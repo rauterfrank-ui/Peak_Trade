@@ -1,0 +1,1153 @@
+{
+  "schema": "peaktrade.documentation_cleanup.v1",
+  "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "documentation_base_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "removed": [
+    {
+      "path": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "group": "standalone_maps",
+      "bytes": 12693,
+      "sha256": "340adf7e09d32529bd9d9d7b34ab6c0b312c442042d0c982519c122a71d02b0b",
+      "git_blob_oid": "70a09df9f996310e34d946092257329bcf3949f8"
+    },
+    {
+      "path": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "group": "standalone_maps",
+      "bytes": 9748,
+      "sha256": "b8ec5848924b8e7e0534ceb19f2bfa229ed606c776fecc85a505a67deced7170",
+      "git_blob_oid": "e4f910e0bda68991ebdcfa20dc06893d26f11874"
+    },
+    {
+      "path": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+      "group": "standalone_maps",
+      "bytes": 6695,
+      "sha256": "3ae017922aa3e0cd2af5073cffc5b1adbe481f707538a7f25a0d94c4d081c4de",
+      "git_blob_oid": "1b841d28469fbd6f848fe559e658ce463b05a244"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 6413,
+      "sha256": "3e838a4c0e1f04f01248c38da65452eb3632cffbae3e07feccceaef6d7a3cb40",
+      "git_blob_oid": "e9da559fb57e402236950831a6c336b993e7ac15"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/ucs_workset_disposition_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 22688,
+      "sha256": "64f166c0b08b36bc45f7e4231c53c5112b376ae438d4b3108274fdcd6fddb81a",
+      "git_blob_oid": "25c8ec24c2d96824e41deed2d211988549e9840f"
+    },
+    {
+      "path": "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 34844,
+      "sha256": "cbe92275df9ff796dbd68f5a4bf679bef6e9e3472ea3264081db327e7ec289f6",
+      "git_blob_oid": "ba8cca03ae518e1365a126a14e27bc40e30c811a"
+    },
+    {
+      "path": "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 93162,
+      "sha256": "cecbde721a9b6b692974051866c0b7f69ab48db1c63ae06fd790184f007bbb30",
+      "git_blob_oid": "0809d2348250c0607d20668a9e0b90b4eb5e0b70"
+    },
+    {
+      "path": "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 3950,
+      "sha256": "e814a4d5d287b61dfd01dd5dd8b53afe4cfb8f5bca90c86bc3a628eec5b4f57e",
+      "git_blob_oid": "28c6a0bb753f6132f1352b143bd297e41bf1917f"
+    },
+    {
+      "path": "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 12700,
+      "sha256": "c0eb87944ff92ea296d78e8d643ed6044efe5afe0c918a3b3a06fba61c5598f2",
+      "git_blob_oid": "53fb320cc91bf2f2555e6cd5013c6cec34df6aaa"
+    },
+    {
+      "path": "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+      "group": "additional_current_maps",
+      "bytes": 44013,
+      "sha256": "7e220affcf0de099a4e75dba827dba45e80c4af2aa500db85d023e9093578e3a",
+      "git_blob_oid": "a077a795c40ef8a6196a0753a86c8413abb3af29"
+    },
+    {
+      "path": "docs/governance/feature_state_map_v1.md",
+      "group": "standalone_maps",
+      "bytes": 15530,
+      "sha256": "e92b10d35118d2f69fdfb0e1293530650291a5970a6ce22cbacc2bac5446683e",
+      "git_blob_oid": "fba0d5a63e6590a867ec6bc0443ed9d99335da70"
+    },
+    {
+      "path": "docs/mindmap/00_MINDMAP_OVERVIEW.md",
+      "group": "mindmaps",
+      "bytes": 815,
+      "sha256": "be84ceb103c0576a5ad46aa78cd65cd61a1677afebc5ad697946058c3abfc05b",
+      "git_blob_oid": "77783aaf66487ed2f4309cc4cb3d93a0c37592b3"
+    },
+    {
+      "path": "docs/mindmap/10_STRATEGY_IDEAS.md",
+      "group": "mindmaps",
+      "bytes": 547,
+      "sha256": "a72693b57d63d9167f5247b28ebff15e51d1ce8090d1f6284e408ef8a39e4fd1",
+      "git_blob_oid": "1487aa66d1cd5e04633f22c07e0c7b96eb24118d"
+    },
+    {
+      "path": "docs/mindmap/20_DATA_INFRA_IDEAS.md",
+      "group": "mindmaps",
+      "bytes": 705,
+      "sha256": "233e47816b4aa6ab94210ea7395ade157687b251764997081eed240f9401e50a",
+      "git_blob_oid": "4e3c740a3a2ec037eacceebd5e88822d4c49e5f6"
+    },
+    {
+      "path": "docs/mindmap/30_EXECUTION_RISK_IDEAS.md",
+      "group": "mindmaps",
+      "bytes": 543,
+      "sha256": "b3c9bc0ee4914fc4807493b04aa395947170adaaab795564fc8d1e88822b6390",
+      "git_blob_oid": "ae328dd0f62d6d6b34e30ad39f8836541c11fb79"
+    },
+    {
+      "path": "docs/mindmap/40_MONITORING_DASHBOARD_IDEAS.md",
+      "group": "mindmaps",
+      "bytes": 573,
+      "sha256": "b537aae9dd97394c36e4e7bee395667d2b657752f32bb1b2fa058b46abdbddeb",
+      "git_blob_oid": "82293fbd5dc28f39c8a73734b651a6a89a97be81"
+    },
+    {
+      "path": "docs/mindmap/50_AI_WORKFLOW_IDEAS.md",
+      "group": "mindmaps",
+      "bytes": 581,
+      "sha256": "dd30c25980b94fb11e5263ab15681548af6e8cc848e001e4dcc544f9415f2954",
+      "git_blob_oid": "79c924155b7638588d654c5884b151b0c41d6be4"
+    },
+    {
+      "path": "docs/mindmap/README_MINDMAP.md",
+      "group": "mindmaps",
+      "bytes": 4135,
+      "sha256": "50af9ae5cca6e2b711e4908a0f12782cf730504f37f7a297c4715c7019a06374",
+      "git_blob_oid": "ead1d87e74b5fe97b5260e3bd5d30adefcfc5f17"
+    },
+    {
+      "path": "docs/mindmap/template/IDEA_TEMPLATE.md",
+      "group": "mindmaps",
+      "bytes": 1345,
+      "sha256": "cd84d08c93b96b70f08f61eba65742416bd4f7b449cf3d699e9fceb8a21c2bce",
+      "git_blob_oid": "bd14b5ad2c39d55803ec58caeb5d93417be75ffd"
+    },
+    {
+      "path": "docs/ops/WAVE4_HOOK_MAP_DRAFT.md",
+      "group": "standalone_maps",
+      "bytes": 591,
+      "sha256": "12399a71e15f3a00980e457f533f38e8aa87ead60273d7eaccf4ff657dd1324a",
+      "git_blob_oid": "91fa5e4f9403e8cf3d2e1e6908290741c5b03f0c"
+    },
+    {
+      "path": "docs/ops/graphs/REMEDIATION_WAVE1_2026-01-13.md",
+      "group": "old_graph_snapshots",
+      "bytes": 6775,
+      "sha256": "7801d64d2b5c6aedbf36ad7d87581338e813e58fe6d008cb972ab1eab7321f7a",
+      "git_blob_oid": "64c0fe5dd39a1aaf0a1242005d7c0b01d193856c"
+    },
+    {
+      "path": "docs/ops/graphs/REMEDIATION_WAVE2_2026-01-13.md",
+      "group": "old_graph_snapshots",
+      "bytes": 8141,
+      "sha256": "1090655d517f96e8f3bc4a3df6716afa330afad98b30d0b5093b1154d36d539c",
+      "git_blob_oid": "14572f7ac9d0998c9beb8db2116743e334ccbd64"
+    },
+    {
+      "path": "docs/ops/graphs/REMEDIATION_WAVE3_2026-01-14.md",
+      "group": "old_graph_snapshots",
+      "bytes": 12336,
+      "sha256": "0f9e744fe411ddd69731683433efc757958fae5c2055ef13ef76589dbd06d58f",
+      "git_blob_oid": "1b893e0e11eb83b91c8316b05b5d6f41ccfcc0fe"
+    },
+    {
+      "path": "docs/ops/graphs/REMEDIATION_WAVE4_2026-01-14.md",
+      "group": "old_graph_snapshots",
+      "bytes": 10076,
+      "sha256": "092ebc87c4ec66483edd057a3b4dc70859dd295878c68896fbd7bb0c6743ad27",
+      "git_blob_oid": "9ce666ae0ea8d848ef8cb39dfeffd179b7028526"
+    },
+    {
+      "path": "docs/ops/graphs/REMEDIATION_WAVE5_2026-01-14.md",
+      "group": "old_graph_snapshots",
+      "bytes": 13145,
+      "sha256": "eb39c9924251b9236fdfca7e73581297d67c354d96c46c765ae4a64efad75581",
+      "git_blob_oid": "5478a845f63572f4e22e1a32b2ad9ea02f708400"
+    },
+    {
+      "path": "docs/ops/graphs/TRIAGE_2026-01-13.md",
+      "group": "old_graph_snapshots",
+      "bytes": 9270,
+      "sha256": "a4ff146f831ed4fdb9d1a5965b1c2d2b1b21dcb88a2859a7d73f1f8793be5385",
+      "git_blob_oid": "0ba4226a804897580fc0d3dea712d0cd0fd2a587"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave3_after.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 9050,
+      "sha256": "49d820a8911e0a3be7f4b49c6c3ab641c4bda2a5217562691cd0e45d02f7f923",
+      "git_blob_oid": "3b1a3bfaa0f6afc7f8650205aa6a326d87a502c9"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave3_before.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 11737,
+      "sha256": "1032c8d98d0f225c354c7845c397819f58de6745a66666d7599ae43a8f446005",
+      "git_blob_oid": "9a326175e42dcc14613681b683377959d2555e77"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave4_after.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 6659,
+      "sha256": "8f08beea0c64629d31fd341c577119c77bc6a46f809b6fe4810c3f9a6e9ecc4e",
+      "git_blob_oid": "21d60d829f9a0bf48df34efb9f26b674c977035a"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave4_before.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 8891,
+      "sha256": "cefe09c633409c48a264718f0f6d7200b4ca6b5625af7a462245a432f1da7513",
+      "git_blob_oid": "41eed078b6fea8ab66c8566092ca9d6651c5ace7"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave5_after.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 4147,
+      "sha256": "9da23155519cd4812d30b91776482b3714c223adc27968fafad8b36b2263f846",
+      "git_blob_oid": "27346aac7d85dd7dabc290785bf0972525369231"
+    },
+    {
+      "path": "docs/ops/graphs/docs_graph_snapshot_wave5_before.txt",
+      "group": "old_graph_snapshots",
+      "bytes": 6021,
+      "sha256": "27c3e519cedf3f8e782058a03ac44fe2473e90061d22f102bd6d70723bc41969",
+      "git_blob_oid": "27f1bf119ff1fb98ed06cf2a57c26f44d0d20456"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/README.md",
+      "group": "old_graph_snapshots",
+      "bytes": 2057,
+      "sha256": "91175cb79e03d7b597a63ecc926c0b32e2f45895c45e22f1e8cb2ab758a47fbb",
+      "git_blob_oid": "4a3c805dc83abda6f1e15925d826ee416488d625"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/broken_targets.md",
+      "group": "old_graph_snapshots",
+      "bytes": 23768,
+      "sha256": "89c5f4b3acfd0b50346ce602c3281abc51cee42e5fa74b115166976acd192514",
+      "git_blob_oid": "fdee6841924a8e6b7c218690a550cc0ee8ad0529"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json",
+      "group": "old_graph_snapshots",
+      "bytes": 514966,
+      "sha256": "17e31810395277334dacf1fed0bd3d354efbb6cc1e100286946a17ac6cbe1671",
+      "git_blob_oid": "8ca17a9f156d1f5727938cb9d32a4733f055d610"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave1_after.json",
+      "group": "old_graph_snapshots",
+      "bytes": 541647,
+      "sha256": "a2d0c0275374683b6cfb99593f7608e5bee88aa4867917c7a46a1fe3496e5476",
+      "git_blob_oid": "b2250e54ca23c7d3c80e04ab3c146a896584d57e"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave2_after.json",
+      "group": "old_graph_snapshots",
+      "bytes": 532971,
+      "sha256": "b3ae2ced3fe6953450b545d36e04ac6ded6b4adc633ea29ee49d41ba5e730c77",
+      "git_blob_oid": "6e8cd0fe3f4e6aae90a0917c74327e236a7ac5d7"
+    },
+    {
+      "path": "docs/ops/graphs/snapshots/2026-01-13/orphans.md",
+      "group": "old_graph_snapshots",
+      "bytes": 26799,
+      "sha256": "299bd7a67e2a09f89123cb0aa4abf5c1dc9ca51b70c530069aa9890292055340",
+      "git_blob_oid": "7f4b57beda26c5fbed8f2d41849302d5d73a2fa7"
+    },
+    {
+      "path": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "group": "standalone_maps",
+      "bytes": 340430,
+      "sha256": "6cf120289bdbcdb434b6f1043dcfe913bcdfdbc09545cb172c7566c0ee7ff4ae",
+      "git_blob_oid": "f13c7cb9aba6cfc6a72662b97496e5c811ab14cf"
+    },
+    {
+      "path": "docs/ops/runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md",
+      "group": "standalone_maps",
+      "bytes": 12711,
+      "sha256": "cd4126c10e75dd8ed248710da7876012036e041027c81e173c1eb6b9ef397166",
+      "git_blob_oid": "3200bff2e92ed8113f5b1a5373571dae75b37fb6"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md",
+      "group": "scoped_system_maps",
+      "bytes": 13108,
+      "sha256": "6f94942bd8317160aa3a48749b2a5d0778a79b02f5ef476050ef857412cba32b",
+      "git_blob_oid": "b65ba287a667208f07f2cfc809884d9ddfe578dc"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "group": "scoped_system_maps",
+      "bytes": 20238,
+      "sha256": "4acf4a27106acbe2c17e9cd5616b4e04e1cee4130a4fd2f0f73555b39e4d9d52",
+      "git_blob_oid": "72dd6dc289753cc68f47ff1fb44a6fe67c89da8c"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 19598,
+      "sha256": "3df91e563bde1147ce60f8cba4eb48b2de7f62ce0e6c143b9845d58618a2f446",
+      "git_blob_oid": "4364114182427b2582a8383921ee2bf985005f0d"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 10584,
+      "sha256": "dbdc95d105e43e1e8d39515700cf8a9d3a4b944f0aaa9dfe3ab5947c48985f61",
+      "git_blob_oid": "7f66c4c61b8c2bc0d39aab35015298cde76b3d53"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 8858,
+      "sha256": "cfbfdbe6a4e601dd8f916ba1ed3631c6c8fa18b0a820c04c9a5c3e195947f370",
+      "git_blob_oid": "2fd4b4f59d5677b066f4a8640c805a033a8d4d90"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 11885,
+      "sha256": "0b31a0776269b01997649a1f880ce7795c4c2d4195ebfb982b73227f92fa6a08",
+      "git_blob_oid": "26ac3e1b95e766fd2f3337f2dab93317280aef5b"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 12585,
+      "sha256": "de120aa62d5378b97dfe93570d3026f497184dcc9432138ad806797e697d17b0",
+      "git_blob_oid": "ff4bf06b88a63776d54fcc7b5fea596405c83413"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 14277,
+      "sha256": "a1b6c0f7903127231d37ce6ccb31f367706c035dc4a7a8d3387c4b48d795e1ec",
+      "git_blob_oid": "c253843c4d81566ef1fc241332eb5dd5701104af"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 16321,
+      "sha256": "336431993778134c693bc5057612bac5ca9076425b1d613510a3ead794da3e7d",
+      "git_blob_oid": "9e44ba07e1e983f9cbb46d54b5289aaef54a2a3a"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "group": "scoped_system_maps",
+      "bytes": 13688,
+      "sha256": "d3f84fdb5367f1b91cf3dbd8ee008774cc1d041c77b6976c1aaf93cf17fab203",
+      "git_blob_oid": "850d1bdf5fbc8b1b49227ee61ac18aa937ffcd60"
+    },
+    {
+      "path": "config/governance/current_system_census_graph_v1/README.md",
+      "sha256": "76b6470eb6b8464ed73ad5965ffa33e3121d3a00d4b6aa536c5976718aa98b4d",
+      "bytes": 2772,
+      "group": "retired_census_readme",
+      "git_blob_oid": "0fbf3384acc13e6a623a45829e7afd848b201581"
+    }
+  ],
+  "navigation_edits": [
+    {
+      "path": "README.md",
+      "before_sha256": "a21c978f3a1bc8a122fd02b710a99941ea908c1d43be902f4c76fe908a1b8bf0",
+      "after_sha256": "a21c978f3a1bc8a122fd02b710a99941ea908c1d43be902f4c76fe908a1b8bf0",
+      "before_git_blob_oid": "24871eb727d340af7936dba7b553bb62b919a07a"
+    },
+    {
+      "path": "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+      "before_sha256": "08f34f0e20bc09555090376d34de637a16236c94bab9f7231bf44943cf962ffe",
+      "after_sha256": "08f34f0e20bc09555090376d34de637a16236c94bab9f7231bf44943cf962ffe",
+      "before_git_blob_oid": "46b41e4d5acf867e9ccd3a7f1e0b6dc94753c25a"
+    },
+    {
+      "path": "config/governance/current_law_impact_map_v1/schema_v1.json",
+      "before_sha256": "8f9d4bc0a858167101b03a973b60eb0336a27bb7ae64de957aabf35f9877f3df",
+      "after_sha256": "8f9d4bc0a858167101b03a973b60eb0336a27bb7ae64de957aabf35f9877f3df",
+      "before_git_blob_oid": "50805eaea15cc95eebe16908c8b0c97e03ab8c2e"
+    },
+    {
+      "path": "config/governance/current_law_impact_map_v1/source_v1.json",
+      "before_sha256": "5be6151720d0a0751c75170f52a5c5dd4742f04331b45faddce86fb240480fbb",
+      "after_sha256": "101601d455ac88e347cb52367a2964be0fec6e18523fafd84567613ef9d5e1c5",
+      "before_git_blob_oid": "c07e3563522a1a7a3c3a9ee69dcbdea7d5563767"
+    },
+    {
+      "path": "config/ops/docs_truth_map.yaml",
+      "before_sha256": "1306b4e043409e7d41b90f32667ddd40f2a8ba55477f80e23aa02cbcccf81118",
+      "after_sha256": "1306b4e043409e7d41b90f32667ddd40f2a8ba55477f80e23aa02cbcccf81118",
+      "before_git_blob_oid": "a45c04c658dc3b59788dab9770a904ee08b0281e"
+    },
+    {
+      "path": "config/ops/repo_truth_claims.yaml",
+      "before_sha256": "6408ea0e0365bae37ff1b37f4b205251d8c8b13392d64bf95ae654bdc9f6c022",
+      "after_sha256": "6408ea0e0365bae37ff1b37f4b205251d8c8b13392d64bf95ae654bdc9f6c022",
+      "before_git_blob_oid": "4c1ed8e6717765c5b273cc5606333ec798c79ad8"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "before_sha256": "89b3c0fab76446a8356e17b0fdaaab62cf56efac0d8c1ae6922934a314318633",
+      "after_sha256": "89b3c0fab76446a8356e17b0fdaaab62cf56efac0d8c1ae6922934a314318633",
+      "before_git_blob_oid": "16b7f8d6043b87da879855d787a9bc6343ff6f07"
+    },
+    {
+      "path": "docs/governance/README.md",
+      "before_sha256": "f79a51d952e7b265dfeb36e1c72fe09b07c09af475a3c400f30c29035c538e8f",
+      "after_sha256": "f79a51d952e7b265dfeb36e1c72fe09b07c09af475a3c400f30c29035c538e8f",
+      "before_git_blob_oid": "13569b2b2edf82853d51f7b87ccfcd738479ab5a"
+    },
+    {
+      "path": "docs/infostream/README.md",
+      "before_sha256": "fd7afda32ceff5b3ea01eb2e7c1c5cca3edbea7a8b2cf2eeaa61d82dc1e6f9da",
+      "after_sha256": "fd7afda32ceff5b3ea01eb2e7c1c5cca3edbea7a8b2cf2eeaa61d82dc1e6f9da",
+      "before_git_blob_oid": "08d9397e2d26523ca7a9f419efa149306bf0b941"
+    },
+    {
+      "path": "docs/ops/README.md",
+      "before_sha256": "2d673951ddddd9120be93ea69b4315d7b84e530e243fd0b5f1ea8a25f6a1da2b",
+      "after_sha256": "2d673951ddddd9120be93ea69b4315d7b84e530e243fd0b5f1ea8a25f6a1da2b",
+      "before_git_blob_oid": "80a409ae8c2ce5c4fc62a0747b94d8a4493eceb5"
+    },
+    {
+      "path": "docs/ops/registry/REPO_TRUTH_CLAIMS.md",
+      "before_sha256": "8f309f508af5155e200d1bf7a36cf75a987afbdcc2a4eab90704e626e5f0746c",
+      "before_git_blob_oid": "e26338c62620e0243bc1d54e4be69ed3421f159c",
+      "after_sha256": "8f309f508af5155e200d1bf7a36cf75a987afbdcc2a4eab90704e626e5f0746c"
+    },
+    {
+      "path": "docs/ops/registry/TRUTH_CORE.md",
+      "before_sha256": "dcbf7b20d37d6f0372a1cadc02600e918f346a96f24438b8ef5120389fc5adb7",
+      "after_sha256": "dcbf7b20d37d6f0372a1cadc02600e918f346a96f24438b8ef5120389fc5adb7",
+      "before_git_blob_oid": "f8580270e975bf7d9e336714ff19bb5be6b37019"
+    },
+    {
+      "path": "docs/ops/runbooks/README.md",
+      "before_sha256": "eb475be96305f5ee4a55268393bf9c9365b2fa7fc055fc9efe531b6e9c14035c",
+      "after_sha256": "eb475be96305f5ee4a55268393bf9c9365b2fa7fc055fc9efe531b6e9c14035c",
+      "before_git_blob_oid": "e573d65d97f3b3df5d05c9bf679dafad35c6a9ec"
+    }
+  ],
+  "retired_map_ids": [
+    "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+    "CURRENT_SYSTEM_CENSUS_GRAPH_V1"
+  ],
+  "law_map_retained": true,
+  "protected_paths": [
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/"
+  ],
+  "additional_backup_created": false,
+  "retained_input_reason": "Original config/governance/current_system_interaction_authority_map_v1/source_v1.json is still referenced by seven src modules; frozen machine input contracts are retained rather than silently breaking their consumers.",
+  "retained_consumed_documents": [
+    {
+      "path": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "role": "MODEL_REGISTRY_VALIDATOR_INPUT",
+      "sha256": "16fd49184d3873d7d5d9036069aca9484f2f26b1e9ada19d58e47a7fba1b2ecd",
+      "git_blob_oid": "ddc86ee5d3b38f87e90d1bd41a15d88f85371fa1",
+      "static_references": [
+        {
+          "path": "src/governance/validate_ai_matrix_vs_registry.py",
+          "line": 49,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/governance/test_matrix_canonical_path_exists.py",
+          "line": 4,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/governance/test_validate_ai_matrix_vs_registry.py",
+          "line": 11,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/governance/test_validate_ai_matrix_vs_registry.py",
+          "line": 23,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    },
+    {
+      "path": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "role": "EVIDENCE_GATE_MARKER_INPUT_NOT_CURRENT_SYSTEM_VIEW",
+      "sha256": "83df4dcc41cfcc9bc962847caefc2299b026a0e3a8a7e1625b551e77da13ea55",
+      "git_blob_oid": "34163cc7cfe88b3f46efdae072f214049ff0bc9b",
+      "static_references": [
+        {
+          "path": "src/ops/config_truth_alignment_contract_v1.py",
+          "line": 715,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_deterministic_offline_evidence_v1/evidence_gate_v1.py",
+          "line": 240,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_pre_activation_closure_v1/pre_activation_gate_v1.py",
+          "line": 256,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "src/ops/single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/evidence_gate_v1.py",
+          "line": 219,
+          "kind": "EXACT_PATH_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/governance/test_deferred_work_recovery_register_v1.py",
+          "line": 34,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/ops/test_post_capability_7_2_cybersecurity_review_v1.py",
+          "line": 23,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    },
+    {
+      "path": "docs/mindmap/INFOSTREAM_LEARNING_LOG.md",
+      "role": "LEARNING_LOG_WRITE_TARGET",
+      "sha256": "61828c052d24558e243bc8fbc58ea78c7486759dcd87807f615a8dbfad215bbe",
+      "git_blob_oid": "7784b1e08449ffb76009efafe036dbeff58a9cd5",
+      "static_references": [
+        {
+          "path": "src/meta/infostream/run_cycle.py",
+          "line": 64,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "SOURCE"
+        },
+        {
+          "path": "tests/meta/test_infostream_basic.py",
+          "line": 654,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        },
+        {
+          "path": "tests/meta/test_infostream_basic.py",
+          "line": 727,
+          "kind": "UNIQUE_BASENAME_LITERAL",
+          "scope": "TEST"
+        }
+      ]
+    }
+  ],
+  "product_source_code_changed": false,
+  "documentation_tooling_changed": true,
+  "verification_scope": {
+    "policy_file_inventory": "780 frozen policy/rule files with static references; not a functional approval of every rule",
+    "consumed_documents": "3 original input/write-target documents retained byte-exact",
+    "full_json_schema_2020_12_check": "NOT_RUN: jsonschema is absent from the existing environment; repository contract validators are used",
+    "whole_repository_test_suite": "NOT_CLAIMED; the existing Atlas YAML-format test boundary remains documented in the Atlas README"
+  },
+  "externalized_archives": [
+    {
+      "path": "DISASTER_RECOVERY_ENVIRONMENT.txt",
+      "sha256": "f2e27d2a9bbcf6a63713013309abacf7d992369098f3badec7850fde94bb18f9",
+      "bytes": 1465,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_ENVIRONMENT.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "DISASTER_RECOVERY_GIT_STATUS.txt",
+      "sha256": "27d338e259acde171c36cec6c34f035c43c49e30a5175a1976667b0243b0f031",
+      "bytes": 132620,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_GIT_STATUS.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "DISASTER_RECOVERY_MANIFEST.txt",
+      "sha256": "dbfd381e152718f9ff82765d65c370aac2d6041a9ea80a777c7262ff224768a7",
+      "bytes": 2335,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_MANIFEST.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "DISASTER_RECOVERY_RSYNC_LOG.txt",
+      "sha256": "869429f7d01cf52f02f5df3e8b5c3cbe3ecd22e5d98081b9d3bd8800fb38fa91",
+      "bytes": 441,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_RSYNC_LOG.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "DISASTER_RECOVERY_UNTRACKED_INVENTORY.txt",
+      "sha256": "5b978c069660d99c2883116bae95a66d359888ab845da2ac1db1329421e00f8f",
+      "bytes": 129632,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_UNTRACKED_INVENTORY.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "DISASTER_RECOVERY_VERIFICATION.txt",
+      "sha256": "4af5859dab95b5068111d5e775cd722fdb72dbacc886b6302556e2da3df7bd50",
+      "bytes": 2256643,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/DISASTER_RECOVERY_VERIFICATION.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "RESTORE_INSTRUCTIONS.txt",
+      "sha256": "75ed21deda30bdf4e305234c85a2f77dcbbe61f06a277035d233f08df1b849cf",
+      "bytes": 1865,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/RESTORE_INSTRUCTIONS.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/COMMIT_RECEIPT.json",
+      "sha256": "34e8ec6e3d24c98b1a56b24eb8b97f65e9342b147a4792d0a4114c24be1f4789",
+      "bytes": 866,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/COMMIT_RECEIPT.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/COMMIT_SCOPE_MANIFEST.json",
+      "sha256": "8be729c4329cc62d8bacbc146fceed8c89952c21323013a0cb9981636efd1148",
+      "bytes": 304605,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/COMMIT_SCOPE_MANIFEST.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/README.md",
+      "sha256": "2261ba4a9567126cdb5d592a998a493691a7bbde0cc40a362c1782b11e2c5b37",
+      "bytes": 1242,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/README.md",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/SNAPSHOT_MANIFEST.json",
+      "sha256": "c1e2134bd101f1e59b0e4859dbbf9589e7b3eb127042c143cefd3b70ca88c274",
+      "bytes": 3330,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/SNAPSHOT_MANIFEST.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/direct_repo_remaining_handoff_callers.json",
+      "sha256": "9d17b2443c2a0ff82a2b89a63169a0e1ce25e4895943407f199e24c6fc5e0a1b",
+      "bytes": 1404,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/direct_repo_remaining_handoff_callers.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/direct_repo_start_binding_manifest.json",
+      "sha256": "561adb4b916f416b9193f38989fe28fc785016a2c6a7900fd38a662da4214e48",
+      "bytes": 3724,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/direct_repo_start_binding_manifest.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/direct_repo_start_binding_results.xml",
+      "sha256": "a001c7e150794d5c230ae9de3e3ce27db1c65e8bf7a2c0ea3c365b2aca6c1a09",
+      "bytes": 9319,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/direct_repo_start_binding_results.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/local_checkpoint_initial_status.json",
+      "sha256": "f81871009c35f0cc3f47199bd608eef0daabf320266544cdb6fe24154f56ed56",
+      "bytes": 193333,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/local_checkpoint_initial_status.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/local_checkpoint_secret_scan.json",
+      "sha256": "9b6a0d127557ceeedc388a65f943772b1b10a52d48cbd57c2947a12f98116a15",
+      "bytes": 339,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/local_checkpoint_secret_scan.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part000",
+      "sha256": "0f05beda23a799651b59be46441e7d980c20ffce5f7f61f4543683c012ad0d69",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part000",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part001",
+      "sha256": "01dde052159565c428de0ef49e2777f690b5e2a5083c7f5017b6324b89c1d39a",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part001",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part002",
+      "sha256": "4d4cc48d0727e0ab403e64082966c4a6464c3c81e64a14954a0668c89f71a6a3",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part002",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part003",
+      "sha256": "aae0896c021ae27c1a704b46517df44415b8cbc1700e8c6f06421f4e082f941a",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part003",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part004",
+      "sha256": "87fe379c46da369ae5e86b97a42231b8f26d9b70feaafe0d032023b54cb55d0c",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part004",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part005",
+      "sha256": "436e697be2b37411919a7c30beaae2b35741207fed51a04669dbf439e408bd78",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part005",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part006",
+      "sha256": "9f6a5c34642aae39f74cd61a26b7b3b4b3dac9500901b9ef3f72b7548f8e0fc9",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part006",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part007",
+      "sha256": "0ef8bf742f06c01447d988168a1420898e3e72db195be7e53977d5f355db7a9e",
+      "bytes": 50331648,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part007",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part008",
+      "sha256": "168787f9a13c542e4d46f6a06619133e1f326191c8899c1a7e81f89a8a830ffa",
+      "bytes": 36256626,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/backups/local_checkpoints/20261103T173259Z/snapshot.tar.zst.gpg.part008",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-design-and-implementation-evidence-001.tar.gz",
+      "sha256": "6c4e89f932eefc0a45d57d14366ed47ee093f9c0cf7f5619bd65bfb9cce678be",
+      "bytes": 2408354,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-design-and-implementation-evidence-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-001.tar.gz",
+      "sha256": "7e592856a156be1cc75b014d792e6817eff7c9d7edf88177791b5c3df827b8a6",
+      "bytes": 3463509,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-002.tar.gz",
+      "sha256": "98b82966d907147cf9370dac3f3db01313d0084ffcfa1774438570276b8a3672",
+      "bytes": 3611129,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-002.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-003.tar.gz",
+      "sha256": "c799c366ac376767e92d6e408e6b6de8f004ba664152050dc8c34358dcc6d3bc",
+      "bytes": 2361314,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-historical-source-mirror-003.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-semantic-plan-and-navigation-001.tar.gz",
+      "sha256": "d143d04f1946d25f1b86ae23a81ef6205c68d32172f4e8d89423a3c7d12bca4f",
+      "bytes": 816211,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/plan-semantic-plan-and-navigation-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-001.tar.gz",
+      "sha256": "727a61b8c5410aa4b9aa4ae5d6b2867e6e24fb2fd678366b3df7aff87a0202b9",
+      "bytes": 17139660,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-002.tar.gz",
+      "sha256": "9f680adb27a6c65096af7f8a48bc4fd38f9a0075d6b46d30053e25298a71e0d9",
+      "bytes": 14905572,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-002.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-003.tar.gz",
+      "sha256": "d2d1a6961199e5cb4bcaf72c49405855f8a5916a245627422f2dc06f8dac4328",
+      "bytes": 4388159,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-003.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-004.tar.gz",
+      "sha256": "45b5e6600d9179962781316b54d5304e73b45a5ad9927a4d738c5dca6db4df4f",
+      "bytes": 5832761,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-004.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-005.tar.gz",
+      "sha256": "9e3949525f3d4f6ab785a38dbbcd3eca4d37c569c8b659c1e8fa5375668ad6ee",
+      "bytes": 6275722,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-005.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-006.tar.gz",
+      "sha256": "447735c243cc9686219b47fafceda5f1957024babb9488af536ab48560b8e134",
+      "bytes": 5126817,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-006.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-007.tar.gz",
+      "sha256": "365fe85960f4027f1c2db0fe75577ea5f4c278b14b640bc8382ad3c6508d3d14",
+      "bytes": 8101393,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-evidence-and-source-binding-007.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-001.tar.gz",
+      "sha256": "42e7eb492fa49c213931d27f782187219037370ced1e190629ea8d8169c74c2c",
+      "bytes": 3569891,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-002.tar.gz",
+      "sha256": "b3902195fb41fea7f8d9bd1f13b0ab199492fc94d6a85311c04be13147d528de",
+      "bytes": 2823977,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-002.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-003.tar.gz",
+      "sha256": "680947310717777fd870c53bd4051efd336658157fe98b859b35b83df2ebc201",
+      "bytes": 1366371,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-003.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-004.tar.gz",
+      "sha256": "8421b6c8586170a14c559243ad9018649a22281df0a95972eb02af7e79f3505c",
+      "bytes": 1273180,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-004.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-005.tar.gz",
+      "sha256": "c75c487f715e5ca76002b7825033878f7b2bdacc8aad71f7227448311efb2841",
+      "bytes": 1092191,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-005.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-006.tar.gz",
+      "sha256": "9b3bcbacdf2767151ba268c7f41e48c9d571d4e524c2a27c8ba3383d52961ed9",
+      "bytes": 1177113,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-006.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-007.tar.gz",
+      "sha256": "964945abecd4efc8d10d966c8deffc2b21e2dce06e1045faf3e2dc1ed0a6acc0",
+      "bytes": 1701632,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-007.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-008.tar.gz",
+      "sha256": "7a4ec2565d077f193dfc56181dc296075ac8b46c824babc31c5718a52212cf9c",
+      "bytes": 2582499,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-008.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-009.tar.gz",
+      "sha256": "7f05a2cd96d1f189910dbb963a3871e5349b8b7eb2e1f2eef78f3d9441ce4f74",
+      "bytes": 2491524,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-009.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-010.tar.gz",
+      "sha256": "f30acf067c27b20699472617f192d04c5b462996859ed130a995c58a31a1b1c3",
+      "bytes": 2392489,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-010.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-011.tar.gz",
+      "sha256": "359fc929ca20658848ab1e5ef0edb1f207fba868af46a94aa5c19e691445711a",
+      "bytes": 2266138,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-011.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-012.tar.gz",
+      "sha256": "08ba436640e92101edccb89d85a3c4b757f2375076eec8ed2f716689a52d0405",
+      "bytes": 2396216,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-012.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-013.tar.gz",
+      "sha256": "0d5ca13e46f9572fc9415a81460de4c5484b1c1ecc32ba367e31cf6673456242",
+      "bytes": 2476166,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-013.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-014.tar.gz",
+      "sha256": "2b6c41c1baef08aec148f6d79a471401ae407130b52390eab0048ed9d7354db5",
+      "bytes": 352269,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-generated-technical-projection-014.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-semantic-view-and-navigation-001.tar.gz",
+      "sha256": "e0564a3e064135884c363e4822e83aae6512319c885c8756d63f80588efac8ca",
+      "bytes": 2250297,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-semantic-view-and-navigation-001.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-semantic-view-and-navigation-002.tar.gz",
+      "sha256": "b1162894b514c42d1a4c1ba4431cf6220a0294788608093a4495bf380dbb069a",
+      "bytes": 1220866,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/obsidian_repo_alignment_2026_11_06/archives/system-semantic-view-and-navigation-002.tar.gz",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/.gitattributes",
+      "sha256": "43a4d1746115e68c04766a075b46ecf825ee794c26861811f7d87d9b79bb6fb1",
+      "bytes": 48,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/.gitattributes",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+      "sha256": "d8c5384e388173abc76f43483ffb8894bd9b6aeec47cc79511b0eef863260dc1",
+      "bytes": 9167,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/artifact_manifest.json",
+      "sha256": "3549c5b79e8ad16a9a4dd5205fd20009a0782d81728509e2d4171a5c648d1063",
+      "bytes": 3399,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/artifact_manifest.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/authority_boundaries.xml",
+      "sha256": "a746cd4d2ab484b8732fd88814f4fc236c259ab7d912e89acb55b74ae8000ee0",
+      "bytes": 2968,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/authority_boundaries.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/bound_reconstruction_adjudication.json",
+      "sha256": "69969f184a4f44951b35ded85f7fddef72c20f36b578c140cbed35e9ea99261c",
+      "bytes": 7263,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/bound_reconstruction_adjudication.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/docs_checks.json",
+      "sha256": "3b9729e810adc803bd4d1a94143872ed80bd80cb13638ef438d3a246c1e0201e",
+      "bytes": 868,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/docs_checks.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/gvef_after.xml",
+      "sha256": "8df99d1c95a3eade6b4324e3ba9535f0d497a210299101882c34b3311ef37a68",
+      "bytes": 43800,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/gvef_after.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/gvef_before.xml",
+      "sha256": "bffcbfe0d8eecfc5d09b2219532836e2270df4e4036ddf126a7650dee3988dc7",
+      "bytes": 66045,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/gvef_before.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_corpus_manifest.json",
+      "sha256": "37947c8014911e7651bc8a8d49cf8241b240a6036f22830e547ce9ca88b6fb1f",
+      "bytes": 147698,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_corpus_manifest.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_ddo_and_learning_test_corpus_5b606f6d.zip",
+      "sha256": "f0c36f8fe8dce5bbd91fcd37eba46170b7da7dc0f6a14b22da961e23a3f4da88",
+      "bytes": 1554012,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_ddo_and_learning_test_corpus_5b606f6d.zip",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_navigation_repair_source.json",
+      "sha256": "209b3bc175697cdabb2d4c2e804de3b1b4ac7e991eb87be60c37af13da7cc399",
+      "bytes": 2491,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_navigation_repair_source.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_phase22_original_request.json",
+      "sha256": "a0566cfd402280680b3e1c4d44099d4491d551bc040f524433d6bbd49d9bb57d",
+      "bytes": 22929,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_phase22_original_request.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_phase24_original_request.json",
+      "sha256": "dcf6f07c2ea9bcff339f6c672a121c074c02d95fa1477580d8937d77de8aa0fb",
+      "bytes": 9341,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/historical_phase24_original_request.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/host_crash_persist_7fe41ed92.original.txt",
+      "sha256": "d6ebfab06b44ebb5a663dc21307bf586134b3a90b970b01b1f73bd474aaf4460",
+      "bytes": 4234,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/host_crash_persist_7fe41ed92.original.txt",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/learning_after.xml",
+      "sha256": "a0902693f4e7aa41bf03bb05618f77e2eb28e0f21703afa82e30217bcf580ef6",
+      "bytes": 106399,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/learning_after.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/learning_before.xml",
+      "sha256": "dcb78faa75bd36aa465ebd6b2e8bbd573f83ac6a70f6563938002b438145b654",
+      "bytes": 109505,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/learning_before.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/literal_reconstruction.xml",
+      "sha256": "144b892b00292dddd13d4fd1f956916d0986f0ddcc1ffe4c3f4c52d5abc069b3",
+      "bytes": 791,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/literal_reconstruction.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/measured_gvef_vector_result.json",
+      "sha256": "1848ae354831de1883afb88172112b6d4f08b907c656d16d49a7c8f685a05f4a",
+      "bytes": 14631,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/measured_gvef_vector_result.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/nested_backup_lookup.json",
+      "sha256": "00ebaad42912aa110f2cc1c0436c6493cfdd585a2a290ee61277f6feca7b6158",
+      "bytes": 1065,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/nested_backup_lookup.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/original_twelve_phases.xml",
+      "sha256": "937a10bbe9b362c4d2933f642f9334e71b368f7e7a2ea916b656854fd50da910",
+      "bytes": 27765,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/original_twelve_phases.xml",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6618_preserved_ddo_boundary.json",
+      "sha256": "145bf6f885dc8cfe9367364ffb71795b01194c8b2971bc6ee0795b83f1477055",
+      "bytes": 11147,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6618_preserved_ddo_boundary.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6865_phase22.json",
+      "sha256": "81e757a2c2a8562655596978e16e869664593cd7642a730baad861116d879d77",
+      "bytes": 3017,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6865_phase22.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6867_phase24.json",
+      "sha256": "cb3ecd894781c15881d264ef8d8062a6a09b69329b131207a0dcc37c01af0754",
+      "bytes": 3545,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/pr6867_phase24.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/receipt.json",
+      "sha256": "550da2d6e51f41287c4a39b9580fe7d212c62e47252bea0c52d3699619827468",
+      "bytes": 2302,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/receipt.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/restoration_receipt.json",
+      "sha256": "15575770061c80bfcb758ca1b3971b0f7fc8eca401f7b55f9cafcbb374285b7f",
+      "bytes": 736,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/restoration_receipt.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/scope_preservation.json",
+      "sha256": "a6d5ed901919f2e8208bc722a207abba7fc7dd4fc136de51d2c45a4af8c515fb",
+      "bytes": 1017,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/scope_preservation.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/source_bindings.json",
+      "sha256": "252e7ea68eb96f7d3ee1981d20115cfada271f28c7e73b2fb12f1fa091471722",
+      "bytes": 1921,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/docs/ops/evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/source_bindings.json",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "scripts/ops/verify_self_learning_restoration_v1.py",
+      "sha256": "ebfcf2bac0e5b38f86fb45c5be6ae0a8bebda010ec4ed1f9426ac8908190c150",
+      "bytes": 7437,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/scripts/ops/verify_self_learning_restoration_v1.py",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    },
+    {
+      "path": "sidebar_before.png",
+      "sha256": "fb80b3bef371789a89cc11243d1aa75c01009fbde68f0f18109f1926d509e9c1",
+      "bytes": 930173,
+      "archive_path": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-repodateien/sidebar_before.png",
+      "role": "HISTORICAL_ARCHIVE_NOT_CURRENT_PRODUCT_INPUT"
+    }
+  ],
+  "external_archive_root": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06",
+  "historical_verifier_status": {
+    "path": "scripts/ops/verify_self_learning_restoration_v1.py",
+    "role": "DATED_RESTORATION_AUDIT_ARCHIVED_WITH_INPUT_PACKAGE",
+    "last_current_tree_result": "FAIL_CURRENT_CORPUS_PARITY_DRIFT",
+    "mismatching_path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+    "promoted_to_current_pass": false
+  },
+  "archive_transfer_receipts_bound_in_successor_baseline": true
+}

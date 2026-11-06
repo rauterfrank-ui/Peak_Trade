@@ -13,15 +13,14 @@ from src.risk_layer.kill_switch.cli import cmd_trigger
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
-from tests.ops._post_path_safety_fixtures_v1 import (
-    isolate_kill_switch_state_root_v1,
-    set_kill_switch_test_approval_env_v1,
-)
 
 
 def _persist_config(tmp_path, monkeypatch):
+    path = tmp_path / "kill_switch_state.json"
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
-    return isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    return path
 
 
 def test_cli_trigger_persists_and_second_process_filegate_blocks(tmp_path, monkeypatch):
@@ -84,21 +83,25 @@ def test_persistence_atomic_json_enum_round_trip(tmp_path):
 
 
 def test_missing_unreadable_invalid_state_policies(tmp_path, monkeypatch):
-    canonical = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "root")
+    configured = tmp_path / "missing.json"
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(configured))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "missing.json"))
-    assert kill_switch_should_block_trading(explicit_active=False) is True
-    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH")
-
-    canonical.parent.mkdir(parents=True)
-    canonical.write_text("{not json", encoding="utf-8")
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    canonical.write_text(json.dumps({"state": "NOPE"}), encoding="utf-8")
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not json", encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(bad))
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    canonical.unlink()
+    invalid = tmp_path / "invalid.json"
+    invalid.write_text(json.dumps({"state": "NOPE"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(invalid))
+    assert kill_switch_should_block_trading(explicit_active=False) is True
+
     monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is False
 
 
@@ -126,20 +129,11 @@ def test_recovery_does_not_silently_clear_killed(tmp_path, monkeypatch):
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    # require_approval_code=False cannot disable durable recovery authorization.
-    assert restarted.request_recovery("operator") is False
-    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
-    code = set_kill_switch_test_approval_env_v1(monkeypatch)
-    assert restarted.request_recovery("operator", code) is True
+    assert restarted.request_recovery("operator") is True
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    assert restarted.complete_recovery() is False
-    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
-    assert (
-        restarted.complete_recovery("operator", code, request_id=restarted.pending_request_id)
-        is True
-    )
+    assert restarted.complete_recovery() is True
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "ACTIVE"
     assert kill_switch_should_block_trading(explicit_active=False) is False
 

@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "scope": "BOUNDED_OFFLINE_RETURN_PATH_AND_EXACT_EVIDENCE_BINDING",
+  "distinct_passed_cases": 787,
+  "new_cases": 40,
+  "source_test_config_bindings": 11358,
+  "original_store_json_files": 4,
+  "point1_bounded_offline_path_implemented": true,
+  "point2_next_model_learning_implemented": false,
+  "natural_source_quality_proven": false,
+  "runtime_activation": false,
+  "documentation_checks": {
+    "files": 4,
+    "token_violations": [],
+    "missing_references": [],
+    "repo_targets_checked": 237,
+    "introduced_wikilinks_checked": 9,
+    "introduced_markdown_links_checked": 8,
+    "historical_source_bindings_restored_and_preserved": true
+  },
+  "lint_and_format": "PASS",
+  "raw_before_image_whitespace": "ORIGINAL_BYTES_PRESERVED_WITH_SCOPED_GIT_ATTRIBUTE"
+}

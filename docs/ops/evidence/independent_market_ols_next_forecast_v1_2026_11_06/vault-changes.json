@@ -1,0 +1,84 @@
+{
+  "vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "changes": [
+    {
+      "path": "Start.md",
+      "snapshot": "vault-after/Start.md.txt",
+      "sha256": "e0d29f484bbf9ff5b332a0318db554a7ec91297b74aba57f8bd6a08c99a79839",
+      "before_snapshot": "vault-before/Start.md.txt",
+      "before_sha256": "c1983ea702a1424f05a846a5a3304bc7f0747bb3cdf61fc9e66f2e26f182fd14"
+    },
+    {
+      "path": "00 Systemindex/System Cockpit.md",
+      "snapshot": "vault-after/00 Systemindex/System Cockpit.md.txt",
+      "sha256": "43a2d8b1df4a890f6a13cd1bc45cb80f0b9492d91489bfd18c94b0ade57acf3d",
+      "before_snapshot": "vault-before/00 Systemindex/System Cockpit.md.txt",
+      "before_sha256": "0c5304830b960329ecfc0a0d8ccca9efb1b1471dfe34d9847166938bbe3c63ca"
+    },
+    {
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "snapshot": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "2f012e9ffca529da2bd15fce18a1de6eefcbdbf3aea921ed75032f784b8f1fd6",
+      "before_snapshot": "vault-before/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "before_sha256": "25d3502d7ea047a8c12322382ff2dcc8360da77898696418fab37a2d451eead0"
+    },
+    {
+      "path": "00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "snapshot": "vault-after/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "9dbc5899753567a084d58d45ba4876757df886dd20fda995f80fe96791993bd6",
+      "before_snapshot": "vault-before/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "before_sha256": "cbc9d48c71ee8d3727edb7690b06d7587702b9192b6616a0862d0ed07872824d"
+    },
+    {
+      "path": "00 Systemindex/Universen/CORE.md",
+      "snapshot": "vault-after/00 Systemindex/Universen/CORE.md.txt",
+      "sha256": "a7f6f54777d05036ea7106cc2b4b67944b7e6a0863ffc1b27c6850d3852b6389",
+      "before_snapshot": "vault-before/00 Systemindex/Universen/CORE.md.txt",
+      "before_sha256": "c1c5d064fc2e85409840e78879941054b3a84b52ea04588ca60d918c6bef9c34"
+    },
+    {
+      "path": "Systemkarte.canvas",
+      "snapshot": "vault-after/Systemkarte.canvas.txt",
+      "sha256": "bb3c5aaddc821d514b9d5b75c18aaac50a8d3f3a189e32c50eb03832d9ab9a57",
+      "before_snapshot": "vault-before/Systemkarte.canvas.txt",
+      "before_sha256": "44acb8cdca83f8ad66c6866fee1c924bc19cfd41f9c81c72a54883ad6f9b8f90"
+    },
+    {
+      "path": "Systemkarte Offlineverbund.canvas",
+      "snapshot": "vault-after/Systemkarte Offlineverbund.canvas.txt",
+      "sha256": "7e59975fd35579b7e03f3667ca6b5c0a6dfd3d63b79c29fcf84f5bf3e16c9e21",
+      "before_snapshot": "vault-before/Systemkarte Offlineverbund.canvas.txt",
+      "before_sha256": "b28fe1295136d53081017c3d63c47349035e45801a8085ff28d8ea1f44321b6b"
+    },
+    {
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/14 Numerischer Folgeforecast und fortlaufender Double Play Betrieb.md",
+      "snapshot": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/14 Numerischer Folgeforecast und fortlaufender Double Play Betrieb.md.txt",
+      "sha256": "9aa9b1fcd797c17bb681171b8432c2ccab0abd8af6f7e84833652b9b0b36881b",
+      "before_snapshot": null,
+      "before_sha256": null
+    }
+  ],
+  "bindings": [
+    {
+      "path": "Systemindexbindung.json",
+      "before_snapshot": "Systemindexbindung.json.before.gz",
+      "before_sha256": "8202acd988c544201ce7d50b0fbeeffd50a12bef491a038c2eda59e1a1f9932c",
+      "snapshot": "Systemindexbindung.json.after.gz",
+      "sha256": "641ca4d71eabf51b51f10001bcb09c86c44eadd15b51c628afbe65cf619d5edc"
+    },
+    {
+      "path": "Systematlasbindung.json",
+      "before_snapshot": "Systematlasbindung.json.before.gz",
+      "before_sha256": "22990c7bc75685c94e6e06d397fef4527f22ca9e3493440c41c8adf51f77aa96",
+      "snapshot": "Systematlasbindung.json.after.gz",
+      "sha256": "3db60837690c022128ccf74e8eff3319de25b18564fef2a48238b492824bfe3c"
+    },
+    {
+      "path": "Ansichtsbindung.json",
+      "before_snapshot": "Ansichtsbindung.json.before.gz",
+      "before_sha256": "5832e10998c864c9ee63125e16cf6919eedafd932d7678b6dca7481aafbc0f18",
+      "snapshot": "Ansichtsbindung.json.after.gz",
+      "sha256": "bab9d72a6b2005381d54ee1524bc2220cedcd15382215a523cbff03e6dcd10b3"
+    }
+  ]
+}

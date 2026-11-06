@@ -1,0 +1,54 @@
+---
+title: "08 Numerische Lernverfahren und ihre Anschlussgrenzen"
+stand: "2026-11-05"
+rolle: "Quellgebundene Fortsetzung des Konstruktverstaendnisses"
+autoritaet: "NONE"
+---
+
+# 08 Numerische Lernverfahren und ihre Anschlussgrenzen
+
+## Ergebnis der Vertiefung
+
+Es gibt im vorhandenen Researchcode tatsächlich numerische Modellanpassung. Ein pauschales „PeakTrade lernt nirgends“ wäre falsch. Für das Konstrukt entscheidend sind das jeweilige Target, die Datenpopulation, der erzeugte Zustand und dessen nächste Verwendung. Die drei hier verfolgten Familien erfüllen unterschiedliche Aufgaben und schließen nicht automatisch den offenen MI-Lernkreislauf.
+
+## OLS: echte Anpassung von Koeffizienten
+
+[fit_ols_lstsq](</Users/frnkhrz/Peak_Trade/src/research/linear_evidence/fitters.py:232>) nimmt eine Featurematrix X, Targetwerte y und deren Binding entgegen. Nach Vorprüfungen teilt die Funktion die Zeilen chronologisch in Training und Validation. `numpy.linalg.lstsq` schätzt die Koeffizienten ausschließlich auf dem Trainingsteil; die Koeffizienten werden anschließend auf alle gelieferten Zeilen angewendet. Das Resultat enthält echte numerische Koeffizienten, Rang-/Konditionsdiagnostik und getrennte R²-Werte für Training und Validation.
+
+Die Funktion liefert `LinearModelEvidenceV1`, kein automatisch in MI installierter Modellzustand. RMSE, MAE und mehrere Residualkennzahlen beziehen sich im Fitter auf alle gelieferten Zeilen einschließlich Training. Der nachfolgende [build_cost_model_calibration_evidence](</Users/frnkhrz/Peak_Trade/src/research/linear_evidence/cost_model.py:8>) bildet Fehlerquantile aus den ihm übergebenen vollständigen Arrays. Sein Status `CALIBRATION_VALIDATED_OFFLINE` folgt bei einem Kandidaten bereits aus `p90 >= 0`; er ist kein unabhängiger Gütenachweis gegenüber einer Forecastbaseline oder einer neuen OOS-Population.
+
+## Zwei konkrete Targetverwendungen desselben Fitters
+
+Der [Offline-Costdiagnostikrunner](</Users/frnkhrz/Peak_Trade/scripts/research/offline_linear_cost_model_diagnostics_v0.py>) materialisiert aus Tradeledger und Entry-Barreferenzen ein simuliertes Backtest-Slippagetarget in Basispunkten. [materialize_offline_linear_cost_diagnostic_rows_v0](</Users/frnkhrz/Peak_Trade/src/research/offline_linear_cost_diagnostic_row_materializer_v0.py:411>) bindet diese Beobachtungen an Trade-, Instrument- und Entryzeit. Dessen Regression ist eine Kosten-/Ausführungsdiagnostik; ihr Target ist keine freie künftige Marktreturnverteilung.
+
+Die Bouchaud-Familie verwendet denselben Fitter mit dem entscheidungsfreien `forward_return_1bar` und den sieben OHLCV-Proxyfeatures. [_consume_cost_diagnostics_v0](</Users/frnkhrz/Peak_Trade/src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py:352>) passt Koeffizienten an dieses Returntarget an, berechnet Predictions daraus und multipliziert die Target-/Predictionwerte mit 10.000 für den vorhandenen bps-Diagnostikconsumer. [execute_bouchaud_diagnostic_payloads_v0](</Users/frnkhrz/Peak_Trade/src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py:378>) enthält dieselbe tatsächliche numerische Verwendung.
+
+Der Funktionsname „cost diagnostics“ verwandelt das zugelieferte Returntarget nicht in gemessene Ausführungskosten. Umgekehrt ist diese tatsächliche Feature-/Targetverarbeitung mehr als das Anhängen einer Evidence-ID. Sie ist als vorhandene eigenständige Researchvariante zu erhalten und fachlich zu bewerten.
+
+## Was ihre gegenwärtigen Garantien nicht beweisen
+
+Die Zeilenbildung berechnet zeitverschobene Targets, entfernt Warmup-/ungültige Featurezeilen und verwendet einen chronologischen Split. [validate_no_lookahead_contract_v0](</Users/frnkhrz/Peak_Trade/src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py:272>) liefert aber mehrere Zusicherungen als feste Booleans zurück; sein konkreter Body vergleicht zuvor bereits sortierte Zeiten. Die Normalisierung filtert `is_final` nur, falls diese Spalte vorhanden ist. Diese lokalen Funktionen allein beweisen daher weder die Bedeutung des eingehenden Timestamps noch eine unabhängig validierte Finalisierung, vollständige Barabstände oder die zulässige Verfügbarkeit jedes Trainingslabels am nächsten Forecastzeitpunkt.
+
+Das [build_feature_matrix_binding](</Users/frnkhrz/Peak_Trade/src/research/linear_evidence/feature_matrix.py:28>) bindet Feature- und Targetwerte mit Digests sowie einen Zeitbereich. Es enthält damit noch keine vollständige MI-Identität aus Quelle, Marktcontext, Forecastzeit, Horizont, Modellgeneration, eingefrorenem Forecast und späterem exaktem Messbeleg. Eine Umbenennung von `decision_time` oder ein vorhandener Matrixhash würde diesen Unterschied nicht beheben.
+
+## Tatsächlicher Folgeconsumer der Diagnostik
+
+[bind_linear_diagnostics_economic_evidence_consumer_v0](</Users/frnkhrz/Peak_Trade/src/research/linear_evidence/offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0.py:238>) bindet Diagnostikreferenzen, Status und Gründe an EconomicViability-Unterstützung. Die entsprechende [build_promotion_gate_input_from_linear_diagnostics_consumer_binding_v0](</Users/frnkhrz/Peak_Trade/src/research/linear_evidence/offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0.py:231>) baut einen Gateinput mit weiterhin ausdrücklich nicht bewiesener EconomicValidity und weiteren FAIL-Zuständen. Sie lädt die OLS-Koeffizienten nicht als nächste MI-Prognosegeneration. Der gelesene Pfad transportiert Diagnostik und Zulässigkeitsinformation; er ist kein positiver wirtschaftlicher Abschluss.
+
+Die Originalblueprints führen OLS-Koeffizienten ebenfalls als diagnostische Evidenceunterstützung und nicht als selbständige Optimierungsfläche. Diese historische Rollenbeschreibung verbietet nicht jede spätere fachlich begründete Nutzung eines Regressionsverfahrens. Sie erklärt jedoch, weshalb ein heutiger Diagnostikfit nicht schon einen freigegebenen MI-Provider oder eine neue Optimierungsfläche darstellt.
+
+## Secondary-Classifier und Modellartefakt
+
+[apply_meta_model](</Users/frnkhrz/Peak_Trade/src/research/ml/meta/meta_labeling.py:125>) kann bei vorhandenem Target tatsächlich ein Modell fitten. Es verwendet `predict_proba`, um vorhandene Basissignale abhängig von der positiven Klassenwahrscheinlichkeit auf null zu setzen. Bei einem übergebenen Modell wird dieses nur angewendet. Die unmittelbare Wirkung sind gefilterte Strategiesignale, keine allgemeine mehrhorizontige Marktreturnverteilung. Der lokale Trainingszweig trainiert auf allen gültig gelabelten Zeilen und filtert danach die gelieferten Zeilen; ein alleiniger Aufruf belegt deshalb keine unabhängige OOS-Messung.
+
+[build_versioned_strategy_model_parameter_artifact_v1](</Users/frnkhrz/Peak_Trade/src/meta/learning_loop/versioned_strategy_model_parameter_artifact_v1.py:725>) validiert und verknüpft vorhandene Candidate-/Model-/Parameteridentitäten zu einem versionierten Artefakt. Sein Body trainiert kein Modell; die gebundenen Completionflags halten `model_trained`, `parameters_optimized` und `parameters_modified` ausdrücklich false. Ebenso sind Patchnormalisierung und Snippetemitter keine bisher übersehenen Trainer.
+
+## Konsequenz für das weitere Verständnis
+
+Die Untersuchung hat einen positiven Bestand an numerischem Lernen und entscheidungsfreier Targetbildung gefunden. Offen ist dessen zulässige und fachlich richtige Verbindung zur ursprünglichen MI-Frage: welches Target, welcher zeitgebundene Datensatz, welche Baseline, welche unabhängige Gütemessung und welcher nachfolgende Consumer. Dabei sind sowohl eine Anpassung vorhandener Verfahren als auch eine begründete Weiterentwicklung des heutigen Zuschnitts zu bewerten. Keine dieser Optionen wird hier umgesetzt, aktiviert oder als endgültige Architektur festgelegt.
+
+Alle Befunde sind statisch an die angegebenen Funktionen und Bytes gebunden. Es wurden keine Modelle trainiert, keine Datensätze geladen, keine Produktmodule importiert und keine Produkttests ausgeführt. [Quellenregister](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-marktmessung-lernzustand-2026-11-05/quellen.json>) · [Gezielte Prüfung](</Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/iu-sl-opt-marktmessung-lernzustand-2026-11-05/pruefung.json>).
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Zum zusammenhängenden Konstrukt]]
+
+<!-- Vollständige Leserprojektion; Original: system:00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/08 Numerische Lernverfahren und ihre Anschlussgrenzen.md; SHA256: 8955742704f2075ce54f20f9569998f434ffcbf3961c66a0c2c43c4bc0ddf267. Native Wikilinks beziehen sich auf den ursprünglichen Vault. -->

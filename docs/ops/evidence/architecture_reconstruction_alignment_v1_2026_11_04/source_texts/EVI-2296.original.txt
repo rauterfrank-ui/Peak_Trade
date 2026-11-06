@@ -1,0 +1,84 @@
+BTC-WECHSEL UND ABGRENZUNG DES OFFLINE-GEGENFALLS
+02.11.2026 · Ergänzung zur Gesamtfunktionsprüfung; Originalbelege bleiben erhalten
+
+ERGEBNIS
+
+Ein konkreter historischer Wechsel ist durch Chat, Git-Diff und GitHub-PR
+belegt: Im §11.13.5-P7.1-Pfad wurde die kanonische Instrumentidentität von
+BTC-USD_UM_XPERP-310404 auf SUI-USD_UM_XPERP-310404 umgestellt.
+
+PR #6051:
+https://github.com/rauterfrank-ui/Peak_Trade/pull/6051
+Merge-Commit: 7062a032fe80491a8749a1641d6f7ec85b50506c
+Merge-Zeit: 25.08.2026 02:44:30Z / 04:44:30 MESZ
+22 geänderte Dateien.
+
+Der Git-Diff der constants_v1.py zeigt ausdrücklich:
+DEFAULT_INSTRUMENT_ID vorher BTC-USD_UM_XPERP-310404
+DEFAULT_INSTRUMENT_ID danach SUI-USD_UM_XPERP-310404
+Die alte BTC-Identität wird als superseded/historical geführt und ist
+für diesen aktiven Zielpfad kein Fallback.
+
+Die aktuelle gelesene Arbeitsdatei
+src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
+führt weiterhin SUI-USD_UM_XPERP-310404 als DEFAULT_INSTRUMENT_ID (Zeile 240).
+
+Das ist ein Nachweis dieses konkreten Binding-Pfads. Daraus folgt weder,
+dass heute jeder Selector/Host SUI wählt, noch dass ETH in einem anderen
+Forschungs- oder späteren Betriebszweig falsch sein muss.
+
+DIREKTE GESPRÄCHSBELEGE
+
+„SUI Rebind Auftrag“:
+6a8cf9b2-6d58-83eb-bbff-8738b1859548
+vor dem Rebind BTC als kanonisches §11.13.5-Instrument, SUI als gewähltes
+Nachfolgeziel. Keine neue Ausführungsfreigabe aus dieser alten Nachricht.
+
+„SUI Identity Rebind Status“:
+6a8d0028-6618-83eb-9cff-853fbc03b597
+Turn 025fda9a-0062-42f6-9b07-cf2d6f12071e meldet die Implementierung.
+Turn 9edf1f7d-ebfb-4ae4-9aaf-3f1a5643786f meldet PR #6051 als gemergt
+mit derselben vollständigen Commit-ID. Die genannte BTC-Residuenfreiheit
+ist zunächst eine damalige Berichtsaussage; hier keine neue globale
+Residuenprüfung.
+
+Der lokal erhaltene Cursor-Suchindex enthält dieselbe Rebind-Spur in
+Chat 52fa4a95-4b24-46cb-889f-af2e06b26dea, Datensätze 324836 und 324838.
+Diese indexierten Nachrichten sind Navigations-/Auftragsbelege und
+ersetzen den direkt geprüften Git-Diff nicht.
+
+WIE DER BTC/ETH-GEGENFALL IN MEINER PRÜFUNG ENTSTAND
+
+Der BTC-Bezug kam direkt aus einem von mir verwendeten vorhandenen
+Testhelfer:
+tests/ops/test_current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
+setzt CANON=BTC-USDT-SWAP-CANON und NATIVE=BTC-USDT-SWAP.
+
+Der andere vorhandene Testhelfer
+tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py
+ruft diese Samples ohne Instrument-Override auf und baut anschließend
+ein ETH-BoundInstrument (inst-eth-usdt-perp / ETH-USDT-SWAP).
+
+Damit habe ich im Offline-Versuch eine bereits in den Testeingaben vorhandene
+BTC/ETH-Mischung benutzt. Der Gegenfall zeigt, dass die geprüfte untere
+G17→CMC-Übergabe diese Mischung annimmt. Er zeigt keinen historischen
+operativen Wechsel von Bitcoin zu ETH und keine tatsächliche heutige
+BTC-Datenverwendung im regulären Handelsweg.
+
+Die pauschale Interpretation „das System verwendet noch Bitcoin für den
+heute gewählten Future“ ist deshalb NICHT belegt und darf aus F01 der
+Gesamtfunktionsprüfung nicht abgeleitet werden.
+
+BEREINIGTE FRAGE FÜR DIE WEITERE BEWEISFÜHRUNG
+
+Zuerst den tatsächlich untersuchten Selection-/Binding-/Host-Pfad samt
+Revision und gespeichertem Instrument festlegen. Dann dessen zugehörige
+Markt-/G17-/Scope-/Outcome-Daten prüfen. Die historische SUI-Umstellung,
+ETH-Forschungsdaten und BTC-Testfixtures bleiben getrennte Quellenrollen.
+
+Kein pauschales Suchen-und-Ersetzen aller BTC-/ETH-Namen. Historische
+Nachweise, Negativtests und frühere Instrumentdaten müssen erhalten bleiben.
+
+Keine Änderung an Produktcode, Instrumentauswahl, Config, Obsidian oder
+historischen Quellen vorgenommen. Keine neue Trading-/Live-Freigabe.
+

@@ -1,0 +1,30 @@
+{
+  "authority": "NONE",
+  "census_revision": "ae131a986e5f0106831b501203725cea7e30bc6c",
+  "commits_after_snapshot": [
+    "3de380c8c fix: bind natural-enter DPO by instrument and candle time (#7137)",
+    "3714620db fix(security): close B5/B5-RR/B6 post-path safety gaps (#7138)",
+    "eef9d9cd3 WP-B5: Kill-Switch Safety & Recovery Closure (#7139)",
+    "769d13663 BWP-LIVE-001: Full-System Live Readiness Closure (#7140)"
+  ],
+  "current_origin_main_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "edges": 81,
+  "ghv_trading_authority": "NONE",
+  "graph_flags": {
+    "CROSS_UNIVERSE_CAUSALITY_PROVEN": false,
+    "CURRENT_CAUSAL_GRAPH_VERIFIED": false,
+    "GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+    "TEMPORAL_CAUSALITY_PROVEN": false
+  },
+  "graph_git_head": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "loaded_artifact": "evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/integrated_causal_graph.v1.json",
+  "manifest": "evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/causal_integration_manifest.v1.json",
+  "nodes": 302,
+  "reason": "Snapshot predates #7137-#7140. Missing census edge is not isolation proof and is not a live blocker. CURRENT code at 769d13663 is authoritative.",
+  "schema_version": "bwp_live_003_ghv_provenance.v1",
+  "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+  "snapshot_matches_origin_main": false,
+  "stale_snapshot_is_additional_live_blocker": false,
+  "status": "STALE",
+  "wp1_companion": "evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_crosswalk_strict/composed_forensic_graph.v1.json"
+}

@@ -20,7 +20,7 @@ Claim `truth-branch-protection-registry-present` hält `docs/ops/registry/TRUTH_
 | --- | --- |
 | `governance-overview-present` | `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md` |
 | `known-limitations-present` | `docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md` |
-| `docs-truth-map-registry-present` | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| `docs-truth-map-registry-present` | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` |
 | `repo-truth-claims-registry-present` | `docs/ops/registry/REPO_TRUTH_CLAIMS.md` (diese Datei) |
 | `truth-core-registry-present` | `docs/ops/registry/TRUTH_CORE.md` |
 | `truth-branch-protection-registry-present` | `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` |

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
 from decimal import Decimal
 
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
@@ -30,15 +29,15 @@ def test_layer_c_distance_differs_from_canonical_fixed_80_on_productive_enter_re
 
 
 def test_low_mark_canonical_80_fail_closed_layer_c_derives_valid_stop() -> None:
-    _, cycle_b, _ = _host_enter_cycle()
-    assert cycle_b.replay is not None
-    replay = cycle_b.replay
-    mc = replay.intermediate.market_context
-    low_mark = replace(mc, mark_price=0.18)
-    low_replay = replace(
-        replay,
-        intermediate=replace(replay.intermediate, market_context=low_mark),
+    from tests.ops.test_gge_scope_learning_configuration_cutover_v2 import _input
+    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+        run_integrated_offline_trading_logic_replay_v1,
     )
+
+    # Re-evaluate a coherent low-price decision, rather than changing only
+    # its market price while retaining another decision's Scope geometry.
+    low_replay = run_integrated_offline_trading_logic_replay_v1(_input(price=0.18))
+    assert low_replay.intermediate is not None
     assert (
         derive_protective_stop_price_from_adverse_exit_v0(
             selected_side="long",

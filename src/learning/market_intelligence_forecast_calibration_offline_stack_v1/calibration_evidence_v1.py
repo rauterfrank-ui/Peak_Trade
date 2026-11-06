@@ -91,6 +91,28 @@ def build_calibration_evidence_v1(
         evaluation_observation=evaluation_observation,
     )
 
+    return _build_calibration_from_validated_join_v1(
+        forecast=forecast,
+        join=join,
+        realized_scalar=realized_scalar,
+        realized_direction=realized_direction,
+        threshold_hit=threshold_hit,
+        support_disposition=support_disposition,
+        provenance=provenance,
+    )
+
+
+def _build_calibration_from_validated_join_v1(
+    *,
+    forecast,
+    join,
+    realized_scalar=None,
+    realized_direction=None,
+    threshold_hit=None,
+    support_disposition=None,
+    provenance=None,
+):
+    """Shared original calibration math; callers must validate their own typed joins."""
     if join["join_status"] != "JOINED":
         body = {
             "domain": STACK_DOMAIN,

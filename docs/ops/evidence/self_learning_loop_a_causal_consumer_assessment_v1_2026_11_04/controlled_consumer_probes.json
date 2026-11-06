@@ -1,0 +1,1659 @@
+{
+  "source_commit": "98e7182508b7641b132ec3871e238737987bc56c",
+  "scope": "Explicit controlled synthetic port/consumer interventions using existing code and test-input helpers. Temporary stores only; no product implementation changes, natural evidence or full host certification.",
+  "ddo": [
+    {
+      "input_price": 110.0,
+      "caller_supplied_label": "OPAQUE_A",
+      "measured_fields": {
+        "schema_name": "ddo_n_bars_outcome_measurement_evidence",
+        "schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
+        "outcome_scalar_kind": "LOG_RETURN",
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+        "n_bars": 2,
+        "bar_close_times_utc": [
+          "2026-09-01T13:00:00Z",
+          "2026-09-01T14:00:00Z"
+        ],
+        "bar_identity_refs": [
+          "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+          "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f"
+        ],
+        "evaluation_time_utc": "2026-09-01T14:00:00Z",
+        "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+        "start_bar_identity_ref": "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+        "end_bar_identity_ref": "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f",
+        "o4_provenance": {
+          "session_id": "o4-session-1",
+          "repository_sha": "abc12345deadbeef",
+          "config_digest": "cfgdigest001"
+        },
+        "bridge_contract_id": "peak_trade.learning.ddo.o4_n_bars_bar_evidence_bridge_v1",
+        "measurement_producer_id": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+        "start_price": 100.0,
+        "end_price": 110.0,
+        "log_return": 0.09531017980432493,
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783"
+      },
+      "outcome_economic_score": "OPAQUE_A",
+      "state_label": "OPAQUE_A",
+      "feedback_label": "OPAQUE_A",
+      "state_version": 1
+    },
+    {
+      "input_price": 90.0,
+      "caller_supplied_label": "OPAQUE_A",
+      "measured_fields": {
+        "schema_name": "ddo_n_bars_outcome_measurement_evidence",
+        "schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
+        "outcome_scalar_kind": "LOG_RETURN",
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+        "n_bars": 2,
+        "bar_close_times_utc": [
+          "2026-09-01T13:00:00Z",
+          "2026-09-01T14:00:00Z"
+        ],
+        "bar_identity_refs": [
+          "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+          "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f"
+        ],
+        "evaluation_time_utc": "2026-09-01T14:00:00Z",
+        "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+        "start_bar_identity_ref": "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+        "end_bar_identity_ref": "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f",
+        "o4_provenance": {
+          "session_id": "o4-session-1",
+          "repository_sha": "abc12345deadbeef",
+          "config_digest": "cfgdigest001"
+        },
+        "bridge_contract_id": "peak_trade.learning.ddo.o4_n_bars_bar_evidence_bridge_v1",
+        "measurement_producer_id": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+        "start_price": 100.0,
+        "end_price": 90.0,
+        "log_return": -0.10536051565782628,
+        "actual_outcome_ref": "ddo.outcome.measure.36fe3b2b5cecff7b5493763b0891ed47e59607b0c7ee8c2082586f825495c531"
+      },
+      "outcome_economic_score": "OPAQUE_A",
+      "state_label": "OPAQUE_A",
+      "feedback_label": "OPAQUE_A",
+      "state_version": 1
+    },
+    {
+      "input_price": 110.0,
+      "caller_supplied_label": "OPAQUE_B",
+      "measured_fields": {
+        "schema_name": "ddo_n_bars_outcome_measurement_evidence",
+        "schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
+        "outcome_scalar_kind": "LOG_RETURN",
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "horizon_start_time_utc": "2026-09-01T12:00:00Z",
+        "n_bars": 2,
+        "bar_close_times_utc": [
+          "2026-09-01T13:00:00Z",
+          "2026-09-01T14:00:00Z"
+        ],
+        "bar_identity_refs": [
+          "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+          "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f"
+        ],
+        "evaluation_time_utc": "2026-09-01T14:00:00Z",
+        "price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+        "start_bar_identity_ref": "ddo.o4.bar.471858da261f252ad48705b5a00eecd8b3a85ef37a4ba7f434ab8fd91271e60d",
+        "end_bar_identity_ref": "ddo.o4.bar.6b774b0693b4fdd209530fce4d8e07d115de0ea72ad55753454fb5312f2ef94f",
+        "o4_provenance": {
+          "session_id": "o4-session-1",
+          "repository_sha": "abc12345deadbeef",
+          "config_digest": "cfgdigest001"
+        },
+        "bridge_contract_id": "peak_trade.learning.ddo.o4_n_bars_bar_evidence_bridge_v1",
+        "measurement_producer_id": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+        "start_price": 100.0,
+        "end_price": 110.0,
+        "log_return": 0.09531017980432493,
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783"
+      },
+      "outcome_economic_score": "OPAQUE_B",
+      "state_label": "OPAQUE_B",
+      "feedback_label": "OPAQUE_B",
+      "state_version": 1
+    }
+  ],
+  "mi": [
+    {
+      "caller_supplied_direction": "UP",
+      "calibration": {
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "schema_version": "calibration_evidence_v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "score": 0.5,
+          "realized_direction": "UP"
+        },
+        "provenance": {},
+        "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+        "calibration_evidence_authority": "NONE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "content_digest": "5c3c57d67e2d438e90abcf0a43c2e547d26fd11985e19abcf36daf3be31019ce"
+      },
+      "mi_evidence": {
+        "schema_version": "mi_learning_evidence_record_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+        "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+        "information_set_ref": "info.set.phase8",
+        "forecast_created_at_utc": "2026-09-01T12:00:00Z",
+        "outcome_horizon_end_utc": "2026-09-01T14:00:00Z",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "evaluation_observation_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "horizon_observation_status": "OK",
+        "outcome_finalization_status": "FINALIZED",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_evidence_digest": "5c3c57d67e2d438e90abcf0a43c2e547d26fd11985e19abcf36daf3be31019ce",
+        "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+        "selected_instrument_ref": null,
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "legacy_learning_evidence_ref": null,
+        "provenance": {
+          "bridge_id": "peak_trade.learning.market_intelligence_mi_to_learning_evidence_bridge_v1",
+          "workpackage_id": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+        },
+        "evidence_class": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE",
+        "mi_learning_evidence_authority": "NONE",
+        "productive_ddo_reducer_mutated": false,
+        "forecast_is_not_decision": true,
+        "reproducibility_digest": "5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c83eb35c1a15c12af8",
+        "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8"
+      },
+      "research_projection": {
+        "schema_version": "market_intelligence_research_evidence_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "drift_assessment_refs": [],
+        "legacy_learning_evidence_ref": null,
+        "market_intelligence_research_authority": "NONE",
+        "evidence_class": "MARKET_INTELLIGENCE_RESEARCH_EVIDENCE",
+        "productive_authority": "NONE",
+        "runtime_reachability": false,
+        "can_auto_promote": false,
+        "research_evidence_id": "mi.research.a829053d640be1250afe40d3ad6211680cd1e23112853e15",
+        "content_digest": "a829053d640be1250afe40d3ad6211680cd1e23112853e15cc8cc2f3b385108e"
+      },
+      "m4_status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+      "m4_full_result": {
+        "schema_version": "canonical_optimization_universe_experiment_plane_v1",
+        "domain": "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+        "status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+        "reason": "OFFLINE_RESEARCH_PROPOSAL_ONLY",
+        "plane_identity": "a7bf3007dba4a3b5c3d7a811d07bd80045d907797d8ead6a2f343066c646b7fa",
+        "optimization_productive_authority": "NONE",
+        "learning_productive_authority": "NONE",
+        "promotion_authority": "NONE",
+        "authorized_productive_surfaces": 0,
+        "zero_authorized_productive_targets": false,
+        "external_effect_authorized": false,
+        "proposal_not_authority": true,
+        "no_trading_reselection": true,
+        "champion_promotion_authority": "NONE",
+        "offline_research_context": {
+          "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+          "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+          "envelope_resolution": {
+            "schema_version": "canonical_optimizable_envelope_v1",
+            "domain": "peak_trade.canonical_optimizable_envelope.v1",
+            "resolution": "NOT_AUTHORIZED",
+            "reason": "UNREGISTERED_SURFACE",
+            "surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_identity": null,
+            "authorized_surface_count": 3,
+            "zero_authorized_productive_targets": false,
+            "optimization_productive_authority": "NONE",
+            "learning_productive_authority": "NONE",
+            "external_effect_authorized": false,
+            "owner_map_provenance_ref": null,
+            "owner_map_implies_authorization": false,
+            "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+          },
+          "envelope_not_productive_authorization": true,
+          "authorized_productive_surfaces": 0,
+          "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+        },
+        "learning_input_validation": {
+          "schema_version": "canonical_optimization_universe_learning_input_v1",
+          "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+          "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "optimization_productive_authority": "NONE",
+          "promotion_authority": "NONE",
+          "runtime_authority_impact": "NONE",
+          "external_effect_authorized": false,
+          "optimizable_envelope_defined": false,
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+          "state_scope_id": "ddo.lscope.export-test",
+          "state_version": 1,
+          "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+        },
+        "chain": {
+          "learning_input_validation": {
+            "schema_version": "canonical_optimization_universe_learning_input_v1",
+            "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+            "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "runtime_authority_impact": "NONE",
+            "external_effect_authorized": false,
+            "optimizable_envelope_defined": false,
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+            "state_scope_id": "ddo.lscope.export-test",
+            "state_version": 1,
+            "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+          },
+          "offline_research_context": {
+            "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+            "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_resolution": {
+              "schema_version": "canonical_optimizable_envelope_v1",
+              "domain": "peak_trade.canonical_optimizable_envelope.v1",
+              "resolution": "NOT_AUTHORIZED",
+              "reason": "UNREGISTERED_SURFACE",
+              "surface_id": "offline.synthetic.research.m4.v1",
+              "envelope_identity": null,
+              "authorized_surface_count": 3,
+              "zero_authorized_productive_targets": false,
+              "optimization_productive_authority": "NONE",
+              "learning_productive_authority": "NONE",
+              "external_effect_authorized": false,
+              "owner_map_provenance_ref": null,
+              "owner_map_implies_authorization": false,
+              "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+            },
+            "envelope_not_productive_authorization": true,
+            "authorized_productive_surfaces": 0,
+            "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+          },
+          "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+          "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+          "selected_candidate": {
+            "status": "PROPOSED",
+            "disposition": "PROPOSAL_ONLY",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "parameter_region": {
+              "fast": 15
+            }
+          },
+          "challenger_evaluation": {
+            "autonomous_champion_swap": false,
+            "challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "challenger_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "disposition": "CHALLENGER_RESEARCH_PREFERRED",
+                "role": "CHALLENGER",
+                "score": 1.05
+              }
+            ],
+            "champion_challenger_can_arm": false,
+            "champion_challenger_can_authorize_canary": false,
+            "champion_challenger_can_create_confirm_token": false,
+            "champion_challenger_can_enable": false,
+            "champion_challenger_can_fund": false,
+            "champion_challenger_can_increase_leverage": false,
+            "champion_challenger_can_increase_risk": false,
+            "champion_challenger_can_mutate_live_config": false,
+            "champion_challenger_can_promote": false,
+            "champion_challenger_can_promote_to_live": false,
+            "champion_challenger_can_submit_order": false,
+            "champion_challenger_can_use_confirm_token": false,
+            "champion_challenger_can_write_live_config": false,
+            "champion_challenger_domain": "peak_trade.canonical_champion_challenger.v1",
+            "champion_challenger_has_runtime_authority": false,
+            "champion_challenger_present": true,
+            "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+            "champion_state": {
+              "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+              "mutated": false,
+              "swapped": false
+            },
+            "comparable_challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "comparison_contract_version": "canonical_comparison_ssot_v1",
+            "comparison_ssot_version": "canonical_comparison_ssot_v1",
+            "completeness": "COMPLETE",
+            "created_at": "2026-09-19T12:00:00Z",
+            "digest_algorithm": "sha256",
+            "evaluation_identity": "166efa5fd1b2c87f98de1eb0ef594f6acdf3d91dcad3ccb4a40cf771277ff72d",
+            "evaluation_policy_version": "canonical_champion_challenger_policy_v1",
+            "evidence_refs": [
+              {
+                "digest": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "kind": "COMPARISON_RESULT",
+                "ref": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+              },
+              {
+                "digest": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "kind": "EXPERIMENT_RECORD",
+                "ref": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              }
+            ],
+            "learning_may_autonomously_replace_core_logic": false,
+            "metric_definitions": "canonical_robustness_metrics_v1",
+            "overall_status": "EVALUATION_COMPLETE",
+            "pair_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "comparison_identity": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "overall_comparability": "COMPARABLE",
+                "rejection_reasons": []
+              }
+            ],
+            "promotion_authority": "NONE",
+            "ranked_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+            ],
+            "ranking": {
+              "ranking_identity": "e0e7b1adfd83934ba518034a86ad8283ebc0cc1ba614f9fbeb9e2ca44835893c",
+              "ranking_status": "RANKED",
+              "ranked_experiment_ids": [
+                "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              ],
+              "rejection_reasons": []
+            },
+            "research_recommendation": "CHALLENGER_RESEARCH_PREFERRED",
+            "robustness_suite_version": "canonical_robustness_suite_v1",
+            "runtime_authority_impact": "NONE",
+            "schema_version": "canonical_champion_challenger_v1",
+            "score_metric": "explicit_research_score",
+            "scores": {
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0": 1.0,
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9": 1.05
+            },
+            "self_learning_self_authorizing_separation": true,
+            "integrity": {
+              "content_sha256": "96ab0877fd36a36b15deb5535bc3e14af44767a6bc1f097991ddb5bb76d68408"
+            }
+          },
+          "robustness_evidence_digest": {
+            "content_sha256": "7241f6f9f7676cee43eed28a04d2006c4c18b8aa58a7bddc05882fe24cca7eda"
+          },
+          "failure_evidence_count": 1,
+          "failure_evidence": [
+            {
+              "kind": "SEARCH_FAILURE_SIGNAL",
+              "payload": {
+                "failure_classes": [],
+                "known_failure": false,
+                "known_failure_class": false,
+                "known_reality_gap_failure": false,
+                "known_rejected_parameter_region": false,
+                "known_robustness_failure": false,
+                "matching_failure_record_ids": [],
+                "matching_reality_gap_record_ids": [],
+                "reason": "no known failure"
+              },
+              "evidence_only": true
+            }
+          ],
+          "proposal": {
+            "disposition": "PROPOSAL_ONLY",
+            "proposal_not_authority": true,
+            "promotion_authority": "NONE",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "identity_digest": "6420255d097c8100bfe79ab6fbf31fb5099f499452ad3d06ce9ccb2b2b1bad7f",
+            "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+            "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+            "challenger_evaluation_disposition": null,
+            "robustness_suite_identity": "b0eb4afffb166f058880cb3ac87e9950f530d9367a430c908b4bb0988cd24eca",
+            "external_effect_authorized": false,
+            "productive_config_mutation": false
+          },
+          "mi_enriched_m4_intake": {
+            "schema_version": "canonical_optimization_universe_mi_enriched_m4_intake_v1",
+            "domain": "peak_trade.canonical_optimization_universe_mi_enriched_m4_intake.v1",
+            "status": "MI_ENRICHED_M4_INTAKE_ACCEPTED",
+            "reason": "MI_ENRICHED_OFFLINE_RESEARCH_INTAKE",
+            "mi_optimization_research_input_ack": {
+              "schema_version": "market_intelligence_optimization_research_input_v1",
+              "domain": "peak_trade.learning.market_intelligence.optimization_research_input.v1",
+              "status": "ACCEPTED_OFFLINE_MI_RESEARCH_INPUT",
+              "reason": "OFFLINE_MI_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "mi_research_evidence_digest": "a829053d640be1250afe40d3ad6211680cd1e23112853e15cc8cc2f3b385108e",
+              "legacy_learning_input_ack": {
+                "schema_version": "canonical_optimization_universe_learning_input_v1",
+                "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+                "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+                "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+                "optimization_productive_authority": "NONE",
+                "promotion_authority": "NONE",
+                "runtime_authority_impact": "NONE",
+                "external_effect_authorized": false,
+                "optimizable_envelope_defined": false,
+                "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+                "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+                "state_scope_id": "ddo.lscope.export-test",
+                "state_version": 1,
+                "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+              },
+              "can_promote": false,
+              "can_mutate_mv2_dp": false,
+              "can_bind_cap23": false,
+              "result_digest": "03dc7dc4440afd596ec3f8c317cc6e5bb04c7aabb404ff5737ee8d559d560410"
+            },
+            "legacy_learning_input_ack": {
+              "schema_version": "canonical_optimization_universe_learning_input_v1",
+              "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+              "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+              "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "promotion_authority": "NONE",
+              "runtime_authority_impact": "NONE",
+              "external_effect_authorized": false,
+              "optimizable_envelope_defined": false,
+              "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+              "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+              "state_scope_id": "ddo.lscope.export-test",
+              "state_version": 1,
+              "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+            },
+            "mi_lineage_refs": {
+              "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+              "mi_optimization_research_input_result_digest": "03dc7dc4440afd596ec3f8c317cc6e5bb04c7aabb404ff5737ee8d559d560410",
+              "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+              "research_evidence_id": "mi.research.a829053d640be1250afe40d3ad6211680cd1e23112853e15",
+              "mi_research_content_digest": "a829053d640be1250afe40d3ad6211680cd1e23112853e15cc8cc2f3b385108e",
+              "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+              "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+              "legacy_learning_evidence_ref": null,
+              "drift_assessment_refs": [],
+              "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+              "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8",
+              "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+              "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+              "mi_learning_reproducibility_digest": "5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c83eb35c1a15c12af8",
+              "mi_learning_content_hash": null,
+              "lineage_digest": "7a75da32b41d8ed2cce03d29ac066cab160e4222f5a88121d75bd149ac99402d"
+            },
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "external_effect_authorized": false,
+            "intake_digest": "ec4e3bb63a7f8f6f60bd9b37a394f784fe656df486f121de42a5cf5c327a5291",
+            "mi_lineage_digest": "7a75da32b41d8ed2cce03d29ac066cab160e4222f5a88121d75bd149ac99402d"
+          },
+          "mi_lineage_refs": {
+            "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+            "mi_optimization_research_input_result_digest": "03dc7dc4440afd596ec3f8c317cc6e5bb04c7aabb404ff5737ee8d559d560410",
+            "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+            "research_evidence_id": "mi.research.a829053d640be1250afe40d3ad6211680cd1e23112853e15",
+            "mi_research_content_digest": "a829053d640be1250afe40d3ad6211680cd1e23112853e15cc8cc2f3b385108e",
+            "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+            "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+            "legacy_learning_evidence_ref": null,
+            "drift_assessment_refs": [],
+            "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+            "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8",
+            "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+            "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+            "mi_learning_reproducibility_digest": "5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c83eb35c1a15c12af8",
+            "mi_learning_content_hash": null,
+            "lineage_digest": "7a75da32b41d8ed2cce03d29ac066cab160e4222f5a88121d75bd149ac99402d"
+          }
+        },
+        "envelope_registry_authorized_surface_count": 3,
+        "normative_spec": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+        "decision_config": "config/governance/optimization_universe_experiment_plane_v1_decision_v1.json",
+        "result_digest": "e0d7515ca5a3d609f65a95be87dd0daf67c08e86bd7c9ea06180b0412ffb8e28"
+      },
+      "ingest": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "APPENDED",
+        "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 1,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "replay": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "IDEMPOTENT_REPLAY",
+        "mi_learning_evidence_id": "mi.learn.5ff1096078d50fbd3ae23f7087a50bee9b5cb4a9610c94c8",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 1,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "triad_calibration_roundtrip": {
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "calibration_evidence_authority": "NONE",
+        "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "realized_direction": "UP",
+          "score": 0.5
+        },
+        "content_digest": "5c3c57d67e2d438e90abcf0a43c2e547d26fd11985e19abcf36daf3be31019ce",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "n_bars": 2,
+        "provenance": {},
+        "schema_version": "calibration_evidence_v1"
+      },
+      "triad_persist": {
+        "persist_id": "peak_trade.learning.market_intelligence_mi_offline_durable_evidence_persist_v1",
+        "persist_status": "APPENDED",
+        "durable_evidence_id": "mi.offline.durable.0790905c2966922b7c519439ec5e8f85779da28d527713bf",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "research_evidence_id": "mi.research.a829053d640be1250afe40d3ad6211680cd1e23112853e15",
+        "content_digest": "0790905c2966922b7c519439ec5e8f85779da28d527713bfd3fb55785d1ff1d1",
+        "store_record_count": 1,
+        "deterministic_replay_equal": true,
+        "external_effect_authorized": false,
+        "productive_authority": "NONE"
+      }
+    },
+    {
+      "caller_supplied_direction": "DOWN",
+      "calibration": {
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "schema_version": "calibration_evidence_v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "score": 0.7,
+          "realized_direction": "DOWN"
+        },
+        "provenance": {},
+        "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+        "calibration_evidence_authority": "NONE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "content_digest": "b73150660cd8701c0db9cbaa02e9070562c36fc3316cb53a2807de604b092ea6"
+      },
+      "mi_evidence": {
+        "schema_version": "mi_learning_evidence_record_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+        "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+        "information_set_ref": "info.set.phase8",
+        "forecast_created_at_utc": "2026-09-01T12:00:00Z",
+        "outcome_horizon_end_utc": "2026-09-01T14:00:00Z",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "evaluation_observation_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "horizon_observation_status": "OK",
+        "outcome_finalization_status": "FINALIZED",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_evidence_digest": "b73150660cd8701c0db9cbaa02e9070562c36fc3316cb53a2807de604b092ea6",
+        "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+        "selected_instrument_ref": null,
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "legacy_learning_evidence_ref": null,
+        "provenance": {
+          "bridge_id": "peak_trade.learning.market_intelligence_mi_to_learning_evidence_bridge_v1",
+          "workpackage_id": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+        },
+        "evidence_class": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE",
+        "mi_learning_evidence_authority": "NONE",
+        "productive_ddo_reducer_mutated": false,
+        "forecast_is_not_decision": true,
+        "reproducibility_digest": "cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e55e651981ad87777",
+        "mi_learning_evidence_id": "mi.learn.cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e"
+      },
+      "research_projection": {
+        "schema_version": "market_intelligence_research_evidence_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "drift_assessment_refs": [],
+        "legacy_learning_evidence_ref": null,
+        "market_intelligence_research_authority": "NONE",
+        "evidence_class": "MARKET_INTELLIGENCE_RESEARCH_EVIDENCE",
+        "productive_authority": "NONE",
+        "runtime_reachability": false,
+        "can_auto_promote": false,
+        "research_evidence_id": "mi.research.5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae024",
+        "content_digest": "5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae0242107274c2befbd28"
+      },
+      "m4_status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+      "m4_full_result": {
+        "schema_version": "canonical_optimization_universe_experiment_plane_v1",
+        "domain": "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+        "status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+        "reason": "OFFLINE_RESEARCH_PROPOSAL_ONLY",
+        "plane_identity": "a7bf3007dba4a3b5c3d7a811d07bd80045d907797d8ead6a2f343066c646b7fa",
+        "optimization_productive_authority": "NONE",
+        "learning_productive_authority": "NONE",
+        "promotion_authority": "NONE",
+        "authorized_productive_surfaces": 0,
+        "zero_authorized_productive_targets": false,
+        "external_effect_authorized": false,
+        "proposal_not_authority": true,
+        "no_trading_reselection": true,
+        "champion_promotion_authority": "NONE",
+        "offline_research_context": {
+          "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+          "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+          "envelope_resolution": {
+            "schema_version": "canonical_optimizable_envelope_v1",
+            "domain": "peak_trade.canonical_optimizable_envelope.v1",
+            "resolution": "NOT_AUTHORIZED",
+            "reason": "UNREGISTERED_SURFACE",
+            "surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_identity": null,
+            "authorized_surface_count": 3,
+            "zero_authorized_productive_targets": false,
+            "optimization_productive_authority": "NONE",
+            "learning_productive_authority": "NONE",
+            "external_effect_authorized": false,
+            "owner_map_provenance_ref": null,
+            "owner_map_implies_authorization": false,
+            "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+          },
+          "envelope_not_productive_authorization": true,
+          "authorized_productive_surfaces": 0,
+          "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+        },
+        "learning_input_validation": {
+          "schema_version": "canonical_optimization_universe_learning_input_v1",
+          "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+          "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "optimization_productive_authority": "NONE",
+          "promotion_authority": "NONE",
+          "runtime_authority_impact": "NONE",
+          "external_effect_authorized": false,
+          "optimizable_envelope_defined": false,
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+          "state_scope_id": "ddo.lscope.export-test",
+          "state_version": 1,
+          "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+        },
+        "chain": {
+          "learning_input_validation": {
+            "schema_version": "canonical_optimization_universe_learning_input_v1",
+            "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+            "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "runtime_authority_impact": "NONE",
+            "external_effect_authorized": false,
+            "optimizable_envelope_defined": false,
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+            "state_scope_id": "ddo.lscope.export-test",
+            "state_version": 1,
+            "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+          },
+          "offline_research_context": {
+            "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+            "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_resolution": {
+              "schema_version": "canonical_optimizable_envelope_v1",
+              "domain": "peak_trade.canonical_optimizable_envelope.v1",
+              "resolution": "NOT_AUTHORIZED",
+              "reason": "UNREGISTERED_SURFACE",
+              "surface_id": "offline.synthetic.research.m4.v1",
+              "envelope_identity": null,
+              "authorized_surface_count": 3,
+              "zero_authorized_productive_targets": false,
+              "optimization_productive_authority": "NONE",
+              "learning_productive_authority": "NONE",
+              "external_effect_authorized": false,
+              "owner_map_provenance_ref": null,
+              "owner_map_implies_authorization": false,
+              "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+            },
+            "envelope_not_productive_authorization": true,
+            "authorized_productive_surfaces": 0,
+            "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+          },
+          "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+          "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+          "selected_candidate": {
+            "status": "PROPOSED",
+            "disposition": "PROPOSAL_ONLY",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "parameter_region": {
+              "fast": 15
+            }
+          },
+          "challenger_evaluation": {
+            "autonomous_champion_swap": false,
+            "challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "challenger_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "disposition": "CHALLENGER_RESEARCH_PREFERRED",
+                "role": "CHALLENGER",
+                "score": 1.05
+              }
+            ],
+            "champion_challenger_can_arm": false,
+            "champion_challenger_can_authorize_canary": false,
+            "champion_challenger_can_create_confirm_token": false,
+            "champion_challenger_can_enable": false,
+            "champion_challenger_can_fund": false,
+            "champion_challenger_can_increase_leverage": false,
+            "champion_challenger_can_increase_risk": false,
+            "champion_challenger_can_mutate_live_config": false,
+            "champion_challenger_can_promote": false,
+            "champion_challenger_can_promote_to_live": false,
+            "champion_challenger_can_submit_order": false,
+            "champion_challenger_can_use_confirm_token": false,
+            "champion_challenger_can_write_live_config": false,
+            "champion_challenger_domain": "peak_trade.canonical_champion_challenger.v1",
+            "champion_challenger_has_runtime_authority": false,
+            "champion_challenger_present": true,
+            "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+            "champion_state": {
+              "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+              "mutated": false,
+              "swapped": false
+            },
+            "comparable_challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "comparison_contract_version": "canonical_comparison_ssot_v1",
+            "comparison_ssot_version": "canonical_comparison_ssot_v1",
+            "completeness": "COMPLETE",
+            "created_at": "2026-09-19T12:00:00Z",
+            "digest_algorithm": "sha256",
+            "evaluation_identity": "166efa5fd1b2c87f98de1eb0ef594f6acdf3d91dcad3ccb4a40cf771277ff72d",
+            "evaluation_policy_version": "canonical_champion_challenger_policy_v1",
+            "evidence_refs": [
+              {
+                "digest": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "kind": "COMPARISON_RESULT",
+                "ref": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+              },
+              {
+                "digest": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "kind": "EXPERIMENT_RECORD",
+                "ref": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              }
+            ],
+            "learning_may_autonomously_replace_core_logic": false,
+            "metric_definitions": "canonical_robustness_metrics_v1",
+            "overall_status": "EVALUATION_COMPLETE",
+            "pair_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "comparison_identity": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "overall_comparability": "COMPARABLE",
+                "rejection_reasons": []
+              }
+            ],
+            "promotion_authority": "NONE",
+            "ranked_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+            ],
+            "ranking": {
+              "ranking_identity": "e0e7b1adfd83934ba518034a86ad8283ebc0cc1ba614f9fbeb9e2ca44835893c",
+              "ranking_status": "RANKED",
+              "ranked_experiment_ids": [
+                "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              ],
+              "rejection_reasons": []
+            },
+            "research_recommendation": "CHALLENGER_RESEARCH_PREFERRED",
+            "robustness_suite_version": "canonical_robustness_suite_v1",
+            "runtime_authority_impact": "NONE",
+            "schema_version": "canonical_champion_challenger_v1",
+            "score_metric": "explicit_research_score",
+            "scores": {
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0": 1.0,
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9": 1.05
+            },
+            "self_learning_self_authorizing_separation": true,
+            "integrity": {
+              "content_sha256": "96ab0877fd36a36b15deb5535bc3e14af44767a6bc1f097991ddb5bb76d68408"
+            }
+          },
+          "robustness_evidence_digest": {
+            "content_sha256": "7241f6f9f7676cee43eed28a04d2006c4c18b8aa58a7bddc05882fe24cca7eda"
+          },
+          "failure_evidence_count": 1,
+          "failure_evidence": [
+            {
+              "kind": "SEARCH_FAILURE_SIGNAL",
+              "payload": {
+                "failure_classes": [],
+                "known_failure": false,
+                "known_failure_class": false,
+                "known_reality_gap_failure": false,
+                "known_rejected_parameter_region": false,
+                "known_robustness_failure": false,
+                "matching_failure_record_ids": [],
+                "matching_reality_gap_record_ids": [],
+                "reason": "no known failure"
+              },
+              "evidence_only": true
+            }
+          ],
+          "proposal": {
+            "disposition": "PROPOSAL_ONLY",
+            "proposal_not_authority": true,
+            "promotion_authority": "NONE",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "identity_digest": "6420255d097c8100bfe79ab6fbf31fb5099f499452ad3d06ce9ccb2b2b1bad7f",
+            "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+            "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+            "challenger_evaluation_disposition": null,
+            "robustness_suite_identity": "b0eb4afffb166f058880cb3ac87e9950f530d9367a430c908b4bb0988cd24eca",
+            "external_effect_authorized": false,
+            "productive_config_mutation": false
+          },
+          "mi_enriched_m4_intake": {
+            "schema_version": "canonical_optimization_universe_mi_enriched_m4_intake_v1",
+            "domain": "peak_trade.canonical_optimization_universe_mi_enriched_m4_intake.v1",
+            "status": "MI_ENRICHED_M4_INTAKE_ACCEPTED",
+            "reason": "MI_ENRICHED_OFFLINE_RESEARCH_INTAKE",
+            "mi_optimization_research_input_ack": {
+              "schema_version": "market_intelligence_optimization_research_input_v1",
+              "domain": "peak_trade.learning.market_intelligence.optimization_research_input.v1",
+              "status": "ACCEPTED_OFFLINE_MI_RESEARCH_INPUT",
+              "reason": "OFFLINE_MI_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "mi_research_evidence_digest": "5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae0242107274c2befbd28",
+              "legacy_learning_input_ack": {
+                "schema_version": "canonical_optimization_universe_learning_input_v1",
+                "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+                "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+                "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+                "optimization_productive_authority": "NONE",
+                "promotion_authority": "NONE",
+                "runtime_authority_impact": "NONE",
+                "external_effect_authorized": false,
+                "optimizable_envelope_defined": false,
+                "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+                "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+                "state_scope_id": "ddo.lscope.export-test",
+                "state_version": 1,
+                "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+              },
+              "can_promote": false,
+              "can_mutate_mv2_dp": false,
+              "can_bind_cap23": false,
+              "result_digest": "558e0d8b70669e59e6bc8bffc67d14d5aee3a2ab78553b371b22d1204cbdb902"
+            },
+            "legacy_learning_input_ack": {
+              "schema_version": "canonical_optimization_universe_learning_input_v1",
+              "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+              "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+              "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "promotion_authority": "NONE",
+              "runtime_authority_impact": "NONE",
+              "external_effect_authorized": false,
+              "optimizable_envelope_defined": false,
+              "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+              "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+              "state_scope_id": "ddo.lscope.export-test",
+              "state_version": 1,
+              "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+            },
+            "mi_lineage_refs": {
+              "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+              "mi_optimization_research_input_result_digest": "558e0d8b70669e59e6bc8bffc67d14d5aee3a2ab78553b371b22d1204cbdb902",
+              "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+              "research_evidence_id": "mi.research.5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae024",
+              "mi_research_content_digest": "5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae0242107274c2befbd28",
+              "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+              "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+              "legacy_learning_evidence_ref": null,
+              "drift_assessment_refs": [],
+              "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+              "mi_learning_evidence_id": "mi.learn.cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e",
+              "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+              "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+              "mi_learning_reproducibility_digest": "cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e55e651981ad87777",
+              "mi_learning_content_hash": null,
+              "lineage_digest": "02977a2e9e5c023c99f6476109767946fbef057a972475a7787fc5a0ccc9455b"
+            },
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "external_effect_authorized": false,
+            "intake_digest": "2c1a5d67a540ea4496cf86fd89af5e3669b067dc4537253ae0d5b0d4e3920263",
+            "mi_lineage_digest": "02977a2e9e5c023c99f6476109767946fbef057a972475a7787fc5a0ccc9455b"
+          },
+          "mi_lineage_refs": {
+            "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+            "mi_optimization_research_input_result_digest": "558e0d8b70669e59e6bc8bffc67d14d5aee3a2ab78553b371b22d1204cbdb902",
+            "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+            "research_evidence_id": "mi.research.5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae024",
+            "mi_research_content_digest": "5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae0242107274c2befbd28",
+            "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+            "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+            "legacy_learning_evidence_ref": null,
+            "drift_assessment_refs": [],
+            "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+            "mi_learning_evidence_id": "mi.learn.cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e",
+            "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+            "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+            "mi_learning_reproducibility_digest": "cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e55e651981ad87777",
+            "mi_learning_content_hash": null,
+            "lineage_digest": "02977a2e9e5c023c99f6476109767946fbef057a972475a7787fc5a0ccc9455b"
+          }
+        },
+        "envelope_registry_authorized_surface_count": 3,
+        "normative_spec": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+        "decision_config": "config/governance/optimization_universe_experiment_plane_v1_decision_v1.json",
+        "result_digest": "8af3b0cfbc0c49a31329d7b9d209834a0590fc1bf589b7aeb49dc2f91fd777e5"
+      },
+      "ingest": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "APPENDED",
+        "mi_learning_evidence_id": "mi.learn.cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 2,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "replay": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "IDEMPOTENT_REPLAY",
+        "mi_learning_evidence_id": "mi.learn.cd388c69f5c929186e68c63468c9a2c128bc9f60ab749f0e",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 2,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "triad_calibration_roundtrip": {
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "calibration_evidence_authority": "NONE",
+        "calibration_evidence_id": "mi.calib.dffff648ee54d70bf633148a4fe705c348f1c0d505907726",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "realized_direction": "DOWN",
+          "score": 0.7
+        },
+        "content_digest": "b73150660cd8701c0db9cbaa02e9070562c36fc3316cb53a2807de604b092ea6",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "n_bars": 2,
+        "provenance": {},
+        "schema_version": "calibration_evidence_v1"
+      },
+      "triad_persist": {
+        "persist_id": "peak_trade.learning.market_intelligence_mi_offline_durable_evidence_persist_v1",
+        "persist_status": "APPENDED",
+        "durable_evidence_id": "mi.offline.durable.24b8d76ed0231e8082a373c61f8f524358edafe4d9f043f0",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "research_evidence_id": "mi.research.5ebf9155b72fbcb67a66dcd3c8a4a18cadc1a25cf10ae024",
+        "content_digest": "24b8d76ed0231e8082a373c61f8f524358edafe4d9f043f0f317917976b115b4",
+        "store_record_count": 2,
+        "deterministic_replay_equal": true,
+        "external_effect_authorized": false,
+        "productive_authority": "NONE"
+      }
+    },
+    {
+      "caller_supplied_direction": "FLAT",
+      "calibration": {
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "schema_version": "calibration_evidence_v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "score": 0.8,
+          "realized_direction": "FLAT"
+        },
+        "provenance": {},
+        "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+        "calibration_evidence_authority": "NONE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "content_digest": "6b5c222d7d6d4214671f1670d3e9de88eb6a4e7b8b1e7646dc4a4292edc1ba34"
+      },
+      "mi_evidence": {
+        "schema_version": "mi_learning_evidence_record_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+        "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+        "information_set_ref": "info.set.phase8",
+        "forecast_created_at_utc": "2026-09-01T12:00:00Z",
+        "outcome_horizon_end_utc": "2026-09-01T14:00:00Z",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "evaluation_observation_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "horizon_observation_status": "OK",
+        "outcome_finalization_status": "FINALIZED",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_evidence_digest": "6b5c222d7d6d4214671f1670d3e9de88eb6a4e7b8b1e7646dc4a4292edc1ba34",
+        "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+        "selected_instrument_ref": null,
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "legacy_learning_evidence_ref": null,
+        "provenance": {
+          "bridge_id": "peak_trade.learning.market_intelligence_mi_to_learning_evidence_bridge_v1",
+          "workpackage_id": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+        },
+        "evidence_class": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE",
+        "mi_learning_evidence_authority": "NONE",
+        "productive_ddo_reducer_mutated": false,
+        "forecast_is_not_decision": true,
+        "reproducibility_digest": "17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f9aa8d5e21c172401",
+        "mi_learning_evidence_id": "mi.learn.17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f"
+      },
+      "research_projection": {
+        "schema_version": "market_intelligence_research_evidence_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+        "n_bars": 2,
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "drift_assessment_refs": [],
+        "legacy_learning_evidence_ref": null,
+        "market_intelligence_research_authority": "NONE",
+        "evidence_class": "MARKET_INTELLIGENCE_RESEARCH_EVIDENCE",
+        "productive_authority": "NONE",
+        "runtime_reachability": false,
+        "can_auto_promote": false,
+        "research_evidence_id": "mi.research.1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc0",
+        "content_digest": "1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc005e07e7fd0e427b9"
+      },
+      "m4_status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+      "m4_full_result": {
+        "schema_version": "canonical_optimization_universe_experiment_plane_v1",
+        "domain": "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+        "status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+        "reason": "OFFLINE_RESEARCH_PROPOSAL_ONLY",
+        "plane_identity": "a7bf3007dba4a3b5c3d7a811d07bd80045d907797d8ead6a2f343066c646b7fa",
+        "optimization_productive_authority": "NONE",
+        "learning_productive_authority": "NONE",
+        "promotion_authority": "NONE",
+        "authorized_productive_surfaces": 0,
+        "zero_authorized_productive_targets": false,
+        "external_effect_authorized": false,
+        "proposal_not_authority": true,
+        "no_trading_reselection": true,
+        "champion_promotion_authority": "NONE",
+        "offline_research_context": {
+          "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+          "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+          "envelope_resolution": {
+            "schema_version": "canonical_optimizable_envelope_v1",
+            "domain": "peak_trade.canonical_optimizable_envelope.v1",
+            "resolution": "NOT_AUTHORIZED",
+            "reason": "UNREGISTERED_SURFACE",
+            "surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_identity": null,
+            "authorized_surface_count": 3,
+            "zero_authorized_productive_targets": false,
+            "optimization_productive_authority": "NONE",
+            "learning_productive_authority": "NONE",
+            "external_effect_authorized": false,
+            "owner_map_provenance_ref": null,
+            "owner_map_implies_authorization": false,
+            "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+          },
+          "envelope_not_productive_authorization": true,
+          "authorized_productive_surfaces": 0,
+          "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+        },
+        "learning_input_validation": {
+          "schema_version": "canonical_optimization_universe_learning_input_v1",
+          "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+          "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+          "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+          "optimization_productive_authority": "NONE",
+          "promotion_authority": "NONE",
+          "runtime_authority_impact": "NONE",
+          "external_effect_authorized": false,
+          "optimizable_envelope_defined": false,
+          "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+          "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+          "state_scope_id": "ddo.lscope.export-test",
+          "state_version": 1,
+          "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+        },
+        "chain": {
+          "learning_input_validation": {
+            "schema_version": "canonical_optimization_universe_learning_input_v1",
+            "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+            "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "runtime_authority_impact": "NONE",
+            "external_effect_authorized": false,
+            "optimizable_envelope_defined": false,
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+            "state_scope_id": "ddo.lscope.export-test",
+            "state_version": 1,
+            "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+          },
+          "offline_research_context": {
+            "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+            "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+            "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+            "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+            "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+            "synthetic_surface_id": "offline.synthetic.research.m4.v1",
+            "envelope_resolution": {
+              "schema_version": "canonical_optimizable_envelope_v1",
+              "domain": "peak_trade.canonical_optimizable_envelope.v1",
+              "resolution": "NOT_AUTHORIZED",
+              "reason": "UNREGISTERED_SURFACE",
+              "surface_id": "offline.synthetic.research.m4.v1",
+              "envelope_identity": null,
+              "authorized_surface_count": 3,
+              "zero_authorized_productive_targets": false,
+              "optimization_productive_authority": "NONE",
+              "learning_productive_authority": "NONE",
+              "external_effect_authorized": false,
+              "owner_map_provenance_ref": null,
+              "owner_map_implies_authorization": false,
+              "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e"
+            },
+            "envelope_not_productive_authorization": true,
+            "authorized_productive_surfaces": 0,
+            "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc"
+          },
+          "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+          "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+          "selected_candidate": {
+            "status": "PROPOSED",
+            "disposition": "PROPOSAL_ONLY",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "parameter_region": {
+              "fast": 15
+            }
+          },
+          "challenger_evaluation": {
+            "autonomous_champion_swap": false,
+            "challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "challenger_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "disposition": "CHALLENGER_RESEARCH_PREFERRED",
+                "role": "CHALLENGER",
+                "score": 1.05
+              }
+            ],
+            "champion_challenger_can_arm": false,
+            "champion_challenger_can_authorize_canary": false,
+            "champion_challenger_can_create_confirm_token": false,
+            "champion_challenger_can_enable": false,
+            "champion_challenger_can_fund": false,
+            "champion_challenger_can_increase_leverage": false,
+            "champion_challenger_can_increase_risk": false,
+            "champion_challenger_can_mutate_live_config": false,
+            "champion_challenger_can_promote": false,
+            "champion_challenger_can_promote_to_live": false,
+            "champion_challenger_can_submit_order": false,
+            "champion_challenger_can_use_confirm_token": false,
+            "champion_challenger_can_write_live_config": false,
+            "champion_challenger_domain": "peak_trade.canonical_champion_challenger.v1",
+            "champion_challenger_has_runtime_authority": false,
+            "champion_challenger_present": true,
+            "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+            "champion_state": {
+              "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+              "mutated": false,
+              "swapped": false
+            },
+            "comparable_challenger_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+            ],
+            "comparison_contract_version": "canonical_comparison_ssot_v1",
+            "comparison_ssot_version": "canonical_comparison_ssot_v1",
+            "completeness": "COMPLETE",
+            "created_at": "2026-09-19T12:00:00Z",
+            "digest_algorithm": "sha256",
+            "evaluation_identity": "166efa5fd1b2c87f98de1eb0ef594f6acdf3d91dcad3ccb4a40cf771277ff72d",
+            "evaluation_policy_version": "canonical_champion_challenger_policy_v1",
+            "evidence_refs": [
+              {
+                "digest": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "kind": "COMPARISON_RESULT",
+                "ref": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+              },
+              {
+                "digest": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "kind": "EXPERIMENT_RECORD",
+                "ref": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              }
+            ],
+            "learning_may_autonomously_replace_core_logic": false,
+            "metric_definitions": "canonical_robustness_metrics_v1",
+            "overall_status": "EVALUATION_COMPLETE",
+            "pair_results": [
+              {
+                "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+                "comparison_identity": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+                "overall_comparability": "COMPARABLE",
+                "rejection_reasons": []
+              }
+            ],
+            "promotion_authority": "NONE",
+            "ranked_experiment_ids": [
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+            ],
+            "ranking": {
+              "ranking_identity": "e0e7b1adfd83934ba518034a86ad8283ebc0cc1ba614f9fbeb9e2ca44835893c",
+              "ranking_status": "RANKED",
+              "ranked_experiment_ids": [
+                "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+                "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+              ],
+              "rejection_reasons": []
+            },
+            "research_recommendation": "CHALLENGER_RESEARCH_PREFERRED",
+            "robustness_suite_version": "canonical_robustness_suite_v1",
+            "runtime_authority_impact": "NONE",
+            "schema_version": "canonical_champion_challenger_v1",
+            "score_metric": "explicit_research_score",
+            "scores": {
+              "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0": 1.0,
+              "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9": 1.05
+            },
+            "self_learning_self_authorizing_separation": true,
+            "integrity": {
+              "content_sha256": "96ab0877fd36a36b15deb5535bc3e14af44767a6bc1f097991ddb5bb76d68408"
+            }
+          },
+          "robustness_evidence_digest": {
+            "content_sha256": "7241f6f9f7676cee43eed28a04d2006c4c18b8aa58a7bddc05882fe24cca7eda"
+          },
+          "failure_evidence_count": 1,
+          "failure_evidence": [
+            {
+              "kind": "SEARCH_FAILURE_SIGNAL",
+              "payload": {
+                "failure_classes": [],
+                "known_failure": false,
+                "known_failure_class": false,
+                "known_reality_gap_failure": false,
+                "known_rejected_parameter_region": false,
+                "known_robustness_failure": false,
+                "matching_failure_record_ids": [],
+                "matching_reality_gap_record_ids": [],
+                "reason": "no known failure"
+              },
+              "evidence_only": true
+            }
+          ],
+          "proposal": {
+            "disposition": "PROPOSAL_ONLY",
+            "proposal_not_authority": true,
+            "promotion_authority": "NONE",
+            "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+            "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "identity_digest": "6420255d097c8100bfe79ab6fbf31fb5099f499452ad3d06ce9ccb2b2b1bad7f",
+            "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9",
+            "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+            "challenger_evaluation_disposition": null,
+            "robustness_suite_identity": "b0eb4afffb166f058880cb3ac87e9950f530d9367a430c908b4bb0988cd24eca",
+            "external_effect_authorized": false,
+            "productive_config_mutation": false
+          },
+          "mi_enriched_m4_intake": {
+            "schema_version": "canonical_optimization_universe_mi_enriched_m4_intake_v1",
+            "domain": "peak_trade.canonical_optimization_universe_mi_enriched_m4_intake.v1",
+            "status": "MI_ENRICHED_M4_INTAKE_ACCEPTED",
+            "reason": "MI_ENRICHED_OFFLINE_RESEARCH_INTAKE",
+            "mi_optimization_research_input_ack": {
+              "schema_version": "market_intelligence_optimization_research_input_v1",
+              "domain": "peak_trade.learning.market_intelligence.optimization_research_input.v1",
+              "status": "ACCEPTED_OFFLINE_MI_RESEARCH_INPUT",
+              "reason": "OFFLINE_MI_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "mi_research_evidence_digest": "1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc005e07e7fd0e427b9",
+              "legacy_learning_input_ack": {
+                "schema_version": "canonical_optimization_universe_learning_input_v1",
+                "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+                "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+                "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+                "optimization_productive_authority": "NONE",
+                "promotion_authority": "NONE",
+                "runtime_authority_impact": "NONE",
+                "external_effect_authorized": false,
+                "optimizable_envelope_defined": false,
+                "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+                "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+                "state_scope_id": "ddo.lscope.export-test",
+                "state_version": 1,
+                "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+              },
+              "can_promote": false,
+              "can_mutate_mv2_dp": false,
+              "can_bind_cap23": false,
+              "result_digest": "7a3f0ebf7ffb53f123ce21e0738f0a0a1a45fc441384bdabfe6480f1d04b2078"
+            },
+            "legacy_learning_input_ack": {
+              "schema_version": "canonical_optimization_universe_learning_input_v1",
+              "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+              "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+              "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+              "optimization_productive_authority": "NONE",
+              "promotion_authority": "NONE",
+              "runtime_authority_impact": "NONE",
+              "external_effect_authorized": false,
+              "optimizable_envelope_defined": false,
+              "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+              "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+              "state_scope_id": "ddo.lscope.export-test",
+              "state_version": 1,
+              "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de"
+            },
+            "mi_lineage_refs": {
+              "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+              "mi_optimization_research_input_result_digest": "7a3f0ebf7ffb53f123ce21e0738f0a0a1a45fc441384bdabfe6480f1d04b2078",
+              "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+              "research_evidence_id": "mi.research.1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc0",
+              "mi_research_content_digest": "1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc005e07e7fd0e427b9",
+              "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+              "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+              "legacy_learning_evidence_ref": null,
+              "drift_assessment_refs": [],
+              "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+              "mi_learning_evidence_id": "mi.learn.17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f",
+              "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+              "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+              "mi_learning_reproducibility_digest": "17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f9aa8d5e21c172401",
+              "mi_learning_content_hash": null,
+              "lineage_digest": "4f2b9b72a5deb03c66a8d18a36d4e7c444f8d15ec18960b102ea6e32d02c54b8"
+            },
+            "optimization_productive_authority": "NONE",
+            "promotion_authority": "NONE",
+            "external_effect_authorized": false,
+            "intake_digest": "a2a51f43ea829909ade7833ccdd0365880f8e83b782d7c865a757ca327bc7c74",
+            "mi_lineage_digest": "4f2b9b72a5deb03c66a8d18a36d4e7c444f8d15ec18960b102ea6e32d02c54b8"
+          },
+          "mi_lineage_refs": {
+            "mi_optimization_research_input_schema_version": "market_intelligence_optimization_research_input_v1",
+            "mi_optimization_research_input_result_digest": "7a3f0ebf7ffb53f123ce21e0738f0a0a1a45fc441384bdabfe6480f1d04b2078",
+            "mi_research_evidence_schema_version": "market_intelligence_research_evidence_v1",
+            "research_evidence_id": "mi.research.1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc0",
+            "mi_research_content_digest": "1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc005e07e7fd0e427b9",
+            "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+            "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+            "legacy_learning_evidence_ref": null,
+            "drift_assessment_refs": [],
+            "mi_learning_evidence_export_schema_version": "mi_learning_evidence_learning_export_path_v1",
+            "mi_learning_evidence_id": "mi.learn.17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f",
+            "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+            "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4",
+            "mi_learning_reproducibility_digest": "17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f9aa8d5e21c172401",
+            "mi_learning_content_hash": null,
+            "lineage_digest": "4f2b9b72a5deb03c66a8d18a36d4e7c444f8d15ec18960b102ea6e32d02c54b8"
+          }
+        },
+        "envelope_registry_authorized_surface_count": 3,
+        "normative_spec": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+        "decision_config": "config/governance/optimization_universe_experiment_plane_v1_decision_v1.json",
+        "result_digest": "8e520772d788e248333212d5feae794c772b3651795073664f9032c9e3e01e5e"
+      },
+      "ingest": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "APPENDED",
+        "mi_learning_evidence_id": "mi.learn.17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 3,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "replay": {
+        "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+        "ingest_status": "IDEMPOTENT_REPLAY",
+        "mi_learning_evidence_id": "mi.learn.17211ff60d359f98ec8cc72ff8bbae48d49d77da3f68261f",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "store_record_count": 3,
+        "deterministic_replay_equal": true,
+        "productive_ddo_reducer_mutated": false
+      },
+      "triad_calibration_roundtrip": {
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "calibration_evidence_authority": "NONE",
+        "calibration_evidence_id": "mi.calib.5baa3f7949acf18871eb2b4c6716f001346f8c32501b295d",
+        "calibration_method": "BRIER_SCORE_V1",
+        "calibration_result": {
+          "method": "BRIER_SCORE_V1",
+          "realized_direction": "FLAT",
+          "score": 0.8
+        },
+        "content_digest": "6b5c222d7d6d4214671f1670d3e9de88eb6a4e7b8b1e7646dc4a4292edc1ba34",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "evidence_class": "CALIBRATION_EVIDENCE",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "forecast_kind": "DIRECTIONAL_PROBABILITY",
+        "n_bars": 2,
+        "provenance": {},
+        "schema_version": "calibration_evidence_v1"
+      },
+      "triad_persist": {
+        "persist_id": "peak_trade.learning.market_intelligence_mi_offline_durable_evidence_persist_v1",
+        "persist_status": "APPENDED",
+        "durable_evidence_id": "mi.offline.durable.61d58ad362982d98bd6f1198ff147a8e81618601486eb1ac",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "research_evidence_id": "mi.research.1c4dc9e8a4f16c7521ef2e1c47496985c4b87be827a30dc0",
+        "content_digest": "61d58ad362982d98bd6f1198ff147a8e81618601486eb1ac657459db1c8c76bb",
+        "store_record_count": 3,
+        "deterministic_replay_equal": true,
+        "external_effect_authorized": false,
+        "productive_authority": "NONE"
+      }
+    }
+  ],
+  "ddo_config_mismatch_rejected_feedback": true,
+  "mi_intervention_result": {
+    "all_non_mi_m4_chain_fields_identical": true,
+    "mi_ids_differ": true,
+    "calibration_scores": [
+      0.5,
+      0.7,
+      0.8
+    ],
+    "single_fixed_observation_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+    "store_records": 3,
+    "numeric_calibration_result_in_mi_record": false,
+    "numeric_calibration_result_in_research_projection": false
+  },
+  "mi_missing_direction_error": "REALIZED_DIRECTION_REQUIRED",
+  "conditioned_loop_a": {
+    "schema_version": "loop_a_conditioned_learning_evidence_v1",
+    "loop_a_proven": true,
+    "writer_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+    "reader_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_learning_export_v1",
+    "persistence_proven": true,
+    "export_retrieval_proven": true,
+    "ingest_result": {
+      "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+      "ingest_status": "APPENDED",
+      "mi_learning_evidence_id": "mi.learn.f3da148f71892b17f466de6519782befbd0756254328bf76",
+      "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+      "store_record_count": 1,
+      "deterministic_replay_equal": true,
+      "productive_ddo_reducer_mutated": false
+    },
+    "mi_learning_evidence_id": "mi.learn.f3da148f71892b17f466de6519782befbd0756254328bf76",
+    "market_context_ref": "mi.market_context.a8d09b501c02fb4315411dcb1b9f7491cdc348d587af56b2",
+    "realized_behavior_ref": "mi.realized_behavior.8682dc2b0dc3b593b055846103a7c1fee10cf5aea2d82081",
+    "learning_export": {
+      "schema_version": "mi_learning_evidence_learning_export_path_v1",
+      "export_path_producer": "peak_trade.learning.market_intelligence_mi_learning_evidence_learning_export_v1",
+      "mi_learning_evidence": {
+        "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+        "behavior_semantics_snapshot": {
+          "classical_mfe_mae_status": "SEMANTICALLY_UNRESOLVED",
+          "excursion_status": "PROVEN_TYPED",
+          "forward_behavior_status": "PROVEN_TYPED",
+          "realized_volatility_status": "PROVEN_TYPED",
+          "transition_status": "SEMANTICALLY_UNRESOLVED"
+        },
+        "calibration_evidence_digest": "5c3c57d67e2d438e90abcf0a43c2e547d26fd11985e19abcf36daf3be31019ce",
+        "calibration_evidence_id": "mi.calib.fa97c54da604888719875b963193daacf233a81014619d36",
+        "calibration_method": "BRIER_SCORE_V1",
+        "conditioned_binding_schema": "conditioned_learning_evidence_v1",
+        "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+        "evaluability": "SUFFICIENT_EVIDENCE",
+        "evaluation_observation_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+        "evidence_class": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE",
+        "forecast_created_at_utc": "2026-09-01T12:00:00Z",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "forecast_is_not_decision": true,
+        "forecast_outcome_join_digest": "77fa46a55c32811197c69d5233fbe22958d4bd17ef21c1363ef84f24ddc5e26d",
+        "horizon_observation_status": "OK",
+        "information_set_ref": "info.set.phase8",
+        "instrument_ref": "ddo.o4.inst.f351f174e079f6a31f211228c6d6bc2958faf7dea6d4dc54967c5402d3d4765f",
+        "learning_direct_productive_write": "FORBIDDEN",
+        "learning_is_not_promotion": true,
+        "learning_promotion_authority": "NONE",
+        "legacy_learning_evidence_ref": null,
+        "market_context_content_digest": "a8d09b501c02fb4315411dcb1b9f7491cdc348d587af56b2c091d043a2646bfa",
+        "market_context_ref": "mi.market_context.a8d09b501c02fb4315411dcb1b9f7491cdc348d587af56b2",
+        "mi_learning_evidence_authority": "NONE",
+        "mi_learning_evidence_id": "mi.learn.f3da148f71892b17f466de6519782befbd0756254328bf76",
+        "n_bars": 2,
+        "outcome_finalization_status": "FINALIZED",
+        "outcome_horizon_end_utc": "2026-09-01T14:00:00Z",
+        "productive_ddo_reducer_mutated": false,
+        "provenance": {
+          "bridge_id": "peak_trade.learning.market_intelligence_mi_to_learning_evidence_bridge_v1",
+          "conditioned_binding_schema": "conditioned_learning_evidence_v1",
+          "ingest_id": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+          "loop_a_owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1.loop_a_conditioned_learning_evidence_v1",
+          "market_context_authority": "NONE",
+          "realized_behavior_authority": "NONE",
+          "workpackage_id": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+        },
+        "realized_behavior_content_digest": "8682dc2b0dc3b593b055846103a7c1fee10cf5aea2d820816583fb42b9960669",
+        "realized_behavior_ref": "mi.realized_behavior.8682dc2b0dc3b593b055846103a7c1fee10cf5aea2d82081",
+        "reproducibility_digest": "f3da148f71892b17f466de6519782befbd0756254328bf76ce87923df33c45b9",
+        "schema_version": "mi_learning_evidence_record_v1",
+        "selected_instrument_ref": null,
+        "temporal_integrity_digest": "9d6b4258ea2af59ca70b09799405815c478ee297a89459d85218fb94e6a35bf4"
+      },
+      "legacy_learning_evidence": null,
+      "consumer_route": {
+        "consumer_route": "MI_TYPED_LEARNING_EVIDENCE_ONLY",
+        "mi_learning_evidence_id": "mi.learn.f3da148f71892b17f466de6519782befbd0756254328bf76",
+        "forecast_evidence_id": "mi.forecast.145b0c5f9a5a32bb20be253f5565a3e0efc70b956695a374",
+        "legacy_learning_evidence_record_id": null,
+        "legacy_ddo_export_compatible": false,
+        "productive_ddo_reducer_mutated": false
+      },
+      "learning_evidence_export_path": "LEGACY_DDO_LEARNING_EVIDENCE_EXPORT_V1",
+      "external_effect_authorized": false,
+      "runtime_reachability": false,
+      "promotion_authority_created": false
+    },
+    "master_v2_evidence_plane_a_termination": {
+      "market_intelligence": {
+        "disposition": "ADMIT",
+        "producer_id": "mi.market_context_descriptive.producer",
+        "reason_codes": [],
+        "envelope_digest": "4b8caf6958ca103fbd9a2b6214cc3a73052c6aebc1ef22e1be3210bf6acf5471"
+      },
+      "learning": {
+        "disposition": "ADMIT",
+        "producer_id": "learning.conditioned_evaluative.producer",
+        "reason_codes": [],
+        "envelope_digest": "314dbfee2f5d3bc1bf7c2c23c613a6c2258a6dbbbae162e5ef322f1afa481074"
+      }
+    },
+    "domain": "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1",
+    "workpackage_id": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+  }
+}

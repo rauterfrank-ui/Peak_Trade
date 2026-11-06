@@ -1715,3 +1715,40 @@ Normative rule:
 - No dashboard component may become a trading authority.
 - Every new Cursor session must bootstrap from the canonical Master Runbook before repository mutation.
 - Every Cursor task must either return the next executable command or a justified HARD_STOP.
+
+
+## Local process-watch extension — 2026-11-03
+
+This additive local implementation note does not ratify or activate the historical
+runbook above. The master runbook remains the sole SSOT. O2 is dashboard-only;
+this command does not register a trading host or grant trading resumption.
+
+The existing operator CLI now offers bounded observation of a registered session:
+
+```sh
+./scripts/pt scripts/ops/peak_trade_runtime.py --state-root STATE_ROOT watch --session-id SESSION_ID --duration-seconds 60 --interval-seconds 1
+```
+
+`STATE_ROOT` and `SESSION_ID` must identify the existing intended registry/session.
+The example is documentation, not an activation performed in this change.
+Adding `--restart-on-failure` explicitly opts into existing O2 dashboard stop/start
+for a proven dead process or a bound stale/unhealthy heartbeat. Current process,
+config-byte and Git-HEAD bindings are checked. Unknown identity/clock/schema,
+failed/locked lifecycle and uncertain restart outcomes require owner reconciliation.
+An intentional stop is honored. Readiness is rechecked after restart.
+
+The separate process-restart budget is at most three attempts for a registered
+session/binding and survives command/process restarts in the checksummed
+`process_watch_state_v1.json` under that session. The observation-poll retry budget
+remains separate. Do not delete receipts to regain attempts. After exhaustion,
+diagnose and repair, explicitly stop the session and start a new dashboard session
+ID while retaining prior evidence. For an interrupted stop/start, inspect the
+existing status/health/registry and use the established explicit operations only
+after reconciliation; a healthy current worker can be acknowledged by watch while
+retaining spent attempts. No safety or trading authorization is automatically reset.
+
+The watch emits existing O6 local file/log notices, including a notice when its
+bounded monitoring ends. Ending watch leaves the worker running. A started O2
+stop/start can outlast the watch scheduling budget. No external persistent service,
+notification delivery or complete HTTP/data-progress guarantee is implied.
+See the master runbook's dated extension for verification and remaining gaps.

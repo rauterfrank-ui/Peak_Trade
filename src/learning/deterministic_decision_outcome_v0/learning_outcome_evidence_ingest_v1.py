@@ -37,10 +37,19 @@ EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 
 
 def derive_learning_state_scope_id_v1(
-    *, session_id: str, account_identity: str | None = None
+    *, session_id: str, account_identity: str | None = None,
+    config_hash: str | None = None, code_sha: str | None = None,
 ) -> str:
     account = account_identity or UNKNOWN
-    digest = hashlib.sha256(f"{session_id}|{account}".encode("utf-8")).hexdigest()
+    identity = f"{session_id}|{account}"
+    if config_hash is not None or code_sha is not None:
+        # Explicit versioned pool, including an isolated UNKNOWN/legacy pool.
+        identity = canonical_json_dumps_v0({
+            "contract": "learning_scope_configuration_v2", "session": session_id,
+            "account": account, "config_hash": config_hash or UNKNOWN,
+            "code_sha": code_sha or UNKNOWN,
+        })
+    digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()
     return f"ddo.lscope.{digest[:40]}"
 
 
@@ -69,6 +78,12 @@ def validate_evaluation_bundle_for_ingest_v1(
     require_self_learning_provenance_eligibility_v1(outcome_rec)
     attr_rec = validate_attribution_record_v0(attribution)
     cf_rec = validate_counterfactual_record_v0(counterfactual)
+    if any(
+        row[field] != outcome_rec[field]
+        for row in (attr_rec, cf_rec)
+        for field in ("code_sha", "config_hash")
+    ):
+        raise DdoValidationError("INGEST_BUNDLE_CONFIGURATION_MISMATCH")
     if attr_rec["outcome_record_ref"] != outcome_rec["record_id"]:
         raise DdoValidationError("INGEST_ATTRIBUTION_OUTCOME_REF_MISMATCH")
     if cf_rec.get("outcome_record_ref") not in (None, outcome_rec["record_id"]):
@@ -124,8 +139,8 @@ def reduce_learning_state_transition_v1(
     event_time_utc: str,
     correlation_id: str,
     cycle_id: str | None,
-    code_sha: str = UNKNOWN,
-    config_hash: str = UNKNOWN,
+    code_sha: str | None = None,
+    config_hash: str | None = None,
 ) -> dict[str, Any]:
     validated = validate_evaluation_bundle_for_ingest_v1(
         bundle["outcome"],
@@ -133,6 +148,13 @@ def reduce_learning_state_transition_v1(
         bundle["counterfactual"],
     )
     outcome = validated["outcome"]
+    source_code = str(outcome.get("code_sha") or UNKNOWN)
+    source_config = str(outcome.get("config_hash") or UNKNOWN)
+    if code_sha is not None and code_sha != source_code:
+        raise DdoValidationError("LEARNING_INGEST_SOURCE_CODE_MISMATCH")
+    if config_hash is not None and config_hash != source_config:
+        raise DdoValidationError("LEARNING_INGEST_SOURCE_CONFIG_MISMATCH")
+    code_sha, config_hash = source_code, source_config
     fingerprint = validated["evaluation_bundle_fingerprint"]
     outcome_time = str(outcome["event_time_utc"])
     prior_class = str(prior_state["outcome_semantic_class"]) if prior_state is not None else None
@@ -143,6 +165,8 @@ def reduce_learning_state_transition_v1(
     outcome_scalar_kind = prov_block.get("outcome_scalar_kind")
 
     if prior_state is not None:
+        if prior_state.get("config_hash") != config_hash or prior_state.get("code_sha") != code_sha:
+            raise DdoValidationError("LEARNING_INGEST_CONFIGURATION_POOL_MISMATCH")
         if str(prior_state.get("evaluation_bundle_fingerprint")) == fingerprint:
             return dict(prior_state)
         prior_time = str(prior_state["last_event_time_utc"])
@@ -234,6 +258,8 @@ def ingest_evaluation_bundle_into_learning_state_v1(
         state_scope_id=state_scope_id, fingerprint=fingerprint
     )
     if prior is not None and str(prior.get("record_id")) == record_id:
+        if any(prior.get(key) != bundle["outcome"].get(key) for key in ("code_sha", "config_hash")):
+            raise DdoValidationError("LEARNING_INGEST_CONFIGURATION_POOL_MISMATCH")
         return {
             "ok": True,
             "idempotent_replay": True,

@@ -12,6 +12,9 @@ from typing import Any, Final, Mapping
 
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
     FIXTURE_LABEL_COVERAGE_WEAKNESS,
+    FIXTURE_LABEL_DEFAULT,
+    FIXTURE_LABEL_CONTEXT_FAMILY,
+    FIXTURE_LABEL_REGIME,
     FIXTURE_LABEL_DRIFT,
     FIXTURE_LABEL_FAILED_HYPOTHESIS,
     FIXTURE_LABEL_REDUNDANCY,
@@ -49,7 +52,7 @@ class LearningRepresentationOfflineEvaluationRequestV1:
     requested_productive_apply: bool = False
 
 
-def _outcome_for_fixture(*, fixture_label: str, research_purpose: str) -> str:
+def _outcome_for_fixture(*, fixture_label: str, research_purpose: str) -> str | None:
     if fixture_label == "FIXTURE_FAIL_CLOSED":
         return OfflineEvaluationOutcome.FAIL_CLOSED_NO_EVALUATION.value
     if fixture_label == FIXTURE_LABEL_REDUNDANCY:
@@ -66,7 +69,9 @@ def _outcome_for_fixture(*, fixture_label: str, research_purpose: str) -> str:
         return OfflineEvaluationOutcome.REJECTED_UNSTABLE_OOS.value
     if fixture_label.endswith("_UNSUPPORTED_FAMILY"):
         return OfflineEvaluationOutcome.REJECTED_UNSUPPORTED_FAMILY.value
-    return OfflineEvaluationOutcome.RESEARCH_EVIDENCE_SUPPORTED.value
+    if fixture_label in {FIXTURE_LABEL_DEFAULT, FIXTURE_LABEL_CONTEXT_FAMILY, FIXTURE_LABEL_REGIME}:
+        return OfflineEvaluationOutcome.RESEARCH_EVIDENCE_SUPPORTED.value
+    return None
 
 
 def run_learning_representation_offline_evaluation_v1(
@@ -88,7 +93,11 @@ def run_learning_representation_offline_evaluation_v1(
         eval_status = "EVALUATION_SKIPPED_PLAN_FAIL_CLOSED"
     else:
         outcome = _outcome_for_fixture(fixture_label=fixture_label, research_purpose=purpose)
-        eval_status = "EVALUATION_COMPLETE"
+        if outcome is None:
+            outcome = OfflineEvaluationOutcome.FAIL_CLOSED_NO_EVALUATION.value
+            eval_status = "EVALUATION_SKIPPED_UNSUPPORTED_FIXTURE"
+        else:
+            eval_status = "EVALUATION_COMPLETE"
 
     identity_body = {
         "schema_version": SCHEMA_VERSION,

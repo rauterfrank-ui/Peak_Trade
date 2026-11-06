@@ -1,0 +1,82 @@
+[
+  {
+    "id": "G2_INTRODUCED",
+    "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+    "snapshot": "historical_sources/G2_INTRODUCED.txt",
+    "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "G2_ORIGINAL_MAPPING",
+    "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "path": "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json",
+    "snapshot": "historical_sources/G2_ORIGINAL_MAPPING.txt",
+    "sha256": "209034aac331c7fe9ce443a113c49fd605b6841b685320d3661105bcc76dc34a",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "G2_ORIGINAL_CONTRACT",
+    "revision": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "path": "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
+    "snapshot": "historical_sources/G2_ORIGINAL_CONTRACT.txt",
+    "sha256": "c9d2a3b62feeb702a6fccada5640ee5933bbd9f9dd9482e4cb851b3c7ae8885f",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "LEARNING_SCHEMA_BEFORE_PROVENANCE",
+    "revision": "cbce80bc2fb62c1218b143d36c55db8c5f609bc3",
+    "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+    "snapshot": "historical_sources/LEARNING_SCHEMA_BEFORE_PROVENANCE.txt",
+    "sha256": "75d5372bf77913f1931f4b25b2b93f054141e48ee118c493532576f67dffc995",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "LEARNING_SCHEMA_AFTER_PROVENANCE",
+    "revision": "881efd47285ebccd83c0e57691e5832730c017a9",
+    "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py",
+    "snapshot": "historical_sources/LEARNING_SCHEMA_AFTER_PROVENANCE.txt",
+    "sha256": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "OPTIMIZATION_PROVENANCE_GUARD",
+    "revision": "881efd47285ebccd83c0e57691e5832730c017a9",
+    "path": "src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py",
+    "snapshot": "historical_sources/OPTIMIZATION_PROVENANCE_GUARD.txt",
+    "sha256": "7f34ada4f0e6e5c83417767bff59031aae18ff8ed0da37a109f077f97775c582",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "MI_PHASE8_ORIGINAL_CONTRACT",
+    "revision": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+    "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+    "snapshot": "historical_sources/MI_PHASE8_ORIGINAL_CONTRACT.txt",
+    "sha256": "2a26e70165c6aa1530a620fa2cac959f4c3260d7aa647295637b2c486fadd41c",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "MI_PHASE9_ORIGINAL_CONTRACT",
+    "revision": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
+    "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+    "snapshot": "historical_sources/MI_PHASE9_ORIGINAL_CONTRACT.txt",
+    "sha256": "72971a51da0c72dc36ba0c7aa0d12b518d731972474f1f8cfedc6a6e0819ebb8",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "MI_PHASE8_ORIGINAL_BRIDGE",
+    "revision": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+    "snapshot": "historical_sources/MI_PHASE8_ORIGINAL_BRIDGE.txt",
+    "sha256": "085c4f87d3954eb8d479ad3b8d96df90c19bd5019f56a5dc2e810a55b718b73c",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  },
+  {
+    "id": "MI_PHASE9_ORIGINAL_INTAKE",
+    "revision": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
+    "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+    "snapshot": "historical_sources/MI_PHASE9_ORIGINAL_INTAKE.txt",
+    "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+    "method": "local git show exact revision:path; no fetch or checkout"
+  }
+]

@@ -889,13 +889,9 @@ def test_restart_helper_identical(tmp_path: Path) -> None:
 
 
 def test_generate_durable_evidence(tmp_path: Path) -> None:
-    """Write Cap 2.3 evidence bundle under docs/evidence when running locally."""
-    import shutil
-
-    evidence_root = Path("docs/evidence/capability_2_3_single_selected_future_policy_v1")
+    """Generate test evidence in isolation; preserve canonical historical bundles."""
+    evidence_root = tmp_path / "capability_2_3_single_selected_future_policy_v1"
     productive = evidence_root / "productive_selection"
-    if productive.exists():
-        shutil.rmtree(productive)
     productive.mkdir(parents=True, exist_ok=True)
 
     ranking = _ranking(

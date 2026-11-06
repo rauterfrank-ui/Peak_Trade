@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from dataclasses import replace
+
 import inspect
 from pathlib import Path
 
@@ -115,11 +118,11 @@ JOIN_SOURCE = Path(
 )
 JOIN_CONSUME_PATH = (
     "src.ops.current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1"
-    ".produce_join_v1.consume_occupied_lane_pins_v1"
+    ".checked_publication_v1.apply_isolated_lane_topology_v1"
 )
 JOIN_RUN_PATH = (
     "src.ops.current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1"
-    ".produce_join_v1.run_single_selected_future_policy_v1"
+    ".checked_publication_v1.prepare_lane_selection_v1"
 )
 
 
@@ -229,6 +232,7 @@ def _join(
     writer,
     prior=None,
     observed_unix: float = OBSERVED_UNIX,
+    **kwargs,
 ):
     bootstrap = prior is None
     membership = _membership(
@@ -244,6 +248,7 @@ def _join(
         writer=writer,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=observed_unix,
+        **kwargs,
     )
 
 
@@ -296,14 +301,15 @@ def test_authority_signature_and_writer_bounds() -> None:
         "writer",
         "repository_sha",
         "producer_observed_at_unix",
+        "observed_portfolio",
+        "replacement_admission_by_lane",
     ]
     source = JOIN_SOURCE.read_text(encoding="utf-8")
     for forbidden in FORBIDDEN_CALL_GRAPH_TARGETS:
         assert forbidden not in source
     assert "writer.acquire" not in source
     assert "writer.release" not in source
-    assert "consume_occupied_lane_pins_v1" in source
-    assert "run_single_selected_future_policy_v1" in source
+    assert "publish_checked_lane_selections_v1" in source
 
 
 def test_t1_empty_occupied_is_empty_map_without_cap23(
@@ -333,12 +339,14 @@ def test_t2_one_occupied_isolated_cap23_persist(
     ranking = _five_ranking()
     ada = _cid(ranking, "ADA-USDT-SWAP")
     calls: list[Path] = []
-    real_run = run_single_selected_future_policy_v1
+    from src.ops.single_selected_future_policy_v1.producer_v1 import prepare_lane_selection_v1
+
+    real_run = prepare_lane_selection_v1
 
     def _spy(**kwargs):
         calls.append(Path(kwargs["state_root"]))
         assert kwargs["governed_pin"] is not None
-        assert kwargs["load_previous_from_state"] is True
+        assert kwargs["expected_previous_instrument"] is None
         assert kwargs["ranking_snapshot"] is ranking
         return real_run(**kwargs)
 
@@ -397,56 +405,56 @@ def test_t3_five_occupied_isolated_n1_calls(tmp_path: Path) -> None:
         )
 
 
-def test_t4_t5_t7_pin_identity_order_and_hysteresis(tmp_path: Path) -> None:
+def test_t4_t5_t7_rejected_replacement_preserves_topology(tmp_path: Path) -> None:
+    from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+        PortfolioTruthSnapshotV1,
+    )
+    from src.ops.hard_facts_system_closure_v1.position_aware_rotation_v1 import (
+        evaluate_position_aware_rotation_v1,
+        RotationPhase,
+    )
+
     ranking = _five_ranking()
-    ada = _cid(ranking, "ADA-USDT-SWAP")
-    sol = _cid(ranking, "SOL-USDT-SWAP")
+    ada, sol = _cid(ranking, "ADA-USDT-SWAP"), _cid(ranking, "SOL-USDT-SWAP")
     writer = _held_writer(tmp_path)
     try:
         first = _join(ranking, [ada], tmp_path, writer=writer)
         topology = recover_durable_lane_assignment_v1(
-            topology_state_root_base=tmp_path,
-            recovery_mode=RECOVERY_MODE_RESTART,
+            topology_state_root_base=tmp_path, recovery_mode=RECOVERY_MODE_RESTART
         )
-        assert topology is not None
-        second = _join(
-            ranking,
-            [sol],
-            tmp_path,
-            writer=writer,
-            prior=topology.membership_instance_id,
-            observed_unix=OBSERVED_UNIX + 60.0,
+        clear = evaluate_position_aware_rotation_v1(
+            phase=RotationPhase.COMMIT,
+            venue_flat=True,
+            reconciled=True,
+            pending_external_custody=False,
+            pending_pre_external_custody=False,
+            lane_health_allows_replacement=True,
         )
-        independent = produce_single_selected_future_v1(
-            ranking_snapshot=ranking,
-            repository_sha=REPO_SHA,
-            producer_observed_at_unix=OBSERVED_UNIX + 60.0,
-            previous_selection=first["LANE_1"],
-            governed_pin=consume_occupied_lane_pins_v1(
-                membership=_membership(
-                    ranking,
-                    [sol],
-                    bootstrap=False,
-                    prior=topology.membership_instance_id,
-                ),
-                ranking_snapshot=ranking,
-                topology_state_root_base=tmp_path,
+        with pytest.raises(
+            RankingDomainOccupiedLaneCap23ProduceJoinError, match="WITHIN_MIN_HOLDING_PERIOD"
+        ):
+            _join(
+                ranking,
+                [sol],
+                tmp_path,
                 writer=writer,
-            )["LANE_1"],
-            lane_state_root=lane_state_root_for(
-                topology_state_root_base=tmp_path,
-                lane_id="LANE_1",
-            ),
+                prior=topology.membership_instance_id,
+                observed_unix=OBSERVED_UNIX + 60,
+                observed_portfolio=PortfolioTruthSnapshotV1(
+                    event_time_unix=OBSERVED_UNIX + 60, max_age_seconds=60
+                ),
+                replacement_admission_by_lane={"LANE_1": clear},
+            )
+        recovered = recover_durable_lane_assignment_v1(
+            topology_state_root_base=tmp_path, recovery_mode=RECOVERY_MODE_RESTART
+        )
+        assert recovered.to_dict() == topology.to_dict()
+        assert (
+            load_and_validate_selection_v1(tmp_path / "LANE_1").selection.to_dict()
+            == first["LANE_1"].to_dict()
         )
     finally:
         writer.release()
-    assert list(first) == ["LANE_1"]
-    assert first["LANE_1"].venue_native_id == "ADA-USDT-SWAP"
-    assert list(second) == ["LANE_1"]
-    assert second["LANE_1"].venue_native_id == "ADA-USDT-SWAP"
-    assert SelectionFailureCodeV1.WITHIN_MIN_HOLDING_PERIOD.value in second["LANE_1"].reason_codes
-    assert independent.selection.venue_native_id == "ADA-USDT-SWAP"
-    assert independent.selection.instrument_id == second["LANE_1"].instrument_id
 
 
 def test_t6_cross_lane_persistence_isolation(tmp_path: Path) -> None:
@@ -473,76 +481,37 @@ def test_t6_cross_lane_persistence_isolation(tmp_path: Path) -> None:
     assert not (empty3 / SELECTION_FILENAME).is_file()
 
 
-def test_t8_no_selection_continues_and_missing_selection_fails_closed(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+@pytest.mark.parametrize("bad_lane", ["LANE_1", "LANE_2"])
+def test_t8_preflight_denial_never_publishes_partial_selections(
+    tmp_path: Path, monkeypatch, bad_lane
+):
+    from src.ops.single_selected_future_policy_v1.producer_v1 import prepare_lane_selection_v1
+
     ranking = _five_ranking()
-    ada = _cid(ranking, "ADA-USDT-SWAP")
-    eth = _cid(ranking, "ETH-USDT-SWAP")
+    ada, eth = _cid(ranking, "ADA-USDT-SWAP"), _cid(ranking, "ETH-USDT-SWAP")
     deny = produce_single_selected_future_v1(
-        ranking_snapshot=None,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
+        ranking_snapshot=None, repository_sha=REPO_SHA, producer_observed_at_unix=OBSERVED_UNIX
     )
-    assert deny.selection.state == STATE_NO_SELECTION
-    real_run = run_single_selected_future_policy_v1
-    calls: list[str] = []
 
-    def _deny_first(**kwargs):
-        lane = Path(kwargs["state_root"]).name
-        calls.append(lane)
-        if lane == "LANE_1":
-            return {
-                "ok": False,
-                "hard_stop": True,
-                "failure_codes": deny.failure_codes,
-                "selection": deny.selection.to_dict(),
-            }
-        return real_run(**kwargs)
+    @contextmanager
+    def denied(**kwargs):
+        with prepare_lane_selection_v1(**kwargs) as item:
+            yield (
+                replace(item, produced=deny)
+                if Path(kwargs["state_root"]).name == bad_lane
+                else item
+            )
 
-    monkeypatch.setattr(JOIN_RUN_PATH, _deny_first)
+    monkeypatch.setattr(JOIN_RUN_PATH, denied)
     writer = _held_writer(tmp_path)
     try:
-        continued = _join(ranking, [ada, eth], tmp_path, writer=writer)
+        with pytest.raises(
+            RankingDomainOccupiedLaneCap23ProduceJoinError, match="PUBLICATION_DEFERRED"
+        ):
+            _join(ranking, [ada, eth], tmp_path, writer=writer)
+        assert _selection_files(tmp_path) == []
     finally:
         writer.release()
-    assert list(continued) == ["LANE_1", "LANE_2"]
-    assert continued["LANE_1"].state == STATE_NO_SELECTION
-    assert continued["LANE_2"].venue_native_id == "ETH-USDT-SWAP"
-    assert calls == ["LANE_1", "LANE_2"]
-
-    missing_root = tmp_path / "missing"
-    calls.clear()
-
-    def _none_second(**kwargs):
-        lane = Path(kwargs["state_root"]).name
-        calls.append(lane)
-        if lane == "LANE_2":
-            return {
-                "ok": False,
-                "hard_stop": True,
-                "failure_codes": (SelectionFailureCodeV1.DUPLICATE_SELECTION_WRITER.value,),
-                "selection": None,
-            }
-        return real_run(**kwargs)
-
-    monkeypatch.setattr(JOIN_RUN_PATH, _none_second)
-    missing_writer = _held_writer(missing_root)
-    try:
-        with pytest.raises(RankingDomainOccupiedLaneCap23ProduceJoinError) as missing_exc:
-            result = _join(ranking, [ada, eth], missing_root, writer=missing_writer)
-            raise AssertionError(f"partial map returned:{result!r}")
-        assert missing_exc.value.failure_code == FAILURE_CAP23_SELECTION_MISSING
-        lane1 = Path(lane_state_root_for(topology_state_root_base=missing_root, lane_id="LANE_1"))
-        loaded = load_and_validate_selection_v1(lane1)
-        assert loaded.ok is True
-        assert loaded.selection is not None
-        assert loaded.selection.instrument_id == ada
-        lane2 = Path(lane_state_root_for(topology_state_root_base=missing_root, lane_id="LANE_2"))
-        assert not (lane2 / SELECTION_FILENAME).is_file()
-    finally:
-        missing_writer.release()
-    assert calls == ["LANE_1", "LANE_2"]
 
 
 def test_t8_pin_consume_exception_propagates(

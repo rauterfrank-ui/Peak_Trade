@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -35,6 +36,14 @@ def _origin_sha() -> str:
 
 
 def main() -> int:
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
+    )
+    parser = argparse.ArgumentParser(description="PRE-LIVE fresh-state convergence; no POST")
+    add_startup_portfolio_arguments_v1(parser, replay_clock=True)
+    args = parser.parse_args()
     wp_token = os.environ.get("SCOPED_OWNER_GO_TOKEN", "").strip()
     cap24_token = os.environ.get("CAP24_CANONICAL_WRITE_OWNER_GO_TOKEN", "").strip()
     if wp_token != OWNER_GO_TOKEN:
@@ -60,11 +69,14 @@ def main() -> int:
         )
         return 2
 
+    observed_portfolio = load_startup_portfolio_args_v1(args)
     PACK.mkdir(parents=True, exist_ok=True)
     report = execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
         repo_root=REPO,
         scoped_owner_go_literal=wp_token,
         cap24_owner_go_literal=cap24_token,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=startup_observation_now_v1(args),
     )
     report["E2E_RUN_ID"] = f"prelive-{_RUN_TS}-{uuid.uuid4().hex[:12]}"
     report["ORIGIN_MAIN_AT_RUN"] = _origin_sha()

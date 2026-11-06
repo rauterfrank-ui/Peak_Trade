@@ -1,0 +1,29 @@
+{
+  "source_commit": "ff9d113804e2b383592ebf1e6741180376bdfac2",
+  "tests": "No new runtime tests or renewed test certification. Prior section39 controlled-path result retained at original pin.",
+  "ruff_status": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+  "boundaries": [
+    "M6 projection is intentionally not Phase11 analyzer execution",
+    "Experiment sample, per-metric pairs and bounded budget metadata are distinct quantities",
+    "Parameter-stability measurement supplier and complete metric definitions remain open",
+    "No automatic adapter, new numeric definition or operation; no full-system completion claim"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/meta_evidence_vs_analyzer_roles_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 204,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_CHANGED_PYTHON",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

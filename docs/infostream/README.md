@@ -1,5 +1,7 @@
 # InfoStream v0 – Intel-Pipeline für Peak_Trade
 
+Aktueller Systemeinstieg: [Map of Truth](../governance/PEAK_TRADE_MAP_OF_TRUTH.md) und [System Atlas](../system_atlas/generated/SYSTEM_ATLAS.md).
+
 > **Version:** v0 (Text-Konvention)
 > **Status:** Aktiv
 > **Erstellt:** 2025-12-11
@@ -265,5 +267,3 @@ Siehe: [MACRO_GEORISK_PROMPT.md](MACRO_GEORISK_PROMPT.md) für den KI-Agenten-Pr
 - [PROMPTS.md](PROMPTS.md) – KI-Prompts für Collector & Evaluator
 - [MACRO_GEORISK_PROMPT.md](MACRO_GEORISK_PROMPT.md) – Makro/GeoRisk-Spezialist Prompt
 - [TEMPLATES.md](TEMPLATES.md) – Format-Templates
-- [INFOSTREAM_LEARNING_LOG.md](../mindmap/INFOSTREAM_LEARNING_LOG.md) – Gesammelte Learnings
-- [README_MINDMAP.md](../mindmap/README_MINDMAP.md) – Mindmap-Übersicht

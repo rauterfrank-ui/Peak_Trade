@@ -1,0 +1,56 @@
+{
+  "source_class": "TEST_ONLY_SYNTHETIC_OFFLINE",
+  "no_decision_event_created": true,
+  "job_key": {
+    "dataset_generation": "market.synthetic.1",
+    "venue": "okx",
+    "instrument_ref": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+    "native_instrument_ref": "ETH-USDT-SWAP",
+    "information_set_ref": "mi.info_set.6f3ed6fac8ad62433f50c425c6d4be1575dd06c3538fd06d",
+    "target_spec_digest": "19509711d5a2a21e99a3497aebe7a94b9f3c1d0cb50bdccb68b157ad5a57d38c",
+    "n_bars": 2,
+    "bar_spec_ref": "ddo.o4.barspec.6335f66ee81ff9b23584a4b038b7240b5860343a6788e6d7b379f3bfd9d2f952",
+    "forecast_model_ref": "TEST_ONLY_SUPPLIED_MODEL",
+    "attempt_generation": "attempt.1",
+    "identity_kind": "MARKET_ONLY_V1"
+  },
+  "canonical_measurement_equals_preserved_original": true,
+  "actual_outcome_ref": "ddo.outcome.measure.fd96f5cdef02498808226425483d0ba794ec7022caacca4c930efd597beab33d",
+  "first_return_close": "2026-09-17T08:00:00Z",
+  "last_return_close": "2026-09-17T09:00:00Z",
+  "measurement_logical_boundary": "2026-09-17T09:00:00Z",
+  "actual_evaluated_at": "2026-09-17T09:00:02Z",
+  "calibration_result": {
+    "error": 0.0670113769896297,
+    "method": "RETURN_ERROR_V1",
+    "realized_return": 0.0870113769896297
+  },
+  "original_triad_exact_digest": "fecc2bff638ba826ca35b433e058611e9215d7624d9a9bbd0b4a9471c1de199e",
+  "readback_original_triad_exact_digest": "fecc2bff638ba826ca35b433e058611e9215d7624d9a9bbd0b4a9471c1de199e",
+  "model_inference_performed": false,
+  "model_training_performed": false,
+  "source_authenticated": false,
+  "runtime_activation": false,
+  "store_files": [
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/calibration_ack.json",
+      "sha256": "7d59275880507efcd779d5e0d2718a5d7b7748d5158f556129451c06da8f8014",
+      "bytes": 1662
+    },
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/forecast.json",
+      "sha256": "a14082e171e4e00f9563d6f0cd04b0cf3fbe54d5246b39854dcbbc54d69b98a2",
+      "bytes": 9618
+    },
+    {
+      "path": "example/store/.intelligence-integration-v1/c7967cbe1bccd9d6899846567baef4f463e0614899698b9d2a463ef383fddbac/measurement.json",
+      "sha256": "0d18c10413cdda2bc87e9afb10338c92811e7b026ccc94e715dc218594e90324",
+      "bytes": 4762
+    },
+    {
+      "path": "example/store/mi.offline.durable.0af314d63ad0b6c0b603d352559eea3081b6148dab62d633/mi_offline_durable_evidence_record_v1.json",
+      "sha256": "fecc2bff638ba826ca35b433e058611e9215d7624d9a9bbd0b4a9471c1de199e",
+      "bytes": 7321
+    }
+  ]
+}

@@ -27,7 +27,14 @@ def _main() -> int:
         action="store_true",
         help="Run macOS K1 PRE-POST + pre-live proof (requires Keychain scope)",
     )
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
+    )
+    add_startup_portfolio_arguments_v1(parser)
     args = parser.parse_args()
+    observed_portfolio = load_startup_portfolio_args_v1(args)
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 import (
         K1_OPAQUE_SIGNING_OWNER_GO,
@@ -57,6 +64,8 @@ def _main() -> int:
             evidence_root=args.evidence_root,
             prove_k1_pre_live=bool(args.prove_k1_pre_live),
             use_macos_k1=bool(args.prove_k1_pre_live),
+            observed_portfolio=observed_portfolio,
+            observation_now_unix=startup_observation_now_v1(args),
         )
     except CurrentProductiveOneShotEnterE2ERuntimeHandoffError as exc:
         print(f"FAIL_CLOSED:{exc}", file=sys.stderr)

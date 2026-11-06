@@ -84,3 +84,30 @@ VENUE_MUTATION_PERFORMED=false
 MAX_POSITIONS_EFFECTIVE=1
 ATLAS_AUTHORITY=NONE
 ```
+
+
+Local runtime-liveness extension (2026-11-03, uncommitted HEAD242b7974):
+observation polling TimeoutError/ConnectionError can retry under the existing O6
+three-retry limit, authorized wait interval and poll/duration/cancellation bounds.
+The limit is cumulative for the run. No S5 failure or unknown/persistence failure
+is automatically retried. The fresh-C1 wait deadline has a separate timestamp from
+polling liveness and applies from the initial cursor floor. Expired polling cannot
+start S5. Existing cursor, decision and authorization replay prohibitions remain.
+The owner persists terminal blocker/next action and O6 local liveness notices;
+startup/final outcomes are also recorded by the existing standing N1 supervisor.
+These local file/log surfaces do not prove external notification or automatic
+process restart. See the master runbook's 2026-11-03 runtime-liveness extension
+for source provenance, verification, known fixture failures and remaining gaps.
+
+
+Local paired-recovery/email extension (2026-11-03): the Fresh-C1 source maps known
+structured public GET network failures into the existing bounded sequencer retry
+path, including dynamically refreshed index-tickers. A paired scoped recovery
+notice follows successful fresh-C1 S5 processing and durable cursor advancement,
+not merely a GET or a restarted component. Existing admission, request budgets,
+replay blocks and trading boundaries remain. O6 notice events can be drained by
+`runtime_recovery_email_v1` through the existing email channel outside the runtime
+loop. A matching earlier fault and explicit transport acceptance are required for
+paired mail/delivery evidence; settings alone prove no delivery. See the master
+runbook's dated autonomous-recovery/paired-email extension for verification,
+private SMTP provisioning status and remaining full-host integration gaps.

@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Final, Mapping
 
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+
 from src.governance.current_productive_actual_venue_post_admission_policy_v1 import (
     validate_actual_venue_post_admission_policy_v1,
     prove_actual_venue_post_admission_requires_durable_owner_go_v1,
@@ -142,6 +144,8 @@ def execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
     scoped_owner_go_literal: str,
     cap24_owner_go_literal: str,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    observed_portfolio=None,
+    observation_now_unix: float | None = None,
 ) -> dict[str, Any]:
     go_probe = validate_scoped_owner_go_v1(
         repo_root=repo_root,
@@ -164,6 +168,7 @@ def execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
     if policy.policy_valid is not True:
         raise RuntimeError("ACTUAL_VENUE_POST_ADMISSION_POLICY_INVALID")
 
+    require_startup_portfolio_v1(observed_portfolio)
     roots = fresh_runtime_roots_v1(repo_root=repo_root, baseline_sha=live_sha)
     for key, path in roots.items():
         if key != "evidence_root":
@@ -201,6 +206,8 @@ def execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
         productivity_root=roots["productivity_root"],
         repository_sha=live_sha,
         binding_epoch=cap24.decision_epoch,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
     assert_post_durable_store_root_isolation_v1(
         store_root=roots["post_durable_store"],

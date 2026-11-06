@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.ops._entry_budget_join_fixture_v1 import join_with_portfolio_fixture_v1
+
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
@@ -94,7 +96,7 @@ def test_synthetic_enter_short_live_29p_join_passes_protective_stop_derivation(
             observe_replay,
             cycle_index=1,
         )
-        result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        result = join_with_portfolio_fixture_v1(
             replay=overlay.replay,
             bound_instrument=_bound(),
             injected=_injected(payload=_balance_payload()),
@@ -160,7 +162,7 @@ def test_protective_stop_fail_closed_when_derived_stop_invalid(
                 ),
             ),
         )
-        result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        result = join_with_portfolio_fixture_v1(
             replay=broken,
             bound_instrument=_bound(),
             injected=_injected(payload=_balance_payload()),

@@ -1,0 +1,14 @@
+{
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "evidence_class": "STATIC_SOURCE_REVIEW_ONLY",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "74a27bc398f8cdfbcdf27cae2d389d14d26d94ec841d09ea6b7712b232c9be59"
+    },
+    {
+      "path": "findings.json",
+      "sha256": "e675191e2491b245104ebb5cd063f047debf2751bd98d6a0a56c64575e46ceab"
+    }
+  ]
+}

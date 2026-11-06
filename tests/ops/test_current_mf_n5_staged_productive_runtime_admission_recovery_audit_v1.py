@@ -64,6 +64,7 @@ from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_
     ORIGIN_SHA,
     _market_kwargs,
     _memory_g17_producer,
+    _mv2_aligned_candles,
 )
 
 PACKAGE = Path(__file__).resolve().parents[2] / (
@@ -109,6 +110,18 @@ def _run_control(
     cycle["g17_typed_vol_producers"] = _g17(
         chain, instrument_rows, requested if harness else min(requested, len(instrument_rows))
     )
+    # Match the current finalized-history gate, as in the orchestrator fixture;
+    # the convenience multi-lane materializer supplies only eight bars.
+    cycle["candles_payload_by_lane"] = {
+        LANE_IDS[index]: {
+            **_mv2_aligned_candles(
+                last_ts_ms=int(cycle["candles_payload"]["data"][-1][0]),
+                mark_px=float(chain["mark_price_by_native_id"][native]),
+            ),
+            "instId": native,
+        }
+        for index, native in enumerate(instrument_rows[:requested])
+    }
     try:
         return run_staged_productive_full_autonomy_n5_runtime_control_plane_v1(
             membership=membership,

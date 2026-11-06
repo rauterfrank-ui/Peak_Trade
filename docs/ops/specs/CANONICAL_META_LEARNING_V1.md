@@ -169,3 +169,42 @@ PRODUCTIVE_CONFIG_MUTATION=false
 ```
 
 Phase 11 does not start Phase 12, live, canary, funding, order submit, confirm tokens, productive config write, or autonomous promotion.
+
+## Shared parameter-region address (2026-11-04)
+
+`derive_meta_parameter_region_digest_v1` exposes the existing full declared-region
+digest calculation for both the finding producer and its Search consumer. The
+producer digest domain, canonical payload and resulting record identity are
+preserved. This address does not identify a single parameter value, a whole
+experiment or an implicitly completed strategy template. Consumer evidence:
+[parameter-region semantic join](../evidence/meta_parameter_region_join_v1_2026_11_04/README.md).
+
+## Knowledge-time ordering (2026-11-04)
+
+Evidence, later-outcome and analysis timestamps are compared as valid UTC calendar
+instants with exact integer nanoseconds, not lexically or via rounded floats.
+The accepted UTC text format remains explicit Z with up to nine fractional digits;
+original strings remain unchanged in serialized records. Calendar-invalid times
+are rejected. Chronological validity does not attest measurement/source truth.
+[Bound temporal checks](../evidence/meta_knowledge_time_semantics_v1_2026_11_04/README.md).
+
+
+## Stability measured sample coverage — 2026-11-04
+
+For PARAMETER_INSTABILITY only, the per-cohort claim sample excludes units with
+missing parameter_stability. Known stable and unstable measurements both count.
+sample_size reports measured coverage, comparable_sample_size retains comparable
+experiment count, and missing_evidence_count remains explicit. Missing values
+cannot enable findings/proposals through the existing minimum-sample gate.
+Other questions, thresholds and scalar definitions are unchanged.
+[Tests and original-request provenance](../evidence/meta_stability_observed_sample_v1_2026_11_04/README.md).
+
+
+## Association sample admission per finding — 2026-11-04
+
+For each robustness-test or metric association, apply the existing sample policy
+to that finding's own paired count inside its comparable cohort before wrapping
+findings or building proposals. Counts across different tests/metrics cannot
+satisfy one another's minimum. Supported findings remain usable when another
+finding is sparse. Thresholds, association formulas and causal restrictions remain.
+[Verification](../evidence/meta_association_bucket_sample_v1_2026_11_04/README.md).

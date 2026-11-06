@@ -1,0 +1,161 @@
+{
+  "schema": "self_learning_gvef_evidence_projection_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "date": "2026-11-05",
+  "evidence_class": "STATIC_SOURCE_REVIEW_ONLY",
+  "product_code_changed": false,
+  "product_tests_executed": false,
+  "runtime_authorization_effect": "NONE",
+  "findings": [
+    {
+      "id": "GFB01",
+      "title": "Messreferenz-Test erhält das Domain-Ergebnis im Runrecord, registriert jedoch ein Fixture-Bundle",
+      "source_observed_effect": "Der konkrete Messreferenz-Test übernimmt _deps mit DeterministicComparatorV1, DeterministicEvidenceBuilderV1 und InMemoryEvidenceRegistryV1 und ersetzt nur das Corpus-Gate. GenericRunner übergibt candidate_result an den Builder. Dieser übernimmt nur CRS-/Ranking-Sonderfelder aus semantic_digest_deltas, setzt unter anderem invariant_results auf i1/PASS, vector_corpus_version auf 1.0.0 und vector_corpus_digest auf run.seed_set_digest. Die SelfLearning-Artefaktmetrik, ihre beiden benannten Invarianten und ihr learning_artifact werden nicht als solche in dieses Bundle kopiert.",
+      "semantics": "Ein konkret verwendetes Corpus-Gate prüft die Eingangsbindung; daraus folgt keine vollständige Erhaltung desselben Corpus- oder Domainvertrags in jedem nachfolgenden Fixture-Bundle. Das detaillierte SelfLearning-Ergebnis bleibt im Runrecord. Der anschließende numerische Meta-Aufruf liest loaded.executed.next_meta_input separat und konsumiert nicht das registrierte Bundle.",
+      "limit": "Begrenzte Quellenanalyse des genannten synthetischen Tests und seiner injizierten Dependencies. Fixture-Felder sind kein nachgewiesener Produktivfehler. Kein Test/Runner/Registryaufruf ausgeführt; andere Builder und Aufrufer nicht global ausgeschlossen. Vorhandene Archiv- und Meta-Verbindung bleibt erhalten.",
+      "source_bindings": [
+        {
+          "path": "tests/evaluation/golden_vectors/test_measured_learning_reference_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "62b4defff0b187cb893dc745089955f70057b08f7c3002ac1a150b553e669535",
+          "line_start": 59,
+          "line_end": 95,
+          "snippet_sha256": "fa30ea6b86af58ecce1145e773bf7a7499c619cd1b4a08cbe2801c9907520706"
+        },
+        {
+          "path": "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp456_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "00cb6513d0ccaa369524f874c7e776292b2e746d9c6e90f9cd189ddfe44af142",
+          "line_start": 63,
+          "line_end": 73,
+          "snippet_sha256": "38d04768e01a0a7a7a20b3efea82a6a692d010dc466a02655e24e5cf1de96c66"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 168,
+          "line_end": 243,
+          "snippet_sha256": "e4b3fec99f2eb6f7996ec03be038e52a5ed8dc3776386ab3794be37fd550fbbd"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 112,
+          "line_end": 265,
+          "snippet_sha256": "e18d5abf037fd2016a838f4c40af5da049710e1c1e77f8889df3d5f189763835"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/contracts/models.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c9fd96c72aadeec712f7e2644db2a25875659413cd1ce8b4a7a6ddc868599005",
+          "line_start": 307,
+          "line_end": 376,
+          "snippet_sha256": "ba75bc158730b0eebaf7800459b392776067d00899da886c139b8e21db245506"
+        }
+      ],
+      "evidence_class": "BOUNDED_PINNED_SOURCE_REVIEW_NOT_OBSERVED_RUNTIME",
+      "product_change": false
+    },
+    {
+      "id": "GFB02",
+      "title": "Protected-output-Digest bindet kein Candidate-Ergebnis direkt; Wirkung hängt von den injizierten Projektionen ab",
+      "source_observed_effect": "Der protected_output_digest enthält Zustandsfolge, Runmanifest-, Baseline-, Delta-, geschützte Fach- und Evidence-Digests, aber keinen direkten Candidate-Result- oder Replay-Trace-Digest. Im referenzierten Dependency-Pfad ignoriert der Comparator Baseline/Candidate-Werte, und der Builder kopiert SelfLearning-Artefaktdeltas nicht. SelfLearningEvaluator kann baseline-/candidate-gelabelte Artefakte auswählen; seine geschützten Candidate-Digests sind die Kontext-Baseline-Digests.",
+      "semantics": "Unter der ausdrücklichen Bedingung identischer übriger Digest-Eingaben können ausschließlich im Candidate-Artefakt geänderte Inhalte im detaillierten Result sichtbar sein, ohne den protected_output_digest zu ändern. Das ist Informationsverlust durch Projektion, kein behaupteter SHA256-Kollisionsfund. Ein benötigter Nachweis des vollständigen Candidate-Ergebnisses muss dessen Identität direkt oder über eine nachweislich erhaltende Projektion binden.",
+      "limit": "Bedingte statische Abhängigkeitsaussage, keine erzeugten zwei Läufe und kein beobachteter Runtimefehler. Der aktuelle Messreferenz-Loader erzeugt einen einzelnen ungelabelten Eintrag für beide Evaluationsseiten; dieser konkrete Test ist kein unabhängiger Baseline-vs-Candidate-Forschungsqualitätsvergleich. Andere Builder/Comparatoren können weitere Werte transitiv binden.",
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 287,
+          "line_end": 310,
+          "snippet_sha256": "46d7d9284758347105bf51b841d7779567d9c158930dc3e38839605cd9cd19a3"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 144,
+          "line_end": 157,
+          "snippet_sha256": "7469aa477b18219a59e8b3d21bf7195d2785c617010087ae328a32be6b3b6271"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 168,
+          "line_end": 243,
+          "snippet_sha256": "e4b3fec99f2eb6f7996ec03be038e52a5ed8dc3776386ab3794be37fd550fbbd"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d",
+          "line_start": 110,
+          "line_end": 128,
+          "snippet_sha256": "8fa7028c087a1c75f1008049ced3f9952f294b7a6bc920dfef6280c7f9672868"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d",
+          "line_start": 130,
+          "line_end": 164,
+          "snippet_sha256": "280cf32505598d1b26901ec8cfa15cde49180ccc73a93314272aa10cc9d64d3a"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/evaluators/self_learning_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "86d28f839f25849d7946111ee18a801cfd0845ba13b376a98c1f73000028287d",
+          "line_start": 86,
+          "line_end": 89,
+          "snippet_sha256": "81a96e20fa3132ccb3320cdd259ac1ff8721eaa17582121ff1cdfbfa0f1c2eb9"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/integration/measured_learning_reference_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c953b114b34dba7360c7c8a36d951fcf8d4b47bc77b83c16a4e8440dc203e503",
+          "line_start": 34,
+          "line_end": 93,
+          "snippet_sha256": "446e31edfd993f20fcca5b34a6e041647698c6f887e283d426ac6b97f86d7dc0"
+        }
+      ],
+      "evidence_class": "BOUNDED_PINNED_SOURCE_REVIEW_NOT_OBSERVED_RUNTIME",
+      "product_change": false
+    }
+  ],
+  "future_acceptance_criteria": [
+    {
+      "id": "GFB-T01",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Bei geforderter Domain-Ergebniserhaltung den registrierten Payload gegen Candidate-Metrik, Invariant-IDs und Artefaktidentität vergleichen."
+    },
+    {
+      "id": "GFB-T02",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Corpusversion und Corpusdigest bis zum erforderlichen Consumer an die echte gebundene Corpusidentität binden; Seed-Digest getrennt halten."
+    },
+    {
+      "id": "GFB-T03",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Nur Candidate-Artefakt variieren und alle übrigen gebundenen Eingaben konstant halten: benötigter Ergebnisnachweis muss die Änderung erkennen."
+    },
+    {
+      "id": "GFB-T04",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Beim reinen Referenzpfad unveränderten numerischen Meta-Eingang und Source-Class-Begrenzung erhalten."
+    },
+    {
+      "id": "GFB-T05",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Getrennten Meta-Aufruf nicht als Konsum des registrierten GVEF-Bundles oder interne Promotion ausweisen."
+    },
+    {
+      "id": "GFB-T06",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Ergebnis-, Trace-, Bundle- und geschützte Fach-Digests jeweils nach ihrem definierten Geltungsbereich prüfen; Digest-Gleichheit nicht pauschal Vollsemantik nennen."
+    }
+  ]
+}

@@ -113,7 +113,7 @@ _NON_ACTIONABLE_DECISION_OUTCOMES = frozenset(
         "reconcile_only",
     }
 )
-_FORBIDDEN_INSTRUMENT_MARKERS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
+_FORBIDDEN_INSTRUMENT_MARKERS = frozenset({"spot", "synthetic_spot"})
 
 _DEFAULT_ORDER_TYPE_POLICY = "MARKET_ONLY"
 _DEFAULT_PRICE_POLICY = "EXPLICIT_NONE"
@@ -228,8 +228,6 @@ def _instrument_forbidden(instrument_id: str) -> Tuple[str, ...]:
     lowered = instrument_id.lower()
     reasons: list[str] = []
     if any(marker in lowered for marker in _FORBIDDEN_INSTRUMENT_MARKERS):
-        if any(marker in lowered for marker in {"btc", "xbt", "bitcoin"}):
-            reasons.append(REASON_BITCOIN_SPECIFIC_DIRECTION)
         if "spot" in lowered or "synthetic" in lowered:
             reasons.append(REASON_NON_FUTURES_INSTRUMENT)
     return tuple(dict.fromkeys(reasons))

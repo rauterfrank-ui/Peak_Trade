@@ -1,0 +1,12 @@
+{
+  "base_head": "9d32ebde39c760c6f68c3fec1c0232e509fd0985",
+  "sources_sha256": {
+    "src/ops/okx_eea_private_account_state_runtime_v1/bills_observation_v1.py": "12f61d69548fc3c8a079df5c7baf6c540bcffd4d7b7e3e197639d5c8b17d7055",
+    "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": "fd185572f437ba9e9af028010d6a6715251a629e76077a8a8b72838b0114302b",
+    "scripts/ops/run_k1_account_observation_readiness_v1.py": "5a03c2bebca76a2abf7a92b31caf6ca2533150399bf86af1a497dc427b4fd23a",
+    "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": "a4287b10205daf2e8b75fa5d8c7365730e67471d20115b21e3e34715387e42a2",
+    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": "2521dd6b5fac11a22519e520fa2ae4e8bbee1995cbcd3082d93f7a6799afbd7d",
+    "config/ops/treasury_k1_account_source_v1.json": "5bd54db9e842bd9d12defb80e8d9b64a917f64b811aefddc8e3115608bd98bcd"
+  },
+  "scope": "Exact source before bounded K1 bills observation; report has no raw amounts"
+}

@@ -36,7 +36,7 @@ from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
 from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingOutcome
 
 
-def test_legacy_path_unchanged_without_portfolio_owner() -> None:
+def test_entry_without_shared_owner_is_blocked_by_outer_budget_policy() -> None:
     _cycle_a, cycle_b, _path = _host_enter_cycle()
     replay = _enter_replay(cycle_b)
     injected = _injected(payload=_balance_payload(avail_eq="100.00"))
@@ -46,12 +46,11 @@ def test_legacy_path_unchanged_without_portfolio_owner() -> None:
         injected=injected,
         decision_epoch=EPOCH,
     )
-    assert legacy.status == STATUS_PASS
+    assert legacy.status == "FAIL"
+    assert legacy.first_blocker == "ENTRY_BUDGET_REQUIRES_SHARED_RESERVATION_OWNER"
+    assert legacy.get_count == 0
     assert legacy.portfolio_reservation_id == ""
-    assert legacy.replay is not None
-    sizing = legacy.replay.intermediate.capital_risk_sizing_decision
-    assert sizing is not None
-    assert sizing.outcome is CapitalRiskSizingOutcome.PASS
+    assert legacy.replay is replay
 
 
 def test_portfolio_owner_requires_paired_slot_context() -> None:

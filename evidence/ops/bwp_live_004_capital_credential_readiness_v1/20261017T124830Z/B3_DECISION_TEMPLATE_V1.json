@@ -1,0 +1,31 @@
+{
+  "authority": "NONE",
+  "classification": "B",
+  "identity": {
+    "account": "okx-eea.productive",
+    "identity_implies_possession": false,
+    "possession_implies_post": false,
+    "provider_ref": "okx-eea-productive",
+    "service": "peak-trade.full-core.venue-credentials"
+  },
+  "keychain_read_performed": false,
+  "later_access_prerequisites": [
+    "Exact Owner-GO OWNER_GO_CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1",
+    "Caller must inject OsNativeStoreLookupBackendV1; the function has no default real Keychain backend",
+    "Item must be UTF-8 JSON with apiKey, secretKey, and passphrase; missing item or fields fail closed as K1_CREDENTIAL_ACQUISITION_FAIL_CLOSED",
+    "Material is wiped on context exit and is not written back into the proof object",
+    "Standing REAL_KEYCHAIN and POST pins stay false",
+    "A bound handle does not mint a permit and does not open a venue socket",
+    "This GO is not that Owner-GO"
+  ],
+  "owner_decision_required": true,
+  "schema_version": "bwp_live_004_b3_template.v1",
+  "separation_from_b1": "The 29P GET executor reads a canary vault secretref, not this Keychain item.",
+  "standing_pins": {
+    "MAY_PERFORM_GET": false,
+    "MAY_POST": false,
+    "REAL_KEYCHAIN_ACCESS_AUTHORIZED": false,
+    "REAL_KEYCHAIN_ACCESS_IMPLEMENTED": false,
+    "header_builder_refuses_if_may_get_or_may_post_becomes_true": true
+  }
+}

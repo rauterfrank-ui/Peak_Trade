@@ -1,0 +1,23 @@
+{
+  "EXTERNAL_EFFECT_COUNT": "0",
+  "PERMIT_CREATED": "false",
+  "POST_COUNT": "0",
+  "binding_digest": "9d19d49723b244d6bccc6ca217baf0815503066193e53ed5f012bf7dbd523023",
+  "consumed_instance_ids": [
+    "a6d3b482bede28ebe0010fae2c773604a22f089359b4cca52e610c7273eafe24",
+    "f15e5b7ba94ce682882c98a9a78a5b53180ad9fa22807694adfc3f1a10bc4f03",
+    "de01c6eb4cb6580472612358863fa293b9529ad60f7bc615fcdde15f7ff9926c",
+    "81c1f5af990d288f38a49b366403c194fb4db08620f67cf0abfb7fb52fa4fc65"
+  ],
+  "continuous_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1",
+  "expected_cursor_floor": 1791824460.0,
+  "last_accepted_c1": 1791824700.0,
+  "max_cycles_per_run": 4,
+  "max_run_duration_seconds": 180.0,
+  "native_id": "W-USDT-SWAP",
+  "reason_code": "MAX_CYCLES_PER_RUN",
+  "run_id": "9d19d49723b244d6",
+  "s5_invoke_count": 4,
+  "s5_runtime_owner_go": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1",
+  "state": "COMPLETED"
+}

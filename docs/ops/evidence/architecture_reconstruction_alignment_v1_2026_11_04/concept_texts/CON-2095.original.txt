@@ -1,0 +1,9 @@
+### CON-2095 — Meta, Suchwirkung und nächster ausgeführter Versuch
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+M6-Standardprojektion mit UNKNOWN-Familie/Methode/Features ist enger als der ursprüngliche experimentübergreifende Meta-Analyzer. M8 übernimmt caller-plane_request unverändert. Ein anderer direkt ausgeführter Meta→Search-Teilweg zeigt echte +20/−20-Prioritätsbeiträge, teilweise netto kompensiert. Zieladressierung, Score, relative Reihenfolge, Budgetaufnahme und tatsächlich ausgeführter Folgeversuch sind getrennte Wirkungen.
+
+**Grenze:** Weder „Meta ist völlig wirkungslos“ noch „M8 lernt bereits autonom nächste Versuche“ ist gedeckt. Gleichmäßiger Zuschlag oder aufhebende Beiträge können echten Konsum ohne geänderte Auswahl ergeben.
+
+Quellen: EVI-2261, EVI-2265, EVI-2251, EVI-2258, EVI-2295, EVI-2287, EVI-2224.

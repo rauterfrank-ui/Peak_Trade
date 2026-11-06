@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.ops._entry_budget_join_fixture_v1 import join_with_portfolio_fixture_v1
+
 import json
 import shutil
 import tempfile
@@ -147,7 +149,7 @@ def test_live_29p_rebound_replay_needs_final_reprojection_for_venue_plan(tmp_pat
             cycle_index=1,
         )
         assert overlay.applied is True
-        live_29p = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        live_29p = join_with_portfolio_fixture_v1(
             replay=overlay.replay,
             bound_instrument=bound,
             injected=_injected(

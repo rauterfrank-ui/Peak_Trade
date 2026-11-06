@@ -24,8 +24,6 @@ def build_residency_observability_report_v1(
         "active_residents": active,
         "capacity_rejected_total": metrics.capacity_rejected_total,
         "evaluation_observed_total": metrics.evaluation_observed_total,
-        "expired_active_total": metrics.expired_active_total,
-        "expired_pending_total": metrics.expired_pending_total,
         "pending_residents": pending,
         "queue_depth": pending,
         "scheduler_service_rate_hint": _service_rate_hint(metrics),

@@ -1,0 +1,144 @@
+{
+  "source_commit": "619f9d47aa0d50645e48322c387471929f78a90a",
+  "sources": [
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-original.md",
+      "sha256": "119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94",
+      "revision": "recovered source; provenance retained in original recovery dossier",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-core-logic-bound.md",
+      "sha256": "77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219",
+      "revision": "recovered source; provenance retained in original recovery dossier",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/original-master-recovery.json",
+      "sha256": "67037bffc47c4b9fd69255569a8c3229b6970903e8506f6787859ac1283301be",
+      "revision": "recovered source; provenance retained in original recovery dossier",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/variants.json",
+      "sha256": "20b3a1177da0d8a9eba8d51940aee817d1ca73fcc10abb3bfeaa31a74e008cc1",
+      "revision": "recovered source; provenance retained in original recovery dossier",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/learning-feedback-outer-ring-2026-11-02/sources/original-concept-v3-4-pages.txt",
+      "sha256": "c85ed2e0be3a1339eab125526ad887a76fac05f7cbaef78f0932fae7d9442a45",
+      "revision": "recovered source; provenance retained in original recovery dossier",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md",
+      "sha256": "213bf48fe6381660ee81f21403fc60009042b041eeb2a4e66918b582ae85001c",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/CANONICAL_REGIME_AWARE_EVALUATION_V1.md",
+      "sha256": "d7f27ea725d3f6256d10d6bbc7d3dc18403957dfdb1bbfb52ada2c6b0bf9fd67",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/CANONICAL_PORTFOLIO_LEARNING_V1.md",
+      "sha256": "3a950530bcba3ec595800445c6ad5d327a5b631320b3eb8f6f34d7a300336374",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/docs/ops/specs/OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
+      "sha256": "2a5b99f8082a00529a8afd4da55b5d0277334039bcfed5d32039ba205b3e5748",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "sha256": "1dafec3663f29753e518ed1c7120c8d1fc523e108845617e971d55182f601c1c",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+      "sha256": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+      "sha256": "6d003847797858ecae8a510ef0c6a4a617519706babe34d4c82c15048f76ad61",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+      "sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+      "sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
+      "sha256": "bfa1471dff2c5d7fc78ca2ecce1c22ef1431cfba2b2373638aa989e32d257d64",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
+      "sha256": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+      "sha256": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/Peak_Trade/tests/learning/test_phase_22_incremental_research_evidence_v1.py",
+      "sha256": "9bbbfbf848fa43f1e3c12a37ce3a26c30d5acdb5d212c183ed8dc0873f150696",
+      "revision": "619f9d47aa0d50645e48322c387471929f78a90a",
+      "coverage": "focused passages and call paths; not full semantic certification"
+    },
+    {
+      "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/f5f7d2d9-e632-4aa6-ab05-cc56ca4d020f/f5f7d2d9-e632-4aa6-ab05-cc56ca4d020f.jsonl",
+      "line_1based": 1,
+      "record_sha256": "cca430b093e1deff0d3dd235975cb24747b3b513cc8c01dc3528487029c69e55",
+      "coverage": "complete original user request; attachment PDF not newly inspected"
+    },
+    {
+      "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/8f8bf90c-b44a-438f-bd80-d44982adf66f/8f8bf90c-b44a-438f-bd80-d44982adf66f.jsonl",
+      "line_1based": 1,
+      "record_sha256": "3be0904fa8742d0f5f96fdab142ed2211d18b38b2d5545b948a8c1205ecb1239",
+      "coverage": "complete original user request; attachment PDF not newly inspected"
+    },
+    {
+      "revision": "1972c706ae8b962f1f23fc9b5c71886b40100e9e",
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md",
+      "sha256": "2f769e7145cb74a9e955deadd4c3fa76bf7e51c07436d70ed98a4d7c2e3c711b",
+      "coverage": "focused original manifest / Phase22 delta and predecessor passages"
+    },
+    {
+      "revision": "4535069657e8d2effe3c26e2a9e18b2c66d2d3a4",
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+      "sha256": "2ccc269a41f0ec73511bf6b8c4cfb9695cc26467c97bf32613ea1f050ac7e6e2",
+      "coverage": "focused original manifest / Phase22 delta and predecessor passages"
+    }
+  ],
+  "scope": "source-role reconstruction; bounded source search; no global completeness claim"
+}

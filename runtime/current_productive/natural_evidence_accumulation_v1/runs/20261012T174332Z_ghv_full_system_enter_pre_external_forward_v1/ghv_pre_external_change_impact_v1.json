@@ -1,0 +1,149 @@
+{
+  "ALL_CHANGE_EVENTS_FANOUT_TRAVERSED": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "change_events": [
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_997e92d44d101325cc16b572"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_790ac9ae780707d153adfe49"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_88ea82e0202b9858c4bdf390"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_1642e459231d4ee2a8dd45b1"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_de96c0e187a6ddec3647d49d"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_5ee67095ee0b1f828c17386c"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_34e6d996e055670218c9ec2f"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_233ae1bba9a283f6a41ae245"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_cd72a6d786e6ebefde8c26f7"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_eb18e1074931bccc3d6a5267"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_1f324bd01ec63f784f91dd8d"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_4a48ad4571520662c2f13605"
+    },
+    {
+      "AFFECTED_GATES": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "CHANGE_EVENT_ID": "VENUE_PLAN_GATE",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "reason": "HOLD"
+    }
+  ],
+  "ghv_explicit_root": true,
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_change_impact.v1"
+}

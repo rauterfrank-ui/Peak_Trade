@@ -27,6 +27,10 @@ from src.ops.mf_membership_context_artifact_contract_v1 import (
 )
 from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1 import (
     checkpoint_root_for,
+    checkpoint_path,
+    commit_marker_path,
+    MANIFEST_FILENAME,
+    recover_durable_lane_assignment_v1,
 )
 from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.single_writer_v1 import (
     DurableLaneAssignmentSingleWriterV1,
@@ -120,6 +124,15 @@ def execute_hard_facts_cap22_to_mf_n5_handoff_v1(
     membership = selector.persisted_artifact or selector.proposed_artifact or prior
     if membership is None:
         raise HardFactsMfN5HandoffError("SELECTOR_NO_MEMBERSHIP")
+    checkpoint_root = checkpoint_root_for(Path(request.topology_state_root_base))
+    topology_state_present = any(
+        p.exists()
+        for p in (
+            checkpoint_path(checkpoint_root),
+            commit_marker_path(checkpoint_root),
+            checkpoint_root / MANIFEST_FILENAME,
+        )
+    )
     if lane_assignment_writer is not None:
         writer = lane_assignment_writer
     else:
@@ -128,12 +141,34 @@ def execute_hard_facts_cap22_to_mf_n5_handoff_v1(
             session_id="hard-facts-handoff-v1",
         )
         writer.acquire()
-    topology = consume_recovered_isolated_lane_topology_v1(
-        membership=membership,
-        ranking_snapshot=snapshot,
-        topology_state_root_base=Path(request.topology_state_root_base),
-        writer=writer,
-    )
+    try:
+        writer.assert_held()
+        if membership.bootstrap and topology_state_present:
+            # An idempotent selector replay must not fabricate a new membership
+            # observation or holding age merely to change the bootstrap flag.
+            # Restore ONLY its exact already-committed topology. The consumer's
+            # strict genesis/restart API and disagreement rejection stay intact.
+            topology = recover_durable_lane_assignment_v1(
+                topology_state_root_base=Path(request.topology_state_root_base),
+                recovery_mode="RESTART",
+                expected_universe_snapshot_id=snapshot["universe_snapshot_id"],
+                expected_ranking_snapshot_id=snapshot["ranking_snapshot_id"],
+                expected_ranking_integrity_digest=snapshot["integrity_digest"],
+            )
+            if topology.membership_instance_id != membership.instance_id or set(
+                topology.occupied_instrument_ids
+            ) != set(membership.ordered_instrument_ids):
+                raise HardFactsMfN5HandoffError("REPLAY_MEMBERSHIP_TOPOLOGY_MISMATCH")
+        else:
+            topology = consume_recovered_isolated_lane_topology_v1(
+                membership=membership,
+                ranking_snapshot=snapshot,
+                topology_state_root_base=Path(request.topology_state_root_base),
+                writer=writer,
+            )
+    finally:
+        if lane_assignment_writer is None:
+            writer.release()
     return HardFactsMfN5HandoffResultV1(
         membership=membership,
         topology=topology,

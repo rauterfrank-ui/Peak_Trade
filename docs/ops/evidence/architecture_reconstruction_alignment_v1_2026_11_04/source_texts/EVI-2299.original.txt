@@ -1,0 +1,225 @@
+ÜBERGABE – PEAKTRADE: URSPRÜNGLICHE GGE-FORMEL REKONSTRUIEREN
+
+AUFTRAG UND AKTUELLER FOKUS
+
+Frank sucht die konkrete mathematische Rechnung, die wir ursprünglich für den GGE ausgearbeitet haben: Welche Größen gehen ein, wie werden sie miteinander verrechnet und welcher Wert wird anschließend weitergegeben?
+
+Frank widerspricht ausdrücklich der Annahme, die vollständige Rechnung sei einfach „Volatilität × Marktpreis“. Diese Aussage darf nicht als fachlich richtiges Zielbild vorausgesetzt werden, nur weil sie heute im Code steht.
+
+Seine letzte Klarstellung:
+„Das ist einfach eine mathematische Rechnung, wie sich der zusammensetzt.“
+
+Die Untersuchung wurde zuletzt unnötig breit und unübersichtlich. Jetzt gezielt die ursprüngliche Herleitung, Berechnungsschritte und Festlegung suchen. Keine erneute allgemeine Architekturrekonstruktion starten, bevor diese konkrete Frage beantwortet ist.
+
+ARBEITSGRENZEN
+
+- Nur lesend untersuchen.
+- Keine Code- oder Konfigurationsänderungen, Wiederherstellung oder Aktivierung.
+- Keine Orders, Kapitalbewegungen oder Live-Trading.
+- Originale, Backups und uncommittete Arbeit erhalten.
+- Keine zusätzlichen Agenten ohne ausdrücklichen Auftrag.
+- Ergebnisse direkt und verständlich im Chat erklären. Frank möchte nicht erst Rekonstruktionsberichte oder Übersichten lesen müssen.
+- Historische Aussagen, implementierten Code und nachgewiesene Laufzeitwirkung getrennt behandeln.
+- Eine nicht gefundene Formel bedeutet nicht, dass sie nie existiert hat.
+
+WAS BISHER TATSÄCHLICH BELEGT IST
+
+1. Im untersuchten GGE-V1-Code steht:
+   D_gge = volatility_estimate × mark_price
+
+   Datei:
+   /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py
+
+   Der Output ist eine positive, endliche Basisgeometrie in Preiseinheiten. Er ist nicht automatisch der vollständige Dynamic Scope und erzeugt selbst keine Handelsentscheidung.
+
+2. Das ist ein Implementierungsbefund, kein Beweis dafür, dass die ursprünglich gewünschte mathematische Konstruktion vollständig oder richtig umgesetzt wurde.
+
+3. Die historische GGE-Arbeitsanweisung verlangte mehrere mathematische Kandidaten, genaue Formeln, Einheiten und eine begründete Auswahl. In den bisher gefundenen Auswahlartefakten ist aber nur die Kontrollformel σ × P konkret ausgeführt. Andere Kandidaten werden namentlich abgelehnt, ohne dort ihre vollständigen Formeln und einen vollständigen quantitativen Vergleich zu dokumentieren.
+
+4. Noch nicht belegt:
+   - die von Frank erinnerte vollständige ursprüngliche Herleitung;
+   - ob sie vor der GGE-V1-Arbeitsanweisung unter einem anderen Namen ausgearbeitet wurde;
+   - ob Teile davon später auf mehrere Berechnungsinstanzen verteilt wurden;
+   - ob die historische Umsetzung die ursprüngliche Absicht korrekt wiedergibt.
+
+WICHTIGSTE PRIMÄRQUELLEN FÜR DIE WEITERSUCHE
+
+A. Classic-Gespräch „Prompt für Berechnung“
+
+Chat-ID:
+6ac46e56-bd48-83ed-af68-42cdf9682ab7
+
+Lokale Kopie:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/gge-conversation-deep-search-2026-11-02/pages/6ac46e56-bd48-83ed-af68-42cdf9682ab7-001.json
+
+Enthält diese direkte Frage von Frank:
+„Okay, ich sehe schon. Wir müssen, glaube ich, uns nochmal einen kompletten Read-Only ziehen von der Scope-Berechnung. Oder weißt du ganz genau, wie die berechnet wird?“
+
+Später direkte Aussage von Frank:
+„Digger, genau so setzen wir das um, weil das wird sonst zu kompliziert, wenn wir den wegnehmen. Genau da setzen wir den hin, gleich hinter die Marktdaten. Ja, das kriegen wir doch in ein Package hin, oder?“
+
+Danach wurde ein GGE-Implementierungsauftrag erzeugt. Diese letzte Classic-Nachricht ist beim Abruf auf 20.000 Zeichen gekürzt. Frühere Kontextnachrichten dieses Gesprächs sind ungekürzt vorhanden.
+
+Sinnvoller nächster Schritt:
+Die ungekürzten Kontextnachrichten lesen und den gekürzten Auftrag mit dem vollständigen Cursor-Auftrag unter B abgleichen. Nicht behaupten, damit die fehlenden Classic-Originalbytes vollständig abgerufen zu haben.
+
+B. Vollständiger ursprünglicher Cursor-Arbeitsauftrag „GOLDEN GEOMETRY ENGINE V1“
+
+Original:
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/c29daed1-98d3-4991-a36e-9b8a053632aa/c29daed1-98d3-4991-a36e-9b8a053632aa.jsonl
+
+Gesicherter lesbarer Auftrag:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/gge-source-collection-2026-11-02/sources/gge-original-cursor-workpackage.txt
+
+Zeitlich: 6. Oktober 2026, etwa 06:13 Uhr Berlin.
+
+Wichtige Stellen:
+- Abschnitte 4–7: Input- und Einheitenverträge.
+- Abschnitt 8: Forderung nach 3–6 mathematischen Kandidaten.
+- Abschnitt 13: begründete Auswahl; kein Sieger ohne ausreichende Begründung.
+- σ × P wird als CURRENT CONTROL behandelt.
+- Weitere Forschungsrichtungen: robuste Bewegungsbereiche, mehrere Zeithorizonte, Spread-Untergrenze, Regime-Kombination.
+- Scope, Trailing und Layer-C-Verhältnisse sollten erhalten bleiben.
+
+Historische Artefaktextrakte:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/gge-source-collection-2026-11-02/historical-gge-design-artifact-excerpts.json
+
+Achtung: Teilweise sind das aufgezeichnete historische Schreib-/Tool-Anforderungen. Ihre Existenz allein beweist nicht die erfolgreiche Ausführung oder mathematische Validierung.
+
+C. Cursor-Rekonstruktion der damaligen vollständigen Scope-Berechnung
+
+Gesprächs-ID:
+4dbf8516-ecf2-4c44-9cd3-57cec074cdde
+
+Darin wird zwischen Rohgröße σ × P und dem später wirksamen, zustandsabhängigen Scope-Band unterschieden. Kann helfen, eine auf mehrere Stufen verteilte Rechnung zu erkennen. Nicht vorschnell mit der gesuchten ursprünglichen Formel gleichsetzen.
+
+D. Classic „Golden Geometry PrePR Validation“
+
+Chat-ID:
+6ac4761f-5ba4-83ed-b791-f453f6faab49
+
+Lokale Kopie im gleichen pages-Ordner.
+
+Wichtige Unterscheidung:
+- Feature-Volatilität: Standardabweichung einfacher Renditen, ddof=1, multipliziert mit √n.
+- G17-Volatilität: Standardabweichung logarithmischer Renditen, ddof=0.
+Unterschiedliche Größenordnungen allein beweisen keinen Fehler. Diese Varianten dürfen nicht stillschweigend gleichgesetzt werden.
+
+GIT-HISTORIE ZUM GGE
+
+Historisch untersuchter Hauptcheckout:
+/Users/frnkhrz/Peak_Trade
+
+Damals geprüfter HEAD:
+242b7974fc93f0bdb47706556101bd6f0c497414
+
+Vor weiterer Arbeit HEAD und lokale Änderungen erneut prüfen. Der Checkout hatte zahlreiche lokale Änderungen; nichts überschreiben.
+
+GGE-Dateihistorie:
+- 4e4711452fa2a3b6de86e6421a7e58ea2f25bd86:
+  Einführung des GGE mit σ × Marktpreis.
+- 1c6f43e89bf1ebdd6f5e2cb0843f8374d6f91363:
+  strengere typisierte Volatilitäts-/Identitätsvalidierung.
+- adf73d16e18986f71bec4205ddc162d045dd5712:
+  Rücknahme dieser zusätzlichen Validierungssemantik.
+- PR #7064, Merge:
+  dd4c23da1f3f519413fe8c9f04ddd0050ff3f026
+  dokumentiert σ × Marktpreis als ausgewählte Implementierung.
+
+Diese Historie belegt die technische Auswahl, nicht automatisch die Vollständigkeit der ursprünglichen fachlichen Rechnung.
+
+QUELLENBESTAND UND KORREKTUR ZUR GROSSEN DATEIZAHL
+
+Die Zahl 6.697 bezeichnet alle vorhandenen JSONL-Protokolldateien in zwei Cursor-Projektordnern – über sämtliche Themen hinweg. Sie bezeichnet NICHT 6.697 Gespräche über eine Formel.
+
+Suchordner:
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade-M1-5-CURRENT/agent-transcripts
+
+Alle 6.697 vorhandenen Dateien wurden textuell durchsucht:
+- 348.649 Textnachrichten untersucht;
+- 197 Dateien mit ausdrücklichen GGE-/Golden-Geometry-Treffern;
+- darin 884 passende Textnachrichten, einschließlich Wiederholungen, kopierter Aufträge und späterer Berichte.
+
+Das war eine Textsuche, keine vollständige semantische Prüfung sämtlicher Gespräche. Protokolldateien sind auch nicht automatisch einzigartige vollständige Chats.
+
+Suchergebnisse:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/gge-conversation-deep-search-2026-11-02
+
+Besonders:
+- cursor-exact-gge-messages.json
+- cursor-formula-expression-register.json
+- cursor-earlier-name-formula-excerpts.json
+- cursor-complete-local-coverage.json
+
+Das Formelregister enthält auch Fehl- bzw. Nebenfundstellen; nicht jede Zeile ist eine mathematische GGE-Formel.
+
+CLASSIC-ZUGRIFF UND GRENZEN
+
+- Es gibt laut Frank keinen vollständigen ChatGPT-Datenexport.
+- Classic-Gespräche konnten direkt über die Gesprächswerkzeuge gelesen werden.
+- Inventar: 3.368 Chats, davon 3.313 im PeakTrade-Projekt.
+- Bisher lokal gelesen: 381 unterschiedliche Chats insgesamt, davon 373 im PeakTrade-Projekt.
+- 2.940 PeakTrade-Projektchats waren noch ungelesen.
+- Lange Nachrichten werden beim Abruf pro Nachricht auf maximal 20.000 Zeichen gekürzt.
+- Die vollständige Classic-Suche ist NICHT abgeschlossen.
+- Breiter Abruf wurde nach Rate Limits und Franks berechtigter Nachfrage zum Umfang beendet.
+- Kein Suchprozess läuft weiter im Hintergrund.
+
+Frank verwendet Safari. Firefox war eine unbegründete Wahl des vorherigen Assistenten. Keine erneute Firefox-Anmeldung verlangen. Browserzugriff ist nur erforderlich, wenn eine konkrete Quellenlücke anders nicht geschlossen werden kann.
+
+EXTERNE UND REKONSTRUIERTE QUELLEN
+
+Zusätzlich wurden gezielt lesend untersucht:
+- /Volumes/M2DATA
+- /Volumes/PeakDATARecovery
+- Obsidian-/Rekonstruktionsmaterial.
+
+Recovery:
+4.388 unterschiedliche inventarisierte Markdown-Inhalte wurden durchsucht. 52 enthielten passende GGE-/Basisgeometrie-Bezüge.
+
+M2:
+29 gefundene GGE-Engine-Kopien hatten denselben Inhalt. Das ist keine unabhängige Bestätigung der fachlichen Richtigkeit und keine vollständige Erschließung aller historischen Daten.
+
+Bisher wurde dort keine andere eindeutig festgelegte produktive GGE-Formel identifiziert. Nicht als Beweis ihrer Nichtexistenz formulieren.
+
+Gesicherte Quellen und Register:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/gge-source-collection-2026-11-02
+
+WEITERER FACHLICHER KONTEXT – NUR SOWEIT FÜR DIE FORMEL NÖTIG
+
+- Double Play ist der übergeordnete Mechanismus; Dynamic Scope ist ein Bestandteil.
+- Die Nulllinie soll laut Frank den aktuellen Marktpreis des tatsächlich gehandelten Futures repräsentieren.
+- Historische BTC-Daten dürfen nicht ungeprüft als passende Basis des später verwendeten Futures behandelt werden.
+- Es gibt verschiedene Marktdatenkanäle und unterschiedliche Verwendungszwecke. Ticker/Marktpreis, Vorauswahl-Volatilität, G17-Volatilität und Scope-Berechnung nicht gleichsetzen.
+- Nach dem GGE folgen weitere Berechnungs-/Zustandsinstanzen. Basisgeometrie, wirksames Scope-Band und Handelsentscheidung sind verschiedene Dinge.
+- Layer C verwendet im untersuchten Code Bandabstände von 1,0 / 0,4 / 0,6. Auch das ersetzt nicht die gesuchte ursprüngliche Herleitung.
+- Frank erinnert: zweimal Short → Short; zweimal Long → Long; gemischt oder keine Bewegung → warten. Im Code existieren unterschiedliche Bestätigungsmechanismen. Nicht ohne Nachweis mit genau dieser Erinnerung gleichsetzen.
+- Simulationskapital ist von Frank ausdrücklich als produktive Grundlage abgelehnt worden; nicht ungefragt als Lösung einführen.
+
+LOKALE NAVIGATION
+
+Globales Arbeitsprofil und geltende AGENTS.md beachten.
+
+Obsidian:
+/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE
+Zunächst README.md und INDEX.md lesen, soweit benötigt.
+
+Quellenzugang:
+/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/2026-11-01/README.md
+
+Weitere Arbeitskopie:
+/Users/frnkhrz/Peak_Trade_M1_5_CURRENT
+
+EMPFOHLENER NÄCHSTER SCHRITT
+
+Mit dem konkreten Classic-Gespräch „Prompt für Berechnung“ und dem vollständigen Cursor-GGE-Auftrag beginnen. Daraus die tatsächlichen mathematischen Aussagen und deren Herkunft extrahieren. Anschließend nur die benötigten Vorgängergespräche bzw. Quellen verfolgen.
+
+Gesuchtes Ergebnis in einfacher Sprache:
+1. Das sind die Eingangsgrößen.
+2. Das sind die Rechenschritte.
+3. Das ist die ursprüngliche Quelle.
+4. Das wurde tatsächlich implementiert.
+5. Hier stimmen Herleitung und Code überein – oder hier fehlt bzw. widerspricht etwas.
+
+Nicht wieder mit Tausenden Dateien oder allgemeinen Architekturberichten antworten. Eine konkrete Rechnung liefern, sofern belegt; andernfalls die exakt fehlende Herleitungsstelle benennen.

@@ -556,6 +556,8 @@ def render_views(doc: dict) -> dict[str, str]:
 
 
 def write_views(views: dict[str, str]) -> None:
+    if (REPO_ROOT / "docs/system_atlas/source/documentation-cleanup.json").is_file():
+        raise RuntimeError("RETIRED_MAP: use docs/system_atlas/generated/SYSTEM_ATLAS.md")
     DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     for key, text in views.items():
         DERIVED_DIR.joinpath(DERIVED_VIEWS[key].name).write_text(text, encoding="utf-8")
@@ -747,6 +749,9 @@ def main(argv: list[str] | None = None) -> int:
     validate = sub.add_parser("validate")
     validate.add_argument("--diff-base", default=None)
     args = parser.parse_args(argv)
+    if (REPO_ROOT / "docs/system_atlas/source/documentation-cleanup.json").is_file():
+        print("RETIRED_MAP: use scripts/ops/validate_system_atlas_v1.py", file=sys.stderr)
+        return 2
     doc = _load_json(SOURCE_PATH)
     if args.command == "generate":
         views = render_views(doc)

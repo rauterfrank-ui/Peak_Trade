@@ -1,0 +1,9 @@
+### CON-2093 — Ursprüngliche Forschungsbausteine und seitliche Eingänge
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Identität, Experiment-/Failure-Memory, Robustheit, Comparison, Champion/Challenger, Reality Gap, Regime, Portfolio, Offline-Loop, Meta und Search haben getrennte Aufgaben. Phase-10-Loop orchestriert nicht automatisch Regime und Portfolio; Abschlussvoraussetzung im Master und tatsächlicher Aufruf sind verschiedene Aussagen. Belegte Binding-Adapter können echte Beobachtungen aufnehmen, erzeugen aber nicht selbst alle Messungen. Der erhaltene Observation-Pack vom 05.08. hat 299 rohdatengleiche Bars; Coverage blieb wegen offener Regime-Semantik missing:299. Vollständige Materialisierung bedeutet daher keine vollständige fachliche Klassifikation oder angeschlossene Kalibrierung.
+
+**Grenze:** Regime-Metrik ist kein Runtime-Bull/Bear-Switch. Portfolio-Learning, Equal-Weight-Allokation und Juli-Sleeve-Portfolio sind keine automatische Mehrpositionsfreigabe.
+
+Quellen: EVI-2279, EVI-2283, EVI-2285, EVI-2286, EVI-2287, EVI-2288, EVI-2282, EVI-2262, EVI-2264.

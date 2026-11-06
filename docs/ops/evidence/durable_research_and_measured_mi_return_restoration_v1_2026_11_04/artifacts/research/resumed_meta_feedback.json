@@ -1,0 +1,567 @@
+{
+  "schema_version": "canonical_research_result_meta_search_feedback_v1",
+  "meta_input_binding": {
+    "schema_version": "canonical_research_result_to_meta_input_v1",
+    "source_bindings": [
+      {
+        "experiment_id": "23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e",
+        "search_identity": "57e63e887633df025a5838d9d90a20206a0381ad86799f069261877b2c233678",
+        "search_content_sha256": "fec6099b83dc203b712d44627caee71ab2b9a5702afa35de4db6041552e55340",
+        "research_loop_identity": "8157e5c06ef314ea52974dea6c5acac14dab18efee1e8f74ae2d157cf5be55cc",
+        "research_loop_content_sha256": "a2a1abb01a4d9f0f4e028a5245257f6c962b8519829a7fbcb8ca1fa90d62f514",
+        "observation_binding": {
+          "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+          "bounded_auto_allowed": false,
+          "experiment_id": "23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e",
+          "identity_digest": "d84fbce0f5b4d9361af4b56c8df6c2163e8719d3bb90f169df316037147ffb3e",
+          "identity_reinterpreted": false,
+          "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+          "persist": {
+            "experiment_record_id": "23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e"
+          },
+          "promotion_apply_allowed": false,
+          "runtime_authority_effect": false,
+          "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+          "status": "BOUND"
+        },
+        "robustness_content_sha256": "af115d1a28ca3352b29a293a6d405b00a91298e7d81d4b5f310ec1cf3021aa2b",
+        "comparison_identity": "cfb889929dfebec750c323294e3014a40e85f143119979d9e56b50fb88e4c115"
+      }
+    ],
+    "meta_learning_record": {
+      "autonomous_champion_swap": false,
+      "autonomous_promotion": false,
+      "champion_experiment_id": null,
+      "comparable_cohorts": [
+        {
+          "cohort_id": "2afa0d094d5cdc0e1be1e5997e84069bc9f499f8cc0240f69401bdacfd2dcb87",
+          "experiment_ids": [
+            "23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e"
+          ]
+        }
+      ],
+      "comparison_pair_results": [],
+      "completeness": "COMPLETE",
+      "correlation_is_not_causality": true,
+      "created_at": "2026-08-18T22:00:00Z",
+      "digest_algorithm": "sha256",
+      "evaluation_policy": {
+        "evaluation_policy_version": "canonical_meta_learning_policy_v1",
+        "min_parameter_stability": 0.5,
+        "min_recurrence_count": 2,
+        "min_sample_size_associative": 8,
+        "min_sample_size_descriptive": 3
+      },
+      "historical_record_mutation": false,
+      "input_lineage": {
+        "contract_versions": {
+          "comparison_ssot": "canonical_comparison_ssot_v1",
+          "experiment_identity": "canonical_experiment_identity_v1",
+          "experiment_memory": "canonical_experiment_memory_v1",
+          "failure_memory": "canonical_failure_memory_v1",
+          "meta_learning": "canonical_meta_learning_v1",
+          "metric_definitions": "canonical_robustness_metrics_v1",
+          "reality_gap_store": "canonical_reality_gap_store_v1",
+          "robustness_suite": "canonical_robustness_suite_v1"
+        },
+        "experiment_ids": [
+          "23ce252fb4e4880bf6bb0a4172725e55a74b187ad85284fede94f450121ae51e"
+        ],
+        "failure_record_ids": [
+          "d8f0c67706c685bc5b41e190883c7c2ed228e08e648891c4b86511084874001b"
+        ],
+        "identity_digests": [
+          "d84fbce0f5b4d9361af4b56c8df6c2163e8719d3bb90f169df316037147ffb3e"
+        ],
+        "reality_gap_record_ids": [
+          "706fd93cb1acc4e0ef6bb365d2ad4f738c5ee2669a5efb66d082e4bf21df87fb"
+        ]
+      },
+      "learning_may_autonomously_replace_core_logic": false,
+      "meta_learning_authority": "RESEARCH_ONLY",
+      "meta_learning_can_arm": false,
+      "meta_learning_can_authorize_canary": false,
+      "meta_learning_can_create_confirm_token": false,
+      "meta_learning_can_enable": false,
+      "meta_learning_can_fund": false,
+      "meta_learning_can_increase_leverage": false,
+      "meta_learning_can_increase_risk": false,
+      "meta_learning_can_mutate_live_config": false,
+      "meta_learning_can_promote": false,
+      "meta_learning_can_promote_to_live": false,
+      "meta_learning_can_submit_order": false,
+      "meta_learning_can_use_confirm_token": false,
+      "meta_learning_can_write_live_config": false,
+      "meta_learning_domain": "peak_trade.canonical_meta_learning.v1",
+      "meta_learning_has_runtime_authority": false,
+      "meta_learning_present": true,
+      "no_lookahead": true,
+      "no_silent_zero_default": true,
+      "overall_status": "META_LEARNING_COMPLETE",
+      "phase_12_started": false,
+      "productive_config_mutation": false,
+      "promotion_authority": "NONE",
+      "questions": [
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 1,
+          "question_id": "STRATEGY_FAMILY_OOS_SURVIVAL",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 1,
+          "question_id": "SEARCH_SPACE_FALSE_POSITIVES",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_SAMPLE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "ROBUSTNESS_REALITY_GAP_ASSOCIATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 1,
+          "question_id": "BACKTEST_METRIC_PREDICTIVE_ASSOCIATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_SAMPLE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "REGIME_RECURRING_FAILURE_MODES",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 1,
+          "question_id": "PARAMETER_INSTABILITY",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 0
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_SAMPLE",
+          "findings": [],
+          "missing_evidence_count": 0,
+          "question_id": "HYPOTHESIS_KIND_POOR_RESULTS",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        },
+        {
+          "causal_claim": false,
+          "claim_strength": "NONE",
+          "claim_type": "NONE",
+          "comparable_sample_size": 1,
+          "correlation_is_not_causality": true,
+          "evidence_status": "INSUFFICIENT_EVIDENCE",
+          "findings": [],
+          "missing_evidence_count": 1,
+          "question_id": "RESEARCH_PATH_INFORMATION_GAIN",
+          "rejected_comparability_count": 0,
+          "research_proposals": [],
+          "sample_size": 1
+        }
+      ],
+      "ranked_experiment_ids": [],
+      "research_proposals": [],
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_meta_learning_v1",
+      "self_learning_not_self_authorizing": true,
+      "self_learning_self_authorizing_separation": true,
+      "meta_learning_identity": "e2ea7d033751b1d001616669d7d7f30211f79100442298f0d09219e6b2b404d6",
+      "integrity": {
+        "content_sha256": "486b013d6b3037b04626e9b54751d3541627611b212ecda9cf3fa1ada7ec0b75"
+      }
+    },
+    "productive_apply_authorized": false,
+    "research_execution_performed": false,
+    "missing_parameter_stability_inferred": false,
+    "missing_later_outcome_inferred": false,
+    "content_digest": "84d055a695fe1943361d8e92da1b401d5d9fdd5b5bd54d684c5f373c4da75027"
+  },
+  "next_search_record": {
+    "advanced_search_authority": "RESEARCH_ONLY",
+    "advanced_search_domain": "peak_trade.canonical_advanced_search.v1",
+    "advanced_search_present": true,
+    "autonomous_champion_swap": false,
+    "autonomous_promotion": false,
+    "best_sharpe_is_not_auto_winner": true,
+    "budget": 1,
+    "candidates": [
+      {
+        "candidate_ref": "a0e311e9abc53d2ad2b911cdda1b0edf75dc80c2d34524a232c78619d8fcdf3f",
+        "duplicate_assessment": {
+          "actions": [
+            "NONE"
+          ],
+          "automatic_research_ban": false,
+          "detected": false,
+          "duplicate_detected_is_not_automatic_research_ban": true,
+          "failure_memory_has_runtime_authority": false,
+          "hypothesis_fingerprint": "c398ef7f5f2d12f78fb049708e6c0b5a66cee0fb5e3c2e48a72daec7456befc7",
+          "matching_failure_record_ids": [],
+          "matching_record_count": 0,
+          "previously_rejected": false,
+          "same_failure_mode_known": false,
+          "same_parameter_region_repeatedly_unstable": false,
+          "same_parameter_region_seen": false
+        },
+        "experiment_id": "0a09ebd7d1b803c34746abf6ce39f02ad4916c8a4564fa476d095b442f306767",
+        "experiment_identity": {
+          "completeness": "COMPLETE",
+          "cost_model_digest": "6077ba40ddf171eff09a060c500216a9917558661d9aaa657202e9adef7e92bb",
+          "dataset_digest": "9c8c8bc4ac5d8e784ffedff0fa05f1bbf1101c75c8ab25adf383aba520d43dbd",
+          "digest_algorithm": "sha256",
+          "environment": {
+            "python_implementation": "CPython",
+            "python_version": "3.11.15",
+            "identity_schema_version": "canonical_experiment_identity_v1"
+          },
+          "environment_digest": "dcb60b4440031ac8a734625cbe844760cbc6b33b3496b9d533ff8547cfb57e16",
+          "experiment_identity_has_runtime_authority": false,
+          "feature_pipeline_digest": "fe185f983feba22be58167d0bc193304f4dba75a2472d4e9d47d3366a24fe687",
+          "fee_model_digest": "cd980ed553970d7ebd0f4e771176f0e1469a3f443be6fe6db4027045fcc6d783",
+          "funding_model_digest": "73d24fc13bd83f78fef23903d701ca914eed13818f0d652378af6752d3785602",
+          "git_sha": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+          "identity_domain": "peak_trade.canonical_experiment_identity.v1",
+          "parent_lineage": {
+            "kind": "ROOT",
+            "parent_lineage_ref": null
+          },
+          "portfolio_digest": "af3c6fbee46d400a9180e35f370055d6975e21685a880b96bf8637f6e49454c5",
+          "risk_policy_digest": "4972bfbc89d2c13e7fe97c01da423a7d1052a6fcefc450639fc76edae3877819",
+          "runtime_authority_impact": "NONE",
+          "schema_version": "canonical_experiment_identity_v1",
+          "seed": 56,
+          "slippage_model_digest": "197ff2301ee357d8760d0d037891d2627cfdb9fd2a71aeac189457a0c8eddd55",
+          "split_policy_digest": "51412c550941119b13432ad85ad129304d7546b403557bcf604ff136f3a73461",
+          "strategy_identity": "ma_crossover.v1",
+          "strategy_identity_digest": "a466f994803a7c90f1265bc257d8c929756e2a433273a97edcc077c461bdbf56",
+          "strategy_params_digest": "772fdc1cb9ff606638444c67599ff8f23b1450d80be16df55500fad968393bff",
+          "bull_bear_logic_digest": "a7961d40b8fa14eed1069ebbc19e7781326a91e4c30c17c657d488d99ff17226",
+          "canonical_trading_decision_core_bound": true,
+          "double_play_logic_digest": "dc8370ee81f5ecc708f98b1f2f769f7792eedc124a411f46932ad8aa76ccb620",
+          "entry_position_exit_logic_digest": "3f3ce1bc676a4b74f9f65c1b66aeaf07b1e6118c7c585aa3c4d3854f55af6fe1",
+          "learning_may_autonomously_replace_core_logic": false,
+          "learning_may_research_core_logic_changes": true,
+          "market_context_contract_digest": "f8bc8342d6223653ec378f9e09993eb2117987b10cb097610a7d1c33ade82f4b",
+          "self_learning_must_learn_from_canonical_trading_decision_path": true,
+          "state_switch_logic_digest": "1f84a18718c09ca583e7652f303f0198efda5cc426347755cc927b29e320b23f",
+          "suitability_logic_digest": "61f9fabccd3b1f8808f6a29466a5a0e0fdbc7690a57bb97f20403a03173acf14",
+          "survival_logic_digest": "c2bba7c6d2faec84559b90fb326e0e0a6f4028a95855442b37e76d49d5e985db",
+          "trading_decision_core_digest": "cf13c2b4001d5ac53dc77cdfe5816275e4aee3829edfa0aa1d088106836ff7fa",
+          "working_tree_status": "CLEAN",
+          "identity_digest": "892692f6a18f4a0816433ca59e3ef0a7d715d4dd4251aeb1a78209af17710167",
+          "integrity": {
+            "content_sha256": "140f569b8ca4da0ca1cecff9237cd388edd5bf448ab38700241f81bf384409e9"
+          }
+        },
+        "failure_signals": {
+          "failure_classes": [],
+          "known_failure": false,
+          "known_failure_class": false,
+          "known_reality_gap_failure": false,
+          "known_rejected_parameter_region": false,
+          "known_robustness_failure": false,
+          "matching_failure_record_ids": [],
+          "matching_reality_gap_record_ids": [],
+          "reason": "no known failure"
+        },
+        "hypothesis_fingerprint": "c398ef7f5f2d12f78fb049708e6c0b5a66cee0fb5e3c2e48a72daec7456befc7",
+        "hypothesis_id": "hyp.ma-crossover.v1.9c0d8de97d1c",
+        "hypothesis_kind": "trend_following",
+        "matched_meta_learning_proposal_ids": [],
+        "offline_experiment_request": {
+          "executed": false,
+          "experiment_id": "0a09ebd7d1b803c34746abf6ce39f02ad4916c8a4564fa476d095b442f306767",
+          "identity_digest": "892692f6a18f4a0816433ca59e3ef0a7d715d4dd4251aeb1a78209af17710167",
+          "loop_started": false,
+          "parameter_region": {
+            "fast_window": 10,
+            "slow_window": 75
+          },
+          "regime": "high_vol",
+          "request_kind": "OFFLINE_EXPERIMENT_REQUEST",
+          "schema_version": "canonical_automated_offline_research_loop_v1",
+          "selected_hypothesis_id": "hyp.ma-crossover.v1.9c0d8de97d1c"
+        },
+        "parameter_region": {
+          "fast_window": 10,
+          "slow_window": 75
+        },
+        "reason": "eligible research candidate",
+        "search_priority_score": 0,
+        "search_score_is_not_canonical_ranking": true,
+        "search_space_id": "native.session.v1",
+        "status": "PROPOSED",
+        "strategy_family": "ma_crossover"
+      }
+    ],
+    "champion_experiment_id": null,
+    "completeness": "COMPLETE",
+    "constraint": {
+      "cannot_arm": true,
+      "cannot_authorize_canary": true,
+      "cannot_create_or_use_confirm_token": true,
+      "cannot_enable": true,
+      "cannot_fund": true,
+      "cannot_increase_leverage": true,
+      "cannot_increase_risk": true,
+      "cannot_promote": true,
+      "cannot_submit_order": true,
+      "cannot_write_live_config": true,
+      "cannot_write_testnet_config": true,
+      "constraint_id": "SEARCH_AUTHORITY_AND_COST_INVARIANT_V1",
+      "constraint_version": "canonical_advanced_search_constraint_v1",
+      "search_score_is_not_canonical_ranking": true
+    },
+    "created_at": "2026-08-18T22:30:00Z",
+    "digest_algorithm": "sha256",
+    "duplicate_assessments": [
+      {
+        "actions": [
+          "NONE"
+        ],
+        "automatic_research_ban": false,
+        "detected": false,
+        "duplicate_detected_is_not_automatic_research_ban": true,
+        "failure_memory_has_runtime_authority": false,
+        "hypothesis_fingerprint": "c398ef7f5f2d12f78fb049708e6c0b5a66cee0fb5e3c2e48a72daec7456befc7",
+        "matching_failure_record_ids": [],
+        "matching_record_count": 0,
+        "previously_rejected": false,
+        "same_failure_mode_known": false,
+        "same_parameter_region_repeatedly_unstable": false,
+        "same_parameter_region_seen": false
+      }
+    ],
+    "historical_record_mutation": false,
+    "hypotheses": [
+      {
+        "experiment_id": "0a09ebd7d1b803c34746abf6ce39f02ad4916c8a4564fa476d095b442f306767",
+        "hypothesis_fingerprint": "c398ef7f5f2d12f78fb049708e6c0b5a66cee0fb5e3c2e48a72daec7456befc7",
+        "hypothesis_id": "hyp.ma-crossover.v1.9c0d8de97d1c",
+        "hypothesis_kind": "trend_following",
+        "identity_digest": "892692f6a18f4a0816433ca59e3ef0a7d715d4dd4251aeb1a78209af17710167",
+        "parameter_region": {
+          "fast_window": 10,
+          "slow_window": 75
+        },
+        "status": "PROPOSED"
+      }
+    ],
+    "input_lineage": {
+      "contract_versions": {
+        "advanced_search": "canonical_advanced_search_v1",
+        "experiment_identity": "canonical_experiment_identity_v1",
+        "experiment_memory": "canonical_experiment_memory_v1",
+        "failure_memory": "canonical_failure_memory_v1",
+        "meta_learning": "canonical_meta_learning_v1",
+        "offline_research_loop": "canonical_automated_offline_research_loop_v1",
+        "reality_gap_store": "canonical_reality_gap_store_v1",
+        "robustness_suite": "canonical_robustness_suite_v1"
+      },
+      "failure_record_ids": [
+        "8132b18fe16f570b2bfb5f68c040c88fbb6cdf9658c987933f121421126862c1",
+        "d8f0c67706c685bc5b41e190883c7c2ed228e08e648891c4b86511084874001b"
+      ],
+      "generated_candidate_refs": [
+        "a0e311e9abc53d2ad2b911cdda1b0edf75dc80c2d34524a232c78619d8fcdf3f"
+      ],
+      "identity_digest": "2034b728021f2ee6ded1d027a8b3c302bce92e7f156c2b01f6aff447973fd23c",
+      "meta_learning_identity": null,
+      "parent_experiment_id": null,
+      "parent_hypothesis_id": "hyp.ma-crossover.v1",
+      "reality_gap_record_ids": [
+        "706fd93cb1acc4e0ef6bb365d2ad4f738c5ee2669a5efb66d082e4bf21df87fb",
+        "91b8b865ef5b5401e8d1a2089701bcaa2f0a86f6e5a4359a8a9c5d42c393348c"
+      ]
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "objective": {
+      "objective_id": "SEARCH_PRIORITY_INFORMATION_GAIN_V1",
+      "objective_version": "canonical_advanced_search_objective_v1",
+      "search_score_is_not_canonical_ranking": true,
+      "sharpe_is_not_auto_winner": true
+    },
+    "offline_experiment_requests": [
+      {
+        "executed": false,
+        "experiment_id": "0a09ebd7d1b803c34746abf6ce39f02ad4916c8a4564fa476d095b442f306767",
+        "identity_digest": "892692f6a18f4a0816433ca59e3ef0a7d715d4dd4251aeb1a78209af17710167",
+        "loop_started": false,
+        "parameter_region": {
+          "fast_window": 10,
+          "slow_window": 75
+        },
+        "regime": "high_vol",
+        "request_kind": "OFFLINE_EXPERIMENT_REQUEST",
+        "schema_version": "canonical_automated_offline_research_loop_v1",
+        "selected_hypothesis_id": "hyp.ma-crossover.v1.9c0d8de97d1c"
+      }
+    ],
+    "overall_status": "SEARCH_COMPLETE",
+    "parameter_region_proposals": [
+      {
+        "hypothesis_id": "hyp.ma-crossover.v1.9c0d8de97d1c",
+        "parameter_region": {
+          "fast_window": 10,
+          "slow_window": 75
+        },
+        "status": "PROPOSED"
+      }
+    ],
+    "phase_13_started": false,
+    "productive_config_mutation": false,
+    "promotion_authority": "NONE",
+    "ranked_experiment_ids": [],
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_advanced_search_v1",
+    "search_can_arm": false,
+    "search_can_authorize_canary": false,
+    "search_can_autonomously_replace_core_logic": false,
+    "search_can_create_confirm_token": false,
+    "search_can_create_hypotheses": true,
+    "search_can_create_research_candidates": true,
+    "search_can_enable": false,
+    "search_can_fund": false,
+    "search_can_increase_leverage": false,
+    "search_can_increase_risk": false,
+    "search_can_mutate_live_config": false,
+    "search_can_promote": false,
+    "search_can_promote_to_live": false,
+    "search_can_propose_parameter_regions": true,
+    "search_can_replace_productive_champion": false,
+    "search_can_request_offline_experiments": true,
+    "search_can_submit_order": false,
+    "search_can_use_confirm_token": false,
+    "search_can_use_meta_learning_signals": true,
+    "search_can_write_live_config": false,
+    "search_can_write_testnet_config": false,
+    "search_evidence": {
+      "candidate_count": 1,
+      "deprioritized_known_failure_count": 0,
+      "proposed_count": 1,
+      "rejected_constraint_count": 0,
+      "rejected_duplicate_count": 0,
+      "rejected_identity_count": 0,
+      "search_score_is_not_canonical_ranking": true
+    },
+    "search_has_runtime_authority": false,
+    "search_is_authority_mechanism": false,
+    "search_method": "BOUNDED_DETERMINISTIC_CONSTRAINED_REGION_SEARCH",
+    "search_method_version": "canonical_advanced_search_method_v1",
+    "search_space": {
+      "axes": [
+        {
+          "name": "fast_window",
+          "values": [
+            10
+          ]
+        },
+        {
+          "name": "slow_window",
+          "values": [
+            75
+          ]
+        }
+      ],
+      "search_space_id": "native.session.v1"
+    },
+    "search_space_digest": "ed81421893d8e13fa64760f43991b4871ebff15d83b9af6462fa386fc2aa7173",
+    "seed": 56,
+    "self_learning_not_self_authorizing": true,
+    "self_learning_self_authorizing_separation": true,
+    "supported_search_mechanisms": [
+      "BOUNDED_DETERMINISTIC_CONSTRAINED_REGION_SEARCH"
+    ],
+    "search_identity": "092fc68c7d30b4199f6f4d2a95555a15e713e50a8d6287937bf501b95bb9686a",
+    "integrity": {
+      "content_sha256": "c7ac5668185d33edcf641176c02e784e2bad2899435db5b6676d3b35291f687c"
+    }
+  },
+  "experiment_execution_performed": false,
+  "productive_apply_authorized": false,
+  "content_digest": "a2c68c3e4b42289d693fef654cfba681557112acf9f85c014dedb275df7dc602"
+}

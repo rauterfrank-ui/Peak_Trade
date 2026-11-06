@@ -78,6 +78,8 @@ FAILURE_STATE_ROOT = "LANE_ASSIGNMENT_STATE_ROOT_MISMATCH"
 FAILURE_PARTIAL_WRITE = "LANE_ASSIGNMENT_PARTIAL_WRITE"
 FAILURE_INVALID_RECOVERY_MODE = "LANE_ASSIGNMENT_INVALID_RECOVERY_MODE"
 FAILURE_AUTHORITY = "LANE_ASSIGNMENT_AUTHORITY_CLAIM_FORBIDDEN"
+PENDING_SELECTION_PUBLICATION = "selection_publication_pending_v1.json"
+FAILURE_PUBLICATION_PENDING = "LANE_SELECTION_PUBLICATION_INCOMPLETE"
 
 
 class DurableLaneAssignmentPersistenceError(ValueError):
@@ -117,6 +119,113 @@ def _atomic_write_text(path: Path, text: str) -> None:
 
 def checkpoint_root_for(topology_state_root_base: Path | str) -> Path:
     return Path(lane_state_root_key(topology_state_root_base)) / CHECKPOINT_DIRNAME
+
+
+def _assert_publication_writer_v1(
+    base: Path | str, writer: DurableLaneAssignmentSingleWriterV1
+) -> Path:
+    writer.assert_held()
+    root = checkpoint_root_for(base)
+    if lane_state_root_key(root) != lane_state_root_key(writer.state_root):
+        _fail(FAILURE_STATE_ROOT, "publication_writer")
+    return root
+
+
+def begin_selection_publication_v1(
+    *,
+    topology: IsolatedLaneTopologyV1,
+    writer: DurableLaneAssignmentSingleWriterV1,
+    selection_digests: Mapping[str, str],
+    recovery_plan: Mapping[str, Any] | None = None,
+    previous_topology_digest: str | None = None,
+) -> str:
+    """Crash barrier in the existing checkpoint owner; never a selection decision."""
+    root = _assert_publication_writer_v1(topology.topology_state_root_base, writer)
+    path = root / PENDING_SELECTION_PUBLICATION
+    if path.exists():
+        _fail(FAILURE_PUBLICATION_PENDING, str(path))
+    transition_id = uuid.uuid4().hex
+    payload = {
+        "transition_id": transition_id,
+        "topology_digest": topology_integrity_digest_v1(topology.to_dict()),
+        "selection_digests": dict(selection_digests),
+        "topology": topology.to_dict(),
+        "recovery_plan": dict(recovery_plan or {}),
+        "previous_topology_digest": previous_topology_digest,
+    }
+    payload["receipt_digest"] = sha256_hex(canonical_json_dumps(payload))
+    _atomic_write_text(path, json.dumps(payload, sort_keys=True))
+    return transition_id
+
+
+def load_pending_selection_publication_v1(base: Path | str) -> dict[str, Any] | None:
+    path = checkpoint_root_for(base) / PENDING_SELECTION_PUBLICATION
+    if not path.exists():
+        return None
+    receipt = _load_json_object(path, missing_code=FAILURE_PUBLICATION_PENDING)
+    material = {key: value for key, value in receipt.items() if key != "receipt_digest"}
+    if receipt.get("receipt_digest") != sha256_hex(canonical_json_dumps(material)):
+        _fail(FAILURE_PUBLICATION_PENDING, "receipt_integrity")
+    return receipt
+
+
+def validate_pending_publication_source_v1(base: Path | str, receipt: Mapping[str, Any]) -> None:
+    """An interrupted write can contain only its recorded old or intended topology."""
+    path = checkpoint_path(checkpoint_root_for(base))
+    if not path.exists():
+        if receipt.get("previous_topology_digest") is not None:
+            _fail(FAILURE_PUBLICATION_PENDING, "previous_checkpoint_missing")
+        return
+    envelope = _load_json_object(path, missing_code=FAILURE_PUBLICATION_PENDING)
+    payload = envelope.get("topology")
+    if not isinstance(payload, Mapping):
+        _fail(FAILURE_PUBLICATION_PENDING, "unknown_checkpoint")
+    digest = topology_integrity_digest_v1(payload)
+    if envelope.get("integrity_digest") != digest or digest not in {
+        receipt.get("previous_topology_digest"),
+        receipt.get("topology_digest"),
+    }:
+        _fail(FAILURE_PUBLICATION_PENDING, "unknown_checkpoint")
+
+
+def finish_selection_publication_v1(
+    *,
+    topology: IsolatedLaneTopologyV1,
+    writer: DurableLaneAssignmentSingleWriterV1,
+    transition_id: str,
+) -> None:
+    root = _assert_publication_writer_v1(topology.topology_state_root_base, writer)
+    receipt = load_pending_selection_publication_v1(topology.topology_state_root_base)
+    if receipt is None:
+        _fail(FAILURE_PUBLICATION_PENDING, "missing_receipt")
+    recovered = _recover_durable_lane_assignment_v1(
+        topology_state_root_base=topology.topology_state_root_base,
+        recovery_mode=RECOVERY_MODE_RESTART,
+    )
+    if (
+        receipt.get("transition_id") != transition_id
+        or receipt.get("topology_digest") != topology_integrity_digest_v1(topology.to_dict())
+        or recovered is None
+        or recovered.to_dict() != topology.to_dict()
+    ):
+        _fail(FAILURE_PUBLICATION_PENDING, "readback")
+    from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+        load_and_validate_selection_v1,
+    )
+
+    slots = {slot.lane_id: slot for slot in topology.occupied_slots()}
+    if set(receipt.get("selection_digests", {})) != set(slots):
+        _fail(FAILURE_PUBLICATION_PENDING, "selection_set")
+    for lane, slot in slots.items():
+        loaded = load_and_validate_selection_v1(Path(slot.lane_state_root))
+        if (
+            not loaded.ok
+            or loaded.selection is None
+            or loaded.selection.instrument_id != slot.canonical_instrument_id
+            or loaded.selection.integrity_digest != receipt["selection_digests"][lane]
+        ):
+            _fail(FAILURE_PUBLICATION_PENDING, f"selection_readback:{lane}")
+    (root / PENDING_SELECTION_PUBLICATION).unlink()
 
 
 def topology_integrity_digest_v1(topology_payload: Mapping[str, Any]) -> str:
@@ -320,6 +429,7 @@ def persist_durable_lane_assignment_v1(
     simulate_partial_write: bool = False,
     simulate_write_failure: bool = False,
     simulate_crash_after_checkpoint_before_marker: bool = False,
+    selection_publication_id: str | None = None,
 ) -> dict[str, Any]:
     """Record an already-governed topology. Does not compute the next topology."""
     _assert_custody_only()
@@ -331,6 +441,17 @@ def persist_durable_lane_assignment_v1(
         _fail(FAILURE_PARTIAL_WRITE, "SIMULATED_WRITE_FAILURE")
     validated = _validate_produced_topology(topology)
     root = checkpoint_root_for(validated.topology_state_root_base)
+    pending = root / PENDING_SELECTION_PUBLICATION
+    if pending.exists():
+        receipt = load_pending_selection_publication_v1(validated.topology_state_root_base)
+        if (
+            selection_publication_id is None
+            or receipt.get("transition_id") != selection_publication_id
+            or receipt.get("topology_digest") != topology_integrity_digest_v1(validated.to_dict())
+        ):
+            _fail(FAILURE_PUBLICATION_PENDING, str(pending))
+    elif selection_publication_id is not None:
+        _fail(FAILURE_PUBLICATION_PENDING, "missing_barrier")
     expected_writer_root = Path(lane_state_root_key(writer.state_root))
     if Path(lane_state_root_key(root)) != expected_writer_root:
         _fail(FAILURE_STATE_ROOT, "writer_state_root")
@@ -354,7 +475,7 @@ def persist_durable_lane_assignment_v1(
         for name in (CHECKPOINT_FILENAME, COMMIT_MARKER_FILENAME, MANIFEST_FILENAME):
             _atomic_write_text(root / name, (staging / name).read_text(encoding="utf-8"))
         verify_manifest(root)
-        recovered = recover_durable_lane_assignment_v1(
+        recovered = _recover_durable_lane_assignment_v1(
             topology_state_root_base=validated.topology_state_root_base,
             recovery_mode=RECOVERY_MODE_RESTART,
             expected_universe_snapshot_id=validated.universe_snapshot_id,
@@ -375,6 +496,26 @@ def persist_durable_lane_assignment_v1(
 
 
 def recover_durable_lane_assignment_v1(
+    *,
+    topology_state_root_base: Path | str,
+    recovery_mode: str,
+    expected_universe_snapshot_id: str | None = None,
+    expected_ranking_snapshot_id: str | None = None,
+    expected_ranking_integrity_digest: str | None = None,
+) -> Optional[IsolatedLaneTopologyV1]:
+    pending = checkpoint_root_for(topology_state_root_base) / PENDING_SELECTION_PUBLICATION
+    if pending.exists():
+        _fail(FAILURE_PUBLICATION_PENDING, str(pending))
+    return _recover_durable_lane_assignment_v1(
+        topology_state_root_base=topology_state_root_base,
+        recovery_mode=recovery_mode,
+        expected_universe_snapshot_id=expected_universe_snapshot_id,
+        expected_ranking_snapshot_id=expected_ranking_snapshot_id,
+        expected_ranking_integrity_digest=expected_ranking_integrity_digest,
+    )
+
+
+def _recover_durable_lane_assignment_v1(
     *,
     topology_state_root_base: Path | str,
     recovery_mode: str,

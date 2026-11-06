@@ -496,7 +496,7 @@ def test_negative_synthetic_spot_instrument() -> None:
     assert intent_mod.REASON_NON_FUTURES_INSTRUMENT in result.reason_codes
 
 
-def test_negative_bitcoin_direction() -> None:
+def test_bitcoin_asset_uses_common_order_intent_checks() -> None:
     result = intent_mod.build_canonical_order_intent_v1(
         _build_input(
             sizing_overrides={
@@ -505,8 +505,8 @@ def test_negative_bitcoin_direction() -> None:
             }
         )
     )
-    assert result.outcome is intent_mod.CanonicalOrderIntentBuildOutcome.BLOCKED
-    assert intent_mod.REASON_BITCOIN_SPECIFIC_DIRECTION in result.reason_codes
+    assert result.outcome is intent_mod.CanonicalOrderIntentBuildOutcome.PASS
+    assert intent_mod.REASON_BITCOIN_SPECIFIC_DIRECTION not in result.reason_codes
 
 
 def test_negative_direct_adapter_cast() -> None:
@@ -947,5 +947,5 @@ def test_transform_22_futures_only_and_no_bitcoin_direction() -> None:
             instrument_metadata_ref="btc_perp_metadata_v1",
         )
     )
-    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
-    assert intent_mod.REASON_BITCOIN_SPECIFIC_DIRECTION in result.reason_codes
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert intent_mod.REASON_BITCOIN_SPECIFIC_DIRECTION not in result.reason_codes

@@ -1,0 +1,15 @@
+{
+  "current_bytes_match_pinned_git": true,
+  "files": {
+    "src/trading/master_v2/canonical_scope_initialization_v1.py": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58",
+    "src/trading/master_v2/double_play_state.py": "a4946a56874db5ed86c66cc0bac16f7a6b4b5d7e71eab04ed016f5933209569e",
+    "src/trading/master_v2/golden_geometry_engine_v1.py": "30a4f2b9baf47cc8faa1c99d62f9021e51318b4dee7229ed87e8a6ff1db03ffc",
+    "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py": "9ea2a9978d902b6b962c40ec14f92e3c927a59684c78e6b53a5f38857602dac3"
+  },
+  "limits": "Source preservation only; no new scope-algorithm functional certification or new scope tests.",
+  "no_change": true,
+  "rechecked_at_source_commit": "e938ddb3f5c3d1ecf797f2c27a8ceba5160097e2",
+  "scope_implementation_change_authorized_by_this_assessment": false,
+  "source_commit": "3a01199438acfe9050e5f3a6a1eafd032b6abaa5",
+  "working_scope_accepted_as_existing_functional_user_context": true
+}

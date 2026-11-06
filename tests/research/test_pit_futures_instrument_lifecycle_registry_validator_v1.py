@@ -201,13 +201,13 @@ def test_validator_rejects_spot_at_normalization() -> None:
     assert LifecycleRegistryErrorCode.SPOT_INSTRUMENT_BLOCKED.value in result.error_codes
 
 
-def test_validator_rejects_bitcoin_on_manual_snapshot() -> None:
-    interval = _interval()
-    bad = dataclasses.replace(interval, base_asset="BTC")
-    bad = dataclasses.replace(bad, record_digest=compute_interval_digest(bad))
-    snap = _manual_snapshot(bad)
-    result = validate_pit_futures_instrument_lifecycle_registry_snapshot_v1(snap)
-    assert LifecycleRegistryErrorCode.BITCOIN_DIRECTION_PROHIBITED.value in result.error_codes
+def test_validator_accepts_consistent_bitcoin_under_common_admission() -> None:
+    interval = _interval(base_asset="BTC", venue_symbol="BTC-USDT-SWAP")
+    result = validate_pit_futures_instrument_lifecycle_registry_snapshot_v1(
+        _manual_snapshot(interval)
+    )
+    assert result.valid is True
+    assert result.error_codes == ()
 
 
 def test_validator_rejects_naive_datetime() -> None:

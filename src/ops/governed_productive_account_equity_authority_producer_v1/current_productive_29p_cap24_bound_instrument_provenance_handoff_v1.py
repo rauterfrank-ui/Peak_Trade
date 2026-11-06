@@ -1,7 +1,7 @@
 """CURRENT_PRODUCTIVE 29P Cap-2.4 bound-instrument provenance handoff v1.
 
-Loads persisted Cap-2.1–2.3 runtime state and invokes
-``run_single_selected_future_runtime_binding_gate_v1`` only. No ranking,
+Separates read-only persisted metadata inspection from explicit observed-portfolio
+binding through ``run_single_selected_future_runtime_binding_gate_v1``. No ranking,
 no Cap-2.3 reselection, no network, no venue I/O.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+from types import MappingProxyType
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
@@ -232,13 +233,27 @@ def _assert_selection_current_for_epoch_v1(
         raise CurrentProductive29PCap24ProvenanceHandoffError("SELECTION_STALE_FOR_BINDING_EPOCH")
 
 
-def acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+@dataclass(frozen=True)
+class InspectedSelectionV1:
+    """Source metadata only; not an admitted instrument or alpha permit."""
+
+    state_root: Path
+    repository_sha: str
+    binding_epoch: str
+    selection: Any
+    ranking: Any
+    universe: Any
+    mark_prices: Mapping[str, Any]
+
+
+def inspect_selection_v1(
     *,
-    productivity_root: Path | None = None,
+    productivity_root: Path,
     repository_sha: str,
     binding_epoch: str,
     mark_price_by_native_id: Mapping[str, Any] | None = None,
-) -> CurrentProductive29PCap24BoundInstrumentProvenanceHandoffV1:
+) -> InspectedSelectionV1:
+    """Read validated persisted inputs without reconciliation, capture or locks."""
     if CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED is not True:
         raise CurrentProductive29PCap24ProvenanceHandoffError(
             "CAP24_PROVENANCE_HANDOFF_NOT_CREATED"
@@ -340,29 +355,111 @@ def acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
             venue_native_id=str(selection.venue_native_id),
         )
 
-    observed_portfolio = PortfolioTruthSnapshotV1(
-        positions=(),
-        event_time_unix=now_unix,
-        wall_time_unix=now_unix,
-        source_id="current_productive_29p_cap24_provenance_handoff_v1",
+    return InspectedSelectionV1(
+        state_root,
+        repo_sha,
+        binding_epoch,
+        selection,
+        ranking,
+        universe,
+        MappingProxyType(marks),
     )
-    gate = run_single_selected_future_runtime_binding_gate_v1(
-        selection_state_root=sel_root,
-        ranking_state_root=rank_root,
-        universe_state_root=uni_root,
-        repository_sha=repo_sha,
-        session_id="current-productive-29p-cap24-provenance-handoff",
-        now_unix=now_unix,
-        reconciliation_state_root=recon_root,
+
+
+def _bind_inspected_selection_v1(
+    *, context, session_id, observed_portfolio, observation_now_unix=None
+):
+    if not isinstance(observed_portfolio, PortfolioTruthSnapshotV1):
+        raise CurrentProductive29PCap24ProvenanceHandoffError("OBSERVED_PORTFOLIO_REQUIRED")
+    if (
+        not isinstance(session_id, str)
+        or not session_id.strip()
+        or session_id != session_id.strip()
+    ):
+        raise ValueError("START_BINDING_SESSION_ID_REQUIRED")
+    selection = context.selection
+    return run_single_selected_future_runtime_binding_gate_v1(
+        selection_state_root=context.state_root / "selection",
+        ranking_state_root=context.state_root / "ranking",
+        universe_state_root=context.state_root / "universe",
+        repository_sha=context.repository_sha,
+        session_id=session_id,
+        now_unix=(
+            _binding_epoch_unix_v1(context.binding_epoch)
+            if observation_now_unix is None
+            else observation_now_unix
+        ),
+        reconciliation_state_root=context.state_root / "recon",
         observed_portfolio=observed_portfolio,
-        mark_price_by_native_id=marks,
+        mark_price_by_native_id=context.mark_prices,
         expected_selection_config_digest=selection.config_digest,
         expected_selection_integrity_digest=selection.integrity_digest,
         dashboard_available=False,
         dashboard_selected_instrument=None,
         direct_instrument_override=None,
         skip_reconciliation=False,
+        require_position_truth_if_open_claimed=True,
     )
+
+
+def bind_observed_selection_v1(
+    *,
+    productivity_root: Path,
+    repository_sha: str,
+    binding_epoch: str,
+    session_id: str,
+    observed_portfolio: PortfolioTruthSnapshotV1,
+    mark_price_by_native_id: Mapping[str, Any] | None = None,
+):
+    """Reload provenance, then return the existing gate's unmodified decision."""
+    if not isinstance(observed_portfolio, PortfolioTruthSnapshotV1):
+        raise TypeError("OBSERVED_PORTFOLIO_REQUIRED")
+    context = inspect_selection_v1(
+        productivity_root=productivity_root,
+        repository_sha=repository_sha,
+        binding_epoch=binding_epoch,
+        mark_price_by_native_id=mark_price_by_native_id,
+    )
+    return _bind_inspected_selection_v1(
+        context=context,
+        session_id=session_id,
+        observed_portfolio=observed_portfolio,
+    )
+
+
+def acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+    *,
+    productivity_root: Path | None = None,
+    repository_sha: str,
+    binding_epoch: str,
+    mark_price_by_native_id: Mapping[str, Any] | None = None,
+    observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
+    session_id: str = "current-productive-29p-cap24-provenance-handoff",
+    expected_selection_integrity_digest: str | None = None,
+    observation_now_unix: float | None = None,
+) -> CurrentProductive29PCap24BoundInstrumentProvenanceHandoffV1:
+    """Bind explicit observed truth. Missing truth never becomes an empty book."""
+    context = inspect_selection_v1(
+        productivity_root=productivity_root,
+        repository_sha=repository_sha,
+        binding_epoch=binding_epoch,
+        mark_price_by_native_id=mark_price_by_native_id,
+    )
+    if (
+        expected_selection_integrity_digest is not None
+        and context.selection.integrity_digest != expected_selection_integrity_digest
+    ):
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "N1_START_SELECTION_CHANGED_DURING_OBSERVATION"
+        )
+    gate = _bind_inspected_selection_v1(
+        context=context,
+        session_id=session_id,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
+    )
+    selection, ranking, universe = context.selection, context.ranking, context.universe
+    state_root, repo_sha = context.state_root, context.repository_sha
     bound = gate.bound
     if gate.ok is not True or bound is None or not isinstance(bound, BoundInstrumentV1):
         blockers = ",".join(gate.blockers) if gate.blockers else "CAP24_GATE_FAIL_CLOSED"
@@ -403,6 +500,7 @@ def resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1(
     cap24_productivity_root: Path | None,
     repository_sha: str,
     binding_epoch: str,
+    observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
 ) -> BoundInstrumentV1 | None:
     """Resolve Cap-2.4 instance for common-epoch compose (no manual instrument id)."""
 
@@ -415,5 +513,6 @@ def resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1(
         productivity_root=root,
         repository_sha=repository_sha,
         binding_epoch=binding_epoch,
+        observed_portfolio=observed_portfolio,
     )
     return handoff.bound_instrument

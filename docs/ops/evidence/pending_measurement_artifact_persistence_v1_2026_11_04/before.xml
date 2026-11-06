@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="0.240" timestamp="2026-11-04T02:13:20.298652+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_pending_measurement_artifact_persistence_v1" name="test_closed_refs_resolve_to_full_validated_artifacts_in_new_process" time="0.015"><failure message="KeyError: 'measurement_bundle_ref'">tests/ops/test_pending_measurement_artifact_persistence_v1.py:26: in test_closed_refs_resolve_to_full_validated_artifacts_in_new_process
+    assert out.closed and out.record.closure_refs['measurement_bundle_ref']
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'measurement_bundle_ref'</failure></testcase><testcase classname="tests.ops.test_pending_measurement_artifact_persistence_v1" name="test_artifact_persistence_failure_precedes_evaluation_and_learning" time="0.013"><failure message="AssertionError: assert (not True)&#10; +  where True = PendingOutcomeBarIngestResultV1(ok=True, advanced=True, duplicate=False, reason='CLOSED', record=NaturalEnterPendingOu...91b111febc6f0c64f03a8', 'optimization_ack_status': 'ACCEPTED_OFFLINE_RESEARCH_INPUT'}, failure_reason=''), closed=True).closed">tests/ops/test_pending_measurement_artifact_persistence_v1.py:49: in test_artifact_persistence_failure_precedes_evaluation_and_learning
+    assert not out.closed and out.reason=='PENDING_MEASUREMENT_PERSISTENCE_FAILED'
+E   AssertionError: assert (not True)
+E    +  where True = PendingOutcomeBarIngestResultV1(ok=True, advanced=True, duplicate=False, reason='CLOSED', record=NaturalEnterPendingOu...91b111febc6f0c64f03a8', 'optimization_ack_status': 'ACCEPTED_OFFLINE_RESEARCH_INPUT'}, failure_reason=''), closed=True).closed</failure></testcase><testcase classname="tests.ops.test_pending_measurement_artifact_persistence_v1" name="test_closed_measurement_loss_or_tampering_is_not_reported_as_verified[delete]" time="0.012"><failure message="assert 0 == 1&#10; +  where 0 = len([])">tests/ops/test_pending_measurement_artifact_persistence_v1.py:58: in test_closed_measurement_loss_or_tampering_is_not_reported_as_verified
+    assert len(paths)==1
+E   assert 0 == 1
+E    +  where 0 = len([])</failure></testcase><testcase classname="tests.ops.test_pending_measurement_artifact_persistence_v1" name="test_closed_measurement_loss_or_tampering_is_not_reported_as_verified[tamper]" time="0.012"><failure message="assert 0 == 1&#10; +  where 0 = len([])">tests/ops/test_pending_measurement_artifact_persistence_v1.py:58: in test_closed_measurement_loss_or_tampering_is_not_reported_as_verified
+    assert len(paths)==1
+E   assert 0 == 1
+E    +  where 0 = len([])</failure></testcase><testcase classname="tests.ops.test_pending_measurement_artifact_persistence_v1" name="test_failed_evaluation_reuses_original_immutable_artifact_pair" time="0.007"><failure message="assert 0 == 1&#10; +  where 0 = len([])">tests/ops/test_pending_measurement_artifact_persistence_v1.py:74: in test_failed_evaluation_reuses_original_immutable_artifact_pair
+    paths=list(root.rglob('measurement_artifacts_v1.json'));assert len(paths)==1
+                                                            ^^^^^^^^^^^^^^^^^^^^
+E   assert 0 == 1
+E    +  where 0 = len([])</failure></testcase></testsuite></testsuites>

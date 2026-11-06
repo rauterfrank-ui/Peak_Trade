@@ -82,11 +82,13 @@ def _ok_payload(data: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     return {"code": "0", "data": list(data or [])}
 
 
-def _result(payload: dict[str, Any], *, fresh: bool = True) -> FreshPretradeGetTransportResultV1:
+def _result(
+    payload: dict[str, Any], *, fresh: bool = True, endpoint: str = ""
+) -> FreshPretradeGetTransportResultV1:
     return FreshPretradeGetTransportResultV1(
         get_performed=True,
         method="GET",
-        endpoint="",
+        endpoint=endpoint,
         http_status=200,
         payload=payload,
         auth_header_sent=True,
@@ -175,7 +177,9 @@ class FixtureBackedOkxReadOnlyTransport:
                 error_class="HTTP_ERROR",
             )
 
-        return _result(payload if isinstance(payload, dict) else _ok_payload(), fresh=fresh)
+        return _result(
+            payload if isinstance(payload, dict) else _ok_payload(), fresh=fresh, endpoint=endpoint
+        )
 
 
 class _ExactOrderNotFoundOverlayTransport:
@@ -197,6 +201,7 @@ class _ExactOrderNotFoundOverlayTransport:
             return _result(
                 {"code": "51603", "msg": "Order does not exist", "data": []},
                 fresh=True,
+                endpoint=endpoint,
             )
         return self._inner.get(
             endpoint=endpoint,
@@ -482,8 +487,10 @@ class TestBugbot7094FindingsAdjudication:
                     endpoint if "://" in endpoint else f"https://eea.okx.com{endpoint}"
                 )
                 if parsed.path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
-                    return _result({"code": "50000", "msg": "Internal error", "data": []})
-                return _result(_ok_payload([]))
+                    return _result(
+                        {"code": "50000", "msg": "Internal error", "data": []}, endpoint=endpoint
+                    )
+                return _result(_ok_payload([]), endpoint=endpoint)
 
         snap = fetch_okx_read_only_reconciliation_snapshot_v1(
             identity=ident,

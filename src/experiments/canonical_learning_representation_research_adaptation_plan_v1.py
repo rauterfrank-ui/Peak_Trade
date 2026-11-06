@@ -13,6 +13,8 @@ from typing import Any, Final, Mapping
 
 from src.experiments.canonical_meta_to_learning_research_adaptation_input_v1 import (
     DISPOSITION_NO_ACTION_FAIL_CLOSED,
+    MetaToLearningResearchAdaptationInputError,
+    validate_learning_research_adaptation_decision_v1,
     DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT,
     SCHEMA_VERSION as ADAPTATION_INPUT_SCHEMA,
 )
@@ -24,6 +26,18 @@ PLAN_DOMAIN: Final[str] = "peak_trade.canonical_learning_representation_research
 PRODUCTIVE_APPLY_AUTHORIZED: Final[bool] = False
 LEARNING_STATE_MUTATION_AUTHORIZED: Final[bool] = False
 PLAN_NOT_AUTHORITY: Final[bool] = True
+
+_PLAN_IDENTITY_FIELDS: Final[tuple[str, ...]] = (
+    "schema_version",
+    "domain",
+    "source_meta_evidence_id",
+    "adaptation_decision_identity",
+    "research_purpose",
+    "evaluation_fixture_label",
+    "plan_status",
+    "productive_apply_authorized",
+    "learning_state_mutation_authorized",
+)
 
 FIXTURE_LABEL_REDUNDANCY: Final[str] = "FIXTURE_REPRESENTATION_REDUNDANCY"
 FIXTURE_LABEL_COVERAGE_WEAKNESS: Final[str] = "FIXTURE_COVERAGE_WEAKNESS"
@@ -93,7 +107,12 @@ def build_learning_representation_research_adaptation_plan_v1(
     if request.requested_parameter_mutation:
         raise LearningRepresentationResearchAdaptationPlanError("PARAMETER_MUTATION_FORBIDDEN")
 
-    decision = request.adaptation_input_decision
+    try:
+        decision = validate_learning_research_adaptation_decision_v1(request.adaptation_input_decision)
+    except (MetaToLearningResearchAdaptationInputError, TypeError, ValueError) as exc:
+        raise LearningRepresentationResearchAdaptationPlanError(
+            f"ADAPTATION_DECISION_INVALID:{exc}"
+        ) from exc
     if decision.get("schema_version") != ADAPTATION_INPUT_SCHEMA:
         raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_INPUT_SCHEMA_MISMATCH")
 
@@ -106,14 +125,19 @@ def build_learning_representation_research_adaptation_plan_v1(
         evaluation_fixture_label = "FIXTURE_FAIL_CLOSED"
         plan_status = "PLAN_FAIL_CLOSED"
     elif overall == DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT:
-        items = decision.get("adaptation_items") or []
-        pattern_ref = FIXTURE_LABEL_DEFAULT
-        lineage_ref = None
-        if items and isinstance(items[0], Mapping):
-            payload = items[0].get("payload") or {}
-            if isinstance(payload, Mapping):
-                pattern_ref = str(payload.get("pattern_ref") or FIXTURE_LABEL_DEFAULT)
-                lineage_ref = payload.get("learning_representation_lineage_ref")
+        items = decision.get("adaptation_items")
+        if not isinstance(items, (list, tuple)) or len(items) != 1:
+            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_ITEM_CARDINALITY_INVALID")
+        item = items[0]
+        payload = item.get("payload") if isinstance(item, Mapping) else None
+        if not isinstance(payload, Mapping):
+            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_CONTEXT_REQUIRED")
+        pattern_ref = payload.get("pattern_ref")
+        lineage_ref = payload.get("learning_representation_lineage_ref")
+        if not isinstance(pattern_ref, str) or not pattern_ref.strip():
+            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_PATTERN_REF_REQUIRED")
+        if not isinstance(lineage_ref, str) or not lineage_ref.strip():
+            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_REPRESENTATION_LINEAGE_REQUIRED")
         purpose = classify_representation_research_purpose_v1(pattern_ref=pattern_ref)
         evaluation_fixture_label = pattern_ref
         plan_status = "PLAN_READY_OFFLINE_EVALUATION"
@@ -160,11 +184,35 @@ def validate_learning_representation_research_adaptation_plan_v1(
 ) -> MappingProxyType[str, Any]:
     if payload.get("schema_version") != SCHEMA_VERSION:
         raise LearningRepresentationResearchAdaptationPlanError("PLAN_SCHEMA_MISMATCH")
-    if payload.get("productive_apply_authorized") is not False:
-        raise LearningRepresentationResearchAdaptationPlanError("PRODUCTIVE_APPLY_MUST_BE_FALSE")
+    for field in (
+        "productive_apply_authorized",
+        "learning_state_mutation_authorized",
+        "productive_feature_mutation_authorized",
+        "trading_configuration_mutation_authorized",
+        "promotion_authorized",
+    ):
+        if payload.get(field) is not False:
+            raise LearningRepresentationResearchAdaptationPlanError(
+                f"PLAN_AUTHORITY_MUST_BE_FALSE:{field}"
+            )
+    if payload.get("plan_not_authority") is not True:
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_NOT_AUTHORITY_MUST_BE_TRUE")
     plan_id = str(payload.get("plan_identity") or "")
     if not is_valid_sha256_hex(plan_id):
         raise LearningRepresentationResearchAdaptationPlanError("PLAN_IDENTITY_INVALID")
+    try:
+        identity_body = {field: payload[field] for field in _PLAN_IDENTITY_FIELDS}
+    except KeyError as exc:
+        raise LearningRepresentationResearchAdaptationPlanError(
+            f"PLAN_IDENTITY_FIELD_MISSING:{exc.args[0]}"
+        ) from exc
+    if derive_representation_research_plan_identity_v1(identity_body=identity_body) != plan_id:
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_IDENTITY_MISMATCH")
+    expected_digest = compute_content_sha256(
+        {key: value for key, value in payload.items() if key != "result_digest"}
+    )
+    if payload.get("result_digest") != expected_digest:
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_RESULT_DIGEST_MISMATCH")
     return MappingProxyType(dict(payload))
 
 

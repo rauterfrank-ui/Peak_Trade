@@ -1,0 +1,9 @@
+{
+  "authority_effect": "NONE",
+  "productive_offline_economic_semantics_v1": true,
+  "scenarios_evaluated": 2,
+  "schema_id": "ops.integrated_offline_economic_stress_domain.v1",
+  "schema_version": "v1",
+  "stress_pass": true,
+  "stress_suite_binding_digest_sha256": "0933a63d49e3b68453a6417bf43409a2c4830e9558e66497c5d5a3fbdbad0c06"
+}

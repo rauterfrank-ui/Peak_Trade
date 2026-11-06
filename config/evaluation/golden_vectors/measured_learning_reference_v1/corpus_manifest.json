@@ -1,0 +1,15 @@
+{
+  "corpus_version": "1.0.0",
+  "corpus_digest": "bcda1de0d7089f7a7cbdcde10e79b340a4bf67e9672a75c4bddf3b32f9b09d79",
+  "vector_ids": [
+    "vec-sl-measured-replay-binding-001"
+  ],
+  "metric_schema_version": "1.0.0",
+  "seed_set": [
+    55
+  ],
+  "provenance": {
+    "source": "TEST_ONLY_SYNTHETIC",
+    "ref": "config/evaluation/golden_vectors/measured_learning_reference_v1"
+  }
+}

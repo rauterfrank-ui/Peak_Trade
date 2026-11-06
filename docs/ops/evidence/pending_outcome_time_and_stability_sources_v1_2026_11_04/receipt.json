@@ -1,0 +1,29 @@
+{
+  "schema": "pending_outcome_time_and_stability_sources_v1",
+  "source_commit": "44e7b1e0d05c12799411b969914c08a5e1c3ad26",
+  "resolver_origin_commit": "29d4ccd52df524a4fbf180c4bc80ca54241a441c",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py": "a3afde964dcb0b7519418371339614a35c6444890ddf9db57577ed46a173a2a9",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py": "e1f7eb81c559d3561538a6f694dc32270c4ff809ff9a15332b99166d181aaee5",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/canonical_bar_producer_v1.py": "00aba3ac60e13b6d25fe0896bf1758f2e609051c5bf25032091ac0f3c1211a54",
+    "src/experiments/canonical_meta_learning_v1.py": "41035e94d90c81c6d5f972318a7cc22260dc9c3e5d919cfb6b16e52faa2162a9",
+    "src/experiments/canonical_robustness_suite_v1.py": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+    "src/experiments/canonical_portfolio_learning_v1.py": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+    "src/meta/learning_loop/research_validity_evidence_v1.py": "73d677b0fbee37365ba7812eaa6c36ec4f742e5d70089429f84b59806614502a",
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/runner_v1.py": "a33964d45bc7f2fed5df26eb1f9862265b08d8a4f12bac35bbf0410ea8456507",
+    "src/research/linear_evidence/offline_productive_parameter_sensitivity_diagnostics_v0.py": "f43f0a4ba6085d8f765df22dfa42b39003b1074ffd3aa5defe8ac3bc855dddc3",
+    "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py": "06ed690b6350e4069479de91b456820f1e64b314a6aec8a9ef79bc09546494b3"
+  },
+  "implemented": "Replay requires and preserves stored receive_ts_unix exactly; no extra second, no fabricated receipt when absent. Stored original events remain unchanged.",
+  "tests": "26 PASS including three new cases; those three failed before. Existing cross-session harness and measurement handoff tests included.",
+  "controlled_probe_findings": {
+    "early_closure": "Explicit fixture closes with measurement end 2400 seconds after latest supplied sample event",
+    "source_clock": "Wrapper uses candle-open time for current mark; controlled mark timestamp differs by 1800 seconds",
+    "classification": "Explicit TEST_FIXTURE chain writes OBSERVED_PRODUCTIVE_PRE_EXTERNAL in temporary ledger",
+    "storage": "Closure persists record refs but not newly retained complete measurement/info artifacts; no new durable measurement store demonstrated"
+  },
+  "handling": "Retain as explicit source/time/classification integration boundaries, not natural-outcome proof. Do not fabricate an alternative outcome class, replace bar clock/price semantics, rewrite old ledgers or launch real observation. Preserve owner-deferred original data/freshness questions.",
+  "stability_roles": "Six reviewed related paths have different value/consumer semantics; exact original Meta scalar formula/source remains unresolved.",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "runtime_authorization_effect": "NONE"
+}

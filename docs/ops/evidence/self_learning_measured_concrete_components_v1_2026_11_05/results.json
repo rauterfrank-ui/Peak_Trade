@@ -1,0 +1,220 @@
+{
+  "schema": "self_learning_measured_concrete_components_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "execution_head": "cfb28e3119cd41b8736c0952756e7a55bc9d7f5e",
+  "date": "2026-11-05",
+  "source_review": {
+    "id": "GCC01",
+    "title": "Gemessene SelfLearning-Referenz lässt sich mit konkreten Gates, Comparator, Registry und Handoff verbinden; Fixture-Projektion bleibt eigener Vertrag",
+    "source_observed_effect": "Ein temporärer Offline-Caller bindet den tatsächlichen kanonischen Constraint-Matrixdigest und dessen Version im bereits vorhandenen Messreferenz-Kontext. Er verwendet konkrete Matrix-Pre-/Postgates, Corpusgate, ProtectedSemanticComparator, SelfLearningEvaluator, GvefEvidenceRegistry und PromotionEvidenceAdapter. Der Run wird REGISTERED, gespeicherter Digest ist gültig, Envelope entsteht und späteres Meta bleibt exakt. Falsche Matrixbindung und deklarierter geschützter Rankingdigest-Drift blockieren vor Registry. Die weiterhin injizierten Delta-/Replay-/Evidence-Fixtures bleiben ausdrücklich benannt.",
+    "semantics": "Vorhandene konkrete Komponenten sind in einem kontrollierten Referenz-Caller kompositionsfähig. Das ist keine neu installierte App-/Runtime-Verbindung. Matrixlabels sind gebundene Konfigurationsbehauptungen, keine neuen Messungen der deklarierten Produktivkanten. Ein gültiger Registry-/Handoff-Digest bindet den tatsächlichen Fixture-Payload, nicht automatisch vollständige Domain-/Corpussemantik oder Forschungsqualität. Numerisches Meta bleibt ein separater Consumer des geladenen Archivs.",
+    "limit": "Vier Offline-Probes mit bestehendem TEST_ONLY_SYNTHETIC-Referenzpaket; nur ein SelfLearning-Domainlauf, keine automatische Fünf-Domain-Orchestrierung und keine natürliche Quellen-/Profit-/Produktivabnahme. Source-/Scope-/Ledger-/Configdateien unverändert. Der Standard-Caller wurde nicht umkonfiguriert und keine Implementierung ergänzt.",
+    "source_bindings": [
+      {
+        "path": "src/evaluation/golden_vectors/constraints/pre_constraint_gate_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "9278b241e0d671adac163850cd39cac92ddef38551032e6838f0b117b9288f7a",
+        "line_start": 24,
+        "line_end": 63,
+        "snippet_sha256": "a5eb8904cae6115e89c0e7f4b45b63fc996664cff80fcfb0c9a3310279441483"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "bb5caeaed7e9bdd09368978b85a3ebdbaae78fd269365c64516f7a0c2ad82866",
+        "line_start": 25,
+        "line_end": 69,
+        "snippet_sha256": "c367403c70240b6da1083b6b44b2031d1db5fdb8527a158b1cb1b53a7c2b550c"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/constraints/matrix_loader_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "1a01c8648e5cf2e878b680e4ebc417139d7149d000474db7eb8ed6ff7f3d5852",
+        "line_start": 21,
+        "line_end": 35,
+        "snippet_sha256": "47c28d27d1432c4281a7f1f165dc85f63318d725d65bc2a8006507b502544dd8"
+      },
+      {
+        "path": "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "fb0cf1f271ede3bb86f2b2f7174959fbccb9f0042bba88841eda42b6437823ea",
+        "line_start": 1,
+        "line_end": 119,
+        "snippet_sha256": "fb0cf1f271ede3bb86f2b2f7174959fbccb9f0042bba88841eda42b6437823ea"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/corpus/gate_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "1391877a28746a32ae6d3df29697727f9ff2153688b15e55c64440cdbfbb0ba7",
+        "line_start": 42,
+        "line_end": 70,
+        "snippet_sha256": "871166912fe7fb8120aa6ac3ea418f9409d26773dffd7d4a6fb94d363fd07d04"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/digest/comparator_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "25a8fba71db39eedad88d97c41e1da8101354f917ba3a909994e636d45be9c1e",
+        "line_start": 32,
+        "line_end": 69,
+        "snippet_sha256": "0f398c03cf1b637a7e7617bd571a8d0c65292a36850d1a722147c1cfee78c157"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "d5625dfd0b6a9a155589fd999a86b862656dfdfe2dd435f314724efabc1c5d59",
+        "line_start": 25,
+        "line_end": 36,
+        "snippet_sha256": "1e1a74af2b1926097216fef3b0211aa3a8ff910edcbd6b6a9b1ab698833630eb"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/promotion/promotion_evidence_adapter_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "f7141779fee3f4d5f6322e3992064fbbe4a0d498924f87c194f4709c5a70eb11",
+        "line_start": 45,
+        "line_end": 87,
+        "snippet_sha256": "a516374e1fef72035fdd4e7d115df2a36d8b1d992ee3389e49b625b3c0f6ebcd"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/integration/measured_learning_reference_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "c953b114b34dba7360c7c8a36d951fcf8d4b47bc77b83c16a4e8440dc203e503",
+        "line_start": 34,
+        "line_end": 93,
+        "snippet_sha256": "446e31edfd993f20fcca5b34a6e041647698c6f887e283d426ac6b97f86d7dc0"
+      },
+      {
+        "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+        "line_start": 168,
+        "line_end": 243,
+        "snippet_sha256": "e4b3fec99f2eb6f7996ec03be038e52a5ed8dc3776386ab3794be37fd550fbbd"
+      },
+      {
+        "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+        "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+        "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b",
+        "line_start": 166,
+        "line_end": 195,
+        "snippet_sha256": "e75f08ea2a4f78aa687f3bf7904e3ec5d97b75521158f50defc0a85517387e41"
+      }
+    ],
+    "evidence_class": "PINNED_SOURCE_PLUS_CONTROLLED_OFFLINE_COMPOSITION_NOT_PRODUCTIVE_ACCEPTANCE",
+    "product_change": false
+  },
+  "tests": [
+    {
+      "name": "test_concrete_components_preserve_numeric_meta",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_real_pre_gate_blocks_wrong_matrix_before_registry",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_real_comparator_blocks_reported_protected_digest_drift",
+      "outcome": "PASS"
+    },
+    {
+      "name": "test_fixture_projection_limit_remains_with_concrete_other_components",
+      "outcome": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "id": "SL-COMP01",
+      "status": "CONTROLLED_COMPOSITION_CONFIRMED",
+      "observed": {
+        "state": "REGISTERED",
+        "evidence_complete": true,
+        "canonical_matrix_version": "1.5.0",
+        "canonical_matrix_digest": "430c84c0109f9c2e834104a6ecaed98dacf2cd0ac693561a8918f804ef39500d",
+        "matrix_rows_checked": 8,
+        "concrete_pre_post_corpus_comparator_registry_handoff": true,
+        "registry_digest_valid": true,
+        "envelope_created": true,
+        "exact_later_meta_preserved": true,
+        "remaining_fixtures": [
+          "ReplayAdapter passthrough",
+          "DeltaBuilder passthrough",
+          "EvidenceBuilder fixture"
+        ],
+        "matrix_labels_are_not_new_productive_observations": true
+      },
+      "source_class": "TEST_ONLY_SYNTHETIC",
+      "productive_authority": false,
+      "implementation_changed": false
+    },
+    {
+      "id": "SL-COMP02",
+      "status": "EXISTING_MATRIX_BINDING_GUARD_CONFIRMED",
+      "observed": {
+        "state": "FAILED",
+        "failure": "CONSTRAINT_FAILURE",
+        "replay_reached": false,
+        "registry_entries": 0,
+        "envelope_created": false
+      },
+      "source_class": "TEST_ONLY_SYNTHETIC",
+      "productive_authority": false,
+      "implementation_changed": false
+    },
+    {
+      "id": "SL-COMP03",
+      "status": "EXISTING_PROTECTED_COMPARATOR_GUARD_CONFIRMED",
+      "observed": {
+        "state": "FAILED",
+        "failure": "PROTECTED_DIGEST_DRIFT",
+        "registry_entries": 0,
+        "envelope_created": false,
+        "changed_domain": "RANKING_UNIVERSE",
+        "scope_calculation_changed": false
+      },
+      "source_class": "TEST_ONLY_SYNTHETIC",
+      "productive_authority": false,
+      "implementation_changed": false
+    },
+    {
+      "id": "SL-COMP04",
+      "status": "FIXTURE_PROJECTION_LIMIT_CONFIRMED",
+      "observed": {
+        "state": "REGISTERED",
+        "concrete_handoff_created": true,
+        "bound_corpus_digest": "bcda1de0d7089f7a7cbdcde10e79b340a4bf67e9672a75c4bddf3b32f9b09d79",
+        "bundle_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "domain_invariants": [
+          "sl.baseline_candidate_bound",
+          "sl.no_productive_writeback"
+        ],
+        "bundle_invariants": [
+          "i1"
+        ],
+        "registry_and_handoff_hashes_bind_fixture_payload_not_full_domain_meaning": true,
+        "numeric_quality_accepted": false
+      },
+      "source_class": "TEST_ONLY_SYNTHETIC",
+      "productive_authority": false,
+      "implementation_changed": false
+    }
+  ],
+  "temporary_offline_caller_only": true,
+  "application_default_changed": false,
+  "product_implementation_changed": false,
+  "scope_calculation_changed": false,
+  "productive_runtime_sessions": 0,
+  "source_class": "TEST_ONLY_SYNTHETIC",
+  "execution_artifacts": [
+    {
+      "path": "tests.xml",
+      "sha256": "88c4998abd41432b65b7fdaf5b4fe38cab20f787619f552d03fe091537616342"
+    },
+    {
+      "path": "tests.log",
+      "sha256": "45c48839011598ed23f5cc18d3d71e46faad83beae19b71b1e65da093878f6cb"
+    },
+    {
+      "path": "test_measured_concrete_components.py",
+      "sha256": "ff662b256890097a376169bb92b8b63fad25828819f4eefecad736fdbd14c9f3"
+    }
+  ]
+}

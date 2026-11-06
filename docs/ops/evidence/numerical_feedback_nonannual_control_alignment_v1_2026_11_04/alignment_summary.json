@@ -1,0 +1,37 @@
+{
+  "consumer_policy_annualization": "MEAN_OVER_SAMPLE_STD_NO_ANNUALIZATION",
+  "effects": [
+    {
+      "after_region": {
+        "fast": 10,
+        "slow": 100
+      },
+      "before_region": {
+        "fast": 10,
+        "slow": 50
+      },
+      "label": "before",
+      "parameter_region_proposal_count": 1
+    },
+    {
+      "after_region": {
+        "fast": 10,
+        "slow": 100
+      },
+      "before_region": {
+        "fast": 10,
+        "slow": 50
+      },
+      "label": "after",
+      "parameter_region_proposal_count": 1
+    }
+  ],
+  "expected_ratio": 93.59487165438073,
+  "historical_evidence_rewritten": false,
+  "old_source_new_control": "NEW_SEMANTIC_CONTROL_FAILS_AGAINST_OLD_SOURCE",
+  "production_conversion_added": false,
+  "ratio": 93.59487165438073,
+  "source_frequency": "HOURLY_CONTROL_RETURNS",
+  "train_sharpe_after": 0.8318439070608391,
+  "train_sharpe_before": 77.85632371783784
+}

@@ -781,6 +781,8 @@ def render_markdown(artifact: dict[str, Any]) -> str:
 
 
 def write_artifact() -> dict[str, Any]:
+    if (REPO_ROOT / "docs/system_atlas/source/documentation-cleanup.json").is_file():
+        raise RuntimeError("RETIRED_MAP_VIEW: use the frozen Law Impact Map policy inventory")
     artifact = build_artifact()
     R29_JSON.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
     md = (

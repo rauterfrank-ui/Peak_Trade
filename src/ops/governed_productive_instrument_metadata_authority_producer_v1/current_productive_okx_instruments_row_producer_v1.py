@@ -81,14 +81,18 @@ def _first_row(payload: Any) -> Mapping[str, Any]:
 
 
 def _contract_kind_from_row(row: Mapping[str, Any]) -> str:
-    inst_type = str(row.get("instType") or "").strip().upper()
-    if inst_type in {"SWAP", "FUTURES"}:
-        return "LINEAR"
     ct_type = str(row.get("ctType") or "").strip().lower()
     if ct_type == "linear":
         return "LINEAR"
     if ct_type == "inverse":
         return "INVERSE"
+    if ct_type:
+        raise CurrentProductiveInstrumentMetadataProducerError(
+            f"{REASON_FIELD_INVALID}:contract_kind"
+        )
+    inst_type = str(row.get("instType") or "").strip().upper()
+    if inst_type in {"SWAP", "FUTURES"}:
+        return "LINEAR"
     raise CurrentProductiveInstrumentMetadataProducerError(f"{REASON_FIELD_INVALID}:contract_kind")
 
 
@@ -183,6 +187,7 @@ def produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
         "minSz": str(minimum_quantity),
         "tickSz": str(tick_size),
         "quantity_unit": QUANTITY_UNIT_SEMANTICS_RATIFIED,
+        "contract_kind": contract_kind,
         "observed_at": str(observed_at_as_of),
     }
     metadata_version = _sha256_text(_canonical_json(digest_material))

@@ -1,0 +1,1 @@
+{"cases": {"max_single_order_notional_infinity": {"full_core_guard_join_enabled": false, "max_single_order_notional": "Infinity", "owner_caps_ratified": false, "raised": false}, "owner_caps_ratified_string_false": {"full_core_guard_join_enabled": true, "max_single_order_notional": null, "owner_caps_ratified": true, "raised": false}}, "label": "BEFORE_origin_main"}

@@ -1,0 +1,793 @@
+{
+  "source_commit": "68c687a64a3e767c19bf52d90b896cc598c6d62f",
+  "layers": [
+    {
+      "id": "SL01",
+      "introduction_commit": "ecbe5b7b4f8a71d3a81443a65949fcce6a5de350",
+      "path": "src/experiments/canonical_experiment_identity_v1.py",
+      "historical_sha256": "d9974edd7874393c2dae0f7b900d2f393d5b62d7a5284da7c21d2214e5113ef7",
+      "current_sha256": "d9974edd7874393c2dae0f7b900d2f393d5b62d7a5284da7c21d2214e5113ef7",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [],
+      "current_calls": [],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL02",
+      "introduction_commit": "e10f32f56fad0576cd250958401d13f044c5920d",
+      "path": "src/experiments/canonical_experiment_memory_v1.py",
+      "historical_sha256": "c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf",
+      "current_sha256": "c9e938747965d22e9886132656dab1b8aaa2e16f7805848e2d9644237627f7cf",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 358
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 496
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 358
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 496
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL03",
+      "introduction_commit": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+      "path": "src/experiments/canonical_failure_memory_v1.py",
+      "historical_sha256": "bec73128000cb83184841bbbdb3e88659ecda50106e15b3e7aabf0fbcc1acf42",
+      "current_sha256": "bec73128000cb83184841bbbdb3e88659ecda50106e15b3e7aabf0fbcc1acf42",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 182
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 304
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 434
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 505
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 182
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 304
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 434
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 505
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL04",
+      "introduction_commit": "2cd8f6b6e1c8051decb3506abc3a2250b4f228c5",
+      "path": "src/experiments/canonical_robustness_suite_v1.py",
+      "historical_sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+      "current_sha256": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 331
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 488
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.CanonicalFailureMemoryRecordRequestV1",
+          "line": 558
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1490
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_value",
+          "line": 1565
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.build_canonical_failure_memory_record_v1",
+          "line": 583
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 331
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 488
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.CanonicalFailureMemoryRecordRequestV1",
+          "line": 558
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1490
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_value",
+          "line": 1565
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.build_canonical_failure_memory_record_v1",
+          "line": 583
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL05",
+      "introduction_commit": "e1efa56f2bde5fefd48c62260c1f720d99138e71",
+      "path": "src/experiments/canonical_comparison_ssot_v1.py",
+      "historical_sha256": "4154155a46990cb6abc9bd78d6cf2ead3c50ed157c43ea990bc0185fa94461ff",
+      "current_sha256": "4154155a46990cb6abc9bd78d6cf2ead3c50ed157c43ea990bc0185fa94461ff",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 450
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 731
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 450
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 731
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL06",
+      "introduction_commit": "bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+      "path": "src/experiments/canonical_champion_challenger_v1.py",
+      "historical_sha256": "ad072a9656395701aeafd124986b0633e867b5ba90258289f2c8078c6b7309db",
+      "current_sha256": "ad072a9656395701aeafd124986b0633e867b5ba90258289f2c8078c6b7309db",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 394
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 516
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 351
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.rank_comparable_candidates_v1",
+          "line": 395
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 511
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 352
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRankingRequestV1",
+          "line": 396
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 353
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 394
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 516
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 351
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.rank_comparable_candidates_v1",
+          "line": 395
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 511
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 352
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRankingRequestV1",
+          "line": 396
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 353
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL07",
+      "introduction_commit": "defa59f12813b961d6edce11c7ead91c6e369950",
+      "path": "src/experiments/canonical_reality_gap_store_v1.py",
+      "historical_sha256": "5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660",
+      "current_sha256": "5dd07e13ed772321bed2043dde78d3076da522905a82afd4ad7ab4c6c9c30660",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 176
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 325
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 470
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 176
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 325
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 470
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL08",
+      "introduction_commit": "4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+      "path": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "historical_sha256": "b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9",
+      "current_sha256": "b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 280
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 467
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 867
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 280
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 467
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 867
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL09",
+      "introduction_commit": "562345af2153fa0c659ca261a71a9191b4b7210e",
+      "path": "src/experiments/canonical_portfolio_learning_v1.py",
+      "historical_sha256": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+      "current_sha256": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+      "current_status": "PRESERVED_IDENTICAL",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 684
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 579
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 679
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 580
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 581
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 684
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.canonical_record_payload",
+          "line": 579
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 679
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 580
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 581
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL10",
+      "introduction_commit": "7c36858bb6b9ed036bba901170d370b61a805110",
+      "path": "src/experiments/canonical_automated_offline_research_loop_v1.py",
+      "historical_sha256": "3290171ea806a48ad68d90e600c04d013efca872c698fb849e6ea75d38b1d31f",
+      "current_sha256": "48b3cccdc8034afbd9d6acd03f1225c3c2cc65b39365ff1ca42183bc68445524",
+      "current_status": "PRESENT_EVOLVED",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 228
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.derive_robustness_policy_digest_v1",
+          "line": 231
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.derive_hypothesis_fingerprint_v1",
+          "line": 232
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.assess_duplicate_hypothesis_v1",
+          "line": 240
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.ComparisonCandidateV1",
+          "line": 269
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 284
+        },
+        {
+          "target": "src.experiments.canonical_champion_challenger_v1.evaluate_canonical_champion_challenger_v1",
+          "line": 294
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.build_canonical_reality_gap_record_v1",
+          "line": 303
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.build_canonical_experiment_memory_record_v1",
+          "line": 669
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.build_canonical_robustness_evidence_v1",
+          "line": 704
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.build_canonical_failure_memory_record_v1",
+          "line": 782
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 285
+        },
+        {
+          "target": "src.experiments.canonical_champion_challenger_v1.CanonicalChampionChallengerRequestV1",
+          "line": 295
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.CanonicalRealityGapRecordRequestV1",
+          "line": 304
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 651
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.CanonicalExperimentMemoryRecordRequestV1",
+          "line": 670
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.CanonicalRobustnessSuiteRequestV1",
+          "line": 705
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.build_failure_records_for_failed_gates_v1",
+          "line": 738
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.CanonicalFailureMemoryRecordRequestV1",
+          "line": 783
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.canonical_robustness_policy_v1",
+          "line": 830
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 863
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 237
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.derive_robustness_policy_digest_v1",
+          "line": 240
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.derive_hypothesis_fingerprint_v1",
+          "line": 241
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.assess_duplicate_hypothesis_v1",
+          "line": 249
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.ComparisonCandidateV1",
+          "line": 276
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 291
+        },
+        {
+          "target": "src.experiments.canonical_champion_challenger_v1.evaluate_canonical_champion_challenger_v1",
+          "line": 301
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.build_canonical_reality_gap_record_v1",
+          "line": 310
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.build_canonical_robustness_evidence_v1",
+          "line": 763
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.build_canonical_failure_memory_record_v1",
+          "line": 841
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 292
+        },
+        {
+          "target": "src.experiments.canonical_champion_challenger_v1.CanonicalChampionChallengerRequestV1",
+          "line": 302
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.CanonicalRealityGapRecordRequestV1",
+          "line": 311
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 670
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.ExperimentRecordConflictError",
+          "line": 720
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.CanonicalRobustnessSuiteRequestV1",
+          "line": 764
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.build_failure_records_for_failed_gates_v1",
+          "line": 797
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.CanonicalFailureMemoryRecordRequestV1",
+          "line": 842
+        },
+        {
+          "target": "src.experiments.canonical_robustness_suite_v1.canonical_robustness_policy_v1",
+          "line": 889
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1006
+        }
+      ],
+      "lost_direct_call_targets": [
+        "src.experiments.canonical_experiment_memory_v1.CanonicalExperimentMemoryRecordRequestV1",
+        "src.experiments.canonical_experiment_memory_v1.build_canonical_experiment_memory_record_v1"
+      ],
+      "added_direct_call_targets": [
+        "src.experiments.canonical_experiment_memory_v1.ExperimentRecordConflictError"
+      ],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL11",
+      "introduction_commit": "fc059d1285be55e433a9ca59e89ce187e7a4b363",
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "historical_sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331",
+      "current_sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
+      "current_status": "PRESENT_EVOLVED",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.ComparisonCandidateV1",
+          "line": 1466
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 489
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.validate_canonical_failure_memory_record_v1",
+          "line": 567
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.validate_canonical_reality_gap_record_v1",
+          "line": 591
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1525
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 615
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 616
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.ComparisonCandidateV1",
+          "line": 1498
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 490
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.validate_canonical_failure_memory_record_v1",
+          "line": 572
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.validate_canonical_reality_gap_record_v1",
+          "line": 596
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1557
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.build_canonical_comparison_result_v1",
+          "line": 620
+        },
+        {
+          "target": "src.experiments.canonical_comparison_ssot_v1.CanonicalComparisonRequestV1",
+          "line": 621
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    },
+    {
+      "id": "SL12",
+      "introduction_commit": "899e154d1bb095227c13690943e13284fb936972",
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "historical_sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad",
+      "current_sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
+      "current_status": "PRESENT_EVOLVED",
+      "historical_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 662
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 693
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.derive_hypothesis_fingerprint_v1",
+          "line": 695
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 807
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 824
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 825
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 838
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1046
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.assess_duplicate_hypothesis_v1",
+          "line": 704
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 833
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 430
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.validate_canonical_failure_memory_record_v1",
+          "line": 1059
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.validate_canonical_reality_gap_record_v1",
+          "line": 1088
+        }
+      ],
+      "current_calls": [
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 663
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 694
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.derive_hypothesis_fingerprint_v1",
+          "line": 696
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.canonicalize_mapping",
+          "line": 808
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 825
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 826
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 839
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.validate_canonical_experiment_identity_v1",
+          "line": 1047
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.assess_duplicate_hypothesis_v1",
+          "line": 705
+        },
+        {
+          "target": "src.experiments.canonical_experiment_identity_v1.build_canonical_experiment_identity_v1",
+          "line": 834
+        },
+        {
+          "target": "src.experiments.canonical_experiment_memory_v1.derive_experiment_id_v1",
+          "line": 431
+        },
+        {
+          "target": "src.experiments.canonical_failure_memory_v1.validate_canonical_failure_memory_record_v1",
+          "line": 1060
+        },
+        {
+          "target": "src.experiments.canonical_reality_gap_store_v1.validate_canonical_reality_gap_record_v1",
+          "line": 1089
+        },
+        {
+          "target": "src.experiments.canonical_meta_learning_v1.derive_meta_parameter_region_digest_v1",
+          "line": 1279
+        }
+      ],
+      "lost_direct_call_targets": [],
+      "added_direct_call_targets": [
+        "src.experiments.canonical_meta_learning_v1.derive_meta_parameter_region_digest_v1"
+      ],
+      "method": "AST-resolved explicit imported direct call targets to the12 canonical phase modules only; not dynamic call graph or execution proof"
+    }
+  ],
+  "missing_original_added_paths": [],
+  "interpretation": "Two lost DIRECT Phase10→Memory targets remain as INDIRECT targets through existing identity-bound observation binder; no deletion inferred.",
+  "intermediate_path": {
+    "caller": "src/experiments/canonical_automated_offline_research_loop_v1.py:_bind_experiment_memory",
+    "binder": "src/experiments/canonical_identity_bound_offline_observation_binding_v1.py",
+    "binder_sha256": "e973d50c3a4f85dd16ea6187986ba70745d94bc211b6a295dfed8f476f8af555",
+    "callee": "src/experiments/canonical_experiment_memory_v1.py:build_canonical_experiment_memory_record_v1",
+    "status": "SOURCE_BODY_REVIEWED_EXISTING_INDIRECT_CONNECTION",
+    "limits": "Actual observation production, numeric units and authenticity remain separate; no new runtime invocation"
+  },
+  "conditional_authorization": "Restore/complete missing layers and connections when their historical presence and role are evidenced. Existing functioning implementations and Scope remain preserved; no blanket rewrite or activation authorization."
+}

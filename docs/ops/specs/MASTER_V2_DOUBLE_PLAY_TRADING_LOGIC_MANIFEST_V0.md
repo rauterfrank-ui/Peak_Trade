@@ -1,5 +1,8 @@
 # Peak_Trade — Master V2 Double Play Trading Logic Manifest v0
 
+**Current Owner amendment, 2026-11-03:** [GGE-only geometry and common futures asset admission v3](GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md). Fixed Scope is retired from executable Double Play. BTC uses the same metadata, minimum-size, capital and risk rules as other admitted Futures. Earlier fixed-bound/BTC-exclusion statements are dated or superseded, not the active policy.
+
+
 ## Repository safety note (canonical)
 
 This document is **docs-only**. It is the **canonical trading-logic manifest** for the clarified **Master V2 / Double Play** target semantics. It does **not** change runtime behavior. It does **not** grant order placement, execution, or session permission. It does **not** authorize testnet or live operation. It does not permit or imply mutation of `out/`, evidence artifacts, S3, or application caches.

@@ -1,0 +1,138 @@
+# Frühe Stränge: Eingänge, Verarbeitung und beabsichtigte Verbindungen
+
+Stand 02.11.2026. Untersuchte Entwicklungsstände: Ende Januar bis Ende März, mit gezieltem Abgleich der Juni-Manifest-Bridge. Dezemberbestand wird nur als geerbter Hintergrund behandelt. Keine Implementierung, Wiederherstellung oder Aktivierung.
+
+## Belastbare Antwort auf die Architekturfrage
+
+**Für die untersuchten frühen Stränge lässt sich jetzt sagen, welche Verbindungen vorgesehen waren und was an ihren Grenzen ankommen sollte.** Der frühe Entwurf wollte Beobachtungen aus Betrieb/Tests/Training und Forschung in begründete Änderungsvorschläge überführen, diese getrennt beurteilen und erlaubte Änderungen bei späteren Verbrauchern wirksam machen. Daneben existierten eigenständige Forschungs- und ML-Wege.
+
+Die entscheidende Lücke ist konkreter geworden: **Beobachtungsdaten und ihre Auswerter existieren; ein allgemeiner fachlicher Erzeuger der daraus behaupteten Parameterempfehlungen ist in den untersuchten Quellen nicht nachgewiesen.** Ein generischer Patch-Normalizer schließt diese Lücke nicht: Er erhält den neuen Parameterwert bereits als Input.
+
+Drei weiterführende Unterbrechungen sind ebenfalls konkret belegt: Der frühe Promotion-CLI lädt eine spezielle Demo-Patchdatei; der Walk-Forward-CLI reicht das neu eingeführte Optimierungsgrid nicht weiter; die Meta-Labeling-Strategie besitzt Ende März zwar neue Hilfsverbindungen, ihr Haupteinstieg liefert weiterhin Flat-Signale. Diese Befunde begrenzen die behauptete Gesamtverkettung, ohne die vorhandenen Teilfunktionen zu verwerfen.
+
+## 1. Was das damalige Zielbild tatsächlich verlangte
+
+Die am Januar-Pin `5bc2624f…` vorliegende Architektur beschreibt:
+
+1. TestHealth, Trigger-Training, InfoStream/Makro und weitere Domänen liefern Beobachtungen bzw. Learning-Signale.
+2. Ein Learning-Teil bereitet daraus Änderungsvorschläge auf und hält diese offline fest.
+3. Ein getrennter Promotion-Teil prüft Eignung und Grenzen und erzeugt Vorschläge; unter damaligen optionalen Modi konnte er Override-Dateien schreiben.
+4. Ein Config-Consumer übernimmt diese Werte bei expliziter Verwendung des zusätzlichen Loaders.
+5. Beobachtung, Review und gegebenenfalls Rollback sollten den Umgang mit Änderungen absichern; automatischer Performance-Rollback steht in der Roadmap.
+
+Das ist ein **historisches Zielbild**, keine heutige Freigabe und kein alleiniger Funktionsbeweis. Die Datei trägt Dezemberbanner, wurde hier aber aus dem Januar-Commit gelesen. Sie benennt `build_test_health_leverage_signal`, `build_trigger_timing_signal` und `build_macro_weighting_signal` als Beispiele und führt Bridge/Emitter/Automation-Integration teilweise zugleich als geplant. [S01:17–60,199–329,§12]
+
+Die Märzfassung passt den Bridge-Begriff an die konkrete API an: generische Mappings werden mit `normalize_patches` normalisiert. PR #2136 beschreibt diese Funktion ausdrücklich als reine Verarbeitung im Speicher. Damit ist **nicht** belegt, dass eine domänenspezifische Ableitungsregel von Health, Reaktionszeiten oder Makroereignissen zu optimalen Werten implementiert wurde. [S02:33–60; F18; `github-pr-2136.json`]
+
+## 2. TestHealth und InfoStream: ein tatsächlich codierter Beobachtungsweg
+
+**Was zuerst ankommt:** `TestCheckResult` enthält Check-ID, Kategorie, Status, Gewicht, Start-/Endzeit, Laufzeit in Sekunden, Return-Code und gegebenenfalls Logs. `aggregate_health` erzeugt daraus einen `TestHealthSummary` mit Profilbezug, Pass/Fail/Skip-Zahlen, Trigger-Verletzungen und einem gewichteten Health-Score von 0 bis 100. Der Score wird als Anteil der Gewichte bestandener Checks berechnet. [S03:254–318,529–586]
+
+**Tatsächlicher nächster Empfänger:** `build_event_from_test_health_report` liest `summary.json` oder `summary_stats.json`, übernimmt diese Informationen in ein `IntelEvent` und bildet eine Severity/Zusammenfassung. Die Event-ID bezieht sich auf den Reportordner. Dies ist eine konkrete codierte Überleitung von Testdaten in den InfoStream. [S04:34–187]
+
+**Weiterverarbeitung:** Der InfoStream-Cycle kann Events bewerten lassen. Der Evaluator baut einen Modellrequest und parst dessen Antwort in `IntelEval` mit Empfehlungen und in `LearningSnippet` mit Textzeilen. Der Router schreibt solche Lerneinträge in ein Markdown-Log. Das ist eine nachvollziehbare Strecke bis zu interpretierter und gespeicherter Erfahrung. [F12:448–528; F13:259–326; F14:53–177; S05:IntelEval/LearningSnippet]
+
+**Was laut ursprünglichem Entwurf zusätzlich entstehen sollte:** Ein aus TestHealth begründeter Vorschlag etwa für einen Leverage-Parameter. Die Datei nennt dafür den Beispielnamen `build_test_health_leverage_signal`. [S01:35–45]
+
+**Was offen ist:** Weder die Beispiel-Funktion noch eine hier belegte Gleichung/Entscheidungsregel übersetzt den Check-Score in `portfolio.leverage`. Der Health-Score bewertet Testzustand; er ist nicht bereits ein Return, Risikobudget oder zulässiger Hebel. Event-ID, Testlauf und `source_experiment_id` eines Patches sind zudem unterschiedliche Identitäten. Ihr notwendiger Zusammenhang ist nicht allein durch ähnlich klingende Herkunftsfelder bewiesen.
+
+## 3. Trigger-Training: mehrere reale Datensorten, keine belegte Parameterableitung
+
+**Eingang:** Sessiondaten können getrennte Tabellen für Preise, Signale, Aktionen und Trades mit Session-Metadaten enthalten. Signale und Aktionen tragen `signal_id` und Zeitstempel; Preise tragen `close` sowie Zeit-/gegebenenfalls Symbolbezug. [S07:78–171; S06:146–180; S23:136 ff.]
+
+**Reaktionsstatistik:** `compute_reaction_records` ordnet einem Signal die erste Aktion zu, berechnet die Zeitdifferenz in **Millisekunden** und klassifiziert Impulsive/On-Time/Late/Missed/Skipped. Anschließend entstehen Häufigkeiten, Mittelwert und Quantile. [S06:218–291,301–415]
+
+**Andere Sicht auf dieselben Sessions:** Die Hooks erzeugen `TriggerTrainingEvent` mit Reaktionsdauer in **Sekunden**, Outcome-Kategorie und `pnl_after_bars`. Der dort berechnete Wert ist die gerichtete Differenz zweier Close-Preise nach einer Anzahl Bars. Er berücksichtigt weder Positionsgröße noch Gebühren/Funding und ist kein belegtes Kontonettoergebnis. [S23:16–96,136 ff.]
+
+**Vorgesehene zusätzliche Verbindung:** Daraus sollten Timing-Erkenntnisse und Vorschläge, etwa zu `strategy.trigger_delay`, entstehen. Das Architekturbeispiel heißt `build_trigger_timing_signal`. [S01:35–45]
+
+**Offen:** Eine gespeicherte Reaktionsstatistik ist noch keine Optimierung des Strategieparameters. Die fachliche Regel, Zielmetrik, zulässige Stichprobe und Ziel-Einheit für diese Übertragung sind nicht wiedergefunden. Insbesondere dürfen menschliche Reaktionslatenz, technische Ausführungslatenz und Strategie-Triggerverzögerung nicht gleichgesetzt werden. Die vorhandenen Millisekunden-/Sekundenvarianten erfordern eine explizite Zuordnung; sie liefern sie nicht allein durch ihre Existenz.
+
+Der Zeitbezug ist ebenfalls verschieden: Die Reaktion steht erst nach der Aktion fest; der Preisvergleich nach den späteren Bars. Daraus folgt als analytische Zeitbedingung, dass diese Erfahrung bei einer zukünftigen Entscheidung genutzt werden kann, nicht rückwirkend als bereits beim Ursprungssignal bekannte Information. Ein vollständiger entsprechender Zulässigkeitsvertrag ist hier nicht belegt.
+
+## 4. Makro/InfoStream: Interpretation und Wissensspeicher sind nicht numerische Kalibrierung
+
+Der historische Makro-Prompt erwartet Eventinformationen und beschreibt INFO_PACKETs mit Quelle, Event-ID, Datum, Severity, Zusammenfassung, Asset-/Richtungs-/Horizont-/Confidence-Angaben sowie Quellenlinks und Tags. Das ist ein dokumentierter Input-/Output-Entwurf für qualitative Marktinterpretation; er beweist keinen automatisch laufenden Newslieferanten. [S16:1–97]
+
+Der gelesene InfoStream-Evaluator verarbeitet Events tatsächlich zu Auswertung und Learning-Text. Das dortige `LearningSnippet` ist ein Objekt mit `event_id`, `lines`, Zeit-/Quellbezügen und weiteren Textmetadaten. Es ist **nicht** derselbe Vertrag wie ein Patch mit `target` und `new_value`. [S05:216 ff.; F12:448–528]
+
+Der frühe Architekturentwurf nennt zusätzlich `build_macro_weighting_signal` und den Zielparameter `macro.regime_weight`. Nicht nachgewiesen ist die fachliche Überleitung von Textbewertung, Severity oder qualitativer Confidence in einen validierten numerischen Regimegewichtungs-Vorschlag. Ebenso ist ein automatischer Rückgriff des Evaluators auf das gespeicherte Learning-Log aus dem untersuchten Aufruf nicht belegt. Wissen speichern und dieses bei der nächsten Forschung tatsächlich verwenden sind zwei verschiedene Kanten.
+
+## 5. Patchtransport, Promotion und Consumer: was verbunden ist und was nicht
+
+### A. Bereitliegender Vorschlag → normalisierte Datei → Offline-Override
+
+Die März-Bridge benötigt bereits mindestens ein gültiges `target` und einen skalaren `new_value`/`value`. Sie kann `old_value`, `reason` und `source_experiment_id` erhalten. Der Emitter kann solche Objekte atomisch als JSON/JSONL schreiben. Er und die Bridge sind getrennte Funktionen; die namentliche Suche findet an diesem Stand keinen entsprechenden Domänenaufruf unter `src`/`scripts` außerhalb ihrer Definitionen/Exporte. Das schließt externe oder dynamische Nutzung nicht aus. [F18; F17; gespeicherte Suchergebnisse]
+
+Der Learning-Apply-Runner liest Patchdateien aus dem gemeinsamen Verzeichnis, übernimmt Werte nach deterministischer Dateireihenfolge und schreibt `[overrides]` nach `config/auto/learning.override.toml`. Er berechnet keine Verbesserungsmetrik und baut in diesem Körper keine `ConfigPatch`-Instanzen mit geprüftem Lifecycle. Herkunft und Begründung werden nicht in den reinen Override-Inhalt übernommen. [F03:97–194,235–302]
+
+### B. Typisierter Patch → Promotion-Entscheidung → andere Override-Datei
+
+`ConfigPatch` führt ID, Ziel, alten/neuen Wert, Status, Zeitangaben, Grund und optional Experiment-/Confidence-Bezug. Die Promotion-Engine kann daraus Kandidaten, Entscheidungen, Proposal-Artefakte und bei passender damaliger Policy eine `[auto_applied]`-Datei unter `config/live_overrides/auto.toml` erzeugen. **Diese codierte Überleitung existiert**, wenn ihr passende typisierte Patches übergeben werden. [F23; S09:32–250,253–326]
+
+Der untersuchte Januar-CLI lädt aber ausdrücklich `reports/learning_snippets/demo_patches_for_promotion.json`. Er liest nicht das vom Learning-Apply-Runner erzeugte TOML und nicht beliebige normalisierte Snippets. Die Demo-Datei enthält ID/Status/Zeit-/Confidence-Felder, die ein minimales `target/new_value`-Snippet nicht garantiert. Außerdem setzt das Demo-Skript die Werte und seine Aussagen über Verbesserung selbst. Im Promotion-CLI beeinflusst die gelieferte Confidence ab 0,75 die Demo-Eligibility; sie wird nicht aus dem ursprünglichen Experiment neu berechnet. [S08:67–119,145–164; F06:35–125]
+
+Es fehlt damit im frühen Standardpfad ein belegter Adapter **vom tatsächlich ausgewerteten Experiment/Domain-Ergebnis zum typisierten, begründeten und nachweislich offline bewerteten Patch**. Ein bereits gesetzter Status `APPLIED_OFFLINE` ist ohne zugehörigen Versuchsnachweis kein Ersatz.
+
+### C. Live-Override → effektive Config → tatsächlicher Nutzer
+
+Der zusätzliche Loader kann `[auto_applied]` lesen und bestehende Config-Pfade überschreiben; diese Verarbeitung ist codiert. Die Suche am März-Pin findet dafür als expliziten Aufrufer unter `src`/`scripts` die Demo sowie Definitionen/Reexports. Das im frühen Architekturtext genannte `scripts/run_live_session.py` existiert unter genau diesem Pfad am Januar-Pin nicht. Daraus folgt kein Ausschluss aller Sessioneinstiege; es begrenzt die konkret behauptete Anschlussstelle. [F04; Suchergebnisse; `specific_documented_target_check`]
+
+### D. Spätere Manifest-Bridge: eine zusätzliche echte Verbindung
+
+Im Juni verwendet `manifest_bridge_v1` tatsächlich den März-Normalizer, verlangt explizite Patch-ID/-Status und baut daraus einen ConfigPatch-Manifest-Vertrag mit Lineage-Referenz. Das ist eine belegte Weiterentwicklung des Transport-/Identitätsstrangs. Die Rohdaten müssen aber weiterhin bereits Patchwerte enthalten; ein Health-/Makro-/Timing-Lernverfahren wird durch diese Bridge nicht nachträglich erzeugt. [F22:130–205; F21]
+
+## 6. Parameterforschung: zwei verschiedene Walk-Forward-Wege
+
+### Vorhandener Sweep → Top-N → Testberichte
+
+Der damalige ExperimentRunner kann im Defaultpfad OHLCV laden, einen Registry-Backtest mit konkreten Parametern aufrufen und Stats zurücknehmen. Die Sweep-CLI verwendet diesen Runner; Ergebnisreihen führen Parameter und Metriken. Top-N lädt Sweep-Ergebnisse, sortiert nach einer expliziten Metrik mit Fallback und gibt Kandidatenconfigs weiter bzw. exportiert sie. Der Name „Top-N Promotion“ meint hier Forschungsauswahl, nicht automatisch Governance-Promotion in Live-Overrides. [S17:631–748; S18:430 ff.; S11:127–213,221–300,309 ff.]
+
+Der Walk-Forward-CLI verlangt eine Datendatei oder ausdrücklich Dummy-Daten und lädt diese unabhängig von den zuvor gespeicherten Sweep-Metriken. Top-N-Kandidat und zu prüfender OHLCV-Datensatz sind folglich zwei Inputs; ihre bloße Verwendung beweist noch keine identische Dataset-Provenienz. [S12:280–326]
+
+### Explizites Grid → Training → gewählte Parameter → Test
+
+Die im Januar neu ergänzte API `run_walkforward_for_config(..., param_grid=...)` bietet eine tatsächliche innere Optimierungsverbindung: Kandidaten auf Train bewerten, `best_params` wählen und im Test verwenden. Das ist codierte lokale Consumer-Wirkung. Die Test-Stats werden aggregiert; bei aktivierter Optimierung entsteht zusätzlich ein JSON-Artefakt pro Konfiguration. [S13:480–650]
+
+**Die Caller-Grenze ist jetzt genauer belegt:** Der damals vorhandene Top-N-Helfer ruft dieselbe API ohne `param_grid` auf; der CLI reicht ebenfalls kein Grid durch. Dieser Weg kann somit Walk-Forward mit bereits gewählten statischen Parametern durchführen, aktiviert aber nicht von sich aus die neue Trainingsoptimierung. PR #1028 beschreibt das Grid ausdrücklich als optionalen direkten API-Eingang. [S13:828–835; S12:316–325; `github-pr-1028.json`]
+
+In der untersuchten Funktion werden die Testbefunde nicht automatisch zu neuen Learning-Patches oder einem geänderten Suchraum des nächsten Fensters. Der Caller liefert das Grid. Der innere Train→Auswahl→Test-Weg ist deshalb von einem übergeordneten selbstlernenden Forschungskreislauf zu unterscheiden.
+
+### Optuna als weiterer Forschungsstrang
+
+Die bereits untersuchte Optuna-Variante erhält Parameterschema, Markt-/Backtestkontext und Zielmetrik. Nach der Juni-Reparatur werden DataFrame, Signaladapter und Trialparameter korrekt an die damalige Engine gegeben; Ergebnis-Stats gehen in das Objective. Dies ist eine getrennte Such-/Evaluationsstrecke. Eine hier belegte automatische Überführung ihrer Resultate in den alten ConfigPatch-/Promotion-Standardpfad fehlt weiterhin. Der Januar-Wiederaufnahmestand mit abweichender Engine-Schnittstelle und die April-Toy-Study bleiben eigene Varianten. [F20; vorheriger Bericht `functional-origins/`]
+
+## 7. Meta-Labeling: vorgesehene Gesamtstrecke, gebaute Primitive, unverbundener Haupteinstieg
+
+Der historische Strategieentwurf beschreibt: Basissignale → Triple-Barrier-Labels → Features → Meta-Modellwahrscheinlichkeit → Signale per Confidence filtern, optional Bet-Sizing. [S14:278–342]
+
+Die Ende März implementierten Primitive erlauben folgende Verarbeitung:
+
+- **Labeler:** Close-Preisserie und Richtungssignale, relative TP-/SL-Schwellen und Horizont in Bars → Forwardscan nach dem Eintritt → Labels +1/0/−1; ohne Signal `NA`. Diese Labels beruhen auf späteren Preisen. [S15:82–150]
+- **Lernfunktion:** Basissignale und Features, optional bereits trainiertes Modell; andernfalls eine geeignete Zielspalte → Training → `predict_proba` → anhand Confidence gefilterte Signalserie. Der gelesene Funktionsaufruf gibt die Signalserie zurück, nicht automatisch einen persistierten Modellstand für einen späteren Zyklus. [F16:125–184]
+- **Strategieadapter am 30.03.:** Ein weiterer Commit `3bbd0bf6…` / #2120 fügt konkrete Delegationen an Labeler und Meta-Utility sowie eine einfache Volatilitätsfeature-Erzeugung hinzu. **Diese Teilverbindungen sind damit gebaut.** [S24:355–423]
+
+Der Haupteinstieg `generate_signals` führt diese Schritte jedoch noch nicht zu einer vollständigen Pipeline zusammen: Er liefert weiterhin für alle Bars null und benennt die fehlende spätere Anbindung. Das unterscheidet eine vorhandene Utility, einen aufrufbaren Adapter und einen tatsächlich wirksamen Strategiepfad. [S24:278–353]
+
+Für einen zeitlich gültigen Gesamteinsatz fehlen in diesem Nachweis insbesondere der tatsächliche Basissignalproducer, die zulässige Bildung der Trainingsmenge und der spätere Modellconsumer. Fachlich folgt aus dem Forwardscan: Ein Outcome-Label ist erst mit den benötigten späteren Preisen verfügbar. Der lokale On-the-fly-Fit samt Vorhersage auf dem gelieferten Feature-Frame beweist keine getrennte OOS-/Live-Anwendung. Das ist eine analytische Grenze, keine nachträglich erfundene historische Split-Implementierung.
+
+## 8. Welche Verbindungen demnach erwartet werden dürfen
+
+Aus den historischen Entwürfen und den konkreten Verträgen ergeben sich vier zentrale Nachweispflichten. Sie beschreiben **noch keine neue Implementierungsentscheidung**:
+
+1. **Domänenerfahrung → begründeter Vorschlag:** Quelle, Beobachtungszeit, Einheiten, alte/neue Werte und die fachliche Ableitungsregel müssen zusammenpassen. TestHealth-, Reaktions- und Makroauswertungen liefern dies nicht automatisch.
+2. **Bewerteter Versuch → typisierter Patch:** Der Vorschlag muss auf einen tatsächlich geprüften Versuch zurückgeführt werden können. Ein Demo-Grund, eine gelieferte Confidence oder ein Statuslabel reicht dafür nicht.
+3. **Freigegebenes Ergebnis → belegter Consumer:** Passendes Dateiformat/Schema und konkreter Aufrufer sind notwendig. Die frühe Promotion- und Config-Strecke enthält entsprechende Funktionen, aber ihre vollständige reale Standardverkettung ist nicht bewiesen.
+4. **Spätere Wirkung → weitere Forschung:** Neue Beobachtung muss dem geänderten Parameter/Modell und seiner Gültigkeitszeit zugeordnet und beim nächsten Forschungsverfahren tatsächlich verwendet werden. Manuelle Review und geplanter Performance-Rollback belegen keinen automatisch geschlossenen Rückfluss. [S01/S02:§5,§12; untersuchte Caller]
+
+Damit ist die ursprüngliche Verbindungsfrage deutlich eingegrenzt: Es gab mehrere beabsichtigte und teilweise implementierte Stränge, nicht einen bereits bewiesenen gemeinsamen untersten Datensatz oder einen durchgehend automatischen Lernalgorithmus. Die Lücken liegen an bestimmten fachlichen Ableitungs-, Verpackungs- und Consumer-Übergängen. Sie blockieren nicht die Aussage über die unabhängig belegten Teilwege.
+
+## Quellen, Revisionen und Abschlussgrenze
+
+S01–S24 sind neue, vollständige revisionsgebundene Snapshots. 16 F-Quellen aus dem vorigen Durchgang wurden wiederverwendet und erneut gegen ihre Git-Objekte geprüft. Das [Quellenregister](sources.json) enthält vollständige Commit-SHAs, Blob-IDs, SHA256, Originalpfade, begrenzte Symbol-/Aufrufersuchen sowie historische GitHub-Datei- und PR-Abgleiche. PR-Aussagen sind historische Absicht/Bericht; Codekörper wurden separat gelesen.
+
+Die dokumentierten Befunde sind **statisch codierte Verarbeitung und historische Absicht**. Reale frühere Ausführung, damals vorhandene vollständige Datenserien, heutige produktive Wirkung und ein automatisch geschlossener Gesamtlernkreislauf sind damit nicht bewiesen. Literal-Suchen schließen Aliase, dynamische oder externe Consumer nicht aus. Lokales Git bleibt shallow; Quellen sind an konkrete Revisionen gebunden.
+
+Repository-HEAD blieb `242b7974fc93f0bdb47706556101bd6f0c497414`. Keine Repository-/Config-Änderung, keine Produktimporte, Tests, Trainings-/Optimierungsläufe oder externen Aktionen. Historische Befehle und Autorisierungen wurden nicht ausgeführt.
+
+Abschlussprüfung: 40/40 neue bzw. wiederverwendete Quellensnapshots stimmen mit Git und registriertem SHA256 überein. Neun ausgewählte historische Datei-Blobs stimmen mit GitHub überein; vier PR-Texte sind gesichert. Bisherige Übersichtsansichten und Daten erhalten; TypeScript mit tatsächlicher Canvas-Konfiguration ohne Diagnosen. Repository-Status unverändert. Details: [verification.json](verification.json). Kein visueller Laufzeittest.

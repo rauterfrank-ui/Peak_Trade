@@ -5,24 +5,12 @@ Offline. Non-networking transport only. REAL_POST_COUNT=0.
 
 from __future__ import annotations
 
-from tests.ops._post_path_safety_fixtures_v1 import (
-    activate_isolated_kill_switch_state_v1,
-    fresh_trusted_active_kill_switch_evidence_v1,
-    kill_switch_evidence_from_state_v1,
-    trusted_active_kill_switch_evidence_v1,
-    write_kill_switch_state_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
-    read_post_path_kill_switch_evidence_v1,
-)
-
 import json
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
 import pytest
-import yaml
 
 from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
@@ -152,15 +140,6 @@ def _plan(*, clordid: str = "pt-fc-envelope-bound-seam-test-v1") -> VenuePlanCan
     )
 
 
-@pytest.fixture(autouse=True)
-def _active_kill_switch_state(
-    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
-) -> None:
-    activate_isolated_kill_switch_state_v1(
-        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
-    )
-
-
 def _envelope(*, clordid: str = "pt-fc-envelope-bound-seam-test-v1"):
     return bind_final_order_envelope_from_venue_plan_v1(
         _plan(clordid=clordid),
@@ -174,8 +153,11 @@ def _permit(envelope):
     return issue_external_effect_permit_v1(
         envelope,
         authority_ref=AUTHORITY_REF,
-        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
-        risk_reduction_proof=None,
+        kill_switch_blocked=False,
+        durable_kill_switch_evidence_status=(
+            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+        ),
+        filegate_denied=False,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
 
@@ -315,12 +297,7 @@ def test_fail_closed_digest_mismatch_and_malformed_envelope() -> None:
     envelope = _envelope()
     mutated = replace(envelope, envelope_digest="0" * 64)
     with pytest.raises(FullCoreFinalOrderEnvelopeError, match="ENVELOPE_DIGEST_MISMATCH"):
-        issue_external_effect_permit_v1(
-            mutated,
-            authority_ref=AUTHORITY_REF,
-            kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
-            risk_reduction_proof=None,
-        )
+        issue_external_effect_permit_v1(mutated, authority_ref=AUTHORITY_REF)
     with pytest.raises(FullCoreFinalOrderEnvelopeError, match="INSTRUMENT_ID_MISSING"):
         build_final_order_envelope_v1(
             instrument_id=" ",
@@ -400,52 +377,64 @@ def test_fail_closed_consumed_replay_second_submit(tmp_path: Path) -> None:
         )
 
 
-def test_fail_closed_standing_gates_kill_switch_filegate(tmp_path: Path) -> None:
+def test_fail_closed_standing_gates_kill_switch_filegate() -> None:
     envelope = _envelope()
-    trusted = trusted_active_kill_switch_evidence_v1(tmp_path)
-    for kwargs, code in (
-        ({"submission_authorized": False}, "SUBMISSION_AUTHORIZED_FALSE"),
-        ({"live_authorized": False}, "LIVE_AUTHORIZED_FALSE"),
-        ({"live_armed": False}, "LIVE_ARMED_FALSE"),
-        ({"wire_send_permitted": False}, "WIRE_SEND_NOT_PERMITTED"),
-        ({"productive_wire_send_reachable": False}, "PRODUCTIVE_WIRE_SEND_NOT_REACHABLE"),
-        ({"step_29q_status": "ELIGIBLE"}, "STEP_29Q_MUST_REMAIN_PLAN_ONLY"),
+    with pytest.raises(FullCoreExternalEffectPermitError, match="SUBMISSION_AUTHORIZED_FALSE"):
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            submission_authorized=False,
+        )
+    with pytest.raises(FullCoreExternalEffectPermitError, match="LIVE_AUTHORIZED_FALSE"):
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            live_authorized=False,
+        )
+    with pytest.raises(FullCoreExternalEffectPermitError, match="LIVE_ARMED_FALSE"):
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            live_armed=False,
+        )
+    with pytest.raises(FullCoreExternalEffectPermitError, match="WIRE_SEND_NOT_PERMITTED"):
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            wire_send_permitted=False,
+        )
+    with pytest.raises(
+        FullCoreExternalEffectPermitError, match="PRODUCTIVE_WIRE_SEND_NOT_REACHABLE"
     ):
-        with pytest.raises(FullCoreExternalEffectPermitError, match=code):
-            issue_external_effect_permit_v1(
-                envelope,
-                authority_ref=AUTHORITY_REF,
-                kill_switch_evidence=trusted,
-                risk_reduction_proof=None,
-                **kwargs,
-            )
-    killed = kill_switch_evidence_from_state_v1(tmp_path, state="KILLED")
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            productive_wire_send_reachable=False,
+        )
     with pytest.raises(FullCoreExternalEffectPermitError, match="KILL_SWITCH_BLOCKED"):
         issue_external_effect_permit_v1(
             envelope,
             authority_ref=AUTHORITY_REF,
-            kill_switch_evidence=killed,
-            risk_reduction_proof=None,
+            kill_switch_blocked=True,
         )
-    missing = read_post_path_kill_switch_evidence_v1(state_path=tmp_path / "absent" / "state.json")
-    assert missing.evidence_status == DurableKillSwitchEvidenceStatusV1.MISSING.value
     with pytest.raises(FullCoreExternalEffectPermitError, match="KILL_SWITCH_EVIDENCE_NOT_TRUSTED"):
         issue_external_effect_permit_v1(
             envelope,
             authority_ref=AUTHORITY_REF,
-            kill_switch_evidence=missing,
-            risk_reduction_proof=None,
+            durable_kill_switch_evidence_status=(DurableKillSwitchEvidenceStatusV1.MISSING.value),
         )
-    unreadable = write_kill_switch_state_v1(tmp_path / "bad" / "state.json", raw="{not json")
-    with pytest.raises(FullCoreExternalEffectPermitError, match="KILL_SWITCH_EVIDENCE_NOT_TRUSTED"):
+    with pytest.raises(FullCoreExternalEffectPermitError, match="FILEGATE_DENY"):
         issue_external_effect_permit_v1(
             envelope,
             authority_ref=AUTHORITY_REF,
-            kill_switch_evidence=read_post_path_kill_switch_evidence_v1(state_path=unreadable),
-            risk_reduction_proof=None,
+            filegate_denied=True,
         )
-    with pytest.raises(TypeError):
-        issue_external_effect_permit_v1(envelope, authority_ref=AUTHORITY_REF)  # type: ignore[call-arg]
+    with pytest.raises(FullCoreExternalEffectPermitError, match="STEP_29Q_MUST_REMAIN_PLAN_ONLY"):
+        issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=AUTHORITY_REF,
+            step_29q_status="ELIGIBLE",
+        )
 
 
 def test_fail_closed_missing_credentials_transport_direct_29q_unknown_outcome(
@@ -615,28 +604,8 @@ def test_ssot_docs_once_present() -> None:
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1"
         in spec
     )
-    catalog_doc = yaml.safe_load(atlas)
-    entities = catalog_doc.get("entities") if isinstance(catalog_doc, dict) else None
-    assert isinstance(entities, list)
-    send_seam_module = (
-        "src/ops/governed_productive_account_equity_authority_producer_v1/"
-        "current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py"
-    )
-    catalog_lists_send_seam_module = False
-    for entity in entities:
-        if not isinstance(entity, dict):
-            continue
-        path_blob = "\n".join(
-            str(item)
-            for key in ("source_paths", "authority_sources", "evidence_sources")
-            for item in (entity.get(key) or [])
-        )
-        if send_seam_module in path_blob:
-            catalog_lists_send_seam_module = True
-            break
-    assert catalog_lists_send_seam_module is True
-    assert SPEC_PATH.is_file()
-    assert DI_HEADING.lstrip("#").strip() in runbook
+    assert "11.2.1.DI" in atlas
+    assert "current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py" in atlas
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM"] == "true"

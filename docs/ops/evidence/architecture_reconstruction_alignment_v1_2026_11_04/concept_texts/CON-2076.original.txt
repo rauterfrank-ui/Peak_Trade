@@ -1,0 +1,9 @@
+### CON-2076 — A/B-Informationsgrenze auf Master-V2-Ebene
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Originalaussage und Blueprint ordnen Component A als Evidence-Adjudicator und B als typisierten Input-Creator/Binder auf Master-V2-Ebene ein. A prüft u.a. Producer/Identität/Frische; B bindet nur erlaubtes ADMIT an die begrenzte L6-Fläche. Der Blueprint erhält bestehende trusted market/runtime seams ausdrücklich.
+
+**Grenze:** A/B ist kein universeller Rohdaten-Zwangseingang und kein GGE-Formelrechner. Marktpreis-/G17-Probleme werden dadurch nicht automatisch gelöst; keine pauschale Bypass-Anschuldigung gegen erhaltene trusted seams.
+
+Quellen: EVI-2216, EVI-2214, EVI-2224, EVI-2294, EVI-2274.

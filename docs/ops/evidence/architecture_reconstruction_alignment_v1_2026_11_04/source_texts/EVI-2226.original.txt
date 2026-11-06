@@ -1,0 +1,76 @@
+# Architektur-Meilenstein und Außenring
+
+Der Owner priorisiert eine verständliche Gesamtarchitektur: innerer Aufbau und Aufgaben je Bereich, interne und externe Kausalität sowie vollständiger Bedeutungsbezug einschließlich Schutz/Außenring. Dieser Meilenstein ist noch offen.
+
+Die bisherigen Bestände sind Belege und Navigation für diese Rekonstruktion. Sie ersetzen keine vollständige Bereichsarchitektur. Die folgende Prüfordnung ist keine neue Beschreibung tatsächlicher PeakTrade-Ebenen.
+
+## Ursprünglicher Zweck und Varianten
+
+Welchen fachlichen Nutzen sollte der Bereich stiften? Was wurde später ausdrücklich anders entschieden?
+
+Absicht, dokumentierte Entscheidung und heutige Umsetzung getrennt mit Datum und Herkunft belegen.
+
+## Innere Architektur und Ebenen
+
+Welche Ebenen waren ausdrücklich vorgesehen, was enthalten sie und wer ist für welche Aufgabe verantwortlich?
+
+Originale Ebenenbezeichnungen erhalten; nachträgliche Analysegruppen kennzeichnen; fehlende Urstruktur offenlassen.
+
+## Innere Kausalität und Zustand
+
+Welche Eingaben, Transformationen, Zustandsübergänge und Rückkopplungen verbinden die Bestandteile?
+
+Bedingung, Producer, Consumer, Persistenz und Fehlerpfad je Verbindung bestimmen.
+
+## Außengrenzen und Gesamtsystem
+
+Was kommt von anderen Bereichen, was wird abgegeben, welche Zyklen oder indirekten Wirkungen bestehen?
+
+Auch Shared Services und nicht als Universum definierte Funktionen einbeziehen; keine lineare Gesamtkette voraussetzen.
+
+## Mehrschichtige Semantik
+
+Was bedeuten Daten, Zustände und Ergebnisse an ihrer Herkunft und am tatsächlichen Consumer?
+
+Einheiten/Währung, Instrument/Account/Lane, Zeit/Epoche, Qualität/Missing und zulässige Wirkung verfolgen.
+
+## Außenring und Schutz
+
+Wie hängen Host, Beobachtung, operativer Zustand, Safety/Kill, Recovery, Execution und Autonomie zusammen?
+
+Originale Konstruktion von späterem Acht-Ebenen-Analysemodell trennen; Daten-, Veto-, Freigabe- und Nachweiswirkung unterscheiden.
+
+## Historische Veränderung und Erhaltung
+
+Was wurde wann geändert oder entfernt, warum und mit welchen systemischen Folgen?
+
+Nicht aus alter Pfadabwesenheit oder neuem Architekturmodell auf Nutzlosigkeit schließen; Erhaltungsziel und Alternativen bewerten.
+
+## Umsetzung und belegte Wirkung
+
+Was war nur gedacht, was existiert, was ist statisch verbunden und was wurde unter welchen Bedingungen tatsächlich beobachtet?
+
+Konkrete Revision, Caller, Eingaben und Laufzeitnachweis unterscheiden. Tests und Labels nur in ihrem tatsächlichen Scope verwenden.
+
+## Historischer Außenring: konkrete Quellen wiedergefunden
+
+Drei vollständig gelesene historische Untersuchungsberichte halten ausdrücklich fest, dass das Acht-Ebenen-Modell eine spätere analytische Ordnung ist. Ein vollständig integrierter Ring war in ihrem Suchraum nicht bewiesen. Die historischen Codeaussagen wurden in diesem Schritt nicht erneut geprüft.
+
+- OR1: /Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-ORIGINAL-DEVELOPMENT-V1/DEVELOPMENT_LINE.md · SHA256 db7a894fb9da0b068704cca3871ca09bc6afb0ccd5b32525b186e8857bdb7cdf
+- OR2: /Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-HISTORICAL-OUTER-RING-INTEGRATION-SEARCH-V2/INTEGRATION_FINDING.md · SHA256 66be0d6ca3f5e95ebc5f77e13410deafddd022a8c8e0b20862139e861b611fea
+- OR3: /Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-ORIGINAL-WHOLE-SYSTEM-ARCHITECTURE-RECONSTRUCTION-V1/INTEGRATION_MAP.md · SHA256 bf73f646b3164c9496a0a15d389554aea350cbed46ad3ddeabb57870d27aac75
+
+Der darin als weitester Aufrufstand genannte Commit d3a1c1ae… ist nur eine Aussage des damaligen Suchraums; weder globales historisches Maximum noch heutiger Integrationsnachweis. Die dortige Nichtbelegung eines Intelligent-Universe-Moduls beweist keine globale Nichtexistenz und stellt es nicht mit Market Intelligence gleich.
+
+## Quellengebundene Suchgruppen des späteren Außenring-Modells
+
+- Host und Runtime: Welcher Host führt welche Variante unter welchen Bedingungen aus?
+- Decision-Aufnahme: Wie werden marktbezogene Inputs in den Decision-Kontext übernommen?
+- Observer-Aufnahme: Wie erreichen öffentliche/private Beobachtungen ihre wirklichen Consumer?
+- Operativer Zustand: Wie wirken Cursor, Reconciliation, Initialisierung und Wiederanlauf zusammen?
+- Wissensdaten: Welche Beobachtungen werden erfasst und welche Rückgabe ist tatsächlich belegt?
+- Safety und Kill: Welche Schutzschicht sperrt was, und wie unterscheidet sie sich vom normalen Zustandswechsel?
+- Recovery und Execution: Welche Wiederherstellung und Ausführungsgrenze ist mit welchem Host verbunden?
+- Full-Autonomous-Stack: Welche Orchestrierung ist eigenständig vorhanden und wie ist sie eingebunden?
+
+Die weitere Arbeit füllt Bereichsdossiers anhand ursprünglicher Quellen und Varianten, verfolgt tatsächliche Producer-/Consumer-Verbindungen und führt Herkunft sowie offene Stellen mit. Die endgültige Zahl und die inneren Ebenen der Bereiche werden nicht durch diese Prüfordnung vorweggenommen.

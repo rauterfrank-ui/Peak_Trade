@@ -1,0 +1,44 @@
+{
+  "btc_and_binding_tests.xml": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "core_asset_tests.xml": {
+    "tests": 195,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_geometry_tests.xml": {
+    "tests": 567,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_seed_scope_tests.xml": {
+    "tests": 31,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "future_matrix_tests.xml": {
+    "tests": 513,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "learning_scope_tests.xml": {
+    "tests": 113,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "regression_tests.xml": {
+    "tests": 885,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

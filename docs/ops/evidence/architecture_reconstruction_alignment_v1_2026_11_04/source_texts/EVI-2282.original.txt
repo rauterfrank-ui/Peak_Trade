@@ -1,0 +1,168 @@
+# Self-Learning: Codierung anhand GitHub-Historie
+
+Die ursprünglichen zwölf Bausteine werden jetzt zusätzlich auf Codeebene geprüft. GitHub-Commitmetadaten, betroffene Code-/Testdateien und lokale Git-Blobs werden gegeneinander abgeglichen. Die Betrachtung bleibt auf das ursprüngliche Self-Learning-System begrenzt.
+
+## Was dadurch belegt wird
+
+- Der konkrete Code existierte am jeweiligen historischen Commit.
+- GitHub und die lokal gelesenen Code-Blobs stimmen für die zwölf Hauptmodule überein, soweit der Abgleich erfolgreich ist.
+- Öffentliche Funktionen, Datenstrukturen und statische Aufrufstellen lassen sich als damalige Codierungsstruktur nachweisen.
+- Spätere Pfadänderungen sind über die paginierte GitHub-Historie bis zum festgelegten Vergleichspin navigierbar.
+
+Das beweist weder vollständige Anforderungserfüllung noch einen funktionierenden Gesamtlauf. Testdateien sind ebenfalls Codierungsbelege; ihr Vorhandensein ist kein neu ausgeführter Test.
+
+## Einführungen
+
+### 1. Experimentidentität
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/ecbe5b7b4f8a71d3a81443a65949fcce6a5de350>) · 2026-08-17T17:55:28Z
+
+Code: `src/experiments/canonical_experiment_identity_v1.py`; 646 Zeilen im damaligen Hauptmodul. Blob: `d9499b867bf0be2f7682df067e8f141c94108e0e`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `digest_domain_name`, `domain_separated_digest`, `compute_trading_decision_core_binding_v1`, `canonicalize_value`, `canonicalize_mapping`, `inspect_code_provenance_v1`, `build_canonical_experiment_identity_v1`, `validate_canonical_experiment_identity_v1`.
+
+Daten-/Klassenstruktur: `CanonicalExperimentIdentityError`, `CanonicalCodeProvenanceV1`, `CanonicalExperimentIdentityRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 2. Unveränderliches Experimentgedächtnis
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/e10f32f56fad0576cd250958401d13f044c5920d>) · 2026-08-17T18:38:47Z
+
+Code: `src/experiments/canonical_experiment_memory_v1.py`; 611 Zeilen im damaligen Hauptmodul. Blob: `9ada18a9bef5d2f8135ff21ba5a6788a301e14e6`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `derive_experiment_id_v1`, `build_canonical_experiment_memory_record_v1`, `validate_canonical_experiment_memory_record_v1`, `canonical_record_payload`, `freeze_canonical_experiment_memory_record_v1`.
+
+Daten-/Klassenstruktur: `ExperimentMemoryValidationError`, `ExperimentRecordConflictError`, `ArtifactReferenceV1`, `LineageReferenceV1`, `CanonicalExperimentMemoryRecordRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 3. Fehlergedächtnis
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/e763bf1bf133afab1c3850a6bbaafde6f83e39d2>) · 2026-08-17T19:12:07Z
+
+Code: `src/experiments/canonical_failure_memory_v1.py`; 630 Zeilen im damaligen Hauptmodul. Blob: `0fffa54547df9f4237c5e480ea794559a830039c`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `derive_hypothesis_fingerprint_v1`, `derive_failure_record_id_v1`, `build_canonical_failure_memory_record_v1`, `validate_canonical_failure_memory_record_v1`, `assess_duplicate_hypothesis_v1`, `canonical_record_payload`, `freeze_canonical_failure_memory_record_v1`.
+
+Daten-/Klassenstruktur: `FailureMemoryValidationError`, `FailureRecordConflictError`, `CanonicalFailureMemoryRecordRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 4. Robustheitsprüfung
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/2cd8f6b6e1c8051decb3506abc3a2250b4f228c5>) · 2026-08-17T19:39:35Z
+
+Code: `src/experiments/canonical_robustness_suite_v1.py`; 1620 Zeilen im damaligen Hauptmodul. Blob: `dea5dceb08582dfffa0fb1bb03700c93c16640f9`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `canonical_robustness_policy_v1`, `derive_robustness_policy_digest_v1`, `derive_robustness_suite_identity_v1`, `build_canonical_robustness_evidence_v1`, `validate_canonical_robustness_evidence_v1`, `build_failure_records_for_failed_gates_v1`, `canonical_record_payload`.
+
+Daten-/Klassenstruktur: `RobustnessSuiteValidationError`, `CanonicalRobustnessSuiteRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 5. Vergleichbarkeit und Vergleich
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/e1efa56f2bde5fefd48c62260c1f720d99138e71>) · 2026-08-17T19:59:59Z
+
+Code: `src/experiments/canonical_comparison_ssot_v1.py`; 819 Zeilen im damaligen Hauptmodul. Blob: `8c229991e913ee75411b8d6279a75301aecee1a7`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `build_canonical_comparison_result_v1`, `rank_comparable_candidates_v1`, `derive_comparison_identity_v1`, `validate_canonical_comparison_result_v1`, `canonical_record_payload`.
+
+Daten-/Klassenstruktur: `ComparisonValidationError`, `ComparisonRankingRejectedError`, `ComparisonCandidateV1`, `CompatibilityRuleV1`, `ComparisonCompatibilityContractV1`, `CanonicalComparisonRequestV1`, `CanonicalComparisonRankingRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 6. Champion-/Challenger-Bewertung
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/bc97d43f715305c8b70eb84ddd12fd718f8460a6>) · 2026-08-17T20:14:00Z
+
+Code: `src/experiments/canonical_champion_challenger_v1.py`; 616 Zeilen im damaligen Hauptmodul. Blob: `f4ca9581a00085886c01b2adeda84b9403491040`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `evaluate_canonical_champion_challenger_v1`, `derive_champion_challenger_identity_v1`, `validate_canonical_champion_challenger_result_v1`, `canonical_record_payload_v1`.
+
+Daten-/Klassenstruktur: `ChampionChallengerValidationError`, `CanonicalChampionChallengerRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 7. Erwartung gegen beobachtete Realität
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/defa59f12813b961d6edce11c7ead91c6e369950>) · 2026-08-17T20:35:14Z
+
+Code: `src/experiments/canonical_reality_gap_store_v1.py`; 638 Zeilen im damaligen Hauptmodul. Blob: `d84ef66ae8abd8953502ef71395ad2b14ec44f30`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `build_canonical_reality_gap_record_v1`, `derive_reality_gap_record_id_v1`, `validate_canonical_reality_gap_record_v1`, `canonical_record_payload`, `freeze_canonical_reality_gap_record_v1`.
+
+Daten-/Klassenstruktur: `RealityGapValidationError`, `RealityGapRecordConflictError`, `RealityGapDimensionV1`, `CanonicalRealityGapRecordRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 8. Regimeabhängige Bewertung
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/4fa4086ba6a96b0cec18d8171da70b1d1d8099d9>) · 2026-08-18T05:42:26Z
+
+Code: `src/experiments/canonical_regime_aware_evaluation_v1.py`; 1025 Zeilen im damaligen Hauptmodul. Blob: `bc800ada6bc1b840789caf3911477e0b661c11fb`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `build_canonical_regime_aware_evaluation_v1`, `derive_regime_aware_evaluation_identity_v1`, `validate_canonical_regime_aware_evaluation_v1`, `canonical_record_payload`.
+
+Daten-/Klassenstruktur: `RegimeAwareEvaluationError`, `RegimeMappingRuleV1`, `RegimeMappingContractV1`, `RegimeSliceV1`, `CoreLogicAttributionV1`, `BullBearDecisionQualityV1`, `CanonicalRegimeAwareEvaluationRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 9. Getrenntes Portfolio-Learning
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/562345af2153fa0c659ca261a71a9191b4b7210e>) · 2026-08-18T12:37:25Z
+
+Code: `src/experiments/canonical_portfolio_learning_v1.py`; 826 Zeilen im damaligen Hauptmodul. Blob: `f2295b883439749ea2316f0054e8d6fef48bc54d`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `build_canonical_portfolio_learning_v1`, `derive_portfolio_learning_identity_v1`, `validate_canonical_portfolio_learning_v1`, `canonical_record_payload_v1`.
+
+Daten-/Klassenstruktur: `PortfolioLearningValidationError`, `StrategyLayerObservationV1`, `PortfolioMemberV1`, `PairwiseObservationV1`, `PortfolioPolicyV1`, `CanonicalPortfolioLearningRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 10. Koordinierter Offline-Forschungsablauf
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/7c36858bb6b9ed036bba901170d370b61a805110>) · 2026-08-18T13:12:29Z
+
+Code: `src/experiments/canonical_automated_offline_research_loop_v1.py`; 949 Zeilen im damaligen Hauptmodul. Blob: `e2b3a5cdf16e958e9767010dd75b2d9484ec39d1`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `run_canonical_automated_offline_research_loop_v1`, `derive_loop_identity_v1`, `canonical_record_payload_v1`, `validate_canonical_automated_offline_research_loop_v1`, `selected_policy`.
+
+Daten-/Klassenstruktur: `AutomatedOfflineResearchLoopValidationError`, `ResearchHypothesisCandidateV1`, `OfflineExperimentObservationsV1`, `CanonicalAutomatedOfflineResearchLoopRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 3 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 11. Meta-Learning
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363>) · 2026-08-18T13:38:33Z
+
+Code: `src/experiments/canonical_meta_learning_v1.py`; 1641 Zeilen im damaligen Hauptmodul. Blob: `9a02aada501ff89f7010acc57fe0386b24dfccac`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `canonical_meta_learning_policy_v1`, `build_canonical_meta_learning_v1`, `derive_meta_learning_identity_v1`, `canonical_record_payload_v1`, `validate_canonical_meta_learning_v1`.
+
+Daten-/Klassenstruktur: `MetaLearningValidationError`, `MetaLearningLaterOutcomeV1`, `MetaLearningExperimentUnitV1`, `MetaLearningPolicyV1`, `CanonicalMetaLearningRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+### 12. Erweiterte Forschungssuche
+
+[GitHub-Commit](<https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972>) · 2026-08-18T14:04:39Z
+
+Code: `src/experiments/canonical_advanced_search_v1.py`; 1515 Zeilen im damaligen Hauptmodul. Blob: `703b2145ec6765271d99da4a52929d4f842bdb54`. GitHub-Abgleich: identisch.
+
+Öffentliche Funktionen: `canonical_advanced_search_objective_v1`, `canonical_advanced_search_constraint_v1`, `build_canonical_advanced_search_v1`, `derive_search_identity_v1`, `canonical_record_payload_v1`, `validate_canonical_advanced_search_v1`.
+
+Daten-/Klassenstruktur: `AdvancedSearchValidationError`, `SearchAxisV1`, `SearchSpaceV1`, `SearchObjectiveV1`, `SearchConstraintV1`, `CanonicalAdvancedSearchRequestV1`.
+
+Pfadbezogene GitHub-Historie bis 5d1c838c15369507c5247834db4dd0df25592169: 1 zurückgegebene Commits; alle Endpoint-Seiten abgefragt.
+
+## Grenzen der History-Abdeckung
+
+Die eingeführten Hauptmodule wurden über GitHub direkt verifiziert. Pfadhistorie ist auf die Abstammung des ausdrücklich angegebenen Vergleichspins begrenzt; keine Behauptung, alle Branches, PR-Zwischenstände, Umbenennungen oder den neuesten Remote-Stand vollständig erfasst zu haben. Das lokale Repository ist teilweise shallow; verfügbare Einzelobjekte und direkte GitHub-Abfragen ergänzen sich.
+
+Ein älterer Commit vom 27.06.2026 enthält bereits Self-Learning-Vertragsmanifeste im damaligen Legacy-Learning-/Promotion-Umfeld. Er ist als Vorgänger vermerkt und wird nicht still mit dem August-Programm oder dessen inneren Ebenen gleichgesetzt.
+
+Die Suche nach dem eigenständigen ursprünglichen Master-Runbook bleibt offen. Ein Git-Commit beweist seine damals enthaltenen Dateien; er kann kein nie eingechecktes Runbook automatisch ersetzen.
+
+Keine Produktdateien verändert; kein Checkout, Fetch, Commit, Push oder Merge. Ausschließlich Git-/GitHub-Lesezugriffe und lokale Untersuchungsartefakte.

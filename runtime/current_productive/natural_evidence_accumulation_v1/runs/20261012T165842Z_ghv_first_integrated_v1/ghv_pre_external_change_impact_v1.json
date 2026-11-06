@@ -1,0 +1,61 @@
+{
+  "ALL_CHANGE_EVENTS_FANOUT_TRAVERSED": true,
+  "GHV_ROOT_CHANGE_EVENT_ID": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "change_events": [
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_1dbad980a95181c4c41f1b52"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_5968a7423410ef37f2485c05"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_57fc4331bfff499858799840"
+    },
+    {
+      "CHANGED_FIELDS": [
+        "live_29p_status",
+        "sizing_outcome"
+      ],
+      "CHANGE_EVENT_ID": "LIVE_29P_REBOUND",
+      "DIRECT_CONSUMERS": [
+        "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+      ],
+      "object_generation_id": "gen_c68491c0fe6c25295c5b054f"
+    },
+    {
+      "AFFECTED_GATES": [
+        "try_bind_current_productive_venue_plan_v1"
+      ],
+      "CHANGE_EVENT_ID": "VENUE_PLAN_GATE",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "reason": "HOLD"
+    }
+  ],
+  "ghv_explicit_root": true,
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "schema_version": "ghv_pre_external_change_impact.v1"
+}

@@ -17,10 +17,10 @@ from trading.master_v2.canonical_market_context_v1 import (
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
-    CanonicalScopeInitializationPolicyV1,
+    default_instrument_relative_scope_initialization_policy_v1,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
-    SCOPE_INITIALIZATION_POLICY_VERSION,
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
 )
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
@@ -151,7 +151,7 @@ def build_productive_replay_baseline_input_v1(
         "canonical_trading_decision_evidence": CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
     }
     policy_versions = {
-        "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+        "scope_initialization": SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
         "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
@@ -217,11 +217,7 @@ def build_productive_replay_baseline_input_v1(
         hard_risk_reduction_signal=PolicySignalV0(triggered=False),
         safety_exit_signal=PolicySignalV0(triggered=False),
         policies=IntegratedOfflineReplayPoliciesV1(
-            scope_initialization=CanonicalScopeInitializationPolicyV1(
-                min_scope_band=50.0,
-                max_scope_band=500.0,
-                policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
-            ),
+            scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
             scope_event_generator=ScopeEventGeneratorPolicyV1(
                 hard_max_scope_distance=1000.0,
                 hard_max_adverse_distance=500.0,

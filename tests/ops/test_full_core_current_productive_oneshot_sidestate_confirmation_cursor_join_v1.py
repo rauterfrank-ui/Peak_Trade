@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -17,8 +18,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
     provenance_for_bound_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
-    build_productive_lane_reconciliation_admission_v1,
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_test_master_v2_reconciliation_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
@@ -30,7 +31,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     DECISION_ENTER,
     STATUS_PASS,
-    join_current_productive_enter_live_29p_before_venue_plan_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     try_bind_current_productive_venue_plan_v1,
@@ -51,17 +51,16 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 )
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
-    TypedRuntimeProducerOutcomeV1,
+)
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
 )
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+    CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from trading.master_v2.double_play_state import SideState
-from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
-    _apply,
-    _sixty_one_samples,
-)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -76,7 +75,7 @@ DR_HEADING = (
 )
 THIS_SLICE = "11.2.1.DR.FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_AND_CONFIRMATION_CURSOR_JOIN"
 _INSTRUMENT = "inst-eth-usdt-perp"
-_PRODUCED_G17_CACHE: dict[str, CanonicalVolatilityTypedRuntimeProducerScaffoldV1] = {}
+_PRODUCED_G17_CACHE: dict[tuple[str, str], CanonicalVolatilityTypedRuntimeProducerScaffoldV1] = {}
 _F1_M9_LEDGER_CACHE: dict[str, object] | None = None
 
 
@@ -120,7 +119,10 @@ PROTECTED_ALGORITHM_FILES = (
 def _bound(*, instrument_id: str = _INSTRUMENT) -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id=instrument_id,
-        venue_native_id=instrument_id,
+        venue_native_id={
+            "inst-eth-usdt-perp": "ETH-USDT-SWAP",
+            "inst-btc-usdt-perp": "BTC-USDT-SWAP",
+        }.get(instrument_id, instrument_id),
         ranking_snapshot_id="rank-cursor-join",
         ranking_integrity_digest="rank-cursor-join-digest",
         universe_snapshot_id="uni-cursor-join",
@@ -130,7 +132,7 @@ def _bound(*, instrument_id: str = _INSTRUMENT) -> BoundInstrumentV1:
     )
 
 
-def _strong_uptrend_closes(count: int = 64) -> tuple[float, ...]:
+def _strong_uptrend_closes(count: int = 100) -> tuple[float, ...]:
     return tuple(1000.0 + float(index) * 10.0 for index in range(count))
 
 
@@ -138,36 +140,27 @@ _AUTO_G17 = object()
 
 
 def _produced_g17_producer(
-    *, instrument_id: str
+    *, instrument_id: str, venue_native_id: str | None = None
 ) -> CanonicalVolatilityTypedRuntimeProducerScaffoldV1:
-    cached = _PRODUCED_G17_CACHE.get(instrument_id)
+    from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+        governed_c1_aligned_g17_dk_producer_v1,
+    )
+
+    bound = _bound(instrument_id=instrument_id)
+    if venue_native_id is not None:
+        bound = replace(bound, venue_native_id=venue_native_id)
+    key = (instrument_id, bound.venue_native_id)
+    cached = _PRODUCED_G17_CACHE.get(key)
     if cached is not None:
         return cached
     store_root = Path(tempfile.mkdtemp(prefix="g17-presence-gate-"))
-    created = _apply(
-        store_root,
-        samples=_sixty_one_samples(
-            canonical_instrument_id=instrument_id,
-            venue_instrument_id=instrument_id,
-        ),
-        canonical_instrument_id=instrument_id,
-        venue_instrument_id=instrument_id,
+    producer = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=1_700_000_000.0,
+        evidence_store_root=store_root,
     )
-    assert created.producer is not None
-    assert created.last_outcome == TypedRuntimeProducerOutcomeV1.PRODUCED.value
-    _PRODUCED_G17_CACHE[instrument_id] = created.producer
-    return created.producer
-
-
-def _productive_flat_admission_v1(bound: BoundInstrumentV1):
-    """Verified-empty book. The oneshot enter fixture tests flat reconciled entry."""
-    with tempfile.TemporaryDirectory(prefix="pt-oneshot-recon-") as raw:
-        return build_productive_lane_reconciliation_admission_v1(
-            bound=bound,
-            occupancy_payloads={"POSITIONS": {"code": "0", "data": []}},
-            state_root=Path(raw),
-            repository_sha="fixture-oneshot-productive-flat-v1",
-        )
+    _PRODUCED_G17_CACHE[key] = producer
+    return producer
 
 
 def _cycle(
@@ -188,7 +181,9 @@ def _cycle(
     )
     canonical_id = str(resolved_bound.instrument_id or instrument_id)
     producer = (
-        _produced_g17_producer(instrument_id=canonical_id)
+        _produced_g17_producer(
+            instrument_id=canonical_id, venue_native_id=resolved_bound.venue_native_id
+        )
         if g17_typed_vol_producer is _AUTO_G17
         else g17_typed_vol_producer
     )
@@ -215,7 +210,10 @@ def _cycle(
             mark_px=last,
             index_px=index_px,
         ),
-        master_v2_reconciliation_admission=_productive_flat_admission_v1(resolved_bound),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=resolved_bound,
+            session_id=cycle_id,
+        ),
         **_f1_m9_cycle_ledger_kwargs_v1(),
     )
 
@@ -282,7 +280,7 @@ def test_cycle_a_persists_confirmation_progress_without_enter(tmp_path: Path) ->
     restored = restore_current_productive_sidestate_confirmation_cursor_v1(
         cursor,
         expected_instrument_id=_INSTRUMENT,
-        expected_venue_native_id=_INSTRUMENT,
+        expected_venue_native_id="ETH-USDT-SWAP",
         venue_flat=True,
     )
     assert restored.disposition.value == "restored"
@@ -309,9 +307,10 @@ def test_cycle_b_restores_cursor_and_existing_logic_can_enter() -> None:
 
 def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -> None:
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
-        EPOCH,
         _balance_payload,
         _injected,
+        _join,
+        EPOCH,
     )
 
     cycle_a = _cycle_a_with_confirmation_progress()
@@ -321,14 +320,15 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
     )
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    # Productive replay does not invent offline-algebra equity. Sizing binds at 29P.
-    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
+    # MV2 host wires simulated-economics CRS boundary before integrated replay.
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
+    assert str(cycle_b.replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED not in cycle_b.replay.evidence.reason_codes
 
-    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+    join = _join(
         replay=cycle_b.replay,
-        bound_instrument=_bound(),
+        bound=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch=EPOCH,
     )
     assert join.decision_class == DECISION_ENTER
     assert join.status == STATUS_PASS
@@ -367,6 +367,7 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
         EPOCH,
         _balance_payload,
         _injected,
+        _join,
     )
 
     cycle_a = _cycle_a_with_confirmation_progress()
@@ -376,12 +377,12 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
     )
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
-    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
+    assert cycle_b.replay.intermediate.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    join = _join(
         replay=cycle_b.replay,
-        bound_instrument=_bound(),
+        bound=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch=EPOCH,
     )
     assert join.status == STATUS_PASS
     rebound = join.replay
@@ -407,7 +408,8 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
     )
     assert envelope.envelope_id
     assert envelope.envelope_digest
-    assert envelope.instrument_id == _INSTRUMENT
+    assert rebound.evidence.instrument_id == _INSTRUMENT
+    assert envelope.instrument_id == _bound().venue_native_id
     assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
 
 
@@ -493,18 +495,12 @@ def test_wrong_instrument_cursor_does_not_leak_state() -> None:
     assert cycle_b.decision_outcome != "enter_long"
 
 
-def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
-    import subprocess
-
-    diff = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main", "--", *PROTECTED_ALGORITHM_FILES],
-        cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-        timeout=30,
+def test_protected_algorithm_files_match_approved_reconfiguration() -> None:
+    from tests.ops._reconfiguration_protected_sources_v1 import (
+        assert_approved_reconfiguration_sources_v1,
     )
-    assert diff.stdout.strip() == ""
+
+    assert_approved_reconfiguration_sources_v1(REPO_ROOT, PROTECTED_ALGORITHM_FILES)
 
 
 def test_ssot_docs_once_present() -> None:
@@ -526,6 +522,6 @@ def test_ssot_docs_once_present() -> None:
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1"
     ) in spec
-    assert "11.2.1.DR" in atlas
+    assert "id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1" in atlas
     assert "current_productive_sidestate_confirmation_cursor_v1.py" in atlas
     assert json.loads(json.dumps({"POST_COUNT": "0"}))["POST_COUNT"] == "0"

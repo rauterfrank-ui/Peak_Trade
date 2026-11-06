@@ -1,0 +1,243 @@
+{
+  "schema": "peaktrade.point1_history_checkpoint.v1",
+  "authority": "NONE",
+  "product_code_changed": false,
+  "global_semantic_recertified": false,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "f9a9d1a44f93f7fcd7361b428b37e2a8eb9a195addf7c3ef8f7f4cc1ce105461",
+      "bytes": 16428
+    },
+    {
+      "path": "consumer-probes.json",
+      "sha256": "888ce6f617fd9883543774b9fa7fc56846d1a356b6f36567631b369a2febebfb",
+      "bytes": 2161
+    },
+    {
+      "path": "consumer_probe.py.txt",
+      "sha256": "905b381eddef91ab4098dc9c3e44c420398835362a9ff0fb1acaf705aabbec09",
+      "bytes": 5750
+    },
+    {
+      "path": "current-sources.json",
+      "sha256": "93ba32cd9ee68b63e875bed593dad6402a6cddb43ea958b350bb93ad5bc6690d",
+      "bytes": 8285
+    },
+    {
+      "path": "forecast-history.log.txt",
+      "sha256": "f2e138ab9c614524bbae9e0b646bf638c0090e5b276eb0e1d13ec41a8839ccd2",
+      "bytes": 142
+    },
+    {
+      "path": "historical/01-2c67dd736216-evaluation_observation_v0.py.txt",
+      "sha256": "0ef8c4b02a31a2b14284c92b4468c9ad08c4f4101e20fbf30dfc41f4186913df",
+      "bytes": 6151
+    },
+    {
+      "path": "historical/02-31f869272982-DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md.txt",
+      "sha256": "989d7dff335063bc21431c1670354d9be30000122e7435edc4b1a48836e41563",
+      "bytes": 11637
+    },
+    {
+      "path": "historical/03-5320a087f4c4-real_outcome_horizon_engine_v1.py.txt",
+      "sha256": "bfd79144f85eefefada451758b9e8ff7a489c1b569de78fded3eeb95f4b31867",
+      "bytes": 3887
+    },
+    {
+      "path": "historical/04-3279f991e155-n_bars_bar_evidence_supplier_v1.py.txt",
+      "sha256": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+      "bytes": 13806
+    },
+    {
+      "path": "historical/05-3279f991e155-o4_n_bars_bar_evidence_bridge_contracts_v1.py.txt",
+      "sha256": "9125459a08aee2a37ea278d8c4f6a8f19258bb758a5175195df01bc84e13d549",
+      "bytes": 13762
+    },
+    {
+      "path": "historical/06-e8fd6d975152-n_bars_bar_evidence_supplier_v1.py.txt",
+      "sha256": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+      "bytes": 13806
+    },
+    {
+      "path": "historical/07-32171b35e631-forecast_evidence_v1.py.txt",
+      "sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682",
+      "bytes": 10770
+    },
+    {
+      "path": "historical/08-32171b35e631-forecast_outcome_join_v1.py.txt",
+      "sha256": "be924030beee05f9b59fc0cc89906471c69a6f26144ed00754e609a337883ea8",
+      "bytes": 3381
+    },
+    {
+      "path": "historical/09-32171b35e631-calibration_evidence_v1.py.txt",
+      "sha256": "1fa265f3b5fe1eaea00f2f8ea4dd1c460017e822c26380959c1c480a22812ca3",
+      "bytes": 8448
+    },
+    {
+      "path": "historical/10-32171b35e631-test_market_intelligence_forecast_calibration_offline_stack_v1.py.txt",
+      "sha256": "53cbe19ee140702fdce31fddda66b95a216520c8ce7bb047ca809c74655e0767",
+      "bytes": 18482
+    },
+    {
+      "path": "historical/11-32171b35e631-MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md.txt",
+      "sha256": "1c3aff875cc17e72c19aea028b93309be15e6c6fae301201a02225170db79ef9",
+      "bytes": 887
+    },
+    {
+      "path": "historical/12-a9b9b6d3c8e2-market_context_v1.py.txt",
+      "sha256": "e6c74c71ae9f0ec1cb928e5f59077a4f13cc84b3d91655d8a825e2c8322850d4",
+      "bytes": 14902
+    },
+    {
+      "path": "historical/13-6d4de46525d4-realized_behavior_v1.py.txt",
+      "sha256": "cd2e461ed4e8fa7563e08c93e32170afcc14e8484b0dd1e22741c1327079cd26",
+      "bytes": 21257
+    },
+    {
+      "path": "historical/14-9065e8eb8824-bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py.txt",
+      "sha256": "00b58b4ea050360375b079580d98f7ae699197af6f9287b77e1563bd260098b5",
+      "bytes": 24723
+    },
+    {
+      "path": "historical/15-0808d2eed72e-offline_recorded_mark_horizon_source_v1.py.txt",
+      "sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
+      "bytes": 9165
+    },
+    {
+      "path": "historical/16-0808d2eed72e-offline_n_bars_semantic_repair_v1.py.txt",
+      "sha256": "a737c5f2f24cba0f79ce953f35cd9fcf9b03ba7a5a0cbe248580949b17cc26a6",
+      "bytes": 17572
+    },
+    {
+      "path": "historical/17-221755e3ae8d-measured_return_calibration_v1.py.txt",
+      "sha256": "e068ad2802d7395c27810b65e6b29c96e8e1f5e8fbb750c7bfb6d71c2b5d87c6",
+      "bytes": 7936
+    },
+    {
+      "path": "historical/18-3aa3ad751123-integration_contracts_v1.py.txt",
+      "sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+      "bytes": 4441
+    },
+    {
+      "path": "historical-blob-equivalence.json",
+      "sha256": "ed27c60986fb086c3063261783b212055046dd96a700d5c408795f4ce8405c17",
+      "bytes": 438
+    },
+    {
+      "path": "historical-source-paths.txt",
+      "sha256": "df96955df33f3b531594c60501ec5e5397b248f6c834899833a859e545ce2d47",
+      "bytes": 110539
+    },
+    {
+      "path": "historical-sources.json",
+      "sha256": "e771093f14f69a28e17e16162e71a3cdaaacd4a3b5cf91b77588b7f4578642b9",
+      "bytes": 25823
+    },
+    {
+      "path": "history-scope.json",
+      "sha256": "7daf7ca3b408fb8261275fc7f77f52bf915932a61edf144ede2637b19e379388",
+      "bytes": 1458
+    },
+    {
+      "path": "introduction-events.json",
+      "sha256": "1c394a1dd9291ec6bd565091b19251e01df41d978237bcc434b8f92c7f0c11e9",
+      "bytes": 1243
+    },
+    {
+      "path": "join-history.log.txt",
+      "sha256": "2cc66df6a148a7c264553464e68c1ab2924b4ed335d0112a69caf3d31de6e557",
+      "bytes": 261
+    },
+    {
+      "path": "measurement-history.log.txt",
+      "sha256": "cdd8397e6c700f71fd6b8bb90c337b18de6291c9150b63779f7facc759c775bd",
+      "bytes": 535
+    },
+    {
+      "path": "obsidian-view.json",
+      "sha256": "6e265dade2822be7e774e032506dd163226ae4bbf2c02151fd255175efb97ec0",
+      "bytes": 17733
+    },
+    {
+      "path": "original-d03-request.txt",
+      "sha256": "656e0e2c8b8248c7fab23f83632aefdca4b211a77111d3f3fa208ab1e035f78f",
+      "bytes": 18086
+    },
+    {
+      "path": "pr-6207.json",
+      "sha256": "cdcbb05f4a7f2ed2ac4cbf2c60ea309499b927a2c7a55bf70e07576b314b4876",
+      "bytes": 19650
+    },
+    {
+      "path": "pr-6626.json",
+      "sha256": "99a081408e5f444ca830f63cebf71a3979de59ff069d659bb9f11c6978a5aa5b",
+      "bytes": 18372
+    },
+    {
+      "path": "pr-6627.json",
+      "sha256": "8aff56555957ce63ad594f5f38cfe09f50cac3e97e451a667b54398b0ad5e691",
+      "bytes": 19709
+    },
+    {
+      "path": "pr-6628.json",
+      "sha256": "328240dc462cafbc4c8b6a8edaa9621735c84193e50f8b1cfa738098c4fe1d54",
+      "bytes": 20128
+    },
+    {
+      "path": "pr-6847.json",
+      "sha256": "39b16a742458e43de6e9dec3489254ec6c8bb105096f64dd500d475aeb54e9c7",
+      "bytes": 18891
+    },
+    {
+      "path": "repository-navigation-before.md.txt",
+      "sha256": "f39b3dfbcc6ef029c1590bd8ac3d3565fb4e345d8545e9ac0ac598abbcfb5ba2",
+      "bytes": 1605
+    },
+    {
+      "path": "repository-navigation-change.json",
+      "sha256": "030b6a94df762f941d250c2d5ed4cce6ad9273700f4061b4e59e6bba838a838e",
+      "bytes": 268
+    },
+    {
+      "path": "typed-return-history.log.txt",
+      "sha256": "138d1a734f993eaeb8e5c24d0a7025e15059d6aedd54c91a04d14a04cdcb9920",
+      "bytes": 279
+    },
+    {
+      "path": "validation.json",
+      "sha256": "c0034db830d6089215907c38a65e1e5d4a760df949c912f15aa7f14a13aa6c83",
+      "bytes": 769
+    },
+    {
+      "path": "vault-before/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md",
+      "sha256": "5bc0d65842e0a78644d3b865ee27f4fa31c3c924144bd3ab06725eb2afedfaa2",
+      "bytes": 3516
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "sha256": "02b6b260782e16c4fd7a02c11ac61879509aeb7355fa54a3acad5b52bcc9c127",
+      "bytes": 8663
+    },
+    {
+      "path": "vault-before/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "sha256": "588bbcb9067449141fd7ea48d57c14fc456a0132ba88a4ce69ceeac26db5edb7",
+      "bytes": 10717
+    },
+    {
+      "path": "vault-before/system/Systemindexbindung.json",
+      "sha256": "6fb7fe6625950a94e7ff4290de0e8b976562c769d6f285c55a81eb6ccfa99fc2",
+      "bytes": 3818532
+    },
+    {
+      "path": "vault-changes.json",
+      "sha256": "68d8c8687d4273e2aa4bd60598babff53ddcb5f4680124ae76c92d9bd437a6ba",
+      "bytes": 2329
+    },
+    {
+      "path": "verify_checkpoint.py",
+      "sha256": "bc0540706e3434de3de6fd25b6e98523570f2e17592835a43d7161490f8dfc69",
+      "bytes": 4111
+    }
+  ]
+}

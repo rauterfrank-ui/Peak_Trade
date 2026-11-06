@@ -1,0 +1,6 @@
+{
+  "schema": "peaktrade.exact_original_trace_artifact.v1",
+  "origin": "/private/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pytest-of-frnkhrz/pytest-0/test_selected_cap24_identity_r0/e6-combined-episode/learning/retained/jobs_v1/eb7e9657e2c1b5b607deca7523a263429e53aec98b72d4a7d458bf305a21c97b/consumer_ack_v1.json",
+  "sha256": "da60e5bf776cad586246cc17a45ab1b6f525d6b755c0922040b56c2e9c2097e2",
+  "original_utf8": "{\"capsule_digest\":\"1e7dfd6b246e7d72ace3751320458b99cde35375c8dc9d779dee3e13cc02decf\",\"ddo_consumers\":[{\"digest\":\"c31ee2a1802233c81087ffca87bf5cdbeb4fbcd5848ebe85fe2d465b57d51f3b\",\"record_id\":\"out.nbars.45b1747eb2e541bf76660cd2ba6d2803f04e8809498218d3\"},{\"digest\":\"2be0a38350f3b03baea99acb7baaf7916426bd21da0fde3d6bc32609b7428b23\",\"record_id\":\"ls.7ff0b2ead5d1f23381fa646e9dd3b2ea2126995af1b98ecd\"}],\"measurement_digest\":\"36cee77173d6ff815ae7fcc397138fac5f4e0d720fc1638d7a04edf1c003b1fe\",\"mi_durable_id\":\"mi.offline.durable.8021a789106096e2e209ceacea1dfb6960958eaace035912\",\"numeric_readback\":{\"error\":0.0670113769896297,\"method\":\"RETURN_ERROR_V1\",\"realized_return\":0.0870113769896297},\"optimization_input_digest\":\"40c73347a6e69be7344c5ddb86c03a3ea649e85618ef71f5a68c76ef102ca712\",\"schema_version\":\"explicit_offline_consumer_ack.v1\"}\n"
+}

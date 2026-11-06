@@ -1,0 +1,155 @@
+{
+  "schema": "peaktrade.obsidian_entry_views_refresh.v1",
+  "date": "2026-11-06",
+  "repository_checkpoint_before_refresh": "c2df25a4834ac3a3a05b7949cbdbdcea6d05cf1b",
+  "vault": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL",
+  "vault_files": [
+    {
+      "path": "Start.md",
+      "snapshot": "after/Start.md.txt",
+      "sha256": "c1983ea702a1424f05a846a5a3304bc7f0747bb3cdf61fc9e66f2e26f182fd14"
+    },
+    {
+      "path": "00 Systemindex/System Cockpit.md",
+      "snapshot": "after/00 Systemindex/System Cockpit.md.txt",
+      "sha256": "0c5304830b960329ecfc0a0d8ccca9efb1b1471dfe34d9847166938bbe3c63ca"
+    },
+    {
+      "path": "Systemkarte.canvas",
+      "snapshot": "after/Systemkarte.canvas",
+      "sha256": "eb226c2854c497b7f35fc52c0d068d4173640d4f4028a5a7dc3544c54ce81ece"
+    },
+    {
+      "path": "Systemkarte Offlineverbund.canvas",
+      "snapshot": "after/Systemkarte Offlineverbund.canvas",
+      "sha256": "12477b72afc677940db986afdbc2008bbfc611a9a4a6497120c2d90ef768f16b"
+    },
+    {
+      "path": "00 Systemindex/Galaxy View.md",
+      "snapshot": "after/00 Systemindex/Galaxy View.md.txt",
+      "sha256": "ee929e7d24718ebc33f6efa84a5ca1d4dbd72aaeb38103a38ccecbe7ac97f364"
+    },
+    {
+      "path": "Systemindexbindung.json",
+      "snapshot": "after/Systemindexbindung.json",
+      "sha256": "0b369a7ef8ac7848c375cce35a1661b7bddfdc7b4125a06dd12961dcceb3a8ce"
+    },
+    {
+      "path": "Systematlasbindung.json",
+      "snapshot": "after/Systematlasbindung.json",
+      "sha256": "22990c7bc75685c94e6e06d397fef4527f22ca9e3493440c41c8adf51f77aa96"
+    },
+    {
+      "path": "Ansichtsbindung.json",
+      "snapshot": "after/Ansichtsbindung.json",
+      "sha256": "5832e10998c864c9ee63125e16cf6919eedafd932d7678b6dca7481aafbc0f18"
+    }
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "d2dd36b858a7d62d2d394bb4ed0c9f5bb7b34809469e52463d7ec79cfba0650c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "1f148dbe8fd7d13f2fcd4333e57923fc6442c8e4f1dd7382c352c22af3101f66"
+    },
+    {
+      "path": "after/00 Systemindex/Galaxy View.md.txt",
+      "sha256": "ee929e7d24718ebc33f6efa84a5ca1d4dbd72aaeb38103a38ccecbe7ac97f364"
+    },
+    {
+      "path": "after/00 Systemindex/System Cockpit.md.txt",
+      "sha256": "0c5304830b960329ecfc0a0d8ccca9efb1b1471dfe34d9847166938bbe3c63ca"
+    },
+    {
+      "path": "after/Ansichtsbindung.json",
+      "sha256": "5832e10998c864c9ee63125e16cf6919eedafd932d7678b6dca7481aafbc0f18"
+    },
+    {
+      "path": "after/Start.md.txt",
+      "sha256": "c1983ea702a1424f05a846a5a3304bc7f0747bb3cdf61fc9e66f2e26f182fd14"
+    },
+    {
+      "path": "after/Systematlasbindung.json",
+      "sha256": "22990c7bc75685c94e6e06d397fef4527f22ca9e3493440c41c8adf51f77aa96"
+    },
+    {
+      "path": "after/Systemindexbindung.json",
+      "sha256": "0b369a7ef8ac7848c375cce35a1661b7bddfdc7b4125a06dd12961dcceb3a8ce"
+    },
+    {
+      "path": "after/Systemkarte Offlineverbund.canvas",
+      "sha256": "12477b72afc677940db986afdbc2008bbfc611a9a4a6497120c2d90ef768f16b"
+    },
+    {
+      "path": "after/Systemkarte.canvas",
+      "sha256": "eb226c2854c497b7f35fc52c0d068d4173640d4f4028a5a7dc3544c54ce81ece"
+    },
+    {
+      "path": "before/00 Systemindex/System Cockpit.md.txt",
+      "sha256": "9823a8a0f77a589c2f37cd2c02a14f9e1a3d2c1fb8c6dcae20dd5eddd162c0fd"
+    },
+    {
+      "path": "before/Ansichtsbindung.json",
+      "sha256": "4b0f897252d203d7d0082ac1b21d82ef09ff5e654cfdf65fd10675d2c8461ad1"
+    },
+    {
+      "path": "before/Start.md.txt",
+      "sha256": "2e2238ef1575d141ee3bde57dec0c9fccca76229a50f17cc75a1587619ac8cad"
+    },
+    {
+      "path": "before/Systematlasbindung.json",
+      "sha256": "c6a40c357c20ab558035a6de7ca326f28f46838038facfd237a74f0dae0a0e11"
+    },
+    {
+      "path": "before/Systemindexbindung.json",
+      "sha256": "3869bdc06854072954ba61c30e9ce7484204395ad5fb820c43a1a8114c8ba4c5"
+    },
+    {
+      "path": "before/Systemkarte Offlineverbund.canvas",
+      "sha256": "97006a6da3b213fefd27aaf626b8a9e7ecdf27da315ca8f26ebf9fa409e5970b"
+    },
+    {
+      "path": "before/Systemkarte.canvas",
+      "sha256": "3ee316dc6b510698804d2933526a99f66d994974de41bf0b1868105d134c862e"
+    },
+    {
+      "path": "galaxy-settings.json",
+      "sha256": "297713551f639953062d212676d5e7be141b2e3286b9cded9976c617fa74de6d"
+    },
+    {
+      "path": "ui-observation.json",
+      "sha256": "a00c005685a80ea9de9663f54d57e7f599771028984b49ec195b3a4c26aa336e"
+    },
+    {
+      "path": "validation.json",
+      "sha256": "7aae75ac8efb1d36cc353ee18565bae0b2359612fb3f811e90dd2cb98bb7e345"
+    },
+    {
+      "path": "verify_view.py",
+      "sha256": "a54cc8965f83a7496ce8e401b1ead96594ff74bf668707af743e1df284e06922"
+    }
+  ],
+  "product_implementation_changed": false,
+  "global_semantic_recertified": false,
+  "runtime_authorization_effect": "NONE",
+  "reused_product_evidence": [
+    {
+      "path": "docs/ops/evidence/independent_market_observation_v1_2026_11_06/manifest.json",
+      "sha256": "07f6778fb92de4d5e12b46ca6721614ee0f0194b36ce9797616630f0207ae37b"
+    },
+    {
+      "path": "docs/ops/evidence/independent_market_observation_v1_2026_11_06/source-test-bindings-before.json",
+      "sha256": "e537b0e8461f908360b3fa799e1a5a3eacb1c49ea1fa3a494f2a26b91d9fded5"
+    },
+    {
+      "path": "docs/ops/evidence/independent_market_observation_v1_2026_11_06/connected-final.xml",
+      "sha256": "d88aa9ffb4740698c3b6b4ae1a71d099d6670acd32feac24c524916ada6eefa1"
+    },
+    {
+      "path": "docs/ops/evidence/independent_market_observation_v1_2026_11_06/test-result.json",
+      "sha256": "a49c08b97b26abccfbcc4f5f622c37cd6a9bd1e1772c36974e5d48a08e305440"
+    }
+  ]
+}

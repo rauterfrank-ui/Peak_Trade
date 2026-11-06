@@ -1,0 +1,79 @@
+# Register: Konzepte
+
+Schema: `V0.9-INIT-1`. Führend für `CONCEPT_ID`.
+Stand: 2026-10-30. Instanzen: keine.
+
+[Schema](../MAPS/system_map.md#schema-v09-init-1) · [INDEX](../INDEX.md) · [README](../README.md)
+
+## Konvention
+
+Präfix: `CPT-`.
+Ein Konzept kann ein historisches Ziel sein, auch wenn es nie implementiert wurde.
+`OWNER_TARGET` ist eine normative Kategorie, kein empirischer Beweis.
+Ein Konzept ohne Beleg bleibt `UNPROVEN` und wird nicht als fehlende Komponente bezeichnet.
+
+Spätere Pflichtfelder:
+
+`CONCEPT_ID | Typ | Bedeutung | Scope | Evidenzstatus | Revisionsstatus | Quellenreferenz | Verbindungen | offene Unsicherheiten`
+
+Blueprint-Felder, erst bei einem echten Eintrag:
+
+`SOURCE_EVIDENCE | ORIGINAL_INTENT | DOMAIN_IDS | LAYER_IDS | HISTORICAL_MATURITY | CURRENT_EQUIVALENT | DEPENDENCIES | POTENTIAL_VALUE | COST_RISK | AUTHORITY_CONFLICT | DISPOSITION | OWNER_DECISION`
+
+## Instanzen
+
+Lauf `RUN-0002`. `CPT-0001` ist ein Ziel im Draft, keine Implementierung.
+
+| CONCEPT_ID | Typ | Bedeutung | Scope | Evidenzstatus | Revisionsstatus | Quelle | Verbindungen | Offen |
+|---|---|---|---|---|---|---|---|---|
+| `CPT-0001` | `CONCEPT_ID` | dokumentierte Side-Switch-Pipelines Long/Bull und Short/Bear; der Quelltext setzt `STATE_SWITCH_IMPLEMENTED=false` | `TARGET` | `PARTIAL` | `ACTIVE` | `EVI-0033` | `CON-0023`, `LYR-0002` | kein Laufzeitwechsel |
+| `CPT-0002` | `CONCEPT_ID` | langfristiges Multi-Future-Portfolio aus einem Top-20-Universum; Runtime im Text nicht autorisiert | `TARGET` | `PARTIAL` | `ACTIVE` | `EVI-0065` | `CON-0054` | erste Phase bleibt eine Position; nicht übernommen |
+| `CPT-0003` | `CONCEPT_ID` | Feature-Engine, Sentiment und Orderbuch im Katalog als fehlend oder zurückgestellt | `TARGET` | `PARTIAL` | `ACTIVE` | `EVI-0064` | `CON-0053` | keine Live-Freigabe; Reife nur aus diesem Text |
+| `CPT-0004` | `CONCEPT_ID` | KI-Schichten L0–L5 mit unbekannter Semantik; nicht die Katalogschichten L1–L10 | `TARGET` | `PARTIAL` | `ACTIVE` | `EVI-0059` | `DOM-0005`, `CON-0048` | kein Modell als Endautorität |
+| `CPT-0005` | `CONCEPT_ID` | Dashboard-Idee IDEA-DASH-001, Status NEW; nicht implementiert und nicht ratifiziert | `HISTORY` | `PARTIAL` | `ACTIVE` | `EVI-0087` | `CON-0076` | eine Tabellenzeile |
+| `CPT-0006` | `CONCEPT_ID` | Vorgeschlagener Research-Agent für Backtests; nicht begonnen und nicht ratifiziert | `HISTORY` | `PARTIAL` | `ACTIVE` | `EVI-0107` | `CON-0096` | Flag im Text aus; keine Order-Werkzeuge |
+| `CPT-0007` | `CONCEPT_ID` | `ARCHITECTURE_TARGET_CANDIDATE` historischer Außenring; untrusted; nicht ratifiziert; keine Gleichsetzung mit Master V2 oder Double Play | `HISTORY` | `UNPROVEN` | `ACTIVE` | `EVI-1602`, `EVI-1621` | keine `EDG`, keine `LYR`, keine `CON` | acht Namen nur in `EVI-1621`; `EVI-1602` benennt sie nicht; neun weitere Dateien ungelesen |
+
+## Offene Unsicherheiten
+
+- Kein Zielkonzept aus vorhandenen Notizen übernommen.
+- Die Wurzelnotiz [PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md](../PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md) ist nicht ausgewertet und nicht dupliziert.
+- Revision `RUN-0004`: `EVI-0075` und `EVI-0076` werden nicht als Zielkonzept aufgenommen. `CPT-0005` hat Scope `HISTORY`.
+- Revision `RUN-0005`: `CPT-0006` hat Scope `HISTORY`. `EVI-0113` und `EVI-0135` werden nicht als Zielkonzept aufgenommen.
+- Revision `RUN-0006`: keine neue `CPT`. `EVI-0161`, `EVI-0177` und `EVI-0182` sind nicht ratifiziert.
+- Revision `RUN-0032`: keine neue `CPT`. Die 50 Quellen wiederholen keine nie umgesetzte Zielidee, die über `CPT-0001` bis `CPT-0006` hinausgeht. Multi-Future bleibt unautorisiert. Optimization bleibt ohne produktive Kante.
+- Revision `RUN-0033`: keine neue `CPT`. Die 50 Quellen wiederholen keine nie umgesetzte Zielidee, die über `CPT-0001` bis `CPT-0006` hinausgeht. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0034`: keine neue `CPT`. Die 50 Quellen wiederholen keine nie umgesetzte Zielidee, die über `CPT-0001` bis `CPT-0006` hinausgeht. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0035`: keine neue `CPT`. Die 50 Quellen wiederholen keine nie umgesetzte Zielidee, die über `CPT-0001` bis `CPT-0006` hinausgeht. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0036`: keine neue `CPT`. Die 50 Quellen wiederholen keine nie umgesetzte Zielidee, die über `CPT-0001` bis `CPT-0006` hinausgeht. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0037`: `CPT-0007` ist ein untrusted `ARCHITECTURE_TARGET_CANDIDATE`. Scope `HISTORY`. Evidenzstatus `UNPROVEN`. Autorität `NONE`. Keine Kante. Keine Gleichsetzung mit Master V2 oder Double Play. `SOURCE_EVIDENCE=EVI-1602,EVI-1621`. `ORIGINAL_INTENT` ist die Acht-Ebenen-Tabelle in `EVI-1621`. `CURRENT_EQUIVALENT` ist nicht belegt. `DISPOSITION=NOT_ADOPTED`. `OWNER_DECISION=NONE`. `AUTHORITY_CONFLICT=NONE_BECAUSE_NO_AUTHORITY`.
+- Revision `RUN-0038`: keine neue `CPT`. `CPT-0007` bleibt unverändert. Die 50 Quellen setzen den Außenring nicht mit Master V2 oder Double Play gleich. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0039`: keine neue `CPT`. `CPT-0007` bleibt unverändert. Die 50 Quellen setzen den Außenring nicht mit Master V2 oder Double Play gleich. Multi-Future bleibt unautorisiert. Der Bayesian-Layer bleibt geparkt.
+- Revision `RUN-0040`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0041`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0042`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0043`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0044`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0045`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0046`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0047`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0048`: keine neue `CPT`. `CPT-0007` bleibt unverändert.
+- Revision `RUN-0049`: keine neue `CPT`. `CPT-0007` bleibt unverändert. Die M2DATA-Quellen `EVI-2058` bis `EVI-2074` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt.
+- Revision `RUN-0050`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2075` bis `EVI-2084` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt.
+- Revision `RUN-0051`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2085` bis `EVI-2092` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt. Fünf Lane-Namen und `MAX_POSITIONS_EFFECTIVE = 1` werden nicht als Multi-Future-Freigabe gelesen.
+- Revision `RUN-0052`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2093` bis `EVI-2099` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt. `HOLD` bleibt ein historisches Literal und keine neue Semantik.
+- Revision `RUN-0053`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2100` bis `EVI-2106` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt. `MAX_POSITIONS_EFFECTIVE = 1` wird nicht als Multi-Future-Freigabe gelesen.
+- Revision `RUN-0054`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2107` bis `EVI-2112` sind keine Zielkonzepte und keine Wirkungskanten. Der Außenring wird nicht mit Master V2 oder Double Play gleichgesetzt. Ein belegter Occupancy-Status wird nicht als Multi-Future-Freigabe gelesen.
+- Revision `RUN-0055`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2113` bis `EVI-2120` sind keine Zielkonzepte und keine Wirkungskanten. `DOM-0015` wird nicht mit Master V2 oder Double Play gleichgesetzt. `RUN-0049` bis `RUN-0054` bleiben `HISTORY`. `MAX_POSITIONS_EFFECTIVE = 1` wird nicht als Multi-Future-Freigabe gelesen.
+- Revision `RUN-0056`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2121` bis `EVI-2124` sind keine Zielkonzepte und keine Wirkungskanten. Der Supervisor-Aufruf wird nicht mit Master V2 oder Double Play gleichgesetzt.
+- Revision `RUN-0057`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `EVI-2125` bis `EVI-2128` sind keine Zielkonzepte und keine Wirkungskanten. Der Katalogstatus `CURRENT_CANONICAL` wird nicht als `CURRENT_PROVEN` übernommen.
+- Revision `RUN-0058`: keine neue `CPT`. `CPT-0007` bleibt unverändert. `DOM-0016` wird nicht mit Master V2, Double Play oder einer systemweiten Kohärenz gleichgesetzt. `CURRENT_PROVEN=false`.
+- Revision `RUN-0059`: keine neue `CPT`. `CPT-0007` bleibt unverändert. Der Aufruf von `evaluate_double_play_entry_exit_policy_v0` ändert die Double-Play-Semantik nicht und ist keine Systemkohärenz. `src/ops/double_play/` bleibt ungelesen. `CURRENT_PROVEN=false`.
+- P3-§3C, 2026-10-31, kein `RUN`: keine neue `CPT`. Die Zeilen `CPT-0001` bis `CPT-0007` bleiben unverändert. Die vollständige Erfassung belegter Zielideen im Recovery- und History-Census ist nicht erreicht. Fehlende Voraussetzung: die Wurzelnotiz `PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md` bleibt unausgewertet; die 2115 zurückgestellten Markdown-Gruppen werden nicht wiederaufgenommen; eine neue Recovery ist nicht freigegeben. Deduplizierung, Systemfit-Screening und Vertiefung sind deshalb nicht begonnen. Keine Ratifikation. `CURRENT` ist nicht als Soll verwendet. `LAST_COMMITTED` bleibt `RUN-0069`.
+- P3-§3C, 2026-10-31, Wurzelnotiz ausgewertet, kein `RUN`: `PEAK_TRADE_MD_RECOVERY_ERKENNTNISSE_MASTER.md` ist vollständig gelesen. SHA256 `a224bcafb70282d5de0948e46092e263a22d974eeed6b02dc40ad2d1cc659c59`. Die Datei bleibt unverändert. Sie bezeichnet sich als laufende Auswertung und nicht als operative SSOT. `CPT-0001` bis `CPT-0006` sind in der Notiz benannt und bleiben die bestehenden Zeilen. `CPT-0007` kommt in der Notiz nicht vor. Keine neue `CPT`. Die Kette in Abschnitt 4 ist eine historische Darstellung und keine neue Kante. Cap 2.3 und Cap 2.4 sind nur in dieser Notiz gelesen; ihre Originaldokumente sind nicht geöffnet und werden nicht als neues Ziel übernommen. Die globale Erfassung bleibt unvollständig. Keine Ratifikation. `CURRENT` ist nicht gelesen. `LAST_COMMITTED` bleibt `RUN-0069`.
+- BWP `SYSTEMFIT_CPT-0001_BIS_CPT-0007`, 2026-10-31, kein `RUN`: nur die bestehenden Zeilen und die Owner-Locks in Blueprint V0.12. Keine neue Quelle, keine neue `CPT`, keine neue Kante, keine Ratifikation. Die sieben Zeilen bleiben bytegleich. `LAST_COMMITTED` bleibt `RUN-0069`. Deduplizierung: keines der sieben ist ein Duplikat eines anderen. `CPT-0001`: Side-Switch Long/Bull und Short/Bear, `STATE_SWITCH_IMPLEMENTED=false`, Herkunft `EVI-0033`; Lock ist die geschützte Long/Short-Umschaltung ohne Rückrollen von Double Play; Ergebnis verträglich, nicht identisch und nicht ratifiziert; Disposition `TARGET`/`PARTIAL` bleibt. `CPT-0002`: Multi-Future-Top-20, Herkunft `EVI-0065`; Lock `MAX_POSITIONS_EFFECTIVE=1` schließt produktives Multi-Future aus; die Zeile sagt bereits „nicht übernommen“; diese Disposition bleibt; die Scope-Spalte `TARGET` bleibt stehen und ist keine Freigabe. `CPT-0003`: Feature-Engine, Sentiment und Orderbuch als fehlend oder zurückgestellt, Herkunft `EVI-0064`; keine Live-Freigabe, damit mit der Live-Sperre verträglich und nicht ratifiziert; Disposition bleibt. `CPT-0004`: L0–L5 mit unbekannter Semantik, Herkunft `EVI-0059`; „kein Modell als Endautorität“ trägt die Authority-Leitplanke; die Schichtsemantik bleibt `UNPROVEN`; Disposition bleibt. `CPT-0005`: Dashboard IDEA-DASH-001, Herkunft `EVI-0087`; nur historisch, nicht ratifiziert; Disposition `HISTORY` bleibt. `CPT-0006`: Research-Agent ohne Order-Werkzeuge, Herkunft `EVI-0107`; nur historisch und mit der Research-only-Leitplanke verträglich; Disposition `HISTORY` bleibt. `CPT-0007`: Außenring, Herkunft `EVI-1602` und `EVI-1621`; `UNPROVEN`, `NOT_ADOPTED`, keine Gleichsetzung mit Master V2 oder Double Play; die neun ungelesenen Dateien bleiben ungelesen. Offener Registerspannungsbefund nur bei `CPT-0002`: Scope-Spalte `TARGET` neben „nicht übernommen“. Keine Umschreibung.
+
+
+## RUN-0077 — Abgleich des gesamten bisher erarbeiteten Stands
+
+Additive Verweisrevision ohne neue CPT: CPT-0007 bleibt historischer, unratifizierter Außenring-Kandidat. CON-2065 und CON-2097 unterscheiden rekonstruierte Passung und historische Zielparameter von neuer TARGET-Ratifizierung. Die fünf Merkmale CURRENT_VORHANDEN / HISTORISCH_FUNKTIONAL_RELEVANT / HISTORISCH_AUSDRUECKLICH_VERWORFEN / ERSETZT / VERLOREN werden hier nicht pauschal auf Berichtsthemen vererbt; ohne direkte komponentenspezifische Evidenz bleiben sie UNKNOWN. [Originalbericht](../RUNS/RUN-0077/RUN-0077.md).

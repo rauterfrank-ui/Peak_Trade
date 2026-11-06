@@ -1,0 +1,215 @@
+{
+  "boundaries": [
+    "Separate native-name execution probes, not the prior Search candidate or its canonical experiment identity",
+    "Reduced-risk scenario is explicit probe configuration; no live or production policy adoption",
+    "Raw engine stats annualize by 365; existing hourly supplier recomputes by 8760",
+    "Sensitivity output stores OOS fields and split references, not all computed train/validation metrics",
+    "Funding absent; economic interpretation flag remains false; CRS unresolved evidence retained",
+    "Different results do not show improvement or natural validity; no direct canonical-core attribution"
+  ],
+  "native_grid": {
+    "evaluated": 2,
+    "failed": 0,
+    "pipeline": "PIPELINE_PASS"
+  },
+  "runs": [
+    {
+      "engine_signal_digest": "dbd5bf2ef09ae1af9fb8bd570489a952dd46b407f34f9d1864213551e9b9970c",
+      "engine_stats": {
+        "blocked_trades": 94,
+        "cagr": 0.0,
+        "economic_interpretation_allowed": false,
+        "fee_drag": 0.0,
+        "funding_drag_or_status": "NOT_BOUND",
+        "gross_return": 0.0,
+        "max_drawdown": 0.0,
+        "net_return": 0.0,
+        "profit_factor": 0.0,
+        "recovery_factor": 0.0,
+        "sharpe": 0.0,
+        "slippage_impact": 0.0,
+        "total_return": 0.0,
+        "total_trades": 0,
+        "ulcer_index": 0.0,
+        "win_rate": 0.0
+      },
+      "hourly_supplier_metrics": {
+        "avg_loss": 0.0,
+        "avg_win": 0.0,
+        "cagr": 0.0,
+        "calmar": 0.0,
+        "expectancy": 0.0,
+        "losing_trades": 0,
+        "max_drawdown": 0.0,
+        "profit_factor": 0.0,
+        "recovery_factor": 0.0,
+        "sharpe": 0.0,
+        "sortino": 0.0,
+        "total_return": 0.0,
+        "total_trades": 0,
+        "ulcer_index": 0.0,
+        "win_rate": 0.0,
+        "winning_trades": 0
+      },
+      "raw_nonzero_bars": 181,
+      "scenario": "original_fixture_sizing",
+      "slow_window": 50
+    },
+    {
+      "engine_signal_digest": "3247f8339deb5227533ac94295564f85310dd7518e8b1d7696b86f8aca3eedfe",
+      "engine_stats": {
+        "blocked_trades": 54,
+        "cagr": 0.0,
+        "economic_interpretation_allowed": false,
+        "fee_drag": 0.0,
+        "funding_drag_or_status": "NOT_BOUND",
+        "gross_return": 0.0,
+        "max_drawdown": 0.0,
+        "net_return": 0.0,
+        "profit_factor": 0.0,
+        "recovery_factor": 0.0,
+        "sharpe": 0.0,
+        "slippage_impact": 0.0,
+        "total_return": 0.0,
+        "total_trades": 0,
+        "ulcer_index": 0.0,
+        "win_rate": 0.0
+      },
+      "hourly_supplier_metrics": {
+        "avg_loss": 0.0,
+        "avg_win": 0.0,
+        "cagr": 0.0,
+        "calmar": 0.0,
+        "expectancy": 0.0,
+        "losing_trades": 0,
+        "max_drawdown": 0.0,
+        "profit_factor": 0.0,
+        "recovery_factor": 0.0,
+        "sharpe": 0.0,
+        "sortino": 0.0,
+        "total_return": 0.0,
+        "total_trades": 0,
+        "ulcer_index": 0.0,
+        "win_rate": 0.0,
+        "winning_trades": 0
+      },
+      "raw_nonzero_bars": 103,
+      "scenario": "original_fixture_sizing",
+      "slow_window": 100
+    },
+    {
+      "engine_signal_digest": "3f9e9a299acd6684bb3849daea6fd53cce94cad2d7d2ff54ee65999506d36ad8",
+      "engine_stats": {
+        "blocked_trades": 0,
+        "cagr": 0.0103972761472102,
+        "economic_interpretation_allowed": false,
+        "fee_drag": 0.0004073845257970338,
+        "funding_drag_or_status": "NOT_BOUND",
+        "gross_return": 0.007843925797034877,
+        "max_drawdown": -0.0022969999999999345,
+        "net_return": 0.007232849008339326,
+        "profit_factor": 4.148824122045803,
+        "recovery_factor": 3.1488241220459434,
+        "sharpe": 0.8809916112497889,
+        "slippage_impact": 0.0002036922628985169,
+        "total_return": 0.007232849008339326,
+        "total_trades": 2,
+        "ulcer_index": 0.0016770836195389633,
+        "win_rate": 0.5
+      },
+      "hourly_supplier_metrics": {
+        "avg_loss": -22.969999999999988,
+        "avg_win": 95.29849008339205,
+        "cagr": 0.0103972761472102,
+        "calmar": 121.75783328011045,
+        "expectancy": 36.164245041696034,
+        "losing_trades": 1,
+        "max_drawdown": -0.0022969999999999345,
+        "profit_factor": 4.148824122045803,
+        "recovery_factor": 3.1488241220459434,
+        "sharpe": 4.315959830468766,
+        "sortino": {
+          "raw_repr": "nan",
+          "status": "NON_FINITE_FROM_SUPPLIER"
+        },
+        "total_return": 0.007232849008339326,
+        "total_trades": 2,
+        "ulcer_index": 0.0016770836195389633,
+        "win_rate": 0.5,
+        "winning_trades": 1
+      },
+      "raw_nonzero_bars": 181,
+      "scenario": "explicit_lower_risk_synthetic_scenario",
+      "slow_window": 50
+    },
+    {
+      "engine_signal_digest": "420af63ae6bbdcbd82c539245a2a4e495230c147319884a4503ee1de5c291807",
+      "engine_stats": {
+        "blocked_trades": 0,
+        "cagr": 0.009219328571705487,
+        "economic_interpretation_allowed": false,
+        "fee_drag": 0.00040656700464540075,
+        "funding_drag_or_status": "NOT_BOUND",
+        "gross_return": 0.007026404645400649,
+        "max_drawdown": -0.0022969999999999345,
+        "net_return": 0.006416554138432548,
+        "profit_factor": 3.793449777288821,
+        "recovery_factor": 2.7934497772889557,
+        "sharpe": 0.8502516695451859,
+        "slippage_impact": 0.00020328350232270037,
+        "total_return": 0.006416554138432548,
+        "total_trades": 2,
+        "ulcer_index": 0.00115518385856176,
+        "win_rate": 0.5
+      },
+      "hourly_supplier_metrics": {
+        "avg_loss": -22.97,
+        "avg_win": 87.13554138432421,
+        "cagr": 0.009219328571705487,
+        "calmar": 106.5142682354947,
+        "expectancy": 32.08277069216211,
+        "losing_trades": 1,
+        "max_drawdown": -0.0022969999999999345,
+        "profit_factor": 3.793449777288821,
+        "recovery_factor": 2.7934497772889557,
+        "sharpe": 4.16536548667041,
+        "sortino": {
+          "raw_repr": "nan",
+          "status": "NON_FINITE_FROM_SUPPLIER"
+        },
+        "total_return": 0.006416554138432548,
+        "total_trades": 2,
+        "ulcer_index": 0.00115518385856176,
+        "win_rate": 0.5,
+        "winning_trades": 1
+      },
+      "raw_nonzero_bars": 103,
+      "scenario": "explicit_lower_risk_synthetic_scenario",
+      "slow_window": 100
+    }
+  ],
+  "short_names": [
+    {
+      "parameters": {
+        "fast": 10,
+        "slow": 50
+      },
+      "reason": "unknown_strategy_param:fast",
+      "status": "REJECTED"
+    },
+    {
+      "parameters": {
+        "fast": 10,
+        "slow": 100
+      },
+      "reason": "unknown_strategy_param:fast",
+      "status": "REJECTED"
+    }
+  ],
+  "small_grid": {
+    "failed": 4,
+    "pipeline": "PIPELINE_PASS"
+  },
+  "source_class": "SYNTHETIC_CONTROL_NOT_NATURAL_MARKET",
+  "source_commit": "965b9255f0d6d91935b7167fee4f8088c1213802"
+}

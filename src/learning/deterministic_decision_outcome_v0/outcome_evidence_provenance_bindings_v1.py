@@ -29,6 +29,7 @@ class ProvenanceProducerBindingV1(str, Enum):
     I67_PAPER_SIM = "I67_PAPER_SIM"
     I17_SHADOW_COUNTERFACTUAL = "I17_SHADOW_COUNTERFACTUAL"
     TESTNET_BOUNDED_OBSERVATION = "TESTNET_BOUNDED_OBSERVATION"
+    EXPLICIT_OFFLINE_SYNTHETIC_N_BARS = "EXPLICIT_OFFLINE_SYNTHETIC_N_BARS"
     REPLAY_HISTORICAL = "REPLAY_HISTORICAL"
     CANARY_EVIDENCE = "CANARY_EVIDENCE"
     DDO_CHALLENGER_SHADOW = "DDO_CHALLENGER_SHADOW"
@@ -167,6 +168,18 @@ def resolve_provenance_for_binding_v1(
                 "outcome_semantic_class": OutcomeSemanticClassV1.TESTNET_VENUE_EVIDENCE.value,
                 "outcome_realization_kind": OutcomeRealizationKindV1.OBSERVATION_ONLY.value,
                 "ddo_ledger_environment": DdoLedgerEnvironmentV1.TESTNET.value,
+            }
+        )
+    elif binding is ProvenanceProducerBindingV1.EXPLICIT_OFFLINE_SYNTHETIC_N_BARS:
+        base.update(
+            {
+                "market_observation_source": MarketObservationSourceV1.SYNTHETIC_OFFLINE.value,
+                "decision_source": DecisionSourceV1.REPLAY_SEMANTIC.value,
+                "execution_mode_label": ExecutionModeLabelV1.NO_EXECUTION.value,
+                "fill_source_type": FillSourceTypeV1.NO_FILL.value,
+                "outcome_source": "EXPLICIT_OFFLINE_N_BARS_SUPPLIER",
+                "outcome_semantic_class": OutcomeSemanticClassV1.INTERNAL_SIMULATED_OUTCOME.value,
+                "outcome_realization_kind": OutcomeRealizationKindV1.SIMULATED.value,
             }
         )
     elif binding is ProvenanceProducerBindingV1.REPLAY_HISTORICAL:

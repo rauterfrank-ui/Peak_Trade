@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-06",
+  "method": "native Obsidian UI via cua_repl",
+  "obsidian_version": "1.15.0",
+  "galaxy_version": "0.6.1",
+  "initial_runtime_plugin_loaded": false,
+  "final_runtime_graph_rendered": true,
+  "initial_community_extension_restricted_mode": true,
+  "final_galaxy_enabled": true,
+  "final_graph_nodes": 1061,
+  "canvas_search_observed": {
+    "Systemkarte.canvas": 47,
+    "Systemkarte Offlineverbund.canvas": 21
+  },
+  "views_opened": [
+    "Start",
+    "System Cockpit",
+    "Systemkarte",
+    "Systemkarte Offlineverbund"
+  ],
+  "open_tabs_include": "all four entry views plus Galaxy view",
+  "visual_check_scope": "opened views, card geometry at overview and reading zoom; no per-pixel exhaustive text audit",
+  "third_party_plugin_modified": false
+}

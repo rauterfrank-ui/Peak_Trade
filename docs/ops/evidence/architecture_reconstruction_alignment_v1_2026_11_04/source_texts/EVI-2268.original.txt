@@ -1,0 +1,188 @@
+PEAKTRADE – GESPEICHERTE QUELLE UND AKTUELLER FUTURE-PREIS
+02.11.2026 · begrenzter Offline-Nachweis, keine operative Autorität
+
+ERGEBNIS UND KLARSTELLUNG DES AUFTRAGS
+
+Eine verwendbare gespeicherte Mark-Preis-Datenstrecke wurde gefunden.
+Der Offline-Weg von abgeleiteten vollständigen Bars bis zur Lernzustands-
+Erzeugung, zum Export und zur bestehenden Optimierungs-Eingangsprüfung
+wurde damit für zwei ausdrücklich angeforderte Testvarianten ausgeführt.
+
+Zwei Stunden sind KEINE fachliche Systemvorgabe und KEINE rekonstruierte
+ursprüngliche Absicht. N=2 stammt aus dem untersuchten fehlerhaften Seed.
+Die neue Quelle bekommt N ausdrücklich vom jeweiligen Testrequest; es gibt
+keinen Default. Die Testvarianten N=2 und N=3 liefern unterschiedlich lange
+vollständige Datenstrecken. Die Pilot-Begrenzung auf maximal 24 Bars und
+die Beschränkung auf stündliche Aggregate sind nur technische Grenzen
+dieses isolierten Versuchs. Sie definieren keine produktive Horizontpolitik.
+
+Franks zusätzliche Anforderung: Zu jedem benötigten Entscheidungszeitpunkt
+muss der tatsächliche aktuelle Preis genau des gehandelten Futures für
+Dynamic Scope verfügbar sein. Das ist ein eigener Eingangsvertrag. Ein
+historischer Bar-Schlusswert und eine spätere Lern-Auswertung erfüllen
+diese Anforderung an die aktuelle Preisversorgung nicht.
+
+GEFUNDENE QUELLE
+
+Lokales Datenarchiv:
+/Users/frnkhrz/Peak_Trade_data_archive/runtime_evidence/20260520T161443Z/
+datasets/admissible_futures/inst-eth-usdt-perp/okx_raw_staging_v3_full/
+
+Raw-Seite: raw/mark_p0001_535c6940a1c4d354.json
+SHA256: 535c6940a1c4d3541057b47a62793cb2e1d353f520d062712002779e704f1d0a
+300 Minutenkerzen, originale Opens 09.10.2026 10:04–15:03 UTC.
+
+Das zugehörige archivierte Request-Protokoll liegt unter
+planning_or_validation/okx_ingest_v3_full_retry2_20261009T182433Z/
+planning_or_validation/okx_futures_market_data_ingestion_canonical_dataset_staging_v1_20261009T182433Z/reports/REQUEST_LOG.json.
+
+Exakter Hash-Match auf den protokollierten Response-Body; Endpoint
+/api/v5/market/history-mark-price-candles, instId=ETH-USDT-SWAP, bar=1m.
+Request 09.10.2026 20:03:10 UTC, Response 20:03:11 UTC, HTTP 200/code 0.
+Die Instrumentzuordnung ist an die vorhandene INSTRUMENT_BINDING.json
+gebunden. Die Pfadänderung vom ursprünglichen .tmp-Verzeichnis zum heutigen
+Raw-Staging-Verzeichnis wird über den Hash abgeglichen, nicht erfunden.
+Der ebenfalls gefundene neuere REQUEST_LOG.json direkt im Raw-Staging
+enthält null Einträge und wurde nicht als Ursprungsnachweis verwendet.
+
+Die benannte Raw-Seite im M2DATA-Backup wurde gezielt gegengeprüft.
+Ihr Hash stimmt mit der lokalen Datei überein. Keine Schreibzugriffe auf M2DATA.
+Das ist eine lokale Konsistenz- und Provenienzprüfung, keine unabhängige
+kryptografische Bestätigung durch die Börse.
+
+DURCHLAUF – ERFOLGREICH IN run004
+
+Die Entscheidung ist ausdrücklich NEU KONSTRUIERT für den Offline-Test:
+ddo.dec:offline-archived-eth-source-probe-v1, NO_ENTRY, Testzeit 10:15 UTC.
+Sie ist kein wiederhergestelltes historisches produktives DecisionEvent.
+Die Preisreihe stammt aus dem beschriebenen gespeicherten Response.
+Die alte RSR-Entscheidung vom 12.10. ist damit nicht repariert oder nachgestellt.
+
+Testrequest 1: N=2, vollständige Stunden 11–12 und 12–13 UTC, 120 originale
+finalisierte Minuten. Testrequest 2: N=3, zusätzlich 13–14 UTC, 180 Minuten.
+Aus jeder Stunde wird der Schlusskurs ihrer letzten Minute übernommen.
+Alle 60 Minuten je Stunde müssen lückenlos und finalisiert vorhanden sein.
+Die Aggregation ist ausdrücklich offline abgeleitet; sie ist kein Nachweis
+des produktiven O4-Bar-Producers und keine Einfügung von erfundenen Ticks.
+
+Die originale Minuten-Zeit ist der Kerzen-Open. Ein tatsächlicher letzter
+Tick-Zeitpunkt innerhalb dieser Minute ist nicht überliefert. Diese Grenze
+steht im Quellvertrag; es wird keine Tick-Identität behauptet.
+Die Verfügbarkeit bleibt der tatsächlich protokollierte Empfang 20:03:11 UTC.
+Um 20:03:10 entsteht für beide Testrequests noch kein Messergebnis.
+Die Kenntnis eines vollständigen historischen Zeitraums wird nicht mit einer
+damaligen Live-Verfügbarkeit gleichgesetzt.
+
+Nach Empfang: vorhandener Supplier → Evaluation → privater neuer Ledger
+→ Lernzustand → Export → zusätzliche quellengebundene Consumer-Prüfung
+→ bestehende Optimierungs-Eingangsprüfung.
+Beide Ergebnisse: ACCEPTED_OFFLINE_RESEARCH_INPUT, REPLAY_HISTORICAL.
+Kein Wechsel zu beobachteter produktiver Wahrheit, keine automatische Suche.
+economic_score_label=UNKNOWN, keine Fill-, PnL- oder Profitabilitätsbehauptung.
+
+Beibehaltene vorhandene Testmessung: ln(letzter Bar-Close / erster Bar-Close).
+N=2: -0.003378672018568576; N=3: -0.008905056832394119.
+Damit wird nicht der Return ab Test-Entscheidungszeit 10:15 gemessen.
+Auch diese Messzielwahl ist keine allgemeine fachliche Ratifikation.
+
+13 neue gezielte Tests bestanden. Abgewiesen werden unter anderem Lücken,
+doppelte Minuten, unfinalisierte Minuten, Handels-Candles statt Mark-Candles,
+falsches Instrument/Intervall, Hash-Mismatch, ungültige Preise und Empfang
+vor Kerzenabschluss. Explizite Anfragen mit N=1/2/3 belegen, dass keine feste
+Zweistundenregel eingebaut wurde; der bestehende Vergleichs-Supplier wird
+hier nur für seine unterstützten N>=2-Fälle verwendet.
+Ruff-Prüfung und git diff --check bestanden. Die bestehenden 24 Prototyp-
+Tests und 23 Absicherungstests wurden mangels Änderung nicht wiederholt.
+
+Der Vergleich wurde gegen Netzwerk-Verbindungsaufbau/urllib-Aufrufe gesperrt.
+Originaldateien und alle zu Beginn bereits modifizierten versionierten
+Dateien sowie die bisherigen Research-Prototyp-Dateien sind hashgleich.
+Neu im Checkout sind nur der isolierte Research-Quelladapter und seine Tests.
+
+AKTUELLER PREIS FÜR DYNAMIC SCOPE – KONKRETE OFFENE LÜCKE
+
+Ist-Implementierung, getrennt von ursprünglicher fachlicher Absicht:
+- GGE verwendet volatility_estimate × mark_price.
+- Runtime-Cycle übergibt mark_px als CMC.mark_price und current_price.
+- Scope-Trailing und Event-Generator verwenden diesen aktuellen Preis.
+- Die Provenienz-Schnittstelle prüft Native-ID, Wert und Preis-Klasse,
+  besitzt aber keinen originalen Preis-Zeitstempel.
+- Der Mark-Payload-Extractor übernimmt markPx/idxPx und verwirft ts.
+
+Gezieltes konstruiertes Gegenbeispiel in current-price-time-probe/result.json:
+Gleiches Instrument und gleicher Preis; nur ts variiert zwischen aktueller
+Testzeit, Jahr 2000, Jahr 2100 und fehlend. Alle vier Provenienzobjekte und
+vollständigen lokalen Runtime-Ergebnisse sind gleich. Der Cycle hat dabei
+keinen input_blocker und replay_pass=true; es war kein früher Abbruch,
+der die Unterschiede lediglich verdeckt hätte.
+
+Der Befund ist auf diesen Eingang und den konstruierten Offline-Fall gebunden.
+Ein vorgelagerter Live-Fresh-C1-Owner fordert dynamischen GET-Refresh für Mark
+an; das wurde statisch gelesen, nicht aktiviert. Ein frischer HTTP-Abruf
+beweist für sich nicht das Alter des enthaltenen Preises. Die Gesamtheit
+aller anderen Producer, Transport- und Laufzeitpfade ist nicht abgenommen.
+
+ERFORDERLICHER NÄCHSTER REPARATURVERTRAG
+
+1. Genaues Future samt Canonical-ID, Native-ID, Venue und Binding-Generation.
+2. Preisart ausdrücklich festlegen: bestehender Mark-Verbrauch ist belegt;
+   das beweist keine ursprüngliche oder neu bestätigte Gleichsetzung mit
+   letztem Handelspreis oder Geld-/Briefkurs.
+3. Originale Preiszeit, Empfangszeit und Consumer-Zeit getrennt weitergeben.
+4. Explizite Frische- und Reihenfolgeprüfung am benötigenden Consumer;
+   kein stilles Label CURRENT bei fehlender/alter/zukünftiger Zeit.
+   Kein beliebiger Sekunden-Schwellwert wird in diesem Versuch ratifiziert.
+5. Datenlücken erkennen. Für Ausfälle das Verhalten von Scope, offenen
+   Positionen und Exit-Schutz an den jeweiligen bestehenden Ownern prüfen.
+   Eine globale Blockierung aller Verarbeitung wäre kein geprüfter Ersatz.
+
+Dieser Vertrag muss vor einer dauerhaften Kopplung geprüft und implementiert
+werden. Eine bloße Preisumbenennung oder ein fester Stundenhorizont löst ihn
+nicht. Geschützte Trading-/Scope-Logik wurde in diesem Auftrag nicht geändert.
+
+STATUS UND GRENZEN
+
+P1: bestehende lokale Absicherung bleibt erhalten.
+P2: Archivquelle und Offline-Weitergabe an einem neuen Test-DecisionEvent
+demonstriert. Originale produktive Decision-Bindung, produktiver Bar-Owner,
+allgemeine Pool-Kompatibilität und Alt-Evidenz-Ausschluss bleiben offen.
+P3/P4: keine dauerhafte Anbindung, kein Scheduler, keine Live-Aktivierung.
+Aktuelle Preisversorgung für Dynamic Scope: an der untersuchten Schnittstelle
+ist die Aktualität nicht abgesichert; Gesamtbetriebsfähigkeit NOT_PROVEN.
+
+run003 enthält einen bereits erzeugten N=2-Fall, dessen Berichtsskript wegen
+eines falsch benannten Auswertungsfelds abbrach. run002 und die frühe baseline
+dokumentieren reine Probe-Setupfehler. Diese Versuche bleiben erhalten und
+werden nicht als erfolgreiche vollständige Durchläufe gezählt. run004 ist
+der vollständige maßgebliche Archivdurchlauf dieses Pakets.
+
+Keine Markt-GETs, Orders, Credential-Zugriffe, Services, Commits oder Pushes.
+Git-Fetch zur origin/main-Prüfung, sonst vollständig offline.
+
+CAUSAL_MODE=BOUNDED_OFFLINE_SOURCE_AND_PRICE_TIME_INVESTIGATION
+CURRENT_ORIGIN_MAIN_SHA=5d1c838c15369507c5247834db4dd0df25592169
+LOCAL_HEAD=242b7974fc93f0bdb47706556101bd6f0c497414
+WORKING_MODEL_DRIFT=NONE_WITHIN_BOUND_SCOPE
+GHV_ARTIFACT_PATH=evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/crosswalk_strict_current/composed_forensic_graph.v1.json
+GHV_SNAPSHOT_ID=2b9612ecbed986a7aae23c0782880205
+GHV_GRAPH_STATUS=NOT_PROVEN_BASELINE_MISMATCH_REFERENCE_ONLY
+NODES_EDGES_EXAMINED=ARCHIVE_RAW_REQUEST_BINDING_AGGREGATION_SUPPLIER_EVAL_LEARNING_EXPORT_INTAKE_AND_PRICE_TO_SCOPE_INPUT
+COVERAGE=EXACT_ARCHIVE_FILES_TWO_REQUESTS_ONE_CONSTRUCTED_DECISION_AND_ONE_HOST_COUNTEREXAMPLE
+FIXPOINT_STATUS=OPEN
+CONFIRMED_EFFECTS=PRIVATE_OFFLINE_EVIDENCE_CREATED;PRICE_TIMESTAMP_IGNORED_AT_BOUND_SEAM
+CONDITIONAL_EFFECTS=FUTURE_PRODUCTIVE_INTEGRATION_NOT_WIRED
+OPEN_EVIDENCE_GAPS=LIVE_PRICE_FRESHNESS;ORIGINAL_DECISION;PRODUCER_ACCEPTANCE;RESTART;POOL;LEGACY_EXCLUSION
+ISOLATION=NOT_PROVEN_GLOBALLY
+STOP_TRIGGERS=NO_PRODUCTIVE_SOURCE_RELEASE_FROM_OFFLINE_TEST
+NEXT_SAFE_ACTION=DEFINE_AND_TEST_PRICE_TIME_CONTRACT_AT_EXISTING_PRICE_OWNER
+
+EVIDENCE_INTEGRITY_V1=BOUNDED
+CLAIM_EXACT=HASH_BOUND_ARCHIVE_CHAIN_RUNS_OFFLINE;PRICE_TS_VARIANTS_INDISTINGUISHABLE_AT_TESTED_HOST_SEAM
+SCOPE=EXACT_FILES_AND_CONSTRUCTED_OFFLINE_DECISION_OR_QUOTES
+POSITIVE_EVIDENCE=run004;13_SOURCE_TESTS;current-price-time-probe/result.json
+ADVERSARIAL_COUNTERCHECK=MISSING_DUPLICATE_PARTIAL_WRONG_FAMILY_INSTRUMENT_HASH_EARLY_SOURCE;OLD_FUTURE_MISSING_PRICE_TIME
+REMAINING_UNCERTAINTIES=ORIGIN_INDEPENDENT_ATTESTATION;ORIGINAL_INTENT;GENERAL_PRODUCTIVE_FRESHNESS_AND_REACHABILITY
+RESULT=NOT_PROVEN_FOR_PRODUCTIVE_SUPPLY_AND_CURRENT_PRICE_GUARANTEE
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=CLOSED
+STOP_REASON=NO_GENERAL_RELEASE_FROM_PARTIAL_OFFLINE_PROOF

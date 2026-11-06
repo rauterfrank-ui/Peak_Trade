@@ -1,0 +1,9 @@
+### CON-2085 — F1/M9 und tatsächliche Veto-Präzedenz
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Der Handoff-Bericht beschreibt einen engen 600-s-Parameterpfad; der spätere Consumer-Abgleich warnt vor Presence-/Enforcement-Unterschieden und finaler Kompatibilitäts-Präzedenz. Beides bleibt als Pfad-/Revisionsfrage sichtbar. Ein administrativ gebundener Parameter oder runtime_applied-Flag beweist keine endgültige sperrende Wirkung.
+
+**Grenze:** Keine globale Aussage, Max-Age sperre heute jeden Alpha-Entry. Relevante Context-/Authority-Flags und finalen DP-Consumer gemeinsam verfolgen; 600 s nicht auf andere Zeitverträge übertragen.
+
+Quellen: EVI-2224, EVI-2217, EVI-2214, EVI-2203.

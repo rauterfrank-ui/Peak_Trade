@@ -1,0 +1,575 @@
+{
+  "alpha_allowed": false,
+  "authority": {
+    "ALPHA_ALLOWED": false,
+    "ALPHA_AUTHORITY_ADDED": false,
+    "AUTHORITY_OWNER": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+    "B06_IMPLEMENTED": true,
+    "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED": true,
+    "CAP23_SOLE_SELECTION_OWNER": true,
+    "DASHBOARD_AUTHORITY": false,
+    "ECONOMIC_RANK_ACTIVATED": true,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "INPUT2_MAX_AGE_SECONDS_RATIFIED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "OWNER": "ops.productive_futures_ranking_producer_v1",
+    "PRODUCER_VERSION": "productive_futures_ranking_producer.v1",
+    "PRODUCTIVE_ECONOMIC_RANK_ACTIVATION": false,
+    "RANKING_AUTHORITY_OWNER_SINGLE": true,
+    "RANKING_CANDIDATE_CONTEXT_AUTHORITY": true,
+    "RANKING_POLICY_ID": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+    "RANKING_POLICY_VERSION": "v1",
+    "SCHEMA_VERSION": "productive_futures_ranking_snapshot.v1",
+    "SELECTION_AUTHORITY_ADDED": false,
+    "TOP20_IS_CONTEXT_ONLY": true,
+    "TOP_N_ACTIVE_SET_AUTHORITY": false,
+    "VENUE": "okx_eea",
+    "economic_explainability_digest": "a379491aec24ad1ebfc85975651fa4e6a06c70f63d6d2edb9262c84611200089",
+    "economic_rank_state": "S_STAR_N_GE_2",
+    "feature_production_digest": "9f8c4a9c0ae7e6f45d34ad8a411b9d165ea1abede1f8743e87772e9709aed95c",
+    "feature_production_snapshot_id": "rfp_420ccd6af4eaf73eb59c6e8c",
+    "s_star_count": 493
+  },
+  "call_graph": [
+    "productive_ranking_entry_point",
+    "load_governed_universe_snapshot",
+    "validate_universe_bindings",
+    "stale_and_integrity_checks",
+    "structural_eligibility_classification",
+    "consume_b05_feature_production_snapshot",
+    "b03_economic_score_and_order",
+    "top20_candidate_context",
+    "atomic_persistence",
+    "snapshot_verification",
+    "restart_reload_proof",
+    "evidence"
+  ],
+  "candidate_count_total": 493,
+  "capability_id": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+  "config_digest": "9b7d404a826915f0938bbf94d8538c417c61a07c664e0840cdec1740aaff8b70",
+  "dashboard_input_used": false,
+  "eligible_candidate_count": 493,
+  "event_time": "2026-10-16T23:03:03Z",
+  "excluded_candidate_count": 0,
+  "excluded_candidates": [],
+  "failure_codes": [],
+  "integrity_digest": "09cf847ce396b37022cf06afd793a5ab840c7533140fecccf18047c2078c307a",
+  "multi_future_authority_created": false,
+  "produced_at_wall_time": "2026-10-16T23:03:04Z",
+  "producer_version": "productive_futures_ranking_producer.v1",
+  "ranked_candidates": [
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 1,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "1.0000000000000000e+00",
+        "balanced_movement_score": "1.0000000000000000e+00",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:DNA:USDT:USDT:dna-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "DNA-USDT-SWAP",
+        "volatility_percentile": "1.0000000000000000e+00"
+      },
+      "total_score": 1.0,
+      "venue_native_id": "DNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:LUNA:USDT:USDT:luna-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 2,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.9796747967479671e-01",
+        "balanced_movement_score": "9.9796747967479671e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:LUNA:USDT:USDT:luna-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "LUNA-USDT-SWAP",
+        "volatility_percentile": "9.9796747967479671e-01"
+      },
+      "total_score": 0.9979674796747967,
+      "venue_native_id": "LUNA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:PUMP:USDT:USDT:pump-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 3,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.9593495934959353e-01",
+        "balanced_movement_score": "9.9593495934959353e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:PUMP:USDT:USDT:pump-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "PUMP-USDT-SWAP",
+        "volatility_percentile": "9.9593495934959353e-01"
+      },
+      "total_score": 0.9959349593495935,
+      "venue_native_id": "PUMP-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:CP:USDT:USDT:cp-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 4,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.8780487804878048e-01",
+        "balanced_movement_score": "9.9085365853658536e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:CP:USDT:USDT:cp-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "CP-USDT-SWAP",
+        "volatility_percentile": "9.9390243902439024e-01"
+      },
+      "total_score": 0.9908536585365854,
+      "venue_native_id": "CP-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:BASED:USDT:USDT:based-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 5,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.8983739837398377e-01",
+        "balanced_movement_score": "9.8983739837398377e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:BASED:USDT:USDT:based-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "BASED-USDT-SWAP",
+        "volatility_percentile": "9.8983739837398377e-01"
+      },
+      "total_score": 0.9898373983739838,
+      "venue_native_id": "BASED-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:BAT:USDT:USDT:bat-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 6,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.9390243902439024e-01",
+        "balanced_movement_score": "9.8983739837398366e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:BAT:USDT:USDT:bat-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "BAT-USDT-SWAP",
+        "volatility_percentile": "9.8577235772357719e-01"
+      },
+      "total_score": 0.9898373983739837,
+      "venue_native_id": "BAT-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:UP:USDT:USDT:up-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 7,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.8577235772357719e-01",
+        "balanced_movement_score": "9.8882113821138207e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:UP:USDT:USDT:up-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "UP-USDT-SWAP",
+        "volatility_percentile": "9.9186991869918695e-01"
+      },
+      "total_score": 0.9888211382113821,
+      "venue_native_id": "UP-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:PONS:USDT:USDT:pons-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 8,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.9186991869918695e-01",
+        "balanced_movement_score": "9.8577235772357719e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:PONS:USDT:USDT:pons-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "PONS-USDT-SWAP",
+        "volatility_percentile": "9.7967479674796742e-01"
+      },
+      "total_score": 0.9857723577235772,
+      "venue_native_id": "PONS-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:LAB:USDT:USDT:lab-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 9,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.7967479674796742e-01",
+        "balanced_movement_score": "9.8170731707317072e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:LAB:USDT:USDT:lab-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "LAB-USDT-SWAP",
+        "volatility_percentile": "9.8373983739837401e-01"
+      },
+      "total_score": 0.9817073170731707,
+      "venue_native_id": "LAB-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:H100:USDT:USDT:h100-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 10,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.7357723577235777e-01",
+        "balanced_movement_score": "9.7764227642276424e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:H100:USDT:USDT:h100-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "H100-USDT-SWAP",
+        "volatility_percentile": "9.8170731707317072e-01"
+      },
+      "total_score": 0.9776422764227642,
+      "venue_native_id": "H100-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:ZRO:USDT:USDT:zro-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 11,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.6951219512195119e-01",
+        "balanced_movement_score": "9.7052845528455278e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:ZRO:USDT:USDT:zro-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "ZRO-USDT-SWAP",
+        "volatility_percentile": "9.7154471544715448e-01"
+      },
+      "total_score": 0.9705284552845528,
+      "venue_native_id": "ZRO-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:TIA:USDT:USDT:tia-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 12,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.6341463414634143e-01",
+        "balanced_movement_score": "9.6849593495934960e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:TIA:USDT:USDT:tia-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "TIA-USDT-SWAP",
+        "volatility_percentile": "9.7357723577235777e-01"
+      },
+      "total_score": 0.9684959349593496,
+      "venue_native_id": "TIA-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:NEAR:USDT:USDT:near-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 13,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.8373983739837401e-01",
+        "balanced_movement_score": "9.6341463414634143e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:NEAR:USDT:USDT:near-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "NEAR-USDT-SWAP",
+        "volatility_percentile": "9.4308943089430897e-01"
+      },
+      "total_score": 0.9634146341463414,
+      "venue_native_id": "NEAR-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:AEON:USDT:USDT:aeon-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 14,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.7764227642276424e-01",
+        "balanced_movement_score": "9.6138211382113825e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:AEON:USDT:USDT:aeon-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "AEON-USDT-SWAP",
+        "volatility_percentile": "9.4512195121951215e-01"
+      },
+      "total_score": 0.9613821138211383,
+      "venue_native_id": "AEON-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:VVV:USDT:USDT:vvv-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 15,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.4715447154471544e-01",
+        "balanced_movement_score": "9.5833333333333326e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:VVV:USDT:USDT:vvv-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "VVV-USDT-SWAP",
+        "volatility_percentile": "9.6951219512195119e-01"
+      },
+      "total_score": 0.9583333333333333,
+      "venue_native_id": "VVV-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:WAL:USDT:USDT:wal-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 16,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.7560975609756095e-01",
+        "balanced_movement_score": "9.5833333333333326e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:WAL:USDT:USDT:wal-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "WAL-USDT-SWAP",
+        "volatility_percentile": "9.4105691056910568e-01"
+      },
+      "total_score": 0.9583333333333333,
+      "venue_native_id": "WAL-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:BWET:USDT:USDT:bwet-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 17,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.4105691056910568e-01",
+        "balanced_movement_score": "9.5121951219512191e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:BWET:USDT:USDT:bwet-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "BWET-USDT-SWAP",
+        "volatility_percentile": "9.6138211382113825e-01"
+      },
+      "total_score": 0.9512195121951219,
+      "venue_native_id": "BWET-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:CT:USDT:USDT:ct-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 18,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.1869918699186992e-01",
+        "balanced_movement_score": "9.4715447154471544e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:CT:USDT:USDT:ct-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "CT-USDT-SWAP",
+        "volatility_percentile": "9.7560975609756095e-01"
+      },
+      "total_score": 0.9471544715447154,
+      "venue_native_id": "CT-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:INJ:USDT:USDT:inj-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 19,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.3902439024390238e-01",
+        "balanced_movement_score": "9.4512195121951215e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:INJ:USDT:USDT:inj-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "INJ-USDT-SWAP",
+        "volatility_percentile": "9.5121951219512191e-01"
+      },
+      "total_score": 0.9451219512195121,
+      "venue_native_id": "INJ-USDT-SWAP"
+    },
+    {
+      "canonical_instrument_id": "okx_eea:linear_perpetual:QUANT:USDT:USDT:quant-usdt-swap",
+      "data_quality_status": "PASS",
+      "eligibility_status": "ELIGIBLE",
+      "exclusion_reason_codes": [],
+      "rank": 20,
+      "score_components": {
+        "data_quality_pass": 1.0,
+        "mark_price_supported": 1.0,
+        "market_data_supported": 1.0,
+        "metadata_complete": 1.0,
+        "trading_status_live": 1.0,
+        "universe_eligibility": 1.0
+      },
+      "tie_break_values": {
+        "amplitude_percentile": "9.6747967479674801e-01",
+        "balanced_movement_score": "9.4512195121951215e-01",
+        "canonical_instrument_id": "okx_eea:linear_perpetual:QUANT:USDT:USDT:quant-usdt-swap",
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "QUANT-USDT-SWAP",
+        "volatility_percentile": "9.2276422764227639e-01"
+      },
+      "total_score": 0.9451219512195121,
+      "venue_native_id": "QUANT-USDT-SWAP"
+    }
+  ],
+  "ranking_policy_id": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+  "ranking_policy_provenance": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1 equal-weight midrank-percentile composite over CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1 and CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1 from Cap-2.1-eligible S_STAR; B05 feature production + B04 contract; venue_native_id ASC final fallback only. No PROFILE_ONLY promotion. No Cap 2.3 selection authority.",
+  "ranking_policy_version": "v1",
+  "ranking_snapshot_id": "pfr_a7b915a2b4c7fa17dc9e965a",
+  "repository_sha": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "schema_version": "productive_futures_ranking_snapshot.v1",
+  "selection_authority_created": false,
+  "snapshot_state": "VALID",
+  "top20_candidate_context_limit": 20,
+  "universe_payload_digest": "6f044ace190d9e0acc396401843884b01784be77fa74a007bfe01cadaf45f10c",
+  "universe_snapshot_id": "gfu_3816dc860c78006b",
+  "universe_source_digest": "75f8d27e16a52d19a2e5cc1d3bea0ac7f4fdcb57e0e61a141e4765521d1ebf5e"
+}

@@ -1,0 +1,9 @@
+### CON-2106 — Historische numerische Wege sind Wiederverwendungskandidaten
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Der tatsächlich vorhandene Zahlenweg aus Trades/Equity in Robustheitsberechnungen und die frühe parameterwirksame WFO-Strecke bieten konkrete Kandidaten, um feste Demonstrationsscores durch sauber gebundene Forschungsergebnisse zu ersetzen. Fehlende moderne Loop-Anbindung macht diesen fachlichen Kern nicht wertlos.
+
+**Grenze:** Daten-/Identitätsadapter, OOS-/Kostenvertrag und erlaubte Forschungsfläche müssen zuerst spezifiziert werden; keine gesperrte Legacy-Promotion wieder aktivieren.
+
+Quellen: EVI-2205, EVI-2211, EVI-2224, EVI-2244, EVI-2248, EVI-2249, EVI-2250, EVI-2251, EVI-2252, EVI-2253, EVI-2254, EVI-2255, EVI-2258, EVI-2259, EVI-2260, EVI-2261, EVI-2262, EVI-2263, EVI-2264, EVI-2265, EVI-2279, EVI-2280, EVI-2282, EVI-2283, EVI-2285, EVI-2286, EVI-2287, EVI-2288, EVI-2295.

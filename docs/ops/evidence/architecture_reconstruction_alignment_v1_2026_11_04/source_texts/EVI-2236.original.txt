@@ -1,0 +1,435 @@
+# Von PR #6626 logisch rückwärts: DDO-Verträge, Datenbedeutung und Implementierungsstränge
+
+Stand 02.11.2026. Untersucht sind 31 Vorgänger-/Neben-PRs zusätzlich zum bereits gesicherten Ausgangspunkt #6626. Die Arbeit verfolgt die fachlichen Abhängigkeiten und behandelt Speicherschritte, Replay und Referenzadapter als getrennte Stränge. Sie behauptet keine vollständige Prüfung jedes PRs des gesamten PeakTrade-Repositories.
+
+## Das Ergebnis des Rückwegs
+
+Der Ausgangspunkt #6626 ist keine ursprüngliche Erfindung des Lernsystems. Er ist der nachträgliche fachliche Abschluss einer konkreten bis dahin offen gebliebenen Outcome-/Horizon-Frage. Direkt davor stellte #6625 vorhandene Auswertungsconsumer auf die richtige Double-Play-Bedeutung um und hielt reale spätere Outcomes ausdrücklich zurück. #6624 schuf dafür den referenzgenauen Join zwischen allgemeinem DecisionEvent und typisiertem Producer-Output.
+
+Weiter zurück zeigt sich: Diese Unterscheidung war nötig, weil das erste Capture #6206 zunächst allgemeines decision_result=NO_ACTION schrieb. #6300 ergänzte die exakten Producer-Handlungen in einer eigenen Typed-Observation. Für handlungsbezogene Ergebnisse darf die allgemeine Hülle danach UNKNOWN bleiben; die Handlung muss aus der verbundenen getypten Beobachtung gelesen werden. Erst #6624/#6625 machen diese Trennung zu einer expliziten Consumer-Regel. Das bedeutet nicht, dass jede andere Quelle verloren war; es betrifft die Aussagekraft dieser konkreten DDO-Felder.
+
+Die frühe Offline-Evaluation #6207 bezog actual_outcome_ref und economic_score aus einer vom Caller gelieferten Observation. Sie beschaffte diese Werte nicht selbst aus späteren Marktdaten. Eine OutcomeRecord-Datei und ein erfolgreicher Evaluatoraufruf bedeuteten deshalb noch keine funktionierende Outcome-Versorgung. Genau an dieser Voraussetzung setzt #6626 fachlich an. Die später am 19.09. eingeführten Supplier-/Host-Schritte #6628/#6632 gehören zur anschließenden Umsetzung und sind in der [vorherigen historischen Untersuchung](../ddo-historical-intent-2026-11-02/Historischer_Entwurf_O4_NBars_und_spaeterer_Export_Seed.md) gesichert.
+
+## Der frühere Blueprint-Ursprung dieses DDO-Programms
+
+Der Originalauftrag zur ersten Umsetzung hängt eine erhaltene 49-seitige PDF an. Ihre Grundfassung bezeichnet sich als am 24.08.2026 erstellt; Erweiterung und Implementation-Completeness-Addendum sind auf 01.09.2026 datiert. Diese kombinierte Datei wurde am 01.09. als Zielquelle für WP-FA-01/02 geliefert. Die Erstellungsangabe der Grundfassung ist eine Aussage im Dokument, kein Beweis dafür, dass alle 49 Seiten schon am 24.08. existierten.
+
+[Original-PDF](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/cab7cadc-a468-4aa5-b210-7c54e3b3ad42/PEAK_TRADE_DETERMINISTIC_DECISION_OUTCOME_LEARNING_BLUEPRINT_FULL_AUTONOMY_IMPLEMENTATION_COMPLETE_2026-09-01.pdf) · SHA256 8ddd8c0868ba686efb93cab85a4f8ab1bd5ccd6a4e4f9ac7705acdf25bf89e77. Der Originalauftrag und die PDF stufen sie als nichtoperative Designquelle ein. Historische Implementierungs-, STOP- und Freigabesätze darin werden hier nicht als neue Aufträge ausgeführt.
+
+Der fachliche Kern ist breiter als der spätere enge N-Bars-Vertrag:
+
+- Seiten 2–4: Lernen soll Markt-, Entscheidungs-, Scope-, Datenqualitäts-, Safety-, Execution-, Positions-/Account- und Experimentinformationen auseinanderhalten. Jeder wesentlichen Entscheidung soll später eine tatsächliche Folge zugeordnet werden. Beobachtete Tatsachen und zulässige Gegenannahmen sind getrennt.
+- Seite 4: actual_outcome umfasst beobachtete Markt-, Execution-, Risiko- und PnL-Folgen; economic_score ist als Nettoökonomie nach Kosten beschrieben. Safety- und Decision-Qualität sind andere Bewertungsgrößen. Spätere Profitabilität darf eine zum Entscheidungszeitpunkt korrekte Safety-Reaktion nicht nachträglich umetikettieren.
+- Seiten 5, 20–21 und 29: Rohbelege bleiben erhalten; abgeleitete Features/Interpretationen ersetzen sie nicht. Evidenz soll über Hypothese, Experiment und Kandidat nachvollziehbar bleiben. Registry, Evaluation, Validierung und mögliche spätere Freigabe sind verschiedene Aufgaben.
+- Seiten 30–32 und 42: Die Umsetzung soll Verträge, Ledger, Capture, Replay, Outcome und Attribution aufeinander aufbauen. Die Existenz einer Record-Klasse ist kein Beweis einer vollständig versorgten Funktion.
+
+Die PDF wurde textseitig nach Seiten erschlossen; die zentrale Outcome-Seite 4 zusätzlich gerendert und visuell geprüft. Es wurde keine neue PDF erzeugt oder das Original verändert. Quellen: [seitenweise Extraktion](./blueprint-pages.json), [PDF-Provenienz](./blueprint-provenance.json), [Originalauftrag vom 01.09.](./message-316683.txt), [Nachrichtenregister](./messages.json).
+
+## Erste Umsetzung und Wiederaufnahme
+
+#6202 wurde geschlossen, ohne gemergt zu werden. Sein erhaltener Head ist d76d349753c5eac9f5c97c27cdcfc6fba8dd659e. Die anschließende Venue-Bereinigung #6203 war eine eigenständige Baseline-Änderung. #6204 brachte danach die erhaltene DDO-Grundlage auf Mainline. Ein unabhängiger Vergleich der GitHub-Datei-Blob-SHAs zeigt: Alle 20 geänderten Dateien von #6202 und #6204 sind byteidentisch. #6204 ist daher nicht der Beginn eines neuen Designs, sondern die gemergte Wiederaufnahme dieses ersten Entwurfs.
+
+Die Grundlage bestand aus versionierten Event-/Incident-/OutcomeRef-Verträgen, Hash-/Lineage-Regeln und einem Append-only-Ledger. Weder die Original-PR noch ihre Wiederaufnahme enthielten bereits eine reale spätere Markt-/Execution-/PnL-Versorgung. Quelle: [20 Blob-Vergleiche](./6202-to-6204-blob-comparison.json).
+
+## Was die Nebenstränge beitragen und was sie nicht ersetzen
+
+Die Speicherkette #6301–#6310 macht Owner, Scope, Ledger-Pfad, Append-Korrektheit und Nachweisgrenzen explizit. Besonders wichtig sind #6303 und #6304: Ein Vertrag über State-Root/Umgebung/Account ist noch kein gebundener Dateipfad; erst der nächste Schritt bindet diesen Pfad bei gültiger Injection. Der Default kann weiterhin ungebunden sein. Speichererfolg beweist keine richtige Datenbedeutung.
+
+#6311–#6313 betreffen einen anderen Speicherauftrag: mutation-kritischen Control-State mit WAL, nicht den beobachtenden DDO-Evidenzledger. Diese Domänen dürfen trotz ähnlicher Durability-Begriffe nicht gleichgesetzt werden.
+
+Die Replay-Kette #6353–#6356 trennt gespeicherten Output rekonstruieren, Input vor dem Producer-Aufruf erfassen und die heutige Producerfunktion tatsächlich erneut ausführen. Ein heutiger Funktionsreplay ist kein historischer Code-Replay und kein Nachweis späterer wirtschaftlicher Folgen.
+
+#6208/#6209/#6314 liefern Registry, Evidence-Packs und Adapter zu bestehenden Identitäts-/Validierungsownern. Sie importieren Nachweise beziehungsweise referenzieren Engine-Owner; sie erzeugen nicht allein dadurch neue Walk-Forward-/Monte-Carlo-/Stress-Ergebnisse. Die kanonische Experimentidentität ist ein bereits vorhandener Fremdowner; dessen früherer Ursprung #5928 wurde separat untersucht und hier nicht erneut als vollständiger eigener Zweig auditiert.
+
+## Fachliche Veränderung zwischen breitem Ziel und v1-Vertrag
+
+Die Blueprint verlangt mehrere verschiedene Outcome-/Metrikfamilien. #6626 legt für den anschließenden v1-Weg zunächst nur N_BARS als REAL-fähigen Horizon fest. Position-Lifecycle und eine Richtungszuordnung bleiben ausdrücklich zurückgestellt; economic_score bleibt ein separates, zunächst opaques Bewertungslabel ohne festgelegte numerische Policy. Der spätere #6628-Supplier konkretisiert den Bar-Close-Preisreturn.
+
+Damit ist nachvollziehbar, weshalb verschiedene Teile heute verschiedenartige Daten erwarten: Einige Erwartungen stammen aus einem breiten Zielbild, andere aus engeren Implementierungsverträgen. Das ist nicht allein eine Frage verschiedener Börsenfeeds. Es ist auch eine schrittweise Veränderung beziehungsweise Begrenzung des umgesetzten fachlichen Umfangs. Ob die breiteren Ziele später an anderen Quellen/Consumern vollständig umgesetzt wurden, ist eine weitere, nun sauber abgrenzbare Frage.
+
+Eine neue Schnittstelle muss diese unterschiedlichen Messgegenstände respektieren. Ein N-Bars-Preisreturn erfüllt nicht automatisch die in der Blueprint genannte Netto-Trade-Ökonomie, Execution-Qualität oder Risk-/Safety-Attribution. Ebenso darf eine vorhandene Reference oder ein PASS-Token nicht als selbst erzeugter wirtschaftlicher Messwert ausgegeben werden.
+
+## Prüfungsumfang und Grenzen
+
+Am exakten Ausgangscommit 31f869272982385fb9afecdfe98b6895b18729e1 wurden alle 46 Dateien des DDO-Pakets gelistet. Ihre gepinnten GitHub-Pfadhistorien ergeben 24 unterschiedliche Mainline-Änderungscommits. Zusätzlich wurden die Vorgänger des Storage-Owner-Dokuments, die ausdrücklich dokumentierte Wiederaufnahme, der Basiskontext und der verknüpfte WAL-Nebenstrang verfolgt. Daraus stammen die 31 unten einzeln geprüften Vorgänger-/Neben-PRs. Jeder besitzt gesicherte vollständige PR-Metadaten und vollständige geänderte Dateilisten; API-Dateilisten wurden bei Bedarf paginiert. Thematisch zentrale Diffstellen wurden gelesen und 18 wichtige Revisionsdateien zusätzlich vollständig gesichert. Das ist keine vollständige zeilenweise Codeprüfung aller geänderten Dateien.
+
+Der lokale Checkout ist shallow; Ursprungsdatierungen wurden deshalb aus GitHub-Pfadhistorien und PR-Metadaten gewonnen. Die Historienabfrage ist an #6626 gebunden und übernimmt keine späteren Änderungen als damaligen Stand. Der aktuelle Arbeitsbaum ist nicht die fachliche Quelle dieser Untersuchung. Die Daten-/Ausführungsebenen bleiben getrennt: PR-Beschreibungen und historische grüne Tests sind keine hier neu beobachteten Laufzeitdaten.
+
+Keine globale Vollständigkeit für sämtliche verwandten PeakTrade-PRs oder frühere Lernverfahren wird beansprucht. Der aktuelle Befund schließt den Rückweg dieses konkreten DDO-Pakets bis zu seiner angehängten Designquelle. Frühere numerische Research-/Learning-Verfahren bleiben eigenständige historische Linien; sie wurden nicht auf September umdatiert.
+
+Die [strukturierte Rückwärtskette](./reviewed-pr-chain.json) enthält jeden PR mit Änderung, vorausgesetzten Daten und Grenze sowie typisierte Beziehungen zwischen den Schritten. Die Klassifikation dort ist eine externe Analyse, keine neue Ledger-Autorität. Die [Verifikation](./verification.json) dokumentiert Datei-/Quellenintegrität. Keine Repository-/Vault-Mutation, keine Wiederherstellung, keine Tests oder Runtime-Ausführung, keine neue Schnittstelle.
+
+## Einzelprüfung aller eingeschlossenen Vorgänger-/Neben-PRs, rückwärts
+
+### PR #6625 — Hauptweg: Consumer-Semantik
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6625) · 19.09.26, 12:03 · Commit b976b2400ab0d3370bd9d67259c1e5caf8742393.
+
+Evaluation, Replay und Challenger werden auf den aufgelösten aktuellen Double-Play-Bundle umgestellt.
+
+Vorausgesetzt: Ein records_by_id-Index und eindeutig gebundene Typed-Observation müssen geliefert werden; ohne sie keine Double-Play-Semantikauswertung.
+
+Grenze: Die PR stoppt ausdrücklich vor real_outcome_horizon_engine; PnL, Horizon und cycle_id werden nicht erfunden.
+
+Quellen: [PR-Metadaten](./pr-6625.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6625-files.json).
+
+### PR #6624 — Hauptweg: semantischer Join
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6624) · 19.09.26, 11:44 · Commit 2446760832031abed7bc48dbec8825ed53b6d2ab.
+
+DecisionEvent ist Hülle; die getypte Double-Play-Observation trägt das maßgebliche Producer-Ergebnis. Resolver verbindet vorhandene IDs und Digests fail-closed.
+
+Vorausgesetzt: Vorhandene Event-/Output-/gegebenenfalls Input-Evidence-Records mit intakter Referenzbindung.
+
+Grenze: Keine neue Marktquelle, keine spätere Outcome-Beobachtung und keine allgemeine automatische Gesamtverkettung.
+
+Quellen: [PR-Metadaten](./pr-6624.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6624-files.json).
+
+### PR #6356 — Replay: Funktionsausführung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6356) · 08.09.26, 19:15 · Commit 874ed2e6ccf99de8cf7042af65b9b7f453a14142.
+
+Heutige Double-Play-Producerfunktion kann unter ausdrücklich abgeschalteter Capture-Session im Speicher erneut ausgeführt und verglichen werden.
+
+Vorausgesetzt: Unveränderliche rekonstruierbare Input-Evidence und referenzgenauer gespeicherter Output.
+
+Grenze: CURRENT_CODE_REPLAY ist keine historische Codeparität und keine spätere Ergebnisbeobachtung.
+
+Quellen: [PR-Metadaten](./pr-6356.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6356-files.json).
+
+### PR #6355 — Replay: Vertrag vor Implementierung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6355) · 08.09.26, 18:22 · Commit a6ad2e67b443a8ab022d7f05d07837bc84e39a00.
+
+Legt aktuellen Code, Capture-Isolation, In-Memory-Ergebnis und Fehlerbehandlung für den Funktionsreplay fest.
+
+Vorausgesetzt: Vorher eingeführte Input-Evidence; klare Trennung der Replay-Klassen.
+
+Grenze: Implementiert und startet den Funktionsreplay in diesem Schritt noch nicht.
+
+Quellen: [PR-Metadaten](./pr-6355.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6355-files.json).
+
+### PR #6354 — Hauptweg: Inputherkunft
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6354) · 08.09.26, 17:34 · Commit 57c2b49edd8ba23ea1466d30015daf9807898d9b.
+
+Erfasst die vor dem Producer-Aufruf vorhandenen typisierten Eingaben als unveränderliche Evidence; der bestehende Producer-input_digest bleibt getrennt.
+
+Vorausgesetzt: Tatsächliche Call-Argumente am Beobachtungspunkt; ein nachträglich rekonstruierter Wunschinput genügt nicht.
+
+Grenze: Noch kein Producer-Funktionsreplay; Inputbeleg ist keine gemessene spätere Folge.
+
+Quellen: [PR-Metadaten](./pr-6354.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6354-files.json).
+
+### PR #6353 — Replay: Outputsemantik
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6353) · 08.09.26, 16:55 · Commit 52ff607efd17c362a4c0139ceae110e7baa07b1e.
+
+Rekonstruiert den bereits gespeicherten typisierten Output und prüft dessen Serialisierung und Semantik.
+
+Vorausgesetzt: Getypte Outputprojektion aus #6300.
+
+Grenze: Ruft den Entscheidungsproducer nicht auf; damaliger Input fehlte zu diesem Zeitpunkt noch.
+
+Quellen: [PR-Metadaten](./pr-6353.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6353-files.json).
+
+### PR #6352 — Nebenstrang: Beobachtungsgrenze
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6352) · 08.09.26, 15:55 · Commit aa89b71ef510e4568f73c9d817685f5c6b3e74be.
+
+Ergänzt eine DDO-Beobachtung vor dem Verbrauch einer Send-Lease am Flatten-Eingang.
+
+Vorausgesetzt: Vorhandener Send-Intent und dessen lokale Prüfungen.
+
+Grenze: Beobachtet Absicht, führt kein Senden aus und bindet keinen dauerhaften Ledger-Pfad. Keine Outcome-Quelle.
+
+Quellen: [PR-Metadaten](./pr-6352.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6352-files.json).
+
+### PR #6314 — Validation: Artefakt-Import
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6314) · 06.09.26, 21:43 · Commit 04bc6c0201e67567d3cf1e404f4db2b102d5118c.
+
+Nimmt typisierte vorhandene Owner-Artefakte auf und baut daraus strengere Validation-Packs; UNKNOWN bleibt erhalten.
+
+Vorausgesetzt: Tatsächlich gelieferte Artefakte bestehender WF-/MC-/Stress-/Fault-/Safety-Owner.
+
+Grenze: DDO führt diese Engines nicht aus; PASS-Tokens werden nicht durch hier neu berechnete Testwerte erzeugt.
+
+Quellen: [PR-Metadaten](./pr-6314.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6314-files.json).
+
+### PR #6313 — Separater Speicher: WAL-Grenzen
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6313) · 06.09.26, 20:48 · Commit 7fe41ed924ca1a045a26661bbd0cc9bdbca86957.
+
+Härtet WAL-Syscalls und dokumentiert Grenzen von Host-Crash-/Power-Loss-Nachweisen.
+
+Vorausgesetzt: Getrennter mutation-kritischer Control-State-Speicher aus #6311/#6312.
+
+Grenze: Keine Host-Crash-Gesamtgarantie und keine Anbindung als neue Outcome-Datenquelle.
+
+Quellen: [PR-Metadaten](./pr-6313.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6313-files.json).
+
+### PR #6312 — Separater Speicher: Prozessabbruch
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6312) · 06.09.26, 20:21 · Commit 1b73f419adf4cd0f11eba2f64bae2deea3e11c9e.
+
+Ergänzt Wiederanlauf-/Unvollständigkeitsprüfungen nach OS-Prozessabbruch für das WAL-Protokoll.
+
+Vorausgesetzt: Der neue Control-State-WAL und seine Prepare-/Commit-Grenzen.
+
+Grenze: Prozessabbruch ist kein Host-Crash; keine produktive Mutation dadurch freigegeben.
+
+Quellen: [PR-Metadaten](./pr-6312.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6312-files.json).
+
+### PR #6311 — Separater Speicher: neue Domäne
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6311) · 06.09.26, 20:01 · Commit f9ac1430f170568deffc945d096b1318f400f24f.
+
+Führt einen isolierten mutation-kritischen Control-State-WAL ein.
+
+Vorausgesetzt: Eigener expliziter Speichervertrag; nicht die wiederverwendete DDO-Beobachtungsdatei.
+
+Grenze: DDO-Evidenz und mutation-kritischer Zustand sind verschiedene Speicheraufgaben; keine neue Lern-/Marktversorgung.
+
+Quellen: [PR-Metadaten](./pr-6311.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6311-files.json).
+
+### PR #6310 — Speicher: ehrliche Nachweisgrenze
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6310) · 06.09.26, 19:15 · Commit f734626f48b6999d9c02066f60133b40657c9828.
+
+Schließt den bestehenden Evidence-Storage-Vertrag mit expliziten Restart-/Crash-Nachweisgrenzen ab.
+
+Vorausgesetzt: Append-only-Ledger samt vorherigen Fehler-/Admission-Verträgen.
+
+Grenze: Host-Crash und Power-Loss bleiben unbewiesen; erfolgreicher Append ist kein universeller Dauerhaftigkeitsbeweis.
+
+Quellen: [PR-Metadaten](./pr-6310.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6310-files.json).
+
+### PR #6309 — Speicher: abhängige Zustandsänderung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6309) · 06.09.26, 18:29 · Commit f75eb562432c0eb7613907a3c44602c108abcba3.
+
+Bindet ungeklärte Dauerhaftigkeit an eine verweigerte abhängige Mutation und eindeutige Replay-Behandlung.
+
+Vorausgesetzt: Bestehender Admission-Owner und getrennte Append-/Idempotenz-/Fehlerzustände.
+
+Grenze: Ein Capture-ok oder vorhandener Record darf keine Mutationserlaubnis vortäuschen.
+
+Quellen: [PR-Metadaten](./pr-6309.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6309-files.json).
+
+### PR #6308 — Speicher: Fehlersemantik
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6308) · 06.09.26, 17:51 · Commit 61f1207ba17c97ddfea5062224dcaa0ac41b3aed.
+
+Bindet klassifizierte Speicherfehler und bewahrt UNKNOWN; mehrdeutiges automatisches Retry bleibt verboten.
+
+Vorausgesetzt: Vorheriges Durability-Modell und Ledger-Fehlerklassen.
+
+Grenze: Aktuelle Beobachtung kann fail-open bleiben; spätere abhängige Mutation ist eine andere Entscheidung.
+
+Quellen: [PR-Metadaten](./pr-6308.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6308-files.json).
+
+### PR #6307 — Speicher: Modellentscheidung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6307) · 06.09.26, 17:19 · Commit d407bb6adc2357eb69f377d065eec215aa914b5e.
+
+Bewertet Atomic-Replace für den vorhandenen Append-only-Ledger als falsches Modell und hält Plattformgrenzen offen.
+
+Vorausgesetzt: Bestehender O_APPEND-JSONL-Speicher.
+
+Grenze: Kein Umbau zu Rename/Tempfile und kein Nachweis echter Outcome-Daten.
+
+Quellen: [PR-Metadaten](./pr-6307.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6307-files.json).
+
+### PR #6306 — Speicher: Laufzeit-Abgrenzung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6306) · 06.09.26, 17:00 · Commit 3528b63820c1ce3953bc68a606a1f528924da6c4.
+
+Ergänzt fail-closed Eligibility und strengere Directory-fsync-Fehlerbehandlung.
+
+Vorausgesetzt: Vorhandene Policy-Grenze und Durability-Primitiven.
+
+Grenze: Implementierungsfähigkeit wird nicht mit zugelassener unbeaufsichtigter Nutzung gleichgesetzt.
+
+Quellen: [PR-Metadaten](./pr-6306.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6306-files.json).
+
+### PR #6305 — Speicher: Policy-Grenze
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6305) · 06.09.26, 16:34 · Commit f83d271e3fe264715a2b490515382c3bc4c210e5.
+
+Definiert die künftige A1-Durability-Policy auf dem bereits gebundenen Beobachtungsledger.
+
+Vorausgesetzt: Bestehende Scope-/Ledger-Bindung.
+
+Grenze: Keine zusätzliche Laufzeitversorgung; Restore/Recovery dürfen keinen stillen Reset verwenden.
+
+Quellen: [PR-Metadaten](./pr-6305.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6305-files.json).
+
+### PR #6304 — Hauptweg: tatsächlicher Ledger-Pfad
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6304) · 06.09.26, 16:05 · Commit 79ababcd3051c4f7aa3478015915a78d62fc890f.
+
+Bindet den Beobachtungsledger an eingefrorenen State-Root, Umgebung und Accountidentität; widersprüchliche Neubindung stoppt.
+
+Vorausgesetzt: Vollständig injizierte Scope-Eingaben aus #6303 und vorhandener Pfadresolver.
+
+Grenze: Default ohne Injection bleibt ungebunden; anderer Dateipfad ist kein erlaubter Ersatz.
+
+Quellen: [PR-Metadaten](./pr-6304.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6304-files.json).
+
+### PR #6303 — Hauptweg: Scope-Eingänge
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6303) · 06.09.26, 11:32 · Commit 0d887b2d1708ed08f58ae12f23f9d21a78ee9be2.
+
+Macht State-Root, ExecutionEnvironment und AccountIdentity zu expliziten Host-Eingaben.
+
+Vorausgesetzt: Gültige nicht bloß fixturebasierte Scope-Identitäten.
+
+Grenze: ledger_path bleibt hier noch None; Eingabe-Vertrag ist noch keine dauerhafte Speicherung.
+
+Quellen: [PR-Metadaten](./pr-6303.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6303-files.json).
+
+### PR #6302 — Speicher: Append-Korrektheit
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6302) · 06.09.26, 11:01 · Commit 433721ab3ed08e948da65c723a9e3c84546ef4db.
+
+Trennt bereits erfasste IDs von erst nach erfolgreichem Append persistierten IDs; ergänzt Writer-/Pfadvorbereitung.
+
+Vorausgesetzt: Bestehender Ledger und Beobachtungscapture.
+
+Grenze: Noch keine produktive Host-Pfadbindung; Crash-Dauerhaftigkeit nicht insgesamt bewiesen.
+
+Quellen: [PR-Metadaten](./pr-6302.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6302-files.json).
+
+### PR #6301 — Speicher: Zuständigkeit
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6301) · 06.09.26, 10:25 · Commit 89eef9dfc021fe1954f071eaf0559c184b2b0bdf.
+
+Bestimmt einen DDO-Durable-Evidence-Owner und den vorhandenen Append-only-Ledger als seine Implementierung.
+
+Vorausgesetzt: Vorhandene Ledger-Primitive.
+
+Grenze: Vertrag allein bindet keinen Host-ledger_path und erzeugt keine Records.
+
+Quellen: [PR-Metadaten](./pr-6301.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6301-files.json).
+
+### PR #6300 — Hauptweg: Informationsverlust korrigiert
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6300) · 06.09.26, 09:47 · Commit c14730e99f1b1303b69a117fdc0d6896ee1c1e51.
+
+Ergänzt eine Producer-nahe Typed-Outputprojektion. Allgemeines NO_ACTION wird für handlungsbezogene Double-Play-Ergebnisse nicht mehr als Ersatz verwendet.
+
+Vorausgesetzt: Tatsächlicher kanonischer Producer-Output und dessen Serializer.
+
+Grenze: Generische Hülle bleibt für manche Ergebnisse UNKNOWN; die exakte Handlung steht in der getypten Schwesterbeobachtung.
+
+Quellen: [PR-Metadaten](./pr-6300.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6300-files.json).
+
+### PR #6215 — Hauptweg: Beobachtungspunkte
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6215) · 02.09.26, 07:57 · Commit 14e8a58f32dcb6b521be6b2559b388bf27360194.
+
+Ergänzt fehlende Host-Decorators und gewinnt Ereigniszeiten aus vorhandenen Producer-Eingaben statt aus erfundenem now().
+
+Vorausgesetzt: Bereits produktive Producer und aktiv gebundene Capture-Session.
+
+Grenze: Decorator-Vorhandensein ist kein Nachweis dauerhafter Records oder späterer Outcomes.
+
+Quellen: [PR-Metadaten](./pr-6215.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6215-files.json).
+
+### PR #6209 — Fremde Owner: Identität / Robustheit
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6209) · 01.09.26, 22:17 · Commit 615de3b307132b73a60df33fd3bedfac811c8cce.
+
+Verweist DDO auf bestehende kanonische Experimentidentität und vorhandene Validierungsowner; ergänzt Offline-Drift-Verträge.
+
+Vorausgesetzt: Von außen gelieferte richtige Identitätsartefakte und Owner-Evidenz.
+
+Grenze: DDO prägt keine zweite Experimentidentität und importiert/führt die referenzierten Robustheitsengines nicht aus.
+
+Quellen: [PR-Metadaten](./pr-6209.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6209-files.json).
+
+### PR #6208 — Learning: Registry / Pack / Challenger
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6208) · 01.09.26, 21:23 · Commit f7e765f89dd1fa620540998871e2e446a4f90224.
+
+Erweitert Hypothesen-/Kandidatenregistry, Validation-Pack und nichtautoritativen Challengervergleich.
+
+Vorausgesetzt: Gelieferte Artefakte und gleiche Evidence-Grundlage für Kandidat und Incumbent.
+
+Grenze: Eine Pack-Auswertung beweist nicht, dass die enthaltenen Markt-/Kosten-/Testwerte hier erzeugt wurden.
+
+Quellen: [PR-Metadaten](./pr-6208.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6208-files.json).
+
+### PR #6207 — Hauptweg: Offline-Auswertung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6207) · 01.09.26, 20:57 · Commit 2c67dd736216151b7bc1f70acaaff515e17b56ea.
+
+Erzeugt Outcome-, Attribution- und Counterfactual-Records aus Decision/Incident und expliziter Evaluation-Observation.
+
+Vorausgesetzt: Der Caller muss tatsächliche spätere Outcome-Referenz und economic_score liefern; der Code übernimmt diese Felder.
+
+Grenze: Keine eigene Beschaffung späterer Marktbeobachtungen und keine automatische PnL-Messung. Genau diese Lücke wird vor #6626 relevant.
+
+Quellen: [PR-Metadaten](./pr-6207.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6207-files.json).
+
+### PR #6206 — Hauptweg: erstes Capture
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6206) · 01.09.26, 20:26 · Commit 0a8ec8e8d73558c7b8a340b514fc86c0157dc525.
+
+Beobachtet vorhandene Producer nach deren Rückgabe und schreibt allgemeine DDO-Records; produktive Ergebnisse bleiben unverändert.
+
+Vorausgesetzt: Vorhandene Producer-Ergebnisse und gebundene Capture-Session.
+
+Grenze: Das allgemeine decision_result wurde zunächst als NO_ACTION geschrieben. Exakte Double-Play-Projektion kam erst mit #6300.
+
+Quellen: [PR-Metadaten](./pr-6206.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6206-files.json).
+
+### PR #6205 — Vertrags-/Control-Plane-Grundlage
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6205) · 01.09.26, 19:36 · Commit e811da431f9f54e050fba0a14bf482cff25d6781.
+
+Ergänzt Record-Verträge, fixturebasierte Auswertung, Registry, no-order Supervisor und inaktiven Promotion-Controller.
+
+Vorausgesetzt: Die Vertrags-/Ledger-Grundlage aus #6204 und explizite Offline-Eingaben.
+
+Grenze: Benannte Outcome-/Autonomie-Records sind keine echte Ereignisversorgung oder geschlossene Laufzeitkette.
+
+Quellen: [PR-Metadaten](./pr-6205.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6205-files.json).
+
+### PR #6204 — Gemergte Grundlage
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6204) · 01.09.26, 18:54 · Commit 29b1ad5104f2fe59dfdfe89a40541fe8d2d6998b.
+
+Übernimmt die erhaltene Arbeit des geschlossenen #6202: Event-/Incident-/OutcomeRef-Verträge, Hashes, Lineage und Append-only-Ledger.
+
+Vorausgesetzt: Erhaltener Commit d76d349 und neue saubere Baseline nach #6203.
+
+Grenze: Alle 20 geänderten Blob-SHAs sind gegenüber #6202 identisch; dies ist eine Wiederaufnahme derselben Arbeit, kein neuer fachlicher Entwurf.
+
+Quellen: [PR-Metadaten](./pr-6204.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6204-files.json).
+
+### PR #6203 — Basiskontext, kein DDO-Datenschritt
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6203) · 01.09.26, 18:34 · Commit d01b76e4d428586dbcc37aa8e00e083fc68b230d.
+
+Bereinigt aktuelle Kraken-Reste zugunsten der OKX-Basis und verändert die Baseline für die Wiederaufnahme.
+
+Vorausgesetzt: Eigenständiger Venue-Bereinigungsauftrag.
+
+Grenze: Kein fachlicher DDO-Outcome-Producer; nur aufgrund des belegten Wiederaufnahmeverlaufs eingeschlossen.
+
+Quellen: [PR-Metadaten](./pr-6203.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6203-files.json).
+
+### PR #6202 — Ursprüngliche ungemergte Umsetzung
+
+[GitHub-PR](https://github.com/rauterfrank-ui/Peak_Trade/pull/6202) · nicht gemergt.
+
+Erster erhaltener PR der WP-FA-01/02-Grundlage auf Basis der angehängten Blueprint.
+
+Vorausgesetzt: Originaler Nutzerauftrag und externes Designziel.
+
+Grenze: Geschlossen, nicht gemergt; tatsächlicher Mainline-Eintritt erfolgt als #6204.
+
+Quellen: [PR-Metadaten](./pr-6202.json), [vollständige geänderte Dateiliste und verfügbare Diff-Hunks](./pr-6202-files.json).
+

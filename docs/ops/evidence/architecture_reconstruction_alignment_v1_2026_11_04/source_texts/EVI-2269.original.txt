@@ -1,0 +1,81 @@
+# Neue Forschungsbefunde im Abgleich mit der Obsidian-Gesamtarchitektur
+
+Stand 02.11.2026. Ergebnis: Mehrere konkrete Verbindungen bestehen bereits auf Quellen- und Codeebene. Besonders ergiebig ist die bislang nur am Rand gelesene Verbindung des Master-V2-Replays zur DDO-Beobachtung. Zugleich zeigen sich Grenzen zwischen Forschung, Datenerfassung, Lernverarbeitung, Zustandsführung und operativer Autorität. Aus diesen Verbindungen folgt keine vollständige Laufzeitversorgung beider Universen.
+
+## Umfang und Bezugspunkt
+
+Die sechs führenden Register wurden vollständig nach Einträgen erschlossen: 2.200 Evidenzen, 17 Domänen, 344 Ebenen, 2.063 Verträge, sechs Kanten, 19 Zustände, sieben Übergänge, 349 Lücken und sieben Konzepte. Alle 22 CURRENT-Census-Bereiche sind in der Vergleichsmatrix einzeln berücksichtigt. Hinzu kommen README, INDEX, Systemkarte, Atlas und thematische Karten sowie vertiefte Originalberichte zu den tatsächlich verbundenen Befunden. Die 315 vorhandenen Markdown-Dateien im erfassten Vault-Suchumfang wurden zur Unverändertheitskontrolle gehasht; das ist keine Behauptung, jede dieser Dateien fachlich neu geprüft zu haben. Ebenso wurden nicht sämtliche 2.200 zugrunde liegenden externen Quellen erneut gelesen.
+
+Der Vault bindet CURRENT an Git-Pin 5d1c838c15369507c5247834db4dd0df25592169. Die aktuelle Arbeitskopie steht dagegen auf 242b7974fc93f0bdb47706556101bd6f0c497414 und besitzt bestehende lokale Änderungen. Der Vergleich verwendet den Vault-Pin für Aussagen über dessen CURRENT, nicht ungeprüft den Arbeitsbaum. Im Vault ist CURRENT eine Herkunftsklasse; CENSUS_AREAS_TOUCHED=22/22 bedeutet ausdrücklich keine semantische Vollständigkeit oder Betriebsbereitschaft.
+
+Ein umfassender früherer Abgleich aller Register ist in unserer Forschungsreihe nicht dokumentiert. Die bisherige Arbeit kannte einzelne Vault-Anker; die hier gesicherte Zuordnung macht Umfang und Grenzen des jetzigen systematischen Abgleichs prüfbar.
+
+Navigation: [README](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/README.md), [INDEX](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/INDEX.md), [Domänen/Ebenen](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/domains_layers.md), [Verträge/Zustände](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/contracts_edges.md), [Lücken](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/REGISTERS/gaps_decisions.md), [bisheriges History/CURRENT-Mapping](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_HISTORICAL_CURRENT_MAPPING.md).
+
+## 1. Vier Quellen stimmen exakt überein
+
+EVI-0086 erfasst die korrigierte Juli-Metrikdefinition. Der im Originalbericht RUN-0004 angegebene Recovery-SHA256 c0b0b6cc… ist exakt der Hash unserer aus Git gesicherten metrics_definitions.md. Damit gehört die in Obsidian bekannte Messkorrektur tatsächlich zur untersuchten Juli-Ergebnisfamilie. Unsere zusätzlichen Trade-/Equity-Prüfungen konkretisieren diese schon dokumentierte Korrektur. Der gemeinsame Dokumentinhalt beweist weiterhin weder den vollständigen Codezustand beim historischen Lauf noch die fehlenden Rohdaten.
+
+Ebenso stimmen drei Universen-Verträge bytegenau überein: EVI-0056 mit Optimization→Self-Learning-Rücklauf, EVI-0078 mit Self-Learning M6 und EVI-0162 mit Meta-/Optimization-Grenze. Hier werden nicht nur ähnliche Namen verbunden: Die Hashes der vorhandenen Git-Fassungen entsprechen den Hashangaben der ursprünglichen Vault-Berichte. Die Recovery-Originale wurden dafür nicht erneut geöffnet. Die neue Codeanalyse erklärt nun genauer, welche numerische Verarbeitung hinter diesen Texten steckt und wo nur Evidence transportiert wird.
+
+Belege: [RUN-0003](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0003/RUN-0003.md), [RUN-0004](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0004/RUN-0004.md), [RUN-0006](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0006/RUN-0006.md); [vier konkrete Hashvergleiche](./cross-source-byte-checks.json).
+
+## 2. Konkreter Anschluss: Master V2 → DDO-Beobachtung
+
+Der Vault führt Self-Learning um deterministische Entscheidungsergebnisse unter DOM-0003 und die Durability-Sperre unter LYR-0325. Die CURRENT-Analyse RUN-0069 nennt den Decorator observe_after_producer_v0 ausdrücklich als damals nicht geöffnetes Importmodul. Genau dort liegt ein ergänzender Anschluss.
+
+Am Pin 5d1c838c ist run_integrated_offline_trading_logic_replay_v1 mit seam_id core.master_v2_evidence dekoriert. Der Wrapper in capture_v0.py ruft zuerst den eigentlichen Producer auf und gibt dessen Ergebnis unverändert zurück. Bei vorhandener, aktivierter Capture-Session ruft er anschließend observe_producer_result_v0. Fehler der Beobachtung ändern den ursprünglichen Entscheidungswert nicht. Das ist eine statisch implementierte Beobachtungsverbindung zur Learning-Datenerfassung und passt zur von Frank gewünschten fehlenden Eingriffsautorität.
+
+Die Bedingungen sind entscheidend: Der ContextVar hat als Default None. Ohne explizite Session oder bei enabled=false wird nicht erfasst. Ohne ledger_path bleiben Records im Speicher; erst mit Ledger-Pfad wird ledger.append aufgerufen. Das Vorhandensein des Decorators beweist also weder dauerhaft gespeicherte Daten noch einen nachfolgenden Lernzustandswechsel. Der untersuchte MV2-Wiring-Körper enthält keinen direkten bind_capture-/DdoCapture-/capture_session-Aufruf; ein äußerer Aufrufer kann die Session setzen. Dieser äußere Versorger und seine tatsächliche Verwendung sind separat nachzuweisen.
+
+Zeitlich bleibt ebenfalls eine Grenze: Das am Juli-Snapshot 89104405 erhaltene integrierte Replay besitzt diesen konkreten Decorator noch nicht. Der Anschluss ist im späteren Pin vorhanden. Daraus darf keine DDO-Erfassung des Juli-Laufs abgeleitet werden. Der Einführungscommit dieses Decorators wurde hier nicht ermittelt.
+
+Belege: [Pin-Replay](./src__trading__master_v2__integrated_offline_trading_logic_replay_v1.py), Zeilen 1418 ff.; [Capture-Implementierung](./pin-capture_v0.py), Zeilen 565–603, 690–754 und 1225 ff.; [Juli-Replay](./july-integrated-replay.py), Zeilen 1049 ff.; [bisherige Decorator-Grenze](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0069/RUN-0069.md). Kein Capture oder Replay wurde ausgeführt.
+
+## 3. Experimentidentität: derselbe Baustein, wesentlich präzisere Bedeutung
+
+LYR-0326 / EVI-2160 erfasst bisher vor allem Fehlerprüfungen der kanonischen Identität. Der jetzt aus demselben Git-Pin gelesene Code hat exakt den in RUN-0064 angegebenen SHA256 d9974edd…. Die aktuelle Identitätsrekonstruktion präzisiert daher denselben Baustein: Legacy-Studie, Package-N-Projektion und Phase-1-Identity sind drei verschiedene Verträge.
+
+Der Vault kennt außerdem den alten MD5-ExperimentRunner unter LYR-0336 und lässt in GAP-0346 die Zuordnung zur CSV-run_id offen. Unsere neue Forschung bestätigt diese Grenze. Generic-CSV-UUID, achtstellige Sweep-UUID, alte Studien-ID, Manifestintegrität und kanonische Experiment-ID können nicht aus ihrer Benennung gleichgesetzt werden. Die historische Zuordnung der Juli-Ausführung bleibt trotz der stärkeren neuen Verträge unvollständig.
+
+Belege: [RUN-0064](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0064/RUN-0064.md), [RUN-0076](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0076/RUN-0076.md); [Identitätsrekonstruktion](../learning-optimization-history/experiment-identity-lineage/Experimentidentitaet_Ursprung_und_Juli_Zuordnung.md).
+
+## 4. Forschungswege unterhalb der Universennamen
+
+RUN-0076 dokumentiert bereits CSV-Registry, Risk-/Leaderboard-Leser, Kandidatenauswahl und Forward-Auswertung am historischen Dezember-Commit f8929523. EDG-0005 und EDG-0006 sind dort begrenzte statische Teilverbindungen. Insbesondere besitzt forward_eval beim gelesenen Schreiber keinen strategy_key, während die Selection schlüssellose Zeilen verwirft. Dieser konkrete Übergabebruch bleibt offen.
+
+Unsere Januar-/April-Rekonstruktion ergänzt daneben einen anderen, tatsächlich zahlenverarbeitenden Forschungsweg: Train-Messwerte bestimmen Testparameter; April-Sweepdiagnostik führt zu Kandidaten-Presets; korrigierte Strategieadapter verbrauchen die gewählten Regime-Overrides. Das belegt eine Forschungswirkung unterhalb der späteren Universumsbezeichnungen. Es schließt weder den alten CSV-Join noch die Versorgung des August-Observation-Requests automatisch. Dezember bleibt geerbter Kontext, kein neu erklärter Universenursprung.
+
+Die systemische Erkenntnis: Es gibt mehrere Research-Einstiege und Ergebniswege. Eine einzige zentrale Pipeline darf nicht allein aus gemeinsamen CLI-Namen oder Registry-Dateien angenommen werden. Der tatsächliche Ausführungs- und Datenpfad muss je Variante erhalten bleiben.
+
+Belege: [historischer Framework-Leseschnitt](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0076/RUN-0076.md); [Januar-/April-/Juli-Anschluss](../learning-optimization-history/backward-numeric-connection/Rueckwaerts_bis_zum_konkreten_numerischen_Anschluss.md).
+
+## 5. Portfolio, Zustände und Risiko besitzen getrennte Bedeutungen
+
+EVI-0161 beschreibt Portfolio-Learning getrennt vom Strategie-Learning. LYR-0319 behandelt dagegen EqualWeight-Zielgewichte 1/n. Der Juli-Nachweis kombiniert noch einmal anders 118 instrumentbezogene Sleeve-Ergebnisse zu einem normalisierten gemeinsamen Forschungsbuch. Gleiche Gewichtungszahlen machen die Verträge nicht identisch. Ein Portfolio-Aggregat allein beweist weder Portfolio-Learning noch dessen mögliche Vergleichs-/Lerninputs. Ebenso bedeutet Forschung über 118 Instrumente keine operative Multi-Positions-Freigabe; CPT-0002 und der Lock MAX_POSITIONS_EFFECTIVE=1 werden dadurch nicht umgedeutet.
+
+STA-0010, STA-0014 und STA-0015 halten Policy-PositionState, Order-State und Ledger-PositionState getrennt. DDO-Ledger, Experiment-Memory und Confirmation-Persistenz sind weitere unterschiedliche Zustands-/Speicherverträge. Dass Ergebnisdaten gespeichert oder im Memory gebunden werden, belegt keine Rekonstruktion eines operativen Positionszustands.
+
+Auch Risiken verlangen Semantik: Die Juli-Datei berichtet Drawdown als negative relative Zahl, etwa -0.02048. Die geprüfte Robustheitsrechnung nutzt den positiven Verlustbetrag. compute_drawdown in src/risk/limits.py liefert einen negativen relativen Quotienten; dieselbe Datei besitzt außerdem Prozent-Konfigurationen, etwa 20.0 für zwanzig Prozent. Das Safety-Binding im Vault vergleicht max_drawdown mit 0.25. Zwischen diesen Funktionen ist hier kein gemeinsamer Aufruf nachgewiesen; deshalb ist das kein behaupteter Integrationsfehler. Es ist eine konkrete Prüfliste für jeden später tatsächlich gefundenen Übergabepunkt: Vorzeichen, Einheit, Frequenz, Zeitraum und Kapitalbasis.
+
+Belege: [Portfolio-Learning](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0006/RUN-0006.md), [Risk/Safety](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0062/RUN-0062.md), [Equal Weight](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0063/RUN-0063.md), [getrennte Zustandsmodelle](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/RUNS/RUN-0065/RUN-0065.md); [Pin-EqualWeight](./src__portfolio__equal_weight.py), [Pin-Risk](./src__risk__limits.py). Die entsprechenden Pin-Hashes stimmen mit den dort berichteten Hashes überein.
+
+## 6. Auswahl, Regime und Marktversorgung bleiben eigenständige Architekturfragen
+
+Die April-Forschung wählt Parameter und Strategiekandidaten. Cap22 rankt Instrumente; Cap23/Selection persistiert eine Instrumentauswahl. Double Play behandelt Seiten und Übergänge. Rotation/Anti-Churn ist noch einmal eine andere Entscheidung. Die P3-Prüfbasis im Vault fordert diese Trennung bereits ausdrücklich. Unsere Befunde erklären, weshalb gemeinsame Wörter wie Ranking, Universe oder Selection keine gemeinsame Entscheidung beweisen.
+
+Gleiches gilt für Regime: DOM-0006 / LYR-0119 führt Research-Regime-Portfolio und Reporting ohne Master-V2-Entscheidungsautorität. Der im April reparierte Regime-Override-Verbrauch ist ein wertvoller konkreter Vergleichspartner. Er ist nicht automatisch die GGE-/Dynamic-Scope-/CHOP-Logik des Handelskerns. Deren Formeln und fachlicher Ursprung bleiben eigenständig zu rekonstruieren.
+
+DOM-0012 kennt Feature-, Volatilitäts- und Datenherkunftsverträge; DOM-0015 den begrenzten Public-Market-Data-Cluster. Keine unserer Equity-Dateien beweist, dass dieses Cluster damals die historischen Marktpanels erzeugt oder den Research-Loop versorgt hat. EVI-1660/PIT-Acquisition bleibt ein Quellenhinweis, keine wiedergefundene Paneldatei. Die offenen Juli-Rohdaten werden durch ähnlich benannte Data-/Feature-Verträge nicht ersetzt.
+
+## 7. Was der Abgleich an der Gesamtkarte ändert
+
+Neu belastbar sind vier gemeinsame Quellidentitäten, die präzisierte Identitätssemantik am identischen Pin-Code und ein konkret lesbarer, bedingter DDO-Beobachtungspunkt am Replay. Die bislang gesicherten numerischen Ergebnisse lassen sich dadurch besser in die Gesamtarchitektur einordnen. Sie schließen weiterhin keinen vollständigen Universen-Loop.
+
+Die abgeleiteten Vault-Karten enden teilweise noch bei RUN-0075, während README, Register und INDEX-Zeile RUN-0076 enthalten. Auch der INDEX-Kopf nennt noch RUN-0075. Das ist ein nachvollziehbarer Navigationsrückstand. Deshalb wurden die führenden Register und der Originalbericht verwendet. Die Dateien wurden nicht korrigiert und keine Registerstatus angehoben.
+
+Als nächste ergiebige Architekturarbeit ergeben sich drei Schwerpunkte aus dem Vergleich: erstens der fachliche Weg von Markt-/Volatilitätsdaten über GGE und Scope zur Seitenentscheidung; zweitens die getrennten Auswahl-, Rotations- und Positionszustände; drittens die Ereignis-/Outcome-Erfassung am tatsächlichen Producer und ihre spätere Lernverarbeitung. Das sind Untersuchungsrichtungen, keine neue Zielarchitektur oder Aktivierungsfreigabe. KI-Schichten, Außenring und Werkzeugdefinitionen bleiben eigene offene Gegenstände; unsere Befunde schließen sie nicht durch Namensähnlichkeit.
+
+Vollständige analytische Zuordnung: [zwölf Verbindungen und alle 22 Census-Bereiche](./comparison.json). Die dortigen A01–A12 sind lokale Vergleichskennungen und keine neuen Ledger-IDs. Quellen-Snapshots stehen in [sources.json](./sources.json); Registerzeilen mit Originalzeilennummern in [register-rows.json](./register-rows.json). Prüfresultat in [verification.json](./verification.json).
+
+Es wurde kein neuer Obsidian-RUN begonnen. Vault, Originalberichte, .obsidian und Repository bleiben unverändert; die Auswertung liegt außerhalb des Vaults. Keine externen Recovery-Laufwerke gelesen und keine Forschungs-/Tradingfunktion ausgeführt. Ein bytegleicher Quelltext ist ein Identitätsnachweis der Datei, kein Funktions- oder Laufzeitnachweis.

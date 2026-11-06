@@ -1,0 +1,32 @@
+{
+  "repository_sha": "94f2eebc26fe378a9beaea820b09e872605b1f3e",
+  "source_ledger": "runtime/current_productive/natural_evidence_accumulation_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl",
+  "source_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "source_bytes": 1593354,
+  "envelope_unwrapped": true,
+  "records": 742,
+  "schema_counts": {
+    "decision_event": 674,
+    "double_play_entry_exit_observation": 56,
+    "outcome_record": 3,
+    "attribution_record": 3,
+    "counterfactual_record": 3,
+    "learning_state_record": 3
+  },
+  "code_sha_unknown": 742,
+  "config_hash_unknown": 517,
+  "scope_decision_records": 56,
+  "scope_decision_config_unknown": 56,
+  "learning_state_records": 3,
+  "learning_state_code_sha_unknown": 3,
+  "learning_state_config_hash_unknown": 3,
+  "learning_semantic_classes": {
+    "OBSERVED_PRODUCTIVE_PRE_EXTERNAL": 3
+  },
+  "limitations": [
+    "One historical local ledger only; not an inventory of all training datasets.",
+    "UNKNOWN fields do not prove wrong numerical values or use of a particular clamp.",
+    "Existing semantic-class labels are recorded, not independently certified by this inventory.",
+    "No ledger modified and no account identifiers or raw decision records exported."
+  ]
+}

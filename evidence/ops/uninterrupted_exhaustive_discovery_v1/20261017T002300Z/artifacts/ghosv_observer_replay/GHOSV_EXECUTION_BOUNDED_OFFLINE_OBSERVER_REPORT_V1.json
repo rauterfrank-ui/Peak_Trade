@@ -1,0 +1,112 @@
+{
+  "contract": "ghosv_execution_bounded_offline_observer.v1",
+  "current_baseline_sha": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "detected_at": "2026-10-16T22:25:12+00:00",
+  "disclaimer": {
+    "cli_exit_not_traffic_green": true,
+    "observer_run_success_not_execution_green": true
+  },
+  "evidence_consistency": "FAIL",
+  "execution_lifecycle_completeness": "INCONSISTENT_SOURCES",
+  "ghosv_pipeline_error": "GhosvEvidenceIngestError:MISSING_LEDGER:/Users/frnkhrz/Peak_Trade/runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T190205Z_ghv_l10_integrated_natural_enter_pre_external_v1/cycles/48cf857337ef5f1f8249146ff607c24787afe0ec2124b406b6cb4321801c4cd5/governed_cycle_orchestrator_ledger_v1.json",
+  "ghosv_result": null,
+  "ghosv_traffic_light": "UNKNOWN",
+  "identity_provenance_coverage": {
+    "input_bytes_total": 0,
+    "input_file_count": 0,
+    "trade_id": "ghv_l10_integrated_natural_enter_pre_external_v1"
+  },
+  "lifecycle_adjudication": {
+    "confirmed_venue_post_submission": false,
+    "post_count_witness_not_venue_post": true,
+    "post_witness_conflict": false
+  },
+  "missing_evidence_classes": [
+    "EXECUTION_PREPARATION",
+    "PRE_EXTERNAL_WITNESS",
+    "VENUE_ACK",
+    "FILL",
+    "FULL_FILL",
+    "PARTIAL_FILL",
+    "EXECUTION_RECON",
+    "POSITION",
+    "POST_SUBMISSION_WITNESS"
+  ],
+  "observer_entrypoint": "src.ops.ghosv_bounded_context_v1.execution_bounded_offline_observer_v1",
+  "observer_invocation_mode": "OPERATOR_STARTED_ONE_SHOT",
+  "observer_run_status": "OBSERVER_RUN_FAILED",
+  "observer_run_success": false,
+  "safety_adapter_status": {
+    "adapter_mode": "DISABLED",
+    "external_post_count": 0,
+    "productive_runtime_activation": false,
+    "safety_escalation_enabled": false
+  },
+  "selected_evidence_sources": {
+    "final_order_envelope": "NOT_SELECTED",
+    "g004_post_attempt_store_root": "NOT_SELECTED",
+    "governed_cycle_evidence_dir": "PRESENT",
+    "pre_external_report": "NOT_SELECTED",
+    "recon_dir": "NOT_SELECTED"
+  },
+  "source_consistency": {
+    "cross_file": {
+      "consistency": "PASS",
+      "details": {
+        "cross_file_snapshot_guarantee": "NONE",
+        "cycle_binding_digest": "",
+        "repository_root": "/private/tmp/peak_trade_ued_origin_main_6261c8f"
+      },
+      "presence": "PRESENT",
+      "reason_codes": [
+        "CROSS_FILE_CHECKS_OK"
+      ],
+      "selected": true,
+      "source_id": "cross_file"
+    },
+    "cross_file_snapshot_guarantee": "NONE",
+    "evidence_consistency": "FAIL",
+    "g004_consistency": "NOT_SELECTED",
+    "guard_details": {
+      "g004": {
+        "consistency": "NOT_APPLICABLE",
+        "details": {},
+        "presence": "NOT_SELECTED",
+        "reason_codes": [],
+        "selected": false,
+        "source_id": "g004_disposition"
+      },
+      "ledger": {
+        "consistency": "FAIL",
+        "details": {},
+        "presence": "SOURCE_NOT_PRESENT",
+        "reason_codes": [
+          "LEDGER_MISSING"
+        ],
+        "selected": true,
+        "source_id": "governed_cycle_ledger"
+      },
+      "recon": {
+        "consistency": "NOT_APPLICABLE",
+        "details": {},
+        "presence": "NOT_SELECTED",
+        "reason_codes": [],
+        "selected": false,
+        "source_id": "recon_portfolio"
+      },
+      "transitions": {
+        "consistency": "NOT_APPLICABLE",
+        "details": {},
+        "presence": "SOURCE_NOT_PRESENT",
+        "reason_codes": [
+          "TRANSITIONS_OPTIONAL_ABSENT"
+        ],
+        "selected": true,
+        "source_id": "governed_cycle_transitions"
+      }
+    },
+    "ledger_read_consistency": "FAIL",
+    "recon_manifest_validation": "NOT_SELECTED",
+    "transitions_consistency": "NOT_APPLICABLE"
+  }
+}

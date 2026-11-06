@@ -1,0 +1,94 @@
+{
+  "schema": "wp_b5_kill_switch_safety_recovery_closure_evidence.v1",
+  "authority_effect": "NONE",
+  "authorization": {
+    "OWNER_IMPLEMENTATION_GO": true,
+    "OWNER_PR_GO": true,
+    "OWNER_MERGE_GO": false,
+    "REAL_VENUE_POST_AUTHORIZED": false,
+    "PRODUCTION_ARMING_AUTHORIZED": false,
+    "TESTNET_AUTHORIZED": false,
+    "LIVE_AUTHORIZED": false
+  },
+  "git": {
+    "baseline_origin_main_sha": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+    "branch": "fix/wp-b5-kill-switch-safety-recovery-closure",
+    "head_sha": "dfb4e729dbb5676790e2cc36e9ca71cd5e926488",
+    "commits": [
+      "a0a8ca94b fix(security): WP-B5 kill-switch safety and recovery closure",
+      "dfb4e729d fix(governance): adjudicate WP-B5 authority-map impact"
+    ],
+    "final_diff_sha256": "e35172250b08656022775230d0906dec2650be25349fcf3276e1ddf50fad71a3",
+    "final_diff_sha256_method": "git diff --binary origin/main...HEAD | shasum -a 256",
+    "changed_files_count": 19,
+    "changed_files_ref": "diff/wp_b5_final_files.txt"
+  },
+  "selector": {
+    "owner": "scripts/ops/ci_test_selection_v1.py",
+    "mode": "PR_BOUNDED_FULL",
+    "reason": "category_central_src_requires_full",
+    "fast_lane_contract_mode": "FULL_STATIC_CONTRACTS",
+    "run_matrix_derivation": "dorny/paths-filter non_webui_code matches src/risk_layer/**, scripts/**, config/** => run_matrix=true => ci.yml fast-lane FULL_STATIC_CONTRACTS step (requires run_matrix != 'true') is skipped",
+    "log_ref": "selector/wp_b5_selector.log"
+  },
+  "timing_proof": {
+    "status": "PASS",
+    "path": "ci.yml job tests (3.11) PR_BOUNDED_FULL: stability smoke + import/collection smoke + 11 validated selector targets",
+    "command_ref": "timing/wp_b5_pr_bounded_timing.sh",
+    "wallclock_seconds": 67,
+    "tests": {"stability_smoke_passed": 10, "pr_bounded_passed": 744, "failed": 0},
+    "rc": 0,
+    "target_max_seconds": 840,
+    "hard_stop_seconds": 900,
+    "safety_margin_seconds": 773,
+    "measured_under_concurrent_load": true,
+    "reference_github_runs_similar_src_prs_tests_3_11_seconds": [242, 237, 260],
+    "discarded_probe": {
+      "what": "local replay of fast-lane FULL_STATIC_CONTRACTS (tests/ci + all 1500 tests/ops files, 8 shards)",
+      "status": "ABORTED_AT_541S_NOT_PATH_EQUIVALENT",
+      "reason": "step is skipped in CI when run_matrix=true; also pre-existing CPU-heavy files make it locally infeasible on baseline as well (baseline single-file 261s)",
+      "side_effect": "pre-existing tests/ops materializer rewrote two tracked config/research/bouchaud_* files in the worktree; restored via git checkout; not part of final diff",
+      "summary_ref": "timing/fastlane_full_static_replay_ABORTED_summary.txt"
+    }
+  },
+  "regression": {
+    "method": "identical CI-style 8-shard run of diff-affected test set on baseline worktree (origin/main) and branch HEAD; failing node sets compared",
+    "affected_set": "97 tests/ops files referencing kill_switch/KillSwitch/risk_gate/_post_path_safety_fixtures_v1/_protected_surface_content_pins_v1 (one excluded, see below) + tests/risk_layer",
+    "baseline": {"passed": 1863, "failed": 87, "wallclock_seconds": 255},
+    "branch": {"passed": 1903, "failed": 87, "wallclock_seconds": 255},
+    "new_failures_in_branch": 0,
+    "failure_sets_identical": true,
+    "failure_cause_class": "pre-existing worktree-location / stale-stamp failures (e.g. output directory must be outside /tmp), identical on origin/main",
+    "passed_delta_explained": "+40 = 39 new WP-B5 tests + 1 new risk_gate emergency-env test",
+    "excluded_from_set": {
+      "file": "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+      "reason": "283 CPU-bound tests (~18s each locally, also slow on baseline); imports changed modules only transitively; runtime path uses pure risk_gate.evaluate_risk (unchanged) and KillSwitchState enum (unchanged)",
+      "kill_or_risk_subset": {"passed": 5, "failed": 0, "deselected": 278, "rc": 0},
+      "remaining_278_tests": "NOT_RUN_LOCALLY"
+    },
+    "authority_map_tests": {"baseline": "2 failed, 32 passed", "branch": "2 failed, 32 passed", "new_failures": 0, "cause": "pre-existing stale baseline_sha stamps"},
+    "refs": ["regression/base/", "regression/branch/", "regression/wp_b5_cmp_base_failed.txt", "regression/wp_b5_cmp_branch_failed.txt"]
+  },
+  "gates": {
+    "ruff_format": "PASS (13 files already formatted)",
+    "ruff_check": "PASS (All checks passed)",
+    "docs_token_policy_changed": "PASS (3 files)",
+    "docs_reference_targets_changed": "PASS (5/5 references)",
+    "authority_map_currency": "MAP_CURRENCY_OK",
+    "bash_n_kill_switch_ctl": "PASS"
+  },
+  "session_observations_not_durably_logged": {
+    "mutation_check": "weakening attestation / authorization / post-write re-check was caught by 6 / 4 / 1 failing WP-B5 tests respectively; sources restored before commit",
+    "note": "raw mutation logs were not persisted; claim is session-bound"
+  },
+  "github_ci_coverage_note": "For this PR GitHub required checks do NOT execute the kill-switch test owners (PR_BOUNDED_FULL targets are tests/ci + stability files). The local branch-vs-baseline regression above is the substantive kill-switch regression evidence.",
+  "residuals_not_proven": [
+    "Joint truncation of the transition journal plus restore of an old attested state is not detectable (no external monotonic anchor; same trust domain as the secret holder).",
+    "Secret-free legacy readers without a journal keep file-only ACTIVE semantics (POST gate denies); pinned by test_18d.",
+    "PEAK_KILL_SWITCH=1 also blocks proven risk reduction (literal reading of OD-3).",
+    "Crash after RECOVERY_COMPLETED is journaled but before state write requires trigger + new request.",
+    "Corrupt journal requires trigger, moving the journal aside, and a new request (operator procedure)."
+  ],
+  "financial_guarantee": "NONE",
+  "active_is_not_trading_authorization": true
+}

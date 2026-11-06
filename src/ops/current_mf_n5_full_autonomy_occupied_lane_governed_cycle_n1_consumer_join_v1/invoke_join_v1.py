@@ -6,11 +6,34 @@ Does not bind Cap61, join a host, call V5, or POST.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Mapping, NoReturn, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, NoReturn, Sequence
+
+if TYPE_CHECKING:
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        PositionEpisodeBindingV1,
+        PositionEpisodeScopeV1,
+    )
+
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
+    PerLaneGovernedIngressV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+    PositionManagementQuantityHandoffV1,
+    bind_position_management_quantity_handoff_v1,
+    compose_position_management_full_close_intent_v1,
+)
+from src.governance.canonical_order_intent_v1 import (
+    CanonicalOrderIntentV1,
+    canonical_order_intent_to_semantic_dict,
+)
+from src.ops.governed_productive_instrument_metadata_authority_producer_v1.current_productive_okx_instruments_row_producer_v1 import (
+    produce_current_productive_instrument_quantity_constraints_from_okx_row_v1,
+)
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.constants_v1 import (
     CAP23_CHANGE_REQUIRED,
@@ -85,6 +108,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_li
     CurrentProductiveEnterLive29PInjectedGetV1,
     CurrentProductiveEnterLive29PPortfolioSlotContextV1,
     DECISION_ENTER,
+    POSITION_MANAGEMENT_HANDOFF_REQUIRED,
     STATUS_PASS,
     current_productive_decision_class_v1,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
@@ -164,6 +188,8 @@ class OccupiedLaneGovernedCycleN1ConsumerResultV1:
     eg_v5_used: bool
     t2_s7_used: bool
     cap61_state_root_bound: bool
+    position_management_quantity_handoff: PositionManagementQuantityHandoffV1 | None = None
+    position_management_close_intent: CanonicalOrderIntentV1 | None = None
 
 
 def _fail(code: str, detail: str = "") -> NoReturn:
@@ -321,50 +347,6 @@ def _s7_kwargs(
     }
 
 
-@dataclass(frozen=True)
-class ForensicOverlayProductiveAdmissionV1:
-    """Productive consumers stay on the pre-overlay replay.
-
-    A bound synthetic-enter overlay keeps its forensic record and does not
-    become the decision passed to 29P, capital, sizing, venue plan, or execution.
-    """
-
-    productive_replay: object
-    admits_synthetic_to_29p: bool
-    admits_synthetic_to_capital: bool
-    admits_synthetic_to_sizing: bool
-    admits_synthetic_to_venue_plan: bool
-    admits_synthetic_to_execution: bool
-    retains_forensic_record: bool
-
-
-def admit_forensic_overlay_to_productive_consumers_v1(
-    natural_replay: object,
-    overlay: object,
-) -> ForensicOverlayProductiveAdmissionV1:
-    applied = bool(getattr(overlay, "applied", False))
-    record = getattr(overlay, "record", None)
-    if applied:
-        return ForensicOverlayProductiveAdmissionV1(
-            productive_replay=natural_replay,
-            admits_synthetic_to_29p=False,
-            admits_synthetic_to_capital=False,
-            admits_synthetic_to_sizing=False,
-            admits_synthetic_to_venue_plan=False,
-            admits_synthetic_to_execution=False,
-            retains_forensic_record=record is not None,
-        )
-    return ForensicOverlayProductiveAdmissionV1(
-        productive_replay=getattr(overlay, "replay", natural_replay),
-        admits_synthetic_to_29p=False,
-        admits_synthetic_to_capital=False,
-        admits_synthetic_to_sizing=False,
-        admits_synthetic_to_venue_plan=False,
-        admits_synthetic_to_execution=False,
-        retains_forensic_record=False,
-    )
-
-
 def _finalize_portfolio_reservation_after_enter_join_v1(
     owner: PortfolioCapitalReservationBudgetOwnerV1 | None,
     *,
@@ -390,8 +372,15 @@ def _t2_from_s7(
     candles_payload: Mapping[str, Any],
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     common_epoch_decision_epoch: str | None = None,
+    position_management_only: bool = False,
+    position_management_ingress: PerLaneGovernedIngressV1 | None = None,
+    position_management_config_payload: Mapping[str, Any] | None = None,
+    host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
+    offline_observation_clock_unix: float | None = None,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
+        bound_epoch = str(common_epoch_decision_epoch or "").strip()
+        epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         observation = kwargs.get("observation")
         last_finalized_ts = float(s7_base["last_finalized_event_ts_unix"])
         accepted_c1_ts = s7_base.get("accepted_c1_venue_event_time_unix")
@@ -424,7 +413,9 @@ def _t2_from_s7(
                     "accepted_c1_venue_event_time_unix": accepted_c1_ts,
                     "incoming_cursor_override": eg_incoming_cursor,
                     "observed_unix": (
-                        float(accepted_c1_ts) + 1.0
+                        offline_observation_clock_unix
+                        if offline_observation_clock_unix is not None
+                        else float(accepted_c1_ts) + 1.0
                         if accepted_c1_ts is not None
                         else last_finalized_ts + 1.0
                     ),
@@ -439,6 +430,146 @@ def _t2_from_s7(
         if str(bound.venue_native_id or "").strip() != native_id:
             _fail(FAILURE_IDENTITY_MISMATCH, native_id)
         replay = invocation.cycle_result.replay
+        if position_management_only:
+            if replay is None or not replay.replay_pass:
+                _fail(FAILURE_AUTHORITY, "position_management_replay_failed")
+            outcome = invocation.cycle_result.decision_outcome
+            if outcome in {"enter_long", "enter_short"}:
+                _fail(FAILURE_AUTHORITY, "position_management_entry_forbidden")
+            action_pending = outcome in {"reduce", "exit"}
+            quantity_handoff = None
+            close_intent = None
+            close_quantity_decision = None
+            close_execution_handoff = None
+            close_plan_reasons = ()
+            if action_pending:
+                if position_management_ingress is None:
+                    _fail(FAILURE_AUTHORITY, "position_management_ingress_required")
+                metadata = None
+                if (
+                    live_29p_injected is not None
+                    and live_29p_injected.instruments_payload is not None
+                ):
+                    metadata = (
+                        produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
+                            venue_native_id=native_id,
+                            bound_instrument_id=bound.instrument_id,
+                            instruments_payload=live_29p_injected.instruments_payload,
+                            observed_at_as_of=live_29p_injected.observed_at,
+                        )
+                    )
+                quantity_args = dict(
+                    identity=position_management_ingress.identity,
+                    position=position_management_ingress.position,
+                    reconciliation_admitted=position_management_ingress.reconciliation.admitted,
+                    replay=replay,
+                    metadata=metadata,
+                )
+                if outcome == "exit":
+                    close_handoff = compose_position_management_full_close_intent_v1(
+                        **quantity_args
+                    )
+                    quantity_handoff = close_handoff.quantity_handoff
+                    close_intent = close_handoff.canonical_intent
+                    close_quantity_decision = close_handoff.close_quantity_decision
+                    config_rows = (position_management_config_payload or {}).get("data", [])
+                    net_mode = len(config_rows) == 1 and config_rows[0].get("posMode") == "net_mode"
+                    if close_intent is not None and not net_mode:
+                        close_plan_reasons = ("FULL_CLOSE_NET_POSITION_MODE_REQUIRED",)
+                    if close_intent is not None and net_mode:
+                        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+                            PositionManagementExecutionHandoffV1,
+                        )
+
+                        status, close_plan_reasons, plan = (
+                            try_bind_current_productive_venue_plan_v1(
+                                replay=replay,
+                                bound_instrument=bound,
+                                session_id=str(s7_base["cycle_id_prefix"]),
+                                run_id=f"{s7_base['cycle_id_prefix']}:{next(iter(composed))}",
+                                composed_epoch=epoch,
+                                execution_mode=(
+                                    s7_base["position_episode_scope"].execution_environment
+                                    if s7_base.get("position_episode_scope") is not None
+                                    else "LIVE"
+                                ),
+                                full_close_handoff=close_handoff,
+                            )
+                        )
+                        if status is CompositionStatusV1.PASS and plan is not None:
+                            envelope = bind_final_order_envelope_from_venue_plan_v1(
+                                plan,
+                                admission_ref=f"{s7_base['cycle_id_prefix']}:position-management",
+                                provenance_ref=close_intent.semantic_digest,
+                                creation_epoch=epoch,
+                            )
+                            close_execution_handoff = PositionManagementExecutionHandoffV1(
+                                source=close_handoff, envelope=envelope
+                            )
+                else:
+                    quantity_handoff = bind_position_management_quantity_handoff_v1(**quantity_args)
+                    # Missing metadata or a rejected quantity binding precedes
+                    # the still-unbound reduction rule. Preserve that owner's
+                    # actual reason instead of relabelling every failure.
+                    if quantity_handoff.status in {
+                        "POSITION_QUANTITY_BOUND",
+                        "BOUND_TO_CANONICAL_INTENT",
+                    }:
+                        quantity_handoff = replace(
+                            quantity_handoff,
+                            status="REDUCE_RISK_RULE_REQUIRED",
+                            requested_quantity=None,
+                            canonical_intent_ref="",
+                            reason_codes=("REDUCE_RISK_RULE_REQUIRED",),
+                        )
+            _dispatch.last_position_management_quantity_handoff = quantity_handoff
+            _dispatch.last_position_management_close_intent = close_intent
+            _dispatch.last_invocation = invocation
+            return SimpleNamespace(
+                runtime_cycle_count="1",
+                decision_result=(
+                    "POSITION_MANAGEMENT_VENUE_PLAN_BOUND"
+                    if close_execution_handoff is not None
+                    else "POSITION_MANAGEMENT_ACTION_PENDING"
+                    if action_pending
+                    else "POSITION_MANAGEMENT_EVALUATED"
+                ),
+                decision_execution_eligible=_FALSE,
+                master_v2_decision=outcome,
+                venue_plan_status="BOUND" if close_execution_handoff else "NOT_REQUESTED",
+                final_envelope_id=(envelope.envelope_id if close_execution_handoff else ""),
+                final_envelope_digest=(envelope.envelope_digest if close_execution_handoff else ""),
+                final_order_envelope=(envelope if close_execution_handoff else None),
+                position_management_execution_handoff=close_execution_handoff,
+                permit_created=_FALSE,
+                post_count="0",
+                first_real_blocker=(
+                    ""
+                    if close_execution_handoff
+                    else close_plan_reasons[0]
+                    if close_plan_reasons
+                    else quantity_handoff.reason_codes[0]
+                    if quantity_handoff is not None and quantity_handoff.reason_codes
+                    else POSITION_MANAGEMENT_HANDOFF_REQUIRED
+                    if action_pending
+                    else ""
+                ),
+                s7_invocation=invocation,
+                position_management_quantity_handoff=(
+                    None if quantity_handoff is None else quantity_handoff.to_dict()
+                ),
+                position_management_canonical_close_intent=(
+                    None
+                    if close_intent is None
+                    else {
+                        **canonical_order_intent_to_semantic_dict(close_intent),
+                        "semantic_digest": close_intent.semantic_digest,
+                    }
+                ),
+                position_management_close_quantity_assessment=(
+                    None if close_quantity_decision is None else close_quantity_decision.to_dict()
+                ),
+            )
         from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
             maybe_apply_synthetic_enter_forensic_overlay_v1,
             read_cycle_index_from_s5_evidence_root_v1,
@@ -462,44 +593,39 @@ def _t2_from_s7(
 
         cycle_evidence_root = Path(str(s7_base.get("cycle_evidence_root") or ""))
         cycle_index = read_cycle_index_from_s5_evidence_root_v1(cycle_evidence_root)
-        natural_replay = replay
         overlay = maybe_apply_synthetic_enter_forensic_overlay_v1(
-            natural_replay,
+            replay,
             cycle_index=cycle_index,
             cycle_evidence_root=cycle_evidence_root if str(cycle_evidence_root) else None,
         )
-        # Cursor persist already happened inside compose, before this overlay.
-        # The admission below only selects the replay that productive consumers see.
-        admission = admit_forensic_overlay_to_productive_consumers_v1(natural_replay, overlay)
-        if overlay.applied and (
-            admission.admits_synthetic_to_29p
-            or admission.admits_synthetic_to_capital
-            or admission.admits_synthetic_to_sizing
-            or admission.admits_synthetic_to_venue_plan
-            or admission.admits_synthetic_to_execution
-            or admission.productive_replay is not natural_replay
-        ):
-            _fail(FAILURE_AUTHORITY, "synthetic_overlay_productive_admission")
-        productive_replay = admission.productive_replay
+        replay = overlay.replay
         if overlay.applied:
             flight_parent = (
                 append_flight_record_stage_v1(
                     stage="SYNTHETIC_OVERLAY_OUTPUT",
                     producer_symbol="maybe_apply_synthetic_enter_forensic_overlay_v1",
-                    consumer_symbol="forensic_synthetic_enter_evidence_ledger_v1",
+                    consumer_symbol="join_current_productive_enter_live_29p_before_venue_plan_v1",
                     parent_generation_id=flight_parent,
-                    replay=overlay.replay,
+                    replay=replay,
                     extra={
                         "natural_outcome_before_overlay": overlay.natural_outcome_before,
                         "synthetic_side": overlay.synthetic_side,
-                        "productive_decision_uses_natural_replay": True,
                     },
                 )
                 or flight_parent
             )
-        replay = productive_replay
-        bound_epoch = str(common_epoch_decision_epoch or "").strip()
-        epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
+        if overlay.applied:
+            evidence = getattr(replay, "evidence", None)
+            raw_outcome = getattr(evidence, "decision_outcome", "") if evidence is not None else ""
+            consumed_outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
+            invocation = replace(
+                invocation,
+                cycle_result=replace(
+                    invocation.cycle_result,
+                    replay=replay,
+                    decision_outcome=consumed_outcome,
+                ),
+            )
         portfolio_slot = None
         if portfolio_budget_owner is not None:
             evidence = getattr(replay, "evidence", None)
@@ -512,13 +638,14 @@ def _t2_from_s7(
                 cycle_id=str(s7_base["cycle_id_prefix"]),
             )
         live_29p = join_current_productive_enter_live_29p_before_venue_plan_v1(
-            replay=productive_replay,
+            replay=replay,
             bound_instrument=bound,
             injected=live_29p_injected,
             decision_epoch=epoch,
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_slot=portfolio_slot,
             cycle_index=cycle_index,
+            host_budget_recovery=host_budget_recovery,
         )
         live_29p_gen = (
             append_flight_record_stage_v1(
@@ -548,27 +675,12 @@ def _t2_from_s7(
                 live_29p_first_blocker=str(live_29p.first_blocker or ""),
                 venue_plan_input_generation_id=live_29p_gen,
             )
-        # Classify the pre-overlay replay. A forensic synthetic replacement is evidence only.
-        decision_class = current_productive_decision_class_v1(productive_replay)
+        # Classify from the post-overlay replay at the LIVE-29P join seam, not a stale
+        # pre-overlay cycle_result snapshot or a rebound artifact that may lag overlay.
+        decision_class = current_productive_decision_class_v1(replay)
         master_decision = str(
-            getattr(getattr(productive_replay, "evidence", None), "decision_outcome", "") or ""
+            getattr(getattr(replay, "evidence", None), "decision_outcome", "") or ""
         )
-        if overlay.applied and decision_class == DECISION_ENTER:
-            result = SimpleNamespace(
-                runtime_cycle_count="1",
-                decision_result="OBSERVE_HOLD",
-                decision_execution_eligible=_FALSE,
-                master_v2_decision=master_decision or "observe",
-                venue_plan_status="DENY",
-                final_envelope_id="",
-                final_envelope_digest="",
-                permit_created=_FALSE,
-                post_count="0",
-                first_real_blocker="FORENSIC_SYNTHETIC_DECISION_NOT_PRODUCTIVE",
-                s7_invocation=invocation,
-            )
-            _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
-            return result
         if decision_class == DECISION_ENTER:
             if str(live_29p.status or "") != STATUS_PASS:
                 result = SimpleNamespace(
@@ -587,22 +699,17 @@ def _t2_from_s7(
                 _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
                 return result
             venue_plan_replay = live_29p.replay
-            if overlay.applied:
-                result = SimpleNamespace(
-                    runtime_cycle_count="1",
-                    decision_result="OBSERVE_HOLD",
-                    decision_execution_eligible=_FALSE,
-                    master_v2_decision=master_decision or "observe",
-                    venue_plan_status="DENY",
-                    final_envelope_id="",
-                    final_envelope_digest="",
-                    permit_created=_FALSE,
-                    post_count="0",
-                    first_real_blocker="FORENSIC_SYNTHETIC_DECISION_NOT_PRODUCTIVE",
-                    s7_invocation=invocation,
+            if overlay.applied and venue_plan_replay is not None:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
+                    is_forensic_synthetic_enter_outcome_v1,
+                    reapply_forensic_synthetic_safety_reprojection_on_replay_v1,
                 )
-                _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
-                return result
+
+                if is_forensic_synthetic_enter_outcome_v1(venue_plan_replay):
+                    venue_plan_replay = reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
+                        venue_plan_replay,
+                        parent_generation_id=live_29p_gen,
+                    )
             append_flight_record_stage_v1(
                 stage="VENUE_PLAN_INPUT",
                 producer_symbol="reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
@@ -646,15 +753,29 @@ def _t2_from_s7(
                 venue_plan_pass=venue_plan_pass,
             )
             if venue_plan_pass:
+                admission_ref = f"{s7_base['cycle_id_prefix']}:admission"
+                if (
+                    portfolio_budget_owner is not None
+                    and portfolio_budget_owner.budget_state_v1().durable_state_enabled
+                ):
+                    admission_ref += f":portfolio-reservation:{live_29p.portfolio_reservation_id}"
                 envelope = bind_final_order_envelope_from_venue_plan_v1(
                     plan,
-                    admission_ref=f"{s7_base['cycle_id_prefix']}:admission",
+                    admission_ref=admission_ref,
                     provenance_ref=f"{s7_base['cycle_id_prefix']}:provenance",
                     creation_epoch=epoch,
                 )
+                if (
+                    portfolio_budget_owner is not None
+                    and portfolio_budget_owner.budget_state_v1().durable_state_enabled
+                ):
+                    portfolio_budget_owner.bind_execution_plan_v1(
+                        live_29p.portfolio_reservation_id, envelope
+                    )
                 result = SimpleNamespace(
                     runtime_cycle_count="1",
                     decision_result="EXECUTABLE_VENUE_PLAN_BOUND",
+                    portfolio_reservation_id=live_29p.portfolio_reservation_id,
                     decision_execution_eligible=_TRUE,
                     master_v2_decision=master_decision or "enter",
                     venue_plan_status="BOUND",
@@ -700,6 +821,8 @@ def _t2_from_s7(
         return result
 
     _dispatch.last_invocation = None  # type: ignore[attr-defined]
+    _dispatch.last_position_management_quantity_handoff = None
+    _dispatch.last_position_management_close_intent = None
     return _dispatch
 
 
@@ -729,7 +852,11 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     canonical_price_provenance: object | None = None,
     canonical_price_provenance_by_lane: Mapping[str, object] | None = None,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
+    position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
+    position_episode_scope: PositionEpisodeScopeV1 | None = None,
     common_epoch_decision_epoch: str | None = None,
+    offline_governed_attempt: object | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -738,6 +865,27 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     fail-closed load semantics.
     """
     _assert_non_authority()
+    if position_episode_bindings is not None:
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeScopeV1,
+        )
+
+        if host_budget_recovery is not None:
+            if (
+                host_budget_recovery.host.closed
+                or host_budget_recovery.host.owner is not portfolio_budget_owner
+            ):
+                _fail(FAILURE_AUTHORITY, "position_episode_budget_host_unbound")
+            host_scope = PositionEpisodeScopeV1(
+                host_budget_recovery.account, host_budget_recovery.host.execution_environment
+            )
+            if position_episode_scope is None:
+                position_episode_scope = host_scope
+            elif position_episode_scope != host_scope:
+                _fail(FAILURE_AUTHORITY, "position_episode_host_account_scope_mismatch")
+        if not isinstance(position_episode_scope, PositionEpisodeScopeV1):
+            _fail(FAILURE_AUTHORITY, "position_episode_account_scope_required")
+        position_episode_scope.validate_v1()
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
     if candles_payload is None and candles_payload_by_lane is None:
@@ -752,6 +900,10 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     unknown = sorted(set(composed_pairs) - set(LANE_IDS))
     if unknown:
         _fail(FAILURE_UNKNOWN_LANE_ID, ",".join(unknown))
+    if position_episode_bindings is not None and set(position_episode_bindings) - set(
+        composed_pairs
+    ):
+        _fail(FAILURE_AUTHORITY, "foreign_position_episode_lane")
     for lane_id, pair in composed_pairs.items():
         if not isinstance(pair, tuple) or len(pair) != 2:
             _fail(FAILURE_PAIR_TYPE, lane_id)
@@ -761,7 +913,23 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if slot.occupancy != OCCUPANCY_OCCUPIED:
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
-    occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else None
+    if offline_governed_attempt is not None:
+        from src.ops.bounded_peaktrade_system_composition_v1.governed_attempt_v1 import (
+            OfflineGovernedAttemptV1,
+        )
+
+        if not isinstance(offline_governed_attempt, OfflineGovernedAttemptV1):
+            _fail(FAILURE_AUTHORITY, "offline_governed_attempt_invalid")
+        addressed = offline_governed_attempt.bind_roots_v1(
+            addressed,
+            prefix=prefix,
+            scope=position_episode_scope,
+            episodes=position_episode_bindings,
+            origin_main_sha=origin_main_sha,
+            observed_unix=observed_unix,
+            last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+        )
+    occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else _occupancy_absent()
     try:
         per_lane_ingress, _ownership = compose_per_lane_n5_identity_closure_v1(
             composed_pairs,
@@ -776,6 +944,53 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         )
     except InstrumentRuntimeIdentityClosureError as exc:
         _fail(exc.failure_code, exc.detail)
+    if position_episode_bindings is not None:
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeBindingV1,
+        )
+
+        # Reject an incompatible episode before consuming a governed-cycle token.
+        for lane_id, ingress in per_lane_ingress.items():
+            episode = position_episode_bindings.get(lane_id)
+            if episode is None:
+                if not ingress.position.venue_flat:
+                    _fail(FAILURE_AUTHORITY, "position_episode_missing:" + lane_id)
+                continue
+            if not isinstance(episode, PositionEpisodeBindingV1):
+                _fail(FAILURE_AUTHORITY, "position_episode_binding_invalid:" + lane_id)
+            try:
+                episode.prepare_for_cycle_v1(
+                    instrument_id=str(composed_pairs[lane_id][1].instrument_id),
+                    venue_native_id=str(composed_pairs[lane_id][1].venue_native_id),
+                    position_side=str(ingress.position.existing_position_side.value),
+                    venue_flat=ingress.position.venue_flat,
+                    event_time=float(ingress.last_finalized_event_ts_unix),
+                    lane_id=lane_id,
+                    expected_scope=position_episode_scope,
+                )
+                from src.ops.exit_policy_producer_binding_v1.simulated_accounting_progress_v1 import (
+                    require_simulated_accounting_quantity_v1,
+                )
+
+                require_simulated_accounting_quantity_v1(
+                    episode=episode,
+                    observation=ingress.position.quantity_observation,
+                )
+                from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+                    require_current_cursor_continuity_v1,
+                )
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+                    load_current_productive_sidestate_confirmation_cursor_v1,
+                )
+
+                cursor_root = Path(composed_pairs[lane_id][0].lane_state_root)
+                require_current_cursor_continuity_v1(
+                    episode=episode,
+                    incoming=load_current_productive_sidestate_confirmation_cursor_v1(cursor_root),
+                    store_root=cursor_root,
+                )
+            except ValueError as exc:
+                _fail(FAILURE_AUTHORITY, str(exc))
     base_mark_px = mark_px
     base_index_px = index_px
     base_provenance: object | None = canonical_price_provenance
@@ -836,19 +1051,19 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         lane_s7["last_finalized_event_ts_unix"] = ingress.last_finalized_event_ts_unix
         lane_s7["venue_flat"] = ingress.position.venue_flat
         lane_s7["existing_position_side"] = ingress.position.existing_position_side
-        from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
-            combine_position_snapshots_v1,
-        )
-
-        lane_portfolio = combine_position_snapshots_v1(occupancy, observed_portfolio)
+        if position_episode_bindings is not None:
+            episode = position_episode_bindings.get(lane_id)
+            if episode is None and not ingress.position.venue_flat:
+                _fail(FAILURE_AUTHORITY, "position_episode_missing:" + lane_id)
+            lane_s7["position_episode_bindings"] = {} if episode is None else {lane_id: episode}
+            lane_s7["position_episode_scope"] = position_episode_scope
         lane_s7["master_v2_reconciliation_admission"] = (
             build_master_v2_reconciliation_admission_for_lane_v1(
                 identity=ingress.identity,
                 per_lane=ingress.reconciliation,
                 session_id=prefix,
                 repository_sha=str(origin_main_sha),
-                portfolio=lane_portfolio,
-                state_root=Path(cursor_store_root),
+                portfolio=observed_portfolio,
             )
         )
         lane_candles = dict(ingress.candles_payload)
@@ -882,6 +1097,13 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             candles_payload=lane_candles,
             portfolio_budget_owner=portfolio_budget_owner,
             common_epoch_decision_epoch=common_epoch_decision_epoch,
+            host_budget_recovery=host_budget_recovery,
+            position_management_only=not ingress.position.venue_flat,
+            position_management_ingress=ingress,
+            position_management_config_payload=(occupancy_payloads or {}).get("CONFIG"),
+            offline_observation_clock_unix=(
+                observed_unix if offline_governed_attempt is not None else None
+            ),
         )
         from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
             FullCoreCapitalGuardHandoffContextV1,
@@ -935,11 +1157,18 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 perform_get=False,
                 eg_cycle_dispatch=non_v5_eg_dispatch_v1,
                 t2_cycle_dispatch=t2_dispatch,
+                position_management_cycle_dispatch=(
+                    t2_dispatch if not ingress.position.venue_flat else None
+                ),
             )
         finally:
             reset_full_core_capital_guard_handoff_context_v1(handoff_ctx_reset)
         s7_invocation = getattr(t2_dispatch, "last_invocation", None)
-        if cycle_result.disposition in {DISPOSITION_PRE_EXTERNAL_EFFECT, DISPOSITION_HOLD}:
+        if cycle_result.disposition in {
+            DISPOSITION_PRE_EXTERNAL_EFFECT,
+            DISPOSITION_HOLD,
+            "COMPLETED",
+        }:
             if s7_invocation is None:
                 _fail(FAILURE_AUTHORITY, "t2_s7_missing")
             if str(s7_invocation.bound_instrument.venue_native_id or "").strip() != native_id:
@@ -961,5 +1190,11 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             eg_v5_used=False,
             t2_s7_used=True,
             cap61_state_root_bound=False,
+            position_management_quantity_handoff=getattr(
+                t2_dispatch, "last_position_management_quantity_handoff", None
+            ),
+            position_management_close_intent=getattr(
+                t2_dispatch, "last_position_management_close_intent", None
+            ),
         )
     return results

@@ -68,7 +68,7 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cons
 )
 from src.ops.current_mf_n5_full_autonomy_runtime_n5_completion_v1.completion_join_v1 import (
     OccupiedLaneRuntimeN5CompletionResultV1,
-    run_occupied_lane_runtime_n5_completion_v1,
+    complete_occupied_lane_runtime_n5_from_readiness_v1,
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
     LANE_IDS,
@@ -77,11 +77,8 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
     IsolatedLaneTopologyV1,
 )
-from src.ops.current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1.produce_join_v1 import (
-    produce_occupied_lane_cap23_n1_selections_v1,
-)
-from src.ops.current_mf_n5_recovered_topology_consumer_join_v1.consumer_v1 import (
-    consume_recovered_isolated_lane_topology_v1,
+from src.ops.current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1.checked_publication_v1 import (
+    publish_checked_lane_selections_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_COMPLETED,
@@ -158,6 +155,7 @@ class ProductiveFullAutonomyN5RuntimeOrchestratorResultV1:
     external_effect_authorized: bool
     post_allowed: bool
     execution_schedule: str
+    lane_publication_resumed: bool = False
 
 
 def _fail(code: str, detail: str = "") -> NoReturn:
@@ -323,6 +321,7 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     target_cardinality: int,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     include_host_completion_rollup: bool = False,
+    replacement_admission_by_lane=None,
     **cycle_kwargs: Any,
 ) -> ProductiveFullAutonomyN5RuntimeOrchestratorResultV1:
     """Compose ranking→topology→Cap23/24→ingest→handoff→readiness (+ optional completion)."""
@@ -341,31 +340,18 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         portfolio=cap24_bind.observed_portfolio,
     )
 
-    selections: dict[str, SingleSelectedFutureSelectionV1] = (
-        produce_occupied_lane_cap23_n1_selections_v1(
-            membership=membership,
-            ranking_snapshot=ranking_snapshot,
-            topology_state_root_base=topology_state_root_base,
-            writer=lane_assignment_writer,
-            repository_sha=repository_sha,
-            producer_observed_at_unix=producer_observed_at_unix,
-        )
-    )
-    topology_membership = membership
-    if membership.bootstrap:
-        topology_membership = build_membership_context_artifact_v1(
-            ordered_instrument_ids=membership.ordered_instrument_ids,
-            cap22_provenance=membership.cap22_provenance,
-            bootstrap=False,
-            prior_membership_reference=membership.instance_id,
-        )
-    topology: IsolatedLaneTopologyV1 = consume_recovered_isolated_lane_topology_v1(
-        membership=topology_membership,
+    publication = publish_checked_lane_selections_v1(
+        membership=membership,
         ranking_snapshot=ranking_snapshot,
         topology_state_root_base=topology_state_root_base,
         writer=lane_assignment_writer,
+        repository_sha=repository_sha,
+        producer_observed_at_unix=producer_observed_at_unix,
         observed_portfolio=cap24_bind.observed_portfolio,
+        replacement_admission_by_lane=replacement_admission_by_lane,
     )
+    selections = publication.selections
+    topology = publication.topology
     bound_by_lane = bind_occupied_lane_cap24_n1_instruments_v1(
         selections=selections,
         topology_state_root_base=topology_state_root_base,
@@ -417,24 +403,12 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
 
     completion: OccupiedLaneRuntimeN5CompletionResultV1 | None = None
     if include_host_completion_rollup:
-        completion_kwargs = {
-            k: v for k, v in cycle_kwargs.items() if k not in FORBIDDEN_COMPOSE_KWARGS
-        }
-        _inject_cap24_lane_canonical_price_provenance_v1(
+        completion = complete_occupied_lane_runtime_n5_from_readiness_v1(
             selected_pairs,
-            cap24_bind,
-            completion_kwargs,
-        )
-        _inject_cap24_lane_candles_payload_by_lane_v1(
-            selected_pairs,
-            cap24_bind,
-            completion_kwargs,
-        )
-        completion = run_occupied_lane_runtime_n5_completion_v1(
-            selected_pairs,
+            readiness,
             target_cardinality=target,
             origin_main_sha=origin_main_sha,
-            **completion_kwargs,
+            cycle_id_prefix=str(readiness_kwargs.get("cycle_id_prefix") or ""),
         )
         if int(completion.post_count) != 0 or completion.permit_created:
             _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
@@ -452,4 +426,5 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         external_effect_authorized=False,
         post_allowed=False,
         execution_schedule=EXECUTION_SCHEDULE,
+        lane_publication_resumed=publication.resumed,
     )

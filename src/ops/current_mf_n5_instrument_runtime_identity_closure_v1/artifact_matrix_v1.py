@@ -2,19 +2,10 @@
 
 from __future__ import annotations
 
-import shutil
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
-from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.constants_v1 import (
-    CURSOR_FILENAME,
-)
-from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
-    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
-    GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
-    GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
-)
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.constants_v1 import (
     LANE_IDENTITY_MANIFEST_BASENAME,
 )
@@ -62,6 +53,15 @@ _ARTIFACT_STATE_CLASS: dict[str, InstrumentSensitiveStateClass] = {
 
 
 def lane_artifact_adjudication_matrix_v1() -> tuple[LaneArtifactAdjudicationRowV1, ...]:
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.constants_v1 import (
+        CURSOR_FILENAME,
+    )
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
+        DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+        GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
+        GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
+    )
+
     return (
         LaneArtifactAdjudicationRowV1(
             "cap23_hysteresis", LaneArtifactDisposition.NOT_LANE_LOCAL, None
@@ -127,25 +127,23 @@ def lane_artifact_adjudication_matrix_v1() -> tuple[LaneArtifactAdjudicationRowV
     )
 
 
-def _purge_path(lane_state_root: Path, relative: str) -> None:
-    target = lane_state_root / relative
-    if target.is_file():
-        target.unlink()
-    elif target.is_dir():
-        shutil.rmtree(target, ignore_errors=True)
-
-
 def purge_lane_local_artifacts_for_release_v1(lane_state_root: Path | str) -> None:
-    """Remove lane-local mutable artifacts that must not cross instrument generations."""
-    root = Path(lane_state_root)
-    matrix = lane_artifact_adjudication_matrix_v1()
-    for row in matrix:
-        if row.disposition != LaneArtifactDisposition.PURGED_ON_RELEASE_REKEY:
-            continue
-        if not row.relative_path:
-            continue
-        _purge_path(root, row.relative_path)
-    _purge_path(root, CURSOR_FILENAME)
+    """Retain and ACK original evidence before removing generation-local paths."""
+    from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (
+        retain_then_release_lane_paths_v1,
+    )
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.constants_v1 import (
+        CURSOR_FILENAME,
+    )
+
+    names = [
+        row.relative_path
+        for row in lane_artifact_adjudication_matrix_v1()
+        if row.disposition == LaneArtifactDisposition.PURGED_ON_RELEASE_REKEY and row.relative_path
+    ]
+    retain_then_release_lane_paths_v1(
+        Path(lane_state_root), [*names, CURSOR_FILENAME, LANE_IDENTITY_MANIFEST_BASENAME]
+    )
 
 
 def adjudicate_lane_release_disposition_v1(

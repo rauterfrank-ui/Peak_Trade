@@ -1,0 +1,58 @@
+# Register: Anker und Evolution
+
+Schema: `V0.9-INIT-1`.
+Führend für später tatsächlich belegte historische Änderungen.
+Stand: 2026-10-30. Instanzen: keine.
+
+[Schema](../MAPS/system_map.md#schema-v09-init-1) · [INDEX](../INDEX.md) · [README](../README.md)
+
+## Konvention
+
+Ein Ereignis erhält eine stabile `EVENT_ID` mit Präfix `EVT-`, sobald ein freigegebener Lauf eine Änderung an einer bereits geführten Domäne, Ebene oder Kante belegt.
+Bis dahin gibt es keine Ereignis-ID.
+
+Spätere Pflichtfelder:
+
+`EVENT_ID | Typ | Bedeutung | Scope | Evidenzstatus | Revisionsstatus | Quellenreferenz | Verbindungen | offene Unsicherheiten`
+
+Blueprint-Felder, erst bei einem echten Ereignis:
+
+`DOMAIN/EDGE | BEFORE_SHA | AFTER_SHA | CHANGE_TYPE | INTENDED_REASON | ACTUAL_EFFECT | REGRESSION_EVIDENCE | CONFIDENCE`
+
+Zeitfelder bleiben getrennt und dürfen fehlen:
+
+`FIRST_DOCUMENTED_AT | FIRST_IMPLEMENTED_AT | FIRST_VERIFIED_WORKING_AT | CHANGED_OR_REMOVED_AT | SEMANTIC_CORRECTION_AT`
+
+Unbekannte Zeiten sind `UNKNOWN`. Sie werden nicht aus Dateidaten oder Commit-Daten geschätzt.
+Hashes werden nur übernommen, wenn derselbe Lauf sie an der genannten Quelle geprüft hat.
+In diesem Paket wurde kein solcher Hash gebildet oder aus Recovery-Beständen übernommen.
+
+## Instanzen
+
+`RUN-0002` vergleicht zwei C2-Hashes und zwei Modell-Hashes. Keine Quelle sagt, sie ersetze den anderen Hash. Deshalb keine `EVT-`.
+
+Keine.
+
+| EVENT_ID | Scope | Evidenzstatus | Revisionsstatus | Quelle |
+|---|---|---|---|---|
+| keine | — | — | — | — |
+
+## Offene Unsicherheiten
+
+- Kein historischer Anker geprüft.
+- Kein Vorher-Nachher-Paar vorhanden.
+- Revision `RUN-0003`: Das Zielrunbook beschreibt eine eigene Ablösung eines nächsten Schritts. Es liegt nur ein Datei-Hash vor. Deshalb keine `EVT-`. Die Landschaft und der Gesetzesindex sind Ansichten, keine Nachfolgebelege.
+- Revision `RUN-0004`: `EVI-0069` und `EVI-0072` sind zwei Hashes mit derselben Kennzahlentabelle, kein Vorher-Nachher eines Artefakts. `EVI-0085` und `EVI-0093` bleiben parallel. `EVI-0086` erklärt ältere Exporte für ungültig, ohne deren Datei-Hashes in diesem Lauf. Deshalb keine `EVT-`.
+- Revision `RUN-0005`: `EVI-0130` nennt eine abgelöste Owner-GO-Zeile, ohne die Vorgängerdatei. `EVI-0121` und `EVI-0122` sind zwei Texte über Christoffersen, kein Vorher-Nachher-Hash. Deshalb keine `EVT-`.
+- Revision `RUN-0006`: `EVI-0170` und `EVI-0171` sowie `EVI-0174` und `EVI-0175` sind Varianten ohne belegte Nachfolge. Deshalb keine `EVT-`.
+- Revision `RUN-0032`: die zwei GHV-Texte und die Volatilitäts- sowie Equity-Varianten haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0033`: Zyklus, Bollinger-v2, Capture-Seam und Volatilitäts-Bindung haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0034`: Atlas, 11.14-Leser, D6-BK und Audit-Paket haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0035`: Golden-Enter, Verdrahtungs-Complete und Atlas-Vollständigkeit haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0036`: ACK-Kriterium, 7200-Sekunden-Closeout und zwei Atlas-Kopien haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0038`: Equity-Ratifizierung, Epoch-Schließung und PIT-Netz haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0039`: U05-GET, Pos-Semantik und N5-Compose haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0040`: das zweite Runbook-SSOT und die Step-6-Bindung haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0041`: Step-29M und die Equity-Fläche haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0042`: Sizing-Basis und Equity-Ratifikation haben keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.
+- Revision `RUN-0043`: das Runbook-SSOT hat keine belegte Vorher-Nachher-Nachfolge mit beiden Hashes. Deshalb keine `EVT-`.

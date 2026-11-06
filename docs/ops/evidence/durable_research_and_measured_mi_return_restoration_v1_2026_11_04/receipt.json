@@ -1,0 +1,34 @@
+{
+  "source_commit": "6dfa11eb393b461befea5e3b89548ca5f995adaa",
+  "tests": "12 new connected durable research tests PASS and13 new measured return calibration tests PASS; separate scopes, no claim of whole-system coverage. Prior25/32 and128 proofs reused only at their pinned unchanged source scopes.",
+  "ruff_status": "PASS; format PASS",
+  "runtime_activation_authorized": false,
+  "full_restoration_proven": false,
+  "boundaries": [
+    "Controlled synthetic data, gap context and forecast; no observed natural Shadow, training, improved predictions or profitability claim.",
+    "Historical full Golden Vector corpus and original BWP5 result bytes remain unavailable in the documented search scope; current tests cannot recreate an unobserved historical run.",
+    "Loop C remains its existing fixture-bound evaluation; no unknown incremental OOS feature definition fabricated.",
+    "Research funding remains pre-applied-actual-cashflow; actual settlement sequencing and separate accounting purpose unresolved. No second writer or research-to-accounting bypass.",
+    "Optional and required robustness/regime/portfolio supplier capabilities remain governed by their existing owner; BLOCKED/FAIL is retained, not promoted to PASS.",
+    "Existing implementations, Scope and original learning ledger unchanged. No services, markets, orders, credentials, push or source archive writes; U04/GAP-0370 deferred."
+  ],
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/durable_research_and_measured_mi_return_restoration_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_MEASURED_LEARNING_HANDOFFS_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 262,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  },
+  "post_commit_replay": "committed_packet_replay.json"
+}

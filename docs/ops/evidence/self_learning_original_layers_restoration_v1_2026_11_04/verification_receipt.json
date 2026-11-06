@@ -1,0 +1,20 @@
+{
+  "source_commit": "68c687a64a3e767c19bf52d90b896cc598c6d62f",
+  "old_git_sources": "12 exact introduction revision:path objects match preserved snapshots",
+  "current_layers": "9 identical;3 evolved;12 present",
+  "original_added_paths": "ALL_PRESENT; scoped to12 introduction changed_files ledgers",
+  "original_direct_calls": "No missing phase target except2 now explicitly traced via existing intermediate binder",
+  "golden_report_mentions": "75 Python path mentions across three reports;ALL_PRESENT; no execution claim",
+  "source_recovery": "14 complete original texts plus retained provenance; hashes match prior source register",
+  "bounded_tests": "Reuse90 connected PASS after comparison of all src/experiments and tests/experiments paths to bound source pin; sole changed control file matches final PASS receipt hash; no new product tests executed",
+  "ruff_status": "NOT_APPLICABLE_NO_PRODUCT_SOURCE_CHANGE",
+  "boundaries": [
+    "Original files are historical evidence, not executable recovery or present authority.",
+    "Byte equality, static calls and existing tests do not certify full semantic applicability, actual original run or useful end-to-end learning.",
+    "No missing original product file found in this bounded inventory; no speculative adapter or retroactive metric/parameter mapping added.",
+    "Original declared runner/scheduler/Shadow/numeric supplier goals must not be relabelled as historically executed edges without evidence.",
+    "Phase0 legacy authority adjudication and full natural operation are not globally certified by phase1–12 presence.",
+    "No Scope change, original-ledger change, runtime, services, trading, publishing, external-source writes or push."
+  ],
+  "original_format_preservation": "Originals include intentional Markdown hard-break spaces and literal git-diff context; archive-local .gitattributes preserves bytes without weakening product rules."
+}

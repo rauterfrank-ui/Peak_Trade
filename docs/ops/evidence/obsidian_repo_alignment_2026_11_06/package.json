@@ -1,0 +1,352 @@
+{
+  "schema": "peaktrade.obsidian_repo_alignment_package.v1",
+  "authority": "NONE",
+  "global_semantic_recertified": false,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "e51139d3a9a2797bc16166ce1b05661ac1c40a913ea087044b99e4b053267c65",
+      "bytes": 25
+    },
+    {
+      "path": "LUECKEN_IM_REPO.md",
+      "sha256": "4c546a57b8e85f7c7add0386915b7fc0e7740c40ace190a624c1e51fa6fba737",
+      "bytes": 10146
+    },
+    {
+      "path": "README.md",
+      "sha256": "19939860259097d5cbfa097ea9eb41e8806a0c392a25b1d101f938007ed7a2ce",
+      "bytes": 8092
+    },
+    {
+      "path": "abgleich.json",
+      "sha256": "2323125e9819fa7d2d3530c0e46efe08a421d23c3e42ee6badc3924c738685b2",
+      "bytes": 15403
+    },
+    {
+      "path": "archives/plan-design-and-implementation-evidence-001.tar.gz",
+      "sha256": "6c4e89f932eefc0a45d57d14366ed47ee093f9c0cf7f5619bd65bfb9cce678be",
+      "bytes": 2408354
+    },
+    {
+      "path": "archives/plan-historical-source-mirror-001.tar.gz",
+      "sha256": "7e592856a156be1cc75b014d792e6817eff7c9d7edf88177791b5c3df827b8a6",
+      "bytes": 3463509
+    },
+    {
+      "path": "archives/plan-historical-source-mirror-002.tar.gz",
+      "sha256": "98b82966d907147cf9370dac3f3db01313d0084ffcfa1774438570276b8a3672",
+      "bytes": 3611129
+    },
+    {
+      "path": "archives/plan-historical-source-mirror-003.tar.gz",
+      "sha256": "c799c366ac376767e92d6e408e6b6de8f004ba664152050dc8c34358dcc6d3bc",
+      "bytes": 2361314
+    },
+    {
+      "path": "archives/plan-semantic-plan-and-navigation-001.tar.gz",
+      "sha256": "d143d04f1946d25f1b86ae23a81ef6205c68d32172f4e8d89423a3c7d12bca4f",
+      "bytes": 816211
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-001.tar.gz",
+      "sha256": "727a61b8c5410aa4b9aa4ae5d6b2867e6e24fb2fd678366b3df7aff87a0202b9",
+      "bytes": 17139660
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-002.tar.gz",
+      "sha256": "9f680adb27a6c65096af7f8a48bc4fd38f9a0075d6b46d30053e25298a71e0d9",
+      "bytes": 14905572
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-003.tar.gz",
+      "sha256": "d2d1a6961199e5cb4bcaf72c49405855f8a5916a245627422f2dc06f8dac4328",
+      "bytes": 4388159
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-004.tar.gz",
+      "sha256": "45b5e6600d9179962781316b54d5304e73b45a5ad9927a4d738c5dca6db4df4f",
+      "bytes": 5832761
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-005.tar.gz",
+      "sha256": "9e3949525f3d4f6ab785a38dbbcd3eca4d37c569c8b659c1e8fa5375668ad6ee",
+      "bytes": 6275722
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-006.tar.gz",
+      "sha256": "447735c243cc9686219b47fafceda5f1957024babb9488af536ab48560b8e134",
+      "bytes": 5126817
+    },
+    {
+      "path": "archives/system-evidence-and-source-binding-007.tar.gz",
+      "sha256": "365fe85960f4027f1c2db0fe75577ea5f4c278b14b640bc8382ad3c6508d3d14",
+      "bytes": 8101393
+    },
+    {
+      "path": "archives/system-generated-technical-projection-001.tar.gz",
+      "sha256": "42e7eb492fa49c213931d27f782187219037370ced1e190629ea8d8169c74c2c",
+      "bytes": 3569891
+    },
+    {
+      "path": "archives/system-generated-technical-projection-002.tar.gz",
+      "sha256": "b3902195fb41fea7f8d9bd1f13b0ab199492fc94d6a85311c04be13147d528de",
+      "bytes": 2823977
+    },
+    {
+      "path": "archives/system-generated-technical-projection-003.tar.gz",
+      "sha256": "680947310717777fd870c53bd4051efd336658157fe98b859b35b83df2ebc201",
+      "bytes": 1366371
+    },
+    {
+      "path": "archives/system-generated-technical-projection-004.tar.gz",
+      "sha256": "8421b6c8586170a14c559243ad9018649a22281df0a95972eb02af7e79f3505c",
+      "bytes": 1273180
+    },
+    {
+      "path": "archives/system-generated-technical-projection-005.tar.gz",
+      "sha256": "c75c487f715e5ca76002b7825033878f7b2bdacc8aad71f7227448311efb2841",
+      "bytes": 1092191
+    },
+    {
+      "path": "archives/system-generated-technical-projection-006.tar.gz",
+      "sha256": "9b3bcbacdf2767151ba268c7f41e48c9d571d4e524c2a27c8ba3383d52961ed9",
+      "bytes": 1177113
+    },
+    {
+      "path": "archives/system-generated-technical-projection-007.tar.gz",
+      "sha256": "964945abecd4efc8d10d966c8deffc2b21e2dce06e1045faf3e2dc1ed0a6acc0",
+      "bytes": 1701632
+    },
+    {
+      "path": "archives/system-generated-technical-projection-008.tar.gz",
+      "sha256": "7a4ec2565d077f193dfc56181dc296075ac8b46c824babc31c5718a52212cf9c",
+      "bytes": 2582499
+    },
+    {
+      "path": "archives/system-generated-technical-projection-009.tar.gz",
+      "sha256": "7f05a2cd96d1f189910dbb963a3871e5349b8b7eb2e1f2eef78f3d9441ce4f74",
+      "bytes": 2491524
+    },
+    {
+      "path": "archives/system-generated-technical-projection-010.tar.gz",
+      "sha256": "f30acf067c27b20699472617f192d04c5b462996859ed130a995c58a31a1b1c3",
+      "bytes": 2392489
+    },
+    {
+      "path": "archives/system-generated-technical-projection-011.tar.gz",
+      "sha256": "359fc929ca20658848ab1e5ef0edb1f207fba868af46a94aa5c19e691445711a",
+      "bytes": 2266138
+    },
+    {
+      "path": "archives/system-generated-technical-projection-012.tar.gz",
+      "sha256": "08ba436640e92101edccb89d85a3c4b757f2375076eec8ed2f716689a52d0405",
+      "bytes": 2396216
+    },
+    {
+      "path": "archives/system-generated-technical-projection-013.tar.gz",
+      "sha256": "0d5ca13e46f9572fc9415a81460de4c5484b1c1ecc32ba367e31cf6673456242",
+      "bytes": 2476166
+    },
+    {
+      "path": "archives/system-generated-technical-projection-014.tar.gz",
+      "sha256": "2b6c41c1baef08aec148f6d79a471401ae407130b52390eab0048ed9d7354db5",
+      "bytes": 352269
+    },
+    {
+      "path": "archives/system-semantic-view-and-navigation-001.tar.gz",
+      "sha256": "e0564a3e064135884c363e4822e83aae6512319c885c8756d63f80588efac8ca",
+      "bytes": 2250297
+    },
+    {
+      "path": "archives/system-semantic-view-and-navigation-002.tar.gz",
+      "sha256": "b1162894b514c42d1a4c1ba4431cf6220a0294788608093a4495bf380dbb069a",
+      "bytes": 1220866
+    },
+    {
+      "path": "coverage.json",
+      "sha256": "60f501be6b26bdbe86e52d406089207df6e52a9253e2fd8f32069657fa41d110",
+      "bytes": 3927731
+    },
+    {
+      "path": "current-module-symbols.json",
+      "sha256": "6c2478bf47e6124dd57c11e0138315b24a5a07cf1707c45ab0b43bc5c772882d",
+      "bytes": 16273
+    },
+    {
+      "path": "historical-index-delta.json",
+      "sha256": "92330980d37cf3a9689794777e4cd35d4c2a4ceb82dcfcb2cc07280f6d963a56",
+      "bytes": 36882
+    },
+    {
+      "path": "readers/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md",
+      "sha256": "68c0f8b2eef3b4493ece1c9eca49740736790344cb62b029ad033bd3b4fb035b",
+      "bytes": 3760
+    },
+    {
+      "path": "readers/system/00 Systemindex/Aussenbereiche/HOST.md",
+      "sha256": "f93cc8f0152190a4bc88f2917953d567e8110de50664bf1a11a954aa3a562396",
+      "bytes": 18295
+    },
+    {
+      "path": "readers/system/00 Systemindex/Betrieb/Wiederanlauf und Stromausfall.md",
+      "sha256": "86689df0e0f1317feabb71ff5e28ba4392600834967c25d58f6f4fa33f03a0ec",
+      "bytes": 4110
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/01 Ursprung Varianten und innere Aufgaben.md",
+      "sha256": "683d4a56a848bf0e9ba19d02be227f20dac113eabd26c36eb91e10ad6a2729ce",
+      "bytes": 9865
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/02 Verarbeitung Zustaende und Rueckkopplungen.md",
+      "sha256": "7b65b49e1dd92d2dba2ce717931dde5785a2288593e1366e2bb35f3efb18e10f",
+      "bytes": 18438
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/03 Bedeutung der Daten und Messungen.md",
+      "sha256": "2f528fb05f3241b4992befa223c028125d07c65208d0f0fb2116f0eb4e20d9b7",
+      "bytes": 9847
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/04 Abgleich der drei Integrationscommits.md",
+      "sha256": "391fc12a674cb55d68381cdd13b247b7db773a7e60ced66f27ed10da582360b3",
+      "bytes": 7977
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/05 Geklaerte Zusammenhaenge und offene Verstaendnisfragen.md",
+      "sha256": "4ed6876bdb4a4c041bdb12464e6585a3bfc5c9b1f11be50423a8716ec8662035",
+      "bytes": 11458
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/06 Marktbeobachtung und historische Messvertraege.md",
+      "sha256": "c3769f709939473d3216d9f9885e046142417cd0072c7e75686420ad8b74936b",
+      "bytes": 7443
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/07 Lernzustand und tatsaechliche Folgeconsumer.md",
+      "sha256": "5b63e63d1c0c5e52d5996da055f62fcfbe7560c87002675b1ca2b2781250be47",
+      "bytes": 7881
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/08 Numerische Lernverfahren und ihre Anschlussgrenzen.md",
+      "sha256": "1aaef6634275a1d899c0d53ff8a616567c317fd4ed513202bf90c4be552e5d46",
+      "bytes": 8958
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/09 Konkrete Werte bis zum Ursprung.md",
+      "sha256": "3353c375947fcbf760b8cc962512e75e1844cc32ba410b594847ab0f59d71365",
+      "bytes": 13419
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/10 Innere Ebenen der aktuellen Anschlussmodule.md",
+      "sha256": "9c41bbd670f7f025c30a42af6c01e5f06057375512ec7626f9906939394d4623",
+      "bytes": 9730
+    },
+    {
+      "path": "readers/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "sha256": "9f7c99ca4f71490d7de2e5246109c8f4786640db94c3de61ad98c29fb104d8f5",
+      "bytes": 8959
+    },
+    {
+      "path": "readers/system/00 Systemindex/Offene Punkte und Arbeitsfolge.md",
+      "sha256": "e388423faae6b88a7efcf2d6cae9013774949ab23ef0b83f28dbc3293b0a6548",
+      "bytes": 11310
+    },
+    {
+      "path": "readers/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "sha256": "7546d24bd50576b52936f0c829ebdd2f5a0d05f0bae1f329564b29107f98b844",
+      "bytes": 10978
+    },
+    {
+      "path": "readers/system/00 Systemindex/Repoabgleich/Standabgleich mit dem Repository.md",
+      "sha256": "c2c2c802854f4d24ddf5ade8bee1398b763c720a0e60bd8e48bf1ad1ae070f20",
+      "bytes": 6492
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantik/S02.md",
+      "sha256": "3529c493c1d5a2de88e6b5e6cd848c91ef01beb441a6c251ac6fd50fad2edd51",
+      "bytes": 5540
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantik/S03.md",
+      "sha256": "a3c4fef84d7a615aa3c9ecc7581531f4a86d41979df129abc07a3eccefef91fe",
+      "bytes": 5353
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantik/S04.md",
+      "sha256": "ff22f39c519964576cb3038be4110a003e12d400e6ee5da1775689bba75b11af",
+      "bytes": 5598
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantik/S06.md",
+      "sha256": "148aa37cc9892d2bcdba86af8c26fc555ea8d3ac3fb6455a25b2ae99ddfd0e41",
+      "bytes": 5041
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantik/S11.md",
+      "sha256": "d6b1dc1ab3901a10d75759f64082524f9d049ae5f310b558113655d22926018b",
+      "bytes": 6710
+    },
+    {
+      "path": "readers/system/00 Systemindex/Semantische Ebenen.md",
+      "sha256": "7ac879a1e542f4ebba63f33d265d2c161418d44da4ddd2921a61eaec74454d84",
+      "bytes": 8446
+    },
+    {
+      "path": "readers/system/00 Systemindex/Universen/INT.md",
+      "sha256": "cddc69aad1513cfe39d8167600bdffc70da63a9f1abb59b24d9b5e119011d980",
+      "bytes": 17387
+    },
+    {
+      "path": "readers/system/00 Systemindex/Universen/OPT.md",
+      "sha256": "1b1c5e2c06fb1f29558bb8bb9cbe60c8ea7b4e0ea053aabf4f8bcb3cca164544",
+      "bytes": 13155
+    },
+    {
+      "path": "readers/system/00 Systemindex/Universen/SL.md",
+      "sha256": "3794d30f0998497de5050e365332f2e19d49a338962d519a2839a53d70b08276",
+      "bytes": 13839
+    },
+    {
+      "path": "readers.json",
+      "sha256": "d66ebd1f7cf0e8ad21d7b7b065221448470d37cf906e4b7e73195f918628de8a",
+      "bytes": 12447
+    },
+    {
+      "path": "repository-before.json",
+      "sha256": "c4f8c1ce7800cef2cfd2cd9464ce07fc5d1edc38ac4d7bcf07795298e47bd0e9",
+      "bytes": 5037521
+    },
+    {
+      "path": "repository-document-change.json",
+      "sha256": "539df8018f842d9b55f30a3f360753c96a8bc5d34217095aa43533c9b67d6f62",
+      "bytes": 273
+    },
+    {
+      "path": "repository-navigation-before.md.txt",
+      "sha256": "9180a32a1e17e02b18cc2f72487d2948cce896f36a03caaa392debfcdf6a9bf9",
+      "bytes": 1145
+    },
+    {
+      "path": "scope.json",
+      "sha256": "4aebba2d0d60b14c66a02c60ee318f2c9880bee56d94fdb81f9d06a557f88fcf",
+      "bytes": 893
+    },
+    {
+      "path": "validation.json",
+      "sha256": "a9ff629b0f571189eeb58ee5a58d353f1414342619dcb5eaba3e6747532da57a",
+      "bytes": 1278
+    },
+    {
+      "path": "vaults-before.json",
+      "sha256": "ac968dc9ddc4df1870531f8a42b5a33086fde27cf84cee86bacec50150153705",
+      "bytes": 3721265
+    },
+    {
+      "path": "verify_alignment.py",
+      "sha256": "619ef76a5938b14d4f6d78e59c006e4e4f80b1d6dafb08896e312b119d9a8b2b",
+      "bytes": 11077
+    }
+  ]
+}

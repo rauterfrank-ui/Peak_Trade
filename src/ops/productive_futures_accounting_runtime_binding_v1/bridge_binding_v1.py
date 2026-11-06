@@ -91,10 +91,12 @@ def sync_portfolio_shell_from_accounting_v1(
     portfolio.state.unrealized_pnl = acct.unrealized_pnl
     portfolio.state.cumulative_fees = acct.cumulative_fees
     portfolio.state.cumulative_slippage = acct.cumulative_slippage
+    # Shell uses positive expense; the accounting owner carries signed cash PnL.
+    portfolio.state.cumulative_funding = -acct.funding_pnl
     portfolio.state.fill_count = acct.fill_count
     portfolio.state.equity = acct.equity
     portfolio.state.cash = (
-        acct.initial_equity + acct.realized_pnl - acct.cumulative_fees - acct.cumulative_slippage
+        acct.initial_equity + acct.realized_pnl + acct.funding_pnl - acct.cumulative_fees
     )
     portfolio.state.peak_equity = max(portfolio.state.peak_equity, acct.equity)
     portfolio.state.positions.clear()

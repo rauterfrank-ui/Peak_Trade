@@ -1,0 +1,39 @@
+{
+  "current_source_commit": "f49735166ab037b90b596d9b91c4ff5f5765e364",
+  "historical_baseline": "5b606f6daf322995a7f26a7208bba70a43cdd392",
+  "mount_identity_rechecked": {
+    "M2DATA": "BFA81BFA-80C5-3634-84EE-17B3496EE123",
+    "PeakDATARecovery": "53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57"
+  },
+  "originals_unchanged": true,
+  "recovery_process_check": "No matching R-Studio/RStudio/PhotoRec/testdisk/ddrescue process listed; not universal continuing guarantee.",
+  "search_scope": "Exact filenames from dated Recovery MD inventory. Shallow M2 metadata only. No new recovery or recursive raw code scan.",
+  "sources": [
+    {
+      "coverage": "Sections1–22 through line345 reviewed; appendix AST inventory346–840 retained but not semantically re-audited",
+      "lines": 840,
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.md",
+      "retained_copy": "historical_sources/Peak_Trade_SELF_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "sha256": "e67371959aee07beffbebea57c4415e15e5bc46b739b16524141299c18bf1c69",
+      "size": 96996
+    },
+    {
+      "coverage": "Entire report text read; historical report assertions, not independently rerun original probes",
+      "lines": 303,
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.md",
+      "retained_copy": "historical_sources/Peak_Trade_META_LEARNING_GOLDEN_VECTOR_V1.original.txt",
+      "sha256": "e61484fc81a3efc092303565e934861ff847e498a376cd4dcf8d189b1d132d33",
+      "size": 16153
+    },
+    {
+      "coverage": "Entire report text read; historical report assertions, not independently rerun original probes",
+      "lines": 277,
+      "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md",
+      "prior_local_copy": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/golden-vector-bridge-pr-filter/local-function-review/obsidian-report-crosscheck/historical-Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.md",
+      "prior_local_copy_byte_equal": true,
+      "retained_copy": "historical_sources/Peak_Trade_SELF_LEARNING_OPTIMIZATION_CROSS_UNIVERSE_GOLDEN_VECTOR_V1.original.txt",
+      "sha256": "18740e6361edd644bf570a5470764767503a230174a649f907d4d6a0aee639a2",
+      "size": 16333
+    }
+  ]
+}

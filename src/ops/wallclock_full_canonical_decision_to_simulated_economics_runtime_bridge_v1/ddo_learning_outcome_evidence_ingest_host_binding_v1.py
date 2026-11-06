@@ -27,7 +27,7 @@ def _ledger_from_state(state: Any) -> AppendOnlyDdoLedgerV0 | None:
     return AppendOnlyDdoLedgerV0(Path(binding.ledger_path))
 
 
-def _scope_id_from_state(state: Any, *, session_id: str) -> str:
+def _scope_id_from_state(state: Any, *, session_id: str, outcome: Mapping[str, Any]) -> str:
     account = getattr(state, "ddo_account_identity_record", None)
     account_identity = None
     if account is not None:
@@ -35,6 +35,8 @@ def _scope_id_from_state(state: Any, *, session_id: str) -> str:
     return derive_learning_state_scope_id_v1(
         session_id=session_id,
         account_identity=account_identity or None,
+        config_hash=str(outcome.get("config_hash") or "UNKNOWN"),
+        code_sha=str(outcome.get("code_sha") or "UNKNOWN"),
     )
 
 
@@ -42,6 +44,17 @@ def apply_learning_state_feedback_to_next_cycle_v1(state: Any) -> None:
     """Ratified feedback seam: opaque economic score label only."""
     snapshot = getattr(state, "last_ddo_learning_state", None)
     if not isinstance(snapshot, Mapping):
+        return
+    binding = getattr(state, "ddo_capture_binding", None)
+    expected_config = getattr(binding, "capture_scope_config_hash", None)
+    if (
+        not expected_config or snapshot.get("config_hash") != expected_config
+        or snapshot.get("code_sha") in (None, "UNKNOWN")
+    ):
+        if getattr(state, "ddo_n_bars_economic_score", None) == snapshot.get(
+            "next_cycle_economic_score_label"
+        ):
+            state.ddo_n_bars_economic_score = "UNKNOWN"
         return
     label = snapshot.get("next_cycle_economic_score_label")
     if not isinstance(label, str) or not label or label == "UNKNOWN":
@@ -90,7 +103,7 @@ def invoke_productive_learning_outcome_evidence_ingest_v1(
             "reason": "EVALUATION_BUNDLE_INCOMPLETE",
             "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         }
-    scope_id = _scope_id_from_state(state, session_id=session_id)
+    scope_id = _scope_id_from_state(state, session_id=session_id, outcome=outcome)
     corr = correlation_id or f"ddo.lingest.{session_id}.fallback"
     if len(corr) < 8:
         corr = f"{corr}.padding00"[:128]

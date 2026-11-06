@@ -37,25 +37,25 @@ rules:
     sensitive:
       - "docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md"
     required_docs:
-      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+      - "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 
   - id: known-limitations-canonical
     sensitive:
       - "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md"
     required_docs:
-      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+      - "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 
   - id: canary-live-entry-canonical
     sensitive:
       - "docs/ops/runbooks/CANARY_LIVE_ENTRY_CRITERIA.md"
     required_docs:
-      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+      - "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 
   - id: truth-branch-protection-canonical
     sensitive:
       - "docs/ops/registry/TRUTH_BRANCH_PROTECTION.md"
     required_docs:
-      - "docs/ops/registry/DOCS_TRUTH_MAP.md"
+      - "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 
   - id: forward-run-manifest-helper
     sensitive:

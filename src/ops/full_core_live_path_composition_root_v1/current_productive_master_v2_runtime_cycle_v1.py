@@ -14,11 +14,16 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
+    CANDIDATE_REJECTED,
+    candidate_market_context_rejection_codes_v1,
+    invalid_candidate_cycle_input_codes_v1,
+)
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_CONFIRMATION_EPOCHS,
     CANONICAL_DECISION_CONFIG_DIGEST,
@@ -30,10 +35,15 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     HostExitPolicyBindingV1,
     evaluate_host_exit_policy_producers_v1,
 )
+from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+    PositionEpisodeBindingV1,
+    PositionEpisodeScopeV1,
+)
 from src.ops.hard_facts_system_closure_v1.durable_kill_switch_mv2_binding_v1 import (
     resolve_durable_kill_switch_for_mv2_host_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
+    CurrentProductiveG17CmcBindError,
     apply_current_productive_g17_typed_vol_cmc_bind_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_capture_to_offline_export_join_v1 import (
@@ -178,6 +188,43 @@ ENDPOINT_PUBLIC_OPEN_INTEREST = "/api/v5/public/open-interest"
 ENDPOINT_PUBLIC_FUNDING_RATE = "/api/v5/public/funding-rate"
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+SIMULATED_ECONOMICS_CRS_BOUNDARY_WIRING_OWNER = (
+    "src.ops.full_core_live_path_composition_root_v1."
+    "current_productive_master_v2_runtime_cycle_v1."
+    "_wire_simulated_economics_crs_boundary_onto_replay_input_v1"
+)
+
+
+def _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
+    replay_input: IntegratedOfflineReplayInputV1,
+    *,
+    instrument_id: str,
+) -> IntegratedOfflineReplayInputV1:
+    """Attach canonical simulated-economics CRS boundary (propagation-only).
+
+    Does not fabricate CRS when the producer rejects inputs; leaves replay input
+    unchanged so integrated replay retains fail-closed unresolved semantics.
+    """
+    canonical_instrument_id = str(instrument_id or "").strip()
+    if not canonical_instrument_id:
+        return replay_input
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+        build_simulated_economics_crs_boundary_state_file_v1,
+    )
+
+    try:
+        boundary = build_simulated_economics_crs_boundary_state_file_v1(
+            instrument_id=canonical_instrument_id,
+        )
+    except ValueError:
+        return replay_input
+    if str(boundary.instrument_id or "").strip() != canonical_instrument_id:
+        return replay_input
+    return replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=boundary,
+    )
 
 
 def _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1(
@@ -459,63 +506,6 @@ def extract_position_truth_v1(
     return "FLAT", True, ExistingPositionSide.NONE
 
 
-def okx_positions_payload_to_portfolio_snapshot_v1(payload: Any):
-    """Parse an OKX positions payload into the existing portfolio snapshot.
-
-    This parser is not a second position authority. Missing or invalid
-    payloads stay missing. An explicit data list is a present snapshot.
-    """
-    from decimal import Decimal
-
-    from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
-        PortfolioTruthSnapshotV1,
-        PositionTruthV1,
-    )
-
-    if not isinstance(payload, Mapping):
-        return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
-    data = payload.get("data")
-    if not isinstance(data, list):
-        return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
-    positions: list[PositionTruthV1] = []
-    seen_open: set[str] = set()
-    duplicate = False
-    for row in data:
-        if not isinstance(row, Mapping):
-            return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
-        inst = str(row.get("instId") or "").strip()
-        raw_pos = row.get("pos")
-        number = _finite_number(raw_pos)
-        if inst == "" or number is None:
-            return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
-        if number == 0.0:
-            continue
-        token = str(row.get("posSide") or "").strip().lower()
-        side = "LONG" if number > 0 else "SHORT"
-        if token == "long" and side != "LONG":
-            duplicate = True
-        elif token == "short" and side != "SHORT":
-            duplicate = True
-        if inst in seen_open:
-            duplicate = True
-        seen_open.add(inst)
-        qty_text = str(raw_pos) if isinstance(raw_pos, str) else str(number)
-        positions.append(
-            PositionTruthV1(
-                instrument_id=inst,
-                signed_quantity=Decimal(qty_text),
-                side=side,
-                source_id="okx_positions_payload",
-            )
-        )
-    return PortfolioTruthSnapshotV1(
-        positions=tuple(positions),
-        missing=False,
-        duplicate=duplicate,
-        source_id="okx_positions_payload",
-    )
-
-
 def resolve_host_market_sample_venue_event_time_unix_v1(
     *,
     last_finalized_event_ts_unix: float,
@@ -649,7 +639,54 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
     kill_switch_state_path: str | None = None,
     explicit_killstate_active: bool = False,
+    position_episode_binding: PositionEpisodeBindingV1 | None = None,
+    position_episode_scope: PositionEpisodeScopeV1 | None = None,
 ) -> CurrentProductiveMasterV2CycleResultV1:
+    # Candidate admission only. Never turn an occupied-position cycle into a
+    # discarded candidate or bypass its existing risk/exit/reconciliation path.
+    checking_new_candidate = (
+        venue_flat is True and existing_position_side is ExistingPositionSide.NONE
+    )
+    if checking_new_candidate:
+        input_codes = invalid_candidate_cycle_input_codes_v1(
+            values={
+                "observed_unix": observed_unix,
+                "mark_px": mark_px,
+                "index_px": index_px,
+                "bid_px": bid_px,
+                "ask_px": ask_px,
+                "volume": volume,
+                "open_interest": open_interest,
+                "funding_rate": funding_rate,
+                "last_finalized_event_ts_unix": last_finalized_event_ts_unix,
+            },
+            finalized_closes=finalized_closes,
+        )
+        for name, value, expected_type in (
+            ("bound_instrument", bound_instrument, BoundInstrumentV1),
+            (
+                "canonical_price_provenance",
+                canonical_price_provenance,
+                ProductiveCycleCanonicalPriceProvenanceV1,
+            ),
+            (
+                "master_v2_reconciliation_admission",
+                master_v2_reconciliation_admission,
+                ProductiveMasterV2ReconciliationAdmissionV1,
+            ),
+        ):
+            if not isinstance(value, expected_type):
+                input_codes += (f"{name}_missing_or_invalid",)
+        if g17_typed_vol_producer is not None and not isinstance(
+            g17_typed_vol_producer, CanonicalVolatilityTypedRuntimeProducerScaffoldV1
+        ):
+            input_codes += ("g17_typed_vol_producer_invalid",)
+        if input_codes:
+            return _blocked_cycle_result(
+                cycle_id=cycle_id,
+                fail_reason=f"{CANDIDATE_REJECTED}:{','.join(input_codes)}",
+                provenance=CANDIDATE_REJECTED,
+            )
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
     if not instrument_id:
@@ -657,6 +694,21 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             cycle_id=cycle_id,
             fail_reason="BINDING_MISSING",
             provenance=CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
+        )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_future_identity_semantics_v1 import (
+        resolve_selected_future_market_type_v1,
+    )
+
+    try:
+        future_market_type = resolve_selected_future_market_type_v1(
+            instrument_id=instrument_id,
+            venue_native_id=venue_native_id,
+        )
+    except ValueError as exc:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=str(exc),
+            provenance="FUTURE_IDENTITY_FAIL_CLOSED",
         )
     try:
         canonical_price_provenance.validate_against_cycle_inputs_v1(
@@ -686,13 +738,43 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         expected_venue_native_id=venue_native_id or instrument_id,
         venue_flat=bool(venue_flat),
     )
-    if restore.fail_closed is True:
+    # An occupied position must continue its own scope, never bootstrap a fresh
+    # entry context after a missing, foreign, stale, or incomplete cursor.
+    occupied_scope_missing = venue_flat is not True and (
+        restore.cursor is None or restore.cursor.existing_scope is None
+    )
+    if restore.fail_closed is True or occupied_scope_missing:
+        restore_blocker = (
+            "CURSOR_SCOPE_MISSING_FOR_OCCUPIED_POSITION"
+            if restore.cursor is not None and occupied_scope_missing
+            else restore.reason_code
+        )
         return _blocked_cycle_result(
             cycle_id=cycle_id,
-            fail_reason=restore.reason_code,
-            provenance=restore.reason_code,
+            fail_reason=restore_blocker,
+            provenance=restore_blocker,
             cursor_restore_status=restore.disposition.value,
         )
+    if position_episode_binding is not None:
+        from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+            require_current_cursor_continuity_v1,
+        )
+
+        try:
+            if not isinstance(position_episode_binding, PositionEpisodeBindingV1):
+                raise ValueError("POSITION_EPISODE_BINDING_INVALID")
+            require_current_cursor_continuity_v1(
+                episode=position_episode_binding,
+                incoming=restore.cursor,
+                store_root=layered_core_store_root,
+            )
+        except ValueError as exc:
+            return _blocked_cycle_result(
+                cycle_id=cycle_id,
+                fail_reason=str(exc),
+                provenance="POSITION_EPISODE_CURSOR_FAIL_CLOSED",
+                cursor_restore_status=restore.disposition.value,
+            )
     closes = tuple(float(x) for x in finalized_closes)
     if canonical_price_provenance.mark_source == "ORDINARY_MARKET_CANDLE_CLOSE":
         return _blocked_cycle_result(
@@ -756,7 +838,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         CanonicalMarketContextV1(
             context_id=f"ctx-{instrument_id}-epoch{trading_epoch}-full-core-current-v1",
             instrument_id=instrument_id,
-            market_type=FuturesMarketType.PERPETUAL,
+            market_type=future_market_type,
             trading_epoch=trading_epoch,
             market_event_time=market_event_time,
             decision_time=decision_time,
@@ -783,12 +865,33 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         )
     )
     cmc_pre_bind_volatility = float(market_context.volatility_estimate)
-    g17_cmc_bind = apply_current_productive_g17_typed_vol_cmc_bind_v1(
-        market_context,
-        producer=g17_typed_vol_producer,
-    )
+    try:
+        g17_cmc_bind = apply_current_productive_g17_typed_vol_cmc_bind_v1(
+            market_context,
+            producer=g17_typed_vol_producer,
+            expected_venue_native_id=venue_native_id,
+            expected_venue=DEFAULT_VENUE,
+        )
+    except CurrentProductiveG17CmcBindError as exc:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=exc.reason_code,
+            provenance="G17_INSTRUMENT_BINDING_FAIL_CLOSED",
+        )
     market_context = g17_cmc_bind.context
     typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
+    if checking_new_candidate:
+        rejection_codes = candidate_market_context_rejection_codes_v1(typed_volatility_eligibility)
+        if rejection_codes:
+            return replace(
+                _blocked_cycle_result(
+                    cycle_id=cycle_id,
+                    fail_reason=f"{CANDIDATE_REJECTED}:{','.join(rejection_codes)}",
+                    provenance=CANDIDATE_REJECTED,
+                    cursor_restore_status=restore.disposition.value,
+                ),
+                fail_reasons=rejection_codes,
+            )
     scope_resolved_volatility: float | None = None
     try:
         from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
@@ -837,21 +940,48 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         confirmation_state = restored.scope_confirmation
         directional_last_evaluated = int(confirmation_state.last_evaluated_trading_epoch)
         directional_count = int(confirmation_state.candidate_count)
-    if replay_reconciliation_state is not ReconciliationState.RECONCILED or (
-        master_v2_reconciliation_admission.is_productive_upstream_provenance_v1() is not True
-    ):
-        position_state = PositionState.RECONCILIATION_REQUIRED
-    elif bool(venue_flat) and existing_position_side is ExistingPositionSide.NONE:
-        position_state = PositionState.FLAT_RECONCILED
-    elif existing_position_side in (ExistingPositionSide.LONG, ExistingPositionSide.SHORT):
-        position_state = PositionState.OPEN_FULL
-    else:
-        position_state = PositionState.RECONCILIATION_REQUIRED
+    position_state = (
+        PositionState.FLAT_RECONCILED if venue_flat is True else PositionState.OPEN_FULL
+    )
     durable_kill = resolve_durable_kill_switch_for_mv2_host_v1(
         kill_switch_state_path=kill_switch_state_path,
         explicit_active=bool(explicit_killstate_active),
     )
-    exit_binding = HostExitPolicyBindingV1(instrument_id=instrument_id)
+    if position_episode_binding is not None:
+        try:
+            if not isinstance(position_episode_binding, PositionEpisodeBindingV1):
+                raise ValueError("POSITION_EPISODE_BINDING_INVALID")
+            from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+                FROZEN_PROFIT_PROTECTION_DISTANCE,
+            )
+            from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+                layer_c_derived_exit_policy_adverse_config_digest_v1,
+            )
+
+            if (
+                position_episode_binding.binding.config_digest
+                != layer_c_derived_exit_policy_adverse_config_digest_v1(
+                    profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
+                )
+            ):
+                raise ValueError("POSITION_EPISODE_EXIT_POLICY_CONFIG_MISMATCH")
+            exit_binding = position_episode_binding.prepare_for_cycle_v1(
+                instrument_id=instrument_id,
+                venue_native_id=venue_native_id,
+                position_side=str(existing_position_side.value),
+                venue_flat=venue_flat,
+                event_time=float(last_finalized_event_ts_unix),
+                expected_scope=position_episode_scope,
+            )
+        except ValueError as exc:
+            return _blocked_cycle_result(
+                cycle_id=cycle_id,
+                fail_reason=str(exc),
+                provenance="POSITION_EPISODE_FAIL_CLOSED",
+                cursor_restore_status=restore.disposition.value,
+            )
+    else:
+        exit_binding = HostExitPolicyBindingV1(instrument_id=instrument_id)
     _bundle, exit_signals, exit_safety_mode, exit_trading_gate = (
         evaluate_host_exit_policy_producers_v1(
             exit_binding,
@@ -860,9 +990,10 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             observation_digest=str(market_context.input_digest or ""),
             has_open_position=venue_flat is not True,
             existing_position_side=str(existing_position_side.value),
-            entry_price=None,
-            entry_event_time=None,
-            entry_trading_epoch=None,
+            entry_price=exit_binding.entry_price,
+            entry_event_time=exit_binding.entry_event_time,
+            entry_trading_epoch=exit_binding.entry_trading_epoch,
+            confirmation_binding=cap61_binding if position_episode_binding is not None else None,
             adverse_exit_distance=float(layer_c_event_distances.adverse_exit_distance),
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),
@@ -895,6 +1026,11 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         "trading_epoch": int(trading_epoch),
         "cursor_restore_status": restore.disposition.value,
     }
+    if position_episode_binding is not None:
+        input_material["position_episode"] = {
+            **position_episode_binding.input_binding_v1(),
+            "exit_producer_digest": _bundle.producers_digest,
+        }
     input_digest = hashlib.sha256(str(sorted(input_material.items())).encode("utf-8")).hexdigest()
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=replay_id,
@@ -996,6 +1132,10 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance=",".join(bind_carry.failure_codes),
             cursor_restore_status=restore.disposition.value,
         )
+    bind_input = _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
+        bind_input,
+        instrument_id=instrument_id,
+    )
     from src.ops.full_core_live_path_composition_root_v1.productive_real_carrier_passive_capture_v1 import (
         enforce_real_carrier_passive_capture_before_replay_v1,
     )
@@ -1062,6 +1202,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             )
             ddo_export_handoff = {
                 "ok": export_result.ok,
+                "status": export_result.status,
+                "pending_outcome_created": False,
                 "join_seam_id": export_result.join_seam_id,
                 "fail_closed": export_result.fail_closed,
                 "reason_codes": list(export_result.reason_codes),
@@ -1169,6 +1311,31 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         )
     outcome = str(replay.evidence.decision_outcome or "")
     reasons = tuple(str(x) for x in (replay.fail_reasons or ()))
+    outgoing_cursor = _outgoing_cursor_from_replay_v1(
+        bound_instrument=bound_instrument,
+        trading_epoch=trading_epoch,
+        now_tick=now_tick,
+        replay=replay,
+        cap61_binding=cap61_binding,
+    )
+    if (
+        position_episode_binding is not None
+        and replay.replay_pass is True
+        and outgoing_cursor is not None
+    ):
+        from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+            build_current_cursor_publication_v1,
+        )
+
+        exit_binding.current_cursor_publication = build_current_cursor_publication_v1(
+            episode=position_episode_binding,
+            incoming=restore.cursor,
+            outgoing=outgoing_cursor,
+            store_root=layered_core_store_root,
+        )
+        # Retain exact cursor material before the caller publishes its cursor.
+        # This is explicit recovery of this pair, not a full-path transaction.
+        position_episode_binding.commit_evaluated_v1(exit_binding, writer_session_id=str(cycle_id))
     return CurrentProductiveMasterV2CycleResultV1(
         replay=replay,
         cycle_id=cycle_id,
@@ -1180,13 +1347,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         input_digest=input_digest,
         input_blocker="",
         cursor_restore_status=restore.disposition.value,
-        outgoing_cursor=_outgoing_cursor_from_replay_v1(
-            bound_instrument=bound_instrument,
-            trading_epoch=trading_epoch,
-            now_tick=now_tick,
-            replay=replay,
-            cap61_binding=cap61_binding,
-        ),
+        outgoing_cursor=outgoing_cursor,
         elementary_direction=elementary_direction,
         ddo_capture_summary=ddo_summary,
         ddo_offline_export_handoff=ddo_export_handoff,

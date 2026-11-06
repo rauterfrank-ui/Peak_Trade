@@ -1,0 +1,30 @@
+{
+  "binding_epoch": "2026-10-12T16:58:43Z",
+  "cap24_reselection_performed": false,
+  "capture_timestamp": "2026-10-12T17:03:49.473218Z",
+  "continuous_run_id": "a6fe591ff63bd722",
+  "entry_confirmation_and_sidestate_carrier": {
+    "present": false,
+    "reason": "MISSING_BY_DESIGN_AFTER_ROTATION"
+  },
+  "expected_cursor_floor": 0.0,
+  "last_accepted_c1_venue_event_time_unix": null,
+  "owner": "full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1",
+  "ranking_integrity_digest": "b5ad53d950717763bfeda4bba16cc906f08f997da96e60a4eb02e5f8fb7bf3a3",
+  "ranking_snapshot_id": "pfr_a4374cbc7fbb4982637dc1db",
+  "repository_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "rotation_reconciliation": {
+    "action": "NO_PERSISTED_CURSOR",
+    "archived_cursor_path": null,
+    "current_native_instrument": "W-USDT-SWAP",
+    "previous_native_instrument": "",
+    "rotation_performed": false,
+    "same_instrument_continuation": false
+  },
+  "run_id": "a6fe591ff63bd722",
+  "schema_version": "continuous_run_entry_state_snapshot.v1",
+  "selected_canonical_instrument": "okx_eea:linear_perpetual:W:USDT:USDT:w-usdt-swap",
+  "selected_native_instrument": "W-USDT-SWAP",
+  "selection_id": "ssf_b5dfae0c16913e8aa4cd358a",
+  "universe_snapshot_id": "gfu_24479c9a8153f8ed"
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
@@ -16,6 +17,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     ContinuousObservationSourceV1,
+    DISPOSITION_FAIL_CLOSED,
+    DISPOSITION_STALL,
+    DISPOSITION_CANCELLED,
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     mint_continuous_run_id_v1,
 )
@@ -34,6 +38,7 @@ from src.ops.n1_standing_pre_external_runtime_supervisor_v1.constants_v1 import 
     PRETRADE_DECISION_ID_SUPERVISOR_TICK,
     SUPERVISOR_ZERO_ECONOMIC_AUTHORITY,
     TRANSPORT_SCOPE_OFFLINE_INJECT,
+    TRANSPORT_SCOPE_SCOPED_READONLY_GET,
 )
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.errors_v1 import (
     StandingSupervisorError,
@@ -62,6 +67,59 @@ from src.governance.current_continuous_run_runtime_binding_v1 import (
 )
 
 
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.runtime_notice_v1 import (
+    record_runtime_notice_v1,
+)
+
+
+def _record_supervisor_outcome_v1(run):
+    @wraps(run)
+    def observed(**kwargs):
+        config = kwargs["config"]
+        # An unsafe evidence path is not a safe place for a fault notice.
+        # Validate root ownership before the wrapper can write any notice.
+        budget_owner_root_for_config_v1(config)
+        try:
+            result = run(**kwargs)
+        except Exception as exc:
+            try:
+                record_runtime_notice_v1(
+                    evidence_root=config.evidence_root,
+                    component="STANDING_N1_SUPERVISOR",
+                    run_id="",
+                    reason_code=getattr(exc, "reason_code", "SUPERVISOR_FAILURE"),
+                    action="Inspect the failing owner, reconcile durable state and verify authorization before a new run. Do not clear safety locks.",
+                    owner_action_required=True,
+                    notification_kind="FAULT",
+                    extra={
+                        "exception_type": type(exc).__name__,
+                        "automatic_restart_allowed": False,
+                    },
+                )
+            except OSError:
+                pass  # local notice writer logs failure; preserve original exception
+            raise
+        terminal = result.policy_result.orchestrator_result if result.policy_result else None
+        record_runtime_notice_v1(
+            evidence_root=config.evidence_root,
+            component="STANDING_N1_SUPERVISOR",
+            run_id=result.run_id,
+            reason_code=terminal.reason_code if terminal else "SUPERVISOR_NO_RUNTIME_RESULT",
+            action=terminal.next_required_owner_decision
+            if terminal
+            else "Inspect missing runtime result before a new authorized run.",
+            owner_action_required=terminal is None or terminal.disposition != DISPOSITION_CANCELLED,
+            extra={
+                "disposition": result.trace.terminal_disposition,
+                "ok": result.ok,
+                "automatic_restart_allowed": False,
+            },
+        )
+        return result
+
+    return observed
+
+
 @dataclass(frozen=True)
 class StandingSupervisorConfigV1:
     public_store_root: Path
@@ -69,6 +127,8 @@ class StandingSupervisorConfigV1:
     lane_state_root: Path
     evidence_root: Path
     lock_root: Path | None = None
+    cap24_productivity_root: Path | None = None
+    expected_account_identity: str | None = None
     venue_native_id: str = "ETH-USDT-SWAP"
     canonical_instrument_id: str = "inst-eth-usdt-perp"
     kill_switch_state_path: str | None = None
@@ -81,6 +141,22 @@ class StandingSupervisorConfigV1:
     wp02_universe_source_event_time: str = "1700000000000"
     wp02_state_root: Path | None = None
     wp02_topology_state_root_base: Path | None = None
+
+
+def budget_owner_root_for_config_v1(config: StandingSupervisorConfigV1) -> Path:
+    """Resolve one private owner, disjoint from run/lane/public roots; no writes."""
+    paths = {
+        name: Path(getattr(config, name))
+        for name in ("private_store_root", "evidence_root", "lane_state_root", "public_store_root")
+    }
+    if any(not p.is_absolute() for p in paths.values()):
+        raise StandingSupervisorError("BUDGET_OWNER_ABSOLUTE_ROOTS_REQUIRED")
+    root = (paths["private_store_root"] / "portfolio_budget_host_v1").resolve()
+    for name in ("evidence_root", "lane_state_root", "public_store_root"):
+        other = paths[name].resolve()
+        if root == other or root.is_relative_to(other) or other.is_relative_to(root):
+            raise StandingSupervisorError("BUDGET_OWNER_ROOT_OVERLAP", name)
+    return root
 
 
 @dataclass(frozen=True)
@@ -156,6 +232,7 @@ def _refresh_pretrade_truth_v1(
     return str(evidence.pretrade_freshness_status)
 
 
+@_record_supervisor_outcome_v1
 def run_n1_standing_pre_external_supervisor_v1(
     *,
     config: StandingSupervisorConfigV1,
@@ -174,6 +251,7 @@ def run_n1_standing_pre_external_supervisor_v1(
     time_fn: Callable[[], float] | None = None,
     sleep_fn: Callable[[float], None] | None = None,
     skip_owner_go_validation: bool = False,
+    cancel_requested: Callable[[], bool] | None = None,
 ) -> StandingSupervisorRunResultV1:
     """Single standing supervisor session: recovery → supply → pretrade → continuous PRE_EXTERNAL run."""
 
@@ -191,6 +269,12 @@ def run_n1_standing_pre_external_supervisor_v1(
     auth_proof = prove_hard_facts_authority_invariants_v1()
     if not auth_proof.ok:
         raise StandingSupervisorError("HARD_FACTS_AUTHORITY_INVARIANTS_FAIL")
+    if (
+        not isinstance(config.expected_account_identity, str)
+        or not config.expected_account_identity
+        or config.expected_account_identity != config.expected_account_identity.strip()
+    ):
+        raise StandingSupervisorError("BUDGET_OWNER_EXPECTED_ACCOUNT_REQUIRED")
 
     run_id = mint_continuous_run_id_v1(authorization)
     trace = StandingSupervisorTraceV1(
@@ -199,6 +283,30 @@ def run_n1_standing_pre_external_supervisor_v1(
         bound_instrument_id=str(bound.instrument_id),
         venue_native_id=config.venue_native_id,
     )
+
+    if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
+        from datetime import datetime, timezone
+        from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
+
+        if config.cap24_productivity_root is None or not config.expected_account_identity:
+            raise StandingSupervisorError("N1_START_ACCOUNT_AND_SELECTION_ROOT_REQUIRED")
+        if (
+            config.venue_native_id != bound.venue_native_id
+            or config.canonical_instrument_id != bound.instrument_id
+        ):
+            raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
+        startup = acquire_account_bound_n1_startup_v1(
+            productivity_root=config.cap24_productivity_root,
+            repository_sha=origin_main_sha,
+            binding_epoch=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            expected_account_identity=config.expected_account_identity,
+            session_id=run_id,
+            private_rest_fetch=private_rest_fetch,
+            expected_bound=bound,
+        )
+        bound = startup.handoff.bound_instrument
+        trace.extra["startup_account_bound"] = True
+        trace.extra["startup_selection_id"] = startup.handoff.selection_id
 
     recovery = _run_unified_recovery_v1(
         config=config,
@@ -302,6 +410,19 @@ def run_n1_standing_pre_external_supervisor_v1(
 
     owner_go_consumed = False
     policy_result: PolicyGovernedContinuousRunResultV1 | None = None
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import PortfolioBudgetHostV1
+
+    budget_host = PortfolioBudgetHostV1(
+        root=budget_owner_root_for_config_v1(config),
+        private_rest_fetch=private_rest_fetch,
+        repository_sha=origin_main_sha,
+        session_id=str(config.evidence_root.name),
+        expected_account_identity=config.expected_account_identity,
+        durable_mode="recover",
+        reconciliation_transport=pretrade_transport,
+        retry_interval_seconds=authorization.wait_interval_seconds,
+        **({"retry_sleep": sleep_fn} if sleep_fn is not None else {}),
+    )
     try:
         policy_result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             authorization=authorization,
@@ -316,12 +437,32 @@ def run_n1_standing_pre_external_supervisor_v1(
             lock_root=config.lock_root,
             time_fn=time_fn,
             sleep_fn=sleep_fn,
+            fresh_pretrade_get_transport=pretrade_transport,
+            portfolio_budget_host=budget_host,
+            cancel_requested=cancel_requested,
         )
         owner_go_consumed = (
             config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json"
         ).is_file()
     except PersistentNaturalEnterConvergenceError as exc:
         raise StandingSupervisorError(exc.reason_code, exc.detail) from exc
+    finally:
+        budget_state = (
+            budget_host.owner.budget_state_v1() if budget_host.owner is not None else None
+        )
+        trace.extra["portfolio_budget_host"] = {
+            "durable_root": str(budget_host.root),
+            "owner_opened": budget_host.owner is not None,
+            "active_reservation_sum": str(budget_host.owner.active_sum_v1())
+            if budget_host.owner is not None
+            else "UNKNOWN",
+            "recovery_required_before_close": budget_state.recovery_required
+            if budget_state is not None
+            else True,
+            "transport_retry_count": budget_host.transport_retry_count,
+            "venue_fill_integrated": False,
+        }
+        budget_host.close()
 
     orch = policy_result.orchestrator_result
     trace.governed_cycle_count = int(orch.cycles_completed)
@@ -351,6 +492,8 @@ def run_n1_standing_pre_external_supervisor_v1(
         and trace.pretrade_truth_refreshed
         and owner_go_consumed
         and trace.post_count == 0
+        and trace.terminal_disposition
+        not in {DISPOSITION_FAIL_CLOSED, DISPOSITION_STALL, DISPOSITION_CANCELLED}
     )
     return StandingSupervisorRunResultV1(
         ok=ok,

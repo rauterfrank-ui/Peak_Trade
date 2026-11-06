@@ -1,0 +1,61 @@
+{
+  "phase": "PHASE_2_VISUAL_COMPARISON",
+  "items": [
+    {
+      "aspect": "Orderformular sichtbar",
+      "CURRENT_LAYOUT": "Volle Handeln-Spalte rechts mit Kaufen/Verkaufen, Margin 3x, Limit-Feldern",
+      "TARGET_LAYOUT": "Orderformular ausgeblendet oder auf Minimum",
+      "NATIVE_OKX_CAPABILITY": "SUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "Chart + Marktdaten gewinnen ~25–30% Breite",
+      "RISK_TO_EXISTING_WORKSPACES": "LOW — nur WS2; WS1 unberührt"
+    },
+    {
+      "aspect": "Orderbuch + Time & Sales gleichzeitig",
+      "CURRENT_LAYOUT": "Ein Market-Tabset, Umschalten Orderbuch | Letzte Trades",
+      "TARGET_LAYOUT": "Beide Streams parallel sichtbar",
+      "NATIVE_OKX_CAPABILITY": "UNSUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "NONE without unsupported hack",
+      "RISK_TO_EXISTING_WORKSPACES": "N/A"
+    },
+    {
+      "aspect": "TradingView groß/zentral",
+      "CURRENT_LAYOUT": "Chart bereits zentral, durch Order-Spalte eingeengt",
+      "TARGET_LAYOUT": "Maximale Chartfläche nach Entfernen Order-Spalte",
+      "NATIVE_OKX_CAPABILITY": "SUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "HIGH",
+      "RISK_TO_EXISTING_WORKSPACES": "LOW"
+    },
+    {
+      "aspect": "Positionen/Orders/PnL",
+      "CURRENT_LAYOUT": "Unteres Account-Tabset + Futures-Modus rechts",
+      "TARGET_LAYOUT": "Unterpanel bleibt sichtbar; PnL ohne Orderformular",
+      "NATIVE_OKX_CAPABILITY": "SUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "MEDIUM — weniger visuelle Konkurrenz mit Orderformular",
+      "RISK_TO_EXISTING_WORKSPACES": "LOW"
+    },
+    {
+      "aspect": "Funding / OI / Marktdaten",
+      "CURRENT_LAYOUT": "Header-Leiste + optional Handelsdaten-Tab",
+      "TARGET_LAYOUT": "Header dauerhaft sichtbar; Handelsdaten bei Bedarf",
+      "NATIVE_OKX_CAPABILITY": "SUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "LOW (already present in header)",
+      "RISK_TO_EXISTING_WORKSPACES": "NONE"
+    },
+    {
+      "aspect": "Ungenutzte Fläche",
+      "CURRENT_LAYOUT": "Orderformular + schmale rechte Tool-Leiste",
+      "TARGET_LAYOUT": "Orderformular weg; Splitter anpassen",
+      "NATIVE_OKX_CAPABILITY": "SUPPORTED",
+      "EXPECTED_VISUAL_IMPROVEMENT": "HIGH",
+      "RISK_TO_EXISTING_WORKSPACES": "MEDIUM — Splitter-Drift in WS2 Persistenz"
+    },
+    {
+      "aspect": "Dediziertes Beobachtungslayout-Preset",
+      "CURRENT_LAYOUT": "Standard-Pro-Trading-Layout",
+      "TARGET_LAYOUT": "One-click Observation preset",
+      "NATIVE_OKX_CAPABILITY": "UNKNOWN",
+      "EXPECTED_VISUAL_IMPROVEMENT": "UNKNOWN",
+      "RISK_TO_EXISTING_WORKSPACES": "UNKNOWN"
+    }
+  ]
+}

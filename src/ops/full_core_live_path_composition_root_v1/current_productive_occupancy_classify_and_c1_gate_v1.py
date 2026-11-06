@@ -14,6 +14,7 @@ from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     extract_finalized_candle_closes_v1,
+    extract_position_truth_v1,
 )
 
 V5_OWNER_GO = (
@@ -130,6 +131,45 @@ def _open_nonzero_position_rows(payload: Any) -> list[Mapping[str, Any]]:
             continue
         open_rows.append(row)
     return open_rows
+
+
+def admits_bound_position_management_v1(
+    *, occupancy_payloads: Mapping[str, Any], facts: Mapping[str, str], native_id: str
+) -> bool:
+    """Admit observation/management of one known position, never a new entry."""
+    if facts.get("OCCUPANCY_STATUS") != "OCCUPANCY_PRESENT":
+        return False
+    if facts.get("PENDING_ORDERS_STATUS") != "NONE_OBSERVED":
+        return False
+    if any(facts.get(key) != "0" for key in ("POSITIONS_CODE", "PENDING_CODE", "CONFIG_CODE")):
+        return False
+    if facts.get("CONFIG_POS_MODE") not in {"net_mode", "long_short_mode"}:
+        return False
+    for key in ("POSITIONS", "PENDING", "CONFIG"):
+        payload = occupancy_payloads.get(key)
+        if not isinstance(payload, Mapping) or not isinstance(payload.get("data"), list):
+            return False
+    rows = occupancy_payloads["POSITIONS"]["data"]
+    open_rows = []
+    for row in rows:
+        if not isinstance(row, Mapping) or not str(row.get("instId") or "").strip():
+            return False
+        try:
+            quantity = Decimal(str(row.get("pos")))
+        except Exception:
+            return False
+        if not quantity.is_finite():
+            return False
+        if quantity != 0:
+            open_rows.append(row)
+    if len(open_rows) != 1 or str(open_rows[0].get("instId") or "").strip() != native_id:
+        return False
+    if str(open_rows[0].get("posSide") or "").lower() not in {"", "net", "long", "short"}:
+        return False
+    status, flat, _side = extract_position_truth_v1(
+        occupancy_payloads["POSITIONS"], native_id=native_id
+    )
+    return status == "BOUND_INSTRUMENT_OPEN" and flat is False
 
 
 def _classify_occupancy_v1(

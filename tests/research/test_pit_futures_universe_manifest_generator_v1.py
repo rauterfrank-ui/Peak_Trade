@@ -470,19 +470,28 @@ def test_non_futures_and_spot_negative_cases(
 
 
 @pytest.mark.parametrize("base_asset", ["BTC", "XBT", "WBTC"])
-def test_bitcoin_direction_blocked(base_asset: str) -> None:
+def test_bitcoin_assets_use_common_admission(base_asset: str) -> None:
     record = _base_record(
         base_asset=base_asset,
         venue_symbol=f"{base_asset}-USDT-SWAP",
         digest_suffix=base_asset.lower(),
     )
-    result = generate_pit_futures_universe_manifest_v1(
+    inp = dataclasses.replace(
         _build_input(
             epochs=(GeneratorEpochInputV1(0, _BAR_CLOSE_0, _eligible_panel() + (record,)),)
-        )
+        ),
+        universe_id="synthetic_common_futures_v1",
+        universe_policy_id="synthetic_common_futures_v1",
+        hypothesis_id="SYNTHETIC_COMMON_FUTURES_V1",
     )
-    assert result.success is False
-    assert GeneratorErrorCode.BITCOIN_INSTRUMENT_BLOCKED.value in result.error_codes
+    inp = dataclasses.replace(inp, config_digest=compute_generator_config_digest(inp))
+    result = generate_pit_futures_universe_manifest_v1(inp)
+    assert result.success is True
+    assert result.error_codes == ()
+    assert result.manifest is not None
+    assert any(m.base_asset == base_asset for m in result.manifest.epochs[0].members)
+    assert result.manifest.non_authorizing is True
+    assert result.manifest.bitcoin_direction_allowed is False
 
 
 def test_exclusion_codes_remain_exactly_sixteen() -> None:

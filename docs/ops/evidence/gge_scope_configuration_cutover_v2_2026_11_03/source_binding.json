@@ -1,0 +1,28 @@
+{
+  "base_commit": "fcb136d2b45182cd8d309718a021284d45c502f5",
+  "actual_source_dirty_before_commit": true,
+  "source_sha256": {
+    "src/learning/deterministic_decision_outcome_v0/capture_v0.py": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
+    "src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py": "7cb27673ec78979cfba4d9a8801d60c115765d16e9f2b25c3f651276054612fe",
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c",
+    "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+    "src/ops/dynamic_scope_persistence_binding_v1/models_v1.py": "16b7a3c4818944aef1ad04a80b57d203802cd47254614f49d303ac0b23e8d25b",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "ee45015a8667740f7ab1545df7690fd63946b606279c347210f83b084d718ea1",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py": "f3ec6c5a5008c1ea931cac3c7de9ffa96aeeae4a9ded7ac6bd7c80d37aae6f44",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py": "52aab00dd55f33e5eef4c8a783de8cd842435d7a70b7aa0b6067223d45417c7d",
+    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py": "ded703d4f4967c888869f4500055c6b57164d3fa3f7289e21209c56ba9baf487",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py": "83e6464e331b5d18913ac2fea8f30968a263d2dca3d5cab9251b0b798807432b",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py": "3337304ccdb69b66ccbce14292c98504a6361be43ea2a43b9905535d56111f43",
+    "src/trading/master_v2/canonical_scope_initialization_v1.py": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58",
+    "src/trading/master_v2/double_play_state.py": "c68fe01d19cbcc88d819c8258d130c44baf9276fed3e6777fdc47b1c962ad717",
+    "src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py": "d0e51b717a289e8949c8d0d22ca4b1a2f73921a37604e9281431a17055e68b56",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "1b4ae9b9f78e97bdd0b42f546c707fb5d5c74d02fcb481c52ddcc219f8692f9d",
+    "tests/learning/test_learning_outcome_evidence_ingest_v1.py": "d50065d48df7f2a45e83676f04aebab1e626b6205057fc59de07a77e199791fc",
+    "tests/ops/test_current_productive_live_29p_layer_c_protective_stop_binding_v1.py": "0ebe7989dc4c97c1b4f2fead755f0df5624c0f70c9db7e54675dad2d662a8f93",
+    "tests/ops/test_gge_scope_learning_configuration_cutover_v2.py": "060113718a72fe5330240a35bdfc99853818095d497490c12e362166f66d6fe7"
+  },
+  "historical_capture_ledger_sha256_unchanged": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "live_activation": false,
+  "github_push": false
+}

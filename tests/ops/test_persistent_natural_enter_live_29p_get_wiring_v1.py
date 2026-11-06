@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.ops._entry_budget_join_fixture_v1 import join_with_portfolio_fixture_v1
+
 import json
 import shutil
 import tempfile
@@ -144,7 +146,7 @@ def test_join_enter_without_injected_still_get_missing() -> None:
 
     _, cycle_b, _ = _host_enter_cycle()
     replay = _enter_replay(cycle_b)
-    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+    join = join_with_portfolio_fixture_v1(
         replay=replay,
         bound_instrument=_bound(),
         injected=None,

@@ -1,0 +1,14 @@
+[
+  {
+    "after": "REJECTED",
+    "before": "ACCEPTED",
+    "case": "changed_numeric_metric_old_integrity",
+    "reason": "integrity.content_sha256 mismatch"
+  },
+  {
+    "after": "REJECTED",
+    "before": "ACCEPTED",
+    "case": "changed_loop_identity_resealed_integrity",
+    "reason": "loop_identity mismatch"
+  }
+]

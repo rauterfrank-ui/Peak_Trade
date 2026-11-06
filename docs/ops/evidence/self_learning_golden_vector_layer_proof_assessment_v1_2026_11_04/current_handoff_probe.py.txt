@@ -1,0 +1,53 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from collections.abc import Mapping
+import subprocess,json
+from tests.learning.test_ddo_o4_n_bars_productive_chain_v1 import _decision,_identity,_snapshot
+from tests.experiments.test_canonical_optimization_universe_experiment_plane_v1 import _plane_request
+from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import build_decision_event_v0
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_productive_host_v1 import produce_real_outcome_horizon_evaluation_observation_v1
+from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import evaluate_offline_bundle_v0
+from src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_ingest_v1 import ingest_evaluation_bundle_into_learning_state_v1
+from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import export_learning_evidence_from_state_v1
+from src.experiments.canonical_optimization_universe_learning_input_v1 import CanonicalOptimizationUniverseLearningInputRequestV1,validate_canonical_optimization_universe_learning_input_v1
+from src.experiments.canonical_optimization_universe_v1 import CanonicalOptimizationUniverseRequestV1,validate_canonical_optimization_universe_v1
+from src.experiments.canonical_optimization_universe_experiment_plane_v1 import run_optimization_universe_experiment_plane_v1
+from src.experiments.canonical_optimization_experiment_evidence_v1 import build_optimization_experiment_evidence_from_plane_v1
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import SelfLearningOptimizationReturnInputRequestV1,validate_self_learning_optimization_return_input_v1
+from src.experiments.canonical_meta_learning_ingest_v1 import MetaLearningIngestRequestV1,ingest_meta_learning_evidence_from_return_input_v1
+from src.experiments.canonical_meta_to_optimization_feedback_v1 import MetaToOptimizationFeedbackInputRequestV1,validate_meta_to_optimization_feedback_input_v1
+
+def safe(x):
+ if isinstance(x,Mapping):return {str(k):safe(v)for k,v in x.items()}
+ if isinstance(x,(tuple,list)):return [safe(v)for v in x]
+ return x
+out={'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'scope':'Current-code controlled reconstruction of historical handoff probe, not execution of old scripts or proof of original historical run. Temporary existing fixtures only; source classification in records is not natural source authentication.','cases':[]}
+with TemporaryDirectory(prefix='peaktrade-golden-handoffs-')as tmp:
+ for i,label in enumerate(['LABEL_A','LABEL_B']):
+  p=Path(tmp)/str(i);d=build_decision_event_v0(_decision());ledger=AppendOnlyDdoLedgerV0(p/'l.jsonl');ledger.append(d)
+  h=produce_real_outcome_horizon_evaluation_observation_v1(d,_snapshot(),economic_score=label)
+  b=evaluate_offline_bundle_v0(d,h['evaluation_observation'],identity=_identity(),ledger=ledger)
+  state=ingest_evaluation_bundle_into_learning_state_v1(ledger,state_scope_id='ddo.lscope.internal-golden-current',outcome=b['outcome_record'],attribution=b['attribution_record'],counterfactual=b['counterfactual_record'],event_time_utc='2026-09-01T15:00:00Z',correlation_id=str(b['outcome_record']['record_id']))['learning_state_record']
+  ev=export_learning_evidence_from_state_v1(state);input_ack=validate_canonical_optimization_universe_learning_input_v1(CanonicalOptimizationUniverseLearningInputRequestV1(learning_evidence=ev))
+  foundation=validate_canonical_optimization_universe_v1(CanonicalOptimizationUniverseRequestV1(learning_evidence=ev))
+  plane=run_optimization_universe_experiment_plane_v1(_plane_request(ev));assert plane['status']=='PLANE_OFFLINE_CHAIN_COMPLETE'
+  opt=build_optimization_experiment_evidence_from_plane_v1(plane)
+  ack=validate_self_learning_optimization_return_input_v1(SelfLearningOptimizationReturnInputRequestV1(optimization_experiment_evidence=opt,expected_plane_identity=plane['plane_identity']))
+  assert ack['status']=='ACCEPTED_OFFLINE_EVIDENCE_INPUT'
+  m6=ingest_meta_learning_evidence_from_return_input_v1(MetaLearningIngestRequestV1(return_input_ack=ack,optimization_experiment_evidence=opt));meta=m6['meta_learning_evidence'];assert meta is not None
+  m7=validate_meta_to_optimization_feedback_input_v1(MetaToOptimizationFeedbackInputRequestV1(meta_learning_evidence=meta));assert m7['search_executed'] is False
+  out['cases'].append(safe({'caller_label':label,'state':state,'learning_evidence':ev,'learning_input_ack':input_ack,'foundation':foundation,'plane':plane,'return_ack':ack,'meta_ingest':m6,'meta_feedback':m7,'ledger_record_count':len(ledger.read_all())}))
+ missing=validate_canonical_optimization_universe_learning_input_v1(CanonicalOptimizationUniverseLearningInputRequestV1(learning_evidence=None))
+ foundation_without=validate_canonical_optimization_universe_v1(CanonicalOptimizationUniverseRequestV1())
+ wrong=validate_self_learning_optimization_return_input_v1(SelfLearningOptimizationReturnInputRequestV1(optimization_experiment_evidence=opt,expected_plane_identity='wrong-plane'))
+ assert missing['status']=='REJECTED_INVALID_EVIDENCE';assert wrong['status']=='REJECTED_OUT_OF_ORDER'
+ out['controls']=safe({'missing_learning_input':missing,'foundation_without_learning':foundation_without,'wrong_return_plane_identity':wrong})
+a,b=out['cases'];pa,pb=a['plane'],b['plane'];assert pa['plane_identity']!=pb['plane_identity'];assert pa['chain']['search_identity']==pb['chain']['search_identity']
+# Full decision-relevant subobjects compared; context and provenance may legitimately differ.
+keys=['search_identity','selected_candidate','challenger_evaluation','robustness_evidence_digest','failure_evidence_count','failure_evidence','proposal'];existing=[k for k in keys if k in pa['chain']]
+assert 'challenger_evaluation'in existing and 'proposal'in existing
+comparisons={k:pa['chain'][k]==pb['chain'][k]for k in existing};assert all(comparisons.values())
+out['intervention_comparison']={'evidence_digest_changed':a['learning_evidence']['content_hash']!=b['learning_evidence']['content_hash'],'plane_identity_changed':True,'search_identity_unchanged':True,'decision_subobject_equalities':comparisons,'all_chain_keys':list(pa['chain']),'feedback_search_executed':[x['meta_feedback']['search_executed']for x in out['cases']]}
+Path('/tmp/peaktrade_golden_handoff_reproof.json').write_text(json.dumps(out,indent=2,ensure_ascii=False)+'\n')
+print(json.dumps(out['intervention_comparison']))

@@ -5,8 +5,6 @@ Injected acquisition/GET only. No venue POST. REAL_POST_COUNT=0.
 
 from __future__ import annotations
 
-from tests.ops._post_path_safety_fixtures_v1 import fresh_trusted_active_kill_switch_evidence_v1
-
 import json
 from pathlib import Path
 
@@ -229,15 +227,21 @@ def test_this_go_does_not_authorize_one_shot_real_post() -> None:
     readiness_permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=OWNER_GO,
-        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
-        risk_reduction_proof=None,
+        kill_switch_blocked=False,
+        durable_kill_switch_evidence_status=(
+            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+        ),
+        filegate_denied=False,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     later_permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=LATER_POST_GO,
-        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
-        risk_reduction_proof=None,
+        kill_switch_blocked=False,
+        durable_kill_switch_evidence_status=(
+            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+        ),
+        filegate_denied=False,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     assert permit_authorizes_one_shot_real_post_v1(readiness_permit) is False

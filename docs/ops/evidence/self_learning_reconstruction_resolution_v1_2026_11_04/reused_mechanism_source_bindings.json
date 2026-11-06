@@ -1,0 +1,100 @@
+{
+  "prior_evidence": "docs/ops/evidence/self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04/current_source_bindings.json",
+  "current_source_commit": "b392c2df7dd5672a3c1de07ad3385c446cc52dfa",
+  "all_current_bytes_unchanged": true,
+  "files": [
+    {
+      "path": "config/evaluation/golden_vectors/fixture_corpus_v1/corpus_manifest.json",
+      "sha256": "68c2cfe6c0d9d040986c635fff3ac9e86d63f33633de48e3a70e3e0b3feb0bb4"
+    },
+    {
+      "path": "scripts/pt",
+      "sha256": "497bdf472dab9fb798bf167d5d04bb1bdb03e69d47ce03cad6e1730677e9db5f"
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+      "sha256": "4ac5f370b04aeb5364124d3bece77dce144767beb98d484a6f53ead9ad00be16"
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "sha256": "da3deab38df85cbedab6a3fc403a0a950caa5a9435d4f1ab3683533dada67306"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_v1.py",
+      "sha256": "66be1ae22132572aceab89d013ec69af0c48a639384a2b9d44b427167180ea46"
+    },
+    {
+      "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
+      "sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b"
+    },
+    {
+      "path": "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
+      "sha256": "641f1fafa9e3dd74d8adee5cf9b7dba7e786d27f51ff469273aa13ffefc75657"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/challenger_v0.py",
+      "sha256": "599bf0a8510bd34f855a127e7f10b18f016349176587aa3c205dc664664aa2be"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py",
+      "sha256": "292e4288f0fdcf722f5a61e6115c18a20af01aa68e34ea60c7290fe6e5f2e77a"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py",
+      "sha256": "7d85e6e7871a674456bdb6700bf0fac0e7cae09043eda1d91c8c8cdffab5bce3"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py",
+      "sha256": "087a9568284b028fce4adac7f8f05c7dfba0de4b44f33feae78d83fbda74819c"
+    },
+    {
+      "path": "tests/learning/test_ddo_capture_productive_join_v1.py",
+      "sha256": "6dbf9d4addf592c9d957d2bc56e4592d1f28d954bf421c58829ff08802d11f6a"
+    },
+    {
+      "path": "tests/learning/test_ddo_double_play_producer_function_replay_v1.py",
+      "sha256": "e576dffa58803dbb3cecc35bfd67275e4d5cbeab9c3a5de98a31389d473061f7"
+    },
+    {
+      "path": "tests/learning/test_ddo_double_play_semantic_replay_parity_v1.py",
+      "sha256": "045a349ad5ee5068dc2c789d3784ee0139589b92d739349f53e076cee6b029bf"
+    },
+    {
+      "path": "tests/learning/test_ddo_evaluation_runtime_productive_join_v1.py",
+      "sha256": "34e713f6802aff0b5df9361c193151f8261739901a3bcb515b1e746d48f4b105"
+    },
+    {
+      "path": "tests/learning/test_deterministic_decision_outcome_control_plane_v0.py",
+      "sha256": "6bd429a4b4316c54feaecd6438d23f48808d345fb2a792d7f1e1211c8e67658f"
+    },
+    {
+      "path": "tests/learning/test_deterministic_decision_outcome_learning_validation_shadow_v0.py",
+      "sha256": "dae8f5903e1a0f4f2ef910bdbdc49478c1d83df23afcf53b891147e46104de32"
+    },
+    {
+      "path": "tests/learning/test_deterministic_decision_outcome_owner_bindings_and_drift_v0.py",
+      "sha256": "a99057497f3a046a9b7a8d2449022868b4bdcd9e520c9e9893bce5878041f0ec"
+    },
+    {
+      "path": "tests/learning/test_learning_evidence_export_v1.py",
+      "sha256": "a3654f43dc747bf1c8e3763c14730e2110446e212404544b3e6acefc367edb7b"
+    }
+  ],
+  "claim": "Reuse only prior bounded results, no new runtime test count"
+}

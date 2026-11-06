@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from runpy import run_path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -39,6 +40,15 @@ def main() -> int:
     )
     args = parser.parse_args()
     repo_root = args.repo_root.resolve()
+    if (repo_root / "docs/system_atlas/source/current-model.json").is_file():
+        if args.changed_file is not None or args.atlas_yaml_diff_file is not None:
+            parser.error(
+                "Current frozen Atlas checks the actual tree; fixture overrides require a YAML Atlas."
+            )
+        print("ATLAS_COMPARISON=FROZEN_SOURCE (the model source_commit is the baseline)")
+        return run_path(str(repo_root / "docs/system_atlas/current_atlas.py"))["main"](
+            ["impact", "--repo-root", str(repo_root)]
+        )
     atlas = load_atlas_v1(repo_root=repo_root)
     yaml_diff = None
     if args.atlas_yaml_diff_file is not None:

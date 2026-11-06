@@ -1,0 +1,82 @@
+# Meta-Rückweg: welche Daten zurückkommen und was den Folgezyklus verändert
+
+Stand: 02.11.2026. Lesende Fortsetzung der gemeinsamen Rekonstruktion von Learning und Optimization. Kein Produkt-/Trainings-/Testlauf, keine Aktivierung oder Änderung der Autoritäten.
+
+## Ergebnis
+
+Der untersuchte September-Rückweg schließt eine Kette von Ergebnisprojektion, Annahme, Meta-Evidence und Forschungshinweisen. Der nächste Versuch wird im geprüften Mehrzyklus-Modul jedoch weiterhin durch eine vom Aufrufer gelieferte plane_request bestimmt. Das vorherige Feedback wird als Metadaten und Identitätsreferenz mitgeführt; es verändert dort weder diese Anfrage noch ihre Parameter, Scores oder ihr Budget.
+
+Das ist eine präzise Grenze des belegten Loops. Die fehlende produktive Eingriffsautorität ist ausdrücklich gewollt. Die hiervon unabhängige Frage bleibt, ob innerhalb des Forschungsraums echte Ergebnisse eine nächste Versuchswahl bestimmen.
+
+## Quellen und historische Absicht
+
+Elf Git-Snapshots stehen mit Revision/Pfad/SHA-256 in sources.json: acht Dateien am Vergleichspin 5d1c838c15369507c5247834db4dd0df25592169 sowie die drei ursprünglichen M6/M7/M8-Module am Einführungscommit 25b0518b93f91a9609d70c30fb8cd3bf96401a46. Drei Originalnachrichten wurden gegen den Suchindex textgleich geprüft (messages.json).
+
+Die originale M7-Anweisung vom 19.09.2026, Gespräch e204fd9c…, Zeile 74, nennt die erlaubten internen Wirkungen ausdrücklich: Forschungsversuche priorisieren, unter zulässigen Suchmethoden wählen, begrenztes Forschungsbudget zuordnen und Hypothesen vorschlagen. Die M8-Anweisung desselben Gesprächs, Zeile 81, beschreibt Feedback → nächste Offline-Research-Cycle-Choice → nächster deterministischer Evidence-Zyklus. Zugleich fordert sie keinen neuen Algorithmus und verlangt, die damals FAIL_CLOSED bleibende Suchmethodenwahl unverändert zu erhalten. Diese historischen Anforderungen werden nicht erneut ausgeführt.
+
+Die Architektur-Anweisung vom 24.09., Gespräch 72baae56…, Zeile 18, verlangt außerdem, eigene F1/F2-Executors nicht automatisch in einen einzigen M4-Executor zu zwingen. Deshalb werden die föderierte und die MI-Variante ergänzend geprüft, ohne sie mit dem synthetischen M4-Ursprung gleichzusetzen.
+
+Vier gepinnte GitHub-Pfadhistorien ergeben:
+- M6-Ingest, M7-Feedback und M8-Replay ursprünglich #6635 am 19.09.2026 19:38:40 UTC, Commit 25b0518b… .
+- M6 ergänzt föderierten Rückweg mit #6793 am 24.09.2026 20:21:01 UTC, Commit 892bc879… .
+- M7 ergänzt Portfolio-Familien-Gate mit #6853 am 26.09.2026 12:13:16 UTC, Commit 8e7d2961… .
+- Single-Cycle-M4–M8-Return-Wrapper #6876 am 26.09.2026 20:41:38 UTC, Commit d4fd3bba… .
+- Das ursprüngliche M8-Replay hat bis zum Vergleichspin nur seinen Einführungseintrag.
+
+Diese Daten datieren konkrete Versionierung; September bleibt eine spätere Ausgestaltung und kein Beweis des fachlichen Ursprungs beider Universen.
+
+## 1. Optimization erzeugt einen typisierten Ergebnis-Auszug
+
+build_optimization_experiment_evidence_from_plane_v1 erstellt M5-Slices aus dem Plane-Ergebnis. SEARCH_EVIDENCE enthält Suchidentität, Kandidatenreferenz und Experiment-ID. CHALLENGER_EVIDENCE enthält Ergebnisdisposition und einen Hash des Vergleichsergebnisses. OOS_EVIDENCE und ROBUSTNESS_EVIDENCE enthalten vor allem Suite-/Integritätsbindungen.
+
+Besonders wichtig: ECONOMIC_EVIDENCE nennt evidence_kind=OPAQUE_LINEAGE_REF_ONLY sowie den Digest der eingegangenen Learning-Evidence. Diese Slice ist keine neu berechnete Return-/Kosten-/PnL-Tabelle. FAILURE_EVIDENCE enthält dagegen Anzahl, Digest und Records der Fehlernachweise. Die Benennung wirtschaftlicher Evidence darf daher nicht mit transportierten wirtschaftlichen Einzelwerten gleichgesetzt werden.
+
+## 2. Meta-Ingest erzeugt keine experimentübergreifende Wiederholungsanalyse
+
+build_meta_learning_evidence_from_optimization_experiment_v1 nimmt einen einzelnen M5-Record entgegen. source_experiment_ids wird aus dessen SEARCH_EVIDENCE.experiment_id als leere oder einelementige Folge gebaut. support_count ist die Länge dieser Folge; dieser Builder akkumuliert keine Versuchshistorie.
+
+repeated_success_or_failure_pattern wird als Text aus aktueller Challenger-Disposition und Failure-Anzahl gebildet. Der Name allein bedeutet daher keine erkannte Wiederholung über mehrere Versuche. oos_robustness_pattern übernimmt Beobachtungstyp und Integritätsbindungen. Bei Fehlern entsteht ein Verweis auf failure_records_digest; daraus wird hier keine separate quantitative Kosten-/Slippage-Ursachenanalyse berechnet.
+
+optimization_family, search_method.method_token, predictive_evidence_features und uncertainty bleiben im ursprünglichen M4-Rückweg UNKNOWN_UNAVAILABLE. Der ältere canonical_meta_learning_v1-Analyzer wird referenziert, aber nicht aufgerufen: CANONICAL_ANALYZER_INVOKED=False. Dieser Anschluss ersetzt daher nicht automatisch die früher rekonstruierten August-Analysen.
+
+## 3. Welche Forschungshinweise M7 tatsächlich bildet
+
+Der M7-Builder nimmt validierte Meta-Evidence entgegen und erzeugt mehrere Feedback-Items:
+- Priorisierung: Bei vorhandenen source_experiment_ids werden genau diese IDs weitergegeben. In diesem Schritt gibt es keine Rangfolge mehrerer Alternativen anhand ihres wirtschaftlichen Erfolgs.
+- Suchmethode: Ein bekannter zulässiger Methodentoken erfordert zusätzlich registrierte Capability. Der M4-Meta-Producer liefert UNKNOWN; dieser Zweig bleibt FAIL_CLOSED.
+- Budget: min(1, max(support_count, 1)). Für jeden verarbeiteten ganzzahligen support_count ergibt das genau eine Forschungseinheit. Der Output reagiert in diesem Stand nicht mit größerem Budget auf mehr Unterstützung.
+- Hypothese: Im ursprünglichen Pfad wird der undurchsichtige Pattern-Text mit unbekannter Optimization-Familie als Vorschlag weitergereicht. Es werden daraus keine neuen Parameterwerte abgeleitet. Die spätere Portfolio-Erweiterung bewertet zusätzlich ausdrücklich benannte Familien; sie füllt die unbekannte Familie dieses Producers nicht von selbst auf.
+
+Damit besitzt M7 einen konkreten, begrenzten Output. Ein applicable-Feld ist keine bewiesene Anwendung dieses Vorschlags auf eine neue Versuchsanfrage und keine produktive Berechtigung.
+
+## 4. Was im nächsten M8-Zyklus passiert
+
+run_offline_evidence_cycle_v1 prüft die vorherige Feedback-Schema-Version und erzeugt daraus cycle_n_plus_1_input_semantics. _extract_cycle_n_plus_1_semantics übernimmt anwendbare Items, den Suchmethoden-Ausgang und die Grenzen search_execution_authorized=False/proposal_not_authority=True.
+
+Danach ruft die Funktion run_optimization_universe_experiment_plane_v1 mit cycle_input.plane_request auf. Die extrahierten Feedback-Metadaten werden weder an den Plane-Aufruf übergeben noch zum Umbau der Anfrage verwendet. Sie erscheinen im cycle_body und damit im Cycle-Digest. Dass sich der Digest wegen des Vorgängers ändert, bedeutet hier keine geänderte Forschungsauswahl.
+
+Der Mehrzyklus-Wrapper setzt für jeden Zyklus plane_request=spec.plane_request. Das Feedback des vorigen Zyklus wird für Herkunft und Konsistenz weitergereicht; Suchraum, Parameter, Scores und Budget des Folgelaufs stammen weiterhin aus dem vom Aufrufer bereitgestellten spec. Ein externer Aufrufer könnte diese Anfrage vorher selbst verändern. Für eine solche feedbackgetriebene Erzeugung ist hier kein konkreter Consumer belegt.
+
+Der bestehende Zweizyklus-Test liefert beiden Zyklen dieselbe Evidence, dieselbe plane_request und denselben Replay-Seed. Er prüft Determinismus, Verknüpfung zur vorherigen Feedback-ID und das Vorhandensein der Metadaten. Das bestätigt die begrenzte Testabsicht, aber keinen aus Feedback neu ausgewählten Versuch. Der Test wurde nur gelesen, nicht ausgeführt.
+
+Der später hinzugefügte Single-Cycle-Wrapper canonical_m4_m8_evidence_return_loop_v1 ruft genau einen solchen Zyklus auf, standardmäßig cycle_index=0 und prior_feedback_decision=None. Sein forward_return_loop_closed kann die Vorwärts-/Rückgabe innerhalb dieses einen Zyklus bezeichnen. Daraus folgt kein ausgeführter Zyklus N+1. Das Mehrzyklus-Modul verlangt mindestens zwei gelieferte Spezifikationen und setzt multi_cycle_loop_closed bei erfolgreicher Verarbeitung dieser Folge; auch das ist kein Beweis adaptierter Spezifikationen.
+
+## 5. Parallele Varianten
+
+Die föderierte Variante run_federated_offline_evidence_cycle_v1 startet keinen M4-Executor. Sie nimmt bereits erzeugte surface-native Optimization-Evidence entgegen, prüft Return-Join/Duplikate und führt M6/M7 aus. Der Zusammenhang der Ausführungen wird erhalten; die nächstgelieferte Surface-Evidence wird dadurch in dieser Funktion nicht neu erzeugt. Vorheriges Feedback wird ebenfalls im cycle_body dokumentiert.
+
+Die MI-Crossing-Variante führt mit dem vom Aufrufer gelieferten orchestrator_input einen MI-angereicherten Abschluss aus. Danach übernimmt sie M5→M6→M7 und dokumentiert cycle_n_plus_1_input_semantics. Die betrachtete Funktion ersetzt diesen orchestrator_input nicht anhand des alten Feedbacks. Die Variante kann andere MI-/Failure-Memory-Verarbeitung besitzen; daraus wird hier keine globale Wirkungslosigkeit dieser Subsysteme abgeleitet.
+
+Ein gepinnter Exact-Field-Suchlauf in src und scripts findet research_budget_units und hypothesis_pattern_ref nur an der M7-Erzeugung. carried_forward_applicable_dispositions und cycle_n_plus_1_input_semantics erscheinen in den drei Replay-Varianten als Ausgabe-/Metadatenfelder. Treffer sind in pinned-feedback-field-consumers.txt gesichert. Das schließt dynamischen Zugriff oder anders benannte externe Consumer nicht aus. Die Schlussfolgerung über die drei konkreten Replay-Funktionen beruht auf ihren Aufrufargumenten und Werteverwendungen, nicht allein auf dieser Namenssuche.
+
+## Gemeinsame historische Einordnung
+
+Für Learning, Optimization und Meta sind jetzt fünf verschiedene Dinge auseinanderzuhalten: wirtschaftliche Ergebnisberechnung; Ergebnisprojektion mit Identität/Integrität; Meta-Zusammenfassung; Forschungsvorschlag; tatsächliche Änderung der nächsten Forschungsauswahl. Der untersuchte Rückweg belegt die mittleren Verarbeitungsschritte und die Verknüpfung von Zyklen. Die letzte Kante ist in den geprüften Replay-Funktionen nicht implementiert.
+
+Das präzisiert auch historische Fertigmeldungen: ein geschlossener Evidence-Loop ist enger als ein kausal adaptierender Forschungsloop. Die ursprüngliche M8-Anweisung begrenzte den Auftrag ausdrücklich auf vorhandene Verträge und ließ die Suchmethodenwahl geschlossen. Deshalb wird hier keine nachträgliche automatische Umsetzungsfreigabe oder eine damals zwingend geschuldete neue Lernlogik behauptet.
+
+Die tatsächlichen Juli-Trades bleiben ein unabhängiger numerischer Strang. Ihre Verarbeitung im eigenen Robustheitsaudit ist belegt; der hier verfolgte September-Rückweg liest sie nicht ein. Weiter zu suchen sind konkrete Producer, die reale wirtschaftliche Resultate zu numerischen Learning-/Meta-Eingaben konvertieren, sowie ein belegter Consumer, der daraus die nächste Offline-Versuchsspezifikation ändert.
+
+## Prüfgrenzen
+
+Nur historische/aktuelle Code-Snapshots, Originalnachrichten und gepinnte GitHub-Historien ausgewertet. Kein neuer Replay oder Systemtest, keine neu beobachtete historische Laufzeit, keine Recovery-/Archivänderung. Repository-Status wird vor/nach verglichen; TypeScript-Prüfung der erweiterten Analyseübersicht in verification.json. Kein visueller Canvas-Lauf behauptet.

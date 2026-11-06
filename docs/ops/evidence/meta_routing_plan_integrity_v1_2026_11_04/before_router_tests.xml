@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.816" timestamp="2026-11-04T00:44:49.666905+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.experiments.test_canonical_meta_evidence_dual_router_v1" name="test_cycle_honors_wrong_consumer_request_before_invoking_either_consumer[RESEARCH_CHOICE-LEARNING_RESEARCH]" time="0.026"><failure message="AssertionError: wrong-consumer request reached a research consumer">tests/experiments/test_canonical_meta_evidence_dual_router_v1.py:186: in test_cycle_honors_wrong_consumer_request_before_invoking_either_consumer
+    result = run_meta_evidence_dual_routing_cycle_v1(
+src/experiments/canonical_meta_evidence_dual_router_v1.py:166: in run_meta_evidence_dual_routing_cycle_v1
+    routed = route_meta_evidence_v1(meta_evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/experiments/canonical_meta_evidence_dual_router_v1.py:127: in route_meta_evidence_v1
+    optimization_result = validate_meta_to_optimization_feedback_input_v1(
+tests/experiments/test_canonical_meta_evidence_dual_router_v1.py:174: in must_not_run
+    raise AssertionError("wrong-consumer request reached a research consumer")
+E   AssertionError: wrong-consumer request reached a research consumer</failure></testcase><testcase classname="tests.experiments.test_canonical_meta_evidence_dual_router_v1" name="test_cycle_honors_wrong_consumer_request_before_invoking_either_consumer[LEARNING_REPRESENTATION-OPTIMIZATION_RESEARCH]" time="0.024"><failure message="AssertionError: wrong-consumer request reached a research consumer">tests/experiments/test_canonical_meta_evidence_dual_router_v1.py:186: in test_cycle_honors_wrong_consumer_request_before_invoking_either_consumer
+    result = run_meta_evidence_dual_routing_cycle_v1(
+src/experiments/canonical_meta_evidence_dual_router_v1.py:166: in run_meta_evidence_dual_routing_cycle_v1
+    routed = route_meta_evidence_v1(meta_evidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/experiments/canonical_meta_evidence_dual_router_v1.py:135: in route_meta_evidence_v1
+    learning_result = validate_meta_to_learning_research_adaptation_input_v1(
+tests/experiments/test_canonical_meta_evidence_dual_router_v1.py:174: in must_not_run
+    raise AssertionError("wrong-consumer request reached a research consumer")
+E   AssertionError: wrong-consumer request reached a research consumer</failure></testcase></testsuite></testsuites>

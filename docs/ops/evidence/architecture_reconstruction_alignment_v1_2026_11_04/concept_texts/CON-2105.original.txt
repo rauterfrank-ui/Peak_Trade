@@ -1,0 +1,9 @@
+### CON-2105 — Consumer-Wirkung benötigt eine gestufte Nachweiskette
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Annahme → typisierte Bindung → fachlicher Wertverbrauch → effektive Präzedenz → geändertes Ergebnis sind verschiedene Nachweise. materialized, runtime_applied, ACCEPTED und Feedback-ID beantworten jeweils nur Teilfragen. Ein unverändertes Endergebnis kann trotz Konsum korrekt sein, etwa bei nicht bindendem Limit, identischem Zuschlag oder aufhebenden Vorschlägen.
+
+**Grenze:** Nach Umbau Kontrollfälle für genau diese Stufen verwenden; kein neues Gesamtgrün aus Einzeltests.
+
+Quellen: EVI-2203, EVI-2207, EVI-2211, EVI-2214, EVI-2216, EVI-2217, EVI-2224, EVI-2245, EVI-2251, EVI-2258, EVI-2261, EVI-2263, EVI-2265, EVI-2270, EVI-2274, EVI-2287, EVI-2293, EVI-2294, EVI-2295.

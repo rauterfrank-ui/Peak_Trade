@@ -1,0 +1,10 @@
+{
+  "items": [
+    "No authenticated GET was performed, so no live USDC availEq exists in this evidence.",
+    "Keychain item presence was not probed.",
+    "GHV snapshot 6261c8f9e does not contain the 29P GET executor or the capital-guard node.",
+    "The observation instrument stamp SUI-USD_UM_XPERP-310404 was not re-proved against the current selected future.",
+    "Local checkout HEAD is not origin/main; findings are from git show of 769d13663."
+  ],
+  "schema_version": "bwp_live_004_uncertainties.v1"
+}

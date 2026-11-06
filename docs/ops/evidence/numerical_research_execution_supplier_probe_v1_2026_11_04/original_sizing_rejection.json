@@ -1,0 +1,9 @@
+{
+  "reason": "Position 10000.00 USD > 25% Limit (2500.00 USD)",
+  "rejected": true,
+  "risk_amount": 200.0,
+  "risk_percent": 0.02,
+  "size": 0,
+  "stop_distance_percent": 0.02,
+  "value": 10000.0
+}

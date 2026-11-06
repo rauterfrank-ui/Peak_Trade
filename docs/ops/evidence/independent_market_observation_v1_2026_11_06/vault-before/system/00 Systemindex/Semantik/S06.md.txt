@@ -1,0 +1,74 @@
+---
+title: "Marktkontext Forecast und Kalibrierung – Loop A"
+stand: "2026-11-05"
+rolle: "Abgeleitete semantische Systemansicht"
+authoritaet: "NONE"
+---
+
+# Marktkontext Forecast und Kalibrierung – Loop A
+
+> [!info] Vertiefung vom 06.11.2026
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/10 Innere Ebenen der aktuellen Anschlussmodule|Innere Kontext-, Forecast-, Mess- und Learningverträge]]. [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Standbindung und Reichweite des Abgleichs]].
+
+<!-- enforcement-view:v1:S06 -->
+> [!info] Produktiver Referenzpfad · EVIDENCE
+> Forschung, Lernen, Meta, Evaluation oder Anzeige; keine unmittelbare produktive Tradingautorität. Eine höhere Betrachtungsebene erbt keine operativen Rechte tieferer Owner.
+> Dokumentrolle, keine Aktivierungsfreigabe. [[00 Systemindex/Produktiver Pfad und Enforcement|Pfad, Gates und ausgeschlossene Kurzschlüsse]].
+<!-- /enforcement-view:v1:S06 -->
+
+**Bezugsbereich:** Marktkontext Forecast und Kalibrierung – Loop A. `S06` ist eine Dokumentadresse, keine kanonische Runtime-Layernummer.
+
+**Zuständige vorhandene Bereiche:** [[00 Systemindex/Universen/INT|Intelligenz-Universum]] · [[00 Systemindex/Universen/SL|Selbstlern-Universum]] · [[00 Systemindex/Aussenbereiche/DATA|Datenebene und Quellenadmission]]
+
+## Vorgesehenes Ziel und fachliche Frage
+
+Marktverhalten und Unsicherheit erklären: Kontext(t), prognostizierter Horizont, später realisierter Outcome, Forecastfehler, Kalibrierung, Coverage und Drift. Marktintelligenz ergänzt Evidence und übernimmt keine Handelsentscheidung.
+
+## Was wird empfangen und erwartet?
+
+Point-in-time zulässige Facts/Context, Forecast mit Ziel-/Horizonidentität und später finalisierter Outcome desselben Instruments/Horizonts.
+
+## Was wird erarbeitet?
+
+Kontext/Forecast bilden, Outcomejoin prüfen, Fehler/Kalibrierung speichern und Learning-/Optimizationevidence exportieren. No-Lookahead und Abstention bleiben eigenständige fachliche Resultate.
+
+## Was wird weitergegeben?
+
+Forecast-/Calibration-/Contextrecords und zweckgebundene Learning-/Researchinputs.
+
+## Welche Bedeutung muss über die Grenze erhalten bleiben?
+
+Confidence ≠ belegte Forecastqualität; Forecastqualität braucht Coverage und Kalibrierung. Mark/Last/Barclose sowie Event/Capture/KnownAt sind nicht austauschbar. Historisches Intelligent Universe ≠ automatisch heutiges MI-Paket.
+
+## Wer besitzt Zustand und Mutation?
+
+Originale MI-/Kalibrierungsstores und DDO-Zustände behalten ihren Writer; Referenzen auf Coreowner duplizieren keine Ownership.
+
+## Heute konkret vorhanden
+
+Offline-MI-Stack, gemessene Returnkalibrierung und MI-enriched M4-Intake existieren. INT bleibt die dokumentarische Universumslesesicht auf diese Fähigkeiten.
+
+## Welche Wirkung ist tatsächlich belegt?
+
+E6 persistiert die tatsächliche Kalibrierung des expliziten Forecasts 0.02 gegen den synthetischen Return. Das ist ein konkreter Zahlenconsumer, kein natürlich trainiertes Vorhersagemodell.
+
+## Was bleibt offen oder nur teilweise umgesetzt?
+
+Natürliche Forecastgüte, breiter Multi-Horizon-/Drift-/Coverage-Nutzen und allgemeiner produktiver Consumerimpact sind nicht als Ganzes belegt.
+
+## Woran wäre die vollständige Schließung zu erkennen?
+
+Dieselbe Context-/Forecast-/Horizonidentität muss ohne Zukunftswissen zum realisierten Outcome und tatsächlichen Calibration-/Learningconsumer führen; fehlende oder unzulässige Evidenz muss abstain/block ergeben.
+
+## Exakte Ein- und Ausgangsports
+
+[[00 Systemindex/Grenzen/P17|P17]] · [[00 Systemindex/Grenzen/P20|P20]] · [[00 Systemindex/Grenzen/P21|P21]] · [[00 Systemindex/Grenzen/P60|P60]]
+
+## Quellen und revisionsgebundene Einordnung
+
+- [docs/ops/evidence/self_learning_original_design_gvef_boundary_v1_2026_11_04/extended_primary_source_text.json](file:///Users/frnkhrz/Peak_Trade/docs/ops/evidence/self_learning_original_design_gvef_boundary_v1_2026_11_04/extended_primary_source_text.json)
+- [docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md](file:///Users/frnkhrz/Peak_Trade/docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py)
+- [src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py](file:///Users/frnkhrz/Peak_Trade/src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py)
+
+[[00 Systemindex/Semantische Ebenen|Semantische Ebenen]] · [[00 Systemindex/Zielbild und Umsetzung|Zielbild und Umsetzungsstand]] · [[PeakTrade-Systemindex|Systemindex]]

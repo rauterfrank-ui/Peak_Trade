@@ -1,0 +1,52 @@
+"""Stateless probes of existing contracts on preserved synthetic original inputs."""
+from pathlib import Path
+import inspect,json,hashlib,copy
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_evidence_v1 import mint_forecast_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import build_calibration_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_outcome_join_v1 import join_forecast_to_n_bars_outcome_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.measured_return_calibration_v1 import prepare_explicit_measured_return_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import IntelligenceIdentityV1
+from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import validate_evaluation_observation_v0
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier_v1 import validate_n_bars_measurement_evidence_v1
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_existing_fact_materialization_v1 import materialize_market_context_v1_from_existing_facts_v1
+from tests.learning.test_intelligence_context_admission_v1 import inputs
+
+OUT=Path('/tmp/peaktrade_point1_history_20261106')
+ROOT=Path('/Users/frnkhrz/Peak_Trade')
+BASE=ROOT/'docs/ops/evidence/iu_sl_opt_concrete_origin_trace_2026_11_05/originals'
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+def original(name):
+ d=json.loads((BASE/name).read_text());raw=d['original_utf8'].encode();assert sha(raw)==d['sha256'];return json.loads(raw)
+def rejected(call):
+ try:call()
+ except (ValueError,TypeError,KeyError,DdoValidationError) as exc:return {'exception':type(exc).__name__,'reason':str(exc)}
+ raise AssertionError('EXPECTED_REJECTION')
+
+triad=original('mi_original_durable_triad.json');capsule=original('mi_original_measurement.json');f=triad['forecast_evidence']
+kwargs={name:copy.deepcopy(f[name]) for name in inspect.signature(mint_forecast_evidence_v1).parameters if name in f};kwargs['decision_event_ref']=None
+forecast=dict(mint_forecast_evidence_v1(**kwargs));assert forecast['decision_event_ref'] is None
+obs=capsule['observation'];measurement=capsule['measurement'];info=capsule['information_set'];before=sha(json.dumps(capsule,sort_keys=True).encode())
+missing=dict(build_calibration_evidence_v1(forecast_evidence=forecast,evaluation_observation=None));assert missing['evaluability']=='NOT_EVALUABLE'
+join=dict(join_forecast_to_n_bars_outcome_v1(forecast_evidence=forecast,evaluation_observation=obs));assert join['join_status']=='JOINED'
+calibration=dict(build_calibration_evidence_v1(forecast_evidence=forecast,evaluation_observation=obs,realized_scalar=measurement['log_return']));assert calibration['calibration_result']==triad['calibration_evidence']['calibration_result']
+strict=rejected(lambda:prepare_explicit_measured_return_v1(forecast_evidence=forecast,evaluation_observation=obs,measurement_evidence=measurement,evaluation_information_set=info));assert strict['reason']=='FORECAST_MEASUREMENT_ENTITY_MISMATCH'
+without=copy.deepcopy(obs);without['decision_event_ref']=None
+observation_rejection=rejected(lambda:validate_evaluation_observation_v0(without));assert 'decision_event_ref' in observation_rejection['reason']
+validate_n_bars_measurement_evidence_v1(obs,measurement)
+assert 'decision_event_ref' not in measurement and 'decision_event_ref' in info
+identity=IntelligenceIdentityV1('GEN.TEST','VENUE.TEST','INST.TEST','NATIVE.TEST','LANE_1','EPOCH.TEST',None)
+identity_rejection=rejected(identity.payload);assert identity_rejection['reason']=='decision_event_ref_REQUIRED'
+args=inputs();context=dict(materialize_market_context_v1_from_existing_facts_v1(args['request']));assert 'decision_event_ref' not in context
+assert before==sha(json.dumps(capsule,sort_keys=True).encode())
+result={'schema':'peaktrade.independent_market_history_contract_probes.v1','source_class':'PRESERVED_TEST_ONLY_SYNTHETIC_INPUTS','historical_runtime_reexecuted':False,'product_writes_performed':False,'new_training_or_inference':False,'cases':{
+ 'base_context_without_decision':{'context_id':context['context_id'],'decision_field_present':False},
+ 'base_forecast_without_decision':{'forecast_evidence_id':forecast['forecast_evidence_id'],'decision_event_ref':forecast['decision_event_ref'],'same_identity_as_original_attributed_forecast':forecast['forecast_evidence_id']==f['forecast_evidence_id']},
+ 'no_observation':{'evaluability':missing['evaluability'],'actual_outcome_ref':missing['actual_outcome_ref']},
+ 'generic_join_of_unattributed_forecast_to_existing_decision_bound_outcome':{'join_status':join['join_status'],'measurement_still_decision_bound':obs['decision_event_ref'],'calibration_result':calibration['calibration_result'],'is_independent_measurement_proof':False},
+ 'typed_measured_join_rejects_absent_forecast_decision':strict,
+ 'observation_rejects_no_decision':observation_rejection,
+ 'new_integration_identity_rejects_no_decision':identity_rejection,
+ 'original_measurement_record':{'schema':measurement['schema_version'],'decision_field_present':False,'actual_outcome_ref':measurement['actual_outcome_ref'],'evaluation_information_set_still_has_decision':info['decision_event_ref'],'original_content_validator':'PASS','probe_executed_decision_free_measurement_producer':False}
+ },'original_capsule_unchanged':True}
+(OUT/'consumer-probes.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n');print(json.dumps(result,ensure_ascii=False,indent=2))

@@ -1,0 +1,38 @@
+{
+  "capital_admitted": false,
+  "expected_account_configured": true,
+  "keychain_access_attempted": true,
+  "keychain_account": "okx-eea.productive",
+  "keychain_service": "peak-trade.full-core.venue-credentials",
+  "last_read": {
+    "endpoint_path": "/api/v5/asset/balances",
+    "get_performed": true,
+    "historical_reuse": false,
+    "http_status": 200,
+    "method": "GET",
+    "transport_error_present": false
+  },
+  "mode": "REAL_READ_ONLY_ONCE",
+  "observation": {
+    "account_equity_is_reconciliation_target_only": true,
+    "account_equity_target_observed": true,
+    "blockers": [],
+    "capital_admitted": false,
+    "completed_at_unix": 1793741105.16694,
+    "configured_account_matched": true,
+    "currency_substitution_or_transfer": false,
+    "equity_reconstructed": false,
+    "funding_observation_class": "SUCCESS",
+    "funding_usdc_row_status": "ABSENT_NOT_ZERO",
+    "inputs_ready": true,
+    "observed_at_unix": 1793741104.6222012,
+    "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+    "trading_usdc_avail_eq_status": "OBSERVED_NUMERIC"
+  },
+  "order_or_transfer_count": 0,
+  "private_get_attempt_count": 3,
+  "profile": "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1",
+  "result": "PASS",
+  "service_activated": false,
+  "source_ref": "fullcore-cred://provider-ref/okx-eea-productive"
+}

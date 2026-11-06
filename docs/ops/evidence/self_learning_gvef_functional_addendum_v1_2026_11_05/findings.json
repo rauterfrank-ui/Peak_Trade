@@ -1,0 +1,123 @@
+{
+  "schema": "self_learning_gvef_functional_addendum_v1",
+  "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+  "date": "2026-11-05",
+  "evidence_class": "STATIC_SOURCE_REVIEW_ONLY",
+  "product_code_changed": false,
+  "product_tests_executed": false,
+  "runtime_authorization_effect": "NONE",
+  "findings": [
+    {
+      "id": "SL-GVEF-01",
+      "classification": "SUPPLEMENTAL_SOURCE_FINDING",
+      "observation": "Der Runner erzeugt den Replay-Trace einmal. Die Wiederholungsprüfung evaluiert denselben Trace erneut, vergleicht den Baseline-Digest und den geschützten Manifest-Digest, verwirft aber den Rückgabewert der zweiten Candidate-Auswertung.",
+      "consequence": "Ein ausschließlich im zweiten Candidate-Rückgabewert geänderter Verdict oder Metrikwert wird hier nicht direkt verglichen. Andere Exceptions, Seiteneffekte und spätere Gates können weiterhin blockieren. Eine unabhängige Neuerzeugung des Replay-Trace wird durch diese Prüfung nicht nachgewiesen.",
+      "test_boundary": "Die referenzierte negative Testfunktion provoziert die Störung beim zweiten Baseline-Aufruf; sie deckt für sich allein keine ausschließliche Änderung des zweiten Candidate-Rückgabewerts ab. Keine Aussage über die Abwesenheit sämtlicher anderer Tests.",
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 112,
+          "line_end": 265,
+          "snippet_sha256": "e18d5abf037fd2016a838f4c40af5da049710e1c1e77f8889df3d5f189763835"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "fbc0856399a10ebcfff9747198a01b7e25a0cdbaf6d579916dae6590f5d003ea",
+          "line_start": 267,
+          "line_end": 285,
+          "snippet_sha256": "79513b28e3eb413fcd87a83687e49b85862cb2eb3be80316f3091fbbc8046c62"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 95,
+          "line_end": 103,
+          "snippet_sha256": "96f2b40127c111891f41329eb0d183534920b02f065c6da4e20b2762383a4d85"
+        },
+        {
+          "path": "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c384b0079790f09e9229630ff725b82fbc1987fbfad9b3163256d040a1174427",
+          "line_start": 105,
+          "line_end": 110,
+          "snippet_sha256": "40e1f1aad2e014f7adb6b3bfa6bb52f06af0b48f7efbdd65de07b382364af848"
+        },
+        {
+          "path": "tests/evaluation/golden_vectors/test_gvef_generic_runner_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "f9429084c181b0a204edae3c6ee0e6d2abea6ac1436e0b2ee8216924caa57459",
+          "line_start": 132,
+          "line_end": 139,
+          "snippet_sha256": "a32b9bf9aba75c0056eaba121916066be9dcc546a0747d1663a6e24cc6d1104b"
+        }
+      ]
+    },
+    {
+      "id": "SL-GVEF-02",
+      "classification": "EXISTING_CONNECTION_PRESERVATION_CONTEXT",
+      "observation": "Der vorhandene Messreferenz-Test lädt die gebundene Forschungsreferenz, verwendet VectorCorpusIntegrityGateV1 und GenericRunnerV1 mit SelfLearningEvaluatorV1 und vergleicht anschließend den Meta-Output aus loaded.executed.next_meta_input mit dem gebundenen Artefakt.",
+      "consequence": "Die Verbindung zum späteren numerischen Meta-Verbraucher ist im eingefrorenen Stand implementiert und im Testquelltext konkret verwendet. Sie ist bei künftigen Ergänzungen zu erhalten. Der Meta-Aufruf folgt außerhalb des GenericRunner: Der Test belegt keine interne Promotion- oder kontinuierliche Produktionsschleife.",
+      "evidence_boundary": "REFERENCE_BINDING_VALID_NOT_RESEARCH_ACCEPTANCE; TEST_ONLY_SYNTHETIC beziehungsweise MECHANISM_TEST_EVIDENCE. Referenzbindung und erhaltene Numerik sind keine Qualitätsannahme, Quellenauthentifizierung oder Produktionsfreigabe. Test und Verifier wurden für diese Untersuchung nicht ausgeführt.",
+      "source_bindings": [
+        {
+          "path": "src/evaluation/golden_vectors/integration/measured_learning_reference_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "c953b114b34dba7360c7c8a36d951fcf8d4b47bc77b83c16a4e8440dc203e503",
+          "line_start": 34,
+          "line_end": 93,
+          "snippet_sha256": "446e31edfd993f20fcca5b34a6e041647698c6f887e283d426ac6b97f86d7dc0"
+        },
+        {
+          "path": "src/experiments/canonical_search_candidate_research_execution_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "a124840cd2a97de2318f478ea205775862d10b731c48f4dfbe9e69ff0f5584be",
+          "line_start": 221,
+          "line_end": 292,
+          "snippet_sha256": "4f53da0667a3c7415ad921b63265ee8526ab52dbad8bc9dd3824d42e09aa57f3"
+        },
+        {
+          "path": "tests/evaluation/golden_vectors/test_measured_learning_reference_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "62b4defff0b187cb893dc745089955f70057b08f7c3002ac1a150b553e669535",
+          "line_start": 59,
+          "line_end": 95,
+          "snippet_sha256": "fa30ea6b86af58ecce1145e773bf7a7499c619cd1b4a08cbe2801c9907520706"
+        },
+        {
+          "path": "scripts/ops/verify_self_learning_restoration_v1.py",
+          "revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+          "sha256": "ebfcf2bac0e5b38f86fb45c5be6ae0a8bebda010ec4ed1f9426ac8908190c150",
+          "line_start": 39,
+          "line_end": 147,
+          "snippet_sha256": "227a6bf8737b7a568adb175c132aa9dedc2a54aa2fa56f005101d6ce7bf700d9"
+        }
+      ]
+    }
+  ],
+  "future_acceptance_criteria": [
+    {
+      "id": "SL-GVEF-T01",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Nur der zweite Candidate-Verdict wechselt von PASS zu FAIL; der vereinbarte Wiederholungsvertrag muss dies erkennen."
+    },
+    {
+      "id": "SL-GVEF-T02",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Nur die zweite Candidate-Metrik ändert sich bei konstantem Baseline- und Manifest-Digest; Abweichung muss gemäß vereinbartem Ergebnisvertrag erkannt werden."
+    },
+    {
+      "id": "SL-GVEF-T03",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Falls unabhängige Replay-Reproduktion verlangt wird: Adapter erneut mit identischer gebundener Eingabe aufrufen und Trace-Identität vergleichen. Sonst Prüfversprechen ausdrücklich auf Evaluation desselben Trace begrenzen."
+    },
+    {
+      "id": "SL-GVEF-T04",
+      "status": "DEFINED_NOT_EXECUTED",
+      "criterion": "Bei späterer Implementierung vorhandene Corpus-, Archiv-, Source-Class- und numerische Meta-Bindungen erhalten und getrennt von Forschungsqualität oder Produktivfreigabe nachweisen."
+    }
+  ]
+}

@@ -99,6 +99,7 @@ class ScopeEventGeneratorPolicyV1:
     hard_max_adverse_distance: float
     hard_max_reversal_distance: float
     policy_version: str = SCOPE_EVENT_GENERATOR_POLICY_VERSION
+    legacy_distance_limits: bool = False
 
 
 @dataclass(frozen=True)
@@ -190,7 +191,6 @@ class ScopeEventEvidenceV1:
             raise ValueError(msg)
 
 
-_FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
 
 def _valid_sha256_hex(value: str) -> bool:
@@ -206,8 +206,9 @@ def _positive_int(value: object) -> bool:
 
 
 def _instrument_id_allowed(instrument_id: str) -> bool:
-    lowered = instrument_id.lower()
-    return not any(token in lowered for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
+    from trading.master_v2.double_play_futures_input import futures_instrument_identity_allowed_v1
+
+    return futures_instrument_identity_allowed_v1(instrument_id)
 
 
 def _sorted_reason_values(reasons: Tuple[ScopeEventBlockReason, ...]) -> Tuple[str, ...]:
@@ -224,11 +225,11 @@ def validate_scope_event_generator_policy(
     policy_version: str,
 ) -> Tuple[ScopeEventBlockReason, ...]:
     blocks: list[ScopeEventBlockReason] = []
-    if not _positive_finite(policy.hard_max_scope_distance):
+    if policy.legacy_distance_limits and not _positive_finite(policy.hard_max_scope_distance):
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_SCOPE_EXCEEDED)
-    if not _positive_finite(policy.hard_max_adverse_distance):
+    if policy.legacy_distance_limits and not _positive_finite(policy.hard_max_adverse_distance):
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_ADVERSE_EXCEEDED)
-    if not _positive_finite(policy.hard_max_reversal_distance):
+    if policy.legacy_distance_limits and not _positive_finite(policy.hard_max_reversal_distance):
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_REVERSAL_EXCEEDED)
     if not policy.policy_version or policy.policy_version != SCOPE_EVENT_GENERATOR_POLICY_VERSION:
         blocks.append(ScopeEventBlockReason.POLICY_VERSION_INVALID)
@@ -236,15 +237,15 @@ def validate_scope_event_generator_policy(
         blocks.append(ScopeEventBlockReason.POLICY_VERSION_INVALID)
     if not _positive_finite(up_distance):
         blocks.append(ScopeEventBlockReason.POLICY_UP_DISTANCE_INVALID)
-    elif up_distance > policy.hard_max_scope_distance:
+    elif policy.legacy_distance_limits and up_distance > policy.hard_max_scope_distance:
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_SCOPE_EXCEEDED)
     if not _positive_finite(adverse_exit_distance):
         blocks.append(ScopeEventBlockReason.POLICY_ADVERSE_DISTANCE_INVALID)
-    elif adverse_exit_distance > policy.hard_max_adverse_distance:
+    elif policy.legacy_distance_limits and adverse_exit_distance > policy.hard_max_adverse_distance:
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_ADVERSE_EXCEEDED)
     if not _positive_finite(reversal_distance):
         blocks.append(ScopeEventBlockReason.POLICY_REVERSAL_DISTANCE_INVALID)
-    elif reversal_distance > policy.hard_max_reversal_distance:
+    elif policy.legacy_distance_limits and reversal_distance > policy.hard_max_reversal_distance:
         blocks.append(ScopeEventBlockReason.POLICY_HARD_MAX_REVERSAL_EXCEEDED)
     if adverse_exit_distance > reversal_distance:
         blocks.append(ScopeEventBlockReason.POLICY_ADVERSE_EXCEEDS_REVERSAL)

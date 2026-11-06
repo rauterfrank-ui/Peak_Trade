@@ -1,0 +1,619 @@
+{
+  "summary": {
+    "schema": "self_learning_offline_functional_execution_v1",
+    "date": "2026-11-05",
+    "source_revision": "732601aeacca7b87ff3df2e0373f180f8de50081",
+    "execution_head": "1660a02faabf5dc3e7eb24ee652c192f55313f72",
+    "existing_tests_passed": 96,
+    "unique_probe_functions_verified": 29,
+    "pytest_case_invocations": 128,
+    "initial_probe_harness_failures": 3,
+    "corrected_probe_reruns_passed": 3,
+    "unchanged_probe_passes_reused": 26,
+    "criteria_executed": 29,
+    "criterion_outcomes": {
+      "GAP_REPRODUCED": 4,
+      "PASS": 12,
+      "BOUNDARY_CONFIRMED": 5,
+      "CONDITIONAL_GAP_REPRODUCED": 4,
+      "REQUIREMENT_OPEN": 1,
+      "PARTIAL_REQUIREMENT_OPEN": 3
+    },
+    "all_criteria_satisfied": false,
+    "all_productive_runtime_proven": false,
+    "existing_frozen_files_unchanged": true,
+    "protected_ledger_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+    "productive_runtime_sessions": 0,
+    "network_or_venue_contact_performed": false,
+    "implementation_changes": false,
+    "scope_calculation_changed": false,
+    "github_push": false,
+    "runtime_authorization_effect": "NONE",
+    "interpretation": "Probe PASS validates an observation, including reproduction of a gap. It is not automatic PASS of the desired functional criterion. Conditional fixture gaps and unresolved requirements are distinct from observed productive failures."
+  },
+  "criteria": [
+    {
+      "criterion_id": "FMC-T01",
+      "criterion_status": "GAP_REPRODUCED",
+      "observed": {
+        "federated_status": "META_LEARNING_INGEST_COMPLETE",
+        "non_federated_status": "META_LEARNING_INGEST_REJECTED_STALE_CONTRACT",
+        "non_federated_reason": "OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION_MISMATCH",
+        "expected_version": "OFFLINE_INCOMPATIBLE_VERSION"
+      },
+      "limitation": null,
+      "criterion": "Gültige föderierte Payload und abweichende erwartete Optimization-Schemaversion: dokumentierten Erwartungsvertrag am M6-Consumer wirksam prüfen."
+    },
+    {
+      "criterion_id": "FMC-T02",
+      "criterion_status": "PASS",
+      "observed": {
+        "status": "META_LEARNING_INGEST_REJECTED_MALFORMED",
+        "reason": "FEDERATED_OPTIMIZATION_EXPERIMENT_EVIDENCE_INVALID"
+      },
+      "limitation": null,
+      "criterion": "Falsche tatsächliche Payload-Schemaversion trotz passender Requesterwartung weiterhin durch den M5-Validator abweisen."
+    },
+    {
+      "criterion_id": "FMC-T03",
+      "criterion_status": "PASS",
+      "observed": [
+        {
+          "field": "schema_version",
+          "status": "META_LEARNING_INGEST_REJECTED_STALE_CONTRACT",
+          "reason": "FEDERATED_RETURN_JOIN_RECORD_SCHEMA_MISMATCH"
+        },
+        {
+          "field": "surface_execution_identity",
+          "status": "META_LEARNING_INGEST_REJECTED_OUT_OF_ORDER",
+          "reason": "JOIN_SURFACE_EXECUTION_IDENTITY_MISMATCH"
+        },
+        {
+          "field": "optimization_experiment_evidence_digest",
+          "status": "META_LEARNING_INGEST_REJECTED_OUT_OF_ORDER",
+          "reason": "JOIN_EVIDENCE_DIGEST_MISMATCH"
+        },
+        {
+          "field": "plane_identity",
+          "status": "META_LEARNING_INGEST_REJECTED_AUTHORITY_BOUNDARY",
+          "reason": "PLANE_IDENTITY_FORBIDDEN_ON_FEDERATED_JOIN"
+        },
+        {
+          "field": "expected_meta_evidence_schema_version",
+          "status": "META_LEARNING_INGEST_REJECTED_STALE_CONTRACT",
+          "reason": "META_LEARNING_EVIDENCE_SCHEMA_VERSION_MISMATCH"
+        }
+      ],
+      "limitation": null,
+      "criterion": "Join-/Meta-Schemaversion, Surfaceidentität, Evidence-Digest und fehlende Planeidentität getrennt erhalten."
+    },
+    {
+      "criterion_id": "FMC-T04",
+      "criterion_status": "BOUNDARY_CONFIRMED",
+      "observed": {
+        "cycle_count": 2,
+        "next_cycle_semantics": {
+          "carried_forward_applicable_dispositions": [
+            {
+              "disposition": "ALLOCATE_BOUNDED_RESEARCH_BUDGET",
+              "outcome": "APPLICABLE_RESEARCH_FEEDBACK_ONLY",
+              "reason": "BOUNDED_RESEARCH_BUDGET_ONLY",
+              "payload": {
+                "research_budget_units": 1,
+                "productive_budget_authority": "NONE"
+              },
+              "proposal_not_authority": true,
+              "search_execution_authorized": false,
+              "trading_selection_effect": "NONE"
+            },
+            {
+              "disposition": "PROPOSE_RESEARCH_HYPOTHESIS",
+              "outcome": "APPLICABLE_RESEARCH_FEEDBACK_ONLY",
+              "reason": "OPAQUE_PATTERN_ONLY_OPTIMIZATION_FAMILY_UNKNOWN",
+              "payload": {
+                "hypothesis_pattern_ref": "FEDERATED_SURFACE_NATIVE_REF_ONLY;CHALLENGER_DISPOSITION=None;FAILURE_EVIDENCE_COUNT=0",
+                "optimization_family": "UNKNOWN_UNAVAILABLE",
+                "predictive_evidence_features": "UNKNOWN_UNAVAILABLE",
+                "uncertainty": "UNKNOWN_UNAVAILABLE"
+              },
+              "proposal_not_authority": true,
+              "search_execution_authorized": false,
+              "trading_selection_effect": "NONE"
+            }
+          ],
+          "search_method_selection_outcome": "FAIL_CLOSED",
+          "search_execution_authorized": false,
+          "proposal_not_authority": true,
+          "m4_plane_execution": false
+        },
+        "search_executed": false,
+        "m4_executed": false
+      },
+      "limitation": "Actual evidence orchestration with fixtures, not new research measurement or autonomous Search.",
+      "criterion": "Zwei Evidence-Zyklen: Feedback-Weitergabe nachweisen, ohne Search oder M4-Neumessung als ausgeführt auszuweisen."
+    },
+    {
+      "criterion_id": "FMC-T05",
+      "criterion_status": "BOUNDARY_CONFIRMED",
+      "observed": {
+        "analyzer_invoked": false,
+        "predictive_evidence_features": "UNKNOWN_UNAVAILABLE",
+        "uncertainty": "UNKNOWN_UNAVAILABLE",
+        "optimization_family": "UNKNOWN_UNAVAILABLE"
+      },
+      "limitation": null,
+      "criterion": "Föderierte M6-Referenzprojektion und tatsächlichen Phase11-Analyzer getrennt klassifizieren; unbekannte Felder nicht als gemessene Werte ergänzen."
+    },
+    {
+      "criterion_id": "GF-T01",
+      "criterion_status": "GAP_REPRODUCED",
+      "observed": {
+        "second_candidate_verdict": "FAIL",
+        "final_state": "REGISTERED",
+        "retained_candidate_verdict": "PASS"
+      },
+      "limitation": null,
+      "criterion": "Nur Candidate2-Verdict wechselt zu FAIL; vereinbarte Wiederholungsprüfung erkennt dies."
+    },
+    {
+      "criterion_id": "GF-T02",
+      "criterion_status": "GAP_REPRODUCED",
+      "observed": [
+        {
+          "change": "metric",
+          "final_state": "REGISTERED",
+          "second": {
+            "domain": "productive_trading_path",
+            "verdict": "PASS",
+            "metrics": [
+              {
+                "metric_id": "m.candidate",
+                "value": 999,
+                "unit": null,
+                "baseline_value": null
+              }
+            ],
+            "invariants": [
+              {
+                "invariant_id": "inv.ok",
+                "pass_": true,
+                "detail": null
+              }
+            ],
+            "boundary_results": [],
+            "decision_deltas": null,
+            "semantic_digest_deltas": null,
+            "evidence_refs": [
+              "evidence/candidate"
+            ],
+            "failure_classification": null
+          },
+          "retained": {
+            "domain": "productive_trading_path",
+            "verdict": "PASS",
+            "metrics": [
+              {
+                "metric_id": "m.candidate",
+                "value": 2,
+                "unit": null,
+                "baseline_value": null
+              }
+            ],
+            "invariants": [
+              {
+                "invariant_id": "inv.ok",
+                "pass_": true,
+                "detail": null
+              }
+            ],
+            "boundary_results": [],
+            "decision_deltas": null,
+            "semantic_digest_deltas": null,
+            "evidence_refs": [
+              "evidence/candidate"
+            ],
+            "failure_classification": null
+          }
+        },
+        {
+          "change": "semantic_digest",
+          "final_state": "REGISTERED",
+          "second": {
+            "domain": "productive_trading_path",
+            "verdict": "PASS",
+            "metrics": [
+              {
+                "metric_id": "m.candidate",
+                "value": 2,
+                "unit": null,
+                "baseline_value": null
+              }
+            ],
+            "invariants": [
+              {
+                "invariant_id": "inv.ok",
+                "pass_": true,
+                "detail": null
+              }
+            ],
+            "boundary_results": [],
+            "decision_deltas": null,
+            "semantic_digest_deltas": {
+              "probe": "second-candidate-changed"
+            },
+            "evidence_refs": [
+              "evidence/candidate"
+            ],
+            "failure_classification": null
+          },
+          "retained": {
+            "domain": "productive_trading_path",
+            "verdict": "PASS",
+            "metrics": [
+              {
+                "metric_id": "m.candidate",
+                "value": 2,
+                "unit": null,
+                "baseline_value": null
+              }
+            ],
+            "invariants": [
+              {
+                "invariant_id": "inv.ok",
+                "pass_": true,
+                "detail": null
+              }
+            ],
+            "boundary_results": [],
+            "decision_deltas": null,
+            "semantic_digest_deltas": null,
+            "evidence_refs": [
+              "evidence/candidate"
+            ],
+            "failure_classification": null
+          }
+        }
+      ],
+      "limitation": null,
+      "criterion": "Nur Candidate2-Metrik oder gebundener semantischer Digest ändert sich; vereinbarter Ergebnisvertrag erkennt dies."
+    },
+    {
+      "criterion_id": "GF-T03",
+      "criterion_status": "PASS",
+      "observed": {
+        "state": "FAILED",
+        "failure": "NON_DETERMINISM"
+      },
+      "limitation": null,
+      "criterion": "Baseline2-Digest driftet; bestehender Blockierpfad bleibt erhalten."
+    },
+    {
+      "criterion_id": "GF-T04",
+      "criterion_status": "CONDITIONAL_GAP_REPRODUCED",
+      "observed": {
+        "runner_adapter_calls": 1,
+        "independent_second_trace_differs": true,
+        "final_state": "REGISTERED"
+      },
+      "limitation": "Runner reevaluates one trace; independent reproduction requirement is not ratified by this probe.",
+      "criterion": "Zweiter unabhängig erzeugter Trace driftet; falls Reproduktion gefordert ist, Abweichung erkennen."
+    },
+    {
+      "criterion_id": "GF-T05",
+      "criterion_status": "PASS",
+      "observed": {
+        "output_digest": "45030b87cf6cea7a130638cea326ea064739f4f7048f461322ad4f3a8c5847ea",
+        "states": [
+          "REGISTERED",
+          "REGISTERED"
+        ],
+        "promotion_envelopes": [
+          null,
+          null
+        ]
+      },
+      "limitation": null,
+      "criterion": "Identische gebundene Eingabe erzeugt identischen Ergebnisvertrag ohne Freigabewirkung."
+    },
+    {
+      "criterion_id": "GF-T06",
+      "criterion_status": "PASS",
+      "observed": {
+        "reused_exact_run_cases": [
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[population]",
+            "time": "0.021"
+          },
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[class]",
+            "time": "0.045"
+          },
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[archive_ref]",
+            "time": "0.014"
+          },
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[same_id_wrong_location]",
+            "time": "0.012"
+          },
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[invariants]",
+            "time": "0.011"
+          },
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_wrong_population_or_provenance_is_rejected[selector]",
+            "time": "0.011"
+          }
+        ],
+        "corpus_cases": [
+          {
+            "classname": "tests.evaluation.golden_vectors.test_gvef_whole_system_bwp9_v1",
+            "name": "test_fail_matrix_corpus_drift",
+            "time": "0.001"
+          }
+        ]
+      },
+      "limitation": null,
+      "criterion": "Veränderte Population, Source-Class, Archivreferenz oder Corpusbindung wird am konkreten Messreferenzpfad abgewiesen."
+    },
+    {
+      "criterion_id": "GF-T07",
+      "criterion_status": "PASS",
+      "observed": {
+        "reused_exact_run_cases": [
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_bound_measured_vector_runs_existing_gvef_and_preserves_exact_later_meta",
+            "time": "0.019"
+          },
+          {
+            "classname": "tests.experiments.test_canonical_native_research_session_v1",
+            "name": "test_archive_idempotence_and_exact_meta_in_new_process",
+            "time": "0.742"
+          }
+        ]
+      },
+      "limitation": null,
+      "criterion": "Originalnumerik und Search-/Loop-/Horizon-/Universe-Identität erreichen denselben späteren Meta-Consumer."
+    },
+    {
+      "criterion_id": "GF-T08",
+      "criterion_status": "BOUNDARY_CONFIRMED",
+      "observed": {
+        "state": "REGISTERED",
+        "metrics": [
+          {
+            "metric_id": "sl.artifact_digest",
+            "value": "5b92ccd53f5c872485610380cdf8d3f79744342e0877cdc725ab48038ede4461",
+            "unit": null,
+            "baseline_value": null
+          }
+        ],
+        "synthetic_bad_quality_declaration_not_evaluated": true
+      },
+      "limitation": "This evaluator has no numerical-quality acceptance contract; the probe does not infer real loss or profitability.",
+      "criterion": "Artifactdigest-PASS allein erfüllt keinen separaten Qualitätsvertrag."
+    },
+    {
+      "criterion_id": "GF-T09",
+      "criterion_status": "REQUIREMENT_OPEN",
+      "observed": {
+        "state": "REGISTERED",
+        "distinct_evaluated_domains": [
+          "productive_trading_path"
+        ],
+        "baseline_calls": 2,
+        "candidate_calls": 2
+      },
+      "limitation": "No all-domain acceptance aggregator is specified by this single-wrapper contract.",
+      "criterion": "Fehlende erforderliche Domainprüfung verhindert einen geforderten Verbundnachweis; Fanout-Tag ersetzt keinen Lauf."
+    },
+    {
+      "criterion_id": "GF-T10",
+      "criterion_status": "PARTIAL_REQUIREMENT_OPEN",
+      "observed": {
+        "first": "REGISTERED",
+        "duplicate": "FAILED",
+        "new_instance_has_record": false
+      },
+      "limitation": "Duplicate protection passes; persistence across process restart is not provided by this in-memory registry. Required persistence contract remains open.",
+      "criterion": "Registry-Duplikat und Wiederanlauf erfüllen den zuvor festgelegten Persistenz-/Identitätsvertrag."
+    },
+    {
+      "criterion_id": "GF-T11",
+      "criterion_status": "PASS",
+      "observed": {
+        "state": "FAILED",
+        "evidence_complete": false,
+        "registered_bundle_retained": true,
+        "envelope": null
+      },
+      "limitation": null,
+      "criterion": "Fehler nach Registrierung liefert keinen erfolgreichen Gesamt-Handoff, selbst wenn ein Evidence-Eintrag vorhanden bleibt."
+    },
+    {
+      "criterion_id": "GF-T12",
+      "criterion_status": "PARTIAL_REQUIREMENT_OPEN",
+      "observed": {
+        "optional_none_accepted": true,
+        "explicit_envelope_created": true,
+        "envelope": {
+          "evidence_bundle_ref": "registry/550e8400-e29b-41d4-a716-446655440000",
+          "evidence_digest": "b5391b44a926f8382be324bebb459e195729b9c8a83fa532289197fe83267a05",
+          "governance_handoff_timestamp": "2026-10-04T09:00:00Z",
+          "post_constraint_gate_pass": true,
+          "fan_out_evaluation_class": "LOCAL_EVALUATION"
+        }
+      },
+      "limitation": "No required external consumer/ACK contract exists in this probe. Envelope creation is not consumer acceptance or productive authority.",
+      "criterion": "Optionaler None-Handoff bleibt zulässig; ausdrücklich erforderlicher Handoff verlangt seinen gebundenen Consumer-Nachweis, ohne produktive Autorität zu schaffen."
+    },
+    {
+      "criterion_id": "GF-T13",
+      "criterion_status": "CONDITIONAL_GAP_REPRODUCED",
+      "observed": {
+        "domain_invariants": [
+          "sl.baseline_candidate_bound",
+          "sl.no_productive_writeback"
+        ],
+        "registered_invariants": [
+          "i1"
+        ],
+        "domain_metric_ids": [
+          "sl.artifact_digest"
+        ],
+        "registered_self_learning_metric": false
+      },
+      "limitation": "Fixture bundle is not a full-domain result archive; requirement applies only if that preservation is demanded.",
+      "criterion": "Bei geforderter Domain-Ergebniserhaltung den registrierten Payload gegen Candidate-Metrik, Invariant-IDs und Artefaktidentität vergleichen."
+    },
+    {
+      "criterion_id": "GF-T14",
+      "criterion_status": "CONDITIONAL_GAP_REPRODUCED",
+      "observed": {
+        "bound_corpus_digest": "bcda1de0d7089f7a7cbdcde10e79b340a4bf67e9672a75c4bddf3b32f9b09d79",
+        "registered_corpus_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "seed_set_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "limitation": "Concrete corpus gate passed; the injected fixture builder writes the seed digest into its corpus-digest field.",
+      "criterion": "Corpusversion und Corpusdigest bis zum erforderlichen Consumer an die echte gebundene Corpusidentität binden; Seed-Digest getrennt halten."
+    },
+    {
+      "criterion_id": "GF-T15",
+      "criterion_status": "CONDITIONAL_GAP_REPRODUCED",
+      "observed": {
+        "candidate_artifact_digests": [
+          "edc586daf2d419efdb505803e4fb07f81407be77ad7493440d49505bf853cde2",
+          "92fe11f202188bce2617e000a6ce342341ad2e1ff9a79933bbcfb74a80f02674"
+        ],
+        "protected_output_digests": [
+          "f0abbc9ab0e3c703291fde47f06d4c23923258d287f320d71040005e85111f06",
+          "f0abbc9ab0e3c703291fde47f06d4c23923258d287f320d71040005e85111f06"
+        ],
+        "trace_digests": [
+          "7436b5e63620b4f04498c2dd6a1a1173211590bd023a13aab180f571b4c3c7cc",
+          "99946e5fb46120442714bccef10cd54cc740d961853fe020ef6af58e873fe084"
+        ]
+      },
+      "limitation": "Distinct projected inputs, not a SHA256 collision; applies to the tested injected builder/comparator.",
+      "criterion": "Nur Candidate-Artefakt variieren und alle übrigen gebundenen Eingaben konstant halten: benötigter Ergebnisnachweis muss die Änderung erkennen."
+    },
+    {
+      "criterion_id": "GF-T16",
+      "criterion_status": "PASS",
+      "observed": {
+        "numeric_binding_baseline": [
+          {
+            "classname": "tests.evaluation.golden_vectors.test_measured_learning_reference_v1",
+            "name": "test_bound_measured_vector_runs_existing_gvef_and_preserves_exact_later_meta",
+            "time": "0.019"
+          }
+        ],
+        "source_class": "TEST_ONLY_SYNTHETIC",
+        "evaluator_class": "MECHANISM_TEST_EVIDENCE"
+      },
+      "limitation": null,
+      "criterion": "Beim reinen Referenzpfad unveränderten numerischen Meta-Eingang und Source-Class-Begrenzung erhalten."
+    },
+    {
+      "criterion_id": "GF-T17",
+      "criterion_status": "BOUNDARY_CONFIRMED",
+      "observed": {
+        "meta_exact_after_registry_cleared": true,
+        "registry_empty": true,
+        "meta_source": "loaded.executed.next_meta_input"
+      },
+      "limitation": "A direct numerical Meta call; not an internal runner promotion or registered-bundle consumer.",
+      "criterion": "Getrennten Meta-Aufruf nicht als Konsum des registrierten GVEF-Bundles oder interne Promotion ausweisen."
+    },
+    {
+      "criterion_id": "GF-T18",
+      "criterion_status": "BOUNDARY_CONFIRMED",
+      "observed": {
+        "trace_changed": true,
+        "candidate_artifact_changed": true,
+        "baseline_equal": true,
+        "evidence_equal": true,
+        "protected_output_equal": true
+      },
+      "limitation": null,
+      "criterion": "Ergebnis-, Trace-, Bundle- und geschützte Fach-Digests jeweils nach ihrem definierten Geltungsbereich prüfen; Digest-Gleichheit nicht pauschal Vollsemantik nennen."
+    },
+    {
+      "criterion_id": "NRC-T01",
+      "criterion_status": "PASS",
+      "observed": {
+        "artifact_id": "7735bcf778627c8628ecfad83416fcc986c0a5ba944b75346a6966ab77b3523a",
+        "exact_execution_readback": true,
+        "measurement_invocations_on_read": 0
+      },
+      "limitation": null,
+      "criterion": "Vorhandenes identisches Archivpaket lesend wiederverwenden: keine erneute Engine-Messung als vermeintliches Replay."
+    },
+    {
+      "criterion_id": "NRC-T02",
+      "criterion_status": "GAP_REPRODUCED",
+      "observed": {
+        "error_type": "ExperimentRecordConflictError",
+        "measurement_receipts_before_rejection": 1,
+        "engine_invocations_before_rejection": 4
+      },
+      "limitation": "Temporary empty Failure/Gap stores isolate the no-blocking-context case; this does not establish a successful prior numerical research outcome. Existing original temporary experiment memory was preserved.",
+      "criterion": "Gleiche Experimentidentität mit neuer Ausführungszeit und ohne blockierenden Failure-Kontext: gewünschtes Wiederverwendungs-/Ablehnungsverhalten vor der Messung festlegen und am Sessionconsumer prüfen."
+    },
+    {
+      "criterion_id": "NRC-T03",
+      "criterion_status": "PASS",
+      "observed": {
+        "explicit_retest_reason_supplied": true,
+        "divergent_memory_write_rejected": true,
+        "measurement_receipts_before_rejection": 1
+      },
+      "limitation": null,
+      "criterion": "Expliziter retest_reason umgeht weder kanonische Experimentidentität noch den Schutz gegen divergente Memory-Payloads."
+    },
+    {
+      "criterion_id": "NRC-T04",
+      "criterion_status": "PASS",
+      "observed": {
+        "declared_seed_changed_from": 55,
+        "declared_seed_changed_to": 56,
+        "canonical_experiment_identity_changed": true
+      },
+      "limitation": "Explicit fixture identity comparison only; no arbitrary seed change is used to bypass a duplicate block.",
+      "criterion": "Fachlich neue Seed-/Dataset-/Parameter-/Lineage-Identität getrennt behandeln; keine bloße ID-Änderung zur Umgehung einer Duplikatsperre erfinden."
+    },
+    {
+      "criterion_id": "NRC-T05",
+      "criterion_status": "PARTIAL_REQUIREMENT_OPEN",
+      "observed": {
+        "owner_records_retained": {
+          "memory": 1,
+          "failures": 1,
+          "gaps": 1
+        },
+        "archive_packet_created": false,
+        "successful_session_returned": false
+      },
+      "limitation": "Existing partial-write limitation reproduced safely in temporary stores; no automatic reconciliation/classification record is supplied by the current Session API.",
+      "criterion": "Abbruch zwischen Owner-Persistenz und Archivierung: bestehende Originalrecords erhalten und den unvollständig archivierten Schritt ausdrücklich klassifizieren; keinen erfolgreichen Sessionabschluss behaupten."
+    },
+    {
+      "criterion_id": "NRC-T06",
+      "criterion_status": "PASS",
+      "observed": {
+        "status": "NO_PROPOSED_CANDIDATE",
+        "measurement_receipts": 0,
+        "artifact_id": null
+      },
+      "limitation": null,
+      "criterion": "Keine vorgeschlagene neue Kandidatenregion: NO_PROPOSED_CANDIDATE ohne erzwungene Wiederholungsmessung erhalten."
+    }
+  ]
+}

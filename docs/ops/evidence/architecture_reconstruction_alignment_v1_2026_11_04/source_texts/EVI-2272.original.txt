@@ -1,0 +1,190 @@
+PEAKTRADE – OFFLINE-SIMULATION EINER SEMANTISCHEN N_BARS-KORREKTUR
+02.11.2026
+
+ERGEBNIS
+
+Der Fehler ist auf dem untersuchten Weg ausführbar nachgewiesen. Der
+vorhandene kanonische Optimierungseingang akzeptiert den ersten historischen
+Seed-Datensatz als OBSERVED_PRODUCTIVE_PRE_EXTERNAL. Die vorhandene Funktion
+provenance_implies_productive_truth_v1 liefert für dessen Provenienz true.
+Damit ist eine konkrete falsche Herkunftsinterpretation belegt. Eine
+anschließende Optimierungssuche, Rankingwirkung oder finanzielle Folge ist
+dadurch noch nicht nachgewiesen.
+
+Ein neuer, isolierter Korrekturprototyp verhindert den nachgestellten Fehler.
+Er verändert keine produktive Aufrufkette. Er ist ein prüfbarer Vorschlag für
+eine spätere Behebung, keine bereits ausgerollte Reparatur des Handoffs.
+
+NEUE DATEIEN IM CHECKOUT
+
+/Users/frnkhrz/Peak_Trade/src/research/offline_n_bars_semantic_repair_v1.py
+/Users/frnkhrz/Peak_Trade/tests/research/test_offline_n_bars_semantic_repair_v1.py
+
+HEAD bleibt 242b7974fc93f0bdb47706556101bd6f0c497414.
+Die 87 vorhandenen Status-Einträge wurden erhalten; hinzu kamen diese zwei
+unversionierten Dateien. Kein Commit, Push, PR oder produktiver Import wurde
+hinzugefügt. Historische Quellen und bestehende Belege bleiben unverändert.
+
+WAS IM PROTOTYP ANDERS IST
+
+1. Herkunft ist eine Eigenschaft der gehashten Eingabe.
+   Ein Forschungswunsch darf sie nicht überschreiben. Ein synthetischer
+   Datensatz darf nur in den synthetischen Forschungsweg. Eine Umleitung in
+   den Weg für beobachtete Daten wird abgelehnt.
+
+2. Preise werden nicht umdatiert.
+   Instrument, Venue-ID, Bar-Intervall, Originalzeiten und innere
+   Beobachtungsidentität werden geprüft und unverändert an den bestehenden
+   Supplier übergeben. Es wird keine neue Zeitachse aus alten Preisen gebaut.
+
+3. Verfügbarkeit und Marktzeit bleiben getrennt.
+   Der letzte Preissample-Zeitpunkt ist nicht automatisch die Verfügbarkeit
+   eines vollständig abgeschlossenen Bars. Eine Verfügbarkeitsangabe vor
+   Beobachtung oder Bar-Ende ist widersprüchlich und führt zur Ablehnung.
+
+4. Fehlende Daten werden nicht ersetzt.
+   Erst wenn alle explizit angeforderten N Stunden-Bars geschlossen und zum
+   jeweiligen Auswertungszeitpunkt verfügbar sind, entstehen Messung,
+   Outcome und Lernzustand. Davor meldet der Prototyp WAITING und erzeugt
+   weder Messung noch Lernzustand. Eine fehlende Bar bleibt auch später offen.
+
+5. Die bestehende Berechnung bleibt zuständig.
+   Der vorhandene O4→DDO-Snapshot-Builder und N_BARS-Supplier erzeugen
+   Informationsset, Messartefakt und LOG_RETURN. Die vorhandene Evaluation,
+   der Ingest, Export und Optimierungseingang verarbeiten die Records.
+   economic_score bleibt UNKNOWN; es wird keine neue Bewertungsformel erfunden.
+
+6. Die Weitergabe wird am Consumer erneut geprüft.
+   Herkunft, Quell-Lineage, Instrument, Messreferenz, Evaluationszeit und
+   Evidenzklasse werden gegen die gebundene Eingabe geprüft. Ein korrekter
+   Hash allein genügt nicht. Ein Test zeigt: Eine falsch umgekennzeichnete
+   Evidenz mit vollständig neu berechneten Hashes kann den bisherigen
+   Eingang passieren; die zusätzliche Quellenbindung weist sie zurück.
+
+KENNZEICHNUNG DER GENERIERTEN DATEN
+
+Der Prototyp benutzt vorhandenes orthogonales Vertragsvokabular:
+  market_observation_source = SYNTHETIC_OFFLINE
+  outcome_semantic_class = INTERNAL_SIMULATED_OUTCOME
+  outcome_realization_kind = SIMULATED
+  execution_mode_label = NO_EXECUTION
+  fill_source_type = NO_FILL
+  accounting_source = NOT_APPLICABLE
+  ddo_ledger_environment = dev
+
+Die Preise sind synthetisch; es werden weder simulierte Fills noch eine
+simulierte Ausführung aus ihnen abgeleitet. Alle Felder bleiben vom Outcome
+über den Lernzustand bis zum Lernnachweis identisch. Der Forschungseingang
+akzeptiert diesen synthetischen Forschungsfall ohne produktive Wahrheit.
+
+Dieses konkrete Producer-Binding ist ein Offline-Kandidat. Es ist nicht als
+neue kanonische Projektregel eingesetzt. Der Prototyp baut die Records mit
+den vorhandenen Buildern vor der Persistenz. Bei einer dauerhaften Umsetzung
+gehört die explizite Herkunftsbindung in den bestehenden Binding-Owner;
+eine nachträgliche Umkennzeichnung bereits gespeicherter Outcomes ist nicht
+das vorgeschlagene Reparaturverfahren.
+
+Die bestehenden Messartefakt-Schemas enthalten selbst kein vollständiges
+Herkunftsfeld. Deshalb wird zusätzlich measurement_origin.json gespeichert:
+mit Herkunft, Uhrdomäne, Quellhash, Lineage, Preisbasis, Preiseinheit,
+Skalareinheit und gebundenem Messartefakt-Hash. Das verändert das kanonische
+Messschema nicht und beansprucht keine neue produktive Autorität.
+
+ZEITLICHER VERSUCH
+
+Explizit konstruierte Preise: 100 und 110; zwei PT1H-Bars, 12:00–13:00 und
+13:00–14:00 am 01.09.2026. Das Datum gehört zu einer simulierten UTC-Uhr,
+nicht zu einem neu beobachteten Marktgeschehen.
+
+  Simulationsuhr 12:00:00: 0 vollständige verfügbare Bars; WAITING.
+  Simulationsuhr 13:00:00: 1 vollständige verfügbare Bar; WAITING.
+  Simulationsuhr 13:59:59: weiterhin WAITING; keine Messung und kein Zustand.
+  Simulationsuhr 14:00:00: 2 Bars verfügbar; vollständiger Offline-Durchlauf.
+
+Resultat nach Horizontreife:
+  Herkunft SYNTHETIC_OFFLINE durchgängig erhalten.
+  LOG_RETURN = ln(110/100), dimensionslos.
+  economic_score_label = UNKNOWN.
+  ACCEPTED_OFFLINE_RESEARCH_INPUT.
+  productive_truth_claim = false.
+
+Umleitung derselben Evidenz in beobachtete Forschung: REJECTED.
+Vermischung mit dem getrennten Replay-Pool: vom bestehenden Pool-Check REJECTED.
+
+Ein zusätzlicher konstruierter Capture-Receipt-Fall prüft den Replay-Zweig.
+Seine Eingabe ist ebenfalls eine Test-Fixture. Der Zweig verwendet
+REPLAY_HISTORICAL; daraus wird ausdrücklich kein echter Marktursprung
+abgeleitet. Dieser positive Test ersetzt keinen Versuch mit echten späteren
+Marktbeobachtungen.
+
+GEGENPROBE MIT DEM ERSTEN HISTORISCHEN FALL
+
+Die gespeicherte Entscheidung wird unverändert geprüft. Sie scheitert
+bereits an ihrer fehlenden ausgewählten Instrumentbindung.
+
+Für die davon unabhängige Zeitprüfung wurde eine ausdrücklich neue
+Labor-Anfrage mit der schon rekonstruierten Messinstrument-Identität
+erstellt. Die ursprüngliche Entscheidung wurde nicht ergänzt. Der
+Prototyp weist die Original-Bar-Fakten wegen ihrer unmöglichen
+Verfügbarkeitszeiten zurück: persisted_at 11:17:32 liegt vor den
+behaupteten Beobachtungen 12:15/13:15 und den Bar-Enden 13:00/14:00.
+
+Der bekannte Seed-Marker wird zusätzlich abgelehnt. Die Zeitprüfung hängt
+nicht allein an diesem Marker. Ein bloßes Umbenennen des Konfigurationsfelds
+behebt die widersprüchlichen Zeiten nicht.
+
+NACHWEISE
+
+run-001/comparison.json enthält den maschinenlesbaren Alt-/Neu-Vergleich.
+run-001/stage-140000/ enthält die vollständigen synthetischen Durchlaufdaten,
+einschließlich Quellkopie, Messung, Herkunftsbindung, Outcome, Lernzustand,
+Export, Intake und privatem Ledger.
+run-002-reproducibility/ enthält einen zweiten unabhängigen Durchlauf.
+Alle 33 Dateien beider Durchläufe sind jeweils bytegleich.
+reproducibility.json nennt die Hashes jeder verglichenen Datei.
+verification.json bindet Code-/Testhashes und die abgeschlossenen Prüfungen.
+
+24 fokussierte Tests bestanden auf dem finalen Stand, 0.69 Sekunden.
+Geprüft wurden unter anderem Horizontreife, verspätete Verfügbarkeit,
+fehlende/duplizierte Bars, falsches Intervall/Instrument, gemischte Herkunft,
+unfertige Bars, Seed-Marker, Quellenhash, exklusive Ausgabe sowie
+Manipulation von Herkunft, Klasse, Pool, Lineage, Messreferenz und Zeit.
+Ruff format/check und kanonische Runtime-Prüfung bestanden.
+Kein vollständiger Repository-Testlauf.
+
+REPRODUKTION
+
+Aus /Users/frnkhrz/Peak_Trade:
+
+./scripts/pt -m pytest -q tests/research/test_offline_n_bars_semantic_repair_v1.py
+
+./scripts/pt -c 'import runpy; runpy.run_path("/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/offline-n-bars-semantic-repair-v1/run_comparison.py", run_name="__main__")' --output '<NEUER_ABSOLUTER_AUSGABEORDNER>'
+
+WAS FÜR DIE DAUERHAFTE BEHEBUNG NOCH FEHLT
+
+Der vorhandene produktive Handoff wurde nicht ersetzt. Die beiden neuen
+Research-Dateien werden von keinem produktiven Modul aufgerufen.
+
+Der überprüfte Korrekturansatz ist: den Seed-Aufruf im beobachteten Weg
+entfernen; die Entscheidung mit explizitem Instrument-/Horizontauftrag
+offenhalten; später eintreffende, tatsächlich abgeschlossene Bars aus dem
+zuständigen Producer übernehmen; deren ursprüngliche Identität und Zeiten
+binden; erst bei Horizontreife evaluieren; Herkunft beim bestehenden
+Provenienz-Owner ausdrücklich setzen und am Consumer gegenprüfen.
+
+Für einen generierten Forschungsweg bleibt der synthetische Ursprung vom
+Generator bis zum Consumer explizit. Er bekommt einen getrennten Scope und
+Pool. Er darf keinen produktiv beobachteten Ursprung erben.
+
+Die Bar-Receipts hier sind ein vorgeschlagener Offline-Eingangsvertrag.
+Ein Hash oder ein selbst angegebenes Herkunftsfeld beweist keinen echten
+Marktursprung. Für die Integration müssen diese Angaben an den tatsächlichen
+Capture-/Bar-Producer und dessen gespeicherte Originale gebunden werden.
+Insbesondere sind reale Bar-Vollständigkeit, Finalisierung, Neustart,
+Wiederholung und fehlende Daten über Sessions hinweg noch an diesem Producer
+zu prüfen. Der bestehende Cross-Session-Resolver ist dafür ein Kandidat,
+keine bereits abgenommene Lösung.
+
+Damit liegt eine ausführbare und gegen konkrete Fehlerfälle geprüfte
+Korrektur vor. Ein Gesamtfunktions- oder Betriebsbereitschaftsnachweis,
+eine Optimierungssuchwirkung oder produktive Aktivierung wird nicht behauptet.

@@ -1,0 +1,15 @@
+# Commitgebundener Rücklesebeweis und Abgleich aller24 Rekonstruktionsfragen
+
+Fortsetzung des bestehenden Master-Runbooks und Blueprints95; gebundener Restaurierungscommit `1151994dd`. Keine neue System-SSOT.
+
+Der [vollständige aktuelle Fragenabgleich](question_reconciliation.json) stellt jeder der24 ursprünglichen Fragen den jetzt belegten Stand, konkrete Quellen und verbleibende Aussagegrenzen gegenüber. Das alte Register bleibt revisionsgetreu erhalten. Vor allem sind seine früher offenen Punkte „voller innerer Corpus“, „nächster gewählter nativer Versuch“, „numerischer MI-Consumer“ und „fehlendes GVEF-Schemamanifest“ inzwischen konkret bearbeitet. Alte offene Texte sind kein aktueller Fehlend-Beleg.
+
+Der [Rücklesebeweis](committed_restoration_verification.json) prüft Git-Objekte gegen tatsächliche Arbeitsbytes:116 historische Dateien vollständig gegen Originalrevision und ZIP, aktuelle Corpus-Parität, Paketartefakte, zwölf ursprüngliche Phasen-Owner, geschützte Scope-Dateien, Originalledger sowie unabhängig rekonstruierte16Schemas/111Felder. Der öffentliche gemessene GVEF-Adapter liest den tatsächlichen archivierten Datensatz; der spätere numerische Meta-Consumer liefert exakt dasselbe vollständige Ergebnis. Historischer Code wird nicht ausgeführt.
+
+Wiederholbarer lesender Aufruf im echten Repo: `./scripts/pt -m scripts.ops.verify_self_learning_restoration_v1 --commit 1151994dd`. Der Prüfer selbst ist eine neue Prüfimplementierung nach diesem Commit; alle importierten Repository-Implementierungen müssen Byte für Byte am gebundenen Commit vorliegen. Der Aufruf gibt JSON aus und schreibt keinen Systemzustand. [Prüfprogramm](../../../../scripts/ops/verify_self_learning_restoration_v1.py).
+
+Die vorhandenen650Learning-/Capture-,254GVEF-,178ursprünglichen Phasen-,17Authority- und3Extraktor-PASS-Scopes werden mit ihren Originalbelegen wiederverwendet und nicht als eine globale Testzahl addiert. Neue Rückleseprüfung ist ein zusätzlicher anderer Nachweis, keine Wiederholung identischer Suites.
+
+Die rekonstruierten ursprünglichen Achsen und implementierten Grenzen bleiben sichtbar: Phase24-Fixture-Closure ist kein verloren gegangener numerischer Feature-Lerner; Phase22 fordert vergleichende Forschung statt erfundener universeller Akzeptanzwerte. DDO-Label-Lernen, gemessene MI-Return-Kalibrierung, numerische Forschungswahl und GVEF-Artefaktprüfung besitzen unterschiedliche Consumer-Wirkungen. GVEF übernimmt weder Lern-Engine noch Apply-Authority.
+
+Die Quellen-/Vertragsrestaurierung hat damit einen reproduzierbaren Stand. Nicht wiedergefundene historische Ausgabebytes, unbekannte genaue historische Eigenbezeichnungen, künftige Feature-Nutzenstudien, natürliche Forecast-/Outcome-Authentizität und vollständige Funding-Wirtschaftlichkeit sind weiterhin ausdrücklich unbelegt. Keines wird durch weitere Hashes oder pauschales COMPLETE ersetzt. Produktiver Apply, U04 und GAP-0370 bleiben außerhalb dieses Vollzugs. Keine Dienste, Markt-/Kontoläufe, Orders, Aktivierung oder Veröffentlichung.

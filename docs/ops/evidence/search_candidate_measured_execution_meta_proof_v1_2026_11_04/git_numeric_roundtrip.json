@@ -1,0 +1,12 @@
+{
+  "source_commit": "1c34978282ede5aa4e25542bbb83fb7360d7d10b",
+  "method": "git show revision:path for every manifest artifact and bound new source; no workspace artifact read",
+  "artifact_count": 15,
+  "artifact_git_byte_sha256": "ALL_MATCH",
+  "new_source_git_and_worktree_bytes": "IDENTICAL",
+  "canonical_numeric_reference_read": "PASS",
+  "existing_search_and_phase10_validators": "PASS",
+  "later_meta_full_result": "IDENTICAL_TO_BOTH_COMMITTED_PRE_AND_POST_RELOAD_OUTPUTS",
+  "authority": "NONE",
+  "limits": "Bounded synthetic mechanism reproducibility and committed artifact availability only; no natural learning, source authentication or whole-system usefulness proof"
+}

@@ -1,0 +1,16 @@
+{
+  "artifact": "evidence/ops/uninterrupted_exhaustive_discovery_v1/20261017T002300Z/artifacts/origin_main_wp2a_causal/integrated_causal_graph.v1.json",
+  "authority": "NONE",
+  "current_origin_main_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "edges": 81,
+  "flags": {
+    "CURRENT_CAUSAL_GRAPH_VERIFIED": false,
+    "GLOBAL_CAUSAL_CLOSURE_PROVEN": false
+  },
+  "graph_git_head": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "nodes": 302,
+  "schema_version": "bwp_live_004_ghv_provenance.v1",
+  "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+  "stale_edges_are_live_blockers": false,
+  "status": "STALE"
+}

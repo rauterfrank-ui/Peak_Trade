@@ -1,0 +1,32 @@
+{
+  "boundaries": [
+    "All existing implementations remain frozen; documentation/evidence only, no new runtime edges.",
+    "Three historical Golden Vector reports recovered, not proof of executable per-layer Golden Vector corpus. Self-Learning AST appendix retained but not semantic review.",
+    "Historical cross report distinguishes digest influence from search behavior; compact transcript field counts/verdicts disagree with full report in some dimensions. No normalized global PROVEN status.",
+    "Five historical EDGE IDs and current capture seams are different kinds of named handoffs; user memory not conclusively attributed to one family.",
+    "Current shipped GVEF corpus manifest lists PTP/RU mechanism vectors; not a global absence claim about untracked/historical/other internal references.",
+    "October7 nodewise raw-run recovery remains unverified here; older local absence report does not rule out external copies.",
+    "Scope/formula/config/test source unchanged, protected ledger unchanged, U04/GAP-0370 deferred; no natural run, activation, order, publication or external source mutation."
+  ],
+  "ruff_status": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+  "runtime_activation_authorized": false,
+  "source_commit": "f49735166ab037b90b596d9b91c4ff5f5765e364",
+  "tests": "No new pytest or original Golden-Vector replay run. Source recovery with exact inventory hash verification, raw transcript line verification, current source/interface crosswalk and current existing capture registry read. Prior historical test counts retained as historical assertions only.",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/self_learning_internal_golden_vector_recovery_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 241,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "mission": "OKX_MULTI_WINDOW_WORKSTATION_V1",
+  "mode": "STRICT_OBSERVATION_ONLY",
+  "owner_go": "MULTI_WINDOW_SETUP",
+  "implementation": "SAFARI_UI_ONLY",
+  "timestamp_utc": "2026-10-16T07:46:00Z",
+  "evidence_path": "evidence/ops/okx_multi_window_workstation_v1/20261016T094200Z",
+  "screenshots": {
+    "BEFORE_DESKTOP": "screenshots/BEFORE_DESKTOP.png",
+    "AFTER_DESKTOP": "screenshots/AFTER_DESKTOP.png",
+    "PERSISTENCE_FOCUS_SWAP": "screenshots/PERSISTENCE_FOCUS_SWAP.png"
+  },
+  "phase_1_display_inventory": {
+    "display_count": 1,
+    "external_monitors_assumed": false,
+    "panel_native_resolution": "3456 x 2234 (Built-in Liquid Retina XDR)",
+    "usable_desktop_bounds_logical": "approximately 1496 x 967 (Finder desktop window)",
+    "window_plan_decision": "TWO_WINDOWS — third window rejected (insufficient readable width on single display)"
+  },
+  "phase_2_architecture": {
+    "window_a_market_chart": {
+      "role": "FENSTER_A",
+      "safari_window_index": 1,
+      "bounds_logical": [0, 25, 748, 967],
+      "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+      "center_tab": "Diagramm (TradingView 15m)",
+      "market_panel_tab": "Orderbuch",
+      "header_metrics": "Mark/Index, Finanzierungsrate countdown, Open Int (USD) when header visible"
+    },
+    "window_b_market_activity": {
+      "role": "FENSTER_B",
+      "safari_window_index": 2,
+      "bounds_logical": [748, 25, 1496, 967],
+      "url": "https://my.okx.com/de/trade-futures/btc-usd_um_xperp-5yearly#workspaceId=1031216400532770816",
+      "center_tab": "Handelsdaten",
+      "market_panel_tabs": "Letzte Trades (primary); Orderbuch also visible in split",
+      "analytics": "Open Interest und Handelsvolumen; Long/Short and Taker charts available via Handelsdaten scroll"
+    },
+    "window_c_account": {
+      "deployed": false,
+      "reason": "Single display — dedicated third window would truncate chart/OB/T&S readability"
+    }
+  },
+  "phase_3_safari_setup": {
+    "baseline_ws2_preserved": true,
+    "ws1_touched": false,
+    "ws1_workspace_id": "1006418239457071104",
+    "ws2_workspace_id": "1031216400532770816",
+    "safari_window_count_after": 2,
+    "session_preserved": true,
+    "setup_incident": {
+      "event": "make new document left window 1 on favorites:// briefly",
+      "recovery": "Both windows navigated back to WS2 deep link; no WS1 hash used"
+    },
+    "workspace_collision_check": {
+      "same_workspace_id_both_windows": true,
+      "observed_divergent_center_tabs": true,
+      "note": "OKX may eventually sync layout via shared workspace storage — monitor on reload"
+    }
+  },
+  "phase_4_visual_optimization": {
+    "method": "Safari window bounds only; OKX native tab clicks via authorized Safari JavaScript (no CSS injection, no storage writes)",
+    "overlapping_windows": false,
+    "trading_form_minimized": false,
+    "trading_form_note": "Kaufen/Verkaufen column remains — no expand/DOM hacks per safety scope"
+  },
+  "phase_5_visual_acceptance": {
+    "primary_criterion": "AFTER_DESKTOP.png full desktop",
+    "chart_visible_simultaneously": true,
+    "orderbook_visible_simultaneously": true,
+    "time_and_sales_visible_simultaneously": true,
+    "open_interest_visible": true,
+    "instrument_consistent": "BTC USD UM XPERP both windows",
+    "ws1_ws2_layout_files_on_server": "WS2 active; WS1 not opened — protected layout not mutated in-session",
+    "readability": "GOOD at 748px per window; right column T&S and OI charts legible"
+  },
+  "phase_6_persistence": {
+    "safari_restart_forced": false,
+    "focus_swap_probe": "PERSISTENCE_FOCUS_SWAP.png captured",
+    "reload_not_forced": true,
+    "expected_risk": "Shared workspaceId may re-converge tabs after hard reload — treat as PARTIAL persistence class per V6F",
+    "ws1_unverified_this_session": true
+  },
+  "security_status": {
+    "strict_observation_only": true,
+    "orders_submitted": false,
+    "order_form_interaction": false,
+    "transfers_deposits_withdrawals": false,
+    "api_key_management": false,
+    "peak_trade_runtime_control": false,
+    "storage_manipulation": false,
+    "apple_events_javascript": "unchanged from owner baseline"
+  },
+  "remaining_limitations": [
+    "Trading order column still visible in both windows (mis-click risk — operator discipline required)",
+    "No dedicated Window C for Positions/PnL — bottom account tabs not maximized",
+    "OB duplicated in both windows (acceptable for acceptance; not minimal chrome)",
+    "Workspace layout coupling between two Safari windows on same workspaceId",
+    "Single display — Cursor/IDE must be moved aside for clean desktop evidence"
+  ],
+  "VERDICT": "PASS",
+  "VERDICT_RATIONALE": "AFTER_DESKTOP.png shows TradingView chart, order book, and time & sales concurrently across two Safari windows with consistent BTC XPERP context and readable typography."
+}

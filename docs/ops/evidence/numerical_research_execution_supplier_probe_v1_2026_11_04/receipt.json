@@ -1,0 +1,42 @@
+{
+  "source_commit": "965b9255f0d6d91935b7167fee4f8088c1213802",
+  "source_sha256": {
+    "src/backtest/strategy_signal_binding_v1.py": "76c4d4447d0bb0f6f1129d582e76584f01daca82d365b0ae12e0a77b4aa38e41",
+    "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py": "49a989fd033544aefaed39a0288283603148e3eb611b44bbc08f63d8f153ccac",
+    "src/backtest/mv2_research_wiring_v1.py": "b2df222d48e08c10a88737b1dd3e9a2a5ff4bec5c00849bd80d575c927925f7d",
+    "src/backtest/parameter_sensitivity_v1.py": "3f3dae9290f228a48e7ecb806bc8a678adddbdbc6c244caf85a7e84fef367b25",
+    "src/backtest/engine.py": "2a0afea369ebd168f9d4e34c6d095bd88288cc4bc80f6301a5529a42c57d7440",
+    "src/backtest/stats.py": "db28d27f6ed42d6fae0aa46638c38198be08dba8ba7d40ad84457e63446bc12a",
+    "src/risk/position_sizer.py": "3629070c68540256f40922991121988cce9737e84ed607f602a3da7ed9746955",
+    "tests/backtest/test_mv2_research_wiring_v1.py": "4e4935b7b0b48a29f130affd3f7bff0a834bc2c6262a64b1e02bf7977eedb878",
+    "tests/backtest/test_parameter_sensitivity_v1.py": "39d0ff79f01c7e1e830491d4e958e92778949dc9aeb567a8f19e507212eb1977"
+  },
+  "tests": "No new pytest run: four actual direct simulator studies, two real schema denials, one existing-size rejection, original grid four FAILED points and native grid two EVALUATED points. Bounded assertions passed; no full-system claim.",
+  "ruff_status": "PASS; format PASS",
+  "boundaries": [
+    "Separate synthetic supplier study, not execution of former short-name Search candidate/identity",
+    "Explicit lower-risk probe cfg is not adopted policy; costs/funding/context/admission remain qualified",
+    "Full split metrics not serialized; no invented Sharpe/stability/outcome from split refs",
+    "365-factor basic Sharpe vs 8760-factor supplier Sharpe; CAGR still basic; Sortino nonfinite retained as evidence marker",
+    "U04 and GAP-0370 deferred; original ledger unchanged; no runtime activation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "scope": "Read-only runtime source; controlled local simulator execution and evidence/docs additions only",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/numerical_research_execution_supplier_probe_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 224,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

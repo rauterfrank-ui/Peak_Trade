@@ -1,0 +1,18 @@
+"""Read-only integrity/current-anchor checks; no claim of semantic completeness.
+Run from actual repo using scripts/pt on stdin. No original external paths needed.
+"""
+from pathlib import Path
+import ast,hashlib,json,xml.etree.ElementTree as ET
+r=Path.cwd();p=r/'docs/ops/evidence/architecture_causal_followthrough_v1_2026_11_04';sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();m=json.loads((p/'source_manifest.json').read_text());a=json.loads((p/'investigation.json').read_text())
+for name,expected in m['files'].items():
+ f=(p/name).resolve();assert f.is_relative_to(p.resolve()),name;assert sha(f)==expected,('source mismatch',name)
+for x in a['current_anchors']:
+ f=r/x['path'];assert sha(f)==x['sha256'],('current code changed; review required',x['path']);ns=[n for n in ast.walk(ast.parse(f.read_text())) if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name==x['symbol']];assert len(ns)==1 and (ns[0].lineno,ns[0].end_lineno)==(x['line'],x['end_line']),x['symbol']
+for h in a['historical_sources']:assert sha(p/h['snapshot'])==h['sha256'],h['id']
+for name in ['meta_search_probe_result.json','mi_semantic_probe_result.json']:
+ q=json.loads((p/name).read_text());assert q['assertions_passed'] is True and q['source_commit']==a['reviewed_at_commit'];
+ for file,expected in q['fixture_sha256'].items():assert sha(r/file)==expected,('probe fixture changed',file)
+protected=a['protected_learning_ledger'];assert sha(r/protected['path'])==protected['sha256']
+cases=list(ET.parse(p/'mi_tests.xml').getroot().iter('testcase'));assert len(cases)==28 and not any(c.find('failure') is not None or c.find('error') is not None or c.find('skipped') is not None for c in cases)
+assert a['full_causal_reconstruction_complete'] is False and a['final_target_architecture_decided'] is False
+print(json.dumps({'source_integrity':'PASS','current_anchors':len(a['current_anchors']),'historical_snapshots':len(a['historical_sources']),'controlled_probe_assertions':'PASS','additional_mi_tests_passed':len(cases),'prior_g2_failures':'9 preserved; no automatic repair','causal_reconstruction':'INCOMPLETE','runtime_authorization_effect':'NONE'},ensure_ascii=False,indent=2))

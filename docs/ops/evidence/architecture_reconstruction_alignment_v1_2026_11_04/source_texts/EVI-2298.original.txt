@@ -1,0 +1,364 @@
+GGE — QUELLENSAMMLUNG UND WEITERER SIGNALVERLAUF BIS DOUBLE PLAY
+Stand: 02.11.2026, Europe/Berlin. Lesende Untersuchung; keine Formelentscheidung, Implementierung oder Aktivierung.
+
+KORREKTUR DER FRÜHEREN KURZFASSUNG
+„Volatilität × Marktpreis“ war als Beschreibung der gesamten fachlichen Berechnung und Weiterverarbeitung zu kurz. Es ist die ausdrücklich implementierte und gemergte GGE-V1-Basisformel, aber weder die gesamte Berechnung ihres Volatilitätseingangs noch die vollständige Scope-/Signal-/Entry-Logik. Die ursprünglich vom Owner gemeinte spezielle Formel ist mit dieser Kurzfassung nicht identifiziert.
+Die Quellen bestätigen den V1-Befund: ursprünglicher GGE-Arbeitsauftrag, wiederhergestellter Semantic Contract, Selected Model Freeze, Commit 4e471145, gemergter PR #7064 und späterer Reproof-PR #7090 nennen σ×P. Das beweist diese historische Fassung. Es beweist nicht, dass jede frühere Absicht vollständig umgesetzt wurde oder dass keine weitere fachliche Formel gemeint ist.
+
+UMFANG DER QUELLENSAMMLUNG
+PeakDATARecovery: alle 4388 unterschiedlichen Inhalte des vorhandenen Markdown-Inventars anhand je eines Vertreters gelesen und gehasht; 406632 Inventar-Dateinamen, 37450750 Bytes der eindeutigen Vertreter. Alle Vertreter vorhanden und hashgleich. 52 Inhalts-Treffer zu GGE/Basisgeometrie gesichert. Zusätzlich sechs nach Dateinamen gefundene Inhalte zu GGE/Scope-Kalibrierung/Cap63 und eine historische Confirmation-Autorisierung. Überschneidungen sind möglich; Trefferzahlen nicht als unabhängige Beweise addieren.
+PeakTradeCodeRecovery01: 3012 vorhandene Text-/Code-/Konfigurationsdateien inhaltlich durchsucht; ein GGE-bezogener Finalreport gesichert. Keine Sektor-Recovery, kein neuer Recovery-Scan und keine Quelländerung.
+M2DATA: sechs bekannte Projekt-/Backup-Anker sowie im gezielt gelisteten Recovery-Projektbaum gefundene GGE-Arbeitskopien einbezogen. 89 relevante Quellkopien aus 30 Ankern gehasht; 29 vorhandene GGE-Enginekopien haben denselben Inhalt. Bei double_play_state und Layer-C jeweils zwei Bytevarianten. Fünf Git-Metadatenstände lesbar, eine alte Worktree-Git-Verknüpfung nicht lesbar. Backups sind shallow. Ein breiter rekursiver Namenslauf wurde wegen unzweckmäßig großem Suchraum abgebrochen; daraus wird keine vollständige M2DATA-Durchsuchung behauptet.
+Lokale Rekonstruktionen: 47 passende Bericht-/Quelltextdateien; Architekturarchiv: 52 passende Text-/JSON-Dateien mit Herkunft und Hash. Abgeleitete Berichte bleiben von Originalquellen getrennt.
+Cursor: beide aufgabenbezogenen Gesprächsordner nach GGE durchsucht; 199 passende JSONL-Gespräche gehasht und 875 passende Textnachrichten samt Originalzeile gesammelt. Fünf zentrale GGE-/Scope-/Remediation-Gespräche zusätzlich mit allen vorhandenen Textnachrichten gesichert. Historische Tool-Requests sind Textbelege, keine neu ausgeführten Anweisungen und ohne Tool-Resultat kein Ausführungsbeweis.
+Classic: 93 exakte GGE-Treffer im bereits gespeicherten begrenzten Nachrichtenbestand; Quellenpfad, Nachricht-ID, Zeitpunkt und Kürzung im JSON erhalten. Kein vollständiger ChatGPT-Export und keine Vollständigkeit aller Classic-Gespräche.
+GitHub: zwei GGE/Golden-Geometry-PR-Suchen mit zusammen 14 unterschiedlichen PRs; Metadaten und Beschreibungen gelesen. #7064 zusätzlich kompletter Changed-File-/Patch-Abruf, #7090 Dateiliste. Pfad-Historie der GGE-Engine enthält drei Commits. Lokale Git-Objekte der fünf relevanten Revisionen separat gesichert: 30 vorhandene Quelldateifassungen. GitHub-Connector war nicht verfügbar (Unknown tool); deshalb authentifizierter gh-GET-Fallback. Kein git fetch und keine Änderung von Refs.
+Obsidian: 66 GGE-/Geometrie-/Layer-C-/MODEL_C-Registerzeilen mit IDs, Zeilen und Quellhash erfasst; kein neuer Vault-Run und keine Änderung der Register.
+
+DATIERTE GGE-VARIANTEN
+Vor GGE: market-to-base-distance mehrfach inline implementiert. Arbeitsauftrag vom 06.10. verlangt 3–6 begründete Kandidaten, exakte Formeln, Einheiten, Invarianten und Auswahl vor Single-Owner-Cutover.
+4e4711452fa2a3b6de86e6421a7e58ea2f25bd86, 06.10.2026 06:18 Europe/Berlin: GGE-V1-Owner eingeführt, Basisformel σ×P; Scope-Zustandssemantik soll erhalten bleiben.
+1c6f43e89bf1ebdd6f5e2cb0843f8374d6f91363, 06.10. 07:29: zusätzliche typed-only Geometry-Volatility-Schicht und strengere Identitäts-/Eingangsbedingungen eingebaut.
+adf73d16e18986f71bec4205ddc162d045dd5712, 06.10. 07:42: diese zusätzlichen Validierungs-/Resolution-Semantiken wieder zurückgenommen. Der finale PR nennt sie unauthorized CLASS C. Das ist eine nachgewiesene Zwischenfassung, nicht eine zweite freigegebene GGE-Formel.
+dd4c23da1f3f519413fe8c9f04ddd0050ff3f026 / PR #7064, 06.10. 08:11: finale Fassung gemergt. PR #7090 vom 12.10. ergänzt L10-Observability und Skalierungsprüfungen bei ausdrücklich unveränderter GGE-Formel.
+
+QUANTITATIVE BELEGRENZE
+Die gefundenen Kandidatenartefakte benennen CURRENT_CONTROL, VOL_LOG_RANGE und SPREAD_FLOOR. Für die beiden Alternativen enthalten die gesicherten Kandidatentexte keine exakten ausgearbeiteten Formeln oder vollständige quantitative Vergleichsmatrix. Ein Winner-/PASS-Label ersetzt diese fehlende Begründung nicht. Weitere Research-Familien (k, k×M, k×σ×M) sind als nichtproduktive Kalibrierungsvarianten vorhanden. Keine wird hier als gesuchte produktive Formel übernommen.
+
+FORMELREGISTER
+GGE-V1: D_gge = σ × P
+Im gemergten PR #7064 und Code ausdrücklich belegt; allein kein vollständiger Scope-/Entry-Verlauf.
+Kanonische Volatilität: r_i=ln(M_i/M_(i−1)); σ=sqrt(sum((r_i−mean(r))²)/60)
+60 Mark-Log-Returns, Population ddof=0, keine jährliche Skalierung; tatsächlicher Bind an Consumer zusätzlich nötig.
+Feature-Regime-Volatilität: r_i=(P_i−P_(i−1))/P_(i−1); sqrt(sample_variance(r)) × sqrt(n)
+Andere Eingangsbedeutung und Skalierung. Nicht still mit G17-σ gleichsetzen.
+Scope-Zustand: band=clamp(D_gge,rules,envelope); Long-Anker=max(alt,Mark), Short-Anker=min(alt,Mark)
+Gates, Neutral, CHOP, Grenzen und gespeicherter Zustand können frischen Basiswert von effektivem Band unterscheiden.
+MODEL_C / Layer-C: up=Band; adverse=Band×80/200; reversal=Band×120/200
+Historische Formel-/Policyentscheidung und spätere Implementierung revisionsgebunden trennen.
+L9/L10: CM_BULL=max(0,R−M); CM_BEAR=max(0,M−R); Switch wenn CM>=D_t
+Andere Aufgabe als C2/C3-Bestätigung und tatsächlicher Entry.
+Research ABSOLUTE: D_t=k
+Forschungsfamilie, keine produktive Auswahl daraus belegt.
+Research RELATIVE: D_t=k×M
+Forschungsfamilie, keine produktive Auswahl daraus belegt.
+Research VOL_NORMALIZED: D_t=k×σ×M
+Forschungsfamilie; k nicht als produktiven Parameter übernehmen.
+GGE-Alternativkandidat VOL_LOG_RANGE: EXAKTE_FORMEL_IN_GEFUNDENEM_KANDIDATENTEXT_NICHT_ANGEGEBEN
+Als abgelehnt benannt; keine vollständig ausgearbeitete Vergleichsformel erfinden.
+GGE-Alternativkandidat SPREAD_FLOOR: EXAKTE_FORMEL_IN_GEFUNDENEM_KANDIDATENTEXT_NICHT_ANGEGEBEN
+Als abgelehnt benannt; bloßes Label belegt keine quantitative Kandidatenanalyse.
+
+OWNER-ERINNERUNG: ZWEI GLEICHE RICHTUNGEN
+Aktuelle fachliche Vorgabe: zwei aufeinanderfolgende Short-Bewegungen sollen Short-Entry ermöglichen; zwei Long-Bewegungen Long-Entry; Long/Short-Mischung und Stillstand zunächst warten/neutral. Das wird als Owner-Absicht erfasst, nicht als bereits bewiesene Implementierungsparität.
+Im Code sind dazu konkrete Stationen vorhanden: C1 DISTINCT-Beobachtungsannahme, elementare Richtung aus Preisänderung, aktive Long-/Short-Lane, C2 ConfirmationProgress, C3 Assessment-Bind. Config setzt confirmation_epochs=2. C2 zählt regulär konsekutive akzeptierte MarketObservationEpochs; bloße Runtime-Zyklen oder doppelte Lieferungen zählen nicht automatisch.
+Wichtig: C3 führt zusätzlich Eingangsgates und eine Signalstärke-Abbildung aus. Danach folgen Survival, Suitability, Composition, SideState und Entry/Exit. Daher belegt confirmation_epochs=2 allein nicht „zwei beliebige Short-Preisänderungen führen immer unmittelbar zu einer Short-Order“. Scope-Event-Bestätigung ist ein zweiter Mechanismus und nicht automatisch identisch mit C2/C3.
+Eine weitere historische Analyse beschreibt Neutral→Armed→Active über zwei bestätigte Scope-Ereignisse derselben Richtung. Das ist eine andere Zählung als zwei rohe Preisbewegungen oder C2-Threshold 2. Der historische Treffer ist eine Analyse/Inference, kein originärer Owner-Formelvertrag; aktuelle transition_state-Quellzweige sind separat gesichert.
+Neutral aktiviert keine Lane. Persistierte Long-/Short-Fortschritte bleiben erhalten; C2 behandelt eine spätere Epochenlücke mit eigenem Recovery-/Ablehnungszweig. Die tatsächliche Wirkung für Long–Short–Long, Short–Neutral–Short und Restart muss vor einer Gleichheitsbehauptung als vollständige Sequenz geprüft werden. Die Behandlung bereits offener Positionen ist vom neutralen Erststart getrennt zu halten.
+
+WEITERER DATEN- UND SIGNALVERLAUF — GETRENNTE PFADE
+
+Älterer zustandsabhängiger Scope-/Event-Pfad
+C3 ruft C2 intern auf. Eingangsdaten und C1 können vorher vom Host erzeugt sein; Liste zeigt Consumer-Abhängigkeit, keinen einzigen globalen Wallclock-Takt.
+V — Volatilität aus Mark-Historie
+Eingang: Finalisierte PT1M-Markpreise
+Verarbeitung: Log-Returns, rollierende Population-Standardabweichung über 60 Returns; keine sqrt(n)- oder Jahres-Skalierung
+Ausgang: Dimensionsloses σ; Warm-up separat
+Zuständigkeit/Grenze: Berechnung eines kanonischen Features; tatsächlicher Runtime-Bind separat
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py:103 :: compute_canonical_volatility_estimate_from_mark_prices_v1
+B — G17 → CMC-Bind
+Eingang: Producer-Outcome und CanonicalMarketContext
+Verarbeitung: Bedingtes Ersetzen/Binden der typisierten Volatilität; Producer None / Dispositionen getrennt
+Ausgang: Kontext mit oder ohne aktualisierten Estimate
+Zuständigkeit/Grenze: Kein allgemeiner Nachweis eines frischen Updates pro Poll
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py:79 :: apply_current_productive_g17_typed_vol_cmc_bind_v1
+G — Golden Geometry Engine
+Eingang: Markpreis und aufgelöster Volatilitätswert desselben fachlichen Instruments
+Verarbeitung: In der gemergten V1: D_gge = σ × P; positive/endliche Eingänge und Ausgabe
+Ausgang: CanonicalBaseGeometryMagnitudeV1.magnitude, Einheit PRICE
+Zuständigkeit/Grenze: Basisdistanz; keine Richtung, Position, Scope-Zustandsmaschine oder Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py:99 :: GoldenGeometryEngineV1
+I — Scope-Initialisierung
+Eingang: CMC, Scope-Policy, Prerequisites, optional vorhandener Snapshot
+Verarbeitung: GGE-basierte Initialdistanz; Policy entscheidet passthrough versus historische Begrenzung; Snapshot-Wiederverwendung separat
+Ausgang: CanonicalScopeSnapshotV1
+Zuständigkeit/Grenze: Kein Signal und keine Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/canonical_scope_initialization_v1.py:515 :: initialize_canonical_scope
+T — Trailing / Scope-Zustand
+Eingang: Mark, aktive Seite, vorheriger RuntimeScopeState, Rules, Envelope
+Verarbeitung: Erneuter GGE-Aufruf, clamp_band_width, Long-Anker=max, Short-Anker=min; Neutral/CHOP/ungültige Voraussetzungen können vorherigen Zustand erhalten
+Ausgang: anchor_price, current_hysteresis_band, Preisgrenzen
+Zuständigkeit/Grenze: Zustandsabhängige Geometrie; gespeichertes Band ist nicht automatisch frischer GGE-Wert
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_state.py:216 :: update_dynamic_boundaries
+LC — Layer-C aus Scope-Band
+Eingang: current_hysteresis_band oder ausdrücklich gebundene Magnitude
+Verarbeitung: Ableitung über derive_scope_event_distances_v1
+Ausgang: up = Band; adverse = 0.4 Band; reversal = 0.6 Band; alle PRICE
+Zuständigkeit/Grenze: Distanzableitung, keine Richtungsbestätigung oder Handelsfreigabe
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py:63 :: resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1
+E — Scope-Event-Generator
+Eingang: Mark, Trailing-Anker, abgeleitete Distanzen, Richtung, Bestätigungs-/Cooldownzustand und Epochengates
+Verarbeitung: Richtungsabhängige Schwellen, Bedingungen und eigener Scope-Event-Bestätigungsfortschritt
+Ausgang: ScopeEventEvidenceV1, Candidate/Confirmed/NOOP/Blocked
+Zuständigkeit/Grenze: Nicht mit C2/C3-Richtungsbestätigung gleichsetzen
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/deterministic_scope_event_generator_v1.py:637 :: generate_deterministic_scope_event
+C1 — C1 akzeptierte Beobachtung
+Eingang: Instrument, Venue und Beobachtungsidentität
+Verarbeitung: DISTINCT gegen Duplikat/Fehler/sonstige Dispositionen unterscheiden
+Ausgang: MarketObservationEpoch und erlaubter Strategiefortschritt
+Zuständigkeit/Grenze: Laufzyklus oder mehrfacher Empfang ist nicht automatisch neue Bewegung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/distinct_market_observation_acceptor_v1.py:213 :: ObservationAcceptanceResultV1
+DIR — Elementare Richtung
+Eingang: Zwei akzeptierte Preisidentitäten desselben Futures
+Verarbeitung: Preis steigt → BULL; fällt → BEAR; gleich/fehlender Vorgänger → NEUTRAL; ungültig wird abgelehnt
+Ausgang: Elementare Richtung
+Zuständigkeit/Grenze: Keine Scope-Bandbreite; ein einzelner aktueller Preis allein liefert keine Bewegung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/elementary_direction_v1.py:205 :: evaluate_elementary_direction_from_observation_acceptance_v1
+LANE — Bestätigungs-Lane
+Eingang: Elementare Richtung, C1-Ergebnis, persistierte Long-/Short-Fortschritte
+Verarbeitung: BULL routet Long, BEAR Short, Neutral keine aktive Lane; vorhandene Gegen-Lane bleibt gespeichert
+Ausgang: Ausgewählte aktive Lane oder Inaktivität
+Zuständigkeit/Grenze: Persistenz ist nicht gleich Freigabe für nicht-aufeinanderfolgende Bestätigung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/single_lane_confirmation_activation_v1.py:341 :: apply_single_lane_confirmation_lifecycle_v1
+C3 — C3 Assessment-Bind
+Eingang: Aktive Lane, Preis-/Signalpfad, C1, C2 und Policy
+Verarbeitung: Eingangsgates und Signalstärke-Schwellen; C2 aufrufen; Status ableiten
+Ausgang: DirectionalAssessmentV1
+Zuständigkeit/Grenze: Daher nicht allein zwei beliebige rohe Preisänderungen = Entry
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/directional_assessment_confirmation_integration_v1.py:311 :: evaluate_directional_assessment_with_confirmation_progress_v1
+C2 — C2 Bestätigungsfortschritt
+Eingang: Akzeptierte DISTINCT-Epoche, Assessment-Signal, gebundene Seite, Threshold
+Verarbeitung: Nur konsekutive Beobachtungsepochen zählen regulär; Duplikate NOOP; Lücken eigener Recovery-/Ablehnungszweig; Threshold im Host 2
+Ausgang: OBSERVE/CANDIDATE/CONFIRMED und Zähler
+Zuständigkeit/Grenze: Richtungs-/Assessment-Fortschritt, keine Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/directional_confirmation_progress_v1.py:572 :: evaluate_confirmation_progress_v1
+COMP — Survival / Suitability / Composition
+Eingang: C3-Ergebnis, Survival-Kosten-/Metrikeingänge, Eignung und Positionskontext
+Verarbeitung: Ausgewählte Lane prüfen, Identitäten binden, zulässige Seite/Handlungsform komponieren
+Ausgang: CompositionResult plus State-/Policy-Eingänge
+Zuständigkeit/Grenze: Bestätigung ist notwendig im Entry-Pfad, ersetzt weitere Voraussetzungen nicht
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1419 :: run_integrated_offline_trading_logic_replay_v1
+S — Double-Play-SideState
+Eingang: Gemapptes ScopeEvent plus SideState/ScopeState und Regeln
+Verarbeitung: Präzedenz, Pending/Blocked/Armed/Active und Schutzregeln
+Ausgang: Nächster SideState und TransitionDecision
+Zuständigkeit/Grenze: Im älteren Pfad Zustandsautorität; beim gültigen Delegations-Seal übersprungen
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_state.py:276 :: transition_state
+EE — Double-Play Entry/Exit
+Eingang: Composition, Armed/Active-Richtung, Positionswahrheit, Reconciliation, Safety und Gate
+Verarbeitung: Präzedenzregeln: Schutz/Reduktion/Bestand/Umkehrvorbereitung/Entry
+Ausgang: ENTER_LONG/ENTER_SHORT/HOLD/REDUCE/weitere Outcomes
+Zuständigkeit/Grenze: Policy-Ergebnis ist keine Order; kein automatischer Flip
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_entry_exit_policy_v0.py:604 :: evaluate_double_play_entry_exit_policy_v0
+
+L1–L10 mit Seal / Delegation
+L1–L5 initialisieren zuvor Auswahl, Beobachtung, Initialrichtung/Regime und Initialbasis. P5.10-Bind ist host-/zustandsabhängig. C3 und Positionsaktion bleiben eigene Stationen.
+V — Volatilität aus Mark-Historie
+Eingang: Finalisierte PT1M-Markpreise
+Verarbeitung: Log-Returns, rollierende Population-Standardabweichung über 60 Returns; keine sqrt(n)- oder Jahres-Skalierung
+Ausgang: Dimensionsloses σ; Warm-up separat
+Zuständigkeit/Grenze: Berechnung eines kanonischen Features; tatsächlicher Runtime-Bind separat
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py:103 :: compute_canonical_volatility_estimate_from_mark_prices_v1
+B — G17 → CMC-Bind
+Eingang: Producer-Outcome und CanonicalMarketContext
+Verarbeitung: Bedingtes Ersetzen/Binden der typisierten Volatilität; Producer None / Dispositionen getrennt
+Ausgang: Kontext mit oder ohne aktualisierten Estimate
+Zuständigkeit/Grenze: Kein allgemeiner Nachweis eines frischen Updates pro Poll
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py:79 :: apply_current_productive_g17_typed_vol_cmc_bind_v1
+G — Golden Geometry Engine
+Eingang: Markpreis und aufgelöster Volatilitätswert desselben fachlichen Instruments
+Verarbeitung: In der gemergten V1: D_gge = σ × P; positive/endliche Eingänge und Ausgabe
+Ausgang: CanonicalBaseGeometryMagnitudeV1.magnitude, Einheit PRICE
+Zuständigkeit/Grenze: Basisdistanz; keine Richtung, Position, Scope-Zustandsmaschine oder Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py:99 :: GoldenGeometryEngineV1
+P — P5.10 D_t-Proposal
+Eingang: CMC, Markprovenienz, vorhandener Scope, Store und Auswahlidentität
+Verarbeitung: GGE-Delegate liefert Scope-Magnitude; ExplicitDtProposalV1.value wird gesetzt
+Ausgang: Expliziter D_t-Vorschlag mit Identität/Lineage
+Zuständigkeit/Grenze: Bedingter Layered-Bind; nicht das Evidence-Plane-P4/P5-Paket
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py:212 :: prepare_productive_layered_core_replay_bind_v1
+P4 — Expliziter D_t-Transport
+Eingang: ExplicitDtProposalV1 und Identitätskontext
+Verarbeitung: Validieren, float(value) kopieren, MechanicalStepSpec erzeugen
+Ausgang: MechanicalStepSpecV1.proposed_d_t
+Zuständigkeit/Grenze: Keine neue Geometrieformel
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/p4_l6_explicit_d_t_proposal_v1/adapter_v1.py:38 :: validate_and_transport_explicit_dt_proposal_v1
+L6 — L6 Dynamic Scope Generator
+Eingang: NullLine-Initialprovenienz und proposed_d_t
+Verarbeitung: Positiven/endlichen Vorschlag prüfen und unverändert weitergeben
+Ausgang: d_t oder fail_closed
+Zuständigkeit/Grenze: Wählt in dieser Implementierung keine alternative Formel
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py:22 :: ExplicitPassthroughDynamicScopeGeneratorV1
+L7 — L7 Scope State
+Eingang: L6-Ergebnis und Initialprovenienz
+Verarbeitung: Materialisiert D_t mit Instrument und Initialbasisbezug
+Ausgang: ScopeStateV1
+Zuständigkeit/Grenze: Keine Switch- oder Orderautorität
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py:14 :: apply_l7_scope_state_materialization_v1
+L8 — L8 laufende Referenz R_t
+Eingang: Mark M_t, Regime und bisheriges R_t
+Verarbeitung: BULL folgt günstigen Hochs, BEAR günstigen Tiefs
+Ausgang: Aktualisiertes R_t
+Zuständigkeit/Grenze: Getrennt von aktueller Preislinie und unveränderlicher L5-Initialbasis
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py:38 :: apply_l8_running_reference_step_v1
+L9 — L9 Gegenbewegung CM_t
+Eingang: M_t, aktualisiertes R_t, Regime
+Verarbeitung: BULL: max(0,R_t−M_t); BEAR: max(0,M_t−R_t)
+Ausgang: CM_t in PRICE
+Zuständigkeit/Grenze: Keine Entry-Freigabe
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py:25 :: apply_l9_counter_move_v1
+L10 — L10 Regimewechsel
+Eingang: CM_t und ScopeState.d_t
+Verarbeitung: Switch bei CM_t >= D_t; Regime flippen, Referenz auf Mark zurücksetzen
+Ausgang: regime_post, switch_condition_met, persisted_r_t
+Zuständigkeit/Grenze: Geometrischer Regimewechsel ist noch keine ausgeführte Positionsumkehr
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py:21 :: apply_l10_bull_bear_switch_v1
+Z — Episode und Authority-Seal
+Eingang: Auswahl, Mark, Proposal, initialisierte oder wiederhergestellte Episode
+Verarbeitung: Mechanischer Schritt L6–L10; Episode persistieren; unveränderliches Seal bilden
+Ausgang: LayeredCoreAuthoritySealV1 mit d_t,r_t,cm_t,Regime
+Zuständigkeit/Grenze: Persistenzaufrufe in dieser Sammlung nur gelesen, nicht ausgeführt
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py:88 :: run_p5_layered_core_authority_seam_v1
+D — CZ4-Delegation
+Eingang: Gültiges Seal, vorhandener Scope und Replay-Input
+Verarbeitung: Bind validieren; älteren Scope-/Event-/Transition-Schreiber unterdrücken; zunächst NOOP und SideState-Träger halten
+Ausgang: Delegationskontext für integrierten Replay
+Zuständigkeit/Grenze: Keine Gleichsetzung mit direktem L10→Entry-Flip
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py:134 :: try_build_p5_cz4_delegated_replay_context_v1
+C1 — C1 akzeptierte Beobachtung
+Eingang: Instrument, Venue und Beobachtungsidentität
+Verarbeitung: DISTINCT gegen Duplikat/Fehler/sonstige Dispositionen unterscheiden
+Ausgang: MarketObservationEpoch und erlaubter Strategiefortschritt
+Zuständigkeit/Grenze: Laufzyklus oder mehrfacher Empfang ist nicht automatisch neue Bewegung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/distinct_market_observation_acceptor_v1.py:213 :: ObservationAcceptanceResultV1
+DIR — Elementare Richtung
+Eingang: Zwei akzeptierte Preisidentitäten desselben Futures
+Verarbeitung: Preis steigt → BULL; fällt → BEAR; gleich/fehlender Vorgänger → NEUTRAL; ungültig wird abgelehnt
+Ausgang: Elementare Richtung
+Zuständigkeit/Grenze: Keine Scope-Bandbreite; ein einzelner aktueller Preis allein liefert keine Bewegung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/elementary_direction_v1.py:205 :: evaluate_elementary_direction_from_observation_acceptance_v1
+LANE — Bestätigungs-Lane
+Eingang: Elementare Richtung, C1-Ergebnis, persistierte Long-/Short-Fortschritte
+Verarbeitung: BULL routet Long, BEAR Short, Neutral keine aktive Lane; vorhandene Gegen-Lane bleibt gespeichert
+Ausgang: Ausgewählte aktive Lane oder Inaktivität
+Zuständigkeit/Grenze: Persistenz ist nicht gleich Freigabe für nicht-aufeinanderfolgende Bestätigung
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/single_lane_confirmation_activation_v1.py:341 :: apply_single_lane_confirmation_lifecycle_v1
+C3 — C3 Assessment-Bind
+Eingang: Aktive Lane, Preis-/Signalpfad, C1, C2 und Policy
+Verarbeitung: Eingangsgates und Signalstärke-Schwellen; C2 aufrufen; Status ableiten
+Ausgang: DirectionalAssessmentV1
+Zuständigkeit/Grenze: Daher nicht allein zwei beliebige rohe Preisänderungen = Entry
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/directional_assessment_confirmation_integration_v1.py:311 :: evaluate_directional_assessment_with_confirmation_progress_v1
+C2 — C2 Bestätigungsfortschritt
+Eingang: Akzeptierte DISTINCT-Epoche, Assessment-Signal, gebundene Seite, Threshold
+Verarbeitung: Nur konsekutive Beobachtungsepochen zählen regulär; Duplikate NOOP; Lücken eigener Recovery-/Ablehnungszweig; Threshold im Host 2
+Ausgang: OBSERVE/CANDIDATE/CONFIRMED und Zähler
+Zuständigkeit/Grenze: Richtungs-/Assessment-Fortschritt, keine Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/market_state/directional_confirmation_progress_v1.py:572 :: evaluate_confirmation_progress_v1
+COMP — Survival / Suitability / Composition
+Eingang: C3-Ergebnis, Survival-Kosten-/Metrikeingänge, Eignung und Positionskontext
+Verarbeitung: Ausgewählte Lane prüfen, Identitäten binden, zulässige Seite/Handlungsform komponieren
+Ausgang: CompositionResult plus State-/Policy-Eingänge
+Zuständigkeit/Grenze: Bestätigung ist notwendig im Entry-Pfad, ersetzt weitere Voraussetzungen nicht
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1419 :: run_integrated_offline_trading_logic_replay_v1
+EE — Double-Play Entry/Exit
+Eingang: Composition, Armed/Active-Richtung, Positionswahrheit, Reconciliation, Safety und Gate
+Verarbeitung: Präzedenzregeln: Schutz/Reduktion/Bestand/Umkehrvorbereitung/Entry
+Ausgang: ENTER_LONG/ENTER_SHORT/HOLD/REDUCE/weitere Outcomes
+Zuständigkeit/Grenze: Policy-Ergebnis ist keine Order; kein automatischer Flip
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_entry_exit_policy_v0.py:604 :: evaluate_double_play_entry_exit_policy_v0
+HO — P5.10B nachgelagerter Handoff
+Eingang: Replay-Ergebnis und Layered-Seal
+Verarbeitung: Nach Replay kanonischen SideState-Handoff ausführen; State-Switch-Evidence ersetzen und Lifecycle persistieren
+Ausgang: Gepatchtes Intermediate/State-Switch-Evidence
+Zuständigkeit/Grenze: Zeitpunkt relativ zu C3, Composition und Entry/Exit gesondert beweisen
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py:385 :: finalize_productive_layered_core_replay_bind_v1
+
+Frische Basis-Geometrie für Host-Exit-Eingänge
+Kein Ersatz für den gespeicherten Scope-/Trailing-Zustand. Fehlende Entry-/Positionsdaten und Schutzsignale bleiben eigene Vertragsprüfungen.
+V — Volatilität aus Mark-Historie
+Eingang: Finalisierte PT1M-Markpreise
+Verarbeitung: Log-Returns, rollierende Population-Standardabweichung über 60 Returns; keine sqrt(n)- oder Jahres-Skalierung
+Ausgang: Dimensionsloses σ; Warm-up separat
+Zuständigkeit/Grenze: Berechnung eines kanonischen Features; tatsächlicher Runtime-Bind separat
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py:103 :: compute_canonical_volatility_estimate_from_mark_prices_v1
+B — G17 → CMC-Bind
+Eingang: Producer-Outcome und CanonicalMarketContext
+Verarbeitung: Bedingtes Ersetzen/Binden der typisierten Volatilität; Producer None / Dispositionen getrennt
+Ausgang: Kontext mit oder ohne aktualisierten Estimate
+Zuständigkeit/Grenze: Kein allgemeiner Nachweis eines frischen Updates pro Poll
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py:79 :: apply_current_productive_g17_typed_vol_cmc_bind_v1
+G — Golden Geometry Engine
+Eingang: Markpreis und aufgelöster Volatilitätswert desselben fachlichen Instruments
+Verarbeitung: In der gemergten V1: D_gge = σ × P; positive/endliche Eingänge und Ausgabe
+Ausgang: CanonicalBaseGeometryMagnitudeV1.magnitude, Einheit PRICE
+Zuständigkeit/Grenze: Basisdistanz; keine Richtung, Position, Scope-Zustandsmaschine oder Order
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py:99 :: GoldenGeometryEngineV1
+F — Frische Layer-C-Geometrie
+Eingang: Aktueller CMC
+Verarbeitung: GGE-Basiswert → dieselben 1.0/0.4/0.6-Ratios
+Ausgang: Frische Distanzfamilie für Host-Exit-Eingänge
+Zuständigkeit/Grenze: Separater Consumer-Zweck gegenüber zustandsabhängigem Scope-Band
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py:127 :: resolve_layer_c_event_distances_from_canonical_market_context_v1
+H — Master-V2-Host / Exit-Eingänge
+Eingang: Preis-/CMC-/Positions-/Admission-Eingänge
+Verarbeitung: Host erzeugt Exit-Signale, baut Replay-Input und wählt Bind-/Delegationspfad
+Ausgang: Replay-Input, später Ergebnis und Cursor
+Zuständigkeit/Grenze: Host-Aufruf ist kein Beweis aktiven produktiven Betriebs
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py:603 :: run_current_productive_master_v2_runtime_cycle_v1
+COMP — Survival / Suitability / Composition
+Eingang: C3-Ergebnis, Survival-Kosten-/Metrikeingänge, Eignung und Positionskontext
+Verarbeitung: Ausgewählte Lane prüfen, Identitäten binden, zulässige Seite/Handlungsform komponieren
+Ausgang: CompositionResult plus State-/Policy-Eingänge
+Zuständigkeit/Grenze: Bestätigung ist notwendig im Entry-Pfad, ersetzt weitere Voraussetzungen nicht
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:1419 :: run_integrated_offline_trading_logic_replay_v1
+EE — Double-Play Entry/Exit
+Eingang: Composition, Armed/Active-Richtung, Positionswahrheit, Reconciliation, Safety und Gate
+Verarbeitung: Präzedenzregeln: Schutz/Reduktion/Bestand/Umkehrvorbereitung/Entry
+Ausgang: ENTER_LONG/ENTER_SHORT/HOLD/REDUCE/weitere Outcomes
+Zuständigkeit/Grenze: Policy-Ergebnis ist keine Order; kein automatischer Flip
+Quelle: /Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_entry_exit_policy_v0.py:604 :: evaluate_double_play_entry_exit_policy_v0
+
+OFFENE ENTSCHEIDENDE ZUORDNUNGEN
+1. Welche spezielle Formel der Owner meint: eigenständige historische GGE-Modellwahl, vorgelagerte Volatilitätsberechnung, Scope-Band-Verarbeitung, Layer-C-Ableitung oder anderer bislang nicht belegter Entwurf. Diese Möglichkeiten werden nicht gleichgesetzt.
+2. Vollständige quantitative Kandidatenbegründung des GGE-Arbeitsauftrags versus tatsächlich auffindbare kurze Kandidaten-/Freeze-Artefakte.
+3. Pfadabhängige Wertgleichheit: frischer GGE-Basiswert, effektives begrenztes Band, gespeicherter Scope, Proposal.d_t und Seal.d_t. Vorhandene Clamp-/Envelope-Funktionen und Freeze-Zweige müssen je tatsächlicher Konfiguration numerisch nachgewiesen werden; ein globales „unverändert durchgereicht“ wäre falsch.
+4. Zeitpunkt und Wirkung von L10-Regimewechsel, C3-Bestätigung, Composition, Entry/Exit und P5.10B-Handoff im selben beziehungsweise nächsten Zyklus. Historische Remediationstexte vom 23.10. behandeln genau diese Grenze, sind aber kein neuer Ausführungs- oder Freigabebeweis.
+5. Provider-Zeitbezug, Instrumentidentität, echte Frische und Neustartzustand sämtlicher Eingänge. Eine geschlossene statische Kette ist keine gemessene Laufzeitversorgung.
+6. A/B-Evidence-Ebene: nicht blind in jeden Markt-/GGE-Pfad einzeichnen. Der historische Blueprint erhält trusted Markt-/Runtime-Seams; Evidence-P4/P5 ist nicht der mechanische P4/P5-D_t-Transport.
+
+ERGEBNISKLASSE
+Quellensammlung mit revisionsgebundener statischer Signalflussrekonstruktion. Keine neue Formel entworfen, keine produktive Änderung oder Wiederherstellung, keine Order und kein Runtime-Zyklus. Keine Vollständigkeit sämtlicher Festplatteninhalte, aller Chats oder des vollständigen Systems behauptet. Insbesondere ist eine abweichende, fachlich maßgebliche GGE-Formel noch nicht eindeutig identifiziert.
+
+ARTEFAKTE
+signal-flow-register.json — 27 konkrete Stationen, drei getrennte Consumer-Pfade, Originalfunktionen und Zeilen.
+formula-register.json — elf getrennte mathematische Konstruktionen/Familien mit Status.
+owner-two-direction-requirement.json — aktuelle fachliche Erinnerung und offene Detailverträge.
+recovery-full-unique-scan.json / recovery-content-hits.json / code-recovery-hits.json — Suchabdeckung und Originalhashes.
+m2-source-manifest.json / m2-git-provenance.json — Backup-Kopien und tatsächliche Git-Stände.
+current-cursor-gge-messages.json / cursor-source-manifest.json / sources/cursor-*.json — lokale Gespräche mit Herkunft.
+historical-gge-design-artifact-excerpts.json — historische Schreibanforderungen, ausdrücklich kein neuer Ausführungsbeweis.
+github-pr-*.json / github-engine-path-history.json / historical-git-source-manifest.json — entfernte und lokale Historie.
+obsidian-gge-register-rows.json / architecture-hits.json / reconstruction-hits.json — ergänzende Rekonstruktionsquellen.
+current-code-source-manifest.json — gebundene heutige Originalbytes der untersuchten Funktionen.
+
+
+NACHTRAG 02.11.2026 — GEZIELTER ABGLEICH DER URSPRÜNGLICHEN HERLEITUNG
+Auftrag: Befund aus dem anschließenden Chat in der bestehenden Dokumentation ergänzen. Keine neue Formelentscheidung und kein neuer Obsidian-Ledger-Run.
+
+Bereits dokumentiert waren die fehlenden exakten Alternativformeln und der fehlende quantitative Vergleich (Abschnitt QUANTITATIVE BELEGRENZE). Ergänzt wird hier die konkrete zeitliche Belegkette:
+
+1. Classic „Prompt für Berechnung“, 06.10.2026, Chat-ID 6ac46e56-bd48-83ed-af68-42cdf9682ab7: Die ungekürzten Kontextnachrichten bestimmen die GGE-Nahtstelle hinter den Marktdaten und vor dem bestehenden Scope. Sie legen noch keine neue konkrete mathematische Rechnung fest. Der abschließende Implementierungsauftrag liegt in der lokalen Classic-Kopie nur mit 20.000 Zeichen vor. Seine fehlenden Originalbytes sind damit nicht wiedergewonnen.
+Quelle: ../gge-conversation-deep-search-2026-11-02/pages/6ac46e56-bd48-83ed-af68-42cdf9682ab7-001.json
+
+2. Der vollständig erhaltene Cursor-Auftrag verlangt in Abschnitten 8 und 13 drei bis sechs unterschiedliche Kandidaten mit EXACT_FORMULA und begründeter Adjudikation. D = σ × P ist CURRENT_CONTROL, kein vorab festgelegter Sieger. Die entsprechenden sichtbaren Classic-Abschnitte stimmen inhaltlich damit überein; das ist kein Nachweis vollständiger Classic-Originalbytes.
+Quelle: sources/gge-original-cursor-workpackage.txt; Original Cursor-JSONL unten, Zeile 1.
+
+3. Im erhaltenen Cursor-JSONL erscheint die Implementierung der GGE mit σ × P bereits als Write-Anforderung in Zeile 12. Die dokumentierten Contract-/Freeze-Schreibanforderungen folgen in Zeile 26, die kurzen Kandidaten-/Adjudikationsartefakte in einer Shell-Anforderung in Zeile 27. Dort werden VOL_LOG_RANGE und SPREAD_FLOOR ohne exakte Formeln abgelehnt. Die Auswahlbegründung nennt Einfachheit, produktive Erreichbarkeit und unverändertes Verhalten. Diese Reihenfolge ist ein Protokollbefund, kein Beweis über nicht aufgezeichnete interne Überlegungen oder erfolgreich ausgeführte Tool-Anforderungen.
+Original: /Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/c29daed1-98d3-4991-a36e-9b8a053632aa/c29daed1-98d3-4991-a36e-9b8a053632aa.jsonl
+Extrakte: historical-gge-design-artifact-excerpts.json
+Der damalige Evidence-Pfad evidence/research/golden_geometry_engine_v1/20261006T051500Z/ ist im am 02.11. erneut geprüften Hauptcheckout nicht vorhanden; die Artefaktinhalte werden daher weiter als historische Tool-Anforderungen behandelt.
+
+4. Implementierungsnachweis separat: Commit 4e4711452fa2a3b6de86e6421a7e58ea2f25bd86 vom 06.10.2026 06:17:46 Europe/Berlin enthält die Multiplikation. Im erneut geprüften Hauptcheckout HEAD 242b7974fc93f0bdb47706556101bd6f0c497414 stehen Rechnung und Ausgabe in src/trading/master_v2/golden_geometry_engine_v1.py:121–144. Eingaben: mark_price und volatility_estimate. Berechnung: magnitude = volatility_estimate * mark_price. Ausgabe: CanonicalBaseGeometryMagnitudeV1.magnitude in canonical_mark_price_unit. Das ist kein neuer Laufzeitnachweis.
+
+Schlussfolgerung: Der erhaltene Auswahlverlauf schließt die Lücke zwischen Franks erinnerter ursprünglicher Gesamtrechnung und der später implementierten Kontrollformel nicht. Es fehlt die Quelle mit den ursprünglich festgelegten Eingangsgrößen, vollständigen Rechenschritten und ihrer Verbindung zur Modellwahl. Weder Nichtexistenz einer früheren Rechnung noch fachliche Vollständigkeit von σ × P ist daraus bewiesen. Die Classic-Suche bleibt unvollständig. Keine Code-/Konfigurationsänderung, keine Credential-Abfrage und kein Trading-Aufruf in diesem Abgleich.

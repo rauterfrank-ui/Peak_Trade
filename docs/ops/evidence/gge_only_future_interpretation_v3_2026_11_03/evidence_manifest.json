@@ -1,0 +1,16 @@
+{
+  "base_commit": "1e0d65f43f750dd00eeed55b277d21c7b112489f",
+  "artifacts": {
+    "btc_and_binding_tests.xml": "d6f470eb7665cdbfec52c1a30eef4d3dc521db2a94c30687793eeb021b22a344",
+    "core_asset_tests.xml": "65c6a848e061c5e98f148e08df24fceeeb43e1bee5b11a1797e738f68da47151",
+    "document_checks.json": "f52270f94291a8361de1531947ce14d717809bdbf2bec7952751b625288935c8",
+    "final_geometry_tests.xml": "2417cca6ebb679661b9b3d739cb60873f366afac86b398bd56ad7e78df536174",
+    "final_seed_scope_tests.xml": "989c36ec659dd76b7f00419236507415ff37b8748c9956fec1e7ab56e6422170",
+    "future_matrix_tests.xml": "98f9ae891edc31ac8dcfeb22a358ecd3dd8d48207651da46761431aeef7949eb",
+    "learning_scope_tests.xml": "66f6a90260d984a19f2b316e63c59893a00071b685eb30ca2209642a253b1d4d",
+    "lint_checks.json": "a49b478a3f33004b5f09b125ca2a9a417eac41b4920ba80b1fb2d1af078d2a36",
+    "regression_tests.xml": "4cae6c03a40bc48d27aa37f4f2a992ac40a3d25cc8ef98b427c41f3c5060002a",
+    "source_binding.json": "ad76d84750d9a6f9d7b9e1225f0ad5f591a29ca18b0bf0b89049abe61e1ee665",
+    "test_summary.json": "60c1923afef2990a823c66ffeebab0c5778197f5a59f9d811a0069e00d5a4e6f"
+  }
+}

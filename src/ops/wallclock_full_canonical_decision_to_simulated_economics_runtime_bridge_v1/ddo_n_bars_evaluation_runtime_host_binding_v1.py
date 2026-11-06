@@ -77,6 +77,8 @@ def invoke_productive_n_bars_evaluation_runtime_v1(
             decision_record_id=str(decision_event["record_id"]),
             evaluation_time_utc=str(observation["evaluation_time_utc"]),
             correlation_id=corr,
+            code_sha=str(decision_event.get("code_sha") or "UNKNOWN"),
+            config_hash=str(decision_event.get("config_hash") or "UNKNOWN"),
         )
     ledger = _productive_evaluation_ledger_v1(state)
     persist_ledger = ledger

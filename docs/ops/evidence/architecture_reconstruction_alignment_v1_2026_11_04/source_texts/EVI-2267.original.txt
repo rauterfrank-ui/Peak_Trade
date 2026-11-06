@@ -1,0 +1,101 @@
+PEAKTRADE – AUSFÜHRUNG P1: FALSCHEN N_BARS-SEED EINDÄMMEN
+02.11.2026 · lokale Codeänderung · keine Betriebsfreigabe
+
+ERGEBNIS
+
+P1 der vorbereiteten Reparatur ist im vorhandenen Checkout umgesetzt.
+Der Master-V2-Capture-to-Export-Handoff ruft den falschen Seed nicht mehr auf.
+Bei gültiger Capture-Zuordnung meldet er ausdrücklich:
+  BLOCKED_UNVERIFIED_OUTCOME_SOURCE
+  VERIFIED_N_BARS_SOURCE_NOT_BOUND
+Er erzeugt keine Outcomes, Learning-States, Exports, Optimierungs-Acks,
+Handoff-Dateien oder dauerhaften Pending-Aufträge. Die Capture-Erfassung
+bleibt bestehen. Eine Blockierung ist kein nachträglich ausgeführter Lernjob.
+
+Die bisher eager ausgeführte Verzeichniserstellung im Capture-Binding wurde
+entfernt. Der Ledger-Owner erstellt Verzeichnisse beim Append und sein bereits
+vorhandener Fehlerpfad behandelt den Schreibfehler, ohne das Handelsergebnis
+zu verändern. Das ist im vollständigen lokalen Runtime-Cycle geprüft.
+
+Die Diagnose ergänzt Status und Gründe. Ohne ausdrücklich übergebene
+Semantik wird nicht länger automatisch OBSERVED_PRODUCTIVE_PRE_EXTERNAL
+eingetragen. Der historische Seed-Helper bleibt ausschließlich für die
+bereits vorhandene forensische Offline-Reproduktion verfügbar; der reparierte
+Handoff verwendet ihn nicht. Er ist keine abgenommene neue Datenquelle.
+
+PRÜFUNG
+
+23 gezielte Tests bestanden (owner-tests.xml):
+- Die Capture-Datensätze bestehen nur aus Entscheidungen/DP-Beobachtungen;
+  keine neuen Auswertungs- oder Lerndatensätze entstehen.
+- Der gesperrte Handoff meldet keine verfügbare Learning-Evidence.
+- Gleiches vollständiges Runtime-Ergebnis bei denselben Eingaben mit/ohne
+  Capture, sowohl bei erfolgreichem Capture als auch bei einem Parent-Pfad,
+  der eine Datei statt eines Verzeichnisses ist. Nur die Diagnosefelder
+  werden für den Vergleich ausgenommen.
+- Der alte Seed wird auch bei vorhandenen Schlusskursen nicht aufgerufen.
+- Vorhandene historische Handoff-Dateien bleiben bytegleich erhalten.
+- Ein fehlgeschlagener dauerhafter Capture und eine bloße Korrelation mit
+  abweichender Cycle-ID werden abgewiesen.
+- Angrenzende Cross-Session-Tests bestanden. Das ist keine semantische
+  Abnahme des dortigen Bar-Finalisierungs- oder Restart-Vertrags.
+
+Zusätzlich im ersten Integrationslauf: zwei Capture-Tests und elf Tests
+der angrenzenden Governance-Suite bestanden. Zwei Governance-Tests scheiterten
+wegen eines fehlenden PRE_EXTERNAL_CONVERGENCE_REPORT.json; die davon
+abhängigen semantischen Checkpoints fehlen ebenfalls. Beide zugehörigen
+Governance-Module sind bytegleich zu HEAD. Die fehlende historische Datei
+wird nicht erfunden oder durch neue Belege ersetzt. Kein Gesamt-GRÜN.
+
+Ruff-Prüfung der sechs berührten Python-Dateien und git diff --check bestanden.
+Black war im vorhandenen Environment nicht installiert; die beiden deutlich
+geänderten Dateien wurden mit dem vorhandenen Ruff formatiert.
+Die früheren Research-Prototyp-Tests wurden nicht unnötig wiederholt.
+
+QUELLENGRENZE FÜR P2
+
+Die gezielte Inventur des originalen GET-Captures umfasst 136 Records.
+RSR-USDT-SWAP, Mark-Price-Candles: 100 verschiedene Minuten-Opens bis 11:17 UTC.
+Handels-Candles: 103 verschiedene Minuten-Opens bis 11:20 UTC.
+Für den untersuchten Entscheidungsfall 11:15 UTC sind echte vollständige
+Mark-Bars 12–13 und 13–14 Uhr damit nicht belegt. Frühestens 14:00 UTC
+könnte der unveränderte N=2/PT1H-Messvertrag vollständig werden.
+Die Quelle wird daher nicht als Ersatz angeschlossen. Diese begrenzte
+Inventur behauptet nicht, alle Archive durchsucht zu haben.
+
+P2 bleibt am Quellennachweis offen. P3 (dauerhafter Wiederanlauf) wird gemäß
+Umsetzungsplan erst nach bestandenem P2 angeschlossen. Der lokale Vergleich
+des Handelsergebnisses aus P4 ist für diese Absicherung bestanden; eine
+Abnahme einer künftigen vollständigen Ersatzversorgung folgt daraus nicht.
+
+WEITER BESTEHENDE GRENZEN
+
+- Die laufende Versorgung mit korrekten Outcomes ist noch nicht hergestellt.
+  Bis dahin fehlen neue Lernergebnisse aus genau diesem Handoff.
+- Alte fehlerhafte Outcomes und Exports sind erhalten, nicht repariert oder
+  automatisch aus allen anderen Consumern ausgeschlossen. Eine neue
+  Forschungsstichprobe muss sie explizit ausschließen. Keine Pool-Freigabe.
+- Andere Producer-/Resolver-Pfade, Instrumentbindung, innerhalb derselben
+  Provenienzklasse liegende Quellenmischungen und dauerhafte Idempotenz
+  bleiben die im Plan benannten eigenen Abnahmen.
+- Keine Orders, Markt-GETs, Dienste, Live-Aktivierung, Commits oder Pushes.
+  Nur der autorisierte Git-Fetch zur Prüfung von origin/main wurde ausgeführt.
+- HEAD unverändert; origin/main ist 94 Commits voraus und 7 zurück relativ
+  zu HEAD. Kein Rebase. Der globale GHV-Graph ist nicht baseline-verifiziert.
+  Kein Anspruch auf globale Isolation, Vollständigkeit oder Betriebsbereitschaft.
+
+NACHWEISE UND RÜCKNAHME
+
+baseline.json: Revisionen, Ausgangsstatus und Hashes vor der Änderung.
+before/: unveränderte Kopien der sieben gezielt bearbeiteten Dateien.
+implementation.patch: ausschließlich die Änderung dieser sieben Dateien.
+verification.json: Nachher-Hashes, Quelleninventur, fehlende Governance-Datei.
+owner-tests.xml: 23 bestandene gezielte Tests.
+verify_containment.py: lesende Nachprüfung über scripts/pt und runpy.
+
+Die drei vorbestehenden versionierten Änderungen und die fünf gebundenen
+historischen Quellen sind anhand SHA256 unverändert. Bestehende untracked
+Forschungsdateien bleiben erhalten. Keine pauschale Git-Bereinigung.
+Eine spätere Rücknahme muss zuerst neue Änderungen an den sieben Dateien
+ausschließen und dann nur die gebundenen before-Kopien zurückspielen;
+kein git reset/restore des gesamten Checkouts.

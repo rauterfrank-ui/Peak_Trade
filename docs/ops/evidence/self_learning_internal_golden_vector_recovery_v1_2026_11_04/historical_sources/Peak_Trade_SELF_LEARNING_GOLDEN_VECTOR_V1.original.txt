@@ -1,0 +1,840 @@
+# Peak_Trade — Self-Learning Universe Golden Vector V1
+
+Generated (UTC): 2026-09-30T00:24:39.058320+00:00
+FORENSIC_BASELINE_SHA: `5b606f6daf322995a7f26a7208bba70a43cdd392`
+FORENSIC_REPO_ROOT: `/Users/frnkhrz/Peak_Trade/.wt_whole_system_matrix_v1`
+READ_ONLY=true | POST_ALLOWED=false | EXTERNAL_EFFECT_AUTHORIZED=false
+BOUNDARY_PACKAGE: `src/learning/deterministic_decision_outcome_v0/`
+FITNESS_MATRIX_NAVIGATION: `~/Desktop/Peak_Trade_WHOLE_SYSTEM_FITNESS_MATRIX_V1/` — **NOT FOUND**; boundary from Runbook §Learning/DDO + anchor.
+
+## 1. Executive Adjudication
+| Dimension | Status |
+|---|---|
+| SELF_LEARNING_BOUNDARY | PROVEN_CURRENT |
+| SELF_LEARNING_INPUTS | PROVEN_CURRENT |
+| SELF_LEARNING_INFORMATION_SUFFICIENCY | UNKNOWN_CURRENT |
+| SELF_LEARNING_INTERNAL_PROCESS | PROVEN_CURRENT |
+| SELF_LEARNING_PARAMETERS | PROVEN_CURRENT |
+| SELF_LEARNING_STATE | PROVEN_CURRENT |
+| SELF_LEARNING_PERSISTENCE | PROVEN_CURRENT |
+| SELF_LEARNING_REPLAY | PROVEN_CURRENT |
+| SELF_LEARNING_OUTPUTS | PROVEN_CURRENT |
+| SELF_LEARNING_LEARNABILITY | UNKNOWN_CURRENT |
+| SELF_LEARNING_PARAMETER_OWNERSHIP | PROVEN_CURRENT |
+| SELF_LEARNING_WRITE_AUTHORITY | PROVEN_CURRENT |
+| SELF_LEARNING_PRODUCTIVE_ISOLATION | PROVEN_CURRENT |
+| SELF_LEARNING_SCOPE_RELATION | UNKNOWN_CURRENT |
+| SELF_LEARNING_PROMOTION_PATH | PROVEN_CURRENT |
+| SELF_LEARNING_SAFETY | PROVEN_CURRENT |
+
+**Productive causal path:** `NO_PRODUCTIVE_CAUSAL_PATH_PROVEN`.
+
+## 2. Proven Self-Learning Boundary
+Internal: all modules in `src/learning/deterministic_decision_outcome_v0/` (59 Python files).
+External (handoff only): trading, ops productive hosts, execution, live, risk, MI offline stack, optimization plane.
+
+## 3. Internal Component Map
+TOTAL_INTERNAL_MODULES=58
+| Module | Header |
+|---|---|
+| `a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` | DDO A1 crash-durability atomic-replace-or-nonrequirement adjudication v1. |
+| `a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` | DDO A1 crash-durability proof or explicit non-provability closure v1. |
+| `a1_durability_failure_policy_binding_v1.py` | DDO A1 durability failure policy binding v1. |
+| `a1_durability_to_admission_and_replay_binding_v1.py` | DDO A1 durability-to-admission and replay binding v1. |
+| `a1_unattended_durability_policy_boundary_v1.py` | DDO A1 unattended durability policy boundary v1. |
+| `a1_unattended_durability_runtime_authorization_v1.py` | DDO A1 unattended durability runtime-authorization adjudication v1. |
+| `authority_v0.py` | Authority and effect markers for the offline DDO contract foundation v0. |
+| `capture_v0.py` | Observation-only DDO capture adapters v0. |
+| `challenger_v0.py` | Fixture-only incumbent vs candidate challenger comparison v0. |
+| `common_v0.py` | Shared field specs, identity rules, and canonicalization for DDO records v0. |
+| `contract_registry_v0.py` | Discoverable contract registry for DDO v0 schemas and enumerations. |
+| `current_decision_consumer_v1.py` | Learning consumers for CURRENT Double-Play decision bundle binding v1. |
+| `current_decision_learning_binding_v1.py` | Normative Double-Play current decision learning bundle join v1. |
+| `decision_event_v0.py` | DecisionEvent schema v0. Offline contract only. No capture. No authority. |
+| `double_play_input_evidence_v1.py` | Versioned observation of DoublePlayEntryExitPolicyInputV0. |
+| `double_play_observation_projection_v1.py` | Versioned observation projection of EntryExitPolicyDecisionV0. |
+| `double_play_producer_function_replay_v1.py` | Offline current-code Double-Play producer-function replay v1. |
+| `double_play_semantic_replay_v1.py` | Offline typed Double-Play semantic replay v1. |
+| `drift_contracts_v0.py` | Offline non-activating drift-monitoring contract foundation v0. |
+| `durable_evidence_path_v0.py` | DDO durable-evidence path resolution primitive v0. |
+| `enums_v0.py` | Versioned enumerations for the offline DDO contract foundation v0. |
+| `errors_v0.py` | Explicit failure modes for the offline DDO contract foundation v0. |
+| `evaluation_engine_v0.py` | Offline DDO replay / outcome / attribution / counterfactual engine v0. |
+| `evaluation_observation_v0.py` | Evaluation-time observation input for the offline DDO engine v0. |
+| `evaluation_records_v0.py` | CounterfactualRecord and AttributionRecord schemas v0. |
+| `evaluation_runtime_productive_host_v1.py` | Productive evaluation-runtime host for REAL N_BARS horizon observations. |
+| `evaluation_v0.py` | Fixture-only outcome, attribution, and counterfactual evaluation v0. |
+| `experiment_identity_binding_v0.py` | Canonical Experiment Identity reference adapter v0. |
+| `hindsight_guard_v0.py` | Hindsight-leakage guards for offline DDO evaluation v0. |
+| `incident_record_v0.py` | IncidentRecord schema v0. Offline contract only. No capture. No safety authority. |
+| `learning_evidence_export_v1.py` | Export learning_state_record_v0 → learning_evidence_record_v1 (offline only). |
+| `learning_evidence_record_v1.py` | Learning evidence record v1 — offline export from non-authorizing learning state. |
+| `learning_outcome_evidence_ingest_v1.py` | LEARNING_OUTCOME_EVIDENCE_INGEST_V1 — fail-closed evaluation bundle → learning state. |
+| `learning_records_v0.py` | LearningHypothesis, CandidateArtifact, and ValidationEvidencePack v0. |
+| `learning_state_record_v0.py` | Learning state record v0 — append-only non-authorizing learning state snapshots. |
+| `ledger_v0.py` | Append-only offline DDO ledger v0. |
+| `lineage_v0.py` | Referential lineage and supersession/correction checks for DDO v0. |
+| `meta_evidence_v1.py` | META_EVIDENCE_V1 — typed routing envelope over meta_learning_evidence_v1 (AUTHORITY=NONE). |
+| `meta_learning_evidence_v1.py` | Meta-learning evidence v1 — typed evidence about optimization process (self-learning side). |
+| `n_bars_bar_evidence_supplier_v1.py` | DDO N_BARS bar evidence supplier v1 — sole authority for supplier_input materialization. |
+| `o4_n_bars_bar_evidence_bridge_contracts_v1.py` | O4→DDO N_BARS bar evidence bridge contracts v1 (translate/bind only). |
+| `outcome_v0.py` | OutcomeRef and minimal structural OutcomeRecord v0. |
+| `promotion_controller_v0.py` | Offline deterministic promotion eligibility controller v0. |
+| `promotion_records_v0.py` | Promotion policy, eligibility, release, deployment, and rollback records v0. |
+| `real_outcome_horizon_contracts_v1.py` | S2 fail-closed REAL N_BARS horizon contracts (DDO Real Outcome Horizon S1 binding). |
+| `real_outcome_horizon_engine_v1.py` | Offline REAL N_BARS observation supplier (DDO Real Outcome Horizon S1/S2). |
+| `real_outcome_horizon_observation_capture_v1.py` | Capture projection for productive REAL N_BARS horizon observations. |
+| `real_outcome_horizon_productive_host_v1.py` | Productive host producer for REAL N_BARS horizon observation (capture seam). |
+| `reason_codes_v0.py` | Reason-code and hard-block taxonomy foundation v0. |
+| `registry_v0.py` | Offline learning registry v0. |
+| `replay_evaluator_v0.py` | Offline deterministic classifier replay evaluator v0. |
+| `section_11_14_flatten_pre_lease_observation_v1.py` | Typed observation record for §11.14 flatten pre-lease send-intent capture. |
+| `serialization_v0.py` | Canonical serialization and content hashing adapter v0. |
+| `supervisor_records_v0.py` | AutonomyCycleRecord and HealthSnapshot schemas v0. |
+| `supervisor_v0.py` | Deterministic autonomy supervisor offline state machine v0. |
+| `validation_artifacts_v0.py` | Opaque validation evidence artifacts v0. |
+| `validation_pack_engine_v0.py` | Offline ValidationEvidencePack evaluation engine v0. |
+| `validation_producer_bindings_v0.py` | Existing-owner validation evidence producer bindings v0. |
+
+## 4. Complete Input Map
+Observation-only capture after authoritative producer return (`capture_v0.py`).
+Typed Double-Play decision/input evidence, real outcome horizon observations, evaluation observations, host join surfaces.
+
+## 5. End-to-End Data Flow
+```text
+PRODUCTIVE PRODUCER (external)
+ → OBSERVATION_ONLY_CAPTURE
+ → DDO RECORDS
+ → APPEND_ONLY_DDO_LEDGER
+ → OFFLINE EVALUATION / REPLAY
+ → LEARNING STATE / REGISTRY
+ → LEARNING_EVIDENCE_EXPORT
+ → DOWNSTREAM RESEARCH/OPT HANDOFF
+ → PROMOTION_ELIGIBILITY (dry-run, no activation)
+```
+
+## 6. Internal Processing Pipeline
+| Stage | Modules | Status |
+|---|---|---|
+| Capture | capture_v0, *productive_host_v1 | PROVEN_CURRENT |
+| Validation | *_v0 record validators | PROVEN_CURRENT |
+| Persistence | ledger_v0, a1_* | PROVEN_CURRENT |
+| Decision join | current_decision_learning_binding_v1 | PROVEN_CURRENT |
+| Outcome join | real_outcome_horizon_* | PROVEN_CURRENT |
+| Evaluation | evaluation_engine_v0, replay_evaluator_v0 | PROVEN_CURRENT |
+| Export | learning_evidence_export_v1 | PROVEN_CURRENT |
+| Promotion | promotion_controller_v0 | PROVEN_CURRENT |
+
+## 7. Parameter / Configuration Groups
+TOTAL_INTERNAL_PARAMETERS=24
+| File | Symbol | Value preview | Classification |
+|---|---|---|---|
+| `a1_durability_to_admission_and_replay_binding_v1.py` | `ADMISSION_OWNER` | `reject_a1_dependent_mutation_on_unproven_durability_v1` | SELF_LEARNING_INTERNAL |
+| `capture_v0.py` | `F` | `TypeVar("F", bound=Callable[..., Any])` | SELF_LEARNING_INTERNAL |
+| `capture_v0.py` | `_REPLAY_ISOLATION_USE_CURRENT` | `object()` | SELF_LEARNING_INTERNAL |
+| `ledger_v0.py` | `_IN_PROCESS_APPEND_LOCKS_GUARD` | `threading.Lock()` | SELF_LEARNING_INTERNAL |
+| `ledger_v0.py` | `_KNOWN_SCHEMA_NAMES` | `{schema for schema, _version in _VALIDATORS}` | SELF_LEARNING_INTERNAL |
+| `ledger_v0.py` | `_VALIDATORS` | `{
+    (SCHEMA_NAME_DECISION_EVENT, SCHEMA_VERSION_DECISION_EVENT_V0): validate_decision_event_v0,
+  ` | SELF_LEARNING_INTERNAL |
+| `lineage_v0.py` | `_MAX_LINEAGE_WALK` | `1024` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `LEARNING_REPRESENTATION` | `LEARNING_REPRESENTATION` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `LEARNING_RESEARCH` | `LEARNING_RESEARCH` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `MIXED` | `MIXED` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `NONE_FAIL_CLOSED` | `NONE_FAIL_CLOSED` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `OPTIMIZATION_RESEARCH` | `OPTIMIZATION_RESEARCH` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `RESEARCH_CHOICE` | `RESEARCH_CHOICE` | SELF_LEARNING_INTERNAL |
+| `meta_evidence_v1.py` | `UNKNOWN` | `UNKNOWN` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `ADAPTER_DEVIATION_ALLOW_NAN_FALSE` | `True` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `ADAPTER_DEVIATION_NO_DEFAULT_COERCION` | `True` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `CANONICAL_JSON_ALGORITHM_EQUIVALENT_TO` | `src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1.canonical_json_dump` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `CANONICAL_JSON_ALGORITHM_ID` | `json.dumps.sort_keys.separators_comma_colon.ensure_ascii_true` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `CONTENT_HASH_ALGORITHM_ID` | `sha256` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `CONTENT_HASH_ENCODING` | `utf-8` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `LEARNING_LOOP_ENSURE_ASCII_FALSE_DIALECT_IMPORTED` | `False` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `_ENVELOPE_VOLATILE_FIELDS` | `frozenset(
+    {
+        "ingested_at_utc",
+        "sequence",
+        "prev_ledger_hash",
+        ` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `_HASH_EXCLUDED_RECORD_FIELDS` | `frozenset({"content_hash"})` | SELF_LEARNING_INTERNAL |
+| `serialization_v0.py` | `_SHA256_HEX_RE` | `re.compile(r"^[0-9a-f]{64}$")` | SELF_LEARNING_INTERNAL |
+
+## 8. State & Persistence
+Append-only ledger with envelope validation; learning_state_record_v0; A1 durability bindings.
+Runbook: DDO durable storage owner contract — observation-only for trading.
+
+## 9. Decision / Outcome / Label Association
+Decision envelope vs typed DP observation; join via current_decision_learning_binding_v1.
+Labels via learning state → evidence export (economic/decision/safety score labels).
+Join keys: record_id, decision_event_ref, evaluation_bundle_fingerprint.
+
+## 10. Learning Mechanisms
+Offline evaluation and evidence export; no proven online trading parameter update.
+Autonomy supervisor code present; AUTONOMY_SUPERVISOR_RUNTIME_REACHABILITY=false in authority_v0.
+
+## 11. Complete Output Map
+Ledger record families; learning_evidence_record_v1; promotion_eligibility_record (non-authorizing).
+
+## 12. External Handoffs
+TOTAL_INPUT_HANDOFFS=1
+| Source | Target universe | Import |
+|---|---|---|
+| `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` | meta | `src.meta.learning_loop.contract_safety_v1` |
+
+## 13. Authority Matrix
+| Action | Allowed | Evidence |
+|---|---|---|
+| Capture observe | YES | capture_v0 |
+| Mutate trading core | NO | authority_v0 |
+| Select/bind instrument | NO | SELECTION_EFFECT=NONE |
+| POST/execute | NO | EXECUTION_EFFECT=NONE |
+| Activate promotion | NO | PROMOTION_AUTHORITY_ACTIVATION=false |
+| Append DDO ledger | CONDITIONAL | ledger_v0 explicit API |
+| Export learning evidence | YES | learning_evidence_export_v1 |
+
+## 14. Productive Isolation Proof
+```text
+LEARNING_PRODUCTIVE_AUTHORITY="NONE"
+DDO_TRADING_AUTHORITY="NONE"
+PROMOTION_AUTHORITY_ACTIVATION=False
+PRODUCTIVE_DEPLOYMENT_ALLOWED=False
+DRIFT_CAN_MUTATE_CORE=False
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=UNKNOWN_CURRENT
+LEARNING_TRADING_AUTHORITY=NONE
+```
+NO_PRODUCTIVE_CAUSAL_PATH_PROVEN.
+
+## 15. Scope / Future / Price / Volatility
+A) OBSERVES productive scope: **UNKNOWN_CURRENT**
+B) CALCULATES internal scope: **UNKNOWN_CURRENT**
+C) WRITES/CONTROLS productive scope: **NO (PROVEN_CURRENT)**
+Keyword hits:
+- `__init__.py` / `scope`
+- `a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` / `scope`
+- `a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` / `scope`
+- `a1_durability_failure_policy_binding_v1.py` / `scope`
+- `a1_durability_to_admission_and_replay_binding_v1.py` / `scope`
+- `a1_unattended_durability_policy_boundary_v1.py` / `scope`
+- `capture_v0.py` / `regime`
+- `capture_v0.py` / `scope`
+- `capture_v0.py` / `selected_future`
+- `capture_v0.py` / `volatility`
+- `common_v0.py` / `scope`
+- `contract_registry_v0.py` / `scope`
+- `current_decision_learning_binding_v1.py` / `scope`
+- `decision_event_v0.py` / `scope`
+- `double_play_input_evidence_v1.py` / `price`
+- `double_play_input_evidence_v1.py` / `scope`
+- `double_play_observation_projection_v1.py` / `scope`
+- `double_play_producer_function_replay_v1.py` / `price`
+- `double_play_semantic_replay_v1.py` / `price`
+- `drift_contracts_v0.py` / `volatility`
+- `durable_evidence_path_v0.py` / `scope`
+- `enums_v0.py` / `scope`
+- `evaluation_engine_v0.py` / `price`
+- `evaluation_observation_v0.py` / `price`
+- `hindsight_guard_v0.py` / `price`
+- `incident_record_v0.py` / `scope`
+- `learning_evidence_export_v1.py` / `scope`
+- `learning_evidence_record_v1.py` / `regime`
+- `learning_evidence_record_v1.py` / `scope`
+- `learning_outcome_evidence_ingest_v1.py` / `scope`
+- `learning_records_v0.py` / `scope`
+- `learning_state_record_v0.py` / `scope`
+- `meta_learning_evidence_v1.py` / `regime`
+- `n_bars_bar_evidence_supplier_v1.py` / `price`
+- `outcome_v0.py` / `scope`
+- `reason_codes_v0.py` / `regime`
+- `reason_codes_v0.py` / `scope`
+- `reason_codes_v0.py` / `selected_future`
+- `section_11_14_flatten_pre_lease_observation_v1.py` / `scope`
+- `serialization_v0.py` / `scope`
+
+## 16. Golden Vector / Replay Results
+Full suite: `pytest tests/learning/` → exit 1; 573 passed, 8 failed (forbidden-import boundary tests).
+Focused: test_learning_evidence_export_v1 + test_ddo_double_play_semantic_replay_parity_v1 → 23 passed.
+```
+DIAGNOSTIC=per-worktree environment isolation proven
+UV_LOCK_SHA256=2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2
+PYPROJECT_SHA256=7ef8f54894a9811bce57f2c0fed5279de8ce4be39be4b3cca00a6de0d6a4c9ab
+SOURCE_BINDING=/Users/frnkhrz/Peak_Trade/src
+```
+| Probe | Result |
+|---|---|
+| A ingest | covered by full suite |
+| B processing | covered by full suite |
+| C decision association | covered by full suite |
+| D outcome association | covered by full suite |
+| E evaluation | covered by full suite |
+| F learning state | PASS |
+| G evidence export | PASS |
+| H persistence | covered by full suite |
+| I replay determinism | PASS |
+| J external handoff | NOT_EXECUTED (experiments tests not run in this pass) |
+| K isolation imports | 8 FAIL in full suite |
+
+## 17. Learnability Adjudication
+| Criterion | Status |
+|---|---|
+| INPUT_SUFFICIENCY | UNKNOWN_CURRENT |
+| OUTCOME_SUFFICIENCY | UNKNOWN_CURRENT |
+| LABEL_SUFFICIENCY | UNKNOWN_CURRENT |
+| STATE_SUFFICIENCY | UNKNOWN_CURRENT |
+| REPLAY_SUFFICIENCY | PROVEN_CURRENT |
+| LEARNABILITY | UNKNOWN_CURRENT |
+
+## 18. UNKNOWN_CURRENT Register
+- End-to-end productive capture frequency and sample counts — no canonical minimum in repo
+- Runtime field values on productive hosts except where contract tests prove shape
+- Full promotion/admission execution path — eligibility computation only; activation false
+- Fitness matrix navigation file absent on Desktop at analysis time
+- Scope/future/price/volatility coupling inside DDO — keyword sparse; semantic role UNKNOWN
+
+## 19. CONFLICTING_CURRENT Register
+- Primary checkout HEAD=10f601e6087c33334034b2e013a72ed46835e9e9 != forensic BASELINE_SHA=5b606f6daf322995a7f26a7208bba70a43cdd392; analysis on isolated worktree only
+
+## 20. VIOLATED_CURRENT Register
+- (none proven)
+
+## 21. Evidence Index
+- `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+- `src/learning/deterministic_decision_outcome_v0/authority_v0.py`
+- `src/learning/deterministic_decision_outcome_v0/capture_v0.py`
+- `src/learning/deterministic_decision_outcome_v0/ledger_v0.py`
+- `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py`
+- `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`
+- `src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py`
+- `docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`
+- `tests/learning/`
+
+## 22. Fitness Verdict by Dimension
+- **SELF_LEARNING_BOUNDARY:** PROVEN_CURRENT
+- **SELF_LEARNING_INPUTS:** PROVEN_CURRENT
+- **SELF_LEARNING_INFORMATION_SUFFICIENCY:** UNKNOWN_CURRENT
+- **SELF_LEARNING_INTERNAL_PROCESS:** PROVEN_CURRENT
+- **SELF_LEARNING_PARAMETERS:** PROVEN_CURRENT
+- **SELF_LEARNING_STATE:** PROVEN_CURRENT
+- **SELF_LEARNING_PERSISTENCE:** PROVEN_CURRENT
+- **SELF_LEARNING_REPLAY:** PROVEN_CURRENT
+- **SELF_LEARNING_OUTPUTS:** PROVEN_CURRENT
+- **SELF_LEARNING_LEARNABILITY:** UNKNOWN_CURRENT
+- **SELF_LEARNING_PARAMETER_OWNERSHIP:** PROVEN_CURRENT
+- **SELF_LEARNING_WRITE_AUTHORITY:** PROVEN_CURRENT
+- **SELF_LEARNING_PRODUCTIVE_ISOLATION:** PROVEN_CURRENT
+- **SELF_LEARNING_SCOPE_RELATION:** UNKNOWN_CURRENT
+- **SELF_LEARNING_PROMOTION_PATH:** PROVEN_CURRENT
+- **SELF_LEARNING_SAFETY:** PROVEN_CURRENT
+
+### Counts
+- TOTAL_INTERNAL_COMPONENTS: 58
+- TOTAL_INTERNAL_PARAMETERS: 24
+- TOTAL_INTERNAL_STATES: ledger + learning_state_record schemas (PROVEN_CURRENT)
+- TOTAL_INPUT_HANDOFFS: 1
+- TOTAL_OUTPUT_HANDOFFS: evidence export + eligibility records (documented)
+- TOTAL_GOLDEN_VECTOR_PROBES: 11
+- PROVEN_CURRENT (dimensions): 13
+- UNKNOWN_CURRENT (dimensions): 3
+- CONFLICTING_CURRENT: 1
+- VIOLATED_CURRENT: 0
+
+### Baseline
+- PRIMARY_CHECKOUT_HEAD: `10f601e6087c33334034b2e013a72ed46835e9e9`
+- ORIGIN_MAIN: `5b606f6daf322995a7f26a7208bba70a43cdd392`
+- FORENSIC_EXECUTION_SHA: `5b606f6daf322995a7f26a7208bba70a43cdd392`
+## Appendix A — Functions & Classes (AST)
+| OBJECT_ID | TYPE | PATH |
+|---|---|---|
+| `CLASS:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.DdoA1CrashDurabilityAdjudicationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `CLASS:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.DdoA1CrashDurabilityAtomicReplaceOrExplicitNonrequirementV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `FUNC:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.canonical_a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `FUNC:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.reject_a1_crash_durability_overclaim_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `FUNC:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.a1_crash_durability_adjudication_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `FUNC:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `FUNC:a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py` |
+| `CLASS:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.DdoA1CrashDurabilityProofOrNonprovabilityClosureError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `CLASS:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.DdoA1FailureClassAdjudicationV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `CLASS:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.DdoA1CrashDurabilityProofOrExplicitNonprovabilityClosureV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.canonical_a1_crash_durability_proof_or_explicit_nonprovability_closure_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.reject_a1_crash_durability_full_proof_overclaim_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1._row` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.a1_crash_durability_failure_model_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.a1_crash_durability_failure_model_by_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.a1_crash_durability_proof_or_nonprovability_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `FUNC:a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py` |
+| `CLASS:a1_durability_failure_policy_binding_v1.DdoA1DurabilityFailurePolicyError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `CLASS:a1_durability_failure_policy_binding_v1.DdoA1DurabilityFailurePolicyResultV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `CLASS:a1_durability_failure_policy_binding_v1.DdoA1DurabilityFailurePolicyBindingV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.canonical_a1_durability_failure_policy_binding_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.reject_a1_dependent_mutation_on_unproven_durability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.reject_a1_runtime_authorization_attempt_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1._retry_allowed_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1._durability_proven_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1._append_acknowledged_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1._recovery_required_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1._reason_code_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.bind_a1_durability_failure_policy_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.a1_failure_class_policy_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.a1_durability_failure_policy_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.as_observability` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `FUNC:a1_durability_failure_policy_binding_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py` |
+| `CLASS:a1_durability_to_admission_and_replay_binding_v1.DdoA1DurabilityToAdmissionAndReplayBindingError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1._durability_result_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1._persist_result_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `CLASS:a1_durability_to_admission_and_replay_binding_v1.DdoA1PersistAttemptClassificationV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `CLASS:a1_durability_to_admission_and_replay_binding_v1.DdoA1DependentMutationAdmissionResultV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `CLASS:a1_durability_to_admission_and_replay_binding_v1.DdoA1DurabilityToAdmissionAndReplayBindingV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.canonical_a1_durability_to_admission_and_replay_binding_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1._resolved_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.classify_a1_persist_attempt_for_admission_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.evaluate_a1_dependent_mutation_admission_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.attempt_a1_dependent_mutation_admission_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.reject_a1_runtime_authorization_attempt_on_admission_binding_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.a1_durability_to_admission_and_replay_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.as_observability` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.as_observability` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `FUNC:a1_durability_to_admission_and_replay_binding_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py` |
+| `CLASS:a1_unattended_durability_policy_boundary_v1.DdoA1PolicyAuthorizationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `CLASS:a1_unattended_durability_policy_boundary_v1.DdoA1UnattendedDurabilityPolicyBoundaryV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.canonical_a1_unattended_durability_policy_boundary_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.reject_a1_runtime_authorization_attempt_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.a1_recovery_disposition_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.assert_a1_restart_reuses_existing_path_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.assert_a1_no_silent_ledger_reset_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.a1_policy_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.a1_named_recovery_policy_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `FUNC:a1_unattended_durability_policy_boundary_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py` |
+| `CLASS:a1_unattended_durability_runtime_authorization_v1.DdoA1RuntimeAuthorizationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `CLASS:a1_unattended_durability_runtime_authorization_v1.DdoA1UnattendedDurabilityRuntimeAuthorizationV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `FUNC:a1_unattended_durability_runtime_authorization_v1.canonical_a1_unattended_durability_runtime_authorization_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `FUNC:a1_unattended_durability_runtime_authorization_v1.reject_a1_runtime_authorization_activation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `FUNC:a1_unattended_durability_runtime_authorization_v1.a1_runtime_authorization_observability_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `FUNC:a1_unattended_durability_runtime_authorization_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `FUNC:a1_unattended_durability_runtime_authorization_v1.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py` |
+| `CLASS:capture_v0.SeamSpecV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `CLASS:capture_v0.HostDecoratorBindingV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `CLASS:capture_v0.DdoCaptureBindingV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.current_capture_binding_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.ddo_replay_capture_disabled_isolation_reason_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.ddo_replay_capture_disabled_isolation_is_pass_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.bind_capture_session_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.reset_capture_session_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.with_ddo_capture_session_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.bind_host_cycle_capture_context_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.observe_after_producer_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.observe_producer_result_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.record_productive_cycle_capture_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._durability_evidence` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._a1_policy_operation_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._persist_and_classify` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._persist` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._token` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._codes_from_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._opaque_codes` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._decision_type_for_seam` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._scope_decision_type` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._bull_bear_decision_type` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._side_bucket` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._should_emit_incident` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._bull_bear_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._scope_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._volatility_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._killswitch_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_kwargs` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_args` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_view` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_object` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_unixish` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._event_time_from_rfc3339` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._from_unix` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._sha_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._stable_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._as_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0._optional_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.observed_ids` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.ledger` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.wrapped` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.decorator` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:capture_v0.wrapper` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/capture_v0.py` |
+| `FUNC:challenger_v0._require_same_pack` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0.compare_challenger_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0._index_by_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0._token_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0._decision_deltas` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0._incident_deltas` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0._metric_deltas` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `FUNC:challenger_v0.compare_shadow_challenger_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/challenger_v0.py` |
+| `CLASS:common_v0.FieldSpecV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_mapping` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.optional_record_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_event_time_utc` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_sha256_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.optional_sha256_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.optional_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_non_empty_string_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.optional_string_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_enum` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.optional_enum` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_id_list` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.require_schema` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.reject_unknown_fields` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.freeze_record` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.attach_content_hash` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.parse_evidence_source_refs_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.parse_shared_envelope_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.finalize_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:common_v0.__post_init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/common_v0.py` |
+| `FUNC:contract_registry_v0._specs_as_dicts` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py` |
+| `FUNC:contract_registry_v0.get_schema_contract_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py` |
+| `FUNC:contract_registry_v0.hash_scope_fields_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py` |
+| `FUNC:current_decision_consumer_v1.is_double_play_decision_event_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.require_current_double_play_bundle_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.classify_current_double_play_decision_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.authoritative_decision_outcome_for_row_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.build_decision_time_evaluation_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.require_records_index_for_double_play_semantic_evaluation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `FUNC:current_decision_consumer_v1.decision_score_from_current_bundle_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py` |
+| `CLASS:current_decision_learning_binding_v1.CurrentDecisionLearningBindingError` | CLASS | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `CLASS:current_decision_learning_binding_v1.CurrentDoublePlayDecisionBundleV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1.records_index_from_sequence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1._semantic_digest_from_canonical_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1._require_canonical_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1._verify_observation_integrity` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1._select_input_evidence` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1._verify_input_integrity` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1.resolve_current_double_play_decision_bundle_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:current_decision_learning_binding_v1.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py` |
+| `FUNC:decision_event_v0._evidence_refs` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/decision_event_v0.py` |
+| `FUNC:decision_event_v0.build_decision_event_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/decision_event_v0.py` |
+| `FUNC:decision_event_v0.validate_decision_event_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/decision_event_v0.py` |
+| `FUNC:double_play_input_evidence_v1.is_typed_entry_exit_policy_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.extract_double_play_producer_call_args_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.snapshot_double_play_producer_input_fields_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.producer_digest_canonical_payload_from_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.compute_producer_input_digest_from_canonical_payload_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.project_double_play_entry_exit_policy_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.reconstruct_typed_double_play_entry_exit_policy_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.build_double_play_entry_exit_policy_input_evidence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.validate_double_play_entry_exit_policy_input_evidence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1.policy_version_from_policy_object_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._require_digest_canonical_keys` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._require_input_field_keys` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._composition_fields_from_result` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._signal_fields` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._duck_typed_digest_canonical_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruct_signal` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruct_composition` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruct_directional_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruct_survival_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruct_suitability_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reject_hindsight_and_secrets_object` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reject_hindsight_and_secrets_mapping` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._scan_forbidden` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._token` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._digest_or_empty` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._require_bool` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._require_int` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._entry_exit_input_class` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._canonical_input_serializer` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._producer_input_digest_fn` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._canonical_composition_serializer` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_input_evidence_v1._reconstruction_constructors` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py` |
+| `FUNC:double_play_observation_projection_v1.is_typed_entry_exit_policy_decision_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.producer_canonical_payload_from_decision_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.project_entry_exit_policy_decision_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.generic_decision_result_for_producer_outcome_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.generic_decision_type_for_producer_outcome_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.build_double_play_entry_exit_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1.validate_double_play_entry_exit_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1._require_canonical_keys` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1._duck_typed_canonical_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1._token` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1._entry_exit_decision_class` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_observation_projection_v1._canonical_serializer` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1.replay_double_play_producer_function_current_code_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._invoke_and_compare` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._enumerate_mismatch_fields` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._resolve_typed_output_observation` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._input_schema_identity_failure` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._reconstruct_policy` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._stored_code_sha` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._stored_digest` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._reject_hindsight_mapping` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_producer_function_replay_v1._finish` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1.replay_double_play_typed_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1.classifier_replay_is_distinct_from_semantic_replay_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._reject_hindsight` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._scan_hindsight_keys` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._reconstruct_typed_decision_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._producer_types` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._producer_helpers` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1._finish` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:double_play_semantic_replay_v1.schema_version_ok` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py` |
+| `FUNC:drift_contracts_v0._require_bool` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0._require_false_authority` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.build_drift_observation_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.validate_drift_observation_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.build_drift_assessment_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.validate_drift_assessment_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.build_known_good_reference_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.validate_known_good_reference_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.build_drift_policy_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:drift_contracts_v0.validate_drift_policy_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py` |
+| `FUNC:durable_evidence_path_v0.resolve_ddo_durable_evidence_path_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py` |
+| `CLASS:errors_v0.DdoError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoValidationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoUnsupportedSchemaVersionError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoMalformedRecordError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoDuplicateConflictError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoLineageError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoIntegrityError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoLedgerCorruptionError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoUnsupportedLineageSlotError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoSilentOverwriteError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoDurabilityWriteError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoConcurrentWriterError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `CLASS:errors_v0.DdoPathResolutionError` | CLASS | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `FUNC:errors_v0.classify_oserror_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `FUNC:errors_v0.classify_ddo_write_failure_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `FUNC:errors_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `FUNC:errors_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/errors_v0.py` |
+| `FUNC:evaluation_engine_v0._require_identity` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._kill_switch_fired` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._safety_class_in_play` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._kill_switch_correctness` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._safety_score` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._stale_root_cause` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._derive_admissibility` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._assert_claim_matches` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0.evaluate_offline_bundle_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0.persist_evaluation_bundle_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_engine_v0._append_as_dict` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py` |
+| `FUNC:evaluation_observation_v0.validate_evaluation_observation_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py` |
+| `FUNC:evaluation_records_v0.build_counterfactual_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py` |
+| `FUNC:evaluation_records_v0.validate_counterfactual_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py` |
+| `FUNC:evaluation_records_v0.build_attribution_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py` |
+| `FUNC:evaluation_records_v0.validate_attribution_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py` |
+| `FUNC:evaluation_runtime_productive_host_v1._require_runtime_wired_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py` |
+| `FUNC:evaluation_runtime_productive_host_v1.ledger_records_index_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py` |
+| `FUNC:evaluation_runtime_productive_host_v1.derive_productive_n_bars_evaluation_identity_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py` |
+| `FUNC:evaluation_runtime_productive_host_v1.produce_n_bars_evaluation_runtime_bundle_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py` |
+| `FUNC:evaluation_v0.evaluate_outcome_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_v0.py` |
+| `FUNC:evaluation_v0.evaluate_counterfactual_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_v0.py` |
+| `FUNC:evaluation_v0.evaluate_attribution_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/evaluation_v0.py` |
+| `FUNC:experiment_identity_binding_v0._require_bool` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0._git_sha_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0.build_canonical_experiment_identity_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0.validate_canonical_experiment_identity_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0._identity_mapping` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0.bind_canonical_experiment_identity_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:experiment_identity_binding_v0.observe_unbound_experiment_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py` |
+| `FUNC:hindsight_guard_v0.assert_no_hindsight_safety_relabel_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py` |
+| `FUNC:hindsight_guard_v0.assert_safety_inputs_exclude_later_economics_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py` |
+| `FUNC:hindsight_guard_v0._scan` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py` |
+| `FUNC:incident_record_v0._evidence_refs` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/incident_record_v0.py` |
+| `FUNC:incident_record_v0.build_incident_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/incident_record_v0.py` |
+| `FUNC:incident_record_v0.validate_incident_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/incident_record_v0.py` |
+| `FUNC:learning_evidence_export_v1.derive_learning_evidence_record_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py` |
+| `FUNC:learning_evidence_export_v1.export_learning_evidence_from_state_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py` |
+| `FUNC:learning_evidence_export_v1.export_learning_evidence_from_state_or_fail_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py` |
+| `FUNC:learning_evidence_record_v1._require_false_authority` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py` |
+| `FUNC:learning_evidence_record_v1.build_learning_evidence_record_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py` |
+| `FUNC:learning_evidence_record_v1.validate_learning_evidence_record_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.derive_learning_state_scope_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.compute_evaluation_bundle_fingerprint_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.validate_evaluation_bundle_for_ingest_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.latest_learning_state_for_scope_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1._derive_next_cycle_economic_score_label_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.reduce_learning_state_transition_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.derive_learning_state_record_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_outcome_evidence_ingest_v1.ingest_evaluation_bundle_into_learning_state_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py` |
+| `FUNC:learning_records_v0._validate_gates_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.build_learning_hypothesis_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.validate_learning_hypothesis_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.build_candidate_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.validate_candidate_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.build_validation_evidence_pack_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.validate_validation_evidence_pack_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.hard_gate_failures_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_records_v0.all_named_gates_pass_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_records_v0.py` |
+| `FUNC:learning_state_record_v0._require_false_authority` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py` |
+| `FUNC:learning_state_record_v0.require_positive_int` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py` |
+| `FUNC:learning_state_record_v0.build_learning_state_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py` |
+| `FUNC:learning_state_record_v0.validate_learning_state_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py` |
+| `CLASS:ledger_v0.DdoLedgerFaultInjectorV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._raise_injected_oserror` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._apply_ledger_fault_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.ddo_ledger_fault_injection_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `CLASS:ledger_v0.AppendResultV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.validate_canonical_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._record_type_for_schema` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._envelope_chain_material` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.compute_ledger_entry_hash_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._decode_envelope_line` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._in_process_append_lock` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `CLASS:ledger_v0.AppendOnlyDdoLedgerV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.consume` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.ledger_path` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.writer_lock_path` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.append` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._append_locked` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._exclusive_writer` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.read_all` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.get` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0.verify_integrity` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._load` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._append_line` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:ledger_v0._write_encoded` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/ledger_v0.py` |
+| `FUNC:lineage_v0._walk_chain` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/lineage_v0.py` |
+| `FUNC:lineage_v0._require_typed_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/lineage_v0.py` |
+| `FUNC:lineage_v0._codes_for` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/lineage_v0.py` |
+| `FUNC:lineage_v0.verify_double_play_decision_triple_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/lineage_v0.py` |
+| `FUNC:lineage_v0.validate_record_lineage_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/lineage_v0.py` |
+| `CLASS:meta_evidence_v1.SemanticRoutingClass` | CLASS | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `CLASS:meta_evidence_v1.IntendedSemanticConsumer` | CLASS | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `CLASS:meta_evidence_v1.MetaEvidenceValidationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1.derive_meta_evidence_record_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1.derive_route_identity_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1._validate_routing_class` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1.assert_routing_class_lineage_binding_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1.build_meta_evidence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `FUNC:meta_evidence_v1.validate_meta_evidence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py` |
+| `CLASS:meta_learning_evidence_v1.MetaLearningEvidenceValidationError` | CLASS | `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py` |
+| `FUNC:meta_learning_evidence_v1.derive_meta_evidence_id_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py` |
+| `FUNC:meta_learning_evidence_v1.validate_meta_learning_evidence_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py` |
+| `CLASS:n_bars_bar_evidence_supplier_v1.NbarsSupplierMaterializationV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1._price_basis_for_bar` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1._resolve_price_basis` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1._assert_pit_observation_boundary` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1._build_measurement_fields` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1.materialize_real_outcome_horizon_supplier_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1._non_ok_supplier_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:n_bars_bar_evidence_supplier_v1.run_offline_n_bars_horizon_pipeline_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1._require_positive_int` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1._normalize_o4_interval_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.unix_seconds_to_event_time_utc` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1._hash_safe_json_value` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.mint_ddo_content_ref_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.validate_o4_bar_snapshot_element_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.validate_o4_n_bars_bar_evidence_snapshot_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `CLASS:o4_n_bars_bar_evidence_bridge_contracts_v1.DdoNbarsBridgeTranslationV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1._bar_state_token` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1._provenance_from_bars` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.translate_o4_snapshot_to_ddo_n_bars_bindings_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:o4_n_bars_bar_evidence_bridge_contracts_v1.to_dict` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py` |
+| `FUNC:outcome_v0._evidence_refs` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/outcome_v0.py` |
+| `FUNC:outcome_v0.validate_outcome_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/outcome_v0.py` |
+| `FUNC:outcome_v0.build_outcome_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/outcome_v0.py` |
+| `FUNC:outcome_v0.validate_outcome_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/outcome_v0.py` |
+| `FUNC:promotion_controller_v0.evaluate_promotion_eligibility_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py` |
+| `FUNC:promotion_controller_v0.evaluate_promotion_eligibility_dry_run_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py` |
+| `FUNC:promotion_records_v0._class_list` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0._require_false` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_promotion_policy_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.validate_promotion_policy_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_promotion_eligibility_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.validate_promotion_eligibility_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_release_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.validate_release_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_deployment_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.validate_deployment_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_rollback_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.validate_rollback_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:promotion_records_v0.build_release_deployment_rollback_dry_run_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.require_opaque_ref` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.require_positive_int` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.validate_bar_close_chain_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.validate_bar_identity_refs_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.assert_no_n_bars_fields_on_non_n_bars_horizon_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.assert_deferred_horizon_rejects_real_fields_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `CLASS:real_outcome_horizon_contracts_v1.NBarsRealEligibilityV1` | CLASS | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.classify_n_bars_real_eligibility_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.validate_n_bars_observation_for_decision_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.resolve_later_horizon_outcome_fields_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.normalize_n_bars_extension_fields_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_contracts_v1.validate_real_outcome_horizon_supplier_input_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py` |
+| `FUNC:real_outcome_horizon_engine_v1.supply_n_bars_evaluation_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py` |
+| `FUNC:real_outcome_horizon_engine_v1.real_outcome_horizon_engine_authority_snapshot_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py` |
+| `FUNC:real_outcome_horizon_observation_capture_v1.project_real_outcome_horizon_observation_capture_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py` |
+| `FUNC:real_outcome_horizon_observation_capture_v1.build_real_outcome_horizon_observation_capture_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py` |
+| `FUNC:real_outcome_horizon_observation_capture_v1.validate_real_outcome_horizon_observation_capture_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py` |
+| `FUNC:real_outcome_horizon_productive_host_v1._require_wired_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py` |
+| `FUNC:real_outcome_horizon_productive_host_v1.produce_real_outcome_horizon_evaluation_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py` |
+| `FUNC:reason_codes_v0._require_str` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py` |
+| `FUNC:reason_codes_v0.validate_coded_ref_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py` |
+| `FUNC:reason_codes_v0.validate_reason_codes_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py` |
+| `FUNC:reason_codes_v0.validate_hard_block_reasons_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py` |
+| `FUNC:reason_codes_v0._raise_not_mapping` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py` |
+| `CLASS:registry_v0.OfflineLearningRegistryV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.register_hypothesis` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.register_candidate` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.register_validation_pack` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.register_evaluated_validation_pack` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.hypotheses` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.candidates` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.validation_packs` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.superseded_ids` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:registry_v0.candidate_lineage` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/registry_v0.py` |
+| `FUNC:replay_evaluator_v0.classify_current_double_play_decision_bundle_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:replay_evaluator_v0.classify_decision_event_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:replay_evaluator_v0.classify_incident_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:replay_evaluator_v0.replay_same_inputs_same_classification_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:replay_evaluator_v0.replay_same_incident_inputs_same_classification_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:replay_evaluator_v0.replay_ledger_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1._token_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1._sha_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1.identity_relationship_for_request_identities_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1.project_section_11_14_flatten_pre_lease_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1.build_section_11_14_flatten_pre_lease_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:section_11_14_flatten_pre_lease_observation_v1.validate_section_11_14_flatten_pre_lease_observation_v1` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py` |
+| `FUNC:serialization_v0._reject_default` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.canonicalize_json_value` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.canonical_json_dumps_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.sha256_hex_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.is_valid_sha256_hex_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.compute_content_hash_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:serialization_v0.hash_scope_payload_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/serialization_v0.py` |
+| `FUNC:supervisor_records_v0._action_list` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py` |
+| `FUNC:supervisor_records_v0.build_autonomy_cycle_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py` |
+| `FUNC:supervisor_records_v0.validate_autonomy_cycle_record_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py` |
+| `FUNC:supervisor_records_v0.build_health_snapshot_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py` |
+| `FUNC:supervisor_records_v0.validate_health_snapshot_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py` |
+| `CLASS:supervisor_v0.SupervisorTransitionV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `CLASS:supervisor_v0.DeterministicAutonomySupervisorV0` | CLASS | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.__init__` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.state` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.cycle_id` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.reconstruct` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.transition` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0._record` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:supervisor_v0.persisted_transitions` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/supervisor_v0.py` |
+| `FUNC:validation_artifacts_v0.validate_validation_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py` |
+| `FUNC:validation_artifacts_v0.validate_validation_artifact_set_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py` |
+| `FUNC:validation_pack_engine_v0._require_identity` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py` |
+| `FUNC:validation_pack_engine_v0.evaluate_validation_evidence_pack_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py` |
+| `FUNC:validation_pack_engine_v0.evaluate_validation_evidence_pack_from_ingested_owners_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py` |
+| `FUNC:validation_producer_bindings_v0._require_producer_fields` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.admit_validation_producer_bindings_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.bind_existing_owner_validation_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0._optional_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0._optional_sha_or_unknown` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0._freeze_opaque_payload` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0._bind_cataloged_producer` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.ingest_existing_owner_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.project_ingested_owner_artifact_to_validation_artifact_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.ingest_existing_owner_artifact_set_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |
+| `FUNC:validation_producer_bindings_v0.admit_ingested_owner_validation_artifacts_v0` | FUNCTION | `src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py` |

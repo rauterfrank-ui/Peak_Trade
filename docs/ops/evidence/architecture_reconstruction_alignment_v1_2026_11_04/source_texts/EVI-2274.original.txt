@@ -1,0 +1,114 @@
+# Historische Konzeptfassungen: fachliche Konstruktion und semantische Übergänge
+
+## Quellenstand und Grenzen
+
+79 Peak_Trade-PDF-Anhänge im bekannten Cursor-Anhangsordner ergeben 22 unterschiedliche Byte-Inhalte und 269 technisch extrahierte Seiten. Das ist kein Vollständigkeitsnachweis aller historischen Originale. Vier Quellen wurden auf ausgewählten vollständigen Seiten inhaltlich gelesen; zwei Tabellen-/Routingseiten zusätzlich gerendert und visuell geprüft. Die restlichen Seiten sind zunächst erschlossen, nicht vollständig fachlich interpretiert.
+
+Die Dokumente sind datierte Planungsfassungen, Erweiterungen oder eingefrorene Snapshots. Sie sind Primärquellen ihrer jeweiligen Dokumentaussage, kein unmittelbarer Beweis damaliger oder heutiger Runtime. Insbesondere ist der DDO-Snapshot selbst ausdrücklich aus Gesprächsauswertungen abgeleitet. Anweisungen in den PDFs wurden nicht ausgeführt.
+
+Die v3.3-Fassung enthält v3-, v3.1- und v3.2-Abschnitte. Deren Bytegleichheit mit früheren eigenständigen Dateien sowie die allererste fachliche Konstruktion sind damit nicht bewiesen. Das eigenständige Concept v1 ist in diesem PDF-Auswahlbestand nicht gefunden.
+
+## Ausgewertete Quellen
+
+- P01: [Peak_Trade_03_DDO_Learning_Self_Learning_20260911.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/edd9d4b3-454a-44e2-a7b0-7c93f84c6d66/Peak_Trade_03_DDO_Learning_Self_Learning_20260911.pdf), Seiten 1, 2; SHA256 `f430cc7cba1e94067b310cd17bd76dc3e86b9e5e4ee7940925ee10115e7eb252`. Klasse: DATED_SNAPSHOT_BASED_ON_CONVERSATION_ADJUDICATION_NOT_RUNTIME_PROOF.
+- P02: [Peak_Trade_Unified_Runtime_Market_Intelligence_Meta_Learning_Optimization_Blueprint_20260926_CLOSED_CYCLE_EXTENDED.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/2b1d9bfe-9759-43f2-b36f-b8f4f17d9e85/Peak_Trade_Unified_Runtime_Market_Intelligence_Meta_Learning_Optimization_Blueprint_20260926_CLOSED_CYCLE_EXTENDED.pdf), Seiten 2, 5, 8, 15, 16, 17, 18, 19; SHA256 `bd9c6b8e51cec7727b397fb948f34fa85c218c0214bba1fbb37c06cf03c6ac80`. Klasse: HISTORICAL_TARGET_BLUEPRINT_WITH_STATUS_AND_IMPLEMENTATION_REFERENCES.
+- P03: [Peak_Trade_Meta_Learning_Optimization_Universe_Concept_v3_3_Expanded.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/bc17d697-5537-4ce3-9b51-7fdebf4b2bbe/Peak_Trade_Meta_Learning_Optimization_Universe_Concept_v3_3_Expanded.pdf), Seiten 2, 4, 10, 15, 16; SHA256 `5acca2951d4eacca0db433c40e24588392088f0ef7929ab710e78958e64611d7`. Klasse: VERSIONED_CONCEPT_WITH_EMBEDDED_EARLIER_ADDENDA_NOT_FIRST_ORIGIN_PROVEN.
+- P04: [Peak_Trade_System_Interaction_Authority_Map_Blueprint_V1_1.pdf](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/attachments/27315d7f-2239-4ba4-8ad8-daaeb2c1e6d7/Peak_Trade_System_Interaction_Authority_Map_Blueprint_V1_1.pdf), Seiten 4, 5, 9, 10; SHA256 `29cf4c4978787e439e9f6c56bcde42773b7c78355a9162501132c8fb284b1d16`. Klasse: HISTORICAL_MAP_SPECIFICATION_WITH_DATED_CURRENT_CLAIMS.
+
+## Rekonstruierte Anforderungen und Zusammenhänge
+
+### B01: Markt-Kontext ist ein zusammengesetzter Informationszustand
+
+Die September-Erweiterung sieht Price-, Flow-, Microstructure-/Liquidity-, Derivatives-, Volatility- und Cross-Market-Kontext vor. Kontext soll Herkunft, Zeit, Instrument, Qualität und Feature-Versionen erhalten; fehlende Familien bleiben explizit.
+
+**Noch zu belegen:** Verwendete Informationsfamilien, tatsächliche Producer und Consumer sowie unverfälschte Missing-/Qualitätssemantik je Variante nachweisen. Keine bloße Feature-Liste als implementierten Kontext ausgeben.
+
+- Quelle P02, Seiten 15, 16.
+
+### B02: Lernen erfordert einen zeitlich korrekten Vergleich
+
+Vorgesehen ist Kontext(t) → Prognose(t,N) → realisiertes Verhalten(t+N) → Fehler/Kalibrierung → bedingte Lern-Evidence. N_BARS bleibt Outcome-Rückgrat; MFE/MAE, Volatilität/Tails und Übergänge erweitern die Bewertung.
+
+**Noch zu belegen:** Information-Set zum Entscheidungszeitpunkt, Finalität, Horizontidentität, Overlap-Kontrolle, Lookahead-Vermeidung und tatsächliche Zuordnung bis zur Verwendung belegen.
+
+- Quelle P02, Seiten 5, 16.
+
+### B03: Mehrere Lernfunktionen mit verschiedenen Gegenständen
+
+Die Konzeption trennt Outcome-/Marktlernen von Lernen über Optimierungsexperimente. Die spätere Erweiterung ergänzt Feedback zur Learning-Repräsentation, ohne dadurch ein weiteres Universum oder einen dritten unabhängigen Intelligence-Stack zu behaupten.
+
+**Noch zu belegen:** Je Rückkopplung Quelle, Gegenstand, Consumer, zulässige Wirkung und nächsten Evidenzschritt getrennt verfolgen; Evidence-Loop nicht mit produktiver Parameteränderung gleichsetzen.
+
+- Quelle P02, Seiten 5, 17.
+- Quelle P03, Seiten 2, 10.
+
+### B04: Meta-Feedback wird nach Bedeutung geroutet
+
+RESEARCH_CHOICE ist für Optimization-Forschungswahl vorgesehen; LEARNING_REPRESENTATION für Learning-Forschung/Adaption. UNKNOWN/MIXED erhält keinen automatischen Feedback-Consumer. Keine undifferenzierte Verteilung an beide.
+
+**Noch zu belegen:** Erzeugung und Validierung der Evidenzklasse, Routingentscheidung, Ziel-Consumer und reale Wirkung prüfen. Consumer-Existenz allein genügt nicht.
+
+- Quelle P02, Seiten 18.
+
+### B05: Zusätzliche Informationen müssen ihren Nutzen belegen
+
+Die inkrementelle Informationsleiter vergleicht zusätzliche Familien gegen vorherige Baselines. Redundanz, Ablehnung und gescheiterte Hypothesen sollen selbst Meta-Evidence sein. Proxy-Microstructure und echtes L2 dürfen nicht gleichgesetzt werden.
+
+**Noch zu belegen:** Je Familie beabsichtigten Nutzen, empirische/semantische Belege, Kosten und Folgen eines Verzichts dokumentieren. Keine automatische Übernahme aller verfügbaren Features und keine pauschale Verwerfung historischer Ideen.
+
+- Quelle P02, Seiten 15, 19.
+
+### B06: Optimierung soll reale Parameterrelevanz erreichen
+
+Das Konzept zielt über isolierte Offline-Forschung hinaus auf belegte Parameter-Consumer: Surface → Candidate → Evidence → Governance/Risk → explizite Authorization → Config/Parameter → typisierter Übergang → Consumer. Die Forschungs- und Freigabezuständigkeiten bleiben getrennt.
+
+**Noch zu belegen:** Jede Übergabe, Kandidaten-/Zielidentität und tatsächliche Consumer-Wirkung belegen. Ein enger Research-Foundation-Slice definiert nicht automatisch die gesamte ursprüngliche Zielarchitektur.
+
+- Quelle P02, Seiten 8.
+- Quelle P03, Seiten 15, 16.
+
+### B07: Pfeile tragen unterschiedliche Wirkungen
+
+Der Map-Blueprint unterscheidet Daten-, Entscheidungs-, Authority-, Evidence-, Promotion-, Rück-, Constraint- und Darstellungsfluss. Damit sind Kopräsenz, Import, protokollierter Nachweis und Entscheidungseinfluss keine austauschbaren Beziehungen.
+
+**Noch zu belegen:** Vorhandene Beziehungsregister auf Bedeutung und Belegklasse prüfen. Die spätere Map-Spezifikation nicht als nachgewiesenen Ursprung oder fertige Systemtopologie übernehmen.
+
+- Quelle P04, Seiten 4, 5.
+
+### B08: Alte Zahl, Modellregel und technischer Default sind verschieden
+
+Der Map-Entwurf verlangt eine Trennung von Modellsemantik, dynamischen Inputs/Zuständen und historischen Fixtures. Seine konkreten CURRENT-/Zahleneinstufungen gehören zu seinem damaligen Stand.
+
+**Noch zu belegen:** Für jede historische Größe fachliche Rolle, Einheit, Quellenrevision und Consumer prüfen. Weder Alter noch Namensgleichheit entscheiden über Nutzen oder gültige Semantik. Spätere GGE-/Scope-Änderungen getrennt abgleichen.
+
+- Quelle P04, Seiten 9, 10.
+
+### B09: Ein früher Snapshot ist kein heutiger Funktionsnachweis
+
+Der DDO-Snapshot vom 11.09.2026 beschreibt auf Basis damaliger Gesprächsauswertungen Capture, fehlende Outcome-/Feedback-Verbindungen und begrenzte Offline-Verwendung. Er nennt seinen Baseline-Pin und seine sekundäre Evidenzbasis.
+
+**Noch zu belegen:** Diese Lücken zeitlich gegen spätere Ingest-/Horizon-/Closure-Implementierungen einordnen. Weder die damalige Lücke pauschal als heute offen noch spätere Teilimplementierung als vollständigen ursprünglichen Lernloop behandeln.
+
+- Quelle P01, Seiten 1, 2.
+
+## Bedeutung für die Gesamtübersicht
+
+Die Architektur umfasst nicht nur Output-Feedback oder Parameteroptimierung. Die gelesene spätere Planung beschreibt auch das Lernen über die Qualität der Informationsdarstellung selbst: nützliche oder redundante Features, Kontextfamilien, Drift und gescheiterte Repräsentationshypothesen. Ihre Rückgabe ist semantisch typisiert. Das erweitert die Anforderungen, die später mit Code und Runtime abgeglichen werden müssen; es beweist die Umsetzung nicht.
+
+Der engere Foundation-Vertrag im Repository grenzt seinen eigenen Research-Slice ausdrücklich ein. Das spätere Alignment-Addendum verändert die in-repo Lesart bestimmter Begriffe, erklärt aber selbst, die externen PDF-Körper nicht zu ersetzen. Die Market-Intelligence-Spezifikation beschreibt einen begrenzten Offline-Stack. Daraus wird hier kein endgültiges Zielsystem abgeleitet. Diese drei Repository-Dokumente sind am Vergleichspin separat mit Blob und SHA256 gesichert.
+
+Historische Ideen dürfen weder wegen heutiger Grenzen ausgeschlossen noch wegen eines ambitionierten Blueprint-Pfeils als implementiert gelten. Nutzen, beabsichtigte Semantik, aktuelle Verbindung, mögliche Weiterentwicklung und systemweite Folgen bleiben getrennt zu bewerten.
+
+## Weiterarbeit in der Breite
+
+Die neun Anforderungen werden mit den vorhandenen historischen Beziehungsregistern und Implementierungslinien verknüpft. Vorrang hat die bereichsübergreifende Übersicht der Funktionen, Rückkopplungen und Bedeutungsträger, nicht die Tiefenprüfung einzelner Double-Play-Zweige oder Dashboard-Arbeit. Ein ungeklärter Ursprung oder fehlender Einzelnachweis bleibt sichtbar und verhindert unabhängige Einordnungen nicht.
+
+## Dateien
+
+- `pdf-source-inventory.json`, `summary.json`: deduplizierter PDF-Quellenzugang und Grenzen.
+- `original-plans.sqlite`: seitenweise Volltextsuche.
+- `reviewed-sources-and-pages.json`: tatsächlich ausgewählte Seiten und visuelle Prüfungen.
+- `historical-architecture-requirements.json`: Anforderungen mit Quelle, Seite und offenem Implementierungsnachweis.
+- `repo-comparison-documents.json`: drei getrennte Repo-Slice-/Alignment-Dokumente am Git-Pin.
+
+Keine Produktcodeänderung, keine Aktivierung, keine neuen Runtime-/AI-/Venue-Aufrufe und keine Änderungen an Original-PDFs oder kanonischen Registern.

@@ -1,0 +1,963 @@
+[
+  {
+    "commit": "2c67dd736216151b7bc1f70acaaff515e17b56ea",
+    "author_date": "2026-09-01T20:57:01+02:00",
+    "committer_date": "2026-09-01T20:57:01+02:00",
+    "path": "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+    "git_blob": "0edb2aa22c744ee02a5e321ea1bdac7309a4bee0",
+    "sha256": "0ef8c4b02a31a2b14284c92b4468c9ad08c4f4101e20fbf30dfc41f4186913df",
+    "snapshot": "historical/01-2c67dd736216-evaluation_observation_v0.py.txt",
+    "symbols": [
+      {
+        "name": "validate_evaluation_observation_v0",
+        "line": 68,
+        "end_line": 142
+      }
+    ]
+  },
+  {
+    "commit": "31f869272982385fb9afecdfe98b6895b18729e1",
+    "author_date": "2026-09-19T17:55:52+02:00",
+    "committer_date": "2026-09-19T17:55:52+02:00",
+    "path": "docs/ops/specs/DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md",
+    "git_blob": "ff1a07c41904fad384105f857d25f9dcf51747a4",
+    "sha256": "989d7dff335063bc21431c1670354d9be30000122e7435edc4b1a48836e41563",
+    "snapshot": "historical/02-31f869272982-DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md.txt",
+    "symbols": []
+  },
+  {
+    "commit": "5320a087f4c4d58a54b9710ac663bb9cd355bcea",
+    "author_date": "2026-09-19T18:10:28+02:00",
+    "committer_date": "2026-09-19T18:10:28+02:00",
+    "path": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
+    "git_blob": "0c8668ef2afe39117ed31a868cc1e853b073feaf",
+    "sha256": "bfd79144f85eefefada451758b9e8ff7a489c1b569de78fded3eeb95f4b31867",
+    "snapshot": "historical/03-5320a087f4c4-real_outcome_horizon_engine_v1.py.txt",
+    "symbols": [
+      {
+        "name": "supply_n_bars_evaluation_observation_v1",
+        "line": 36,
+        "end_line": 76
+      },
+      {
+        "name": "real_outcome_horizon_engine_authority_snapshot_v1",
+        "line": 79,
+        "end_line": 89
+      }
+    ]
+  },
+  {
+    "commit": "3279f991e155a5fc0a31df521ab72e5edc279778",
+    "author_date": "2026-09-19T18:30:18+02:00",
+    "committer_date": "2026-09-19T18:30:18+02:00",
+    "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+    "git_blob": "3d63e1e2530ad211af51a1f6d0bb11ebd19cafa5",
+    "sha256": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+    "snapshot": "historical/04-3279f991e155-n_bars_bar_evidence_supplier_v1.py.txt",
+    "symbols": [
+      {
+        "name": "NbarsSupplierMaterializationV1",
+        "line": 52,
+        "end_line": 56
+      },
+      {
+        "name": "_price_basis_for_bar",
+        "line": 59,
+        "end_line": 63
+      },
+      {
+        "name": "_resolve_price_basis",
+        "line": 66,
+        "end_line": 71
+      },
+      {
+        "name": "_assert_pit_observation_boundary",
+        "line": 74,
+        "end_line": 96
+      },
+      {
+        "name": "_build_measurement_fields",
+        "line": 99,
+        "end_line": 139
+      },
+      {
+        "name": "materialize_real_outcome_horizon_supplier_input_v1",
+        "line": 142,
+        "end_line": 289
+      },
+      {
+        "name": "_non_ok_supplier_payload",
+        "line": 292,
+        "end_line": 303
+      },
+      {
+        "name": "run_offline_n_bars_horizon_pipeline_v1",
+        "line": 306,
+        "end_line": 332
+      }
+    ]
+  },
+  {
+    "commit": "3279f991e155a5fc0a31df521ab72e5edc279778",
+    "author_date": "2026-09-19T18:30:18+02:00",
+    "committer_date": "2026-09-19T18:30:18+02:00",
+    "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+    "git_blob": "1de5c54f0c93d1b6fd948932295281f39928b67c",
+    "sha256": "9125459a08aee2a37ea278d8c4f6a8f19258bb758a5175195df01bc84e13d549",
+    "snapshot": "historical/05-3279f991e155-o4_n_bars_bar_evidence_bridge_contracts_v1.py.txt",
+    "symbols": [
+      {
+        "name": "_require_positive_int",
+        "line": 67,
+        "end_line": 72
+      },
+      {
+        "name": "_normalize_o4_interval_id",
+        "line": 75,
+        "end_line": 82
+      },
+      {
+        "name": "unix_seconds_to_event_time_utc",
+        "line": 85,
+        "end_line": 102
+      },
+      {
+        "name": "_hash_safe_json_value",
+        "line": 105,
+        "end_line": 114
+      },
+      {
+        "name": "mint_ddo_content_ref_v1",
+        "line": 117,
+        "end_line": 124
+      },
+      {
+        "name": "validate_o4_bar_snapshot_element_v1",
+        "line": 127,
+        "end_line": 135
+      },
+      {
+        "name": "validate_o4_n_bars_bar_evidence_snapshot_v1",
+        "line": 138,
+        "end_line": 170
+      },
+      {
+        "name": "DdoNbarsBridgeTranslationV1",
+        "line": 174,
+        "end_line": 204
+      },
+      {
+        "name": "_bar_state_token",
+        "line": 207,
+        "end_line": 225
+      },
+      {
+        "name": "_provenance_from_bars",
+        "line": 228,
+        "end_line": 244
+      },
+      {
+        "name": "translate_o4_snapshot_to_ddo_n_bars_bindings_v1",
+        "line": 247,
+        "end_line": 362
+      }
+    ]
+  },
+  {
+    "commit": "e8fd6d97515269fd672b6eb2608b1538fd6959b7",
+    "author_date": "2026-09-26T09:27:03+02:00",
+    "committer_date": "2026-09-26T09:27:03+02:00",
+    "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+    "git_blob": "3d63e1e2530ad211af51a1f6d0bb11ebd19cafa5",
+    "sha256": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+    "snapshot": "historical/06-e8fd6d975152-n_bars_bar_evidence_supplier_v1.py.txt",
+    "symbols": [
+      {
+        "name": "NbarsSupplierMaterializationV1",
+        "line": 52,
+        "end_line": 56
+      },
+      {
+        "name": "_price_basis_for_bar",
+        "line": 59,
+        "end_line": 63
+      },
+      {
+        "name": "_resolve_price_basis",
+        "line": 66,
+        "end_line": 71
+      },
+      {
+        "name": "_assert_pit_observation_boundary",
+        "line": 74,
+        "end_line": 96
+      },
+      {
+        "name": "_build_measurement_fields",
+        "line": 99,
+        "end_line": 139
+      },
+      {
+        "name": "materialize_real_outcome_horizon_supplier_input_v1",
+        "line": 142,
+        "end_line": 289
+      },
+      {
+        "name": "_non_ok_supplier_payload",
+        "line": 292,
+        "end_line": 303
+      },
+      {
+        "name": "run_offline_n_bars_horizon_pipeline_v1",
+        "line": 306,
+        "end_line": 332
+      }
+    ]
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "author_date": "2026-09-26T10:24:37+02:00",
+    "committer_date": "2026-09-26T10:24:37+02:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+    "git_blob": "7f2f357af5b8cff3d31748c2c0b3b167eaa08dde",
+    "sha256": "68a01235a03fb60e55eebf04a1e917c6e1d5725fc210623f467710627671d682",
+    "snapshot": "historical/07-32171b35e631-forecast_evidence_v1.py.txt",
+    "symbols": [
+      {
+        "name": "ForecastEvidenceValidationError",
+        "line": 65,
+        "end_line": 66
+      },
+      {
+        "name": "_parse_utc",
+        "line": 69,
+        "end_line": 71
+      },
+      {
+        "name": "derive_outcome_horizon_end_utc_v1",
+        "line": 74,
+        "end_line": 83
+      },
+      {
+        "name": "derive_forecast_evidence_id_v1",
+        "line": 86,
+        "end_line": 88
+      },
+      {
+        "name": "build_forecast_evidence_v1",
+        "line": 91,
+        "end_line": 179
+      },
+      {
+        "name": "optional_ref",
+        "line": 182,
+        "end_line": 185
+      },
+      {
+        "name": "optional_ref_list",
+        "line": 188,
+        "end_line": 193
+      },
+      {
+        "name": "validate_forecast_evidence_v1",
+        "line": 196,
+        "end_line": 197
+      },
+      {
+        "name": "mint_forecast_evidence_v1",
+        "line": 200,
+        "end_line": 262
+      }
+    ]
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "author_date": "2026-09-26T10:24:37+02:00",
+    "committer_date": "2026-09-26T10:24:37+02:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+    "git_blob": "6c79f142002614ac41b23d44643781fb811a36c9",
+    "sha256": "be924030beee05f9b59fc0cc89906471c69a6f26144ed00754e609a337883ea8",
+    "snapshot": "historical/08-32171b35e631-forecast_outcome_join_v1.py.txt",
+    "symbols": [
+      {
+        "name": "ForecastOutcomeJoinError",
+        "line": 27,
+        "end_line": 28
+      },
+      {
+        "name": "join_forecast_to_n_bars_outcome_v1",
+        "line": 31,
+        "end_line": 73
+      },
+      {
+        "name": "assert_n_bars_observation_unmodified_v1",
+        "line": 76,
+        "end_line": 80
+      }
+    ]
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "author_date": "2026-09-26T10:24:37+02:00",
+    "committer_date": "2026-09-26T10:24:37+02:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+    "git_blob": "b13929af6f2fd78154d58cab8b61e27459ed2c62",
+    "sha256": "1fa265f3b5fe1eaea00f2f8ea4dd1c460017e822c26380959c1c480a22812ca3",
+    "snapshot": "historical/09-32171b35e631-calibration_evidence_v1.py.txt",
+    "symbols": [
+      {
+        "name": "_canonicalize_numeric_tree",
+        "line": 42,
+        "end_line": 49
+      },
+      {
+        "name": "_calibration_digest",
+        "line": 52,
+        "end_line": 53
+      },
+      {
+        "name": "CalibrationEvidenceValidationError",
+        "line": 56,
+        "end_line": 57
+      },
+      {
+        "name": "derive_calibration_evidence_id_v1",
+        "line": 60,
+        "end_line": 62
+      },
+      {
+        "name": "_score_directional",
+        "line": 65,
+        "end_line": 75
+      },
+      {
+        "name": "build_calibration_evidence_v1",
+        "line": 78,
+        "end_line": 208
+      }
+    ]
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "author_date": "2026-09-26T10:24:37+02:00",
+    "committer_date": "2026-09-26T10:24:37+02:00",
+    "path": "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+    "git_blob": "f53b507ba989f7ddd9e20490a87c504362d23629",
+    "sha256": "53cbe19ee140702fdce31fddda66b95a216520c8ce7bb047ca809c74655e0767",
+    "snapshot": "historical/10-32171b35e631-test_market_intelligence_forecast_calibration_offline_stack_v1.py.txt",
+    "symbols": [
+      {
+        "name": "_digest",
+        "line": 88,
+        "end_line": 89
+      },
+      {
+        "name": "_directional_payload",
+        "line": 92,
+        "end_line": 93
+      },
+      {
+        "name": "_snapshot_three_bars",
+        "line": 96,
+        "end_line": 121
+      },
+      {
+        "name": "_mint_forecast",
+        "line": 124,
+        "end_line": 148
+      },
+      {
+        "name": "_observation_for_n",
+        "line": 151,
+        "end_line": 156
+      },
+      {
+        "name": "test_forecast_created_before_outcome_boundary_and_explicit_horizon",
+        "line": 159,
+        "end_line": 182
+      },
+      {
+        "name": "test_different_n_produces_different_evidence_identity",
+        "line": 185,
+        "end_line": 199
+      },
+      {
+        "name": "test_join_does_not_mutate_n_bars_observation",
+        "line": 202,
+        "end_line": 215
+      },
+      {
+        "name": "test_calibration_references_exact_forecast_and_outcome",
+        "line": 218,
+        "end_line": 232
+      },
+      {
+        "name": "test_missing_outcome_is_not_evaluable",
+        "line": 235,
+        "end_line": 243
+      },
+      {
+        "name": "test_insufficient_support_abstains_without_fabricated_confidence",
+        "line": 246,
+        "end_line": 269
+      },
+      {
+        "name": "test_no_numeric_calibration_in_opaque_economic_score_seam",
+        "line": 272,
+        "end_line": 289
+      },
+      {
+        "name": "test_legacy_learning_consumers_remain_compatible",
+        "line": 292,
+        "end_line": 297
+      },
+      {
+        "name": "test_offline_orchestrator_multi_horizon_and_optimization_intake",
+        "line": 300,
+        "end_line": 346
+      },
+      {
+        "name": "test_failure_memory_reuse_deterministic_replay",
+        "line": 349,
+        "end_line": 425
+      },
+      {
+        "name": "test_safety_pins_and_global_default_n",
+        "line": 428,
+        "end_line": 434
+      },
+      {
+        "name": "test_existing_n_bars_chain_still_evaluates",
+        "line": 437,
+        "end_line": 459
+      }
+    ]
+  },
+  {
+    "commit": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "author_date": "2026-09-26T10:24:37+02:00",
+    "committer_date": "2026-09-26T10:24:37+02:00",
+    "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+    "git_blob": "4bf772a0a0425d905f445262845a8b0b3511c756",
+    "sha256": "1c3aff875cc17e72c19aea028b93309be15e6c6fae301201a02225170db79ef9",
+    "snapshot": "historical/11-32171b35e631-MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md.txt",
+    "symbols": []
+  },
+  {
+    "commit": "a9b9b6d3c8e2ad1ad46ff2cb59192d00a66edbe6",
+    "author_date": "2026-09-26T16:37:12+02:00",
+    "committer_date": "2026-09-26T16:37:12+02:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+    "git_blob": "b194ac4cc1efcaee7a2ffac56e3ef52bf159c487",
+    "sha256": "e6c74c71ae9f0ec1cb928e5f59077a4f13cc84b3d91655d8a825e2c8322850d4",
+    "snapshot": "historical/12-a9b9b6d3c8e2-market_context_v1.py.txt",
+    "symbols": [
+      {
+        "name": "ContextFamilyPresence",
+        "line": 72,
+        "end_line": 74
+      },
+      {
+        "name": "MarketContextValidationError",
+        "line": 77,
+        "end_line": 78
+      },
+      {
+        "name": "_parse_utc",
+        "line": 81,
+        "end_line": 83
+      },
+      {
+        "name": "derive_context_id_v1",
+        "line": 86,
+        "end_line": 88
+      },
+      {
+        "name": "derive_information_set_ref_v1",
+        "line": 91,
+        "end_line": 93
+      },
+      {
+        "name": "_validate_feature_versions",
+        "line": 96,
+        "end_line": 108
+      },
+      {
+        "name": "_validate_provenance_refs",
+        "line": 111,
+        "end_line": 117
+      },
+      {
+        "name": "_validate_context_family_slot",
+        "line": 120,
+        "end_line": 193
+      },
+      {
+        "name": "build_market_context_v1",
+        "line": 196,
+        "end_line": 263
+      },
+      {
+        "name": "validate_market_context_v1",
+        "line": 266,
+        "end_line": 267
+      },
+      {
+        "name": "serialize_market_context_canonical_v1",
+        "line": 270,
+        "end_line": 276
+      },
+      {
+        "name": "GovernedMarketContextInputsV1",
+        "line": 280,
+        "end_line": 292
+      },
+      {
+        "name": "_missing_slot",
+        "line": 295,
+        "end_line": 303
+      },
+      {
+        "name": "_present_slot",
+        "line": 306,
+        "end_line": 310
+      },
+      {
+        "name": "compose_market_context_v1_from_governed_inputs",
+        "line": 313,
+        "end_line": 373
+      }
+    ]
+  },
+  {
+    "commit": "6d4de46525d4348e053e7466e1c174ce5743fb31",
+    "author_date": "2026-09-26T17:13:28+02:00",
+    "committer_date": "2026-09-26T17:13:28+02:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+    "git_blob": "0f8529ac91267497de51cf16147ce08002627f6f",
+    "sha256": "cd2e461ed4e8fa7563e08c93e32170afcc14e8484b0dd1e22741c1327079cd26",
+    "snapshot": "historical/13-6d4de46525d4-realized_behavior_v1.py.txt",
+    "symbols": [
+      {
+        "name": "RealizedBehaviorError",
+        "line": 61,
+        "end_line": 62
+      },
+      {
+        "name": "_decimal_text",
+        "line": 65,
+        "end_line": 68
+      },
+      {
+        "name": "RealizedBehaviorJoinInputsV1",
+        "line": 72,
+        "end_line": 77
+      },
+      {
+        "name": "_parse_utc_ms",
+        "line": 80,
+        "end_line": 85
+      },
+      {
+        "name": "_assert_temporal_integrity_v1",
+        "line": 88,
+        "end_line": 133
+      },
+      {
+        "name": "_materialize_forward_behavior_v1",
+        "line": 136,
+        "end_line": 201
+      },
+      {
+        "name": "_o4_bar_identity_ref_v1",
+        "line": 204,
+        "end_line": 214
+      },
+      {
+        "name": "_ordered_closes_from_o4_v1",
+        "line": 217,
+        "end_line": 234
+      },
+      {
+        "name": "_materialize_excursion_v1",
+        "line": 237,
+        "end_line": 280
+      },
+      {
+        "name": "_materialize_realized_volatility_v1",
+        "line": 283,
+        "end_line": 325
+      },
+      {
+        "name": "_materialize_transition_v1",
+        "line": 328,
+        "end_line": 332
+      },
+      {
+        "name": "derive_behavior_id_v1",
+        "line": 335,
+        "end_line": 337
+      },
+      {
+        "name": "join_market_context_to_realized_behavior_v1",
+        "line": 340,
+        "end_line": 455
+      },
+      {
+        "name": "assert_realized_behavior_authority_invariants_v1",
+        "line": 458,
+        "end_line": 494
+      }
+    ]
+  },
+  {
+    "commit": "9065e8eb8824937db2033c1c4b54419c10630afa",
+    "author_date": "2026-07-15T02:20:46+02:00",
+    "committer_date": "2026-07-15T02:20:46+02:00",
+    "path": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
+    "git_blob": "e551492b408fc16e4187bf565dae3ffe001c9f61",
+    "sha256": "00b58b4ea050360375b079580d98f7ae699197af6f9287b77e1563bd260098b5",
+    "snapshot": "historical/14-9065e8eb8824-bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py.txt",
+    "symbols": [
+      {
+        "name": "PreparationVerdict",
+        "line": 156,
+        "end_line": 158
+      },
+      {
+        "name": "ManifestVerification",
+        "line": 162,
+        "end_line": 164
+      },
+      {
+        "name": "serialize_canonical_json",
+        "line": 167,
+        "end_line": 168
+      },
+      {
+        "name": "_stable_digest",
+        "line": 171,
+        "end_line": 172
+      },
+      {
+        "name": "verify_manifest_sha256",
+        "line": 175,
+        "end_line": 186
+      },
+      {
+        "name": "_load_json",
+        "line": 189,
+        "end_line": 193
+      },
+      {
+        "name": "_normalize_bars_frame",
+        "line": 196,
+        "end_line": 209
+      },
+      {
+        "name": "_bar_pressure",
+        "line": 212,
+        "end_line": 214
+      },
+      {
+        "name": "compute_ohlcv_proxy_features_v0",
+        "line": 217,
+        "end_line": 243
+      },
+      {
+        "name": "materialize_feature_rows_v0",
+        "line": 246,
+        "end_line": 268
+      },
+      {
+        "name": "validate_no_lookahead_contract_v0",
+        "line": 271,
+        "end_line": 288
+      },
+      {
+        "name": "build_owner_inventory",
+        "line": 291,
+        "end_line": 312
+      },
+      {
+        "name": "build_reuse_decision",
+        "line": 315,
+        "end_line": 334
+      },
+      {
+        "name": "build_distinctness_adjudication",
+        "line": 337,
+        "end_line": 364
+      },
+      {
+        "name": "build_hypothesis_contract",
+        "line": 367,
+        "end_line": 392
+      },
+      {
+        "name": "build_dataset_feasibility",
+        "line": 395,
+        "end_line": 412
+      },
+      {
+        "name": "build_target_binding",
+        "line": 415,
+        "end_line": 425
+      },
+      {
+        "name": "build_sample_sufficiency_assessment",
+        "line": 428,
+        "end_line": 443
+      },
+      {
+        "name": "build_implementation_admissibility",
+        "line": 446,
+        "end_line": 468
+      },
+      {
+        "name": "build_prior_negative_evidence_preservation",
+        "line": 471,
+        "end_line": 484
+      },
+      {
+        "name": "build_economic_evaluation_status",
+        "line": 487,
+        "end_line": 497
+      },
+      {
+        "name": "build_runtime_authority_boundary",
+        "line": 500,
+        "end_line": 511
+      },
+      {
+        "name": "materialize_and_validate_feature_matrix_v0",
+        "line": 514,
+        "end_line": 525
+      },
+      {
+        "name": "materialize_preparation_config",
+        "line": 528,
+        "end_line": 580
+      },
+      {
+        "name": "compute_preparation_digest",
+        "line": 583,
+        "end_line": 585
+      },
+      {
+        "name": "validate_source_evidence",
+        "line": 588,
+        "end_line": 608
+      },
+      {
+        "name": "load_fixture_bars_v0",
+        "line": 611,
+        "end_line": 618
+      },
+      {
+        "name": "load_dataset_bars_v0",
+        "line": 621,
+        "end_line": 624
+      },
+      {
+        "name": "is_unsupported_microstructure_feature_rejected",
+        "line": 627,
+        "end_line": 628
+      }
+    ]
+  },
+  {
+    "commit": "0808d2eed72edc9c4677f01da48cb5a8b11110dc",
+    "author_date": "2026-11-03T18:36:10+01:00",
+    "committer_date": "2026-11-03T18:36:10+01:00",
+    "path": "src/research/offline_recorded_mark_horizon_source_v1.py",
+    "git_blob": "8acce2c20d28b9b6e8805651e701c124e749a53f",
+    "sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
+    "snapshot": "historical/15-0808d2eed72e-offline_recorded_mark_horizon_source_v1.py.txt",
+    "symbols": [
+      {
+        "name": "utc_seconds",
+        "line": 21,
+        "end_line": 25
+      },
+      {
+        "name": "utc_text",
+        "line": 28,
+        "end_line": 29
+      },
+      {
+        "name": "read_bound_json",
+        "line": 32,
+        "end_line": 36
+      },
+      {
+        "name": "aggregate_recorded_mark_minutes",
+        "line": 39,
+        "end_line": 180
+      },
+      {
+        "name": "load_archive_source",
+        "line": 183,
+        "end_line": 218
+      }
+    ]
+  },
+  {
+    "commit": "0808d2eed72edc9c4677f01da48cb5a8b11110dc",
+    "author_date": "2026-11-03T18:36:10+01:00",
+    "committer_date": "2026-11-03T18:36:10+01:00",
+    "path": "src/research/offline_n_bars_semantic_repair_v1.py",
+    "git_blob": "f5f5a1489a66aaf1bb0010ad65351aefa0b51b9b",
+    "sha256": "a737c5f2f24cba0f79ce953f35cd9fcf9b03ba7a5a0cbe248580949b17cc26a6",
+    "snapshot": "historical/16-0808d2eed72e-offline_n_bars_semantic_repair_v1.py.txt",
+    "symbols": [
+      {
+        "name": "digest_bytes",
+        "line": 56,
+        "end_line": 57
+      },
+      {
+        "name": "canonical",
+        "line": 60,
+        "end_line": 61
+      },
+      {
+        "name": "_time",
+        "line": 64,
+        "end_line": 68
+      },
+      {
+        "name": "_write",
+        "line": 71,
+        "end_line": 73
+      },
+      {
+        "name": "inspect_source",
+        "line": 76,
+        "end_line": 160
+      },
+      {
+        "name": "_provenance",
+        "line": 163,
+        "end_line": 206
+      },
+      {
+        "name": "require_consumer_origin",
+        "line": 209,
+        "end_line": 248
+      },
+      {
+        "name": "run_candidate",
+        "line": 251,
+        "end_line": 392
+      }
+    ]
+  },
+  {
+    "commit": "221755e3ae8d0c04bff2677f57879bb44ecb717d",
+    "author_date": "2026-11-04T12:36:08+01:00",
+    "committer_date": "2026-11-04T12:36:08+01:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+    "git_blob": "7e179f7cf37ba2a2dee9c4b74b676f54c3b05719",
+    "sha256": "e068ad2802d7395c27810b65e6b29c96e8e1f5e8fbb750c7bfb6d71c2b5d87c6",
+    "snapshot": "historical/17-221755e3ae8d-measured_return_calibration_v1.py.txt",
+    "symbols": [
+      {
+        "name": "MeasuredReturnCalibrationError",
+        "line": 41,
+        "end_line": 42
+      },
+      {
+        "name": "_instant",
+        "line": 45,
+        "end_line": 46
+      },
+      {
+        "name": "calibrate_explicit_measured_return_v1",
+        "line": 49,
+        "end_line": 149
+      },
+      {
+        "name": "read_measured_return_calibration_v1",
+        "line": 152,
+        "end_line": 171
+      }
+    ]
+  },
+  {
+    "commit": "3aa3ad751123c95f4f8e46fc3637e759267742bc",
+    "author_date": "2026-11-05T21:33:10+01:00",
+    "committer_date": "2026-11-05T21:33:10+01:00",
+    "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+    "git_blob": "e593871d188f73722ba16cb9ad1692525e92f7e9",
+    "sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+    "snapshot": "historical/18-3aa3ad751123-integration_contracts_v1.py.txt",
+    "symbols": [
+      {
+        "name": "IntelligenceIntegrationError",
+        "line": 13,
+        "end_line": 14
+      },
+      {
+        "name": "require_v1",
+        "line": 17,
+        "end_line": 19
+      },
+      {
+        "name": "text_v1",
+        "line": 22,
+        "end_line": 24
+      },
+      {
+        "name": "instant_v1",
+        "line": 27,
+        "end_line": 35
+      },
+      {
+        "name": "finite_v1",
+        "line": 38,
+        "end_line": 41
+      },
+      {
+        "name": "plain_v1",
+        "line": 44,
+        "end_line": 53
+      },
+      {
+        "name": "bytes_v1",
+        "line": 56,
+        "end_line": 64
+      },
+      {
+        "name": "digest_v1",
+        "line": 67,
+        "end_line": 68
+      },
+      {
+        "name": "strict_json_v1",
+        "line": 71,
+        "end_line": 82
+      },
+      {
+        "name": "seal_v1",
+        "line": 85,
+        "end_line": 88
+      },
+      {
+        "name": "validate_seal_v1",
+        "line": 91,
+        "end_line": 97
+      },
+      {
+        "name": "IntelligenceIdentityV1",
+        "line": 101,
+        "end_line": 117
+      },
+      {
+        "name": "assert_offline_v1",
+        "line": 120,
+        "end_line": 127
+      }
+    ]
+  }
+]

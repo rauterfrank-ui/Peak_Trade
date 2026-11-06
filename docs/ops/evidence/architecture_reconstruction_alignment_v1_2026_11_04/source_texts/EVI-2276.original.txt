@@ -1,0 +1,122 @@
+PEAKTRADE – SOLL–IST-VERGLEICH UND STOPP
+02.11.2026 · Abschluss innerhalb des zuletzt begrenzten Auftrags
+
+AUFTRAG
+
+Prüfen, ob der heutige Stand noch die damalige fachliche Naked-MV2-/
+Double-Play-Konstruktion abbildet. Keine Wiederherstellung. Danach stoppen.
+Die zuvor formulierten Vorschläge für weitere Reparaturen sind damit nicht
+beauftragt. Dieses Dokument ordnet die ausführliche Ergebnis.txt ein.
+
+ERGEBNIS
+
+Die L1–L10-Kernphasen sind nachweislich erhalten. Eine vollständige fachliche
+Gleichheit der damaligen Naked-Konfiguration mit dem heutigen gesamten
+Preis-/GGE-/Scope-Verbund ist NICHT nachgewiesen.
+
+Das bedeutet weder „alles unverändert richtig“ noch „die zehn Ebenen sind
+ein Fehler“. Erhaltene Kernlogik und veränderte äußere Anbindung müssen
+einzeln bewertet werden. Die heutige Implementierung ist kein automatisches
+Sollbild für diesen Vergleich.
+
+1. ERHALTEN
+
+- Die zehn L1–L10-Dateien und ihr Katalog sind bytegleich zum belegten
+  historischen PR-Stand 59a9756215ba796ff2e463f70f3627cc6787d7af.
+- Im Vergleich des zusammengeführten L1–L10-Stands 097b6338a mit HEAD zeigt
+  das Verzeichnis nur eine später ergänzte durable_state_v1.py. Die übrigen
+  dort vorhandenen Dateien sind im Git-Vergleich unverändert.
+- Voraussetzungskette: Instrumentbindung → akzeptierte unterschiedliche
+  Beobachtungen → Richtung → initiales Regime → eigene Preisbasis.
+- Austauschbarer L6-Generator und L7-Zustandsbildung aus ausdrücklich
+  übergebenem D_t bleiben vorhanden.
+- R_t folgt günstigen Bewegungen, CM misst die Gegenbewegung, L10 vergleicht
+  CM mit D. BULL/BEAR-Spiegelung ist in den geprüften Fällen erhalten.
+- 19 bestehende gezielte Phasentests sind bestanden.
+
+Diese Erhaltung ist an die benannten Dateien, Revisionen und Tests gebunden.
+Sie beweist nicht allein identische Gesamtkonfiguration oder Live-Wirkung.
+
+2. NACHWEISLICH VERÄNDERT / ERWEITERT
+
+- Spätere Persistenz und äußere produktive Bind-Seams sind hinzugekommen.
+  Die heutige productive_cycle_bind_seam_v1.py existiert am L1–L10-Merge-
+  Stand 097b6338a noch nicht.
+- Später wurden Episode-Bootstrap, semantische Preis-Provenienzprüfung,
+  Host-Kompatibilitätswege und ein gemeinsamer GGE-Owner eingeführt bzw.
+  geändert. Beispiele in der erreichbaren Historie: 4e84cbf73, ce6c06a22,
+  a21d86060, 049fc18cd, 4e4711452, 1c6f43e89 und adf73d16e.
+- Der heutige GGE-Kontrollweg berechnet σ×M. Der heutige äußere Bind-Adapter
+  liefert daraus ExplicitDtProposal/proposed_d_t an den unveränderten L6.
+  Im historischen L1–L10-Auftrag war die endgültige D_t-Formel ausdrücklich
+  nicht festgelegt. Unveränderter L6 bedeutet deshalb nicht unveränderte
+  Auswahl und Herkunft seines Eingangswerts.
+- Bootstrap und wiederhergestellter Layered-Bind nehmen unterschiedliche
+  Aufrufwege. Drei lokale synthetische Host-Traces zeigen diese Wege.
+
+Die Einordnung als Veränderung ist keine automatische Bewertung als
+unzulässig oder fachlich falsch. Auch ein Umbau ohne geänderte Semantik
+muss von einer Änderung der fachlichen Wirkung unterschieden werden.
+
+3. NICHT AUSREICHEND BELEGT
+
+- Der eine konkrete, vollständig gebundene „damals richtige“ Gesamtstand
+  einschließlich aller zugehörigen Konfigurationswerte und äußeren
+  Verbraucher ist noch nicht als vollständiger Referenzsatz festgelegt.
+  „Naked MV2“ benennt einen fachlichen Anker; der Name allein ist kein
+  eindeutiger Commit-/Config-Pin.
+- Fachliche laufende Nulllinie M_t versus heutiges Codefeld
+  L5.nullline_price: Es sind unterschiedliche Größen. Die vorhandene
+  Zuordnungskarte führt ihre Identität ausdrücklich als offen.
+- Dass der gesamte aktuelle Verbund die von Frank beschriebene laufende
+  Preisbasis und die Scope-Verwendung in beiden Richtungen erfüllt.
+- Durchgehende Aktualisierung/Frische des tatsächlichen Future-Preises
+  bis zum jeweils wirksamen Scope-Consumer und einer etwaigen Anzeige.
+- Vollständige Gleichheit der späteren Formula-/Parameter-/Confirmation-
+  und Zustandsverträge mit dem damaligen fachlichen Ziel.
+- Rechtfertigung sämtlicher später hinzugekommener Übergaben und ihre
+  gesamte Wirkung unter realen Inputs und Wiederanlaufbedingungen.
+
+Eine Reihe historischer Vorgaben ist bewusst unterschiedlich: laufende
+Nulllinie in September-/Oktober-Nachrichten, eine explizite Initialpreisbasis
+im L1–L10-Auftrag und eine spätere Freeze-Architektur als offene Hypothese.
+Die aktuelle Klarstellung von Frank bildet die heutige fachliche Vorgabe.
+Keine historische Variante wird still in eine andere umbenannt.
+
+WICHTIGE KORREKTUR
+
+Die vorherige Interpretation „NullLine muss fest bleiben“ war als Aussage
+über Franks ursprüngliches Ziel zu weitgehend. Belegt ist lediglich, dass
+das so bezeichnete L5-Feld in der untersuchten Schichtenfassung fixiert ist.
+Die fachliche Nulllinie als aktueller Marktpreis ist hiervon getrennt zu
+rekonstruieren. Aus diesem Begriffskonflikt wird keine Sofortreparatur
+abgeleitet. Die L1–L10-Abfolge selbst ist ausdrücklich vorgesehen.
+
+BELEGUMFANG UND GRENZEN
+
+Arbeitskopie: /Users/frnkhrz/Peak_Trade
+HEAD: 242b7974fc93f0bdb47706556101bd6f0c497414
+origin/main: 5d1c838c15369507c5247834db4dd0df25592169
+49 gebundene Quellen, acht gezielte historische User-Nachrichten,
+19 bestandene Phasentests, drei konstruierte Offline-Host-Traces.
+Source-Evidence enthält Hashes, Symbol-/Zeilenanker und Abgleich je Datei
+gegen HEAD und origin/main. Der Host hat außerhalb dieser Betrachtung
+weitere Änderungen auf origin/main. Kein pauschaler Testnachweis dafür.
+
+Git ist shallow; kein vollständiger historischer Ursprung behauptet.
+GHV-Gesamtgraph ist nicht baseline-verifiziert. Keine Gesamtbetriebs- oder
+Kapital-/Profitabilitätsgarantie und keine Freigabe für Live-Betrieb.
+
+STOPP
+
+Vergleich beendet. Keine Wiederherstellung durchgeführt.
+Keine weitere Reparatur, Integration, Folgeuntersuchung oder Hintergrund-
+Aufgabe gestartet. Bestehende Arbeit und historische Quellen erhalten.
+Seit Beginn dieses vollständigen Flow-Vergleichs nur Quellen gelesen und
+isolierte Offline-Nachweise außerhalb der produktiven Daten erzeugt.
+Die zuvor begonnenen Research-Dateien bleiben isoliert; keine Aktivierung.
+
+RESTORATION_PERFORMED=false
+FURTHER_IMPLEMENTATION_DISPATCHED=false
+FOLLOWUP_TASK_STARTED=false
+FINAL_STATUS=COMPARISON_DELIVERED_STOPPED

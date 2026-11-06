@@ -1,0 +1,213 @@
+{
+  "blocked_point_count": 0,
+  "combination_count": 4,
+  "contract_version": "backtest_parameter_sensitivity_v1",
+  "failed_point_count": 4,
+  "full_grid_persisted": true,
+  "grid": {
+    "canonical_trading_logic_version": "v1",
+    "combination_count": 4,
+    "config_digest": "5e5b047887e643e38cffb6b52c851e311e43adc78f29fd03976403e9f657890e",
+    "data_digest_or_explicit_missing": "aa028d537215929bf8fc173208938078667067d5951c0fb7e9be706febbfc754",
+    "grid_digest": "dab3a19d565231a503becfb7c8c18fb72c4b91692cfcf4c5cd69e50c5a440b93",
+    "grid_id": "test_grid_v1",
+    "grid_version": "v1",
+    "implementation_digest": "468775209690f252df98dae7580ac4b2f0e5859433095228e9ebaa4e20adf2fb",
+    "out_of_sample_period": "2026-06-01 18:00:00+00:00..2026-06-01 23:00:00+00:00",
+    "parameter_names": [
+      "fee_bps",
+      "slippage_bps"
+    ],
+    "parameter_values": [
+      [
+        8.0,
+        10.0
+      ],
+      [
+        4.0,
+        6.0
+      ]
+    ],
+    "search_space_bounds": {
+      "fee_bps": {
+        "max": 10.0,
+        "min": 8.0
+      },
+      "slippage_bps": {
+        "max": 6.0,
+        "min": 4.0
+      }
+    },
+    "seed": 42,
+    "strategy_id": "ma_crossover",
+    "strategy_version": "v1",
+    "train_period": "2026-06-01 00:00:00+00:00..2026-06-01 11:00:00+00:00",
+    "validation_period": "2026-06-01 12:00:00+00:00..2026-06-01 17:00:00+00:00"
+  },
+  "grid_digest": "dab3a19d565231a503becfb7c8c18fb72c4b91692cfcf4c5cd69e50c5a440b93",
+  "oos_tuning_forbidden": true,
+  "owner": "backtest.parameter_sensitivity_v1",
+  "parameter_robustness_policy_pass": true,
+  "parameter_robustness_policy_status": "PASS",
+  "pipeline_status": "PIPELINE_PASS",
+  "points": [
+    {
+      "config_digest": "5e5b047887e643e38cffb6b52c851e311e43adc78f29fd03976403e9f657890e",
+      "cost_model_ref": "NOT_BOUND",
+      "data_digest": "aa028d537215929bf8fc173208938078667067d5951c0fb7e9be706febbfc754",
+      "evaluation_status": "FAILED",
+      "funding_model_ref": "NOT_BOUND",
+      "implementation_digest": "468775209690f252df98dae7580ac4b2f0e5859433095228e9ebaa4e20adf2fb",
+      "max_drawdown": {
+        "semantic": "UNKNOWN"
+      },
+      "monte_carlo_status": "NOT_COMPUTED",
+      "net_expectancy": {
+        "semantic": "UNKNOWN"
+      },
+      "net_return": {
+        "semantic": "UNKNOWN"
+      },
+      "out_of_sample_result_ref": "7b60bca13e001e8cf1535d10d37b1c0b6c432aea134065f8a190622366bcf9f1:out_of_sample",
+      "parameter_set_id": "7b60bca13e001e8cf1535d10d37b1c0b6c432aea134065f8a190622366bcf9f1",
+      "parameter_values": {
+        "fee_bps": 8.0,
+        "slippage_bps": 4.0
+      },
+      "profit_factor": {
+        "semantic": "UNKNOWN"
+      },
+      "reason_codes": [
+        "evaluation_failed:Brauche mind. 50 Bars, habe nur 12"
+      ],
+      "result_digest": "ec58d41090a32a814ca9bf8efbf1d192c83a8e0ea844dccc67389a1a6ad740ec",
+      "stress_status": "NOT_COMPUTED",
+      "trade_count": {
+        "semantic": "UNKNOWN"
+      },
+      "train_result_ref": "7b60bca13e001e8cf1535d10d37b1c0b6c432aea134065f8a190622366bcf9f1:train",
+      "validation_result_ref": "7b60bca13e001e8cf1535d10d37b1c0b6c432aea134065f8a190622366bcf9f1:validation",
+      "walk_forward_status": "NOT_COMPUTED"
+    },
+    {
+      "config_digest": "5e5b047887e643e38cffb6b52c851e311e43adc78f29fd03976403e9f657890e",
+      "cost_model_ref": "NOT_BOUND",
+      "data_digest": "aa028d537215929bf8fc173208938078667067d5951c0fb7e9be706febbfc754",
+      "evaluation_status": "FAILED",
+      "funding_model_ref": "NOT_BOUND",
+      "implementation_digest": "468775209690f252df98dae7580ac4b2f0e5859433095228e9ebaa4e20adf2fb",
+      "max_drawdown": {
+        "semantic": "UNKNOWN"
+      },
+      "monte_carlo_status": "NOT_COMPUTED",
+      "net_expectancy": {
+        "semantic": "UNKNOWN"
+      },
+      "net_return": {
+        "semantic": "UNKNOWN"
+      },
+      "out_of_sample_result_ref": "1a104b8fda6262891a8bbf13bb8b713ac73b2cb4825dbe76d2b5a4d9c4a2cf24:out_of_sample",
+      "parameter_set_id": "1a104b8fda6262891a8bbf13bb8b713ac73b2cb4825dbe76d2b5a4d9c4a2cf24",
+      "parameter_values": {
+        "fee_bps": 8.0,
+        "slippage_bps": 6.0
+      },
+      "profit_factor": {
+        "semantic": "UNKNOWN"
+      },
+      "reason_codes": [
+        "evaluation_failed:Brauche mind. 50 Bars, habe nur 12"
+      ],
+      "result_digest": "6effe70b77b6c28c3141bc70f9c20c6929caa9458683790a2dfdd56ef8eeebc4",
+      "stress_status": "NOT_COMPUTED",
+      "trade_count": {
+        "semantic": "UNKNOWN"
+      },
+      "train_result_ref": "1a104b8fda6262891a8bbf13bb8b713ac73b2cb4825dbe76d2b5a4d9c4a2cf24:train",
+      "validation_result_ref": "1a104b8fda6262891a8bbf13bb8b713ac73b2cb4825dbe76d2b5a4d9c4a2cf24:validation",
+      "walk_forward_status": "NOT_COMPUTED"
+    },
+    {
+      "config_digest": "5e5b047887e643e38cffb6b52c851e311e43adc78f29fd03976403e9f657890e",
+      "cost_model_ref": "NOT_BOUND",
+      "data_digest": "aa028d537215929bf8fc173208938078667067d5951c0fb7e9be706febbfc754",
+      "evaluation_status": "FAILED",
+      "funding_model_ref": "NOT_BOUND",
+      "implementation_digest": "468775209690f252df98dae7580ac4b2f0e5859433095228e9ebaa4e20adf2fb",
+      "max_drawdown": {
+        "semantic": "UNKNOWN"
+      },
+      "monte_carlo_status": "NOT_COMPUTED",
+      "net_expectancy": {
+        "semantic": "UNKNOWN"
+      },
+      "net_return": {
+        "semantic": "UNKNOWN"
+      },
+      "out_of_sample_result_ref": "0181624eb9fd6905b509d8261ce6598fd4b1a277902d44b2b32e0548c67bd069:out_of_sample",
+      "parameter_set_id": "0181624eb9fd6905b509d8261ce6598fd4b1a277902d44b2b32e0548c67bd069",
+      "parameter_values": {
+        "fee_bps": 10.0,
+        "slippage_bps": 4.0
+      },
+      "profit_factor": {
+        "semantic": "UNKNOWN"
+      },
+      "reason_codes": [
+        "evaluation_failed:Brauche mind. 50 Bars, habe nur 12"
+      ],
+      "result_digest": "f3e3b27f57d5a00c9e93caca33aeb760df2eff11981afa3edf739e32986dc82d",
+      "stress_status": "NOT_COMPUTED",
+      "trade_count": {
+        "semantic": "UNKNOWN"
+      },
+      "train_result_ref": "0181624eb9fd6905b509d8261ce6598fd4b1a277902d44b2b32e0548c67bd069:train",
+      "validation_result_ref": "0181624eb9fd6905b509d8261ce6598fd4b1a277902d44b2b32e0548c67bd069:validation",
+      "walk_forward_status": "NOT_COMPUTED"
+    },
+    {
+      "config_digest": "5e5b047887e643e38cffb6b52c851e311e43adc78f29fd03976403e9f657890e",
+      "cost_model_ref": "NOT_BOUND",
+      "data_digest": "aa028d537215929bf8fc173208938078667067d5951c0fb7e9be706febbfc754",
+      "evaluation_status": "FAILED",
+      "funding_model_ref": "NOT_BOUND",
+      "implementation_digest": "468775209690f252df98dae7580ac4b2f0e5859433095228e9ebaa4e20adf2fb",
+      "max_drawdown": {
+        "semantic": "UNKNOWN"
+      },
+      "monte_carlo_status": "NOT_COMPUTED",
+      "net_expectancy": {
+        "semantic": "UNKNOWN"
+      },
+      "net_return": {
+        "semantic": "UNKNOWN"
+      },
+      "out_of_sample_result_ref": "d4b4390d49684d14758e2b4cd48a0bf33e4ff16b90095d2c7c6e951a0c019ae9:out_of_sample",
+      "parameter_set_id": "d4b4390d49684d14758e2b4cd48a0bf33e4ff16b90095d2c7c6e951a0c019ae9",
+      "parameter_values": {
+        "fee_bps": 10.0,
+        "slippage_bps": 6.0
+      },
+      "profit_factor": {
+        "semantic": "UNKNOWN"
+      },
+      "reason_codes": [
+        "evaluation_failed:Brauche mind. 50 Bars, habe nur 12"
+      ],
+      "result_digest": "713a54c1d09dafba8edee87b30379408650c0a302d9c3937495c2ff77c4b9ec6",
+      "stress_status": "NOT_COMPUTED",
+      "trade_count": {
+        "semantic": "UNKNOWN"
+      },
+      "train_result_ref": "d4b4390d49684d14758e2b4cd48a0bf33e4ff16b90095d2c7c6e951a0c019ae9:train",
+      "validation_result_ref": "d4b4390d49684d14758e2b4cd48a0bf33e4ff16b90095d2c7c6e951a0c019ae9:validation",
+      "walk_forward_status": "NOT_COMPUTED"
+    }
+  ],
+  "reason_codes": [
+    "parameter_points_failed",
+    "parameter_sensitivity_pipeline_executed"
+  ],
+  "result_digest": "d5741de6624a97c3f9808dd7bde0a708175246824c32c928c8f953ec19b7b0f2",
+  "seed": 42
+}

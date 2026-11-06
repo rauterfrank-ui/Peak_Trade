@@ -1,0 +1,18 @@
+{
+  "source_commit": "a09f8e6c92bc6983d02b0994329c1ef91086a858",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "3922e0bb84080d725ecad608249198a0ef64139c8007c8c09826e834b9b0a86f",
+    "canonical_advanced_search_v1.py.before.txt": "b2357b490eccdd5a3edd5889874e1f6c9665335156852734d338fcde67b40913",
+    "learning_envelope_after.xml": "8bc769939a29ede368205c872f51009c4b76a532334ea60273042706115a0041",
+    "learning_envelope_before.xml": "00ea2f652ca59096f78d58490c007fbd2de10fec636ef6eaa5fd51f46c8cde49",
+    "learning_envelope_neighbors.xml": "3417df0c9db47348c1b4817345607c7cd2cddf922e9e5a84329a91bbe6b2a49b",
+    "learning_evidence_record_v1.py.before.txt": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b",
+    "meta_target_after.xml": "4c56c761f326a0c129de2d334e304adbd63caac3d93f23893d7cd7ae6f8edbb4",
+    "meta_target_before.xml": "a844e4b01c40fdbc0abf5d392c82b50be93eba8cdaf9489de38f9b7ad4b17589",
+    "normal_fixture_comparisons.json": "b2df354f6479e041ab4c90132ac561ccec1988303944d4c5e1bed07eb3e12b2a",
+    "optimization_provenance_eligibility_v1.py.before.txt": "7f34ada4f0e6e5c83417767bff59031aae18ff8ed0da37a109f077f97775c582",
+    "receipt.json": "96273e4931014df0f034fc0188ba8e49069d80b4aa4f751b2c5f7cc7145958a4",
+    "source_changes.patch.txt": "0889010ff29ee00a0654c3a0b7775712fc5478e189affabce94cc8588d9e4aa6"
+  }
+}

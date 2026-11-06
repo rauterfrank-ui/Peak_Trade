@@ -1,0 +1,80 @@
+---
+title: "PeakTrade System-Cockpit"
+stand: "2026-11-05"
+rolle: "Abgeleitete Orientierung ohne Betriebsautorität"
+authoritaet: "NONE"
+---
+
+# PeakTrade System-Cockpit
+
+> [!info] SL und OPT ausdrücklich getrennt
+> [[00 Systemindex/SL OPT Trennung/Selbstlernen und Optimierung getrennt|Originalaufgaben, Wiederverwendung und getrennte Writer/Übergaben]]. Gemeinsame Module oder Meta-Begriffe verschmelzen die Universen nicht.
+
+> [!info] Semantik bis zum tatsächlichen Consumer
+> [[00 Systemindex/Systempruefung/Systemweite Semantik|Bedeutung, Einheit, Identität, Informationszeit, Zustand und erlaubte Wirkung systemweit prüfen]]. Struktur, Namen und Datentypen allein reichen nicht.
+
+> [!info] Systemweiter Dokumentationsdurchgang abgeschlossen
+> [[00 Systemindex/Systempruefung/Gesamtsystem Dokumentationsabgleich|Alle22 Bereiche,91 inneren Gruppen,62 Übergänge und dokumentierten Unterschiede]]. Nur Dokumentation; fachliche Architekturvollständigkeit und natürliche Gesamtwirkung bleiben offen. Fünf Slots bleiben fest.
+
+> [!info] Weitere offene Arbeit außerhalb der Pfadkarte
+> [[00 Systemindex/Offene Punkte und Arbeitsfolge|22 bekannte Themen in 8 Bündeln: jetzt bearbeitbar, abhängig oder bewusst begrenzt]]. Die offenen Übergänge auf der Karte sind nicht der gesamte Arbeitsvorrat.
+
+> [!info] Produktiver Pfad · Zuständigkeiten und Sperren
+> [[00 Systemindex/Produktiver Pfad und Enforcement|Enforcement-Sicht öffnen]] · [[00 Systemindex/Karten/Produktiver Pfad.canvas|Pfadkarte]] · [[00 Systemindex/Enforcement Pruefung|Lokaler Dokumentcheck]]. Dokumentmarkierung, keine Aktivierungsfreigabe.
+
+## Was diese Anzeige bedeutet
+
+**Datierte Dokumentationssicht vom05.11.2026, kein Livemonitor.** Die Anzeige bezieht sich auf den gebundenen lokalen Stand und dessen erhaltene Nachweise. Ob jetzt ein fremder Prozess läuft, wird damit nicht beobachtet.
+
+## Der belastbare Stand
+
+- **Ausgewählter synthetischer Offlineverbund:** tatsächliche Consumerwirkungen in1509 unterschiedlichen gebundenen Tests;39 Pflichtfälle.
+- **Natürliche Gesamtwirkung:** nicht abgenommen.
+- **Wirtschaftliche Qualität:** BLOCKED; positiver Zielvertrag/Unabhängigkeits-/Kostennachweis offen.
+- **Produktive Betriebs-/Orderfreigabe aus diesen Nachweisen:** NONE.
+- **GitHubintegration:** separat offen; keine gesamte grüne Repositoriesuite behauptet.
+
+[[01 System/Abnahmestand|Exakter Abnahmescope]] · [[01 System/Offene Grenzen|Offene Grenzen]] · [[90 Nachweise/Belegregister|Originale Nachweise]]
+
+## Vier Wege durch das System
+
+1. **Was passiert konkret?** [[00 Systemindex/Fallverlaeufe|Sechs durchgehende Fallverläufe]].
+2. **Wo liegt die Verantwortung?** [[PeakTrade-Systemindex|Universen und Außenkanten]] · [[00 Systemindex/Semantische Ebenen|Semantische Ebenen]].
+3. **Was wäre von einer Änderung betroffen?** [[00 Systemindex/Aenderungsauswirkungen|Auswirkungen je Bereich]].
+4. **Was fehlt und wer muss entscheiden?** [[00 Systemindex/Entscheidungen und Widersprueche|Gemeinsames Entscheidungs-/Widerspruchsregister]].
+
+[[00 Systemindex/Karten/Cockpit.canvas|Cockpitkarte]] · [[00 Systemindex/Externe Signalstroeme|Externe Signale]] · [[00 Systemindex/Execution und Betriebsarten|Execution/Betriebsarten]]
+
+## Bereichsstand richtig lesen
+
+**Vorgesehen → Code vorhanden → statisch verbunden → im benannten Fall beobachtet → natürlich/wirtschaftlich/operativ abgenommen** sind getrennte Belegarten. Ein späterer Status ist nicht allein aus dem vorherigen ableitbar. Für jeden Bereich stehen Quellen/Code, beobachtete Wirkung und verbleibende Lücken im Dossier; es gibt bewusst keinen unbelegten pauschalen Grünstatus pro Universum.
+
+- [[00 Systemindex/Universen/RANK|Ranking-Universum]] · [[00 Systemindex/Auswirkungen/RANK|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] · [[00 Systemindex/Auswirkungen/CORE|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/SL|Selbstlern-Universum]] · [[00 Systemindex/Auswirkungen/SL|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/OPT|Optimierungs-Universum]] · [[00 Systemindex/Auswirkungen/OPT|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/INT|Intelligenz-Universum]] · [[00 Systemindex/Auswirkungen/INT|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/FA|Vollautonomie-Universum]] · [[00 Systemindex/Auswirkungen/FA|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/TREASURY|Treasury]] · [[00 Systemindex/Auswirkungen/TREASURY|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/RISK|Risk Sizing und Equityadmission]] · [[00 Systemindex/Auswirkungen/RISK|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/BUDGET|Portfolio und Reservierung]] · [[00 Systemindex/Auswirkungen/BUDGET|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/ACCOUNTING|Accounting Position und Reconciliation]] · [[00 Systemindex/Auswirkungen/ACCOUNTING|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/GOV|Governance Promotion und Applygrenze]] · [[00 Systemindex/Auswirkungen/GOV|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/SAFETY|Safety und Sperrgrenzen]] · [[00 Systemindex/Auswirkungen/SAFETY|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EVAL|Evaluation GVEF und Qualitätsnachweise]] · [[00 Systemindex/Auswirkungen/EVAL|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/DATA|Datenebene und Quellenadmission]] · [[00 Systemindex/Auswirkungen/DATA|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EXEC|Intent Ausführungsgrenze und Lifecycle]] · [[00 Systemindex/Auswirkungen/EXEC|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/CRED|Credential und Capabilitygrenzen]] · [[00 Systemindex/Auswirkungen/CRED|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/HOST|Host Session und Prozessbetrieb]] · [[00 Systemindex/Auswirkungen/HOST|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/STORE|Persistenz Identität und Transportmechanik]] · [[00 Systemindex/Auswirkungen/STORE|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/VIEW|Operator Anzeige Monitoring und Wissen]] · [[00 Systemindex/Auswirkungen/VIEW|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/ENG|Entwicklung Tests CI und Auslieferung]] · [[00 Systemindex/Auswirkungen/ENG|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EIP|Evidence Input Plane und G2-Querübergaben]] · [[00 Systemindex/Auswirkungen/EIP|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/GATES|F1 M9 Schwellen und Laufzeitadmission]] · [[00 Systemindex/Auswirkungen/GATES|Übergaben/Auswirkungen]]
+
+## Stand und Aktualisierung
+
+HEAD `1814ca5b24d1d3ab537683e340b3ab045ea51e62` plus lokale uncommittete Ergänzungen; Sourcebaum `3190c01f4393dbfa695bf610160555e7720b735916d04d014810ece2b7310eaf`. Bei neuer Source-/Config-/Evidencegeneration muss diese Sicht erneut abgeglichen werden. Alte PASS-Receipts wandern nicht automatisch auf neue Versionen. Der heutige Documentationcheck prüft Links/Bindungen/Erhaltung und erzeugt keine neue fachliche Abnahme.
+
+
+[[00 Systemindex/System Cockpit|Cockpit]] · [[PeakTrade-Systemindex|Systemindex]]

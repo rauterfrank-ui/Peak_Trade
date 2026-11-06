@@ -20,7 +20,7 @@ def attach_market_context_to_mi_offline_cycle_v1(
     request: ExistingFactMaterializationRequestV1,
 ) -> dict[str, Any]:
     """Compose market context for MI/Learning offline evidence (observation-only)."""
-    if EXTERNAL_EFFECT_AUTHORIZED or RUNTIME_REACHABILITY != "OFFLINE_ONLY":
+    if EXTERNAL_EFFECT_AUTHORIZED is not False or RUNTIME_REACHABILITY is not False:
         raise ValueError("MI_MARKET_CONTEXT_BRIDGE_RUNTIME_FORBIDDEN")
     record = dict(materialize_market_context_v1_from_existing_facts_v1(request))
     return {

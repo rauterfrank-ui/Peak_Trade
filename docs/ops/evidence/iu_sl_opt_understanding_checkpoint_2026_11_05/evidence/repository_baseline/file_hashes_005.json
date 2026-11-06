@@ -1,0 +1,5002 @@
+[
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/ruff.txt",
+    "sha256": "341d99a178e8c2cd63791317b1089ed1b92f38ec4af38af6c66675ab4fc8a583",
+    "size": 408
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/scope_state_trailing_analysis.txt",
+    "sha256": "7dc6529452d5d3b3afd203a6d0a5b24f337f8e7827742311f5165a02ec61680c",
+    "size": 1583
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/test_results.txt",
+    "sha256": "0d9d74e71a2328c61e834d0f7ef626cda97770878219bdae35eb343197974486",
+    "size": 426
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/threshold_analysis.txt",
+    "sha256": "2a16a8c6e8607c0126f153a4ffe96b447b13b8f591013035bb79b58520728f1d",
+    "size": 1921
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/verdict.txt",
+    "sha256": "99732281b4d3ec01b7b718479c8cf47eb60b348d30ad502b9bbd9eaf3695962b",
+    "size": 1774
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/worktree_after.txt",
+    "sha256": "a569dbac2bd5c190a0b22e56db5fea4988691a5f7ec040758252329cdcb4860e",
+    "size": 427
+  },
+  {
+    "path": "docs/evidence/scope_event_noop_root_cause_audit_v1/worktree_before.txt",
+    "sha256": "cc44ff1b1fb231f144053621c799d70f1063025a004ddd7f02dd0f2fe82de343",
+    "size": 428
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/README.md",
+    "sha256": "fdea3aea2242fc02e9be5a789403c616daa7b0dea8068b1950391130570c3efb",
+    "size": 1824
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/attribution_by_composition.csv",
+    "sha256": "533dcc3e5565fc6a466fc88411d8a4eb58a13e2b22fc27336d7d48fcd09e7f73",
+    "size": 296
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/attribution_by_direction.csv",
+    "sha256": "f3ad0549f282270310576ea580608837151533e0c49e3ad5908c6364d276c580",
+    "size": 779
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/attribution_by_exit_reason.csv",
+    "sha256": "0225f94a21a4ee68cf558ccacb41fa75d695a14882a209330ecb5f428b00329d",
+    "size": 589
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/attribution_by_instrument.csv",
+    "sha256": "bb7c2c97798a9d394a9fb0c8cd1aeb710aa30bd015dff19397607d2db3fc14c1",
+    "size": 36104
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/attribution_by_scope.csv",
+    "sha256": "aa314e8b2da2a506c1000b3049587e9097477de3539c7307354654db54aeff36",
+    "size": 236
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/baseline_reproduction.json",
+    "sha256": "2efa3b5c1f72bd9f86bc6a654929df87a25d00ebc2831cf121a9b2302627a036",
+    "size": 5197
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/chronological_segments.csv",
+    "sha256": "00adbf2eec9c5d1343f156130f07cf3f1dea13f146ec16bbc4b94b5153022bc4",
+    "size": 1754
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/commands.log",
+    "sha256": "cfa1ec21445adab79ea5a4bc505562e98667ae40f7a0f2fb368f4e678647060d",
+    "size": 255
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/cost_turnover_attribution.csv",
+    "sha256": "2dbbb1da8f7061c3dbb5ba266c6e9f920bc3950e82ac7a7a08cfb17080172eea",
+    "size": 1237
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/decision_matrix.md",
+    "sha256": "d5c825b6f448383d66b386338bee573f8693719e150861bec021c98e45341692",
+    "size": 3231
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/leave_one_instrument_out.csv",
+    "sha256": "395dae565babade2a8bfa82182f2920d805c71e2ab042993834f5ebb8cabcd21",
+    "size": 25002
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/manifest.json",
+    "sha256": "f24a2faf5e4459ec40487532aae0b9dfd65e2357ddbac49c57900376ef2376a1",
+    "size": 2237
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/robustness_summary.json",
+    "sha256": "26b78aeb2d28131d305f9a48cdf8ccf9e1f9af5cd7f241f3be377d2d8b6c422e",
+    "size": 10514
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/root_cause_classification.json",
+    "sha256": "a5867474cb84b88c0a0f8b741e6d4050ead0c8271c3673f1ed82f63fa3082ca5",
+    "size": 5126
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/run_attribution_audit_v1.py",
+    "sha256": "950eacf22b006776d6b291c6462c7d050acd2a3522ac5ae0fdc7e46ef33808b4",
+    "size": 59209
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/stress_reaudit.csv",
+    "sha256": "2f50d65c888f68a29b6c3f17fd0aa2400d3f934274bd3c4d51f58a6b10ce5c43",
+    "size": 1954
+  },
+  {
+    "path": "docs/evidence/separate_read_only_robustness_attribution_audit_v1/walk_forward_reaudit.csv",
+    "sha256": "febfb6d83e4b19c7eb79e8a32058229dec05a387e6c4a74c64527413faa3f6a4",
+    "size": 878
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/README.md",
+    "sha256": "50b8d71e2d017f9a1c8e9c361b786d2c9c47ce17e30fe356736b7685cdd7cf93",
+    "size": 1194
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/fixture_alignment_matrix.md",
+    "sha256": "9ddb6faaf4969b9a1014f4a62199f36a0890943e531ea592668761fbe40a99ef",
+    "size": 1691
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/git_diff_stat.txt",
+    "sha256": "ee02b5c0c83ceff82011fc2f379f6e05e93a2ceb4d73a249c6c928deb82ea48f",
+    "size": 206
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/repro_before.txt",
+    "sha256": "899015991538d9f29fa927dc8017ddbdca0c521fc70c1c276871aab9a990ed6c",
+    "size": 14929
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/root_cause.md",
+    "sha256": "ff178ba650dd2305e9e287155fcc17bab2cd3639972032867784df234b763207",
+    "size": 1249
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/safety_contract.md",
+    "sha256": "bc98bc38821cfb63dcb7216a49c537eac663e0e585de5a653ecea0f36b87d34d",
+    "size": 873
+  },
+  {
+    "path": "docs/evidence/surface_p_smoke_composition_alignment_v1/tests.txt",
+    "sha256": "4e8816465bf9ca3cfdc3f9846a0bca65ed2b1459558d6ea88807fedd856482c9",
+    "size": 120
+  },
+  {
+    "path": "docs/evidence/volatility_compression_breakout_v1_definition_semantics_completion_pre_pr_v1/summary.json",
+    "sha256": "ca82d449dc5942bba683cf4e023bb2e0f755e4d9e846b6897a3afef542b9b325",
+    "size": 843
+  },
+  {
+    "path": "docs/evidence/volatility_compression_breakout_v1_definition_semantics_completion_pre_pr_v1/wallclock_seconds.txt",
+    "sha256": "b58a3da5fde2680191877ec88a1aa7d06927cc3b30cdf0d0db8c39b488891576",
+    "size": 3
+  },
+  {
+    "path": "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/README.md",
+    "sha256": "54b10d29b6463856a41fa63545a859076129ea805f803e5b7520f033e1504cc8",
+    "size": 621
+  },
+  {
+    "path": "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/local_gate_timing_proof.txt",
+    "sha256": "73f92dd390e1cde890c03fe671e0c644714955bb402c5c8ee0d603aa320c6c75",
+    "size": 4634
+  },
+  {
+    "path": "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/local_selector_proof.txt",
+    "sha256": "20fc39c9b6dc7f147d1b2dfd4b82f88692c47b63d6876079ea21bb1e9a5de29d",
+    "size": 1240
+  },
+  {
+    "path": "docs/evidence/volatility_regime_post_cslrvc_close_lane_lifecycle_decision_v1/safety_attestation.md",
+    "sha256": "33f2f38ecf3870f3c219fb822d17fc2143549cd5d8fdeb59c8fe73cbfcc2a505",
+    "size": 381
+  },
+  {
+    "path": "docs/execution/DETERMINISTIC_REPLAY_PACK.md",
+    "sha256": "f3291da682ff710929e7565aa05e7a9c143148ce0261530521afabe239771000",
+    "size": 8041
+  },
+  {
+    "path": "docs/execution/EXECUTION_SIMPLE_V1.md",
+    "sha256": "e81bf483538a0f9399fc3022827c4b59d5e0fc666538c79aec4b6264e0d509c9",
+    "size": 9297
+  },
+  {
+    "path": "docs/execution/EXECUTION_TELEMETRY_LIVE_TRACK_V1.md",
+    "sha256": "7079f5b98629485406299711b7be29835fe57b53ac6dd1e107d89598a4219721",
+    "size": 13869
+  },
+  {
+    "path": "docs/execution/LEDGER_SLICE2.md",
+    "sha256": "10cf25ad3076a87c2cb7b600042b2db1b1e6ec7ca9429b363be307e5c22a440d",
+    "size": 2802
+  },
+  {
+    "path": "docs/execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md",
+    "sha256": "451d41fd28ff39c8753f80b7f35e9deaa8f568edc5c1880e290b272d96ad7f0f",
+    "size": 13317
+  },
+  {
+    "path": "docs/execution/PHASE0_GATE_REPORT.md",
+    "sha256": "ca4cea913763d6c0f07f9f15c519f9357208ce35fb1b09614995078fa2ac3798",
+    "size": 9496
+  },
+  {
+    "path": "docs/execution/PHASE0_INTEGRATION_DAY_CHECKLIST.md",
+    "sha256": "af5c32925c68b5309e0b263b0af7c92da3b53a27233dc83f357c0a8ba35ff555",
+    "size": 11165
+  },
+  {
+    "path": "docs/execution/README.md",
+    "sha256": "1a1b6efdd3c7eb6842721e3938a36dfee56ed3939cc75f305db8f5752735adcc",
+    "size": 2472
+  },
+  {
+    "path": "docs/execution/REPLAY_PACK_VNEXT.md",
+    "sha256": "856a0c10ef2e602161934a7b164c6673f4f6f11a4e094efd46b60ecc02f2dadb",
+    "size": 6225
+  },
+  {
+    "path": "docs/execution/RUNBOOK_RECON_DIFFS.md",
+    "sha256": "a1a3cda453486a4686c3ff97b0558885f220dcedf8c0b9563325aaf52dfa0520",
+    "size": 12786
+  },
+  {
+    "path": "docs/execution/SLICE_3_BETA_BRIDGE.md",
+    "sha256": "ba7d2b0277f7bcf4342b284df409cb5f71060987a1b67f19b35563ddcaf20f85",
+    "size": 6711
+  },
+  {
+    "path": "docs/execution/TELEMETRY_VIEWER.md",
+    "sha256": "7aa2ea86c95ea53d4c1db7e6ab563ea352c78a1fccdc92687df177ba9a2a2d27",
+    "size": 11120
+  },
+  {
+    "path": "docs/execution/WP0A_COMPLETION_REPORT.md",
+    "sha256": "a281c3ef265d5634ce2eba03819d611fc7ba7769538ea1832cbfcbdccf3eee73",
+    "size": 8928
+  },
+  {
+    "path": "docs/execution/WP0A_GATE_REPORT.md",
+    "sha256": "f3f0e13ae8d568fea42c62e3677bd07aecea02c8858d3a3d7f6e9ddab0de6fe7",
+    "size": 13520
+  },
+  {
+    "path": "docs/execution/WP0B_COMPLETION_REPORT.md",
+    "sha256": "8a2487ea0fad33d90dcd5c370c1b21e69335e07b676c1f5a2d73911ab7cc4d07",
+    "size": 8270
+  },
+  {
+    "path": "docs/execution/WP0C_COMPLETION_REPORT.md",
+    "sha256": "9a1a81a677938e8237ba1899ed445f4d15bea80564fb3e350d782bc8b1f991cc",
+    "size": 12593
+  },
+  {
+    "path": "docs/execution/WP0D_COMPLETION_REPORT.md",
+    "sha256": "effebdc131cdbce208607b6062e52f1fb8d637401f2f320c3ce8c684af717768",
+    "size": 12613
+  },
+  {
+    "path": "docs/execution/WP0E_COMPLETION_REPORT.md",
+    "sha256": "f06257d21ee77a827155817aca6076abebb2c2162869b0f0467ff180db5ae91c",
+    "size": 8095
+  },
+  {
+    "path": "docs/execution/WP1A_COMPLETION_REPORT.md",
+    "sha256": "c6c967f64ac8964a8cbec72ec1a04e82ee29e3cde3658dff0235eb4960bcf560",
+    "size": 9400
+  },
+  {
+    "path": "docs/execution/WP1C_COMPLETION_REPORT.md",
+    "sha256": "91474bd54a807ae194a10249a75f2f218e055c16a1b1f90faaa6e659706c6f47",
+    "size": 263
+  },
+  {
+    "path": "docs/execution/WP1D_COMPLETION_REPORT.md",
+    "sha256": "e510efe04ee7831997a43dd9b72b889f3aeb86bf15aac916cffbc3272c8fc242",
+    "size": 7358
+  },
+  {
+    "path": "docs/execution/WP4B_EVIDENCE_PACK_TEMPLATE.md",
+    "sha256": "d657625862e6d6c054d23973fcadf9b4826563d3b2b238eabbc0547c5fa9c27c",
+    "size": 925
+  },
+  {
+    "path": "docs/execution/WP4B_OPERATOR_DRILLS_EVIDENCE_PACK.md",
+    "sha256": "f88b2b1c9bbd711d4043dfebe585f8b1deab6672fc1d91529b732abdcd198e29",
+    "size": 6436
+  },
+  {
+    "path": "docs/execution/phase0/PHASE0_GATE_REPORT_TEMPLATE.md",
+    "sha256": "cec5edbe4887077ba0c0e45fffb06b824cd2aba40c6a813825f7809556172aac",
+    "size": 9729
+  },
+  {
+    "path": "docs/execution/phase0/PHASE0_INTEGRATION_DAY_PLAN.md",
+    "sha256": "02f9cdf4d0f28bf3acbdc8f9a1f9f91199910625afbe29a44d945d2ee30c9f03",
+    "size": 8703
+  },
+  {
+    "path": "docs/execution/phase0/PHASE0_OWNERSHIP_MATRIX.md",
+    "sha256": "c6e5134a3ab0a34359f1b09c4cf8f5545852d380fa07c0101c5ce84feb6d4ded",
+    "size": 5129
+  },
+  {
+    "path": "docs/execution/phase0/WP0A_TASK_PACKET.md",
+    "sha256": "92bddcb1c748592d58bbde7a3223fde0636a64eb98f0bf4e28284837b1349e71",
+    "size": 29523
+  },
+  {
+    "path": "docs/execution/phase0/WP0B_TASK_PACKET.md",
+    "sha256": "71fef43a26650c5cd101d1e9e196ddd3d8526e139ed95f75be7bf9bfa0a457b0",
+    "size": 27884
+  },
+  {
+    "path": "docs/execution/phase0/WP0C_TASK_PACKET.md",
+    "sha256": "e06519df6238be439e872d6c94232473fa0a684ccd9f336b748489d68868f8df",
+    "size": 33289
+  },
+  {
+    "path": "docs/execution/phase0/WP0D_TASK_PACKET.md",
+    "sha256": "294555e798d631635c6d363e8bdac1e5ce7d8574b8a9289174cdaceed47351bf",
+    "size": 47507
+  },
+  {
+    "path": "docs/execution/phase0/WP0E_IMPLEMENTATION_GATE_REPORT.md",
+    "sha256": "bdfbc76ea649a30f4c0cee43814b13af0e1514c5ce4af08f84d60668ed2234c0",
+    "size": 14824
+  },
+  {
+    "path": "docs/execution/phase0/WP0E_TASK_PACKET.md",
+    "sha256": "61e8dd768a643eee0f4c1ecade22eae18216b6fa23430a67961f302b49f8e12d",
+    "size": 26488
+  },
+  {
+    "path": "docs/execution/phase16/PHASE16A_EXECUTION_PIPELINE_MVP.md",
+    "sha256": "7307c7d1ab090dc177a032f84d1d17e992f34c72817068975a1c8ac5879ca0b3",
+    "size": 3303
+  },
+  {
+    "path": "docs/execution/phase4/GOVERNANCE_LOCK_LOG.md",
+    "sha256": "059456b08124c1a592ac23f3d8e9d46feb3d70181cabac1fc9a35f394cb9b41d",
+    "size": 446
+  },
+  {
+    "path": "docs/execution/phase4/GO_NO_GO_MEETING_LOG.md",
+    "sha256": "833c5b8a539d3da517be878138cc8768eb062287d6c05483bc2d4103fb9b06b9",
+    "size": 445
+  },
+  {
+    "path": "docs/execution/phase4/WP4A_LIVE_READINESS_GOVERNANCE_LOCK_PACKET.md",
+    "sha256": "25b56b7c971d5be22a75e635553a7df047c8cfc15b966d76285be17c73ddc4c4",
+    "size": 21617
+  },
+  {
+    "path": "docs/execution/phase4/evidence/WP4A_PREFLIGHT_CHECKLIST.md",
+    "sha256": "e00833af9c1d6e5047ed30bf64bbc771667d47ba1c4d5f5699e1f18774972ea3",
+    "size": 595
+  },
+  {
+    "path": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+    "sha256": "79069f1d25460171df537012947847b9035e648d6de3cc2f9ff6ace02af196e1",
+    "size": 12255
+  },
+  {
+    "path": "docs/features/psychology/PSYCHOLOGY_HEATMAP_README.md",
+    "sha256": "847d121b2347f8e53350bf999d31a47a4659b8ed0a2d9e758a5e97fdee4b65d5",
+    "size": 9932
+  },
+  {
+    "path": "docs/features/psychology/PSYCHOLOGY_HEURISTICS_IMPLEMENTATION.md",
+    "sha256": "44445a70f156545410495c42f77bb9316218a25daea3f19bf17da3f0ca8ae12c",
+    "size": 14791
+  },
+  {
+    "path": "docs/features/psychology/PSYCHOLOGY_HEURISTICS_README.md",
+    "sha256": "b5d25707d3205d3c38dcd6d356452aa13695653e0ad5bc02cb5bfa8581bdecc2",
+    "size": 8998
+  },
+  {
+    "path": "docs/features/rd_strategy_status_grammar_v0.json",
+    "sha256": "9e56eaa80d7be21b89c326b4784d6dceaecd111371f0c3c9e9cc26766f2434a2",
+    "size": 3406
+  },
+  {
+    "path": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md",
+    "sha256": "0624e0f34d5f77fa80f8f11c823033599155492cd0d2fa8efdbede555c23c8ec",
+    "size": 3414
+  },
+  {
+    "path": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md",
+    "sha256": "3fb69b1d0accd7924045cb147351b319767269c62b9f5331a06cd648b28644a1",
+    "size": 2208
+  },
+  {
+    "path": "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md",
+    "sha256": "af814a2c4b957050d413609f6236c7ddf0878dbcca9f5471ce2d8d0d62921f68",
+    "size": 2999
+  },
+  {
+    "path": "docs/forensics/persistence/AUTHORITY_NONE.txt",
+    "sha256": "2b4029cde89920f7c8550746cfa262044632ad68354920537c00890f97c996b8",
+    "size": 580
+  },
+  {
+    "path": "docs/forensics/persistence/FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md",
+    "sha256": "255d1e9e8602818a759268855c63f121b99cc681e7a9bd5faa914ec125d1c442",
+    "size": 9422
+  },
+  {
+    "path": "docs/forensics/persistence/FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md",
+    "sha256": "0551617f2fa848f49f30a7429aa49c190029d3e898700a12a5240b0f0a2cecdf",
+    "size": 6767
+  },
+  {
+    "path": "docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md",
+    "sha256": "7140fd63cacb6007283fdc15657fcdb853c4ff7c47bc36ffa634465f0359cb89",
+    "size": 37346
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_OBSERVATION_V1.json",
+    "sha256": "e03e7a7a227b3a0b7912611b06c1b6da82f08aa713dc5e7087157d19afd280d5",
+    "size": 2259
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/AUTHENTICATED_PRODUCTIVE_TRANSPORT_OBSERVATION_V1.json",
+    "sha256": "c39ca6399dfe036088610ee1a74a57ee9a49c2f909a9d2c4cb201b63adaa8f10",
+    "size": 1431
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json",
+    "sha256": "f592ee41a10f8f7670e9b070fce985d848f56fac052ce541d70cb4e905b3c22e",
+    "size": 24022
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P10_TARGET_POSITION_QTY_UNIT_FORENSIC_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "5ae4c5d9c70a7c57cfdee6f5b015c5b9cbc8c0e006bc606706c47cace2d2324a",
+    "size": 806
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P11_POS_TO_SZ_UNIT_IDENTITY_INDEPENDENT_PROOF_OBSERVATION_V1.json",
+    "sha256": "2a0fb22627bb8b30458fca30981a129cfb1bd1b5a6e9127cb7ed3447dbc01633",
+    "size": 898
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P12_EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE_OBSERVATION_V1.json",
+    "sha256": "4229124f00279fb1be3f902f1fb7ae7e055c666a0b2f8aaa8c80647901de21a2",
+    "size": 1066
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P13_EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_OBSERVATION_V1.json",
+    "sha256": "dcbc78322dfed92e5b8d69e9ff8f6a8bd126a6c54f4eab2f352c1448f417bc8c",
+    "size": 1287
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P16_EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_OBSERVATION_V1.json",
+    "sha256": "e76c0257e8c8e9de234f355165502aa802c65151197491f2fe3a7b2ae43d7419",
+    "size": 1282
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.contract.json",
+    "sha256": "4270e9cc9e2e43b6b62bf89a4c34345295f45d80a9b0c84bfdf0bdd89396492e",
+    "size": 1318
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json",
+    "sha256": "ce8b2e8d2cc823ced62e8597455ca3f3839ce8dd8451deef6cfae5a5fcb6e5cb",
+    "size": 64760
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P1_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json",
+    "sha256": "f4a57b0e0863adab71b9b13ae68fd4951a7f9348c508f591863619bcd29605b9",
+    "size": 10641
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P20_EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION_OBSERVATION_V1.json",
+    "sha256": "b9a65712ac8340a4dcd275183e2ae0719f52cbc69d990b6f7c5803aff20f1cc7",
+    "size": 1210
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P25_EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_OBSERVATION_V1.json",
+    "sha256": "c5f134453ac6c057aca88885a1227e58240047c1cf29b60a912ac53349d35956",
+    "size": 1260
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json",
+    "sha256": "4879cead60e6e13461dafc9f7091f7aafe4840775cf1a00f250e4d771322cdf5",
+    "size": 22633
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P5_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json",
+    "sha256": "0bf558e4ff33a01ee80343af3babdcf39fc6ecf55dd53b918895b2dd044aa6e9",
+    "size": 11392
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_37G_ARCHIVE_SQLITE_VSCDB_BODY_PREIMAGE_PROBE_OBSERVATION_V1.json",
+    "sha256": "97ffabba7928f4d07d69f357f5dd5fbe488fe9634166f2edbbd8b1293e66b3d6",
+    "size": 17945
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+    "sha256": "a7351372e798fa6875fe71c25efaedc246b440719d11b6412a72391e640f95ef",
+    "size": 13047
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json",
+    "sha256": "3c10d5e79c60505b76af3d85c1034605908753f9c550bbb4acf4a6a8d4d01717",
+    "size": 13154
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_COUNT_DRIFT_3946_3951_LOCATOR_SEMANTICS_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "88b723db2b14f8f91006be100b136a15cbd83b6b74877c129bc07e6b19e170bb",
+    "size": 21246
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_DOMAIN_IDENTITY_D01_D03_OWNER_DECISION_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "812b0892a7408715dbc5a51b2eb1754feb621d3121ed092118697e8575a5f8cc",
+    "size": 17866
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_OBSERVATION_V1.json",
+    "sha256": "171ded2ee75b922fdd7254f23626a816fc1040b3a71a2949f87e2b6953d78807",
+    "size": 31130
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+    "sha256": "265b0c9672aac02d55c2062f7385d7bc0940a4b0c43f5f7dfb0300cc4c9530d1",
+    "size": 25217
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+    "sha256": "57b6cb2276e67afd4c7db8d31d01f309691d11103175baa49459c13bed42e580",
+    "size": 13545
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json",
+    "sha256": "3a6226c632f0e9448b485e4d922bb5459d9d628850dd8d82d11a779eda380ec8",
+    "size": 8950
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_FINAL_SURVIVING_COPY_RECOVERY_AND_EVIDENCE_BOUNDARY_OBSERVATION_V1.json",
+    "sha256": "c287404efdc8f3c8893bef63a7c389bae03dd519205158b78eba9026b2601266",
+    "size": 21608
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1.json",
+    "sha256": "402f5a0e5aa5668417854bf0b7ffb4dc39dbd3b3d241158eac8dde007dd50395",
+    "size": 60114
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_GLOBAL_EVIDENCE_SURFACE_UNIVERSE_COMPLETENESS_AND_EXHAUSTION_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "cb6c41eb439952b7c9e1edf425f73b535df016841c8e48382e230c411984004a",
+    "size": 51976
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_HISTORICAL_SOURCE_SET_UNIVERSE_AND_POSITIVE_MEMBERSHIP_LEDGER_AND_THREE_HASH_NON_INFERENCE_OBSERVATION_V1.json",
+    "sha256": "8f206005c9a6d6a66ca5b46e93c6f13eb08c6762873d7c089dca8403b28147fb",
+    "size": 98423
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_NON_P2_ARCHIVE_LOCALIZATION_OBSERVATION_V1.json",
+    "sha256": "0fd9bed648b5b29aa097ee878a5bb919875789fc8413d7f8905cfdcf365d49d6",
+    "size": 16644
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_OBSERVATION_V1.json",
+    "sha256": "f904f913447c8c254c71a8bb12adadba8a2c857929331c676789f8369575fa9c",
+    "size": 30477
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+    "sha256": "6b17ff348980ac1c0f791f05c2347b1e8991a657091bd94071d556d9e47d0cfa",
+    "size": 46363
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_POST_COUNT_DRIFT_GLOBAL_CLOSURE_FRONTIER_AND_MAX_LEVERAGE_NEXT_STEP_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "d1fcb0c977d4719eaf6c1da8a4e0409d8b3fca27872563340fc3184eee78686a",
+    "size": 23868
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_POST_GLOBAL_CLOSURE_MAX_LEVERAGE_FRONTIER_ADJUDICATION_READ_ONLY_OBSERVATION_V1.json",
+    "sha256": "c5714e44050954ed08b1fb2c260b3e08fd11c4c81b52edbf4e020424943b890f",
+    "size": 12360
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+    "sha256": "3f1a135bdb130d52df2ab79c845cbe783e233c2b54d9c6821cebb416605a9b39",
+    "size": 19150
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+    "sha256": "4cb281d3ef49fb8b899bfc9b3eab24283b5af62e0638acd01a2ec035c000964a",
+    "size": 15914
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_PREIMAGE_RECOVERY_NEGATIVE_FINDINGS_AND_1067_LOCATOR_BINDING_OBSERVATION_V1.json",
+    "sha256": "2aa1a9ec47f47c84a93be1c8e4aad6b9fc975c2e20abfdc5cd079f1e0162106c",
+    "size": 110767
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+    "sha256": "161c8f7f4ca070b54eca5b7e2a280bbfbb99e747ab4e30365e5a727c53ce0aa4",
+    "size": 20991
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+    "sha256": "1eff147e400d81ca76ba437dc8f87e3576ea94f1df6d7e4b105f06e36b396ab6",
+    "size": 18110
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_OBSERVATION_V1.json",
+    "sha256": "46df274076f811104aafbe23512f19cd3d3da1258b1ad7c123a54d50bfbbcda2",
+    "size": 23927
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "bf4447ad8984b6904b5b6605bc71878136ff989c802d3564cce6d74cb45a01ab",
+    "size": 37788
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_CLOSURE_MODE_AND_MAX_LEVERAGE_FRONTIER_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "14fae2b6b2b8af39c6298aa85e87209b9f161af2fe196fce0c80e0689f3213d5",
+    "size": 45674
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_DEP_NON_PROOF_OBLIGATION_AND_SHARED_DISCRIMINANT_SYNTHESIS_OBSERVATION_V1.json",
+    "sha256": "dcc9a7bac9f9bf4b42d9f80727368710d7692ce5f8d3f2f29f4beaefdaff64a7",
+    "size": 46922
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json",
+    "sha256": "3863bcc1bb84246dcd2501c434954587058d1157b14dde66907cf8a43e7d030a",
+    "size": 28598
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_RELATION_EVIDENCE_SURFACE_EXHAUSTION_AND_OWNER_DECISION_BOUNDARY_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "3991111b1149edcf84083bbb15432f474d724c8c33d93d740e00598b559f1d60",
+    "size": 54903
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "3a9ab3ffd48acf24395d0096e3427cad1ac13749d8055c3a855444c1060561e6",
+    "size": 42124
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1_OPTION_C_DECISION_OBSERVATION_V1.json",
+    "sha256": "b90eee2e846e3573a2386a6036c525f9da6d76a95a1994964ea24ae1227d2b88",
+    "size": 20127
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_CAP2_DUAL_EXECUTION_SURFACE_AND_LIVE_FRONTIER_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "eff23a60094672d7f75a04644b7b012cb456c7e41f099807804ca2b99d8a9379",
+    "size": 42548
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_CAP2_GAP_U_RISK_007_CLASS_A_FALSE_GAP_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "b2371efc468185b1da7fb92a23efe3f1328836d8656842960b38e1791e0a9f1f",
+    "size": 17439
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_EXISTING_EVIDENCE_FEDERATED_L0_L2_L4_RECONCILIATION_AND_BACKFILL_OBSERVATION_V1.json",
+    "sha256": "dd189b6dbf42f8135e58db7ce248375d63f2e0db1562f989010522738cb7f690",
+    "size": 10531
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_FEDERATED_SCOPED_COMPLETENESS_POLICY_OWNER_DECISION_OBSERVATION_V1.json",
+    "sha256": "19b2e2266203482bd1e33db9aa97fb79050114775ea2ebdff18f165145f7a63c",
+    "size": 7823
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "738f7843f02c5fe861ca56fdeb016d02f7b4ea5c917863118f5aa429922bc0ec",
+    "size": 681838
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_RAW_GET_SOURCE_ENVELOPES_V1.json",
+    "sha256": "af8da3e8947475ffe041f1f48ebe07314ccb1c751948a3598a2f06471c945200",
+    "size": 900253
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "8891e33b313b793e4067c82f7609f2c12d308325059f132b1a95df40349f2cbc",
+    "size": 14369
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_RAW_GET_SOURCE_ENVELOPES_V1.json",
+    "sha256": "af219799d2e1197e9b73c7ccac8fd6234bb3f0fd2dd27bf92b80fec4b4b6c94d",
+    "size": 15061
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "0cfa6a52a6f14aaf4d521c96648475ff7ae2b170a09e1d91e6d80283e6cbb538",
+    "size": 32365
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_RAW_GET_SOURCE_ENVELOPES_V1.json",
+    "sha256": "0cce31a71ed0e6f2346dfe6d5beda8bc8e5ea64ec2f025f538427847b55bcdf5",
+    "size": 10162
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_P3_CLASS_D_Z2CK_BLOCKER_SUCCESS_PREDICATE_AND_TRANSPORT_GAP_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "3499f9e3303e77f654123b5cfa05ae17c86a95f59f6ee55ac134391345c0d3aa",
+    "size": 15089
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_POST_PR6105_REMAINING_RESIDUAL_FRONTIER_COMPLETENESS_AND_MAX_LEVERAGE_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "43187e8dcc61fc2a419e5eab5b8c5942f8834d66cc844119baae3633c92859b2",
+    "size": 21182
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_POST_PR6106_SEPARATE_RESIDUALS_FORENSIC_CLOSABILITY_AND_HIGHEST_LEVERAGE_WORKPACKAGE_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "766d699087ed787bafa6221028fc44c2abfc5f4f14d710e367228c2814647d85",
+    "size": 21845
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_POST_PR6109_FEDERATED_OPEN_SYSTEM_FRONTIER_DEPENDENCY_CLOSABILITY_AND_MAX_LEVERAGE_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "0a25e6b24d6d2691eb7cefc7cb63a45951be88782805353c7e71be7dcbc83853",
+    "size": 47502
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_CHOICE_B_AND_PRODUCTIVE_TRANSPORT_OFFLINE_IMPLEMENTATION_OBSERVATION_V1.json",
+    "sha256": "59e466e0df02fa8cdb0da68711de1c1134a384026a0531d9cca1ae2cc52c6ebf",
+    "size": 5525
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_COMPLETENESS_PRECONDITION_AND_CLOSED_UNIVERSE_EXCLUSION_GAP_OBSERVATION_V1.json",
+    "sha256": "f880e03423640f4f0d428c64612babf51fb8fa522aaeec6052063d50a81c0009",
+    "size": 22296
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_IDENTITY_AND_HEADER_GAP_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "b72bc748f0984ebd6a862d869207a1c472a6e01cbd121439d39f8e212477ccc1",
+    "size": 12344
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_OBSERVATION_V1.json",
+    "sha256": "e4f1a0d5f347e3ec8317229304ca2739a10868150fffc6ea202ce115dac4e630",
+    "size": 29480
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_OFFLINE_SEMANTIC_BINDINGS_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "7107e06b49ca1478fb15d9eb054a8b367ebf3dabe0ab6c51bc5a25a226bf0774",
+    "size": 10035
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_POST_MERGE_AUTHENTICATED_TRANSPORT_AND_RUNTIME_PROOF_SURFACES_ADJUDICATION_OBSERVATION_V1.json",
+    "sha256": "fa64f4b7fe92a5f1ec3780ace2abe964068b551641868bd5714033523deed9c9",
+    "size": 6519
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_PREMERGE_CHOICE_B_CAUSAL_AND_TRANSPORT_HARDENING_OBSERVATION_V1.json",
+    "sha256": "a36cf72392e2f38727f08a0eef794c892bb43ff2e54da650ba30fed960a26cef",
+    "size": 2501
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_PREMERGE_INVARIANT_AUDIT_OBSERVATION_V1.json",
+    "sha256": "27caed26c63ce9f570b61bcf9c0d09350f4e0e5087339448ec6869e92b39fff6",
+    "size": 2083
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json",
+    "sha256": "6250042ae5a1939bae6749fd094527c2b86441d440d95230ac78978b0701c6cb",
+    "size": 34929
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/P6_Z2CL_SCHEMA_NEGATIVE_CAPABILITY_AND_CENSUS_LINEAGE_OBSERVATION_V1.json",
+    "sha256": "21d68e02bfaae4d13ddae4b0583ceedf5d719e4c43881dc7231689a91dee546f",
+    "size": 22159
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_OBSERVATION_V1.json",
+    "sha256": "ce3be36466e9f568648e340f9ebc258e2c04c34fe50501cd376d15f35ffad7fa",
+    "size": 1799
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/PR_6252_MERGE_CLOSEOUT_OBSERVATION_V1.json",
+    "sha256": "797219eed0ec7f6eec4b2a2393fa2e6c1b5d59a1f06f41fee4c4cfb92e5089dd",
+    "size": 1590
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/REMAINING_EXECUTION_PATH_END_TO_END_CENSUS_OBSERVATION_V1.json",
+    "sha256": "cc09f9b16aa6f0fc159b732b75a4eed6f4d51d0d81a61619e58172b1ac79e61e",
+    "size": 1778
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/SEND_TIME_PASS_18_19_21_24_OBSERVATION_V1.json",
+    "sha256": "ca96128e5464a3bb16b4268e206f3ded9ac3263d1891cccbe11187522dbb91fb",
+    "size": 1259
+  },
+  {
+    "path": "docs/forensics/persistence/inventories/SEND_TIME_POSITION_REOBSERVATION_OBSERVATION_V1.json",
+    "sha256": "9d9a677c37bb528e1cedfbe00a36dadeb7637b6212a75e33619c91aae6fd67a6",
+    "size": 1658
+  },
+  {
+    "path": "docs/forensics/persistence/registries/CROSS_CORPUS_RELATION_REGISTER_V1.md",
+    "sha256": "a704c32d1185273702a30bb73e2739107a12266ba39d453c7631798f5aa948f8",
+    "size": 10391
+  },
+  {
+    "path": "docs/forensics/persistence/registries/CURRENT_STATE_PROJECTION_V1.md",
+    "sha256": "bfae66816b74071c9bbeee2ac9382af35e9c9b6890069e1d4b6610e1884a90f1",
+    "size": 44442
+  },
+  {
+    "path": "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+    "sha256": "d66983c5926ff76136aa913fb3e485cd791e872b937301f20ef6becf221917bc",
+    "size": 14512
+  },
+  {
+    "path": "docs/forensics/persistence/registries/FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md",
+    "sha256": "d332de10d6501f5eba1c840d3f9098bfc79d43ec4745214a34134259ba440422",
+    "size": 10918
+  },
+  {
+    "path": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+    "sha256": "23559cd5ef4d9b167b54bdd4ebded8823a94da4c2dc51a774f8fc7a0fe461860",
+    "size": 56580
+  },
+  {
+    "path": "docs/forensics/persistence/registries/P6_5189_PROOF_OBLIGATION_MATRIX_V1.json",
+    "sha256": "37d017c22645da57a5702ed8e78bcdaf2b67a47db471a7cb9fb47d8a61922e5a",
+    "size": 14425
+  },
+  {
+    "path": "docs/forensics/persistence/registries/P6_5189_RELATION_LEDGER_V1.json",
+    "sha256": "8b180b4199f93bab047a8b04cfd2f002abec191a057a5a1935b49f5c66103782",
+    "size": 35079
+  },
+  {
+    "path": "docs/forensics/persistence/registries/P6_5189_RELATION_NODE_REGISTER_V1.json",
+    "sha256": "f6ac4604b28c96dc5c00d4a0d7c7217e91f8f3c47a8b23adfc396290665fb337",
+    "size": 30963
+  },
+  {
+    "path": "docs/forensics/persistence/registries/P6_5189_SET_AND_UNIVERSE_REGISTER_V1.json",
+    "sha256": "77494df7a39e2a32ecb4dd1fbb583f4fe8c3fb3550e356819faf6d614ef829db",
+    "size": 14751
+  },
+  {
+    "path": "docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md",
+    "sha256": "f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f",
+    "size": 140959
+  },
+  {
+    "path": "docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION_BINDING.md",
+    "sha256": "31355ca63201a976498946cfc2692db6ef53ee861a165a247e10631d61e0317f",
+    "size": 2131
+  },
+  {
+    "path": "docs/forensics/preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA.md",
+    "sha256": "3121bf903796df819860d1e38ecdd320373af2419b6b08b889f6a128c974d4a3",
+    "size": 57921
+  },
+  {
+    "path": "docs/forensics/preservation/PEAK_TRADE_SW_R_002_POST_HANDOFF_READ_ONLY_ANALYSIS_PRESERVATION_DELTA_BINDING.md",
+    "sha256": "7d2a61e5576df8d42743dc682a2b8b6c3b5bf341fad63556495fff8c6bade5cd",
+    "size": 2437
+  },
+  {
+    "path": "docs/forensics/working_state/PEAK_TRADE_SW_R_002_WORKING_STATE.md",
+    "sha256": "603ccd8cf001a15b3ef8eb22bc83141113238cab1668aab1681c2aec196f10fb",
+    "size": 44955
+  },
+  {
+    "path": "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "809064294f954fc39dcafebe4665aafa10183887e82cbf4a5747e2875971a09c",
+    "size": 2462
+  },
+  {
+    "path": "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md",
+    "sha256": "5a3134dc43944f39f28cff7358bcb5d9e650003d0d5a499a9538b99be38f647e",
+    "size": 1993
+  },
+  {
+    "path": "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_HOLDOUT_PREREGISTERED_MEASUREMENT_V2.md",
+    "sha256": "a11c9e270b9883f1cee57a595ae25e19a48af8ad013a57eba2178cb0b8ed829b",
+    "size": 1549
+  },
+  {
+    "path": "docs/governance/ADX_DI_DIRECTION_CONFIRMATION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "1ab59a46857ea3055b3eef25a0f0384ce0a220c61099465deb37a179080c9b51",
+    "size": 3016
+  },
+  {
+    "path": "docs/governance/ADX_RANGE_ADMISSION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "e08883f48ee519a806d7970c03a2ce7f202fc221d692c0489af9c3c078800e2e",
+    "size": 2224
+  },
+  {
+    "path": "docs/governance/ADX_RANGE_ADMISSION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "3a403144b4dfe89a446d4755614bbaedc48afa447a27056fd49802905acf4f4a",
+    "size": 3196
+  },
+  {
+    "path": "docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md",
+    "sha256": "782f5df68d434fb08b73a975f0f21c058af995825b98b38fcd6c8582366e93a5",
+    "size": 10039
+  },
+  {
+    "path": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+    "sha256": "88cdfb60a0846a77f6ad309d26f6806761ca360cefbf6b75a4f8e41515a3b6aa",
+    "size": 5291
+  },
+  {
+    "path": "docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md",
+    "sha256": "bed77025dbf3fc1165b37e90198948d312a65dc6cec2987a374b214ad5aa9e90",
+    "size": 5287
+  },
+  {
+    "path": "docs/governance/BOLLINGER_BANDS_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "d6cb009e87eee128e393130b68a5d515e81ad711df0c717b9cfe7f528c8011b5",
+    "size": 3208
+  },
+  {
+    "path": "docs/governance/BOLLINGER_BANDS_V2_SEALED_LONG_PANEL_TERMINAL_ECONOMIC_FAIL_ARCHIVE_AND_NEXT_HYPOTHESIS_V1.md",
+    "sha256": "4c3f0b24ff597d77cc00b57894d4d2fa58f7e4a0fbcc840a86547b3fe2a8bcc3",
+    "size": 1255
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_ECONOMIC_FAILURE_DECOMPOSITION_DEVELOPMENT_V1.md",
+    "sha256": "d7c7e715e737345d2f990f7ec7480c67a961999a19936c178aa7ca4928dabfbe",
+    "size": 3547
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "078c3c0bcf09966c337ce337323321811a4df7adc44ec1a4607854afd8c8e5a9",
+    "size": 2247
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V2.md",
+    "sha256": "9d6048eb91bcdf7b34dec97aac87a86188a3a9cbc3e1ed3f7c3e931020b93783",
+    "size": 3159
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V3.md",
+    "sha256": "32b534a726ae8c6a57cf12f61aa44ed9164887e1cae8d72dbf707cb11a42b04f",
+    "size": 3136
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V4.md",
+    "sha256": "b2cb381fd3158ce26a4b2387837657be2063cb4143443c5384406b431a15868f",
+    "size": 3499
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V5.md",
+    "sha256": "6f1d56f96c27a7d9b4c11b505337751389ff6887c0e50460fe9d60ba70cee1b6",
+    "size": 3245
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_DEVELOPMENT_EVALUATION_V6.md",
+    "sha256": "4536a62c85500f8fdf0844e95d9a99aff0c823a16fa68e1ae38a39ee68ed74a3",
+    "size": 2912
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "ed41cc3a320a0823074bdfed6d715456323250ed2eaff7159a9b014dbc2c58b1",
+    "size": 4245
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V2.md",
+    "sha256": "f4cf721feb0665ddc098ef568de3dd51b1f8ac5a1f6bc6c8dda4ee22d6149a4f",
+    "size": 5413
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V3.md",
+    "sha256": "deaa517c81d2bd65f1a3753052669b56b6033c572d28c4d702e4ac097aed4857",
+    "size": 7272
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V4.md",
+    "sha256": "ae82c7555a849d65f59b9b45717ebbae8c3211c671c22e8f6066a3e9f62d54b1",
+    "size": 4257
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V5.md",
+    "sha256": "aaa895e0512896aec3499ede5dbe169d6d29c68e80b3dbaaec4218f22a38e784",
+    "size": 3276
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V6.md",
+    "sha256": "34950b0d3a011adbad8bc43f30ff06d1584bdde9576ad73af918376c82ca06ec",
+    "size": 3239
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_EFFICIENCY_V6_FAILURE_ATTRIBUTION.md",
+    "sha256": "620e6fbe2737fd8af5626ba5eabf1fdbd324d39b23976dd5396b230b2e78033d",
+    "size": 1904
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V7.md",
+    "sha256": "9d083d29fab52067b027d804f2a80f68ea1d94bbe7578ec19560e85ac3dec018",
+    "size": 1431
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_AUTHORIZATION_RATIFICATION_V8.md",
+    "sha256": "4b127a24a7d32b5583e94b923b24d2115aa73a4caa979fe42b9356b9ce940191",
+    "size": 1093
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V7.md",
+    "sha256": "dcf40fa19dc02e8730df67389f438e13def35beddd381a0d454fb33644d34106",
+    "size": 2006
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_DEVELOPMENT_EVALUATION_V8.md",
+    "sha256": "ea2974aa6862adccad89e399b2ab5a0fc2ce07273d97824ef2d4dda0977037d0",
+    "size": 1584
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_EVALUATION_V1.md",
+    "sha256": "d8747aca7e1028e281aa39cc6ec1ab3e42b334a18c9542355e6cbdca3c86afcb",
+    "size": 1095
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_HOLDOUT_PREREGISTERED_MEASUREMENT_V1.md",
+    "sha256": "ef06effe8f684c42b1b8a5f85d8bf99e07179219055ce6901dbd2b09f9245ac2",
+    "size": 1571
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V7.md",
+    "sha256": "061a5f2807c58018635d71cf9370aee669648b0b2d0ba1e971b8c8896433fce6",
+    "size": 2609
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_OPERATOR_CLARIFICATION_AUTHORITY_V8.md",
+    "sha256": "4b2bd6b1f4936956d33dced7b18855a3ca4f232fe7395df482cde3fdeb5bdf6e",
+    "size": 786
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V7.md",
+    "sha256": "a984857e302f09a1696a3a1687124cd58422711f22dccef638bbb60c5ba68d57",
+    "size": 2179
+  },
+  {
+    "path": "docs/governance/BOLLINGER_MR_MIDBAND_EXIT_REENTRY_COOLDOWN_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V8.md",
+    "sha256": "494c004e33b6130ece5a5613ad7d125487980a86f9b283db9c294ede46f0ebe6",
+    "size": 2777
+  },
+  {
+    "path": "docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_OFFLINE_PRODUCTIVE_LINEAR_DIAGNOSTICS_FEATURE_MATRIX_BINDING_V0.md",
+    "sha256": "d0829351a5e468b4d4bb7036ac6107d880947dfdd3e6f5e8ffadab154356ba9f",
+    "size": 1582
+  },
+  {
+    "path": "docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md",
+    "sha256": "6159ec1021d87b8536890f47db763d4123343a539fea4c0e704244cfe0f2f2a8",
+    "size": 4561
+  },
+  {
+    "path": "docs/governance/BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_RESEARCH_GENERATION_PREPARATION_V0.md",
+    "sha256": "28d2b05af50f3f7250c96e90e649842c6c19c577cd4404b7a6ad38a3f590c2ad",
+    "size": 2301
+  },
+  {
+    "path": "docs/governance/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md",
+    "sha256": "6db2bcd7544130554c7c3606b5e8b39fd9a57d270092bf73212f91ad309be4f5",
+    "size": 5203
+  },
+  {
+    "path": "docs/governance/BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "fe0b36cb0db242a4c805bbabf18ca00ebed53e8d303ad9792b61929ac3dffa1a",
+    "size": 2442
+  },
+  {
+    "path": "docs/governance/BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "7ecc5426f4b950d73fcc7a7ebf99f64aff0207d47f0203721544550a3589cea2",
+    "size": 5064
+  },
+  {
+    "path": "docs/governance/CANONICAL_OPEN_MR_ENTRY_ELIGIBILITY_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "ec706775d257dac8caf9e4b63114f367947187edb12ea49d85ce59eb01969678",
+    "size": 4253
+  },
+  {
+    "path": "docs/governance/CANONICAL_OPEN_MR_EXIT_EFFICIENCY_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "23ec5aea7a846e2e75f665861a595d91288256201d338b5e03f67f967ce0b649",
+    "size": 11510
+  },
+  {
+    "path": "docs/governance/CANONICAL_RESEARCH_LANE_POST_TERMINAL_LIFECYCLE_CONTRACT_V1.md",
+    "sha256": "ae0df24e2e23124cee2d018ccb97f744399f9054f191561206d8bcec004e39c8",
+    "size": 7274
+  },
+  {
+    "path": "docs/governance/COMPANION_FRACTION_TO_UNITS_CONTRACT_V1.md",
+    "sha256": "cef0c0c362cc4ef12799d2511fe29ed35688f8699893f7af478da0ff78ac0344",
+    "size": 1882
+  },
+  {
+    "path": "docs/governance/COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1_ARCHITECTURE_REJECTION_AND_RESEARCH_LINE_CLOSEOUT_V0.md",
+    "sha256": "c2e3f9364bf8bf0a41653e5e731042642855c42e5ca5c667c35466a385c86c83",
+    "size": 5057
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_TERMINAL_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_RATIFICATION_V0.md",
+    "sha256": "fbd3a189b28ba78b4490aad64f6f674a857eb39f059a2aa58f67ec64d52e1606",
+    "size": 4816
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_VERSIONED_HYPOTHESIS_BINDING_V0.md",
+    "sha256": "9ba8358e3f82728b6d424487a000c49c884bf1b5bc740c8d6c0757c71d08e990",
+    "size": 1864
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_RATIFICATION_V0.md",
+    "sha256": "4369b5ca582f9ce5eb66633eb80a2847144f92671e2ff37f4fe83b9445afaf9c",
+    "size": 5064
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_SCORE_AND_RANKING_CONTRACT_V0.md",
+    "sha256": "4ae9af25199fdd397271d485fecb45e46ab58421ac98e1ffa9d0311bc0b0a1ae",
+    "size": 3105
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_FUTURES_PAIRWISE_LEAD_LAG_SPILLOVER_V1_VERSIONED_HYPOTHESIS_BINDING_V0.md",
+    "sha256": "44d7ace53c144b8d99d8251d27dd6ebcba0c07e3a4f72cdf603a433aaba51e2c",
+    "size": 3355
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "93830bfacf38451c81ce20f89e286b802cadb99215c212a8c5cf301bf555885b",
+    "size": 1532
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "b5b7ff212df88b8c724319b074ab31459d702a0b2120f87cbb385778c6b5eff5",
+    "size": 5334
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_HIGH_REALIZED_VOLATILITY_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "d693a7dd4b4189bce678bd923308394dca3a01831f933fbcdfaf5b7540168283",
+    "size": 1733
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "112aaefcb3ac122bdedf64618cf71cebc88f8057637fee42e096e322b62629e9",
+    "size": 1244
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_RESEARCH_PROGRAM_V1.md",
+    "sha256": "5fd7a8ff1fdbfe5a185256a1734d133771379bbff793735fe4b30b2fff1e7bad",
+    "size": 3831
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "456dce3a4acb024d53b3dee743ded94ef0c2b3d30b71d999a79f419abdd18bf7",
+    "size": 1568
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "02913051667a76a22ab5569fdcdfeff2990ca62d6721907efd4ac4208cf3cdd4",
+    "size": 2878
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_INTRABAR_CLOSE_LOCATION_PRESSURE_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "18cad3956d2a68ad66ea338c7d2cd9d0de7026a8c8ed82391ade06f571afa17a",
+    "size": 2305
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "564d19111cd07f29bb8f6fb9773c2ba791c0a9d17ad80afd1d22e34671305217",
+    "size": 1657
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "1ab806487e433947a184f6ced88285d08d0b0deec7902086b406639325d30fcf",
+    "size": 5698
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_LOW_REALIZED_VOLATILITY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "9d788588c37db61ed4090cfca42dec59af0438f18c7e03d393bbcf2e004d8b33",
+    "size": 1857
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_V1.md",
+    "sha256": "80f001dbb2e04fcd4c65526467931bd4e9b1901a5972899d6084944682280b5b",
+    "size": 2908
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_V1.md",
+    "sha256": "3b101e643b9886018316d0ec0b866adce8eb39cb22ccd0ed4bb05969bcb9c8a7",
+    "size": 2350
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0.md",
+    "sha256": "e83580ba13d4ef7441f289b797bb865f7cf474f144b0a383a18235cf3f3f7ef9",
+    "size": 5348
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_VERSIONED_BINDING_RATIFICATION_V1.md",
+    "sha256": "fc7b77b3bdd0b48e5a224ab196d83ddf4a1664442d6649a2e10c17449a938cf7",
+    "size": 3034
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "20430e6793f6e44a95b291aca262cfd1bf2ab02a87a298809eae807648e8fd53",
+    "size": 2344
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_RESEARCH_PROGRAM_V1.md",
+    "sha256": "07c2280e3801536c20b3fb70dcdeba6a1b2b229b442a5a5f65d2847eeb54ba98",
+    "size": 3201
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "f004ef770d31c6934702d631ddbca8786b4664d966d0cecadd330730a849aa29",
+    "size": 1642
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "466884705fe1a47dc2628adc52e93e021c6409402862a7ab5e754b4154ad1ad6",
+    "size": 3962
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_GAP_PRESSURE_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "ccd9e3b1eded2d3bfbec1ca9dc9d54345e621c9da49a7f1c218c3c5aa38a9e21",
+    "size": 3044
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_TERMINAL_BASELINE_BUNDLE_SUPERSEDING_INTEGRITY_ATTESTATION_V0.md",
+    "sha256": "8178e469e604e34d8fb97691105490eb8855ab2f7468ddb89ee1678a228e14d7",
+    "size": 4774
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_VERSIONED_HYPOTHESIS_BINDING_V0.md",
+    "sha256": "c18907789378ec1c87b63119c0f0612d3dced7fabc65ac6b59b9fe2cb09e8b83",
+    "size": 3116
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_TERMINAL_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_RATIFICATION_V0.md",
+    "sha256": "b5fa133eea5ae88947378ffee6de9d9aaee1dcaaefc71ee5d617c20ce9b69457",
+    "size": 3613
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_VERSIONED_HYPOTHESIS_BINDING_V0.md",
+    "sha256": "6741685ce3425cd5fc56187490a41d38c065b117d5806ca7dd78bf31ed67b6a9",
+    "size": 3040
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "f2bdfc44a6341745ae502f7a889ba12e32f2628a092e8bf27317a9182e72abdc",
+    "size": 1641
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_RESEARCH_PROGRAM_V1.md",
+    "sha256": "c37f36ba9058db50507c31d4c7aac1a343e17acc3504c34136787b0211d02078",
+    "size": 3649
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "4d2019b51f0e516f637d3ea05cc2bbe91ba68fbf5a832326331e9455f8bb3dac",
+    "size": 1684
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "831d29a1996d0ce46cda0aad1fcfb0bbe3b6b33b286fd4dafad1ccfe90ecde50",
+    "size": 2584
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_PATH_EFFICIENCY_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "7fdf454b8e288db05f63ca5a89af78a39003e4275a1ba8f0bb637ba1e1755ae1",
+    "size": 2077
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0.md",
+    "sha256": "505e01cf616e5b0796e9ff5f18795edb75d118e350eff4b6ddcfd0f99677230c",
+    "size": 5070
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "6d6fe917073c0cd5689691312bf36561a0a973e24fa576858a5c0e8ed5e13073",
+    "size": 3034
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "9bbd9c38e56d37fc451a582cebe1e9c6a47f7cae6ce55cf9b2aaec2ff21d957c",
+    "size": 5596
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_RELATIVE_STRENGTH_MOMENTUM_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "47b00b3135c2c758bee4475e37d3da3d0a3d011ce67dfdfb62b42f1f663b9766",
+    "size": 1812
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "6d5bcdd5f04a1976145d2c27e1beda417ea1a9928e2cb3aef1a2b3d738ad81b0",
+    "size": 1832
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_RESEARCH_PROGRAM_V1.md",
+    "sha256": "977f6cdc22fe660ee2a4c27c6fc40e07dcdd49ea48f31ba9efd8d4a36d636dbc",
+    "size": 2976
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "a20a8bff70a04764d6203be7ec6371d3547177d92eb6c01256d9368058607426",
+    "size": 1952
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "bdeec7a777848aa52e84650996a89ede4dd2a4a7211b2339ad7f685c3707f773",
+    "size": 2205
+  },
+  {
+    "path": "docs/governance/CROSS_SECTIONAL_SHORT_HORIZON_RETURN_REVERSAL_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "3e57cebfc53d02d88adc92b45d08a0c67bc9394be0b4fe7115b31c12be8a0fce",
+    "size": 2216
+  },
+  {
+    "path": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+    "sha256": "3ae017922aa3e0cd2af5073cffc5b1adbe481f707538a7f25a0d94c4d081c4de",
+    "size": 6695
+  },
+  {
+    "path": "docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md",
+    "sha256": "c31cec379c31319f3a604b4db4834a43b69cd6e747d3014bf46d29d746ef4d84",
+    "size": 30302
+  },
+  {
+    "path": "docs/governance/EHLERS_CYCLE_FILTER_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+    "sha256": "11df5a9cd87f77a2c1f475be4bd93c7241d570f08d61d91b13b4f534d47ea5f3",
+    "size": 4521
+  },
+  {
+    "path": "docs/governance/EHLERS_CYCLE_FILTER_V1_TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE_AND_DISTINCT_FUTURES_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "0cd3e3ab64b35948f368ffa3d86a201da03dfc22d318f93609ca79ca7bd8f9e4",
+    "size": 5000
+  },
+  {
+    "path": "docs/governance/EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+    "sha256": "d5008ccdf0639030dcd0b7b736234c24e32e0440bfa2a441ecd39d287477ee4a",
+    "size": 4112
+  },
+  {
+    "path": "docs/governance/EL_KAROUI_VOL_MODEL_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md",
+    "sha256": "8847f972bec559bfb535e41724ba67601ee1aff5655653986ebb7bcec9137467",
+    "size": 5225
+  },
+  {
+    "path": "docs/governance/ENTRY_EFFECTIVE_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "b35a97dd0a28b36ca50646052803ffb2ac629738eec0b9d101a7615ae8c0fb15",
+    "size": 2672
+  },
+  {
+    "path": "docs/governance/ENTRY_EFFECTIVE_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "5d647da095b3846a63e0ea08e7bf2f1a930e1079f559009c7418ad71f44b1ac1",
+    "size": 1601
+  },
+  {
+    "path": "docs/governance/FINAL_CURRENT_AUTHORITY_CLOSURE_LIMIT_EQUITY_AND_LAYERED_SAFETY_RATIFICATION_V1.md",
+    "sha256": "6122c4205a52e8add5e47338926ff2e8eac6c258b389d7887bccb2305913efc8",
+    "size": 1728
+  },
+  {
+    "path": "docs/governance/FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_V0.md",
+    "sha256": "df8c7e4b61e7753df0aeb7b57579ed05d6ba8c7ec6a9c299e5a2c38e87bec6e1",
+    "size": 7141
+  },
+  {
+    "path": "docs/governance/FINAL_FLEET_OFFLINE_EVAL_EXECUTION_OWNER_REBIND_AND_RETRY_GOVERNANCE_V0.md",
+    "sha256": "591b483dcefa81d1ccbfeaa4fe3c4ecf0ac38eb99b5123d1581c398db44879ad",
+    "size": 3627
+  },
+  {
+    "path": "docs/governance/FINAL_FLEET_OPERATOR_DECISION_PACKET_FOR_BLOCKED_REEXECUTION_V0.md",
+    "sha256": "bbb8f1a75e7f185c51537ea67d0eae82b0aca8550b838ab657b9e9bb250c9a28",
+    "size": 4932
+  },
+  {
+    "path": "docs/governance/FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0.md",
+    "sha256": "e31bac630edbff8e96b5467358d4d67c90e639c92f2cd7e266bc0d2777f61f7c",
+    "size": 6977
+  },
+  {
+    "path": "docs/governance/FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_POST_PR4937_V0.md",
+    "sha256": "4e82054bb646e05f1277627a175f92be33a7dcd9c4a1306141e4fb0d122025d0",
+    "size": 6616
+  },
+  {
+    "path": "docs/governance/FINAL_RESEARCH_FLEET_CLASS_D_OPERATOR_RATIFICATION_RECORD_V0.md",
+    "sha256": "de43197c7e9e31349f0b02cd948bfee6184daae260f6c5d51648d8fc95346ced",
+    "size": 3979
+  },
+  {
+    "path": "docs/governance/FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_V0.md",
+    "sha256": "4e9337c34565af2007eda64b2a6cdbbdb7d849df60766056bc80a44d991c99b9",
+    "size": 4899
+  },
+  {
+    "path": "docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0.md",
+    "sha256": "f9522e0f2c723b28555a3b88ba38b8ea74c9a3c0df131ca30e6650ee1120a7ff",
+    "size": 6046
+  },
+  {
+    "path": "docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md",
+    "sha256": "c061374e1dc428493a9f4b2bc3fed4ab6c455e47b1a1850317ff068d6331ca75",
+    "size": 4162
+  },
+  {
+    "path": "docs/governance/FULL_CANONICAL_SYSTEM_ECONOMIC_EVIDENCE_GENERATION_V1_BINDING_RATIFICATION_V0.md",
+    "sha256": "0be65364afb1fb913b710b01d8d1edfd6e384246db8320c32015a395b4c1f67f",
+    "size": 4596
+  },
+  {
+    "path": "docs/governance/INDEPENDENT_DEV_PANEL_QUARANTINE_RELEASE_V1.md",
+    "sha256": "6a68cac63397102005a0166a4633c281a8b5ba1764fb5495906cd9fe2150e62b",
+    "size": 806
+  },
+  {
+    "path": "docs/governance/LAYER_LEARNING_SURFACES_STUB.md",
+    "sha256": "feec8c5f3a6344e35f64336314097782f4ed24561a6347d200ca8a27c602c728",
+    "size": 1025
+  },
+  {
+    "path": "docs/governance/LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md",
+    "sha256": "fd4d9fb423911bd3769801837e1ee7df7b53f7380ac0df935669f9083d110ab1",
+    "size": 13617
+  },
+  {
+    "path": "docs/governance/LLM_POLICY_CRITIC_CHARTER.md",
+    "sha256": "f6b1003598c70aec4b244e55ed022b104668a5e32241ae7d27f0e90a32966038",
+    "size": 7932
+  },
+  {
+    "path": "docs/governance/MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "0b399574eeaedf354ee077f7c16ba0e5686bdccfca6924d6d94aedd1513e713e",
+    "size": 2693
+  },
+  {
+    "path": "docs/governance/MACD_HISTOGRAM_COUNTERTREND_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "f0a7a84711602d062c22ce23e61ff7520dff776fb11582bfc82e3e864940c635",
+    "size": 2669
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
+    "sha256": "8116cab03a4daa08e0ae5bbf8a349836fbdee34cc34b15f89a3d49f4105e1d0e",
+    "size": 5174
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_V1.md",
+    "sha256": "2ba374ad549b14b3c771264748d8714176e87bec825d14a524163fb2dee7ae5d",
+    "size": 1612
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P2_EVIDENCE_ADJUDICATOR_RUNTIME_V1.md",
+    "sha256": "aad69b5c868361bd75e7dce2dfb06afe4f10377c6cdd6ffe55f19309285938d1",
+    "size": 1403
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md",
+    "sha256": "6dc79e2a5e71691a37f5f2efba9dca64354a3a63097607964818fc024772abf2",
+    "size": 1649
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P4_L6_PRODUCTIVE_SEAM_BINDING_V1.md",
+    "sha256": "b86cf2458c6adcb79e2eeb35a12be6b6791f81dbebd591d2397418faed3330cb",
+    "size": 1832
+  },
+  {
+    "path": "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md",
+    "sha256": "4c7d6ee89c632bdea0655363ea04534007b89e9f9a61f3d03c09c1b460400c85",
+    "size": 2453
+  },
+  {
+    "path": "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "0a5ab74fde5986a20a750b79229c087261acdfb2b7bdb3c39cad6c9a8456f9e8",
+    "size": 3346
+  },
+  {
+    "path": "docs/governance/MATERIAL_DIFFERENT_CROSS_SECTIONAL_MOMENTUM_PROGRAM_V1.md",
+    "sha256": "5ac501ee7a6e7a554f3c157b8cf2b0ba8aa2291a9245706805df9a70031a8a4e",
+    "size": 2858
+  },
+  {
+    "path": "docs/governance/MA_TREND_ALIGNMENT_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "253309f0ca7f243c1d7f5737f976b7f5f5c51a0b2129c2822276e5379b699a25",
+    "size": 2601
+  },
+  {
+    "path": "docs/governance/MA_TREND_ALIGNMENT_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "ca9b6cde23a31d54aab99a047c4de628b298792c4e3c8c7259178f758cf83117",
+    "size": 3449
+  },
+  {
+    "path": "docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "b767c1a4a1e532a2db2304f4a1875dcb90607581d6f5fd0499aafb8651785d5d",
+    "size": 3797
+  },
+  {
+    "path": "docs/governance/MOMENTUM_1H_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_AND_BINDING_MATERIALIZATION_V0.md",
+    "sha256": "a69a4541847aae3643b38f7f16b9fffa6267df6467b71b4bf17d9ab1d210a93c",
+    "size": 8011
+  },
+  {
+    "path": "docs/governance/MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_V0.md",
+    "sha256": "5f1882161bb38c3b83228a90cba5b6731725be7357c25ab322041ac907859b83",
+    "size": 5071
+  },
+  {
+    "path": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "fe04441a644a03ff61b537c1c3efd82bc4ead62b50b69bf40c64e99020d7ffe4",
+    "size": 2001
+  },
+  {
+    "path": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_RESEARCH_PROGRAM_V1.md",
+    "sha256": "778035990e2edd9da66cf85bd7523e24d4a6074a0d523dbe18930d4b171ac223",
+    "size": 3274
+  },
+  {
+    "path": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "a317545daa20b90cf1ba0236a2d23ac976a18b18c2142360fc6061a96f674a59",
+    "size": 1746
+  },
+  {
+    "path": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "0edbb6fed510fca259576be04f24f153ec95f1093c46b36bf06a8d77274c71df",
+    "size": 3500
+  },
+  {
+    "path": "docs/governance/MOMENTUM_V2_VOLATILITY_SCALED_OWN_INSTRUMENT_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_AND_DEV_EVAL_PREP_V1.md",
+    "sha256": "9f98ae72c537c6ecbd6f74a0fd7a198ed335349dc3b12bd921b527d88fc1d1c0",
+    "size": 2269
+  },
+  {
+    "path": "docs/governance/MONETARY_NORMALIZATION_IMPLEMENTATION_V1.md",
+    "sha256": "c2e16a9a9e21aec35053a806e535427090b6c29934cf9b2120dd8e2b0b676992",
+    "size": 1063
+  },
+  {
+    "path": "docs/governance/MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1.md",
+    "sha256": "0a4a03416558c9828b8249fbf4aee27a25a7e8ca65740c9491a7b1c659d3b1ac",
+    "size": 3267
+  },
+  {
+    "path": "docs/governance/OBL_B05_BOLLINGER_ENTRY_SIDE_DOC_ALIGNMENT_THEN_LONG_DECISION_V1.md",
+    "sha256": "16d0147f91b5459bc64e8315371c3f8c264ba730f5bab220724fdfccd3c550a7",
+    "size": 4274
+  },
+  {
+    "path": "docs/governance/OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_V1.md",
+    "sha256": "c4a564a27f3098ebfc021b62783f2a76a55bd92762bc5de5af476a2073cca710",
+    "size": 5639
+  },
+  {
+    "path": "docs/governance/OBL_B05_ENTRY_EXIT_OPTIONAL_SIDE_CARRIER_CONTRACT_V1.md",
+    "sha256": "3f867088ee576d27f1e31ddbcba30bf374210e0f3dac7d5cd2d781381cd516ae",
+    "size": 5251
+  },
+  {
+    "path": "docs/governance/OBL_B05_ENTRY_EXIT_PRODUCER_SIDE_AUTHORITY_DECISION_V1.md",
+    "sha256": "16e9eb01c90bbe632c01048aa337fc35a823de24087091ef15a1df6d3c8d84f6",
+    "size": 6863
+  },
+  {
+    "path": "docs/governance/OBL_B05_TREND_FOLLOWING_ENTRY_SIDE_RATIFICATION_V1.md",
+    "sha256": "e9252855f77e6c6bc6fbeabcd7c3f1519104e36986b9612623c11d88ba21b06e",
+    "size": 3350
+  },
+  {
+    "path": "docs/governance/OBL_B05_TREND_FOLLOWING_SIDE_IMPACT_DIAGNOSTIC_V1.md",
+    "sha256": "2f9a38c5fad79b4784c3900880b4fc6d9dcee8f829b987e5f7a27959e77017e7",
+    "size": 4075
+  },
+  {
+    "path": "docs/governance/OBL_B07_BOLLINGER_EVENT_ONLY_SEMANTIC_CONTRACT_V1.md",
+    "sha256": "b2428afbb17b5c157e3a4a85157c9a9b9052f37fefb70e3d24669f9d7f3f1e68",
+    "size": 2133
+  },
+  {
+    "path": "docs/governance/OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND_CANONICAL_ADJUDICATION_V1.md",
+    "sha256": "d3da18b4abc860b19383035303dcb78bcf829a39ec7c8661c2d30f079d2d09c9",
+    "size": 2417
+  },
+  {
+    "path": "docs/governance/OD_29P_NORMATIVE_PACK_V1.md",
+    "sha256": "749eb0082880bf6008ed6ca365045da4634b3ceb12a39ab914c749bc4f1beed1",
+    "size": 2590
+  },
+  {
+    "path": "docs/governance/OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1.md",
+    "sha256": "d3e4aede1a7294299da27a4e2a1efd49f1e61b16033cceaceb1d01bca8f63f8b",
+    "size": 2446
+  },
+  {
+    "path": "docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md",
+    "sha256": "8c2b6893eaa2ba0fd3e47d1b9c8c205f1ebabdad6542495adf26e0ca8e3317ca",
+    "size": 3154
+  },
+  {
+    "path": "docs/governance/OFFLINE_OBSERVATION_PROPOSAL_CONTRACT_FENCES_V1.md",
+    "sha256": "fd355b86604b6fecfbb50ec9d6c7b1742edc07e684fe79cffa9eeb4ff962be87",
+    "size": 2773
+  },
+  {
+    "path": "docs/governance/OFFLINE_SOURCE_EVIDENCE_ADMISSIBILITY_REVIEW_EXECUTION_V0.md",
+    "sha256": "2962c28c4aa66bd873fb63fc766d837ddfc25abaed62c0ba6d2d21ac292caf3a",
+    "size": 4535
+  },
+  {
+    "path": "docs/governance/OFFLINE_SOURCE_EVIDENCE_ADMISSIBILITY_REVIEW_SCOPE_V0.md",
+    "sha256": "f4ff15facdbbcd6c5d4b42dce3d0e60a9dd4e7be570baf511016ff018f51bd49",
+    "size": 3874
+  },
+  {
+    "path": "docs/governance/OFFLINE_SOURCE_EVIDENCE_CONTRACT_COLLECTOR_MATERIALIZATION_V0.md",
+    "sha256": "885d59ef1ebad1fbbdb478b3711b4895f97aaaa2dee9230fccead2a46a91c1f3",
+    "size": 4208
+  },
+  {
+    "path": "docs/governance/OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_V0.md",
+    "sha256": "0557a581d7769c19ee58ea31c593dcb7f31803693f249e287f1675d9a8c5b820",
+    "size": 2943
+  },
+  {
+    "path": "docs/governance/OFFLINE_SOURCE_EVIDENCE_PARENT_CLOSEOUT_MANIFEST_PRECONDITION_GAP_FIX_V0.md",
+    "sha256": "bc41c30554a0d1d9aba4c8ebfbaf5d9c9c3f7c832a451e11008681ac74707e22",
+    "size": 3463
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_SIGNAL_DIAGNOSTICS_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_V0.md",
+    "sha256": "c7819505e3b4e870cc76ff9b7a6359866c65faac8a907167ddcb1d6a57679415",
+    "size": 7631
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BINDINGS_V0.md",
+    "sha256": "5cc27430ad77f774feac6718f0d088643fe8818cdd13f2bbb2c44c5600fdec80",
+    "size": 6691
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0.md",
+    "sha256": "82419001f95afb0e32514ae4a17a9a6b96e4e955238fc90a05ce7219f246b4b1",
+    "size": 4490
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0.md",
+    "sha256": "6ac522aa6f5c90bfeb697823a9f4ed385ad9856242f929fe7ef95e95d62a72cb",
+    "size": 4672
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVIDENCE_CLASS_SCOPE_V0.md",
+    "sha256": "9a070938b43c2156b162cf060e5ce3ab69bd41a6ec93421d3bf52fd5a706e372",
+    "size": 8200
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+    "sha256": "7aca7839fa85b888265921cc2cd3bb1d74d00e1792376d24854f611d248fc665",
+    "size": 6474
+  },
+  {
+    "path": "docs/governance/OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_TRADE_LEVEL_ARTIFACT_MATERIALIZATION_EVIDENCE_CLASS_SCOPE_V0.md",
+    "sha256": "f0d6ec213bc3cedf03710901d68ffb896556cb53ad8fea2bd38bdabd2820b5bf",
+    "size": 9710
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+    "sha256": "3462fe2733280f7f5310ef580b246903d977c1ef9263d543c12c42909fdc3b5f",
+    "size": 749051
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+    "sha256": "83df4dcc41cfcc9bc962847caefc2299b026a0e3a8a7e1625b551e77da13ea55",
+    "size": 40448
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_DEFERRED_WORK_RECOVERY_REGISTER_V1.md",
+    "sha256": "08c91f170967080bdab4fe4df0119d3a422653940b96cf23ac46b630df50b713",
+    "size": 5424
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+    "sha256": "5f69d4008b6a92950ce1766d14418b8c206fc33e1867789e8243f9ebff38c220",
+    "size": 19128
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT_REPO_SHORT.md",
+    "sha256": "42ac318f60c1adb0a04fac6fd632ab94194e973e36aab7de34fb464f9a99fb99",
+    "size": 7900
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "sha256": "9b1cc9149d19ed2120706b7e14138189f8f169fc1ad4784a30d12571bf64044e",
+    "size": 67734
+  },
+  {
+    "path": "docs/governance/PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md",
+    "sha256": "bea663cbb287cf5585d6a472b3d3b8d05b68a7145ccdfdec43d045197bea359f",
+    "size": 7059
+  },
+  {
+    "path": "docs/governance/POLICY_CRITIC_G4_TELEMETRY_WORKFLOW.md",
+    "sha256": "8e3ef0202ab58609322680f3098934f444f6888b2bf1446a349cf1abb4ba3e87",
+    "size": 7558
+  },
+  {
+    "path": "docs/governance/POLICY_CRITIC_REAL_CYCLES_G3_5.md",
+    "sha256": "c51aafe49d28a24be4f9dafac9ffa4e28314f0ef73d889f3d0ec2f882bcff705",
+    "size": 3043
+  },
+  {
+    "path": "docs/governance/POLICY_CRITIC_ROADMAP.md",
+    "sha256": "9bf0b9a49426c15022f3aecb0919693d411853634247d801e7a0adf6367a0c26",
+    "size": 8531
+  },
+  {
+    "path": "docs/governance/POLICY_CRITIC_STATUS.md",
+    "sha256": "b07edee21fa0907cd400d03bc9c63b5400f41fe472b72f9640137d105fcd6d34",
+    "size": 5395
+  },
+  {
+    "path": "docs/governance/POLICY_CRITIC_TELEMETRY_G4.md",
+    "sha256": "9b2f66ebd1daad77a84fa81bee02567e0e0ebefb2e1a4c92ea9c2de3bad65267",
+    "size": 3605
+  },
+  {
+    "path": "docs/governance/POLICY_PACK_TUNING_LOG.md",
+    "sha256": "79157597065ddd8a85eef573ae662c8c507960df4d0ea61ef2790fefe7d735b2",
+    "size": 6567
+  },
+  {
+    "path": "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
+    "sha256": "68a15246a8fdc3643cad2697073f4cca1327e4792bf1361190365d88497122ab",
+    "size": 2555
+  },
+  {
+    "path": "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
+    "sha256": "ecd64c05a287daec402021de826e669d6544f2eac42411c3c5c272bb227dc489",
+    "size": 2757
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md",
+    "sha256": "efa5a6db682978d42a5a81a5b588a155fc186c335fc36b7fe2d200e6ce6efa4c",
+    "size": 5155
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0.md",
+    "sha256": "f887ae7217e8a7d87837797ea77956f8040ca2fcf4d35b4ad3a17d3a4f9c7754",
+    "size": 7070
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md",
+    "sha256": "f3844640a4872a43407a38809048c0761e234cba8c1c9c285e1ac2f0ad6027b4",
+    "size": 5186
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "47e9531737c7583b634d348f6afdad418e2284a4a8a475dda739e9de958b750f",
+    "size": 10041
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0.md",
+    "sha256": "4858956f680d1c44d4acee528a683e878fd6cd378071a5ea57bc1a3364effa40",
+    "size": 8450
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "9eeff7fda29664fe104bce652f01fdcf896cfeb017a09471dd4145764063ff65",
+    "size": 4241
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0.md",
+    "sha256": "011db3436066fe846b8d4e2de9652ad07943348936cbbf5c4a0c738b19962878",
+    "size": 9032
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md",
+    "sha256": "50c13fe36c83a119de9c084f7da58c5177c922fb7c11466056e4b57e8eca112a",
+    "size": 4798
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "9209302e6d4b49bd6936e5aac40c04b16a591af7db3e37f8737b84d9ce80eb5b",
+    "size": 8730
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0.md",
+    "sha256": "23548789d0acf725429b1a27f9789cd9f0f8f51d3ca7f7a065955801346e2407",
+    "size": 9713
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "e905ec117fb5043c445a6354ac037614c82dca1332d2d18e43f34184d60bf485",
+    "size": 3982
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0.md",
+    "sha256": "6aba040ff457de121e80964f577a962fa89b99178029c6f69d2ad95e965e20d6",
+    "size": 7257
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "07172f0878ea58e8a0467c6bafac27815022b6b683e582fdf0fc31b3e8a45095",
+    "size": 4762
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_V0.md",
+    "sha256": "d850b1a2f0c009299c45d8b3d63526bf5bffd242c25cf984c4cbd34923ef3b70",
+    "size": 6109
+  },
+  {
+    "path": "docs/governance/POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_V0.md",
+    "sha256": "a0ed3e734633230cfa3d198f8b2f71a1f7351607a0f1b8e470703a80c86a7925",
+    "size": 10842
+  },
+  {
+    "path": "docs/governance/POST_PR4823_OPERATOR_DECISION_PACKET_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "da48798f056e42e3262e8776eee6bf46598cc013f35a48bb17d083a843f5080b",
+    "size": 8659
+  },
+  {
+    "path": "docs/governance/POST_PR4824_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "ccb4027407b2dbf8af09f164cc981ce11780518e5c12a257e2d90e3dc7a19c77",
+    "size": 6181
+  },
+  {
+    "path": "docs/governance/POST_PR4827_OPERATOR_DECISION_READINESS_UNMODIFIED_BINDING_REEXECUTION_BLOCKED_V0.md",
+    "sha256": "65c6778f32d9b4af7870186a18f32adcdd5c2dacc63d2a8dab2b636a6bba79be",
+    "size": 4042
+  },
+  {
+    "path": "docs/governance/POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0.md",
+    "sha256": "48457df86b15dc27358d689b824fdd9c7505a3930a8d692637a920d5eaa453a5",
+    "size": 9303
+  },
+  {
+    "path": "docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_V0.md",
+    "sha256": "d643489f6a3ce76b33af58944c665e3b8ecffa161a06898949b8755cfe10db56",
+    "size": 8426
+  },
+  {
+    "path": "docs/governance/POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_SCOPE_DEFINITION_V0.md",
+    "sha256": "a4a3cb9dc9485cbb5e547c9bd2fe30ef1a1cd78b67fccb657e0fbbaa6e788c16",
+    "size": 10500
+  },
+  {
+    "path": "docs/governance/POST_PR4894_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "60c358a496b9dd91c656e3a8eb648569370fd640ec170f6d16e0eac61c5113a5",
+    "size": 11169
+  },
+  {
+    "path": "docs/governance/POST_PR4895_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md",
+    "sha256": "1dd9f6b3f581d3f74ee75010795f99c5a285a9b0483fc24483dabf11bab3838e",
+    "size": 7384
+  },
+  {
+    "path": "docs/governance/POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "ad284d5298fee7ac5ec0de6d88d785de13eed3aed438040d5261f5f90b0be882",
+    "size": 4889
+  },
+  {
+    "path": "docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_CLASS_SCOPE_DEFINITION_V0.md",
+    "sha256": "eb61fa262fa585e7af5780a77bb295374fb493751cde42c3b252fd36f97e163a",
+    "size": 12749
+  },
+  {
+    "path": "docs/governance/POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0.md",
+    "sha256": "e8e390c92fca9938932cc6adedd8d5ee7271aa71603d30538cefad041dc1caa1",
+    "size": 8782
+  },
+  {
+    "path": "docs/governance/POST_PR4900_VERSIONED_BINDING_OR_EVALUATION_EXECUTION_SCOPE_V0.md",
+    "sha256": "733ec175d5750fd6e34a47bd7123e72bbe9ecec2e9ef0abdbf6f21861631237a",
+    "size": 7181
+  },
+  {
+    "path": "docs/governance/POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_V0.md",
+    "sha256": "26680de96da6a0df3fdeb21f9ec5bfb7d4d00039cbb2d39cd375b02a10b256c3",
+    "size": 8087
+  },
+  {
+    "path": "docs/governance/POST_PR4905_TERMINAL_FLEET_FAILURE_NEXT_SCOPE_DEFINITION_V0.md",
+    "sha256": "16991e7c587c3cf331dba709c3c9912709c4e7544ed2155dc0cd25b778a8c44c",
+    "size": 16869
+  },
+  {
+    "path": "docs/governance/POST_PR4906_OFFLINE_ONLY_TERMINAL_FLEET_FAILURE_EVIDENCE_EXECUTION_V0.md",
+    "sha256": "b6cf36841cbf877b8d7a9219ff21a45cf58a7f0424ed6bdd71a72e83fc8add63",
+    "size": 8846
+  },
+  {
+    "path": "docs/governance/POST_PR4907_TERMINAL_FLEET_FAILURE_NEXT_SCOPE_DEFINITION_V0.md",
+    "sha256": "584bb2d3731c3a110ba2351519ac724f6720bea60da4de152a9078c68a668b0d",
+    "size": 17381
+  },
+  {
+    "path": "docs/governance/POST_PR4908_OFFLINE_TERMINAL_FAILURE_ARTIFACT_MATERIALIZATION_V0.md",
+    "sha256": "5e6f77776e3074f176a95062e9c12cef2a83ba07108a469ac6b1c75c72ac75ca",
+    "size": 8027
+  },
+  {
+    "path": "docs/governance/POST_PR4909_TERMINAL_FAILURE_NEXT_EVIDENCE_SCOPE_DEFINITION_V0.md",
+    "sha256": "9647f7158fcb679b04d0c7a85c14030d4667b03d42085ce0f66db89db726ca50",
+    "size": 2840
+  },
+  {
+    "path": "docs/governance/POST_PR4918_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_AND_NEXT_SCOPE_DECISION_V0.md",
+    "sha256": "0ad51ee1df3079a49bfa2e8a29f3db19642a03c0d23dfe8879af0518dbd169f6",
+    "size": 11854
+  },
+  {
+    "path": "docs/governance/POST_PR4919_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_FOLLOWUP_SCOPE_V0.md",
+    "sha256": "c17827787d3f90314c242b03eff28bd5bda83ae169a083da9ae8fc14a1522817",
+    "size": 12120
+  },
+  {
+    "path": "docs/governance/POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
+    "sha256": "cbd6235fa150e3ac5bcc06bca54c72508c2527d1aa047be697f7ec3473bdec63",
+    "size": 10955
+  },
+  {
+    "path": "docs/governance/POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0.md",
+    "sha256": "2954a611a926d4be7dff76059d17d5729e530dec42c7ec2b0ba9a7d70644867f",
+    "size": 6742
+  },
+  {
+    "path": "docs/governance/POST_PR4922_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "eb21c5155acd530fa5daab7783312a5bb8e5f60786917606f66852bf81753255",
+    "size": 5084
+  },
+  {
+    "path": "docs/governance/POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0.md",
+    "sha256": "dd968bda94fae763350f8cb7d7f5e980e29cdb138d4251ebbb916941d48279b9",
+    "size": 8567
+  },
+  {
+    "path": "docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md",
+    "sha256": "14bf7502c0355b896bdfe86e0aa24dd5d0dbb508e57df5a3ace9f9e600773d16",
+    "size": 8185
+  },
+  {
+    "path": "docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0.md",
+    "sha256": "e69d427296283dec10af2c4683669b23d51073da7babc92038033b48068fdf46",
+    "size": 9002
+  },
+  {
+    "path": "docs/governance/POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0.md",
+    "sha256": "997212e768be03c373fc754084c32523d9460986ea33c1f201ccff020874cf11",
+    "size": 6939
+  },
+  {
+    "path": "docs/governance/POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0.md",
+    "sha256": "96adca4538c24f1ae9e51fcdc3b26956a6fd0e1317949a85259e37c0405c60b0",
+    "size": 6086
+  },
+  {
+    "path": "docs/governance/POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0.md",
+    "sha256": "738619db76bbe7584196e1487be0cc319370b9f55123d24783eb265d01d062bd",
+    "size": 5733
+  },
+  {
+    "path": "docs/governance/PROMOTION_OWNER_AND_GATE_INVENTORY_SSOT_V1.md",
+    "sha256": "fd446c7e8ecaadf17e49a4ef7c2b6ab185125961d6f972d4cb667d57019cc347",
+    "size": 8069
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Canonical_Capability_Closure_Runtime_Recovery_Trading_Path_Runbook_V1_2_Trading_First.md",
+    "sha256": "351de6a77a0e5e5fc6457a4cca5e55355dcd012462f6ce0c089dcafeeefe1939",
+    "size": 58888
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md",
+    "sha256": "0a30887cc3099cd230b4826a6e1255a494acc75093338abdb5bb5ba559528f27",
+    "size": 76036
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md",
+    "sha256": "fe24efc4d9fdc7c610d74d681b415399ba79151828c93671e1eea9c3ffd1fb99",
+    "size": 132285
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md",
+    "sha256": "a1259266dec35a885eb1c3ab16c0bd668dac14f3494c82e9d1e8bc55a349f9bb",
+    "size": 148366
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md",
+    "sha256": "5c4f162f53f49f15dd55c7599dc8571157aaeefd741211378d42648e7a5dff27",
+    "size": 51163
+  },
+  {
+    "path": "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md",
+    "sha256": "5b1f35c0d733c4e1d489b12550e612fe1c45a47c6686c485a74391a5cfde1668",
+    "size": 50275
+  },
+  {
+    "path": "docs/governance/RATIFIED_FINAL_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",
+    "sha256": "3b5586a99905936065e7f11e7c87b90cacf5c16adec2b5c618f1384f6d31bd82",
+    "size": 1887
+  },
+  {
+    "path": "docs/governance/RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0.md",
+    "sha256": "e1d02c8bceac0d84978d488cfdf44ccfb10d08e8b2dbab2d78a0713272c70b69",
+    "size": 1779
+  },
+  {
+    "path": "docs/governance/README.md",
+    "sha256": "00bda670f013099774991e94e22dc536fe89a9bdd83a10d39148555c713ca7cc",
+    "size": 10906
+  },
+  {
+    "path": "docs/governance/READ_ONLY_CANONICAL_CHAIN_AND_ZERO_TRADE_BLOCKER_REAUDIT_V1.md",
+    "sha256": "f8bf77d26be6c4de852c1bba86988d683f2713da18c4de3b230e4f8aefa0a8d6",
+    "size": 11008
+  },
+  {
+    "path": "docs/governance/REGIME_GATED_STANDASIDE_MR_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "71d412711e1f2e1b1714bcf4d5400319f61dbaf7540e7c3da7e604c22a6e04e5",
+    "size": 879
+  },
+  {
+    "path": "docs/governance/REGIME_GATED_STANDASIDE_MR_INDEPENDENT_DEV_PANEL_INVENTORY_V1.md",
+    "sha256": "d2ba721b235c10d233175b98723ffb793c80fd2cc851270df2db94a1c899f221",
+    "size": 1093
+  },
+  {
+    "path": "docs/governance/REGIME_GATED_STANDASIDE_MR_INDEPENDENT_DEV_PANEL_SEALED_V1.md",
+    "sha256": "0a6e841d9ab8b6859f44ffa349c4cac7165a49675f327880304d5c9c0305b28a",
+    "size": 1105
+  },
+  {
+    "path": "docs/governance/REGIME_GATED_STANDASIDE_MR_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "7211495035136f123697df0969833f5a516e02e1eaad753858f01f6681d0e795",
+    "size": 882
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+    "sha256": "7a45ed1c60be8fae507b17dbb16b0b3071ac82a691f70073213daa76b257a194",
+    "size": 2955
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1.md",
+    "sha256": "870f882ae2c41c19b91bc6186474c4ac2da472f71b0c678636b30802f57f993f",
+    "size": 10510
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1.md",
+    "sha256": "5cd5c225166325e6172856adbb1cebf313f0fa120a38de09538273713f2b578f",
+    "size": 2122
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md",
+    "sha256": "3afed01d720264c1f04ce66939876206ab49071481ff168273769293a022263b",
+    "size": 3322
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md",
+    "sha256": "ba1c4e6aee04f3f43dad7d443d106bb06ea68cfea979117a511022b8ba9f87f6",
+    "size": 2502
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md",
+    "sha256": "002b92b567d223ad3cd133263d770d813a313cb1abfec6993135a1bc3e7c06ab",
+    "size": 2081
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md",
+    "sha256": "598d7e65ab25df2cc55f98881e8e41f803dd45b6d2c57de4c420292eae8d16cf",
+    "size": 6732
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1.md",
+    "sha256": "75cafa5d1399100e47fa710d98b061a5b2db7f371ad99d1565e51cccac6e60d6",
+    "size": 1459
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+    "sha256": "94678f97e796a9ef2db8ccf5ee60ef545f35ed74aa7d3deeb61e0b83c82e3e57",
+    "size": 2541
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
+    "sha256": "e34036a94637765f84de5b1753f5980b3287da2b390645ca8aa8309c4bd97755",
+    "size": 829
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1.md",
+    "sha256": "7b41cfc55057f148cc52445300d40d0f83ebb63aad5e3cfa60ae5a9ab58bdf0f",
+    "size": 1617
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2.md",
+    "sha256": "3bcd0942ef9d4bcd288b507275f3adca72ba380686b454baae151ae7c05f958a",
+    "size": 1634
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_DOMAIN_AUTHORITY_RESOLUTION_V1.md",
+    "sha256": "d96d0f40c2fa55002041fdc1368472fe33afb644f2519ba7ab19fb40df48406d",
+    "size": 1957
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md",
+    "sha256": "d19eaeb08f6b70617b41e10233e2641817baf388d5c2984bff286300e177ca5a",
+    "size": 2211
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md",
+    "sha256": "96ec24c4dd36c781d9275dcb3531948f10fca24e1324a9380f9a22c2bf5a566f",
+    "size": 6983
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_COMPANION_INTENT_FREEZE_AND_EFS_QUARANTINE_V1.md",
+    "sha256": "fb90f3cf6075f949e4024247eb0e12e704384e9c4728dfb80e9d84d06dff0668",
+    "size": 8202
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_FINAL_QUANTITY_PROVENANCE_RESOLUTION_AUDIT_V1.md",
+    "sha256": "42eb8b9ea3d34d5d0eb78296e6efed9395c0073735a9b465f8d1164830ef052a",
+    "size": 8368
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_GOVERNED_PRODUCER_OBSERVATION_ADAPTER_CONTRACT_V1.md",
+    "sha256": "56d7a5d6063b1224a07cb228f3b5e8fd4091c507056a93df144bd03282e64ee5",
+    "size": 11843
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+    "sha256": "ac5a29c04900b721569142f31dad0bdca046590326b179da9019e01abd1e9ba7",
+    "size": 3440
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md",
+    "sha256": "a49e727e7040bb085b2ed243bc9baba7b5c28060b33fd659735d4a3fd828372c",
+    "size": 7208
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "sha256": "3a949150dfe5e7b050e0c590b4d75e853a7f2a4d53204b02acd94ac61e6f12a6",
+    "size": 20834
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1.md",
+    "sha256": "35c3a3c79cf473e645ef011dcdf5fb2e7e0e47f0df96a1fc1b4d9e0b1877139e",
+    "size": 8793
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+    "sha256": "890d9b87f5560e7528e66f7328d9a7bf4b8c0290234e2e59c0817726b99ae4e5",
+    "size": 3228
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_UNITS_DIMENSIONS_CONTRACT_V0.md",
+    "sha256": "3db30e2721465051230e4aeb575f98e875863bb6bfca5973d793c0bb5462b32a",
+    "size": 4487
+  },
+  {
+    "path": "docs/governance/RISK_SIZING_UNRESOLVED_FINAL_QUANTITY_PROVENANCE_CONTRACT_V0.md",
+    "sha256": "5b9e7a30996091e9392c1d866efcfc16166c826f3f95dee24496a90d7a2d341e",
+    "size": 6819
+  },
+  {
+    "path": "docs/governance/RSI_EXHAUSTION_MR_ELIGIBILITY_DEVELOPMENT_EVALUATION_V1.md",
+    "sha256": "3be3e66a01865593eec8718be7a54fcd4516168dc9551643d7bc1aac12b44930",
+    "size": 2533
+  },
+  {
+    "path": "docs/governance/RSI_EXHAUSTION_MR_ELIGIBILITY_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "477c5a129061bc429cdb02e2d355bcfc50863566e6ad6723af026a157766055f",
+    "size": 3058
+  },
+  {
+    "path": "docs/governance/STEP29M_FLEET_NO_PASS_OPERATOR_POLICY_DECISION_V0.md",
+    "sha256": "daa5f54be1191a5f1cff34e8cc2298aee206cc1c935880278f5447e95f8643b1",
+    "size": 2858
+  },
+  {
+    "path": "docs/governance/STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0.md",
+    "sha256": "4f83ff41a8be8b367dd7386dfe417150fa69241c24a33e2bc47b94cbfd8215ba",
+    "size": 4903
+  },
+  {
+    "path": "docs/governance/STEP29M_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_V0.md",
+    "sha256": "1faf494b1a9c3f15a3e7b820a90a2ea8d1ac74f776ee71bc7e2b50caea8e9827",
+    "size": 5003
+  },
+  {
+    "path": "docs/governance/STEP30A_CANDIDATE_DESIGN_CONTRACT_V0.md",
+    "sha256": "6d724281e861519e681803ffe2eb7e2fcd13a859f24ab8cadf9aa2e63b5526ad",
+    "size": 1416
+  },
+  {
+    "path": "docs/governance/STEP30A_RSI_REVERSION_V1_OPERATOR_POLICY_DECISION_V0.md",
+    "sha256": "209a493c6dc0ec3fe614949c480af424d2a988a38ebfd288027ceeab2d7ce98a",
+    "size": 3439
+  },
+  {
+    "path": "docs/governance/STRATEGY_SIGNAL_CANONICAL_ARCHITECTURE_RATIFICATION_CLOSEOUT_V1.md",
+    "sha256": "cc6119ba48c29c83532348a4aa046288281c2e98c109db5a3d70a5ab3bac9f3e",
+    "size": 5329
+  },
+  {
+    "path": "docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_AUTHORIZATION_V1.md",
+    "sha256": "edb5b88c8a4a1b05d33e3e5dff172644d063816b566145ccb85340bd9be187bb",
+    "size": 6117
+  },
+  {
+    "path": "docs/governance/STRATEGY_SIGNAL_CANONICAL_CONSUMER_ARCHITECTURE_DECISION_D_V1.md",
+    "sha256": "b03691134db5366393d1afce3f4e81d0df06f5d3ee875b71ce3d39f85aece496",
+    "size": 4987
+  },
+  {
+    "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_EVIDENCE_CLASS_SCOPE_V0.md",
+    "sha256": "25b3e206b482c21a1f184828fdf75392a8b77d583fa2c053dc0a6bbb2c809446",
+    "size": 10410
+  },
+  {
+    "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0.md",
+    "sha256": "80a7c782b27c1980a3ddad147023321fb6d63abc4b55ccc8f377c32f97d816cb",
+    "size": 5860
+  },
+  {
+    "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_V0.md",
+    "sha256": "f3fecd900f86357ee9d428e61c68d3fd44ea1ad67a94e96caa917483ac535849",
+    "size": 5998
+  },
+  {
+    "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_V0.md",
+    "sha256": "0f1a75414452f1d080e885ee1be9259db5cccd661988cd67eec7b75f31eac46d",
+    "size": 3013
+  },
+  {
+    "path": "docs/governance/TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_SCOPE_V0.md",
+    "sha256": "6b3d14db5ae6f1c7982d7563f273dfec3bad1a51f9970a5ff588ec7a1832ccbc",
+    "size": 6913
+  },
+  {
+    "path": "docs/governance/TREND_FOLLOWING_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+    "sha256": "9c77f54731ab4eae69213216c0fa5c8ec7289aacab73da9d355f7cf86bcfb320",
+    "size": 5643
+  },
+  {
+    "path": "docs/governance/TREND_FOLLOWING_V2_OFFLINE_ECONOMIC_EVALUATION_AUTHORIZATION_V0.md",
+    "sha256": "4eab3ea57c5d87b2f4b4cc479a83571c13859ccda03daaf72c8c63b3315d6312",
+    "size": 4395
+  },
+  {
+    "path": "docs/governance/TREND_FOLLOWING_V2_POST_REPAIR_ECONOMIC_FAIL_GOVERNANCE_CLOSEOUT_V0.md",
+    "sha256": "e55fd960e58f8c2d18c5a2bfebc439beeee2373805fb09d901fa89e6f24da5bd",
+    "size": 7496
+  },
+  {
+    "path": "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
+    "sha256": "2d525e34dd05b8b1ad06120351081c622d91e7083336e0beff1a5ffbe532bf71",
+    "size": 1140
+  },
+  {
+    "path": "docs/governance/UNTRACKED_LOCAL_REPORTS_POLICY.md",
+    "sha256": "55ee2f2997f3e8718cc32bc5eace8ad8777fbab70646db3a6cb691c068f8ba3c",
+    "size": 2084
+  },
+  {
+    "path": "docs/governance/VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0.md",
+    "sha256": "ce7805a95161ea5dbae606310525299dd0395dfc1a8742d56708089751a59279",
+    "size": 14302
+  },
+  {
+    "path": "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "7de6e2786ca0edb74e858f904a81bba2b45ec9cf305672913678b5ef6f4755cf",
+    "size": 2918
+  },
+  {
+    "path": "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "0eb708f81e4b79d507e904b8094581f9342d234c8cd6e7bbcbf63804b0a7021c",
+    "size": 2790
+  },
+  {
+    "path": "docs/governance/VOLATILITY_COMPRESSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "f882694159fd0172f0ae3e954384395eb3a968cf4ec6fd8167f1edb524abe057",
+    "size": 2404
+  },
+  {
+    "path": "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "1351c7d7dbed49095edbdc101c4b66e24beb4eefe824f4a745b2eefb52352187",
+    "size": 2655
+  },
+  {
+    "path": "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "b89f1945fa5f53fb06f244adf5c537cadaf3507ba9b4774404e6989fecc22f2e",
+    "size": 3078
+  },
+  {
+    "path": "docs/governance/VOLATILITY_CONTRACTION_EXPANSION_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "102b36266ae17a07a585b6dfd143e6a4967f22348466069c47fd897c88230955",
+    "size": 1131
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "c3a11025dd49ad07b07eee5c06961c0fba99435148fa9669f40ed8131a1d3464",
+    "size": 3515
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "8b07c88bfff3b13f8464dffeb862ac9e41c3ebe16b8c099fee1a0665db135c17",
+    "size": 2311
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "84dbd811049f0423ce104594e5f714082a62bf86c11322b3c90c409bb4e4873c",
+    "size": 2818
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "994aeaa4928c8c139ec4ece1ac4eab82a19335280c323ba1dcc113b93d2fd453",
+    "size": 4005
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "464c3bfdcded93e6502d73983c14da6180c448e0a35377b57588e60356f1992b",
+    "size": 2455
+  },
+  {
+    "path": "docs/governance/VOLATILITY_DECAY_BREAKOUT_WITH_EXPLICIT_DECAY_EXIT_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "ad98468661291e583b112bea7e741529da6e92a9d8a501f82209f9809297d80d",
+    "size": 1027
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "1d9e7c26c79d143e20bbb1002a72b76a727dd33ddfb1cb0b1918b668f21b20bf",
+    "size": 1062
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "7782b52c6ae09914ce340ea3fe7765e9b12584787e68e34976c9d7601f95ed04",
+    "size": 2947
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_FAILED_CONTINUATION_FADE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "8421f000cd7ecd2cb1c7e12f6f3ad69add511806bcbf14af3cf6d58057b9d331",
+    "size": 2171
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "63fd662bce2ddad4a6cfb6ca48b28fb7be2bc07529dfe512e5f47ca348683f1a",
+    "size": 3326
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "51ef5e595cc8d8c6e18cf8f54c5a4a3e0e6ac53e3b14d0531bec25ca3328c2d9",
+    "size": 2568
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PERSISTENCE_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "8bdb320df03d0fb612744c6b3339948d95b50143e6432976909a88e623788786",
+    "size": 2796
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "05e897db7f63dd9b13f6cf854fc9c0051731a9650fc096ea9568b459cdc43a79",
+    "size": 1272
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_HISTORICAL_SLOT_CONSUMED_NO_RETRY_AND_BASELINE_END_OF_SERIES_PAIRING_V1.md",
+    "sha256": "ec7c57cb2cd5a577b2872d6c5ab4aa2ed55f0fdeb4272f4aba16b4873f3dfac6",
+    "size": 2290
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "30fa31297a197f4db78ca0348a7e12f80a2049245e0dcd0daf1587f174a819b7",
+    "size": 2228
+  },
+  {
+    "path": "docs/governance/VOLATILITY_EXPANSION_PULLBACK_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "7115b912149d4505b294febbe49ac4b989c0e0115053ea3c0ccdbc4746f652cd",
+    "size": 1547
+  },
+  {
+    "path": "docs/governance/VOLATILITY_REGIME_HYPOTHESIS_BACKLOG_V1.md",
+    "sha256": "a5e4b76511abfa5e7c516ea62f534f97335d1bf22e0ac7811d832add303e7edf",
+    "size": 1909
+  },
+  {
+    "path": "docs/governance/VOLATILITY_REGIME_POST_VEPC_LANE_LIFECYCLE_OPERATOR_DECISION_PACKET_V1.md",
+    "sha256": "16702778ebc3af9dc115ba8fc90b8f5f189d6e4d08e0bbd5be06015581a53194",
+    "size": 2818
+  },
+  {
+    "path": "docs/governance/VOLATILITY_REGIME_RESEARCH_PROGRAM_V1.md",
+    "sha256": "71e7f00da3580bef2b295ee46a8d6d8ac2ccf0052ad6dd02d61465f95467cb06",
+    "size": 1151
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "34403c03c4a2e19b1c5d2942378de572ed97942b6cafa1aa9b066d23074ec1a8",
+    "size": 1069
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "cd54e619cf26ebe45fb782a8aa2089bf55259d2874739f697b489ce6518b6676",
+    "size": 4076
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_DEPRESSED_CONTINUATION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "76a9ee345ec389a78eca71c1a15d5f4f884f99a465b262df37c8b5d917d7f4ce",
+    "size": 1447
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_DEVELOPMENT_EVALUATION_ENTRY_POINT_V1.md",
+    "sha256": "5c21ad0d72467a4254668b4f5d707926824fc9f04f57b1485cd25091a527adb5",
+    "size": 1020
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_PREREGISTERED_HYPOTHESIS_MEASUREMENT_V1.md",
+    "sha256": "516438d52c31efd846b9035a0b2ead2fdb614e45fdf6621fd107fa6bfebad061",
+    "size": 2453
+  },
+  {
+    "path": "docs/governance/VOLATILITY_TERM_STRUCTURE_REVERSION_V1_STRATEGY_IMPLEMENTATION_ONLY_V1.md",
+    "sha256": "c773b69c5eadd147394571ce7139c6ab133e8b905419a537afcea50b94819361",
+    "size": 1893
+  },
+  {
+    "path": "docs/governance/VOL_BREAKOUT_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+    "sha256": "9268db01d76af262cffb8c60bb5592712f25b030aef01ee46f7cd788f7504ea1",
+    "size": 3103
+  },
+  {
+    "path": "docs/governance/VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0.md",
+    "sha256": "8ceb9e39933c12e567a882574b553a5bff1a557a7689865d3a07a0565b704f2d",
+    "size": 5320
+  },
+  {
+    "path": "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
+    "sha256": "1f982ae2245d9f12b33edc3196811eddb1f4502a812a8b13ae22424f215ffa2c",
+    "size": 2631
+  },
+  {
+    "path": "docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1.md",
+    "sha256": "caf85b0b8b9414906c22d50d7b3bab7d1f89bb5ebbed2c220294712abe930602",
+    "size": 4470
+  },
+  {
+    "path": "docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1_CHANGELOG.md",
+    "sha256": "7d042f2ebfffd992037d91367a167ada189722fa7609e4ecec741a75cb39408a",
+    "size": 374
+  },
+  {
+    "path": "docs/governance/ai/AI_UNKNOWN_REDUCTION_V1.md",
+    "sha256": "7c80759aed3e7ad40aebb4dab0b82a1c8f5f5bfe73f67ddb4281a88c2d9f062d",
+    "size": 3907
+  },
+  {
+    "path": "docs/governance/ai/AI_UNKNOWN_REDUCTION_V1_CHANGELOG.md",
+    "sha256": "32022d3844096cd8f8dc20359287877cd65176a0aaedfdd572ea4605664c6899",
+    "size": 291
+  },
+  {
+    "path": "docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md",
+    "sha256": "6e243943bd436ec28c71d4ad53697b1dd90ccd617c072d0508ae84c321f5c9dc",
+    "size": 3754
+  },
+  {
+    "path": "docs/governance/ai/CRITIC_PROPOSER_BOUNDARY_SPEC_V1_CHANGELOG.md",
+    "sha256": "c4baa327ecce2faf62be880b8aea92fc3683978abbf16186adf2e81b8b34eaef",
+    "size": 282
+  },
+  {
+    "path": "docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2.md",
+    "sha256": "3c4fe5e09f2bd341e7d10005f121d4af0a6fbe0dd48835b5a06f24494a99e6d9",
+    "size": 1233
+  },
+  {
+    "path": "docs/governance/ai/CRITIC_RUNTIME_RESOLUTION_V2_CHANGELOG.md",
+    "sha256": "91fef21364bdab9de65287c7e061aaaf5e44e1dac3a1d277b0e8c41e23325ed1",
+    "size": 236
+  },
+  {
+    "path": "docs/governance/ai/EXECUTION_ADJACENT_AI_BOUNDARY_SPEC_V1.md",
+    "sha256": "335cf99593ee083f9d7da4e7596399b41c6c3588f32a24bdcb0ad7753f5e08a6",
+    "size": 3456
+  },
+  {
+    "path": "docs/governance/ai/EXECUTION_ADJACENT_AI_BOUNDARY_SPEC_V1_CHANGELOG.md",
+    "sha256": "9a47152e208ec30a1f383bc88af070e82a4a57c290e16349019ac97654a7ee06",
+    "size": 347
+  },
+  {
+    "path": "docs/governance/ai/PROPOSER_RUNTIME_RESOLUTION_V1.md",
+    "sha256": "bb1aede5b88d08f79b16d90b53b11ddcb090abcd87c280a886d6f2702ca86aa5",
+    "size": 1311
+  },
+  {
+    "path": "docs/governance/ai/PROPOSER_RUNTIME_RESOLUTION_V1_CHANGELOG.md",
+    "sha256": "8e9c6edfe219a2d8dc9f152396401630a4b4d8d7f7671eefc412266669c39d89",
+    "size": 240
+  },
+  {
+    "path": "docs/governance/ai/PROVIDER_MODEL_BINDING_SPEC_V1.md",
+    "sha256": "ac21a6b73fedb73d14a9b112b4f914071f707746eb762b165d0cd683a08cb281",
+    "size": 4705
+  },
+  {
+    "path": "docs/governance/ai/PROVIDER_MODEL_BINDING_SPEC_V1_CHANGELOG.md",
+    "sha256": "08d0298c1bd71683a3c07c0bc93b0d3a3d7318aa780239e4e5c7f81d95cae24b",
+    "size": 303
+  },
+  {
+    "path": "docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1.md",
+    "sha256": "e590681f3384b7bfed79421c9d95cee9937e68cde36eaa8a7cbf1881c4ccc3de",
+    "size": 1414
+  },
+  {
+    "path": "docs/governance/ai/RUNTIME_UNKNOWN_RESOLUTION_V1_CHANGELOG.md",
+    "sha256": "95e6ded9ee49679dae824101c6bb770350f38015c8dfd275d5e762b0e7dd3454",
+    "size": 242
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE1_COMPLETION_REPORT.md",
+    "sha256": "6342bd752fe998f3f3af0ced0e75ec2e9ebc2e4af0a8e2cbb95989ffeaf9027e",
+    "size": 8440
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE2_MULTIMODEL_ORCHESTRATION_MVP.md",
+    "sha256": "74b8d9c0a8ba8e23c00f10190716ce57fcbd6d76698f73e62df1b8b440be9834",
+    "size": 9166
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE3_L2_MARKET_OUTLOOK_PILOT.md",
+    "sha256": "3bd1dfccfb404c4bf1f4766ddc34db8691021837c696eb09ff6a7a8acc1d6239",
+    "size": 17298
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4C_CRITIC_HARDENING.md",
+    "sha256": "ca63004a6105f2a38e4094248e14e86803acae64f8f3e125d2bb45e90b914d26",
+    "size": 24197
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4D_CURSOR_TRIAGE_PROMPT.md",
+    "sha256": "f4dbf2f0cf0437add9fd299f4df25357002e1cfdb7852bdd57aceeb686fa0563",
+    "size": 13094
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4D_CURSOR_TRIAGE_PROMPT_QUICKSTART.md",
+    "sha256": "a6165ce53a8280b3f9c25f0ea925e08050b049db87442b8da4d16792da8a920d",
+    "size": 7911
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md",
+    "sha256": "5c3bb7876f826953c4a9696dadb1862d6b5b6279853ff40f0b76eeda4de12bd1",
+    "size": 9889
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4E_QUICKSTART.md",
+    "sha256": "9d3468e5fedecfbe071386fdb1761cd61525b134ec01c2d41e428adc1944b80e",
+    "size": 8023
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4E_VALIDATOR_REPORT_NORMALIZATION.md",
+    "sha256": "a70894ee0c0243f03a9eb401800a918efcaad218fee28202a182e321cc9eba8e",
+    "size": 13590
+  },
+  {
+    "path": "docs/governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md",
+    "sha256": "105a6e6726ea6d614eef5e520da2e043a6956e6de8fc4910bcc75b28052f1900",
+    "size": 19094
+  },
+  {
+    "path": "docs/governance/ai_autonomy/QUICKSTART.md",
+    "sha256": "570cc2bf13c86254efa3af6c2671ee924993ad8809dc186df6443c15931eb6de",
+    "size": 6249
+  },
+  {
+    "path": "docs/governance/ai_autonomy/README.md",
+    "sha256": "ecd8ed367a399af28f81c27a968fdfe737d71ac5825d082bf69f1c7f7c5ae116",
+    "size": 218
+  },
+  {
+    "path": "docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md",
+    "sha256": "813c6f0ba83f6c66c653f53479f9bad93b05218964c016220664e2dcbf089604",
+    "size": 13865
+  },
+  {
+    "path": "docs/governance/authority_conflict_matrix_v1.md",
+    "sha256": "05f823dc75007fbaf9450b8a60cd4ce7d5b929486362ec36b6f944fdd6ca768d",
+    "size": 31612
+  },
+  {
+    "path": "docs/governance/authority_resolution_synthesis_v1.md",
+    "sha256": "4aba5357a99d45b9ab96b76b8cd9ef7b6211ad53d8bfd03033f0818102f1b079",
+    "size": 25327
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
+    "sha256": "4f3a835c46c88e9c1053d65ca75c0af96bcdbb7b95237ef5c45349fab4021c47",
+    "size": 357
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "sha256": "0ba6e204c1a4a11a93c331051d5a785b045236bacb5ad1d3b5a62f938ad9e1a0",
+    "size": 9325
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
+    "sha256": "3e838a4c0e1f04f01248c38da65452eb3632cffbae3e07feccceaef6d7a3cb40",
+    "size": 6413
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
+    "sha256": "86583c229c427ee766074b0838c81063f2e8612d8e4290f22968d8659d974a2c",
+    "size": 4708
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
+    "sha256": "fbcc04f90616e90bee483e02e17ec920fe7327e627f726c8932379c327bb1d5d",
+    "size": 2008
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/ucs_workset_disposition_v1.md",
+    "sha256": "64f166c0b08b36bc45f7e4231c53c5112b376ae438d4b3108274fdcd6fddb81a",
+    "size": 22688
+  },
+  {
+    "path": "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
+    "sha256": "ed40dee32c8a7e8776f0a584898c5b7e37e38da512f85854b9241d7eea950738",
+    "size": 738
+  },
+  {
+    "path": "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "sha256": "cbe92275df9ff796dbd68f5a4bf679bef6e9e3472ea3264081db327e7ec289f6",
+    "size": 34844
+  },
+  {
+    "path": "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "sha256": "cecbde721a9b6b692974051866c0b7f69ab48db1c63ae06fd790184f007bbb30",
+    "size": 93162
+  },
+  {
+    "path": "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
+    "sha256": "e814a4d5d287b61dfd01dd5dd8b53afe4cfb8f5bca90c86bc3a628eec5b4f57e",
+    "size": 3950
+  },
+  {
+    "path": "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
+    "sha256": "c0eb87944ff92ea296d78e8d643ed6044efe5afe0c918a3b3a06fba61c5598f2",
+    "size": 12700
+  },
+  {
+    "path": "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "sha256": "7e220affcf0de099a4e75dba827dba45e80c4af2aa500db85d023e9093578e3a",
+    "size": 44013
+  },
+  {
+    "path": "docs/governance/deferred_work_recovery_register_v1.json",
+    "sha256": "2310d8210f4e1e287f5a26f94602dd937317e49f6a6617758c4a7d3a875dd4bd",
+    "size": 11670
+  },
+  {
+    "path": "docs/governance/drift_cleanup_plan_v1.md",
+    "sha256": "d89101c12ff83ddd269659e89e92107b22b18a8e79ff0affe07c567af38ccded",
+    "size": 19160
+  },
+  {
+    "path": "docs/governance/evidence/WP0C_GATE_EVIDENCE.md",
+    "sha256": "8c4472269093c1584043ca091923f1f28528260df798403e1fdb656e60e243a8",
+    "size": 9044
+  },
+  {
+    "path": "docs/governance/feature_state_map_v1.md",
+    "sha256": "e92b10d35118d2f69fdfb0e1293530650291a5970a6ce22cbacc2bac5446683e",
+    "size": 15530
+  },
+  {
+    "path": "docs/governance/implementation_plan_v0.json",
+    "sha256": "62258090cccf663c35d9247f2774a5d81e9fb78c91dd92933dfc30d53971d9ba",
+    "size": 6604
+  },
+  {
+    "path": "docs/governance/implementation_plan_v0.md",
+    "sha256": "892d868da3dfdfc372fadea00574c02cc38d36868fa19664d56eaf7138b5d3da",
+    "size": 1098
+  },
+  {
+    "path": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+    "sha256": "16fd49184d3873d7d5d9036069aca9484f2f26b1e9ada19d58e47a7fba1b2ecd",
+    "size": 9875
+  },
+  {
+    "path": "docs/governance/post_auth021_auth022_next_workstream_discovery_authorization_v1.md",
+    "sha256": "cf2d442e482f8f484dfd288763a9da6568414db7410c9a2fa6d930fd2630c9da",
+    "size": 805
+  },
+  {
+    "path": "docs/governance/releases/AI_MATRIX_VALIDATOR_V1.md",
+    "sha256": "9db27f22d859a4e6c6bf88e283b17c2c746c049c5002d6d733a57dee3ef7b8c2",
+    "size": 1201
+  },
+  {
+    "path": "docs/governance/research_scope_ratifications/cross_sectional_realized_volatility_rank_rotation_v0.md",
+    "sha256": "13b122b630b88becfecc71fb7ef0a5dbde4d2aaa2d4d9ff2fd4568d2e8dcf24f",
+    "size": 1287
+  },
+  {
+    "path": "docs/governance/research_scope_ratifications/cross_sectional_realized_volatility_rank_rotation_v0_versioned_bindings_and_eval_scope.md",
+    "sha256": "0581135cea9c6d8d106ed4508c89c728090f0a223778c9d9de10fc273f76122d",
+    "size": 1291
+  },
+  {
+    "path": "docs/governance/ssot_counterfactual_simulation_v1.md",
+    "sha256": "30984483450822b1cf619111ee94185ce1d6905e082f31a7285de533c799251c",
+    "size": 33790
+  },
+  {
+    "path": "docs/governance/ssot_cycle_break_execution_strategy_v1.md",
+    "sha256": "3576c0a7ad4ff9f70b91e70cfff405d0caa193f9129a5eb125072eff6c51b0b8",
+    "size": 30454
+  },
+  {
+    "path": "docs/governance/ssot_cycle_break_plan_v1.md",
+    "sha256": "acec81acd615482ba0b2c1b6e894572b063c484164b8bcc15ffe0cc880195d04",
+    "size": 26279
+  },
+  {
+    "path": "docs/governance/ssot_decision_hygiene_report_v1.md",
+    "sha256": "ae11b0c62602279bbf23cf7835ec5e6281b39931d096c77fec7f90d2ec1a7d19",
+    "size": 26431
+  },
+  {
+    "path": "docs/governance/ssot_decision_surface_neutral_v1.md",
+    "sha256": "517e276bd656deec4ab7274e5ea63e297a5550e76ed4ffd66a2d87bff652f269",
+    "size": 21132
+  },
+  {
+    "path": "docs/governance/ssot_decoupling_design_v1.md",
+    "sha256": "4fbcbbbb3168062a6d1bbd622502896bf95f3b70a382c81255f40a072528e6d9",
+    "size": 28404
+  },
+  {
+    "path": "docs/governance/system_snapshot_before_ssot_decision_v1.md",
+    "sha256": "3f195c42bc243bdc2ea9661e43f40211d119c5115dde971f0f27d718c0fd65d4",
+    "size": 4140
+  },
+  {
+    "path": "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md",
+    "sha256": "420c9c7079351667eaa42dba4a574cffb02ec855df84f0f729537de88741a7c4",
+    "size": 5357
+  },
+  {
+    "path": "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md",
+    "sha256": "8ab6216ad5496347ee2584a81253fd843d5334d45d89706c98a96c0c7a28e356",
+    "size": 7260
+  },
+  {
+    "path": "docs/governance/todos/AI_MATRIX_GATE_TODO.md",
+    "sha256": "9546c3bda48ba2b4bb2060903496fbb7e58b7cc557081d26699b4e8610e9f325",
+    "size": 2048
+  },
+  {
+    "path": "docs/implementation/SECTION_11_12_8_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_FORENSIC_IMPLEMENTATION_SPEC.md",
+    "sha256": "07f27650ff8bd5f8f85af03a6c96288c4c71526891f83851e16bf0fffd9d8405",
+    "size": 48731
+  },
+  {
+    "path": "docs/infostream/MACRO_GEORISK_PROMPT.md",
+    "sha256": "0003b1c82a9748e0e5e2e70f70bc562647dfc29f83e607315cc2cae413e909c0",
+    "size": 6685
+  },
+  {
+    "path": "docs/infostream/PROMPTS.md",
+    "sha256": "da393dacdc1766b03c80097995187cd5db17fee3aac37b0eeb505c2f26048cc9",
+    "size": 9040
+  },
+  {
+    "path": "docs/infostream/README.md",
+    "sha256": "a62dd681b645a8da65ffcc1b7baa408086817e2c4b1102f76f391f9a5ca660b7",
+    "size": 9776
+  },
+  {
+    "path": "docs/infostream/TEMPLATES.md",
+    "sha256": "4d7203b20d7dde8eeb370ffd7d55b27d3a7486d2b86c751795e9729e06a0d0fb",
+    "size": 7571
+  },
+  {
+    "path": "docs/learning_promotion/BOUNDED_AUTO_SAFETY_PLAYBOOK.md",
+    "sha256": "21491c712e42ae7f577f64c0d68549bedc7b14cb59cab5ee1ee49ba3eee181d9",
+    "size": 13940
+  },
+  {
+    "path": "docs/learning_promotion/CHANGELOG_LEARNING_PROMOTION_LOOP.md",
+    "sha256": "b34eddbfd665aa7ef52edf11b1052ff1fd3a1a1199eadce031f49dd45132e2b6",
+    "size": 5832
+  },
+  {
+    "path": "docs/learning_promotion/OPERATOR_DECISION_LOG.md",
+    "sha256": "caa8b7302ca4e05f683fb2c3b094b327a2b9c811b9d1c918da5faffeefeec466",
+    "size": 25071
+  },
+  {
+    "path": "docs/learning_promotion/QUICK_REFERENCE_CYCLES_1_5.md",
+    "sha256": "e9a8aa47471a2445b30e49b6d25ea339355965580683e0d8384c50a8bad80467",
+    "size": 4537
+  },
+  {
+    "path": "docs/learning_promotion/README.md",
+    "sha256": "66a75107096180979e4419c9c7ea268083a33e76d5062bbbaa16bbefb0939feb",
+    "size": 4438
+  },
+  {
+    "path": "docs/learning_promotion/STABILIZATION_PHASE_COMPLETE.md",
+    "sha256": "a7cee4eeb9a1d58def1c723bf0e9ed9162a01d95120f5935ee1091e01379b3b3",
+    "size": 10326
+  },
+  {
+    "path": "docs/learning_promotion/STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md",
+    "sha256": "00b37b8778f24bd6a4940915aec74d551307dfbfdacee3e9882802339c8adcf6",
+    "size": 14058
+  },
+  {
+    "path": "docs/learning_promotion/TIMELINE_CLARIFICATION.md",
+    "sha256": "1395227cb838fb16bd06f430a02d42b2340d62960c0e4c4f5c793b88238f3ec6",
+    "size": 7852
+  },
+  {
+    "path": "docs/macro/MACRO_BRIEFING_TEMPLATE.md",
+    "sha256": "c4424ec4e8d3e6d50e1bbb5f46fd4cf1403c97ae913080c4b18e0326ac0ec0e1",
+    "size": 2787
+  },
+  {
+    "path": "docs/macro/README.md",
+    "sha256": "3bc4e17833d646e41218563a126eae3c7aa5b8074e4467a8a3ab35d99045b128",
+    "size": 5996
+  },
+  {
+    "path": "docs/markets/cme/NQ_MNQ_SPEC.md",
+    "sha256": "dc568f29d496beacbb839af43b73c22e864ec37dd1a039ed272ecd1b12337a71",
+    "size": 1455
+  },
+  {
+    "path": "docs/markets/cme/ROLL_POLICY.md",
+    "sha256": "ac65de3ba8ebfe8bf4bb64f73c0c9ae79226b5b88fac24158a27a04f8575bff9",
+    "size": 1350
+  },
+  {
+    "path": "docs/mindmap/00_MINDMAP_OVERVIEW.md",
+    "sha256": "be84ceb103c0576a5ad46aa78cd65cd61a1677afebc5ad697946058c3abfc05b",
+    "size": 815
+  },
+  {
+    "path": "docs/mindmap/10_STRATEGY_IDEAS.md",
+    "sha256": "a72693b57d63d9167f5247b28ebff15e51d1ce8090d1f6284e408ef8a39e4fd1",
+    "size": 547
+  },
+  {
+    "path": "docs/mindmap/20_DATA_INFRA_IDEAS.md",
+    "sha256": "233e47816b4aa6ab94210ea7395ade157687b251764997081eed240f9401e50a",
+    "size": 705
+  },
+  {
+    "path": "docs/mindmap/30_EXECUTION_RISK_IDEAS.md",
+    "sha256": "b3c9bc0ee4914fc4807493b04aa395947170adaaab795564fc8d1e88822b6390",
+    "size": 543
+  },
+  {
+    "path": "docs/mindmap/40_MONITORING_DASHBOARD_IDEAS.md",
+    "sha256": "b537aae9dd97394c36e4e7bee395667d2b657752f32bb1b2fa058b46abdbddeb",
+    "size": 573
+  },
+  {
+    "path": "docs/mindmap/50_AI_WORKFLOW_IDEAS.md",
+    "sha256": "dd30c25980b94fb11e5263ab15681548af6e8cc848e001e4dcc544f9415f2954",
+    "size": 581
+  },
+  {
+    "path": "docs/mindmap/INFOSTREAM_LEARNING_LOG.md",
+    "sha256": "61828c052d24558e243bc8fbc58ea78c7486759dcd87807f615a8dbfad215bbe",
+    "size": 2684
+  },
+  {
+    "path": "docs/mindmap/README_MINDMAP.md",
+    "sha256": "50af9ae5cca6e2b711e4908a0f12782cf730504f37f7a297c4715c7019a06374",
+    "size": 4135
+  },
+  {
+    "path": "docs/mindmap/template/IDEA_TEMPLATE.md",
+    "sha256": "cd84d08c93b96b70f08f61eba65742416bd4f7b449cf3d699e9fceb8a21c2bce",
+    "size": 1345
+  },
+  {
+    "path": "docs/ops/AI_KI_COST_AUTONOMY_CI_POLICY_V0.md",
+    "sha256": "eb4bf16da0e8e1da50f4ca9f672c5f723c1f9d8db32a991e3fde142bb6480588",
+    "size": 5932
+  },
+  {
+    "path": "docs/ops/AUDIT_DEPENDENCY_REMEDIATION_2026-01-07.md",
+    "sha256": "cac11e4c8eb64c0c7e31586935c5773f441c9bdf27c22c5ef7da8eb9c5ca69c1",
+    "size": 4647
+  },
+  {
+    "path": "docs/ops/AUDIT_VALIDATION_NOTES.md",
+    "sha256": "26b4eb28b10aae3d6ca19d140e4793804d27be53a6c05c530332bcd56533314c",
+    "size": 3589
+  },
+  {
+    "path": "docs/ops/AUTHORITY_RECOVERY_CONSOLIDATION_INDEX_V0.md",
+    "sha256": "003652bb3b3f6aeea87fa3e31c83588589779ce9aa79779331e2791ba778994a",
+    "size": 21568
+  },
+  {
+    "path": "docs/ops/BACKUP_AUDIT_CONSOLIDATED_REPORT_ANNOTATION_20260103.md",
+    "sha256": "39f5ee323169884c18cd4917111f7dbd35ca004937995b7149b15df420d27292",
+    "size": 1527
+  },
+  {
+    "path": "docs/ops/BOUNDED_ACCEPTANCE_AUTHORITY_FRONTDOOR_INDEX_V0.md",
+    "sha256": "0969ba32d0fda145eae065249686f56a9368ab9ab2ae8524f129c0645c438f20",
+    "size": 12942
+  },
+  {
+    "path": "docs/ops/BOUNDED_ACCEPTANCE_INDEX.md",
+    "sha256": "9dd7f3ccda39005576215568f4bf066f9ee0513df36106c0b82d625edb90bec0",
+    "size": 3881
+  },
+  {
+    "path": "docs/ops/BOUNDED_PILOT_LIVE_ORDER_EXECUTION_DECISION_PACKAGE.md",
+    "sha256": "606ec2dc0afcb363bf337e1b62ff86d13e7608a3799fb12c636145426e8ecb25",
+    "size": 9501
+  },
+  {
+    "path": "docs/ops/BRANCH_PROTECTION_MAIN_SNAPSHOT.json",
+    "sha256": "40a1f026af827914da245fff0b6a7a7924ef35ec8ed3086fe2b3271c7aa67090",
+    "size": 1735
+  },
+  {
+    "path": "docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md",
+    "sha256": "caab0d4c33d9231c86624a583a1e41c429658cf693e298218948219d4467377f",
+    "size": 9065
+  },
+  {
+    "path": "docs/ops/CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md",
+    "sha256": "9345f7181a93f2178131f316339f3b532e2b8baf93994913c55f882b5d6337e7",
+    "size": 5126
+  },
+  {
+    "path": "docs/ops/CANONICAL_RUNTIME_OPERATOR_ENTRYPOINT_O8_V1.md",
+    "sha256": "8a79a61c2cfd024b3384aa9386c03288472548891c11feaa6d14e70e8a6144a3",
+    "size": 2177
+  },
+  {
+    "path": "docs/ops/CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md",
+    "sha256": "a466b70aff85176f0765e9c0a71d47549b0c01b8e8d9b4cbe029456db68fb0d9",
+    "size": 4571
+  },
+  {
+    "path": "docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md",
+    "sha256": "82175955bb335c7f21d3745f0afeed45fc627e9fe4f2c42d4826c55e5a0e4397",
+    "size": 10717
+  },
+  {
+    "path": "docs/ops/CI.md",
+    "sha256": "ca056f0450944ccad6d74b5d5c043231d9e05ca0b0ef1d6666daf5b800da5e21",
+    "size": 2677
+  },
+  {
+    "path": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+    "sha256": "b1668ea6fdabc06fa1a7d03da26400cef77f8af69a682fe17563dc78fc7b8b8a",
+    "size": 620296
+  },
+  {
+    "path": "docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md",
+    "sha256": "a14ea51b07b32c6130006e67c8e1cbd74bf44b46fc168d3e2327706619b49e1e",
+    "size": 22779
+  },
+  {
+    "path": "docs/ops/CI_HARDENING_SESSION_20260103.md",
+    "sha256": "7deae23c3ffd0c4fa172c78b0fb0be0fb3ace6ee91da750ba6ff5a49f3580106",
+    "size": 3755
+  },
+  {
+    "path": "docs/ops/CI_LARGE_PR_HANDLING.md",
+    "sha256": "af2ef698736160360f6948bad79172dac4e1846f98aaf2e90a717ee0dbf3f095",
+    "size": 11989
+  },
+  {
+    "path": "docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md",
+    "sha256": "b40cf5fca2c2624711e87a5bff55df57e0dad5e3eb622699f71d0e763c5df551",
+    "size": 11799
+  },
+  {
+    "path": "docs/ops/CLAUDE_CODE_AUTH_RUNBOOK.md",
+    "sha256": "f175728de4afec2eb17232de829ec88b9c9f8fcbab0a7c440ac01416d6ad9cc6",
+    "size": 1935
+  },
+  {
+    "path": "docs/ops/CLI_RUN_MANIFEST_RUN_ID.md",
+    "sha256": "28a0bd88d1056c5bcc792d290e492994a56d5437bf400d0336c9aa296e41b7f6",
+    "size": 639
+  },
+  {
+    "path": "docs/ops/CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md",
+    "sha256": "fd3fac87ef280e3753180418d0964e52a7755a8767a32550c28ac47d517a8da5",
+    "size": 6355
+  },
+  {
+    "path": "docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md",
+    "sha256": "cece06064281c20eaf4ce7fc752bf5b2b2f8497640356e6e60310804506703a8",
+    "size": 28056
+  },
+  {
+    "path": "docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md",
+    "sha256": "653ca8933f983daaa45107e1ea407484cdb6ede41e0e4bee1943737212d4913b",
+    "size": 35760
+  },
+  {
+    "path": "docs/ops/CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md",
+    "sha256": "4c49bf36f032c03a75a11e6b333120f9f3fe09e65c34fe20a1e1a4cf96e7f737",
+    "size": 556
+  },
+  {
+    "path": "docs/ops/CURSOR_MULTI_AGENT_WORKFLOW.md",
+    "sha256": "c914f300519abc7c1809440bcc6c4357318d5ed7bc61f3cd2fbb824255f54025",
+    "size": 1275
+  },
+  {
+    "path": "docs/ops/CURSOR_TIMEOUT_TRIAGE.md",
+    "sha256": "50fdfcfe9fa1c6e9c2ccee2078ce6bcf9696d038d65c48214f4cb28811b59fb6",
+    "size": 9432
+  },
+  {
+    "path": "docs/ops/DOCKER_RECOVERY_CANONICAL_STATE.md",
+    "sha256": "b38cfa5ced73a84307dba7d554a2f63bf2afcc03e54d6b33f34f3a83047e3cf0",
+    "size": 1365
+  },
+  {
+    "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
+    "sha256": "6b17fa9863f3446049e989c097003dd8200e833ac21c5a8b0466f37a1fa9aafe",
+    "size": 53283
+  },
+  {
+    "path": "docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md",
+    "sha256": "301c5696610dee4a5b569e983c4f5527a61566c960fc486dc5c1115c74591c6d",
+    "size": 15729
+  },
+  {
+    "path": "docs/ops/DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md",
+    "sha256": "e10eae1818f6d40324609a80fa665e478be2baf90515576c1246f32ec24f1d2d",
+    "size": 4684
+  },
+  {
+    "path": "docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt",
+    "sha256": "dc3a8dac219e7144566347bdaeaee8962a19071968e0ed46690b597d92558523",
+    "size": 1331
+  },
+  {
+    "path": "docs/ops/DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md",
+    "sha256": "cf8c5a1cd817639daca2a4b24da0e64b8ece3c86d6378fd6d8adf41df9b52bc9",
+    "size": 5379
+  },
+  {
+    "path": "docs/ops/DRIFT_GUARD_QUICK_START.md",
+    "sha256": "0349a32f97cd9a83395c098cc29ea65b0ce7b11f97e34b79647c9dade4cf4570",
+    "size": 6340
+  },
+  {
+    "path": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
+    "sha256": "5631eae8907eb91fec1cfe3a3752f804ba4c030a73401a7c2dc4f106d45316d7",
+    "size": 5441
+  },
+  {
+    "path": "docs/ops/EVIDENCE_INDEX.md",
+    "sha256": "1cc9314e6ffe57b1196b06544e052bd91a2b454b760229e72525876bc666eff4",
+    "size": 95504
+  },
+  {
+    "path": "docs/ops/EVIDENCE_SCHEMA.md",
+    "sha256": "f396170bb19b32e8a8822b350964f7a942d1cf625dbcb8c444b2e4287c0c248e",
+    "size": 4689
+  },
+  {
+    "path": "docs/ops/EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md",
+    "sha256": "148a57d3e4c1eafddb5c66da0ac078ce555ad926658ce0171a10bca9e1f65670",
+    "size": 16508
+  },
+  {
+    "path": "docs/ops/F1_R1_RESEARCH_STRATIFICATION_V2_IMPLEMENTATION_PLAN_V1.md",
+    "sha256": "b734c9ef015f18fdeda1bf91d5934079d961c5811f1eae84f43b4dde6cf31da6",
+    "size": 544
+  },
+  {
+    "path": "docs/ops/FULL_INTEGRATION_ACTIVATION_MASTER_PLAN.md",
+    "sha256": "84c18823bf1e598e7d4045927d5d902a6fef9ddfe57ca00dde6b929568aabbdc",
+    "size": 1476
+  },
+  {
+    "path": "docs/ops/GATES_OVERVIEW.md",
+    "sha256": "a545f3b687c85b3b07a9f6c32ad6037086a34b63222d4a35f30bb917ba113deb",
+    "size": 33012
+  },
+  {
+    "path": "docs/ops/GATES_UND_DATENFLUSS_UEBERSICHT.md",
+    "sha256": "88532d3a335a23a52bbb5846e17c9c244eda0e84a286a80782c8badc228cb808",
+    "size": 17701
+  },
+  {
+    "path": "docs/ops/GIT_BRANCH_CLEANUP_20260105.md",
+    "sha256": "3e1746e4abb91662a6788ff887e552146867b8bcbfc856d936087142318c3aca",
+    "size": 1743
+  },
+  {
+    "path": "docs/ops/GIT_RESCUE_20260101_FINAL_SUMMARY.md",
+    "sha256": "2ab59ac9d5ebcda23c0c74c7fac7e15424097ed799db4c6351589c68efdb8864",
+    "size": 6776
+  },
+  {
+    "path": "docs/ops/GIT_STATE_VALIDATION.md",
+    "sha256": "04a5c81a90bfb6a22d85bfb1e832910956b9ab6eef112a4cce88f5d18fd8a770",
+    "size": 1162
+  },
+  {
+    "path": "docs/ops/HANDOVER_ULTRA_SHORT_2026-01-03.md",
+    "sha256": "cb0cdb2f3469b27055c646032b487fa20297ebd80f4a560dfbe63a16141ed31e",
+    "size": 2534
+  },
+  {
+    "path": "docs/ops/INFOSTREAM_DELIVERY_CONTRACT.md",
+    "sha256": "162e8da723e56fc55ecf470ab8ddaa1d657b682a83d8b2724945a414ee05e47e",
+    "size": 1766
+  },
+  {
+    "path": "docs/ops/KILL_SWITCH_RUNBOOK.md",
+    "sha256": "f6b2d1cfe0153f288762eee8fe5a69a17a54cd808a107f85433609b975d54c53",
+    "size": 12743
+  },
+  {
+    "path": "docs/ops/KILL_SWITCH_TROUBLESHOOTING.md",
+    "sha256": "0e62b2d8e800a397fba926534233e6fc5c4b45f7c922ccd0c738d435eb58a0a3",
+    "size": 14787
+  },
+  {
+    "path": "docs/ops/LABELING_GUIDE.md",
+    "sha256": "2c63a8415c378169071fc489041b0c1889b857cba8027a497f1a9e2d1f256cd5",
+    "size": 1141
+  },
+  {
+    "path": "docs/ops/LB_APR_001_ACCOUNT_TYPE_FIELD_MAPPING.md",
+    "sha256": "4f04e851de2e0d341eb144980a0045efe28c9286e95f108dc7e2f20dc77cfb05",
+    "size": 4166
+  },
+  {
+    "path": "docs/ops/LB_APR_001_STRATEGY_VERSION_FIELD_MAPPING.md",
+    "sha256": "a9efad16e12cb791b1ec6605d9529fa5914f99db108d600803c112b5cb3eb82e",
+    "size": 5377
+  },
+  {
+    "path": "docs/ops/LEGACY_MERGE_LOG_VIOLATIONS_BACKLOG.md",
+    "sha256": "b2d2fdaeb95e9cecd6df2f7be949601a0d2f733de16964b48790f40f5e3fcbb8",
+    "size": 3950
+  },
+  {
+    "path": "docs/ops/LIVE_READINESS_PHASE_TRACKER.md",
+    "sha256": "ae9157fa9d7f5cb4f0951853b213cebdcb5b239081b096bcd866e4fcbb6551c6",
+    "size": 1018
+  },
+  {
+    "path": "docs/ops/LIVE_SESSION_EVALUATION.md",
+    "sha256": "3071ae1320821f335746fd9ecf6ffd853d147aae9dc97e83577d3329cac38bee",
+    "size": 8892
+  },
+  {
+    "path": "docs/ops/LOCAL_WIP_HYGIENE.md",
+    "sha256": "1d8487b8f5f0e65a98b5f2326f5d17ff6fe270bbc95f4203be62c1bec59429f8",
+    "size": 2128
+  },
+  {
+    "path": "docs/ops/MERGE_LOGS_STYLE_GUIDE.md",
+    "sha256": "2f9a98f150ee4058a148dfcfa76fbb51b781e4a2e71a601b116277abbeacfea7",
+    "size": 6080
+  },
+  {
+    "path": "docs/ops/MERGE_LOG_TEMPLATE_COMPACT.md",
+    "sha256": "17925f2d200ab555bb808d5375f0d64ecae04330dd537daeffb798574be7a9e0",
+    "size": 1153
+  },
+  {
+    "path": "docs/ops/MERGE_LOG_TEMPLATE_DETAILED.md",
+    "sha256": "e760aab867717ebd0aa62a15d710757cd2b278413da545244353d49dc0acb906",
+    "size": 2873
+  },
+  {
+    "path": "docs/ops/MERGE_LOG_WORKFLOW.md",
+    "sha256": "18be7b53b1d8a50876bb751a42b722604011a6fc19ae31eccced16f16749c067",
+    "size": 207
+  },
+  {
+    "path": "docs/ops/MERGE_STACKED_PRS_1102_1103_1104.md",
+    "sha256": "82b255f6cf2f7b9dcc3ae3c3f162e821931367982b4d140d87647253d21b8dc4",
+    "size": 1262
+  },
+  {
+    "path": "docs/ops/NEXT_STEPS_WORKFLOW_DOCS.md",
+    "sha256": "2a568465089ac168737f26078f4ea315f2e5e903ebc3e3213f66a4b2482dc34a",
+    "size": 3610
+  },
+  {
+    "path": "docs/ops/O7_REMAINING_NETWORK_GAPS_PRODUCTIVE_WIRING_V1.md",
+    "sha256": "d49fb1f6913b4d34281191656dbc291e1110e032cfd6d40ac943e89a6786755c",
+    "size": 1357
+  },
+  {
+    "path": "docs/ops/OBS_PORTS.md",
+    "sha256": "1370734c0c455f6b48d1c73b68fd30ba40b45265c7e3404ecb8ed7be0a0683f0",
+    "size": 482
+  },
+  {
+    "path": "docs/ops/OBS_STAGE2_DECISION.md",
+    "sha256": "6d60b1792c8a20b07a63e2d226b11716b0f5d046db4684c5d7a9bbebd63917c8",
+    "size": 3682
+  },
+  {
+    "path": "docs/ops/OPS_DOCTOR_README.md",
+    "sha256": "98e3109d7d9ca35bc6ad959036fd760224105fa868857e1282068fb7606043e3",
+    "size": 11644
+  },
+  {
+    "path": "docs/ops/OPS_OPERATOR_CENTER.md",
+    "sha256": "738f32a70e5acf73c424a12c7d6506dc447d943e8646be4c88f46f878b55508b",
+    "size": 6533
+  },
+  {
+    "path": "docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md",
+    "sha256": "f38b8baeba50a44d52f8c0fa2f968fefc3a5bf44fc5db05803b754574928e3ab",
+    "size": 5376
+  },
+  {
+    "path": "docs/ops/P0_GUARDRAILS_QUICK_REFERENCE.md",
+    "sha256": "b32148930e1ed4c303838caf2c853a3f1632711a60173e0f1c16d576d52ee835",
+    "size": 7639
+  },
+  {
+    "path": "docs/ops/PAGER_HOOK_HANG_TRIAGE.md",
+    "sha256": "c52e787427115acc6c657637e910b2721f48cd9f8dea7f27d30aa5891e9a76c2",
+    "size": 6148
+  },
+  {
+    "path": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
+    "sha256": "45de19a5b63eb675f8a8452fba69f5c3650a2e0e1e23af4bcfd5a77696999ee4",
+    "size": 15746
+  },
+  {
+    "path": "docs/ops/PEAK_TRADE_REUSE_CANDIDATES.md",
+    "sha256": "e70c34a756431d3ba33276d1c72e510fe3305958096f1ee396c87c4aa4a79041",
+    "size": 1848
+  },
+  {
+    "path": "docs/ops/PHASE3B_EVIDENCE_PACK_QUICKSTART.md",
+    "sha256": "6d8b6e4474b689d1091b7d45c993451c2f490fadcb6cb8671e4751a5a899d373",
+    "size": 7522
+  },
+  {
+    "path": "docs/ops/PHASE3_CRITIC_REVIEW.md",
+    "sha256": "99ba1937456afa1322b8c12686c5afd21448a21ea07a637944867c7cafbd7a18",
+    "size": 6850
+  },
+  {
+    "path": "docs/ops/PHASE3_MISSION_BRIEF.md",
+    "sha256": "6f8d4e2034118a36b7356289e4f9fe2fcdde071521070f8706070cfe385e461c",
+    "size": 7411
+  },
+  {
+    "path": "docs/ops/PHASE3_ORCHESTRATOR_QUICKSTART.md",
+    "sha256": "22182b5a7ff397885fedf36b7bf8aae87528a11044e53bfcbb868a3536194784",
+    "size": 3719
+  },
+  {
+    "path": "docs/ops/PHASE3_PR_DESCRIPTION.md",
+    "sha256": "65adb13cdfa2f978503bed8fc63be95c144c12e10f4b13882e8fab70f0ac0a98",
+    "size": 8789
+  },
+  {
+    "path": "docs/ops/PHASE3_VERIFICATION_EVIDENCE_PACK.md",
+    "sha256": "23517927103f39c1cf535775ed2c44a535d66e0877a8bf43efcc33da5d660e0c",
+    "size": 8714
+  },
+  {
+    "path": "docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md",
+    "sha256": "b3369a546913a00b1aabe32c8fa5925f00a17ed2b78da2bd51a204bf81534b6d",
+    "size": 25087
+  },
+  {
+    "path": "docs/ops/PHASE_16C_FILES.txt",
+    "sha256": "46a191ef3240ce60154982d12afb4ffb115b5ec9ebbc63f29ddcfc4eba13c434",
+    "size": 2276
+  },
+  {
+    "path": "docs/ops/PHASE_16C_IMPLEMENTATION_SUMMARY.md",
+    "sha256": "1f8b10282835b85907bf3192503879269034446e647d6f7ce9be9120855050c1",
+    "size": 13114
+  },
+  {
+    "path": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
+    "sha256": "d24aad7dff5b1014c53c2d48e1328168d8c304fbe01315b144f77747a737eea6",
+    "size": 7066
+  },
+  {
+    "path": "docs/ops/PLACEHOLDER_POLICY.md",
+    "sha256": "35dd201069aca71345ba37cc8aeee1ecc419506d0f057cd2722e5aa32ff02758",
+    "size": 8117
+  },
+  {
+    "path": "docs/ops/POLICY_CRITIC_TRIAGE_RUNBOOK.md",
+    "sha256": "a4109b41d8fad7d8e1248810e85ad648b5568ac052fa026fd1822e94ce8d3225",
+    "size": 13818
+  },
+  {
+    "path": "docs/ops/POLICY_GUARD_PATTERN_TEMPLATE.md",
+    "sha256": "ae41b60abe8e1f449e355da4c17534341e85bd76844d50b5d04e823d88ddaacb",
+    "size": 1400
+  },
+  {
+    "path": "docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md",
+    "sha256": "2788e0add27c3be6e97415c72610ac64ec18bc7ba59068c04d89ab519b7646a1",
+    "size": 9530
+  },
+  {
+    "path": "docs/ops/PR-05_PR_BODY.md",
+    "sha256": "4ce69684d6dff7c8cafd7950e690fb3629cdc52e38c91e598265db9d87ba1ac4",
+    "size": 542
+  },
+  {
+    "path": "docs/ops/PR-08_PR_BODY.md",
+    "sha256": "231423f6dd5139aafb90a7cf1ec2e9bb70cb08134a4551635ea29b5b65112306",
+    "size": 929
+  },
+  {
+    "path": "docs/ops/PR-10_PLAN.md",
+    "sha256": "d32b13ade31bffc3c0711c7ff63b26ea2504cdc75980d990f1a893db03baf511",
+    "size": 663
+  },
+  {
+    "path": "docs/ops/PRE_PR_FULL_SCAN_CI_PARITY.md",
+    "sha256": "308cc94a5d0bc3e5dcfb965c75787acece2e8918f0b7b16fd80e45b17addffbe",
+    "size": 8326
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_DISPLAY_DECISION_HOST_BINDING_V1_OPTION_A_OWNER_RATIFICATION_V1.md",
+    "sha256": "f1cce9c1146631427872c5ca661e959da329ce7fb7f762f1c7ec386c5c61be61",
+    "size": 3955
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_INPUT_AUTHORITIES_OWNER_RATIFICATION_V1.md",
+    "sha256": "aff8a5d108837e2c5b8b6f165560093dcf6bf7702a529c6a382773265b5f6a44",
+    "size": 36141
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_CAMPAIGN_MANIFEST_V1.json",
+    "sha256": "2f25f0ae6beb899107bd85d5efadadaacbeb13210881683ef502a2f706bd5c6d",
+    "size": 44386
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_PROTOCOL_V1.md",
+    "sha256": "3352a5f92ba67593409cd4bf4933dd43d6ae33d90b8a99ea15d0c88bd52f3b58",
+    "size": 9577
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_EVIDENCE_PACK_SCAFFOLDING_V1.md",
+    "sha256": "d743cbfeed23cb9eef6a8112368b61164567d0ad687b882dd6b4f9c3c830355e",
+    "size": 4084
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_EVIDENCE_REQUIREMENTS_V1.md",
+    "sha256": "3528e4b5554a138edfc9c6576bd7a5634cf0f3674c0bec3ac855b90148354de6",
+    "size": 29363
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_SHADOW_CAMPAIGN_V1.md",
+    "sha256": "7dd5cfdcb276a2fe763db91d2ccd3b69f69e0dcd45d95c4d8d43dd7b3d045693",
+    "size": 4223
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_OWNER_VALUES_STRUCTURAL_MANIFEST_V1.json",
+    "sha256": "187cd375b3d3763de7d37c9f13d56f318ccd2987f1e57ab1db77c26169d862fe",
+    "size": 9939
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_OWNER_VALUES_TWO_STAGE_RATIFICATION_V1.md",
+    "sha256": "94867e2bc8bb16e52e8906d7298d7ea932dce8b507f7d05fa5411ae4e158e942",
+    "size": 13841
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_CYBERSECURITY_MIRROR_SYNC_V1.md",
+    "sha256": "a8a23a264c5a381355d3efffdd558181933403ac900cafd88a0d00ec80ae8e46",
+    "size": 4259
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_NOTION_MIRROR_SYNC_V1.md",
+    "sha256": "b0619daec5d67a43cc6602b3da6c021e2de1dc09f50c2c9a4fb25a6362deb5e6",
+    "size": 5050
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_DECISIONS_V1.json",
+    "sha256": "639abd1a75fa28670488c6d15676dc4a48cc9bf8fb23fb1e4a526f7b318caf94",
+    "size": 5900
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_IMPLEMENTATION_PLAN_V1.md",
+    "sha256": "7a00edba3d2965c2c7ea99d42c840ae927c2c867ac9515d795507d5bd1138b92",
+    "size": 4799
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_OWNER_RATIFICATION_V1.md",
+    "sha256": "c8496af1e061209ab830759a67ffc238e399894912ca399c5e52eee6abfa1017",
+    "size": 10514
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "3844bcfb15876a1b672315c1c0a10ae5b13b3281290b4e51c2e452d3b42def8c",
+    "size": 2325
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISIONS_V1.json",
+    "sha256": "435dba71eaf057aecb14aacaf5e1ed08d622a5155bb0342bea4b7f7f8cfca24c",
+    "size": 28330
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_CANDLE_MARK_INSTRUMENT_AUTHORITY_DECISION_V1.md",
+    "sha256": "7c5087425526cc7fae75a9851e5a5c5ac52b1f6d12d2a56494c1818b0d7929dc",
+    "size": 12427
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "d8836348845282c4de729d481d6cc009152d0a1cc123162eb3ee60a66ba26813",
+    "size": 2741
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_DECISIONS_V1.json",
+    "sha256": "6fbd2910fa590346bc85a7ba6ba67d90baf44fda1261188dffdde537fc901332",
+    "size": 8133
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_V1.md",
+    "sha256": "fae86f4613335f521cf3c0a740d319940b31966dba3b8fc254b36373cf3bf0b9",
+    "size": 6315
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_EXECUTION_V1.md",
+    "sha256": "37c98f600772d798e7808f2a8c0cfaa1df9289a572c8b170fa3668ec184595a0",
+    "size": 2136
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "a941ef2229f0d379a81a94c6c0b97699b9c72aa0c6f767ac269e33ca23f65b46",
+    "size": 4153
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_EXECUTION_V1.json",
+    "sha256": "2a620d7633c4f36173065e7c1f2816391f5542c21be46a1f3cdf048f62134f24",
+    "size": 4787
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISIONS_V1.json",
+    "sha256": "e4aad8ad16174fbf049c935bfe75c83ebf047112d121de9b192ab22ab88dcada",
+    "size": 28894
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION_V1.md",
+    "sha256": "51a74e955233f37043d58be5368084290d115d755dac42262f93760c8d342cf6",
+    "size": 22722
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_V1.md",
+    "sha256": "cfba004c3655d16aec652a2548384a4a13264a2877b616e37b04b9423018749d",
+    "size": 6284
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "87bfd9b2374fa66b0a4c8131207dcefbedc61ccf58f0356e35a948eb97146377",
+    "size": 2600
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_DECISIONS_V1.json",
+    "sha256": "6debcb409db13d8386f2118601afa233264891b67cde37177a414f74b2ecfe7d",
+    "size": 6283
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_RAW_PT1M_OBSERVATION_INPUT_AND_EXCLUSIVE_TIP_PROOF_V1.md",
+    "sha256": "a96f6a0af9e899efddf8b66087e59bf50742387ee0b0a0adbf48f8e98df0a5cd",
+    "size": 7966
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "676a1c2ea5599cd48bdd1076191fad07548e195feeec27206bbaf5ee21e9ad14",
+    "size": 2677
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISIONS_V1.json",
+    "sha256": "dab8d5eb0e44f40f87920f33b471d6770420da44f4ba4a9a2b2d4f4101ab4669",
+    "size": 7375
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_PRODUCER_DECISION_V1.md",
+    "sha256": "e8f81b21e612375fa9e3d4cf1f976316a24d1e638024dacd0bd31ce96a07aa61",
+    "size": 12376
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "1914b36a92197a25436d18c413f7b46c9829e4d5dd1ed026983d219527a02f0d",
+    "size": 2251
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_DECISIONS_V1.json",
+    "sha256": "27a0a579d434adecda57fd10fd236c0c9b8bc5c40730842328fa7cf7151140aa",
+    "size": 5836
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_REGIME_COVERAGE_STA_OPEN_INPUTS_CLOSEOUT_V1.md",
+    "sha256": "df366208b6f27bf0f5b2e5f8b10bd1fea94ac1fbee9e01bca65611d5ac333262",
+    "size": 8204
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "e3b63b97a84a56b72f69766e595cf2c94f90cf3d6489cbc8877cca852a88684d",
+    "size": 1945
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_DECISIONS_V1.json",
+    "sha256": "bc07f3b59315ac271bb1a6c0f9f55ae124467c041bdec30511add4a71a96a6a1",
+    "size": 5264
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_RAW_PT1M_INPUT_PACK_OWNER_DECISION_V1.md",
+    "sha256": "dc5d6bfaac7409a2382b27043b270d5f8f36123c3589558bd47930855297d78c",
+    "size": 11619
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT_CYBERSECURITY_MIRROR_V1.md",
+    "sha256": "8158d7915dfeb30ff361c4d254df6ebea5b1a8e48d212f3f3a83c1ed04121f3f",
+    "size": 1662
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT_DECISIONS_V1.json",
+    "sha256": "ff2ffab55a248095bee00b37e837a8ca0fbc861fbc53462cec35c7e555310405",
+    "size": 6434
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_AND_DASHBOARD_INPUT_GAP_CLOSEOUT_V1.md",
+    "sha256": "7235785c105d022933b2b4d00324c8d9fc7f268b938666a6e2e080d0459ecd82",
+    "size": 4571
+  },
+  {
+    "path": "docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_REGIME_COVERAGE_PRODUCER_V1.md",
+    "sha256": "14d477280dfb8631276ac5497f9a863d77e07d00278d1645527c5541d6560e04",
+    "size": 2453
+  },
+  {
+    "path": "docs/ops/PR_110_MERGE_LOG.md",
+    "sha256": "cf8e5d2f860c981cc60014d6480844b968870e72a23652bfe139b44e55da3072",
+    "size": 491
+  },
+  {
+    "path": "docs/ops/PR_112_MERGE_LOG.md",
+    "sha256": "cf41e16c3c4fef4b9a18e335d6358b87b685ce4b2af115d47010cfac924736c5",
+    "size": 991
+  },
+  {
+    "path": "docs/ops/PR_114_MERGE_LOG.md",
+    "sha256": "cde911cd4dcf04cd08d26fe86fcb6706f039e183158332a5e46712e25922ad93",
+    "size": 1151
+  },
+  {
+    "path": "docs/ops/PR_116_MERGE_LOG.md",
+    "sha256": "8f30970092b8a620a87602108dd0e10e2464e3d371d60d5f0c820ec3277d29ca",
+    "size": 749
+  },
+  {
+    "path": "docs/ops/PR_121_MERGE_LOG.md",
+    "sha256": "b6319a4631dbbd2ad340e743a1dce976fd14ca7300c2f1771d05c01d18cd17c5",
+    "size": 1352
+  },
+  {
+    "path": "docs/ops/PR_123_MERGE_LOG.md",
+    "sha256": "ac6522166247458402f73be4beb3501c285b55e4419add74dd43296033824331",
+    "size": 1707
+  },
+  {
+    "path": "docs/ops/PR_136_MERGE_LOG.md",
+    "sha256": "de1fe9b033382507b54ddb248c1a7b7428475173009c3bb1edbf41ff4970802b",
+    "size": 2930
+  },
+  {
+    "path": "docs/ops/PR_137_MERGE_LOG.md",
+    "sha256": "e0d7174afcb48bf730d7e47b6c56d1445a81f638e7b919e738b28effee67ebe8",
+    "size": 760
+  },
+  {
+    "path": "docs/ops/PR_143_MERGE_LOG.md",
+    "sha256": "9a4a06ae38d05840321c061d5a36d236ff529bee3597ca8e4d3a54952d406675",
+    "size": 1378
+  },
+  {
+    "path": "docs/ops/PR_144_MERGE_LOG.md",
+    "sha256": "e29463bedbf71130a65a7452d0c841c42dc01463a2b2142cb1ace14e1a62f0ac",
+    "size": 1918
+  },
+  {
+    "path": "docs/ops/PR_150_MERGE_LOG.md",
+    "sha256": "ed507a2bae871d184c67afd0914c2e40fe952b556b73b86fbdc50f10d5781a4f",
+    "size": 5504
+  },
+  {
+    "path": "docs/ops/PR_152_MERGE_LOG.md",
+    "sha256": "d78be698985e24b0501c94ec6246c5ed9644700cc1480daf533d85a0c0b18c77",
+    "size": 5807
+  },
+  {
+    "path": "docs/ops/PR_154_MERGE_LOG.md",
+    "sha256": "ba1817c25a891b16a9abbb35b72bd873b8b2276f622d9312cb1c3a64f7799d2c",
+    "size": 3062
+  },
+  {
+    "path": "docs/ops/PR_161_MERGE_LOG.md",
+    "sha256": "931c7d472fe290236a73ae0608b440e51981c425412f30d77e990220cfc7b73a",
+    "size": 9430
+  },
+  {
+    "path": "docs/ops/PR_180_MERGE_LOG.md",
+    "sha256": "a3d26a0c17e34c1756490ce59dab7b610ba8f3b417a4107214291de364910b28",
+    "size": 6087
+  },
+  {
+    "path": "docs/ops/PR_182_MERGE_LOG.md",
+    "sha256": "20a93934700343ab493b9275f2751b263287a47708cab4eb63ada428d84e44d2",
+    "size": 6327
+  },
+  {
+    "path": "docs/ops/PR_183_MERGE_LOG.md",
+    "sha256": "3e5270a8e704e2b88572579d6833b1eae52a91c715ae2e7993b87cca954009b8",
+    "size": 9308
+  },
+  {
+    "path": "docs/ops/PR_185_MERGE_LOG.md",
+    "sha256": "172875f8829323b37714b2e061873d641b82386bd53c61f8f282daa469e264b9",
+    "size": 10014
+  },
+  {
+    "path": "docs/ops/PR_186_MERGE_LOG.md",
+    "sha256": "7a7373608da67cac80eac1b1e489ad5442e1464f432f7311d61503d4a0750b0e",
+    "size": 10350
+  },
+  {
+    "path": "docs/ops/PR_193_MERGE_LOG.md",
+    "sha256": "f0795940124eaca20383c185d0e2f0ef9bc603ddf61b210b2d32814e354963e7",
+    "size": 2418
+  },
+  {
+    "path": "docs/ops/PR_195_MERGE_LOG.md",
+    "sha256": "e9aafc8297c7a04ecee09ca8b8ec72b38af9645e9e26dc7dc684b158976f3f14",
+    "size": 9116
+  },
+  {
+    "path": "docs/ops/PR_197_MERGE_LOG.md",
+    "sha256": "4ffa80875e77455bbd5633eb8ee850ce3812b917e42616a19eb29b8f9831f9d7",
+    "size": 22366
+  },
+  {
+    "path": "docs/ops/PR_199_MERGE_LOG.md",
+    "sha256": "d973f854d64c0815a0cb1a08fd6c19d3c9ba679f8fec94beabf9d514bfcb566d",
+    "size": 9036
+  },
+  {
+    "path": "docs/ops/PR_201_MERGE_LOG.md",
+    "sha256": "5325ad6eb990268e662fb93cac5073240d54fbd3d7c6f68c650a5bf62abe9fa6",
+    "size": 1267
+  },
+  {
+    "path": "docs/ops/PR_204_MERGE_LOG.md",
+    "sha256": "be59b87c1dd4cb132ddd86b4c288084f4ea96aa8f08eed9c17d44360289c66cf",
+    "size": 5519
+  },
+  {
+    "path": "docs/ops/PR_206_MERGE_LOG.md",
+    "sha256": "9920a288aba758253d3bc80a44a18950f0b5c428c57706d305c406326c754249",
+    "size": 2101
+  },
+  {
+    "path": "docs/ops/PR_208_MERGE_LOG.md",
+    "sha256": "54dbd0bd9307a6a2a6ef74b038d3361a2677006750db53c43f2910d7e3a8be2e",
+    "size": 3454
+  },
+  {
+    "path": "docs/ops/PR_209_MERGE_LOG.md",
+    "sha256": "e0659f13103216c6fdcd78ee20f0e9c524ccd61c3e9cd5eaeddfb2c351b2ee79",
+    "size": 1560
+  },
+  {
+    "path": "docs/ops/PR_210_MERGE_LOG.md",
+    "sha256": "53ed2c897f30b67a5e08449ae06083b824e146d213975ed6784b4e78439b2a7c",
+    "size": 1589
+  },
+  {
+    "path": "docs/ops/PR_211_MERGE_LOG.md",
+    "sha256": "d649663ac3276db3ed9c89fbdd1510ed47c8cf7c65bc4715820f14b948b35bb8",
+    "size": 1687
+  },
+  {
+    "path": "docs/ops/PR_212_MERGE_LOG.md",
+    "sha256": "9ceebe89cdc4023014cdfa1b11a905e1c25293bf2abeec3cdf236d9574f23b54",
+    "size": 1381
+  },
+  {
+    "path": "docs/ops/PR_213_MERGE_LOG.md",
+    "sha256": "fc4ac9067a5ed21e401caa59c53c144e1bddf8885f323d6e5db0bd279d8f030e",
+    "size": 1370
+  },
+  {
+    "path": "docs/ops/PR_217_MERGE_LOG.md",
+    "sha256": "f36a493206c86d1aeed696781b1575378dcfca347989a910ec613bd852742045",
+    "size": 4925
+  },
+  {
+    "path": "docs/ops/PR_218_MERGE_LOG.md",
+    "sha256": "e5d39fba96606ff4535a5ec21517d9c1c74554c243c64113f0ac5d5b43cd9027",
+    "size": 1799
+  },
+  {
+    "path": "docs/ops/PR_222_MERGE_LOG.md",
+    "sha256": "56b08b1005f88b3071ed562d3866c8bdc6b3d69a79056a7b4429db737caeff9e",
+    "size": 5519
+  },
+  {
+    "path": "docs/ops/PR_225_MERGE_LOG.md",
+    "sha256": "b09d6c7ae2caff732b23564a24bdcf4e9891424eba4901bc02639a1ed7863b74",
+    "size": 2097
+  },
+  {
+    "path": "docs/ops/PR_228_MERGE_LOG.md",
+    "sha256": "3fdb8e619979c9f2915b315848960e2c990b9dd08a5461e705302d84745f28d6",
+    "size": 3033
+  },
+  {
+    "path": "docs/ops/PR_229_MERGE_LOG.md",
+    "sha256": "d7969ccc3a3a51f4af86bd5f24d50d70dc01c312380f28fee2d10db5848d0120",
+    "size": 1808
+  },
+  {
+    "path": "docs/ops/PR_234_MERGE_LOG.md",
+    "sha256": "f19176fa7ba1cb22446c2ae0d94ccbdc00cf5690879eda0f94ea7b1408274616",
+    "size": 1675
+  },
+  {
+    "path": "docs/ops/PR_235_MERGE_LOG.md",
+    "sha256": "d458e12c8e7676700f17bcbdc8c5d2b4e584d9facdcc1d680423cf8be2e5876c",
+    "size": 989
+  },
+  {
+    "path": "docs/ops/PR_237_MERGE_LOG.md",
+    "sha256": "1a631f676aa8c7a2d06951c22c5715b1f934b181f56422eb219694251a9162a8",
+    "size": 2567
+  },
+  {
+    "path": "docs/ops/PR_240_MERGE_LOG.md",
+    "sha256": "4ed609e32c48aba032d3ef7b69c33d782d2d983d82843165244ead16c40375a5",
+    "size": 1462
+  },
+  {
+    "path": "docs/ops/PR_242_MERGE_LOG.md",
+    "sha256": "39e0a5861dfd9db0d603d20a99114b09e65960ef4ce9c694038db6083705364f",
+    "size": 3259
+  },
+  {
+    "path": "docs/ops/PR_243_MERGE_LOG.md",
+    "sha256": "60fc594a7bc012e3b2daf5b9cb46e5ce23665a7cbb826f2a5da828481904d36e",
+    "size": 5676
+  },
+  {
+    "path": "docs/ops/PR_246_MERGE_LOG.md",
+    "sha256": "a7e7c4ba26ba23c3e4372405cbf94c1689cdc1949610fe2f625401960184af32",
+    "size": 2677
+  },
+  {
+    "path": "docs/ops/PR_250_MERGE_LOG.md",
+    "sha256": "a0803a7ea9d92ae758d964607ee08d038a04a29607783f6fe130a243ceade759",
+    "size": 1866
+  },
+  {
+    "path": "docs/ops/PR_261_MERGE_LOG.md",
+    "sha256": "3185efd2d459004706d85a485e93b89d1890a00b3b3ece4944bab21bab77d62c",
+    "size": 4092
+  },
+  {
+    "path": "docs/ops/PR_262_MERGE_LOG.md",
+    "sha256": "fbc6ff747816438810dc484f41a9638cffe20da1b471a43de7c40d7fb4011ce7",
+    "size": 2135
+  },
+  {
+    "path": "docs/ops/PR_265_MERGE_LOG.md",
+    "sha256": "15dc65f5a466934e638ef02558a059886d3f4df2ecae3705c990c4cc0f0cee28",
+    "size": 1825
+  },
+  {
+    "path": "docs/ops/PR_267_MERGE_LOG.md",
+    "sha256": "96fc9b3d465b86988731197df827735f2ed2d7e7dbdf758a4d4f14aa93400247",
+    "size": 16308
+  },
+  {
+    "path": "docs/ops/PR_271_MERGE_LOG.md",
+    "sha256": "00b57a12c9c21395152782d74dc0d41bea2739aa1e4813e1b5ef94f30ad4f0d0",
+    "size": 6836
+  },
+  {
+    "path": "docs/ops/PR_278_MERGE_LOG.md",
+    "sha256": "2f47ec771f6ffb543148e9301a01eb77a4c5b0d9c24f0afe13483dfcd5c60222",
+    "size": 2388
+  },
+  {
+    "path": "docs/ops/PR_279_MERGE_LOG.md",
+    "sha256": "2cb67a916e7fd2a1f23c0842866be2a00143bda151a49f55c112ca1b8133ebd8",
+    "size": 2481
+  },
+  {
+    "path": "docs/ops/PR_280_MERGE_LOG.md",
+    "sha256": "cb0615cfa61f6f9c98d50f570b19377c9b2fbffa92f4e5e645b3e061d4cc51da",
+    "size": 2584
+  },
+  {
+    "path": "docs/ops/PR_281_MERGE_LOG.md",
+    "sha256": "f45af45bfd391f686a31d2bfc20619dba11df9ccdcbf726f35450c7f38d43da6",
+    "size": 817
+  },
+  {
+    "path": "docs/ops/PR_284_MERGE_LOG.md",
+    "sha256": "82ced8afc1262b478158819e74506fac24bda3cade6ebfc50e83b78c19d40a1b",
+    "size": 2338
+  },
+  {
+    "path": "docs/ops/PR_285_MERGE_LOG.md",
+    "sha256": "e4b1e6b0042584199dac78efd50f97addf7e218eb41a59dd344c52ca54da5cb6",
+    "size": 2535
+  },
+  {
+    "path": "docs/ops/PR_286_MERGE_LOG.md",
+    "sha256": "fd123e825ac9e96fcc142bf65b24f06f26cf510d9792aaaddcdf8f95ea7ffb80",
+    "size": 2287
+  },
+  {
+    "path": "docs/ops/PR_288_MERGE_LOG.md",
+    "sha256": "d4391ac5ca2d15706789b6bd1128be4bbe4aa07a1f0533030779ef8a8c63e2d8",
+    "size": 2418
+  },
+  {
+    "path": "docs/ops/PR_290_MERGE_LOG.md",
+    "sha256": "5df2578ae8dd43e6ba609284e15a44b38544a0cbc3349833b22d43af2f8aa955",
+    "size": 2291
+  },
+  {
+    "path": "docs/ops/PR_292_MERGE_LOG.md",
+    "sha256": "9ba6e9e61de3cb8a4d87fb6009e2400f780913db40459a30e9ab98e05d8b9ce2",
+    "size": 1766
+  },
+  {
+    "path": "docs/ops/PR_295_MERGE_LOG.md",
+    "sha256": "1e04bcf3cc2746177c702b584308c05327331cc706a06f2c7b00a27ba5922c9e",
+    "size": 1380
+  },
+  {
+    "path": "docs/ops/PR_304_MERGE_LOG.md",
+    "sha256": "ae7852cbe9616fe9dc215eb48f9bee425ce8ee531ea096f6f810472b8d0a4830",
+    "size": 1335
+  },
+  {
+    "path": "docs/ops/PR_307_MERGE_LOG.md",
+    "sha256": "93444eb2000f1ed4f2745811fe02e7a6942a85ea360de2a77e9791576ef6f0a9",
+    "size": 1058
+  },
+  {
+    "path": "docs/ops/PR_309_MERGE_LOG.md",
+    "sha256": "e0f01a9dc25b78489bbe6ea001d91fbccd2fc9214afec96fce43ced558f2d81a",
+    "size": 999
+  },
+  {
+    "path": "docs/ops/PR_311_MERGE_LOG.md",
+    "sha256": "9307425acb80ab60acbed0bf74c2c7154c4ec3980b1d2c03b8fb1f90e5fc28f4",
+    "size": 2677
+  },
+  {
+    "path": "docs/ops/PR_321_CLOSEOUT_LOG.md",
+    "sha256": "07379aeb3c932cdb0a6ef93de28d9cba9129795988c061e5661a7574dc42400a",
+    "size": 2175
+  },
+  {
+    "path": "docs/ops/PR_322_MERGE_LOG.md",
+    "sha256": "05fc2965dbefe2e747b707a9d695b0dd8e85d6e900f7b2240d468b32582253ac",
+    "size": 3963
+  },
+  {
+    "path": "docs/ops/PR_323_MERGE_LOG.md",
+    "sha256": "46705aaf05010bbd4381fac57517bde9284b5f77b2aad50888cb8e303d003edb",
+    "size": 3872
+  },
+  {
+    "path": "docs/ops/PR_325_MERGE_LOG.md",
+    "sha256": "6e34f0ca6e4121f1e323c0f7a1aa7c2789dffe887655a3baae130cc78e965c30",
+    "size": 3681
+  },
+  {
+    "path": "docs/ops/PR_409_MERGE_LOG.md",
+    "sha256": "1f28f6ab6af97eb9715cc692fa4361381e92f0bd521b4ecd3d317d003022c95c",
+    "size": 3321
+  },
+  {
+    "path": "docs/ops/PR_413_MERGE_LOG.md",
+    "sha256": "26a021d4844415fe8eea5fc18ef5c28505f8f367e532c184f087f9a8a26f51f5",
+    "size": 6303
+  },
+  {
+    "path": "docs/ops/PR_418_MERGE_LOG.md",
+    "sha256": "e1fada0b4d58e6d8b413f157ae284bf3c2e0d1daf55b270f98aaa3a94aa690cd",
+    "size": 7022
+  },
+  {
+    "path": "docs/ops/PR_424_MERGE_LOG.md",
+    "sha256": "e86ed9ec1d4e1259ba1b2254c0f84116aaff766414b94e4954544db6631dda7a",
+    "size": 1455
+  },
+  {
+    "path": "docs/ops/PR_426_MERGE_LOG.md",
+    "sha256": "6d462f75e731b650a064aad2d4698ce174f2666092f193636577531ccda069ed",
+    "size": 1799
+  },
+  {
+    "path": "docs/ops/PR_429_MERGE_LOG.md",
+    "sha256": "36c45924a84d87b680a40f6a0727ce6e9f003a966162cb41d0120362d061ecfc",
+    "size": 1269
+  },
+  {
+    "path": "docs/ops/PR_442_MERGE_LOG.md",
+    "sha256": "9465dfd374dd1bb0e70c9c0a99b900cf4023eb087cdb330ec38de311fc1c174d",
+    "size": 1127
+  },
+  {
+    "path": "docs/ops/PR_446_MERGE_LOG.md",
+    "sha256": "6914e506463b8499026e803c8ae8fd86341dc423e04a96c4feb121fcb9173210",
+    "size": 6355
+  },
+  {
+    "path": "docs/ops/PR_447_MERGE_LOG.md",
+    "sha256": "b6d4ee85779b01f7f6bdb4a97afef28dec6fba24f3395475dc6175b93e3f2fe2",
+    "size": 6932
+  },
+  {
+    "path": "docs/ops/PR_448_MERGE_LOG.md",
+    "sha256": "c9dd139070677b0aa5670a4ea5ab469bdb41824c0861e8526e3b2a2f320f9599",
+    "size": 8907
+  },
+  {
+    "path": "docs/ops/PR_454_MERGE_LOG.md",
+    "sha256": "412be6bd21ea2d7798b6bf850d2d6f5bd70e8ca184893679acf07e875ad3f5c9",
+    "size": 1437
+  },
+  {
+    "path": "docs/ops/PR_456_MERGE_LOG.md",
+    "sha256": "f5d2d721c866efbb4faa0c142a578ede21075c8e7dc448d2bdeae99ebde4803c",
+    "size": 3788
+  },
+  {
+    "path": "docs/ops/PR_458_MERGE_LOG.md",
+    "sha256": "ab2539c046b6b73d265f8b5f96c582198353dc1f0d3cc8b9448ae7bc167bc27c",
+    "size": 5790
+  },
+  {
+    "path": "docs/ops/PR_45_FINAL_REPORT.md",
+    "sha256": "54c0fcc278e3c6d928b7bcef15702f8f2f8d736e65e8b4cc4a64dbdc2548d3c1",
+    "size": 3225
+  },
+  {
+    "path": "docs/ops/PR_462_MERGE_LOG.md",
+    "sha256": "983e88bcb45b1cf7b7b3cd48dc864479bd6f6ce3ad6b8437b2f13c43eb557e31",
+    "size": 7361
+  },
+  {
+    "path": "docs/ops/PR_470_MERGE_LOG.md",
+    "sha256": "48287da90904bef8925b368220e4cd68a129cc7f07e6514f17e43beca409e31b",
+    "size": 5429
+  },
+  {
+    "path": "docs/ops/PR_479_MERGE_LOG.md",
+    "sha256": "05c630b1031e9faad8c59230b1bb002e970c7294952ea8148f7742a04f4c11c1",
+    "size": 1514
+  },
+  {
+    "path": "docs/ops/PR_481_MERGE_LOG.md",
+    "sha256": "b698f493a6e3002541e561e627f02af534570504e76ff642fab6f5f6cd5f9b7f",
+    "size": 2856
+  },
+  {
+    "path": "docs/ops/PR_482_MERGE_LOG.md",
+    "sha256": "42d926c94c9ed5527674ff77bce8cf01e6ec5b3ff588e86fb8e0fb3aa531f73b",
+    "size": 3379
+  },
+  {
+    "path": "docs/ops/PR_483_MERGE_LOG.md",
+    "sha256": "bec4676f6d405a4685277a6311955baf3d510150fcaa68126659972a3c5ed635",
+    "size": 4917
+  },
+  {
+    "path": "docs/ops/PR_485_MERGE_LOG.md",
+    "sha256": "e6dbf2c92a21f3a39a0dafd8781495f96fe02c64c4d475b56a9f062d6f288769",
+    "size": 1431
+  },
+  {
+    "path": "docs/ops/PR_486_MERGE_LOG.md",
+    "sha256": "58e8ea63a8959e3a3a2f2d4e3ff799cd060427eb9837e1ab0c14af89f45a8fc6",
+    "size": 1014
+  },
+  {
+    "path": "docs/ops/PR_488_MERGE_LOG.md",
+    "sha256": "b8c68df7c8982bdcbdb4fb8dac9651d5f5c76c560b02f8ea24fd6c4d3ef057b7",
+    "size": 3187
+  },
+  {
+    "path": "docs/ops/PR_489_MERGE_LOG.md",
+    "sha256": "b4a1948199a31119d519fcc43e8761b48d6eb90ef54ab4ce379a02a227dd0726",
+    "size": 1576
+  },
+  {
+    "path": "docs/ops/PR_491_MERGE_LOG.md",
+    "sha256": "129c825311c853da8c94de7e7019c528a980b304443d5a6af3c55755deb61e50",
+    "size": 1643
+  },
+  {
+    "path": "docs/ops/PR_497_MERGE_LOG.md",
+    "sha256": "b71025052e1763b6d4abe2081a560f309c26784d83d08d0e7d08ea1900a1ec35",
+    "size": 4771
+  },
+  {
+    "path": "docs/ops/PR_499_MERGE_LOG.md",
+    "sha256": "d8dcf900264cff3e82ac7f6b60874565d101684b64d7e0d1e8c8f1e21786a62b",
+    "size": 2526
+  },
+  {
+    "path": "docs/ops/PR_501_MERGE_LOG.md",
+    "sha256": "a927115d67284b2fd12f8b58888abb29350a940f5f5f1e1ffe8ea8dee2dab9a2",
+    "size": 1603
+  },
+  {
+    "path": "docs/ops/PR_504_MERGE_LOG.md",
+    "sha256": "3997c7f2586220b7f35f803a86e13aa8be9ae45a4b7b5625556ed6e175a2d496",
+    "size": 6764
+  },
+  {
+    "path": "docs/ops/PR_506_MERGE_LOG.md",
+    "sha256": "3233cf31f25dfd530d74d77b3700031d238ea6d2e0e0ef44ee6548b8c35605c1",
+    "size": 2127
+  },
+  {
+    "path": "docs/ops/PR_509_MERGE_LOG.md",
+    "sha256": "e8d8b617b323cac0fff095883f0259d71426c0d7134644665caa070cb7eca7ee",
+    "size": 5049
+  },
+  {
+    "path": "docs/ops/PR_510_MERGE_LOG.md",
+    "sha256": "4443a50c694109bf04e26afc0e1453d3c1c3c8aedecbb2e611d73e7027c34abc",
+    "size": 1220
+  },
+  {
+    "path": "docs/ops/PR_512_MERGE_LOG.md",
+    "sha256": "d916dd765e760798ba5a5d97bc7779a440abc61e82d471259f0a2df730905b90",
+    "size": 2399
+  },
+  {
+    "path": "docs/ops/PR_518_CI_GOVERNANCE_HEALTH_PANEL.md",
+    "sha256": "44af263c994ae2135f5b627d04427ad13e58fc944013ddf4734683408df02755",
+    "size": 8140
+  },
+  {
+    "path": "docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md",
+    "sha256": "e3b5c0d2db05a5bc5bd53c88ab048b457991ed93db89df4559ccf323fd7f23b3",
+    "size": 13507
+  },
+  {
+    "path": "docs/ops/PR_519_CI_HEALTH_BUTTONS_V0_2.md",
+    "sha256": "defa3cb0334822afdb54b16b6ad196ac34b06e7e18d69c999a06e2cba63c4ace",
+    "size": 9436
+  },
+  {
+    "path": "docs/ops/PR_51_FINAL_REPORT.md",
+    "sha256": "30bb94c08a74f62169c570523ed61d657d284fa1f95d0423ebb8af25bf52e334",
+    "size": 6405
+  },
+  {
+    "path": "docs/ops/PR_53_FINAL_REPORT.md",
+    "sha256": "c13f705cf006d61105dfe1abb597761bfd21d89095205c3b1a9729f3536ee2b3",
+    "size": 1531
+  },
+  {
+    "path": "docs/ops/PR_551_MERGE_LOG.md",
+    "sha256": "4833e7b108477c0a4ec99bcebf05869172e5cd23bb30d2c8b3c1a1182b47135b",
+    "size": 6692
+  },
+  {
+    "path": "docs/ops/PR_560_MERGE_LOG.md",
+    "sha256": "7cb8cc74724feac3ddf9d34eedfc4fd0e24f356983d028cbc6e3b3f7ef5c1459",
+    "size": 1045
+  },
+  {
+    "path": "docs/ops/PR_562_MERGE_LOG.md",
+    "sha256": "f78e5b8198c0d04c2b73868adf0c545bf0afef211d3d33686c76eb7034ebb6e3",
+    "size": 3288
+  },
+  {
+    "path": "docs/ops/PR_566_MERGE_LOG.md",
+    "sha256": "e64e1ffbe53345fb3fc4b36d6d9bff8d8aea47bda8537f00a40b20ecdc9ba6cf",
+    "size": 2586
+  },
+  {
+    "path": "docs/ops/PR_569_MERGE_LOG.md",
+    "sha256": "b10238960806baaa233c01e3879ede42f9bb9ac5d6adbd7b650280a250e1695b",
+    "size": 11858
+  },
+  {
+    "path": "docs/ops/PR_593_MERGE_LOG.md",
+    "sha256": "9afe65224c0dce8599bd7791bb0b535ce690d8235d95121ba279f00a9cf6fe94",
+    "size": 2057
+  },
+  {
+    "path": "docs/ops/PR_596_MERGE_LOG.md",
+    "sha256": "506d8412fc241fa300241e666a3d971c3a526cc4616730c8109678368dce891d",
+    "size": 811
+  },
+  {
+    "path": "docs/ops/PR_599_MERGE_LOG.md",
+    "sha256": "c4a9fae1aa30d2098ed69a1e217fd5e92770802ee9b29472e7d52758a9a621f9",
+    "size": 5147
+  },
+  {
+    "path": "docs/ops/PR_59_FINAL_REPORT.md",
+    "sha256": "fa19ae77a1da7fd0ab5270b8b2cbe9891439db3c00bd58521e7a942e9edd8404",
+    "size": 5289
+  },
+  {
+    "path": "docs/ops/PR_604_MERGE_LOG.md",
+    "sha256": "4cfd299386b15c2466f4e409f4524a9a950e815a00e5b13b4c10d91741e22641",
+    "size": 4489
+  },
+  {
+    "path": "docs/ops/PR_605_MERGE_LOG.md",
+    "sha256": "2ae1c6229568005d5fc7fe91182e338f681d2d3637e9a3f93dc3d1ae09385d8f",
+    "size": 3318
+  },
+  {
+    "path": "docs/ops/PR_607_MERGE_LOG.md",
+    "sha256": "c3e8ec9880231f9f5abe39a3b0b6e7cef849b88683472adb852b7818a639da95",
+    "size": 1517
+  },
+  {
+    "path": "docs/ops/PR_610_MERGE_LOG.md",
+    "sha256": "42b2706872fbefbd83390093d356c9cf5b52cd35f554ae3e3aade0b7aba613ee",
+    "size": 6452
+  },
+  {
+    "path": "docs/ops/PR_611_MERGE_LOG.md",
+    "sha256": "859b8900158b3077ec919bfe4530730a539922a308dedb4b1e581b37ae7e82e1",
+    "size": 7019
+  },
+  {
+    "path": "docs/ops/PR_614_MERGE_LOG.md",
+    "sha256": "20a885a6510d3267387bba152be44d7349764052c17f55b3a041be7450bdc902",
+    "size": 10209
+  },
+  {
+    "path": "docs/ops/PR_619_MERGE_LOG.md",
+    "sha256": "b29a5d0edcb4fada86fe14a0c7522ea1508e564db82ca624352aeecf51980d65",
+    "size": 4406
+  },
+  {
+    "path": "docs/ops/PR_61_FINAL_REPORT.md",
+    "sha256": "c102024cc59aa59e68db198291b19f388beb76a1dfba3c6dd4569328456c9f2f",
+    "size": 3956
+  },
+  {
+    "path": "docs/ops/PR_623_MERGE_LOG.md",
+    "sha256": "d4b509809b3c1e294a2a008feb1146c155bcc8c807060573d4b8e8ec197bb71b",
+    "size": 843
+  },
+  {
+    "path": "docs/ops/PR_628_MERGE_LOG.md",
+    "sha256": "33649240121703e3b3466064ef50d8a98b843957f4ad4fbd0a7fde65e9cc6bcf",
+    "size": 7365
+  },
+  {
+    "path": "docs/ops/PR_62_FINAL_REPORT.md",
+    "sha256": "9a9b0636a753ac4b486c9184396ca6c4961ebd344fe0b1fc748457a8a69af9f2",
+    "size": 1951
+  },
+  {
+    "path": "docs/ops/PR_63_FINAL_REPORT.md",
+    "sha256": "e2ddbb5b21c194cdab442a2da16e5f228d3d1ef63a014d922a1c11b27b548065",
+    "size": 1833
+  },
+  {
+    "path": "docs/ops/PR_640_MERGE_LOG.md",
+    "sha256": "62124099c548bf207403082e7ba711aedc856eac486277e86d29926c957da265",
+    "size": 3523
+  },
+  {
+    "path": "docs/ops/PR_642_MERGE_LOG.md",
+    "sha256": "1e5c1dc98f6c86c179ad0754d10fe1b00272369d91e534f92e769e4e260f16fa",
+    "size": 7145
+  },
+  {
+    "path": "docs/ops/PR_643_MERGE_LOG.md",
+    "sha256": "f5ee65baa836a0dfc0009f3130ded176f02d8726fc6d02cd47172837c32a7272",
+    "size": 4169
+  },
+  {
+    "path": "docs/ops/PR_645_MERGE_LOG.md",
+    "sha256": "83031cbab54ca83cd9f5df425c1a454b484005285884764c670350b8942ad040",
+    "size": 7081
+  },
+  {
+    "path": "docs/ops/PR_649_MERGE_LOG.md",
+    "sha256": "81df1c5fbf3e23c150965cc248d48335777fae112eda1847e79712a5552d0eec",
+    "size": 5828
+  },
+  {
+    "path": "docs/ops/PR_650_MERGE_LOG.md",
+    "sha256": "7b58c1093367d2992464cfbf2658496a7d504a86db0a64e722cf8631be2e7a66",
+    "size": 5480
+  },
+  {
+    "path": "docs/ops/PR_651_MERGE_LOG.md",
+    "sha256": "c6ca5e1666c726660aa0a05815373501c2249edc160abb20517599b1b675d15b",
+    "size": 5737
+  },
+  {
+    "path": "docs/ops/PR_653_MERGE_LOG.md",
+    "sha256": "71f4d815fba9dc0f6a97d34ba997571b55564863c27d0a30c3058bdf929c3ae4",
+    "size": 10931
+  },
+  {
+    "path": "docs/ops/PR_654_MERGE_LOG.md",
+    "sha256": "54ce347af56b034bc304523b1c1538e33bc9a42fca555f913b05f4bd47f2fba0",
+    "size": 2658
+  },
+  {
+    "path": "docs/ops/PR_656_MERGE_LOG.md",
+    "sha256": "3a47e889af47ff490a0b2ff253761ef70b2c9af917e8b47617d74d88e42a2869",
+    "size": 5605
+  },
+  {
+    "path": "docs/ops/PR_663_MERGE_LOG.md",
+    "sha256": "304e8e187e0d59869d045c7d6297b3ecb4e80758e197f317945c4619e2b1d9c4",
+    "size": 1100
+  },
+  {
+    "path": "docs/ops/PR_664_MERGE_LOG.md",
+    "sha256": "8d8f69ec1b89920b73014530225d86559ea106131f67ddf2341d38262ddb1809",
+    "size": 978
+  },
+  {
+    "path": "docs/ops/PR_669_MERGE_LOG.md",
+    "sha256": "c8132267b7cd8f2b6116a985a8e1180ff71eaa9261d971ee214659ccea089f27",
+    "size": 6443
+  },
+  {
+    "path": "docs/ops/PR_66_FINAL_REPORT.md",
+    "sha256": "c5c3b0ff61021eefe75f2c488e75b63da7409c347d27891761ff1910af18d8aa",
+    "size": 1821
+  },
+  {
+    "path": "docs/ops/PR_672_MERGE_LOG.md",
+    "sha256": "d2fde8d08b42f8fda21293ef21eaddd24008681751e1d129f1568af4edce42d2",
+    "size": 1758
+  },
+  {
+    "path": "docs/ops/PR_675_MERGE_LOG.md",
+    "sha256": "cad624f1ca52bc1e16b2b9d0bf7ff7b8531a79837bd86ab8d89134cf8d2eee5f",
+    "size": 1410
+  },
+  {
+    "path": "docs/ops/PR_690_MERGE_LOG.md",
+    "sha256": "0cd258f81ce0c5e2adfefb4fb2ee0f76bb74c8d82355c60c11a56d6e58f53484",
+    "size": 6954
+  },
+  {
+    "path": "docs/ops/PR_691_MERGE_LOG.md",
+    "sha256": "bef380033d805253632f4b95ff576434833001e05128a130504287e63136c28e",
+    "size": 9551
+  },
+  {
+    "path": "docs/ops/PR_693_MERGE_LOG.md",
+    "sha256": "887d5cd8c227e6fe5a3de6c8334c93fda06b2c3e13e5526fc04f08677aef21f2",
+    "size": 13189
+  },
+  {
+    "path": "docs/ops/PR_693_POST_MERGE_VERIFICATION.md",
+    "sha256": "751f95d0edbf6b6f046a7bcae69e415197729b6c300179e2129e552c8b61f7ab",
+    "size": 11304
+  },
+  {
+    "path": "docs/ops/PR_694_MERGE_LOG.md",
+    "sha256": "769c7e3ac06c703593f9e5cf980bbf443eeac4f4592921ebbc4002b6c6beaee9",
+    "size": 4196
+  },
+  {
+    "path": "docs/ops/PR_695_MERGE_LOG.md",
+    "sha256": "ea814970ad70295e59263532545be68d25d1a56406cea6a750a6cacdb0cf4a84",
+    "size": 1605
+  },
+  {
+    "path": "docs/ops/PR_696_MERGE_LOG.md",
+    "sha256": "925366bc799f2c60181ecbbdbe8601bf4906100e70a360d8095b638c4051293e",
+    "size": 1078
+  },
+  {
+    "path": "docs/ops/PR_697_MERGE_LOG.md",
+    "sha256": "60615b225b399f43bfcb2b64bc2cf8d52aeaa3c834b01d0110d83d526186fab3",
+    "size": 1147
+  },
+  {
+    "path": "docs/ops/PR_706_MERGE_LOG.md",
+    "sha256": "0c779ba3f1b1724bc5c27dc5e4fe3711964288eab72939c2e5e5f8b15f223aa4",
+    "size": 1598
+  },
+  {
+    "path": "docs/ops/PR_70_FINAL_REPORT.md",
+    "sha256": "5bd711642e6b54a63ebcd63f7a5794cca3c337b8f773c603bbdf11c593967410",
+    "size": 3779
+  },
+  {
+    "path": "docs/ops/PR_73_FINAL_REPORT.md",
+    "sha256": "b80ffda90a13705fc2ca75757f7870a57af794174c712341833d0abe1b6fe6f7",
+    "size": 2068
+  },
+  {
+    "path": "docs/ops/PR_74_FINAL_REPORT.md",
+    "sha256": "887d1b780ccd654691d2a2af0ffb83b727b9c3f28c31fb6a3f7804ab3dc78ab5",
+    "size": 3670
+  },
+  {
+    "path": "docs/ops/PR_76_MERGE_LOG.md",
+    "sha256": "cc6cda3d939b88ef4ee8ca8a1435ab375c06d1e7f826c71f48c181b7bee38272",
+    "size": 1058
+  },
+  {
+    "path": "docs/ops/PR_78_MERGE_LOG.md",
+    "sha256": "35e150662466366cff8bfc5ba838cc6d825ba73b8bb9ab05dcee10bb9709ff63",
+    "size": 823
+  },
+  {
+    "path": "docs/ops/PR_80_MERGE_LOG.md",
+    "sha256": "fc3ec9842732821f5716fe4aaa0c69639ea3bd503fe96ee040c587395d81387a",
+    "size": 908
+  },
+  {
+    "path": "docs/ops/PR_85_MERGE_LOG.md",
+    "sha256": "fa9708a11fff1f23009bf07bac96d1396eb84a81c410d76a0445dea79b029f05",
+    "size": 2170
+  },
+  {
+    "path": "docs/ops/PR_87_MERGE_LOG.md",
+    "sha256": "6b51cae0923d87cc200ad135cb4ff075988407e14951dde7701f7c675eb496ac",
+    "size": 1030
+  },
+  {
+    "path": "docs/ops/PR_90_MERGE_LOG.md",
+    "sha256": "604b3047d65c471d0ca2fba1f69cdd2f89ac91b5daea931a1233104a77884ebf",
+    "size": 6972
+  },
+  {
+    "path": "docs/ops/PR_93_MERGE_LOG.md",
+    "sha256": "a26181821163a89766aa4aa6f2011c225674b55b14007464fce03b251501da80",
+    "size": 4551
+  },
+  {
+    "path": "docs/ops/PR_999_MERGE_LOG.md",
+    "sha256": "c62152eb8a53e38e577b11f5350505470cfb3013564047d4c71122dc21a3e470",
+    "size": 4608
+  },
+  {
+    "path": "docs/ops/PR_CLOSURE_CANONICAL_CHECKLIST_HOOK_V1.md",
+    "sha256": "7ba122c63be85f92b5f13ea2e8ac6d6b988657029842f38e8c891fc53db92964",
+    "size": 1451
+  },
+  {
+    "path": "docs/ops/PR_LABELING_SNAPSHOT_2025-12-19.md",
+    "sha256": "92f6d6856e4b5485b36773f88821a2280ccc657bdfc191fe9560a2d6d4b74150",
+    "size": 954
+  },
+  {
+    "path": "docs/ops/PR_MANAGEMENT_QUICKSTART.md",
+    "sha256": "d414b86f075270c3f06a3c0aa359295a910f88886e2c8cd66454c4683f17e7b4",
+    "size": 5043
+  },
+  {
+    "path": "docs/ops/PR_MANAGEMENT_TOOLKIT.md",
+    "sha256": "969dbfc9bfc9ce540cdba9876d7ebc25f08defaff6c3c9c6061ef1761498df91",
+    "size": 24476
+  },
+  {
+    "path": "docs/ops/PR_PHASE_16AB_EXECUTION_PIPELINE_TELEMETRY.md",
+    "sha256": "bbc33d9382712f0f154df406efbb14405631906b0cabca6196a3bb4fcfd0ea7b",
+    "size": 10677
+  },
+  {
+    "path": "docs/ops/PR_REPORT_AUTOMATION_RUNBOOK.md",
+    "sha256": "2993cfde4f016447fb02ba63e4d67c1a58de35bb2298f690208811eb6bcc628b",
+    "size": 5229
+  },
+  {
+    "path": "docs/ops/PYTHON_VERSION_PLAN.md",
+    "sha256": "637654747c0febda81747b5f546787aba1921d0c1e0f45512a5a862e51c9645e",
+    "size": 4154
+  },
+  {
+    "path": "docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md",
+    "sha256": "cf66a6f82e970567c31754e9b149747eed7c488c3836ad46f02de2b2450ca24f",
+    "size": 10893
+  },
+  {
+    "path": "docs/ops/Peak_Trade_WORKFLOW_NOTES.md",
+    "sha256": "73832101437fc712b477a321eec4c07173379f26aea0b7169b19584e4872de2e",
+    "size": 1595
+  },
+  {
+    "path": "docs/ops/QUEUE_DURCHZIEHEN_STRATEGIE.md",
+    "sha256": "a09b4d345cc07e9b2b12071ccb134b5191ca11364321dd02ee9cc6b997ea49de",
+    "size": 8372
+  },
+  {
+    "path": "docs/ops/README.md",
+    "sha256": "9f4ac4a890a5fec029b0277eaa96f018fff0d9fd0a8003934010221f33950f87",
+    "size": 11759
+  },
+  {
+    "path": "docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md",
+    "sha256": "d8ff09254887f2af2867f5eb0bf176f73fe03e17263c18e46810de1b132e6518",
+    "size": 5732
+  },
+  {
+    "path": "docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md",
+    "sha256": "50d53a58ba8930f7d59c29c9ccc855173a6591b0d47ebbf1eb1f4b0a2db0c3a6",
+    "size": 9812
+  },
+  {
+    "path": "docs/ops/RESTORE_BACKUP_SCOREBOARD.md",
+    "sha256": "03517a3b4eb50d4169870daeabc72d6d433b3cacacd88c30daeedf1277682d78",
+    "size": 11701
+  },
+  {
+    "path": "docs/ops/RISK_REGISTER.md",
+    "sha256": "36196ad0bb0df090552db9907c10d4838efb9302c1284227a27dc2d1fc2fd228",
+    "size": 2989
+  },
+  {
+    "path": "docs/ops/RUNBOOK_BACKGROUND_JOBS.md",
+    "sha256": "271849f0bd0abe50c6113b8cd45b927d8cbd4266ae0f366861d1f6c3dd5aed0c",
+    "size": 8456
+  },
+  {
+    "path": "docs/ops/RUNBOOK_EXECUTION_SLICE2_LEDGER_ACCOUNTING.md",
+    "sha256": "1c194fee2dc0c83aacd10f173790c7c213bf70ecde1229c37ae509862bebd875",
+    "size": 3404
+  },
+  {
+    "path": "docs/ops/RUNBOOK_INDEX.md",
+    "sha256": "3fe8fcd44705af20c0329c275a02a23184af7870b12f081ba74456964193d225",
+    "size": 11035
+  },
+  {
+    "path": "docs/ops/RUNBOOK_WAVE_RESTORE.md",
+    "sha256": "76525a3b2627b5d6b0d02b1a8b32e71d6fc65f40722f32c330d9f9dc8506d82e",
+    "size": 3408
+  },
+  {
+    "path": "docs/ops/SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md",
+    "sha256": "2c66d5a088e5a1bc94528bee46e487fa56b297587994522a46f7e56898de3d30",
+    "size": 12069
+  },
+  {
+    "path": "docs/ops/STABILITY_RESILIENCE_PLAN_V1.md",
+    "sha256": "e242c33f2dcae519413c151c9c757960da481855ee1906fcbaecd6f231a90392",
+    "size": 15134
+  },
+  {
+    "path": "docs/ops/STAGE1_LAUNCHD_MANAGEMENT.md",
+    "sha256": "573ef12ff96088a74eb2eca21603275db60842d3d82e4a56ae171c10f13b7e2c",
+    "size": 8940
+  },
+  {
+    "path": "docs/ops/STASH_HYGIENE_POLICY.md",
+    "sha256": "ebd1bd4ce0b01aee5c980417b12d395e15b468125d2d1d6d349c8b092df35459",
+    "size": 4066
+  },
+  {
+    "path": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+    "sha256": "b6c280f52a4565b3669cd420ff7bc74d6b12f8ef32de2dc40ccaaf4c7a51151b",
+    "size": 2167
+  },
+  {
+    "path": "docs/ops/STATUS_MATRIX.md",
+    "sha256": "197f728ffc6fbaa4615e50ca90b8650ec2d0f5d81c11cdf111966b277cd29eb6",
+    "size": 2413
+  },
+  {
+    "path": "docs/ops/STATUS_OVERVIEW_2026-02-19.md",
+    "sha256": "c99fb85e096a7963663db1217c763ab5cbc0c97fb4c81684e2c1c07206702068",
+    "size": 10886
+  },
+  {
+    "path": "docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md",
+    "sha256": "1e2182508be7685cf26ecc4592c50075001fbce5f05dc7746a60a90c24142618",
+    "size": 16096
+  },
+  {
+    "path": "docs/ops/TASK_PACKET_EVIDENCE_PYTEST.md",
+    "sha256": "8a309435b1c0df208f10839ee6b8484e30614c7a764e12c867c755023cfc9dec",
+    "size": 3783
+  },
+  {
+    "path": "docs/ops/TELEMETRY_ALERTING_LIFECYCLE_RUNBOOK.md",
+    "sha256": "e34276ede772accb0cb5a99c8d776c058df6ab34ae64f808835440ce35c1f8d0",
+    "size": 7979
+  },
+  {
+    "path": "docs/ops/TELEMETRY_ALERTING_RUNBOOK.md",
+    "sha256": "5348a155302ebf90fefc5067fbbda4a46bb6e8959db3a9c164903223e661941d",
+    "size": 12935
+  },
+  {
+    "path": "docs/ops/TELEMETRY_HEALTH_RUNBOOK.md",
+    "sha256": "252f2d6abcea9a9be3f44e855902f3d447d99f581c56d2e74b425551ae383841",
+    "size": 7775
+  },
+  {
+    "path": "docs/ops/TELEMETRY_HEALTH_TRENDS_RUNBOOK.md",
+    "sha256": "8b749153a8c3baa51c72ac22cf351161f25fb74f71815d1d0687c3784dfdd705",
+    "size": 9705
+  },
+  {
+    "path": "docs/ops/TERMINAL_HANG_DIAGNOSTICS_SETUP.md",
+    "sha256": "8d1bdba68ce07405c73a3b0fcbe0fc2bde3f3eda440886e14cc0aa5e59fa1578",
+    "size": 4944
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_AUTOMATION_V0.md",
+    "sha256": "01dd17484bfd1a03b07a1e0699cf91266bd730f623c9ba3a51e65650cb71364f",
+    "size": 12650
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_AUTOMATION_V0_SUMMARY.md",
+    "sha256": "2451724315c6df6ecb0074af29893c1c2fb43a044864fabcf591386fd726b9f4",
+    "size": 6487
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_AUTOMATION_V1.md",
+    "sha256": "5a87adc06e87bd141a6b96b2d7f6eff2736672250c0bf7dc0b7682425ded1df7",
+    "size": 11467
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_BADGE_TEMPLATE.md",
+    "sha256": "3917f435a968d9dc5369f2eccd5e8d256e18e1305d5f3d05d02cba7df3a050c9",
+    "size": 5803
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_CI_CD.md",
+    "sha256": "0f6cfdd3e4ca4e9d1e091cc06de1f4be1f5f9d862e871e348464ad7d5355dc69",
+    "size": 8343
+  },
+  {
+    "path": "docs/ops/TEST_HEALTH_QUICKSTART.md",
+    "sha256": "d285c830286ed5b63a5d692bb968b0602fd84953033798f90ae6a13f3d418df2",
+    "size": 6816
+  },
+  {
+    "path": "docs/ops/TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md",
+    "sha256": "7a38119cfa01199838ffba719f594eb1b5eefb1755d0b868d456bbfed3fed77a",
+    "size": 27429
+  },
+  {
+    "path": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md",
+    "sha256": "427eb58150feaaf1eb640527358c2adf8f8b4e4b6ec604f5e4072610305d42af",
+    "size": 18499
+  },
+  {
+    "path": "docs/ops/WAVE1_NEW_LISTINGS_ACTIVATION_PLAN.md",
+    "sha256": "7a59e1e8ec74000e7ea08a80c367ff173b96b3f68f3daed1bfd4f9cb43fefd96",
+    "size": 570
+  },
+  {
+    "path": "docs/ops/WAVE2_AI_ENTRYPOINTS_PLAN.md",
+    "sha256": "854fa5fcbd3bced85f54f3a375887c7ed22da3535ecd279ffac728499239893e",
+    "size": 1056
+  },
+  {
+    "path": "docs/ops/WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md",
+    "sha256": "9165d66b3a86510313034319aecd1ff23791a7f3c8089f93b63edcf2739eb22f",
+    "size": 1031
+  },
+  {
+    "path": "docs/ops/WAVE3_CONTROL_CENTER.md",
+    "sha256": "a5713232c3c7b4a7932c293e0eeec67b7b61931fc26f0e6530fbbe6d931a4c7b",
+    "size": 13041
+  },
+  {
+    "path": "docs/ops/WAVE3_MERGE_READINESS_MATRIX.md",
+    "sha256": "cde3eb8413ada5ebc99f337122588b15962c185d2ca6936394b260a0be5878e3",
+    "size": 18395
+  },
+  {
+    "path": "docs/ops/WAVE3_OPERATOR_BRIEFING.md",
+    "sha256": "625f2a8161f3f43ee58372203233e1d24fc451151831a50ef504270f33fc3dc7",
+    "size": 12603
+  },
+  {
+    "path": "docs/ops/WAVE3_OPERATOR_CHECKLIST.md",
+    "sha256": "6fb8636809e07d66d88ee73ec79404242dc39efbadd1781258d4e23100d1f977",
+    "size": 3734
+  },
+  {
+    "path": "docs/ops/WAVE3_ORCH_OBS_SERVICE_PLAN.md",
+    "sha256": "a7f521c557d683054b854ebe58c9973328dca81eec6a6f1d7d2789c020066e80",
+    "size": 1065
+  },
+  {
+    "path": "docs/ops/WAVE3_QUICKSTART.md",
+    "sha256": "8d1bc8768717df899b3597812991545cc11a58a4c4e8d840509b4bdbe3f34603",
+    "size": 13858
+  },
+  {
+    "path": "docs/ops/WAVE3_README.md",
+    "sha256": "9600b25a4926119897185aedaaae5dc6817d0efa42be3d917ae23831a6123553",
+    "size": 9834
+  },
+  {
+    "path": "docs/ops/WAVE4_AGGREGATOR_SUMMARY_BRIDGE_PLAN.md",
+    "sha256": "da57ccc6eb11c87d8253deb641d0c5c65472b9343d48867a4c16955c9f0c51b2",
+    "size": 619
+  },
+  {
+    "path": "docs/ops/WAVE4_HOOK_CONTRACT_INTEGRATION_PLAN.md",
+    "sha256": "0d6b6c7e3d673c5511f49eb8a8b750b1da0ad464d8985db115b45317608a6dab",
+    "size": 797
+  },
+  {
+    "path": "docs/ops/WAVE4_HOOK_MAP_DRAFT.md",
+    "sha256": "12399a71e15f3a00980e457f533f38e8aa87ead60273d7eaccf4ff657dd1324a",
+    "size": 591
+  },
+  {
+    "path": "docs/ops/WAVE4_SHARED_SMOKE_CONTRACT_DRAFT.md",
+    "sha256": "4e4783df2344fc635b67022411710d7ee664b9b12ea87341aedad2a2c0121c21",
+    "size": 617
+  },
+  {
+    "path": "docs/ops/WAVE5_NEW_LISTINGS_AI_BRIDGE_PLAN.md",
+    "sha256": "7b3e2a238501f58ad82cdf5af8d35e05835218e7b72f2844f9dc4b2d270c25fd",
+    "size": 403
+  },
+  {
+    "path": "docs/ops/WAVE5_POST_ACTIVATION_GAP_AUDIT_PLAN.md",
+    "sha256": "07f824318e3bad961a82c542015acd747f6bb0bb7472fa7d380161e7e1226dd0",
+    "size": 496
+  },
+  {
+    "path": "docs/ops/WAVE6_EVIDENCE_REGISTRY_HOOK_PLAN.md",
+    "sha256": "9ed600a9d0f5efdc1ee42b226eaff4e04cab0f9a9d43d49e2d3a82908c8337ce",
+    "size": 1341
+  },
+  {
+    "path": "docs/ops/WIP_STASH_ARCHIVES.md",
+    "sha256": "bae70dfdcf37e87a94f98ffa4e355d9e79b49a4df8e53d83009c9e42f2cafa4d",
+    "size": 2789
+  },
+  {
+    "path": "docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md",
+    "sha256": "3195b0704a845643f60ef7dd8f2f9930916839bd1581e199ef3105842ea258ad",
+    "size": 9289
+  },
+  {
+    "path": "docs/ops/WORKFLOW_SCRIPTS.md",
+    "sha256": "ef01bd9d7afcca8360e5bb2b0e2ecf3b8da1d8384754ebbb3a0a8adb313a15b2",
+    "size": 16280
+  },
+  {
+    "path": "docs/ops/WORKTREE_PATCHES_RECOVERY_20260105_REPORT.md",
+    "sha256": "7e13b4ec33c2e4c0e5bce61538f258b0fc39983e2280a42b796c080994d68a47",
+    "size": 6565
+  },
+  {
+    "path": "docs/ops/WORKTREE_POLICY.md",
+    "sha256": "18b251769981536bf3052f00bab45d20e7fd34f60ad55b0f5b72095754044628",
+    "size": 3431
+  },
+  {
+    "path": "docs/ops/WORKTREE_RESCUE_20260105_REPORT.md",
+    "sha256": "76841e17acf4d2d2e9761c57ff608848cfd2d0b2b316564c41f0fc2f37a9478d",
+    "size": 2699
+  },
+  {
+    "path": "docs/ops/WORKTREE_RESCUE_SESSION_20260105_CLOSEOUT.md",
+    "sha256": "65bf7bfef1bb508618198e6fad517757f6415820f9cd67221cb9da4420fd78a1",
+    "size": 18682
+  },
+  {
+    "path": "docs/ops/WP1D_RUNBOOK_INDEX.md",
+    "sha256": "da03a0843d651a472bc999aacd0582f26a938d14755019b679515a39dc567ba6",
+    "size": 1780
+  },
+  {
+    "path": "docs/ops/WP5A_NO_LIVE_COMPLETION_REPORT.md",
+    "sha256": "f4f8860844a9f9773b59a383475f1064750188f1b2e4e1c9ad922eeb4b53dd67",
+    "size": 10922
+  },
+  {
+    "path": "docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md",
+    "sha256": "4657bd0ee74b686e910e91eb43818beae3bbedf2597d931becc4bd981c978265",
+    "size": 13083
+  },
+  {
+    "path": "docs/ops/ai/ai_model_enablement_runbook_v1.md",
+    "sha256": "0a51f7c89d8191cba3915e261cb5f75519ca7aa1b776fccc7b5976c54115a2a2",
+    "size": 1150
+  },
+  {
+    "path": "docs/ops/ai/online_readiness_supervisor_health_gate_runbook_v1.md",
+    "sha256": "70fff1d70d60aa3a214d2c9ac6abc5e072029db5dd265e0188bf998090b296f3",
+    "size": 2251
+  },
+  {
+    "path": "docs/ops/architecture/LOCAL_BOUNDED_SECRET_LAUNCH_PATH_PROPOSAL.md",
+    "sha256": "e7f9841583f341f33adfb87729f8ca6b704178d481ca211c798414a1bc685ced",
+    "size": 6952
+  },
+  {
+    "path": "docs/ops/archives/NEW_LISTINGS_RUNBOOK_CLOSEOUT_20260208-151147Z.txt",
+    "sha256": "bb7b92772de25a2af555301ace916c5f07cd9d645681c4acdc29dd2d1dcdc1de",
+    "size": 1134
+  },
+  {
+    "path": "docs/ops/archives/PEAK_TRADE_GLOBAL_CLOSEOUT_20260208-105951Z.txt",
+    "sha256": "fe115e388cae182111e16e46fd77f87c69908e4a076aade3250030efeed86969",
+    "size": 1349
+  },
+  {
+    "path": "docs/ops/archives/PEAK_TRADE_INCOMING_DATA_OVERVIEW_20260207.md",
+    "sha256": "db0ef02ab0dd6d61e1b967c06263524682ba6da06088a7816df425d061088dbb",
+    "size": 14788
+  },
+  {
+    "path": "docs/ops/archives/PEAK_TRADE_INGRESS_A_FINAL_STATE_20260208-054730.txt",
+    "sha256": "35399252f7bcbd383a59f393c29090273f9465ed2d1173cfa5b63f096c8d1708",
+    "size": 2004
+  },
+  {
+    "path": "docs/ops/archives/PR_DRILL.md",
+    "sha256": "6542a75ead44c8235a449fa834120ae460d8a78e920dca2813e48afff96ff27a",
+    "size": 31
+  },
+  {
+    "path": "docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md",
+    "sha256": "780cc1ce6f0e709bda8b4cafca9afb1f53b65fc40718f1aeeb9b9201693ff071",
+    "size": 7601
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE6_OPERATOR_ZUSAMMENFASSUNG.md",
+    "sha256": "5603555f86e86923f38081207ff8ccf2a4fd27a2127e8719cf71358dc14b7b72",
+    "size": 6488
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE6_PR_BODY.md",
+    "sha256": "864fbf7e08ba000d1d59534cf018217bbff282bbe6bf82a3d9f1d97369e4afc1",
+    "size": 7982
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md",
+    "sha256": "bb64b072094267b61701e9316476cdc70881a4c0523093e0400bd99e2efd729a",
+    "size": 20756
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE8B_CLI_INTEGRATION.md",
+    "sha256": "d040d6c43b202117d393376212489b8dd4bd286a4c5cf064d4d2375c450a6e73",
+    "size": 8103
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE8B_MERGE_LOG.md",
+    "sha256": "1fbbe14b4e5bc128d6d8970ed3cdcd50fec043812bbd139ceb5af0272f7ed873",
+    "size": 11804
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE9C_WAVE5_CHANGED_FILES.txt",
+    "sha256": "fc7db6422f5e2c703e88760e45116756552c287e20bf93ce85835e96c7b0c0db",
+    "size": 636
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/PHASE9C_WAVE5_PR_BODY.md",
+    "sha256": "96442177570f20cd6de7dd0f0145f1ff330594e31c3e6773d2836d75d896c77b",
+    "size": 6691
+  },
+  {
+    "path": "docs/ops/archives/repo_root_docs/README.md",
+    "sha256": "88fe021bc85913cfd09d89ab4181240c68efec773cda17048349cc0467eb3100",
+    "size": 1165
+  },
+  {
+    "path": "docs/ops/archives/scratch_manifest.txt",
+    "sha256": "59984aa6baa899843b461514ada5999e39596d33c6317899f208794035d2465f",
+    "size": 4762
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/candle_raw_http_response.json",
+    "sha256": "e1da39436377d5c9eeae2470b7b21041e7894276e0fb32d9e96e2a60b826c739",
+    "size": 29172
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/http_response_metadata.json",
+    "sha256": "52c31578e0afc48be27e5383c7f1b84495624591ed040ae289da01dc9e6481f5",
+    "size": 1478
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/mark_raw_http_response.json",
+    "sha256": "1a2a9d48dea7fe44663cc9b3f7a422a0ade9e9f19ca4ae6c0c5effab23aec610",
+    "size": 18436
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/numeric_tip_proof.json",
+    "sha256": "e489a296a1ff60106d0f88834904ca8204ed7154d418d7335fa05ea0d12c49bc",
+    "size": 1966
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/pagination_trace.json",
+    "sha256": "c1bd5c75361715448702f7a781a8092fcba9afb072ffa4b5b3f5fd6c4533ee4f",
+    "size": 700
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/raw_source_concat.bin",
+    "sha256": "9ea3edd6b0b7051a647ff3e6dd64da524b0bbb3ca6850a699c37936ad9541a57",
+    "size": 47621
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/materialization_proof.json",
+    "sha256": "dc4368d35ee69ab427119aea2d064c84bb0d01cad609e4bd993cc3b7e7ea6aae",
+    "size": 3144
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/observation_pack.json",
+    "sha256": "ca026c9ad44f41e4fb6c02db811ab5fe602909fb87f3e3540eefecf423fe02e0",
+    "size": 155865
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1/observation_pack_digest.txt",
+    "sha256": "9158b63d7c4441a1ec5027141a3542839676d7e1e3d8779f349d5bdadf665788",
+    "size": 65
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/missing_source_delta_report.json",
+    "sha256": "f7c06586936c39dc9bfb35c77395275ba1b4520dfc824597d921a6d978202b78",
+    "size": 1244
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/observation_pack_digest.txt",
+    "sha256": "9158b63d7c4441a1ec5027141a3542839676d7e1e3d8779f349d5bdadf665788",
+    "size": 65
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/producer_digest.txt",
+    "sha256": "5d8d0fe75a0d7c755d4adde467f230a0ce16913a43433d04d0f8f1fbd82775d4",
+    "size": 65
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/regime_coverage_counts.json",
+    "sha256": "9ed4531612954ed79735cd453a80454cd15f349bc381ec5b8c13f11e9ddd969a",
+    "size": 332
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/regime_coverage_execution_proof.json",
+    "sha256": "01d466851871688dbc37d6531ac0ce3309c3074dbc7767933f65c0d3d1c64cb3",
+    "size": 3608
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/regime_coverage_instance.json",
+    "sha256": "ad2960df6b4c90a8af77c91dd83b55481a798bc77431af497bd409e4f24d8c23",
+    "size": 1923
+  },
+  {
+    "path": "docs/ops/artifacts/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1/topic_closeout_verdict.json",
+    "sha256": "a5ec209fc3b05b9c9d46eaed995e16590dc9564ec3da55b966b16be93607faa3",
+    "size": 1089
+  },
+  {
+    "path": "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+    "sha256": "aeede87ed1bd4d6fe2b68d34697125ad9f52a1b79736556d0c07e47ff4ab70da",
+    "size": 390485
+  },
+  {
+    "path": "docs/ops/blueprints/REPO_RECONFIGURATION_ALIGNMENT_REGISTER_2026_11_03.json",
+    "sha256": "efe92fa52d3ab25aa2361b81f85dfd6552e2802d68da275258180d183ec9f93a",
+    "size": 7357612
+  },
+  {
+    "path": "docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md",
+    "sha256": "a480cd2f10a23221d24ddd3a6a571e01c3c34eb1ef2e1691cf14d9000760f0ce",
+    "size": 4762
+  },
+  {
+    "path": "docs/ops/ci/WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md",
+    "sha256": "b5954dcdcf3808fd57d44fe5b1daac145b45034705b52bd850d6855e0a095553",
+    "size": 6354
+  },
+  {
+    "path": "docs/ops/ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md",
+    "sha256": "b4a1334e5f920a96605525de70b70e10caf21dca0cc71453e5ed7c4db8ea5be8",
+    "size": 5640
+  },
+  {
+    "path": "docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md",
+    "sha256": "447c31b6f8f575473f0d836103c252587636b4b6bd14ed52d84563f8d9b1a0ff",
+    "size": 9291
+  },
+  {
+    "path": "docs/ops/ci/trigger_runbook.md",
+    "sha256": "91d7fbc4f4971123d4274eb98e0c7400cb3188113628bcc1214e8a9aaa91a116",
+    "size": 1904
+  },
+  {
+    "path": "docs/ops/ci_pragmatic_flow_inventory.md",
+    "sha256": "41d8355d3dcac992e5007240ffca00cdff6347aa38de35919d85936f3605a1db",
+    "size": 6254
+  },
+  {
+    "path": "docs/ops/ci_pragmatic_flow_meta_gate.md",
+    "sha256": "eaf24340d11c16ce3cc9cecb3ff485d37147647d8ca069a5ef444ca1d14c7097",
+    "size": 3217
+  },
+  {
+    "path": "docs/ops/ci_pragmatic_flow_pr_body.md",
+    "sha256": "93169bd9b226862ec22b35004db6b6f18153addd83c4c4838fec6527da31f50c",
+    "size": 2535
+  },
+  {
+    "path": "docs/ops/ci_required_checks_matrix_naming_contract.md",
+    "sha256": "4ab3267e145d05f60004edb4b2dc678b3789337c76255b824c56a607a6cb6d9f",
+    "size": 11212
+  },
+  {
+    "path": "docs/ops/cleanup/CHANGES_LOG.md",
+    "sha256": "78f6240235bb2ff74ab6abe3666ea6e5b7bf52df8178afdf9c794a7fd33c121f",
+    "size": 5037
+  },
+  {
+    "path": "docs/ops/cleanup/CLEANUP_PLAN.md",
+    "sha256": "d6fd220db978370954a90c428c9df2118ac0cba893b6c2b56a471cf0dceb6bb1",
+    "size": 20529
+  },
+  {
+    "path": "docs/ops/cleanup/CLEANUP_REPORT.md",
+    "sha256": "0db2a241899f1cdc4e9a26f2f5273e07cf953fc96ec98a30c019e74e48be7051",
+    "size": 22230
+  },
+  {
+    "path": "docs/ops/cleanup/INVENTORY_FILES.md",
+    "sha256": "ea9032ef243ea89ce4ed1f396d918666169b50083fff57bb03f7a2c709491f09",
+    "size": 12730
+  },
+  {
+    "path": "docs/ops/cleanup/INVENTORY_TREE_AFTER.txt",
+    "sha256": "5625305fca8fbfb6893fbb129b14e55dad9afd5ca9c7435556880356a1bf54c5",
+    "size": 4081
+  },
+  {
+    "path": "docs/ops/cleanup/INVENTORY_TREE_BEFORE.txt",
+    "sha256": "4e2fffff884bc2a7378a0084e31d37571f27dbf4d01f0e57b5e3c6059ee65e03",
+    "size": 5105
+  },
+  {
+    "path": "docs/ops/cleanup/OPEN_QUESTIONS.md",
+    "sha256": "a1405270777d1450982e3e52fe83a5a6b0bfa7d1e546beea91a5cfa1071c45ca",
+    "size": 8707
+  },
+  {
+    "path": "docs/ops/cleanup/SAFETY_SNAPSHOT.md",
+    "sha256": "1ba614aeceb837c67fb33deb9888235436c2a6816c673709ee37e2f6d5d55bda",
+    "size": 1361
+  },
+  {
+    "path": "docs/ops/concepts/WORKFLOW_OFFICER_FAILURE_TAXONOMY_V0.md",
+    "sha256": "2bb418e2a41f0574d88408fe82d1c2ef1a514391d7465068d3d3cd9a4adf9b61",
+    "size": 3141
+  },
+  {
+    "path": "docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md",
+    "sha256": "4e1c30fdd1e57260efcd5aca8ba4eda9c9ea386b5503cb8fa0e50e4de0887729",
+    "size": 15376
+  },
+  {
+    "path": "docs/ops/control_center/CONTROL_CENTER_NAV.md",
+    "sha256": "3cbf5d2a8df144fa9ae4621018f09e73ce8bd9aed8cc10e6d22ec773d98c4148",
+    "size": 3184
+  }
+]

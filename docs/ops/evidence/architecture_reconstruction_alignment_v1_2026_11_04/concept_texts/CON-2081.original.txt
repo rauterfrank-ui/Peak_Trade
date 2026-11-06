@@ -1,0 +1,9 @@
+### CON-2081 — Simulationskapital und Quellenrevision
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+PR7146/b68252bd entfernt die automatische simulierte Equity-Wire am späteren Pin; im älteren beziehungsweise lokal abweichenden Hauptarbeitsstand existiert sie noch. Frank lehnt sie als produktive Grundlage ab. Isolierte Testannahmen bleiben als Fixtures erkennbar.
+
+**Grenze:** „Im System entfernt“ und „in dieser Arbeitskopie vorhanden“ können gleichzeitig zutreffen. Keine Wiederaufnahme der Simulationswire, keine ungefragte Kapitalersatzlösung.
+
+Quellen: EVI-2214, EVI-2295, EVI-2217.

@@ -1,0 +1,221 @@
+# PeakTrade — erste quellenbasierte Bestandsübersicht
+
+Stand: 1. November 2026. Auftrag: fachlichen Überblick gewinnen, frühere sinnvolle Fähigkeiten und Ideen bewerten, keine Umsetzung oder Aktivierung.
+
+Das heutige System ist ein prüfbarer Ist-Stand, kein endgültiges Zielmodell. Jede historische Idee wird nach ihrem gewünschten Nutzen beurteilt. Sowohl eine Anpassung des alten Bausteins als auch eine begründete Veränderung der heutigen Architektur bleiben mögliche Wege. Bestehende Obsidian-Register und ihre Evidenz-IDs werden nicht ersetzt. Diese Übersicht und der Suchindex sind Arbeitsmittel, keine neue System-SSOT und kein ratifiziertes Zielmodell.
+
+## Belastbare Ausgangsbasis
+
+Ein lokaler, durchsuchbarer Quellenindex erschließt 44,188 historische Benutzer-Textblöcke, 307,564 Agenten-Textblöcke, 236 Compaction-Dateien, 367 Obsidian-Dokumente und 8724 lokal erreichbare Commit-Beschreibungen. Die Indexierung bedeutet technische Erschließung, nicht vollständige inhaltliche Interpretation aller Gespräche. Tool-Ergebnis-Rohdaten sind in diesem Index noch nicht vollständig enthalten; der vorgelagerte Vollständigkeitsbericht erklärt die Grenzen.
+
+Aus der lokal erreichbaren Git-Historie wurden 6065 Löschereignisse für 5159 unterschiedliche Pfade unter src/scripts/tests/config erfasst. 1122 dieser Pfade fehlen am Vergleichspin. Darunter sind 461 src-Pfade: Alle 461 ausgewählten historischen Git-Blobs sind lesbar und ihr Git-Objekthash ist bestätigt. 405 sind Python-Dateien, die sich alle per AST syntaktisch lesen lassen. Darin stehen 455 Klassendeklarationen und 2.371 Funktions-/Methodendeklarationen, ohne Aussage über eigenständige oder funktionierende Fähigkeiten. Die 461 Pfade fehlen auch am CURRENT-HEAD.
+
+Diese Zahlen sind keine Anzahl verlorener Funktionen. Wieder hinzugefügte Pfade, Cache-/Dokumentdateien, bewusst stillgelegte Pakete und andernorts bytegleiche Inhalte sind enthalten. Für 13 der 461 src-Pfade gibt es bytegleichen Inhalt irgendwo im Vergleichsbaum; das kann auch leere Initialisierungsdateien betreffen und beweist keine semantische Migration.
+
+Vergleichspin: lokaler origin/main `5d1c838c15369507c5247834db4dd0df25592169`; CURRENT-HEAD `fffb95ef41f7e78c145f022144947911cce27279`. Die 15 gezielt untersuchten heutigen Quellen sind auch in der CURRENT-Arbeitskopie bytegleich zum Vergleichspin. Das ist keine vollständige Prüfung aller lokalen Änderungen und kein Laufzeitnachweis. Die Git-Kopie bleibt shallow; keine Netzwerkaktualisierung und keine Repository-Mutation.
+
+## Wie die Befunde zu lesen sind
+
+- Ein früherer Auftrag belegt einen damaligen Wunsch, keine Implementierung und keine heutige Zielentscheidung.
+- Ein Git-Blob und seine Deklarationen belegen vorhandenen historischen Code, keine funktionierende Integration.
+- Heute vorhandene Dateien belegen vorhandene Bausteine, keine korrekte Laufzeitwirkung.
+- Eine damalige Entfernung begründet eine Untersuchung, weder automatische Wiederherstellung noch endgültige Ablehnung.
+- Die folgenden Anpassungswege sind prüfbare technische Überlegungen, keine geprüften Implementierungspläne oder Aufwandsschätzungen.
+
+## 1. Research, Backtests und Robustheitsprüfungen
+
+**Möglicher Nutzen:** Frühere Forschung wieder nutzbar machen, ohne vorhandene Werkzeuge doppelt zu bauen.
+
+**Historische Spur:** Obsidian RUN-0076 beschreibt historische Research-CLI und Golden Paths mit konkreten Git-Blobs.
+
+**Heutiger statischer Befund:** research_cli, Walk-forward, Monte-Carlo, BacktestEngine und Signal-Binding sind am Vergleichspin vorhanden; die 15 ausgewählten heutigen Quellen sind auch im CURRENT-Arbeitsordner bytegleich. Das Binding trennt RAW_SIGNAL_RESEARCH von CANONICAL_SYSTEM_REPLAY.
+
+**Vorläufige Einordnung:** Vorhandene Grundlage zuerst verstehen.
+
+**Weg über den alten Baustein:** Historische Versuche und Datenformate auf die vorhandenen Research-Schnittstellen abbilden; tatsächliche Kompatibilität erst prüfen.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Wenn die vorhandene Pipeline die gewünschte Forschung nicht korrekt abbildet, Anforderungen und eine veränderte Pipeline gegenüberstellen.
+
+**Nächste reine Untersuchung:** Welche Experimente liefern sinnvolle Erkenntnisse? Signalherkunft, Datensatzidentität, Kostenmodell und Ergebnisverträge vergleichen; noch keine Ausführung.
+
+Quellen: `Obsidian: RUNS/RUN-0076/RUN-0076.md`; `PIN: scripts/research_cli.py`; `PIN: src/backtest/strategy_signal_binding_v1.py`
+
+## 2. Self-Learning und Entscheidungs-/Ergebnislernen
+
+**Möglicher Nutzen:** Erfahrungen auswerten, Hypothesen vergleichen und Verbesserungen nachvollziehbar machen.
+
+**Historische Spur:** Mehrere Cursor-Aufträge untersuchen Self-Learning; darunter Parent self-learning adaptation und M1.5 boundary selection plan.
+
+**Heutiger statischer Befund:** 106 Pfade unter src/learning; DDO authority_v0 und current_decision_learning_binding_v1 sind statisch vorhanden. Deklarationen trennen Learning von produktiver Handelsautorität. Das beweist keinen funktionierenden automatischen Lernkreislauf.
+
+**Vorläufige Einordnung:** Teilweise vorhanden; Bedeutung und Anschluss offen.
+
+**Weg über den alten Baustein:** Frühere Lerninstrumente mit tatsächlichen DDO-Ereignissen, Outcomes, Replay und Validierung abgleichen.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Das gewünschte Lernverhalten zuerst bestimmen; bei Bedarf das heutige Ereignis-/Feedbackmodell verändern, statt alte Ideen auf einen unpassenden Slot zu reduzieren.
+
+**Nächste reine Untersuchung:** Originalziel, Datenqualität, Feedback-Zeiten, Lern-/Validierungsgrenze und tatsächliche Consumer rekonstruieren.
+
+Quellen: `Chat: f6d27bda-e9d8-4377-ba2e-0aeefa385289`; `Chat: 569cd742-82c6-47a3-a66d-cdaeb11f2447`; `PIN: src/learning/deterministic_decision_outcome_v0/authority_v0.py`; `PIN: src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py`
+
+## 3. Feature-Engine, Sentiment und Orderbuch
+
+**Möglicher Nutzen:** Zusätzliche Daten gezielt in nachvollziehbare Merkmale und überprüfbare Hypothesen überführen.
+
+**Historische Spur:** Frühere Missing-Feature-Aufträge nennen Feature-Engine, Sentiment und Orderbuch. Obsidian CPT-0003 führt das als historisches Ziel, nicht als belegte Implementierung.
+
+**Heutiger statischer Befund:** 15 src/features-Pfade sind vorhanden. Der selektive Engine-Vertrag deklariert ACTIVATED=false und PRODUCTIVE_CALLER_EXISTS=false. Alt-Data-Konstanten führen I04 als NONE_UNWIRED und I05 als NONE_UNWIRED_TRUE_TICK_L2. Das sind statische Deklarationen, kein vollständiger Producer-Census.
+
+**Vorläufige Einordnung:** Idee und Implementierung sauber trennen.
+
+**Weg über den alten Baustein:** Ermitteln, welche Datenaufbereitung tatsächlich kodiert wurde und welche Teile nur als Wunsch existierten.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Prüfen, ob die heutige Contract-/Consumer-Trennung den gewünschten Nutzen trägt oder eine andere Feature-Architektur sinnvoller wäre.
+
+**Nächste reine Untersuchung:** Frühere Anforderungsquellen, vorhandene Producer und Datenverträge zu Instrument, Zeit, Granularität und Consumer vergleichen.
+
+Quellen: `Obsidian: REGISTERS/concepts.md, CPT-0003`; `Chat: 4c17f115-777e-431c-b949-55c7809b1d55`; `PIN: src/features/canonical_feature_data_contract_layer_v1/selective_engine_v1.py`; `PIN: src/features/canonical_alt_data_consumer_boundary_v1/constants_v1.py`
+
+## 4. Makro-/Regime-Kontext
+
+**Möglicher Nutzen:** Historisch ausgearbeitete Kontextinformationen als mögliche Forschungshilfe wieder beurteilen.
+
+**Historische Spur:** src/macro_regimes/loader.py ist historisch aus Git lesbar; MacroRegimeConfig und load_current_macro_regime_config wurden per AST gefunden.
+
+**Heutiger statischer Befund:** Der Loader-Pfad fehlt sowohl am Vergleichspin als auch am CURRENT-HEAD. Der heutige Alt-Data-Vertrag nennt denselben Pfad weiterhin für I55. Wegen der dort deklarierten inaktiven Consumer-Grenze ist das kein belegter aktiver Laufzeitfehler.
+
+**Vorläufige Einordnung:** Konkreter Wiederverwendungs- und Konsistenzkandidat.
+
+**Weg über den alten Baustein:** Alten Loader, TOML-Schema und historische Verwendungen lesen und mit heutigen Konfigurationsverträgen vergleichen.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Falls Makrokontext heute anders modelliert werden sollte, einen passenden Provider-/Consumer-Vertrag entwerfen; den alten Loader nicht als Zielvorgabe behandeln.
+
+**Nächste reine Untersuchung:** Klären, ob I55 historischer Verweis oder benötigte Fähigkeit ist und welche Daten-/Sizing-Semantik damals gemeint war.
+
+Quellen: `HISTORY: src/macro_regimes/loader.py`; `HISTORY DELETE: 41928f88fe9f66726c2c2e097d9a472294d7cd01`; `PIN: src/features/canonical_alt_data_consumer_boundary_v1/constants_v1.py`
+
+## 5. Operator-Training und Session-Auswertung
+
+**Möglicher Nutzen:** Menschliche Bedienung und Offline-Drills anhand vollständiger Sessions und Reaktionen auswerten, falls das heute noch ein Ziel ist.
+
+**Historische Spur:** Historisch lesbar: session_data_store.py speichert Prices, Signals, Actions, Trades; reaction_stats.py enthält Reaktionskategorien und Auswertungsfunktionen.
+
+**Heutiger statischer Befund:** Diese alten src/trigger_training-Pfade fehlen am Vergleichspin und CURRENT-HEAD. Eine gleichwertige heutige Fähigkeit wurde noch nicht systemweit nachgewiesen oder ausgeschlossen.
+
+**Vorläufige Einordnung:** Erhaltene Substanz; heutiger Nutzen zu klären.
+
+**Weg über den alten Baustein:** Session-Schema und Statistikfunktionen auf heutige Daten-/Reportformate abbilden.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Je nach gewünschter Betreiberrolle einen getrennten Trainingsbereich oder ein neu gestaltetes Beobachtungs-/Feedbackmodell erwägen.
+
+**Nächste reine Untersuchung:** Human-Operator-Ziel mit automatischem Systemlernen unterscheiden; Abhängigkeiten zu Daten, Reports und Oberflächen lesen.
+
+Quellen: `HISTORY: src/trigger_training/session_data_store.py`; `HISTORY: src/trigger_training/reaction_stats.py`; `HISTORY DELETE: 41928f88fe9f66726c2c2e097d9a472294d7cd01`
+
+## 6. Portfolio, mehrere Strategien und Multi-Future
+
+**Möglicher Nutzen:** Frühere Portfolio-Ideen erhalten und ihren heutigen oder zukünftigen Zweck klären.
+
+**Historische Spur:** Obsidian CPT-0002 nennt ein historisches Top-20-/Multi-Future-Ziel. Cursor enthält getrennte Multi-Future-Bereitschaftsaufträge. Das ist keine automatische heutige Zielratifikation.
+
+**Heutiger statischer Befund:** PortfolioManager für mehrere Strategien ist vorhanden und bindet die BacktestEngine. Das ist kein Beleg einer Multi-Future-Ausführung. Die Rekonstruktionsunterlagen beschreiben einen aktuellen Single-Future-/N=1-Rahmen.
+
+**Vorläufige Einordnung:** Research-Nutzen und Architekturentscheidung trennen.
+
+**Weg über den alten Baustein:** Vorhandene Portfolio-Forschung zunächst als Vergleichswerkzeug verstehen, ohne sie als aktuelle Execution-Fähigkeit auszugeben.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Falls mehrere Futures zum gewünschten Ziel gehören, die nötigen Änderungen an Auswahl, Kapital, Positionsidentitäten, Risiko und Zustandsbesitz bewusst untersuchen. Heutiges N=1 ist dabei keine endgültige Ideengrenze.
+
+**Nächste reine Untersuchung:** Gewünschte Fähigkeit exakt bestimmen: mehrere Strategien, mehrere Forschungsinstrumente oder mehrere gleichzeitige Positionen sind verschiedene Anforderungen.
+
+Quellen: `Obsidian: REGISTERS/concepts.md, CPT-0002`; `Chat: U-MF-S1 forensic preparation (Quellenindex)`; `PIN: src/portfolio/manager.py`
+
+## 7. Automatische Risiko-Trigger und Kill-Switch
+
+**Möglicher Nutzen:** Frühere Schutzideen gegen heute tatsächlich bestehende Schutzmechanismen abwägen.
+
+**Historische Spur:** Threshold-, Watchdog- und weitere Trigger sind historisch vorhanden. Commit da3932853 nennt als Entfernungsgrund fehlende produktive Consumer und irreführend aktivierte Konfiguration.
+
+**Heutiger statischer Befund:** Kill-Switch core.py ist vorhanden. Die alten Trigger-Pfade fehlen. Ob heutige andere Mechanismen denselben fachlichen Zweck erfüllen, ist noch nicht vollständig untersucht.
+
+**Vorläufige Einordnung:** Bewusste Entfernung ist Hinweis, kein endgültiges Werturteil.
+
+**Weg über den alten Baustein:** Alte Triggerlogik auf klare Metriken, Auslösebedingungen, Persistenz und heutige Fehlerfälle prüfen.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Gegebenenfalls einen neuen konsistenten Trigger-/Safety-Vertrag entwickeln, statt alte enabled-Schalter wieder einzuschalten.
+
+**Nächste reine Untersuchung:** Den konkreten Schutzbedarf und heutige zuständige Consumer prüfen; historische Tests und Entfernungsmotive gegenüberstellen.
+
+Quellen: `HISTORY: src/risk_layer/kill_switch/triggers/threshold.py`; `COMMIT: da3932853ec10f8024a8e32a9a5c43d24a7a27b8`; `PIN: src/risk_layer/kill_switch/core.py`
+
+## 8. Dashboards, Marktübersichten und Readmodels
+
+**Möglicher Nutzen:** Frühere nützliche Ansichten und Datenaufbereitungen von veralteten Hosts und Oberflächen trennen.
+
+**Historische Spur:** Viele gelöschte Pfade betreffen webui, Markt-Tiefe, OHLCV, Tape, Ranking-Funnel und Workflow-Readmodels; historische Inhalte sind verfügbar. Mehrere spätere Commits beschreiben gezielte Stilllegung alter Präsentationsinfrastruktur.
+
+**Heutiger statischer Befund:** Ein Obsidian-Rekonstruktionsworkspace mit Registern, Karten und lokalen Viewern existiert. Das ist kein Nachweis einer gleichwertigen operativen Markt-/Systemoberfläche.
+
+**Vorläufige Einordnung:** Fähigkeiten bewerten, nicht ganze alte Oberflächen übernehmen.
+
+**Weg über den alten Baustein:** Erst Datenmodelle, benötigte Kennzahlen und sinnvolle Ansichten rekonstruieren.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Die gewünschte heutige Beobachtbarkeit neu gestalten; alte Readmodels können Vorlage oder Rohmaterial sein, müssen aber nicht die Zielarchitektur bestimmen.
+
+**Nächste reine Untersuchung:** Nutzerfragen und erforderliche Datenherkunft auflisten; alte Ansichten mit heutigen Daten-/Zustandsquellen vergleichen.
+
+Quellen: `Historical inventory: src/webui/*`; `COMMIT: 388fe623e (Präsentationsinfrastruktur)`; `Obsidian: VIEWERS/ und MAPS/`
+
+## 9. Order-Schemata und alte Execution-Bausteine
+
+**Möglicher Nutzen:** Bewährte Vertragsideen erhalten und doppelte oder widersprüchliche Ausführungspfade vermeiden.
+
+**Historische Spur:** execution_simple wurde mit cf3d9fa58 entfernt. Der Commit beschreibt die Übernahme von RiskGate-Eingabetypen nach risk_layer/order_input.py.
+
+**Heutiger statischer Befund:** order_input.py enthält Order, OrderSide und OrderType und kennzeichnet sie ausdrücklich als Risk-Audit-Eingaben, nicht als Live-Execution-Verträge. Damit ist ein Teil des früheren Zwecks erhalten, nicht automatisch das ganze alte Paket.
+
+**Vorläufige Einordnung:** Teilweise überführt; kein pauschaler Verlust.
+
+**Weg über den alten Baustein:** Alte und heutige Vertragsfelder, Validierungen und Consumers vergleichen.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Wenn der gewünschte Orderfluss eine andere Architektur erfordert, Zuständigkeiten und Schnittstellen neu begründen; nicht aus historischer Existenz einen zweiten Sendepfad ableiten.
+
+**Nächste reine Untersuchung:** Fachlichen Datenvertrag vom ausführenden Adapter trennen; Schemaübernahme und verlorene Funktionen einzeln belegen.
+
+Quellen: `COMMIT: cf3d9fa58b914cf6f043808ba56af63e32e37e23`; `HISTORY: src/execution_simple/types.py`; `PIN: src/risk_layer/order_input.py`
+
+## 10. Historische Strategie- und Regime-Experimente
+
+**Möglicher Nutzen:** Frühere Forschungsarbeit und überprüfbare Hypothesen bewahren, ohne daraus Wirksamkeit abzuleiten.
+
+**Historische Spur:** Armstrong×El-Karoui-Experiment ist historisch lesbar: Zustandslabels, Forward-Returns, Kombinationsstatistik und Berichtsfunktionen. Es wurde mit cb60d0f51 ausdrücklich stillgelegt.
+
+**Heutiger statischer Befund:** src/strategies/ecm.py ist vorhanden; der alte Combi-Producer fehlt. Das beweist weder Gleichwertigkeit noch einen Nutzen der alten Hypothese.
+
+**Vorläufige Einordnung:** Forschungsinhalt getrennt von damaliger Einbindung prüfen.
+
+**Weg über den alten Baustein:** Interessante Methoden/Reports auf heutige Forschungsdaten und robuste Validierungsverträge abbilden.
+
+**Mögliche Weiterentwicklung des heutigen Systems:** Wenn die ursprüngliche Zielidee sinnvoll erscheint, auch ein anderes Regime-/Featuremodell vergleichen. Historische Stilllegung und heutige Architektur sind keine abschließenden Qualitätsurteile.
+
+**Nächste reine Untersuchung:** Originalhypothese, Datengrundlage, Forward-Looking-Bias und tatsächlich vorhandene Testbelege lesen; keine Performancebehauptung und keine Aktivierung.
+
+Quellen: `HISTORY: src/experiments/armstrong_elkaroui_combi_experiment.py`; `COMMIT: cb60d0f5123d321120e946798a2c0d53bca19ca7`; `PIN: src/strategies/ecm.py`
+
+## Untersuchungsreihenfolge als Vorschlag
+
+Zuerst die gewünschten Fähigkeiten und bisherigen Belege für Research, Learning und Feature-/Kontextdaten zusammenführen. Dort liegen sowohl vorhandene Bausteine als auch klare Unterschiede zwischen Wunsch, Contract und tatsächlichem Producer vor. Anschließend Operator-Training, Beobachtbarkeit und Portfolio-Ideen nach ihrem heutigen Nutzen gewichten. Execution- und Safety-Altbestände zunächst als Vertrags- und Zuständigkeitsfragen lesen. Diese Reihenfolge ist veränderbar; kein Bereich ist wegen heutiger Nichtpassung endgültig aussortiert.
+
+## Was noch nicht geleistet ist
+
+Dies ist eine erste quellenbasierte Orientierung, keine vollständige semantische Rekonstruktion aller historischen Fähigkeiten. Noch offen sind domänenweise Originalabsichten, konkurrierende Implementierungen, konkrete Verbraucher-/Datenverträge, damalige Testergebnisse, heutige Laufzeitbeobachtungen und begründete Änderungsumfänge. Keine alte Funktion wurde integriert, kein Produktcode ausgeführt und keine Trading-/Lernfunktion aktiviert. Der bestehende Obsidian-Ledger wurde nicht fortgeschrieben; kein automatischer RUN-0077. Recovery-Medien wurden nicht gelesen.
+
+## Quellen und Suche
+
+- `sources.sqlite`: lokaler FTS-Suchindex mit Dateipfad, Zeilennummer, Chat-ID oder Commit pro Fund. Keine neue KI-Anfrage nötig.
+- `source_index.py search "Begriffe" --limit 12`: Suchwerkzeug; historische Inhalte werden nicht als Befehle ausgeführt.
+- `git-deletion-catalog.json`: Löschereignisse, Git-Blobs und Pfad-/Inhaltsvergleich zum Pin.
+- `historical-code-inventory.json`: historisch lesbare src-Dateien, Hashprüfung und AST-Deklarationen.
+- `current-source-evidence.json`: 15 statisch untersuchte heutige Quellen mit Pin-, HEAD- und Arbeitskopievergleich.
+- `capability-source-hits.json`: erste Suchfundstellen; kein Vollständigkeits- oder Qualitätsranking.
+- Bestehender Vault: `/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE`, insbesondere README, INDEX, REGISTERS und RUN-0076. Historische Blueprint-Kopftexte wurden nicht als neuer Arbeitsauftrag ausgeführt.

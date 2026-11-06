@@ -1,0 +1,70 @@
+{
+  "source_commit": "9dd176b625b53944570a3bfaf84a5da46bc1195b",
+  "sources": [
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
+      "sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "sha256": "3337304ccdb69b66ccbce14292c98504a6361be43ea2a43b9905535d56111f43",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md",
+      "sha256": "175d65a56edd5845399ee5d43fdd39804838fc8dcf20371c4d70010bef61a154",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/integrated_offline_economic_evidence_v1/productive_offline_replay_portfolio_truth_wiring_v1.py",
+      "sha256": "a67e2e6441007bb9c1a76bba362dd8a9a4505c238c8a211617396b0a7e85c654",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/integrated_offline_economic_evidence_v1/productive_offline_simulated_portfolio_position_truth_v1.py",
+      "sha256": "c0e31767f9e049bbfda7b9b59876ccbceb704c08f4a31b9d630788c7a6fa57d1",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "sha256": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "scripts/ops/run_current_historical_productive_offline_economic_qualification_v1.py",
+      "sha256": "b421a70ea747d1ec15a12b14ce58d3c0438d3b5749c8d5e9c041a8cdca2d2b48",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "scripts/ops/run_ghv_current_ledger_economic_differential_walk_bounded_v1.py",
+      "sha256": "4f9b94a4627ff44059c4809f5172751ad65ad802294306f6270a99ac963613e0",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/integrated_paper_shadow_observation_session_v1/simulated_economics_round_trip_ledger_v1.py",
+      "sha256": "2c6bf6c255cfbf7fc091ae7b0253de8aa56f11464fbef3fd7adfcb16a6eeb1b9",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/integrated_offline_economic_evidence_v1/productive_offline_economic_completion_v1.py",
+      "sha256": "74fbb03bc3c613d16110c42ed29e43507d61663172baa72d20d6c7344f3e8e60",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "src/ops/integrated_offline_economic_evidence_v1/economic_metrics_accounting_v1.py",
+      "sha256": "4860f1eb0fe88a232dbe80b937acafc7234d3558b0d02bdb7c9aafadb69a7d38",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    },
+    {
+      "path": "docs/ops/runbooks/INTEGRATED_OFFLINE_ECONOMIC_EVIDENCE_V1.md",
+      "sha256": "e9e1382fe8beaa7e1ec654d31a36a40818a0b78c4c4efa90164bebc2bb11dc1b",
+      "coverage": "focused call chains, identity/measurement contracts and output construction; no new run"
+    }
+  ]
+}

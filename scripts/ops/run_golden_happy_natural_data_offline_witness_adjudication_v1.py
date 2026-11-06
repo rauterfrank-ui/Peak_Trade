@@ -763,6 +763,8 @@ def _run_stateful_replay(
     g17_provision: str = G17_PROVISION_SYNTHETIC_HARNESS,
     dataset_root: Path | None = None,
     instrument_id: str = "",
+    observed_portfolio=None,
+    observation_now_unix: float | None = None,
 ) -> dict[str, Any]:
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         _cursor_floor_or_zero,
@@ -797,6 +799,9 @@ def _run_stateful_replay(
         _FakeClock,
     )
 
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+
+    require_startup_portfolio_v1(observed_portfolio)
     prod_template = REPO / PRODUCTIVITY_TEMPLATE_REL
     prod_runtime = REPO / RUNTIME_PRODUCTIVITY_REL
     lane_root = workspace / "lane_state"
@@ -824,6 +829,8 @@ def _run_stateful_replay(
         productivity_root=prod_src,
         repository_sha=str(prod_repo_sha),
         binding_epoch=binding_epoch,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
     bound = handoff.bound_instrument
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
@@ -1107,7 +1114,10 @@ def _witness_levels(replay: dict[str, Any], dist: dict[str, Any]) -> dict[str, A
     }
 
 
-def run_g17_parity_readjudication_v1(out_dir: Path) -> dict[str, Any]:
+def run_g17_parity_readjudication_v1(out_dir: Path, *, observed_portfolio=None, observation_now_unix=None) -> dict[str, Any]:
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+
+    require_startup_portfolio_v1(observed_portfolio)
     """Run synthetic vs natural-checkpoint G17 provision on the same post6999 capture."""
     from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
         bind_typed_canonical_volatility_estimate_into_market_context_v1,
@@ -1143,6 +1153,8 @@ def run_g17_parity_readjudication_v1(out_dir: Path) -> dict[str, Any]:
         workspace=ws_old / "faithful_180s_4cycles",
         mode="SYNTHETIC_HARNESS_G17",
         g17_provision=G17_PROVISION_SYNTHETIC_HARNESS,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
     new = _run_stateful_replay(
         injections=injections,
@@ -1154,6 +1166,8 @@ def run_g17_parity_readjudication_v1(out_dir: Path) -> dict[str, Any]:
         g17_provision=G17_PROVISION_NATURAL_CHECKPOINT,
         dataset_root=root,
         instrument_id="okx_eea:linear_perpetual:ON:USDT:USDT:on-usdt-swap",
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
 
     # Recompute G17→CMC→resolver on bootstrap observation with natural producer after ingest.
@@ -1195,6 +1209,8 @@ def run_g17_parity_readjudication_v1(out_dir: Path) -> dict[str, Any]:
         binding_epoch=resolve_cap24_runtime_binding_witness_epoch_v1(
             selection=sel.selection, decision_epoch="2026-10-01T21:33:35Z"
         ),
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=observation_now_unix,
     )
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=out_dir / "g17_chain_probe_lane",
@@ -1339,12 +1355,20 @@ def main() -> int:
         action="store_true",
         help="Run G17 synthetic vs natural-checkpoint parity replay (post6999 capture only).",
     )
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
+    )
+    add_startup_portfolio_arguments_v1(parser, replay_clock=True)
     args = parser.parse_args()
+    observed_portfolio = load_startup_portfolio_args_v1(args)
+    observation_now_unix = startup_observation_now_v1(args)
     if args.parity_readjudication:
         out = args.output_dir
         out.mkdir(parents=True, exist_ok=True)
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
-        verdict = run_g17_parity_readjudication_v1(out)
+        verdict = run_g17_parity_readjudication_v1(out, observed_portfolio=observed_portfolio, observation_now_unix=observation_now_unix)
         verdict["FINAL_HEAD"] = head
         verdict["CODE_CHANGED"] = True
         verdict["PR_CREATED"] = False
@@ -1419,6 +1443,8 @@ def main() -> int:
             max_duration=180.0,
             workspace=ws / "faithful_180s_4cycles",
             mode="FAITHFUL_PRODUCT_BUDGET",
+            observed_portfolio=observed_portfolio,
+            observation_now_unix=observation_now_unix,
         )
         extended = _run_stateful_replay(
             injections=injections,
@@ -1427,6 +1453,8 @@ def main() -> int:
             max_duration=180.0,
             workspace=ws / "extended_same_budget_duplicate",
             mode="EXTENDED_SAME_BUDGET_DUPLICATE_RUN",
+            observed_portfolio=observed_portfolio,
+            observation_now_unix=observation_now_unix,
         )
         levels = _witness_levels(extended, dist)
         replay_results[seq_id] = {

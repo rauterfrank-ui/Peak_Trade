@@ -1,0 +1,13 @@
+{
+  "source_commit": "8b9a56dcdd9d712a6723ee64f338b9c7bdf8de67",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "53d44988f788797b1942746d3b1cfcd573c2cc7cf026adbea0d692ffe2b42064",
+    "evaluation_runtime_productive_host_v1.py.before.txt": "7cb27673ec78979cfba4d9a8801d60c115765d16e9f2b25c3f651276054612fe",
+    "n_bars_bar_evidence_supplier_v1.py.before.txt": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+    "real_outcome_horizon_productive_host_v1.py.before.txt": "adfe211d6a62524eec4fc07d1d677ce746eab1b3a78829591ffe1013c3c440cc",
+    "receipt.json": "7ffce604010a76ce7347cdfbe7ba0f4efd4c278b921eb368d7e996313155bdab",
+    "source_changes.patch.txt": "d1828a53f4f7ce8471ad1b31cdcf528c438606a8d71a5cff03f75ec5593ee0b4",
+    "tests.xml": "855af419c586df93dfdd073012e27dc36b72a6a0d4afb6127172225af6b29a44"
+  }
+}

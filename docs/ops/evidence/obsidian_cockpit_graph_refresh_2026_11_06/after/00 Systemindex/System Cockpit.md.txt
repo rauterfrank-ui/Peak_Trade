@@ -1,0 +1,81 @@
+---
+title: "PeakTrade System-Cockpit"
+stand: "2026-11-06"
+rolle: "Abgeleitete Orientierung ohne Betriebsautorität"
+authoritaet: "NONE"
+---
+
+# PeakTrade System-Cockpit
+
+**[[Start|Start]] · [[Systemkarte.canvas|Universen und Außenkanten]] · [[Systemkarte Offlineverbund.canvas|Offlinepfade]] · [[00 Systemindex/Galaxy View|3D-Galaxie]]**
+
+## Was heute belegt ist
+
+> [!success] Neue unabhängige Marktbeobachtung · begrenzter Offlinepfad
+> [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback|Punkt 1: Vertrag, Zahlen und persistierter Readback]]. Marktkontext und bereitgestellter Forecast werden ohne Decision/Lane/Trading-Epoche eingefroren. Derselbe originale N_BARS-Messowner liefert die spätere Messung; originale RETURN_ERROR-Kalibrierung und nativer Forecast-/Calibration-/Research-Store bleiben erhalten. **787 unterschiedliche gebundene Tests PASS, davon 40 neu**. Das ist Mechanismusnachweis für explizit stündliche Mark-Price-Daten mit mindestens zwei Schlusswerten, keine natürliche oder wirtschaftliche Gesamtprüfung.
+
+- **Ursprünglicher E6-Offlineverbund, Stand 05.11.2026:** 1.509 gebundene Tests, 39 Pflichtfälle und 31 Schnittstellenbewertungen. [[01 System/Abnahmestand|Ursprünglicher Abnahmescope]] · [[90 Nachweise/Belegregister|Originalnachweise]].
+- **Spätere Integrationsprüfung:** 1.575 Tests gehören zu ihrem damaligen Integrationsstand; [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Revisionen und Abgleich]]. Die Zahlen verschiedener Läufe werden nicht addiert und zertifizieren nicht automatisch den heutigen Gesamtbaum.
+- **Aktueller Punkt-1-Nachweis:** alle Learning-Tests, zwei Research-Source-Module und fünf begrenzte E6-Episoden ausgewählt; 11.358 Source-/Test-/Configdateien vor und nach dem finalen Lauf unverändert gebunden. Kein vollständiger Repository-Testlauf oder aktueller GitHub-CI-PASS folgt daraus.
+- **Natürliche Gesamtwirkung und wirtschaftliche Qualität:** offen; der E6-Qualitätsnachweis bleibt BLOCKED. Bereitgestellte Forecastbytes belegen weder Training noch Inferenz, Prognosegüte oder Profitabilität.
+- **Betriebs-, Order- und Promotionautorität aus diesen Ansichten:** NONE. Dies ist eine Dokumentationssicht, kein Livemonitor.
+
+## Die fachlichen Verbindungen genau lesen
+
+**Zwei getrennte Eingänge:** Der bewahrte Decision-/DDO-Pfad attributiert Outcomes zu echten Entscheidungen. Der neue Market-only-Pfad bewertet einen expliziten Marktkontext und Forecast ohne erfundene Decision. Beide verwenden denselben ursprünglichen Messkörper; es gibt keinen zweiten Outcomeowner.
+
+**Zeiten und Größen:** N Schlusswerte liefern N−1 Returnintervalle. Markt-Logreturn, Forecastfehler, Positions-PnL und Researchscore sind verschiedene Zahlen. Logische Horizontgrenze, tatsächliche Receipt-Verfügbarkeit und spätere Auswertung bleiben getrennt. Die instrumentbezogene Quellenidentität wird ausdrücklich an die vorhandene opaque Messreferenz gebunden.
+
+**Kausalität in E6:** Geschlossene Consumer-ACKs öffnen Researchadmission und Elternlineage. Eine numerische Wirkung des MI-Fehlers auf Researchfeatures ist nicht belegt. Die konkrete E6-Auswahl **50 → 100** entsteht durch den Duplicatefilter. Der separate E4-Kontrollversuch belegt regionale Meta-Priorisierung; sein voller Folgescore ist etwas niedriger. Daraus folgt keine Qualitätsverbesserung.
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Originalkonstrukt und Einzelbelege]] · [[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Eigene Outputs, fremde Admission und getrennte Writer]] · [[00 Systemindex/Systempruefung/Systemweite Semantik|Semantik bis zum tatsächlichen Consumer]].
+
+## Wo wir weiterarbeiten
+
+[[00 Systemindex/Repoabgleich/Konkrete Luecken im Repository|Konkrete Lücken im Repository]] ist der aktuelle Einstieg: Punkt 1 ist im benannten Offlineumfang geschlossen. **Punkt 2 – tatsächlicher Lernzustand bis zum nächsten verwendeten Modell – bleibt offen.** Der fehlende bedingte Phase-20/21-Return, M6/Loop-C-Lineage, natürliche Consumer-/Qualitätsnachweise und weitere Bereiche bleiben jeweils eigenständig zu prüfen.
+
+[[00 Systemindex/Betrieb/Wiederanlauf und Stromausfall|Wiederanlauf und Stromausfall]] unterscheidet Prozessabbruch/Readback von tatsächlichem Stromverlust, Hardwareboot und sicherer Servicefortsetzung. Ein geschlossener erster Nachweis schließt den zweiten nicht.
+
+## Wege durch das System
+
+1. [[Systemkarte.canvas|Universen und Außenkanten]] zeigt fachliche Ownership und die ersten fremden Consumer.
+2. [[Systemkarte Offlineverbund.canvas|Offlineverbund und unabhängige Marktbeobachtung]] zeigt die beiden konkreten Pfade samt offenen Folgewirkungen.
+3. [[00 Systemindex/Galaxy View|Galaxy View]] erschließt die verlinkten Notizen räumlich; Graphabstand und Knotengröße sind keine fachlichen Beweisgrade.
+4. [[00 Systemindex/Fallverlaeufe|Fallverläufe]] · [[00 Systemindex/Aenderungsauswirkungen|Änderungsauswirkungen]] · [[00 Systemindex/Entscheidungen und Widersprueche|Entscheidungsregister]].
+
+[[00 Systemindex/Karten/Cockpit.canvas|Ergänzende ältere Cockpitkarte]] · [[00 Systemindex/Offene Punkte und Arbeitsfolge|Datierter breiter Arbeitsvorrat]] · [[00 Systemindex/Produktiver Pfad und Enforcement|Produktiver Pfad und Sperren]] · [[00 Systemindex/Externe Signalstroeme|Externe Signale]] · [[00 Systemindex/Execution und Betriebsarten|Betriebsarten]].
+
+## Bereichsstand richtig lesen
+
+**Vorgesehen → Code vorhanden → statisch verbunden → im benannten Fall beobachtet → natürlich/wirtschaftlich/operativ abgenommen** sind getrennte Belegarten. Ein späterer Status ist nicht allein aus dem vorherigen ableitbar. Für jeden Bereich stehen Quellen/Code, beobachtete Wirkung und verbleibende Lücken im Dossier; es gibt bewusst keinen unbelegten pauschalen Grünstatus pro Universum.
+
+- [[00 Systemindex/Universen/RANK|Ranking-Universum]] · [[00 Systemindex/Auswirkungen/RANK|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] · [[00 Systemindex/Auswirkungen/CORE|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/SL|Selbstlern-Universum]] · [[00 Systemindex/Auswirkungen/SL|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/OPT|Optimierungs-Universum]] · [[00 Systemindex/Auswirkungen/OPT|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/INT|Intelligenz-Universum]] · [[00 Systemindex/Auswirkungen/INT|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Universen/FA|Vollautonomie-Universum]] · [[00 Systemindex/Auswirkungen/FA|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/TREASURY|Treasury]] · [[00 Systemindex/Auswirkungen/TREASURY|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/RISK|Risk Sizing und Equityadmission]] · [[00 Systemindex/Auswirkungen/RISK|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/BUDGET|Portfolio und Reservierung]] · [[00 Systemindex/Auswirkungen/BUDGET|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/ACCOUNTING|Accounting Position und Reconciliation]] · [[00 Systemindex/Auswirkungen/ACCOUNTING|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/GOV|Governance Promotion und Applygrenze]] · [[00 Systemindex/Auswirkungen/GOV|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/SAFETY|Safety und Sperrgrenzen]] · [[00 Systemindex/Auswirkungen/SAFETY|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EVAL|Evaluation GVEF und Qualitätsnachweise]] · [[00 Systemindex/Auswirkungen/EVAL|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/DATA|Datenebene und Quellenadmission]] · [[00 Systemindex/Auswirkungen/DATA|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EXEC|Intent Ausführungsgrenze und Lifecycle]] · [[00 Systemindex/Auswirkungen/EXEC|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/CRED|Credential und Capabilitygrenzen]] · [[00 Systemindex/Auswirkungen/CRED|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/HOST|Host Session und Prozessbetrieb]] · [[00 Systemindex/Auswirkungen/HOST|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/STORE|Persistenz Identität und Transportmechanik]] · [[00 Systemindex/Auswirkungen/STORE|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/VIEW|Operator Anzeige Monitoring und Wissen]] · [[00 Systemindex/Auswirkungen/VIEW|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/ENG|Entwicklung Tests CI und Auslieferung]] · [[00 Systemindex/Auswirkungen/ENG|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/EIP|Evidence Input Plane und G2-Querübergaben]] · [[00 Systemindex/Auswirkungen/EIP|Übergaben/Auswirkungen]]
+- [[00 Systemindex/Aussenbereiche/GATES|F1 M9 Schwellen und Laufzeitadmission]] · [[00 Systemindex/Auswirkungen/GATES|Übergaben/Auswirkungen]]
+
+## Stand und Aktualisierung
+
+**Diese vier Einstiegsansichten wurden am 06.11.2026 abgeglichen.** Produktstand der neuen Marktbeobachtung: `9150b9d129cc630ab214f87b56422f4962e3a34e`; letzter Repository-Checkpoint vor diesem Ansichtsupdate: `c2df25a4834ac3a3a05b7949cbdbdcea6d05cf1b`. Der neue Ansichtsbeleg enthält Vorherbilder, aktuelle Dateien, lokale Link-/Canvasprüfungen und die begrenzte Herkunftsbindung.
+
+**Historische Inventarbasis erhalten:** HEAD `1814ca5b24d1d3ab537683e340b3ab045ea51e62`, Sourcebaum `3190c01f4393dbfa695bf610160555e7720b735916d04d014810ece2b7310eaf`. Die damaligen lokalen Ergänzungen und ursprünglichen Source-/Modell-/PASS-Bindungen bleiben datiert. Sie werden durch aktuelle Ansichtshashes nicht zu einem neu geprüften Gesamtsystem.
+
+[[00 Systemindex/Systempruefung/Gesamtsystem Dokumentationsabgleich|Früherer Dokumentationsdurchgang über 22 Bereiche, 91 Gruppen und 62 Übergänge]] ist ein Inventar-/Dokumentationsnachweis. Bei weiteren Source-, Config- oder Evidenceänderungen ist der betroffene Scope erneut abzugleichen; alte PASS-Receipts werden nicht pauschal übertragen.

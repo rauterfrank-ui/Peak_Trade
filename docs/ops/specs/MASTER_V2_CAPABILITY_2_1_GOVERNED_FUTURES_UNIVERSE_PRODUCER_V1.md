@@ -1,5 +1,8 @@
 # CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1
 
+**Current Owner amendment, 2026-11-03:** [GGE-only geometry and common futures asset admission v3](GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md). Fixed Scope is retired from executable Double Play. BTC uses the same metadata, minimum-size, capital and risk rules as other admitted Futures. Earlier fixed-bound/BTC-exclusion statements are dated or superseded, not the active policy.
+
+
 ---
 docs_token: DOCS_TOKEN_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1
 STATUS: CAPABILITY_AVAILABLE

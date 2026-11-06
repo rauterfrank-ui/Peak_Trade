@@ -1,0 +1,152 @@
+{
+  "role": "BOUNDED_CONTROLLED_MECHANISM_WITNESS_NOT_FULL_SYSTEM_LEARNING_CERTIFICATE",
+  "source_commit": "2ed94965facb87bb24eaa386b44d78c233be8dc2",
+  "original_design_anchor": "Restored SelfLearning master sections3.1/15/22: experiment runner, memory, feedback and next hypothesis. Newly implemented composition, not recovered historical executable.",
+  "steps": [
+    {
+      "stage": "Prior control",
+      "meaning": "Three computed-return fixture experiments with native parameter names declared from creation; shared curve, not independent market samples",
+      "experiment_ids": [
+        "f36497fd5115958dd87344ebfa02642ea8d105e9999f915822dfeed9cc866768",
+        "5308456f4d5ea71a43b17c241006997f283fb58d92464f85ad4e26e7e2ec82ee",
+        "9ddc67881099e001cdb3d14b368972245abdd416f3de00819e5c0f616579c9c8"
+      ]
+    },
+    {
+      "stage": "Meta reasoning",
+      "meaning": "Existing Phase11 repeated-overfit question and its actual proposals",
+      "meta_learning_identity": "1620300926fc03e917f5c64c8eb79a7fc67c32c48f48a550526f30c404a66db9",
+      "proposal_ids": [
+        "672cd39b62784a51abb44175bbcc5d78893fe0035b9bf4e91e1c43cae4f472cf"
+      ]
+    },
+    {
+      "stage": "Actual Search consumer effect",
+      "before_region": {
+        "fast_window": 10,
+        "slow_window": 50
+      },
+      "after_region": {
+        "fast_window": 10,
+        "slow_window": 100
+      },
+      "budget_before": 1,
+      "budget_after": 1,
+      "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3"
+    },
+    {
+      "stage": "Explicit native experiment",
+      "provider_calls": 1,
+      "actual_engine_split_calls": 3,
+      "native_parameters": {
+        "fast_window": 10,
+        "slow_window": 100
+      },
+      "dataset_csv_sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd",
+      "canonical_dataset_digest": "9c8c8bc4ac5d8e784ffedff0fa05f1bbf1101c75c8ab25adf383aba520d43dbd",
+      "splits": [
+        {
+          "split": "train",
+          "sharpe_nonannual": 0.03688030075443945,
+          "net_return": 0.006729039644509976,
+          "trade_count": 2,
+          "return_observations": 384
+        },
+        {
+          "split": "validation",
+          "sharpe_nonannual": -0.07216878364870323,
+          "net_return": -0.0022969999999999345,
+          "trade_count": 1,
+          "return_observations": 192
+        },
+        {
+          "split": "holdout",
+          "sharpe_nonannual": 0.05228598850098903,
+          "net_return": 0.006799355001851109,
+          "trade_count": 2,
+          "return_observations": 192
+        }
+      ]
+    },
+    {
+      "stage": "Memory/Robustness",
+      "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3",
+      "loop_identity": "ad018404a1aa57e80e9927a7b1bf6575815bd1d9c412ca712e97ae645cd067c9",
+      "memory_metrics": {
+        "oos_sharpe": 0.05228598850098903
+      },
+      "aggregate_status": "BLOCKED",
+      "meaning": "OOS Sharpe named explicitly; unavailable capabilities remain blocked, no whole-run Sharpe substitution"
+    },
+    {
+      "stage": "Later Meta admission",
+      "source_bindings": [
+        {
+          "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3",
+          "search_identity": "312e26eb1f09cac10df2e7495e18179934fe7968d865149a69e5838862eae813",
+          "search_content_sha256": "c57b50a75da0af384694395e03c341042dadd1aa6858d277ad4fbc90008e7ad0",
+          "research_loop_identity": "ad018404a1aa57e80e9927a7b1bf6575815bd1d9c412ca712e97ae645cd067c9",
+          "research_loop_content_sha256": "c96f36265b617af85220f2049b4d5a449b3bc0bd50fd4f554cffc263978ba150",
+          "observation_binding": {
+            "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+            "bounded_auto_allowed": false,
+            "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3",
+            "identity_digest": "c2862e39979725ec7b17decf3ecbdd343d54edc8372a9968abd41cb2cb5c9492",
+            "identity_reinterpreted": false,
+            "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+            "persist": {
+              "experiment_record_id": null
+            },
+            "promotion_apply_allowed": false,
+            "runtime_authority_effect": false,
+            "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+            "status": "BOUND"
+          },
+          "robustness_content_sha256": "bda3cdba64ca270954f6b05a64e88aec4bf118f07515408b0906597650c65ae4",
+          "comparison_identity": "50c5cfbb09fcbfeacb381d62f35eefd4aa73521d2f73ac610043623e5c8968ec"
+        }
+      ],
+      "meaning": "Same measured candidate admitted; small sample and missing OOS capabilities still yield insufficient evidence, not asserted improved strategy"
+    },
+    {
+      "stage": "GVEF reference",
+      "reference": {
+        "schema_version": "research_execution_gvef_reference_v1",
+        "artifact_ref": "executed_research.canonical.json",
+        "payload_encoding": "UTF8_JSON_NUMBERS_PRESERVED",
+        "payload_sha256": "4e5970b30662925e77fdc7e4912135943c1b29087241401b01202f6f35d7b2b2",
+        "execution_content_digest": "f4429aea641d229f2e4b21b74fc8b1fcf5f972c9bb75f10e2710baf9fea34512",
+        "experiment_id": "7ed962d52ca935f94ca77d8defc6ddab7e31331b899cb31551a679236058f7b3",
+        "loop_identity": "ad018404a1aa57e80e9927a7b1bf6575815bd1d9c412ca712e97ae645cd067c9",
+        "search_identity": "312e26eb1f09cac10df2e7495e18179934fe7968d865149a69e5838862eae813",
+        "declared_evidence_source_class": "TEST_ONLY_SYNTHETIC",
+        "source_class_authenticated": false,
+        "TEST_ONLY_SYNTHETIC": true,
+        "gvef_scope": "REFERENCE_ARTIFACT_BINDING_NOT_NUMERIC_QUALITY_EVALUATION",
+        "productive_apply_authorized": false
+      },
+      "metric": [
+        {
+          "metric_id": "sl.artifact_digest",
+          "value": "4c3e61c8b5e0ddf1909927877c4c9b46414dbe361f1d47c21c61c90f0ff00b43",
+          "unit": null,
+          "baseline_value": null
+        }
+      ],
+      "meaning": "Existing evaluator hashes the float-free reference, not a numerical quality judgment"
+    },
+    {
+      "stage": "Numeric reload after reference verification",
+      "exact_payload_sha256_verified": true,
+      "existing_search_and_phase10_validators": true,
+      "later_full_meta_result_identical": true,
+      "meaning": "Actual numeric JSON survives serialization/reference/GVEF artifact evaluation/reload and reaches the same later Meta owner result"
+    }
+  ],
+  "non_closures": [
+    "Synthetic ancillary identity/core/cost bindings and caller-supplied champion/gap fixture are not authenticated productive evidence.",
+    "Funding NOT_BOUND, economic_interpretation_allowed false, robustness BLOCKED and nonfinite metric names remain visible.",
+    "No model training, natural outcome verification, incremental feature benefit, complete regime/portfolio orchestration, installed scheduler or productive apply established.",
+    "Old generic fast/slow candidate was not renamed or retroactively declared executed. This is a new native-name case."
+  ]
+}

@@ -26,12 +26,10 @@ from src.ops.presentation_archive_root_v1.resolver_v1 import (
     PRECEDENCE_EXPLICIT,
     resolve_workflow_dashboard_archive_root,
 )
-from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_contract_v1 import (
+from src.webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
     STORAGE_RELATIVE_PATH,
-)
-from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_reader_v1 import (
-    UniverseSelectionVerifiedLoadError,
-    load_universe_selection_contract_verified_v1,
+    UniverseSelectionContractError,
+    load_universe_selection_contract,
 )
 
 
@@ -102,28 +100,18 @@ def resolve_selected_instrument_from_archive_v1(
     *,
     archive_root: str | Path,
     expected_symbol: str | None = None,
-    require_instrument_pin: bool = False,
 ) -> tuple[str, str]:
     """Resolve selected instrument from archive universe selection authority.
 
     Returns (symbol, source_label). Never invents a productive hard-coded symbol.
-    Uses the same verify-before-trust path as the dashboard universe loader.
     """
-    if require_instrument_pin and not (expected_symbol and str(expected_symbol).strip()):
-        raise ProductiveHostAuthorizationError(
-            "INSTRUMENT_PIN_REQUIRED",
-            "expected_symbol must be set for archive-smoke binding",
-        )
     root = Path(archive_root).expanduser().resolve()
+    payload_path = root / STORAGE_RELATIVE_PATH
     try:
-        _payload, contract = load_universe_selection_contract_verified_v1(
-            root,
-            require_non_authorizing=True,
-            reject_fixture_marked=False,
-        )
-    except UniverseSelectionVerifiedLoadError as exc:
+        contract = load_universe_selection_contract(payload_path)
+    except UniverseSelectionContractError as exc:
         raise ProductiveHostAuthorizationError(
-            "ARCHIVE_UNIVERSE_VERIFY_FAILED",
+            "SELECTED_INSTRUMENT_LOAD_FAILED",
             str(exc),
         ) from exc
     if contract.selected_future is None or not str(contract.selected_future.symbol).strip():

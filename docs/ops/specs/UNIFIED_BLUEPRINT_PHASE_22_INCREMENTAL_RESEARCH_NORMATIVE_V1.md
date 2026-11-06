@@ -39,3 +39,14 @@ Integration closure:
 - `tests/learning/test_phase_22_incremental_research_evidence_v1.py`
 - `tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py`
 - `prove_unified_blueprint_phase_22_incremental_research_v1`
+
+
+## Actual immediate predecessor — 2026-11-04
+
+Active stage processing checks supplied predecessor stage_id against the existing
+immediate-predecessor mapping before projection/plane work. Baseline cannot consume
+a predecessor; missing predecessor remains insufficient. The early DEFERRED B5
+route has no comparison/plane execution and stays reachable. Ordering alone does
+not prove this edge. Numeric score/dataset/window equivalence and full predecessor
+content remain distinct proof questions.
+[Verification](../evidence/incremental_immediate_predecessor_binding_v1_2026_11_04/README.md).

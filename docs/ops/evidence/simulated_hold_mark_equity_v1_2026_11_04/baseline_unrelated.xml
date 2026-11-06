@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.154" timestamp="2026-11-04T03:49:06.546180+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.ops.test_wallclock_bridge_hardening_v2" name="test_warmup_complete_true_features_ok_false_no_required_window_incomplete" time="0.003"><failure message="ValueError: gge_base_geometry_unavailable:volatility_non_positive">tests/ops/test_wallclock_bridge_hardening_v2.py:444: in test_warmup_complete_true_features_ok_false_no_required_window_incomplete
+    scope = initialize_canonical_scope(
+src/trading/master_v2/canonical_scope_initialization_v1.py:584: in initialize_canonical_scope
+    scope = _build_initialized_scope(market_context, policy)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trading/master_v2/canonical_scope_initialization_v1.py:480: in _build_initialized_scope
+    raise ValueError(
+E   ValueError: gge_base_geometry_unavailable:volatility_non_positive</failure></testcase></testsuite></testsuites>

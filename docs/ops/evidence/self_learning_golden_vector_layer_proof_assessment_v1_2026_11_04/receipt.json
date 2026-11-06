@@ -1,0 +1,33 @@
+{
+  "boundaries": [
+    "Current user freeze: no changes to product code, tests, configuration or Scope.",
+    "Recovered emitter literal statuses/counts and import/AST inventories do not prove independently executed per-layer Golden Vector coverage. Historical commands and actual historical outputs remain different evidence types.",
+    "128 current PASS do not reproduce the old8 failures or certify all historical/full-system behavior. Current producer replay expressly does not claim historical code parity.",
+    "Validation consumes named opaque evidence statuses; passing DDO validation is not proof of running every external validation engine. Promotion dry-run remains non-authorizing.",
+    "Current default handoff path label A/B changes context/lineage, not seven compared research-decision subobjects; other explicit Meta/Search pathway remains separate and present.",
+    "No natural market, authenticated real-label or useful learned-model improvement proof; missing historical tool outputs retained as gaps.",
+    "Original learning ledger unchanged, U04/GAP-0370 deferred, no activation, services, orders, push or external-source writes."
+  ],
+  "probe_correction": "Own first temporary probe asserted an invented status literal; corrected that assertion to existing PLANE_OFFLINE_CHAIN_COMPLETE. No implementation change. Additional comparison expanded to all seven actual decision-related subobjects.",
+  "ruff_status": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+  "runtime_activation_authorized": false,
+  "source_commit": "de0ddf2661274e5f0008dbe40ef88a81b80e1885",
+  "tests": "128 existing current tests PASS in two distinct non-overlapping scopes:69 Capture/typed-semantic replay/current producer-function replay/evaluation/export;59 Registry/validation/shadow/control/drift/producer-binding contracts. Current five-handoff source-backed synthetic probe with label A/B and missing-input/foreign-plane controls PASS. Original historical scripts were inspected as source, never executed.",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 243,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "semantic_target_and_provenance_consistency_v1",
+  "source_commit": "a09f8e6c92bc6983d02b0994329c1ef91086a858",
+  "sources": {
+    "src/experiments/canonical_advanced_search_v1.py": {
+      "before_sha256": "b2357b490eccdd5a3edd5889874e1f6c9665335156852734d338fcde67b40913",
+      "after_sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840"
+    },
+    "src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py": {
+      "before_sha256": "b57f3370e85c730cb88f2861ced973b06dad26f3175c9e1a1290ebfb5e98929b",
+      "after_sha256": "fd773cb6b8c1a359c9f6541dcb5d19babae16c65791c7a08901be3edd7edb0ec"
+    },
+    "src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py": {
+      "before_sha256": "7f34ada4f0e6e5c83417767bff59031aae18ff8ed0da37a109f077f97775c582",
+      "after_sha256": "0d010118a10f5170f7fb146874be8edb63d5e865792d2efcc6e958c6e476ce45"
+    }
+  },
+  "research_target_origin": {
+    "report_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/learning-optimization-history/data-prerequisites-and-processing/Vorausgesetzte_Daten_Verarbeitung_und_wirksame_Forschungsrueckkopplung.md",
+    "report_sha256": "5857854f34ccc89257b6de300a2317b34c0fe9a2e846053dfb384f4afa1ee2fd",
+    "finding": "G03: unlike target meanings were matched through untyped fallback",
+    "original_search_revision": "899e154d1bb095227c13690943e13284fb936972"
+  },
+  "provenance_origin": {
+    "guard_revision": "881efd47285ebccd83c0e57691e5832730c017a9",
+    "original_contract": "Explicit class from embedded provenance, digest binding, equal single-record pool; current gate overwrote declared fields and record owner lacked class-to-block equality."
+  },
+  "tests": {
+    "target_scope": "63 PASS including 22 new cases; before 20 FAIL / 2 PASS",
+    "provenance_scope": "55 PASS including 8 new cases; before 6 FAIL / 2 PASS",
+    "additional_learning_ingest_scope": "14 PASS",
+    "overlap_note": "Scopes overlap and are not summed as distinct tests."
+  },
+  "normal_fixtures": {
+    "same_current_dependencies": true,
+    "search_without_meta_complete_output_identical": true,
+    "normal_search_identity": "2446d9d4cb197f8bf556ec865c404778c22a3d7a3ddb49e81d0ced8dce309910",
+    "consistent_learning_record_complete_output_identical": true,
+    "consistent_learning_record_hash": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+    "consistent_gate_result_identical": true,
+    "limit": "Controlled synthetic fixture comparisons at exact old/current modules; not natural runtime or global historical replay."
+  },
+  "remaining": [
+    "Dedicated semantic consumers for robustness/metric/cost/regime/path proposals not established by this change",
+    "Canonical Meta numerical unit producer and parameter-stability formula remain unresolved; no namesake M6/M7 projection substitution",
+    "Rejecting contradictions does not attest source truth or detect all consistently rehashed false provenance",
+    "G2 original missing outcome class remains rejected; no fabricated class",
+    "N_BARS actual source/window and durable measurement retention remain separately open"
+  ],
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b",
+  "runtime_authorization_effect": "NONE"
+}

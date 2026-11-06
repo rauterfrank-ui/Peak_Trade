@@ -1,0 +1,199 @@
+PEAKTRADE – INFORMATIONSQUELLEN, ABGLEICH UND REKONSTRUKTIONSCHANCE
+02.11.2026 · Europe/Berlin · lesende Zugangs- und Machbarkeitsprüfung
+
+AKTUALISIERUNG CHATGPT-ZUGRIFF, gleicher Tag:
+Die nachfolgende ursprüngliche Einordnung in Abschnitt 9 war zu eng.
+Direktes Auflisten und Lesen von ChatGPT-Gesprächen über diese App ist
+inzwischen praktisch bestätigt, auch für archivierte Gespräche und ältere
+Nachrichtenseiten. Ein Export ist dafür nicht zwingend vorgeschaltet.
+Vollständigkeit bleibt ungeprüft. Siehe ChatGPT-Zugriff-Ergaenzung.txt.
+
+EINSCHÄTZUNG
+
+Ja: Eine nachvollziehbare Rekonstruktion hat eine realistische, gute Chance.
+Diese Einschätzung stützt sich auf tatsächlich zugängliche, unterschiedliche
+Belegarten und bereits nachgewiesene Verknüpfungen zwischen ihnen.
+Sie ist keine Behauptung, dass vollständige historische Semantik, sämtliche
+verlorenen Daten oder ein funktionsfähiges Gesamtsystem bereits belegt wären.
+
+Der feste Ausgangsbefund bleibt: Ein historischer Stand, an dem das gesamte
+System nachweislich korrekt zusammenarbeitete, ist bislang nicht belegt.
+Die Aufgabe ist deshalb, ursprüngliche Aufgaben und Varianten zu rekonstruieren,
+ihre Umsetzung und spätere Änderungen zu verfolgen und offene Übergänge
+sichtbar zu halten. Ein aktueller Commit oder ein Ordnername ist kein Ersatz.
+
+TATSÄCHLICH VERFÜGBARE QUELLEN
+
+1. OBSIDIAN
+
+/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE
+README/INDEX und Register sind lesbar. Der dokumentierte letzte Abschluss
+ist RUN-0076, Blueprint-Pin V0.15. Vorhanden sind Register für Evidence,
+Bereiche/Ebenen, Verträge/Kanten/Zustände, Entwicklung und offene Fragen.
+Diese Struktur kann die nachvollziehbare Belegführung tragen.
+Sie beschreibt ausdrücklich noch keine vollständig bewiesene Gesamtkohärenz.
+In dieser Prüfung wurde kein neuer RUN eröffnet und kein Register verändert.
+
+2. GIT, ARBEITSKOPIEN UND LOKALE SPUREN
+
+Primär: /Users/frnkhrz/Peak_Trade
+Weitere Arbeitskopie: /Users/frnkhrz/Peak_Trade_M1_5_CURRENT
+Aktuelle HEADs erneut geprüft; sie sind verschieden. Beide sind shallow.
+Im primären Repository sind 8724 Commits über vorhandene Refs erreichbar;
+704 Ref-Zeilen sind vorhanden. Das ist keine vollständige Ursprungshistorie.
+Worktrees, Reflogs, Stashes und uncommittete Arbeit können zusätzliche
+Zwischenstände enthalten und dürfen nicht automatisch bereinigt werden.
+
+3. GITHUB: ZUGRIFF PRAKTISCH GEPRÜFT
+
+Repository rauterfrank-ui/Peak_Trade ist über die vorhandene gh-CLI lesbar.
+Der angebotene GitHub-Connector lieferte Unknown-tool-Fehler; der lesende
+CLI/API-Zugang funktioniert. Keine neue Anmeldung oder Installation nötig.
+Die Suche meldet 7134 aktuell auffindbare PRs, incomplete_results=false.
+Das ist eine Such-Gesamtzahl, kein bereits vollständig abgearbeiteter Katalog.
+
+Stichproben:
+- PR 1 vom 12.12.2025: Metadaten und Commit-Verweise erreichbar.
+- PR 6626: N_BARS-Horizontsemantik, Base/Head/Merge erreichbar.
+- PR 6718: Naked L1–L10, sieben Einzelcommits, 38 geänderte Dateien;
+  Base 7aa7f120…, Head 59a97562…, Merge 097b6338… stimmen mit lokalen Spuren.
+  Issue-Kommentare, Reviews und Inline-Kommentare wurden abgefragt: jeweils 0.
+- Commit 21452016… vom 29.08.2026 ist per API erreichbar, also vor der
+  auffälligen lokalen Shallow-Grenze vom 23.09.2026.
+
+Damit ist eine PR-für-PR-Erhebung technisch möglich. Noch nicht erfolgt sind
+die vollständige Enumeration, Prüfung aller Seiten/Dateien/Kommentare sowie
+eine semantische Bewertung sämtlicher PRs. Aktuelle Suchergebnisse und API-
+Verfügbarkeit garantieren nicht alle jemals gelöschten oder unerreichbaren
+Branches, Forks, Artefakte und Diskussionen. CI-Artefakte können fehlen.
+
+4. CURSOR-GESPRÄCHE, ROHDATEN, COMPACTIONS UND ANHÄNGE
+
+Der vorhandene SQLite-Index ist lesbar, quick_check=ok. Seine Abdeckung ist
+vom 01.11.2026: 44188 User-Texte, 307564 Antworttexte, 236 Compaction-Einträge,
+367 Obsidian-Dokumente, Git-Metadaten; 6836 unterschiedliche Transkript-Chat-IDs.
+Das ist kein vollständiges Verzeichnis aller jemals geführten Gespräche.
+
+Der vorhandene Cursor-Audit hat zusätzliche lokale Datenbanknachrichten und
+Werkzeugergebnisse lokalisiert, die im JSONL-Transkript nicht vollständig
+auftauchen. Er nennt auch Anhänge und CLI-Speicher. Diese gezielte Vertiefung
+ist wichtig, wenn eine frühere Antwort eine behauptete Ausführung beschreibt.
+Die große Cursor-Datenbank ist vorhanden; sie wurde hier nicht vollständig
+neu gelesen, gehasht oder semantisch ausgewertet. Frühere Audit-Zahlen sind
+datierte Existenz-/Strukturbelege mit ausdrücklich begrenztem Inhaltsscope.
+
+5. ARCHITEKTUR-, WIEDERHERSTELLUNGS- UND EVIDENZARCHIVE
+
+/Users/frnkhrz/Peak_Trade_Architecture_Archive
+/Users/frnkhrz/Peak_Trade_Run_Evidence
+sowie vorhandene Reports/Manifeste und Evidence in den Repositories.
+Das bestehende Archiv-Inventar erfasst 300 lesbare Architekturdokumente.
+AEV2-/AEV3-Stände, kumulative Handoffs, Epoch-/Capability-Ledger und
+Preservation-Manifeste sind Quellen für die Entwicklungsgeschichte.
+Eine Archiv-Stichprobe wurde aktuell gelesen und gegen ihren Hash abgeglichen.
+Closure-/PROVEN-Labels bleiben an ihre damaligen Behauptungen und Revisionen
+gebunden und ersetzen keine unabhängige Prüfung der dahinterliegenden Belege.
+
+6. EXTERNE BACKUPS AUF M2DATA
+
+Mount vorhanden und lesbar. Mehrere datierte Sicherungen sind sichtbar.
+Das vorhandene Inventar vergleicht vier externe Git-Sicherungen und nennt
+zwölf zusätzliche Commit-IDs gegenüber dem damaligen lokalen Bestand.
+Zwei Backup-HEADs wurden erneut direkt gelesen; sie entsprechen dem Inventar.
+Auch diese Backups sind laut datierter Inventur shallow. Sie können dennoch
+lokale Zwischenstände, zusätzliche Objekte und unversionierte Daten bewahren.
+Auf dem Quelllaufwerk wurde nichts geschrieben und kein Git-Fetch ausgeführt.
+
+7. RECOVERY AUF PeakDATARecovery
+
+Mount und gezielter Dateizugriff funktionieren. Das bestehende Inventar
+enthält 4388 unterschiedliche Markdown-Inhaltsgruppen aus vielen Duplikaten.
+Der Recovery-/Archiv-Suchindex ist intakt. Eine Original-Markdown-Datei wurde
+aktuell vom Laufwerk gelesen und stimmt mit dem gespeicherten Hash überein.
+
+Der datierte Code-Bericht enthält 809 Python-Dateien, 230 unterschiedliche
+Inhalte und 302 exakte bekannte Git-Inhaltsmatches. Eine zugehörige
+Originaldatei wurde aktuell gelesen und ihr Hash bestätigt. Recovery-Code
+wurde nicht ausgeführt. Nicht zugeordnete Dateien sind keine automatisch
+verlorenen PeakTrade-Fähigkeiten. Es lief kein neuer Recovery-Scan.
+Eine breite Verzeichnisauflistung wurde beendet; für den Abgleich sind
+vorhandene Inhaltsindizes und gezielte Originalöffnungen geeigneter.
+Die Laufwerke sind technisch beschreibbar, nicht forensisch schreibgeschützt.
+
+8. MARKTDATEN, TESTS UND LAUFZEITBELEGE
+
+/Users/frnkhrz/Peak_Trade_data_archive
+/Users/frnkhrz/Peak_Trade_Run_Evidence
+gespeicherte GET-Captures, Ledger, Checkpoints, Report- und Run-Manifeste.
+Damit lassen sich dokumentierte Aussagen teilweise gegen tatsächlich
+gespeicherte Werte prüfen und später getrennte Offline-Prüfungen aufbauen.
+Der vorangegangene ETH-Archivfall hat bereits gezeigt, dass Raw-Response,
+Request-Protokoll, Instrumentbindung und Consumer-Verarbeitung verknüpfbar
+sind. Das war kein Gesamtfunktionsnachweis oder echter historischer Trade.
+
+9. CHATGPT CLASSIC UND ORIGINÄRE KONZEPTDATEIEN
+
+Ein automatischer Vollzugriff auf sämtliche alten ChatGPT-Classic-Gespräche
+ist nicht vorhanden. Nutzbar sind tatsächlich vorhandene Exporte, PDFs,
+Anhänge, Notizen und in Cursor übernommene Texte. Ein vollständiger Classic-
+Export ist im geprüften Quellenzugang bislang nicht belegt. Inhalte ohne
+lokale Spur bleiben eine echte Grenze; sie werden nicht aus Erinnerung erfunden.
+
+WIE DER ABGLEICH VERLÄSSLICHER WERDEN KANN
+
+Die vorhandenen Obsidian-Register bleiben die gemeinsame Nachweisstruktur.
+Suchindizes erschließen die Quellen; sie werden keine zweite Systemwahrheit.
+Für einen Befund werden konkrete Belege miteinander verbunden:
+
+ursprüngliche fachliche Anforderung / spätere Owner-Korrektur
+→ zugehöriger PR und einzelne Commits
+→ tatsächlicher Code und gebundene Konfiguration vor/nach der Änderung
+→ Zustand, Datenvertrag und konkrete Producer-/Consumer-Verwendung
+→ gespeicherte Ausführung oder ausdrücklich begrenzter Offline-Test
+→ Obsidian-Eintrag mit Herkunft, Aussageumfang, Gegenbelegen und offenen Fragen.
+
+Dabei sind zwei Zeitachsen auseinanderzuhalten: Wann wurde etwas gewünscht
+oder beschlossen, und wann ist welche Umsetzung oder Wirkung tatsächlich belegt?
+Preisart, Einheit, Instrument, Zeitbezug, Zustand und Autorität gehören
+zu dieser Prüfung. Namen und gleichartige Funktionssignaturen genügen nicht.
+
+Für GitHub wäre zuerst ein vollständig paginierter PR-Katalog mit einem
+Abdeckungsregister nötig. Metadaten, Dateiänderungen und Commit-Beziehungen
+aller erreichbaren PRs werden erfasst; Suchlimits werden nicht als Ende der
+Geschichte behandelt. Auch nicht gemergte Arbeiten und Reverts bleiben sichtbar.
+Dann werden Änderungen nach fachlichen Bereichen und betroffenen Schnittstellen
+zusammengeführt und relevante Entwicklungsfolgen inhaltlich geprüft.
+So bleibt PR-für-PR-Abdeckung nachvollziehbar, ohne jedes Dokument ungeprüft
+als neue Architektur oder abgeschlossenen Funktionsnachweis zu behandeln.
+
+WAS SICH DAMIT AUSSAGEN LÄSST
+
+- Gute Ausgangslage für die Rekonstruktion von Absicht, Varianten, Umsetzung
+  und Veränderungen: unterschiedliche Quellen sind praktisch zugänglich.
+- Realistische Chance, viele heutige Widersprüche aufzuklären, weil Gespräche,
+  PRs, Code, Backups und konkrete Datenfälle gegeneinander geprüft werden können.
+- Für unauflösbare Lücken werden ausdrückliche fachliche Entscheidungen oder
+  neue, begrenzte Nachweise nötig. Ein fehlender damaliger Laufzeitbeleg kann
+  durch eine heutige Simulation nicht nachträglich zu einem alten Beweis werden.
+- Ein erstmals belastbarer Gesamtreferenzstand ist ein mögliches späteres
+  Ergebnis dieser Arbeit, kein heute bereits zugesichertes Resultat.
+
+Die entscheidende Verbesserung gegenüber manuellem Copy-Paste ist der direkte
+und reproduzierbare Quellenabgleich. Frank muss die Gesamtarchitektur nicht
+aus dem Gedächtnis liefern. Er sollte nur verbleibende echte fachliche
+Entscheidungen verständlich vorgelegt bekommen.
+
+DURCHGEFÜHRT UND GESTOPPT
+
+Nur Zugänglichkeit, bestehende Inventare und benannte Stichproben geprüft.
+Kein vollständiger GitHub-Import, kein Deepen/Unshallow, kein neuer Obsidian-
+RUN, kein Recovery-Scan, keine Wiederherstellung oder Codeintegration.
+Keine automatische Folgearbeit gestartet. source-access-probe.json hält
+aktuelle Stichproben und datierte Inventar-Aussagen getrennt fest.
+
+ASSESSMENT=RECONSTRUCTION_REALISTIC_WITH_SUBSTANTIAL_SOURCE_SUPPORT
+HISTORICAL_FULL_SYSTEM_FUNCTIONAL_BASELINE=NOT_PROVEN
+SOURCE_COMPLETENESS=NOT_PROVEN
+ALL_PRS_REVIEWED=false
+RESTORATION_PERFORMED=false
+IMPLEMENTATION_PERFORMED=false

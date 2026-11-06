@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate map currency
+      - name: Validate canonical frozen map and policy views
         run: |
           set -euo pipefail
-          python3 scripts/ops/current_system_interaction_authority_map_v1.py validate --diff-base origin/main
+          python3 scripts/ops/validate_system_atlas_v1.py

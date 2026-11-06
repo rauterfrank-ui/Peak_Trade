@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.289" timestamp="2026-11-04T02:50:20.238968+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.experiments.test_meta_association_bucket_sample_v1" name="test_many_robustness_tests_on_one_experiment_do_not_create_large_sample" time="0.005"><failure message="AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'&#10;  &#10;  - INSUFFICIENT_SAMPLE&#10;  + COMPUTED">tests/experiments/test_meta_association_bucket_sample_v1.py:22: in test_many_robustness_tests_on_one_experiment_do_not_create_large_sample
+    assert question["evidence_status"] == "INSUFFICIENT_SAMPLE"
+E   AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'
+E     
+E     - INSUFFICIENT_SAMPLE
+E     + COMPUTED</failure></testcase><testcase classname="tests.experiments.test_meta_association_bucket_sample_v1" name="test_different_metrics_do_not_share_paired_sample_counts" time="0.009"><failure message="AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'&#10;  &#10;  - INSUFFICIENT_SAMPLE&#10;  + COMPUTED">tests/experiments/test_meta_association_bucket_sample_v1.py:29: in test_different_metrics_do_not_share_paired_sample_counts
+    assert question["evidence_status"] == "INSUFFICIENT_SAMPLE"
+E   AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'
+E     
+E     - INSUFFICIENT_SAMPLE
+E     + COMPUTED</failure></testcase><testcase classname="tests.experiments.test_meta_association_bucket_sample_v1" name="test_supported_metric_cannot_rescue_sparse_other_metric" time="0.013"><failure message="AssertionError: assert ['profit_factor', 'sharpe'] == ['sharpe']&#10;  &#10;  At index 0 diff: 'profit_factor' != 'sharpe'&#10;  Left contains one more item: 'sharpe'&#10;  Use -v to get more diff">tests/experiments/test_meta_association_bucket_sample_v1.py:37: in test_supported_metric_cannot_rescue_sparse_other_metric
+    assert [finding["metric_name"] for finding in question["findings"]] == ["sharpe"]
+E   AssertionError: assert ['profit_factor', 'sharpe'] == ['sharpe']
+E     
+E     At index 0 diff: 'profit_factor' != 'sharpe'
+E     Left contains one more item: 'sharpe'
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.experiments.test_meta_association_bucket_sample_v1" name="test_supported_same_metric_still_emits_weak_association" time="0.009" /></testsuite></testsuites>

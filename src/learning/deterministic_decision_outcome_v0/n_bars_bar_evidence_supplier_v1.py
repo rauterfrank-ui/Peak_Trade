@@ -56,6 +56,88 @@ class NbarsSupplierMaterializationV1:
     bridge_translation: DdoNbarsBridgeTranslationV1
 
 
+_MEASUREMENT_CONTEXT_FIELDS_V1 = (
+    "instrument_ref",
+    "bar_spec_ref",
+    "horizon_start_time_utc",
+    "n_bars",
+    "bar_close_times_utc",
+    "bar_identity_refs",
+)
+
+
+def validate_n_bars_measurement_evidence_v1(
+    observation: Mapping[str, Any],
+    measurement: Mapping[str, Any],
+) -> None:
+    """Validate the existing measurement independently of information-set availability."""
+    if (
+        measurement.get("schema_name") != MEASUREMENT_SCHEMA_NAME
+        or measurement.get("schema_version") != MEASUREMENT_SCHEMA_VERSION
+    ):
+        raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_SCHEMA_MISMATCH")
+    if measurement.get("bridge_contract_id") != O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID:
+        raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_BRIDGE_MISMATCH")
+    if measurement.get("measurement_producer_id") != N_BARS_BAR_EVIDENCE_SUPPLIER_ID:
+        raise DdoValidationError("N_BARS_MEASUREMENT_PRODUCER_MISMATCH")
+    expected = mint_ddo_content_ref_v1(
+        prefix="ddo.outcome.measure.",
+        payload={key: value for key, value in measurement.items() if key != "actual_outcome_ref"},
+    )
+    if (
+        measurement.get("actual_outcome_ref") != expected
+        or observation.get("actual_outcome_ref") != expected
+    ):
+        raise DdoValidationError("N_BARS_MEASUREMENT_CONTENT_REF_MISMATCH:actual_outcome_ref")
+    for field in _MEASUREMENT_CONTEXT_FIELDS_V1:
+        if measurement.get(field) != observation.get(field):
+            raise DdoValidationError(f"N_BARS_MEASUREMENT_CONTEXT_MISMATCH:{field}")
+    if measurement.get("outcome_scalar_kind") != observation.get("outcome_scalar_kind"):
+        raise DdoValidationError("N_BARS_MEASUREMENT_SCALAR_KIND_MISMATCH")
+    if measurement.get("evaluation_time_utc") != observation.get("evaluation_time_utc"):
+        raise DdoValidationError("N_BARS_MEASUREMENT_EVALUATION_TIME_MISMATCH")
+
+
+def validate_n_bars_measurement_artifacts_v1(
+    observation: Mapping[str, Any],
+    measurement: Mapping[str, Any],
+    information_set: Mapping[str, Any],
+) -> None:
+    """Validate existing supplier content/joins; do not recompute or promote outcomes."""
+    validate_n_bars_measurement_evidence_v1(observation, measurement)
+    if (
+        information_set.get("schema_name") != EVAL_INFO_SET_SCHEMA_NAME
+        or information_set.get("schema_version") != EVAL_INFO_SET_SCHEMA_VERSION
+    ):
+        raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_SCHEMA_MISMATCH")
+    if information_set.get("bridge_contract_id") != O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID:
+        raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_BRIDGE_MISMATCH")
+    expected = mint_ddo_content_ref_v1(
+        prefix="ddo.eval_info_set.",
+        payload={
+            key: value
+            for key, value in information_set.items()
+            if key != "evaluation_time_information_set_ref"
+        },
+    )
+    if (
+        information_set.get("evaluation_time_information_set_ref") != expected
+        or observation.get("evaluation_time_information_set_ref") != expected
+    ):
+        raise DdoValidationError(
+            "N_BARS_MEASUREMENT_CONTENT_REF_MISMATCH:evaluation_time_information_set_ref"
+        )
+    for field in _MEASUREMENT_CONTEXT_FIELDS_V1:
+        if information_set.get(field) != observation.get(field):
+            raise DdoValidationError(f"N_BARS_MEASUREMENT_CONTEXT_MISMATCH:{field}")
+    if information_set.get("decision_event_ref") != observation.get("decision_event_ref"):
+        raise DdoValidationError("N_BARS_MEASUREMENT_DECISION_MISMATCH")
+    if information_set.get("evaluation_boundary_time_utc") != observation.get(
+        "evaluation_time_utc"
+    ):
+        raise DdoValidationError("N_BARS_MEASUREMENT_EVALUATION_TIME_MISMATCH")
+
+
 def _price_basis_for_bar(finalization_state: str) -> str:
     fin = _bar_state_token(finalization_state)
     if fin == O4_STATE_CORRECTED:
@@ -210,13 +292,7 @@ def materialize_real_outcome_horizon_supplier_input_v1(
         forbidden_reuse = None
 
     sorted_bars = tuple(sorted(bars, key=lambda b: float(b["bar_open_time"])))
-    start_bar = sorted_bars[0]
     end_bar = sorted_bars[-1]
-    start_price = float(start_bar["close"])
-    end_price = float(end_bar["close"])
-    price_basis = _resolve_price_basis(
-        str(start_bar["finalization_state"]), str(end_bar["finalization_state"])
-    )
 
     eval_artifact_body: dict[str, Any] = {
         "schema_name": EVAL_INFO_SET_SCHEMA_NAME,
@@ -239,36 +315,14 @@ def materialize_real_outcome_horizon_supplier_input_v1(
         raise DdoValidationError("DECISION_TIME_INFORMATION_SET_REUSE_FORBIDDEN")
     eval_artifact = {**eval_artifact_body, "evaluation_time_information_set_ref": eval_ref}
 
-    measurement_body: dict[str, Any] = {
-        "schema_name": MEASUREMENT_SCHEMA_NAME,
-        "schema_version": MEASUREMENT_SCHEMA_VERSION,
-        "outcome_scalar_kind": outcome_scalar_kind,
-        "instrument_ref": translation.instrument_ref,
-        "bar_spec_ref": translation.bar_spec_ref,
-        "horizon_start_time_utc": translation.horizon_start_time_utc,
-        "n_bars": translation.n_bars,
-        "bar_close_times_utc": list(bar_closes),
-        "bar_identity_refs": list(bar_ids),
-        "evaluation_time_utc": evaluation_boundary,
-        "price_basis_kind": price_basis,
-        "start_bar_identity_ref": bar_ids[0],
-        "end_bar_identity_ref": bar_ids[-1],
-        "o4_provenance": dict(translation.o4_provenance),
-        "bridge_contract_id": O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID,
-        "measurement_producer_id": N_BARS_BAR_EVIDENCE_SUPPLIER_ID,
-        **_build_measurement_fields(
-            outcome_scalar_kind=outcome_scalar_kind,
-            start_price=start_price,
-            end_price=end_price,
-            target_value=hit_target_value,
-            comparator=hit_target_comparator,
-        ),
-    }
-    actual_outcome_ref = mint_ddo_content_ref_v1(
-        prefix="ddo.outcome.measure.",
-        payload=measurement_body,
+    measurement_artifact = _materialize_canonical_n_bars_measurement_v1(
+        translation=translation,
+        bars=bars,
+        outcome_scalar_kind=outcome_scalar_kind,
+        hit_target_value=hit_target_value,
+        hit_target_comparator=hit_target_comparator,
     )
-    measurement_artifact = {**measurement_body, "actual_outcome_ref": actual_outcome_ref}
+    actual_outcome_ref = measurement_artifact["actual_outcome_ref"]
 
     supplier_payload: dict[str, Any] = {
         **supplier_core,
@@ -330,3 +384,59 @@ def run_offline_n_bars_horizon_pipeline_v1(
         "materialization": materialized,
         "evaluation_observation": observation,
     }
+
+
+def _materialize_canonical_n_bars_measurement_v1(
+    *, translation, bars, outcome_scalar_kind, hit_target_value=None, hit_target_comparator=None
+):
+    """Single canonical measurement body shared by DDO and versioned market requests."""
+    bar_closes = translation.bar_close_times_utc
+    bar_ids = translation.bar_identity_refs
+    evaluation_boundary = bar_closes[-1]
+    sorted_bars = tuple(sorted(bars, key=lambda b: float(b["bar_open_time"])))
+    start_bar, end_bar = sorted_bars[0], sorted_bars[-1]
+    start_price, end_price = float(start_bar["close"]), float(end_bar["close"])
+    price_basis = _resolve_price_basis(
+        str(start_bar["finalization_state"]), str(end_bar["finalization_state"])
+    )
+    measurement_body: dict[str, Any] = {
+        "schema_name": MEASUREMENT_SCHEMA_NAME,
+        "schema_version": MEASUREMENT_SCHEMA_VERSION,
+        "outcome_scalar_kind": outcome_scalar_kind,
+        "instrument_ref": translation.instrument_ref,
+        "bar_spec_ref": translation.bar_spec_ref,
+        "horizon_start_time_utc": translation.horizon_start_time_utc,
+        "n_bars": translation.n_bars,
+        "bar_close_times_utc": list(bar_closes),
+        "bar_identity_refs": list(bar_ids),
+        "evaluation_time_utc": evaluation_boundary,
+        "price_basis_kind": price_basis,
+        "start_bar_identity_ref": bar_ids[0],
+        "end_bar_identity_ref": bar_ids[-1],
+        "o4_provenance": dict(translation.o4_provenance),
+        "bridge_contract_id": O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID,
+        "measurement_producer_id": N_BARS_BAR_EVIDENCE_SUPPLIER_ID,
+        **_build_measurement_fields(
+            outcome_scalar_kind=outcome_scalar_kind,
+            start_price=start_price,
+            end_price=end_price,
+            target_value=hit_target_value,
+            comparator=hit_target_comparator,
+        ),
+    }
+    actual_outcome_ref = mint_ddo_content_ref_v1(
+        prefix="ddo.outcome.measure.",
+        payload=measurement_body,
+    )
+    measurement_artifact = {**measurement_body, "actual_outcome_ref": actual_outcome_ref}
+
+    return measurement_artifact
+
+
+def materialize_independent_market_horizon_v1(*, request, source_receipts, evaluated_at_utc):
+    """Offline market entry at the existing measurement owner; no DDO attribution."""
+    from .independent_market_horizon_v1 import _materialize_market_horizon_v1
+
+    return _materialize_market_horizon_v1(
+        request=request, source_receipts=source_receipts, evaluated_at_utc=evaluated_at_utc
+    )

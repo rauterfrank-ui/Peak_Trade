@@ -1,0 +1,37 @@
+---
+title: "PeakTrade · Galaxy View"
+stand: "2026-11-06"
+rolle: "Navigation im lokalen Dokumentgraph ohne Betriebsautorität"
+authoritaet: "NONE"
+---
+
+# PeakTrade in der 3D-Galaxie
+
+**Galaxy View 0.6.1** ist die vorhandene Obsidian-Erweiterung für den dreidimensionalen Notizgraph. Sie ist keine Markdownvorlage. Die vorhandene Erweiterung wurde am 06.11.2026 geladen und ihre laufende Graphansicht geprüft.
+
+## Öffnen und navigieren
+
+1. Links in Obsidian das **Orbit-Symbol** anklicken; alternativ **⌘P → „Galaxy View: Galaxy View öffnen“**.
+2. **Suchen** öffnet die Knotensuche. Mit `System Cockpit`, `SL`, `INT`, `OPT` oder dem Titel einer unten verlinkten Notiz zum passenden Knoten fliegen.
+3. Eine Notiz auswählen, ihre Nachbarn erkunden und das Dossier öffnen. **Zentrieren** führt zurück zur Übersicht. **Zwei verbinden** zeigt einen kürzesten Dokument-Linkpfad zwischen zwei Notizen.
+4. Unter **Filter** lassen sich Ordner per Klick aus- und einblenden. **Alle anzeigen** stellt die Gesamtsicht wieder her. Für den Einstieg sind die großen technischen Sammlungen „06 Komponenten“, „07 Verbindungen“, „08 Register“ und „09 Werte“ ausgeblendet; sie bleiben vollständig erhalten. „00 Systemindex“ enthält die fachlichen Dossiers und inneren Ebenen.
+
+Das Preset **Galaxy** ist ein Darstellungsstil mit Hintergrund, Licht und Physik. Es ändert keine fachlichen Verträge. Auch die Bewegung und räumliche Nähe entstehen aus dem Graphlayout.
+
+## Fachliche Einstiegspunkte
+
+- [[Start|Startseite]] · [[00 Systemindex/System Cockpit|Aktueller Stand, Reichweite und nächste offene Arbeit]].
+- [[Systemkarte.canvas|Sechs Universen und ihre Außenkanten]] · [[Systemkarte Offlineverbund.canvas|E6 und unabhängige Marktbeobachtung]]. Die Karten enthalten zusätzlich echte Datei-Karten zu den Dossiers, damit Galaxy View diese Verbindungen aus dem Canvas-JSON übernehmen kann.
+- [[00 Systemindex/Universen/SL|Selbstlernen]] · [[00 Systemindex/Universen/OPT|Optimierung]] · [[00 Systemindex/Universen/INT|Intelligenz]].
+- [[00 Systemindex/Semantische Ebenen|Semantische Ebenen]] · [[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Outputs, Admission und Writergrenzen]].
+- [[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback|Neu: Marktkontext bis zum nativen Readback]] · [[00 Systemindex/Repoabgleich/Konkrete Luecken im Repository|Offene Folgeconsumer und weitere Lücken]].
+
+## Was eine Kante bedeutet
+
+Galaxy liest aufgelöste Notizlinks und Datei-Karten innerhalb von Canvas-Dateien. Eine solche Kante bedeutet zunächst **„dieses Dokument verweist auf jenes Dokument“**. Textkarten und Canvas-Pfeile sind keine zusätzliche Laufzeitbeweisschicht.
+
+Ob tatsächlich Daten übertragen, geprüft, numerisch verbraucht oder Zustände verändert werden, steht mit Revision und Nachweisen im jeweiligen Dossier. Fachliche Absicht, vorhandener Code, statische Verbindung, beobachtete Wirkung und natürliche/wirtschaftliche/operative Abnahme bleiben getrennt. Knotengröße, Farbe, Nähe und ein kürzester Linkpfad ersetzen diese Belege nicht.
+
+Die neue Marktbeobachtung endet nach originaler Calibration und nativem Cold Readback. **Lernzustand → nächstes tatsächlich verwendetes Modell bleibt offen**; aus dem Dokumentgraph entsteht keine automatische Trainings- oder Trading-Schleife.
+
+Herstellerquelle: [Galaxy View – Bedienung und Canvas-Unterstützung](https://github.com/Longwind1984/galaxy-view). Die lokal installierte Version ist für die konkrete Bedienprüfung maßgeblich.

@@ -1,0 +1,288 @@
+"""Explicit K1 account-read profile; never relabel K1 as a dedicated read key.
+
+Uses the existing K1 OS-store/signing session and productive GET transport.
+No fallback from the dedicated observer credential contract and no POST port.
+"""
+
+from contextlib import contextmanager
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
+import json
+from urllib.parse import parse_qsl, urlsplit
+import time
+
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    FullCoreK1BoundVenueAuthHandleV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1 import (
+    open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    FullCoreProductiveReadOnlyGetTransportV1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+    BASELINE_REST_RECOVERY_ALLOWLIST,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
+    ALGO_PENDING_PATH,
+    SUPPORTED_ALGO_TYPES,
+    AccountObservationSourceError,
+    AccountObservationSourceV1,
+)
+
+K1_ACCOUNT_READ_PROFILE = "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1"
+
+
+class _AccountReadTransportV1:
+    def __init__(self, transport):
+        self._transport = transport
+        self.last_read = None
+        self.read_count = 0
+
+    def get(self, *, endpoint, auth_required, **kwargs):
+        parsed = urlsplit(endpoint)
+        pairs = parse_qsl(parsed.query, keep_blank_values=True)
+        params = dict(pairs)
+        if (
+            parsed.scheme
+            or parsed.netloc
+            or parsed.fragment
+            or len(params) != len(pairs)
+            or auth_required is not True
+        ):
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_SCOPE_INVALID")
+        path = parsed.path
+        expected = (
+            {}
+            if path
+            in {"/api/v5/account/config", "/api/v5/account/balance", "/api/v5/asset/balances"}
+            else {"instType": "SWAP"}
+        )
+        if path == ALGO_PENDING_PATH:
+            if params.get("ordType") not in SUPPORTED_ALGO_TYPES:
+                raise AccountObservationSourceError("K1_ALGO_TYPE_UNSUPPORTED")
+            expected = {"instType": "SWAP", "ordType": params["ordType"]}
+        elif path not in BASELINE_REST_RECOVERY_ALLOWLIST and path != "/api/v5/asset/balances":
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_ENDPOINT_FORBIDDEN")
+        # Fixed scope-inspection reads may omit instType to expose products
+        # outside the SWAP consumer contract. They cannot hide those products.
+        full_scope = (
+            path in {"/api/v5/account/positions", "/api/v5/trade/orders-pending"} and params == {}
+        ) or (
+            path == ALGO_PENDING_PATH
+            and params == {"ordType": params.get("ordType")}
+            and params.get("ordType") in SUPPORTED_ALGO_TYPES
+        )
+        if params != expected and not full_scope:
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_SCOPE_INVALID")
+        self.read_count += 1
+        self.last_read = {"endpoint_path": path, "method": "GET", "completion_evidence": False}
+        result = self._transport.get(endpoint=endpoint, auth_required=True, **kwargs)
+        self.last_read = {
+            "endpoint_path": path,
+            "method": result.method,
+            "http_status": result.http_status,
+            "get_performed": result.get_performed,
+            "transport_error_present": bool(result.error_class),
+            "historical_reuse": result.historical_reuse,
+        }
+        return result
+
+
+class K1AccountObservationSourceV1(AccountObservationSourceV1):
+    """Share normalization/export with the dedicated profile, retain K1 identity."""
+
+    credential_profile = K1_ACCOUNT_READ_PROFILE
+
+    def __init__(self, *, credential, transport, **kwargs):
+        if (
+            not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1)
+            or transport._handle is not credential
+        ):
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_BINDING_REQUIRED")
+        super().__init__(
+            credential=credential, transport=_AccountReadTransportV1(transport), **kwargs
+        )
+
+    def inspect_account_scope_v1(self):
+        """Seven fresh read-only queries; no amounts, UID or raw rows returned.
+
+        Audit all-position/order product coverage before relying on SWAP-only
+        consumers. This is an observation, never an account adoption or mint.
+        Other products and missing instrument types remain explicit blockers.
+        """
+        if self.closed:
+            raise AccountObservationSourceError("OBSERVATION_SESSION_CLOSED")
+        started = self.clock()
+        self("/api/v5/account/config", {})
+        positions = self._verified_get_v1("/api/v5/account/positions", {})["data"]
+        pending = self._verified_get_v1("/api/v5/trade/orders-pending", {})["data"]
+        algos = {
+            kind: len(self._verified_get_v1(ALGO_PENDING_PATH, {"ordType": kind})["data"])
+            for kind in SUPPORTED_ALGO_TYPES
+        }
+        product_counts = {}
+        for row in positions:
+            kind = row.get("instType")
+            if kind not in {"SWAP", "FUTURES", "MARGIN", "OPTION", "SPOT", "EVENTS"}:
+                kind = "UNKNOWN"
+            product_counts[kind] = product_counts.get(kind, 0) + 1
+        completed = self.clock()
+        blockers = []
+        if not 0 <= completed - started <= 5:
+            blockers.append("ACCOUNT_SCOPE_OBSERVATION_STALE")
+        if set(product_counts) - {"SWAP"}:
+            blockers.append("ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER")
+        if pending or any(algos.values()):
+            blockers.append("ACCOUNT_PENDING_CUSTODY_PRESENT")
+        return {
+            "profile": K1_ACCOUNT_READ_PROFILE,
+            "configured_account_matched": True,
+            "observed_at_unix": started,
+            "completed_at_unix": completed,
+            "position_product_counts": product_counts,
+            "ordinary_pending_count": len(pending),
+            "algo_pending_counts": algos,
+            "supported_scope_clear": not blockers,
+            "blockers": blockers,
+            "equity_reconstructed": False,
+            "capital_admitted": False,
+        }
+
+    def inspect_treasury_inputs_v1(self):
+        """Three explicit reads; observe source presence without admitting money.
+
+        Funding balances reuse the existing funding parser. Trading USDC
+        selection is an input-readiness check, never the 29P producer itself.
+        No fiat/USDT/USD substitution, conversion, transfer or reconstructed EQ.
+        """
+        if self.closed:
+            raise AccountObservationSourceError("OBSERVATION_SESSION_CLOSED")
+        from src.ops.offline_funding_balance_read_producer_v1.observation_v1 import (
+            parse_funding_account_balance_observation_v1,
+        )
+
+        started = self.clock()
+        self("/api/v5/account/config", {})
+        trading = self._verified_get_v1("/api/v5/account/balance", {})["data"]
+        funding = self._verified_get_v1("/api/v5/asset/balances", {})
+        funding_observation = parse_funding_account_balance_observation_v1(
+            body_bytes=json.dumps(funding).encode(),
+            http_status=200,
+            observed_at_utc=datetime.fromtimestamp(started, timezone.utc).isoformat(),
+            venue="okx",
+            rest_host="eea.okx.com",
+            endpoint="/api/v5/asset/balances",
+            headers={},
+            transport_class="FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+            get_performed=True,
+        )
+        completed = self.clock()
+        blockers = []
+        usdc_status = "ABSENT_NOT_ZERO"
+        target_observed = False
+
+        def numeric(raw, *, nonnegative=False):
+            try:
+                value = Decimal(raw) if isinstance(raw, str) and raw.strip() else Decimal("NaN")
+                return value.is_finite() and (not nonnegative or value >= 0)
+            except (InvalidOperation, TypeError, ValueError):
+                return False
+
+        if len(trading) != 1 or not isinstance(trading[0].get("details"), list):
+            blockers.append("TRADING_BALANCE_SCOPE_UNPROVEN")
+        else:
+            row = trading[0]
+            if row.get("uid") is not None and row["uid"] != self.expected_account_identity:
+                raise AccountObservationSourceError("OBSERVATION_ACCOUNT_MISMATCH")
+            target_observed = numeric(row.get("totalEq"))
+            details = row["details"]
+            if any(not isinstance(d, dict) for d in details):
+                blockers.append("TRADING_CURRENCY_ROWS_INVALID")
+            else:
+                rows = [d for d in details if d.get("ccy") == "USDC"]
+                if len(rows) > 1:
+                    usdc_status = "DUPLICATE_UNPROVEN"
+                elif len(rows) == 1:
+                    usdc_status = (
+                        "OBSERVED_NUMERIC"
+                        if numeric(rows[0].get("availEq"), nonnegative=True)
+                        else "NUMERIC_UNPROVEN"
+                    )
+        if usdc_status != "OBSERVED_NUMERIC":
+            blockers.append("TRADING_USDC_AVAILABLE_MARGIN_NOT_OBSERVED")
+        if not 0 <= completed - started <= 5:
+            blockers.append("TREASURY_INPUT_OBSERVATION_STALE")
+        return {
+            "profile": K1_ACCOUNT_READ_PROFILE,
+            "configured_account_matched": True,
+            "observed_at_unix": started,
+            "completed_at_unix": completed,
+            "trading_usdc_avail_eq_status": usdc_status,
+            "funding_usdc_row_status": funding_observation.usdc_row_status,
+            "funding_observation_class": funding_observation.observation_class,
+            "account_equity_target_observed": target_observed,
+            "account_equity_is_reconciliation_target_only": True,
+            "inputs_ready": not blockers,
+            "blockers": blockers,
+            "equity_reconstructed": False,
+            "capital_admitted": False,
+            "currency_substitution_or_transfer": False,
+        }
+
+    def _validate_credential_v1(self, credential):
+        if (
+            not isinstance(credential, FullCoreK1BoundVenueAuthHandleV1)
+            or credential.bound is not True
+            or credential.can_sign is not True
+            or credential.material_loaded is not False
+        ):
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_INVALID")
+
+
+@contextmanager
+def open_k1_account_observation_source_v1(
+    *,
+    expected_account_identity,
+    session_id,
+    max_request_count,
+    k1_lookup_backend=None,
+    clock=time.time,
+):
+    """Explicit K1 source selection, bounded by its existing acquisition gates.
+
+    Expected account is independently configured, never inferred from a GET.
+    This API does not consume the dedicated observer policy/SecretRef. Opening
+    it with the real backend is a real credential operation, not a dry run.
+    """
+    if (
+        not isinstance(expected_account_identity, str)
+        or not expected_account_identity
+        or expected_account_identity != expected_account_identity.strip()
+    ):
+        raise AccountObservationSourceError("OBSERVATION_EXPECTED_ACCOUNT_REQUIRED")
+    if not isinstance(session_id, str) or not session_id.strip():
+        raise AccountObservationSourceError("OBSERVATION_SESSION_REQUIRED")
+    if (
+        isinstance(max_request_count, bool)
+        or not isinstance(max_request_count, int)
+        or max_request_count < 10
+    ):
+        raise AccountObservationSourceError("K1_ACCOUNT_BASELINE_QUOTA_REQUIRED")
+    with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+        max_request_count=max_request_count, k1_lookup_backend=k1_lookup_backend
+    ) as (transport, _proof):
+        source = K1AccountObservationSourceV1(
+            credential=transport._handle,
+            transport=transport,
+            expected_account_identity=expected_account_identity,
+            session_id=session_id,
+            clock=clock,
+        )
+        try:
+            yield source
+        finally:
+            source.close()
+            transport.payloads_by_path.clear()
+            transport._cache.clear()
+            transport._handle = None

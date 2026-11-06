@@ -589,7 +589,11 @@ def build_scope_decision_trace_record_v1(
     thresholds = scope_ev.evaluated_thresholds
     mark = float(binding.current_price)
     anchor = float(binding.trailing_anchor)
-    effective_band = float(intermediate.runtime_scope_state_before.current_hysteresis_band)
+    consumed_magnitude = intermediate.effective_scope_magnitude
+    effective_band = float(
+        consumed_magnitude if consumed_magnitude is not None
+        else intermediate.runtime_scope_state_before.current_hysteresis_band
+    )
     raw_distance = (
         float(layer_c_dynamic_scope_magnitude)
         if layer_c_dynamic_scope_magnitude is not None
@@ -633,6 +637,7 @@ def build_scope_decision_trace_record_v1(
         "trailing_anchor_used": float(intermediate.trailing_anchor_used),
         "raw_scope_distance": raw_distance,
         "effective_hysteresis_band": effective_band,
+        "scope_distance_mode": intermediate.runtime_scope_state_after.scope_distance_mode,
         "layer_c_up_distance": layer_c_up_distance,
         "layer_c_adverse_exit_distance": layer_c_adverse_exit_distance,
         "layer_c_reversal_distance": layer_c_reversal_distance,

@@ -1,0 +1,167 @@
+# Beziehungen und Kausalität: Rekonstruktionsdurchgang 01.11.2026
+
+## Ergebnis und Beweisgrenze
+
+Dieser Durchgang erschließt vorhandene Beziehungsbehauptungen und prüft ausgewählte zusammenhängende Funktionskörper neu. Er ersetzt keine kanonischen Register. Ganze Systemsemantik und echte Laufzeit bleiben unbewiesen. Alle fachlichen Befunde sind unten an konkrete Quellrevisionen gebunden.
+
+## Historische Beziehungsbehauptungen
+
+Aus 50 der 300 Archivdateien wurden 2243 Vorkommen expliziter Beziehungsdatensätze extrahiert. Darunter sind 1873 unterschiedliche serialisierte Records und 212 unterschiedliche vorhandene IDs. Kopien, Revisionen und Teilbefunde sind enthalten; dies sind keine gezählten, neu bewiesenen Kausalketten. Freitext-Beziehungen und andere Record-Formate sind nicht vollständig erfasst.
+
+`historical-relationship-claims.jsonl` erhält Quelle, Datei-Prüfsumme, JSON-Pointer/JSONL-Zeile, Original-ID, Revisionskontext soweit vorhanden und den unveränderten Datensatz. PROVEN-, EXECUTABLE- und CURRENT-Labels werden als historische Aussagen erhalten, nicht als neue Verifikation übernommen.
+
+## Neu gelesene Verbindungen
+
+Vergleichspin: `5d1c838c15369507c5247834db4dd0df25592169`. Im ersten Teil wurden 14 Quellen mit Blob/SHA256 gesichert, 13 davon bytegleich zum älteren Archivpin `f3b33f937fa373b162f6b00dfcb95b6e9bcfea90`. Bytegleichheit überträgt keine alten Laufzeitbehauptungen.
+
+### N01: Pending Outcome → Export → Research-Ack → CLOSED
+
+Nach Horizon-, Evaluation- und Ingest-Erfolg exportiert try_close_pending_outcome_v1 den Learning-State; nur akzeptierter Offline-Research-Ack führt im gelesenen Körper zum CLOSED-Record und persist_record_v1.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: PERSISTENT_STATE_TRANSITION.
+Grenze: Vollständige Implementierung der aufgerufenen Horizon-/Ingest-/Store-Owner und echte Laufzeit noch nicht bewiesen. CLOSED heißt hier abgeschlossener Outcome-Vorgang, nicht produktiv angewandtes Lernen.
+- `src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/resolver_v1.py`: Zeile 417–571; Blob `a4e98ab560e2d500c712c4ea72d98704a1de5eb2`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`: Zeile 40–112; Blob `adceacfa466e76443744fccf5ad6734a610b4437`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/experiments/canonical_optimization_universe_learning_input_v1.py`: Zeile 76–151; Blob `064656a3d8f3a1ff5d3969d78cd8b140834db227`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+Vorhandener Archivbezug: `C010-CLOSURE`. Keine Mutation seines Status.
+
+### N02: Produktiver DDO-Export endet vor G2-Primary-Ingress
+
+evaluate_productive_ddo_export_for_g2_primary_evidence_ingress_v1 liefert für diese Klasse g2_ingress_admitted=False, bridge_implemented=False und fail_closed=True; Entscheidungsconfig hält Case B und fehlende Bridge-Freigabe fest.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: EXPLICIT_REJECTION.
+Grenze: Dies ist die implementierte Bewertung dieses Übergangs, kein Beweis, dass der Evaluator auf jedem Host erreicht wird. Über diese Grenze hinaus sind andere legitimierte Quellen separat zu prüfen.
+- `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`: Zeile 154–179; Blob `5ccdb355c7f30a3027883d5cc29dbe66ceaa60be`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json`: Zeilen 4; Blob `a0ad5d4f10f5b58a0a0c26417856f171f05a2cd6`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+
+### N03: Andere Quellklasse: G2 → Offline M4–M8
+
+Der Continuation-Körper ruft Primary-Projection, Binding, Learning-Validator und M4–M8-Loop auf. Die dort gebaute Plane verwendet synthetischen Offline-Markt, feste Identitätstemplates sowie Champion-/Challenger-Scores 1.0 und 1.05.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: OFFLINE_EVIDENCE_CONTINUATION.
+Grenze: PROVEN_REAL_MECHANICAL_PATH im Quelltext ist kein unabhängiger Laufzeitnachweis. Original-Primary-Archiv, Validierung aller Vorbedingungen und wirtschaftliche Eignung der Template-Werte bleiben offen.
+- `src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`: Zeile 209–363; Blob `050b97e8e8bc668e8ebd0566d5af7a8b35b42e7d`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`: Zeile 165–206; Blob `050b97e8e8bc668e8ebd0566d5af7a8b35b42e7d`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/experiments/canonical_m4_m8_evidence_return_loop_v1.py`: Zeile 124–176; Blob `c3cf6b31a89aa6414950b5165e90d2ac88e0ce97`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+
+### N04: Mehrzyklus-Feedback als weitergetragene Evidenz
+
+run_deterministic_multi_cycle_offline_replay_v1 reicht vorheriges Feedback an den nächsten Cycle. _extract_cycle_n_plus_1_semantics extrahiert Dispositionen; run_offline_evidence_cycle_v1 legt diese in cycle_body ab. Der Plane-Aufruf bekommt den separat gelieferten plane_request.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: METADATA_FEEDBACK.
+Grenze: In diesen Körpern ist kein Ableiten neuer Plane-Parameter aus prior_feedback belegt. Das widerlegt nicht andere adaptive Pfade. Keine automatische produktive Lernwirkung aus dem Wort Loop ableiten.
+- `src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py`: Zeile 198–279; Blob `5a8bf7bfe42f8e3461cd9aa89fd75a2a8b645cdd`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py`: Zeile 108–195; Blob `5a8bf7bfe42f8e3461cd9aa89fd75a2a8b645cdd`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py`: Zeile 296–315; Blob `5a8bf7bfe42f8e3461cd9aa89fd75a2a8b645cdd`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+
+### N05: GGE → Clamp → dynamischer Scope
+
+GGE berechnet Volatilität × Mark als positive endliche Preisdistanz. update_dynamic_boundaries begrenzt sie über clamp_band_width und setzt Anker sowie Up-/Downscope-Grenzen; ungültige Inputs, CHOP oder fehlende Volatilität behalten den Zustand bei.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: VALUE_TO_STATE.
+Grenze: Caller liefert hier leere Instrument-ID an GGE; Herkunft/Zeitbezug des inneren Zahlenwerts ist über den umgebenden Pfad zu belegen. Kein Positionsgrößen- oder Entry-Anker-Producer aus GGE-Namen ableiten.
+- `src/trading/master_v2/golden_geometry_engine_v1.py`: Zeile 106–144; Blob `7fed76f7d260685475ae2eb1054c490b8a061ec3`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/trading/master_v2/double_play_state.py`: Zeile 208–213; Blob `774f824fe78fd68ec0acd00b1656afff2b9f8c66`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/trading/master_v2/double_play_state.py`: Zeile 216–273; Blob `774f824fe78fd68ec0acd00b1656afff2b9f8c66`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+Vorhandener Archivbezug: `C010-GGE`. Keine Mutation seines Status.
+
+### N06: Scope-Distanz → Event-Generator im Replay
+
+Der integrierte Replay übergibt das aktualisierte Band an resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1 und dessen Up-/Adverse-/Reversal-Distanzen an ScopeEventGeneratorInputV1; anschließend wird generate_deterministic_scope_event aufgerufen.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: DECISION_INPUT.
+Grenze: Belegt der gelesene Zweig, keine gleichzeitige Wirkung aller alternativen Layer-C/L6-Pfade. Event-Generator-Körper und Vorrangbedingungen sind nächste getrennte Prüfung.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`: Zeilen 1725; Blob `9cb35e5c966049010a5c95647e8d24115026f229`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`: Zeilen 1740; Blob `9cb35e5c966049010a5c95647e8d24115026f229`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`: Zeilen 1780; Blob `9cb35e5c966049010a5c95647e8d24115026f229`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+
+### N07: Cycle → forensischer Lineage-Recorder
+
+Der Runtime-Cycle ruft append_intelligence_lineage_observability_from_productive_cycle_v1 auf, nutzt dessen Rückgabe hier nicht. Ohne aktive Forensic-Session liefert der Recorder None; sonst baut er Referenzslots und versucht JSONL zu schreiben.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: OBSERVABILITY_ONLY.
+Grenze: Vollständigkeit der Slots und extern beobachtete Wirkung sind nicht belegt. Ergebnisflags wie decision_unchanged sind aufgezeichnete Aussagen, keine unabhängige Vergleichsprüfung.
+- `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`: Zeilen 1152; Blob `d7f0465015fc54e57f79dec28b6b8dd929d41052`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py`: Zeile 196–229; Blob `aae4a54c38f43f34d9febc51796007e2dee0da1c`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py`: Zeile 61–193; Blob `aae4a54c38f43f34d9febc51796007e2dee0da1c`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+Vorhandener Archivbezug: `OF-010-GHV-LINEAGE`. Keine Mutation seines Status.
+
+### N08: Negativer GHV-Artefaktcheck wird als PRESENT dargestellt
+
+prove_ghv_reference_artifacts_v1 liefert artifacts_ok als Boolean. _ghv_reference_bundle_v1 wandelt ihn mit str in Text um; der Record-Builder prüft bool dieses Texts. Deshalb wird auch False → "False" → True und der Referenzslot PRESENT.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: STATIC_PRESENTATION_DEFECT.
+Grenze: Betrifft den forensischen Präsenzstatus dieses Record-Builders; hier kein Nachweis einer Änderung von Handelsentscheidungen. Prüfer nicht ausgeführt. Das konkret referenzierte Report-Artefakt fehlt beim momentanen is_file-Check in beiden lokalen Checkouts.
+- `src/governance/ghv_referenced_intelligence_superstructure_ghv_reference_manifest_v1.py`: Zeile 61–89; Blob `027a6546e31a8879db1a87327e59dfd836290a8a`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py`: Zeile 52–58; Blob `aae4a54c38f43f34d9febc51796007e2dee0da1c`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+- `src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py`: Zeilen 123; Blob `aae4a54c38f43f34d9febc51796007e2dee0da1c`; Revision `5d1c838c15369507c5247834db4dd0df25592169`.
+
+### N09: Historischer Ursprungsanspruch an Shallow-Grenze
+
+Ältere Relationship-Records nennen 2dba1355 als root_commit/SAME_BLOB_SINCE_REPOSITORY_ROOT. Das lokale Commit-Objekt enthält tatsächlich parent 9cac7077475e23340d9ddc7ed085b6bfb46d4eb4. Frühere erreichbare Teilhistorien und die flach abgeschnittene main-Historie müssen getrennt behandelt werden.
+
+Belegart: STATIC_BODY_AT_REVISION; Wirkungsklasse: HISTORICAL_PROOF_CORRECTION.
+Grenze: Dies korrigiert die Beweisreichweite des Ursprungsclaims, nicht automatisch jede Unverändertheitsbehauptung oder jeden Funktionsbefund. Vollständige Elternhistorie bleibt offen.
+
+## Zusammenhang der Befunde
+
+Es existieren unterschiedliche Arten von Kreisläufen und Übergängen. Ein CLOSED-Outcome-Record, akzeptierter Offline-Input, ein M4–M8-Evidence-Loop, weitergetragene Feedback-Metadaten und eine geänderte Trading-Policy sind unterschiedliche Sachverhalte. Die Case-B-Grenze ist im gelesenen Code eine ausdrückliche Ablehnung dieser Quellklasse und nicht einfach eine vergessene Importkante. Ein anderes gewünschtes Endsystem wäre eine spätere Architekturentscheidung, nicht Ergebnis einer automatischen Wiederherstellung.
+
+Die geometrische Kette zeigt dagegen eine konkrete Wertwirkung: Magnitude wird begrenzt, verändert Scope-Zustand und liefert Distanzen an einen Event-Aufruf. Welche Ereigniszweige und Handelsentscheidungen dadurch auf welchem Host tatsächlich beeinflusst werden, wird weiter getrennt untersucht.
+
+## Nächste offene Quellenfragen
+
+1. Beim Scope: Event-Generator, Layer-C-Distanzabbildung, Prioritätsregeln und persistierte Confirmation bis zu konkreten Policy-Consumern verbinden.
+2. Beim Learning: legitime Primary-Projektion und deren Originaldaten prüfen; metadatengetragene Rückkopplung gegen tatsächliche Parameter-/Modelländerung abgrenzen. Andere ältere Promotion-/Apply-Pfade getrennt untersuchen.
+3. Beim Outcome: Horizon-/Evaluation-/Ingest-Owner, Zurechnung und Zustandsgrenzen inklusive Cross-Session-Persistenz belegen.
+4. Die vorhandenen historischen Beziehungsdatensätze revisionsweise mit Quellen vergleichen. Fehlender Pfad oder offene Originalabsicht bleibt eine dokumentierte Lücke, kein Anlass zum Erfinden.
+5. Den gefundenen Darstellungsfehler getrennt für eine spätere Reparatur vormerken. In diesem Auftrag bleibt der Produktcode unverändert.
+
+## Dateien
+
+- `current-path-source-evidence.json`: vollständige Quellen am Pin, Hashes und Symbolfenster.
+- `fresh-static-findings.json`: zwölf Befunde mit konkreten Belegankern und Grenzen.
+- `historical-relationship-claims.jsonl`: rein navigierbarer Auszug alter Beziehungsbehauptungen.
+- `history-anchors.json`: erreichbare Hinzufügungskandidaten, nicht zertifizierte Ursprünge.
+- `shallow-origin-countercheck.json`: Elternbezug des fälschlich pauschal als Ursprung verwendeten Commits.
+- `verification.json`: Integrität und begrenzte Konsistenzprüfungen.
+
+Keine Repo-/Vault-/Archivmutation, keine Runtime- oder Exchange-Ausführung und keine Fehlerkorrektur durchgeführt.
+
+
+## Fortsetzung: Scope bis zum Sizing und getrennte Checkout-Varianten
+
+### N10: Scope-Event: Gates, Epochen und paralleles Exit-Signal
+
+Event-Generator blockiert unfinalisierte/untrusted Daten und ungültigen Scope. Doppelte Epoche erhöht den Confirmation-Zähler nicht; bei Sprung wird neu begonnen. Directional Scope-Kandidaten haben Auswahlvorrang, während ADVERSE_EXIT in matched_conditions separat sichtbar bleibt.
+
+Grenze: ScopeEvent und Exit-Signal sind unterschiedliche Dimensionen. Ein gewähltes DOWNSCOPE-Ereignis beweist nicht das Fehlen eines Exit-Hinweises. Nachfolgende Policy-Verwendung aller matched_conditions bleibt separat zu lesen.
+
+- `src/trading/master_v2/deterministic_scope_event_generator_v1.py`, Zeilen 637–797, Blob `7694fadec727727912e3fa33042742b9454919ee` am Vergleichspin.
+- `src/trading/master_v2/deterministic_scope_event_generator_v1.py`, Zeilen 256–287, Blob `7694fadec727727912e3fa33042742b9454919ee` am Vergleichspin.
+- `src/trading/master_v2/deterministic_scope_event_generator_v1.py`, Zeilen 439–457, Blob `7694fadec727727912e3fa33042742b9454919ee` am Vergleichspin.
+- `src/trading/master_v2/deterministic_scope_event_generator_v1.py`, Zeilen 381–416, Blob `7694fadec727727912e3fa33042742b9454919ee` am Vergleichspin.
+
+### N11: Gleiche Ratio, unterschiedliche geometrische Ausgangsgröße
+
+Layer-C bildet D auf Up=1.0D, Adverse=0.4D und Reversal=0.6D ab. Der gelesene zustandsbehaftete Replay-Zweig nimmt current_hysteresis_band; sein Boundary-Sizing bekommt dieselbe cycle_adverse_exit_distance. Der spätere ENTER-29P-Join berechnet Adverse dagegen frisch aus dem kanonischen Market-Context.
+
+Grenze: Zustandsband und frische GGE-Magnitude sind nicht ohne Weiteres identisch: Clamp, CHOP, bestehender Zustand und Preisquelle können relevant sein. Replay übergibt inp.current_price an update_dynamic_boundaries, der Fresh-Pfad nutzt CMC-Mark. Ob zulässige Host-Invarianten Gleichheit erzwingen oder eine Abweichung beabsichtigt ist, bleibt offen. Kein pauschaler Rechenfehler behauptet.
+
+- `src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py`, Zeilen 63–94, Blob `60e7cbe7ef8879be810d945075209b1b1317ac6c` am Vergleichspin.
+- `src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py`, Zeilen 127–157, Blob `60e7cbe7ef8879be810d945075209b1b1317ac6c` am Vergleichspin.
+- `src/ops/derive_scope_event_distances_v1/derive_v1.py`, Zeilen 30–50, Blob `1739847628bbaddff2d5fb98ebe7263099a496dd` am Vergleichspin.
+- `src/ops/derive_scope_event_distances_v1/constants_v1.py`, Zeilen 10, Blob `cccfaeb150919cd1e1ea940a807252a0b21a2eca` am Vergleichspin.
+- `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, Zeilen 343–359, Blob `48a4a6b67f149f12d6df9a962f9899382ec6dd31` am Vergleichspin.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, Zeilen 1740, Blob `9cb35e5c966049010a5c95647e8d24115026f229` am Vergleichspin.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, Zeilen 1768, 2112, 2126, Blob `9cb35e5c966049010a5c95647e8d24115026f229` am Vergleichspin.
+
+### N12: Zwei lokale Checkout-Stände bleiben getrennte Varianten
+
+Der Runtime-Cycle im Hauptcheckout weicht vom Vergleichspin ab und ist bytegleich zu seinem eigenen HEAD. Er enthält Simulated-Economics-CRS-Wiring und einen anderen Positionszustandszweig. Daher sind Befunde am Pin nicht still auf diesen Arbeitsstand zu übertragen.
+
+Grenze: Keine Änderung durch diese Untersuchung. Kein autoritativer/produktiver Stand aus Ordnernamen oder HEAD abgeleitet. Der separate CURRENT-Checkout wird in checkout-variant-check.json unabhängig erfasst.
+
+- `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, Zeilen 843, 849, Blob `d7f0465015fc54e57f79dec28b6b8dd929d41052` am Vergleichspin.
+
+Aktuell 19 gesicherte Quellen und 12 neue statische Befunde. 18 Quellen sind im Hauptcheckout bytegleich zum Pin; 19 im separaten CURRENT-Checkout. Die vollständigen Einzelvergleiche stehen in current-path-source-evidence.json.

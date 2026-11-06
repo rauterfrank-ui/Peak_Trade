@@ -1,0 +1,339 @@
+{
+  "fixture_learning_evidence": {
+    "actual_outcome_ref": "ddo.outcome.measure.7ff53ec03ac93aa4380602aebca6383f0ee0c7203b15eed4268f9d72a64c1783",
+    "artifact_model_version": null,
+    "authority_owner": "UNKNOWN",
+    "can_auto_promote": false,
+    "can_deploy": false,
+    "can_mutate_core": false,
+    "can_mutate_risk": false,
+    "can_mutate_safety": false,
+    "causal_parent_ids": [
+      "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+      "dec-chain-0001"
+    ],
+    "code_sha": "UNKNOWN",
+    "config_hash": "UNKNOWN",
+    "content_hash": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+    "corrects_id": null,
+    "correlation_id": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+    "cycle_id": null,
+    "decision_event_ref": "dec-chain-0001",
+    "decision_score_label": "REPLAY_CLASSIFICATION_MATCH",
+    "economic_score_label": "LABEL_EXPORT",
+    "environment_fingerprint": null,
+    "evaluation_bundle_fingerprint": "b4d240bd5e9ef1da55698927371b134ba13b2d51e34aa6133665a3afb06592d1",
+    "evaluation_horizon": "N_BARS",
+    "event_time_utc": "2026-09-01T14:00:00Z",
+    "evidence_class": "LEARNING_EVIDENCE",
+    "evidence_hash": "b4d240bd5e9ef1da55698927371b134ba13b2d51e34aa6133665a3afb06592d1",
+    "evidence_pool_class": "OBSERVED_PRODUCTIVE_PRE_EXTERNAL",
+    "evidence_source_refs": [
+      "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+      "out-chain-0001",
+      "attr-chain-0001",
+      "cf-chain-0001"
+    ],
+    "observed_at_utc": "2026-09-01T14:00:00Z",
+    "outcome_evidence_provenance": {
+      "accounting_source": "SIMULATED_ECONOMICS_PARALLEL",
+      "cycle_id": null,
+      "ddo_ledger_environment": "UNKNOWN",
+      "decision_event_ref": "dec-chain-0001",
+      "decision_source": "PRODUCTIVE_MV2_DP_PRE_EXTERNAL",
+      "decision_timestamp_utc": "2026-09-01T12:00:00Z",
+      "evaluation_horizon": "N_BARS",
+      "evaluation_timestamp_utc": "2026-09-01T14:00:00Z",
+      "execution_mode_label": "NO_EXECUTION",
+      "external_capital_flow_class": "NONE",
+      "fill_source_type": "NO_FILL",
+      "instrument_id": "UNKNOWN",
+      "lineage_digest": "UNKNOWN",
+      "market_observation_source": "INJECTED_C1",
+      "market_timestamp_utc": null,
+      "order_environment_label": "UNKNOWN",
+      "outcome_realization_kind": "OBSERVATION_ONLY",
+      "outcome_scalar_kind": "LOG_RETURN",
+      "outcome_semantic_class": "OBSERVED_PRODUCTIVE_PRE_EXTERNAL",
+      "outcome_source": "N_BARS_HORIZON_ENGINE",
+      "position_truth_source": "RECONCILIATION_ADMISSION",
+      "producer_id": "peak_trade.learning.ddo.evaluation_engine_v0",
+      "producer_version": "evaluation_engine_v0",
+      "provenance_digest": "ffb6c2cadcabf12468b10156cc826d4c277350d2aabc0ac2140d406b824a7ec6",
+      "provenance_status": "KNOWN",
+      "provenance_version": "1",
+      "reconciliation_source": "PRODUCTIVE_RECON",
+      "schema_name": "outcome_evidence_provenance",
+      "schema_version": "outcome_evidence_provenance_v1",
+      "trading_epoch": "UNKNOWN",
+      "venue_native_id": "UNKNOWN"
+    },
+    "outcome_evidence_provenance_digest": "ffb6c2cadcabf12468b10156cc826d4c277350d2aabc0ac2140d406b824a7ec6",
+    "outcome_scalar_kind": "LOG_RETURN",
+    "outcome_semantic_class": "OBSERVED_PRODUCTIVE_PRE_EXTERNAL",
+    "producer_id": "peak_trade.learning.ddo.learning_evidence_export_v1",
+    "producer_version": null,
+    "productive_authority": "NONE",
+    "record_id": "ddo.lev.c0108ddd772048cbcf37aaa2ba433d256d450844",
+    "runtime_reachability": false,
+    "safety_score_label": "SAFETY_NOT_APPLICABLE",
+    "schema_name": "learning_evidence_record",
+    "schema_version": "learning_evidence_record_v1",
+    "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+    "state_scope_id": "ddo.lscope.export-test",
+    "state_version": 1,
+    "supersedes_id": null,
+    "universe_class": "SELF_LEARNING_UNIVERSE"
+  },
+  "plane_result": {
+    "authorized_productive_surfaces": 0,
+    "chain": {
+      "challenger_evaluation": {
+        "autonomous_champion_swap": false,
+        "challenger_experiment_ids": [
+          "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+        ],
+        "challenger_results": [
+          {
+            "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "disposition": "CHALLENGER_RESEARCH_PREFERRED",
+            "role": "CHALLENGER",
+            "score": 1.05
+          }
+        ],
+        "champion_challenger_can_arm": false,
+        "champion_challenger_can_authorize_canary": false,
+        "champion_challenger_can_create_confirm_token": false,
+        "champion_challenger_can_enable": false,
+        "champion_challenger_can_fund": false,
+        "champion_challenger_can_increase_leverage": false,
+        "champion_challenger_can_increase_risk": false,
+        "champion_challenger_can_mutate_live_config": false,
+        "champion_challenger_can_promote": false,
+        "champion_challenger_can_promote_to_live": false,
+        "champion_challenger_can_submit_order": false,
+        "champion_challenger_can_use_confirm_token": false,
+        "champion_challenger_can_write_live_config": false,
+        "champion_challenger_domain": "peak_trade.canonical_champion_challenger.v1",
+        "champion_challenger_has_runtime_authority": false,
+        "champion_challenger_present": true,
+        "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+        "champion_state": {
+          "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+          "mutated": false,
+          "swapped": false
+        },
+        "comparable_challenger_experiment_ids": [
+          "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+        ],
+        "comparison_contract_version": "canonical_comparison_ssot_v1",
+        "comparison_ssot_version": "canonical_comparison_ssot_v1",
+        "completeness": "COMPLETE",
+        "created_at": "2026-09-19T12:00:00Z",
+        "digest_algorithm": "sha256",
+        "evaluation_identity": "166efa5fd1b2c87f98de1eb0ef594f6acdf3d91dcad3ccb4a40cf771277ff72d",
+        "evaluation_policy_version": "canonical_champion_challenger_policy_v1",
+        "evidence_refs": [
+          {
+            "digest": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+            "kind": "COMPARISON_RESULT",
+            "ref": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9"
+          },
+          {
+            "digest": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+            "kind": "EXPERIMENT_RECORD",
+            "ref": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+          }
+        ],
+        "integrity": {
+          "content_sha256": "96ab0877fd36a36b15deb5535bc3e14af44767a6bc1f097991ddb5bb76d68408"
+        },
+        "learning_may_autonomously_replace_core_logic": false,
+        "metric_definitions": "canonical_robustness_metrics_v1",
+        "overall_status": "EVALUATION_COMPLETE",
+        "pair_results": [
+          {
+            "challenger_experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "champion_experiment_id": "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0",
+            "comparison_identity": "4d7f995ac9405d7d4f4eb137d89f5ad657c1a18ef6a6784069c77cc6917441ba",
+            "overall_comparability": "COMPARABLE",
+            "rejection_reasons": []
+          }
+        ],
+        "promotion_authority": "NONE",
+        "ranked_experiment_ids": [
+          "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+          "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+        ],
+        "ranking": {
+          "ranked_experiment_ids": [
+            "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+            "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0"
+          ],
+          "ranking_identity": "e0e7b1adfd83934ba518034a86ad8283ebc0cc1ba614f9fbeb9e2ca44835893c",
+          "ranking_status": "RANKED",
+          "rejection_reasons": []
+        },
+        "research_recommendation": "CHALLENGER_RESEARCH_PREFERRED",
+        "robustness_suite_version": "canonical_robustness_suite_v1",
+        "runtime_authority_impact": "NONE",
+        "schema_version": "canonical_champion_challenger_v1",
+        "score_metric": "explicit_research_score",
+        "scores": {
+          "56dea4b59eeea70c541dcd2776f281f1f1f2be87e3ce1df9d9e6d05bd9b909f0": 1.0,
+          "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9": 1.05
+        },
+        "self_learning_self_authorizing_separation": true
+      },
+      "failure_evidence": [
+        {
+          "evidence_only": true,
+          "kind": "SEARCH_FAILURE_SIGNAL",
+          "payload": {
+            "failure_classes": [],
+            "known_failure": false,
+            "known_failure_class": false,
+            "known_reality_gap_failure": false,
+            "known_rejected_parameter_region": false,
+            "known_robustness_failure": false,
+            "matching_failure_record_ids": [],
+            "matching_reality_gap_record_ids": [],
+            "reason": "no known failure"
+          }
+        }
+      ],
+      "failure_evidence_count": 1,
+      "learning_input_validation": {
+        "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+        "external_effect_authorized": false,
+        "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+        "optimizable_envelope_defined": false,
+        "optimization_productive_authority": "NONE",
+        "promotion_authority": "NONE",
+        "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+        "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de",
+        "runtime_authority_impact": "NONE",
+        "schema_version": "canonical_optimization_universe_learning_input_v1",
+        "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+        "state_scope_id": "ddo.lscope.export-test",
+        "state_version": 1,
+        "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT"
+      },
+      "offline_research_context": {
+        "authorized_productive_surfaces": 0,
+        "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+        "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc",
+        "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+        "envelope_not_productive_authorization": true,
+        "envelope_resolution": {
+          "authorized_surface_count": 3,
+          "domain": "peak_trade.canonical_optimizable_envelope.v1",
+          "envelope_identity": null,
+          "external_effect_authorized": false,
+          "learning_productive_authority": "NONE",
+          "optimization_productive_authority": "NONE",
+          "owner_map_implies_authorization": false,
+          "owner_map_provenance_ref": null,
+          "reason": "UNREGISTERED_SURFACE",
+          "resolution": "NOT_AUTHORIZED",
+          "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e",
+          "schema_version": "canonical_optimizable_envelope_v1",
+          "surface_id": "offline.synthetic.research.m4.v1",
+          "zero_authorized_productive_targets": false
+        },
+        "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+        "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+        "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+        "synthetic_surface_id": "offline.synthetic.research.m4.v1"
+      },
+      "proposal": {
+        "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+        "challenger_evaluation_disposition": null,
+        "disposition": "PROPOSAL_ONLY",
+        "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+        "external_effect_authorized": false,
+        "identity_digest": "6420255d097c8100bfe79ab6fbf31fb5099f499452ad3d06ce9ccb2b2b1bad7f",
+        "productive_config_mutation": false,
+        "promotion_authority": "NONE",
+        "proposal_not_authority": true,
+        "robustness_suite_identity": "b0eb4afffb166f058880cb3ac87e9950f530d9367a430c908b4bb0988cd24eca",
+        "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+        "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9"
+      },
+      "robustness_evidence_digest": {
+        "content_sha256": "7241f6f9f7676cee43eed28a04d2006c4c18b8aa58a7bddc05882fe24cca7eda"
+      },
+      "search_identity": "454944cd94dd317839427acb50be6679edfa741a91fdcc122cb8b42411032a6b",
+      "selected_candidate": {
+        "candidate_ref": "9aee5773af051248495c74ea69ef4f585b4d76051aef6b5f5d5f419c432adc16",
+        "disposition": "PROPOSAL_ONLY",
+        "experiment_id": "95bdcba8a03ed3623cd9fdeee70eb91cfd6c0835ddf9fbcbeed8b91959fb15c9",
+        "parameter_region": {
+          "fast": 15
+        },
+        "status": "PROPOSED"
+      },
+      "template_identity_digest": "afda7b280f05df53715c1ee51df18517ad0f2c5214f224ac7660b90ca4d32cd9"
+    },
+    "champion_promotion_authority": "NONE",
+    "decision_config": "config/governance/optimization_universe_experiment_plane_v1_decision_v1.json",
+    "domain": "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+    "envelope_registry_authorized_surface_count": 3,
+    "external_effect_authorized": false,
+    "learning_input_validation": {
+      "domain": "peak_trade.canonical_optimization_universe_learning_input.v1",
+      "external_effect_authorized": false,
+      "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+      "optimizable_envelope_defined": false,
+      "optimization_productive_authority": "NONE",
+      "promotion_authority": "NONE",
+      "reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "result_digest": "ac3117f0db19b54cd0217427d18ae48a5205e52a1082beb39af96181adb383de",
+      "runtime_authority_impact": "NONE",
+      "schema_version": "canonical_optimization_universe_learning_input_v1",
+      "source_learning_state_record_ref": "ls.00bbb03269fa11b213e9288ee0b1cc1f90eed7ce77533af9",
+      "state_scope_id": "ddo.lscope.export-test",
+      "state_version": 1,
+      "status": "ACCEPTED_OFFLINE_RESEARCH_INPUT"
+    },
+    "learning_productive_authority": "NONE",
+    "no_trading_reselection": true,
+    "normative_spec": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+    "offline_research_context": {
+      "authorized_productive_surfaces": 0,
+      "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+      "context_digest": "d5337594a6ba0e1bbf17023def63e7fc8add680d6e677e2eb9f0257d694129cc",
+      "context_kind": "OFFLINE_SYNTHETIC_RESEARCH_CONTEXT",
+      "envelope_not_productive_authorization": true,
+      "envelope_resolution": {
+        "authorized_surface_count": 3,
+        "domain": "peak_trade.canonical_optimizable_envelope.v1",
+        "envelope_identity": null,
+        "external_effect_authorized": false,
+        "learning_productive_authority": "NONE",
+        "optimization_productive_authority": "NONE",
+        "owner_map_implies_authorization": false,
+        "owner_map_provenance_ref": null,
+        "reason": "UNREGISTERED_SURFACE",
+        "resolution": "NOT_AUTHORIZED",
+        "result_digest": "7f66537781445cebbe953f3795ac50815b2b2289cdbf93aedd94adbbeaf9ef2e",
+        "schema_version": "canonical_optimizable_envelope_v1",
+        "surface_id": "offline.synthetic.research.m4.v1",
+        "zero_authorized_productive_targets": false
+      },
+      "learning_evidence_digest": "aa5d866adb1fac510e6d4568f5ad35b2235cb27541fcce31bd9769abadafdd78",
+      "learning_input_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "learning_input_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+      "synthetic_surface_id": "offline.synthetic.research.m4.v1"
+    },
+    "optimization_productive_authority": "NONE",
+    "plane_identity": "a7bf3007dba4a3b5c3d7a811d07bd80045d907797d8ead6a2f343066c646b7fa",
+    "promotion_authority": "NONE",
+    "proposal_not_authority": true,
+    "reason": "OFFLINE_RESEARCH_PROPOSAL_ONLY",
+    "result_digest": "55326089225cddc247cebcf5cb1527d7e8f4cc8dbd6be618c71331744d2c4fb2",
+    "schema_version": "canonical_optimization_universe_experiment_plane_v1",
+    "status": "PLANE_OFFLINE_CHAIN_COMPLETE",
+    "zero_authorized_productive_targets": false
+  }
+}

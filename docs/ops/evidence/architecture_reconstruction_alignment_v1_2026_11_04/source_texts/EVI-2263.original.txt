@@ -1,0 +1,78 @@
+# Späterer Runtime-Import: Herkunft ist noch keine numerische Lernwirkung
+
+Untersuchung: 02.11.2026. Fortsetzung der historischen Rekonstruktion beider Universen. Kein Programm, Test oder alter Auftrag ausgeführt. Dieser spätere Strang ersetzt keine Rekonstruktion der früheren Juli-Versorgung.
+
+## Neuer Befund
+
+Am 26.09.2026 wurde ein konkreter Adapterweg ergänzt: vorhandene dauerhafte Paper-/Shadow-/Testnet-Nachweise → Offline-Beobachtungen und Runtime-Learning-Eingang → Learning-Evidence → akzeptierter Optimization-Eingang → M4–M8-Folgeweg. Seine Datenherkunft wird weitergereicht. Der geprüfte M4-Anfragebauer übernimmt aber nicht die ursprünglichen wirtschaftlichen Messwerte als Vergleichsscores oder Robustheitsreihe. Er erzeugt einen abgegrenzten synthetischen Forschungskontext mit festen Scores und Standardbeobachtungen.
+
+Damit ist die Aussage „mechanischer Anschluss“ enger als „wirtschaftliche Ergebnisse steuern neue Forschung“. Das ist kein Nachweis eines verbotenen produktiven Zugriffs und keine Forderung nach einer Aktivierung.
+
+## Datierung und Herkunft
+
+GitHub-Pfadhistorien am Pin 5d1c838c15369507c5247834db4dd0df25592169 ergeben:
+- #6879: 85d4d70cb910239c4809d24ae6a177672a813629, 26.09.2026 21:37:27 UTC: governed_runtime_primary_to_offline_observation_projection_v1.py.
+- #6880: 23dccab71eac79c8d39498bbe5bfc84bd54ebf9d, 26.09.2026 21:50:10 UTC: governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py.
+- #6881: a220e44325947f10cf0f342a0971b4dcd568a5be, 26.09.2026 22:02:23 UTC: governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py.
+- #6940: ad99257a7e0922192ca32d27f0acf029e9efae83, 28.09.2026 06:26:52 UTC: späterer Paper→G2-Folgerunner.
+
+Für diese vier Pfade ist bis zum untersuchten Pin jeweils nur der Einführungseintrag vorhanden. Dies datiert die konkreten Adapter, nicht den Ursprung von Learning/Optimization insgesamt.
+
+Acht revisionsgebundene Snapshots stehen in sources.json. Die ersten sieben sind außerdem bytegleich zum entsprechenden HEAD-Blob des gegenwärtigen Checkouts. Vier originale Cursor-Nachrichten wurden textgleich mit dem Suchindex abgeglichen: ursprünglicher Implementierungsauftrag #6879, Abschluss #6879, Abschluss #6880 und ein späterer E2E-Bericht vom 28.09. Originalpfad/Zeile/SHA-256 stehen in messages.json. Die historische September-Anweisung bezeichnet den fehlenden mechanischen Runtime-Import ausdrücklich als damalige Lücke; diese Aussage wird als damaliger Kontext und nicht als alleiniger Vollständigkeitsbeweis verwendet.
+
+## A. Primary-Archiv zu zwei verschiedenen Projektionen
+
+In governed_runtime_primary_to_offline_observation_projection_v1.py, build_offline_experiment_observations_from_primary_v1, wird review/REVIEW_RESULT.json gelesen. Eine vorhandene nichtleere metrics-Map wird kopiert. Andernfalls wird nur primary_review_verdict übernommen. robustness_results und regime_results werden als leere Maps geliefert; robustness_observations enthält Source-Modus und Beobachtungszeit. Diese Funktion berechnet weder Gebühren noch Return, Regime oder Robustheit aus dem zugrunde liegenden Run neu.
+
+Dieser OfflineExperimentObservations-Zweig wird an den identity-bound Beobachtungsadapter übergeben. Die Identität stammt vom Aufrufer request.phase1_identity. Der hier untersuchte G2-Aufruf übergibt keinen ExperimentMemoryStore. Ein erfolgreiches Binding ist deshalb noch kein Nachweis eines dauerhaft gespeicherten Phase-2-Records. Das Ergebnis des G2-Projektors führt den Binding-Status, nicht eine bestätigte Store-Append-ID.
+
+Daneben entsteht ein RuntimeObservationBundle. Für Order, Fill, PnL, Gebühren, Funding, Slippage, Latenz und weitere Kategorien werden überwiegend Referenzen auf dieselbe Review-Datei mit dem Primary-Manifest-Digest als BOUND eingetragen. Für Position wird RUN_METADATA.json referenziert. Dies bindet Herkunft auf Bundle-/Review-Ebene; es extrahiert keine separaten Zahlenwerte aus Fill-, Gebühren- oder Funding-Ledgern. Ein COMPLETE-Status darf daher nicht als selbständiger Nachweis all dieser fachlichen Messungen gelesen werden.
+
+Der folgende RuntimeToLearningInput erhält realized_performance_refs auf das Review-Verzeichnis; cost_refs, execution_quality_refs, risk_event_refs und reconciliation_refs bleiben leer. Datenqualität und Vollständigkeit werden hier ausdrücklich VERIFIED beziehungsweise COMPLETE gesetzt. In runtime_observation_feedback_v1.py werden diese Referenzen und Statuswerte vertraglich serialisiert. Dieser Zweig ist von der zuvor kopierten metrics-Map zu unterscheiden.
+
+## B. Learning zu Optimization: Statuslabel und Herkunft
+
+_project_learning_evidence_from_runtime_v1 im #6880-Adapter projiziert einen learning_evidence_record_v1. Wichtige Inhalte:
+- economic_score_label wird als g2.review.<review_verdict> aufgebaut. Das ist ein Review-Label, kein numerisch berechneter Economic Score.
+- evaluation_horizon wird zum Token g2.mode.<SOURCE_MODE>.bounded_observation, nicht zu einer aus Marktdaten ausgewerteten Haltedauer.
+- actual_outcome_ref verweist auf die Source-Observation.
+- Fingerprints und kausale Referenzen binden Primary-Manifest, Projektion und Runtime-Learning-Input.
+- code_sha, config_hash und authority_owner werden UNKNOWN; produktive Autorität bleibt NONE.
+
+Die Funktion enthält keine Übernahme der ursprünglichen review.metrics in eine numerische Optimization-Zielfunktion. Ein validierter ACCEPTED_OFFLINE_RESEARCH_INPUT besagt zunächst, dass der Empfänger diesen Forschungseingang vertraglich akzeptiert. Er besagt noch nicht, wie die Werte einer Handelsstrategie verbessert werden.
+
+## C. Optimization-Folgeweg: feste Versuchsvorgaben
+
+build_bounded_offline_m4_plane_request_from_runtime_learning_evidence_v1 im #6881-Modul überprüft den Producer und übernimmt Learning-Evidence in die Anfrage. Der neue Identitätsrahmen bindet record_id als parent_lineage_ref. Er verwendet aber auch feste Werte:
+- Strategie g2.runtime.offline_plane.v1, Parameter fast=10 und slow=50.
+- Dataset-Digest als SHA-256 des konstanten Labels g2-offline-dataset; ebenso feste Labels für Feature-, Kosten-, Risiko- und weitere Modell-Digests. Diese Hashes sind hier keine Hashes des ursprünglichen Marktpreis-Datasets.
+- Git-SHA c889577bef56300f74039d921472f0638cbb8810 sowie feste Environment-/Seed-Angaben im Identitätsrahmen.
+- Champion-Score 1,0; Challenger-Score 1,05.
+- Suchachse fast=(10,15), Budget 1, Search-Seed standardmäßig 19.
+- Vergleichszeitraum 2020–2024 und Market-Universe SYNTHETIC-OFFLINE-RESEARCH-ONLY.
+
+Eine Funktion zur Ableitung eines Replay-Seeds aus dem Learning-Fingerprint ist im Modul vorhanden. Der geprüfte Anfragebauer ruft sie nicht auf; bei fehlendem explizitem replay_seed setzt er 19. Keine Wirkung aus bloßer Funktionsanwesenheit ableiten.
+
+Der Anfragebauer liefert keine robustness_observations. Die Experiment-Plane verwendet dann _observations_or_default: eine feste 32-Werte-Returnreihe, feste Kennzahlen (unter anderem Sharpe 1,2, PF 1,4) sowie vorgegebene Train/Validation/Holdout-, Walk-forward- und Stress-Beobachtungen. Das sind Eingaben eines synthetischen Forschungspfads. Sie sind nicht die historischen Returns des Primary-Runs und werden durch einen echten Primary-Archivpfad allein nicht dazu.
+
+Der reale Ursprungsbezug kann die Lineage und darauf aufbauende Identitäten/Digests verändern. Daraus folgt nicht, dass ein besseres oder schlechteres wirtschaftliches Run-Ergebnis den Champion-Score, die Suchachse oder diese Robustheitsmesswerte verändert. Der numerische Vergleich erhält seine Werte in diesem Pfad aus festen Vorgaben.
+
+## D. Was spätere E2E-Berichte tatsächlich ergänzen
+
+Der originale Bericht vom 28.09. meldet einen ausgeführten G2→M4–M8→Meta→Feedback-Weg und bezeichnet ihn ausdrücklich als mechanisch offline. Gleichzeitig nennt er den produktiven Learning-Feedback-Loop nicht geschlossen. Seine Statuswörter RUNTIME_PROVEN oder prove_real_meta_path ersetzen keine Prüfung der Werteherkunft. Die gerade nachvollzogenen festen Versuchseingaben bleiben damit vereinbar: ein Prozess kann den realen Primary-Nachweis verarbeiten und danach synthetische Forschung rechnen.
+
+Der später versionierte Paper-Folgerunner #6940 lädt projection_request aus einer Test-Fixture-Hilfsdatei. Der echte primary_root wird übergeben; phase1_identity und Hypothesenrahmen stammen dagegen aus der Hilfsfunktion. Diese setzt unter anderem ma_crossover.v1, fast=10/slow=50, konstante Label-Digests und strategy_family=g2_fixture. Das ist ein gemischter Herkunftsrahmen, nicht automatisch ein vollständig synthetisches Primary-Archiv. Ebenso wenig ist es ein Beleg, dass die Identität der tatsächlich im Primary-Run untersuchten Strategie übernommen wird.
+
+Der Archivklassifizierer bewertet außerdem Validierung und Metadaten wie Run-ID/Strategie-/SHA-Präfix. Sein Resultat OBSERVED_BOUNDED_RUNTIME darf nicht als unabhängiger wirtschaftlicher Messnachweis verstanden werden.
+
+In dieser Fortsetzung wurde keine gespeicherte September-Projektionsdatei geöffnet oder deren Manifest erneut verifiziert. Die zuvor aufgebauten begrenzten Pfadinventare liefern für die gezielt gesuchten G2-Projektions-/E2E-Resultatnamen vor allem Code-/Konfigurationspfade. Der konkrete September-Primary-Bestand und vollständige Zwischenresultate bleiben daher gesondert zu lokalisieren. Aus dem historischen Abschlussbericht wird kein neu beobachteter Lauf behauptet.
+
+## Gemeinsame Einordnung und nächste Beweisfrage
+
+Die beiden Universen erhielten im September einen expliziten internen Übergabeweg ohne produktive Eingriffsrechte. Dieser Befund präzisiert die historische Entwicklung: Verbindung und Provenienztransport wurden ergänzt, während numerische Forschung im geprüften M4-Folgepfad synthetisch bleibt.
+
+Die Juli-Baseline und ihr Attributionsaudit bleiben eine andere Datenlinie. Kein hier gefundener Adapter liest ihre konkreten Checkpoint-/Equity-Bundles ein. Weiter offen ist ein fachlicher Konverter, der echte wirtschaftliche Resultate samt Marktzeit, Dataset-, Kosten- und Strategieidentität an den passenden numerischen Consumer übergibt. Ebenso offen bleibt die konkrete Rückwirkung dieses numerischen Ergebnisses auf eine nächste Forschungshypothese. Dafür wären echte Zwischenrecords und ihre Werteverwendung zu paaren; Status-/Digest-Ketten allein genügen nicht.
+
+## Verifikation und Grenzen
+
+Vier gepinnte GitHub-Pfadhistorien, acht Git-Snapshots, vier textgleich abgeglichene Originalnachrichten. Nur lesende Git-/Quellenanalyse; keine Aktivierung, keine Archivänderung, kein Produkt-/Testlauf. Repository-Status vor/nach bytegleich; Ergebnis und TypeScript-Diagnostik in verification.json. Historische Ansichten bleiben erhalten. Kein neuer Recovery-Scan und kein Zugriff auf Zugangsdaten.

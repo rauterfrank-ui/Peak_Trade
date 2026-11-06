@@ -1,0 +1,869 @@
+{
+  "schema": "peaktrade.complete_local_working_state_commit_readiness.v1",
+  "checked_at_utc": "2026-11-05T22:45:17.887765+00:00",
+  "source_head": "489270f651ce2718e6efcae52ae7c3cd248cb7a9",
+  "branch": "feat/ghv-current-exchange-reconciliation-pr-integration-v1",
+  "result": "PASS_FOR_LOCAL_COMPLETE_WORKING_STATE_COMMIT",
+  "authorization": "User requests committing all existing product changes and findings after checking their combined compatibility.",
+  "previous_feature_commits": [
+    "3aa3ad751123c95f4f8e46fc3637e759267742bc",
+    "4d312c37819fffbbd1684999e823656e45af6107",
+    "10d899b16356974bdd1f3c90f13681825cc09afe"
+  ],
+  "preexisting_changed_or_new_files": 135,
+  "files_to_commit_as_real_product_test_and_document_files": [
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "sha256": "ea4aea9fce10c424490796db307d2d1382f5b4ee71839bdeeaca3314df702b8e",
+      "bytes": 550109,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/registry/evidence_registry_v1.py",
+      "sha256": "629490ddfc5ca0d63a549a7bad881bb699cf3951ce0c214df2d10091d6976c70",
+      "bytes": 2336,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/errors.py",
+      "sha256": "2a892f51bda49ee12342dcecf99eb4faf52117bf59d16218bf6d50230bcc7969",
+      "bytes": 505,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+      "sha256": "0bb8eaeff6d24d0cdf22b3160efb6759f90a22f709eec8cf6edbf7c1a3833d75",
+      "bytes": 15716,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
+      "sha256": "08b28d4d8e46c8b532c9e0cc014338d2f19b2417ee26fc9d6113395ac62f4a75",
+      "bytes": 24839,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_native_research_measurements_v1.py",
+      "sha256": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+      "bytes": 25647,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_native_research_session_v1.py",
+      "sha256": "4b9b45a07df4c18c5b6e11bf197c42d5226a07fe75a21cb42790d7ea8a81b31b",
+      "bytes": 24020,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_search_candidate_research_execution_v1.py",
+      "sha256": "8ce1830484cb1f592bac90ee78e9cfa11d693eece12ddaac8ab669e82aa78cfc",
+      "bytes": 15640,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/ohlcv_returns_file.py",
+      "sha256": "fc9d04522d50c83011db5ee4f3d2c68a6e1a93af3eb24c26295c55731881d968",
+      "bytes": 2163,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/optimization_provenance_eligibility_v1.py",
+      "sha256": "3d5e8050922be69e003b5c46274ed85ddb1111ed411c87227b3ae49990290c83",
+      "bytes": 5154,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/outcome_evidence_provenance_bindings_v1.py",
+      "sha256": "cc967adddc5a6c1a463a7a2b26875e15c452582339913e90548bf3e907566d92",
+      "bytes": 11191,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
+      "bytes": 54949,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+      "sha256": "d54582b65b96f61375180c0abaa5df3279495b17307162820e50e8923025a57b",
+      "bytes": 40654,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
+      "bytes": 16512,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/__init__.py",
+      "sha256": "0406556e549fe85bc6fd5beb799af8672b32bb56cccbc7603ce01c73c334270b",
+      "bytes": 2743,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py",
+      "sha256": "559a8267bb4c57c198c3e3146b980b4208837bb4eb863d5c715be26e800437ea",
+      "bytes": 21109,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/artifact_matrix_v1.py",
+      "sha256": "15ea8d235a47088c9912e80234e6b1554ddbe962c5f0cb652af011adc607ffe8",
+      "bytes": 6950,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py",
+      "sha256": "70a0fbe3bb90a9ae4bf9cfcda05f57964d0681a5a859e5df6dd36ad8766c22cb",
+      "bytes": 13864,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/models_v1.py",
+      "sha256": "d63f2f8ca211c2f613449d95a260f3e261672a6539e6e29152417f3ca6094e24",
+      "bytes": 8229,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/persistence_v1.py",
+      "sha256": "77685dcbd323ebf8e1e35eada804add2cf7d795a05b4b9b8984cd2498f1fb396",
+      "bytes": 9659,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
+      "bytes": 45578,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+      "sha256": "10dfb5217be629495ff97c0c57b179c27583b6458da44c75c095d1560d4a056c",
+      "bytes": 7641,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+      "sha256": "e27fab1fb95999d8033e2c586fbc3c3a9deadf969fa53a5d582583728bf61e75",
+      "bytes": 58603,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+      "sha256": "a5acdac494f48b5879ba842682800adf0e79f267c11618dad712c571b4c9660c",
+      "bytes": 19680,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_runtime_economic_md_adapter_v1.py",
+      "sha256": "2da39826ad221ebf585519afe412d719d2c38ebc925090776085a338e1b1bb18",
+      "bytes": 4738,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py",
+      "sha256": "ebc6741fa60fdc691751125fc11de60a40050f5953d0b7c95da00244cf528586",
+      "bytes": 3821,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py",
+      "sha256": "6e3f89ad9422340377db69af155e826b3f34d7021ab9877a9dfb47dadf480871",
+      "bytes": 3480,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
+      "bytes": 70282,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "bytes": 10771,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
+      "sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28",
+      "bytes": 7072,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py",
+      "sha256": "653a008d478832b3e33d3b9facb1134148a7d3947cacdfe3fc3112b05e574cbc",
+      "bytes": 11064,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py",
+      "sha256": "eaf1518c4254c85200c045126d46f124acc1545d72f4dd4bfb83d348ed4d61e3",
+      "bytes": 19054,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_runtime_n5_completion_v1.py",
+      "sha256": "daf85cd40351b547f8e280c8458f15449e796ac8874b8e9ef89bc7d5af066dcc",
+      "bytes": 25033,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+      "sha256": "9e02ad08eff79fc61c34425c7f70708c8cd639b84a27faeb39ca41bccaa34710",
+      "bytes": 10102,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
+      "sha256": "2588fce0b7115a8a9de3bbe5b881e69c29d5e42327156ea07f591aa0056bacf3",
+      "bytes": 5673,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_current_productive_occupied_scope_continuity_v1.py",
+      "sha256": "39b98e788e55d4efa9bc06786b714cfdf1fc18e8f0a962674af53a30b7382d31",
+      "bytes": 7764,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_economic_md_input_producer_v1.py",
+      "sha256": "0ff3e35780b309c7183f6bc2249370dc8506e02dc35c05d0da1761c568f06d3b",
+      "bytes": 17379,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_portfolio_budget_host_v1.py",
+      "sha256": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+      "bytes": 18952,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E1_ACCEPTANCE_2026_11_05.md",
+      "sha256": "1cd686c8154d84f05c8289ebd04abf719af7851abd03884687c5504e43fabdf1",
+      "bytes": 5486,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E2_ACCEPTANCE_2026_11_05.md",
+      "sha256": "e258ccfa0361e90ea59c72043a769e1bf99bd82fbc3a6962bb2d78042d244b76",
+      "bytes": 5645,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E3_ACCEPTANCE_2026_11_05.md",
+      "sha256": "0a630eef1d51970518ae115859a47af404c178a604ba512adab25ea97575c896",
+      "bytes": 4789,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E4_ACCEPTANCE_2026_11_05.md",
+      "sha256": "e119484d3681aed82d392cd9f799af56135d4e09943178c46b518a75f6348880",
+      "bytes": 5142,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E5_ACCEPTANCE_2026_11_05.md",
+      "sha256": "2954793f81ce67fa2f9b3eee1ce508c8fed1f7dcc764b37a5a510903dc3fa931",
+      "bytes": 6440,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md",
+      "sha256": "3d21b6868173e9a9eb191a0ceb83143506a5ccd7c2a5cad9309956006a533b54",
+      "bytes": 7788,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE10_2026_11_05.md",
+      "sha256": "6649eef147a6cf83329a0c11f1f8ab736b7c5984aded173bc7866f65176e8333",
+      "bytes": 3278,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE1_2026_11_05.md",
+      "sha256": "ece6cfed8913a1300268e5e9baa34e03a105d3ca9ba66519f30155eea7bd07bd",
+      "bytes": 2698,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE2_2026_11_05.md",
+      "sha256": "ca3c05fae3b70cf21f72e063ebc30b1a327313e214040a3eccc95e602ab8b6f8",
+      "bytes": 4020,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE3_2026_11_05.md",
+      "sha256": "c5e80c39cd14f27f295528f20fae9d9475b854c42b65b6e613275a4dc9699d7a",
+      "bytes": 4673,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE4_2026_11_05.md",
+      "sha256": "8e561e08bd83610b2456c68141637de451420d7fa5abfe243a333e0fec1380fb",
+      "bytes": 3818,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE5_2026_11_05.md",
+      "sha256": "0b68cfd671440f69e5482ec0a7403fa33d2b6e4cad2c4696eab8e1ffb5f98ed5",
+      "bytes": 3698,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE6_2026_11_05.md",
+      "sha256": "4f3c95ad4afe999ccebad064f562d86cb40e13f0d4e11dfb52757816a0daf6a1",
+      "bytes": 3943,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE7_2026_11_05.md",
+      "sha256": "33e1fdfabde9e4d101887f1186241b767ecdac8cea34df40525d30ef95516072",
+      "bytes": 4654,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE8_2026_11_05.md",
+      "sha256": "6237b836e908a74b5f1ca5c7f647b7d9bfa0656d2cf297f5d75f1c9742013dd7",
+      "bytes": 4244,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE9_2026_11_05.md",
+      "sha256": "39b66e4a291bd8b5e7dcf1ba6571c68f4770bf4f3b2041fd8a4d13bc73d4f13b",
+      "bytes": 3493,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_ADVERSE_TIME_EXIT_CONSUMER_SEMANTICS_V1.md",
+      "sha256": "e8d124b0a9cd9495df927181c73ce4da5d6d7c77925950523c961c3bf6460b03",
+      "bytes": 5791,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_EXIT_CURSOR_PUBLICATION_RECOVERY_V1.md",
+      "sha256": "f094607635aaf9c1911a6be5eede88fcf3a53a2aa6c8087956939a1a0e4e43f2",
+      "bytes": 5909,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_ATTEMPT_CONTINUATION_AND_DATA_ADMISSION_V1.md",
+      "sha256": "f3b304888e3516fcb12887b7f79f278f4a93d8253e4924b0e8830d17e6290a73",
+      "bytes": 4554,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_CYCLE_CAPTURE_NAMESPACE_V1.md",
+      "sha256": "535ef85eda682393e405a61b1410737153200912cc38eba8b1c2fda9742462ea",
+      "bytes": 4163,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_EPISODE_SESSION_V1.md",
+      "sha256": "b285d522f97c6fefd9f766f68ae437f2c19034635e2174dbc3f65536dbf04fee",
+      "bytes": 7178,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E1_ACCEPTANCE_V1.md",
+      "sha256": "d9500063dbd935f09e856735c7c2536bb2f0967c5461f2dacada51ed8bbe46be",
+      "bytes": 8753,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E2_POSITION_CAPITAL_RISK_V1.md",
+      "sha256": "890f5d958d94c3b9a052b6b41c8700fe0824c527f792648cbe0fc9354b202588",
+      "bytes": 13336,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E3_OUTCOME_LEARNING_V1.md",
+      "sha256": "25220b56e55f9e17f53d54b89a2315bcd88a9a2f117369da0c1370093e867937",
+      "bytes": 7397,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E4_RESEARCH_RECOVERY_V1.md",
+      "sha256": "4e1d2eac65c2fea5a04fdecb2f2e3de88e33ee778f5735d3f9d256cadc604574",
+      "bytes": 7689,
+      "documentation_token_or_reference_hygiene_only": true
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E5_EVALUATION_RECEIPTS_V1.md",
+      "sha256": "ef6bc24ec71a93e59228d64ab651d050319f0bc57e6627840c255c32900fe7a5",
+      "bytes": 7732,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_POSITION_EPISODE_EXIT_CONTINUITY_V1.md",
+      "sha256": "328b24e7205781c8e032249d992a8f8cb34395c5aae2353155a9411ca0ce2843",
+      "bytes": 5360,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SIMULATED_ACCOUNTING_ENTRY_SOURCE_V1.md",
+      "sha256": "a2ad1803c3b7b438e60fd7aa38f32130d14645363d944cbad16e438912c47889",
+      "bytes": 5842,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SIMULATED_ACCOUNTING_EPISODE_PROGRESS_V1.md",
+      "sha256": "798b36ab88b6cdb29c2b9682e6fb02884f478fcd60441769d5ca3277b04bd321",
+      "bytes": 7669,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SIMULATED_EPISODE_FLAT_SEAL_AND_SUCCESSOR_V1.md",
+      "sha256": "6e0b2d365ecb8bb464a2cab4165c68c5fcce35bccd897681af5bf2947b3a00a9",
+      "bytes": 7562,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SYSTEM_ACCEPTANCE_EPISODES_V1.md",
+      "sha256": "b14c368ac923cc27125fc7b7d199147b10b91db4ba0060f3a95693dcfe7c59ac",
+      "bytes": 7979,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SYSTEM_COMPOSITION_CONTRACT_V1.md",
+      "sha256": "cee16cd9c2838e8a407715cc44e0dcd6ad15dbbff778a7c7bb2ef637050a9d26",
+      "bytes": 7451,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "docs/ops/specs/BOUNDED_SYSTEM_N5_COMPLETION_AND_RECOVERY_TRANSPORT_V1.md",
+      "sha256": "1ea09699288dd5214412c0985d0e6153f9328d7c6cd9a598b9b3d6ab948fc267",
+      "bytes": 5091,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py",
+      "sha256": "9936a96e98ed5b38b95f9f668c67164d061d0095ecf6e7dbf796ca69dc2191fa",
+      "bytes": 24306,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/integration/domain_result_binding_v1.py",
+      "sha256": "fd368f163cd7fb0a4e1a9f3af6cc74ad7c87ac1c53c8ae4bb1998399e0d0b447",
+      "bytes": 5595,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/evaluation/golden_vectors/integration/evaluation_receipt_v1.py",
+      "sha256": "db8e42e683bd4cdecc3230b64b0b99f45487e00066b2423d1d67d482bc2db852",
+      "bytes": 10556,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_research_preflight_v1.py",
+      "sha256": "6b29bedef24e486e76942f4f01e213c1f500dc9086108162a651b9ca8d2c6e57",
+      "bytes": 2417,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/experiments/canonical_research_prepared_execution_v1.py",
+      "sha256": "c0b37369e0dceff8c40f02916fac70deed229846ed9b51b4f85d711516f95045",
+      "bytes": 10204,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_scope_guard_v1.py",
+      "sha256": "10c3cf8b6e741bd61c80d70b1d58be267c4213f636d26b5eec81cb1e85452eaa",
+      "bytes": 1811,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/__init__.py",
+      "sha256": "e2b201e7d29682354f08f62acd4293cea8174b6a38800ca6603f45d210443094",
+      "bytes": 81,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/acceptance_v1.py",
+      "sha256": "149270ece18714efcabbde91167c98ef7efacd8022f8aa05382db06ebb6ac999",
+      "bytes": 3467,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/configuration_v1.py",
+      "sha256": "2820a314a2727e5def6d81eac86a439b31692cb6ddf93f39b23015ce12be9e21",
+      "bytes": 1912,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/cycle_namespace_v1.py",
+      "sha256": "d5fb07c95e0e47db6fceb3f08a69096210deff3e8d10cad0865c20a299ad7b76",
+      "bytes": 1396,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py",
+      "sha256": "262f0a55fb4699351522ef595902cf62ff6a835ad859ae0be9f0f174c9dea435",
+      "bytes": 5027,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py",
+      "sha256": "5c59eea515e8aba08a0e02fb3ed07b2affeff6cbff84ba70ad9c07d133f9ba98",
+      "bytes": 7067,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/manifest_v1.py",
+      "sha256": "1faf8fc1642761157240d613536eed7f19ecf1866240fb6b23b357a12453080e",
+      "bytes": 7081,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/profile_v1.py",
+      "sha256": "6fc41d96a183f6c3a6860d3aa29f567c8fe742c94d044abef759e4aa304f4d0f",
+      "bytes": 1092,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/readiness_v1.py",
+      "sha256": "33d4ac803b4db55c0148ef728a55d183f2fc359b1bd681c2966d9351d25f9a28",
+      "bytes": 6396,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/recovery_v1.py",
+      "sha256": "ff5539b5afbb2ef30a7b1d5fd7749047ec90ec3dfddeea873352445a9e5789b8",
+      "bytes": 2751,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py",
+      "sha256": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9",
+      "bytes": 31339,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/economic_md_input_producer_v1/purpose_admission_v1.py",
+      "sha256": "456e6582cfe7165a311ac4bad1bf892553b5c6b852cf2ccdc3d8c6d0dbcb637c",
+      "bytes": 7539,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py",
+      "sha256": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757",
+      "bytes": 12699,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/economic_md_input_producer_v1/purpose_gateway_v1.py",
+      "sha256": "754824ef78021ce277f5b95cd25014c888530db4ab6e734869a9828d17f646e4",
+      "bytes": 2252,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/current_cursor_recovery_v1.py",
+      "sha256": "042b9133de510038d3d488c6e7cec3588efe5c8f27a975c65f6cc33edaaab75d",
+      "bytes": 5629,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py",
+      "sha256": "51c52f3caec87fd051343c1b47053da5f06dfd5812acca878c0f0d2bf5fe5a5d",
+      "bytes": 13602,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/risk_bound_simulated_entry_v1.py",
+      "sha256": "a213e0b4fdc82af743a293ba5297016ae77e5ec2718125da8ff77cdd0f4f0e87",
+      "bytes": 9251,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py",
+      "sha256": "dd743daba0b43e378cd0c20811d6d6d1f9933a2af91ac58838061fe1c9f0597c",
+      "bytes": 19240,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py",
+      "sha256": "300cb76643cb95e05c9abe2d5d53a09fadbead1724b414a4c5c4759ea47817b1",
+      "bytes": 10740,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py",
+      "sha256": "853f2fb7fb2eede7b78673944e2118d82b4dadedf4bf0f93327ee9a850a8beed",
+      "bytes": 9135,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/offline_v1.py",
+      "sha256": "1a150c36da85304fa71acd4a35bf823652166efeb7d1230af725fd792f9892ad",
+      "bytes": 32682,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py",
+      "sha256": "ec49050d75d8f27720480eebeeb571a10b2e33ce9b277460630abbed4799bf2d",
+      "bytes": 6195,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py",
+      "sha256": "5d4b4fddbaec1aa393cb4138ef76ed69ab32efaaf5a0f088d25455d042f93f71",
+      "bytes": 2719,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py",
+      "sha256": "6dc6ac382e389bd4a29de72ab25071a165d2a52f971116d248947492e7f12572",
+      "bytes": 5910,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "src/risk/decision_bound_model_adapters_v1.py",
+      "sha256": "4564dad05f1657f856e7d156af8b360a2b1ead1c47eb3681767edb17b880ee69",
+      "bytes": 23868,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/evaluation/golden_vectors/test_bounded_required_domain_fanout_v1.py",
+      "sha256": "f2d498b8c39480777d365575ec0302966e17c5576aed7544d7774fadfb0296a6",
+      "bytes": 28437,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/evaluation/golden_vectors/test_gvef_result_integrity_v1.py",
+      "sha256": "0ab9ec5efab73a5d386b7eb1d1afd1f96b8e0e21b45204419f367f41884f93c8",
+      "bytes": 5494,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/experiments/_research_prepared_recovery_worker_v1.py",
+      "sha256": "d29fc836f5cceaa9b493d4f2a75c40a57cd0785616ea1ffc39656d9314b9b4b6",
+      "bytes": 2416,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/experiments/test_measured_meta_next_trial_v1.py",
+      "sha256": "27dfaa47d5b54011fea4953685e6649569da39b2c56c3287cf29dd64e6fac0d0",
+      "bytes": 6061,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/experiments/test_research_preflight_recovery_v1.py",
+      "sha256": "dcb0c31427602824fed7987823cb99a963e9f8c69925bcba5b19385c79f9f68c",
+      "bytes": 16372,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/learning/test_offline_learning_scope_guard_v1.py",
+      "sha256": "4db907ffcc17b5aed0108ebad49376211f50523ca6d29b52747f6df59414e379",
+      "bytes": 3599,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/_bounded_offline_episode_session_worker_v1.py",
+      "sha256": "40ebd15812cf71ee78a1638dfc53e37b85e48bc5230598029aea7b0a931ddf17",
+      "bytes": 1881,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/_bounded_system_episode_fixture_v1.py",
+      "sha256": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+      "bytes": 30832,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_adverse_time_exit_consumer_semantics_v1.py",
+      "sha256": "17af689c269074da784459805d59c1756504835fceed14abbe5b9e37d98a14a4",
+      "bytes": 10019,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_all_purpose_consumers_v1.py",
+      "sha256": "b7a453cf1a79aa6221d16acfe1a94ab35fc5beb9c750ce05c1d04428f1768bbb",
+      "bytes": 19500,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_configuration_binding_v1.py",
+      "sha256": "810276c8b5d57eee16204d528fc7dbf2783e6b8de96447feac948b1f4e67bc46",
+      "bytes": 5458,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_cycle_namespace_v1.py",
+      "sha256": "a21b4055373ea91cac222ccb584d57af6ec67d2922f81f1a2423be2f7a416454",
+      "bytes": 5978,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_decision_risk_v1.py",
+      "sha256": "9cf30f0c1af57952c3e61e0b65a610f889a0c0696d7f498714dc381af5839b07",
+      "bytes": 19514,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_episode_session_v1.py",
+      "sha256": "4a619bb5c34154704fd7ee8171529e8b2072293ccc57cc44d47865f68ba337d3",
+      "bytes": 15726,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_governed_continuation_v1.py",
+      "sha256": "268b48ef55870a987fed86c7022f212fba5c93e7600fdde4248f3c99b2c4c662",
+      "bytes": 5283,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_original_entry_risk_join_v1.py",
+      "sha256": "b4a521c9e85914013555a141b5f5d292de99e42612b46574d37cb6b32653464c",
+      "bytes": 9925,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_owner_crash_points_v1.py",
+      "sha256": "7157dd807468804621e90382d4bc56956895f0cd9db498fc8145fedf781fdc5d",
+      "bytes": 12416,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_partial_close_lifecycle_v1.py",
+      "sha256": "1a0c993df68a62b1f650c22c3917bf449ab6f582ed336b3502391f4def4e59b5",
+      "bytes": 12222,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_ranking_unit_admission_v1.py",
+      "sha256": "35848cb5a8c556f750d8e7609858645b20600164331e445b781b4122e84c041a",
+      "bytes": 3086,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_risk_entry_source_integrity_v1.py",
+      "sha256": "37b8eca889b2c2f3b651e04cf33d25fc9cec9e51688295dd2292d5929f15fe4b",
+      "bytes": 5540,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_shared_gateway_n5_v1.py",
+      "sha256": "48dddf8c7959af1aa3bc8de7983a409e7941db74e8de81c15241756389ebae66",
+      "bytes": 3189,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_offline_stop_and_handoff_v1.py",
+      "sha256": "5abb0104fae8053ef91957b682359eecdbe053078c8ee315e7bdd5decf5a4059",
+      "bytes": 10508,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_bounded_peaktrade_system_episodes_v1.py",
+      "sha256": "06e3c089177c820bb9d468b23acf7d809b6e3df6d2d3edee75f2d9660deb520e",
+      "bytes": 18983,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_exit_policy_restore_integrity_v1.py",
+      "sha256": "10cd141108aedcb7dd7f4ac3eec91db57927e7f0d69a8fc32252c7db6cf81b75",
+      "bytes": 3945,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_explicit_offline_pending_learning_v1.py",
+      "sha256": "0869df5dcc180b83c8be913e79e0da4f672c0ba6aacc1bbf469c58b7f705431d",
+      "bytes": 21606,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_outcome_retention_release_v1.py",
+      "sha256": "62bf7c582b71c7afc5246dda2312a8bc2bec1cd96eb4988c5c9ce04fccb6a8d2",
+      "bytes": 5101,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_position_episode_cursor_recovery_v1.py",
+      "sha256": "a8fc0f8aec6abd8ff67d50a977969cc27efd9e08222e9199b87eda8c2c9c1997",
+      "bytes": 10628,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_position_episode_exit_continuity_v1.py",
+      "sha256": "56928dc169615120f2641c564a5a7eb323d0d50c3251aff00acdd6a09660b857",
+      "bytes": 19453,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_public_fact_consumer_semantics_v1.py",
+      "sha256": "9130c6ab27bcd963d912744e99da48c150c76a5786f32a10f4dff8207b4b91d6",
+      "bytes": 7573,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_public_fact_purpose_admission_v1.py",
+      "sha256": "2c64c2cf89282b3cf462bc9fb2b50d109b0bcddfae2de42cc2ccd807c9e6ba93",
+      "bytes": 5112,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_simulated_accounting_entry_source_v1.py",
+      "sha256": "eee5a92e36eef0a0ea257e20cfded1b16e4cb7c753dd62da519cd355611c4235",
+      "bytes": 14051,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_simulated_accounting_episode_close_v1.py",
+      "sha256": "b1ef8de00ad5b2d523d58ce327cdbc3baa93f64a960333227254ea13fa50bf1c",
+      "bytes": 19816,
+      "documentation_token_or_reference_hygiene_only": false
+    },
+    {
+      "path": "tests/ops/test_simulated_accounting_episode_progress_v1.py",
+      "sha256": "664d1991bbb7f0a2d7543dd40cadfbbf7018cb70351761b9d33ff1e0c52dfa5e",
+      "bytes": 20555,
+      "documentation_token_or_reference_hygiene_only": false
+    }
+  ],
+  "precheck_all_135_files_equal_e6_report_bytes": true,
+  "final_source_and_tests_unchanged_during_validation": true,
+  "cosmetic_documentation_adjustments": [
+    "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md",
+    "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE4_2026_11_05.md",
+    "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE5_2026_11_05.md",
+    "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE6_2026_11_05.md",
+    "docs/ops/evidence/BOUNDED_SYSTEM_LOCAL_IMPLEMENTATION_PHASE8_2026_11_05.md",
+    "docs/ops/specs/BOUNDED_OFFLINE_ATTEMPT_CONTINUATION_AND_DATA_ADMISSION_V1.md",
+    "docs/ops/specs/BOUNDED_OFFLINE_EPISODE_SESSION_V1.md",
+    "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E2_POSITION_CAPITAL_RISK_V1.md",
+    "docs/ops/specs/BOUNDED_OFFLINE_STAGE_E4_RESEARCH_RECOVERY_V1.md"
+  ],
+  "old_repository_files_preserved_except_listed_document_hygiene": 22607,
+  "connected_tests": 1551,
+  "supplementary_tests": 24,
+  "distinct_passed_tests": 1575,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "test_selection": "E6 connected selection plus three later MI test files; three changed test files missing from that selector run separately.",
+  "all_changed_test_files_selected": true,
+  "scope": "Explicit synthetic offline/replay/contract integration, including Core/Risk/Pending/Learning/MI/native Research/GVEF paths and recovery controls.",
+  "known_legacy_counterevidence": {
+    "path": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEMPLAN/65 Gesamtsystementwurf/Etappe 3 Outcome Lernrueckweg/legacy-contract-counterevidence-2026-11-05.xml",
+    "sha256": "a74a87c5d8d486cacc446dd1d0f0cfbc58e1e85453fb2c1d9d2f81b5fe66cbbc",
+    "reproduction_script": {
+      "path": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEMPLAN/65 Gesamtsystementwurf/Etappe 3 Outcome Lernrueckweg/legacy-comparison-script-2026-11-05.py",
+      "sha256": "7b07c5bafe18f5733aa8501b9fdd21365382b1bb93a0f76aac02326b0665e720"
+    },
+    "test": "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_scope_v1.py::test_i12_pre_external_evidence_lineage_per_lane",
+    "reason": "future_native_contract_identity_unknown for legacy VENUE-A fixture",
+    "pre_E3_matrix_source": "HEAD:1814ca5b24d1d3ab537683e340b3ab045ea51e62",
+    "result": "SAME_PREEXISTING_FAILURE_WITH_UNCHANGED_MATRIX_IN_ISOLATED_PROCESS",
+    "not_in_passing_population": true
+  },
+  "whole_repository_test_green_claimed": false,
+  "complete_MI_model_learning_cycle_proven": false,
+  "natural_market_or_economic_quality_proven": false,
+  "product_behavior_changes_made_in_this_commit_preparation": 0,
+  "implementation_authorized_by_documentation": false,
+  "runtime_authorization_effect": "NONE",
+  "push_performed": false
+}

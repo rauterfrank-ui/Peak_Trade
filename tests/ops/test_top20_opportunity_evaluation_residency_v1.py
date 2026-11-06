@@ -1,7 +1,8 @@
-"""Top20 evaluation residency & scheduling contract tests (matrix 01–50)."""
+"""Event-driven Top20 evaluation residency and scheduling contract tests."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -64,8 +65,6 @@ def cfg() -> ResidencyRuntimeConfigV1:
     return ResidencyRuntimeConfigV1(
         enabled=True,
         max_pending=5,
-        duration_seconds=600.0,
-        early_release_allowed=True,
     )
 
 
@@ -149,18 +148,23 @@ def test_04_transient_internal_rank_not_exposed() -> None:
     assert "classify_and_rank_candidates_v1" in dir(ranking_v1)
 
 
-def test_05_repeat_top20_no_deadline_reset(tmp_path: Path, residency_enabled, cfg) -> None:
+def test_05_repeat_top20_preserves_epoch_and_admission(
+    tmp_path: Path, residency_enabled, cfg
+) -> None:
     root = tmp_path / "res"
     s1 = _snapshot([_candidate("A", 20)], snapshot_id="s1")
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root, ranking_snapshot=s1, config=cfg, now_unix=100.0
     )
-    deadline = load_store_v1(root).records[0].residency_deadline_unix
+    admitted = load_store_v1(root).records[0]
     s2 = _snapshot([_candidate("A", 5)], snapshot_id="s2")
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root, ranking_snapshot=s2, config=cfg, now_unix=150.0
     )
-    assert load_store_v1(root).records[0].residency_deadline_unix == deadline
+    current = load_store_v1(root).records[0]
+    assert current.residency_epoch_id == admitted.residency_epoch_id
+    assert current.admission == admitted.admission
+    assert current.residency_started_at_unix == admitted.residency_started_at_unix
 
 
 def test_06_rank_drop_preserves_residency(tmp_path: Path, residency_enabled, cfg) -> None:
@@ -209,7 +213,7 @@ def test_11_12_queue_finite_and_invalid_config() -> None:
 
 
 def test_13_14_overflow_capacity_rejected(tmp_path: Path, residency_enabled) -> None:
-    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=1, duration_seconds=600.0)
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=1)
     root = tmp_path / "res"
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
@@ -263,7 +267,7 @@ def test_21_23_completion_via_replay_not_enter() -> None:
     assert not is_canonical_evaluation_complete_v1(w_bad)
 
 
-def test_24_early_release_frees_slot(tmp_path: Path, residency_enabled, cfg) -> None:
+def test_24_completion_event_frees_slot(tmp_path: Path, residency_enabled, cfg) -> None:
     root = tmp_path / "res"
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
@@ -290,16 +294,25 @@ def test_24_early_release_frees_slot(tmp_path: Path, residency_enabled, cfg) -> 
     assert load_store_v1(root).records[0].active_slot is None
 
 
-def test_25_deadline_expiry(tmp_path: Path, residency_enabled, cfg) -> None:
+def test_25_elapsed_time_neither_completes_nor_discards(
+    tmp_path: Path, residency_enabled, cfg
+) -> None:
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=6)
     root = tmp_path / "res"
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
-        ranking_snapshot=_snapshot([_candidate("A", 1)], snapshot_id="s1"),
+        ranking_snapshot=_snapshot([_candidate(str(i), i) for i in range(1, 7)], snapshot_id="s1"),
         config=cfg,
         now_unix=100.0,
     )
-    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1000.0)
-    assert load_store_v1(root).records[0].state.startswith("EXPIRED")
+    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=100.0)
+    before = load_store_v1(root)
+    assert len(active_residents_v1(before)) == 5
+    assert sum(r.state == STATE_ADMITTED_PENDING for r in before.records) == 1
+    after = run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=10_000_000.0)
+    assert [(r.residency_epoch_id, r.state, r.active_slot) for r in after.records] == [
+        (r.residency_epoch_id, r.state, r.active_slot) for r in before.records
+    ]
 
 
 def test_27_no_duplicate_active_residency(tmp_path: Path, residency_enabled, cfg) -> None:
@@ -322,7 +335,14 @@ def test_29_reentry_requires_outside_inside(tmp_path: Path, residency_enabled, c
         config=cfg,
         now_unix=1.0,
     )
-    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=2000.0)
+    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=2.0)
+    rec = load_store_v1(root).records[0]
+    apply_evaluation_completion_v1(
+        state_root=root,
+        config=cfg,
+        witnesses=[EvaluationCompletionWitnessV1("A", rec.residency_epoch_id, True, "HOLD")],
+        now_unix=3.0,
+    )
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
         ranking_snapshot=_snapshot([_candidate("A", 1)], snapshot_id="s2"),
@@ -330,9 +350,26 @@ def test_29_reentry_requires_outside_inside(tmp_path: Path, residency_enabled, c
         now_unix=2001.0,
     )
     assert len([r for r in load_store_v1(root).records if r.state == STATE_ADMITTED_PENDING]) == 0
+    observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([], snapshot_id="s3"),
+        config=cfg,
+        now_unix=2002.0,
+    )
+    observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([_candidate("A", 1)], snapshot_id="s4"),
+        config=cfg,
+        now_unix=2003.0,
+    )
+    records = load_store_v1(root).records
+    assert [r.state for r in records] == [STATE_COMPLETED, STATE_ADMITTED_PENDING]
+    assert records[0].residency_epoch_id != records[1].residency_epoch_id
 
 
-def test_30_31_restart_preserves_deadline(tmp_path: Path, residency_enabled, cfg) -> None:
+def test_30_31_restart_preserves_identity_and_evidence(
+    tmp_path: Path, residency_enabled, cfg
+) -> None:
     root = tmp_path / "res"
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
@@ -340,15 +377,17 @@ def test_30_31_restart_preserves_deadline(tmp_path: Path, residency_enabled, cfg
         config=cfg,
         now_unix=10.0,
     )
-    deadline = load_store_v1(root).records[0].residency_deadline_unix
-    reloaded = load_store_v1(root)
+    admitted = load_store_v1(root).records[0].to_dict()
     observe_valid_cap22_ranking_snapshot_v1(
         state_root=root,
         ranking_snapshot=_snapshot([_candidate("B", 2)], snapshot_id="s2"),
         config=cfg,
         now_unix=11.0,
     )
-    assert reloaded.records[0].residency_deadline_unix == deadline
+    reloaded = load_store_v1(root).records[0]
+    assert reloaded.residency_epoch_id == admitted["residency_epoch_id"]
+    assert reloaded.admission.to_dict() == admitted["admission"]
+    assert reloaded.queue_order_key == tuple(admitted["queue_order_key"])
 
 
 def test_33_clock_rollback_fail_closed(tmp_path: Path, residency_enabled, cfg) -> None:
@@ -424,3 +463,163 @@ def test_validate_integrity_detects_tamper() -> None:
     snap = _snapshot([_candidate("A", 1)])
     snap["integrity_digest"] = "deadbeef"
     assert validate_cap22_integrity_v1(snap)
+
+
+@pytest.mark.parametrize(
+    "instrument,epoch,replayed,disposition",
+    [
+        ("B", "matching", True, "HOLD"),
+        ("A", "wrong", True, "HOLD"),
+        ("A", "matching", False, "HOLD"),
+        ("A", "matching", True, "UNKNOWN"),
+    ],
+)
+def test_unmatched_or_incomplete_event_does_not_release(
+    tmp_path,
+    cfg,
+    instrument,
+    epoch,
+    replayed,
+    disposition,
+) -> None:
+    root = tmp_path / "res"
+    observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([_candidate("A", 1)]),
+        config=cfg,
+        now_unix=1.0,
+    )
+    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1.0)
+    rec = load_store_v1(root).records[0]
+    witness = EvaluationCompletionWitnessV1(
+        instrument,
+        rec.residency_epoch_id if epoch == "matching" else "wrong",
+        replayed,
+        disposition,
+    )
+    result = apply_evaluation_completion_v1(
+        state_root=root,
+        config=cfg,
+        witnesses=[witness],
+        now_unix=2.0,
+    )
+    assert result.records[0].state == STATE_ACTIVE_RESIDENT
+    assert result.records[0].active_slot == 1
+
+
+def test_completion_is_immediate_idempotent_and_promotes_pending(tmp_path, cfg) -> None:
+    from src.ops.top20_opportunity_evaluation_residency_v1.orchestration_v1 import (
+        post_orchestrator_evaluation_feedback_v1,
+    )
+    from src.ops.top20_opportunity_evaluation_residency_v1.persistence_v1 import load_metrics_v1
+
+    cfg = ResidencyRuntimeConfigV1(enabled=True, max_pending=6)
+    root = tmp_path / "res"
+    observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([_candidate(str(i), i) for i in range(1, 7)]),
+        config=cfg,
+        now_unix=1.0,
+    )
+    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1.0)
+    rec = load_store_v1(root).records[0]
+    witness = EvaluationCompletionWitnessV1("1", rec.residency_epoch_id, True, "HOLD")
+    for _ in range(2):
+        post_orchestrator_evaluation_feedback_v1(
+            residency_state_root=root,
+            config=cfg,
+            witnesses=[witness],
+            producer_observed_at_unix=1.0,
+            scoped_productive_activation=True,
+        )
+    result = load_store_v1(root)
+    assert result.records[0].state == STATE_COMPLETED
+    assert result.records[-1].state == STATE_ACTIVE_RESIDENT
+    assert len(active_residents_v1(result)) == 5
+    assert load_metrics_v1(root).evaluation_observed_total == 1
+
+
+def test_unsupported_store_preserved_without_automatic_conversion(tmp_path, cfg) -> None:
+    from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import STATE_FILENAME
+    from src.ops.top20_opportunity_evaluation_residency_v1.persistence_v1 import (
+        ResidencyPersistenceError,
+    )
+
+    root = tmp_path / "res"
+    root.mkdir()
+    path = root / STATE_FILENAME
+    original = json.dumps({"schema_version": "top20_opportunity_evaluation_residency.v1"})
+    path.write_text(original)
+    with pytest.raises(ResidencyPersistenceError, match="UNSUPPORTED_RESIDENCY_SCHEMA"):
+        run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1.0)
+    assert path.read_text() == original
+    assert list(root.iterdir()) == [path]
+
+
+def test_invalid_state_or_unknown_record_field_preserved(tmp_path, cfg) -> None:
+    from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import STATE_FILENAME
+    from src.ops.top20_opportunity_evaluation_residency_v1.persistence_v1 import (
+        ResidencyPersistenceError,
+    )
+
+    root = tmp_path / "res"
+    store = observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([_candidate("A", 1)]),
+        config=cfg,
+        now_unix=1.0,
+    )
+    for change, code in [
+        ({"state": "UNSUPPORTED"}, "UNSUPPORTED_RESIDENCY_STATE"),
+        ({"unrecognized_field": 1}, "INVALID_RESIDENCY_RECORD"),
+    ]:
+        payload = store.to_dict()
+        payload["records"][0].update(change)
+        original = json.dumps(payload)
+        path = root / STATE_FILENAME
+        path.write_text(original)
+        with pytest.raises(ResidencyPersistenceError, match=code):
+            load_store_v1(root)
+        assert path.read_text() == original
+
+
+def test_unsupported_metrics_do_not_get_silently_overwritten(tmp_path, cfg) -> None:
+    from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import (
+        METRICS_FILENAME,
+        STATE_FILENAME,
+    )
+    from src.ops.top20_opportunity_evaluation_residency_v1.persistence_v1 import (
+        ResidencyPersistenceError,
+    )
+
+    root = tmp_path / "res"
+    root.mkdir()
+    path = root / METRICS_FILENAME
+    original = json.dumps({"unsupported_metric": 1})
+    path.write_text(original)
+    with pytest.raises(ResidencyPersistenceError, match="INVALID_RESIDENCY_METRICS"):
+        run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1.0)
+    assert path.read_text() == original
+    assert not (root / STATE_FILENAME).exists()
+
+
+def test_structural_invalidation_still_discards_without_completion(tmp_path, cfg) -> None:
+    from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import STATE_INVALIDATED
+
+    root = tmp_path / "res"
+    observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([_candidate("A", 1)]),
+        config=cfg,
+        now_unix=1.0,
+    )
+    run_scheduler_tick_v1(state_root=root, config=cfg, now_unix=1.0)
+    result = observe_valid_cap22_ranking_snapshot_v1(
+        state_root=root,
+        ranking_snapshot=_snapshot([], snapshot_id="s2"),
+        config=cfg,
+        now_unix=1.0,
+        universe_snapshot={"snapshot_id": "uni_1", "instruments": []},
+    )
+    assert result.records[0].state == STATE_INVALIDATED
+    assert result.records[0].active_slot is None

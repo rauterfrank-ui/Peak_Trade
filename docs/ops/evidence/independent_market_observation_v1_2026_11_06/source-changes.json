@@ -1,0 +1,593 @@
+{
+  "source_head_before": "8cfb04ec17e2f6d2c85559ebf89cfb3283accad9",
+  "files": [
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/independent_market_horizon_v1.py",
+      "before_sha256": null,
+      "after_sha256": "ba08937ca367fc851796b5eb5a98b94e55f3be0abb5b911359cb70ef16a401fe",
+      "bytes": 11207,
+      "symbols": [
+        {
+          "name": "_require",
+          "line": 57,
+          "end_line": 59
+        },
+        {
+          "name": "_text",
+          "line": 62,
+          "end_line": 64
+        },
+        {
+          "name": "_instant",
+          "line": 67,
+          "end_line": 74
+        },
+        {
+          "name": "_bytes",
+          "line": 77,
+          "end_line": 78
+        },
+        {
+          "name": "_digest",
+          "line": 81,
+          "end_line": 82
+        },
+        {
+          "name": "_original",
+          "line": 85,
+          "end_line": 93
+        },
+        {
+          "name": "validate_market_horizon_request_v1",
+          "line": 96,
+          "end_line": 124
+        },
+        {
+          "name": "_materialize_market_horizon_v1",
+          "line": 127,
+          "end_line": 247
+        },
+        {
+          "name": "validate_independent_market_horizon_v1",
+          "line": 250,
+          "end_line": 259
+        },
+        {
+          "name": "build_independent_market_return_target_v1",
+          "line": 262,
+          "end_line": 281
+        }
+      ]
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "before_sha256": "886607ce405fd19f7233fb83d2b68cac524b6cba9d77f763a59838cfe0872b21",
+      "after_sha256": "aed5dc58465fa862623f9b4183d47ad72cc31912ee41129bf9e8456e8444b35a",
+      "bytes": 18821,
+      "symbols": [
+        {
+          "name": "NbarsSupplierMaterializationV1",
+          "line": 52,
+          "end_line": 56
+        },
+        {
+          "name": "validate_n_bars_measurement_evidence_v1",
+          "line": 69,
+          "end_line": 98
+        },
+        {
+          "name": "validate_n_bars_measurement_artifacts_v1",
+          "line": 101,
+          "end_line": 138
+        },
+        {
+          "name": "_price_basis_for_bar",
+          "line": 141,
+          "end_line": 145
+        },
+        {
+          "name": "_resolve_price_basis",
+          "line": 148,
+          "end_line": 153
+        },
+        {
+          "name": "_assert_pit_observation_boundary",
+          "line": 156,
+          "end_line": 178
+        },
+        {
+          "name": "_build_measurement_fields",
+          "line": 181,
+          "end_line": 221
+        },
+        {
+          "name": "materialize_real_outcome_horizon_supplier_input_v1",
+          "line": 224,
+          "end_line": 343
+        },
+        {
+          "name": "_non_ok_supplier_payload",
+          "line": 346,
+          "end_line": 357
+        },
+        {
+          "name": "run_offline_n_bars_horizon_pipeline_v1",
+          "line": 360,
+          "end_line": 386
+        },
+        {
+          "name": "_materialize_canonical_n_bars_measurement_v1",
+          "line": 389,
+          "end_line": 433
+        },
+        {
+          "name": "materialize_independent_market_horizon_v1",
+          "line": 436,
+          "end_line": 442
+        }
+      ]
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+      "before_sha256": "9125459a08aee2a37ea278d8c4f6a8f19258bb758a5175195df01bc84e13d549",
+      "after_sha256": "c1c8cca0088947b8dd7d4cd3867d752669e7f887e5fcd44158315399eca1c17d",
+      "bytes": 15126,
+      "symbols": [
+        {
+          "name": "_require_positive_int",
+          "line": 67,
+          "end_line": 72
+        },
+        {
+          "name": "_normalize_o4_interval_id",
+          "line": 75,
+          "end_line": 82
+        },
+        {
+          "name": "unix_seconds_to_event_time_utc",
+          "line": 85,
+          "end_line": 102
+        },
+        {
+          "name": "_hash_safe_json_value",
+          "line": 105,
+          "end_line": 114
+        },
+        {
+          "name": "mint_ddo_content_ref_v1",
+          "line": 117,
+          "end_line": 124
+        },
+        {
+          "name": "validate_o4_bar_snapshot_element_v1",
+          "line": 127,
+          "end_line": 135
+        },
+        {
+          "name": "validate_o4_n_bars_bar_evidence_snapshot_v1",
+          "line": 138,
+          "end_line": 170
+        },
+        {
+          "name": "DdoNbarsBridgeTranslationV1",
+          "line": 174,
+          "end_line": 204
+        },
+        {
+          "name": "_bar_state_token",
+          "line": 207,
+          "end_line": 225
+        },
+        {
+          "name": "_provenance_from_bars",
+          "line": 228,
+          "end_line": 244
+        },
+        {
+          "name": "translate_o4_snapshot_to_ddo_n_bars_bindings_v1",
+          "line": 247,
+          "end_line": 257
+        },
+        {
+          "name": "translate_o4_market_bar_chain_v1",
+          "line": 260,
+          "end_line": 275
+        },
+        {
+          "name": "_translate_o4_bar_chain_v1",
+          "line": 278,
+          "end_line": 380
+        },
+        {
+          "name": "derive_o4_instrument_ref_v1",
+          "line": 383,
+          "end_line": 392
+        },
+        {
+          "name": "derive_o4_bar_spec_ref_v1",
+          "line": 395,
+          "end_line": 397
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "before_sha256": "94fae7b7516630a99f18f33f253b9301bfeaf46f3d93fe845fe98f6f70359b74",
+      "after_sha256": "adc948d5e24ff7f18beb04b0469c29ec97f4675c12809f4de4a93598456dd00c",
+      "bytes": 11461,
+      "symbols": [
+        {
+          "name": "_canonicalize_numeric_tree",
+          "line": 42,
+          "end_line": 49
+        },
+        {
+          "name": "_calibration_digest",
+          "line": 52,
+          "end_line": 53
+        },
+        {
+          "name": "CalibrationEvidenceValidationError",
+          "line": 56,
+          "end_line": 57
+        },
+        {
+          "name": "derive_calibration_evidence_id_v1",
+          "line": 60,
+          "end_line": 62
+        },
+        {
+          "name": "_score_directional",
+          "line": 65,
+          "end_line": 75
+        },
+        {
+          "name": "build_calibration_evidence_v1",
+          "line": 78,
+          "end_line": 102
+        },
+        {
+          "name": "_build_calibration_from_validated_join_v1",
+          "line": 105,
+          "end_line": 230
+        },
+        {
+          "name": "validate_calibration_evidence_v1",
+          "line": 233,
+          "end_line": 281
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+      "before_sha256": "500f8ac9794dce0d44513bb8b5da09200c226a54deae5bf16a19ace5eb189ec4",
+      "after_sha256": "91dd7c0b3339e0178e7f8531c0d0bfb24091a4fa898b0e3389b3b4910becf9ba",
+      "bytes": 19143,
+      "symbols": [
+        {
+          "name": "FactAdmissionReceiptV1",
+          "line": 40,
+          "end_line": 46
+        },
+        {
+          "name": "ContextAdmissionPolicyV1",
+          "line": 50,
+          "end_line": 55
+        },
+        {
+          "name": "_fact_groups",
+          "line": 58,
+          "end_line": 80
+        },
+        {
+          "name": "_identity_and_time",
+          "line": 83,
+          "end_line": 109
+        },
+        {
+          "name": "_validate_numbers_and_units",
+          "line": 112,
+          "end_line": 158
+        },
+        {
+          "name": "compose_admitted_intelligence_context_v1",
+          "line": 161,
+          "end_line": 176
+        },
+        {
+          "name": "compose_admitted_market_context_v1",
+          "line": 179,
+          "end_line": 190
+        },
+        {
+          "name": "_compose_admitted_context_v1",
+          "line": 193,
+          "end_line": 350
+        },
+        {
+          "name": "replay_admitted_intelligence_context_v1",
+          "line": 353,
+          "end_line": 355
+        },
+        {
+          "name": "replay_admitted_market_context_v1",
+          "line": 358,
+          "end_line": 359
+        },
+        {
+          "name": "_replay_admitted_context_v1",
+          "line": 362,
+          "end_line": 444
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "before_sha256": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+      "after_sha256": "dcb00c640bf97c0a47d14c1cc621aba38301ba30d8f39e29136aa7555a4c528e",
+      "bytes": 21734,
+      "symbols": [
+        {
+          "name": "validate_forecast_numbers_v1",
+          "line": 47,
+          "end_line": 58
+        },
+        {
+          "name": "_lease",
+          "line": 62,
+          "end_line": 70
+        },
+        {
+          "name": "_append",
+          "line": 73,
+          "end_line": 95
+        },
+        {
+          "name": "_read",
+          "line": 98,
+          "end_line": 99
+        },
+        {
+          "name": "freeze_existing_intelligence_forecast_v1",
+          "line": 102,
+          "end_line": 121
+        },
+        {
+          "name": "freeze_existing_market_forecast_v1",
+          "line": 124,
+          "end_line": 143
+        },
+        {
+          "name": "_freeze_existing_forecast_v1",
+          "line": 146,
+          "end_line": 321
+        },
+        {
+          "name": "calibrate_frozen_intelligence_forecast_v1",
+          "line": 324,
+          "end_line": 412
+        },
+        {
+          "name": "_readback",
+          "line": 415,
+          "end_line": 429
+        },
+        {
+          "name": "handoff_calibrated_intelligence_evidence_v1",
+          "line": 432,
+          "end_line": 516
+        },
+        {
+          "name": "read_calibrated_intelligence_v1",
+          "line": 519,
+          "end_line": 547
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py",
+      "before_sha256": null,
+      "after_sha256": "2ffaa8ff1b174b0ccad12f5607dc9ff6b017268d2535873bf36f5614a467065e",
+      "bytes": 8751,
+      "symbols": [
+        {
+          "name": "_prepare",
+          "line": 45,
+          "end_line": 95
+        },
+        {
+          "name": "calibrate_frozen_market_forecast_v1",
+          "line": 98,
+          "end_line": 161
+        },
+        {
+          "name": "read_independent_market_calibration_v1",
+          "line": 164,
+          "end_line": 199
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/integration_contracts_v1.py",
+      "before_sha256": "d5643610897776253cfd158c98cc218dc7b52ebb1122bc2b2b614807af545695",
+      "after_sha256": "6c3e38f0a750d4fbe64d5bd9052d3cb5bc9e0883067d8760a627cb0b99174b03",
+      "bytes": 4837,
+      "symbols": [
+        {
+          "name": "IntelligenceIntegrationError",
+          "line": 13,
+          "end_line": 14
+        },
+        {
+          "name": "require_v1",
+          "line": 17,
+          "end_line": 19
+        },
+        {
+          "name": "text_v1",
+          "line": 22,
+          "end_line": 24
+        },
+        {
+          "name": "instant_v1",
+          "line": 27,
+          "end_line": 35
+        },
+        {
+          "name": "finite_v1",
+          "line": 38,
+          "end_line": 41
+        },
+        {
+          "name": "plain_v1",
+          "line": 44,
+          "end_line": 53
+        },
+        {
+          "name": "bytes_v1",
+          "line": 56,
+          "end_line": 64
+        },
+        {
+          "name": "digest_v1",
+          "line": 67,
+          "end_line": 68
+        },
+        {
+          "name": "strict_json_v1",
+          "line": 71,
+          "end_line": 82
+        },
+        {
+          "name": "seal_v1",
+          "line": 85,
+          "end_line": 88
+        },
+        {
+          "name": "validate_seal_v1",
+          "line": 91,
+          "end_line": 97
+        },
+        {
+          "name": "IntelligenceIdentityV1",
+          "line": 101,
+          "end_line": 117
+        },
+        {
+          "name": "MarketIdentityV1",
+          "line": 121,
+          "end_line": 133
+        },
+        {
+          "name": "assert_offline_v1",
+          "line": 136,
+          "end_line": 143
+        }
+      ]
+    },
+    {
+      "path": "tests/learning/test_independent_market_forecast_measurement_v1.py",
+      "before_sha256": null,
+      "after_sha256": "7a482aa9dd75331a1d071fb8c0eba709b9437f1e04e4c4d32477f18803b3bbd2",
+      "bytes": 22595,
+      "symbols": [
+        {
+          "name": "utc",
+          "line": 52,
+          "end_line": 53
+        },
+        {
+          "name": "case",
+          "line": 56,
+          "end_line": 179
+        },
+        {
+          "name": "forbidden",
+          "line": 182,
+          "end_line": 183
+        },
+        {
+          "name": "test_complete_without_decision_original_measurement_and_cold_retry",
+          "line": 186,
+          "end_line": 220
+        },
+        {
+          "name": "mutate_bar",
+          "line": 223,
+          "end_line": 230
+        },
+        {
+          "name": "test_bad_original_bar_never_becomes_measurement",
+          "line": 253,
+          "end_line": 257
+        },
+        {
+          "name": "test_receipt_identity_time_units_and_bytes",
+          "line": 273,
+          "end_line": 277
+        },
+        {
+          "name": "test_explicit_request_and_no_defaults",
+          "line": 295,
+          "end_line": 299
+        },
+        {
+          "name": "test_incomplete_duplicate_and_forbidden_trading_identity",
+          "line": 302,
+          "end_line": 313
+        },
+        {
+          "name": "test_forged_record_and_changed_retry_cannot_replace_original",
+          "line": 316,
+          "end_line": 349
+        },
+        {
+          "name": "test_source_generations_and_correction_are_separate_jobs",
+          "line": 352,
+          "end_line": 363
+        },
+        {
+          "name": "test_legacy_apis_keep_their_decision_requirement",
+          "line": 366,
+          "end_line": 371
+        },
+        {
+          "name": "test_fresh_process_reads_original_numbers_without_recomputation",
+          "line": 374,
+          "end_line": 398
+        },
+        {
+          "name": "remint",
+          "line": 401,
+          "end_line": 415
+        },
+        {
+          "name": "test_explicit_three_closes_are_two_intervals_and_distinct_horizon",
+          "line": 418,
+          "end_line": 446
+        },
+        {
+          "name": "test_source_generation_target_and_context_units_cannot_be_relabelled",
+          "line": 449,
+          "end_line": 465
+        },
+        {
+          "name": "test_received_generation_detached_and_before_freeze_calibration_blocked",
+          "line": 468,
+          "end_line": 482
+        },
+        {
+          "name": "test_market_path_cannot_acquire_a_decision_or_change_source_class",
+          "line": 485,
+          "end_line": 495
+        },
+        {
+          "name": "test_existing_attributed_identity_subtypes_remain_accepted",
+          "line": 498,
+          "end_line": 505
+        }
+      ]
+    }
+  ],
+  "actual_product_and_test_changes": true
+}

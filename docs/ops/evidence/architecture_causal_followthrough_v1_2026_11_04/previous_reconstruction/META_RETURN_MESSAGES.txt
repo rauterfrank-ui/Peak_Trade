@@ -1,0 +1,26 @@
+[
+  {
+    "id": 203898,
+    "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/72baae56-9b01-43d6-9a8e-af01616d2d2d/72baae56-9b01-43d6-9a8e-af01616d2d2d.jsonl",
+    "line": 18,
+    "role": "user",
+    "index_text_matches": true,
+    "sha256": "89c777e7ae1162497384e79ab2549616ac4a57658ad417bae6de8c14c13534ba"
+  },
+  {
+    "id": 262760,
+    "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/e204fd9c-8bdc-4178-b980-1c191a86795c/e204fd9c-8bdc-4178-b980-1c191a86795c.jsonl",
+    "line": 74,
+    "role": "user",
+    "index_text_matches": true,
+    "sha256": "c1b16e9d4e99db6d77da8f89fa27c8f601fcdaad683855895cb45e02318e561e"
+  },
+  {
+    "id": 262767,
+    "path": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/e204fd9c-8bdc-4178-b980-1c191a86795c/e204fd9c-8bdc-4178-b980-1c191a86795c.jsonl",
+    "line": 81,
+    "role": "user",
+    "index_text_matches": true,
+    "sha256": "d5b3894b75cf6afbfbbe129b4a5199cec7984185df28562f58251a8ef7b48e87"
+  }
+]

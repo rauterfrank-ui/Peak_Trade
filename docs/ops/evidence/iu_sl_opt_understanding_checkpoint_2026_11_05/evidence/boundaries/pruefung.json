@@ -1,0 +1,6 @@
+{
+  "schema": "peaktrade.exact_utf8_artifact.v1",
+  "origin": "/Users/frnkhrz/Desktop/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Systemindex/sl-opt-aussenkanten-architektur-2026-11-05/pruefung.json",
+  "sha256": "254ac865efd9448fb987199f855484b205fda8ac7005d7993fd4cdcb81fb0db9",
+  "original_utf8": "{\n  \"schema\": \"peaktrade.sl_opt.architectural_boundary_document_check.v1\",\n  \"result\": \"PASS\",\n  \"errors\": [],\n  \"head\": \"10d899b16356974bdd1f3c90f13681825cc09afe\",\n  \"written_documents_and_models\": 69,\n  \"preserved_original_vault_files\": 4641,\n  \"byte_exact_prior_versions\": 62,\n  \"repository_local_files_preserved\": 135,\n  \"repository_sources_rechecked\": 55,\n  \"function_anchors_rechecked\": 64,\n  \"authored_wikilinks_checked\": 240,\n  \"all_port_endpoint_mirrors_checked\": true,\n  \"runtime_or_product_tests_executed\": false,\n  \"natural_system_or_economic_acceptance_claimed\": false,\n  \"new_canvas_or_dashboard\": false,\n  \"external_drive_access_in_this_task\": false,\n  \"global_old_view_models_recertified\": false\n}\n"
+}

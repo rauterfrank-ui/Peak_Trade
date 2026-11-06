@@ -1,0 +1,26 @@
+{
+  "schema": "n_bars_measurement_handoff_v1",
+  "source_commit": "8b9a56dcdd9d712a6723ee64f338b9c7bdf8de67",
+  "changes": {
+    "src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py": {
+      "before_sha256": "7cb27673ec78979cfba4d9a8801d60c115765d16e9f2b25c3f651276054612fe",
+      "after_sha256": "966cff7bdf204d441ff57c4a68926eeb7b3106a8e1785b52cd5c0faa5a7585e1"
+    },
+    "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py": {
+      "before_sha256": "00d280a98148f0522e6f3af071c85bdc5f6b1228e8694811bffa425102ae62d3",
+      "after_sha256": "a6370540c8e6be1702822251e9866abf571ec0d23b5df36a46f3072ca22f3dd3"
+    },
+    "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py": {
+      "before_sha256": "adfe211d6a62524eec4fc07d1d677ce746eab1b3a78829591ffe1013c3c440cc",
+      "after_sha256": "37126c8167902ab046624aadb5222f2bcb8fa8acb182afff833452eb5fb6e43a"
+    }
+  },
+  "origin": "Dataset_v1_Herkunft_Fassungen_und_DDO_Messwertuebergabe.md historical reconstruction and current supplier/host/runtime body review",
+  "effect": "Retain existing supplier measurement and information-set artifacts in host/runtime result; validate original content refs and observation/decision context before evaluation or ledger access. No duplicate calculation.",
+  "tests": "41 pass, ten new cases; ETH/BTC/SUI, JSON roundtrip, tampering, rehashed wrong context, partial pair, legacy input, close-window semantics.",
+  "measurement_window": "First supplied close to last supplied close; horizon grid start is distinct from first close. Not automatically an MI target-window label.",
+  "persistence": "In-process/JSON-serializable result retention only; no new durable measurement store or natural-runtime proof.",
+  "economic_score_inference": false,
+  "runtime_authorization_effect": "NONE",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b"
+}

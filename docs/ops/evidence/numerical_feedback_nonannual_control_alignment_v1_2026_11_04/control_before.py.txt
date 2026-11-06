@@ -1,0 +1,309 @@
+"""Computed offline evidence reaches Meta and changes actual next Search choice."""
+
+from dataclasses import replace
+
+import pandas as pd
+import pytest
+
+from src.backtest.stats import compute_backtest_stats
+from src.experiments.canonical_advanced_search_v1 import build_canonical_advanced_search_v1
+from src.experiments.canonical_automated_offline_research_loop_v1 import (
+    run_canonical_automated_offline_research_loop_v1,
+    canonical_record_payload_v1,
+    validate_canonical_automated_offline_research_loop_v1,
+    AutomatedOfflineResearchLoopValidationError,
+)
+from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
+from src.experiments.canonical_experiment_identity_v1 import build_canonical_experiment_identity_v1
+from src.experiments.canonical_research_result_to_meta_input_v1 import (
+    ResearchResultMetaInputV1,
+    build_meta_learning_from_research_results_v1,
+)
+from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
+from tests.experiments.test_canonical_advanced_search_v1 import _request as _search_request
+from tests.experiments.test_canonical_automated_offline_research_loop_v1 import (
+    _request,
+    _hypothesis,
+    _observations,
+    _identity_request,
+    _candidate,
+)
+
+_HORIZON = {"start": "2024-01-01T00:00:00Z", "end": "2024-01-05T00:00:00Z"}
+_UNIVERSE = ("SYNTHETIC-HOURLY-CONTROL",)
+
+
+def _stats(returns):
+    equity = pd.Series(
+        [1000.0, *list(1000.0 * (1.0 + pd.Series(returns)).cumprod())],
+        index=pd.date_range("2024-01-01", periods=len(returns) + 1, freq="h", tz="UTC"),
+    )
+    return compute_backtest_stats(trades=[], equity_curve=equity)
+
+
+def _source(seed=12, *, fail_oos=True):
+    # Controlled hourly returns, not natural market/strategy evidence.
+    train = [0.002, -0.001, 0.003, 0.001] * 8
+    test = ([-0.003, 0.001, -0.002, -0.001] if fail_oos else [0.002, -0.001, 0.003, 0.001]) * 8
+    train_stats, test_stats = _stats(train), _stats(test)
+    metrics = _stats(train + test + test)
+    template = _identity_request(
+        seed=seed,
+        dataset_digest=compute_content_sha256(
+            {
+                "train": train,
+                "bad_test": [-0.003, 0.001, -0.002, -0.001] * 8,
+                "good_test": [0.002, -0.001, 0.003, 0.001] * 8,
+            }
+        ),
+        split_policy_digest=compute_content_sha256(
+            {
+                "train_samples": 32,
+                "validation_samples": 32,
+                "holdout_samples": 32,
+                "frequency": "PT1H",
+                "test_case": "bad" if fail_oos else "good",
+            }
+        ),
+    )
+    search_request = _search_request(
+        identity_template=template, budget=1, regime="controlled_hourly_scenario"
+    )
+    search = build_canonical_advanced_search_v1(search_request)
+    chosen = next(row for row in search["candidates"] if row["status"] == "PROPOSED")
+    hypothesis = _hypothesis(
+        hypothesis_id=chosen["hypothesis_id"],
+        identity_request=replace(
+            template, strategy_params={**template.strategy_params, **chosen["parameter_region"]}
+        ),
+        parameter_region=chosen["parameter_region"],
+        strategy_family=chosen["strategy_family"],
+        regime="controlled_hourly_scenario",
+        candidate_ref=chosen["candidate_ref"],
+        time_horizon=_HORIZON,
+        market_universe=_UNIVERSE,
+    )
+    observations = _observations(
+        metrics={"sharpe": metrics["sharpe"]},
+        robustness_results={
+            "train_sharpe": train_stats["sharpe"],
+            "test_sharpe": test_stats["sharpe"],
+        },
+        regime_results={},
+        robustness_observations={
+            "returns": train + test + test,
+            "split_metrics": {
+                "train": {"sharpe": train_stats["sharpe"], "sample_size": len(train)},
+                "validation": {"sharpe": test_stats["sharpe"], "sample_size": len(test)},
+                "holdout": {"sharpe": test_stats["sharpe"], "sample_size": len(test)},
+            },
+        },
+    )
+    loop = run_canonical_automated_offline_research_loop_v1(
+        _request(
+            hypotheses=(hypothesis,),
+            selected_hypothesis_id=hypothesis.hypothesis_id,
+            created_at="2026-08-18T15:30:00Z",
+            experiment_observations=observations,
+            champion=_candidate(
+                identity=build_canonical_experiment_identity_v1(replace(template, seed=1000)),
+                time_horizon=_HORIZON,
+                market_universe=_UNIVERSE,
+            ),
+            # The control compares the same whole-period statistic; selection
+            # feedback below comes from measured split collapse, not this rank.
+            champion_score=metrics["sharpe"],
+            challenger_score=metrics["sharpe"],
+        )
+    )
+    return ResearchResultMetaInputV1(search, loop, _HORIZON, _UNIVERSE), search_request
+
+
+def _analyze(inputs):
+    return build_meta_learning_from_research_results_v1(
+        inputs, created_at="2026-08-18T16:00:00Z", policy=canonical_meta_learning_policy_v1()
+    )
+
+
+def test_computed_overfit_changes_next_actual_search_choice():
+    inputs = [_source(seed)[0] for seed in (12, 13, 14)]
+    result = _analyze(inputs)
+    meta = result["meta_learning_record"]
+    proposals = [p for p in meta["research_proposals"] if p["target_kind"] == "parameter_region"]
+    assert proposals
+    _, request = _source()
+    request = replace(request, budget=1)
+    before = build_canonical_advanced_search_v1(request)
+    after = build_canonical_advanced_search_v1(
+        replace(
+            request,
+            meta_learning_signals=tuple(proposals),
+            meta_learning_identity=meta["meta_learning_identity"],
+        )
+    )
+    before_selected = next(row for row in before["candidates"] if row["status"] == "PROPOSED")
+    after_selected = next(row for row in after["candidates"] if row["status"] == "PROPOSED")
+    assert before_selected["parameter_region"] != after_selected["parameter_region"]
+    assert any(
+        p["proposal_id"] in row["matched_meta_learning_proposal_ids"]
+        for p in proposals
+        for row in after["candidates"]
+    )
+    assert result["productive_apply_authorized"] is False
+    assert meta["ranked_experiment_ids"] == []
+    assert _analyze(tuple(reversed(inputs)))["content_digest"] == result["content_digest"]
+
+
+def test_same_control_with_no_oos_collapse_has_no_overfit_region_proposal():
+    result = _analyze([_source(seed, fail_oos=False)[0] for seed in (12, 13, 14)])
+    assert not [
+        p
+        for p in result["meta_learning_record"]["research_proposals"]
+        if p["target_kind"] == "parameter_region"
+    ]
+
+
+def test_missing_stability_and_later_outcome_are_not_invented():
+    result = _analyze([_source()[0]])
+    questions = {q["question_id"]: q for q in result["meta_learning_record"]["questions"]}
+    assert questions["PARAMETER_INSTABILITY"]["sample_size"] == 0
+    assert questions["BACKTEST_METRIC_PREDICTIVE_ASSOCIATION"]["missing_evidence_count"] == 1
+    assert not result["missing_parameter_stability_inferred"]
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("market_universe", ("OTHER-SWAP",)),
+        ("time_horizon", {"start": "2021-01-01T00:00:00Z", "end": "2024-12-31T00:00:00Z"}),
+    ],
+)
+def test_context_values_must_match_existing_comparison_owner(field, value):
+    source, _ = _source()
+    with pytest.raises(ValueError, match="comparison"):
+        _analyze([replace(source, **{field: value})])
+
+
+def test_mutated_loop_metrics_cannot_reuse_old_witness():
+    source, _ = _source()
+    loop = canonical_record_payload_v1(source.research_loop_record)
+    loop["experiment_record"]["metrics"]["sharpe"] = 999.0
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError, match="content_sha256 mismatch"
+    ):
+        validate_canonical_automated_offline_research_loop_v1(loop)
+
+
+def test_changed_loop_identity_cannot_be_resealed_with_only_integrity():
+    source, _ = _source()
+    loop = canonical_record_payload_v1(source.research_loop_record)
+    loop["loop_identity"] = "a" * 64
+    loop["integrity"]["content_sha256"] = compute_content_sha256(
+        {k: v for k, v in loop.items() if k != "integrity"}
+    )
+    with pytest.raises(AutomatedOfflineResearchLoopValidationError, match="loop_identity mismatch"):
+        _analyze([replace(source, research_loop_record=loop)])
+
+
+def test_wrong_search_candidate_source_rejected():
+    source, _ = _source(12)
+    other, _ = _source(13)
+    with pytest.raises(ValueError, match="SELECTED_SEARCH_CANDIDATE_UNBOUND"):
+        _analyze([replace(source, search_record=other.search_record)])
+
+
+def test_future_search_record_cannot_be_parent_of_prior_research():
+    source, request = _source()
+    future = build_canonical_advanced_search_v1(
+        replace(request, created_at="2026-08-18T15:30:00.000000001Z")
+    )
+    with pytest.raises(ValueError, match="SEARCH_AFTER_RESEARCH_EVIDENCE"):
+        _analyze([replace(source, search_record=future)])
+
+
+def test_duplicate_experiment_does_not_inflate_meta_sample():
+    source, _ = _source()
+    with pytest.raises(ValueError, match="unique experiment_id"):
+        _analyze([source, source])
+
+
+def test_analysis_cannot_precede_bound_evidence():
+    source, _ = _source()
+    with pytest.raises(ValueError, match="lookahead"):
+        build_meta_learning_from_research_results_v1(
+            [source], created_at="2026-08-18T15:00:00Z", policy=canonical_meta_learning_policy_v1()
+        )
+
+
+def test_bounded_feedback_entry_calls_actual_analyzer_and_next_search():
+    from src.experiments.canonical_research_result_to_meta_input_v1 import (
+        run_research_result_meta_search_feedback_v1,
+    )
+
+    inputs = [_source(seed)[0] for seed in (12, 13, 14)]
+    _, request = _source()
+    request = replace(request, created_at="2026-08-18T16:01:00Z")
+    before = build_canonical_advanced_search_v1(request)
+    result = run_research_result_meta_search_feedback_v1(
+        inputs,
+        created_at="2026-08-18T16:00:00Z",
+        policy=canonical_meta_learning_policy_v1(),
+        next_search_request=request,
+    )
+    before_choice = next(c for c in before["candidates"] if c["status"] == "PROPOSED")
+    after_choice = next(
+        c for c in result["next_search_record"]["candidates"] if c["status"] == "PROPOSED"
+    )
+    assert before_choice["parameter_region"] != after_choice["parameter_region"]
+    assert result["experiment_execution_performed"] is False
+    assert result["productive_apply_authorized"] is False
+    assert len(result["meta_input_binding"]["source_bindings"]) == 3
+
+
+def test_next_search_cannot_precede_meta_analysis():
+    from src.experiments.canonical_research_result_to_meta_input_v1 import (
+        run_research_result_meta_search_feedback_v1,
+    )
+
+    source, request = _source()
+    with pytest.raises(ValueError, match="NEXT_SEARCH_PRECEDES_META_EVIDENCE"):
+        run_research_result_meta_search_feedback_v1(
+            [source],
+            created_at="2026-08-18T16:00:00Z",
+            policy=canonical_meta_learning_policy_v1(),
+            next_search_request=request,
+        )
+
+
+def test_insufficient_sample_preserves_unmodified_next_search():
+    from src.experiments.canonical_research_result_to_meta_input_v1 import (
+        run_research_result_meta_search_feedback_v1,
+    )
+
+    source, request = _source()
+    request = replace(request, created_at="2026-08-18T16:01:00Z")
+    result = run_research_result_meta_search_feedback_v1(
+        [source],
+        created_at="2026-08-18T16:00:00Z",
+        policy=canonical_meta_learning_policy_v1(),
+        next_search_request=request,
+    )
+    assert result["meta_input_binding"]["meta_learning_record"]["research_proposals"] == []
+    assert result["next_search_record"] == canonical_record_payload_v1(
+        build_canonical_advanced_search_v1(request)
+    )
+
+
+def test_existing_next_meta_input_cannot_be_silently_replaced():
+    from src.experiments.canonical_research_result_to_meta_input_v1 import (
+        run_research_result_meta_search_feedback_v1,
+    )
+
+    source, request = _source()
+    with pytest.raises(ValueError, match="NEXT_SEARCH_META_INPUT_ALREADY_BOUND"):
+        run_research_result_meta_search_feedback_v1(
+            [source],
+            created_at="2026-08-18T16:00:00Z",
+            policy=canonical_meta_learning_policy_v1(),
+            next_search_request=replace(request, meta_learning_identity="a" * 64),
+        )

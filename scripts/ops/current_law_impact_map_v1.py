@@ -12,6 +12,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from runpy import run_path
 
 MAP_ID = "CURRENT_LAW_IMPACT_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
@@ -128,6 +129,10 @@ def validate_law_references(doc: dict, repo_root: Path) -> list[str]:
                 errors.append(f"law {lid} index_status must be MISSING_SOURCE")
         elif expected != digest:
             errors.append(f"law {lid} STALE source_sha256 for {src}")
+        if digest is not None and doc.get("policy_inventory"):
+            anchor = lref.get("canonical_anchor", "")
+            if not anchor or anchor not in (repo_root / src).read_text(encoding="utf-8"):
+                errors.append(f"law {lid} STALE canonical_anchor for {src}")
         if not lref.get("evidence_refs"):
             errors.append(f"law {lid} missing evidence_refs")
     return errors
@@ -209,6 +214,10 @@ def validate_edges(doc: dict) -> list[str]:
 
 
 def render_views(doc: dict) -> dict[str, str]:
+    if doc.get("policy_inventory"):
+        return run_path(str(REPO_ROOT / "docs/system_atlas/policy_projection.py"))[
+            "render_law_views"
+        ](doc, REPO_ROOT)
     law_lines = [
         _banner("law_reference_index"),
         "# Law Reference Index",
@@ -428,11 +437,27 @@ def validate_repository(repo_root: Path, diff_base: str | None) -> list[str]:
     errors.extend(validate_semantic_divergence_index(doc))
     errors.extend(validate_unclassified_surfaces(doc))
     errors.extend(derived_drift(doc, repo_root))
+    if doc.get("policy_inventory"):
+        projection = run_path(str(repo_root / "docs/system_atlas/policy_projection.py"))
+        try:
+            projection["validate_policy_inventory"](repo_root, doc)
+        except (ValueError, KeyError, FileNotFoundError) as exc:
+            errors.append(str(exc))
     candidates = _load_json(repo_root / CANDIDATES_PATH.relative_to(REPO_ROOT))
     if candidates.get("exhaustive") is not False:
         errors.append("candidate catalog exhaustive flag must be false")
     if diff_base:
-        changed = git_changed_paths(repo_root, diff_base)
+        if doc.get("policy_inventory"):
+            diff_base = doc["baseline_sha"]
+            tracked = subprocess.check_output(
+                ["git", "diff", "--name-only", diff_base, "--"], cwd=repo_root, text=True
+            ).splitlines()
+            extras = subprocess.check_output(
+                ["git", "ls-files", "--others", "--exclude-standard"], cwd=repo_root, text=True
+            ).splitlines()
+            changed = sorted(set(tracked + extras))
+        else:
+            changed = git_changed_paths(repo_root, diff_base)
         declaration = None
         adj = repo_root / ADJUDICATION_PATH.relative_to(REPO_ROOT)
         if adj.is_file():
@@ -443,7 +468,9 @@ def validate_repository(repo_root: Path, diff_base: str | None) -> list[str]:
                 changed,
                 declaration,
                 surfaces=list(candidates.get("surfaces", [])),
-                source_changed=git_path_changed(repo_root, diff_base, source_rel),
+                source_changed=source_rel in changed
+                if doc.get("policy_inventory")
+                else git_path_changed(repo_root, diff_base, source_rel),
                 derived_clean=not derived_drift(doc, repo_root),
             )
         )

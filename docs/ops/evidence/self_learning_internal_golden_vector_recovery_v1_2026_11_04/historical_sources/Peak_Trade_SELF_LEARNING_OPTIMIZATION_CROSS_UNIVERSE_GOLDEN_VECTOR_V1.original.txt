@@ -1,0 +1,277 @@
+# Peak_Trade — Self-Learning ↔ Optimization Cross-Universe Golden Vector V1
+
+Generated (UTC): 2026-09-30T00:37:39.965785+00:00
+
+## 1. Executive Relation Adjudication
+
+**Central answer:** Self-Learning exports a typed `learning_evidence_record_v1`; Optimization validates it and **requires** it for the M4 experiment plane entrypoint, but **semantic label fields do not change search, objective, candidates, scores, or champion/challenger outcomes** in deterministic A/B probes. Only **`content_hash` / digest lineage** and **`plane_identity` / offline context metadata** change when evidence content changes.
+
+**RELATION_CLASS:** `CONNECTED_AND_CONSUMED` — **not** `CONNECTED_CONSUMED_AND_BEHAVIORALLY_EFFECTIVE` for search/objective/candidate logic.
+
+**NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN**
+
+## 2. Baseline
+- PRIMARY_HEAD=`10f601e6087c33334034b2e013a72ed46835e9e9`
+- ORIGIN_MAIN_HEAD=`5b606f6daf322995a7f26a7208bba70a43cdd392`
+- FORENSIC_BASELINE_SHA=`5b606f6daf322995a7f26a7208bba70a43cdd392`
+- FORENSIC_WORKTREE=`/Users/frnkhrz/Peak_Trade/.wt_whole_system_matrix_v1`
+- BASELINE_RELATION=`PRIMARY_AHEAD_DIRTY; forensic on detached worktree at ORIGIN_MAIN`
+- Prior GV MDs on Desktop: **NOT FOUND** (navigation skipped; code re-verified).
+
+## 3. Relation Boundary
+- **Start (SL):** `export_learning_evidence_from_state_v1` / `learning_evidence_record_v1`.
+- **Handoff:** `validate_canonical_optimization_universe_learning_input_v1`.
+- **OPT consumer chain (minimal):** `run_optimization_universe_experiment_plane_v1` → `build_offline_research_context_v1` → advanced search / champion-challenger (request-driven).
+- **Return channel STOP:** `validate_self_learning_optimization_return_input_v1` (ACK only; no DDO ledger/state write).
+
+## 4. Complete Edge Map
+
+| EDGE_ID | DIRECTION | SOURCE | TARGET | CONTRACT | STATUS |
+|---|---|---|---|---|---|
+| EDGE:SL_EXPORT_TO_OPT_LEARNING_INPUT | SL→OPT | learning_evidence_export_v1 | validate_canonical_optimization_universe_learning_input_v1 | learning_evidence_record_v1 / canonical_optimization_universe_learning_input_v1 | PROVEN_CURRENT |
+| EDGE:OPT_FOUNDATION_ACK | SL→OPT | learning_evidence optional | validate_canonical_optimization_universe_v1 | learning_evidence_record_v1 / canonical_optimization_universe_v1 | PROVEN_CURRENT |
+| EDGE:OPT_PLANE_REQUIRES_EVIDENCE | SL→OPT | plane request.learning_evidence | run_optimization_universe_experiment_plane_v1 | learning_evidence_record_v1 / experiment_plane_v1 | PROVEN_CURRENT |
+| EDGE:OPT_EVIDENCE_TO_SL_RETURN | OPT→SL | build_optimization_experiment_evidence_from_plane_v1 | validate_self_learning_optimization_return_input_v1 | optimization_experiment_evidence_v1 / self_learning_optimization_return_input_v1 | PROVEN_CURRENT |
+| EDGE:META_TO_OPT_FEEDBACK | Meta→OPT | meta_learning_evidence_v1 | canonical_meta_to_optimization_feedback_v1 | META_EVIDENCE / feedback_v1 | PROVEN_CURRENT |
+
+TOTAL_CROSS_UNIVERSE_EDGES=5
+
+## 5. Producer Map
+| Producer | Object | Evidence |
+|---|---|---|
+| `export_learning_evidence_from_state_v1` | `learning_evidence_record_v1` | `learning_evidence_export_v1.py` |
+| `ingest_evaluation_bundle_into_learning_state_v1` | `learning_state_record_v0` | upstream of export |
+| `build_optimization_experiment_evidence_from_plane_v1` | optimization experiment evidence | M5 tests |
+
+## 6. Consumer Map
+| Consumer | Accepts | Uses for computation | Evidence |
+|---|---|---|---|
+| `validate_canonical_optimization_universe_learning_input_v1` | full evidence record | validation + digest + 3 lineage refs | learning_input_v1.py:129-137 |
+| `run_optimization_universe_experiment_plane_v1` | validated digest | **digest only** in offline_context + plane_identity | experiment_plane_v1.py:184-189,431-446 |
+| `validate_self_learning_optimization_return_input_v1` | optimization evidence | ACK metadata only | return_input_v1 constants |
+
+## 7. Contract Map
+- **Schema:** `learning_evidence_record_v1` (`schema_name` + `schema_version`).
+- **Optimization ingest schema:** `canonical_optimization_universe_learning_input_v1`.
+- **Required classes:** `universe_class=SELF_LEARNING_UNIVERSE`, `evidence_class=LEARNING_EVIDENCE`, `productive_authority=NONE`.
+- **Plane requires:** `learning_input_schema_version` match + accepted learning input status.
+
+## 8. Field-Level Lineage
+TOTAL_EXPORTED_FIELDS (allowed record fields) = **39**.
+
+| FIELD | EXPORT | OPT ingest | Plane compute | Search/Objective effect | Classification |
+|---|---|---|---|---|---|
+| `content_hash/digest` | YES | YES | YES | Changes plane_identity & offline_context only | CONSUMED_FOR_IDENTITY_ONLY |
+| `source_learning_state_record_ref` | YES | YES | NO | NO | CONSUMED_FOR_VALIDATION_ONLY |
+| `state_scope_id` | YES | YES | NO | NO | CONSUMED_FOR_VALIDATION_ONLY |
+| `state_version` | YES | YES | NO | NO | CONSUMED_FOR_VALIDATION_ONLY |
+| `economic_score_label` | YES | validated | NO | NO (A/B probe) | EXPORTED_BUT_NOT_CONSUMED |
+| `decision_score_label` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `safety_score_label` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `decision_event_ref` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `evaluation_bundle_fingerprint` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `evaluation_horizon` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `actual_outcome_ref` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+| `observed_at_utc` | YES | validated | NO | NO | EXPORTED_BUT_NOT_CONSUMED |
+
+TOTAL_CONSUMED_FIELDS (validation gate): **39**; plane computation fields: **1**; search/objective-affecting fields: **0**.
+
+## 9. Actual Field Consumption
+Optimization plane code path uses `learning_input['learning_evidence_digest']` after full-record validation. Search invocation (`build_canonical_advanced_search_v1`) receives only request template/space/scores — **not** evidence semantic fields.
+
+## 10. Causal Effect Trace
+```text
+learning_state_record_v0
+ → export_learning_evidence_from_state_v1
+ → learning_evidence_record_v1 (content_hash)
+ → validate_canonical_optimization_universe_learning_input_v1
+ → learning_evidence_digest
+ → build_offline_research_context_v1 / _derive_plane_identity
+ → plane output metadata
+X (no edge) → build_canonical_advanced_search_v1 parameters
+```
+**TOTAL_BEHAVIORALLY_EFFECTIVE_FIELDS (search/objective/candidate/score path): 0.**
+
+## 11. Differential Golden Vectors
+| Test | Input delta | Observed delta | First divergence | Final effect | Status |
+|---|---|---|---|---|---|
+| DV-01 | `economic_score_label` LABEL_A vs LABEL_B | digest differs; plane_identity differs; **search_identity equal** | offline_context digest | metadata only | PROVEN_CURRENT |
+| DV-02 | identical evidence twice | plane_identity equal | none | deterministic | PROVEN_CURRENT (plane tests) |
+
+## 12. Absence/Invalid/Stale Behavior
+| Case | Result | Evidence |
+|---|---|---|
+| A valid evidence | ACCEPTED_OFFLINE_RESEARCH_INPUT | learning_input tests |
+| B missing evidence | REJECTED_INVALID_EVIDENCE | probe |
+| C missing required field | DdoValidationError at record validate | probe |
+| E wrong schema at plane | PLANE_REJECTED_STALE_INPUT | plane test |
+| F wrong universe_class | REJECTED_INVALID_EVIDENCE | probe |
+| G wrong evidence_class | REJECTED_INVALID_EVIDENCE | probe |
+| H productive_authority != NONE | REJECTED_INVALID_EVIDENCE | probe |
+| I stale evidence | **UNKNOWN_CURRENT** (no dedicated staleness TTL in learning_input) | code review |
+| Foundation without learning | OPTIMIZATION_UNIVERSE_FOUNDATION_OK | probe |
+
+## 13. Optional-vs-Required Analysis
+| Entrypoint | Evidence required? | Path without learning | Behavioral difference |
+|---|---|---|---|
+| `validate_canonical_optimization_universe_v1` | OPTIONAL | foundation OK | none |
+| `validate_canonical_optimization_universe_learning_input_v1` | REQUIRED for non-reject | missing → REJECTED_INVALID_EVIDENCE | gate only |
+| `run_optimization_universe_experiment_plane_v1` | REQUIRED (validated ingest) | invalid/missing → PLANE_REJECTED_INPUT | plane cannot complete |
+
+**IS_SELF_LEARNING_STRUCTURALLY_REQUIRED_FOR_OPTIMIZATION?** NO for foundation; **YES for M4 plane completion path**.
+**CAN_OPTIMIZATION_OPERATE_WITHOUT_SELF_LEARNING?** YES for foundation/registry; **NO for documented offline plane golden path**.
+**IF_YES WHAT CAPABILITY IS LOST?** M4 plane chain completion and digest-linked plane identity.
+
+## 14. Information Sufficiency Across the Edge
+CONTRACT_SUFFICIENCY=PROVEN_CURRENT; FIELD_SUFFICIENCY for semantic driving of search=**UNKNOWN_CURRENT / effectively unused**; SAMPLE/FRESHNESS minima=UNKNOWN_CURRENT.
+INFORMATION_SUFFICIENCY_STATUS=UNKNOWN_CURRENT
+
+## 15. Temporal/Identity Alignment
+Fields present: `state_scope_id`, `decision_event_ref`, `evaluation_bundle_fingerprint`, `observed_at_utc`, experiment identity digests on OPT side.
+Cross-future/scope mismatch enforcement against plane identity template: **UNKNOWN_CURRENT** (no proven join beyond digest metadata).
+
+## 16. Feedback Loop Analysis
+- **OPT→SL return:** `validate_self_learning_optimization_return_input_v1` — **EVIDENCE_FEEDBACK ACK only**; `LEARNING_STATE_MUTATION_PERFORMED=false`.
+- **Meta→OPT:** separate `canonical_meta_to_optimization_feedback_v1` (not standard learning export).
+- **SL→OPT→SL closed learning cycle with state update:** **NO (PROVEN_CURRENT false)**.
+FEEDBACK_LOOP_STATUS=PROVEN_CURRENT (ACK-only return; no training/state feedback)
+
+## 17. Authority Composition
+| Question | Answer | Evidence |
+|---|---|---|
+| SL start/configure OPT search | NO | AUTO_SEARCH_FORBIDDEN flags |
+| SL change objective/search space | NO | plane uses request fields |
+| OPT mutate SL ledger/state via return | NO | return_input constants |
+| Composed productive authority | NO | NO_COMPOSED_PRODUCTIVE_CAUSAL_PATH_PROVEN |
+COMPOSED_AUTHORITY_STATUS=PROVEN_CURRENT (none)
+
+## 18. Productive Escape Analysis
+Path SL→OPT→proposal→governance ingress stops at review; no AUTO_PROMOTION/AUTO_APPLY in cross-universe modules.
+PRODUCTIVE_ISOLATION_STATUS=PROVEN_CURRENT
+
+## 19. Real-vs-Synthetic Data Analysis
+- SL export chain in tests: **fixture/replay hybrid** (`_learning_state` test harness).
+- OPT plane market universe: **`SYNTHETIC-OFFLINE-RESEARCH-ONLY`** constants.
+- **PRODUCTIVE_RUNTIME_REACHABILITY of cross-universe chain:** UNKNOWN_CURRENT.
+
+## 20. Runtime Reachability
+| Hop | CODE | TEST | PRODUCTIVE |
+|---|---|---|---|
+| SL export | YES | YES | UNKNOWN |
+| OPT ingest | YES | YES | NO |
+| Plane search/eval | YES | YES | NO |
+RUNTIME_REACHABILITY_STATUS=UNKNOWN_CURRENT (productive)
+
+## 21. End-to-End Golden Vector
+**TEST-EXECUTED CHAIN (side-effect-free):** observation fixture → DDO state → export → plane → optimization experiment evidence → return ACK.
+- `tests/experiments/test_canonical_optimization_experiment_evidence_v1.py`: **8 passed**.
+- `tests/experiments/test_canonical_optimization_universe_experiment_plane_v1.py`: **5 passed**.
+END_TO_END_FUNCTIONALITY_STATUS=PROVEN_CURRENT (offline/test harness)
+
+## 22. UNKNOWN_CURRENT Register
+- Productive-host executed cross-universe chain frequency
+- Staleness/TTL semantics for learning evidence at optimization ingest
+- Cross-scope/future alignment enforcement between evidence and plane identity template
+- Whether semantic labels are consumed in any non-plane optimization entrypoint
+- Real observed (non-fixture) end-to-end runtime execution
+
+## 23. CONFLICTING_CURRENT Register
+- Primary checkout `10f601e6087c33334034b2e013a72ed46835e9e9` != forensic `5b606f6daf322995a7f26a7208bba70a43cdd392` (worktree isolation used).
+
+## 24. VIOLATED_CURRENT Register
+- none proven
+
+## 25. Evidence Index
+- `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`
+- `src/learning/deterministic_decision_outcome_v0/learning_evidence_record_v1.py`
+- `src/experiments/canonical_optimization_universe_learning_input_v1.py`
+- `src/experiments/canonical_optimization_universe_experiment_plane_v1.py`
+- `src/experiments/canonical_optimization_experiment_evidence_v1.py`
+- `src/experiments/canonical_self_learning_optimization_return_input_v1.py`
+- `tests/experiments/test_canonical_optimization_universe_experiment_plane_v1.py`
+- `tests/experiments/test_canonical_optimization_experiment_evidence_v1.py`
+- `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md`
+- `Deterministic A/B probe (economic_score_label LABEL_A vs LABEL_B)`
+
+## 26. Final Relation Fitness
+- **RELATION_BOUNDARY:** PROVEN_CURRENT
+- **CONTRACT_CONNECTIVITY:** PROVEN_CURRENT
+- **PRODUCER_REACHABILITY:** PROVEN_CURRENT
+- **DATA_EXPORT:** PROVEN_CURRENT
+- **DATA_TRANSPORT:** PROVEN_CURRENT
+- **DATA_INGEST:** PROVEN_CURRENT
+- **SCHEMA_COMPATIBILITY:** PROVEN_CURRENT
+- **FIELD_COMPATIBILITY:** PROVEN_CURRENT
+- **IDENTITY_ALIGNMENT:** UNKNOWN_CURRENT
+- **TEMPORAL_ALIGNMENT:** UNKNOWN_CURRENT
+- **ACTUAL_CONSUMPTION:** PROVEN_CURRENT
+- **BEHAVIORAL_INFLUENCE:** PROVEN_CURRENT
+- **INFORMATION_SUFFICIENCY:** UNKNOWN_CURRENT
+- **FAILURE_SEMANTICS:** PROVEN_CURRENT
+- **REPLAYABILITY:** PROVEN_CURRENT
+- **DETERMINISM:** PROVEN_CURRENT
+- **FEEDBACK_LOOP:** PROVEN_CURRENT
+- **AUTHORITY_ISOLATION:** PROVEN_CURRENT
+- **COMPOSED_AUTHORITY:** PROVEN_CURRENT
+- **PRODUCTIVE_ISOLATION:** PROVEN_CURRENT
+- **RUNTIME_REACHABILITY:** UNKNOWN_CURRENT
+- **END_TO_END_FUNCTIONALITY:** PROVEN_CURRENT
+
+PROVEN_CURRENT=18; UNKNOWN_CURRENT=4; CONFLICTING_CURRENT=1; VIOLATED_CURRENT=0
+
+## 27. Exact Blockers
+- **Productive runtime blocker:** optimization/productive authority NONE; plane synthetic-only.
+- **Behavioral blocker:** semantic SL fields not wired into search/objective functions (code-proven).
+- **Feedback blocker:** return path explicitly forbids learning state mutation.
+
+## Appendix B — Full exported field inventory (39)
+
+| # | FIELD_NAME | OPT plane compute | Search/Objective effect |
+|---|---|---|---|
+| 1 | `actual_outcome_ref` | NO | NO |
+| 2 | `artifact_model_version` | NO | NO |
+| 3 | `authority_owner` | NO | NO |
+| 4 | `can_auto_promote` | NO | NO |
+| 5 | `can_deploy` | NO | NO |
+| 6 | `can_mutate_core` | NO | NO |
+| 7 | `can_mutate_risk` | NO | NO |
+| 8 | `can_mutate_safety` | NO | NO |
+| 9 | `causal_parent_ids` | NO | NO |
+| 10 | `code_sha` | NO | NO |
+| 11 | `config_hash` | NO | NO |
+| 12 | `content_hash` | YES (as digest) | NO |
+| 13 | `corrects_id` | NO | NO |
+| 14 | `correlation_id` | NO | NO |
+| 15 | `cycle_id` | NO | NO |
+| 16 | `decision_event_ref` | NO | NO |
+| 17 | `decision_score_label` | NO | NO |
+| 18 | `economic_score_label` | NO | NO |
+| 19 | `environment_fingerprint` | NO | NO |
+| 20 | `evaluation_bundle_fingerprint` | NO | NO |
+| 21 | `evaluation_horizon` | NO | NO |
+| 22 | `event_time_utc` | NO | NO |
+| 23 | `evidence_class` | NO | NO |
+| 24 | `evidence_hash` | NO | NO |
+| 25 | `evidence_source_refs` | NO | NO |
+| 26 | `observed_at_utc` | NO | NO |
+| 27 | `producer_id` | NO | NO |
+| 28 | `producer_version` | NO | NO |
+| 29 | `productive_authority` | NO | NO |
+| 30 | `record_id` | NO | NO |
+| 31 | `runtime_reachability` | NO | NO |
+| 32 | `safety_score_label` | NO | NO |
+| 33 | `schema_name` | NO | NO |
+| 34 | `schema_version` | NO | NO |
+| 35 | `source_learning_state_record_ref` | NO | NO |
+| 36 | `state_scope_id` | NO | NO |
+| 37 | `state_version` | NO | NO |
+| 38 | `supersedes_id` | NO | NO |
+| 39 | `universe_class` | NO | NO |
+
+## Appendix C — Findings (diagnosis only)
+
+| FINDING_ID | STATUS | SOURCE | TARGET | OBSERVED | EXPECTED | IMPACT | EVIDENCE |
+|---|---|---|---|---|---|---|---|
+| FIND-001 | PROVEN_CURRENT | SL semantic labels | OPT search | Validated only; search_identity unchanged in DV-01 | Contract allows export; plane ignores semantics for search | Integration present; optimization semantics not driven by labels | A/B probe + experiment_plane_v1.py |
+| FIND-002 | PROVEN_CURRENT | OPT plane | SL state | Return ACK without mutation | Return should not mutate learning | No closed learning loop via return path | test_m5_return_ack_without_learning_state_mutation |
+| FIND-003 | UNKNOWN_CURRENT | Evidence scope | Plane identity | Alignment not enforced beyond digest | Unknown contract requirement | Risk of mismatched context if extended productively | code review |

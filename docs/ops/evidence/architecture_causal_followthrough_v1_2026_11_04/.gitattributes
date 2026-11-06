@@ -1,0 +1,3 @@
+# Preserve exact historical/probe source and original pytest output bytes.
+*.txt -text -whitespace
+*.xml -text -whitespace

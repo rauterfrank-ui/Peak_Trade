@@ -1,0 +1,218 @@
+{
+  "authority": "NONE",
+  "edge_count": 81,
+  "edge_keys_sample": [
+    "causal_traversal_eligible",
+    "contract_or_payload",
+    "current_relevance",
+    "edge_id",
+    "provenance",
+    "source_endpoint_ref",
+    "source_native_id",
+    "source_system",
+    "target_endpoint_ref",
+    "target_native_id",
+    "typed_edge"
+  ],
+  "graph_authority": "NAVIGATION_ONLY",
+  "node_count": 300,
+  "note": "Missing edge is not proof of isolation; package-level census graph.",
+  "snapshot_id": "b0fd854d17c3a702ff5a6333d5ed378a",
+  "starts": {
+    "SO-OPS-PKG:capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:capability_11_section_11_12_7_kill_switch_and_emergency_control_proof_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:full_core_live_path_composition_root_v1": {
+      "forward_direct": [
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+        "SO-SRC-PKG:trading",
+        "venue_plan_td_mode"
+      ],
+      "forward_transitive": [
+        "SO-OPS-PKG:archive_sibling_export_contract_v1",
+        "SO-OPS-PKG:canonical_decision_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+        "SO-OPS-PKG:double_play_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:dynamic_scope_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:economic_summary_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:execution_reconciliation_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:full_core_live_path_composition_root_v1",
+        "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+        "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
+        "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+        "SO-OPS-PKG:regime_bull_bear_switch_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:risk_sizing_capital_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:safety_authority_archive_sibling_exporter_v1",
+        "SO-SRC-PKG:learning",
+        "SO-SRC-PKG:orders",
+        "SO-SRC-PKG:risk",
+        "SO-SRC-PKG:trading",
+        "SO-SRC-PKG:webui",
+        "venue_plan_td_mode"
+      ],
+      "reverse_direct": [
+        "SO-OPS-PKG:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
+        "SO-OPS-PKG:k1_productive_macos_credential_store_provisioning_authority_v1",
+        "SO-OPS-PKG:market_data_private_state_runtime_convergence_v1",
+        "SO-OPS-PKG:okx_eea_private_account_state_runtime_v1",
+        "SO-OPS-PKG:pre_external_to_external_effect_boundary_bounded_wp_v1",
+        "SO-OPS-PKG:productive_typed_volatility_producer_and_cmc_hot_path_binding_v1",
+        "SO-OPS-PKG:stateful_confirmation_and_c1_productive_binding_v1",
+        "SO-SRC-PKG:orders",
+        "SO-SRC-PKG:trading"
+      ],
+      "reverse_transitive": [
+        "SO-OPS-PKG:canonical_decision_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+        "SO-OPS-PKG:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
+        "SO-OPS-PKG:current_productive_eea_universe_inventory_acquisition_v1",
+        "SO-OPS-PKG:full_core_live_path_composition_root_v1",
+        "SO-OPS-PKG:governed_futures_universe_producer_v1",
+        "SO-OPS-PKG:governed_productive_account_equity_authority_producer_v1",
+        "SO-OPS-PKG:k1_productive_macos_credential_store_provisioning_authority_v1",
+        "SO-OPS-PKG:market_data_private_state_runtime_convergence_v1",
+        "SO-OPS-PKG:okx_eea_private_account_state_runtime_v1",
+        "SO-OPS-PKG:peak_trade_public_market_data_runtime_v1",
+        "SO-OPS-PKG:portfolio_capital_reservation_budget_v1",
+        "SO-OPS-PKG:pre_external_to_external_effect_boundary_bounded_wp_v1",
+        "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+        "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
+        "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+        "SO-OPS-PKG:productive_futures_ranking_producer_v1",
+        "SO-OPS-PKG:productive_reconciliation_runtime_binding_v1",
+        "SO-OPS-PKG:productive_typed_volatility_producer_and_cmc_hot_path_binding_v1",
+        "SO-OPS-PKG:safety_authority_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:single_selected_future_policy_v1",
+        "SO-OPS-PKG:single_selected_future_runtime_binding_v1",
+        "SO-OPS-PKG:stateful_confirmation_and_c1_productive_binding_v1",
+        "SO-OPS-PKG:treasury_phase_1_offline_contracts_v1",
+        "SO-OPS-PKG:whole_system_connection_closure_bounded_wp_v1",
+        "SO-SRC-PKG:orders",
+        "SO-SRC-PKG:risk",
+        "SO-SRC-PKG:trading",
+        "SO-SRC-PKG:webui",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+      ]
+    },
+    "SO-OPS-PKG:gates": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:section_11_13_5_live_canary_minimum_exposure_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:section_11_14_live_handoff_exact_fee_restart_durability_and_pre_execution_readiness_closure_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:section_11_14_live_handoff_exact_single_live_fill_requires_separate_owner_execution_go_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-OPS-PKG:section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-SRC-PKG:ops": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    },
+    "SO-SRC-PKG:risk": {
+      "forward_direct": [
+        "SO-SRC-PKG:orders"
+      ],
+      "forward_transitive": [
+        "SO-OPS-PKG:archive_sibling_export_contract_v1",
+        "SO-OPS-PKG:canonical_decision_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+        "SO-OPS-PKG:double_play_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:dynamic_scope_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:economic_summary_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:execution_reconciliation_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:full_core_live_path_composition_root_v1",
+        "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+        "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
+        "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+        "SO-OPS-PKG:regime_bull_bear_switch_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:risk_sizing_capital_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:safety_authority_archive_sibling_exporter_v1",
+        "SO-SRC-PKG:learning",
+        "SO-SRC-PKG:orders",
+        "SO-SRC-PKG:risk",
+        "SO-SRC-PKG:trading",
+        "SO-SRC-PKG:webui",
+        "venue_plan_td_mode"
+      ],
+      "reverse_direct": [
+        "SO-OPS-PKG:treasury_phase_1_offline_contracts_v1",
+        "SO-SRC-PKG:trading"
+      ],
+      "reverse_transitive": [
+        "SO-OPS-PKG:canonical_decision_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+        "SO-OPS-PKG:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
+        "SO-OPS-PKG:current_productive_eea_universe_inventory_acquisition_v1",
+        "SO-OPS-PKG:full_core_live_path_composition_root_v1",
+        "SO-OPS-PKG:governed_futures_universe_producer_v1",
+        "SO-OPS-PKG:governed_productive_account_equity_authority_producer_v1",
+        "SO-OPS-PKG:k1_productive_macos_credential_store_provisioning_authority_v1",
+        "SO-OPS-PKG:market_data_private_state_runtime_convergence_v1",
+        "SO-OPS-PKG:okx_eea_private_account_state_runtime_v1",
+        "SO-OPS-PKG:peak_trade_public_market_data_runtime_v1",
+        "SO-OPS-PKG:portfolio_capital_reservation_budget_v1",
+        "SO-OPS-PKG:pre_external_to_external_effect_boundary_bounded_wp_v1",
+        "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+        "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
+        "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+        "SO-OPS-PKG:productive_futures_ranking_producer_v1",
+        "SO-OPS-PKG:productive_reconciliation_runtime_binding_v1",
+        "SO-OPS-PKG:productive_typed_volatility_producer_and_cmc_hot_path_binding_v1",
+        "SO-OPS-PKG:safety_authority_archive_sibling_exporter_v1",
+        "SO-OPS-PKG:single_selected_future_policy_v1",
+        "SO-OPS-PKG:single_selected_future_runtime_binding_v1",
+        "SO-OPS-PKG:stateful_confirmation_and_c1_productive_binding_v1",
+        "SO-OPS-PKG:treasury_phase_1_offline_contracts_v1",
+        "SO-OPS-PKG:whole_system_connection_closure_bounded_wp_v1",
+        "SO-SRC-PKG:orders",
+        "SO-SRC-PKG:risk",
+        "SO-SRC-PKG:trading",
+        "SO-SRC-PKG:webui",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+      ]
+    },
+    "SO-SRC-PKG:risk_layer": {
+      "forward_direct": [],
+      "forward_transitive": [],
+      "reverse_direct": [],
+      "reverse_transitive": []
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "iu_forecast_measurement_implementation_evidence_v1",
+  "baseline_head": "3aa3ad751123c95f4f8e46fc3637e759267742bc",
+  "result": "PASS",
+  "exit_code": 0,
+  "tests": 72,
+  "data_class": "EXPLICIT_SYNTHETIC_OFFLINE",
+  "source_bindings": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py": "500f8ac9794dce0d44513bb8b5da09200c226a54deae5bf16a19ace5eb189ec4",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py": "bcfc10d0aa2aa4aba6f87e053ff0d2bbcf41a54b718af0382031a1c30336618c",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py": "f737a856de745400d7c4392ca68f596b9fbf91f7bf31fa2250f8a090ad858fee",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py": "f26c985bd3d2fac37ac1a8413bb4b03488f3d1b9654ae1d720014cbbc19a99c5",
+    "tests/learning/test_intelligence_context_admission_v1.py": "5ecb6af7704a97f0c42b98747b959c15e5c4ac12b1ae7bdb5144f525e17be516",
+    "tests/learning/test_intelligence_forecast_measurement_integration_v1.py": "7f19c1d647f49acc74301f909a5d642856dc12ae731e96c0af52e95a9ae691a3",
+    "docs/ops/specs/INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md": "36830b2a9726efbdeb61ca8e46d8e2512857ac17ad67a0009ea3bdced9a7696f"
+  },
+  "pytest_sha256": "7a375b6349c2ff9f755d13a78816ace067d82a91275d8e9f44586bddff6092fd",
+  "scoped_docs_token_and_targets": "PASS",
+  "preexisting_dirty_files_preserved": 135,
+  "original_equations_or_scope_changed": false,
+  "defined_slots": 5,
+  "native_model_inference_performed": false,
+  "natural_quality_proven": false,
+  "full_system_accepted": false,
+  "activation": false,
+  "remote_ci_run": false
+}

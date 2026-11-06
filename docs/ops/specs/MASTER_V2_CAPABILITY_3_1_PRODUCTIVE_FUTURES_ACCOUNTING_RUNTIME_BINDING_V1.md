@@ -70,3 +70,5 @@ CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 - Master V2 / Double Play / Risk / Safety decision semantics are unchanged.
 - Cap 2.3 selection authority and Cap 2.4 instrument binding remain upstream authorities.
 - Dashboard and allowlists are never accounting authority.
+
+Fortschreibung 03.11.2026: [interne Vergleichsregel, korrigiertes Accounting-Binding und lokale Betriebsprüfungen](EQUITY_CONTINUOUS_VERIFICATION_PREPARATION_V1.md). Die mathematischen Kernel-Primitive bleiben unverändert; Checkpoint-Version 2 und expliziter lokaler Abgleich sind geprüft. Legacy-Checkpoint-Migration und echte Betriebsfreigabe werden nicht daraus abgeleitet.

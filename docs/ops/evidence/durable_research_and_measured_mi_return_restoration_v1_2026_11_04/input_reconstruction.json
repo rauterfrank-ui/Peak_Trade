@@ -1,0 +1,35 @@
+{
+  "source_commit": "6dfa11eb393b461befea5e3b89548ca5f995adaa",
+  "bars_ref": "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/artifacts/bars.csv",
+  "base_config_ref": "docs/ops/evidence/native_research_regular_provider_closure_v1_2026_11_04/artifacts/cfg.canonical.json",
+  "only_explicit_native_strategy_params_replaced": true,
+  "packets": [
+    {
+      "archive": "092fe43dc4a8b3d88040082dd853e429c7c0862ca7c32474354067946f46ff99.json",
+      "parameters": {
+        "fast_window": 10,
+        "slow_window": 100
+      },
+      "resolved_config_sha256": "29303a92bffd93809d86cf73e20a2504f669012f24f24add9d672ea50d703ef5",
+      "dataset_sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd"
+    },
+    {
+      "archive": "7735bcf778627c8628ecfad83416fcc986c0a5ba944b75346a6966ab77b3523a.json",
+      "parameters": {
+        "fast_window": 10,
+        "slow_window": 50
+      },
+      "resolved_config_sha256": "b3e963573708c90474eaa3ca4184a564885d281f85ecf89acd2c006737fb4f87",
+      "dataset_sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd"
+    },
+    {
+      "archive": "83cf2a0c3d2892d6235b7b3f7b37452b2c9074d23557804e12f4f5b5453682cd.json",
+      "parameters": {
+        "fast_window": 10,
+        "slow_window": 75
+      },
+      "resolved_config_sha256": "a896d4dc3a4742a78314509f688df10f10bccf4f9a07e2c096b23106d221095a",
+      "dataset_sha256": "54b86e631ee74cdf7037566d9cdc62a0fab3acc2339ccb04eeba3564890ee0bd"
+    }
+  ]
+}

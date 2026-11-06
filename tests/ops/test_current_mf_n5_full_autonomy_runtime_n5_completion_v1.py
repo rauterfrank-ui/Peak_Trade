@@ -131,7 +131,6 @@ from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_
     C1_TS_NEXT,
     ORIGIN_SHA,
     SUCCESS_DISPOSITIONS,
-    _clear_cycle_ledger,
     _lane_g17,
     _market_kwargs,
     _pair,
@@ -174,7 +173,17 @@ def _called_names(source: str) -> set[str]:
 
 
 def _run(tmp_path: Path, lane_ids: tuple[str, ...], **overrides: object):
+    from dataclasses import replace
+    from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+        provenance_for_bound_v1,
+    )
+
     pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in lane_ids}
+    natives = ("SOL-USDT-SWAP", "ETH-USDT-SWAP", "ADA-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP")
+    pairs = {
+        lane: (slot, replace(bound, venue_native_id=natives[int(lane[-1]) - 1]))
+        for lane, (slot, bound) in pairs.items()
+    }
     last_ts = float(overrides.pop("last_ts", C1_TS))
     target = int(overrides.pop("target_cardinality", len(lane_ids)))
     kwargs = _market_kwargs(
@@ -182,6 +191,15 @@ def _run(tmp_path: Path, lane_ids: tuple[str, ...], **overrides: object):
         last_ts=last_ts,
     )
     kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
+    kwargs.pop("canonical_price_provenance")
+    kwargs["canonical_price_provenance_by_lane"] = {
+        lane: provenance_for_bound_v1(bound=bound, mark_px=100.0, index_px=99.5)
+        for lane, (_slot, bound) in pairs.items()
+    }
+    kwargs["candles_payload_by_lane"] = {
+        lane: {**kwargs["candles_payload"], "instId": bound.venue_native_id}
+        for lane, (_slot, bound) in pairs.items()
+    }
     kwargs.update(overrides)
     result = run_occupied_lane_runtime_n5_completion_v1(
         pairs,
@@ -382,7 +400,8 @@ def test_five_lane_state_isolation_and_instrument_binding(tmp_path: Path) -> Non
     for lane_id in LANE_IDS:
         record = result.joined_lanes[lane_id]
         bound = pairs[lane_id][1]
-        assert record.native_id == bound.venue_native_id == f"VENUE-{lane_id[-1]}"
+        assert record.native_id == bound.venue_native_id
+        assert record.native_id.endswith("-USDT-SWAP")
         assert record.instrument_id == bound.instrument_id == f"INST-{lane_id}"
         assert record.lane_state_root != N1_GLOBAL_CURSOR_STORE_RELPATH
         assert N1_GLOBAL_CURSOR_STORE_RELPATH not in record.cursor_store_root
@@ -406,7 +425,9 @@ def test_five_lane_state_isolation_and_instrument_binding(tmp_path: Path) -> Non
     assert len(set(activations)) == 5
 
 
-def test_restart_reentry_reloads_cursor_and_host_activation(tmp_path: Path) -> None:
+def test_restart_reentry_preserves_consumed_ledger_cursor_and_host_activation(
+    tmp_path: Path,
+) -> None:
     pairs, first = _run(tmp_path, ("LANE_2",), cycle_id_prefix="n5-restart-1")
     first_record = first.joined_lanes["LANE_2"]
     first_host = load_activation_state_v1(
@@ -414,26 +435,30 @@ def test_restart_reentry_reloads_cursor_and_host_activation(tmp_path: Path) -> N
     )
     assert first_host is not None
     first_seq = int(first_host.commit_sequence)
-    _clear_cycle_ledger(first_record.evidence_root)
-    second = run_occupied_lane_runtime_n5_completion_v1(
-        pairs,
-        target_cardinality=1,
-        g17_typed_vol_producers=_lane_g17(pairs),
-        **_market_kwargs(cycle_id_prefix="n5-restart-2", last_ts=C1_TS_NEXT),
-    )
-    second_record = second.joined_lanes["LANE_2"]
-    assert second_record.host_activation_root == first_record.host_activation_root
-    assert second_record.native_id == pairs["LANE_2"][1].venue_native_id
-    assert second_record.host_join_invoked is True
-    assert second_record.disposition in SUCCESS_DISPOSITIONS | {DISPOSITION_FAIL_CLOSED}
+    ledger = Path(first_record.evidence_root) / "governed_cycle_orchestrator_ledger_v1.json"
+    prior_bytes = ledger.read_bytes()
+    with pytest.raises(
+        CurrentProductiveGovernedCycleOrchestratorError, match="CYCLE_AUTHORIZATION_REPLAY"
+    ):
+        run_occupied_lane_runtime_n5_completion_v1(
+            pairs,
+            target_cardinality=1,
+            g17_typed_vol_producers=_lane_g17(pairs),
+            **_market_kwargs(
+                cycle_id_prefix="n5-restart-2",
+                last_ts=C1_TS_NEXT,
+                venue_native_id=pairs["LANE_2"][1].venue_native_id,
+            ),
+        )
+    assert ledger.read_bytes() == prior_bytes
     second_host = load_activation_state_v1(
-        Path(second_record.host_activation_root), require_present=True
+        Path(first_record.host_activation_root), require_present=True
     )
     assert second_host is not None
     assert second_host.instrument_id == first_host.instrument_id
-    assert int(second_host.commit_sequence) >= first_seq
+    assert int(second_host.commit_sequence) == first_seq
     cursor = load_current_productive_sidestate_confirmation_cursor_v1(
-        Path(second_record.cursor_store_root)
+        Path(first_record.cursor_store_root)
     )
     assert isinstance(cursor, dict)
     assert cursor["venue_native_id"] == pairs["LANE_2"][1].venue_native_id
@@ -457,11 +482,17 @@ def test_single_writer_lane_local_cursor_no_n1_global_and_no_dual_write(
 
 
 def test_same_lane_concurrent_lock_fail_closed(tmp_path: Path) -> None:
+    from dataclasses import replace
+
     pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    slot, bound = pairs["LANE_1"]
+    pairs["LANE_1"] = (slot, replace(bound, venue_native_id="SOL-USDT-SWAP"))
     compose_occupied_lane_mv2_dp_durable_cycle_v1(
         pairs,
         g17_typed_vol_producers=_lane_g17(pairs),
-        **_s7_kwargs(_market_kwargs(cycle_id_prefix="n5-lock-seed")),
+        **_s7_kwargs(
+            _market_kwargs(cycle_id_prefix="n5-lock-seed", venue_native_id="SOL-USDT-SWAP")
+        ),
     )
     roots = bind_occupied_lane_governed_cycle_store_roots_v1(pairs)
     lock = AuthorizationLifecycleLockV1(
@@ -476,7 +507,7 @@ def test_same_lane_concurrent_lock_fail_closed(tmp_path: Path) -> None:
                 pairs,
                 target_cardinality=1,
                 g17_typed_vol_producers=_lane_g17(pairs),
-                **_market_kwargs(cycle_id_prefix="n5-lock"),
+                **_market_kwargs(cycle_id_prefix="n5-lock", venue_native_id="SOL-USDT-SWAP"),
             )
         assert exc.value.reason_code == REASON_CONCURRENT_CYCLE
     finally:

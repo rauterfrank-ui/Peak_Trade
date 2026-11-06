@@ -51,6 +51,7 @@ class CanonicalScopeLifecycleState(str, Enum):
 
 class CanonicalScopeBlockReason(str, Enum):
     SCOPE_ALREADY_INITIALIZED = "scope_already_initialized"
+    SCOPE_POLICY_MISMATCH = "scope_policy_mismatch"
     REINITIALIZATION_OPEN_POSITION = "reinitialization_open_position"
     REINITIALIZATION_UNKNOWN_POSITION = "reinitialization_unknown_position"
     REINITIALIZATION_UNRESOLVED_INCREASE_ORDER = "reinitialization_unresolved_increase_order"
@@ -532,6 +533,11 @@ def initialize_canonical_scope(
     blocks.extend(policy_blocks)
 
     if existing_scope is not None:
+        if existing_scope.policy_version != policy.policy_version:
+            return CanonicalScopeInitializationResultV1(
+                scope=None, lifecycle_state=CanonicalScopeLifecycleState.SCOPE_INVALID,
+                block_reasons=(CanonicalScopeBlockReason.SCOPE_POLICY_MISMATCH,),
+            )
         if existing_scope.lifecycle_state is CanonicalScopeLifecycleState.SCOPE_VALID:
             bound = (
                 market_context

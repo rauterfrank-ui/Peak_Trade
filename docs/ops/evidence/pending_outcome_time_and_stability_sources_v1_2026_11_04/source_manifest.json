@@ -1,0 +1,27 @@
+{
+  "source_commit": "44e7b1e0d05c12799411b969914c08a5e1c3ad26",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "59f50a1e4249118f91d19080f6aa5ee17261e52dac3b97940d5a35c5f12015c8",
+    "canonical_bar_producer_v1.py.current.txt": "00aba3ac60e13b6d25fe0896bf1758f2e609051c5bf25032091ac0f3c1211a54",
+    "canonical_meta_learning_v1.py.current.txt": "41035e94d90c81c6d5f972318a7cc22260dc9c3e5d919cfb6b16e52faa2162a9",
+    "canonical_portfolio_learning_v1.py.current.txt": "a70e3854f5f7d9497c55b68a773cf126f73426fd4bbd158932f4b684464b973b",
+    "canonical_robustness_suite_v1.py.current.txt": "ac295f491b091739f2141b8ff499c46b7fd9e49757a761aff1b52614f9ca525a",
+    "offline_productive_parameter_sensitivity_diagnostics_v0.py.current.txt": "f43f0a4ba6085d8f765df22dfa42b39003b1074ffd3aa5defe8ac3bc855dddc3",
+    "parameter_sensitivity_productive_contract_v0.py.current.txt": "06ed690b6350e4069479de91b456820f1e64b314a6aec8a9ef79bc09546494b3",
+    "pending_receive_after.xml": "13d9097150d5a666009baa1b63e9d67204b1e2b3bf4850ad5fae67197f7f123d",
+    "pending_receive_before.xml": "e431a0bcf066516dd847197302962de91a19e5ee02224e815a967caaaa2aa773",
+    "receipt.json": "801452a6be9630b4d51c286dec8ecff1b59cce23ae9ca169479e456233b63fbe",
+    "research_validity_evidence_v1.py.current.txt": "73d677b0fbee37365ba7812eaa6c36ec4f742e5d70089429f84b59806614502a",
+    "resolver.before.txt": "52aab00dd55f33e5eef4c8a783de8cd842435d7a70b7aa0b6067223d45417c7d",
+    "resolver.introduced.txt": "1781c674e41750df47aaaddd42523082f010377b5b90bbb493adc2c03f36663f",
+    "resolver_v1.py.current.txt": "a3afde964dcb0b7519418371339614a35c6444890ddf9db57577ed46a173a2a9",
+    "runner_v1.py.current.txt": "a33964d45bc7f2fed5df26eb1f9862265b08d8a4f12bac35bbf0410ea8456507",
+    "session.introduced.txt": "528301b1f9321cc4c67a2c1a07507bc078a76fc2006507df1a2ae622b41b20b4",
+    "session_integration_v1.py.current.txt": "e1f7eb81c559d3561538a6f694dc32270c4ff809ff9a15332b99166d181aaee5",
+    "source_changes.patch.txt": "cb153be7514ea2b4f4c5bd2dff18b55ea3192188256a143ba2e4f7255a685c28",
+    "stability_source_roles.json": "84bc4e1ebedf9482ad8b4334794471ed7666b05f0de4f7e61083ac913a0b9362",
+    "temporal_source_probe.json": "de88d69094809c47a65fc4a710ca2b033844d32c0dbdbbe86e9884f612d81baf",
+    "temporal_source_probe.py.txt": "e267033b5a806d684d962007f6ba9c4df6278f91af0df9bc46baeb2943505dea"
+  }
+}

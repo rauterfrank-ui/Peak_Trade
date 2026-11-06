@@ -1,0 +1,9 @@
+### CON-2077 — L6-Zulassung und numerischer Wert sind getrennt
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Der mechanische L6-Consumer verwendet optional separat geliefertes mechanical_proposed_d_t; er berechnet D_t nicht aus dem Evidence-Envelope. Dokumentierte Gegenproben ändern bei gleichem D_t trotz anderem zugelassenen Payload den L6-Wert nicht; Änderung von D_t ändert ihn. Feste 0.01/1000.0 in einem Continuation-Fall sind Prüfwerte, keine gelernt hergeleitete Scope-Konfiguration.
+
+**Grenze:** Evidence-Annahme belegt keine numerische Lernwirkung. Ein eventuell gewünschter adaptiver Wert braucht eigenen zulässigen Producer-/Consumer-Vertrag; hier nicht ratifiziert.
+
+Quellen: EVI-2216, EVI-2214, EVI-2224.

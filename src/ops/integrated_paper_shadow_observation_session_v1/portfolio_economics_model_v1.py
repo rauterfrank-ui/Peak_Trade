@@ -221,6 +221,7 @@ class SimulatedPortfolioEconomicsModelV1:
         if side_u in {"", "HOLD", "NONE", "FLAT"}:
             self.state.intended_action_count += 1
             self._mark_to_market(instrument_id=instrument_id, mark_price=mark_price)
+            self._update_equity_drawdown()
             return None
         if side_u not in {"BUY", "SELL"}:
             raise PortfolioEconomicsModelError(f"INVALID_SIDE:{side_u}")

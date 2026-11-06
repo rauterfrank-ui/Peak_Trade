@@ -1,0 +1,134 @@
+{
+  "schema": "peaktrade.mi_next_model_causal_assessment.v1",
+  "date": "2026-11-06",
+  "source_head": "286c1f0f93b6a536df9469d48c9c36d6569deb03",
+  "scope": "historical cause, bounded static consumers, existing-function controls, target clarification and Obsidian dossier",
+  "product_code_changed": false,
+  "next_model_implemented": false,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "2e981c9d28ff9615c2b3870b86bed4035dcfba8c5f8b39911a18fe37ef768a9f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3cd7ba0d889e258f54edfbbd51b7e995866ea7394e6e135bb51ef6f2486cd3ba"
+    },
+    {
+      "path": "consumer-index.json",
+      "sha256": "cc2d89c3d91be45b29478c7b910d6b46456e9860e2c3c6f439e7ae58b5f605ce"
+    },
+    {
+      "path": "current-user-goal.json",
+      "sha256": "eac3098bbbeec9df48ee291ea11905a47e2c8b521d183498358b12bc2af23400"
+    },
+    {
+      "path": "design-source-excerpts.json",
+      "sha256": "3820ca9ef899e67f517f9579ce6796aab462303ed75f2c41802d2ed6996c1f1e"
+    },
+    {
+      "path": "existing-tests.xml",
+      "sha256": "d4b8fd8d1aa062e9677bd4b48a9583eb453caee8ba32c55e2c4fbd4bf40ebba0"
+    },
+    {
+      "path": "historical/01-c889577bef56-learning_outcome_evidence_ingest_v1.py.txt",
+      "sha256": "77a70099f06358eb8e2f55729a241f0b593b1fe1a0e69a376a9c1cf7668d6cdd"
+    },
+    {
+      "path": "historical/02-32171b35e631-offline_orchestrator_v1.py.txt",
+      "sha256": "85be1fb0077973304b7ed113789a8cff99d40c65cade9cf6d267bccc4a78fe98"
+    },
+    {
+      "path": "historical/03-5e2337ea0e25-mi_learning_evidence_learning_export_v1.py.txt",
+      "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71"
+    },
+    {
+      "path": "historical/04-90183c9be6f1-phase_24_representation_feedback_loop_evidence_v1.py.txt",
+      "sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1"
+    },
+    {
+      "path": "historical/05-265c33603427-fitters.py.txt",
+      "sha256": "f253d5c8222337a83f64ad8b8e0530d4708adc7650075c1b57983eb2d20d7b5d"
+    },
+    {
+      "path": "historical/06-eaa03ec54cbc-bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py.txt",
+      "sha256": "b197156e026e891d914086ce160a48cd5239855ecf44e9bff811fec7857eecd9"
+    },
+    {
+      "path": "historical/07-790810692c2d-meta_labeling.py.txt",
+      "sha256": "f300ac1f79b00bc807b90c9ce3d7c6cca985e7d0d4bfde88e65d35a92f9b970d"
+    },
+    {
+      "path": "historical/08-7604145fb58a-meta_labeling.py.txt",
+      "sha256": "954beb534f649d5dcdfb305ba4308a427c6642fe3acba1733e7a387ce1f61a0d"
+    },
+    {
+      "path": "historical-sources.json",
+      "sha256": "67fa4dc7919e53a95b4d3aa8c31279e854a45bd5bd2e25c87bc31ae68da3b5a2"
+    },
+    {
+      "path": "numeric-probe.json",
+      "sha256": "d54117ad9b239462500867525a179e50e4e63174423da4c8d1ff347d61b7b0bd"
+    },
+    {
+      "path": "numeric_probe.py",
+      "sha256": "242e6d00bd984ee5ab29976a4525ce61ccefd3b24171ae1dae6eaec0f689197d"
+    },
+    {
+      "path": "original-learning-decisions.json",
+      "sha256": "ed43b2a5903899648e32fe0c138035cbfe38b12296b264277dc865db435b0827"
+    },
+    {
+      "path": "other-checkout-comparison.json",
+      "sha256": "d33c7124dd51f8c49157bb887809cf6e8f4587ba87f05273e84936c2c13a0af8"
+    },
+    {
+      "path": "prior-pass-reuse.json",
+      "sha256": "1194ca99f9f3643ae636e0c04433bc3911d3e367efccbc897ab3a22c193c5c49"
+    },
+    {
+      "path": "sources.json",
+      "sha256": "b1820b2df1cfdd389500b1e9a5e44bf4fc0c16bcfc88d34f127763192fcd15fb"
+    },
+    {
+      "path": "systemindex-after.json.gz",
+      "sha256": "9c0f55261e558c6be351e77aea38ea254c9c083d3cff9f45938f22a0a3459f93"
+    },
+    {
+      "path": "systemindex-before.json.gz",
+      "sha256": "6b19604c9f042e6aaec55302386d1cae2877db3522f0a9cde2dd2b45016b4ecc"
+    },
+    {
+      "path": "validation.json",
+      "sha256": "5a92cdcc93363769335afe11e267e38bf8c1750c0d8e8d6d653aa67e00369569"
+    },
+    {
+      "path": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/13 Vom MI Ergebnis zum naechsten verwendeten Modell.md.txt",
+      "sha256": "e7f8b917a0e6d2c083bc77252523ec959fdadffc245ad422c9f3840a567a5396"
+    },
+    {
+      "path": "vault-after/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "25d3502d7ea047a8c12322382ff2dcc8360da77898696418fab37a2d451eead0"
+    },
+    {
+      "path": "vault-after/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "cbc9d48c71ee8d3727edb7690b06d7587702b9192b6616a0862d0ed07872824d"
+    },
+    {
+      "path": "vault-before/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt",
+      "sha256": "924682b3d43b55ac4c13bdedbe1b2ea4cf21f50739fa2dac22ce669cc76adb5b"
+    },
+    {
+      "path": "vault-before/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt",
+      "sha256": "51af72571b54867b7405a18078fc83fc21b7cb5e4429fc9d337852ce5a9ff067"
+    },
+    {
+      "path": "vault-changes.json",
+      "sha256": "ce8af880eaf24c026c347b5ee20c1f33ccce861177d59ee9e35222805fc5a7ea"
+    },
+    {
+      "path": "verify_assessment.py",
+      "sha256": "13e93d495fa86fac7b60a34f08f9abb14cd40e26a04db7d72826f59c4d0dd2f4"
+    }
+  ]
+}

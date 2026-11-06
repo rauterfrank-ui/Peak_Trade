@@ -14,6 +14,7 @@ from src.ops.n1_whole_system_hard_facts_integration_wp_v1.execution_lifecycle_ch
 )
 from src.ops.n1_whole_system_hard_facts_integration_wp_v1.private_observation_chain_v1 import (
     prove_private_restart_recovery_order_v1,
+    private_restart_reconciliation_trusted_v1,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
     bootstrap_rest_snapshot_v1,
@@ -75,6 +76,9 @@ def execute_unified_recovery_orchestration_v1(
     result.steps_completed.append(RECOVERY_STEP_ORDER[2])
     if not private_restart.get("reconciliation"):
         result.fail_closed_reason = "PRIVATE_RECONCILIATION_INCOMPLETE"
+        return result
+    if not private_restart_reconciliation_trusted_v1(private_restart):
+        result.fail_closed_reason = "PRIVATE_RECONCILIATION_UNTRUSTED"
         return result
     result.steps_completed.append(RECOVERY_STEP_ORDER[3])
 

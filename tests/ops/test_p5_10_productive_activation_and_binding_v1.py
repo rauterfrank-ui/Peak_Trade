@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
     non_productive_test_master_v2_reconciliation_admission_v1,
 )
@@ -228,8 +230,10 @@ def test_s7_compose_bootstraps_layered_store_before_c1_extract_second_cycle(
     )
 
     pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    slot, bound = pairs["LANE_1"]
+    pairs["LANE_1"] = (slot, replace(bound, venue_native_id="ETH-USDT-SWAP"))
     root = Path(pairs["LANE_1"][0].lane_state_root)
-    mk = _market_kwargs(cycle_id_prefix="p510-bootstrap")
+    mk = _market_kwargs(cycle_id_prefix="p510-bootstrap", venue_native_id="ETH-USDT-SWAP")
     mk["g17_typed_vol_producers"] = _lane_g17(pairs)
     s7 = _s7_kwargs(mk)
     first = compose_occupied_lane_mv2_dp_durable_cycle_v1(pairs, **s7)

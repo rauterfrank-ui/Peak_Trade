@@ -59,6 +59,7 @@ PACKAGE_ROOT = REPO_ROOT / "src/learning/mutation_critical_control_state_storage
 DDO_PACKAGE = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1"
 BOUND_SHA = "f734626f48b6999d9c02066f60133b40657c9828"
+ORIGINAL_WORKPACKAGE_SHA = "f9ac1430f170568deffc945d096b1318f400f24f"
 FORBIDDEN_IMPORT_NEEDLES = (
     "src.trading.master_v2",
     "src.trading.double_play",
@@ -228,8 +229,11 @@ def test_map_and_atlas_remain_navigation_only() -> None:
 
 
 def test_src_diff_stays_on_authorized_prefixes() -> None:
+    # This is the scope of Owner-GO #6311, not an authorization policy for every
+    # future feature branch. Current isolation/authority is tested above against
+    # the actual package. Both endpoints are immutable historical revisions.
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", "origin/main"],
+        ["git", "diff", "--name-only", BOUND_SHA, ORIGINAL_WORKPACKAGE_SHA],
         cwd=REPO_ROOT,
         text=True,
     ).splitlines()

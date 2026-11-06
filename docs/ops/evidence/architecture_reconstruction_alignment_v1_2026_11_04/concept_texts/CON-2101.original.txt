@@ -1,0 +1,9 @@
+### CON-2101 — Nicht-Entry ist ein zensierter Beobachtungsfall
+
+Status im Quellenabgleich: **UNPROVEN** · Klasse: `DERIVED_INFERENCE`.
+
+Für das ursprüngliche Core-Lernziel muss unterscheidbar bleiben, ob kein Trade wegen unzureichender Marktdaten, Residency, Confirmation, Safety, Kapital oder Execution entstand. Ein Review-PASS/HOLD ist ohne diesen Kontext weder Gewinn noch Strategieversagen. Counterfactual kann fehlende tatsächlich realisierte Ökonomie nicht ersetzen.
+
+**Grenze:** Abgeleitete Anforderung an Attribution; noch kein belegter heutiger Klassifikator und kein frei erfundener Outcome-Score.
+
+Quellen: EVI-2203, EVI-2204, EVI-2211, EVI-2214, EVI-2215, EVI-2217, EVI-2220, EVI-2223, EVI-2224, EVI-2234, EVI-2236, EVI-2237, EVI-2240, EVI-2247, EVI-2256, EVI-2257, EVI-2258, EVI-2263, EVI-2269, EVI-2270, EVI-2273, EVI-2284, EVI-2285, EVI-2289, EVI-2295.

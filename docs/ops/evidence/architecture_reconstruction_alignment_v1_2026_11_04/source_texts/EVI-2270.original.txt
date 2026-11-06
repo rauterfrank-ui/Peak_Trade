@@ -1,0 +1,138 @@
+# Neue Producer-Befunde im Abgleich mit Obsidian und den Gesamtübersichten
+
+Stand: 02.11.2026. Der Abgleich geht der nächsten vertieften PR-Rückverfolgung voraus. Er berücksichtigt alle sechs führenden Register nach Einträgen, alle 22 CURRENT-Census-Bereiche und die konkret wiedergefundenen Gesamtübersichten. Neu ermittelt wurden außerdem vier PR-Anker. Keine Ledger-Mutation, kein neuer Obsidian-RUN und keine Integration/Aktivierung.
+
+## Ergebnis
+
+Die zuvor offenen Übergaben sind nicht pauschal als nie gebaut zu behandeln. Für kanonische Volatilität existiert ein späterer konkreter Producer; für Sequenzmetriken existiert ein bewusst begrenzter Shadow-Zweig. Dagegen bleiben reale ursprüngliche Messdaten, Verbraucherbindung und wirtschaftliche Wirkung jeweils eigene Beweisfragen. Die Gesamtübersichten enthalten diese Unterscheidungen teilweise schon, allerdings an unterschiedlichen Revisionen und mit verschiedenem Umfang.
+
+Insbesondere sind drei Dinge auseinanderzuhalten: ein aufrufbarer Empfänger, ein numerischer Erzeuger mit definierten Eingängen und ein beobachteter historischer Gesamtlauf. Eine erfolgreiche Adapterabbildung oder ein WIRED-Label kann das erste belegen, ohne die beiden anderen zu beweisen.
+
+## 1. Was insgesamt abgeglichen wurde
+
+Die aktuellen sechs Register wurden vollständig als 5.012 Instanzzeilen erschlossen: 2.200 EVI, 17 DOM, 344 LYR, 2.063 CON, 19 STA, sieben TRN, sechs EDG, 349 GAP und sieben CPT. 181 Zeilen wurden durch die thematische Suche als Vergleichskandidaten ausgewählt. Alle 22 CURRENT-Bereiche LYR-0307 bis LYR-0328 sind in [comparison.json](./comparison.json) eingeordnet; LYR-0329 wird als separate Decision-Spine zusätzlich eingeordnet. Diese Abdeckung bedeutet keine erneute fachliche Prüfung sämtlicher externer Primärquellen hinter 2.200 Evidenz-IDs.
+
+README, INDEX und Atlas wurden erneut gelesen. Führend sind die Register und zugehörigen Originalberichte; der Atlas nennt noch RUN-0075, die Register führen RUN-0076. Der Desktop-Gesamtbericht hat einen früheren Ledger-Abgleich bis RUN-0069. Der Vault-CURRENT-Pin ist 5d1c838c15369507c5247834db4dd0df25592169. Der heutige Checkout ist eine andere Revision; aus seinem Namen oder HEAD wird keine Autorität abgeleitet.
+
+317 Vault-Markdown-Dateien außerhalb node_modules und .obsidian wurden zur Erhaltung gehasht. Die zwei zusätzlichen Dateien gegenüber dem vorherigen 315er-Prüfumfang sind nur README und VERSIONS des vorhandenen 3D-Viewers; alle vorher erfassten Hashes stimmen weiterhin. Dies ist eine Umfangserweiterung der Integritätskontrolle, keine neu behauptete Vault-Änderung.
+
+## 2. Früher Vertrag und spätere Producer lassen sich verbinden
+
+### B01 – Dieselbe historische Survival-/Suitability-Familie ist in Obsidian erfasst
+
+EVI-0401 / CON-0376 verweisen auf den Arithmetic-Sequence-Survival-Vertrag, EVI-1274 / CON-1249 auf den Suitability-Vertrag. Der am Vault-Git-Pin gelesene [Survival-Vertrag](./pin-MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md) hat exakt den Hash b612a403… aus RUN-0011/SELECTION.md. Dadurch ist die Zuordnung nicht nur namensbasiert.
+
+Die frühere PR-Reihe #3036–#3058 erklärt die konkrete Implementierungsgrenze: Presence-/Readiness-Flags, vorbereitete Profilwerte und empfangene Sequenzmetriken. Die Zahlendaten werden dadurch nicht historisch als gemessen bewiesen. Der neue Rückweg präzisiert den bereits in Obsidian erfassten Vertrag, statt einen weiteren unabhängigen Architekturentwurf zu erfinden.
+
+### B02 – Kanonische Volatilität hat einen späteren tatsächlichen Producer
+
+Der neue GitHub-Pfadrückweg führt auf [#5611](https://github.com/rauterfrank-ui/Peak_Trade/pull/5611), 31.07.2026: nach Carrier, Transport und Quarantäne wird ein noch nicht verdrahteter Runtime-Producer eingeführt. Der [Scaffold am Vault-Pin](./pin-canonical_volatility_typed_runtime_producer_scaffold_v1.py), insbesondere Zeilen 294–519, nimmt finalisierte PT1M-Mark-Samples an, hält eine instrumentgebundene Historie, wartet auf die erforderlichen 61 Preise und ruft denselben Materializer-/Typed-Factory-Vertrag auf. Das ist eine konkrete Verarbeitung, kein bloßes Owner-Label.
+
+RUN-0052/0053 beschreiben dazu ältere Backup-Varianten; RUN-0060 / EVI-2136–2138 untersucht den späteren Bind am Pin. Unsere neu gesicherten Dateien G17-CMC-Bind, G17-Join, GGE und Economic-Ranking stimmen bytegenau mit den dort angegebenen Hashes überein. Der Zusammenhang ist also am identischen Code prüfbar. [Sechs konkrete Hashvergleiche](./cross-source-byte-checks.json).
+
+Der [Hot-Path-Join](./pin-current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py) erhält Mark-Candle-Payload von außen, extrahiert Samples und ruft einen Checkpoint-Owner. Er ist nicht selbst der ursprüngliche Netzwerkfeed. Der [CMC-Bind](./pin-current_productive_g17_typed_vol_cmc_bind_v1.py) ist wiederum ein eigener Übergang. RUN-0060 lässt den äußeren Prepare→Cycle-Aufrufer offen; der Desktop-Gesamtbericht beschreibt später enger den S6-Host. Diese Aussagen betreffen unterschiedliche Untersuchungsfenster und werden nicht als pauschaler Widerspruch behandelt.
+
+RUN-0053 beschreibt außerdem einen Port-Estimate, der ohne neues Sample weiter vorhanden bleibt, fehlenden Instrumentvergleich am CMC-Bind und nicht erzwungene Max-Age. Dies bleibt an die dortigen sechs historischen Backup-Wurzeln gebunden. Eine typisierte Verbindung und fehlendes numerisches Age-Enforcement können gleichzeitig bestehen; true/false dieser verschiedenen Fähigkeiten ist nicht automatisch ein logischer Widerspruch. Die ursprünglichen GAP-Einträge werden hier nicht geändert oder geschlossen.
+
+### B03 – Ranking-Volatilität und Scope-Volatilität haben verschiedene Wirkung
+
+EVI-2139 / LYR-0309 und die Funktionslandkarte beschreiben den relativen Balanced-Movement-Rang. Der am identischen Pin gelesene [Economic-Rank-Code](./pin-economic_rank_v1.py) nimmt Raw-Feature-Snapshots entgegen, filtert und ruft den Score-Builder auf. Seine Percentile/Score-Ausgänge ordnen Instrumente. Sie werden dadurch nicht zum kanonischen Volatilitätsinput der GGE.
+
+Die [GGE](./pin-golden_geometry_engine_v1.py) bildet eine Magnitude in Preiseinheiten aus zulässiger Volatilität × Markpreis. Der alte Input-Vertrag erwartete Instrumentprofile; daraus folgt aber keine automatische gemeinsame Quelle für heutigen Ranking-Score und Scope-Geometrie. Für einen späteren Anschluss sind Formel, Einheit, Zeitfenster, Instrument und Consumer-Wirkung separat zu binden.
+
+## 3. Die früh erwarteten Sequenzmetriken haben einen eigenen, begrenzten Ausbau
+
+### B04 – Konkreter Shadow-Producer ab #5728
+
+Die Suche aus dem Survival-Vertrag heraus findet im Pin einen [Shadow-Sequence-Producer](./pin-shadow_sequence_survival_metrics_producer_v1.py) mit exakt demselben SequenceSurvivalMetrics-Typ. Die gepinnte GitHub-Historie führt auf [#5728](https://github.com/rauterfrank-ui/Peak_Trade/pull/5728), 05.08.2026. Der PR führt eine isolierte Kalibrierungs-/Shadow-Kampagne mit mehreren Formeln ein. PRODUCTIVE_ACTIVATION bleibt false.
+
+Der [Path-Survival-Helfer](./pin-fps_sequence_path_survival_ratio_prearm_path_fraction_v1.py) berechnet den Anteil true in einer bereits gelieferten booleschen Pfadmenge. Er erzeugt diese Pfade oder ihre Barriereentscheidung nicht aus Trades. Der Sequenzproducer übernimmt die anderen sechs Kennzahlen aus explicit_metrics; fehlende Werte bleiben None/UNAVAILABLE. Selbst diese gefundene Producer-Bezeichnung bedeutet damit nur eine teilweise eigene Berechnung.
+
+Der [Assembler](./pin-shadow_survival_envelope_assembler_v1.py), Zeilen 75–155, lehnt übergebene Survival-Limits ab und gibt selbst bei AVAILABLE envelope=None zurück. Die DTO-Projektion wird erzeugt und verworfen, nicht in eine vollständig parametrierte produktive Survival-Entscheidung eingespeist. Der [Kampagnenrunner](./pin-campaign_runner_v1.py), Zeilen 162–192, ruft diese Formeln mit bereits gelieferten Request-Daten auf und fetch't keine Marktserie.
+
+Auch der breitere April-Profilbedarf hat hier erste Berechnungskandidaten: [realisierte Volatilität](./pin-fps_realized_volatility_population_stdev_mark_log_returns_v1.py), [ATR/Range](./pin-fps_atr_or_range_wilder_atr_finalized_ohlcv_v1.py) und [Opportunity](./pin-fps_opportunity_score_fee_slippage_breakeven_movement_v1.py). Diese sind Shadow-Definitionen, keine freigegebenen Snapshot-Producer. Die Volatilitätsformel weist einen CMC-Alias ausdrücklich zurück. Beim als Wilder-ATR benannten Helfer wird im gelesenen Körper aus dem letzten 15-Bar-Fenster der Durchschnitt von 14 True Ranges als Seed berechnet; daraus wird hier keine vollständige fortlaufende Wilder-Rekursion behauptet. Opportunity transformiert gelieferte Bewegung relativ zu gelieferten Fee-/Slippage-bps, erzeugt diese Basisdaten aber nicht selbst.
+
+### B05 – Die in Obsidian dokumentierte Parität schließt die Datenfrage nicht
+
+EVI-1117 / CON-1092, erfasst in RUN-0026, gehört exakt zu [diesem Git-Dokument](./pin-SURVIVAL_AND_SUITABILITY_BACKTEST_PARITY_WIRING_ASSESSMENT_OR_NARROW_REWIRE_V0.md): Hash 89156a35… stimmt überein. Der Pfadrückweg datiert es auf [#5064](https://github.com/rauterfrank-ui/Peak_Trade/pull/5064), 10.07.2026.
+
+Das Dokument bewertet den begrenzten Aufrufweg zu canonical survival/suitability als WIRED, hält Gesamtparität und wirtschaftliche Evidenz aber false. Es nennt explizit integrated replay stub survival metrics und backtest regime status hardcoded KNOWN. Daraus folgt eine präzisere Prüffrage: Stammt ein bestandener Untercheck aus berechneten historischen Werten oder aus einer im Replay gesetzten Annahme?
+
+#5064 ist ein Assertion-/Dokumentationsschritt. Der dort genannte Vorgänger [#5017](https://github.com/rauterfrank-ui/Peak_Trade/pull/5017), 08.07.2026, ergänzt unter anderem Composition-Nichtautoritätsassertionen im Parity-Harness. Dessen gelesener Diff implementiert nicht selbst sämtliche Survival-/Suitability-Datenproducer. Der frühere Adapterursprung bleibt separat zu verfolgen; der Verweis allein schließt ihn nicht.
+
+### B06 – Der Zero-Trade-Befund ist ein zusätzlicher, anderer historischer Versuch
+
+EVI-0575 / CON-0550 nennt die [MV2-Per-Bar-Diagnose](./pin-MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1.md). Sie berichtet für einen späteren Juli-Versuch Suitability als dominante erste fehlgeschlagene Stufe. Das Dokument bindet Base 147f0bee… und eine Evidence-Familie vom 17.07.2026, nicht den 01.07.-Versuch #4729. Die damaligen Counts (185 Panel-ENTRY-Bars, ein Eval-ENTRY-Bar) sind Dokumentangaben, hier nicht neu nachgerechnet. Sie belegen weder dieselbe Fehlerursache noch einen ungeprüft zu reparierenden Defekt.
+
+## 4. Eine spätere universenübergreifende Übergabe ist bewusst eine andere Ebene
+
+### B07 – Evidence/Input Plane ist kein Ersatz für Markt- und Metrikproducer
+
+EVI-1154 / CON-1129 erfasst den P1-Vertrag. Die vorhandene Gesamtstrukturübersicht führt ergänzend P1–P5 zusammen. [P5 am Vault-Pin](./pin-MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md) beschreibt Producer-Artefakt → typisierter Adapter → Component A (Adjudikation). Direkte Producer→B-, Producer→L6- oder Producer→DP-Bypässe sind dort ausgeschlossen; PRODUCER_TRADING_AUTHORITY=NONE.
+
+Das passt zur gewollten fehlenden Eingriffsautorität von Learning und Optimization. Es ist aber ein eigener Evidence-Vertrag. Er berechnet nicht automatisch Markprofile oder Path-Survival-Kennzahlen und beweist auch keinen vollständigen Rückkopplungsloop. Der fachliche Consumer muss bestimmen, welchen zugelassenen Inhalt er wie interpretiert. Originale Marktversorgung, Research-Metriken, Evidence-Adjudikation und spätere Policy-Wirkung bleiben vier gesonderte Beziehungen.
+
+## 5. Wiedergefundene Gesamtübersichten und ihre Namen
+
+27 konkrete Dateien sind mit Pfad, Rolle, Grenze, SHA256 und Größe in [overview-catalog.json](./overview-catalog.json) erfasst. Das ist ein wiederauffindbarer Katalog, keine Behauptung, alle jemals erstellten Gesamtübersichten gefunden zu haben.
+
+### Obsidian
+
+- [Peak Trade Reconstruction Atlas](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_RECONSTRUCTION_ATLAS.md) — Einstieg in die Gesamtübersicht und sieben Teilkarten. Grenze: Abgeleitet; erfasst laut Kopf IDs bis RUN-0075, während die Register RUN-0076 enthalten.
+- [CURRENT Visual Map](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_CURRENT_VISUAL_MAP.md) — 22 CURRENT-Census-Bereiche mit Herkunft und Prüfgrenzen. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Historical Visual Map](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_HISTORICAL_VISUAL_MAP.md) — Historische Domänen und Layer. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Historical → CURRENT Mapping](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_HISTORICAL_CURRENT_MAPPING.md) — Vergleich historischer und späterer CURRENT-Bausteine. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Evidence / Causal / Gaps Visual Map](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_EVIDENCE_VISUAL_MAP.md) — Belegte statische Beziehungen und offene Relationen. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Tools Visual Map](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_TOOLS_VISUAL_MAP.md) — Werkzeug- und Beobachtungslandschaft. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Recovery Visual Map](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_RECOVERY_VISUAL_MAP.md) — Recovery-Quellen und nicht geschlossene Wiederherstellungsfragen. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Workspace Navigation](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/PEAK_TRADE_WORKSPACE_NAVIGATION.md) — Dateinavigation im Vault. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Systemkarte](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/MAPS/system_map.md) — Registerbasierte Systemkarte und Schema. Grenze: Karte ist abgeleitete Navigation; Pfeile oder Gruppierung sind nicht automatisch Laufzeitwirkung.
+- [Peak Trade 3D Architecture Galaxy (WP-0009)](/Users/frnkhrz/Desktop/PEAK_TRADE_RECONSTRUCTION_WORKSPACE/VIEWERS/3d_architecture_galaxy/README.md) — 3D Architecture Galaxy: vorhandene interaktive Darstellung der Atlas-Daten. Grenze: Z-Ebenen sind Layout; DOCUMENT_NAVIGATION bedeutet Dokumentlink. Hier nicht gestartet oder visuell abgenommen.
+
+### Konsolidierte Berichte
+
+- [Peak Trade CURRENT — konsolidierter Rekonstruktionsbericht](/Users/frnkhrz/Desktop/PEAK_TRADE_CURRENT_COMPLETE_RECONSTRUCTION_REPORT_2026-10-31.md) — Konsolidiert sieben erreichbare CURRENT-Abschlüsse (PASS 1–6 plus Completion) am Pin 5d1c838c. Grenze: SYSTEM_COHERENCE=NOT_ASSESSED, Runtime nicht geprüft; Kapitel 22 bindet noch RUN-0069, daher nicht jüngster Ledgerstand.
+
+### Architekturarchiv
+
+- [CURRENT Historical Full System Architecture Report V6](/Users/frnkhrz/Peak_Trade_Architecture_Archive/preservation/evidence/v6/CURRENT_HISTORICAL_FULL_SYSTEM_ARCHITECTURE_REPORT_V6.md) — Ältere Architekturprüfung mit GGE-, Policy-, Selection- und Sizer-Bezügen. Grenze: Anderer Pin f3b33f93; September-Historiengrenze ist Grenze der damaligen erreichbaren History, kein globaler Ursprung.
+- [Integrationslandkarte](/Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-ORIGINAL-WHOLE-SYSTEM-ARCHITECTURE-RECONSTRUCTION-V1/INTEGRATION_MAP.md) — Trennt ursprüngliche Zielbilder, codierte Verbindungen und belegte Entkopplungen. Grenze: Archivbefund mit eigenen Revisions-/Suchgrenzen. Aussagen über nie vorhandene Absicht nicht über den damaligen Suchraum hinaus verallgemeinern.
+- [Funktionslandkarte der intelligenten Fähigkeiten](/Users/frnkhrz/Peak_Trade_Architecture_Archive/history/architecture_versions/AEV3-ORIGINAL-WHOLE-SYSTEM-ARCHITECTURE-RECONSTRUCTION-V1/INTELLIGENT_CAPABILITIES_FUNCTIONAL_MAP.md) — Ordnet Ranking, Selection, G17, Learning, MI und Cross-Universe-Sperren nach Funktion. Grenze: Archivbefund mit eigenen Revisions-/Suchgrenzen. Aussagen über nie vorhandene Absicht nicht über den damaligen Suchraum hinaus verallgemeinern.
+- [PEAK_TRADE_SYSTEM_RECOVERY_ROADMAP_V1](/Users/frnkhrz/Peak_Trade_Architecture_Archive/PEAK_TRADE_SYSTEM_RECOVERY_ROADMAP_V1.md) — Frühere systemweite Wiederherstellungs- und Untersuchungsroadmap. Grenze: Datierter Untersuchungsplan; keine aktuelle Wiederherstellungsanweisung.
+
+### Lokale Untersuchungsberichte
+
+- [PeakTrade: systemweiter Rekonstruktionsstand — 01.11.2026](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/Systemweiter_Rekonstruktionsstand.md) — Breiter Quellenzugang und 13 überlappende Untersuchungsfelder. Grenze: Abgeleitete datierte Forschung außerhalb des Vaults; kein Gesamtfunktionsnachweis.
+- [PeakTrade: ursprüngliche Architektur, Kausalität und Semantik — Überblick](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/architecture-overview/Architektur_Kausalitaet_Semantik_Ueberblick.md) — Historische Konstruktion, Varianten und semantische Beziehungen. Grenze: Abgeleitete datierte Forschung außerhalb des Vaults; kein Gesamtfunktionsnachweis.
+- [Gesamtsystem: Strukturbausteine und offenes Register](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/system-structure-register/Gesamtsystem_Strukturbausteine_und_Register.md) — 75 Einträge einer konkreten Interaction-Map navigierbar; unter anderem Evidence/Input Plane. Grenze: Abgeleitete datierte Forschung außerhalb des Vaults; kein Gesamtfunktionsnachweis.
+- [Gesamtbericht und semantische Verbindbarkeit der Architektur](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/semantic-integration-assessment-2026-11-02/Gesamtbericht_Wert_und_semantische_Verbindbarkeit.md) — Prüfung semantischer Verbindbarkeit vorhandener Bausteine. Grenze: Abgeleitete datierte Forschung außerhalb des Vaults; kein Gesamtfunktionsnachweis.
+- [Neue Forschungsbefunde im Abgleich mit der Obsidian-Gesamtarchitektur](/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/obsidian-crosscheck-2026-11-02/Obsidian_Gesamtarchitektur_Abgleich_neuer_Erkenntnisse.md) — Vorheriger Gesamtregister-Abgleich vor den neuesten Producer-/PR-Befunden. Grenze: Abgeleitete datierte Forschung außerhalb des Vaults; kein Gesamtfunktionsnachweis.
+
+### Interaktive Übersichten
+
+- [PeakTrade: Gesamtarchitektur](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-architektur-gesamtstruktur.canvas.tsx) — Gesamtstruktur: operative und langsamere Lern-/Anpassungswege. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [PeakTrade: Architektur, Kausalität und Semantik](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-gesamtueberblick-breite.canvas.tsx) — Breiter Architektur-, Kausalitäts- und Semantiküberblick. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [PeakTrade: Rekonstruktion des Gesamtsystems](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-systemweite-rekonstruktion.canvas.tsx) — Systemweite Untersuchungsfelder und offene Fragen. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [PeakTrade · Was ist noch nutzbar?](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-rekonstruktionsueberblick.canvas.tsx) — Nutzbarkeit und mögliche Entwicklungswege nach Bereichen. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [PeakTrade: Beziehungen und Kausalität](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-beziehungen-und-kausalitaet.canvas.tsx) — Beziehungen und offene Kausalität. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [PeakTrade: Entscheidungen und Anpassung](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-entscheidungen-und-anpassung.canvas.tsx) — Entscheidungs- und Anpassungslinien. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+- [Learning und Optimization: Architekturgeschichte](/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/canvases/peaktrade-self-learning-urarchitektur.canvas.tsx) — Laufende Learning-/Optimization-Rekonstruktion mit PR-Rückwegen. Grenze: Abgeleitete Sicht; eingebettete Daten haben eigene Revisions- und Nachweisgrenzen.
+
+Die Karten unterscheiden Dokumentnavigation, Parent-Gruppierung, statische Kante, historische Variante und beobachtete Laufzeit. Die 3D-Z-Ebenen sind visuelles Layout. Im V6-Archiv gilt ein anderer Pin f3b33f93; die dortige frühe September-Grenze darf nicht als erster globaler Commit gelesen werden. Die neu gesicherten April-/Juli-GitHub-PRs reichen über die damals lokal erreichbare History hinaus.
+
+## 6. Präzisierte nächste PR-Rückwege
+
+Der Abgleich priorisiert vier begrenzte Stränge:
+
+1. Volatilität: #5611 rückwärts über #5610/#5609/#5608 zu #5149/#5148; danach die späteren tatsächlichen Host-Aufrufer und die Herkunft des Mark-Candle-Payloads verbinden. Die fehlende Eingriffsautorität bleibt erhalten.
+2. Profil-/Sequenzproduktion: #5728 rückwärts zu Stage-1-Formeldefinitionen und Kalibrierungsbedarf. Angelieferte sechs Metriken, boolesche Pfadmenge sowie Fee-/Slippage-/Bewegungswerte sind eigene Upstream-Fragen.
+3. Parität: #5064 → behaupteter Vorgänger #5017 und tatsächlicher Survival-/Suitability-Adapterursprung. Aufrufbindung und vollständige Datenberechnung nicht gleichsetzen.
+4. Regime/Feature-Semantik: KNOWN-/Stub-/Default-Varianten mit der jeweiligen Quellenfamilie vergleichen, ohne verschiedene Juli-Experimente oder Ranking- und Scope-Schätzer zu verschmelzen.
+
+Die vier neuen PRs besitzen vollständige Metadaten und Dateilisten im Ausgabeordner; drei neue Pfadhistorien sind am Vault-Pin gebunden und enden jeweils vor der Seitengrenze. Keine globale Behauptung zu allen PRs oder Branches. Die Original-Evidence-Verzeichnisse wurden hier nicht neu ausgeführt oder als vollständig bestätigt.
+
+## Erhalt und Verifikation
+
+Repository, Vault und Originalberichte bleiben unverändert. Von den gefundenen Gesamtübersichten wird ausschließlich die bestehende abgeleitete Learning-/Optimization-Übersicht um diesen Abgleich ergänzt; ihre bisherigen Inhalte bleiben erhalten. Daneben entstehen neue Untersuchungsartefakte außerhalb des Vaults. Keine externen Recovery-Medien, keine Handels-/Netzwerkfunktion und kein Kalibrierungslauf wurde ausgeführt. GitHub wurde lesend über gh api angesprochen.
+
+[Quell-Snapshots](./code-sources.json) · [Registerzeilen](./register-rows.json) · [Vergleich aller CURRENT-Bereiche](./comparison.json) · [neue PR-Historien](./new-pr-anchors.json) · [Erhaltungs- und TypeScript-Prüfung](./verification.json).

@@ -1,0 +1,180 @@
+# Intelligentes Universum: fachliche Code-Ursprünge und Verbindung zu Learning und Optimization
+
+Stand: 02.11.2026. Lesende Fortsetzung der GitHub-/Obsidian-Rekonstruktion. Ausgangspunkt ist die fachliche Funktion, nicht ein später vergebener Universe-Name. Der Befund benennt früheste nachweisbare Versionen der tatsächlich geprüften Pfade; er behauptet keinen abschließend bewiesenen globalen Erstbeginn aller unter Intelligent Universe denkbaren Funktionen.
+
+## Ergebnis
+
+Ein einzelner erster Codebaustein eines eindeutig abgegrenzten intelligenten Universums ist weiterhin nicht belegbar. Dafür sind nun zwei konkrete frühe Funktionslinien und ihre spätere Zuordnung trennbar:
+
+- Scope-/Geometrieberechnung: Bereits #3035 vom 25.04.2026 implementiert Volatilität × Markpreis, Begrenzung und Trailing im Double-Play-Modell. Ein eigenständiger IU-Owner ist damit nicht bewiesen.
+- Instrumentuniversum, Ranking, Auswahl und Binding: #5640–#5643 vom 02.08.2026 führen die später unter IU gruppierte Cap-Kette ein. Das August-Ranking ist zunächst strukturell; marktbewegungsabhängige Feature-/Score-Produktion folgt erst am 26.09. durch #6835/#6836.
+
+Der Name hat in erhaltenen Quellen verschiedene Bedeutungsumfänge. Eine Originalnachricht vom 01.10. beschreibt eine eng begrenzte Scope-Fähigkeit ohne Ranking-/Selection-Recht. Das Dossier vom 07.10. verwendet IU für eine 14-Layer-Projektion der breiteren Cap-/Feature-/Residency-Kette. Diese Sichtweisen müssen nicht als globale Zielbilder einander widersprechen; sie dürfen aber weder als derselbe Owner noch als dieselbe Autorität behandelt werden.
+
+## 1. Ursprüngliche Aufgaben aus Quellen statt rückwirkender Namensvergabe
+
+Das [Double-Play-Manifest vom April](../ddo-pre-foundation-pr-lineage/april-double-play-manifest.md) fordert Instrumentwissen: Volatilität, ATR/Range, Liquidität, Spread, Funding, OI, Preisarten und Frische sollen Scope-/Suitability-Regeln informieren. Es ist ein fachlicher Entwurf. Die vorherigen PR-Prüfungen zeigten, dass die ersten Snapshot-/Suitability-Modelle vorberechnete Werte oder Presence-Flags erwarten. Das ist ein erster Aufgabenbezug, keine nachträgliche Erklärung des gesamten Modells zum IU.
+
+Eine [erhaltene Original-Ownernachricht vom 01.10.2026](./original-message-101096.txt), Cursor-Zeile 1 im Chat 9d650ac7-16e7-4c34-af38-9f91ff76d543, präzisiert den Ausdruck: Das intelligente Universum soll für den schon ausgewählten Future Dynamic Scope berechnen und den Wert über eine kanonische Grenze wirksam bereitstellen können. Ranking, Auswahl, Instrumentbinding, Bull/Bear, Switch-/Confirmation-/Entry-/Exit-Entscheidung, Kapital und Ausführung gehören ausdrücklich nicht zur Autorität dieser Fähigkeit. Die historische Nachricht fordert zunächst eine Untersuchung und keine Implementierung. Historische GO-/Modusangaben darin wurden hier nicht ausgeführt oder als heutige Freigabe verwendet.
+
+Die [damalige Antwort](./original-message-101117.txt) unterscheidet ebenfalls das Owner-Ziel von vorhandenen Bausteinen: kein einzelner namensgleicher IU-Owner, tatsächliche Scope-Rechnung in Master-V2-/Double-Play-Funktionen und L6 als Vorschlags-/Validierungsgrenze. Sie bleibt eine historische Analyse an bd40621e…, kein heutiger Gesamtnachweis. Beide gespeicherten Texte wurden an den Original-JSONL-Zeilen textgleich verifiziert; [Provenienz](./original-messages.json).
+
+Das spätere [14-Layer-Register vom 07.10.](./110ae358-07_iu_14_layer_master_model_v1.json) ordnet dagegen Discovery, Filter, Universe-Membership, Economic-MD, Features, Score, Rank, Top20, Residency, Selection und Binding unter IU ein. Diese Gruppierung ist ein datierter Untersuchungsbefund des Dossiers. Seine PROVEN_CURRENT-/FIRST_PROVEN_SHA-Felder werden nicht als neu verifizierte Funktion oder Erstimplementierung übernommen. Die im Register referenzierte ursprüngliche 03_iu_layer_model_v1.json wurde hier nicht geöffnet. Das gelesene 07_iu_14_layer_master_model_v1.json ist eine spätere verarbeitete Quelle.
+
+## 2. Früher Scope-Code: April, nicht erst Oktober
+
+Die vollständig paginierte GitHub-Historie von double_play_state.py am Vergleichspin 5d1c838c… führt bis auf [#3035](https://github.com/rauterfrank-ui/Peak_Trade/pull/3035), Commit f78e1c9de767346e52ae7f35df7681141d7ed645, 25.04.2026. Der [Einführungssnapshot](./f78e1c9d-double_play_state.py), Zeilen 173–222, ist konkret:
+
+1. Envelope und Rules werden geprüft.
+2. band = clamp_band_width(rules.volatility_estimate × mark_price, rules, env).
+3. Long-Anker folgt neuen Hochs; Short-Anker folgt neuen Tiefs.
+4. Band und Grenzen werden in den zurückgegebenen RuntimeScopeState übernommen.
+
+Das ist implementierte Berechnungs- und Zustandswirkung innerhalb einer reinen Funktion, aber keine beobachtete damalige Trading-Ausführung. Der damalige volatility_estimate hat Default 1.0 und wird als abstrakter Proxy beschrieben. Der später ratifizierte PT1M/PT60M-Mark-Schätzer darf nicht rückwirkend als bereits vorhandene Quelle dieses April-Werts behauptet werden.
+
+[#4678](https://github.com/rauterfrank-ui/Peak_Trade/pull/4678) führt danach [kanonische Scope-Initialisierung](./561f2459-canonical_scope_initialization_v1.py) ein: Marktcontext, Referenzpreis, Volatilitätsdistanz, begrenztes Band, neutraler Bereich und Herkunftsdigest. Merge am 29.06.23:00 UTC, also 30.06. Berliner Zeit. Dieser Vertrag konkretisiert die Einbettung, beweist aber keine vollständige damalige Messdatenversorgung.
+
+L6 wird erst mit [#6718](https://github.com/rauterfrank-ui/Peak_Trade/pull/6718) eingeführt (Berlin 22.09.). Der [Einführungscode](./097b6338-l6_dynamic_scope_generator_v1.py) validiert proposed_d_t und reicht es weiter. Er erzeugt weder Sigma noch Preisprodukt. Slot und Producer sind deshalb zu trennen.
+
+[#6993](https://github.com/rauterfrank-ui/Peak_Trade/pull/6993), 01.10., verändert konkrete Scope-/Layer-C-Pfade. [Die dortige Scope-Fassung](./049fc18c-canonical_scope_initialization_v1.py), Zeilen 189–215 und 470–485, unterscheidet die instrumentrelative Rohmagnitude von der weiterhin möglichen Legacy-Clamp-Variante. Eine solche fachliche Änderung ist nicht nur eine Umbenennung. Der PR belegt zugleich nicht, dass ein eigenständiger IU-Prozess den Wert nun extern berechnet.
+
+Am 06.10. wird die [Golden Geometry Engine](./4e471145-golden_geometry_engine_v1.py) als eigener Owner eingeführt. Die Formel existiert bereits im April. Die anschließende kurzzeitige Änderung 1c6f43e8 und der Revert adf73d16 sind in der Pfadhistorie getrennt erhalten; der aktuelle gültige Stand wird nicht aus dem Änderungsnamen abgeleitet. Die Modulgründung im Oktober ist kein Ursprung der Produktrechnung.
+
+Frühester Beleg im geprüften Scope-Dateistrang: #3035 am 25.04.2026. Frühester globaler IU-Code: NICHT abschließend bewiesen. Noch frühere generische Volatilitäts-/Scanner-/Risk-Funktionen werden ohne Zugehörigkeitsbeleg nicht als IU-Ursprung umetikettiert.
+
+## 3. Die später IU genannte Instrumentkette beginnt als Code im August
+
+[Cap 2.1, #5640](https://github.com/rauterfrank-ui/Peak_Trade/pull/5640), Commit 02095305…, 02.08.06:20 Berlin: [Producer](./02095305-producer_v1.py) erhält source_payload und optional mark_price_payload von außen. Er ruft Discovery/Validierung und Eligibility auf und erzeugt einen deterministischen Universe-Snapshot. Separate Funktionen kümmern sich um Persistenz und Restart-Lesen. Damit ist ein realer Codebaustein belegt, jedoch nicht schon ein autonomer Marktfeed. Mark-Price-Support eines Instruments ist ebenfalls nicht seine gemessene Volatilität.
+
+[Cap 2.2, #5641](https://github.com/rauterfrank-ui/Peak_Trade/pull/5641), Commit 22e6174c…, 06:34 Berlin: [Policy](./22e6174c-policy_v1.py) und [Ranking](./22e6174c-ranking_v1.py) verwenden sechs binäre Strukturkriterien: Universe-Eligibility, Datenqualität, Mark-Support, Markt-Daten-Support, aktiver Trading-Status und vollständige Metadaten. Alle sechs müssen für Eligibility 1 sein. Damit haben vollständig Eligible denselben total_score=6. Das ist eine aus den gelesenen Funktionen abgeleitete Rechnung; keine neue Testausführung. Die Sortierung löst diesen Gleichstand über Venue-/Instrument-ID. Der frühe Rankname bedeutet daher noch keine wirtschaftliche Bewegungsbewertung.
+
+[Cap 2.3, #5642](https://github.com/rauterfrank-ui/Peak_Trade/pull/5642), Commit ecb44849…, 06:51 Berlin: [Selection](./ecb44849-selection_v1.py) liest ein geliefertes Ranking, prüft Gültigkeit/Alter, wählt deterministisch und besitzt eigene Previous-/Anti-Churn-Zweige. Die tatsächliche Lieferung einer Previous-Selection durch jeden Host folgt daraus nicht.
+
+[Cap 2.4, #5643](https://github.com/rauterfrank-ui/Peak_Trade/pull/5643), Commit 9f294a2d…, 07:13 Berlin: [Binding-Gate](./9f294a2d-binding_gate_v1.py) validiert die bestehende Selection und erzeugt einen gebundenen Instrumentkontext. Keine eigenständige Neuauswahl.
+
+Diese Pfade wurden erst später im Dossier gemeinsam IU zugeordnet. Ihre Einführung im August ist durch GitHub-Historien/PRs belegt; das September-Datum älterer lokaler Übersichten ist eine Grenze des dortigen shallow Suchraums, nicht der erste Code. Die alten Berichte bleiben als datierte Quellen erhalten und werden nicht überschrieben.
+
+## 4. September: von strukturellen Kriterien zu berechneter Marktbewegung
+
+[#6835](https://github.com/rauterfrank-ui/Peak_Trade/pull/6835), 26.09., führt den [Feature-Producer](./6cf96b61-producer_v1.py) samt [reiner Rechnung](./6cf96b61-pure_compute_v1.py) ein. Aus 61 Markpreisen werden 60 Log-Returns und deren Populationsstandardabweichung berechnet. Relative Amplitude ist (Maximum−Minimum)/Mittelpunkt von Maximum und Minimum. Die zeitliche Gültigkeit des Fensters ist eine Verantwortung der vorgelagerten Fensterprüfung; eine reine Zahlenfunktion allein ist kein globaler Point-in-Time-Beweis.
+
+[#6836](https://github.com/rauterfrank-ui/Peak_Trade/pull/6836) ergänzt den [Economic-Score](./9004c700-score_construction_v1.py): Features werden innerhalb der zulässigen Kandidatenmenge in Perzentile transformiert und gewichtet zusammengeführt. Der Rang hängt dadurch auch von der Vergleichsmenge ab. Das ist semantisch eine andere Ordnung als das ursprüngliche binäre Strukturranking.
+
+Diese Sigma-Formel ist mit dem früher ratifizierten kanonischen Minutenvolatilitätsschätzer fachlich vergleichbar. Das beweist weder gemeinsame Runtime-Owner noch identische historische Markfenster, Instrument-/Venue-Bindungen, Zeitpunkte, Digests oder numerisch bitgleiche Ergebnisse. Der Ranking-Code formatiert sein Ergebnis zudem als Decimal aus einem Float-Rechenergebnis. Ein gemeinsamer Rohdatenstrom könnte mehrere Berechnungszweige versorgen; verschiedene Ausgänge verlangen nicht zwingend verschiedene Quellen.
+
+Ein Perzentil oder Gesamt-Score kann dagegen nicht als Sigma in die GGE eingesetzt werden. Sigma ist eine dimensionslose Return-Streuung; Sigma×Mark ist eine Preismagnitude; Rank ist eine relative Ordnung. Das sind konkrete Übergabegrenzen für die spätere Rekonstruktion.
+
+## 5. Einbeziehung in Learning und Optimization
+
+Ein tatsächlicher erster Anschluss ist am Ranking vorhanden: [#6206](https://github.com/rauterfrank-ui/Peak_Trade/pull/6206) ergänzt am 01.09. [diesen Decorator](./0a8ec8e8-producer_v1.py), Zeilen 196–197:
+
+observe_after_producer_v0(seam_id="selection.ranking")
+
+Das Ranking wird nach der Berechnung beobachtbar; die August-Fassung besitzt diesen Decorator nicht. Der bereits gesondert geprüfte Capture-Wrapper verändert das eigentliche Producer-Ergebnis nicht. Seine Session-/Ledger-Bedingungen bleiben: Vorhandensein eines Decorators ist kein Beweis eines ausgeführten Runs, persistierter Beobachtungen oder einer abgeschlossenen Lernverarbeitung. [Vorheriger Pin-/Capture-Abgleich](../obsidian-crosscheck-2026-11-02/Obsidian_Gesamtarchitektur_Abgleich_neuer_Erkenntnisse.md).
+
+Für Self-Learning→Optimization bleibt der bereits rekonstruierte [Learning-Evidence-Vertrag](../learning-optimization-history/O22-META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md) maßgeblicher Untersuchungsbeleg seiner Revision: Export von Lernzustands-Evidence, Validierung als Offline-Research-Input und Stop vor automatischer Suche, Parameter-/Envelopeänderung oder produktivem Join. Die dortigen three universes umfassen Self-Learning, Optimization und Governance/Risk; das ist nicht automatisch dieselbe Dreiergliederung wie unsere zusätzliche Untersuchung des intelligenten Bereichs.
+
+Im späteren 14er-IU-Modell stehen vier LEARNING_RELATION-Felder auf OBSERVE (Universe, Ranking, Selection und Binding); OPTIMIZATION_RELATION ist in allen 14 Zeilen null. Das ist eine dokumentierte Beobachtungszuordnung und eine offene Optimization-Kante in genau diesem Modell, kein globaler Nichtvorhandenseinsbeweis. Die hier direkt geöffnete Ranking-Capture-Kante konkretisiert einen Teil davon.
+
+Ein Optimization→IU-/Ranking-/Scope-Rückfluss wurde in den neu gelesenen Producerfunktionen nicht belegt. Lernwirksamkeit oder Optimierungswirkung darf nicht aus gemeinsamen Datencontainern, einer OBSERVE-Zuordnung oder dem Wort Universe gefolgert werden. Die anderen bereits bekannten Research-Feedbackvarianten bleiben eigenständige Stränge.
+
+## 6. Revisionsgebundene Zeitlinie
+
+### 25.04.2026 · #3034 · 1972c706
+
+Manifest: Selector / Instrument Intelligence soll Kontext für Scope und Suitability liefern.
+
+Grenze: Historische Absicht, kein vollständiger Profilproducer; Begriff nicht automatisch identisch mit späterem IU.
+
+### 25.04.2026 · #3035 · f78e1c9d
+
+update_dynamic_boundaries berechnet Volatilität×Mark, klemmt die Bandbreite und aktualisiert den Trailing-Anker.
+
+Grenze: Frühester Code im geprüften Scope-Dateistrang. Volatilität damals abstrakter zugelieferter Wert mit Default 1.0; kein eigenständiges IU-Modul belegt.
+
+### 30.06.2026 · #4678 · 561f2459
+
+Kanonische Scope-Initialisierung bindet Marktcontext, Referenzpreis, Volatilitätsdistanz, Band und Herkunft.
+
+Grenze: June-29-UTC-Merge liegt am 30.06. in Berlin. Kein Beweis der ursprünglichen Messquelle oder damaligen Gesamtversorgung.
+
+### 13.07.2026 · #5148/#5149
+
+Kanonischer Minutenvolatilitätsvertrag und Materialisierung aus Markpreisen.
+
+Grenze: Bereits separat rekonstruiert; bindet die Messgröße, aber nicht jeden Caller oder das gesamte April-Instrumentprofil.
+
+### 31.07.2026 · #5611
+
+Typisierter Mark-History-Producer implementiert denselben Schätzer.
+
+Grenze: Bei Einführung ausdrücklich noch nicht an CMC/Double Play verdrahtet.
+
+### 02.08.2026 · #5640 · 02095305
+
+Cap 2.1: vorbereitete Discovery-Payload validieren, Instrumente klassifizieren und Universe-Snapshot/Persistenz bereitstellen.
+
+Grenze: Früheste Version dieses später IU zugeordneten Producer-Pfads; Producerfunktion nimmt Payload von außen.
+
+### 02.08.2026 · #5641 · 22e6174c
+
+Cap 2.2: sechs binäre Strukturkriterien, Rangfolge und Top20-Kontext.
+
+Grenze: Noch kein marktbewegungsabhängiger Economic-Score. Vollständig Eligible haben denselben Score 6; IDs lösen Gleichstände.
+
+### 02.08.2026 · #5642/#5643 · ecb44849 / 9f294a2d
+
+Cap 2.3 wählt aus angeliefertem Ranking; Cap 2.4 validiert/bindet die Selection.
+
+Grenze: Getrennte Owner: Auswahl ist keine Scope-Berechnung; Binding wählt nicht neu.
+
+### 01.09.2026 · #6206 · 0a8ec8e8
+
+produce_productive_futures_ranking_v1 erhält observe_after_producer_v0(seam_id="selection.ranking").
+
+Grenze: Konkrete statische Beobachtungskante; Session, Speicherung, Auswertung und Rückfluss nicht durch den Decorator allein bewiesen.
+
+### 22.09.2026 · #6718 · 097b6338
+
+L6-Generator validiert extern vorgeschlagenes D_t und gibt es weiter.
+
+Grenze: Keine eigene Scope-Formel. UTC-Datum 21.09.; Berlin 22.09.
+
+### 26.09.2026 · #6835/#6836 · 6cf96b61 / 9004c700
+
+Feature-Produktion aus 61 PT1M-Marks; Sigma und relative Amplitude; danach relative Scorebildung und Ranking.
+
+Grenze: Anderer Inhalt als das August-Strukturranking. Vergleichbare Sigma-Formel beweist keine identische historische Quelle mit G17.
+
+### 01.10.2026 · Originalnachricht 101096; #6993 · 049fc18c
+
+Owner beschreibt IU als begrenzten Scope-Lieferanten. #6993 verändert konkrete Scope-/Layer-C-Pfade.
+
+Grenze: Owner-Ziel und Implementierung getrennt; der PR belegt keine eigenständige IU-Komponente als externen Scope-Owner.
+
+### 06.10.2026 · Commit 4e471145
+
+Golden Geometry Engine als benannter Owner eingeführt; spätere Änderung und Revert folgen.
+
+Grenze: Die Produktformel existiert schon im April. Neues Moduldatum ist nicht Datum der ersten Berechnung.
+
+### 07.10.2026 · Commit 110ae358
+
+Dossier ordnet vorhandene Cap-/Feature-/Residency-Funktionen in 14 IU-Layer ein.
+
+Grenze: Spätere analytische Zuordnung. FIRST_PROVEN_SHA und PROVEN_CURRENT des Registers sind keine geprüften Ursprung-/Laufzeitbeweise.
+
+
+## 7. Was jetzt zur ursprünglichen Konstruktion gesagt werden kann
+
+Der früheste geprüfte Scope-Code liegt im April und implementiert innerhalb Double Play eine vorberechnete Volatilität×Mark-/Trailing-Funktion. Der zugehörige fachliche Kontextbedarf ist im April-Manifest dokumentiert. Die später unter IU gruppierte Cap-Kette ist konkret ab August codiert. Ihr wirtschaftlicher Score entsteht erst im September. Eine eng formulierte spätere Owner-Absicht für eine externe IU-Scope-Fähigkeit ist am 01.10. als Originaltext belegt. Der 14er-Gesamtbegriff ist eine spätere Projektionsquelle vom 07.10., keine rückwirkende Gründungsurkunde.
+
+Die nächste historische Lücke ist damit gezielt: Wer sollte den externen Scope-Wert fachlich erzeugen, welche der frühen Profilberechnungen war dafür vorgesehen und welche konkrete Übergabe war implementiert? Parallel sind die tatsächlichen Markfenster-Produzenten und die Beobachtungs-/Research-Empfänger zu verbinden. Die unverifizierte gemeinsame Gesamtarchitektur bleibt offen, ohne unabhängige Teilstränge anzuhalten.
+
+## Quellenumfang und Erhalt
+
+18 Funktionen-/Register-Snapshots plus zwei zusätzlich gesicherte Ranking-/Binding-Snapshots stehen in [sources.json](./sources.json); zusammen 20. Neun neue PR-Metadaten/Dateilisten (#4678, #5640–#5643, #6718, #6835/#6836, #6993) wurden vollständig erfasst; zentrale Funktionskörper/Diffs geprüft, keine zeilenweise Vollprüfung aller PR-Dateien. Die älteren #3034/#3035/#5148/#5149/#5611/#6206-Prüfungen werden mit konkreten zusätzlichen Quellen verbunden und nicht als sämtlich neu geprüft ausgegeben.
+
+GitHub-Pfadhistorien sind an 5d1c838c… gepinnt; die abgefragten Seiten bleiben unter 100 Einträgen beziehungsweise wurden beim ersten Pfadsatz vollständig paginiert. Ein leerer Ersttreffer für den falsch angenommenen Pfad single_selected_future_selection_v1 ist kein Negativbeweis: der tatsächliche Owner liegt unter single_selected_future_policy_v1 und wurde danach gelesen. Kein Fetch, Checkout oder Produktcodeimport.
+
+Repository, Vault, Originalnachrichten und alte Berichte bleiben unverändert. Ergänzt wird nur dieses lokale Untersuchungsartefakt samt bestehender abgeleiteter Übersicht. Keine Run-/Trading-/Kalibrierungsfunktion ausgeführt; historische Anweisungen als Quellen behandelt. [Verifikation](./verification.json). Keine neue globale Universe-Taxonomie oder operative Autorität.

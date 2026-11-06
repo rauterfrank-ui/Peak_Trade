@@ -1,0 +1,209 @@
+{
+  "id": "SL12",
+  "phase": 12,
+  "title": "Erweiterte Forschungssuche",
+  "introduction_commit": "899e154d1bb095227c13690943e13284fb936972",
+  "introduction_date": "2026-08-18T14:04:39Z",
+  "commit_subject": "research: add canonical advanced search v1 (#5940)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_advanced_search_v1.py",
+  "code_blob": "703b2145ec6765271d99da4a52929d4f842bdb54",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL12-canonical_advanced_search_v1.source.py",
+  "source_lines": 1515,
+  "module_docstring": "Phase 12 Canonical Advanced Search v1 (research proposals only).\n\nEnumerates a declared discrete search space, binds every candidate to\nPhase 1 identity, consults Phase 3 / Phase 7 / Phase 11 signals, and\nemits research candidates plus offline-experiment requests. This layer\ndoes not rank, promote, write config, fund, or submit orders.",
+  "public_functions": [
+    {
+      "name": "canonical_advanced_search_objective_v1",
+      "line": 309
+    },
+    {
+      "name": "canonical_advanced_search_constraint_v1",
+      "line": 318
+    },
+    {
+      "name": "build_canonical_advanced_search_v1",
+      "line": 337
+    },
+    {
+      "name": "derive_search_identity_v1",
+      "line": 532
+    },
+    {
+      "name": "canonical_record_payload_v1",
+      "line": 547
+    },
+    {
+      "name": "validate_canonical_advanced_search_v1",
+      "line": 551
+    }
+  ],
+  "classes": [
+    {
+      "name": "AdvancedSearchValidationError",
+      "line": 241
+    },
+    {
+      "name": "SearchAxisV1",
+      "line": 246
+    },
+    {
+      "name": "SearchSpaceV1",
+      "line": 252
+    },
+    {
+      "name": "SearchObjectiveV1",
+      "line": 258
+    },
+    {
+      "name": "SearchConstraintV1",
+      "line": 266
+    },
+    {
+      "name": "CanonicalAdvancedSearchRequestV1",
+      "line": 284
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 662,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "canonicalize_mapping",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 693,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 695,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "derive_hypothesis_fingerprint_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 807,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "canonicalize_mapping",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 824,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "build_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 825,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 838,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1046,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 704,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "assess_duplicate_hypothesis_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 833,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "build_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 430,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1059,
+      "imported_module": "src.experiments.canonical_failure_memory_v1",
+      "called_symbol": "validate_canonical_failure_memory_record_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 1088,
+      "imported_module": "src.experiments.canonical_reality_gap_store_v1",
+      "called_symbol": "validate_canonical_reality_gap_record_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
+      "status": "added",
+      "sha": "b2fea75c4b74fc34cc396807a6861266be9a2edf",
+      "additions": 299,
+      "deletions": 0,
+      "changes": 299
+    },
+    {
+      "filename": "src/experiments/canonical_advanced_search_v1.py",
+      "status": "added",
+      "sha": "703b2145ec6765271d99da4a52929d4f842bdb54",
+      "additions": 1515,
+      "deletions": 0,
+      "changes": 1515
+    },
+    {
+      "filename": "tests/experiments/test_canonical_advanced_search_v1.py",
+      "status": "added",
+      "sha": "5c9e14d55799c297b0b12548762719fe080c66b7",
+      "additions": 560,
+      "deletions": 0,
+      "changes": 560
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_advanced_search_v1.py",
+      "status": "added",
+      "sha": "5c9e14d55799c297b0b12548762719fe080c66b7",
+      "additions": 560,
+      "deletions": 0,
+      "changes": 560
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_advanced_search_v1.py",
+      "status": "added",
+      "sha": "703b2145ec6765271d99da4a52929d4f842bdb54",
+      "additions": 1515,
+      "deletions": 0,
+      "changes": 1515
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "899e154d1bb095227c13690943e13284fb936972",
+      "date": "2026-08-18T14:04:39Z",
+      "subject": "research: add canonical advanced search v1 (#5940)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972",
+      "parents": [
+        "fc059d1285be55e433a9ca59e89ce187e7a4b363"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

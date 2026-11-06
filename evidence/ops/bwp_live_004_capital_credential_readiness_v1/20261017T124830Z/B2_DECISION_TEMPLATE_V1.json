@@ -1,0 +1,128 @@
+{
+  "authority": "NONE",
+  "classification": "B",
+  "config": "config/ops/current_full_core_capital_guard_v1.json",
+  "decision_text": "Owner chooses the finite cap numbers and whether to set the two booleans. This template does not select those numbers.",
+  "fields": [
+    {
+      "evaluation": "false appends OWNER_CAPS_UNRATIFIED and admission raises NEW_RISK_POST_OWNER_CAPS_UNRATIFIED",
+      "field": "owner_caps_ratified",
+      "parser": "only true or false; other types INVALID_BOOL_FLAG; absent defaults false",
+      "unit": "JSON boolean"
+    },
+    {
+      "evaluation": "false appends FULL_CORE_GUARD_JOIN_DISABLED and admission raises NEW_RISK_POST_GUARD_JOIN_DISABLED",
+      "field": "full_core_guard_join_enabled",
+      "parser": "only true or false; absent defaults false",
+      "unit": "JSON boolean"
+    },
+    {
+      "canonical": "USDC",
+      "field": "currency",
+      "parser": "required non-empty uppercased",
+      "unit": "ISO code"
+    },
+    {
+      "evaluation": "null -> MISSING_NUMERIC_CAP; positive notional greater than cap -> MAX_SINGLE_ORDER_NOTIONAL_EXCEEDED",
+      "field": "max_single_order_notional",
+      "parser": "null or finite decimal; bool and non-finite rejected; negative finite currently parses",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "required margin = notional * imr + fee buffer; excess -> MAX_INCREMENTAL_INITIAL_MARGIN_EXCEEDED",
+      "field": "max_incremental_initial_margin",
+      "parser": "same decimal rule",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "requested notional and existing+requested checked against this cap",
+      "field": "max_aggregate_exposure",
+      "parser": "same decimal rule",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "observed leverage must be positive and not above the cap",
+      "field": "max_leverage",
+      "parser": "same decimal rule",
+      "unit": "dimensionless ratio"
+    },
+    {
+      "evaluation": "requested notional above cap is denied",
+      "field": "max_session_capital_commitment",
+      "parser": "same decimal rule",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "null -> MISSING_NUMERIC_CAP:max_existing_exposure",
+      "field": "max_existing_exposure",
+      "parser": "full-core field; null or finite decimal",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "null -> MISSING_FEE_BUFFER_CAP; added into required initial margin",
+      "field": "fee_buffer_usdc",
+      "parser": "same decimal rule",
+      "unit": "USDC"
+    },
+    {
+      "evaluation": "null -> MISSING_NUMERIC_CAP",
+      "field": "max_open_positions",
+      "parser": "null or integer >= 0; bool and negative rejected",
+      "unit": "count"
+    },
+    {
+      "evaluation": "null -> MISSING_NUMERIC_CAP",
+      "field": "max_submitted_orders",
+      "parser": "null or integer >= 0",
+      "unit": "count"
+    },
+    {
+      "evaluation": "0 blocks entry; session count at or above the cap blocks",
+      "field": "max_new_orders",
+      "observed": 1,
+      "parser": "required integer >= 0",
+      "unit": "count"
+    },
+    {
+      "evaluation": "open position count at or above the cap blocks",
+      "field": "max_new_positions",
+      "observed": 1,
+      "parser": "required integer >= 0",
+      "unit": "count"
+    },
+    {
+      "evaluation": "absent defaults true",
+      "field": "scale_in_forbidden",
+      "observed": true,
+      "unit": "JSON boolean"
+    },
+    {
+      "evaluation": "absent defaults true",
+      "field": "automatic_retry_forbidden",
+      "observed": true,
+      "unit": "JSON boolean"
+    }
+  ],
+  "observed": {
+    "automatic_retry_forbidden": true,
+    "currency": "USDC",
+    "fee_buffer_usdc": null,
+    "full_core_guard_join_enabled": false,
+    "max_aggregate_exposure": null,
+    "max_existing_exposure": null,
+    "max_incremental_initial_margin": null,
+    "max_leverage": null,
+    "max_new_orders": 1,
+    "max_new_positions": 1,
+    "max_open_positions": null,
+    "max_session_capital_commitment": null,
+    "max_single_order_notional": null,
+    "max_submitted_orders": null,
+    "owner_caps_ratified": false,
+    "scale_in_forbidden": true
+  },
+  "owner_decision_required": true,
+  "reservation": "created only after guard_allowed; canonical config never reaches that branch",
+  "schema_version": "bwp_live_004_b2_template.v1",
+  "values_set_by_this_pass": false
+}

@@ -16,6 +16,8 @@ from __future__ import annotations
 import json
 import math
 import time
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import PendingDecisionContextV1
+
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
@@ -80,6 +82,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_occupanc
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
+)
+
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
+    bounded_retry_policy_v1,
+)
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.runtime_notice_v1 import (
+    record_runtime_notice_v1,
 )
 
 PRIMARY_SEMANTIC_IDENTITY = "governed_continuous_cycle_orchestrator_v1"
@@ -212,6 +221,7 @@ class ContinuousCycleRecordV1:
     eg_owner_go: str
     occupancy_owner_go: str
     t2_owner_go: str
+    pending_decision_context: PendingDecisionContextV1 | None = None
 
 
 @dataclass(frozen=True)
@@ -294,6 +304,38 @@ def _load_ledger(evidence_root: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         return {"state": STATE_FAILED_STOP, "reason_code": "LEDGER_INVALID"}
     return payload
+
+
+def _dead_owner_wait_checkpoint_proven_v1(
+    receipt: Mapping[str, Any], *, cursor_store_root: Path, native_id: str
+) -> bool:
+    """Reclaim exclusion only between completed cycles, never an uncertain S5."""
+    try:
+        context = receipt["recovery_context"]
+        root = Path(context["evidence_root"])
+        if not root.is_absolute() or root.is_symlink():
+            return False
+        if context["cursor_store_root"] != str(Path(cursor_store_root).resolve()):
+            return False
+        ledger = _load_ledger(root)
+        consumed = ledger.get("consumed_instance_ids")
+        return (
+            ledger.get("state") == STATE_WAITING_FOR_NEXT_C1
+            and ledger.get("binding_digest") == context["binding_digest"]
+            and ledger.get("native_id") == native_id
+            and ledger.get("continuous_owner_go") == RUNTIME_OWNER_GO
+            and ledger.get("POST_COUNT") == "0"
+            and ledger.get("PERMIT_CREATED") == FALSE_TOKEN
+            and ledger.get("EXTERNAL_EFFECT_COUNT") == "0"
+            and isinstance(consumed, list)
+            and type(ledger.get("s5_invoke_count")) is int
+            and ledger["s5_invoke_count"] == len(consumed)
+            and len(set(consumed)) == len(consumed)
+            and ledger.get("checkpoint_cursor_sha256")
+            == sha256((Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()).hexdigest()
+        )
+    except (OSError, KeyError, TypeError, ValueError):
+        return False
 
 
 def _assert_standing_pins() -> None:
@@ -561,6 +603,15 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         lock_path=Path(lock_root) / LOCK_NAME,
         authorization_id=LOCK_AUTHORIZATION_ID,
         owner="current_productive_governed_continuous_cycle_orchestrator_v1",
+        recover_dead_local_owner=True,
+        recovery_context={
+            "evidence_root": str(Path(evidence_root).resolve()),
+            "cursor_store_root": str(Path(cursor_store_root).resolve()),
+            "binding_digest": digest,
+        },
+        dead_owner_validator=lambda receipt: _dead_owner_wait_checkpoint_proven_v1(
+            receipt, cursor_store_root=Path(cursor_store_root), native_id=authorization.native_id
+        ),
     )
     try:
         lock.acquire()
@@ -580,6 +631,9 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     cursor_floor_before = last_accepted
     s5_invoke_count = 0
     poll_iterations = 0
+    poll_retry_count = 0
+    recovery_incident_id = None
+    last_fresh_c1_at = started_at
     max_poll_iterations = compute_max_canonical_continuous_poll_iterations_v1(
         max_run_duration_seconds=authorization.max_run_duration_seconds,
         wait_interval_seconds=authorization.wait_interval_seconds,
@@ -607,12 +661,20 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             "expected_cursor_floor": authorization.expected_cursor_floor,
             "max_cycles_per_run": authorization.max_cycles_per_run,
             "max_run_duration_seconds": authorization.max_run_duration_seconds,
+            "poll_retry_count": poll_retry_count,
             "POST_COUNT": "0",
             "PERMIT_CREATED": FALSE_TOKEN,
             "EXTERNAL_EFFECT_COUNT": "0",
         }
         if extra:
             payload.update(dict(extra))
+        if (
+            state == STATE_WAITING_FOR_NEXT_C1
+            and (Path(cursor_store_root) / CURSOR_FILENAME).is_file()
+        ):
+            payload["checkpoint_cursor_sha256"] = sha256(
+                (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
+            ).hexdigest()
         _persist_json(path=Path(evidence_root) / LEDGER_FILENAME, payload=payload)
         trans_path = Path(evidence_root) / "transitions.jsonl"
         with trans_path.open("a", encoding="utf-8") as handle:
@@ -642,7 +704,31 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         first_blocker = blocker
         next_owner = owner_next
         ledger_state = state
-        _write_ledger(state=state, extra={"reason_code": result_reason})
+        _write_ledger(
+            state=state,
+            extra={
+                "reason_code": result_reason,
+                "first_genuine_blocker": blocker,
+                "next_required_owner_decision": owner_next,
+            },
+        )
+        record_runtime_notice_v1(
+            evidence_root=Path(evidence_root),
+            component="GOVERNED_CONTINUOUS_RUNTIME",
+            run_id=run_id,
+            reason_code=result_reason,
+            action=owner_next,
+            owner_action_required=result_disposition != DISPOSITION_CANCELLED,
+            notification_kind="FAULT"
+            if result_disposition in {DISPOSITION_FAIL_CLOSED, DISPOSITION_STALL}
+            else None,
+            extra={
+                "disposition": result_disposition,
+                "poll_retry_count": poll_retry_count,
+                "cycles_completed": len(records),
+                "automatic_restart_allowed": False,
+            },
+        )
         return _result(
             disposition=disposition,
             reason_code=reason_code,
@@ -679,7 +765,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     result_terminal="MAX_DURATION_BOUND",
                     state=STATE_COMPLETED,
                     blocker="MAX_RUN_DURATION",
-                    owner_next="Max run duration bound stopped the sequencer. POST unauthorized.",
+                    owner_next="Authorized duration completed. A new run requires fresh bounded authorization and current inputs.",
                 )
             if float(clock()) - last_progress_at >= float(authorization.stall_seconds):
                 return _stop(
@@ -688,11 +774,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     result_terminal="STALL_BOUND",
                     state=STATE_COMPLETED,
                     blocker="STALL",
-                    owner_next="Stall/anti-hang bound stopped the sequencer. POST unauthorized.",
+                    owner_next="Inspect the stalled runtime/source and reconcile durable state before a newly authorized run.",
                 )
-            if records and (
-                float(clock()) - last_progress_at
-                >= float(authorization.max_wait_for_next_c1_seconds)
+            if float(clock()) - last_fresh_c1_at >= float(
+                authorization.max_wait_for_next_c1_seconds
             ):
                 return _stop(
                     result_disposition=DISPOSITION_STALL,
@@ -700,7 +785,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     result_terminal="WAIT_BOUND",
                     state=STATE_COMPLETED,
                     blocker="MAX_WAIT_FOR_NEXT_C1",
-                    owner_next="Max wait for next fresh C1 stopped the sequencer. POST unauthorized.",
+                    owner_next="Restore fresh C1 supply and reconcile the cursor before a newly authorized run. This run cannot be replayed.",
                 )
             poll_iterations += 1
             if poll_iterations > max_poll_iterations:
@@ -712,7 +797,65 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     blocker=REASON_HANG_GUARD,
                     owner_next="Anti-hang poll guard fired. Do not resume.",
                 )
-            observation = observation_source.poll()
+            try:
+                observation = observation_source.poll()
+            except (TimeoutError, ConnectionError) as exc:
+                if recovery_incident_id is None:
+                    fault = record_runtime_notice_v1(
+                        evidence_root=Path(evidence_root),
+                        component="GOVERNED_CONTINUOUS_RUNTIME",
+                        run_id=run_id,
+                        reason_code="OBSERVATION_SOURCE_FAULT",
+                        action="Automatic bounded fresh-source recovery is in progress.",
+                        owner_action_required=False,
+                        notification_kind="FAULT",
+                        extra={
+                            "exception_type": type(exc).__name__,
+                            "recovery_scope": "FRESH_C1_DATA_PROCESSING",
+                        },
+                    )
+                    recovery_incident_id = fault["event_id"]
+                retry = bounded_retry_policy_v1(
+                    attempt=poll_retry_count, automatic_recovery_allowed=True
+                )
+                if not retry["retry_allowed"]:
+                    return _stop(
+                        result_disposition=DISPOSITION_FAIL_CLOSED,
+                        result_reason="OBSERVATION_POLL_RETRY_EXHAUSTED",
+                        result_terminal="SOURCE_UNAVAILABLE",
+                        state=STATE_FAILED_STOP,
+                        blocker=type(exc).__name__,
+                        owner_next="Restore observation source and reconcile the persisted cursor; obtain a fresh authorized run. Do not replay this run.",
+                    )
+                poll_retry_count += 1
+                _write_ledger(
+                    state=STATE_WAITING_FOR_NEXT_C1,
+                    extra={"reason_code": "OBSERVATION_POLL_RETRY_SCHEDULED"},
+                )
+                record_runtime_notice_v1(
+                    evidence_root=Path(evidence_root),
+                    component="GOVERNED_CONTINUOUS_RUNTIME",
+                    run_id=run_id,
+                    reason_code="OBSERVATION_POLL_RETRY_SCHEDULED",
+                    action="Poll the source again within the same bounded authorization.",
+                    owner_action_required=False,
+                    extra={
+                        "poll_retry_count": poll_retry_count,
+                        "exception_type": type(exc).__name__,
+                    },
+                )
+                _touch_poll_liveness_v1()
+                sleeper(
+                    min(
+                        float(authorization.wait_interval_seconds),
+                        max(0.0, float(authorization.max_run_duration_seconds) - _elapsed()),
+                    )
+                )
+                continue
+            if _elapsed() >= float(authorization.max_run_duration_seconds) or float(
+                clock()
+            ) - last_fresh_c1_at >= float(authorization.max_wait_for_next_c1_seconds):
+                continue  # expired bounds are handled before any S5 invocation
             if observation is None:
                 _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
@@ -785,6 +928,9 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 )
             cycle_root = Path(evidence_root) / "cycles" / consume_id
             cycle_lock = Path(evidence_root) / "cycle_locks" / consume_id
+            # End the safe wait checkpoint before any per-cycle authorization or
+            # S5 effect. A SIGKILL here must not inherit the previous WAIT state.
+            _write_ledger(state=STATE_IN_PROGRESS, extra={"reason_code": "S5_CYCLE_STARTING"})
             auth_record = {
                 "cycle_index": cycle_index,
                 "cycle_instance_id": consume_id,
@@ -826,8 +972,16 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     evidence_root=cycle_root / "s5",
                     candles_payload=observation.candles_payload,
                     occupancy_payloads=observation.occupancy_payloads,
-                    mark_price_payload=observation.mark_price_payload,
-                    index_tickers_payload=observation.index_tickers_payload,
+                    **(
+                        {"mark_price_payload": observation.mark_price_payload}
+                        if observation.mark_price_payload is not None
+                        else {}
+                    ),
+                    **(
+                        {"index_tickers_payload": observation.index_tickers_payload}
+                        if observation.index_tickers_payload is not None
+                        else {}
+                    ),
                     execute_network=False,
                     perform_get=False,
                     eg_cycle_dispatch=eg_cycle_dispatch,
@@ -858,6 +1012,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     eg_owner_go=EG_OWNER_GO,
                     occupancy_owner_go=OCCUPANCY_OWNER_GO,
                     t2_owner_go=T2_RUNTIME_OWNER_GO,
+                    pending_decision_context=getattr(s5_result, "pending_decision_context", None),
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:
@@ -875,6 +1030,36 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 cursor_store_root=Path(cursor_store_root),
                 venue_event_time=c1_time,
             )
+            last_fresh_c1_at = float(clock())
+            if recovery_incident_id is not None and s5_result.disposition in {
+                S5_DISPOSITION_HOLD,
+                S5_DISPOSITION_PRE_EXTERNAL_EFFECT,
+            }:
+                # Report recovery after real S5 processing and durable cursor
+                # advancement, never merely after a GET or a component restart.
+                cursor_digest = sha256(
+                    (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
+                ).hexdigest()
+                record_runtime_notice_v1(
+                    evidence_root=Path(evidence_root),
+                    component="GOVERNED_CONTINUOUS_RUNTIME",
+                    run_id=run_id,
+                    reason_code="RUNTIME_RECOVERY_VERIFIED",
+                    action="Fresh C1 processing has resumed under the existing cycle admission.",
+                    owner_action_required=False,
+                    notification_kind="RECOVERED",
+                    extra={
+                        "incident_id": recovery_incident_id,
+                        "recovery_scope": "FRESH_C1_DATA_PROCESSING",
+                        "accepted_c1": c1_time,
+                        "cursor_sha256": cursor_digest,
+                        "s5_consume_instance_id": consume_id,
+                        "s5_disposition": s5_result.disposition,
+                        "cycles_completed": len(records),
+                        "poll_retry_count": poll_retry_count,
+                    },
+                )
+                recovery_incident_id = None
             if s5_result.disposition == S5_DISPOSITION_PRE_EXTERNAL_EFFECT:
                 return _stop(
                     result_disposition=DISPOSITION_PRE_EXTERNAL_EFFECT,
@@ -921,6 +1106,34 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 state=STATE_WAITING_FOR_NEXT_C1,
                 extra={"reason_code": "HOLD_WAIT_NEXT_FRESH_C1"},
             )
+    except Exception as exc:
+        # An unexpected failure may follow a consumed S5 instance. Preserve the
+        # original exception and consumed ledger; never retry the trading cycle.
+        try:
+            _write_ledger(
+                state=STATE_FAILED_STOP,
+                extra={
+                    "reason_code": "UNEXPECTED_RUNTIME_FAILURE",
+                    "exception_type": type(exc).__name__,
+                },
+            )
+            record_runtime_notice_v1(
+                evidence_root=Path(evidence_root),
+                component="GOVERNED_CONTINUOUS_RUNTIME",
+                run_id=run_id,
+                reason_code="UNEXPECTED_RUNTIME_FAILURE",
+                notification_kind="FAULT",
+                action="Inspect owner state and reconcile consumed cycle/cursor evidence before a newly authorized run.",
+                owner_action_required=True,
+                extra={
+                    "exception_type": type(exc).__name__,
+                    "s5_invoke_count": s5_invoke_count,
+                    "automatic_restart_allowed": False,
+                },
+            )
+        except OSError:
+            pass  # notice writer logs persistence failure; retain original error
+        raise
     finally:
         lock.release()
     return _stop(

@@ -6,6 +6,7 @@ only. No runtime producer discovery, no second market truth, no trading authorit
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -197,9 +198,17 @@ def _decimal_text(value: float) -> str:
     return format(value, ".16g")
 
 
-def _state_ref_for_family(*, family: str, identity_body: Mapping[str, Any]) -> str:
+def _state_ref_for_family(
+    *,
+    family: str,
+    identity_body: Mapping[str, Any],
+    derivations: dict[str, Any] | None = None,
+) -> str:
     digest = compute_content_hash_v0(dict(identity_body))
-    return f"mi.ctx.{family}.{digest[:40]}"
+    ref = f"mi.ctx.{family}.{digest[:40]}"
+    if derivations is not None:
+        derivations[ref] = deepcopy(dict(identity_body))
+    return ref
 
 
 def _present_slot_from_derivation(
@@ -230,6 +239,7 @@ def derive_price_state_slot_v1(
     mark_fact: GovernedCanonicalFactV1 | None,
     o4_bar_fact: GovernedCanonicalFactV1 | None,
     observed_at: str,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if mark_fact is not None and o4_bar_fact is not None:
         msg = MaterializationRejection.AMBIGUOUS_PRICE_SOURCE.value
@@ -248,7 +258,9 @@ def derive_price_state_slot_v1(
         }
         return _present_slot_from_derivation(
             field_name="price_state_ref",
-            state_ref=_state_ref_for_family(family="price_state", identity_body=identity),
+            state_ref=_state_ref_for_family(
+                family="price_state", identity_body=identity, derivations=derivations
+            ),
             pit_observed_at_utc=pit,
             producer_owner=WP_A_PRODUCER,
             feature_version=PRICE_STATE_FEATURE_VERSION,
@@ -266,7 +278,9 @@ def derive_price_state_slot_v1(
     }
     return _present_slot_from_derivation(
         field_name="price_state_ref",
-        state_ref=_state_ref_for_family(family="price_state", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="price_state", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=pit,
         producer_owner=WP_A_PRODUCER,
         feature_version=PRICE_STATE_FEATURE_VERSION,
@@ -291,6 +305,7 @@ def derive_flow_state_slot_v1(
     *,
     trade_facts: Sequence[GovernedCanonicalFactV1] | None,
     observed_at: str,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not trade_facts:
         return None
@@ -324,7 +339,9 @@ def derive_flow_state_slot_v1(
     pit_iso = latest_pit.replace(microsecond=0).isoformat().replace("+00:00", "Z")
     return _present_slot_from_derivation(
         field_name="flow_state_ref",
-        state_ref=_state_ref_for_family(family="flow_state", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="flow_state", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=pit_iso,
         producer_owner=WP_A_PRODUCER,
         feature_version=FLOW_STATE_FEATURE_VERSION,
@@ -360,6 +377,7 @@ def derive_liquidity_microstructure_slot_v1(
     *,
     ohlcv_facts: Sequence[GovernedCanonicalFactV1] | None,
     observed_at: str,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not ohlcv_facts:
         return None
@@ -396,7 +414,9 @@ def derive_liquidity_microstructure_slot_v1(
     }
     return _present_slot_from_derivation(
         field_name="liquidity_microstructure_state_ref",
-        state_ref=_state_ref_for_family(family="liquidity_microstructure", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="liquidity_microstructure", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=require_event_time_utc(pit, "micro_pit"),
         producer_owner=BOUCHAUD_PROXY_PRODUCER,
         feature_version=MICROSTRUCTURE_FEATURE_VERSION,
@@ -408,6 +428,7 @@ def derive_volatility_state_slot_v1(
     *,
     mark_facts: Sequence[GovernedCanonicalFactV1] | None,
     observed_at: str,
+    derivations: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not mark_facts:
         return None
@@ -442,7 +463,9 @@ def derive_volatility_state_slot_v1(
     }
     return _present_slot_from_derivation(
         field_name="volatility_state_ref",
-        state_ref=_state_ref_for_family(family="volatility_state", identity_body=identity),
+        state_ref=_state_ref_for_family(
+            family="volatility_state", identity_body=identity, derivations=derivations
+        ),
         pit_observed_at_utc=pit_iso,
         producer_owner=VOL_FEATURE_PRODUCER,
         feature_version=VOLATILITY_FEATURE_VERSION,
@@ -518,6 +541,8 @@ def collect_fact_digests_from_request_v1(
 
 def materialize_market_context_v1_from_existing_facts_v1(
     request: ExistingFactMaterializationRequestV1,
+    *,
+    derivations: dict[str, Any] | None = None,
 ) -> MappingProxyType[str, Any]:
     """Materialize MARKET_CONTEXT_V1 from governed existing facts (explicit inputs only)."""
     observed_at = require_event_time_utc(request.observed_at, "observed_at")
@@ -529,18 +554,22 @@ def materialize_market_context_v1_from_existing_facts_v1(
         mark_fact=request.price_mark_fact,
         o4_bar_fact=request.price_o4_bar_fact,
         observed_at=observed_at,
+        derivations=derivations,
     )
     flow_slot = derive_flow_state_slot_v1(
         trade_facts=request.trade_facts,
         observed_at=observed_at,
+        derivations=derivations,
     )
     micro_slot = derive_liquidity_microstructure_slot_v1(
         ohlcv_facts=request.ohlcv_facts,
         observed_at=observed_at,
+        derivations=derivations,
     )
     vol_slot = derive_volatility_state_slot_v1(
         mark_facts=request.volatility_mark_facts,
         observed_at=observed_at,
+        derivations=derivations,
     )
 
     derivatives_slot = None
@@ -556,10 +585,12 @@ def materialize_market_context_v1_from_existing_facts_v1(
 
         derivatives_slot = derive_derivatives_state_slot_v1(
             inputs=request.phase_19,
+            derivations=derivations,
             observed_at=observed_at,
         )
         cross_market_slot = derive_cross_market_state_slot_v1(
             inputs=request.phase_19,
+            derivations=derivations,
             observed_at=observed_at,
             instrument_ref=instrument_ref,
         )

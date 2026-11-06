@@ -1,0 +1,4 @@
+captured_utc=2026-10-16T07:42:00Z
+type=full_desktop
+pre_state=single_safari_window_ws2
+notes=Cursor IDE partially obscuring OKX; baseline WS2 futures BTC XPERP workspaceId=1031216400532770816

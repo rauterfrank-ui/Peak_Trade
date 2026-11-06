@@ -1,0 +1,9 @@
+### CON-2096 — Market Intelligence und gemeinsame Outcome-Identität
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+MI-Forecast/Calibration kann Outcome über Instrument-/Zeit-/Horizontidentität anschließen. Der MI-angereicherte M4-Intake validiert gemeinsame Learning-Evidence, ruft die plane_request jedoch unverändert auf und ergänzt Lineage. Messung, Forecast, Kalibrierung, Marktprofil und Suchwirkung sind keine austauschbaren Objekte.
+
+**Grenze:** Ein gemeinsamer Identifier beweist keine gemeinsame Zustandsmaschine oder kausale Verwendung der MI-Metrik. Kein Forecast wird dadurch zur Tradingrichtung oder automatisch zum Scope-Wert.
+
+Quellen: EVI-2211, EVI-2224, EVI-2274, EVI-2270, EVI-2245.

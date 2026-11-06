@@ -1,0 +1,2 @@
+4d312c37819fffbbd1684999e823656e45af6107 2026-11-05T21:47:25+01:00 feat(mi): bind exact forecasts to original measurements and typed handoffs
+221755e3ae8d0c04bff2677f57879bb44ecb717d 2026-11-04T12:36:08+01:00 feat(learning): restore durable research and measured return handoffs

@@ -1,0 +1,10 @@
+[
+  {
+    "n_bars": 2,
+    "result": "IDENTICAL_FULL_JOIN_OUTPUT_AND_DIGEST"
+  },
+  {
+    "n_bars": 3,
+    "result": "IDENTICAL_FULL_JOIN_OUTPUT_AND_DIGEST"
+  }
+]

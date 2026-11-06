@@ -158,12 +158,6 @@ def _execute(
     )
 
 
-def _bw_section() -> str:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    start = runbook.index(BW_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
-
-
 def test_authorized_anchor_and_defined_kind_bind_membership(tmp_path: Path) -> None:
     result = _execute(evidence_root=tmp_path)
     assert result.declaration_id == AUTHORIZED_DECLARATION_ID
@@ -463,36 +457,41 @@ def test_canonical_pack_and_parents_unrewritten() -> None:
     assert claims["PROTECTED_SURFACES_UNCHANGED"] == "true"
 
 
-def test_runbook_bw_and_navigation_persist() -> None:
+def test_historical_membership_is_traceable_without_current_stock_authority() -> None:
+    # September's retired heading/enable flags are not today's documentation
+    # contract. Preserve actual sealed identities and test the current boundary.
+    from scripts.ops.verify_historical_accounting_sources_v1 import verify_historical_sources_v1
+    from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+        RUNNING_ACCOUNT_EQUITY_MINT_ALLOWED,
+        PRIVATE_STATE_PLANE_EQUITY_SIZING_AUTHORITY,
+    )
+
+    replay = verify_historical_sources_v1(REPO_ROOT)
+    assert replay["historical_anchor_cross_artifact_links_match"]
+    assert not replay["today_equity_reconstructed"]
+    assert not replay["historical_anchor_adopted_as_current"]
+    assert not replay["complete_stream_between_anchor_and_today_proven"]
+    membership = _load_json(CANONICAL_PACK / "today_initial_stock_kind_set_membership_v1.json")
+    assert membership["declaration_id"] == AUTHORIZED_DECLARATION_ID
+    assert membership["anchor_id"] == AUTHORIZED_ANCHOR_ID
+    assert membership["membership_id"] == AUTHORIZED_MEMBERSHIP_ID
+    assert membership["source_kind"] == TODAY_SOURCE_KIND
+    assert membership["reconstruction_source_authority"] == "false"
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    for pin in (
+        "HISTORICAL_STOCK_IS_NOT_CURRENT_STOCK=true",
+        "CURRENT_CLASSIFIED_STREAM_COMPLETE=false",
+        "BILLS_OBSERVATION_AUTHORITY=NONE",
+    ):
+        assert pin in runbook
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    bw_section = _bw_section()
-    assert OWNER_GO in bw_section
-    assert AUTHORIZED_DECLARATION_ID in bw_section
-    assert AUTHORIZED_ANCHOR_ID in bw_section
-    assert AUTHORIZED_MEMBERSHIP_ID in bw_section
-    assert "RATIFICATION_STATUS=RATIFIED" in bw_section
-    assert "INITIAL_STOCK_ANCHOR_STATUS=PRESENT" in bw_section
-    assert f"LIVE_EQUITY_STOCK_KIND_SET={TODAY_SOURCE_KIND}" in bw_section
-    assert f"KIND_SET_MEMBERS={TODAY_SOURCE_KIND}" in bw_section
-    assert "SOURCE_KIND_STATUS=DEFINED_KIND_SET_MEMBER" in bw_section
-    assert "MEMBERSHIP_OWNER_RATIFICATION_REQUIRED=false" in bw_section
-    assert "VENUE_EQ_SOURCE_AUTHORITY=false" in bw_section
-    assert "VENUE_GET_COUNT_ADDED=0" in bw_section
-    assert "VENUE_POST_COUNT=0" in bw_section
-    assert EARLIEST_LIVE_CRITICAL_PATH_BLOCKER in bw_section
-    assert NEXT_OWNER_GO_REQUIRED in bw_section
-    assert "CURRENT_CANONICAL_SECTION=11.2.1.BW" in bw_section
-    assert BV_HEADING in RUNBOOK.read_text(encoding="utf-8")
     assert (
         "DOCS_TOKEN_FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_KIND_SET_MEMBERSHIP_WP1" in spec
     )
-    assert "FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_KIND_SET_MEMBERSHIP_WP1.md" in mot
-    assert BW_HEADING in mot
-    assert "11.2.1.BW" in atlas
+    assert "ACCOUNT_BILLS_OBSERVATION_AND_HISTORICAL_REPLAY_V1.md" in MOT_PATH.read_text()
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert "live_equity_stock_today_initial_stock_kind_set_membership_v1.py" in atlas
+    assert "bills_observation_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
-    assert LIVE_ENABLED is True
-    assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is True
+    assert RUNNING_ACCOUNT_EQUITY_MINT_ALLOWED is False
+    assert PRIVATE_STATE_PLANE_EQUITY_SIZING_AUTHORITY is False

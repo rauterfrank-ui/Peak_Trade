@@ -4,10 +4,12 @@ status: active
 scope: Full-Core CURRENT_PRODUCTIVE one-shot host join of closed §11.2.1.C–H SideState/confirmation cursor persist/restore; offline Cycle A/B proof; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-16
+last_updated: 2026-11-02
 ---
 
 # Full Core Current Productive One-Shot SideState And Confirmation Cursor Join V1
+
+Current regression alignment, 2026-11-03: fixtures distinguish canonical versus native contract identity, require G17 history not later than the first C1 and retain the existing occupied-account cursor requirement. Source protection is pinned to all listed files at the approved GGE-only revision instead of the older moving origin/main comparison. [Evidence and limits](../evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md). Cursor semantics and production code are unchanged by this test alignment.
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.DR.
 Consumes Owner-GO
@@ -18,9 +20,15 @@ This persist joins the already-closed §11.2.1.C–H SideState persist authority
 and Cap-6.2 confirmation/scope snapshot contracts into
 `run_current_productive_master_v2_runtime_cycle_v1`. Flat CURRENT_PRODUCTIVE
 one-shot cycles no longer re-seed `NEUTRAL_OBSERVE` when a valid same-lineage,
-same-instrument cursor exists. Missing cursor remains Cap-6.2 NEUTRAL default.
+same-instrument cursor exists. Missing cursor while flat remains Cap-6.2 NEUTRAL default.
 Invalid SideState fails closed. Instrument, lineage, schema, and stale
 mismatch refuse restore and never invent ARMED or ENTER.
+
+Owner-authorized local correction, 2026-11-02: occupied-position cycles also
+restore the validated cursor, including existing scope and runtime scope state.
+Active SideState is incompatible with a flat venue only. Occupied cycles with
+missing/unusable cursor or missing scope fail closed before replay rather than
+starting a new entry context. Venue exposure does not fabricate an ACTIVE state.
 
 Master-V2, Double Play, Bull/Bear, confirmation thresholds, Top-20, learning,
 §11.14, Flatten, Canary, `MAX_POSITIONS=1`, permit, and POST semantics are

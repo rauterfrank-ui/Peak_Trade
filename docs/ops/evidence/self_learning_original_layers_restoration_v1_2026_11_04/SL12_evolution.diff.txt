@@ -1,0 +1,34 @@
+diff --git a/src/experiments/canonical_advanced_search_v1.py b/src/experiments/canonical_advanced_search_v1.py
+index 703b2145e..a6071a554 100644
+--- a/src/experiments/canonical_advanced_search_v1.py
++++ b/src/experiments/canonical_advanced_search_v1.py
+@@ -39,6 +39,7 @@ from src.experiments.canonical_meta_learning_v1 import (
+     PROPOSAL_RETEST,
+     PROMOTION_AUTHORITY as META_PROMOTION_AUTHORITY,
+     SCHEMA_VERSION as META_LEARNING_SCHEMA_VERSION,
++    derive_meta_parameter_region_digest_v1,
+ )
+ from src.experiments.canonical_reality_gap_store_v1 import (
+     DISPOSITION_REJECTED_REALITY_GAP,
+@@ -1269,15 +1270,19 @@ def _signal_applies(
+     target_kind = str(signal["target_kind"])
+     if target_kind == "strategy_family":
+         return target == strategy_family
+-    if target_kind == "search_space_id":
++    if target_kind in {"search_space", "search_space_id"}:
+         return target == search_space_id
+     if target_kind == "hypothesis_kind":
+         return target == hypothesis_kind
+     if target_kind == "parameter_region":
++        if is_valid_sha256_hex(target):
++            return target == derive_meta_parameter_region_digest_v1(parameter_region)
+         return target in {str(value) for value in parameter_region.values()} or target in {
+             f"{key}={value}" for key, value in parameter_region.items()
+         }
+-    return target in {strategy_family, search_space_id, hypothesis_kind}
++    # Equal text does not make a metric, regime, cost model or research path a
++    # candidate identity target. Those proposals need their own consumer seam.
++    return False
+ 
+ 
+ def _offline_request(

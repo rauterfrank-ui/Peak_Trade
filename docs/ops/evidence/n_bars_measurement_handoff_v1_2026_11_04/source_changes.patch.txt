@@ -1,0 +1,137 @@
+diff --git a/src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py b/src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
+index 4ae784af3..69228b57c 100644
+--- a/src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
++++ b/src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
+@@ -7,6 +7,7 @@ event and explicit evaluation identity. Does not recompute supplier outcomes.
+ from __future__ import annotations
+ 
+ import hashlib
++from copy import deepcopy
+ from typing import Any, Final, Mapping
+ 
+ from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
+@@ -19,6 +20,9 @@ from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import
+     EVALUATION_ENGINE_ID,
+     evaluate_offline_bundle_v0,
+ )
++from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier_v1 import (
++    validate_n_bars_measurement_artifacts_v1,
++)
+ from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+     EVALUATION_RUNTIME_WIRING,
+ )
+@@ -86,6 +90,13 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
+             raise DdoValidationError("EVALUATION_RUNTIME_DECISION_CONFIGURATION_MISMATCH")
+     if str(observation.get("decision_event_ref")) != str(decision["record_id"]):
+         raise DdoValidationError("EVALUATION_RUNTIME_DECISION_REF_MISMATCH")
++    measurement = horizon_producer_result.get("measurement_evidence_artifact")
++    information_set = horizon_producer_result.get("evaluation_time_information_set_artifact")
++    artifacts_present = measurement is not None or information_set is not None
++    if artifacts_present:
++        if not isinstance(measurement, Mapping) or not isinstance(information_set, Mapping):
++            raise DdoValidationError("EVALUATION_RUNTIME_MEASUREMENT_ARTIFACTS_INCOMPLETE")
++        validate_n_bars_measurement_artifacts_v1(observation, measurement, information_set)
+     records_by_id = ledger_records_index_v1(ledger) if ledger is not None else None
+     bundle = evaluate_offline_bundle_v0(
+         decision,
+@@ -112,4 +123,11 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
+         "durable_persist": durable_persist,
+         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
+         "producer_host_id": PRODUCTIVE_EVALUATION_HOST_ID,
++        "measurement_artifacts_retained": artifacts_present,
++        "measurement_evidence_artifact": (
++            deepcopy(dict(measurement)) if isinstance(measurement, Mapping) else None
++        ),
++        "evaluation_time_information_set_artifact": (
++            deepcopy(dict(information_set)) if isinstance(information_set, Mapping) else None
++        ),
+     }
+diff --git a/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py b/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py
+index 3d63e1e25..5a07dcb09 100644
+--- a/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py
++++ b/src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py
+@@ -56,6 +56,55 @@ class NbarsSupplierMaterializationV1:
+     bridge_translation: DdoNbarsBridgeTranslationV1
+ 
+ 
++def validate_n_bars_measurement_artifacts_v1(
++    observation: Mapping[str, Any],
++    measurement: Mapping[str, Any],
++    information_set: Mapping[str, Any],
++) -> None:
++    """Validate existing supplier content/joins; do not recompute or promote outcomes."""
++    for artifact, schema, version in (
++        (measurement, MEASUREMENT_SCHEMA_NAME, MEASUREMENT_SCHEMA_VERSION),
++        (information_set, EVAL_INFO_SET_SCHEMA_NAME, EVAL_INFO_SET_SCHEMA_VERSION),
++    ):
++        if artifact.get("schema_name") != schema or artifact.get("schema_version") != version:
++            raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_SCHEMA_MISMATCH")
++        if artifact.get("bridge_contract_id") != O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID:
++            raise DdoValidationError("N_BARS_MEASUREMENT_ARTIFACT_BRIDGE_MISMATCH")
++    if measurement.get("measurement_producer_id") != N_BARS_BAR_EVIDENCE_SUPPLIER_ID:
++        raise DdoValidationError("N_BARS_MEASUREMENT_PRODUCER_MISMATCH")
++    for artifact, field, prefix in (
++        (measurement, "actual_outcome_ref", "ddo.outcome.measure."),
++        (information_set, "evaluation_time_information_set_ref", "ddo.eval_info_set."),
++    ):
++        expected = mint_ddo_content_ref_v1(
++            prefix=prefix, payload={key: value for key, value in artifact.items() if key != field}
++        )
++        if artifact.get(field) != expected or observation.get(field) != expected:
++            raise DdoValidationError(f"N_BARS_MEASUREMENT_CONTENT_REF_MISMATCH:{field}")
++    for field in (
++        "instrument_ref",
++        "bar_spec_ref",
++        "horizon_start_time_utc",
++        "n_bars",
++        "bar_close_times_utc",
++        "bar_identity_refs",
++    ):
++        if measurement.get(field) != observation.get(field) or information_set.get(
++            field
++        ) != observation.get(field):
++            raise DdoValidationError(f"N_BARS_MEASUREMENT_CONTEXT_MISMATCH:{field}")
++    if measurement.get("outcome_scalar_kind") != observation.get("outcome_scalar_kind"):
++        raise DdoValidationError("N_BARS_MEASUREMENT_SCALAR_KIND_MISMATCH")
++    if information_set.get("decision_event_ref") != observation.get("decision_event_ref"):
++        raise DdoValidationError("N_BARS_MEASUREMENT_DECISION_MISMATCH")
++    if measurement.get("evaluation_time_utc") != observation.get(
++        "evaluation_time_utc"
++    ) or information_set.get("evaluation_boundary_time_utc") != observation.get(
++        "evaluation_time_utc"
++    ):
++        raise DdoValidationError("N_BARS_MEASUREMENT_EVALUATION_TIME_MISMATCH")
++
++
+ def _price_basis_for_bar(finalization_state: str) -> str:
+     fin = _bar_state_token(finalization_state)
+     if fin == O4_STATE_CORRECTED:
+diff --git a/src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py b/src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+index c9012b63f..33356d94e 100644
+--- a/src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
++++ b/src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+@@ -6,6 +6,7 @@ does not bypass supplier authority, and does not reach trading or execution.
+ 
+ from __future__ import annotations
+ 
++from copy import deepcopy
+ from typing import Any, Final, Mapping
+ 
+ from src.learning.deterministic_decision_outcome_v0.capture_v0 import observe_after_producer_v0
+@@ -66,6 +67,16 @@ def produce_real_outcome_horizon_evaluation_observation_v1(
+         "failure_codes": failure_codes,
+         "horizon_observation_status": status,
+         "evaluation_observation": dict(observation),
++        "measurement_evidence_artifact": (
++            deepcopy(dict(materialization.measurement_evidence_artifact))
++            if materialization.measurement_evidence_artifact
++            else None
++        ),
++        "evaluation_time_information_set_artifact": (
++            deepcopy(dict(materialization.evaluation_time_information_set_artifact))
++            if materialization.evaluation_time_information_set_artifact
++            else None
++        ),
+         "supplier_input_ref_present": "actual_outcome_ref" in materialization.supplier_input,
+         "measurement_producer_id": materialization.measurement_evidence_artifact.get(
+             "measurement_producer_id"

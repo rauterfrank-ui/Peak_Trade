@@ -1,0 +1,73 @@
+{
+  "backup_git_head": "14323f12b9bdd64723f84daba3f04355f69e7756",
+  "copy_is_independent_runtime_proof": false,
+  "coverage": "Targeted lookup across requested source classes, not exhaustive full recovery/backup review; broad recovery enumeration was stopped.",
+  "m2_files": [
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_4_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
+      "repository_relative_path": "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_4_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
+      "sha256": "16d4f9c18b47eb3a918c99f0618b0316913b17350babe30d0f91c248f0a257cc"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+      "repository_relative_path": "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+      "sha256": "641f4b763b39328c2ea78f7932f7194e4300e8433c1cb7f7fbac787229e05db0"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+      "repository_relative_path": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+      "sha256": "1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py",
+      "repository_relative_path": "src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py",
+      "sha256": "6e2f27bf3c70c0b917095b8261759a15b69afe9d18a8a254d1a2fe5223d1070b"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+      "repository_relative_path": "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+      "sha256": "dfbe208f04a828e4d61a9213a45d4f298c6af8bed850c0ec3cd8f1cb26d70f54"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "repository_relative_path": "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
+      "sha256": "a626a52690826d23f8899404e9bb08a741370cbd75f820f9b35cce04b2980aba"
+    },
+    {
+      "byte_equal_to_current_repo": true,
+      "path": "/Volumes/M2DATA/PeakTradeDisasterBackup_Stand2026_10_07_CURRENT_922167f1/src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "repository_relative_path": "src/evaluation/golden_vectors/evaluators/market_intelligence_v1.py",
+      "sha256": "1735837499fa504a6661f37f213c31526d8caf0c0b3b83facd801efc3cdffd3b"
+    }
+  ],
+  "mount_metadata": [
+    {
+      "DeviceIdentifier": "disk6s2",
+      "MountPoint": "/Volumes/M2DATA",
+      "ReadOnlyVolume": null,
+      "VolumeName": "M2DATA",
+      "VolumeUUID": "BFA81BFA-80C5-3634-84EE-17B3496EE123",
+      "Writable": true
+    },
+    {
+      "DeviceIdentifier": "disk8s1",
+      "MountPoint": "/Volumes/PeakDATARecovery",
+      "ReadOnlyVolume": null,
+      "VolumeName": "PeakDATARecovery",
+      "VolumeUUID": "53B45FBD-BBAC-4D62-B42C-A75BD6BD7C57",
+      "Writable": true
+    }
+  ],
+  "recovery_file": {
+    "path": "/Volumes/PeakDATARecovery/    PeakTradeMDRecovery00/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_4_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.Id_dc000010096670e.md",
+    "same_as_repo_and_m2": true,
+    "sha256": "16d4f9c18b47eb3a918c99f0618b0316913b17350babe30d0f91c248f0a257cc"
+  },
+  "source_write_performed": false
+}

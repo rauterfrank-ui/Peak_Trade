@@ -1,0 +1,17 @@
+{
+  "reviewed_at_commit": "f69fc6f6d2cd5276d6447b24c0cff9b250a535f0",
+  "new_mi_tests": "28 passed",
+  "new_mi_junit_sha256": "1be1a6fb2f45d07662e86201d06b8ff3d6b542a7e756733ff37c0ad262d5e3ca",
+  "reused_previous_results": {
+    "integration_tests.xml": "48dca84cdea0458ea56e4bc3757a9f576633a4556dddbc60efca5d233a40ae30",
+    "intermediate_tests.xml": "de143528dcaf409367bd90df6bc82d286f4d57eb94ba9bf7a6b1c72327fe004d",
+    "g2_failure_diagnosis.json": "3866fd98f4bc257d0e9e887048e65a7c2a96140cd1f7b7e8c294e81fe3ca562b"
+  },
+  "old_results_reexecuted": false,
+  "old_9_failures_repaired": false,
+  "source_and_anchor_verification": "PASS; semantic and full runtime closure not implied",
+  "atlas_validation": "PASS; generated views match",
+  "docs_validation": "PASS local token and link-target checks",
+  "product_code_config_or_tests_changed": false,
+  "natural_runtime_or_end_architecture_proof": false
+}

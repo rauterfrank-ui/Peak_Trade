@@ -1,0 +1,80 @@
+{
+  "source_commit": "3b56ababb9a791817f7fea053171f7c991c85e9f",
+  "sources": [
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "sha256": "0f44b0ffd34699681ceffd831cf5657213eb0223273b8ba3b91e73ea34aa288b",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+      "sha256": "54c28251701bd163178f8206749357a8c0ccb4b87c412d382cba297eec0bd183",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
+      "sha256": "c9d2a3b62feeb702a6fccada5640ee5933bbd9f9dd9482e4cb851b3c7ae8885f",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
+      "sha256": "069b4997a0725535603c41ebf7f17abccb6abbb9a70cdd3afb9dce5c703ac252",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+      "sha256": "f026db105af8fcf1747a8eeaf534a2ea636fbb0d1bbf8ea98e922c6ff41ace48",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+      "sha256": "72971a51da0c72dc36ba0c7aa0d12b518d731972474f1f8cfedc6a6e0819ebb8",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+      "sha256": "1507f008b47df920860b9c380d055cfac4ffe30c232429276568d9a9f5fdef5c",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+      "sha256": "da3deab38df85cbedab6a3fc403a0a950caa5a9435d4f1ab3683533dada67306",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+      "sha256": "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+      "sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+      "sha256": "6d003847797858ecae8a510ef0c6a4a617519706babe34d4c82c15048f76ad61",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+      "sha256": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
+      "sha256": "ec6236e755490ebd107249b2b6f84083f65fbbbe04ffaf990d21dc96fed032d1",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    },
+    {
+      "path": "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json",
+      "sha256": "209034aac331c7fe9ce443a113c49fd605b6841b685320d3661105bcc76dc34a",
+      "coverage": "relevant contract and function bodies; not whole-file end-to-end certification"
+    }
+  ]
+}

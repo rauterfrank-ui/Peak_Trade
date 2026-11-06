@@ -1,0 +1,52 @@
+{
+  "cycle_count_match": true,
+  "hold_closed_all_cycles": true,
+  "matches_pre_external_report": true,
+  "natural_enter_match": true,
+  "post_count_match": true,
+  "pre_external_match": true,
+  "reconstructed_cycles": [
+    {
+      "auth_path": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z/cycles/6866554fd9b7708ba5c049f302f3fa4a8d11237453992759bbb4a5273929cf6f/s5_cycle_authorization_v1.json",
+      "c1_venue_event_time": 1791803760.0,
+      "cycle_index": 1,
+      "cycle_instance_id": "6866554fd9b7708ba5c049f302f3fa4a8d11237453992759bbb4a5273929cf6f"
+    },
+    {
+      "auth_path": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z/cycles/f6a37f9e860ec6cbc444be6a9baec1695e20fb66bf6c6835f1398fa0ade4465b/s5_cycle_authorization_v1.json",
+      "c1_venue_event_time": 1791803820.0,
+      "cycle_index": 2,
+      "cycle_instance_id": "f6a37f9e860ec6cbc444be6a9baec1695e20fb66bf6c6835f1398fa0ade4465b"
+    },
+    {
+      "auth_path": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z/cycles/6c4cd31c50bc21e44c7e071ee921bf6b3c64c4301a36c5ea2ef3c50340349d4e/s5_cycle_authorization_v1.json",
+      "c1_venue_event_time": 1791803880.0,
+      "cycle_index": 3,
+      "cycle_instance_id": "6c4cd31c50bc21e44c7e071ee921bf6b3c64c4301a36c5ea2ef3c50340349d4e"
+    },
+    {
+      "auth_path": "runtime/current_productive/natural_evidence_accumulation_v1/runs/20261012T111235Z/cycles/6f799277651744dec802ab73df54b43152a8d574d17874b817f48227a3414ce3/s5_cycle_authorization_v1.json",
+      "c1_venue_event_time": 1791803940.0,
+      "cycle_index": 4,
+      "cycle_instance_id": "6f799277651744dec802ab73df54b43152a8d574d17874b817f48227a3414ce3"
+    }
+  ],
+  "reconstructed_s5_dispositions": [
+    {
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 4,
+      "s5_disposition": "HOLD_CLOSED"
+    }
+  ]
+}

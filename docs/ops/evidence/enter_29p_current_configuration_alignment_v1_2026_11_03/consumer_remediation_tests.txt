@@ -1,0 +1,26 @@
+REASON_CODE=WORKTREE_ENV_ISOLATION_PASS
+EXIT_CODE=0
+DIAGNOSTIC=per-worktree environment isolation proven
+UV_LOCK_SHA256=2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2
+PYPROJECT_SHA256=7ef8f54894a9811bce57f2c0fed5279de8ce4be39be4b3cca00a6de0d6a4c9ab
+SOURCE_BINDING=/Users/frnkhrz/Peak_Trade/src
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 85 items
+
+tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py . [  1%]
+...                                                                      [  4%]
+tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py ... [  8%]
+....                                                                     [ 12%]
+tests/ops/test_current_productive_semantic_enforcement_repair_v1.py .... [ 17%]
+......                                                                   [ 24%]
+tests/ops/test_current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py . [ 25%]
+...............................................                          [ 81%]
+tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py . [ 82%]
+.......                                                                  [ 90%]
+tests/ops/test_p5_10_productive_activation_and_binding_v1.py ........    [100%]
+
+============================== 85 passed in 4.01s ==============================

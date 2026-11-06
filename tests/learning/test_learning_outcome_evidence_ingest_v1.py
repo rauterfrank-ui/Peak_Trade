@@ -158,7 +158,7 @@ def test_ledger_reopen_reconstructs_latest_learning_state(tmp_path: Path) -> Non
     assert reconstructed["next_cycle_economic_score_label"] == "LABEL_A"
 
 
-def test_productive_closed_loop_two_cycles_feedback(tmp_path: Path) -> None:
+def test_productive_closed_loop_keeps_unknown_provenance_out_of_feedback(tmp_path: Path) -> None:
     account = build_account_identity_record_v1(
         account_identity="acct-closed-loop",
         venue="OKX",
@@ -205,6 +205,8 @@ def test_productive_closed_loop_two_cycles_feedback(tmp_path: Path) -> None:
         ddo_evidence_environment=ExecutionEnvironment.DEV,
         ddo_account_identity_record=account,
     )
-    assert state.ddo_n_bars_economic_score == first_label
+    # This historical bridge fixture has UNKNOWN decision code/config lineage.
+    # Its evidence remains readable, but cannot feed a newly bound config.
+    assert state.ddo_n_bars_economic_score == "UNKNOWN"
     assert state.last_ddo_learning_state is not None
     assert int(state.last_ddo_learning_state["state_version"]) >= prior_version

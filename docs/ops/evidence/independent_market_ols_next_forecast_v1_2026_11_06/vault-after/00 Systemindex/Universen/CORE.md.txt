@@ -1,0 +1,150 @@
+---
+title: "Master V2 und Double Play"
+stand: "2026-11-05"
+rolle: "Fachlicher PeakTrade-Systemindex"
+authoritaet: "NONE"
+tags: [aktuell, systemindex]
+---
+
+# Master V2 und Double Play
+
+<!-- enforcement-view:v1:CORE -->
+> [!info] Produktiver Referenzpfad · OWNER
+> Master V2 + Double Play bleiben Decisionowner; weder Orchestrator noch P5 übernehmen diese Autorität.
+> Dokumentrolle, keine Aktivierungsfreigabe. [[00 Systemindex/Produktiver Pfad und Enforcement|Pfad, Gates und ausgeschlossene Kurzschlüsse]].
+<!-- /enforcement-view:v1:CORE -->
+
+**Typ:** Universum. **Rubrik:** Universen.
+Aus gebundenem Instrument, zulässiger Beobachtung und originalem Zustand die Handels-/Positionsentscheidung erarbeiten.
+
+## Äußerste fachliche Grenze
+**Gehört bis zur Grenze hinein:** Master-V2-Markt-/Regimeverarbeitung; GGE-/Scopeanbindung; zehn native mechanische L1–L10; Direction/Confirmation; Survival/Suitability/Composition; Double-Play-SideState, Scopeevents, Entry/Exit und originaler Cursor-/Exitanschluss. MV2 und DP sind intern unterscheidbar, der aktuelle Entscheidungsweg ist gemeinsam.
+
+**Erster eigener Prüf-/Verarbeitungspunkt:** Beginnt an der Admission von BoundInstrument, kanonischem Marktkontext, typisierter Volatilität und gültigem Zustands-/Reconciliationwitness. Auswahl und Rohquellen liegen davor.
+
+**Letzter eigener Zustand / Output / Entscheidungsumfang:** Endet an der exakten Decision-/DP-Evidence einschließlich nicht ausführbarer Ergebnisse und an der abgegrenzten Übergabe des Entscheidungskontexts an Risiko bzw. Capture. Positionsausführung und ihre bestätigten Fills sind fremde Owner.
+
+**Liegt ausdrücklich jenseits dieser Grenze:** Keine Instrumentneuauswahl, keine Kapitalquelle, keine finale externe Finanzmenge, kein Budgethold, Permit, Fill oder selbstautorisierte Learningänderung.
+
+[[00 Systemindex/Karten/CORE.canvas|Bereich mit tatsächlicher Innen-/Außengrenze und Nachbarn öffnen]]
+
+## Innere Architektur und sämtliche benannten Stufen
+Diese 6 Funktionsstufen sind eine quellengestützte Gliederung der vorhandenen Konstruktion. Sie werden nicht als neue universelle Runtime-Layernummern eingeführt. Die nativen zehn mechanischen Corelayer bleiben gesondert vollständig sichtbar.
+- [[00 Systemindex/Innenebenen/CORE-01|Instrument-/Daten-/Restoreadmission]] — Identität und vorhandenen Zustand prüfen.
+- [[00 Systemindex/Innenebenen/CORE-02|GGE und Scopeanschluss]] — Basismagnitude und originale Scope-/Layer-C-Anbindung.
+- [[00 Systemindex/Innenebenen/CORE-03|Zehn native mechanische Layer]] — L1–L5 Initialisierung; L6–L10 laufende Mechanik.
+- [[00 Systemindex/Innenebenen/CORE-04|Richtung und Confirmation]] — Originalen Richtungs-/Bestätigungsconsumer ausführen.
+- [[00 Systemindex/Innenebenen/CORE-05|Survival Suitability Composition]] — Originale Zulässigkeit erarbeiten; Composition als bestätigte Gateinstanz.
+- [[00 Systemindex/Innenebenen/CORE-06|Double Play Entry/Exit und Fortsetzung]] — HOLD/ENTER/REDUCE/EXIT nach bestehender Policy bestimmen.
+
+[[05 Systematlas/Core L1 bis L10|Alle zehn nativen Layer mit Originalinput, Output, Mutation und Downstreamconsumer]] · [[05 Systematlas/Innenkarten/F3 Native L1-L10.canvas|L1–L10-Vertragsdiagramm]].
+
+## Eingangsgrenzen: hier beginnt unsere Verantwortung
+- [[00 Systemindex/Grenzen/P02|P02 · C1 und gebundener Marktkontext]] — von [[00 Systemindex/Aussenbereiche/DATA|Datenebene und Quellenadmission]]. **Erste eigene Prüfung:** [src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py). Erwartet TRADING-C1-Bars plus gesonderter originaler G17-/Markkontext. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P04|P04 · Per-Lane Originalentscheidung aufrufen]] — von [[00 Systemindex/Universen/FA|Vollautonomie-Universum]]. **Erste eigene Prüfung:** [src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py). Erwartet Lanegebundener originaler N1-/MV2-Aufruf mit separaten Originalroots. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P12|P12 · Bestätigte Restposition und Episode zurückführen]] — von [[00 Systemindex/Aussenbereiche/ACCOUNTING|Accounting Position und Reconciliation]]. **Erste eigene Prüfung:** [src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py). Erwartet Originalaccountinggebundene Positionsepisode und bestätigter Rest. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P29|P29 · Replay-/KILL_ALL-Schutz an der Entscheidung]] — von [[00 Systemindex/Aussenbereiche/SAFETY|Safety und Sperrgrenzen]]. **Erste eigene Prüfung:** [src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py). Erwartet Originaler lokaler Replayveto-/Safetyinput plus DP-eigener KILL_ALL-Kontext. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P48|P48 · P3-P4-L6-Seam zu eigenem Coreconsumer]] — von [[00 Systemindex/Aussenbereiche/EIP|Evidence Input Plane und G2-Querübergaben]]. **Erste eigene Prüfung:** [src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/l6_mechanical_consumption_v1.py](file:///Users/frnkhrz/Peak_Trade/src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/l6_mechanical_consumption_v1.py). Erwartet Gebundene P4/L6-Input-/Seamevidence unter eigenem Admissioncontract. Status `FOLGEWIRKUNG_NICHT_DURCHGAENGIG_GESCHLOSSEN`.
+- [[00 Systemindex/Grenzen/P51|P51 · Bounded Enforcement an DP-Alphaadmission]] — von [[00 Systemindex/Aussenbereiche/GATES|F1 M9 Schwellen und Laufzeitadmission]]. **Erste eigene Prüfung:** [src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py). Erwartet Typed Presence-/Eligibility-/Enforcementresult zum originalen MV2-/DP-Consumer. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P55|P55 · Single-Future-Handoff ohne N5-Neuauswahl]] — von [[00 Systemindex/Universen/RANK|Ranking-Universum]]. **Erste eigene Prüfung:** [src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py). Erwartet Originale ausgewählte und Cap24-gebundene Futureidentität für den bestehenden SSF-Corepfad. Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+
+## Ausgangsgrenzen: hier beginnt die fremde Verantwortung
+- [[00 Systemindex/Grenzen/P05|P05 · Exakte Decision an Risiko und Sizing]] — an [[00 Systemindex/Aussenbereiche/RISK|Risk Sizing und Equityadmission]]. **Eigener Producer endet:** [src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py). **Erster fremder Consumer:** [src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py). Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+- [[00 Systemindex/Grenzen/P34|P34 · Master V2 und Double Play an originalen Domain-Evaluator]] — an [[00 Systemindex/Aussenbereiche/EVAL|Evaluation GVEF und Qualitätsnachweise]]. **Eigener Producer endet:** [src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py). **Erster fremder Consumer:** [src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py](file:///Users/frnkhrz/Peak_Trade/src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py). Status `VORHANDENER_BEZEICHNETER_VERTRAG; WIRKUNGSUMFANG_SIEHE_BELEG`.
+
+## Kausale Teilketten und Rechenrichtung
+- RANK/FA/DATA → P55/P04/P02 → eigene Admission → GGE/Scope und Originalmechanik → Richtung/Confirmation → Survival/Suitability/Composition → DP-Decision. Diese Rollen sind kein beliebig vertauschbarer nummerierter Layerstack.
+- CORE-Decision → P05/RISK und getrennt P15/SL. Positionswahrheit → P12 → originaler occupied Management-/Exit-/Cursorpfad.
+- GATES → P51 → eigene begrenzte Coreadmission; EIP → P48 nur am eigenen zulässigen Seam. Keine neue Geometrieautorität aus vorgeschlagener Evidence.
+
+Rückwärts wird vom erwarteten Consumerfeld über genau denselben Port zum Producer und dessen Originalinput verfolgt. Das ist Quellen-/Abhängigkeitsnavigation, keine nachträgliche Neuberechnung mit Zukunftswissen. Aufrufrichtung und Datenrichtung können entgegengesetzt sein und sind pro Port getrennt erklärt.
+
+## Zustandsowner und vollständige Feldverträge
+Regime, feste Initialisierungsbasis, laufende Referenz R_t, Scope-/Richtung/SideState, Confirmationfortschritt, Decisionevidence, Originalcursor und noch offene Exitidentität. Positionsepisode/Accountingbestand werden als fremde bestätigte Wahrheit konsumiert.
+
+[[00 Systemindex/Zustaende/CORE|Deklarierte konkrete Zustands-/DTO-/Enumfelder mit Codezeilen]].
+
+## Semantik innerhalb dieses Bereichs und über seine Grenze
+GGE liefert D=σ×Mark in der Markpreiseinheit; GGE ist ein Subsystem und kein zusätzliches Universum. Native L1–L10 beschreiben Initialisierung und Mechanik, nicht die ganze Risk-/Executionpipeline. L10-Regimewechsel ist kein Entryfill. C3/CONFIRMED bedeutet keine allgemeine Sicherheit. Adverse-Präzedenz erfindet keine REDUCE-Menge und löscht keine noch ungeklärte TimeExitidentität.
+
+## Originalbausteine Runner Bridges und Vektoren
+[[00 Systemindex/Zuordnung/CORE|Alle diesem Bereich zugeordneten heutigen Implementierungs-/Unterlagenpfade]]. Die fachliche Grenze folgt den hier erklärten Ownerrollen; eine Namespacezuordnung allein ist kein Beweis ihrer semantischen Vollständigkeit.
+
+## Quellen und eingeschränkter Wirkungsnachweis
+- [src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py)
+- [src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py](file:///Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py)
+- [src/trading/master_v2/directional_assessment_confirmation_integration_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/directional_assessment_confirmation_integration_v1.py)
+- [src/trading/master_v2/double_play_entry_exit_policy_v0.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/double_play_entry_exit_policy_v0.py)
+- [src/trading/master_v2/golden_geometry_engine_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/golden_geometry_engine_v1.py)
+- [src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py)
+- [src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py)
+- [src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py](file:///Users/frnkhrz/Peak_Trade/src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py)
+
+E6 verbindet die originale Entscheidung mit nachgelagerten Ownern unter synthetischen Inputs. Die gesonderte Enterpreisstudie ist nicht derselbe HOLD-Fall bei unveränderten Preisen. Kein natürlicher Gesamtqualitätsnachweis.
+
+[[PeakTrade-Systemindex|PeakTrade-Systemindex]] · [[00 Systemindex/Grenzregister|Alle Grenzübergaben]] · [[00 Systemindex/Belegstand|Belegstand und offene Grenzen]]
+
+## Weitere vorhandene Owner-/Kartenanschlüsse
+Diese ergänzende Liste erhält auch Quer-/Neben-/Kontrollkanten aus den vorhandenen Karten. Sie ist keine zweite Definition der Bereichsgrenze und übernimmt keine früheren PROVEN-Labels.
+- Eingang: [[07 Verbindungen/Uebergaben/H004 CE-004|CE-004]] · [[00 Systemindex/Aussenbereiche/HOST|Host Session und Prozessbetrieb]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H009 CE-009|CE-009]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/HOST|Host Session und Prozessbetrieb]].
+- Eingang: [[07 Verbindungen/Uebergaben/H017 archive_smoke_host_to_dynamic_scope_exporter|archive_smoke_host_to_dynamic_scope_exporter]] · [[00 Systemindex/Aussenbereiche/HOST|Host Session und Prozessbetrieb]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H030 binding_to_mv2|binding_to_mv2]] · [[00 Systemindex/Universen/RANK|Ranking-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H031 c1_injected_governed_cycle|c1_injected_governed_cycle]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Universen/FA|Vollautonomie-Universum]].
+- Eingang: [[07 Verbindungen/Uebergaben/H036 f1_m9_canonical_durable_bootstrap_to_master_v2_seam|f1_m9_canonical_durable_bootstrap_to_master_v2_seam]] · [[00 Systemindex/Aussenbereiche/GATES|F1 M9 Schwellen und Laufzeitadmission]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H040 fa_compose_mv2_dp_handoff_join|fa_compose_mv2_dp_handoff_join]] · [[00 Systemindex/Universen/FA|Vollautonomie-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- intern: [[07 Verbindungen/Uebergaben/H045 g17_bind_into_mv2_cycle|g17_bind_into_mv2_cycle]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H052 governed_cycle_t2_mv2_stack|governed_cycle_t2_mv2_stack]] · [[00 Systemindex/Universen/FA|Vollautonomie-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H055 integrated_replay_safety_gate_before_intent|integrated_replay_safety_gate_before_intent]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/EXEC|Intent Ausführungsgrenze und Lifecycle]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H058 learning_capture|learning_capture]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Universen/SL|Selbstlern-Universum]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H066 mv2_executable_pre_external_terminal|mv2_executable_pre_external_terminal]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/EXEC|Intent Ausführungsgrenze und Lifecycle]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H067 mv2_to_sizing|mv2_to_sizing]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/RISK|Risk Sizing und Equityadmission]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H068 mv2_valid_no_trade_terminal|mv2_valid_no_trade_terminal]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/EXEC|Intent Ausführungsgrenze und Lifecycle]].
+- Ausgang: [[07 Verbindungen/Uebergaben/H085 real_runtime_component_a_admit_to_p3_binder|real_runtime_component_a_admit_to_p3_binder]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Aussenbereiche/EIP|Evidence Input Plane und G2-Querübergaben]].
+- Eingang: [[07 Verbindungen/Uebergaben/H088 real_runtime_g2_to_p5_adjudicator_a_continuation|real_runtime_g2_to_p5_adjudicator_a_continuation]] · [[00 Systemindex/Aussenbereiche/EIP|Evidence Input Plane und G2-Querübergaben]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H093 real_runtime_p5_meta_learning_routed_to_adjudicator_a|real_runtime_p5_meta_learning_routed_to_adjudicator_a]] · [[00 Systemindex/Universen/OPT|Optimierungs-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H094 real_runtime_p5_optimization_envelope_to_adjudicator_a|real_runtime_p5_optimization_envelope_to_adjudicator_a]] · [[00 Systemindex/Universen/OPT|Optimierungs-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H095 reconciliation_admission_to_mv2_entry|reconciliation_admission_to_mv2_entry]] · [[00 Systemindex/Universen/RANK|Ranking-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H098 replay_provenance_drop|replay_provenance_drop]] · [[00 Systemindex/Universen/RANK|Ranking-Universum]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- Eingang: [[07 Verbindungen/Uebergaben/H100 safety_signals_into_integrated_replay|safety_signals_into_integrated_replay]] · [[00 Systemindex/Aussenbereiche/SAFETY|Safety und Sperrgrenzen]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+- intern: [[07 Verbindungen/Uebergaben/H104 sidestate_cursor_to_mv2_cycle|sidestate_cursor_to_mv2_cycle]] · [[00 Systemindex/Universen/CORE|Master V2 und Double Play]] → [[00 Systemindex/Universen/CORE|Master V2 und Double Play]].
+
+[[00 Systemindex/Owner und Kartenabgleich|Vollständigen Abgleich aller 75 Domänen/113 Kanten ansehen]].
+
+## Semantische Bezugsebenen über die Bereichsgrenze hinweg
+
+- [[00 Systemindex/Semantik/S01|Fachsemantik im ursprünglichen Owner]]
+- [[00 Systemindex/Semantik/S02|Innere Lernsemantik: Entscheidung zu Outcome und Wissen]]
+- [[00 Systemindex/Semantik/S08|Evidence-Adjudikation und Inputbindung – EIP]]
+- [[00 Systemindex/Semantik/S09|Unabhängige Evaluation und Reproof – GVEF]]
+- [[00 Systemindex/Semantik/S10|Geregelte Rückwirkung bis zum echten Parameterconsumer]]
+
+[[00 Systemindex/Semantische Ebenen|Alle semantischen Ebenen im Gesamtzusammenhang]] · [[00 Systemindex/Aussenring - acht Sichtbereiche|Achtteilige Außenringsicht]]
+
+## Externe Eingänge und Executionvarianten
+
+- [[00 Systemindex/Signalstroeme/E01|Öffentliche WS Ticker und Preisbeobachtung]]
+- [[00 Systemindex/Signalstroeme/E03|Best Bid Ask und Books5]]
+- [[00 Systemindex/Signalstroeme/E04|REST Mark Kerzen Bootstrap und Gap Recovery]]
+- [[00 Systemindex/Signalstroeme/E09|Private Positions und Positionstruth]]
+
+[[00 Systemindex/Execution und Betriebsarten|Execution und Betriebsarten im Zusammenhang]] · [[00 Systemindex/Externe Signalstroeme|Systemweite externe Eingänge]]
+
+## Orientierung Fall und Änderung
+
+[[00 Systemindex/System Cockpit|Cockpit]] · [[00 Systemindex/Fallverlaeufe|Fälle]] · [[00 Systemindex/Aenderungsauswirkungen|Auswirkungen]] · [[00 Systemindex/Entscheidungen und Widersprueche|Entscheidungen]]
+
+## Korrigierte Anschlussseite für SL und OPT
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Architektonische Außengrenzen SL und OPT]] bestimmt ausschließlich die hier betroffenen Anschlussrollen. Andere Nachbarfunktionen dieser Seite wurden nicht neu abgegrenzt.
+
+## Datenanschlüsse
+
+- [[00 Systemindex/Grenzen/P15|P15 · Core-/DP-Produktergebnis in DDO-Capture]] — **Ausgang: CORE → SL**. `STATISCH_KONKRET`. [run_integrated_offline_replay_with_productive_ddo_capture_v1](/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py:105) → [observe_producer_result_v0](/Users/frnkhrz/Peak_Trade/src/learning/deterministic_decision_outcome_v0/capture_v0.py:759).
+
+
+## Fortlaufender Handelskreis und spätere fünf Futures
+
+Franks Präzisierung vom 06.11.2026: Double Play arbeitet nach dem Einstieg kontinuierlich auf dem gebundenen Instrument mit Long-/Short-Richtungswechsel weiter. Ein abgeschlossener Trade beendet den Handelskreis nicht. Nach Freischaltung aller fünf Slots sollen fünf Futures parallel handeln; schwächere Kandidaten werden durch relativ stärkere ersetzt und der Handelskreis setzt auf dem neuen Instrument fort. N1/MaxPos=1 ist eine begrenzte aktuelle Ausbaustufe, keine endgültige Zieldefinition.
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/14 Numerischer Folgeforecast und fortlaufender Double Play Betrieb|Betriebsziel, heutige Profilgrenzen und späterer Natural-Enter-Gesamtnachweis]]. Der neue Offline-Lerner verändert keine Scope-, SideState-, Positions- oder Rotationsowner.

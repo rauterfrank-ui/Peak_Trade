@@ -1,0 +1,40 @@
+{
+  "source_commit": "dda30913cffefe70f9c5ec5ce06b247527b89fe9",
+  "historical_origin": "453506965",
+  "source_paths_sha256": {
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
+    "tests/learning/test_incremental_immediate_predecessor_binding_v1.py": "658bfb6c7dc38d5c5d90d1d7a9e9b0774bc74142a2adb944d62f3c510c96df33",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+    "src/experiments/canonical_optimization_universe_experiment_plane_v1.py": "d08edd72e90956f0e50e0bf6c118de920c253dd79212e1e3d970ade4adc73a2e"
+  },
+  "tests": {
+    "before": "3 FAIL / 2 PASS",
+    "initial": "22 PASS / 1 deferred admission failure",
+    "after": "23 PASS",
+    "positive_output": "Full B0/B1 and B0/DEFERRED B5 closure outputs/digests IDENTICAL"
+  },
+  "boundaries": [
+    "Full predecessor content and numeric score/dataset/window equivalence not certified",
+    "Loop-C normal producer call statically present; next numeric representation consumer not demonstrated by bounded symbol search",
+    "U04/GAP-0370 deferred; no activation, original-ledger mutation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/incremental_immediate_predecessor_binding_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 203,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

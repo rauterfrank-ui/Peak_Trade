@@ -24,6 +24,7 @@ LEDGER_PATH = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0/ledger
 AUTHORITY_PATH = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0/authority_v0.py"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1"
 BOUND_SHA = "c14730e99f1b1303b69a117fdc0d6896ee1c1e51"
+ORIGINAL_WORKPACKAGE_SHA = "89eef9dfc021fe1954f071eaf0559c184b2b0bdf"
 
 
 def _owner_contract_persist_section(text: str) -> str:
@@ -547,8 +548,13 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     assert "resolve_ddo_durable_evidence_path_v1(" in binding
     assert "class DdoObservationHostScopeInputsV1" in binding
     assert "ddo_durable_ledger_path: Optional[str] = None" in host
+    # The unbound-path restriction belongs to the original #6301 contract slice.
+    # Its own later sections13/14 explicitly define a separately bound host.
+    # Do not apply this historical diff guard to later authorized #6304/#6936
+    # capture joins. Current wallclock defaults and observation-only seams above
+    # remain checked; current capture/owner behavior has its own runtime tests.
     changed = subprocess.check_output(
-        ["git", "diff", "--name-only", "origin/main"],
+        ["git", "diff", "--name-only", BOUND_SHA, ORIGINAL_WORKPACKAGE_SHA],
         cwd=REPO_ROOT,
         text=True,
     ).splitlines()

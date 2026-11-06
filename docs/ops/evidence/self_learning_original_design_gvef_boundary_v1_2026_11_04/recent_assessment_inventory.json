@@ -1,0 +1,126 @@
+{
+  "count": 24,
+  "scope": "Topic-selected prior assessment READMEs, not all repository files",
+  "sources": [
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/btc_common_research_admission_v1_2026_11_04/README.md",
+      "sha256": "df2ba9677e9b68facbbe61566528a16d117e946e52694165affbef3b55b1d795"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/btc_research_scope_boundary_v1_2026_11_04/README.md",
+      "sha256": "b32de20f9c95b26ddff2c81a66a956ae0e4fbd7a72c5497e801af1bf8486a5e6"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/core_position_label_and_research_feedback_roles_v1_2026_11_04/README.md",
+      "sha256": "6773b925868f2ed7ddfed50f482dd247c283e99f8aae94df1b60e3ef41597086"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/gvef_universe_relationship_assessment_v1_2026_11_04/README.md",
+      "sha256": "1441b17fd1501dd29830998ba9735f8acac52363f13042400dcdb1cd9dd3cf33"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/m4_explicit_meta_priority_join_v1_2026_11_04/README.md",
+      "sha256": "63248cb677875fa56b93263730d88d9db70df71447179698437ff6c85c4bfdfc"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/measured_split_robustness_consumer_effect_v1_2026_11_04/README.md",
+      "sha256": "d7f43efaa0f5f6af092465207a3a6cc80d2dd823c717d48268164df063dcce7e"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_association_bucket_sample_v1_2026_11_04/README.md",
+      "sha256": "7a355b6c3f401989d5333534548dc64cbe35d8fe944ea405ab0b5f23114ece11"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_evidence_vs_analyzer_roles_v1_2026_11_04/README.md",
+      "sha256": "c850cc2f608a8f60a9b94ddb7e4b431b9a19fd03c67829a6325e548164bf62de"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_knowledge_time_semantics_v1_2026_11_04/README.md",
+      "sha256": "2d513b895ec4b14d3f90d9cfab93d98eaaad62461ceff7802f75db0f367d1a24"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_parameter_region_join_v1_2026_11_04/README.md",
+      "sha256": "11cd957bdb6b6736c0e23b0e7414e6b59389eb11417454fe0dda3608bc9a4372"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_routing_plan_integrity_v1_2026_11_04/README.md",
+      "sha256": "d133cb7fb2a0f1bca94f3b434c0962bc43aca0dbe273231987c1475023bc6fad"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/meta_stability_observed_sample_v1_2026_11_04/README.md",
+      "sha256": "094d55c556898703f3447c75d57144dfc8d9786138800e81330f2d5682b98a77"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/numerical_feedback_nonannual_control_alignment_v1_2026_11_04/README.md",
+      "sha256": "c85fc30c9e66105a5c45a1d42406152b729deea12c90f156aed391fd21913565"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/numerical_research_execution_supplier_probe_v1_2026_11_04/README.md",
+      "sha256": "7f2973205b82520aac44120b3749c2b903f76dc805110b12f00d269687fa2696"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/numerical_research_meta_search_feedback_v1_2026_11_04/README.md",
+      "sha256": "d40df9f9037cbb852c0042720febbce872352b449f257c2b360d80f74c1c57d0"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/outer_ring_construction_before_mutation_v1_2026_11_04/README.md",
+      "sha256": "fcc49e594898eecfeb4f39f6b81b86f16f1c75e576c3dbf80a6ef80eabd16403"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/outer_ring_source_roles_v1_2026_11_04/README.md",
+      "sha256": "96f389d0a5e28af717b25340c46cb7a1ce32b1f5625471281a6a397b535051b3"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/parameter_sensitivity_split_observation_v1_2026_11_04/README.md",
+      "sha256": "a93a899e836dbcc1801408190e599b959dff2b5cdb10716782441d42f7eb9e53"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/representation_adaptation_decision_integrity_v1_2026_11_04/README.md",
+      "sha256": "35034ad96ff782f6ec32d71e094bb77ab2d993ff12bd1da1ea5ce81fa1eb405e"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/representation_plan_required_context_v1_2026_11_04/README.md",
+      "sha256": "1d14e81ad90fc5cf97dc0b913cd5b8fc0740e8dd6c89b9b564c0597a8034e6e2"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/representation_unknown_fixture_admission_v1_2026_11_04/README.md",
+      "sha256": "4eb10cfe5be2fc0fb0b3dd1d2464544d839148d13b2c629e8ef99c87bf8e55ab"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/representation_unknown_typed_feedback_v1_2026_11_04/README.md",
+      "sha256": "c63de5f1e4fe84be8a8dc209dbe9e2ea1ca3c730e4625c57df0676d92edb1a43"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/research_memory_feedback_roles_v1_2026_11_04/README.md",
+      "sha256": "db1f7e64ce5ceea6126bed7fa2fafa6f7d12e83e919532c2aee7fb98dcd81ebf"
+    },
+    {
+      "coverage": "Prior direct review reused; hash rebound. Nested raw artifacts not all re-audited.",
+      "path": "docs/ops/evidence/specialized_research_numeric_supplier_roles_v1_2026_11_04/README.md",
+      "sha256": "101aeb243ff65c848d139bd892aa1a49a0c11e86e0e87bddff2b9ec06adff375"
+    }
+  ]
+}

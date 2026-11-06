@@ -1,0 +1,95 @@
+# Fachlicher Beginn vor den Universumsnamen
+
+Stand 02.11.2026. Methodische Korrektur nach Franks Hinweis: Gesucht wird zuerst codiertes fachliches Verhalten, unabhängig von späterer Universumsbenennung, Gesamtverifikation oder Versionsschema. Dezember bleibt historischer Vergleich; Schwerpunkt sind neue Funktionen ab Ende Januar 2026 und ihre weitere Entwicklung.
+
+## Korrigiertes Ergebnis
+
+**Der 19.09.2026 ist kein geeigneter Beginn der Optimierungsfunktionen.** Er bleibt ein belegter Zeitpunkt ihrer späteren expliziten Abgrenzung als Optimization Universe. Schon lange vorher existieren mehrere fachlich relevante Code-Linien:
+
+- **27.01.2026:** neuer Learning-Apply-Runner für bereits gelieferte Änderungsvorschläge sowie ein zusätzlicher Config-Loader für Live-Overrides.
+- **28.01.2026:** konkret neu implementierte Parameteroptimierung im Trainingsfenster und anschließende Bewertung mit den gewählten Parametern im Testfenster.
+- **08.02.2026:** konkrete Grenzen für erlaubte lernbare Flächen; dies belegt kontrollierte Lern-/Änderungsabsicht, aber noch keinen Lernalgorithmus.
+- **30.03.2026:** ein zuvor stubartiges Meta-Labeling-Modul erhält tatsächlich codiertes Modelltraining und signalverändernde Inferenz.
+- **31.03.2026:** Emitter und generische Patch-Normalisierung werden als weitere Teile der älteren Learning-Strecke implementiert.
+
+Noch früher ist am **03.01.2026** ein Optuna-Backtest-Runner aus einem Backup wieder in Git aufgenommen worden. Das ist ein zusätzlicher relevanter Fund, aber sein Wiederaufnahmedatum ist kein Beweis seiner Erstkonstruktion. Der damalige Code hat zudem eine konkret nachweisbare Schnittstellenlücke zur damaligen Engine. Dieses Beispiel zeigt, weshalb weder der erste Dateifund noch ein vollständig klingender Modultext allein den fachlichen Anfang oder Nutzbarkeit beweist.
+
+Diese Daten sind **frühe belegte Funktionsanker**, keine neue Behauptung, das vollständige spätere Universum sei jeweils schon fertig gewesen. Ein Git-versionierter Baustein, ein als Universum benannter Zusammenschluss und dessen Gesamtverifikation sind unterschiedliche historische Ereignisse.
+
+## 1. Ende Januar: zwei verschiedene fachliche Stränge
+
+### 27.01., 18:04:09 Berlin — Learning-Patches verarbeiten
+
+Commit `5bc2624f818e3a582192d41b528d4c9e8c1593be`, PR #1011, fügt `scripts/run_learning_apply_cycle.py` hinzu. Der Runner liest JSON-/JSONL-Dateien unter `reports/learning_snippets`, extrahiert `target` und `new_value`/`value`, führt Werte nach Dateizeit/Pfad zusammen und schreibt skalare Overrides nach `config/auto/learning.override.toml`. Bei mehreren Vorschlägen zum gleichen Ziel gewinnt der zuletzt verarbeitete Wert. [F03:1–34,97–194,235–302]
+
+Das ist konkrete Verarbeitung mit möglicher Dateiwirkung. Es ist **kein im Runner gefundener Algorithmus, der aus Backtestergebnissen selbst den besseren Parameter bestimmt**: Der neue Wert kommt bereits aus der Eingabedatei. Herkunfts-/Begründungsfelder werden für den Override-Inhalt nicht ausgewertet. Das im gleichen Commit ergänzte Demo-Skript setzt seine Vorschläge, Gründe und Confidence-Werte ausdrücklich selbst. [F06:35–125]
+
+Im gleichen Commit kommt `load_config_with_live_overrides` hinzu: Basisconfig laden, Umgebung/Opt-in prüfen, zulässige vorhandene Zielpfade filtern und Werte in ein Config-Objekt übernehmen. Dies ist eine konkrete Consumer-Funktion für `config/live_overrides/auto.toml`. Der Learning-Runner schreibt standardmäßig eine **andere Datei mit anderer Tabellenform**; daraus darf ohne zusätzliche Promotion-/Adaptionskante keine direkte durchgängige Verbindung abgeleitet werden. Ob reale historische Verbraucher diesen zusätzlichen Loader aufriefen, ist separat zu belegen. [F04:247–358]
+
+Die damalige Architekturdokumentation nennt zwar eine automatische evidenzbasierte Optimierung und einen vollständigen Stand, führt Bridge und Emitter aber zugleich als **planned**. Ihre Banner tragen zudem ein Dezemberdatum. Maßgeblich für die hier datierte neue Funktion sind deshalb Commit und Körper des neu hinzugefügten Codes. Der ältere `ConfigPatch`-Datentyp war bereits vorher vorhanden. [F05:1–60; F23; GitHub-Pfadhistorien]
+
+### 28.01., 04:59:19 Berlin — Parameter anhand von Versuchsergebnissen wählen
+
+Commit `f37535c65f2a4c7cc2f507aa3107604267accb24`, PR #1028, erweitert `src/backtest/walkforward.py` tatsächlich um `param_grid`, deterministische Kandidatenbildung, Training-Backtests je Kandidat, Metrikbewertung und Auswahl von `best_params`. Danach werden diese Parameter beim separaten Testfenster-Backtest verwendet. Trainings- und Testfenster werden endexklusiv zugeschnitten. Der gespeicherte Parent-Diff unterscheidet die neue Implementierung von vorheriger Dokumentation über „optimierte Parameter“. [F07:191–254,480–578; Parent-Diff]
+
+Hier ist die fachliche Beziehung stärker als beim Patch-Runner: **Parameterkandidat → berechnete Trainings-Stats → Auswahl → Verwendung im Testaufruf** ist innerhalb der Funktion codiert. Das ist ein belastbarer früher Optimierungskern. Nicht belegt sind damit ein konkreter damals ausgeführter Datensatzlauf, der spätere Anschluss an den August-/September-Forschungsraum oder ein geschlossener produktiver Lernkreislauf.
+
+## 2. Februar: lernbare Änderungen werden begrenzt
+
+Am 08.02. führt `920a679e…` / #1217 eine Allowlist ein. Die untersuchte Policy erlaubt pro historischem L1/L2/L3 bestimmte Flächen, etwa Retrieval-Templates/Source-Ranking, Szenariopriors/No-Trade-Schwellen und Promptvarianten. Andere bzw. unbekannte Flächen werden zurückgewiesen. [F08; F09]
+
+Die weitere Codierung verbindet diese Grenze mit einem Policy-Critic-Eingang vor Apply und einem L3-Runner-Eingang. Die Gate-Funktionen werden dort tatsächlich aufgerufen. Das ist mehr als ein Konzepttext: Eine angeforderte Änderung kann anhand der erlaubten Flächen abgelehnt werden. [F10:117–154; F11:100–117]
+
+Es ist trotzdem keine Implementierung eines Verfahrens, das beispielsweise Szenariopriors selbst lernt. **Erlaubnisraum und Lernverfahren sind verschiedene Funktionen.** Ebenso werden die historischen AI-L0–L6 nicht zur behaupteten Ebenenhierarchie des späteren Self-Learning Universe erklärt.
+
+Eine zusätzliche funktionale Suche am Februar-Pin nach `study.optimize`, `fit`, `partial_fit` und Learning-/Patch-Begriffen findet unter anderem den Optuna-Runner und ein Meta-Labeling-Modul. Der damals im Meta-Labeling-Stub sichtbare `model.fit` ist jedoch auskommentiert; eine bloße Textsuche hätte hier fälschlich aktives Training suggeriert. Der Codekörper wurde deshalb erneut geprüft. [F15:87–139,199–220; `february-function-search.txt`]
+
+## 3. März: echte neue Funktionen mit unterschiedlicher Bedeutung von „Learning“
+
+**InfoStream:** Ein Event wird zu einem Modellrequest verarbeitet; die Antwort wird in Bewertung, Empfehlungen und Learning-Zeilen geparst. Der Cycle kann diese Zeilen in ein Markdown-Learning-Log schreiben. Das ist Beobachtung/Interpretation/Textgedächtnis. Die Märzänderung verbessert einen schon im Dezember vorhandenen Strang; sie ist nicht dessen Erstkonstruktion. Der gelesene Cycle ruft nicht automatisch den Patch-Normalizer oder den Learning-Apply-Runner auf. [F12:448–528; F13:259–326; F14:53–177]
+
+**Meta-Labeling am 30.03., 01:28:52 Berlin:** `7604145f…` / #2117 ersetzt relevante Stub-Teile. `apply_meta_model` kann ein geliefertes trainiertes Modell verwenden oder bei geeigneter Zielspalte selbst ein Modell erzeugen und `fit(X_train, y_train)` aufrufen. `predict_proba` und eine Confidence-Schwelle filtern anschließend die Eingangssignale; verworfene Signale werden null. Das ist innerhalb der Funktion nachweisbare Datenabhängigkeit und Consumer-Wirkung. [F16:90–184; Parent-Diff]
+
+Dabei sind Datensplit, zeitlich zulässige Labels, externe Aufrufer und Einsatz in späteren Universen noch nicht nachgewiesen. Der untersuchte Trainingszweig verwendet vorhandene gelabelte Zeilen und sagt danach auf dem Feature-Frame vorher; er ist allein kein OOS-Nachweis. Dieses „Meta“-Modell für Signalscreening ist außerdem etwas anderes als die spätere August-Meta-Analyse über Forschungsserien oder die September-M6-Evidence-Projektion.
+
+**Emitter am 31.03., 12:10:21 Berlin:** `42242c80…` / #2135 implementiert atomisches JSON-/JSONL-Schreiben von Patchobjekten. **Bridge am 31.03., 12:35:02 Berlin:** `c0681f80…` / #2136 normalisiert generische Mappings zu Patch-Dictionaries. Beide sind konkrete Transport-/Normalisierungsfunktionen; sie ermitteln selbst keinen optimalen `new_value`. Im Januar waren diese Module noch als geplant geführt. [F17; F18; F05]
+
+## 4. Optuna: Wiederaufnahme, Demo und spätere Reparatur getrennt
+
+Am 03.01. wird mit `a6de9942…` / #509 ein umfangreicher Runner aus „BK1“ wieder aufgenommen. Er codiert Parameterschema → Optuna-Vorschlag → Trial-Backtest → Metrik → Objective und Study. Das ist fachlich klar der Optimierung zuzuordnen, auch ohne Universumslabel. [F01:138–415]
+
+Seine damalige Gegenstelle passt jedoch nicht: Der Runner konstruiert `BacktestEngine(strategy=…, config=…, tracker=…)` und ruft `run_realistic()` ohne Daten-/Strategieargumente auf. Die Engine desselben Commits akzeptiert diese Constructor-Argumente nicht und benötigt beim Aufruf den DataFrame, die Signalfunktion und Strategieparameter. **Codierte Optimierungsabsicht ist hier belegt; ein lauffähiger Trialpfad ist an dieser Revision nicht belegt und bereits statisch widersprüchlich.** [F01:170–201; F02:88–100,299 ff.]
+
+Am 02.04. erhält der separate Placeholder-Runner ein tatsächlich optimiertes Toy-Objective um `a=b=0,5`. Ein mathematischer Demo-Lauf ist eine andere Variante als eine Strategieoptimierung über Marktdaten. [F19:78–125]
+
+Am 14.06. repariert `1c20185…` die Backtestbindung des großen Optuna-Runners konkret: OHLCV-DataFrame, geladene Signalfunktion und Trialparameter werden in `run_realistic` gegeben; Objective-Werte werden aus `BacktestResult.stats` übernommen und auf gültige Zahlen geprüft. Das ist ein weiterer früher fachlicher Anschluss, lange vor der September-Institutionalisierung. Ein hier neu ausgeführter Lauf oder eine tatsächliche spätere Universe-Einbindung wird nicht behauptet. [F20:87–136,260–350; Parent-Diff]
+
+## 5. Juni bis September: spätere Formalisierung als eigene Entwicklung verfolgen
+
+Am 27.06. entstehen ConfigPatch-/Lineage-Manifeste und eine Offline-Bridge. Die Bridge verwendet den März-Normalizer, verlangt explizite Patch-IDs/-Status und baut daraus ein Manifest. Diese Entwicklung präzisiert Transport, Identität und Nachvollziehbarkeit bereits vorhandener Vorschläge. Sie ist nicht automatisch der Ursprung des Lernens oder Optimierens. [F21; F22:130–205]
+
+Die August-Verträge und die September-Universe-Grenzen sind danach als weitere Umbauten/Wiederverwendungen zu vergleichen. Welche ältere Funktionslinie erhalten, ersetzt, stillgelegt, unabhängig fortgeführt oder tatsächlich angeschlossen wurde, muss **pro Funktion und Datenvertrag** bewiesen werden. Gemeinsame Wörter wie „Learning“, „Meta“ oder „Optimization“ beweisen keine kausale Weiterentwicklung.
+
+## Neue Such- und Abschlusskriterien
+
+Für jede Kandidatenfunktion wird künftig zuerst gefragt:
+
+1. Welche Eingangsdaten verarbeitet sie tatsächlich?
+2. Entsteht ein neuer Messwert, ein Urteil, ein Parameter/Modell, ein fertiger Vorschlag oder lediglich eine neue Verpackung?
+3. Welcher Consumer verwendet das Ergebnis, und was ändert sich dadurch?
+4. An welchem Commit wurde genau dieses Verhalten eingeführt oder verändert? Was tat der Parent?
+5. Ist dies Neuimplementierung, Backup-Wiederaufnahme, Umbenennung, Dokumentation, Gate oder spätere Gesamtverifikation?
+
+Damit wird die bisherige Benennungszeitlinie zur **Institutionalisierungs-/Vertragsgeschichte** umgeordnet. Die primäre fachliche Rekonstruktion beginnt bei diesen früheren Funktionen. Dezember dient zum Abgleich geerbter Bausteine; Januar wird nicht künstlich zu deren Erstentstehung erklärt.
+
+**Offen bleiben:** absolute früheste Entstehung insbesondere wiederaufgenommener Quellen, weitere unter anderen Namen codierte Lernverfahren, deren historische Aufrufer sowie die vollständige Zusammenführung zum späteren Self-Learning-/Optimization-System. Eine begrenzte Funktions-/Pfadsuche ist kein Ausschluss aller anderen Implementierungen.
+
+## Quellen und Grenzen
+
+F01–F23 sind vollständige revisionsgebundene Snapshots im selben Verzeichnis; fünf Parent-Diffs sichern ausgewählte Verhaltensänderungen. [Quellenregister](sources.json) enthält GitHub-Abgleiche und Pfadhistorien. Ein negativer lokaler Ancestry-Check ist wegen shallow Git kein Nichtabstammungsbeweis; gepinnte GitHub-Pfadhistorien werden separat verwendet. Dezemberfunde aus der vorangegangenen Untersuchung bleiben historischer Vergleich.
+
+Keine Produktimporte, Trainings-/Optimierungsläufe, Tests, Config-Änderungen, Orders, Repository-Mutationen oder Wiederherstellungen. Aussagen über Codeverhalten sind statische Belege; tatsächliche historische Ausführung und Gesamtwirkung bleiben separat zu prüfen.
+
+GitHub-Primäranker: [Januar-Learning-Runner #1011](https://github.com/rauterfrank-ui/Peak_Trade/commit/5bc2624f818e3a582192d41b528d4c9e8c1593be), [Trainingsoptimierung #1028](https://github.com/rauterfrank-ui/Peak_Trade/commit/f37535c65f2a4c7cc2f507aa3107604267accb24), [Februar-Learning-Grenze #1217](https://github.com/rauterfrank-ui/Peak_Trade/commit/920a679e42353623da0d012095f61e67a33c89b0), [Meta-Modell-Anwendung #2117](https://github.com/rauterfrank-ui/Peak_Trade/commit/7604145fb58a97308a43eae218130013fe6f7be7).
+
+Abschlussprüfung: 23/23 Snapshots stimmen mit Git und registriertem SHA256 überein. Die neun abgeglichenen GitHub-Commits stimmen in ihren geprüften Datei-Blobs überein; 13 gepinnte Pfadhistorien sind gesichert. Bisherige Übersichtsansichten und Daten erhalten; TypeScript ohne Diagnosen. Repository-Status unverändert. [Prüfregister](verification.json). Kein visueller Laufzeittest.

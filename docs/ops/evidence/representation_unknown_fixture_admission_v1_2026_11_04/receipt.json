@@ -1,0 +1,38 @@
+{
+  "source_commit": "2858f6079df82eb4b09b592404de82a2554749a9",
+  "historical_origin": "90183c9be",
+  "source_paths_sha256": {
+    "src/experiments/canonical_learning_representation_offline_evaluation_v1.py": "bfa1471dff2c5d7fc78ca2ecce1c22ef1431cfba2b2373638aa989e32d257d64",
+    "tests/experiments/test_representation_unknown_fixture_admission_v1.py": "7b752fba6aca0a0dcf76122fc515f7f8fa7a6783b43458163886d0f473c72b27",
+    "src/experiments/canonical_meta_learning_v1.py": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e"
+  },
+  "tests": {
+    "before": "3 FAIL / 3 PASS",
+    "after": "27 PASS",
+    "positive_output": "Nine known fixture full outputs/digests IDENTICAL"
+  },
+  "boundaries": [
+    "No real numerical representation evaluator or downstream natural adaptation proven",
+    "Meta later observed-surface equivalence/units/source remain separate; no invented pooling rule",
+    "Factory defaults remain fixture convenience; U04/GAP-0370 deferred, no activation/push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/representation_unknown_fixture_admission_v1_2026_11_04/README.md",
+      "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 198,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

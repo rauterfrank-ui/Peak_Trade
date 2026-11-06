@@ -16,6 +16,8 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     require_mapping,
     require_record_id,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+
 from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import (
     validate_evaluation_observation_v0,
 )
@@ -23,6 +25,7 @@ from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier
     MEASUREMENT_SCHEMA_NAME,
     MEASUREMENT_SCHEMA_VERSION,
     N_BARS_BAR_EVIDENCE_SUPPLIER_ID,
+    validate_n_bars_measurement_evidence_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.o4_n_bars_bar_evidence_bridge_contracts_v1 import (
     mint_ddo_content_ref_v1,
@@ -221,7 +224,12 @@ def _ordered_closes_from_o4_v1(
 ) -> tuple[float, ...]:
     if not o4_bars:
         return ()
-    by_id = {_o4_bar_identity_ref_v1(bar): bar for bar in o4_bars}
+    by_id: dict[str, Mapping[str, Any]] = {}
+    for bar in o4_bars:
+        ref = _o4_bar_identity_ref_v1(bar)
+        if ref in by_id:
+            raise RealizedBehaviorError(f"O4_BAR_IDENTITY_DUPLICATE:{ref}")
+        by_id[ref] = bar
     if bar_identity_refs:
         ordered: list[float] = []
         for ref in bar_identity_refs:
@@ -386,6 +394,11 @@ def join_market_context_to_realized_behavior_v1(
         if inputs.measurement_evidence is not None
         else None
     )
+    if measurement is not None and observation.get("horizon_observation_status") == "OK":
+        try:
+            validate_n_bars_measurement_evidence_v1(observation, measurement)
+        except (DdoValidationError, TypeError, ValueError) as exc:
+            raise RealizedBehaviorError("MEASUREMENT_EVIDENCE_BINDING_INVALID") from exc
     o4_bars = tuple(inputs.o4_bars_for_path) if inputs.o4_bars_for_path is not None else None
 
     _assert_temporal_integrity_v1(
@@ -398,6 +411,16 @@ def join_market_context_to_realized_behavior_v1(
     obs_instrument = observation.get("instrument_ref")
     if obs_instrument is not None and str(obs_instrument) != str(context["instrument_ref"]):
         raise RealizedBehaviorError("INSTRUMENT_REF_MISMATCH")
+
+    if measurement is not None and o4_bars is not None and observation.get("horizon_observation_status") == "OK":
+        ordered_closes = _ordered_closes_from_o4_v1(
+            o4_bars=o4_bars, bar_identity_refs=observation.get("bar_identity_refs"),
+        )
+        if ordered_closes and (
+            ordered_closes[0] != float(measurement["start_price"])
+            or ordered_closes[-1] != float(measurement["end_price"])
+        ):
+            raise RealizedBehaviorError("O4_MEASUREMENT_ENDPOINT_PRICE_MISMATCH")
 
     n_bars = require_positive_int(observation.get("n_bars"), "n_bars")
     horizon_identity = {

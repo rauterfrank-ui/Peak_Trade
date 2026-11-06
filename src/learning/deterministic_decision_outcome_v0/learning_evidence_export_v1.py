@@ -44,11 +44,14 @@ def export_learning_evidence_from_state_v1(
     event_time_utc: str | None = None,
     correlation_id: str | None = None,
     cycle_id: str | None = None,
-    code_sha: str = UNKNOWN,
-    config_hash: str = UNKNOWN,
+    code_sha: str | None = None,
+    config_hash: str | None = None,
 ) -> dict[str, Any]:
     """Project one validated learning state snapshot into learning evidence."""
     state = validate_learning_state_record_v0(learning_state)
+    for field, supplied in (("code_sha", code_sha), ("config_hash", config_hash)):
+        if supplied is not None and supplied != state[field]:
+            raise DdoValidationError("LEARNING_EXPORT_SOURCE_CONFIGURATION_MISMATCH")
     if str(state.get("outcome_semantic_class") or UNKNOWN) in {
         OutcomeSemanticClassV1.UNKNOWN.value,
         OutcomeSemanticClassV1.AMBIGUOUS.value,
@@ -92,8 +95,8 @@ def export_learning_evidence_from_state_v1(
         "causal_parent_ids": [source_ref, str(state["decision_event_ref"])],
         "producer_id": EXPORT_ID,
         "authority_owner": UNKNOWN,
-        "code_sha": code_sha,
-        "config_hash": config_hash,
+        "code_sha": state["code_sha"],
+        "config_hash": state["config_hash"],
         "evidence_hash": fingerprint,
         "evidence_source_refs": [
             source_ref,

@@ -1,0 +1,39 @@
+{
+  "schema_version": "bwp_live_002_terminal_report.v1",
+  "authority": "NONE",
+  "production_live_authorization": false,
+  "merge_authorization": false,
+  "financial_guarantee": "NONE",
+  "baseline_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+  "pr_number": 7140,
+  "pr_status": "DRAFT",
+  "branch": "feat/bwp-live-001-full-system-live-readiness-closure",
+  "final_head_sha": "5ae057bbd3d46147b99d065515b2efcd720a4874",
+  "final_committed_diff_sha256": "6b10b3ae91a32b60c917da05eba4ca55a82d97e8e12cbe0be34105ae41d172be",
+  "ghv": {
+    "status": "STALE_NAVIGATION_ONLY",
+    "snapshot_id_before": "60464bd517760389ac4992a24cd5a918",
+    "snapshot_id_after": "b0fd854d17c3a702ff5a6333d5ed378a",
+    "nodes": 302,
+    "edges": 81,
+    "forward_reverse": "full_core_live_path_composition_root_v1 F20 R30; risk F20 R30; other starts have no census edges",
+    "composed_forensic_graph_sha256": "0a1e20b62d2faa365f759171584fb5e2443bf20889c82b9dda4de8445efa80ee",
+    "integrated_causal_graph_sha256": "9a24066e80c2d0ed70e68ac740c98f6c7a73e90e6ab14709f20eab5fa0be195d"
+  },
+  "crash_restart_status": "PASS",
+  "permit_reuse_status": "PASS_GLOBAL_REPLAY_DENIED",
+  "e2e_status": "24 passed",
+  "live_handoff_status": "12/12 files RC=0",
+  "ci_integration": {
+    "mode": "PR_BOUNDED_FULL",
+    "reason": "ci_bootstrap_mixed_diff_requires_full",
+    "b2_b4_b7_test": "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
+    "testowner_only_mode": "CONTRACT_FOCUSED",
+    "timing_wallclock_seconds": 74,
+    "smoke_rc": 0,
+    "bounded_passed": 995,
+    "bounded_rc": 0
+  },
+  "security_invariants": "No trading logic, cap ratification, credential, or POST authorization change. Restart no longer expects a second post.",
+  "side_effect_reverted": "Live-handoff test rewrote tracked BASELINE.json REPO_ROOT to the worktree path; restored before commit."
+}

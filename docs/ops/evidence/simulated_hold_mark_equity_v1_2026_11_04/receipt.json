@@ -1,0 +1,60 @@
+{
+  "source_commit": "481c11d6aac15a7f1895d3598fdfb8753ad6dc41",
+  "source_before_sha256": "d2cf28b8a8b0ad59fd7e42770a05c99e1be29f1eeae4bc130cd0e22784ad70b5",
+  "current_paths_sha256": {
+    "src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py": "7eb3fb441e3a82258c9a4f7653b091a4681bb0485a0c8852c940f67f033ef7a0",
+    "tests/ops/test_simulated_hold_mark_equity_v1.py": "b7b77a6371f12c4c3ac93aa7ec1b5034c15aa357457149c681b7019977e2fbb6",
+    "src/ops/integrated_offline_economic_evidence_v1/replay_simulated_economics_bridge_v1.py": "be6b9e3e2e79891a9e6b47e1d8ed332db0ca38c3adc10e7841f4160cc6c4ac8d",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/idempotent_portfolio_v2.py": "bb576c06146ea738be830dc375204d221c8565c755e70de756f986da5a834f60",
+    "docs/ops/runbooks/WALLCLOCK_FULL_CANONICAL_DECISION_TO_SIMULATED_ECONOMICS_RUNTIME_BRIDGE_V1.md": "8532db4c7b3c9f657acc670978a234fcf3f990ec16ddf2c8932224e3231a6a66"
+  },
+  "tests": "Six initial regressions fail; 88 distinct connected tests pass after one-line fix, one independent GGE initialization failure reproduced with original model method. No overall suite PASS.",
+  "test_runs": {
+    "before.xml": {
+      "tests": 6,
+      "failures": 6,
+      "errors": 0
+    },
+    "after.xml": {
+      "tests": 65,
+      "failures": 1,
+      "errors": 0
+    },
+    "baseline_unrelated.xml": {
+      "tests": 1,
+      "failures": 1,
+      "errors": 0
+    },
+    "additional_connected.xml": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "non_hold_full_outputs": "IDENTICAL across controlled Long/Short entry-close paths",
+  "ruff_status": "PASS",
+  "boundaries": [
+    "Simulated HOLD mark/equity/drawdown consistency only, not new financial kernel or complete model correctness",
+    "Existing GGE nonpositive volatility fixture remains failing; no test weakening or unrelated core change",
+    "Natural measurement/source, automatic research loop, U04/GAP-0370 and whole-system closure remain unproven",
+    "No runtime session, account/network, original ledger mutation, activation or push"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/simulated_hold_mark_equity_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 210,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

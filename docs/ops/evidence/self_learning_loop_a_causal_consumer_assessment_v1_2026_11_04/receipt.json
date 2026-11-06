@@ -1,0 +1,33 @@
+{
+  "boundaries": [
+    "Current user freeze: all existing implementations remain unchanged. Documentation/evidence only.",
+    "DDO closed loop was expressly economic-label feedback only; no derived performance/calibration/training claim.",
+    "Changed MI labels change score and evidence identities, not the observed M4 numerical chain at fixed plane request; bounded causal intervention, not universal absence of consumers.",
+    "Full calibration payload is durably retainable in existing separate triad store; reference-only export does not mean data is globally lost.",
+    "Directional metric name BRIER_SCORE_V1 is retained; actual implemented formula1-p_realized documented without changing it or certifying alternative score conventions.",
+    "Authentic realized-label source, numerical late consumer and model update remain unproved here; no natural freshness/GAP-0370 run, U04 unchanged.",
+    "Historical hashes, original ledger and Scope preserved; no services, activation, orders, publication or external source writes."
+  ],
+  "probe_correction": "First probe used a 40-character code_sha; existing contract rejected INVALID_SHA256_OR_UNKNOWN. Corrected own fixture input to the required64-character digest and reran successfully; no product change.",
+  "ruff_status": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+  "runtime_activation_authorized": false,
+  "source_commit": "98e7182508b7641b132ec3871e238737987bc56c",
+  "tests": "No new pytest suite or test source. Actual existing-owner controlled interventions asserted: three DDO price/label cases with three config-mismatch controls; three MI supplied-direction cases with idempotent store replay, complete calibration-triad roundtrip and equal non-MI M4 chain; missing direction rejected; conditioned Loop A writer/store/reader and Adjudicator-A ADMIT calls. Temporary synthetic fixtures only; not natural evidence or full productive-host proof.",
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04/README.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 240,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "NOT_APPLICABLE_NO_PYTHON_SOURCE_CHANGE",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

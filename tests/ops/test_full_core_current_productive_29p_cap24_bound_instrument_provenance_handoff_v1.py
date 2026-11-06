@@ -230,6 +230,7 @@ def test_valid_current_cap24_handoff_accepted(tmp_path: Path) -> None:
         productivity_root=prod,
         repository_sha=REPO_SHA,
         binding_epoch=chain["binding_epoch"],
+        observed_portfolio=_empty_portfolio(),
     )
     assert handoff.reselection_performed is False
     assert handoff.historical_substitution is False
@@ -249,6 +250,7 @@ def test_missing_runtime_root_fail_closed(tmp_path: Path) -> None:
             productivity_root=tmp_path / "missing",
             repository_sha=REPO_SHA,
             binding_epoch="2026-01-01T00:00:00Z",
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -272,6 +274,7 @@ def test_mark_prices_missing_fail_closed(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -289,6 +292,7 @@ def test_historical_evidence_path_forbidden(tmp_path: Path) -> None:
                 productivity_root=prod,
                 repository_sha=REPO_SHA,
                 binding_epoch=chain["binding_epoch"],
+                observed_portfolio=_empty_portfolio(),
             )
     finally:
         shutil.rmtree(evidence_root, ignore_errors=True)
@@ -309,6 +313,7 @@ def test_contradictory_ranking_provenance_fail_closed(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -323,6 +328,7 @@ def test_repository_sha_mismatch_fail_closed(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha="deadbeef" * 5,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -336,6 +342,7 @@ def test_no_cap23_reselection_during_handoff(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
         mock_policy.assert_not_called()
 
@@ -347,6 +354,7 @@ def test_resolve_returns_none_without_root_or_bound() -> None:
             cap24_productivity_root=None,
             repository_sha=REPO_SHA,
             binding_epoch="2026-01-01T00:00:00Z",
+            observed_portfolio=_empty_portfolio(),
         )
         is None
     )
@@ -364,6 +372,7 @@ def test_stale_persisted_root_without_publish_manifest_rejected(tmp_path: Path) 
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -379,6 +388,7 @@ def test_matching_repository_sha_alone_without_manifest_insufficient(tmp_path: P
             productivity_root=prod,
             repository_sha=chain["repository_sha"],
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -397,6 +407,7 @@ def test_missing_valid_until_fail_closed(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -415,6 +426,7 @@ def test_expired_valid_until_rejected(tmp_path: Path) -> None:
             productivity_root=prod,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
 
 
@@ -428,6 +440,7 @@ def test_default_root_existence_alone_does_not_confer_authority(tmp_path: Path) 
             cap24_productivity_root=None,
             repository_sha=REPO_SHA,
             binding_epoch=chain["binding_epoch"],
+            observed_portfolio=_empty_portfolio(),
         )
         is None
     )
@@ -435,6 +448,7 @@ def test_default_root_existence_alone_does_not_confer_authority(tmp_path: Path) 
         productivity_root=prod,
         repository_sha=REPO_SHA,
         binding_epoch=chain["binding_epoch"],
+        observed_portfolio=_empty_portfolio(),
     )
     assert handoff.instrument_id == chain["instrument_id"]
 
@@ -461,6 +475,7 @@ def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
             evidence_root=tmp_path / "pack",
             cap24_productivity_root=prod,
             execution_integrity_backend=_INTEGRITY,
+            cap24_observed_portfolio=_empty_portfolio(),
         )
     assert result.bound_instrument_id == chain["instrument_id"]
     assert result.deduplicated_get_count == 9
@@ -491,6 +506,7 @@ def test_execute_cap24_fail_closed_when_handoff_invalid(tmp_path: Path) -> None:
             evidence_root=tmp_path / "pack2",
             cap24_productivity_root=prod,
             execution_integrity_backend=_INTEGRITY,
+            cap24_observed_portfolio=_empty_portfolio(),
         )
     assert result.first_real_blocker == "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED"
     assert result.deduplicated_get_count == 0
@@ -536,6 +552,7 @@ def test_acquire_binds_when_witness_epoch_resolved_from_wall_time(tmp_path: Path
         productivity_root=prod,
         repository_sha=REPO_SHA,
         binding_epoch=witness,
+        observed_portfolio=_empty_portfolio(),
     )
     assert handoff.venue_native_id == chain["venue_native_id"]
 
@@ -554,6 +571,7 @@ def test_legacy_build_chain_still_binds_via_gate(tmp_path: Path) -> None:
         repository_sha=REPO_SHA,
         binding_epoch=selection.selected_at_wall_time,
         mark_price_by_native_id=marks,
+        observed_portfolio=_empty_portfolio(),
     )
     assert handoff.bound_instrument.venue_native_id == chain["venue_native_id"]
     _ = _empty_portfolio()

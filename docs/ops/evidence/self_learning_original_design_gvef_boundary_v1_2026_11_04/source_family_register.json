@@ -1,0 +1,56 @@
+{
+  "families": [
+    {
+      "coverage": "Two recovered original/master-core sources, recovery receipt, source inventories and semantic dossier; selected passages rebound, previous complete review reused",
+      "evidence": "original_and_prior_source_bindings.json",
+      "family": "Historical original research masters"
+    },
+    {
+      "coverage": "66 pages, including dated Aug24/Sep1/Sep2/Sep5 layers; 49/57 page predecessors exact text prefixes",
+      "evidence": "extended_primary_source_coverage.json",
+      "family": "DDO / autonomy design and amendments"
+    },
+    {
+      "coverage": "27-page Concept v3.4 and 20-page Unified Closed Cycle fully read, 22/14-page predecessors text-prefix verified",
+      "evidence": "extended_primary_source_coverage.json",
+      "family": "Universe / Meta / MI / Loop C designs"
+    },
+    {
+      "coverage": "V1.4 all9 pages, V1.5 completeness all19; physical V1.4 p5 viewed; historical request/response raw-line verified, intermediate tools redacted",
+      "evidence": "gvef_v15_completeness_source_excerpts.json",
+      "family": "GVEF primary blueprint and original closure exchange"
+    },
+    {
+      "coverage": "Prior bound vault entrypoints/registers and source-specific relationships reused; no new vault run; historical narrow IU vs later broad layer projection and current N5 meaning kept distinct",
+      "evidence": "../gvef_universe_relationship_assessment_v1_2026_11_04/obsidian_source_bindings.json",
+      "family": "Obsidian / IU / N5 / separate autonomy"
+    },
+    {
+      "coverage": "Current HEAD and relevant source hashes; fresh14 PR source records plus prior source-specific history, local history shallow; no full remote history census",
+      "evidence": "github_phase_sources.json",
+      "family": "Local code / Git and GitHub PR history"
+    },
+    {
+      "coverage": "Mount identities checked, two direct recovery MD matches and nine targeted backup files in this package, plus prior seven backup matches; exact missing harness/manifest locations named; no recursive raw-code scan",
+      "evidence": "external_followup_lookup.json",
+      "family": "M2 backup / Recovery"
+    },
+    {
+      "coverage": "24 selected README bindings, corrections retain earlier evidence and source revisions",
+      "evidence": "recent_assessment_inventory.json",
+      "family": "Recent reconstruction and numerical proofs"
+    },
+    {
+      "coverage": "Performed after primary intent review; existing fixture producer and actual evaluator calls, no authenticated natural learning producer established",
+      "evidence": "last_resort_reverse_probes.json",
+      "family": "Bounded reverse tracing from GVEF"
+    },
+    {
+      "coverage": "All17 pages newly read,11 byte-identical copies;2 historical requests raw-line verified, previous EVI-2293 variant study read, current V3.2 contract/decision compared. No match in dated Recovery MD filename inventory.",
+      "evidence": "einhorn_primary_source.json",
+      "family": "Einhorn v2 user-supplied search lead"
+    }
+  ],
+  "scope": "Findable topic-relevant source families; no exhaustive physical-disk or all-chat review claim",
+  "source_commit": "e938ddb3f5c3d1ecf797f2c27a8ceba5160097e2"
+}

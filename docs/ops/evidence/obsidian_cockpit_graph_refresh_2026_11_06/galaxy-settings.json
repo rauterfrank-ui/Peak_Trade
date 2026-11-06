@@ -1,0 +1,72 @@
+{
+  "bloom": {
+    "strength": 0.35,
+    "radius": 0.35,
+    "threshold": 0.22
+  },
+  "physics": {
+    "repel": 170,
+    "linkDistance": 55,
+    "linkStrength": 1.1,
+    "centerPull": 0.05,
+    "flatten": 0.55,
+    "coreGravity": 0.1,
+    "spiral": 0.02
+  },
+  "look": {
+    "nodeSize": 1,
+    "linkOpacity": 0.14,
+    "linkCurve": 0.35,
+    "twinkle": 0.5,
+    "sizeBy": "degree"
+  },
+  "space": {
+    "nebula": 0.35,
+    "fieldStars": 0.25,
+    "clusterClouds": 0.3
+  },
+  "cruise": true,
+  "cruiseSpeed": 1,
+  "showUnresolved": false,
+  "showOrphans": true,
+  "showTags": false,
+  "tagLens": null,
+  "colorByTag": false,
+  "showTagHubs": false,
+  "tagHubLimit": 20,
+  "hiddenFolders": [
+    "06 Komponenten",
+    "09 Werte",
+    "07 Verbindungen",
+    "08 Register"
+  ],
+  "filterQuery": "",
+  "showGhostEdges": false,
+  "showStarfield": true,
+  "colorTheme": "imported",
+  "qualityOverride": "auto",
+  "preset": "deep-space",
+  "activePreset": "galaxy",
+  "customPresets": [],
+  "language": "auto",
+  "panelSections": {
+    "filter": true,
+    "nav": true
+  },
+  "panelWidth": 464.1015625,
+  "hintsSeen": false,
+  "selectionDepth": 1,
+  "tour": {
+    "speed": 1
+  },
+  "colorGroups": [
+    {
+      "query": "tag:#fachbereich",
+      "color": "#60a5fa"
+    },
+    {
+      "query": "tag:#grenze",
+      "color": "#f59e0b"
+    }
+  ]
+}

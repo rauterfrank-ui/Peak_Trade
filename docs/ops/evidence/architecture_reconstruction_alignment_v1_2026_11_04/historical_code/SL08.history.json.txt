@@ -1,0 +1,145 @@
+{
+  "id": "SL08",
+  "phase": 8,
+  "title": "Regimeabhängige Bewertung",
+  "introduction_commit": "4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+  "introduction_date": "2026-08-18T05:42:26Z",
+  "commit_subject": "research: add canonical regime-aware evaluation v1 (#5935)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+  "code_blob": "bc800ada6bc1b840789caf3911477e0b661c11fb",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "b56a4845eecc8966fd9cb29cde722bad27a58762e8ebad98ef58cac9a0ae89e9",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL08-canonical_regime_aware_evaluation_v1.source.py",
+  "source_lines": 1025,
+  "module_docstring": "Phase 8 Canonical Regime-Aware Evaluation v1 (research evidence only).\n\nPer-regime research evaluation bound to Phase 1 Canonical Experiment\nIdentity. Research and runtime regime labels are never treated as silently\nidentical. Lookahead into decision-time labels is forbidden. This layer\nhas no runtime, order, live, funding, canary, promotion, or config-write\nauthority.",
+  "public_functions": [
+    {
+      "name": "build_canonical_regime_aware_evaluation_v1",
+      "line": 276
+    },
+    {
+      "name": "derive_regime_aware_evaluation_identity_v1",
+      "line": 377
+    },
+    {
+      "name": "validate_canonical_regime_aware_evaluation_v1",
+      "line": 387
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 523
+    }
+  ],
+  "classes": [
+    {
+      "name": "RegimeAwareEvaluationError",
+      "line": 206
+    },
+    {
+      "name": "RegimeMappingRuleV1",
+      "line": 211
+    },
+    {
+      "name": "RegimeMappingContractV1",
+      "line": 217
+    },
+    {
+      "name": "RegimeSliceV1",
+      "line": 227
+    },
+    {
+      "name": "CoreLogicAttributionV1",
+      "line": 243
+    },
+    {
+      "name": "BullBearDecisionQualityV1",
+      "line": 252
+    },
+    {
+      "name": "CanonicalRegimeAwareEvaluationRequestV1",
+      "line": 263
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 280,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 467,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 867,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_REGIME_AWARE_EVALUATION_V1.md",
+      "status": "added",
+      "sha": "2630d85e88eeb4b926939ce014984b3b8b7ae9dd",
+      "additions": 192,
+      "deletions": 0,
+      "changes": 192
+    },
+    {
+      "filename": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "status": "added",
+      "sha": "bc800ada6bc1b840789caf3911477e0b661c11fb",
+      "additions": 1025,
+      "deletions": 0,
+      "changes": 1025
+    },
+    {
+      "filename": "tests/experiments/test_canonical_regime_aware_evaluation_v1.py",
+      "status": "added",
+      "sha": "a57d3b54a3c015183a103bd5b93c40ee02ebe6b9",
+      "additions": 460,
+      "deletions": 0,
+      "changes": 460
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_regime_aware_evaluation_v1.py",
+      "status": "added",
+      "sha": "a57d3b54a3c015183a103bd5b93c40ee02ebe6b9",
+      "additions": 460,
+      "deletions": 0,
+      "changes": 460
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_regime_aware_evaluation_v1.py",
+      "status": "added",
+      "sha": "bc800ada6bc1b840789caf3911477e0b661c11fb",
+      "additions": 1025,
+      "deletions": 0,
+      "changes": 1025
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+      "date": "2026-08-18T05:42:26Z",
+      "subject": "research: add canonical regime-aware evaluation v1 (#5935)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/4fa4086ba6a96b0cec18d8171da70b1d1d8099d9",
+      "parents": [
+        "defa59f12813b961d6edce11c7ead91c6e369950"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

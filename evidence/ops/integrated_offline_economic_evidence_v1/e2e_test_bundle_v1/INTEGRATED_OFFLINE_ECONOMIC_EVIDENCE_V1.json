@@ -1,0 +1,129 @@
+{
+  "authority_effect": "NONE",
+  "canonical_identity_binding_v1": {
+    "decision_equivalence_ref": {
+      "artifact_digest_sha256": "519868e9fac80fe9e5ea2932a7bccd65994b00350eef5b79f96690fd8979106a",
+      "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json",
+      "equivalence_class": "PRODUCTIVE_CURRENT"
+    },
+    "economic_execution_model_identity_v1": {
+      "execution_model_binding_digest_sha256": "de0cb7b52de364967f3710f55347293327b5b6389635f9d3786947bcd54c1449",
+      "execution_model_class": "SIMULATED_ECONOMICS_BRIDGE",
+      "owner": "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+    },
+    "economic_policy_reference_v1": {
+      "policy_digest_sha256": "963c200013fbf23b4d04bceb5c464aa543814db94f1fbfa49057015a12ab8fad",
+      "policy_id": "ops.current_integrated_offline_economic_policy_v1",
+      "policy_version": "v1",
+      "trade_count_semantic": "COMPLETED_POSITION_ROUND_TRIP"
+    },
+    "instrument_identity_v1": {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "contract_type": "um_xperp",
+      "instrument_mapping_digest_sha256": "fd88190a75ab2011bb282e8082bc279293155367ee272cd69a41511db28e02e1",
+      "market_type": "linear_perpetual",
+      "venue": "okx_eea",
+      "venue_native_id": "ETH-USD_UM_XPERP-310404"
+    },
+    "market_data_lineage_v1": {
+      "bridge_contract_id": "CURRENT_OFFLINE_MD_BRIDGE_V1",
+      "dataset_content_digest_sha256": "f69f27e2a9ea27a2851e5c8afa6ef145e7a4d9a3b44f98f9f60994670de3ffce",
+      "equivalence_attestation_ref": {
+        "artifact_digest_sha256": "86f16d1717233aac21d78fc5a7457df35730fd4c967e4bb3267a832cb0640460",
+        "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/CURRENT_OFFLINE_MD_BRIDGE_V1.json"
+      },
+      "md_lineage_class": "admissible_versioned_futures_offline"
+    },
+    "productive_gate_binding_v1": {
+      "cap61_observation_acceptance_binding_mode": "MUST_REPLAY",
+      "confirmation_progression_binding_mode": "MUST_REPLAY",
+      "g17_typed_volatility_binding_mode": "MUST_RECONSTRUCT"
+    },
+    "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+    "risk_sizing_identity_v1": {
+      "capital_context_digest_sha256": "e19ac7c71aaab990bed4641ce297475cb970fc1c5570f574dbec627c95f59389",
+      "crs_binding_mode": "PRODUCTIVE_BOUNDARY_STATE_FILE"
+    },
+    "strategy_selection_identity_v1": {
+      "per_decision_selected_strategy_binding_ref": "CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json",
+      "strategy_intent_owner": "trading.master_v2.double_play_entry_exit_policy_v0",
+      "suitability_registry_snapshot_digest_sha256": "b29b100f09dd84178480e8d58c38fe1092d571048eca541acddac15901ac1716"
+    },
+    "trading_logic_identity_v1": {
+      "canonical_decision_config_digest_sha256": "c3265e0ac5b63afbe6c044806a564f425261d2253b409808bc6c7f4912450c78",
+      "component_versions_digest_sha256": "7b12be43febc6e18259dd77c004315b4143d570234e0f15acf5f9d7b79c371b5",
+      "policy_versions_digest_sha256": "5b3a02e57af9b55aae545b599baa6a6798a364d8d2798a38536249f77e30fe5f",
+      "productive_cycle_capability_id": "ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1",
+      "replay_layer_version": "v1",
+      "replay_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+      "trading_logic_implementation_binding_digest_sha256": "26b78d27c03a4a70b737d824eb4b64cfb78002daa4a9abbde161f86acbe69935"
+    },
+    "universe_identity_v1": {
+      "ranking_snapshot_id": "productive-offline-rank-v1",
+      "residency_applicability": "NOT_ENABLED_FOR_EVIDENCE_SCOPE",
+      "selection_integrity_digest_sha256": "65045134064dd4d905665eceaf4153fea4f9d69d2ae22255a0b7cef4701f4886",
+      "universe_scope_class": "SINGLE_SELECTED_FUTURE",
+      "universe_snapshot_id": "productive-offline-uni-v1"
+    }
+  },
+  "economic_evidence_scope": "PER_INSTRUMENT_CURRENT_SELECTED",
+  "economic_metrics_domain_ref": {
+    "artifact_digest_sha256": "460d9e964ef3244a8c9cea3504703661f55220e8d7cd899282c8cb476a6911b2",
+    "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/economic_metrics_domain_v1.json",
+    "authority_effect": "NONE",
+    "config_digest_sha256": "39b6ceeae302db1385ad1072063f8614d495c967275eb0ef376b5c6269e7c2ab",
+    "dataset_input_binding_digest_sha256": "f69f27e2a9ea27a2851e5c8afa6ef145e7a4d9a3b44f98f9f60994670de3ffce",
+    "implementation_surface_digest_sha256": "6029d60b1d95afd13f461894cfa2c1bb2ada93e9a123d530cc640000729fcc3c",
+    "producer_id": "ops.integrated_offline_economic_evidence_v1.productive_completion_v1.bundle",
+    "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+    "schema_id": "ops.integrated_offline_economic_metrics_domain.v1",
+    "schema_version": "v1",
+    "verifier_id": "ops.integrated_offline_economic_metrics_domain_verifier.v1"
+  },
+  "evidence_root_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1",
+  "evidence_scope_class": "PRODUCTIVE_CURRENT",
+  "monte_carlo_domain_ref": {
+    "artifact_digest_sha256": "8435fb77e9c5d88af2416e6a8d1bd082c12ed7f89ba7514259959e21c8ef0165",
+    "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/monte_carlo_domain_v1.json",
+    "authority_effect": "NONE",
+    "config_digest_sha256": "39b6ceeae302db1385ad1072063f8614d495c967275eb0ef376b5c6269e7c2ab",
+    "dataset_input_binding_digest_sha256": "f69f27e2a9ea27a2851e5c8afa6ef145e7a4d9a3b44f98f9f60994670de3ffce",
+    "implementation_surface_digest_sha256": "6029d60b1d95afd13f461894cfa2c1bb2ada93e9a123d530cc640000729fcc3c",
+    "producer_id": "ops.integrated_offline_economic_evidence_v1.productive_completion_v1.bundle",
+    "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+    "schema_id": "ops.integrated_offline_economic_monte_carlo_domain.v1",
+    "schema_version": "v1",
+    "verifier_id": "ops.integrated_offline_economic_monte_carlo_domain_verifier.v1"
+  },
+  "producer_id": "ops.integrated_offline_economic_evidence_v1.productive_completion_v1.bundle",
+  "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "schema_id": "ops.integrated_offline_economic_evidence.v1",
+  "schema_version": "v1.1",
+  "stress_domain_ref": {
+    "artifact_digest_sha256": "14047882986ea236890bf917bef7fe04c2e98bbd019ee123dbd9a0141f83530d",
+    "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/stress_domain_v1.json",
+    "authority_effect": "NONE",
+    "config_digest_sha256": "39b6ceeae302db1385ad1072063f8614d495c967275eb0ef376b5c6269e7c2ab",
+    "dataset_input_binding_digest_sha256": "f69f27e2a9ea27a2851e5c8afa6ef145e7a4d9a3b44f98f9f60994670de3ffce",
+    "implementation_surface_digest_sha256": "6029d60b1d95afd13f461894cfa2c1bb2ada93e9a123d530cc640000729fcc3c",
+    "producer_id": "ops.integrated_offline_economic_evidence_v1.productive_completion_v1.bundle",
+    "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+    "schema_id": "ops.integrated_offline_economic_stress_domain.v1",
+    "schema_version": "v1",
+    "verifier_id": "ops.integrated_offline_economic_stress_domain_verifier.v1"
+  },
+  "verifier_id": "ops.integrated_offline_economic_evidence_verifier.v1",
+  "walk_forward_domain_ref": {
+    "artifact_digest_sha256": "f59209637ce0359b73a4e00f412eb1c73e9a732a723e179b3e1fec2d8fa53dfb",
+    "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1/walk_forward_domain_v1.json",
+    "authority_effect": "NONE",
+    "config_digest_sha256": "39b6ceeae302db1385ad1072063f8614d495c967275eb0ef376b5c6269e7c2ab",
+    "dataset_input_binding_digest_sha256": "f69f27e2a9ea27a2851e5c8afa6ef145e7a4d9a3b44f98f9f60994670de3ffce",
+    "implementation_surface_digest_sha256": "6029d60b1d95afd13f461894cfa2c1bb2ada93e9a123d530cc640000729fcc3c",
+    "producer_id": "ops.integrated_offline_economic_evidence_v1.productive_completion_v1.bundle",
+    "proven_source_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+    "schema_id": "ops.integrated_offline_economic_walk_forward_domain.v1",
+    "schema_version": "v1",
+    "verifier_id": "ops.integrated_offline_economic_walk_forward_domain_verifier.v1"
+  }
+}

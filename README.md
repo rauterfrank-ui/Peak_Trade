@@ -1,5 +1,7 @@
 # Peak_Trade
 
+Aktueller Systemeinstieg: [Map of Truth](docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md) und [System Atlas](docs/system_atlas/generated/SYSTEM_ATLAS.md).
+
 Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequentem Safety-First-Ansatz. Die Architektur trennt sauber zwischen Data, Strategy, Portfolio, Execution und Reporting – Research-Experimente, Shadow-Runs und Testnet-Betrieb sind klar voneinander abgegrenzt. Eine umfassende Research-Pipeline (Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests) liefert fundierte Go/No-Go-Entscheidungen, während Risk-Limits auf Order- und Portfolio-Level greifen, bevor ein Trade überhaupt ausgeführt werden kann. Kurz: Ein produktionsnahes Framework, dem Future-Ich vertrauen kann.
 
 ---
@@ -59,7 +61,6 @@ Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
 - 🔒 **[Security Notes](SECURITY_NOTES.md)** — Known vulnerabilities, Python version limitations, CVE tracking
 - 🔍 **[Audit Runbook](docs/audit/AUDIT_RUNBOOK_COMPLETE.md)** — Complete audit procedures (Security, Dependencies, Quality)
 - 🛡️ **[Governance & AI Autonomy](docs/governance/README.md)** — Governance-first guardrails, Policy Critic, Evidence Packs
-- 🗺️ **[Docs Truth Map](docs/ops/registry/DOCS_TRUTH_MAP.md)** — Kanonische Ops-Doku-Registry und Änderungsnachweis (truth-first)
 
 ---
 

@@ -1,0 +1,165 @@
+# Self-Learning: ursprüngliche Konstruktion und Ebenenbeleg
+
+## Direkte Antwort zur Ebenenzahl
+
+**Eine vollständige ursprüngliche Ebenenzahl ist weiterhin nicht belegt.** Belegt sind zwölf benannte Entwicklungsphasen mit zeitnahen Verträgen vom 17./18. August 2026. Diese werden nicht als zwölf übereinanderliegende Architekturebenen ausgegeben.
+
+**Ausdrücklich getrennt sind Strategy Layer und Portfolio Layer.** Das ist eine konkrete innere Trennung, keine Behauptung, das gesamte Universum habe insgesamt nur zwei Ebenen.
+
+Das separate ursprüngliche Self-Learning-Master-Runbook ist noch nicht wiedergefunden. Seine historische Existenz und spätere Core-Logic-Bound-Fassung sind durch datierte Nachrichten und einen damaligen Quelleninventar-Hash belegt. Der Hash bestätigt hier nicht den Inhalt eines heute vorliegenden Originals.
+
+## Zwölf zeitnah belegte Konstruktionsbausteine
+
+### Phase 1: Experimentidentität
+
+Jedes Experiment eindeutig an Code, Daten, Features, Kosten, Risiko, Portfolio und die kanonische Handelslogik binden.
+
+Eingang: Versionierte Inputs und explizite Digests.
+Ausgang: Vollständige, reproduzierbare Experimentidentität.
+Beleg: `SL01`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 2: Unveränderliches Experimentgedächtnis
+
+Experimente, Messwerte, Ergebnisse und Abstammung unveränderlich und nachvollziehbar erhalten.
+
+Eingang: Experimentidentität, Beobachtungen und Artefaktverweise.
+Ausgang: Append-only Experimentrecord.
+Beleg: `SL02`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 3: Fehlergedächtnis
+
+Gescheiterte Hypothesen und Prüfungen samt Kontext erinnern und begründete Wiederholungsversuche unterscheiden.
+
+Eingang: Experimentrecord, Fehlerklasse und Hypothesenkontext.
+Ausgang: Fehlerrecord und Duplikatbewertung.
+Beleg: `SL03`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 4: Robustheitsprüfung
+
+Ergebnisse über Datensplits, Out-of-Sample, Monte Carlo, Kosten-/Marktstress und weitere Pflichtprüfungen bewerten.
+
+Eingang: Gebundene Experimente, Prüfergebnisse und Metrikversionen.
+Ausgang: Robustness-Evidence; fehlende Prüfungen bleiben explizit offen/blockiert.
+Beleg: `SL04`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 5: Vergleichbarkeit und Vergleich
+
+Vor jeder gemeinsamen Bewertung prüfen, ob Daten, Kosten, Splits, Risiken und Metriken methodisch vergleichbar sind.
+
+Eingang: Zwei Experimentidentitäten und Vergleichs-/Kompatibilitätsvertrag.
+Ausgang: Vergleichbarkeitsnachweis; Forschungssortierung nur bei Vergleichbarkeit.
+Beleg: `SL05`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 6: Champion-/Challenger-Bewertung
+
+Bestehenden Kandidaten und Alternativen nachvollziehbar vergleichen und Forschungsempfehlungen ableiten.
+
+Eingang: Expliziter Champion, Challenger und Vergleichsevidence.
+Ausgang: Bewertung/Empfehlung ohne automatischen Champion-Wechsel.
+Beleg: `SL06`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 7: Erwartung gegen beobachtete Realität
+
+Abweichungen zwischen Forschungserwartung und beobachteten Kosten, Ausführung oder Ergebnissen festhalten.
+
+Eingang: Identitätsgebundene erwartete und beobachtete Messungen.
+Ausgang: Reality-Gap-Record und Bewertung.
+Beleg: `SL07`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 8: Regimeabhängige Bewertung
+
+Strategien und Entscheidungsqualität nach Marktregime und Teilstufen der Handelslogik untersuchen.
+
+Eingang: Experimentidentität, explizite Regimezuordnung und zeitlich zulässige Beobachtungen.
+Ausgang: Regime-Evidence, Core-Logik-Zuordnung und Bull/Bear-Qualitätsbewertung.
+Beleg: `SL08`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 9: Getrenntes Portfolio-Learning
+
+Einzelstrategiequalität und Zusammenspiel im Portfolio getrennt bewerten; eine starke Strategie ist nicht automatisch ein guter Portfolio-Bestandteil.
+
+Eingang: Mindestens zwei gebundene Strategie-/Experimentmitglieder und Paar-/Portfoliobeobachtungen.
+Ausgang: Getrennte Strategy-/Portfolio-Evidence, ohne Allocation-Apply.
+Beleg: `SL09`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 10: Koordinierter Offline-Forschungsablauf
+
+Eine explizit ausgewählte Hypothese mit bestehenden Memory-, Robustness-, Vergleichs-, Challenger-, Fehler- und Reality-Gap-Bausteinen bearbeiten.
+
+Eingang: Explizite Hypothese, Champion und bereitgestellte Offline-Beobachtungen.
+Ausgang: Nachvollziehbarer Forschungszyklus; kein automatisches Starten der produktiven Engine.
+Beleg: `SL10`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 11: Meta-Learning
+
+Über mehrere vergleichbare Experimente hinweg wiederkehrende Fehler, Überanpassung, Kostenprobleme und Informationsgewinn untersuchen.
+
+Eingang: Versionierte Experiment-, Failure- und Reality-Gap-Evidence.
+Ausgang: Begrenzte Forschungserkenntnisse und priorisierte Vorschläge; keine erfundene Kausalität.
+Beleg: `SL11`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+### Phase 12: Erweiterte Forschungssuche
+
+Innerhalb expliziter Suchräume und Grenzen neue gebundene Forschungskandidaten und Experimentanfragen vorschlagen.
+
+Eingang: Identitätstemplate, Suchraum, Budget, Constraints, Failure-/Meta-Signale.
+Ausgang: Kandidaten, Hypothesen, Suchnachweise und Offline-Experimentanfragen.
+Beleg: `SL12`; Entwicklungsphase/Vertrag, keine erfundene kanonische Layernummer.
+
+## Ausdrücklich bezeichnete Bewertungsebenen
+
+### Strategy Layer
+
+Qualität der einzelnen Strategie beurteilen.
+
+Signalqualität, Ausführungsrobustheit, Parameterstabilität, Regime-Eignung.
+Beleg: `SL09:Shape; historical owner request 329304`.
+
+### Portfolio Layer
+
+Zusammenspiel und Portfolio-Eignung mehrerer Strategien beurteilen.
+
+Korrelation / Kovarianz, Diversifikation / Konzentration, Marginal Risk / Risk Contribution, Portfolio-Drawdown, Turnover / Kapazität, Allokationsstabilität.
+Beleg: `SL09:Shape; historical owner request 329304`.
+
+## Wie die Bausteine strukturell zusammenarbeiten
+
+Identität ist die gemeinsame Bindung für Experimentgedächtnis, Fehlergedächtnis und Bewertungen. Robustheit und Vergleichbarkeit sind eigenständige Prüfaufgaben. Champion/Challenger verwendet die Vergleichsinstanz, statt selbst neue Vergleichsregeln zu erfinden. Reality Gap und Regimebewertung untersuchen andere Fragen als Kandidatenrangfolge. Portfolio Learning trennt die Eignung im Verbund ausdrücklich von Einzelstrategiequalität.
+
+Der Phase-10-Forschungsablauf koordiniert die genannten vorhandenen Owner in einer dokumentierten Folge; er ist keine weitere Kopie ihrer Fachlogik. Er führt in diesem historischen Schnitt weder die Regime- noch die Portfolio-Evaluation als Loop-Schritt aus. Meta-Learning untersucht Muster über vergleichbare Experimente; Advanced Search kann dessen Vorschläge priorisieren und neue Forschungsanfragen erzeugen. Eine Suchanfrage ist nicht automatisch ein ausgeführtes Experiment.
+
+Diese Beziehungen sind aus den historischen Verträgen beschrieben, kein neu ausgeführter Kausalitäts-/Runtime-Beweis. Die zwölf Phasen sind insbesondere keine belegte lineare Pipeline durch alle zwölf Bausteine.
+
+## Korrektur der bisherigen Darstellung
+
+Die frühere Darstellung in sieben funktionalen Learning-Blöcken war eine analytische Gliederung eines späteren Blueprint-Entwurfs. Sie ist kein Beleg für sieben ursprüngliche Ebenen. Ebenso wird die heutige engere DDO-Paketgrenze nicht als rückwirkende Begrenzung des frühen Self-Learning-Programms benutzt. Der August-Aufbau enthält ausdrücklich auch Meta-Learning, Portfolio Learning und Advanced Search; spätere Ownership-Änderungen bleiben eine gesonderte Frage.
+
+## Noch offene Ursprungsfragen
+
+- Vollständiges originales Master-Runbook und seine Varianten beschaffen oder aus zitierenden Quellen belastbar rekonstruieren.
+- Klären, ob es eine ausdrücklich nummerierte ursprüngliche Innenhierarchie gab und wie sie die zwölf Konstruktionsbausteine einordnete.
+- Ursprüngliche Kernidee und Beziehungen von Gedächtnis, Bewertung, Forschungskreislauf und Meta-Learning vollständig belegen.
+- Den späteren DDO-Entwurf erst danach als eigene Entwicklungsstufe abgleichen.
+
+## Quellen und Prüfung
+
+Alle zwölf Vertragsdateien wurden direkt an ihren damaligen Commit-Ankern gelesen und gesichert. Sie sind am Phase-12-Commit 899e154d1bb095227c13690943e13284fb936972 bytegleich. Die zugehörigen Commitdaten und Blob-/SHA256-Werte stehen im JSON. Historische Test-/Merge-Fertigmeldungen werden nicht als neuer Funktionsbeweis übernommen.
+
+- **SL01**, 2026-08-17T19:55:28+02:00: `ecbe5b7b4f8a71d3a81443a65949fcce6a5de350` · `docs/ops/specs/CANONICAL_EXPERIMENT_IDENTITY_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL01-CANONICAL_EXPERIMENT_IDENTITY_V1.md>).
+- **SL02**, 2026-08-17T20:38:47+02:00: `e10f32f56fad0576cd250958401d13f044c5920d` · `docs/ops/specs/CANONICAL_EXPERIMENT_MEMORY_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL02-CANONICAL_EXPERIMENT_MEMORY_V1.md>).
+- **SL03**, 2026-08-17T21:12:07+02:00: `e763bf1bf133afab1c3850a6bbaafde6f83e39d2` · `docs/ops/specs/CANONICAL_FAILURE_MEMORY_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL03-CANONICAL_FAILURE_MEMORY_V1.md>).
+- **SL04**, 2026-08-17T21:39:35+02:00: `2cd8f6b6e1c8051decb3506abc3a2250b4f228c5` · `docs/ops/specs/CANONICAL_ROBUSTNESS_SUITE_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL04-CANONICAL_ROBUSTNESS_SUITE_V1.md>).
+- **SL05**, 2026-08-17T21:59:59+02:00: `e1efa56f2bde5fefd48c62260c1f720d99138e71` · `docs/ops/specs/CANONICAL_COMPARISON_SSOT_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL05-CANONICAL_COMPARISON_SSOT_V1.md>).
+- **SL06**, 2026-08-17T22:14:00+02:00: `bc97d43f715305c8b70eb84ddd12fd718f8460a6` · `docs/ops/specs/CANONICAL_CHAMPION_CHALLENGER_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL06-CANONICAL_CHAMPION_CHALLENGER_V1.md>).
+- **SL07**, 2026-08-17T22:35:14+02:00: `defa59f12813b961d6edce11c7ead91c6e369950` · `docs/ops/specs/CANONICAL_REALITY_GAP_STORE_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL07-CANONICAL_REALITY_GAP_STORE_V1.md>).
+- **SL08**, 2026-08-18T07:42:26+02:00: `4fa4086ba6a96b0cec18d8171da70b1d1d8099d9` · `docs/ops/specs/CANONICAL_REGIME_AWARE_EVALUATION_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL08-CANONICAL_REGIME_AWARE_EVALUATION_V1.md>).
+- **SL09**, 2026-08-18T14:37:25+02:00: `562345af2153fa0c659ca261a71a9191b4b7210e` · `docs/ops/specs/CANONICAL_PORTFOLIO_LEARNING_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL09-CANONICAL_PORTFOLIO_LEARNING_V1.md>).
+- **SL10**, 2026-08-18T15:12:29+02:00: `7c36858bb6b9ed036bba901170d370b61a805110` · `docs/ops/specs/CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL10-CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md>).
+- **SL11**, 2026-08-18T15:38:33+02:00: `fc059d1285be55e433a9ca59e89ce187e7a4b363` · `docs/ops/specs/CANONICAL_META_LEARNING_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL11-CANONICAL_META_LEARNING_V1.md>).
+- **SL12**, 2026-08-18T16:04:39+02:00: `899e154d1bb095227c13690943e13284fb936972` · `docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md`. [Vertrag](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL12-CANONICAL_ADVANCED_SEARCH_V1.md>).
+
+Kein Code geändert, keine Phasen implementiert oder aktiviert, kein Git-Fetch, kein neuer Vault-Ledger-Run. Der Fokus bleibt ausschließlich auf der ursprünglichen Self-Learning-Architektur.
+
+## Ergänzung: direkte GitHub-Codebelege
+
+Die [GitHub-/Code-Historie](</Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/Self_Learning_GitHub_Codebelege.md>) verifiziert die zwölf Hauptmodule zusätzlich an ihren Einführungscommits. Vertrag, codierte Struktur, statische Aufrufstelle und beobachtete Funktion bleiben getrennte Belegarten. Die vollständige ursprüngliche Ebenenzahl bleibt offen.

@@ -1,0 +1,59 @@
+{
+  "absent_from_census_graph": [
+    "current_full_core_capital_guard",
+    "integrated_offline_economic_evidence_v1",
+    "global venue-effect authority ledger"
+  ],
+  "authority": "NONE",
+  "code_verification": "B1-B7 and ECO adjudicated from origin/main source and config, not from graph reachability",
+  "fixpoint_status": "NOT_PROVEN",
+  "global_closure": false,
+  "graph_status": "STALE",
+  "method": "forward and reverse BFS on integrated_causal_graph.v1 edges; then verified against origin/main code",
+  "schema_version": "bwp_live_003_graph_traversal.v1",
+  "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+  "starts": {
+    "SO-OPS-PKG:full_core_live_path_composition_root_v1": {
+      "direct_in": [
+        "okx_eea_private_account_state_runtime_v1 PRODUCES",
+        "k1_productive_macos_credential_store_provisioning_authority_v1 BLOCKS",
+        "orders BLOCKS",
+        "trading BLOCKS via mv2 terminals",
+        "pre_external_to_external_effect_boundary BLOCKS"
+      ],
+      "direct_out": [
+        "census:dashboard_read -> canonical_derived_public_md_read_model_v1 OBSERVES",
+        "census:governed_cycle_t2_mv2_stack -> trading HANDOFF",
+        "census:governed_cycle_venue_plan_status self PRODUCES"
+      ],
+      "present": true
+    },
+    "SO-OPS-PKG:governed_productive_account_equity_authority_producer_v1": {
+      "forward": "portfolio_capital_reservation_budget_v1 -> treasury_phase_1_offline_contracts_v1 -> risk -> orders -> full_core_live_path",
+      "present": true,
+      "reverse": "no incoming census edge"
+    },
+    "SO-OPS-PKG:k1_productive_macos_credential_store_provisioning_authority_v1": {
+      "forward_first_hop": "full_core_live_path_composition_root_v1 via census:k1_bind_governed_cycle_occupancy BLOCKS",
+      "present": true,
+      "trading_authority_implied": false
+    },
+    "SO-OPS-PKG:portfolio_capital_reservation_budget_v1": {
+      "present": true,
+      "reverse": [
+        "governed_productive_account_equity_authority_producer_v1",
+        "current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1"
+      ]
+    },
+    "SO-OPS-PKG:treasury_capital_admission_to_account_equity_orchestration_v1": {
+      "edges": 0,
+      "isolation_from_missing_edges": "NOT_PROVEN",
+      "present": true
+    },
+    "SO-SRC-PKG:execution": {
+      "edges": 0,
+      "isolation_from_missing_edges": "NOT_PROVEN",
+      "present": true
+    }
+  }
+}

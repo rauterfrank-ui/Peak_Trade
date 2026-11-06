@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_PRE_EXTERNAL_EFFECT,
 )
@@ -52,6 +56,7 @@ def _run_layered_enter_pre_external_once_v1(*, tmp_path: Path, cycle_id_prefix: 
         last_event_ts_unix=event_ts,
     )
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    budget_owner = PortfolioCapitalReservationBudgetOwnerV1()
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
@@ -79,9 +84,12 @@ def _run_layered_enter_pre_external_once_v1(*, tmp_path: Path, cycle_id_prefix: 
         },
         g17_typed_vol_producers={"LANE_1": g17},
         execution_integrity_backend=integrity,
+        portfolio_budget_owner=budget_owner,
     )
     assert result.wp2_status == "PASS"
     assert result.terminal_disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
+    assert 0 < budget_owner.active_sum_v1() <= 25
+    budget_owner.close()
 
 
 def test_layered_enter_pre_external_closure_with_process_isolation_contract_v1(

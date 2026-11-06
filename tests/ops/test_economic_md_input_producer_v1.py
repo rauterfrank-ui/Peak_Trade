@@ -216,7 +216,9 @@ def test_cap21_ineligible_cannot_be_injected() -> None:
     universe = _universe_snapshot(
         [
             _perp("ETH-USDT-SWAP"),
-            _perp("BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC"),
+            # Current shared futures admission permits live BTC. Use an actual
+            # ineligible lifecycle state, rather than restoring an old blacklist.
+            _perp("BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC", state="suspend"),
         ]
     )
     eligible = _eligible_ids(universe)

@@ -77,7 +77,8 @@ def _dec(value: str | None) -> Decimal | None:
     if not text:
         return None
     try:
-        return Decimal(text)
+        value = Decimal(text)
+        return value if value.is_finite() else None
     except InvalidOperation:
         return None
 
@@ -184,6 +185,8 @@ class FullCoreExchangeReconciliationSnapshotV1:
     transport_failures: tuple[str, ...]
     api_errors: tuple[str, ...]
     identity_conflicts: tuple[str, ...] = ()
+    pending_orders_observation: Mapping[str, Any] | None = None
+    positions_observation: Mapping[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -197,6 +200,8 @@ class FullCoreExchangeReconciliationSnapshotV1:
             "transport_failures": list(self.transport_failures),
             "api_errors": list(self.api_errors),
             "identity_conflicts": list(self.identity_conflicts),
+            "pending_orders_observation": self.pending_orders_observation,
+            "positions_observation": self.positions_observation,
             "contract_id": CONTRACT_ID,
         }
 
@@ -255,6 +260,11 @@ def _verify_evidence_identity(
     if item.environment.strip().upper() != identity.execution_environment.strip().upper():
         return REASON_ENV_MISMATCH
     if item.instrument.strip() != identity.instrument_id.strip():
+        return REASON_INSTRUMENT_MISMATCH
+    if item.canonical_identity_digest != identity.identity_digest():
+        return "IDENTITY_DIGEST_MISMATCH"
+    native = str(item.payload.get("instId") or "")
+    if native and native != identity.native_id:
         return REASON_INSTRUMENT_MISMATCH
     cl = str(item.payload.get("clOrdId") or item.payload.get("clordid") or "")
     if cl and cl != identity.clordid:
@@ -342,92 +352,6 @@ def _collect_fill_rows(
     return rows
 
 
-def _collect_position_rows(
-    snapshot: FullCoreExchangeReconciliationSnapshotV1,
-    instrument_id: str,
-) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    for item in snapshot.evidence_items:
-        if item.layer is not EvidenceLayer.EXCHANGE_POSITION_STATE:
-            continue
-        if item.instrument.strip() != instrument_id.strip():
-            continue
-        rows.append(dict(item.payload))
-    return rows
-
-
-def _position_row_signature(row: Mapping[str, Any]) -> tuple[str, str]:
-    return (
-        str(row.get("pos") or row.get("availPos") or "0").strip(),
-        str(row.get("posSide") or "").lower().strip(),
-    )
-
-
-def _conflicting_position_rows_v1(rows: Sequence[Mapping[str, Any]]) -> bool:
-    if len(rows) <= 1:
-        return False
-    return len({_position_row_signature(row) for row in rows}) > 1
-
-
-def _fill_rows_total_v1(fills: Sequence[Mapping[str, Any]]) -> Decimal:
-    total = Decimal("0")
-    for row in fills:
-        total += _dec(str(row.get("fillSz") or row.get("sz") or "0")) or Decimal("0")
-    return total
-
-
-def _position_crosscheck_v1(
-    *,
-    identity: FullCoreExchangeReconciliationIdentityV1,
-    snapshot: FullCoreExchangeReconciliationSnapshotV1,
-    acc_fill: Decimal | None,
-    fills: Sequence[Mapping[str, Any]],
-    decision: FullCoreExchangeReconciliationDecisionV1,
-) -> str | None:
-    """Instrument-level position cross-check without clOrdId / pre-submit baseline attribution.
-
-    ``selected_side`` encodes entry intent only; net ``pos`` reflects netting, reduce,
-    close, and reversal. Sign or flat-net checks against entry side are intentionally
-    omitted (CURRENT productive path assumes ``net_mode`` but does not bind a pre-submit
-    position snapshot in this contract).
-    """
-    if decision.outcome == OUTCOME_HALTED_UNRESOLVED:
-        return None
-    position_rows = _collect_position_rows(snapshot, identity.instrument_id)
-    if not position_rows:
-        return None
-    if _conflicting_position_rows_v1(position_rows):
-        return REASON_POSITION_CONTRADICTION
-
-    acc = acc_fill or Decimal("0")
-    fill_total = _fill_rows_total_v1(fills)
-
-    if decision.outcome in {OUTCOME_CONFIRMED_REJECTED, OUTCOME_CONFIRMED_CANCELED}:
-        if decision.exposure_retained is False and (acc > 0 or fill_total > 0):
-            return REASON_ORDER_FILL_CONTRADICTION
-    return None
-
-
-def _finalize_reconciliation_decision_v1(
-    *,
-    identity: FullCoreExchangeReconciliationIdentityV1,
-    snapshot: FullCoreExchangeReconciliationSnapshotV1,
-    acc_fill: Decimal | None,
-    fills: Sequence[Mapping[str, Any]],
-    decision: FullCoreExchangeReconciliationDecisionV1,
-) -> FullCoreExchangeReconciliationDecisionV1:
-    crosscheck = _position_crosscheck_v1(
-        identity=identity,
-        snapshot=snapshot,
-        acc_fill=acc_fill,
-        fills=fills,
-        decision=decision,
-    )
-    if crosscheck:
-        return _halt(crosscheck)
-    return decision
-
-
 def _fill_consistency(
     *,
     order_sz: Decimal | None,
@@ -436,14 +360,19 @@ def _fill_consistency(
 ) -> str | None:
     if not fills:
         return None
-    seen: dict[str, Decimal] = {}
+    seen: dict[str, tuple] = {}
     total = Decimal("0")
     for row in fills:
         fill_id = str(row.get("fillId") or row.get("tradeId") or json.dumps(row, sort_keys=True))
-        qty = _dec(str(row.get("fillSz") or row.get("sz") or "0")) or Decimal("0")
-        if fill_id in seen and seen[fill_id] != qty:
+        qty = _dec(str(row.get("fillSz") or row.get("sz") or ""))
+        if qty is None or qty <= 0:
+            return REASON_ORDER_FILL_CONTRADICTION
+        signature = (qty, str(row.get("fillPx") or ""), str(row.get("ordId") or ""))
+        if fill_id in seen and seen[fill_id] != signature:
             return REASON_DUPLICATE_FILL_CONFLICT
-        seen[fill_id] = qty
+        if fill_id in seen:
+            continue
+        seen[fill_id] = signature
         total += qty
     if order_sz is not None and acc_fill is not None and acc_fill > order_sz:
         return REASON_NEGATIVE_REMAINING
@@ -504,6 +433,9 @@ def adjudicate_full_core_exchange_reconciliation_v1(
 
     if identity.quantity_unit.upper() not in {"CONTRACTS", "CONTRACT"}:
         return _halt(REASON_UNSUPPORTED_UNITS)
+    requested_quantity = _dec(identity.final_quantity)
+    if requested_quantity is None or requested_quantity <= 0:
+        return _halt(REASON_ORDER_FILL_CONTRADICTION)
 
     orders = _collect_order_rows(snapshot, identity.clordid)
     fills = _collect_fill_rows(snapshot, identity.clordid)
@@ -539,9 +471,16 @@ def adjudicate_full_core_exchange_reconciliation_v1(
         primary = dict(fills[0])
 
     state = str(primary.get("state") or "").lower()
+    if state in {"cancelled", "mmp_canceled"}:
+        state = "canceled"
     ord_id = str(primary.get("ordId") or "") or None
     order_sz = _dec(str(primary.get("sz") or identity.final_quantity))
     acc_fill = _dec(str(primary.get("accFillSz") or primary.get("fillSz") or "0"))
+
+    if order_sz is None or order_sz != requested_quantity or acc_fill is None or acc_fill < 0:
+        return _halt(REASON_ORDER_FILL_CONTRADICTION)
+    if state in {"rejected", "reject"} and acc_fill > 0:
+        return _halt(REASON_ORDER_FILL_CONTRADICTION)
 
     if order_sz is not None and acc_fill is not None and acc_fill > order_sz:
         return _halt(REASON_NEGATIVE_REMAINING)
@@ -549,129 +488,95 @@ def adjudicate_full_core_exchange_reconciliation_v1(
     fill_err = _fill_consistency(order_sz=order_sz, acc_fill=acc_fill, fills=fills)
     if fill_err:
         return _halt(fill_err)
+    if state == "filled" and acc_fill != order_sz:
+        return _halt(REASON_ORDER_FILL_CONTRADICTION)
+    if any(row.get("ordId") and str(row["ordId"]) != str(ord_id or "") for row in fills):
+        return _halt(REASON_CONFLICTING_ORDID)
 
     if state in {"rejected", "reject"} or str(primary.get("sCode") or "0") not in {"", "0"}:
-        if acc_fill is not None and acc_fill > 0:
-            return _halt(REASON_ORDER_FILL_CONTRADICTION)
-        return _finalize_reconciliation_decision_v1(
-            identity=identity,
-            snapshot=snapshot,
-            acc_fill=acc_fill,
-            fills=fills,
-            decision=FullCoreExchangeReconciliationDecisionV1(
-                outcome=OUTCOME_CONFIRMED_REJECTED,
-                reasons=(),
-                exposure_retained=False,
-                reconciliation_complete=True,
-                recommended_atomic_state="TERMINAL_RECONCILED",
-                execution_authority_effect="NONE",
-                order_state=state or "rejected",
-                cumulative_filled_qty=str(acc_fill or Decimal("0")),
-                remaining_qty="0",
-                venue_ord_id=ord_id,
-            ),
+        return FullCoreExchangeReconciliationDecisionV1(
+            outcome=OUTCOME_CONFIRMED_REJECTED,
+            reasons=(),
+            exposure_retained=False,
+            reconciliation_complete=True,
+            recommended_atomic_state="TERMINAL_RECONCILED",
+            execution_authority_effect="NONE",
+            order_state=state or "rejected",
+            cumulative_filled_qty=str(acc_fill or Decimal("0")),
+            remaining_qty="0",
+            venue_ord_id=ord_id,
         )
 
     if state == "canceled":
         partial = acc_fill is not None and acc_fill > 0
         if partial:
-            return _finalize_reconciliation_decision_v1(
-                identity=identity,
-                snapshot=snapshot,
-                acc_fill=acc_fill,
-                fills=fills,
-                decision=FullCoreExchangeReconciliationDecisionV1(
-                    outcome=OUTCOME_CONFIRMED_PARTIALLY_FILLED,
-                    reasons=("CANCELED_AFTER_PARTIAL",),
-                    exposure_retained=True,
-                    reconciliation_complete=True,
-                    recommended_atomic_state="TERMINAL_RECONCILED",
-                    execution_authority_effect="NONE",
-                    order_state=state,
-                    cumulative_filled_qty=str(acc_fill),
-                    remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
-                    venue_ord_id=ord_id,
-                ),
-            )
-        return _finalize_reconciliation_decision_v1(
-            identity=identity,
-            snapshot=snapshot,
-            acc_fill=acc_fill,
-            fills=fills,
-            decision=FullCoreExchangeReconciliationDecisionV1(
-                outcome=OUTCOME_CONFIRMED_CANCELED,
-                reasons=(),
-                exposure_retained=False,
-                reconciliation_complete=True,
-                recommended_atomic_state="TERMINAL_RECONCILED",
-                execution_authority_effect="NONE",
-                order_state=state,
-                cumulative_filled_qty=str(acc_fill or Decimal("0")),
-                remaining_qty=str(order_sz or Decimal("0")),
-                venue_ord_id=ord_id,
-            ),
-        )
-
-    if state == "filled":
-        return _finalize_reconciliation_decision_v1(
-            identity=identity,
-            snapshot=snapshot,
-            acc_fill=acc_fill,
-            fills=fills,
-            decision=FullCoreExchangeReconciliationDecisionV1(
-                outcome=OUTCOME_CONFIRMED_FILLED,
-                reasons=(),
+            return FullCoreExchangeReconciliationDecisionV1(
+                outcome=OUTCOME_CONFIRMED_PARTIALLY_FILLED,
+                reasons=("CANCELED_AFTER_PARTIAL",),
                 exposure_retained=True,
                 reconciliation_complete=True,
                 recommended_atomic_state="TERMINAL_RECONCILED",
                 execution_authority_effect="NONE",
                 order_state=state,
-                cumulative_filled_qty=str(acc_fill or order_sz or Decimal("0")),
-                remaining_qty="0",
+                cumulative_filled_qty=str(acc_fill),
+                remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
                 venue_ord_id=ord_id,
-            ),
+            )
+        return FullCoreExchangeReconciliationDecisionV1(
+            outcome=OUTCOME_CONFIRMED_CANCELED,
+            reasons=(),
+            exposure_retained=False,
+            reconciliation_complete=True,
+            recommended_atomic_state="TERMINAL_RECONCILED",
+            execution_authority_effect="NONE",
+            order_state=state,
+            cumulative_filled_qty=str(acc_fill or Decimal("0")),
+            remaining_qty=str(order_sz or Decimal("0")),
+            venue_ord_id=ord_id,
+        )
+
+    if state == "filled":
+        return FullCoreExchangeReconciliationDecisionV1(
+            outcome=OUTCOME_CONFIRMED_FILLED,
+            reasons=(),
+            exposure_retained=True,
+            reconciliation_complete=True,
+            recommended_atomic_state="TERMINAL_RECONCILED",
+            execution_authority_effect="NONE",
+            order_state=state,
+            cumulative_filled_qty=str(acc_fill or order_sz or Decimal("0")),
+            remaining_qty="0",
+            venue_ord_id=ord_id,
         )
 
     if state in {"partially_filled", "partially-filled"} or (
         acc_fill is not None and order_sz is not None and Decimal("0") < acc_fill < order_sz
     ):
-        return _finalize_reconciliation_decision_v1(
-            identity=identity,
-            snapshot=snapshot,
-            acc_fill=acc_fill,
-            fills=fills,
-            decision=FullCoreExchangeReconciliationDecisionV1(
-                outcome=OUTCOME_CONFIRMED_PARTIALLY_FILLED,
-                reasons=(),
-                exposure_retained=True,
-                reconciliation_complete=False,
-                recommended_atomic_state="RECONCILIATION_PENDING",
-                execution_authority_effect="NONE",
-                order_state=state or "partially_filled",
-                cumulative_filled_qty=str(acc_fill or Decimal("0")),
-                remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
-                venue_ord_id=ord_id,
-            ),
+        return FullCoreExchangeReconciliationDecisionV1(
+            outcome=OUTCOME_CONFIRMED_PARTIALLY_FILLED,
+            reasons=(),
+            exposure_retained=True,
+            reconciliation_complete=False,
+            recommended_atomic_state="RECONCILIATION_PENDING",
+            execution_authority_effect="NONE",
+            order_state=state or "partially_filled",
+            cumulative_filled_qty=str(acc_fill or Decimal("0")),
+            remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
+            venue_ord_id=ord_id,
         )
 
     if state in {"live", "open"}:
-        return _finalize_reconciliation_decision_v1(
-            identity=identity,
-            snapshot=snapshot,
-            acc_fill=acc_fill,
-            fills=fills,
-            decision=FullCoreExchangeReconciliationDecisionV1(
-                outcome=OUTCOME_CONFIRMED_OPEN,
-                reasons=(),
-                exposure_retained=True,
-                reconciliation_complete=False,
-                recommended_atomic_state="RECONCILIATION_PENDING",
-                execution_authority_effect="NONE",
-                order_state=state,
-                cumulative_filled_qty=str(acc_fill or Decimal("0")),
-                remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
-                venue_ord_id=ord_id,
-            ),
+        return FullCoreExchangeReconciliationDecisionV1(
+            outcome=OUTCOME_CONFIRMED_OPEN,
+            reasons=(),
+            exposure_retained=True,
+            reconciliation_complete=False,
+            recommended_atomic_state="RECONCILIATION_PENDING",
+            execution_authority_effect="NONE",
+            order_state=state,
+            cumulative_filled_qty=str(acc_fill or Decimal("0")),
+            remaining_qty=str((order_sz or Decimal("0")) - (acc_fill or Decimal("0"))),
+            venue_ord_id=ord_id,
         )
 
     return _halt(REASON_ORDER_FILL_CONTRADICTION)
@@ -695,6 +600,5 @@ __all__ = [
     "RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET",
     "RECONCILIATION_PROVIDER_PRODUCTION",
     "REASON_CONFLICTING_ORDER_STATE",
-    "REASON_POSITION_CONTRADICTION",
     "adjudicate_full_core_exchange_reconciliation_v1",
 ]

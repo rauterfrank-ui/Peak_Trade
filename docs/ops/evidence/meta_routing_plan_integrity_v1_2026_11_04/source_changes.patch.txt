@@ -1,0 +1,77 @@
+diff --git a/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py b/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py
+index 1ed4327ad..3d2b5326b 100644
+--- a/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py
++++ b/src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py
+@@ -25,6 +25,18 @@ PRODUCTIVE_APPLY_AUTHORIZED: Final[bool] = False
+ LEARNING_STATE_MUTATION_AUTHORIZED: Final[bool] = False
+ PLAN_NOT_AUTHORITY: Final[bool] = True
+ 
++_PLAN_IDENTITY_FIELDS: Final[tuple[str, ...]] = (
++    "schema_version",
++    "domain",
++    "source_meta_evidence_id",
++    "adaptation_decision_identity",
++    "research_purpose",
++    "evaluation_fixture_label",
++    "plan_status",
++    "productive_apply_authorized",
++    "learning_state_mutation_authorized",
++)
++
+ FIXTURE_LABEL_REDUNDANCY: Final[str] = "FIXTURE_REPRESENTATION_REDUNDANCY"
+ FIXTURE_LABEL_COVERAGE_WEAKNESS: Final[str] = "FIXTURE_COVERAGE_WEAKNESS"
+ FIXTURE_LABEL_DRIFT: Final[str] = "FIXTURE_REPRESENTATION_DRIFT"
+@@ -160,11 +172,35 @@ def validate_learning_representation_research_adaptation_plan_v1(
+ ) -> MappingProxyType[str, Any]:
+     if payload.get("schema_version") != SCHEMA_VERSION:
+         raise LearningRepresentationResearchAdaptationPlanError("PLAN_SCHEMA_MISMATCH")
+-    if payload.get("productive_apply_authorized") is not False:
+-        raise LearningRepresentationResearchAdaptationPlanError("PRODUCTIVE_APPLY_MUST_BE_FALSE")
++    for field in (
++        "productive_apply_authorized",
++        "learning_state_mutation_authorized",
++        "productive_feature_mutation_authorized",
++        "trading_configuration_mutation_authorized",
++        "promotion_authorized",
++    ):
++        if payload.get(field) is not False:
++            raise LearningRepresentationResearchAdaptationPlanError(
++                f"PLAN_AUTHORITY_MUST_BE_FALSE:{field}"
++            )
++    if payload.get("plan_not_authority") is not True:
++        raise LearningRepresentationResearchAdaptationPlanError("PLAN_NOT_AUTHORITY_MUST_BE_TRUE")
+     plan_id = str(payload.get("plan_identity") or "")
+     if not is_valid_sha256_hex(plan_id):
+         raise LearningRepresentationResearchAdaptationPlanError("PLAN_IDENTITY_INVALID")
++    try:
++        identity_body = {field: payload[field] for field in _PLAN_IDENTITY_FIELDS}
++    except KeyError as exc:
++        raise LearningRepresentationResearchAdaptationPlanError(
++            f"PLAN_IDENTITY_FIELD_MISSING:{exc.args[0]}"
++        ) from exc
++    if derive_representation_research_plan_identity_v1(identity_body=identity_body) != plan_id:
++        raise LearningRepresentationResearchAdaptationPlanError("PLAN_IDENTITY_MISMATCH")
++    expected_digest = compute_content_sha256(
++        {key: value for key, value in payload.items() if key != "result_digest"}
++    )
++    if payload.get("result_digest") != expected_digest:
++        raise LearningRepresentationResearchAdaptationPlanError("PLAN_RESULT_DIGEST_MISMATCH")
+     return MappingProxyType(dict(payload))
+ 
+ 
+diff --git a/src/experiments/canonical_meta_evidence_dual_router_v1.py b/src/experiments/canonical_meta_evidence_dual_router_v1.py
+index af3b194b3..a89913f71 100644
+--- a/src/experiments/canonical_meta_evidence_dual_router_v1.py
++++ b/src/experiments/canonical_meta_evidence_dual_router_v1.py
+@@ -163,7 +163,10 @@ def run_meta_evidence_dual_routing_cycle_v1(
+ ) -> MappingProxyType[str, Any]:
+     """Classify → route → bounded consumer research input (deterministic replay chain)."""
+     meta_evidence = classify_and_build_meta_evidence_v1(request)
+-    routed = route_meta_evidence_v1(meta_evidence)
++    routed = route_meta_evidence_v1(
++        meta_evidence,
++        requested_consumer=request.requested_consumer_override,
++    )
+     body = {
+         "schema_version": SCHEMA_VERSION,
+         "domain": ROUTER_DOMAIN,

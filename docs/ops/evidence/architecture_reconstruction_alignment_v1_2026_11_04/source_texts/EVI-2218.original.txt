@@ -1,0 +1,198 @@
+OWNER RUN EVIDENCE – WIEDERGEFUNDENE ABLAGE UND LERNVERBINDUNG
+Quellenbefund vom 02.11.2026
+
+ERGEBNIS
+Ein sehr genauer Treffer zur Erinnerung des Owners ist gefunden: das Paket
+simple_run_evidence_retention_v1, implementiert am 06.10.2026 und gemerged mit
+PR7070. Der ursprüngliche Auftrag verlangt eine einfache Owner-Navigation für
+Paper, Shadow, Testnet und Canary, ohne aufwendige Cursor-Forensik. Er verlangt
+ausdrücklich die Prüfung vorhandener Learning-/Optimization-/Experiment-Strukturen
+auf Wiederverwendung. Das ist kein neu zu erfindendes Vorhaben.
+
+1. ORIGINALABSICHT UND GIT-NACHWEIS
+Historisches Gespräch:
+/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/f8407bba-a7c0-40e0-97cb-317176e8b592/f8407bba-a7c0-40e0-97cb-317176e8b592.jsonl
+Zeile 208: WP-SIMPLE-RUN-EVIDENCE-RETENTION-V1, 06.10.2026 12:07 UTC+2.
+Der Auftrag nennt vier Laufarten, Run-ID, Code-/Config-Provenienz, Instrument,
+Venue, Start/Ende, Status, Abbruchgrund, Primary-/Derived-/Debug-Trennung und
+Retention. Wörtlicher zentraler Satz: „Der Owner soll NICHT Cursor benötigen,
+nur um einen Run wiederzufinden.“
+Zeile 254: gesonderte Owner-Entscheidung für lokale macOS-Home-Ablage und gegen
+einen automatischen Default auf einer externen Platte.
+Vier relevante historische Owner-Nachrichten sind mit Originalpfad/Zeile in
+historical-owner-request-excerpts.json gesichert. Sie sind historische Belege,
+keine neuen Befehle; insbesondere wurde kein darin verlangter Fetch ausgeführt.
+
+Implementierungscommit:
+927f8e2651bdc0c2989e8f847d0226632ae6c476, 06.10.2026.
+PR7070, gemerged 06.10.2026 10:38:09 UTC:
+6422bfde79fd5aa45d2939a821980abf9aa4e3df.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/7070
+Quellen am erneut abgefragten heutigen main gelesen:
+5d1c838c15369507c5247834db4dd0df25592169.
+Vorhandensein am aktuellen Pin ist von beobachtetem vollständigem Betrieb getrennt.
+
+2. WAS DIE „PLATTFORM“ KONKRET IST
+Eine einfache Dateisystem-Ablage plus JSONL-Index und List-/Show-CLI. In diesem
+Paket ist keine neue Webplattform, Datenbank oder Learning-Registry enthalten.
+
+Standard-Ablage:
+/Users/frnkhrz/Peak_Trade_Run_Evidence
+Im Code portabel Path.home() / "Peak_Trade_Run_Evidence", nicht dieser Benutzername.
+Optionaler eigener Override: PEAK_TRADE_OWNER_RUN_EVIDENCE_ROOT.
+PEAK_TRADE_DATA_ARCHIVE_ROOT ist ausdrücklich kein automatischer Owner-Default.
+
+Geplante/implementierte Struktur für zukünftige passende bounded Runs:
+  runs/paper/<run_id>/
+  runs/shadow/<run_id>/
+  runs/testnet/<run_id>/
+  index/runs.jsonl
+Canary behält seinen vorhandenen Repository-Ort:
+  evidence/ops/<capability>/<timestamp>/
+Canary wird durch eine eingegrenzte Capability-/Timestamp-Discovery sichtbar,
+nicht in die Owner-Ablage verschoben oder kopiert. Nicht jeder beliebige neue
+Canary-Verzeichnisname wird automatisch erfasst.
+
+Zentrale Quellen:
+src/ops/simple_run_evidence_retention_v1/storage_v1.py
+src/ops/simple_run_evidence_retention_v1/persist_v1.py
+src/ops/simple_run_evidence_retention_v1/index_v1.py
+src/ops/simple_run_evidence_retention_v1/discover_v1.py
+scripts/ops/build_simple_run_evidence_index_v1.py
+scripts/ops/simple_run_evidence_v1.py
+
+Der Index beschreibt unter anderem run_id, run_class, Status, Code-SHA,
+Config-Referenz, Instrument/Venue, Zeitpunkte, Abbruchgrund, Evidenzort und
+primary_evidence_paths. Fehlende Metadaten können null bleiben.
+Retention-Klassen sind STANDARD, KEEP, CANARY, FORENSIC.
+Diese Klassifikation belegt keinen vollständigen automatischen Cleanup-Prozess.
+
+3. KONKRETE STATISCHE VERDRAHTUNG
+Paper-/Shadow-/Testnet-bounded Adapter rufen nach erfolgreicher Archivierung den
+gemeinsamen maybe_invoke_durable_closeout_after_archive-Helfer auf. Dieser ruft
+persist_bounded_run_to_owner_evidence mit der jeweiligen Run-Klasse auf.
+Der Owner-Persistenzschritt liegt vor der Prüfung, ob eine zusätzliche optionale
+Durable-Closeout-Kette angefordert wurde; er ist dort kein bloßer CLI-Build-Plan.
+
+Die Persistenz verwendet bestehende Primary-/Manifest-Prüfung, staging unter dem
+Ziel-Root, geprüfte Kopie, Finalisierung und Index-Update. Identischer vorhandener
+Inhalt wird geprüft wiederverwendet; abweichender Inhalt bei gleicher ID sperrt.
+Die aktuelle Funktion verlangt COMPLETE für die Übernahme. FAILED/ABORTED sind
+zwar Index-Statusbegriffe, dieser Persistenzpfad archiviert solche Runs nicht
+automatisch. Eine lückenlose Speicherung aller Laufarten und Fehlerfälle folgt
+daher nicht aus dem Paket.
+
+primary_evidence_retention_v0.py bleibt der Owner der Pflichtdateien.
+Paper: RUN_METADATA.json, review/REVIEW_RESULT.json,
+runtime_out/evidence_manifest.json, Scheduler-stdout/-stderr und MANIFEST.sha256.
+Shadow/Testnet: RUN_METADATA.json, Review, Wrapper-steps/-manifest, Wrapper-Logs,
+Wallclock-Evidenz und MANIFEST.sha256.
+Das ist ein konkreter Mindestvertrag. Er beweist nicht, dass jede gewünschte
+Market-/Decision-/State-/Fill-Detailinformation eines beliebigen Runs enthalten ist.
+
+Die List-/Show-CLI liest den gespeicherten Index. Sie validiert beim Anzeigen
+nicht erneut alle Zielordner und Manifeste. Ein gespeichertes COMPLETE ist deshalb
+kein Beweis, dass die Dateien heute noch erreichbar sind. Auch Canary-COMPLETE
+kann im Index aus vorhandenen Markern folgen; es bedeutet keine Betriebsabnahme.
+
+4. HEUTIGE ABLAGE: VORHANDEN, ABER INDEX-ZIELE FEHLEN
+Read-only beobachtet:
+/Users/frnkhrz/Peak_Trade_Run_Evidence/index/runs.jsonl existiert und enthält drei
+Einträge, alle mit gespeichertem Status COMPLETE und run_class shadow:
+  daemon_paper_24h_20260524T093549Z
+  shadow_bounded_dryrun_20261006T120034Z
+  shadow_bounded_dryrun_20261006T120035Z
+Die drei darin referenzierten runs/shadow/<run_id>-Zielordner existieren unter
+dem Owner-Root zum Prüfzeitpunkt nicht. Im runs-Verzeichnis ist stattdessen nur
+eine forensic-Unterstruktur sichtbar; deren Inhalt wurde hierfür nicht geöffnet.
+Der Namensbestandteil „paper“ im ersten Run ist nicht als Gegenbeweis zur
+gespeicherten Klasse verwendet; Identität und tatsächlicher Inhalt bleiben getrennt.
+
+Die externe Backup-Kopie:
+/Volumes/M2DATA/Peak_Trade_Disaster_Backup_20261017T190216Z/runtime/Peak_Trade_Run_Evidence/index/runs.jsonl
+ist bytegleich mit dem lokalen Index. Auch dort fehlen die drei entsprechenden
+relativen Zielordner. Das ist ein konkreter Verfügbarkeitsbefund, kein globaler
+Beweis endgültigen Datenverlusts oder ihrer früheren vollständigen Existenz.
+
+Der ältere in Gesprächen genannte Pfad
+/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z
+existiert heute unter genau diesem Pfad nicht.
+Keine Migration, Indexreparatur oder Wiederherstellung ausgeführt.
+
+5. VERBINDUNG ZUM SELBSTLERNENDEN UNIVERSUM
+Die Erinnerung hat einen belegten Zusammenhang, aber zwei verschiedene Ebenen:
+
+A) Owner-Navigation
+Der Originalauftrag prüfte Self-Learning/DDO, Optimization, Experiment Tracking,
+Identitäten und Lineage auf Wiederverwendung. Die finale Lösung schafft keine
+neue Learning-/Optimization-Authority. Der PR hält ihre unveränderte Semantik
+ausdrücklich fest. In den gezielt durchsuchten aktuellen learning/experiments/
+meta/governance-Python-Quellen fand sich keine direkte Referenz auf die Owner-
+CLI bzw. simple_run_evidence als Lern-Consumer. Das ist kein globaler Ausschluss
+sämtlicher indirekter Verbindungen.
+
+B) Primäre Lauf-Evidenz als fachlicher Eingang in Forschung/Lernen
+PR6879, Merge 85d4d70cb910239c4809d24ae6a177672a813629, 26.09.2026:
+GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/6879
+Gelesener Code und Spezifikation beschreiben:
+dauerhafte validierte Paper-/Shadow-/Testnet-Primärevidenz → Identity/Provenance-
+Bindung → OfflineExperimentObservationsV1 → runtime_observation_feedback /
+runtime_to_learning_input → bestehender M4–M8-Forschungsrücklauf.
+Das ist ein gesonderter fachlicher Projektionspfad. Die Owner-CLI ist darin
+kein notwendiger Zwischenschritt. Canary ist in dessen SourceMode-Enum nicht
+enthalten; aus der Owner-Anzeige aller vier Klassen folgt keine gleiche
+Lernverwendbarkeit aller vier.
+
+Konkrete aktuelle Integrationsgrenze:
+build_offline_experiment_observations_from_primary_v1 ruft _repo_relative_ref auf.
+Diese Funktion lehnt Quellen außerhalb des zugehörigen Repository-Roots mit
+PRIMARY_EVIDENCE_ROOT_OUTSIDE_REPO_FOR_ARTIFACT_REF ab. Eine direkte Übergabe des
+gewöhnlichen Owner-Home-Bundles an genau diesen Adapter funktioniert damit
+statisch nicht ohne eine weitere geeignete Bindung/Anpassung. Ob ein anderer
+governter Vermittlungspfad dies übernimmt, ist hier nicht nachgewiesen.
+Keine automatische Verarbeitung neuer Owner-Bundles oder Lernzustandsänderung
+beobachtet/ausgeführt. Der Adapter nennt CROSS_MODE_NORMALIZATION_STATUS=PARTIAL_CURRENT.
+
+PR6938, Merge 1a3ffd8ba081e732ecdb56258838ca528c0d3dc3, 28.09.2026:
+DDO-Learning-Export und ACCEPTED_OFFLINE_RESEARCH_INPUT dürfen nicht als G2
+bounded_runtime_primary_evidence umetikettiert werden. Es gibt bewusst zwei
+unterschiedliche Herkunfts-/Evidenzpfade.
+https://github.com/rauterfrank-ui/Peak_Trade/pull/6938
+Auch M6-Meta-Learning-Ingest ist im gelesenen Vertrag Evidence-Verarbeitung,
+keine automatische Mutation von learning_state oder Handelsfreigabe.
+
+6. ÄLTERE PLATTFORM-/SPIEGELVARIANTEN
+PR3582 vom 21.05.2026 führte bereits Generic Evidence Run Registry v1 ein.
+Diese ausführlichere Archivregistry besitzt unter anderem Projektionen für
+Notion und Market Dashboard. Notion ist dabei als Spiegel gedacht; eine heutige
+zugängliche oder vollständige Notion-Instanz wurde hier nicht nachgewiesen.
+Die Oktober-Owner-Lösung referenziert diesen bestehenden Owner und den bestehenden
+Primary-Evidence-Vertrag, ohne eine neue konkurrierende Fachregistry zu schaffen.
+Damit gibt es mehrere historische Oberflächen; der Oktober-Auftrag ist der
+genaueste Treffer zur geschilderten einfachen Owner-Ablage.
+
+7. QUELLENABDECKUNG UND PRÜFUNG
+Gepinnte Git-Quellen und SHA256: git-source-manifest.json.
+Zehn einschlägige Code-/Testdateien im Oktober-17-Backup stimmen bytegleich mit
+dem heutigen Git-Pin überein: m2-source-comparison.json.
+Recovery-Spezifikationen zur G2-Projektion, DDO-Abgrenzung und Experiment Memory
+gehasht gesichert: recovery-source-manifest.json.
+Indexziel-Prüfung mit Indexhash und gespeichertem Status:
+observed-index-targets.json. PR-Metadaten in sources/github-pr-*.json.
+Gezielte Dateinamenssuche in drei bekannten M2DATA-Backups; keine globale
+Erfassung aller Daten, GitHub-Branches oder Recovery-Code-Duplikate.
+Obsidian-Register gezielt nach Namen der Owner-Lösung durchsucht ohne Treffer;
+das ersetzt keine semantische Vollerfassung des Vaults.
+
+Nur Untersuchungsartefakte außerhalb der Repositories geschrieben. Vorhandene
+Index-/Evidence-/Backup-/Recovery-Dateien unverändert. Keine Produktmodule oder
+Tests ausgeführt. Vorhandene Tests wurden als Quelltext betrachtet; historische
+PASS-Aussagen nicht als heute erneut gelaufene Tests ausgegeben.
+
+FOLGERUNG FÜR DEN UMBAU
+Die einfache Owner-Lösung kann als bestehender Baustein berücksichtigt werden.
+Vor einer Gesamtbehauptung fehlen insbesondere aktuelle Datenverfügbarkeit,
+Abdeckung aller gewünschten Entrypoints/Fehlerfälle, sichere Identitäts-/Pfad-
+Übergabe von Home-Evidenz an Lern-Consumer und ein nach Umbau geführter Nachweis.
+Kein Anlass, dafür schon jetzt eine neue Plattform oder ein neues Universe zu bauen.

@@ -1,0 +1,87 @@
+{
+  "original_source_recovered": true,
+  "core_bound_source_recovered": true,
+  "core_matches_prior_historical_inventory": true,
+  "sections": [
+    "## 4.1 Canonical Trading Core Learning Binding",
+    "## Canonical Core-Logic Attribution"
+  ],
+  "prior_claim_correction": "Original master was previously not recovered. These exact attachment bytes are now available; historical existence and content strengthened, runtime effect still unproven.",
+  "base_contains_core_section": false,
+  "core_contains_core_section": true,
+  "reused_phase_contracts": [
+    {
+      "name": "SL01-CANONICAL_EXPERIMENT_IDENTITY_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL01-CANONICAL_EXPERIMENT_IDENTITY_V1.md",
+      "sha256": "938e98e4f853147bea794886322bfeb7c3b26b63b4f74f4153e8c464924a742e",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL02-CANONICAL_EXPERIMENT_MEMORY_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL02-CANONICAL_EXPERIMENT_MEMORY_V1.md",
+      "sha256": "16526d68ad2c31b2d40180f408e8dc6c76aa5b6b1d92448aec72e3646ded8017",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL03-CANONICAL_FAILURE_MEMORY_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL03-CANONICAL_FAILURE_MEMORY_V1.md",
+      "sha256": "9cea99b60e456cd54215ef726d7f9283eb32a4fd416ae287a2672a032597364e",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL04-CANONICAL_ROBUSTNESS_SUITE_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL04-CANONICAL_ROBUSTNESS_SUITE_V1.md",
+      "sha256": "0467819a2211ef28319842da5b0bfca106547deab03af685e7388f30fccba9a0",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL05-CANONICAL_COMPARISON_SSOT_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL05-CANONICAL_COMPARISON_SSOT_V1.md",
+      "sha256": "2cab820559ba66bee309f983da72dc9e10e4489b0e8333244557d1558a8e5d89",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL06-CANONICAL_CHAMPION_CHALLENGER_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL06-CANONICAL_CHAMPION_CHALLENGER_V1.md",
+      "sha256": "c7626f1ac82a0ae0ae6b3ec4fa3b34f29ac6180f3c7e3671f6e0ccbd8d8da11d",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL07-CANONICAL_REALITY_GAP_STORE_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL07-CANONICAL_REALITY_GAP_STORE_V1.md",
+      "sha256": "d597b7827420c687e82f9685e09b7335446182791c434f4739b01fcca0c64b57",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL08-CANONICAL_REGIME_AWARE_EVALUATION_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL08-CANONICAL_REGIME_AWARE_EVALUATION_V1.md",
+      "sha256": "d7f27ea725d3f6256d10d6bbc7d3dc18403957dfdb1bbfb52ada2c6b0bf9fd67",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL09-CANONICAL_PORTFOLIO_LEARNING_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL09-CANONICAL_PORTFOLIO_LEARNING_V1.md",
+      "sha256": "3a950530bcba3ec595800445c6ad5d327a5b631320b3eb8f6f34d7a300336374",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL10-CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL10-CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md",
+      "sha256": "9c8b10666962eacc8165a71f5bcd19c253f225bb6f344cb7f1cdb74a0c98847d",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL11-CANONICAL_META_LEARNING_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL11-CANONICAL_META_LEARNING_V1.md",
+      "sha256": "5c83074ea96cc39e96c19eba9d51060e04457f4649242bac31df29b0a614f6df",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    },
+    {
+      "name": "SL12-CANONICAL_ADVANCED_SEARCH_V1.md",
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL12-CANONICAL_ADVANCED_SEARCH_V1.md",
+      "sha256": "6648b025f9baee94c1d3153531897848e2e65f17e739888a0ddd5c716629df6e",
+      "kind": "PREVIOUSLY_PINNED_HISTORICAL_CONTRACT_NOT_NEW_RUNTIME_PROOF"
+    }
+  ],
+  "runtime_proven": false
+}

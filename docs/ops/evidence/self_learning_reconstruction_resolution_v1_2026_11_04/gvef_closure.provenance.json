@@ -1,0 +1,19 @@
+{
+  "source": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b/2fd5ccb8-0d19-4e91-b2b5-038b0b9c894b.jsonl",
+  "source_sha256": "61511351eda4dccdfbeb104ef807d6e91c23f41a1eeda5023a98a362ba72998f",
+  "reconstruction": "Ordered retained Write/StrReplace inputs only; syntax checked, never executed; historical outputs not restored",
+  "steps": [
+    {
+      "line": 64,
+      "tool": "Write",
+      "matched_count": null,
+      "sha256": "ccb5c13cae57b649399388411fc63786915c689e3a442b8b9691a28922d653e6"
+    },
+    {
+      "line": 67,
+      "tool": "StrReplace",
+      "matched_count": 1,
+      "sha256": "82c9a4e884eb1535675d4af12be4a644491e01446489112858baf6afe1443826"
+    }
+  ]
+}

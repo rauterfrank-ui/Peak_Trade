@@ -1,0 +1,71 @@
+diff --git a/src/experiments/canonical_advanced_search_v1.py b/src/experiments/canonical_advanced_search_v1.py
+index 703b2145e..09de7605e 100644
+--- a/src/experiments/canonical_advanced_search_v1.py
++++ b/src/experiments/canonical_advanced_search_v1.py
+@@ -39,6 +39,7 @@ from src.experiments.canonical_meta_learning_v1 import (
+     PROPOSAL_RETEST,
+     PROMOTION_AUTHORITY as META_PROMOTION_AUTHORITY,
+     SCHEMA_VERSION as META_LEARNING_SCHEMA_VERSION,
++    derive_meta_parameter_region_digest_v1,
+ )
+ from src.experiments.canonical_reality_gap_store_v1 import (
+     DISPOSITION_REJECTED_REALITY_GAP,
+@@ -1274,6 +1275,8 @@ def _signal_applies(
+     if target_kind == "hypothesis_kind":
+         return target == hypothesis_kind
+     if target_kind == "parameter_region":
++        if is_valid_sha256_hex(target):
++            return target == derive_meta_parameter_region_digest_v1(parameter_region)
+         return target in {str(value) for value in parameter_region.values()} or target in {
+             f"{key}={value}" for key, value in parameter_region.items()
+         }
+diff --git a/src/experiments/canonical_meta_learning_v1.py b/src/experiments/canonical_meta_learning_v1.py
+index 9a02aada5..0ead73170 100644
+--- a/src/experiments/canonical_meta_learning_v1.py
++++ b/src/experiments/canonical_meta_learning_v1.py
+@@ -750,14 +750,7 @@ def _question_repeated_overfit(**kwargs: Any) -> dict[str, Any]:
+                 if not failures:
+                     missing += 1
+                 continue
+-            key = compute_content_sha256(
+-                {
+-                    "digest_algorithm": DIGEST_ALGORITHM,
+-                    "digest_domain": f"{META_LEARNING_DOMAIN}.parameter_region",
+-                    "payload": unit["parameter_region"],
+-                    "schema_version": SCHEMA_VERSION,
+-                }
+-            )
++            key = derive_meta_parameter_region_digest_v1(unit["parameter_region"])
+             counts[key] = counts.get(key, 0) + len(overfit)
+             regions[key] = unit["parameter_region"]
+         min_recurrence = int(kwargs["policy"]["min_recurrence_count"])
+@@ -1269,6 +1262,22 @@ def _oos_proposals(findings: Sequence[Mapping[str, Any]], **kwargs: Any) -> list
+     return proposals
+ 
+ 
++def derive_meta_parameter_region_digest_v1(parameter_region: Mapping[str, Any]) -> str:
++    """Address the complete canonical region using the existing Phase-11 identity.
++
++    Both the Meta producer and its Search consumer use this address. It is not
++    the identity of an individual parameter value or an experiment.
++    """
++    return compute_content_sha256(
++        {
++            "digest_algorithm": DIGEST_ALGORITHM,
++            "digest_domain": f"{META_LEARNING_DOMAIN}.parameter_region",
++            "payload": parameter_region,
++            "schema_version": SCHEMA_VERSION,
++        }
++    )
++
++
+ def _overfit_proposals(
+     findings: Sequence[Mapping[str, Any]], **kwargs: Any
+ ) -> list[dict[str, Any]]:
+@@ -1637,5 +1646,6 @@ __all__ = [
+     "build_canonical_meta_learning_v1",
+     "canonical_meta_learning_policy_v1",
+     "canonical_record_payload_v1",
++    "derive_meta_parameter_region_digest_v1",
+     "validate_canonical_meta_learning_v1",
+ ]

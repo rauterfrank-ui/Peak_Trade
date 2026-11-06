@@ -1,0 +1,28 @@
+{
+  "capture_record_ids": [
+    "ddo.dec:ba967c8def0d38aae9330600",
+    "ddo.dec:0d500f553056bf8e54542426",
+    "ddo.dec:a0e29ff6d6be6f19877b74ec",
+    "ddo.dec:933dd613f16e922e84f2f163",
+    "ddo.dec:8d7f24aea2af8f3998e8962c",
+    "ddo.dec:86b1a512654261b9ccd2b513",
+    "ddo.dec:2d59d27734a452762b2cf90a",
+    "ddo.dec:b41afe6b98bafb271197a574",
+    "ddo.dec:0aa56d3611b5109d03764219",
+    "ddo.dec:d3b1653ae0b48215b7f30235",
+    "ddo.dec:16f94b4e9a77ca9b6673fe56"
+  ],
+  "correlation_id": "ddo.corr.persistent-natural-enter-bootstrap:LANE_1",
+  "cycle_id": "persistent-natural-enter-bootstrap:LANE_1:cycle:1",
+  "decision_event_ref": "ddo.dec:2d59d27734a452762b2cf90a",
+  "export_id": "peak_trade.learning.ddo.learning_evidence_export_v1",
+  "external_effect_authorized": false,
+  "join_seam_id": "CURRENT_PRODUCTIVE_MASTER_V2_DDO_CAPTURE_TO_OFFLINE_EXPORT_JOIN_V1",
+  "learning_evidence_record_id": "ddo.lev.3b740953465a55bed5d90e67179a8fc8bc965276",
+  "learning_state_record_ref": "ls.03b3f95f43f1a3fa4863c0624b4fe45e0227c5ca5e192db6",
+  "optimization_ack_reason": "OFFLINE_RESEARCH_INPUT_ONLY",
+  "optimization_ack_status": "ACCEPTED_OFFLINE_RESEARCH_INPUT",
+  "post_count": 0,
+  "productive_optimization_join_authorized": false,
+  "session_id": "persistent-natural-enter-bootstrap:LANE_1"
+}

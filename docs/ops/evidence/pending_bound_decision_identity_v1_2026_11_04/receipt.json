@@ -1,0 +1,38 @@
+{
+  "source_commit": "7b940091daa9b5f54d3ee2b94c9e7184c9751278",
+  "source_paths_sha256": {
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_lineage_v1.py": "88899113fa7cc4bc6e0086d0e862c5e7cc2bd09e8fed5323c8c699d2410d040b",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py": "229854324b60f6f1ac85c91be22efbad9cceffc0e38fc2a202e4efcdb3f2a6a9",
+    "tests/ops/test_pending_bound_decision_identity_v1.py": "ed25e32bb376d8345eac2b1dfcd14d7e5d020d44271ddcdbcaf745ada1f65fa1"
+  },
+  "tests": {
+    "before": "3 FAIL",
+    "after": "73 PASS",
+    "learning_consumer": "1 additional actual-capture-to-Learning closure PASS",
+    "distinct": "74 PASS"
+  },
+  "boundaries": [
+    "Injected declared-public source and clock control, not natural-run authenticity",
+    "Existing older guessed/empty Pending metadata not migrated or re-certified",
+    "Complete episode/target, source freshness, cross-ledger atomicity and full system remain separate; U04/GAP-0370 deferred"
+  ],
+  "runtime_activation_authorized": false,
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/pending_bound_decision_identity_v1_2026_11_04/README.md",
+      "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 201,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "schema_version": "canonical_research_result_to_meta_input_v1",
+  "source_bindings": [
+    {
+      "experiment_id": "bec4bd4a1284cc41b1c86d1ff80a9462665413211f70a477d9a99da51b6a26be",
+      "search_identity": "d97af289777512e476e1ec63678f123ce0dbd4c6eeea0487eb329c9074d8563f",
+      "search_content_sha256": "2f8e2a074a60a9abd6edddc08e8149ff7e78c74131e0f2bc03e8d9df526c8ea8",
+      "research_loop_identity": "8190edc196045e0756a3542cff6b7f7c898ae45926ec0fd251c48000be863671",
+      "research_loop_content_sha256": "74cb304926508f94d4cec68d0fa0bc705050e76dfeb5faa3cd684563af4fa00e",
+      "observation_binding": {
+        "binding_domain": "peak_trade.canonical_identity_bound_offline_observation_binding.v1",
+        "bounded_auto_allowed": false,
+        "experiment_id": "bec4bd4a1284cc41b1c86d1ff80a9462665413211f70a477d9a99da51b6a26be",
+        "identity_digest": "c1510a01752e9b13f5c47b1af5406315fe6b3db6e84620decfe46e8e27e37ddc",
+        "identity_reinterpreted": false,
+        "observation_owner": "OFFLINE_EXPERIMENT_OBSERVATIONS_V1",
+        "persist": {
+          "experiment_record_id": null
+        },
+        "promotion_apply_allowed": false,
+        "runtime_authority_effect": false,
+        "schema_version": "canonical_identity_bound_offline_observation_binding_v1",
+        "status": "BOUND"
+      },
+      "robustness_content_sha256": "6012684adfe860012b55b9709b6fe90ca58ca8323879fa5f9e4a991ac44db549",
+      "comparison_identity": "4260905c12213ed3593f113066ea910be950f9595b8662d24d48426928e6be39"
+    }
+  ],
+  "meta_learning_record": {
+    "autonomous_champion_swap": false,
+    "autonomous_promotion": false,
+    "champion_experiment_id": null,
+    "comparable_cohorts": [
+      {
+        "cohort_id": "19419eef8fb95c1a3f077f14e43e3ebd4c9d66f0c8eaa6384da5261ea0d034e6",
+        "experiment_ids": [
+          "bec4bd4a1284cc41b1c86d1ff80a9462665413211f70a477d9a99da51b6a26be"
+        ]
+      }
+    ],
+    "comparison_pair_results": [],
+    "completeness": "COMPLETE",
+    "correlation_is_not_causality": true,
+    "created_at": "2026-08-18T19:00:00Z",
+    "digest_algorithm": "sha256",
+    "evaluation_policy": {
+      "evaluation_policy_version": "canonical_meta_learning_policy_v1",
+      "min_parameter_stability": 0.5,
+      "min_recurrence_count": 2,
+      "min_sample_size_associative": 8,
+      "min_sample_size_descriptive": 3
+    },
+    "historical_record_mutation": false,
+    "input_lineage": {
+      "contract_versions": {
+        "comparison_ssot": "canonical_comparison_ssot_v1",
+        "experiment_identity": "canonical_experiment_identity_v1",
+        "experiment_memory": "canonical_experiment_memory_v1",
+        "failure_memory": "canonical_failure_memory_v1",
+        "meta_learning": "canonical_meta_learning_v1",
+        "metric_definitions": "canonical_robustness_metrics_v1",
+        "reality_gap_store": "canonical_reality_gap_store_v1",
+        "robustness_suite": "canonical_robustness_suite_v1"
+      },
+      "experiment_ids": [
+        "bec4bd4a1284cc41b1c86d1ff80a9462665413211f70a477d9a99da51b6a26be"
+      ],
+      "failure_record_ids": [],
+      "identity_digests": [
+        "c1510a01752e9b13f5c47b1af5406315fe6b3db6e84620decfe46e8e27e37ddc"
+      ],
+      "reality_gap_record_ids": [
+        "a7e936ac1b37f1412d257510cbf1626e27f0066fb42de1ab69c9b2ccef9a8593"
+      ]
+    },
+    "learning_may_autonomously_replace_core_logic": false,
+    "meta_learning_authority": "RESEARCH_ONLY",
+    "meta_learning_can_arm": false,
+    "meta_learning_can_authorize_canary": false,
+    "meta_learning_can_create_confirm_token": false,
+    "meta_learning_can_enable": false,
+    "meta_learning_can_fund": false,
+    "meta_learning_can_increase_leverage": false,
+    "meta_learning_can_increase_risk": false,
+    "meta_learning_can_mutate_live_config": false,
+    "meta_learning_can_promote": false,
+    "meta_learning_can_promote_to_live": false,
+    "meta_learning_can_submit_order": false,
+    "meta_learning_can_use_confirm_token": false,
+    "meta_learning_can_write_live_config": false,
+    "meta_learning_domain": "peak_trade.canonical_meta_learning.v1",
+    "meta_learning_has_runtime_authority": false,
+    "meta_learning_present": true,
+    "no_lookahead": true,
+    "no_silent_zero_default": true,
+    "overall_status": "META_LEARNING_COMPLETE",
+    "phase_12_started": false,
+    "productive_config_mutation": false,
+    "promotion_authority": "NONE",
+    "questions": [
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "STRATEGY_FAMILY_OOS_SURVIVAL",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "SEARCH_SPACE_FALSE_POSITIVES",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_SAMPLE",
+        "findings": [],
+        "missing_evidence_count": 0,
+        "question_id": "ROBUSTNESS_REALITY_GAP_ASSOCIATION",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "BACKTEST_METRIC_PREDICTIVE_ASSOCIATION",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_SAMPLE",
+        "findings": [],
+        "missing_evidence_count": 0,
+        "question_id": "COST_MODEL_REALITY_UNDERESTIMATION",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "REGIME_RECURRING_FAILURE_MODES",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "PARAMETER_INSTABILITY",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 0
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_SAMPLE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "HYPOTHESIS_KIND_POOR_RESULTS",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      },
+      {
+        "causal_claim": false,
+        "claim_strength": "NONE",
+        "claim_type": "NONE",
+        "comparable_sample_size": 1,
+        "correlation_is_not_causality": true,
+        "evidence_status": "INSUFFICIENT_EVIDENCE",
+        "findings": [],
+        "missing_evidence_count": 1,
+        "question_id": "RESEARCH_PATH_INFORMATION_GAIN",
+        "rejected_comparability_count": 0,
+        "research_proposals": [],
+        "sample_size": 1
+      }
+    ],
+    "ranked_experiment_ids": [],
+    "research_proposals": [],
+    "runtime_authority_impact": "NONE",
+    "schema_version": "canonical_meta_learning_v1",
+    "self_learning_not_self_authorizing": true,
+    "self_learning_self_authorizing_separation": true,
+    "meta_learning_identity": "4062081de3c792117959c754d5487132b5e80eed241aadd9675ecd1a0daa8ca7",
+    "integrity": {
+      "content_sha256": "9852fe4d3bdf51d0628cf86d45caf69a9538885d10c51a4d79457d073eb94866"
+    }
+  },
+  "productive_apply_authorized": false,
+  "research_execution_performed": false,
+  "missing_parameter_stability_inferred": false,
+  "missing_later_outcome_inferred": false,
+  "content_digest": "01bf7bc6adbc9c6372d1277104ee65fe55aed7494458fa416800b42895a9e90e"
+}

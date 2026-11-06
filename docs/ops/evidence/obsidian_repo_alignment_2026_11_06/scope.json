@@ -1,0 +1,33 @@
+{
+  "repository_head_before": "63a3627598ac228ef37b3c61befe50b3bbfe450b",
+  "before_files": {
+    "system": 4887,
+    "plan": 2389
+  },
+  "captured_files": {
+    "system": 4933,
+    "plan": 2390
+  },
+  "role_counts": {
+    "system": {
+      "EVIDENCE_AND_SOURCE_BINDING": 374,
+      "SEMANTIC_VIEW_AND_NAVIGATION": 1065,
+      "GENERATED_TECHNICAL_PROJECTION": 3494
+    },
+    "plan": {
+      "SEMANTIC_PLAN_AND_NAVIGATION": 500,
+      "HISTORICAL_SOURCE_MIRROR": 1038,
+      "DESIGN_AND_IMPLEMENTATION_EVIDENCE": 852
+    }
+  },
+  "reader_projections": 26,
+  "new_archive_bytes": 105863420,
+  "policy": "COMPLETE_BOUNDED_KNOWLEDGE_CAPTURE_NOT_PRODUCT_IMPORT",
+  "excluded": [
+    ".obsidian",
+    ".git",
+    ".DS_Store"
+  ],
+  "sensitive_check": "LIMITED_FILENAME_PRIVATE_KEY_AND_COMMON_TOKEN_PATTERN_SCAN_NO_MATCHES_NOT_GLOBAL_SECRET_CERTIFICATION",
+  "global_semantic_recertified": false
+}

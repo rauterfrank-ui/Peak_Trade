@@ -1,0 +1,81 @@
+{
+  "schema": "meta_parameter_region_semantic_join_v1",
+  "source_commit": "e64049fbf5b82a1c1bfa6fd094a64dc141ebdc8a",
+  "historical_purpose": "Original Phase-12 contract explicitly reuses Phase-11 research_proposals as priority signals. Producer addresses a whole declared parameter-region mapping, not individual values.",
+  "changes": [
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "before_revision": "e64049fbf5b82a1c1bfa6fd094a64dc141ebdc8a",
+      "before_sha256": "b7231bb8c39fd9e7c0906cf592e928df7cda58b8d420343e51a603fb7e2ee331",
+      "before_snapshot": "canonical_meta_learning_v1.py.before.txt",
+      "after_sha256": "1bfbdcad312837d57616801167d1c4a726e009c6b9f47025fac95083811ffa7e"
+    },
+    {
+      "path": "src/experiments/canonical_advanced_search_v1.py",
+      "before_revision": "e64049fbf5b82a1c1bfa6fd094a64dc141ebdc8a",
+      "before_sha256": "861bc011faae0f2e508613be70f9e5de602ac57207d0c419485b3cbc2c3799ad",
+      "before_snapshot": "canonical_advanced_search_v1.py.before.txt",
+      "after_sha256": "b2357b490eccdd5a3edd5889874e1f6c9665335156852734d338fcde67b40913"
+    }
+  ],
+  "actual_meta_record_identity_unchanged_for_bound_fixture": true,
+  "meta_identity_before_and_after": "db3a439f69157e4bf2f2130e0f8d3b39fc57050de667e398c07f206bdc091905",
+  "proposal": {
+    "applies_to_champion": false,
+    "authority": "RESEARCH_ONLY",
+    "claim_type": "DESCRIPTIVE",
+    "kind": "DEPRIORITIZE_RESEARCH",
+    "promotion_authority": "NONE",
+    "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+    "reason": "REPEATED_OVERFIT",
+    "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+    "target_kind": "parameter_region",
+    "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+  },
+  "search_candidates": [
+    {
+      "region": {
+        "fast": 10,
+        "slow": 100
+      },
+      "priority": 0,
+      "status": "PROPOSED",
+      "matched_proposals": []
+    },
+    {
+      "region": {
+        "fast": 10,
+        "slow": 50
+      },
+      "priority": -20,
+      "status": "BUDGET_EXCLUDED",
+      "matched_proposals": [
+        "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+      ]
+    },
+    {
+      "region": {
+        "fast": 15,
+        "slow": 100
+      },
+      "priority": 0,
+      "status": "BUDGET_EXCLUDED",
+      "matched_proposals": []
+    },
+    {
+      "region": {
+        "fast": 15,
+        "slow": 50
+      },
+      "priority": 0,
+      "status": "BUDGET_EXCLUDED",
+      "matched_proposals": []
+    }
+  ],
+  "tests": "37 passed, including five new actual-producer/consumer and negative-control tests",
+  "result_scope": "Offline Search priority and budget-selected requests only. No automatic experiment execution, promotion, trading or parameter apply. Exact declared-region matching; subset/superset addresses are not inferred from frozen template parameters.",
+  "legacy_handling": "Non-digest value selectors preserved. A 64-character SHA256 target is only a whole-region address and cannot incidentally match an individual parameter value.",
+  "historical_evidence_status": "Earlier SL11/SL12 source anchors and old synthetic probes are revision-bound historical evidence, superseded for this local current consumer by this reviewed fix. Originals are not rewritten.",
+  "remaining": "Other target recipients, M4 forwarding of optional Meta inputs, full experiment measurement and adaptive next-cycle orchestration remain open. No automatic new planner/dispatcher is created.",
+  "protected_learning_sha256": "33c9faf6207e0757c7658f4641c9a2aa61dcb4fff928da6b6be5e631db2e363b"
+}

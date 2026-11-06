@@ -1,0 +1,16 @@
+{
+  "builder_source_sha256": "e7dbab3ae3519caa7585c740162387793a1e825f86d535bd9d43210ef94b3d81",
+  "closure_fix_source_sha256": "6991d0e893a0e7ac49dc440fa2cf8a69982a12b097e76c965bbbfa2c01311776",
+  "closure_source_sha256": "82c9a4e884eb1535675d4af12be4a644491e01446489112858baf6afe1443826",
+  "contract_manifest_sha256": "4a3874031e67487a3a100c9288c2ad44f3379ab446f8aa5d1bd19eefc8bdb755",
+  "field_count": 111,
+  "original_generated_output_bytes_recovered": false,
+  "reconstructed_at": "2026-11-04",
+  "reconstruction_method": "Bounded AST literal/fields extraction plus exact retained closure normalization; historical code NOT executed; current Pydantic models NOT read",
+  "runtime_authority": "NONE",
+  "schema_count": 16,
+  "source_refs": [
+    "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/gvef_builder.reconstructed.py.txt",
+    "docs/ops/evidence/self_learning_reconstruction_resolution_v1_2026_11_04/gvef_closure.reconstructed.py.txt"
+  ]
+}

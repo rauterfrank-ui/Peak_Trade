@@ -14,6 +14,8 @@ from typing import Any, Mapping, Sequence
 
 from src.research.okx_production_instrument_lifecycle_source_v1 import (
     SOURCE_ID as OKX_PRODUCTION_LIFECYCLE_SOURCE_ID,
+    _FORBIDDEN_BASE_ASSETS as _LEGACY_COHORT_EXCLUDED_BASE_ASSETS,
+    is_forbidden_okx_instrument_token,
     UNIVERSE_POLICY_ID as RATIFIED_UNIVERSE_POLICY_ID,
     UNIVERSE_POLICY_VERSION as RATIFIED_UNIVERSE_POLICY_VERSION,
 )
@@ -388,6 +390,15 @@ def build_supplementary_market_data_from_panel_v1(
     return tuple(item for _, item in sorted(items, key=lambda row: row[0]))
 
 
+def _matches_legacy_research_cohort(snapshot: RegistrySnapshotV1) -> bool:
+    """Preserve this fixed historical source policy, not global asset admission."""
+    return not any(
+        interval.base_asset.upper() in _LEGACY_COHORT_EXCLUDED_BASE_ASSETS
+        or is_forbidden_okx_instrument_token(interval.instrument_id, interval.venue_symbol)
+        for interval in snapshot.intervals
+    )
+
+
 def assemble_production_registry_from_observations_v1(
     observations: Sequence[SourceObservationRecordV1],
     *,
@@ -408,7 +419,10 @@ def assemble_production_registry_from_observations_v1(
     if not assembly.success or assembly.snapshot is None:
         return None, tuple(sorted({issue.error_code for issue in assembly.issues}))
     validation = validate_pit_futures_instrument_lifecycle_registry_snapshot_v1(assembly.snapshot)
-    if validation.verdict != RegistryValidationVerdict.ACCEPTED:
+    if (
+        validation.verdict != RegistryValidationVerdict.ACCEPTED
+        or not _matches_legacy_research_cohort(assembly.snapshot)
+    ):
         return None, (ProductionMaterializationErrorCode.REGISTRY_VALIDATION_FAILED.value,)
     return assembly.snapshot, ()
 
@@ -425,7 +439,10 @@ def materialize_production_pit_futures_universe_manifest_v1(
 
     snapshot = inp.registry_snapshot
     registry_validation = validate_pit_futures_instrument_lifecycle_registry_snapshot_v1(snapshot)
-    if registry_validation.verdict != RegistryValidationVerdict.ACCEPTED:
+    if (
+        registry_validation.verdict != RegistryValidationVerdict.ACCEPTED
+        or not _matches_legacy_research_cohort(snapshot)
+    ):
         return PitFuturesUniverseManifestProductionMaterializationResultV1(
             False,
             None,

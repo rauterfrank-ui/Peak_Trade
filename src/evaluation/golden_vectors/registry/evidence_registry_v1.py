@@ -36,7 +36,18 @@ class GvefEvidenceRegistryV1:
         return f"registry/{bundle.run_id}"
 
     def get(self, run_id: str) -> EvidenceBundleV1 | None:
-        return self._entries.get(run_id)
+        stored = self._entries.get(run_id)
+        if stored is None:
+            return None
+        try:
+            detached = EvidenceBundleV1.model_validate(
+                stored.model_dump(mode="json", by_alias=True)
+            )
+        except ValueError as exc:
+            raise GvefRegistryError("invalid stored evidence on readback") from exc
+        if detached.evidence_digest != evidence_bundle_semantic_digest(detached):
+            raise GvefRegistryError("evidence_digest mismatch on readback")
+        return detached
 
     def registry_manifest(self) -> dict[str, object]:
         return {

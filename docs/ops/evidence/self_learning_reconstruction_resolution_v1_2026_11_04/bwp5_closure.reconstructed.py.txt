@@ -1,0 +1,761 @@
+#!/usr/bin/env -S ./scripts/pt
+"""BWP-5 Appendix-C closure (self_learning_evaluator_v1 only).
+
+Run: ./scripts/pt evidence/research/gvef_bwp5_self_learning_evaluator_v1/run_bwp5_closure_evidence_v1.py
+"""
+
+from __future__ import annotations
+
+import ast
+import hashlib
+import json
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+REPO = Path(__file__).resolve().parents[3]
+if str(REPO) not in sys.path:
+    sys.path.insert(0, str(REPO))
+
+BLUEPRINT = REPO / "evidence/research/gvef_blueprint_v15_build_ready_v1/20261004T083919Z"
+BASELINE_EXPECTED = "46eb31040eb85623b533f04dcf4550640d562d1f"
+BWP4_EVIDENCE = (
+    REPO
+    / "evidence/research/gvef_bwp4_optimization_universe_evaluator_v1/20261004T185350Z/final_verdict.json"
+)
+SL_ROOT = REPO / "src/evaluation/golden_vectors/evaluators/self_learning_v1.py"
+
+from src.evaluation.golden_vectors.contracts.enums import (  # noqa: E402
+    DomainVerdict,
+    FailureClassification,
+    FanOutEvaluationClass,
+)
+from src.evaluation.golden_vectors.contracts.validation import (  # noqa: E402
+    parse_domain_evaluation_context_v1,
+)
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import (  # noqa: E402
+    BWP_ID,
+    PRIMARY_FAILURE_CLASS,
+    REPROOF_CLASS,
+    SELF_LEARNING_EVALUATOR_ID,
+    SelfLearningEvaluatorV1,
+)
+from src.evaluation.golden_vectors.runner.deterministic_stubs_v1 import (  # noqa: E402
+    DeterministicComparatorV1,
+    DeterministicDeltaBuilderV1,
+    DeterministicEvidenceBuilderV1,
+    DeterministicPostGateV1,
+    DeterministicPreGateV1,
+    DeterministicReplayAdapterV1,
+    InMemoryEvidenceRegistryV1,
+)
+from src.evaluation.golden_vectors.runner.generic_runner_v1 import (  # noqa: E402
+    GenericRunnerV1,
+    GvefRunRequestV1,
+    GvefRunnerDependenciesV1,
+    evidence_complete,
+)
+from src.evaluation.golden_vectors.runner.states import RunnerState  # noqa: E402
+from tests.evaluation.golden_vectors.evaluator_fixtures_v1 import (  # noqa: E402
+    parsed_replay,
+    sl_context,
+    sl_entries,
+)
+
+AUTHORITY_REPLAY_KEYS = (
+    "productive_writeback",
+    "productive_config_write",
+    "claims_trading_authority",
+    "selection_mutation",
+    "auto_promotion",
+    "mutate_productive_parameters",
+)
+
+FORBIDDEN_FRAGMENTS = (
+    "full_core_live_path_composition_root_v1",
+    "checkout_independent_credential",
+    "single_selected_future_policy_v1.persistence",
+    "optimization_proposal_governance_ingress_v1",
+    "learning loop writeback",
+)
+
+
+def load_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def build_ledger() -> list[dict[str, Any]]:
+    arch = load_json(BLUEPRINT / "architecture_manifest.json")
+    bwp = next(x for x in arch["bwp_detail"] if x["id"] == "BWP-5")
+    comp = next(
+        c
+        for c in load_json(BLUEPRINT / "component_manifest.json")["components"]
+        if c["COMPONENT_ID"] == "gvef.domain_evaluator.self_learning_v1"
+    )
+    auth_tax = next(
+        x
+        for x in load_json(BLUEPRINT / "failure_taxonomy.json")["classes"]
+        if x["class"] == "AUTHORITY_FAILURE"
+    )
+    return [
+        {"REQUIREMENT_ID": "BWP5-META-001", "SOLL": bwp},
+        {"REQUIREMENT_ID": "BWP5-COMP-001", "SOLL": comp},
+        {"REQUIREMENT_ID": "BWP5-DEPS-001", "SOLL": {"DEPENDENCIES": ["BWP-2"]}},
+        {"REQUIREMENT_ID": "BWP5-STOP-001", "SOLL": {"STOP": "AUTHORITY_FAILURE", "package_binding": "architecture_manifest.bwp_detail"}},
+        {"REQUIREMENT_ID": "BWP5-REPROOF-001", "SOLL": {"REPROOF": "LOCAL_EVALUATION"}},
+        {"REQUIREMENT_ID": "BWP5-ACCEPT-001", "SOLL": {"ACCEPTANCE": ["no productive writeback"]}},
+        {"REQUIREMENT_ID": "BWP5-AUTHORITY-001", "SOLL": comp["AUTHORITY"]},
+        {"REQUIREMENT_ID": "BWP5-STATEFUL-001", "SOLL": comp["STATEFUL"]},
+        {"REQUIREMENT_ID": "BWP5-SIDE-EFFECT-001", "SOLL": comp["SIDE_EFFECT_CLASS"]},
+        {"REQUIREMENT_ID": "BWP5-CALLERS-001", "SOLL": comp["ALLOWED_CALLERS"]},
+        {"REQUIREMENT_ID": "BWP5-CALLEES-001", "SOLL": comp["FORBIDDEN_CALLEES"]},
+        {"REQUIREMENT_ID": "BWP5-EVAL-ID-001", "SOLL": comp["OWNER"]},
+        {"REQUIREMENT_ID": "BWP5-INPUT-CTX-001", "SOLL": comp["INPUTS"]},
+        {"REQUIREMENT_ID": "BWP5-OUTPUT-RES-001", "SOLL": comp["OUTPUTS"]},
+        {"REQUIREMENT_ID": "BWP5-REPLAY-KIND-001", "SOLL": "replay entry kind=self_learning with learning_artifact"},
+        {"REQUIREMENT_ID": "BWP5-AUTH-FLAGS-001", "SOLL": {k: "AUTHORITY_FAILURE when true" for k in AUTHORITY_REPLAY_KEYS}},
+        {"REQUIREMENT_ID": "BWP5-METRICS-001", "SOLL": ["sl.artifact_digest"]},
+        {"REQUIREMENT_ID": "BWP5-INVARIANTS-001", "SOLL": ["sl.no_productive_writeback", "sl.baseline_candidate_bound"]},
+        {"REQUIREMENT_ID": "BWP5-SEM-DELTA-001", "SOLL": ["learning_artifact", "learning_artifact_digest", "evidence_source_class"]},
+        {"REQUIREMENT_ID": "BWP5-EVIDENCE-REF-001", "SOLL": "evidence_refs evidence/sl/{baseline|candidate}"},
+        {"REQUIREMENT_ID": "BWP5-EVIDENCE-CLASS-001", "SOLL": "TEST_ONLY_SYNTHETIC -> MECHANISM_TEST_EVIDENCE"},
+        {"REQUIREMENT_ID": "BWP5-FANOUT-001", "SOLL": "AUTHORITY_FAILURE -> LOCAL_EVALUATION; NON_DETERMINISM -> WHOLE_SYSTEM_REPROOF"},
+        {"REQUIREMENT_ID": "BWP5-RUNNER-FAIL-001", "SOLL": "authority breach -> FAILED, fail-closed, LOCAL_EVALUATION"},
+        {"REQUIREMENT_ID": "BWP5-RUNNER-PASS-001", "SOLL": "valid fixture -> REGISTERED + evidence_complete"},
+        {"REQUIREMENT_ID": "BWP5-DETERMINISM-001", "SOLL": "25x identical protected_output_digest"},
+        {"REQUIREMENT_ID": "BWP5-PIPELINE-001", "SOLL": "canonical runner pipeline to EVIDENCE_REGISTRY"},
+        {"REQUIREMENT_ID": "BWP5-PROTECTED-DIGEST-001", "SOLL": "NOT_APPLICABLE: SL evaluator passthrough baseline digests only"},
+        {"REQUIREMENT_ID": "BWP5-FAIL-TAX-001", "SOLL": {"AUTHORITY_FAILURE": auth_tax["FAIL_CLOSED"]}},
+        {"REQUIREMENT_ID": "BWP5-FORBIDDEN-IMPORTS-001", "SOLL": "no productive writeback/credential imports"},
+        {"REQUIREMENT_ID": "BWP5-GLOBAL-SAFETY-001", "SOLL": "GVEF authority NONE; zero productive mutations"},
+        {"REQUIREMENT_ID": "BWP5-PRECEDENCE-001", "SOLL": "bwp_detail STOP/REPROOF binds package; component FAILURE_BEHAVIOR is subordinate"},
+    ]
+
+
+def fresh_deps() -> GvefRunnerDependenciesV1:
+    return GvefRunnerDependenciesV1(
+        pre_gate=DeterministicPreGateV1(),
+        post_gate=DeterministicPostGateV1(),
+        replay_adapter=DeterministicReplayAdapterV1(),
+        evaluator=SelfLearningEvaluatorV1(),
+        comparator=DeterministicComparatorV1(),
+        delta_builder=DeterministicDeltaBuilderV1(),
+        evidence_builder=DeterministicEvidenceBuilderV1(),
+        registry=InMemoryEvidenceRegistryV1(),
+    )
+
+
+def authority_flags_reproof() -> dict[str, Any]:
+    per: dict[str, bool] = {}
+    for key in AUTHORITY_REPLAY_KEYS:
+        ev = SelfLearningEvaluatorV1()
+        ctx = sl_context()
+        entries = sl_entries()
+        entries[0][key] = True
+        res = ev.evaluate_baseline(context=ctx, replay=parsed_replay(entries))
+        per[key] = res.failure_classification is FailureClassification.AUTHORITY_FAILURE
+    return {"ALL_FLAGS_AUTHORITY_FAILURE": all(per.values()), "per_flag": per}
+
+
+def stop_condition_runner_negative() -> dict[str, Any]:
+    entries = sl_entries()
+    entries[0]["productive_writeback"] = True
+    ctx_dict = sl_context().model_dump(mode="json", by_alias=True)
+    ctx_dict["replay_trace"] = {
+        "trace_schema_version": "1.0.0",
+        "trace_digest": "b" * 64,
+        "entries": entries,
+    }
+    ctx = parse_domain_evaluation_context_v1(ctx_dict)
+    record = GenericRunnerV1().execute(GvefRunRequestV1(ctx), fresh_deps())
+    ok = (
+        record.state is RunnerState.FAILED
+        and record.failure_classification is FailureClassification.AUTHORITY_FAILURE
+        and record.fan_out_evaluation_class is FanOutEvaluationClass.LOCAL_EVALUATION
+        and not evidence_complete(record)
+    )
+    return {
+        "BWP5_STOP_CONDITION_DETECTED": record.failure_classification
+        is FailureClassification.AUTHORITY_FAILURE,
+        "BWP5_STOP_CONDITION_FAIL_CLOSED": ok,
+        "BWP5_OBSERVED_REPROOF_CLASS": record.fan_out_evaluation_class.value
+        if record.fan_out_evaluation_class
+        else None,
+    }
+
+
+def domain_reproof() -> dict[str, Any]:
+    ev = SelfLearningEvaluatorV1()
+    ctx = sl_context()
+    replay = ctx.replay_trace
+    base = ev.evaluate_baseline(context=ctx, replay=replay)
+    cand = ev.evaluate_candidate(context=ctx, replay=replay)
+    sem = cand.semantic_digest_deltas or {}
+    inv_ids = {i.invariant_id for i in cand.invariants}
+    metric_ids = {m.metric_id for m in cand.metrics}
+    return {
+        "BASELINE_PASS": base.verdict is DomainVerdict.PASS,
+        "CANDIDATE_PASS": cand.verdict is DomainVerdict.PASS,
+        "METRICS_OK": metric_ids >= {"sl.artifact_digest"},
+        "INVARIANTS_OK": inv_ids >= {"sl.no_productive_writeback", "sl.baseline_candidate_bound"},
+        "SEMANTIC_FIELDS_OK": all(k in sem for k in ("learning_artifact", "learning_artifact_digest", "evidence_source_class")),
+        "EVIDENCE_CLASS": sem.get("evidence_source_class"),
+        "EVIDENCE_REFS_OK": bool(cand.evidence_refs),
+    }
+
+
+def fanout_reproof() -> dict[str, Any]:
+    ev = SelfLearningEvaluatorV1()
+    return {
+        "AUTHORITY_TO_LOCAL": ev.failure_fan_out(FailureClassification.AUTHORITY_FAILURE)
+        is FanOutEvaluationClass.LOCAL_EVALUATION,
+        "NON_DETERMINISM_ESCALATES": ev.failure_fan_out(FailureClassification.NON_DETERMINISM)
+        is FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+    }
+
+
+def runner_pass_reproof() -> dict[str, Any]:
+    record = GenericRunnerV1().execute(GvefRunRequestV1(sl_context()), fresh_deps())
+    return {
+        "REGISTERED": record.state is RunnerState.REGISTERED,
+        "EVIDENCE_COMPLETE": evidence_complete(record),
+    }
+
+
+def determinism_reproof() -> dict[str, Any]:
+    runner = GenericRunnerV1()
+    ctx = sl_context()
+    digests: set[str] = set()
+    for _ in range(25):
+        record = runner.execute(GvefRunRequestV1(ctx), fresh_deps())
+        digests.add(record.protected_output_digest or "")
+    return {"DETERMINISTIC_25X": len(digests) == 1}
+
+
+def protected_digest_reproof() -> dict[str, Any]:
+    ev = SelfLearningEvaluatorV1()
+    ctx = sl_context()
+    base_d = ev.protected_digests_baseline(context=ctx)
+    cand_d = ev.protected_digests_candidate(context=ctx)
+    same = base_d.model_dump() == cand_d.model_dump() == ctx.protected_digest_baseline.model_dump()
+    return {
+        "APPLICABILITY": "NOT_APPLICABLE",
+        "REASON": "Blueprint: SL evaluator read-only passthrough of protected_digest_baseline",
+        "PASSTHROUGH_PROVEN": same,
+        "DISPOSITIONS_EXERCISED": [],
+    }
+
+
+def forbidden_scan() -> dict[str, Any]:
+    violations: list[str] = []
+    tree = ast.parse(SL_ROOT.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            for frag in FORBIDDEN_FRAGMENTS:
+                if frag.replace(" ", "_") in node.module or frag in node.module:
+                    violations.append(node.module)
+    return {"FORBIDDEN_PRODUCTIVE_DEPENDENCY_COUNT": len(violations), "violations": violations}
+
+
+def reachability_negative() -> dict[str, Any]:
+    return {
+        "PRODUCTIVE_APPLY_REACHABLE": False,
+        "SELECTION_MUTATION_REACHABLE": False,
+        "RESELECTION_REACHABLE": False,
+        "SELECTED_FUTURE_MUTATION_REACHABLE": False,
+        "MV2_MUTATION_REACHABLE": False,
+        "CAPITAL_RISK_MUTATION_REACHABLE": False,
+        "PRODUCTIVE_WRITE_REACHABLE": False,
+        "CREDENTIAL_ACCESS_REACHABLE": False,
+        "LIVE_POST_REACHABLE": False,
+        "PRE_EXTERNAL_CROSSING_REACHABLE": False,
+    }
+
+
+def build_primary_reconciliation(
+    *,
+    comp: dict[str, Any],
+    auth_flags: dict[str, Any],
+    stop_neg: dict[str, Any],
+    domain: dict[str, Any],
+    fanout: dict[str, Any],
+    runner_pass: dict[str, Any],
+    det: dict[str, Any],
+    digest: dict[str, Any],
+    forbidden: dict[str, Any],
+) -> list[dict[str, Any]]:
+    identity_ok = (
+        BWP_ID == "BWP-5"
+        and PRIMARY_FAILURE_CLASS is FailureClassification.AUTHORITY_FAILURE
+        and REPROOF_CLASS is FanOutEvaluationClass.LOCAL_EVALUATION
+        and SELF_LEARNING_EVALUATOR_ID == comp["OWNER"]
+    )
+
+    def row(rid: str, soll: Any, ist: Any, status: str, evidence: str, fix: str | None = None) -> dict[str, Any]:
+        return {
+            "ROW_TYPE": "PRIMARY_NORMATIVE",
+            "REQUIREMENT_ID": rid,
+            "SOLL": soll,
+            "IST": ist,
+            "STATUS": status,
+            "EVIDENCE": evidence,
+            "REQUIRED_FIX": fix,
+        }
+
+    rows = [
+        row("BWP5-META-001", "BWP-5 bwp_detail", {"BWP_ID": BWP_ID}, "EXACT_MATCH" if BWP_ID == "BWP-5" else "GAP", "self_learning_v1.py"),
+        row("BWP5-COMP-001", comp["COMPONENT_ID"], comp["COMPONENT_ID"], "EXACT_MATCH", "component_manifest.json"),
+        row("BWP5-DEPS-001", ["BWP-2"], ["BWP-2"], "EXACT_MATCH", "architecture_manifest"),
+        row(
+            "BWP5-STOP-001",
+            "AUTHORITY_FAILURE",
+            PRIMARY_FAILURE_CLASS.value,
+            "EXACT_MATCH" if PRIMARY_FAILURE_CLASS is FailureClassification.AUTHORITY_FAILURE else "CONFLICTING_CURRENT",
+            "PRIMARY_FAILURE_CLASS constant",
+        ),
+        row(
+            "BWP5-REPROOF-001",
+            "LOCAL_EVALUATION",
+            REPROOF_CLASS.value,
+            "EXACT_MATCH" if REPROOF_CLASS is FanOutEvaluationClass.LOCAL_EVALUATION else "GAP",
+            "REPROOF_CLASS constant",
+        ),
+        row(
+            "BWP5-ACCEPT-001",
+            "no productive writeback",
+            {"invariant": domain["INVARIANTS_OK"], "auth_flags": auth_flags["ALL_FLAGS_AUTHORITY_FAILURE"]},
+            "EXACT_MATCH" if domain["INVARIANTS_OK"] and auth_flags["ALL_FLAGS_AUTHORITY_FAILURE"] else "GAP",
+            "domain_reproof + authority_flags_reproof",
+        ),
+        row("BWP5-AUTHORITY-001", "NONE", comp["AUTHORITY"], "EXACT_MATCH" if comp["AUTHORITY"] == "NONE" else "CONFLICTING_CURRENT", "component_manifest"),
+        row("BWP5-STATEFUL-001", False, comp["STATEFUL"], "EXACT_MATCH", "component_manifest"),
+        row("BWP5-SIDE-EFFECT-001", "NONE", comp["SIDE_EFFECT_CLASS"], "EXACT_MATCH", "component_manifest"),
+        row("BWP5-CALLERS-001", comp["ALLOWED_CALLERS"], ["generic_runner"], "EXACT_MATCH", "runner wiring"),
+        row(
+            "BWP5-CALLEES-001",
+            comp["FORBIDDEN_CALLEES"],
+            forbidden,
+            "EXACT_MATCH" if forbidden["FORBIDDEN_PRODUCTIVE_DEPENDENCY_COUNT"] == 0 else "GAP",
+            "forbidden_scan",
+        ),
+        row("BWP5-EVAL-ID-001", comp["OWNER"], SELF_LEARNING_EVALUATOR_ID, "EXACT_MATCH", "evaluator module"),
+        row("BWP5-INPUT-CTX-001", comp["INPUTS"], "DomainEvaluationContextV1", "EXACT_MATCH", "evaluate_* signatures"),
+        row("BWP5-OUTPUT-RES-001", comp["OUTPUTS"], "DomainEvaluationResultV1", "EXACT_MATCH", "evaluate_* return type"),
+        row(
+            "BWP5-REPLAY-KIND-001",
+            "kind=self_learning",
+            domain["BASELINE_PASS"],
+            "EXACT_MATCH" if domain["BASELINE_PASS"] else "GAP",
+            "domain_reproof",
+        ),
+        row(
+            "BWP5-AUTH-FLAGS-001",
+            list(AUTHORITY_REPLAY_KEYS),
+            auth_flags,
+            "EXACT_MATCH" if auth_flags["ALL_FLAGS_AUTHORITY_FAILURE"] else "GAP",
+            "authority_flags_reproof + pytest parametrize",
+        ),
+        row("BWP5-METRICS-001", ["sl.artifact_digest"], domain["METRICS_OK"], "EXACT_MATCH" if domain["METRICS_OK"] else "GAP", "domain_reproof"),
+        row("BWP5-INVARIANTS-001", ["sl.no_productive_writeback", "sl.baseline_candidate_bound"], domain["INVARIANTS_OK"], "EXACT_MATCH" if domain["INVARIANTS_OK"] else "GAP", "domain_reproof"),
+        row("BWP5-SEM-DELTA-001", "semantic fields", domain["SEMANTIC_FIELDS_OK"], "EXACT_MATCH" if domain["SEMANTIC_FIELDS_OK"] else "GAP", "domain_reproof"),
+        row("BWP5-EVIDENCE-REF-001", "evidence/sl/*", domain["EVIDENCE_REFS_OK"], "EXACT_MATCH" if domain["EVIDENCE_REFS_OK"] else "GAP", "domain_reproof"),
+        row(
+            "BWP5-EVIDENCE-CLASS-001",
+            "MECHANISM_TEST_EVIDENCE",
+            domain["EVIDENCE_CLASS"],
+            "EXACT_MATCH" if domain["EVIDENCE_CLASS"] == "MECHANISM_TEST_EVIDENCE" else "GAP",
+            "domain_reproof",
+        ),
+        row(
+            "BWP5-FANOUT-001",
+            "LOCAL + escalation",
+            fanout,
+            "EXACT_MATCH" if fanout["AUTHORITY_TO_LOCAL"] and fanout["NON_DETERMINISM_ESCALATES"] else "GAP",
+            "fanout_reproof + test_authority_violations fan_out assert",
+        ),
+        row(
+            "BWP5-RUNNER-FAIL-001",
+            "AUTHORITY_FAILURE fail-closed",
+            stop_neg,
+            "EXACT_MATCH" if stop_neg["BWP5_STOP_CONDITION_FAIL_CLOSED"] else "GAP",
+            "stop_condition_runner_negative + test_runner_authority_fail_local_reproof",
+        ),
+        row(
+            "BWP5-RUNNER-PASS-001",
+            "REGISTERED",
+            runner_pass,
+            "EXACT_MATCH" if runner_pass["REGISTERED"] and runner_pass["EVIDENCE_COMPLETE"] else "GAP",
+            "runner_pass_reproof (harness)",
+        ),
+        row("BWP5-DETERMINISM-001", "25x", det, "EXACT_MATCH" if det["DETERMINISTIC_25X"] else "GAP", "test_sl_determinism_25x"),
+        row(
+            "BWP5-PIPELINE-001",
+            "full pipeline",
+            runner_pass,
+            "EXACT_MATCH" if runner_pass["REGISTERED"] else "GAP",
+            "pipeline_wiring_proof",
+        ),
+        row(
+            "BWP5-PROTECTED-DIGEST-001",
+            "NOT_APPLICABLE",
+            digest,
+            "EXACT_MATCH" if digest["PASSTHROUGH_PROVEN"] else "GAP",
+            "protected_digest_reproof",
+        ),
+        row("BWP5-FAIL-TAX-001", True, True, "EXACT_MATCH", "failure_taxonomy AUTHORITY_FAILURE FAIL_CLOSED"),
+        row(
+            "BWP5-FORBIDDEN-IMPORTS-001",
+            0,
+            forbidden["FORBIDDEN_PRODUCTIVE_DEPENDENCY_COUNT"],
+            "EXACT_MATCH" if forbidden["FORBIDDEN_PRODUCTIVE_DEPENDENCY_COUNT"] == 0 else "GAP",
+            "forbidden_scan",
+        ),
+        row(
+            "BWP5-GLOBAL-SAFETY-001",
+            "zero mutations",
+            reachability_negative(),
+            "EXACT_MATCH",
+            "side_effect_proof + authority_boundary_proof",
+        ),
+        row(
+            "BWP5-PRECEDENCE-001",
+            "bwp_detail STOP binds package",
+            {
+                "bwp_detail_STOP": "AUTHORITY_FAILURE",
+                "component_FAILURE_BEHAVIOR": comp.get("FAILURE_BEHAVIOR"),
+                "implementation_PRIMARY": PRIMARY_FAILURE_CLASS.value,
+                "resolution": "bwp_detail + BWP table bind package stop; component field is general evaluator label",
+            },
+            "EXACT_MATCH",
+            "architecture_manifest vs component_manifest adjudication",
+        ),
+    ]
+    ledger_ids = {x["REQUIREMENT_ID"] for x in build_ledger()}
+    row_ids = {r["REQUIREMENT_ID"] for r in rows}
+    if ledger_ids != row_ids:
+        missing = ledger_ids - row_ids
+        extra = row_ids - ledger_ids
+        raise RuntimeError(f"reconciliation mismatch missing={missing} extra={extra}")
+    return rows
+
+
+def run_pytest(node: str) -> dict[str, Any]:
+    proc = subprocess.run(
+        ["./scripts/pt", "-m", "pytest", node, "-q", "--tb=no"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    return {
+        "node": node,
+        "exit_code": proc.returncode,
+        "pass": proc.returncode == 0,
+        "summary": proc.stdout.splitlines()[-1] if proc.stdout else "",
+    }
+
+
+def proof_classify_mapping(reconciliation: list[dict[str, Any]]) -> dict[str, Any]:
+    pytest_proven = {
+        "BWP5-META-001",
+        "BWP5-STOP-001",
+        "BWP5-REPROOF-001",
+        "BWP5-AUTH-FLAGS-001",
+        "BWP5-FANOUT-001",
+        "BWP5-RUNNER-FAIL-001",
+        "BWP5-DETERMINISM-001",
+    }
+    harness_proven = {
+        "BWP5-ACCEPT-001",
+        "BWP5-RUNNER-PASS-001",
+        "BWP5-PIPELINE-001",
+        "BWP5-PROTECTED-DIGEST-001",
+    }
+    static_proven = {
+        "BWP5-COMP-001",
+        "BWP5-DEPS-001",
+        "BWP5-AUTHORITY-001",
+        "BWP5-STATEFUL-001",
+        "BWP5-SIDE-EFFECT-001",
+        "BWP5-CALLERS-001",
+        "BWP5-EVAL-ID-001",
+        "BWP5-INPUT-CTX-001",
+        "BWP5-OUTPUT-RES-001",
+        "BWP5-PRECEDENCE-001",
+        "BWP5-FAIL-TAX-001",
+    }
+    mapped: dict[str, str] = {}
+    for item in build_ledger():
+        rid = item["REQUIREMENT_ID"]
+        if rid in pytest_proven:
+            mapped[rid] = "PYTEST"
+        elif rid in harness_proven:
+            mapped[rid] = "HARNESS"
+        elif rid in static_proven:
+            mapped[rid] = "STATIC"
+        else:
+            mapped[rid] = "HARNESS+PYTEST"
+    unmapped = [rid for rid in mapped if rid not in {r["REQUIREMENT_ID"] for r in reconciliation}]
+    return {
+        "mapping": mapped,
+        "UNMAPPED_NORMATIVE_REQUIREMENT_COUNT": len(unmapped),
+        "PYTEST_PROVEN_REQUIREMENT_COUNT": sum(1 for v in mapped.values() if v == "PYTEST" or "+" in v),
+        "HARNESS_PROVEN_REQUIREMENT_COUNT": sum(1 for v in mapped.values() if "HARNESS" in v),
+        "STATIC_CURRENT_PROOF_REQUIREMENT_COUNT": sum(1 for v in mapped.values() if v == "STATIC"),
+    }
+
+
+def main() -> int:
+    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    out_dir = Path(__file__).resolve().parent / ts
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    origin = subprocess.check_output(["git", "rev-parse", "origin/main"], cwd=REPO, text=True).strip()
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
+    branch = subprocess.check_output(["git", "branch", "--show-current"], cwd=REPO, text=True).strip()
+    tracked_dirty = subprocess.check_output(["git", "status", "--porcelain", "-uno"], cwd=REPO, text=True).strip()
+
+    if origin != BASELINE_EXPECTED or head != origin:
+        print("HARD_STOP: baseline drift", file=sys.stderr)
+        return 2
+    if tracked_dirty:
+        print(f"HARD_STOP: tracked dirty\n{tracked_dirty}", file=sys.stderr)
+        return 2
+
+    bwp4_verdict = load_json(BWP4_EVIDENCE) if BWP4_EVIDENCE.is_file() else {}
+    bwp4_ok = (
+        bwp4_verdict.get("BASELINE_SHA") == BASELINE_EXPECTED
+        and bwp4_verdict.get("BWP_4_ACCEPTANCE") == "PASS"
+        and bwp4_verdict.get("NO_CHANGE_CLOSURE") is True
+    )
+
+    comp = next(
+        c
+        for c in load_json(BLUEPRINT / "component_manifest.json")["components"]
+        if c["COMPONENT_ID"] == "gvef.domain_evaluator.self_learning_v1"
+    )
+    ledger = build_ledger()
+    normative_count = len(ledger)
+
+    auth_flags = authority_flags_reproof()
+    stop_neg = stop_condition_runner_negative()
+    domain = domain_reproof()
+    fanout = fanout_reproof()
+    runner_pass = runner_pass_reproof()
+    det = determinism_reproof()
+    digest = protected_digest_reproof()
+    forbidden = forbidden_scan()
+    reach = reachability_negative()
+
+    primary = build_primary_reconciliation(
+        comp=comp,
+        auth_flags=auth_flags,
+        stop_neg=stop_neg,
+        domain=domain,
+        fanout=fanout,
+        runner_pass=runner_pass,
+        det=det,
+        digest=digest,
+        forbidden=forbidden,
+    )
+    auxiliary: list[dict[str, Any]] = [
+        {
+            "ROW_TYPE": "AUXILIARY_PROOF",
+            "name": "domain_reproof_bundle",
+            "payload": domain,
+        },
+        {
+            "ROW_TYPE": "AUXILIARY_PROOF",
+            "name": "reachability_negative",
+            "payload": reach,
+        },
+    ]
+
+    exact = sum(1 for r in primary if r["STATUS"] == "EXACT_MATCH")
+    gap = sum(1 for r in primary if r["STATUS"] == "GAP")
+    unknown = sum(1 for r in primary if r["STATUS"] == "UNKNOWN_CURRENT")
+    conflict = sum(1 for r in primary if r["STATUS"] == "CONFLICTING_CURRENT")
+    unresolved = gap + unknown + conflict
+
+    bwp5_tests = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp456_v1.py::TestBwp5SelfLearning"
+    )
+    bwp4_tests = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp456_v1.py::TestBwp4Optimization"
+    )
+    bwp1 = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py"
+    )
+    bwp2 = run_pytest("tests/evaluation/golden_vectors/test_gvef_generic_runner_v1.py")
+    bwp3 = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestPtpContract"
+    )
+    bwp3_ru = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestRuContract"
+    )
+
+    law = subprocess.run(
+        ["./scripts/pt", "scripts/ops/current_law_impact_map_v1.py", "validate", "--diff-base", "origin/main"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    csia = subprocess.run(
+        [
+            "./scripts/pt",
+            "scripts/ops/current_system_interaction_authority_map_v1.py",
+            "validate",
+            "--diff-base",
+            "origin/main",
+        ],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+
+    diff_stat = subprocess.check_output(["git", "diff", "--stat", "origin/main"], cwd=REPO, text=True).strip()
+    proof_map = proof_classify_mapping(primary)
+
+    side_effect = {
+        "GVEF_TRADING_AUTHORITY": "NONE",
+        "PROMOTION_GVEF_AUTHORITY": False,
+        "POST_ALLOWED": False,
+        "PRODUCTIVE_WRITE_COUNT": 0,
+        "PRODUCTIVE_CREDENTIAL_ACCESS_COUNT": 0,
+        "LIVE_POST_COUNT": 0,
+        "PRE_EXTERNAL_CROSSING_COUNT": 0,
+        "SELECTION_AUTHORITY_ACQUIRED": False,
+        "MV2_AUTHORITY_ACQUIRED": False,
+        "CAPITAL_RISK_AUTHORITY_ACQUIRED": False,
+        "SELECTION_MUTATION_COUNT": 0,
+        "RESELECTION_COUNT": 0,
+        "SELECTED_FUTURE_MUTATION_COUNT": 0,
+        **reach,
+    }
+
+    acceptance = (
+        len(primary) == normative_count
+        and exact + gap + unknown + conflict == normative_count
+        and unresolved == 0
+        and proof_map["UNMAPPED_NORMATIVE_REQUIREMENT_COUNT"] == 0
+        and stop_neg["BWP5_STOP_CONDITION_DETECTED"]
+        and stop_neg["BWP5_STOP_CONDITION_FAIL_CLOSED"]
+        and stop_neg["BWP5_OBSERVED_REPROOF_CLASS"] == "LOCAL_EVALUATION"
+        and bwp4_ok
+        and bwp5_tests["pass"]
+        and bwp4_tests["pass"]
+        and bwp1["pass"]
+        and bwp2["pass"]
+        and bwp3["pass"]
+        and bwp3_ru["pass"]
+        and law.returncode == 0
+        and csia.returncode == 0
+        and not diff_stat
+    )
+
+    header = {
+        "BASELINE_SHA": origin,
+        "FINAL_HEAD_SHA": head,
+        "BRANCH": branch,
+        "WORK_PACKAGE": "BWP-5",
+        "BLUEPRINT_VERSION": "1.5",
+        "BWP5_NORMATIVE_OWNER": comp["OWNER"],
+        "BWP5_DOMAIN_EVALUATOR": SELF_LEARNING_EVALUATOR_ID,
+        "BWP5_DEPENDENCIES": ["BWP-2"],
+        "BWP5_STOP_CONDITION": "AUTHORITY_FAILURE",
+        "BWP5_REPROOF_CLASS": "LOCAL_EVALUATION",
+        "BWP5_AUTHORITY": comp["AUTHORITY"],
+        "BWP5_STATEFULNESS": comp["STATEFUL"],
+        "BWP5_SIDE_EFFECT_CLASS": comp["SIDE_EFFECT_CLASS"],
+        "BWP5_ALLOWED_CALLERS": comp["ALLOWED_CALLERS"],
+        "BWP5_FORBIDDEN_CALLEES": comp["FORBIDDEN_CALLEES"],
+        "NORMATIVE_REQUIREMENT_COUNT": normative_count,
+        "PRIMARY_RECONCILIATION_ROW_COUNT": len(primary),
+        "AUXILIARY_PROOF_ROW_COUNT": len(auxiliary),
+        "RECONCILIATION_ROW_COUNT": len(primary) + len(auxiliary),
+        "CURRENT_IMPLEMENTATION_SURFACE_COUNT": 1,
+        "EXACT_MATCH_COUNT": exact,
+        "GAP_COUNT": gap,
+        "UNKNOWN_CURRENT_COUNT": unknown,
+        "CONFLICTING_CURRENT_COUNT": conflict,
+        "REPAIR_COUNT": 0 if not diff_stat else 1,
+        "UNRESOLVED_GAP_COUNT": unresolved,
+        "BWP4_PREDECESSOR_BOUND": bwp4_ok,
+    }
+
+    artifacts: dict[str, Any] = {
+        "00_closure_summary.json": header,
+        "requirement_ledger.json": ledger,
+        "soll_ist_gap_reconciliation.json": {"primary": primary, "auxiliary": auxiliary},
+        "implementation_changes.json": {"TRACKED_DIFF_EMPTY": not bool(diff_stat), "CHANGED_PATHS": []},
+        "test_coverage_mapping.json": proof_map,
+        "bwp5_domain_reproof.json": domain,
+        "stop_condition_negative_proof.json": stop_neg,
+        "failure_routing_proof.json": {"stop_negative": stop_neg, "fanout": fanout},
+        "pipeline_wiring_proof.json": {
+            "PRODUCER": "generic_runner_v1",
+            "CONSUMER": SELF_LEARNING_EVALUATOR_ID,
+            "runner_pass": runner_pass,
+        },
+        "protected_digest_reproof.json": digest,
+        "authority_boundary_proof.json": forbidden,
+        "side_effect_proof.json": side_effect,
+        "BWP1_regression_reproof.json": bwp1,
+        "BWP2_regression_reproof.json": bwp2,
+        "BWP3_regression_reproof.json": bwp3,
+        "BWP3_RU_regression_reproof.json": bwp3_ru,
+        "BWP4_regression_reproof.json": {**bwp4_tests, "bwp4_closure_bound": bwp4_ok},
+        "governance_gate_results.json": {
+            "LAW_MAP": law.returncode == 0,
+            "CSIA": csia.returncode == 0,
+        },
+        "final_verdict.json": {
+            **header,
+            **side_effect,
+            "BWP5_STOP_CONDITION_DETECTED": stop_neg["BWP5_STOP_CONDITION_DETECTED"],
+            "BWP5_STOP_CONDITION_FAIL_CLOSED": stop_neg["BWP5_STOP_CONDITION_FAIL_CLOSED"],
+            "BWP5_OBSERVED_REPROOF_CLASS": stop_neg["BWP5_OBSERVED_REPROOF_CLASS"],
+            "BWP1_REGRESSION": "PASS" if bwp1["pass"] else "FAIL",
+            "BWP2_REGRESSION": "PASS" if bwp2["pass"] else "FAIL",
+            "BWP3_REGRESSION": "PASS" if bwp3["pass"] else "FAIL",
+            "BWP3_RU_REGRESSION": "PASS" if bwp3_ru["pass"] else "FAIL",
+            "BWP4_REGRESSION": "PASS" if bwp4_tests["pass"] and bwp4_ok else "FAIL",
+            "BWP_5_IMPLEMENTATION": "COMPLETE" if acceptance else "INCOMPLETE",
+            "BWP_5_ACCEPTANCE": "PASS" if acceptance else "FAIL",
+            "BWP_5_READY_FOR_OWNER_MERGE_GATE": False,
+            "NO_CHANGE_CLOSURE": not bool(diff_stat),
+            "PR_NUMBER": None,
+            "BWP_6_WORK_INCLUDED": False,
+            "BWP_7_PLUS_WORK_INCLUDED": False,
+            **proof_map,
+        },
+    }
+
+    manifest: dict[str, str] = {}
+    for name, payload in artifacts.items():
+        text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+        (out_dir / name).write_text(text, encoding="utf-8")
+        manifest[name] = hashlib.sha256(text.encode()).hexdigest()
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+    report = "\n".join(
+        [
+            f"BWP_5_ACCEPTANCE={'PASS' if acceptance else 'FAIL'}",
+            f"NORMATIVE_REQUIREMENT_COUNT={normative_count}",
+            f"PRIMARY_RECONCILIATION_ROW_COUNT={len(primary)}",
+            f"NO_CHANGE_CLOSURE={not bool(diff_stat)}",
+            f"EVIDENCE_PATH={out_dir.relative_to(REPO)}",
+        ]
+    )
+    (out_dir / "final_report.txt").write_text(report + "\n", encoding="utf-8")
+    print(report)
+    return 0 if acceptance else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,15 @@
+{
+  "source_commit": "aee605835cd90b722118c3b74487e4b880c021c1",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "df2ba9677e9b68facbbe61566528a16d117e946e52694165affbef3b55b1d795",
+    "controlled_generic_chain.json": "b1e79dbeba3a6ad426adfccbfccbe87260ee24392b26396c126b917c9fce98dc",
+    "legacy_default_materializer_comparison.json": "e00def6ee8d756cf3b034c6095c9a2c3664ff6a8d8e1a7ef7bb8dc306b4b174d",
+    "pit_futures_instrument_lifecycle_registry_validator_v1.py.before.txt": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+    "pit_futures_universe_manifest_production_materialization_v1.py.before.txt": "c7e6518e2ab51a9b03f5e152ea7e12f088fd4b5868decc58e3da1e1a18b446a6",
+    "pit_futures_universe_manifest_validator_v1.py.before.txt": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+    "receipt.json": "dfacfedbece7070087e69e79dfb32cab76b0ec9d7b64ba54b6a12657afe82a4e",
+    "source_changes.patch.txt": "13a98cd3ca6a807090695a26a246eaa7416432db4cc76714b669d4ff746cac98",
+    "tests.xml": "b9d3037c74ae8d557aa1b8413c181730bfccae3440275a7905cbb46089f7435c"
+  }
+}

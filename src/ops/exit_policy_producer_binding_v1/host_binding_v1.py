@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
@@ -16,6 +17,8 @@ from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     FROZEN_PROFIT_PROTECTION_DISTANCE,
     OWNER,
     STATE_VERSION,
+    EXIT_STATE_FILENAME,
+    MANIFEST_FILENAME,
 )
 from src.ops.exit_policy_producer_binding_v1.models_v1 import (
     CanonicalExitPolicyStateV1,
@@ -86,6 +89,9 @@ class HostExitPolicyBindingV1:
     last_evaluated_event_time: Optional[float] = None
     last_bundle: dict[str, Any] = field(default_factory=dict)
     last_commit: dict[str, Any] = field(default_factory=dict)
+    current_cursor_publication: Optional[dict[str, Any]] = None
+    simulated_accounting_progress: Optional[dict[str, Any]] = None
+    simulated_accounting_close: Optional[dict[str, Any]] = None
 
     def to_canonical_state(self) -> CanonicalExitPolicyStateV1:
         return CanonicalExitPolicyStateV1(
@@ -107,6 +113,9 @@ class HostExitPolicyBindingV1:
             last_evaluated_event_time=self.last_evaluated_event_time,
             commit_sequence=int(self.commit_sequence),
             owner=OWNER,
+            current_cursor_publication=deepcopy(self.current_cursor_publication),
+            simulated_accounting_progress=deepcopy(self.simulated_accounting_progress),
+            simulated_accounting_close=deepcopy(self.simulated_accounting_close),
         )
 
 
@@ -127,12 +136,15 @@ def ensure_host_exit_policy_binding_v1(
         return binding
     root = Path(state_root)
     binding.state_root = str(root)
-    if prior_commit_exists(root):
+    if prior_commit_exists(root) or any(
+        (root / name).exists() for name in (EXIT_STATE_FILENAME, MANIFEST_FILENAME)
+    ):
         try:
             loaded = load_exit_policy_state_v1(
                 root,
                 expected_repository_sha=repository_sha,
                 expected_config_digest=config_digest,
+                expected_instrument_id=instrument_id,
             )
         except ExitPolicyPersistenceError as exc:
             binding.alpha_blocked = True
@@ -153,6 +165,9 @@ def ensure_host_exit_policy_binding_v1(
         binding.last_observation_digest = str(loaded.last_observation_digest or "")
         binding.last_evaluated_event_time = loaded.last_evaluated_event_time
         binding.commit_sequence = int(loaded.commit_sequence)
+        binding.current_cursor_publication = loaded.current_cursor_publication
+        binding.simulated_accounting_progress = loaded.simulated_accounting_progress
+        binding.simulated_accounting_close = loaded.simulated_accounting_close
         binding.prior_commit_seen = True
     binding.initialized = True
     binding.alpha_blocked = False
@@ -302,6 +317,7 @@ def commit_host_exit_policy_state_v1(
     *,
     persist: bool,
     writer_session_id: str,
+    expected_prior_sequence: int | None = None,
 ) -> Mapping[str, Any]:
     if not persist or not binding.state_root:
         return {"ok": True, "persisted": False}
@@ -311,6 +327,7 @@ def commit_host_exit_policy_state_v1(
         state_root=Path(binding.state_root),
         state=state,
         writer_session_id=writer_session_id,
+        expected_prior_sequence=expected_prior_sequence,
     )
     binding.last_commit = dict(out)
     binding.prior_commit_seen = True

@@ -22,8 +22,8 @@ from trading.master_v2.double_play_state import (
     rules_valid,
     transition_state,
     update_dynamic_boundaries,
-    clamp_band_width,
 )
+from src.research.legacy_scope_band_reference_v1 import clamp_band_width
 
 GOOD = StaticHardLimits(
     max_notional=1.0,

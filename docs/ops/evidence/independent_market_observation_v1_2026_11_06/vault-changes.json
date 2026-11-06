@@ -1,0 +1,79 @@
+{
+  "source_head_before": "8cfb04ec17e2f6d2c85559ebf89cfb3283accad9",
+  "changes": [
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback.md",
+      "before_sha256": null,
+      "after_sha256": "e8d176ebdb19d2f3a1420dc4767e5de5ddc5e69d74b6792703a607ce86b98725",
+      "backup": null
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md",
+      "before_sha256": "a0b99df3037fa3abea5933e65cc324d2e7adc653c7dd705d4691a991b2dafb8c",
+      "after_sha256": "924682b3d43b55ac4c13bdedbe1b2ea4cf21f50739fa2dac22ce669cc76adb5b",
+      "backup": "vault-before/system/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S02.md",
+      "before_sha256": "3deb8211253c71d35209b9298922775c939ded9b0062142e7e230ffd101b9b6a",
+      "after_sha256": "e632a9f98a8afdeee470f5bed25b82cc1ab35a173d66303d010bf26f1347c97b",
+      "backup": "vault-before/system/00 Systemindex/Semantik/S02.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Semantik/S06.md",
+      "before_sha256": "35ab8bf800c9e7a5eb0f9547002bbcd8b5667bb543f72341f666878e88519089",
+      "after_sha256": "936b47c5835af43aa883d3cd8540b2295811fe778fb55b3741cdd835158bf68e",
+      "backup": "vault-before/system/00 Systemindex/Semantik/S06.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Universen/INT.md",
+      "before_sha256": "a082fdba1cc41ffeb4df641c072cffa606df923e4b55498b14d458cb75eccc08",
+      "after_sha256": "5059e1694940c6fbed028823f01ccec4c5442be006992b30363b9b4b80a20d98",
+      "backup": "vault-before/system/00 Systemindex/Universen/INT.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Universen/SL.md",
+      "before_sha256": "24e3b2f30c0de379490e927682b51b8113c721971216d6154e3f4a31277a3503",
+      "after_sha256": "1b1fc3c95ada01c41ff80a6b1e25ad04e9c0b415924ed6dceddf07b23aa5a464",
+      "backup": "vault-before/system/00 Systemindex/Universen/SL.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Repoabgleich/Standabgleich mit dem Repository.md",
+      "before_sha256": "5ad6bcf95fb8c8e31defa967b82042810ed5ee7d569e3ddca19a235215d8f462",
+      "after_sha256": "e8c2527d704c9542c0cd0b868c6a33c04fe41af9a6de49358cf1de8324138846",
+      "backup": "vault-before/system/00 Systemindex/Repoabgleich/Standabgleich mit dem Repository.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md",
+      "before_sha256": "b99840f9df20355c7dc45371a95a227d4f73a3d946a5b4668e8c0644defa0a92",
+      "after_sha256": "51af72571b54867b7405a18078fc83fc21b7cb5e4429fc9d337852ce5a9ff067",
+      "backup": "vault-before/system/00 Systemindex/Repoabgleich/Konkrete Luecken im Repository.md.txt"
+    },
+    {
+      "vault": "plan",
+      "path": "00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md",
+      "before_sha256": "563abe18d9c0b329b01a19e66a5df7c3909035d4dac5ef05cb80aa98c31c7257",
+      "after_sha256": "30594bffc5ccc342e2c93776b3cb8a2f4dfc534ce7ea41ef024351d5130efd11",
+      "backup": "vault-before/plan/00 Einstieg/Repo und Erkenntnisstand 2026-11-06.md.txt"
+    },
+    {
+      "vault": "system",
+      "path": "Systemindexbindung.json",
+      "before_sha256": "d18e396c13a313ceecc5d00f6b4d957da6a9f10f9ff86d61f68bb599c2f16208",
+      "after_sha256": "3869bdc06854072954ba61c30e9ce7484204395ad5fb820c43a1a8114c8ba4c5",
+      "backup": "vault-before/system/Systemindexbindung.json"
+    }
+  ],
+  "point1_status": "IMPLEMENTED_BOUNDED_OFFLINE_RETURN_PATH",
+  "point2_model_learning": "OPEN",
+  "historical_models_unchanged": true,
+  "global_semantic_recertified": false
+}

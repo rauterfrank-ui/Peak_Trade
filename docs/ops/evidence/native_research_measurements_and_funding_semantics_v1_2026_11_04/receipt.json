@@ -1,0 +1,31 @@
+{
+  "source_commit": "df645ae88eddd2b207ff94de9f75ddbd17634b94",
+  "tests": "18 new scoped tests PASS;4 native engine runs plus a second4-run funding-binding intervention; actual downstream MC/bootstrap/rolling/crash evaluation, same later Meta after reference reload, input identity divergence denied. Previous32 tests remain separate unchanged prior evidence.",
+  "ruff_status": "PASS; format PASS",
+  "runtime_activation_authorized": false,
+  "boundaries": [
+    "Controlled synthetic bars and scenario-time fixtures; source-authentication is false.",
+    "Source helper binds6 configured source components, not authentic core/feature/Git history.",
+    "Funding probe proves model-binding versus applied cashflow distinction; it does not invent actual venue settlement or declare repaired funding yet.",
+    "Nonfinite metrics remain typed missing; missing robustness/regime/portfolio/stress inputs are not fabricated.",
+    "Existing code, Scope and original learning ledger unchanged; U04/GAP-0370 deferred; no services, activation, external orders, push or external-source writes."
+  ],
+  "local_checks": {
+    "mode": "Exact staged paths through existing token/reference validators via canonical Python",
+    "markdown_files": [
+      "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "docs/ops/evidence/native_research_measurements_and_funding_semantics_v1_2026_11_04/README.md",
+      "docs/ops/specs/CANONICAL_NATIVE_RESEARCH_MEASUREMENTS_V1.md",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "docs/system_atlas/generated/COVERAGE_REPORT.md",
+      "docs/system_atlas/generated/SYSTEM_ATLAS.md"
+    ],
+    "reference_count": 259,
+    "token_policy": "PASS",
+    "references": "PASS",
+    "blueprint_bodies": "IDENTICAL",
+    "protected_ledger": "UNCHANGED_SHA256",
+    "ruff": "PASS; format PASS",
+    "atlas_structure_generated_drift": "PASS"
+  }
+}

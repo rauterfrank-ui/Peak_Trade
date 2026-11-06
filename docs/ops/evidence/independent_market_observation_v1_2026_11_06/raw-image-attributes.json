@@ -1,0 +1,9 @@
+{
+  "source_feature_commit": "9150b9d12",
+  "reason": "EXACT_HISTORICAL_BEFORE_IMAGE_CONTAINS_ORIGINAL_BLANK_EOF",
+  "scope": "vault-before/** only",
+  "raw_original_bytes_changed": false,
+  "product_lint_and_whitespace_rules_changed": false,
+  "attribute": "-whitespace",
+  "all_active_source_and_document_paths_remain_checked": true
+}

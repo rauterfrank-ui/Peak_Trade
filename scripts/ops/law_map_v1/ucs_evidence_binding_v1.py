@@ -1439,6 +1439,8 @@ def render_workset_markdown(artifact: dict[str, Any]) -> str:
 
 
 def write_workset_artifact(_doc: dict[str, Any] | None = None) -> dict[str, Any]:
+    if (REPO_ROOT / "docs/system_atlas/source/documentation-cleanup.json").is_file():
+        raise RuntimeError("RETIRED_MAP_VIEW: use the frozen Law Impact Map policy inventory")
     artifact = build_workset_artifact()
     WORKSET_JSON.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
     md_path = (

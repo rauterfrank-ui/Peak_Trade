@@ -1,0 +1,58 @@
+# Funktionsketten außerhalb benannter Universen: erster Risk-Sizing-Nachweis
+
+Stand: 01.11.2026. Erweiterung des systemweiten Quellenzugangs. Keine neue kanonische Semantik oder Universe-Zuordnung. Quellcode wurde nur gelesen; keine Runtime gestartet.
+
+## Umfang der Rekonstruktion
+
+Die 13 bisherigen Untersuchungsfelder sind offene Suchzugänge. Zum Auftrag gehören ebenso unbenannte Komponenten, Adapter, Konfigurationen, Persistenz, Währungsumrechnung und funktionsübergreifende Beziehungen. Fehlende Universe-Zuordnung ist kein Ausschlussgrund. Risk-Sizing ist der erste konkrete Fall dieser erweiterten Suche, keine Begrenzung auf Finanzmathematik.
+
+Drei Zugänge werden kombiniert: historische Absichten; Code und Datenverträge unabhängig von Ordnernamen; tatsächliche Weitergabe und Änderung von Werten zwischen Produzenten und Consumern. Verzweigungen und Rückkopplungen werden verfolgt, ohne eine einzige zentrale Pipeline vorauszusetzen.
+
+## Quellenbindung
+
+Alle nachfolgenden Code-Zeilen beziehen sich auf Git-Revision `5d1c838c15369507c5247834db4dd0df25592169`, nicht pauschal auf den laufenden Betrieb. `source-evidence.json` enthält die vollständigen sieben gelesenen Quellen samt Git-Blob, SHA256 und Bytevergleich zur Arbeitskopie. Historische Verträge deklarieren Regeln; daraus folgt keine heutige Wirksamkeit.
+
+## Mehrere Größenbegriffe und Berechnungswege
+
+- `src/core/position_sizing.py`, FixedFractionSizer: Ein Anteil der Equity wird zu einem Notional und durch den Preis zu einer signierten Menge. Dies ist zunächst Kapitalallokation, kein durch Stop-Abstand bestimmtes Verlustbudget (Zeilen 76–90).
+- `src/risk/position_sizer.py`: `PositionSizerConfig.risk_pct` verwendet Prozentwerte, die Methode teilt durch 100 (169–170). Dagegen ist `calc_position_size` / `PositionRequest.risk_per_trade` ein Dezimalbruch: Verlustbudget = Equity × risk_per_trade, Menge = Verlustbudget / Stop-Abstand (335–338). Gleicher Themenbereich bedeutet keine identische Zahlenkonvention. Die nachfolgenden Oversize-Prüfungen sind eigenständig zu berücksichtigen.
+- `src/governance/capital_risk_sizing_v1.py`: Eine weitere Kette berechnet Kontraktmenge unter Risiko-, Kapital-, Exposure- und Mengenlimits. Sie berücksichtigt den Contract-Multiplier. Ein Rückgabewert oder PASS hier ist keine Order-Freigabe.
+
+## Statisch gelesene CRS-Berechnung
+
+In `capital_risk_sizing_v1.py`:
+
+1. Verfügbares Kapital = account_equity − already_committed_capital. Restkapital = max(0, min(verfügbares Kapital, total_capital_limit − current_reconciled_exposure)), Zeilen 569–581.
+2. Verlustbudget = min(per_trade_risk_cap oder policy.order_limit_usd, tägliches Restverlustbudget, Restkapital), 703–705.
+3. Verlust je Kontrakt = effektiver Stop-Abstand × Contract-Multiplier. Notional je Kontrakt = Referenzpreis × Contract-Multiplier, 715–717.
+4. Risikomengenlimit = Verlustbudget / Verlust je Kontrakt. Kapitalmengenlimit = min(Restkapital, Order-Notional-Limit) / Notional je Kontrakt. Ein Exposure-Mengenlimit kommt hinzu, 727–734.
+5. Kleinste Menge aus diesen Limits sowie optionalen Mengenobergrenzen; anschließend Abrunden auf Lot-Schritt, 736–772. Reduce/Exit kann zusätzlich auf offene Menge begrenzt werden, 779–793.
+6. Mindestmenge/-notional und erneute Risiko-/Exposure-Prüfung können blockieren. Provenance enthält final_quantity, Metadatenreferenz, Policy-/Config-/Implementierungsbezug, 795–949.
+
+Diese Formeln beschreiben diesen Codepfad nach seinen Vorbedingungen. Sie belegen weder die fachliche Eignung aller Inputs noch die Anwendung auf jedem Host. Insbesondere bedeutet `resulting_max_loss` hier ein lineares Stop-Verlustmodell; Slippage, Gaps oder Gebühren sind dadurch nicht als vollständig modelliert bewiesen.
+
+## Wie die Menge weitergegeben wird: zwei konkrete statische Pfade
+
+**A06-Composition** (`capital_risk_sizing_intent_restore_v1.py`): Context/Policy werden gebaut (94–123), dann `evaluate_quantity_chain_v1` aufgerufen (209). Bei PASS, Provenance und actionable Entscheidung wird ein SizingDecision erzeugt und an `build_canonical_order_intent_v1` übergeben (218–245). Adapter deklariert COMPOSITION_ONLY und PLAN_ONLY. Das ist eine statisch belegte Übergabe, keine externe Orderwirkung.
+
+**ENTER-Join vor Venue-Plan** (`current_productive_enter_live_29p_join_v1.py`): Treasury-Handoff ist in diesem Funktionskörper tatsächlich aufgerufen (522–532). Danach wird risk_admissible geprüft (561–573), aus MV2-Mark ein Referenzpreis erzeugt (615–620), ein Stop aus Adverse-Exit-Distanz abgeleitet (652–657), Instrument-Metadaten gebunden (684–689) und ein Währungskontext aufgebaut (731–745). Der Kapital-Kontext bekommt diese normalisierten Operanden (761–767). Der Join besitzt zudem einen Portfolio-Reservierungszweig (836–864). `_rebound_replay_with_sizing_decision_v1` bindet Sizing-/Quantity-Provenance und reicht sizing_decision an das Intent-Binding weiter (303–340).
+
+Damit ist die frühere offene Frage für diesen konkreten Funktionskörper enger: Treasury-Aufruf ist statisch sichtbar. Dass jeder relevante Host diesen Join erreicht und seine Menge bis zum endgültigen Venue-Plan unverändert korrekt verwendet, bleibt offen. Die Konsolidierung vom 31.10. wird dadurch nicht pauschal als falsch eingestuft; ihr Scope und ihre Host-Abdeckung bleiben getrennt.
+
+## Konkrete semantische Anschlussfragen
+
+- Bedeutet account_equity beim Consumer gesamte Equity oder bereits um gebundenes Kapital bereinigte verfügbare Margin? Im gelesenen ENTER-Join wird Available-Margin-Provenance mit already_net_of_in_use=true aufgebaut (490–504). Doppelte Subtraktion muss pfadbezogen ausgeschlossen werden.
+- Stimmen Währung, Preis-/Stop-Einheit und Contract-Multiplier nach Normalisierung zusammen? Normalisierung wird aufgerufen; ihre Implementierung und alle Conversion-Zweige sind hier noch nicht nachgewiesen. Der Gleichheitscheck live_ctx.account_equity gegen producer_equity (783–784) ist bei Untersuchung der zulässigen Währungsumrechnungen einzubeziehen, kein hier bewiesener Fehler.
+- `leverage_ceiling` ist im CRS-Context deklariert, wird aber im gelesenen evaluate_quantity_chain_v1 nicht als Rechenoperand verwendet. Die Wirkung außerhalb dieser Funktion bleibt zu verfolgen.
+- Der A06-Adapter setzt already_committed_capital, daily_loss_consumed und reconciled_open_position_quantity auf 0 (108–112). Ob diese Annahmen seinem zulässigen Einsatz entsprechen, ist über seine Aufrufer zu klären; keine globale Fehlerbehauptung.
+- `or`-Fallbacks für order_notional_cap/per_trade_risk_cap unterscheiden Null von einem ausdrücklich wirksamen Null-Limit nicht. Ob vorgelagerte Verträge solche Werte ausschließen, bleibt zu prüfen; ebenfalls keine voreilige Fehlerklassifikation.
+- Reduktionen und Exits laufen in der CRS-Funktion teilweise durch dieselben Kapital-/Budget-Vorbedingungen. Ob relevante Exit-Hosts diese Funktion so konsumieren oder separate Sicherheitswege nutzen, muss belegt werden.
+- Welche Consumer verändern die berechnete Menge später durch Caps, Rundung, Veto oder erneutes Sizing? Die bestehende overwrite-Vertragsdatei bietet konkrete Kandidaten, ersetzt keine frische Prüfung jedes Körpers.
+
+## Historische Anker und verbleibende Beweisgrenzen
+
+Die erreichbare Historie enthält die CRS-Implementierung vom 01.07.2026, Commit `661a883bc420602a46cd234a01de3b4948aeb2ab` (#4714), sowie A06 vom 29.08.2026, `ba76a1d14c1c3eca8325efca465137c9712d13b5` (#6132). Frühere Sizing-Varianten liegen bereits in Dezember-2025-Commits. `historical-addition-anchors.json` hält die pfadbezogenen Kandidaten fest. Shallow-Grenzen können eine scheinbare Hinzufügung erzeugen; dies beweist keinen absoluten Ursprung.
+
+Der historische STEP29M-Auftrag (Chat 03281ec4…, Zeile 1) ist als Anfrage mit Herkunft separat gespeichert. Er ist Planungsbeleg, keine aktuelle Ausführungsanweisung und kein Implementierungsnachweis. Originale Absicht und mathematische Varianten müssen weiter zeitlich abgeglichen werden.
+
+Nächster zusammenhängender Prüfschritt: operative Kapital-/Währungsoperanden und die unterschiedlichen Context-Builder bis zu ihren Hosts verfolgen; danach finale Mengen-Consumer samt Overwrite-Reihenfolge. Parallel dazu bleiben alle nicht benannten Funktionen im Untersuchungsumfang. Keine vollständige Funktionszuordnung oder semantische Gesamtkohärenz behauptet.

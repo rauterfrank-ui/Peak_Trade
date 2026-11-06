@@ -1,0 +1,70 @@
+{
+  "schema": "wp_b5_post_merge_verification.v1",
+  "authority_effect": "NONE",
+  "authorization": {
+    "OWNER_MERGE_GO": true,
+    "PRODUCTION_ARMING_AUTHORIZED": false,
+    "REAL_VENUE_POST_AUTHORIZED": false,
+    "LIVE_AUTHORIZED": false,
+    "TESTNET_AUTHORIZED": false
+  },
+  "pr": {
+    "number": 7139,
+    "url": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7139",
+    "title": "WP-B5: Kill-Switch Safety & Recovery Closure",
+    "verified_head_sha": "9709696dbd606c96f818cf3d52242666bf765959",
+    "merge_method": "squash",
+    "match_head_commit_bound": true,
+    "merged_at": "2026-10-17T11:04:13Z"
+  },
+  "pre_merge_live_checks": {
+    "base": "main",
+    "base_sha": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+    "required_checks": "12/12 pass",
+    "policy_critic_review": "success",
+    "policy_critic_gate": "success",
+    "merge_state_status": "CLEAN",
+    "cursor_bugbot": "neutral; 2 known findings (97beb165 medium, f0c9040e low), no new findings",
+    "human_reviews": 0
+  },
+  "post_merge": {
+    "merge_commit_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+    "origin_main_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+    "merge_commit_parent": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+    "single_parent": true,
+    "merge_tree": "9fa2ce4f51182d355232af802095f5996bca8520",
+    "pr_head_tree": "9fa2ce4f51182d355232af802095f5996bca8520",
+    "tree_identical_to_verified_pr_head": true,
+    "squash_diff_sha256": "eadb3de21751ea8aacda9711d60124d7b067c994ffc4471d167dce507597e129",
+    "verified_pr_diff_sha256": "eadb3de21751ea8aacda9711d60124d7b067c994ffc4471d167dce507597e129",
+    "changed_files": 19
+  },
+  "security_invariants": {
+    "protected_trading_logic_paths_in_diff": 0,
+    "post_gate_content_sha256_on_main": "f95a36596d081ca9ce0c72c25c7bb3ea30ab53c094db109da6d35ac42969f482",
+    "post_gate_content_matches_pin": true,
+    "pin_semantics": "pins apply to paths differing from origin/main; post-merge main content equals the pinned content",
+    "productive_kill_switch_state_file_in_tree": false,
+    "productive_kill_switch_state_file_in_main_checkout": false,
+    "active_is_not_trading_authorization": true,
+    "arming_post_orders_capital_performed": false
+  },
+  "accepted_residuals": [
+    "Journal truncation plus restore of an old attested state is not detectable (same trust domain; no external monotonic anchor).",
+    "Secret-free legacy readers without journal keep file-only ACTIVE semantics (unchanged vs prior main; POST gate denies).",
+    "PEAK_KILL_SWITCH=1 also blocks proven risk reduction (fail-closed reading of OD-3).",
+    "Crash after RECOVERY_COMPLETED before state write requires trigger + new request.",
+    "Corrupt journal requires operator procedure (trigger, move journal aside, new request).",
+    "Bugbot 97beb165 (medium): RECOVERING without recovery binding is idempotently accepted by request_recovery and stays denied until trigger + new request; fail-closed, only reachable from pre-WP-B5 or hand-edited files.",
+    "Bugbot f0c9040e (low): get_status ignores HMAC-bound cooldown; display only, completion stays fail-closed.",
+    "278 of 283 tests in the CPU-heavy transitively affected integration-contract file not run locally.",
+    "current_law_impact_map_v1 validate reports hash mismatch / undeterminable paths for this diff (informational periodic workflow; not PR-required; not caused by the remediation commit)."
+  ],
+  "ghv": {
+    "snapshot_id": "4a8338cb292b89d566731abc647b0529",
+    "status": "STALE / NAVIGATION_ONLY",
+    "coverage_gap": "no nodes for impact_adjudication_v1.json or policy critic",
+    "used_as": "REFERENCE_ONLY; CURRENT code scan authoritative"
+  },
+  "financial_guarantee": "NONE"
+}

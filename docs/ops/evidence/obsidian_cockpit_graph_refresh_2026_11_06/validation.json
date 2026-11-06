@@ -1,0 +1,28 @@
+{
+  "view_check": {
+    "result": "PASS",
+    "scope": "ENTRY_VIEWS_LINKS_GEOMETRY_BINDING_PRESERVATION_AND_PRIOR_PASS_REUSE",
+    "vault_files": 8,
+    "resolved_local_links_and_file_cards": 175,
+    "canvases": {
+      "Systemkarte.canvas": {
+        "nodes": 21,
+        "edges": 7,
+        "file_cards": 6
+      },
+      "Systemkarte Offlineverbund.canvas": {
+        "nodes": 21,
+        "edges": 13,
+        "file_cards": 2
+      }
+    },
+    "prior_source_test_config_hashes_verified": 11358,
+    "prior_distinct_passes_reused": 787,
+    "new_product_test_run": false,
+    "global_semantic_recertification": false,
+    "runtime_authorization_effect": "NONE"
+  },
+  "ruff_check": "PASS",
+  "native_ui_check": "OBSERVED_AS_SCOPED_IN_UI_OBSERVATION",
+  "product_test_run": "REUSED_787_WITH_UNCHANGED_11358_SOURCE_TEST_CONFIG_HASHES"
+}

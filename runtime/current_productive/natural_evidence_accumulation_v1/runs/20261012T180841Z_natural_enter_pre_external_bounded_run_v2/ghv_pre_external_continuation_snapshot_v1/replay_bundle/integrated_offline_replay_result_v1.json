@@ -1,0 +1,643 @@
+{
+  "capital_risk_mode": "OFFLINE_ALGEBRA",
+  "compute_owner": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+  "consumed_strategy_ids": [
+    "strat-momentum-v1"
+  ],
+  "decision_packet_role": "HANDOFF_EVIDENCE_ONLY",
+  "evidence": {
+    "adapter_compatible": false,
+    "authority_effect": "NONE",
+    "bear_assessment_ref": "dir-assess-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+    "bear_suitability_ref": "suitability-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+    "bear_survival_ref": "survival-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+    "bull_assessment_ref": "",
+    "bull_suitability_ref": "",
+    "bull_survival_ref": "",
+    "component_versions": {
+      "canonical_market_context": "v1",
+      "canonical_scope_initialization": "v1",
+      "canonical_trading_decision_evidence": "v1",
+      "deterministic_scope_event_generator": "v1",
+      "directional_assessment": "v1",
+      "double_play_composition_matrix": "v1",
+      "double_play_entry_exit_policy": "v0",
+      "double_play_state": "v0",
+      "integrated_offline_trading_logic_replay": "v1",
+      "suitability_binding": "v1",
+      "survival_assessment": "v1"
+    },
+    "composition_result_ref": "a66466ec18111e4ef8685f621f92f69c",
+    "config_digest": "59f3062f719dcf4efe73aaa52b74527969aa1fb746b7cb9b12cdd69a5bdfc31b",
+    "current_scope_ref": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+    "decision_id": "decision-264182ff2daab85d1761cd552898dec5",
+    "decision_outcome": "no_action",
+    "decision_precedence_trace": [
+      "no_action"
+    ],
+    "entry_exit_policy_ref": "9642ab88704a3442805aa978bf1ee792",
+    "entry_or_exit_policy_ref": "9642ab88704a3442805aa978bf1ee792",
+    "evidence_schema_version": "canonical_trading_decision_evidence_v1",
+    "execution_eligible": false,
+    "implementation_digest": "46c511fe65ca67c277d65f0d2b936ff83380455f7d87a5e438e1bf30c776519d",
+    "input_digest": "f3472d17a5d5aceb770781581ef0d6ad3fca4f0aee3ba8e11380c9ecbf2ada2f",
+    "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+    "killswitch_boundary_effect": "BOUND_OFFLINE",
+    "killswitch_boundary_ref": "69af08c246d7371d5cb6750eb93904d02527f39681d71699b6f1955a2121e360",
+    "market_context_ref": "ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-full-core-current-v1",
+    "next_direction_state": "long_armed",
+    "next_scope_ref": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+    "order_effect": "NONE",
+    "order_intent_effect": "NONE",
+    "order_intent_ref": "",
+    "policy_versions": {
+      "composition": "double_play_composition_matrix_policy_v1",
+      "directional": "directional_assessment_policy_v1",
+      "entry_exit": "double_play_entry_exit_policy_v0",
+      "scope_event_generator": "deterministic_scope_event_generator_policy_v1",
+      "scope_initialization": "canonical_scope_initialization_policy_instrument_relative_v1",
+      "suitability": "suitability_ranking_policy_v1",
+      "survival": "survival_assessment_policy_v1"
+    },
+    "previous_direction_state": "long_armed",
+    "quantity_provenance_ref": "",
+    "quantity_status": "NOT_BOUND",
+    "reason_codes": [
+      "no_action"
+    ],
+    "reconciliation_unknown_outcome_effect": "BOUND_OFFLINE",
+    "reconciliation_unknown_outcome_ref": "f403574ed5c2a6bb4c826778e089cc9877e6c1d0ce287f5426bf95c84b3f368f",
+    "replay_id": "persistent-natural-enter-live-c1:s5:LANE_1:LANE_1-master-v2",
+    "risk_sizing_effect": "NONE",
+    "risk_sizing_ref": "",
+    "runtime_effect": "NONE",
+    "safety_boundary_effect": "BOUND_OFFLINE",
+    "safety_boundary_ref": "257361120d0e9712d5cdd914cb6803a3d821f8d908c0da9959b235142c332276",
+    "scope_event_ref": "state-switch-a93057e889193bdab4003dc5",
+    "scope_initialization_ref": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+    "selected_side": "none",
+    "selected_strategy_ref": "",
+    "semantic_digest": "b6401f78ebc94cc05586cbdced2816780967d86a24df782543259ea003e7d705",
+    "state_switch_ref": "state-switch-ca6f7447213f8ae507da0cb5",
+    "trading_epoch": 13,
+    "volatility_provenance": null,
+    "volatility_quarantine_provenance": null
+  },
+  "fail_reasons": [],
+  "intermediate": {
+    "bear_assessment": {
+      "assessment_id": "dir-assess-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+      "authority_effect": "NONE",
+      "confidence": 0.0,
+      "feature_refs": [
+        "feat-momentum-v1"
+      ],
+      "hard_block_reasons": [
+        "epoch_gap"
+      ],
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "order_effect": "NONE",
+      "reason_codes": [
+        "confirmation_progress_fail_closed",
+        "EPOCH_GAP"
+      ],
+      "risk_effect": "NONE",
+      "runtime_effect": "NONE",
+      "scope_event_ref": {
+        "event_type": "noop",
+        "scope_event_id": "state-switch-a93057e889193bdab4003dc5",
+        "semantic_digest": "b4f18f71d8fcf69d3f5381333c95b95874ef825332f6301160181dcdcc0ba8c2",
+        "trading_epoch": 13
+      },
+      "semantic_digest": "46aa4efb53cfd88064bae57023f93b09e8f507497dc2e39d2f6052c2d0044e35",
+      "side": "short",
+      "signal_strength": -0.06640981445807564,
+      "status": "blocked",
+      "survival_preconditions": [
+        "survival_precondition_ref_only"
+      ],
+      "trading_epoch": 13,
+      "valid_until_epoch": 16
+    },
+    "bear_suitability": {
+      "authority_effect": "NONE",
+      "directional_assessment_ref": {
+        "assessment_id": "dir-assess-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "semantic_digest": "46aa4efb53cfd88064bae57023f93b09e8f507497dc2e39d2f6052c2d0044e35",
+        "side": "short",
+        "status": "blocked",
+        "trading_epoch": 13
+      },
+      "eligible_strategy_ids": [],
+      "hard_block_reasons": [],
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "order_effect": "NONE",
+      "ranking_policy_version": "suitability_ranking_policy_v1",
+      "reason_codes": [
+        "survival_gate_blocked",
+        "survival_result_blocked"
+      ],
+      "regime_id": "trending",
+      "regime_status": "known",
+      "risk_effect": "NONE",
+      "runtime_effect": "NONE",
+      "selected_strategy_id": null,
+      "semantic_digest": "2851f70d6dfbbec751fd739f7f24d4c16a05311998eb7fa4f4ba2d9f17523b18",
+      "side": "short",
+      "status": "blocked",
+      "suitability_id": "suitability-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+      "survival_result_ref": {
+        "semantic_digest": "b4e531be721018b8a648d4dc2301cee9c0c885451461e8dcd292c961c2513699",
+        "side": "short",
+        "status": "blocked",
+        "survival_id": "survival-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "trading_epoch": 13
+      },
+      "tie_break_trace": [],
+      "trading_epoch": 13,
+      "valid_until_epoch": 16
+    },
+    "bear_survival": {
+      "authority_effect": "NONE",
+      "blocked_reasons": [
+        "directional_assessment_blocked"
+      ],
+      "cost_survival_result": {
+        "name": "cost_survival_check",
+        "reason_code": "",
+        "status": "unknown"
+      },
+      "data_completeness_result": {
+        "name": "data_completeness_check",
+        "reason_code": "",
+        "status": "unknown"
+      },
+      "directional_assessment_ref": {
+        "assessment_id": "dir-assess-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "semantic_digest": "46aa4efb53cfd88064bae57023f93b09e8f507497dc2e39d2f6052c2d0044e35",
+        "side": "short",
+        "status": "blocked",
+        "trading_epoch": 13
+      },
+      "drawdown_survival_result": {
+        "name": "drawdown_survival_check",
+        "reason_code": "",
+        "status": "unknown"
+      },
+      "expected_gross_edge": null,
+      "expected_roundtrip_cost": null,
+      "hard_fail_reasons": [],
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "liquidation_buffer_result": {
+        "name": "liquidation_buffer_check",
+        "reason_code": "",
+        "status": "unknown"
+      },
+      "net_expected_edge": null,
+      "order_effect": "NONE",
+      "policy_version": "survival_assessment_policy_v1",
+      "reason_codes": [
+        "directional_assessment_gate_failed"
+      ],
+      "risk_effect": "NONE",
+      "runtime_effect": "NONE",
+      "semantic_digest": "b4e531be721018b8a648d4dc2301cee9c0c885451461e8dcd292c961c2513699",
+      "sequence_survival_result": {
+        "name": "sequence_survival_check",
+        "reason_code": "",
+        "status": "unknown"
+      },
+      "side": "short",
+      "status": "blocked",
+      "survival_id": "survival-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+      "trading_epoch": 13,
+      "valid_until_epoch": 16,
+      "volatility_survival_result": {
+        "name": "volatility_survival_check",
+        "reason_code": "",
+        "status": "unknown"
+      }
+    },
+    "bull_assessment": null,
+    "bull_suitability": null,
+    "bull_survival": null,
+    "canonical_order_intent": null,
+    "capital_risk_mode": "OFFLINE_ALGEBRA",
+    "capital_risk_sizing_decision": null,
+    "chop_binding_status": "BOUND_AS_SCOPE_POLICY",
+    "composition_result": {
+      "authority_effect": "NONE",
+      "bear_assessment_ref": {
+        "assessment_id": "dir-assess-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "semantic_digest": "46aa4efb53cfd88064bae57023f93b09e8f507497dc2e39d2f6052c2d0044e35",
+        "side": "short",
+        "status": "blocked",
+        "trading_epoch": 13
+      },
+      "bear_suitability_ref": {
+        "semantic_digest": "2851f70d6dfbbec751fd739f7f24d4c16a05311998eb7fa4f4ba2d9f17523b18",
+        "side": "short",
+        "status": "blocked",
+        "suitability_id": "suitability-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "trading_epoch": 13
+      },
+      "bear_survival_ref": {
+        "semantic_digest": "b4e531be721018b8a648d4dc2301cee9c0c885451461e8dcd292c961c2513699",
+        "side": "short",
+        "status": "blocked",
+        "survival_id": "survival-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-short-blocked",
+        "trading_epoch": 13
+      },
+      "bull_assessment_ref": null,
+      "bull_suitability_ref": null,
+      "bull_survival_ref": null,
+      "chop_guard_status": "none",
+      "composition_id": "a66466ec18111e4ef8685f621f92f69c",
+      "composition_status": "blocked",
+      "conflict_status": "input_conflict",
+      "context_reference": "full-core-current-productive-cycle-persistent-natural-enter-live-c1:s5:LANE_1:LANE_1",
+      "input_digest": "d02f60cb84b303cb65b5624439e602098e767efdd45f941ec487dc323294192d",
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "order_effect": "NONE",
+      "policy_version": "double_play_composition_matrix_policy_v1",
+      "position_management_context": "flat",
+      "previous_direction_state": "neutral",
+      "reason_codes": [
+        "selected_lane_blocked",
+        "ambiguous_composition"
+      ],
+      "risk_effect": "NONE",
+      "runtime_effect": "NONE",
+      "selected_side": "none",
+      "semantic_digest": "2d785f66da3a0001c5f9e2e8853b31337c9fd0e8f2eda9338266c6158396ff10",
+      "sizing_effect": "NONE",
+      "trading_epoch": 13
+    },
+    "confirmation_integration_capability_id": "DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1",
+    "current_scope": {
+      "initial_volatility_distance": 0.0005392442784807463,
+      "initialized_at_trading_epoch": 1,
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "lifecycle_state": "scope_valid",
+      "max_scope_band": 1.0,
+      "min_scope_band": 1.0,
+      "neutral_lower_boundary": 0.09739075572151926,
+      "neutral_upper_boundary": 0.09846924427848075,
+      "policy_version": "canonical_scope_initialization_policy_instrument_relative_v1",
+      "reason_codes": [],
+      "reference_price": 0.09793,
+      "scope_band": 0.0005392442784807463,
+      "scope_id": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+      "semantic_digest": "0fe3b87ae5e9dd279f1558f540451c74d472b3c96d8542dd55c5243def51c17d",
+      "source_input_digest": "8b1c740abcbdea4bcde2b672d2bb8dd3f4db1a295319e710cec94b58e8e25039",
+      "source_market_context_id": "ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+      "trailing_anchor": 0.09793,
+      "volatility_estimate": 0.005506425798843524
+    },
+    "directional_confirmation_progress_after": {
+      "bear_confirmation_state": {
+        "assessment_state": "observe",
+        "candidate_started_at_epoch": null,
+        "distinct_confirmation_observation_count": 0,
+        "instrument": {
+          "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+          "venue": "OKX",
+          "venue_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap"
+        },
+        "last_processed_acceptor_result_fingerprint": "41bbb558d07e8b5380d23709d133b5949bedaee2e815307bcac1fcefd945c391",
+        "latest_accepted_market_observation_epoch": {
+          "value": 2
+        },
+        "session_id": "cfsess-okx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-c4b563a2eda812ee6c7ace69",
+        "side": "short",
+        "venue": "OKX"
+      },
+      "bull_confirmation_state": {
+        "assessment_state": "candidate",
+        "candidate_started_at_epoch": {
+          "value": 12
+        },
+        "distinct_confirmation_observation_count": 1,
+        "instrument": {
+          "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+          "venue": "OKX",
+          "venue_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap"
+        },
+        "last_processed_acceptor_result_fingerprint": "e4e785e7f803276be03f9bd2c6d6a289ca4e16206d2076ee886f41f8cd608009",
+        "latest_accepted_market_observation_epoch": {
+          "value": 12
+        },
+        "session_id": "cfsess-okx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-c4b563a2eda812ee6c7ace69",
+        "side": "long",
+        "venue": "OKX"
+      }
+    },
+    "entry_exit_decision": {
+      "adapter_compatible": false,
+      "authority_effect": "NONE",
+      "composition_result_ref": "a66466ec18111e4ef8685f621f92f69c",
+      "decision_outcome": "no_action",
+      "decision_precedence_trace": [
+        "no_action"
+      ],
+      "entry_eligibility": "not_applicable",
+      "execution_eligible": false,
+      "exit_class": "none",
+      "input_digest": "0b10b1271740dac688ae0c7572260896db13d27c9c4f0dd7b37b46ea9adc1576",
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "order_effect": "NONE",
+      "policy_decision_id": "9642ab88704a3442805aa978bf1ee792",
+      "policy_version": "double_play_entry_exit_policy_v0",
+      "position_flip_allowed": false,
+      "position_management_action": "none",
+      "position_state": "flat_reconciled",
+      "previous_direction_state": "long_armed",
+      "quantity_status": "NOT_BOUND",
+      "reason_codes": [
+        "no_action"
+      ],
+      "reconciliation_state": "reconciled",
+      "reduce_only": false,
+      "reversal_state": "none",
+      "risk_sizing_effect": "NONE",
+      "runtime_effect": "NONE",
+      "selected_side": "none",
+      "semantic_digest": "b48deb60fe832f9ab0e6f68734b799eba3b1c7496058f22b15bde856890a4bef",
+      "trading_epoch": 13
+    },
+    "market_context": {
+      "bar_finality_status": "finalized",
+      "bar_interval": "1m",
+      "best_ask": 0.09909,
+      "best_bid": 0.09844,
+      "canonical_volatility_estimate": {
+        "annualized": false,
+        "as_of_event_time": "2026-10-12T18:12:00+00:00",
+        "bar_duration": "PT1M",
+        "bar_interval_seconds": 60,
+        "config_digest": "a1ed5bc9b4a00e41765643cec2e33a84ea984c21a5e5c5c8e21c3dc07b51da3f",
+        "contract_version": "canonical_volatility_estimate_feature_contract/v1",
+        "data_quality": "TRUSTED",
+        "estimator": "POPULATION_STANDARD_DEVIATION_OF_LOG_RETURNS",
+        "estimator_version": "population_std_ddof_0/v1",
+        "fallback_identity": "NONE",
+        "fallback_used": false,
+        "horizon_seconds": 3600,
+        "lookback_bars": 60,
+        "minimum_observation_count": 60,
+        "observation_count": 60,
+        "oldest_observation_event_time": "2026-10-12T17:12:00+00:00",
+        "provenance": "CANONICAL_MATERIALIZER_V1",
+        "source_digest": "e3e098e42d3fc2df075d6570eda3a079c0ece91b45c8bda42df3353a08e433cc",
+        "unit": "PER_BAR_DECIMAL_RETURN_VOLATILITY",
+        "value": 0.005506425798843524
+      },
+      "clock_trust_status": "trusted",
+      "context_id": "ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch13-full-core-current-v1",
+      "data_integrity_status": "trusted",
+      "decision_time": "2026-10-12T18:23:01.000000Z",
+      "feature_contract_version": "canonical_market_context_feature_contract_v1",
+      "funding_rate": 0.0001,
+      "index_price": 0.09796,
+      "input_digest": "46cd0c3fa28a4469f1a849d60b114787eea18f2b4026a5fd4e2eaba3652a1ac7",
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "liquidity_feature_set": {
+        "depth_score": 0.0
+      },
+      "mark_price": 0.09863,
+      "market_event_time": "2026-10-12T18:23:00.000000Z",
+      "market_structure_feature_set": {
+        "range_ratio": 0.07377381434941233
+      },
+      "market_type": "perpetual",
+      "momentum_feature_set": {
+        "roc": 0.07109519157711928,
+        "rsi": 60.92030676892298
+      },
+      "open_interest": 20.0,
+      "spread": 0.0006499999999999978,
+      "trading_epoch": 13,
+      "trend_feature_set": {
+        "slope": 0.0007254611385420335,
+        "strength": 1.0
+      },
+      "volatility_estimate": 0.005506425798843524,
+      "volume": 10.0,
+      "warmup_status": "warmup_complete"
+    },
+    "next_scope_ref": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+    "post_confirmation_binding_capability_id": "POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1",
+    "runtime_scope_reinitialized": false,
+    "runtime_scope_state_after": {
+      "anchor_price": 0.09793,
+      "chop_latched": false,
+      "current_downscope_boundary": 0.09739075572151926,
+      "current_hysteresis_band": 0.0005392442784807463,
+      "current_upscope_boundary": 0.09846924427848075,
+      "last_completed_side_switch_tick": -1000000,
+      "last_switch_tick": -1000000,
+      "now_tick": 1,
+      "scope_stability_ticks": 0,
+      "switches_in_window": 0,
+      "window_start_tick": 1
+    },
+    "runtime_scope_state_before": {
+      "anchor_price": 0.09793,
+      "chop_latched": false,
+      "current_downscope_boundary": 0.09739075572151926,
+      "current_hysteresis_band": 0.0005392442784807463,
+      "current_upscope_boundary": 0.09846924427848075,
+      "last_completed_side_switch_tick": -1000000,
+      "last_switch_tick": -1000000,
+      "now_tick": 1,
+      "scope_stability_ticks": 0,
+      "switches_in_window": 0,
+      "window_start_tick": 1
+    },
+    "scope_event": {
+      "authority_effect": "NONE",
+      "blocked_reasons": [],
+      "candidate_count_after": 0,
+      "candidate_count_before": 0,
+      "current_scope_ref": {
+        "initial_volatility_distance": 0.0005392442784807463,
+        "initialized_at_trading_epoch": 1,
+        "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "lifecycle_state": "scope_valid",
+        "max_scope_band": 1.0,
+        "min_scope_band": 1.0,
+        "neutral_lower_boundary": 0.09739075572151926,
+        "neutral_upper_boundary": 0.09846924427848075,
+        "policy_version": "canonical_scope_initialization_policy_instrument_relative_v1",
+        "reason_codes": [],
+        "reference_price": 0.09793,
+        "scope_band": 0.0005392442784807463,
+        "scope_id": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+        "semantic_digest": "0fe3b87ae5e9dd279f1558f540451c74d472b3c96d8542dd55c5243def51c17d",
+        "source_input_digest": "8b1c740abcbdea4bcde2b672d2bb8dd3f4db1a295319e710cec94b58e8e25039",
+        "source_market_context_id": "ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+        "trailing_anchor": 0.09793,
+        "volatility_estimate": 0.005506425798843524
+      },
+      "evaluated_thresholds": {
+        "adverse_exit_threshold": 0.0002172395106159747,
+        "downscope_candidate_threshold": 0.0005430987765399367,
+        "reversal_candidate_threshold": 0.000325859265923962,
+        "up_candidate_threshold": 0.0005430987765399367
+      },
+      "event_type": "noop",
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "matched_conditions": [
+        "p5_cz4_delegated_noop"
+      ],
+      "next_confirmation_state": {
+        "candidate_count": 0,
+        "candidate_kind": null,
+        "last_evaluated_trading_epoch": 1
+      },
+      "next_scope_effective_epoch": null,
+      "order_effect": "NONE",
+      "position_effect": "NONE",
+      "previous_confirmation_state": {
+        "candidate_count": 0,
+        "candidate_kind": null,
+        "last_evaluated_trading_epoch": 1
+      },
+      "runtime_effect": "NONE",
+      "scope_event_id": "state-switch-a93057e889193bdab4003dc5",
+      "semantic_binding": {
+        "adverse_exit_distance": 0.0002172395106159747,
+        "confirmation_epochs": 2,
+        "cooldown_active": false,
+        "cooldown_remaining_epochs": 0,
+        "current_direction_state": "long",
+        "current_price": 0.09863,
+        "generator_policy_version": "deterministic_scope_event_generator_policy_v1",
+        "market_context_digest": "46cd0c3fa28a4469f1a849d60b114787eea18f2b4026a5fd4e2eaba3652a1ac7",
+        "reversal_distance": 0.000325859265923962,
+        "trailing_anchor": 0.09894,
+        "up_distance": 0.0005430987765399367
+      },
+      "semantic_digest": "b4f18f71d8fcf69d3f5381333c95b95874ef825332f6301160181dcdcc0ba8c2",
+      "trading_epoch": 13
+    },
+    "scope_initialization": {
+      "block_reasons": [],
+      "execution_eligible": false,
+      "is_authority": false,
+      "is_signal": false,
+      "lifecycle_state": "scope_valid",
+      "live_authorization": false,
+      "order_effect": false,
+      "runtime_effect": false,
+      "scope": {
+        "initial_volatility_distance": 0.0005392442784807463,
+        "initialized_at_trading_epoch": 1,
+        "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+        "lifecycle_state": "scope_valid",
+        "max_scope_band": 1.0,
+        "min_scope_band": 1.0,
+        "neutral_lower_boundary": 0.09739075572151926,
+        "neutral_upper_boundary": 0.09846924427848075,
+        "policy_version": "canonical_scope_initialization_policy_instrument_relative_v1",
+        "reason_codes": [],
+        "reference_price": 0.09793,
+        "scope_band": 0.0005392442784807463,
+        "scope_id": "scope-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+        "semantic_digest": "0fe3b87ae5e9dd279f1558f540451c74d472b3c96d8542dd55c5243def51c17d",
+        "source_input_digest": "8b1c740abcbdea4bcde2b672d2bb8dd3f4db1a295319e710cec94b58e8e25039",
+        "source_market_context_id": "ctx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-epoch1-full-core-current-v1",
+        "trailing_anchor": 0.09793,
+        "volatility_estimate": 0.005506425798843524
+      },
+      "scope_event_generated": false
+    },
+    "single_lane_confirmation_after": {
+      "confirmation_progress": {
+        "assessment_state": "observe",
+        "candidate_started_at_epoch": null,
+        "distinct_confirmation_observation_count": 0,
+        "instrument": {
+          "canonical_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+          "venue": "OKX",
+          "venue_instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap"
+        },
+        "last_processed_acceptor_result_fingerprint": "41bbb558d07e8b5380d23709d133b5949bedaee2e815307bcac1fcefd945c391",
+        "latest_accepted_market_observation_epoch": {
+          "value": 2
+        },
+        "session_id": "cfsess-okx-okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap-c4b563a2eda812ee6c7ace69",
+        "side": "short",
+        "venue": "OKX"
+      },
+      "kind": "active",
+      "selected_side": "short"
+    },
+    "state_switch": {
+      "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+      "next_side_state": "long_armed_neutral_start",
+      "previous_side_state": "long_armed_neutral_start",
+      "scope_event_type": "noop",
+      "semantic_digest": "e822340a16369cd12ab52512e7d292c4f541d2560f05aa12d1414362446cec5f",
+      "state_switch_id": "state-switch-ca6f7447213f8ae507da0cb5",
+      "trading_epoch": 13,
+      "transition_allowed": false,
+      "transition_reason_code": "p5_7_regime_bound_projection_handoff"
+    },
+    "trailing_anchor_used": 0.09793,
+    "transition_decision": {
+      "allowed": false,
+      "live_authorization_granted": false,
+      "reason_code": "P5_CZ4_DELEGATED_EXTERNAL_LAYERED_CORE_AUTHORITY"
+    }
+  },
+  "regime_bull_bear_switch_evidence_readmodel": {
+    "artifact_filename": "regime_bull_bear_switch_evidence_readmodel.v1.json",
+    "authority_effect": "NONE",
+    "capability_id": "CAPABILITY_REGIME_BULL_BEAR_SWITCH_EVIDENCE_READMODEL_V1",
+    "capture_mode": "IMMUTABLE_CAPTURE_OF_AUTHORIZED_RUNTIME_OUTPUT",
+    "decision_authority": false,
+    "evidence_classification": "EVIDENCE_ONLY",
+    "family_id": "regime_bull_bear_switch",
+    "instrument_id": "okx_eea:linear_perpetual:STRK:USDT:USDT:strk-usdt-swap",
+    "next_side_state": "long_armed_neutral_start",
+    "order_effect": "NONE",
+    "owner": "trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1",
+    "parallel_persistence_domain": false,
+    "presentation_authority": false,
+    "previous_side_state": "long_armed_neutral_start",
+    "regime_id": "trending",
+    "regime_status": "known",
+    "restart_authority": false,
+    "runtime_capture_point": "trading.master_v2.integrated_offline_trading_logic_replay_v1.run_integrated_offline_trading_logic_replay_v1@post_transition_state",
+    "runtime_effect": "NONE",
+    "schema_name": "regime_bull_bear_switch_evidence_readmodel.v1",
+    "schema_version": 1,
+    "scope_event_type": "noop",
+    "side_state": "long_armed_neutral_start",
+    "trading_epoch": 13,
+    "trading_input": false,
+    "transition_allowed": false,
+    "transition_reason_code": "P5_CZ4_DELEGATED_EXTERNAL_LAYERED_CORE_AUTHORITY"
+  },
+  "registry_snapshot_digest": "",
+  "replay_execution_safety": {
+    "cancel_only": false,
+    "consumption_guard_effect": "NONE",
+    "contract_version": "v1",
+    "emergency_boundary_active": false,
+    "emergency_mode": "normal",
+    "entry_blocked": false,
+    "flatten_only": false,
+    "post_29q_role": "POST_29Q_CONSUMPTION_GUARD",
+    "reason_codes": [],
+    "reduce_only": false,
+    "runtime_authority_effect": "NONE",
+    "source_refs": [
+      "safety:257361120d0e9712d5cdd914cb6803a3d821f8d908c0da9959b235142c332276",
+      "killswitch:69af08c246d7371d5cb6750eb93904d02527f39681d71699b6f1955a2121e360"
+    ]
+  },
+  "replay_pass": true,
+  "strategy_identity_enforcement": "EXPLICIT_INJECTION"
+}

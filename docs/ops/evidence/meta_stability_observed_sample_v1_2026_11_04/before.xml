@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.296" timestamp="2026-11-04T02:48:01.986550+01:00" hostname="MacBook-Pro-von-Frank.local"><testcase classname="tests.experiments.test_meta_stability_observed_sample_v1" name="test_missing_measurements_do_not_enable_instability_findings_or_proposals[values0]" time="0.008"><failure message="AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'&#10;  &#10;  - INSUFFICIENT_SAMPLE&#10;  + COMPUTED">tests/experiments/test_meta_stability_observed_sample_v1.py:18: in test_missing_measurements_do_not_enable_instability_findings_or_proposals
+    assert question["evidence_status"] == "INSUFFICIENT_SAMPLE"
+E   AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'
+E     
+E     - INSUFFICIENT_SAMPLE
+E     + COMPUTED</failure></testcase><testcase classname="tests.experiments.test_meta_stability_observed_sample_v1" name="test_missing_measurements_do_not_enable_instability_findings_or_proposals[values1]" time="0.015"><failure message="AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'&#10;  &#10;  - INSUFFICIENT_SAMPLE&#10;  + COMPUTED">tests/experiments/test_meta_stability_observed_sample_v1.py:18: in test_missing_measurements_do_not_enable_instability_findings_or_proposals
+    assert question["evidence_status"] == "INSUFFICIENT_SAMPLE"
+E   AssertionError: assert 'COMPUTED' == 'INSUFFICIENT_SAMPLE'
+E     
+E     - INSUFFICIENT_SAMPLE
+E     + COMPUTED</failure></testcase><testcase classname="tests.experiments.test_meta_stability_observed_sample_v1" name="test_known_stable_measurement_counts_in_coverage" time="0.011"><failure message="assert 3 == 2">tests/experiments/test_meta_stability_observed_sample_v1.py:28: in test_known_stable_measurement_counts_in_coverage
+    assert question["sample_size"] == 2
+E   assert 3 == 2</failure></testcase><testcase classname="tests.experiments.test_meta_stability_observed_sample_v1" name="test_all_missing_keeps_explicit_absence" time="0.007"><failure message="assert 2 == 0">tests/experiments/test_meta_stability_observed_sample_v1.py:35: in test_all_missing_keeps_explicit_absence
+    assert question["sample_size"] == 0
+E   assert 2 == 0</failure></testcase></testsuite></testsuites>

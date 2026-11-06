@@ -9,7 +9,6 @@ from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.top20_opportunity_evaluation_residency_v1.constants_v1 import (
     DEFAULT_MAX_PENDING,
-    DEFAULT_RESIDENCY_DURATION_SECONDS,
     IMPLEMENTATION_SAFETY_MAX_PENDING,
     SCHEMA_VERSION,
     STATE_ABSENT,
@@ -31,16 +30,12 @@ def sha256_hex(payload: str | bytes) -> str:
 class ResidencyRuntimeConfigV1:
     enabled: bool = TOP20_EVALUATION_RESIDENCY_ENABLED
     max_pending: int = DEFAULT_MAX_PENDING
-    duration_seconds: float = DEFAULT_RESIDENCY_DURATION_SECONDS
-    early_release_allowed: bool = True
 
     def validate_v1(self) -> None:
         if int(self.max_pending) <= 0:
             raise ValueError("max_pending_must_be_positive")
         if int(self.max_pending) > IMPLEMENTATION_SAFETY_MAX_PENDING:
             raise ValueError("max_pending_exceeds_safety_bound")
-        if float(self.duration_seconds) <= 0:
-            raise ValueError("duration_seconds_must_be_positive")
 
 
 @dataclass(frozen=True)
@@ -98,7 +93,6 @@ class ResidencyRecordV1:
     state: str
     admission: AdmissionProvenanceV1
     residency_started_at_unix: float
-    residency_deadline_unix: float
     first_admission_sequence: int
     queue_order_key: tuple[int, str]
     active_slot: Optional[int] = None
@@ -117,7 +111,6 @@ class ResidencyRecordV1:
             "last_observed_clock_unix": float(self.last_observed_clock_unix),
             "post_terminal_outside_top20_observed": bool(self.post_terminal_outside_top20_observed),
             "queue_order_key": [int(self.queue_order_key[0]), str(self.queue_order_key[1])],
-            "residency_deadline_unix": float(self.residency_deadline_unix),
             "residency_epoch_id": self.residency_epoch_id,
             "residency_started_at_unix": float(self.residency_started_at_unix),
             "state": self.state,
@@ -127,6 +120,8 @@ class ResidencyRecordV1:
 
     @staticmethod
     def from_dict(payload: Mapping[str, Any]) -> "ResidencyRecordV1":
+        if set(payload) - set(ResidencyRecordV1.__dataclass_fields__):
+            raise ValueError("unsupported_residency_record_fields")
         qk = payload.get("queue_order_key") or [0, ""]
         obs = [
             CurrentRankObservationV1(
@@ -144,7 +139,6 @@ class ResidencyRecordV1:
             state=str(payload["state"]),
             admission=AdmissionProvenanceV1.from_dict(payload.get("admission") or {}),
             residency_started_at_unix=float(payload["residency_started_at_unix"]),
-            residency_deadline_unix=float(payload["residency_deadline_unix"]),
             first_admission_sequence=int(payload["first_admission_sequence"]),
             queue_order_key=(int(qk[0]), str(qk[1])),
             active_slot=(
@@ -205,8 +199,6 @@ class ResidencyMetricsV1:
     admissions_total: int = 0
     promotions_total: int = 0
     evaluation_observed_total: int = 0
-    expired_pending_total: int = 0
-    expired_active_total: int = 0
     capacity_rejected_total: int = 0
     first_admission_to_active_latency_samples: tuple[float, ...] = ()
     active_to_evaluation_observed_latency_samples: tuple[float, ...] = ()
@@ -219,8 +211,6 @@ class ResidencyMetricsV1:
             "admissions_total": int(self.admissions_total),
             "capacity_rejected_total": int(self.capacity_rejected_total),
             "evaluation_observed_total": int(self.evaluation_observed_total),
-            "expired_active_total": int(self.expired_active_total),
-            "expired_pending_total": int(self.expired_pending_total),
             "first_admission_to_active_latency_samples": list(
                 self.first_admission_to_active_latency_samples
             ),
@@ -229,12 +219,12 @@ class ResidencyMetricsV1:
 
     @staticmethod
     def from_dict(payload: Mapping[str, Any]) -> "ResidencyMetricsV1":
+        if set(payload) - set(ResidencyMetricsV1.__dataclass_fields__):
+            raise ValueError("unsupported_residency_metrics_fields")
         return ResidencyMetricsV1(
             admissions_total=int(payload.get("admissions_total") or 0),
             promotions_total=int(payload.get("promotions_total") or 0),
             evaluation_observed_total=int(payload.get("evaluation_observed_total") or 0),
-            expired_pending_total=int(payload.get("expired_pending_total") or 0),
-            expired_active_total=int(payload.get("expired_active_total") or 0),
             capacity_rejected_total=int(payload.get("capacity_rejected_total") or 0),
             first_admission_to_active_latency_samples=tuple(
                 float(x) for x in (payload.get("first_admission_to_active_latency_samples") or ())

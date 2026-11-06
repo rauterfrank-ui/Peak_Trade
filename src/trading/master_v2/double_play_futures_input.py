@@ -10,9 +10,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+import re
 from typing import Optional, Tuple
 
 DOUBLE_PLAY_FUTURES_INPUT_LAYER_VERSION = "v0"
+FORBIDDEN_FUTURES_BASE_ASSETS: frozenset[str] = frozenset()
+
+
+def futures_instrument_identity_allowed_v1(instrument_id: str) -> bool:
+    """Negative identity filter; assets including BTC use common futures gates."""
+    if not isinstance(instrument_id, str) or not instrument_id.strip():
+        return False
+    forbidden = {v.lower() for v in FORBIDDEN_FUTURES_BASE_ASSETS} | {
+        "spot", "synthetic_spot", "syntheticspot"
+    }
+    return not any(
+        re.search(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])", instrument_id.lower())
+        for token in forbidden
+    )
 
 
 class FuturesMarketType(str, Enum):

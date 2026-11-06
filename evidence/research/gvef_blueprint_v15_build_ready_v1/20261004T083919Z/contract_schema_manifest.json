@@ -1,0 +1,1292 @@
+{
+  "digest_model": {
+    "algorithm": "SHA-256",
+    "canonical_serialization": "JSON Canonical Form (JCS/RFC 8785 style): UTF-8, sorted object keys, no insignificant whitespace",
+    "excluded_volatile_fields": [
+      "created_at_utc",
+      "runner_host",
+      "process_id"
+    ],
+    "null_handling": "Required fields must not be null; optional absent vs null explicit in schema",
+    "numeric_normalization": "Decimals as strings fixed-scale per metric_schema; integers as JSON numbers",
+    "ordering": "Arrays: contract-defined order; objects: key-sorted",
+    "protected_domains": [
+      "ranking_universe",
+      "selection",
+      "mv2",
+      "dp",
+      "confirmation",
+      "sidestate",
+      "entry_exit",
+      "scope",
+      "crs",
+      "sizing",
+      "admission",
+      "venue_plan"
+    ],
+    "schema_version_binding": "digest includes schema_version field inside payload",
+    "timestamp_handling": "UTC ISO8601 with Z; excluded from digest if volatile (e.g. created_at) when listed in excluded_fields",
+    "verdicts": {
+      "DIGEST_CHANGED_EXPECTED": "authorized slice declared expected change",
+      "DIGEST_CHANGED_UNEXPECTED": "fail-closed; WHOLE_SYSTEM_REPROOF via resolver",
+      "DIGEST_CONFLICTING": "CURRENT_CONFLICT; STOP",
+      "DIGEST_EQUAL": "baseline and candidate digests match",
+      "DIGEST_UNAVAILABLE": "fail-closed unless contract allows absent"
+    }
+  },
+  "schemas": {
+    "BoundaryResult": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "constraint_edge",
+        "NAME": "edge_id",
+        "NULLABLE": false,
+        "PROVENANCE": "gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Boundary checked",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "bool",
+        "NAME": "pass",
+        "NULLABLE": false,
+        "PROVENANCE": "gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Pass/fail",
+        "TYPE": "boolean",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "owner_id",
+        "NAME": "producer",
+        "NULLABLE": false,
+        "PROVENANCE": "gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Producer owner",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "owner_id",
+        "NAME": "consumer",
+        "NULLABLE": false,
+        "PROVENANCE": "gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Consumer owner",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "PROVEN_CURRENT|...",
+        "NAME": "current_verdict",
+        "NULLABLE": false,
+        "PROVENANCE": "gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Verdict",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "CapitalRiskCrsSizingEvidenceBundle": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "crs_state_digest",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP nested",
+        "REQUIRED": false,
+        "SEMANTICS": "CRS boundary state observe",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "PASS|REJECT",
+        "NAME": "sizing_verdict",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP",
+        "REQUIRED": false,
+        "SEMANTICS": "Sizing outcome observe",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "PASS|REJECT",
+        "NAME": "admission_verdict",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP",
+        "REQUIRED": false,
+        "SEMANTICS": "Admission observe",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "capital_context_provenance",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP",
+        "REQUIRED": false,
+        "SEMANTICS": "Capital context bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "risk_context_provenance",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP",
+        "REQUIRED": false,
+        "SEMANTICS": "Risk context bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "InvariantResult[]",
+        "NAME": "exposure_invariants",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP",
+        "REQUIRED": false,
+        "SEMANTICS": "Exposure/limit observe",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "ConstraintMatrix": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "matrix_version",
+        "NULLABLE": false,
+        "PROVENANCE": "BWP-0C",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix version",
+        "TYPE": "string",
+        "VERSIONING_RULE": "matrix_version_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "matrix_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "BWP-0C",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "matrix_version_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ConstraintRow[]",
+        "NAME": "rows",
+        "NULLABLE": false,
+        "PROVENANCE": "BWP-0C",
+        "REQUIRED": true,
+        "SEMANTICS": "Edges",
+        "TYPE": "array",
+        "VERSIONING_RULE": "matrix_version_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "git_sha",
+        "NAME": "baseline_sha",
+        "NULLABLE": false,
+        "PROVENANCE": "BWP-0C",
+        "REQUIRED": true,
+        "SEMANTICS": "Code baseline bind",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "CorpusManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "corpus_version",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus version",
+        "TYPE": "string",
+        "VERSIONING_RULE": "bump_on_population_change"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "corpus_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Population digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "string[]",
+        "NAME": "vector_ids",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Member vectors",
+        "TYPE": "array",
+        "VERSIONING_RULE": "bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "metric_schema_version",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Shared metric schema",
+        "TYPE": "string",
+        "VERSIONING_RULE": "schema_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "int[]",
+        "NAME": "seed_set",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus-level seeds",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "provenance",
+        "NULLABLE": false,
+        "PROVENANCE": "registry",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus origin",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "DecisionDeltaManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DecisionDelta[]",
+        "NAME": "deltas",
+        "NULLABLE": false,
+        "PROVENANCE": "comparator",
+        "REQUIRED": true,
+        "SEMANTICS": "Decision changes",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "digest",
+        "NULLABLE": false,
+        "PROVENANCE": "comparator",
+        "REQUIRED": true,
+        "SEMANTICS": "Manifest digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "DomainEvaluationContext": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "RunManifest",
+        "NAME": "run_manifest",
+        "NULLABLE": false,
+        "PROVENANCE": "runner",
+        "REQUIRED": true,
+        "SEMANTICS": "Bound run",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ArtifactIdentity",
+        "NAME": "baseline_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Baseline bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ArtifactIdentity",
+        "NAME": "candidate_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Candidate bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "CorpusManifest",
+        "NAME": "corpus_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ConfigIdentity",
+        "NAME": "config_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Config bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DataManifest",
+        "NAME": "data_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Data bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "SeedSet",
+        "NAME": "seed_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Seed bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ConstraintMatrix",
+        "NAME": "constraint_identity",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Constraint bind",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ProtectedDigestManifest",
+        "NAME": "protected_digest_baseline",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Baseline digests",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ReplayTrace",
+        "NAME": "replay_trace",
+        "NULLABLE": false,
+        "PROVENANCE": "replay",
+        "REQUIRED": true,
+        "SEMANTICS": "Replay output",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "DomainEvaluationResult": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "domain_enum",
+        "NAME": "domain",
+        "NULLABLE": false,
+        "PROVENANCE": "evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Evaluator domain",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "PASS|FAIL",
+        "NAME": "verdict",
+        "NULLABLE": false,
+        "PROVENANCE": "evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Domain verdict",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "MetricResult[]",
+        "NAME": "metrics",
+        "NULLABLE": false,
+        "PROVENANCE": "metric_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Metrics",
+        "TYPE": "array",
+        "VERSIONING_RULE": "schema_version"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "InvariantResult[]",
+        "NAME": "invariants",
+        "NULLABLE": false,
+        "PROVENANCE": "invariant_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Invariants",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "BoundaryResult[]",
+        "NAME": "boundary_results",
+        "NULLABLE": false,
+        "PROVENANCE": "evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Boundary checks",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DecisionDeltaManifest",
+        "NAME": "decision_deltas",
+        "NULLABLE": true,
+        "PROVENANCE": "comparator",
+        "REQUIRED": false,
+        "SEMANTICS": "Decision deltas",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DigestDeltaMap",
+        "NAME": "semantic_digest_deltas",
+        "NULLABLE": true,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": false,
+        "SEMANTICS": "Digest deltas",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "string[]",
+        "NAME": "evidence_refs",
+        "NULLABLE": false,
+        "PROVENANCE": "evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Nested evidence paths",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "failure_enum",
+        "NAME": "failure_classification",
+        "NULLABLE": true,
+        "PROVENANCE": "evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "If FAIL",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "EvidenceBundle": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "uuid",
+        "NAME": "run_id",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Run identity",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "string",
+        "NAME": "experiment_id",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Experiment id",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "git_sha",
+        "NAME": "baseline_sha",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Baseline",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "git_sha",
+        "NAME": "candidate_sha",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Candidate",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "constraint_matrix_version",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix version",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "constraint_matrix_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "vector_corpus_version",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus version",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "vector_corpus_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Corpus digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "ProtectedDigestManifest",
+        "NAME": "protected_semantic_digests",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Separate RU vs selection",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "config_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Config binding",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "config_provenance",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Config source",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DataManifest",
+        "NAME": "data_manifest",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Dataset binding",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "data_provenance",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Data source",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "int[]",
+        "NAME": "seed_set",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Deterministic seeds",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "metric_schema_version",
+        "NULLABLE": false,
+        "PROVENANCE": "manifest",
+        "REQUIRED": true,
+        "SEMANTICS": "Metrics schema",
+        "TYPE": "string",
+        "VERSIONING_RULE": "schema_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "InvariantResult[]",
+        "NAME": "invariant_results",
+        "NULLABLE": false,
+        "PROVENANCE": "invariant_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Hard gates",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "BoundaryResult[]",
+        "NAME": "authority_boundary_results",
+        "NULLABLE": false,
+        "PROVENANCE": "constraint_gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Pre/post gate",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DecisionDeltaManifest",
+        "NAME": "decision_delta_manifest",
+        "NULLABLE": false,
+        "PROVENANCE": "comparator",
+        "REQUIRED": true,
+        "SEMANTICS": "Decision deltas",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "RankingUniverseManifest",
+        "NAME": "ranking_universe_manifest",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "If RU slice",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "RankingDeltaManifest",
+        "NAME": "ranking_delta_manifest",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "If RU slice",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "LOCAL_EVALUATION|DOWNSTREAM_IMPACT_EVALUATION|WHOLE_SYSTEM_REPROOF",
+        "NAME": "fan_out_evaluation_class",
+        "NULLABLE": false,
+        "PROVENANCE": "adjudication",
+        "REQUIRED": true,
+        "SEMANTICS": "Reproof class",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "CapitalRiskCrsSizingEvidenceBundle",
+        "NAME": "capital_risk_crs_sizing_evidence_bundle",
+        "NULLABLE": true,
+        "PROVENANCE": "PTP evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Nested PTP only",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "evidence_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "builder",
+        "REQUIRED": true,
+        "SEMANTICS": "Bundle integrity",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "external_governance_enum",
+        "NAME": "promotion_status",
+        "NULLABLE": false,
+        "PROVENANCE": "governance",
+        "REQUIRED": true,
+        "SEMANTICS": "External only",
+        "TYPE": "string",
+        "VERSIONING_RULE": "external"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "bool",
+        "NAME": "post_constraint_gate_pass",
+        "NULLABLE": false,
+        "PROVENANCE": "post_gate",
+        "REQUIRED": true,
+        "SEMANTICS": "Promotion handoff gate",
+        "TYPE": "boolean",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "failure_enum",
+        "NAME": "failure_classification",
+        "NULLABLE": true,
+        "PROVENANCE": "runner",
+        "REQUIRED": false,
+        "SEMANTICS": "If FAILED",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "InvariantResult": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "id",
+        "NAME": "invariant_id",
+        "NULLABLE": false,
+        "PROVENANCE": "invariant_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Invariant",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "bool",
+        "NAME": "pass",
+        "NULLABLE": false,
+        "PROVENANCE": "invariant_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Pass/fail",
+        "TYPE": "boolean",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "string",
+        "NAME": "detail",
+        "NULLABLE": true,
+        "PROVENANCE": "invariant_engine",
+        "REQUIRED": false,
+        "SEMANTICS": "Failure detail",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "MetricResult": [
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "id",
+        "NAME": "metric_id",
+        "NULLABLE": false,
+        "PROVENANCE": "metric_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Metric name",
+        "TYPE": "string",
+        "VERSIONING_RULE": "schema_version"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "typed",
+        "NAME": "value",
+        "NULLABLE": false,
+        "PROVENANCE": "metric_engine",
+        "REQUIRED": true,
+        "SEMANTICS": "Metric value",
+        "TYPE": "number|string",
+        "VERSIONING_RULE": "schema_version"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "string",
+        "NAME": "unit",
+        "NULLABLE": true,
+        "PROVENANCE": "metric_engine",
+        "REQUIRED": false,
+        "SEMANTICS": "Unit",
+        "TYPE": "string",
+        "VERSIONING_RULE": "schema_version"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "typed",
+        "NAME": "baseline_value",
+        "NULLABLE": true,
+        "PROVENANCE": "comparator",
+        "REQUIRED": false,
+        "SEMANTICS": "Baseline comparison",
+        "TYPE": "number|string",
+        "VERSIONING_RULE": "schema_version"
+      }
+    ],
+    "PromotionEvidenceEnvelope": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "hash",
+        "NAME": "evidence_bundle_ref",
+        "NULLABLE": false,
+        "PROVENANCE": "adapter",
+        "REQUIRED": true,
+        "SEMANTICS": "Bundle pointer",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "evidence_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "adapter",
+        "REQUIRED": true,
+        "SEMANTICS": "Bundle digest copy",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "iso8601",
+        "NAME": "governance_handoff_timestamp",
+        "NULLABLE": false,
+        "PROVENANCE": "adapter",
+        "REQUIRED": true,
+        "SEMANTICS": "Handoff time",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "bool",
+        "NAME": "post_constraint_gate_pass",
+        "NULLABLE": false,
+        "PROVENANCE": "adapter",
+        "REQUIRED": true,
+        "SEMANTICS": "Required true",
+        "TYPE": "boolean",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "reproof_enum",
+        "NAME": "fan_out_evaluation_class",
+        "NULLABLE": false,
+        "PROVENANCE": "adapter",
+        "REQUIRED": true,
+        "SEMANTICS": "Declared reproof",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "ProtectedDigestManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "protected_domain_enum",
+        "NAME": "domain",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Digest domain",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "digest_hex",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Digest value",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "schema_version",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Digest schema",
+        "TYPE": "string",
+        "VERSIONING_RULE": "bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "DIGEST_EQUAL|...",
+        "NAME": "verdict",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_layer",
+        "REQUIRED": true,
+        "SEMANTICS": "Compare verdict",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "RankingDeltaManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "MembershipDelta[]",
+        "NAME": "membership_deltas",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Membership changes",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "OrderDelta[]",
+        "NAME": "ordering_deltas",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Ordering changes",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ChurnMetrics",
+        "NAME": "churn_metrics",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Anti-churn observe",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256",
+        "NAME": "digest",
+        "NULLABLE": false,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Manifest digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "RankingUniverseManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "InstrumentMembership[]",
+        "NAME": "membership",
+        "NULLABLE": false,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Universe membership snapshot",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "id",
+        "NAME": "ranking_snapshot_id",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Cap22 snapshot ref",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "RankEntry[]",
+        "NAME": "ordering",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "Ordering observe",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "TopKContext",
+        "NAME": "top_k_context",
+        "NULLABLE": true,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": false,
+        "SEMANTICS": "CURRENT-qualified Top-K",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "provenance",
+        "NULLABLE": false,
+        "PROVENANCE": "RU evaluator",
+        "REQUIRED": true,
+        "SEMANTICS": "Provenance",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "RunManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "uuid_v4",
+        "NAME": "run_id",
+        "NULLABLE": false,
+        "PROVENANCE": "runner",
+        "REQUIRED": true,
+        "SEMANTICS": "Immutable run identity",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "string",
+        "NAME": "experiment_id",
+        "NULLABLE": false,
+        "PROVENANCE": "request",
+        "REQUIRED": true,
+        "SEMANTICS": "Experiment grouping",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "git_sha",
+        "NAME": "baseline_sha",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Baseline code binding",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "git_sha",
+        "NAME": "candidate_sha",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Candidate code binding",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "evaluator_enum",
+        "NAME": "domain_evaluator_id",
+        "NULLABLE": false,
+        "PROVENANCE": "request",
+        "REQUIRED": true,
+        "SEMANTICS": "One of five evaluators",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "path_or_hash",
+        "NAME": "corpus_manifest_ref",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Bound corpus",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "constraint_matrix_version",
+        "NULLABLE": false,
+        "PROVENANCE": "BWP-0C",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix version",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256_hex",
+        "NAME": "constraint_matrix_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "digest_service",
+        "REQUIRED": true,
+        "SEMANTICS": "Matrix digest",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "sha256_hex",
+        "NAME": "seed_set_digest",
+        "NULLABLE": false,
+        "PROVENANCE": "binding",
+        "REQUIRED": true,
+        "SEMANTICS": "Seeds",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "LOCAL_EVALUATION|DOWNSTREAM_IMPACT_EVALUATION|WHOLE_SYSTEM_REPROOF",
+        "NAME": "fan_out_evaluation_class",
+        "NULLABLE": false,
+        "PROVENANCE": "adjudication",
+        "REQUIRED": true,
+        "SEMANTICS": "Declared reproof scope",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "iso8601",
+        "NAME": "created_at_utc",
+        "NULLABLE": false,
+        "PROVENANCE": "runner",
+        "REQUIRED": true,
+        "SEMANTICS": "Run creation timestamp",
+        "TYPE": "string",
+        "VERSIONING_RULE": "immutable"
+      }
+    ],
+    "VectorManifest": [
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "id",
+        "NAME": "vector_id",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Stable vector id",
+        "TYPE": "string",
+        "VERSIONING_RULE": "corpus_version_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "GoldenHappy|GoldenNeutral|...",
+        "NAME": "vector_class",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Taxonomy class",
+        "TYPE": "string",
+        "VERSIONING_RULE": "corpus_version_bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "semver",
+        "NAME": "schema_version",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Vector schema",
+        "TYPE": "string",
+        "VERSIONING_RULE": "bump"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "PopulationSelector",
+        "NAME": "population_selector",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Identical population binding",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": true,
+        "ENUM_OR_DOMAIN": "string[]",
+        "NAME": "invariant_ids",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Required invariants",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "Disposition[]",
+        "NAME": "expected_dispositions",
+        "NULLABLE": true,
+        "PROVENANCE": "corpus",
+        "REQUIRED": false,
+        "SEMANTICS": "Optional expected classes",
+        "TYPE": "array",
+        "VERSIONING_RULE": "immutable"
+      },
+      {
+        "DIGEST_PARTICIPATION": false,
+        "ENUM_OR_DOMAIN": "ProvenanceRecord",
+        "NAME": "provenance",
+        "NULLABLE": false,
+        "PROVENANCE": "corpus",
+        "REQUIRED": true,
+        "SEMANTICS": "Origin",
+        "TYPE": "object",
+        "VERSIONING_RULE": "immutable"
+      }
+    ]
+  }
+}

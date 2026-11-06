@@ -1,0 +1,111 @@
+{
+  "source_commit": "68c687a64a3e767c19bf52d90b896cc598c6d62f",
+  "files": [
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-original.md",
+      "archive": "originals/self_learning_master_base.original.txt",
+      "sha256": "119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94",
+      "bytes": 27371,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/sources/self-learning-master-core-logic-bound.md",
+      "archive": "originals/self_learning_master_core_bound.original.txt",
+      "sha256": "77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219",
+      "bytes": 33495,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/integrated-reconstruction-2026-11-02/original-master-recovery.json",
+      "archive": "originals/original_master_recovery.provenance.json",
+      "sha256": "67037bffc47c4b9fd69255569a8c3229b6970903e8506f6787859ac1283301be",
+      "bytes": 5462,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL01-CANONICAL_EXPERIMENT_IDENTITY_V1.md",
+      "archive": "originals/SL01-CANONICAL_EXPERIMENT_IDENTITY_V1.original.txt",
+      "sha256": "938e98e4f853147bea794886322bfeb7c3b26b63b4f74f4153e8c464924a742e",
+      "bytes": 3456,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL02-CANONICAL_EXPERIMENT_MEMORY_V1.md",
+      "archive": "originals/SL02-CANONICAL_EXPERIMENT_MEMORY_V1.original.txt",
+      "sha256": "16526d68ad2c31b2d40180f408e8dc6c76aa5b6b1d92448aec72e3646ded8017",
+      "bytes": 3900,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL03-CANONICAL_FAILURE_MEMORY_V1.md",
+      "archive": "originals/SL03-CANONICAL_FAILURE_MEMORY_V1.original.txt",
+      "sha256": "9cea99b60e456cd54215ef726d7f9283eb32a4fd416ae287a2672a032597364e",
+      "bytes": 3682,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL04-CANONICAL_ROBUSTNESS_SUITE_V1.md",
+      "archive": "originals/SL04-CANONICAL_ROBUSTNESS_SUITE_V1.original.txt",
+      "sha256": "0467819a2211ef28319842da5b0bfca106547deab03af685e7388f30fccba9a0",
+      "bytes": 4162,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL05-CANONICAL_COMPARISON_SSOT_V1.md",
+      "archive": "originals/SL05-CANONICAL_COMPARISON_SSOT_V1.original.txt",
+      "sha256": "2cab820559ba66bee309f983da72dc9e10e4489b0e8333244557d1558a8e5d89",
+      "bytes": 4803,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL06-CANONICAL_CHAMPION_CHALLENGER_V1.md",
+      "archive": "originals/SL06-CANONICAL_CHAMPION_CHALLENGER_V1.original.txt",
+      "sha256": "c7626f1ac82a0ae0ae6b3ec4fa3b34f29ac6180f3c7e3671f6e0ccbd8d8da11d",
+      "bytes": 3817,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL07-CANONICAL_REALITY_GAP_STORE_V1.md",
+      "archive": "originals/SL07-CANONICAL_REALITY_GAP_STORE_V1.original.txt",
+      "sha256": "d597b7827420c687e82f9685e09b7335446182791c434f4739b01fcca0c64b57",
+      "bytes": 4612,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL08-CANONICAL_REGIME_AWARE_EVALUATION_V1.md",
+      "archive": "originals/SL08-CANONICAL_REGIME_AWARE_EVALUATION_V1.original.txt",
+      "sha256": "d7f27ea725d3f6256d10d6bbc7d3dc18403957dfdb1bbfb52ada2c6b0bf9fd67",
+      "bytes": 5510,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL09-CANONICAL_PORTFOLIO_LEARNING_V1.md",
+      "archive": "originals/SL09-CANONICAL_PORTFOLIO_LEARNING_V1.original.txt",
+      "sha256": "3a950530bcba3ec595800445c6ad5d327a5b631320b3eb8f6f34d7a300336374",
+      "bytes": 5341,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL10-CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.md",
+      "archive": "originals/SL10-CANONICAL_AUTOMATED_OFFLINE_RESEARCH_LOOP_V1.original.txt",
+      "sha256": "9c8b10666962eacc8165a71f5bcd19c253f225bb6f344cb7f1cdb74a0c98847d",
+      "bytes": 5899,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL11-CANONICAL_META_LEARNING_V1.md",
+      "archive": "originals/SL11-CANONICAL_META_LEARNING_V1.original.txt",
+      "sha256": "5c83074ea96cc39e96c19eba9d51060e04457f4649242bac31df29b0a614f6df",
+      "bytes": 5606,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    },
+    {
+      "source": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/SL12-CANONICAL_ADVANCED_SEARCH_V1.md",
+      "archive": "originals/SL12-CANONICAL_ADVANCED_SEARCH_V1.original.txt",
+      "sha256": "6648b025f9baee94c1d3153531897848e2e65f17e739888a0ddd5c716629df6e",
+      "bytes": 9339,
+      "role": "HISTORICAL_SOURCE_NOT_CURRENT_INSTRUCTION_OR_RUNTIME_AUTHORITY"
+    }
+  ],
+  "scope": "Two complete masters,12 original phase contracts, retained recovery provenance; exact bytes, no product-file overwrite"
+}

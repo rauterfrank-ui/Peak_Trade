@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -82,14 +83,45 @@ def maybe_create_natural_enter_pending_outcome_v1(
             skipped=True,
             reason="NOT_GENUINE_NATURAL_ENTER",
         )
-    dpo_instrument_id = str(reporting.dpo.get("instrument_id") or "").strip()
-    expected_instrument_id = str(canonical_instrument_id or "").strip()
-    if not dpo_instrument_id or dpo_instrument_id != expected_instrument_id:
+    try:
+        values = (decision_timestamp_unix, decision_reference_price)
+        context_bound = all(
+            not isinstance(value, bool) and math.isfinite(float(value)) and float(value) > 0
+            for value in values
+        )
+    except (TypeError, ValueError, OverflowError):
+        context_bound = False
+    if not context_bound:
         return NaturalEnterPendingCreationResultV1(
             created=False,
             skipped=True,
-            reason="DPO_INSTRUMENT_MISMATCH",
+            reason="PENDING_DECISION_CONTEXT_UNBOUND",
         )
+    bound_identity = None
+    context = reporting.decision_context
+    if context is not None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_lineage_v1 import (
+            load_bound_pending_decision_identity_v1,
+        )
+        context_matches = (
+            canonical_instrument_id == context.instrument_id
+            and native_id == context.native_id
+            and float(decision_timestamp_unix) == context.decision_timestamp_unix
+            and float(decision_reference_price) == context.reference_price
+            and market_context_ref == context.market_context_ref
+            and reporting.dpo.get("cycle_id") == context.cycle_id
+            and reporting.enter_side.upper() == str(reporting.dpo.get("selected_side", "")).upper()
+        )
+        bound_identity = load_bound_pending_decision_identity_v1(
+            ledger_path=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
+            context=context, dpo=reporting.dpo,
+        ) if context_matches else None
+        if bound_identity is None or (
+            decision_id and decision_id != bound_identity.policy_decision_id
+        ):
+            return NaturalEnterPendingCreationResultV1(
+                created=False, skipped=True, reason="PENDING_DECISION_LINEAGE_UNBOUND",
+            )
     decision_event_ref = str(reporting.dpo.get("decision_event_ref") or "")
     ddo_path = lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl"
     if pending_outcome_has_closed_outcome_in_ddo_ledger_v1(ddo_path, decision_event_ref):
@@ -111,14 +143,17 @@ def maybe_create_natural_enter_pending_outcome_v1(
     side = str(reporting.enter_side or reporting.dpo.get("selected_side") or "").upper()
     cycle_id = str(reporting.dpo.get("cycle_id") or "")
     session_part = cycle_id.rsplit(":cycle:", 1)[0] if ":cycle:" in cycle_id else cycle_id
-    correlation_id = f"ddo.corr.{session_part}" if session_part else ""
+    correlation_id = (
+        bound_identity.correlation_id if bound_identity is not None
+        else f"ddo.corr.{session_part}" if session_part else ""
+    )
     now = _utc_now_iso_v1()
     record = NaturalEnterPendingOutcomeRecordV1(
         schema_version="natural_enter_pending_outcome.v1",
         pending_outcome_id=pending_id,
         decision_event_ref=decision_event_ref,
         dpo_ref=str(reporting.dpo.get("dpo_ref") or ""),
-        decision_id=str(decision_id or ""),
+        decision_id=bound_identity.policy_decision_id if bound_identity is not None else str(decision_id or ""),
         correlation_id=correlation_id[:128],
         cycle_id=cycle_id,
         source_run_id=str(run_id),

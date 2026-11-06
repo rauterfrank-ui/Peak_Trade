@@ -247,7 +247,7 @@ def test_productive_venue_plan_binding_consumes_ratified_authority() -> None:
 
 def test_runbook_records_new_authority_without_repairing_header_sha() -> None:
     text = _RUNBOOK.read_text(encoding="utf-8")
-    assert "BOUND_ORIGIN_MAIN_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1" in text
+    assert "BOUND_ORIGIN_MAIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f" in text
     assert "EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY" in text
     assert "NOT_A_HISTORICAL_PREEXISTING_FACT=true" in text
     assert "VENUE_PLAN_BINDING_IMPLEMENTED=true" in text
@@ -419,7 +419,8 @@ def test_current_plan_preserves_decision_side_sizing_and_envelope_trading_fields
     )
     assert legacy_status is CompositionStatusV1.PASS, legacy_reasons
     assert legacy is not None
-    assert plan.instrument_id == legacy.instrument_id == _INSTRUMENT
+    assert replay.evidence.instrument_id == _INSTRUMENT
+    assert plan.instrument_id == legacy.instrument_id == _current_bound().venue_native_id
     assert plan.side == legacy.side
     assert plan.quantity == legacy.quantity
     assert plan.order_type == legacy.order_type

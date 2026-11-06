@@ -297,3 +297,30 @@ PHASE_13_STARTED=false
 ```
 
 Phase 12 does not start Phase 13, live, canary, funding, order submit, confirm tokens, productive config write, or autonomous promotion.
+
+## Exact declared parameter-region targets (2026-11-04)
+
+Phase-11 parameter-region proposals address the complete declared region mapping
+by its existing domain-separated digest. Search uses the same
+`derive_meta_parameter_region_digest_v1` producer helper for exact matching.
+A region is not implicitly expanded from frozen identity-template parameters;
+subsets and supersets are distinct addresses. SHA256-shaped region targets cannot
+fall back to matching individual hash-shaped parameter values. Older non-digest
+value selectors retain their bounded behavior. Other proposal target kinds keep
+their existing recipients and semantics pending separate reconciliation.
+
+This restores the documented Phase-11 proposal reuse within offline Search.
+It changes priority/budget admission only, not canonical trading ranking, runtime
+configuration, experiment execution or promotion authority. Evidence:
+[parameter-region semantic join](../evidence/meta_parameter_region_join_v1_2026_11_04/README.md).
+
+## Typed Meta target matching (2026-11-04)
+
+Strategy-family, hypothesis-kind, parameter-region and search-space hints bind to
+their respective candidate fields only. The producer name `search_space` and the
+existing consumer name `search_space_id` both mean the actual search-space ID.
+Metric, robustness-test, cost-model, regime, research-path and unknown target kinds
+cannot match a family, space or hypothesis by coincidentally equal text. This
+closes the untyped fallback; it creates no dedicated consumer for those other
+proposals or new research authority.
+[Bound target/lineage checks](../evidence/semantic_target_and_provenance_consistency_v1_2026_11_04/README.md).

@@ -1,0 +1,8 @@
+{
+  "source_commit": "5161a5c8656069ac301220f2cf84ad535c284345",
+  "missing_report": "evidence/research/natural_enter_rerun_post_7065_v1/20261006T064200Z/PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+  "report_exists": false,
+  "required_atlas_seam": "CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_SEAM_V1",
+  "required_seam_present_at_source_commit": false,
+  "s5_seam_present_at_source_commit": false
+}

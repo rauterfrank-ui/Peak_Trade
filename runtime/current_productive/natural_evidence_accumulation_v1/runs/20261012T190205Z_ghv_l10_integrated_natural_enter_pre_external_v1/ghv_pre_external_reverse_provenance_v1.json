@@ -1,0 +1,40 @@
+{
+  "FIRST_DIVERGENCE_FROM_GHV_ENTER_SEMANTICS": [],
+  "cross_branch_conflicts": [],
+  "divergences": [],
+  "owner": "full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1",
+  "reverse_chains": [
+    {
+      "chain": [
+        {
+          "field": "decision_outcome",
+          "generation_id": "gen_f4da0250b23071573e6cd5c2",
+          "producer_symbol": "translate_core_live_intent_to_venue_plan_v1",
+          "source_generation_id": "gen_893ad98fc2cd9bc288ee0dcb",
+          "transformation_kind": "PASSTHROUGH"
+        }
+      ],
+      "consumer_field": "decision_outcome",
+      "terminus": "AUTHORITATIVE_ORIGIN_OR_UNKNOWN"
+    },
+    {
+      "chain": [
+        {
+          "field": "selected_side",
+          "generation_id": "gen_f4da0250b23071573e6cd5c2",
+          "producer_symbol": "translate_core_live_intent_to_venue_plan_v1",
+          "source_generation_id": "gen_893ad98fc2cd9bc288ee0dcb",
+          "transformation_kind": "PASSTHROUGH"
+        }
+      ],
+      "consumer_field": "selected_side",
+      "terminus": "AUTHORITATIVE_ORIGIN_OR_UNKNOWN"
+    },
+    {
+      "chain": [],
+      "consumer_field": "venue_plan_pass",
+      "terminus": "UNKNOWN_CURRENT"
+    }
+  ],
+  "schema_version": "ghv_pre_external_reverse_provenance.v1"
+}

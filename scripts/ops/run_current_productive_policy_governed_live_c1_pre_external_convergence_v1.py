@@ -194,16 +194,7 @@ def _main() -> int:
     parser.add_argument("--evidence-root", type=Path, required=True)
     parser.add_argument("--lane-state-root", type=Path, required=True)
     parser.add_argument("--productivity-root", type=Path, required=True)
-    parser.add_argument(
-        "--selection-max-total-get-attempts",
-        type=int,
-        default=None,
-        help=(
-            "Hard ceiling for this selection run: four inventory GETs plus two "
-            "Economic-MD GETs per Cap-2.1-eligible instrument, retries 0 on this path. "
-            "Required before the first selection GET."
-        ),
-    )
+    parser.add_argument("--binding-epoch", default=None)
     parser.add_argument(
         "--wp-branch-evidence-run",
         action="store_true",
@@ -314,12 +305,14 @@ def _main() -> int:
             f"launcher wall time; default {PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS})"
         ),
     )
-    parser.add_argument(
-        "--binding-epoch",
-        default=None,
-        help="Optional binding epoch; defaults to current UTC timestamp.",
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
     )
+    add_startup_portfolio_arguments_v1(parser)
     args = parser.parse_args()
+    observed_portfolio = load_startup_portfolio_args_v1(args)
     try:
         observation_budget = resolve_continuous_observation_budget_v1(
             max_cycles=int(args.max_cycles),
@@ -342,18 +335,6 @@ def _main() -> int:
     )
     from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
         UrllibEeaPublicUniverseGetTransportV1,
-    )
-    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_selection_state_canonical_writer_v1 import (
-        CurrentProductiveCap24SelectionStateWriterError,
-    )
-    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
-        MAX_REQUEST_COUNT,
-    )
-    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_selection_network_budget_v1 import (
-        SelectionNetworkBudgetError,
-        SelectionNetworkBudgetExceeded,
-        SelectionNetworkBudgetV1,
-        build_budgeted_economic_md_source_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
         CONTINUOUS_RUN_AUTHORIZED,
@@ -417,58 +398,11 @@ def _main() -> int:
     repository_sha = execution_head_sha
     decision_epoch = args.binding_epoch or _utc_iso()
 
-    if args.selection_max_total_get_attempts is None:
-        out = {"status": "FAIL", "blocker": "SELECTION_GET_BUDGET_EXPLICIT_REQUIRED"}
-        print(json.dumps(out, sort_keys=True))
-        return 2
-    try:
-        selection_budget = SelectionNetworkBudgetV1(
-            max_total_attempts=int(args.selection_max_total_get_attempts)
-        )
-    except (SelectionNetworkBudgetError, TypeError, ValueError) as exc:
-        out = {
-            "status": "FAIL",
-            "blocker": "SELECTION_MAX_TOTAL_GET_ATTEMPTS_INVALID",
-            "detail": str(exc)[:200],
-        }
-        print(json.dumps(out, sort_keys=True))
-        return 2
-
-    try:
-        acq = acquire_eea_universe_inventory_v1(
-            transport=UrllibEeaPublicUniverseGetTransportV1(
-                before_attempt=selection_budget.before_http_attempt
-            )
-        )
-    except SelectionNetworkBudgetExceeded as exc:
-        out = {
-            "status": "FAIL",
-            "blocker": "SELECTION_NETWORK_BUDGET_EXCEEDED",
-            "detail": str(exc)[:200],
-        }
-        print(json.dumps(out, sort_keys=True))
-        return 2
+    acq = acquire_eea_universe_inventory_v1(transport=UrllibEeaPublicUniverseGetTransportV1())
     if acq.ok is not True:
         out = {"status": "FAIL", "blocker": "EEA_UNIVERSE_ACQUISITION_FAIL"}
         print(json.dumps(out, sort_keys=True))
         return 2
-    recorded = acq.request_count
-    if (
-        isinstance(recorded, bool)
-        or not isinstance(recorded, int)
-        or selection_budget.attempts != recorded
-    ):
-        out = {"status": "FAIL", "blocker": "SELECTION_INVENTORY_ATTEMPTS_NOT_RECORDED"}
-        print(json.dumps(out, sort_keys=True))
-        return 2
-    if recorded != MAX_REQUEST_COUNT:
-        out = {"status": "FAIL", "blocker": "SELECTION_INVENTORY_ATTEMPT_COUNT_NOT_CURRENT"}
-        print(json.dumps(out, sort_keys=True))
-        return 2
-    economic_md_source = build_budgeted_economic_md_source_v1(
-        budget=selection_budget,
-        capture_timestamp=decision_epoch,
-    )
 
     from src.ops.top20_opportunity_evaluation_residency_v1.scoped_residency_integrated_evaluation_propagation_v1 import (
         build_m01_scoped_residency_cap24_propagation_handoff_v1,
@@ -484,40 +418,23 @@ def _main() -> int:
         repository_sha=repository_sha,
         repo_root=REPO_ROOT,
     )
-    try:
-        execute_current_productive_cap24_selection_state_canonical_write_v1(
-            owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
-            origin_main_sha=origin_sha,
-            acquisition_result=acq,
-            productivity_root=productivity_root,
-            repository_sha=repository_sha,
-            allow_default_productivity_root=False,
-            decision_epoch=decision_epoch,
-            execution_integrity_backend=backend,
-            residency_runtime_config=residency_handoff.residency_runtime_config,
-            cap23_residency_eligibility_gate=residency_handoff.cap23_residency_eligibility_gate,
-            scoped_top20_evaluation_residency_v1=residency_handoff.scoped_top20_evaluation_residency_v1,
-            scoped_residency_integrated_evaluation=(
-                residency_handoff.scoped_residency_integrated_evaluation
-            ),
-            cap21_coalesce_repo_root=residency_handoff.cap21_coalesce_repo_root,
-            economic_md_public_source=economic_md_source,
-        )
-    except SelectionNetworkBudgetExceeded as exc:
-        out = {
-            "status": "FAIL",
-            "blocker": "SELECTION_NETWORK_BUDGET_EXCEEDED",
-            "detail": str(exc)[:200],
-        }
-        print(json.dumps(out, sort_keys=True))
-        return 2
-    except CurrentProductiveCap24SelectionStateWriterError as exc:
-        text = str(exc)
-        if text.startswith("SELECTION_"):
-            out = {"status": "FAIL", "blocker": text.split(":", 1)[0]}
-            print(json.dumps(out, sort_keys=True))
-            return 2
-        raise
+    execute_current_productive_cap24_selection_state_canonical_write_v1(
+        owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
+        origin_main_sha=origin_sha,
+        acquisition_result=acq,
+        productivity_root=productivity_root,
+        repository_sha=repository_sha,
+        allow_default_productivity_root=False,
+        decision_epoch=decision_epoch,
+        execution_integrity_backend=backend,
+        residency_runtime_config=residency_handoff.residency_runtime_config,
+        cap23_residency_eligibility_gate=residency_handoff.cap23_residency_eligibility_gate,
+        scoped_top20_evaluation_residency_v1=residency_handoff.scoped_top20_evaluation_residency_v1,
+        scoped_residency_integrated_evaluation=(
+            residency_handoff.scoped_residency_integrated_evaluation
+        ),
+        cap21_coalesce_repo_root=residency_handoff.cap21_coalesce_repo_root,
+    )
     from src.ops.single_selected_future_policy_v1.persistence_v1 import (
         load_and_validate_selection_v1,
     )
@@ -539,6 +456,8 @@ def _main() -> int:
         productivity_root=productivity_root,
         repository_sha=repository_sha,
         binding_epoch=binding_epoch,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=startup_observation_now_v1(args),
     )
     bound = handoff.bound_instrument
     native_id = str(bound.venue_native_id or "").strip()
@@ -548,6 +467,8 @@ def _main() -> int:
         repository_sha=repository_sha,
         binding_epoch=binding_epoch,
         authorization_native_id=native_id,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=startup_observation_now_v1(args),
     )
     if not pre.ok:
         out = {"status": "FAIL", "blocker": pre.reason_code, "preflight": pre.reason_code}
@@ -714,7 +635,6 @@ def _main() -> int:
         terminal_disposition=str(orch.disposition or ""),
         ddo_jsonl=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
         lane_state_root=lane_state_root,
-        expected_instrument_id=str(bound.instrument_id or ""),
     )
     dpo = dict(reporting.dpo)
     outcome = str(dpo.get("decision_outcome") or "").lower()
@@ -744,24 +664,14 @@ def _main() -> int:
         syn = json.loads(synthetic_summary_path.read_text(encoding="utf-8"))
         synthetic_enter_observed = bool(syn.get("synthetic_enter_observed"))
         synthetic_enter_count = int(syn.get("synthetic_enter_count") or 0)
-    decision_timestamp_unix = 0.0
-    decision_reference_price = 0.0
-    if reporting.reporting_s5_cycle_index is not None:
-        for rec in orch.cycle_records:
-            if int(rec.cycle_index) == int(reporting.reporting_s5_cycle_index):
-                decision_timestamp_unix = float(rec.c1_venue_event_time or 0.0)
-                break
-    trace_path = evidence_root / "golden_happy_scope_decision_trace_v1.jsonl"
-    if trace_path.is_file():
-        for line in trace_path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            row = json.loads(line)
-            if str(row.get("master_v2_decision_outcome") or "").lower() in {
-                "enter_long",
-                "enter_short",
-            }:
-                decision_reference_price = float(row.get("decision_input_mark") or 0.0)
+    context = reporting.decision_context
+    context_matches_instrument = (
+        context is not None
+        and context.instrument_id == str(bound.instrument_id or "")
+        and context.native_id == native_id
+    )
+    decision_timestamp_unix = context.decision_timestamp_unix if context_matches_instrument else 0.0
+    decision_reference_price = context.reference_price if context_matches_instrument else 0.0
     from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.session_integration_v1 import (
         finalize_pre_external_session_pending_outcomes_v1,
     )
@@ -775,6 +685,7 @@ def _main() -> int:
         native_id=native_id,
         decision_timestamp_unix=decision_timestamp_unix,
         decision_reference_price=decision_reference_price,
+        market_context_ref=context.market_context_ref if context_matches_instrument else "",
         synthetic_enter_observed=synthetic_enter_observed,
         repository_sha=origin_sha,
     )
@@ -812,7 +723,6 @@ def _main() -> int:
         "REPORTING_S5_DISPOSITION": reporting.reporting_s5_disposition,
         "S5_CYCLE_SUMMARIES": cycle_summaries,
         "DPO": dpo,
-        "DPO_CORRELATION_STATUS": reporting.correlation_status,
         "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": str(CONTINUOUS_RUN_AUTHORIZED).lower(),
         "POST_COUNT": orch.post_count,
         "PERMIT_CREATED": str(orch.permit_created).lower(),

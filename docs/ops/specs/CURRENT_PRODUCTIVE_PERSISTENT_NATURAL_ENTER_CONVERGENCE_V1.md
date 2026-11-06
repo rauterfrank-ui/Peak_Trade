@@ -43,3 +43,7 @@ Targets natural confirmation progression and PRE_EXTERNAL terminal without POST.
 ## Tests
 
 `tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py`
+
+## Scoped correction — 2026-11-03
+
+The prepare API forwards an explicitly supplied shared portfolio budget owner; absence remains fail-closed. ENTER blocked downstream reports its genuine blocker. Natural long/short fixtures now use causal G17 history; the persistent account-bound test requires actual PRE_EXTERNAL and a reservation. No owner/source acquisition, capital-rule or learning change is implied. See [full-flow repair evidence](../evidence/FIVE_FULL_FLOW_REPAIRS_2026_11_03.md) for the 68-case injected proof and remaining limits.

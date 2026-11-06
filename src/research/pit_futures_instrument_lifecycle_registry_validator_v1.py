@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Sequence
 
+from trading.master_v2.double_play_futures_input import FORBIDDEN_FUTURES_BASE_ASSETS
+
 from src.research.instrument_id_canonicalization_v1 import validate_instrument_id_format_v1
 from src.research.pit_futures_instrument_lifecycle_registry_v1 import (
     INPUT_CONTRACT_VERSION,
@@ -46,8 +48,10 @@ from src.research.pit_futures_universe_manifest_v1 import (
 
 PACKAGE_MARKER = "PIT_FUTURES_INSTRUMENT_LIFECYCLE_REGISTRY_VALIDATOR_V1=true"
 
-_FORBIDDEN_BASE_ASSETS = frozenset({"BTC", "XBT", "WBTC", "TBTC", "RBTC", "BTCB"})
-_FORBIDDEN_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "wbtc"})
+# General instrument admission shares the current common policy. Historical
+# cohort composition belongs to the explicitly bound source/materializer.
+_FORBIDDEN_BASE_ASSETS = FORBIDDEN_FUTURES_BASE_ASSETS
+_FORBIDDEN_SUBSTRINGS = frozenset(asset.lower() for asset in FORBIDDEN_FUTURES_BASE_ASSETS)
 _ABSOLUTE_PATH_PATTERN = re.compile(r"(^/|^\\\\|^[A-Za-z]:[/\\\\])")
 _CURRENT_STATE_FALLBACK_MARKERS = frozenset(
     {"current_state", "use_current_state", "fallback_to_current", "now()"}
@@ -133,7 +137,7 @@ def _validate_source_ref(
         )
 
 
-def _is_bitcoin_instrument(
+def _is_excluded_asset_instrument(
     interval: InstrumentLifecycleIntervalV1,
 ) -> bool:
     if interval.base_asset.upper() in _FORBIDDEN_BASE_ASSETS:
@@ -231,7 +235,7 @@ def _validate_interval(
             field_path=f"{path_prefix}.contract_type",
         )
 
-    if _is_bitcoin_instrument(interval):
+    if _is_excluded_asset_instrument(interval):
         _add_issue(
             issues,
             LifecycleRegistryErrorCode.BITCOIN_DIRECTION_PROHIBITED,

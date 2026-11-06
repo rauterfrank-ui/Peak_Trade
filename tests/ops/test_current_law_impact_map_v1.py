@@ -108,9 +108,19 @@ def test_no_map_impact_without_adjudication_fails() -> None:
     assert any("undeterminable" in e for e in errors)
 
 
-def test_master_v2_unchanged_in_diff_against_main() -> None:
+def _frozen_source() -> str:
+    doc = _doc()
+    atlas = MAP._load_json(REPO / "docs/system_atlas/source/current-model.json")
+    resolved = subprocess.check_output(
+        ["git", "rev-parse", doc["source_tag"] + "^{commit}"], cwd=REPO, text=True
+    ).strip()
+    assert resolved == doc["baseline_sha"] == atlas["source_commit"]
+    return resolved
+
+
+def test_master_v2_unchanged_against_frozen_source() -> None:
     result = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main...HEAD", "--", "src/trading/master_v2"],
+        ["git", "diff", "--name-only", _frozen_source(), "--", "src/trading/master_v2"],
         cwd=REPO,
         capture_output=True,
         text=True,
@@ -119,9 +129,9 @@ def test_master_v2_unchanged_in_diff_against_main() -> None:
     assert result.stdout.strip() == ""
 
 
-def test_runtime_untracked_not_in_diff() -> None:
+def test_runtime_unchanged_against_frozen_source() -> None:
     result = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main...HEAD", "--", "runtime/"],
+        ["git", "diff", "--name-only", _frozen_source(), "--", "runtime/"],
         cwd=REPO,
         capture_output=True,
         text=True,

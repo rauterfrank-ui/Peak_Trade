@@ -1,0 +1,74 @@
+{
+  "authority": "NONE",
+  "normalization": "KNOWN_ZERO_RF_HOURLY_SHARPE_DIVIDED_BY_SQRT_8760_FOR_DECLARED_NONANNUAL_POLICY",
+  "results": [
+    {
+      "actual_aggregate_status": "BLOCKED",
+      "actual_gate_status": "PASS",
+      "collapsed_holdout_gate": "FAIL_WITH_REJECTED_OVERFIT_MEMORY",
+      "converted_split_metrics": {
+        "holdout": {
+          "sample_size": 192,
+          "sharpe": 0.05228598850098903
+        },
+        "train": {
+          "sample_size": 384,
+          "sharpe": 0.03811009551571799
+        },
+        "validation": {
+          "sample_size": 192,
+          "sharpe": -0.015091380463017244
+        }
+      },
+      "missing_validation_gate": "BLOCKED_MISSING_CAPABILITY",
+      "native_parameters": {
+        "fast_window": 10,
+        "slow_window": 50
+      },
+      "nonfinite_validation_denied": "non-finite numeric values are forbidden in observations",
+      "source_parameter_set_id": "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a",
+      "source_split_refs": [
+        "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:train",
+        "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:validation",
+        "abfde67dc7493d87d6eb4d4290f9f18eca4860c9417239871388306ffcb3721a:out_of_sample"
+      ],
+      "validation_plus_and_minus_100_gate": "PASS_BOTH_WITH_DISTINCT_BOUND_EVIDENCE"
+    },
+    {
+      "actual_aggregate_status": "BLOCKED",
+      "actual_gate_status": "PASS",
+      "collapsed_holdout_gate": "FAIL_WITH_REJECTED_OVERFIT_MEMORY",
+      "converted_split_metrics": {
+        "holdout": {
+          "sample_size": 192,
+          "sharpe": 0.05228598850098903
+        },
+        "train": {
+          "sample_size": 384,
+          "sharpe": 0.036880300754439446
+        },
+        "validation": {
+          "sample_size": 192,
+          "sharpe": -0.07216878364870322
+        }
+      },
+      "missing_validation_gate": "BLOCKED_MISSING_CAPABILITY",
+      "native_parameters": {
+        "fast_window": 10,
+        "slow_window": 100
+      },
+      "nonfinite_validation_denied": "non-finite numeric values are forbidden in observations",
+      "source_parameter_set_id": "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f",
+      "source_split_refs": [
+        "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:train",
+        "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:validation",
+        "b36e138e7f51309a37ac3e052f53368c9f0c95744f901b53b7a3fcbae29eab4f:out_of_sample"
+      ],
+      "validation_plus_and_minus_100_gate": "PASS_BOTH_WITH_DISTINCT_BOUND_EVIDENCE"
+    }
+  ],
+  "source_commit": "401421f72b121e069ad0a803053292ad8508a33e",
+  "source_grid_file_sha256": "8fe3dd72fdd08d61df3ae3ca76e613af47067d71d41c3faa887e5ff355637ab5",
+  "source_scope": "ACTUAL_SYNTHETIC_SIMULATOR_MEASUREMENTS_WITH_SYNTHETIC_IDENTITY_SCAFFOLD",
+  "source_split_file_sha256": "f9adc154c26749ff903e8e92b22a2b29da394951a865d41b1d60ff2ab3b1a953"
+}

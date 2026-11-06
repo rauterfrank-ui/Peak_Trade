@@ -70,11 +70,27 @@ def verify_manifest(root: Path) -> dict[str, Any]:
     if not manifest.is_file():
         raise PersistenceInterruptionError("MANIFEST_MISSING")
     errors: list[str] = []
+    required = {
+        ACCOUNTING_STATE_FILENAME,
+        PORTFOLIO_STATE_FILENAME,
+        RISK_STATE_FILENAME,
+        FILL_LEDGER_FILENAME,
+    }
+    allowed = required | {EVIDENCE_FILENAME, RESULT_FILENAME}
+    seen = set()
     for line in manifest.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
             continue
-        digest, rel = line.split(None, 1)
+        import re
+
+        parts = line.split()
+        if len(parts) != 2 or not re.fullmatch(r"[0-9a-f]{64}", parts[0]):
+            raise PersistenceInterruptionError("MANIFEST_MALFORMED")
+        digest, rel = parts
+        if rel not in allowed or rel in seen:
+            raise PersistenceInterruptionError("MANIFEST_SCOPE_INVALID")
+        seen.add(rel)
         path = Path(root) / rel
         if not path.is_file():
             errors.append(f"MISSING:{rel}")
@@ -82,6 +98,8 @@ def verify_manifest(root: Path) -> dict[str, Any]:
         actual = sha256_hex(path.read_bytes())
         if actual != digest:
             errors.append(f"DIGEST_MISMATCH:{rel}")
+    if not required <= seen:
+        errors.append("MANIFEST_REQUIRED_FILES_MISSING")
     if errors:
         raise PersistenceInterruptionError(";".join(errors))
     return {"ok": True, "manifest_path": str(manifest)}
@@ -94,10 +112,19 @@ def load_accounting_session(
 ) -> Optional[ProductiveFuturesAccountingSessionV1]:
     path = Path(state_root) / ACCOUNTING_STATE_FILENAME
     if not path.is_file():
-        if require_present:
+        if require_present or any(
+            (Path(state_root) / name).exists()
+            for name in (
+                MANIFEST_FILENAME,
+                PORTFOLIO_STATE_FILENAME,
+                RISK_STATE_FILENAME,
+                FILL_LEDGER_FILENAME,
+            )
+        ):
             raise PersistenceInterruptionError("ACCOUNTING_STATE_MISSING")
         return None
     try:
+        verify_manifest(Path(state_root))
         payload = json.loads(path.read_text(encoding="utf-8"))
         return ProductiveFuturesAccountingSessionV1.from_durable_dict(payload)
     except Exception as exc:  # noqa: BLE001
@@ -115,6 +142,8 @@ def persist_accounting_bundle_atomic_v1(
 ) -> dict[str, Any]:
     """Atomically persist accounting + portfolio + risk derived solely from kernel session."""
     writer.assert_held()
+    if writer.writer_identity != session.writer_identity:
+        raise PersistenceInterruptionError("SESSION_WRITER_MISMATCH")
     if interrupt_after_fill_before_accounting:
         raise PersistenceInterruptionError("INJECTED_INTERRUPT_AFTER_FILL_BEFORE_ACCOUNTING")
 

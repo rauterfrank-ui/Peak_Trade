@@ -25,7 +25,14 @@ def _main() -> int:
     parser.add_argument("--evidence-root", type=Path, default=None)
     parser.add_argument("--execute-network", action="store_true")
     parser.add_argument("--vault-file", type=Path, default=None)
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        add_startup_portfolio_arguments_v1,
+        load_startup_portfolio_args_v1,
+        startup_observation_now_v1,
+    )
+    add_startup_portfolio_arguments_v1(parser)
     args = parser.parse_args()
+    observed_portfolio = load_startup_portfolio_args_v1(args)
 
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
         acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
@@ -56,6 +63,8 @@ def _main() -> int:
         productivity_root=prod,
         repository_sha=origin_sha,
         binding_epoch=epoch,
+        observed_portfolio=observed_portfolio,
+        observation_now_unix=startup_observation_now_v1(args),
     )
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=args.owner_go,

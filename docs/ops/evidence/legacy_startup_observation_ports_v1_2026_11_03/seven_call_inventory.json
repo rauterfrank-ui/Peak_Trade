@@ -1,0 +1,44 @@
+[
+  {
+    "path": "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
+    "line": 62,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "startup_observation_now_v1(args)"
+  },
+  {
+    "path": "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "line": 455,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "startup_observation_now_v1(args)"
+  },
+  {
+    "path": "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+    "line": 828,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "observation_now_unix"
+  },
+  {
+    "path": "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+    "line": 1206,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "observation_now_unix"
+  },
+  {
+    "path": "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+    "line": 205,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "observation_now_unix"
+  },
+  {
+    "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "line": 357,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "observation_now_unix"
+  },
+  {
+    "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+    "line": 264,
+    "observed_portfolio": "observed_portfolio",
+    "observation_now_unix": "observation_now_unix"
+  }
+]

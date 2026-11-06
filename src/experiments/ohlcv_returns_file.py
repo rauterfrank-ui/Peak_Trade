@@ -21,18 +21,23 @@ def load_close_returns_from_ohlcv_parquet(path: Path | str) -> pd.Series:
     if not p.is_file():
         raise FileNotFoundError(f"OHLCV parquet not found: {p}")
 
-    df = pd.read_parquet(p).sort_index()
+    return load_close_returns_from_ohlcv_frame(pd.read_parquet(p))
+
+
+def load_close_returns_from_ohlcv_frame(frame: pd.DataFrame) -> pd.Series:
+    """Original return calculation shared by admitted in-memory offline inputs."""
+    df = frame.copy(deep=True).sort_index()
     if df.empty:
-        raise ValueError(f"OHLCV parquet empty: {p}")
+        raise ValueError("OHLCV frame empty")
     if "close" not in df.columns:
-        raise ValueError(f"OHLCV parquet missing 'close' column: {p}")
+        raise ValueError("OHLCV frame missing 'close' column")
 
     if isinstance(df.index, pd.DatetimeIndex):
         ix = pd.DatetimeIndex(df.index)
     elif "timestamp" in df.columns:
         ix = pd.to_datetime(df["timestamp"], utc=True, errors="raise")
     else:
-        raise ValueError(f"OHLCV parquet must use DatetimeIndex or include 'timestamp' column: {p}")
+        raise ValueError("OHLCV frame must use DatetimeIndex or include 'timestamp' column")
 
     s_close = pd.Series(pd.to_numeric(df["close"], errors="raise").to_numpy(dtype=float), index=ix)
     if s_close.index.duplicated().any():
@@ -47,7 +52,7 @@ def load_close_returns_from_ohlcv_parquet(path: Path | str) -> pd.Series:
 
     rets = s_close.astype(float).pct_change().dropna()
     if len(rets) < 2:
-        raise ValueError(f"Insufficient close observations after pct_change for OHLCV: {p}")
+        raise ValueError("Insufficient close observations after pct_change for OHLCV")
 
     rets.name = "returns"
     return rets

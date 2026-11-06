@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -45,6 +46,12 @@ def append_private_state_v1(
     paths: DurablePrivateStorePathsV1, payload: Mapping[str, Any]
 ) -> PrivateStateRecordV1:
     paths.normalized_state.parent.mkdir(parents=True, exist_ok=True)
+    if paths.normalized_state.exists():
+        with paths.normalized_state.open("rb") as handle:
+            if handle.seek(0, os.SEEK_END):
+                handle.seek(-1, os.SEEK_END)
+                if handle.read(1) != b"\n":
+                    raise DurablePrivateStoreError("PRIVATE_STATE_JOURNAL_FRAME_UNPROVEN")
     digest = body_digest(payload)
     record = PrivateStateRecordV1(
         schema_version=STATE_STORE_SCHEMA,
@@ -55,6 +62,8 @@ def append_private_state_v1(
     line = json.dumps(record.to_dict(), sort_keys=True) + "\n"
     with paths.normalized_state.open("a", encoding="utf-8") as fh:
         fh.write(line)
+        fh.flush()
+        os.fsync(fh.fileno())
     prov = payload.get("provenance")
     if prov:
         with paths.provenance_index.open("a", encoding="utf-8") as fh:
@@ -82,24 +91,33 @@ def append_private_state_v1(
 def load_all_private_state_v1(paths: DurablePrivateStorePathsV1) -> list[Mapping[str, Any]]:
     if not paths.normalized_state.is_file():
         return []
+    raw = paths.normalized_state.read_text(encoding="utf-8")
+    if raw and not raw.endswith("\n"):
+        raise DurablePrivateStoreError("PRIVATE_STATE_JOURNAL_FRAME_UNPROVEN")
     out: list[Mapping[str, Any]] = []
-    for line in paths.normalized_state.read_text(encoding="utf-8").splitlines():
+    for line in raw.splitlines():
         if not line.strip():
             continue
-        row = json.loads(line)
-        out.append(row.get("payload") or row)
+        try:
+            row = json.loads(line)
+            payload = row.get("payload") if isinstance(row, dict) else None
+            if (
+                not isinstance(payload, dict)
+                or row.get("schema_version") != STATE_STORE_SCHEMA
+                or row.get("state_digest") != body_digest(payload)
+            ):
+                raise DurablePrivateStoreError("PRIVATE_STATE_INTEGRITY_UNPROVEN")
+        except (ValueError, TypeError) as exc:
+            raise DurablePrivateStoreError("PRIVATE_STATE_INTEGRITY_UNPROVEN") from exc
+        out.append(payload)
     return out
 
 
 def load_known_fill_trade_ids_v1(paths: DurablePrivateStorePathsV1) -> set[str]:
-    if not paths.fill_dedup_index.is_file():
-        return set()
-    ids: set[str] = set()
-    for line in paths.fill_dedup_index.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        tid = str(row.get("tradeId") or "")
-        if tid:
-            ids.add(tid)
-    return ids
+    # The index is rebuildable: a stale/corrupt index cannot suppress a real fill
+    # and a crash between journal append and index update cannot duplicate it.
+    return {
+        str(row["tradeId"])
+        for row in load_all_private_state_v1(paths)
+        if row.get("fact_kind") == "FillFactV1" and row.get("tradeId")
+    }

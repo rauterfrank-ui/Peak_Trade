@@ -230,16 +230,16 @@ def test_non_futures_rejected() -> None:
     assert LifecycleRegistryErrorCode.NON_FUTURES_INSTRUMENT.value in result.error_codes
 
 
-def test_bitcoin_base_rejected() -> None:
-    result = normalize_source_observation_record_v1(_source_record(base_asset="BTC"))
-    assert not result.success
-    assert LifecycleRegistryErrorCode.BITCOIN_DIRECTION_PROHIBITED.value in result.error_codes
+def test_bitcoin_base_uses_common_admission() -> None:
+    result = normalize_source_observation_record_v1(_source_record(base_asset="BTC", venue_symbol="BTC-USDT-SWAP"))
+    assert result.success
+    assert result.error_codes == ()
 
 
-def test_xbt_base_rejected() -> None:
-    result = normalize_source_observation_record_v1(_source_record(base_asset="XBT"))
-    assert not result.success
-    assert LifecycleRegistryErrorCode.BITCOIN_DIRECTION_PROHIBITED.value in result.error_codes
+def test_xbt_base_uses_common_admission() -> None:
+    result = normalize_source_observation_record_v1(_source_record(base_asset="XBT", venue_symbol="XBT-USDT-SWAP"))
+    assert result.success
+    assert result.error_codes == ()
 
 
 def test_invalid_timestamp_rejected() -> None:

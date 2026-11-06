@@ -1,0 +1,51 @@
+"""Controlled offline probe; fixture inputs are synthetic, no experiment execution.
+Run from repo with scripts/pt. Imports existing test data factories, not a real ledger.
+"""
+from pathlib import Path
+import hashlib,json,socket,subprocess
+from tests.experiments.test_canonical_meta_learning_v1 import _request as meta_request
+from tests.experiments.test_canonical_advanced_search_v1 import _request as search_request
+from src.experiments.canonical_meta_learning_v1 import build_canonical_meta_learning_v1
+from src.experiments.canonical_advanced_search_v1 import build_canonical_advanced_search_v1,AdvancedSearchValidationError,_canonicalize_meta_signals
+
+def network_denied(*a,**kw):
+ raise RuntimeError('NETWORK_FORBIDDEN_IN_CONTROLLED_PROBE')
+socket.create_connection=network_denied
+socket.socket=network_denied
+r=Path.cwd(); protected=r/'runtime/current_productive/natural_evidence_accumulation_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl'
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+before=sha(protected)
+meta=build_canonical_meta_learning_v1(meta_request())
+proposals=list(meta['research_proposals']);identity=meta['meta_learning_identity']
+base=build_canonical_advanced_search_v1(search_request(budget=1))
+def summarize(rec):
+ return {'candidate_scores':[{'region':dict(c['parameter_region']),'score':c['search_priority_score'],'status':c['status'],'matched':list(c['matched_meta_learning_proposal_ids'])} for c in rec['candidates']], 'selected_regions':[dict(c['parameter_region']) for c in rec['candidates'] if c['status']=='PROPOSED'],'requests_executed':[q['executed'] for q in rec['offline_experiment_requests']], 'search_can_promote':rec['search_can_promote']}
+def with_signals(signals):
+ return build_canonical_advanced_search_v1(search_request(budget=1,meta_learning_signals=tuple(signals),meta_learning_identity=identity))
+region=next(p for p in proposals if p['target_kind']=='parameter_region')
+family=next(p for p in proposals if p['target_kind']=='strategy_family')
+normalized_region_signal=_canonicalize_meta_signals([region],meta_learning_identity=identity)
+assert normalized_region_signal and 'claim_type' not in normalized_region_signal[0]
+region_result=with_signals([region]);family_result=with_signals([family]);all_result=with_signals(proposals)
+baseline=summarize(base);rs=summarize(region_result);fs=summarize(family_result);alls=summarize(all_result)
+assert all(c['search_priority_score']==0 for c in region_result['candidates'])
+assert rs['selected_regions']==baseline['selected_regions']
+assert all(c['search_priority_score']==20 for c in family_result['candidates'])
+assert fs['selected_regions']==baseline['selected_regions']
+assert all(c['search_priority_score']==0 for c in all_result['candidates'])
+assert alls['selected_regions']==baseline['selected_regions']
+# Deliberately synthetic positive control for existing single-value target semantics.
+# This is NOT a suggested translation of a whole-region digest into a single value.
+selected=baseline['selected_regions'][0]
+control=dict(region);control['target']=str(selected['fast']);control['proposal_id']=hashlib.sha256(b'controlled-single-value-target').hexdigest()
+cr=summarize(with_signals([control]));assert cr['selected_regions']!=baseline['selected_regions']
+for rec in [base,region_result,family_result,all_result]:
+ assert rec['search_can_promote'] is False
+ assert all(q['executed'] is False and q['loop_started'] is False for q in rec['offline_experiment_requests'])
+invalid=dict(region);invalid['target']='fast=10';invalid['proposal_id']=hashlib.sha256(b'controlled-equals-target').hexdigest()
+try:with_signals([invalid]);raise AssertionError('equals target unexpectedly accepted')
+except AdvancedSearchValidationError as exc:invalid_reason=str(exc)
+assert sha(protected)==before
+out={'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'scope':'Synthetic fixture experiment records → actual SL11 builder → actual SL12 builder, controlled in-memory calls; no natural outcomes, measurements, training, orders or execution.','network':'socket creation and create_connection denied during probe','fixture_modules':['tests/experiments/test_canonical_meta_learning_v1.py','tests/experiments/test_canonical_advanced_search_v1.py'],'fixture_sha256':{str(p):sha(r/p) for p in ['tests/experiments/test_canonical_meta_learning_v1.py','tests/experiments/test_canonical_advanced_search_v1.py']},'meta_identity':identity,'actual_meta_proposals':[dict(p) for p in proposals],'baseline':baseline,'actual_region_digest_proposal':{'proposal':dict(region),'result':rs,'observed':'whole-region digest did not match single-value target semantics'},'actual_family_proposal':{'proposal':dict(family),'result':fs,'observed':'uniform +20 scores; unchanged budget-selected region'},'all_actual_meta_proposals':{'result':alls,'observed':'family +20 and hypothesis -20 canceled; other supplied target types gave no match in this fixture'},'positive_control':{'signal':control,'result':cr,'observed':'single-value target altered budget-selected region; control is not a whole-region mapper'},'equals_target_negative_control':invalid_reason,'semantic_projection':{'producer_has_claim_type':'claim_type' in region,'normalized_consumer_signal':normalized_region_signal,'consumer_keeps_claim_type':'claim_type' in normalized_region_signal[0],'note':'Search normalizer reads a smaller signal shape. The meaningful lineage/claim contract still needs separate review.'},'protected_learning_ledger_sha256':before,'assertions_passed':True,'causal_scope_limit':'Demonstrates bounded functions on synthetic inputs. Does not prove global absence of a mapper/dispatcher, natural adaptation, or desired final architecture.'}
+Path('/tmp/peaktrade_meta_search_probe_v1_result.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'assertions_passed':True,'baseline':baseline['selected_regions'],'region_digest':rs['selected_regions'],'family_shift':fs['selected_regions'],'positive_control':cr['selected_regions'],'all_fixture_generated_proposals':alls['selected_regions'],'equals_target_rejected':True},ensure_ascii=False))

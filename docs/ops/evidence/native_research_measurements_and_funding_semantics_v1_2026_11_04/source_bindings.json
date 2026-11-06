@@ -1,0 +1,8 @@
+{
+  "base_commit": "df645ae88eddd2b207ff94de9f75ddbd17634b94",
+  "new_files": {
+    "src/experiments/canonical_native_research_measurements_v1.py": "809d8ba18fec39e23f15736ad49733de6c08bace3f81aa805dd01e501eeabddc",
+    "tests/experiments/test_canonical_native_research_measurements_v1.py": "a34f3d0390271ae393a4aa54c602c8437a0d05e921069a2c242d3610514897f6"
+  },
+  "existing_implementations_unchanged": true
+}

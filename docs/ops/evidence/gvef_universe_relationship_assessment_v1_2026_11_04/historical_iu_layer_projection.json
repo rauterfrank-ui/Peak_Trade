@@ -1,0 +1,133 @@
+{
+  "layers": [
+    {
+      "LAYER": "L00",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "EEA_UNIVERSE_ACQUISITION_INGRESS",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "discovery_v1"
+    },
+    {
+      "LAYER": "L01",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP21_STRUCTURAL_FILTERING",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "eligibility_v1"
+    },
+    {
+      "LAYER": "L02",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP21_GOVERNED_FUTURES_UNIVERSE",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.governed_futures_universe_producer_v1"
+    },
+    {
+      "LAYER": "L03",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "ECONOMIC_MD_INPUT",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.economic_md_input_producer_v1"
+    },
+    {
+      "LAYER": "L04",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "B05_FEATURE_PRODUCTION",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.peak_trade_ranking_feature_production_v1"
+    },
+    {
+      "LAYER": "L05",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "S_STAR_ECONOMIC_SET",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1"
+    },
+    {
+      "LAYER": "L06",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "B03_ECONOMIC_SCORING",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "score_construction_v1"
+    },
+    {
+      "LAYER": "L07",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP22_FULL_RANK_ORDER",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1"
+    },
+    {
+      "LAYER": "L08",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "TOP20_CANDIDATE_CONTEXT",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.productive_futures_ranking_producer_v1"
+    },
+    {
+      "LAYER": "L09",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "TOP20_EVALUATION_RESIDENCY",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.top20_opportunity_evaluation_residency_v1"
+    },
+    {
+      "LAYER": "L10",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_SELECTION_ELIGIBILITY",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.single_selected_future_policy_v1.policy_v1"
+    },
+    {
+      "LAYER": "L11",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_ANTI_CHURN_OVERLAY",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "selection_v1"
+    },
+    {
+      "LAYER": "L12",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_SINGLE_SELECTED_FUTURE",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.single_selected_future_policy_v1"
+    },
+    {
+      "LAYER": "L13",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP24_RUNTIME_BINDING",
+      "OPTIMIZATION_RELATION": null,
+      "OWNER": "ops.single_selected_future_runtime_binding_v1"
+    }
+  ],
+  "scope": "Datierte Untersuchungsprojektion 07.10., keine erneute Funktionsratifikation",
+  "source_path": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/intelligent-universe-functional-origins/110ae358-07_iu_14_layer_master_model_v1.json",
+  "source_sha256": "8a85d7eb6834089d5ca2c6efcabaa57af008ef23b0d88a7f7a8fe27d64c369af"
+}

@@ -1,0 +1,1 @@
+{"cases": {"max_single_order_notional_infinity": {"error": "CanaryCapitalGuardError:NON_FINITE_CAP:max_single_order_notional", "raised": true}, "owner_caps_ratified_string_false": {"error": "CanaryCapitalGuardError:INVALID_BOOL_FLAG:full_core_guard_join_enabled", "raised": true}}, "label": "AFTER_fix_HEAD_2fdcb7ed9"}

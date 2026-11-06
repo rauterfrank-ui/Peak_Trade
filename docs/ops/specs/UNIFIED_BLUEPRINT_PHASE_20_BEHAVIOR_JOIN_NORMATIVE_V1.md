@@ -33,3 +33,23 @@ Integration closure:
 - `tests/learning/test_market_context_realized_behavior_join_v1.py`
 - `tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py`
 - `prove_unified_blueprint_phase_20_behavior_join_v1`
+
+
+## Measurement content and context admission — 2026-11-04
+
+For an OK N_BARS observation, supplied measurement must pass the existing supplier
+measurement validation before forward-return/behavior use: content reference,
+observation identity/context, scalar kind and evaluation time. Rejection is
+MEASUREMENT_EVIDENCE_BINDING_INVALID. The supplier pair validator reuses the same
+measurement-only function and retains full information-set checks. No missing
+information-set payload, measurement formula or source authenticity is invented.
+[Verification](../evidence/mi_realized_measurement_binding_v1_2026_11_04/README.md).
+
+
+## O4 close-path endpoint admission — 2026-11-04
+
+O4 identities must be unique. A supplied OK path ordered by observation bar refs
+must match bound measurement first/last close prices. Reject duplicates or endpoint
+mismatch before numeric derivation. Input list order does not determine canonical
+order. This does not authenticate all interior close values or change formulas.
+[Verification](../evidence/mi_realized_close_path_binding_v1_2026_11_04/README.md).

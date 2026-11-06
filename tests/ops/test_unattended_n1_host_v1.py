@@ -1,0 +1,143 @@
+"""Physical N1 host process death, durable total bounds, fresh governed restart."""
+
+from dataclasses import replace
+import json
+from pathlib import Path
+import signal
+import subprocess
+import time
+
+import pytest
+
+from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
+    UnattendedHostBoundsV1,
+    run_unattended_n1_host_v1,
+)
+
+REPO = Path(__file__).resolve().parents[2]
+
+
+@pytest.mark.parametrize("phase", ["before", "during"])
+def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_budget(
+    tmp_path, phase
+):
+    from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _bound_lane_1,
+    )
+
+    # One explicit temporary bootstrap before the first process. Restarted
+    # workers must recover this same store; they cannot create their own.
+    initialize_synthetic_host_budget_v1(tmp_path / "private_store", _bound_lane_1())
+    command = [str(REPO / "scripts/pt"), "-m", "tests.ops._unattended_n1_worker_v1", str(tmp_path)]
+    with (tmp_path / "stderr").open("w") as stderr:
+        child = subprocess.Popen(
+            [*command, phase], cwd=REPO, stdout=subprocess.DEVNULL, stderr=stderr
+        )
+        try:
+            deadline = time.monotonic() + 25
+            while (
+                not (tmp_path / "checkpoint.json").exists()
+                and child.poll() is None
+                and time.monotonic() < deadline
+            ):
+                time.sleep(0.05)
+            assert (tmp_path / "checkpoint.json").exists(), (tmp_path / "stderr").read_text()
+            checkpoint = json.loads((tmp_path / "checkpoint.json").read_text())
+            cursor = Path(checkpoint["cursor"])
+            old_cursor = cursor.read_bytes()
+            child.send_signal(signal.SIGKILL)
+            child.wait(timeout=5)
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.wait(timeout=5)
+    completed = subprocess.run(
+        [*command, "after"], cwd=REPO, capture_output=True, text=True, timeout=25
+    )
+    assert completed.returncode == 0, completed.stderr
+    result = json.loads(completed.stdout.splitlines()[-1])
+    if phase == "during":
+        assert result["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+        assert result["attempts"] == 1
+        assert cursor.read_bytes() == old_cursor
+    else:
+        assert result["status"] == "COMPLETED"
+        assert result["attempts"] == 2
+        assert result["cycles_used"] == 2
+        assert (
+            json.loads(cursor.read_bytes())["trading_epoch"]
+            == json.loads(old_cursor)["trading_epoch"] + 1
+        )
+        before = (
+            tmp_path / "controller/attempts/1/governed_continuous_cycle_run_ledger_v1.json"
+        ).read_bytes()
+        repeated = subprocess.run(
+            [*command, "after"], cwd=REPO, capture_output=True, text=True, timeout=25
+        )
+        assert repeated.returncode == 0, repeated.stderr
+        assert json.loads(repeated.stdout.splitlines()[-1])["attempts"] == 2
+        assert (
+            tmp_path / "controller/attempts/1/governed_continuous_cycle_run_ledger_v1.json"
+        ).read_bytes() == before
+
+
+def test_expired_stopped_or_lost_receipt_never_calls_runtime_factory(tmp_path):
+    bounds = UnattendedHostBoundsV1("test", "revision", "config", 90, 2, 30, 1)
+
+    def forbidden(*_):
+        raise AssertionError("No source, credentials or runtime may be opened")
+
+    result = run_unattended_n1_host_v1(
+        bounds=bounds, state_root=tmp_path / "expired", request_factory=forbidden, clock=lambda: 100
+    )
+    assert result["status"] == "BOUNDS_EXHAUSTED"
+    with pytest.raises(ValueError, match="REGISTERED_STATE_MISSING"):
+        run_unattended_n1_host_v1(
+            bounds=bounds, state_root=tmp_path, request_factory=forbidden, clock=lambda: 100
+        )
+    with pytest.raises(ValueError, match="RECEIPT_UNPROVEN"):
+        run_unattended_n1_host_v1(
+            bounds=replace(bounds, runtime_config_digest="changed"),
+            state_root=tmp_path / "expired",
+            request_factory=forbidden,
+            clock=lambda: 100,
+        )
+
+
+def test_launch_agent_preparation_has_no_activation_and_rejects_test_source_factory(tmp_path):
+    from dataclasses import asdict
+    import plistlib
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import host_service_v1
+
+    bounds = UnattendedHostBoundsV1("test", "revision", "config", time.time() + 60, 1, 30, 1)
+    manifest = {
+        "schema": "n1_unattended_host_service.v1",
+        "bounds": asdict(bounds),
+        "state_root": str(tmp_path / "controller"),
+        "repository_root": str(REPO),
+        "runtime_factory": "src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1:run_n1_standing_pre_external_supervisor_v1",
+        "runtime_request_config": {},
+    }
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(manifest))
+    result = host_service_v1(manifest_path=path, action="validate")
+    assert result["runtime_ports_validated"] is False
+    output = tmp_path / "host.plist"
+    assert (
+        host_service_v1(manifest_path=path, action="prepare", output_path=output)[
+            "service_activated"
+        ]
+        is False
+    )
+    plist = plistlib.loads(output.read_bytes())
+    assert plist["KeepAlive"] == {"SuccessfulExit": False}
+    assert plist["RunAtLoad"] is True and plist["ThrottleInterval"] == 60
+    assert "host-service" in plist["ProgramArguments"]
+    assert not (tmp_path / "controller").exists()
+    with pytest.raises(FileExistsError):
+        host_service_v1(manifest_path=path, action="prepare", output_path=output)
+    manifest["runtime_factory"] = "tests.ops._unattended_n1_worker_v1:main"
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="SOURCE_FACTORY_REQUIRED"):
+        host_service_v1(manifest_path=path, action="validate")

@@ -1,0 +1,74 @@
+{
+  "scope": "Synthetic fixture research inputs; actual SL11 producer → explicit M4 request → existing Search → M4 candidate choice. No natural outcome or new market measurement.",
+  "source_meta_learning_identity": "db3a439f69157e4bf2f2130e0f8d3b39fc57050de667e398c07f206bdc091905",
+  "proposal": {
+    "applies_to_champion": false,
+    "authority": "RESEARCH_ONLY",
+    "claim_type": "DESCRIPTIVE",
+    "kind": "DEPRIORITIZE_RESEARCH",
+    "promotion_authority": "NONE",
+    "question_id": "PARAMETER_REGION_REPEATED_OVERFIT",
+    "reason": "REPEATED_OVERFIT",
+    "target": "aec334e287d62c605cfc2032e1f2b5f33aed91f9d87437dcae337a3b9ac0d975",
+    "target_kind": "parameter_region",
+    "proposal_id": "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+  },
+  "before_selected_region": {
+    "fast": 10,
+    "slow": 50
+  },
+  "after_selected_region": {
+    "fast": 10,
+    "slow": 100
+  },
+  "priority_evidence": {
+    "source_meta_learning_identity": "db3a439f69157e4bf2f2130e0f8d3b39fc57050de667e398c07f206bdc091905",
+    "supplied_proposal_ids": [
+      "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+    ],
+    "candidates": [
+      {
+        "parameter_region": {
+          "fast": 10,
+          "slow": 100
+        },
+        "search_priority_score": 0,
+        "status": "PROPOSED",
+        "matched_proposal_ids": []
+      },
+      {
+        "parameter_region": {
+          "fast": 10,
+          "slow": 50
+        },
+        "search_priority_score": -20,
+        "status": "BUDGET_EXCLUDED",
+        "matched_proposal_ids": [
+          "819a8904ac46ab61cd451870401f74132c2abdd351cb67b6fb0ba61cb9a9db6d"
+        ]
+      },
+      {
+        "parameter_region": {
+          "fast": 15,
+          "slow": 100
+        },
+        "search_priority_score": 0,
+        "status": "BUDGET_EXCLUDED",
+        "matched_proposal_ids": []
+      },
+      {
+        "parameter_region": {
+          "fast": 15,
+          "slow": 50
+        },
+        "search_priority_score": 0,
+        "status": "BUDGET_EXCLUDED",
+        "matched_proposal_ids": []
+      }
+    ],
+    "research_priority_only": true,
+    "productive_apply_authorized": false
+  },
+  "proposal_not_authority": true,
+  "productive_config_mutation": false
+}

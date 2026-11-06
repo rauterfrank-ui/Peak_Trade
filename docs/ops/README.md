@@ -1,4 +1,6 @@
 # Peak_Trade — Ops documentation index
+
+Aktueller Systemeinstieg: [Map of Truth](../governance/PEAK_TRADE_MAP_OF_TRUTH.md) und [System Atlas](../system_atlas/generated/SYSTEM_ATLAS.md).
 <!-- MERGE_LOG_EXAMPLES:START -->
 - PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
@@ -10,11 +12,9 @@
 
 
 
-**[Docs Truth Map](registry/DOCS_TRUTH_MAP.md)** — canonical ops documentation registry and change log (truth-first).
 
 ### Recent safe contract anchors (discoverability)
 
-- **PR #3237** — Double Play WebUI **read-only** route contract aligned with the pure-stack **dashboard display map** (docs coherence): [`MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md), [`MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md`](specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md). **Display/read-only only**; **no** live authorization; **no** order or execution authority; **no** gate bypass and **no** replacement for Master V2, Double Play execution semantics, Risk, Kill Switch, or execution gates.
 
 - **PR #3238** — Observability **read-model** contract **tests** (`tests&#47;webui&#47;test_market_depth_readmodel_v0.py`, `tests&#47;webui&#47;test_paper_shadow_summary_readmodel_v0.py`): **tests-only** fixture-backed regression/readability anchors; **not** operational readiness, telemetry guarantees, or authorization.
 

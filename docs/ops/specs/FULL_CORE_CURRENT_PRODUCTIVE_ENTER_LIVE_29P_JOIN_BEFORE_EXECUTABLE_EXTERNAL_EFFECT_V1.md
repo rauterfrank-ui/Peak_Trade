@@ -4,10 +4,12 @@ status: active
 scope: Full-Core CURRENT_PRODUCTIVE execution-eligible ENTER must consume the existing Live-29P GET producer and canonical 29P evaluator before 29Q/venue-plan/envelope; HOLD skips the private GET; offline-default equity cannot feed a Real-POST-capable Current-Productive ENTER; no permit; no venue POST
 capability: FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-17
+last_updated: 2026-11-02
 ---
 
 # Full Core Current Productive Enter Live 29P Join Before Executable External Effect V1
+
+Current reconfiguration clarification, 2026-11-03: ENTER requires the existing shared reservation owner and paired slot context. Tests must not fabricate an ENTER or substitute another capital source. The host's pre-join OFFLINE_ALGEBRA evidence is replaced by account-bound sizing here; it is not live capital authority. The evaluated GGE-based adverse distance supplies the protective stop. Native identity, freshness, monetary conversion, budget caps and reservation gates remain mandatory. [Current regression evidence](../evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md) resolves the earlier 18-case diagnostic; full Treasury integration remains unfinished.
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EF.
 Consumes Owner-GO
@@ -23,6 +25,15 @@ canonical capital into the existing offline sizing adapter. FAIL,
 UNKNOWN, STALE, or MISSING fail-closed before 29Q/venue-plan/envelope.
 29P evidence is not authority. Raw venue fields are not promoted to
 sizing authority. STEP-29Q remains PLAN_ONLY. No permit. No POST.
+
+Local correction, 2026-11-02: REDUCE/EXIT are POSITION_MANAGEMENT, not HOLD.
+The entry-only join skips its GET and returns no venue-plan authorization for
+them, preserving the original replay and reporting
+POSITION_MANAGEMENT_EXECUTION_HANDOFF_REQUIRED. The occupied lane host likewise
+reports ACTION_PENDING for these decisions. This exposes the unbound reducing
+execution handoff; it does not create quantities, intents, order authorization,
+automatic flattening or a position flip. Long/Short safety-exit tests do not
+prove normal scope-triggered reversal or live execution.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_LIVE_29P_CAPITAL_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1

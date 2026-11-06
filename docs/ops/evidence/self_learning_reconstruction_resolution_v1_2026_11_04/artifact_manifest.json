@@ -1,0 +1,56 @@
+{
+  "source_commit": "b392c2df7dd5672a3c1de07ad3385c446cc52dfa",
+  "source_only_historical_programs_not_executed": true,
+  "files": [
+    {
+      "path": "gvef_builder.reconstructed.py.txt",
+      "sha256": "e7dbab3ae3519caa7585c740162387793a1e825f86d535bd9d43210ef94b3d81",
+      "bytes": 79759
+    },
+    {
+      "path": "gvef_builder.provenance.json",
+      "sha256": "32d7bfe5b0c1da03d027e7e3b7dbdf8f17e3cfd0385544aa464e957014db4904",
+      "bytes": 1518
+    },
+    {
+      "path": "gvef_closure.reconstructed.py.txt",
+      "sha256": "82c9a4e884eb1535675d4af12be4a644491e01446489112858baf6afe1443826",
+      "bytes": 25587
+    },
+    {
+      "path": "gvef_closure.provenance.json",
+      "sha256": "73fe5381327a3fc62ffb27861a2d6514022de10326455a17e941a47808a7afc9",
+      "bytes": 745
+    },
+    {
+      "path": "gvef_fixpoint.reconstructed.py.txt",
+      "sha256": "5fac8aaa3cdb1936bfb78bd600ec241abb0e32c3e9f54a9072c07595093a710c",
+      "bytes": 26946
+    },
+    {
+      "path": "gvef_fixpoint.provenance.json",
+      "sha256": "7d0819859c39acddc6ab4e39ada3893010fa0ca31f55ae2a0599d3e388643896",
+      "bytes": 3950
+    },
+    {
+      "path": "bwp5_closure.reconstructed.py.txt",
+      "sha256": "d5dbc17e7c94a9067f86881420c8696887be8595df1aa0e8aea898eceb328346",
+      "bytes": 31579
+    },
+    {
+      "path": "bwp5_closure.provenance.json",
+      "sha256": "4dfc246b7423357e527af5fb52bf6f17c4145706b02b0f1225352883a174da94",
+      "bytes": 745
+    },
+    {
+      "path": "gvef_source_requirement_reconstruction.json",
+      "sha256": "4052a1d5fbbbb395624fb44a7ac795d88340d1eb5e64e10a54d9731f87913264",
+      "bytes": 12193
+    },
+    {
+      "path": "exact_manifest_lookup.json",
+      "sha256": "ea361e614b1c4cb04ee02c000726f3761d45f489be55fe20715dccc91b2e3007",
+      "bytes": 940
+    }
+  ]
+}

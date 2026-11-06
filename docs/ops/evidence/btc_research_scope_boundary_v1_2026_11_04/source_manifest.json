@@ -1,0 +1,21 @@
+{
+  "review_commit": "4960b43c2d3e7ee599dca929e366505ed12cf43d",
+  "files": {
+    ".gitattributes": "5b60419c62f19a3968f2f34fe299083b36d6ed878e16c8c6b6c6380800357746",
+    "README.md": "b32de20f9c95b26ddff2c81a66a956ae0e4fbd7a72c5497e801af1bf8486a5e6",
+    "controlled_probe.json": "111b698d2f4a71a426bd8955a21e34c83e9732e6afc9c63ce9d8109718e70a1f",
+    "instrument_id_canonicalization_v1.py.current.txt": "0be5334559c1a25f8f913b5e580910da55b66bf175b32a6c3046f71cf717404b",
+    "okx_production_instrument_lifecycle_source_v1.py.current.txt": "3cc44d7145cec953368c43288db99c3fed830bd26217d5b16eee18e7f71efd6c",
+    "pit_futures_instrument_lifecycle_registry_validator_v1.py.0f6182cf4.txt": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+    "pit_futures_instrument_lifecycle_registry_validator_v1.py.current.txt": "bf5e8a0ee0e6ee941b59eced02a2b01f2554ae236d05071778d3521ec3599b2c",
+    "pit_futures_universe_manifest_dataset_period_binding_v0.py.current.txt": "49b6aafe78921f875718a03f1dc5ac1702b44d8827901bdd6167308e885c1159",
+    "pit_futures_universe_manifest_generator_v1.py.cce50d22b.txt": "5d87f1629faa4cca02f97b557cc106b8690ab84737af22a4b9a5884f70325903",
+    "pit_futures_universe_manifest_generator_v1.py.current.txt": "5d87f1629faa4cca02f97b557cc106b8690ab84737af22a4b9a5884f70325903",
+    "pit_futures_universe_manifest_production_materialization_policy_v1.json.current.txt": "11f316c105af7e8edbb3b8354123e2f15142ee6e72c4edfdceaa52e6837d9e13",
+    "pit_futures_universe_manifest_production_materialization_v1.py.current.txt": "c7e6518e2ab51a9b03f5e152ea7e12f088fd4b5868decc58e3da1e1a18b446a6",
+    "pit_futures_universe_manifest_validator_v1.py.current.txt": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+    "pit_futures_universe_manifest_validator_v1.py.f9ba0eb21.txt": "b337ad12e5ee1facf626654d9241eca2150b5a10fa86396fdbaa2a300e7cd493",
+    "receipt.json": "c640f679a85e1eaddead7f25afd5ff405f3e5002fea3fe9acc0063db9fd6def0",
+    "tests.xml": "8157f9958f37dab3ec51750e975dc23a0ecaec98b58a13a08dfd2e878dbda036"
+  }
+}

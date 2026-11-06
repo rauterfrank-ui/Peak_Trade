@@ -1,0 +1,13 @@
+{
+  "CROSS_UNIVERSE_CAUSALITY_PROVEN": false,
+  "CURRENT_CAUSAL_GRAPH_VERIFIED": false,
+  "GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+  "GLOBAL_NON_INTERFERENCE_PROVEN": false,
+  "RUNTIME_EVIDENCE_BINDING": "NOT_REQUESTED",
+  "TEMPORAL_CAUSALITY_PROVEN": false,
+  "authority": "NONE",
+  "overlay_edge_count": 0,
+  "schema_version": "causal_integration_manifest.v1",
+  "snapshot_id": "b0fd854d17c3a702ff5a6333d5ed378a",
+  "wp1_output_dir": "/private/tmp/bwp_live_002/ghv_after/wp1_nav"
+}

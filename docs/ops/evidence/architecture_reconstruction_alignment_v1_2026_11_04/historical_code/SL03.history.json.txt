@@ -1,0 +1,163 @@
+{
+  "id": "SL03",
+  "phase": 3,
+  "title": "Fehlergedächtnis",
+  "introduction_commit": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+  "introduction_date": "2026-08-17T19:12:07Z",
+  "commit_subject": "research: add canonical failure memory v1 (#5930)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_failure_memory_v1.py",
+  "code_blob": "0fffa54547df9f4237c5e480ea794559a830039c",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "bec73128000cb83184841bbbdb3e88659ecda50106e15b3e7aabf0fbcc1acf42",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL03-canonical_failure_memory_v1.source.py",
+  "source_lines": 630,
+  "module_docstring": "Phase 3 Canonical Failure Memory v1 (research evidence only).\n\nAppend-only historical memory of rejected research hypotheses. This layer\nreuses Phase 1 Canonical Experiment Identity and Phase 2 rejection\ndispositions. It has no runtime, order, live, funding, canary, promotion,\nor config-write authority.\n\nDuplicate detection is fingerprint-based, not free text. A duplicate is a\nwarning / annotation / deprioritization signal. It is never an automatic\nresearch ban.",
+  "public_functions": [
+    {
+      "name": "derive_hypothesis_fingerprint_v1",
+      "line": 141
+    },
+    {
+      "name": "derive_failure_record_id_v1",
+      "line": 168
+    },
+    {
+      "name": "build_canonical_failure_memory_record_v1",
+      "line": 178
+    },
+    {
+      "name": "validate_canonical_failure_memory_record_v1",
+      "line": 273
+    },
+    {
+      "name": "assess_duplicate_hypothesis_v1",
+      "line": 358
+    },
+    {
+      "name": "canonical_record_payload",
+      "line": 420
+    },
+    {
+      "name": "freeze_canonical_failure_memory_record_v1",
+      "line": 424
+    }
+  ],
+  "classes": [
+    {
+      "name": "FailureMemoryValidationError",
+      "line": 114
+    },
+    {
+      "name": "FailureRecordConflictError",
+      "line": 118
+    },
+    {
+      "name": "CanonicalFailureMemoryRecordRequestV1",
+      "line": 123
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 182,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 304,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 434,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 505,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "canonicalize_mapping",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_FAILURE_MEMORY_V1.md",
+      "status": "added",
+      "sha": "c32245741b1d6b8335221c4b6a3d97eae5cad7bc",
+      "additions": 96,
+      "deletions": 0,
+      "changes": 96
+    },
+    {
+      "filename": "src/experiments/canonical_failure_memory_store_v1.py",
+      "status": "added",
+      "sha": "cfe17f6775498fa38d79b3192ff7c583382d477d",
+      "additions": 220,
+      "deletions": 0,
+      "changes": 220
+    },
+    {
+      "filename": "src/experiments/canonical_failure_memory_v1.py",
+      "status": "added",
+      "sha": "0fffa54547df9f4237c5e480ea794559a830039c",
+      "additions": 630,
+      "deletions": 0,
+      "changes": 630
+    },
+    {
+      "filename": "tests/experiments/test_canonical_failure_memory_v1.py",
+      "status": "added",
+      "sha": "94840f82d8e3f480a7440cd2ec7c862cc7bd748d",
+      "additions": 401,
+      "deletions": 0,
+      "changes": 401
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_failure_memory_v1.py",
+      "status": "added",
+      "sha": "94840f82d8e3f480a7440cd2ec7c862cc7bd748d",
+      "additions": 401,
+      "deletions": 0,
+      "changes": 401
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_failure_memory_store_v1.py",
+      "status": "added",
+      "sha": "cfe17f6775498fa38d79b3192ff7c583382d477d",
+      "additions": 220,
+      "deletions": 0,
+      "changes": 220
+    },
+    {
+      "filename": "src/experiments/canonical_failure_memory_v1.py",
+      "status": "added",
+      "sha": "0fffa54547df9f4237c5e480ea794559a830039c",
+      "additions": 630,
+      "deletions": 0,
+      "changes": 630
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+      "date": "2026-08-17T19:12:07Z",
+      "subject": "research: add canonical failure memory v1 (#5930)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/e763bf1bf133afab1c3850a6bbaafde6f83e39d2",
+      "parents": [
+        "e10f32f56fad0576cd250958401d13f044c5920d"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

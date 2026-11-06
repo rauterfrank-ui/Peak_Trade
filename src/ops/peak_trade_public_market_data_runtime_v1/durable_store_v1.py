@@ -73,11 +73,20 @@ def load_all_facts_v1(paths: DurableStorePathsV1) -> list[Mapping[str, Any]]:
     if not paths.finalized_facts.is_file():
         return []
     out: list[Mapping[str, Any]] = []
-    for line in paths.finalized_facts.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        out.append(row.get("payload") or row)
+    raw = paths.finalized_facts.read_text(encoding="utf-8")
+    if raw and not raw.endswith("\n"):
+        raise DurableStoreError("public fact store incomplete record")
+    for number, line in enumerate(raw.splitlines(), start=1):
+        try:
+            row = json.loads(line)
+            if not isinstance(row, dict) or row.get("schema_version") != FACT_STORE_SCHEMA:
+                raise ValueError("unsupported public fact record schema")
+            payload = row.get("payload")
+            if not isinstance(payload, dict) or row.get("fact_digest") != fact_digest(payload):
+                raise ValueError("public fact payload digest mismatch")
+        except (ValueError, TypeError) as exc:
+            raise DurableStoreError(f"public fact store invalid record at line {number}") from exc
+        out.append(payload)
     return out
 
 

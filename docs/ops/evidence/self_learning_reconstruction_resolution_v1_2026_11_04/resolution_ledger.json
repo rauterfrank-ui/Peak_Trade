@@ -1,0 +1,290 @@
+{
+  "source_commit": "b392c2df7dd5672a3c1de07ad3385c446cc52dfa",
+  "status": "CONSOLIDATED_RECONSTRUCTION_WITH_EXPLICIT_NON_CLOSURES",
+  "not_a_new_system_ssot": true,
+  "rows": [
+    {
+      "id": "SLR-01",
+      "question": "Was ist das ursprüngliche selbstlernende Universum?",
+      "original_construction": "Autonomer Forscher: Experimentidentität, Memory, Robustheit, Vergleich, Challenger, Shadow, Reality Gap, Failure Memory, nächste Hypothese. DDO ergänzt Lernen aus Entscheidungen.",
+      "current_evidence": "Quellenkonstruktionen und heutige Owner sind getrennt zugeordnet. Ein Lerner muss kein trainiertes neuronales Modell sein; eine evidenzabhängige Forschungswahl ist eine mögliche Lernwirkung.",
+      "resolution": "SOURCE_AND_MEANING_RESOLVED",
+      "remaining": "Früheste vollständige Entstehung aller Ideen nicht behauptet; heutige vollständige Wirkung ist eine weitere Frage.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-02",
+      "question": "Wie viele innere Ebenen gibt es?",
+      "original_construction": "SL0–12, M0–M11, B0–B5, A0–A3, Core-Layer und Zeittakte beschreiben verschiedene Achsen.",
+      "current_evidence": "Keine belegte einzige feste Anzahl semantischer Ebenen. Die Erinnerung an mehrere GV-Prüfstellen ist durch drei Originalberichte konkretisiert.",
+      "resolution": "AXES_DISTINGUISHED",
+      "remaining": "Vollständiger historischer ausführbarer Vector-Corpus je erinnerter Ebene fehlt.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "self_learning_internal_golden_vector_recovery_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-03",
+      "question": "Was gelangt in den Lerner?",
+      "original_construction": "DecisionEvent einschließlich NoAction, Block und Vorfall; Herkunftsklassen OBSERVED/REPLAYABLE/MODELLED/UNAVAILABLE.",
+      "current_evidence": "Capture besitzt benannte Seams und aktiv gebundene Producer-Hooks; kontrollierte aktuelle Tests prüfen Erfassung und Replay.",
+      "resolution": "CONTROLLED_MECHANISM_PROVEN",
+      "remaining": "Hook/Registry und gültiger Record beweisen nicht lückenlose natürliche Erfassung oder authentische Outcomes.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-04",
+      "question": "Was bedeutet späteres Outcome?",
+      "original_construction": "Entscheidungszeit, Horizont, verfügbare Information und realisierte Beobachtung sind getrennt.",
+      "current_evidence": "N_BARS-Fenster und Close-Zeitpunkte benötigen explizite Bindung; die bekannte Future-Bar-Fixture bleibt als Zeitproblem markiert. Safety-Korrektheit bleibt unabhängig von späterem Profit.",
+      "resolution": "SEMANTIC_BOUNDARY_RESOLVED",
+      "remaining": "Natürliches kausal korrektes Label benötigt belegte Finalisierung/Knowledge-Time und echten Forecast-Horizont; keine Ledger-Kontamination behauptet.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-05",
+      "question": "Lernt der DDO-Closed-Loop unmittelbar aus dem Zahlenwert des Returns?",
+      "original_construction": "Historischer Closed Loop ist nach PR6634 auf economic-label feedback begrenzt.",
+      "current_evidence": "100→110 und 100→90 ergeben unterschiedliche gemessene Log-Returns, bei gleichem opakem Label aber dieselbe Feedbackwirkung. Labeländerung verändert State-Feedback.",
+      "resolution": "CONTROLLED_CAUSAL_SCOPE_PROVEN",
+      "remaining": "Numerische Forecast-Kalibrierung oder Modellupdate folgen daraus nicht automatisch.",
+      "evidence_packages": [
+        "self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-06",
+      "question": "Sind Labels, State-Versionen und Memory bereits Verbesserung?",
+      "original_construction": "Memory und Failure Memory sollen nachfolgende Forschung informieren.",
+      "current_evidence": "Persistenz und lineage sind belegt; höhere Version/anderer Digest allein sind keine fachliche Verbesserung. Numerische Failure-Evidence hat im separaten Meta-Pfad eine nachgewiesene Wirkung.",
+      "resolution": "MECHANISMS_SEPARATED",
+      "remaining": "Memory-Nutzung muss für den jeweiligen Consumer konkret nachgewiesen werden, nicht aus Existenz gefolgert.",
+      "evidence_packages": [
+        "self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04",
+        "numerical_feedback_nonannual_control_alignment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-07",
+      "question": "Ist Validation gleich Ausführen aller Robustheitsverfahren?",
+      "original_construction": "Robustheit, Vergleich und Shadow sind eigene Forschungsfunktionen.",
+      "current_evidence": "DDO-Validation/Shadow prüfen angelieferte Evidence-Status und Pack-Bindung; sie starten dadurch nicht sämtliche fremden Backtest/WF/MC/Stress-Engines.",
+      "resolution": "CONTRACT_BOUNDARY_RESOLVED",
+      "remaining": "Gemessene fachliche Lieferanten bleiben separat zu binden; ein Statusname ersetzt keine Engine-Ausführung.",
+      "evidence_packages": [
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04",
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-08",
+      "question": "Sind Challenger und Reality Gap gemessene Fakten?",
+      "original_construction": "Challenger-Vergleich und Realitätsschwelle sollen Experimentausgänge beurteilen.",
+      "current_evidence": "Vorhandene kontrollierte Ketten nutzen auch caller-supplied Scores/Beobachtungen; Verarbeitung und Quellauthentizität sind verschieden.",
+      "resolution": "MECHANISM_PRESENT_SOURCE_LIMITED",
+      "remaining": "Authentische vergleichbare Kontroll-/Challenger- und Realitätsbeobachtungen je Experiment fehlen als Gesamtbeweis.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-09",
+      "question": "Wo liegen die benannten Übergabepunkte?",
+      "original_construction": "SL Export→Optimization Input; Foundation ACK; Plane requires evidence; Optimization evidence→SL Return; Meta→Optimization feedback.",
+      "current_evidence": "Fünf historische EDGE-IDs sind mit heutigen Eingängen abgeglichen und in einer kontrollierten gültigen Kette durchlaufen.",
+      "resolution": "NAMED_HANDOFFS_RESOLVED",
+      "remaining": "EDGE-Namen sind historische Bezeichnungen, keine zusätzlichen installierten Runtime-Edges.",
+      "evidence_packages": [
+        "self_learning_internal_golden_vector_recovery_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-10",
+      "question": "Ist Learning zwingend für jede Foundation?",
+      "original_construction": "Learning-Evidence ist ein optionaler Foundation-Eingang und ein gezieltes Requirement des Learning-Pfades.",
+      "current_evidence": "Foundation kann ohne Learning bestehen; fehlender Learning-Input wird am zuständigen Input abgelehnt.",
+      "resolution": "OPTIONALITY_PROVEN",
+      "remaining": "Keine universelle Pflichtverbindung aus einzelnen Harness-Pfaden ableiten.",
+      "evidence_packages": [
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-11",
+      "question": "Bewirkt A/B-Economic-Label bereits andere Forschung?",
+      "original_construction": "Learning-Evidence soll als Forschungsgrundlage nutzbar sein.",
+      "current_evidence": "Im geprüften Standard-Handoff ändern LABEL_A/B Evidence-/Plane-Identität. Search-Identität, Kandidat, Challenger, Robustheitsdigest, Failure-Anzahl, Failure-Evidence und Proposal bleiben gleich.",
+      "resolution": "CONTROLLED_NON_EFFECT_PROVEN_FOR_THIS_PATH",
+      "remaining": "Nicht als globale Wirkungslosigkeit des separaten Research→Meta→Search-Pfades verallgemeinern.",
+      "evidence_packages": [
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04",
+        "numerical_feedback_nonannual_control_alignment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-12",
+      "question": "Sind Return-ACK, M6 und Analyzer derselbe Schritt?",
+      "original_construction": "Rückgabe, Meta-Aufnahme und Analyse haben getrennte Funktionen.",
+      "current_evidence": "ACK schreibt nicht automatisch Learning-State und ruft M6 nicht auf; ausdrücklich aufgerufenes M6 ist eine Projektion und meldet Analyzer nicht aufgerufen.",
+      "resolution": "OWNER_RESPONSIBILITIES_RESOLVED",
+      "remaining": "Ein M6-Datensatz allein beweist keinen Phase11-Analyzelauf.",
+      "evidence_packages": [
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04",
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-13",
+      "question": "Gibt es überhaupt numerisch wirksames Meta-Learning?",
+      "original_construction": "Gemessene Robustheits-/OOS-/Failure-Evidence soll die nächste begrenzte Forschungswahl verändern.",
+      "current_evidence": "Separat gebundener Search+Phase10→Phase11→Search-Pfad: berechneter OOS-Collapse ändert Region 10/50→10/100 bei gleichem Budget; No-Collapse-Kontrolle erzeugt keine Proposal.",
+      "resolution": "CONTROLLED_NUMERIC_CAUSAL_EFFECT_PROVEN",
+      "remaining": "Synthetische Quellen und proposal/search effect, noch kein gemessener neuer Versuch oder Nutzenbeweis.",
+      "evidence_packages": [
+        "numerical_feedback_nonannual_control_alignment_v1_2026_11_04",
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-14",
+      "question": "Sind parameter_stability und later_outcome überall Pflicht?",
+      "original_construction": "Meta/Advanced Search erweitern das minimale Forschungsprogramm.",
+      "current_evidence": "Optionale Felder bleiben fehlend; der belegte Collapse-Pfad kann ohne erfundene Stability-/Outcome-Zahlen wirken.",
+      "resolution": "MINIMUM_VS_EXTENSION_RESOLVED",
+      "remaining": "Spezifische vollständige Stabilitätsbehauptungen brauchen deren eigene Evidence; kein pauschaler Block jeder Minimal-Schleife.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "numerical_feedback_nonannual_control_alignment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-15",
+      "question": "Führt nächste Search den nächsten Versuch aus?",
+      "original_construction": "Nächste Hypothese soll in ein neues vergleichbares Experiment münden.",
+      "current_evidence": "Search wählt/plant; M7 search_executed=false, M8 N+1 ist Lineage-Replay. Die konkrete generische fast/slow-Region ist nicht nativ fast_window/slow_window.",
+      "resolution": "EXECUTION_BOUNDARY_IDENTIFIED",
+      "remaining": "Für genau diesen Rückkopplungskandidaten ist der belegte nächste native gemessene Versuch offen; keine stille Parameterumbenennung oder Identitätsumschreibung.",
+      "evidence_packages": [
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04",
+        "numerical_feedback_nonannual_control_alignment_v1_2026_11_04",
+        "numerical_research_execution_supplier_probe_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-16",
+      "question": "Existieren brauchbare numerische Versuchslieferanten?",
+      "original_construction": "Strategieparameter müssen tatsächlich Engine-Eingang und Messung beeinflussen.",
+      "current_evidence": "Separate explizite native synthetische Studien ändern Signale und Engine-Eingang; zwei Grid-Punkte EVALUATED. Späterer vorhandener Split-Observer erhält Train/Validation/OOS vollständig.",
+      "resolution": "CONTROLLED_SUPPLIER_EFFECT_PROVEN",
+      "remaining": "Separate Studie ist nicht das ausgeführte vorige Search-Experiment. Funding NOT_BOUND, CRS offen, nonfinite Sortino; kein natürlicher Futures-Nutzenbeweis.",
+      "evidence_packages": [
+        "numerical_research_execution_supplier_probe_v1_2026_11_04",
+        "parameter_sensitivity_split_observation_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-17",
+      "question": "Was lernt Loop A/MI numerisch?",
+      "original_construction": "Forecast zu t und realisierter Horizont sollen Kalibrierung/Drift liefern.",
+      "current_evidence": "Caller UP/DOWN/FLAT verändert Kalibrierung .5/.7/.8 bei festem Forecast. Aktuell benannter BRIER_SCORE verwendet 1−p_realized; Triad-Store hält vollständige Werte, Research-Projektion überwiegend Referenzen.",
+      "resolution": "LOCAL_NUMERIC_EFFECT_AND_STORAGE_PROVEN",
+      "remaining": "Label-Authentizität, tatsächlicher späterer numerischer Consumer und verbesserte Prognose offen; kein globaler Datenverlust behauptet.",
+      "evidence_packages": [
+        "self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-18",
+      "question": "Bewirkt MI-Export automatisch eine andere M4-Entscheidung?",
+      "original_construction": "MI-angereicherter Intake ist ein expliziter bedingter zusätzlicher Eingang.",
+      "current_evidence": "Drei kontrollierte M4-Aufrufe mit optionalem MI-Export lassen die vollständige nicht-MI-Kette gleich. Conditioned Loop A Writer/Reader und Adjudicator A ADMIT sind separat fixturebasiert belegt.",
+      "resolution": "CONDITIONED_PATH_BOUNDARY_PROVEN",
+      "remaining": "ADMIT ist weder Training noch produktive Parameteränderung; keine globale Wirkungslosigkeit aller MI-Consumer.",
+      "evidence_packages": [
+        "self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-19",
+      "question": "Ist Loop C schon numerische Feature-Forschung?",
+      "original_construction": "LEARNING_REPRESENTATION soll Feature-/Kontextnutzen mit inkrementeller OOS-Evidence prüfen.",
+      "current_evidence": "Vorhandener Wrapper routet Decision→Plan→Fixture-Evaluator→typed next Evidence. Unbekannte gültige Fixture scheitert geschlossen.",
+      "resolution": "ROUTING_MECHANISM_PROVEN",
+      "remaining": "Labels aus Fixtures sind kein ausgeführtes numerisches Feature-/Modell-Experiment und kein inkrementeller OOS-Nutzen.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-20",
+      "question": "Wie gehört GVEF zum selbstlernenden Universum?",
+      "original_construction": "V1.4 positioniert GVEF außerhalb interner Loops; §8.3 benennt Learning Outcomes, Stability, Reproducibility und Evidence Deltas.",
+      "current_evidence": "SelfLearning-Evaluator verarbeitet angelieferte Artefakte, bindet Digest und Authority-Grenzen. Rekonstruierte V1.5-Komponente schreibt AUTHORITY NONE, STATEFUL false und kein produktives Writeback vor.",
+      "resolution": "ARCHITECTURAL_ROLE_AND_NARROW_ACCEPTANCE_RESOLVED",
+      "remaining": "Breite fachliche Outcome-/Stability-Evaluation wird durch Hashvergleich nicht automatisch erfüllt.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "CURRENT_PACKAGE"
+      ]
+    },
+    {
+      "id": "SLR-21",
+      "question": "Was beweist der damalige BWP-5-Abschluss wirklich?",
+      "original_construction": "Komponente: Learning/DDO candidate evaluation, DomainEvaluationContext→DomainEvaluationResult, SL evidence.",
+      "current_evidence": "31 Requirement-Zeilen sind aus dem Closure-Quelltext wiederhergestellt; BWP5-METRICS-001 setzt sl.artifact_digest. Teile der Reconciliation sind Deklarationsabgleich/feste EXACT_MATCH-Labels, andere echte Fixture-/Runner-Prüfungen.",
+      "resolution": "SOURCE_REQUIREMENT_PROVENANCE_RESOLVED",
+      "remaining": "Originale Ergebnisbytes/31 historische Laufzeiturteile fehlen weiterhin. Programmquelle ist kein restaurierter Lauf. Breiter Blueprint-Anspruch bleibt eigenständig.",
+      "evidence_packages": [
+        "CURRENT_PACKAGE"
+      ]
+    },
+    {
+      "id": "SLR-22",
+      "question": "Sind die Golden Vectors je innerer Ebene vollständig belegt?",
+      "original_construction": "Drei historische Originalberichte nennen innere Prüfbereiche und Cross-Universe-Handoffs.",
+      "current_evidence": "Reports mit Recovery-Hashes, Emitter und Differentialprogramme rekonstruiert;128 aktuelle Tests in genau abgegrenzten Scopes PASS. Teile historischer PROVEN-/Zahlentexte sind Literale.",
+      "resolution": "HISTORICAL_REPORTS_AND_CURRENT_SCOPES_RESOLVED",
+      "remaining": "Vollständige historische Corpus-/Erwartungswert-/Originalresultat-/Revisions-Zuordnung bleibt offen; keine Vollzertifizierung aus128 PASS.",
+      "evidence_packages": [
+        "self_learning_internal_golden_vector_recovery_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-23",
+      "question": "Ist produktive Rückwirkung bereits geschlossen oder implizit erlaubt?",
+      "original_construction": "Candidate→Evidence→Governance/Risk→Authorization→freigegebener Parameterübergang→konkreter Consumer; versionierte Release-Grenze.",
+      "current_evidence": "Eligibility/Dry-Run sind nicht autorisierend. GVEF ist kein Apply-Owner. Heutige Freeze-Regel erhält vorhandene Implementierungen.",
+      "resolution": "AUTHORITY_AND_HANDOFF_BOUNDARY_RESOLVED",
+      "remaining": "Vollständige konkrete freigegebene Parameter-Consumer-Kette samt beobachteter Wirkung ist nicht als Teil dieses Forschungsbelegs nachgewiesen.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04",
+        "self_learning_golden_vector_layer_proof_assessment_v1_2026_11_04"
+      ]
+    },
+    {
+      "id": "SLR-24",
+      "question": "Wie gehören N5, IU, Ranking und Scope dazu?",
+      "original_construction": "Instrumentwahl, Slotbindung, Core-Entscheidung, Scope und Ausführung haben verschiedene Zuständigkeiten.",
+      "current_evidence": "N5 Full Core bedeutet fünf Slots. Historischer Autonomiepfad separat; IU01.10 enger Scope-Auftrag, IU07.10 breiteres Layer-Modell, MI eigenständig.",
+      "resolution": "IDENTITY_VARIANTS_DISTINGUISHED",
+      "remaining": "Unbekannte genaue Eigenidentität des vollautomatischen Universe offen; funktionierende Scope-Berechnung bleibt unangetastet.",
+      "evidence_packages": [
+        "self_learning_original_design_gvef_boundary_v1_2026_11_04"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+---
+title: "PeakTrade · Aktuelles System"
+stand: "2026-11-05"
+rolle: "Abgeleitete Orientierung ohne Betriebsautorität"
+authoritaet: "NONE"
+---
+
+# PeakTrade · Aktuelles System
+
+> [!info] Aktueller Abgleich vom 06.11.2026
+> [[00 Systemindex/Repoabgleich/Standabgleich mit dem Repository|Repo- und Obsidianstand mit den beiden vollständigen Commits, inneren Anschlussverträgen und Kausalitätskorrektur]]. Die darunter beschriebene Quellenbasis bleibt ein datierter Prüfstand; sie wird nicht pauschal neu zertifiziert.
+
+> [!info] SL und OPT ausdrücklich getrennt
+> [[00 Systemindex/SL OPT Trennung/Selbstlernen und Optimierung getrennt|Originalaufgaben, Wiederverwendung und getrennte Writer/Übergaben]]. Gemeinsame Module oder Meta-Begriffe verschmelzen die Universen nicht.
+
+> [!info] Semantik bis zum tatsächlichen Consumer
+> [[00 Systemindex/Systempruefung/Systemweite Semantik|Bedeutung, Einheit, Identität, Informationszeit, Zustand und erlaubte Wirkung systemweit prüfen]]. Struktur, Namen und Datentypen allein reichen nicht.
+
+> [!info] Systemweiter Dokumentationsdurchgang abgeschlossen
+> [[00 Systemindex/Systempruefung/Gesamtsystem Dokumentationsabgleich|Alle22 Bereiche,91 inneren Gruppen,62 Übergänge und dokumentierten Unterschiede]]. Nur Dokumentation; fachliche Architekturvollständigkeit und natürliche Gesamtwirkung bleiben offen. Fünf Slots bleiben fest.
+
+> [!info] Punkt 8 begonnen · Unterschiede dokumentiert
+> [[00 Systemindex/Architekturpruefung/Universen und innere Ebenen|Universen, innere Ebenen und Unterschiede öffnen]]. Übersicht erstellt; Architekturvollständigkeit offen. Keine Produkt- oder Klassifikationsänderung.
+
+> [!info] Weitere offene Arbeit außerhalb der Pfadkarte
+> [[00 Systemindex/Offene Punkte und Arbeitsfolge|22 bekannte Themen in 8 Bündeln: jetzt bearbeitbar, abhängig oder bewusst begrenzt]]. Die offenen Übergänge auf der Karte sind nicht der gesamte Arbeitsvorrat.
+
+> [!info] Produktiver Pfad · Zuständigkeiten und Sperren
+> [[00 Systemindex/Produktiver Pfad und Enforcement|Enforcement-Sicht öffnen]] · [[00 Systemindex/Karten/Produktiver Pfad.canvas|Pfadkarte]] · [[00 Systemindex/Enforcement Pruefung|Lokaler Dokumentcheck]]. Dokumentmarkierung, keine Aktivierungsfreigabe.
+
+**[[00 Systemindex/System Cockpit|System-Cockpit öffnen]]**
+
+[[00 Systemindex/Fallverlaeufe|Konkrete Fallverläufe]] · [[00 Systemindex/Aenderungsauswirkungen|Änderungsauswirkungen]] · [[00 Systemindex/Entscheidungen und Widersprueche|Offene Entscheidungen und Bedeutungsgrenzen]]
+
+[[PeakTrade-Systemindex|Vollständiger Systemindex]] · [[00 Systemindex/Semantische Ebenen|Semantische Ebenen]] · [[00 Systemindex/Execution und Betriebsarten|Execution/Betriebsarten]] · [[00 Systemindex/Externe Signalstroeme|Externe Eingänge]]
+
+Datierte Sicht auf den begrenzten synthetischen Offlineverbund. Die fachliche Reichweite und Standbindung stehen im Cockpit; kein Livebetrieb wird damit beobachtet oder freigegeben.
+
+[[00 Systemindex/System Cockpit|Cockpit]] · [[PeakTrade-Systemindex|Systemindex]]
+
+## Korrigierte SL-/OPT-Außenhüllen
+
+[[00 Systemindex/SL OPT Trennung/Aussenkanten Architektur/Aussenkanten SL und OPT|Architektonische Grenzen von Selbstlernen und Optimierung]] — konkrete Producer, erste fremde Consumer, Zustands-/Autoritätsgrenzen; Daten, Kontrolle, Prüfung und Storage getrennt. Diese Definition ersetzt die betroffenen früheren Port-/Ownerzuordnungen; innere Karten bleiben vorhandenes Inventar.
+
+## Konstrukt nach den geklaerten Aussenkanten
+
+[[00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/Konstrukt von IU SL und OPT|Ursprung, innere Verarbeitung, Lernzustände, Rückkopplungen und Prüfung der drei Integrationscommits]]. Quellgebundener Verständnisstand; die Commits sind abgegrenzte Prüfkandidaten. Die fachliche Gesamtklärung bleibt offen; keine weitere Implementierung folgt daraus.

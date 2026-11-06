@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import copy
 from dataclasses import dataclass, field
+from decimal import Decimal, InvalidOperation
 from typing import Any, Callable, Mapping
 
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
@@ -78,12 +78,34 @@ def _quality_current() -> PrivateStateQualityV1:
     return PrivateStateQualityV1(state=QUALITY_CURRENT, reconciliation_required=False)
 
 
+def _rows(payload: Mapping[str, Any], kind: str, *, singleton: bool = False) -> list:
+    if not isinstance(payload, Mapping):
+        raise PrivateRestBaselineError(f"{kind}_MALFORMED")
+    data = payload.get("data")
+    if not isinstance(data, list) or any(not isinstance(row, dict) for row in data):
+        raise PrivateRestBaselineError(f"{kind}_MALFORMED")
+    if singleton and len(data) != 1:
+        raise PrivateRestBaselineError(f"{kind}_MALFORMED")
+    return data
+
+
+def _number(value: Any, kind: str, *, positive: bool = False) -> str:
+    try:
+        if value is None or isinstance(value, bool) or not str(value).strip():
+            raise ValueError()
+        numeric = Decimal(str(value))
+        if not numeric.is_finite() or (positive and numeric <= 0):
+            raise ValueError()
+    except (ValueError, InvalidOperation) as exc:
+        raise PrivateRestBaselineError(f"{kind}_NUMERIC_UNPROVEN") from exc
+    return str(value)
+
+
 def normalize_account_config_v1(
     path: str, payload: Mapping[str, Any], *, captured_at: str
 ) -> AccountConfigStateV1:
-    data = payload.get("data")
-    row = data[0] if isinstance(data, list) and data else {}
-    if not isinstance(row, dict):
+    row = _rows(payload, "ACCOUNT_CONFIG", singleton=True)[0]
+    if not row.get("acctLv") or not row.get("posMode"):
         raise PrivateRestBaselineError("ACCOUNT_CONFIG_MALFORMED")
     return AccountConfigStateV1(
         acct_lv=str(row.get("acctLv")) if row.get("acctLv") is not None else None,
@@ -96,10 +118,7 @@ def normalize_account_config_v1(
 def normalize_balance_v1(
     path: str, payload: Mapping[str, Any], *, captured_at: str
 ) -> BalanceSnapshotV1:
-    data = payload.get("data")
-    row = data[0] if isinstance(data, list) and data else {}
-    if not isinstance(row, dict):
-        raise PrivateRestBaselineError("BALANCE_MALFORMED")
+    row = _rows(payload, "BALANCE", singleton=True)[0]
     details = row.get("details")
     ccy = None
     avail = None
@@ -108,6 +127,10 @@ def normalize_balance_v1(
         if isinstance(d0, dict):
             ccy = str(d0.get("ccy")) if d0.get("ccy") is not None else None
             avail = str(d0.get("availEq")) if d0.get("availEq") is not None else None
+    if not ccy:
+        raise PrivateRestBaselineError("BALANCE_CURRENCY_UNPROVEN")
+    _number(row.get("totalEq"), "BALANCE_TOTAL_EQ")
+    _number(avail, "BALANCE_AVAIL_EQ")
     return BalanceSnapshotV1(
         total_eq=str(row.get("totalEq")) if row.get("totalEq") is not None else None,
         avail_eq=avail,
@@ -120,13 +143,9 @@ def normalize_balance_v1(
 def normalize_positions_v1(
     path: str, payload: Mapping[str, Any], *, captured_at: str
 ) -> tuple[PositionStateV1, ...]:
-    data = payload.get("data")
-    if not isinstance(data, list):
-        raise PrivateRestBaselineError("POSITIONS_MALFORMED")
+    data = _rows(payload, "POSITIONS")
     out: list[PositionStateV1] = []
     for row in data:
-        if not isinstance(row, dict):
-            continue
         inst = str(row.get("instId") or "")
         if not inst:
             raise PrivateRestBaselineError("POSITION_UNKNOWN_INSTRUMENT")
@@ -134,7 +153,7 @@ def normalize_positions_v1(
             PositionStateV1(
                 inst_id=inst,
                 pos_side=str(row.get("posSide")) if row.get("posSide") is not None else None,
-                pos=str(row.get("pos") or "0"),
+                pos=_number(row.get("pos"), "POSITION_QUANTITY"),
                 avg_px=str(row.get("avgPx")) if row.get("avgPx") is not None else None,
                 quality=_quality_current(),
                 provenance=_provenance(path, payload, captured_at),
@@ -158,16 +177,22 @@ def _map_order_state(raw: str) -> str:
 def normalize_orders_v1(
     path: str, payload: Mapping[str, Any], *, captured_at: str
 ) -> tuple[OrderSnapshotV1, ...]:
-    data = payload.get("data")
-    if not isinstance(data, list):
-        raise PrivateRestBaselineError("ORDERS_MALFORMED")
+    data = _rows(payload, "ORDERS")
     out: list[OrderSnapshotV1] = []
     for row in data:
-        if not isinstance(row, dict):
-            continue
         inst = str(row.get("instId") or "")
         if not inst:
             raise PrivateRestBaselineError("ORDER_UNKNOWN_INSTRUMENT")
+        if not (row.get("ordId") or row.get("clOrdId")):
+            raise PrivateRestBaselineError("ORDER_IDENTITY_INCOMPLETE")
+        if _map_order_state(str(row.get("state") or "")) not in {
+            "accepted/live",
+            "partial",
+            "filled",
+            "canceled",
+            "rejected",
+        }:
+            raise PrivateRestBaselineError("ORDER_STATE_UNPROVEN")
         out.append(
             OrderSnapshotV1(
                 inst_id=inst,
@@ -184,13 +209,9 @@ def normalize_orders_v1(
 def normalize_fills_v1(
     path: str, payload: Mapping[str, Any], *, captured_at: str
 ) -> tuple[FillFactV1, ...]:
-    data = payload.get("data")
-    if not isinstance(data, list):
-        raise PrivateRestBaselineError("FILLS_MALFORMED")
+    data = _rows(payload, "FILLS")
     out: list[FillFactV1] = []
     for row in data:
-        if not isinstance(row, dict):
-            continue
         inst = str(row.get("instId") or "")
         trade_id = str(row.get("tradeId") or "")
         if not inst or not trade_id:
@@ -201,8 +222,8 @@ def normalize_fills_v1(
                 trade_id=trade_id,
                 ord_id=str(row.get("ordId")) if row.get("ordId") is not None else None,
                 cl_ord_id=str(row.get("clOrdId")) if row.get("clOrdId") is not None else None,
-                fill_sz=str(row.get("fillSz") or "0"),
-                fill_px=str(row.get("fillPx") or "0"),
+                fill_sz=_number(row.get("fillSz"), "FILL_SIZE", positive=True),
+                fill_px=_number(row.get("fillPx"), "FILL_PRICE", positive=True),
                 quality=_quality_current(),
                 provenance=_provenance(path, payload, captured_at),
             )
@@ -225,8 +246,9 @@ def collect_rest_baseline_v1(
         assert_no_rest_post_v1("GET")
         called.append(path)
         payload = fetch_json(path, dict(params or {}))
-        if str(payload.get("code")) not in ("0", "0.0", ""):
+        if not isinstance(payload, Mapping) or str(payload.get("code")) not in ("0", "0.0"):
             raise PrivateRestBaselineError("REST_AUTH_OR_VENUE_FAILURE")
+        _rows(payload, "REST_DATA")
         return payload
 
     cfg = _get("/api/v5/account/config")
@@ -270,96 +292,3 @@ def collect_rest_baseline_v1(
 
 def cached_state_may_not_substitute_fresh_pretrade_get_v1(path: str) -> bool:
     return path in FRESH_PRETRADE_ONLY_GET_PATHS
-
-
-@dataclass(frozen=True)
-class AdmissionRawCaptureV1:
-    """One observed GET body. Pagination terminal stays unset here."""
-
-    endpoint: str
-    request_params: Mapping[str, str]
-    payload: Mapping[str, Any]
-    body_digest: str
-    captured_at_ms: int | None
-    page_row_count: int | None = None
-    request_limit: int | None = None
-    observed_cursor: str | None = None
-    next_cursor: str | None = None
-
-
-def explicit_captured_at_ms_v1(value: object) -> int | None:
-    if isinstance(value, int) and not isinstance(value, bool):
-        return value
-    return None
-
-
-def _string_params(params: Mapping[str, str]) -> dict[str, str]:
-    checked: dict[str, str] = {}
-    for key, raw in params.items():
-        if not isinstance(key, str) or not isinstance(raw, str):
-            raise PrivateRestBaselineError("ADMISSION_CAPTURE_PARAMS_MALFORMED")
-        checked[key] = raw
-    return checked
-
-
-def admission_capture_record_v1(
-    path: str,
-    params: Mapping[str, str],
-    payload: Mapping[str, Any],
-    *,
-    captured_at_ms: int | None,
-) -> AdmissionRawCaptureV1:
-    frozen_params = _string_params(params)
-    frozen_payload = copy.deepcopy(dict(payload))
-    data = frozen_payload.get("data")
-    row_count = len(data) if isinstance(data, list) else None
-    limit_text = frozen_params.get("limit")
-    request_limit = (
-        int(limit_text) if isinstance(limit_text, str) and limit_text.isdigit() else None
-    )
-    cursor = frozen_params.get("after")
-    observed = cursor if isinstance(cursor, str) and cursor != "" else None
-    return AdmissionRawCaptureV1(
-        endpoint=path,
-        request_params=frozen_params,
-        payload=frozen_payload,
-        body_digest=body_digest(frozen_payload),
-        captured_at_ms=captured_at_ms,
-        page_row_count=row_count,
-        request_limit=request_limit,
-        observed_cursor=observed,
-        next_cursor=None,
-    )
-
-
-def collect_optional_admission_capture_v1(
-    fetch_json: RestGetJson,
-    *,
-    inst_id: str,
-    inst_type: str,
-    captured_at_ms: object = None,
-) -> tuple[AdmissionRawCaptureV1, ...]:
-    """Retain the six baseline GET bodies. Not called by the runtime orchestrator.
-
-    ``captured_at_ms`` is stored only when the caller passes an int. No clock is read.
-    """
-    explicit_ms = explicit_captured_at_ms_v1(captured_at_ms)
-    queries: tuple[tuple[str, dict[str, str]], ...] = (
-        ("/api/v5/account/config", {}),
-        ("/api/v5/account/balance", {}),
-        ("/api/v5/account/positions", {"instType": inst_type, "instId": inst_id}),
-        ("/api/v5/trade/orders-pending", {"instType": inst_type, "instId": inst_id}),
-        ("/api/v5/trade/orders-history", {"instType": inst_type, "instId": inst_id}),
-        ("/api/v5/trade/fills", {"instType": inst_type, "instId": inst_id}),
-    )
-    records: list[AdmissionRawCaptureV1] = []
-    for path, params in queries:
-        assert_get_path_allowlisted_v1(path)
-        assert_no_rest_post_v1("GET")
-        payload = fetch_json(path, dict(params))
-        if not isinstance(payload, Mapping):
-            raise PrivateRestBaselineError("ADMISSION_CAPTURE_PAYLOAD_MALFORMED")
-        records.append(
-            admission_capture_record_v1(path, params, payload, captured_at_ms=explicit_ms)
-        )
-    return tuple(records)

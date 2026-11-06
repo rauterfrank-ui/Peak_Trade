@@ -1,0 +1,15 @@
+{
+  "schema_version": "research_execution_gvef_reference_v1",
+  "artifact_ref": "measured_execution.canonical.json",
+  "payload_encoding": "UTF8_JSON_NUMBERS_PRESERVED",
+  "payload_sha256": "dcaddcc60ba269b7268ee81e8aabb1479c1439af644df5561ea32dc0c8e778fa",
+  "execution_content_digest": "a255ada60264c1b0aa06539fe221091ac63e3a5ee843c5b4670a213da8e5d876",
+  "experiment_id": "bec4bd4a1284cc41b1c86d1ff80a9462665413211f70a477d9a99da51b6a26be",
+  "loop_identity": "8190edc196045e0756a3542cff6b7f7c898ae45926ec0fd251c48000be863671",
+  "search_identity": "d97af289777512e476e1ec63678f123ce0dbd4c6eeea0487eb329c9074d8563f",
+  "declared_evidence_source_class": "TEST_ONLY_SYNTHETIC",
+  "source_class_authenticated": false,
+  "TEST_ONLY_SYNTHETIC": true,
+  "gvef_scope": "REFERENCE_ARTIFACT_BINDING_NOT_NUMERIC_QUALITY_EVALUATION",
+  "productive_apply_authorized": false
+}

@@ -1,0 +1,155 @@
+{
+  "id": "SL06",
+  "phase": 6,
+  "title": "Champion-/Challenger-Bewertung",
+  "introduction_commit": "bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+  "introduction_date": "2026-08-17T20:14:00Z",
+  "commit_subject": "research: add canonical champion-challenger v1 (#5933)",
+  "github_url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+  "github_commit_matches_local": true,
+  "code_path": "src/experiments/canonical_champion_challenger_v1.py",
+  "code_blob": "f4ca9581a00085886c01b2adeda84b9403491040",
+  "github_code_blob_matches_local": true,
+  "code_sha256": "ad072a9656395701aeafd124986b0633e867b5ba90258289f2c8078c6b7309db",
+  "code_snapshot": "/Users/frnkhrz/Documents/ChatGPT/PeakTrade Reconstruction/system-wide-2026-11-01/self-learning-original-architecture/github-code-history/SL06-canonical_champion_challenger_v1.source.py",
+  "source_lines": 616,
+  "module_docstring": "Phase 6 Canonical Champion-Challenger v1 (research evaluation only).\n\nDeterministic Champion versus Challenger evaluation. Comparability is\ndelegated entirely to Phase 5 Comparison SSOT. This layer classifies and\nrecommends; it does not swap the Champion, mutate runtime, write config,\npromote, fund, or submit orders.",
+  "public_functions": [
+    {
+      "name": "evaluate_canonical_champion_challenger_v1",
+      "line": 113
+    },
+    {
+      "name": "derive_champion_challenger_identity_v1",
+      "line": 244
+    },
+    {
+      "name": "validate_canonical_champion_challenger_result_v1",
+      "line": 271
+    },
+    {
+      "name": "canonical_record_payload_v1",
+      "line": 334
+    }
+  ],
+  "classes": [
+    {
+      "name": "ChampionChallengerValidationError",
+      "line": 98
+    },
+    {
+      "name": "CanonicalChampionChallengerRequestV1",
+      "line": 103
+    }
+  ],
+  "static_canonical_call_sites": [
+    {
+      "line": 394,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "canonical_record_payload",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 516,
+      "imported_module": "src.experiments.canonical_experiment_memory_v1",
+      "called_symbol": "derive_experiment_id_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 351,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "canonical_record_payload",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 395,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "rank_comparable_candidates_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 511,
+      "imported_module": "src.experiments.canonical_experiment_identity_v1",
+      "called_symbol": "validate_canonical_experiment_identity_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 352,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "build_canonical_comparison_result_v1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 396,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "CanonicalComparisonRankingRequestV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    },
+    {
+      "line": 353,
+      "imported_module": "src.experiments.canonical_comparison_ssot_v1",
+      "called_symbol": "CanonicalComparisonRequestV1",
+      "evidence": "STATIC_CALL_SITE_ONLY_NOT_RUNTIME_EXECUTION"
+    }
+  ],
+  "changed_files": [
+    {
+      "filename": "docs/ops/specs/CANONICAL_CHAMPION_CHALLENGER_V1.md",
+      "status": "added",
+      "sha": "e927eb5de3c0279a348d448d07aa483e78a9f334",
+      "additions": 129,
+      "deletions": 0,
+      "changes": 129
+    },
+    {
+      "filename": "src/experiments/canonical_champion_challenger_v1.py",
+      "status": "added",
+      "sha": "f4ca9581a00085886c01b2adeda84b9403491040",
+      "additions": 616,
+      "deletions": 0,
+      "changes": 616
+    },
+    {
+      "filename": "tests/experiments/test_canonical_champion_challenger_v1.py",
+      "status": "added",
+      "sha": "a815ab8f31dbd05c05423114c9eee37999f77c32",
+      "additions": 322,
+      "deletions": 0,
+      "changes": 322
+    }
+  ],
+  "test_files": [
+    {
+      "filename": "tests/experiments/test_canonical_champion_challenger_v1.py",
+      "status": "added",
+      "sha": "a815ab8f31dbd05c05423114c9eee37999f77c32",
+      "additions": 322,
+      "deletions": 0,
+      "changes": 322
+    }
+  ],
+  "changed_src_python_files": [
+    {
+      "filename": "src/experiments/canonical_champion_challenger_v1.py",
+      "status": "added",
+      "sha": "f4ca9581a00085886c01b2adeda84b9403491040",
+      "additions": 616,
+      "deletions": 0,
+      "changes": 616
+    }
+  ],
+  "primary_path_history_through_pin": [
+    {
+      "sha": "bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+      "date": "2026-08-17T20:14:00Z",
+      "subject": "research: add canonical champion-challenger v1 (#5933)",
+      "url": "https://github.com/rauterfrank-ui/Peak_Trade/commit/bc97d43f715305c8b70eb84ddd12fd718f8460a6",
+      "parents": [
+        "e1efa56f2bde5fefd48c62260c1f720d99138e71"
+      ]
+    }
+  ],
+  "history_end_pin": "5d1c838c15369507c5247834db4dd0df25592169",
+  "history_api_pagination": "ALL_PAGES_RETURNED_BY_ENDPOINT",
+  "runtime_verified": false
+}

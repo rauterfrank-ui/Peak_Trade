@@ -1,0 +1,99 @@
+# Self-Learning: Ergebnisproduzenten, Identitätsbindung und Rückkopplung
+
+Stand: 02.11.2026. Fortsetzung der Untersuchung „Verarbeitung und Nachspeisung“. Untersuchungsartefakt, kein neuer Systemvertrag. Ausschließlich Quellen gelesen und Untersuchungsdateien geschrieben; kein Produktcode importiert, kein Forschungs- oder Tradinglauf gestartet.
+
+## Ergebnis
+
+Ein vorhandener Messwertproduzent ist im August-Code konkret nachvollziehbar: `scripts/run_backtest.py` lädt OHLCV-Daten, ruft `BacktestEngine.run_realistic` auf und erhält Equity, Trades und daraus berechnete Kennzahlen. Diese werden in eine ältere Experiment-CSV und Reportartefakte geschrieben. **Dass dieser Produzent die Eingaben des ursprünglichen August-Forschungsloops geliefert hat, ist weiterhin nicht belegt.**
+
+Die erste vollständig nachvollziehbare Befüllung der Loop-Schnittstelle in den untersuchten Quellen stammt aus Test-Fixtures. Deren Kennzahlen sind gesetzte Zahlen; ihre Dataset-Digests sind Hashes von Testbezeichnungen. Sie sind kein wiedergefundenes historisches Marktexperiment.
+
+Die noch am 18.08. eingeführte Identitätsbindung schließt eine andere Aufgabe: Sie bindet gelieferte Beobachtungen an eine COMPLETE-Identität und das Experimentgedächtnis. Sie erzeugt keine Backtestergebnisse. Ebenso sind die Bildung von Meta-Einheiten und der Wiedereintritt von Search-Anfragen zusätzliche Übergaben mit eigenen Anforderungen, keine automatisch bewiesenen Fortsetzungen des Loops.
+
+## 1. Konkret codierter Produzent vor der Loop-Grenze
+
+Referenz für diesen Abschnitt: Phase-12-Commit `899e154d1bb095227c13690943e13284fb936972` vom 18.08.2026, 16:04:39 Uhr Berlin. Er dient zum Lesen damals vorhandener Produzenten; er ist nicht deren Einführungscommit.
+
+**Dateneingang.** `load_ohlcv_data` liest eine explizite CSV-/Parquet-Datei. Für CSV wird zwischen generischem und Kraken-Loader unterschieden. Ohne Datei erzeugt der Runner Dummy-OHLCV. Das ist eine echte Verzweigung im Code; aus einem Runnernamen folgt kein historischer Marktdatenlauf. Normalisierte Datei-Eingänge haben einen UTC-Zeitindex sowie `open`, `high`, `low`, `close`, `volume`; der Normalizer sortiert und entfernt doppelte Zeitstempel. Start- und Endfilter werden einschließlich der Grenzen angewandt. [P01:356–428; P06:31–90]
+
+**Verarbeitung.** Der Runner beschafft Strategieparameter, Signalfunktion, Positionsgrößen- und Risikokomponenten sowie eine Kostenkonfiguration und ruft `run_realistic(df, strategy_signal_fn, strategy_params, cost_config)` auf. Der Pfad ist bereits damals als Legacy-Raw-Signal-Research klassifiziert. Seine Existenz belegt keinen vollständigen kanonischen Systembacktest und keine korrekte Futures-Nettoökonomie. [P01:575–631]
+
+**Neu erzeugte Daten.** Die Engine baut aus ihrer Equity-Folge eine Zeitreihe, berechnet Drawdown und Basic-/Trade-Stats und liefert `BacktestResult(equity_curve, drawdown, trades, stats, metadata)`. Dies ist ein konkreter Ergebnisproduzent, anders als das spätere Binden fertiger Loop-Beobachtungen. [P02:935–1025; P04:14–33]
+
+**Zeit und Einheiten.** `compute_basic_stats` berechnet Total Return als `(Ende−Anfang)/Anfang`, Drawdown als negative relative Entfernung vom bisherigen Hoch und Sharpe aus den Equity-Periodenreturns mit festem Annualisierungsfaktor 365. Die Eingangsfrequenz wird in dieser Funktion nicht zur Annualisierung aufgelöst. Preis-/Volumeneinheiten stammen aus der konkreten Quelldatei; der normalisierte Spaltenname allein legt sie nicht fest. Ein konkretes historisches Dataset, dessen tatsächliches Zeitfenster und Instrument-/Volumeneinheiten sind hier nicht wiedergefunden. [P03:41–115]
+
+**Persistierter Empfänger.** `log_backtest_result` übernimmt `result.stats` über `build_record_from_result` in `reports/experiments/experiments.csv`. Der Legacy-Record erhält eine UUID als `run_id` und einen UTC-Schreibzeitpunkt. Sein Datum ist der Zeitpunkt des Loggens, nicht der Marktzeitraum. Start-/Enddatum werden gesondert als Metadaten geführt. Der untersuchte Runner übergibt beim Logging weder Symbol noch Timeframe explizit, obwohl der Logger diese optional unterstützt. [P01:665–679; P05:77–225,298–367]
+
+**Offene Kante.** Diese UUID ist nicht die aus dem Phase-1-Identitätsdigest abgeleitete kanonische `experiment_id`. Es fehlt in der untersuchten Strecke die belegte Überführung von Quelldatei, Zeit-/Einheitenvertrag und Ergebnis in `CanonicalExperimentIdentityRequestV1` plus `OfflineExperimentObservationsV1`. Ähnliche Kennzahlnamen ersetzen diese Überführung nicht.
+
+## 2. Was der ursprüngliche Loop tatsächlich bekommt
+
+Im ursprünglichen Request liegen `experiment_observations`, Champion, Champion-/Challenger-Score und Gap-Dimensionen bereits vor. Die Hypothese bringt separat Identitätsvorgaben, Marktuniversum und Zeitfenster mit. `_bind_experiment_memory` übernimmt die bereitgestellten Ergebnisfelder in das kanonische Gedächtnis; es liest dabei keine OHLCV-Datei und führt keinen Backtest aus. [P14:158–204,659–691]
+
+Die untersuchte Testbefüllung macht die Herkunft an dieser Grenze sichtbar:
+
+- `dataset_digest = sha256("dataset")`; auch Features und Kostenreferenzen werden aus Testlabels gehasht.
+- Marktuniversum: BTC-/ETH-USDT-SWAP; deklariertes Zeitfenster 01.01.2020–31.12.2024. Dieses Testfenster belegt keine tatsächlich geladene Datenreihe.
+- Memory-Metriken: Sharpe 1,25 und `max_drawdown = −0,12`.
+- Separater Robustheitskanal: unter anderem Sharpe 1,2, `max_dd = 0,08`, gesetzte Split-/Stressbeobachtungen und eine wiederholte Liste von 32 Returns.
+- Separater Vergleichskanal: Champion-Score 1,0 und Challenger-Score 1,2.
+- Separater Gap-Kanal: erwartete Gebühren 0,001, beobachtete 0,0012, Schwelle 0,001, Einheit `ratio`.
+
+Quelle: P07:57–265. Das sind **gesetzte Testdaten mit verschiedenen Rollen**, keine zusammenhängend gemessene Versuchsserie. Insbesondere werden Challenger-Score und Robustheits-Sharpe nicht an dieser Stelle aus den Memory-Metriken abgeleitet. Für diese Kanäle muss Herkunft jeweils separat belegt werden.
+
+Auch semantisch ist ein bloßes Kopieren alter Stats nicht belegt: Die kanonische Robustheitspolicy benennt `MEAN_OVER_SAMPLE_STD_NO_ANNUALIZATION`; der oben untersuchte Legacy-Produzent annualisiert dagegen mit 365. `max_drawdown` und `max_dd` werden in der Fixture zudem mit unterschiedlichem Vorzeichen verwendet. Die Namensnähe begründet keinen bereits vorhandenen Konversionsvertrag. [P17:52,136,258–270; P03:90–105; P07:138–223]
+
+Robustheit ist dabei nicht auf das Speichern fertiger Urteile beschränkt: Die Suite verarbeitet gelieferte Returns/Beobachtungen und ruft unter anderem Monte-Carlo-/Bootstrap-Auswertungen auf. Neu erzeugte Robustheitsbefunde sind von den schon im Request enthaltenen `robustness_results` zu unterscheiden. Auch diese Berechnung erzeugt jedoch nicht rückwirkend die zugrunde liegenden Markt-/Experimentdaten. [P17:598–626,793 ff.]
+
+## 3. Entwicklung noch am 18.08.: Binding statt neuer Ergebnisproduktion
+
+Vier konkrete Commits wurden über GitHub lesend abgeglichen; SHA und sämtliche zurückgegebenen Datei-Blobs stimmen mit den lokalen Git-Objekten überein. Zeitangaben sind Committer-Zeiten in Berlin, keine Laufzeitnachweise.
+
+- **15:12:29 — #5938 / `7c36858b…`:** Loop eingeführt; Memory direkt aus caller-supplied observations.
+- **19:16:46 — #5943 / `c0a45f4e…`:** separater Binder verlangt COMPLETE-Identität, prüft Identitäts-/Experiment-/Lineage-Claims und baut Phase-2-Memory.
+- **19:28:21 — #5944 / `dfe2003f…`:** Loop konsumiert diesen Binder.
+- **19:55:13 — #5945 / `eac9bbaf…`:** optionales Memory-Persistieren wird ebenfalls an den Binder delegiert; der parallele Persistenzweg wird konsolidiert.
+
+Der einzige erlaubte Observation-Owner im eingeführten Binder lautet `OFFLINE_EXPERIMENT_OBSERVATIONS_V1`. Vertrag und Code erklären ihn ausdrücklich als bestehende caller-supplied Schnittstelle. Der Binder nimmt `observations` entgegen und kopiert `metrics`, `robustness_results`, `regime_results`, `artifacts` in das gebundene Ergebnis. **Ein erlaubter Owner-Token ist hier kein identifizierter Backtest-/Marktdatenproduzent.** [P10:1–6,42–48,78–105,270–450; P11:27–84; P12/P13:`_bind_experiment_memory`]
+
+Die Claims prüfen Übereinstimmung mit der gelieferten Identität. Im späteren Loop werden sie aus derselben ausgewählten Identität befüllt. Das belegt interne Identitätsbindung; ein unabhängiger Abgleich gegen die tatsächlich verarbeiteten Quelldaten ist damit allein nicht nachgewiesen. [P13:672–716]
+
+Die Originalnachrichten bestätigen die Abgrenzung: Phase-10-Bericht 332806 beschreibt Memory aus Caller-Observations ausdrücklich ohne Engine-Lauf. Der spätere Bericht 263961 nennt die Wiederverwendung der Phase-10-Form „SHAPE_ONLY_NOT_EXECUTOR“. Auftrag und Bericht sind historische Absicht/Aussage; die tatsächliche Rolle wurde am oben genannten Code geprüft. Acht relevante Originalnachrichten wurden gegen den Suchindex abgeglichen und separat gesichert. Historische Autorisierungen wurden nicht ausgeführt.
+
+## 4. Wie Meta-Einheiten entstehen müssten und was schon codiert ist
+
+`MetaLearningExperimentUnitV1` ist kein nackter Experimentrecord. Es verlangt zusätzlich unter anderem `hypothesis_kind`, `search_space_id`, `parameter_region`, ein explizites Regime, Zeitfenster, Marktuniversum und Robustheits-Teststatus. Der Phase-2-Memory-Request garantiert nicht alle diese Kontextfelder als eigene Pflichtfelder. Ein Gesamt-Loop-Ergebnis enthält mehr Kontext als sein Memory-Record; dessen konkrete Projektion in Meta-Einheiten bleibt trotzdem zu belegen. [P09:145–169; P15:199–219]
+
+Die Funktion kanonisiert die vom Caller gelieferten Einheiten, leitet deren kanonische Experiment-ID ab, verbietet doppelte IDs und partitioniert vergleichbare Kohorten. Failure-/Gap-Records werden anhand der Experiment-ID an diese Eingangsmenge gebunden; unbekannte IDs werden zurückgewiesen. Dies ist eine belegte interne Verknüpfung, kein belegter automatischer Leseweg aus einem Experimentstore. [P15:250–281,476–603]
+
+In der ursprünglichen Test-Fixture baut `_unit()` die Meta-Einheit unmittelbar aus gesetzten Werten: unter anderem `search.ma.v1`, `trend_following`, Backtest-Sharpe 1,2, `parameter_stability = 0,9` und späterer Shadow-Sharpe 0,8. Dort wird kein Loop-Ergebnis in eine Unit konvertiert. [P08:131–159]
+
+**Spätere Nachspeisung.** Das optionale Outcome hat `observed_surface`, `metric_name`, `value`, `observed_at`. Der Code verlangt `evidence_created_at ≤ observed_at ≤ created_at` der Meta-Auswertung. Eine spätere Auswertung kann also neu beobachtete Erfahrung aufnehmen; das ist von bereits beim Loop-Aufruf vorhandenen Gap-Werten zu unterscheiden. [P15:538–555]
+
+**Bedeutung beim Empfänger.** Die untersuchte Frage zur Backtest-/Outcome-Assoziation zählt bei gleichem Metriknamen Vorzeichenübereinstimmungen/-wechsel. Sie misst dort nicht den Fehlerbetrag 1,2 gegenüber 0,8 und kalibriert kein Modell. Die Kostenfrage zählt dagegen pro Kostendimension/Digest gerichtete Unterschätzungen `observed > expected`, auch ohne Schwellenbruch. Die Aussage bleibt beschreibend/assoziativ; ein statistischer Befund ist kein Kausalbeweis. [P15:871–915,920–965]
+
+## 5. Rückfluss zur Forschung und fehlender Wiedereintritt
+
+Advanced Search bekommt einen eigenen Request mit Identitätstemplate, Suchraum, Methode, Budget, Objective/Constraint und optionalen Failure-/Gap-/Meta-Signalen. Im Search-Code werden passende Meta-Proposals tatsächlich in einen Prioritätsscore umgesetzt. Für passende Strategie-/Suchraum-/Hypothesen-/Parameterziele ist damit eine lokale Consumer-Verwendung codiert; die bereits bekannte Lücke für `cost_model`-Targets bleibt bestehen. [P16:284–306,1230–1280]
+
+Der erzeugte `offline_experiment_request` enthält Hypothesen-ID, Experiment-ID, Identitätsdigest, Parameterregion und Regime sowie `executed=False`, `loop_started=False`. Er enthält insbesondere **keine** fertigen Experimentbeobachtungen, keinen Champion, keine Champion-/Challenger-Scores und keine Gap-Dimensionen. Das gleiche Schema-Label wie beim Loop ersetzt nicht dessen Pflichtfelder. Die Ausgabestruktur ist deshalb allein kein vollständig befüllter `CanonicalAutomatedOfflineResearchLoopRequestV1`. [P16:1283–1301; P14:181–204]
+
+Für einen tatsächlich erneuten Versuch braucht es außerhalb dieser Ausgabe mindestens die konkrete Versuchserzeugung und das Befüllen des vollständigen Requests. Das ist eine aus den Feldverträgen abgeleitete fehlende Übergabe, keine neu entworfene Runner-Architektur und kein Implementierungsauftrag.
+
+## 6. Belegreichweite und offene Untersuchung
+
+Die gespeicherten Symbol-/Importsuchen umfassen **alle `src`- und `scripts`-Pfade** an drei Pins: Phase 12, Ende der Binding-Folge und bisheriger Vergleichspin `5d1c838c…`. Sie finden dort keinen externen namentlichen Loop-Aufruf, keinen namentlichen Meta-Unit-/Request-Konstruktor und keinen externen wörtlichen Consumer von `offline_experiment_requests`. Am späteren Pin ist dagegen der bereits bekannte September-Governance-Projektor als Binder-Consumer sichtbar. Dieser gehört zu einer späteren Lieferlinie.
+
+Das ist begrenzte statische Evidenz: Alias-/dynamische Aufrufe, generische Dictionary-Consumer, nicht untersuchte Pfade, unverfügbare Branches und externe Prozesse sind damit nicht ausgeschlossen. Das Repository ist shallow. Der bisherige Vergleichspin wurde in diesem Durchgang nicht erneut als aktueller Remote-main bestätigt; alle Aussagen sind an den angegebenen Commit gebunden. Reale historische Experimentartefakte wurden hier nicht mit einem Loop-Ergebnis gepaart.
+
+Der nächste konkrete Herkunftsnachweis bleibt ein zusammengehöriges Quellenpaar: tatsächliche OHLCV-/Return-/Sessiondaten samt Zeitraum, Einheiten und Content-Digest **und** der daraus erzeugte, identitätsgebundene Observation-/Loop-Record. Unabhängig davon sind Meta-Unit-Projektion und Search-Consumer gezielt weiterzuverfolgen. Kein durchgängiger automatischer Kreislauf und kein frühester tatsächlicher Gesamteingang sind bewiesen. Das ursprüngliche übergreifende Master-Runbook bleibt offen.
+
+## Quellen und Prüfung
+
+Alle P01–P17 beziehen sich auf vollständige, lokal gesicherte Git-Snapshots im selben Verzeichnis. [Quellenregister](sources.json) enthält vollständige Commit-SHAs, Originalpfade, Blob-IDs, SHA256, Snapshotpfade, GitHub-Abgleiche, Originalnachrichten und Suchgrenzen. Die Zeilennummern oben beziehen sich auf diese Snapshots.
+
+GitHub-Primärquellen: [Loop #5938](https://github.com/rauterfrank-ui/Peak_Trade/commit/7c36858bb6b9ed036bba901170d370b61a805110), [Binding #5943](https://github.com/rauterfrank-ui/Peak_Trade/commit/c0a45f4ecf592d1618679f1ef5087e0a22c04fab), [Consumer #5944](https://github.com/rauterfrank-ui/Peak_Trade/commit/dfe2003fdd03eb782725bd99eb56788320ae0592), [Persistenz #5945](https://github.com/rauterfrank-ui/Peak_Trade/commit/eac9bbafeee98ffb7bacb1bd407625c667e9d71e).
+
+Repository-HEAD beim Lesen: `242b7974fc93f0bdb47706556101bd6f0c497414`, Branch `feat/ghv-current-exchange-reconciliation-pr-integration-v1`. Vorhandene lokale Änderungen wurden nicht bearbeitet. Keine Recovery-Medien gelesen, kein Obsidian-Ledger-RUN begonnen, kein Produktcode wiederhergestellt oder aktiviert. Validiert wurden Quellenintegrität und Dokument-/Übersichtskonsistenz; keine Laufzeitwirkung.
+
+Abschlussprüfung: 17/17 Snapshot-Inhalte stimmen mit Git und registriertem SHA256 überein. Alle bisherigen Canvas-Daten und Ansichten sind erhalten; TypeScript-Prüfung mit dem tatsächlichen Canvas-tsconfig und lokalem SDK ohne Diagnosen. Repository-Status vor/nach Untersuchung unverändert. Kein visueller Laufzeittest der Übersicht. Details: [verification.json](verification.json).

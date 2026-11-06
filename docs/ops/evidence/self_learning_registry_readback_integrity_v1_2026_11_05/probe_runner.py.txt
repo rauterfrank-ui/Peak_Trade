@@ -1,0 +1,49 @@
+"""Offline actual-registry consumer contract; no product patch or external effects."""
+from pathlib import Path
+import json
+import socket
+import pytest
+from src.evaluation.golden_vectors.registry.evidence_registry_v1 import GvefEvidenceRegistryV1
+from src.evaluation.golden_vectors.promotion.promotion_evidence_adapter_v1 import PromotionEvidenceAdapterV1, PromotionAdaptRequestV1, evidence_bundle_semantic_digest
+from src.evaluation.golden_vectors.promotion.errors import GvefPromotionAuthorityError
+from tests.evaluation.golden_vectors.promotion_fixtures_v1 import valid_evidence_bundle
+
+OUT=Path(__file__).resolve().parent/'observations';OUT.mkdir(exist_ok=True)
+
+@pytest.fixture(autouse=True)
+def offline_only(monkeypatch):
+    def deny(*args,**kwargs):raise AssertionError('NETWORK_FORBIDDEN_IN_OFFLINE_PROBE')
+    monkeypatch.setattr(socket.socket,'connect',deny)
+    monkeypatch.setattr(socket,'create_connection',deny)
+
+def save(ident,observed,status):
+    (OUT/(ident+'.json')).write_text(json.dumps(dict(id=ident,status=status,observed=observed,productive_failure_observed=False,implementation_changed=False),indent=2,default=str)+'\n')
+
+def request_for(bundle):
+    return PromotionAdaptRequestV1(evidence_bundle_ref='registry/'+bundle.run_id,governance_handoff_timestamp='2026-10-04T09:00:00Z')
+
+def test_registration_takes_independent_snapshot():
+    original=valid_evidence_bundle();registry=GvefEvidenceRegistryV1();registry.register(original)
+    before=list(original.seed_set);original.seed_set.append(99)
+    stored=registry.get(original.run_id)
+    assert stored.seed_set==before and stored.seed_set!=original.seed_set
+    assert evidence_bundle_semantic_digest(stored)==stored.evidence_digest
+    envelope=PromotionEvidenceAdapterV1().adapt(bundle=stored,request=request_for(stored))
+    assert envelope.evidence_digest==stored.evidence_digest
+    save('REG-READ01',dict(original_input_changed_after_register=True,stored_snapshot_unchanged=True,stored_digest_valid=True,handoff_envelope_created=True,productive_authority=False),'EXISTING_SNAPSHOT_GUARD_CONFIRMED')
+
+def test_readback_exposes_registry_owned_nested_list():
+    original=valid_evidence_bundle();registry=GvefEvidenceRegistryV1();registry.register(original)
+    before=registry.registry_manifest();old_seed_set=list(original.seed_set)
+    returned=registry.get(original.run_id);returned.seed_set.append(99)
+    again=registry.get(original.run_id);computed=evidence_bundle_semantic_digest(again)
+    assert again.seed_set!=old_seed_set and original.seed_set==old_seed_set
+    assert computed!=again.evidence_digest and registry.registry_manifest()==before
+    save('REG-READ02',dict(returned_readback_changed_stored_payload=True,original_input_unchanged=True,manifest_unchanged=True,manifest_append_only=before['append_only'],entry_count=before['entry_count'],declared_digest=again.evidence_digest,recomputed_digest=computed,invalid_stored_digest_returned_without_error=True),'OFFLINE_READBACK_INTEGRITY_GAP_REPRODUCED')
+
+def test_concrete_handoff_rejects_changed_readback():
+    original=valid_evidence_bundle();registry=GvefEvidenceRegistryV1();registry.register(original)
+    returned=registry.get(original.run_id);returned.seed_set.append(99)
+    with pytest.raises(GvefPromotionAuthorityError,match='evidence_digest mismatch'):
+        PromotionEvidenceAdapterV1().adapt(bundle=registry.get(original.run_id),request=request_for(original))
+    save('REG-READ03',dict(stored_readback_digest_invalid=True,concrete_promotion_adapter_rejected=True,envelope_created=False),'EXISTING_CONSUMER_REHASH_GUARD_CONFIRMED')

@@ -1,0 +1,25 @@
+{
+  "analysis_source": "git show origin/main",
+  "authority": "NONE",
+  "baseline_matches_origin_main": true,
+  "caps_ratified": false,
+  "current_origin_main_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "dirty_census_used_as_current": false,
+  "financial_guarantee": "NONE",
+  "get_executed": false,
+  "guard_join_enabled_by_this_pass": false,
+  "keychain_read": false,
+  "local_branch": "feat/ghv-current-exchange-reconciliation-pr-integration-v1",
+  "local_head": "242b7974fc93f0bdb47706556101bd6f0c497414",
+  "observed_pins": {
+    "CAPITAL_GUARD_JOIN_ENABLED": false,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "OWNER_CAPS_RATIFIED": false,
+    "POST_ALLOWED": false,
+    "REAL_VENUE_POST_ALLOWED": false
+  },
+  "post_executed": false,
+  "requested_baseline_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "schema_version": "bwp_live_004_baseline.v1",
+  "working_model_drift": "LOCAL_CHECKOUT_NOT_ORIGIN_MAIN"
+}

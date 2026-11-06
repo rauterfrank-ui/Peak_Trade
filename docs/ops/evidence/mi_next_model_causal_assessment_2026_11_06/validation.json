@@ -1,0 +1,17 @@
+{
+  "assessment_integrity": "PASS",
+  "next_model_implemented": false,
+  "current_bound_sources": 37,
+  "tracked_python_files_indexed": 6290,
+  "checked_document_links": 90,
+  "historical_snapshots": 8,
+  "existing_test_run": {
+    "passed": 22,
+    "failed_missing_sklearn": 3,
+    "skipped_archive_unavailable": 3
+  },
+  "numeric_probe": "PASS_BOUNDED_SYNTHETIC_AND_ORIGINAL_STORE_READ",
+  "prior_source_test_config_files_unchanged": 11358,
+  "global_semantic_recertification": false,
+  "runtime_authorization_effect": "NONE"
+}

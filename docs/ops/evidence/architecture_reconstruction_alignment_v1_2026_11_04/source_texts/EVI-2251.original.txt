@@ -1,0 +1,180 @@
+# Vorausgesetzte Daten, Verarbeitung und wirksame Forschungsrückkopplung
+
+Stand 02.11.2026. Untersuchung konkreter historischer Revisionen, ohne Produktlauf.
+
+## Ergebnis
+
+Die Bausteine erwarten aufbereitete Versuchsdaten. Für einen wirksamen Forschungskreislauf fehlen im untersuchten Stand belegte Erzeugungs-/Adapterwege; an einer Meta→Suche-Grenze passt die Bedeutung des Zielwerts konkret nicht zusammen.
+
+Frank bestätigt am 02.11.2026: Self-Learning und Optimization sollen keine eigene Autorität zum Eingriff in den produktiven Fluss haben. Diese Grenze ist beabsichtigt und wird nicht als Funktionsmangel behandelt.
+
+Die fehlende produktive Eingriffsautorität ist damit kein zu reparierender Defekt. Untersucht wird die fachliche Forschungswirkung: Liefert ein Baustein die Daten, die der nächste wirklich benötigt, und verändert dieser aufgrund dieser Daten eine Forschungsentscheidung?
+
+## Historischer Bezug
+
+August-Vergleichsschnitt: `899e154d1bb095227c13690943e13284fb936972`, 18.08.2026, 16:04:39 Berlin. Meta-Learning wurde zuvor mit `fc059d1285be55e433a9ca59e89ce187e7a4b363`, 15:38:33 Berlin eingeführt. Phase 10 stammt aus `7c36858b…`, 15:12:29 Berlin; seine hier gesicherte Datei ist der Stand am gemeinsamen August-Schnitt. September-Kontrast: `25b0518b93f91a9609d70c30fb8cd3bf96401a46`, 19.09.2026, 21:38:40 Berlin. Die September-Benennung wird nicht als früher funktionaler Ursprung behandelt. Dezember ist nicht Gegenstand dieses Durchgangs.
+
+GitHub-Abgleich: [Meta-Learning #5939](https://github.com/rauterfrank-ui/Peak_Trade/commit/fc059d1285be55e433a9ca59e89ce187e7a4b363), [Advanced Search #5940](https://github.com/rauterfrank-ui/Peak_Trade/commit/899e154d1bb095227c13690943e13284fb936972), [spätere Universe-Foundation #6635](https://github.com/rauterfrank-ui/Peak_Trade/commit/25b0518b93f91a9609d70c30fb8cd3bf96401a46). Die zugehörigen lokalen Git-Blobs der acht relevanten geänderten Dateien stimmen mit GitHub überein.
+
+## 1. Die vorausgesetzte Verarbeitungskette
+
+### 1 · Versuch auswerten / Daten bereitstellen
+
+**Vorausgesetzter Eingang:** Identität, Hypothese, Metriken, Robustheitsbeobachtungen, Champion und beide Vergleichsscores; Gap-Messwerte und Policy.
+
+**Codierte Verarbeitung:** August-Loop bindet gelieferte Beobachtungen, ruft vorhandene Bewertungsbausteine auf und erzeugt Records/Berichte.
+
+**Grenze:** Er berechnet nicht selbst sämtliche gelieferten Beobachtungen und Scores. Beleg: D01:159–310.
+
+### 2 · Meta-Eingänge zusammenstellen
+
+**Vorausgesetzter Eingang:** Eine oder mehrere MetaLearningExperimentUnitV1 mit eindeutiger Experimentidentität, Zeitbezug, Familie, Hypothesenart, Suchraum, Parameterbereich, Robustheitsstatus und Backtestmetriken; optional Stabilität/Research-Pfad/späteres Outcome.
+
+**Codierte Verarbeitung:** Validiert Einheiten und optionale Failure-/Gap-Records; stellt paarweise Vergleichbarkeit fest und bildet vergleichbare Kohorten.
+
+**Grenze:** Der Entry-Point liest keinen Experiment-Memory-Store aus und konstruiert diese Einheiten nicht aus einem Loop-Report. Beleg: D02:191–274,476–673.
+
+### 3 · Erfahrungen untersuchen
+
+**Vorausgesetzter Eingang:** Vergleichbare Einheiten plus ausdrückliche Stichproben- und Wiederholungspolicy.
+
+**Codierte Verarbeitung:** Zehn festgelegte Fragen erzeugen Häufigkeiten, einfache Assoziationen und Forschungshinweise.
+
+**Grenze:** Stabilität und spätere Outcome-Werte sind Eingaben; die behauptete predictive association zählt Vorzeichengleichheit. Beleg: D02:707–1103,1143–1454.
+
+### 4 · Forschung priorisieren
+
+**Vorausgesetzter Eingang:** research_proposals, meta_learning_identity, vorhandene Identitätsvorlage, diskrete Achsen, Grenzen und Budget.
+
+**Codierte Verarbeitung:** Suche prüft Hinweise, matched Ziele, summiert Prioritätsgewichte und vergibt das beschränkte Vorschlagsbudget.
+
+**Grenze:** Ein akzeptierter Hinweis wirkt nur, wenn sein Ziel im Consumer fachlich zugeordnet wird. Beleg: D03:284–307,787–798,1121–1281.
+
+### 5 · Nächsten Versuch vorbereiten
+
+**Vorausgesetzter Eingang:** Ausgewählte Suchkandidaten mit Identität und Parameterbereich.
+
+**Codierte Verarbeitung:** Erzeugt einen Offline-Experimentantrag mit executed=False und loop_started=False.
+
+**Grenze:** Ein weiterer Caller muss Versuchsdaten erzeugen, den Loop aufrufen und später wieder Meta-Einheiten zusammenstellen. Beleg: D03:1283–1302; D01:179–208.
+
+## 2. Welche Daten Meta-Learning für seine zehn Fragen benötigte
+
+Die Dataclass verlangt keine rohen Kerzen, Trades oder vollständigen Engine-Runs. Sie erwartet eine vom Caller vorbereitete Versuchseinheit. Einheiten sind nach Experiment-ID eindeutig; Failure-/Gap-Records werden validiert und müssen einem Experiment dieser Eingangsmenge zugeordnet sein. Ein direktes Laden und Ableiten aus dem Experiment-Memory-Store ist nicht Bestandteil dieses Entry-Points. D02:191–238,476–604.
+
+**OOS-Überleben je Strategiefamilie:** Eingang: WALK_FORWARD- und ROLLING_OOS-Status je Einheit. Verarbeitung: Zählt bestanden/fehlgeschlagen; Mehrheit erzeugt Priorisieren/Depriorisieren der Familie. Quelle: D02:707–740,1235–1270.
+
+**Wiederholtes Overfitting:** Eingang: Failure-Records REJECTED_OVERFIT und zugehörige Parameterbereiche. Verarbeitung: Gruppiert per Bereichs-Hash, zählt Wiederholungen; erzeugt Depriorisierung des Hash-Ziels. Quelle: D02:741–784,1272–1286.
+
+**Fehlalarme eines Suchraums:** Eingang: TRAIN_VALIDATION_HOLDOUT sowie die beiden OOS-Status. Verarbeitung: Zählt In-Sample-PASS mit mindestens einem OOS-FAIL; erzeugt Suchraum-Hinweis. Quelle: D02:785–814,1288–1302.
+
+**Robustheit und Reality Gap:** Eingang: Robustheitsstatus und zu Experimenten passende Gap-Records. Verarbeitung: Zählt PASS/FAIL × Gap innerhalb/überschritten je Test; schwache Assoziation, keine Kausalität. Quelle: D02:815–870.
+
+**Backtestmetrik und späteres Ergebnis:** Eingang: LaterOutcome mit identischem metric_name wie in backtest_metrics. Verarbeitung: Zählt Wertepaarungen und gleiche/gegensätzliche Vorzeichen. Kein Regressions- oder Prognosemodell. Quelle: D02:871–917.
+
+**Unterschätzte Kostenmodelle:** Eingang: Gap-Dimensionen fee/slippage/funding mit expected/observed und Modell-Digests. Verarbeitung: Zählt observed>expected je Dimension/Modell. Gleiche Einheiten sind fachlich nötig; hier nicht pro Messwert kodiert. Quelle: D02:918–964.
+
+**Wiederkehrende Regimefehler:** Eingang: Failure-Records mit regime/failure_class. Verarbeitung: Zählt Regime × Fehlerklasse; wiederholte Muster ergeben Untersuchungsauftrag. Quelle: D02:965–998.
+
+**Parameterinstabilität:** Eingang: Bereits berechneter optionaler numerischer parameter_stability-Wert. Verarbeitung: Vergleicht mit min_parameter_stability und zählt Instabilität je Familie. Berechnet das Stabilitätsmaß nicht. Quelle: D02:999–1025.
+
+**Schwache Hypothesenarten:** Eingang: hypothesis_kind, Failure-Records und/oder OOS-Fehler. Verarbeitung: Zählt beobachtete/gescheiterte Einheiten je Art; erzeugt Depriorisierung. Quelle: D02:1026–1058.
+
+**Informationsgewinn von Forschungswegen:** Eingang: research_path_id und Failure-Records. Verarbeitung: Sortiert nach Zahl verschiedener Fehlerklassen; empfiehlt den ersten Weg. Keine Entropie- oder Nutzenberechnung. Quelle: D02:1059–1103,1394–1407.
+
+## 3. Was tatsächlich aus Erfahrung werden konnte
+
+Die mitgelieferte kanonische Policy enthält die Schwellen 3 für beschreibende und 8 für assoziative Stichproben, Wiederholung ab 2 und Stabilitätsschwelle 0,5. Der Request verlangt eine Policy; andere explizite zulässige Werte sind möglich. In den historischen Tests werden zum Beispiel beide Stichprobenschwellen auf 2 gesetzt. Diese Werte sind folglich keine nachgewiesene statistische Eignung für reale Daten. D02:220–247,449–474; D05:118–127.
+
+Einheiten werden paarweise durch Phase 5 verglichen und in Kohorten aufgenommen, deren Mitglieder untereinander vergleichbar sind. Vergleichsdimensionen betreffen u.a. Dataset, Splits, Kostenmodelle, Risiko-/Portfolio-/Core-Bindungen, Zeithorizont und Marktuniversum. Nur innerhalb einer solchen Kohorte entstehen gemeinsame Befunde. Das ist codierte Schutzlogik; die tatsächliche Wahrheit der gelieferten Messwerte und ihrer Einheiten wird damit nicht automatisch neu gemessen. D02:606–671; D04.
+
+Die zehn Fragen liefern teils bewusst einfache Auswertungen: „predictive association“ zählt insbesondere gleiche und gegensätzliche Vorzeichen einer gleich benannten Backtest-/späteren Metrik. „Information gain“ sortiert Forschungswege nach der Zahl verschiedener Failure-Klassen. Solche Bezeichnungen dürfen nicht als zusätzlich vorhandenes Prognosemodell oder informationstheoretische Berechnung gelesen werden. Parameterstabilität wird nur gegen eine Schwelle verglichen; der erforderliche Lieferant und die Formel bleiben eine eigene Kante.
+
+Die Search-Seite erhält diese Forschungshinweise optional. Ein passender Hinweis erhöht die Priorität um 20 (Priorisieren), um 10 (Untersuchen/Retest) oder senkt sie um 20 (Depriorisieren); erkannte Duplikate haben einen eigenen Abzug. Nach Anwendung der Gates werden vorschlagsfähige Kandidaten anhand der Priorität und anschließend Hypothesen-ID geordnet; das Budget begrenzt die vorgeschlagenen Versuche. Damit ist eine konkrete lokale Forschungswirkung codiert. Sie wählt keine produktive Strategie und ersetzt keine Versuchsauswertung. D03:213–217,787–798,1225–1281.
+
+## 4. Konkret nachgewiesene Übergabe- und Bedeutungsgrenzen
+
+### G01 · Erzeugung und Verpackung
+
+**Producer / Voraussetzung:** Loop-Bericht und Memory-Record sind nicht bereits MetaLearningExperimentUnitV1.
+
+**Consumer / tatsächlicher Abgleich:** Meta-Entry-Point verlangt vom Caller aufbereitete Einheiten; die begrenzte August-Symbolsuche findet unter src/scripts keinen direkten Meta-Builder-Aufruf außerhalb seiner Definition.
+
+**Folge:** Adapter und real verwendete Inputs nicht belegt. Quelle: D01/D02; august-meta-producers-and-consumers.txt.
+
+### G02 · Parameterbereich-Hinweis
+
+**Producer / Voraussetzung:** Meta liefert target_kind=parameter_region, target=parameter_region_digest.
+
+**Consumer / tatsächlicher Abgleich:** Suche vergleicht target nur mit str(value) oder key=value; sie berechnet zum Matching keinen Bereichs-Hash. Für {fast:10,slow:50} sind das 10,50,fast=10,slow=50.
+
+**Folge:** Direkte Übergabe eines erzeugten Bereichs-Hash-Hinweises matched diesen normalen numerischen Bereich nicht; keine Prioritätsänderung aus diesem Hinweis. Quelle: D02:751–778,1272–1286; D03:1260–1281.
+
+### G03 · Weitere Hinweisziele
+
+**Producer / Voraussetzung:** Meta erzeugt auch robustness_test, backtest_metric, cost_model, regime und research_path.
+
+**Consumer / tatsächlicher Abgleich:** Suche hat hierfür keine entsprechende fachliche Match-Regel; der Fallback vergleicht lediglich mit Familie, Suchraum-ID oder Hypothesenart. search_space heißt beim Producer anders, kann über denselben Suchraum-ID-Text im Fallback trotzdem matchen.
+
+**Folge:** Strukturell akzeptiert bedeutet keine fachlich wirksame Nutzung aller zehn Fragen. Zufällige gleiche Tokens wären kein belastbarer Adapter. Quelle: D02:1288–1407; D03:1121–1180,1260–1281.
+
+### G04 · Stabilitätsmaß
+
+**Producer / Voraussetzung:** Meta erwartet eine endliche Zahl und eine explizite Schwelle; keine Einheit/Formel am Feld.
+
+**Consumer / tatsächlicher Abgleich:** Ein anderer damaliger Forschungsrunner schreibt unter parameter_stability ein Objekt mit rejected und rejection_reasons.
+
+**Folge:** Gleicher Feldname liefert kein kompatibles Stabilitätsmaß. Eine Übertragung/Formel ist gesondert nachzuweisen. Quelle: D02:199–225,999–1025,1589–1593; D11:390–393.
+
+### G05 · Chronologische Verfügbarkeit
+
+**Producer / Voraussetzung:** Absicht: evidence_created_at ≤ later_outcome.observed_at ≤ Auswertungszeit.
+
+**Consumer / tatsächlicher Abgleich:** Der Code prüft die Zeittexte unmittelbar als Strings; das erlaubte Format lässt optionale Nachkommastellen zu.
+
+**Folge:** Chronologische Gültigkeit ist nicht allein durch NO_LOOKAHEAD=true bewiesen. Unterschiedliche Präzision erfordert einen eigenen Abgleich; historische komplette Zeitreihe nicht belegt. Quelle: D02:169,476–556,1540–1546.
+
+### G06 · September-Variante
+
+**Producer / Voraussetzung:** M6 verarbeitet M5-Optimierungs-Evidence und Return-ACK; M7 erzeugt Hinweise/Budget.
+
+**Consumer / tatsächlicher Abgleich:** M6 setzt CANONICAL_ANALYZER_INVOKED=False. M7 erzeugt z.B. begrenzte research_budget_units aus support_count.
+
+**Folge:** Diese Projection ist nicht die Durchführung der zehn August-Fragen und belegt nicht deren Versorgung mit den benötigten Messwerten. Quelle: D09:1–63; D10:240–255.
+
+### Statisches Beispiel für G02
+
+Für den Bereich `{fast: 10, slow: 50}` erzeugt die Meta-Overfit-Frage einen SHA256-Bereichsbezug. Der Search-Consumer vergleicht ein `parameter_region`-Ziel dagegen nur mit den Texten `10`, `50`, `fast=10`, `slow=50`. Der Bereichs-Hash gehört nicht dazu. Ein solcher direkt übergebener Forschungshinweis erhält daher in `_priority_from_signals` keinen Treffer und keinen Prioritätsbeitrag. Das ist ein konkret herleitbarer Vertragsfehler an diesem Übergang; andere Failure-/Gap-Signale können denselben Kandidaten unabhängig davon beeinflussen.
+
+Die vorhandene Search-Testfunktion `test_meta_learning_signals_bind_and_change_priority_not_authority` verwendet einen selbst konstruierten Strategiefamilien-Hinweis. Dieser hat ein passendes Matching. Er beweist nicht die Wirkung des tatsächlich von der Overfit-Frage erzeugten Hash-Ziels. D06:127–142,373–386. Es wurden keine neuen Tests geschrieben oder Produktfunktionen ausgeführt.
+
+### Statisches Beispiel für G05
+
+Das akzeptierte Zeitformat erlaubt Sekunden ohne Nachkommastellen und mit 1–9 Nachkommastellen. Eine `evidence_created_at` von `2026-08-18T12:00:00.100Z` liegt chronologisch nach einer Auswertungszeit `2026-08-18T12:00:00Z`. Beim direkten Stringvergleich ist der erste Text wegen `.` vor `Z` jedoch kleiner. Die Prüfung `evidence_created_at > created_at` weist diesen Fall deshalb nicht ab. Dieser Befund betrifft die codierte Zeitprüfung, nicht den Nachweis einer tatsächlich historisch falsch verarbeiteten Reihe. Einheitlich formatierte untersuchte Stundenbeispiele reichen nicht für einen Gesamtbeweis chronologischer Korrektheit.
+
+## 5. Gleichzeitig betrachtete Rollen beider Universen
+
+Im August sind die Funktionen noch nicht über die späteren Universe-Foundation-Namen institutionalisiert. Fachlich gibt es aber bereits diese Arbeitsteilung: Forschungs-/Suchseite erzeugt zu prüfende Kandidaten und Anträge; Versuchsauswerter müssen die Messwerte liefern; Gedächtnis und Vergleich bilden gebundene Evidenz; Meta-Learning untersucht diese Evidenz und gibt Prioritätshinweise an weitere Forschung zurück. Diese Funktionseinordnung ist eine Analyse der Verträge, kein Beleg einer ursprünglichen vollständigen Universe-Hierarchie.
+
+Die spätere September-M6/M7-Kette ist gesondert zu behandeln: M6 projiziert Optimierungs-Evidence nach Return-ACK in Meta-Evidence und meldet ausdrücklich `CANONICAL_ANALYZER_INVOKED=False`. M7 erzeugt unter anderem Forschungshinweise und ein aus `support_count` begrenztes Forschungsbudget. Das ersetzt nicht die zehn August-Fragen und beweist nicht, dass deren benötigte Versuchseinheiten inzwischen automatisch entstanden. Die bereits getrennt untersuchte M4/M8-Replay-Strecke darf daher ebenfalls nicht allein anhand ihrer Namen als semantische Schließung dieser Kette gelten. D09/D10; voriger gemeinsamer Übergabebericht.
+
+## 6. Welche Anforderungen jetzt festgehalten werden können
+
+Aus historischen Verträgen belegbar: vollständige gebundene Versuchskontexte; explizite endliche Messwerte; vergleichbare Bedingungen; zugeordnete Failure-/Gap-Daten; bekannte Verfügbarkeit späterer Ergebnisse; ausdrückliche Stichprobenpolicy; passende Ziele der Forschungshinweise; neuer Versuchsantrag mit erneuter Evidenzbildung.
+
+Zusätzliche analytische Nachweisanforderungen, keine nachträglich behaupteten historischen Implementierungen: Einheiten und Zielrichtung einer Metrik müssen beim Producer/Consumer übereinstimmen; ein späteres Outcome muss zum richtigen Versuch und Beobachtungsfenster gehören; ein Prioritätshinweis muss am richtigen Suchziel tatsächlich Wirkung haben; neue Erfahrungen müssen in einer späteren Iteration verwendet werden. Namen, Hashes und COMPLETE-Labels beweisen diese Beziehungen nicht.
+
+## Nächste gezielte Quellenfragen
+
+- Realen Erzeuger und Formel jedes Messwerts finden; insbesondere Stabilität, Vergleichsscores, Kosten und spätere Outcomes.
+- Einen konkreten historischen Versuch vom Roh-/Quelldatensatz bis zur Meta-Einheit mit Identität und Zeitbezug paaren.
+- Für jeden Vorschlag sein Ziel im Such-Consumer und dessen tatsächliche Prioritäts-/Budgetwirkung nachweisen.
+- Die nächste Iteration anhand neuer Versuchsdaten belegen; ein erzeugter Antrag oder Replay-Verweis reicht dafür nicht.
+
+## Quellen und Prüfgrenze
+
+[Quellenregister](sources.json): D01–D11 mit Revision, Originalpfad, Git-Blob und SHA256; vollständige Code-/Test-/Dokumentsnapshots im gleichen Ordner. [Symbolsuche](august-meta-producers-and-consumers.txt) ist auf `src`/`scripts` und konkrete Namen am August-Schnitt begrenzt. Sie schließt dynamische, externe oder anders benannte Adapter nicht aus. Der zusätzlich gefundene Numeric-Max-Age-Runner belegt lediglich einen anderen Stability-Vertrag; seine gesamte Messkette wurde hier nicht auditiert.
+
+Die gepinnten GitHub-Pfadhistorien der beiden August-Module liefern bis `5d1c838c15369507c5247834db4dd0df25592169` jeweils nur den Einführungscommit; die Blobs am Pin sind identisch. Das belegt den Dateiverbleib, keine gleichbleibende oder produktive Einbindung. Remote-main wurde beim Lesen separat im Quellenregister notiert. Lokales Git bleibt shallow; kein Schluss über sämtliche historischen Branches, Rename-Wege oder Recovery-Archive.
+
+Keine Repository-/Config-Änderung, keine Produktimporte, Tests, Lern-/Optimierungsläufe oder produktiven Aktionen. Aktualisiert werden nur dieser Untersuchungsbericht und die bestehende Übersicht außerhalb des Checkouts. Das Obsidian-Ledger wird nicht verändert und kein neuer Ledger-Run begonnen. Technische Abschlussprüfung: [verification.json](verification.json). Die ganze Learning-/Optimization-Rekonstruktion bleibt offen.

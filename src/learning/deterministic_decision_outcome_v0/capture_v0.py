@@ -576,6 +576,7 @@ class DdoCaptureBindingV0:
     capture_correlation_id: str | None = None
     capture_cycle_id: str | None = None
     capture_repository_sha: str | None = None
+    capture_scope_config_hash: str | None = None
     evidence_environment: str | None = None
     evidence_account_scope: str | None = None
     evidence_environment_binding_status: str = "UNBOUND"
@@ -685,6 +686,7 @@ def bind_host_cycle_capture_context_v0(
     binding.capture_correlation_id = _as_record_id(f"ddo.corr.{session_id}"[:128])
     binding.capture_cycle_id = _optional_record_id(f"{session_id}:cycle:{cycle_index}")
     binding.capture_repository_sha = repository_sha
+    binding.capture_scope_config_hash = None
 
 
 def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
@@ -828,6 +830,12 @@ def observe_producer_result_v0(
         "correlation_id": correlation_id or "ddo.corr.default",
         "repository_sha": repository_sha or UNKNOWN,
     }
+    config_hash = _sha_or_unknown(binding.capture_scope_config_hash)
+    if binding.capture_scope_config_hash is None:
+        config_hash = _sha_or_unknown(view.get("config_digest"))
+    if binding.capture_scope_config_hash is not None:
+        identity["scope_config_hash"] = config_hash
+    code_hash = _repository_code_hash_v1(repository_sha)
     if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
         identity["policy_decision_id"] = policy_decision_id
     if spec.seam_id == SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT:
@@ -866,8 +874,8 @@ def observe_producer_result_v0(
         "risk_snapshot_ref": None,
         "position_snapshot_ref": None,
         "selected_instrument_ref": None,
-        "code_sha": UNKNOWN,
-        "config_hash": _sha_or_unknown(view.get("config_digest")),
+        "code_sha": code_hash,
+        "config_hash": config_hash,
         "authority_owner": spec.authority_owner,
         "producer_id": spec.producer_id,
         "evidence_hash": UNKNOWN,
@@ -1000,8 +1008,8 @@ def observe_producer_result_v0(
             "data_quality_ref": None,
             "risk_snapshot_ref": None,
             "position_snapshot_ref": None,
-            "code_sha": UNKNOWN,
-            "config_hash": _sha_or_unknown(view.get("config_digest")),
+            "code_sha": code_hash,
+            "config_hash": config_hash,
             "authority_owner": spec.authority_owner,
             "producer_id": spec.producer_id,
             "evidence_hash": UNKNOWN,
@@ -1610,6 +1618,18 @@ def _sha_or_unknown(value: Any) -> str:
     ):
         return value
     return UNKNOWN
+
+
+def _repository_code_hash_v1(value: Any) -> str:
+    """DDO's SHA256 field: domain-hash a Git SHA1, preserve a supplied SHA256.
+
+    This binds the declared repository revision, not uncommitted source bytes.
+    """
+    if isinstance(value, str) and len(value) == 40 and all(
+        ch in "0123456789abcdef" for ch in value
+    ):
+        return hashlib.sha256(f"git-commit-sha1:{value}".encode()).hexdigest()
+    return _sha_or_unknown(value)
 
 
 def _stable_record_id(prefix: str, identity: Mapping[str, Any]) -> str:

@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import json
 import traceback
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import PendingDecisionContextV1
+
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
@@ -68,6 +70,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_occupanc
     PREVIOUS_C1_VENUE_EVENT_TIME,
     _classify_occupancy_v1,
     _evaluate_c1_gate_v1,
+    admits_bound_position_management_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
@@ -179,6 +182,7 @@ class CurrentProductiveGovernedCycleResultV1:
     transitions: tuple[str, ...]
     final_order_envelope: FinalOrderEnvelopeV1 | None = None
     extra: dict[str, str] = field(default_factory=dict)
+    pending_decision_context: PendingDecisionContextV1 | None = None
 
 
 def _token(value: bool) -> str:
@@ -402,6 +406,7 @@ def run_current_productive_governed_cycle_v1(
     perform_get: bool = False,
     eg_cycle_dispatch: CycleDispatchV1 | None = None,
     t2_cycle_dispatch: CycleDispatchV1 | None = None,
+    position_management_cycle_dispatch: CycleDispatchV1 | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
@@ -428,19 +433,6 @@ def run_current_productive_governed_cycle_v1(
     Path(lock_root).mkdir(parents=True, exist_ok=True)
     ledger = _load_ledger(Path(evidence_root))
     digest = _binding_digest(authorization)
-    from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
-        observe_full_core_s5_recovery_entry_v1,
-    )
-
-    _s5_recovery_observation_extra = observe_full_core_s5_recovery_entry_v1(
-        ledger=ledger,
-        authorization_binding_digest=digest,
-    ).to_extra_fields_v1()
-
-    def _cycle_result(**kwargs: object) -> CurrentProductiveGovernedCycleResultV1:
-        kwargs["s5_recovery_observation_extra"] = _s5_recovery_observation_extra
-        return _result(**kwargs)  # type: ignore[arg-type]
-
     prior_state = str(ledger.get("state") or STATE_IDLE)
     if prior_state == STATE_IN_PROGRESS:
         raise CurrentProductiveGovernedCycleOrchestratorError(REASON_PARTIAL_NOT_RESUMABLE)
@@ -527,7 +519,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "FRESHNESS_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -556,7 +548,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "BOUND_C1_IDENTITY_MISMATCH"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="C1_MISMATCH",
@@ -580,7 +572,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "CURSOR_FLOOR_BINDING_MISMATCH"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="CURSOR_BINDING_FAILURE",
@@ -601,7 +593,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "FRESHNESS_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -623,7 +615,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "T2_GATE_NOT_SATISFIED"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="T2_GATE_FAILURE",
@@ -663,7 +655,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = exc.reason_code
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="EG_FAILURE",
@@ -683,7 +675,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = f"EG_DISPATCH_COUNT_NOT_1:{eg_result.reason_code}"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="EG_FAILURE",
@@ -705,7 +697,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "K1_CREDENTIAL_MATERIAL_LOADED_FORBIDDEN"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="K1_BIND_FAILURE",
@@ -741,7 +733,7 @@ def run_current_productive_governed_cycle_v1(
             reason_code = first_blocker
             occupancy_consumed = False
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="OCCUPANCY_FAILURE",
@@ -769,10 +761,22 @@ def run_current_productive_governed_cycle_v1(
         occupancy_disposition = str(occupancy_facts.get("OCCUPANCY_STATUS") or "UNKNOWN")
         occupancy_used = occupancy_disposition
         pending_status = str(occupancy_facts.get("PENDING_ORDERS_STATUS") or "")
-        if occupancy_disposition not in {"OCCUPANCY_ABSENT"} or pending_status not in {
-            "NONE_OBSERVED",
-            "",
-        }:
+        managing_position = (
+            position_management_cycle_dispatch is not None
+            and admits_bound_position_management_v1(
+                occupancy_payloads=occupancy_payloads,
+                facts=occupancy_facts,
+                native_id=authorization.native_id,
+            )
+        )
+        if not managing_position and (
+            occupancy_disposition not in {"OCCUPANCY_ABSENT"}
+            or pending_status
+            not in {
+                "NONE_OBSERVED",
+                "",
+            }
+        ):
             first_blocker = (
                 occupancy_disposition
                 if occupancy_disposition != "OCCUPANCY_ABSENT"
@@ -787,7 +791,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "OCCUPANCY_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -809,7 +813,11 @@ def run_current_productive_governed_cycle_v1(
                 cursor_floor_before=cursor_floor_before,
             )
 
-        t2_dispatch = t2_cycle_dispatch or _reject_default_v5_as_direct_entrypoint
+        t2_dispatch = (
+            position_management_cycle_dispatch
+            if managing_position
+            else t2_cycle_dispatch or _reject_default_v5_as_direct_entrypoint
+        )
         try:
             t2_result = t2_dispatch(
                 owner_go=authorization.t2_owner_go,
@@ -820,7 +828,7 @@ def run_current_productive_governed_cycle_v1(
         except CurrentProductiveGovernedCycleOrchestratorError as exc:
             first_blocker = exc.reason_code
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": first_blocker})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
@@ -848,7 +856,7 @@ def run_current_productive_governed_cycle_v1(
                 if detail:
                     ledger_extra["t2_join_detail"] = detail[:512]
                 _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
-                return _cycle_result(
+                return _result(
                     disposition=DISPOSITION_FAIL_CLOSED,
                     reason_code=first_blocker,
                     terminal_class="T2_FAILURE",
@@ -882,7 +890,7 @@ def run_current_productive_governed_cycle_v1(
                 **t2_exception_evidence,
             }
             _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
@@ -917,11 +925,49 @@ def run_current_productive_governed_cycle_v1(
         permit_created = str(getattr(t2_result, "permit_created", FALSE_TOKEN)).lower() == "true"
         post_count = int(str(getattr(t2_result, "post_count", "0") or "0"))
         first_blocker = str(getattr(t2_result, "first_real_blocker", "") or "")
-        if permit_created or post_count != 0:
-            first_blocker = "EXTERNAL_EFFECT_OR_POST_LEAK"
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+            validates_position_management_execution_handoff_v1,
+        )
+
+        close_execution_handoff = getattr(t2_result, "position_management_execution_handoff", None)
+        management_close_bound = (
+            managing_position
+            and master_v2_decision.lower() == "exit"
+            and decision_result == "POSITION_MANAGEMENT_VENUE_PLAN_BOUND"
+            and eligible.lower() == "false"
+            and venue_plan_status == "BOUND"
+            and occupancy_facts.get("CONFIG_POS_MODE") == "net_mode"
+            and validates_position_management_execution_handoff_v1(
+                close_execution_handoff,
+                native_id=authorization.native_id,
+                positions_payload=occupancy_payloads.get("POSITIONS"),
+            )
+            and final_order_envelope == close_execution_handoff.envelope
+            and envelope_id == final_order_envelope.envelope_id
+            and envelope_digest == final_order_envelope.envelope_digest
+        )
+        management_entry_leak = managing_position and (
+            eligible.lower() == "true"
+            or (bool(envelope_id) and not management_close_bound)
+            or (final_order_envelope is not None and not management_close_bound)
+            or decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            or (venue_plan_status == "BOUND" and not management_close_bound)
+            or (
+                decision_result == "POSITION_MANAGEMENT_VENUE_PLAN_BOUND"
+                and not management_close_bound
+            )
+            or (close_execution_handoff is not None and not management_close_bound)
+            or master_v2_decision.lower() in {"enter", "enter_long", "enter_short"}
+        )
+        if permit_created or post_count != 0 or management_entry_leak:
+            first_blocker = (
+                "POSITION_MANAGEMENT_ENTRY_FORBIDDEN"
+                if management_entry_leak
+                else "EXTERNAL_EFFECT_OR_POST_LEAK"
+            )
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _cycle_result(
+            return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="T2_FAILURE",
@@ -945,7 +991,40 @@ def run_current_productive_governed_cycle_v1(
             )
 
         transitions.append(STATE_COMPLETED)
-        if decision_result == "EXECUTABLE_VENUE_PLAN_BOUND" and eligible.lower() == "true":
+        if management_close_bound:
+            disposition = DISPOSITION_PRE_EXTERNAL_EFFECT
+            terminal_class = "POSITION_MANAGEMENT_PRE_EXTERNAL_EFFECT"
+            blocker_class = "PRE_EXTERNAL_EFFECT"
+            first_blocker = POST_NEXT_OWNER_GO
+            reason_code = first_blocker
+            next_owner = (
+                "Use the existing envelope-bound send admission; no send authority from this cycle."
+            )
+        elif managing_position:
+            disposition = DISPOSITION_COMPLETED
+            action_pending = decision_result == "POSITION_MANAGEMENT_ACTION_PENDING"
+            terminal_class = (
+                "POSITION_MANAGEMENT_ACTION_PENDING"
+                if action_pending
+                else "POSITION_MANAGEMENT_EVALUATED"
+            )
+            blocker_class = "IMPLEMENTATION_REQUIRED" if action_pending else "NONE"
+            first_blocker = (
+                (
+                    first_blocker
+                    if first_blocker not in {"", "HOLD"}
+                    else "POSITION_MANAGEMENT_EXECUTION_HANDOFF_REQUIRED"
+                )
+                if action_pending
+                else ""
+            )
+            reason_code = first_blocker or "POSITION_MANAGEMENT_EVALUATED"
+            next_owner = (
+                "Bind the existing reduce/exit decision to reconciled quantity and the execution handoff."
+                if action_pending
+                else "Continue Double Play on the assigned future; execution remains separately governed."
+            )
+        elif decision_result == "EXECUTABLE_VENUE_PLAN_BOUND" and eligible.lower() == "true":
             disposition = DISPOSITION_PRE_EXTERNAL_EFFECT
             terminal_class = "PRE_EXTERNAL_EFFECT"
             blocker_class = "PRE_EXTERNAL_EFFECT"
@@ -965,22 +1044,52 @@ def run_current_productive_governed_cycle_v1(
                 "HOLD/non-executable is a valid terminal trading outcome. Do not force ENTER. "
                 f"Remainder {REMAINDER_OWNER_GO} is not a consume license. POST unauthorized."
             )
-        completed_ledger_extra: dict[str, str] = {
-            "reason_code": reason_code,
-            "terminal_class": terminal_class,
-            "decision_result": decision_result,
-        }
-        if disposition == DISPOSITION_PRE_EXTERNAL_EFFECT:
-            from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
-                pre_external_completed_ledger_pending_marker_v1,
-            )
-
-            completed_ledger_extra.update(pre_external_completed_ledger_pending_marker_v1())
         _write_ledger(
             state=STATE_COMPLETED,
-            extra=completed_ledger_extra,
+            extra={
+                "reason_code": reason_code,
+                "terminal_class": terminal_class,
+                "decision_result": decision_result,
+                "portfolio_reservation_id": str(
+                    getattr(t2_result, "portfolio_reservation_id", "") or ""
+                ),
+                **(
+                    {
+                        "position_management_quantity_handoff": getattr(
+                            t2_result, "position_management_quantity_handoff", None
+                        ),
+                        "position_management_canonical_close_intent": getattr(
+                            t2_result, "position_management_canonical_close_intent", None
+                        ),
+                        "position_management_close_quantity_assessment": getattr(
+                            t2_result, "position_management_close_quantity_assessment", None
+                        ),
+                    }
+                    if managing_position
+                    else {}
+                ),
+            },
         )
         capital_guard_join_extra: dict[str, str] = {}
+        reservation_id = str(getattr(t2_result, "portfolio_reservation_id", "") or "")
+        if reservation_id:
+            capital_guard_join_extra["PORTFOLIO_RESERVATION_ID"] = reservation_id
+        if managing_position:
+            quantity_handoff = getattr(t2_result, "position_management_quantity_handoff", None)
+            if quantity_handoff is not None:
+                capital_guard_join_extra["POSITION_MANAGEMENT_QUANTITY_HANDOFF"] = json.dumps(
+                    quantity_handoff, sort_keys=True
+                )
+            close_intent = getattr(t2_result, "position_management_canonical_close_intent", None)
+            if close_intent is not None:
+                capital_guard_join_extra["POSITION_MANAGEMENT_CANONICAL_CLOSE_INTENT"] = json.dumps(
+                    close_intent, sort_keys=True
+                )
+            assessment = getattr(t2_result, "position_management_close_quantity_assessment", None)
+            if assessment is not None:
+                capital_guard_join_extra["POSITION_MANAGEMENT_CLOSE_QUANTITY_ASSESSMENT"] = (
+                    json.dumps(assessment, sort_keys=True)
+                )
         if disposition == DISPOSITION_PRE_EXTERNAL_EFFECT:
             from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
                 active_full_core_capital_guard_handoff_context_v1,
@@ -1043,103 +1152,24 @@ def run_current_productive_governed_cycle_v1(
                     instrument_metadata=handoff_ctx.instrument_metadata,
                 )
             join_mode = resolve_full_core_capital_guard_join_mode_v1()
-            capital_guard_join_extra = maybe_record_full_core_capital_guard_join_at_pre_external_v1(
-                binding=binding,
-                envelope=final_order_envelope
-                if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
-                else None,
-                join_mode=join_mode,
-                account_evidence_scope=handoff_ctx.account_identity if handoff_ctx else None,
-                authoritative_environment=handoff_ctx.environment if handoff_ctx else None,
-                authoritative_venue_plan_digest=(
-                    binding.venue_plan_digest if binding is not None else None
-                ),
-                pretrade_reference_mark_px=(
-                    handoff_ctx.reference_mark_px if handoff_ctx is not None else None
-                ),
-            )
-            from src.ops.full_core_live_path_composition_root_v1.full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 import (
-                maybe_record_full_core_governed_cycle_lifecycle_wiring_v1,
-            )
-
-            partial_for_lifecycle = CurrentProductiveGovernedCycleResultV1(
-                disposition=disposition,
-                reason_code=reason_code,
-                terminal_class=terminal_class,
-                cycle_go_status_after="",
-                get_consumed=True,
-                eg_consumed=True,
-                occupancy_consumed=True,
-                t2_consumed=True,
-                get_consume_count=1,
-                eg_dispatch_count=eg_dispatch_count,
-                occupancy_disposition=occupancy_disposition,
-                t2_consume_count=t2_consume_count,
-                runtime_cycle_count=runtime_cycle_count,
-                c1_used=c1_used,
-                occupancy_used=occupancy_used,
-                decision_result=decision_result,
-                decision_execution_eligible=eligible,
-                master_v2_decision=master_v2_decision,
-                venue_plan_status=venue_plan_status,
-                envelope_created=bool(envelope_id),
-                envelope_identity=envelope_identity_for_cycle,
-                permit_created=False,
-                post_count=0,
-                external_effect_count=0,
-                cursor_floor_before=cursor_floor_before,
-                cursor_floor_after=cursor_floor_before,
-                cursor_persisted=False,
-                first_genuine_blocker=first_blocker,
-                blocker_class=blocker_class,
-                next_required_owner_decision=next_owner,
-                lock_released=_token(True),
-                ledger_state=STATE_COMPLETED,
-                transitions=tuple(transitions),
-                final_order_envelope=final_order_envelope
-                if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
-                else None,
-            )
-            lifecycle_wiring_extra = maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
-                cycle=partial_for_lifecycle,
-                handoff=handoff_ctx,
-            )
-            from src.ops.full_core_live_path_composition_root_v1.full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 import (
-                lifecycle_wiring_disabled_in_context_v1,
-                lifecycle_wiring_invocation_is_bound_v1,
-            )
-            from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
-                CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_FAIL_CLOSED,
-                CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_PASS,
-                build_post_completed_hook_ledger_supplement_v1,
-                merge_supplement_persistence_outcome_v1,
-            )
-
-            hook_supplement = build_post_completed_hook_ledger_supplement_v1(
-                lifecycle_hook_fields=lifecycle_wiring_extra or {},
-                invocation_bound=lifecycle_wiring_invocation_is_bound_v1(),
-                wiring_explicitly_disabled=lifecycle_wiring_disabled_in_context_v1(),
-                capital_guard_fields=capital_guard_join_extra or {},
-            )
-            ledger_extra = {
-                "reason_code": reason_code,
-                "terminal_class": terminal_class,
-                "decision_result": decision_result,
-                **hook_supplement,
-            }
-            try:
-                _write_ledger(state=STATE_COMPLETED, extra=ledger_extra)
-                capital_guard_join_extra = merge_supplement_persistence_outcome_v1(
-                    hook_supplement,
-                    persistence_status=CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_PASS,
+            capital_guard_join_extra.update(
+                maybe_record_full_core_capital_guard_join_at_pre_external_v1(
+                    binding=binding,
+                    envelope=final_order_envelope
+                    if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
+                    else None,
+                    join_mode=join_mode,
+                    account_evidence_scope=handoff_ctx.account_identity if handoff_ctx else None,
+                    authoritative_environment=handoff_ctx.environment if handoff_ctx else None,
+                    authoritative_venue_plan_digest=(
+                        binding.venue_plan_digest if binding is not None else None
+                    ),
+                    pretrade_reference_mark_px=(
+                        handoff_ctx.reference_mark_px if handoff_ctx is not None else None
+                    ),
                 )
-            except OSError as exc:
-                capital_guard_join_extra = merge_supplement_persistence_outcome_v1(
-                    hook_supplement,
-                    persistence_status=CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_FAIL_CLOSED,
-                    persistence_error=type(exc).__name__,
-                )
-        return _cycle_result(
+            )
+        return _result(
             disposition=disposition,
             reason_code=reason_code,
             terminal_class=terminal_class,
@@ -1228,15 +1258,12 @@ def _result(
     cursor_floor_before: float | None = None,
     cursor_floor_after: float | None = None,
     extra_fields: Mapping[str, str] | None = None,
-    s5_recovery_observation_extra: Mapping[str, str] | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
     merged_extra = {
         "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
         "DIRECT_V5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
         "REMAINDER_IS_CONSUME_LICENSE": FALSE_TOKEN,
     }
-    if s5_recovery_observation_extra:
-        merged_extra.update({str(k): str(v) for k, v in s5_recovery_observation_extra.items()})
     if extra_fields:
         merged_extra.update({str(k): str(v) for k, v in extra_fields.items()})
     return CurrentProductiveGovernedCycleResultV1(

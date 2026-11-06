@@ -27,7 +27,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
     OWNER_GO,
     CurrentProductiveActualVenuePostError,
-    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as _execute_v1,
+    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
     prove_pre_live_actual_venue_post_readiness_v1,
 )
 from src.governance.current_productive_actual_venue_post_admission_policy_v1 import (
@@ -38,10 +38,6 @@ from src.governance.governed_current_productive_actual_venue_post_admission_clos
 )
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
-)
-from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
-    PilotGuardReadTransport,
-    mandatory_new_risk_execute_kwargs,
 )
 
 FAKE_OPAQUE = json.dumps(
@@ -101,25 +97,6 @@ class _TrustedReadTransport:
             error_class="",
             data_safety_source_kind="REAL",
         )
-
-
-from tests.ops._post_path_safety_fixtures_v1 import (
-    activate_isolated_kill_switch_state_v1,
-    execute_with_isolated_global_ledger_v1,
-)
-
-execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 = (
-    execute_with_isolated_global_ledger_v1(_execute_v1)
-)
-
-
-@pytest.fixture(autouse=True)
-def _active_kill_switch_state(
-    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
-) -> None:
-    activate_isolated_kill_switch_state_v1(
-        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
-    )
 
 
 @pytest.fixture(autouse=True)
@@ -201,9 +178,8 @@ def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None
             perform_real_venue_post=True,
             k1_backend=backend,
             opener_factory=lambda: _TimeoutOpener(),
-            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
+            read_only_get_transport=_TrustedReadTransport(),
             execution_integrity_backend=_clean_post_integrity(),
-            **mandatory_new_risk_execute_kwargs(tmp_path),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"

@@ -1,0 +1,14 @@
+{
+  "source_commit": "ff9d113804e2b383592ebf1e6741180376bdfac2",
+  "argv": [
+    "rg",
+    "-n",
+    "MetaLearningExperimentUnitV1\\(|CanonicalMetaLearningRequestV1\\(|build_canonical_meta_learning_v1\\(",
+    "src",
+    "scripts"
+  ],
+  "exit_code": 0,
+  "stdout": "src/experiments/canonical_meta_learning_v1.py:251:def build_canonical_meta_learning_v1(\n",
+  "stderr": "",
+  "limits": "exact symbols src/scripts; does not rule out aliases/dynamic/external callers; test callers separately inspected"
+}

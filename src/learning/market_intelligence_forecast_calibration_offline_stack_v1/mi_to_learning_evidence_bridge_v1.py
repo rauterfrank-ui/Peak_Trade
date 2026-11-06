@@ -98,6 +98,7 @@ def compose_mi_to_learning_evidence_v1(
     evaluation_observation: Mapping[str, Any] | None,
     realized_direction: str | None = None,
     realized_scalar: float | None = None,
+    calibration_evidence: Mapping[str, Any] | None = None,
     legacy_learning_evidence_ref: str | None = None,
     provenance: Mapping[str, Any] | None = None,
 ) -> MappingProxyType[str, Any]:
@@ -122,6 +123,8 @@ def compose_mi_to_learning_evidence_v1(
         raise MiToLearningBridgeError(str(exc)) from exc
 
     if join["join_status"] != "JOINED":
+        if calibration_evidence is not None:
+            raise MiToLearningBridgeError("CALIBRATION_REQUIRES_JOINED_OUTCOME")
         calib = build_calibration_evidence_v1(
             forecast_evidence=forecast,
             evaluation_observation=None,
@@ -174,12 +177,22 @@ def compose_mi_to_learning_evidence_v1(
     if status != "OK":
         raise MiToLearningBridgeError("HORIZON_OBSERVATION_NOT_FINALIZED")
 
+    # Optional additive handoff: reproduce and retain the exact original calibration,
+    # including its provenance, rather than mint a different calibration identity.
     calib = build_calibration_evidence_v1(
         forecast_evidence=forecast,
         evaluation_observation=observation,
         realized_direction=realized_direction,
         realized_scalar=realized_scalar,
+        provenance=calibration_evidence.get("provenance")
+        if calibration_evidence is not None
+        else None,
     )
+    if calibration_evidence is not None:
+        from .integration_contracts_v1 import bytes_v1
+
+        if bytes_v1(calib) != bytes_v1(calibration_evidence):
+            raise MiToLearningBridgeError("ORIGINAL_CALIBRATION_MISMATCH")
     if obs_before is not None:
         assert_n_bars_observation_unmodified_v1(obs_before, observation)
 

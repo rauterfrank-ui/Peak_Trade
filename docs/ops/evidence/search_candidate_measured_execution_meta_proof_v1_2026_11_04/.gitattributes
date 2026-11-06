@@ -1,0 +1,2 @@
+*.xml -text -whitespace
+*.txt -text -whitespace

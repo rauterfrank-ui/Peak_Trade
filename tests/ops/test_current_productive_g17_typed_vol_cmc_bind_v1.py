@@ -95,8 +95,8 @@ def _context(**overrides: object) -> CanonicalMarketContextV1:
         "instrument_id": "BTC-USDT-SWAP-CANON",
         "market_type": FuturesMarketType.PERPETUAL,
         "trading_epoch": 1,
-        "market_event_time": "2023-11-14T22:13:20.000000Z",
-        "decision_time": "2023-11-14T22:13:21.000000Z",
+        "market_event_time": "2023-11-14T23:13:20.000000Z",
+        "decision_time": "2023-11-14T23:13:21.000000Z",
         "bar_interval": "1m",
         "bar_finality_status": BarFinalityStatus.FINALIZED,
         "mark_price": 160.0,
@@ -137,7 +137,7 @@ def _bound() -> BoundInstrumentV1:
 
 
 def _closes() -> tuple[float, ...]:
-    return tuple(1000.0 + float(index) * 10.0 for index in range(64))
+    return tuple(1000.0 + float(index) * 10.0 for index in range(100))
 
 
 def test_owner_lock_tokens_and_non_transfer() -> None:
@@ -266,7 +266,7 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=bound,
         cycle_id="g17-cmc-bind-produced",
-        observed_unix=1_700_000_100.0,
+        observed_unix=1_700_003_700.0,
         mark_px=last,
         index_px=index_px,
         bid_px=last - 0.5,
@@ -275,7 +275,7 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
         open_interest=1_000.0,
         funding_rate=0.0001,
         finalized_closes=closes,
-        last_finalized_event_ts_unix=1_700_000_000.0,
+        last_finalized_event_ts_unix=1_700_003_600.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=created.producer,
@@ -322,7 +322,7 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
     without_producer = run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=bound,
         cycle_id="g17-cmc-bind-absent-baseline",
-        observed_unix=1_700_000_100.0,
+        observed_unix=1_700_003_700.0,
         mark_px=last,
         index_px=index_px,
         bid_px=last - 0.5,
@@ -331,7 +331,7 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         open_interest=1_000.0,
         funding_rate=0.0001,
         finalized_closes=closes,
-        last_finalized_event_ts_unix=1_700_000_000.0,
+        last_finalized_event_ts_unix=1_700_003_600.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
@@ -346,7 +346,7 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
     with_restored = run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=bound,
         cycle_id="g17-cmc-bind-absent",
-        observed_unix=1_700_000_100.0,
+        observed_unix=1_700_003_700.0,
         mark_px=last,
         index_px=index_px,
         bid_px=last - 0.5,
@@ -355,7 +355,7 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         open_interest=1_000.0,
         funding_rate=0.0001,
         finalized_closes=closes,
-        last_finalized_event_ts_unix=1_700_000_000.0,
+        last_finalized_event_ts_unix=1_700_003_600.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=restored.producer,
@@ -368,8 +368,10 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
             bound=bound
         ),
     )
-    assert without_producer.input_blocker == ""
-    assert with_restored.input_blocker == ""
+    assert without_producer.provenance == "CANDIDATE_INPUT_REJECTED"
+    assert with_restored.provenance == "CANDIDATE_INPUT_REJECTED"
+    assert without_producer.replay is None
+    assert with_restored.replay is None
     assert without_producer.decision_outcome == with_restored.decision_outcome
     assert without_producer.fail_reasons == with_restored.fail_reasons
     assert calls == []
@@ -378,7 +380,7 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
 def _allowed_bound() -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id="inst-eth-usdt-perp",
-        venue_native_id="inst-eth-usdt-perp",
+        venue_native_id="ETH-USDT-SWAP",
         ranking_snapshot_id="rank-g17-bind",
         ranking_integrity_digest="rank-g17-bind-digest",
         universe_snapshot_id="uni-g17-bind",
@@ -396,7 +398,7 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
     return {
         "bound_instrument": bound,
         "cycle_id": cycle_id,
-        "observed_unix": 1_700_000_100.0,
+        "observed_unix": 1_700_003_700.0,
         "mark_px": last,
         "index_px": index_px,
         "bid_px": last - 0.5,
@@ -405,7 +407,7 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
         "open_interest": 1_000.0,
         "funding_rate": 0.0001,
         "finalized_closes": closes,
-        "last_finalized_event_ts_unix": 1_700_000_000.0,
+        "last_finalized_event_ts_unix": 1_700_003_600.0,
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producer": producer,
@@ -422,7 +424,8 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
 
 def test_master_v2_cycle_none_producer_fail_closes_typed_presence() -> None:
     cycle = run_current_productive_master_v2_runtime_cycle_v1(**_cycle_kwargs("g17-presence-none"))
-    assert cycle.input_blocker == ""
+    assert cycle.provenance == "CANDIDATE_INPUT_REJECTED"
+    assert cycle.replay is None
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons
     assert cycle.decision_outcome not in {"enter_long", "enter_short"}
 
@@ -453,11 +456,9 @@ def test_duplicate_noop_reuses_prior_estimate_for_cmc_and_presence_gate(
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
         **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer),
     )
-    if g17_cmc_bind_produced_only_v1():
-        assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons or cycle.input_blocker
-    else:
-        assert cycle.input_blocker == ""
-        assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
+    # The direct bind above is BTC→BTC; this cycle deliberately selects ETH.
+    # A cached estimate must not cross instruments, regardless of reuse policy.
+    assert cycle.input_blocker == "G17_CMC_BIND_INSTRUMENT_MISMATCH"
 
 
 def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
@@ -467,10 +468,10 @@ def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
         tmp_path,
         samples=_sixty_one_samples(
             canonical_instrument_id="inst-eth-usdt-perp",
-            venue_instrument_id="inst-eth-usdt-perp",
+            venue_instrument_id="ETH-USDT-SWAP",
         ),
         canonical_instrument_id="inst-eth-usdt-perp",
-        venue_instrument_id="inst-eth-usdt-perp",
+        venue_instrument_id="ETH-USDT-SWAP",
     )
     assert created.producer is not None
     cycle = run_current_productive_master_v2_runtime_cycle_v1(

@@ -1,0 +1,66 @@
+[
+  {
+    "revision": "c889577bef56300f74039d921472f0638cbb8810",
+    "source_path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+    "snapshot": "historical/01-c889577bef56-learning_outcome_evidence_ingest_v1.py.txt",
+    "sha256": "77a70099f06358eb8e2f55729a241f0b593b1fe1a0e69a376a9c1cf7668d6cdd",
+    "commit": "2026-09-19T20:16:20+02:00\nSelf-learning v1: outcome evidence ingest and horizon feedback seam (#6634)",
+    "git_blob": "12dcfe3cea06b394f0de58ebce30fdec6039d29b"
+  },
+  {
+    "revision": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+    "source_path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+    "snapshot": "historical/02-32171b35e631-offline_orchestrator_v1.py.txt",
+    "sha256": "85be1fb0077973304b7ed113789a8cff99d40c65cade9cf6d267bccc4a78fe98",
+    "commit": "2026-09-26T10:24:37+02:00\nfeat(learning): Track D03 offline MI forecast/calibration stack v1 (#6847)",
+    "git_blob": "163e00d702f3c13730ee0b5cc8c4a33c3799312c"
+  },
+  {
+    "revision": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+    "source_path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+    "snapshot": "historical/03-5e2337ea0e25-mi_learning_evidence_learning_export_v1.py.txt",
+    "sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71",
+    "commit": "2026-09-26T10:52:35+02:00\nfeat(governance): Unified Blueprint Phase 8 MI→Learning integration (#6849)",
+    "git_blob": "9bbf2e87f20760d62627570e11c1ff7f0bc2c928"
+  },
+  {
+    "revision": "90183c9be6f1d8fa70e9cb59f900c1a6c85195ee",
+    "source_path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+    "snapshot": "historical/04-90183c9be6f1-phase_24_representation_feedback_loop_evidence_v1.py.txt",
+    "sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+    "commit": "2026-09-26T18:24:06+02:00\nPhase 24: Loop C representation feedback closure (#6867)",
+    "git_blob": "f7e8bd993462456b9d91dff12b537ba2b6606440"
+  },
+  {
+    "revision": "265c336034271ed9719d94b3be0814e03d6a4ef5",
+    "source_path": "src/research/linear_evidence/fitters.py",
+    "snapshot": "historical/05-265c33603427-fitters.py.txt",
+    "sha256": "f253d5c8222337a83f64ad8b8e0530d4708adc7650075c1b57983eb2d20d7b5d",
+    "commit": "2026-07-09T23:00:40+02:00\nAdd offline linear cost diagnostics scaffold (#5041)",
+    "git_blob": "d1a08379ce2101686ad6a706df15365f6158ef4b"
+  },
+  {
+    "revision": "eaa03ec54cbc3ae36decfa8bb2332701aa0e4059",
+    "source_path": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
+    "snapshot": "historical/06-eaa03ec54cbc-bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py.txt",
+    "sha256": "b197156e026e891d914086ce160a48cd5239855ecf44e9bff811fec7857eecd9",
+    "commit": "2026-07-15T02:38:35+02:00\nBind Bouchaud OHLCV proxy feature matrix into productive linear diagnostics chain. (#5190)",
+    "git_blob": "db0edddc1781c911da6bfc2f04704391b5194178"
+  },
+  {
+    "revision": "790810692c2dae383e2fc51e3f7a29163e06269b",
+    "source_path": "src/research/ml/meta/meta_labeling.py",
+    "snapshot": "historical/07-790810692c2d-meta_labeling.py.txt",
+    "sha256": "f300ac1f79b00bc807b90c9ce3d7c6cca985e7d0d4bfde88e65d35a92f9b970d",
+    "commit": "2025-12-08T22:09:03+01:00\nfeat(research): add R&D strategy modules & tests",
+    "git_blob": "efd8ae28d7aee0381dc4d0aff785b1edb689cf6e"
+  },
+  {
+    "revision": "7604145fb58a97308a43eae218130013fe6f7be7",
+    "source_path": "src/research/ml/meta/meta_labeling.py",
+    "snapshot": "historical/08-7604145fb58a-meta_labeling.py.txt",
+    "sha256": "954beb534f649d5dcdfb305ba4308a427c6642fe3acba1733e7a387ce1f61a0d",
+    "commit": "2026-03-30T01:28:52+02:00\nauto: feat(research): implement practical meta-labeling model application (#2117)",
+    "git_blob": "ece6a7378aae75f03294e3ac98a775c64abddc0f"
+  }
+]

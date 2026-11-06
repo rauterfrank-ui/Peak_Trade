@@ -1,0 +1,101 @@
+KEYCHAIN / K1 — VERBINDUNGEN UND UMBAUVERTRÄGE
+Stand 02.11.2026, Europe/Berlin. Lokale statische Untersuchung, keine Freigabe zur Implementierung oder Aktivierung.
+
+ERGEBNIS
+K1 ist eine gemeinsam genutzte Authentifizierungs-/Signierfunktion mehrerer Bereiche. Treasury nutzt den PL-TF-002-/GET-Pfad. Zusätzlich speisen SecretRef-Vault-Dateilader Credentials in K1 ein. Der private WebSocket-Pfad ist als tatsächlicher K1-Consumer noch offen. Ein bloßer Austausch des Keychain-Loaders deckt deshalb weder alle Consumer noch alle Klartexteingänge ab.
+
+QUELLENSTAND UND GRENZEN
+Hauptcheckout: /Users/frnkhrz/Peak_Trade, HEAD 242b7974fc93f0bdb47706556101bd6f0c497414, bestehende lokale Änderungen erhalten. Untersuchung betrifft die Arbeitskopie; SHA ist Bezugspunkt, nicht pauschale Byteidentität mit HEAD. static-call-inventory.json hält Hashes der direkt betroffenen Dateien fest.
+Vergleich: /Users/frnkhrz/Peak_Trade_M1_5_CURRENT, HEAD fffb95ef41f7e78c145f022144947911cce27279, ebenfalls lokal verändert. Von 22 Nicht-Test-Dateien mit ausgewählten direkten Aufrufstellen sind 14 bytegleich, 8 verschieden. Kein vollständiger Vergleich beider Checkouts. Beispiel: PL-TF-002/GET-Transport ergänzt in der zweiten Kopie Owner-GET-Budget und Zeitlimitverträge. Keine Zielrevision allein nach Alter oder CURRENT-Namen gewählt.
+AST-Inventar: 9594 getrackte vorhandene Python-Dateien unter src/scripts/tests syntaktisch erfasst; 0 Parsefehler. Für neun explizite Seed-Funktionen 50 Aufrufstellen, davon 29 außerhalb tests in 22 Dateien. Das sind Callsite-Zahlen, keine Anzahl laufender Verbindungen und kein semantischer Vollständigkeitsbeweis. Imports zusätzlich nur Navigation. Zusätzlicher manueller Befund: direkter Canary-HMAC-Vertrag und materialfreier Governed-Cycle-Bind.
+Keine Produktmodule importiert/ausgeführt, keine Vault-Dateien oder Environment-Werte gelesen, keine Keychain-Abfragen, keine Netzwerk- oder Orderaufrufe. Keine Tests ausgeführt. Vorhandene Tests nur als Testquellen geprüft: K1-Signer-Parität mit synthetischen Werten, PL-TF-002 mit Fake-Backend sowie Treasury-capture mit gemockter Sitzung. Daraus folgt kein neuer PASS und kein realer End-to-End-Beweis.
+Nicht erfasst: vollständige dynamische Dispatcher-/Plugin-Bindung, ungetrackte Erweiterungen, alle anderen historischen Kopien, alle Secrets auf dem Rechner und tatsächliche Keychain-ACLs. Kein neuer Obsidian-Ledger-Run. Mystery wurde vom Owner als Treasury klargestellt.
+
+VERBINDUNGSBEREICHE
+1. Treasury / Kapitalverwaltung
+Pfad: macOS Keychain → PL-TF-002 → K1 → GET
+Wirkung: Kontokonfiguration und Funding-Balance → Treasury-Beobachtung → Reconciliation → Kapitalzulassung / Account-Equity-Host. Credentials enden am Transport, nicht in der fachlichen Treasury-Rechnung.
+Befund: Statische Aufrufkette belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Eigene READ-Capability; Account-Identität, Funding-Endpunkt, Aktualität und rohe/abgeglichene Kapitalwerte erhalten. Keine Transfer- oder Withdrawal-Autorität ableiten.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/treasury_productive_read_only_venue_observation_v1/capture_v1.py:113
+
+2. Private GETs / Pretrade C1
+Pfad: macOS Keychain → K1-Sitzung → GET-Transport
+Wirkung: Authentifizierte private Anfragen vor Handelsentscheidungen; öffentlicher Datenzugriff ist davon zu unterscheiden.
+Befund: Statische Aufrufkette belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Host- und Endpunktbegrenzung, Request-Budget, Cache-/Freshness-Semantik und Deadline über die Dienstgrenze tragen.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py:84
+
+3. Kontostand / Free Margin / Sizing
+Pfad: SecretRef-Vault-Datei → K1-Session-Bind → GET
+Wirkung: 29P Free-Margin-Abfrage sowie P1-/U05-Nachweiswege verwenden den K1-Signer, obwohl das Material nicht aus der Keychain stammt.
+Befund: Zweiter Materialeingang belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Dateilader ebenfalls hinter die Schutzgrenze verlegen oder nach separat belegter Migration stilllegen. Nie aus einem Keychain-Umbau auf Beseitigung aller Klartexteingänge schließen.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py:437
+
+4. Execute-network Credential Join
+Pfad: SecretRef-Vault-Datei → Credential-Loader → K1
+Wirkung: Ein Loader-Slot erzeugt einen K1-Handle aus geladenen Vault-Feldern und gibt ihn an weitere READ-Consumer weiter.
+Befund: Statischer Bind belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Referenzauflösung, Erwerb und Freigabe als Dienstvertrag abbilden; keine Vault-Datei oder Klartextfelder an Agent/Client zurückgeben.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py:103
+
+5. Order-Vorbereitung / PRE-POST
+Pfad: Governance → Keychain → K1 → signierter Envelope
+Wirkung: Policy-Prüfung, begrenzte Signiersitzung und PRE-POST-Envelope. Signieren ist getrennt von Sendefreigabe.
+Befund: Statische Aufrufkette belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Öffentliche Schnittstelle darf keine vollständigen Auth-Header zurückgeben: aktuelle Header enthalten API-Key und Passphrase. Nur bereinigte Prüfbelege / Ergebnisreferenzen herausgeben.
+Quelle: /Users/frnkhrz/Peak_Trade/src/governance/current_productive_k1_pre_post_productive_chain_v1.py:166
+
+6. Einmaliger Order-POST
+Pfad: Finaler Envelope + Permit + dauerhafter Consume → K1 → HTTP-POST
+Wirkung: One-shot-Join und HTTP-Transport verwenden K1-Sitzung/Signer. Existenz ist keine aktuelle POST-Freigabe.
+Befund: Statische Aufrufkette belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Exakter Envelope-/Body-Bind, dauerhafter Permit-Verbrauch, Einmaligkeit, Unsicherheitsfall und Post-submit-Reconciliation müssen erhalten bleiben.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py:240
+
+7. Abgleich nach unklarem Orderversuch
+Pfad: Separater Reconciliation-Einstieg → Keychain → K1
+Wirkung: Eigenes Skript eröffnet eine K1-Sitzung für lesenden Abgleich nach unsicherem POST-Ausgang.
+Befund: Direkter statischer Consumer belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Separates READ-Profil für exakte Order-/Positionsabfragen erhalten; kein blindes erneutes Senden bei Timeout.
+Quelle: /Users/frnkhrz/Peak_Trade/scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py:43
+
+8. Canary / Flatten-Vertrag
+Pfad: Bereits gebundener K1-Handle oder vom Aufrufer geliefertes Secret → Signieradapter
+Wirkung: Authenticated-transport-Baustein enthält K1-Header-Adapter und zusätzlich einen direkten HMAC-Vertrag. Kein aktueller Live-Einsatz daraus bewiesen.
+Befund: Implementierter Vertrag; Aktivität offen. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Auch direkte Signier-APIs und Exit-/Flatten-Aufrufer aufnehmen; Richtung und Existenz einer aktuellen Runtime-Bindung separat prüfen.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py:197
+
+9. N5 / Governed-Cycle Occupancy
+Pfad: N5-Consumer → Governed-Cycle → K1-Capability-Bind
+Wirkung: Dieser Bind bleibt ausdrücklich fail-closed und lädt kein Material. Daneben existieren getrennte echte K1-Sitzungspfade.
+Befund: Materialfreier Bind belegt. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Capability-Prüfung nicht versehentlich zu Credential-Laden oder Netzwerkaktivität aufwerten.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py:690
+
+10. Private WebSocket / Account-State
+Pfad: Observation-Handle und von außen eingespeistes Login-Payload / REST-Fetcher
+Wirkung: WS-Transport nimmt login_payload vom Aufrufer entgegen; signing_capable=true im Handle beweist keine echte K1-Anbindung.
+Befund: K1-Verbindung offen. Laufzeit in dieser Untersuchung nicht belegt.
+Umbauvertrag: Herkunft und Erneuerung des Login-Payloads, Reconnect, dedizierte READ-Credential-Klasse und REST-Baseline durch konkrete Aufrufer nachweisen.
+Quelle: /Users/frnkhrz/Peak_Trade/src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py:56
+
+SCHUTZGRENZE
+Ist: gleicher Python-Prozess hält _SESSION_FIELDS mit API-Key, Secret und Passphrase; Auth-Header-Funktion gibt API-Key und Passphrase zurück. Handle-Redaktion / material_loaded=false sind keine Betriebssystem-Isolation. bounded_ephemeral_keychain_access_v1 nutzt eine erlaubte Consumer-Kennung im selben Prozess; keine externe Agent-Identitätsprüfung daraus bewiesen. Provisioning-Code definiert nicht explizit die vollständige beabsichtigte Zugriffstrennung; aktuelle ACLs wurden nicht abgefragt.
+Zielhypothese, keine ratifizierte Endarchitektur: geschützter Auth-/Transportdienst mit separater OS-Identität bzw. nachgewiesener Prozess-/Code-/Konfigurationsisolation. Secret-Quelle, Parser, Session-Haltung, Headerbau und authentifizierter Versand verbleiben innerhalb dieser Grenze. Consumer bekommen zweckgebundene Operationsreferenzen und bereinigte Ergebnisse; READ/POST getrennt. Schlüssel dürfen nicht durch einen parallel zugänglichen Vault- oder Signierpfad wieder exportierbar sein. Ein Dienstname oder separater Prozess allein genügt nicht. Kein generischer Signierdienst für beliebige URLs/Requests.
+
+ABNAHMEKRITERIEN — NICHT AUSGEFÜHRT
+1. Consumer-Abdeckung: Jeder statische Callsite ist klassifiziert; dynamische/injizierte Aufrufer und untracked Erweiterungen sind separat erfasst.
+2. Kompatibilität mit Treasury: Mit Dummy-Dienst: gleiche Account-Identität, Funding-Balance und Beobachtungssemantik bis Reconciliation/Equity; kein zusätzlicher Kapitalzulassungsanspruch.
+3. GET-Verträge: Host/Endpunkt, READ-Profil, Freshness, Cache, Request-Budget und Deadline erhalten; unzulässige Methode/Endpunkt wird verweigert.
+4. POST-Verträge: Nur Dummy-Transport: gleicher finaler Body/Envelope; Permit genau einmal dauerhaft verbraucht; nach unsicherem Ausgang kein erneuter POST.
+5. Ausgabegrenze: Eindeutige Dummy-Secrets dürfen nie in IPC-Antworten, Logs, Exceptions, Traces, Dateien oder Auth-Header-Rückgaben erscheinen.
+6. OS-Isolation: Agent-Identität kann weder Keychain-Eintrag, Dienstspeicher noch Dienstprogramm/-konfiguration lesen oder ändern; Prüfverfahren ohne echte Credential-Ausgabe festlegen.
+7. Neustart / Parallelität: Sitzungsablauf, Dienstneustart, mehrere N5-Lanes und Reconciliation erhalten Identitätsbindung, Budgets und Einmaligkeit.
+8. Zweite Arbeitskopie: Abweichende Transport-/Budgetverträge an einer explizit ausgewählten Zielrevision beurteilen; Ordnername CURRENT ist keine Autorität.
+
+AUSSAGE ZUR VOLLSTÄNDIGKEIT
+Aktuell belegt ist ein eingegrenzter statischer Überblick. Vollständige Integration und Verträglichkeit des gedachten Umbaus sind OFFEN, solange Consumer-Abdeckung, tatsächliche Bindungen, alternative Materialquellen und die obigen Verträge nicht auf einer ausgewählten Revision geprüft sind. Einen neuen Dienst jetzt als vollständig kompatibel oder für den Agenten unzugänglich zu bezeichnen wäre unbelegt.
+

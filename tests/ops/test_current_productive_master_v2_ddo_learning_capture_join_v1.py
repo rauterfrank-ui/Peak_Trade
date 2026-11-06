@@ -25,7 +25,15 @@ from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 
 
 
 def _cycle_kwargs(*, cycle_id: str, tmp_path: Path) -> dict:
-    created = _apply(tmp_path, samples=_sixty_one_samples())
+    created = _apply(
+        tmp_path,
+        samples=_sixty_one_samples(
+            canonical_instrument_id="inst-eth-usdt-perp",
+            venue_instrument_id="ETH-USDT-SWAP",
+        ),
+        canonical_instrument_id="inst-eth-usdt-perp",
+        venue_instrument_id="ETH-USDT-SWAP",
+    )
     closes = _closes()
     last = float(closes[-1])
     index_px = last * 0.995
@@ -42,7 +50,7 @@ def _cycle_kwargs(*, cycle_id: str, tmp_path: Path) -> dict:
     return {
         "bound_instrument": bound,
         "cycle_id": cycle_id,
-        "observed_unix": 1_700_000_100.0,
+        "observed_unix": 1_700_003_700.0,
         "mark_px": last,
         "index_px": index_px,
         "bid_px": last - 0.5,
@@ -51,7 +59,7 @@ def _cycle_kwargs(*, cycle_id: str, tmp_path: Path) -> dict:
         "open_interest": 1_000.0,
         "funding_rate": 0.0001,
         "finalized_closes": closes,
-        "last_finalized_event_ts_unix": 1_700_000_000.0,
+        "last_finalized_event_ts_unix": 1_700_003_600.0,
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producer": created.producer,
@@ -86,3 +94,48 @@ def test_master_v2_cycle_without_ledger_has_no_ddo_summary(tmp_path: Path) -> No
     kwargs.pop("ddo_durable_evidence_ledger_path")
     result = run_current_productive_master_v2_runtime_cycle_v1(**kwargs)
     assert result.ddo_capture_summary is None
+
+
+def test_invalid_capture_clock_is_fail_open_and_shadows_outer_capture(monkeypatch):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_master_v2_ddo_learning_capture_join_v1 as join,
+    )
+    from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+        DdoCaptureBindingV0,
+        bind_capture_session_v0,
+        current_capture_binding_v0,
+        reset_capture_session_v0,
+    )
+
+    binding = DdoCaptureBindingV0(capture_cycle_id="stale", capture_correlation_id="stale")
+    outer = DdoCaptureBindingV0()
+    replay = object()
+    called = []
+
+    def producer(value):
+        called.append(value)
+        assert current_capture_binding_v0().enabled is False
+        return replay
+
+    monkeypatch.setattr(join, "run_integrated_offline_trading_logic_replay_v1", producer)
+    monkeypatch.setattr(join, "productive_scope_learning_config_hash_v1", lambda _: "c" * 64)
+    token = bind_capture_session_v0(outer)
+    try:
+        result, summary = join.run_integrated_offline_replay_with_productive_ddo_capture_v1(
+            "input",
+            ddo_capture_binding=binding,
+            repository_sha="a" * 40,
+            session_id="next",
+            cycle_index=2,
+            event_ts_unix=float("nan"),
+            observation_acceptance_result=None,
+            features=None,
+            confirmation_binding=None,
+        )
+        assert result is replay and called == ["input"]
+        assert summary == {"ok": False, "skipped": True, "error": "host_cycle_capture:ValueError"}
+        assert current_capture_binding_v0() is outer
+        assert binding.capture_cycle_id is None and binding.capture_correlation_id is None
+        assert not binding.captured_records
+    finally:
+        reset_capture_session_v0(token)

@@ -1,0 +1,9 @@
+### CON-2066 — Wiedergefundenes Self-Learning-Master-Runbook
+
+Status im Quellenabgleich: **PARTIAL** · Klasse: `DERIVED_INFERENCE`.
+
+Die ältere Aussage „Master noch nicht wiedergefunden“ ist durch den späteren Fund präzisiert: frühe Fassung SHA256 119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94 und Core-Logic-Bound-Fassung 77eb523b165d3f534c10da86e55f105c10c3f91629d0a19795f2a5eeb02b6219 liegen laut Fundbericht vor. Die Core-Fassung fordert Lernen aus der tatsächlich verwendeten Core-Kette samt Versions-, Gate-, Kosten- und Ausführungsbezug.
+
+**Grenze:** Der Fundbericht und seine Originalkopien ersetzen keinen Nachweis vollständiger Implementierung. Entwicklungsphasen 0–12 sind keine vertikale Ebenenzahl. Ursprünglich erste Fassung weiterhin unbekannt.
+
+Quellen: EVI-2208, EVI-2279, EVI-2283, EVI-2281, EVI-2282.
