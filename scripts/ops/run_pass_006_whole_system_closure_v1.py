@@ -20,11 +20,26 @@ PRIOR_CKPT = (
     / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T081100Z"
 )
 
-BWP02 = MAIN_REPO / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_STATIC_CARTOGRAPHY_BWP02_V1.json"
-HIST_EDGES_112 = MAIN_REPO / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/_ghv_edges_112_seed.json"
-HIST_CARTO = MAIN_REPO / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json"
-BULK05 = MAIN_REPO / "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/20261002T223000Z/WHOLE_SYSTEM_GHV_BULK05_COVERAGE_MATRIX_V1.json"
-CLOSURE_REPORT = MAIN_REPO / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+BWP02 = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_STATIC_CARTOGRAPHY_BWP02_V1.json"
+)
+HIST_EDGES_112 = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/_ghv_edges_112_seed.json"
+)
+HIST_CARTO = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json"
+)
+BULK05 = (
+    MAIN_REPO
+    / "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/20261002T223000Z/WHOLE_SYSTEM_GHV_BULK05_COVERAGE_MATRIX_V1.json"
+)
+CLOSURE_REPORT = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+)
 
 PRODUCTIVE_ROOT_HINTS = (
     "run_current_productive_golden_happy_vector",
@@ -50,7 +65,9 @@ def _load(name: str, path: Path) -> Any:
 
 
 def _hash(items: list[str]) -> str:
-    return hashlib.sha256(json.dumps(sorted(set(items)), separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps(sorted(set(items)), separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 def build_historical_120_rows() -> list[dict[str, Any]]:
@@ -62,13 +79,22 @@ def build_historical_120_rows() -> list[dict[str, Any]]:
     for c in bwp.get("WHOLE_SYSTEM_COMPONENT_MATRIX", []):
         rows.append({"HIST_ID": c["id"], "KIND": "CMP", "NAME": c["name"], "OWNER": c.get("owner")})
     for r in cart.get("PHASE_A", {}).get("records", []):
-        rows.append({"HIST_ID": r["NODE_ID"], "KIND": "PHASE_A", "LOCATION": r.get("LOCATION"), "MODULE": r.get("MODULE")})
+        rows.append(
+            {
+                "HIST_ID": r["NODE_ID"],
+                "KIND": "PHASE_A",
+                "LOCATION": r.get("LOCATION"),
+                "MODULE": r.get("MODULE"),
+            }
+        )
     for r in cart.get("EXTRA_CORPUS_NODES", []):
         rows.append({"HIST_ID": r["NODE_ID"], "KIND": "EXTRA_CORPUS", "PATH": r.get("PATH")})
     for r in closure.get("PASS3_CORPUS_NODES", []):
         rows.append({"HIST_ID": r["NODE_ID"], "KIND": "PASS3_CORPUS", "PATH": r.get("PATH")})
     for row in bulk.get("rows", []):
-        rows.append({"HIST_ID": row["SECTOR_ID"], "KIND": "BULK05_SECTOR", "NAME": row.get("SECTOR_NAME")})
+        rows.append(
+            {"HIST_ID": row["SECTOR_ID"], "KIND": "BULK05_SECTOR", "NAME": row.get("SECTOR_NAME")}
+        )
     seen = {r["HIST_ID"] for r in rows}
     for sec in cart.get("SECTION_REGISTER", []):
         if len(rows) >= 120:
@@ -76,12 +102,21 @@ def build_historical_120_rows() -> list[dict[str, Any]]:
         hid = f"NODE-SECTION-{sec['PACKAGE_ID']}"
         if hid in seen:
             continue
-        rows.append({"HIST_ID": hid, "KIND": "SECTION_REGISTER", "PACKAGE_PATH": sec.get("PACKAGE_PATH"), "PACKAGE_ID": sec.get("PACKAGE_ID")})
+        rows.append(
+            {
+                "HIST_ID": hid,
+                "KIND": "SECTION_REGISTER",
+                "PACKAGE_PATH": sec.get("PACKAGE_PATH"),
+                "PACKAGE_ID": sec.get("PACKAGE_ID"),
+            }
+        )
         seen.add(hid)
     return rows[:120]
 
 
-def resolve_historical_node(repo: Path, row: dict[str, Any], cmp_index: dict[str, dict]) -> dict[str, Any]:
+def resolve_historical_node(
+    repo: Path, row: dict[str, Any], cmp_index: dict[str, dict]
+) -> dict[str, Any]:
     kind = row["KIND"]
     evidence: list[str] = []
     current_paths: list[str] = []
@@ -122,14 +157,21 @@ def resolve_historical_node(repo: Path, row: dict[str, Any], cmp_index: dict[str
             for hit in repo.glob(f"src/**/{tok}/**/*.py"):
                 hits.add(str(hit.relative_to(repo)))
         if hits:
-            classification = "CURRENT_RENAMED_MATCH" if len(hits) > 1 else "CURRENT_SEMANTIC_SUCCESSOR"
+            classification = (
+                "CURRENT_RENAMED_MATCH" if len(hits) > 1 else "CURRENT_SEMANTIC_SUCCESSOR"
+            )
             current_paths = sorted(hits)[:8]
             evidence.append(f"owner_name_token_paths:n={len(hits)}")
         elif name and list(repo.glob(f"scripts/**/*{name[:20]}*")):
             classification = "CURRENT_SEMANTIC_SUCCESSOR"
             evidence.append("runner_or_script_reference")
 
-    return {**row, "CLASSIFICATION": classification, "CURRENT_PATHS": current_paths, "EVIDENCE": evidence}
+    return {
+        **row,
+        "CLASSIFICATION": classification,
+        "CURRENT_PATHS": current_paths,
+        "EVIDENCE": evidence,
+    }
 
 
 def recover_historical_edges() -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -147,17 +189,27 @@ def recover_historical_edges() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         for u in c.get("upstream", []):
             eid = f"HIST-CMP-{u}-{c['id']}"
             if eid not in recovered:
-                recovered[eid] = {"id": eid, "source": u, "dest": c["id"], "PROVENANCE": "WHOLE_SYSTEM_COMPONENT_MATRIX"}
+                recovered[eid] = {
+                    "id": eid,
+                    "source": u,
+                    "dest": c["id"],
+                    "PROVENANCE": "WHOLE_SYSTEM_COMPONENT_MATRIX",
+                }
                 sources.add("WHOLE_SYSTEM_COMPONENT_MATRIX")
         for d in c.get("downstream", []):
             eid = f"HIST-CMP-{c['id']}-{d}"
             if eid not in recovered:
-                recovered[eid] = {"id": eid, "source": c["id"], "dest": d, "PROVENANCE": "WHOLE_SYSTEM_COMPONENT_MATRIX"}
+                recovered[eid] = {
+                    "id": eid,
+                    "source": c["id"],
+                    "dest": d,
+                    "PROVENANCE": "WHOLE_SYSTEM_COMPONENT_MATRIX",
+                }
                 sources.add("WHOLE_SYSTEM_COMPONENT_MATRIX")
 
     rows = bulk.get("rows", [])
     for i in range(len(rows) - 1):
-        eid = f"HIST-SECTOR-{rows[i]['SECTOR_ID']}-{rows[i+1]['SECTOR_ID']}"
+        eid = f"HIST-SECTOR-{rows[i]['SECTOR_ID']}-{rows[i + 1]['SECTOR_ID']}"
         recovered[eid] = {
             "id": eid,
             "source": rows[i]["SECTOR_ID"],
@@ -169,7 +221,12 @@ def recover_historical_edges() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     for cfg in bwp.get("WHOLE_SYSTEM_CONFIG_MATRIX", []):
         for cons in cfg.get("consumers", []):
             eid = f"HIST-CFG-{cfg['id']}-{cons}"
-            recovered[eid] = {"id": eid, "source": cfg["id"], "dest": cons, "PROVENANCE": "WHOLE_SYSTEM_CONFIG_MATRIX"}
+            recovered[eid] = {
+                "id": eid,
+                "source": cfg["id"],
+                "dest": cons,
+                "PROVENANCE": "WHOLE_SYSTEM_CONFIG_MATRIX",
+            }
             sources.add("WHOLE_SYSTEM_CONFIG_MATRIX")
 
     # Exhaustive evidence/ops JSON walk for GHV-E (confirm no additional flat ids)
@@ -182,11 +239,15 @@ def recover_historical_edges() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         def walk(o: object) -> None:
             if isinstance(o, dict):
                 if str(o.get("id", "")).startswith("GHV-E-"):
-                    recovered.setdefault(o["id"], {**o, "PROVENANCE": str(p.relative_to(MAIN_REPO))})
+                    recovered.setdefault(
+                        o["id"], {**o, "PROVENANCE": str(p.relative_to(MAIN_REPO))}
+                    )
                 if isinstance(o.get("edges"), list):
                     for e in o["edges"]:
                         if isinstance(e, dict) and str(e.get("id", "")).startswith("GHV-E-"):
-                            recovered.setdefault(e["id"], {**e, "PROVENANCE": str(p.relative_to(MAIN_REPO))})
+                            recovered.setdefault(
+                                e["id"], {**e, "PROVENANCE": str(p.relative_to(MAIN_REPO))}
+                            )
                 for v in o.values():
                     walk(v)
             elif isinstance(o, list):
@@ -282,11 +343,22 @@ def domain_of_path(rel: str) -> str:
     return "OTHER"
 
 
-def build_cross_flows(reachable: set[str], semantic_edges: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_cross_flows(
+    reachable: set[str], semantic_edges: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Cross-domain flows from semantic composition edges among reachable nodes."""
     flows: list[dict[str, Any]] = []
     flow_id = 0
-    domains = ["MARKET", "DECISION", "RISK", "EXECUTION_SURFACE", "RECONCILIATION", "ACCOUNTING", "TESTNET", "CANARY"]
+    domains = [
+        "MARKET",
+        "DECISION",
+        "RISK",
+        "EXECUTION_SURFACE",
+        "RECONCILIATION",
+        "ACCOUNTING",
+        "TESTNET",
+        "CANARY",
+    ]
     for i, a in enumerate(domains):
         for b in domains[i + 1 :]:
             edges_ab = [
@@ -333,15 +405,29 @@ def build_cross_flows(reachable: set[str], semantic_edges: list[dict[str, Any]])
 
 
 def main() -> int:
-    p5 = _load("p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py")
-    cont = _load("cont", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
-    ws = _load("ws", MAIN_REPO / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py")
+    p5 = _load(
+        "p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py"
+    )
+    cont = _load(
+        "cont",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
+    ws = _load(
+        "ws",
+        MAIN_REPO
+        / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+    )
 
     repo = cont._resolve_current_repo()
     ws.ensure_forensic_evidence_bridge(repo, MAIN_REPO)
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_006"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
@@ -353,19 +439,28 @@ def main() -> int:
     matches = sum(
         1
         for r in hist120_full
-        if r["CLASSIFICATION"] in ("CURRENT_EXACT_MATCH", "CURRENT_RENAMED_MATCH", "CURRENT_SEMANTIC_SUCCESSOR")
+        if r["CLASSIFICATION"]
+        in ("CURRENT_EXACT_MATCH", "CURRENT_RENAMED_MATCH", "CURRENT_SEMANTIC_SUCCESSOR")
     )
 
     hist_edges, hist_edge_meta = recover_historical_edges()
     hist_edge_full = []
     for e in hist_edges:
-        st = "CURRENT_EXACT_EDGE" if str(e.get("id", "")).startswith("GHV-E-") else "CURRENT_SEMANTIC_SUCCESSOR_EDGE"
+        st = (
+            "CURRENT_EXACT_EDGE"
+            if str(e.get("id", "")).startswith("GHV-E-")
+            else "CURRENT_SEMANTIC_SUCCESSOR_EDGE"
+        )
         hist_edge_full.append({**e, "RECONCILIATION": st})
 
     hist_gap = {
-        "HISTORICAL_CARTOGRAPHY_FULL_IDENTITY_RECOVERY": hist_edge_meta["RECOVERED_UNIQUE_HISTORICAL_EDGE_IDENTITIES"] >= 396,
+        "HISTORICAL_CARTOGRAPHY_FULL_IDENTITY_RECOVERY": hist_edge_meta[
+            "RECOVERED_UNIQUE_HISTORICAL_EDGE_IDENTITIES"
+        ]
+        >= 396,
         "HISTORICAL_CARTOGRAPHY_AVAILABLE_EVIDENCE_EXHAUSTED": True,
-        "HISTORICAL_INDEX_EVIDENCE_GAP": hist_edge_meta["UNRECOVERED_HISTORICAL_EDGE_IDENTITIES"] > 0,
+        "HISTORICAL_INDEX_EVIDENCE_GAP": hist_edge_meta["UNRECOVERED_HISTORICAL_EDGE_IDENTITIES"]
+        > 0,
         "SEARCH_PATHS": [
             "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02",
             "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1",
@@ -380,7 +475,11 @@ def main() -> int:
     alt = json.loads((PRIOR_CKPT / "alternative_root_adjudication.json").read_text())
     alt_paths = list(alt.get("NEW_ROOTS_VS_PASS004", []))
     alt_paths += [str(p.relative_to(repo)) for p in repo.glob("scripts/ops/run_*.py")]
-    alt_paths = [p for p in alt_paths if p.endswith(".py") and ("/run_" in p or p.startswith("scripts/ops/run_"))]
+    alt_paths = [
+        p
+        for p in alt_paths
+        if p.endswith(".py") and ("/run_" in p or p.startswith("scripts/ops/run_"))
+    ]
     # Also default productive seeds
     default_seeds = [
         "scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py",
@@ -401,7 +500,9 @@ def main() -> int:
         root_classes[cls].append(rel)
 
     reach_by_class = {cls: bfs_from_roots(repo, paths) for cls, paths in root_classes.items()}
-    productive = reach_by_class.get("DEFAULT_PRODUCTIVE_ROOT", set()) | reach_by_class.get("CONDITIONAL_PRODUCTIVE_ROOT", set())
+    productive = reach_by_class.get("DEFAULT_PRODUCTIVE_ROOT", set()) | reach_by_class.get(
+        "CONDITIONAL_PRODUCTIVE_ROOT", set()
+    )
     testnet_reach = reach_by_class.get("TESTNET_ROOT", set())
     canary_reach = reach_by_class.get("CANARY_RELATED_ROOT", set())
 
@@ -446,7 +547,11 @@ def main() -> int:
         tn_status = "PROVEN_CURRENT_CONDITIONAL_REACHABLE"
 
     canary_paths = [p for p in py_paths if "section_11_13_5" in p or "canary" in p.lower()]
-    cy_status = "PROVEN_CURRENT_CONDITIONAL_REACHABLE" if canary_reach or canary_paths else "PROVEN_CURRENT_NOT_REACHABLE"
+    cy_status = (
+        "PROVEN_CURRENT_CONDITIONAL_REACHABLE"
+        if canary_reach or canary_paths
+        else "PROVEN_CURRENT_NOT_REACHABLE"
+    )
 
     edge_rows_path = PRIOR_CKPT / "exhaustive_passes/pass_005/edge_semantic_adjudication_rows.json"
     semantic_edge_list: list[dict[str, Any]] = []
@@ -456,7 +561,11 @@ def main() -> int:
             if e.get("SEMANTIC_CLASS") != "COMPOSITION_CURRENT":
                 continue
             to_raw = str(e.get("TO", ""))
-            tgt = to_raw.replace(".", "/") + ".py" if to_raw.startswith(("src.", "trading.")) else None
+            tgt = (
+                to_raw.replace(".", "/") + ".py"
+                if to_raw.startswith(("src.", "trading."))
+                else None
+            )
             if tgt and tgt.startswith("trading."):
                 tgt = "src/" + tgt
             if not tgt or not tgt.endswith(".py"):
@@ -505,12 +614,26 @@ def main() -> int:
     cf_hash = _hash([c["CROSS_FLOW_ID"] for c in cross_flows])
     ep_hash = _hash(all_roots)
 
-    _write(root, "historical_120_node_reconciliation_full.json", {"ROWS": hist120_full, "TOTAL": 120})
+    _write(
+        root, "historical_120_node_reconciliation_full.json", {"ROWS": hist120_full, "TOTAL": 120}
+    )
     _write(root, "historical_396_index_recovery.json", hist_edge_meta)
-    _write(root, "historical_396_edge_reconciliation_full.json", {"ROWS": hist_edge_full, "TOTAL_RECOVERED": len(hist_edge_full)})
+    _write(
+        root,
+        "historical_396_edge_reconciliation_full.json",
+        {"ROWS": hist_edge_full, "TOTAL_RECOVERED": len(hist_edge_full)},
+    )
     _write(root, "historical_evidence_gap_adjudication.json", hist_gap)
-    _write(root, "canonical_current_entrypoint_inventory.json", {"ENTRYPOINTS": entry_inv, "TOTAL": len(entry_inv)})
-    _write(root, "multi_root_reachability_matrix.json", {k: {"COUNT": len(v), "SAMPLE": sorted(v)[:20]} for k, v in reach_by_class.items()})
+    _write(
+        root,
+        "canonical_current_entrypoint_inventory.json",
+        {"ENTRYPOINTS": entry_inv, "TOTAL": len(entry_inv)},
+    )
+    _write(
+        root,
+        "multi_root_reachability_matrix.json",
+        {k: {"COUNT": len(v), "SAMPLE": sorted(v)[:20]} for k, v in reach_by_class.items()},
+    )
     _write(
         root,
         "canonical_reachability_denominator.json",
@@ -547,16 +670,31 @@ def main() -> int:
     _write(
         root,
         "canonical_current_semantic_edge_graph.json",
-        {"CURRENT_SEMANTIC_EDGE_COUNT": semantic_count, "UNION_EDGE_CANDIDATES": edge_summary.get("UNION_EDGE_CANDIDATE_DENOMINATOR")},
+        {
+            "CURRENT_SEMANTIC_EDGE_COUNT": semantic_count,
+            "UNION_EDGE_CANDIDATES": edge_summary.get("UNION_EDGE_CANDIDATE_DENOMINATOR"),
+        },
     )
-    _write(root, "canonical_cross_flow_inventory.json", {"FLOWS": cross_flows, "TOTAL": len(cross_flows)})
+    _write(
+        root,
+        "canonical_cross_flow_inventory.json",
+        {"FLOWS": cross_flows, "TOTAL": len(cross_flows)},
+    )
     _write(root, "cross_flow_deep_proof.json", {"FLOWS": cross_flows})
     _write(root, "pass006_cross_method_reconciliation.json", universe)
-    _write(root, "pass006_disagreement_ledger.json", {"TOTAL": len(disagreements), "ENTRIES": disagreements})
+    _write(
+        root,
+        "pass006_disagreement_ledger.json",
+        {"TOTAL": len(disagreements), "ENTRIES": disagreements},
+    )
     _write(root, "universe_closure_proof.json", universe)
     _write(root, "ghv_probe_results.json", ghv)
     _write(root, "whole_system_regression_results.json", regression)
-    _write(root, "semantic_non_change_proof.json", {"DECISION_SEMANTICS_CHANGED": False, "AUTHORITY_CHANGED": False})
+    _write(
+        root,
+        "semantic_non_change_proof.json",
+        {"DECISION_SEMANTICS_CHANGED": False, "AUTHORITY_CHANGED": False},
+    )
     _write(root, "safety_proof.json", {"POST_ALLOWED": False, "RUN003_STARTED": False})
 
     _write(
@@ -614,7 +752,9 @@ def main() -> int:
         f"CANONICAL_ENTRYPOINT_UNIVERSE_SHA256={ep_hash}",
         f"WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256={cf_hash}",
         "WHOLE_SYSTEM_FORENSIC_FIXPOINT_REACHED=false",
-        "NEXT_STEP=PASS_007 independent exhaustive post-closure reproof with fresh discovery hashes" if fixpoint_c1 else "PASS_007: close remaining FS gap disagreements if any; accept bounded historical 396 gap",
+        "NEXT_STEP=PASS_007 independent exhaustive post-closure reproof with fresh discovery hashes"
+        if fixpoint_c1
+        else "PASS_007: close remaining FS gap disagreements if any; accept bounded historical 396 gap",
         f"EVIDENCE_DIR={root.relative_to(MAIN_REPO)}",
     ]
     (root / "00_final_report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")

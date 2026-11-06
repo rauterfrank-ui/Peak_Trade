@@ -207,7 +207,9 @@ def test_cycle_explicit_matching_consumer_preserves_the_default_result(
 ) -> None:
     meta = _learning_representation_meta(tmp_path)
     default = run_meta_evidence_dual_routing_cycle_v1(
-        MetaEvidenceDualRouterRequestV1(meta_learning_evidence=meta, semantic_routing_class=routing_class)
+        MetaEvidenceDualRouterRequestV1(
+            meta_learning_evidence=meta, semantic_routing_class=routing_class
+        )
     )
     explicit = run_meta_evidence_dual_routing_cycle_v1(
         MetaEvidenceDualRouterRequestV1(

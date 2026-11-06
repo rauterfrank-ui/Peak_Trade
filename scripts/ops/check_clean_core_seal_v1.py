@@ -16,6 +16,7 @@ import ast
 import copy
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -27,6 +28,8 @@ LINT_GATE_REL = ".github/workflows/lint_gate.yml"
 LINT_GATE_NEEDLE = "scripts/ops/check_clean_core_seal_v1.py"
 WHOLE_FILE = "WHOLE_FILE"
 MIXED_FILE = "MIXED_FILE"
+SEALED_SOURCE_COMMIT = "c742a23c964901c1353fcf3468e618db9cb6ef42"
+SEALED_SOURCE_TAG = "freeze/clean-system-2026-11-06-v1"
 
 # Frozen census membership (paths/modes/symbols). Digests live only in the manifest.
 CENSUS_MEMBERS: tuple[dict[str, Any], ...] = (
@@ -211,6 +214,7 @@ CENSUS_MEMBERS: tuple[dict[str, Any], ...] = (
         "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
         "mode": MIXED_FILE,
         "definitions": (
+            "_instrument_allowed",
             "_canonical_scope_event_to_scope_event",
             "_side_state_to_entry_exit_direction",
             "_rules_for_cycle_v1",
@@ -221,7 +225,6 @@ CENSUS_MEMBERS: tuple[dict[str, Any], ...] = (
             "resolve_integrated_reversal_preparation_entry_exit_binding_v0",
         ),
         "assignments": (
-            "_FORBIDDEN_INSTRUMENT_SUBSTRINGS",
             "_DEFAULT_STATIC_LIMITS",
             "_DEFAULT_RUNTIME_ENVELOPE",
             "_DEFAULT_SCOPE_RULES",
@@ -488,6 +491,11 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
         errors.append("manifest_state_not_sealed")
     if manifest.get("unseal_implemented") is True:
         errors.append("unseal_implemented_forbidden")
+    if (
+        manifest.get("sealed_source_commit") != SEALED_SOURCE_COMMIT
+        or manifest.get("sealed_source_tag") != SEALED_SOURCE_TAG
+    ):
+        errors.append("sealed_source_binding_mismatch")
     members = manifest.get("members")
     if not isinstance(members, list):
         errors.append("malformed_manifest:members")
@@ -633,6 +641,18 @@ def compute_member_record(repo_root: Path, frozen: dict[str, Any]) -> dict[str, 
 
 
 def emit_manifest(repo_root: Path) -> dict[str, Any]:
+    # Re-pinning is restricted to the accepted frozen source, never arbitrary HEAD.
+    resolved = subprocess.check_output(
+        ["git", "rev-parse", SEALED_SOURCE_TAG + "^{commit}"], cwd=repo_root, text=True
+    ).strip()
+    if resolved != SEALED_SOURCE_COMMIT:
+        raise RuntimeError("sealed_source_tag_mismatch")
+    for rel in FROZEN_PATHS:
+        original = subprocess.check_output(
+            ["git", "show", SEALED_SOURCE_COMMIT + ":" + rel], cwd=repo_root
+        )
+        if (repo_root / rel).read_bytes() != original:
+            raise RuntimeError("refusing_unbound_seal_repin:" + rel)
     members = [compute_member_record(repo_root, frozen) for frozen in CENSUS_MEMBERS]
     return {
         "schema_version": SCHEMA_VERSION,
@@ -640,6 +660,9 @@ def emit_manifest(repo_root: Path) -> dict[str, Any]:
         "document_class": "SUBORDINATE_ALLOWLIST_NOT_SECOND_SSOT",
         "canonical_authority": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "census_bound_origin_main_sha": "44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5",
+        "sealed_source_commit": SEALED_SOURCE_COMMIT,
+        "sealed_source_tag": SEALED_SOURCE_TAG,
+        "repin_evidence": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.json",
         "seal_core_count": FROZEN_MEMBER_COUNT,
         "whole_file_count": sum(1 for m in CENSUS_MEMBERS if m["mode"] == WHOLE_FILE),
         "mixed_file_count": sum(1 for m in CENSUS_MEMBERS if m["mode"] == MIXED_FILE),

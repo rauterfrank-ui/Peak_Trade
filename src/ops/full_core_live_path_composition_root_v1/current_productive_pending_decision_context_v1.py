@@ -1,4 +1,5 @@
 """Observation-only transport of the market input and its exact DP producer result."""
+
 from __future__ import annotations
 
 import json
@@ -54,7 +55,9 @@ def pending_decision_context_from_invocation_v1(invocation: Any) -> PendingDecis
             return None
         ts = timestamp.timestamp()
         price = market.mark_price
-        if any(isinstance(v, bool) or not math.isfinite(float(v)) or float(v) <= 0 for v in (ts, price)):
+        if any(
+            isinstance(v, bool) or not math.isfinite(float(v)) or float(v) <= 0 for v in (ts, price)
+        ):
             return None
     except (ValueError, TypeError, OverflowError):
         return None

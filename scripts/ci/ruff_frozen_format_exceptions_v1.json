@@ -1,0 +1,164 @@
+{
+  "schema": "peaktrade.ruff_frozen_format_exceptions.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "source_tag": "freeze/clean-system-2026-11-06-v1",
+  "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "files": [
+    {
+      "path": "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+      "sha256": "defd381876b526e125d7538e0dc0529b08fb3880182344f7d33d42987c0c4b16",
+      "reason": "Exact frozen policy-inventory source protection"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+      "sha256": "32c3210e3f6596a82c070df90a56313b8789800fa91d71ba618e6f2f1905eb0f",
+      "reason": "Exact canonical law-reference source digest protection"
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/counterfactual_replay_v1.py",
+      "sha256": "fba251c15eb0e12f9cfac457a6e698211a7c6fbf25dceded5ead70de9f1bd853",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/distance_geometry_v1.py",
+      "sha256": "dc71ecbdaf1897bfa71aa111f62dace0c72e8e9d1c804b6a8a752a718d7bf51e",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/runner_v1.py",
+      "sha256": "69079ef4fdbc0dc6ef51acab5abac9ffc8c260eede82fd521d369e6c6b6c49ab",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/stage1_v1.py",
+      "sha256": "5672c4289fa064ba00dee339dda4da8cf8bddcf0c45e6be00b40e6f59757134e",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/stage2_v1.py",
+      "sha256": "6bb96c32179458cbc5ea011f369d8e98dcf332802d06e2482089697fc23723d8",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/aggregate_v2.py",
+      "sha256": "f00e6c9e41c9a986f31b831eee01c3234a520c3e5579b1ba55b12f27ef448627",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/cycle_observation_v2.py",
+      "sha256": "a2211391a42c3de4fdd72c87a1386ab82c700919b6a3b3daab1b3dc0fc0c2813",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/replay_input_v2.py",
+      "sha256": "7116fc7d293d94168e80fb28e2f6f020932e854168d3ec5171f6d92d2948e723",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/runner_v2.py",
+      "sha256": "8f71e11daa0d6ad6f70ff85a20301112422ebef82176e3fb7f079f6ef1aaa04f",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/safety_v2.py",
+      "sha256": "a49dce1780505e8cc785c2c78e6df56bcf58a7332f6dcbeca6d7407ee1753476",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/stage2_runner_v2.py",
+      "sha256": "2b0089d6501cab75743a8aaac648ea2b1674845891bbc6b0d65083c6bd4bc0c8",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/aggregate_v3.py",
+      "sha256": "9e69d7c22af32837fa76c7d96299e27ebb488f50e8a6d4f61ef74b3ad8e4b1e1",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/proof_gates_v3.py",
+      "sha256": "d8ce015a6cdc6f1891d84cf700af9ebfbde4806a07c40a1039c412eda97be3dd",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/replay_state_v3.py",
+      "sha256": "8e18edff27129a6b903e99076d2880eb460a91dd4b6d7a0a1d066a069dc121af",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/runner_v3.py",
+      "sha256": "10c68f46308a82134c23a2e6533535c1435c89925e46c4ba55ba6f4e9900c8b3",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/stage2_runner_v3.py",
+      "sha256": "f46d2afb400a295a83813973b9b13cfe360c57378832ee74bd582f33095b59d7",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/state_carrier_v3.py",
+      "sha256": "5fc6e5f8f760abe69acb8e60197931d5952c4b22534adf577aa645061cc2bf58",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+      "sha256": "83b6f743a6024a2e764f8b80ec7d59db488f63b708429a795add91a605f69128",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/canonical_scope_initialization_v1.py",
+      "sha256": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+      "sha256": "ac4ef2dacee28101b5c5f324836390c34b8e7d4a6682e44f61933f131fb09c2f",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/directional_assessment_v1.py",
+      "sha256": "d8e9c0567a861208fb426521914579b3674dd7e2628987517a8d9b799ae71e01",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_composition_matrix_v1.py",
+      "sha256": "e524ef55e29a8f38502a516b206c5ed2d17cb180b459061a1ccab937d02986c9",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+      "sha256": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_futures_input.py",
+      "sha256": "87decc2ff83b13dca8541e7eeac739ba2200b48bb8c0baff5f3a903597cf1e56",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "sha256": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "tests/research/test_btc_common_research_admission_v1.py",
+      "sha256": "9ed367744792b68999901980f6f8ce1263f08587b764ccddbb9150083c4cc167",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/research/test_multi_future_ghv_counterfactual_distance_lab_v2.py",
+      "sha256": "3703ab55bd5af12a9e8060455d10960e790b0d246d9eb58a7709f1735a2e0420",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/research/test_pit_futures_instrument_lifecycle_registry_v1.py",
+      "sha256": "9db53a0a607e7a03a1e3f7cd2b7b5d57642b3351185ab8871925f93898515a58",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py",
+      "sha256": "fd42f27fd1bdb684297a517047c276b16fddc892942ee640a78b68772021a0bb",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    }
+  ]
+}

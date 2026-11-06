@@ -1166,7 +1166,9 @@ def _cohort_question(
             for finding in cohort_findings:
                 bucket_status, _, _ = _claim_gate(
                     sample_size=int(finding.get(sample_key, 0)),
-                    findings=[finding], policy=policy, associative=True,
+                    findings=[finding],
+                    policy=policy,
+                    associative=True,
                 )
                 statuses.append(bucket_status)
                 if bucket_status == EVIDENCE_COMPUTED:
@@ -1574,7 +1576,9 @@ def _utc_order_key(value: str) -> tuple[datetime, int]:
     try:
         whole_second = datetime.fromisoformat(value[:19]).replace(tzinfo=timezone.utc)
     except ValueError as exc:
-        raise MetaLearningValidationError("created_at must be a valid UTC calendar instant") from exc
+        raise MetaLearningValidationError(
+            "created_at must be a valid UTC calendar instant"
+        ) from exc
     fraction = value[20:-1] if value[19:20] == "." else ""
     return whole_second, int(fraction.ljust(9, "0"))
 

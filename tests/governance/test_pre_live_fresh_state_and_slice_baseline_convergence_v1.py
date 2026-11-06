@@ -40,8 +40,11 @@ def test_fail_closed_without_owner_go_token() -> None:
 
 
 def test_convergence_on_tmp_productivity_root(monkeypatch: pytest.MonkeyPatch) -> None:
-    from src.governance.pre_live_fresh_state_and_slice_baseline_convergence_v1 import _CAP24_WRITER_OBSERVED_UNIX
+    from src.governance.pre_live_fresh_state_and_slice_baseline_convergence_v1 import (
+        _CAP24_WRITER_OBSERVED_UNIX,
+    )
     from tests.ops.test_single_selected_future_runtime_binding_v1 import _empty_portfolio
+
     origin = EXPECTED_BASELINE_ORIGIN_MAIN_SHA
     integrity = MockCurrentProductive29PIntegrityBackendV1(origin_main=origin, head=origin)
 

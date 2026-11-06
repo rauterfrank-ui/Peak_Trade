@@ -92,9 +92,7 @@ def main() -> int:
             profile_binding=profile_binding,
             research_execution_cost=research_execution_cost,
         )
-        context = apply_g17_typed_volatility_to_context_v1(
-            context, typed_estimate=typed_g17.get(i)
-        )
+        context = apply_g17_typed_volatility_to_context_v1(context, typed_estimate=typed_g17.get(i))
         if context.warmup_status != WarmupStatus.WARMUP_COMPLETE:
             continue
         obs = accept_mv2_research_bar_market_observation_v1(

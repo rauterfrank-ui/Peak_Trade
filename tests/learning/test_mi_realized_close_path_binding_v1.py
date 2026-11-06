@@ -1,22 +1,32 @@
 """Close-path observations must not silently replace bound measurement endpoints."""
+
 from copy import deepcopy
 
 import pytest
 
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.realized_behavior_v1 import (
-    RealizedBehaviorError, RealizedBehaviorJoinInputsV1, join_market_context_to_realized_behavior_v1,
+    RealizedBehaviorError,
+    RealizedBehaviorJoinInputsV1,
+    join_market_context_to_realized_behavior_v1,
 )
-from tests.learning.test_market_context_realized_behavior_join_v1 import _pipeline, _context_for_observation, _snapshot
+from tests.learning.test_market_context_realized_behavior_join_v1 import (
+    _pipeline,
+    _context_for_observation,
+    _snapshot,
+)
 
 
 def _join(bars):
     pipe = _pipeline()
     obs = pipe["evaluation_observation"]
-    return join_market_context_to_realized_behavior_v1(RealizedBehaviorJoinInputsV1(
-        market_context=_context_for_observation(obs), evaluation_observation=obs,
-        measurement_evidence=pipe["materialization"].measurement_evidence_artifact,
-        o4_bars_for_path=bars,
-    ))
+    return join_market_context_to_realized_behavior_v1(
+        RealizedBehaviorJoinInputsV1(
+            market_context=_context_for_observation(obs),
+            evaluation_observation=obs,
+            measurement_evidence=pipe["materialization"].measurement_evidence_artifact,
+            o4_bars_for_path=bars,
+        )
+    )
 
 
 @pytest.mark.parametrize("index", [0, -1])

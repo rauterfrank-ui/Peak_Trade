@@ -48,7 +48,8 @@ def apply_learning_state_feedback_to_next_cycle_v1(state: Any) -> None:
     binding = getattr(state, "ddo_capture_binding", None)
     expected_config = getattr(binding, "capture_scope_config_hash", None)
     if (
-        not expected_config or snapshot.get("config_hash") != expected_config
+        not expected_config
+        or snapshot.get("config_hash") != expected_config
         or snapshot.get("code_sha") in (None, "UNKNOWN")
     ):
         if getattr(state, "ddo_n_bars_economic_score", None) == snapshot.get(

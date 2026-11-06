@@ -63,3 +63,9 @@ PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py frozen
 ```
 
 Diese Prüfung ist absichtlich strikt: zusätzliche lokale Dateien oder spätere Änderungen am eingefrorenen Arbeitsbaum werden gemeldet. Leere Ausgabeverzeichnisse für die vorhandenen Writer enthalten keine Archivdaten und bleiben als Betriebsadressen erhalten. Der Dateikatalog des Atlas bindet den Quell-Fixpunkt; der vollständige System-Tag bindet zusätzlich die aktuellen Ansichten über seinen Git-Baum.
+
+## Formatprüfung und eingefrorene Bytes
+
+Die CI-Formatprüfung verwendet [den Formatverifier](../../scripts/ci/check_ruff_frozen_format_v1.py). Er prüft 31 [exakt benannte Originaldateien](../../scripts/ci/ruff_frozen_format_exceptions_v1.json) gegen ihre unveränderten Frozen-Gitobjekte und die aktuellen Dateibytes. Damit bleiben die bestehenden Master-V2-, Policy- und Whole-File-Seal-Verträge gültig. Eine Änderung an einer dieser Dateien ist ein Fehler, auch bei nachgeführtem Manifestdigest. Zusätzliche Ausnahmen sind nicht zulässig.
+
+Alle übrigen Pythondateien in src, tests und scripts durchlaufen weiterhin die Ruff-Formatprüfung. Die separate Ruff-Fehlerprüfung konsumiert den gesamten ursprünglichen Suchumfang einschließlich der 31 bytegeschützten Dateien. Die [CI-Korrektur](../ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.md) hält Formatänderungen, negative Prüfungen und den belegten Main-Abgleich der Linkschulden fest.

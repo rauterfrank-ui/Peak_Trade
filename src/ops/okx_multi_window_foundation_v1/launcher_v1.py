@@ -14,7 +14,10 @@ from src.ops.okx_multi_window_foundation_v1.safari_v1 import (
     list_safari_windows,
     set_window_tab_url,
 )
-from src.ops.okx_multi_window_foundation_v1.validate_v1 import validate_slot_url, validate_url_bindings
+from src.ops.okx_multi_window_foundation_v1.validate_v1 import (
+    validate_slot_url,
+    validate_url_bindings,
+)
 
 
 class LauncherStop(RuntimeError):
@@ -37,9 +40,7 @@ def _identify_workstation(
     required_tab_count: int,
 ) -> SafariWindow:
     matches = [
-        w
-        for w in windows
-        if w.tab_count == required_tab_count and title_substring in w.name
+        w for w in windows if w.tab_count == required_tab_count and title_substring in w.name
     ]
     if len(matches) == 0:
         raise LauncherStop("workstation_not_found")
@@ -48,7 +49,9 @@ def _identify_workstation(
     return matches[0]
 
 
-def _neutral_slot_candidates(windows: list[SafariWindow], workstation_id: int) -> list[SafariWindow]:
+def _neutral_slot_candidates(
+    windows: list[SafariWindow], workstation_id: int
+) -> list[SafariWindow]:
     return sorted(
         [w for w in windows if w.window_id != workstation_id and w.is_neutral_slot_window()],
         key=lambda w: w.window_id,
@@ -179,7 +182,9 @@ def run_launch(
     except LauncherStop:
         raise
     except SafariProbeError as exc:
-        return LaunchResult("BLOCKED", workstation.window_id, {}, 0, 0, f"safari_create_failed:{exc}")
+        return LaunchResult(
+            "BLOCKED", workstation.window_id, {}, 0, 0, f"safari_create_failed:{exc}"
+        )
 
     if created > 0:
         windows = list_fn()

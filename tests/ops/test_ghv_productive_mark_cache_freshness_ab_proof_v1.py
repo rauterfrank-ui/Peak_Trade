@@ -53,7 +53,9 @@ def _mark_body(mark_px: float) -> bytes:
     return json.dumps(payload).encode("utf-8")
 
 
-def _patch_opener(monkeypatch: pytest.MonkeyPatch, responses: deque[tuple[int, bytes, str]]) -> None:
+def _patch_opener(
+    monkeypatch: pytest.MonkeyPatch, responses: deque[tuple[int, bytes, str]]
+) -> None:
     opener = MagicMock()
     url = f"https://{AUTHORIZED_HOST}{_ENDPOINT}"
 

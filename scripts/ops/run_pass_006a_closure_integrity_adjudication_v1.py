@@ -25,7 +25,9 @@ PASS_005_SURFACE = (
 
 def _write(root: Path, name: str, obj: object) -> None:
     root.mkdir(parents=True, exist_ok=True)
-    (p := root / name).write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (p := root / name).write_text(
+        json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _load_module(name: str, path: Path) -> Any:
@@ -37,14 +39,19 @@ def _load_module(name: str, path: Path) -> Any:
 
 
 def _sha256_canonical(items: list[str]) -> str:
-    return hashlib.sha256(json.dumps(sorted(set(items)), separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps(sorted(set(items)), separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 def domain_of_path(rel: str) -> str:
     low = rel.lower()
     if "market" in low or "/md/" in low or "public" in low and "tick" in low:
         return "MARKET"
-    if any(x in low for x in ("confirm", "sidestate", "double_play", "master_v2", "decision", "candidate")):
+    if any(
+        x in low
+        for x in ("confirm", "sidestate", "double_play", "master_v2", "decision", "candidate")
+    ):
         return "DECISION"
     if any(x in low for x in ("risk", "admission", "capital", "killswitch")):
         return "RISK"
@@ -83,7 +90,11 @@ BOUNDARY_KINDS = [
 
 
 def prefix_adjudication() -> tuple[list[dict], int, bool]:
-    prefix = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json").read_text())
+    prefix = json.loads(
+        (
+            PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json"
+        ).read_text()
+    )
     probes = prefix["PROBES"]
     adjudicated: list[dict] = []
     unexplained = 0
@@ -137,7 +148,11 @@ def prefix_adjudication() -> tuple[list[dict], int, bool]:
             "REPAIR_ALLOWED": False,
         }
         if pr.get("MATCH"):
-            entry["CLASSIFICATION"] = "EXPECTED_NON_AUTHORITY_HARNESS_DIFFERENCE" if stage == "EVIDENCE" else "PARITY_PROVEN"
+            entry["CLASSIFICATION"] = (
+                "EXPECTED_NON_AUTHORITY_HARNESS_DIFFERENCE"
+                if stage == "EVIDENCE"
+                else "PARITY_PROVEN"
+            )
             entry["UNEXPECTED_DIFFERENCE"] = False
         elif stage in rules:
             entry.update(rules[stage])
@@ -150,7 +165,8 @@ def prefix_adjudication() -> tuple[list[dict], int, bool]:
         adjudicated.append(entry)
 
     parity_ok = unexplained == 0 and all(
-        e.get("CLASSIFICATION", "").startswith("EXPECTED_") or e.get("CLASSIFICATION") in ("PARITY_PROVEN",)
+        e.get("CLASSIFICATION", "").startswith("EXPECTED_")
+        or e.get("CLASSIFICATION") in ("PARITY_PROVEN",)
         for e in adjudicated
         if not e.get("MATCH")
     )
@@ -158,9 +174,19 @@ def prefix_adjudication() -> tuple[list[dict], int, bool]:
 
 
 def defect_reconciliation() -> list[dict]:
-    reg = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/defect_register.json").read_text())
-    pr7052 = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/pr7052_forensic_adjudication.json").read_text())
-    prefix = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json").read_text())
+    reg = json.loads(
+        (PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/defect_register.json").read_text()
+    )
+    pr7052 = json.loads(
+        (
+            PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/pr7052_forensic_adjudication.json"
+        ).read_text()
+    )
+    prefix = json.loads(
+        (
+            PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json"
+        ).read_text()
+    )
 
     pre_ext_match = next(
         (p for p in prefix["PROBES"] if p["LAST_STAGE"] == "PRE_EXTERNAL"),
@@ -172,17 +198,23 @@ def defect_reconciliation() -> list[dict]:
         did = d["DEFECT_ID"]
         row: dict[str, Any] = {
             "DEFECT_ID": did,
-            "ORIGINAL_MEANING": d.get("ROOT_CAUSE") or d.get("PRODUCTIVE_OBSERVED") or d.get("CAUSAL_DIMENSION"),
+            "ORIGINAL_MEANING": d.get("ROOT_CAUSE")
+            or d.get("PRODUCTIVE_OBSERVED")
+            or d.get("CAUSAL_DIMENSION"),
             "ORIGINAL_SEVERITY": d.get("SEVERITY"),
             "ORIGINAL_STATUS": "OPEN_IN_REGISTER",
-            "PRODUCTIVE_REPAIR_COMMIT_IF_ANY": "PR #7052 (pre-external projection wiring)" if did == "DEF-001" else None,
+            "PRODUCTIVE_REPAIR_COMMIT_IF_ANY": "PR #7052 (pre-external projection wiring)"
+            if did == "DEF-001"
+            else None,
             "LANDED_ON_CURRENT_MAIN": did == "DEF-001",
             "REGRESSION": "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py PASS on GHV carrier"
             if did == "DEF-001"
             else "WHOLE_SYSTEM_REGRESSION subset PASS in PASS_006",
             "EVIDENCE": [
                 str(PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/defect_register.json"),
-                str(PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json"),
+                str(
+                    PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json"
+                ),
             ],
         }
         if did == "DEF-001":
@@ -244,7 +276,9 @@ def defect_reconciliation() -> list[dict]:
 def surface_audit() -> dict[str, Any]:
     surf = json.loads(PASS_005_SURFACE.read_text())
     counts = Counter(r["FINAL_CLASSIFICATION"] for r in surf["ROWS"])
-    true_surfaces = [r["PATH"] for r in surf["ROWS"] if r["FINAL_CLASSIFICATION"] == "TRUE_RUNTIME_SURFACE"]
+    true_surfaces = [
+        r["PATH"] for r in surf["ROWS"] if r["FINAL_CLASSIFICATION"] == "TRUE_RUNTIME_SURFACE"
+    ]
     return {
         "SOURCE": str(PASS_005_SURFACE.relative_to(MAIN_REPO)),
         "TOTAL_RUNTIME_SURFACE_CANDIDATES": len(surf["ROWS"]),
@@ -264,8 +298,14 @@ def surface_audit() -> dict[str, Any]:
 
 def cross_flow_audit(repo: Path) -> dict[str, Any]:
     p6 = _load_module("p6", MAIN_REPO / "scripts/ops/run_pass_006_whole_system_closure_v1.py")
-    p5 = _load_module("p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py")
-    cont = _load_module("cont", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
+    p5 = _load_module(
+        "p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py"
+    )
+    cont = _load_module(
+        "cont",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
 
     reach = json.loads((PASS_006_CKPT / "canonical_reachability_denominator.json").read_text())
     union_n = reach["UNION_REACHABLE"]
@@ -338,7 +378,13 @@ def cross_flow_audit(repo: Path) -> dict[str, Any]:
     # PASS_006 called build_cross_flows(reachable, []) — empty semantic edge list
     incomplete = pass006_flows["TOTAL"] == 2 and "NOTE" in pass006_flows["FLOWS"][0]
 
-    reconstructed = p6.build_cross_flows(reach_set, [{"FROM": t["FROM"], "TO": t["TO"], "SEMANTIC_CLASS": "COMPOSITION_CURRENT"} for t in transitions[:5000]])
+    reconstructed = p6.build_cross_flows(
+        reach_set,
+        [
+            {"FROM": t["FROM"], "TO": t["TO"], "SEMANTIC_CLASS": "COMPOSITION_CURRENT"}
+            for t in transitions[:5000]
+        ],
+    )
 
     return {
         "PASS_006_TOTAL_CROSS_FLOWS_REPORTED": pass006_flows["TOTAL"],
@@ -356,16 +402,29 @@ def cross_flow_audit(repo: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    cont = _load_module("cont2", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
+    cont = _load_module(
+        "cont2",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
     repo = cont._resolve_current_repo()
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_006a"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
     defects = defect_reconciliation()
-    stale = any(d.get("CURRENT_STATUS") == "CLOSED_REPAIRED_LANDED" and d.get("ORIGINAL_STATUS") == "OPEN_IN_REGISTER" for d in defects if "DEFECT_ID" in d)
+    stale = any(
+        d.get("CURRENT_STATUS") == "CLOSED_REPAIRED_LANDED"
+        and d.get("ORIGINAL_STATUS") == "OPEN_IN_REGISTER"
+        for d in defects
+        if "DEFECT_ID" in d
+    )
 
     prefix_rows, unexplained, prefix_parity = prefix_adjudication()
     surface = surface_audit()
@@ -405,24 +464,48 @@ def main() -> int:
     entry = json.loads((PASS_006_CKPT / "canonical_current_entrypoint_inventory.json").read_text())
     sem = json.loads((PASS_006_CKPT / "canonical_current_semantic_edge_graph.json").read_text())
     surf_rows = json.loads(PASS_005_SURFACE.read_text())["ROWS"]
-    true_paths = sorted(r["PATH"] for r in surf_rows if r["FINAL_CLASSIFICATION"] == "TRUE_RUNTIME_SURFACE")
+    true_paths = sorted(
+        r["PATH"] for r in surf_rows if r["FINAL_CLASSIFICATION"] == "TRUE_RUNTIME_SURFACE"
+    )
 
     hashes = {
         "WHOLE_SYSTEM_NODE_UNIVERSE_SHA256": _sha256_canonical([str(reach["UNION_REACHABLE"])]),
-        "WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256": _sha256_canonical([str(sem["CURRENT_SEMANTIC_EDGE_COUNT"])]),
+        "WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256": _sha256_canonical(
+            [str(sem["CURRENT_SEMANTIC_EDGE_COUNT"])]
+        ),
         "WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256": _sha256_canonical(
             [f"INVALID_PASS006_DENOM={cross['PASS_006_TOTAL_CROSS_FLOWS_REPORTED']}"]
         ),
         "RUNTIME_SURFACE_UNIVERSE_SHA256": _sha256_canonical(true_paths),
-        "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": _sha256_canonical([e["PATH"] for e in entry["ENTRYPOINTS"]]),
-        "AUTHORITY_MATRIX_SHA256": _sha256_canonical(["UNEMITTED_PASS006A_PENDING_CROSSFLOW_CLOSURE"]),
+        "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": _sha256_canonical(
+            [e["PATH"] for e in entry["ENTRYPOINTS"]]
+        ),
+        "AUTHORITY_MATRIX_SHA256": _sha256_canonical(
+            ["UNEMITTED_PASS006A_PENDING_CROSSFLOW_CLOSURE"]
+        ),
         "REACHABILITY_MATRIX_SHA256": _sha256_canonical(
-            [f"U={reach['UNION_REACHABLE']}", f"P={reach['DEFAULT_PRODUCTIVE_REACHABLE']}", f"T={reach['TESTNET_REACHABLE']}"]
+            [
+                f"U={reach['UNION_REACHABLE']}",
+                f"P={reach['DEFAULT_PRODUCTIVE_REACHABLE']}",
+                f"T={reach['TESTNET_REACHABLE']}",
+            ]
         ),
     }
 
-    _write(root, "defect_register_reconciliation.json", {"DEFECTS": defects, "STALE_DEFECT_REGISTER_STATE": stale})
-    _write(root, "prefix_parity_adjudication.json", {"PROBES": prefix_rows, "UNEXPLAINED_DIVERGENCES": unexplained, "PREFIX_PARITY_ADJUDICATED": prefix_parity})
+    _write(
+        root,
+        "defect_register_reconciliation.json",
+        {"DEFECTS": defects, "STALE_DEFECT_REGISTER_STATE": stale},
+    )
+    _write(
+        root,
+        "prefix_parity_adjudication.json",
+        {
+            "PROBES": prefix_rows,
+            "UNEXPLAINED_DIVERGENCES": unexplained,
+            "PREFIX_PARITY_ADJUDICATED": prefix_parity,
+        },
+    )
     _write(root, "runtime_surface_denominator_audit.json", surface)
     _write(root, "cross_flow_denominator_audit.json", cross)
     _write(root, "semantic_hashes.json", hashes)
@@ -438,13 +521,19 @@ def main() -> int:
         },
     )
 
-    prefix = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json").read_text())
+    prefix = json.loads(
+        (
+            PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/prefix_probe_results.json"
+        ).read_text()
+    )
     md = next(p for p in prefix_rows if p["STAGE"] == "MARKET_DATA")
     uni = next(p for p in prefix_rows if p["STAGE"] == "UNIVERSE")
     rec = next(p for p in prefix_rows if p["STAGE"] == "RECONCILIATION")
 
     ghv = json.loads((PASS_006_CKPT / "ghv_probe_results.json").read_text())
-    reg = json.loads((PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/defect_register.json").read_text())
+    reg = json.loads(
+        (PASS_006_CKPT / "exhaustive_passes/pass_006/ghv_probe/defect_register.json").read_text()
+    )
 
     def status(did: str) -> str:
         for d in defects:

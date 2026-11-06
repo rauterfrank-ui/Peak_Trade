@@ -15,11 +15,11 @@ def _at(evidence: str, analysis: str, later: str | None = None):
     unit = _unit(_identity(), evidence_created_at=evidence)
     unit = replace(
         unit,
-        later_outcome=(replace(unit.later_outcome, observed_at=later) if later is not None else None),
+        later_outcome=(
+            replace(unit.later_outcome, observed_at=later) if later is not None else None
+        ),
     )
-    return _request(
-        units=(unit,), failure_records=(), reality_gap_records=(), created_at=analysis
-    )
+    return _request(units=(unit,), failure_records=(), reality_gap_records=(), created_at=analysis)
 
 
 @pytest.mark.parametrize(

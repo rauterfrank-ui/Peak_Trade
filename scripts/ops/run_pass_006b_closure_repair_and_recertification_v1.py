@@ -13,8 +13,14 @@ from typing import Any
 
 MAIN_REPO = Path(__file__).resolve().parents[2]
 BASELINE_SHA = "d962aaee86b347b9d0247981cb06896a0431aeba"
-PASS_006 = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T081649Z"
-PASS_006A = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T082557Z"
+PASS_006 = (
+    MAIN_REPO
+    / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T081649Z"
+)
+PASS_006A = (
+    MAIN_REPO
+    / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T082557Z"
+)
 PASS_005_SURFACE = (
     MAIN_REPO
     / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T081100Z/runtime_surface_candidate_adjudication.json"
@@ -42,7 +48,9 @@ def _write(root: Path, name: str, obj: object) -> None:
 
 def lossless_snapshot(repo: Path) -> dict[str, Any]:
     def git(cwd: Path, *a: str) -> str:
-        return subprocess.check_output(["git", "-C", str(cwd), *a], text=True, errors="replace").strip()
+        return subprocess.check_output(
+            ["git", "-C", str(cwd), *a], text=True, errors="replace"
+        ).strip()
 
     wt = Path("/Users/frnkhrz/Peak_Trade/.ghv_worktrees/post7053_reproof")
     return {
@@ -88,16 +96,30 @@ def main() -> int:
         return 2
 
     logic = _load("closure_logic", LOGIC)
-    p5 = _load("p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py")
+    p5 = _load(
+        "p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py"
+    )
     p6 = _load("p6", MAIN_REPO / "scripts/ops/run_pass_006_whole_system_closure_v1.py")
-    cont = _load("cont", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
-    ws = _load("ws", MAIN_REPO / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py")
+    cont = _load(
+        "cont",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
+    ws = _load(
+        "ws",
+        MAIN_REPO
+        / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+    )
 
     repo = cont._resolve_current_repo()
     ws.ensure_forensic_evidence_bridge(repo, MAIN_REPO)
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_006b"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
@@ -141,7 +163,9 @@ def main() -> int:
         "ADJUDICATED_SEMANTIC_BOUNDARY_TRANSITIONS": len(boundary_rows) - unadj_bt,
         "UNADJUDICATED_SEMANTIC_BOUNDARY_TRANSITIONS": unadj_bt,
         "UNKNOWN_BOUNDARY_TRANSITIONS": unknown_bt,
-        "ASSIGNED": sum(1 for r in boundary_rows if r.get("ADJUDICATION") == "ASSIGNED_TO_CANONICAL_CROSS_FLOW"),
+        "ASSIGNED": sum(
+            1 for r in boundary_rows if r.get("ADJUDICATION") == "ASSIGNED_TO_CANONICAL_CROSS_FLOW"
+        ),
         "CROSS_FLOW_DENOMINATOR_VALID": unadj_bt == 0 and unknown_bt == 0,
         "PASS006B_REPAIR": "semantic_edges_loaded_for_cross_flows",
     }
@@ -161,19 +185,39 @@ def main() -> int:
 
     ghv = ws.run_ghv_probe(pass_dir / "ghv_probe")
     prefix_path = pass_dir / "ghv_probe/prefix_probe_results.json"
-    prefix_rows, unexp_prefix, prefix_parity, strict_literal = logic.prefix_parity_from_probe(prefix_path)
+    prefix_rows, unexp_prefix, prefix_parity, strict_literal = logic.prefix_parity_from_probe(
+        prefix_path
+    )
 
-    pre_ext = next((p for p in json.loads(prefix_path.read_text())["PROBES"] if p["LAST_STAGE"] == "PRE_EXTERNAL"), {})
+    pre_ext = next(
+        (
+            p
+            for p in json.loads(prefix_path.read_text())["PROBES"]
+            if p["LAST_STAGE"] == "PRE_EXTERNAL"
+        ),
+        {},
+    )
     defects = logic.build_current_defect_register(
         pre_external_wired=bool(pre_ext.get("MATCH")),
         pre_external_prefix_match=bool(pre_ext.get("MATCH")),
         prefix_path=str(prefix_path.relative_to(MAIN_REPO)),
     )
-    open_s1 = sum(1 for d in defects if d.get("CURRENT_STATUS", "").startswith("OPEN") and str(d.get("CURRENT_SEVERITY", "")).startswith("S1"))
+    open_s1 = sum(
+        1
+        for d in defects
+        if d.get("CURRENT_STATUS", "").startswith("OPEN")
+        and str(d.get("CURRENT_SEVERITY", "")).startswith("S1")
+    )
 
     regression = ws.run_regression(repo)
     guard_tests = subprocess.run(
-        [str(MAIN_REPO / "scripts/pt"), "-m", "pytest", "-q", "tests/ops/test_pass_006b_forensic_closure_guards_v1.py"],
+        [
+            str(MAIN_REPO / "scripts/pt"),
+            "-m",
+            "pytest",
+            "-q",
+            "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
+        ],
         cwd=str(MAIN_REPO),
         capture_output=True,
         text=True,
@@ -186,17 +230,29 @@ def main() -> int:
     }
 
     reach_d = json.loads((PASS_006 / "canonical_reachability_denominator.json").read_text())
-    edge_count = json.loads((PASS_006 / "canonical_current_semantic_edge_graph.json").read_text())["CURRENT_SEMANTIC_EDGE_COUNT"]
+    edge_count = json.loads((PASS_006 / "canonical_current_semantic_edge_graph.json").read_text())[
+        "CURRENT_SEMANTIC_EDGE_COUNT"
+    ]
 
     hashes = {
         "WHOLE_SYSTEM_NODE_UNIVERSE_SHA256": logic.sha256_list([str(reach_d["UNION_REACHABLE"])]),
         "WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256": logic.sha256_list([str(edge_count)]),
-        "WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256": logic.sha256_list([f["CROSS_FLOW_ID"] for f in flows]),
+        "WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256": logic.sha256_list(
+            [f["CROSS_FLOW_ID"] for f in flows]
+        ),
         "RUNTIME_SURFACE_UNIVERSE_SHA256": rs_hash,
-        "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": logic.sha256_list([e["PATH"] for e in entry["ENTRYPOINTS"]]),
-        "AUTHORITY_MATRIX_SHA256": logic.sha256_list([i["PATH"] + "|" + i["AUTHORITY"] for i in true_inv]),
+        "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": logic.sha256_list(
+            [e["PATH"] for e in entry["ENTRYPOINTS"]]
+        ),
+        "AUTHORITY_MATRIX_SHA256": logic.sha256_list(
+            [i["PATH"] + "|" + i["AUTHORITY"] for i in true_inv]
+        ),
         "REACHABILITY_MATRIX_SHA256": logic.sha256_list(
-            [f"U={reach_d['UNION_REACHABLE']}", f"P={reach_d['DEFAULT_PRODUCTIVE_REACHABLE']}", f"T={reach_d['TESTNET_REACHABLE']}"]
+            [
+                f"U={reach_d['UNION_REACHABLE']}",
+                f"P={reach_d['DEFAULT_PRODUCTIVE_REACHABLE']}",
+                f"T={reach_d['TESTNET_REACHABLE']}",
+            ]
         ),
     }
 
@@ -235,7 +291,11 @@ def main() -> int:
     )
 
     _write(root, "lossless_snapshot.json", snap)
-    _write(root, "current_ghv_defect_register.json", {"DEFECTS": defects, "STALE_DEFECT_REGISTER_STATE_REPAIRED": True})
+    _write(
+        root,
+        "current_ghv_defect_register.json",
+        {"DEFECTS": defects, "STALE_DEFECT_REGISTER_STATE_REPAIRED": True},
+    )
     _write(
         root,
         "prefix_parity_adjudication.json",
@@ -248,8 +308,16 @@ def main() -> int:
         },
     )
     _write(root, "runtime_surface_denominator_audit.json", surface_audit)
-    _write(root, "canonical_runtime_surface_inventory.json", {"SURFACES": true_inv, "TOTAL": len(true_inv)})
-    _write(root, "semantic_boundary_transition_adjudication.json", {"ROWS": boundary_rows, "TOTAL": len(boundary_rows)})
+    _write(
+        root,
+        "canonical_runtime_surface_inventory.json",
+        {"SURFACES": true_inv, "TOTAL": len(true_inv)},
+    )
+    _write(
+        root,
+        "semantic_boundary_transition_adjudication.json",
+        {"ROWS": boundary_rows, "TOTAL": len(boundary_rows)},
+    )
     _write(root, "canonical_cross_flow_inventory.json", {"FLOWS": flows, "TOTAL": len(flows)})
     _write(root, "cross_flow_deep_proof.json", {"FLOWS": deep})
     _write(root, "cross_flow_denominator_audit.json", cross_audit)
@@ -271,7 +339,9 @@ def main() -> int:
 
     fwd = sum(1 for f in flows if f.get("FORWARD_OR_RETURN") == "FORWARD")
     ret = sum(1 for f in flows if f.get("FORWARD_OR_RETURN") == "RETURN")
-    s_bounded = sum(1 for f in flows if f.get("CLASSIFICATION") in ("SAFETY_BOUNDED", "CONDITIONAL"))
+    s_bounded = sum(
+        1 for f in flows if f.get("CLASSIFICATION") in ("SAFETY_BOUNDED", "CONDITIONAL")
+    )
 
     def dstatus(did: str) -> str:
         for d in defects:
@@ -341,7 +411,9 @@ def main() -> int:
         "GHV_AUTHORITY=NONE",
         "RUN003_STARTED=false",
         "OWNER_MERGE_GO=false",
-        "NEXT_STEP=PASS_007" if candidate else "Continue cross-flow assignment coverage or bounded exclusions with proof",
+        "NEXT_STEP=PASS_007"
+        if candidate
+        else "Continue cross-flow assignment coverage or bounded exclusions with proof",
         f"EVIDENCE_DIR={root.relative_to(MAIN_REPO)}",
     ]
     (root / "00_pass_006b_final_report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")

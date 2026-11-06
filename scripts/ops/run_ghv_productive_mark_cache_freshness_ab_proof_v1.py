@@ -50,9 +50,7 @@ EVIDENCE_SUBDIR = "ghv_productive_mark_cache_freshness_ab_proof_v1"
 DEFAULT_INSTRUMENT = "CAP-USDT-SWAP"
 DEFAULT_DURATION = 300
 DEFAULT_INTERVAL = 5.0
-TRANSPORT_OWNER = (
-    "full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1"
-)
+TRANSPORT_OWNER = "full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1"
 
 
 def _utc_now() -> str:
@@ -134,7 +132,9 @@ def _provenance_from_transport(
         "request_count_after": request_count_after,
         "HTTP_GET_EXECUTED": http_executed,
         "CACHE_HIT": cache_hit if cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT else False,
-        "CACHE_MISS": cache_miss if cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT else http_executed,
+        "CACHE_MISS": cache_miss
+        if cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT
+        else http_executed,
         "RESPONSE_FROM_CACHE": response_from_cache,
         "body_sha256": getattr(result, "body_sha256", None) if result else None,
         "get_performed": bool(getattr(result, "get_performed", False)) if result else False,
@@ -231,8 +231,7 @@ def _arm_metrics(samples: list[ArmSample], *, tick_size: float) -> dict[str, Any
     unknown = sum(
         1
         for s in samples
-        if s.provenance.get("HTTP_GET_EXECUTED") is None
-        and s.provenance.get("CACHE_HIT") is None
+        if s.provenance.get("HTTP_GET_EXECUTED") is None and s.provenance.get("CACHE_HIT") is None
     )
     return {
         "SAMPLE_COUNT": len(samples),
@@ -279,25 +278,40 @@ def _classify_staleness(
         venue_moved = True
     a_flat = metrics_a.get("UNIQUE_MARK_COUNT", 0) <= 1
     b_moves = metrics_b.get("UNIQUE_MARK_COUNT", 0) > 1
-    proven_a_stale = (
-        metrics_a.get("HTTP_GET_EXECUTED_COUNT", 0) <= 1
-        and metrics_a.get("CACHE_HIT_COUNT", 0) >= max(0, metrics_a.get("SAMPLE_COUNT", 0) - 1)
-    )
+    proven_a_stale = metrics_a.get("HTTP_GET_EXECUTED_COUNT", 0) <= 1 and metrics_a.get(
+        "CACHE_HIT_COUNT", 0
+    ) >= max(0, metrics_a.get("SAMPLE_COUNT", 0) - 1)
     if proven_a_stale and (b_moves or (metrics_c and metrics_c.get("UNIQUE_MARK_COUNT", 0) > 1)):
         if movement_witness > 0:
             return "PROVEN_CACHE_STALENESS", "PROVEN", "REPAIR_CONTRACT_LIVENESS_DEFECT"
     if proven_a_stale and b_moves and movement_witness > 0:
         return "PROVEN_CACHE_STALENESS", "PROVEN", "REPAIR_CONTRACT_LIVENESS_DEFECT"
     if not venue_moved and a_flat and metrics_b.get("UNIQUE_MARK_COUNT", 0) <= 1:
-        return "INCONCLUSIVE_NO_MARKET_MOVEMENT", "NOT_PROVEN", "REPEAT_ONLY_WHEN_VENUE_MOVEMENT_WITNESSED"
-    if metrics_a.get("HTTP_GET_EXECUTED_COUNT", 0) > 1 and b_moves and metrics_a.get("UNIQUE_MARK_COUNT", 0) > 1:
-        return "FALSIFIED_FOR_OBSERVED_WINDOW", "NOT_PROVEN", "ACQUIRE_SYNCHRONOUS_REAL_INPUT_FOR_GAP"
+        return (
+            "INCONCLUSIVE_NO_MARKET_MOVEMENT",
+            "NOT_PROVEN",
+            "REPEAT_ONLY_WHEN_VENUE_MOVEMENT_WITNESSED",
+        )
+    if (
+        metrics_a.get("HTTP_GET_EXECUTED_COUNT", 0) > 1
+        and b_moves
+        and metrics_a.get("UNIQUE_MARK_COUNT", 0) > 1
+    ):
+        return (
+            "FALSIFIED_FOR_OBSERVED_WINDOW",
+            "NOT_PROVEN",
+            "ACQUIRE_SYNCHRONOUS_REAL_INPUT_FOR_GAP",
+        )
     if a_flat and b_moves and movement_witness > 0 and not proven_a_stale:
         return "STRONGLY_SUSPECTED_NOT_PROVEN", "NOT_PROVEN", "ISOLATE_CACHE_PROVENANCE"
     if a_flat and b_moves and movement_witness > 0:
         return "STRONGLY_SUSPECTED_NOT_PROVEN", "NOT_PROVEN", "ISOLATE_CACHE_PROVENANCE"
     if not venue_moved:
-        return "INCONCLUSIVE_NO_MARKET_MOVEMENT", "NOT_PROVEN", "REPEAT_ONLY_WHEN_VENUE_MOVEMENT_WITNESSED"
+        return (
+            "INCONCLUSIVE_NO_MARKET_MOVEMENT",
+            "NOT_PROVEN",
+            "REPEAT_ONLY_WHEN_VENUE_MOVEMENT_WITNESSED",
+        )
     return "FALSIFIED_FOR_OBSERVED_WINDOW", "NOT_PROVEN", "ACQUIRE_SYNCHRONOUS_REAL_INPUT_FOR_GAP"
 
 
@@ -332,16 +346,23 @@ def run_ab_proof(
 
     preflight = {
         "timestamp_utc": _utc_now(),
-        "CURRENT_BRANCH": subprocess.check_output(["git", "branch", "--show-current"], text=True).strip(),
+        "CURRENT_BRANCH": subprocess.check_output(
+            ["git", "branch", "--show-current"], text=True
+        ).strip(),
         "CURRENT_HEAD": _git_head(),
         "ORIGIN_MAIN": _git_origin_main(),
         "HEAD_EQUALS_ORIGIN_MAIN": _git_head() == _git_origin_main(),
-        "TRACKED_WORKTREE_CLEAN": subprocess.check_output(["git", "diff", "origin/main", "--stat"], text=True).strip() == "",
+        "TRACKED_WORKTREE_CLEAN": subprocess.check_output(
+            ["git", "diff", "origin/main", "--stat"], text=True
+        ).strip()
+        == "",
         "TARGET_INSTRUMENT": instrument,
         "TARGET_AVAILABLE": target_available,
         "preflight_markPx": pre_mark["markPx"],
     }
-    (out_dir / "PREFLIGHT.json").write_text(json.dumps(preflight, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "PREFLIGHT.json").write_text(
+        json.dumps(preflight, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     if not target_available:
         final = {
@@ -350,7 +371,9 @@ def run_ab_proof(
             "TARGET_AVAILABLE": False,
             "NEXT_ACTION": "STOP_AND_REQUEST_MISSING_EVIDENCE",
         }
-        (out_dir / "FINAL_REPORT.json").write_text(json.dumps(final, indent=2, sort_keys=True), encoding="utf-8")
+        (out_dir / "FINAL_REPORT.json").write_text(
+            json.dumps(final, indent=2, sort_keys=True), encoding="utf-8"
+        )
         return final
 
     transport_contract = {
@@ -394,10 +417,14 @@ def run_ab_proof(
         "TARGET_SAMPLE_INTERVAL_SECONDS": interval_seconds,
         "DIRECT_VENUE_CONTROL_USED": use_direct_control,
     }
-    (out_dir / "AB_TEST_DESIGN.json").write_text(json.dumps(ab_design, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "AB_TEST_DESIGN.json").write_text(
+        json.dumps(ab_design, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     tick_size = 1e-5
-    rounds_target = max_rounds if max_rounds is not None else int(duration_seconds // interval_seconds)
+    rounds_target = (
+        max_rounds if max_rounds is not None else int(duration_seconds // interval_seconds)
+    )
     deadline = time.monotonic() + duration_seconds
 
     samples_a: list[ArmSample] = []
@@ -422,7 +449,9 @@ def run_ab_proof(
         round_marks: dict[str, Optional[float]] = {"A": None, "B": None, "C": None}
         call_order = 0
 
-        def _do_arm(arm: str, transport: FullCoreProductiveReadOnlyGetTransportV1, policy: str) -> None:
+        def _do_arm(
+            arm: str, transport: FullCoreProductiveReadOnlyGetTransportV1, policy: str
+        ) -> None:
             nonlocal call_order, prev_a, prev_b, b_while_a_stale, c_while_a_stale, movement_witness
             call_order += 1
             ptid = f"ab-proof-r{round_index}-{arm.lower()}"
@@ -481,7 +510,9 @@ def run_ab_proof(
                 **sample.provenance,
             }
             raw_lines.append(json.dumps(row, sort_keys=True))
-            cache_lines.append(json.dumps({"round": round_index, "arm": arm, **sample.provenance}, sort_keys=True))
+            cache_lines.append(
+                json.dumps({"round": round_index, "arm": arm, **sample.provenance}, sort_keys=True)
+            )
 
         for arm in order:
             if arm == "A":
@@ -528,8 +559,16 @@ def run_ab_proof(
                 )
             )
 
-        a_changed = round_marks["A"] != prev_a if round_marks["A"] is not None and prev_a is not None else None
-        b_changed = round_marks["B"] != prev_b if round_marks["B"] is not None and prev_b is not None else None
+        a_changed = (
+            round_marks["A"] != prev_a
+            if round_marks["A"] is not None and prev_a is not None
+            else None
+        )
+        b_changed = (
+            round_marks["B"] != prev_b
+            if round_marks["B"] is not None and prev_b is not None
+            else None
+        )
         c_changed = (
             round_marks["C"] != prev_c
             if use_direct_control and round_marks["C"] is not None and prev_c is not None
@@ -578,7 +617,9 @@ def run_ab_proof(
         if sleep_for > 0 and time.monotonic() + sleep_for <= deadline + interval_seconds:
             time.sleep(sleep_for)
 
-    (out_dir / "RAW_AB_MARK_SAMPLES.jsonl").write_text("\n".join(raw_lines) + "\n", encoding="utf-8")
+    (out_dir / "RAW_AB_MARK_SAMPLES.jsonl").write_text(
+        "\n".join(raw_lines) + "\n", encoding="utf-8"
+    )
     (out_dir / "CACHE_PROVENANCE.jsonl").write_text("\n".join(cache_lines) + "\n", encoding="utf-8")
 
     metrics_a = _arm_metrics(samples_a, tick_size=tick_size)
@@ -587,8 +628,12 @@ def run_ab_proof(
     per_arm = {"A": metrics_a, "B": metrics_b}
     if metrics_c:
         per_arm["C"] = metrics_c
-    (out_dir / "PER_ARM_METRICS.json").write_text(json.dumps(per_arm, indent=2, sort_keys=True), encoding="utf-8")
-    (out_dir / "ROUND_COMPARISON.json").write_text(json.dumps(round_rows, indent=2), encoding="utf-8")
+    (out_dir / "PER_ARM_METRICS.json").write_text(
+        json.dumps(per_arm, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    (out_dir / "ROUND_COMPARISON.json").write_text(
+        json.dumps(round_rows, indent=2), encoding="utf-8"
+    )
 
     cache_status, contract_defect, next_action = _classify_staleness(
         metrics_a=metrics_a,
@@ -611,7 +656,9 @@ def run_ab_proof(
         "NO_LANE_PREVENTS_C3": True,
         "CACHE_DEFECT_CAN_STARVE_GHV": cache_status == "PROVEN_CACHE_STALENESS",
     }
-    (out_dir / "GHV_CAUSAL_CONSEQUENCE.json").write_text(json.dumps(ghv_causal, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "GHV_CAUSAL_CONSEQUENCE.json").write_text(
+        json.dumps(ghv_causal, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     final_report = {
         "WP": "GHV_PRODUCTIVE_MARK_CACHE_FRESHNESS_AB_PROOF_V1",
@@ -629,7 +676,11 @@ def run_ab_proof(
         "PRODUCTIVE_MARK_RESPONSE_FIELD": "markPx",
         "PRODUCTIVE_MARK_DEFAULT_CACHE_POLICY": GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
         "PRODUCTIVE_CANDLE_CACHE_POLICY": GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
-        **{k: transport_contract[k] for k in transport_contract if k.startswith("CACHE") or k.startswith("DOES") or k.startswith("CAN_")},
+        **{
+            k: transport_contract[k]
+            for k in transport_contract
+            if k.startswith("CACHE") or k.startswith("DOES") or k.startswith("CAN_")
+        },
         "AB_SAME_HOST": True,
         "AB_SAME_ENDPOINT": True,
         "AB_SAME_QUERY": True,
@@ -648,9 +699,7 @@ def run_ab_proof(
         "B_CACHE_POLICY": GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
         **{f"B_{k}": v for k, v in metrics_b.items()},
         "DIRECT_VENUE_CONTROL_USED": use_direct_control,
-        **(
-            {f"C_{k}": v for k, v in metrics_c.items()} if metrics_c else {"C_SAMPLE_COUNT": 0}
-        ),
+        **({f"C_{k}": v for k, v in metrics_c.items()} if metrics_c else {"C_SAMPLE_COUNT": 0}),
         "B_CHANGED_WHILE_A_STALE_COUNT": b_while_a_stale,
         "C_CHANGED_WHILE_A_STALE_COUNT": c_while_a_stale,
         "B_OR_C_PROVES_VENUE_MOVEMENT_WHILE_A_REUSED_COUNT": movement_witness,
@@ -669,7 +718,9 @@ def run_ab_proof(
         "NEXT_ACTION": next_action,
         "OVERALL_STATUS": "COMPLETE" if cache_status != "TEST_INVALID" else "TEST_INVALID",
     }
-    (out_dir / "FINAL_REPORT.json").write_text(json.dumps(final_report, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "FINAL_REPORT.json").write_text(
+        json.dumps(final_report, indent=2, sort_keys=True), encoding="utf-8"
+    )
     return final_report
 
 
@@ -690,7 +741,12 @@ def main() -> int:
         use_direct_control=not args.no_direct_control,
         max_rounds=args.max_rounds,
     )
-    print(json.dumps({"status": report.get("OVERALL_STATUS"), "NEXT_ACTION": report.get("NEXT_ACTION")}, sort_keys=True))
+    print(
+        json.dumps(
+            {"status": report.get("OVERALL_STATUS"), "NEXT_ACTION": report.get("NEXT_ACTION")},
+            sort_keys=True,
+        )
+    )
     return 0 if report.get("TARGET_AVAILABLE", True) else 2
 
 

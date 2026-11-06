@@ -22,6 +22,39 @@ def test_frozen_policy_sources_and_reference_targets_are_valid():
     assert result["runtime_effect_inferred"] is False
 
 
+@pytest.mark.parametrize("field", ["before_sha256", "sha256"])
+def test_rebound_ci_seal_requires_its_exact_development_hash(monkeypatch, field):
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    binding = json.loads(binding_path.read_bytes())
+    row = next(
+        row
+        for row in binding["files"]
+        if row["path"] == "config/governance/clean_core_seal_manifest_v1.json"
+    )
+    row[field] = "0" * 64
+    original = Path.read_bytes
+
+    def read(path):
+        return json.dumps(binding).encode() if path == binding_path else original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+def test_rebound_ci_seal_still_rejects_unbound_working_bytes(monkeypatch):
+    seal = ROOT / "config/governance/clean_core_seal_manifest_v1.json"
+    original = Path.read_bytes
+
+    def read(path):
+        raw = original(path)
+        return raw + b" " if path == seal else raw
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
 def test_cap23_policy_change_identifies_selection_consumer():
     result = PROJECTION["policy_impact_for_paths"](
         LAW, ["src/ops/single_selected_future_policy_v1/constants_v1.py"], ROOT

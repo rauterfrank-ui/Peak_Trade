@@ -250,7 +250,9 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatc
         monetary_inputs.append(kwargs)
         return original(**kwargs)
 
-    monkeypatch.setattr(seam, "build_capital_risk_sizing_monetary_context_v1", observed_monetary_context)
+    monkeypatch.setattr(
+        seam, "build_capital_risk_sizing_monetary_context_v1", observed_monetary_context
+    )
     cycle_a, cycle_b, path = _host_enter_cycle()
     assert cycle_a.outgoing_cursor is not None
     assert cycle_b.cursor_restore_status == "restored"

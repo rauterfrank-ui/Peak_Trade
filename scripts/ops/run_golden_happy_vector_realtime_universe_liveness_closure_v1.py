@@ -196,9 +196,7 @@ def _ghv_elementary_lane_counts(
         )
         obs = evaluate_distinct_market_observation_v1(accept_state, cand)
         if obs.classification is ObservationClassification.DISTINCT:
-            accept_state = commit_observation_acceptance_v1(
-                current_state=accept_state, result=obs
-            )
+            accept_state = commit_observation_acceptance_v1(current_state=accept_state, result=obs)
         elif obs.classification in {
             ObservationClassification.DUPLICATE,
             ObservationClassification.TRANSPORT_ONLY_DUPLICATE,
@@ -245,9 +243,7 @@ def _ghv_elementary_lane_counts(
             else ("LANE" if lane == 0 else "UNKNOWN_MISSING_REAL_INPUT")
         ),
         "FAILURE_CLASS": (
-            "DATA_STARVATION"
-            if bull + bear == 0
-            else "NORMAL_MARKET_NON_QUALIFICATION"
+            "DATA_STARVATION" if bull + bear == 0 else "NORMAL_MARKET_NON_QUALIFICATION"
         ),
     }
 
@@ -394,9 +390,7 @@ def run_closure_v1(
     cap_rate = cap_info.get("MARK_CHANGE_RATE")
     med = statistics.median(change_rates) if change_rates else None
     cap_flat_others_move = (
-        (cap_info.get("MARK_CHANGE_COUNT") or 0) == 0 and with_move > 0
-        if cap_info
-        else None
+        (cap_info.get("MARK_CHANGE_COUNT") or 0) == 0 and with_move > 0 if cap_info else None
     )
 
     (evidence_root / "CURRENT_UNIVERSE.json").write_text(
@@ -428,8 +422,7 @@ def run_closure_v1(
                 "UNIVERSE_MARK_CHANGE_RATE_P75": _percentile(change_rates, 75),
                 "UNIVERSE_MARK_CHANGE_RATE_MAX": max(change_rates) if change_rates else None,
                 "INSTRUMENTS_WITH_DIRECTIONAL_MARK_INPUT": with_directional,
-                "INSTRUMENTS_WITH_ZERO_DIRECTIONAL_MARK_INPUT": len(native_set)
-                - with_directional,
+                "INSTRUMENTS_WITH_ZERO_DIRECTIONAL_MARK_INPUT": len(native_set) - with_directional,
                 "IS_CAP_FLAT_WHILE_OTHER_INSTRUMENTS_MOVE": cap_flat_others_move,
             },
             indent=2,
@@ -484,9 +477,7 @@ def run_closure_v1(
         ),
         "ELEMENTARY_DIRECTION_OWNER": "trading.market_state.elementary_direction_v1",
         "SINGLE_LANE_OWNER": "trading.master_v2.single_lane_confirmation_activation_v1",
-        "C3_OWNER": (
-            "trading.master_v2.directional_assessment_confirmation_integration_v1"
-        ),
+        "C3_OWNER": ("trading.master_v2.directional_assessment_confirmation_integration_v1"),
         "CONFIRMATION_OWNER": "src.ops.stateful_confirmation_and_c1_productive_binding_v1",
         "COMPOSITION_OWNER": "trading.master_v2.double_play_composition",
         "ENTRY_POLICY_OWNER": "trading.master_v2.double_play_entry_exit_policy_v0",

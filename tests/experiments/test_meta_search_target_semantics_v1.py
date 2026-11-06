@@ -17,7 +17,8 @@ def _search(signal):
 
 
 @pytest.mark.parametrize(
-    "target_kind", ["robustness_test", "backtest_metric", "cost_model", "regime", "research_path", "unknown_kind"]
+    "target_kind",
+    ["robustness_test", "backtest_metric", "cost_model", "regime", "research_path", "unknown_kind"],
 )
 @pytest.mark.parametrize("target", ["ma_crossover", "search.ma.v1", "trend_following"])
 def test_other_target_kinds_cannot_match_unrelated_candidate_identity_text(target_kind, target):
@@ -65,7 +66,9 @@ def test_actual_meta_search_space_proposal_keeps_its_typed_effect():
         replace(
             unit,
             robustness_test_statuses={
-                "TRAIN_VALIDATION_HOLDOUT": "PASS", "WALK_FORWARD": "FAIL", "ROLLING_OOS": "FAIL"
+                "TRAIN_VALIDATION_HOLDOUT": "PASS",
+                "WALK_FORWARD": "FAIL",
+                "ROLLING_OOS": "FAIL",
             },
         )
         for unit in request.units
@@ -80,5 +83,8 @@ def test_actual_meta_search_space_proposal_keeps_its_typed_effect():
         )
     )
     assert all(c["search_priority_score"] == -20 for c in result["candidates"])
-    assert all(c["matched_meta_learning_proposal_ids"] == [proposal["proposal_id"]] for c in result["candidates"])
+    assert all(
+        c["matched_meta_learning_proposal_ids"] == [proposal["proposal_id"]]
+        for c in result["candidates"]
+    )
     assert result["productive_config_mutation"] is False

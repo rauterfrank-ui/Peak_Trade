@@ -21,8 +21,14 @@ REF_GHV = (
     REPO
     / "evidence/research/peak_trade_ghv_forensic_system_reconciliation_and_bounded_repair_v1/20261005T055500Z/run002_ghv_at_b36ccbaa"
 )
-RUN001_RESULT = REPO / "evidence/research/paper_shadow_run001_operational_v1/20261004T224156Z/operational_run_result.json"
-RUN002_STDOUT = REPO / "evidence/research/paper_shadow_run002_operational_v1/20261005T005319Z/operational_run_stdout.log"
+RUN001_RESULT = (
+    REPO
+    / "evidence/research/paper_shadow_run001_operational_v1/20261004T224156Z/operational_run_result.json"
+)
+RUN002_STDOUT = (
+    REPO
+    / "evidence/research/paper_shadow_run002_operational_v1/20261005T005319Z/operational_run_stdout.log"
+)
 CONTROL_FIXPOINT = "b36ccbaa0468369db634c7bbb6130dcb3713045c"
 ORIGIN_MAIN = "c9db3d52ca09205f5b904347862bd06bdd1f29e3"
 
@@ -32,7 +38,8 @@ DISCOVERY_SEEDS = [
     REPO / "evidence/research/full_core_golden_happy_vector_e2e_v1/run_full_core_ghv_e2e_v1.py",
     REPO
     / "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    REPO / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    REPO
+    / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
 ]
 
 ENTRYPOINTS = [
@@ -122,7 +129,8 @@ def _branch_inventory() -> list[dict[str, Any]]:
             {
                 "BRANCH_ID": f"DECISION_OUTCOME.{oc}",
                 "IMPLEMENTATION": "double_play_entry_exit_policy_v0",
-                "GHV_SPECIMEN_AVAILABLE": oc in {"blocked", "observe", "no_action", "enter_long", "enter_short"},
+                "GHV_SPECIMEN_AVAILABLE": oc
+                in {"blocked", "observe", "no_action", "enter_long", "enter_short"},
                 "PRODUCTIVE_REACHABILITY": "WALLCLOCK_BRIDGE_AND_GHV_MV2",
             }
         )
@@ -164,7 +172,13 @@ def _build_specimens(probe_mod: Any) -> list[dict[str, Any]]:
     conf = probe_mod._load_jsonl(REF_GHV / "confirmation_epoch_observations.jsonl")
     vectors = probe_mod._select_probe_vectors(entry_rows)
     for row in sidestate[:5]:
-        vectors.append({**row, "PROBE_CLASS": "SIDESTATE_TRANSITION", "PROBE_ID": f"SIDESTATE-{row['FLIGHT_ID']}-c{row['CYCLE_ID']}"})
+        vectors.append(
+            {
+                **row,
+                "PROBE_CLASS": "SIDESTATE_TRANSITION",
+                "PROBE_ID": f"SIDESTATE-{row['FLIGHT_ID']}-c{row['CYCLE_ID']}",
+            }
+        )
     for row in conf:
         if row.get("confirmation_c2"):
             vectors.append(
@@ -196,7 +210,9 @@ def _build_specimens(probe_mod: Any) -> list[dict[str, Any]]:
     return out
 
 
-def _200_cycle_windows(*, run_id: str, total_cycles: int, distribution: dict[str, int]) -> list[dict[str, Any]]:
+def _200_cycle_windows(
+    *, run_id: str, total_cycles: int, distribution: dict[str, int]
+) -> list[dict[str, Any]]:
     windows = []
     window_size = 200
     n_full = total_cycles // window_size
@@ -329,7 +345,11 @@ def _run_pass(
     if wt.is_dir():
         env["PEAK_TRADE_FORENSIC_REPO"] = str(wt)
     subprocess.run(
-        [str(wt / "scripts/pt") if (wt / "scripts/pt").is_file() else str(REPO / "scripts/pt"), str(PROBE_SCRIPT), str(ghv_subprocess_out)],
+        [
+            str(wt / "scripts/pt") if (wt / "scripts/pt").is_file() else str(REPO / "scripts/pt"),
+            str(PROBE_SCRIPT),
+            str(ghv_subprocess_out),
+        ],
         cwd=str(wt if wt.is_dir() else REPO),
         env=env,
         check=False,
@@ -374,9 +394,17 @@ def _run_pass(
     _write(
         pass_dir,
         "component_coverage.json",
-        {"NUMERATOR": discovery["COMPONENTS_TOTAL"], "DENOMINATOR": discovery["COMPONENTS_TOTAL"], "NOTE": "Seed-bounded discovery"},
+        {
+            "NUMERATOR": discovery["COMPONENTS_TOTAL"],
+            "DENOMINATOR": discovery["COMPONENTS_TOTAL"],
+            "NOTE": "Seed-bounded discovery",
+        },
     )
-    _write(pass_dir, "edge_coverage.json", {"NUMERATOR": discovery["NEW_EDGES"], "DENOMINATOR": discovery["NEW_EDGES"]})
+    _write(
+        pass_dir,
+        "edge_coverage.json",
+        {"NUMERATOR": discovery["NEW_EDGES"], "DENOMINATOR": discovery["NEW_EDGES"]},
+    )
     _write(
         pass_dir,
         "branch_coverage.json",
@@ -386,20 +414,44 @@ def _run_pass(
             "DENOMINATOR": len(branches),
         },
     )
-    _write(pass_dir, "state_transition_coverage.json", {"SIDESTATE_SPECIMENS": sum(1 for s in specimens if s.get("PROBE_CLASS") == "SIDESTATE_TRANSITION")})
+    _write(
+        pass_dir,
+        "state_transition_coverage.json",
+        {
+            "SIDESTATE_SPECIMENS": sum(
+                1 for s in specimens if s.get("PROBE_CLASS") == "SIDESTATE_TRANSITION"
+            )
+        },
+    )
     _write(pass_dir, "config_coverage.json", {"PRODUCTIVE_DIGEST": D._productive_digest()})
     _write(
         pass_dir,
         "ghv_probe_results.json",
-        {"SURFACE": surface, "SPECIMEN_COUNT": len(specimens), "RESULTS": ghv_results, "MATCH_RATE": match_rate},
+        {
+            "SURFACE": surface,
+            "SPECIMEN_COUNT": len(specimens),
+            "RESULTS": ghv_results,
+            "MATCH_RATE": match_rate,
+        },
     )
-    _write(pass_dir, "prefix_probe_results.json", {"NOTE": "See ghv_probe_results + orchestration edges per pass"})
+    _write(
+        pass_dir,
+        "prefix_probe_results.json",
+        {"NOTE": "See ghv_probe_results + orchestration edges per pass"},
+    )
     _write(
         pass_dir,
         "historical_input_results.json",
-        {"RUN002_PER_CYCLE_MD_RECOVERABLE": False, "REPLAY_BLOCKED_FIELDS": ["raw_ticks", "feature_vectors", "threshold_distances"]},
+        {
+            "RUN002_PER_CYCLE_MD_RECOVERABLE": False,
+            "REPLAY_BLOCKED_FIELDS": ["raw_ticks", "feature_vectors", "threshold_distances"],
+        },
     )
-    _write(pass_dir, "defects_discovered.json", {"NEW_DEFECTS": list(truly_new), "NEW_DEFECT_COUNT": len(truly_new)})
+    _write(
+        pass_dir,
+        "defects_discovered.json",
+        {"NEW_DEFECTS": list(truly_new), "NEW_DEFECT_COUNT": len(truly_new)},
+    )
     repairs = []
     if pass_num == 2 and surface == "repair_surface":
         repairs = [
@@ -429,7 +481,11 @@ def _run_pass(
 
 def main() -> int:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = REPO / "evidence/research/peak_trade_ghv_driven_exhaustive_whole_system_forensic_fixpoint_v1" / ts
+    root = (
+        REPO
+        / "evidence/research/peak_trade_ghv_driven_exhaustive_whole_system_forensic_fixpoint_v1"
+        / ts
+    )
     root.mkdir(parents=True, exist_ok=True)
 
     run001_hash_before = _sha256_path(RUN001_RESULT) if RUN001_RESULT.is_file() else ""
@@ -441,9 +497,39 @@ def main() -> int:
     components: set[str] = {str(p.relative_to(REPO)) for p in DISCOVERY_SEEDS if p.is_file()}
 
     pass_results = []
-    pass_results.append(_run_pass(root / "pass_001", 1, surface="origin_main", probe_mod=probe_mod, ledger=ledger, prior_defect_ids=prior_defects, component_prior=components))
-    pass_results.append(_run_pass(root / "pass_002", 2, surface="repair_surface", probe_mod=probe_mod, ledger=ledger, prior_defect_ids=prior_defects, component_prior=components))
-    pass_results.append(_run_pass(root / "pass_003", 3, surface="repair_surface", probe_mod=probe_mod, ledger=ledger, prior_defect_ids=prior_defects, component_prior=components))
+    pass_results.append(
+        _run_pass(
+            root / "pass_001",
+            1,
+            surface="origin_main",
+            probe_mod=probe_mod,
+            ledger=ledger,
+            prior_defect_ids=prior_defects,
+            component_prior=components,
+        )
+    )
+    pass_results.append(
+        _run_pass(
+            root / "pass_002",
+            2,
+            surface="repair_surface",
+            probe_mod=probe_mod,
+            ledger=ledger,
+            prior_defect_ids=prior_defects,
+            component_prior=components,
+        )
+    )
+    pass_results.append(
+        _run_pass(
+            root / "pass_003",
+            3,
+            surface="repair_surface",
+            probe_mod=probe_mod,
+            ledger=ledger,
+            prior_defect_ids=prior_defects,
+            component_prior=components,
+        )
+    )
 
     consecutive_zero = 0
     for pr in pass_results[-2:]:
@@ -452,7 +538,9 @@ def main() -> int:
 
     run002_payload = json.loads(RUN002_STDOUT.read_text(encoding="utf-8"))
     dist = run002_payload["evidence"]["decision_distribution"]
-    run001_payload = json.loads(RUN001_RESULT.read_text(encoding="utf-8")) if RUN001_RESULT.is_file() else {}
+    run001_payload = (
+        json.loads(RUN001_RESULT.read_text(encoding="utf-8")) if RUN001_RESULT.is_file() else {}
+    )
 
     _write(
         root,
@@ -464,8 +552,16 @@ def main() -> int:
             "PR7052": "OPEN_NOT_MERGED",
         },
     )
-    _write(root, "forensic_method.json", {"MODE": "EXHAUSTIVE_ITERATIVE_GHV_FORENSICS", "AUTHORITY": "NONE"})
-    _write(root, "control_specimens.json", {"FIXPOINT": CONTROL_FIXPOINT, "NATURAL_ENTER_REFERENCE": 576})
+    _write(
+        root,
+        "forensic_method.json",
+        {"MODE": "EXHAUSTIVE_ITERATIVE_GHV_FORENSICS", "AUTHORITY": "NONE"},
+    )
+    _write(
+        root,
+        "control_specimens.json",
+        {"FIXPOINT": CONTROL_FIXPOINT, "NATURAL_ENTER_REFERENCE": 576},
+    )
     _write(root, "cumulative_defect_ledger.json", {"DEFECTS": ledger})
     _write(
         root,
@@ -491,7 +587,12 @@ def main() -> int:
     _write(
         root,
         "run002_200_cycle_windows.json",
-        {"WINDOWS": _200_cycle_windows(run_id="PAPER_SHADOW_RUN_002", total_cycles=5980, distribution=dist), "ZERO_ENTER_WINDOWS_UNPROVEN_COUNT": 30},
+        {
+            "WINDOWS": _200_cycle_windows(
+                run_id="PAPER_SHADOW_RUN_002", total_cycles=5980, distribution=dist
+            ),
+            "ZERO_ENTER_WINDOWS_UNPROVEN_COUNT": 30,
+        },
     )
     _write(
         root,
@@ -500,7 +601,9 @@ def main() -> int:
             "WINDOWS": _200_cycle_windows(
                 run_id="PAPER_SHADOW_RUN_001",
                 total_cycles=int(run001_payload.get("cycle_count", 1526)),
-                distribution=run001_payload.get("decision_distribution", {"observe": 1524, "blocked": 2}),
+                distribution=run001_payload.get(
+                    "decision_distribution", {"observe": 1524, "blocked": 2}
+                ),
             )
         },
     )
@@ -547,7 +650,8 @@ def main() -> int:
             "RUN002_SHA256_BEFORE": run002_hash_before,
             "RUN001_SHA256_AFTER": _sha256_path(RUN001_RESULT) if RUN001_RESULT.is_file() else "",
             "RUN002_SHA256_AFTER": _sha256_path(RUN002_STDOUT) if RUN002_STDOUT.is_file() else "",
-            "MUTATED": run001_hash_before == _sha256_path(RUN001_RESULT) and run002_hash_before == _sha256_path(RUN002_STDOUT),
+            "MUTATED": run001_hash_before == _sha256_path(RUN001_RESULT)
+            and run002_hash_before == _sha256_path(RUN002_STDOUT),
         },
     )
 
@@ -555,10 +659,7 @@ def main() -> int:
     ghv_match = float(pass_results[-1].get("GHV_PROBE_MATCH_RATE", 0))
     regression_ok = bool(pass_results[-1].get("REGRESSION_PASS"))
     forensic_fixpoint = (
-        discovery_fixpoint
-        and consecutive_zero >= 2
-        and regression_ok
-        and ghv_match >= 0.99
+        discovery_fixpoint and consecutive_zero >= 2 and regression_ok and ghv_match >= 0.99
     )
 
     _write(
@@ -572,7 +673,10 @@ def main() -> int:
             "GHV_PROBE_MATCH_RATE": ghv_match,
             "COMPLETION_GATE_SECTION_35": False,
             "GLOBAL_BLOCKER": "Run-002 per-cycle market/feature traces unavailable; UNRESOLVED_S1=2",
-            "DOMAIN_LOCAL_BLOCKERS": ["wallclock_execution_tail_without_enter_cycles", "bounded_discovery_not_full_repo"],
+            "DOMAIN_LOCAL_BLOCKERS": [
+                "wallclock_execution_tail_without_enter_cycles",
+                "bounded_discovery_not_full_repo",
+            ],
         },
     )
     _write(

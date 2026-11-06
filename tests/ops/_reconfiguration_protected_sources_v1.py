@@ -5,7 +5,9 @@ import json
 from pathlib import Path
 
 
-MANIFEST = Path(__file__).resolve().parents[1] / "fixtures/ops/approved_reconfiguration_core_v1.json"
+MANIFEST = (
+    Path(__file__).resolve().parents[1] / "fixtures/ops/approved_reconfiguration_core_v1.json"
+)
 
 
 def assert_approved_reconfiguration_sources_v1(repo_root: Path, paths) -> None:

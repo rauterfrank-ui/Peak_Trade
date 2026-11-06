@@ -33,9 +33,7 @@ def test_wrong_expected_sha_fail_closed() -> None:
     if not WT.is_dir():
         pytest.skip("fixpoint worktree missing")
     with pytest.raises(ForensicControlBindingError, match="sha_mismatch"):
-        resolve_forensic_control_binding_v1(
-            REPO, expected_sha="0" * 40, fail_closed=True
-        )
+        resolve_forensic_control_binding_v1(REPO, expected_sha="0" * 40, fail_closed=True)
 
 
 def test_missing_worktree_fail_closed(tmp_path: Path) -> None:

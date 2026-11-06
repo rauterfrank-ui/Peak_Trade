@@ -108,7 +108,9 @@ def build_learning_representation_research_adaptation_plan_v1(
         raise LearningRepresentationResearchAdaptationPlanError("PARAMETER_MUTATION_FORBIDDEN")
 
     try:
-        decision = validate_learning_research_adaptation_decision_v1(request.adaptation_input_decision)
+        decision = validate_learning_research_adaptation_decision_v1(
+            request.adaptation_input_decision
+        )
     except (MetaToLearningResearchAdaptationInputError, TypeError, ValueError) as exc:
         raise LearningRepresentationResearchAdaptationPlanError(
             f"ADAPTATION_DECISION_INVALID:{exc}"
@@ -127,7 +129,9 @@ def build_learning_representation_research_adaptation_plan_v1(
     elif overall == DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT:
         items = decision.get("adaptation_items")
         if not isinstance(items, (list, tuple)) or len(items) != 1:
-            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_ITEM_CARDINALITY_INVALID")
+            raise LearningRepresentationResearchAdaptationPlanError(
+                "ADAPTATION_ITEM_CARDINALITY_INVALID"
+            )
         item = items[0]
         payload = item.get("payload") if isinstance(item, Mapping) else None
         if not isinstance(payload, Mapping):
@@ -135,9 +139,13 @@ def build_learning_representation_research_adaptation_plan_v1(
         pattern_ref = payload.get("pattern_ref")
         lineage_ref = payload.get("learning_representation_lineage_ref")
         if not isinstance(pattern_ref, str) or not pattern_ref.strip():
-            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_PATTERN_REF_REQUIRED")
+            raise LearningRepresentationResearchAdaptationPlanError(
+                "ADAPTATION_PATTERN_REF_REQUIRED"
+            )
         if not isinstance(lineage_ref, str) or not lineage_ref.strip():
-            raise LearningRepresentationResearchAdaptationPlanError("ADAPTATION_REPRESENTATION_LINEAGE_REQUIRED")
+            raise LearningRepresentationResearchAdaptationPlanError(
+                "ADAPTATION_REPRESENTATION_LINEAGE_REQUIRED"
+            )
         purpose = classify_representation_research_purpose_v1(pattern_ref=pattern_ref)
         evaluation_fixture_label = pattern_ref
         plan_status = "PLAN_READY_OFFLINE_EVALUATION"

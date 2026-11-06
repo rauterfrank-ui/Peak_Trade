@@ -412,9 +412,14 @@ def join_market_context_to_realized_behavior_v1(
     if obs_instrument is not None and str(obs_instrument) != str(context["instrument_ref"]):
         raise RealizedBehaviorError("INSTRUMENT_REF_MISMATCH")
 
-    if measurement is not None and o4_bars is not None and observation.get("horizon_observation_status") == "OK":
+    if (
+        measurement is not None
+        and o4_bars is not None
+        and observation.get("horizon_observation_status") == "OK"
+    ):
         ordered_closes = _ordered_closes_from_o4_v1(
-            o4_bars=o4_bars, bar_identity_refs=observation.get("bar_identity_refs"),
+            o4_bars=o4_bars,
+            bar_identity_refs=observation.get("bar_identity_refs"),
         )
         if ordered_closes and (
             ordered_closes[0] != float(measurement["start_price"])

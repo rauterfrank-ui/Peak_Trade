@@ -44,9 +44,7 @@ def test_actual_meta_region_proposal_changes_only_the_whole_region_and_budget_ch
 def test_unrelated_whole_region_digest_does_not_change_candidates():
     result = build_canonical_advanced_search_v1(
         _request(
-            meta_learning_signals=(
-                _signal(target_kind="parameter_region", target="a" * 64),
-            ),
+            meta_learning_signals=(_signal(target_kind="parameter_region", target="a" * 64),),
             meta_learning_identity="b" * 64,
         )
     )
@@ -61,9 +59,7 @@ def test_region_digest_cannot_accidentally_match_an_individual_hash_shaped_value
                 search_space_id="hash.shaped.parameter.value",
                 axes=(SearchAxisV1("fast", ("a" * 64,)), SearchAxisV1("slow", (50,))),
             ),
-            meta_learning_signals=(
-                _signal(target_kind="parameter_region", target="a" * 64),
-            ),
+            meta_learning_signals=(_signal(target_kind="parameter_region", target="a" * 64),),
             meta_learning_identity="b" * 64,
         )
     )

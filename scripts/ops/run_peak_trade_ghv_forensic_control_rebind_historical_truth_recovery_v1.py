@@ -22,7 +22,9 @@ REF_GHV = (
 RUN001 = REPO / "evidence/research/paper_shadow_run001_operational_v1/20261004T224156Z"
 RUN002 = REPO / "evidence/research/paper_shadow_run002_operational_v1/20261005T005319Z"
 PROBE = REPO / "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py"
-GHV_E2E = REPO / "evidence/research/full_core_golden_happy_vector_e2e_v1/run_full_core_ghv_e2e_v1.py"
+GHV_E2E = (
+    REPO / "evidence/research/full_core_golden_happy_vector_e2e_v1/run_full_core_ghv_e2e_v1.py"
+)
 ORIGIN_MAIN = "c9db3d52ca09205f5b904347862bd06bdd1f29e3"
 PR7052_HEAD = "356ec7317b52a5f21dfe5f376ab068d55dca7c20"
 
@@ -126,7 +128,11 @@ def main() -> int:
     forensic_subprocess_env = binding_mod.forensic_subprocess_env
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = REPO / "evidence/research/peak_trade_ghv_forensic_control_rebind_historical_truth_recovery_v1" / ts
+    root = (
+        REPO
+        / "evidence/research/peak_trade_ghv_forensic_control_rebind_historical_truth_recovery_v1"
+        / ts
+    )
     root.mkdir(parents=True, exist_ok=True)
     passes = root / "exhaustive_passes"
     passes.mkdir(exist_ok=True)
@@ -188,7 +194,12 @@ def main() -> int:
     _write(
         passes / "pass_001",
         "ghv_probe_results.json",
-        {"MATCHES": matches, "TOTAL": total, "PASS": single.get("PASS"), "EXIT": probe_proc.returncode},
+        {
+            "MATCHES": matches,
+            "TOTAL": total,
+            "PASS": single.get("PASS"),
+            "EXIT": probe_proc.returncode,
+        },
     )
 
     tests = subprocess.run(
@@ -211,8 +222,16 @@ def main() -> int:
         {"PASS": tests.returncode == 0, "STDOUT": tests.stdout[-4000:]},
     )
 
-    _write(root, "historical_artifact_inventory_run001.json", _inventory_run(RUN001, "PAPER_SHADOW_RUN_001"))
-    _write(root, "historical_artifact_inventory_run002.json", _inventory_run(RUN002, "PAPER_SHADOW_RUN_002"))
+    _write(
+        root,
+        "historical_artifact_inventory_run001.json",
+        _inventory_run(RUN001, "PAPER_SHADOW_RUN_001"),
+    )
+    _write(
+        root,
+        "historical_artifact_inventory_run002.json",
+        _inventory_run(RUN002, "PAPER_SHADOW_RUN_002"),
+    )
     _write(
         root,
         "historical_provenance.json",
@@ -359,8 +378,7 @@ def main() -> int:
         {
             "RUN001_SHA256": run001_hash_before,
             "RUN002_SHA256": run002_hash_before,
-            "MUTATED": run001_hash_before
-            == _sha256_file(RUN001 / "operational_run_result.json")
+            "MUTATED": run001_hash_before == _sha256_file(RUN001 / "operational_run_result.json")
             and run002_hash_before == _sha256_file(RUN002 / "operational_run_stdout.log"),
         },
     )

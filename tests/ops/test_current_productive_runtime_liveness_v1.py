@@ -276,7 +276,9 @@ def test_supervisor_reports_policy_stop_and_does_not_render_failure_ok(
         expected_account_identity="host-offline-account",
     )
     from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
-    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import _bound_lane_1
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _bound_lane_1,
+    )
 
     initialize_synthetic_host_budget_v1(config.private_store_root, _bound_lane_1())
     config.evidence_root.mkdir()

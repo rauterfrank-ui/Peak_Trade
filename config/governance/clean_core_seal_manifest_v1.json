@@ -4,6 +4,9 @@
   "document_class": "SUBORDINATE_ALLOWLIST_NOT_SECOND_SSOT",
   "canonical_authority": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
   "census_bound_origin_main_sha": "44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5",
+  "sealed_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "sealed_source_tag": "freeze/clean-system-2026-11-06-v1",
+  "repin_evidence": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.json",
   "seal_core_count": 20,
   "whole_file_count": 7,
   "mixed_file_count": 13,
@@ -20,7 +23,7 @@
       "id": "SEAL_CORE_01",
       "path": "src/trading/master_v2/double_play_state.py",
       "mode": "WHOLE_FILE",
-      "content_sha256": "85b3cef04b89cfbf35d58305bbf0cf29ecf5fca37a572d29d662fe0102a0a965"
+      "content_sha256": "a4946a56874db5ed86c66cc0bac16f7a6b4b5d7e71eab04ed016f5933209569e"
     },
     {
       "id": "SEAL_CORE_02",
@@ -87,13 +90,13 @@
       "id": "SEAL_CORE_05",
       "path": "src/trading/master_v2/survival_assessment_v1.py",
       "mode": "WHOLE_FILE",
-      "content_sha256": "57cc9a4847c48cf9aa79256d30bc6d75542ca15b3592d742aba911af1016a73a"
+      "content_sha256": "16d45d5842fe66af526d611a3bb2e9d3cad8458465e3d981d7e5fe93311c5381"
     },
     {
       "id": "SEAL_CORE_06",
       "path": "src/trading/master_v2/suitability_binding_v1.py",
       "mode": "WHOLE_FILE",
-      "content_sha256": "c9794ed99dfca19651a2f50d38a8128e39ba921136116a0203a85edf1838c7d9"
+      "content_sha256": "cba6a5ddd05c14da93279cd0727d36cad54cd4c9818253b9d6394965f084a950"
     },
     {
       "id": "SEAL_CORE_07",
@@ -148,7 +151,7 @@
       "id": "SEAL_CORE_11",
       "path": "src/trading/master_v2/canonical_scope_initialization_v1.py",
       "mode": "WHOLE_FILE",
-      "content_sha256": "8bceadf4987c393e6a9f71bf8a0d0e3130820d6437abf2aa45eec762b667ce8e"
+      "content_sha256": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58"
     },
     {
       "id": "SEAL_CORE_12",
@@ -169,7 +172,7 @@
         "generate_deterministic_scope_event"
       ],
       "assignments": [],
-      "ast_sha256": "3fb9a79a0d07ef7a15031ed4540c58ead8788785c86e13fd74bf7f2069925673"
+      "ast_sha256": "43049d89af9f4c89211ad3972260eb2c87b31b48b97aa767813e84ca943ee623"
     },
     {
       "id": "SEAL_CORE_13",
@@ -214,6 +217,7 @@
       "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
       "mode": "MIXED_FILE",
       "definitions": [
+        "_instrument_allowed",
         "_canonical_scope_event_to_scope_event",
         "_side_state_to_entry_exit_direction",
         "_rules_for_cycle_v1",
@@ -224,7 +228,6 @@
         "resolve_integrated_reversal_preparation_entry_exit_binding_v0"
       ],
       "assignments": [
-        "_FORBIDDEN_INSTRUMENT_SUBSTRINGS",
         "_DEFAULT_STATIC_LIMITS",
         "_DEFAULT_RUNTIME_ENVELOPE",
         "_DEFAULT_SCOPE_RULES"
@@ -298,7 +301,7 @@
         "compute_entry_exit_policy_input_digest",
         "evaluate_double_play_entry_exit_policy_v0"
       ],
-      "ast_sha256": "5ee505e848d53f6cca752e4aed4a255de330f6756cf9d23aeac06b0dc9a1bacc"
+      "ast_sha256": "4a2ddab4cccd82480948c16393e22f146409639dc0b7777ebd089952779e85ed"
     },
     {
       "id": "SEAL_CORE_17",

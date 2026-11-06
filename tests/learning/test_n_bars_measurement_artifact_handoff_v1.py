@@ -38,7 +38,9 @@ def _horizon(asset="ETH", start=100.0, end=110.0):
 @pytest.mark.parametrize(
     ("asset", "start", "end"), [("ETH", 100.0, 110.0), ("BTC", 50000.0, 55000.0), ("SUI", 1.0, 1.1)]
 )
-def test_supplier_measurement_reaches_runtime_for_each_asset_without_a_score_inference(asset, start, end):
+def test_supplier_measurement_reaches_runtime_for_each_asset_without_a_score_inference(
+    asset, start, end
+):
     decision, horizon = _horizon(asset, start, end)
     result = produce_n_bars_evaluation_runtime_bundle_v1(horizon, decision, _identity())
     restored = json.loads(json.dumps(result, allow_nan=False))
@@ -70,7 +72,9 @@ def test_modified_measurement_is_rejected_before_evaluation(monkeypatch):
         produce_n_bars_evaluation_runtime_bundle_v1(horizon, decision, _identity())
 
 
-@pytest.mark.parametrize("field,value", [("instrument_ref", "different.future"), ("outcome_scalar_kind", "ABS_RETURN")])
+@pytest.mark.parametrize(
+    "field,value", [("instrument_ref", "different.future"), ("outcome_scalar_kind", "ABS_RETURN")]
+)
 def test_rehashed_measurement_cannot_change_instrument_or_scalar_meaning(field, value):
     decision, horizon = _horizon()
     measurement = horizon["measurement_evidence_artifact"]

@@ -273,8 +273,8 @@ def run_unattended_n1_host_v1(
                 ),
             )
             original_cancel = request.get("cancel_requested")
-            request["cancel_requested"] = lambda: (root / "STOP").exists() or (
-                original_cancel is not None and original_cancel()
+            request["cancel_requested"] = lambda: (
+                (root / "STOP").exists() or (original_cancel is not None and original_cancel())
             )
             from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
                 build_s8_occupied_lane_pairs_v1,

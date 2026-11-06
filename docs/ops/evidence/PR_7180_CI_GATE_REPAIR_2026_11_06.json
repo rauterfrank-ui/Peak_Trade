@@ -1,0 +1,852 @@
+{
+  "created_at": "2026-11-06T20:15:21.166811+00:00",
+  "base_commit": "44bf97953241c21e856976e798463b2a83e44bef",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "ruff_version": "0.15.22",
+  "formatted_files": [
+    {
+      "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
+      "before_sha256": "768fab5f51709f5990c36770030ca9ef084c850f3ff6750ccb005ffb942dbad2",
+      "sha256": "406515395e84ac653b558a815be7b72604331eb9e21fbdbe215ef0fcdc661799",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/prove_productive_offline_portfolio_state_desync_v1.py",
+      "before_sha256": "1679aac9a1d94c88066e507759c8e82b37ced434169881315973a05392bffa17",
+      "sha256": "5264e6206f3e72df0b9c8ed252746be116d9cca5d95e20a49d5bd886e7b65125",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
+      "before_sha256": "565b91b8147bab999719c055a83fbe1fd092ce791f0ea2e02f7d0f624f915e56",
+      "sha256": "3160177c6622f48db3ed9a8a8f5021960dda08275b7951f58585cd034fc59689",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_current_productive_one_shot_enter_e2e_prepare_v1.py",
+      "before_sha256": "034935ce6a753ed3ee2ca735c97754382dea298abefa667e44d71a510caf3461",
+      "sha256": "1bcaa7777cc7c083453b1d83c0addf80489586caf1a258f915b585d33ceed7ac",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py",
+      "before_sha256": "305973670da27685a74cbd9b4ed216e3ad9700054af320cff4588d8e13f57da3",
+      "sha256": "73de0bd6a0347725b10f096e9d3580e4d5e7d8c5166956556d7e5c6a3c48c91c",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+      "before_sha256": "c949f8230aa92e549e95a2202f993120118f63a8b5cf875d56ccda08007e7624",
+      "sha256": "f99755acf1bff9d00cee1f441a711ef352a0f5a07c211bc4310bb16e395753bb",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_ghv_productive_mark_cache_freshness_ab_proof_v1.py",
+      "before_sha256": "89684cc3002050cfc131fdc99c688d62a495edfb4d68cf3ef7fba80f751170dd",
+      "sha256": "8b1d49a8671386684846f91731c368279b4ef64c147213b62b9da77ec84b41b3",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+      "before_sha256": "d2634058dbda5a6245c1fab0b47d5273afaea417bc1bafde735861b530f29911",
+      "sha256": "674474d30748bcef44d008ae0f2051e8c669f7b20ff4a5b428c1bf0a3fe925ab",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_golden_happy_vector_realtime_universe_liveness_closure_v1.py",
+      "before_sha256": "449caecaaf51f2ec0ec4beb9a302328e63e92dc0bba747b7c774b2fa35dda2a9",
+      "sha256": "0d073cd20861d4ee55d2e97afb3ca553dcffc0507476c63e2e8de798cdaa425a",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
+      "before_sha256": "1f9acf391f453d2a0735bb01d39116d1e78e231920566a5091f15ba102215539",
+      "sha256": "4c7992a6a30dff9c63972ea1717d8236570a542868726a5ba191b70de8792d30",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_006_whole_system_closure_v1.py",
+      "before_sha256": "3109362b3ade7775ba895e9cb2a3051b60538d3eba8b1e4f7d1f416568266ec6",
+      "sha256": "454ba5372bb7e043c06eb808cbb0355735573b9293b1eed26f4146a6b5498898",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_006a_closure_integrity_adjudication_v1.py",
+      "before_sha256": "db3de0fb43fbfcd6e18e831c2c2f866dac8c3702126104d1227cc84af343d484",
+      "sha256": "798c42523a4426837385fc81bf856cedf270a4cdb16949d8c6021d585ebe4a54",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_006b_closure_repair_and_recertification_v1.py",
+      "before_sha256": "c35305c498b5b6797ef7b68bd2e2409ec19a17ccea2a43520623f685604c4980",
+      "sha256": "1d9ba7ec16da47b204baf6678e9c4043b606f33fdca2a7176929bd849c7c03ff",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_007_whole_system_independent_reproof_v1.py",
+      "before_sha256": "a7b9eabb186e0abbac4d71ddd5ec568debd608ca473488e109fb316e2e171684",
+      "sha256": "1afc31064ba7fd019ae69207f9c841e11d93b579f21b72ec9fb00039b3347545",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pass_009_whole_system_v2_zero_delta_final_v1.py",
+      "before_sha256": "6c9855556c2a4dedbe42200e2c1e8fe781324779eadb84c719737712f8aa504c",
+      "sha256": "47c114750f8396322b255a91bbe37e23d784bad28fa3a28f1a78d9c6abeedd91",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_peak_trade_ghv_driven_exhaustive_whole_system_forensic_fixpoint_v1.py",
+      "before_sha256": "7cc07657d003e1f12646e41f31bb2a8ff91b0cb8dee3d7bea74455a92945de1e",
+      "sha256": "0dd4e38c0f49076da2408d16fbaaf3313364ba35efdee730abac95e1753997ca",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_peak_trade_ghv_forensic_control_rebind_historical_truth_recovery_v1.py",
+      "before_sha256": "72b5fe9c2899dd5a789b7c5604aa001e5aa2c5fad57265d199a3ccd38d6b2213",
+      "sha256": "cff00b34309cf5cdf49892e9bdf6e8ab87ca4e585b989aa04193a2b36197ec36",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_peak_trade_ghv_forensic_fixpoint_continuation_v1.py",
+      "before_sha256": "bddcbc8f4796410134df2049971f6d0097fb21d34f0be55fb7dff90a3976e153",
+      "sha256": "62169834e9b72bd2e4d762870b280b5ba872564b959db4c4e434faf076ab20a2",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+      "before_sha256": "4591b929472654e4d51fae9d92fcdd70ceee4d459ea71453a536241534ecd9ed",
+      "sha256": "7459fb84aaf3cff42d635c50939e76e336dedbd15421731cd59fdcf94b51eccf",
+      "AST_unchanged": true
+    },
+    {
+      "path": "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+      "before_sha256": "b67870a50828c63051529b9f2e1316fc0c57ed78b3b113fc5f91ec00ce86b370",
+      "sha256": "0ce63d4f0d299bd4afcde0389e4c4acbc844cad602c2761e7c8c35d867b5c90c",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
+      "before_sha256": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
+      "sha256": "612f8019e614a1e99198b954d11242cf2d466cfbf92737c85a7dbfcacf08cd2c",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/experiments/canonical_meta_learning_v1.py",
+      "before_sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
+      "sha256": "706550946b1cbe6065ccf6110e80ac7111aa4e499c3574d236a295b1293d28b1",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+      "before_sha256": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
+      "sha256": "15d56285589843b6e455617bb825f531364e839585a8e95796da6fb6009c3f22",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+      "before_sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
+      "sha256": "b32f5e246addf6648b52eb58bd2bd575290a4b2ab573874201e648f80e8f2b7c",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "before_sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
+      "sha256": "bf54873a5be5f11d3da411cd43ab8a1b3add68373e713ae5cb73843707cad910",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
+      "before_sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
+      "sha256": "78f989329346d3e24cbf3aa6d53a1fa57cc01839972cbe950bbe810ca424518f",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+      "before_sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
+      "sha256": "f27767168b3fd347087455f7aa9abe3cc6ed19f57c7f5cdfd2e89b1fd6a584f6",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+      "before_sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
+      "sha256": "3130457a9e30cf254de94abbb908a26637f7f87707faea8ec03a5476d76f9352",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
+      "before_sha256": "6be253945270800e25dbac433925b8478c7683bcdce0f9cce3c8d78c900e666b",
+      "sha256": "c819a85d2f657d9cbee702a912cade32a259a19455093be8aff4571b25ea59b0",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
+      "sha256": "0eeea624598c5405e0c8da9d15ecfabea2818e9e6ba63d972952d321c2dbfabb",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
+      "sha256": "6950bf9aa48971f2770f90be221c740076135ef43af269e4aaa8e23ede9a6cb1",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
+      "before_sha256": "6f359e816acffca8ff45ad324b4ba2bf24eef8310f155d07925653a1bb16ef43",
+      "sha256": "f59b0d7960ad379f48ad7b9d623e30659567595db433757ee57d9cf81589c7d3",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_lineage_v1.py",
+      "before_sha256": "88899113fa7cc4bc6e0086d0e862c5e7cc2bd09e8fed5323c8c699d2410d040b",
+      "sha256": "20da3ade0b84ba4d02f1caeca87313ce5719afd28eb07666c52e8782e5e10a1d",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+      "before_sha256": "2972ba9c7e1b61af31a1075a08e755d4665126e46e8585cdf8157efa0d6151ed",
+      "sha256": "907af6030c9b37c8cd15407294ebfabd573d2dd6b4193a660020e3201f1ba2e9",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
+      "before_sha256": "229854324b60f6f1ac85c91be22efbad9cceffc0e38fc2a202e4efcdb3f2a6a9",
+      "sha256": "dfc6c22e57e1b8f33302ab50c1e8967b961d5426ef566cd1f0882867a72ccfad",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
+      "before_sha256": "ded703d4f4967c888869f4500055c6b57164d3fa3f7289e21209c56ba9baf487",
+      "sha256": "766e68c086a3419f5fdff05c63f75277beaf07ddf0a9fc3812772934e375956f",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/ghv_forensic_control_binding_v1.py",
+      "before_sha256": "32f61bfef20570c97a8575264a8e913bf26e09d6f3ec5dd1353b19afd07033ed",
+      "sha256": "949b0ce66d395269661df59524e80a131ae51c9f43f0b9ec32e6b69c850714c5",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/unattended_v1.py",
+      "before_sha256": "810da1d3ed28b604f141206fdc412ccdf2e15547e3976ae90f4bccc4cde17c18",
+      "sha256": "defc51d42105f7a11df12ba3bcd08aa823e917cc2d63eb4f4a1a598cbb47f08c",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/okx_multi_window_foundation_v1/launcher_v1.py",
+      "before_sha256": "e57be0fd0d09873a92ccded866435340fc9154c9d4dd89a456cff235bb3faf09",
+      "sha256": "978cbd7cc2036a16793f59aea82aef62cb0a2272888c09d19545a31ac8c0b0e1",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py",
+      "before_sha256": "6eacdcda90706808e17b47b14f5feb63ef523f394024ac2aa8bad868376b31c1",
+      "sha256": "4198f78b1f0b4d8e9a12ff9cb6d14a93f2a27b0015d6f3023415a19152b446cf",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
+      "before_sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
+      "sha256": "ed7d86770ece226928941e1e465b7cc477f55a56084fec2618e218bbadfe2a11",
+      "AST_unchanged": true
+    },
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+      "before_sha256": "3337304ccdb69b66ccbce14292c98504a6361be43ea2a43b9905535d56111f43",
+      "sha256": "7a627bcdb9a0716a77c5b5c5c4dd963dd7bf74117cf78fbee6cddab4a6a4e7d3",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py",
+      "before_sha256": "371972b0e96edaf62383d160d4a6dff80aabb5d6fc766259f58ff23b9d2c4b3e",
+      "sha256": "2faeb8a4eb5e42adf7411d58b29cdc5dd744e37ecf2c244dd20c4289211b5194",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_canonical_learning_representation_research_adaptation_plan_v1.py",
+      "before_sha256": "a1073b17ae6b764cef4a1ff35fab4d0fd1bad6ae77726910a31948c75bca974b",
+      "sha256": "121dfcb34fbf55c6c7565586ce4df6f0c49d56c0b23d0a8f9bc4e7510e5bc5fd",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+      "before_sha256": "92209011781f0aaf46cc386b880c0b1c58299b874097bc569db90ac98143c942",
+      "sha256": "f1a774407aa18e10a69b763cd71b319eadaacacfedf04a59fa5ec3dd95f1f386",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_meta_association_bucket_sample_v1.py",
+      "before_sha256": "233a497b95ec4ddf617ab8c0c618dc8cbdea7de6be2b4c4a1a0cd83366b9f14f",
+      "sha256": "b8a318466c5b90477b89f054ead673b3a59de4363311bd9f345e5dc9559a3f65",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_meta_learning_temporal_semantics_v1.py",
+      "before_sha256": "2d74ceafa6a105f881941701ac02df1607ecafcdb4e75c9440a71dcded6e61e2",
+      "sha256": "6edbe40dca6af15a7b9a6bd9bbbf4d9f9b6f73d98b8def4b03fbc74314d13e8b",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_meta_search_parameter_region_semantic_join_v1.py",
+      "before_sha256": "8e71a51d387d8ad686aac8df495e1d197850e3e431605f157fdaf47074a2f932",
+      "sha256": "3017de8d825c525178f6b5819cda681b767099eb9795791a8c5f2e5f3588e6a3",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_meta_search_target_semantics_v1.py",
+      "before_sha256": "795ab626ba4bace203a088534c88338718c43f2063a1333e3bd7eb82d3d0ccd7",
+      "sha256": "0058975b4a5c3077f88ecf10966d4c19faf4191205a963fd7d6f76691c703783",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_meta_stability_observed_sample_v1.py",
+      "before_sha256": "6ae8620cdcee726041bccb3588db88d12409a323b0b1fb3bbb0c95fb48f1ab36",
+      "sha256": "6f1f97820ef6742ae70e8037f01a9af3d896076e1c8a1de507a490b6c98eaf9f",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_representation_adaptation_decision_integrity_v1.py",
+      "before_sha256": "41e4cafb1248be57a4cd9b967033828be896bcb23602aa9f6769fbd8b2f809fb",
+      "sha256": "6a8a698cde8dcdef4ea72257e9ca317a87d6e4b007946ef7051230546f212446",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/experiments/test_representation_plan_required_context_v1.py",
+      "before_sha256": "ebeae82e7fe92455fe8f821c640c4c748a71256c9089c5c3e4436a44f0ab813c",
+      "sha256": "acdecde8847c63cc9d7854b0d1aa2b51d25a742834f60b6fb5f9fda9c161619e",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+      "before_sha256": "a06a83172b73f694e261dcc2b7b23612cf0fd9c5249e56a9acf38fe96d633f13",
+      "sha256": "900aeaf6e90c7cf651ffc2340cd435c355de65708c9afae3e23b618c750011a0",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
+      "before_sha256": "658bfb6c7dc38d5c5d90d1d7a9e9b0774bc74142a2adb944d62f3c510c96df33",
+      "sha256": "5ed3f16bc82b2c8413ba8123e362c62ed59bcd063f6893579ab9626601e432d9",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_learning_provenance_envelope_consistency_v1.py",
+      "before_sha256": "b4e29d6853d012c9155e20c76f3fcadb71ebee9c73ed09823835247a272f3df7",
+      "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",
+      "before_sha256": "1728804eb4ed7b328b08bdd38cf60efbf78f0673be887840c622836d2dff6b1c",
+      "sha256": "2cab53f9f710acf8e8e9b01e91f3fddc6633db7635c438361eb67cba120156c1",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_mi_realized_close_path_binding_v1.py",
+      "before_sha256": "7bd3f8d9568872655a909ed8489aea4de1b3410808362a0a91b1e36e5e3bef5a",
+      "sha256": "9aaa8d56daa93ff9fede766a4ec2434a115ab38a1c9499d94be24c9c3ee20ed3",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_mi_realized_measurement_binding_v1.py",
+      "before_sha256": "ff458a971b62101523d409a23068d7abdbb28f19cc2c99647ac54c101b7fea2d",
+      "sha256": "651ef4ee54542b2174f805b8d69fcf0e3cc3c95dc2a7c607b11273bab41fcc49",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/learning/test_n_bars_measurement_artifact_handoff_v1.py",
+      "before_sha256": "5bdace9df1bccaf9a356468051ed14d4910cf55042fab94fabd5d153456fb96f",
+      "sha256": "05199c5f82ba8df12b8ddd5113909ea3f2d61ef910773a70c227d68dbc115ea8",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/_host_private_rest_fixture_v1.py",
+      "before_sha256": "bdb912cb9ba4a12a1d5e4a02ff2f1db0eb426bd3a17a16d91be7bb65f0a93570",
+      "sha256": "98a76cf4c49425079d1c539c139e9e58cc912bade82ed590899cc6328b96e2be",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/_reconfiguration_protected_sources_v1.py",
+      "before_sha256": "6d2a7d361fc33ce934737edec5ce2334c23b07af6d95a45da88ee953ffd5ca2c",
+      "sha256": "d3697c09c66296d075c40019d2685ef178f9750360e7635acd43fc51d119e315",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
+      "before_sha256": "9ef5e124d97d48d10e7cffa11f95fa32dd15a007c065b264cae0db4c6f7fccc5",
+      "sha256": "d906a9252019d5e91afdb30dcee457bdcf8f1a52b782c362c8a00f2c5dac382b",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+      "before_sha256": "da5c8091b3b7604f0e26c6849fe16167ea8b4f9698f4112316e484efc7034100",
+      "sha256": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
+      "before_sha256": "0d9c2014b1a52cafde4d66e41870432f976b6acfd4571cdd2b76dd870d47c6f0",
+      "sha256": "a8110453d897060a3424d253cf53c339b43ae0c5c10aed19bbc0f9a241f79ac0",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",
+      "before_sha256": "19a2b9db8c71727b76b9daa2063cd1991f475f2b2722bbe587727e23d40fa3d3",
+      "sha256": "2be7404e8f9812ef9399c21939cd4864aba8c137e82a04d4ca216d8c99d96d27",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+      "before_sha256": "75ba9dab9b435cddf54f1db6494e32a4892108e7659f760fa4f85fb0881db19b",
+      "sha256": "6deb192e5a3511c40bf3500c4673e99c3925934941f2e61db894f234e56b4854",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_gge_only_future_interpretation_v3.py",
+      "before_sha256": "e47e2e8b5a9f2c1f601690fb81b44244e2d24d728abb62a9dd99fd44afa33987",
+      "sha256": "13360a510c59f71657ab15bb4277f5ba051993e3e7ef7427645f1d97f3a2d3e0",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_gge_scope_learning_configuration_cutover_v2.py",
+      "before_sha256": "f361845acc82b5df89d7829dac598644d703e0c03fc2b9ddaed65480eb4d415f",
+      "sha256": "4ed551db59a3031f02deafc7c79a5c628f01e37b41cbab4b2789d4c48b3c3b3d",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_ghv_forensic_control_binding_v1.py",
+      "before_sha256": "e2679c1325902da985bc5bba3328da915e5d20f1ca76e132b8adf64637927c6d",
+      "sha256": "103783d3188ddbb757d44ce6db575c89fc913e6b1121204558ebb4c23dc466b2",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_ghv_productive_mark_cache_freshness_ab_proof_v1.py",
+      "before_sha256": "379d644dabf3f8b9233f05c4df9e79fea1b005e416eebe4c1123da2d83e9e729",
+      "sha256": "ba3bea199ea4e2feb3ce3c12656b0eccf2934434773086b95fad823f854a9f3d",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_legacy_startup_observed_portfolio_migration_v1.py",
+      "before_sha256": "e9401142ba301438dca3d9182a340c0b899b81319772eb0c583bdecf3b35b965",
+      "sha256": "52d980debe874508dd711960f2c2a773ac202abf965565cef790cdb620f300fa",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_pending_bound_decision_identity_v1.py",
+      "before_sha256": "ed25e32bb376d8345eac2b1dfcd14d7e5d020d44271ddcdbcaf745ada1f65fa1",
+      "sha256": "9486fe725b1c2f52bb6b73db9e8425027ebd10fd7cd67868fd78e7dd3d758792",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_pending_decision_parent_lineage_v1.py",
+      "before_sha256": "cb98354bc2766d0501b43eb1629613299c882aa6f47a79c9a67d5a499ff1be89",
+      "sha256": "6c7887416d1d15df890eb8490e66f53a4258b2853c4a53fbbb7180f3f6c065d0",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_pending_exact_decision_context_v1.py",
+      "before_sha256": "6848735f7e35a1521b8bc437d5234b7b6ef78872310fc0850a653f39114ccf6d",
+      "sha256": "0845b77d695a74eee560181d54d91dbf48f73eb611e504df4b7cb297b7aed7bb",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_pending_outcome_receive_time_replay_v1.py",
+      "before_sha256": "b69f31febe56a0eb5bb04f09e96d45db424ff359c16ced6cc2b9cbcad8ac1a44",
+      "sha256": "ed1f094fbe2e463dda7eb9d3ada2c74b3bfbce5d359e3f822d61cd5cf0f2f721",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_portfolio_execution_recovery_v1.py",
+      "before_sha256": "67f8bbd5f5d139b4d33dd730c98e71abd177fb6152b7ef6be01c0dfe4b162a9a",
+      "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+      "AST_unchanged": true
+    },
+    {
+      "path": "tests/ops/test_treasury_budget_owner_start_contract_v1.py",
+      "before_sha256": "f64d8780088b62fc1f057be2167dc8f35ed7e7811ec5f9d5de998a48877bc4b4",
+      "sha256": "7432ef24a3174990000cbf6653cb213e61c879881ab5208d113a3dc84590d102",
+      "AST_unchanged": true
+    }
+  ],
+  "frozen_exceptions": [
+    {
+      "path": "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+      "sha256": "defd381876b526e125d7538e0dc0529b08fb3880182344f7d33d42987c0c4b16",
+      "reason": "Exact frozen policy-inventory source protection"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+      "sha256": "32c3210e3f6596a82c070df90a56313b8789800fa91d71ba618e6f2f1905eb0f",
+      "reason": "Exact canonical law-reference source digest protection"
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/counterfactual_replay_v1.py",
+      "sha256": "fba251c15eb0e12f9cfac457a6e698211a7c6fbf25dceded5ead70de9f1bd853",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/distance_geometry_v1.py",
+      "sha256": "dc71ecbdaf1897bfa71aa111f62dace0c72e8e9d1c804b6a8a752a718d7bf51e",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/runner_v1.py",
+      "sha256": "69079ef4fdbc0dc6ef51acab5abac9ffc8c260eede82fd521d369e6c6b6c49ab",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/stage1_v1.py",
+      "sha256": "5672c4289fa064ba00dee339dda4da8cf8bddcf0c45e6be00b40e6f59757134e",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v1/stage2_v1.py",
+      "sha256": "6bb96c32179458cbc5ea011f369d8e98dcf332802d06e2482089697fc23723d8",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/aggregate_v2.py",
+      "sha256": "f00e6c9e41c9a986f31b831eee01c3234a520c3e5579b1ba55b12f27ef448627",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/cycle_observation_v2.py",
+      "sha256": "a2211391a42c3de4fdd72c87a1386ab82c700919b6a3b3daab1b3dc0fc0c2813",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/replay_input_v2.py",
+      "sha256": "7116fc7d293d94168e80fb28e2f6f020932e854168d3ec5171f6d92d2948e723",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/runner_v2.py",
+      "sha256": "8f71e11daa0d6ad6f70ff85a20301112422ebef82176e3fb7f079f6ef1aaa04f",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/safety_v2.py",
+      "sha256": "a49dce1780505e8cc785c2c78e6df56bcf58a7332f6dcbeca6d7407ee1753476",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v2/stage2_runner_v2.py",
+      "sha256": "2b0089d6501cab75743a8aaac648ea2b1674845891bbc6b0d65083c6bd4bc0c8",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/aggregate_v3.py",
+      "sha256": "9e69d7c22af32837fa76c7d96299e27ebb488f50e8a6d4f61ef74b3ad8e4b1e1",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/proof_gates_v3.py",
+      "sha256": "d8ce015a6cdc6f1891d84cf700af9ebfbde4806a07c40a1039c412eda97be3dd",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/replay_state_v3.py",
+      "sha256": "8e18edff27129a6b903e99076d2880eb460a91dd4b6d7a0a1d066a069dc121af",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/runner_v3.py",
+      "sha256": "10c68f46308a82134c23a2e6533535c1435c89925e46c4ba55ba6f4e9900c8b3",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/stage2_runner_v3.py",
+      "sha256": "f46d2afb400a295a83813973b9b13cfe360c57378832ee74bd582f33095b59d7",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/research/multi_future_ghv_counterfactual_distance_lab_v3/state_carrier_v3.py",
+      "sha256": "5fc6e5f8f760abe69acb8e60197931d5952c4b22534adf577aa645061cc2bf58",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+      "sha256": "83b6f743a6024a2e764f8b80ec7d59db488f63b708429a795add91a605f69128",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/canonical_scope_initialization_v1.py",
+      "sha256": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+      "sha256": "ac4ef2dacee28101b5c5f324836390c34b8e7d4a6682e44f61933f131fb09c2f",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/directional_assessment_v1.py",
+      "sha256": "d8e9c0567a861208fb426521914579b3674dd7e2628987517a8d9b799ae71e01",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_composition_matrix_v1.py",
+      "sha256": "e524ef55e29a8f38502a516b206c5ed2d17cb180b459061a1ccab937d02986c9",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+      "sha256": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_futures_input.py",
+      "sha256": "87decc2ff83b13dca8541e7eeac739ba2200b48bb8c0baff5f3a903597cf1e56",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "sha256": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+      "reason": "Exact frozen Master V2 source protection"
+    },
+    {
+      "path": "tests/research/test_btc_common_research_admission_v1.py",
+      "sha256": "9ed367744792b68999901980f6f8ce1263f08587b764ccddbb9150083c4cc167",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/research/test_multi_future_ghv_counterfactual_distance_lab_v2.py",
+      "sha256": "3703ab55bd5af12a9e8060455d10960e790b0d246d9eb58a7709f1735a2e0420",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/research/test_pit_futures_instrument_lifecycle_registry_v1.py",
+      "sha256": "9db53a0a607e7a03a1e3f7cd2b7b5d57642b3351185ab8871925f93898515a58",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    },
+    {
+      "path": "tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py",
+      "sha256": "fd42f27fd1bdb684297a517047c276b16fddc892942ee640a78b68772021a0bb",
+      "reason": "Existing economic/diagnostic boundary admission rejects mutations on this frozen source; preserve exact original bytes."
+    }
+  ],
+  "baseline_rebind": {
+    "generated_at_utc": "2026-11-06T20:13:31.336188+00:00",
+    "git_sha": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+    "tool_version": "1.0.0",
+    "scan_stats": {
+      "total_markdown_files": 3450,
+      "ignored_files": 449,
+      "scanned_files": 3001,
+      "total_references": 19679
+    },
+    "missing_count": 653,
+    "rebind_provenance": {
+      "previous_missing_count": 243,
+      "previous_git_sha": "f33000f8909c4fad45a2050bcdcd0e1afa884e2c",
+      "source": "read-only Git blob scan of origin/main",
+      "reason": "Rebind stale historical debt comparison to the verified existing main snapshot, as prescribed by DOCS_REFERENCE_TARGETS_DEBT_GUIDE; no missing targets introduced by this PR are included."
+    }
+  },
+  "checks": [
+    {
+      "command": "Selected N1, Atlas, formatting guard, law and Core seal regression set",
+      "result": "FAIL",
+      "collected": 252,
+      "passed": 247,
+      "failed": 5,
+      "duration_seconds": 31.15,
+      "cause": "Previously stale Core seal digests and removed historical BTC-specific assignment; the existing failure is retained, not relabelled PASS.",
+      "next_verification": "Rerun affected seal, law and Atlas cases after targeted metadata/consumer correction."
+    },
+    {
+      "result": "FAIL_THEN_REPAIRED",
+      "scope": "Law source hash after initial formatting",
+      "reason": "G17 canonical law-reference source digest requires byte-preserved original; source restored and added as tenth exact exception."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider docs/system_atlas/tests tests/ops/test_current_law_impact_map_v1.py tests/governance/test_clean_core_seal_v1.py",
+      "result": "PASS",
+      "passed": 86,
+      "duration_seconds": 3.5
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ci/test_ruff_frozen_format_v1.py tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "result": "PASS",
+      "passed": 36,
+      "duration_seconds": 3.91
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ci/check_ruff_frozen_format_v1.py --ruff <ruff-0.15.22>",
+      "result": "PASS",
+      "exact_frozen_originals": 10,
+      "formatted_remaining_files": 9897
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m ruff check src/ tests/ scripts/ docs/system_atlas",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ops/current_law_impact_map_v1.py validate --diff-base origin/main",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py check",
+      "result": "PASS",
+      "development_bound_files": 126,
+      "catalog_scope": "FROZEN_SOURCE_SNAPSHOT",
+      "development_policy_files": [
+        "config/governance/clean_core_seal_manifest_v1.json"
+      ]
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ops/check_clean_core_seal_v1.py",
+      "result": "PASS",
+      "state": "SEALED",
+      "members": 20
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ci/check_branch_ruleset_enforcement_governance_v1.py",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ci/check_tracked_credential_hygiene_policy_v1.py",
+      "result": "PASS",
+      "secret_value_exposed": false
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 bash scripts/governance/ai_matrix_consistency_gate.sh",
+      "result": "PASS"
+    },
+    {
+      "command": "Shared canonical Markdown token/reference and full-scan functions on all current changes",
+      "result": {
+        "result": "PASS",
+        "markdown_files": 5,
+        "references": 44,
+        "trend_baseline": 653,
+        "current_missing": 653,
+        "baseline_commit": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a"
+      }
+    },
+    {
+      "result": "FAIL_THEN_REPAIRED",
+      "scope": "Post-commit economic/diagnostic boundary check before push",
+      "reason": "Formatting touched 20 unclassified and one protected test source; all 21 restored byte-for-byte to the original frozen source. Original boundary guard and its admission policies remain unchanged; exact source pins cover these 21 originals."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ci/test_ruff_frozen_format_v1.py",
+      "result": "PASS",
+      "passed": 14,
+      "duration_seconds": 0.35,
+      "scope": "final 31 original-source pins"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ci/check_ruff_frozen_format_v1.py --ruff <ruff-0.15.22>",
+      "result": "PASS",
+      "exact_frozen_originals": 31,
+      "formatted_remaining_files": 9876
+    },
+    {
+      "command": "Current Atlas and Law validation APIs on the final working delta",
+      "result": "PASS",
+      "development_files": 105
+    },
+    {
+      "command": "Original build_boundary_report with full current working diff and exact origin/main base",
+      "result": "PASS",
+      "unclassified_touch_count": 0,
+      "reason_codes": [
+        "NO_BOUNDARY_GOVERNED_CHANGES"
+      ]
+    }
+  ],
+  "claims": {
+    "AST_equal_is_full_functional_proof": false,
+    "original_lint_scan_excludes_frozen_files": false,
+    "all_653_missing_links_repaired": false,
+    "new_PR_missing_links_admitted_as_old_debt": false,
+    "live_or_testnet_activated": false,
+    "freeze_tags_changed": false,
+    "auto_merge_enabled": false,
+    "approved_reconfiguration_source_bytes_changed": false,
+    "frozen_catalog_objects_rewritten": false,
+    "CI_seal_metadata_rebound_to_original_source": true,
+    "frozen_format_exception_source_bytes_changed": false
+  },
+  "core_seal_repin": {
+    "legacy_manifest_sha256": "592d7fe3aec571f18f222b74a1373c80688963c072edcb8c20091c4ef584cfe5",
+    "legacy_manifest_at": "44bf97953241c21e856976e798463b2a83e44bef:config/governance/clean_core_seal_manifest_v1.json",
+    "legacy_census_reference": "44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5",
+    "sealed_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "all_20_source_files_byte_equal_to_frozen_commit_before_emit": true,
+    "production_core_files_changed": false,
+    "removed_obsolete_assignment": "_FORBIDDEN_INSTRUMENT_SUBSTRINGS",
+    "replacement_protected_consumer": "_instrument_allowed",
+    "owner_decision": "docs/ops/specs/GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md",
+    "schema_and_20_members_and_whole_vs_mixed_modes_preserved": true
+  },
+  "additional_validation_sources": [
+    {
+      "path": "docs/system_atlas/current_atlas.py",
+      "sha256": "9a28bb7416ada38aa044fd294db407c81d1550f351fd85d24cb7c83bd3eaa744"
+    },
+    {
+      "path": "docs/system_atlas/policy_projection.py",
+      "sha256": "2a0fba0cae22aba75eec04c04b5fb6aa1dded247afa098efaba3255075a472c9"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_development_binding.py",
+      "sha256": "24abe6e18f3b768f1320f9543cac7f0d3c4d8b1c156b4e5bf65edfc90975bc5b"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_policy_projection.py",
+      "sha256": "0cfdb83757e5e07670f3c28f2cec29c80eab49802f1dfb4d283890fa510cb5b1"
+    },
+    {
+      "path": "scripts/ci/check_ruff_frozen_format_v1.py",
+      "sha256": "f5a3311b8d4b144060429de90b63e17f0d68398a1b32a959b21aa903a84e4272"
+    },
+    {
+      "path": "scripts/ops/check_clean_core_seal_v1.py",
+      "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
+    },
+    {
+      "path": "scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py",
+      "sha256": "4bfcdcf707b0a5e76de8d1580decb1e800d8ddb24b8e68c84e05f81e655ca314"
+    },
+    {
+      "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+      "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
+      "sha256": "1500edefe9d634dd94fe3d9de4fcc6af8704ae87af2a99b044bc0ccb37ae39eb"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "sha256": "11db8faefe5cfee61829446d0447cd1b79772bd8aca4179d4f877e5d4dbcc763"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
+      "sha256": "0f296f8f537a4ae4eb5f4071be2b53b9150e45aa0787d9d08fc6f7fc51a1c4b1"
+    },
+    {
+      "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
+      "sha256": "ec2ef3f832fa7c77f06d48aeb3b7b1fd9b051aabc1e6b33bc3a97cc778eb4cf1"
+    },
+    {
+      "path": "tests/ci/test_ruff_frozen_format_v1.py",
+      "sha256": "d1c8127403f7b6d029d9a6856ef971beb1a960d44944692388e6034c4ab5ea92"
+    },
+    {
+      "path": "tests/governance/test_clean_core_seal_v1.py",
+      "sha256": "dad74b7e4bc999a527e18c4dfad82595234b2173631eb181007d266a0918249e"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "sha256": "dd984a1f67024b06148c4e9b70f34954ed54bfa300287018b0a0f339d0dfb247"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "sha256": "9e60b419cbc81b1745a54fd4fe3153ce021a5df73bae60c61f24aeee1b8166e6"
+    }
+  ],
+  "remote_CI_status": "Pending push of this bound candidate; previous candidate had only the two addressed failed gates.",
+  "full_repository_test_pass_claimed": false
+}

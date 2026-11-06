@@ -77,6 +77,15 @@ def _errors(proc: subprocess.CompletedProcess[str]) -> list[str]:
 
 
 class TestCleanCoreSealCurrentCheckpointV1:
+    def test_manifest_repin_is_bound_to_existing_frozen_source(self) -> None:
+        module = _load_verifier()
+        emitted = module.emit_manifest(REPO_ROOT)
+        assert emitted == json.loads(MANIFEST.read_text())
+        assert emitted["sealed_source_commit"] == module.SEALED_SOURCE_COMMIT
+        replay = next(row for row in emitted["members"] if row["id"] == "SEAL_CORE_16")
+        assert "_instrument_allowed" in replay["definitions"]
+        assert "_FORBIDDEN_INSTRUMENT_SUBSTRINGS" not in replay["assignments"]
+
     def test_manifest_and_verifier_exist(self) -> None:
         assert VERIFIER.is_file()
         assert MANIFEST.is_file()
@@ -117,6 +126,43 @@ class TestCleanCoreSealCurrentCheckpointV1:
 
 
 class TestCleanCoreSealNegativeAndExtensionV1:
+    def test_common_asset_consumer_mutation_fails(self, tmp_path: Path) -> None:
+        root = _seed_repo(tmp_path)
+        path = root / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+        text = path.read_text()
+        needle = "return futures_instrument_identity_allowed_v1(instrument_id)"
+        assert needle in text
+        path.write_text(text.replace(needle, "return True", 1))
+        proc = _run_cli("--repo-root", str(root))
+        assert proc.returncode == 1
+        assert any("protected_ast_digest_mismatch" in error for error in _errors(proc))
+
+    def test_sealed_source_rebinding_fails(self, tmp_path: Path) -> None:
+        root = _seed_repo(tmp_path)
+        path = root / "config/governance/clean_core_seal_manifest_v1.json"
+        manifest = json.loads(path.read_text())
+        manifest["sealed_source_commit"] = "b" * 40
+        path.write_text(json.dumps(manifest))
+        proc = _run_cli("--repo-root", str(root))
+        assert proc.returncode == 1
+        assert "sealed_source_binding_mismatch" in _errors(proc)
+
+    def test_emitter_rejects_unbound_source(self, tmp_path: Path, monkeypatch) -> None:
+        root = _seed_repo(tmp_path)
+        module = _load_verifier()
+        originals = {rel: (root / rel).read_bytes() for rel in module.FROZEN_PATHS}
+
+        def git(args, **kwargs):
+            if args[1] == "rev-parse":
+                return module.SEALED_SOURCE_COMMIT + "\n"
+            return originals[args[2].split(":", 1)[1]]
+
+        monkeypatch.setattr(module.subprocess, "check_output", git)
+        path = root / "src/trading/master_v2/double_play_state.py"
+        path.write_bytes(path.read_bytes() + b"\n# unreviewed edit\n")
+        with pytest.raises(RuntimeError, match="refusing_unbound_seal_repin"):
+            module.emit_manifest(root)
+
     def test_seeded_repo_passes(self, tmp_path: Path) -> None:
         root = _seed_repo(tmp_path)
         proc = _run_cli("--repo-root", str(root))

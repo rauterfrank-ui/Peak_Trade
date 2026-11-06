@@ -1625,8 +1625,10 @@ def _repository_code_hash_v1(value: Any) -> str:
 
     This binds the declared repository revision, not uncommitted source bytes.
     """
-    if isinstance(value, str) and len(value) == 40 and all(
-        ch in "0123456789abcdef" for ch in value
+    if (
+        isinstance(value, str)
+        and len(value) == 40
+        and all(ch in "0123456789abcdef" for ch in value)
     ):
         return hashlib.sha256(f"git-commit-sha1:{value}".encode()).hexdigest()
     return _sha_or_unknown(value)

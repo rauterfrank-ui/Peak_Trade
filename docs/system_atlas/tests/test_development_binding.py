@@ -85,3 +85,33 @@ def test_an_additional_unbound_source_is_rejected(tmp_path, monkeypatch):
     check, root, old, _, _ = _case(tmp_path, monkeypatch)
     with pytest.raises(AssertionError, match="UNSCOPED_CHANGE"):
         check(root, {"source_commit": "f" * 40}, old, ["src/changed.py"], ["src/extra.py"], None)
+
+
+def test_workflow_delta_requires_its_exact_hash(tmp_path, monkeypatch):
+    check, root, old, binding, manifest = _case(tmp_path, monkeypatch)
+    rel = ".github/workflows/changed.yml"
+    path = root / rel
+    path.parent.mkdir(parents=True)
+    path.write_text("name: check\n")
+    binding["files"].append(
+        {"path": rel, "before_sha256": None, "sha256": ATLAS["digest"](path.read_bytes())}
+    )
+    manifest.write_text(json.dumps(binding))
+    assert rel in check(root, {"source_commit": "f" * 40}, old, ["src/changed.py"], [rel], None)
+    path.write_text("name: different\n")
+    with pytest.raises(AssertionError, match="DEVELOPMENT_SOURCE_DRIFT"):
+        check(root, {"source_commit": "f" * 40}, old, ["src/changed.py"], [rel], None)
+
+
+def test_unrelated_configuration_is_not_an_accepted_development_surface(tmp_path, monkeypatch):
+    check, root, old, binding, manifest = _case(tmp_path, monkeypatch)
+    rel = "config/unknown.json"
+    path = root / rel
+    path.parent.mkdir()
+    path.write_text("{}\n")
+    binding["files"].append(
+        {"path": rel, "before_sha256": None, "sha256": ATLAS["digest"](path.read_bytes())}
+    )
+    manifest.write_text(json.dumps(binding))
+    with pytest.raises(AssertionError):
+        check(root, {"source_commit": "f" * 40}, old, ["src/changed.py"], [rel], None)

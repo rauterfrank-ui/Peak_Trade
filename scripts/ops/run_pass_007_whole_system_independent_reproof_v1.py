@@ -15,17 +15,48 @@ from typing import Any
 
 MAIN_REPO = Path(__file__).resolve().parents[2]
 BASELINE_SHA = "d962aaee86b347b9d0247981cb06896a0431aeba"
-CP1 = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T083102Z"
-PASS004 = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T080457Z"
+CP1 = (
+    MAIN_REPO
+    / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T083102Z"
+)
+PASS004 = (
+    MAIN_REPO
+    / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T080457Z"
+)
 LOGIC_PATH = MAIN_REPO / "scripts/ops/peak_trade_forensic_closure_logic_v1.py"
 
 TOOLING_PATHS = [
-    ("scripts/ops/run_pass_007_whole_system_independent_reproof_v1.py", "PASS_007 orchestrator", True, True),
-    ("scripts/ops/run_pass_006b_closure_repair_and_recertification_v1.py", "PASS_006B orchestrator", True, False),
-    ("scripts/ops/run_pass_006a_closure_integrity_adjudication_v1.py", "PASS_006A adjudication", True, False),
+    (
+        "scripts/ops/run_pass_007_whole_system_independent_reproof_v1.py",
+        "PASS_007 orchestrator",
+        True,
+        True,
+    ),
+    (
+        "scripts/ops/run_pass_006b_closure_repair_and_recertification_v1.py",
+        "PASS_006B orchestrator",
+        True,
+        False,
+    ),
+    (
+        "scripts/ops/run_pass_006a_closure_integrity_adjudication_v1.py",
+        "PASS_006A adjudication",
+        True,
+        False,
+    ),
     ("scripts/ops/peak_trade_forensic_closure_logic_v1.py", "closure logic", True, True),
-    ("scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py", "GHV probe (patched)", True, True),
-    ("scripts/ops/run_pass_006_whole_system_closure_v1.py", "PASS_006 (patched edges)", True, False),
+    (
+        "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
+        "GHV probe (patched)",
+        True,
+        True,
+    ),
+    (
+        "scripts/ops/run_pass_006_whole_system_closure_v1.py",
+        "PASS_006 (patched edges)",
+        True,
+        False,
+    ),
     ("tests/ops/test_pass_006b_forensic_closure_guards_v1.py", "regression guards", True, True),
 ]
 
@@ -53,8 +84,15 @@ def tooling_freeze(repo: Path) -> list[dict[str, Any]]:
     rows = []
     for rel, role, u6b, u7 in TOOLING_PATHS:
         p = repo / rel
-        st = subprocess.check_output(["git", "-C", str(repo), "status", "--porcelain", rel], text=True).strip()
-        tracked = subprocess.call(["git", "-C", str(repo), "cat-file", "-e", f"HEAD:{rel}"], stderr=subprocess.DEVNULL) == 0
+        st = subprocess.check_output(
+            ["git", "-C", str(repo), "status", "--porcelain", rel], text=True
+        ).strip()
+        tracked = (
+            subprocess.call(
+                ["git", "-C", str(repo), "cat-file", "-e", f"HEAD:{rel}"], stderr=subprocess.DEVNULL
+            )
+            == 0
+        )
         rows.append(
             {
                 "PATH": rel,
@@ -88,15 +126,23 @@ def load_frozen_baseline() -> dict[str, Any]:
     return {
         "CHECKPOINT": "20261005T083102Z",
         "TOTAL_UNION_COMPONENTS_NOTE": "006B used PASS_006 reachability hash not full union export",
-        "TOTAL_CURRENT_REACHABLE_COMPONENTS": int(vals.get("TOTAL_CURRENT_REACHABLE_COMPONENTS", "2537") or 2537)
+        "TOTAL_CURRENT_REACHABLE_COMPONENTS": int(
+            vals.get("TOTAL_CURRENT_REACHABLE_COMPONENTS", "2537") or 2537
+        )
         if "TOTAL_CURRENT_REACHABLE_COMPONENTS" not in vals
         else None,
-        "METRICS_FROM_REPORT": {k: vals[k] for k in vals if k.startswith("TOTAL_") or k.startswith("FORWARD_") or k.startswith("RETURN_")},
+        "METRICS_FROM_REPORT": {
+            k: vals[k]
+            for k in vals
+            if k.startswith("TOTAL_") or k.startswith("FORWARD_") or k.startswith("RETURN_")
+        },
         "SEMANTIC_HASHES": hashes,
         "TRUE_RUNTIME_SURFACE_PATHS": sorted(s["PATH"] for s in cp1_surfaces["SURFACES"]),
         "CROSS_FLOW_IDS": sorted(f["CROSS_FLOW_ID"] for f in cp1_flows["FLOWS"]),
         "ENTRYPOINT_PATHS": sorted(e["PATH"] for e in cp1_entry["ENTRYPOINTS"]),
-        "AUTHORITY_TUPLES": sorted(f"{s['PATH']}|{s['AUTHORITY']}" for s in cp1_surfaces["SURFACES"]),
+        "AUTHORITY_TUPLES": sorted(
+            f"{s['PATH']}|{s['AUTHORITY']}" for s in cp1_surfaces["SURFACES"]
+        ),
     }
 
 
@@ -146,7 +192,9 @@ def bfs_import_forward(repo: Path, out_edges: dict[str, set[str]], roots: list[s
     return seen
 
 
-def recompute_semantic_edges(cont: Any, repo: Path, py_paths: list[str], reach: set[str]) -> tuple[list[dict], int, int]:
+def recompute_semantic_edges(
+    cont: Any, repo: Path, py_paths: list[str], reach: set[str]
+) -> tuple[list[dict], int, int]:
     ast_d = cont.discover_ast(repo, py_paths)
     union_count = len(ast_d["import_edges"])
     edge_adj: list[dict[str, Any]] = []
@@ -159,11 +207,17 @@ def recompute_semantic_edges(cont: Any, repo: Path, py_paths: list[str], reach: 
             if tgt.startswith("trading."):
                 tgt = "src/" + tgt
             if (repo / tgt).is_file():
-                sem = "COMPOSITION_CURRENT" if e["FROM"] in reach and tgt in reach else "DORMANT_CURRENT"
+                sem = (
+                    "COMPOSITION_CURRENT"
+                    if e["FROM"] in reach and tgt in reach
+                    else "DORMANT_CURRENT"
+                )
         elif to.startswith("tests."):
             sem = "TEST_ONLY"
         edge_adj.append({**e, "SEMANTIC_CLASS": sem, "TO_PATH": tgt})
-    semantic = [e for e in edge_adj if e["SEMANTIC_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT")]
+    semantic = [
+        e for e in edge_adj if e["SEMANTIC_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT")
+    ]
     composition = []
     for e in edge_adj:
         if e["SEMANTIC_CLASS"] != "COMPOSITION_CURRENT":
@@ -171,13 +225,23 @@ def recompute_semantic_edges(cont: Any, repo: Path, py_paths: list[str], reach: 
         tgt = e.get("TO_PATH")
         if tgt and e["FROM"] in reach and tgt in reach:
             composition.append(
-                {"FROM": e["FROM"], "TO": tgt, "SEMANTIC_CLASS": "COMPOSITION_CURRENT", "TO_RAW": e["TO"]}
+                {
+                    "FROM": e["FROM"],
+                    "TO": tgt,
+                    "SEMANTIC_CLASS": "COMPOSITION_CURRENT",
+                    "TO_RAW": e["TO"],
+                }
             )
     return composition, len(semantic), union_count
 
 
 def semantic_diff(a: set[str], b: set[str]) -> dict[str, Any]:
-    return {"NEW": sorted(b - a), "REMOVED": sorted(a - b), "NEW_COUNT": len(b - a), "REMOVED_COUNT": len(a - b)}
+    return {
+        "NEW": sorted(b - a),
+        "REMOVED": sorted(a - b),
+        "NEW_COUNT": len(b - a),
+        "REMOVED_COUNT": len(a - b),
+    }
 
 
 def build_hashes(
@@ -196,7 +260,9 @@ def build_hashes(
         "WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256": logic.sha256_list(flow_ids),
         "RUNTIME_SURFACE_UNIVERSE_SHA256": logic.runtime_surface_universe_hash(true_inv),
         "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": logic.sha256_list(entry_paths),
-        "AUTHORITY_MATRIX_SHA256": logic.sha256_list([f"{i['PATH']}|{i['AUTHORITY']}" for i in true_inv]),
+        "AUTHORITY_MATRIX_SHA256": logic.sha256_list(
+            [f"{i['PATH']}|{i['AUTHORITY']}" for i in true_inv]
+        ),
         "REACHABILITY_MATRIX_SHA256": logic.sha256_list(
             [f"U={reach_d['UNION']}", f"P={reach_d['PRODUCTIVE']}", f"T={reach_d['TESTNET']}"]
         ),
@@ -205,13 +271,26 @@ def build_hashes(
 
 def main() -> int:
     logic = _load("logic", LOGIC_PATH)
-    p5 = _load("p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py")
+    p5 = _load(
+        "p5", MAIN_REPO / "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py"
+    )
     p6 = _load("p6", MAIN_REPO / "scripts/ops/run_pass_006_whole_system_closure_v1.py")
-    cont = _load("cont", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
-    ws = _load("ws", MAIN_REPO / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py")
+    cont = _load(
+        "cont",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
+    ws = _load(
+        "ws",
+        MAIN_REPO
+        / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+    )
 
     wt = Path("/Users/frnkhrz/Peak_Trade/.ghv_worktrees/post7053_reproof")
-    if subprocess.check_output(["git", "-C", str(wt), "rev-parse", "HEAD"], text=True).strip() != BASELINE_SHA:
+    if (
+        subprocess.check_output(["git", "-C", str(wt), "rev-parse", "HEAD"], text=True).strip()
+        != BASELINE_SHA
+    ):
         print("HARD_STOP worktree SHA")
         return 2
 
@@ -219,7 +298,11 @@ def main() -> int:
     ws.ensure_forensic_evidence_bridge(repo, MAIN_REPO)
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_007"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
@@ -244,7 +327,11 @@ def main() -> int:
             "TOTAL_UNION_COMPONENTS": len(union_nodes),
         },
     )
-    _write(root, "fresh_ast_discovery.json", {"IMPORT_EDGE_CANDIDATES": len(ast_d["import_edges"]), "PARSED_MODULES": len(py_paths)})
+    _write(
+        root,
+        "fresh_ast_discovery.json",
+        {"IMPORT_EDGE_CANDIDATES": len(ast_d["import_edges"]), "PARSED_MODULES": len(py_paths)},
+    )
 
     entry_inv = discover_entrypoints_fresh(repo, p6)
     roots = [e["PATH"] for e in entry_inv]
@@ -255,12 +342,17 @@ def main() -> int:
     for e in entry_inv:
         cls = e["ROOT_CLASS"]
         reach_by_class[cls].add(e["PATH"])
-    class_reach = {cls: bfs_import_forward(repo, out_edges, list(paths)) for cls, paths in reach_by_class.items()}
+    class_reach = {
+        cls: bfs_import_forward(repo, out_edges, list(paths))
+        for cls, paths in reach_by_class.items()
+    }
     union_reach = set()
     for cls, s in class_reach.items():
         if cls not in ("TEST_ROOT", "FORENSIC_ROOT"):
             union_reach |= s
-    productive = class_reach.get("DEFAULT_PRODUCTIVE_ROOT", set()) | class_reach.get("CONDITIONAL_PRODUCTIVE_ROOT", set())
+    productive = class_reach.get("DEFAULT_PRODUCTIVE_ROOT", set()) | class_reach.get(
+        "CONDITIONAL_PRODUCTIVE_ROOT", set()
+    )
 
     reach_d = {
         "UNION": len(union_reach),
@@ -276,17 +368,29 @@ def main() -> int:
         }
     )
     _write(root, "fresh_multi_root_reachability.json", reach_payload)
-    _write(root, "fresh_entrypoint_inventory.json", {"ENTRYPOINTS": entry_inv, "TOTAL": len(entry_inv)})
+    _write(
+        root, "fresh_entrypoint_inventory.json", {"ENTRYPOINTS": entry_inv, "TOTAL": len(entry_inv)}
+    )
 
-    composition, semantic_count, union_edge_candidates = recompute_semantic_edges(cont, repo, py_paths, union_reach)
+    composition, semantic_count, union_edge_candidates = recompute_semantic_edges(
+        cont, repo, py_paths, union_reach
+    )
     _write(
         root,
         "fresh_semantic_edge_graph.json",
-        {"TOTAL_UNION_EDGE_CANDIDATES": union_edge_candidates, "TOTAL_CURRENT_SEMANTIC_EDGES": semantic_count, "COMPOSITION_IN_REACH": len(composition)},
+        {
+            "TOTAL_UNION_EDGE_CANDIDATES": union_edge_candidates,
+            "TOTAL_CURRENT_SEMANTIC_EDGES": semantic_count,
+            "COMPOSITION_IN_REACH": len(composition),
+        },
     )
 
-    surf_cands = json.loads((PASS004 / "execution_promotion_surface_candidates.json").read_text())["CANDIDATES"]
-    surf_adj = [p5.adjudicate_surface_candidate(c, repo, union_reach, importers) for c in surf_cands]
+    surf_cands = json.loads((PASS004 / "execution_promotion_surface_candidates.json").read_text())[
+        "CANDIDATES"
+    ]
+    surf_adj = [
+        p5.adjudicate_surface_candidate(c, repo, union_reach, importers) for c in surf_cands
+    ]
     counts = Counter(r["FINAL_CLASSIFICATION"] for r in surf_adj)
     true_rows = [r for r in surf_adj if r["FINAL_CLASSIFICATION"] == "TRUE_RUNTIME_SURFACE"]
     true_inv = logic.build_true_runtime_surface_inventory(true_rows, union_reach)
@@ -303,16 +407,36 @@ def main() -> int:
     )
 
     flows, boundary_rows = logic.build_cross_flows_from_semantics(composition, union_reach)
-    deep = [{**f, "EXPECTED_TRACE": f"{f['SOURCE']}->{f['DESTINATION']}", "OBSERVED_SAFE_TRACE": "fresh_composition"} for f in flows]
+    deep = [
+        {
+            **f,
+            "EXPECTED_TRACE": f"{f['SOURCE']}->{f['DESTINATION']}",
+            "OBSERVED_SAFE_TRACE": "fresh_composition",
+        }
+        for f in flows
+    ]
 
-    _write(root, "fresh_boundary_transition_adjudication.json", {"ROWS": boundary_rows, "TOTAL": len(boundary_rows)})
+    _write(
+        root,
+        "fresh_boundary_transition_adjudication.json",
+        {"ROWS": boundary_rows, "TOTAL": len(boundary_rows)},
+    )
     _write(root, "fresh_cross_flow_inventory.json", {"FLOWS": flows, "TOTAL": len(flows)})
     _write(root, "fresh_cross_flow_deep_proof.json", {"FLOWS": deep})
 
     ghv = ws.run_ghv_probe(pass_dir / "ghv_probe")
     prefix_path = pass_dir / "ghv_probe/prefix_probe_results.json"
-    prefix_rows, unexp_prefix, prefix_parity, strict_literal = logic.prefix_parity_from_probe(prefix_path)
-    pre_ext = next((p for p in json.loads(prefix_path.read_text())["PROBES"] if p["LAST_STAGE"] == "PRE_EXTERNAL"), {})
+    prefix_rows, unexp_prefix, prefix_parity, strict_literal = logic.prefix_parity_from_probe(
+        prefix_path
+    )
+    pre_ext = next(
+        (
+            p
+            for p in json.loads(prefix_path.read_text())["PROBES"]
+            if p["LAST_STAGE"] == "PRE_EXTERNAL"
+        ),
+        {},
+    )
     defects = logic.build_current_defect_register(
         pre_external_wired=bool(pre_ext.get("MATCH")),
         pre_external_prefix_match=bool(pre_ext.get("MATCH")),
@@ -334,7 +458,13 @@ def main() -> int:
 
     regression = ws.run_regression(repo)
     guards = subprocess.run(
-        [str(MAIN_REPO / "scripts/pt"), "-m", "pytest", "-q", "tests/ops/test_pass_006b_forensic_closure_guards_v1.py"],
+        [
+            str(MAIN_REPO / "scripts/pt"),
+            "-m",
+            "pytest",
+            "-q",
+            "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
+        ],
         cwd=str(MAIN_REPO),
         capture_output=True,
         text=True,
@@ -368,10 +498,20 @@ def main() -> int:
     _write(root, "semantic_hash_comparison.json", hash_cmp)
 
     schema_val = {
-        "WHOLE_SYSTEM_NODE_UNIVERSE_SHA256": {"COVERS": "union_reachable_count_only", "STRONG": False, "NOTE": "matches PASS_006B schema"},
-        "WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256": {"COVERS": "semantic_edge_count_only", "STRONG": False},
+        "WHOLE_SYSTEM_NODE_UNIVERSE_SHA256": {
+            "COVERS": "union_reachable_count_only",
+            "STRONG": False,
+            "NOTE": "matches PASS_006B schema",
+        },
+        "WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256": {
+            "COVERS": "semantic_edge_count_only",
+            "STRONG": False,
+        },
         "WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256": {"COVERS": "cross_flow_id_set", "STRONG": True},
-        "RUNTIME_SURFACE_UNIVERSE_SHA256": {"COVERS": "path+surface_class+external_effect_flags", "STRONG": True},
+        "RUNTIME_SURFACE_UNIVERSE_SHA256": {
+            "COVERS": "path+surface_class+external_effect_flags",
+            "STRONG": True,
+        },
         "CANONICAL_ENTRYPOINT_UNIVERSE_SHA256": {"COVERS": "entrypoint_path_set", "STRONG": True},
         "AUTHORITY_MATRIX_SHA256": {"COVERS": "true_surface_path|authority", "STRONG": True},
         "REACHABILITY_MATRIX_SHA256": {"COVERS": "U/P/T_counts", "STRONG": False},
@@ -399,10 +539,19 @@ def main() -> int:
         "NEW_RUNTIME_SURFACES": semantic_diff(cp1_paths, p7_paths)["NEW_COUNT"],
         "REMOVED_RUNTIME_SURFACES": semantic_diff(cp1_paths, p7_paths)["REMOVED_COUNT"],
         "CHANGED_RUNTIME_SURFACES": 0,
-        "NEW_AUTHORITY_RELATIONSHIPS": semantic_diff(set(frozen["AUTHORITY_TUPLES"]), {f"{s['PATH']}|{s['AUTHORITY']}" for s in true_inv})["NEW_COUNT"],
-        "REMOVED_AUTHORITY_RELATIONSHIPS": semantic_diff(set(frozen["AUTHORITY_TUPLES"]), {f"{s['PATH']}|{s['AUTHORITY']}" for s in true_inv})["REMOVED_COUNT"],
+        "NEW_AUTHORITY_RELATIONSHIPS": semantic_diff(
+            set(frozen["AUTHORITY_TUPLES"]), {f"{s['PATH']}|{s['AUTHORITY']}" for s in true_inv}
+        )["NEW_COUNT"],
+        "REMOVED_AUTHORITY_RELATIONSHIPS": semantic_diff(
+            set(frozen["AUTHORITY_TUPLES"]), {f"{s['PATH']}|{s['AUTHORITY']}" for s in true_inv}
+        )["REMOVED_COUNT"],
         "CHANGED_AUTHORITY_RELATIONSHIPS": 0,
-        "NEW_REACHABILITY_RELATIONSHIPS": 0 if len(union_reach) == frozen["METRICS_FROM_REPORT"].get("TOTAL_CURRENT_REACHABLE_COMPONENTS", str(len(union_reach))) else 1,
+        "NEW_REACHABILITY_RELATIONSHIPS": 0
+        if len(union_reach)
+        == frozen["METRICS_FROM_REPORT"].get(
+            "TOTAL_CURRENT_REACHABLE_COMPONENTS", str(len(union_reach))
+        )
+        else 1,
         "REMOVED_REACHABILITY_RELATIONSHIPS": 0,
         "CHANGED_REACHABILITY_RELATIONSHIPS": 0,
         "NEW_DEFECTS": 0,
@@ -416,7 +565,9 @@ def main() -> int:
         "UNEXPLAINED_DIVERGENCES": 0,
     }
     if diff["NEW_RUNTIME_SURFACES"] or diff["REMOVED_RUNTIME_SURFACES"]:
-        diff["UNEXPLAINED_DIVERGENCES"] += diff["NEW_RUNTIME_SURFACES"] + diff["REMOVED_RUNTIME_SURFACES"]
+        diff["UNEXPLAINED_DIVERGENCES"] += (
+            diff["NEW_RUNTIME_SURFACES"] + diff["REMOVED_RUNTIME_SURFACES"]
+        )
     if diff["NEW_CROSS_FLOWS"] or diff["REMOVED_CROSS_FLOWS"]:
         diff["UNEXPLAINED_DIVERGENCES"] += diff["NEW_CROSS_FLOWS"] + diff["REMOVED_CROSS_FLOWS"]
     if not all_match:
@@ -424,7 +575,12 @@ def main() -> int:
 
     _write(root, "candidate_pass1_vs_pass007_semantic_diff.json", diff)
 
-    open_s1 = sum(1 for d in defects if d.get("CURRENT_STATUS", "").startswith("OPEN") and str(d.get("CURRENT_SEVERITY", "")).startswith("S1"))
+    open_s1 = sum(
+        1
+        for d in defects
+        if d.get("CURRENT_STATUS", "").startswith("OPEN")
+        and str(d.get("CURRENT_SEVERITY", "")).startswith("S1")
+    )
     unadj_bt = sum(1 for r in boundary_rows if "ADJUDICATION" not in r)
     unknown_bt = sum(1 for r in boundary_rows if r.get("ADJUDICATION") == "UNKNOWN_CURRENT")
     fwd = sum(1 for f in flows if f.get("FORWARD_OR_RETURN") == "FORWARD")
@@ -443,7 +599,10 @@ def main() -> int:
     )
 
     universe = {
-        "UNIVERSE_CLOSURE_PROVEN": unadj_bt == 0 and unknown_bt == 0 and unexp_prefix == 0 and open_s1 == 0,
+        "UNIVERSE_CLOSURE_PROVEN": unadj_bt == 0
+        and unknown_bt == 0
+        and unexp_prefix == 0
+        and open_s1 == 0,
         "PASS007_INDEPENDENT_DISCOVERY_COMPLETE": True,
         "RUNTIME_SURFACE_DENOMINATOR_VALID": counts.get("TRUE_RUNTIME_SURFACE", 0) > 0,
         "CROSS_FLOW_DENOMINATOR_VALID": unadj_bt == 0 and unknown_bt == 0,
@@ -539,13 +698,27 @@ def main() -> int:
     ]
     for hk in hashes:
         lines.append(f"{hk}={hashes[hk]}")
-    lines.append(f"NODE_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_NODE_UNIVERSE_SHA256']['MATCH']).lower()}")
-    lines.append(f"EDGE_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256']['MATCH']).lower()}")
-    lines.append(f"CROSS_FLOW_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256']['MATCH']).lower()}")
-    lines.append(f"RUNTIME_SURFACE_HASH_MATCH={str(hash_cmp['RUNTIME_SURFACE_UNIVERSE_SHA256']['MATCH']).lower()}")
-    lines.append(f"ENTRYPOINT_HASH_MATCH={str(hash_cmp['CANONICAL_ENTRYPOINT_UNIVERSE_SHA256']['MATCH']).lower()}")
-    lines.append(f"AUTHORITY_HASH_MATCH={str(hash_cmp['AUTHORITY_MATRIX_SHA256']['MATCH']).lower()}")
-    lines.append(f"REACHABILITY_HASH_MATCH={str(hash_cmp['REACHABILITY_MATRIX_SHA256']['MATCH']).lower()}")
+    lines.append(
+        f"NODE_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_NODE_UNIVERSE_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"EDGE_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_EDGE_UNIVERSE_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"CROSS_FLOW_HASH_MATCH={str(hash_cmp['WHOLE_SYSTEM_CROSS_FLOW_UNIVERSE_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"RUNTIME_SURFACE_HASH_MATCH={str(hash_cmp['RUNTIME_SURFACE_UNIVERSE_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"ENTRYPOINT_HASH_MATCH={str(hash_cmp['CANONICAL_ENTRYPOINT_UNIVERSE_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"AUTHORITY_HASH_MATCH={str(hash_cmp['AUTHORITY_MATRIX_SHA256']['MATCH']).lower()}"
+    )
+    lines.append(
+        f"REACHABILITY_HASH_MATCH={str(hash_cmp['REACHABILITY_MATRIX_SHA256']['MATCH']).lower()}"
+    )
     lines.append(f"ALL_SEVEN_SEMANTIC_HASHES_MATCH={str(all_match).lower()}")
     lines.append(f"UNIVERSE_CLOSURE_PROVEN={str(universe['UNIVERSE_CLOSURE_PROVEN']).lower()}")
     lines.append(f"WHOLE_SYSTEM_FIXPOINT_CANDIDATE_PASS_2={str(fixpoint).lower()}")

@@ -209,7 +209,10 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             and rel not in indexed
             and rel in actual_changes
         ), ["DEVELOPMENT_PATH_INVALID", rel]
-        assert rel.startswith(("src/", "tests/", "docs/", "scripts/")), rel
+        assert (
+            rel.startswith(("src/", "tests/", "docs/", "scripts/", ".github/workflows/"))
+            or rel == "config/governance/clean_core_seal_manifest_v1.json"
+        ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
         file = root / rel

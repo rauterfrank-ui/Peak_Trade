@@ -179,7 +179,12 @@ def test_host_automatically_matches_cancel_without_fill_or_retains_uncertain_hol
         if fault != "position"
         else ({"instId": _bound().venue_native_id, "posSide": "net", "pos": "1"},)
     )
-    host = _host(tmp_path, _fetch(uid=ACCOUNT, positions=positions), clock=lambda: NOW, expected_account=ACCOUNT)
+    host = _host(
+        tmp_path,
+        _fetch(uid=ACCOUNT, positions=positions),
+        clock=lambda: NOW,
+        expected_account=ACCOUNT,
+    )
     host.reconciliation_transport = ReadPort(identity, fault=fault)
     try:
         if fault in {"account", "cached"}:
@@ -407,7 +412,12 @@ while True:
                 },
             )
         )
-        host = _host(tmp_path, _fetch(uid=ACCOUNT, positions=positions), clock=lambda: NOW, expected_account=ACCOUNT)
+        host = _host(
+            tmp_path,
+            _fetch(uid=ACCOUNT, positions=positions),
+            clock=lambda: NOW,
+            expected_account=ACCOUNT,
+        )
         host.reconciliation_transport = ReadPort(
             identity,
             state="filled" if filled else "canceled",
@@ -424,7 +434,12 @@ while True:
             host.close()
         # A repeated restart cannot resurrect the released reservation or reset
         # the frozen submit barrier; no send port is involved in recovery.
-        host = _host(tmp_path, _fetch(uid=ACCOUNT, positions=positions), clock=lambda: NOW, expected_account=ACCOUNT)
+        host = _host(
+            tmp_path,
+            _fetch(uid=ACCOUNT, positions=positions),
+            clock=lambda: NOW,
+            expected_account=ACCOUNT,
+        )
         host.reconciliation_transport = ReadPort(
             identity,
             state="filled" if filled else "canceled",
