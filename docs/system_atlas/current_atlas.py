@@ -177,6 +177,47 @@ LAW_NAMES = {
     "law_change_impact": "LAW_CHANGE_IMPACT.md",
 }
 LAW_ROOT = "docs/governance/current_law_impact_map_v1/generated"
+DEVELOPMENT_BINDING = ATLAS + "source/development-binding-v1.json"
+
+
+def validate_development_binding(root, model, frozen, changed, extras, cleanup):
+    """Bind an explicit development delta without rewriting the frozen inventory."""
+    unexpected = {p for p in changed + extras if not allowed(p, cleanup)}
+    path = root / DEVELOPMENT_BINDING
+    if not path.is_file():
+        assert not unexpected, ["UNSCOPED_CHANGE", *sorted(unexpected)]
+        return {}
+    binding = json.loads(path.read_bytes())
+    assert binding["schema"] == "peaktrade.atlas_development_binding.v1"
+    assert binding["authority"] == binding["runtime_authorization_effect"] == "NONE"
+    assert binding["frozen_source_commit"] == model["source_commit"]
+    parent = binding["development_parent_commit"]
+    assert re.fullmatch(r"[0-9a-f]{40}", parent), "DEVELOPMENT_PARENT_INVALID"
+    git(root, "merge-base", "--is-ancestor", parent, "HEAD")
+    rows = binding["files"]
+    assert isinstance(rows, list) and rows, "DEVELOPMENT_BINDING_EMPTY"
+    indexed = {}
+    actual_changes = set(changed + extras)
+    for row in rows:
+        rel = row["path"]
+        assert (
+            isinstance(rel, str)
+            and not Path(rel).is_absolute()
+            and ".." not in Path(rel).parts
+            and rel == Path(rel).as_posix()
+            and rel != DEVELOPMENT_BINDING
+            and rel not in indexed
+            and rel in actual_changes
+        ), ["DEVELOPMENT_PATH_INVALID", rel]
+        assert rel.startswith(("src/", "tests/", "docs/", "scripts/")), rel
+        expected_before = frozen.get(rel, {}).get("sha256")
+        assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
+        file = root / rel
+        assert file.is_file() and not file.is_symlink(), ["DEVELOPMENT_SOURCE_MISSING", rel]
+        assert row["sha256"] == digest(file.read_bytes()), ["DEVELOPMENT_SOURCE_DRIFT", rel]
+        indexed[rel] = row
+    assert unexpected <= indexed.keys(), ["UNSCOPED_CHANGE", *sorted(unexpected - indexed.keys())]
+    return indexed
 
 
 def allowed(path, cleanup=None):
@@ -289,6 +330,9 @@ def validate(root, check_outputs=True):
     assert len(inventory) == len(by_path) == m["file_count"]
     assert {k: v["git_blob_oid"] for k, v in by_path.items()} == frozen
     cleanup = validate_cleanup(root, m, by_path)
+    changed = git(root, "diff", "--name-only", m["source_commit"], "--").decode().splitlines()
+    extras = git(root, "ls-files", "--others", "--exclude-standard").decode().splitlines()
+    development = validate_development_binding(root, m, by_path, changed, extras, cleanup)
     symbols = records(root, "current-symbols.jsonl.gz")
     imports = records(root, "current-imports.jsonl.gz")
     assert len(symbols) == m["named_definitions"]
@@ -301,7 +345,8 @@ def validate(root, check_outputs=True):
                 path
             )
             if path in by_path:
-                assert digest((root / path).read_bytes()) == by_path[path]["sha256"], path
+                expected = development.get(path, by_path[path])["sha256"]
+                assert digest((root / path).read_bytes()) == expected, path
     for claim in m["constant_claims"]:
         tree = ast.parse((root / claim["path"]).read_bytes())
         matching = []
@@ -324,12 +369,6 @@ def validate(root, check_outputs=True):
                     else ast.literal_eval(value)
                 )
         assert matching == [claim["value"]], claim
-    changed = git(root, "diff", "--name-only", m["source_commit"], "--").decode().splitlines()
-    extras = git(root, "ls-files", "--others", "--exclude-standard").decode().splitlines()
-    assert all(allowed(p, cleanup) for p in changed + extras), [
-        "UNSCOPED_CHANGE",
-        *[p for p in changed + extras if not allowed(p, cleanup)],
-    ]
     rat = json.loads((root / RATIFICATION).read_bytes())
     assert rat["source_commit"] == m["source_commit"]
     assert rat["canonical_document_sha256"] == digest((root / MASTER).read_bytes())
@@ -384,7 +423,10 @@ def validate(root, check_outputs=True):
         "lexical_imports": len(imports),
         "areas": len(m["domains"]),
         "checked_links": link_count,
-        "product_paths_unchanged": True,
+        "product_paths_unchanged": not any(p.startswith("src/") for p in development),
+        "development_bound_files": len(development),
+        "catalog_scope": "FROZEN_SOURCE_SNAPSHOT",
+        "development_binding": DEVELOPMENT_BINDING if development else None,
         "runtime_authorization_effect": "NONE",
         "removed_extra_map_files": len(cleanup["removed"]) if cleanup else 0,
         "externalized_historical_files": len(cleanup.get("externalized_archives", []))

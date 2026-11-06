@@ -1,0 +1,85 @@
+{
+  "schema": "peaktrade.atlas_development_binding.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "development_parent_commit": "277f069bd215d3af0f609958731290a1e0163212",
+  "scope": "Explicit N1 post-close development delta; unchanged frozen catalog remains a snapshot, not current runtime evidence.",
+  "files": [
+    {
+      "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
+      "before_sha256": null,
+      "sha256": "3352a356b5947c239128a9b8441a685b8afe7ff63e0e5f481fb3b6a1bded2b96"
+    },
+    {
+      "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.md",
+      "before_sha256": null,
+      "sha256": "9683bf7c84c82509a616da3dc8cb3199fb98b59f984e594cfed339f9d6c3e4e0"
+    },
+    {
+      "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
+      "before_sha256": null,
+      "sha256": "aa5331060d24a3cbfe13a33a0aaa33e39e5e2ce4f3be2a84f0db66bac44e1a79"
+    },
+    {
+      "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md",
+      "before_sha256": null,
+      "sha256": "a5eec9742aa7c3ff48084c1b79b7c2f90ad335a0329a03ae6e5c595da4b76ba9"
+    },
+    {
+      "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
+      "before_sha256": null,
+      "sha256": "a642486daea329a606690aed67d6a22782bb85225875e706ef10f4fbee52a04e"
+    },
+    {
+      "path": "docs/system_atlas/README.md",
+      "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
+      "sha256": "a1c58ea8958e01667b6a674a7de9c3e32a8490d1d1ef79784425ccd1c89adc50"
+    },
+    {
+      "path": "docs/system_atlas/current_atlas.py",
+      "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
+      "sha256": "b4d9c27b9b4f0be8c4fbd778b6f9612ea42765ee6cd7f117f1c3c0b2cd8c1f59"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_development_binding.py",
+      "before_sha256": null,
+      "sha256": "5f4e5e3ba2543187c29b5bba87e18a0dc9969186a50c7b9737ee45b6ef51ab01"
+    },
+    {
+      "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+      "before_sha256": "93eb1f48641bdf52758bef1f77a66e004f97e618538d09f4f95af1ca7ae97e60",
+      "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
+      "before_sha256": "da72b1a6ade82418895e0d9729aaa0ee1a989060b443bcccd406c42c718920ae",
+      "sha256": "1500edefe9d634dd94fe3d9de4fcc6af8704ae87af2a99b044bc0ccb37ae39eb"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "before_sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
+      "sha256": "11db8faefe5cfee61829446d0447cd1b79772bd8aca4179d4f877e5d4dbcc763"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
+      "before_sha256": null,
+      "sha256": "0f296f8f537a4ae4eb5f4071be2b53b9150e45aa0787d9d08fc6f7fc51a1c4b1"
+    },
+    {
+      "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
+      "before_sha256": "9171863c923ed85ea7a394ffef580ba1d16bf314d5b9b45adc026c61457490f1",
+      "sha256": "ec2ef3f832fa7c77f06d48aeb3b7b1fd9b051aabc1e6b33bc3a97cc778eb4cf1"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "before_sha256": "c6f6ef23d4ada0bb48952e836e82956f7f771f76878598f929ae260da767a391",
+      "sha256": "dd984a1f67024b06148c4e9b70f34954ed54bfa300287018b0a0f339d0dfb247"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "before_sha256": null,
+      "sha256": "9e60b419cbc81b1745a54fd4fe3153ce021a5df73bae60c61f24aeee1b8166e6"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ Der [System Atlas](generated/SYSTEM_ATLAS.md) beschreibt diesen fixierten Quellb
 
 Der Dateikatalog bezeichnet den unveränderten Freeze-Baum. Die aktuelle Dokumentationsprojektion ersetzt die Runbook-, Map- und Atlasdarstellung; ihre Dokumentbytes und Atlaswerkzeuge sind deshalb ausdrücklich von den fixierten Produktquellen getrennt. Der Freeze-Tag bleibt an seinem Commit.
 
-Der [Abgrenzungsbeleg](source/successor-disposition.json) unterscheidet den aktuellen Arbeitsbestand, die benötigte `origin/main`-Vergleichsquelle und extern archivierte Bestände. Die 42 lokalen Worktrees wurden als historische Arbeitskopien ausgelagert; kein Worktree-Inhalt wurde integriert. 82 historische Repo-Dateien einschließlich Backup-Paketen und eines datierten Wiederherstellungsprüfers sind im Bereinigungsregister mit Transferdigests gebunden. Die Atlasprüfung braucht zum Prüfen dieser Belege kein angeschlossenes Archivlaufwerk.
+Der [Abgrenzungsbeleg](source/successor-disposition.json) unterscheidet den aktuellen Arbeitsbestand, die benötigte origin/main-Vergleichsquelle und extern archivierte Bestände. Die 42 lokalen Worktrees wurden als historische Arbeitskopien ausgelagert; kein Worktree-Inhalt wurde integriert. 82 historische Repo-Dateien einschließlich Backup-Paketen und eines datierten Wiederherstellungsprüfers sind im Bereinigungsregister mit Transferdigests gebunden. Die Atlasprüfung braucht zum Prüfen dieser Belege kein angeschlossenes Archivlaufwerk.
 
 Der historische Wiederherstellungsprüfer war am aktuellen Baum bereits vor seiner Auslagerung mit `CURRENT_CORPUS_PARITY_DRIFT` am N-Bars-Supplier fehlgeschlagen. Er und sein damaliges Eingabepaket bilden eine archivierte, datierte Prüfeinheit. Dieser Befund wird nicht in einen heutigen PASS umgedeutet. Produktimplementierungen, aktuelle Corpus-/Researchinputs und gespeicherte Runtimezustände werden dadurch nicht aus historischen Worktrees ersetzt.
 
@@ -49,6 +49,12 @@ ATLAS_SOURCE_MISSING:census/census_meta.yaml
 ```
 
 Die aktuellen CLI-Prüfungen ersetzen keine erfolgreiche Ausführung dieser Testbindung. Die Testdateien und die YAML-Bibliothek gehören zum unveränderten Quellstand.
+
+## Gebundene Weiterentwicklung nach dem Freeze
+
+Der Katalog bleibt eine Ansicht des unveränderten Freeze-Commits. Spätere Produktänderungen werden im separaten [Entwicklungsbeleg](source/development-binding-v1.json) mit ursprünglichem und aktuellem SHA256 pro Datei gebunden. Die normale Prüfung akzeptiert nur dieses konkrete Delta und meldet seine Größe sowie veränderte Produktquellen ausdrücklich. Nicht gebundene oder nachträglich veränderte Produktdateien bleiben Fehler. Der Beleg erzeugt keine fachliche oder betriebliche Freigabe und macht den alten Katalog nicht zu einem neuen Gesamtkatalog.
+
+Die erste gebundene Änderung ist der [N1-Post-Close-Fortsetzungsanschluss](../ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md). Seine Abnahme und offenen Grenzen stehen im [Umsetzungsbeleg](../ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md). Die Freeze-Tags, ihr ursprünglicher Dateikatalog und die strikte Prüfung mit dem Modus frozen bleiben unverändert.
 
 Der vollständige Freeze umfasst den bereinigten Quellstand und die nachgeführten Dokumentationsansichten. Sein Tag ist oben gesondert benannt. Den exakten Arbeitsbaum, die Grenze der lokal vorhandenen Commit-Vorgeschichte und die einzige nicht versionierte Betriebsabhängigkeit `.venv/` prüft:
 

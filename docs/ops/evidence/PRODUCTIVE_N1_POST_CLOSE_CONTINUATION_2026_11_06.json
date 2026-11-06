@@ -1,0 +1,164 @@
+{
+  "created_at": "2026-11-06T20:49:59.670286+01:00",
+  "base_commit": "277f069bd215d3af0f609958731290a1e0163212",
+  "status": "bounded_implementation_verified",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "current_python_sources": [
+    {
+      "path": "docs/system_atlas/current_atlas.py",
+      "sha256": "b4d9c27b9b4f0be8c4fbd778b6f9612ea42765ee6cd7f117f1c3c0b2cd8c1f59"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_development_binding.py",
+      "sha256": "5f4e5e3ba2543187c29b5bba87e18a0dc9969186a50c7b9737ee45b6ef51ab01"
+    },
+    {
+      "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+      "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
+      "sha256": "1500edefe9d634dd94fe3d9de4fcc6af8704ae87af2a99b044bc0ccb37ae39eb"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "sha256": "11db8faefe5cfee61829446d0447cd1b79772bd8aca4179d4f877e5d4dbcc763"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
+      "sha256": "0f296f8f537a4ae4eb5f4071be2b53b9150e45aa0787d9d08fc6f7fc51a1c4b1"
+    },
+    {
+      "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
+      "sha256": "ec2ef3f832fa7c77f06d48aeb3b7b1fd9b051aabc1e6b33bc3a97cc778eb4cf1"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "sha256": "dd984a1f67024b06148c4e9b70f34954ed54bfa300287018b0a0f339d0dfb247"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "sha256": "9e60b419cbc81b1745a54fd4fe3153ce021a5df73bae60c61f24aeee1b8166e6"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ops/test_productive_n1_post_close_continuation_v1.py tests/ops/test_checked_lane_selection_publication_v1.py tests/ops/test_current_productive_post_close_feedback_v1.py tests/ops/test_treasury_durable_post_close_chain_v1.py tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py tests/ops/test_current_mf_n5_durable_lane_assignment_persistence_v1.py tests/ops/test_durable_portfolio_budget_recovery_v1.py tests/ops/test_outcome_retention_release_v1.py tests/ops/test_reconfiguration_protected_sources_v1.py docs/system_atlas/tests",
+      "result": "PASS",
+      "exit_code": 0,
+      "passed": 188,
+      "duration_seconds": 28.07,
+      "new_continuation_cases": 22,
+      "new_development_binding_cases": 10,
+      "stdout_final_line": "188 passed in 28.07s",
+      "scope": "temporary test roots, injected ranking/market/account/close inputs, actual original writer/recovery/Core functions"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m ruff check docs/system_atlas/current_atlas.py docs/system_atlas/tests/test_development_binding.py src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py tests/ops/test_current_productive_post_close_feedback_v1.py tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m ruff format --check docs/system_atlas/current_atlas.py docs/system_atlas/tests/test_development_binding.py src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py tests/ops/test_current_productive_post_close_feedback_v1.py tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "result": "PASS",
+      "exit_code": 0,
+      "files": 9
+    }
+  ],
+  "claims": {
+    "original_membership_writer_consumed": true,
+    "original_publication_and_cap24_consumed": true,
+    "original_durable_budget_recovery_consumed": true,
+    "actual_next_s7_core_consumed": true,
+    "completed_replay_reinvokes_core": false,
+    "completed_replay_readmits_account": false,
+    "uncertain_core_outcome_fails_closed": true,
+    "uncertain_core_automatic_readback_implemented": false,
+    "new_live_testnet_authorization": false,
+    "new_orders_or_capital_movements_executed": false,
+    "N_gt_1_enabled": false,
+    "economic_improvement_proven": false,
+    "physical_powerloss_proven": false
+  },
+  "known_open": [
+    {
+      "id": "KEEP_FRESHNESS",
+      "effect": "Existing long-held keep selection can fail original Cap24 with SELECTION_EXPIRED/SELECTION_STALE; negative countercase proves it stays blocked.",
+      "fixed": false
+    },
+    {
+      "id": "CORE_ACK_UNCERTAIN",
+      "effect": "Missing ACK after CONSUMING needs original consumer/ledger reconciliation; automatic readback is not implemented.",
+      "fixed": false
+    },
+    {
+      "id": "ACTIVE_SCOPE_CARRY",
+      "effect": "Existing lane generation and retention rules remain; continuous active scope/side state across changed selection generations is not newly proven.",
+      "fixed": false
+    },
+    {
+      "id": "LEGACY_YAML_ATLAS",
+      "effect": "The unchanged old YAML loader setup error from package A remains open; no replacement census or PASS substitution.",
+      "evidence": "OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
+      "new_execution_claimed": false
+    },
+    {
+      "id": "N5_AND_NATURAL_OPERATION",
+      "effect": "Five-position runtime, natural execution, quality, productive apply and power restoration remain outside this slice."
+    }
+  ],
+  "code_validation_binding": "SHA256 of all nine changed Python inputs; no functional source edits after the 188-PASS run.",
+  "frozen_catalog_rewritten": false,
+  "freeze_tags_changed": false,
+  "remote_CI_pass_claimed": false,
+  "document_validation": [
+    {
+      "path": "docs/system_atlas/README.md",
+      "tokens": "PASS",
+      "references": "PASS",
+      "references_checked": 5
+    },
+    {
+      "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
+      "tokens": "PASS",
+      "references": "PASS",
+      "references_checked": 5
+    },
+    {
+      "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md",
+      "tokens": "PASS",
+      "references": "PASS",
+      "references_checked": 2
+    }
+  ],
+  "atlas_validation": {
+    "result": "PASS",
+    "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "frozen_files": 22459,
+    "python_modules": 9963,
+    "named_definitions": 100915,
+    "lexical_imports": 175260,
+    "areas": 22,
+    "checked_links": 2607,
+    "product_paths_unchanged": false,
+    "development_bound_files": 15,
+    "catalog_scope": "FROZEN_SOURCE_SNAPSHOT",
+    "development_binding": "docs/system_atlas/source/development-binding-v1.json",
+    "runtime_authorization_effect": "NONE",
+    "removed_extra_map_files": 51,
+    "externalized_historical_files": 82,
+    "policy_files": 780,
+    "static_reference_sites": 9940,
+    "no_static_reference_discovered": 52,
+    "by_kind": {
+      "DEVELOPMENT_GUIDANCE": 10,
+      "MACHINE_CONFIGURATION": 285,
+      "DOCUMENTARY_INDEX_DATA": 7,
+      "DEVELOPMENT_CHECK_POLICY": 3,
+      "SOURCE_INTERFACE": 475
+    },
+    "runtime_effect_inferred": false,
+    "retained_consumed_documents": 3
+  }
+}

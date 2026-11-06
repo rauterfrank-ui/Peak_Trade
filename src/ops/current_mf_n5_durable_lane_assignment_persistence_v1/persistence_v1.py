@@ -169,6 +169,17 @@ def load_pending_selection_publication_v1(base: Path | str) -> dict[str, Any] | 
     return receipt
 
 
+def load_completed_selection_publication_v1(base: Path | str) -> dict[str, Any] | None:
+    path = checkpoint_root_for(base) / "selection_publication_completed_v1.json"
+    if not path.exists():
+        return None
+    receipt = _load_json_object(path, missing_code=FAILURE_PUBLICATION_PENDING)
+    material = {key: value for key, value in receipt.items() if key != "receipt_digest"}
+    if receipt.get("receipt_digest") != sha256_hex(canonical_json_dumps(material)):
+        _fail(FAILURE_PUBLICATION_PENDING, "completed_receipt_integrity")
+    return receipt
+
+
 def validate_pending_publication_source_v1(base: Path | str, receipt: Mapping[str, Any]) -> None:
     """An interrupted write can contain only its recorded old or intended topology."""
     path = checkpoint_path(checkpoint_root_for(base))
@@ -225,6 +236,9 @@ def finish_selection_publication_v1(
             or loaded.selection.integrity_digest != receipt["selection_digests"][lane]
         ):
             _fail(FAILURE_PUBLICATION_PENDING, f"selection_readback:{lane}")
+    _atomic_write_text(
+        root / "selection_publication_completed_v1.json", json.dumps(receipt, sort_keys=True)
+    )
     (root / PENDING_SELECTION_PUBLICATION).unlink()
 
 

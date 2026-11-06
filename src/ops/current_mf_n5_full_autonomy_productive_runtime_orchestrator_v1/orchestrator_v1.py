@@ -66,6 +66,10 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cons
     TERMINAL_BOUNDARY_FAIL_CLOSED,
     TERMINAL_BOUNDARY_PRE_EXTERNAL,
 )
+from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.post_close_continuation_v1 import (
+    ProductiveN1PostCloseContinuationV1,
+    PostCloseContinuationReplayV1,
+)
 from src.ops.current_mf_n5_full_autonomy_runtime_n5_completion_v1.completion_join_v1 import (
     OccupiedLaneRuntimeN5CompletionResultV1,
     complete_occupied_lane_runtime_n5_from_readiness_v1,
@@ -156,6 +160,7 @@ class ProductiveFullAutonomyN5RuntimeOrchestratorResultV1:
     post_allowed: bool
     execution_schedule: str
     lane_publication_resumed: bool = False
+    post_close_continuation_receipt: dict | None = None
 
 
 def _fail(code: str, detail: str = "") -> NoReturn:
@@ -322,8 +327,9 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     include_host_completion_rollup: bool = False,
     replacement_admission_by_lane=None,
+    post_close_continuation: ProductiveN1PostCloseContinuationV1 | None = None,
     **cycle_kwargs: Any,
-) -> ProductiveFullAutonomyN5RuntimeOrchestratorResultV1:
+) -> ProductiveFullAutonomyN5RuntimeOrchestratorResultV1 | PostCloseContinuationReplayV1:
     """Compose ranking→topology→Cap23/24→ingest→handoff→readiness (+ optional completion)."""
     _assert_orchestrator_authority()
     forbidden = sorted(set(cycle_kwargs) & FORBIDDEN_COMPOSE_KWARGS)
@@ -335,6 +341,29 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_AUTHORITY, "origin_main_sha")
     validate_membership_context_artifact_v1(membership)
+    continuation_handle = None
+    if post_close_continuation is not None:
+        from .post_close_continuation_v1 import (
+            prepare_post_close_continuation_v1,
+        )
+
+        prepared = prepare_post_close_continuation_v1(
+            post_close_continuation,
+            membership=membership,
+            ranking_snapshot=ranking_snapshot,
+            topology_root=topology_state_root_base,
+            writer=lane_assignment_writer,
+            owner=portfolio_budget_owner,
+            repository_sha=repository_sha,
+            origin_main_sha=origin_main_sha,
+            observed_unix=producer_observed_at_unix,
+            cap24=cap24_bind,
+            target_cardinality=target,
+            cycle_kwargs=cycle_kwargs,
+        )
+        if isinstance(prepared, PostCloseContinuationReplayV1):
+            return prepared
+        membership, continuation_handle = prepared
     membership = pin_open_positions_in_membership_v1(
         membership,
         portfolio=cap24_bind.observed_portfolio,
@@ -386,6 +415,18 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         cap24_bind,
         readiness_kwargs,
     )
+    if continuation_handle is not None:
+        from .post_close_continuation_v1 import admit_post_close_target_v1
+
+        admit_post_close_target_v1(
+            post_close_continuation,
+            continuation_handle,
+            owner=owner,
+            pairs=selected_pairs,
+            now_unix=cap24_bind.now_unix,
+            repo_sha=repository_sha,
+            recon_root=cap24_bind.reconciliation_state_root,
+        )
     readiness = compose_occupied_lane_n1_host_join_readiness_v1(
         selected_pairs,
         portfolio_budget_owner=owner,
@@ -414,7 +455,7 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
             _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
 
     budget = owner.budget_state_v1()
-    return ProductiveFullAutonomyN5RuntimeOrchestratorResultV1(
+    result = ProductiveFullAutonomyN5RuntimeOrchestratorResultV1(
         terminal_boundary=terminal,
         target_cardinality=target,
         occupied_lane_ids=tuple(sorted(readiness)),
@@ -428,3 +469,10 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         execution_schedule=EXECUTION_SCHEDULE,
         lane_publication_resumed=publication.resumed,
     )
+    if continuation_handle is not None:
+        from dataclasses import replace
+        from .post_close_continuation_v1 import acknowledge_post_close_consumer_v1
+
+        receipt = acknowledge_post_close_consumer_v1(continuation_handle, result)
+        result = replace(result, post_close_continuation_receipt=receipt)
+    return result
