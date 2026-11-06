@@ -3,7 +3,7 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "277f069bd215d3af0f609958731290a1e0163212",
+  "development_parent_commit": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
   "scope": "Explicit N1 continuation and CI repair delta; immutable frozen catalog, byte-protected originals and runtime state retained.",
   "files": [
     {
