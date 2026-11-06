@@ -350,6 +350,13 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     self._store.close()
                 raise
 
+    def durable_scope_identity_v1(self) -> dict[str, str]:
+        """Stable store/account address only; this is never an admission token."""
+        with self._lock:
+            if self._store is None:
+                raise PortfolioCapitalBudgetError("DURABLE_BUDGET_SCOPE_REQUIRED")
+            return {"root": str(self._store.root), "account": self._account_identity}
+
     def close(self) -> None:
         with self._lock:
             self._admitted = False

@@ -252,6 +252,7 @@ def run_n1_standing_pre_external_supervisor_v1(
     sleep_fn: Callable[[float], None] | None = None,
     skip_owner_go_validation: bool = False,
     cancel_requested: Callable[[], bool] | None = None,
+    post_close_startup_recovery: Any | None = None,
 ) -> StandingSupervisorRunResultV1:
     """Single standing supervisor session: recovery → supply → pretrade → continuous PRE_EXTERNAL run."""
 
@@ -318,8 +319,11 @@ def run_n1_standing_pre_external_supervisor_v1(
             "UNIFIED_RECOVERY_FAIL_CLOSED",
             recovery.fail_closed_reason,
         )
-    trace.recovery_completed = True
+    trace.observation_recovery_completed = True
+    trace.recovery_completed = recovery.runtime_owner_recovery_complete
     trace.recovery_steps = list(recovery.steps_completed)
+    trace.extra["recovery_evidence_scope"] = recovery.evidence_scope
+    trace.extra["pending_runtime_recovery_steps"] = list(recovery.pending_runtime_steps)
 
     if config.simulate_restart_before_continuous:
         recovery_restart = _run_unified_recovery_v1(
@@ -333,80 +337,6 @@ def run_n1_standing_pre_external_supervisor_v1(
                 recovery_restart.fail_closed_reason,
             )
         trace.extra["recovery_restart_before_continuous"] = True
-
-    ws_msgs = public_ws_messages if public_ws_messages is not None else []
-    mark_count = _refresh_public_supply_v1(
-        config=config,
-        ws_messages=ws_msgs,
-        public_rest_fetch=public_rest_fetch,
-    )
-    trace.public_supply_refreshed = True
-    trace.public_marks_count = mark_count
-
-    wp02_chain_error: type[Exception] | None = None
-    if wp02_hook is not None:
-        hook = wp02_hook
-    elif config.wp02_productive_default_enabled:
-        from src.ops.current_wp02_default_productive_universe_handoff_v1.errors_v1 import (
-            Wp02ProductiveDefaultChainError,
-        )
-        from src.ops.current_wp02_default_productive_universe_handoff_v1.wp02_hook_v1 import (
-            Wp02HookBindingV1,
-            build_default_wp02_hook_v1,
-        )
-
-        wp02_chain_error = Wp02ProductiveDefaultChainError
-        if (
-            config.wp02_universe_source_payload is None
-            or config.wp02_universe_mark_price_payload is None
-        ):
-            raise StandingSupervisorError("WP02_UNIVERSE_INJECT_REQUIRED")
-        wp02_state = config.wp02_state_root or (config.lane_state_root / "wp02_runtime")
-        topo_base = config.wp02_topology_state_root_base or (config.lane_state_root / "topology")
-        binding = Wp02HookBindingV1(
-            wp02_state_root=wp02_state,
-            topology_state_root_base=topo_base,
-            repository_sha=origin_main_sha,
-            universe_source_payload=config.wp02_universe_source_payload,
-            universe_mark_price_payload=config.wp02_universe_mark_price_payload,
-            source_event_time=config.wp02_universe_source_event_time,
-        )
-        hook = build_default_wp02_hook_v1(binding)
-    else:
-        hook = noop_wp02_hook_v1
-    wp02_result_sink: dict[str, Any] = {}
-    try:
-        hook(
-            Wp02InsertionContextV1(
-                public_store_root=config.public_store_root,
-                venue_native_id=config.venue_native_id,
-                canonical_instrument_id=config.canonical_instrument_id,
-                economic_md_mark_count=mark_count,
-                tick_index=trace.tick_index,
-                wp02_result_sink=wp02_result_sink,
-            )
-        )
-    except Exception as exc:
-        if wp02_chain_error is not None and isinstance(exc, wp02_chain_error):
-            raise StandingSupervisorError(getattr(exc, "code", "WP02_FAIL"), str(exc)) from exc
-        raise
-    trace.wp02_hook_invoked = True
-    chain_result = wp02_result_sink.get("chain_result")
-    if chain_result is not None:
-        trace.wp02_cap21_refresh_invoked = bool(chain_result.cap21_refresh_invoked)
-        trace.wp02_hard_facts_handoff_invoked = bool(chain_result.hard_facts_handoff_invoked)
-        trace.wp02_membership_persisted = bool(chain_result.membership_persisted)
-        trace.extra["wp02_ranking_snapshot_id"] = str(
-            (chain_result.ranking_snapshot or {}).get("ranking_snapshot_id") or ""
-        )
-        trace.extra["wp02"] = {"chain_result": chain_result}
-
-    trace.pretrade_freshness_status = _refresh_pretrade_truth_v1(
-        bound=bound,
-        transport=pretrade_transport,
-        require_collection=config.require_pretrade_collection,
-    )
-    trace.pretrade_truth_refreshed = True
 
     owner_go_consumed = False
     policy_result: PolicyGovernedContinuousRunResultV1 | None = None
@@ -424,6 +354,91 @@ def run_n1_standing_pre_external_supervisor_v1(
         **({"retry_sleep": sleep_fn} if sleep_fn is not None else {}),
     )
     try:
+        if post_close_startup_recovery is not None:
+            from .startup_binding_v1 import recover_post_close_before_runtime_v1
+
+            trace.extra["post_close_startup_recovery"] = recover_post_close_before_runtime_v1(
+                post_close_startup_recovery,
+                current_bound=bound,
+                current_topology_root=config.lane_state_root,
+                budget_host=budget_host,
+            )
+        ws_msgs = public_ws_messages if public_ws_messages is not None else []
+        mark_count = _refresh_public_supply_v1(
+            config=config,
+            ws_messages=ws_msgs,
+            public_rest_fetch=public_rest_fetch,
+        )
+        trace.public_supply_refreshed = True
+        trace.public_marks_count = mark_count
+
+        wp02_chain_error: type[Exception] | None = None
+        if wp02_hook is not None:
+            hook = wp02_hook
+        elif config.wp02_productive_default_enabled:
+            from src.ops.current_wp02_default_productive_universe_handoff_v1.errors_v1 import (
+                Wp02ProductiveDefaultChainError,
+            )
+            from src.ops.current_wp02_default_productive_universe_handoff_v1.wp02_hook_v1 import (
+                Wp02HookBindingV1,
+                build_default_wp02_hook_v1,
+            )
+
+            wp02_chain_error = Wp02ProductiveDefaultChainError
+            if (
+                config.wp02_universe_source_payload is None
+                or config.wp02_universe_mark_price_payload is None
+            ):
+                raise StandingSupervisorError("WP02_UNIVERSE_INJECT_REQUIRED")
+            wp02_state = config.wp02_state_root or (config.lane_state_root / "wp02_runtime")
+            topo_base = config.wp02_topology_state_root_base or (
+                config.lane_state_root / "topology"
+            )
+            binding = Wp02HookBindingV1(
+                wp02_state_root=wp02_state,
+                topology_state_root_base=topo_base,
+                repository_sha=origin_main_sha,
+                universe_source_payload=config.wp02_universe_source_payload,
+                universe_mark_price_payload=config.wp02_universe_mark_price_payload,
+                source_event_time=config.wp02_universe_source_event_time,
+            )
+            hook = build_default_wp02_hook_v1(binding)
+        else:
+            hook = noop_wp02_hook_v1
+        wp02_result_sink: dict[str, Any] = {}
+        try:
+            hook(
+                Wp02InsertionContextV1(
+                    public_store_root=config.public_store_root,
+                    venue_native_id=config.venue_native_id,
+                    canonical_instrument_id=config.canonical_instrument_id,
+                    economic_md_mark_count=mark_count,
+                    tick_index=trace.tick_index,
+                    wp02_result_sink=wp02_result_sink,
+                )
+            )
+        except Exception as exc:
+            if wp02_chain_error is not None and isinstance(exc, wp02_chain_error):
+                raise StandingSupervisorError(getattr(exc, "code", "WP02_FAIL"), str(exc)) from exc
+            raise
+        trace.wp02_hook_invoked = True
+        chain_result = wp02_result_sink.get("chain_result")
+        if chain_result is not None:
+            trace.wp02_cap21_refresh_invoked = bool(chain_result.cap21_refresh_invoked)
+            trace.wp02_hard_facts_handoff_invoked = bool(chain_result.hard_facts_handoff_invoked)
+            trace.wp02_membership_persisted = bool(chain_result.membership_persisted)
+            trace.extra["wp02_ranking_snapshot_id"] = str(
+                (chain_result.ranking_snapshot or {}).get("ranking_snapshot_id") or ""
+            )
+            trace.extra["wp02"] = {"chain_result": chain_result}
+
+        trace.pretrade_freshness_status = _refresh_pretrade_truth_v1(
+            bound=bound,
+            transport=pretrade_transport,
+            require_collection=config.require_pretrade_collection,
+        )
+        trace.pretrade_truth_refreshed = True
+
         policy_result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             authorization=authorization,
             origin_main_sha=origin_main_sha,
@@ -487,7 +502,7 @@ def run_n1_standing_pre_external_supervisor_v1(
         )
 
     ok = (
-        trace.recovery_completed
+        trace.observation_recovery_completed
         and trace.public_supply_refreshed
         and trace.pretrade_truth_refreshed
         and owner_go_consumed

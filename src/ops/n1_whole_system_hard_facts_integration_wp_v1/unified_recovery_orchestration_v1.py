@@ -45,6 +45,10 @@ class UnifiedRecoveryOrchestrationResultV1:
     steps_completed: list[str] = field(default_factory=list)
     fail_closed_reason: str = ""
     trace: list[dict[str, Any]] = field(default_factory=list)
+    evidence_scope: str = "PUBLIC_PRIVATE_OBSERVATION_RECOVERY_AND_CONTRACT_CHECKS"
+    runtime_owner_recovery_complete: bool = False
+    contract_checks: dict[str, bool] = field(default_factory=dict)
+    pending_runtime_steps: list[str] = field(default_factory=lambda: list(RECOVERY_STEP_ORDER[4:]))
 
 
 def execute_unified_recovery_orchestration_v1(
@@ -86,23 +90,26 @@ def execute_unified_recovery_orchestration_v1(
     if not safety.instrument_epoch_safe:
         result.fail_closed_reason = "INSTRUMENT_EPOCH_UNSAFE"
         return result
-    result.steps_completed.append(RECOVERY_STEP_ORDER[4])
+    result.contract_checks["instrument_epoch_rule_sample"] = safety.instrument_epoch_safe
 
     exec_proof = prove_execution_lifecycle_chain_v1()
     if not exec_proof.order_lifecycle_contract:
         result.fail_closed_reason = "ORDER_LIFECYCLE_RECONSTRUCTION_FAIL"
         return result
-    result.steps_completed.extend(RECOVERY_STEP_ORDER[5:8])
+    result.contract_checks["simulated_order_lifecycle"] = exec_proof.order_lifecycle_contract
+    result.contract_checks["reservation_state_definitions"] = exec_proof.reservation_restart_safe
+    result.contract_checks["treasury_guard_sample"] = exec_proof.treasury_feedback_closed
 
     if not safety.durable_kill_switch_bound:
         result.fail_closed_reason = "KILL_SWITCH_STATE_UNRESOLVED"
         return result
-    result.steps_completed.append(RECOVERY_STEP_ORDER[8])
+    result.contract_checks["kill_switch_blocking_rule"] = safety.durable_kill_switch_bound
 
     if not safety.position_custody_safe:
         result.fail_closed_reason = "MEMBERSHIP_CUSTODY_UNSAFE"
         return result
-    result.steps_completed.append(RECOVERY_STEP_ORDER[9])
-    result.steps_completed.append(RECOVERY_STEP_ORDER[10])
-    result.ok = len(result.steps_completed) == len(RECOVERY_STEP_ORDER)
+    result.contract_checks["position_custody_rule_sample"] = safety.position_custody_safe
+    # These sample contracts do not reconstruct this account's orders, holds,
+    # treasury, instrument generation or actual runtime eligibility.
+    result.ok = len(result.steps_completed) == 4 and all(result.contract_checks.values())
     return result

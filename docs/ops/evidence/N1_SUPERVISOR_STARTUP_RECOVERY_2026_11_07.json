@@ -1,0 +1,174 @@
+{
+  "schema": "peaktrade.n1_supervisor_startup_recovery_evidence.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "ba01032d7c1e423bd75287896e79b1739d7ddc5b",
+  "source_binding": [
+    {
+      "path": "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "base_sha256": "07360a51f360866b31f0034d11e439679d53d142135cd7d0d5417b3ba289b5b4",
+      "sha256": "7db32ee8e30d1a297dd7286365ae5ebd1b0b6ec0cd805c5e5511da479ab2381d"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/evidence_v1.py",
+      "base_sha256": "0039449a5fb3b52408993b7704913924181d4ef977cad16f6a3ee1ab36fbbd9b",
+      "sha256": "6a1ab80cd4011ff5585369b341e5d90176f64e7034e12172a295b57c4ef660d7"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py",
+      "base_sha256": "12b649e0552efe94ebed19695f9d1d5da2b204e2ded8ba12e52815e0cc05715a",
+      "sha256": "6c041991182a939e21c5226e87b9186b55014d6d5f797d0ffe73538cb9b788d8"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
+      "base_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
+      "sha256": "9f2602547b7ecb181a174338b20eb3e57edc3a32e52acaf92e1202de1d608675"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
+      "base_sha256": "ac120c6b79d262fe3c3f24856d7450e66551985a195a23f4a0f98857eb57726d",
+      "sha256": "9555f1944e28983db7f0eae524d7a0ce01815d4c3e04277f9b82a738222294c4"
+    },
+    {
+      "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py",
+      "base_sha256": "3ee2df6973fd4555a8de2c52140aa34b92a28bfb1cbfe5547af99437f68689c8",
+      "sha256": "9ed2abdc2ff19d8c0f442f5f9cab3bea1e89241c4877876b5b0aa0af4b6e538b"
+    },
+    {
+      "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/unified_recovery_orchestration_v1.py",
+      "base_sha256": "405e0ac4b10895c74781dee12f8e1dcb75229a76668874ac1537449251bb4a0f",
+      "sha256": "48bf093309ef9ce16475f659aecd9addff14d7785e5d019b1dd19e4014e48357"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "base_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
+      "sha256": "9cc77f5c1e331326703e20dccef2c803ed5126696b51b8eef91ad774d6643e89"
+    },
+    {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "base_sha256": "5996f96ef77dbbb4a38f673bc144129a988ab3b032f255033128b2377162d484",
+      "sha256": "d2315cbe0ed90b6477cb1dc2bf528c3d53c39c6ab249edeb518700e5dd88c54e"
+    },
+    {
+      "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
+      "base_sha256": "a8110453d897060a3424d253cf53c339b43ae0c5c10aed19bbc0f9a241f79ac0",
+      "sha256": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3"
+    },
+    {
+      "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "base_sha256": "e5413bec76a85eab72f5f2963bef254343003cf100a5d7ba9d46328521a4ae78",
+      "sha256": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41"
+    },
+    {
+      "path": "tests/ops/test_n1_startup_recovery_scope_v1.py",
+      "base_sha256": null,
+      "sha256": "b3fec9a6e1d1ae58b5aa2839aa4034fd1b49e1d69b9e787063db436732719a6a"
+    },
+    {
+      "path": "tests/ops/test_n1_supervisor_post_close_startup_recovery_v1.py",
+      "base_sha256": null,
+      "sha256": "69fe95b87f0e8759961ef68de7f71c09bbafd50ba95d9a3d054fb27b00c51a10"
+    },
+    {
+      "path": "tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py",
+      "base_sha256": "502e64fa6388a3a49f046c0a8c1ba46024edee0b010451423105b3b04ae6aeff",
+      "sha256": "2606b1e543e94af18a2af75737f1005a067929c36d032c38d778bd1ac54391ba"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "base_sha256": "e7a694925508a3ae3978d614c6c88a22e6edb2fd70e87e4e3a1ae03887cc7ac7",
+      "sha256": "38dbbbde172d3b13aeaf2ce3265f6e6da0703f533e2136a80d2844fe9faa5936"
+    }
+  ],
+  "implemented": [
+    "Existing standing supervisor invokes original historical post-close recovery before WP02 or a new Core cycle when the caller supplies the exact original typed invocation.",
+    "Exact original topology and writer, budget root/account, full target generation, existing CONSUMING/ACKED receipt and fresh private account reconciliation are required.",
+    "Original prepared completion publication and ACK restoration do not invoke historical Core again or admit budget. The original next S6/S5/S7 cycle consumes its next distinct C1.",
+    "Observation recovery and sample contract checks no longer attest actual financial owner recovery. Broad unified_restart_safe remains false without actual runtime owner evidence."
+  ],
+  "verification": {
+    "targeted_integration": {
+      "passed": 128,
+      "seconds": 11.92,
+      "log": "/tmp/peaktrade-n1-startup-integration.txt",
+      "note": "Includes the earlier 16-case startup file. Two final integration negatives and stronger ordering/single-new-Core assertions are covered in the later run."
+    },
+    "owner_regressions_and_extended_acceptance": {
+      "passed": 123,
+      "failed": 6,
+      "seconds": 50.45,
+      "log": "/tmp/peaktrade-n1-startup-owner-regressions.txt",
+      "startup_cases_passed": 18,
+      "note": "Contains overlapping startup cases; counts must not be summed as independent unique passes."
+    },
+    "red_scope": {
+      "failed": 1,
+      "log": "/tmp/peaktrade-n1-startup-scope-red.txt",
+      "cause": "Original sample contracts were reported as actual order/reservation/treasury/runtime recovery."
+    },
+    "test_harness_corrections": [
+      "Create nested temporary transition parent before original fixture writers.",
+      "Bind injected mark/index observations to the actual target BoundInstrument.",
+      "Pass the original topology base to S8 instead of appending another LANE_1. No productive validation was bypassed."
+    ],
+    "actual_core_observation": "Wrap original runtime Core without replacing its result: old after-close Core call list is unchanged during ACK recovery; exactly one new actual Core call occurs for the next authorized C1. WP02 observes ACKED before any new Core call.",
+    "guards": [
+      "wrong topology",
+      "wrong account",
+      "wrong durable budget root",
+      "changed target generation",
+      "absent original receipt",
+      "membership-only phase",
+      "corrupt receipt",
+      "missing original output",
+      "corrupt original output",
+      "changed original invocation",
+      "lost writer lock",
+      "pending venue orders",
+      "changed observed account",
+      "transient private transport failure",
+      "actual supervisor failure before WP02 and owner close"
+    ],
+    "population": "Injected offline market/account/ranking observations and temporary original stores. No real venue IO or economic-quality claim.",
+    "governance": {
+      "passed": 83,
+      "seconds": 4.44,
+      "log": "/tmp/peaktrade-n1-startup-governance.txt"
+    },
+    "static_guards": {
+      "atlas": "PASS, frozen 22459 files; exact development delta 140 files",
+      "law_generation_and_currency": "PASS",
+      "core_seal": "PASS, 20 protected sources, SEALED",
+      "ruff_changed": "PASS, 15 files lint/format",
+      "frozen_format": "PASS, 31 exact frozen files retained and 9882 formatted files checked"
+    }
+  },
+  "open_acceptance": {
+    "files": [
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+    ],
+    "failures": 6,
+    "observed_causes": [
+      "Two-epoch harness bootstraps only 14 candles; current original input consumer rejects finalized_history_not_ready.",
+      "Natural LONG setup fails its enter_long assertion before the changed recovery/admission consumer."
+    ],
+    "baseline_comparison": "Original recovery, trace, supervisor and WP03 harness modules from the base commit are evaluated in memory; all test stores remain temporary. This is a bounded source comparison, not a pristine full-checkout test.",
+    "baseline_result": {
+      "passed": 7,
+      "failed": 6,
+      "seconds": 0.5,
+      "log": "/tmp/peaktrade-wp03-wp04-baseline.txt",
+      "same_failed_test_ids": true
+    }
+  },
+  "limits": [
+    "Caller must retain/provide the full original typed invocation. No process host loader or daemon startup was added.",
+    "No original completion means outcome uncertainty remains fenced; no fabricated ACK, empty budget genesis, permit or cursor reset.",
+    "Historical ACK repair never grants budget admission; fresh original capital recovery stays at the existing Entry seam.",
+    "Six broader WP03/WP04 acceptance failures remain open and prevent an overall outer-ring completion claim.",
+    "No complete unattended process/host/power-loss recovery or full runtime safety admission claim.",
+    "No natural continuous N5 runtime, venue fill or live trading claim. Core sealed source bytes, financial parameters and activation flags are unchanged.",
+    "Historical Kraken/link research stays deferred. Latency Control remains a later separate runbook."
+  ]
+}

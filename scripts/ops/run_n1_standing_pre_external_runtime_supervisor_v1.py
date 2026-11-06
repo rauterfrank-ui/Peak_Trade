@@ -83,6 +83,7 @@ def _run_offline_inject_session(
         "real_venue_post_allowed": REAL_VENUE_POST_ALLOWED,
         "owner_go_consumed": result.owner_go_consumed,
         "recovery_before_cycle": result.trace.recovery_completed,
+        "observation_recovery_before_cycle": result.trace.observation_recovery_completed,
         "transport_scope": TRANSPORT_SCOPE_OFFLINE_INJECT,
         "authority_invariants_ok": result.authority_invariants_ok,
         "origin_main_sha_used": origin_main_sha,

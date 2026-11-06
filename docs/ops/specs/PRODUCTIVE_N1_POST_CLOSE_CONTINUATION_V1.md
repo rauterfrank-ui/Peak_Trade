@@ -57,7 +57,26 @@ Liegt der exakte unveränderte Abschluss vor oder wurde seine vorbereitete Verö
 
 Fehlen sowohl finaler als auch vorbereiteter Originalabschluss oder ist der benötigte Beleg unvollständig, korrupt oder widersprüchlich, meldet die Wiederholung weiterhin POST_CLOSE_CORE_OUTCOME_UNCERTAIN_RECONCILIATION_REQUIRED. Ein Cursor, ein einzelner gespeicherter Decisionrecord oder eine abgeschlossene vorgelagerte S5-Phase ersetzt diesen Beleg nicht. Insbesondere bleibt ein Abbruch nach Coreverbrauch, aber vor dem ersten dauerhaften vorbereiteten Consumerbeleg gesperrt. Alte ungewisse Übergänge ohne diesen Originalbeleg werden nicht automatisch migriert. Der [Rücklesebeleg](../evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.md) grenzt die geprüfte Unterbrechung genau ab. Ein physischer Stromausfall wird hier nicht als nachgewiesen bezeichnet.
 
-Franks Ziel der selbsttätigen Wiederherstellung der Betriebsbereitschaft bleibt verbindlich: Übergang aufklären, aktuelle Originalzustände reconciliieren und erst nach erneuter gültiger Admission weiterarbeiten. Der historische ACK allein schaltet kein Konto frei. Der vorhandene originale Budget-Recoveryowner kann nach frischen Kapital-/Portfolio-/Reconciliationinputs wieder zulassen; stale Facts bleiben gesperrt. Diese Ownerwirkung ist gesondert offline geprüft. Die automatische Hostauslösung und durchgängige Verknüpfung aller Betriebsbereitschaftsgates sowie die Aufklärung eines Ausgangs ohne jeden Originalabschluss bleiben weitere notwendige Außenringarbeit.
+Franks Ziel der selbsttätigen Wiederherstellung der Betriebsbereitschaft bleibt verbindlich: Übergang aufklären, aktuelle Originalzustände reconciliieren und erst nach erneuter gültiger Admission weiterarbeiten. Der historische ACK allein schaltet kein Konto frei. Der vorhandene originale Budget-Recoveryowner kann nach frischen Kapital-/Portfolio-/Reconciliationinputs wieder zulassen; stale Facts bleiben gesperrt. Diese Ownerwirkung ist gesondert offline geprüft.
+
+## Anschluss am bestehenden Hoststart
+
+Der bestehende [Standing-N1-Supervisor](../../../src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py) nimmt optional post_close_startup_recovery entgegen. PostCloseStartupRecoveryRequestV1 bindet den vom aufrufenden Owner erhaltenen ursprünglichen Orchestratoraufruf. Er wird nicht aus einem Dateiscan, Cursor oder einer vermuteten Instrumentidentität zusammengesetzt.
+
+Nach den bestehenden Owner-/Account-/Beobachtungsprüfungen und vor dem WP02-Hook beziehungsweise einem weiteren Corezyklus prüft der [Startanschluss](../../../src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py):
+
+- gehaltenen Originalassignmentwriter und exakt dieselbe Topologie-/Lane-Statewurzel;
+- ursprüngliche dauerhafte Budgetwurzel und denselben expliziten Account;
+- vorhandenen integren Übergangsbeleg in CONSUMING oder ACKED und die vollständige aktuelle BoundInstrument-Generation;
+- neue private Kontobeobachtung des bestehenden Budgethosts, offene Orders und ungelöste originale Ausführungsreconciliation.
+
+Nur dann ruft er die ursprüngliche Fortsetzungs-Recovery mit dem wieder geöffneten Originalbudgetowner auf. Der historische Replay darf einen vorbereiteten Originalabschluss veröffentlichen und sein ACK nachtragen. MEMBERSHIP_STORED oder ein fehlender Übergang werden an diesem Startanschluss abgewiesen: Hier darf kein neuer Coreverbrauch als Recovery entstehen. Danach arbeitet der bestehende Supervisor mit seinem ursprünglichen S6/S5/S7-Pfad und eigener gültiger Authorization weiter. Seine lane_state_root ist im aktuellen S8-Consumer die Topologiebasis; ein zusätzlich angehängtes LANE_1 würde eine falsche neue Stateadresse erzeugen.
+
+Der Startanschluss setzt keine Budgetadmission. Diese bleibt bei der bestehenden Entry-Schnittstelle des Budgethosts und benötigt neue kanonische Kapital-/Portfoliofacts. Der Supervisor schließt seinen Owner auch bei nachgelagertem Startfehler. Der [Hoststartbeleg](../evidence/N1_SUPERVISOR_STARTUP_RECOVERY_2026_11_07.md) dokumentiert Ablauf, Gegenfälle und Reichweite.
+
+Die bestehende Unified-Recovery meldet Beobachtungs-Recovery und Beispiel-/Vertragsprüfungen getrennt. Ein simulierter Order-Lifecycle oder ein geprüftes Reservation-Enum ist keine Rekonstruktion der tatsächlichen Orders, Holds oder Treasury. recovery_completed und unified_restart_safe bleiben deshalb für eine unbelegte vollständige Owner-Recovery false; observation_recovery_completed bezeichnet den engeren Beobachtungserfolg. Ein erfolgreicher begrenzter PRE_EXTERNAL-Supervisorlauf hebt diese Grenze nicht auf.
+
+Offen bleiben die dauerhafte Bereitstellung des vollständigen Startkontexts durch einen Prozesshost nach echtem Prozessverlust, die durchgängige Verknüpfung aller Betriebsbereitschafts-/Safetygates und die Aufklärung eines Ausgangs ohne jeden Originalabschluss. Es wird kein vollständiger autonomer Hostneustart behauptet.
 
 ## Bestehende Auswahl- und Zustandsregeln
 

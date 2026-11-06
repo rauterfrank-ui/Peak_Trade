@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "82615aa2cdc01b74a08204b6a156712a6e29344f",
-  "scope": "Explicit N1 continuation, freshness, durable original output publication/ACK recovery and CI repair delta; frozen inventory, protected source bytes and runtime state retained.",
+  "development_parent_commit": "ba01032d7c1e423bd75287896e79b1739d7ddc5b",
+  "scope": "Explicit N1 continuation, freshness, durable output/ACK recovery, standing supervisor startup/account join and truthful recovery scope; frozen inventory, protected sources and runtime state retained.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -47,6 +47,16 @@
       "sha256": "23fbd6add90519d07136db25e74cc96078eb26b4fbf95674e1c5c70adf2cfddb"
     },
     {
+      "path": "docs/ops/evidence/N1_SUPERVISOR_STARTUP_RECOVERY_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "9b1c142317846a027008fb01957702f305314082ef3a4877ec06fded6d66624a"
+    },
+    {
+      "path": "docs/ops/evidence/N1_SUPERVISOR_STARTUP_RECOVERY_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "29f951a775b6b2cfa732b95a7d4ace0882d8de06da2e985c497c99abefdf0675"
+    },
+    {
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
       "before_sha256": null,
       "sha256": "3352a356b5947c239128a9b8441a685b8afe7ff63e0e5f481fb3b6a1bded2b96"
@@ -84,7 +94,7 @@
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
-      "sha256": "bb05ab4afa23ed0c3d7c14692d52cd8faf60ec3a6e46c2d505feb16d3bc038bc"
+      "sha256": "58830cd2f2ee64f15c2a48dce31016feba80b7a82610d1c1241b87b9867c8785"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -185,6 +195,11 @@
       "path": "scripts/ops/run_golden_happy_vector_realtime_universe_liveness_closure_v1.py",
       "before_sha256": "449caecaaf51f2ec0ec4beb9a302328e63e92dc0bba747b7c774b2fa35dda2a9",
       "sha256": "0d073cd20861d4ee55d2e97afb3ca553dcffc0507476c63e2e8de798cdaa425a"
+    },
+    {
+      "path": "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "before_sha256": "07360a51f360866b31f0034d11e439679d53d142135cd7d0d5417b3ba289b5b4",
+      "sha256": "7db32ee8e30d1a297dd7286365ae5ebd1b0b6ec0cd805c5e5511da479ab2381d"
     },
     {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
@@ -372,14 +387,49 @@
       "sha256": "949b0ce66d395269661df59524e80a131ae51c9f43f0b9ec32e6b69c850714c5"
     },
     {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/evidence_v1.py",
+      "before_sha256": "0039449a5fb3b52408993b7704913924181d4ef977cad16f6a3ee1ab36fbbd9b",
+      "sha256": "6a1ab80cd4011ff5585369b341e5d90176f64e7034e12172a295b57c4ef660d7"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py",
+      "before_sha256": "12b649e0552efe94ebed19695f9d1d5da2b204e2ded8ba12e52815e0cc05715a",
+      "sha256": "6c041991182a939e21c5226e87b9186b55014d6d5f797d0ffe73538cb9b788d8"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
+      "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
+      "sha256": "9f2602547b7ecb181a174338b20eb3e57edc3a32e52acaf92e1202de1d608675"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
+      "before_sha256": "ac120c6b79d262fe3c3f24856d7450e66551985a195a23f4a0f98857eb57726d",
+      "sha256": "9555f1944e28983db7f0eae524d7a0ce01815d4c3e04277f9b82a738222294c4"
+    },
+    {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/unattended_v1.py",
       "before_sha256": "810da1d3ed28b604f141206fdc412ccdf2e15547e3976ae90f4bccc4cde17c18",
       "sha256": "defc51d42105f7a11df12ba3bcd08aa823e917cc2d63eb4f4a1a598cbb47f08c"
     },
     {
+      "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py",
+      "before_sha256": "3ee2df6973fd4555a8de2c52140aa34b92a28bfb1cbfe5547af99437f68689c8",
+      "sha256": "9ed2abdc2ff19d8c0f442f5f9cab3bea1e89241c4877876b5b0aa0af4b6e538b"
+    },
+    {
+      "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/unified_recovery_orchestration_v1.py",
+      "before_sha256": "405e0ac4b10895c74781dee12f8e1dcb75229a76668874ac1537449251bb4a0f",
+      "sha256": "48bf093309ef9ce16475f659aecd9addff14d7785e5d019b1dd19e4014e48357"
+    },
+    {
       "path": "src/ops/okx_multi_window_foundation_v1/launcher_v1.py",
       "before_sha256": "e57be0fd0d09873a92ccded866435340fc9154c9d4dd89a456cff235bb3faf09",
       "sha256": "978cbd7cc2036a16793f59aea82aef62cb0a2272888c09d19545a31ac8c0b0e1"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
+      "sha256": "9cc77f5c1e331326703e20dccef2c803ed5126696b51b8eef91ad774d6643e89"
     },
     {
       "path": "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py",
@@ -517,6 +567,11 @@
       "sha256": "d3697c09c66296d075c40019d2685ef178f9750360e7635acd43fc51d119e315"
     },
     {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "before_sha256": "5996f96ef77dbbb4a38f673bc144129a988ab3b032f255033128b2377162d484",
+      "sha256": "d2315cbe0ed90b6477cb1dc2bf528c3d53c39c6ab249edeb518700e5dd88c54e"
+    },
+    {
       "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
       "before_sha256": "2a081ef8904aa9b0db5a30302aa23678278271991d9befb7c4725dfeb9378a64",
       "sha256": "ad5b6b88d13ba01597a08df0a0159ece014ca85db997aa9851116d0853b72865"
@@ -539,7 +594,7 @@
     {
       "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
       "before_sha256": "0d9c2014b1a52cafde4d66e41870432f976b6acfd4571cdd2b76dd870d47c6f0",
-      "sha256": "a8110453d897060a3424d253cf53c339b43ae0c5c10aed19bbc0f9a241f79ac0"
+      "sha256": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3"
     },
     {
       "path": "tests/ops/test_docs_reference_targets_resolution_v1.py",
@@ -587,6 +642,26 @@
       "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
     },
     {
+      "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "before_sha256": "e5413bec76a85eab72f5f2963bef254343003cf100a5d7ba9d46328521a4ae78",
+      "sha256": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41"
+    },
+    {
+      "path": "tests/ops/test_n1_startup_recovery_scope_v1.py",
+      "before_sha256": null,
+      "sha256": "b3fec9a6e1d1ae58b5aa2839aa4034fd1b49e1d69b9e787063db436732719a6a"
+    },
+    {
+      "path": "tests/ops/test_n1_supervisor_post_close_startup_recovery_v1.py",
+      "before_sha256": null,
+      "sha256": "69fe95b87f0e8759961ef68de7f71c09bbafd50ba95d9a3d054fb27b00c51a10"
+    },
+    {
+      "path": "tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py",
+      "before_sha256": "502e64fa6388a3a49f046c0a8c1ba46024edee0b010451423105b3b04ae6aeff",
+      "sha256": "2606b1e543e94af18a2af75737f1005a067929c36d032c38d778bd1ac54391ba"
+    },
+    {
       "path": "tests/ops/test_pending_bound_decision_identity_v1.py",
       "before_sha256": "ed25e32bb376d8345eac2b1dfcd14d7e5d020d44271ddcdbcaf745ada1f65fa1",
       "sha256": "9486fe725b1c2f52bb6b73db9e8425027ebd10fd7cd67868fd78e7dd3d758792"
@@ -614,7 +689,7 @@
     {
       "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "e7a694925508a3ae3978d614c6c88a22e6edb2fd70e87e4e3a1ae03887cc7ac7"
+      "sha256": "38dbbbde172d3b13aeaf2ce3265f6e6da0703f533e2136a80d2844fe9faa5936"
     },
     {
       "path": "tests/ops/test_single_selected_future_policy_v1.py",

@@ -61,7 +61,15 @@ NEXT = "2026-11-03T00:01:01Z"
 NOW = T0 + 62
 
 
-def _fixture(tmp_path, monkeypatch, *, replace_instrument=False, remaining="0", selection_age=None):
+def _fixture(
+    tmp_path,
+    monkeypatch,
+    *,
+    replace_instrument=False,
+    remaining="0",
+    selection_age=None,
+    budget_root=None,
+):
     age = (3600 if replace_instrument else 0) if selection_age is None else selection_age
     monkeypatch.setattr(sources, "OBSERVED_UNIX", T0 - age)
     monkeypatch.setattr(sources, "SOURCE_EVENT", str(int((T0 - age) * 1000)))
@@ -107,7 +115,7 @@ def _fixture(tmp_path, monkeypatch, *, replace_instrument=False, remaining="0", 
     )
     memory_owner.close()
     owner = PortfolioCapitalReservationBudgetOwnerV1(
-        durable_root=tmp_path / "budget",
+        durable_root=budget_root or tmp_path / "budget",
         durable_account_identity="acct-1",
         durable_mode="create",
         durable_lane_bindings={"LANE_1": bound},
