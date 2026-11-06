@@ -88,13 +88,13 @@ def _parse_event_time_unix(value: str) -> Optional[float]:
 
 def _valid_until_rfc(
     *,
-    selected_at_event_time: str,
+    validation_event_time: str,
     refresh_cadence_seconds: float,
     min_holding_period_seconds: float,
     fallback_unix: float,
 ) -> str:
-    """Validity horizon bound to selection event-time (not wall-clock observe time)."""
-    base = _parse_event_time_unix(selected_at_event_time)
+    """Bind validity to the supporting event, independently of holding duration."""
+    base = _parse_event_time_unix(validation_event_time)
     if base is None:
         base = float(fallback_unix)
     horizon = max(float(refresh_cadence_seconds), float(min_holding_period_seconds))
@@ -215,7 +215,10 @@ def _validate_ranking_dict_v1(
         failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_STALE.value)
     elif event_unix is not None:
         age = producer_observed_at_unix - event_unix
-        if age > float(max_ranking_age_seconds):
+        if age < 0:
+            # A future ranking cannot support a new or renewed selection.
+            failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value)
+        elif age > float(max_ranking_age_seconds):
             failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_STALE.value)
 
     if snap.selection_authority_created:
@@ -598,7 +601,7 @@ def produce_single_selected_future_v1(
                 selected_at_wall_time=wall_rfc,
                 valid_from=previous.valid_from,
                 valid_until=_valid_until_rfc(
-                    selected_at_event_time=previous.selected_at_event_time,
+                    validation_event_time=previous.selected_at_event_time,
                     refresh_cadence_seconds=refresh_cadence_seconds,
                     min_holding_period_seconds=min_holding_period_seconds,
                     fallback_unix=producer_observed_at_unix,
@@ -855,7 +858,9 @@ def produce_single_selected_future_v1(
         selected_at_wall_time=wall_rfc,
         valid_from=valid_from,
         valid_until=_valid_until_rfc(
-            selected_at_event_time=selected_at_event,
+            # Retention preserves selected_at_event_time for minimum holding,
+            # while this validated ranking supports the current validity window.
+            validation_event_time=ranking.event_time,
             refresh_cadence_seconds=refresh_cadence_seconds,
             min_holding_period_seconds=min_holding_period_seconds,
             fallback_unix=producer_observed_at_unix,

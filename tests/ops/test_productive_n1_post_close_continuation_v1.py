@@ -505,27 +505,57 @@ def test_young_replacement_respects_original_minimum_holding(tmp_path, monkeypat
         writer.release()
 
 
-def test_existing_expired_keep_is_blocked_by_original_cap24(tmp_path, monkeypatch):
+def test_expired_keep_requires_fresh_review_then_reaches_original_cap24_and_core(
+    tmp_path, monkeypatch
+):
     from src.ops.current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 import bind_join_v1
+    from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+        lane_state_root_for,
+    )
+    from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+        load_and_validate_selection_v1,
+    )
 
     args, owner, writer, _ = _fixture(tmp_path, monkeypatch, selection_age=3600)
     calls = _count_consumption(monkeypatch)
-    original = bind_join_v1.run_single_selected_future_runtime_binding_gate_v1
-    blockers = []
-
-    def observed(**kwargs):
-        result = original(**kwargs)
-        blockers.extend(result.blockers)
-        return result
-
-    monkeypatch.setattr(
-        bind_join_v1, "run_single_selected_future_runtime_binding_gate_v1", observed
-    )
     try:
-        with pytest.raises(ValueError, match="CARDINALITY_MISMATCH"):
-            run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
-        assert "SELECTION_EXPIRED" in blockers
+        lane_root = lane_state_root_for(
+            topology_state_root_base=args["topology_state_root_base"], lane_id="LANE_1"
+        )
+        old = load_and_validate_selection_v1(lane_root).selection
+        context = args["cap24_bind"]
+        expired = bind_join_v1.run_single_selected_future_runtime_binding_gate_v1(
+            selection_state_root=lane_root,
+            ranking_state_root=context.ranking_state_root,
+            universe_state_root=context.universe_state_root,
+            repository_sha=args["repository_sha"],
+            session_id="unreviewed-old-keep",
+            now_unix=NOW,
+            reconciliation_state_root=context.reconciliation_state_root,
+            observed_portfolio=context.observed_portfolio,
+            mark_price_by_native_id=context.mark_price_by_native_id,
+        )
+        assert not expired.ok and "SELECTION_EXPIRED" in expired.blockers
         assert calls == []
+
+        result = run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
+        renewed = load_and_validate_selection_v1(lane_root).selection
+        assert renewed.instrument_id == old.instrument_id
+        assert renewed.selected_at_event_time == old.selected_at_event_time
+        assert renewed.valid_from == old.valid_from
+        assert datetime.fromisoformat(renewed.valid_until.replace("Z", "+00:00")).timestamp() > NOW
+        assert renewed.ranking_integrity_digest == args["ranking_snapshot"]["integrity_digest"]
+        receipt = result.post_close_continuation_receipt
+        assert receipt["phase"] == "ACKED"
+        assert receipt["consumed"]["LANE_1"]["native_id"] == "ETH-USDT-SWAP"
+        assert result.readiness_projections["LANE_1"].n1_consumer_result.s7_invocation is not None
+        assert owner.budget_state_v1().canonical_available_capital == 75
+        assert not result.post_allowed and not result.external_effect_authorized
+        replay = run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
+        assert isinstance(replay, PostCloseContinuationReplayV1)
+        assert replay.receipt == receipt
+        assert load_and_validate_selection_v1(lane_root).selection == renewed
+        assert calls == [1]
     finally:
         owner.close()
         writer.release()

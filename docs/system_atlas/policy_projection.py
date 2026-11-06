@@ -257,7 +257,10 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         actual = hashlib.sha256(raw).hexdigest()
         original = raw
         if actual != policy["frozen_sha256"]:
-            if path != "config/governance/clean_core_seal_manifest_v1.json":
+            if path not in {
+                "config/governance/clean_core_seal_manifest_v1.json",
+                "src/ops/single_selected_future_policy_v1/selection_v1.py",
+            }:
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
                 (root / "docs/system_atlas/source/development-binding-v1.json").read_bytes()

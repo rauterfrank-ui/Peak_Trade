@@ -55,7 +55,9 @@ Bei CONSUMING ohne ACK bleibt der Ausgang ungewiss. Eine Wiederholung meldet POS
 
 Mindesthaltung, Hysterese und Gültigkeit werden beim zuständigen Selection-/Bindingowner ausgewertet. Die Injektionsfälle der Abnahme liefern ausdrücklich einen qualifizierten Rangnachrücker und ein erfülltes Haltefenster. Daraus folgt keine neue allgemeine Rotationsparameterwahl.
 
-Ein zusätzlicher Gegenfall zeigt: Eine lange gehaltene Auswahl kann im vorhandenen Keep-Pfad trotz neuem Ranking an einer alten Gültigkeitsgrenze scheitern. Der neue Anschluss meldet dann keine erfolgreiche Corefortsetzung. Die genaue Erneuerungssemantik des ursprünglichen Cap23-/Cap24-Vertrags bleibt ein gesonderter offener Befund.
+Der ursprüngliche Keep-Befund ist durch die [Auswahlfrischekorrektur](../evidence/N1_SELECTION_FRESHNESS_2026_11_06.md) im begrenzten Offlinepfad behoben: Cap23 erhält den ursprünglichen Instrumenteintritt für die Mindesthaltung und bindet die aktuelle Gültigkeitsgrenze an das neu geprüfte Rankingereignis. Wiederholtes Beobachten desselben Rankings verlängert diese Frist nicht. Zukünftige, alte oder korrupte Rankinginputs können die Auswahl nicht erneuern.
+
+Die Abnahme zeigt zuerst die Ablehnung der unveränderten abgelaufenen Auswahl am originalen Cap24-Gate und danach die tatsächliche Fortsetzung mit frisch geprüfter, vom Originalwriter persistierter Keep-Auswahl. Alte gespeicherte Receipts werden nicht nachträglich umgeschrieben; eine automatische Migration bereits unter der alten Semantik fehlgeschlagener Checkpoints wird nicht behauptet.
 
 Der ursprüngliche Lane-Generation-Vertrag entscheidet weiter über Carry, Rekey oder Reset. Bei geänderter Bindungsidentität verwendet er die vorhandene Retention vor der Freigabe generationgebundener Dateien. Der Anschluss behauptet keine neue Garantie, aktive Scope-/SideStatefelder über beliebige geänderte Selectiongenerationen weiterzutragen. Die Mechanikgeschichte bleibt von der aktuellen Instrumentgeneration getrennt.
 

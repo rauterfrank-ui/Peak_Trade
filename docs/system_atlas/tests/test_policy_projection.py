@@ -1,6 +1,7 @@
 """Frozen policy references and retired-map boundaries, without trading effects."""
 
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 from runpy import run_path
@@ -52,6 +53,72 @@ def test_rebound_ci_seal_still_rejects_unbound_working_bytes(monkeypatch):
 
     monkeypatch.setattr(Path, "read_bytes", read)
     with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+@pytest.mark.parametrize("field", ["before_sha256", "sha256"])
+def test_selection_policy_delta_requires_its_exact_development_hash(monkeypatch, field):
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    binding = json.loads(binding_path.read_bytes())
+    row = next(
+        row
+        for row in binding["files"]
+        if row["path"] == "src/ops/single_selected_future_policy_v1/selection_v1.py"
+    )
+    row[field] = "0" * 64
+    original = Path.read_bytes
+
+    def read(path):
+        return json.dumps(binding).encode() if path == binding_path else original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+def test_selection_policy_delta_still_rejects_unbound_working_bytes(monkeypatch):
+    source = ROOT / "src/ops/single_selected_future_policy_v1/selection_v1.py"
+    original = Path.read_bytes
+
+    def read(path):
+        raw = original(path)
+        return raw + b" " if path == source else raw
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+def test_exact_selection_delta_is_explicit_in_policy_validation_result():
+    result = PROJECTION["validate_policy_inventory"](ROOT, LAW)
+    assert set(result["development_policy_files"]) == {
+        "config/governance/clean_core_seal_manifest_v1.json",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    }
+
+
+def test_binding_cannot_admit_another_changed_policy_source(monkeypatch):
+    rel = "src/ops/single_selected_future_policy_v1/constants_v1.py"
+    source = ROOT / rel
+    original = Path.read_bytes
+    raw = original(source)
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    binding = json.loads(original(binding_path))
+    binding["files"].append(
+        {
+            "path": rel,
+            "before_sha256": hashlib.sha256(raw).hexdigest(),
+            "sha256": hashlib.sha256(raw + b" ").hexdigest(),
+        }
+    )
+
+    def read(path):
+        if path == binding_path:
+            return json.dumps(binding).encode()
+        return raw + b" " if path == source else original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_SOURCE_DRIFT"):
         PROJECTION["validate_policy_inventory"](ROOT, LAW)
 
 
