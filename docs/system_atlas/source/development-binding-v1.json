@@ -24,7 +24,7 @@
     {
       "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
       "before_sha256": "6b17fa9863f3446049e989c097003dd8200e833ac21c5a8b0466f37a1fa9aafe",
-      "sha256": "cfc1fd1aa6781e6aba7901499f35e518d34fea2672566657936fac32246aa0f6"
+      "sha256": "3b22ddf21347a6fc53b927e9194295e067dae4261a3204890846b88d6ba23a4a"
     },
     {
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
@@ -49,12 +49,12 @@
     {
       "path": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.json",
       "before_sha256": null,
-      "sha256": "005bc9b646817343d27fab6d8068608501ea5cf19edd1bd304c4de593b418a3f"
+      "sha256": "17ce95f436b434abc45fbab484d9d0a8dea44740c051d374ac5b9cad57dcfb56"
     },
     {
       "path": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.md",
       "before_sha256": null,
-      "sha256": "be387e2939cad20aa46bcf1a81e57e61298cb78fc4e8adbe9097cafe2c81d02e"
+      "sha256": "e325a87a9b64377e93c85f9d50a26b383bbaf28fe5e55631013ec20b4f7ffa16"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
@@ -110,6 +110,11 @@
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
+    },
+    {
+      "path": "scripts/ops/collect_docs_reference_targets_fullscan.py",
+      "before_sha256": "78fd88a26432e5d7fa96c72d67a8097019f0443ae114a54b07f070b478ebb4f5",
+      "sha256": "fbc730abb166f631a20af54d06efa43d631426a858bab9e06a93238208aec2ab"
     },
     {
       "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
@@ -280,6 +285,11 @@
       "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
       "before_sha256": "9171863c923ed85ea7a394ffef580ba1d16bf314d5b9b45adc026c61457490f1",
       "sha256": "ec2ef3f832fa7c77f06d48aeb3b7b1fd9b051aabc1e6b33bc3a97cc778eb4cf1"
+    },
+    {
+      "path": "src/ops/docs_reference_targets_common.py",
+      "before_sha256": "a71f8fc278df173622deed08b970670b892dd5ce7742d98a0a43666274da429f",
+      "sha256": "dbc0da0063f298c0c7559990ca1310319abae2df10895b8ef6a4dda64af6ee6e"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -485,6 +495,11 @@
       "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
       "before_sha256": "0d9c2014b1a52cafde4d66e41870432f976b6acfd4571cdd2b76dd870d47c6f0",
       "sha256": "a8110453d897060a3424d253cf53c339b43ae0c5c10aed19bbc0f9a241f79ac0"
+    },
+    {
+      "path": "tests/ops/test_docs_reference_targets_resolution_v1.py",
+      "before_sha256": null,
+      "sha256": "32ab220f92dc7a279c3ac4b04e3271662b4eddbfd15e8de492d6e5f125c9965d"
     },
     {
       "path": "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",

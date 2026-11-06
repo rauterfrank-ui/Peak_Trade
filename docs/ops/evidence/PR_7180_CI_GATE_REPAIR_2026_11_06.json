@@ -898,5 +898,72 @@
       "baseline": 653
     },
     "changed_test_sha256": "4002f7351bb78c201e9264e83ff99523719b76af02d1991c778a806f356f2730"
+  },
+  "URI_resolution_followup": {
+    "base_commit": "a026d32b18a32a82671c79b69af8854a8e6627df",
+    "previous_candidate_CI": {
+      "success": 58,
+      "pending": 0,
+      "failed": 0
+    },
+    "complete_reference_intake": {
+      "references": 651,
+      "unique_targets": 164,
+      "source_documents": 189,
+      "originals_located_in_three_snapshots": 71,
+      "current_encoded_file_targets": 42,
+      "semantic_review_complete": false
+    },
+    "checks": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ops/test_docs_reference_targets_resolution_v1.py tests/ops/test_docs_reference_targets_normalize_contract_v0.py tests/ops/test_docs_reference_targets_extract_line_contract_v0.py tests/ops/test_docs_reference_targets_baseline.py",
+        "result": "PASS",
+        "passed": 78,
+        "new_cases": 16,
+        "duration_seconds": 0.38
+      }
+    ],
+    "same_document_reference_count_before_and_after": 19722,
+    "previous_missing": 651,
+    "existing_references_recognized": 184,
+    "current_missing": 467,
+    "main_baseline_remeasurement": {
+      "generated_at_utc": "2026-11-06T21:11:30.144926+00:00",
+      "git_sha": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+      "tool_version": "1.1.0",
+      "scan_stats": {
+        "total_markdown_files": 3450,
+        "ignored_files": 449,
+        "scanned_files": 3001,
+        "total_references": 19679
+      },
+      "missing_count": 469,
+      "rebind_provenance": {
+        "previous_missing_count": 653,
+        "previous_tool_version": "1.0.0",
+        "previous_baseline_at": "a026d32b18a32a82671c79b69af8854a8e6627df:docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
+        "source": "read-only Git blob scan of the same verified origin/main snapshot",
+        "reason": "Re-measure identical main documents with URI-correct resolver 1.1.0; encoded spaces no longer create false missing-source reports. Reference extraction and ignore policy are unchanged."
+      }
+    },
+    "source_hashes": {
+      "src/ops/docs_reference_targets_common.py": "dbc0da0063f298c0c7559990ca1310319abae2df10895b8ef6a4dda64af6ee6e",
+      "scripts/ops/collect_docs_reference_targets_fullscan.py": "fbc730abb166f631a20af54d06efa43d631426a858bab9e06a93238208aec2ab",
+      "tests/ops/test_docs_reference_targets_resolution_v1.py": "32ab220f92dc7a279c3ac4b04e3271662b4eddbfd15e8de492d6e5f125c9965d"
+    },
+    "original_intake_records_retained": true,
+    "all_164_meaning_reviews_retained": true,
+    "data_or_runtime_functionality_proven_by_counter": false,
+    "trading_parameters_changed": false,
+    "final_validation": {
+      "result": "PASS",
+      "markdown_files": 7,
+      "references": 142,
+      "atlas_bound_files": 113,
+      "law": "PASS",
+      "current_missing": 467,
+      "main_baseline": 469,
+      "tool_version": "1.1.0"
+    }
   }
 }

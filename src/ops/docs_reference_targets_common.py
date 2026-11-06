@@ -10,6 +10,7 @@ from __future__ import annotations
 import html
 import re
 from pathlib import Path
+from urllib.parse import unquote
 
 # Inline ignore marker (same line skips all reference extraction)
 IGNORE_MARKER = "<!-- pt:ref-target-ignore -->"
@@ -108,19 +109,22 @@ def range_overlaps(a0: int, a1: int, spans: list[tuple[int, int]]) -> bool:
 
 def safe_is_within(p: Path, root: Path) -> bool:
     try:
-        rp = p.resolve()
-        return str(rp).startswith(str(root))
-    except Exception:
+        p.resolve().relative_to(root.resolve())
+        return True
+    except (OSError, ValueError, RuntimeError):
         return False
 
 
 def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
     """Resolve a target path to an absolute path within repo_root, or None if outside."""
-    if target.startswith("./") or target.startswith("../"):
-        doc_dir = doc_file.parent
-        resolved = (doc_dir / target).resolve()
-    else:
-        resolved = (repo_root / target).resolve()
+    try:
+        # Markdown targets are URI paths. Decode once before choosing the base
+        # and checking containment; encoded separators must not bypass it.
+        decoded = unquote(target, errors="strict")
+        base = doc_file.parent if decoded.startswith(("./", "../")) else repo_root
+        resolved = (base / decoded).resolve()
+    except (OSError, ValueError, RuntimeError):
+        return None
 
     if not safe_is_within(resolved, repo_root):
         return None
