@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "fe0b1659fb5ea8cf5c353cfaebc9ffad1d3caf97",
-  "scope": "Explicit N1 continuation, selection freshness and CI repair delta; frozen inventory, byte-protected originals and runtime state retained.",
+  "development_parent_commit": "82615aa2cdc01b74a08204b6a156712a6e29344f",
+  "scope": "Explicit N1 continuation, freshness, durable original output publication/ACK recovery and CI repair delta; frozen inventory, protected source bytes and runtime state retained.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -25,6 +25,16 @@
       "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
       "before_sha256": "6b17fa9863f3446049e989c097003dd8200e833ac21c5a8b0466f37a1fa9aafe",
       "sha256": "3b22ddf21347a6fc53b927e9194295e067dae4261a3204890846b88d6ba23a4a"
+    },
+    {
+      "path": "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.json",
+      "before_sha256": null,
+      "sha256": "8429cbedf753363585e70a23dbe2d25cece3caaa0d34856cb2b018ff99d563d9"
+    },
+    {
+      "path": "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.md",
+      "before_sha256": null,
+      "sha256": "cbeeeeb651f84848e68e220b17736dc41643e6cb7e42bb9561d0509d0fb66484"
     },
     {
       "path": "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.json",
@@ -74,7 +84,7 @@
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
-      "sha256": "4e32e098461acd6fa46a4b9a78beaaa82268cf4991d7ba1be7cee01b07fbd5e3"
+      "sha256": "bb05ab4afa23ed0c3d7c14692d52cd8faf60ec3a6e46c2d505feb16d3bc038bc"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -282,6 +292,16 @@
       "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
     },
     {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/consumer_completion_v1.py",
+      "before_sha256": null,
+      "sha256": "6f2c6e82d122091ddaf9c854b93567855be21f6e804d3ce1e6a1b2a7e41c4073"
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py",
+      "before_sha256": "c0c0a8f64b738acafe541a2d3c62cf8490c32db6a1688bc4b16f789023d0643f",
+      "sha256": "4bec97a5d61c14729f368ef033e31661562211d46257faecec704decbbc7ecba"
+    },
+    {
       "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
       "before_sha256": "da72b1a6ade82418895e0d9729aaa0ee1a989060b443bcccd406c42c718920ae",
       "sha256": "1500edefe9d634dd94fe3d9de4fcc6af8704ae87af2a99b044bc0ccb37ae39eb"
@@ -289,12 +309,12 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
       "before_sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
-      "sha256": "11db8faefe5cfee61829446d0447cd1b79772bd8aca4179d4f877e5d4dbcc763"
+      "sha256": "3e2977025d66317281f733ee09e65f3ec5241ffd1fa24c7951e9c3089def6ceb"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "0f296f8f537a4ae4eb5f4071be2b53b9150e45aa0787d9d08fc6f7fc51a1c4b1"
+      "sha256": "ac0f74f482dd575fb865ea538eb7273eafb6959b457390449ca0ddb8d70df2c3"
     },
     {
       "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
@@ -497,6 +517,11 @@
       "sha256": "d3697c09c66296d075c40019d2685ef178f9750360e7635acd43fc51d119e315"
     },
     {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
+      "before_sha256": "2a081ef8904aa9b0db5a30302aa23678278271991d9befb7c4725dfeb9378a64",
+      "sha256": "ad5b6b88d13ba01597a08df0a0159ece014ca85db997aa9851116d0853b72865"
+    },
+    {
       "path": "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
       "before_sha256": "9ef5e124d97d48d10e7cffa11f95fa32dd15a007c065b264cae0db4c6f7fccc5",
       "sha256": "d906a9252019d5e91afdb30dcee457bdcf8f1a52b782c362c8a00f2c5dac382b"
@@ -557,6 +582,11 @@
       "sha256": "52d980debe874508dd711960f2c2a773ac202abf965565cef790cdb620f300fa"
     },
     {
+      "path": "tests/ops/test_n1_consumer_completion_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
+    },
+    {
       "path": "tests/ops/test_pending_bound_decision_identity_v1.py",
       "before_sha256": "ed25e32bb376d8345eac2b1dfcd14d7e5d020d44271ddcdbcaf745ada1f65fa1",
       "sha256": "9486fe725b1c2f52bb6b73db9e8425027ebd10fd7cd67868fd78e7dd3d758792"
@@ -584,7 +614,7 @@
     {
       "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "93bc521c07d9dd43604eeaafbdd9dce888cb96f713ae4d4cac394bf7bcdfea7c"
+      "sha256": "e7a694925508a3ae3978d614c6c88a22e6edb2fd70e87e4e3a1ae03887cc7ac7"
     },
     {
       "path": "tests/ops/test_single_selected_future_policy_v1.py",

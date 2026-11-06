@@ -119,6 +119,41 @@ def _read_receipt(path):
     return record
 
 
+def _read_original_consumer_completion(record, *, recover=False):
+    from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+        lane_state_root_for,
+    )
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.consumer_completion_v1 import (
+        N1ConsumerCompletionError,
+        N1ConsumerCompletionPublicationError,
+        read_n1_consumer_completion_v1,
+        recover_n1_consumer_completion_v1,
+    )
+
+    lane, bound = next(iter(record["bound_by_lane"].items()))
+    root = lane_state_root_for(
+        topology_state_root_base=record["binding"]["topology_root"], lane_id=lane
+    )
+    try:
+        reader = recover_n1_consumer_completion_v1 if recover else read_n1_consumer_completion_v1
+        return reader(
+            lane_state_root=root,
+            binding_digest=record["binding_digest"],
+            lane_id=lane,
+            bound=bound,
+            cycle_prefix=record["binding"]["next_cycle"],
+            origin_main_sha=record["binding"]["origin_main_sha"],
+        )
+    except N1ConsumerCompletionPublicationError as exc:
+        raise PostCloseContinuationError(
+            "POST_CLOSE_CONSUMER_PUBLICATION_RETRY_REQUIRED:" + str(exc)
+        ) from exc
+    except N1ConsumerCompletionError as exc:
+        raise PostCloseContinuationError(
+            "POST_CLOSE_CORE_OUTCOME_UNCERTAIN_RECONCILIATION_REQUIRED:" + str(exc)
+        ) from exc
+
+
 def prepare_post_close_continuation_v1(
     context,
     *,
@@ -216,7 +251,16 @@ def prepare_post_close_continuation_v1(
         if prior["phase"] == "ACKED":
             return PostCloseContinuationReplayV1(prior)
         if prior["phase"] == "CONSUMING":
-            _fail("POST_CLOSE_CORE_OUTCOME_UNCERTAIN_RECONCILIATION_REQUIRED")
+            completion = _read_original_consumer_completion(prior, recover=True)
+            lane = completion["lane_id"]
+            prior.update(
+                phase="ACKED",
+                consumed={lane: completion["consumed"]},
+                terminal_boundary="PRE_EXTERNAL_EFFECT",
+                consumer_completion_digest=completion["content_digest"],
+                acknowledgement_source="ORIGINAL_N1_CONSUMER_COMPLETION_READBACK",
+            )
+            return PostCloseContinuationReplayV1(_write_receipt(path, prior))
     else:
         topology = recover_durable_lane_assignment_v1(
             topology_state_root_base=topology_root,
@@ -331,5 +375,14 @@ def acknowledge_post_close_consumer_v1(handle, result):
         }
     if len(consumed) != 1 or result.post_allowed or result.external_effect_authorized:
         _fail("POST_CLOSE_CONSUMER_BOUNDARY_INVALID")
-    record.update(phase="ACKED", consumed=consumed, terminal_boundary=result.terminal_boundary)
+    completion = _read_original_consumer_completion(record)
+    if consumed != {completion["lane_id"]: completion["consumed"]}:
+        _fail("POST_CLOSE_CONSUMER_COMPLETION_CONFLICT")
+    record.update(
+        phase="ACKED",
+        consumed=consumed,
+        terminal_boundary=result.terminal_boundary,
+        consumer_completion_digest=completion["content_digest"],
+        acknowledgement_source="ORIGINAL_N1_CONSUMER_COMPLETION",
+    )
     return _write_receipt(path, record)

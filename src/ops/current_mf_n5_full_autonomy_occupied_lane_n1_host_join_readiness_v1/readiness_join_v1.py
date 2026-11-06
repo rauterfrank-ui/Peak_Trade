@@ -355,6 +355,8 @@ def address_occupied_lane_n1_consumer_to_host_join_seam_v1(
 
 def compose_occupied_lane_n1_host_join_readiness_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    *,
+    consumer_completion_binding_digest: str | None = None,
     **kwargs: Any,
 ) -> dict[str, OccupiedLaneN1HostJoinReadinessProjectionV1]:
     """Invoke N1 consumer then address host-join params. Stops before host join."""
@@ -364,16 +366,31 @@ def compose_occupied_lane_n1_host_join_readiness_v1(
         _fail(FAILURE_FORBIDDEN_KWARG, ",".join(forbidden))
     origin_main_sha = str(kwargs.get("origin_main_sha") or "").strip()
     cycle_id_prefix = str(kwargs.get("cycle_id_prefix") or "").strip()
+    if consumer_completion_binding_digest is not None:
+        from .consumer_completion_v1 import validate_consumer_completion_request_v1
+
+        validate_consumer_completion_request_v1(consumer_completion_binding_digest, composed_pairs)
     consumer_results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         composed_pairs,
         **kwargs,
     )
-    return address_occupied_lane_n1_consumer_to_host_join_seam_v1(
+    projections = address_occupied_lane_n1_consumer_to_host_join_seam_v1(
         composed_pairs,
         consumer_results,
         origin_main_sha=origin_main_sha,
         cycle_id_prefix=cycle_id_prefix,
     )
+    if consumer_completion_binding_digest is not None:
+        from .consumer_completion_v1 import persist_n1_consumer_completion_v1
+
+        assert_readiness_stops_before_owner_boundary_v1(projections)
+        persist_n1_consumer_completion_v1(
+            projections,
+            binding_digest=consumer_completion_binding_digest,
+            cycle_prefix=cycle_id_prefix,
+            origin_main_sha=origin_main_sha,
+        )
+    return projections
 
 
 def assert_readiness_stops_before_owner_boundary_v1(

@@ -15,6 +15,8 @@
     "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
     "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
+    "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.json",
+    "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.md",
     "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.json",
     "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.md",
     "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
@@ -79,6 +81,8 @@
     "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
     "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
     "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/consumer_completion_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py",
     "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
     "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
     "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
@@ -122,6 +126,7 @@
     "tests/learning/test_n_bars_measurement_artifact_handoff_v1.py",
     "tests/ops/_host_private_rest_fixture_v1.py",
     "tests/ops/_reconfiguration_protected_sources_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
     "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
     "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
     "tests/ops/test_current_productive_post_close_feedback_v1.py",
@@ -134,6 +139,7 @@
     "tests/ops/test_ghv_forensic_control_binding_v1.py",
     "tests/ops/test_ghv_productive_mark_cache_freshness_ab_proof_v1.py",
     "tests/ops/test_legacy_startup_observed_portfolio_migration_v1.py",
+    "tests/ops/test_n1_consumer_completion_readback_v1.py",
     "tests/ops/test_pending_bound_decision_identity_v1.py",
     "tests/ops/test_pending_decision_parent_lineage_v1.py",
     "tests/ops/test_pending_exact_decision_context_v1.py",
@@ -144,12 +150,14 @@
     "tests/ops/test_single_selected_future_selection_freshness_v1.py",
     "tests/ops/test_treasury_budget_owner_start_contract_v1.py"
   ],
-  "changed_paths_sha256": "6ce687b48658384c67a2b128cd301c60aada129f44c610e72207b1077957a676",
+  "changed_paths_sha256": "3f829753055dda36c44fd58283df64922acef9d84ae3c5492a4639c47c510c80",
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "selector_used_as_law_impact_authority": false,
-  "reason": "Change-bound N1 continuation and explicit CI hygiene repair. Seventy-seven non-protected Python files are formatted with identical ASTs; 31 exact frozen Master V2 and policy sources retain their original bytes and are independently checked before Ruff formatting. Core seal, approved source digests, frozen policy inventory, original tags and runtime state remain unchanged. The stale link-debt baseline is rebound to the verified actual main snapshot under the existing debt-management guide; no new PR debt is admitted. Functional and negative verification is recorded in the CI repair evidence. The newly reached stale CI Core-seal manifest is rebound only after all 20 production sources match the accepted frozen commit; the obsolete BTC-specific assignment is replaced by protection of the existing common-admission consumer. Core source bytes and canonical asset/risk decisions remain unchanged. The one explicit CI-policy development delta preserves the original frozen policy objects. All 21 original economic/diagnostic boundary-controlled research/test sources are preserved byte-for-byte; no new grant or boundary implementation change is introduced. Current DDO owner-spec navigation is restored; all prior documentation assertions are retained against digest-bound historical document fixtures from their original Git revision. No historical authority is promoted to current runtime status. Shared documentation URI resolution now recognizes existing encoded source locations; reference intake is unchanged, path containment is strengthened, and baseline/candidate are remeasured with identical tool version 1.1.0. All original source-review targets remain retained. Subsequent Cap23 freshness correction: preserve instrument holding time, anchor the renewed validity to the newly validated ranking event, and reject future ranking timestamps. Original numerical defaults and alpha/financial/Core authority remain unchanged. The exact named policy-source delta retains the frozen policy objects and rejects unbound hashes and unrelated policy source changes; 173 owner/integration cases and 37 source-binding cases verify the scoped effect.",
+  "reason": "Change-bound N1 continuation and explicit CI hygiene repair. Seventy-seven non-protected Python files are formatted with identical ASTs; 31 exact frozen Master V2 and policy sources retain their original bytes and are independently checked before Ruff formatting. Core seal, approved source digests, frozen policy inventory, original tags and runtime state remain unchanged. The stale link-debt baseline is rebound to the verified actual main snapshot under the existing debt-management guide; no new PR debt is admitted. Functional and negative verification is recorded in the CI repair evidence. The newly reached stale CI Core-seal manifest is rebound only after all 20 production sources match the accepted frozen commit; the obsolete BTC-specific assignment is replaced by protection of the existing common-admission consumer. Core source bytes and canonical asset/risk decisions remain unchanged. The one explicit CI-policy development delta preserves the original frozen policy objects. All 21 original economic/diagnostic boundary-controlled research/test sources are preserved byte-for-byte; no new grant or boundary implementation change is introduced. Current DDO owner-spec navigation is restored; all prior documentation assertions are retained against digest-bound historical document fixtures from their original Git revision. No historical authority is promoted to current runtime status. Shared documentation URI resolution now recognizes existing encoded source locations; reference intake is unchanged, path containment is strengthened, and baseline/candidate are remeasured with identical tool version 1.1.0. All original source-review targets remain retained. Subsequent Cap23 freshness correction: preserve instrument holding time, anchor the renewed validity to the newly validated ranking event, and reject future ranking timestamps. Original numerical defaults and alpha/financial/Core authority remain unchanged. The exact named policy-source delta retains the frozen policy objects and rejects unbound hashes and unrelated policy source changes; 173 owner/integration cases and 37 source-binding cases verify the scoped effect. Original N1 consumer completion readback: publish exact historical Core output at the existing readiness consumer, bind its original transition/generation/cycle and restore only a lost handoff ACK. No new Core call, financial readmission, cursor reset or execution authority. A missing or contradictory original completion remains fenced; the pre-publication crash window is explicitly open. Existing readiness test inputs are corrected to valid per-lane Futures identities without weakening productive identity checks. User-directed self-recovery extension: preserve a durable prepared original consumer output before final publication; restart can finish publication and restore the historical ACK. Persistent storage failure preserves evidence and reports a distinct publication-retry condition. Original fresh budget admission is separately tested; the historical ACK never re-admits an account, and full autonomous host recovery remains required.",
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.json",
+    "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.md",
     "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.json",
     "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.md",
     "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
@@ -161,5 +169,5 @@
     "docs/system_atlas/source/documentation-cleanup.json",
     "docs/system_atlas/source/policy-inventory.json"
   ],
-  "head_context": "Current N1 continuation/CI delta plus explicit Cap23 selection validity correction; exact frozen source comparison."
+  "head_context": "Current N1 continuation/CI/freshness delta plus exact original N1 consumer completion readback; frozen source comparison preserved."
 }
