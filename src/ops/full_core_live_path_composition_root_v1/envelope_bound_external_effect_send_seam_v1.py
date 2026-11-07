@@ -202,7 +202,7 @@ def attempt_envelope_bound_external_effect_send_v1(
         # Both durable barriers precede any transport. A crash between them is
         # uncertain and must be reconciled; it never authorizes a resend.
         portfolio_budget_owner.mark_execution_submit_boundary_v1(
-            portfolio_reservation_id, execution_identity
+            portfolio_reservation_id, execution_identity, external_effect_permit=permit
         )
     try:
         persist_external_effect_durable_consume_v1(

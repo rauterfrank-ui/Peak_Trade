@@ -14,6 +14,11 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
     assert_envelope_unmodified_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
+    ExternalEffectPermitV1,
+    FullCoreExternalEffectPermitError,
+    assert_permit_matches_envelope_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
     FullCoreExchangeReconciliationIdentityV1,
     LocalSubmitOutcome,
@@ -29,7 +34,12 @@ def detached(value):
 
 
 def validate_link_v1(owner, reservation_id, link):
-    if set(link) != {"envelope", "identity", "phase", "reconciliation"}:
+    if set(link) - {"external_effect_permit"} != {
+        "envelope",
+        "identity",
+        "phase",
+        "reconciliation",
+    }:
         raise ValueError("EXECUTION_LINK_SHAPE_INVALID")
     key = owner._by_id.get(reservation_id)
     sizing = owner._sizing_bindings.get(key)
@@ -55,11 +65,27 @@ def validate_link_v1(owner, reservation_id, link):
         )
         sizing.risk_binding.validate_envelope_v1(envelope)
     if link["phase"] == "PLAN_BOUND":
-        if link["identity"] is not None or link["reconciliation"] is not None:
+        if (
+            link["identity"] is not None
+            or link["reconciliation"] is not None
+            or "external_effect_permit" in link
+        ):
             raise ValueError("EXECUTION_PLAN_STATE_INVALID")
         return
     if link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED":
         raise ValueError("EXECUTION_LINK_PHASE_INVALID")
+    if "external_effect_permit" in link:
+        # Separate send lineage, not a replacement for capital-guard authority
+        # or proof that the later durable permit barrier has been consumed.
+        payload = link["external_effect_permit"]
+        if not isinstance(payload, dict) or set(payload) != set(
+            ExternalEffectPermitV1.__dataclass_fields__
+        ):
+            raise ValueError("EXECUTION_SEND_PERMIT_SHAPE_INVALID")
+        try:
+            assert_permit_matches_envelope_v1(ExternalEffectPermitV1(**payload), envelope)
+        except FullCoreExternalEffectPermitError as exc:
+            raise ValueError("EXECUTION_SEND_PERMIT_INVALID") from exc
     raw = dict(link["identity"])
     raw.pop("contract_id", None)
     identity = FullCoreExchangeReconciliationIdentityV1(**raw)
@@ -113,7 +139,7 @@ def bind_plan_locked_v1(owner, reservation_id, envelope):
     return detached(link)
 
 
-def _validated_submit_link_v1(owner, reservation_id, identity):
+def _validated_submit_link_v1(owner, reservation_id, identity, external_effect_permit=None):
     found = owner._require_locked(reservation_id)
     if found is None or found[1].state.value != "COMMITTED":
         raise ValueError("EXECUTION_SUBMIT_OWNER_FENCED")
@@ -123,6 +149,16 @@ def _validated_submit_link_v1(owner, reservation_id, identity):
     if not isinstance(identity, FullCoreExchangeReconciliationIdentityV1):
         raise ValueError("EXECUTION_IDENTITY_TYPE_INVALID")
     link = {**old, "phase": "SUBMIT_MAY_HAVE_OCCURRED", "identity": identity.to_dict()}
+    if external_effect_permit is not None:
+        if not isinstance(external_effect_permit, ExternalEffectPermitV1):
+            raise ValueError("EXECUTION_SEND_PERMIT_TYPE_INVALID")
+        assert_permit_matches_envelope_v1(
+            external_effect_permit, FinalOrderEnvelopeV1(**old["envelope"])
+        )
+        link["external_effect_permit"] = {
+            "permit_id": external_effect_permit.permit_id,
+            **external_effect_permit.to_canonical_payload_v1(),
+        }
     validate_link_v1(owner, reservation_id, link)
     return link
 
@@ -145,8 +181,8 @@ def inspect_submit_context_locked_v1(owner, reservation_id, envelope, identity):
     }
 
 
-def mark_submit_locked_v1(owner, reservation_id, identity):
-    link = _validated_submit_link_v1(owner, reservation_id, identity)
+def mark_submit_locked_v1(owner, reservation_id, identity, *, external_effect_permit=None):
+    link = _validated_submit_link_v1(owner, reservation_id, identity, external_effect_permit)
     owner._execution_links[reservation_id] = detached(link)
     owner._persist_locked()
     return detached(link)
