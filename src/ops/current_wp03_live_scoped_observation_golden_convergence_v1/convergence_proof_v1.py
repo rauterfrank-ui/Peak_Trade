@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal
+from .runtime_boundary_evidence_v1 import (
+    current_runtime_boundary_evidence_v1,
+    current_runtime_cycle_records_v1,
+)
 
 from src.ops.current_wp03_live_scoped_observation_golden_convergence_v1.constants_v1 import (
     MIN_CONTIGUOUS_C1_EPOCHS,
@@ -32,6 +36,7 @@ class Wp03ScenarioProofV1:
     trace: dict[str, object]
     golden_compare: GoldenHappyPathTraceResultV1
     pre_external_reached: bool
+    ok: bool = False
 
 
 @dataclass(frozen=True)
@@ -58,28 +63,27 @@ def _scenario_proof_v1(
         observation_scope=observation_scope,
     )
     compare = diff_golden_vs_actual_v1(
-        expected=trace,
+        expected={
+            "pre_external": require_pre_external,
+            "terminal": "PRE_EXTERNAL" if require_pre_external else "HOLD",
+            "side": side,
+        },
         actual=trace,
         vector_name=f"NATURAL_{side}",
-        keys=tuple(trace.keys()),
+        keys=("pre_external", "terminal", "side"),
     )
-    pre_external = bool(trace.get("pre_external"))
-    last_s5 = ""
-    if result.policy_result is not None:
-        records = result.policy_result.orchestrator_result.cycle_records
-        if records:
-            last_s5 = str(records[-1].s5_disposition)
-    if last_s5 == "PRE_EXTERNAL_EFFECT":
-        pre_external = True
-    elif side == "LONG" and result.trace.extra.get("natural_enter_decision") == "enter_long":
-        pre_external = True
-    elif side == "SHORT" and result.trace.extra.get("natural_enter_decision") == "enter_short":
-        pre_external = True
+    boundary = current_runtime_boundary_evidence_v1(result)
+    pre_external = boundary.reached
+    matching_entry = boundary.decision_outcome == {
+        "LONG": "enter_long",
+        "SHORT": "enter_short",
+    }.get(side)
     ok = (
         result.ok
+        and bool(current_runtime_cycle_records_v1(result))
         and compare.ok
         and result.trace.post_count == 0
-        and (pre_external if require_pre_external else not pre_external)
+        and (pre_external and matching_entry if require_pre_external else not pre_external)
     )
     return Wp03ScenarioProofV1(
         side=side,
@@ -87,6 +91,7 @@ def _scenario_proof_v1(
         trace=trace,
         golden_compare=compare,
         pre_external_reached=pre_external,
+        ok=ok,
     )
 
 
@@ -120,6 +125,10 @@ def prove_wp03_golden_convergence_v1(
     two_epoch_ok = prove_contiguous_confirmation_epochs_v1(
         accepted_c1_count=two_epoch_result.trace.accepted_c1_count,
         governed_cycle_count=two_epoch_result.trace.governed_cycle_count,
+        observed_event_times=tuple(
+            record.c1_venue_event_time
+            for record in current_runtime_cycle_records_v1(two_epoch_result)
+        ),
     )
     harness = GoldenHarnessAggregateV1(
         natural_long=long_sc.golden_compare,
@@ -127,12 +136,9 @@ def prove_wp03_golden_convergence_v1(
         hold=hold_sc.golden_compare,
     )
     ok = (
-        long_sc.supervisor_ok
-        and long_sc.pre_external_reached
-        and short_sc.supervisor_ok
-        and short_sc.pre_external_reached
-        and hold_sc.supervisor_ok
-        and not hold_sc.pre_external_reached
+        long_sc.ok
+        and short_sc.ok
+        and hold_sc.ok
         and two_epoch_ok
         and two_epoch_result.trace.post_count == 0
         and synthetic_b05_rejected

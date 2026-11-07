@@ -266,19 +266,23 @@ def test_created_flag_pins_and_docs() -> None:
         bind_s5_governed_cycle_orchestrator_offline_v1(owner_go=RUNTIME_OWNER_GO)["reason_code"]
         == REASON_OWNER_GO_MISMATCH
     )
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    current_index = (REPO_ROOT / "docs/system_atlas/generated/SOURCE_INDEX.md").read_text()
+    import gzip
+
+    assert "../source/current-files.jsonl.gz" in current_index
+    with gzip.open(REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz", "rt") as stream:
+        indexed = {json.loads(line)["path"] for line in stream}
+    assert str(OWNER_MODULE.relative_to(REPO_ROOT)) in indexed
+    assert str(Path(__file__).relative_to(REPO_ROOT)) in indexed
     source = OWNER_MODULE.read_text(encoding="utf-8")
-    assert "EH.S5" in runbook
+    assert "EH.S5" in source
     assert THIS_SLICE in source
-    assert "current_productive_governed_cycle_orchestrator_v1.py" in mot
+    assert "../system_atlas/generated/SYSTEM_ATLAS.md" in mot
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1" in spec
-    assert JOIN_SEAM_ID in atlas
-    assert "current_productive_governed_cycle_orchestrator_v1.py" in atlas
-    assert "test_full_core_current_productive_governed_cycle_orchestrator_v1.py" in atlas
+    assert JOIN_SEAM_ID in spec
     assert (
         "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
         not in source

@@ -1,6 +1,9 @@
 """Map WP-01 runtime supervisor session to standing supervisor admission proof."""
 
 from __future__ import annotations
+from src.ops.current_wp03_live_scoped_observation_golden_convergence_v1.runtime_boundary_evidence_v1 import (
+    current_runtime_boundary_evidence_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -55,11 +58,9 @@ def prove_standing_supervisor_from_runtime_session_v1(
             and trace.wp02_cap21_refresh_invoked
             and trace.wp02_hard_facts_handoff_invoked
         )
-    pre_external = bool(trace.terminal_disposition == "PRE_EXTERNAL_EFFECT") or bool(
-        trace.extra.get("natural_enter_decision") in ("enter_long", "enter_short")
-    )
+    pre_external = current_runtime_boundary_evidence_v1(result).reached
     if pre_external_reached is not None:
-        pre_external = pre_external_reached
+        pre_external = pre_external and pre_external_reached is True
     continuous = pre_external and safe and runtime_standing
     return StandingSupervisorProofV1(
         ok=boundary and safe and runtime_standing and continuous,

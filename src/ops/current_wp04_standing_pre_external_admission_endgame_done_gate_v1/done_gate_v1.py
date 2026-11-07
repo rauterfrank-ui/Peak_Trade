@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from typing import Any
+from src.ops.current_wp03_live_scoped_observation_golden_convergence_v1.runtime_boundary_evidence_v1 import (
+    current_runtime_boundary_evidence_v1,
+)
 
 from src.ops.current_wp03_live_scoped_observation_golden_convergence_v1.convergence_proof_v1 import (
     Wp03ConvergenceProofV1,
@@ -71,6 +74,7 @@ def evaluate_current_n1_endgame_done_gate_v1(
     launcher_invoked_supervisor: bool = True,
 ) -> CurrentN1EndgameDoneGateV1:
     trace = reference_supervisor_run.trace
+    current_boundary = current_runtime_boundary_evidence_v1(reference_supervisor_run)
     long_ok = wp03.scenarios[0].pre_external_reached if wp03.scenarios else False
     short_ok = wp03.scenarios[1].pre_external_reached if len(wp03.scenarios) > 1 else False
     hold_ok = wp03.scenarios[2].golden_compare.ok if len(wp03.scenarios) > 2 else False
@@ -95,7 +99,9 @@ def evaluate_current_n1_endgame_done_gate_v1(
         NATURAL_LONG_REACHABLE_TO_PRE_EXTERNAL=long_ok and admission.natural_long_proven,
         NATURAL_SHORT_REACHABLE_TO_PRE_EXTERNAL=short_ok and admission.natural_short_proven,
         HOLD_PATH_VALID=hold_ok,
-        EXIT_PATH_VALID=True,
+        EXIT_PATH_VALID=current_boundary.reached
+        and current_boundary.decision_outcome == "exit"
+        and current_boundary.reduce_only,
         PRE_EXTERNAL_TERMINAL=PRE_EXTERNAL_TERMINAL is True and admission.pre_external_terminal,
         POST_COUNT=admission.post_count,
         POST_ALLOWED=POST_ALLOWED is True,

@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "ba01032d7c1e423bd75287896e79b1739d7ddc5b",
-  "scope": "Explicit N1 continuation, freshness, durable output/ACK recovery, standing supervisor startup/account join and truthful recovery scope; frozen inventory, protected sources and runtime state retained.",
+  "development_parent_commit": "82a5cf27e3cb0f490cf85bb1352e7d37596a4a35",
+  "scope": "N1 continuation/recovery and current Core/intent/envelope observation evidence. Capital, freshness, source-netting repair and natural-time admission remain separate; frozen sources, inventory and runtime state retained.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -20,6 +20,31 @@
       "path": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
       "before_sha256": "21f97d4e8ed323c9db9132640f6ed5c2375c7a76ff401c771a9b4314583642fb",
       "sha256": "99cefea14fa9ac875ceb402c5970cdbdb8db118d71ec46ac3cd438c52921aeff"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
+      "before_sha256": "c5c240b485e4b08c702dae77ee51b1fe8751b53ceae009b5bbf4252398e073d0",
+      "sha256": "e00ef2b79e47b1abe644c3c35ac1856185d5bfd519f6aedbe9b44e112aeed7c0"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+      "before_sha256": "d650d77e6e198c87397a4bec054d802c3f0dd380d049d1634ccc2b9432946a5a",
+      "sha256": "0773fa1fb8a72221ffbb37204b3f3f09ef28eca5771338494525ff83be36eba4"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
+      "before_sha256": "59b7b0fa8141f63a05005551c1592675d627e3534122830f729110ca342193c1",
+      "sha256": "ebc2458267b1f8fb4ddeac50e388c11a5115df82f92c084a3637044e5ece56ac"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
+      "before_sha256": "cd5cfd7cbc511e75e59b21806565355bb3e3746ac2971bdf12df8e81aec0d8b4",
+      "sha256": "23f2f130b776da9fb8abf98eefa9cbee353c5090503425138ef6bd049ac3b429"
+    },
+    {
+      "path": "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
+      "before_sha256": "2e14305f24687179f0c11e6aa0b615e34020c3d393702d06886642aa0654ccb5",
+      "sha256": "b312bd8fd6929f868820a62977a88a4374c109b757bbc742f3ecbeb2204fc0e3"
     },
     {
       "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
@@ -87,6 +112,26 @@
       "sha256": "e325a87a9b64377e93c85f9d50a26b383bbaf28fe5e55631013ec20b4f7ffa16"
     },
     {
+      "path": "docs/ops/evidence/WP03_CURRENT_CONSUMER_PROOF_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "5a70ed35d48a047be1e055c19faa92cb0d68404ab47ad14834779e10ddbe9e0d"
+    },
+    {
+      "path": "docs/ops/evidence/WP03_CURRENT_CONSUMER_PROOF_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "f88e00f6d595c413fd3121420699c42a789d8885e2f1c275bd09e52589b8eca6"
+    },
+    {
+      "path": "docs/ops/specs/CURRENT_WP03_LIVE_SCOPED_OBSERVATION_GOLDEN_CONVERGENCE_V1.md",
+      "before_sha256": "60135a4389aae35780b3ba7d0f75a81209ad373d1ac315617ea7a2af7c521d78",
+      "sha256": "f7768f9242e894323a926769bc2b1f4e10ce287767c60ada98df2b9be010aae9"
+    },
+    {
+      "path": "docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md",
+      "before_sha256": "fc3aaa7b0fd28a9ac42e15db130912790807bd730cb3861ce622390f99071285",
+      "sha256": "f8f82314209e7f9d440bdf5d85d57ef910771c121d0767319b03de65a514c744"
+    },
+    {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
@@ -107,6 +152,11 @@
       "sha256": "9247b2cfb72bef55f3b46eef3b4c9a72d8222a5d874492c6503d56072f3cf12f"
     },
     {
+      "path": "docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md",
+      "before_sha256": "fe858083ec2298e3b8261fd4eea3b82008ca52fea103f73c0f3827c1635f147b",
+      "sha256": "abc1ab37b991ccf79b3520cccceb06e01d990293c4fd2778f2a2e95521343937"
+    },
+    {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
       "sha256": "0769b96a1aa5ad14a8f0f607730864a38b088edc9291e149f6bd0769d11ceb7b"
@@ -117,14 +167,69 @@
       "sha256": "9a28bb7416ada38aa044fd294db407c81d1550f351fd85d24cb7c83bd3eaa744"
     },
     {
+      "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
+      "before_sha256": "667a56b3b73e0a54dae01df4f643e249bbc5ba9960d1b9a4ee1f71961fbfd338",
+      "sha256": "518d5a1a795ee1105c8063fbfa1f6cb428c6e9973b8f8d70ae3dad1d45b15aef"
+    },
+    {
+      "path": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "before_sha256": "5894b89c1616a23634f2a8b1d435385867955296701ed4bb56f27de0616aacd2",
+      "sha256": "c3f50b9ecce20e2acd36d553e12fc31a703a074a977fd0ba84b2bf9d6af9e581"
+    },
+    {
+      "path": "docs/system_atlas/obsidian_projection.py",
+      "before_sha256": "bbe004de11effb2c2e558ad569c899bb8e159d5ec43dd038d20e70073eacda59",
+      "sha256": "04a4913c13da81c5bfbf17841b32c010a419a93674754d862f3b7a916f2a5061"
+    },
+    {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
       "sha256": "119fdb3605d6d9a815e0965585cdd16fe200cf155ac62831c3321ba808350535"
     },
     {
+      "path": "docs/system_atlas/source/current-files.jsonl.gz",
+      "before_sha256": "e3fa973f5e2dd9a08c85775bbdc3e4d6bf92c4bf13700dc5898511da1832b9db",
+      "sha256": "789e20acb8ba8b5b79183e18f065cdcfcbb397dbccff8f42fedf7a3b6d06256f"
+    },
+    {
+      "path": "docs/system_atlas/source/current-imports.jsonl.gz",
+      "before_sha256": "c72da6cf894ca7d9a0fa9cd4532357bde95777576668d289fb34fab49e276e45",
+      "sha256": "cd2d7bf18783d26f83b27fab4fe081abb2817fd1ec9315cc390326beb5607a96"
+    },
+    {
+      "path": "docs/system_atlas/source/current-model.json",
+      "before_sha256": "890992dd6b9e382e1f1ed21b769e48fc47f5c1d3346aa7b4d583c5593c9a9777",
+      "sha256": "99d97e2aa904de7c2bc2197ec725011db4cbe0c51a6618d8870d4ec7a38bf17f"
+    },
+    {
+      "path": "docs/system_atlas/source/current-symbols.jsonl.gz",
+      "before_sha256": "2e5da680a30a1128bb81569463581703f65a7e061d07eea3276498ea1ed93ad7",
+      "sha256": "c5fcf00ea7d4aba9b3be43723aa3b858055bca621ab613b41f35c89224fcab19"
+    },
+    {
+      "path": "docs/system_atlas/source/documentation-cleanup.json",
+      "before_sha256": "0c25c1b261d874d84bc1fb71895b5b30ed37bcd326fe7c43b098c324bfa9c64d",
+      "sha256": "104740ee973f4eb3528ded28e2cb8de839aad26e7d888ab2d30569e1f0517859"
+    },
+    {
+      "path": "docs/system_atlas/source/policy-inventory.json",
+      "before_sha256": "73dbfdba7f9768dc3cc73b7b792379fc6b111c6ce4515147cc9469fca90d8a6c",
+      "sha256": "8393dd2f8f1529f9632742f528106388d18e96a60a2266ef494f1886b1df6c48"
+    },
+    {
+      "path": "docs/system_atlas/source/successor-disposition.json",
+      "before_sha256": "0d3b3fa6c372ab62bd3048fdae21b94cd8970fad120830cc4fdee98d168a0a3a",
+      "sha256": "85022d87a1d5b71206f42d4cd4e9a42a169f9e1b9ec93774686fad9a4e37144e"
+    },
+    {
       "path": "docs/system_atlas/tests/test_development_binding.py",
       "before_sha256": null,
       "sha256": "24abe6e18f3b768f1320f9543cac7f0d3c4d8b1c156b4e5bf65edfc90975bc5b"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_obsidian_projection.py",
+      "before_sha256": "3274f1737329b6fbfde85700572a39aa23870f9aab4e172ea20c188edecac549",
+      "sha256": "bade8335041bbe21e37cb882729f39287ff881f4f59f4ec9d564a5ada10ff946"
     },
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
@@ -307,6 +412,11 @@
       "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
     },
     {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "before_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
+      "sha256": "805c06a9b3e5b1976bce4623ed1690f18862c175f71d83d95953394a5b25959d"
+    },
+    {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/consumer_completion_v1.py",
       "before_sha256": null,
       "sha256": "6f2c6e82d122091ddaf9c854b93567855be21f6e804d3ce1e6a1b2a7e41c4073"
@@ -337,6 +447,31 @@
       "sha256": "ec2ef3f832fa7c77f06d48aeb3b7b1fd9b051aabc1e6b33bc3a97cc778eb4cf1"
     },
     {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/convergence_proof_v1.py",
+      "before_sha256": "564b8645b8afdfbf187fbbe1aa3e13ee04dd2d2560225f7747cb3424cdc13ec1",
+      "sha256": "5b9b3ba4ed05866f0e0b9994ae788ad9d015c02d5a8671ce263f6236da1de5d0"
+    },
+    {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/runtime_boundary_evidence_v1.py",
+      "before_sha256": null,
+      "sha256": "dc020e1c251bd5c4fd8c5e34128cc14294cbf3ed8b5c66e17ed21bdec981a188"
+    },
+    {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/trace_projection_v1.py",
+      "before_sha256": "7f6894fb0c2d3bca376b5a43b67b872476e3a19573e78a5b587517cc06aa661f",
+      "sha256": "2f24baa2c40b5d209f1b46894f7a84755e1ae0f61cecc91f3226335a87b22e4f"
+    },
+    {
+      "path": "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/done_gate_v1.py",
+      "before_sha256": "4d84aff82835cbeb2a6564e7eb7373b75e96b082ce71c22180d9636a6386f4c6",
+      "sha256": "204f96145b615777256017e521e0ce65ac50414f1ac0a731f9137a27f0493279"
+    },
+    {
+      "path": "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/runtime_supervisor_proof_v1.py",
+      "before_sha256": "c19282254257f654bd65243974f27a94e61f9593bff75e079ad3d461f7eb0fb5",
+      "sha256": "fbe1efc536eedd5c29622745c19297ddc9b72eb615e6b9c3c5c67f5e8c305dcd"
+    },
+    {
       "path": "src/ops/docs_reference_targets_common.py",
       "before_sha256": "a71f8fc278df173622deed08b970670b892dd5ce7742d98a0a43666274da429f",
       "sha256": "dbc0da0063f298c0c7559990ca1310319abae2df10895b8ef6a4dda64af6ee6e"
@@ -349,17 +484,17 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
       "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
-      "sha256": "0eeea624598c5405e0c8da9d15ecfabea2818e9e6ba63d972952d321c2dbfabb"
+      "sha256": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
       "before_sha256": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
-      "sha256": "6950bf9aa48971f2770f90be221c740076135ef43af269e4aaa8e23ede9a6cb1"
+      "sha256": "f812166a8d0bfd4e85553700e012dc5508c0e0d08c0170421fb94d62db12b0dc"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
       "before_sha256": "6f359e816acffca8ff45ad324b4ba2bf24eef8310f155d07925653a1bb16ef43",
-      "sha256": "f59b0d7960ad379f48ad7b9d623e30659567595db433757ee57d9cf81589c7d3"
+      "sha256": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_lineage_v1.py",
@@ -399,7 +534,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "9f2602547b7ecb181a174338b20eb3e57edc3a32e52acaf92e1202de1d608675"
+      "sha256": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -569,7 +704,12 @@
     {
       "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
       "before_sha256": "5996f96ef77dbbb4a38f673bc144129a988ab3b032f255033128b2377162d484",
-      "sha256": "d2315cbe0ed90b6477cb1dc2bf528c3d53c39c6ab249edeb518700e5dd88c54e"
+      "sha256": "cc046d4319dffea720912055377772398b6fe4ba30eced2f56ffe3fb8096e56b"
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+      "before_sha256": "c4ab6d54fe139fbea296a3eff4ab53d7f01cd00ecf8fa3c2356c83c8921afb31",
+      "sha256": "66c24caf6fa4307e03464dcbb0bd957cfe463b7538f656f058792b719933c8e4"
     },
     {
       "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
@@ -597,9 +737,34 @@
       "sha256": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3"
     },
     {
+      "path": "tests/ops/test_current_runtime_boundary_evidence_v1.py",
+      "before_sha256": null,
+      "sha256": "f6f773c0bcede51633c5ff57b6a49d706590e57c36e48c23c03765b858a08795"
+    },
+    {
+      "path": "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "before_sha256": "3bac35dbf1e261f0888e31a66d5ab76992e4c33ad843de07c9305812dff298bd",
+      "sha256": "485b750fec92fa33606f635b26c4f7af958ca5174e127ad6f68c978b4bbadb0a"
+    },
+    {
+      "path": "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "before_sha256": "7286ac90af295e1a2520664fc0fbff63f9cd6adf62dab7e38551d8a6b62e696e",
+      "sha256": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd"
+    },
+    {
       "path": "tests/ops/test_docs_reference_targets_resolution_v1.py",
       "before_sha256": null,
       "sha256": "32ab220f92dc7a279c3ac4b04e3271662b4eddbfd15e8de492d6e5f125c9965d"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "before_sha256": "d57018109559468d86d86b3126b0cf96e10f6a113fa59c5a72e59da69af7f49f",
+      "sha256": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "9938cbd5800d13094e346acdbbc65b7550532fe6d4dbc539f073f65611d64c5f",
+      "sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd"
     },
     {
       "path": "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",

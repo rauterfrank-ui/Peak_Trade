@@ -26,6 +26,7 @@ class PendingDecisionContextV1:
     reference_price: float
     market_context_ref: str
     producer_payload_json: str
+    canonical_decision_id: str = ""
 
 
 def pending_decision_context_from_invocation_v1(invocation: Any) -> PendingDecisionContextV1 | None:
@@ -69,4 +70,7 @@ def pending_decision_context_from_invocation_v1(invocation: Any) -> PendingDecis
         reference_price=float(price),
         market_context_ref=market.context_id,
         producer_payload_json=canonical_payload_json_v1(producer),
+        canonical_decision_id=str(
+            getattr(getattr(replay, "evidence", None), "decision_id", "") or ""
+        ),
     )

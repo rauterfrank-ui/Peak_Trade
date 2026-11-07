@@ -541,6 +541,7 @@ def _t2_from_s7(
                 final_envelope_digest=(envelope.envelope_digest if close_execution_handoff else ""),
                 final_order_envelope=(envelope if close_execution_handoff else None),
                 position_management_execution_handoff=close_execution_handoff,
+                canonical_order_intent=close_intent if close_execution_handoff else None,
                 permit_created=_FALSE,
                 post_count="0",
                 first_real_blocker=(
@@ -782,6 +783,7 @@ def _t2_from_s7(
                     final_envelope_id=str(envelope.envelope_id),
                     final_envelope_digest=str(envelope.envelope_digest),
                     final_order_envelope=envelope,
+                    canonical_order_intent=venue_plan_replay.intermediate.canonical_order_intent,
                     permit_created=_FALSE,
                     post_count="0",
                     first_real_blocker="",
