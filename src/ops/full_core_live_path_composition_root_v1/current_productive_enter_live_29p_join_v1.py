@@ -44,7 +44,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveUsdcFreeMarginObservationV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
-    build_default_full_core_u04_p01_eligibility_host_inputs_v1,
+    build_full_core_margin_inputs_from_budget_owner_v1,
     execute_current_productive_treasury_single_source_capital_handoff_v1,
 )
 from src.ops.b05_full_core_governed_authority_chain_closure_v1.registry_and_witness_v1 import (
@@ -642,15 +642,19 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             get_count=get_count,
         )
 
+    try:
+        margin_host_inputs = build_full_core_margin_inputs_from_budget_owner_v1(
+            raw_acct_lv=raw_acct_lv, budget_owner=portfolio_budget_owner
+        )
+    except ValueError as exc:
+        return _deny(status=STATUS_FAIL, blocker=str(exc), replay=replay, get_count=get_count)
     handoff = execute_current_productive_treasury_single_source_capital_handoff_v1(
         margin_observation=observation,
         instrument_id=selected_instrument,
         body_sha256=str(observation.provenance_digest),
         fresh_pretrade_get_status=get_status,
         live_account_bound_status=lab_status,
-        u04_p01_host_inputs=build_default_full_core_u04_p01_eligibility_host_inputs_v1(
-            raw_acct_lv=raw_acct_lv,
-        ),
+        u04_p01_host_inputs=margin_host_inputs,
         clear_treasury_idempotency=True,
     )
     output = handoff.producer_output
@@ -1002,6 +1006,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             fresh_evidence_fetched=True,
             fresh_evidence_validated=produced,
             restrictive_risk=restrictive_risk,
+            local_commitment_readback=margin_host_inputs.local_commitment_readback,
             handoff_journal=handoff_journal,
         )
         portfolio_reservation_disposition = str(seam.disposition.value)

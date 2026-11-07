@@ -42,3 +42,14 @@ reaches its original 29P owner without constructing CT BASE. Nonempty U04 with
 unproven venue coverage blocks that branch. Active local budget holds and the
 fixed empty-witness default remain separate unresolved semantic boundaries.
 The durable owner, recovery admission and reservation/release rules are unchanged.
+
+## Original local commitment readback — 2026-11-07
+
+The [local source/consumer proof](../evidence/LOCAL_COMMITMENT_SOURCE_BINDING_2026_11_07.md)
+replaces the fixed empty-U04 helper in the productive ENTER caller with an atomic
+readback of its existing shared budget owner. Canonical sizing holds retain their
+original resulting-notional meaning; raw declared holds remain explicitly distinct.
+The same owner/generation is checked through margin transport and at atomic reserve.
+No local amount is credited as venue margin or substituted for Funding CT U04.
+Existing sizing mathematics, persisted records, recovery and release authorities
+remain unchanged. Venue/local netting and market-exposure policy remain open.

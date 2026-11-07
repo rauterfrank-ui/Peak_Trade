@@ -33,7 +33,8 @@ class CurrentProductiveU04P01EligibilityHostInputsV1:
     """Host-supplied canonical inputs for CT sizing produce (no GET in join)."""
 
     u01_raw_acct_lv: str
-    u04_evidence: CurrentProductiveU04ReservationTypedEvidenceV1
+    u04_evidence: CurrentProductiveU04ReservationTypedEvidenceV1 | None
+    local_commitment_readback: object | None = None
 
 
 @dataclass(frozen=True)

@@ -440,6 +440,21 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return self._active_sum_locked()
 
+    def local_commitment_readback_v1(self):
+        """Atomic projection of this owner's obligations, never venue margin."""
+        from .local_commitment_readback_v1 import read_local_commitments_locked_v1
+
+        with self._lock:
+            return read_local_commitments_locked_v1(self)
+
+    def require_local_commitment_readback_v1(self, readback, *, account_identity):
+        from .local_commitment_readback_v1 import require_local_commitments_locked_v1
+
+        with self._lock:
+            return require_local_commitments_locked_v1(
+                self, readback, account_identity=account_identity
+            )
+
     def admitted_budget_v1(self) -> Decimal:
         with self._lock:
             return self._budget if self._admitted else Decimal("0")
@@ -701,6 +716,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         sizing_binding: ReservationSizingBindingV1 | None = None,
         max_active_sum: Decimal | None = None,
         expected_risk_snapshot_digest: str | None = None,
+        expected_local_commitment_generation: str | None = None,
         handoff_journal: object | None = None,
     ) -> ReserveResultV1:
         try:
@@ -718,6 +734,20 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         if max_active_sum is not None and _money(max_active_sum) is None:
             return self._closed(("RESERVATION_ACTIVE_CEILING_INVALID",))
         with self._lock:
+            if expected_local_commitment_generation is not None:
+                from .local_commitment_readback_v1 import read_local_commitments_locked_v1
+
+                try:
+                    current_generation = read_local_commitments_locked_v1(self).generation_digest
+                    if expected_local_commitment_generation != current_generation:
+                        raise ValueError("LOCAL_COMMITMENT_GENERATION_CHANGED_BEFORE_RESERVE")
+                except ValueError as exc:
+                    return self._result_locked(
+                        disposition=ReserveDispositionV1.FAIL_CLOSED,
+                        reservation=None,
+                        reason_codes=(str(exc),),
+                        mutated=False,
+                    )
             if expected_risk_snapshot_digest is not None:
                 if (
                     self._store is None
@@ -1430,6 +1460,7 @@ def admit_sized_slot_reservation_v1(
     fresh_evidence_fetched: bool,
     fresh_evidence_validated: bool,
     restrictive_risk: object | None = None,
+    local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
 ) -> SizedReservationResultV1:
     """Producer, 29P admissibility, existing sizing, then atomic reserve.
@@ -1437,6 +1468,16 @@ def admit_sized_slot_reservation_v1(
     Sizing runs against a budget snapshot. Admission is only the later atomic
     reserve of ``resulting_notional``. A lost race denies with no partial hold.
     """
+    local_generation = None
+    if local_commitment_readback is not None:
+        try:
+            local_generation = owner.require_local_commitment_readback_v1(
+                local_commitment_readback, account_identity=account_identity
+            )
+        except ValueError as exc:
+            return _sized_deny(
+                owner, disposition=ReserveDispositionV1.FAIL_CLOSED, reason_codes=(str(exc),)
+            )
     if not owner.slot_account_binding_matches_v1(
         slot_id=str(slot_id),
         instrument_id=instrument_id,
@@ -1637,6 +1678,7 @@ def admit_sized_slot_reservation_v1(
         expected_risk_snapshot_digest=risk_snapshot["digest"]
         if risk_snapshot is not None
         else None,
+        expected_local_commitment_generation=local_generation,
         handoff_journal=handoff_journal,
     )
     if (

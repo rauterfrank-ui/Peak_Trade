@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "d2615064e7bf757999b6ea0884a51526d5114b6b",
-  "scope": "N1 continuation/recovery, capital acquisition freshness and shared GET fuse. Source-specific Treasury dispatch preserves Funding CT and original account-USDC free-margin 29P; no fake CT BASE for margin, unknown nonempty U04 coverage is fenced. Local hold domains/default witness, independent historical reconciliation, broad contract debt and full host/natural operation remain open.",
+  "development_parent_commit": "1174f9f48ce9a1323938fc22b479ae6689353eec",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -60,6 +60,16 @@
       "path": "docs/ops/evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.md",
       "before_sha256": null,
       "sha256": "f4002b287d4c5e6a6a4682e647b0c25368b61a077c9c700a4838d15275898ebe"
+    },
+    {
+      "path": "docs/ops/evidence/LOCAL_COMMITMENT_SOURCE_BINDING_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "49edc56df522b1d1f5906aa9695915ba390cc66af0cfba5a093504e1343794de"
+    },
+    {
+      "path": "docs/ops/evidence/LOCAL_COMMITMENT_SOURCE_BINDING_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "c0418dd7378219e40d6e346bf20b8840ecc4b250a52abb4dbfeabaac9d8a6d73"
     },
     {
       "path": "docs/ops/evidence/N1_CONSUMER_ACK_READBACK_2026_11_06.json",
@@ -189,7 +199,7 @@
     {
       "path": "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md",
       "before_sha256": "a37fa823e22ed17544b3c19e1bbfb9624aa024d47cfb2ff62182d1fffe0806ae",
-      "sha256": "ebccaaefc5cef6209597ed48f4f7ab1e76e605dd78a6960af823322cc595d570"
+      "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -534,7 +544,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "bf10b7904900930f6f514023fadc5bf36e5b84f9e72095940189173e9c964721"
+      "sha256": "e1007f4ed18bc95372a64b5c5383d00b80890aa81ebb69a708c3f217339eb849"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -569,7 +579,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
-      "sha256": "43bbc7b4d90dbcf821653fca304724cf8ea8f585d43fadbf374002c5275513e9"
+      "sha256": "4d0b445b374370c7b600ef3a9786a2fa1f724d1e0a599df48639a94a62dcb92b"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -634,12 +644,17 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_free_margin_inputs_binding_v1.py",
       "before_sha256": null,
-      "sha256": "f404ec891a74f2075daff9ae9772952d7884895ba87fa1613248431549c4da07"
+      "sha256": "8b7ebfdd42f257482e35ba6e7c801bbef55070e24409273a3bf5fc7a8c157617"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
+      "before_sha256": "0f8271d89bb32980cddda4dd6a89dab1d3cf8e33dfef1dbabd445685bbfb1948",
+      "sha256": "cd8ec15875264d5a1ce5115a45ae0aff00f4419c67ccc12aa37f75bf82463ba4"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
       "before_sha256": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1",
-      "sha256": "5119bca88deff5a81b0af8dc538e6ea93e10bffad54f75d64b51ab7ce56ab6c3"
+      "sha256": "d9a496f99e2ac819308f329227450c39629835cab2500849f4326db90fb79431"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/non_forbidden_non_eq_non_stock_usdc_current_productive_observation_v1.py",
@@ -689,7 +704,12 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "9cc77f5c1e331326703e20dccef2c803ed5126696b51b8eef91ad774d6643e89"
+      "sha256": "7bd1be3bc516674767bb4c58ce904a997f60a0bdd4a2a62d1b11728d97afeed8"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "b0af6a95fcc7a0e37bf5d1049cc79acd732dd1885e0bebed70eec5d0c27616bc"
     },
     {
       "path": "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py",
@@ -909,7 +929,7 @@
     {
       "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
       "before_sha256": "c6f6ef23d4ada0bb48952e836e82956f7f771f76878598f929ae260da767a391",
-      "sha256": "dd984a1f67024b06148c4e9b70f34954ed54bfa300287018b0a0f339d0dfb247"
+      "sha256": "0a1162fff828ed0ba734f52118e934a510a2b66b96912f7c5daae94e01d28e24"
     },
     {
       "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
@@ -1002,6 +1022,11 @@
       "sha256": "52d980debe874508dd711960f2c2a773ac202abf965565cef790cdb620f300fa"
     },
     {
+      "path": "tests/ops/test_local_commitment_source_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "56e5bf4bf0e4d7701852d2f4bb482a830a9a953e542ac33eb7617bd0bc1dafa8"
+    },
+    {
       "path": "tests/ops/test_n1_consumer_completion_readback_v1.py",
       "before_sha256": null,
       "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
@@ -1059,7 +1084,7 @@
     {
       "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "38dbbbde172d3b13aeaf2ce3265f6e6da0703f533e2136a80d2844fe9faa5936"
+      "sha256": "a26f94d499e84d686e84f79c86b9897e9ddfdeace1133d04840281f942b6f864"
     },
     {
       "path": "tests/ops/test_single_selected_future_policy_v1.py",

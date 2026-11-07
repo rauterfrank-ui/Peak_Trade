@@ -93,22 +93,43 @@ def bind_current_productive_free_margin_inputs_and_produce_v1(
     if reasons:
         return _blocked(reasons)
     try:
-        # Validate the original explicit witness, without inventing an empty one.
-        # This U04 fact is never an argument of the free-margin producer.
-        witness = bind_current_productive_u04_reservation_fact_from_typed_evidence_v1(
-            base=original,
-            evidence=host_inputs.u04_evidence,
-            age_seconds=original.age_seconds,
-            freshness_max_age=original.freshness_max_age,
-        )
-        if Decimal(witness.value) != 0:
-            return _blocked(["U04_COVERAGE_UNRESOLVED_FOR_FREE_MARGIN"])
+        if host_inputs.local_commitment_readback is not None:
+            from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+                PortfolioCapitalReservationBudgetOwnerV1,
+            )
+            from src.ops.portfolio_capital_reservation_budget_v1.local_commitment_readback_v1 import (
+                LocalCapitalCommitmentReadbackV1,
+            )
+
+            readback = host_inputs.local_commitment_readback
+            if (
+                host_inputs.u04_evidence is not None
+                or type(readback) is not LocalCapitalCommitmentReadbackV1
+                or not isinstance(readback.source_owner, PortfolioCapitalReservationBudgetOwnerV1)
+            ):
+                return _blocked(["LOCAL_COMMITMENT_AND_U04_DOMAINS_MUST_REMAIN_DISTINCT"])
+            readback.source_owner.require_local_commitment_readback_v1(
+                readback, account_identity=original.bound_account_identity
+            )
+        else:
+            # Legacy explicit U04 evidence has no local/venue coverage identity.
+            # It cannot replace the original budget owner's separate readback.
+            if host_inputs.u04_evidence is None:
+                return _blocked(["LOCAL_COMMITMENT_OR_EXPLICIT_U04_EVIDENCE_MISSING"])
+            witness = bind_current_productive_u04_reservation_fact_from_typed_evidence_v1(
+                base=original,
+                evidence=host_inputs.u04_evidence,
+                age_seconds=original.age_seconds,
+                freshness_max_age=original.freshness_max_age,
+            )
+            if Decimal(witness.value) != 0:
+                return _blocked(["U04_COVERAGE_UNRESOLVED_FOR_FREE_MARGIN"])
         p01 = bind_current_productive_p01_fact_for_ct_sizing_produce_v1(
             base=original,
             age_seconds=original.age_seconds,
             freshness_max_age=original.freshness_max_age,
         )
-    except CurrentProductiveU04P01EligibilityInputsBindingError as exc:
+    except ValueError as exc:
         return _blocked([str(exc)])
     eligibility = build_current_productive_u01_eligibility_fact_v1(
         adaptation=adapt_current_productive_u01_account_mode_v1(host_inputs.u01_raw_acct_lv),
