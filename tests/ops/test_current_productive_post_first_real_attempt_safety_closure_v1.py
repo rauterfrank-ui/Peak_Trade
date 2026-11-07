@@ -10,6 +10,9 @@ from urllib.error import HTTPError
 from urllib.request import OpenerDirector
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 from src.data.safety import DataSourceKind
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (

@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
     serialize_canonical_okx_post_body_v1,

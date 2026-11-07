@@ -21,6 +21,10 @@ from urllib.request import OpenerDirector
 from src.governance.current_productive_real_venue_post_admission_v1 import (
     evaluate_real_venue_post_admission_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+    CurrentPostSafetyVetoError,
+    resolve_current_post_safety_context_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -102,6 +106,7 @@ class OneShotJoinProbeV1:
     external_effect_count: int = 0
     permit_minted: bool = False
     one_shot_real_post_forwarded: bool = False
+    minted_permit: ExternalEffectPermitV1 | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -203,6 +208,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         opener_factory: Callable[[], OpenerDirector] | None,
         probe: OneShotJoinProbeV1,
         send_handle: FullCoreSendCredentialHandleV1,
+        post_safety_context=None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -210,6 +216,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._opener_factory = opener_factory
         self._probe = probe
         self._send_handle = send_handle
+        self._post_safety_context = post_safety_context
 
     def post_trade_order(
         self,
@@ -237,6 +244,12 @@ class _DurableConsumeThenK1HttpTransportV1:
         expected = _payload_from_envelope_v1(self._envelope)
         if dict(payload) != expected or not set(payload).issubset(_WIRE_BODY_KEYS):
             raise FullCoreProductiveHttpPostError("WIRE_BODY_ENVELOPE_MISMATCH")
+        try:
+            safety = resolve_current_post_safety_context_v1(
+                self._envelope, self._post_safety_context, stage="BEFORE_K1"
+            )
+        except CurrentPostSafetyVetoError as exc:
+            raise FullCoreProductiveHttpPostError(str(exc)) from exc
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
         try:
@@ -250,6 +263,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     handle=self._send_handle,
                     signing_handle=session.signing_handle,
                     opener_factory=self._opener_factory,
+                    post_safety_context=safety,
                 )
                 try:
                     result = http.post_trade_order(
@@ -290,6 +304,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     portfolio_reservation_id: str = "",
     execution_identity=None,
     execution_plan_context=None,
+    post_safety_context=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -329,8 +344,22 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
-    permit = issue_external_effect_permit_v1(envelope, authority_ref=POST_OWNER_GO)
+    try:
+        safety = resolve_current_post_safety_context_v1(
+            envelope, post_safety_context, stage="BEFORE_ACTUAL_PERMIT"
+        )
+        veto = safety.inspect_v1(stage="ACTUAL_PERMIT_SOURCE")
+    except CurrentPostSafetyVetoError as exc:
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    permit = issue_external_effect_permit_v1(
+        envelope,
+        authority_ref=POST_OWNER_GO,
+        kill_switch_blocked=veto.blocked,
+        durable_kill_switch_evidence_status=veto.evidence_status,
+        filegate_denied=veto.blocked,
+    )
     observed.permit_minted = True
+    observed.minted_permit = permit
     observed.events.append("PERMIT_MINTED")
     assert_one_shot_join_permit_constraints_v1(permit, envelope)
     admission = evaluate_real_venue_post_admission_v1(
@@ -357,6 +386,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         opener_factory=opener_factory,
         probe=observed,
         send_handle=send_handle,
+        post_safety_context=safety,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(
@@ -369,6 +399,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
+            post_safety_context=safety,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
