@@ -28,6 +28,14 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     DataSafetyAdmissionStatusV1,
     FreshPretradeGetStatusV1,
+    LiveAccountBoundStatusV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+    FullCoreEnvelopeBoundSendSeamError,
+    inspect_original_portfolio_execution_context_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
+    evaluate_live_account_bound_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
@@ -67,6 +75,7 @@ class ActualVenuePostPreMutationFreshnessProofV1:
     position_source_binding: Mapping[str, Any] = field(default_factory=dict)
     scope: str = "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY"
     account_identity_binding_status: str = "NOT_ASSESSED"
+    account_source_binding: Mapping[str, Any] = field(default_factory=dict)
 
 
 def _position_rows_v1(payload: Any, *, scoped_native: str = "") -> dict[tuple, Decimal]:
@@ -154,8 +163,22 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     envelope: FinalOrderEnvelopeV1,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None,
     pretrade_decision_id: str,
+    portfolio_budget_owner=None,
+    portfolio_reservation_id: str = "",
+    execution_identity=None,
 ) -> ActualVenuePostPreMutationFreshnessProofV1:
     assert_envelope_unmodified_v1(envelope)
+    context_args = dict(
+        envelope=envelope,
+        portfolio_budget_owner=portfolio_budget_owner,
+        portfolio_reservation_id=portfolio_reservation_id,
+        execution_identity=execution_identity,
+        required_execution_environment="LIVE",
+    )
+    try:
+        original_context = inspect_original_portfolio_execution_context_v1(**context_args)
+    except FullCoreEnvelopeBoundSendSeamError as exc:
+        raise CurrentProductiveActualVenuePostPreMutationFreshnessError(str(exc)) from exc
     if read_only_get_transport is None:
         raise CurrentProductiveActualVenuePostPreMutationFreshnessError(
             "PRE_MUTATION_READ_TRANSPORT_REQUIRED"
@@ -200,6 +223,8 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     position_fresh, consistent, entry_admissible = False, False, False
     truth = "UNKNOWN"
     account_fresh = pretrade_ok
+    account_status = "NOT_ASSESSED" if original_context is None else "MISSING"
+    account_binding = {}
     try:
         now = utc_now_iso_v1()
         # The tenth read must not extend the lifetime of the original nine.
@@ -209,6 +234,46 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             account_fresh = False
             pretrade_ok = False
             raise ValueError("COMMON_DATASAFETY_NOT_SATISFIED")
+        if original_context is not None:
+            # Recheck the original owner after acquisition; no cached owner proof.
+            current_context = inspect_original_portfolio_execution_context_v1(**context_args)
+            if current_context != original_context:
+                raise ValueError("ORIGINAL_PORTFOLIO_CONTEXT_CHANGED")
+            config = results.get("config")
+            data = config.payload.get("data") if config is not None else None
+            if not (
+                isinstance(data, list)
+                and len(data) == 1
+                and isinstance(data[0], Mapping)
+                and isinstance(data[0].get("uid"), str)
+                and data[0]["uid"]
+                and data[0]["uid"] == data[0]["uid"].strip()
+            ):
+                account_status = LiveAccountBoundStatusV1.MALFORMED.value
+                raise ValueError("PREPOST_ACCOUNT_CONFIG_IDENTITY_MALFORMED")
+            account = evaluate_live_account_bound_v1(
+                get_evidence=evidence,
+                expected_account_identity=original_context["account"],
+                expected_instrument_id=envelope.instrument_id,
+                expected_td_mode=envelope.td_mode,
+            )
+            account_status = account.evidence_status
+            if account_status != LiveAccountBoundStatusV1.TRUSTED_PRESENT.value:
+                reasons.extend(account.reason_codes)
+                raise ValueError("PREPOST_ORIGINAL_ACCOUNT_BINDING_NOT_TRUSTED")
+            account_binding = {
+                "config": _position_source_v1(config),
+                "original_owner_scope_sha256": hashlib.sha256(
+                    json.dumps(
+                        {k: original_context[k] for k in ("root", "account")},
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode()
+                ).hexdigest(),
+                "reservation_id": original_context["reservation_id"],
+                "envelope_digest": original_context["envelope_digest"],
+                "execution_identity_digest": original_context["execution_identity_digest"],
+            }
         global_result = results.get("positions")
         _validate_position_result_v1(
             global_result, endpoint=ENDPOINT_ACCOUNT_POSITIONS, decision_id=decision_id, now=now
@@ -245,13 +310,29 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             entry_admissible = envelope.reduce_only is False
         if envelope.reduce_only is True:
             reasons.append("CLOSE_REQUIRES_ORIGINAL_POSITION_ADMISSION")
-    except (ValueError, TypeError, AttributeError, KeyError) as exc:
+    except (
+        ValueError,
+        TypeError,
+        AttributeError,
+        KeyError,
+        FullCoreEnvelopeBoundSendSeamError,
+    ) as exc:
         reasons.append(str(exc))
         # Fresh account acquisition is a clock claim, not UID/order admission.
         if str(exc).startswith("ACQUISITION_"):
             account_fresh = False
             pretrade_ok = False
-    all_pass = pretrade_ok and account_fresh and position_fresh and consistent and entry_admissible
+    account_bound = (
+        original_context is None or account_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+    )
+    all_pass = (
+        pretrade_ok
+        and account_fresh
+        and account_bound
+        and position_fresh
+        and consistent
+        and entry_admissible
+    )
     if not all_pass:
         reasons.append("PREPOST_GATE_CONJUNCTION_FAIL_CLOSED")
     return ActualVenuePostPreMutationFreshnessProofV1(
@@ -265,6 +346,11 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         position_observations_consistent=consistent,
         new_entry_position_admissible=entry_admissible,
         position_source_binding=source_binding,
+        account_identity_binding_status=account_status,
+        account_source_binding=account_binding,
+        scope="PREPOST_ORIGINAL_BUDGET_ACCOUNT_AND_NEW_ENTRY_POSITION_ONLY"
+        if original_context is not None
+        else "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY",
     )
 
 

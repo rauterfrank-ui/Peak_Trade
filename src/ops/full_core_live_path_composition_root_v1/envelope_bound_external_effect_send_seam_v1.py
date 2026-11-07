@@ -97,6 +97,47 @@ def _payload_from_envelope_v1(envelope: FinalOrderEnvelopeV1) -> dict[str, Any]:
     return body
 
 
+def inspect_original_portfolio_execution_context_v1(
+    *,
+    envelope,
+    portfolio_budget_owner=None,
+    portfolio_reservation_id="",
+    execution_identity=None,
+    required_execution_environment=None,
+):
+    """Inspect original owner/hold/plan identity; never create or recover an owner."""
+    if ":portfolio-reservation:" in envelope.admission_ref:
+        bound_id = envelope.admission_ref.rsplit(":portfolio-reservation:", 1)[1]
+        if portfolio_budget_owner is None or not bound_id or portfolio_reservation_id != bound_id:
+            raise FullCoreEnvelopeBoundSendSeamError("HOST_PORTFOLIO_EXECUTION_CONTEXT_REQUIRED")
+    if not any(
+        (
+            portfolio_budget_owner is not None,
+            portfolio_reservation_id,
+            execution_identity is not None,
+        )
+    ):
+        return None
+    if portfolio_budget_owner is None or not portfolio_reservation_id or execution_identity is None:
+        raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_CONTEXT_INCOMPLETE")
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+    if not isinstance(portfolio_budget_owner, PortfolioCapitalReservationBudgetOwnerV1):
+        raise FullCoreEnvelopeBoundSendSeamError("ORIGINAL_PORTFOLIO_BUDGET_OWNER_REQUIRED")
+    if required_execution_environment is not None and (
+        getattr(execution_identity, "execution_environment", None) != required_execution_environment
+    ):
+        raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVIRONMENT_MISMATCH")
+    try:
+        return portfolio_budget_owner.inspect_execution_submit_context_v1(
+            portfolio_reservation_id, envelope, execution_identity
+        )
+    except (ValueError, TypeError, AttributeError, KeyError) as exc:
+        raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
+
+
 def attempt_envelope_bound_external_effect_send_v1(
     *,
     envelope: FinalOrderEnvelopeV1,
@@ -140,8 +181,8 @@ def attempt_envelope_bound_external_effect_send_v1(
     if handle.material_loaded is True:
         raise FullCoreEnvelopeBoundSendSeamError("CREDENTIAL_MATERIAL_LOADED_FORBIDDEN")
     if ":portfolio-reservation:" in envelope.admission_ref:
-        bound_reservation_id = envelope.admission_ref.rsplit(":portfolio-reservation:", 1)[1]
-        if portfolio_budget_owner is None or portfolio_reservation_id != bound_reservation_id:
+        bound_id = envelope.admission_ref.rsplit(":portfolio-reservation:", 1)[1]
+        if portfolio_budget_owner is None or not bound_id or portfolio_reservation_id != bound_id:
             raise FullCoreEnvelopeBoundSendSeamError("HOST_PORTFOLIO_EXECUTION_CONTEXT_REQUIRED")
     existing = load_external_effect_durable_consume_v1(store_root=store_root)
     if existing.get("durable_consumed") is True:
@@ -151,22 +192,13 @@ def attempt_envelope_bound_external_effect_send_v1(
         if str(record.get("envelope_id") or "") == envelope.envelope_id:
             raise FullCoreEnvelopeBoundSendSeamError("REPLAYED_PERMIT")
         raise FullCoreEnvelopeBoundSendSeamError("FOLLOW_ON_SUBMIT_DENIED")
-    if any(
-        (
-            portfolio_budget_owner is not None,
-            portfolio_reservation_id,
-            execution_identity is not None,
-        )
-    ):
-        if (
-            portfolio_budget_owner is None
-            or not portfolio_reservation_id
-            or execution_identity is None
-        ):
-            raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_CONTEXT_INCOMPLETE")
-        links = portfolio_budget_owner.execution_links_v1()
-        if links.get(portfolio_reservation_id, {}).get("envelope") != envelope.to_runtime_json_v1():
-            raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVELOPE_MISMATCH")
+    context = inspect_original_portfolio_execution_context_v1(
+        envelope=envelope,
+        portfolio_budget_owner=portfolio_budget_owner,
+        portfolio_reservation_id=portfolio_reservation_id,
+        execution_identity=execution_identity,
+    )
+    if context is not None:
         # Both durable barriers precede any transport. A crash between them is
         # uncertain and must be reconciled; it never authorizes a resend.
         portfolio_budget_owner.mark_execution_submit_boundary_v1(
@@ -248,6 +280,9 @@ def prove_follow_on_submit_isolated_v1(
     store_root: Path | str,
     transport: FullCoreProductiveTradeOrderPostTransportV1,
     handle: FullCoreSendCredentialHandleV1,
+    portfolio_budget_owner=None,
+    portfolio_reservation_id: str = "",
+    execution_identity=None,
 ) -> bool:
     try:
         attempt_envelope_bound_external_effect_send_v1(
@@ -256,6 +291,9 @@ def prove_follow_on_submit_isolated_v1(
             store_root=store_root,
             transport=transport,
             handle=handle,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         return str(exc) in {

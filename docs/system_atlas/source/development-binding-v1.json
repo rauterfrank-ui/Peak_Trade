@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
-  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface.",
+  "development_parent_commit": "220b474b5ed4f408fc942ddf65dd74940ce014ef",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -110,6 +110,16 @@
       "path": "docs/ops/evidence/N1_SUPERVISOR_STARTUP_RECOVERY_2026_11_07.md",
       "before_sha256": null,
       "sha256": "29f951a775b6b2cfa732b95a7d4ace0882d8de06da2e985c497c99abefdf0675"
+    },
+    {
+      "path": "docs/ops/evidence/ORIGINAL_BUDGET_PREPOST_ACCOUNT_AND_SEND_CONTEXT_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "9d95b9db94e9ac5775ab2493dc4f63c5c9ec81d3962a7a01ae747c74fc9431df"
+    },
+    {
+      "path": "docs/ops/evidence/ORIGINAL_BUDGET_PREPOST_ACCOUNT_AND_SEND_CONTEXT_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "577238232dab045eaacaac9e20315112621587c9bc6983e584cb3b63f437413d"
     },
     {
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
@@ -559,7 +569,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
       "before_sha256": "6c483089dd14ec67fb9a09291f285caf1e39e7ef0ae3cc46c614940e463122e6",
-      "sha256": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047"
+      "sha256": "3abf0905e55ee68448f0e113d36e9c988dbc7bc062e2daf4317b6cbca1fb08e4"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
@@ -592,6 +602,11 @@
       "sha256": "d2089d085720ba7901ca8b1141ba00aadf0c8bb422b70f10a95ffbba7b414152"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
+      "sha256": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
       "before_sha256": "6f359e816acffca8ff45ad324b4ba2bf24eef8310f155d07925653a1bb16ef43",
       "sha256": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991"
@@ -610,6 +625,11 @@
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
       "sha256": "4d0b445b374370c7b600ef3a9786a2fa1f724d1e0a599df48639a94a62dcb92b"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+      "before_sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5",
+      "sha256": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -654,7 +674,7 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
       "before_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b",
-      "sha256": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4"
+      "sha256": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
@@ -739,7 +759,12 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "7bd1be3bc516674767bb4c58ce904a997f60a0bdd4a2a62d1b11728d97afeed8"
+      "sha256": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "sha256": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -1145,6 +1170,11 @@
       "path": "tests/ops/test_portfolio_execution_recovery_v1.py",
       "before_sha256": "67f8bbd5f5d139b4d33dd730c98e71abd177fb6152b7ef6be01c0dfe4b162a9a",
       "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79"
+    },
+    {
+      "path": "tests/ops/test_prepost_original_budget_context_v1.py",
+      "before_sha256": null,
+      "sha256": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
     },
     {
       "path": "tests/ops/test_prepost_position_source_admission_v1.py",
