@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from datetime import datetime, timezone
 from typing import Any
 from urllib.error import HTTPError
 from urllib.request import OpenerDirector
 
 import pytest
+from src.data.safety import DataSourceKind
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (
     EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
@@ -68,8 +70,15 @@ class _TrustedReadTransport:
     def __init__(self) -> None:
         self.request_count = 0
 
-    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
-        del auth_required, pretrade_decision_id
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = "CACHEABLE_SNAPSHOT",
+    ):
+        del auth_required, get_cache_policy
         self.request_count += 1
         path = str(endpoint).split("?", 1)[0]
         if "instruments" in path or "price-limit" in path:
@@ -94,13 +103,22 @@ class _TrustedReadTransport:
             venue_live_contact=True,
             historical_reuse=False,
             error_class="",
-            data_safety_source_kind="REAL",
+            data_safety_source_kind=DataSourceKind.REAL.value,
+            pretrade_decision_id=pretrade_decision_id,
+            acquired_at_utc=datetime.now(timezone.utc).isoformat(),
         )
 
 
 class _MissingReadTransport:
-    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
-        del endpoint, auth_required, pretrade_decision_id
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = "CACHEABLE_SNAPSHOT",
+    ):
+        del endpoint, auth_required, pretrade_decision_id, get_cache_policy
         return FreshPretradeGetTransportResultV1(
             get_performed=False,
             method="GET",

@@ -93,6 +93,8 @@ async def build_canonical_surface_state_v1(*, force_refresh: bool = False) -> di
         elif isinstance(refresh_meta, dict) and isinstance(refresh_meta.get("ohlcv"), dict):
             ohlcv_doc = dict(refresh_meta["ohlcv"])
 
+    # Evaluate after the acquisition/load, without renewing the source clocks.
+    observed_at = _utc_now_iso()
     market = project_market_state_from_ohlcv_doc(
         ohlcv_doc, refresh_meta=refresh_meta, observed_at=observed_at
     )

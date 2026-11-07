@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import json
 import socket
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import pytest
+from src.data.safety import DataSourceKind
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_concrete_backend_item_identity_v1 import (
     KEYCHAIN_ACCOUNT_ID,
@@ -67,8 +69,15 @@ class _TimeoutOpener:
 
 
 class _TrustedReadTransport:
-    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
-        del auth_required, pretrade_decision_id
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = "CACHEABLE_SNAPSHOT",
+    ):
+        del auth_required, get_cache_policy
         path = str(endpoint).split("?", 1)[0]
         if "positions" in path:
             payload = {"code": "0", "data": []}
@@ -95,7 +104,9 @@ class _TrustedReadTransport:
             venue_live_contact=True,
             historical_reuse=False,
             error_class="",
-            data_safety_source_kind="REAL",
+            data_safety_source_kind=DataSourceKind.REAL.value,
+            pretrade_decision_id=pretrade_decision_id,
+            acquired_at_utc=datetime.now(timezone.utc).isoformat(),
         )
 
 
@@ -110,7 +121,7 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def _envelope():
     plan = VenuePlanCandidateV1(
-        instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
+        instrument_id="0G-USDT-SWAP",
         side="buy",
         quantity="1",
         order_type="market",

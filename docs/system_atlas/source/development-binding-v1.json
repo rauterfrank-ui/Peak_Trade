@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "d48a75b314d89f6a1e385e964b7356d00bb39ea4",
-  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open.",
+  "development_parent_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -122,6 +122,16 @@
       "sha256": "9683bf7c84c82509a616da3dc8cb3199fb98b59f984e594cfed339f9d6c3e4e0"
     },
     {
+      "path": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "a94f0afc582c9ea1b7d75ce7ffd6db50f949d8dc2ce2f5becdc0ead495e5c59a"
+    },
+    {
+      "path": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "be653d1de293a73ea62bfb7437f9d56bef937b5c6dbbf868bd729ef38f8721dd"
+    },
+    {
       "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
       "before_sha256": null,
       "sha256": "301551485c41dba8b069ef0b519094d3b3416c2b5627dfa9d5a98340e062e8a2"
@@ -234,7 +244,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "9a28bb7416ada38aa044fd294db407c81d1550f351fd85d24cb7c83bd3eaa744"
+      "sha256": "1cffbf36b5ee203595fc0e4e02c92b0deb59bb37f06d90aa5f52a0d9ca813f14"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -294,7 +304,7 @@
     {
       "path": "docs/system_atlas/tests/test_development_binding.py",
       "before_sha256": null,
-      "sha256": "24abe6e18f3b768f1320f9543cac7f0d3c4d8b1c156b4e5bf65edfc90975bc5b"
+      "sha256": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976"
     },
     {
       "path": "docs/system_atlas/tests/test_obsidian_projection.py",
@@ -547,6 +557,11 @@
       "sha256": "dbc0da0063f298c0c7559990ca1310319abae2df10895b8ef6a4dda64af6ee6e"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+      "before_sha256": "6c483089dd14ec67fb9a09291f285caf1e39e7ef0ae3cc46c614940e463122e6",
+      "sha256": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
       "before_sha256": "2a5f20f5bc4d46841d015b82cbe11a896b2d66a3d64b687bdc2063faa396dbd9",
       "sha256": "1ed52014e040a467be5a313f6f9738f045d40c8b9fcea1a25e426d0e7581846d"
@@ -635,6 +650,11 @@
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "before_sha256": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
       "sha256": "4da2e3e1840e36189739ebbc3df3187c8954b5a2e9e38a638bf3865fedb42a6f"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b",
+      "sha256": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
@@ -780,6 +800,21 @@
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
       "before_sha256": "3337304ccdb69b66ccbce14292c98504a6361be43ea2a43b9905535d56111f43",
       "sha256": "7a627bcdb9a0716a77c5b5c5c4dd963dd7bf74117cf78fbee6cddab4a6a4e7d3"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/canonical_state_v1.py",
+      "before_sha256": "9c5be9069d9a1e82983972c0992baa1f6f3b2e11b1f4eefed85f1d3a9a6fee12",
+      "sha256": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/market_projection_v1.py",
+      "before_sha256": "4a34895b7c43210088a3bda061a21b7ea5ad4f968e1181086bd9ca1164456988",
+      "sha256": "ec32a7ac73ef6e6897d60bdc45cd3a0403945375e5425c166619433b41d362ec"
+    },
+    {
+      "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
+      "before_sha256": "fb5ffb587ed09acf69fc1b4ad87c822893dc0f66576bb2585d9849d99a4dc188",
+      "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
     },
     {
       "path": "tests/ci/test_ruff_frozen_format_v1.py",
@@ -932,6 +967,11 @@
       "sha256": "ad5b6b88d13ba01597a08df0a0159ece014ca85db997aa9851116d0853b72865"
     },
     {
+      "path": "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "db405cb9329b1c7cd4b4429393a32fc110f394000b357d9352635e9e50909a12",
+      "sha256": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70"
+    },
+    {
       "path": "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
       "before_sha256": "9ef5e124d97d48d10e7cffa11f95fa32dd15a007c065b264cae0db4c6f7fccc5",
       "sha256": "d906a9252019d5e91afdb30dcee457bdcf8f1a52b782c362c8a00f2c5dac382b"
@@ -945,6 +985,11 @@
       "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
       "before_sha256": "c6f6ef23d4ada0bb48952e836e82956f7f771f76878598f929ae260da767a391",
       "sha256": "0a1162fff828ed0ba734f52118e934a510a2b66b96912f7c5daae94e01d28e24"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "before_sha256": "fc550cec7ace633cb8957d6f5fa7c254ef99836a5e6501400694e75a8dcf78f0",
+      "sha256": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9"
     },
     {
       "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
@@ -1102,6 +1147,11 @@
       "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79"
     },
     {
+      "path": "tests/ops/test_prepost_position_source_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6"
+    },
+    {
       "path": "tests/ops/test_pretrade_acquisition_freshness_v1.py",
       "before_sha256": null,
       "sha256": "9f79a3f5ea9c40d01586a0748fa125db7b794a4583d9aaafb0652969d5d30185"
@@ -1130,6 +1180,11 @@
       "path": "tests/ops/test_treasury_capital_source_semantics_v1.py",
       "before_sha256": null,
       "sha256": "9a13fa6785f8c5fdbaf9b9d073b7e239cc0664908aafb688ece7399499b93aae"
+    },
+    {
+      "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "71ad04f51b04a61f21f770ce246aeedaa51b20de534c4ae0f7c548daabb20db0"
     }
   ]
 }
