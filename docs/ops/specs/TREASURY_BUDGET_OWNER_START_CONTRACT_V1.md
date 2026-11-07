@@ -31,3 +31,14 @@ Implementation: [budget host](../../../src/ops/portfolio_capital_reservation_bud
 ## Explicit K1 selection and lifecycle audit — 2026-11-03
 
 Frank selected the already-configured K1 credential service. The [K1 source profile and capital lifecycle contract](K1_TREASURY_ACCOUNT_SOURCE_AND_CAPITAL_LIFECYCLE_V1.md) adds an explicit bounded alternative to the dedicated-observer profile, without relabeling credentials or adding fallback. Real account/Trading/Funding reads passed; durable post-close composition is injected-tested. Dedicated observer policy, U04/P01 and economic formulas remain unchanged. Independent real accounting/equity reconstruction and continuous service deployment remain open. Earlier unprovisioned-source statements describe their dated phase/profile.
+
+## Clarified consumer scope — 2026-11-07
+
+The [source/consumer correction](../evidence/TREASURY_CAPITAL_SOURCE_SEMANTICS_2026_11_07.md)
+distinguishes CT's intermediate U04 subtraction from final 29P free margin.
+The earlier summary above must not be read as proof that the final margin
+producer subtracted U04: it did not. Funding still uses CT; free margin now
+reaches its original 29P owner without constructing CT BASE. Nonempty U04 with
+unproven venue coverage blocks that branch. Active local budget holds and the
+fixed empty-witness default remain separate unresolved semantic boundaries.
+The durable owner, recovery admission and reservation/release rules are unchanged.

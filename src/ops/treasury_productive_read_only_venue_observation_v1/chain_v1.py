@@ -14,6 +14,7 @@ from src.ops.treasury_capital_admission_to_account_equity_orchestration_producti
     join_treasury_observation_through_e4_into_productive_account_equity_host_v1,
 )
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
+    TreasuryBalanceSourceV1,
     TreasuryVenueObservationV1,
 )
 from src.ops.treasury_phase_3_shadow_enforcement_v1.constants_v1 import (
@@ -34,6 +35,10 @@ from src.ops.treasury_productive_read_only_venue_observation_v1.errors_v1 import
 def execute_treasury_productive_reconciliation_chain_v1(
     observation: TreasuryVenueObservationV1,
 ) -> dict[str, Any]:
+    if observation.balance_source != TreasuryBalanceSourceV1.FUNDING_AVAILABLE_BALANCE.value:
+        raise TreasuryProductiveReadOnlyVenueObservationError(
+            "FUNDING_SOURCE_REQUIRED_FOR_OBSERVATION_ONLY_CHAIN"
+        )
     interference = prove_treasury_bounded_full_core_reachability_v1()
     if interference.get("ok") is not True:
         raise TreasuryProductiveReadOnlyVenueObservationError(

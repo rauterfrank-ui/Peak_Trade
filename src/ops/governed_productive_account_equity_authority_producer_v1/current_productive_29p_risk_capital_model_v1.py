@@ -559,6 +559,9 @@ def _validate_scope_and_freshness(
     except (InvalidOperation, ValueError):
         reasons.append(f"{field}_FRESHNESS_UNPARSEABLE")
     else:
+        if not age.is_finite() or not max_age.is_finite():
+            reasons.append(f"{field}_FRESHNESS_UNPARSEABLE")
+            return tuple(reasons)
         if age < 0 or max_age <= 0 or age > max_age:
             reasons.append(f"{field}_STALE")
         if max_age > Decimal(str(NUMERIC_EQUITY_TTL_SECONDS)):

@@ -43,6 +43,13 @@ class TreasuryReconciliationClassV1(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class TreasuryBalanceSourceV1(str, Enum):
+    """Distinct USDC surfaces; a reconciliation label cannot convert one to the other."""
+
+    FUNDING_AVAILABLE_BALANCE = "OKX_FUNDING_USDC_AVAIL_BAL"
+    ACCOUNT_FREE_MARGIN = "OKX_ACCOUNT_DETAILS_USDC_AVAIL_EQ_NET_OF_IN_USE"
+
+
 @dataclass(frozen=True)
 class TreasuryVenueObservationV1:
     evidence_id: str
@@ -59,6 +66,9 @@ class TreasuryVenueObservationV1:
     prior_reconciled_capital_raw: str = ""
     cached_trading_capital_raw: str = ""
     phase1_lifecycle_state: str = ""
+    # Legacy Treasury observations were funding observations. Both venue adapters
+    # set this explicitly; free margin must never inherit the legacy default.
+    balance_source: str = TreasuryBalanceSourceV1.FUNDING_AVAILABLE_BALANCE.value
 
 
 @dataclass(frozen=True)

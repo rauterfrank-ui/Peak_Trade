@@ -24,6 +24,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     LiveCanaryTransportV1,
 )
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
+    TreasuryBalanceSourceV1,
     TreasuryFreshnessSignalV1,
     TreasuryVenueObservationV1,
 )
@@ -119,6 +120,7 @@ def build_treasury_venue_observation_from_funding_balance_v1(
         prior_reconciled_capital_raw=str(context.prior_reconciled_capital_raw),
         cached_trading_capital_raw=str(context.cached_trading_capital_raw),
         phase1_lifecycle_state=str(context.phase1_lifecycle_state),
+        balance_source=TreasuryBalanceSourceV1.FUNDING_AVAILABLE_BALANCE.value,
     )
 
 

@@ -1,0 +1,316 @@
+{
+  "schema": "peaktrade.treasury_capital_source_semantics_evidence.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "d2615064e7bf757999b6ea0884a51526d5114b6b",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+      "before_sha256": "6e63884c6b8d0349eebb52deaf6c81b7cc60ca6e7f7b17c3def012a02e00e276",
+      "sha256": "43bbc7b4d90dbcf821653fca304724cf8ea8f585d43fadbf374002c5275513e9"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+      "before_sha256": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
+      "sha256": "4da2e3e1840e36189739ebbc3df3187c8954b5a2e9e38a638bf3865fedb42a6f"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+      "before_sha256": "4fae6b067a13f8052406ad079771a42221b596d2b88d7bb8677c208f4272d159",
+      "sha256": "4d156842c27ccaa7618402be7f9691bc11c98cb57be01ead0dd9467bd42f46be"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_free_margin_inputs_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "f404ec891a74f2075daff9ae9772952d7884895ba87fa1613248431549c4da07"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+      "before_sha256": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1",
+      "sha256": "5119bca88deff5a81b0af8dc538e6ea93e10bffad54f75d64b51ab7ce56ab6c3"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/non_forbidden_non_eq_non_stock_usdc_current_productive_observation_v1.py",
+      "before_sha256": "4b1e967d2261dff419d554f881eda93f4eb3e19aa1fe9f8c3fae40a690db6145",
+      "sha256": "f9e218a5ab5349df2dea2842f05205aeef6e449e6537fd6ff70e28bee5404669"
+    },
+    {
+      "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
+      "before_sha256": "daa21942a05e2170dd52d67dd30e653bc4e1623ac73af68705f35559aa5ee76a",
+      "sha256": "372c7d9f0a6a58d9f2eca11269e3dd5422d366f3e8c96e8033feb26d5141e13c"
+    },
+    {
+      "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/models_v1.py",
+      "before_sha256": "a1aa45eaa7c7ef5492ecacac71c53acbcaa5d965ab1ec79025bf13a31bd79f33",
+      "sha256": "2f99b6a6922b7127e6bfcc719655d7f0a49bf3ae92336954929f47a2b8f416c5"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py",
+      "before_sha256": "6723906c11149ff4f6d2e8ef60aa96f7b48544e647f2a891ece7b664d4f5fbe1",
+      "sha256": "10b8bfea07e47ab55efb8293f6c62ef5d65f1cd01fb8afe4e36e07013d1c687b"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py",
+      "before_sha256": "e05822d9bca92c1e232e720c7f4a7f89ad075fb8fd73ae56081270cd5c2898cf",
+      "sha256": "7f77b89e54abd026e46630407a68d7ca83a8220e0c9f7fa4899c6c0ba7779fa3"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/account_balance_usdc_avail_eq_adapter_v1.py",
+      "before_sha256": "7b0628689ddcda8e6d8749216b227a754b69ff683fdcfb16cf6dab498d750613",
+      "sha256": "4995696593f9791acad515731440e14bc9ad719fc5bbf53eb57ab0fe5f113429"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py",
+      "before_sha256": "0448d0817cd3d46d8bb917b01570fd61ef664bf4df8ea5edf7dac3d5c1e2cbfb",
+      "sha256": "753cb2380b53dbaa73dade1da4722ad9f0087f25f773b47f1b86af97381e54df"
+    },
+    {
+      "path": "src/ops/treasury_productive_read_only_venue_observation_v1/chain_v1.py",
+      "before_sha256": "e97d8cbb879311b7d49ae4324d1d789cdb05dc4ad36465b5239faa0b9ddb3c37",
+      "sha256": "8b169f3e340ef5ec47e28eb17a8d274fad1063326542c0f829097eec9b4402ef"
+    },
+    {
+      "path": "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
+      "before_sha256": "7d9c0d868c0c074b7c8d0d2193662bad3707909027407d23957cf671e4c65c46",
+      "sha256": "7d9c0d868c0c074b7c8d0d2193662bad3707909027407d23957cf671e4c65c46"
+    },
+    {
+      "path": "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
+      "before_sha256": "2e139a7949413b31f11808b0d131bf153563521c127cc4e6cb5bd088838fa791",
+      "sha256": "2e139a7949413b31f11808b0d131bf153563521c127cc4e6cb5bd088838fa791"
+    },
+    {
+      "path": "tests/ops/test_current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+      "before_sha256": "b9be204e984ae17ed98653573f21d17c65d38b6709bc13d1106d882c2e5bfad5",
+      "sha256": "b9be204e984ae17ed98653573f21d17c65d38b6709bc13d1106d882c2e5bfad5"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py",
+      "before_sha256": "3054565b70174dc43a9b7e976f3980ced6190326f959d9be6e2b33a997005774",
+      "sha256": "3054565b70174dc43a9b7e976f3980ced6190326f959d9be6e2b33a997005774"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py",
+      "before_sha256": "cb7f0c26834b051f50888385d8830c5d6d78fd9c7ab02b708c884b745615a815",
+      "sha256": "cb7f0c26834b051f50888385d8830c5d6d78fd9c7ab02b708c884b745615a815"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py",
+      "before_sha256": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3",
+      "sha256": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3"
+    },
+    {
+      "path": "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py",
+      "before_sha256": "8649eec08801f46a295cbc118d539c308d2171b53d4cfbb4e1b34e2d5396d741",
+      "sha256": "8649eec08801f46a295cbc118d539c308d2171b53d4cfbb4e1b34e2d5396d741"
+    },
+    {
+      "path": "tests/ops/test_portfolio_budget_host_v1.py",
+      "before_sha256": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+      "sha256": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c"
+    },
+    {
+      "path": "tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py",
+      "before_sha256": "821d72cb54fc6dff2abc5b90d2665757971c5055b56d7b1c750e6b8081725a15",
+      "sha256": "821d72cb54fc6dff2abc5b90d2665757971c5055b56d7b1c750e6b8081725a15"
+    },
+    {
+      "path": "tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1.py",
+      "before_sha256": "6deb805ac96d99b60e775f7f2a2542aafe4861605073601c7193cb8cf37cd2ce",
+      "sha256": "6deb805ac96d99b60e775f7f2a2542aafe4861605073601c7193cb8cf37cd2ce"
+    },
+    {
+      "path": "tests/ops/test_treasury_capital_source_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "9a13fa6785f8c5fdbaf9b9d073b7e239cc0664908aafb688ece7399499b93aae"
+    },
+    {
+      "path": "tests/ops/test_treasury_phase_2_read_only_reconciliation_v1.py",
+      "before_sha256": "f01b5a3e03793312b7d6c09c971d3ba26d4edeaa21a5cdcc1cb797512a6dde63",
+      "sha256": "f01b5a3e03793312b7d6c09c971d3ba26d4edeaa21a5cdcc1cb797512a6dde63"
+    },
+    {
+      "path": "tests/ops/test_treasury_phase_2_read_only_venue_observation_binding_v1.py",
+      "before_sha256": "9c39ca959d742e9db4162ae0e5af54020401d98bf0ae1575363a809cbb5209bd",
+      "sha256": "9c39ca959d742e9db4162ae0e5af54020401d98bf0ae1575363a809cbb5209bd"
+    }
+  ],
+  "original_counterexample": {
+    "base_commit": "d2615064e7bf757999b6ea0884a51526d5114b6b",
+    "original_loaded_sources": [
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "sha256": "6e63884c6b8d0349eebb52deaf6c81b7cc60ca6e7f7b17c3def012a02e00e276"
+      },
+      {
+        "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+        "sha256": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80"
+      },
+      {
+        "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+        "sha256": "4fae6b067a13f8052406ad079771a42221b596d2b88d7bb8677c208f4272d159"
+      },
+      {
+        "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+        "sha256": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1"
+      },
+      {
+        "path": "src/ops/governed_productive_account_equity_authority_producer_v1/non_forbidden_non_eq_non_stock_usdc_current_productive_observation_v1.py",
+        "sha256": "4b1e967d2261dff419d554f881eda93f4eb3e19aa1fe9f8c3fae40a690db6145"
+      },
+      {
+        "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
+        "sha256": "daa21942a05e2170dd52d67dd30e653bc4e1623ac73af68705f35559aa5ee76a"
+      },
+      {
+        "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/models_v1.py",
+        "sha256": "a1aa45eaa7c7ef5492ecacac71c53acbcaa5d965ab1ec79025bf13a31bd79f33"
+      },
+      {
+        "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py",
+        "sha256": "6723906c11149ff4f6d2e8ef60aa96f7b48544e647f2a891ece7b664d4f5fbe1"
+      },
+      {
+        "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py",
+        "sha256": "e05822d9bca92c1e232e720c7f4a7f89ad075fb8fd73ae56081270cd5c2898cf"
+      },
+      {
+        "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/account_balance_usdc_avail_eq_adapter_v1.py",
+        "sha256": "7b0628689ddcda8e6d8749216b227a754b69ff683fdcfb16cf6dab498d750613"
+      },
+      {
+        "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py",
+        "sha256": "0448d0817cd3d46d8bb917b01570fd61ef664bf4df8ea5edf7dac3d5c1e2cbfb"
+      }
+    ],
+    "generic_base_upstream_venue_field": "funding_availBal_usdc",
+    "account_adapter_source_field": null,
+    "observed_original_handoff": [
+      {
+        "u04": "0",
+        "fail_closed": false,
+        "final_29p_value": "1000",
+        "ct_inputs_bound": true,
+        "base_bind_count": 1
+      },
+      {
+        "u04": "15",
+        "fail_closed": false,
+        "final_29p_value": "1000",
+        "ct_inputs_bound": true,
+        "base_bind_count": 1
+      }
+    ]
+  },
+  "historical_origins": [
+    {
+      "pr": 6494,
+      "commit": "62ac12d8167757aeaa145af03d0e972772385195",
+      "role": "Original free-margin 29P owner: net venue in-use, no second U04 subtraction"
+    },
+    {
+      "pr": 6676,
+      "commit": "90c1ffbcfe04482f1ed9c7ac424918dfea76e5c0",
+      "role": "Treasury Funding C08 -> CT BASE binding"
+    },
+    {
+      "pr": 6827,
+      "commit": "9647cb7bbab8137d1db1f47cf053ab6fcb7057a9",
+      "role": "Single-source Treasury path before original free-margin 29P, CT value not final capital"
+    }
+  ],
+  "verification": {
+    "owner": {
+      "command": [
+        "PYTHONDONTWRITEBYTECODE=1",
+        "./scripts/pt",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/ops/test_treasury_capital_source_semantics_v1.py",
+        "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py",
+        "tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1.py",
+        "tests/ops/test_current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+        "tests/ops/test_treasury_phase_2_read_only_venue_observation_binding_v1.py",
+        "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
+        "tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py",
+        "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
+        "tests/ops/test_treasury_phase_2_read_only_reconciliation_v1.py",
+        "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py",
+        "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py",
+        "tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py",
+        "tests/ops/test_portfolio_budget_host_v1.py",
+        "--deselect=tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py::test_canonical_pack_and_ssot",
+        "--deselect=tests/ops/test_treasury_phase_2_read_only_reconciliation_v1.py::test_treasury_not_in_full_core_interference_proof",
+        "--deselect=tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py::test_runbook_ct_persists_producer_without_mint",
+        "--deselect=tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py::test_created_flag_pins_and_docs"
+      ],
+      "exit_code": 0,
+      "passed": 158,
+      "deselected": 4,
+      "duration_seconds": 6.15,
+      "log_path": "owner-final-source-dispatch.txt",
+      "log_sha256": "56db4429838bbbc1d83619e95069a4cefe237436cdc29fc111aee7ad00ffd8a5",
+      "new_regression_cases": 32
+    },
+    "original_owner_modules_probe": {
+      "passed": 90,
+      "failed": 3,
+      "log_path": "original-owners.txt",
+      "exit_code": 1
+    },
+    "original_enter_doc_probe": {
+      "failed": 1,
+      "log_path": "original-enter-doc.txt",
+      "exit_code": 1
+    },
+    "initial_current_owner_probe": {
+      "passed": 90,
+      "failed": 3,
+      "exit_code": 1
+    },
+    "expanded_current_owner_probe": {
+      "passed": 157,
+      "failed": 1,
+      "deselected": 3,
+      "exit_code": 1
+    },
+    "prior_source_dispatch_probe": {
+      "passed": 157,
+      "deselected": 4,
+      "duration_seconds": 6.22,
+      "exit_code": 0,
+      "log_path": "owner-sealed.txt",
+      "scope": "Before guarding the existing funding-only observation report against a margin input"
+    }
+  },
+  "still_open_test_nodes": [
+    "tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py::test_canonical_pack_and_ssot",
+    "tests/ops/test_treasury_phase_2_read_only_reconciliation_v1.py::test_treasury_not_in_full_core_interference_proof",
+    "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py::test_runbook_ct_persists_producer_without_mint",
+    "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py::test_created_flag_pins_and_docs"
+  ],
+  "original_static_predicates": {
+    "obsolete_atlas_catalog_absent_in_original_tree": true,
+    "original_full_core_handoff_contains_treasury_phase_2": true,
+    "baseline_loading_scope": "Only changed product modules loaded from original Git blobs using an import hook; all other runtime modules are unchanged. Static original-tree predicates separately checked. This is not an isolated complete original checkout."
+  },
+  "open_boundaries": [
+    "Nonempty U04 witness lacks venue/local coverage identity; free-margin branch blocks rather than ignoring or guessing subtraction.",
+    "Default full-core empty-U04 helper is still a fixed witness, not verified general account or local-hold evidence.",
+    "Portfolio budget original active local holds are deducted separately; local/venue overlap and domains remain unresolved.",
+    "Treasury account adapter sets prior/cached from the same snapshot, not independent historic reconciliation.",
+    "Process-local replay guard is not durable restore or full host power-loss proof.",
+    "Earlier broad 24 failure/setup cases remain open; selected PASS does not replace them.",
+    "No full natural host run, N5 operation, authenticated live read, order, credential access, service installation or activation proof."
+  ],
+  "external_logs": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/Treasury capital source verification 2026-11-07",
+  "technical_reference": {
+    "url": "https://www.okx.com/docs-v5/en/",
+    "checked_date": "2026-11-07",
+    "scope": "Account-level vs currency-level availEq and ordFrozen definitions; no attestation of local U04 coverage or current account state."
+  }
+}

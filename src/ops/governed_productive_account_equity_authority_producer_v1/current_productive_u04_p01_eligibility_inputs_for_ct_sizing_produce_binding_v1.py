@@ -12,7 +12,7 @@ import hashlib
 import json
 import re
 from decimal import Decimal, InvalidOperation
-from typing import Mapping
+from typing import Mapping, Protocol
 
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_ALGEBRA,
@@ -65,6 +65,31 @@ EARLIEST_NEW_REAL_BLOCKER_AFTER_WP = (
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
+class CapitalInputScopeV1(Protocol):
+    """Shared scope of original BASE and free-margin facts, with no numeric conversion."""
+
+    @property
+    def fact_id(self) -> str: ...
+
+    @property
+    def settlement_currency(self) -> str: ...
+
+    @property
+    def bound_account_identity(self) -> str: ...
+
+    @property
+    def bound_venue_identity(self) -> str: ...
+
+    @property
+    def bound_td_mode(self) -> str: ...
+
+    @property
+    def decision_epoch(self) -> str: ...
+
+    @property
+    def observed_at_as_of(self) -> str: ...
+
+
 def _digest(payload: Mapping[str, str]) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
@@ -100,7 +125,7 @@ def _parse_non_negative(value: str) -> Decimal | None:
 
 def bind_current_productive_u04_reservation_fact_from_typed_evidence_v1(
     *,
-    base: CurrentProductiveAvailableForSizingBaseFactV1,
+    base: CapitalInputScopeV1,
     evidence: CurrentProductiveU04ReservationTypedEvidenceV1,
     age_seconds: str,
     freshness_max_age: str,
@@ -152,7 +177,7 @@ def bind_current_productive_u04_reservation_fact_from_typed_evidence_v1(
 
 def bind_current_productive_p01_fact_for_ct_sizing_produce_v1(
     *,
-    base: CurrentProductiveAvailableForSizingBaseFactV1,
+    base: CapitalInputScopeV1,
     age_seconds: str,
     freshness_max_age: str,
     applicability_state: str | None = None,

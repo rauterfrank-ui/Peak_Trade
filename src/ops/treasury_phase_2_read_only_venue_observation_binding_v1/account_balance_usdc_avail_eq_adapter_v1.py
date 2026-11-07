@@ -13,6 +13,7 @@ import json
 from typing import Mapping
 
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
+    TreasuryBalanceSourceV1,
     TreasuryDepositHistorySignalV1,
     TreasuryExternalDepletionSignalV1,
     TreasuryFreshnessSignalV1,
@@ -81,6 +82,7 @@ def build_treasury_venue_observation_from_trusted_account_balance_usdc_avail_eq_
         external_depletion_signal=TreasuryExternalDepletionSignalV1.NONE.value,
         prior_reconciled_capital_raw=value,
         cached_trading_capital_raw=value,
+        balance_source=TreasuryBalanceSourceV1.ACCOUNT_FREE_MARGIN.value,
     )
 
 
