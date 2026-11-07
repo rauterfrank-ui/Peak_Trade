@@ -1026,11 +1026,19 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 }
             )
 
-    def bind_execution_plan_v1(self, reservation_id, envelope):
+    def bind_execution_plan_v1(
+        self, reservation_id, envelope, *, canonical_intent=None, venue_plan=None
+    ):
         from .execution_v1 import bind_plan_locked_v1
 
         with self._lock:
-            return bind_plan_locked_v1(self, str(reservation_id), envelope)
+            return bind_plan_locked_v1(
+                self,
+                str(reservation_id),
+                envelope,
+                canonical_intent=canonical_intent,
+                venue_plan=venue_plan,
+            )
 
     def mark_execution_submit_boundary_v1(
         self, reservation_id, identity, *, external_effect_permit=None

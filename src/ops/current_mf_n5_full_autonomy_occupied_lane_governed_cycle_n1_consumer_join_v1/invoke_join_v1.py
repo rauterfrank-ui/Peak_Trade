@@ -795,7 +795,10 @@ def _t2_from_s7(
                     and portfolio_budget_owner.budget_state_v1().durable_state_enabled
                 ):
                     portfolio_budget_owner.bind_execution_plan_v1(
-                        live_29p.portfolio_reservation_id, envelope
+                        live_29p.portfolio_reservation_id,
+                        envelope,
+                        canonical_intent=venue_plan_replay.intermediate.canonical_order_intent,
+                        venue_plan=plan,
                     )
                 result = SimpleNamespace(
                     runtime_cycle_count="1",

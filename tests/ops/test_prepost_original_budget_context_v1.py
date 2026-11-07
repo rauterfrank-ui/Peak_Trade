@@ -428,8 +428,8 @@ def test_actual_n1_plan_owner_reaches_account_consumer_without_any_send(
     original_bind = Owner.bind_execution_plan_v1
     proofs = []
 
-    def bind(owner, rid, envelope):
-        result = original_bind(owner, rid, envelope)
+    def bind(owner, rid, envelope, **kwargs):
+        result = original_bind(owner, rid, envelope, **kwargs)
         state = owner.risk_snapshot_v1()["state"]
         reservation = next(row for row in state["reservations"] if row["reservation_id"] == rid)
         bound = reservation["binding"]["bound"]

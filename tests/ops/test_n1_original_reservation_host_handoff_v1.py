@@ -69,8 +69,8 @@ def test_original_n1_hold_reaches_actual_supervisor_and_retains_cold_recovery_fe
     plans = []
     cycles = []
 
-    def observe_bind(owner, rid, envelope):
-        output = original_bind(owner, rid, envelope)
+    def observe_bind(owner, rid, envelope, **kwargs):
+        output = original_bind(owner, rid, envelope, **kwargs)
         snapshot = owner.risk_snapshot_v1()["state"]
         reservation = next(r for r in snapshot["reservations"] if r["reservation_id"] == rid)
         plans.append((owner, rid, envelope, snapshot, reservation))
