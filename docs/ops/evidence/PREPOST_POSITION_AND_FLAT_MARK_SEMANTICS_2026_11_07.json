@@ -33,7 +33,7 @@
     {
       "path": "src/webui/market_surface_greenfield_v1/market_projection_v1.py",
       "before_sha256": "4a34895b7c43210088a3bda061a21b7ea5ad4f968e1181086bd9ca1164456988",
-      "sha256": "2c7b3f8794b1d8c23e52983c93c40d825c14953bad2befc081853d6c6f6c3ecf"
+      "sha256": "ec32a7ac73ef6e6897d60bdc45cd3a0403945375e5425c166619433b41d362ec"
     },
     {
       "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
@@ -63,7 +63,7 @@
     {
       "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
       "before_sha256": null,
-      "sha256": "6dbb6b2b941e649fbbd28017c586d50ccbb1c87a2fa7d3a9b91c96ddf7526766"
+      "sha256": "1e7711320a75cbfb8cae70ef0da687e237aa1bc62ea8f4d599ba3d18d807370c"
     },
     {
       "path": "tests/webui/test_market_surface_greenfield_v1.py",
@@ -161,47 +161,8 @@
     "system_cache": "Synthetic fixed flat system slice; actual market API response updates independently on each poll",
     "actual_browser_source_executed": true,
     "browser_environment": "Node VM with DOM/fetch doubles; no browser/venue network",
-    "missing_or_stale_price": "Unknown/stale source shown explicitly; candle fallback remains visibly CANDLE_CLOSE, never a relabeled live mark."
-  },
-  "final_owner_test": {
-    "base_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
-    "command": [
-      "./scripts/pt",
-      "-m",
-      "pytest",
-      "-q",
-      "tests/ops/test_prepost_position_source_admission_v1.py",
-      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
-      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
-      "tests/webui/test_flat_position_live_mark_semantics_v1.py",
-      "tests/webui/test_market_surface_greenfield_v1.py",
-      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
-      "docs/system_atlas/tests/test_development_binding.py",
-      "--tb=short"
-    ],
-    "exit_code": 0,
-    "elapsed_seconds": 3.79,
-    "source_sha256": {
-      "docs/system_atlas/current_atlas.py": "1cffbf36b5ee203595fc0e4e02c92b0deb59bb37f06d90aa5f52a0d9ca813f14",
-      "docs/system_atlas/tests/test_development_binding.py": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976",
-      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047",
-      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4",
-      "src/webui/market_surface_greenfield_v1/canonical_state_v1.py": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265",
-      "src/webui/market_surface_greenfield_v1/market_projection_v1.py": "2c7b3f8794b1d8c23e52983c93c40d825c14953bad2befc081853d6c6f6c3ecf",
-      "static/js/market_surface_greenfield_v1/surface_app_v1.js": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f",
-      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
-      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
-      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
-      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
-      "tests/webui/test_flat_position_live_mark_semantics_v1.py": "6dbb6b2b941e649fbbd28017c586d50ccbb1c87a2fa7d3a9b91c96ddf7526766",
-      "tests/webui/test_market_surface_greenfield_v1.py": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
-    },
-    "unchanged_during_run": true,
-    "log_sha256": "2b9855d5db5e8d29c43c75f64464831b185f6946f387b192aa9afeb0e760b374",
-    "scope": "Original consumers, synthetic GET ports, accounting kernel, ASGI source load/poll response, actual browser JS under DOM/fetch doubles, named source-binding verifier. No actual venue/credential or natural full-host proof.",
-    "passed": 110,
-    "pytest_elapsed_seconds": 1.48,
-    "warning": "Existing Starlette/httpx deprecation; no dependency changes."
+    "missing_or_stale_price": "Unknown/stale source shown explicitly; candle fallback remains visibly CANDLE_CLOSE, never a relabeled live mark.",
+    "fresh_document_without_any_price": "UNAVAILABLE price with UNKNOWN price freshness and no price timestamp; fresh unrelated metadata cannot prove a fresh price."
   },
   "negative_original_position_probe": {
     "log_sha256": "863104e12d909deb202ee72fb6fb6e9fa8e50906e3473c670957b7c9451f3736",
@@ -341,5 +302,80 @@
     "live_host_started": false,
     "real_orders": 0,
     "synthetic_effects": "Existing caller tests exercise fake K1/HTTP and temporary durable GO/permit records; new denial tests prohibit durable GO and send callbacks."
+  },
+  "previous_owner_test_before_missing_price_label_correction": {
+    "base_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_prepost_position_source_admission_v1.py",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "tests/webui/test_market_surface_greenfield_v1.py",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "docs/system_atlas/tests/test_development_binding.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.79,
+    "source_sha256": {
+      "docs/system_atlas/current_atlas.py": "1cffbf36b5ee203595fc0e4e02c92b0deb59bb37f06d90aa5f52a0d9ca813f14",
+      "docs/system_atlas/tests/test_development_binding.py": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4",
+      "src/webui/market_surface_greenfield_v1/canonical_state_v1.py": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265",
+      "src/webui/market_surface_greenfield_v1/market_projection_v1.py": "2c7b3f8794b1d8c23e52983c93c40d825c14953bad2befc081853d6c6f6c3ecf",
+      "static/js/market_surface_greenfield_v1/surface_app_v1.js": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py": "6dbb6b2b941e649fbbd28017c586d50ccbb1c87a2fa7d3a9b91c96ddf7526766",
+      "tests/webui/test_market_surface_greenfield_v1.py": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "2b9855d5db5e8d29c43c75f64464831b185f6946f387b192aa9afeb0e760b374",
+    "scope": "Original consumers, synthetic GET ports, accounting kernel, ASGI source load/poll response, actual browser JS under DOM/fetch doubles, named source-binding verifier. No actual venue/credential or natural full-host proof.",
+    "passed": 110,
+    "pytest_elapsed_seconds": 1.48,
+    "warning": "Existing Starlette/httpx deprecation; no dependency changes."
+  },
+  "final_owner_test": {
+    "base_commit": "d868c3bdb18ad252ea3d45438b7d01127884b1d0",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_prepost_position_source_admission_v1.py",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "tests/webui/test_market_surface_greenfield_v1.py",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "docs/system_atlas/tests/test_development_binding.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.34,
+    "source_sha256": {
+      "docs/system_atlas/tests/test_development_binding.py": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976",
+      "src/webui/market_surface_greenfield_v1/market_projection_v1.py": "ec32a7ac73ef6e6897d60bdc45cd3a0403945375e5425c166619433b41d362ec",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py": "1e7711320a75cbfb8cae70ef0da687e237aa1bc62ea8f4d599ba3d18d807370c",
+      "tests/webui/test_market_surface_greenfield_v1.py": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "709b554aa3fbca76c820bae000fbd6d3d797124bd5898b1d83c85e6af80cff95",
+    "scope": "Original consumers, synthetic GET ports, accounting kernel, ASGI source load/poll response, actual browser JS under DOM/fetch doubles, named source-binding verifier. No actual venue/credential or natural full-host proof.",
+    "passed": 111,
+    "pytest_elapsed_seconds": 1.59,
+    "warning": "Existing Starlette/httpx deprecation; no dependency changes."
   }
 }

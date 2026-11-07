@@ -91,6 +91,16 @@ def test_invalid_or_missing_mark_does_not_relabel_candle_as_live_mark(value):
     assert state["last_price_kind"] == "CANDLE_CLOSE"
 
 
+def test_fresh_document_without_any_price_is_not_a_fresh_price():
+    doc = document(None)
+    doc["bars"] = []
+    state = project(doc)
+    assert state["last_price"] is None
+    assert state["last_price_kind"] == "UNAVAILABLE"
+    assert state["last_price_freshness"] == "UNKNOWN"
+    assert state["last_price_timestamp"] is None
+
+
 @pytest.mark.parametrize(
     ("capture", "freshness"),
     [

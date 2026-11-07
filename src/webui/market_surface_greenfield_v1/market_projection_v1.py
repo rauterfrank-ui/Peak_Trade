@@ -142,10 +142,12 @@ def project_market_state_from_ohlcv_doc(
         "last_price_kind": "MARK_PRICE"
         if mark_price is not None
         else ("CANDLE_CLOSE" if series else "UNAVAILABLE"),
-        "last_price_freshness": mark_freshness if mark_price is not None else freshness,
+        "last_price_freshness": mark_freshness
+        if mark_price is not None
+        else (freshness if series else "UNKNOWN"),
         "last_price_timestamp": (mark_event or mark_captured)
         if mark_price is not None
-        else ohlcv.get("last_timestamp"),
+        else (ohlcv.get("last_timestamp") if series else None),
         "live_mark_price": mark_price,
         "live_mark_captured_at": mark_captured,
         "live_mark_provider_ts": mark_event,
