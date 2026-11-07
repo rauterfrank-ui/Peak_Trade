@@ -223,6 +223,9 @@ def _s5_hold_liveness_stub(**_kwargs: object) -> SimpleNamespace:
         reason_code="HOLD",
         permit_created=False,
         post_count=0,
+        final_order_envelope=None,
+        envelope_created=False,
+        envelope_identity="",
     )
 
 
@@ -271,6 +274,8 @@ def test_orchestrator_reaches_second_s5_cycle_with_live_fresh_c1_transport(
     assert result.cycle_records[0].c1_venue_event_time == C1_A
     assert result.cycle_records[1].c1_venue_event_time == C1_B
     assert result.post_count == 0
+    assert all(record.final_order_envelope is None for record in result.cycle_records)
+    assert all(record.envelope_created is False for record in result.cycle_records)
 
 
 def test_permanent_cache_would_fail_dynamic_regression_without_repair(

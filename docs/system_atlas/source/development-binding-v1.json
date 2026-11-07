@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "74714c81b539743b65c384118cbb6b1dd278559f",
-  "scope": "N1 continuation/recovery and current Core/intent/envelope proof, extended by original capital decision identity and decision-scoped acquisition freshness. Numerical finance/risk formulas, global GET quotas, activation, frozen inventory and Core bytes retained. Treasury funding/margin source-netting semantics and natural/full-host admission remain open.",
+  "development_parent_commit": "2ad95be4a8382d6d75a9855e124feb9e6b4f64fe",
+  "scope": "N1 continuation/recovery, current consumer proof and capital acquisition freshness; shared Product GET fuse now counts conditional dynamic index reads and original pretrade fetch groups. Existing cycle/duration/retry/TTL and trading authority remain unchanged. Full-host/universe transport budgets, hard in-flight deadlines, Treasury source-netting and natural readiness remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -122,6 +122,16 @@
       "sha256": "e325a87a9b64377e93c85f9d50a26b383bbaf28fe5e55631013ec20b4f7ffa16"
     },
     {
+      "path": "docs/ops/evidence/SHARED_GET_RESOURCE_ENVELOPE_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "9e72197db52cb45cdc6674832975f7425a93241c4a3383c969b5d620a9d46d21"
+    },
+    {
+      "path": "docs/ops/evidence/SHARED_GET_RESOURCE_ENVELOPE_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "6263b0c5727e55751355f76a4786224f1edc5ac20e14ed8dbe1ee1ddb341236c"
+    },
+    {
       "path": "docs/ops/evidence/WP03_CURRENT_CONSUMER_PROOF_2026_11_07.json",
       "before_sha256": null,
       "sha256": "5a70ed35d48a047be1e055c19faa92cb0d68404ab47ad14834779e10ddbe9e0d"
@@ -149,7 +159,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md",
       "before_sha256": "8c9c77e41226c3b53f78159a574a1b7ede27a446bfe4331d43bc3ecfad90e9ea",
-      "sha256": "2991ae78c0cc90b149ba8a5ff82577f41bd2a44f5b3b23ccaaed127b84a90add"
+      "sha256": "efe67ec3bba80e78c520a4f988200db2a0ebccf63b6440e7243300512c877530"
     },
     {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
@@ -497,6 +507,11 @@
       "sha256": "dbc0da0063f298c0c7559990ca1310319abae2df10895b8ef6a4dda64af6ee6e"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
+      "before_sha256": "2a5f20f5bc4d46841d015b82cbe11a896b2d66a3d64b687bdc2063faa396dbd9",
+      "sha256": "1ed52014e040a467be5a313f6f9738f045d40c8b9fcea1a25e426d0e7581846d"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
       "sha256": "bf10b7904900930f6f514023fadc5bf36e5b84f9e72095940189173e9c964721"
@@ -780,6 +795,21 @@
       "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
       "before_sha256": "5996f96ef77dbbb4a38f673bc144129a988ab3b032f255033128b2377162d484",
       "sha256": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46"
+    },
+    {
+      "path": "tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py",
+      "before_sha256": "a55120ab2ba666a1b2592df436c87fb1613588533cca8ebbce2662ac58467d81",
+      "sha256": "2bbffd1a8a6c5846d383914c04a09c274972fd65c67b81abaa25819e1d78341e"
+    },
+    {
+      "path": "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py",
+      "before_sha256": "7efb14bf148d727be3baf0d06505cb3c20314b72630683aa50cefc79bbe4c583",
+      "sha256": "5c7755d298323907c8065d0cb3e4c034649f9c2bfec0cab4557b1738c75e7ed6"
+    },
+    {
+      "path": "tests/ops/full_core_live_path_composition_root_v1/test_shared_get_resource_envelope_v1.py",
+      "before_sha256": null,
+      "sha256": "1d67ecac93a627191695d7b33b930b1df881b941e7a8ac1783cd552d0eb02105"
     },
     {
       "path": "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
