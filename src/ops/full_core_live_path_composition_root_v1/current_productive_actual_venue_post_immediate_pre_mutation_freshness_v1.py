@@ -166,6 +166,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     portfolio_budget_owner=None,
     portfolio_reservation_id: str = "",
     execution_identity=None,
+    execution_plan_context=None,
 ) -> ActualVenuePostPreMutationFreshnessProofV1:
     assert_envelope_unmodified_v1(envelope)
     context_args = dict(
@@ -173,6 +174,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         portfolio_budget_owner=portfolio_budget_owner,
         portfolio_reservation_id=portfolio_reservation_id,
         execution_identity=execution_identity,
+        execution_plan_context=execution_plan_context,
         required_execution_environment="LIVE",
     )
     try:
@@ -272,7 +274,16 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
                 ).hexdigest(),
                 "reservation_id": original_context["reservation_id"],
                 "envelope_digest": original_context["envelope_digest"],
-                "execution_identity_digest": original_context["execution_identity_digest"],
+                **{
+                    k: original_context[k]
+                    for k in (
+                        "execution_identity_digest",
+                        "plan_origin_digest",
+                        "order_environment",
+                        "context_kind",
+                    )
+                    if k in original_context
+                },
             }
         global_result = results.get("positions")
         _validate_position_result_v1(

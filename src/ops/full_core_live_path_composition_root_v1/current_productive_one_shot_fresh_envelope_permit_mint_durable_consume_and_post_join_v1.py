@@ -224,6 +224,8 @@ class _DurableConsumeThenK1HttpTransportV1:
         if existing.get("durable_consumed") is not True:
             raise FullCoreProductiveHttpPostError("DURABLE_CONSUME_NOT_BEFORE_TRANSPORT")
         record = existing.get("record") or {}
+        if str(record.get("permit_id") or "") != permit_id:
+            raise FullCoreProductiveHttpPostError("DURABLE_PERMIT_ID_MISMATCH")
         if str(record.get("durable_state") or "") != "SENT_INITIATED":
             raise FullCoreProductiveHttpPostError("DURABLE_STATE_NOT_SENT_INITIATED")
         if str(record.get("envelope_id") or "") != envelope_id:
@@ -287,6 +289,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     portfolio_budget_owner=None,
     portfolio_reservation_id: str = "",
     execution_identity=None,
+    execution_plan_context=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -321,6 +324,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
             required_execution_environment="LIVE",
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
@@ -364,6 +368,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc

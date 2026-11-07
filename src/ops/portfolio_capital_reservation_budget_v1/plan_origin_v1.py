@@ -4,7 +4,7 @@ This carrier is lineage, not a current admission, submit attempt or authority.
 The original canonical validators and reference functions retain their meaning.
 """
 
-from dataclasses import fields
+from dataclasses import dataclass, fields
 
 from src.governance.canonical_order_intent_v1 import (
     CanonicalOrderIntentV1,
@@ -31,6 +31,19 @@ from .durable_store_v1 import digest
 from .sizing_binding_v1 import _decode, _encode
 
 SCHEMA = "portfolio_execution_plan_origin.v1"
+
+
+@dataclass(frozen=True)
+class PortfolioExecutionPlanContextV1:
+    """Immutable original plan reference; no attempt, permission or admission."""
+
+    root: str
+    account: str
+    reservation_id: str
+    envelope_id: str
+    envelope_digest: str
+    plan_origin_digest: str
+    order_environment: str
 
 
 def bind_plan_origin_v1(canonical_intent, venue_plan):

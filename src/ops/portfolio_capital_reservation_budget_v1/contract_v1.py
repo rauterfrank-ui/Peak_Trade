@@ -1050,6 +1050,32 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 self, str(reservation_id), identity, external_effect_permit=external_effect_permit
             )
 
+    def execution_plan_context_v1(self, reservation_id, envelope):
+        from .attempt_v2 import plan_context_locked_v1
+
+        with self._lock:
+            return plan_context_locked_v1(self, str(reservation_id), envelope)
+
+    def inspect_execution_plan_context_v1(self, reservation_id, envelope, context):
+        from .attempt_v2 import inspect_plan_context_locked_v1
+
+        with self._lock:
+            return inspect_plan_context_locked_v1(self, str(reservation_id), envelope, context)
+
+    def begin_execution_submit_v2(self, reservation_id, envelope, context, permit):
+        from .attempt_v2 import begin_submit_locked_v2
+
+        with self._lock:
+            return begin_submit_locked_v2(self, str(reservation_id), envelope, context, permit)
+
+    def inspect_started_execution_attempt_v2(self, reservation_id, envelope, identity, permit):
+        from .attempt_v2 import inspect_started_attempt_locked_v2
+
+        with self._lock:
+            return inspect_started_attempt_locked_v2(
+                self, str(reservation_id), envelope, identity, permit
+            )
+
     def inspect_execution_submit_context_v1(self, reservation_id, envelope, identity):
         """Original committed-plan predicates under lock; no submit or new authority."""
         from .execution_v1 import inspect_submit_context_locked_v1

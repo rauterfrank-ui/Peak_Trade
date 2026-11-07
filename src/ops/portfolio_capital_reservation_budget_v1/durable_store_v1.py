@@ -141,6 +141,26 @@ class DurableBudgetStoreV1:
                 self.connection.rollback()
             raise DurableBudgetStoreError("DURABLE_BUDGET_COMMIT_UNPROVEN") from exc
 
+    def read_revision_v1(self, sequence, expected_digest=None):
+        """Read an exact owned history revision without moving the writer cursor."""
+        if self.connection is None or type(sequence) is not int or sequence <= 0:
+            raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_INVALID")
+        row = self.connection.execute(
+            "SELECT previous, digest, payload FROM states WHERE seq = ?", (sequence,)
+        ).fetchone()
+        if row is None:
+            raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_MISSING")
+        prior, checksum, body = row
+        payload = json.loads(body)
+        if (
+            checksum != digest({"seq": sequence, "previous": prior, "state": payload})
+            or (expected_digest is not None and checksum != expected_digest)
+            or payload.get("schema") != SCHEMA
+            or payload.get("account_identity") != self.account
+        ):
+            raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_UNPROVEN")
+        return {"sequence": sequence, "digest": checksum, "previous": prior, "state": payload}
+
     def close(self):
         if self.connection is not None:
             self.connection.close()

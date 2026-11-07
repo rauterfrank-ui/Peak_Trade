@@ -306,6 +306,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     portfolio_budget_owner=None,
     portfolio_reservation_id: str = "",
     execution_identity=None,
+    execution_plan_context=None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -327,6 +328,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
             required_execution_environment="LIVE",
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
@@ -352,6 +354,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
         )
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
@@ -392,6 +395,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
@@ -443,6 +447,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         portfolio_budget_owner=portfolio_budget_owner,
         portfolio_reservation_id=portfolio_reservation_id,
         execution_identity=execution_identity,
+        execution_plan_context=execution_plan_context,
     )
     second_post = probe.http_post_attempts > 1
     recon = _enter_reconciliation_v1(envelope=envelope, transport=read_only_get_transport)

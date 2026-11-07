@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, fields
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from typing import Any, Mapping, Sequence
 
 CONTRACT_ID = "FULL_CORE_EXCHANGE_RECONCILIATION_V1"
+PORTFOLIO_IDENTITY_CONTRACT_V2 = "PORTFOLIO_EXECUTION_RECONCILIATION_IDENTITY_V2"
 RECONCILIATION_PROVIDER_OFFLINE_STUB = "OFFLINE_STUB"
 RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET = "OKX_EEA_READ_ONLY_GET_V1"
 RECONCILIATION_PROVIDER_PRODUCTION = "PRODUCTION_DISABLED"
@@ -140,6 +141,72 @@ class FullCoreExchangeReconciliationIdentityV1:
 
 
 @dataclass(frozen=True)
+class PortfolioExecutionReconciliationIdentityV2:
+    """Original budget-owned submit attempt; distinct from capitalguard V1.
+
+    The state references address actual revisions of the original budget store.
+    Send authority is the separate actual permit, never a renamed capitalguard GO.
+    """
+
+    canonical_decision_id: str
+    decision_outcome: str
+    selected_side: str
+    instrument_id: str
+    native_id: str
+    account_identity: str
+    execution_environment: str
+    venue: str
+    envelope_identity: str
+    envelope_digest: str
+    final_quantity: str
+    quantity_unit: str
+    order_type: str
+    order_price: str
+    clordid: str
+    exchange_ord_id: str | None
+    canonical_intent_digest: str
+    plan_origin_digest: str
+    send_permit_id: str
+    send_authority_ref: str
+    submit_attempt_id: str
+    budget_owner_root: str
+    portfolio_reservation_id: str
+    slot_id: str
+    cycle_id: str
+    reservation_binding_digest: str
+    budget_source_sequence: int
+    budget_source_digest: str
+    budget_submit_sequence: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {**asdict(self), "contract_id": PORTFOLIO_IDENTITY_CONTRACT_V2}
+
+    def identity_digest(self) -> str:
+        return hashlib.sha256(_canonical_json(self.to_dict()).encode("utf-8")).hexdigest()
+
+
+ExchangeReconciliationIdentity = (
+    FullCoreExchangeReconciliationIdentityV1 | PortfolioExecutionReconciliationIdentityV2
+)
+
+
+def parse_exchange_reconciliation_identity_v1(payload) -> ExchangeReconciliationIdentity:
+    """Parse explicit identity versions; never fill V2 from legacy labels."""
+    raw = dict(payload)
+    contract = raw.pop("contract_id", CONTRACT_ID)
+    kind = (
+        FullCoreExchangeReconciliationIdentityV1
+        if contract == CONTRACT_ID
+        else PortfolioExecutionReconciliationIdentityV2
+        if contract == PORTFOLIO_IDENTITY_CONTRACT_V2
+        else None
+    )
+    if kind is None or set(raw) != {f.name for f in fields(kind)}:
+        raise ValueError("EXECUTION_IDENTITY_CONTRACT_OR_SHAPE_INVALID")
+    return kind(**raw)
+
+
+@dataclass(frozen=True)
 class ExchangeEvidenceItemV1:
     layer: EvidenceLayer
     source: str
@@ -252,7 +319,7 @@ def _halt(*reasons: str) -> FullCoreExchangeReconciliationDecisionV1:
 
 
 def _verify_evidence_identity(
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     item: ExchangeEvidenceItemV1,
 ) -> str | None:
     if item.account.strip() != identity.account_identity.strip():
@@ -385,7 +452,7 @@ def _fill_consistency(
 
 def adjudicate_full_core_exchange_reconciliation_v1(
     *,
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     snapshot: FullCoreExchangeReconciliationSnapshotV1,
     local_submit_outcome: LocalSubmitOutcome,
     proven_never_submitted: bool = False,
@@ -586,8 +653,12 @@ __all__ = [
     "CONTRACT_ID",
     "EvidenceLayer",
     "ExchangeEvidenceItemV1",
+    "ExchangeReconciliationIdentity",
     "FullCoreExchangeReconciliationDecisionV1",
     "FullCoreExchangeReconciliationIdentityV1",
+    "PortfolioExecutionReconciliationIdentityV2",
+    "PORTFOLIO_IDENTITY_CONTRACT_V2",
+    "parse_exchange_reconciliation_identity_v1",
     "FullCoreExchangeReconciliationSnapshotV1",
     "LocalSubmitOutcome",
     "OUTCOME_CONFIRMED_CANCELED",

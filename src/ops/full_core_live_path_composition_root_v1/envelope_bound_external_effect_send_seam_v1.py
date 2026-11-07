@@ -103,6 +103,7 @@ def inspect_original_portfolio_execution_context_v1(
     portfolio_budget_owner=None,
     portfolio_reservation_id="",
     execution_identity=None,
+    execution_plan_context=None,
     required_execution_environment=None,
 ):
     """Inspect original owner/hold/plan identity; never create or recover an owner."""
@@ -115,22 +116,44 @@ def inspect_original_portfolio_execution_context_v1(
             portfolio_budget_owner is not None,
             portfolio_reservation_id,
             execution_identity is not None,
+            execution_plan_context is not None,
         )
     ):
         return None
-    if portfolio_budget_owner is None or not portfolio_reservation_id or execution_identity is None:
+    if (
+        portfolio_budget_owner is None
+        or not portfolio_reservation_id
+        or (execution_identity is None and execution_plan_context is None)
+    ):
         raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_CONTEXT_INCOMPLETE")
+    if execution_identity is not None and execution_plan_context is not None:
+        raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_CONTEXT_AMBIGUOUS")
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
         PortfolioCapitalReservationBudgetOwnerV1,
     )
 
     if not isinstance(portfolio_budget_owner, PortfolioCapitalReservationBudgetOwnerV1):
         raise FullCoreEnvelopeBoundSendSeamError("ORIGINAL_PORTFOLIO_BUDGET_OWNER_REQUIRED")
-    if required_execution_environment is not None and (
-        getattr(execution_identity, "execution_environment", None) != required_execution_environment
+    if (
+        execution_plan_context is None
+        and required_execution_environment is not None
+        and (
+            getattr(execution_identity, "execution_environment", None)
+            != required_execution_environment
+        )
     ):
         raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVIRONMENT_MISMATCH")
     try:
+        if execution_plan_context is not None:
+            proof = portfolio_budget_owner.inspect_execution_plan_context_v1(
+                portfolio_reservation_id, envelope, execution_plan_context
+            )
+            if (
+                required_execution_environment is not None
+                and proof["order_environment"] != required_execution_environment
+            ):
+                raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVIRONMENT_MISMATCH")
+            return proof
         return portfolio_budget_owner.inspect_execution_submit_context_v1(
             portfolio_reservation_id, envelope, execution_identity
         )
@@ -149,6 +172,7 @@ def attempt_envelope_bound_external_effect_send_v1(
     portfolio_budget_owner=None,
     portfolio_reservation_id: str = "",
     execution_identity=None,
+    execution_plan_context=None,
 ) -> EnvelopeBoundSendSeamResultV1:
     if canonical_intent is not None:
         try:
@@ -197,13 +221,20 @@ def attempt_envelope_bound_external_effect_send_v1(
         portfolio_budget_owner=portfolio_budget_owner,
         portfolio_reservation_id=portfolio_reservation_id,
         execution_identity=execution_identity,
+        execution_plan_context=execution_plan_context,
     )
+    owned_identity = None
     if context is not None:
         # Both durable barriers precede any transport. A crash between them is
         # uncertain and must be reconciled; it never authorizes a resend.
-        portfolio_budget_owner.mark_execution_submit_boundary_v1(
-            portfolio_reservation_id, execution_identity, external_effect_permit=permit
-        )
+        if execution_plan_context is not None:
+            owned_identity = portfolio_budget_owner.begin_execution_submit_v2(
+                portfolio_reservation_id, envelope, execution_plan_context, permit
+            )
+        else:
+            portfolio_budget_owner.mark_execution_submit_boundary_v1(
+                portfolio_reservation_id, execution_identity, external_effect_permit=permit
+            )
     try:
         persist_external_effect_durable_consume_v1(
             store_root=store_root,
@@ -212,10 +243,24 @@ def attempt_envelope_bound_external_effect_send_v1(
             durable_state=DURABLE_STATE_SENT_INITIATED,
             post_count=1,
             outcome="SENT_INITIATED_UNKNOWN_UNTIL_TRANSPORT",
+            **({"execution_identity": owned_identity} if owned_identity is not None else {}),
         )
     except FullCoreExternalEffectDurableConsumeError as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
     payload = _payload_from_envelope_v1(envelope)
+    if owned_identity is not None:
+        readback = load_external_effect_durable_consume_v1(store_root=store_root)
+        record = readback.get("record") or {}
+        if not (
+            readback.get("durable_consumed") is True
+            and record.get("durable_state") == DURABLE_STATE_SENT_INITIATED
+            and record.get("execution_identity") == owned_identity.to_dict()
+            and record.get("execution_identity_digest") == owned_identity.identity_digest()
+        ):
+            raise FullCoreEnvelopeBoundSendSeamError("ORIGINAL_EXECUTION_PERMIT_READBACK_UNPROVEN")
+        portfolio_budget_owner.inspect_started_execution_attempt_v2(
+            portfolio_reservation_id, envelope, owned_identity, permit
+        )
     one_shot = permit_authorizes_one_shot_real_post_v1(permit)
     if REAL_VENUE_POST_ALLOWED is True:
         raise FullCoreEnvelopeBoundSendSeamError("STANDING_REAL_VENUE_POST_FORBIDDEN")
@@ -283,6 +328,7 @@ def prove_follow_on_submit_isolated_v1(
     portfolio_budget_owner=None,
     portfolio_reservation_id: str = "",
     execution_identity=None,
+    execution_plan_context=None,
 ) -> bool:
     try:
         attempt_envelope_bound_external_effect_send_v1(
@@ -294,6 +340,7 @@ def prove_follow_on_submit_isolated_v1(
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
+            execution_plan_context=execution_plan_context,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         return str(exc) in {

@@ -298,7 +298,7 @@ class PortfolioBudgetHostV1:
 
     def _reconcile_executions_v1(self, context):
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
-            FullCoreExchangeReconciliationIdentityV1,
+            parse_exchange_reconciliation_identity_v1,
         )
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
             fetch_okx_read_only_reconciliation_snapshot_v1,
@@ -344,9 +344,7 @@ class PortfolioBudgetHostV1:
             raise ValueError("HOST_EXECUTION_READ_PORT_ACCOUNT_UNPROVEN")
         result = {}
         for rid, link in submitted.items():
-            raw = dict(link["identity"])
-            raw.pop("contract_id", None)
-            identity = FullCoreExchangeReconciliationIdentityV1(**raw)
+            identity = parse_exchange_reconciliation_identity_v1(link["identity"])
             if identity.execution_environment != self.execution_environment:
                 raise ValueError("HOST_EXECUTION_ENVIRONMENT_MISMATCH")
             acquired = datetime.fromtimestamp(self.clock(), timezone.utc).isoformat()
