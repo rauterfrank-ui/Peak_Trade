@@ -274,7 +274,16 @@ def test_created_flag_pins_and_docs() -> None:
     )
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    # Approved cleanup retired the old YAML catalogue. Its current successor
+    # indexes files; the unchanged owner spec names the concrete seam.
+    current_index = (REPO_ROOT / "docs/system_atlas/generated/SOURCE_INDEX.md").read_text()
+    import gzip
+
+    assert "../source/current-files.jsonl.gz" in current_index
+    with gzip.open(REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz", "rt") as stream:
+        indexed = {json.loads(line)["path"] for line in stream}
+    assert str(OWNER_MODULE.relative_to(REPO_ROOT)) in indexed
+    assert str(Path(__file__).relative_to(REPO_ROOT)) in indexed
     source = OWNER_MODULE.read_text(encoding="utf-8")
     s5_source = S5_MODULE.read_text(encoding="utf-8")
     assert "EH.S6" in source
@@ -284,9 +293,7 @@ def test_created_flag_pins_and_docs() -> None:
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1" in spec
     )
-    assert JOIN_SEAM_ID in atlas
-    assert "current_productive_governed_continuous_cycle_orchestrator_v1.py" in atlas
-    assert "test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py" in atlas
+    assert JOIN_SEAM_ID in spec
     assert "run_current_productive_governed_cycle_v1" in source
     assert "urlopen" not in source
     assert (

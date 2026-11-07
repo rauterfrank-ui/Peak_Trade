@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, Mapping
+from typing import Any, Literal, Mapping, Sequence
+import math
+from .runtime_boundary_evidence_v1 import (
+    current_runtime_boundary_evidence_v1,
+    current_runtime_cycle_records_v1,
+)
+from src.ops.economic_md_input_producer_v1.constants_v1 import PT1M_STEP_MS
 
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1 import (
     StandingSupervisorRunResultV1,
@@ -47,16 +53,11 @@ def project_supervisor_golden_trace_v1(
     last = orch.cycle_records[-1] if orch is not None and orch.cycle_records else None
     wp02 = _wp02_chain_snapshot(trace.extra)
 
-    pre_external = bool(last and last.s5_disposition == "PRE_EXTERNAL_EFFECT")
-    natural_decision = str(trace.extra.get("natural_enter_decision") or "")
-    if side == "LONG" and natural_decision == "enter_long":
-        pre_external = True
-    if side == "SHORT" and natural_decision == "enter_short":
-        pre_external = True
-    if side == "HOLD":
-        terminal_pre_external = False
-    else:
-        terminal_pre_external = pre_external
+    boundary = current_runtime_boundary_evidence_v1(result)
+    terminal_pre_external = boundary.reached
+    observed_hold = bool(current_runtime_cycle_records_v1(result)) and (
+        trace.terminal_disposition != "PRE_EXTERNAL_EFFECT" and last.s5_disposition == "HOLD_CLOSED"
+    )
 
     ranking_id = str(
         trace.extra.get("wp02_ranking_snapshot_id")
@@ -92,7 +93,14 @@ def project_supervisor_golden_trace_v1(
             "governed_cycle_count": trace.governed_cycle_count,
             "cursor_floor_before": orch.cursor_floor_before if orch is not None else None,
             "cursor_floor_after": orch.cursor_floor_after if orch is not None else None,
-            "contiguous_confirmation": trace.accepted_c1_count >= 2,
+            "contiguous_confirmation": prove_contiguous_confirmation_epochs_v1(
+                accepted_c1_count=trace.accepted_c1_count,
+                governed_cycle_count=trace.governed_cycle_count,
+                observed_event_times=tuple(
+                    record.c1_venue_event_time
+                    for record in current_runtime_cycle_records_v1(result)
+                ),
+            ),
         },
         "g17": {
             "refreshed": trace.pretrade_truth_refreshed,
@@ -114,23 +122,42 @@ def project_supervisor_golden_trace_v1(
         "reservation": {"permit_created": bool(orch.permit_created) if orch is not None else False},
         "final_order_envelope": {
             "pre_external_reached": terminal_pre_external,
-            "envelope_identity": last.cycle_instance_id if last is not None else "",
+            "envelope_identity": boundary.envelope_identity,
+            "cycle_instance_id": boundary.cycle_instance_id,
+            "evidence_reason": boundary.reason,
+            "decision_outcome": boundary.decision_outcome,
         },
         "pre_external": terminal_pre_external,
         "observation_scope": observation_scope,
         "synthetic_b05_rejected": synthetic_b05_rejected,
-        "side": side,
-        "terminal": "PRE_EXTERNAL" if terminal_pre_external else "HOLD",
+        "side": {"enter_long": "LONG", "enter_short": "SHORT"}.get(
+            boundary.decision_outcome, "HOLD" if observed_hold else "UNKNOWN"
+        ),
+        "terminal": "PRE_EXTERNAL"
+        if terminal_pre_external
+        else "HOLD"
+        if observed_hold
+        else "UNPROVEN",
     }
     assert_all_golden_trace_keys_present_v1(projected)
     return projected
 
 
 def prove_contiguous_confirmation_epochs_v1(
-    *, accepted_c1_count: int, governed_cycle_count: int
+    *,
+    accepted_c1_count: int,
+    governed_cycle_count: int,
+    observed_event_times: Sequence[float] | None = None,
 ) -> bool:
     return (
         accepted_c1_count >= 2
         and governed_cycle_count >= 2
         and accepted_c1_count == governed_cycle_count
+        and observed_event_times is not None
+        and len(observed_event_times) == accepted_c1_count
+        and all(math.isfinite(t) and t > 0 for t in observed_event_times)
+        and all(
+            later - earlier == PT1M_STEP_MS / 1000
+            for earlier, later in zip(observed_event_times, observed_event_times[1:])
+        )
     )

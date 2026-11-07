@@ -84,6 +84,67 @@ def test_wp03_full_golden_convergence_bundle(tmp_path: Path) -> None:
     assert proof.scenarios[0].pre_external_reached is True
     assert proof.scenarios[1].pre_external_reached is True
     assert proof.scenarios[2].pre_external_reached is False
+    for result, outcome in ((long_r, "enter_long"), (short_r, "enter_short")):
+        import json
+        from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+            assert_envelope_unmodified_v1,
+        )
+
+        last = result.policy_result.orchestrator_result.cycle_records[-1]
+        assert last.s5_disposition == "PRE_EXTERNAL_EFFECT"
+        assert_envelope_unmodified_v1(last.final_order_envelope)
+        assert (
+            json.loads(last.pending_decision_context.producer_payload_json)["decision_outcome"]
+            == outcome
+        )
+        assert last.final_order_envelope.instrument_id == result.trace.venue_native_id
+        assert last.pending_decision_context.instrument_id == result.trace.bound_instrument_id
+        assert "natural_enter_decision" not in result.trace.extra
+        assert result.trace.post_count == 0
+
+
+@pytest.mark.parametrize("short", [False, True])
+def test_current_entry_without_fresh_pretrade_stays_hold(tmp_path: Path, short: bool) -> None:
+    import json
+    from tests.ops._wp03_supervisor_golden_harness_v1 import _run_layered_entry_supervisor_v1
+
+    result = _run_layered_entry_supervisor_v1(tmp_path, short=short, with_pretrade=False)
+    last = result.policy_result.orchestrator_result.cycle_records[-1]
+    outcome = "enter_short" if short else "enter_long"
+    assert (
+        json.loads(last.pending_decision_context.producer_payload_json)["decision_outcome"]
+        == outcome
+    )
+    assert last.s5_disposition == "HOLD_CLOSED"
+    assert last.s5_reason_code == "LIVE_29P_GET_MISSING"
+    assert last.final_order_envelope is None
+    result.trace.extra["natural_enter_decision"] = outcome
+    projected = project_supervisor_golden_trace_v1(
+        result, side="SHORT" if short else "LONG", observation_scope="scoped_readonly_inject"
+    )
+    assert not projected["pre_external"]
+    assert projected["final_order_envelope"]["envelope_identity"] == ""
+
+
+def test_supervisor_forwards_original_cap24_productivity_root(tmp_path: Path, monkeypatch) -> None:
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+
+    seen = []
+    original = supervisor.run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1
+
+    def observe(**kwargs):
+        seen.append(kwargs["cap24_productivity_root"])
+        return original(**kwargs)
+
+    monkeypatch.setattr(
+        supervisor,
+        "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
+        observe,
+    )
+    result = run_natural_long_supervisor_v1(tmp_path)
+    assert seen == [tmp_path / "cap24_productivity"]
+    assert seen[0].is_dir()
+    assert result.trace.terminal_disposition == "PRE_EXTERNAL_EFFECT"
 
 
 def test_negative_stale_c1_first_divergence() -> None:

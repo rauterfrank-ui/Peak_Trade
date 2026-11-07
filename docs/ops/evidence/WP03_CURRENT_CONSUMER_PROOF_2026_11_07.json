@@ -1,0 +1,146 @@
+{
+  "schema": "peaktrade.wp03_current_consumer_proof.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "82a5cf27e3cb0f490cf85bb1352e7d37596a4a35",
+  "source_binding": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "base_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
+      "sha256": "805c06a9b3e5b1976bce4623ed1690f18862c175f71d83d95953394a5b25959d"
+    },
+    {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/convergence_proof_v1.py",
+      "base_sha256": "564b8645b8afdfbf187fbbe1aa3e13ee04dd2d2560225f7747cb3424cdc13ec1",
+      "sha256": "5b9b3ba4ed05866f0e0b9994ae788ad9d015c02d5a8671ce263f6236da1de5d0"
+    },
+    {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/runtime_boundary_evidence_v1.py",
+      "base_sha256": null,
+      "sha256": "dc020e1c251bd5c4fd8c5e34128cc14294cbf3ed8b5c66e17ed21bdec981a188"
+    },
+    {
+      "path": "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/trace_projection_v1.py",
+      "base_sha256": "7f6894fb0c2d3bca376b5a43b67b872476e3a19573e78a5b587517cc06aa661f",
+      "sha256": "2f24baa2c40b5d209f1b46894f7a84755e1ae0f61cecc91f3226335a87b22e4f"
+    },
+    {
+      "path": "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/done_gate_v1.py",
+      "base_sha256": "4d84aff82835cbeb2a6564e7eb7373b75e96b082ce71c22180d9636a6386f4c6",
+      "sha256": "204f96145b615777256017e521e0ce65ac50414f1ac0a731f9137a27f0493279"
+    },
+    {
+      "path": "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/runtime_supervisor_proof_v1.py",
+      "base_sha256": "c19282254257f654bd65243974f27a94e61f9593bff75e079ad3d461f7eb0fb5",
+      "sha256": "fbe1efc536eedd5c29622745c19297ddc9b72eb615e6b9c3c5c67f5e8c305dcd"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "base_sha256": "0eeea624598c5405e0c8da9d15ecfabea2818e9e6ba63d972952d321c2dbfabb",
+      "sha256": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+      "base_sha256": "6950bf9aa48971f2770f90be221c740076135ef43af269e4aaa8e23ede9a6cb1",
+      "sha256": "f812166a8d0bfd4e85553700e012dc5508c0e0d08c0170421fb94d62db12b0dc"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
+      "base_sha256": "f59b0d7960ad379f48ad7b9d623e30659567595db433757ee57d9cf81589c7d3",
+      "sha256": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
+      "base_sha256": "9f2602547b7ecb181a174338b20eb3e57edc3a32e52acaf92e1202de1d608675",
+      "sha256": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e"
+    },
+    {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "base_sha256": "d2315cbe0ed90b6477cb1dc2bf528c3d53c39c6ab249edeb518700e5dd88c54e",
+      "sha256": "cc046d4319dffea720912055377772398b6fe4ba30eced2f56ffe3fb8096e56b"
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+      "base_sha256": "c4ab6d54fe139fbea296a3eff4ab53d7f01cd00ecf8fa3c2356c83c8921afb31",
+      "sha256": "66c24caf6fa4307e03464dcbb0bd957cfe463b7538f656f058792b719933c8e4"
+    },
+    {
+      "path": "tests/ops/test_current_runtime_boundary_evidence_v1.py",
+      "base_sha256": null,
+      "sha256": "f6f773c0bcede51633c5ff57b6a49d706590e57c36e48c23c03765b858a08795"
+    },
+    {
+      "path": "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "base_sha256": "3bac35dbf1e261f0888e31a66d5ab76992e4c33ad843de07c9305812dff298bd",
+      "sha256": "485b750fec92fa33606f635b26c4f7af958ca5174e127ad6f68c978b4bbadb0a"
+    },
+    {
+      "path": "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "base_sha256": "7286ac90af295e1a2520664fc0fbff63f9cd6adf62dab7e38551d8a6b62e696e",
+      "sha256": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "base_sha256": "d57018109559468d86d86b3126b0cf96e10f6a113fa59c5a72e59da69af7f49f",
+      "sha256": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "base_sha256": "9938cbd5800d13094e346acdbbc65b7550532fe6d4dbc539f073f65611d64c5f",
+      "sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd"
+    }
+  ],
+  "verification": {
+    "owner_tests": {
+      "selectors": [
+        "tests/ops/test_current_runtime_boundary_evidence_v1.py",
+        "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+        "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+        "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+        "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+        "tests/ops/test_pending_decision_parent_lineage_v1.py",
+        "tests/ops/test_pending_exact_decision_context_v1.py",
+        "tests/ops/test_current_productive_full_close_execution_handoff_v1.py",
+        "tests/ops/test_n1_supervisor_post_close_startup_recovery_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+        "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+        "tests/ops/test_current_productive_runtime_liveness_v1.py"
+      ],
+      "passed": 236,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 20.2,
+      "log_sha256": "295d0d3dc4e4920379bb701fcd776666a578da8e36cc7d262647a86296ef1a17"
+    },
+    "red_parent_binding": {
+      "assertion_failures": 8,
+      "fixture_error": 1,
+      "note": "Eight contradictions passed the pre-fix observation helper. The ninth setup lacked original close safety and was corrected before acceptance."
+    },
+    "original_t2_baseline": {
+      "passed": 6,
+      "failed": 9,
+      "method": "Exact HEAD T2 module executed in the isolated pytest process; original tests and original native fixture identifier."
+    }
+  },
+  "bounded_claims": [
+    "Current original Core parent, sized canonical intent and envelope survive T2/S5/S6 transport and must agree at the observation consumer.",
+    "Historical labels, forced booleans, self-comparison, count-only confirmation and constant exit flags cannot attest a current boundary.",
+    "The supervisor forwards the configured existing Cap24 productivity root.",
+    "Offline fixtures exercise actual supervisor and original budget/Core/intent owners under an explicitly fixed same-snapshot acquisition clock."
+  ],
+  "deferred": [
+    "Decision-epoch/capture-time repair",
+    "Cache acquisition freshness and truthful source/netting semantics",
+    "Full natural-time and natural-market acceptance",
+    "Complete runtime owner recovery, process-host restore and N5",
+    "Actual venue orders, positions and economic quality"
+  ],
+  "unchanged": [
+    "Capital and sizing formulas and limits",
+    "Trading Core source and freeze tags",
+    "Financial/safety/permit authority",
+    "Operational stores and activation pins"
+  ]
+}

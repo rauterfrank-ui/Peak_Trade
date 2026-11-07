@@ -185,6 +185,8 @@ class CurrentProductiveGovernedCycleResultV1:
     final_order_envelope: FinalOrderEnvelopeV1 | None = None
     extra: dict[str, str] = field(default_factory=dict)
     pending_decision_context: PendingDecisionContextV1 | None = None
+    canonical_order_intent: Any | None = None
+    position_management_execution_handoff: Any | None = None
 
 
 def _token(value: bool) -> str:
@@ -1197,6 +1199,8 @@ def run_current_productive_governed_cycle_v1(
             final_order_envelope=final_order_envelope
             if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
             else None,
+            canonical_order_intent=getattr(t2_result, "canonical_order_intent", None),
+            position_management_execution_handoff=close_execution_handoff,
             first_genuine_blocker=first_blocker,
             blocker_class=blocker_class,
             next_required_owner_decision=next_owner,
@@ -1251,6 +1255,8 @@ def _result(
     envelope_created: bool = False,
     envelope_identity: str = "",
     final_order_envelope: FinalOrderEnvelopeV1 | None = None,
+    canonical_order_intent: Any | None = None,
+    position_management_execution_handoff: Any | None = None,
     first_genuine_blocker: str = "",
     blocker_class: str = "",
     next_required_owner_decision: str = "",
@@ -1295,6 +1301,8 @@ def _result(
         envelope_created=envelope_created,
         envelope_identity=envelope_identity,
         final_order_envelope=final_order_envelope,
+        canonical_order_intent=canonical_order_intent,
+        position_management_execution_handoff=position_management_execution_handoff,
         permit_created=False,
         post_count=0,
         external_effect_count=0,

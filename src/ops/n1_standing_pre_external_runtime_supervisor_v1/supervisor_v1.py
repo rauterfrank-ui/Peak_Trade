@@ -453,6 +453,7 @@ def run_n1_standing_pre_external_supervisor_v1(
             time_fn=time_fn,
             sleep_fn=sleep_fn,
             fresh_pretrade_get_transport=pretrade_transport,
+            cap24_productivity_root=config.cap24_productivity_root,
             portfolio_budget_host=budget_host,
             cancel_requested=cancel_requested,
         )

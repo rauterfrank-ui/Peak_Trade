@@ -16,6 +16,9 @@ from __future__ import annotations
 import json
 import math
 import time
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
     PendingDecisionContextV1,
 )
@@ -224,6 +227,11 @@ class ContinuousCycleRecordV1:
     occupancy_owner_go: str
     t2_owner_go: str
     pending_decision_context: PendingDecisionContextV1 | None = None
+    final_order_envelope: FinalOrderEnvelopeV1 | None = None
+    envelope_created: bool = False
+    envelope_identity: str = ""
+    canonical_order_intent: Any | None = None
+    position_management_execution_handoff: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -1015,6 +1023,13 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     occupancy_owner_go=OCCUPANCY_OWNER_GO,
                     t2_owner_go=T2_RUNTIME_OWNER_GO,
                     pending_decision_context=getattr(s5_result, "pending_decision_context", None),
+                    final_order_envelope=s5_result.final_order_envelope,
+                    envelope_created=s5_result.envelope_created,
+                    canonical_order_intent=getattr(s5_result, "canonical_order_intent", None),
+                    position_management_execution_handoff=getattr(
+                        s5_result, "position_management_execution_handoff", None
+                    ),
+                    envelope_identity=s5_result.envelope_identity,
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:

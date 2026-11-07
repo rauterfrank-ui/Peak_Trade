@@ -177,7 +177,7 @@ def _called_names(source: str) -> set[str]:
 def _bound(*, lane_id: str) -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id=f"INST-{lane_id}",
-        venue_native_id="VENUE-HARNESS",
+        venue_native_id="ETH-USDT-SWAP",
         ranking_snapshot_id="rank-shared",
         ranking_integrity_digest="rank-digest-shared",
         universe_snapshot_id="uni-shared",
@@ -261,7 +261,7 @@ def _market_kwargs(
     *,
     cycle_id_prefix: str,
     last_ts: float = C1_TS,
-    venue_native_id: str = "VENUE-HARNESS",
+    venue_native_id: str = "ETH-USDT-SWAP",
 ) -> dict[str, object]:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
         build_provenance_from_governed_synthetic_close_mark_and_index_v1,
@@ -472,13 +472,13 @@ def test_identity_native_id_is_bound_instrument_throughout(tmp_path: Path) -> No
     pairs, results = _invoke(tmp_path, ("LANE_3",), cycle_id_prefix="n1-id")
     bound = pairs["LANE_3"][1]
     record = results["LANE_3"]
-    assert record.native_id == bound.venue_native_id == "VENUE-HARNESS"
+    assert record.native_id == bound.venue_native_id == "ETH-USDT-SWAP"
     assert record.governed_cycle_result.disposition in SUCCESS_DISPOSITIONS, (
         record.governed_cycle_result.reason_code
     )
-    assert record.governed_cycle_result.c1_used.startswith("native_id=VENUE-HARNESS;")
+    assert record.governed_cycle_result.c1_used.startswith("native_id=ETH-USDT-SWAP;")
     assert record.s7_invocation is not None
-    assert record.s7_invocation.bound_instrument.venue_native_id == "VENUE-HARNESS"
+    assert record.s7_invocation.bound_instrument.venue_native_id == "ETH-USDT-SWAP"
 
 
 def test_restart_reloads_lane_cursor_and_runs_again(tmp_path: Path) -> None:
@@ -538,7 +538,7 @@ def test_lane_isolation_sequential_harness(tmp_path: Path) -> None:
     assert left.lock_root != right.lock_root
     assert left.evidence_root != right.evidence_root
     assert left.bound_instrument.instrument_id != right.bound_instrument.instrument_id
-    assert left.native_id == right.native_id == "VENUE-HARNESS"
+    assert left.native_id == right.native_id == "ETH-USDT-SWAP"
     assert Path(left.cursor_store_root) / CURSOR_FILENAME != (
         Path(right.cursor_store_root) / CURSOR_FILENAME
     )

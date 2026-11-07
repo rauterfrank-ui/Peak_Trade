@@ -122,7 +122,9 @@ def test_ci_admission_snapshot_structural() -> None:
     assert snap.all_required_ci_green_at_admission is False
 
 
-def test_wp04_standing_admission_and_mechanical_done_gate(tmp_path: Path) -> None:
+def test_wp04_keeps_full_admission_closed_without_current_restart_and_exit_proof(
+    tmp_path: Path,
+) -> None:
     wp03 = _wp03_proof_v1(tmp_path)
     assert wp03.ok is True
     public_proof = _public_chain_proof_v1(tmp_path / "pub_chain")
@@ -151,12 +153,18 @@ def test_wp04_standing_admission_and_mechanical_done_gate(tmp_path: Path) -> Non
         tested_code_sha=OWNER_GO_BASELINE_SHA,
         backlog_matrix=summary,
     )
-    assert pkg.admission.ok is True
+    # The bilateral current ENTRY consumers are proven above. The distinct
+    # reference run ends in HOLD and only observation recovery is proven.
+    assert pkg.admission.ok is False
+    assert pkg.admission.unified_restart_safe is False
+    assert pkg.admission.pre_external_terminal is False
     assert pkg.admission.post_count == 0
-    assert pkg.done_gate.mechanical_ok is True
+    assert pkg.done_gate.mechanical_ok is False
+    assert pkg.done_gate.RESTART_RECOVERY_CLOSED is False
+    assert pkg.done_gate.EXIT_PATH_VALID is False
     assert pkg.done_gate.ok is False
     assert pkg.done_gate.ALL_REQUIRED_CI_GREEN is False
-    assert pkg.ok is True
+    assert pkg.ok is False
 
 
 def test_fail_closed_admission_rejects_missing_wp03(tmp_path: Path) -> None:

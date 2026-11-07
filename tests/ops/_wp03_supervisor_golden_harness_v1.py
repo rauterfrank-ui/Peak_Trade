@@ -3,45 +3,21 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
-from src.ops.economic_md_input_producer_v1.constants_v1 import (
-    MINIMUM_FINALIZED_PT1M_MARKS,
-    PT1M_STEP_MS,
-)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     ScriptedContinuousObservationSourceV1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
-    run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
-    persist_current_productive_sidestate_confirmation_cursor_v1,
-)
-from src.ops.n1_standing_pre_external_runtime_supervisor_v1.trace_v1 import (
-    StandingSupervisorTraceV1,
-)
-from src.ops.n1_standing_pre_external_runtime_supervisor_v1.wp02_insertion_v1 import (
-    Wp02InsertionContextV1,
-)
-from src.ops.n1_whole_system_hard_facts_integration_wp_v1.unified_recovery_orchestration_v1 import (
-    execute_unified_recovery_orchestration_v1,
 )
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1 import (
     StandingSupervisorConfigV1,
     StandingSupervisorRunResultV1,
     run_n1_standing_pre_external_supervisor_v1,
 )
-from src.ops.peak_trade_public_market_data_runtime_v1.durable_store_v1 import (
-    append_fact_v1,
-    default_store_paths_v1,
-)
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_productive_c1_event_ts_unix_v1,
-    run_natural_enter_long_sequence_for_bound_v1,
-    run_natural_enter_short_sequence_for_bound_v1,
     strong_uptrend_closes_v1,
 )
 from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
@@ -73,27 +49,67 @@ from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import (
     REPO,
     _f1_m9_evaluator_factory,
     _public_rest_empty,
-    _seed_public_marks,
     _supervisor_config,
 )
-from tests.ops.test_okx_eea_private_account_state_runtime_v1 import _fixture_rest
+from tests.ops._host_private_rest_fixture_v1 import host_private_rest_fixture_v1 as _fixture_rest
 
 BASE_TS = 1_757_631_540_000
 
 
-def _supervisor_config_wp03(tmp_path: Path) -> StandingSupervisorConfigV1:
+def _run_with_fixed_offline_acquisition_clock_v1(**kwargs):
+    """An explicit same-snapshot test clock, not a productive freshness proof.
+
+    The original financial path still conflates decision and capture epochs.
+    Keep that separate defect visible in evidence rather than depending on
+    whether this offline fixture happens to cross a wall-clock second.
+    """
+    from unittest.mock import patch
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_persistent_natural_enter_convergence_v1 as runner,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_29p_common_epoch_handoff_v1 as handoff,
+    )
+
+    instant = datetime.now(timezone.utc).replace(microsecond=0)
+
+    class OfflineDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return instant.astimezone(tz) if tz is not None else instant.replace(tzinfo=None)
+
+    with (
+        patch.object(runner, "datetime", OfflineDateTime),
+        patch.object(
+            handoff, "_utc_now_iso_v1", return_value=instant.strftime("%Y-%m-%dT%H:%M:%SZ")
+        ),
+    ):
+        return run_n1_standing_pre_external_supervisor_v1(**kwargs)
+
+
+def _supervisor_config_wp03(tmp_path: Path, bound) -> StandingSupervisorConfigV1:
     cfg = _supervisor_config(tmp_path)
-    return replace(cfg, wp02_productive_default_enabled=False)
+    return replace(
+        cfg,
+        wp02_productive_default_enabled=False,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+    )
 
 
-def _wp02_hook_v1(tmp_path: Path):
+def _wp02_hook_v1(tmp_path: Path, native_id: str):
     writer = _held_writer(tmp_path / "wp02_topology")
+    universe = wp02_eth_only_universe_source_payload_v1()
+    base = native_id.split("-")[0]
+    universe["data"][0].update(instId=native_id, baseCcy=base, ctValCcy=base, uly=f"{base}-USDT")
+    marks = wp02_eth_only_mark_price_payload_v1()
+    marks["data"][0]["instId"] = native_id
     binding = Wp02HookBindingV1(
         wp02_state_root=tmp_path / "wp02_state",
         topology_state_root_base=tmp_path / "wp02_topology",
         repository_sha=OWNER_GO_BASELINE_SHA,
-        universe_source_payload=wp02_eth_only_universe_source_payload_v1(),
-        universe_mark_price_payload=wp02_eth_only_mark_price_payload_v1(),
+        universe_source_payload=universe,
+        universe_mark_price_payload=marks,
         source_event_time="2026-09-26T00:00:00Z",
         lane_assignment_writer=writer,
         producer_observed_at_unix=OBSERVED_UNIX,
@@ -108,8 +124,9 @@ def _run_supervisor_with_observations_v1(
     max_cycles: int,
     bootstrap_closes: list[float] | None = None,
     prepared_lane: tuple[Any, Any, dict[str, Any]] | None = None,
+    pretrade_transport=None,
+    cap24_productivity_root=None,
 ) -> StandingSupervisorRunResultV1:
-    _seed_public_marks(tmp_path / "public_store")
     if prepared_lane is not None:
         bound, g17, pairs = prepared_lane
     else:
@@ -117,9 +134,13 @@ def _run_supervisor_with_observations_v1(
         lane_root = tmp_path / "lane_state"
         pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
         g17 = _lane_g17(pairs)
-        path = bootstrap_closes if bootstrap_closes is not None else strong_uptrend_closes_v1()
+        path = (
+            bootstrap_closes
+            if bootstrap_closes is not None
+            else strong_uptrend_closes_v1(count=128)
+        )
         t_boot = governed_productive_c1_event_ts_unix_v1(offset_seconds=60.0)
-        obs_boot = _observation_from_closes(closes=path[:14], event_ts=t_boot - 60.0)
+        obs_boot = _observation_from_closes(closes=path[:104], event_ts=t_boot - 60.0)
         bootstrap_s8_lane_via_s7_compose_v1(
             composed_pairs=pairs,
             origin_main_sha=OWNER_GO_BASELINE_SHA,
@@ -130,6 +151,29 @@ def _run_supervisor_with_observations_v1(
             index_tickers_payload=obs_boot.index_tickers_payload,
         )
     native_id = str(bound.venue_native_id)
+    # Explicit synthetic finalized public history for this fixture's instrument.
+    from src.ops.peak_trade_public_market_data_runtime_v1.durable_store_v1 import (
+        append_fact_v1,
+        default_store_paths_v1,
+    )
+    from src.ops.economic_md_input_producer_v1.constants_v1 import (
+        MINIMUM_FINALIZED_PT1M_MARKS,
+        PT1M_STEP_MS,
+    )
+
+    paths = default_store_paths_v1(tmp_path / "public_store")
+    for index in range(MINIMUM_FINALIZED_PT1M_MARKS):
+        append_fact_v1(
+            paths,
+            {
+                "fact_kind": "FinalizedPt1mMarkFactV1",
+                "interval_start_ms": BASE_TS + index * PT1M_STEP_MS,
+                "mark_px": str(100 + index),
+                "confirm": "1",
+                "captured_at": "2026-09-26T00:00:00Z",
+                "instrument": {"venue_native_id": native_id},
+            },
+        )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     auth = _continuous_auth(native_id=native_id, max_cycles=max_cycles)
     auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
@@ -144,8 +188,33 @@ def _run_supervisor_with_observations_v1(
         stall_seconds=auth.stall_seconds,
     )
     clock = _FakeClock()
-    return run_n1_standing_pre_external_supervisor_v1(
-        config=_supervisor_config_wp03(tmp_path),
+    config = _supervisor_config_wp03(tmp_path, bound) if cap24_productivity_root is None else None
+    private_fetch = _fixture_rest
+    if cap24_productivity_root is not None:
+        from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
+        from tests.ops.test_portfolio_budget_host_v1 import _fetch
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+            REUSED_BINDING_ACCOUNT_SCOPE,
+        )
+
+        config = StandingSupervisorConfigV1(
+            public_store_root=tmp_path / "public_store",
+            private_store_root=tmp_path / "private_store",
+            lane_state_root=tmp_path / "lane_state",
+            evidence_root=tmp_path / "evidence",
+            lock_root=tmp_path / "lock",
+            venue_native_id=bound.venue_native_id,
+            canonical_instrument_id=bound.instrument_id,
+            expected_account_identity=REUSED_BINDING_ACCOUNT_SCOPE,
+            cap24_productivity_root=cap24_productivity_root,
+            wp02_productive_default_enabled=False,
+        )
+        initialize_synthetic_host_budget_v1(
+            config.private_store_root, bound, account=REUSED_BINDING_ACCOUNT_SCOPE
+        )
+        private_fetch = _fetch(uid=REUSED_BINDING_ACCOUNT_SCOPE)
+    return _run_with_fixed_offline_acquisition_clock_v1(
+        config=config,
         origin_main_sha=OWNER_GO_BASELINE_SHA,
         bound=bound,
         authorization=auth,
@@ -154,8 +223,9 @@ def _run_supervisor_with_observations_v1(
         f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
         repo_root=REPO,
         public_rest_fetch=_public_rest_empty,
-        private_rest_fetch=_fixture_rest,
-        wp02_hook=_wp02_hook_v1(tmp_path),
+        private_rest_fetch=private_fetch,
+        pretrade_transport=pretrade_transport,
+        wp02_hook=_wp02_hook_v1(tmp_path, native_id),
         time_fn=clock.time,
         sleep_fn=clock.sleep,
     )
@@ -170,201 +240,93 @@ def _run_persistent_enter_after_wp02_v1(
     observations: list[Any],
     max_cycles: int,
 ) -> StandingSupervisorRunResultV1:
-    """Recovery + public supply + WP-02, then the same continuous path the supervisor uses."""
-    cfg = _supervisor_config_wp03(tmp_path)
-    _seed_public_marks(cfg.public_store_root)
-    recovery = execute_unified_recovery_orchestration_v1(
-        public_store_root=cfg.public_store_root,
-        private_store_root=cfg.private_store_root,
-        public_rest_fetch=_public_rest_empty,
-        private_rest_fetch=_fixture_rest,
-        venue_native_id=cfg.venue_native_id,
-    )
-    from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_real_md_cap22_n1_chain_v1 import (
-        run_public_runtime_ws_normalization_cycle_v1,
+    """Use the actual supervisor and its original private/budget host lifecycle."""
+    return _run_supervisor_with_observations_v1(
+        tmp_path,
+        observations=observations,
+        max_cycles=max_cycles,
+        prepared_lane=(bound, g17, pairs),
     )
 
-    run_public_runtime_ws_normalization_cycle_v1(
-        store_root=cfg.public_store_root,
-        venue_native_id=cfg.venue_native_id,
-        canonical_instrument_id=cfg.canonical_instrument_id,
-        ws_messages=[],
-        rest_fetch_json=_public_rest_empty,
+
+def _run_layered_entry_supervisor_v1(tmp_path: Path, *, short: bool, with_pretrade: bool = True):
+    from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+        prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
+        prepare_layered_short_armed_seed_for_pre_external_invoke_v1,
     )
-    wp02_sink: dict[str, Any] = {}
-    _wp02_hook_v1(tmp_path)(
-        Wp02InsertionContextV1(
-            public_store_root=cfg.public_store_root,
-            venue_native_id=cfg.venue_native_id,
-            canonical_instrument_id=cfg.canonical_instrument_id,
-            economic_md_mark_count=MINIMUM_FINALIZED_PT1M_MARKS,
-            tick_index=0,
-            wp02_result_sink=wp02_sink,
-        )
+    from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+        _bound as account_bound,
+        _productive_transport,
     )
-    floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    auth = _continuous_auth(native_id=str(bound.venue_native_id), max_cycles=max_cycles)
-    auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
-        continuous_owner_go=auth.continuous_owner_go,
-        native_id=auth.native_id,
-        bar=auth.bar,
-        expected_cursor_floor=float(floor),
-        max_cycles_per_run=max_cycles,
-        max_run_duration_seconds=auth.max_run_duration_seconds,
-        wait_interval_seconds=0.001,
-        max_wait_for_next_c1_seconds=30.0,
-        stall_seconds=auth.stall_seconds,
+    from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
+        write_cap21_productivity_root_for_inst_v1,
     )
-    clock = _FakeClock()
-    policy_result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
-        authorization=auth,
-        origin_main_sha=OWNER_GO_BASELINE_SHA,
-        lane_state_root=cfg.lane_state_root,
-        bound=bound,
-        g17_producers=g17,
-        observation_source=ScriptedContinuousObservationSourceV1(observations),
-        evidence_root=cfg.evidence_root,
-        f1_m9_cycle_evaluator=_f1_m9_evaluator_factory(tmp_path),
-        repo_root=REPO,
-        lock_root=cfg.lock_root,
-        time_fn=clock.time,
-        sleep_fn=clock.sleep,
+    from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+        observation_mark_payloads_for_bound_v1,
     )
-    orch = policy_result.orchestrator_result
-    chain_result = wp02_sink.get("chain_result")
-    trace = StandingSupervisorTraceV1(
-        run_id="wp03-golden-session",
-        bound_instrument_id=str(bound.instrument_id),
-        venue_native_id=str(bound.venue_native_id),
-        observation_recovery_completed=recovery.ok,
-        recovery_completed=recovery.runtime_owner_recovery_complete,
-        recovery_steps=list(recovery.steps_completed),
-        public_supply_refreshed=True,
-        public_marks_count=MINIMUM_FINALIZED_PT1M_MARKS,
-        pretrade_truth_refreshed=True,
-        wp02_hook_invoked=True,
-        wp02_cap21_refresh_invoked=bool(getattr(chain_result, "cap21_refresh_invoked", False)),
-        wp02_hard_facts_handoff_invoked=bool(
-            getattr(chain_result, "hard_facts_handoff_invoked", False)
+
+    bound = account_bound()
+    lane_root = tmp_path / "lane_state"
+    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
+    prepare = (
+        prepare_layered_short_armed_seed_for_pre_external_invoke_v1
+        if short
+        else prepare_layered_long_armed_seed_for_pre_external_invoke_v1
+    )
+    arm, closes, mark, event_ts, g17 = prepare(
+        bound=bound, g17_typed_vol_producer=None, lane_state_root=lane_root
+    )
+    assert arm.decision_outcome not in {"enter_long", "enter_short"}
+    observation = _observation_from_closes(closes=closes, event_ts=event_ts, bound=bound)
+    mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
+        bound=bound, mark_px=mark, index_px=mark * 0.995
+    )
+    observation = replace(
+        observation, mark_price_payload=mark_payload, index_tickers_payload=index_payload
+    )
+    # These are explicit original-owner test ports. Their productive-class
+    # fixture labels do not attest actual venue contact or natural data.
+    return _run_supervisor_with_observations_v1(
+        tmp_path,
+        observations=[observation],
+        max_cycles=1,
+        prepared_lane=(bound, {"LANE_1": g17}, pairs),
+        pretrade_transport=_productive_transport() if with_pretrade else None,
+        cap24_productivity_root=write_cap21_productivity_root_for_inst_v1(
+            tmp_path, venue_native_id=bound.venue_native_id
         ),
-        wp02_membership_persisted=bool(getattr(chain_result, "membership_persisted", False)),
-        continuous_admission_granted=True,
-        accepted_c1_count=int(orch.accepted_c1_count),
-        governed_cycle_count=int(orch.cycles_completed),
-        terminal_disposition=str(orch.disposition),
-        post_count=int(orch.post_count),
-        extra={
-            "wp02": wp02_sink,
-            "observation_scope": "scoped_readonly_inject",
-        },
-    )
-    if chain_result is not None:
-        trace.extra["wp02_ranking_snapshot_id"] = str(
-            (getattr(chain_result, "ranking_snapshot", None) or {}).get("ranking_snapshot_id") or ""
-        )
-    return StandingSupervisorRunResultV1(
-        ok=recovery.ok and orch.post_count == 0,
-        run_id=trace.run_id,
-        trace=trace,
-        recovery=recovery,
-        policy_result=policy_result,
-        owner_go_consumed=(
-            cfg.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json"
-        ).is_file(),
-        authority_invariants_ok=True,
     )
 
 
 def run_natural_long_supervisor_v1(tmp_path: Path) -> StandingSupervisorRunResultV1:
-    bound = _bound_lane_1()
-    lane_root = tmp_path / "lane_state"
-    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
-    g17 = _lane_g17(pairs)
-    g17_single = g17["LANE_1"]
-    _o, _u, enter_cycle, enter_closes, _mark = run_natural_enter_long_sequence_for_bound_v1(
-        bound=bound,
-        g17_typed_vol_producer=g17_single,
-    )
-    cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
-    persist_current_productive_sidestate_confirmation_cursor_v1(
-        enter_cycle.outgoing_cursor,
-        store_root=cursor_root,
-    )
-    floor = _cursor_floor_or_zero(cursor_root)
-    enter_ts = max(governed_productive_c1_event_ts_unix_v1(offset_seconds=300.0), floor + 60.0)
-    result = _run_persistent_enter_after_wp02_v1(
-        tmp_path,
-        bound=bound,
-        pairs=pairs,
-        g17=g17,
-        observations=[
-            _observation_from_closes(closes=enter_closes, event_ts=enter_ts, bound=bound)
-        ],
-        max_cycles=1,
-    )
-    result.trace.extra["natural_enter_decision"] = str(enter_cycle.decision_outcome)
-    return result
+    return _run_layered_entry_supervisor_v1(tmp_path, short=False)
 
 
 def run_natural_short_supervisor_v1(tmp_path: Path) -> StandingSupervisorRunResultV1:
-    bound = _bound_lane_1()
-    lane_root = tmp_path / "lane_state"
-    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
-    g17_single = _lane_g17(pairs)["LANE_1"]
-    (
-        _o1,
-        _d,
-        _arm,
-        enter_cycle,
-        _ac,
-        enter_closes,
-        _sm,
-    ) = run_natural_enter_short_sequence_for_bound_v1(
-        bound=bound,
-        g17_typed_vol_producer=g17_single,
-    )
-    cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
-    persist_current_productive_sidestate_confirmation_cursor_v1(
-        enter_cycle.outgoing_cursor,
-        store_root=cursor_root,
-    )
-    floor = _cursor_floor_or_zero(cursor_root)
-    enter_ts = max(governed_productive_c1_event_ts_unix_v1(offset_seconds=300.0), floor + 60.0)
-    result = _run_persistent_enter_after_wp02_v1(
-        tmp_path,
-        bound=bound,
-        pairs=pairs,
-        g17=_lane_g17(pairs),
-        observations=[
-            _observation_from_closes(closes=enter_closes, event_ts=enter_ts, bound=bound)
-        ],
-        max_cycles=1,
-    )
-    result.trace.extra["natural_enter_decision"] = str(enter_cycle.decision_outcome)
-    return result
+    return _run_layered_entry_supervisor_v1(tmp_path, short=True)
 
 
 def run_hold_supervisor_v1(tmp_path: Path) -> StandingSupervisorRunResultV1:
-    flat = [100.0] * 20
+    flat = [100.0] * 128
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     return _run_supervisor_with_observations_v1(
         tmp_path,
         observations=[_observation_from_closes(closes=flat, event_ts=t0)],
         max_cycles=1,
-        bootstrap_closes=strong_uptrend_closes_v1()[:14],
+        bootstrap_closes=strong_uptrend_closes_v1(count=128)[:104],
     )
 
 
 def run_two_epoch_supervisor_v1(tmp_path: Path) -> StandingSupervisorRunResultV1:
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=128)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     t1 = t0 + 60.0
     return _run_supervisor_with_observations_v1(
         tmp_path,
         observations=[
-            _observation_from_closes(closes=path[:16], event_ts=t0),
+            _observation_from_closes(closes=path[:106], event_ts=t0),
             None,
-            _observation_from_closes(closes=path[:18], event_ts=t1),
+            _observation_from_closes(closes=path[:108], event_ts=t1),
         ],
         max_cycles=2,
     )
