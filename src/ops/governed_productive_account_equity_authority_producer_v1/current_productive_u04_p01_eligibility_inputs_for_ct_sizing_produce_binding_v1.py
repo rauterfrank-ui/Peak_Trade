@@ -250,6 +250,10 @@ def bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1(
             base=base,
         )
     try:
+        if host_inputs.u04_evidence is None or host_inputs.local_commitment_readback is not None:
+            raise CurrentProductiveU04P01EligibilityInputsBindingError(
+                "CT_REQUIRES_EXPLICIT_U04_NOT_LOCAL_BUDGET_COMMITMENTS"
+            )
         u04 = bind_current_productive_u04_reservation_fact_from_typed_evidence_v1(
             base=base,
             evidence=host_inputs.u04_evidence,

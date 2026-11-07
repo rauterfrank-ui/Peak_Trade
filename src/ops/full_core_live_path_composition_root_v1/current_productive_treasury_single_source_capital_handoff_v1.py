@@ -100,6 +100,7 @@ def build_default_full_core_u04_p01_eligibility_host_inputs_v1(
     *,
     raw_acct_lv: str,
 ) -> CurrentProductiveU04P01EligibilityHostInputsV1:
+    """Legacy explicit fixture adapter; not a productive local-book readback."""
     return CurrentProductiveU04P01EligibilityHostInputsV1(
         u01_raw_acct_lv=str(raw_acct_lv or ""),
         u04_evidence=CurrentProductiveU04ReservationTypedEvidenceV1(
@@ -108,6 +109,22 @@ def build_default_full_core_u04_p01_eligibility_host_inputs_v1(
             witness_kind="TYPED_FULL_CORE_EMPTY_RESERVATION_WITNESS_V1",
             witness_digest=_DEFAULT_U04_WITNESS_DIGEST,
         ),
+    )
+
+
+def build_full_core_margin_inputs_from_budget_owner_v1(
+    *, raw_acct_lv: str, budget_owner: object
+) -> CurrentProductiveU04P01EligibilityHostInputsV1:
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+    if not isinstance(budget_owner, PortfolioCapitalReservationBudgetOwnerV1):
+        raise ValueError("LOCAL_COMMITMENT_ORIGINAL_OWNER_REQUIRED")
+    return CurrentProductiveU04P01EligibilityHostInputsV1(
+        u01_raw_acct_lv=raw_acct_lv,
+        u04_evidence=None,
+        local_commitment_readback=budget_owner.local_commitment_readback_v1(),
     )
 
 
@@ -336,5 +353,6 @@ __all__ = (
     "CurrentProductiveTreasurySingleSourceCapitalHandoffError",
     "CurrentProductiveTreasurySingleSourceCapitalHandoffV1",
     "build_default_full_core_u04_p01_eligibility_host_inputs_v1",
+    "build_full_core_margin_inputs_from_budget_owner_v1",
     "execute_current_productive_treasury_single_source_capital_handoff_v1",
 )

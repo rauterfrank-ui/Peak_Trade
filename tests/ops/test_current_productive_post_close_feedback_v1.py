@@ -17,7 +17,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_position
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
     execute_current_productive_treasury_single_source_capital_handoff_v1,
-    build_default_full_core_u04_p01_eligibility_host_inputs_v1,
+    build_full_core_margin_inputs_from_budget_owner_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
     OfflineExchangeFixtureV1,
@@ -49,6 +49,19 @@ from tests.ops.test_full_core_exchange_reconciliation_v1 import _binding
 NOW = "2026-11-03T00:00:03Z"
 FILL_MS = "1793664001000"
 POSITION_MS = "1793664002000"
+
+
+@pytest.fixture(autouse=True)
+def isolated_capital_observation_ordering():
+    # Each test creates an independent synthetic account/owner world. Keep
+    # ordering guards active inside that world, including all replay negatives.
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_base_binding_v1 import (
+        clear_current_productive_base_binding_state_v1,
+    )
+
+    clear_current_productive_base_binding_state_v1()
+    yield
+    clear_current_productive_base_binding_state_v1()
 
 
 def _case(
@@ -106,14 +119,15 @@ def _case(
     )
     reservation_id = str(reserved.reservation.reservation_id)
     owner.commit_internal_pre_external_effect_v1(reservation_id)
+    margin = _obs(value="75", epoch=NOW)
     capital = execute_current_productive_treasury_single_source_capital_handoff_v1(
-        margin_observation=_obs(value="75", epoch=NOW),
+        margin_observation=margin,
         instrument_id=bound.instrument_id,
-        body_sha256="ab" * 32,
+        body_sha256=margin.provenance_digest,
         fresh_pretrade_get_status="TRUSTED_PRESENT",
         live_account_bound_status="TRUSTED_PRESENT",
-        u04_p01_host_inputs=build_default_full_core_u04_p01_eligibility_host_inputs_v1(
-            raw_acct_lv="2"
+        u04_p01_host_inputs=build_full_core_margin_inputs_from_budget_owner_v1(
+            raw_acct_lv="2", budget_owner=owner
         ),
     )
     assert not capital.fail_closed, capital.reason_codes
