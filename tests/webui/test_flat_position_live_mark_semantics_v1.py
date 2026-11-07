@@ -163,6 +163,9 @@ def test_canonical_api_market_updates_even_while_system_slice_stays_cached(tmp_p
 def test_actual_browser_consumer_renders_live_source_and_age_across_flat_ticks():
     frames = [project(document(mark)) for mark in ("101.25", "103.75", "100.50")]
     frames[1] = project(document("103.75"), now="2026-11-07T12:03:00Z")
+    missing = document(None)
+    missing["bars"] = []
+    frames.append(project(missing))
     script = r"""
 const vm=require('vm'),fs=require('fs'),assert=require('assert');
 const input=JSON.parse(fs.readFileSync(0,'utf8'));
@@ -179,7 +182,7 @@ vm.runInNewContext(fs.readFileSync(input.source,'utf8'),context);
   await new Promise(setImmediate);
   rendered.push({price:nodes['ots-header-price'].textContent,sourceAge:nodes['ots-header-freshness'].textContent});
  }
- assert.equal(calls,3);console.log(JSON.stringify(rendered));
+ assert.equal(calls,4);console.log(JSON.stringify(rendered));
 })().catch(e=>{console.error(e);process.exitCode=1;});
 """
     source = (
@@ -195,7 +198,8 @@ vm.runInNewContext(fs.readFileSync(input.source,'utf8'),context);
     )
     assert result.returncode == 0, result.stderr
     rendered = json.loads(result.stdout)
-    assert [r["price"] for r in rendered] == ["101.25", "103.75", "100.5"]
+    assert [r["price"] for r in rendered[:3]] == ["101.25", "103.75", "100.5"]
     assert "MARK PRICE · FRESH" in rendered[0]["sourceAge"]
     assert "MARK PRICE · STALE" in rendered[1]["sourceAge"]
     assert CAPTURED in rendered[1]["sourceAge"]
+    assert rendered[3]["sourceAge"] == "UNAVAILABLE · UNKNOWN · —"

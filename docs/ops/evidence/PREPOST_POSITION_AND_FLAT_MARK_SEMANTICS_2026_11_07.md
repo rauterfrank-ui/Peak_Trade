@@ -107,6 +107,8 @@ nach dem vorhandenen reference_mark_price-Vertrag. Frische Candles machen
 keinen alten Mark frisch. Fehlende/fehlerhafte Markquelle bleibt unbekannt;
 ein noch vorhandener Kerzenschluss wird sichtbar als Kerzenschluss bezeichnet.
 Eine alte Zahl wird nicht durch die aktuelle Browserabfrage erneuert.
+Bei vollständig fehlendem Preis bleiben Preiszeit und Preisfrische auch im
+Browser leer beziehungsweise UNKNOWN; er übernimmt keine fremde Dokumentuhr.
 
 Der kanonische API-Aggregator bewertet die Quellen erst nach deren Aufnahme
 beziehungsweise Load. Sonst kann die gerade empfangene Quelle gegenüber dem

@@ -211,7 +211,7 @@
       "ots-header-freshness",
       (market.last_price_kind || "PRICE SOURCE UNKNOWN").replace(/_/g, " ") + " · " +
       (market.last_price_freshness || "UNKNOWN") + " · " +
-      (market.last_price_timestamp || market.market_timestamp || "—")
+      (market.last_price_timestamp || "—")
     );
     setText("ots-chart-sub", market.okx_inst_id ? "OKX " + market.okx_inst_id : "—");
     setText("ots-interval", market.interval || "—");

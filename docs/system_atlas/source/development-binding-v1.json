@@ -124,12 +124,12 @@
     {
       "path": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.json",
       "before_sha256": null,
-      "sha256": "22ddf6592538e499641ba360e4ce72601a9ea69e9800fac69d586107b910aeed"
+      "sha256": "a94f0afc582c9ea1b7d75ce7ffd6db50f949d8dc2ce2f5becdc0ead495e5c59a"
     },
     {
       "path": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.md",
       "before_sha256": null,
-      "sha256": "d0e234a24430092991a99f548c40c50049db9de913105976d2ad1163183bc40d"
+      "sha256": "be653d1de293a73ea62bfb7437f9d56bef937b5c6dbbf868bd729ef38f8721dd"
     },
     {
       "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
@@ -814,7 +814,7 @@
     {
       "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
       "before_sha256": "fb5ffb587ed09acf69fc1b4ad87c822893dc0f66576bb2585d9849d99a4dc188",
-      "sha256": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f"
+      "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
     },
     {
       "path": "tests/ci/test_ruff_frozen_format_v1.py",
@@ -1184,7 +1184,7 @@
     {
       "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
       "before_sha256": null,
-      "sha256": "1e7711320a75cbfb8cae70ef0da687e237aa1bc62ea8f4d599ba3d18d807370c"
+      "sha256": "71ad04f51b04a61f21f770ce246aeedaa51b20de534c4ae0f7c548daabb20db0"
     }
   ]
 }

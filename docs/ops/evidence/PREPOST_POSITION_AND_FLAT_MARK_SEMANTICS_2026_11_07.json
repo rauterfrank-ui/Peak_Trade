@@ -38,7 +38,7 @@
     {
       "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
       "before_sha256": "fb5ffb587ed09acf69fc1b4ad87c822893dc0f66576bb2585d9849d99a4dc188",
-      "sha256": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f"
+      "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
     },
     {
       "path": "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
@@ -63,7 +63,7 @@
     {
       "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
       "before_sha256": null,
-      "sha256": "1e7711320a75cbfb8cae70ef0da687e237aa1bc62ea8f4d599ba3d18d807370c"
+      "sha256": "71ad04f51b04a61f21f770ce246aeedaa51b20de534c4ae0f7c548daabb20db0"
     },
     {
       "path": "tests/webui/test_market_surface_greenfield_v1.py",
@@ -162,7 +162,8 @@
     "actual_browser_source_executed": true,
     "browser_environment": "Node VM with DOM/fetch doubles; no browser/venue network",
     "missing_or_stale_price": "Unknown/stale source shown explicitly; candle fallback remains visibly CANDLE_CLOSE, never a relabeled live mark.",
-    "fresh_document_without_any_price": "UNAVAILABLE price with UNKNOWN price freshness and no price timestamp; fresh unrelated metadata cannot prove a fresh price."
+    "fresh_document_without_any_price": "UNAVAILABLE price with UNKNOWN price freshness and no price timestamp; fresh unrelated metadata cannot prove a fresh price.",
+    "unavailable_price_clock": "UNAVAILABLE / UNKNOWN / no price timestamp in projection and actual browser; no borrowed document or candle clock."
   },
   "negative_original_position_probe": {
     "log_sha256": "863104e12d909deb202ee72fb6fb6e9fa8e50906e3473c670957b7c9451f3736",
@@ -344,6 +345,41 @@
     "warning": "Existing Starlette/httpx deprecation; no dependency changes."
   },
   "final_owner_test": {
+    "base_commit": "d1467aabde0509b3780c7004844dd737f3a7d211",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_prepost_position_source_admission_v1.py",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "tests/webui/test_market_surface_greenfield_v1.py",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "docs/system_atlas/tests/test_development_binding.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.37,
+    "source_sha256": {
+      "docs/system_atlas/tests/test_development_binding.py": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976",
+      "static/js/market_surface_greenfield_v1/surface_app_v1.js": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py": "71ad04f51b04a61f21f770ce246aeedaa51b20de534c4ae0f7c548daabb20db0",
+      "tests/webui/test_market_surface_greenfield_v1.py": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "709b554aa3fbca76c820bae000fbd6d3d797124bd5898b1d83c85e6af80cff95",
+    "scope": "Original consumers, synthetic GET ports, accounting kernel, ASGI source load/poll response, actual browser JS under DOM/fetch doubles, named source-binding verifier. No actual venue/credential or natural full-host proof.",
+    "passed": 111,
+    "pytest_elapsed_seconds": 1.59,
+    "warning": "Existing Starlette/httpx deprecation; no dependency changes."
+  },
+  "previous_owner_test_before_browser_clock_correction": {
     "base_commit": "d868c3bdb18ad252ea3d45438b7d01127884b1d0",
     "command": [
       "./scripts/pt",
