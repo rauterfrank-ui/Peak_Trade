@@ -64,6 +64,10 @@ Dokuments bleiben an ihren damaligen Umfang gebunden. Aktuelle Korrektur,
 Ressourcenfolge und Gegenfälle stehen im
 [Kapital-/Aufnahmefrischebeleg](../evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.md).
 
+Die anschließende [GET-Ressourcenrechnung](../evidence/SHARED_GET_RESOURCE_ENVELOPE_2026_11_07.md)
+bindet die erforderlichen Fetchgruppen an die bestehende begrenzte Productsession.
+Ihr Requestdeckel ist von Frische, Zeitkontrolle und Betriebsrechten getrennt.
+
 ```text
 FRESHNESS_SEMANTICS=FRESH_GET_PER_PRETRADE_DECISION
 TTL_INVENTED=false
