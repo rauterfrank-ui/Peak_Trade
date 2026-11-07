@@ -1032,11 +1032,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return bind_plan_locked_v1(self, str(reservation_id), envelope)
 
-    def mark_execution_submit_boundary_v1(self, reservation_id, identity):
+    def mark_execution_submit_boundary_v1(
+        self, reservation_id, identity, *, external_effect_permit=None
+    ):
         from .execution_v1 import mark_submit_locked_v1
 
         with self._lock:
-            return mark_submit_locked_v1(self, str(reservation_id), identity)
+            return mark_submit_locked_v1(
+                self, str(reservation_id), identity, external_effect_permit=external_effect_permit
+            )
 
     def inspect_execution_submit_context_v1(self, reservation_id, envelope, identity):
         """Original committed-plan predicates under lock; no submit or new authority."""
