@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "220b474b5ed4f408fc942ddf65dd74940ce014ef",
-  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation.",
+  "development_parent_commit": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation. Original N1 reservation reference is now preserved from S5 extra into each S6 cycle record and the native supervisor return. This is historical hold lineage only: closed and recovered owners remain fenced, no envelope parsing, new owner/ledger, authority identity, GET, release, send or activation. Natural productive execution-identity and full admission remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -90,6 +90,16 @@
       "path": "docs/ops/evidence/N1_FINAL_NATIVE_QUANTITY_LIMITS_2026_11_07.md",
       "before_sha256": null,
       "sha256": "804bcc9ac25535f76c8fb5bdb65eb7f8b3833d1ec4229b4f0d0011abd9d1ec9b"
+    },
+    {
+      "path": "docs/ops/evidence/N1_ORIGINAL_RESERVATION_HOST_HANDOFF_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "c88776cdd5618bc1e129827e89db8bc4972eedc4ca23087bc81375408952175f"
+    },
+    {
+      "path": "docs/ops/evidence/N1_ORIGINAL_RESERVATION_HOST_HANDOFF_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "2723fcc7aa38908f5374af3cea393a5caaf5f65970d991dd06f5da0e3ab9fc03"
     },
     {
       "path": "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.json",
@@ -589,7 +599,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
       "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
-      "sha256": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6"
+      "sha256": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
@@ -1115,6 +1125,11 @@
       "path": "tests/ops/test_n1_consumer_completion_readback_v1.py",
       "before_sha256": null,
       "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
+    },
+    {
+      "path": "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
+      "before_sha256": null,
+      "sha256": "f8d729292230770c95b4cff9e08e98a2c0b9be4cf309b6359428cc5c39b3d85e"
     },
     {
       "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",

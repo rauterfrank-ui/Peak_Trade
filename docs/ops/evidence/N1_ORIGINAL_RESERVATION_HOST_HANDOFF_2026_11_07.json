@@ -1,0 +1,472 @@
+{
+  "schema": "peaktrade.n1_original_reservation_host_handoff.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "before_sha256": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c",
+      "sha256": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "before_sha256": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6",
+      "sha256": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+      "sha256": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "before_sha256": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217",
+      "sha256": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
+      "before_sha256": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991",
+      "sha256": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+      "before_sha256": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f",
+      "sha256": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+      "before_sha256": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810",
+      "sha256": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py",
+      "before_sha256": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+      "sha256": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py",
+      "before_sha256": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+      "sha256": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py",
+      "before_sha256": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+      "sha256": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f",
+      "sha256": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f"
+    },
+    {
+      "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
+      "before_sha256": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e",
+      "sha256": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "before_sha256": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+      "sha256": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
+      "before_sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+      "sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "before_sha256": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49",
+      "sha256": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
+      "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+      "sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py",
+      "before_sha256": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e",
+      "sha256": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e"
+    },
+    {
+      "path": "tests/ops/_current_productive_pre_external_shared_process_state_v1.py",
+      "before_sha256": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a",
+      "sha256": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a"
+    },
+    {
+      "path": "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py",
+      "before_sha256": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b",
+      "sha256": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b"
+    },
+    {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "before_sha256": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46",
+      "sha256": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46"
+    },
+    {
+      "path": "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+      "before_sha256": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d",
+      "sha256": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "before_sha256": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c",
+      "sha256": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+      "sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd"
+    },
+    {
+      "path": "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
+      "before_sha256": null,
+      "sha256": "f8d729292230770c95b4cff9e08e98a2c0b9be4cf309b6359428cc5c39b3d85e"
+    },
+    {
+      "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "before_sha256": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41",
+      "sha256": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41"
+    },
+    {
+      "path": "tests/ops/test_portfolio_budget_host_v1.py",
+      "before_sha256": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+      "sha256": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c"
+    },
+    {
+      "path": "tests/ops/test_portfolio_execution_recovery_v1.py",
+      "before_sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+      "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79"
+    },
+    {
+      "path": "tests/ops/test_prepost_original_budget_context_v1.py",
+      "before_sha256": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111",
+      "sha256": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+    }
+  ],
+  "historical_sources": [
+    {
+      "commit": "0808d2eed72edc9c4677f01da48cb5a8b11110dc",
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "sha256": "96301aac48e0a9847c98a355ae9850ee8c060653f080b7442a0380882206fc7b",
+      "base_sha256": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6",
+      "equal_to_base": false
+    },
+    {
+      "commit": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py",
+      "sha256": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+      "base_sha256": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+      "equal_to_base": true
+    },
+    {
+      "commit": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py",
+      "sha256": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+      "base_sha256": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+      "equal_to_base": true
+    },
+    {
+      "commit": "cccd5bbd3f7eb7e89722b8b8133740325ec03674",
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py",
+      "sha256": "7ca5bfbeb18b0c99c982c4cdbc7f4b27e555ad55617c646c48c7cf925d4e98ba",
+      "base_sha256": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+      "equal_to_base": false
+    }
+  ],
+  "external_history_access": {
+    "volume": "M2DATA",
+    "volume_uuid": "BFA81BFA-80C5-3634-84EE-17B3496EE123",
+    "identity_rechecked": true,
+    "operations": "Targeted git log/show, read only by procedure. No scans, restore or writes. Checkpoints do not establish exact original authoring time."
+  },
+  "original_counterprobe": {
+    "schema": "peaktrade.n1_reservation_handoff_counterprobe.v1",
+    "head": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+    "source_sha256": {
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": "102f10f04db8c2c0f1d9b4aaaf9ceb97ea6d433cad5072360baa835e0fb268d6",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f",
+      "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e",
+      "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1"
+    },
+    "results": [
+      {
+        "direction": "LONG",
+        "terminal": "PRE_EXTERNAL_EFFECT",
+        "original_reservation_id": "5005834b6fa14abf71f56e4c65837d09512bc8d1d9c12766a919bd3c97a495fd",
+        "original_decision_id": "decision-e99906e18c4ba6d79db676fec286d822",
+        "original_slot_id": "LANE_1",
+        "canonical_instrument": "cap24-ADA-USDT-SWAP",
+        "native_instrument": "ADA-USDT-SWAP",
+        "returned_record_has_reservation_field": false,
+        "reservation_only_embedded_in_envelope_admission_ref": true,
+        "original_owner_closed_submit_context_fenced": true,
+        "cached_admission_after_close": false,
+        "cached_recovery_flag_after_close": false,
+        "original_link_phase": "PLAN_BOUND",
+        "post_count": 0,
+        "external_effect_count": 0
+      },
+      {
+        "direction": "SHORT",
+        "terminal": "PRE_EXTERNAL_EFFECT",
+        "original_reservation_id": "e27403ac04155c2c8b5fee6c4eba4ec53aad3a5268d9f53c98775e7dc079a27a",
+        "original_decision_id": "decision-3e736e42a94bae2b8616c478c218ab2c",
+        "original_slot_id": "LANE_1",
+        "canonical_instrument": "cap24-ADA-USDT-SWAP",
+        "native_instrument": "ADA-USDT-SWAP",
+        "returned_record_has_reservation_field": false,
+        "reservation_only_embedded_in_envelope_admission_ref": true,
+        "original_owner_closed_submit_context_fenced": true,
+        "cached_admission_after_close": false,
+        "cached_recovery_flag_after_close": false,
+        "original_link_phase": "PLAN_BOUND",
+        "post_count": 0,
+        "external_effect_count": 0
+      }
+    ],
+    "scope": "Actual supervisor, natural decision paths, original budget writer and S6; all market/account data synthetic, no real credentials or network. No runtime activation or submission.",
+    "observation": "S5 extra has original reservation id; S6 cycle record drops it while retaining its envelope. Closing owner is intentional; its submit predicate is fenced although cached admission/recovery display fields are not rewritten by close. A reopened durable owner requires its original recovery.",
+    "probe_correction": "Initial probe incorrectly expected the cached recovery_required flag itself to change on close. Corrected to check the actual original submit-context predicate; no product change."
+  },
+  "final_owner_test": {
+    "base_commit": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
+      "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+      "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+      "tests/ops/test_portfolio_budget_host_v1.py",
+      "tests/ops/test_portfolio_execution_recovery_v1.py",
+      "tests/ops/test_prepost_original_budget_context_v1.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 24.11,
+    "source_sha256": {
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f",
+      "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+      "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f",
+      "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e",
+      "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+      "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+      "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49",
+      "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+      "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e",
+      "tests/ops/_current_productive_pre_external_shared_process_state_v1.py": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a",
+      "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b",
+      "tests/ops/_wp03_supervisor_golden_harness_v1.py": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46",
+      "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d",
+      "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c",
+      "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+      "tests/ops/test_n1_original_reservation_host_handoff_v1.py": "f8d729292230770c95b4cff9e08e98a2c0b9be4cf309b6359428cc5c39b3d85e",
+      "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41",
+      "tests/ops/test_portfolio_budget_host_v1.py": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+      "tests/ops/test_portfolio_execution_recovery_v1.py": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+      "tests/ops/test_prepost_original_budget_context_v1.py": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "d5625aab060a1a28c8270a37ec75e547329770de41186a21d40b8e57edde6adb",
+    "scope": "Original S5/S6, actual supervisor and natural long/short with synthetic market/account ports. Original closed/cold owner fences and retained holds; existing budget/GET/wrapper/recovery contracts. No natural execution-authorization delivery, live network, real credentials, orders or automatic resumption.",
+    "passed": 148,
+    "pytest_elapsed_seconds": 21.76,
+    "new_cases": 7
+  },
+  "iteration_evidence": [
+    {
+      "source_proof": {
+        "base_commit": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+        "command": [
+          "./scripts/pt",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
+          "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+          "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+          "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+          "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+          "tests/ops/test_portfolio_budget_host_v1.py",
+          "tests/ops/test_portfolio_execution_recovery_v1.py",
+          "tests/ops/test_prepost_original_budget_context_v1.py",
+          "--tb=short"
+        ],
+        "exit_code": 1,
+        "elapsed_seconds": 23.78,
+        "source_sha256": {
+          "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f",
+          "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+          "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f",
+          "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e",
+          "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+          "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+          "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49",
+          "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+          "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e",
+          "tests/ops/_current_productive_pre_external_shared_process_state_v1.py": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a",
+          "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b",
+          "tests/ops/_wp03_supervisor_golden_harness_v1.py": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46",
+          "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d",
+          "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c",
+          "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+          "tests/ops/test_n1_original_reservation_host_handoff_v1.py": "cd427f75bc105b7b3e2a9b0ed67342c0556d4821f002a49fbf3ecd21b28f1bbe",
+          "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41",
+          "tests/ops/test_portfolio_budget_host_v1.py": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+          "tests/ops/test_portfolio_execution_recovery_v1.py": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+          "tests/ops/test_prepost_original_budget_context_v1.py": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+        },
+        "unchanged_during_run": true,
+        "log_sha256": "4584baabd2d5500d9350c5ce46bc9d1109146452f6f74e38f66da5790e152555",
+        "scope": "Original S5/S6, actual supervisor and natural long/short with synthetic market/account ports. Original closed/cold owner fences and retained holds; existing budget/GET/wrapper/recovery contracts. No natural execution-authorization delivery, live network, real credentials, orders or automatic resumption."
+      },
+      "passed": 146,
+      "failed": 2,
+      "cause": "New test incorrectly assumed complete native records have a bare JSON encoding",
+      "product_changed_to_fit_fixture": false
+    },
+    {
+      "source_proof": {
+        "base_commit": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+        "command": [
+          "./scripts/pt",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
+          "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
+          "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+          "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+          "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
+          "tests/ops/test_portfolio_budget_host_v1.py",
+          "tests/ops/test_portfolio_execution_recovery_v1.py",
+          "tests/ops/test_prepost_original_budget_context_v1.py",
+          "--tb=short"
+        ],
+        "exit_code": 1,
+        "elapsed_seconds": 23.68,
+        "source_sha256": {
+          "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py": "87995dd980cfeeb339879a25df75b5ba46fc6f3edf88f8eff7217f9b52b44991",
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f",
+          "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py": "484bd5a42596e5badc7ab6276273852465fc8089dd0032414ad028774f59d5b0",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py": "9cc51af81fad17e2687f92f0964bdc0815c14deb87641fdfdc6cff47085e804b",
+          "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py": "6ff62eb410a6fa9d1f8fe498ff453aebb937f70f12e5408bd4be3b65a2e535a1",
+          "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f",
+          "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py": "6ac0e7edd40a5dc49b5bb74498ffc1d34befafca10c88a751dff959ef39d1e0e",
+          "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+          "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+          "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49",
+          "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+          "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e",
+          "tests/ops/_current_productive_pre_external_shared_process_state_v1.py": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a",
+          "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b",
+          "tests/ops/_wp03_supervisor_golden_harness_v1.py": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46",
+          "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d",
+          "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py": "b9983e1ae43526239ac9806495f89d2345124954f7c6cf1098308246a3a2855c",
+          "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+          "tests/ops/test_n1_original_reservation_host_handoff_v1.py": "0c6930de0dc6bb7da85e739ef3baebad808de4586ef2c7dd6e5f39f8ef8512f1",
+          "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41",
+          "tests/ops/test_portfolio_budget_host_v1.py": "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+          "tests/ops/test_portfolio_execution_recovery_v1.py": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+          "tests/ops/test_prepost_original_budget_context_v1.py": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+        },
+        "unchanged_during_run": true,
+        "log_sha256": "d327b21ad50319a2604581a1d4463aed2355de97fa381bcc18197a354881ca9f",
+        "scope": "Original S5/S6, actual supervisor and natural long/short with synthetic market/account ports. Original closed/cold owner fences and retained holds; existing budget/GET/wrapper/recovery contracts. No natural execution-authorization delivery, live network, real credentials, orders or automatic resumption."
+      },
+      "passed": 146,
+      "failed": 2,
+      "cause": "New test incorrectly compared a post-runner pending context with the earlier S5 output before that context is produced",
+      "product_changed_to_fit_fixture": false
+    }
+  ],
+  "handoff_contract": {
+    "producer": "Original N1 reservation and envelope writer",
+    "s5_field": "extra.PORTFOLIO_RESERVATION_ID",
+    "s6_and_supervisor_field": "ContinuousCycleRecordV1.portfolio_reservation_id",
+    "copy": "Exact original S5 value for each record; empty default; no envelope parsing, prior-cycle fallback or synthetic identity",
+    "scope": "Native historical result reference only",
+    "new_durable_ledger": false,
+    "changes_code_lines": 3,
+    "owner_reference_or_root_recovery_added": false,
+    "send_or_authorization_joined": false,
+    "pending_decision_context_birth": "Existing N1 S5 runner adds context after original S5 return; S6 preserves it",
+    "canonical_intent": "Original object preserved, including native Decimal fields; no new wire serializer"
+  },
+  "owner_lifetime": {
+    "supervisor_finally_closes_owner": true,
+    "cached_admission_field_after_close_is_not_operational_right": true,
+    "actual_closed_owner_submit_predicate": "EXECUTION_SUBMIT_OWNER_FENCED",
+    "cold_original_store_retains": [
+      "Reservation ID",
+      "Nonzero original hold amount",
+      "Exact PLAN_BOUND envelope"
+    ],
+    "cold_owner_requires_fresh_original_recovery": true,
+    "automatic_readmission_or_release_added": false
+  },
+  "identity_boundary": {
+    "existing_builder": "identity_from_full_core_binding_v1",
+    "origin": "Separate FullCoreAuthorizationBindingV1 from offline capital-guard construction",
+    "not_interchangeable_with_productive_send_grant": true,
+    "old_join_live_environment": "FORBIDDEN; LIVE_POST resolves DISABLED",
+    "instrument_difference": "Historical guard binding takes native envelope instrument_id; current budget identity requires original canonical BoundInstrument.instrument_id",
+    "consumption_difference": "Offline four-scope authorization key and productive envelope-bound permit consume are separate owners",
+    "caller_required_fields": [
+      "decision_outcome",
+      "venue_plan_identity",
+      "envelope_identity",
+      "submit_attempt_id",
+      "local_durable_state_version"
+    ],
+    "natural_productive_authority_and_attempt_delivery": "OPEN"
+  },
+  "still_open": [
+    "Natural productive execution-identity and independent authorization delivery",
+    "Global uniqueness/anti-clone provenance of original owner roots",
+    "Pending custody and current full quantity/risk/safety/old-plan admission",
+    "Never-submitted recovery and continuous host send mandate",
+    "Seven pre-existing collector/account-closeout contracts and earlier broad acceptance debt"
+  ],
+  "operations": {
+    "real_venue_calls": 0,
+    "real_credentials_read": false,
+    "real_orders": 0,
+    "live_host_started": false,
+    "new_gets": 0,
+    "financial_formulas_changed": false,
+    "release_or_submit_barriers_changed": false,
+    "flat_market_price_changed": false
+  }
+}
