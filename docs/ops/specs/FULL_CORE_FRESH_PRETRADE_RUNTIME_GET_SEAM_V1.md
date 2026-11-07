@@ -58,6 +58,12 @@ scope. Canary venue-pretrade-limit extra gate remains canary-only.
 
 ## Freshness
 
+Die begrenzte Weiterentwicklung vom 07.11.2026 bindet den Pretrade-Snapshot an
+tatsächliche Aufnahmezeit und Entscheidung. Die historischen Pins dieses
+Dokuments bleiben an ihren damaligen Umfang gebunden. Aktuelle Korrektur,
+Ressourcenfolge und Gegenfälle stehen im
+[Kapital-/Aufnahmefrischebeleg](../evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.md).
+
 ```text
 FRESHNESS_SEMANTICS=FRESH_GET_PER_PRETRADE_DECISION
 TTL_INVENTED=false

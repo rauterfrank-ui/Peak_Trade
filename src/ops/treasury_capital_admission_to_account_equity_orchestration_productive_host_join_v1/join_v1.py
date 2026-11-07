@@ -47,6 +47,9 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
     expected_instrument_id: str,
     usdc_row_status: str = "",
     u04_p01_eligibility_host_inputs: CurrentProductiveU04P01EligibilityHostInputsV1 | None = None,
+    decision_epoch: str = "",
+    age_seconds: str = "1",
+    freshness_max_age: str = "5",
 ) -> TreasuryE4ProductiveHostJoinResultV1:
     """Full E4 productive host join chain. No network. No authority expansion."""
     if PARALLEL_ACCOUNT_EQUITY_AUTHORITY_ADDED or SECOND_ACCOUNT_EQUITY_AUTHORITY_ADDED:
@@ -89,10 +92,15 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
         host_evaluation=host_evaluation,
         usdc_row_status=usdc_row_status,
         capital_admission_evidence=admission_evidence,
+        decision_epoch=decision_epoch,
+        age_seconds=age_seconds,
+        freshness_max_age=freshness_max_age,
     )
     u04_p01_binding = bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1(
         base=base_binding.base_fact,
         host_inputs=u04_p01_eligibility_host_inputs,
+        age_seconds=age_seconds,
+        freshness_max_age=freshness_max_age,
     )
 
     return TreasuryE4ProductiveHostJoinResultV1(

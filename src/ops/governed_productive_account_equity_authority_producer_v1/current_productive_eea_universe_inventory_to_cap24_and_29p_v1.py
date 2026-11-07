@@ -594,14 +594,12 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             instruments=cap21_instruments,
             venue_native_id=bound.venue_native_id,
         )
-        package_finished = _utc_now_iso_v1()
         handoff = compose_current_productive_29p_common_epoch_handoff_v1(
             decision_epoch=decision_epoch,
             bound_instrument=bound,
             fresh_get_transport=fresh_get_transport,
             expected_account_identity=expected_uid,
             inst_type=inst_type,
-            package_finished_iso=package_finished,
             p01_decision_state=p01_decision.decision_state,
         )
     finally:

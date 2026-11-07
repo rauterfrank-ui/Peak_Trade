@@ -21,9 +21,13 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
     METHOD_GET,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FreshPretradeGetTransportResultV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    utc_now_iso_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     parse_json_object_v1,
@@ -73,6 +77,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         self.venue_live_contact = False
         self.transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
         self._cache: dict[str, FreshPretradeGetTransportResultV1] = {}
+        self._decision_cache: dict[tuple[str, bool, str], FreshPretradeGetTransportResultV1] = {}
         self.payloads_by_path: dict[str, Any] = {}
         # Explicit private evidence consumer only. Never enabled by default;
         # request headers/signing material are not supplied to this callback.
@@ -86,14 +91,23 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         pretrade_decision_id: str,
         get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> FreshPretradeGetTransportResultV1:
-        del pretrade_decision_id
+        decision = str(pretrade_decision_id or "")
+        if get_cache_policy == GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT and (
+            not decision or decision != decision.strip()
+        ):
+            raise FullCoreProductiveReadOnlyGetError("PRETRADE_DECISION_ID_MALFORMED")
         cacheable = get_cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT
+        decision_cacheable = get_cache_policy == GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT
         if get_cache_policy not in (
             GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
             GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+            GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
         ):
             raise FullCoreProductiveReadOnlyGetError("INVALID_GET_CACHE_POLICY")
         cached = self._cache.get(str(endpoint)) if cacheable else None
+        decision_key = (decision, auth_required, str(endpoint))
+        if decision_cacheable:
+            cached = self._decision_cache.get(decision_key)
         if cached is not None:
             return cached
         if self.request_count >= self.max_request_count:
@@ -175,11 +189,15 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             error_class=error_class,
             body_sha256=hashlib.sha256(body).hexdigest() if body else "",
             data_safety_source_kind=data_safety_source_kind,
+            pretrade_decision_id=decision,
+            acquired_at_utc=utc_now_iso_v1(),
         )
         if self.raw_response_sink_v1 is not None:
             self.raw_response_sink_v1(result=result, body=body)
         if cacheable:
             self._cache[str(endpoint)] = result
+        if decision_cacheable:
+            self._decision_cache[decision_key] = result
         path_only = str(endpoint).split("?", 1)[0]
         self.payloads_by_path[path_only] = payload
         return result

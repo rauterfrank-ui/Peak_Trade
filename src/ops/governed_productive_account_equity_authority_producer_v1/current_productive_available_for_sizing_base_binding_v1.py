@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import replace
 from typing import Mapping, Protocol, Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
@@ -204,7 +203,7 @@ def bind_current_productive_available_for_sizing_base_from_treasury_host_v1(
             if prior is not None:
                 prior_ts, prior_fp = prior
                 current_ts = str(treasury_observation.observed_at_utc or "")
-                if current_ts < prior_ts and fp != prior_fp:
+                if current_ts < prior_ts:
                     reasons.append("OLD_REPLAY_AFTER_NEWER_STATE_FAIL_CLOSED")
                     fail_closed = True
                     numeric_bound = False
@@ -216,22 +215,20 @@ def bind_current_productive_available_for_sizing_base_from_treasury_host_v1(
                         fail_closed = True
                         numeric_bound = False
                         base_fact = None
+                    elif cached.value != typed.value_raw:
+                        reasons.append("EVIDENCE_FINGERPRINT_CONTENT_MISMATCH")
+                        fail_closed = True
+                        numeric_bound = False
+                        base_fact = None
                     else:
-                        base_fact = cached
-                        rebound_epoch = str(
-                            decision_epoch or treasury_observation.observed_at_utc or ""
-                        ).strip()
-                        if rebound_epoch and base_fact.decision_epoch != rebound_epoch:
-                            base_fact = replace(
-                                base_fact,
-                                decision_epoch=rebound_epoch,
-                                observed_at_as_of=str(
-                                    treasury_observation.observed_at_utc
-                                    or base_fact.observed_at_as_of
-                                ),
-                                age_seconds=age_seconds,
-                                freshness_max_age=freshness_max_age,
-                            )
+                        # Same bytes do not stop the original acquisition from aging.
+                        # Rebuild from the newly validated scope/time, not cached ages.
+                        base_fact = _observation_to_base_fact_v1(typed)
+                        _latest_binding_by_account[account] = (
+                            max(prior_ts, str(treasury_observation.observed_at_utc or "")),
+                            fp,
+                        )
+                        _last_base_fact_by_fingerprint[fp] = base_fact
                         numeric_bound = True
                         fail_closed = False
                 else:

@@ -76,6 +76,7 @@ from tests.ops._monetary_normalization_test_helpers_v1 import (
 )
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
+    _fixture_acquisition_time_v1,
 )
 
 _INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
@@ -183,19 +184,24 @@ class CountingInjectedFreshGetTransportV1(InjectedFreshGetTransportV1):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.get_call_count = 0
+        self.get_counts_by_decision = {}
         self.payloads_by_path = dict(self.payloads)
 
-    def get(self, *, endpoint, auth_required, pretrade_decision_id):
+    def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
         full = str(endpoint or "").strip()
-        if full in self._cache:
-            return self._cache[full]
+        key = (pretrade_decision_id, full)
+        if key in self._cache:
+            return self._cache[key]
         self.get_call_count += 1
-        if self.get_call_count > MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT:
+        count = self.get_counts_by_decision.get(pretrade_decision_id, 0) + 1
+        self.get_counts_by_decision[pretrade_decision_id] = count
+        if count > MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT:
             raise CurrentProductive29PCommonEpochHandoffError("GET_BUDGET_EXCEEDS_MAXIMUM")
         result = super().get(
             endpoint=endpoint,
             auth_required=auth_required,
             pretrade_decision_id=pretrade_decision_id,
+            **kwargs,
         )
         path = str(endpoint or "").split("?", 1)[0]
         if result.payload is not None:
@@ -209,7 +215,7 @@ class MismatchInstrumentTransportV1(InjectedFreshGetTransportV1):
         self.payloads_by_path = dict(payloads)
         self._wrong_inst = wrong_inst
 
-    def get(self, *, endpoint, auth_required, pretrade_decision_id):
+    def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
         path = str(endpoint or "").split("?", 1)[0]
         if path == ENDPOINT_PUBLIC_INSTRUMENTS:
             payload = dict(self.payloads.get(path, {"code": "0", "data": []}))
@@ -225,11 +231,14 @@ class MismatchInstrumentTransportV1(InjectedFreshGetTransportV1):
                 venue_live_contact=False,
                 historical_reuse=False,
                 error_class="",
+                pretrade_decision_id=pretrade_decision_id,
+                acquired_at_utc=self.acquired_at_utc or _fixture_acquisition_time_v1(),
             )
         return super().get(
             endpoint=endpoint,
             auth_required=auth_required,
             pretrade_decision_id=pretrade_decision_id,
+            **kwargs,
         )
 
 

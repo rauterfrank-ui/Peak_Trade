@@ -90,12 +90,13 @@ class EndpointRecordingProductiveFreshGetTransportV1(ProductiveClassFreshGetTran
         super().__init__(*args, **kwargs)
         self.requested_endpoints: list[str] = []
 
-    def get(self, *, endpoint, auth_required, pretrade_decision_id):
+    def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
         self.requested_endpoints.append(str(endpoint))
         return super().get(
             endpoint=endpoint,
             auth_required=auth_required,
             pretrade_decision_id=pretrade_decision_id,
+            **kwargs,
         )
 
 

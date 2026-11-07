@@ -14,7 +14,7 @@ import argparse
 import hashlib
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -42,11 +42,15 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     FreshPretradeRuntimeGetEvidenceV1,
+    FreshPretradeGetTransportResultV1,
     FullCoreFreshPretradeGetTransportV1,
     REQUIRED_GET_ITEM_SPECS,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     build_required_get_endpoint_v1,
     collect_fresh_pretrade_runtime_get_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
 )
 from src.ops.governed_futures_universe_producer_v1.constants_v1 import SUPPORTED_INST_TYPES
 from src.ops.governed_futures_universe_producer_v1.models_v1 import GovernedUniverseInstrumentV1
@@ -209,6 +213,14 @@ class CurrentProductive29PCommonEpochHandoffResultV1:
     balance_get_count: int
     bound_uid: str
     public_inst_type: str
+    # Original results of this collection, never the transport's mutable path cache.
+    pretrade_results: Mapping[str, FreshPretradeGetTransportResultV1] = field(
+        default_factory=dict, repr=False
+    )
+    source_transport: FullCoreFreshPretradeGetTransportV1 | None = field(
+        default=None, repr=False, compare=False
+    )
+    pretrade_cycle_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -233,7 +245,7 @@ class CurrentProductive29PCommonEpochHandoffExecuteResultV1:
 
 
 def _utc_now_iso_v1() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def _sha256_text(text: str) -> str:
@@ -479,6 +491,9 @@ def build_fresh_pretrade_get_item_diagnostics_v1(
                 "REASON_CODES": list(item.reason_codes),
                 "GET_PERFORMED": item.get_performed,
                 "IDENTITY_FIELDS_MALFORMED": item.identity_fields_malformed,
+                "ACQUIRED_AT_UTC": item.acquired_at_utc,
+                "ACQUISITION_DECISION_ID": item.acquisition_decision_id,
+                "EVALUATED_AT_UTC": get_evidence.evaluated_at_utc,
             }
         )
     return rows
@@ -493,10 +508,17 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
     inst_type: str = "FUTURES",
     package_finished_iso: str | None = None,
     p01_decision_state: str | None = None,
+    pretrade_cycle_id: str = "",
 ) -> CurrentProductive29PCommonEpochHandoffResultV1:
     if CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_CREATED is not True:
         raise CurrentProductive29PCommonEpochHandoffError("COMMON_EPOCH_HANDOFF_NOT_CREATED")
     epoch = _validate_decision_epoch_v1(decision_epoch)
+    cycle_id = str(pretrade_cycle_id or "")
+    if cycle_id != cycle_id.strip():
+        raise CurrentProductive29PCommonEpochHandoffError("PRETRADE_CYCLE_ID_MALFORMED")
+    acquisition_decision = (
+        _canonical_json({"decision_epoch": epoch, "cycle_id": cycle_id}) if cycle_id else epoch
+    )
     try:
         bound = require_current_productive_29p_bound_instrument_v1(bound_instrument)
     except CurrentProductiveLabInstrumentScopeError as exc:
@@ -513,18 +535,21 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
     if p01_state != CURRENT_PRODUCTIVE_P01_POLICY_DECISION:
         raise CurrentProductive29PCommonEpochHandoffError("P01_POLICY_MUST_BE_DOES_NOT_APPLY")
 
-    package_finished = package_finished_iso or _utc_now_iso_v1()
     expected_uid = str(expected_account_identity or REUSED_BINDING_ACCOUNT_SCOPE)
 
+    collected_results: dict[str, FreshPretradeGetTransportResultV1] = {}
     get_evidence = collect_fresh_pretrade_runtime_get_v1(
-        pretrade_decision_id=epoch,
+        pretrade_decision_id=acquisition_decision,
         instrument_id=bound.venue_native_id,
         td_mode=REQUIRED_TD_MODE,
         limit_px="",
         inst_type=inst_type,
         transport=fresh_get_transport,
         require_collection=True,
+        collected_results=collected_results,
+        evaluated_at_utc=package_finished_iso,
     )
+    package_finished = package_finished_iso or _utc_now_iso_v1()
     dedup_count, config_count, balance_count = _count_get_budget_from_evidence_v1(
         get_evidence=get_evidence
     )
@@ -543,22 +568,10 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
     )
     lab_status = lab.evidence_status
 
-    payloads = getattr(fresh_get_transport, "payloads_by_path", {}) or {}
-    config_payload = payloads.get(ENDPOINT_ACCOUNT_CONFIG)
-    balance_payload = payloads.get(ENDPOINT_ACCOUNT_BALANCE)
-    if config_payload is None or balance_payload is None:
-        config_payload = config_payload or payload_from_fresh_get_transport_v1(
-            fresh_get_transport,
-            endpoint=ENDPOINT_ACCOUNT_CONFIG,
-            auth_required=True,
-            decision_epoch=epoch,
-        )
-        balance_payload = balance_payload or payload_from_fresh_get_transport_v1(
-            fresh_get_transport,
-            endpoint=account_balance_query_path_v1(),
-            auth_required=True,
-            decision_epoch=epoch,
-        )
+    config_result = collected_results.get("config")
+    balance_result = collected_results.get("balance")
+    config_payload = config_result.payload if config_result is not None else None
+    balance_payload = balance_result.payload if balance_result is not None else None
 
     uid_config = _extract_uid(config_payload if isinstance(config_payload, dict) else None)
     uid_balance = _extract_uid(balance_payload if isinstance(balance_payload, dict) else None)
@@ -570,7 +583,11 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
         adaptation = adapt_current_productive_u01_account_mode_v1(None)
 
     eligibility = None
-    if adaptation.status == "ELIGIBLE" and isinstance(config_payload, dict):
+    if (
+        get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+        and adaptation.status == "ELIGIBLE"
+        and isinstance(config_payload, dict)
+    ):
         eligibility = build_current_productive_u01_eligibility_fact_v1(
             adaptation=adaptation,
             bound_account_identity=bound_uid,
@@ -582,7 +599,11 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
 
     observation = None
     raw_availeq = ""
-    if isinstance(balance_payload, dict):
+    if (
+        get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+        and isinstance(balance_payload, dict)
+        and balance_result is not None
+    ):
         try:
             raw_availeq = extract_usdc_details_availeq_from_balance_payload_v1(balance_payload)
             observation = CurrentProductiveUsdcFreeMarginObservationV1(
@@ -595,12 +616,13 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
                 bound_venue_identity="okx",
                 bound_td_mode=REQUIRED_TD_MODE,
                 decision_epoch=epoch,
-                observed_at_as_of=package_finished,
-                age_seconds=_age_seconds(
-                    observed_at_as_of=package_finished, now_iso=package_finished
+                observed_at_as_of=balance_result.acquired_at_utc,
+                age_seconds=acquisition_age_seconds_v1(
+                    acquired_at_utc=balance_result.acquired_at_utc, now_utc=package_finished
                 ),
                 freshness_max_age=str(NUMERIC_EQUITY_TTL_SECONDS),
-                provenance_digest=_sha256_text(_canonical_json(balance_payload)),
+                provenance_digest=balance_result.body_sha256
+                or _sha256_text(_canonical_json(balance_payload)),
                 already_net_of_in_use=TRUE_TOKEN,
                 account_level_avail_eq_used=FALSE_TOKEN,
                 fallback_chain_used=FALSE_TOKEN,
@@ -725,6 +747,9 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
         balance_get_count=balance_count,
         bound_uid=bound_uid,
         public_inst_type=str(inst_type or "").strip().upper() or "FUTURES",
+        pretrade_results=dict(collected_results),
+        source_transport=fresh_get_transport,
+        pretrade_cycle_id=cycle_id,
     )
 
 
@@ -910,7 +935,6 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         fresh_get_transport=fresh_get_transport,
         expected_account_identity=expected_account_identity,
         inst_type=resolved_inst_type,
-        package_finished_iso=package_started,
         p01_decision_state=p01_decision.decision_state,
     )
     transport_class = str(getattr(fresh_get_transport, "transport_class", "") or "")

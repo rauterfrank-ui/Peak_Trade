@@ -12,6 +12,11 @@ import hashlib
 import json
 from typing import Any, Mapping
 
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
+    utc_now_iso_v1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     CurrentProductiveEnterLive29PInjectedGetV1,
 )
@@ -36,7 +41,6 @@ from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     CurrentProductive29PCommonEpochHandoffResultV1,
-    payload_from_fresh_get_transport_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
     REQUIRED_TD_MODE,
@@ -88,30 +92,27 @@ def _fresh_pretrade_item_spec_v1(*, item_id: str):
 
 def _payload_from_decision_epoch_get_v1(
     *,
-    transport: FullCoreFreshPretradeGetTransportV1,
+    handoff: CurrentProductive29PCommonEpochHandoffResultV1,
     endpoint: str,
     auth_required: bool,
     decision_epoch: str,
 ) -> Any:
-    endpoint_key = str(endpoint or "").strip()
-    cache = getattr(transport, "_cache", None)
-    if isinstance(cache, dict) and endpoint_key in cache:
-        cached = cache[endpoint_key]
-        if hasattr(cached, "payload"):
-            return cached.payload
-        if isinstance(cached, Mapping):
-            return cached.get("payload")
-    try:
-        return payload_from_fresh_get_transport_v1(
-            transport,
-            endpoint=endpoint_key,
-            auth_required=auth_required,
-            decision_epoch=decision_epoch,
-        )
-    except Exception as exc:
-        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
-            "FRESH_PRETRADE_PAYLOAD_RETRIEVAL_FAILED"
-        ) from exc
+    # Do not consult a path-only cache or issue another read after admission.
+    for result in handoff.pretrade_results.values():
+        if result.endpoint != endpoint or result.auth_header_sent is not auth_required:
+            continue
+        if result.pretrade_decision_id != handoff.get_evidence.pretrade_decision_id:
+            break
+        try:
+            acquisition_age_seconds_v1(
+                acquired_at_utc=result.acquired_at_utc, now_utc=utc_now_iso_v1()
+            )
+        except ValueError as exc:
+            raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(str(exc)) from exc
+        return result.payload
+    raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+        "FRESH_PRETRADE_SNAPSHOT_BINDING_MISSING"
+    )
 
 
 def _require_bound_instruments_payload_v1(
@@ -169,6 +170,10 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
 ) -> CurrentProductiveEnterLive29PInjectedGetV1:
     """Build enter-live-29p carrier from common-epoch outputs only."""
     _require_productive_transport_v1(transport)
+    if transport is not handoff.source_transport:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "FRESH_PRETRADE_SNAPSHOT_TRANSPORT_MISMATCH"
+        )
     epoch = str(handoff.decision_epoch or "").strip()
     if not epoch:
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("DECISION_EPOCH_MISSING")
@@ -180,6 +185,21 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
             "LIVE_ACCOUNT_BOUND_NOT_TRUSTED"
         )
+    groups = {spec.fetch_group for spec in REQUIRED_GET_ITEM_SPECS}
+    if set(handoff.pretrade_results) != groups:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "FRESH_PRETRADE_SNAPSHOT_BINDING_MISSING"
+        )
+    now_utc = utc_now_iso_v1()
+    for result in handoff.pretrade_results.values():
+        if result.pretrade_decision_id != handoff.get_evidence.pretrade_decision_id:
+            raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+                "FRESH_PRETRADE_SNAPSHOT_DECISION_MISMATCH"
+            )
+        try:
+            acquisition_age_seconds_v1(acquired_at_utc=result.acquired_at_utc, now_utc=now_utc)
+        except ValueError as exc:
+            raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(str(exc)) from exc
 
     bound_venue_native_id = str(handoff.bound_instrument.venue_native_id or "").strip()
     if not bound_venue_native_id:
@@ -187,16 +207,13 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
 
     public_inst_type = str(handoff.public_inst_type or "").strip().upper() or "FUTURES"
 
-    payloads = getattr(transport, "payloads_by_path", None) or {}
     balance_path = account_balance_query_path_v1()
-    balance_payload = payloads.get(balance_path) or payloads.get(ENDPOINT_ACCOUNT_BALANCE)
-    if balance_payload is None:
-        balance_payload = _payload_from_decision_epoch_get_v1(
-            transport=transport,
-            endpoint=balance_path,
-            auth_required=True,
-            decision_epoch=epoch,
-        )
+    balance_payload = _payload_from_decision_epoch_get_v1(
+        handoff=handoff,
+        endpoint=balance_path,
+        auth_required=True,
+        decision_epoch=epoch,
+    )
     if not isinstance(balance_payload, Mapping):
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("BALANCE_PAYLOAD_MISSING")
 
@@ -209,7 +226,7 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         inst_type=public_inst_type,
     )
     instruments_payload = _payload_from_decision_epoch_get_v1(
-        transport=transport,
+        handoff=handoff,
         endpoint=bound_instruments_endpoint,
         auth_required=False,
         decision_epoch=epoch,
@@ -227,14 +244,12 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         limit_px="",
         inst_type=public_inst_type,
     )
-    index_tickers_payload = payloads.get(ENDPOINT_MARKET_INDEX_TICKERS)
-    if index_tickers_payload is None:
-        index_tickers_payload = _payload_from_decision_epoch_get_v1(
-            transport=transport,
-            endpoint=index_tickers_endpoint,
-            auth_required=False,
-            decision_epoch=epoch,
-        )
+    index_tickers_payload = _payload_from_decision_epoch_get_v1(
+        handoff=handoff,
+        endpoint=index_tickers_endpoint,
+        auth_required=False,
+        decision_epoch=epoch,
+    )
     if not isinstance(index_tickers_payload, Mapping):
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
             "MONETARY_NORMALIZATION_INDEX_TICKERS_MISSING"
@@ -251,7 +266,7 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         inst_type=public_inst_type,
     )
     conversion_pair_payload = _payload_from_decision_epoch_get_v1(
-        transport=transport,
+        handoff=handoff,
         endpoint=conversion_pair_endpoint,
         auth_required=False,
         decision_epoch=epoch,
@@ -271,13 +286,13 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
     if not body_sha256:
         body_sha256 = _sha256_text(_canonical_json(dict(balance_payload)))
 
-    observed_at = epoch
-    if handoff.observation is not None:
-        observed_at = str(handoff.observation.observed_at_as_of or epoch)
+    if handoff.observation is None:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "ORIGINAL_MARGIN_OBSERVATION_MISSING"
+        )
+    observed_at = handoff.observation.observed_at_as_of
 
-    age_seconds = "1"
-    if handoff.observation is not None:
-        age_seconds = str(handoff.observation.age_seconds or "1")
+    age_seconds = acquisition_age_seconds_v1(acquired_at_utc=observed_at, now_utc=utc_now_iso_v1())
 
     raw_acct_lv = str(handoff.adaptation.raw_token or "").strip()
 
@@ -296,6 +311,11 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         instruments_payload=dict(instruments_payload),
         index_tickers_payload=dict(index_tickers_payload),
         conversion_pair_instruments_payload=dict(conversion_pair_payload),
+        acquisition_decision_id=epoch,
+        acquisition_cycle_id=handoff.pretrade_cycle_id,
+        pretrade_acquired_at_utc=tuple(
+            result.acquired_at_utc for result in handoff.pretrade_results.values()
+        ),
     )
 
 

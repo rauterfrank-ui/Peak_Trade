@@ -173,6 +173,9 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     instruments_payload: Mapping[str, Any] | None = None
     index_tickers_payload: Mapping[str, Any] | None = None
     conversion_pair_instruments_payload: Mapping[str, Any] | None = None
+    acquisition_decision_id: str = ""
+    acquisition_cycle_id: str = ""
+    pretrade_acquired_at_utc: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -526,6 +529,33 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             get_count=0,
             reasons=("FRESH_EVIDENCE_NOT_FETCHED",),
         )
+    if injected is not None and injected.acquisition_decision_id:
+        from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+            acquisition_age_seconds_v1,
+            utc_now_iso_v1,
+        )
+
+        try:
+            if injected.acquisition_decision_id != decision_epoch:
+                raise ValueError("ACQUISITION_DECISION_MISMATCH")
+            if injected.acquisition_cycle_id and (
+                portfolio_slot is None or injected.acquisition_cycle_id != portfolio_slot.cycle_id
+            ):
+                raise ValueError("ACQUISITION_CYCLE_MISMATCH")
+            if not injected.pretrade_acquired_at_utc:
+                raise ValueError("PRETRADE_ACQUISITIONS_MISSING")
+            now_utc = utc_now_iso_v1()
+            for acquired_at in injected.pretrade_acquired_at_utc:
+                acquisition_age_seconds_v1(acquired_at_utc=acquired_at, now_utc=now_utc)
+            age_seconds = acquisition_age_seconds_v1(acquired_at_utc=observed_at, now_utc=now_utc)
+        except ValueError as exc:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker="LIVE_29P_ACQUISITION_FAIL_CLOSED",
+                replay=replay,
+                get_count=get_count,
+                reasons=(str(exc),),
+            )
     if get_performed is not True or payload is None or http_status != 200:
         status = STATUS_UNKNOWN if error_class else STATUS_MISSING
         return _deny(

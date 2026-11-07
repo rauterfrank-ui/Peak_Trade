@@ -57,18 +57,14 @@ BASE_TS = 1_757_631_540_000
 
 
 def _run_with_fixed_offline_acquisition_clock_v1(**kwargs):
-    """An explicit same-snapshot test clock, not a productive freshness proof.
+    """Synthetic decisions at a fixed start; acquisition/evaluation clocks advance.
 
-    The original financial path still conflates decision and capture epochs.
-    Keep that separate defect visible in evidence rather than depending on
-    whether this offline fixture happens to cross a wall-clock second.
+    The original financial path must preserve distinct decision/capture times.
+    These injected payloads remain synthetic, without any venue contact.
     """
     from unittest.mock import patch
     from src.ops.full_core_live_path_composition_root_v1 import (
         current_productive_persistent_natural_enter_convergence_v1 as runner,
-    )
-    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
-        current_productive_29p_common_epoch_handoff_v1 as handoff,
     )
 
     instant = datetime.now(timezone.utc).replace(microsecond=0)
@@ -78,12 +74,7 @@ def _run_with_fixed_offline_acquisition_clock_v1(**kwargs):
         def now(cls, tz=None):
             return instant.astimezone(tz) if tz is not None else instant.replace(tzinfo=None)
 
-    with (
-        patch.object(runner, "datetime", OfflineDateTime),
-        patch.object(
-            handoff, "_utc_now_iso_v1", return_value=instant.strftime("%Y-%m-%dT%H:%M:%SZ")
-        ),
-    ):
+    with patch.object(runner, "datetime", OfflineDateTime):
         return run_n1_standing_pre_external_supervisor_v1(**kwargs)
 
 
