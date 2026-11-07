@@ -212,6 +212,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
         assert (
             rel.startswith(("src/", "tests/", "docs/", "scripts/", ".github/workflows/"))
             or rel == "config/governance/clean_core_seal_manifest_v1.json"
+            or rel == "static/js/market_surface_greenfield_v1/surface_app_v1.js"
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]

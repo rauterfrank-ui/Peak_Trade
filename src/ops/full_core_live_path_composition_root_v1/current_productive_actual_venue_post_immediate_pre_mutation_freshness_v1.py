@@ -1,24 +1,32 @@
 """Immediate pre-mutation freshness for direct actual-venue POST entry.
 
 Reuses collect_fresh_pretrade_runtime_get_v1 and bound-instrument position
-truth. UNKNOWN != PASS. Real POST must not proceed without TRUSTED_PRESENT
-pretrade conjunction and explicit account/position freshness tokens.
+observations. UNKNOWN != FLAT. Fresh position data and new-entry eligibility
+are distinct predicates. A valid position proof is not complete account/order,
+risk, safety, permit or later-send admission; original account context remains
+a separate integration boundary.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from decimal import Decimal, InvalidOperation
+import hashlib
+import json
+from typing import Any, Mapping
 from urllib.parse import urlencode
 
-from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
-    extract_position_truth_v1,
-)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_POSITIONS,
+    GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
+    REQUIRED_GET_ITEM_SPECS,
+    FreshPretradeGetTransportResultV1,
+    _item_status_and_reasons,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    DataSafetyAdmissionStatusV1,
     FreshPretradeGetStatusV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
@@ -31,6 +39,13 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
+)
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
+    utc_now_iso_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.datasafety_gate_join_into_execution_admission_v1 import (
+    evaluate_datasafety_admission_for_transport_result_v1,
 )
 
 
@@ -47,6 +62,84 @@ class ActualVenuePostPreMutationFreshnessProofV1:
     pretrade_evidence_status: str
     position_truth: str
     reason_codes: tuple[str, ...]
+    position_observations_consistent: bool = False
+    new_entry_position_admissible: bool = False
+    position_source_binding: Mapping[str, Any] = field(default_factory=dict)
+    scope: str = "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY"
+    account_identity_binding_status: str = "NOT_ASSESSED"
+
+
+def _position_rows_v1(payload: Any, *, scoped_native: str = "") -> dict[tuple, Decimal]:
+    """Keep native signed counts and hedge legs; never net opposite legs away."""
+    if (
+        not isinstance(payload, Mapping)
+        or payload.get("code") != "0"
+        or not isinstance(payload.get("data"), list)
+    ):
+        raise ValueError("POSITION_RESPONSE_MALFORMED")
+    positions, seen = {}, set()
+    for row in payload["data"]:
+        if not isinstance(row, Mapping):
+            raise ValueError("POSITION_ROW_MALFORMED")
+        native, side, mode, ccy = (row.get(k) for k in ("instId", "posSide", "mgnMode", "ccy"))
+        if not isinstance(native, str) or not native or native != native.strip():
+            raise ValueError("POSITION_INSTRUMENT_MISSING")
+        if scoped_native and native != scoped_native:
+            raise ValueError("POSITION_SCOPED_INSTRUMENT_MISMATCH")
+        if side not in {"net", "long", "short"} or mode not in {"cross", "isolated"}:
+            raise ValueError("POSITION_SIDE_OR_MARGIN_MODE_MALFORMED")
+        if ccy is not None and not isinstance(ccy, str):
+            raise ValueError("POSITION_CURRENCY_MALFORMED")
+        raw = row.get("pos")
+        if not isinstance(raw, str) or not raw or raw != raw.strip():
+            raise ValueError("POSITION_QUANTITY_MALFORMED")
+        try:
+            quantity = Decimal(raw)
+        except InvalidOperation as exc:
+            raise ValueError("POSITION_QUANTITY_MALFORMED") from exc
+        if not quantity.is_finite() or (side != "net" and quantity < 0):
+            raise ValueError("POSITION_QUANTITY_MALFORMED")
+        key = (native, side, mode, ccy or "")
+        if key in seen:
+            raise ValueError("POSITION_DUPLICATE_IDENTITY")
+        seen.add(key)
+        if quantity != 0:
+            positions[key] = quantity
+    return positions
+
+
+def _validate_position_result_v1(result, *, endpoint, decision_id, now):
+    if not isinstance(result, FreshPretradeGetTransportResultV1):
+        raise ValueError("POSITION_RESULT_MISSING")
+    spec = next(s for s in REQUIRED_GET_ITEM_SPECS if s.item_id == "MARGIN_MODE")
+    status, _ = _item_status_and_reasons(
+        spec=spec, result=result, pretrade_decision_id=decision_id, requested_endpoint=endpoint
+    )
+    if (
+        status != FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+        or result.method != "GET"
+        or result.error_class
+    ):
+        raise ValueError("POSITION_RESULT_NOT_TRUSTED")
+    if result.endpoint != endpoint or result.pretrade_decision_id != decision_id:
+        raise ValueError("POSITION_ACQUISITION_OR_ENDPOINT_MISMATCH")
+    acquisition_age_seconds_v1(acquired_at_utc=result.acquired_at_utc, now_utc=now)
+    if (
+        evaluate_datasafety_admission_for_transport_result_v1(result)
+        != DataSafetyAdmissionStatusV1.SATISFIED.value
+    ):
+        raise ValueError("POSITION_DATASAFETY_NOT_SATISFIED")
+
+
+def _position_source_v1(result):
+    payload = json.dumps(result.payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return {
+        "endpoint": result.endpoint,
+        "acquisition_decision_id": result.pretrade_decision_id,
+        "acquired_at_utc": result.acquired_at_utc,
+        "response_body_sha256": result.body_sha256,
+        "payload_sha256": hashlib.sha256(payload.encode()).hexdigest(),
+    }
 
 
 def _inst_type_for_envelope_v1(envelope: FinalOrderEnvelopeV1) -> str:
@@ -77,6 +170,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             "PRETRADE_DECISION_ID_REQUIRED"
         )
     inst_type = _inst_type_for_envelope_v1(envelope)
+    results: dict[str, FreshPretradeGetTransportResultV1] = {}
     evidence = collect_fresh_pretrade_runtime_get_v1(
         pretrade_decision_id=decision_id,
         instrument_id=envelope.instrument_id,
@@ -85,6 +179,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         inst_type=inst_type,
         transport=read_only_get_transport,
         require_collection=True,
+        collected_results=results,
     )
     pretrade_ok = evidence.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     reasons: list[str] = list(evidence.reason_codes)
@@ -99,33 +194,64 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         endpoint=pos_endpoint,
         auth_required=True,
         pretrade_decision_id=decision_id,
+        get_cache_policy=GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
     )
-    if pos_result.get_performed is not True:
-        reasons.append("POSITION_GET_NOT_PERFORMED")
-        return ActualVenuePostPreMutationFreshnessProofV1(
-            account_state_fresh=False,
-            position_state_fresh=False,
-            full_pretrade_conjunction_pass=False,
-            all_required_pre_post_gates_pass=False,
-            pretrade_evidence_status=str(evidence.evidence_status),
-            position_truth="UNKNOWN",
-            reason_codes=tuple(dict.fromkeys(reasons)),
+    source_binding = {}
+    position_fresh, consistent, entry_admissible = False, False, False
+    truth = "UNKNOWN"
+    account_fresh = pretrade_ok
+    try:
+        now = utc_now_iso_v1()
+        # The tenth read must not extend the lifetime of the original nine.
+        for result in results.values():
+            acquisition_age_seconds_v1(acquired_at_utc=result.acquired_at_utc, now_utc=now)
+        if evidence.data_safety_admission_status != DataSafetyAdmissionStatusV1.SATISFIED.value:
+            account_fresh = False
+            pretrade_ok = False
+            raise ValueError("COMMON_DATASAFETY_NOT_SATISFIED")
+        global_result = results.get("positions")
+        _validate_position_result_v1(
+            global_result, endpoint=ENDPOINT_ACCOUNT_POSITIONS, decision_id=decision_id, now=now
         )
-    truth, eligible, _side = extract_position_truth_v1(
-        pos_result.payload, native_id=envelope.instrument_id
-    )
-    position_fresh = pos_result.get_performed is True and truth in {
-        "FLAT",
-        "BOUND_INSTRUMENT_OPEN",
-    }
-    if truth == "FOREIGN_OPEN_POSITION_MAX_POSITIONS_1":
-        position_fresh = False
-        reasons.append("FOREIGN_OPEN_POSITION_MAX_POSITIONS_ONE")
-    if not eligible and truth != "BOUND_INSTRUMENT_OPEN":
-        position_fresh = False
-        reasons.append("POSITION_TRUTH_NOT_ELIGIBLE")
-    account_fresh = pretrade_ok and pos_result.get_performed is True
-    all_pass = pretrade_ok and account_fresh and position_fresh
+        _validate_position_result_v1(
+            pos_result, endpoint=pos_endpoint, decision_id=decision_id, now=now
+        )
+        global_positions = _position_rows_v1(global_result.payload)
+        scoped_positions = _position_rows_v1(
+            pos_result.payload, scoped_native=envelope.instrument_id
+        )
+        source_binding = {
+            "account_wide": _position_source_v1(global_result),
+            "bound_instrument": _position_source_v1(pos_result),
+            "envelope_digest": envelope.envelope_digest,
+        }
+        position_fresh = True
+        bound_positions = {
+            key: value
+            for key, value in global_positions.items()
+            if key[0] == envelope.instrument_id
+        }
+        consistent = bound_positions == scoped_positions
+        if not consistent:
+            reasons.append("POSITION_OBSERVATIONS_CHANGED_OR_CONFLICTING")
+        elif any(key[0] != envelope.instrument_id for key in global_positions):
+            truth = "FOREIGN_OPEN_POSITION_MAX_POSITIONS_1"
+            reasons.append("FOREIGN_OPEN_POSITION_MAX_POSITIONS_ONE")
+        elif bound_positions:
+            truth = "BOUND_INSTRUMENT_OPEN"
+            reasons.append("NEW_ENTRY_REQUIRES_ACCOUNT_FLAT")
+        else:
+            truth = "FLAT"
+            entry_admissible = envelope.reduce_only is False
+        if envelope.reduce_only is True:
+            reasons.append("CLOSE_REQUIRES_ORIGINAL_POSITION_ADMISSION")
+    except (ValueError, TypeError, AttributeError, KeyError) as exc:
+        reasons.append(str(exc))
+        # Fresh account acquisition is a clock claim, not UID/order admission.
+        if str(exc).startswith("ACQUISITION_"):
+            account_fresh = False
+            pretrade_ok = False
+    all_pass = pretrade_ok and account_fresh and position_fresh and consistent and entry_admissible
     if not all_pass:
         reasons.append("PREPOST_GATE_CONJUNCTION_FAIL_CLOSED")
     return ActualVenuePostPreMutationFreshnessProofV1(
@@ -136,6 +262,9 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         pretrade_evidence_status=str(evidence.evidence_status),
         position_truth=str(truth),
         reason_codes=tuple(dict.fromkeys(reasons)),
+        position_observations_consistent=consistent,
+        new_entry_position_admissible=entry_admissible,
+        position_source_binding=source_binding,
     )
 
 

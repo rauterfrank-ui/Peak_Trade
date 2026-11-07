@@ -1,0 +1,345 @@
+{
+  "schema": "peaktrade.prepost_position_and_flat_mark_semantics.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "docs/system_atlas/current_atlas.py",
+      "before_sha256": "9a28bb7416ada38aa044fd294db407c81d1550f351fd85d24cb7c83bd3eaa744",
+      "sha256": "1cffbf36b5ee203595fc0e4e02c92b0deb59bb37f06d90aa5f52a0d9ca813f14"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_development_binding.py",
+      "before_sha256": "24abe6e18f3b768f1320f9543cac7f0d3c4d8b1c156b4e5bf65edfc90975bc5b",
+      "sha256": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+      "before_sha256": "6c483089dd14ec67fb9a09291f285caf1e39e7ef0ae3cc46c614940e463122e6",
+      "sha256": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b",
+      "sha256": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/canonical_state_v1.py",
+      "before_sha256": "9c5be9069d9a1e82983972c0992baa1f6f3b2e11b1f4eefed85f1d3a9a6fee12",
+      "sha256": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/market_projection_v1.py",
+      "before_sha256": "4a34895b7c43210088a3bda061a21b7ea5ad4f968e1181086bd9ca1164456988",
+      "sha256": "2c7b3f8794b1d8c23e52983c93c40d825c14953bad2befc081853d6c6f6c3ecf"
+    },
+    {
+      "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
+      "before_sha256": "fb5ffb587ed09acf69fc1b4ad87c822893dc0f66576bb2585d9849d99a4dc188",
+      "sha256": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f"
+    },
+    {
+      "path": "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "db405cb9329b1c7cd4b4429393a32fc110f394000b357d9352635e9e50909a12",
+      "sha256": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "before_sha256": "fc550cec7ace633cb8957d6f5fa7c254ef99836a5e6501400694e75a8dcf78f0",
+      "sha256": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9"
+    },
+    {
+      "path": "tests/ops/test_prepost_position_source_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6"
+    },
+    {
+      "path": "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "before_sha256": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "sha256": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556"
+    },
+    {
+      "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "6dbb6b2b941e649fbbd28017c586d50ccbb1c87a2fa7d3a9b91c96ddf7526766"
+    },
+    {
+      "path": "tests/webui/test_market_surface_greenfield_v1.py",
+      "before_sha256": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9",
+      "sha256": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
+    }
+  ],
+  "unchanged_boundary_sources": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+      "sha256": "3a017ee162a645214d2a6c0d76ddd7daee9eeb9417c23443784fecdc01c4f9ff"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/pretrade_acquisition_v1.py",
+      "sha256": "8db00cfb9c9932f2495b28ee6fc2ce136b8c4319fa2f063794737e716728afe9"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
+      "sha256": "cac878a085cbe84cf926614b045bf860f92a47ac375b397374495ad896a89d9d"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+      "sha256": "e27fab1fb95999d8033e2c586fbc3c3a9deadf969fa53a5d582583728bf61e75"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "sha256": "7bd1be3bc516674767bb4c58ce904a997f60a0bdd4a2a62d1b11728d97afeed8"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
+      "sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5"
+    },
+    {
+      "path": "src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py",
+      "sha256": "5622a632cfcd28bb31a194d81efea55edd68a04df830d6cdcded3c51b3335283"
+    },
+    {
+      "path": "src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py",
+      "sha256": "ab4c02cf6720bf9966be3dcc780a9be21ca0c43110c4c9fa0e72f8bc7209dc9d"
+    },
+    {
+      "path": "src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py",
+      "sha256": "ebc6741fa60fdc691751125fc11de60a40050f5953d0b7c95da00244cf528586"
+    },
+    {
+      "path": "src/ops/okx_captured_at_freshness_policy_v1.py",
+      "sha256": "f3df1ab2e77ce848d5e2131691352979d6d829a0ddc06aae350b75e932c22aa8"
+    },
+    {
+      "path": "config/ops/okx_captured_at_freshness_policy_ratification_v1.json",
+      "sha256": "8938bbdc0daa31084bab0d191ecec4e8daed95a56bcb5b5dd8eb96ce76cdbb7d"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+      "sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5"
+    }
+  ],
+  "position_contract": {
+    "scope": "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY",
+    "account_identity_binding_status": "NOT_ASSESSED",
+    "reads_per_complete_proof": 10,
+    "new_reads": 0,
+    "acquisition_policy": "Original decision-bound snapshot plus original age/DataSafety owner predicates at consumer",
+    "observations": "Original unfiltered account positions and bound-instrument positions; bound open footprints must match without netting hedge legs.",
+    "fresh_open_position_is_new_entry_admission": false,
+    "valid_empty_and_zero_rows_are_flat": true,
+    "unknown_is_flat": false,
+    "inconsistent_views_mean": "Changed or conflicting observations require original reconciliation; not automatically a defective producer.",
+    "release_authority_added": false,
+    "close_authority_added": false,
+    "proof_persisted_as_send_authority": false,
+    "original_caller": "Receives reason codes before durable GO-consume and actual one-shot send join; original pre-live still creates an in-memory permit."
+  },
+  "flat_market_contract": {
+    "position_quantity": "0",
+    "held_notional": "0",
+    "market_prices": [
+      "101.25",
+      "103.75",
+      "100.50"
+    ],
+    "position_mark_rows_do_not_supply_market_price": [
+      "0",
+      "999"
+    ],
+    "price_source": "Original public live-mark scalar from selected-instrument readmodel",
+    "price_kinds": [
+      "MARK_PRICE",
+      "CANDLE_CLOSE",
+      "UNAVAILABLE"
+    ],
+    "candle_close": "99; unchanged when independent mark updates",
+    "price_clock": "Original live_mark_provider_ts/live_mark_captured_at, not poll time",
+    "freshness_owner": "okx_captured_at_freshness_policy_v1 reference_mark_price, unchanged ratified thresholds",
+    "system_cache": "Synthetic fixed flat system slice; actual market API response updates independently on each poll",
+    "actual_browser_source_executed": true,
+    "browser_environment": "Node VM with DOM/fetch doubles; no browser/venue network",
+    "missing_or_stale_price": "Unknown/stale source shown explicitly; candle fallback remains visibly CANDLE_CLOSE, never a relabeled live mark."
+  },
+  "final_owner_test": {
+    "base_commit": "7a44ea6b395e98a7e000a2c3cd89a744092210b0",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_prepost_position_source_admission_v1.py",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py",
+      "tests/webui/test_market_surface_greenfield_v1.py",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "docs/system_atlas/tests/test_development_binding.py",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.79,
+    "source_sha256": {
+      "docs/system_atlas/current_atlas.py": "1cffbf36b5ee203595fc0e4e02c92b0deb59bb37f06d90aa5f52a0d9ca813f14",
+      "docs/system_atlas/tests/test_development_binding.py": "1025f30c1b5f61135f40b03e0f2b2ef7ff1a9537644498553195ed579b90a976",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4",
+      "src/webui/market_surface_greenfield_v1/canonical_state_v1.py": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265",
+      "src/webui/market_surface_greenfield_v1/market_projection_v1.py": "2c7b3f8794b1d8c23e52983c93c40d825c14953bad2befc081853d6c6f6c3ecf",
+      "static/js/market_surface_greenfield_v1/surface_app_v1.js": "f7f866c992586d2cba5673db82b0e170f9d73d013503a1f8e8ee982abc3e860f",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
+      "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py": "6dbb6b2b941e649fbbd28017c586d50ccbb1c87a2fa7d3a9b91c96ddf7526766",
+      "tests/webui/test_market_surface_greenfield_v1.py": "098855624861587c6cad5c86f98fbfe4d618b1c6b07f5b019794bddc0e8c4be9"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "2b9855d5db5e8d29c43c75f64464831b185f6946f387b192aa9afeb0e760b374",
+    "scope": "Original consumers, synthetic GET ports, accounting kernel, ASGI source load/poll response, actual browser JS under DOM/fetch doubles, named source-binding verifier. No actual venue/credential or natural full-host proof.",
+    "passed": 110,
+    "pytest_elapsed_seconds": 1.48,
+    "warning": "Existing Starlette/httpx deprecation; no dependency changes."
+  },
+  "negative_original_position_probe": {
+    "log_sha256": "863104e12d909deb202ee72fb6fb6e9fa8e50906e3473c670957b7c9451f3736",
+    "summary": "============================== 23 failed in 0.80s ==============================",
+    "failed_nodes": [
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>0]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>1]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>3]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>4]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>5]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>6]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>7]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>8]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>9]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>10]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>11]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_scoped_unknown_never_becomes_flat_or_pass[<lambda>12]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_fresh_bound_position_is_not_new_entry_admission[net-2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_fresh_bound_position_is_not_new_entry_admission[net--2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_fresh_bound_position_is_not_new_entry_admission[long-2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_fresh_bound_position_is_not_new_entry_admission[short-2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_account_wide_foreign_open_cannot_be_hidden_by_scoped_flat",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_changed_observations_require_original_reconciliation_not_flat_guess",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_valid_empty_or_zero_rows_preserve_flat_semantics[rows0]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_valid_empty_or_zero_rows_preserve_flat_semantics[rows1]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_valid_empty_or_zero_rows_preserve_flat_semantics[rows2]",
+      "tests/ops/test_prepost_position_source_admission_v1.py::test_original_post_caller_preserves_reason_before_any_durable_go_or_send"
+    ],
+    "failed": 23,
+    "exit_code": 1,
+    "method": "Exact two original product bodies loaded via import hook; current final new tests/ports. Not a whole original tree run."
+  },
+  "negative_original_market_probe": {
+    "log_sha256": "c09c91e2f6d124e168bd2a6837bd70511f3049e35f00b561ea754876ebbaa592",
+    "summary": "========================= 3 failed, 1 warning in 2.01s =========================",
+    "failed_nodes": [
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py::test_actual_adapter_decimal_mark_is_consumed_instead_of_candle_close",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py::test_flat_accounting_and_display_follow_multiple_market_updates",
+      "tests/webui/test_flat_position_live_mark_semantics_v1.py::test_canonical_api_market_updates_even_while_system_slice_stays_cached"
+    ],
+    "failed": 3,
+    "exit_code": 1,
+    "method": "Exact original market projection and canonical API bodies; current synthetic documents; assertions fail on actual 99 versus expected independent live mark. Not a complete old browser/runtime run."
+  },
+  "existing_debt_diagnosis": {
+    "original_two_modules": {
+      "log_sha256": "dca18bfffb86e1c0c2cd1357f3a24afef07ccc2fbb93f4f8d3ad1803b5347420",
+      "summary": "======================== 10 failed, 44 passed in 1.06s =========================",
+      "failed_nodes": [
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming",
+        "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py::test_execute_unknown_outcome_single_attempt_no_retry",
+        "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py::test_unknown_position_freshness_fail_closed",
+        "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py::test_timeout_preserves_transport_failure_without_retry"
+      ],
+      "failed": 10,
+      "passed": 44,
+      "exit_code": 1
+    },
+    "initial_current_owner": {
+      "log_sha256": "2ca1c4593b26e9f8a497dd44e836cf0ea3f21bc1c214274859214553c3f1841f",
+      "summary": "========================= 7 failed, 72 passed in 1.07s =========================",
+      "failed_nodes": [
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming"
+      ],
+      "failed": 7,
+      "passed": 72
+    },
+    "initial_current_callers": {
+      "log_sha256": "de2028ab458fb8cd28e0da4d91ee0cf4302a0f92384ca6e14769b44dfa36c760",
+      "summary": "========================= 3 failed, 9 passed in 0.65s ==========================",
+      "failed_nodes": [
+        "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py::test_execute_unknown_outcome_single_attempt_no_retry",
+        "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py::test_unknown_position_freshness_fail_closed",
+        "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py::test_timeout_preserves_transport_failure_without_retry"
+      ],
+      "failed": 3,
+      "passed": 9
+    },
+    "repaired_callers": "Explicit original cache-policy kwarg, decision/acquisition fields, exact original DataSourceKind enum and native wire ID. Existing negative assertions retained. All 12 caller cases included in final 110 PASS.",
+    "remaining_failed_nodes": [
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming"
+    ],
+    "remaining_failures": 7,
+    "remaining_scope": "Original collector/account-closeout contracts, including obsolete docs/blocker assertions and UID type expectation. Not claimed resolved or replaced by document validation."
+  },
+  "research_setup_and_iteration": {
+    "first_position_negative_probe": "22 expected failures; initial synthetic DataSafety spelling was corrected to the exact enum before final 23-case original comparison.",
+    "first_market_probe": "13 failures included one synthetic schema mismatch; fixture corrected without weakening original loader before final three numerical regressions.",
+    "first_final_owner_run": {
+      "log_sha256": "6000bb44a1553d97e4cda56d4b0220e41ba2c416f82356097f7b634ffe054e1b",
+      "summary": "=================== 1 failed, 109 passed, 1 warning in 1.70s ===================",
+      "failed_nodes": [
+        "tests/webui/test_flat_position_live_mark_semantics_v1.py::test_actual_browser_consumer_renders_live_source_and_age_across_flat_ticks"
+      ],
+      "passed": 109,
+      "failed": 1,
+      "reason": "Browser DOM double lacked body.classList; corrected harness only, final 110-case proof passes."
+    }
+  },
+  "governance_delta": {
+    "named_browser_consumer": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
+    "binding": "Exact frozen-before and current digests required by existing development verifier; unrelated static paths and drift remain denied.",
+    "frozen_catalog_regenerated": false,
+    "policy_thresholds_changed": false
+  },
+  "open_boundaries": [
+    "Original account/order/budget/reservation/execution context to send consumer",
+    "Pending-order custody and independent current account scope",
+    "Later quantity/risk/safety admission and original decision validity",
+    "Persistent restart and never-submitted/unknown reconciliation",
+    "Historical mandatory security branch and continuous host mandate",
+    "Seven reproduced existing collector/account-closeout failures",
+    "Actual natural market/host/venue evidence"
+  ],
+  "operation_boundary": {
+    "real_venue_calls": 0,
+    "real_credential_access": false,
+    "live_host_started": false,
+    "real_orders": 0,
+    "synthetic_effects": "Existing caller tests exercise fake K1/HTTP and temporary durable GO/permit records; new denial tests prohibit durable GO and send callbacks."
+  }
+}

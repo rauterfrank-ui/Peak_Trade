@@ -3,7 +3,23 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import math
 from typing import Any, Mapping
+
+from src.ops.okx_captured_at_freshness_policy_v1 import (
+    classify_freshness_v1,
+    load_freshness_policy_v1,
+)
+
+
+def _positive_price(value: Any) -> float | None:
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        price = float(value)
+    except (TypeError, ValueError):
+        return None
+    return price if math.isfinite(price) and price > 0 else None
 
 
 def _parse_bar_time_unix(bar: Mapping[str, Any]) -> int | None:
@@ -40,6 +56,10 @@ def project_market_state_from_ohlcv_doc(
             "instrument": None,
             "okx_inst_id": None,
             "last_price": None,
+            "last_price_kind": "UNAVAILABLE",
+            "last_price_freshness": "UNKNOWN",
+            "last_price_timestamp": None,
+            "live_mark_price": None,
             "candle_series": [],
             "interval": None,
             "market_timestamp": None,
@@ -79,13 +99,31 @@ def project_market_state_from_ohlcv_doc(
     if series:
         last_price = series[-1]["close"]
     live_mark = ohlcv.get("live_mark_price")
+    # The original producer emits a decimal string, independently of positions.
+    # Preserve the older object shape as an input compatibility surface only.
     if isinstance(live_mark, Mapping):
-        lp = live_mark.get("price") or live_mark.get("mark_px")
-        if lp is not None:
-            try:
-                last_price = float(lp)
-            except (TypeError, ValueError):
-                pass
+        live_mark = (
+            live_mark.get("price")
+            if live_mark.get("price") is not None
+            else live_mark.get("mark_px")
+        )
+    mark_price = _positive_price(live_mark)
+    mark_captured = ohlcv.get("live_mark_captured_at")
+    mark_event = ohlcv.get("live_mark_provider_ts")
+    mark_freshness = "UNKNOWN"
+    if mark_price is not None and mark_captured:
+        try:
+            verdict, _, _ = classify_freshness_v1(
+                reference_at=mark_captured,
+                as_of=observed_at,
+                source_type="reference_mark_price",
+                policy=load_freshness_policy_v1(),
+            )
+            mark_freshness = verdict.upper()
+        except (ValueError, TypeError, AttributeError, OverflowError):
+            mark_freshness = "UNKNOWN"
+    if mark_price is not None:
+        last_price = mark_price
 
     freshness = str(ohlcv.get("freshness_state") or "UNKNOWN").upper()
     if bool(ohlcv.get("is_stale")):
@@ -101,6 +139,16 @@ def project_market_state_from_ohlcv_doc(
         "instrument": inst,
         "okx_inst_id": okx_inst,
         "last_price": last_price,
+        "last_price_kind": "MARK_PRICE"
+        if mark_price is not None
+        else ("CANDLE_CLOSE" if series else "UNAVAILABLE"),
+        "last_price_freshness": mark_freshness if mark_price is not None else freshness,
+        "last_price_timestamp": (mark_event or mark_captured)
+        if mark_price is not None
+        else ohlcv.get("last_timestamp"),
+        "live_mark_price": mark_price,
+        "live_mark_captured_at": mark_captured,
+        "live_mark_provider_ts": mark_event,
         "candle_series": series,
         "interval": ohlcv.get("interval"),
         "market_timestamp": ohlcv.get("last_timestamp") or ohlcv.get("captured_at"),

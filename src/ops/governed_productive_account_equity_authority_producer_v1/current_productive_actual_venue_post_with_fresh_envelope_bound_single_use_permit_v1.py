@@ -338,7 +338,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     if freshness.all_required_pre_post_gates_pass is not True:
-        raise CurrentProductiveActualVenuePostError("PRE_MUTATION_FRESHNESS_FAIL_CLOSED")
+        raise CurrentProductiveActualVenuePostError(
+            "PRE_MUTATION_FRESHNESS_FAIL_CLOSED:" + ",".join(freshness.reason_codes)
+        )
     persist_durable_post_owner_go_consume_v1(
         store_root=root,
         owner_go_token=OWNER_GO,
