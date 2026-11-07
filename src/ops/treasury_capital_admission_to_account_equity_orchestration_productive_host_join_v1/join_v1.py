@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
+    CurrentProductiveUsdcFreeMarginObservationV1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_free_margin_inputs_binding_v1 import (
+    bind_current_productive_free_margin_inputs_and_produce_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 import (
     bind_c08_productive_sizing_source_from_e4_host_join_v1,
 )
@@ -36,6 +42,7 @@ from src.ops.treasury_phase_2_read_only_reconciliation_v1.join_v1 import (
     join_treasury_reconciliation_into_capital_admission_v1,
 )
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
+    TreasuryBalanceSourceV1,
     TreasuryVenueObservationV1,
 )
 
@@ -50,6 +57,7 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
     decision_epoch: str = "",
     age_seconds: str = "1",
     freshness_max_age: str = "5",
+    free_margin_observation: CurrentProductiveUsdcFreeMarginObservationV1 | None = None,
 ) -> TreasuryE4ProductiveHostJoinResultV1:
     """Full E4 productive host join chain. No network. No authority expansion."""
     if PARALLEL_ACCOUNT_EQUITY_AUTHORITY_ADDED or SECOND_ACCOUNT_EQUITY_AUTHORITY_ADDED:
@@ -79,6 +87,31 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
         usdc_row_status=usdc_row_status,
         balance_freshness=str(observation.balance_freshness or ""),
     )
+    if observation.balance_source == TreasuryBalanceSourceV1.ACCOUNT_FREE_MARGIN.value:
+        margin_binding = bind_current_productive_free_margin_inputs_and_produce_v1(
+            treasury_observation=observation,
+            margin_observation=free_margin_observation,
+            host_inputs=u04_p01_eligibility_host_inputs,
+            treasury_host_admitted=(
+                host_evaluation.productive_host_reachable
+                and not host_evaluation.fail_closed
+                and c08_binding.base_candidate_created
+                and not c08_binding.fail_closed
+            ),
+            decision_epoch=decision_epoch,
+            age_seconds=age_seconds,
+            freshness_max_age=freshness_max_age,
+        )
+        return TreasuryE4ProductiveHostJoinResultV1(
+            treasury_join=treasury_join,
+            orchestration_join=orchestration_join,
+            host_evaluation=host_evaluation,
+            c08_sizing_source_binding=c08_binding,
+            base_numeric_binding=None,
+            u04_p01_eligibility_binding=None,
+            join_seam_id=JOIN_SEAM_ID,
+            free_margin_inputs_binding=margin_binding,
+        )
     from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
         CapitalAdmissionEvidenceV1,
     )

@@ -80,16 +80,38 @@ class _ProductiveHostEvaluationLike(Protocol):
     usdc_row_status: str
 
 
-_latest_binding_by_account: dict[str, tuple[str, str]] = {}
-_seen_evidence_fingerprints: set[str] = set()
-_last_base_fact_by_fingerprint: dict[str, CurrentProductiveAvailableForSizingBaseFactV1] = {}
+_latest_binding_by_source_account: dict[tuple[str, str], tuple[str, str]] = {}
+_values_by_source_account_fingerprint: dict[tuple[str, str, str], str] = {}
 
 
 def clear_current_productive_base_binding_state_v1() -> None:
-    """Test-only reset for ordering/idempotency proofs."""
-    _latest_binding_by_account.clear()
-    _seen_evidence_fingerprints.clear()
-    _last_base_fact_by_fingerprint.clear()
+    """Test-only reset of the shared observation ordering/content guard."""
+    _latest_binding_by_source_account.clear()
+    _values_by_source_account_fingerprint.clear()
+
+
+def check_and_record_current_productive_capital_observation_v1(
+    *, source: str, account: str, observed_at: str, fingerprint: str, value: str
+) -> tuple[bool, tuple[str, ...]]:
+    """Preserve the original replay guard for either source, without minting BASE.
+
+    Call only after the original source-specific input validation. Process-local
+    ordering is not a durable restore or independent venue reconciliation proof.
+    """
+    scope = (source, account)
+    content_key = (*scope, fingerprint)
+    prior = _latest_binding_by_source_account.get(scope)
+    if prior is not None and observed_at < prior[0]:
+        return False, ("OLD_REPLAY_AFTER_NEWER_STATE_FAIL_CLOSED",)
+    if content_key in _values_by_source_account_fingerprint:
+        if _values_by_source_account_fingerprint[content_key] != value:
+            return False, ("EVIDENCE_FINGERPRINT_CONTENT_MISMATCH",)
+        reasons = ("DUPLICATE_EVIDENCE_NO_ADDITIONAL_CAPITAL_EFFECT",)
+    else:
+        reasons = ()
+    _latest_binding_by_source_account[scope] = (observed_at, fingerprint)
+    _values_by_source_account_fingerprint[content_key] = value
+    return True, reasons
 
 
 def _digest(payload: Mapping[str, str]) -> str:
@@ -198,60 +220,19 @@ def bind_current_productive_available_for_sizing_base_from_treasury_host_v1(
             numeric_bound = False
             base_fact = None
         else:
-            fp = str(treasury_observation.evidence_fingerprint or "")
-            prior = _latest_binding_by_account.get(account)
-            if prior is not None:
-                prior_ts, prior_fp = prior
-                current_ts = str(treasury_observation.observed_at_utc or "")
-                if current_ts < prior_ts:
-                    reasons.append("OLD_REPLAY_AFTER_NEWER_STATE_FAIL_CLOSED")
-                    fail_closed = True
-                    numeric_bound = False
-                    base_fact = None
-                elif fp in _seen_evidence_fingerprints and fp == prior_fp:
-                    reasons.append("DUPLICATE_EVIDENCE_NO_ADDITIONAL_CAPITAL_EFFECT")
-                    cached = _last_base_fact_by_fingerprint.get(fp)
-                    if cached is None:
-                        fail_closed = True
-                        numeric_bound = False
-                        base_fact = None
-                    elif cached.value != typed.value_raw:
-                        reasons.append("EVIDENCE_FINGERPRINT_CONTENT_MISMATCH")
-                        fail_closed = True
-                        numeric_bound = False
-                        base_fact = None
-                    else:
-                        # Same bytes do not stop the original acquisition from aging.
-                        # Rebuild from the newly validated scope/time, not cached ages.
-                        base_fact = _observation_to_base_fact_v1(typed)
-                        _latest_binding_by_account[account] = (
-                            max(prior_ts, str(treasury_observation.observed_at_utc or "")),
-                            fp,
-                        )
-                        _last_base_fact_by_fingerprint[fp] = base_fact
-                        numeric_bound = True
-                        fail_closed = False
-                else:
-                    _seen_evidence_fingerprints.add(fp)
-                    _latest_binding_by_account[account] = (
-                        str(treasury_observation.observed_at_utc or ""),
-                        fp,
-                    )
-                    base_fact = _observation_to_base_fact_v1(typed)
-                    _last_base_fact_by_fingerprint[fp] = base_fact
-                    numeric_bound = True
-                    fail_closed = False
-                    reasons.append("NUMERIC_BASE_BOUND_FROM_TYPED_OBSERVATION")
-            else:
-                _seen_evidence_fingerprints.add(fp)
-                _latest_binding_by_account[account] = (
-                    str(treasury_observation.observed_at_utc or ""),
-                    fp,
+            numeric_bound, ordering_reasons = (
+                check_and_record_current_productive_capital_observation_v1(
+                    source=treasury_observation.balance_source,
+                    account=account,
+                    observed_at=typed.observed_at_as_of,
+                    fingerprint=typed.evidence_fingerprint,
+                    value=typed.value_raw,
                 )
-                base_fact = _observation_to_base_fact_v1(typed)
-                _last_base_fact_by_fingerprint[fp] = base_fact
-                numeric_bound = True
-                fail_closed = False
+            )
+            reasons.extend(ordering_reasons)
+            fail_closed = not numeric_bound
+            base_fact = _observation_to_base_fact_v1(typed) if numeric_bound else None
+            if numeric_bound and not ordering_reasons:
                 reasons.append("NUMERIC_BASE_BOUND_FROM_TYPED_OBSERVATION")
 
     if capital_admission_evidence.risk_admissible is True:

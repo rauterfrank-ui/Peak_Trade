@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "2ad95be4a8382d6d75a9855e124feb9e6b4f64fe",
-  "scope": "N1 continuation/recovery, current consumer proof and capital acquisition freshness; shared Product GET fuse now counts conditional dynamic index reads and original pretrade fetch groups. Existing cycle/duration/retry/TTL and trading authority remain unchanged. Full-host/universe transport budgets, hard in-flight deadlines, Treasury source-netting and natural readiness remain open.",
+  "development_parent_commit": "d2615064e7bf757999b6ea0884a51526d5114b6b",
+  "scope": "N1 continuation/recovery, capital acquisition freshness and shared GET fuse. Source-specific Treasury dispatch preserves Funding CT and original account-USDC free-margin 29P; no fake CT BASE for margin, unknown nonempty U04 coverage is fenced. Local hold domains/default witness, independent historical reconciliation, broad contract debt and full host/natural operation remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -132,6 +132,16 @@
       "sha256": "6263b0c5727e55751355f76a4786224f1edc5ac20e14ed8dbe1ee1ddb341236c"
     },
     {
+      "path": "docs/ops/evidence/TREASURY_CAPITAL_SOURCE_SEMANTICS_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "2d8b83cc2a24e81cbaa86bc9c31830a794b4e28438267b3c43a5939727879292"
+    },
+    {
+      "path": "docs/ops/evidence/TREASURY_CAPITAL_SOURCE_SEMANTICS_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "5998a62af38489956790197f3468e0e441f6565c64f3bcfb1dcf4f40b9cec7fb"
+    },
+    {
       "path": "docs/ops/evidence/WP03_CURRENT_CONSUMER_PROOF_2026_11_07.json",
       "before_sha256": null,
       "sha256": "5a70ed35d48a047be1e055c19faa92cb0d68404ab47ad14834779e10ddbe9e0d"
@@ -140,6 +150,11 @@
       "path": "docs/ops/evidence/WP03_CURRENT_CONSUMER_PROOF_2026_11_07.md",
       "before_sha256": null,
       "sha256": "f88e00f6d595c413fd3121420699c42a789d8885e2f1c275bd09e52589b8eca6"
+    },
+    {
+      "path": "docs/ops/specs/ACCOUNT_AND_TREASURY_SOURCE_BINDING_PLAN_2026_11_03.md",
+      "before_sha256": "5bf8cd956b4c5ca998860de9f1faee1eec22e4b82a1e0804ebe8dc50439465fb",
+      "sha256": "24ae56e6f4a300adbd900c48c44370aa647c6a28a7c92ed9d3e0872d6b86391c"
     },
     {
       "path": "docs/ops/specs/CURRENT_WP03_LIVE_SCOPED_OBSERVATION_GOLDEN_CONVERGENCE_V1.md",
@@ -170,6 +185,11 @@
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
       "sha256": "58830cd2f2ee64f15c2a48dce31016feba80b7a82610d1c1241b87b9867c8785"
+    },
+    {
+      "path": "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md",
+      "before_sha256": "a37fa823e22ed17544b3c19e1bbfb9624aa024d47cfb2ff62182d1fffe0806ae",
+      "sha256": "ebccaaefc5cef6209597ed48f4f7ab1e76e605dd78a6960af823322cc595d570"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -549,7 +569,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
-      "sha256": "6e63884c6b8d0349eebb52deaf6c81b7cc60ca6e7f7b17c3def012a02e00e276"
+      "sha256": "43bbc7b4d90dbcf821653fca304724cf8ea8f585d43fadbf374002c5275513e9"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -587,9 +607,14 @@
       "sha256": "f6834f5074195b5cb11082f49b318c029e6966b53f7806201ae6ebf0ecea3294"
     },
     {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+      "before_sha256": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
+      "sha256": "4da2e3e1840e36189739ebbc3df3187c8954b5a2e9e38a638bf3865fedb42a6f"
+    },
+    {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
       "before_sha256": "6500d6b02cab61f81f08a5789346079da3cba0543e20b91c8a5e40299bd80f55",
-      "sha256": "4fae6b067a13f8052406ad079771a42221b596d2b88d7bb8677c208f4272d159"
+      "sha256": "4d156842c27ccaa7618402be7f9691bc11c98cb57be01ead0dd9467bd42f46be"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
@@ -605,6 +630,21 @@
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
       "before_sha256": "b11e58b1e1f23a8a073ca9e8ad229f48cd4e44251a7ee4f5cbb47d7772fc13bf",
       "sha256": "edd2eba139cdf1b27881aab53fba30510f4c9d555da1b5ad1ee3adefbbc40675"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_free_margin_inputs_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "f404ec891a74f2075daff9ae9772952d7884895ba87fa1613248431549c4da07"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+      "before_sha256": "e26018835d6c1b24f3335dbef667efe9f40d144b9fde99f929a6bc22792fa2b1",
+      "sha256": "5119bca88deff5a81b0af8dc538e6ea93e10bffad54f75d64b51ab7ce56ab6c3"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/non_forbidden_non_eq_non_stock_usdc_current_productive_observation_v1.py",
+      "before_sha256": "4b1e967d2261dff419d554f881eda93f4eb3e19aa1fe9f8c3fae40a690db6145",
+      "sha256": "f9e218a5ab5349df2dea2842f05205aeef6e449e6537fd6ff70e28bee5404669"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/evidence_v1.py",
@@ -664,7 +704,37 @@
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
       "before_sha256": "ef493dfcab6d9266a2b89ca92e77c6a226def55c2597b26807dc422eff28ece5",
-      "sha256": "daa21942a05e2170dd52d67dd30e653bc4e1623ac73af68705f35559aa5ee76a"
+      "sha256": "372c7d9f0a6a58d9f2eca11269e3dd5422d366f3e8c96e8033feb26d5141e13c"
+    },
+    {
+      "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/models_v1.py",
+      "before_sha256": "a1aa45eaa7c7ef5492ecacac71c53acbcaa5d965ab1ec79025bf13a31bd79f33",
+      "sha256": "2f99b6a6922b7127e6bfcc719655d7f0a49bf3ae92336954929f47a2b8f416c5"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py",
+      "before_sha256": "6723906c11149ff4f6d2e8ef60aa96f7b48544e647f2a891ece7b664d4f5fbe1",
+      "sha256": "10b8bfea07e47ab55efb8293f6c62ef5d65f1cd01fb8afe4e36e07013d1c687b"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py",
+      "before_sha256": "e05822d9bca92c1e232e720c7f4a7f89ad075fb8fd73ae56081270cd5c2898cf",
+      "sha256": "7f77b89e54abd026e46630407a68d7ca83a8220e0c9f7fa4899c6c0ba7779fa3"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/account_balance_usdc_avail_eq_adapter_v1.py",
+      "before_sha256": "7b0628689ddcda8e6d8749216b227a754b69ff683fdcfb16cf6dab498d750613",
+      "sha256": "4995696593f9791acad515731440e14bc9ad719fc5bbf53eb57ab0fe5f113429"
+    },
+    {
+      "path": "src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py",
+      "before_sha256": "0448d0817cd3d46d8bb917b01570fd61ef664bf4df8ea5edf7dac3d5c1e2cbfb",
+      "sha256": "753cb2380b53dbaa73dade1da4722ad9f0087f25f773b47f1b86af97381e54df"
+    },
+    {
+      "path": "src/ops/treasury_productive_read_only_venue_observation_v1/chain_v1.py",
+      "before_sha256": "e97d8cbb879311b7d49ae4324d1d789cdb05dc4ad36465b5239faa0b9ddb3c37",
+      "sha256": "8b169f3e340ef5ec47e28eb17a8d274fad1063326542c0f829097eec9b4402ef"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
@@ -1005,6 +1075,11 @@
       "path": "tests/ops/test_treasury_budget_owner_start_contract_v1.py",
       "before_sha256": "f64d8780088b62fc1f057be2167dc8f35ed7e7811ec5f9d5de998a48877bc4b4",
       "sha256": "7432ef24a3174990000cbf6653cb213e61c879881ab5208d113a3dc84590d102"
+    },
+    {
+      "path": "tests/ops/test_treasury_capital_source_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "9a13fa6785f8c5fdbaf9b9d073b7e239cc0664908aafb688ece7399499b93aae"
     }
   ]
 }

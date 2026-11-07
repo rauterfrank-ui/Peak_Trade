@@ -58,3 +58,13 @@ Documentation-only change. Source contracts and consumers were inspected at the 
 ## Explicit K1 selection and lifecycle audit — 2026-11-03
 
 Frank selected the already-configured K1 credential service. The [K1 source profile and capital lifecycle contract](K1_TREASURY_ACCOUNT_SOURCE_AND_CAPITAL_LIFECYCLE_V1.md) adds an explicit bounded alternative to the dedicated-observer profile, without relabeling credentials or adding fallback. Real account/Trading/Funding reads passed; durable post-close composition is injected-tested. Dedicated observer policy, U04/P01 and economic formulas remain unchanged. Independent real accounting/equity reconstruction and continuous service deployment remain open. Earlier unprovisioned-source statements describe their dated phase/profile.
+
+## Source-specific consumer correction — 2026-11-07
+
+The [source/consumer evidence](../evidence/TREASURY_CAPITAL_SOURCE_SEMANTICS_2026_11_07.md)
+binds the follow-up at d2615064e7bf757999b6ea0884a51526d5114b6b. The fresh
+Trading USDC free-margin observation now retains its source through Treasury/E4/C08
+and enters the original 29P producer without being labeled as Funding CT BASE.
+Funding retains its existing CT consumer. Nonempty U04 without venue-coverage
+identity is fenced on the margin branch. This does not resolve the zero-witness
+default, local-hold accounting domains, complete accounting or host recovery.

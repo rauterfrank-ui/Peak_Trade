@@ -26,6 +26,7 @@ from src.ops.offline_funding_balance_read_producer_v1.observation_v1 import (
     CURRENCY_ROW_STATUS_PRESENT,
 )
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
+    TreasuryBalanceSourceV1,
     TreasuryFreshnessSignalV1,
     TreasuryReconciliationClassV1,
     TreasuryVenueObservationV1,
@@ -142,6 +143,10 @@ def build_non_forbidden_usdc_current_productive_observation_from_treasury_v1(
 ) -> NonForbiddenNonEqNonStockUsdcCurrentProductiveObservationV1:
     """Materialize typed observation from reconciled Treasury venue balance only."""
     reject_forbidden_upstream_field_name_v1(field_name=UPSTREAM_OBSERVED_FIELD_NAME)
+    if observation.balance_source != TreasuryBalanceSourceV1.FUNDING_AVAILABLE_BALANCE.value:
+        raise NonForbiddenUsdcCurrentProductiveObservationError(
+            "CT_BASE_REQUIRES_FUNDING_SOURCE_NOT_NET_FREE_MARGIN"
+        )
     if treasury_reconciliation_class != TreasuryReconciliationClassV1.RECONCILED.value:
         raise NonForbiddenUsdcCurrentProductiveObservationError(
             "OBSERVATION_REQUIRES_RECONCILED_TREASURY_CLASS"

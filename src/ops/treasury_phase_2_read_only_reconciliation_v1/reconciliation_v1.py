@@ -21,7 +21,8 @@ from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
     TreasuryVenueObservationV1,
 )
 
-_IDEMPOTENCY_CACHE: dict[str, TreasuryReconciliationEvaluationV1] = {}
+_IDEMPOTENCY_CACHE: dict[tuple[str, str, str, str], TreasuryReconciliationEvaluationV1] = {}
+_IDEMPOTENCY_INPUTS: dict[tuple[str, str, str, str], TreasuryVenueObservationV1] = {}
 
 
 def _parse_amount(raw: str) -> Decimal | None:
@@ -54,7 +55,12 @@ def evaluate_treasury_read_only_reconciliation_v1(
     use_idempotency_cache: bool = True,
 ) -> TreasuryReconciliationEvaluationV1:
     _validate_observation(observation)
-    fp = str(observation.evidence_fingerprint)
+    fp = (
+        observation.balance_source,
+        observation.account_identity,
+        observation.instrument_id,
+        str(observation.evidence_fingerprint),
+    )
     if use_idempotency_cache and fp in _IDEMPOTENCY_CACHE:
         cached = _IDEMPOTENCY_CACHE[fp]
         if cached.evidence_id != observation.evidence_id:
@@ -65,7 +71,11 @@ def evaluate_treasury_read_only_reconciliation_v1(
                 reasons=("DUPLICATE_FINGERPRINT_CONFLICTING_EVIDENCE_ID",),
                 observation=observation,
             )
-        return cached
+        if _IDEMPOTENCY_INPUTS.get(fp) == observation:
+            return cached
+    # The same response bytes do not freeze later freshness or transfer signals.
+    if use_idempotency_cache:
+        _IDEMPOTENCY_INPUTS[fp] = observation
 
     reasons: list[str] = []
     balance_fresh = str(observation.balance_freshness or TreasuryFreshnessSignalV1.UNKNOWN.value)
@@ -267,6 +277,7 @@ def evaluate_treasury_read_only_reconciliation_v1(
 
 def clear_treasury_reconciliation_idempotency_cache_v1() -> None:
     _IDEMPOTENCY_CACHE.clear()
+    _IDEMPOTENCY_INPUTS.clear()
 
 
 def _result(
@@ -297,7 +308,7 @@ def _result(
 
 def _finalize(
     result: TreasuryReconciliationEvaluationV1,
-    fingerprint: str,
+    fingerprint: tuple[str, str, str, str],
     use_cache: bool,
 ) -> TreasuryReconciliationEvaluationV1:
     if use_cache:

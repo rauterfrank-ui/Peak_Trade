@@ -14,6 +14,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.c08_treasu
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_base_binding_models_v1 import (
     CurrentProductiveAvailableForSizingBaseBindingV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_free_margin_inputs_binding_v1 import (
+    CurrentProductiveFreeMarginInputsBindingV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1 import (
     CurrentProductiveU04P01EligibilityInputsBindingV1,
 )
@@ -49,6 +52,7 @@ class TreasuryE4ProductiveHostJoinResultV1:
     orchestration_join: TreasuryAccountEquityOrchestrationJoinV1
     host_evaluation: ProductiveHostTreasuryCapitalAdmissionEvaluationV1
     c08_sizing_source_binding: C08ProductiveSizingSourceBindingV1
-    base_numeric_binding: CurrentProductiveAvailableForSizingBaseBindingV1
-    u04_p01_eligibility_binding: CurrentProductiveU04P01EligibilityInputsBindingV1
+    base_numeric_binding: CurrentProductiveAvailableForSizingBaseBindingV1 | None
+    u04_p01_eligibility_binding: CurrentProductiveU04P01EligibilityInputsBindingV1 | None
     join_seam_id: str
+    free_margin_inputs_binding: CurrentProductiveFreeMarginInputsBindingV1 | None = None

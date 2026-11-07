@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation
 from typing import Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
@@ -37,7 +36,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductive29PRiskCapitalOutputV1,
     CurrentProductiveUsdcFreeMarginObservationV1,
     bind_step_29p_typed_equity_from_risk_capital_v1,
-    produce_current_productive_29p_risk_capital_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1 import (
     CurrentProductiveU04P01EligibilityHostInputsV1,
@@ -46,9 +44,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_producer_v1 import (
     CurrentProductiveAccountEligibilityFactV1,
     CurrentProductiveP01ReductionFactV1,
-)
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 import (
-    bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1,
 )
 from src.ops.offline_funding_balance_read_producer_v1.observation_v1 import (
     CURRENCY_ROW_STATUS_PRESENT,
@@ -94,6 +89,7 @@ class CurrentProductiveTreasurySingleSourceCapitalHandoffV1:
     eligibility_fact: CurrentProductiveAccountEligibilityFactV1 | None
     reason_codes: Tuple[str, ...]
     fail_closed: bool
+    free_margin_inputs_bound: bool = False
 
 
 class CurrentProductiveTreasurySingleSourceCapitalHandoffError(RuntimeError):
@@ -162,6 +158,7 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         decision_epoch=str(margin_observation.decision_epoch),
         age_seconds=str(margin_observation.age_seconds),
         freshness_max_age=str(margin_observation.freshness_max_age),
+        free_margin_observation=margin_observation,
     )
     reasons: list[str] = [JOIN_SEAM_ID]
     if host.host_evaluation.fail_closed is True:
@@ -178,67 +175,24 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
             reasons=tuple(dict.fromkeys(reasons)),
             treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
         )
-    if (
-        host.base_numeric_binding.fail_closed is True
-        or host.base_numeric_binding.numeric_base_bound is not True
-    ):
-        reasons.extend(str(code) for code in host.base_numeric_binding.reason_codes)
-        return _fail_closed(
-            reasons=tuple(dict.fromkeys(reasons)),
-            treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-        )
-    u04_binding = host.u04_p01_eligibility_binding
-    if u04_binding is None or u04_binding.inputs_bound is not True:
+    margin_binding = host.free_margin_inputs_binding
+    if margin_binding is None or margin_binding.inputs_bound is not True:
         blockers = (
-            tuple(str(code) for code in u04_binding.reason_codes)
-            if u04_binding is not None
-            else ("U04_P01_BINDING_MISSING",)
+            margin_binding.reason_codes
+            if margin_binding is not None
+            else ("FREE_MARGIN_BINDING_MISSING",)
         )
         return _fail_closed(
             reasons=blockers,
             treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-            ct_bound=False,
         )
-    p01 = u04_binding.p01_fact
-    eligibility = u04_binding.eligibility_fact
-    if p01 is None or eligibility is None:
+    p01 = margin_binding.p01_fact
+    eligibility = margin_binding.eligibility_fact
+    output = margin_binding.producer_output
+    if p01 is None or eligibility is None or output is None or output.produced != "true":
         return _fail_closed(
-            reasons=("P01_OR_ELIGIBILITY_MISSING",),
+            reasons=("FREE_MARGIN_PRODUCER_INPUTS_OR_OUTPUT_MISSING",),
             treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-            ct_bound=False,
-        )
-    base_value = str(
-        host.base_numeric_binding.base_fact.value if host.base_numeric_binding.base_fact else ""
-    )
-    try:
-        treasury_base = Decimal(base_value)
-        margin_value = Decimal(str(margin_observation.value))
-    except (InvalidOperation, ValueError):
-        return _fail_closed(
-            reasons=("TREASURY_BASE_OR_MARGIN_NOT_DECIMAL",),
-            treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-            ct_bound=True,
-        )
-    if treasury_base > margin_value:
-        return _fail_closed(
-            reasons=("TREASURY_CANNOT_INCREASE_ABOVE_TRUSTED_MARGIN",),
-            treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-            ct_bound=True,
-        )
-    output = produce_current_productive_29p_risk_capital_v1(
-        observation=margin_observation,
-        p01=p01,
-        eligibility=eligibility,
-        eq_target=None,
-        u04=None,
-        restart_from_kind_set="false",
-    )
-    if output.produced != "true":
-        return _fail_closed(
-            reasons=tuple(str(code) for code in output.reason_codes),
-            treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
-            ct_bound=True,
-            producer=output,
         )
     capital = evaluate_capital_admission_v1(
         claim=CapitalAdmissionClaimV1(
@@ -275,11 +229,11 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         join_seam_id=JOIN_SEAM_ID,
         equity_observation_count=1,
         treasury_e4_host_reachable=True,
-        base_bind_count=1,
+        base_bind_count=0,
         p01_application_count=1,
         capital_admission_count=1,
         step_29p_admissibility_count=1,
-        ct_sizing_eligibility_inputs_bound=True,
+        ct_sizing_eligibility_inputs_bound=False,
         treasury_reconciliation_class=recon,
         producer_output=output,
         capital_admission=capital,
@@ -289,6 +243,7 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         eligibility_fact=eligibility,
         reason_codes=tuple(dict.fromkeys(reasons)),
         fail_closed=fail_closed,
+        free_margin_inputs_bound=True,
     )
 
 
@@ -357,7 +312,7 @@ def _fail_closed(
         join_seam_id=JOIN_SEAM_ID,
         equity_observation_count=1,
         treasury_e4_host_reachable=False,
-        base_bind_count=0 if "TREASURY_CANNOT_INCREASE" in " ".join(reasons) else 1,
+        base_bind_count=0,
         p01_application_count=0,
         capital_admission_count=0,
         step_29p_admissibility_count=0,
