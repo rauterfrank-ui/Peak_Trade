@@ -234,6 +234,7 @@ class ContinuousCycleRecordV1:
     position_management_execution_handoff: Any | None = None
     # Original producer reference only; not owner recovery or submit admission.
     portfolio_reservation_id: str = ""
+    execution_plan_context: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -1033,6 +1034,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     ),
                     envelope_identity=s5_result.envelope_identity,
                     portfolio_reservation_id=s5_result.extra.get("PORTFOLIO_RESERVATION_ID", ""),
+                    execution_plan_context=getattr(s5_result, "execution_plan_context", None),
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:

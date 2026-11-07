@@ -790,11 +790,18 @@ def _t2_from_s7(
                     provenance_ref=f"{s7_base['cycle_id_prefix']}:provenance",
                     creation_epoch=epoch,
                 )
+                execution_plan_context = None
                 if (
                     portfolio_budget_owner is not None
                     and portfolio_budget_owner.budget_state_v1().durable_state_enabled
                 ):
                     portfolio_budget_owner.bind_execution_plan_v1(
+                        live_29p.portfolio_reservation_id,
+                        envelope,
+                        canonical_intent=venue_plan_replay.intermediate.canonical_order_intent,
+                        venue_plan=plan,
+                    )
+                    execution_plan_context = portfolio_budget_owner.execution_plan_context_v1(
                         live_29p.portfolio_reservation_id, envelope
                     )
                 result = SimpleNamespace(
@@ -808,6 +815,7 @@ def _t2_from_s7(
                     final_envelope_digest=str(envelope.envelope_digest),
                     final_order_envelope=envelope,
                     canonical_order_intent=venue_plan_replay.intermediate.canonical_order_intent,
+                    execution_plan_context=execution_plan_context,
                     venue_quantity_limit_assessment=quantity_assessment.to_dict(),
                     permit_created=_FALSE,
                     post_count="0",

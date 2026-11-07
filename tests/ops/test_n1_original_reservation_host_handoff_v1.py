@@ -69,8 +69,8 @@ def test_original_n1_hold_reaches_actual_supervisor_and_retains_cold_recovery_fe
     plans = []
     cycles = []
 
-    def observe_bind(owner, rid, envelope):
-        output = original_bind(owner, rid, envelope)
+    def observe_bind(owner, rid, envelope, **kwargs):
+        output = original_bind(owner, rid, envelope, **kwargs)
         snapshot = owner.risk_snapshot_v1()["state"]
         reservation = next(r for r in snapshot["reservations"] if r["reservation_id"] == rid)
         plans.append((owner, rid, envelope, snapshot, reservation))
@@ -140,10 +140,12 @@ def test_each_record_keeps_its_own_producer_reference_and_entry_still_stops(
     tmp_path, hold_rid, enter_rid
 ):
     outputs = []
+    original_contexts = [object(), None]
 
     def dispatch(**kwargs):
         output = _t2_hold(**kwargs) if not outputs else _t2_enter(**kwargs)
         output.portfolio_reservation_id = hold_rid if not outputs else enter_rid
+        output.execution_plan_context = original_contexts[len(outputs)]
         outputs.append(output)
         return output
 
@@ -155,6 +157,8 @@ def test_each_record_keeps_its_own_producer_reference_and_entry_still_stops(
         t2_cycle_dispatch=dispatch,
     )
     assert [r.portfolio_reservation_id for r in result.cycle_records] == [hold_rid, enter_rid]
+    assert result.cycle_records[0].execution_plan_context is original_contexts[0]
+    assert result.cycle_records[1].execution_plan_context is None
     assert result.cycle_records[0].final_order_envelope is None
     assert result.cycle_records[1].final_order_envelope == outputs[-1].final_order_envelope
     assert result.disposition == "PRE_EXTERNAL_EFFECT"

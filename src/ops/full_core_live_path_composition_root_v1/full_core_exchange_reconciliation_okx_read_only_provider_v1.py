@@ -23,7 +23,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET,
     EvidenceLayer,
     ExchangeEvidenceItemV1,
-    FullCoreExchangeReconciliationIdentityV1,
+    ExchangeReconciliationIdentity,
     FullCoreExchangeReconciliationSnapshotV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
@@ -140,7 +140,7 @@ def _collect_api_error_v1(result: FreshPretradeGetTransportResultV1, *, surface:
 
 def _item_from_row(
     *,
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     layer: EvidenceLayer,
     source: str,
     query_scope: str,
@@ -170,7 +170,7 @@ def _record_order_row_identity_conflicts_v1(
     *,
     rows: list[dict[str, Any]],
     cl: str,
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     source: str,
     identity_conflicts: list[str],
 ) -> list[dict[str, Any]]:
@@ -207,7 +207,7 @@ def _record_fill_row_identity_conflicts_v1(
     *,
     rows: list[dict[str, Any]],
     cl: str,
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     identity_conflicts: list[str],
 ) -> list[dict[str, Any]]:
     matching = [row for row in rows if str(row.get("clOrdId") or "") == cl]
@@ -236,7 +236,7 @@ def _record_fill_row_identity_conflicts_v1(
 
 def fetch_okx_read_only_reconciliation_snapshot_v1(
     *,
-    identity: FullCoreExchangeReconciliationIdentityV1,
+    identity: ExchangeReconciliationIdentity,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1,
     pretrade_decision_id: str,
     options: OkxReadOnlyReconciliationQueryOptionsV1 | None = None,

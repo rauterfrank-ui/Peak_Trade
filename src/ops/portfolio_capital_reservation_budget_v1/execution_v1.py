@@ -21,6 +21,8 @@ from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 i
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
     FullCoreExchangeReconciliationIdentityV1,
+    PortfolioExecutionReconciliationIdentityV2,
+    parse_exchange_reconciliation_identity_v1,
     LocalSubmitOutcome,
     adjudicate_full_core_exchange_reconciliation_v1,
     OUTCOME_HALTED_UNRESOLVED,
@@ -33,8 +35,8 @@ def detached(value):
     return json.loads(json.dumps(value, allow_nan=False))
 
 
-def validate_link_v1(owner, reservation_id, link):
-    if set(link) - {"external_effect_permit"} != {
+def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
+    if set(link) - {"external_effect_permit", "plan_origin"} != {
         "envelope",
         "identity",
         "phase",
@@ -64,6 +66,17 @@ def validate_link_v1(owner, reservation_id, link):
             amount=reservation.amount, decision_id=reservation.decision_id
         )
         sizing.risk_binding.validate_envelope_v1(envelope)
+    order_environment = None
+    if "plan_origin" in link:
+        from .plan_origin_v1 import validate_plan_origin_v1
+
+        order_environment = validate_plan_origin_v1(
+            link["plan_origin"],
+            sizing=sizing,
+            reservation=reservation,
+            bound=bound,
+            envelope=envelope,
+        )
     if link["phase"] == "PLAN_BOUND":
         if (
             link["identity"] is not None
@@ -86,9 +99,10 @@ def validate_link_v1(owner, reservation_id, link):
             assert_permit_matches_envelope_v1(ExternalEffectPermitV1(**payload), envelope)
         except FullCoreExternalEffectPermitError as exc:
             raise ValueError("EXECUTION_SEND_PERMIT_INVALID") from exc
-    raw = dict(link["identity"])
-    raw.pop("contract_id", None)
-    identity = FullCoreExchangeReconciliationIdentityV1(**raw)
+    identity = parse_exchange_reconciliation_identity_v1(link["identity"])
+    raw = identity.to_dict()
+    raw.pop("contract_id")
+    modern = type(identity) is PortfolioExecutionReconciliationIdentityV2
     if not (
         identity.canonical_decision_id == reservation.decision_id
         and identity.account_identity == owner._account_identity
@@ -104,17 +118,24 @@ def validate_link_v1(owner, reservation_id, link):
         and identity.selected_side.upper() == side
         and identity.venue.lower() == owner._capital_scope["bound_venue_identity"].lower()
         and envelope.td_mode == owner._capital_scope["bound_td_mode"]
-        and identity.execution_environment in {"LIVE", "SHADOW", "PAPER", "TESTNET"}
+        and (modern or identity.execution_environment in {"LIVE", "SHADOW", "PAPER", "TESTNET"})
+        and (order_environment is None or identity.execution_environment == order_environment)
         and all(
             isinstance(v, str) and v and v == v.strip()
             for k, v in raw.items()
-            if k not in {"exchange_ord_id", "order_price"}
+            if k
+            not in {"exchange_ord_id", "order_price"}
+            | ({"budget_source_sequence", "budget_submit_sequence"} if modern else set())
         )
     ):
         raise ValueError("EXECUTION_IDENTITY_MISMATCH")
+    if modern:
+        from .attempt_v2 import validate_attempt_locked_v2
+
+        validate_attempt_locked_v2(owner, reservation_id, link, identity, pending=pending_attempt)
 
 
-def bind_plan_locked_v1(owner, reservation_id, envelope):
+def bind_plan_locked_v1(owner, reservation_id, envelope, *, canonical_intent=None, venue_plan=None):
     if owner._store is None or owner._require_locked(reservation_id) is None:
         raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
     link = {
@@ -123,6 +144,10 @@ def bind_plan_locked_v1(owner, reservation_id, envelope):
         "phase": "PLAN_BOUND",
         "reconciliation": None,
     }
+    if canonical_intent is not None or venue_plan is not None:
+        from .plan_origin_v1 import bind_plan_origin_v1
+
+        link["plan_origin"] = bind_plan_origin_v1(canonical_intent, venue_plan)
     validate_link_v1(owner, reservation_id, link)
     if any(
         rid != reservation_id and old["envelope"]["client_order_id"] == envelope.client_order_id
@@ -133,6 +158,8 @@ def bind_plan_locked_v1(owner, reservation_id, envelope):
     if old is not None:
         if old["envelope"] != link["envelope"]:
             raise ValueError("EXECUTION_PLAN_CHANGED")
+        if old.get("plan_origin") != link.get("plan_origin"):
+            raise ValueError("EXECUTION_PLAN_ORIGIN_CHANGED")
         return detached(old)
     owner._execution_links[reservation_id] = detached(link)
     owner._persist_locked()
@@ -178,6 +205,14 @@ def inspect_submit_context_locked_v1(owner, reservation_id, envelope, identity):
         "envelope_digest": envelope.envelope_digest,
         "execution_identity_digest": identity.identity_digest(),
         "scope": "ORIGINAL_COMMITTED_PLAN_CONTEXT_ONLY",
+        **(
+            {
+                "plan_origin_digest": link["plan_origin"]["digest"],
+                "order_environment": link["plan_origin"]["venue_plan"]["environment"],
+            }
+            if "plan_origin" in link
+            else {}
+        ),
     }
 
 
@@ -201,9 +236,7 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
     if link is None or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED":
         raise ValueError("EXECUTION_RECONCILIATION_SUBMIT_UNPROVEN")
     validate_link_v1(owner, reservation_id, link)
-    raw = dict(link["identity"])
-    raw.pop("contract_id", None)
-    identity = FullCoreExchangeReconciliationIdentityV1(**raw)
+    identity = parse_exchange_reconciliation_identity_v1(link["identity"])
     if account != owner._account_identity or not isinstance(observed, PortfolioTruthSnapshotV1):
         raise ValueError("EXECUTION_RECONCILIATION_ACCOUNT_UNPROVEN")
     if (

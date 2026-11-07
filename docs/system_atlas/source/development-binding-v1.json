@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "3ca65eee148a5aa215de0b1e8903731553a72f9f",
-  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation. Original N1 reservation reference is now preserved from S5 extra into each S6 cycle record and the native supervisor return. This is historical hold lineage only: closed and recovered owners remain fenced, no envelope parsing, new owner/ledger, authority identity, GET, release, send or activation. Natural productive execution-identity and full admission remain open. Actual typed send permit now travels from the original send seam into the existing original budget submit transaction as separate canonical lineage beside the unchanged reconciliation identity. Present permit fields are validated at cold restore; old links remain absent, not defaulted. Budget/permit barriers, holds, recovery, admission and standing activation limits remain unchanged. No authority/attempt/state reference aliasing or natural executionidentity producer is claimed; broader historical static-doc failure remains open.",
+  "development_parent_commit": "ad63a2dc5bc5823d98e42c3b0bd72026b04aeed2",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation. Original N1 reservation reference is now preserved from S5 extra into each S6 cycle record and the native supervisor return. This is historical hold lineage only: closed and recovered owners remain fenced, no envelope parsing, new owner/ledger, authority identity, GET, release, send or activation. Natural productive execution-identity and full admission remain open. Actual typed send permit now travels from the original send seam into the existing original budget submit transaction as separate canonical lineage beside the unchanged reconciliation identity. Present permit fields are validated at cold restore; old links remain absent, not defaulted. Budget/permit barriers, holds, recovery, admission and standing activation limits remain unchanged. No authority/attempt/state reference aliasing or natural executionidentity producer is claimed; broader historical static-doc failure remains open. Original N1 intent and full venue plan now reach the existing PLAN_BOUND store as optional typed plan_origin. Original sizing references, intent semantics, venue transforms and environment identity are checked at bind, submit and cold restore. No authority/attempt/state alias, late legacy enrichment, financial formula, GET or automatic send is added. This is an intermediate work commit; full executionidentity/attempt/state topic remains in progress. Original-writer V2 now binds the naturally supplied N1 plan reference, real source/submit budget history rows and the actual separate send permit; exact dual-barrier readback and original recovery preserve uncertainty and holds. Complete field semantics and exact-source 469-pass owner proof include 44 new V2 cases. This remains a same-branch working checkpoint without a new PR; independent authority provenance, complete current admission and the autonomous host mandate remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -92,6 +92,16 @@
       "sha256": "804bcc9ac25535f76c8fb5bdb65eb7f8b3833d1ec4229b4f0d0011abd9d1ec9b"
     },
     {
+      "path": "docs/ops/evidence/N1_ORIGINAL_PLAN_ORIGIN_BINDING_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "7f288ef81f57077d828ece22263c06b63a4acc7c558efa0fe492180a6526cd73"
+    },
+    {
+      "path": "docs/ops/evidence/N1_ORIGINAL_PLAN_ORIGIN_BINDING_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "98e39fc76a4a3f2d122d9851dac286aef604fe927648f0a6561b4f56bdd563af"
+    },
+    {
       "path": "docs/ops/evidence/N1_ORIGINAL_RESERVATION_HOST_HANDOFF_2026_11_07.json",
       "before_sha256": null,
       "sha256": "c88776cdd5618bc1e129827e89db8bc4972eedc4ca23087bc81375408952175f"
@@ -150,6 +160,16 @@
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.md",
       "before_sha256": null,
       "sha256": "9683bf7c84c82509a616da3dc8cb3199fb98b59f984e594cfed339f9d6c3e4e0"
+    },
+    {
+      "path": "docs/ops/evidence/PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2_2026_11_07.json",
+      "before_sha256": null,
+      "sha256": "51a7b38db68d7f0bf7a51ffb33305957239ebf24cfebb1d0b45c5346c080cac9"
+    },
+    {
+      "path": "docs/ops/evidence/PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2_2026_11_07.md",
+      "before_sha256": null,
+      "sha256": "282f0b5bafdb08f612abcd30694e12aa0dcea09d3840235132da9326ea3e97bd"
     },
     {
       "path": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.json",
@@ -240,6 +260,11 @@
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
+    },
+    {
+      "path": "docs/ops/specs/PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2.md",
+      "before_sha256": null,
+      "sha256": "9d6e818ad675db59209875e89866bd4a0afbb59c46a791b1a0f3577b8e868e55"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
@@ -524,7 +549,7 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
       "before_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
-      "sha256": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c"
+      "sha256": "f11ca56a14a7204aba1f3b01ba837485fe69cef2d2dcc6cbf24c3fedfd76b082"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/consumer_completion_v1.py",
@@ -589,7 +614,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
       "before_sha256": "6c483089dd14ec67fb9a09291f285caf1e39e7ef0ae3cc46c614940e463122e6",
-      "sha256": "3abf0905e55ee68448f0e113d36e9c988dbc7bc062e2daf4317b6cbca1fb08e4"
+      "sha256": "1dff2c6a86436920727850c9572f71ca4d318bc6a906629f8f5b6dfd6ec3ef5a"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
@@ -609,12 +634,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
       "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
-      "sha256": "f31f8c240ad8847beecb1972903c3879ee41781433d466509a8603f974032da2"
+      "sha256": "bef390a9d8360ff50bde8c3b860fa9821f6eed263408d0088ed51d4b050228e0"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
       "before_sha256": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
-      "sha256": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26"
+      "sha256": "f3f0dc743f4b56e3dfe835042491814b7164ce1a9dc9391b3cdbf4e9a0a252b6"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
@@ -624,7 +649,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
       "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
-      "sha256": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217"
+      "sha256": "290c8dca4b3dae951066d2ce508797ad6970e5e3acc4500351be5451a88f00c4"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
@@ -649,12 +674,27 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
       "before_sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5",
-      "sha256": "52ad5662f23e6220782e768822150deea0093b0a3b327fb344e27531b769547d"
+      "sha256": "6abc18a8f628bd5a00891802ba93e7c66e6abd10614175fb62113f315675d24d"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+      "before_sha256": "0b6ccaecbc7db6c144d25c90671dbf14c4efcbed9347281ffeba16be43c9e373",
+      "sha256": "de187c650a06f200a5fbdc489f843555aca3de23b2f9e7c41cae0a36a8af699b"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
       "before_sha256": "bef113d8d68514f14c4fb6c7ae91be03e86f7d0b20e1bb4b254de4955bd5ebcd",
       "sha256": "3a017ee162a645214d2a6c0d76ddd7daee9eeb9417c23443784fecdc01c4f9ff"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
+      "before_sha256": "6c9258fba9a99d1ef97d571c47cca2bb358c8018491d4aa984ea4f6fbe53d7ad",
+      "sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
+      "before_sha256": "6d629b76c9aec8de1220a0e1748773ff47833578ce80ad552941e6f7bead5ab9",
+      "sha256": "54628d530946253980c79f0e80e5b7d1b5f3c37e4fe07aee819953da9eeaee55"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
@@ -694,7 +734,7 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
       "before_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b",
-      "sha256": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f"
+      "sha256": "a85b26c1f78ec2f0a070057b96017d2e36ff721dbaaeba6c19dc92932f9dc742"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
@@ -777,19 +817,39 @@
       "sha256": "978cbd7cc2036a16793f59aea82aef62cb0a2272888c09d19545a31ac8c0b0e1"
     },
     {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/attempt_v2.py",
+      "before_sha256": null,
+      "sha256": "4a0fc2a9077d56b354a0b4f1753063bb4140c762159487f6ff9e67d44c3c2973"
+    },
+    {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "63f96b24ba4e52946c269f615b1361dc4980af297c5e3f591d40dbcf5cfd4627"
+      "sha256": "e370b404ca37bd5efe0a4490b80dbb9a0e509b455cac7cee0a4fb02c87b13de5"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
+      "before_sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+      "sha256": "0af962af02e2907765701d9bfd47835ce75b28cce7d9fe39b8073050e2d82f34"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "6d9ac28cc1dea489096147e1c3cfffbe0c1bac75e4d2af89bc3741b29ae5bd8c"
+      "sha256": "f5eb31188514d347cfc41b17984a13d67c16511049a738dde1fe6893104e27b6"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
+      "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
+      "sha256": "dccda289a751be95a836ba2ecb468f28e6f0a0c3772085db04d690f38f526662"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
       "before_sha256": null,
       "sha256": "b0af6a95fcc7a0e37bf5d1049cc79acd732dd1885e0bebed70eec5d0c27616bc"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/plan_origin_v1.py",
+      "before_sha256": null,
+      "sha256": "251dba020818e2259215cbb7c0b95fbbe7b6457e3addd236865e31a867ba683f"
     },
     {
       "path": "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py",
@@ -1137,9 +1197,14 @@
       "sha256": "b31c832944ff9d1439c7c6ed1c28c6bebf4ae7cb90f9fc42f534a5f704afbe36"
     },
     {
+      "path": "tests/ops/test_n1_original_plan_origin_v1.py",
+      "before_sha256": null,
+      "sha256": "98cacc118d8e0f7d46f8de492ef46d40e9c1f663cd52ab5011bb1a48d7fe7e1c"
+    },
+    {
       "path": "tests/ops/test_n1_original_reservation_host_handoff_v1.py",
       "before_sha256": null,
-      "sha256": "f8d729292230770c95b4cff9e08e98a2c0b9be4cf309b6359428cc5c39b3d85e"
+      "sha256": "ee136ed4510c57e5a609fafe9ff16f0f8256ef9cda9064c1575d77ff2c6f77d0"
     },
     {
       "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
@@ -1202,9 +1267,19 @@
       "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79"
     },
     {
+      "path": "tests/ops/test_portfolio_owned_execution_boundaries_v2.py",
+      "before_sha256": null,
+      "sha256": "8f657dd5e663a956f1816cca1bca232b01a265cd2a56197b5e75543ac355c174"
+    },
+    {
+      "path": "tests/ops/test_portfolio_owned_execution_identity_v2.py",
+      "before_sha256": null,
+      "sha256": "ccc8439eeecf2800f374f9133d1c0e7759b5f9e203358fe2fba7c50156c39051"
+    },
+    {
       "path": "tests/ops/test_prepost_original_budget_context_v1.py",
       "before_sha256": null,
-      "sha256": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+      "sha256": "b985a5ca271c46f05cabaa67312f8d2796b19e9356e599644b074e1bf454551d"
     },
     {
       "path": "tests/ops/test_prepost_position_source_admission_v1.py",

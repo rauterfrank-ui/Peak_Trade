@@ -187,6 +187,7 @@ class CurrentProductiveGovernedCycleResultV1:
     pending_decision_context: PendingDecisionContextV1 | None = None
     canonical_order_intent: Any | None = None
     position_management_execution_handoff: Any | None = None
+    execution_plan_context: Any | None = None
 
 
 def _token(value: bool) -> str:
@@ -1227,6 +1228,7 @@ def run_current_productive_governed_cycle_v1(
             if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
             else None,
             canonical_order_intent=getattr(t2_result, "canonical_order_intent", None),
+            execution_plan_context=getattr(t2_result, "execution_plan_context", None),
             position_management_execution_handoff=close_execution_handoff,
             first_genuine_blocker=first_blocker,
             blocker_class=blocker_class,
@@ -1284,6 +1286,7 @@ def _result(
     final_order_envelope: FinalOrderEnvelopeV1 | None = None,
     canonical_order_intent: Any | None = None,
     position_management_execution_handoff: Any | None = None,
+    execution_plan_context: Any | None = None,
     first_genuine_blocker: str = "",
     blocker_class: str = "",
     next_required_owner_decision: str = "",
@@ -1330,6 +1333,7 @@ def _result(
         final_order_envelope=final_order_envelope,
         canonical_order_intent=canonical_order_intent,
         position_management_execution_handoff=position_management_execution_handoff,
+        execution_plan_context=execution_plan_context,
         permit_created=False,
         post_count=0,
         external_effect_count=0,
