@@ -995,6 +995,7 @@ def run_current_productive_governed_cycle_v1(
             )
 
         transitions.append(STATE_COMPLETED)
+        quantity_assessment = getattr(t2_result, "venue_quantity_limit_assessment", None)
         if management_close_bound:
             disposition = DISPOSITION_PRE_EXTERNAL_EFFECT
             terminal_class = "POSITION_MANAGEMENT_PRE_EXTERNAL_EFFECT"
@@ -1038,6 +1039,19 @@ def run_current_productive_governed_cycle_v1(
                 f"Authorize or withhold {POST_NEXT_OWNER_GO} for one envelope-bound "
                 "single-use permit/POST. Cycle GO does not compose POST."
             )
+        elif (
+            isinstance(quantity_assessment, Mapping) and quantity_assessment.get("allowed") is False
+        ):
+            disposition = DISPOSITION_HOLD
+            terminal_class = "VENUE_QUANTITY_ADMISSION_DENIED"
+            blocker_class = "CURRENT_ADMISSION_REQUIRED"
+            first_blocker = first_blocker or "VENUE_QUANTITY_ADMISSION_DENIED"
+            reason_code = first_blocker
+            next_owner = (
+                "Inspect current venue capacity and source binding. A new cycle needs its own "
+                "original acquisition, sizing and reservation. Do not reuse the denied plan "
+                "or its released hold. POST remains separately governed."
+            )
         else:
             disposition = DISPOSITION_HOLD
             terminal_class = "MARKET_STATE_REQUIRED"
@@ -1056,6 +1070,15 @@ def run_current_productive_governed_cycle_v1(
                 "decision_result": decision_result,
                 "portfolio_reservation_id": str(
                     getattr(t2_result, "portfolio_reservation_id", "") or ""
+                ),
+                **(
+                    {
+                        "venue_quantity_limit_assessment": getattr(
+                            t2_result, "venue_quantity_limit_assessment"
+                        )
+                    }
+                    if getattr(t2_result, "venue_quantity_limit_assessment", None) is not None
+                    else {}
                 ),
                 **(
                     {
@@ -1078,6 +1101,10 @@ def run_current_productive_governed_cycle_v1(
         reservation_id = str(getattr(t2_result, "portfolio_reservation_id", "") or "")
         if reservation_id:
             capital_guard_join_extra["PORTFOLIO_RESERVATION_ID"] = reservation_id
+        if quantity_assessment is not None:
+            capital_guard_join_extra["N1_VENUE_QUANTITY_LIMIT_ASSESSMENT"] = json.dumps(
+                quantity_assessment, sort_keys=True
+            )
         if managing_position:
             quantity_handoff = getattr(t2_result, "position_management_quantity_handoff", None)
             if quantity_handoff is not None:

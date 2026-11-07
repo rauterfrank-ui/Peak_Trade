@@ -301,6 +301,22 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
 
     raw_acct_lv = str(handoff.adaptation.raw_token or "").strip()
 
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_n1_venue_quantity_limit_admission_v1 import (
+        capture_n1_venue_quantity_limits_v1,
+    )
+
+    try:
+        venue_quantity_limits = capture_n1_venue_quantity_limits_v1(
+            results=handoff.pretrade_results,
+            acquisition_decision_id=handoff.get_evidence.pretrade_decision_id,
+            account_identity=handoff.bound_uid,
+            bound_instrument=handoff.bound_instrument,
+            decision_epoch=epoch,
+            cycle_id=handoff.pretrade_cycle_id,
+        )
+    except (ValueError, TypeError) as exc:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(str(exc)) from exc
+
     return CurrentProductiveEnterLive29PInjectedGetV1(
         payload=dict(balance_payload),
         get_performed=True,
@@ -321,6 +337,7 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         pretrade_acquired_at_utc=tuple(
             result.acquired_at_utc for result in handoff.pretrade_results.values()
         ),
+        venue_quantity_limits=venue_quantity_limits,
     )
 
 

@@ -353,11 +353,15 @@ def _finalize_portfolio_reservation_after_enter_join_v1(
     reservation_id: str,
     enter_status: str,
     venue_plan_pass: bool,
+    venue_quantity_admission_denied: bool = False,
 ) -> None:
     if owner is None or not str(reservation_id or "").strip():
         return
     if enter_status == STATUS_PASS and venue_plan_pass:
         owner.commit_internal_pre_external_effect_v1(str(reservation_id))
+        return
+    if venue_quantity_admission_denied:
+        owner.release_sizing_or_admission_deny_v1(str(reservation_id))
         return
     owner.release_plan_failure_v1(str(reservation_id))
 
@@ -728,6 +732,23 @@ def _t2_from_s7(
                 execution_mode="LIVE",
             )
             venue_plan_pass = status is CompositionStatusV1.PASS and plan is not None
+            quantity_assessment = None
+            if venue_plan_pass:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_n1_venue_quantity_limit_admission_v1 import (
+                    assess_n1_final_plan_venue_quantity_v1,
+                )
+
+                quantity_assessment = assess_n1_final_plan_venue_quantity_v1(
+                    observation=getattr(live_29p_injected, "venue_quantity_limits", None),
+                    plan=plan,
+                    bound_instrument=bound,
+                    account_identity=str(
+                        getattr(live_29p_injected, "expected_account_identity", "") or ""
+                    ),
+                    decision_epoch=epoch,
+                    cycle_id=str(s7_base["cycle_id_prefix"]),
+                )
+                venue_plan_pass = quantity_assessment.allowed
             from src.ops.full_core_live_path_composition_root_v1.current_productive_forensic_executable_quantity_override_v1 import (
                 active_forensic_executable_quantity_override_session_v1,
                 refresh_forensic_executable_quantity_run_outcome_v1,
@@ -752,6 +773,9 @@ def _t2_from_s7(
                 reservation_id=live_29p.portfolio_reservation_id,
                 enter_status=live_29p.status,
                 venue_plan_pass=venue_plan_pass,
+                venue_quantity_admission_denied=(
+                    quantity_assessment is not None and not quantity_assessment.allowed
+                ),
             )
             if venue_plan_pass:
                 admission_ref = f"{s7_base['cycle_id_prefix']}:admission"
@@ -784,6 +808,7 @@ def _t2_from_s7(
                     final_envelope_digest=str(envelope.envelope_digest),
                     final_order_envelope=envelope,
                     canonical_order_intent=venue_plan_replay.intermediate.canonical_order_intent,
+                    venue_quantity_limit_assessment=quantity_assessment.to_dict(),
                     permit_created=_FALSE,
                     post_count="0",
                     first_real_blocker="",
@@ -794,6 +819,7 @@ def _t2_from_s7(
             result = SimpleNamespace(
                 runtime_cycle_count="1",
                 decision_result="OBSERVE_HOLD",
+                portfolio_reservation_id=live_29p.portfolio_reservation_id,
                 decision_execution_eligible=_FALSE,
                 master_v2_decision=master_decision or "enter",
                 venue_plan_status="DENY",
@@ -801,7 +827,14 @@ def _t2_from_s7(
                 final_envelope_digest="",
                 permit_created=_FALSE,
                 post_count="0",
-                first_real_blocker="VENUE_PLAN_NOT_PASS",
+                first_real_blocker=(
+                    quantity_assessment.reason_codes[0]
+                    if quantity_assessment is not None
+                    else "VENUE_PLAN_NOT_PASS"
+                ),
+                venue_quantity_limit_assessment=(
+                    quantity_assessment.to_dict() if quantity_assessment is not None else None
+                ),
                 s7_invocation=invocation,
             )
             _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
