@@ -1,0 +1,488 @@
+{
+  "schema": "peaktrade.n1_final_native_quantity_limits.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "d48a75b314d89f6a1e385e964b7356d00bb39ea4",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "before_sha256": "805c06a9b3e5b1976bce4623ed1690f18862c175f71d83d95953394a5b25959d",
+      "sha256": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "before_sha256": "e1007f4ed18bc95372a64b5c5383d00b80890aa81ebb69a708c3f217339eb849",
+      "sha256": "348d58041c978c5a8288b9cb0c14022a17b47a73bec42515c5a53961fa3a3a18"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "f812166a8d0bfd4e85553700e012dc5508c0e0d08c0170421fb94d62db12b0dc",
+      "sha256": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "d2089d085720ba7901ca8b1141ba00aadf0c8bb422b70f10a95ffbba7b414152"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+      "before_sha256": "4c069e7be526739013c5cc8ef3b271492c1242c52d776a11477de3438eaf0c81",
+      "sha256": "30089d1c6f4044e5744586bd278f9b3020711f824d0aed5bccaa4ac63d06e8ca"
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+      "before_sha256": "66c24caf6fa4307e03464dcbb0bd957cfe463b7538f656f058792b719933c8e4",
+      "sha256": "66c24caf6fa4307e03464dcbb0bd957cfe463b7538f656f058792b719933c8e4"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "before_sha256": "0a1162fff828ed0ba734f52118e934a510a2b66b96912f7c5daae94e01d28e24",
+      "sha256": "0a1162fff828ed0ba734f52118e934a510a2b66b96912f7c5daae94e01d28e24"
+    },
+    {
+      "path": "tests/ops/test_current_productive_runtime_liveness_v1.py",
+      "before_sha256": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3",
+      "sha256": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3"
+    },
+    {
+      "path": "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "before_sha256": "744775a71a3eb8f1f61ae1988a79e8c73bfe441a141fd82c55ab54040662b7ce",
+      "sha256": "744775a71a3eb8f1f61ae1988a79e8c73bfe441a141fd82c55ab54040662b7ce"
+    },
+    {
+      "path": "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "before_sha256": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd",
+      "sha256": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "before_sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+      "sha256": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "before_sha256": "0770d141678c3a48e23c94eac34f32ef897697b49dcdf1afa5ef7d8b8b9b2633",
+      "sha256": "b233381a6ebf96eea9ea0267a5512bdec5b88d65f6dc3c89397ec228b4c896eb"
+    },
+    {
+      "path": "tests/ops/test_n1_venue_quantity_limit_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "652ac7860e66b4a07d7ef6389eeb7962b66520880aacd8088895682a325ce812"
+    },
+    {
+      "path": "tests/ops/test_n1_venue_quantity_limit_contract_v1.py",
+      "before_sha256": null,
+      "sha256": "8bd5e9c86ebf0331cd3ae4ab15119642f8e87481fe419218173729d542f99d2c"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "before_sha256": "a26f94d499e84d686e84f79c86b9897e9ddfdeace1133d04840281f942b6f864",
+      "sha256": "a26f94d499e84d686e84f79c86b9897e9ddfdeace1133d04840281f942b6f864"
+    }
+  ],
+  "unchanged_boundary_sources": [
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "sha256": "7bd1be3bc516674767bb4c58ce904a997f60a0bdd4a2a62d1b11728d97afeed8"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+      "sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/pretrade_acquisition_v1.py",
+      "sha256": "8db00cfb9c9932f2495b28ee6fc2ce136b8c4319fa2f063794737e716728afe9"
+    },
+    {
+      "path": "src/governance/capital_risk_sizing_v1.py",
+      "sha256": "5beb463291672c5058724953b61c86d1ddbbbad8f2657f138bb0ffd2ac4ffce8"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+      "sha256": "3a017ee162a645214d2a6c0d76ddd7daee9eeb9417c23443784fecdc01c4f9ff"
+    }
+  ],
+  "semantic_contract": {
+    "unit": "NATIVE_CONTRACT_COUNT_FOR_FUTURES_OR_SWAP",
+    "private_source": "/api/v5/account/max-size",
+    "public_source": "/api/v5/public/instruments",
+    "private_field": "maxBuy for buy; maxSell for sell",
+    "public_field": "maxMktSz for market; maxLmtSz for limit",
+    "equality_allowed": true,
+    "zero_maximum_allows_positive_quantity": false,
+    "quantity_mutation": false,
+    "additional_get_count": 0,
+    "source_age_owner": "Original acquisition_age_seconds_v1 policy, rechecked at final plan consumer",
+    "placement": "After canonical sizing/reservation and native plan; before original internal commit/envelope binding",
+    "deny_release_owner": "PortfolioCapitalReservationBudgetOwnerV1.release_sizing_or_admission_deny_v1",
+    "stored_scope": "N1_FINAL_PLAN_ONLY",
+    "final_plan_pass_is_later_send_admission": false,
+    "hash_is_external_authorization": false,
+    "denied_terminal_class": "VENUE_QUANTITY_ADMISSION_DENIED",
+    "denied_blocker_class": "CURRENT_ADMISSION_REQUIRED"
+  },
+  "original_negative_probe": {
+    "failed": 5,
+    "passed": 4,
+    "scope": "New nine-case synthetic original supervisor/Core/29P/plan consumer test against unchanged base product; socket connect forbidden.",
+    "raw_final_log_retained": false
+  },
+  "prior_existing_test": {
+    "passed": 80,
+    "exit_code": 0,
+    "pytest_elapsed_seconds": 6.21,
+    "log_sha256": "43e45e080a9da2ad6cdc010913d442cbcd5b01666bd8500cfe63e172e8e8db70",
+    "scope": "Earlier formatted product stand before positive-fixture maxima and final S5 semantic status correction; all cases included in final 201-case proof."
+  },
+  "fixture_diagnosis": {
+    "initial_failed": 3,
+    "initial_passed": 27,
+    "reason": "Positive synthetic rows omitted maximum fields; new gate correctly rejects malformed private maxima.",
+    "bounded_original_modules": {
+      "passed": 30,
+      "exit_code": 0,
+      "pytest_elapsed_seconds": 6.24,
+      "scope": "Exact original four changed product modules loaded through test import hook; no original whole-tree checkout run.",
+      "runner_sha256": "d8b1824b26f199ac79027f6338267087a22065405257a3d97d5a4b043d191d51",
+      "log_sha256": "597bbfdd99e767637bbf88743906f7103b4db5562b4ddcb9097e2c00496c2bf7"
+    },
+    "repair": "Explicit ample public/private native maximum fields only in positive productive fixture; no assertion, algorithm or production admission relaxed."
+  },
+  "historical_safety_line": {
+    "historical_ref": "5d1c838c15369507c5247834db4dd0df25592169",
+    "merge_base_historical_current_pre_freeze": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
+    "dependency_scope": "Transitive historical imports followed only through modules missing from the current checkout; present modules inspected for declared imported names. Not a whole-repository or runtime closure.",
+    "files": [
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "a75858d1c9fcc1fe2a0052f01187e7d9e9d0ba7e",
+        "sha256": "184f0712d5cc65271a063628686f856b58fc26cbcbf26de8cf252fffbea59fc4",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_post_admission_seal_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "6bebe967d70ea72f6f10aba3bfff92658d64cb83",
+        "sha256": "d09def10194a67aa3b52599158a77088f61a4c72f12c066cd26ad6b038a90a99",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pilot_capital_guard_post_bind_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "dada47be0dabf9ab0b9b5ed7bcd2be2668bafc5b",
+        "sha256": "653c31e7df8e3f69df7f37c1b70f4bf12de7b0432b01be48fa27f14b5d90a141",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reducing_envelope_provenance_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "62113a596e297cb05bb71290ed83eefa664020dd",
+        "sha256": "73c82865d72985a4c7d8cc946232ac3602c04edd737822456872e85e8b381325",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_execution_lifecycle_root_binding_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "83889b4fff1ac0d065db7fa9be195aef8299848d",
+        "sha256": "01687756484121c62b3e944db0dc1cf6e3f585037daccdbcb9dd63590d2fb936",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "dc0e1ad6cc5dad6a1129dbafed3124592e86e583",
+        "sha256": "5b2f6237f733b35f50d3e37f0f9991645db0426c6d50b5a75bce1e6184574f9d",
+        "current_exists": true,
+        "current_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14"
+      },
+      {
+        "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "8d8fad39efe71f3ea02bcad73c196e377d9cdc2b",
+        "sha256": "91c3e054c4c8d575cfa7b946aa73f2a4f71b27948c12f5b93df24cb997145876",
+        "current_exists": true,
+        "current_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b"
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "534f974bb6ab59d44972dc003fad5eb19c0ce6e9",
+        "sha256": "37d315e80c03dc98ed7111af9abac7ad25576762cbe3525f56ef938afed02a09",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "7ad2f7a6f25b3e09dee2dd6d6f82f2b046036103",
+        "sha256": "72f585cf1c37c00620a157d52ddf8ebbb545a889ccc960db9ee9414e412ab5b3",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "b3e571328fa9d05e81887e6cc633a3f935b6363e",
+        "sha256": "f95a36596d081ca9ce0c72c25c7bb3ea30ab53c094db109da6d35ac42969f482",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "70c3b492a3b7c496136675d23f05e6ee69b5b7d6",
+        "sha256": "1a97dc6881b21d923362f3087ccdfdc423ef8a1083fcd764b5ca364c83f528b4",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/risk_layer/kill_switch/recovery_attestation.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "ef2954f3f643ba21312a8846e942b631473eb512",
+        "sha256": "225e42e886e09ce63f86e0aeee362a58ee16d70b6728eb86ecb4306e4e78e508",
+        "current_exists": false,
+        "current_sha256": null
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "afe45650542d29ec8b719ff517f60ef17ea41fc5",
+        "sha256": "b15271aa28c4c3b52a701b68c14295f1806acdf161e887bb1ff61aedc50abace",
+        "current_exists": true,
+        "current_sha256": "0b6ccaecbc7db6c144d25c90671dbf14c4efcbed9347281ffeba16be43c9e373"
+      },
+      {
+        "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+        "commit": "5d1c838c15369507c5247834db4dd0df25592169",
+        "blob": "a74047fe780d7a8af3dbdd44f8fc64ff23598ebd",
+        "sha256": "1d26cdefd232c32fa3b3c0dd1ead2f95b782d12d1b912a7f206b02ea23336f5f",
+        "current_exists": true,
+        "current_sha256": "9335d0c9085db0cfabcc0fc9884c0d0cda34401e66661b93f04984e22459c711"
+      }
+    ],
+    "source_manifest_sha256": "777d3d745327f2447f8daaa2267cbbeaf6bf1785f49299923d0e1b59aa7aa974",
+    "probe_results_sha256": "89d36c5be094e98405a877150c47dd3e3767afa87992af64bbe252980097b997",
+    "missing_current_modules": 10,
+    "static_import_edges_examined": 96,
+    "historical_modules_imported": false,
+    "full_runtime_closure_proven": false,
+    "evidence_count_scope": "Fourteen preserved exact source files; original seven-file acquisition description was expanded by subsequent bounded import tracing.",
+    "introducing_revisions": [
+      {
+        "pr": 6931,
+        "commit": "093b481458c86af5fa8a5105d202935fde30c521",
+        "meaning": "Original fresh pre-POST validation, distinct from mandatory admission"
+      },
+      {
+        "pr": 7092,
+        "commit": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
+        "meaning": "Observation capital guard, default disabled"
+      },
+      {
+        "pr": 7103,
+        "commit": "07af38a15310206011ec2422085add60167dfbf0",
+        "meaning": "Mandatory order-specific NEW_RISK admission"
+      },
+      {
+        "pr": 7118,
+        "commit": "3ea0fd677073c4d01ead11b79022b4adebe2172a",
+        "meaning": "Lifecycle root binding"
+      },
+      {
+        "pr": 7138,
+        "commit": "3714620db0ebfb3f6786e1b91923a7f32c0d3e08",
+        "meaning": "One-shot global authority, late kill gate, technical risk reduction"
+      },
+      {
+        "pr": 7139,
+        "commit": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
+        "meaning": "Signed ACTIVE recovery attestation"
+      }
+    ],
+    "not_sent_predicate": {
+      "cases": [
+        {
+          "case": "same_boot_dead_original_process",
+          "proven_not_sent": true
+        },
+        {
+          "case": "process_still_alive",
+          "proven_not_sent": false
+        },
+        {
+          "case": "process_state_unknown",
+          "proven_not_sent": false
+        },
+        {
+          "case": "different_boot",
+          "proven_not_sent": false
+        },
+        {
+          "case": "unknown_current_boot",
+          "proven_not_sent": false
+        },
+        {
+          "case": "different_host",
+          "proven_not_sent": false
+        },
+        {
+          "case": "same_current_process",
+          "proven_not_sent": false
+        },
+        {
+          "case": "live_attempt_token_exists",
+          "proven_not_sent": false
+        },
+        {
+          "case": "sent_initiated",
+          "proven_not_sent": false
+        },
+        {
+          "case": "sent_ever_in_history",
+          "proven_not_sent": false
+        },
+        {
+          "case": "unknown_outcome",
+          "proven_not_sent": false
+        },
+        {
+          "case": "missing_history",
+          "proven_not_sent": false
+        },
+        {
+          "case": "history_not_original_claim",
+          "proven_not_sent": false
+        }
+      ],
+      "file_mutations": 0,
+      "function": "GlobalVenueEffectAuthorityLedgerV1._claim_proven_not_sent_v1",
+      "network_calls": 0,
+      "scope": "Exact original function body with explicit synthetic host/boot/process providers. No process killed, ledger opened, persisted state changed or current budget released. Not a full crash/reboot/power-loss proof.",
+      "source_line": 674,
+      "source_sha256": "72f585cf1c37c00620a157d52ddf8ebbb545a889ccc960db9ee9414e412ab5b3",
+      "status": "PASS_SCOPED_ORIGINAL_PREDICATE"
+    },
+    "probe_setup_failure": {
+      "reason": "External path execution could not import src; corrected canonical launcher stdin invocation.",
+      "exit_code": 1,
+      "production_failure": false
+    },
+    "direct_probe_scope": "Three original function branches, AST-selected exact bodies with named injected dependencies; not an original whole-tree runtime test."
+  },
+  "open_boundaries": [
+    "Fresh later pre-POST quantitative/authority admission",
+    "Persistent restart and independent unknown-outcome reconciliation",
+    "Historical mandatory guard/seal/global authority/kill/recovery contracts not restored",
+    "Continuous standing Double-Play mandate versus historical one-shot scope",
+    "Close/reduce-only remains its original distinct owner",
+    "Older documented acceptance/setup debt",
+    "Full natural host, power loss and venue/fill acceptance"
+  ],
+  "test_boundary": {
+    "synthetic_inputs": true,
+    "real_venue_reads": 0,
+    "credential_access": false,
+    "services_started": false,
+    "orders_submitted": 0,
+    "capital_movements": 0
+  },
+  "initial_owner_fixture_test": {
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_n1_venue_quantity_limit_admission_v1.py",
+      "tests/ops/test_n1_venue_quantity_limit_contract_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "--tb=short"
+    ],
+    "base_commit": "d48a75b314d89f6a1e385e964b7356d00bb39ea4",
+    "exit_code": 0,
+    "elapsed_seconds": 7.05,
+    "source_sha256": {
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "bee11a00dc458fb0b1e1f3e225c5385bac3c9fc89a41661f98c3e1831c06c8dc",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "348d58041c978c5a8288b9cb0c14022a17b47a73bec42515c5a53961fa3a3a18",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "d572642650077f8836d2723cf0726c2067f293e4700e6b44d0449a457e9c6629",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py": "d2089d085720ba7901ca8b1141ba00aadf0c8bb422b70f10a95ffbba7b414152",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py": "30089d1c6f4044e5744586bd278f9b3020711f824d0aed5bccaa4ac63d06e8ca",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py": "b233381a6ebf96eea9ea0267a5512bdec5b88d65f6dc3c89397ec228b4c896eb",
+      "tests/ops/test_n1_venue_quantity_limit_admission_v1.py": "1fdba8fd46e735a836e81288042cf895d0ea674f96feea3c9954f7b517b9062f",
+      "tests/ops/test_n1_venue_quantity_limit_contract_v1.py": "8bd5e9c86ebf0331cd3ae4ab15119642f8e87481fe419218173729d542f99d2c"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "22a33a7410e4028873e17cf868fe88ea30d06e4b1eef563ca63493d1aff5438f",
+    "reason_for_run": "Final explicit positive fixture inputs changed; repeat only affected owner/fixture cases. Earlier 37-case PASS and 80-case prior-stand PASS retained separately.",
+    "passed": 82,
+    "pytest_elapsed_seconds": 4.74,
+    "final_stand": false
+  },
+  "initial_wp03_liveness_wp04_test": {
+    "passed": 37,
+    "exit_code": 0,
+    "pytest_elapsed_seconds": 9.91,
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "tests/ops/test_current_productive_runtime_liveness_v1.py",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "--tb=short"
+    ],
+    "source_binding": "Earlier product stand, before final S5 semantic status/reservation identity correction; all cases included in final 201-case proof.",
+    "result_capture": "Observed tool output; separate complete raw log not retained."
+  },
+  "final_owner_test": {
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_n1_venue_quantity_limit_admission_v1.py",
+      "tests/ops/test_n1_venue_quantity_limit_contract_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+      "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "tests/ops/test_current_productive_runtime_liveness_v1.py",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "--tb=short"
+    ],
+    "base_commit": "d48a75b314d89f6a1e385e964b7356d00bb39ea4",
+    "exit_code": 0,
+    "elapsed_seconds": 20.87,
+    "source_sha256": {
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "348d58041c978c5a8288b9cb0c14022a17b47a73bec42515c5a53961fa3a3a18",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "0f534fed178efea7a5b4408032a01b7d7d94dca2c7cb55422f56d7f82c5ffc26",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py": "d2089d085720ba7901ca8b1141ba00aadf0c8bb422b70f10a95ffbba7b414152",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py": "30089d1c6f4044e5744586bd278f9b3020711f824d0aed5bccaa4ac63d06e8ca",
+      "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py": "66c24caf6fa4307e03464dcbb0bd957cfe463b7538f656f058792b719933c8e4",
+      "tests/ops/test_current_productive_post_close_feedback_v1.py": "0a1162fff828ed0ba734f52118e934a510a2b66b96912f7c5daae94e01d28e24",
+      "tests/ops/test_current_productive_runtime_liveness_v1.py": "5d35164e67902e8b8297eb2a939ac904ad7635972fa825b9a6815e89d7ff41d3",
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py": "744775a71a3eb8f1f61ae1988a79e8c73bfe441a141fd82c55ab54040662b7ce",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd",
+      "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py": "2b1eed03c6a94394c2eb0179a197bf01fb8fa370d8c52774dadeedbebb1589bd",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py": "b233381a6ebf96eea9ea0267a5512bdec5b88d65f6dc3c89397ec228b4c896eb",
+      "tests/ops/test_n1_venue_quantity_limit_admission_v1.py": "652ac7860e66b4a07d7ef6389eeb7962b66520880aacd8088895682a325ce812",
+      "tests/ops/test_n1_venue_quantity_limit_contract_v1.py": "8bd5e9c86ebf0331cd3ae4ab15119642f8e87481fe419218173729d542f99d2c",
+      "tests/ops/test_productive_n1_post_close_continuation_v1.py": "a26f94d499e84d686e84f79c86b9897e9ddfdeace1133d04840281f942b6f864"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "42c8180717b4d2af90db10a60d8e320792988e209f94a4e45889744799f02e54",
+    "reason_for_run": "S5 semantic classification and denied reservation identity changed after first 82-case proof; verify affected N1/Close/S5/WP03/WP04 consumers together once on final code.",
+    "passed": 201,
+    "pytest_elapsed_seconds": 18.16
+  }
+}

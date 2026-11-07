@@ -19,6 +19,9 @@ from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 if TYPE_CHECKING:
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_n1_venue_quantity_limit_admission_v1 import (
+        N1VenueQuantityLimitsObservationV1,
+    )
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     NUMERIC_EQUITY_TTL_SECONDS,
@@ -176,6 +179,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     acquisition_decision_id: str = ""
     acquisition_cycle_id: str = ""
     pretrade_acquired_at_utc: tuple[str, ...] = ()
+    venue_quantity_limits: N1VenueQuantityLimitsObservationV1 | None = None
 
 
 @dataclass(frozen=True)

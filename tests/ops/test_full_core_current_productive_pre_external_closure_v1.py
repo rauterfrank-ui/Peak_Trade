@@ -11,6 +11,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     DISPOSITION_PRE_EXTERNAL_EFFECT,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_PUBLIC_INSTRUMENTS,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
 )
@@ -131,6 +132,8 @@ def _productive_instruments_row_for_enter_metadata_v1(
         "ctValCcy": "ADA",
         "lotSz": "1",
         "minSz": "1",
+        "maxMktSz": "1000000",
+        "maxLmtSz": "1000000",
         "tickSz": "0.01",
         "tdMode": "cross",
         "mgnMode": "cross",
@@ -147,6 +150,10 @@ def _productive_transport(**kwargs) -> ProductiveClassFreshGetTransportV1:
     )
 
     payloads = dict(_identity_payloads(instrument_id=_TEST_INST, **kwargs))
+    # Explicit synthetic opening capacity for positive productive-plan fixtures.
+    payloads[ENDPOINT_ACCOUNT_MAX_SIZE]["data"][0].update(
+        {"maxBuy": "1000000", "maxSell": "1000000"}
+    )
     payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = {
         "code": "0",
         "data": [
