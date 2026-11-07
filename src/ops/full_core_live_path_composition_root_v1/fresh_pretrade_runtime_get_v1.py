@@ -14,9 +14,15 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import dataclass, replace
 from typing import Any, Mapping, Optional, Protocol, Tuple
 from urllib.parse import urlencode
+
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
+    utc_now_iso_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ARMED,
@@ -58,6 +64,7 @@ METHOD_GET = "GET"
 
 GET_CACHE_POLICY_CACHEABLE_SNAPSHOT = "CACHEABLE_SNAPSHOT"
 GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED = "DYNAMIC_REFRESH_REQUIRED"
+GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT = "DECISION_BOUND_SNAPSHOT"
 
 ENDPOINT_PUBLIC_INSTRUMENTS = "/api/v5/public/instruments"
 ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
@@ -144,6 +151,8 @@ class FreshPretradeGetTransportResultV1:
     # Only FullCoreProductiveReadOnlyGetTransportV1.get may set REAL from
     # direct venue-acquisition evidence. Foreign vocabularies are not mapped.
     data_safety_source_kind: str | None = None
+    pretrade_decision_id: str = ""
+    acquired_at_utc: str = ""
 
 
 class FullCoreFreshPretradeGetTransportV1(Protocol):
@@ -178,6 +187,8 @@ class FreshPretradeGetItemEvidenceV1:
     observed_inst_ids: Tuple[str, ...] = ()
     observed_td_modes: Tuple[str, ...] = ()
     identity_fields_malformed: bool = False
+    acquired_at_utc: str = ""
+    acquisition_decision_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -198,6 +209,7 @@ class FreshPretradeRuntimeGetEvidenceV1:
     join_seam_id: str = JOIN_SEAM_ID
     authority: str = FRESH_PRETRADE_GET_AUTHORITY
     freshness_policy: str = FRESHNESS_POLICY
+    evaluated_at_utc: str = ""
 
 
 def _endpoint_path_only(endpoint: str) -> str:
@@ -417,7 +429,11 @@ def collect_fresh_pretrade_runtime_get_v1(
     inst_type: str = "FUTURES",
     transport: FullCoreFreshPretradeGetTransportV1 | None,
     require_collection: bool,
+    collected_results: dict[str, FreshPretradeGetTransportResultV1] | None = None,
+    evaluated_at_utc: str | None = None,
 ) -> FreshPretradeRuntimeGetEvidenceV1:
+    if collected_results is not None:
+        collected_results.clear()
     decision = str(pretrade_decision_id or "")
     if require_collection is not True:
         return FreshPretradeRuntimeGetEvidenceV1(
@@ -501,7 +517,10 @@ def collect_fresh_pretrade_runtime_get_v1(
             endpoint=requested,
             auth_required=spec.auth_required,
             pretrade_decision_id=decision,
+            get_cache_policy=GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
         )
+        if collected_results is not None:
+            collected_results[spec.fetch_group] = replace(result, payload=deepcopy(result.payload))
         # S2C: immediately after transport.get, before A1 ItemEvidence unwrap.
         group_datasafety_status[spec.fetch_group] = (
             evaluate_datasafety_admission_for_transport_result_v1(result)
@@ -510,6 +529,8 @@ def collect_fresh_pretrade_runtime_get_v1(
             post_attempted = True
         group_results[spec.fetch_group] = result
 
+    # Evaluate after the last GET, never against a package-start timestamp.
+    evaluation_time = evaluated_at_utc or utc_now_iso_v1()
     items: list[FreshPretradeGetItemEvidenceV1] = []
     seen_payload_by_group: dict[str, str] = {}
     for spec in REQUIRED_GET_ITEM_SPECS:
@@ -527,6 +548,18 @@ def collect_fresh_pretrade_runtime_get_v1(
             pretrade_decision_id=decision,
             requested_endpoint=requested,
         )
+        if status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value and result is not None:
+            if result.pretrade_decision_id != decision or result.endpoint != requested:
+                status = FreshPretradeGetStatusV1.CONTRADICTORY.value
+                reasons += (f"{spec.item_id}_ACQUISITION_DECISION_OR_ENDPOINT_MISMATCH",)
+            else:
+                try:
+                    acquisition_age_seconds_v1(
+                        acquired_at_utc=result.acquired_at_utc, now_utc=evaluation_time
+                    )
+                except ValueError as exc:
+                    status = FreshPretradeGetStatusV1.STALE.value
+                    reasons += (f"{spec.item_id}_{exc}",)
         body_key = ""
         if result is not None:
             body_key = str(result.body_sha256 or "") or repr(result.payload)
@@ -558,6 +591,8 @@ def collect_fresh_pretrade_runtime_get_v1(
                 observed_inst_ids=inst_ids,
                 observed_td_modes=td_modes,
                 identity_fields_malformed=identity_malformed,
+                acquired_at_utc=result.acquired_at_utc if result is not None else "",
+                acquisition_decision_id=result.pretrade_decision_id if result is not None else "",
             )
         )
 
@@ -608,6 +643,7 @@ def collect_fresh_pretrade_runtime_get_v1(
         wire_send_permitted=WIRE_SEND_PERMITTED is True,
         post_attempted=post_attempted,
         data_safety_admission_status=data_safety_admission_status,
+        evaluated_at_utc=evaluation_time,
     )
 
 

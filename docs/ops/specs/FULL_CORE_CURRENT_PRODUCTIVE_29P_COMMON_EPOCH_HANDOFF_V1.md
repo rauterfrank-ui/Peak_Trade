@@ -9,6 +9,12 @@ last_updated: 2026-09-22
 
 # Full Core Current Productive 29P Common Epoch Handoff V1
 
+Die begrenzte Weiterentwicklung vom 07.11.2026 erhält Entscheidungsidentität,
+tatsächliche Aufnahmezeit und denselben geprüften Pretrade-Snapshot bis zum
+Consumer. Die historischen Angaben unten bleiben an ihren damaligen Umfang
+gebunden. Aktuelle Korrektur, Grenzen und Nachweise:
+[Kapital-/Aufnahmefrischebeleg](../evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.md).
+
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EI.
 Consumes Owner-GO
 `CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_TO_FIRST_REAL_BLOCKER_V1`.

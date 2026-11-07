@@ -544,6 +544,7 @@ def resolve_live_29p_injected_for_productive_s5_cycle_v1(
     fresh_pretrade_get_transport: Any | None,
     productivity_root: Path | None,
     decision_epoch: str,
+    pretrade_cycle_id: str = "",
 ) -> Any | None:
     """Build enter-live-29p injected carrier from shared fresh-pretrade GET transport.
 
@@ -578,6 +579,7 @@ def resolve_live_29p_injected_for_productive_s5_cycle_v1(
             bound_instrument=bound,
             fresh_get_transport=fresh_pretrade_get_transport,
             inst_type=inst_type,
+            pretrade_cycle_id=pretrade_cycle_id,
         )
         if handoff.evaluator_29p is not True:
             return None
@@ -704,6 +706,7 @@ def make_n1_occupied_lane_s5_runner_v1(
             fresh_pretrade_get_transport=fresh_pretrade_get_transport,
             productivity_root=cap24_productivity_root,
             decision_epoch=decision_epoch,
+            pretrade_cycle_id=f"{prefix}:{LANE_ID}",
         )
         t2_dispatch = _t2_from_s7(
             lane_pairs=lane_pairs,

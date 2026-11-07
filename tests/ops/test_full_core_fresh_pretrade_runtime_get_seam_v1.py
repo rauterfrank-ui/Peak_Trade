@@ -31,6 +31,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     ENDPOINT_MARKET_INDEX_TICKERS,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
@@ -85,6 +86,15 @@ from tests.ops._monetary_normalization_test_helpers_v1 import (
 )
 
 
+def _fixture_acquisition_time_v1():
+    # Explicit synthetic clock shared by the common-handoff integration fixtures.
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+        _utc_now_iso_v1,
+    )
+
+    return _utc_now_iso_v1()
+
+
 class InjectedFreshGetTransportV1:
     def __init__(
         self,
@@ -100,6 +110,7 @@ class InjectedFreshGetTransportV1:
         method="GET",
         payload_override=None,
         error_class="",
+        acquired_at_utc=None,
     ):
         self.payloads = payloads or {}
         self.missing_paths = set(missing_paths)
@@ -112,11 +123,20 @@ class InjectedFreshGetTransportV1:
         self.method = method
         self.payload_override = payload_override
         self.error_class = error_class
+        self.acquired_at_utc = acquired_at_utc
         self._cache: dict[str, FreshPretradeGetTransportResultV1] = {}
 
-    def get(self, *, endpoint, auth_required, pretrade_decision_id):
+    def get(
+        self,
+        *,
+        endpoint,
+        auth_required,
+        pretrade_decision_id,
+        get_cache_policy=GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
+    ):
         full = str(endpoint or "").strip()
-        cached = self._cache.get(full)
+        key = (pretrade_decision_id, full)
+        cached = self._cache.get(key)
         if cached is not None:
             return cached
         path = full.split("?", 1)[0]
@@ -160,8 +180,10 @@ class InjectedFreshGetTransportV1:
             venue_live_contact=self.venue_live_contact,
             historical_reuse=self.historical_reuse,
             error_class=self.error_class,
+            pretrade_decision_id=pretrade_decision_id,
+            acquired_at_utc=self.acquired_at_utc or _fixture_acquisition_time_v1(),
         )
-        self._cache[full] = result
+        self._cache[key] = result
         return result
 
 

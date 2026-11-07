@@ -159,6 +159,9 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         expected_instrument_id=str(instrument_id),
         usdc_row_status=CURRENCY_ROW_STATUS_PRESENT,
         u04_p01_eligibility_host_inputs=host_inputs,
+        decision_epoch=str(margin_observation.decision_epoch),
+        age_seconds=str(margin_observation.age_seconds),
+        freshness_max_age=str(margin_observation.freshness_max_age),
     )
     reasons: list[str] = [JOIN_SEAM_ID]
     if host.host_evaluation.fail_closed is True:

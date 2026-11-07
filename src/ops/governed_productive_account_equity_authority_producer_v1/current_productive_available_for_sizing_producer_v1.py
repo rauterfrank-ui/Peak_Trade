@@ -541,6 +541,7 @@ def _validate_scope_and_freshness(
     expected_venue: str,
     expected_td_mode: str,
     expected_epoch: str,
+    expected_as_of: str,
     source_class: str,
     field: str,
 ) -> list[str]:
@@ -559,7 +560,7 @@ def _validate_scope_and_freshness(
         reasons.append(f"{field}_TD_MODE_NOT_CROSS")
     if decision_epoch == "" or observed_at_as_of == "":
         reasons.append(f"{field}_EPOCH_MISSING")
-    elif decision_epoch != expected_epoch or observed_at_as_of != expected_epoch:
+    elif decision_epoch != expected_epoch or observed_at_as_of != expected_as_of:
         reasons.append(f"{field}_EPOCH_MISMATCH")
     age = _parse_age_seconds(age_seconds)
     max_age = _parse_age_seconds(freshness_max_age)
@@ -639,6 +640,7 @@ def produce_current_productive_available_for_sizing_v1(
             expected_venue=base.bound_venue_identity,
             expected_td_mode=base.bound_td_mode,
             expected_epoch=base.decision_epoch,
+            expected_as_of=base.observed_at_as_of,
             source_class=base.source_class,
             field="BASE",
         )
@@ -657,6 +659,7 @@ def produce_current_productive_available_for_sizing_v1(
             expected_venue=base.bound_venue_identity,
             expected_td_mode=base.bound_td_mode,
             expected_epoch=base.decision_epoch,
+            expected_as_of=base.observed_at_as_of,
             source_class=u04.source_class,
             field="U04",
         )
@@ -675,6 +678,7 @@ def produce_current_productive_available_for_sizing_v1(
             expected_venue=base.bound_venue_identity,
             expected_td_mode=base.bound_td_mode,
             expected_epoch=base.decision_epoch,
+            expected_as_of=base.observed_at_as_of,
             source_class=p01.source_class,
             field="P01",
         )

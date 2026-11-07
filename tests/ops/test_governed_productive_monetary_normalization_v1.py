@@ -8,6 +8,8 @@ from decimal import Decimal
 
 import pytest
 
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import utc_now_iso_v1
+
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     FreshPretradeGetStatusV1,
 )
@@ -370,7 +372,7 @@ def test_productive_fx_get_enrolled_in_fresh_pretrade_v1() -> None:
         def __init__(self) -> None:
             self.endpoints: list[str] = []
 
-        def get(self, *, endpoint, auth_required, pretrade_decision_id):
+        def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
             self.endpoints.append(str(endpoint))
             path = str(endpoint).split("?", 1)[0]
             text = str(endpoint)
@@ -394,6 +396,8 @@ def test_productive_fx_get_enrolled_in_fresh_pretrade_v1() -> None:
                 venue_live_contact=True,
                 historical_reuse=False,
                 error_class="",
+                pretrade_decision_id=pretrade_decision_id,
+                acquired_at_utc=utc_now_iso_v1(),
             )
 
     transport = _RecordingTransport()
@@ -453,7 +457,7 @@ def test_productive_conversion_pair_get_enrolled_in_fresh_pretrade_v1() -> None:
         def __init__(self) -> None:
             self.endpoints: list[str] = []
 
-        def get(self, *, endpoint, auth_required, pretrade_decision_id):
+        def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
             self.endpoints.append(str(endpoint))
             path = str(endpoint).split("?", 1)[0]
             if path == ENDPOINT_PUBLIC_INSTRUMENTS and USDT_USDC_PAIR_NATIVE_ID in str(endpoint):
@@ -471,6 +475,8 @@ def test_productive_conversion_pair_get_enrolled_in_fresh_pretrade_v1() -> None:
                 venue_live_contact=True,
                 historical_reuse=False,
                 error_class="",
+                pretrade_decision_id=pretrade_decision_id,
+                acquired_at_utc=utc_now_iso_v1(),
             )
 
     transport = _RecordingTransport()
@@ -655,14 +661,7 @@ def test_ghv_api3_productive_normalization_join_venue_plan_v1() -> None:
     assert ctx.usdt_usdc_edge.inversion_applied is True
     assert bound_api3.venue_native_id == "API3-USDT-SWAP"
 
-    from unittest.mock import patch
-
-    with patch(
-        "src.ops.governed_productive_account_equity_authority_producer_v1."
-        "current_productive_29p_common_epoch_handoff_v1._utc_now_iso_v1",
-        return_value=_COMMON_EPOCH,
-    ):
-        handoff, transport = _compose_handoff()
+    handoff, transport = _compose_handoff()
     injected = build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
         handoff=handoff,
         transport=transport,

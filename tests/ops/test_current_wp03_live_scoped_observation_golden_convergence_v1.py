@@ -126,6 +126,47 @@ def test_current_entry_without_fresh_pretrade_stays_hold(tmp_path: Path, short: 
     assert projected["final_order_envelope"]["envelope_identity"] == ""
 
 
+@pytest.mark.parametrize("foreign_cycle", [False, True])
+def test_current_pretrade_snapshot_reaches_its_original_cycle_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, foreign_cycle: bool
+) -> None:
+    from dataclasses import replace
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+        invoke_join_v1,
+    )
+    from tests.ops._wp03_supervisor_golden_harness_v1 import run_natural_long_supervisor_v1
+
+    original = invoke_join_v1.join_current_productive_enter_live_29p_before_venue_plan_v1
+    seen = []
+
+    def bound_consumer(**kwargs):
+        injected = kwargs["injected"]
+        if injected is not None:
+            slot = kwargs["portfolio_slot"]
+            assert slot is not None
+            assert injected.acquisition_cycle_id == slot.cycle_id
+            seen.append(slot.cycle_id)
+            if foreign_cycle:
+                kwargs["injected"] = replace(injected, acquisition_cycle_id="foreign-cycle")
+        return original(**kwargs)
+
+    monkeypatch.setattr(
+        invoke_join_v1,
+        "join_current_productive_enter_live_29p_before_venue_plan_v1",
+        bound_consumer,
+    )
+    result = run_natural_long_supervisor_v1(tmp_path)
+    last = result.policy_result.orchestrator_result.cycle_records[-1]
+    assert seen
+    if foreign_cycle:
+        assert last.s5_disposition == "HOLD_CLOSED"
+        assert last.s5_reason_code == "LIVE_29P_ACQUISITION_FAIL_CLOSED"
+        assert last.final_order_envelope is None
+    else:
+        assert last.s5_disposition == "PRE_EXTERNAL_EFFECT"
+        assert last.final_order_envelope is not None
+
+
 def test_supervisor_forwards_original_cap24_productivity_root(tmp_path: Path, monkeypatch) -> None:
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
 

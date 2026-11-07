@@ -1,0 +1,286 @@
+{
+  "schema": "peaktrade.capital_decision_acquisition_freshness_evidence.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "74714c81b539743b65c384118cbb6b1dd278559f",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
+      "sha256": "bf10b7904900930f6f514023fadc5bf36e5b84f9e72095940189173e9c964721"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+      "before_sha256": "907af6030c9b37c8cd15407294ebfabd573d2dd6b4193a660020e3201f1ba2e9",
+      "sha256": "bfd23ed24ffc4be050854b24a482f6a8318f23851a4e910b6de7e1e452e0ec2f"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+      "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
+      "sha256": "6e63884c6b8d0349eebb52deaf6c81b7cc60ca6e7f7b17c3def012a02e00e276"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+      "before_sha256": "bef113d8d68514f14c4fb6c7ae91be03e86f7d0b20e1bb4b254de4955bd5ebcd",
+      "sha256": "3a017ee162a645214d2a6c0d76ddd7daee9eeb9417c23443784fecdc01c4f9ff"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/pretrade_acquisition_v1.py",
+      "before_sha256": null,
+      "sha256": "8db00cfb9c9932f2495b28ee6fc2ce136b8c4319fa2f063794737e716728afe9"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
+      "before_sha256": "cbe5312a819bdba381e3aef21049291ca4d924ec0f9df2474cc777f8b7bbd75f",
+      "sha256": "1fb5335f6e1d9253027e6cb5d70f17d917a80b6c9a244229453f3389f9e09365"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+      "before_sha256": "e703f985801641152f7bf5db30b8f1fa804aefcde0cc7baec2ae748bd651c615",
+      "sha256": "f6834f5074195b5cb11082f49b318c029e6966b53f7806201ae6ebf0ecea3294"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+      "before_sha256": "6500d6b02cab61f81f08a5789346079da3cba0543e20b91c8a5e40299bd80f55",
+      "sha256": "4fae6b067a13f8052406ad079771a42221b596d2b88d7bb8677c208f4272d159"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+      "before_sha256": "58def2a5faa651607d9d999f6e97cd10c5435b2daa234eb4670d7abee598bef2",
+      "sha256": "1020810bbe9d82fe90867e72f69b7f1b1f7f0fc5e9cfe3b3a0dfc46f8daecee6"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+      "before_sha256": "9518059e2ddfd2b1ce45c9a0b0153c61c615bc27906259bceff27375aaea3ad0",
+      "sha256": "4c069e7be526739013c5cc8ef3b271492c1242c52d776a11477de3438eaf0c81"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+      "before_sha256": "b11e58b1e1f23a8a073ca9e8ad229f48cd4e44251a7ee4f5cbb47d7772fc13bf",
+      "sha256": "edd2eba139cdf1b27881aab53fba30510f4c9d555da1b5ad1ee3adefbbc40675"
+    },
+    {
+      "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
+      "before_sha256": "ef493dfcab6d9266a2b89ca92e77c6a226def55c2597b26807dc422eff28ece5",
+      "sha256": "daa21942a05e2170dd52d67dd30e653bc4e1623ac73af68705f35559aa5ee76a"
+    },
+    {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "before_sha256": "cc046d4319dffea720912055377772398b6fe4ba30eced2f56ffe3fb8096e56b",
+      "sha256": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46"
+    },
+    {
+      "path": "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
+      "before_sha256": null,
+      "sha256": "7d9c0d868c0c074b7c8d0d2193662bad3707909027407d23957cf671e4c65c46"
+    },
+    {
+      "path": "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "before_sha256": "485b750fec92fa33606f635b26c4f7af958ca5174e127ad6f68c978b4bbadb0a",
+      "sha256": "744775a71a3eb8f1f61ae1988a79e8c73bfe441a141fd82c55ab54040662b7ce"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
+      "before_sha256": "a9611a5dce7a0bcef18c6cd41acbed72ca1628457a6c9dda34b0a660d6b26694",
+      "sha256": "53d5eb73e2ff1e5ebf39f6ca3bb336adbaf1e39bb04babe5f8513f672b15cf18"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "before_sha256": "9850c6693672f675a343a3ee7732b4a07a06c1575034fbd92f689554ed0cbda2",
+      "sha256": "0770d141678c3a48e23c94eac34f32ef897697b49dcdf1afa5ef7d8b8b9b2633"
+    },
+    {
+      "path": "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+      "before_sha256": "1d25c3c3fcc2eb52968ba873a95f640cce7e5384d02c302f8a81b13bfdaed6b5",
+      "sha256": "19632b94ebaf724688539990a1a2806fde5d305551d731e8c82891eda24fb59d"
+    },
+    {
+      "path": "tests/ops/test_governed_productive_monetary_normalization_v1.py",
+      "before_sha256": "24693b76f5f94224c01db97c5b10eed1c3add7f8527db9abdb750d4473dd615d",
+      "sha256": "8c3c135fae9b04bf3cbe8128a05913bfdc08e66ede38add03a15403e30b42163"
+    },
+    {
+      "path": "tests/ops/test_pretrade_acquisition_freshness_v1.py",
+      "before_sha256": null,
+      "sha256": "9f79a3f5ea9c40d01586a0748fa125db7b794a4583d9aaafb0652969d5d30185"
+    }
+  ],
+  "focused": {
+    "status": "PASS",
+    "exit_code": 0,
+    "passed": 151,
+    "elapsed_seconds": 13.32,
+    "selector": [
+      "tests/ops/test_pretrade_acquisition_freshness_v1.py",
+      "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
+      "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py",
+      "tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1.py",
+      "tests/ops/test_current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+      "tests/ops/test_governed_productive_monetary_normalization_v1.py",
+      "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    ],
+    "log_sha256": "6126bf0df7a6171cc92a90e462d954698b63850fde4d18ee73d8e90246f1e9f9"
+  },
+  "broader": {
+    "status": "FAIL",
+    "exit_code": 1,
+    "passed": 302,
+    "failed": 17,
+    "errors": 7,
+    "skipped": 4,
+    "elapsed_seconds": 36.49,
+    "selector": [
+      "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py",
+      "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
+      "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
+      "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
+      "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+      "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+      "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+      "tests/ops/test_current_productive_pre_external_order_independence_v1.py",
+      "tests/ops/test_current_productive_stale_construction_pointer_rebind_v1.py",
+      "tests/ops/test_current_wp03_live_scoped_observation_golden_convergence_v1.py",
+      "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+      "tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py",
+      "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+      "tests/ops/test_full_core_current_productive_29p_chain_cap24_writer_to_common_epoch_join_v1.py",
+      "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
+      "tests/ops/test_full_core_current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+      "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py",
+      "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
+      "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+      "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py",
+      "tests/ops/test_full_core_pre_post_capital_guard_binding_v1.py",
+      "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py",
+      "tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py",
+      "tests/ops/test_ghv_pre_external_offline_convergence_v1.py",
+      "tests/ops/test_governed_productive_monetary_normalization_v1.py",
+      "tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py",
+      "tests/ops/test_pretrade_acquisition_freshness_v1.py",
+      "tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1.py"
+    ],
+    "failing_cases": [
+      "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py::test_gap_true_01_closes_with_executable_envelope_pre_external",
+      "tests/ops/test_current_productive_native_full_cycle_host_v1.py::test_native_full_cycle_host_reaches_pre_external_or_hold_without_driver_slices",
+      "tests/ops/test_current_productive_native_full_cycle_host_v1.py::test_pre_external_result_does_not_imply_permit_or_post",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_F_cap24_bound_lineage_preserved_into_selected_market_path",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_G_external_observation_uses_current_transformations_not_driver_objects",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_I_decision_capital_join_same_session_lineage",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_J_crs_cannot_change_direction",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_K_intent_cannot_change_direction",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_L_pre_external_does_not_imply_permit",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_M_pre_external_does_not_imply_post",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_Q_fail_closed_instrument_mismatch",
+      "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_S_synthetic_close_mark_provenance_not_venue_public",
+      "tests/ops/test_full_core_current_productive_29p_chain_cap24_writer_to_common_epoch_join_v1.py::test_common_epoch_resolves_legacy_cap24_repository_sha",
+      "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py::test_ssot_docs_once_present",
+      "tests/ops/test_full_core_current_productive_29p_live_account_bound_and_instrument_scope_v1.py::test_ssot_docs_once_present",
+      "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py::test_runbook_ct_persists_producer_without_mint",
+      "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py::test_ssot_docs_once_present",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming"
+    ],
+    "log_sha256": "3b79e7755aaf6798cf91b9f9424e9b57847138ffb53b3ed28df0651155a2702f"
+  },
+  "original_source_probes": [
+    {
+      "scope": "three original owner modules",
+      "status": "FAIL",
+      "passed": 49,
+      "failed": 5,
+      "errors": 0,
+      "failing_cases": [
+        "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py::test_ssot_docs_once_present",
+        "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py::test_runbook_ct_persists_producer_without_mint",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get"
+      ],
+      "log_sha256": "809f4a19fc2c430463b5b0c540af350e3e408e6d74eb96a8557ff844420daa06"
+    },
+    {
+      "scope": "original tracked broad selection",
+      "status": "FAIL",
+      "passed": 249,
+      "failed": 14,
+      "errors": 7,
+      "skipped": 4,
+      "elapsed_seconds": 33.65,
+      "failing_cases": [
+        "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py::test_gap_true_01_closes_with_executable_envelope_pre_external",
+        "tests/ops/test_current_productive_native_full_cycle_host_v1.py::test_native_full_cycle_host_reaches_pre_external_or_hold_without_driver_slices",
+        "tests/ops/test_current_productive_native_full_cycle_host_v1.py::test_pre_external_result_does_not_imply_permit_or_post",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_F_cap24_bound_lineage_preserved_into_selected_market_path",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_G_external_observation_uses_current_transformations_not_driver_objects",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_I_decision_capital_join_same_session_lineage",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_J_crs_cannot_change_direction",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_K_intent_cannot_change_direction",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_L_pre_external_does_not_imply_permit",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_M_pre_external_does_not_imply_post",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_Q_fail_closed_instrument_mismatch",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py::test_S_synthetic_close_mark_provenance_not_venue_public",
+        "tests/ops/test_full_core_current_productive_29p_chain_cap24_writer_to_common_epoch_join_v1.py::test_common_epoch_resolves_legacy_cap24_repository_sha",
+        "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py::test_ssot_docs_once_present",
+        "tests/ops/test_full_core_current_productive_29p_live_account_bound_and_instrument_scope_v1.py::test_ssot_docs_once_present",
+        "tests/ops/test_full_core_current_productive_available_for_sizing_producer_v1.py::test_runbook_ct_persists_producer_without_mint",
+        "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py::test_ssot_docs_once_present",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+        "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming"
+      ],
+      "log_sha256": "5de0b15d3da07314dbabeae169f4897e6b9b8f9f48c764a3e4aa6aba04e420dd"
+    }
+  ],
+  "comparison": {
+    "current_failure_set_equals_union_of_original_failure_sets": true,
+    "failure_or_error_cases": 24,
+    "method": "Original Git HEAD module and fixture bytes loaded by import hook in isolated pytest process; not a full clean checkout; no current source mutation."
+  },
+  "observed_effects": {
+    "first_decision_stub_wire_gets": 9,
+    "new_decision_additional_stub_wire_gets": 9,
+    "same_decision_keeps_original_acquisition_time": true,
+    "same_decision_age_advances": true,
+    "global_request_limit_16_exhausts_at_attempt": 16,
+    "budget_reset": false,
+    "time_checks_at_collection_carrier_and_enter": true,
+    "wp03_wp04_acquisition_clock_frozen": false,
+    "distinct_original_cycles_in_same_second_acquire_separately": true,
+    "original_cycle_is_checked_by_enter_consumer": true,
+    "identity_pair_encoding_collision_free": true,
+    "expiry_during_carrier_build_uses_expected_fail_closed_owner_error": true
+  },
+  "data_class": "SYNTHETIC_OFFLINE; original productive transport class uses completely local network/signing stubs; no actual venue or credential contact",
+  "unchanged": [
+    "final margin-minus-applicable-P01 formula",
+    "CT arithmetic",
+    "original financial admission owners",
+    "native sizing and capital reservation rules",
+    "GET and retry quotas",
+    "runtime authority and activation",
+    "frozen tags and Core bytes"
+  ],
+  "open": [
+    "All listed broader acceptance failures/errors",
+    "Resource envelope for later natural duration: nine fresh GETs per new pretrade decision, unchanged global quota may exhaust sooner",
+    "Funding/margin source and netting semantics of generic Treasury intermediate contract",
+    "Full process host restore and runtime owner recovery",
+    "Natural continuous operation, N5 and confirmed venue fill"
+  ]
+}
