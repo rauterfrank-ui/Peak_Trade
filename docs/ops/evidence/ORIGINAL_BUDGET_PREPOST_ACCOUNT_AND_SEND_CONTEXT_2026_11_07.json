@@ -1,0 +1,378 @@
+{
+  "schema": "peaktrade.original_budget_prepost_account_and_send_context.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "220b474b5ed4f408fc942ddf65dd74940ce014ef",
+  "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_bindings": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+      "before_sha256": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047",
+      "sha256": "3abf0905e55ee68448f0e113d36e9c988dbc7bc062e2daf4317b6cbca1fb08e4"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
+      "sha256": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+      "before_sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5",
+      "sha256": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4",
+      "sha256": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "before_sha256": "7bd1be3bc516674767bb4c58ce904a997f60a0bdd4a2a62d1b11728d97afeed8",
+      "sha256": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "sha256": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49"
+    },
+    {
+      "path": "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "before_sha256": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "sha256": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70"
+    },
+    {
+      "path": "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "before_sha256": "69fa21ac7113bec42b1f21737e94b470315b109d9122d4c4a0a885dba009c513",
+      "sha256": "69fa21ac7113bec42b1f21737e94b470315b109d9122d4c4a0a885dba009c513"
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "before_sha256": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "sha256": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9"
+    },
+    {
+      "path": "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+      "before_sha256": "1f7b10e87d0c0dca4803816609303d160bfb798210ddccc95b57ea90c19afcc4",
+      "sha256": "1f7b10e87d0c0dca4803816609303d160bfb798210ddccc95b57ea90c19afcc4"
+    },
+    {
+      "path": "tests/ops/test_portfolio_execution_recovery_v1.py",
+      "before_sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+      "sha256": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79"
+    },
+    {
+      "path": "tests/ops/test_prepost_original_budget_context_v1.py",
+      "before_sha256": null,
+      "sha256": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111"
+    },
+    {
+      "path": "tests/ops/test_prepost_position_source_admission_v1.py",
+      "before_sha256": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6",
+      "sha256": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6"
+    }
+  ],
+  "unchanged_boundary_sources": [
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+      "sha256": "fdf48fea44f8c76aa5a6d245d1bbb23b0033782c1d1c9980537df19b1e27447c"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
+      "sha256": "cac878a085cbe84cf926614b045bf860f92a47ac375b397374495ad896a89d9d"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+      "sha256": "3a017ee162a645214d2a6c0d76ddd7daee9eeb9417c23443784fecdc01c4f9ff"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/pretrade_acquisition_v1.py",
+      "sha256": "8db00cfb9c9932f2495b28ee6fc2ce136b8c4319fa2f063794737e716728afe9"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
+      "sha256": "03bb0295b8f4aa617737a91c0b56f13e22d8ba32733bd48a5a935b4e90aeb086"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+      "sha256": "7264cae74b6152f64383d5a5feccccd2ab5ec64c1474b2e728a9522ab691fe66"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+      "sha256": "b0fb193d4d650a7a7a4c59319dcf8a257319affb6cf993883914e055a9f5d2ef"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+      "sha256": "0b6ccaecbc7db6c144d25c90671dbf14c4efcbed9347281ffeba16be43c9e373"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+      "sha256": "9335d0c9085db0cfabcc0fc9884c0d0cda34401e66661b93f04984e22459c711"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
+      "sha256": "d2089d085720ba7901ca8b1141ba00aadf0c8bb422b70f10a95ffbba7b414152"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
+      "sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
+      "sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py",
+      "sha256": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py",
+      "sha256": "6dc6ac382e389bd4a29de72ab25071a165d2a52f971116d248947492e7f12572"
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
+      "sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+      "sha256": "16f1159480df1edee83804e162589933bbfab74d9dc76d3e879d453c57ace197"
+    },
+    {
+      "path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+      "sha256": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/market_projection_v1.py",
+      "sha256": "ec32a7ac73ef6e6897d60bdc45cd3a0403945375e5425c166619433b41d362ec"
+    },
+    {
+      "path": "src/webui/market_surface_greenfield_v1/canonical_state_v1.py",
+      "sha256": "6adedeafd244dc65186ff0cf10fab7b7b1d50009e41c6a271e30c8360957e265"
+    },
+    {
+      "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
+      "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
+    },
+    {
+      "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
+      "sha256": "718845facf4200aece11752ef68be7dc3cf7e2a4114e1bf714bd644dc2bace46"
+    },
+    {
+      "path": "tests/ops/_current_productive_pre_external_shared_process_state_v1.py",
+      "sha256": "ced7d85396118f372315038c3e64a4f20efeee5bcfa0954a6bd322972b179e2a"
+    },
+    {
+      "path": "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py",
+      "sha256": "eef71ed523c3cd252ebda4c063dbb966a95788130fe2db4c33f6c7f150e72f8b"
+    }
+  ],
+  "historical_sources": [
+    {
+      "commit": "95f597823215533afc65197135fe17d4405e652a",
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "sha256": "1cc400e51a335764c92757e12b7790eaf084073ebfecb35fd75658b861589cbe",
+      "current_base_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
+      "equal_to_current_base": false
+    },
+    {
+      "commit": "0808d2eed72edc9c4677f01da48cb5a8b11110dc",
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "sha256": "234b093101432e8f5114472379963fa4bec54fcad292e749140f490fbe948bf0",
+      "current_base_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "equal_to_current_base": false
+    },
+    {
+      "commit": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
+      "sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "current_base_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
+      "equal_to_current_base": true
+    }
+  ],
+  "history_source": {
+    "volume": "M2DATA",
+    "volume_uuid": "BFA81BFA-80C5-3634-84EE-17B3496EE123",
+    "mounted_identity_rechecked": true,
+    "operations": "Targeted git log/show only; no external writes, checkout or scans. Earliest reachable checkpoint is not proof of exact original authoring time."
+  },
+  "context_contract": {
+    "owner": "Same supplied PortfolioCapitalReservationBudgetOwnerV1 instance, durable COMMITTED/PLAN_BOUND state, original sizing/risk/identity predicates under existing lock",
+    "source_account": "Original supplied durable owner, never a new expected-UID literal or the observed config UID",
+    "forwarded_fields": [
+      "portfolio_budget_owner",
+      "portfolio_reservation_id",
+      "execution_identity"
+    ],
+    "readonly_context_inspection": true,
+    "new_ledger": false,
+    "context_scope": "ORIGINAL_COMMITTED_PLAN_CONTEXT_ONLY",
+    "all_execution_fields_independently_authorized": false,
+    "required_environment_at_actual_post_wrappers": "LIVE",
+    "generic_environment_contract_unchanged": true,
+    "legacy_no_reservation_or_context": "NOT_ASSESSED; no global closure claim"
+  },
+  "account_contract": {
+    "get_groups": 9,
+    "scoped_position_gets": 1,
+    "additional_gets": 0,
+    "original_account_consumer": "evaluate_live_account_bound_v1",
+    "strict_config_uid": "One exact nonempty string, no whitespace/type coercion or duplicate config rows",
+    "owner_rechecked_after_acquisition": true,
+    "source_clock_renewed": false,
+    "positive_scope": "PREPOST_ORIGINAL_BUDGET_ACCOUNT_AND_NEW_ENTRY_POSITION_ONLY",
+    "proof_persisted_as_send_authority": false,
+    "raw_uid_or_credential_in_new_evidence": false
+  },
+  "submit_contract": {
+    "before_top_store_pre_live_and_go": "Original context inspected; missing/bad context denied before own permit or durable GO",
+    "before_lower_permit": "Same original context inspected",
+    "original_barrier_order": [
+      "Original budget SUBMIT_MAY_HAVE_OCCURRED under lock and save",
+      "Original permit SENT_INITIATED durable consume",
+      "Original K1/HTTP transport"
+    ],
+    "crash_between_barriers": "Uncertain, retained obligation; never resend permission",
+    "unknown_outcome": "Original hold retained, second callback denied",
+    "replay_proof": "Receives same original reservation context and reads actual consumed permit",
+    "release_added": false,
+    "actual_host_loop_joined": false
+  },
+  "final_owner_test": {
+    "base_commit": "220b474b5ed4f408fc942ddf65dd74940ce014ef",
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_prepost_original_budget_context_v1.py",
+      "tests/ops/test_prepost_position_source_admission_v1.py",
+      "tests/ops/test_portfolio_execution_recovery_v1.py",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+      "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_standing_flags_close_without_real_external_effect",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_happy_path_exactly_one_mocked_post",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_fail_closed_no_permit_wrong_permit_wrong_envelope",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_fail_closed_digest_mismatch_and_malformed_envelope",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_fail_closed_consumed_replay_second_submit",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_fail_closed_standing_gates_kill_switch_filegate",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_fail_closed_missing_credentials_transport_direct_29q_unknown_outcome",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_productive_http_transport_never_opens_socket",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_owner_go_and_sha_fail_closed",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py::test_evaluate_closes_seam_without_real_post",
+      "--tb=short"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 16.2,
+    "source_sha256": {
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py": "3abf0905e55ee68448f0e113d36e9c988dbc7bc062e2daf4317b6cbca1fb08e4",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "2a72793e922024358a78ebf6c4930c9290f000f60b63cc9a01517f310f6b2217",
+      "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py": "ff4adcb4245321681117d41297b8000c9e16982877ca814def5f1bdbc2b0a810",
+      "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "730ef2f896a7e35455dc01c8dfa88eab59580bf6eebba86760f79d23a69c9c2f",
+      "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "2a233cb9a18134a9d0053d8351fd35ab82ab904d8f5bd51a305941d054bee941",
+      "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py": "bb24d2e790dce1e0e0fbf5e8ecbbeba7255b499d1534e5c7bf51cf59badfdd49",
+      "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py": "f106b6a6d59207c46283f5c359ce44657c21c50d449675d74fbaf3097e95cc70",
+      "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "69fa21ac7113bec42b1f21737e94b470315b109d9122d4c4a0a885dba009c513",
+      "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py": "599f6109e5ce90254363ed1a12dc416b4499fa59932bc427953697b2ecafbae9",
+      "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py": "1f7b10e87d0c0dca4803816609303d160bfb798210ddccc95b57ea90c19afcc4",
+      "tests/ops/test_portfolio_execution_recovery_v1.py": "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+      "tests/ops/test_prepost_original_budget_context_v1.py": "72afe6637a4330b526818c1936ad765ce90c8fc06d79c7c821b032c311cca111",
+      "tests/ops/test_prepost_position_source_admission_v1.py": "bfae78e93ee3a2d8bbcaf3e7273933a7b17d637a8ec59242095a2a6c489106f6"
+    },
+    "unchanged_during_run": true,
+    "log_sha256": "f40d14374f7c6e3e07ecca943bf9ba8d690700e00585f5b23da534861a8cc304",
+    "scope": "Original budget/GET/caller/send consumers, synthetic caller-supplied execution identities, temporary durable stores, original N1 long/short test harness and fake HTTP/K1. No natural host/identity/authority delivery, venue contact or full admission proof.",
+    "passed": 137,
+    "pytest_elapsed_seconds": 13.9,
+    "new_cases": 48
+  },
+  "original_module_comparison": {
+    "base_commit": "220b474b5ed4f408fc942ddf65dd74940ce014ef",
+    "source_sha256": {
+      "src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1": "88228ae0aab849f7a5b23ddf4cd5f72f595319af14b7741953be5f7611d69047",
+      "src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
+      "src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1": "10e63e52006d462590ed1dae5dc85548056b73c04fbbdcbf92768c4ccda00ae4"
+    },
+    "whole_original_tree_run": false,
+    "cases": [
+      {
+        "case": "Original consumer has no source-account context input",
+        "all_required_pre_post_gates_pass": true,
+        "account_identity_binding_status": "NOT_ASSESSED"
+      },
+      {
+        "case": "Original top wrapper without original context",
+        "outcome": "GO_CALLBACK_REACHED_WITHOUT_ORIGINAL_BUDGET_CONTEXT",
+        "forbidden_go_callbacks": 1
+      },
+      {
+        "case": "Original lower wrapper without original context",
+        "outcome": "REAL_VENUE_POST_ADMISSION_DENIED:POST_OWNER_GO_NOT_DURABLE_CONSUMED",
+        "permit_minted": true,
+        "http_post_attempts": 0
+      }
+    ],
+    "scope": "Exact three original modules at the base with current dependency bodies, including the changed owner/send seam, and synthetic ports. Not a whole original tree run. No real GO write, credential, HTTP or venue contact."
+  },
+  "iteration_evidence": {
+    "first_new_tests": {
+      "log_sha256": "1ddc747201962f694555f412b48a0e4d6244acfcf8c28f8959d86ddb1d4a9e89",
+      "summary": "========================= 1 failed, 34 passed in 3.43s =========================",
+      "passed": 34,
+      "failed": 1,
+      "reason": "Malformed envelope correctly rejected by earlier original envelope identity check; final fixture is validly rebound but foreign, negative assertion retained."
+    },
+    "first_owner_integration": {
+      "log_sha256": "9ffcf12cd489aebe982d87bd7bf20177add5996f6039f917ba6722480874b592",
+      "summary": "======================= 12 failed, 106 passed in 10.71s ========================",
+      "passed": 106,
+      "failed": 12,
+      "reason": "New N1 test leaked a later synthetic capital observation to old recovery fixtures. Existing temporary PRE_EXTERNAL isolation with workspace reseed false now surrounds each new case; original replay guard unchanged. Same recovery cases pass in final proof."
+    },
+    "previous_128_case_pass": {
+      "log_sha256": "16797e4a0bb147c320ffe781eeb491f8604d87fc2b58de0af49a80d2eca526ae",
+      "summary": "============================= 128 passed in 12.94s ============================="
+    }
+  },
+  "still_open_existing_debt": {
+    "previous_evidence": "docs/ops/evidence/PREPOST_POSITION_AND_FLAT_MARK_SEMANTICS_2026_11_07.json",
+    "remaining_failures": 7,
+    "remaining_failed_nodes": [
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_live_path_without_transport_denies_missing_get",
+      "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py::test_empty_margin_mode_positions_are_trusted_flat_account",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_flags_and_standing_gates_remain_false",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_malformed_uid_deny",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_offline_injected_full_core_path_halts_before_wire_and_does_not_post",
+      "tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py::test_runbook_and_spec_bind_closeout_without_live_arming"
+    ],
+    "status": "Not repaired or replaced by this scoped proof; prior broad acceptance remains dated and open."
+  },
+  "test_boundaries": {
+    "n1_long_and_short": "Actual original N1 producer/budget writer/read consumer, test-caller supplies synthetic execution identity inside bind callback; no natural host/authority producer asserted",
+    "http": "Actual wrapper/permit/budget code, fake K1 and HTTP opener, sockets forbidden, temporary stores",
+    "existing_recovery": "Original tests include process death after submit barrier; not physical power-loss proof",
+    "excluded_sender_checks": [
+      "Frozen historical documentation presence",
+      "Unchanged protected algorithm Git comparison; code hashes bound instead"
+    ],
+    "natural_latency_measured": false
+  },
+  "open_boundaries": [
+    "Natural Host/Authorization producer of supplied execution identity and same owner/root context",
+    "Independent authority for opaque plan/GO/attempt/consumption references",
+    "Global uniqueness or anti-clone proof across owner roots",
+    "Pending order custody and current full quantity/risk/safety admission",
+    "Original decision validity and original recovery/never-submitted evidence",
+    "Continuous host mandate and actual venue/host latency",
+    "Legacy unmarked/no-context account path remains NOT_ASSESSED",
+    "Seven previously documented collector/account-closeout contracts"
+  ],
+  "operations": {
+    "real_venue_calls": 0,
+    "real_credential_access": false,
+    "real_orders": 0,
+    "live_host_started": false,
+    "external_history_written": false,
+    "market_price_behavior_changed": false
+  }
+}

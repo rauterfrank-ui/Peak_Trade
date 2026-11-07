@@ -113,7 +113,7 @@ def bind_plan_locked_v1(owner, reservation_id, envelope):
     return detached(link)
 
 
-def mark_submit_locked_v1(owner, reservation_id, identity):
+def _validated_submit_link_v1(owner, reservation_id, identity):
     found = owner._require_locked(reservation_id)
     if found is None or found[1].state.value != "COMMITTED":
         raise ValueError("EXECUTION_SUBMIT_OWNER_FENCED")
@@ -124,6 +124,29 @@ def mark_submit_locked_v1(owner, reservation_id, identity):
         raise ValueError("EXECUTION_IDENTITY_TYPE_INVALID")
     link = {**old, "phase": "SUBMIT_MAY_HAVE_OCCURRED", "identity": identity.to_dict()}
     validate_link_v1(owner, reservation_id, link)
+    return link
+
+
+def inspect_submit_context_locked_v1(owner, reservation_id, envelope, identity):
+    """Read the original submit predicates without advancing either barrier."""
+    if owner._store is None:
+        raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
+    link = _validated_submit_link_v1(owner, reservation_id, identity)
+    assert_envelope_unmodified_v1(envelope)
+    if link["envelope"] != envelope.to_runtime_json_v1():
+        raise ValueError("PORTFOLIO_EXECUTION_ENVELOPE_MISMATCH")
+    return {
+        "root": str(owner._store.root),
+        "account": owner._account_identity,
+        "reservation_id": reservation_id,
+        "envelope_digest": envelope.envelope_digest,
+        "execution_identity_digest": identity.identity_digest(),
+        "scope": "ORIGINAL_COMMITTED_PLAN_CONTEXT_ONLY",
+    }
+
+
+def mark_submit_locked_v1(owner, reservation_id, identity):
+    link = _validated_submit_link_v1(owner, reservation_id, identity)
     owner._execution_links[reservation_id] = detached(link)
     owner._persist_locked()
     return detached(link)

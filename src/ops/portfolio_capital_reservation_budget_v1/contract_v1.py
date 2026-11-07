@@ -1038,6 +1038,13 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return mark_submit_locked_v1(self, str(reservation_id), identity)
 
+    def inspect_execution_submit_context_v1(self, reservation_id, envelope, identity):
+        """Original committed-plan predicates under lock; no submit or new authority."""
+        from .execution_v1 import inspect_submit_context_locked_v1
+
+        with self._lock:
+            return inspect_submit_context_locked_v1(self, str(reservation_id), envelope, identity)
+
     def reconcile_execution_v1(self, reservation_id, **kwargs):
         from .execution_v1 import reconcile_locked_v1
 

@@ -44,6 +44,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
     prove_one_shot_join_standing_boundary_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+    FullCoreEnvelopeBoundSendSeamError,
+    inspect_original_portfolio_execution_context_v1,
     prove_follow_on_submit_isolated_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
@@ -301,6 +303,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     opener_factory: Callable[[], OpenerDirector] | None = None,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    portfolio_budget_owner=None,
+    portfolio_reservation_id: str = "",
+    execution_identity=None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -316,6 +321,16 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
+    try:
+        inspect_original_portfolio_execution_context_v1(
+            envelope=envelope,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
+            required_execution_environment="LIVE",
+        )
+    except FullCoreEnvelopeBoundSendSeamError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     root = Path(store_root)
     assert_post_durable_store_root_isolation_v1(store_root=root)
     root.mkdir(parents=True, exist_ok=True)
@@ -334,6 +349,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             envelope=envelope,
             read_only_get_transport=read_only_get_transport,
             pretrade_decision_id=pre_mutation_id,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
         )
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
@@ -371,6 +389,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             k1_backend=k1_backend,
             opener_factory=opener_factory,
             probe=probe,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
@@ -419,6 +440,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         store_root=root,
         transport=_ReplayBlockedTransportV1(),
         handle=handle,
+        portfolio_budget_owner=portfolio_budget_owner,
+        portfolio_reservation_id=portfolio_reservation_id,
+        execution_identity=execution_identity,
     )
     second_post = probe.http_post_attempts > 1
     recon = _enter_reconciliation_v1(envelope=envelope, transport=read_only_get_transport)

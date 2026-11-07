@@ -41,6 +41,7 @@ from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_eff
     FullCoreEnvelopeBoundSendSeamError,
     _payload_from_envelope_v1,
     attempt_envelope_bound_external_effect_send_v1,
+    inspect_original_portfolio_execution_context_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     load_external_effect_durable_consume_v1,
@@ -283,6 +284,9 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     reselect: bool = False,
     sizing_recompute: bool = False,
     mv2_double_play_reevaluate: bool = False,
+    portfolio_budget_owner=None,
+    portfolio_reservation_id: str = "",
+    execution_identity=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -311,6 +315,16 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     if envelope.issued_for_exact_action != ISSUED_FOR_EXACT_ACTION:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError("ISSUED_FOR_EXACT_ACTION_MISMATCH")
+    try:
+        inspect_original_portfolio_execution_context_v1(
+            envelope=envelope,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
+            required_execution_environment="LIVE",
+        )
+    except FullCoreEnvelopeBoundSendSeamError as exc:
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     permit = issue_external_effect_permit_v1(envelope, authority_ref=POST_OWNER_GO)
     observed.permit_minted = True
     observed.events.append("PERMIT_MINTED")
@@ -347,6 +361,9 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             store_root=store_root,
             transport=transport,
             handle=send_handle,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_reservation_id=portfolio_reservation_id,
+            execution_identity=execution_identity,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
