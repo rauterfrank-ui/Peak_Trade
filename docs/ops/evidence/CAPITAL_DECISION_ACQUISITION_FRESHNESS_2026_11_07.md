@@ -52,6 +52,8 @@ Cacheobjekte oder GETs statt des bereits geprüften Snapshots verwenden.
   kein zusätzlicher GET ersetzt einen bereits geprüften Snapshot. Decision,
   tatsächliche Aufnahme und Venue-uTime bleiben verschiedene Bezüge.
 - Carrier und ursprünglicher Enter-Consumer prüfen das verstrichene Alter erneut.
+  Ein Frischeablauf während der Carrierbildung liefert den vorgesehenen
+  sperrenden Ownerfehler statt eines unerwarteten Hostfehlers.
   Eine Wiederholung derselben Aufnahme altert weiter. Gleiche Antwortbytes einer
   echten neuen Aufnahme dürfen denselben Kapitalbetrag liefern. Der BASE-Owner
   erhält aktuelle validierte Zeit-/Peerbezüge ohne zusätzlichen Kapitalbetrag;
@@ -63,7 +65,7 @@ zuständig. Keine Kapitalfreigabe und keine neue Mengenentscheidung.
 
 ## Prüfung und Grenzen
 
-Die gezielte Auswahl aus zwölf Modulen besteht mit **150 PASS**: ursprünglicher
+Die gezielte Auswahl aus zwölf Modulen besteht mit **151 PASS**: ursprünglicher
 Transportcode mit vollständig lokalen Netzwerk-/Signierstubs, Common-Epoch,
 Carrier, Treasury-/E4-/BASE-/P01-Consumer, Ownerprüfungen, monetäre Normalisierung,
 GET-Budget und WP03-/WP04-Supervisorintegration. Daten sind synthetisch; kein

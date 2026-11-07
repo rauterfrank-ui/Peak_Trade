@@ -205,6 +205,24 @@ def test_carrier_rechecks_elapsed_time_without_an_extra_get(local_wire):
     assert transport.request_count == 9
 
 
+def test_expiry_during_carrier_build_uses_the_same_fail_closed_owner_error(local_wire, monkeypatch):
+    _, transport = local_wire
+    handoff = compose(transport)
+    calls = []
+
+    def advancing_clock():
+        calls.append(True)
+        return "2026-11-07T12:00:01Z" if len(calls) <= 5 else "2026-11-07T12:00:07Z"
+
+    monkeypatch.setattr(mapping, "utc_now_iso_v1", advancing_clock)
+    with pytest.raises(
+        CurrentProductiveCommonEpochToEnterLive29PHandoffError, match="ACQUISITION_STALE"
+    ):
+        carrier(handoff, transport)
+    assert len(calls) == 6
+    assert transport.request_count == 9
+
+
 def test_new_decision_cannot_relabel_an_old_typed_result(local_wire, monkeypatch):
     state, transport = local_wire
     first = compose(transport)

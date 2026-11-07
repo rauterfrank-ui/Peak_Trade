@@ -292,7 +292,12 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         )
     observed_at = handoff.observation.observed_at_as_of
 
-    age_seconds = acquisition_age_seconds_v1(acquired_at_utc=observed_at, now_utc=utc_now_iso_v1())
+    try:
+        age_seconds = acquisition_age_seconds_v1(
+            acquired_at_utc=observed_at, now_utc=utc_now_iso_v1()
+        )
+    except ValueError as exc:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(str(exc)) from exc
 
     raw_acct_lv = str(handoff.adaptation.raw_token or "").strip()
 
