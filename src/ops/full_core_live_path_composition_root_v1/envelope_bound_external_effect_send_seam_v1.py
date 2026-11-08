@@ -166,10 +166,21 @@ def inspect_original_portfolio_execution_context_v1(
                 and proof["order_environment"] != required_execution_environment
             ):
                 raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVIRONMENT_MISMATCH")
+            portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
+                portfolio_reservation_id, envelope
+            )
+            portfolio_budget_owner.inspect_current_core_cursor_v1(
+                portfolio_reservation_id, envelope
+            )
             return proof
-        return portfolio_budget_owner.inspect_execution_submit_context_v1(
+        proof = portfolio_budget_owner.inspect_execution_submit_context_v1(
             portfolio_reservation_id, envelope, execution_identity
         )
+        portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
+            portfolio_reservation_id, envelope
+        )
+        portfolio_budget_owner.inspect_current_core_cursor_v1(portfolio_reservation_id, envelope)
+        return proof
     except (ValueError, TypeError, AttributeError, KeyError) as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
 

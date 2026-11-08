@@ -143,7 +143,16 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
         validate_attempt_locked_v2(owner, reservation_id, link, identity, pending=pending_attempt)
 
 
-def bind_plan_locked_v1(owner, reservation_id, envelope, *, canonical_intent=None, venue_plan=None):
+def bind_plan_locked_v1(
+    owner,
+    reservation_id,
+    envelope,
+    *,
+    canonical_intent=None,
+    venue_plan=None,
+    core_parent=None,
+    core_cursor_root=None,
+):
     if owner._store is None or owner._require_locked(reservation_id) is None:
         raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
     link = {
@@ -152,10 +161,12 @@ def bind_plan_locked_v1(owner, reservation_id, envelope, *, canonical_intent=Non
         "phase": "PLAN_BOUND",
         "reconciliation": None,
     }
-    if canonical_intent is not None or venue_plan is not None:
+    if any(x is not None for x in (canonical_intent, venue_plan, core_parent, core_cursor_root)):
         from .plan_origin_v1 import bind_plan_origin_v1
 
-        link["plan_origin"] = bind_plan_origin_v1(canonical_intent, venue_plan)
+        link["plan_origin"] = bind_plan_origin_v1(
+            canonical_intent, venue_plan, core_parent=core_parent, core_cursor_root=core_cursor_root
+        )
     validate_link_v1(owner, reservation_id, link)
     if any(
         rid != reservation_id and old["envelope"]["client_order_id"] == envelope.client_order_id

@@ -1027,7 +1027,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             )
 
     def bind_execution_plan_v1(
-        self, reservation_id, envelope, *, canonical_intent=None, venue_plan=None
+        self,
+        reservation_id,
+        envelope,
+        *,
+        canonical_intent=None,
+        venue_plan=None,
+        core_parent=None,
+        core_cursor_root=None,
     ):
         from .execution_v1 import bind_plan_locked_v1
 
@@ -1038,6 +1045,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 envelope,
                 canonical_intent=canonical_intent,
                 venue_plan=venue_plan,
+                core_parent=core_parent,
+                core_cursor_root=core_cursor_root,
             )
 
     def mark_execution_submit_boundary_v1(
@@ -1113,6 +1122,74 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
         with self._lock:
             return inspect_submit_context_locked_v1(self, str(reservation_id), envelope, identity)
+
+    def inspect_current_entry_budget_policy_v1(self, reservation_id, envelope):
+        """Current original Ops ceilings over unchanged original notional holds.
+
+        This reads policy and the two monetary operands under this owner's lock.
+        It neither renews Core/risk inputs nor resizes, persists or releases a hold.
+        Generic historical link validation and reconciliation remain separate.
+        """
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_entry_budget_policy_v1 import (
+            load_entry_budget_policy_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+            assert_envelope_unmodified_v1,
+        )
+
+        with self._lock:
+            found = self._require_locked(reservation_id)
+            if (
+                found is None
+                or self._store is None
+                or not self._admitted
+                or found[1].state is not ReservationStateV1.COMMITTED
+            ):
+                raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_OWNER_FENCED")
+            assert_envelope_unmodified_v1(envelope)
+            link = self._execution_links.get(str(reservation_id))
+            if not link or link["envelope"] != envelope.to_runtime_json_v1():
+                raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_PLAN_MISMATCH")
+            policy = load_entry_budget_policy_v1()
+            if self._capital_scope["settlement_currency"] != policy.currency:
+                raise ValueError("CURRENT_ENTRY_BUDGET_CURRENCY_MISMATCH")
+            amount, aggregate = found[1].amount, self._active_sum_locked()
+            if amount > policy.per_entry_notional_limit:
+                raise ValueError("CURRENT_ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED")
+            if aggregate > policy.aggregate_reserved_notional_limit:
+                raise ValueError("CURRENT_ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED")
+            return {
+                "scope": "CURRENT_ORIGINAL_ENTRY_BUDGET_POLICY_ONLY",
+                "policy_digest": policy.digest_v1(),
+                "currency": policy.currency,
+                "reserved_notional": str(amount),
+                "aggregate_reserved_notional": str(aggregate),
+            }
+
+    def inspect_current_core_cursor_v1(self, reservation_id, envelope):
+        """Read only the cursor pinned by the original N1 plan writer."""
+        from .core_cursor_source_v1 import inspect_current_core_cursor_v1
+        from .execution_v1 import validate_link_v1
+        from .plan_origin_v1 import CORE_CURSOR_SCHEMA
+
+        with self._lock:
+            found = self._require_locked(reservation_id)
+            if (
+                found is None
+                or not self._admitted
+                or found[1].state is not ReservationStateV1.COMMITTED
+            ):
+                raise ValueError("CURRENT_CORE_CURSOR_ORIGINAL_OWNER_FENCED")
+            link = self._execution_links.get(str(reservation_id))
+            if not link or link["envelope"] != envelope.to_runtime_json_v1():
+                raise ValueError("CURRENT_CORE_CURSOR_ORIGINAL_PLAN_MISMATCH")
+            validate_link_v1(self, str(reservation_id), link)
+            origin = link.get("plan_origin", {})
+            if origin.get("schema") != CORE_CURSOR_SCHEMA:
+                return {"scope": "LEGACY_ORIGINAL_CORE_CURSOR_NOT_ASSESSED"}
+            return inspect_current_core_cursor_v1(
+                origin["core_cursor_source"], intent_side=origin["canonical_order_intent"]["side"]
+            )
 
     def reconcile_execution_v1(self, reservation_id, **kwargs):
         from .execution_v1 import reconcile_locked_v1
