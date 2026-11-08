@@ -137,3 +137,13 @@ Legacyherkunft, vollständige Pending-Custody und autonomer Host bleiben offen.
 S6 endet weiter PRE_EXTERNAL_EFFECT; MAX_POSITIONS_EFFECTIVE=1 und HOST_JOIN=False
 bleiben. Kein neuer GET, Refresh, Retry, Finanzwert, operativer Safety-/Credential-
 zugriff, Venuekontakt oder Dienststart gehört zu diesem Anschluss.
+
+## Nachgeführter Abnahmestand vom 08.11.2026
+
+Der obige Fehlerbefund beschreibt den damaligen Prüflauf. Die anschließende
+[Kompositionsabnahme](../evidence/COMPOSITION_ACCEPTANCE_DEBT_REPAIR_2026_11_08.md)
+schließt diese 25 Kompositionsfehler und alle drei zuvor ausgeschlossenen
+Dokumentverträge durch quellengebundene Testreparaturen: gemeinsamer Lauf
+1132 PASS, keine Deselektion. Produktowner und Betriebsgrenzen bleiben unverändert.
+Sieben ältere Collector-/Account-Verträge und die weiteren oben benannten
+Integrations- und Gesamtabnahmefragen bleiben offen.
