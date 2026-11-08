@@ -4,6 +4,9 @@ from dataclasses import asdict, replace
 from decimal import Decimal
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
     invoke_join_v1 as n1,

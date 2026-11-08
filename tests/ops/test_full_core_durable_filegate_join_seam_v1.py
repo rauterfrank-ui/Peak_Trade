@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
+from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
+    synthetic_ports_and_isolation as synthetic_ports_and_isolation,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
@@ -71,13 +74,15 @@ def _join_inputs(**overrides):
     return join_durable_filegate_into_admission_inputs_v1(**payload)
 
 
-def test_join_flag_and_standing_gates_remain_false() -> None:
+def test_join_exists_without_changing_current_standing_pins() -> None:
     assert DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        # The base revision already names the original Treasury handoff here;
+        # this diagnostic label is not a substitute for actual POST authority.
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     node = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
@@ -214,23 +219,24 @@ def test_join_does_not_change_hardcoded_untrusted_injector() -> None:
     assert decision.admitted is False
 
 
-def test_full_core_path_join_trusted_active_still_halts_before_wire(
+def test_full_core_active_filegate_does_not_promote_original_no_action_to_enter(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     path = _bind_state_path(tmp_path, monkeypatch)
     StatePersistence(str(path)).save(KillSwitchState.ACTIVE)
-    result, _ = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
-    assert result.boundary is not None
-    assert result.boundary.halt_before_wire is True
-    assert result.boundary.admission is not None
-    assert result.boundary.admission.admitted is False
+    evidence = read_durable_filegate_join_evidence_v1()
+    assert evidence.evidence_status == DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+    assert evidence.blocked is False
+    result, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    # The actual original decision is NO_ACTION; composition groups this under
+    # its HOLD deny reason. Neither label may fabricate ENTER or a later receipt.
+    assert replay.replay_pass
+    assert str(replay.evidence.decision_outcome).lower() == "no_action"
+    assert result.stage.value == "COMPOSITION"
+    assert result.reason_codes == ("HOLD",)
+    assert result.boundary is None
     assert result.wire_send_occurred is False
-    assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
-    assert "LIVE_ARMED_FALSE" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
-    assert "DURABLE_FILEGATE_EVIDENCE_MISSING" not in result.reason_codes
-    assert JOIN_SEAM_ID
-    assert result.boundary.live_execution_port_constructed is False
+    assert result.venue_plan is None
 
 
 def test_runbook_and_spec_bind_join_without_live_arming() -> None:

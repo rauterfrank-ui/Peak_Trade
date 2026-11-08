@@ -14,6 +14,19 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+    CurrentPostSafetyVetoError,
+    resolve_current_post_safety_context_v1,
+)
+from .current_productive_post_venue_quantity_v1 import (
+    CurrentPostVenueQuantityError,
+    inspect_current_post_venue_quantity_v1,
+)
+from .current_productive_post_pending_observation_v1 import (
+    CurrentPostPendingObservationError,
+    inspect_current_post_pending_v1,
+)
+
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -173,6 +186,9 @@ def attempt_envelope_bound_external_effect_send_v1(
     portfolio_reservation_id: str = "",
     execution_identity=None,
     execution_plan_context=None,
+    post_safety_context=None,
+    post_quantity_context=None,
+    post_pending_context=None,
 ) -> EnvelopeBoundSendSeamResultV1:
     if canonical_intent is not None:
         try:
@@ -224,12 +240,40 @@ def attempt_envelope_bound_external_effect_send_v1(
         execution_plan_context=execution_plan_context,
     )
     owned_identity = None
+    if post_pending_context is not None:
+        try:
+            inspect_current_post_pending_v1(
+                post_pending_context,
+                envelope=envelope,
+                stage="BEFORE_BUDGET_SUBMIT",
+                expected_account=context["account"] if context is not None else None,
+            )
+        except CurrentPostPendingObservationError as exc:
+            raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
+    if post_quantity_context is not None:
+        try:
+            inspect_current_post_venue_quantity_v1(
+                post_quantity_context, envelope=envelope, stage="BEFORE_BUDGET_SUBMIT"
+            )
+        except CurrentPostVenueQuantityError as exc:
+            raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
+    if post_safety_context is not None:
+        try:
+            resolve_current_post_safety_context_v1(
+                envelope, post_safety_context, stage="BEFORE_BUDGET_SUBMIT"
+            )
+        except CurrentPostSafetyVetoError as exc:
+            raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
     if context is not None:
         # Both durable barriers precede any transport. A crash between them is
         # uncertain and must be reconciled; it never authorizes a resend.
         if execution_plan_context is not None:
             owned_identity = portfolio_budget_owner.begin_execution_submit_v2(
-                portfolio_reservation_id, envelope, execution_plan_context, permit
+                portfolio_reservation_id,
+                envelope,
+                execution_plan_context,
+                permit,
+                transport_store_root=store_root,
             )
         else:
             portfolio_budget_owner.mark_execution_submit_boundary_v1(
@@ -274,6 +318,8 @@ def attempt_envelope_bound_external_effect_send_v1(
         )
     except FullCoreProductiveHttpPostError as exc:
         msg = str(exc)
+        if msg.startswith(("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")):
+            raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
         if msg in {
             "REDIRECT_OFF_HOST_FORBIDDEN",
             "HOST_NOT_EEA_OKX",

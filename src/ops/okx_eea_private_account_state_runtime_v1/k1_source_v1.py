@@ -164,6 +164,14 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
 
     credential_profile = K1_ACCOUNT_READ_PROFILE
 
+    def _assert_current_resource_pair_v1(self):
+        super()._assert_current_resource_pair_v1()
+        if (
+            not isinstance(self.transport, _AccountReadTransportV1)
+            or self.transport._transport._handle is not self.credential
+        ):
+            raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_BINDING_REQUIRED")
+
     def __init__(self, *, credential, transport, **kwargs):
         if (
             not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1)

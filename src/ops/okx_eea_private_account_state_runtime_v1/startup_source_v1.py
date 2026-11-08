@@ -8,6 +8,8 @@ service. Transport evidence is checked, not manufactured.
 from __future__ import annotations
 
 from contextlib import contextmanager
+from dataclasses import asdict, dataclass
+from datetime import datetime
 import json
 import math
 import os
@@ -23,6 +25,7 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     BASELINE_REST_RECOVERY_ALLOWLIST,
+    POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.credentials_v1 import (
     ObservationCredentialHandleV1,
@@ -40,8 +43,28 @@ ALGO_PENDING_PATH = "/api/v5/trade/orders-algo-pending"
 SUPPORTED_ALGO_TYPES = ("conditional", "oco", "trigger", "move_order_stop")
 
 
+@dataclass(frozen=True)
+class PendingOrdersReadbackV1:
+    """Original completed host observation; not a new grant or durable receipt."""
+
+    account: str
+    session_id: str
+    started_at_unix: float
+    completed_at_unix: float
+    max_age_seconds: float
+    gets_json: str
+
+
 class AccountObservationSourceError(ValueError):
     """Account source is not suitable for the existing startup contract."""
+
+
+def is_original_account_observation_source_v1(source):
+    # Explicitly retain the two existing credential owners; do not accept a
+    # caller's arbitrary subclass or equate dedicated observation and K1 grants.
+    from .k1_source_v1 import K1AccountObservationSourceV1
+
+    return type(source) in {AccountObservationSourceV1, K1AccountObservationSourceV1}
 
 
 class AccountObservationSourceV1:
@@ -73,6 +96,10 @@ class AccountObservationSourceV1:
         self.session_id = session_id
         self.clock = clock
         self.closed = False
+        self._pending_observation = None
+        self._observation_gets = {}
+        self._observation_credential = None
+        self._observation_transport = None
 
     def _validate_credential_v1(self, credential):
         if not isinstance(credential, ObservationCredentialHandleV1):
@@ -100,6 +127,8 @@ class AccountObservationSourceV1:
         self.closed = True
         self.transport = None
         self.credential = None
+        self._pending_observation = None
+        self._observation_gets = {}
 
     def __call__(self, path, params):
         if self.closed:
@@ -129,6 +158,11 @@ class AccountObservationSourceV1:
                 raise AccountObservationSourceError("OBSERVATION_ACCOUNT_SCOPE_REQUIRED")
         if query != expected_params:
             raise AccountObservationSourceError("OBSERVATION_ACCOUNT_SCOPE_REQUIRED")
+        if path == "/api/v5/account/config":
+            self._pending_observation = None
+            self._observation_gets = {}
+            self._observation_credential = self.credential
+            self._observation_transport = self.transport
         payload = self._verified_get_v1(path, expected_params)
         if path == "/api/v5/account/config":
             if (
@@ -152,6 +186,7 @@ class AccountObservationSourceV1:
     def _verified_get_v1(self, path, params):
         # This private helper has only fixed internal callers; public callback
         # scope remains the existing recovery allowlist. No mutation endpoints.
+        self._pending_observation = None
         endpoint = path + ("?" + urlencode(params) if params else "")
         result = self.transport.get(
             endpoint=endpoint,
@@ -183,7 +218,103 @@ class AccountObservationSourceV1:
         # fields (e.g. continuation metadata) need an explicit contract review.
         if set(payload) - {"code", "msg", "data"}:
             raise AccountObservationSourceError("OBSERVATION_RESPONSE_SCOPE_UNPROVEN")
+        # Detach actual original evidence; no synthesized time/session labels.
+        self._observation_gets[endpoint] = json.loads(json.dumps(asdict(result), allow_nan=False))
         return payload
+
+    def bind_completed_host_observation_v1(self, observation):
+        """Called by the original collector after its full baseline validation."""
+        snap = observation.observed
+        if observation.account != self.expected_account_identity or observation.pending_orders:
+            raise AccountObservationSourceError("OBSERVATION_PENDING_ACCOUNT_UNPROVEN")
+        self._pending_observation = PendingOrdersReadbackV1(
+            account=observation.account,
+            session_id=self.session_id,
+            started_at_unix=snap.event_time_unix,
+            completed_at_unix=snap.wall_time_unix,
+            max_age_seconds=snap.max_age_seconds,
+            gets_json=json.dumps(
+                self._observation_gets, sort_keys=True, separators=(",", ":"), allow_nan=False
+            ),
+        )
+
+    def pending_observation_v1(self):
+        return self._pending_observation
+
+    def inspect_pending_observation_v1(self, observation):
+        """Read the same still-owned session and completed source; no GET."""
+        if self.closed or observation is None or observation is not self._pending_observation:
+            raise AccountObservationSourceError("OBSERVATION_PENDING_SOURCE_CLOSED_OR_REPLACED")
+        self._validate_credential_v1(self.credential)
+        self._assert_current_resource_pair_v1()
+        if (
+            observation.account != self.expected_account_identity
+            or observation.session_id != self.session_id
+        ):
+            raise AccountObservationSourceError("OBSERVATION_PENDING_SESSION_ACCOUNT_CHANGED")
+        now = time.time()
+        limit = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        if not (
+            observation.max_age_seconds == limit
+            and all(
+                type(v) in {int, float} and math.isfinite(v)
+                for v in (observation.started_at_unix, observation.completed_at_unix)
+            )
+            and 0
+            <= now - observation.completed_at_unix
+            <= now - observation.started_at_unix
+            <= limit
+        ):
+            raise AccountObservationSourceError("OBSERVATION_PENDING_HOST_WINDOW_STALE_OR_FUTURE")
+        gets = json.loads(observation.gets_json)
+        endpoints = ["/api/v5/account/config", "/api/v5/trade/orders-pending?instType=SWAP"] + [
+            ALGO_PENDING_PATH + "?" + urlencode({"instType": "SWAP", "ordType": kind})
+            for kind in SUPPORTED_ALGO_TYPES
+        ]
+        for endpoint in endpoints:
+            row = gets.get(endpoint)
+            if not isinstance(row, dict) or row.get("pretrade_decision_id") != self.session_id:
+                raise AccountObservationSourceError("OBSERVATION_PENDING_ACQUISITION_UNPROVEN")
+            try:
+                acquired = datetime.fromisoformat(row["acquired_at_utc"].replace("Z", "+00:00"))
+                if (
+                    acquired.tzinfo is None
+                    or not observation.started_at_unix
+                    <= acquired.timestamp()
+                    <= observation.completed_at_unix
+                ):
+                    raise ValueError("window")
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
+                raise AccountObservationSourceError(
+                    "OBSERVATION_PENDING_ACQUISITION_UNPROVEN"
+                ) from exc
+            payload = row["payload"]
+            if endpoint == endpoints[0]:
+                if (
+                    len(payload["data"]) != 1
+                    or payload["data"][0].get("uid") != observation.account
+                ):
+                    raise AccountObservationSourceError("OBSERVATION_PENDING_ACCOUNT_UNPROVEN")
+            elif payload.get("data") != []:
+                raise AccountObservationSourceError("OBSERVATION_PENDING_NOT_EMPTY")
+        return dict(
+            account=observation.account,
+            session_id=observation.session_id,
+            started_at_unix=observation.started_at_unix,
+            completed_at_unix=observation.completed_at_unix,
+            scope="ORIGINAL_ACCOUNT_WIDE_SWAP_ORDINARY_AND_FOUR_ALGO_TYPES",
+            endpoints=endpoints,
+            source_class=type(self).__name__,
+        )
+
+    def _assert_current_resource_pair_v1(self):
+        # Dedicated observer composition is caller-owned; the existing object
+        # identity checks retain that exact pair, without claiming auth.
+        if (
+            self.credential is not self._observation_credential
+            or self.transport is not self._observation_transport
+        ):
+            raise AccountObservationSourceError("OBSERVATION_PENDING_RESOURCE_CHANGED")
 
     def collect_v1(self, *, instrument_ids_by_native_id):
         return collect_host_account_observation_v1(

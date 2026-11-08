@@ -9,6 +9,11 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
+    synthetic_current_post_quantity_context_v1,
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
     serialize_canonical_okx_post_body_v1,
@@ -140,7 +145,7 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def _envelope():
     plan = VenuePlanCandidateV1(
-        instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
+        instrument_id="0G-USDT-SWAP",
         side="buy",
         quantity="1",
         order_type="market",
@@ -148,7 +153,7 @@ def _envelope():
         reduce_only=False,
         clordid="pt-fc-one-shot-join-v1",
         venue_native_payload={
-            "instId": "okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
+            "instId": "0G-USDT-SWAP",
             "ordType": "market",
             "side": "buy",
             "sz": "1",
@@ -184,8 +189,15 @@ def _attempt(tmp_path: Path, **kwargs: Any):
     post_owner_go = kwargs.pop("post_owner_go", POST_OWNER_GO)
     if kwargs.pop("persist_post_go", True) and str(post_owner_go) == POST_OWNER_GO:
         _persist_post_go(store_root)
+    envelope = kwargs.pop("envelope", _envelope())
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
-        envelope=kwargs.pop("envelope", _envelope()),
+        envelope=envelope,
+        post_quantity_context=kwargs.pop(
+            "post_quantity_context", synthetic_current_post_quantity_context_v1(envelope)
+        ),
+        post_pending_context=kwargs.pop(
+            "post_pending_context", synthetic_current_post_pending_context_v1(envelope)
+        ),
         post_owner_go=post_owner_go,
         store_root=store_root,
         k1_backend=kwargs.pop("k1_backend", backend),
@@ -321,6 +333,8 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     _persist_post_go(tmp_path)
     join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=_envelope(),
+        post_quantity_context=synthetic_current_post_quantity_context_v1(_envelope()),
+        post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path,
         k1_backend=_FakeKeychainBackend(),
@@ -495,6 +509,8 @@ def test_bypass_flags_are_false(tmp_path: Path) -> None:
     _persist_post_go(tmp_path / "once")
     first_join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=_envelope(),
+        post_quantity_context=synthetic_current_post_quantity_context_v1(_envelope()),
+        post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path / "once",
         k1_backend=_FakeKeychainBackend(),

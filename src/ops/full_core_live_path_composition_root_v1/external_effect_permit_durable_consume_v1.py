@@ -14,6 +14,8 @@ from __future__ import annotations
 import json
 import fcntl
 import os
+from dataclasses import dataclass
+from uuid import uuid4
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,7 +36,9 @@ DURABLE_CONSUME_FILENAME = "full_core_external_effect_permit_consume_v1.json"
 DURABLE_STATE_NONE = "NONE"
 DURABLE_STATE_SENT_INITIATED = "SENT_INITIATED"
 DURABLE_STATE_COMPLETED = "COMPLETED"
-_CONSUMED_STATES = frozenset({DURABLE_STATE_SENT_INITIATED, DURABLE_STATE_COMPLETED})
+DURABLE_STATE_ABORTED_BEFORE_TRANSPORT = "ABORTED_BEFORE_TRANSPORT"
+_INITIAL_STATES = frozenset({DURABLE_STATE_SENT_INITIATED, DURABLE_STATE_COMPLETED})
+_CONSUMED_STATES = _INITIAL_STATES | {DURABLE_STATE_ABORTED_BEFORE_TRANSPORT}
 _SECRET_TOKENS = ("secret", "passphrase", "api_key", "apikey", "private_key")
 
 
@@ -48,6 +52,173 @@ def _utc_now_iso_v1() -> str:
 
 def _canonical_json(payload: Mapping[str, Any]) -> str:
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+def _write_record_v1(path, record):
+    """Same original writer, including file and directory sync before readback."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as stream:
+        stream.write(_canonical_json(record) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    tmp.replace(path)
+    fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+    if json.loads(path.read_text(encoding="utf-8")) != record:
+        raise FullCoreExternalEffectDurableConsumeError("DURABLE_TRANSPORT_READBACK_UNPROVEN")
+
+
+def _validate_transport_attempt_v1(record):
+    attempt = record.get("transport_attempt")
+    if attempt is None:
+        if record.get("durable_state") == DURABLE_STATE_ABORTED_BEFORE_TRANSPORT:
+            raise FullCoreExternalEffectDurableConsumeError("DURABLE_ABORT_PROOF_MISSING")
+        return
+    try:
+        phase = attempt["phase"]
+        extra = {
+            "PRE_SOCKET": set(),
+            "MAY_HAVE_SENT": {"socket_boundary_at_utc"},
+            "ABORTED": {"aborted_at_utc", "reason_code"},
+        }[phase]
+        if not (
+            set(attempt) == {"contract_id", "claim_id", "phase", "claimed_at_utc"} | extra
+            and attempt["contract_id"] == "ORIGINAL_PERMIT_TRANSPORT_ATTEMPT_V1"
+            and len(attempt["claim_id"]) == 32
+            and all(c in "0123456789abcdef" for c in attempt["claim_id"])
+            and record["consumed"] is True
+            and record["resubmit_allowed"] is False
+            and record["retry_allowed"] is False
+            and record["second_submit_allowed"] is False
+            and (
+                (phase == "ABORTED")
+                == (record["durable_state"] == DURABLE_STATE_ABORTED_BEFORE_TRANSPORT)
+            )
+            and (
+                phase != "ABORTED"
+                or attempt["reason_code"].startswith(
+                    ("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")
+                )
+            )
+        ):
+            raise ValueError("shape")
+        times = [
+            datetime.fromisoformat(attempt[key].replace("Z", "+00:00"))
+            for key in (
+                ["claimed_at_utc"]
+                + (
+                    ["aborted_at_utc"]
+                    if phase == "ABORTED"
+                    else ["socket_boundary_at_utc"]
+                    if phase == "MAY_HAVE_SENT"
+                    else []
+                )
+            )
+        ]
+        if any(value.tzinfo is None for value in times) or times != sorted(times):
+            raise ValueError("timestamps")
+    except (ValueError, KeyError, TypeError, AttributeError) as exc:
+        raise FullCoreExternalEffectDurableConsumeError("DURABLE_TRANSPORT_PROOF_INVALID") from exc
+
+
+@dataclass(frozen=True)
+class OriginalPermitTransportAttemptV1:
+    """Original consumed permit's one transport claim; never send authority."""
+
+    store_root: str
+    permit_id: str
+    envelope_id: str
+    envelope_digest: str
+    claim_id: str
+
+    def _read_pre_socket_v1(self):
+        record = load_external_effect_durable_consume_v1(store_root=self.store_root)["record"]
+        if not (
+            record
+            and record.get("permit_id") == self.permit_id
+            and record.get("envelope_id") == self.envelope_id
+            and record.get("envelope_digest") == self.envelope_digest
+            and record.get("durable_state") == DURABLE_STATE_SENT_INITIATED
+            and record.get("transport_attempt", {}).get("phase") == "PRE_SOCKET"
+            and record["transport_attempt"]["claim_id"] == self.claim_id
+        ):
+            raise FullCoreExternalEffectDurableConsumeError(
+                "ORIGINAL_TRANSPORT_CLAIM_CLOSED_OR_MISMATCH"
+            )
+        return record
+
+    def inspect_v1(self, *, permit_id=None, envelope_id=None, envelope_digest=None):
+        if any(
+            actual is not None and actual != expected
+            for actual, expected in (
+                (permit_id, self.permit_id),
+                (envelope_id, self.envelope_id),
+                (envelope_digest, self.envelope_digest),
+            )
+        ):
+            raise FullCoreExternalEffectDurableConsumeError("ORIGINAL_TRANSPORT_IDENTITY_MISMATCH")
+        self._read_pre_socket_v1()
+
+    def mark_socket_boundary_v1(self):
+        self._transition_v1("MAY_HAVE_SENT")
+
+    def abort_before_transport_v1(self, *, reason_code):
+        if not isinstance(reason_code, str) or not reason_code.startswith(
+            ("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")
+        ):
+            raise FullCoreExternalEffectDurableConsumeError(
+                "ORIGINAL_TRANSPORT_ABORT_REASON_INVALID"
+            )
+        self._transition_v1("ABORTED", reason_code=reason_code)
+
+    def _transition_v1(self, phase, *, reason_code=None):
+        with _writer_lock_v1(Path(self.store_root)):
+            record = self._read_pre_socket_v1()
+            attempt = {**record["transport_attempt"], "phase": phase}
+            if phase == "ABORTED":
+                attempt.update(aborted_at_utc=_utc_now_iso_v1(), reason_code=reason_code)
+                record["durable_state"] = DURABLE_STATE_ABORTED_BEFORE_TRANSPORT
+            else:
+                attempt["socket_boundary_at_utc"] = _utc_now_iso_v1()
+            record["transport_attempt"] = attempt
+            _validate_transport_attempt_v1(record)
+            _assert_no_secrets(record)
+            _write_record_v1(durable_consume_path_v1(self.store_root), record)
+
+
+def claim_original_permit_transport_attempt_v1(
+    *, store_root, permit_id, envelope_id, envelope_digest
+):
+    root = Path(store_root).resolve()
+    with _writer_lock_v1(root):
+        record = load_external_effect_durable_consume_v1(store_root=root)["record"]
+        if not (
+            record
+            and record.get("durable_state") == DURABLE_STATE_SENT_INITIATED
+            and record.get("permit_id") == permit_id
+            and record.get("envelope_id") == envelope_id
+            and record.get("envelope_digest") == envelope_digest
+            and "transport_attempt" not in record
+            and record.get("consumed") is True
+        ):
+            raise FullCoreExternalEffectDurableConsumeError(
+                "ORIGINAL_TRANSPORT_ALREADY_CLAIMED_OR_MISMATCH"
+            )
+        claim = OriginalPermitTransportAttemptV1(
+            str(root), permit_id, envelope_id, envelope_digest, uuid4().hex
+        )
+        record["transport_attempt"] = dict(
+            contract_id="ORIGINAL_PERMIT_TRANSPORT_ATTEMPT_V1",
+            claim_id=claim.claim_id,
+            phase="PRE_SOCKET",
+            claimed_at_utc=_utc_now_iso_v1(),
+        )
+        _validate_transport_attempt_v1(record)
+        _write_record_v1(durable_consume_path_v1(root), record)
+        return claim
 
 
 def _assert_no_secrets(payload: Mapping[str, Any]) -> None:
@@ -127,6 +298,7 @@ def load_external_effect_durable_consume_v1(*, store_root: Path | str | None) ->
     if not isinstance(payload, dict):
         raise FullCoreExternalEffectDurableConsumeError("DURABLE_CONSUME_MALFORMED")
     _validate_owned_identity_v2(payload)
+    _validate_transport_attempt_v1(payload)
     consumed = bool(payload.get("consumed")) is True
     state = str(payload.get("durable_state") or DURABLE_STATE_NONE)
     durable_consumed = consumed or state in _CONSUMED_STATES
@@ -158,7 +330,7 @@ def persist_external_effect_durable_consume_v1(
     """Persist consume before any retry-capable control flow. Atomic replace."""
     if store_root is None:
         raise FullCoreExternalEffectDurableConsumeError("DURABLE_STORE_REQUIRED")
-    if durable_state not in _CONSUMED_STATES:
+    if durable_state not in _INITIAL_STATES:
         raise FullCoreExternalEffectDurableConsumeError(f"DURABLE_STATE_FORBIDDEN:{durable_state}")
     if int(post_count) > 1:
         raise FullCoreExternalEffectDurableConsumeError("POST_COUNT_EXCEEDS_ONE")
@@ -207,9 +379,7 @@ def persist_external_effect_durable_consume_v1(
                 "DURABLE_CONSUME_ALREADY_PRESENT_NO_REWRITE"
             )
         path = durable_consume_path_v1(root)
-        tmp = path.with_suffix(path.suffix + ".tmp")
-        tmp.write_text(_canonical_json(bound) + "\n", encoding="utf-8")
-        tmp.replace(path)
+        _write_record_v1(path, bound)
     return bound
 
 
@@ -254,7 +424,6 @@ def finalize_external_effect_durable_consume_v1(
         if load_external_effect_durable_consume_v1(store_root=store_root).get("record") != record:
             raise FullCoreExternalEffectDurableConsumeError("DURABLE_FINALIZE_PARENT_CHANGED")
         path = durable_consume_path_v1(Path(store_root))
-        tmp = path.with_suffix(path.suffix + ".tmp")
-        tmp.write_text(_canonical_json(completed) + "\n", encoding="utf-8")
-        tmp.replace(path)
+        _validate_transport_attempt_v1(completed)
+        _write_record_v1(path, completed)
     return completed

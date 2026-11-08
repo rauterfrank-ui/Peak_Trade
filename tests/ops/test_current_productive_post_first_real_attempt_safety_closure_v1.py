@@ -10,6 +10,10 @@ from urllib.error import HTTPError
 from urllib.request import OpenerDirector
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 from src.data.safety import DataSourceKind
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (
@@ -84,14 +88,31 @@ class _TrustedReadTransport:
         if "instruments" in path or "price-limit" in path:
             payload = {
                 "code": "0",
-                "data": [{"instId": "0G-USDT-SWAP", "instType": "SWAP", "state": "live"}],
+                "data": [
+                    {
+                        "instId": "0G-USDT-SWAP",
+                        "instType": "SWAP",
+                        "state": "live",
+                        "maxMktSz": "100",
+                        "maxLmtSz": "100",
+                    }
+                ],
             }
         elif "positions" in path:
             payload = {"code": "0", "data": []}
         elif path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
             payload = {"code": "0", "data": []}
         else:
-            payload = {"code": "0", "data": [{"instId": "ADA-USDT-SWAP", "tdMode": "cross"}]}
+            payload = {"code": "0", "data": [{"instId": "0G-USDT-SWAP", "tdMode": "cross"}]}
+        if path == "/api/v5/account/config":
+            payload["data"][0]["uid"] = "injected-observer-account"
+        if path == "/api/v5/account/max-size":
+            payload = {
+                "code": "0",
+                "data": [
+                    {"instId": "0G-USDT-SWAP", "tdMode": "cross", "maxBuy": "100", "maxSell": "100"}
+                ],
+            }
         return FreshPretradeGetTransportResultV1(
             get_performed=True,
             method="GET",
@@ -192,6 +213,7 @@ def test_timeout_preserves_transport_failure_without_retry(tmp_path: Path) -> No
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
             read_only_get_transport=_TrustedReadTransport(),
+            post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
             execution_integrity_backend=_clean_post_integrity(),
         )
     )

@@ -19,6 +19,23 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import OpenerDirector, ProxyHandler, Request, build_opener
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+    CurrentPostSafetyContextV1,
+    CurrentPostSafetyVetoError,
+)
+from .current_productive_post_venue_quantity_v1 import (
+    CurrentPostVenueQuantityError,
+    inspect_current_post_venue_quantity_v1,
+)
+from .current_productive_post_pending_observation_v1 import (
+    CurrentPostPendingObservationError,
+    inspect_current_post_pending_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    FullCoreExternalEffectDurableConsumeError,
+    OriginalPermitTransportAttemptV1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
     serialize_canonical_okx_post_body_v1,
 )
@@ -55,6 +72,18 @@ CONNECT_TIMEOUT_SECONDS = 10.0
 
 class FullCoreProductiveHttpPostError(RuntimeError):
     """Fail-closed productive HTTP POST transport violation."""
+
+
+class FullCoreCurrentPostSafetyVetoError(FullCoreProductiveHttpPostError):
+    """Actual current safety-reader denial, distinct from caller error text."""
+
+
+class FullCoreCurrentPostQuantityVetoError(FullCoreProductiveHttpPostError):
+    """Actual current native-quantity consumer denial."""
+
+
+class FullCoreCurrentPostPendingVetoError(FullCoreProductiveHttpPostError):
+    """Actual original observation session/pending denial."""
 
 
 @dataclass(frozen=True)
@@ -132,10 +161,18 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         signing_handle: Any | None = None,
         opener_factory: Callable[[], OpenerDirector] | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+        post_safety_context: CurrentPostSafetyContextV1 | None = None,
+        transport_attempt: OriginalPermitTransportAttemptV1 | None = None,
+        post_quantity_context=None,
+        post_pending_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
         self._opener_factory = opener_factory
+        self._post_safety_context = post_safety_context
+        self._transport_attempt = transport_attempt
+        self._post_quantity_context = post_quantity_context
+        self._post_pending_context = post_pending_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -151,7 +188,6 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         envelope_digest: str,
         one_shot_real_post: bool = False,
     ) -> FullCoreTradeOrderPostResultV1:
-        del permit_id, envelope_id, envelope_digest
         if self._handle is None or self._handle.bound is not True:
             raise FullCoreProductiveHttpPostError("CREDENTIAL_HANDLE_MISSING")
         if self._handle.material_loaded is True:
@@ -160,7 +196,52 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("STANDING_REAL_VENUE_POST_FORBIDDEN")
         if one_shot_real_post is not True:
             raise FullCoreProductiveHttpPostError("REAL_VENUE_POST_FORBIDDEN_IN_THIS_SLICE")
+        self._check_current_safety_v1(
+            payload=payload,
+            stage="HTTP_ORDER_IDENTITY",
+            envelope_id=envelope_id,
+            envelope_digest=envelope_digest,
+        )
+        self._check_original_transport_v1(
+            permit_id=permit_id, envelope_id=envelope_id, envelope_digest=envelope_digest
+        )
         return self._perform_http_post_v1(payload=payload)
+
+    def _check_current_safety_v1(self, *, payload, stage, **identity):
+        if type(self._post_safety_context) is not CurrentPostSafetyContextV1:
+            raise FullCoreProductiveHttpPostError("POST_SAFETY_CONTEXT_REQUIRED")
+        try:
+            self._post_safety_context.inspect_wire_v1(payload=payload, stage=stage, **identity)
+        except CurrentPostSafetyVetoError as exc:
+            raise FullCoreCurrentPostSafetyVetoError(str(exc)) from exc
+
+    def _check_original_transport_v1(self, **identity):
+        if type(self._transport_attempt) is not OriginalPermitTransportAttemptV1:
+            raise FullCoreProductiveHttpPostError("ORIGINAL_TRANSPORT_CLAIM_REQUIRED")
+        try:
+            self._transport_attempt.inspect_v1(**identity)
+            self._transport_attempt.inspect_v1(
+                envelope_id=self._post_safety_context.envelope.envelope_id,
+                envelope_digest=self._post_safety_context.envelope.envelope_digest,
+            )
+        except FullCoreExternalEffectDurableConsumeError as exc:
+            raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
+            inspect_current_post_venue_quantity_v1(
+                self._post_quantity_context,
+                envelope=self._post_safety_context.envelope,
+                stage="HTTP_QUANTITY",
+            )
+        except CurrentPostVenueQuantityError as exc:
+            raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
+        try:
+            inspect_current_post_pending_v1(
+                self._post_pending_context,
+                envelope=self._post_safety_context.envelope,
+                stage="HTTP_PENDING",
+            )
+        except CurrentPostPendingObservationError as exc:
+            raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
 
     def _perform_http_post_v1(
         self, *, payload: Mapping[str, Any]
@@ -169,6 +250,8 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("STANDING_REAL_VENUE_POST_FORBIDDEN")
         if self._signing_handle is None:
             raise FullCoreProductiveHttpPostError("SIGNING_HANDLE_MISSING")
+        self._check_current_safety_v1(payload=payload, stage="BEFORE_HTTP_SIGNING")
+        self._check_original_transport_v1()
         url = f"{REST_BASE}{TRADE_ORDER_PATH}"
         parsed = urlparse(url)
         if parsed.scheme != "https" or str(parsed.hostname or "") != AUTHORIZED_HOST:
@@ -192,6 +275,27 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         outcome_phase = NOT_ATTEMPTED
         try:
             socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
+            self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
+            try:
+                inspect_current_post_venue_quantity_v1(
+                    self._post_quantity_context,
+                    envelope=self._post_safety_context.envelope,
+                    stage="BEFORE_SOCKET",
+                )
+            except CurrentPostVenueQuantityError as exc:
+                raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
+            try:
+                inspect_current_post_pending_v1(
+                    self._post_pending_context,
+                    envelope=self._post_safety_context.envelope,
+                    stage="BEFORE_SOCKET",
+                )
+            except CurrentPostPendingObservationError as exc:
+                raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
+            try:
+                self._transport_attempt.mark_socket_boundary_v1()
+            except FullCoreExternalEffectDurableConsumeError as exc:
+                raise FullCoreProductiveHttpPostError(str(exc)) from exc
             self.post_count += 1
             self.methods_used.append("POST")
             outcome_phase = SEND_INITIATED

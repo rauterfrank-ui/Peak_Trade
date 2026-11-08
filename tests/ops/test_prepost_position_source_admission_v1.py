@@ -5,6 +5,9 @@ from datetime import datetime, timedelta, timezone
 import socket
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 
 from src.data.safety import DataSourceKind
 
@@ -259,7 +262,7 @@ def test_close_keeps_its_original_separate_position_admission():
 
 def test_proof_scope_does_not_assert_original_account_identity():
     proof = prove(Port())
-    assert proof.scope == "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY"
+    assert proof.scope == "PREPOST_FRESHNESS_POSITION_AND_VENUE_QUANTITY_ONLY"
     assert proof.account_identity_binding_status == "NOT_ASSESSED"
 
 

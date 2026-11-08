@@ -208,7 +208,11 @@ Nach verlorener Commitbestätigung entscheidet ausschließlich Kaltlesen des
 Originalstores, welcher Zustand tatsächlich vorliegt. Fehler zwischen beiden
 Barrieren oder danach behalten den Hold und sperren blinden Retry. Ein abgebrochener
 Testtransport wird nicht zu einem bestätigten Nie-gesendet-Nachweis umgedeutet.
-Der vorhandene Budgetreconciler verwendet weiterhin TRANSPORT_UNKNOWN. Nur exakt
+Der Basisvertrag verwendete im Budgetreconciler durchgehend TRANSPORT_UNKNOWN.
+Der nachfolgende [Originaltransportvertrag](ORIGINAL_PERMIT_TRANSPORT_ABORT_AND_BUDGET_V1.md)
+ergänzt für einen beim Submit gepinnten Sendestore den tatsächlichen negativen
+Originalabschluss vor einer irreversiblen Socketgrenze. Ohne diesen Beleg bleibt
+TRANSPORT_UNKNOWN. Nur exakt
 zugeordnete frische Venue-/Positions-/Pendingevidence kann den bestehenden
 Releasevertrag erfüllen; offene, teilweise gefüllte, gefüllte oder ungeklärte
 Ausführung gibt den Hold nicht automatisch frei.
@@ -226,6 +230,6 @@ Stores mit gesperrten Sockets, kein belegter natürlicher Venuebetrieb.
 S6 stoppt weiterhin bei PRE_EXTERNAL_EFFECT und komponiert keinen autonomen POST.
 MAX_POSITIONS_EFFECTIVE=1 und HOST_JOIN=False bleiben erhalten. Aktuelle vollständige
 Safety-/Risk-/Altplan-/Mengen-/Pendingzulassung, ursprüngliche unabhängige
-Authorityherkunft, Session-/GET-Ressourcenbindung, Never-submitted-Recovery und
+Authorityherkunft, Session-/GET-Ressourcenbindung, physisch belegte Recovery und
 der fortgesetzte Hostauftrag bleiben eigene offene Anschlüsse. Dieser Vertrag
 schließt nicht das Runbook A–H, fünf Slots, Double Play, Lernen oder Gesamtbetrieb.

@@ -19,6 +19,15 @@ from typing import Any, Callable, Mapping
 from urllib.parse import urlencode
 from urllib.request import OpenerDirector
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+    CurrentPostSafetyVetoError,
+    resolve_current_post_safety_context_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pending_observation_v1 import (
+    CurrentPostPendingObservationError,
+    inspect_current_post_pending_v1,
+)
+
 from src.governance.current_productive_real_venue_post_admission_v1 import (
     evaluate_real_venue_post_admission_v1,
 )
@@ -246,6 +255,7 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     envelope: FinalOrderEnvelopeV1,
     store_root: Path | str,
     k1_backend: OsNativeStoreLookupBackendV1 | None = None,
+    post_safety_context=None,
 ) -> dict[str, str]:
     """Runtime pre-live checklist. Does not consume Owner-GO or POST."""
     if str(owner_go or "") != OWNER_GO:
@@ -258,10 +268,23 @@ def prove_pre_live_actual_venue_post_readiness_v1(
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
+    try:
+        safety = resolve_current_post_safety_context_v1(
+            envelope, post_safety_context, stage="PRE_LIVE_READINESS"
+        )
+        veto = safety.inspect_v1(stage="PRE_LIVE_PERMIT")
+    except CurrentPostSafetyVetoError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     assert_post_durable_store_root_isolation_v1(store_root=store_root)
     if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is True:
         raise CurrentProductiveActualVenuePostError("POST_OWNER_GO_ALREADY_DURABLE_CONSUMED")
-    permit = issue_external_effect_permit_v1(envelope, authority_ref=OWNER_GO)
+    permit = issue_external_effect_permit_v1(
+        envelope,
+        authority_ref=OWNER_GO,
+        kill_switch_blocked=veto.blocked,
+        durable_kill_switch_evidence_status=veto.evidence_status,
+        filegate_denied=veto.blocked,
+    )
     admission = evaluate_real_venue_post_admission_v1(
         post_owner_go=OWNER_GO,
         one_shot_real_post=True,
@@ -307,6 +330,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     portfolio_reservation_id: str = "",
     execution_identity=None,
     execution_plan_context=None,
+    post_pending_context=None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -333,6 +357,10 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    try:
+        safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_PREFLIGHT")
+    except CurrentPostSafetyVetoError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     root = Path(store_root)
     assert_post_durable_store_root_isolation_v1(store_root=root)
     root.mkdir(parents=True, exist_ok=True)
@@ -342,10 +370,27 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         envelope=envelope,
         store_root=root,
         k1_backend=k1_backend,
+        post_safety_context=safety,
     )
     if pre.get("PRE_LIVE_PROOF_COMPLETE") != "true":
         raise CurrentProductiveActualVenuePostError("PRE_LIVE_PROOF_INCOMPLETE")
     pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
+    pending_proof = None
+    expected_account = (
+        portfolio_budget_owner.durable_scope_identity_v1()["account"]
+        if portfolio_budget_owner is not None
+        else None
+    )
+    if post_pending_context is not None:
+        try:
+            pending_proof = inspect_current_post_pending_v1(
+                post_pending_context,
+                envelope=envelope,
+                stage="BEFORE_PREFLIGHT_GET",
+                expected_account=expected_account,
+            )
+        except CurrentPostPendingObservationError as exc:
+            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     try:
         freshness = prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             envelope=envelope,
@@ -355,6 +400,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
+            expected_account_identity=pending_proof["account"]
+            if pending_proof is not None
+            else None,
         )
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
@@ -362,6 +410,19 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(
             "PRE_MUTATION_FRESHNESS_FAIL_CLOSED:" + ",".join(freshness.reason_codes)
         )
+    try:
+        safety.inspect_v1(stage="BEFORE_POST_GO_CONSUME")
+    except CurrentPostSafetyVetoError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    try:
+        inspect_current_post_pending_v1(
+            post_pending_context,
+            envelope=envelope,
+            stage="BEFORE_POST_GO_CONSUME",
+            expected_account=expected_account,
+        )
+    except CurrentPostPendingObservationError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     persist_durable_post_owner_go_consume_v1(
         store_root=root,
         owner_go_token=OWNER_GO,
@@ -396,6 +457,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
+            post_safety_context=safety,
+            post_quantity_context=freshness.venue_quantity_context,
+            post_pending_context=post_pending_context,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
@@ -437,7 +501,11 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         bound=True,
         material_loaded=False,
     )
-    permit_replay = issue_external_effect_permit_v1(envelope, authority_ref=OWNER_GO)
+    # Replay checks the actual minted object. It must not mint a new permission
+    # from defaults or from a safety observation made before a later state flip.
+    permit_replay = probe.minted_permit
+    if permit_replay is None:
+        raise CurrentProductiveActualVenuePostError("ACTUAL_MINTED_PERMIT_REQUIRED_FOR_REPLAY")
     replay_blocked = prove_follow_on_submit_isolated_v1(
         envelope=envelope,
         permit=permit_replay,
