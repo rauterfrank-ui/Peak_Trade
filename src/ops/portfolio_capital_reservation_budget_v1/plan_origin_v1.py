@@ -5,6 +5,7 @@ The original canonical validators and reference functions retain their meaning.
 """
 
 from dataclasses import dataclass, fields
+from decimal import Decimal, InvalidOperation
 
 from src.governance.canonical_order_intent_v1 import (
     CanonicalOrderIntentV1,
@@ -15,6 +16,11 @@ from src.governance.canonical_order_intent_v1 import (
     compute_post_sizing_risk_ref,
     compute_quantity_provenance_ref,
     validate_canonical_order_intent_v1,
+    _ORDER_TYPE_POLICY_BINDINGS,
+    _PRICE_POLICY_EXPLICIT_NONE,
+    _PRICE_POLICY_EXPLICIT_PREFIX,
+    _TIME_IN_FORCE_POLICY_BINDINGS,
+    _POST_ONLY_POLICY,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     bind_final_order_envelope_from_venue_plan_v1,
@@ -58,6 +64,38 @@ def bind_plan_origin_v1(canonical_intent, venue_plan):
         "venue_plan": _encode(venue_plan),
     }
     return {**payload, "digest": digest(payload)}
+
+
+def _validate_native_order_policy_v1(intent, plan, envelope):
+    """Consume the original declarations at the native plan boundary.
+
+    Ordinary market/limit plans cannot silently become IOC/FOK/post-only.
+    Prices stay exact native decimals; no structural adapter float is used.
+    This verifies the retained declaration, not its current risk admission.
+    """
+    order_type = _ORDER_TYPE_POLICY_BINDINGS.get(intent.order_type_policy)
+    if order_type is None or order_type != plan.order_type:
+        raise ValueError("EXECUTION_PLAN_ORIGIN_ORDER_TYPE_POLICY_MISMATCH")
+    if (
+        _TIME_IN_FORCE_POLICY_BINDINGS.get(intent.time_in_force_policy) != "gtc"
+        or intent.max_slippage_policy == _POST_ONLY_POLICY
+    ):
+        raise ValueError("EXECUTION_PLAN_ORIGIN_NATIVE_EXECUTION_POLICY_UNREPRESENTED")
+    if order_type == "market":
+        if intent.price_policy != _PRICE_POLICY_EXPLICIT_NONE or envelope.price:
+            raise ValueError("EXECUTION_PLAN_ORIGIN_MARKET_PRICE_POLICY_MISMATCH")
+        return
+    if not intent.price_policy.startswith(_PRICE_POLICY_EXPLICIT_PREFIX):
+        raise ValueError("EXECUTION_PLAN_ORIGIN_LIMIT_PRICE_POLICY_UNBOUND")
+    try:
+        declared = Decimal(intent.price_policy[len(_PRICE_POLICY_EXPLICIT_PREFIX) :])
+        actual = Decimal(envelope.price)
+        if not (
+            declared.is_finite() and actual.is_finite() and declared > 0 and actual == declared
+        ):
+            raise ValueError("EXECUTION_PLAN_ORIGIN_LIMIT_PRICE_POLICY_MISMATCH")
+    except InvalidOperation as exc:
+        raise ValueError("EXECUTION_PLAN_ORIGIN_LIMIT_PRICE_POLICY_MALFORMED") from exc
 
 
 def validate_plan_origin_v1(origin, *, sizing, reservation, bound, envelope):
@@ -125,4 +163,5 @@ def validate_plan_origin_v1(origin, *, sizing, reservation, bound, envelope):
         body["posSide"] = envelope.pos_side
     if expected != envelope or body != plan.venue_native_payload:
         raise ValueError("EXECUTION_PLAN_ORIGIN_ENVELOPE_MISMATCH")
+    _validate_native_order_policy_v1(intent, plan, envelope)
     return plan.environment

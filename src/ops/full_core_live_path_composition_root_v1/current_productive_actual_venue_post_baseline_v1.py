@@ -47,6 +47,7 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/plan_origin_v1.py",
+    "src/governance/canonical_order_intent_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py",
     "src/risk/decision_bound_model_adapters_v1.py",
