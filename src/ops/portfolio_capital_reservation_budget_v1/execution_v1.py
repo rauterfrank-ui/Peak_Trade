@@ -152,6 +152,7 @@ def bind_plan_locked_v1(
     venue_plan=None,
     core_parent=None,
     core_cursor_root=None,
+    entry_frame_required=False,
 ):
     if owner._store is None or owner._require_locked(reservation_id) is None:
         raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
@@ -161,11 +162,17 @@ def bind_plan_locked_v1(
         "phase": "PLAN_BOUND",
         "reconciliation": None,
     }
-    if any(x is not None for x in (canonical_intent, venue_plan, core_parent, core_cursor_root)):
+    if entry_frame_required or any(
+        x is not None for x in (canonical_intent, venue_plan, core_parent, core_cursor_root)
+    ):
         from .plan_origin_v1 import bind_plan_origin_v1
 
         link["plan_origin"] = bind_plan_origin_v1(
-            canonical_intent, venue_plan, core_parent=core_parent, core_cursor_root=core_cursor_root
+            canonical_intent,
+            venue_plan,
+            core_parent=core_parent,
+            core_cursor_root=core_cursor_root,
+            entry_frame_required=entry_frame_required,
         )
     validate_link_v1(owner, reservation_id, link)
     if any(

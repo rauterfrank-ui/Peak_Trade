@@ -593,6 +593,10 @@ def _outgoing_cursor_from_replay_v1(
         except RuntimeError:
             cap61_state = None
     try:
+        from .current_core_entry_assessment_frame_v1 import (
+            build_current_core_entry_assessment_frame_v1,
+        )
+
         return build_current_productive_sidestate_confirmation_cursor_v1(
             instrument_id=str(bound_instrument.instrument_id or "").strip(),
             venue_native_id=str(bound_instrument.venue_native_id or "").strip(),
@@ -605,6 +609,9 @@ def _outgoing_cursor_from_replay_v1(
             runtime_scope_state=replay.intermediate.runtime_scope_state_after,
             confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
             cap61_confirmation_state=cap61_state,
+            entry_assessment_frame=build_current_core_entry_assessment_frame_v1(
+                replay=replay, confirmation_state=cap61_state
+            ),
         )
     except CurrentProductiveCursorError:
         return None

@@ -53,7 +53,14 @@ class PortfolioExecutionPlanContextV1:
     order_environment: str
 
 
-def bind_plan_origin_v1(canonical_intent, venue_plan, *, core_parent=None, core_cursor_root=None):
+def bind_plan_origin_v1(
+    canonical_intent,
+    venue_plan,
+    *,
+    core_parent=None,
+    core_cursor_root=None,
+    entry_frame_required=False,
+):
     if (
         type(canonical_intent) is not CanonicalOrderIntentV1
         or type(venue_plan) is not VenuePlanCandidateV1
@@ -64,12 +71,15 @@ def bind_plan_origin_v1(canonical_intent, venue_plan, *, core_parent=None, core_
         "canonical_order_intent": _encode(canonical_intent),
         "venue_plan": _encode(venue_plan),
     }
-    if core_parent is not None or core_cursor_root is not None:
+    if entry_frame_required or core_parent is not None or core_cursor_root is not None:
         from .core_cursor_source_v1 import bind_core_cursor_source_v1
 
         payload["schema"] = CORE_CURSOR_SCHEMA
         payload["core_cursor_source"] = bind_core_cursor_source_v1(
-            core_parent, core_cursor_root, canonical_intent
+            core_parent,
+            core_cursor_root,
+            canonical_intent,
+            entry_frame_required=entry_frame_required,
         )
     return {**payload, "digest": digest(payload)}
 

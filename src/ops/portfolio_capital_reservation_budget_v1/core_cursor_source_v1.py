@@ -5,6 +5,8 @@ from pathlib import Path
 from .durable_store_v1 import digest
 
 SCHEMA = "portfolio_original_core_cursor_source.v1"
+C3_SCHEMA = "portfolio_original_core_cursor_source.v2"
+FRAME_SCHEMA = "portfolio_original_core_cursor_source.v3"
 _FIELDS = {
     "schema",
     "cursor_root",
@@ -58,7 +60,7 @@ def _read_original_cursor(root, *, instrument_id, native_id):
     return cursor, original.current_productive_cursor_digest_v1(payload), payload
 
 
-def bind_core_cursor_source_v1(parent, cursor_root, intent):
+def bind_core_cursor_source_v1(parent, cursor_root, intent, *, entry_frame_required=False):
     from trading.master_v2.canonical_trading_decision_evidence_v1 import (
         CanonicalTradingDecisionEvidenceV1,
         compute_canonical_trading_decision_evidence_semantic_digest,
@@ -93,11 +95,15 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
     if raw is None:
         raise ValueError("CURRENT_CORE_CURSOR_MISSING")
     native = raw.get("venue_native_id")
-    _, checksum, _ = _read_original_cursor(
+    cursor, checksum, _ = _read_original_cursor(
         root, instrument_id=parent.instrument_id, native_id=native
     )
+    from .core_confirmation_source_v1 import bind_core_confirmation_lineage_v1
+
+    if type(entry_frame_required) is not bool:
+        raise ValueError("ORIGINAL_CORE_ASSESSMENT_REQUIREMENT_INVALID")
     payload = dict(
-        schema=SCHEMA,
+        schema=FRAME_SCHEMA if entry_frame_required else C3_SCHEMA,
         cursor_root=root,
         instrument_id=parent.instrument_id,
         native_id=native,
@@ -105,15 +111,27 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
         core_parent_digest=parent.semantic_digest,
         trading_epoch=parent.trading_epoch,
         source_cursor_digest=checksum,
+        confirmation_lineage=bind_core_confirmation_lineage_v1(cursor),
     )
+    if entry_frame_required:
+        from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+            bind_current_core_entry_frame_reference_v1,
+        )
+
+        payload["entry_frame_reference"] = bind_current_core_entry_frame_reference_v1(
+            cursor=cursor, parent=parent
+        )
     return {**payload, "digest": digest(payload)}
 
 
 def validate_core_cursor_source_v1(source, *, intent, native_id):
     if (
         not isinstance(source, dict)
-        or set(source) != _FIELDS
-        or source["schema"] != SCHEMA
+        or source.get("schema") not in {SCHEMA, C3_SCHEMA, FRAME_SCHEMA}
+        or set(source)
+        != _FIELDS
+        | ({"confirmation_lineage"} if source.get("schema") in {C3_SCHEMA, FRAME_SCHEMA} else set())
+        | ({"entry_frame_reference"} if source.get("schema") == FRAME_SCHEMA else set())
         or source["digest"] != digest({k: v for k, v in source.items() if k != "digest"})
         or any(
             type(source[k]) is not str or not source[k] or source[k] != source[k].strip()
@@ -132,6 +150,22 @@ def validate_core_cursor_source_v1(source, *, intent, native_id):
         )
     ):
         raise ValueError("ORIGINAL_CORE_CURSOR_SOURCE_INVALID")
+    if source["schema"] in {C3_SCHEMA, FRAME_SCHEMA}:
+        from .core_confirmation_source_v1 import validate_core_confirmation_lineage_v1
+
+        validate_core_confirmation_lineage_v1(
+            source["confirmation_lineage"], instrument_id=intent.instrument_id
+        )
+    if source["schema"] == FRAME_SCHEMA:
+        from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+            validate_current_core_entry_frame_reference_v1,
+        )
+
+        validate_current_core_entry_frame_reference_v1(
+            source["entry_frame_reference"],
+            decision_id=source["decision_id"],
+            trading_epoch=source["trading_epoch"],
+        )
 
 
 def inspect_current_core_cursor_v1(source, *, intent_side):
@@ -176,6 +210,24 @@ def inspect_current_core_cursor_v1(source, *, intent_side):
     )
     if direction is not expected:
         raise ValueError("CURRENT_CORE_ENTRY_DIRECTION_MISMATCH")
+    confirmation = {"scope": "LEGACY_ORIGINAL_C3_NOT_ASSESSED"}
+    if source["schema"] in {C3_SCHEMA, FRAME_SCHEMA}:
+        from .core_confirmation_source_v1 import inspect_current_core_confirmation_v1
+
+        confirmation = inspect_current_core_confirmation_v1(
+            source["confirmation_lineage"], cursor=cursor, raw=raw, intent_side=intent_side
+        )
+    assessment = {"scope": "LEGACY_ORIGINAL_ASSESSMENT_FRAME_NOT_ASSESSED"}
+    if source["schema"] == FRAME_SCHEMA:
+        from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+            inspect_current_core_entry_assessment_v1,
+        )
+
+        assessment = inspect_current_core_entry_assessment_v1(
+            cursor=cursor,
+            intent_side=intent_side,
+            original_strategy=source["entry_frame_reference"]["selected_strategy"],
+        )
     return dict(
         scope="CURRENT_ORIGINAL_CORE_ENTRY_STATE_VETOES_ONLY",
         current_side_state=cursor.side_state.value,
@@ -184,5 +236,7 @@ def inspect_current_core_cursor_v1(source, *, intent_side):
         chop_guard_status=chop,
         cursor_digest=checksum,
         source_cursor_digest=source["source_cursor_digest"],
+        confirmation=confirmation,
+        assessment=assessment,
         runtime_authorization_effect="NONE",
     )

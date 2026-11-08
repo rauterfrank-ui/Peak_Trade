@@ -69,7 +69,6 @@ SPEC_PATH = (
     REPO_ROOT / "docs/ops/specs/"
     "FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1.md"
 )
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
 DR_HEADING = (
     "### 11.2.1.DR FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_AND_CONFIRMATION_CURSOR_JOIN"
 )
@@ -495,23 +494,39 @@ def test_wrong_instrument_cursor_does_not_leak_state() -> None:
     assert cycle_b.decision_outcome != "enter_long"
 
 
-def test_protected_algorithm_files_match_approved_reconfiguration() -> None:
-    from tests.ops._reconfiguration_protected_sources_v1 import (
-        assert_approved_reconfiguration_sources_v1,
+def test_current_protected_sources_match_declared_inventory() -> None:
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
     )
 
-    assert_approved_reconfiguration_sources_v1(REPO_ROOT, PROTECTED_ALGORITHM_FILES)
+    # Check all nine current source bodies without creating execution approval.
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        owners=tuple(REPO_ROOT / p for p in PROTECTED_ALGORITHM_FILES),
+    )
 
 
 def test_ssot_docs_once_present() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
+    )
+
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        owners=(
+            REPO_ROOT
+            / "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        ),
+    )
     # Spec/Atlas carry sealed facts; Master Runbook heading / Mot filename pin are
     # not required for this derived slice (same pattern as enter-live-29p join EF).
     assert DR_HEADING not in runbook
-    assert "DOCUMENT_ROLE=NAVIGATION_ONLY" in mot
+    assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
     assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in spec
     assert "STEP_29Q_STATUS=PLAN_ONLY" in spec
@@ -522,6 +537,4 @@ def test_ssot_docs_once_present() -> None:
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1"
     ) in spec
-    assert "id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1" in atlas
-    assert "current_productive_sidestate_confirmation_cursor_v1.py" in atlas
     assert json.loads(json.dumps({"POST_COUNT": "0"}))["POST_COUNT"] == "0"

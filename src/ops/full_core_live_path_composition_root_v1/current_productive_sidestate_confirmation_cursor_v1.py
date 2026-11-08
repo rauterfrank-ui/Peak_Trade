@@ -112,6 +112,7 @@ class CurrentProductiveSideStateConfirmationCursorV1:
     existing_scope: Optional[CanonicalScopeSnapshotV1]
     runtime_scope_state: Optional[RuntimeScopeState]
     cap61_confirmation_state: Optional[CanonicalConfirmationStateV1]
+    entry_assessment_frame: Optional[dict[str, Any]] = None
 
     def to_dict(self) -> dict[str, Any]:
         kind = self.scope_confirmation.candidate_kind
@@ -147,6 +148,11 @@ class CurrentProductiveSideStateConfirmationCursorV1:
                 None
                 if self.cap61_confirmation_state is None
                 else self.cap61_confirmation_state.to_dict()
+            ),
+            "entry_assessment_frame": (
+                None
+                if self.entry_assessment_frame is None
+                else json.loads(_canonical_json(self.entry_assessment_frame))
             ),
         }
 
@@ -271,6 +277,7 @@ def parse_current_productive_sidestate_confirmation_cursor_v1(
         existing_scope=existing_scope,
         runtime_scope_state=runtime_scope,
         cap61_confirmation_state=cap61_state,
+        entry_assessment_frame=payload.get("entry_assessment_frame"),
     )
 
 
@@ -287,6 +294,7 @@ def build_current_productive_sidestate_confirmation_cursor_v1(
     runtime_scope_state: Optional[RuntimeScopeState],
     cap61_confirmation_state: Optional[CanonicalConfirmationStateV1] = None,
     confirmation_epochs: int = int(CANONICAL_CONFIRMATION_EPOCHS),
+    entry_assessment_frame: Optional[dict[str, Any]] = None,
 ) -> CurrentProductiveSideStateConfirmationCursorV1:
     bound_instrument = _text(instrument_id)
     bound_native = _text(venue_native_id)
@@ -314,6 +322,7 @@ def build_current_productive_sidestate_confirmation_cursor_v1(
         existing_scope=existing_scope,
         runtime_scope_state=runtime_scope_state,
         cap61_confirmation_state=cap61_confirmation_state,
+        entry_assessment_frame=entry_assessment_frame,
     )
 
 
