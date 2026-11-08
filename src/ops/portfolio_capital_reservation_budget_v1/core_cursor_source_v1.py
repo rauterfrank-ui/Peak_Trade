@@ -1,4 +1,4 @@
-"""Original Core cursor lineage and current KILL_ALL veto, never a fresh decision."""
+"""Original Core cursor and current entry-state vetoes, never a fresh decision."""
 
 from pathlib import Path
 
@@ -55,7 +55,7 @@ def _read_original_cursor(root, *, instrument_id, native_id):
         <= cursor.last_evaluated_trading_epoch
     ):
         raise ValueError("CURRENT_CORE_CURSOR_STATE_UNPROVEN")
-    return cursor, original.current_productive_cursor_digest_v1(payload)
+    return cursor, original.current_productive_cursor_digest_v1(payload), payload
 
 
 def bind_core_cursor_source_v1(parent, cursor_root, intent):
@@ -93,7 +93,9 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
     if raw is None:
         raise ValueError("CURRENT_CORE_CURSOR_MISSING")
     native = raw.get("venue_native_id")
-    _, checksum = _read_original_cursor(root, instrument_id=parent.instrument_id, native_id=native)
+    _, checksum, _ = _read_original_cursor(
+        root, instrument_id=parent.instrument_id, native_id=native
+    )
     payload = dict(
         schema=SCHEMA,
         cursor_root=root,
@@ -132,18 +134,54 @@ def validate_core_cursor_source_v1(source, *, intent, native_id):
         raise ValueError("ORIGINAL_CORE_CURSOR_SOURCE_INVALID")
 
 
-def inspect_current_core_cursor_v1(source):
+def inspect_current_core_cursor_v1(source, *, intent_side):
     from trading.master_v2.double_play_state import SideState
+    from trading.master_v2.double_play_entry_exit_policy_v0 import (
+        EntryExitDirectionState,
+        _direction_armed_for_entry,
+    )
+    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+        _side_state_to_entry_exit_direction,
+    )
+    from trading.master_v2.chop_scope_event_policy_binding_v1 import (
+        project_composition_chop_guard_from_scope_policy_v1,
+    )
+    from trading.master_v2.double_play_composition_matrix_v1 import CompositionChopGuardStatus
 
-    cursor, checksum = _read_original_cursor(
+    cursor, checksum, raw = _read_original_cursor(
         source["cursor_root"], instrument_id=source["instrument_id"], native_id=source["native_id"]
     )
-    # This is the original Core replay's explicit KILL_ALL predicate. Other
-    # current Core, scope, market and numerical-risk predicates are not renewed.
+    # Preserve the previous explicit KILL_ALL veto's precedence.
     if cursor.side_state is SideState.KILL_ALL:
         raise ValueError("CURRENT_CORE_CURSOR_KILL_ALL")
+    runtime_scope = raw.get("runtime_scope_state")
+    if not isinstance(runtime_scope, dict) or type(runtime_scope.get("chop_latched")) is not bool:
+        # The general restore adapter's bool conversion is not proof that an
+        # absent/null/numeric/string value means an inactive current CHOP latch.
+        raise ValueError("CURRENT_CORE_SCOPE_POLICY_UNPROVEN")
+    chop = project_composition_chop_guard_from_scope_policy_v1(
+        chop_latched=runtime_scope["chop_latched"]
+    )
+    if chop == CompositionChopGuardStatus.CHOP_GUARD_BLOCK.value:
+        raise ValueError("CURRENT_CORE_SCOPE_CHOP_BLOCK")
+    direction = _side_state_to_entry_exit_direction(cursor.side_state)
+    if not _direction_armed_for_entry(direction):
+        raise ValueError("CURRENT_CORE_ENTRY_DIRECTION_NOT_ARMED")
+    if intent_side not in {"LONG", "SHORT"}:
+        raise ValueError("CURRENT_CORE_ORIGINAL_ENTRY_SIDE_UNPROVEN")
+    expected = (
+        EntryExitDirectionState.LONG_ARMED
+        if intent_side == "LONG"
+        else EntryExitDirectionState.SHORT_ARMED
+    )
+    if direction is not expected:
+        raise ValueError("CURRENT_CORE_ENTRY_DIRECTION_MISMATCH")
     return dict(
-        scope="CURRENT_ORIGINAL_CORE_KILL_ALL_VETO_ONLY",
+        scope="CURRENT_ORIGINAL_CORE_ENTRY_STATE_VETOES_ONLY",
+        current_side_state=cursor.side_state.value,
+        direction_state=direction.value,
+        original_intent_side=intent_side,
+        chop_guard_status=chop,
         cursor_digest=checksum,
         source_cursor_digest=source["source_cursor_digest"],
         runtime_authorization_effect="NONE",

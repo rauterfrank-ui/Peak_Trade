@@ -201,7 +201,7 @@ def test_newer_epoch_and_digest_alone_are_not_new_plan_expiry_or_core_admission(
             args["portfolio_reservation_id"], args["envelope"]
         )
         assert current["cursor_digest"] != current["source_cursor_digest"]
-        assert current["scope"] == "CURRENT_ORIGINAL_CORE_KILL_ALL_VETO_ONLY"
+        assert current["scope"] == "CURRENT_ORIGINAL_CORE_ENTRY_STATE_VETOES_ONLY"
         assert current["runtime_authorization_effect"] == "NONE"
         assert files(tmp_path) == snapshot
     finally:

@@ -1187,7 +1187,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             origin = link.get("plan_origin", {})
             if origin.get("schema") != CORE_CURSOR_SCHEMA:
                 return {"scope": "LEGACY_ORIGINAL_CORE_CURSOR_NOT_ASSESSED"}
-            return inspect_current_core_cursor_v1(origin["core_cursor_source"])
+            return inspect_current_core_cursor_v1(
+                origin["core_cursor_source"], intent_side=origin["canonical_order_intent"]["side"]
+            )
 
     def reconcile_execution_v1(self, reservation_id, **kwargs):
         from .execution_v1 import reconcile_locked_v1
