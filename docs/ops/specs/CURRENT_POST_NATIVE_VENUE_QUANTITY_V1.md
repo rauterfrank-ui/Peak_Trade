@@ -12,6 +12,11 @@ vergleicht dieselbe unveränderte finale Ordermenge mit den bereits erneut
 aufgenommenen öffentlichen und privaten Maximalmengen. Er erteilt keine eigene
 Sendebefugnis und ist keine vollständige aktuelle Risiko-/Corezulassung.
 
+Der spätere [Anschluss nativer Orderbedingungen](CURRENT_POST_NATIVE_ORDER_CONSTRAINTS_V1.md)
+ergänzt Mindestmenge, Losgröße, Limitpreisstep, Instrumentstatus und angekündigte
+Regelwirkung am selben aktuellen Consumer. Der hier belegte ursprüngliche
+Maximalmengenanschluss behält seine eigene historische Prüfbasis und seinen Scope.
+
 ## Ursprüngliche Konstruktion und belegte Lücke
 
 Der [N1-Vertrag](../evidence/N1_FINAL_NATIVE_QUANTITY_LIMITS_2026_11_07.md)

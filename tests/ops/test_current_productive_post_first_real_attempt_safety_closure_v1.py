@@ -93,6 +93,10 @@ class _TrustedReadTransport:
                         "instId": "0G-USDT-SWAP",
                         "instType": "SWAP",
                         "state": "live",
+                        "minSz": "1",
+                        "lotSz": "1",
+                        "tickSz": "0.01",
+                        "upcChg": [],
                         "maxMktSz": "100",
                         "maxLmtSz": "100",
                     }

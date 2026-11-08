@@ -135,6 +135,7 @@ def _productive_instruments_row_for_enter_metadata_v1(
         "maxMktSz": "1000000",
         "maxLmtSz": "1000000",
         "tickSz": "0.01",
+        "upcChg": [],
         "tdMode": "cross",
         "mgnMode": "cross",
     }
