@@ -5,6 +5,7 @@ from pathlib import Path
 from .durable_store_v1 import digest
 
 SCHEMA = "portfolio_original_core_cursor_source.v1"
+C3_SCHEMA = "portfolio_original_core_cursor_source.v2"
 _FIELDS = {
     "schema",
     "cursor_root",
@@ -93,11 +94,13 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
     if raw is None:
         raise ValueError("CURRENT_CORE_CURSOR_MISSING")
     native = raw.get("venue_native_id")
-    _, checksum, _ = _read_original_cursor(
+    cursor, checksum, _ = _read_original_cursor(
         root, instrument_id=parent.instrument_id, native_id=native
     )
+    from .core_confirmation_source_v1 import bind_core_confirmation_lineage_v1
+
     payload = dict(
-        schema=SCHEMA,
+        schema=C3_SCHEMA,
         cursor_root=root,
         instrument_id=parent.instrument_id,
         native_id=native,
@@ -105,6 +108,7 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
         core_parent_digest=parent.semantic_digest,
         trading_epoch=parent.trading_epoch,
         source_cursor_digest=checksum,
+        confirmation_lineage=bind_core_confirmation_lineage_v1(cursor),
     )
     return {**payload, "digest": digest(payload)}
 
@@ -112,8 +116,9 @@ def bind_core_cursor_source_v1(parent, cursor_root, intent):
 def validate_core_cursor_source_v1(source, *, intent, native_id):
     if (
         not isinstance(source, dict)
-        or set(source) != _FIELDS
-        or source["schema"] != SCHEMA
+        or source.get("schema") not in {SCHEMA, C3_SCHEMA}
+        or set(source)
+        != _FIELDS | ({"confirmation_lineage"} if source.get("schema") == C3_SCHEMA else set())
         or source["digest"] != digest({k: v for k, v in source.items() if k != "digest"})
         or any(
             type(source[k]) is not str or not source[k] or source[k] != source[k].strip()
@@ -132,6 +137,12 @@ def validate_core_cursor_source_v1(source, *, intent, native_id):
         )
     ):
         raise ValueError("ORIGINAL_CORE_CURSOR_SOURCE_INVALID")
+    if source["schema"] == C3_SCHEMA:
+        from .core_confirmation_source_v1 import validate_core_confirmation_lineage_v1
+
+        validate_core_confirmation_lineage_v1(
+            source["confirmation_lineage"], instrument_id=intent.instrument_id
+        )
 
 
 def inspect_current_core_cursor_v1(source, *, intent_side):
@@ -176,6 +187,13 @@ def inspect_current_core_cursor_v1(source, *, intent_side):
     )
     if direction is not expected:
         raise ValueError("CURRENT_CORE_ENTRY_DIRECTION_MISMATCH")
+    confirmation = {"scope": "LEGACY_ORIGINAL_C3_NOT_ASSESSED"}
+    if source["schema"] == C3_SCHEMA:
+        from .core_confirmation_source_v1 import inspect_current_core_confirmation_v1
+
+        confirmation = inspect_current_core_confirmation_v1(
+            source["confirmation_lineage"], cursor=cursor, raw=raw, intent_side=intent_side
+        )
     return dict(
         scope="CURRENT_ORIGINAL_CORE_ENTRY_STATE_VETOES_ONLY",
         current_side_state=cursor.side_state.value,
@@ -184,5 +202,6 @@ def inspect_current_core_cursor_v1(source, *, intent_side):
         chop_guard_status=chop,
         cursor_digest=checksum,
         source_cursor_digest=source["source_cursor_digest"],
+        confirmation=confirmation,
         runtime_authorization_effect="NONE",
     )
