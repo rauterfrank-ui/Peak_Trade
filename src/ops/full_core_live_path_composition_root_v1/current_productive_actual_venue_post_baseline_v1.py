@@ -41,6 +41,8 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_safety_veto_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_venue_quantity_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_consumer_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_observation_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_pending_observation_v1.py",
     "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py",
     "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py",

@@ -13,6 +13,12 @@ Die unveränderte Order braucht passende aktuelle Venuebedingungen. Eine passend
 Losgröße oder ein gültiger Preisstep erneuert keine Core-/Risikoentscheidung
 und begründet keine eigenständige Sendeauthority.
 
+Die [spätere Preisbandfortsetzung](CURRENT_POST_ORIGINAL_PRICE_BAND_V1.md)
+auf Basis f2fd836a9 ergänzt am selben Consumer die ursprüngliche seitenspezifische
+LIMIT-Preisgrenze und einen fünften optionalen Quellenträger. Die nachfolgende
+Beschreibung bindet den davor geprüften vierfeldrigen Metadatenanschluss;
+dessen datierte Nachweise und weitergehende offene Zulassungen bleiben erhalten.
+
 ## Ursprüngliche Konstruktion und belegte Lücke
 
 Der originale [Sizingowner](../../../src/governance/capital_risk_sizing_v1.py)

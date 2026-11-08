@@ -50,6 +50,25 @@ def _planned_limit_px(raw: str) -> Decimal:
     return value
 
 
+def compare_native_limit_price_to_band_v1(
+    *, side: str, planned_limit_px: str, buy_lmt: Decimal, sell_lmt: Decimal
+) -> tuple[str, str, Decimal, Decimal]:
+    """Original scalar comparison after the caller's own source validation.
+
+    No instrument, acquisition, canary permission or source is manufactured.
+    The original canary consumer and later current POST share this predicate.
+    """
+    field = select_price_band_field_for_side_v1(side=side)
+    limit = buy_lmt if field == "buyLmt" else sell_lmt
+    px = _planned_limit_px(planned_limit_px)
+    selected_side = str(side).strip().upper()
+    if selected_side == "BUY" and px > limit:
+        raise LiveCanaryPriceBandConsumerError("PLANNED_LIMIT_PX_EXCEEDS_BUYLMT")
+    if selected_side == "SELL" and px < limit:
+        raise LiveCanaryPriceBandConsumerError("PLANNED_LIMIT_PX_BELOW_SELLLMT")
+    return selected_side, field, limit, px
+
+
 def apply_fresh_price_band_pretrade_gate_v1(
     *,
     pretrade_decision_id: str,
@@ -90,14 +109,12 @@ def apply_fresh_price_band_pretrade_gate_v1(
             instrument_id=instrument_id,
             price_domain=price_domain,
         )
-        field = select_price_band_field_for_side_v1(side=side)
-        limit = validated.buy_lmt if field == "buyLmt" else validated.sell_lmt
-        px = _planned_limit_px(planned_limit_px)
-        selected_side = str(side).strip().upper()
-        if selected_side == "BUY" and px > limit:
-            raise LiveCanaryPriceBandConsumerError("PLANNED_LIMIT_PX_EXCEEDS_BUYLMT")
-        if selected_side == "SELL" and px < limit:
-            raise LiveCanaryPriceBandConsumerError("PLANNED_LIMIT_PX_BELOW_SELLLMT")
+        selected_side, field, limit, px = compare_native_limit_price_to_band_v1(
+            side=side,
+            planned_limit_px=planned_limit_px,
+            buy_lmt=validated.buy_lmt,
+            sell_lmt=validated.sell_lmt,
+        )
     except LiveCanaryPriceBandObservationError as exc:
         raise LiveCanaryPriceBandConsumerError(str(exc)) from exc
     return {
