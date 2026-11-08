@@ -7,6 +7,7 @@ import socket
 
 import pytest
 from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
 )
 
@@ -121,6 +122,23 @@ def prove(args, port=None):
 
 
 def execute(args, tmp_path, *, port=None, opener=None):
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+    owner = args.get("portfolio_budget_owner")
+    if (
+        "post_pending_context" not in args
+        and isinstance(owner, PortfolioCapitalReservationBudgetOwnerV1)
+        and owner._store is not None
+    ):
+        args = {
+            **args,
+            "post_pending_context": synthetic_current_post_pending_context_v1(
+                args["envelope"],
+                account=args["portfolio_budget_owner"].durable_scope_identity_v1()["account"],
+            ),
+        }
     return caller.execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
         **args,
         owner_go=caller.OWNER_GO,

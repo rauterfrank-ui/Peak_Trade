@@ -42,6 +42,7 @@ class HostAccountObservationV1:
     observed: PortfolioTruthSnapshotV1
     pending_orders: bool
     occupancy_payloads: dict
+    pending_source: object | None = field(default=None, repr=False, compare=False)
 
 
 def collect_host_account_observation_v1(
@@ -126,7 +127,7 @@ def collect_host_account_observation_v1(
                 wall_time_unix=now,
             )
         )
-    return HostAccountObservationV1(
+    observation = HostAccountObservationV1(
         account=account,
         pending_orders=bool(pending),
         occupancy_payloads=occupancy,
@@ -138,6 +139,16 @@ def collect_host_account_observation_v1(
             max_age_seconds=position_max_age,
         ),
     )
+    # Only the original concrete observer has the supported algo/credential/
+    # session contract. A plain callback's empty rows are not that evidence.
+    from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
+        is_original_account_observation_source_v1,
+    )
+
+    if is_original_account_observation_source_v1(private_rest_fetch):
+        private_rest_fetch.bind_completed_host_observation_v1(observation)
+        observation = replace(observation, pending_source=private_rest_fetch)
+    return observation
 
 
 @dataclass(frozen=True)
@@ -148,6 +159,7 @@ class HostBudgetRecoveryContextV1:
     pending_orders: bool
     occupancy_payloads: dict
     execution_reconciliation: dict = field(default_factory=dict)
+    pending_source: object | None = field(default=None, repr=False, compare=False)
 
     def recover_v1(self, owner, output):
         if owner is not self.host.owner:
@@ -292,6 +304,7 @@ class PortfolioBudgetHostV1:
             account=account,
             pending_orders=observation.pending_orders,
             occupancy_payloads=observation.occupancy_payloads,
+            pending_source=observation.pending_source,
             observed=observation.observed,
         )
         return replace(context, execution_reconciliation=self._reconcile_executions_v1(context))

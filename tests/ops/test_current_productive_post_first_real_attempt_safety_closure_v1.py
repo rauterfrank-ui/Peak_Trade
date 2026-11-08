@@ -11,6 +11,7 @@ from urllib.request import OpenerDirector
 
 import pytest
 from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
 )
 from src.data.safety import DataSourceKind
@@ -102,7 +103,9 @@ class _TrustedReadTransport:
         elif path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
             payload = {"code": "0", "data": []}
         else:
-            payload = {"code": "0", "data": [{"instId": "ADA-USDT-SWAP", "tdMode": "cross"}]}
+            payload = {"code": "0", "data": [{"instId": "0G-USDT-SWAP", "tdMode": "cross"}]}
+        if path == "/api/v5/account/config":
+            payload["data"][0]["uid"] = "injected-observer-account"
         if path == "/api/v5/account/max-size":
             payload = {
                 "code": "0",
@@ -210,6 +213,7 @@ def test_timeout_preserves_transport_failure_without_retry(tmp_path: Path) -> No
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
             read_only_get_transport=_TrustedReadTransport(),
+            post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
             execution_integrity_backend=_clean_post_integrity(),
         )
     )

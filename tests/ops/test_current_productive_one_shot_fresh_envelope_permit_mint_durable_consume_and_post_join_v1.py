@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
     synthetic_current_post_quantity_context_v1,
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
 )
@@ -194,6 +195,9 @@ def _attempt(tmp_path: Path, **kwargs: Any):
         post_quantity_context=kwargs.pop(
             "post_quantity_context", synthetic_current_post_quantity_context_v1(envelope)
         ),
+        post_pending_context=kwargs.pop(
+            "post_pending_context", synthetic_current_post_pending_context_v1(envelope)
+        ),
         post_owner_go=post_owner_go,
         store_root=store_root,
         k1_backend=kwargs.pop("k1_backend", backend),
@@ -330,6 +334,7 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=_envelope(),
         post_quantity_context=synthetic_current_post_quantity_context_v1(_envelope()),
+        post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path,
         k1_backend=_FakeKeychainBackend(),
@@ -505,6 +510,7 @@ def test_bypass_flags_are_false(tmp_path: Path) -> None:
     first_join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=_envelope(),
         post_quantity_context=synthetic_current_post_quantity_context_v1(_envelope()),
+        post_pending_context=synthetic_current_post_pending_context_v1(_envelope()),
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path / "once",
         k1_backend=_FakeKeychainBackend(),

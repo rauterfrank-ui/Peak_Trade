@@ -1,6 +1,7 @@
 """Actual later POST consumer of original current venue quantity sources."""
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import synthetic_current_post_pending_context_v1
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import json
@@ -309,6 +310,9 @@ def test_same_original_acquisition_is_checked_again_at_real_later_consumers(
             expire()
         return Opener()
 
+    args["post_pending_context"] = synthetic_current_post_pending_context_v1(
+        order, account=host.owner.durable_scope_identity_v1()["account"]
+    )
     port = AccountPort(args, after_last=expire if phase == "after_gets" else None)
     held = host.owner.active_sum_v1()
     sequence = host.owner._store.sequence

@@ -4,6 +4,7 @@ import json
 from dataclasses import replace
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import synthetic_current_post_pending_context_v1
 
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
@@ -50,6 +51,9 @@ def test_actual_original_durable_veto_blocks_before_go_attempt_or_http(
         portfolio_budget_owner=host.owner,
         portfolio_reservation_id=rid,
         execution_plan_context=context,
+        post_pending_context=synthetic_current_post_pending_context_v1(
+            envelope, account=host.owner.durable_scope_identity_v1()["account"]
+        ),
     )
     sequence = host.owner._store.sequence
     try:
@@ -105,6 +109,9 @@ def test_current_veto_rechecks_actual_source_across_both_barriers_and_before_soc
         portfolio_budget_owner=host.owner,
         portfolio_reservation_id=rid,
         execution_plan_context=context,
+        post_pending_context=synthetic_current_post_pending_context_v1(
+            envelope, account=host.owner.durable_scope_identity_v1()["account"]
+        ),
     )
     calls = dict(k1=0, opener=0, http=0)
 

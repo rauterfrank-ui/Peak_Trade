@@ -53,3 +53,36 @@ def synthetic_current_post_quantity_context_v1(envelope):
     return capture_current_post_venue_quantity_v1(
         envelope=envelope, results=results, acquisition_decision_id=decision
     )
+
+
+def synthetic_current_post_pending_context_v1(envelope, *, account="injected-observer-account"):
+    """Real original observer/collector, explicitly injected credential/GET port."""
+    from datetime import datetime, timezone
+    from dataclasses import replace
+    import time
+    from tests.ops.test_account_observation_startup_source_v1 import InjectedTransport, credential
+    from tests.ops.test_portfolio_budget_host_v1 import _fetch
+    from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
+        AccountObservationSourceV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pending_observation_v1 import (
+        capture_current_post_pending_v1,
+    )
+
+    class Port(InjectedTransport):
+        def get(self, **request):
+            return replace(
+                super().get(**request),
+                pretrade_decision_id=request["pretrade_decision_id"],
+                acquired_at_utc=datetime.now(timezone.utc).isoformat(),
+            )
+
+    source = AccountObservationSourceV1(
+        credential=credential(),
+        transport=Port(fetch=_fetch(uid=account)),
+        expected_account_identity=account,
+        session_id="synthetic-live-observation-session",
+        clock=time.time,
+    )
+    source.collect_v1(instrument_ids_by_native_id={envelope.instrument_id: "synthetic-instrument"})
+    return capture_current_post_pending_v1(envelope=envelope, source=source)

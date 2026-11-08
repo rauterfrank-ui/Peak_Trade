@@ -99,7 +99,9 @@ def _validate_transport_attempt_v1(record):
             )
             and (
                 phase != "ABORTED"
-                or attempt["reason_code"].startswith(("POST_SAFETY", "POST_QUANTITY"))
+                or attempt["reason_code"].startswith(
+                    ("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")
+                )
             )
         ):
             raise ValueError("shape")
@@ -165,7 +167,7 @@ class OriginalPermitTransportAttemptV1:
 
     def abort_before_transport_v1(self, *, reason_code):
         if not isinstance(reason_code, str) or not reason_code.startswith(
-            ("POST_SAFETY", "POST_QUANTITY")
+            ("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")
         ):
             raise FullCoreExternalEffectDurableConsumeError(
                 "ORIGINAL_TRANSPORT_ABORT_REASON_INVALID"

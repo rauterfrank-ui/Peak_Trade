@@ -175,6 +175,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     portfolio_reservation_id: str = "",
     execution_identity=None,
     execution_plan_context=None,
+    expected_account_identity=None,
 ) -> ActualVenuePostPreMutationFreshnessProofV1:
     assert_envelope_unmodified_v1(envelope)
     context_args = dict(
@@ -189,6 +190,21 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         original_context = inspect_original_portfolio_execution_context_v1(**context_args)
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveActualVenuePostPreMutationFreshnessError(str(exc)) from exc
+    if expected_account_identity is not None and (
+        type(expected_account_identity) is not str
+        or not expected_account_identity
+        or expected_account_identity != expected_account_identity.strip()
+        or (
+            original_context is not None
+            and expected_account_identity != original_context["account"]
+        )
+    ):
+        raise CurrentProductiveActualVenuePostPreMutationFreshnessError(
+            "PREPOST_EXPECTED_ACCOUNT_MISMATCH"
+        )
+    expected_account = (
+        original_context["account"] if original_context is not None else expected_account_identity
+    )
     if read_only_get_transport is None:
         raise CurrentProductiveActualVenuePostPreMutationFreshnessError(
             "PRE_MUTATION_READ_TRANSPORT_REQUIRED"
@@ -233,7 +249,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     position_fresh, consistent, entry_admissible = False, False, False
     truth = "UNKNOWN"
     account_fresh = pretrade_ok
-    account_status = "NOT_ASSESSED" if original_context is None else "MISSING"
+    account_status = "NOT_ASSESSED" if expected_account is None else "MISSING"
     account_binding = {}
     quantity_context, quantity_assessment = None, {}
     try:
@@ -250,6 +266,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             current_context = inspect_original_portfolio_execution_context_v1(**context_args)
             if current_context != original_context:
                 raise ValueError("ORIGINAL_PORTFOLIO_CONTEXT_CHANGED")
+        if expected_account is not None:
             config = results.get("config")
             data = config.payload.get("data") if config is not None else None
             if not (
@@ -264,7 +281,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
                 raise ValueError("PREPOST_ACCOUNT_CONFIG_IDENTITY_MALFORMED")
             account = evaluate_live_account_bound_v1(
                 get_evidence=evidence,
-                expected_account_identity=original_context["account"],
+                expected_account_identity=expected_account,
                 expected_instrument_id=envelope.instrument_id,
                 expected_td_mode=envelope.td_mode,
             )
@@ -274,26 +291,33 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
                 raise ValueError("PREPOST_ORIGINAL_ACCOUNT_BINDING_NOT_TRUSTED")
             account_binding = {
                 "config": _position_source_v1(config),
-                "original_owner_scope_sha256": hashlib.sha256(
-                    json.dumps(
-                        {k: original_context[k] for k in ("root", "account")},
-                        sort_keys=True,
-                        separators=(",", ":"),
-                    ).encode()
-                ).hexdigest(),
-                "reservation_id": original_context["reservation_id"],
-                "envelope_digest": original_context["envelope_digest"],
-                **{
-                    k: original_context[k]
-                    for k in (
-                        "execution_identity_digest",
-                        "plan_origin_digest",
-                        "order_environment",
-                        "context_kind",
-                    )
-                    if k in original_context
-                },
+                "envelope_digest": envelope.envelope_digest,
+                "expected_account_sha256": hashlib.sha256(expected_account.encode()).hexdigest(),
             }
+        if original_context is not None:
+            account_binding.update(
+                {
+                    "original_owner_scope_sha256": hashlib.sha256(
+                        json.dumps(
+                            {k: original_context[k] for k in ("root", "account")},
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode()
+                    ).hexdigest(),
+                    "reservation_id": original_context["reservation_id"],
+                    "envelope_digest": original_context["envelope_digest"],
+                    **{
+                        k: original_context[k]
+                        for k in (
+                            "execution_identity_digest",
+                            "plan_origin_digest",
+                            "order_environment",
+                            "context_kind",
+                        )
+                        if k in original_context
+                    },
+                }
+            )
         global_result = results.get("positions")
         _validate_position_result_v1(
             global_result, endpoint=ENDPOINT_ACCOUNT_POSITIONS, decision_id=decision_id, now=now
@@ -349,7 +373,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             account_fresh = False
             pretrade_ok = False
     account_bound = (
-        original_context is None or account_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+        expected_account is None or account_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
     )
     all_pass = (
         pretrade_ok
@@ -380,6 +404,8 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         venue_quantity_context=quantity_context if quantity_assessment else None,
         scope="PREPOST_ORIGINAL_BUDGET_ACCOUNT_POSITION_AND_VENUE_QUANTITY_ONLY"
         if original_context is not None
+        else "PREPOST_PENDING_SESSION_ACCOUNT_POSITION_AND_VENUE_QUANTITY_ONLY"
+        if expected_account is not None
         else "PREPOST_FRESHNESS_POSITION_AND_VENUE_QUANTITY_ONLY",
     )
 

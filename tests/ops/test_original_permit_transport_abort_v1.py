@@ -4,6 +4,7 @@ from dataclasses import replace
 import json
 
 import pytest
+from tests.ops._current_post_safety_fixture_v1 import synthetic_current_post_pending_context_v1
 
 from tests.ops.test_n1_original_plan_origin_v1 import seed_with_origin
 from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
@@ -46,6 +47,9 @@ def stopped_attempt(tmp_path, monkeypatch, phase):
         portfolio_budget_owner=host.owner,
         portfolio_reservation_id=rid,
         execution_plan_context=host.owner.execution_plan_context_v1(rid, envelope),
+        post_pending_context=synthetic_current_post_pending_context_v1(
+            envelope, account=host.owner.durable_scope_identity_v1()["account"]
+        ),
     )
     calls = []
     if phase == "boundary_write":

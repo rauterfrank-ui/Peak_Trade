@@ -22,6 +22,10 @@ from .current_productive_post_venue_quantity_v1 import (
     CurrentPostVenueQuantityError,
     inspect_current_post_venue_quantity_v1,
 )
+from .current_productive_post_pending_observation_v1 import (
+    CurrentPostPendingObservationError,
+    inspect_current_post_pending_v1,
+)
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -184,6 +188,7 @@ def attempt_envelope_bound_external_effect_send_v1(
     execution_plan_context=None,
     post_safety_context=None,
     post_quantity_context=None,
+    post_pending_context=None,
 ) -> EnvelopeBoundSendSeamResultV1:
     if canonical_intent is not None:
         try:
@@ -235,6 +240,16 @@ def attempt_envelope_bound_external_effect_send_v1(
         execution_plan_context=execution_plan_context,
     )
     owned_identity = None
+    if post_pending_context is not None:
+        try:
+            inspect_current_post_pending_v1(
+                post_pending_context,
+                envelope=envelope,
+                stage="BEFORE_BUDGET_SUBMIT",
+                expected_account=context["account"] if context is not None else None,
+            )
+        except CurrentPostPendingObservationError as exc:
+            raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
     if post_quantity_context is not None:
         try:
             inspect_current_post_venue_quantity_v1(
@@ -303,7 +318,7 @@ def attempt_envelope_bound_external_effect_send_v1(
         )
     except FullCoreProductiveHttpPostError as exc:
         msg = str(exc)
-        if msg.startswith(("POST_SAFETY", "POST_QUANTITY")):
+        if msg.startswith(("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")):
             raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
         if msg in {
             "REDIRECT_OFF_HOST_FORBIDDEN",

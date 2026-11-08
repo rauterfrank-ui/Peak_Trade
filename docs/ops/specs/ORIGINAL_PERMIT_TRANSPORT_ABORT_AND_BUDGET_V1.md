@@ -64,6 +64,9 @@ ursprüngliche Portfolio-Executionidentität V2. Keine dieser Kennungen wird umb
   Der [aktuelle Mengenconsumer](CURRENT_POST_NATIVE_VENUE_QUANTITY_V1.md) verwendet
   zusätzlich den typisierten POST_QUANTITY-Fehler auf derselben Originalphase;
   er erfindet keinen negativen Abschluss nach möglicher Außenwirkung.
+  Der [Original-Pendingconsumer](CURRENT_POST_ORIGINAL_PENDING_OBSERVATION_V1.md)
+  ergänzt den typisierten POST_PENDING-Fehler unter denselben unveränderten
+  Phasenbedingungen. Fehlende oder geschlossene Beobachtung ist kein neuer Grant.
 - `post_count=1` des bisherigen Permitrecords bleibt der belegte Verbrauch seines
   einen POST-Slots. Es ist nach einem Abbruch keine Behauptung eines tatsächlich
   geöffneten Sockets. `http.post_count` bleibt der gesonderte lokale Aufrufzähler.

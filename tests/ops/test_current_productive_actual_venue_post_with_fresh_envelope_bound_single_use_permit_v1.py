@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_current_post_pending_context_v1,
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
 )
 from src.data.safety import DataSourceKind
@@ -101,6 +102,8 @@ class _TrustedReadTransport:
             payload = {"code": "0", "data": [{"instId": "0G-USDT-SWAP", "tdMode": "cross"}]}
         if path == "/api/v5/account/max-size":
             payload["data"][0].update(maxBuy="100", maxSell="100")
+        if path == "/api/v5/account/config":
+            payload["data"][0]["uid"] = "injected-observer-account"
         from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
             FreshPretradeGetTransportResultV1,
             TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
@@ -203,6 +206,7 @@ def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None
             k1_backend=backend,
             opener_factory=lambda: _TimeoutOpener(),
             read_only_get_transport=_TrustedReadTransport(),
+            post_pending_context=synthetic_current_post_pending_context_v1(envelope),
             execution_integrity_backend=_clean_post_integrity(),
         )
     )

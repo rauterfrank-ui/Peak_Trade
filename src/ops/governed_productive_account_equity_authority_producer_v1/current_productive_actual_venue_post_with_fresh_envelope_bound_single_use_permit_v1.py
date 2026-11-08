@@ -23,6 +23,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_post_saf
     CurrentPostSafetyVetoError,
     resolve_current_post_safety_context_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pending_observation_v1 import (
+    CurrentPostPendingObservationError,
+    inspect_current_post_pending_v1,
+)
 
 from src.governance.current_productive_real_venue_post_admission_v1 import (
     evaluate_real_venue_post_admission_v1,
@@ -326,6 +330,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     portfolio_reservation_id: str = "",
     execution_identity=None,
     execution_plan_context=None,
+    post_pending_context=None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -370,6 +375,22 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     if pre.get("PRE_LIVE_PROOF_COMPLETE") != "true":
         raise CurrentProductiveActualVenuePostError("PRE_LIVE_PROOF_INCOMPLETE")
     pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
+    pending_proof = None
+    expected_account = (
+        portfolio_budget_owner.durable_scope_identity_v1()["account"]
+        if portfolio_budget_owner is not None
+        else None
+    )
+    if post_pending_context is not None:
+        try:
+            pending_proof = inspect_current_post_pending_v1(
+                post_pending_context,
+                envelope=envelope,
+                stage="BEFORE_PREFLIGHT_GET",
+                expected_account=expected_account,
+            )
+        except CurrentPostPendingObservationError as exc:
+            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     try:
         freshness = prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             envelope=envelope,
@@ -379,6 +400,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
+            expected_account_identity=pending_proof["account"]
+            if pending_proof is not None
+            else None,
         )
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
@@ -389,6 +413,15 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     try:
         safety.inspect_v1(stage="BEFORE_POST_GO_CONSUME")
     except CurrentPostSafetyVetoError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    try:
+        inspect_current_post_pending_v1(
+            post_pending_context,
+            envelope=envelope,
+            stage="BEFORE_POST_GO_CONSUME",
+            expected_account=expected_account,
+        )
+    except CurrentPostPendingObservationError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     persist_durable_post_owner_go_consume_v1(
         store_root=root,
@@ -426,6 +459,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             execution_plan_context=execution_plan_context,
             post_safety_context=safety,
             post_quantity_context=freshness.venue_quantity_context,
+            post_pending_context=post_pending_context,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
