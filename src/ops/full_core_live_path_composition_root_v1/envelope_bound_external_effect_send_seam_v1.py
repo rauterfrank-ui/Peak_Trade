@@ -169,6 +169,9 @@ def inspect_original_portfolio_execution_context_v1(
             portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
                 portfolio_reservation_id, envelope
             )
+            portfolio_budget_owner.inspect_current_core_cursor_v1(
+                portfolio_reservation_id, envelope
+            )
             return proof
         proof = portfolio_budget_owner.inspect_execution_submit_context_v1(
             portfolio_reservation_id, envelope, execution_identity
@@ -176,6 +179,7 @@ def inspect_original_portfolio_execution_context_v1(
         portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
             portfolio_reservation_id, envelope
         )
+        portfolio_budget_owner.inspect_current_core_cursor_v1(portfolio_reservation_id, envelope)
         return proof
     except (ValueError, TypeError, AttributeError, KeyError) as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc

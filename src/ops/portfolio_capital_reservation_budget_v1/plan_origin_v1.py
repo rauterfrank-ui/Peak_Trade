@@ -37,6 +37,7 @@ from .durable_store_v1 import digest
 from .sizing_binding_v1 import _decode, _encode
 
 SCHEMA = "portfolio_execution_plan_origin.v1"
+CORE_CURSOR_SCHEMA = "portfolio_execution_plan_origin.v2"
 
 
 @dataclass(frozen=True)
@@ -52,7 +53,7 @@ class PortfolioExecutionPlanContextV1:
     order_environment: str
 
 
-def bind_plan_origin_v1(canonical_intent, venue_plan):
+def bind_plan_origin_v1(canonical_intent, venue_plan, *, core_parent=None, core_cursor_root=None):
     if (
         type(canonical_intent) is not CanonicalOrderIntentV1
         or type(venue_plan) is not VenuePlanCandidateV1
@@ -63,6 +64,13 @@ def bind_plan_origin_v1(canonical_intent, venue_plan):
         "canonical_order_intent": _encode(canonical_intent),
         "venue_plan": _encode(venue_plan),
     }
+    if core_parent is not None or core_cursor_root is not None:
+        from .core_cursor_source_v1 import bind_core_cursor_source_v1
+
+        payload["schema"] = CORE_CURSOR_SCHEMA
+        payload["core_cursor_source"] = bind_core_cursor_source_v1(
+            core_parent, core_cursor_root, canonical_intent
+        )
     return {**payload, "digest": digest(payload)}
 
 
@@ -101,8 +109,10 @@ def _validate_native_order_policy_v1(intent, plan, envelope):
 def validate_plan_origin_v1(origin, *, sizing, reservation, bound, envelope):
     if (
         not isinstance(origin, dict)
-        or set(origin) != {"schema", "canonical_order_intent", "venue_plan", "digest"}
-        or origin["schema"] != SCHEMA
+        or origin.get("schema") not in {SCHEMA, CORE_CURSOR_SCHEMA}
+        or set(origin)
+        != {"schema", "canonical_order_intent", "venue_plan", "digest"}
+        | ({"core_cursor_source"} if origin.get("schema") == CORE_CURSOR_SCHEMA else set())
         or origin["digest"] != digest({k: v for k, v in origin.items() if k != "digest"})
     ):
         raise ValueError("EXECUTION_PLAN_ORIGIN_SHAPE_OR_DIGEST_INVALID")
@@ -164,4 +174,10 @@ def validate_plan_origin_v1(origin, *, sizing, reservation, bound, envelope):
     if expected != envelope or body != plan.venue_native_payload:
         raise ValueError("EXECUTION_PLAN_ORIGIN_ENVELOPE_MISMATCH")
     _validate_native_order_policy_v1(intent, plan, envelope)
+    if origin["schema"] == CORE_CURSOR_SCHEMA:
+        from .core_cursor_source_v1 import validate_core_cursor_source_v1
+
+        validate_core_cursor_source_v1(
+            origin["core_cursor_source"], intent=intent, native_id=envelope.instrument_id
+        )
     return plan.environment
