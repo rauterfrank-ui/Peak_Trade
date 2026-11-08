@@ -140,3 +140,17 @@ ersetzen diese Herleitung nicht. Der [Prüfbeleg](../evidence/CURRENT_SURVIVAL_N
 beschreibt den anfänglichen Zwischenstand. Der
 [aktuelle Siegel-/Eingangsabschluss](../evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
 bindet die endgültige Eingangsgrenze und die unveränderte Kernschutzprüfung.
+
+
+## Technische Governancebindung
+
+Die am 9. November 2026 ausdrücklich beauftragte Fortschreibung ergänzt sechs
+exakte Adapter-/Vertragstestdateien im bestehenden technischen Zulassungsowner.
+Sein ursprünglicher Inhalt bleibt bis auf diese Pfade und eine Zwecknotiz
+unverändert. Die getrennte Atlas-/Policybindung prüft ursprünglichen und neuen
+Digest sowie den begrenzten JSON-Unterschied. Andere Pfade, alte Freigaben,
+Wirkungs-/Invariantenfelder oder Verzeichnisrechte können auch mit passendem
+neuem Hash nicht geändert werden. Das vollständige Freeze-Inventar, die native
+Handelslogik, das Kernsiegel, die Format-Freeze-Liste und die Live-Grenzen bleiben
+erhalten. Der [Abschlussbeleg](../evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
+trennt die 115 Governancefälle vom unveränderten 2120-Fachowner-Nachweis.

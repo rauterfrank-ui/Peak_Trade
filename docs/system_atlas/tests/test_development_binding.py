@@ -92,6 +92,7 @@ def test_an_additional_unbound_source_is_rejected(tmp_path, monkeypatch):
     [
         ".github/workflows/changed.yml",
         "static/js/market_surface_greenfield_v1/surface_app_v1.js",
+        "config/governance/technical_canonical_wiring_authorization_v1.json",
     ],
 )
 def test_workflow_and_named_price_consumer_require_exact_hash(tmp_path, monkeypatch, rel):

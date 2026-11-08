@@ -10,7 +10,7 @@ PR 7201 scheiterte tatsächlich am Clean-Core-Siegel der direkt geänderten
 Survival-Datei. Die Korrektur erhält nun sowohl Survival als auch den gesamten
 integrierten Replaykörper exakt auf aktuellem Main. Das 20-Member-Siegel und
 alle 31 vollständigen Format-Freeze-Dateien bestehen unveränderte Checker.
-Schutzmanifest, Sollhashes, Ausnahmen, Workflows und Freeze-Tags bleiben erhalten.
+Clean-Core-/Format-Schutzmanifeste, Sollhashes, Ausnahmen, Workflows und Freeze-Tags bleiben erhalten.
 Der zwischenzeitliche Versuch eines geänderten Replayjoins wurde verworfen;
 sein 2098-PASS ist kein Quellenbeleg für den endgültigen Stand.
 
@@ -46,3 +46,31 @@ numerisch zugelassen. Synthetischer Finanzkontext und temporäre Manifestrecords
 geben die tatsächlichen globalen Standardflags nicht frei. Vollständiger Host,
 Sendemandat, Recovery, Custody/Ressourcen und Gesamtabnahme bleiben offen.
 Keine realen Konten, Credentials oder Venueorders wurden verwendet oder verändert.
+
+## Ausdrücklich beauftragte Governance-Fortschreibung · 9. November 2026
+
+Der nachfolgende Lint-Schritt wies sechs nicht eingetragene geschützte Dateien
+zurück. Der Nutzer beauftragte ausdrücklich deren eng begrenzte technische
+Zulassung samt der eingefrorenen Policybindung. Die vorhandene
+[technische Zulassung](../../../config/governance/technical_canonical_wiring_authorization_v1.json)
+erhält genau diese sechs Pfade und eine Zwecknotiz. Die
+[Atlasbindung](../../system_atlas/current_atlas.py) verlangt weiterhin ursprünglichen
+und aktuellen SHA256 getrennt. Die [Policyprojektion](../../system_atlas/policy_projection.py)
+prüft zusätzlich, dass ausschließlich diese sechs Pfade und die zugehörige Notiz
+angehängt sind. Alle ursprünglichen Einträge, Notizen, sonstigen Vertragsfelder,
+Invarianten und NONE-/false-Wirkungen müssen dem Freeze entsprechen.
+Ein gültiger neuer Hash allein erlaubt dadurch weder eine siebte Datei noch
+eine andere Policyänderung. Das eingefrorene Inventar und seine Originalhashes
+werden nicht umgeschrieben. Die native Boundaryklassifikation und ihr Checker
+bleiben bytegleich.
+
+**115 gezielte Governance-/Atlasverträge PASS, Exit 0, ohne Ausschlüsse.** Die
+Gegenfälle prüfen Hashfehler, ungebundene Bytes, fehlenden/zusätzlichen/ersetzten
+Pfad, Runtime-/Core-/Checkbefreiungs-/Prefixänderung und ersetzte alte/Zwecknotiz.
+Die bisherige Sperre für andere Policys bleibt enthalten. Die tatsächliche
+Boundary-CLI und der gesamte Atlascheck bestehen. Die 2016 Pythonkörper des
+abgeschlossenen 2120-Owner-PASS sind weiterhin identisch; dieser getrennte
+Fachnachweis wird ohne erneuten identischen Suitelauf wiederverwendet. Die vier
+geänderten Governance-Pythonkörper sind separat vor/nach der gezielten Prüfung
+an die vorher geschriebene Entwicklungsbindung gebunden. Ein grüner
+Governancevertrag ist keine neue Trading- oder wirtschaftliche Freigabe.

@@ -94,7 +94,89 @@ def test_exact_selection_delta_is_explicit_in_policy_validation_result():
     assert set(result["development_policy_files"]) == {
         "config/governance/clean_core_seal_manifest_v1.json",
         "src/ops/single_selected_future_policy_v1/selection_v1.py",
+        "config/governance/technical_canonical_wiring_authorization_v1.json",
     }
+
+
+@pytest.mark.parametrize("field", ["before_sha256", "sha256"])
+def test_numeric_admission_policy_requires_exact_development_hash(monkeypatch, field):
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    binding = json.loads(binding_path.read_bytes())
+    row = next(row for row in binding["files"] if row["path"] == PROJECTION["TECHNICAL_ADMISSION"])
+    row[field] = "0" * 64
+    original = Path.read_bytes
+
+    def read(path):
+        return json.dumps(binding).encode() if path == binding_path else original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "extra_path",
+        "missing_path",
+        "old_path",
+        "runtime",
+        "core",
+        "check_waiver",
+        "scope",
+        "old_note",
+        "new_note",
+    ],
+)
+def test_numeric_admission_rejects_other_policy_changes_even_when_hash_rebound(monkeypatch, fault):
+    source = ROOT / PROJECTION["TECHNICAL_ADMISSION"]
+    data = json.loads(source.read_bytes())
+    if fault == "extra_path":
+        data["allowed_paths"].append("src/trading/master_v2/unapproved_seventh_file.py")
+    elif fault == "missing_path":
+        data["allowed_paths"].pop()
+    elif fault == "old_path":
+        data["allowed_paths"][0] = "src/trading/master_v2/unapproved_replacement.py"
+    elif fault == "runtime":
+        data["forbidden_effects"]["RUNTIME_EFFECT"] = "ENABLED"
+    elif fault == "core":
+        data["required_semantic_invariants"]["CORE_SEMANTICS_CHANGED"] = True
+    elif fault == "check_waiver":
+        data["required_check_waiver"] = True
+    elif fault == "scope":
+        data["authorized_path_prefixes"] = ["src/trading/master_v2/"]
+    elif fault == "old_note":
+        data["authorized_surface_notes"][0] = "Replaced prior attestation"
+    else:
+        data["authorized_surface_notes"][-1] = "Different purpose"
+    raw = json.dumps(data).encode()
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    binding = json.loads(binding_path.read_bytes())
+    row = next(row for row in binding["files"] if row["path"] == PROJECTION["TECHNICAL_ADMISSION"])
+    row["sha256"] = hashlib.sha256(raw).hexdigest()
+    original = Path.read_bytes
+
+    def read(path):
+        if path == source:
+            return raw
+        return json.dumps(binding).encode() if path == binding_path else original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_TECHNICAL_ADMISSION_DELTA_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+def test_numeric_admission_rejects_unbound_working_bytes(monkeypatch):
+    source = ROOT / PROJECTION["TECHNICAL_ADMISSION"]
+    original = Path.read_bytes
+
+    def read(path):
+        raw = original(path)
+        return raw + b" " if path == source else raw
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="POLICY_DEVELOPMENT_BINDING_INVALID"):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
 
 
 def test_binding_cannot_admit_another_changed_policy_source(monkeypatch):

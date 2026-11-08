@@ -2313,6 +2313,272 @@
     "real_credentials": false,
     "real_venue_contact": false,
     "operational_configuration_modified": false,
-    "historical_code_imported": false
+    "historical_code_imported": false,
+    "technical_exact_file_admission_updated": true,
+    "atlas_policy_development_binding_extended_by_explicit_user_scope": true
+  },
+  "governance_followup": {
+    "date": "2026-11-09",
+    "base_commit": "0f9af8318fed4710a73a8d6355ac58f2db523eb5",
+    "scope_authorization": "User explicitly commissioned restricted governance evolution for these six files and their frozen policy binding on 2026-11-09; preserve trading formulas, frozen tags and live rights.",
+    "technical_manifest": "config/governance/technical_canonical_wiring_authorization_v1.json",
+    "technical_manifest_sha256": "42d80a318e200ac82219c73de0667d757f40abe008a86d23a8456bdf4479799d",
+    "added_exact_paths": [
+      "src/trading/master_v2/survival_numeric_admission_v1.py",
+      "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+      "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+      "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",
+      "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
+      "tests/trading/master_v2/test_survival_numeric_admission_v1.py"
+    ],
+    "changed_governance_python": [
+      "docs/system_atlas/current_atlas.py",
+      "docs/system_atlas/policy_projection.py",
+      "docs/system_atlas/tests/test_development_binding.py",
+      "docs/system_atlas/tests/test_policy_projection.py"
+    ],
+    "primary_source_binding": {
+      "docs/system_atlas/current_atlas.py": {
+        "sha256": "0497b88db9aeffdb326059797d2c6ab62a578e9454ef719046ae4f1ff71657c6",
+        "before_test_binding": "Provisional development-binding written before the targeted test invocation; same bytes verified after completion"
+      },
+      "docs/system_atlas/policy_projection.py": {
+        "sha256": "e7ed9af9e14545900e287718633820db120118dea363692550f6daa10f7230b5",
+        "before_test_binding": "Provisional development-binding written before the targeted test invocation; same bytes verified after completion"
+      },
+      "docs/system_atlas/tests/test_development_binding.py": {
+        "sha256": "133d05b5826d406e7238acc892839b60a21386a07c5b8042eaec44954d23af6f",
+        "before_test_binding": "Provisional development-binding written before the targeted test invocation; same bytes verified after completion"
+      },
+      "docs/system_atlas/tests/test_policy_projection.py": {
+        "sha256": "459a679d73e9c4135cd66c1cf628378a156cfb6bdb85c35b1ba8e8a47e26a653",
+        "before_test_binding": "Provisional development-binding written before the targeted test invocation; same bytes verified after completion"
+      },
+      "src/governance/economic_diagnostic_optimization_boundary_v0.py": {
+        "sha256": "3d1f997b686ef62573e394da72d777661f0f6af6e2bfcaf84a207185d1ba5755",
+        "before_test_binding": "Exact unchanged current-main original"
+      },
+      "scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py": {
+        "sha256": "e5ca18f38dc2b92ccd37647034379882f2a076108f0fad6bd7a80e192ac57cbb",
+        "before_test_binding": "Exact unchanged current-main original"
+      },
+      "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py": {
+        "sha256": "03907afd7738b6e981a9678321c9ae3b87b0c9b17c55678ea9a1f860f3b94948",
+        "before_test_binding": "Exact unchanged current-main original"
+      },
+      "config/governance/economic_diagnostic_optimization_boundary_v0.json": {
+        "sha256": "8fa49d0116f96b8c9dec838040f6c5a7a4c33695b6d6da25759e2a4083db8373",
+        "before_test_binding": "Exact unchanged current-main original"
+      },
+      "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json": {
+        "sha256": "092e73dff0a0e4cf06112887e004b45f12350c4ef36bf3de4e91d5e018610cb0",
+        "before_test_binding": "Exact unchanged current-main original"
+      }
+    },
+    "targeted_test_run": {
+      "command": [
+        "./scripts/pt",
+        "-m",
+        "pytest",
+        "docs/system_atlas/tests/test_policy_projection.py",
+        "docs/system_atlas/tests/test_development_binding.py",
+        "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
+        "-q"
+      ],
+      "passed": 115,
+      "exit_code": 0,
+      "deselected": 0,
+      "source_bytes_unchanged": true,
+      "receipt_sha256": "95d9c3b34f69e7891f8173905e7d1775f3b68abdbecc053a720a347cb84ef8aa"
+    },
+    "boundary_report": {
+      "DECOMMISSION_ADMISSION_COUNT": 0,
+      "ECONOMIC_GUARD_BLOCK_COUNT": 0,
+      "ECONOMIC_GUARD_PROTECTED_TOUCH_COUNT": 11,
+      "ECONOMIC_GUARD_UNCLASSIFIED_TOUCH_COUNT": 0,
+      "FORBIDDEN_SURFACE_CHANGED_COUNT": 0,
+      "OWNER_ADJUDICATED_NONPRODUCTIVE_CHANGE_COUNT": 0,
+      "admissible": true,
+      "allowed_surface_classification": [],
+      "bull_bear_changed": false,
+      "canonical_trading_semantics_changed": false,
+      "changed_files": [
+        "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+        "docs/ops/evidence/CURRENT_OFFLINE_PARITY_EXPLICIT_FINANCIAL_CONTEXT_2026_11_08.json",
+        "docs/ops/evidence/CURRENT_OFFLINE_PARITY_EXPLICIT_FINANCIAL_CONTEXT_2026_11_08.md",
+        "docs/ops/evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.json",
+        "docs/ops/evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md",
+        "docs/ops/evidence/CURRENT_SURVIVAL_NUMERIC_ADMISSION_2026_11_08.json",
+        "docs/ops/evidence/CURRENT_SURVIVAL_NUMERIC_ADMISSION_2026_11_08.md",
+        "docs/ops/specs/CURRENT_OFFLINE_PARITY_EXPLICIT_FINANCIAL_CONTEXT_V1.md",
+        "docs/ops/specs/CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md",
+        "docs/system_atlas/source/development-binding-v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_core_entry_assessment_frame_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_numeric_entry_admission_v1.py",
+        "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
+        "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+        "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+        "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+        "src/trading/master_v2/survival_numeric_admission_v1.py",
+        "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+        "tests/ops/test_current_post_assessment_frame_v1.py",
+        "tests/ops/test_current_productive_actual_venue_post_baseline_v1.py",
+        "tests/trading/master_v2/_surface_p_current_manifest_fixture_v1.py",
+        "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+        "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",
+        "tests/trading/master_v2/test_surface_p_final_flags_fail_closed_contract_v0.py",
+        "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
+        "tests/trading/master_v2/test_survival_numeric_admission_v1.py"
+      ],
+      "changed_symbols": [],
+      "decommission_admission_count": 0,
+      "double_play_changed": false,
+      "economic_or_diagnostic_only": false,
+      "fail_closed": false,
+      "forbidden_surface_matches": [
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
+          "surface_id": "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY"
+        },
+        {
+          "category": "CAPITAL_RISK_SIZING",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+          "surface_id": "CAPITAL_RISK_SIZING"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "DOUBLE_PLAY_COMPOSITION",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+          "surface_id": "DOUBLE_PLAY_COMPOSITION"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/survival_numeric_admission_v1.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "prefix",
+          "matched_path": "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_surface_p_final_flags_fail_closed_contract_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
+          "surface_id": "MASTER_V2"
+        },
+        {
+          "category": "ENTRY_POSITION_EXIT_REVERSAL_POLICY",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_survival_numeric_admission_v1.py",
+          "surface_id": "ENTRY_POSITION_EXIT_REVERSAL_POLICY"
+        },
+        {
+          "category": "MASTER_V2",
+          "match_kind": "glob",
+          "matched_path": "tests/trading/master_v2/test_survival_numeric_admission_v1.py",
+          "surface_id": "MASTER_V2"
+        }
+      ],
+      "impact_unknown": false,
+      "master_v2_changed": false,
+      "new_od1_single_lane_confirmation_authorization_applied": false,
+      "new_productive_mapping_bind_authorization_applied": false,
+      "new_scope_direction_generator_fallback_authorization_applied": false,
+      "new_sidestate_armed_identity_split_authorization_applied": false,
+      "od1_single_lane_confirmation_authorization_applied": false,
+      "od1_single_lane_confirmation_authorization_version": null,
+      "od1_single_lane_confirmation_mutation_purpose_class": null,
+      "owner_adjudicated_nonproductive_change_count": 0,
+      "owner_adjudicated_nonproductive_contract_change_authorization_applied": false,
+      "owner_adjudicated_nonproductive_contract_change_authorization_version": null,
+      "owner_adjudicated_nonproductive_contract_change_mutation_purpose_class": null,
+      "productive_mapping_contract_runtime_bind_authorization_applied": false,
+      "productive_mapping_contract_runtime_bind_authorization_version": null,
+      "productive_mapping_contract_runtime_bind_mutation_purpose_class": null,
+      "promotion_runtime_authority_changed": false,
+      "reason_codes": [
+        "TECHNICAL_CANONICAL_WIRING_AUTHORIZED"
+      ],
+      "restoration_authorization_applied": false,
+      "restoration_authorization_version": null,
+      "restoration_mutation_purpose_class": null,
+      "risk_sizing_changed": false,
+      "safety_killswitch_reconciliation_changed": false,
+      "scope_direction_generator_fallback_authorization_applied": false,
+      "scope_direction_generator_fallback_authorization_version": null,
+      "scope_direction_generator_fallback_mutation_purpose_class": null,
+      "scope_entry_exit_reversal_changed": false,
+      "semantics_neutral_decommission_authorization_applied": false,
+      "semantics_neutral_decommission_authorization_version": null,
+      "semantics_neutral_decommission_mutation_purpose_class": null,
+      "semantics_neutral_decommission_proven_predicates": [],
+      "sidestate_armed_identity_split_authorization_applied": false,
+      "sidestate_armed_identity_split_authorization_version": null,
+      "sidestate_armed_identity_split_mutation_purpose_class": null,
+      "technical_wiring_authorization_applied": true,
+      "technical_wiring_authorization_version": "technical_canonical_wiring_authorization_v1",
+      "unclassified_touch_count": 0
+    },
+    "governance_semantics": "Six exact paths and one purpose note appended to original technical authorization. Original entries/notes, all other fields, capabilities/effects and invariants must equal the frozen original. Separate before/after hashes bind the delta; a matching new hash alone cannot admit another path or policy change.",
+    "counterfactuals": "Before/after hash tampering, unbound bytes, missing/seventh/rewritten path, runtime/core/check-waiver/prefix expansion and changed old/purpose notes fail closed. Existing unrelated policy drift tests remain.",
+    "preserved_original_owner_pass": {
+      "passed": 2120,
+      "python_source_hashes": 2016,
+      "all_hashes_identical": true,
+      "reused_without_rerun": true
+    },
+    "freeze_inventory_rewritten": false,
+    "core_and_format_protections_unchanged": true,
+    "runtime_authorization_effect": "NONE"
   }
 }
