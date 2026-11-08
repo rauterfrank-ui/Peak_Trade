@@ -1,16 +1,16 @@
-"""Unusable economic numbers must not become original Survival PASS evidence."""
+"""Unusable economic numbers are blocked before the unchanged sealed owner."""
 
 from dataclasses import replace
 import json
 
 import pytest
 
-from trading.master_v2.survival_assessment_v1 import (
-    SurvivalAssessmentStatus,
+from trading.master_v2.survival_assessment_v1 import SurvivalAssessmentStatus
+from trading.master_v2.survival_numeric_admission_v1 import (
     compute_expected_roundtrip_cost,
     compute_net_expected_edge,
-    evaluate_survival_assessment_v1,
-    serialize_survival_result_canonical,
+    evaluate_survival_with_numeric_admission_v1 as evaluate_survival_assessment_v1,
+    serialize_survival_result_strict_v1 as serialize_survival_result_canonical,
 )
 from tests.trading.master_v2.test_survival_assessment_v1 import _input, _policy
 
@@ -137,3 +137,15 @@ def test_serializer_rejects_nonfinite_manually_constructed_result():
     result = evaluate_survival_assessment_v1(_input(), _policy())
     with pytest.raises(ValueError):
         serialize_survival_result_canonical(replace(result, expected_gross_edge=float("nan")))
+
+
+def test_direct_legacy_owner_is_not_silently_redefined_as_current_admission():
+    from trading.master_v2 import survival_assessment_v1 as original
+
+    inp = _input()
+    inp = replace(inp, cost_inputs=replace(inp.cost_inputs, entry_fee=float("nan")))
+    legacy = original.evaluate_survival_assessment_v1(inp, _policy())
+    assert legacy.status is SurvivalAssessmentStatus.PASS
+    assert_blocked(inp)
+    with pytest.raises(ValueError):
+        serialize_survival_result_canonical(legacy)

@@ -6,6 +6,13 @@ runtime_authorization_effect: NONE
 
 # Prüfbeleg: numerische Survival-Eingangszulassung
 
+Dieser Beleg hält den Arbeitsstand vor der CI-Siegelkorrektur fest. Die zunächst
+direkt geänderte geschützte V1-Datei wurde wiederhergestellt. Die endgültige
+Reparatur liegt an der vorgelagerten Eingangsgrenze und ist mit eigenem neuen
+Ownerlauf im [aktuellen Abschluss](CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
+belegt. Die folgenden Zahlen und Quellhashes werden nicht für den geänderten
+Endstand wiederverwendet.
+
 Aktuelle Basis: e1e90e7d57b88b0feecb22f3850788e20f138a2a. Der
 [Originalowner](../../../src/trading/master_v2/survival_assessment_v1.py) wurde
 gezielt geändert; historische Implementierungen oder frühere Parameter wurden

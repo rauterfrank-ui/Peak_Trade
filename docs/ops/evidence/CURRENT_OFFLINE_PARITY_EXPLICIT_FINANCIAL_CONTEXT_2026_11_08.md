@@ -6,6 +6,12 @@ runtime_authorization_effect: NONE
 
 # Prüfbeleg: expliziter Finanzkontext im heutigen Paritätsvergleich
 
+Revisiongebundener Zwischenstand vor der anschließenden CI-Siegelkorrektur.
+Der aktuelle [Siegel-/Eingangsabschluss](CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
+enthält den neuen gemeinsamen Lauf für den endgültigen Code. Die unten genannten
+2090 PASS werden nach der Änderung der numerischen Eingangsgrenze nicht als
+unveränderter Quellenbeleg wiederverwendet.
+
 Aktuelle Basis: 65fdc5075b3adda49e12c83f21276d0ec96dd50d. Der
 [gemeinsame Ownerlauf](CURRENT_OFFLINE_PARITY_EXPLICIT_FINANCIAL_CONTEXT_2026_11_08.json)
 endet mit **2090 PASS, Exit 0, ohne Ausschlüsse**. Die drei im

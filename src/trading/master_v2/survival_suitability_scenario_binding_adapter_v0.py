@@ -48,7 +48,9 @@ from trading.master_v2.survival_assessment_v1 import (
     SurvivalHardFailReason,
     SurvivalMetricInputsV1,
     SurvivalResultV1,
-    evaluate_survival_assessment_v1,
+)
+from trading.master_v2.survival_numeric_admission_v1 import (
+    evaluate_survival_with_numeric_admission_v1,
 )
 
 SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_LAYER_VERSION = "v0"
@@ -246,7 +248,7 @@ def evaluate_scenario_directional_survival_v0(
         explicit_blocked_reasons=(),
         policy_version=SURVIVAL_ASSESSMENT_POLICY_VERSION,
     )
-    result = evaluate_survival_assessment_v1(inp, scenario_survival_policy_v0())
+    result = evaluate_survival_with_numeric_admission_v1(inp, scenario_survival_policy_v0())
     if status_override is not None:
         return replace(result, status=status_override)
     return result

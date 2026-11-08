@@ -132,3 +132,10 @@ nicht restauriert und keine Erfolgsflags direkt gesetzt.
 
 Der [Prüfbeleg](../evidence/CURRENT_OFFLINE_PARITY_EXPLICIT_FINANCIAL_CONTEXT_2026_11_08.md)
 bindet die konkreten aktuellen Quellen und den gemeinsamen Ownerlauf.
+
+Nachfolgende CI-Korrektur: Survival und der gesamte integrierte Replaykörper
+bleiben exakt unverändert. Der Szenarioadapter prüft die numerischen Eingänge
+vor dem nativen Survivalowner; der Host sperrt Entry bei negativen Zahlenbefunden
+vor Finanz-/DDO-Weitergabe. Die hier beschriebene Finanzkontextübergabe bleibt
+erhalten. Der [aktuelle Abschluss](../evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
+ersetzt die früheren Zwischenläufe als Quellenbeleg für den endgültigen Stand.

@@ -1170,6 +1170,16 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance="REAL_CARRIER_PASSIVE_CAPTURE_FAIL_CLOSED",
             cursor_restore_status=restore.disposition.value,
         )
+    from .current_productive_numeric_entry_admission_v1 import (
+        prepare_current_productive_numeric_entry_v1,
+    )
+
+    bind_input, numeric_preview, numeric_admission_reasons = (
+        prepare_current_productive_numeric_entry_v1(
+            bind_input, replay_runner=run_integrated_offline_trading_logic_replay_v1
+        )
+    )
+    input_digest = bind_input.input_digest
     ddo_binding = (
         build_productive_ddo_capture_binding_v1(ledger_path=ddo_durable_evidence_ledger_path)
         if ddo_durable_evidence_ledger_path is not None
@@ -1225,7 +1235,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
                 "handoff_artifact_path": export_result.handoff_artifact_path,
             }
     else:
-        replay = run_integrated_offline_trading_logic_replay_v1(bind_input)
+        replay = numeric_preview or run_integrated_offline_trading_logic_replay_v1(bind_input)
     replay = finalize_productive_layered_core_replay_bind_v1(
         replay=replay,
         carry=bind_carry,
@@ -1317,7 +1327,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             persist=False,
         )
     outcome = str(replay.evidence.decision_outcome or "")
-    reasons = tuple(str(x) for x in (replay.fail_reasons or ()))
+    reasons = tuple(str(x) for x in (replay.fail_reasons or ())) + numeric_admission_reasons
     outgoing_cursor = _outgoing_cursor_from_replay_v1(
         bound_instrument=bound_instrument,
         trading_epoch=trading_epoch,

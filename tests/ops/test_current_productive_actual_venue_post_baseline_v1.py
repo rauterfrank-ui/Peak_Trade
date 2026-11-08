@@ -52,6 +52,22 @@ def test_protected_surface_drift_fail_closed() -> None:
         )
 
 
+def test_current_numeric_ingress_guard_drift_reaches_actual_post_integrity_gate() -> None:
+    guard = "src/trading/master_v2/survival_numeric_admission_v1.py"
+
+    class GuardDrift(MockCurrentProductive29PIntegrityBackendV1):
+        def diff_origin_main_for_paths_v1(self, paths):
+            return guard if guard in paths else ""
+
+    with pytest.raises(
+        CurrentProductiveActualVenuePostBaselineError, match="PROTECTED_POST_SLICE_SURFACE_DRIFT"
+    ):
+        resolve_and_assert_live_post_execution_baseline_v1(
+            declared_baseline_origin_main_sha=RECORDED,
+            integrity_backend=GuardDrift(origin_main=RECORDED, head=RECORDED),
+        )
+
+
 def test_head_not_at_origin_main_fail_closed() -> None:
     integrity = MockCurrentProductive29PIntegrityBackendV1(
         origin_main=RECORDED,

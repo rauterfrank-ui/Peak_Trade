@@ -115,7 +115,11 @@ def read_current_core_entry_assessment_frame_v1(cursor):
             or hashlib.sha256(value["canonical"].encode()).hexdigest() != value["semantic_digest"]
         ):
             raise ValueError("CURRENT_CORE_ASSESSMENT_COMPONENT_UNPROVEN")
-        body = json.loads(value["canonical"])
+
+        def reject_nonfinite(value):
+            raise ValueError("CURRENT_CORE_ASSESSMENT_NUMERIC_OUTPUT_NONFINITE:" + value)
+
+        body = json.loads(value["canonical"], parse_constant=reject_nonfinite)
         if (
             not isinstance(body, dict)
             or body.get("instrument_id") != cursor.instrument_id

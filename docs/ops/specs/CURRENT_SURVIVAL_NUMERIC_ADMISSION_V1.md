@@ -4,72 +4,102 @@ authority: NONE
 runtime_authorization_effect: NONE
 ---
 
-# Numerische Eingangszulassung des heutigen Survivalowners
+# Numerische Zulassung an den heutigen Außenanschlüssen
 
 Ausgangspunkt ist der aktuelle Merge e1e90e7d57b88b0feecb22f3850788e20f138a2a.
-Dieser Anschluss korrigiert die vorhandene
-[Survivalbewertung](../../../src/trading/master_v2/survival_assessment_v1.py).
-Er übernimmt keinen historischen Code und ersetzt keine wirtschaftliche
-Inputherleitung durch neue Parameter oder Bedeutungen.
+Der [Survivalowner](../../../src/trading/master_v2/survival_assessment_v1.py) und
+der gesamte [integrierte Replaykörper](../../../src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py)
+bleiben bytegleich zu current main. Das Clean-Core-Siegel und die 31 vollständigen
+Format-Freeze-Dateien werden unverändert geprüft. Weder Sollhash noch Ausnahme,
+Checker, Workflow oder Freeze-Tag wird für diese Änderung angepasst.
+Die Korrektur liegt an zwei ausdrücklich verschiedenen Außenanschlüssen.
 
-## Fehler und konkrete Wirkung
+## Fehler und numerische Bedeutung
 
-Die bisherige Kostenprüfung erkannte fehlende Werte, prüfte aber nicht ihre
-numerische Darstellung. Ein NaN in jedem der sechs Kosten-/Gross-Edge-Felder
-konnte ein PASS ergeben: der Vergleich eines NaN-Nettoedges mit dem Minimum ist
-false und fiel damit in den PASS-Zweig. Der Serializer ließ NaN- und
-Infinity-Token zu. Wahrheitsähnliche Vollständigkeitswerte und Boolwerte an
-Zahlenfeldern konnten ebenfalls die ursprünglichen Prüfungen passieren.
+Der ursprüngliche Kostenvergleich erkennt fehlende Werte, lässt aber nichtendliche
+oder falsch typisierte Werte teilweise passieren. NaN kann wegen seines false-
+Vergleichs mit dem Mindest-Nettoedge ein PASS ergeben. Der Originalserializer
+lässt nichtendliche JSON-Token zu. Diese ursprüngliche V1-Semantik wird nicht
+heimlich umdefiniert; ein direkter Legacy-Grenztest hält sie sichtbar.
 
-Die Korrektur lässt an den vorhandenen Zahlenfeldern nur endliche Python-int-
-oder float-Werte zu. Bool, Strings, NaN, positive/negative Infinity und bei der
-Floatprojektion überlaufende Integer erzeugen einen BLOCKED-Ausgang. Die
-Funding-Pflicht verlangt ein tatsächliches bool; Datenvollständigkeit verlangt
-bool oder das bisherige None für unbekannt. Fehlende erforderliche Werte behalten
-ihre bestehenden Missing-/Unknown-Regeln. Auch bei optionalem Funding darf ein
-ausdrücklich mitgelieferter Wert nicht ungültig sein.
+Die [numerische Prüfung](../../../src/trading/master_v2/survival_numeric_admission_v1.py)
+verlangt an Zahlenfeldern endliche Python-int oder float, ohne Bool, Strings,
+NaN, Infinity oder bei der Floatprojektion überlaufende Integer. Fundingpflicht
+verlangt bool; Vollständigkeit bool oder das ursprüngliche unbekannte None.
+Optionale mitgelieferte Zahlen müssen ebenfalls gültig sein. Fehlende Werte
+behalten die bestehenden Missing-/Unknown-Regeln.
 
-Alle fünf numerischen Policygrenzen müssen endlich und numerisch sein. Die
-bisherige Nichtnegativitätsbedingung des Mindest-Nettoedges bleibt erhalten.
-Es gibt keine neue wirtschaftliche Ober-/Untergrenze für die anderen Zahlen.
-Endliche negative Gebühren-/Fundingwerte oder Gross-Edges werden durch diese
-Darstellungsprüfung nicht umgedeutet. Ebenso entsteht keine neue Begrenzung
-eines Ratios auf eins. Die vorhandene Kostenaddition, Nettoedge-Subtraktion und
-die vorhandenen Ratiovergleiche bleiben maßgeblich.
+Alle fünf numerischen Policygrenzen müssen endlich sein. Die ursprüngliche
+Nichtnegativitätsbedingung des Mindest-Nettoedges bleibt bestehen. Es werden
+keine neuen wirtschaftlichen Grenzen eingeführt, signierte endliche Werte
+nicht umgedeutet und Ratios nicht auf eins begrenzt. Kosten und Nettoedge werden
+mit der ursprünglichen Rechnung geprüft; auch deren Überlauf wird abgewiesen.
+Eine ungültige validity_epochs-Policy erhält ausschließlich für die nicht
+zugelassene Verarbeitung eine serialisierbare Ein-Epochen-Form. Dies erzeugt
+keine Zulassung und keine TTL für gespeicherte Pläne.
 
-Auch endliche Eingaben können bei Addition oder Subtraktion überlaufen. Dieser
-Fall ergibt ausdrücklich cost_arithmetic_nonfinite und BLOCKED. Die beiden
-vorhandenen öffentlichen Kostenhelfer liefern dann None. Ungültige Zahlen
-erscheinen nicht als wirtschaftliche Größen im Fehlerrecord. Der ursprüngliche
-kanonische Serializer verwendet zusätzlich striktes JSON ohne NaN/Infinity.
+## Szenarioadapter: vor dem unveränderten Survivalowner
 
-Eine ungültige validity_epochs-Policy erzeugt weiterhin nur BLOCKED. Ihr
-Fehlerrecord erhält zur Erfüllung des bestehenden DTO-Invarianten einen
-Ein-Epochen-Serialisierungsabstand. Das ist weder ein neuer Eintrittszeitraum
-noch eine TTL für gespeicherte Pläne; die ungültige Policy wird nie zugelassen.
-Authority, Runtime-, Order- und Risk-Effekt des Survivalergebnisses bleiben NONE.
+Der [Szenarioadapter](../../../src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py)
+verwendet die ausdrückliche numerische Eingangsgrenze. Bei ungültigen Werten wird
+input_complete false; bei ungültiger numerischer Policy wird zusätzlich deren
+nicht zugelassene serialisierbare Form verwendet. Der unveränderte native Owner
+muss selbst BLOCKED mit drei None-Ergebnisgrößen erzeugen. Nur dann ergänzt der
+Adapter negative Diagnosecodes und berechnet den Originaldigest neu. Eine
+strikte Prüfung seines Originalserialisats lehnt NaN-/Infinity-Token ab.
+Es entsteht keine zweite positive Survival- oder Entryformel. Gültige Inputs
+und native endliche Rechenausgänge bleiben erhalten.
 
-## Weg zum bestehenden späten Consumer
+## Host: negatives Entryveto vor Finanz- und DDO-Übergabe
 
 Der heutige [Corezyklus](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py)
-verbraucht den unverändert benannten integrierten Replayowner. Der neue BLOCKED-
-Ausgang durchläuft dessen vorhandene Suitability-, Composition- und Entry-
-Verarbeitung. Der [Originalframeadapter](../../../src/ops/full_core_live_path_composition_root_v1/current_core_entry_assessment_frame_v1.py)
-und der vorhandene Cursorwriter publizieren die resultierenden kanonischen
-Ausgänge gemeinsam mit dem C1-/C3-Zustand. Es wird kein zweiter Prüfer am
-Versand eingeführt. Die [bestehende Framebindung](CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md)
-übernimmt das negative Originalergebnis bis zu den frühen und späten Readern.
+ruft den [Hostadapter](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_numeric_entry_admission_v1.py)
+vor der DDO-Capture-Session und vor der finanziellen Weitergabe auf. Eine
+ungültige numerische Policy wird zuerst erkannt. Andernfalls liefert eine reine
+native Replayvorschau die tatsächlichen C3-Assessments. Der unveränderte native
+Survivalinputbuilder erzeugt daraus mit denselben Inputkörpern die zu prüfenden
+Kosten-/Metrikfelder. Keine wirtschaftliche Ersatzformel wird eingeführt.
 
-Die [Consumerfälle](../../../tests/ops/test_current_post_assessment_frame_v1.py)
-erzeugen NaN-Kosten, Kostenüberlauf, ungültige Vollständigkeit und eine ungültige
-Policy durch den tatsächlichen heutigen Survivalowner. Bestätigter C3-Fortschritt
-bleibt dabei erhalten. Der Originalwriter publiziert den negativen Frame; das
-spätere Veto sperrt vor dem Socket. Nach möglicher Socketwirkung bleiben Unknown
-und Hold erhalten. Ein später wieder zulässiger Frame erneuert keinen bereits
-verbrauchten abgebrochenen Versuch.
+Bei einem Fehler erhält der finale native Replayinput den vorhandenen
+EXIT_ONLY-Gate oder behält sein bereits restriktiveres BLOCKED/EXIT_ONLY. Sein
+Inputdigest bindet die negative Zulassung. So kann die ursprüngliche Entrypolicy
+keinen neuen Entry zulassen; risikoabbauende Exits werden nicht pauschal in einen
+BLOCKED-Gate umgedeutet. Der native Survivalstatus selbst wird dabei ausdrücklich
+nicht als BLOCKED umgeschrieben. Er kann weiterhin seine Legacy-Semantik zeigen.
 
-Diese Versuche verwenden temporäre Stores und synthetische Ports. Sie sind keine
-Venuebeobachtung und keine Live-Betriebsabnahme.
+Die Vorschau veröffentlicht weder den optionalen Regime-Evidencepfad noch DDO,
+Confirmation, Scope- oder Cursorzustand. Der finale Lauf erhält denselben
+unveränderten eingehenden C3-/C1-Carrier. Ein gültiger Aufruf ohne Capturebedarf
+verwendet direkt das Vorschauergebnis; DDO beziehungsweise ein ausdrücklich
+angeforderter Evidencepfad verwenden einen finalen nativen Lauf. Nur dessen
+Ergebnis erreicht die bisherigen Writer und Folgeconsumer. Dies ist keine
+zweite Fortschrittsanwendung oder neue positive Authority.
+
+Der [bestehende Frameadapter](../../../src/ops/full_core_live_path_composition_root_v1/current_core_entry_assessment_frame_v1.py)
+liest die unveränderten kanonischen Originalausgänge nun zusätzlich mit strikter
+Ablehnung nichtendlicher JSON-Konstanten. Der ursprüngliche Cursorwriter und die
+[frühen/späten Consumer](CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md) bleiben die
+Übergabe für negative Entryausgänge. Ein direkt übergebener nichtendlicher
+Legacy-Ausgang wird dort abgewiesen. Die vorhandene tatsächliche POST-
+Sourceintegrität schützt beide neuen Adapterdateien ausdrücklich mit.
+
+## Prüfung und Grenze des Nachweises
+
+Sechs Host-Gegenfälle verwenden die tatsächlich gebundenen Replayinputs für
+beide Executionidentitäten: NaN-Kosten, falsch typisierte Vollständigkeit und
+ungültige Epochenpolicy. Sie prüfen das native Entryveto, erhaltenen bestätigten
+C3-Fortschritt, identischen eingehenden Carrier und unveränderten dauerhaften
+Cursor während der Vorschau. Zwei positive Fälle prüfen die genaue native
+Ergebniswiederverwendung. Der direkte Legacy-V1-Grenzfall und der tatsächliche
+POST-Source-Driftconsumer sind gesondert abgedeckt. Bestehende negative
+Frame-/Permit-/Budget-/Unknownfälle bleiben enthalten. Temporäre Stores und
+synthetische Ports sind keine Venue- oder Live-Betriebsabnahme.
+
+Ein nativer Fehler, der bereits vor einer verwendbaren Vorschau wirft, erzeugt
+hierdurch keinen publizierten Negativframe. Diese bestehende Hostfehlergrenze
+bleibt offen. Direkte V1-Aufrufer außerhalb der beiden ausdrücklichen Adapter
+sind nicht automatisch numerisch zugelassen. Typprüfung belegt weder die
+wirtschaftliche Richtigkeit fester Replaywerte noch produktives Risiko.
 
 ## Wirtschaftsinputs und numerisches Risiko bleiben eigene offene Anschlüsse
 
@@ -107,4 +137,6 @@ zuständige Quellen, Bedeutung und Einheiten, Instrument/Seite, Ereignis- und
 Kenntniszeit, Horizont und tatsächlicher Verbrauch. Ein korrekter numerischer
 Datentyp, ein transportiertes PASS und ein neu beschrifteter Herkunftscontainer
 ersetzen diese Herleitung nicht. Der [Prüfbeleg](../evidence/CURRENT_SURVIVAL_NUMERIC_ADMISSION_2026_11_08.md)
-grenzt die hier abgeschlossene Reparatur davon ab.
+beschreibt den anfänglichen Zwischenstand. Der
+[aktuelle Siegel-/Eingangsabschluss](../evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
+bindet die endgültige Eingangsgrenze und die unveränderte Kernschutzprüfung.
