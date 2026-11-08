@@ -33,6 +33,11 @@ from .current_productive_post_pending_observation_v1 import (
     CurrentPostPendingObservationError,
     inspect_current_post_pending_v1,
 )
+from .current_productive_post_budget_admission_v1 import (
+    CurrentPostBudgetAdmissionError,
+    capture_current_post_budget_admission_v1,
+    inspect_current_post_budget_admission_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -76,6 +81,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_p
     FullCoreCurrentPostSafetyVetoError,
     FullCoreCurrentPostQuantityVetoError,
     FullCoreCurrentPostPendingVetoError,
+    FullCoreCurrentPostBudgetVetoError,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveHttpTradeOrderTransportV1,
 )
@@ -224,6 +230,10 @@ class _DurableConsumeThenK1HttpTransportV1:
         post_safety_context=None,
         post_quantity_context=None,
         post_pending_context=None,
+        portfolio_budget_owner=None,
+        portfolio_reservation_id="",
+        execution_identity=None,
+        permit=None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -234,6 +244,10 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._post_safety_context = post_safety_context
         self._post_quantity_context = post_quantity_context
         self._post_pending_context = post_pending_context
+        self._portfolio_budget_owner = portfolio_budget_owner
+        self._portfolio_reservation_id = portfolio_reservation_id
+        self._execution_identity = execution_identity
+        self._permit = permit
 
     def post_trade_order(
         self,
@@ -291,6 +305,24 @@ class _DurableConsumeThenK1HttpTransportV1:
         except CurrentPostPendingObservationError as exc:
             attempt.abort_before_transport_v1(reason_code=str(exc))
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
+            budget_context = capture_current_post_budget_admission_v1(
+                owner=self._portfolio_budget_owner,
+                reservation_id=self._portfolio_reservation_id,
+                envelope=self._envelope,
+                identity=self._execution_identity,
+                permit=self._permit,
+                transport_attempt=attempt,
+            )
+            inspect_current_post_budget_admission_v1(
+                budget_context,
+                envelope=self._envelope,
+                transport_attempt=attempt,
+                stage="BEFORE_K1",
+            )
+        except CurrentPostBudgetAdmissionError as exc:
+            attempt.abort_before_transport_v1(reason_code=str(exc))
+            raise FullCoreCurrentPostBudgetVetoError(str(exc)) from exc
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
         try:
@@ -308,6 +340,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     transport_attempt=attempt,
                     post_quantity_context=self._post_quantity_context,
                     post_pending_context=self._post_pending_context,
+                    post_budget_context=budget_context,
                 )
                 try:
                     result = http.post_trade_order(
@@ -328,6 +361,7 @@ class _DurableConsumeThenK1HttpTransportV1:
             FullCoreCurrentPostSafetyVetoError,
             FullCoreCurrentPostQuantityVetoError,
             FullCoreCurrentPostPendingVetoError,
+            FullCoreCurrentPostBudgetVetoError,
         ) as exc:
             # K1 context has exited. Only the original still-PRE_SOCKET claim
             # can close negatively; a matching error string or zero counter
@@ -464,6 +498,10 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         post_safety_context=safety,
         post_quantity_context=post_quantity_context,
         post_pending_context=post_pending_context,
+        portfolio_budget_owner=portfolio_budget_owner,
+        portfolio_reservation_id=portfolio_reservation_id,
+        execution_identity=execution_identity,
+        permit=permit,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(

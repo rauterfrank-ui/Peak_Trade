@@ -95,6 +95,10 @@ class _TrustedReadTransport:
                         "state": "live",
                         "maxMktSz": "100",
                         "maxLmtSz": "100",
+                        "minSz": "1",
+                        "lotSz": "1",
+                        "tickSz": "0.01",
+                        "upcChg": [],
                     }
                 ],
             }

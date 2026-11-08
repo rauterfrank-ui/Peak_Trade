@@ -31,6 +31,10 @@ from .current_productive_post_pending_observation_v1 import (
     CurrentPostPendingObservationError,
     inspect_current_post_pending_v1,
 )
+from .current_productive_post_budget_admission_v1 import (
+    CurrentPostBudgetAdmissionError,
+    inspect_current_post_budget_admission_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
     OriginalPermitTransportAttemptV1,
@@ -84,6 +88,10 @@ class FullCoreCurrentPostQuantityVetoError(FullCoreProductiveHttpPostError):
 
 class FullCoreCurrentPostPendingVetoError(FullCoreProductiveHttpPostError):
     """Actual original observation session/pending denial."""
+
+
+class FullCoreCurrentPostBudgetVetoError(FullCoreProductiveHttpPostError):
+    """Actual original budget-owner/current-attempt readback denial."""
 
 
 @dataclass(frozen=True)
@@ -165,6 +173,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         transport_attempt: OriginalPermitTransportAttemptV1 | None = None,
         post_quantity_context=None,
         post_pending_context=None,
+        post_budget_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
@@ -173,6 +182,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._transport_attempt = transport_attempt
         self._post_quantity_context = post_quantity_context
         self._post_pending_context = post_pending_context
+        self._post_budget_context = post_budget_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -242,6 +252,18 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             )
         except CurrentPostPendingObservationError as exc:
             raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
+        self._check_current_budget_v1(stage="HTTP_BUDGET")
+
+    def _check_current_budget_v1(self, *, stage):
+        try:
+            inspect_current_post_budget_admission_v1(
+                self._post_budget_context,
+                envelope=self._post_safety_context.envelope,
+                transport_attempt=self._transport_attempt,
+                stage=stage,
+            )
+        except CurrentPostBudgetAdmissionError as exc:
+            raise FullCoreCurrentPostBudgetVetoError(str(exc)) from exc
 
     def _perform_http_post_v1(
         self, *, payload: Mapping[str, Any]
@@ -292,6 +314,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 )
             except CurrentPostPendingObservationError as exc:
                 raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
+            self._check_current_budget_v1(stage="BEFORE_SOCKET")
             try:
                 self._transport_attempt.mark_socket_boundary_v1()
             except FullCoreExternalEffectDurableConsumeError as exc:

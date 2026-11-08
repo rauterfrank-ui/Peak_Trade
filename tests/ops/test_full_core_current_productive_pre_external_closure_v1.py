@@ -13,6 +13,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_PUBLIC_INSTRUMENTS,
+    ENDPOINT_PUBLIC_PRICE_LIMIT,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
@@ -135,6 +136,7 @@ def _productive_instruments_row_for_enter_metadata_v1(
         "maxMktSz": "1000000",
         "maxLmtSz": "1000000",
         "tickSz": "0.01",
+        "upcChg": [],
         "tdMode": "cross",
         "mgnMode": "cross",
     }
@@ -162,6 +164,19 @@ def _productive_transport(**kwargs) -> ProductiveClassFreshGetTransportV1:
         ],
     }
     payloads[ENDPOINT_MARKET_INDEX_TICKERS] = usdt_usdc_index_tickers_payload_v1()
+    payloads[ENDPOINT_PUBLIC_PRICE_LIMIT] = {
+        "code": "0",
+        "data": [
+            {
+                "instId": _TEST_INST,
+                "instType": "SWAP",
+                "enabled": True,
+                "buyLmt": "1000000",
+                "sellLmt": "0",
+                "ts": "1597026383085",
+            }
+        ],
+    }
     return ProductiveClassFreshGetTransportV1(payloads=payloads)
 
 
