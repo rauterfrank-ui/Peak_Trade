@@ -567,45 +567,17 @@ def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
+    )
+
+    assert_current_frozen_document_navigation(REPO_ROOT, spec=SPEC_PATH)
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DI_HEADING in runbook
-    assert THIS_SLICE in runbook
-    di_section = runbook[
-        runbook.index(
-            "11.2.1.DI FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM"
-        ) : runbook.index("## 11.3 Autonomy state model")
-    ]
-    assert "ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true" in di_section
-    assert "SINGLE_USE=true" in di_section
-    assert "MAX_POST_COUNT=1" in di_section
-    assert "REPLAY_PROTECTION_DURABLE=true" in di_section
-    assert "FOLLOW_ON_SUBMIT_ISOLATED=true" in di_section
-    assert "FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true" in di_section
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in di_section
-    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in di_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in di_section
-    assert "POST_COUNT=0" in di_section
-    assert f"FIRST_DEFINITIVE_BLOCK={NEXT_BLOCKER}" in di_section
-    dh_section = runbook[
-        runbook.index(
-            "11.2.1.DH FULL_CORE_CURRENT_PRODUCTIVE_LIVE_AUTHORIZED_AND_CAP_11_1_SEND_CAPABLE_ADAPTER"
-        ) : runbook.index(
-            "11.2.1.DI FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM"
-        )
-    ]
-    assert "LIVE_AUTHORIZED=true" in dh_section
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in dh_section
-    assert "FIRST_DEFINITIVE_BLOCK=EXTERNAL_EFFECT_NOT_AUTHORIZED" in dh_section
-    assert SPEC_PATH.name in mot
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1"
         in spec
     )
-    assert "11.2.1.DI" in atlas
-    assert "current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py" in atlas
+    # Retain all original historical-pack claims and exact manifest proof.
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM"] == "true"

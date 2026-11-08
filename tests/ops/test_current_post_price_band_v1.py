@@ -306,6 +306,7 @@ def limit_seed(tmp_path, monkeypatch):
     producer emitted LIMIT or refresh its risk decision.
     """
     from tests.ops.test_n1_original_plan_origin_v1 import seed_with_origin
+    from src.governance.canonical_order_intent_v1 import compute_semantic_digest
     from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
         bind_final_order_envelope_from_venue_plan_v1,
     )
@@ -318,6 +319,8 @@ def limit_seed(tmp_path, monkeypatch):
         order_type="limit",
         venue_native_payload={**plan.venue_native_payload, "ordType": "limit", "px": "10.03"},
     )
+    intent = replace(intent, order_type_policy="LIMIT_ONLY", price_policy="EXPLICIT_PRICE:10.03")
+    intent = replace(intent, semantic_digest=compute_semantic_digest(intent))
     order = bind_final_order_envelope_from_venue_plan_v1(
         plan,
         admission_ref=original_order.admission_ref,

@@ -240,28 +240,17 @@ def test_full_core_active_filegate_does_not_promote_original_no_action_to_enter(
 
 
 def test_runbook_and_spec_bind_join_without_live_arming() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    spec = SPEC_PATH.read_text(encoding="utf-8")
-    start = runbook.index("11.2.1.J FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM")
-    section = runbook[
-        start : runbook.index("11.2.1.K FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM", start)
-    ]
-    assert "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true" in section
-    assert "LIVE_ENABLED=false" in section
-    assert "LIVE_ARMED=false" in section
-    assert "WIRE_SEND_PERMITTED=false" in section
-    assert "GET_PERFORMED=false" in section
-    assert "POST_PERFORMED=false" in section
-    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in section
-    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in section
-    assert (
-        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT"
-        in section
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
     )
+
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert_current_frozen_document_navigation(REPO_ROOT, spec=SPEC_PATH)
+    assert "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true" in spec
+    assert "LIVE_ENABLED=false" in spec and "LIVE_ARMED=false" in spec
+    assert "WIRE_SEND_PERMITTED=false" in spec
+    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in spec
+    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in spec
+    assert "TRUSTED_FILEGATE_DOES_NOT_ADMIT_LIVE=true" in spec
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1" in spec
-    identity = runbook[
-        runbook.index("11.2.1.I FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP") : start
-    ]
-    assert "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false" in identity
-    assert "FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH" in identity

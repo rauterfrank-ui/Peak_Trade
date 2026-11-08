@@ -246,13 +246,18 @@ def test_productive_venue_plan_binding_consumes_ratified_authority() -> None:
 
 
 def test_runbook_records_new_authority_without_repairing_header_sha() -> None:
-    text = _RUNBOOK.read_text(encoding="utf-8")
-    assert "BOUND_ORIGIN_MAIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f" in text
-    assert "EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY" in text
-    assert "NOT_A_HISTORICAL_PREEXISTING_FACT=true" in text
-    assert "VENUE_PLAN_BINDING_IMPLEMENTED=true" in text
-    assert "TOKEN=cross" in text
-    assert "TRANSFORMATION=IDENTITY" in text
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
+    )
+
+    # The current Runbook describes its frozen source. The separately labelled
+    # authority belongs to its actual code owner, not a removed old header.
+    assert NOT_A_HISTORICAL_PREEXISTING_FACT is True
+    assert_current_frozen_document_navigation(
+        _REPO,
+        spec=_REPO / "docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md",
+        owners=(_AUTHORITY,),
+    )
 
 
 def test_standing_pins_and_post_go_remain_unconsumed() -> None:

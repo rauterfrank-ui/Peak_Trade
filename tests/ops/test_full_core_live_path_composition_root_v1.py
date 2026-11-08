@@ -53,7 +53,6 @@ from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 imp
 )
 from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
     _confirmed_replay_input,
-    _patch_replay_owners,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DecisionOutcome,
@@ -63,12 +62,41 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
+    IntegratedOfflineReplayResultV1,
 )
+
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_DIR = REPO_ROOT / "src/ops/full_core_live_path_composition_root_v1"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md"
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+
+
+@pytest.fixture(autouse=True)
+def isolated_composition_owners(monkeypatch, tmp_path):
+    import socket
+    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+        establish_current_productive_pre_external_test_process_isolation_v1,
+        reset_current_productive_pre_external_shared_test_process_state_v1,
+    )
+
+    establish_current_productive_pre_external_test_process_isolation_v1(
+        monkeypatch=monkeypatch,
+        f1_root=tmp_path / "synthetic-composition-f1",
+        reseed_workspace_f1_m9=False,
+    )
+
+    def denied(*args, **kwargs):
+        raise AssertionError("Composition tests must never reach a network socket")
+
+    monkeypatch.setattr(socket.socket, "connect", denied)
+    monkeypatch.setattr(socket, "create_connection", denied)
+    yield
+    reset_current_productive_pre_external_shared_test_process_state_v1()
 
 
 def _binding(*, instrument_id: str = _INSTRUMENT, selection_id: str = "sel-1") -> BoundInstrumentV1:
@@ -102,11 +130,26 @@ def _pretrade(
     return FrozenPretradeEvidenceV1(**payload)
 
 
-def _run(monkeypatch, replay_input, **kwargs):
-    _patch_replay_owners(
-        monkeypatch, force_safety_hard_block=kwargs.pop("force_safety_hard_block", False)
+def _actual_enter_replay():
+    # Actual current Core -> original LIVE-29P -> original 29Q test path.
+    # No outcome, size or intent is overwritten to make an ENTER fixture.
+    from tests.ops.test_current_productive_venue_plan_td_mode_and_order_environment_authority_v1 import (
+        _enter_replay,
     )
-    replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+
+    replay = _enter_replay()
+    assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
+    assert replay.intermediate.capital_risk_sizing_decision.outcome is CapitalRiskSizingOutcome.PASS
+    assert replay.intermediate.canonical_order_intent is not None
+    return replay
+
+
+def _run(monkeypatch, replay_input, **kwargs):
+    replay = (
+        replay_input
+        if isinstance(replay_input, IntegratedOfflineReplayResultV1)
+        else run_integrated_offline_trading_logic_replay_v1(replay_input)
+    )
     payload = FullCoreLivePathInputV1(
         replay=replay,
         bound_instrument=kwargs.pop("bound", _binding()),
@@ -187,7 +230,7 @@ def test_restart_gate_stays_false_even_if_offline_chain_passes() -> None:
 def test_no_selection(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         bound=_binding(selection_id=""),
     )
     assert result.status.value == "DENY"
@@ -198,7 +241,7 @@ def test_no_selection(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_binding_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         bound=_binding(instrument_id=CANARY_DEFAULT_INSTRUMENT_ID),
     )
     assert "BINDING_MISMATCH" in result.reason_codes
@@ -208,7 +251,7 @@ def test_binding_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_hardcoded_instrument_injection(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         injected_instrument_id=CANARY_DEFAULT_INSTRUMENT_ID,
     )
     assert "HARDCODED_INSTRUMENT_INJECTION_FORBIDDEN" in result.reason_codes
@@ -217,7 +260,7 @@ def test_hardcoded_instrument_injection(monkeypatch: pytest.MonkeyPatch) -> None
 def test_hardcoded_side_injection(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         injected_side=CANARY_DEFAULT_SIDE,
     )
     assert "HARDCODED_SIDE_INJECTION_FORBIDDEN" in result.reason_codes
@@ -236,7 +279,7 @@ def test_hold(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_missing_double_play_result(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     mutated = replace(
         replay,
         intermediate=replace(
@@ -251,7 +294,7 @@ def test_missing_double_play_result(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_blocked_enter(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     blocked = replace(
         replay,
         evidence=replace(replay.evidence, decision_outcome=DecisionOutcome.BLOCKED.value),
@@ -262,7 +305,7 @@ def test_blocked_enter(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_missing_29p(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     mutated = replace(
         replay,
         intermediate=replace(replay.intermediate, capital_risk_sizing_decision=None),
@@ -272,7 +315,7 @@ def test_missing_29p(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_29p_deny(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     sizing = replay.intermediate.capital_risk_sizing_decision
     mutated = replace(
         replay,
@@ -286,7 +329,7 @@ def test_29p_deny(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_missing_29q(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     mutated = replace(
         replay,
         intermediate=replace(replay.intermediate, canonical_order_intent=None),
@@ -296,7 +339,7 @@ def test_missing_29q(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_zero_qty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     intent = replace(replay.intermediate.canonical_order_intent, quantity=Decimal("0"))
     mutated = replace(
         replay,
@@ -307,7 +350,7 @@ def test_zero_qty(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_invalid_sizing(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     intent = replace(replay.intermediate.canonical_order_intent, quantity_provenance="")
     mutated = replace(
         replay,
@@ -318,7 +361,7 @@ def test_invalid_sizing(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_wrong_identity(monkeypatch: pytest.MonkeyPatch) -> None:
-    _, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    _, replay = _run(monkeypatch, _actual_enter_replay())
     intent = replace(replay.intermediate.canonical_order_intent, semantic_digest="")
     mutated = replace(
         replay,
@@ -329,18 +372,22 @@ def test_wrong_identity(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_replay_safety_deny(monkeypatch: pytest.MonkeyPatch) -> None:
-    result, replay = _run(
-        monkeypatch,
-        _confirmed_replay_input(side="LONG"),
-        force_safety_hard_block=True,
+    replay = _actual_enter_replay()
+    guarded = replace(
+        replay,
+        evidence=replace(
+            replay.evidence, reason_codes=(*replay.evidence.reason_codes, "killswitch_blocked")
+        ),
     )
-    assert replay.intermediate.canonical_order_intent is None
-    assert "REPLAY_SAFETY_DENY" in result.reason_codes or "MISSING_29Q" in result.reason_codes
+    result = _path_from_replay(guarded)
+    assert result.reason_codes == ("REPLAY_SAFETY_DENY",)
+    assert result.wire_send_occurred is False
+    # The consumer refuses the guarded original child; it never edits it away.
+    assert guarded.intermediate.canonical_order_intent is replay.intermediate.canonical_order_intent
 
 
 def test_duplicate_intent(monkeypatch: pytest.MonkeyPatch) -> None:
-    _patch_replay_owners(monkeypatch)
-    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    replay = _actual_enter_replay()
     digest = replay.intermediate.canonical_order_intent.semantic_digest
     dup = _path_from_replay(replay, seen_semantic_digests=frozenset({digest}))
     assert "DUPLICATE_INTENT" in dup.reason_codes
@@ -350,7 +397,7 @@ def test_duplicate_intent(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_stale_intent(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         expected_trading_epoch="9999",
     )
     assert "STALE_CANONICAL_ORDER_INTENT" in result.reason_codes
@@ -359,7 +406,7 @@ def test_stale_intent(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_pretrade_max_available_zero(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         frozen=_pretrade(max_available="0"),
     )
     assert "MAX_AVAILABLE_ZERO" in result.reason_codes
@@ -369,7 +416,7 @@ def test_pretrade_max_available_zero(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_pretrade_max_size_zero(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         frozen=_pretrade(max_size="0"),
     )
     assert "MAX_SIZE_ZERO" in result.reason_codes
@@ -379,7 +426,7 @@ def test_pretrade_max_size_zero(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_price_band_fail(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         frozen=_pretrade(price_band_ok=False),
     )
     assert "PRICE_BAND_FAIL" in result.reason_codes
@@ -388,14 +435,14 @@ def test_price_band_fail(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_unavailable_margin(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         frozen=_pretrade(available_margin_ok=False),
     )
     assert "UNAVAILABLE_MARGIN" in result.reason_codes
 
 
 def test_venue_translation_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
-    result, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    result, replay = _run(monkeypatch, _actual_enter_replay())
     assert result.intent is not None
 
     def _mismatch(**kwargs):
@@ -423,7 +470,7 @@ def test_venue_translation_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_execution_disabled_and_unarmed_on_halt(monkeypatch: pytest.MonkeyPatch) -> None:
-    result, _ = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
+    result, _ = _run(monkeypatch, _actual_enter_replay())
     assert result.boundary is not None
     assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" not in result.reason_codes
@@ -436,7 +483,7 @@ def test_execution_disabled_and_unarmed_on_halt(monkeypatch: pytest.MonkeyPatch)
 def test_missing_owner_go_halts_before_wire(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         owner_go=None,
     )
     assert result.boundary is not None
@@ -449,7 +496,7 @@ def test_missing_owner_go_halts_before_wire(monkeypatch: pytest.MonkeyPatch) -> 
 def test_attempted_wire_send_still_false(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         attempt_wire_send=True,
         attempt_construct_live_port=True,
     )
@@ -466,21 +513,23 @@ def test_attempted_wire_send_still_false(monkeypatch: pytest.MonkeyPatch) -> Non
 
 
 def test_spec_and_runbook_isolation_language() -> None:
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
+    )
+
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     assert "CANARY_VENUE_PROOF_PATH != FULL_CORE_LIVE_PATH" in spec
     assert "HARD STOP BEFORE WIRE" in spec
-    assert "FULL_CORE_LIVE_PATH_COMPOSITION_ROOT" in runbook
     assert PATH_KIND in spec
+    assert_current_frozen_document_navigation(REPO_ROOT, spec=SPEC_PATH)
 
 
 # ---------------------------------------------------------------------------
 # CHAR-3 PRE_SPLIT_CHARACTERIZATION — composition consumption of the alias
-# CURRENT_BEHAVIOR: producer paths short-circuit before REPLAY_SAFETY_DENY;
-#     composition consumes killswitch_blocked as REPLAY_SAFETY_DENY only
-#     after HOLD/BLOCKED and 29P gates.
-# ADJUDICATED_TARGET_BEHAVIOR=split sources; composition must not drift.
-# CURRENT_BEHAVIOR_EQUALS_TARGET=false (alias mixing remains)
+# Raw upstream inputs and actual composed ENTERs are separate test sources.
+# NO_ACTION keeps its original outcome while typed kill/safety still blocks.
+# An EXIT without original capital context has no fabricated 29P result.
+# Actual ENTER child consumption remains subject to the original safety guard.
 # ---------------------------------------------------------------------------
 
 
@@ -493,36 +542,37 @@ def _compose_replay(replay):
     )
 
 
-def test_char3_pre_split_characterization_kill_all_denies_blocked_enter() -> None:
-    """CHAR-3: INPUT=SideState.KILL_ALL. OUTPUT=BLOCKED_ENTER (not REPLAY_SAFETY_DENY)."""
+def test_kill_all_without_directional_candidate_preserves_no_action_and_typed_block() -> None:
     replay = run_integrated_offline_trading_logic_replay_v1(
         replace(_confirmed_replay_input(side="LONG"), side_state=SideState.KILL_ALL)
     )
-    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    assert replay.evidence.decision_outcome == DecisionOutcome.NO_ACTION.value
     assert "killswitch_blocked" in replay.evidence.reason_codes
     assert replay.intermediate.canonical_order_intent is None
+    assert replay.intermediate.capital_risk_sizing_decision is None
+    assert replay.replay_execution_safety.entry_blocked is True
+    assert replay.replay_execution_safety.runtime_authority_effect == "NONE"
     status, reasons, intent = _compose_replay(replay)
-    assert status is CompositionStatusV1.DENY
-    assert reasons == ("BLOCKED_ENTER",)
-    assert intent is None
+    assert status is CompositionStatusV1.DENY and intent is None
+    assert reasons == ("HOLD",)
 
 
-def test_char3_pre_split_characterization_safety_mode_blocked_denies_blocked_enter() -> None:
-    """CHAR-3 / CHAR-7: INPUT=SafetyMode.BLOCKED. OUTPUT=BLOCKED_ENTER."""
+def test_blocked_safety_without_directional_candidate_preserves_no_action_and_typed_block() -> None:
     replay = run_integrated_offline_trading_logic_replay_v1(
         replace(_confirmed_replay_input(side="LONG"), safety_mode=SafetyMode.BLOCKED)
     )
-    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    assert replay.evidence.decision_outcome == DecisionOutcome.NO_ACTION.value
     assert "killswitch_blocked" in replay.evidence.reason_codes
     assert replay.intermediate.canonical_order_intent is None
+    assert replay.intermediate.capital_risk_sizing_decision is None
+    assert replay.replay_execution_safety.entry_blocked is True
+    assert replay.replay_execution_safety.runtime_authority_effect == "NONE"
     status, reasons, intent = _compose_replay(replay)
-    assert status is CompositionStatusV1.DENY
-    assert reasons == ("BLOCKED_ENTER",)
-    assert intent is None
+    assert status is CompositionStatusV1.DENY and intent is None
+    assert reasons == ("HOLD",)
 
 
-def test_char3_pre_split_characterization_safety_exit_denies_29p_before_replay_safety() -> None:
-    """CHAR-3 / CHAR-6: INPUT=safety_exit_signal.triggered. OUTPUT=29P_DENY first."""
+def test_safety_exit_without_bound_capital_context_denies_missing_29p() -> None:
     replay = run_integrated_offline_trading_logic_replay_v1(
         replace(
             _confirmed_replay_input(side="LONG"),
@@ -531,20 +581,18 @@ def test_char3_pre_split_characterization_safety_exit_denies_29p_before_replay_s
     )
     assert replay.evidence.decision_outcome == DecisionOutcome.EXIT.value
     assert "killswitch_blocked" in replay.evidence.reason_codes
+    assert "CAPITAL_RISK_CONTEXT_UNRESOLVED" in replay.evidence.reason_codes
     assert replay.intermediate.canonical_order_intent is None
-    assert replay.intermediate.capital_risk_sizing_decision.outcome is (
-        CapitalRiskSizingOutcome.BLOCKED
-    )
+    assert replay.intermediate.capital_risk_sizing_decision is None
+    assert replay.replay_execution_safety.entry_blocked is True
     status, reasons, intent = _compose_replay(replay)
-    assert status is CompositionStatusV1.DENY
-    assert reasons[0] == "29P_DENY"
-    assert "REPLAY_SAFETY_DENY" not in reasons
-    assert intent is None
+    assert status is CompositionStatusV1.DENY and intent is None
+    assert reasons == ("MISSING_29P",)
 
 
 def test_char3_pre_split_characterization_killswitch_blocked_reason_is_replay_safety_deny() -> None:
     """CHAR-3: INPUT_FIELD=killswitch_blocked on ENTER+29P_PASS. OUTPUT=REPLAY_SAFETY_DENY."""
-    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    replay = _actual_enter_replay()
     assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
     assert replay.intermediate.canonical_order_intent is not None
     assert replay.intermediate.capital_risk_sizing_decision.outcome is CapitalRiskSizingOutcome.PASS
@@ -570,7 +618,7 @@ def test_post_29q_consumption_guard_denies_enter_without_rewriting_outcome() -> 
         ReplayExecutionSafetyV1,
     )
 
-    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    replay = _actual_enter_replay()
     assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
     assert replay.intermediate.canonical_order_intent is not None
     original_outcome = replay.evidence.decision_outcome
@@ -603,7 +651,7 @@ def test_post_29q_consumption_guard_denies_enter_without_rewriting_outcome() -> 
 
 
 def test_post_29q_guard_does_not_imitate_filegate_or_kill_all() -> None:
-    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    replay = _actual_enter_replay()
     status, reasons, intent = _compose_replay(replay)
     assert "FILEGATE_KILLED" not in reasons
     if replay.replay_execution_safety is not None:
@@ -615,9 +663,38 @@ def test_sidestate_kill_all_remains_distinct_from_filegate_killed() -> None:
     replay = run_integrated_offline_trading_logic_replay_v1(
         replace(_confirmed_replay_input(side="LONG"), side_state=SideState.KILL_ALL)
     )
-    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    assert replay.evidence.decision_outcome == DecisionOutcome.NO_ACTION.value
     status, reasons, intent = _compose_replay(replay)
-    assert reasons == ("BLOCKED_ENTER",)
+    assert reasons == ("HOLD",)
     assert "FILEGATE_KILLED" not in reasons
     assert "POST_29Q_CONSUMPTION_GUARD" not in reasons
     assert intent is None
+
+
+def test_composition_mutation_fixture_reaches_actual_enter_sizing_and_intent(monkeypatch):
+    result, replay = _run(monkeypatch, _actual_enter_replay())
+    assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
+    assert replay.intermediate.capital_risk_sizing_decision.outcome is CapitalRiskSizingOutcome.PASS
+    assert result.intent is not None and result.venue_plan is not None
+    assert result.intent.source_decision_id == replay.evidence.decision_id
+    assert (
+        result.intent.source_semantic_digest
+        == replay.intermediate.canonical_order_intent.semantic_digest
+    )
+    assert result.intent.quantity == replay.intermediate.capital_risk_sizing_decision.final_quantity
+    assert result.wire_send_occurred is False
+
+
+def test_raw_upstream_input_helper_does_not_fabricate_enter_for_other_callers(monkeypatch):
+    source = _confirmed_replay_input(side="LONG")
+    direct = run_integrated_offline_trading_logic_replay_v1(source)
+    result, through_helper = _run(monkeypatch, source)
+    assert (
+        direct.evidence.decision_outcome
+        == through_helper.evidence.decision_outcome
+        == DecisionOutcome.NO_ACTION.value
+    )
+    assert direct.intermediate.canonical_order_intent is None
+    assert through_helper.intermediate.canonical_order_intent is None
+    assert result.reason_codes == ("HOLD",)
+    assert result.wire_send_occurred is False

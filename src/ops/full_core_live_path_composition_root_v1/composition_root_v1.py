@@ -8,7 +8,16 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import Optional, TYPE_CHECKING
 
-from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1, IntentAction
+from src.governance.canonical_order_intent_v1 import (
+    CanonicalOrderIntentV1,
+    IntentAction,
+    compute_capital_envelope_ref,
+    compute_pre_sizing_risk_ref,
+    compute_sizing_result_ref,
+    compute_post_sizing_risk_ref,
+    compute_quantity_provenance_ref,
+    validate_canonical_order_intent_v1,
+)
 from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingOutcome
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     ALLOWED_MODES,
@@ -59,6 +68,82 @@ _SAFETY_MARKERS = frozenset(
         "trading_gate_blocked",
     }
 )
+
+
+def _entry_original_parent_failure_v1(replay, intent, sizing):
+    """Read the original decision/29P/29Q links; never renew a decision.
+
+    Logical trading_epoch is compared to its actual original parent, not
+    composed_epoch or a new wall-clock age policy. Original hash/reference
+    functions remain the owners of their respective bodies and declarations.
+    """
+    from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+        CanonicalTradingDecisionEvidenceV1,
+        compute_canonical_trading_decision_evidence_semantic_digest,
+    )
+    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+        map_decision_outcome_to_intent_action,
+        map_selected_side_to_sizing_side,
+    )
+    from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
+        ORDER_INTENT_EFFECT_BOUND_OFFLINE,
+    )
+    from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+        RISK_SIZING_EFFECT_BOUND_OFFLINE,
+        compute_risk_sizing_decision_ref_v0,
+    )
+
+    try:
+        parent = replay.evidence
+        if (
+            type(parent) is not CanonicalTradingDecisionEvidenceV1
+            or not parent.semantic_digest
+            or parent.semantic_digest
+            != compute_canonical_trading_decision_evidence_semantic_digest(parent)
+            or parent.execution_eligible is not False
+            or parent.adapter_compatible is not False
+            or parent.authority_effect != "NONE"
+            or parent.runtime_effect != "NONE"
+            or parent.order_effect != "NONE"
+        ):
+            return "ENTRY_ORIGINAL_DECISION_SOURCE_UNPROVEN"
+        if validate_canonical_order_intent_v1(intent).validation_status != "VALID":
+            return "ENTRY_ORIGINAL_INTENT_INVALID"
+        action = map_decision_outcome_to_intent_action(parent.decision_outcome)
+        side = map_selected_side_to_sizing_side(parent.selected_side)
+        if not (
+            parent.decision_id
+            and type(parent.trading_epoch) is int
+            and intent.decision_id == parent.decision_id
+            and intent.trading_epoch == str(parent.trading_epoch)
+            and intent.intent_action == action
+            and side is not None
+            and intent.side == side == map_selected_side_to_sizing_side(sizing.selected_side)
+            and sizing.canonical_position_sizing.decision_id == parent.decision_id
+            and intent.quantity == sizing.final_quantity
+            and intent.quantity_unit == "CONTRACTS"
+        ):
+            return "ENTRY_ORIGINAL_DECISION_PARENT_MISMATCH"
+        references = {
+            "capital_envelope_ref": compute_capital_envelope_ref(sizing),
+            "pre_sizing_risk_ref": compute_pre_sizing_risk_ref(sizing),
+            "sizing_result_ref": compute_sizing_result_ref(sizing),
+            "post_sizing_risk_ref": compute_post_sizing_risk_ref(sizing),
+            "quantity_provenance": compute_quantity_provenance_ref(sizing.quantity_provenance),
+        }
+        if any(not value or getattr(intent, key) != value for key, value in references.items()):
+            return "ENTRY_ORIGINAL_SIZING_REFERENCE_MISMATCH"
+        if not (
+            parent.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE
+            and parent.order_intent_ref == intent.semantic_digest
+            and parent.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE
+            and parent.risk_sizing_ref == compute_risk_sizing_decision_ref_v0(sizing)
+            and parent.quantity_provenance_ref == references["quantity_provenance"]
+        ):
+            return "ENTRY_ORIGINAL_DECISION_CHILD_LINK_UNPROVEN"
+    except (TypeError, ValueError, AttributeError, KeyError, ArithmeticError):
+        return "ENTRY_ORIGINAL_DECISION_PARENT_MALFORMED"
+    return ""
 
 
 def _deny(*reasons: str) -> tuple[CompositionStatusV1, tuple[str, ...], None]:
@@ -259,6 +344,17 @@ def compose_core_live_execution_intent_v1(
         return _deny_traced("WRONG_IDENTITY", predicate="semantic_digest_present")
     if intent.semantic_digest in seen_semantic_digests:
         return _deny_traced("DUPLICATE_INTENT", predicate="semantic_digest_unique")
+    if outcome in _ENTER and not close_path:
+        parent_failure = _entry_original_parent_failure_v1(replay, intent, sizing)
+        if parent_failure:
+            return _deny_traced(parent_failure, predicate="original_decision_parent")
+        _trace(
+            "original_decision_parent",
+            intent.decision_id,
+            "PASS",
+            "ORIGINAL_ENTRY_PARENT_BOUND",
+            terminal=False,
+        )
 
     composed = CoreLiveExecutionIntentV1(
         instrument_id=bound_id,
