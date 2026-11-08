@@ -802,6 +802,7 @@ def _t2_from_s7(
                         venue_plan=plan,
                         core_parent=venue_plan_replay.evidence,
                         core_cursor_root=Path(lane_pairs[lane_id][0].lane_state_root),
+                        entry_frame_required=True,
                     )
                     execution_plan_context = portfolio_budget_owner.execution_plan_context_v1(
                         live_29p.portfolio_reservation_id, envelope

@@ -1035,6 +1035,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         venue_plan=None,
         core_parent=None,
         core_cursor_root=None,
+        entry_frame_required=False,
     ):
         from .execution_v1 import bind_plan_locked_v1
 
@@ -1047,6 +1048,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 venue_plan=venue_plan,
                 core_parent=core_parent,
                 core_cursor_root=core_cursor_root,
+                entry_frame_required=entry_frame_required,
             )
 
     def mark_execution_submit_boundary_v1(

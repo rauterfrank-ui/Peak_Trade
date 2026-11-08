@@ -175,7 +175,8 @@ def test_natural_n1_selected_c3_producer_reaches_retained_consumer(
     def capture(owner, rid, envelope, **kw):
         result = bind(owner, rid, envelope, **kw)
         source = result["plan_origin"]["core_cursor_source"]
-        assert source["schema"] == "portfolio_original_core_cursor_source.v2"
+        assert source["schema"] == "portfolio_original_core_cursor_source.v3"
+        assert source["entry_frame_reference"]["decision_id"] == kw["core_parent"].decision_id
         observed.append((source, kw["core_cursor_root"], kw["canonical_intent"].side))
         return result
 
