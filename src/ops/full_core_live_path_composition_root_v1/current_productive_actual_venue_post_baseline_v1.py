@@ -42,6 +42,7 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_safety_veto_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_venue_quantity_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_budget_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_entry_budget_policy_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/attempt_v2.py",
     "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",

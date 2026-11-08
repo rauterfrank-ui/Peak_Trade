@@ -1114,6 +1114,49 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return inspect_submit_context_locked_v1(self, str(reservation_id), envelope, identity)
 
+    def inspect_current_entry_budget_policy_v1(self, reservation_id, envelope):
+        """Current original Ops ceilings over unchanged original notional holds.
+
+        This reads policy and the two monetary operands under this owner's lock.
+        It neither renews Core/risk inputs nor resizes, persists or releases a hold.
+        Generic historical link validation and reconciliation remain separate.
+        """
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_entry_budget_policy_v1 import (
+            load_entry_budget_policy_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+            assert_envelope_unmodified_v1,
+        )
+
+        with self._lock:
+            found = self._require_locked(reservation_id)
+            if (
+                found is None
+                or self._store is None
+                or not self._admitted
+                or found[1].state is not ReservationStateV1.COMMITTED
+            ):
+                raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_OWNER_FENCED")
+            assert_envelope_unmodified_v1(envelope)
+            link = self._execution_links.get(str(reservation_id))
+            if not link or link["envelope"] != envelope.to_runtime_json_v1():
+                raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_PLAN_MISMATCH")
+            policy = load_entry_budget_policy_v1()
+            if self._capital_scope["settlement_currency"] != policy.currency:
+                raise ValueError("CURRENT_ENTRY_BUDGET_CURRENCY_MISMATCH")
+            amount, aggregate = found[1].amount, self._active_sum_locked()
+            if amount > policy.per_entry_notional_limit:
+                raise ValueError("CURRENT_ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED")
+            if aggregate > policy.aggregate_reserved_notional_limit:
+                raise ValueError("CURRENT_ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED")
+            return {
+                "scope": "CURRENT_ORIGINAL_ENTRY_BUDGET_POLICY_ONLY",
+                "policy_digest": policy.digest_v1(),
+                "currency": policy.currency,
+                "reserved_notional": str(amount),
+                "aggregate_reserved_notional": str(aggregate),
+            }
+
     def reconcile_execution_v1(self, reservation_id, **kwargs):
         from .execution_v1 import reconcile_locked_v1
 

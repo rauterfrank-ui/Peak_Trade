@@ -83,6 +83,7 @@ class CurrentPostBudgetAdmissionContextV1:
             )
             if actual != self.identity.to_dict():
                 raise ValueError("ORIGINAL_CURRENT_READBACK_MISMATCH")
+            self.owner.inspect_current_entry_budget_policy_v1(self.reservation_id, envelope)
             return {
                 "scope": "CURRENT_ORIGINAL_BUDGET_EXECUTION_ADMISSION_ONLY",
                 "account": self.identity.account_identity,
