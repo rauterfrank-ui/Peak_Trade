@@ -25,6 +25,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_post_saf
     CurrentPostSafetyVetoError,
     resolve_current_post_safety_context_v1,
 )
+from .current_productive_post_venue_quantity_v1 import (
+    CurrentPostVenueQuantityError,
+    inspect_current_post_venue_quantity_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -66,6 +70,7 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
     FullCoreCurrentPostSafetyVetoError,
+    FullCoreCurrentPostQuantityVetoError,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveHttpTradeOrderTransportV1,
 )
@@ -212,6 +217,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         probe: OneShotJoinProbeV1,
         send_handle: FullCoreSendCredentialHandleV1,
         post_safety_context=None,
+        post_quantity_context=None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -220,6 +226,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._probe = probe
         self._send_handle = send_handle
         self._post_safety_context = post_safety_context
+        self._post_quantity_context = post_quantity_context
 
     def post_trade_order(
         self,
@@ -263,6 +270,13 @@ class _DurableConsumeThenK1HttpTransportV1:
         except CurrentPostSafetyVetoError as exc:
             attempt.abort_before_transport_v1(reason_code=str(exc))
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
+            inspect_current_post_venue_quantity_v1(
+                self._post_quantity_context, envelope=self._envelope, stage="BEFORE_K1"
+            )
+        except CurrentPostVenueQuantityError as exc:
+            attempt.abort_before_transport_v1(reason_code=str(exc))
+            raise FullCoreProductiveHttpPostError(str(exc)) from exc
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
         try:
@@ -278,6 +292,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     opener_factory=self._opener_factory,
                     post_safety_context=safety,
                     transport_attempt=attempt,
+                    post_quantity_context=self._post_quantity_context,
                 )
                 try:
                     result = http.post_trade_order(
@@ -294,7 +309,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                         if self._opener_factory is None:
                             self._probe.external_effect_count += 1
                 return result
-        except FullCoreCurrentPostSafetyVetoError as exc:
+        except (FullCoreCurrentPostSafetyVetoError, FullCoreCurrentPostQuantityVetoError) as exc:
             # K1 context has exited. Only the original still-PRE_SOCKET claim
             # can close negatively; a matching error string or zero counter
             # can never overwrite a recorded MAY_HAVE_SENT boundary.
@@ -329,6 +344,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     execution_identity=None,
     execution_plan_context=None,
     post_safety_context=None,
+    post_quantity_context=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -375,6 +391,12 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         veto = safety.inspect_v1(stage="ACTUAL_PERMIT_SOURCE")
     except CurrentPostSafetyVetoError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    try:
+        inspect_current_post_venue_quantity_v1(
+            post_quantity_context, envelope=envelope, stage="BEFORE_ACTUAL_PERMIT"
+        )
+    except CurrentPostVenueQuantityError as exc:
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=POST_OWNER_GO,
@@ -411,6 +433,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         probe=observed,
         send_handle=send_handle,
         post_safety_context=safety,
+        post_quantity_context=post_quantity_context,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(
@@ -424,6 +447,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
             post_safety_context=safety,
+            post_quantity_context=post_quantity_context,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc

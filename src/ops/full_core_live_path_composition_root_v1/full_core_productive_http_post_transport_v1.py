@@ -23,6 +23,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_post_saf
     CurrentPostSafetyContextV1,
     CurrentPostSafetyVetoError,
 )
+from .current_productive_post_venue_quantity_v1 import (
+    CurrentPostVenueQuantityError,
+    inspect_current_post_venue_quantity_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
     OriginalPermitTransportAttemptV1,
@@ -68,6 +72,10 @@ class FullCoreProductiveHttpPostError(RuntimeError):
 
 class FullCoreCurrentPostSafetyVetoError(FullCoreProductiveHttpPostError):
     """Actual current safety-reader denial, distinct from caller error text."""
+
+
+class FullCoreCurrentPostQuantityVetoError(FullCoreProductiveHttpPostError):
+    """Actual current native-quantity consumer denial."""
 
 
 @dataclass(frozen=True)
@@ -147,12 +155,14 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         post_safety_context: CurrentPostSafetyContextV1 | None = None,
         transport_attempt: OriginalPermitTransportAttemptV1 | None = None,
+        post_quantity_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
         self._opener_factory = opener_factory
         self._post_safety_context = post_safety_context
         self._transport_attempt = transport_attempt
+        self._post_quantity_context = post_quantity_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -206,6 +216,14 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             )
         except FullCoreExternalEffectDurableConsumeError as exc:
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
+            inspect_current_post_venue_quantity_v1(
+                self._post_quantity_context,
+                envelope=self._post_safety_context.envelope,
+                stage="HTTP_QUANTITY",
+            )
+        except CurrentPostVenueQuantityError as exc:
+            raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
 
     def _perform_http_post_v1(
         self, *, payload: Mapping[str, Any]
@@ -240,6 +258,14 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         try:
             socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
+            try:
+                inspect_current_post_venue_quantity_v1(
+                    self._post_quantity_context,
+                    envelope=self._post_safety_context.envelope,
+                    stage="BEFORE_SOCKET",
+                )
+            except CurrentPostVenueQuantityError as exc:
+                raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
             try:
                 self._transport_attempt.mark_socket_boundary_v1()
             except FullCoreExternalEffectDurableConsumeError as exc:

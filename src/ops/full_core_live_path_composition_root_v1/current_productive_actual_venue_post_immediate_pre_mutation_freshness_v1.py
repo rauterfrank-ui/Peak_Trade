@@ -55,6 +55,11 @@ from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 imp
 from src.ops.full_core_live_path_composition_root_v1.datasafety_gate_join_into_execution_admission_v1 import (
     evaluate_datasafety_admission_for_transport_result_v1,
 )
+from .current_productive_post_venue_quantity_v1 import (
+    CurrentPostVenueQuantityContextV1,
+    capture_current_post_venue_quantity_v1,
+    inspect_current_post_venue_quantity_v1,
+)
 
 
 class CurrentProductiveActualVenuePostPreMutationFreshnessError(RuntimeError):
@@ -73,9 +78,12 @@ class ActualVenuePostPreMutationFreshnessProofV1:
     position_observations_consistent: bool = False
     new_entry_position_admissible: bool = False
     position_source_binding: Mapping[str, Any] = field(default_factory=dict)
-    scope: str = "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY"
+    scope: str = "PREPOST_FRESHNESS_POSITION_AND_VENUE_QUANTITY_ONLY"
     account_identity_binding_status: str = "NOT_ASSESSED"
     account_source_binding: Mapping[str, Any] = field(default_factory=dict)
+    venue_quantity_limits_admissible: bool = False
+    venue_quantity_assessment: Mapping[str, Any] = field(default_factory=dict)
+    venue_quantity_context: CurrentPostVenueQuantityContextV1 | None = None
 
 
 def _position_rows_v1(payload: Any, *, scoped_native: str = "") -> dict[tuple, Decimal]:
@@ -227,6 +235,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
     account_fresh = pretrade_ok
     account_status = "NOT_ASSESSED" if original_context is None else "MISSING"
     account_binding = {}
+    quantity_context, quantity_assessment = None, {}
     try:
         now = utc_now_iso_v1()
         # The tenth read must not extend the lifetime of the original nine.
@@ -321,6 +330,12 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             entry_admissible = envelope.reduce_only is False
         if envelope.reduce_only is True:
             reasons.append("CLOSE_REQUIRES_ORIGINAL_POSITION_ADMISSION")
+        quantity_context = capture_current_post_venue_quantity_v1(
+            envelope=envelope, results=results, acquisition_decision_id=decision_id
+        )
+        quantity_assessment = inspect_current_post_venue_quantity_v1(
+            quantity_context, envelope=envelope, stage="BEFORE_POST_GO"
+        )
     except (
         ValueError,
         TypeError,
@@ -343,6 +358,7 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         and position_fresh
         and consistent
         and entry_admissible
+        and bool(quantity_assessment)
     )
     if not all_pass:
         reasons.append("PREPOST_GATE_CONJUNCTION_FAIL_CLOSED")
@@ -359,9 +375,12 @@ def prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
         position_source_binding=source_binding,
         account_identity_binding_status=account_status,
         account_source_binding=account_binding,
-        scope="PREPOST_ORIGINAL_BUDGET_ACCOUNT_AND_NEW_ENTRY_POSITION_ONLY"
+        venue_quantity_limits_admissible=bool(quantity_assessment),
+        venue_quantity_assessment=quantity_assessment,
+        venue_quantity_context=quantity_context if quantity_assessment else None,
+        scope="PREPOST_ORIGINAL_BUDGET_ACCOUNT_POSITION_AND_VENUE_QUANTITY_ONLY"
         if original_context is not None
-        else "PREPOST_FRESHNESS_AND_NEW_ENTRY_POSITION_ONLY",
+        else "PREPOST_FRESHNESS_POSITION_AND_VENUE_QUANTITY_ONLY",
     )
 
 

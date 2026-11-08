@@ -40,6 +40,8 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "src/ops/full_core_live_path_composition_root_v1/"
     "current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_safety_veto_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_venue_quantity_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
     "src/ops/gates/risk_gate.py",
     "src/ops/full_core_live_path_composition_root_v1/"

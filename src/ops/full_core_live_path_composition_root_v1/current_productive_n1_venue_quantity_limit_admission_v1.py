@@ -89,6 +89,32 @@ class N1VenueQuantityLimitAssessmentV1:
         }
 
 
+def capture_venue_quantity_source_v1(
+    *, results, item_id: str, acquisition_decision_id: str
+) -> VenueQuantitySourceV1:
+    spec = next(item for item in REQUIRED_GET_ITEM_SPECS if item.item_id == item_id)
+    result = results.get(spec.fetch_group)
+    if not isinstance(result, FreshPretradeGetTransportResultV1):
+        raise ValueError("VENUE_QUANTITY_SOURCE_MISSING")
+    status, _ = _item_status_and_reasons(
+        spec=spec,
+        result=result,
+        pretrade_decision_id=acquisition_decision_id,
+        requested_endpoint=result.endpoint,
+    )
+    if status != FreshPretradeGetStatusV1.TRUSTED_PRESENT.value:
+        raise ValueError("VENUE_QUANTITY_SOURCE_NOT_TRUSTED")
+    if result.pretrade_decision_id != acquisition_decision_id:
+        raise ValueError("VENUE_QUANTITY_ACQUISITION_MISMATCH")
+    return VenueQuantitySourceV1(
+        endpoint=result.endpoint,
+        acquired_at_utc=result.acquired_at_utc,
+        acquisition_decision_id=result.pretrade_decision_id,
+        response_body_sha256=result.body_sha256,
+        payload_json=_json(result.payload),
+    )
+
+
 def capture_n1_venue_quantity_limits_v1(
     *,
     results: Mapping[str, FreshPretradeGetTransportResultV1],
@@ -100,37 +126,20 @@ def capture_n1_venue_quantity_limits_v1(
 ) -> N1VenueQuantityLimitsObservationV1:
     """Detach the two original response bodies; never consult a path cache."""
 
-    def capture(item_id: str) -> VenueQuantitySourceV1:
-        spec = next(item for item in REQUIRED_GET_ITEM_SPECS if item.item_id == item_id)
-        result = results.get(spec.fetch_group)
-        if not isinstance(result, FreshPretradeGetTransportResultV1):
-            raise ValueError("VENUE_QUANTITY_SOURCE_MISSING")
-        status, _ = _item_status_and_reasons(
-            spec=spec,
-            result=result,
-            pretrade_decision_id=acquisition_decision_id,
-            requested_endpoint=result.endpoint,
-        )
-        if status != FreshPretradeGetStatusV1.TRUSTED_PRESENT.value:
-            raise ValueError("VENUE_QUANTITY_SOURCE_NOT_TRUSTED")
-        if result.pretrade_decision_id != acquisition_decision_id:
-            raise ValueError("VENUE_QUANTITY_ACQUISITION_MISMATCH")
-        return VenueQuantitySourceV1(
-            endpoint=result.endpoint,
-            acquired_at_utc=result.acquired_at_utc,
-            acquisition_decision_id=result.pretrade_decision_id,
-            response_body_sha256=result.body_sha256,
-            payload_json=_json(result.payload),
-        )
-
     observation = N1VenueQuantityLimitsObservationV1(
         account_identity=account_identity,
         bound_instrument_json=_json(bound_instrument.to_dict()),
         decision_epoch=decision_epoch,
         cycle_id=cycle_id,
         acquisition_decision_id=acquisition_decision_id,
-        public_source=capture("MAX_SIZE"),
-        private_source=capture("MAX_AVAILABLE"),
+        public_source=capture_venue_quantity_source_v1(
+            results=results, item_id="MAX_SIZE", acquisition_decision_id=acquisition_decision_id
+        ),
+        private_source=capture_venue_quantity_source_v1(
+            results=results,
+            item_id="MAX_AVAILABLE",
+            acquisition_decision_id=acquisition_decision_id,
+        ),
     )
     return replace(observation, integrity_digest=observation.digest_v1())
 
@@ -168,6 +177,86 @@ def _query(source: VenueQuantitySourceV1, *, path: str) -> dict[str, list[str]]:
     if parsed.scheme or parsed.netloc or parsed.fragment or parsed.path != path:
         raise ValueError("VENUE_QUANTITY_ENDPOINT_SCOPE_MISMATCH")
     return parse_qs(parsed.query, keep_blank_values=True)
+
+
+def assess_native_order_venue_quantity_sources_v1(
+    *,
+    public_source,
+    private_source,
+    acquisition_decision_id,
+    native,
+    side,
+    quantity,
+    order_type,
+    td_mode,
+    price,
+    evaluated_at_utc=None,
+):
+    """The original native comparison, shared by N1 plan and actual POST.
+
+    Scalars are exact original order values, not a reconstructed plan/decision.
+    This function raises on unknown evidence and never clamps or sizes.
+    """
+    if side not in {"buy", "sell"} or order_type not in {"market", "limit"}:
+        raise ValueError("VENUE_QUANTITY_NEW_RISK_PLAN_REQUIRED")
+    now = evaluated_at_utc or utc_now_iso_v1()
+    for source in (public_source, private_source):
+        if (
+            type(source) is not VenueQuantitySourceV1
+            or source.acquisition_decision_id != acquisition_decision_id
+        ):
+            raise ValueError("VENUE_QUANTITY_ACQUISITION_MISMATCH")
+        acquisition_age_seconds_v1(acquired_at_utc=source.acquired_at_utc, now_utc=now)
+    public_query = _query(public_source, path="/api/v5/public/instruments")
+    if (
+        set(public_query) != {"instId", "instType"}
+        or public_query["instId"] != [native]
+        or public_query["instType"] not in [["SWAP"], ["FUTURES"]]
+    ):
+        raise ValueError("VENUE_QUANTITY_PUBLIC_SCOPE_MISMATCH")
+    private_query = _query(private_source, path="/api/v5/account/max-size")
+    if (
+        set(private_query) - {"instId", "tdMode", "px"}
+        or private_query.get("instId") != [native]
+        or private_query.get("tdMode") != [td_mode]
+    ):
+        raise ValueError("VENUE_QUANTITY_PRIVATE_SCOPE_MISMATCH")
+    if (order_type == "limit" and (not price or private_query.get("px") != [price])) or (
+        order_type == "market" and ("px" in private_query or price)
+    ):
+        raise ValueError("VENUE_QUANTITY_PRICE_SCOPE_MISMATCH")
+    public = _row(public_source, native=native)
+    if public.get("instType") != public_query["instType"][0]:
+        raise ValueError("VENUE_QUANTITY_INSTRUMENT_TYPE_MISMATCH")
+    private = _row(private_source, native=native)
+    private_limits = {
+        key: _decimal(
+            private.get(key), positive=False, reason="VENUE_QUANTITY_PRIVATE_MAXIMUM_MALFORMED"
+        )
+        for key in ("maxBuy", "maxSell")
+    }
+    private_field = "maxBuy" if side == "buy" else "maxSell"
+    public_field = "maxMktSz" if order_type == "market" else "maxLmtSz"
+    public_maximum = _decimal(
+        public.get(public_field),
+        positive=False,
+        reason="VENUE_QUANTITY_PUBLIC_MAXIMUM_MALFORMED",
+    )
+    final_count = _decimal(quantity, positive=True, reason="VENUE_QUANTITY_FINAL_COUNT_MALFORMED")
+    reasons = []
+    if final_count > private_limits[private_field]:
+        reasons.append("VENUE_QUANTITY_EXCEEDS_" + private_field.upper())
+    if final_count > public_maximum:
+        reasons.append("VENUE_QUANTITY_EXCEEDS_" + public_field.upper())
+    return dict(
+        allowed=not reasons,
+        reason_codes=tuple(reasons) or ("VENUE_QUANTITY_LIMITS_PASS",),
+        final_native_quantity=str(quantity),
+        selected_private_field=private_field,
+        private_maximum=str(private_limits[private_field]),
+        selected_public_field=public_field,
+        public_maximum=str(public_maximum),
+    )
 
 
 def assess_n1_final_plan_venue_quantity_v1(
@@ -259,60 +348,22 @@ def assess_n1_final_plan_venue_quantity_v1(
             or wire.get("reduceOnly", False) is not False
         ):
             raise ValueError("VENUE_QUANTITY_WIRE_PLAN_MISMATCH")
-        public_query = _query(observation.public_source, path="/api/v5/public/instruments")
-        if (
-            set(public_query) != {"instId", "instType"}
-            or public_query["instId"] != [native]
-            or public_query["instType"] not in [["SWAP"], ["FUTURES"]]
-        ):
-            raise ValueError("VENUE_QUANTITY_PUBLIC_SCOPE_MISMATCH")
-        private_query = _query(observation.private_source, path="/api/v5/account/max-size")
-        if (
-            set(private_query) - {"instId", "tdMode", "px"}
-            or private_query.get("instId") != [native]
-            or private_query.get("tdMode") != [plan.td_mode]
-        ):
-            raise ValueError("VENUE_QUANTITY_PRIVATE_SCOPE_MISMATCH")
-        price = wire.get("px", "")
-        if (plan.order_type == "limit" and (not price or private_query.get("px") != [price])) or (
-            plan.order_type == "market" and ("px" in private_query or price)
-        ):
-            raise ValueError("VENUE_QUANTITY_PRICE_SCOPE_MISMATCH")
-        public = _row(observation.public_source, native=native)
-        if public.get("instType") != public_query["instType"][0]:
-            raise ValueError("VENUE_QUANTITY_INSTRUMENT_TYPE_MISMATCH")
-        private = _row(observation.private_source, native=native)
-        private_limits = {
-            key: _decimal(
-                private.get(key), positive=False, reason="VENUE_QUANTITY_PRIVATE_MAXIMUM_MALFORMED"
-            )
-            for key in ("maxBuy", "maxSell")
-        }
-        private_field = "maxBuy" if plan.side == "buy" else "maxSell"
-        public_field = "maxMktSz" if plan.order_type == "market" else "maxLmtSz"
-        public_maximum = _decimal(
-            public.get(public_field),
-            positive=False,
-            reason="VENUE_QUANTITY_PUBLIC_MAXIMUM_MALFORMED",
+        comparison = assess_native_order_venue_quantity_sources_v1(
+            public_source=observation.public_source,
+            private_source=observation.private_source,
+            acquisition_decision_id=expected_acquisition,
+            native=native,
+            side=plan.side,
+            quantity=plan.quantity,
+            order_type=plan.order_type,
+            td_mode=plan.td_mode,
+            price=wire.get("px", ""),
+            evaluated_at_utc=now,
         )
-        quantity = _decimal(
-            plan.quantity, positive=True, reason="VENUE_QUANTITY_FINAL_COUNT_MALFORMED"
-        )
-        reasons = []
-        if quantity > private_limits[private_field]:
-            reasons.append("VENUE_QUANTITY_EXCEEDS_" + private_field.upper())
-        if quantity > public_maximum:
-            reasons.append("VENUE_QUANTITY_EXCEEDS_" + public_field.upper())
         return N1VenueQuantityLimitAssessmentV1(
-            allowed=not reasons,
-            reason_codes=tuple(reasons) or ("VENUE_QUANTITY_LIMITS_PASS",),
+            **comparison,
             observation_digest=observation.digest_v1(),
             plan_digest=_digest(asdict(plan)),
-            final_native_quantity=plan.quantity,
-            selected_private_field=private_field,
-            private_maximum=str(private_limits[private_field]),
-            selected_public_field=public_field,
-            public_maximum=str(public_maximum),
             source_binding=source_binding,
         )
     except (ValueError, TypeError, AttributeError, KeyError) as exc:

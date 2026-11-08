@@ -425,6 +425,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
             post_safety_context=safety,
+            post_quantity_context=freshness.venue_quantity_context,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (

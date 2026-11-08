@@ -61,6 +61,9 @@ ursprüngliche Portfolio-Executionidentität V2. Keine dieser Kennungen wird umb
   erzeugt der typisierte Safetyfehler den Abschluss; passender fremder Fehlertext
   allein erzeugt ihn nicht. Auch ein typisierter Fehler nach MAY_HAVE_SENT kann
   diese Grenze nicht zurücksetzen.
+  Der [aktuelle Mengenconsumer](CURRENT_POST_NATIVE_VENUE_QUANTITY_V1.md) verwendet
+  zusätzlich den typisierten POST_QUANTITY-Fehler auf derselben Originalphase;
+  er erfindet keinen negativen Abschluss nach möglicher Außenwirkung.
 - `post_count=1` des bisherigen Permitrecords bleibt der belegte Verbrauch seines
   einen POST-Slots. Es ist nach einem Abbruch keine Behauptung eines tatsächlich
   geöffneten Sockets. `http.post_count` bleibt der gesonderte lokale Aufrufzähler.

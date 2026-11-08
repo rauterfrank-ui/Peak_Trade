@@ -97,7 +97,10 @@ def _validate_transport_attempt_v1(record):
                 (phase == "ABORTED")
                 == (record["durable_state"] == DURABLE_STATE_ABORTED_BEFORE_TRANSPORT)
             )
-            and (phase != "ABORTED" or attempt["reason_code"].startswith("POST_SAFETY"))
+            and (
+                phase != "ABORTED"
+                or attempt["reason_code"].startswith(("POST_SAFETY", "POST_QUANTITY"))
+            )
         ):
             raise ValueError("shape")
         times = [
@@ -161,7 +164,9 @@ class OriginalPermitTransportAttemptV1:
         self._transition_v1("MAY_HAVE_SENT")
 
     def abort_before_transport_v1(self, *, reason_code):
-        if not isinstance(reason_code, str) or not reason_code.startswith("POST_SAFETY"):
+        if not isinstance(reason_code, str) or not reason_code.startswith(
+            ("POST_SAFETY", "POST_QUANTITY")
+        ):
             raise FullCoreExternalEffectDurableConsumeError(
                 "ORIGINAL_TRANSPORT_ABORT_REASON_INVALID"
             )

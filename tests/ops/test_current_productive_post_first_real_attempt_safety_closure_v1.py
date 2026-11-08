@@ -87,7 +87,15 @@ class _TrustedReadTransport:
         if "instruments" in path or "price-limit" in path:
             payload = {
                 "code": "0",
-                "data": [{"instId": "0G-USDT-SWAP", "instType": "SWAP", "state": "live"}],
+                "data": [
+                    {
+                        "instId": "0G-USDT-SWAP",
+                        "instType": "SWAP",
+                        "state": "live",
+                        "maxMktSz": "100",
+                        "maxLmtSz": "100",
+                    }
+                ],
             }
         elif "positions" in path:
             payload = {"code": "0", "data": []}
@@ -95,6 +103,13 @@ class _TrustedReadTransport:
             payload = {"code": "0", "data": []}
         else:
             payload = {"code": "0", "data": [{"instId": "ADA-USDT-SWAP", "tdMode": "cross"}]}
+        if path == "/api/v5/account/max-size":
+            payload = {
+                "code": "0",
+                "data": [
+                    {"instId": "0G-USDT-SWAP", "tdMode": "cross", "maxBuy": "100", "maxSell": "100"}
+                ],
+            }
         return FreshPretradeGetTransportResultV1(
             get_performed=True,
             method="GET",

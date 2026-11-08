@@ -156,7 +156,7 @@ def test_account_from_original_owner_reaches_original_get_consumer(original, tmp
     assert result.all_required_pre_post_gates_pass, result.reason_codes
     assert result.position_truth == "FLAT"
     assert result.account_identity_binding_status == "TRUSTED_PRESENT"
-    assert result.scope == "PREPOST_ORIGINAL_BUDGET_ACCOUNT_AND_NEW_ENTRY_POSITION_ONLY"
+    assert result.scope == "PREPOST_ORIGINAL_BUDGET_ACCOUNT_POSITION_AND_VENUE_QUANTITY_ONLY"
     assert result.account_source_binding["envelope_digest"] == args["envelope"].envelope_digest
     assert result.account_source_binding["reservation_id"] == args["portfolio_reservation_id"]
     assert (
