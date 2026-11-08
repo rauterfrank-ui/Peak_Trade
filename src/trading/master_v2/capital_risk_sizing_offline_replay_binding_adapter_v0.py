@@ -63,6 +63,7 @@ _OFFLINE_BINDING_CONFIG_DIGEST = hashlib.sha256(
 DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST = _OFFLINE_BINDING_CONFIG_DIGEST
 
 _UNSET_PROTECTIVE_STOP = object()
+_UNSET_CAPITAL_CONTEXT = object()
 
 # Leak-detection alias for productive paths (fixture literal only; not CURRENT authority).
 _DEFAULT_ACCOUNT_EQUITY = ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY
@@ -413,11 +414,31 @@ def evaluate_scenario_capital_risk_sizing_v0(
     evidence: CanonicalTradingDecisionEvidenceV1,
     *,
     reference_price: Decimal | None = None,
+    capital_context: CanonicalCoreRuntimeCapitalContextV0 | None | object = _UNSET_CAPITAL_CONTEXT,
 ) -> CapitalRiskSizingOfflineReplayBindingResultV0:
-    ctx = isolated_offline_replay_fixture_capital_context_v0(
-        instrument_id=evidence.instrument_id,
-        reference_price=reference_price,
-    )
+    if capital_context is _UNSET_CAPITAL_CONTEXT:
+        # Existing omitted-argument callers retain their isolated fixture API.
+        ctx = isolated_offline_replay_fixture_capital_context_v0(
+            instrument_id=evidence.instrument_id,
+            reference_price=reference_price,
+        )
+    else:
+        from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+            CanonicalCoreRuntimeCapitalContextV0,
+        )
+
+        if (
+            capital_context is not None
+            and type(capital_context) is not CanonicalCoreRuntimeCapitalContextV0
+        ):
+            raise ValueError("SCENARIO_EXPLICIT_CAPITAL_CONTEXT_INVALID")
+        ctx = capital_context
+        if (
+            ctx is not None
+            and reference_price is not None
+            and ctx.reference_price != reference_price
+        ):
+            raise ValueError("SCENARIO_EXPLICIT_REFERENCE_PRICE_MISMATCH")
     return bind_capital_risk_sizing_offline_replay_evidence_v0(
         evidence,
         capital_context=ctx,

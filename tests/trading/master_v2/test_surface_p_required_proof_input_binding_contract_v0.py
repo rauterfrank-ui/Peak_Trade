@@ -7,6 +7,10 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
+from tests.trading.master_v2._surface_p_current_manifest_fixture_v1 import (
+    verified_current_parity_manifest_v1 as verified_current_parity_manifest_v1,
+)
+
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     parity_surface_assessments_v0,
 )
@@ -95,7 +99,7 @@ def test_missing_owner_evidence_refs_fail_closed_with_surface_p_reason_v0(
     assert REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P in result.fail_closed_reasons
 
 
-def test_binding_json_schema_deterministic_v0() -> None:
+def test_binding_json_schema_deterministic_v0(verified_current_parity_manifest_v1) -> None:
     result = evaluate_surface_p_required_proof_input_binding_v0(REPO_ROOT)
     payload = surface_p_required_proof_input_binding_to_dict_v0(result)
     assert payload["binding_slice_id"] == BINDING_SLICE_ID
@@ -113,7 +117,9 @@ def test_binding_json_schema_deterministic_v0() -> None:
     assert '"binding_status": "VERIFIED"' in encoded
 
 
-def test_final_success_flags_offline_parity_true_economic_false_v0() -> None:
+def test_final_success_flags_offline_parity_true_economic_false_v0(
+    verified_current_parity_manifest_v1,
+) -> None:
     result = evaluate_surface_p_required_proof_input_binding_v0(REPO_ROOT)
     assert result.full_canonical_chain_wired is True
     assert result.backtest_runtime_decision_parity_pass is True

@@ -37,6 +37,13 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
     _FakeKeychainBackend,
 )
 
+NUMERIC_FAULTS = [
+    "survival_nan",
+    "survival_overflow",
+    "survival_metric_bool",
+    "survival_policy_inf",
+]
+
 
 def seed_frame(root, monkeypatch, modern):
     from src.ops.full_core_live_path_composition_root_v1 import (
@@ -61,6 +68,7 @@ def seed_frame(root, monkeypatch, modern):
         for key, name in [
             ("c3", "evaluate_directional_assessment_with_confirmation_progress_v1"),
             ("survival", "evaluate_survival_assessment_v1"),
+            ("survival_inputs", "_survival_input_for_assessment"),
             ("suitability", "evaluate_suitability_binding_v1"),
             ("composition", "evaluate_double_play_composition_matrix_v1"),
             ("entry", "evaluate_double_play_entry_exit_policy_v0"),
@@ -69,12 +77,145 @@ def seed_frame(root, monkeypatch, modern):
 
             def capture(*a, _key=key, _original=original, **kw):
                 captured[_key] = (a, kw, _original)
+                if _key == "survival_inputs":
+                    captured["input"] = a[0]
                 return _original(*a, **kw)
 
             patch.setattr(integrated, name, capture)
         host, args, cursor_root = seed_core(root, monkeypatch, modern)
     assert "replay" in captured and captured["replay"].intermediate is not None
     return host, args, cursor_root, captured
+
+
+@pytest.mark.parametrize("modern", [False, True])
+@pytest.mark.parametrize("fault", ["cost", "metric", "validity"])
+def test_host_numeric_admission_restricts_entry_before_financial_handoff(
+    tmp_path, monkeypatch, modern, fault
+):
+    from trading.master_v2 import integrated_offline_trading_logic_replay_v1 as integrated
+    from trading.master_v2.double_play_entry_exit_policy_v0 import TradingGate
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_numeric_entry_admission_v1 import (
+        prepare_current_productive_numeric_entry_v1,
+    )
+
+    host, args, root, captured = seed_frame(tmp_path, monkeypatch, modern)
+    try:
+        inp = captured["input"]
+        original_builder = integrated._survival_input_for_assessment
+
+        def invalid_input(*a, **kw):
+            value = original_builder(*a, **kw)
+            if fault == "cost":
+                return replace(
+                    value, cost_inputs=replace(value.cost_inputs, entry_fee=float("nan"))
+                )
+            if fault == "metric":
+                return replace(
+                    value,
+                    metric_inputs=replace(value.metric_inputs, data_completeness_complete="False"),
+                )
+            return value
+
+        if fault == "validity":
+            inp = replace(
+                inp,
+                policies=replace(
+                    inp.policies, survival=replace(inp.policies.survival, validity_epochs=0)
+                ),
+            )
+        monkeypatch.setattr(integrated, "_survival_input_for_assessment", invalid_input)
+        cursor_before = cursors.load_current_productive_sidestate_confirmation_cursor_v1(root)
+        admitted, preview, reasons = prepare_current_productive_numeric_entry_v1(
+            inp, replay_runner=integrated.run_integrated_offline_trading_logic_replay_v1
+        )
+        assert preview is None and reasons
+        assert admitted.trading_gate is TradingGate.EXIT_ONLY
+        assert admitted.input_digest != inp.input_digest
+        assert admitted.directional_confirmation_progress is inp.directional_confirmation_progress
+        assert admitted.observation_acceptance_result is inp.observation_acceptance_result
+        if fault == "validity":
+            assert admitted.policies.survival.validity_epochs == 1
+        result = integrated.run_integrated_offline_trading_logic_replay_v1(admitted)
+        assert result.intermediate is not None
+        mid = result.intermediate
+        side = "bull" if mid.bull_survival is not None else "bear"
+        assert getattr(mid, side + "_assessment").status.value == "confirmed"
+        assert (
+            mid.directional_confirmation_progress_after
+            == captured["replay"].intermediate.directional_confirmation_progress_after
+        )
+        assert mid.entry_exit_decision.decision_outcome.value not in {"enter_long", "enter_short"}
+        assert (
+            cursors.load_current_productive_sidestate_confirmation_cursor_v1(root) == cursor_before
+        )
+    finally:
+        host.close()
+
+
+@pytest.mark.parametrize("modern", [False, True])
+def test_valid_host_numeric_admission_reuses_exact_native_preview(tmp_path, monkeypatch, modern):
+    from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+        DdoCaptureBindingV0,
+        bind_capture_session_v0,
+        current_capture_binding_v0,
+        reset_capture_session_v0,
+    )
+    from trading.master_v2 import integrated_offline_trading_logic_replay_v1 as integrated
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_numeric_entry_admission_v1 import (
+        prepare_current_productive_numeric_entry_v1,
+    )
+
+    host, args, root, captured = seed_frame(tmp_path, monkeypatch, modern)
+    outer = DdoCaptureBindingV0(enabled=True, ledger_path=tmp_path / "outer-ddo.jsonl")
+    token = bind_capture_session_v0(outer)
+    try:
+        calls = []
+
+        def run(value):
+            assert current_capture_binding_v0().enabled is False
+            result = integrated.run_integrated_offline_trading_logic_replay_v1(value)
+            calls.append(result)
+            return result
+
+        inp = captured["input"]
+        admitted, preview, reasons = prepare_current_productive_numeric_entry_v1(
+            inp, replay_runner=run
+        )
+        assert admitted is inp and not reasons and calls == [preview]
+        assert preview.evidence == captured["replay"].evidence
+        assert current_capture_binding_v0() is outer
+        assert not outer.captured_records and not outer.ledger_path.exists()
+    finally:
+        reset_capture_session_v0(token)
+        host.close()
+
+
+@pytest.mark.parametrize("modern", [False, True])
+def test_current_frame_rejects_nonfinite_direct_native_legacy_output(tmp_path, monkeypatch, modern):
+    host, args, root, captured = seed_frame(tmp_path, monkeypatch, modern)
+    try:
+        a, kw, native = captured["survival"]
+        value = replace(a[0], cost_inputs=replace(a[0].cost_inputs, entry_fee=float("nan")))
+        survival = native(value, a[1], **kw)
+        assert survival.status.value == "pass"
+        original = captured["replay"]
+        prefix = "bull" if original.intermediate.bull_survival is not None else "bear"
+        replay = replace(
+            original,
+            intermediate=replace(original.intermediate, **{prefix + "_survival": survival}),
+        )
+        cursor = cursors.parse_current_productive_sidestate_confirmation_cursor_v1(
+            cursors.load_current_productive_sidestate_confirmation_cursor_v1(root)
+        )
+        frame = frames.build_current_core_entry_assessment_frame_v1(
+            replay=replay, confirmation_state=cursor.cap61_confirmation_state
+        )
+        with pytest.raises(ValueError, match="CURRENT_CORE_ASSESSMENT_NUMERIC_OUTPUT_NONFINITE"):
+            frames.read_current_core_entry_assessment_frame_v1(
+                replace(cursor, entry_assessment_frame=frame)
+            )
+    finally:
+        host.close()
 
 
 def publish_frame(root, captured, fault):
@@ -165,7 +306,29 @@ def publish_frame(root, captured, fault):
             surv_inp = replace(
                 surv_inp, cost_inputs=replace(surv_inp.cost_inputs, expected_gross_edge=None)
             )
-        survival = evaluate(surv_inp, a[1], **kw)
+        elif fault == "survival_nan":
+            surv_inp = replace(
+                surv_inp, cost_inputs=replace(surv_inp.cost_inputs, entry_fee=float("nan"))
+            )
+        elif fault == "survival_overflow":
+            surv_inp = replace(
+                surv_inp, cost_inputs=replace(surv_inp.cost_inputs, entry_fee=1e308, exit_fee=1e308)
+            )
+        elif fault == "survival_metric_bool":
+            surv_inp = replace(
+                surv_inp,
+                metric_inputs=replace(surv_inp.metric_inputs, data_completeness_complete="False"),
+            )
+        survival_policy = a[1]
+        if fault == "survival_policy_inf":
+            survival_policy = replace(survival_policy, min_net_edge=float("inf"))
+        from trading.master_v2.survival_numeric_admission_v1 import (
+            evaluate_survival_with_numeric_admission_v1,
+        )
+
+        survival = evaluate_survival_with_numeric_admission_v1(surv_inp, survival_policy)
+        if fault in NUMERIC_FAULTS:
+            assert survival.status.value == "blocked"
         a, kw, evaluate = captured["suitability"]
         suit_inp = replace(a[0], directional_assessment=assessment, survival_result=survival)
         if fault == "suitability":
@@ -244,6 +407,7 @@ def publish_frame(root, captured, fault):
         "c3_binding",
         "declaration",
         "eligibility",
+        *NUMERIC_FAULTS,
     ],
 )
 def test_current_assessment_frame_vetoes_while_c3_progress_stays_confirmed(
@@ -333,8 +497,9 @@ def test_actual_current_n1_writer_publishes_and_binds_its_assessment_frame(
 
 @pytest.mark.parametrize("modern", [False, True])
 @pytest.mark.parametrize("phase", ["before_get", "after_get", "during_k1", "opener_factory"])
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
 def test_actual_post_rechecks_current_blocked_assessment_before_socket(
-    tmp_path, monkeypatch, modern, phase
+    tmp_path, monkeypatch, modern, phase, fault
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
@@ -349,7 +514,7 @@ def test_actual_post_rechecks_current_blocked_assessment_before_socket(
 
     def change():
         if not changed:
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             changed.append(True)
 
     class Port(AccountPort):
@@ -409,8 +574,9 @@ def test_actual_post_rechecks_current_blocked_assessment_before_socket(
 
 
 @pytest.mark.parametrize("modern", [False, True])
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
 def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
-    tmp_path, monkeypatch, modern
+    tmp_path, monkeypatch, modern, fault
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
@@ -426,7 +592,7 @@ def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
     class Opener:
         def open(self, *a, **kw):
             calls.append(True)
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             raise TimeoutError("Synthetic possible send")
 
     held = owner.active_sum_v1()
@@ -459,7 +625,10 @@ def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
 
 
 @pytest.mark.parametrize("modern", [False, True])
-def test_republished_admissible_frame_cannot_reopen_consumed_abort(tmp_path, monkeypatch, modern):
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
+def test_republished_admissible_frame_cannot_reopen_consumed_abort(
+    tmp_path, monkeypatch, modern, fault
+):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
     )
@@ -473,7 +642,7 @@ def test_republished_admissible_frame_cannot_reopen_consumed_abort(tmp_path, mon
     class Backend(_FakeKeychainBackend):
         def copy_matching_generic_password_value_data_v1(self, **kw):
             value = super().copy_matching_generic_password_value_data_v1(**kw)
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             return value
 
     common = dict(

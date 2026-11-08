@@ -1043,7 +1043,13 @@
     "src/research/m9_s1_durable_market_session_evidence_accumulation_v1/owner_review_v1.py",
     "src/research/m9_s1_durable_market_session_evidence_accumulation_v1/passive_accumulation_v1.py",
     "src/research/m9_s1_durable_market_session_evidence_accumulation_v1/runner_v1.py",
-    "tests/research/test_m9_s1_durable_market_session_evidence_accumulation_v1.py"
+    "tests/research/test_m9_s1_durable_market_session_evidence_accumulation_v1.py",
+    "src/trading/master_v2/survival_numeric_admission_v1.py",
+    "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+    "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",
+    "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
+    "tests/trading/master_v2/test_survival_numeric_admission_v1.py"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -1275,6 +1281,7 @@
     "PR7036_RAW_INSTRUMENT_RELATIVE_SCOPE_CUTOVER_V1: authorize exact-file productive Scope initialization policy cutover from legacy absolute [50,500] injection to existing instrument-relative σ×mark policy on canonical_core_runtime_integration_bridge_v0 and integrated_vs_scenario_replay_full_system_parity_harness_v0; focused cutover contract tests, GHV reproof evidence runner/manifests, and SCOPE_INIT navigation docs. No new Scope formula; Double Play / Layer-C / LIVE29P unchanged; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
     "PR7037_CRS_BOUNDARY_MV2_WIRING_V1: authorize exact-file WIRING_ONLY MV2 CRS boundary propagation on current_productive_master_v2_runtime_cycle_v1 via build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1; focused wiring tests and updated enter/29p join regression expectations. No trading-decision, Scope, Layer-C, or POST authority change; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
     "PR7064_GOLDEN_GEOMETRY_ENGINE_V1: authorize exact-file Golden Geometry Engine V1 module and focused GGE/scope/trailing contract tests plus asymmetric dynamic-scope recovery replay-string contract alignment. Semantics-neutral technical canonical wiring only: D_gge=volatility_estimate×mark_price magnitude owner; SAFE CORRECTION baseline; no Entry/Exit/Reversal/MV2 decision-semantics change at governance boundary; CORE_SEMANTICS/RISK_SIZING/SAFETY invariants unchanged; no live/testnet/orders/POST.",
-    "PR7090_GHV_CURRENT_L10_OBSERVABILITY_AND_GGE_SCALE_REPROOF_V1: authorize exact-file default-off GHV scope trace L10 seal field export (read-only LayeredCoreAuthoritySealV1 provenance) plus one-line bind_carry.seal wiring on productive MV2 cycle hook; synthetic GGE σ×P scale/L10 unit reproof tests only. OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION=false; no GGE formula, Dynamic Scope threshold, L10 predicate, Entry/Exit, Double Play, or risk/sizing semantic change; CORE_SEMANTICS/RISK_SIZING/SAFETY invariants unchanged; no live/testnet/orders/POST."
+    "PR7090_GHV_CURRENT_L10_OBSERVABILITY_AND_GGE_SCALE_REPROOF_V1: authorize exact-file default-off GHV scope trace L10 seal field export (read-only LayeredCoreAuthoritySealV1 provenance) plus one-line bind_carry.seal wiring on productive MV2 cycle hook; synthetic GGE σ×P scale/L10 unit reproof tests only. OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION=false; no GGE formula, Dynamic Scope threshold, L10 predicate, Entry/Exit, Double Play, or risk/sizing semantic change; CORE_SEMANTICS/RISK_SIZING/SAFETY invariants unchanged; no live/testnet/orders/POST.",
+    "CURRENT_NUMERIC_INPUT_ADMISSION_AND_EXPLICIT_OFFLINE_FINANCIAL_CONTEXT_V1: exact-file technical admission for the explicit numeric input adapter and scenario caller plus affected current numeric/context/manifest contract tests. Original Survival, entire integrated replay, finite economic formulas and configured thresholds are unchanged; malformed representations yield only negative outer admission. Existing capital/intent owner bodies, operational parameters and all NONE/false authority boundaries remain unchanged. Explicit financial context is newly declared synthetic test data, not account/risk policy ratification. No directory grant, restoration, productive capability, orders, credentials, scheduler, core-seal change or required-check waiver. Current spec and exact-source evidence: docs/ops/specs/CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md and docs/ops/evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.json."
   ]
 }

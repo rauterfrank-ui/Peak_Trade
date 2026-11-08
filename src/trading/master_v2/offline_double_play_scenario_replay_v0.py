@@ -21,7 +21,12 @@ import re
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Mapping, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Tuple
+
+if TYPE_CHECKING:
+    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+        CanonicalCoreRuntimeCapitalContextV0,
+    )
 
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
     MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER,
@@ -315,6 +320,11 @@ class OfflineDoublePlayScenarioReplayInputV0:
     allow_test_scope_event_injection: bool = False
     # Explicit offline/test/scenario surface; runtime/live/order surfaces fail-closed.
     execution_surface: str = "offline_scenario"
+    # Explicit current fixture mode. Empty/missing tick entries mean no context;
+    # never recover isolated legacy account literals for this mode.
+    capital_contexts_by_tick: Mapping[int, CanonicalCoreRuntimeCapitalContextV0 | None] | None = (
+        None
+    )
 
 
 @dataclass(frozen=True)
@@ -1240,9 +1250,15 @@ def run_offline_double_play_scenario_replay_v0(
             config_digest=DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST,
             implementation_digest="offline-double-play-scenario-replay-v0",
         )
+        financial_kwargs = (
+            {"capital_context": inp.capital_contexts_by_tick.get(tick.tick_index)}
+            if inp.capital_contexts_by_tick is not None
+            else {}
+        )
         sizing_binding = evaluate_scenario_capital_risk_sizing_v0(
             tick_evidence,
             reference_price=Decimal(str(tick.price)),
+            **financial_kwargs,
         )
         bound_evidence = sizing_binding.evidence
         sizing_decision = sizing_binding.sizing_decision
@@ -1250,6 +1266,7 @@ def run_offline_double_play_scenario_replay_v0(
             bound_evidence,
             sizing_decision=sizing_decision,
             reference_price=Decimal(str(tick.price)),
+            **financial_kwargs,
         )
         safety_binding = evaluate_scenario_safety_kernel_v0(
             intent_binding.evidence,

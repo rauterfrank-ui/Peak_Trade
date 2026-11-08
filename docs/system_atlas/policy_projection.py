@@ -12,6 +12,39 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 LAW = "config/governance/current_law_impact_map_v1/source_v1.json"
+TECHNICAL_ADMISSION = "config/governance/technical_canonical_wiring_authorization_v1.json"
+NUMERIC_ADMISSION_PATHS = (
+    "src/trading/master_v2/survival_numeric_admission_v1.py",
+    "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+    "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",
+    "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
+    "tests/trading/master_v2/test_survival_numeric_admission_v1.py",
+)
+NUMERIC_ADMISSION_ID = "CURRENT_NUMERIC_INPUT_ADMISSION_AND_EXPLICIT_OFFLINE_FINANCIAL_CONTEXT_V1"
+
+
+def validate_numeric_technical_admission_delta(original: bytes, current: bytes) -> None:
+    """Admit only the owner-requested six-file extension of the frozen contract.
+
+    Hash rebinding alone cannot change a prior grant, an invariant, an effect,
+    or add a seventh file. The original frozen inventory stays authoritative
+    for the baseline; this is a separately bound development delta.
+    """
+    before, after = json.loads(original), json.loads(current)
+    mutable = {"allowed_paths", "authorized_surface_notes"}
+    if (
+        set(before) != set(after)
+        or any(after[k] != v for k, v in before.items() if k not in mutable)
+        or any(p in before["allowed_paths"] for p in NUMERIC_ADMISSION_PATHS)
+        or after["allowed_paths"] != before["allowed_paths"] + list(NUMERIC_ADMISSION_PATHS)
+        or not isinstance(after["authorized_surface_notes"], list)
+        or len(after["authorized_surface_notes"]) != len(before["authorized_surface_notes"]) + 1
+        or after["authorized_surface_notes"][:-1] != before["authorized_surface_notes"]
+        or type(after["authorized_surface_notes"][-1]) is not str
+        or not after["authorized_surface_notes"][-1].startswith(NUMERIC_ADMISSION_ID + ": ")
+    ):
+        raise ValueError("POLICY_TECHNICAL_ADMISSION_DELTA_INVALID")
 
 
 def policy_scope_kind(path: str) -> str | None:
@@ -260,6 +293,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
             if path not in {
                 "config/governance/clean_core_seal_manifest_v1.json",
                 "src/ops/single_selected_future_policy_v1/selection_v1.py",
+                TECHNICAL_ADMISSION,
             }:
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
@@ -277,6 +311,8 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
             ):
                 raise ValueError("POLICY_DEVELOPMENT_BINDING_INVALID:" + path)
             original = subprocess.check_output(["git", "show", resolved + ":" + path], cwd=root)
+            if path == TECHNICAL_ADMISSION:
+                validate_numeric_technical_admission_delta(original, raw)
             development_policy_files.append(path)
         original_digest = hashlib.sha256(original).hexdigest()
         if original_digest != policy["frozen_sha256"] or original_digest != frozen[path]["sha256"]:
