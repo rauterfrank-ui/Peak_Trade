@@ -1085,6 +1085,28 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 self, str(reservation_id), envelope, identity, permit
             )
 
+    def inspect_started_execution_attempt_v1(self, reservation_id, envelope, identity, permit):
+        """Current admission/readback for the actual retained V1 or V2 identity.
+
+        Reuses the original started-attempt reader. Does not upgrade a legacy
+        identity, change state, refresh financial facts or create authority.
+        """
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            FullCoreExchangeReconciliationIdentityV1,
+            PortfolioExecutionReconciliationIdentityV2,
+        )
+        from .attempt_v2 import inspect_started_attempt_locked_v2
+
+        if type(identity) not in {
+            FullCoreExchangeReconciliationIdentityV1,
+            PortfolioExecutionReconciliationIdentityV2,
+        }:
+            raise ValueError("EXECUTION_IDENTITY_TYPE_INVALID")
+        with self._lock:
+            return inspect_started_attempt_locked_v2(
+                self, str(reservation_id), envelope, identity, permit
+            )
+
     def inspect_execution_submit_context_v1(self, reservation_id, envelope, identity):
         """Original committed-plan predicates under lock; no submit or new authority."""
         from .execution_v1 import inspect_submit_context_locked_v1

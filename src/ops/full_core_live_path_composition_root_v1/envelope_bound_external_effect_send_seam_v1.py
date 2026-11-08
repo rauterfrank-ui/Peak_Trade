@@ -318,7 +318,7 @@ def attempt_envelope_bound_external_effect_send_v1(
         )
     except FullCoreProductiveHttpPostError as exc:
         msg = str(exc)
-        if msg.startswith(("POST_SAFETY", "POST_QUANTITY", "POST_PENDING")):
+        if msg.startswith(("POST_SAFETY", "POST_QUANTITY", "POST_PENDING", "POST_BUDGET")):
             raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
         if msg in {
             "REDIRECT_OFF_HOST_FORBIDDEN",

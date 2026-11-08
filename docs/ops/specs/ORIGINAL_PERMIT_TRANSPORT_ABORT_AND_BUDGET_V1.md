@@ -11,6 +11,11 @@ das [aktuelle Originalveto](CURRENT_POST_ORIGINAL_SAFETY_VETO_V1.md). Ein negati
 Transportabschluss erzeugt weder Senderecht noch einen Retry. Den Kapitalübergang
 entscheidet weiterhin ausschließlich der ursprüngliche Budgetowner.
 
+Die [Fortsetzung des aktuellen Budgetvetos](CURRENT_POST_ORIGINAL_BUDGET_ADMISSION_V1.md)
+auf Basis c1802ac7c ergänzt denselben negativen Originalabschluss für die tatsächliche
+späte Ablehnung des ursprünglichen Budgetowners. Die weitergehende aktuelle
+Core-/Risiko-/Altplanzulassung bleibt ein eigener offener Vertrag.
+
 ## Ursprung und belegte Lücke
 
 Die vorhandene Exchange-Reconciliation unterscheidet NOT_SUBMITTED von
