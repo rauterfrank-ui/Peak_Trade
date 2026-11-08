@@ -12,6 +12,10 @@ import json
 
 import pytest
 
+from tests.trading.master_v2._surface_p_current_manifest_fixture_v1 import (
+    verified_current_parity_manifest_v1 as verified_current_parity_manifest_v1,
+)
+
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
     FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER,
@@ -194,14 +198,14 @@ def test_surface_p_four_way_parity_binding_pass_v0() -> None:
     assert surface_p.recommended_next_slice == NEXT_RECOMMENDED_SLICE
 
 
-def test_gap_matrix_markdown_renders_v0() -> None:
+def test_gap_matrix_markdown_renders_v0(verified_current_parity_manifest_v1) -> None:
     md = render_parity_gap_matrix_markdown_v0()
     assert "FULL_CANONICAL_CHAIN_WIRED=true" in md
     assert "Double Play composition" in md
     assert NEXT_RECOMMENDED_SLICE in md
 
 
-def test_gap_matrix_json_machine_readable_v0() -> None:
+def test_gap_matrix_json_machine_readable_v0(verified_current_parity_manifest_v1) -> None:
     payload = json.loads(render_parity_gap_matrix_json_v0())
     assert payload["assessment_owner"] == FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER
     assert payload["next_recommended_slice"] == NEXT_RECOMMENDED_SLICE

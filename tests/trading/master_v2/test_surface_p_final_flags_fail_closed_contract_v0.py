@@ -8,6 +8,10 @@ from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
 import ast
 from pathlib import Path
 
+from tests.trading.master_v2._surface_p_current_manifest_fixture_v1 import (
+    verified_current_parity_manifest_v1 as verified_current_parity_manifest_v1,
+)
+
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
     render_parity_gap_matrix_json_v0,
@@ -201,7 +205,9 @@ def test_only_complete_manifest_verified_evidence_can_derive_true_flags_v0() -> 
     assert result.fail_closed_reasons == ()
 
 
-def test_current_head_derives_offline_parity_flags_without_runtime_activation_v0() -> None:
+def test_verified_current_fixture_derives_offline_flags_without_activation_v0(
+    verified_current_parity_manifest_v1,
+) -> None:
     result = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
     evidence = current_head_default_final_flags_evidence_input_v0()
     assert evidence.source_manifest_verify_rc == 0
@@ -215,7 +221,7 @@ def test_current_head_derives_offline_parity_flags_without_runtime_activation_v0
     assert CANONICAL_RUNTIME_ENTRYPOINT_STATUS == "BOUND_NOT_ACTIVATED"
 
 
-def test_current_head_default_manifest_verified_v0() -> None:
+def test_explicit_current_fixture_manifest_verified_v0(verified_current_parity_manifest_v1) -> None:
     evidence = current_head_default_final_flags_evidence_input_v0()
     assert evidence.source_manifest_verify_rc == 0
     assert evidence.runtime_bridge_binding_status == "BOUND_NOT_ACTIVATED"
@@ -226,7 +232,9 @@ def test_gap_assessment_semantic_bindings_derived_from_targeted_pass_surfaces_v0
     assert all(confirmations[key] for key in REQUIRED_SEMANTIC_BINDING_CONFIRMATIONS_V0)
 
 
-def test_parity_gap_matrix_json_uses_derived_final_flags_v0() -> None:
+def test_parity_gap_matrix_json_uses_derived_final_flags_v0(
+    verified_current_parity_manifest_v1,
+) -> None:
     import json
 
     payload = json.loads(render_parity_gap_matrix_json_v0())
@@ -245,6 +253,31 @@ def test_parity_gap_matrix_json_uses_derived_final_flags_v0() -> None:
     assert summary["full_canonical_chain_wired"] is True
     assert summary["backtest_runtime_decision_parity_pass"] is True
     assert summary["system_economic_evidence_admissible"] is False
+
+
+def test_missing_current_manifest_keeps_final_flags_false_v1(tmp_path, monkeypatch) -> None:
+    from trading.master_v2 import surface_p_final_flags_fail_closed_contract_v0 as flags
+
+    monkeypatch.setattr(flags, "DEFAULT_CANONICAL_PARITY_SOURCE_EVIDENCE_DIR", tmp_path / "missing")
+    evidence = current_head_default_final_flags_evidence_input_v0()
+    assert evidence.source_manifest_verify_rc == -1
+    result = evaluate_surface_p_final_flags_fail_closed_contract_v0(evidence)
+    assert result.full_canonical_chain_wired is False
+    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.system_economic_evidence_admissible is False
+
+
+def test_corrupt_current_manifest_keeps_final_flags_false_v1(
+    verified_current_parity_manifest_v1,
+) -> None:
+    directory = verified_current_parity_manifest_v1
+    (directory / "synthetic-current-source-binding.json").write_text("changed after manifest\n")
+    evidence = current_head_default_final_flags_evidence_input_v0()
+    assert evidence.source_manifest_verify_rc != 0
+    result = evaluate_surface_p_final_flags_fail_closed_contract_v0(evidence)
+    assert result.full_canonical_chain_wired is False
+    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.system_economic_evidence_admissible is False
 
 
 def test_slice_sources_have_no_forbidden_runtime_imports_v0() -> None:

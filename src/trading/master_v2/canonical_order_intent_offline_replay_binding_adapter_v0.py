@@ -43,6 +43,7 @@ CANONICAL_ORDER_INTENT_OWNER = "src.governance.canonical_order_intent_v1"
 
 ORDER_INTENT_EFFECT_BOUND_OFFLINE = "BOUND_OFFLINE"
 ORDER_INTENT_EFFECT_NONE = "NONE"
+_UNSET_CAPITAL_CONTEXT = object()
 
 _DEFAULT_ORDER_TYPE_POLICY = "MARKET_ONLY"
 _DEFAULT_PRICE_POLICY = "EXPLICIT_NONE"
@@ -233,6 +234,7 @@ def evaluate_scenario_canonical_order_intent_v0(
     *,
     sizing_decision: Optional[CapitalRiskSizingDecisionV1],
     reference_price=None,
+    capital_context: CanonicalCoreRuntimeCapitalContextV0 | None | object = _UNSET_CAPITAL_CONTEXT,
 ) -> CanonicalOrderIntentOfflineReplayBindingResultV0:
     from decimal import Decimal
 
@@ -240,10 +242,28 @@ def evaluate_scenario_canonical_order_intent_v0(
         isolated_offline_replay_fixture_capital_context_v0,
     )
 
-    ctx = isolated_offline_replay_fixture_capital_context_v0(
-        instrument_id=evidence.instrument_id,
-        reference_price=reference_price if reference_price is not None else Decimal("3500"),
-    )
+    if capital_context is _UNSET_CAPITAL_CONTEXT:
+        ctx = isolated_offline_replay_fixture_capital_context_v0(
+            instrument_id=evidence.instrument_id,
+            reference_price=reference_price if reference_price is not None else Decimal("3500"),
+        )
+    else:
+        from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+            CanonicalCoreRuntimeCapitalContextV0,
+        )
+
+        if (
+            capital_context is not None
+            and type(capital_context) is not CanonicalCoreRuntimeCapitalContextV0
+        ):
+            raise ValueError("SCENARIO_EXPLICIT_CAPITAL_CONTEXT_INVALID")
+        ctx = capital_context
+        if (
+            ctx is not None
+            and reference_price is not None
+            and ctx.reference_price != reference_price
+        ):
+            raise ValueError("SCENARIO_EXPLICIT_REFERENCE_PRICE_MISMATCH")
     return bind_canonical_order_intent_offline_replay_evidence_v0(
         evidence,
         sizing_decision=sizing_decision,

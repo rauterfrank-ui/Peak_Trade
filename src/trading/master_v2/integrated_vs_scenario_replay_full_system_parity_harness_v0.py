@@ -11,8 +11,14 @@ from __future__ import annotations
 import ast
 import hashlib
 from dataclasses import dataclass, replace
+from decimal import Decimal
 from pathlib import Path
-from typing import Literal, Mapping, Optional, Sequence, Tuple
+from typing import TYPE_CHECKING, Literal, Mapping, Optional, Sequence, Tuple
+
+if TYPE_CHECKING:
+    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+        CanonicalCoreRuntimeCapitalContextV0,
+    )
 
 from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentStatus
 from trading.master_v2.double_play_composition import RequestedSide
@@ -377,6 +383,7 @@ class SurfacePBarSequenceFixtureV0:
     instrument_id: str
     trading_epoch: int
     context_reference: str
+    capital_context: Optional[CanonicalCoreRuntimeCapitalContextV0] = None
 
 
 @dataclass(frozen=True)
@@ -2152,7 +2159,7 @@ def surface_p_core_bar_sequence_fixtures_v0(
     trading_epoch: int = 44,
     context_reference: str = "surface-p-bar-sequence-4way-parity-v0",
 ) -> Tuple[SurfacePBarSequenceFixtureV0, ...]:
-    return (
+    fixtures = (
         SurfacePBarSequenceFixtureV0(
             "entry_long_path",
             "entry_path",
@@ -2225,6 +2232,33 @@ def surface_p_core_bar_sequence_fixtures_v0(
             trading_epoch,
             context_reference,
         ),
+    )
+    return tuple(
+        replace(fixture, capital_context=_surface_p_synthetic_capital_context_v1(instrument_id))
+        if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path")
+        else fixture
+        for fixture in fixtures
+    )
+
+
+def _surface_p_synthetic_capital_context_v1(instrument_id: str):
+    """Declared test account for the price-100/stop-98 fixture, never account truth."""
+    from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+        default_offline_replay_capital_context_v0,
+    )
+
+    return default_offline_replay_capital_context_v0(
+        instrument_id=instrument_id,
+        reference_price=Decimal("100"),
+        protective_stop_price=Decimal("98"),
+        account_equity=Decimal("1000"),
+        scope_capital_limit=Decimal("120"),
+        per_trade_risk_limit=Decimal("120"),
+        total_capital_limit=Decimal("240"),
+        daily_loss_remaining_budget=Decimal("6"),
+        config_digest=hashlib.sha256(
+            b"surface-p-explicit-synthetic-financial-input-v1"
+        ).hexdigest(),
     )
 
 
@@ -2694,6 +2728,44 @@ def build_surface_p_integrated_replay_result_v0(
     return result
 
 
+def _surface_p_financial_evidence_v1(fixture, tick):
+    from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+        build_scenario_tick_decision_evidence_v0,
+    )
+    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+        CanonicalCoreRuntimeCapitalContextV0,
+    )
+
+    context = fixture.capital_context
+    side = {
+        DecisionOutcome.ENTER_LONG.value: "long",
+        DecisionOutcome.ENTER_SHORT.value: "short",
+    }.get(tick.entry_exit_decision_outcome)
+    if (
+        type(context) is not CanonicalCoreRuntimeCapitalContextV0
+        or context.capital_risk_mode != "OFFLINE_ALGEBRA"
+        or context.instrument.instrument_id != fixture.instrument_id
+        or tick.selected_future_id != fixture.instrument_id
+        or context.reference_price != Decimal(str(tick.price))
+        or side is None
+    ):
+        return None
+    return build_scenario_tick_decision_evidence_v0(
+        decision_id=tick.entry_exit_policy_ref,
+        replay_id=f"{fixture.context_reference}-replay",
+        instrument_id=fixture.instrument_id,
+        trading_epoch=fixture.trading_epoch,
+        composition_result_id=tick.composition_result_id,
+        entry_exit_policy_ref=tick.entry_exit_policy_ref,
+        selected_side=side,
+        decision_outcome=tick.entry_exit_decision_outcome,
+        reason_codes=tick.entry_exit_reason_codes,
+        decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
+        config_digest=_SURFACE_P_CONFIG_DIGEST,
+        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+    )
+
+
 def build_surface_p_fixture_scenario_envelope_v0(
     fixture: SurfacePBarSequenceFixtureV0,
 ) -> ParityDecisionEnvelopeV0 | None:
@@ -2745,47 +2817,28 @@ def build_surface_p_fixture_scenario_envelope_v0(
             composition_status=matrix.composition_status.value,
         )
     if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
-        replay = run_offline_double_play_scenario_replay_v0(
-            OfflineDoublePlayScenarioReplayInputV0(
-                selected_future_id=fixture.instrument_id,
-                ticks=build_default_bull_bear_bull_scenario_ticks(),
-                source_revision=f"surface-p-{fixture.fixture_id}",
-                allow_test_scope_event_injection=True,
-            )
-        )
-        if not replay.replay_pass:
-            return None
         tick = _surface_p_scenario_replay_tick_for_fixture_v0(fixture)
         if tick is None:
             return None
-        if fixture.path_kind == "capital_risk_sizing_path":
-            return extract_scenario_replay_tick_capital_risk_sizing_envelope_v0(tick)
         from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
             evaluate_scenario_canonical_order_intent_v0,
         )
         from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
-            build_scenario_tick_decision_evidence_v0,
             evaluate_scenario_capital_risk_sizing_v0,
         )
 
-        evidence = build_scenario_tick_decision_evidence_v0(
-            decision_id=tick.entry_exit_policy_ref,
-            replay_id=f"{fixture.context_reference}-replay",
-            instrument_id=fixture.instrument_id,
-            trading_epoch=fixture.trading_epoch,
-            composition_result_id=tick.composition_result_id,
-            entry_exit_policy_ref=tick.entry_exit_policy_ref,
-            selected_side="long",
-            decision_outcome=tick.entry_exit_decision_outcome,
-            reason_codes=tick.entry_exit_reason_codes,
-            decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
-            config_digest=_SURFACE_P_CONFIG_DIGEST,
-            implementation_digest=_SURFACE_P_IMPL_DIGEST,
+        evidence = _surface_p_financial_evidence_v1(fixture, tick)
+        if evidence is None:
+            return None
+        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(
+            evidence, capital_context=fixture.capital_context
         )
-        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(evidence)
+        if fixture.path_kind == "capital_risk_sizing_path":
+            return extract_capital_risk_sizing_parity_envelope_v0(sizing_binding)
         intent_binding = evaluate_scenario_canonical_order_intent_v0(
             sizing_binding.evidence,
             sizing_decision=sizing_binding.sizing_decision,
+            capital_context=fixture.capital_context,
         )
         return extract_canonical_order_intent_parity_envelope_v0(intent_binding)
     matrix = evaluate_scenario_matrix_for_side_state_v0(
@@ -2834,18 +2887,22 @@ def _surface_p_scenario_replay_tick_for_fixture_v0(
             ticks=build_default_bull_bear_bull_scenario_ticks(),
             source_revision=f"surface-p-{fixture.fixture_id}",
             allow_test_scope_event_injection=True,
+            capital_contexts_by_tick={}
+            if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path")
+            else None,
         )
     )
     if not replay.replay_pass:
         return None
-    if fixture.path_kind == "capital_risk_sizing_path":
+    if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
+        expected = {
+            SideState.LONG_ARMED: DecisionOutcome.ENTER_LONG.value,
+            SideState.SHORT_ARMED: DecisionOutcome.ENTER_SHORT.value,
+        }.get(fixture.scenario_side_state)
+        if expected is None:
+            return None
         for tick in replay.tick_records:
-            if tick.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
-                return tick
-        return None
-    if fixture.path_kind == "canonical_order_intent_path":
-        for tick in replay.tick_records:
-            if tick.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
+            if tick.entry_exit_decision_outcome == expected:
                 return tick
         return None
     if fixture.path_kind == "entry_path":
@@ -3195,9 +3252,20 @@ def surface_p_fixture_lane_semantics_ok_v0(
     if path_kind == "flat_before_opposite_side_path":
         return envelope.decision_outcome != DecisionOutcome.ENTER_SHORT.value
     if path_kind == "capital_risk_sizing_path":
-        return envelope.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE
+        return (
+            envelope.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE
+            and envelope.quantity_status in {"PASS", "REDUCE"}
+            and bool(envelope.risk_sizing_ref)
+            and bool(envelope.quantity_provenance_ref)
+        )
     if path_kind == "canonical_order_intent_path":
-        return envelope.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE
+        return (
+            envelope.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE
+            and envelope.quantity_status in {"PASS", "REDUCE"}
+            and bool(envelope.order_intent_ref)
+            and bool(envelope.risk_sizing_ref)
+            and bool(envelope.quantity_provenance_ref)
+        )
     if path_kind == "blocked_no_action_path":
         return envelope.decision_outcome in (
             DecisionOutcome.OBSERVE.value,
@@ -3271,39 +3339,28 @@ def _build_surface_p_adapter_integrated_envelope_v0(
     fixture: SurfacePBarSequenceFixtureV0,
 ) -> ParityDecisionEnvelopeV0 | None:
     from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
-        evaluate_scenario_canonical_order_intent_v0,
+        bind_canonical_order_intent_offline_replay_evidence_v0,
     )
     from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
         bind_capital_risk_sizing_offline_replay_evidence_v0,
-        build_scenario_tick_decision_evidence_v0,
-        evaluate_scenario_capital_risk_sizing_v0,
     )
 
     tick = _surface_p_scenario_replay_tick_for_fixture_v0(fixture)
     if tick is None:
         return None
-    evidence = build_scenario_tick_decision_evidence_v0(
-        decision_id=tick.entry_exit_policy_ref,
-        replay_id=f"{fixture.context_reference}-replay",
-        instrument_id=fixture.instrument_id,
-        trading_epoch=fixture.trading_epoch,
-        composition_result_id=tick.composition_result_id,
-        entry_exit_policy_ref=tick.entry_exit_policy_ref,
-        selected_side=tick.side_state.value.replace("_active", "").replace("_armed", ""),
-        decision_outcome=tick.entry_exit_decision_outcome,
-        reason_codes=tick.entry_exit_reason_codes,
-        decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
-        config_digest=_SURFACE_P_CONFIG_DIGEST,
-        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+    evidence = _surface_p_financial_evidence_v1(fixture, tick)
+    if evidence is None:
+        return None
+    binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+        evidence, capital_context=fixture.capital_context
     )
     if fixture.path_kind == "capital_risk_sizing_path":
-        binding = bind_capital_risk_sizing_offline_replay_evidence_v0(evidence)
         return extract_capital_risk_sizing_parity_envelope_v0(binding)
     if fixture.path_kind == "canonical_order_intent_path":
-        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(evidence)
-        intent_binding = evaluate_scenario_canonical_order_intent_v0(
-            sizing_binding.evidence,
-            sizing_decision=sizing_binding.sizing_decision,
+        intent_binding = bind_canonical_order_intent_offline_replay_evidence_v0(
+            binding.evidence,
+            sizing_decision=binding.sizing_decision,
+            capital_context=fixture.capital_context,
         )
         return extract_canonical_order_intent_parity_envelope_v0(intent_binding)
     return None
@@ -3364,6 +3421,11 @@ def evaluate_surface_p_bar_sequence_fixture_four_way_parity_v0(
                 and scenario_sem
                 and integrated_env.risk_sizing_effect == scenario_env.risk_sizing_effect
                 and integrated_env.order_intent_effect == scenario_env.order_intent_effect
+                and integrated_env.decision_outcome == scenario_env.decision_outcome
+                and integrated_env.quantity_status == scenario_env.quantity_status
+                and integrated_env.quantity_provenance_ref == scenario_env.quantity_provenance_ref
+                and integrated_env.risk_sizing_ref == scenario_env.risk_sizing_ref
+                and integrated_env.order_intent_ref == scenario_env.order_intent_ref
             )
         elif fixture.path_kind in SURFACE_P_BOUNDARY_PATH_KINDS:
             integrated_scenario_aligned = (
