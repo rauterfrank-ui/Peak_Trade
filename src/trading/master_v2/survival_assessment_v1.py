@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from dataclasses import dataclass
 from enum import Enum
@@ -74,7 +75,11 @@ class SurvivalBlockedReason(str, Enum):
     INSTRUMENT_KIND_FORBIDDEN = "instrument_kind_forbidden"
     POLICY_VERSION_INVALID = "policy_version_invalid"
     POLICY_MIN_NET_EDGE_INVALID = "policy_min_net_edge_invalid"
+    POLICY_RATIO_THRESHOLD_INVALID = "policy_ratio_threshold_invalid"
     POLICY_VALIDITY_EPOCHS_INVALID = "policy_validity_epochs_invalid"
+    COST_INPUT_INVALID = "cost_input_invalid"
+    METRIC_INPUT_INVALID = "metric_input_invalid"
+    COST_ARITHMETIC_NONFINITE = "cost_arithmetic_nonfinite"
     TRADING_EPOCH_OUT_OF_ORDER = "trading_epoch_out_of_order"
     TRADING_EPOCH_STALE = "trading_epoch_stale"
     MISSING_ENTRY_FEE = "missing_entry_fee"
@@ -202,16 +207,21 @@ def _valid_sha256_hex(value: str) -> bool:
     return bool(re.fullmatch(r"[0-9a-f]{64}", value))
 
 
-def _positive_finite(value: object) -> bool:
-    return isinstance(value, (int, float)) and float(value) > 0.0
+def _finite_number(value: object) -> bool:
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def _non_negative_finite(value: object) -> bool:
-    return isinstance(value, (int, float)) and float(value) >= 0.0
+    return _finite_number(value) and value >= 0
 
 
 def _positive_int(value: object) -> bool:
-    return isinstance(value, int) and value > 0
+    return type(value) is int and value > 0
 
 
 def _instrument_id_allowed(instrument_id: str) -> bool:
@@ -244,9 +254,39 @@ def validate_survival_assessment_policy(
         blocks.append(SurvivalBlockedReason.POLICY_VERSION_INVALID)
     if not _non_negative_finite(policy.min_net_edge):
         blocks.append(SurvivalBlockedReason.POLICY_MIN_NET_EDGE_INVALID)
+    if any(
+        not _finite_number(value)
+        for value in (
+            policy.min_volatility_survival_ratio,
+            policy.min_sequence_survival_ratio,
+            policy.min_drawdown_survival_ratio,
+            policy.min_liquidation_buffer_ratio,
+        )
+    ):
+        blocks.append(SurvivalBlockedReason.POLICY_RATIO_THRESHOLD_INVALID)
     if not _positive_int(policy.validity_epochs):
         blocks.append(SurvivalBlockedReason.POLICY_VALIDITY_EPOCHS_INVALID)
     return tuple(dict.fromkeys(blocks))
+
+
+def _invalid_economic_inputs(inp: SurvivalAssessmentInputV1) -> Tuple[str, ...]:
+    """Validate representation only; do not invent economic ranges or units."""
+    invalid = []
+    for name, value in vars(inp.cost_inputs).items():
+        if name == "funding_cost_required":
+            valid = type(value) is bool
+        else:
+            valid = value is None or _finite_number(value)
+        if not valid:
+            invalid.append(f"cost_input_invalid:{name}")
+    for name, value in vars(inp.metric_inputs).items():
+        if name == "data_completeness_complete":
+            valid = value is None or type(value) is bool
+        else:
+            valid = value is None or _finite_number(value)
+        if not valid:
+            invalid.append(f"metric_input_invalid:{name}")
+    return tuple(invalid)
 
 
 def compute_expected_roundtrip_cost(costs: SurvivalCostInputsV1) -> Optional[float]:
@@ -256,16 +296,18 @@ def compute_expected_roundtrip_cost(costs: SurvivalCostInputsV1) -> Optional[flo
         costs.exit_fee,
         costs.expected_exit_slippage,
     )
-    if any(v is None for v in fields):
+    if any(not _finite_number(v) for v in fields) or type(costs.funding_cost_required) is not bool:
         return None
     funding = costs.expected_funding_cost
     if costs.funding_cost_required and funding is None:
+        return None
+    if funding is not None and not _finite_number(funding):
         return None
     total = float(costs.entry_fee) + float(costs.expected_entry_slippage)
     total += float(costs.exit_fee) + float(costs.expected_exit_slippage)
     if funding is not None:
         total += float(funding)
-    return total
+    return total if math.isfinite(total) else None
 
 
 def compute_net_expected_edge(
@@ -273,9 +315,10 @@ def compute_net_expected_edge(
     expected_gross_edge: Optional[float],
     expected_roundtrip_cost: Optional[float],
 ) -> Optional[float]:
-    if expected_gross_edge is None or expected_roundtrip_cost is None:
+    if not _finite_number(expected_gross_edge) or not _finite_number(expected_roundtrip_cost):
         return None
-    return float(expected_gross_edge) - float(expected_roundtrip_cost)
+    result = float(expected_gross_edge) - float(expected_roundtrip_cost)
+    return result if math.isfinite(result) else None
 
 
 def _collect_cost_blocked_reasons(costs: SurvivalCostInputsV1) -> Tuple[SurvivalBlockedReason, ...]:
@@ -451,7 +494,7 @@ def serialize_survival_result_canonical(result: SurvivalResultV1) -> str:
         "valid_until_epoch": result.valid_until_epoch,
         "volatility_survival_result": _subcheck_payload(result.volatility_survival_result),
     }
-    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
 
 def compute_survival_result_semantic_digest(result: SurvivalResultV1) -> str:
@@ -519,7 +562,11 @@ def _finalize_result(
     reason_codes: Tuple[str, ...],
 ) -> SurvivalResultV1:
     data, cost, vol, seq, dd, liq = subchecks
-    valid_until = inp.trading_epoch + policy.validity_epochs
+    # Invalid policy still needs a well-formed, non-authorizing BLOCKED record.
+    # Its one-epoch serialization interval never admits the invalid policy.
+    valid_until = inp.trading_epoch + (
+        policy.validity_epochs if _positive_int(policy.validity_epochs) else 1
+    )
     result = SurvivalResultV1(
         survival_id=_derive_survival_id(inp.instrument_id, inp.trading_epoch, inp.side, status),
         instrument_id=inp.instrument_id,
@@ -667,12 +714,42 @@ def evaluate_survival_assessment_v1(
             reason_codes=(f"epoch_semantics_failed:{epoch_mode}",),
         )
 
+    invalid = _invalid_economic_inputs(inp)
+    if invalid:
+        return _finalize_result(
+            inp,
+            policy,
+            status=SurvivalAssessmentStatus.BLOCKED,
+            subchecks=empty_subchecks,
+            expected_gross_edge=None,
+            expected_roundtrip_cost=None,
+            net_expected_edge=None,
+            hard_fail_reasons=(),
+            blocked_reasons=tuple(dict.fromkeys(reason.split(":")[0] for reason in invalid)),
+            reason_codes=invalid,
+        )
+
     data_result = _evaluate_data_completeness(inp.metric_inputs)
     roundtrip_cost = compute_expected_roundtrip_cost(inp.cost_inputs)
     net_edge = compute_net_expected_edge(
         expected_gross_edge=inp.cost_inputs.expected_gross_edge,
         expected_roundtrip_cost=roundtrip_cost,
     )
+    if not _collect_cost_blocked_reasons(inp.cost_inputs) and (
+        roundtrip_cost is None or net_edge is None
+    ):
+        return _finalize_result(
+            inp,
+            policy,
+            status=SurvivalAssessmentStatus.BLOCKED,
+            subchecks=empty_subchecks,
+            expected_gross_edge=None,
+            expected_roundtrip_cost=None,
+            net_expected_edge=None,
+            hard_fail_reasons=(),
+            blocked_reasons=(SurvivalBlockedReason.COST_ARITHMETIC_NONFINITE.value,),
+            reason_codes=("cost_arithmetic_nonfinite",),
+        )
     cost_result, cost_blocks = _evaluate_cost_survival(
         costs=inp.cost_inputs,
         policy=policy,

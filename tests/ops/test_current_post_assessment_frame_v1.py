@@ -37,6 +37,13 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
     _FakeKeychainBackend,
 )
 
+NUMERIC_FAULTS = [
+    "survival_nan",
+    "survival_overflow",
+    "survival_metric_bool",
+    "survival_policy_inf",
+]
+
 
 def seed_frame(root, monkeypatch, modern):
     from src.ops.full_core_live_path_composition_root_v1 import (
@@ -165,7 +172,25 @@ def publish_frame(root, captured, fault):
             surv_inp = replace(
                 surv_inp, cost_inputs=replace(surv_inp.cost_inputs, expected_gross_edge=None)
             )
-        survival = evaluate(surv_inp, a[1], **kw)
+        elif fault == "survival_nan":
+            surv_inp = replace(
+                surv_inp, cost_inputs=replace(surv_inp.cost_inputs, entry_fee=float("nan"))
+            )
+        elif fault == "survival_overflow":
+            surv_inp = replace(
+                surv_inp, cost_inputs=replace(surv_inp.cost_inputs, entry_fee=1e308, exit_fee=1e308)
+            )
+        elif fault == "survival_metric_bool":
+            surv_inp = replace(
+                surv_inp,
+                metric_inputs=replace(surv_inp.metric_inputs, data_completeness_complete="False"),
+            )
+        survival_policy = a[1]
+        if fault == "survival_policy_inf":
+            survival_policy = replace(survival_policy, min_net_edge=float("inf"))
+        survival = evaluate(surv_inp, survival_policy, **kw)
+        if fault in NUMERIC_FAULTS:
+            assert survival.status.value == "blocked"
         a, kw, evaluate = captured["suitability"]
         suit_inp = replace(a[0], directional_assessment=assessment, survival_result=survival)
         if fault == "suitability":
@@ -244,6 +269,7 @@ def publish_frame(root, captured, fault):
         "c3_binding",
         "declaration",
         "eligibility",
+        *NUMERIC_FAULTS,
     ],
 )
 def test_current_assessment_frame_vetoes_while_c3_progress_stays_confirmed(
@@ -333,8 +359,9 @@ def test_actual_current_n1_writer_publishes_and_binds_its_assessment_frame(
 
 @pytest.mark.parametrize("modern", [False, True])
 @pytest.mark.parametrize("phase", ["before_get", "after_get", "during_k1", "opener_factory"])
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
 def test_actual_post_rechecks_current_blocked_assessment_before_socket(
-    tmp_path, monkeypatch, modern, phase
+    tmp_path, monkeypatch, modern, phase, fault
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
@@ -349,7 +376,7 @@ def test_actual_post_rechecks_current_blocked_assessment_before_socket(
 
     def change():
         if not changed:
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             changed.append(True)
 
     class Port(AccountPort):
@@ -409,8 +436,9 @@ def test_actual_post_rechecks_current_blocked_assessment_before_socket(
 
 
 @pytest.mark.parametrize("modern", [False, True])
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
 def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
-    tmp_path, monkeypatch, modern
+    tmp_path, monkeypatch, modern, fault
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
@@ -426,7 +454,7 @@ def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
     class Opener:
         def open(self, *a, **kw):
             calls.append(True)
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             raise TimeoutError("Synthetic possible send")
 
     held = owner.active_sum_v1()
@@ -459,7 +487,10 @@ def test_blocked_assessment_after_possible_socket_retains_unknown_and_hold(
 
 
 @pytest.mark.parametrize("modern", [False, True])
-def test_republished_admissible_frame_cannot_reopen_consumed_abort(tmp_path, monkeypatch, modern):
+@pytest.mark.parametrize("fault", ["c3", *NUMERIC_FAULTS])
+def test_republished_admissible_frame_cannot_reopen_consumed_abort(
+    tmp_path, monkeypatch, modern, fault
+):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
     )
@@ -473,7 +504,7 @@ def test_republished_admissible_frame_cannot_reopen_consumed_abort(tmp_path, mon
     class Backend(_FakeKeychainBackend):
         def copy_matching_generic_password_value_data_v1(self, **kw):
             value = super().copy_matching_generic_password_value_data_v1(**kw)
-            publish_frame(root, captured, "c3")
+            publish_frame(root, captured, fault)
             return value
 
     common = dict(
