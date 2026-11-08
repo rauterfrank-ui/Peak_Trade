@@ -6,6 +6,7 @@ of this owner's existing history, not arbitrary caller version strings.
 """
 
 from uuid import uuid4
+from pathlib import Path
 
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     assert_envelope_unmodified_v1,
@@ -157,13 +158,21 @@ def validate_attempt_locked_v2(owner, reservation_id, link, identity, *, pending
         or actual.get("phase") != "SUBMIT_MAY_HAVE_OCCURRED"
         or any(
             actual.get(key) != link.get(key)
-            for key in ("identity", "envelope", "plan_origin", "external_effect_permit")
+            for key in (
+                "identity",
+                "envelope",
+                "plan_origin",
+                "external_effect_permit",
+                "transport_store_root",
+            )
         )
     ):
         raise ValueError("ORIGINAL_EXECUTION_ATTEMPT_COMMIT_UNPROVEN")
 
 
-def begin_submit_locked_v2(owner, reservation_id, envelope, context, permit):
+def begin_submit_locked_v2(
+    owner, reservation_id, envelope, context, permit, *, transport_store_root=None
+):
     from .execution_v1 import detached, validate_link_v1
 
     inspect_plan_context_locked_v1(owner, reservation_id, envelope, context)
@@ -179,6 +188,8 @@ def begin_submit_locked_v2(owner, reservation_id, envelope, context, permit):
             **permit.to_canonical_payload_v1(),
         },
     }
+    if transport_store_root is not None:
+        link["transport_store_root"] = str(Path(transport_store_root).resolve())
     identity = _identity_from_originals(owner, reservation_id, link, source, uuid4().hex)
     link["identity"] = identity.to_dict()
     validate_link_v1(owner, reservation_id, link, pending_attempt=True)

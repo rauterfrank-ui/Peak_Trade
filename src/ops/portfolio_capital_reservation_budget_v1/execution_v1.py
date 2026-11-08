@@ -9,6 +9,7 @@ from decimal import Decimal
 from datetime import datetime
 from hashlib import sha256
 import json
+from pathlib import Path
 
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
@@ -36,7 +37,7 @@ def detached(value):
 
 
 def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
-    if set(link) - {"external_effect_permit", "plan_origin"} != {
+    if set(link) - {"external_effect_permit", "plan_origin", "transport_store_root"} != {
         "envelope",
         "identity",
         "phase",
@@ -82,11 +83,18 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
             link["identity"] is not None
             or link["reconciliation"] is not None
             or "external_effect_permit" in link
+            or "transport_store_root" in link
         ):
             raise ValueError("EXECUTION_PLAN_STATE_INVALID")
         return
     if link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED":
         raise ValueError("EXECUTION_LINK_PHASE_INVALID")
+    if "transport_store_root" in link and not (
+        type(link["transport_store_root"]) is str
+        and Path(link["transport_store_root"]).is_absolute()
+        and str(Path(link["transport_store_root"]).resolve()) == link["transport_store_root"]
+    ):
+        raise ValueError("ORIGINAL_TRANSPORT_ROOT_INVALID")
     if "external_effect_permit" in link:
         # Separate send lineage, not a replacement for capital-guard authority
         # or proof that the later durable permit barrier has been consumed.
@@ -223,6 +231,47 @@ def mark_submit_locked_v1(owner, reservation_id, identity, *, external_effect_pe
     return detached(link)
 
 
+def _original_never_submitted_v1(link, identity):
+    """Read only the transport root pinned in the original V2 submit revision.
+
+    Missing/legacy/uncertain evidence cannot become a positive local outcome.
+    This does not replace current exchange, pending or position admission.
+    """
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+        DURABLE_STATE_ABORTED_BEFORE_TRANSPORT,
+    )
+
+    if (
+        type(identity) is not PortfolioExecutionReconciliationIdentityV2
+        or "transport_store_root" not in link
+    ):
+        return None
+    root = link["transport_store_root"]
+    try:
+        loaded = load_external_effect_durable_consume_v1(store_root=root)
+        record = loaded["record"]
+        if not (
+            loaded["durable_consumed"] is True
+            and record["durable_state"] == DURABLE_STATE_ABORTED_BEFORE_TRANSPORT
+            and record["execution_identity"] == identity.to_dict()
+            and record["execution_identity_digest"] == identity.identity_digest()
+            and record["permit_id"] == link["external_effect_permit"]["permit_id"]
+            and record["authority_ref"] == link["external_effect_permit"]["authority_ref"]
+            and record["envelope_id"] == link["envelope"]["envelope_id"]
+            and record["envelope_digest"] == link["envelope"]["envelope_digest"]
+            and record["transport_attempt"]["phase"] == "ABORTED"
+        ):
+            return None
+        return {
+            "store_root": root,
+            "record_digest": sha256(json.dumps(record, sort_keys=True).encode()).hexdigest(),
+            "record": detached(record),
+        }
+    except (ValueError, RuntimeError, OSError, KeyError, TypeError):
+        return None
+
+
 def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, now_unix):
     """Resolve evidence while fenced; capital admission is a separate fresh gate."""
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReservationStateV1
@@ -253,10 +302,17 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
                 raise ValueError("age")
         except (ValueError, TypeError, AttributeError) as exc:
             raise ValueError("EXECUTION_RECONCILIATION_FRESH_ORDER_REQUIRED") from exc
+    local_evidence = _original_never_submitted_v1(link, identity)
+    local_outcome = (
+        LocalSubmitOutcome.NOT_SUBMITTED
+        if local_evidence is not None
+        else LocalSubmitOutcome.TRANSPORT_UNKNOWN
+    )
     decision = adjudicate_full_core_exchange_reconciliation_v1(
         identity=identity,
         snapshot=snapshot,
-        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_UNKNOWN,
+        local_submit_outcome=local_outcome,
+        proven_never_submitted=local_evidence is not None,
     )
     positions = [p for p in observed.positions if p.instrument_id == identity.instrument_id]
     quantity = positions[0].signed_quantity if len(positions) == 1 else Decimal(0)
@@ -301,6 +357,8 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
                 reasons.append("EXECUTION_PENDING_CUSTODY_UNPROVEN")
                 matched = False
     evidence = {
+        "local_submit_outcome": local_outcome.value,
+        "local_submit_evidence": local_evidence,
         "identity_digest": identity.identity_digest(),
         "snapshot_digest": sha256(
             json.dumps(snapshot.to_dict(), sort_keys=True).encode()

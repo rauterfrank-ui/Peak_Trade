@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "6fe3d4e4c34b232790097988890daaf746614850",
-  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation. Original N1 reservation reference is now preserved from S5 extra into each S6 cycle record and the native supervisor return. This is historical hold lineage only: closed and recovered owners remain fenced, no envelope parsing, new owner/ledger, authority identity, GET, release, send or activation. Natural productive execution-identity and full admission remain open. Actual typed send permit now travels from the original send seam into the existing original budget submit transaction as separate canonical lineage beside the unchanged reconciliation identity. Present permit fields are validated at cold restore; old links remain absent, not defaulted. Budget/permit barriers, holds, recovery, admission and standing activation limits remain unchanged. No authority/attempt/state reference aliasing or natural executionidentity producer is claimed; broader historical static-doc failure remains open. Original N1 intent and full venue plan now reach the existing PLAN_BOUND store as optional typed plan_origin. Original sizing references, intent semantics, venue transforms and environment identity are checked at bind, submit and cold restore. No authority/attempt/state alias, late legacy enrichment, financial formula, GET or automatic send is added. This is an intermediate work commit; full executionidentity/attempt/state topic remains in progress. Original-writer V2 now binds the naturally supplied N1 plan reference, real source/submit budget history rows and the actual separate send permit; exact dual-barrier readback and original recovery preserve uncertainty and holds. Complete field semantics and exact-source 469-pass owner proof include 44 new V2 cases. This remains a same-branch working checkpoint without a new PR; independent authority provenance, complete current admission and the autonomous host mandate remain open. Current direct POST now consumes the actual original durable FILEGATE veto before GO, permit and budget mutation and again before K1/signing/socket, with pinned path and exact original envelope/body identity. Actual minted permit is reused for replay; source-integrity protection covers the new consumer and original readers. Exact-source 519-pass owner run includes 27 new cases; two old document contracts remain explicitly excluded/open. This is a working checkpoint without a new PR; independent authority, signed recovery, full admission and autonomous host mandate remain open.",
+  "development_parent_commit": "b78406ae3bd40a27dd79cfabbf188a6375899c9c",
+  "scope": "N1 continuation/recovery, original capital acquisition and source-specific Treasury dispatch. Productive ENTER now carries same-owner local commitment readback to original atomic reserve with generation fencing, no synthetic empty-U04 or venue margin credit. Monetary formulas, ledger schema and release owners unchanged. Venue netting/policy suitability, older acceptance debt and full host/natural N5 readiness remain open. Final N1 native opening quantity now rejects against original account/side and public order-type maxima before commit. No clamp, extra GET, new financial formula or send authority; planning-only proof. Historical security branch and later send/restart remain explicitly open. Pre-POST position source/age/DataSafety and account-wide/scoped coherence now restrict new-entry position eligibility. Flat quantity retains independent live-mark display with original source clocks and explicit stale/candle labels. No original account/send restoration, new read, financial kernel or freshness threshold; seven reproduced older contracts remain open. Exactly one browser consumer is admitted as a digest-bound development surface. Original supplied durable budget/hold/identity context now passes through the direct wrappers to the existing submit barriers; account identity is checked against the original owner by the same ten reads. Context inspection is read-only; actual-post wrappers require LIVE. Natural host/authority input delivery, full admission and legacy NOT_ASSESSED path remain open; no new GET, ledger, release or activation. Original N1 reservation reference is now preserved from S5 extra into each S6 cycle record and the native supervisor return. This is historical hold lineage only: closed and recovered owners remain fenced, no envelope parsing, new owner/ledger, authority identity, GET, release, send or activation. Natural productive execution-identity and full admission remain open. Actual typed send permit now travels from the original send seam into the existing original budget submit transaction as separate canonical lineage beside the unchanged reconciliation identity. Present permit fields are validated at cold restore; old links remain absent, not defaulted. Budget/permit barriers, holds, recovery, admission and standing activation limits remain unchanged. No authority/attempt/state reference aliasing or natural executionidentity producer is claimed; broader historical static-doc failure remains open. Original N1 intent and full venue plan now reach the existing PLAN_BOUND store as optional typed plan_origin. Original sizing references, intent semantics, venue transforms and environment identity are checked at bind, submit and cold restore. No authority/attempt/state alias, late legacy enrichment, financial formula, GET or automatic send is added. This is an intermediate work commit; full executionidentity/attempt/state topic remains in progress. Original-writer V2 now binds the naturally supplied N1 plan reference, real source/submit budget history rows and the actual separate send permit; exact dual-barrier readback and original recovery preserve uncertainty and holds. Complete field semantics and exact-source 469-pass owner proof include 44 new V2 cases. This remains a same-branch working checkpoint without a new PR; independent authority provenance, complete current admission and the autonomous host mandate remain open. Current direct POST now consumes the actual original durable FILEGATE veto before GO, permit and budget mutation and again before K1/signing/socket, with pinned path and exact original envelope/body identity. Actual minted permit is reused for replay; source-integrity protection covers the new consumer and original readers. Exact-source 519-pass owner run includes 27 new cases; two old document contracts remain explicitly excluded/open. This is a working checkpoint without a new PR; independent authority, signed recovery, full admission and autonomous host mandate remain open. Post-b784 working increment: original consumed permit owns one transport claim and irreversible pre-socket MAY_HAVE_SENT state. Actual typed veto may close only original PRE_SOCKET claim; both actual HTTP entry paths require this original reference. Same writer now flushes/syncs/replaces/syncs directory/readbacks. Original V2 submit history pins actual send-store root. Original budget consumes exact negative original proof through existing fresh exchange/position/pending guards, with explicit venue-conflict deny; missing/legacy/uncertain remains TRANSPORT_UNKNOWN. Exact-source 545 owner cases pass including 26 new cases, two known historical document tests excluded/open. No new PR or activation; independent authority/global anti-clone/signed recovery/full admission/autonomous host and physical power proof remain open.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -162,6 +162,16 @@
       "sha256": "08395dac0e2e77d2a1c635f9cd1b63f4e912211e2c55569bba27ec20f634e635"
     },
     {
+      "path": "docs/ops/evidence/ORIGINAL_PERMIT_TRANSPORT_ABORT_2026_11_08.json",
+      "before_sha256": null,
+      "sha256": "17a8d3e43196087f22fe4317def77c229221ec679deb848cfa7171e76551c498"
+    },
+    {
+      "path": "docs/ops/evidence/ORIGINAL_PERMIT_TRANSPORT_ABORT_2026_11_08.md",
+      "before_sha256": null,
+      "sha256": "0a4317f224537773894cb4a22ab3de4e9cd5f1c63a7b6f125cbf096808409e96"
+    },
+    {
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
       "before_sha256": null,
       "sha256": "3352a356b5947c239128a9b8441a685b8afe7ff63e0e5f481fb3b6a1bded2b96"
@@ -249,7 +259,7 @@
     {
       "path": "docs/ops/specs/CURRENT_POST_ORIGINAL_SAFETY_VETO_V1.md",
       "before_sha256": null,
-      "sha256": "19ea35712b8c0b8c3a2b2eb2b7d86dfc8e9587cc03bcd7aef3386dbe4f92ee36"
+      "sha256": "0bf3f1a6a179ce18401bab7561f066331df8984fdbd0e795ababf2a1962e1231"
     },
     {
       "path": "docs/ops/specs/CURRENT_WP03_LIVE_SCOPED_OBSERVATION_GOLDEN_CONVERGENCE_V1.md",
@@ -277,9 +287,14 @@
       "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
     },
     {
+      "path": "docs/ops/specs/ORIGINAL_PERMIT_TRANSPORT_ABORT_AND_BUDGET_V1.md",
+      "before_sha256": null,
+      "sha256": "d006ddb7c267930e410a93b4f6c221369c701c0eb3b06c1a8a5fbab894d80974"
+    },
+    {
       "path": "docs/ops/specs/PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2.md",
       "before_sha256": null,
-      "sha256": "9d6e818ad675db59209875e89866bd4a0afbb59c46a791b1a0f3577b8e868e55"
+      "sha256": "011aff43a5ca64297f5a103f1b8eae2a669e4248722f25aed00f363d8e4aec2e"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
@@ -669,7 +684,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
       "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
-      "sha256": "89d821a0e85982d66a4e97da3a602f9d36d70c53887671fa687e53f2e84bab9e"
+      "sha256": "ec1fdf1e3075eb80bf6e90bd1bfdf515b130ad410f46f17e6619dd0e27dd1aee"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
@@ -699,12 +714,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
       "before_sha256": "1e9254c776b88dcce658ff8a72fa10cb6bf9138c3043d5eb839aa5d5af8938a5",
-      "sha256": "ca6c6125203b5c7b46f34936ad165be131c1f55317bdfcd98ee046c6fddc8261"
+      "sha256": "530d1b37b86646ca4a4a7ac9e52a2efb25d8d07dd0e6278454319798cbe2ed9a"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
       "before_sha256": "0b6ccaecbc7db6c144d25c90671dbf14c4efcbed9347281ffeba16be43c9e373",
-      "sha256": "de187c650a06f200a5fbdc489f843555aca3de23b2f9e7c41cae0a36a8af699b"
+      "sha256": "aa134d46d4df962524495a94b7ec06a58379f417b1710a78545d883b95c9f633"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -719,12 +734,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
       "before_sha256": "6d629b76c9aec8de1220a0e1748773ff47833578ce80ad552941e6f7bead5ab9",
-      "sha256": "54628d530946253980c79f0e80e5b7d1b5f3c37e4fe07aee819953da9eeaee55"
+      "sha256": "4fe5a27527061149b48e694acc646c18e67081ff0777a269699d0ab886411c0a"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
       "before_sha256": "9335d0c9085db0cfabcc0fc9884c0d0cda34401e66661b93f04984e22459c711",
-      "sha256": "2834caaed7665520381e9d6490a2a6bb4b07f0a7e4a34ea4ec65dd583bd6aaa1"
+      "sha256": "9d6c59560d2c1815e743c24700e72a3791cd6775247c75a1114c6c46c60a7c82"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
@@ -849,12 +864,12 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/attempt_v2.py",
       "before_sha256": null,
-      "sha256": "4a0fc2a9077d56b354a0b4f1753063bb4140c762159487f6ff9e67d44c3c2973"
+      "sha256": "d9046fc00307f18db04f73d920e3a531096b45314a96c3aebc332ac71fa23e14"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "e370b404ca37bd5efe0a4490b80dbb9a0e509b455cac7cee0a4fb02c87b13de5"
+      "sha256": "96672c475ed5233e48af5832156ce9105e0dc6f3f4ef85460e2a11ecd71ff08a"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
@@ -864,7 +879,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "f5eb31188514d347cfc41b17984a13d67c16511049a738dde1fe6893104e27b6"
+      "sha256": "13dcb50a9cb60a7f57f6013c71144b0322267fe8f2dad73a7517c65979280045"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
@@ -1290,6 +1305,11 @@
       "path": "tests/ops/test_original_budget_send_permit_handoff_v1.py",
       "before_sha256": null,
       "sha256": "fe027c467e3843064c359e891c1406fcb48feacb44a43b774cd68d6fa046f6f7"
+    },
+    {
+      "path": "tests/ops/test_original_permit_transport_abort_v1.py",
+      "before_sha256": null,
+      "sha256": "bb4f694c83f1fa69ea99c8d9b943a12d1831f8265f4701cd3bcce9628dbfb1f9"
     },
     {
       "path": "tests/ops/test_pending_bound_decision_identity_v1.py",

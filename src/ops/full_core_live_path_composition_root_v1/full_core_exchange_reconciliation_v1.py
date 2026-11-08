@@ -507,6 +507,13 @@ def adjudicate_full_core_exchange_reconciliation_v1(
     orders = _collect_order_rows(snapshot, identity.clordid)
     fills = _collect_fill_rows(snapshot, identity.clordid)
 
+    if (
+        proven_never_submitted
+        and local_submit_outcome is LocalSubmitOutcome.NOT_SUBMITTED
+        and (orders or fills)
+    ):
+        return _halt("LOCAL_NEVER_SUBMITTED_VENUE_CONTRADICTION")
+
     if not orders and not fills:
         if local_submit_outcome in {
             LocalSubmitOutcome.TRANSPORT_TIMEOUT,

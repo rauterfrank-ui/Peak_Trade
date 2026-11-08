@@ -130,10 +130,13 @@ die Außenwirkung nicht rückwirkend ungeschehen.
 Frühes Veto verbraucht weder POST-GO noch Budgetversuch oder Permit. Spätes Veto
 setzt bereits gewonnene Marker nicht zurück und löst keinen Hold eigenständig.
 Ein lokal bekannter fehlender HTTP-Aufruf erzeugt hier keinen erfundenen dauerhaften
-Never-submitted-Receipt. Der originale Budgetreconciler verwendet weiterhin seinen
-eigenen TRANSPORT_UNKNOWN-Vertrag. Der Anschluss an belastbare Abort-/Never-submitted-
-Evidence bleibt offen. Nach möglicher Außenwirkung bleiben Replay, neuerlicher
-Versand und automatische Kapitalfreigabe gesperrt.
+Never-submitted-Receipt. Der gesonderte
+[Transportabschluss am Originalwriter](ORIGINAL_PERMIT_TRANSPORT_ABORT_AND_BUDGET_V1.md)
+ergänzt diesen Vetoanschluss: Nur ein vor der gespeicherten Socketgrenze endgültig
+geschlossener Originalclaim kann am gebundenen V2-Budgetpfad als NOT_SUBMITTED
+konsumiert werden. Fehlende oder ungewisse Evidence bleibt TRANSPORT_UNKNOWN.
+Nach möglicher Außenwirkung bleiben Replay, neuerlicher Versand und automatische
+Kapitalfreigabe aus einem lokalen Vetobefund gesperrt.
 
 Die bestehende [POST-Integritätsprüfung](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py)
 schützt zusätzlich das neue Vetomodul sowie die beiden tatsächlich konsumierten
@@ -169,7 +172,9 @@ bleibt ausdrücklich fehlschlagend und offen.
 Unabhängige Authorityherkunft und ein fortgesetztes autonomes Mandat sind weiterhin
 offen, ebenso signierte Recovery/Anti-Rollback, globale Root-/Owner-Eindeutigkeit,
 vollständige aktuelle Fach-/Risk-/Mengen-/Altplanzulassung, Pending-Custody,
-Session-/GET-Ressourcenbindung und vollständige Never-submitted-Recovery. Es gibt
+Session-/GET-Ressourcenbindung und physisch belegte vollständige Recovery. Der
+gesonderte Originaltransportvertrag verbindet nur seine belegten lokalen
+Abortfälle mit dem Budgetconsumer. Es gibt
 keine neue pauschale Reduce-only-Ausnahme für KILLED. Die stärkere historische
 Sicherheitslinie ist nicht als Ganzes wiederhergestellt. S6 endet weiterhin an
 PRE_EXTERNAL_EFFECT; der gesamte Außenring ist nicht abgenommen.

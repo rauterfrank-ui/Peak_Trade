@@ -1062,11 +1062,20 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return inspect_plan_context_locked_v1(self, str(reservation_id), envelope, context)
 
-    def begin_execution_submit_v2(self, reservation_id, envelope, context, permit):
+    def begin_execution_submit_v2(
+        self, reservation_id, envelope, context, permit, *, transport_store_root=None
+    ):
         from .attempt_v2 import begin_submit_locked_v2
 
         with self._lock:
-            return begin_submit_locked_v2(self, str(reservation_id), envelope, context, permit)
+            return begin_submit_locked_v2(
+                self,
+                str(reservation_id),
+                envelope,
+                context,
+                permit,
+                transport_store_root=transport_store_root,
+            )
 
     def inspect_started_execution_attempt_v2(self, reservation_id, envelope, identity, permit):
         from .attempt_v2 import inspect_started_attempt_locked_v2

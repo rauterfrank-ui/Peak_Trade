@@ -242,7 +242,11 @@ def attempt_envelope_bound_external_effect_send_v1(
         # uncertain and must be reconciled; it never authorizes a resend.
         if execution_plan_context is not None:
             owned_identity = portfolio_budget_owner.begin_execution_submit_v2(
-                portfolio_reservation_id, envelope, execution_plan_context, permit
+                portfolio_reservation_id,
+                envelope,
+                execution_plan_context,
+                permit,
+                transport_store_root=store_root,
             )
         else:
             portfolio_budget_owner.mark_execution_submit_boundary_v1(

@@ -23,6 +23,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_post_saf
     CurrentPostSafetyContextV1,
     CurrentPostSafetyVetoError,
 )
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    FullCoreExternalEffectDurableConsumeError,
+    OriginalPermitTransportAttemptV1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
     serialize_canonical_okx_post_body_v1,
@@ -60,6 +64,10 @@ CONNECT_TIMEOUT_SECONDS = 10.0
 
 class FullCoreProductiveHttpPostError(RuntimeError):
     """Fail-closed productive HTTP POST transport violation."""
+
+
+class FullCoreCurrentPostSafetyVetoError(FullCoreProductiveHttpPostError):
+    """Actual current safety-reader denial, distinct from caller error text."""
 
 
 @dataclass(frozen=True)
@@ -138,11 +146,13 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         opener_factory: Callable[[], OpenerDirector] | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         post_safety_context: CurrentPostSafetyContextV1 | None = None,
+        transport_attempt: OriginalPermitTransportAttemptV1 | None = None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
         self._opener_factory = opener_factory
         self._post_safety_context = post_safety_context
+        self._transport_attempt = transport_attempt
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -158,7 +168,6 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         envelope_digest: str,
         one_shot_real_post: bool = False,
     ) -> FullCoreTradeOrderPostResultV1:
-        del permit_id
         if self._handle is None or self._handle.bound is not True:
             raise FullCoreProductiveHttpPostError("CREDENTIAL_HANDLE_MISSING")
         if self._handle.material_loaded is True:
@@ -173,6 +182,9 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             envelope_id=envelope_id,
             envelope_digest=envelope_digest,
         )
+        self._check_original_transport_v1(
+            permit_id=permit_id, envelope_id=envelope_id, envelope_digest=envelope_digest
+        )
         return self._perform_http_post_v1(payload=payload)
 
     def _check_current_safety_v1(self, *, payload, stage, **identity):
@@ -181,6 +193,18 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         try:
             self._post_safety_context.inspect_wire_v1(payload=payload, stage=stage, **identity)
         except CurrentPostSafetyVetoError as exc:
+            raise FullCoreCurrentPostSafetyVetoError(str(exc)) from exc
+
+    def _check_original_transport_v1(self, **identity):
+        if type(self._transport_attempt) is not OriginalPermitTransportAttemptV1:
+            raise FullCoreProductiveHttpPostError("ORIGINAL_TRANSPORT_CLAIM_REQUIRED")
+        try:
+            self._transport_attempt.inspect_v1(**identity)
+            self._transport_attempt.inspect_v1(
+                envelope_id=self._post_safety_context.envelope.envelope_id,
+                envelope_digest=self._post_safety_context.envelope.envelope_digest,
+            )
+        except FullCoreExternalEffectDurableConsumeError as exc:
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
 
     def _perform_http_post_v1(
@@ -191,6 +215,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         if self._signing_handle is None:
             raise FullCoreProductiveHttpPostError("SIGNING_HANDLE_MISSING")
         self._check_current_safety_v1(payload=payload, stage="BEFORE_HTTP_SIGNING")
+        self._check_original_transport_v1()
         url = f"{REST_BASE}{TRADE_ORDER_PATH}"
         parsed = urlparse(url)
         if parsed.scheme != "https" or str(parsed.hostname or "") != AUTHORIZED_HOST:
@@ -215,6 +240,10 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         try:
             socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
+            try:
+                self._transport_attempt.mark_socket_boundary_v1()
+            except FullCoreExternalEffectDurableConsumeError as exc:
+                raise FullCoreProductiveHttpPostError(str(exc)) from exc
             self.post_count += 1
             self.methods_used.append("POST")
             outcome_phase = SEND_INITIATED

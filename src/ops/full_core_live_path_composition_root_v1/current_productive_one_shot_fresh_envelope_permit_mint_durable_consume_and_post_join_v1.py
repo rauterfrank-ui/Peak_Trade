@@ -48,6 +48,8 @@ from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_eff
     inspect_original_portfolio_execution_context_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    FullCoreExternalEffectDurableConsumeError,
+    claim_original_permit_transport_attempt_v1,
     load_external_effect_durable_consume_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
@@ -63,6 +65,7 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     assert_envelope_unmodified_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+    FullCoreCurrentPostSafetyVetoError,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveHttpTradeOrderTransportV1,
 )
@@ -245,10 +248,20 @@ class _DurableConsumeThenK1HttpTransportV1:
         if dict(payload) != expected or not set(payload).issubset(_WIRE_BODY_KEYS):
             raise FullCoreProductiveHttpPostError("WIRE_BODY_ENVELOPE_MISMATCH")
         try:
+            attempt = claim_original_permit_transport_attempt_v1(
+                store_root=self._store_root,
+                permit_id=permit_id,
+                envelope_id=envelope_id,
+                envelope_digest=envelope_digest,
+            )
+        except FullCoreExternalEffectDurableConsumeError as exc:
+            raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
             safety = resolve_current_post_safety_context_v1(
                 self._envelope, self._post_safety_context, stage="BEFORE_K1"
             )
         except CurrentPostSafetyVetoError as exc:
+            attempt.abort_before_transport_v1(reason_code=str(exc))
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
@@ -264,6 +277,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     signing_handle=session.signing_handle,
                     opener_factory=self._opener_factory,
                     post_safety_context=safety,
+                    transport_attempt=attempt,
                 )
                 try:
                     result = http.post_trade_order(
@@ -280,6 +294,16 @@ class _DurableConsumeThenK1HttpTransportV1:
                         if self._opener_factory is None:
                             self._probe.external_effect_count += 1
                 return result
+        except FullCoreCurrentPostSafetyVetoError as exc:
+            # K1 context has exited. Only the original still-PRE_SOCKET claim
+            # can close negatively; a matching error string or zero counter
+            # can never overwrite a recorded MAY_HAVE_SENT boundary.
+            try:
+                attempt.abort_before_transport_v1(reason_code=str(exc))
+                self._probe.events.append("DURABLE_ABORTED_BEFORE_TRANSPORT")
+            except (FullCoreExternalEffectDurableConsumeError, OSError):
+                self._probe.events.append("DURABLE_ABORT_UNPROVEN")
+            raise
         except CurrentProductiveK1OpaqueSigningHandleError as exc:
             self._probe.events.append("K1_FAILED")
             raise FullCoreProductiveHttpPostError("K1_SIGNING_HANDLE_UNAVAILABLE") from exc
