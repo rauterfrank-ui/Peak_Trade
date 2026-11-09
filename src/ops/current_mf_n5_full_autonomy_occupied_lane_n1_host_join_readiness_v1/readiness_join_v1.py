@@ -368,8 +368,20 @@ def compose_occupied_lane_n1_host_join_readiness_v1(
     cycle_id_prefix = str(kwargs.get("cycle_id_prefix") or "").strip()
     if consumer_completion_binding_digest is not None:
         from .consumer_completion_v1 import validate_consumer_completion_request_v1
+        from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.bounded_slot_post_close_v1 import (
+            original_bounded_host_v1,
+        )
 
-        validate_consumer_completion_request_v1(consumer_completion_binding_digest, composed_pairs)
+        host = original_bounded_host_v1(
+            kwargs.get("portfolio_budget_owner"), kwargs.get("host_budget_recovery")
+        )
+        completion_groups = [composed_pairs]
+        if host is not None:
+            if {l: b for l, (_, b) in composed_pairs.items()} != host.bindings:
+                _fail(FAILURE_IDENTITY_MISMATCH, "bounded_completion_bindings")
+            completion_groups = [{l: pair} for l, pair in composed_pairs.items()]
+        for group in completion_groups:
+            validate_consumer_completion_request_v1(consumer_completion_binding_digest, group)
     consumer_results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         composed_pairs,
         **kwargs,
@@ -384,12 +396,13 @@ def compose_occupied_lane_n1_host_join_readiness_v1(
         from .consumer_completion_v1 import persist_n1_consumer_completion_v1
 
         assert_readiness_stops_before_owner_boundary_v1(projections)
-        persist_n1_consumer_completion_v1(
-            projections,
-            binding_digest=consumer_completion_binding_digest,
-            cycle_prefix=cycle_id_prefix,
-            origin_main_sha=origin_main_sha,
-        )
+        for group in completion_groups:
+            persist_n1_consumer_completion_v1(
+                {l: projections[l] for l in group},
+                binding_digest=consumer_completion_binding_digest,
+                cycle_prefix=cycle_id_prefix,
+                origin_main_sha=origin_main_sha,
+            )
     return projections
 
 

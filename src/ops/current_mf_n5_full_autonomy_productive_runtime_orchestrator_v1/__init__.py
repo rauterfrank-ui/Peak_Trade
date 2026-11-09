@@ -21,6 +21,7 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.post
     PostCloseContinuationError,
     PostCloseContinuationReplayV1,
 )
+from .bounded_slot_post_close_v1 import BoundedSlotPostCloseContinuationV1
 
 __all__ = [
     "AUTONOMY_ORCHESTRATOR_STATUS",
@@ -36,6 +37,7 @@ __all__ = [
     "ProductiveFullAutonomyN5RuntimeOrchestratorResultV1",
     "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
     "ProductiveN1PostCloseContinuationV1",
+    "BoundedSlotPostCloseContinuationV1",
     "PostCloseContinuationError",
     "PostCloseContinuationReplayV1",
 ]

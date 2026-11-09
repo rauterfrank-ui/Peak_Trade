@@ -51,6 +51,20 @@ class BoundedSlotPostCloseContinuationV1(ProductiveN1PostCloseContinuationV1):
     host: PortfolioBudgetHostV1
 
 
+def original_bounded_host_v1(owner, recovery):
+    """Recognize only the existing simulated host and its immutable slot policy."""
+    if owner is None or not isinstance(owner.entry_budget_policy_v1(), BoundedSlotEntryBudgetV1):
+        return None
+    if (
+        not isinstance(recovery, HostBudgetRecoveryContextV1)
+        or recovery.host.owner is not owner
+        or recovery.host.closed
+        or recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+    ):
+        _fail("BOUNDED_CLOSE_ORIGINAL_SIMULATED_HOST_REQUIRED")
+    return recovery.host
+
+
 def retained_bounds_v1(record):
     return {
         lane: BoundInstrumentV1(**raw)

@@ -696,14 +696,20 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     g17_typed_vol_producer: object,
     lane_state_root: Path,
     lane_id: str = "LANE_1",
+    arm_event_ts_unix: float | None = None,
+    g17_evidence_root: Path | None = None,
 ) -> tuple[Any, tuple[float, ...], float, float, object]:
     """Stop after layered ARM; leave store ready for one governed ENTER cycle."""
-    enter_ts = governed_productive_c1_event_ts_unix_v1()
+    enter_ts = (
+        governed_productive_c1_event_ts_unix_v1()
+        if arm_event_ts_unix is None
+        else arm_event_ts_unix
+    )
     path = strong_uptrend_closes_v1()
     aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
         bound=bound,
         anchor_event_ts_unix=enter_ts - 120.0,
-        evidence_store_root=Path(lane_state_root) / "g17-seed",
+        evidence_store_root=Path(g17_evidence_root or lane_state_root) / "g17-seed",
         mark_closes=path,
     )
     g17_for_cycles = aligned_g17
@@ -772,7 +778,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     invoke_g17 = governed_c1_aligned_g17_dk_producer_v1(
         bound=bound,
         anchor_event_ts_unix=enter_event_ts,
-        evidence_store_root=Path(lane_state_root) / "g17-invoke",
+        evidence_store_root=Path(g17_evidence_root or lane_state_root) / "g17-invoke",
         mark_closes=enter_closes,
     )
     _ = g17_typed_vol_producer

@@ -176,6 +176,23 @@ def prepare_post_close_continuation_v1(
     cycle_kwargs,
 ):
     """Validate the original close; store the original selector's exact proposal."""
+    from .bounded_slot_post_close_v1 import BoundedSlotPostCloseContinuationV1, prepare_v1
+
+    if type(context) is BoundedSlotPostCloseContinuationV1:
+        return prepare_v1(
+            context,
+            membership=membership,
+            ranking_snapshot=ranking_snapshot,
+            topology_root=topology_root,
+            writer=writer,
+            owner=owner,
+            repository_sha=repository_sha,
+            origin_main_sha=origin_main_sha,
+            observed_unix=observed_unix,
+            cap24=cap24,
+            target_cardinality=target_cardinality,
+            cycle_kwargs=cycle_kwargs,
+        )
     if not isinstance(context, ProductiveN1PostCloseContinuationV1):
         _fail("POST_CLOSE_CONTEXT_INVALID")
     writer.assert_held()
@@ -335,6 +352,10 @@ def prepare_post_close_continuation_v1(
 
 def admit_post_close_target_v1(context, handle, *, owner, pairs, now_unix, repo_sha, recon_root):
     """The existing budget owner admits the exact new Cap24 bindings."""
+    from .bounded_slot_post_close_v1 import BoundedSlotPostCloseContinuationV1, admit_v1
+
+    if type(context) is BoundedSlotPostCloseContinuationV1:
+        return admit_v1(context, handle, owner=owner, pairs=pairs)
     path, record = handle
     if len(pairs) != 1:
         _fail("POST_CLOSE_N1_BOUND_CARDINALITY_REQUIRED")
@@ -361,6 +382,10 @@ def admit_post_close_target_v1(context, handle, *, owner, pairs, now_unix, repo_
 
 def acknowledge_post_close_consumer_v1(handle, result):
     """ACK only an actual original S7/Core invocation with the published binding."""
+    from .bounded_slot_post_close_v1 import SCHEMA as BOUNDED_SCHEMA, acknowledge_v1
+
+    if handle[1]["schema"] == BOUNDED_SCHEMA:
+        return acknowledge_v1(handle, result)
     path, record = handle
     consumed = {}
     for lane, projection in result.readiness_projections.items():
