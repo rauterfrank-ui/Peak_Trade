@@ -432,7 +432,9 @@ def connected_close(tmp_path, monkeypatch, count, lane):
     )
 
 
-def roundtrip(tmp_path, monkeypatch, count, lane, replacement, fault=None):
+def roundtrip(
+    tmp_path, monkeypatch, count, lane, replacement, fault=None, *, expected_loss_exhausted=False
+):
     world = connected_close(tmp_path, monkeypatch, count, lane)
     host = world["host"]
     writer = world["writer"]
@@ -813,6 +815,7 @@ def roundtrip(tmp_path, monkeypatch, count, lane, replacement, fault=None):
                 for p in follow.readiness_projections.values()
             )
             if core.governed_cycle_result.final_order_envelope is not None:
+                assert not expected_loss_exhausted, "Exhausted test slot received another Entry"
                 assert core.s7_invocation.cycle_result.decision_outcome in {
                     "enter_long",
                     "enter_short",
@@ -951,6 +954,35 @@ def roundtrip(tmp_path, monkeypatch, count, lane, replacement, fault=None):
                 )
                 break
         else:
+            if expected_loss_exhausted:
+                assert any(
+                    "TEST_SLOT_25_USDC_LOSS_BUDGET_EXHAUSTED" in str(blocker)
+                    for _, blocker in decisions
+                ), decisions
+                assert host.owner.active_slot_sum_v1(lane) == 0
+                state = host.owner.test_slot_loss_state_v1(lane)
+                assert state["exhausted"] and state["remaining_loss_allowance_usdc"] == "0"
+                assert len(state["records"]) == 1
+                host.close()
+                host = PortfolioBudgetHostV1(
+                    root=host.root,
+                    private_rest_fetch=host.fetch,
+                    repository_sha=sources.REPO_SHA,
+                    session_id="cold-exhausted-slot",
+                    expected_account_identity="acct-1",
+                    durable_mode="recover",
+                    clock=lambda: event + 2,
+                    execution_environment="INTERNAL_SIMULATED_EXECUTION",
+                    entry_budget_policy=policy(),
+                )
+                cold = host.observe_v1(next_bounds)
+                assert not host.owner.budget_state_v1().admitted
+                cold.recover_v1(host.owner, _produce(value="1000", epoch=utc(event + 2)))
+                assert host.owner.test_slot_loss_state_v1(lane) == state
+                assert all(
+                    host.owner.active_slot_sum_v1(l) == hold for l, hold in foreign_holds.items()
+                )
+                return
             pytest.fail("No natural follow-up Entry: " + repr(decisions))
     finally:
         host.close()

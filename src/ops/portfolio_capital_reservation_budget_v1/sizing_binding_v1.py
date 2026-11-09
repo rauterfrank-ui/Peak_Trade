@@ -75,6 +75,7 @@ class ReservationSizingBindingV1:
     applied_input: CapitalRiskSizingInputV1
     decision: CapitalRiskSizingDecisionV1
     risk_binding: object | None = None
+    monetary_source: object | None = None
 
     def validate_v1(self, *, amount: Decimal, decision_id: str) -> None:
         decision, applied = self.decision, self.applied_input
@@ -105,6 +106,26 @@ class ReservationSizingBindingV1:
             and decision.adapter_compatible is False
         ):
             raise ValueError("RESERVATION_SIZING_BINDING_MISMATCH")
+        if self.monetary_source is not None:
+            from src.ops.governed_productive_monetary_normalization_v1.sizing_source_v1 import (
+                SizingMonetarySourceV1,
+            )
+            from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
+                MonetaryNormalizationError,
+            )
+
+            try:
+                if type(self.monetary_source) is not SizingMonetarySourceV1:
+                    raise ValueError("RESERVATION_TYPED_MONETARY_SOURCE_REQUIRED")
+                self.monetary_source.validate_sizing_v1(applied)
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                ArithmeticError,
+                MonetaryNormalizationError,
+            ) as exc:
+                raise ValueError("RESERVATION_MONETARY_SOURCE_INVALID:" + str(exc)) from exc
         if self.risk_binding is not None:
             from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
 
@@ -135,6 +156,9 @@ class ReservationSizingBindingV1:
         }
         if self.risk_binding is not None:
             result["risk_binding"] = self.risk_binding.to_dict_v1()
+        if self.monetary_source is not None:
+            result["schema"] = "reservation_sizing_binding.v3"
+            result["monetary_source"] = self.monetary_source.to_dict_v1()
         return result
 
     @classmethod
@@ -144,20 +168,37 @@ class ReservationSizingBindingV1:
         version2 = (
             isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v2"
         )
+        version3 = (
+            isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v3"
+        )
+        required = {"schema", "request_digest", "applied_input", "decision"}
+        if version2 or version3 and "risk_binding" in payload:
+            required.add("risk_binding")
+        if version3:
+            required.add("monetary_source")
         if (
             not isinstance(payload, dict)
-            or set(payload)
-            != {"schema", "request_digest", "applied_input", "decision"}
-            | ({"risk_binding"} if version2 else set())
+            or set(payload) != required
             or payload["schema"]
-            not in {"reservation_sizing_binding.v1", "reservation_sizing_binding.v2"}
+            not in {
+                "reservation_sizing_binding.v1",
+                "reservation_sizing_binding.v2",
+                "reservation_sizing_binding.v3",
+            }
         ):
             raise ValueError("RESERVATION_SIZING_STATE_SCHEMA_INVALID")
+        from src.ops.governed_productive_monetary_normalization_v1.sizing_source_v1 import (
+            SizingMonetarySourceV1,
+        )
+
         return cls(
             request_digest=payload["request_digest"],
             applied_input=_decode(CapitalRiskSizingInputV1, payload["applied_input"]),
             decision=_decode(CapitalRiskSizingDecisionV1, payload["decision"]),
             risk_binding=RiskAdmissionBindingV1.from_dict_v1(payload["risk_binding"])
-            if version2
+            if version2 or version3 and "risk_binding" in payload
+            else None,
+            monetary_source=SizingMonetarySourceV1.from_dict_v1(payload["monetary_source"])
+            if version3
             else None,
         )

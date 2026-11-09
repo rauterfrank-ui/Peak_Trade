@@ -85,3 +85,71 @@ Dieser erste Commit ist kein Beleg mehrerer fortgesetzter Handelszyklen.
 Der gemeinsame Zwei-/Fünfslot-Corepfad, Close/Rotation, Ausfälle und Wiederanlauf
 folgen als zweite und dritte Arbeitsschritte. Die produktiven N1-/N5-Pins,
 Handelsformeln, Freeze-Tags und vorhandenen Betriebsrechte bleiben erhalten.
+
+## BWP1-Fortschreibung: ausschließliches Test-Verlustbudget
+
+Auf Basis des Zwischencommits `d855ca546` präzisiert Frank am 9. November:
+Höchstens 25 USDC Verlustbudget je Testslot; nach Verbrauch keine neuen Entries.
+Diese Regel gilt **nur für die Testphase**. Der spätere kapitalabhängige Betrieb
+erhält seine eigene ausdrückliche Policyentscheidung. Es gibt keinen
+automatischen Phasenübergang und keine stillschweigende Recoverymigration.
+
+Die zusätzliche [Testpolicy Revision 2](BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V2.json)
+verwendet dafür `entry_budget_policy.v3`,
+`loss_limit_scope=EXPLICIT_TEST_PHASE_ONLY` und verbietet automatische Auffüllung.
+Die ältere V2-Policy bleibt lesbar und hat dieses neue Verlustbudget nicht.
+Die bisherige Standardpolicy wird unverändert weitergelesen. Das neue Artefakt
+ist ein explizit zu bindender Entwicklungsinput; es startet keine Session.
+
+Notional und Verlustbudget bleiben unterschiedliche Größen. Der
+[ursprüngliche Budgetowner](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py)
+speichert die Verlustfortschreibung im selben Store unter der stabilen Slot-ID,
+nicht unter dem austauschbaren Instrument. Ein neuer Tag, Rotation, verfügbares
+Kontokapital oder ein Prozessneustart setzt sie nicht zurück. Nach erstmaligem
+Verbrauch bleibt die Sperre innerhalb dieser Testpolicy gesetzt.
+
+Der [29P-Anschluss](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py)
+hält für neues Sizing zusätzlich die ursprünglichen Instrument-, Preis- und
+Währungsumrechnungsquellen in der
+[Sizingbindung](../../../src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py)
+fest. Ihr erneutes Lesen verwendet die Originalrechnungen, keine zweite
+FX-/Mengenformel. Ältere Holds werden nicht nachträglich als quellengebunden
+zertifiziert.
+
+Nach dem ursprünglichen bestätigten Full-Close und Kapitalrefresh liest der
+[wirtschaftliche Adapter](../../../src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py)
+die versiegelte ursprüngliche simulierte Episode. Originalaccounting liefert
+die Differenz vom Stand unmittelbar vor dem Öffnungsfill bis nach dem Closefill,
+einschließlich Gebühren und zugehöriger geordneter Fundingzahlungen. Slippage
+ist bereits im Fillpreis enthalten und wird nicht nochmals abgezogen. Bei
+USDT-Ergebnissen ist eine explizite frische USDT/USDC-Indexbewertung mit
+Währungsidentität, Ereignis- und Kenntniszeit erforderlich. Diese Bewertung
+ist kein Nachweis einer tatsächlichen Geldkonvertierung und erzeugt kein
+Kontokapital.
+
+Der [Loss-Adapter im Originalowner](../../../src/ops/portfolio_capital_reservation_budget_v1/slot_loss_budget_v1.py)
+führt die abgeschlossenen Nettoergebnisse je Slot fort. Restbudget ist die
+Startgrenze zuzüglich kumuliertem Nettoergebnis, für neue Risikozulassung auf
+0 bis 25 USDC begrenzt. Gewinne erhöhen damit die Risikogrenze nicht über 25 USDC.
+Der originale Sizer erhält die verbliebene Verlustzulage als zusätzliche obere
+Grenze seines bestehenden Stoprisikos; dieselbe Grenze wird atomar bei der
+Reservation geprüft. Die neue Policy verlangt dort die ursprünglichen
+Sizing-Geldquellen.
+
+Fehlt nach einem legitimen Flat-/Kapitalrefresh noch die wirtschaftliche
+Übergabe, bleiben die ursprüngliche Kapitalwahrheit und andere Slotbindungen
+erhalten. Der betroffene neue Entry bleibt bis zum Quellenabschluss gesperrt.
+Cold-Reopen prüft Policy, Summen, Reihenfolge und ursprüngliche Quellen erneut;
+ein beschädigter Nachweis wird nicht durch ein neues 25-USDC-Budget ersetzt.
+
+Die [verbundenen Prüfungen](../../../tests/ops/test_test_phase_slot_loss_budget_v1.py)
+verwenden echte Original-Corepläne und ausdrücklich simulierte Fills. Sie prüfen
+positive Fortsetzung, genau 25 USDC Nettoverlust, KEEP/REPLACE, erneutes Lesen,
+fünf Slots und fehlende oder verfälschte Nachweise. Das ist keine Venue-PnL-
+oder physische Stromausfallprobe.
+
+Offen in BWP1 bleiben insbesondere Gebühren-/Slippage-/Fundingvorsorge vor dem
+Entry sowie die gemeinsame Margin- und Verlustfolgenabnahme. Das Verlustergebnis
+wird derzeit am abgeschlossenen simulierten Zyklus fortgeschrieben. Der
+Stoprisikowert ist keine garantierte maximale Ausführungslast bei Preisgaps,
+Kosten oder Liquidation. Diese Anschlussarbeit schließt das Paket nicht ab.

@@ -66,7 +66,16 @@ def test_actual_n1_preserves_original_risk_quantity_into_reservation_and_final_e
     bindings = list(snapshot["state"]["sizing_bindings"].values())
     assert len(bindings) == 1
     stored = bindings[0]
-    assert stored["schema"] == "reservation_sizing_binding.v1" and "risk_binding" not in stored
+    assert stored["schema"] == "reservation_sizing_binding.v3" and "risk_binding" not in stored
+    assert stored["monetary_source"]["schema"] == "sizing_monetary_source.v1"
+    original_source = kwargs["portfolio_budget_owner"].reservation_monetary_source_v1(
+        held.reservation_id
+    )
+    monetary, identity, metadata = original_source.rebuild_v1()
+    assert identity.inst_id == envelope.instrument_id
+    assert metadata.instrument_id == before.instrument_id
+    assert monetary.account_equity.currency == monetary.reference_price.currency == "USDC"
+    assert original_source.canonical_instrument_id == before.instrument_id
     applied = stored["applied_input"]
     multiplier = Decimal(applied["instrument"]["contract_multiplier"])
     assert held.amount == Decimal(applied["reference_price"]) * multiplier * sizing.final_quantity

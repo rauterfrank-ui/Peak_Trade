@@ -30,7 +30,13 @@ deren fehlende Fachabnahme nicht.
 
 Die Testphase bleibt bei 25 USDC Notionalreservation je Slot, höchstens 125 USDC
 bei fünf Slots und zusätzlicher tatsächlicher Kapitalzulassung. Ihr Ende
-entscheidet Frank ausdrücklich. Entwicklung und Prüfung erzeugen keine
+entscheidet Frank ausdrücklich. Zusätzlich gilt nur während dieser ausdrücklich
+gewählten Testphase ein Verlustbudget von 25 USDC je Slot. Nach dessen Verbrauch
+gibt es für diesen Slot keine neuen Entries und keine automatische Auffüllung.
+Ein Instrumentwechsel, Neustart oder Tageswechsel beginnt kein neues Budget.
+Diese Testregel wird nicht zur allgemeinen Regel des späteren kapitalabhängigen
+Betriebs. Dessen Freigabe und finanzielle Policy werden getrennt festgelegt.
+Entwicklung und Prüfung erzeugen keine
 Live-/Testnet-, Order- oder Kapitalbewegungsfreigabe. Freeze-Tags bleiben erhalten.
 
 ## BWP 1 — Wirtschaftliche Wahrheit und Risiko
@@ -112,13 +118,29 @@ beobachtete Fundingzahlungen bis zu Episode, Exit und Readback verbunden.
 Funding ist dabei ein signierter Geldbetrag mit Ereigniszeit, kein Forecast
 oder Prozentsatz. Ein Funding-only-Fortschritt benötigt keinen erfundenen Fill.
 Diese begrenzten Änderungen schließen weder BWP1-S1/C1/R1 insgesamt noch die
-produktive Kosten-/Margin-/Verlustbudgetherleitung ab. Noch kein Paketabschluss,
-Commit, PR oder Merge.
+produktive Kosten-/Margin-/Verlustbudgetherleitung ab. Der geprüfte Zwischenstand
+ist in `d855ca546` committet. BWP1 bleibt offen; noch kein Paket-PR oder Merge.
 
 Frank hat die [genau vier Fundingadapter betreffende Fortschreibung](CURRENT_ORDERED_FUNDING_EPISODE_DEVELOPMENT_ADMISSION_V1.md)
 gesondert freigegeben, ausdrücklich mit Erhalt des Wiederanlaufs. Nur die
 konkret geprüften Nachfolgedigests werden als vollständiges Entwicklungsbundle
 zugelassen; der ursprüngliche Freeze und fremde Policyquellen bleiben geschützt.
+
+Weitere Präzisierungen vom 9. November: Das Aufstocken einer noch offenen
+Position wird in diesem Paket nicht eingeführt. Die 25 USDC sind eine obere
+Grenze, keine Pflicht, bei jedem Entry die volle Summe einzusetzen. Der originale
+Sizer kann aus tatsächlichen Kapital-/Risiko-/Mengenbedingungen kleinere Mengen
+zulassen; eine frei gewählte Anfangstranche oder neue Ratchet-Prozentzahl wird
+nicht ergänzt.
+
+Die [Fortschreibung des Testbudgetanschlusses](BOUNDED_MULTISLOT_ENTRY_BUDGET_V1.md)
+bindet die Verlustregel ausdrücklich an eine neue Testpolicy. Der Originalowner
+behält die Geldquellen des Sizings und liest für einen abgeschlossenen
+simulierten Zyklus die ursprünglichen Fill-/Fundingquellen erneut. Fehlende
+wirtschaftliche Closequellen sperren die erneute finanzielle Entryzulassung,
+auch wenn frisches Kontokapital zugelassen ist. Dies ersetzt weder die noch
+offene Gebühren-/Slippage-/Fundingvorsorge vor einem Entry noch die vollständige
+Margin- und Verlustfolgenabnahme von BWP1.
 
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),

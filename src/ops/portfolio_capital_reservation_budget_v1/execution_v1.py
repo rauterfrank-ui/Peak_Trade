@@ -52,6 +52,11 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
     envelope = FinalOrderEnvelopeV1(**link["envelope"])
     assert_envelope_unmodified_v1(envelope)
     bound = owner._reservation_bindings[reservation_id]["bound"]
+    if sizing.monetary_source is not None and (
+        sizing.monetary_source.venue_native_id != bound["venue_native_id"]
+        or sizing.monetary_source.canonical_instrument_id != bound["instrument_id"]
+    ):
+        raise ValueError("EXECUTION_MONETARY_SOURCE_INSTRUMENT_MISMATCH")
     side = sizing.decision.selected_side.upper()
     if not (
         envelope.instrument_id == bound["venue_native_id"]

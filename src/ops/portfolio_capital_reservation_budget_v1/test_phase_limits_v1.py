@@ -19,6 +19,7 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
 class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     per_slot_reserved_notional_limit: Decimal
     allowed_slot_ids: tuple[str, ...]
+    per_slot_test_loss_limit: Decimal | None = None
 
     def validate_v1(self):
         super().validate_v1()
@@ -35,18 +36,33 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             or self.aggregate_reserved_notional_limit > limit * len(slots)
         ):
             raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_POLICY_INVALID")
+        if self.per_slot_test_loss_limit is not None and (
+            type(self.per_slot_test_loss_limit) is not Decimal
+            or not self.per_slot_test_loss_limit.is_finite()
+            or self.per_slot_test_loss_limit != Decimal("25")
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_SLOT_LOSS_LIMIT_MUST_BE_25_USDC")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
-        return {
+        result = {
             **result,
             "schema": "entry_budget_policy.v2",
             "per_slot_reserved_notional_limit": str(self.per_slot_reserved_notional_limit),
             "allowed_slot_ids": list(self.allowed_slot_ids),
         }
+        if self.per_slot_test_loss_limit is not None:
+            result.update(
+                schema="entry_budget_policy.v3",
+                per_slot_test_loss_limit=str(self.per_slot_test_loss_limit),
+                loss_limit_scope="EXPLICIT_TEST_PHASE_ONLY",
+                automatic_loss_budget_refill_allowed=False,
+            )
+        return result
 
 
 def parse_slot_entry_budget_v1(payload):
+    loss_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v3"
     expected = {
         "schema",
         "policy_id",
@@ -59,14 +75,28 @@ def parse_slot_entry_budget_v1(payload):
         "per_slot_reserved_notional_limit",
         "allowed_slot_ids",
     }
+    if loss_mode:
+        expected |= {
+            "per_slot_test_loss_limit",
+            "loss_limit_scope",
+            "automatic_loss_budget_refill_allowed",
+        }
     if (
         not isinstance(payload, dict)
         or set(payload) != expected
-        or payload["schema"] != "entry_budget_policy.v2"
+        or payload["schema"] not in {"entry_budget_policy.v2", "entry_budget_policy.v3"}
     ):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_SCHEMA_INVALID")
     data = dict(payload)
     data.pop("schema")
+    if loss_mode:
+        if (
+            data.pop("loss_limit_scope") != "EXPLICIT_TEST_PHASE_ONLY"
+            or data.pop("automatic_loss_budget_refill_allowed") is not False
+            or type(data["per_slot_test_loss_limit"]) is not str
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_SLOT_LOSS_POLICY_INVALID")
+        data["per_slot_test_loss_limit"] = Decimal(data["per_slot_test_loss_limit"])
     for name in (
         "per_entry_notional_limit",
         "aggregate_reserved_notional_limit",
