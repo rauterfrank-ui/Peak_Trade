@@ -224,6 +224,18 @@ Futures-Cross-Netpfad mit USDT-/USDC-Abrechnung begrenzt. Native Kostendeckung,
 accountwirksame Erhaltungsmargin/Liquidationsdeckung und die numerische
 USD-X-Perp-Abrechnung bleiben ausdrücklich offen; dies schließt BWP1 nicht.
 
+Die zusätzliche [native Kostendeckung](CURRENT_NATIVE_COST_COVER_V1.md) führt
+Initialmargin, Eröffnungskosten und wirksame Close-/Fundingvorsorge am selben
+Budgetowner je Abwicklungswährung zusammen. Die ausdrücklich neue Testpolicy
+verlangt diese Prüfung vor einem Hold, beim späten Entry und für die atomare
+Reservenerneuerung mit aktueller passender Balancequelle. Gespeicherte native
+Erneuerungsbelege werden aus der vorherigen Originalrevision rekonstruiert;
+fehlende Quellen oder Deckung geben keine Holds frei. Die Prüfung bleibt
+konservativ ohne unbelegten Credit für bereits verbrauchte Margin/Kosten.
+Aktuelle authentische Venueinputs, zukünftige Marginänderungen, accountwirksame
+Erhaltungsmargin/Liquidationsdeckung, USD-X-Perp-Abrechnung und der gesamte
+vorvalidierte Wirtschaftsrahmen bleiben offen. BWP1 bleibt in Bearbeitung.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),

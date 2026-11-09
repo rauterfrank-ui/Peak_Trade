@@ -326,6 +326,12 @@ def require_native_margin_locked_v1(
             required += Fraction(int(row["required_numerator"]), int(row["required_denominator"]))
     if required > Fraction(Decimal(receipt["available_native"])):
         raise ValueError("NATIVE_INITIAL_MARGIN_LOCAL_OBLIGATIONS_UNCOVERED")
+    if getattr(owner._entry_budget_policy, "require_native_cost_cover", False):
+        from .native_cost_cover_v1 import require_native_cost_cover_locked_v1
+
+        require_native_cost_cover_locked_v1(
+            owner, sizing, exclude_reservation_id=exclude_reservation_id
+        )
     return receipt
 
 

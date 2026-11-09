@@ -2516,6 +2516,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             ):
                 raise ValueError("required native initial margin binding missing on active hold")
+            if getattr(self._entry_budget_policy, "require_native_cost_cover", False):
+                from .native_cost_cover_v1 import original_costs_v1, _f
+
+                for key, record in records.items():
+                    if record.counts_against_budget:
+                        margin, costs = original_costs_v1(restored_sizing[key])
+                        if sum(costs.values()) > _f(margin["available_native"]):
+                            raise ValueError(
+                                "required original native cost cover missing on active hold"
+                            )
             if (
                 self._entry_budget_policy is not None
                 and self._entry_budget_policy.require_opening_execution_costs
