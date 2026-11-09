@@ -45,6 +45,9 @@ class PostCloseRankingReviewRequestV1:
     provenance: Cap22ProvenanceV1
     prior: MembershipContextArtifactV1
     observation_chain: tuple[MembershipContextArtifactV1, ...]
+    reserved_challenger_v1: str | None = None
+    rotation_waiting_v1: bool = False
+    reserved_incumbent_v1: str | None = None
 
 
 @dataclass(frozen=True)
@@ -415,6 +418,9 @@ def compose_post_close_feedback_v1(
                     cap22_provenance=provenance,
                     prior=review.prior,
                     observation_chain=review.observation_chain,
+                    reserved_challenger_v1=review.reserved_challenger_v1,
+                    rotation_waiting_v1=review.rotation_waiting_v1,
+                    reserved_incumbent_v1=review.reserved_incumbent_v1,
                 )
             except MembershipContextArtifactError as exc:
                 reasons.append(f"POST_CLOSE_RANKING_REVIEW_REJECTED:{exc.failure_code}")

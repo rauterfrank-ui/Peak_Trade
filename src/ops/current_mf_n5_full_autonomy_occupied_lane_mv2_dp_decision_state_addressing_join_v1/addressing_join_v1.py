@@ -727,6 +727,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
+    rotation_exit_requests: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -808,6 +809,10 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             master_v2_reconciliation_admission=harness_admission,
             position_episode_binding=episode,
             position_episode_scope=position_episode_scope,
+            rotation_exit_request=None
+            if rotation_exit_requests is None
+            else rotation_exit_requests.get(lane_id),
+            rotation_time_exit_only=rotation_exit_requests is not None,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -883,6 +888,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
+    rotation_exit_requests: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Fence Entries, run Core, then CAS-publish an actual outgoing cursor.
 
@@ -931,6 +937,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         master_v2_reconciliation_admission=master_v2_reconciliation_admission,
         position_episode_bindings=position_episode_bindings,
         position_episode_scope=position_episode_scope,
+        rotation_exit_requests=rotation_exit_requests,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

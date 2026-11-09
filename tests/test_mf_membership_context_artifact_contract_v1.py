@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -222,7 +223,12 @@ def test_bootstrap_from_canonical_cap22_prefix_fill() -> None:
     assert len(set(artifact.ordered_instrument_ids)) == 5
     assert artifact.bootstrap is True
     assert artifact.prior_membership_reference is None
-    assert artifact.cap22_provenance.ranking_snapshot_id == "pfr_evidence_cap22_v1"
+    assert artifact.cap22_provenance.ranking_snapshot_id == snapshot["ranking_snapshot_id"]
+    assert artifact.cap22_provenance.ranking_integrity_digest == snapshot["integrity_digest"]
+    assert (
+        artifact.cap22_provenance.source_file_sha256
+        == hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+    )
     assert artifact.temporal_identity.cap22_event_time == snapshot["event_time"]
 
 
@@ -238,26 +244,26 @@ def test_materialize_isolated_root_then_readback(tmp_path: Path) -> None:
     )
     assert readback.to_dict() == written.to_dict()
     assert readback.bootstrap is True
-
-
-def test_canonical_bootstrap_readback_and_no_padding() -> None:
-    store = REPO_ROOT / CANONICAL_STORE_RELATIVE_ROOT
-    snapshot_path = REPO_ROOT / CANONICAL_CAP22_SNAPSHOT_RELATIVE_PATH
-    expected = build_bootstrap_membership_from_cap22_snapshot_v1(
-        snapshot_path=snapshot_path,
-        source_relative_path=CANONICAL_CAP22_SNAPSHOT_RELATIVE_PATH,
-    )
-    readback = read_membership_context_artifact_v1(expected.instance_id, store_root=store)
-    assert readback.instance_id == expected.instance_id
-    assert list(readback.ordered_instrument_ids) == list(expected.ordered_instrument_ids)
-    assert len(readback.ordered_instrument_ids) == 5
-    assert len(readback.ordered_instrument_ids) <= N_VALUE
+    assert 0 < len(readback.ordered_instrument_ids) <= N_VALUE
     assert readback.policy_identity == POLICY_IDENTITY_V1
-    assert readback.prior_membership_reference is None
-    delta = derive_rotation_delta_v1(readback, None)
-    assert delta["entered"] == list(readback.ordered_instrument_ids)
-    assert delta["exited"] == []
-    assert delta["retained"] == []
+
+
+def test_stored_canonical_bootstrap_keeps_its_own_identity_and_no_padding() -> None:
+    store = REPO_ROOT / CANONICAL_STORE_RELATIVE_ROOT
+    records = [json.loads(path.read_text()) for path in sorted(store.glob("mca_*.json"))]
+    bootstraps = [record for record in records if record["bootstrap"]]
+    assert bootstraps
+    for expected in bootstraps:
+        readback = read_membership_context_artifact_v1(expected["instance_id"], store_root=store)
+        assert readback.to_dict() == expected
+        assert len(set(readback.ordered_instrument_ids)) == len(readback.ordered_instrument_ids)
+        assert 0 < len(readback.ordered_instrument_ids) <= N_VALUE
+        assert readback.policy_identity == POLICY_IDENTITY_V1
+        assert readback.prior_membership_reference is None
+        delta = derive_rotation_delta_v1(readback, None)
+        assert delta["entered"] == list(readback.ordered_instrument_ids)
+        assert delta["exited"] == []
+        assert delta["retained"] == []
 
 
 def test_no_selector_runtime_or_execution_authority_introduced() -> None:

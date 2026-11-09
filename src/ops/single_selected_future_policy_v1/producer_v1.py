@@ -85,6 +85,7 @@ def prepare_lane_selection_v1(
     governed_pin: GovernedCap23InstrumentPinV1,
     expected_previous_instrument: str | None,
     open_position_instrument_id: str | None = None,
+    min_holding_period_seconds: float = DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
 ):
     """Assess with the existing policy while holding the existing selection lock.
 
@@ -112,6 +113,7 @@ def prepare_lane_selection_v1(
             open_position_instrument_id=open_position_instrument_id,
             governed_pin=governed_pin,
             lane_state_root=state_root,
+            min_holding_period_seconds=min_holding_period_seconds,
         )
         yield PreparedLaneSelectionV1(writer, produced, previous)
     finally:

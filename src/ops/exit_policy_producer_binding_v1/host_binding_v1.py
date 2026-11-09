@@ -23,6 +23,7 @@ from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
 from src.ops.exit_policy_producer_binding_v1.models_v1 import (
     CanonicalExitPolicyStateV1,
     ExitPolicyProducerBundleV1,
+    canonical_digest_v1,
 )
 from src.ops.exit_policy_producer_binding_v1.persistence_v1 import (
     ExitPolicyPersistenceError,
@@ -92,6 +93,7 @@ class HostExitPolicyBindingV1:
     current_cursor_publication: Optional[dict[str, Any]] = None
     simulated_accounting_progress: Optional[dict[str, Any]] = None
     simulated_accounting_close: Optional[dict[str, Any]] = None
+    pending_rotation_close: Optional[dict[str, Any]] = None
 
     def to_canonical_state(self) -> CanonicalExitPolicyStateV1:
         return CanonicalExitPolicyStateV1(
@@ -116,6 +118,7 @@ class HostExitPolicyBindingV1:
             current_cursor_publication=deepcopy(self.current_cursor_publication),
             simulated_accounting_progress=deepcopy(self.simulated_accounting_progress),
             simulated_accounting_close=deepcopy(self.simulated_accounting_close),
+            pending_rotation_close=deepcopy(self.pending_rotation_close),
         )
 
 
@@ -168,6 +171,7 @@ def ensure_host_exit_policy_binding_v1(
         binding.current_cursor_publication = loaded.current_cursor_publication
         binding.simulated_accounting_progress = loaded.simulated_accounting_progress
         binding.simulated_accounting_close = loaded.simulated_accounting_close
+        binding.pending_rotation_close = loaded.pending_rotation_close
         binding.prior_commit_seen = True
     binding.initialized = True
     binding.alpha_blocked = False
@@ -214,6 +218,7 @@ def evaluate_host_exit_policy_producers_v1(
     regime_ok: bool = True,
     price_basis_ok: bool = True,
     max_drawdown: float = 0.0,
+    rotation_time_exit: dict[str, Any] | None = None,
 ) -> tuple[ExitPolicyProducerBundleV1, dict[str, PolicySignalV0], SafetyMode, TradingGate]:
     if binding.alpha_blocked:
         raise ExitPolicyPersistenceError(
@@ -249,6 +254,7 @@ def evaluate_host_exit_policy_producers_v1(
         binding.pending_exit_class = ""
         binding.pending_exit_reason = ""
         binding.pending_exit_identity = ""
+        binding.pending_rotation_close = None
         eff_entry_price = None
         eff_entry_event = None
 
@@ -276,6 +282,7 @@ def evaluate_host_exit_policy_producers_v1(
         max_drawdown=float(max_drawdown),
         pending_exit_class=str(binding.pending_exit_class or ""),
         duplicate_observation=duplicate,
+        rotation_time_exit=rotation_time_exit,
     )
     signals = bundle_to_policy_signals_v1(bundle)
     # Arm pending exit on first true mandatory/safety trigger.
@@ -290,9 +297,22 @@ def evaluate_host_exit_policy_producers_v1(
         if evidence.triggered and not binding.pending_exit_class:
             binding.pending_exit_class = evidence.exit_class
             binding.pending_exit_reason = evidence.reason_code
+            if (
+                evidence.exit_class == "time_exit"
+                and rotation_time_exit is not None
+                and rotation_time_exit.get("allowed") is True
+            ):
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+                    verify_pending_rotation_close_v1,
+                )
+
+                binding.pending_rotation_close = deepcopy(
+                    verify_pending_rotation_close_v1(rotation_time_exit)
+                )
             identity = hashlib.sha256(
                 f"{binding.instrument_id}:{evidence.exit_class}:{evidence.reason_code}:"
-                f"{eff_entry_event}:{observation_digest}".encode()
+                f"{eff_entry_event}:{observation_digest}"
+                f"{canonical_digest_v1(binding.pending_rotation_close) if binding.pending_rotation_close is not None else ''}".encode()
             ).hexdigest()[:32]
             binding.pending_exit_identity = identity
             break

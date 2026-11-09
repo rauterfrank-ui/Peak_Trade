@@ -298,6 +298,27 @@ def _validate_ordered_instrument_ids(ids: Sequence[str]) -> tuple[str, ...]:
 def _validate_policy_identity(payload: Mapping[str, Any]) -> dict[str, Any]:
     actual = {str(k): payload[k] for k in payload}
     expected = dict(POLICY_IDENTITY_V1)
+    pin = actual.get("reserved_challenger_v1")
+    if pin is not None:
+        if type(pin) is not str:
+            raise MembershipContextArtifactError(
+                "INVALID_POLICY_IDENTITY", "reserved_challenger_v1"
+            )
+        _validate_ordered_instrument_ids([pin])
+        expected["reserved_challenger_v1"] = pin
+        expected["anti_churn_policy"] = "POLICY_A_RESERVED_CHALLENGER_V1"
+        incumbent = actual.get("reserved_incumbent_v1")
+        if incumbent is not None:
+            if type(incumbent) is not str or incumbent == pin:
+                raise MembershipContextArtifactError(
+                    "INVALID_POLICY_IDENTITY", "reserved_incumbent_v1"
+                )
+            _validate_ordered_instrument_ids([incumbent])
+            expected["reserved_incumbent_v1"] = incumbent
+            expected["anti_churn_policy"] = "POLICY_A_RESERVED_PAIR_V1"
+    if actual.get("rotation_waiting_v1") is True and pin is None:
+        expected["rotation_waiting_v1"] = True
+        expected["anti_churn_policy"] = "POLICY_A_ROTATION_WAITING_V1"
     if actual != expected:
         raise MembershipContextArtifactError(
             "INVALID_POLICY_IDENTITY", canonical_json_dumps(actual)
@@ -394,7 +415,18 @@ def build_membership_context_artifact_v1(
     cap22_provenance: Cap22ProvenanceV1,
     bootstrap: bool,
     prior_membership_reference: Optional[str],
+    reserved_challenger_v1: str | None = None,
+    rotation_waiting_v1: bool = False,
+    reserved_incumbent_v1: str | None = None,
 ) -> MembershipContextArtifactV1:
+    if (
+        type(rotation_waiting_v1) is not bool
+        or rotation_waiting_v1
+        and reserved_challenger_v1 is not None
+        or reserved_incumbent_v1 is not None
+        and reserved_challenger_v1 is None
+    ):
+        raise MembershipContextArtifactError("INVALID_POLICY_IDENTITY", "rotation_profile")
     ordered = _validate_ordered_instrument_ids(ordered_instrument_ids)
     temporal = TemporalIdentityV1(
         cap22_ranking_snapshot_id=cap22_provenance.ranking_snapshot_id,
@@ -409,7 +441,28 @@ def build_membership_context_artifact_v1(
         ordered_instrument_ids=ordered,
         prior_membership_reference=prior_membership_reference,
         cap22_provenance=cap22_provenance,
-        policy_identity=dict(POLICY_IDENTITY_V1),
+        policy_identity=_validate_policy_identity(
+            {
+                **POLICY_IDENTITY_V1,
+                "anti_churn_policy": "POLICY_A_ROTATION_WAITING_V1",
+                "rotation_waiting_v1": True,
+            }
+            if rotation_waiting_v1
+            else dict(POLICY_IDENTITY_V1)
+            if reserved_challenger_v1 is None
+            else {
+                **POLICY_IDENTITY_V1,
+                "anti_churn_policy": "POLICY_A_RESERVED_CHALLENGER_V1"
+                if reserved_incumbent_v1 is None
+                else "POLICY_A_RESERVED_PAIR_V1",
+                "reserved_challenger_v1": reserved_challenger_v1,
+                **(
+                    {"reserved_incumbent_v1": reserved_incumbent_v1}
+                    if reserved_incumbent_v1 is not None
+                    else {}
+                ),
+            }
+        ),
         bootstrap=bootstrap,
         lifecycle_state=LIFECYCLE_DURABLE_VALID,
         integrity_digest="",

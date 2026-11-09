@@ -58,6 +58,7 @@ class CanonicalExitPolicyStateV1:
     current_cursor_publication: Optional[dict[str, Any]] = None
     simulated_accounting_progress: Optional[dict[str, Any]] = None
     simulated_accounting_close: Optional[dict[str, Any]] = None
+    pending_rotation_close: Optional[dict[str, Any]] = None
 
     def to_dict(self) -> dict[str, Any]:
         payload = {
@@ -86,6 +87,8 @@ class CanonicalExitPolicyStateV1:
             payload["simulated_accounting_progress"] = deepcopy(self.simulated_accounting_progress)
         if self.simulated_accounting_close is not None:
             payload["simulated_accounting_close"] = deepcopy(self.simulated_accounting_close)
+        if self.pending_rotation_close is not None:
+            payload["pending_rotation_close"] = deepcopy(self.pending_rotation_close)
         return payload
 
     @classmethod
@@ -126,6 +129,7 @@ class CanonicalExitPolicyStateV1:
             current_cursor_publication=deepcopy(payload.get("current_cursor_publication")),
             simulated_accounting_progress=deepcopy(payload.get("simulated_accounting_progress")),
             simulated_accounting_close=deepcopy(payload.get("simulated_accounting_close")),
+            pending_rotation_close=deepcopy(payload.get("pending_rotation_close")),
         )
 
     def digest(self) -> str:

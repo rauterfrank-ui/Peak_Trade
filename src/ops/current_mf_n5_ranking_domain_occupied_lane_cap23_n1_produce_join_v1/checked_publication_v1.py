@@ -103,6 +103,7 @@ def publish_checked_lane_selections_v1(
     observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     replacement_admission_by_lane: Mapping[str, PositionAwareRotationDecisionV1] | None = None,
     retained_bound_by_lane: Mapping | None = None,
+    rotation_min_hold_seconds_v1: float | None = None,
 ) -> CheckedLanePublicationV1:
     from .produce_join_v1 import _assert_non_authority, _fail
 
@@ -270,6 +271,11 @@ def publish_checked_lane_selections_v1(
                     governed_pin=pin,
                     expected_previous_instrument=old_by_lane.get(lane),
                     open_position_instrument_id=open_instrument,
+                    **(
+                        {"min_holding_period_seconds": rotation_min_hold_seconds_v1}
+                        if rotation_min_hold_seconds_v1 is not None
+                        else {}
+                    ),
                 )
             )
             selection = assessed.produced.selection

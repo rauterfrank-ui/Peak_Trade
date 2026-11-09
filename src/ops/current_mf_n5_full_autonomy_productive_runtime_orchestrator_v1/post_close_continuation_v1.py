@@ -266,6 +266,12 @@ def prepare_post_close_continuation_v1(
         "topology_root": str(Path(topology_root).resolve()),
     }
     path = checkpoint_root_for(topology_root) / "post_close" / (close_ref + ".json")
+    if request.ranking.reserved_challenger_v1 is not None or request.ranking.rotation_waiting_v1:
+        binding["rotation_constraint_v1"] = dict(
+            reserved_challenger=request.ranking.reserved_challenger_v1,
+            reserved_incumbent=request.ranking.reserved_incumbent_v1,
+            waiting=request.ranking.rotation_waiting_v1,
+        )
     fingerprint = _digest(binding)
     prior = _read_receipt(path) if path.exists() else None
     if prior is not None:
