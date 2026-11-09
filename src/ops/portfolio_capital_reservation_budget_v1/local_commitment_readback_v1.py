@@ -32,6 +32,8 @@ class LocalCapitalCommitmentV1:
     reconciliation_outcome: str
     reconciliation_matched: bool
     opening_fee_reserve: Decimal = Decimal("0")
+    closing_cost_reserve: Decimal = Decimal("0")
+    funding_cost_reserve: Decimal = Decimal("0")
 
 
 @dataclass(frozen=True)
@@ -52,6 +54,8 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
         raise ValueError("LOCAL_COMMITMENT_SOURCE_UNAVAILABLE")
     rows = []
     from .entry_execution_cost_v1 import reserved_opening_fee_v1
+    from .entry_execution_cost_v1 import reserved_closing_cost_v1
+    from .entry_execution_cost_v1 import reserved_funding_cost_v1
 
     for key, reservation in sorted(owner._by_key.items()):
         rid = str(reservation.reservation_id)
@@ -85,6 +89,8 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
                 reconciliation_outcome=str(reconciliation.get("decision", {}).get("outcome", "")),
                 reconciliation_matched=reconciliation.get("matched") is True,
                 opening_fee_reserve=reserved_opening_fee_v1(sizing),
+                closing_cost_reserve=reserved_closing_cost_v1(sizing),
+                funding_cost_reserve=reserved_funding_cost_v1(sizing),
             )
         )
     # Capital refresh/admission does not change the obligation generation. A
@@ -99,6 +105,8 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
                     **asdict(row),
                     "amount": str(row.amount),
                     "opening_fee_reserve": str(row.opening_fee_reserve),
+                    "closing_cost_reserve": str(row.closing_cost_reserve),
+                    "funding_cost_reserve": str(row.funding_cost_reserve),
                 }
                 for row in rows
             ],

@@ -1,0 +1,94 @@
+{
+  "schema": "peaktrade.multi_source_purpose_semantic_probe.v1",
+  "commit": "eb9633139fa26c44d9c76867e7695f406dfec127",
+  "sources": "TWO_INDEPENDENT_SYNTHETIC_STORES_NO_NETWORK",
+  "separate_routing_observed": true,
+  "ranking_source_a_last_mark": "1020.0",
+  "trading_source_b_last_close": "980.0",
+  "research_source_b_return_negative": true,
+  "source_switch_changes_profile_digest": true,
+  "later_capture_excluded_asof": true,
+  "liquidity_depth_unavailable_not_inferred": true,
+  "outcome_interval": "PT1H",
+  "limitations": [
+    "different values are retained, not reconciled into a common truth",
+    "no observed combined Core or financial admission from this probe",
+    "no live Paper Shadow session started",
+    "no proof of full instrument coverage"
+  ],
+  "source_sha256": {
+    "src/ops/economic_md_input_producer_v1/purpose_gateway_v1.py": "754824ef78021ce277f5b95cd25014c888530db4ab6e734869a9828d17f646e4",
+    "src/ops/economic_md_input_producer_v1/purpose_consumers_v1.py": "8ad5860abea73b1977448c472a5d2b6dd6e012a513d755eedde66e820aa6b757",
+    "src/ops/economic_md_input_producer_v1/purpose_admission_v1.py": "456e6582cfe7165a311ac4bad1bf892553b5c6b852cf2ccdc3d8c6d0dbcb637c",
+    "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9",
+    "src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_runtime_economic_md_adapter_v1.py": "2da39826ad221ebf585519afe412d719d2c38ebc925090776085a338e1b1bb18",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py": "19b81f5d07a3d34ee5776662ddb1dda1a16906097943480f7ad082b7c9a911d8",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/independent_market_forecast_measurement_v1.py": "2ffaa8ff1b174b0ccad12f5607dc9ff6b017268d2535873bf36f5614a467065e",
+    "src/experiments/canonical_native_research_measurements_v1.py": "dbefcd3ce569971bd15dce4a3acccefe8b26852a6adb719bb4c1d1ca0fd5cead",
+    "src/ops/okx_eea_private_account_state_runtime_v1/bills_observation_v1.py": "12f61d69548fc3c8a079df5c7baf6c540bcffd4d7b7e3e197639d5c8b17d7055"
+  },
+  "runtime_authorization_effect": "NONE",
+  "selected_cases": 44,
+  "test_result": "PASS",
+  "junit_sha256": "8a8ea4553c2ae2e1a7680f1a7207a468dbcbfe2ad41465b28a98b9d298ccf09c",
+  "log_sha256": "e9ce6e8460488ee1c56df63107b2b190689e4d4feb3c1f2689156621c6d0956d",
+  "obsidian_knowledge_sources": [
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Aussenbereiche/DATA.md",
+      "sha256": "5ab54814268b1ab5ea9dea8b8ba173af9db1e6abb26622364ea1416deed4e29d",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": "6b132fa1bd4788a937243c179cf294658c5389f7"
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S01.md",
+      "sha256": "969437ede5303859c48b1ea67430948d6108ffa8bd8619fface3e3e7854e92d0",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": "76268b904ded8e1db02ed27950c8d7f46cca2f60"
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S06.md",
+      "sha256": "621ed325d40766d64cd9f044524866a2d41998c86075d92a42124119a59f580b",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Signalstroeme/E06.md",
+      "sha256": "1d614b89aa73538db6140e146f7a2587b6e3e505c149c7308a4185519b42038a",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Signalstroeme/E12.md",
+      "sha256": "9dac43f68372e6df466ddab73ddbbf412f0f51f9c38b22d5b3099c801e143d1b",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Signalstroeme/E24.md",
+      "sha256": "c4b5cc98a974a1c1ac9a258640caf6c976c619d6f148a450612dbf6b9e1ba5a5",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Intelligentes Universum/Verstaendnis nach Aussenkanten/12 Unabhaengige Marktbeobachtung bis zum Calibration Readback.md",
+      "sha256": "98bfe53dd6dbed9a34963e5e4de7a5af4a56f59364b7fa09def9bd2b8dd71fe6",
+      "stand": "2026-11-06",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    },
+    {
+      "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/SL OPT Trennung/Meta Freilegung/11 Herkunft von Shadow Reality Gap und Metawerten.md",
+      "sha256": "ae9072c9c0737bc9448dc49f5f72700f0c29d352be47e03ec23cec9f8035a318",
+      "stand": "2026-11-05",
+      "abgleich_revision": "8dc28cb984b18fa72dd0fab5b82b987dcdaeab53",
+      "entwicklungsnachfuehrung": null
+    }
+  ],
+  "obsidian_crosscheck_scope": "Dated knowledge sources and four additional original code paths read and compared; no new runtime proof inferred. The 44-case PASS retains its original five-source scope and revision."
+}

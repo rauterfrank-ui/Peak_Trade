@@ -181,6 +181,8 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     pretrade_acquired_at_utc: tuple[str, ...] = ()
     venue_quantity_limits: N1VenueQuantityLimitsObservationV1 | None = None
     opening_cost_observation: object | None = None
+    funding_cost_observation: object | None = None
+    open_slot_loss_observation: object | None = None
 
 
 @dataclass(frozen=True)
@@ -1066,6 +1068,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             restrictive_risk=restrictive_risk,
             monetary_source=monetary_source,
             opening_cost_observation=injected.opening_cost_observation
+            if injected is not None
+            else None,
+            funding_cost_observation=injected.funding_cost_observation
             if injected is not None
             else None,
             local_commitment_readback=margin_host_inputs.local_commitment_readback,

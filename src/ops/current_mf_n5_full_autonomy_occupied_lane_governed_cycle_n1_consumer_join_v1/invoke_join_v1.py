@@ -191,6 +191,8 @@ class OccupiedLaneGovernedCycleN1ConsumerResultV1:
     cap61_state_root_bound: bool
     position_management_quantity_handoff: PositionManagementQuantityHandoffV1 | None = None
     position_management_close_intent: CanonicalOrderIntentV1 | None = None
+    slot_loss_protection_status: str = "NOT_APPLICABLE"
+    slot_loss_protection_reason_codes: tuple[str, ...] = ()
 
 
 def _fail(code: str, detail: str = "") -> NoReturn:
@@ -1144,7 +1146,10 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     )
     results: dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1] = {}
     lane_order = list(LANE_IDS)
-    if rotation_exit_requests is not None:
+    if rotation_exit_requests is not None or (
+        bounded_slots
+        and portfolio_budget_owner.entry_budget_policy_v1().enforce_open_slot_loss_protection
+    ):
         lane_order.sort(
             key=lambda lane: (
                 per_lane_ingress[lane].position.venue_flat if lane in per_lane_ingress else True,
@@ -1242,6 +1247,52 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             lane_s7["canonical_price_provenance"] = lane_prov
             lane_s7["mark_px"] = float(getattr(lane_prov, "mark_px", lane_s7["mark_px"]))
             lane_s7["index_px"] = float(getattr(lane_prov, "index_px", lane_s7["index_px"]))
+        loss_protection_status = "NOT_APPLICABLE"
+        loss_protection_reasons = ()
+        if (
+            bounded_slots
+            and portfolio_budget_owner.entry_budget_policy_v1().enforce_open_slot_loss_protection
+            and not ingress.position.venue_flat
+        ):
+            from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+                PortfolioCapitalBudgetError,
+            )
+            from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
+                MonetaryNormalizationError,
+            )
+
+            episode = (
+                None
+                if position_episode_bindings is None
+                else position_episode_bindings.get(lane_id)
+            )
+            try:
+                loss_request = portfolio_budget_owner.observe_open_slot_loss_v1(
+                    slot_id=lane_id,
+                    episode=episode,
+                    observation=None if lane_29p is None else lane_29p.open_slot_loss_observation,
+                    mark_px=lane_s7["mark_px"],
+                    observed_unix=observed_unix,
+                )
+                loss_protection_status = "OBSERVED_PROTECTION_ONLY"
+            except PortfolioCapitalBudgetError:
+                raise
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                ArithmeticError,
+                MonetaryNormalizationError,
+            ) as exc:
+                # Missing valuation cannot invent a loss or suppress an
+                # original exit; an already durable close trigger survives.
+                loss_request = portfolio_budget_owner.pending_open_slot_loss_exit_v1(lane_id)
+                loss_protection_status = "UNPROVEN_ORIGINAL_EXITS_RETAINED"
+                loss_protection_reasons = (str(exc),)
+            lane_s7["slot_loss_exit_requests"] = (
+                {} if loss_request is None else {lane_id: loss_request}
+            )
         if g17_typed_vol_producers is not None:
             if lane_id not in g17_typed_vol_producers:
                 _fail(FAILURE_S8_ROOTS_MISSING, f"g17:{lane_id}")
@@ -1364,5 +1415,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             position_management_close_intent=getattr(
                 t2_dispatch, "last_position_management_close_intent", None
             ),
+            slot_loss_protection_status=loss_protection_status,
+            slot_loss_protection_reason_codes=loss_protection_reasons,
         )
     return results

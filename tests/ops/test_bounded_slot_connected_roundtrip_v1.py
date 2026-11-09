@@ -244,7 +244,14 @@ def capital(host, bound, event):
 
 
 def connected_close(
-    tmp_path, monkeypatch, count, lane, *, rotation_requests_factory=None, rotation_driver=None
+    tmp_path,
+    monkeypatch,
+    count,
+    lane,
+    *,
+    rotation_requests_factory=None,
+    rotation_driver=None,
+    expected_exit_class="time_exit",
 ):
     monkeypatch.setattr(sources, "OBSERVED_UNIX", T0 - 3700)
     monkeypatch.setattr(sources, "SOURCE_EVENT", str(int((T0 - 3700) * 1000)))
@@ -394,7 +401,7 @@ def connected_close(
         )
         assert (
             r.s7_invocation.cycle_result.replay.intermediate.entry_exit_decision.exit_class.value
-            == "time_exit"
+            == expected_exit_class
         )
     execution = exits[lane].governed_cycle_result.position_management_execution_handoff
     assert execution is not None, exits[lane].governed_cycle_result.first_genuine_blocker
@@ -484,6 +491,7 @@ def roundtrip(
     rotation_requests_factory=None,
     follow_direction=1,
     rotation_driver=None,
+    expected_exit_class="time_exit",
 ):
     world = connected_close(
         tmp_path,
@@ -492,6 +500,7 @@ def roundtrip(
         lane,
         rotation_requests_factory=rotation_requests_factory,
         rotation_driver=rotation_driver,
+        expected_exit_class=expected_exit_class,
     )
     host = world["host"]
     writer = world["writer"]

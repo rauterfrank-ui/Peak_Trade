@@ -22,7 +22,8 @@ from __future__ import annotations
 import hashlib
 import json
 import threading
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from pathlib import Path
@@ -181,6 +182,8 @@ class PortfolioBudgetStateV1:
     recovery_required: bool = False
     durable_state_enabled: bool = False
     reserved_opening_fees: Decimal = Decimal("0")
+    reserved_closing_costs: Decimal = Decimal("0")
+    reserved_funding_costs: Decimal = Decimal("0")
 
 
 @dataclass(frozen=True)
@@ -344,6 +347,12 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .slot_loss_budget_v1 import empty_state
 
         self._slot_test_economics = empty_state(self._entry_budget_policy)
+        self._open_slot_protection = (
+            {slot: None for slot in self._entry_budget_policy.allowed_slot_ids}
+            if self._entry_budget_policy is not None
+            and self._entry_budget_policy.enforce_open_slot_loss_protection
+            else {}
+        )
         supplied = (durable_root, durable_account_identity, durable_mode, durable_lane_bindings)
         if any(x is not None for x in supplied):
             if any(x is None for x in supplied):
@@ -487,12 +496,160 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             if not enabled(self._entry_budget_policy) or slot_id not in self._slot_test_economics:
                 raise ValueError("TEST_SLOT_LOSS_POLICY_REQUIRED")
-            return {
+            result = {
                 **json.loads(json.dumps(self._slot_test_economics[slot_id])),
                 "remaining_loss_allowance_usdc": str(remaining_loss(self, slot_id)),
-                "new_entry_blocker": admission_reason(self, slot_id),
+                "new_entry_blocker": self._test_slot_loss_entry_blocker_locked(slot_id),
                 "scope": "EXPLICIT_TEST_PHASE_ONLY",
             }
+            if self._open_slot_protection:
+                opened = self._open_slot_protection[slot_id]
+                result["open_position_protection"] = json.loads(json.dumps(opened))
+                if opened and opened["exhaustion"] is not None:
+                    result.update(exhausted=True, remaining_loss_allowance_usdc="0")
+            return result
+
+    def _test_slot_loss_entry_blocker_locked(self, slot_id):
+        from .slot_loss_budget_v1 import admission_reason
+
+        closed_reason = admission_reason(self, slot_id)
+        if closed_reason is not None:
+            return closed_reason
+        opened = self._open_slot_protection.get(slot_id)
+        if opened:
+            if opened["exhaustion"] is not None:
+                return "TEST_SLOT_MARK_VALUED_LOSS_ALLOWANCE_EXHAUSTED"
+            pending = opened["pending_close"]
+            if (
+                pending
+                and self._by_key[self._by_id[pending["reservation_id"]]].counts_against_budget
+            ):
+                return "TEST_SLOT_LOSS_CLOSE_PENDING"
+        return None
+
+    def observe_open_slot_loss_v1(self, *, slot_id, episode, observation, mark_px, observed_unix):
+        from .entry_execution_cost_v1 import assess_open_slot_loss_v1, SlotLossExitRequestV1
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeBindingV1,
+        )
+
+        with self._lock:
+            if not self._open_slot_protection or slot_id not in self._open_slot_protection:
+                raise ValueError("OPEN_SLOT_EXPLICIT_TEST_POLICY_REQUIRED")
+            if self._closed_owner or self._storage_failed or self._store is None:
+                raise ValueError("OPEN_SLOT_ORIGINAL_BUDGET_WRITER_UNAVAILABLE")
+            if type(episode) is not PositionEpisodeBindingV1:
+                raise ValueError("OPEN_SLOT_ORIGINAL_EPISODE_REQUIRED")
+            rows = [
+                r
+                for r in self._by_key.values()
+                if str(r.slot_id) == slot_id and r.counts_against_budget
+            ]
+            if len(rows) != 1:
+                raise ValueError("OPEN_SLOT_SINGLE_ORIGINAL_HELD_RESERVATION_REQUIRED")
+            rid = str(rows[0].reservation_id)
+            expected_ref = (
+                episode.entry_source_ref
+                if episode.binding.simulated_accounting_progress is None
+                else episode.binding.simulated_accounting_progress["current_source_ref"]
+            )
+            if (
+                observation.identity_json != _canonical_json(asdict(episode.identity))
+                or observation.initial_source_ref != episode.entry_source_ref
+                or observation.current_source_ref != expected_ref
+                or datetime.fromisoformat(
+                    observation.valuation_epoch.replace("Z", "+00:00")
+                ).timestamp()
+                != observed_unix
+            ):
+                raise ValueError("OPEN_SLOT_CURRENT_EPISODE_OR_CYCLE_MISMATCH")
+            proof = assess_open_slot_loss_v1(self, rid, observation)
+            if Decimal(proof["native_mark_price"]) != Decimal(str(mark_px)):
+                raise ValueError("OPEN_SLOT_CURRENT_MARK_CYCLE_MISMATCH")
+            prior = self._open_slot_protection[slot_id]
+            if prior:
+                old = datetime.fromisoformat(
+                    prior["latest"]["valuation_epoch"].replace("Z", "+00:00")
+                )
+                new = datetime.fromisoformat(proof["valuation_epoch"].replace("Z", "+00:00"))
+                if new < old or new == old and proof != prior["latest"]:
+                    raise ValueError("OPEN_SLOT_OBSERVATION_TIME_OR_REPLAY_CONFLICT")
+            updated = {
+                "latest": proof,
+                "pending_close": prior["pending_close"]
+                if prior
+                and prior["pending_close"] is not None
+                and self._by_key[
+                    self._by_id[prior["pending_close"]["reservation_id"]]
+                ].counts_against_budget
+                else proof
+                if proof["close_required"]
+                else None,
+                "exhaustion": prior["exhaustion"]
+                if prior and prior["exhaustion"] is not None
+                else proof
+                if proof["actual_loss_allowance_exhausted"]
+                else None,
+            }
+            if updated != prior:
+                self._open_slot_protection[slot_id] = updated
+                self._persist_locked()
+            pending = updated["pending_close"]
+            return None if pending is None else SlotLossExitRequestV1(self, rid, pending["digest"])
+
+    def inspect_open_slot_loss_exit_v1(
+        self, *, reservation_id, proof_digest, episode, bound, observed_unix
+    ):
+        from .entry_execution_cost_v1 import assess_open_slot_loss_v1, OpenSlotLossObservationV1
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeBindingV1,
+        )
+
+        with self._lock:
+            if type(episode) is not PositionEpisodeBindingV1:
+                raise ValueError("OPEN_SLOT_ORIGINAL_EPISODE_REQUIRED")
+            record = self._by_key.get(self._by_id.get(reservation_id))
+            if (
+                record is None
+                or not record.counts_against_budget
+                or self._closed_owner
+                or self._storage_failed
+            ):
+                raise ValueError("OPEN_SLOT_ORIGINAL_CLOSE_CONTEXT_UNAVAILABLE")
+            stored = self._open_slot_protection.get(str(record.slot_id))
+            proof = None if not stored else stored["pending_close"]
+            if proof is None or proof["digest"] != proof_digest or not proof["close_required"]:
+                raise ValueError("OPEN_SLOT_ORIGINAL_CLOSE_TRIGGER_REQUIRED")
+            rebuilt = assess_open_slot_loss_v1(
+                self, reservation_id, OpenSlotLossObservationV1.from_dict_v1(proof["observation"])
+            )
+            if (
+                rebuilt != proof
+                or proof["identity"] != asdict(episode.identity)
+                or (bound.instrument_id, bound.venue_native_id)
+                != (episode.identity.instrument_id, episode.identity.venue_native_id)
+                or datetime.fromisoformat(
+                    proof["valuation_epoch"].replace("Z", "+00:00")
+                ).timestamp()
+                > observed_unix
+            ):
+                raise ValueError("OPEN_SLOT_CLOSE_SOURCE_OR_EPISODE_MISMATCH")
+            return True
+
+    def pending_open_slot_loss_exit_v1(self, slot_id):
+        from .entry_execution_cost_v1 import SlotLossExitRequestV1
+
+        with self._lock:
+            row = self._open_slot_protection.get(slot_id)
+            proof = None if row is None else row["pending_close"]
+            if proof is None:
+                return None
+            record = self._by_key.get(self._by_id.get(proof["reservation_id"]))
+            return (
+                SlotLossExitRequestV1(self, proof["reservation_id"], proof["digest"])
+                if record is not None and record.counts_against_budget
+                else None
+            )
 
     def record_test_slot_close_economics_v1(self, request):
         from .slot_loss_budget_v1 import record_closed_locked
@@ -680,6 +837,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         request: CapitalRiskSizingInputV1,
         risk_request: object | None = None,
         opening_cost_observation: object | None = None,
+        funding_cost_observation: object | None = None,
     ) -> SizedReservationResultV1:
         """Reuse the acknowledged canonical result, never resize an old hold."""
         with self._lock:
@@ -709,6 +867,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         raise ValueError("ENTRY_COST_REPLAY_CONTEXT_CHANGED_OR_MISSING")
                 elif opening_cost_observation is not None:
                     raise ValueError("ENTRY_COST_UNBOUND_LEGACY_RESERVATION_NOT_UPGRADED")
+                if binding.funding_cost_binding is not None:
+                    from .entry_execution_cost_v1 import FundingCostObservationV1
+                    from .durable_store_v1 import canonical
+
+                    if (
+                        type(funding_cost_observation) is not FundingCostObservationV1
+                        or binding.funding_cost_binding.observation_json
+                        != canonical(funding_cost_observation.to_dict_v1())
+                    ):
+                        raise ValueError("FUNDING_COST_REPLAY_CONTEXT_CHANGED_OR_MISSING")
+                elif funding_cost_observation is not None:
+                    raise ValueError("FUNDING_COST_UNBOUND_LEGACY_RESERVATION_NOT_UPGRADED")
                 if binding.risk_binding is not None:
                     binding.risk_binding.validate_replay_v1(risk_request, request)
                 elif risk_request is not None:
@@ -940,10 +1110,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 ):
                     return deny("POST_CLOSE_ENTRY_RECONCILIATION_UNRESOLVED")
             from .entry_execution_cost_v1 import reserved_opening_fee_v1
+            from .entry_execution_cost_v1 import reserved_closing_cost_v1
+            from .entry_execution_cost_v1 import reserved_funding_cost_v1
 
             remaining = self._held_capital_locked() - sum(
                 (
-                    r.amount + reserved_opening_fee_v1(self._sizing_bindings.get(rid))
+                    r.amount
+                    + reserved_opening_fee_v1(self._sizing_bindings.get(rid))
+                    + reserved_closing_cost_v1(self._sizing_bindings.get(rid))
+                    + reserved_funding_cost_v1(self._sizing_bindings.get(rid))
                     for rid, r in active.items()
                 ),
                 Decimal(0),
@@ -1181,6 +1356,26 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             ):
                 policy_denial = "OPENING_EXECUTION_COST_SOURCES_REQUIRED"
+            if (
+                policy_denial is None
+                and self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_closing_execution_costs
+                and (
+                    not isinstance(sizing_binding, ReservationSizingBindingV1)
+                    or sizing_binding.close_cost_binding is None
+                )
+            ):
+                policy_denial = "CLOSING_EXECUTION_COST_SOURCES_REQUIRED"
+            if (
+                policy_denial is None
+                and self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_next_funding_costs
+                and (
+                    not isinstance(sizing_binding, ReservationSizingBindingV1)
+                    or sizing_binding.funding_cost_binding is None
+                )
+            ):
+                policy_denial = "NEXT_FUNDING_COST_SOURCES_REQUIRED"
             if policy_denial is not None:
                 return self._result_locked(
                     disposition=ReserveDispositionV1.DENIED,
@@ -1225,9 +1420,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 if detached_sizing is not None and detached_sizing.entry_cost_binding is not None
                 else Decimal(0)
             )
+            from .entry_execution_cost_v1 import reserved_closing_cost_v1
+
+            closing_cost = reserved_closing_cost_v1(detached_sizing)
+            from .entry_execution_cost_v1 import reserved_funding_cost_v1
+
+            funding_cost = reserved_funding_cost_v1(detached_sizing)
             if (
                 enabled(self._entry_budget_policy)
-                and detached_sizing.decision.post_sizing_risk.resulting_max_loss + opening_cost
+                and detached_sizing.decision.post_sizing_risk.resulting_max_loss
+                + opening_cost
+                + closing_cost
+                + funding_cost
                 > remaining_loss(self, str(slot))
             ):
                 return self._result_locked(
@@ -1270,7 +1474,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         reason_codes=("ENTRY_COST_ORIGINAL_BOUND_INSTRUMENT_MISMATCH",),
                         mutated=False,
                     )
-            if self._held_capital_locked() + money + fee > ceiling:
+            if self._held_capital_locked() + money + fee + closing_cost + funding_cost > ceiling:
                 return self._result_locked(
                     disposition=ReserveDispositionV1.DENIED,
                     reservation=None,
@@ -1583,11 +1787,55 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     cycle_id=receipt["cycle_id"],
                     evaluated_at_utc=utc_now_iso_v1(),
                 )
+                if sizing.close_cost_binding is not None:
+                    from .entry_execution_cost_v1 import assess_closing_execution_cost_v1
+
+                    sizing.close_cost_binding.validate_v1(
+                        entry_binding=sizing.entry_cost_binding,
+                        monetary_source=sizing.monetary_source,
+                        applied_input=sizing.applied_input,
+                        decision=sizing.decision,
+                    )
+                    assess_closing_execution_cost_v1(
+                        sizing.entry_cost_binding,
+                        monetary_source=sizing.monetary_source,
+                        applied_input=sizing.applied_input,
+                        decision=sizing.decision,
+                        evaluated_at_utc=utc_now_iso_v1(),
+                    )
+                if sizing.funding_cost_binding is not None:
+                    from .entry_execution_cost_v1 import (
+                        FundingCostObservationV1,
+                        assess_next_funding_cost_v1,
+                    )
+
+                    sizing.funding_cost_binding.validate_v1(
+                        entry_binding=sizing.entry_cost_binding,
+                        close_binding=sizing.close_cost_binding,
+                        monetary_source=sizing.monetary_source,
+                        applied_input=sizing.applied_input,
+                        decision=sizing.decision,
+                    )
+                    assess_next_funding_cost_v1(
+                        FundingCostObservationV1.from_dict_v1(
+                            json.loads(sizing.funding_cost_binding.observation_json)
+                        ),
+                        entry_binding=sizing.entry_cost_binding,
+                        close_binding=sizing.close_cost_binding,
+                        monetary_source=sizing.monetary_source,
+                        applied_input=sizing.applied_input,
+                        decision=sizing.decision,
+                        evaluated_at_utc=utc_now_iso_v1(),
+                    )
             if self._held_capital_locked() > self._budget:
                 raise ValueError("CURRENT_ENTRY_BUDGET_OPENING_FEES_UNCOVERED")
             if self._entry_budget_policy is not None:
                 bound = self._entry_budget_policy
                 slot = str(found[1].slot_id)
+                if bound.enforce_open_slot_loss_protection:
+                    blocker = self._test_slot_loss_entry_blocker_locked(slot)
+                    if blocker is not None:
+                        raise ValueError("CURRENT_ENTRY_BUDGET:" + blocker)
                 if bound.allowed_slot_ids is not None and slot not in bound.allowed_slot_ids:
                     raise ValueError("CURRENT_ENTRY_BUDGET_SLOT_NOT_ALLOWED")
                 if (
@@ -1779,7 +2027,38 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         )
 
     def _held_capital_locked(self):
-        return self._active_sum_locked() + self._opening_fee_sum_locked()
+        return (
+            self._active_sum_locked()
+            + self._opening_fee_sum_locked()
+            + self._closing_cost_sum_locked()
+            + self._funding_cost_sum_locked()
+        )
+
+    def _funding_cost_sum_locked(self, slot_id=None):
+        from .entry_execution_cost_v1 import reserved_funding_cost_v1
+
+        return sum(
+            (
+                reserved_funding_cost_v1(self._sizing_bindings.get(key))
+                for key, record in self._by_key.items()
+                if record.counts_against_budget
+                and (slot_id is None or str(record.slot_id) == slot_id)
+            ),
+            Decimal(0),
+        )
+
+    def _closing_cost_sum_locked(self, slot_id=None):
+        from .entry_execution_cost_v1 import reserved_closing_cost_v1
+
+        return sum(
+            (
+                reserved_closing_cost_v1(self._sizing_bindings.get(key))
+                for key, record in self._by_key.items()
+                if record.counts_against_budget
+                and (slot_id is None or str(record.slot_id) == slot_id)
+            ),
+            Decimal(0),
+        )
 
     def _entry_budget_denial_locked(self, slot_id, amount):
         policy = self._entry_budget_policy
@@ -1789,7 +2068,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             return "ENTRY_BUDGET_SLOT_NOT_ALLOWED"
         from .slot_loss_budget_v1 import admission_reason
 
-        loss_reason = admission_reason(self, slot_id)
+        loss_reason = self._test_slot_loss_entry_blocker_locked(slot_id)
         if loss_reason is not None:
             return loss_reason
         if amount > policy.per_entry_notional_limit:
@@ -1818,6 +2097,12 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 {"test_slot_economics": self._slot_test_economics}
                 if self._entry_budget_policy is not None
                 and self._entry_budget_policy.per_slot_test_loss_limit is not None
+                else {}
+            ),
+            **(
+                {"open_slot_protection": self._open_slot_protection}
+                if self._entry_budget_policy is not None
+                and self._entry_budget_policy.enforce_open_slot_loss_protection
                 else {}
             ),
             "observation_id": self._observation_id,
@@ -1856,7 +2141,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         for binding in state["sizing_bindings"].values():
             binding.pop("risk_binding", None)
             binding["schema"] = (
-                "reservation_sizing_binding.v4"
+                "reservation_sizing_binding.v6"
+                if "funding_cost_binding" in binding
+                else "reservation_sizing_binding.v5"
+                if "close_cost_binding" in binding
+                else "reservation_sizing_binding.v4"
                 if "entry_cost_binding" in binding
                 else "reservation_sizing_binding.v3"
                 if "monetary_source" in binding
@@ -1912,6 +2201,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "execution_links",
                 "entry_budget_policy",
                 "test_slot_economics",
+                "open_slot_protection",
             } != {
                 "schema",
                 "account_identity",
@@ -2058,6 +2348,32 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             ):
                 raise ValueError("required opening fee binding missing on active hold")
+            if (
+                self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_closing_execution_costs
+                and any(
+                    r.counts_against_budget
+                    and (
+                        key not in restored_sizing
+                        or restored_sizing[key].close_cost_binding is None
+                    )
+                    for key, r in records.items()
+                )
+            ):
+                raise ValueError("required closing cost binding missing on active hold")
+            if (
+                self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_next_funding_costs
+                and any(
+                    r.counts_against_budget
+                    and (
+                        key not in restored_sizing
+                        or restored_sizing[key].funding_cost_binding is None
+                    )
+                    for key, r in records.items()
+                )
+            ):
+                raise ValueError("required funding cost binding missing on active hold")
             from .execution_v1 import detached, validate_link_v1
 
             links = payload.get("execution_links", {})
@@ -2069,6 +2385,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             from .slot_loss_budget_v1 import restore_state
 
             self._slot_test_economics = restore_state(self, payload.get("test_slot_economics"))
+            from .entry_execution_cost_v1 import restore_open_slot_protection_v1
+
+            self._open_slot_protection = restore_open_slot_protection_v1(
+                self, payload.get("open_slot_protection")
+            )
             policy = self._entry_budget_policy
             if policy is not None:
                 active = [r for r in records.values() if r.counts_against_budget]
@@ -2097,7 +2418,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         active = self._active_sum_locked()
         budget = self._budget if self._admitted else Decimal("0")
         fees = self._opening_fee_sum_locked()
-        remaining = budget - active - fees if self._admitted else Decimal("0")
+        closing_costs = self._closing_cost_sum_locked()
+        funding_costs = self._funding_cost_sum_locked()
+        # Use the same aggregate as atomic admission/readback. Chained
+        # subtraction can round differently at the Decimal context boundary.
+        remaining = budget - self._held_capital_locked() if self._admitted else Decimal("0")
         return PortfolioBudgetStateV1(
             admitted=self._admitted,
             observation_id=self._observation_id,
@@ -2109,6 +2434,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             recovery_required=self._recovery_required,
             durable_state_enabled=self._store is not None,
             reserved_opening_fees=fees,
+            reserved_closing_costs=closing_costs,
+            reserved_funding_costs=funding_costs,
         )
 
     def _result_locked(
@@ -2153,7 +2480,10 @@ def capital_context_facts_v1(
             raise PortfolioCapitalBudgetError("CAPITAL_CONTEXT_REQUIRES_BOUND_PRODUCER_OUTPUT")
         facts = {
             "account_equity": state.canonical_available_capital,
-            "already_committed_capital": state.active_reservation_sum + state.reserved_opening_fees,
+            "already_committed_capital": state.active_reservation_sum
+            + state.reserved_opening_fees
+            + state.reserved_closing_costs
+            + state.reserved_funding_costs,
             "current_reconciled_exposure": state.active_reservation_sum,
         }
         policy = owner._entry_budget_policy
@@ -2164,7 +2494,7 @@ def capital_context_facts_v1(
             from .slot_loss_budget_v1 import enabled, admission_reason, remaining_loss
 
             if enabled(policy):
-                reason = admission_reason(owner, slot)
+                reason = owner._test_slot_loss_entry_blocker_locked(slot)
                 if reason is not None:
                     raise PortfolioCapitalBudgetError(reason)
                 facts["slot_remaining_loss_allowance"] = remaining_loss(owner, slot)
@@ -2200,6 +2530,7 @@ def admit_sized_slot_reservation_v1(
     restrictive_risk: object | None = None,
     monetary_source: object | None = None,
     opening_cost_observation: object | None = None,
+    funding_cost_observation: object | None = None,
     local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
 ) -> SizedReservationResultV1:
@@ -2314,6 +2645,7 @@ def admit_sized_slot_reservation_v1(
             request=sizing_input,
             risk_request=restrictive_risk,
             opening_cost_observation=opening_cost_observation,
+            funding_cost_observation=funding_cost_observation,
         )
         if (
             handoff_journal is not None
@@ -2443,6 +2775,69 @@ def admit_sized_slot_reservation_v1(
                 reason_codes=(str(exc), "ENTRY_COST_NOT_ADMITTED_NO_RESERVATION"),
                 sizing_decision=decision,
             )
+    close_cost_binding = None
+    if policy is not None and policy.require_closing_execution_costs:
+        from .entry_execution_cost_v1 import bind_closing_execution_cost_v1
+
+        try:
+            close_cost_binding = bind_closing_execution_cost_v1(
+                entry_cost_binding,
+                monetary_source=monetary_source,
+                applied_input=patched,
+                decision=decision,
+                evaluated_at_utc=utc_now_iso_v1(),
+            )
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            ArithmeticError,
+            MonetaryNormalizationError,
+        ) as exc:
+            return _sized_deny(
+                owner,
+                disposition=ReserveDispositionV1.FAIL_CLOSED,
+                reason_codes=(str(exc), "CLOSE_COST_NOT_ADMITTED_NO_RESERVATION"),
+                sizing_decision=decision,
+            )
+    funding_cost_binding = None
+    if funding_cost_observation is not None and not (
+        policy is not None and policy.require_next_funding_costs
+    ):
+        return _sized_deny(
+            owner,
+            disposition=ReserveDispositionV1.FAIL_CLOSED,
+            reason_codes=("FUNDING_COST_EXPLICIT_POLICY_REQUIRED",),
+            sizing_decision=decision,
+        )
+    if policy is not None and policy.require_next_funding_costs:
+        from .entry_execution_cost_v1 import bind_next_funding_cost_v1
+
+        try:
+            funding_cost_binding = bind_next_funding_cost_v1(
+                funding_cost_observation,
+                entry_binding=entry_cost_binding,
+                close_binding=close_cost_binding,
+                monetary_source=monetary_source,
+                applied_input=patched,
+                decision=decision,
+                evaluated_at_utc=utc_now_iso_v1(),
+            )
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            ArithmeticError,
+            MonetaryNormalizationError,
+        ) as exc:
+            return _sized_deny(
+                owner,
+                disposition=ReserveDispositionV1.FAIL_CLOSED,
+                reason_codes=(str(exc), "FUNDING_COST_NOT_ADMITTED_NO_RESERVATION"),
+                sizing_decision=decision,
+            )
     if restrictive_risk is not None:
         from .restrictive_risk_binding_v1 import bind_restrictive_risk_v1
 
@@ -2477,6 +2872,8 @@ def admit_sized_slot_reservation_v1(
             risk_binding=risk_binding,
             monetary_source=monetary_source,
             entry_cost_binding=entry_cost_binding,
+            close_cost_binding=close_cost_binding,
+            funding_cost_binding=funding_cost_binding,
         ),
         max_active_sum=patched.total_capital_limit,
         expected_risk_snapshot_digest=risk_snapshot["digest"]
@@ -2494,6 +2891,7 @@ def admit_sized_slot_reservation_v1(
             request=sizing_input,
             risk_request=restrictive_risk,
             opening_cost_observation=opening_cost_observation,
+            funding_cost_observation=funding_cost_observation,
         )
     if reserved.disposition is not ReserveDispositionV1.ADMITTED:
         return _sized_deny(

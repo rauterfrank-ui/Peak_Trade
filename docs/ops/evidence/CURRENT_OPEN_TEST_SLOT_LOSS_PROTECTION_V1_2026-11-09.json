@@ -1,0 +1,204 @@
+{
+  "schema": "peaktrade.open_test_slot_loss_protection_evidence.v1",
+  "base_commit": "07d966bbfc0697a7c7cddc2f8596a6ffcd551fc3",
+  "source_sha256": {
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V6.json": "0e3a0b82a1d7d979d78896d6aaf0e285a4ed5e8315d68d63fca2dfae76e2f1b7",
+    "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md": "d22926b2c1c2b5ced89f14b92bbcb8c8a3a2a556fe842ccd497910d63c17d21b",
+    "docs/ops/specs/CURRENT_OPEN_TEST_SLOT_LOSS_PROTECTION_V1.md": "6743364b2b077fed6e823bf957f71e11f449232516ec9f23e4dfbd2992990a26",
+    "docs/ops/specs/CURRENT_SYSTEM_FIVE_BOUNDED_WORK_PACKAGES_V1.md": "478e9aaf0fefecbe52a24948c691aa222e07f9f9721b3f674cc02136a92c313b",
+    "docs/system_atlas/policy_projection.py": "105a424f94eb7e34fb53f5212a45617ee3da0dad781bdc43793f5059f2dc547d",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "485af1635aecda0f570b4ff6a62ce7af2eaf8e539b61a0f2f85c8274e4289c5b",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "dee46f1690010ede269b45bdc608f31e691aad9dc639bd6371cfbed982384043",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "bb81041299a56b9e98065e0287dd3abfa6d29b60ca892ad7824ba6afb3d613b3",
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "5dc93a3e751426a2f8a955b70a44b26dcc6e911c05ea03ae04bdb30075d4a8be",
+    "tests/ops/test_bounded_slot_connected_roundtrip_v1.py": "6e2124c1fdd6258776cc6d481eca059989516f9f47202a006430d49ac968fa34",
+    "tests/ops/test_open_slot_loss_protection_development_delta_v1.py": "0c455d83de07d553dda07f20779ef591df58c3729982ce5e20a045f63d8dbd85",
+    "tests/ops/test_open_slot_loss_protection_v1.py": "bc294e708905e8fa7324b7f7871e168dc88341f410027032691f1c3cab398a2c",
+    "tests/ops/test_open_slot_loss_short_protection_v1.py": "fff4cfc2835f23d071e4ab708970ea58944bb30320444af6fb1149b670987424"
+  },
+  "result": "PASS",
+  "selected_distinct_cases": 433,
+  "test_batches": [
+    {
+      "cases": 379,
+      "selector": "tests/ops/test_open_slot_loss_protection_v1.py tests/ops/test_next_funding_cost_provision_v1.py tests/ops/test_closing_execution_cost_provision_v1.py tests/ops/test_opening_execution_cost_admission_v1.py tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py tests/ops/test_durable_portfolio_budget_recovery_v1.py tests/ops/test_test_phase_slot_loss_budget_v1.py tests/ops/test_current_post_original_budget_admission_v1.py tests/ops/test_prepost_original_budget_context_v1.py tests/ops/test_bounded_slot_post_close_capital_v1.py tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py tests/ops/test_bounded_multislot_connected_cycle_v1.py tests/ops/test_current_productive_rotation_close_v1.py",
+      "full_run": true,
+      "exit_code": 0,
+      "junit_sha256": "f454d7caeb9f271cd06fbc0ff271be0020f6675488ac0c58de8e9f1a0f03455c",
+      "log_sha256": "68b6dd67b55916de6abd0dd1ab534ee3689a61fbc79af951fba0cda8cd418a0f"
+    },
+    {
+      "cases": 46,
+      "full_run": true,
+      "exit_code": 0,
+      "log_sha256": "d92acb180189c936362a5cca482c509d0d0727ae91fb97849cfe1a774a0bb403",
+      "reuse_scope": "Exact unchanged policy projection, reviewed adapter pairs and original preserved policy files; no rerun for report generation.",
+      "original_batch_selector": "tests/ops/test_open_slot_loss_protection_development_delta_v1.py tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
+      "selector": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
+      "original_batch_cases": 53,
+      "reused_subset": "46 unchanged original rotation development-contract cases; the amended 7-case extension fixture was rerun separately."
+    },
+    {
+      "cases": 1,
+      "selector": "tests/ops/test_open_slot_loss_short_protection_v1.py",
+      "full_run": true,
+      "exit_code": 0,
+      "junit_sha256": "12d9dd0b4e80ef31d9d79467be631b2df43622f3979396e030d71cf0e229b010",
+      "log_sha256": "834fcace9d35e1302344af055a80440f20e8610dc8d8337ffbbc978474799e32"
+    },
+    {
+      "cases": 7,
+      "selector": "tests/ops/test_open_slot_loss_protection_development_delta_v1.py",
+      "full_run": true,
+      "exit_code": 0,
+      "junit_sha256": "296b6752ad54348daaa8053abb3cd9d9858dd80504fb9a240d6e012ad823435c",
+      "log_sha256": "1862436d08397bfffad2c1821bad12353c02f2ec52e3a2cceefb10fe5947e505"
+    }
+  ],
+  "source_time_note": "The additional SHORT fixture keeps market, financial acquisition, simulated fill and later Core event distinct. Its synthetic market was advanced explicitly past the financial assessment and fill; the existing episode time check was preserved.",
+  "semantics": {
+    "S01": "Original kernel and native quantity; fees/funding counted once, no extra slippage debit; separate mark/FX/as-of.",
+    "S11": "Durable original budget close/loss latch, idempotence, cold read, no fill/flat/release from intent.",
+    "S12": "Original per-slot safety input, separate writers/permits and preserved foreign holds.",
+    "P11_P12": "Confirmed simulated fill and original episode identity/current cursor; no ACK-to-fill or reload-to-opening shortcut."
+  },
+  "covered_effects": [
+    "Natural LONG N1 entry and original simulated fill/accounting -> target-slot loss trigger -> existing Safety exit and full close handoff.",
+    "Two and five slots, target slots 1 and 5; foreign holds and positions retained.",
+    "Explicit original provisions can trigger before zero; no new percentage threshold.",
+    "Missing/foreign/stale/future mark/FX/episode data do not invent a loss; original Time Exit remains reachable.",
+    "Durable pending close survives improved mark and idempotent reobservation.",
+    "Original close fill, Flat, reconciliation, economic close record, no new Entry after exhaustion, and cold restart.",
+    "Missing/rehash-forged records rejected; late original entry-budget reader consumes loss latch; failed guard persistence fences original owner.",
+    "Natural SHORT Entry, original short fill/accounting and preserved quantity reach a validated durable loss request and actual original S7 Safety Exit."
+  ],
+  "preservation_and_knowledge": {
+    "base_commit": "07d966bbfc0697a7c7cddc2f8596a6ffcd551fc3",
+    "source_sha256": {
+      "docs/system_atlas/policy_projection.py": "105a424f94eb7e34fb53f5212a45617ee3da0dad781bdc43793f5059f2dc547d",
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "485af1635aecda0f570b4ff6a62ce7af2eaf8e539b61a0f2f85c8274e4289c5b",
+      "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "dee46f1690010ede269b45bdc608f31e691aad9dc639bd6371cfbed982384043",
+      "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "bb81041299a56b9e98065e0287dd3abfa6d29b60ca892ad7824ba6afb3d613b3",
+      "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "5dc93a3e751426a2f8a955b70a44b26dcc6e911c05ea03ae04bdb30075d4a8be",
+      "tests/ops/test_bounded_slot_connected_roundtrip_v1.py": "6e2124c1fdd6258776cc6d481eca059989516f9f47202a006430d49ac968fa34",
+      "tests/ops/test_open_slot_loss_protection_development_delta_v1.py": "d1913071899bcf0bad05a143adf177a7bc6739d7ec5e981cf966fd66f1a30312",
+      "tests/ops/test_open_slot_loss_protection_v1.py": "bc294e708905e8fa7324b7f7871e168dc88341f410027032691f1c3cab398a2c"
+    },
+    "preserved_source_sha256": {
+      "config/ops/current_productive_entry_budget_policy_v1.json": "d4c5e28f9f2725589abe853f54956cb7ad284520860141761cc596c9955459ed",
+      "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/bounded_slot_post_close_v1.py": "34cbb33104b490f8eb8d2bd536e3e96e9a2f988099ca289c4bcf679517b49a9d",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py": "fec15a06cc3504c4b37d6029dfa30980ddd3d74b22634712cdb56ef968b8a45c",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/rotation_plan_v1.py": "9f7322ff1fc357c3b828df4f6c0c73e74db0ee52350d7d90be434ed93255b96c",
+      "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de",
+      "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
+      "src/ops/exit_policy_producer_binding_v1/models_v1.py": "589dec4be5f00b4909c3aa511a600dfc63a31c92b018b20e9f437faa8334e9bc",
+      "src/ops/exit_policy_producer_binding_v1/persistence_v1.py": "adc66058a39f3c84e84fc47ca45fc60f6e99f4605e06dc79d58153fc5de76826",
+      "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py": "bf1c90a45a80171b5d3b1ed192a9348fe89271e71be490cff92fa2076e82569d",
+      "src/ops/exit_policy_producer_binding_v1/producers_v1.py": "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py": "946c35e6c540024679f1a8fb53c9e4b557e5f41ec13972557a1a8f89f52ea769",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py": "5b726daeddef92b7697e3a1ac8920bd0b1735b6913def8e41eeeb8f2817db86e",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_rotation_close_v1.py": "843de05030c1a4bbb7420762c60fe3e16bfbdbe89b01a184ffe4f857969b69a2",
+      "src/ops/mf_membership_context_artifact_contract_v1.py": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8",
+      "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d",
+      "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py": "6c041991182a939e21c5226e87b9186b55014d6d5f797d0ffe73538cb9b788d8",
+      "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+      "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py": "1a33a474ff398ca0969fb89a18b97bd9e7534b1b4d9d608c2adc26c0a48a6ef6",
+      "src/ops/single_selected_future_policy_v1/producer_v1.py": "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78"
+    },
+    "native_master_v2_unchanged": true,
+    "obsidian_knowledge_sources": [
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S01.md",
+        "sha256": "969437ede5303859c48b1ea67430948d6108ffa8bd8619fface3e3e7854e92d0",
+        "dated_front_matter": "\ntitle: \"Fachsemantik im ursprünglichen Owner\"\nstand: \"2026-11-05\"\nrolle: \"Abgeleitete semantische Systemansicht\"\nauthoritaet: \"NONE\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Delta vorhanden; datierte Auszüge nicht aktueller Quelltext\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"76268b904ded8e1db02ed27950c8d7f46cca2f60\"\nnachfuehrung_datum: \"2026-11-08\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S11.md",
+        "sha256": "7841dfefa30bdd0532c3cbdd5f6af0463ae8d37cbc4e3bf0978c1222df665005",
+        "dated_front_matter": "\ntitle: \"Betriebs- und Autonomiesemantik des Außenrings\"\nstand: \"2026-11-05\"\nrolle: \"Abgeleitete semantische Systemansicht\"\nauthoritaet: \"NONE\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Delta vorhanden; datierte Auszüge nicht aktueller Quelltext\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"76268b904ded8e1db02ed27950c8d7f46cca2f60\"\nnachfuehrung_datum: \"2026-11-08\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S12.md",
+        "sha256": "a6f5ac5cfc9cc123af6e772d6513d70edd8906a74224751ea11a432577ba6361",
+        "dated_front_matter": "\ntitle: \"Konstitutionelle Finanz-, Schutz- und Capabilitygrenzen\"\nstand: \"2026-11-05\"\nrolle: \"Abgeleitete semantische Systemansicht\"\nauthoritaet: \"NONE\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Delta vorhanden; datierte Auszüge nicht aktueller Quelltext\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"76268b904ded8e1db02ed27950c8d7f46cca2f60\"\nnachfuehrung_datum: \"2026-11-08\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Aussenbereiche/ACCOUNTING.md",
+        "sha256": "a3ddd0c84d049d6f1a42544c31f767db68070d89e361ca8b096f68e8c0863ed2",
+        "dated_front_matter": "\ntitle: \"Accounting Position und Reconciliation\"\nstand: \"2026-11-05\"\nrolle: \"Fachlicher PeakTrade-Systemindex\"\nauthoritaet: \"NONE\"\ntags: [aktuell, systemindex]\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"6b132fa1bd4788a937243c179cf294658c5389f7\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Aussenbereiche/RISK.md",
+        "sha256": "28ccecc87ee64bd9e0aa13afc3dde9da9035e2c7e0b80719bbaafede6e088f33",
+        "dated_front_matter": "\ntitle: \"Risk Sizing und Equityadmission\"\nstand: \"2026-11-05\"\nrolle: \"Fachlicher PeakTrade-Systemindex\"\nauthoritaet: \"NONE\"\ntags: [aktuell, systemindex]\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Delta vorhanden; datierte Auszüge nicht aktueller Quelltext\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"6b132fa1bd4788a937243c179cf294658c5389f7\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Betrieb/Wiederanlauf und Stromausfall.md",
+        "sha256": "d23a24389facc4448dbc5a85f14547f6f91abcd581eb224ef05b120a5ec80ffc",
+        "dated_front_matter": "\ntitle: \"Wiederanlauf und Stromausfall\"\nstand: \"2026-11-06\"\nrolle: \"Quellgebundener Standabgleich ohne Betriebsautoritaet\"\nauthoritaet: \"NONE\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Delta vorhanden; datierte Auszüge nicht aktueller Quelltext\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"3ca65eee148a5aa215de0b1e8903731553a72f9f\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Governance und Risk Sizing/Gesamtoffenlegung/J Kapital Accounting und Lernergebnis sauber getrennt.md",
+        "sha256": "db46722c51b67f27a42d4b59dde99227b8e027ae1ef40941a4031d1ff4172484",
+        "dated_front_matter": "\nstand: \"2026-11-05\"\nautoritaet: \"NONE\"\nrolle: \"Offenlegung dokumentierter Konstruktion, statischer Consumer und belegter Grenzen\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"6b132fa1bd4788a937243c179cf294658c5389f7\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Governance und Risk Sizing/Semantik und Bruecken/04 KillSwitch vier verschiedene Vertraege.md",
+        "sha256": "435467731f8d25a44c92a07d3b8f7b3f17862258a526355e05bcf275263f2e96",
+        "dated_front_matter": "\nstand: \"2026-11-05\"\nautoritaet: \"NONE\"\nrolle: \"Quellgebundene Semantikrekonstruktion; kein produktiver Apply\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"18bfb2c4d8fd5a0d74c84b4fdd423269b06b9bec\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Governance und Risk Sizing/Gesamtoffenlegung/H KillSwitch Disabled und Schutzwirkung.md",
+        "sha256": "640b887e7f47c6e630086a787e5a9c7bb2439f037f6bd3f8dd5c351e55923e69",
+        "dated_front_matter": "\nstand: \"2026-11-05\"\nautoritaet: \"NONE\"\nrolle: \"Offenlegung dokumentierter Konstruktion, statischer Consumer und belegter Grenzen\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"6b132fa1bd4788a937243c179cf294658c5389f7\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantische Ebenen.md",
+        "sha256": "a2a6fa73fbe4f4a0248507f7694923ed9932dc782f6a7d7465af760917fb2cbf",
+        "dated_front_matter": "\ntitle: \"Semantische Ebenen des Gesamtsystems\"\nstand: \"2026-11-05\"\nrolle: \"Abgeleitete semantische Systemansicht\"\nauthoritaet: \"NONE\"\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Keine maschinell zugeordnete Repoquelle; Aussage bleibt datiert\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"6b132fa1bd4788a937243c179cf294658c5389f7\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P11.md",
+        "sha256": "9e1310fdd536947c698ae4a0f99495eca2c789a571b08a2e0a4ee3f92cfcaff8",
+        "dated_front_matter": "\ntitle: \"P11 · Fill und Submitstatus getrennt übergeben\"\nstand: \"2026-11-05\"\nrolle: \"Fachlicher PeakTrade-Systemindex\"\nauthoritaet: \"NONE\"\ntags: [aktuell, systemindex]\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"e2abdf73876b6f093347b27c4145b86cb7fc16c6\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Grenzen/P12.md",
+        "sha256": "b269b07deb1df6df103891c32c87720a80d9eae694652dbfeca34de2a2cf5ed7",
+        "dated_front_matter": "\ntitle: \"P12 · Bestätigte Restposition und Episode zurückführen\"\nstand: \"2026-11-05\"\nrolle: \"Fachlicher PeakTrade-Systemindex\"\nauthoritaet: \"NONE\"\ntags: [aktuell, systemindex]\ndokumentklasse: \"Datierte Fach- oder Navigationsansicht mit Quellenabgleich\"\nquellenabgleich: \"Historische Referenzen bytegleich; keine erneute Semantikabnahme\"\nabgleich_revision: \"8dc28cb984b18fa72dd0fab5b82b987dcdaeab53\"\nabgleich_datum: \"2026-11-07\"\nabgleich_vollinventar: true\nentwicklungsnachfuehrung: \"e2abdf73876b6f093347b27c4145b86cb7fc16c6\"\nnachfuehrung_datum: \"2026-11-09\"\n"
+      }
+    ],
+    "tags": {
+      "freeze/clean-system-2026-11-06-v1": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+      "freeze/clean-system-complete-2026-11-06-v1": "160db0e90f1392c5caf3d115808f425d395b7c5e"
+    },
+    "runtime_authorization_effect": "NONE"
+  },
+  "runtime_authorization_effect": "NONE",
+  "limits": [
+    "Explicit synthetic public/private ports and simulated fills/funding; no observed private venue cash or real order.",
+    "Original entry close/funding provisions are not renewed by this guard. Ongoing rollover and full margin/liquidation admission remain open.",
+    "The complete fill/Flat/reconciliation loss-close lifecycle is tested for LONG; the added SHORT test reaches the original S7 Safety decision.",
+    "No guarantee against future gaps, costs, rate changes, liquidation or negative venue cash.",
+    "No physical power loss or unbounded autonomous Paper/Shadow/live service proof. No full-universe coverage claim.",
+    "BWP1 and the full financial framework remain open."
+  ],
+  "history_consolidation": {
+    "public_cost_parent": "ba3ac869a1bd1da9fa1677993865e351aad5553a",
+    "tree_identical_to_original_local_head": "07d966bbfc0697a7c7cddc2f8596a6ffcd551fc3",
+    "local_original_history_ref": "refs/codex/peaktrade-bwp1/pre-pr-consolidation-2026-11-09",
+    "governance_fixture_parent": "6b132fa1bd4788a937243c179cf294658c5389f7",
+    "reason": "Two requested PR commits; the source tree was preserved. The two adapter parent bodies are already present in merged PR7207, so the fixture uses that reachable public parent instead of an unpublished intermediate commit."
+  }
+}

@@ -77,6 +77,8 @@ class ReservationSizingBindingV1:
     risk_binding: object | None = None
     monetary_source: object | None = None
     entry_cost_binding: object | None = None
+    close_cost_binding: object | None = None
+    funding_cost_binding: object | None = None
 
     def validate_v1(self, *, amount: Decimal, decision_id: str) -> None:
         decision, applied = self.decision, self.applied_input
@@ -148,6 +150,35 @@ class ReservationSizingBindingV1:
                 MonetaryNormalizationError,
             ) as exc:
                 raise ValueError("RESERVATION_ENTRY_COST_SOURCE_INVALID:" + str(exc)) from exc
+        if self.close_cost_binding is not None:
+            from .entry_execution_cost_v1 import CloseExecutionCostBindingV1
+
+            if (
+                type(self.close_cost_binding) is not CloseExecutionCostBindingV1
+                or self.entry_cost_binding is None
+            ):
+                raise ValueError("RESERVATION_TYPED_CLOSE_COST_BINDING_REQUIRED")
+            self.close_cost_binding.validate_v1(
+                entry_binding=self.entry_cost_binding,
+                monetary_source=self.monetary_source,
+                applied_input=applied,
+                decision=decision,
+            )
+        if self.funding_cost_binding is not None:
+            from .entry_execution_cost_v1 import FundingCostBindingV1
+
+            if (
+                type(self.funding_cost_binding) is not FundingCostBindingV1
+                or self.close_cost_binding is None
+            ):
+                raise ValueError("RESERVATION_TYPED_FUNDING_COST_BINDING_REQUIRED")
+            self.funding_cost_binding.validate_v1(
+                entry_binding=self.entry_cost_binding,
+                close_binding=self.close_cost_binding,
+                monetary_source=self.monetary_source,
+                applied_input=applied,
+                decision=decision,
+            )
         if self.risk_binding is not None:
             from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
 
@@ -184,6 +215,12 @@ class ReservationSizingBindingV1:
         if self.entry_cost_binding is not None:
             result["schema"] = "reservation_sizing_binding.v4"
             result["entry_cost_binding"] = self.entry_cost_binding.to_dict_v1()
+        if self.close_cost_binding is not None:
+            result["schema"] = "reservation_sizing_binding.v5"
+            result["close_cost_binding"] = self.close_cost_binding.to_dict_v1()
+        if self.funding_cost_binding is not None:
+            result["schema"] = "reservation_sizing_binding.v6"
+            result["funding_cost_binding"] = self.funding_cost_binding.to_dict_v1()
         return result
 
     @classmethod
@@ -196,9 +233,20 @@ class ReservationSizingBindingV1:
         version3 = isinstance(payload, dict) and payload.get("schema") in {
             "reservation_sizing_binding.v3",
             "reservation_sizing_binding.v4",
+            "reservation_sizing_binding.v5",
+            "reservation_sizing_binding.v6",
         }
-        version4 = (
-            isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v4"
+        version4 = isinstance(payload, dict) and payload.get("schema") in {
+            "reservation_sizing_binding.v4",
+            "reservation_sizing_binding.v5",
+            "reservation_sizing_binding.v6",
+        }
+        version5 = isinstance(payload, dict) and payload.get("schema") in {
+            "reservation_sizing_binding.v5",
+            "reservation_sizing_binding.v6",
+        }
+        version6 = (
+            isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v6"
         )
         required = {"schema", "request_digest", "applied_input", "decision"}
         if version2 or version3 and "risk_binding" in payload:
@@ -207,6 +255,10 @@ class ReservationSizingBindingV1:
             required.add("monetary_source")
         if version4:
             required.add("entry_cost_binding")
+        if version5:
+            required.add("close_cost_binding")
+        if version6:
+            required.add("funding_cost_binding")
         if (
             not isinstance(payload, dict)
             or set(payload) != required
@@ -216,6 +268,8 @@ class ReservationSizingBindingV1:
                 "reservation_sizing_binding.v2",
                 "reservation_sizing_binding.v3",
                 "reservation_sizing_binding.v4",
+                "reservation_sizing_binding.v5",
+                "reservation_sizing_binding.v6",
             }
         ):
             raise ValueError("RESERVATION_SIZING_STATE_SCHEMA_INVALID")
@@ -223,6 +277,8 @@ class ReservationSizingBindingV1:
             SizingMonetarySourceV1,
         )
         from .entry_execution_cost_v1 import EntryExecutionCostBindingV1
+        from .entry_execution_cost_v1 import CloseExecutionCostBindingV1
+        from .entry_execution_cost_v1 import FundingCostBindingV1
 
         return cls(
             request_digest=payload["request_digest"],
@@ -238,5 +294,13 @@ class ReservationSizingBindingV1:
                 payload["entry_cost_binding"]
             )
             if version4
+            else None,
+            close_cost_binding=CloseExecutionCostBindingV1.from_dict_v1(
+                payload["close_cost_binding"]
+            )
+            if version5
+            else None,
+            funding_cost_binding=FundingCostBindingV1.from_dict_v1(payload["funding_cost_binding"])
+            if version6
             else None,
         )

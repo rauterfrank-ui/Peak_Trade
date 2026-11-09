@@ -130,6 +130,22 @@ RESERVED_SLOT_ROTATION_DELTAS = {
 }
 
 
+# Frank requested the open test-slot loss close and continuation of BWP1.
+# This exact two-adapter successor carries an original-budget proof to the
+# existing per-cycle safety input. The reviewed rotation parent, native Core,
+# funding episode adapters, startup, recovery and external-effect rights remain.
+OPEN_TEST_SLOT_LOSS_PROTECTION_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "bc04c096f9d20fa7dd360523f3d1f5d77f0d62e5e5afd5f32aefee69fc4609d3",
+        "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": (
+        "0e109341649d82a539e6395e784967645a0907b5bc49f41f4e40dff05da96df4",
+        "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+    ),
+}
+
+
 def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | None = None) -> None:
     frozen = {} if policies is None else {row["path"]: row["frozen_sha256"] for row in policies}
     actual = {}
@@ -142,7 +158,12 @@ def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | No
         )
     before = {path: pair[0] for path, pair in RESERVED_SLOT_ROTATION_DELTAS.items()}
     after = {path: pair[1] for path, pair in RESERVED_SLOT_ROTATION_DELTAS.items()}
-    if actual != before and actual != after:
+    protected_after = dict(after)
+    for path, (parent, successor) in OPEN_TEST_SLOT_LOSS_PROTECTION_DELTAS.items():
+        if path not in after or after[path] != parent:
+            raise ValueError("OPEN_TEST_SLOT_LOSS_PROTECTION_PARENT_INVALID:" + path)
+        protected_after[path] = successor
+    if actual not in (before, after, protected_after):
         raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
 
 

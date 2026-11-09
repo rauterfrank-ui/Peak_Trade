@@ -1,0 +1,28 @@
+{
+  "base_commit": "6b132fa1bd4788a937243c179cf294658c5389f7",
+  "source_sha256": {
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V4.json": "cb136ea60f0479c3dc2f2b314c976b761d89918a481b619ae07e5f212d3d7b00",
+    "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md": "db5fbf3dffa6ed166f4a0016de2793027bd41c60571b2c7f8121587ab46ffb80",
+    "docs/ops/specs/CURRENT_SYSTEM_FIVE_BOUNDED_WORK_PACKAGES_V1.md": "5cc6035cb02f6b51cc4abf89f566857e1c1a5116a22fdf1646ce56ba7475fbf0",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "8c0a65414cbf79c7700218ec164c216aa9f156346bf8da9eac26bb5a746c112c",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "ec32ca4df8e620123b4226d9ff11d575950890d89121535747bccae34ee3bea8",
+    "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py": "d4ff09909657e328588cb2ef304516a1bb3d3ce3300d3137af48867c32ed58b3",
+    "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py": "bd71920b85779be1164db2b522a06884bf0b243a09a4492532475191382d8968",
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "155b613d7f5b134f40c2665f9ac9da08698da63c058c7a37bc22f645d9a3457f",
+    "tests/ops/test_closing_execution_cost_provision_v1.py": "70e7282c9ad3442139865f4e6535635dda2bf7dfe593a95e943c523d38e457ba"
+  },
+  "test_selector": "tests/ops/test_closing_execution_cost_provision_v1.py tests/ops/test_opening_execution_cost_admission_v1.py tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py tests/ops/test_durable_portfolio_budget_recovery_v1.py tests/ops/test_test_phase_slot_loss_budget_v1.py tests/ops/test_current_post_original_budget_admission_v1.py tests/ops/test_prepost_original_budget_context_v1.py tests/ops/test_bounded_slot_post_close_capital_v1.py",
+  "runtime_authorization_effect": "NONE",
+  "result": "PASS",
+  "exit_code": 0,
+  "full_run": true,
+  "selected_cases": 237,
+  "log_sha256": "c4313ed2db3ef1999d01ddd0683f5d1470a50810381af834814c67e820fa9ae9",
+  "junit_sha256": "046c7500661bf49a5fb5eb495c641e59f4d4779042d74b4b80d44c82de07c8d4",
+  "limits": [
+    "simulated sources only",
+    "funding provision not included",
+    "no open-slot exhaustion consumer yet",
+    "not whole BWP1 completion"
+  ]
+}
