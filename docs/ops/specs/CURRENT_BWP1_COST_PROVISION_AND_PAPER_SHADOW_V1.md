@@ -141,6 +141,12 @@ belegt außerdem noch nicht alle hier verlangten Grenzen und Herkunftsfelder.
 
 ## Noch offene Anschlüsse und Quellen
 
+Der [aktuelle Kostenvergleich offener Slots](CURRENT_OPEN_SLOT_CURRENT_COST_PROTECTION_V1.md)
+ergänzt den Schutz innerhalb der ursprünglich gebundenen nächsten Fundingperiode.
+Frische Gebühren, Schließtiefe, Restmenge und Fundinggrenzen können den bestehenden
+Zielslot-Safety-Exit auslösen. Er verändert keine Reservation und schließt den
+noch offenen Abrechnungs-/Reservenübergang nicht.
+
 Der [Schutz einer offenen Testslotposition](CURRENT_OPEN_TEST_SLOT_LOSS_PROTECTION_V1.md)
 ergänzt die Entryvorsorge: Originalaccounting und frischer Mark-/FX-Bezug
 erreichen den ursprünglichen kontrollierten Safety-Exit. Ein begonnener Close

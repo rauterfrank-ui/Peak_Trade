@@ -196,6 +196,13 @@ Wissensquellen wurden an den tatsächlichen Ownereingängen abgeglichen.
 Die laufende Kosten-/Fundingvorsorgeerneuerung, vollständige Margin-/Liquidations-
 zulassung und der gemeinsame Wirtschaftsrahmen bleiben offen.
 
+Der anschließende [aktuelle Kostenvergleich](CURRENT_OPEN_SLOT_CURRENT_COST_PROTECTION_V1.md)
+verbindet frische kontobezogene Gebühren, ausführbare Schließtiefe und dieselbe
+noch kommende Fundingperiode mit dem vorhandenen slotbezogenen Safety-Exit.
+Der Quellenbefund bleibt von Reservenmutation und gebuchter Zahlung getrennt.
+Der Abrechnungsübergang samt atomarer Anpassung der tatsächlichen Holds ist damit
+noch nicht geschlossen; BWP1 bleibt IN_BEARBEITUNG.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),
