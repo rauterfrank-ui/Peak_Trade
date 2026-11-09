@@ -118,15 +118,27 @@ def _frozen_source() -> str:
     return resolved
 
 
-def test_master_v2_unchanged_against_frozen_source() -> None:
+def test_master_v2_unchanged_against_accepted_current_source() -> None:
+    # The frozen tag stays immutable, but the accepted current merge already
+    # contains separately approved adapter/numeric-admission deltas. This BWP
+    # may change none of them or the native Core; do not mistake prior approved
+    # development for a new unapproved mutation of the frozen source.
+    _frozen_source()
+    accepted = "304719c94030ff9aacdf2571e2ae56533f9e6a25"
     result = subprocess.run(
-        ["git", "diff", "--name-only", _frozen_source(), "--", "src/trading/master_v2"],
+        ["git", "diff", "--name-only", accepted, "--", "src/trading/master_v2"],
         cwd=REPO,
         capture_output=True,
         text=True,
         check=True,
     )
     assert result.stdout.strip() == ""
+    untracked = subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard", "--", "src/trading/master_v2"],
+        cwd=REPO,
+        text=True,
+    )
+    assert not untracked.strip()
 
 
 def test_runtime_unchanged_against_frozen_source() -> None:

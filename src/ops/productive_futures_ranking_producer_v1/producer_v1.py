@@ -379,6 +379,8 @@ def produce_productive_futures_ranking_v1(
         universe_source_digest=universe.source_digest,
         config_digest=config_digest,
         repository_sha=repository_sha,
+        feature_production_digest=feature_snap.production_digest,
+        universe_payload_digest=universe.payload_digest,
     )
     auth = authority_block()
     auth = {

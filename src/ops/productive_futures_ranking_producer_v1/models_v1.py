@@ -149,8 +149,8 @@ class ProductiveFuturesRankingSnapshotV1:
     def deterministic_payload_for_digest(self) -> dict[str, Any]:
         """Digest payload excludes wall-clock production time.
 
-        Ranking identity is bound to universe input, policy, config, and repository
-        SHA — not to the wall clock of a later identical recompute.
+        Ranking identity is bound to universe input, economic features, policy,
+        config, and repository SHA — not to a later identical recompute's clock.
         """
         payload = self.to_dict()
         payload.pop("integrity_digest", None)
@@ -320,17 +320,25 @@ def compute_ranking_snapshot_id_v1(
     universe_source_digest: str,
     config_digest: str,
     repository_sha: str,
+    feature_production_digest: str | None = None,
+    universe_payload_digest: str | None = None,
 ) -> str:
-    material = "|".join(
-        [
-            CAPABILITY_ID,
-            RANKING_POLICY_ID,
-            RANKING_POLICY_VERSION,
-            PRODUCER_VERSION,
-            universe_snapshot_id,
-            universe_source_digest,
-            config_digest,
-            repository_sha,
-        ]
-    )
+    identity_parts = [
+        CAPABILITY_ID,
+        RANKING_POLICY_ID,
+        RANKING_POLICY_VERSION,
+        PRODUCER_VERSION,
+        universe_snapshot_id,
+        universe_source_digest,
+        config_digest,
+        repository_sha,
+    ]
+    if feature_production_digest is not None:
+        # An economic ranking is an observation of features, not just the
+        # structural universe. The original feature digest includes its source
+        # observation identity. A later recompute clock is not a new source.
+        identity_parts.extend(
+            ["economic-observation-v1", universe_payload_digest or "", feature_production_digest]
+        )
+    material = "|".join(identity_parts)
     return f"pfr_{sha256_hex(material)[:24]}"

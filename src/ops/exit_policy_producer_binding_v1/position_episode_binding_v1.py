@@ -146,8 +146,23 @@ class PositionEpisodeBindingV1:
             )
 
             progress = verify_simulated_accounting_progress_v1(self)
-            if event_time < progress["latest_fill_event_time"]:
+            if event_time < progress["latest_economic_event_time"]:
                 raise ValueError("SIMULATED_ENTRY_PROGRESS_AFTER_OBSERVATION")
+        elif isinstance(self.entry_source_ref, str) and self.entry_source_ref.startswith(
+            "simulated_accounting_entry_source.v1:"
+        ):
+            from src.ops.exit_policy_producer_binding_v1.simulated_accounting_progress_v1 import (
+                _source,
+            )
+            from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v1 import (
+                latest_economic_event_time_v1,
+            )
+
+            payload, _ = _source(self.entry_source_ref, self.identity)
+            if payload["accounting_checkpoint"]["funding_events"] and (
+                event_time < latest_economic_event_time_v1(payload)
+            ):
+                raise ValueError("SIMULATED_ENTRY_FUNDING_AFTER_OBSERVATION")
         # Stage evaluation: failed/blocked replay cannot alter committed episode state.
         return deepcopy(self.binding)
 

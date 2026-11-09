@@ -48,7 +48,7 @@ Quellanker: `GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1`. SHA256: `cf3371c1ee41b80727
 
 [src/ops/productive_futures_ranking_producer_v1/producer_v1.py](../../../../src/ops/productive_futures_ranking_producer_v1/producer_v1.py)
 
-Quellanker: `produce_productive_futures_ranking_v1`. SHA256: `1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9`. Index: `INDEXED`.
+Quellanker: `produce_productive_futures_ranking_v1`. SHA256: `df993feeaab9428eb32164ce94eca5ab5e2d6fe5f73d48c6faaa6ce5d123a31e`. Index: `INDEXED`.
 
 ## CAP23-SINGLE-SELECTED-FUTURE-V1
 

@@ -98,7 +98,7 @@
       "law_id": "CAP22-PRODUCTIVE-RANKING-V1",
       "canonical_source": "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
       "canonical_anchor": "produce_productive_futures_ranking_v1",
-      "source_sha256": "1cdb79bc23b2e1d343fd5ae88729488c98d8d860416d6175b934f78e39d058b9",
+      "source_sha256": "df993feeaab9428eb32164ce94eca5ab5e2d6fe5f73d48c6faaa6ce5d123a31e",
       "source_authority_class": "CANONICAL_SPEC",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",

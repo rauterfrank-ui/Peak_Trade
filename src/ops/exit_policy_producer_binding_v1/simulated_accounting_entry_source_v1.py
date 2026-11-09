@@ -24,6 +24,46 @@ SCHEMA = "simulated_accounting_entry_source.v1"
 FLAT_SCHEMA = "simulated_accounting_flat_source.v1"
 
 
+def economic_journal_events_v1(payload):
+    """Original recorded interleaving; never infer missing funding acquisition order."""
+    funding = payload["accounting_checkpoint"]["funding_events"]
+    if any("funding_sequence" not in row for row in funding.values()):
+        raise ValueError("SIMULATED_ENTRY_FUNDING_REPLAY_NOT_SUPPORTED")
+    ordered = sorted(funding.items(), key=lambda item: item[1]["funding_sequence"])
+    events = []
+    index = 0
+    for count in range(len(payload["fills"]) + 1):
+        while index < len(ordered) and ordered[index][1]["applied_after_fill_count"] == count:
+            event_id, row = ordered[index]
+            events.append(dict(kind="FUNDING", event_id=event_id, value=dict(row)))
+            index += 1
+        if count < len(payload["fills"]):
+            events.append(dict(kind="FILL", value=payload["fills"][count]))
+    if index != len(ordered):
+        raise ValueError("SIMULATED_ENTRY_FUNDING_ORDER_INVALID")
+    return tuple(events)
+
+
+def require_economic_history_extension_v1(previous, current):
+    before, after = economic_journal_events_v1(previous), economic_journal_events_v1(current)
+    if len(after) < len(before) or after[: len(before)] != before:
+        raise ValueError("SIMULATED_ENTRY_ECONOMIC_HISTORY_REWRITE")
+    return before, after
+
+
+def latest_economic_event_time_v1(payload):
+    values = [
+        event["value"].get("event_time_unix") for event in economic_journal_events_v1(payload)
+    ]
+    if not values or any(
+        type(t) not in (int, float) or not math.isfinite(t) or t <= 0 for t in values
+    ):
+        raise ValueError("SIMULATED_ENTRY_ECONOMIC_EVENT_TIME_REQUIRED")
+    if any(a > b for a, b in zip(values, values[1:])):
+        raise ValueError("SIMULATED_ENTRY_ECONOMIC_TIME_REGRESSION")
+    return values[-1]
+
+
 def bind_simulated_accounting_episode_identity_v1(*, identity, opening_fill):
     """Deterministic episode key for this exact simulated opening, not a position ID."""
     identity.validate_v1()
@@ -45,7 +85,7 @@ def _verify(*, identity, session, fills, closed=False):
     fills = tuple(fills)
     if frozen.contract.symbol != identity.venue_native_id:
         raise ValueError("SIMULATED_ENTRY_NATIVE_ID_MISMATCH")
-    if frozen.funding_events or frozen.funding_pnl != 0:
+    if any("funding_sequence" not in row for row in frozen.funding_events.values()):
         raise ValueError("SIMULATED_ENTRY_FUNDING_REPLAY_NOT_SUPPORTED")
     if not fills or any(not isinstance(f, SimulatedFillInputV1) for f in fills):
         raise ValueError("SIMULATED_ENTRY_FILL_INPUTS_REQUIRED")
@@ -59,7 +99,27 @@ def _verify(*, identity, session, fills, closed=False):
     opening = None
     closed_opening = None
     closing_fill = None
-    for fill in fills:
+    payload = {
+        "schema": FLAT_SCHEMA if closed else SCHEMA,
+        "identity": asdict(identity),
+        "accounting_checkpoint": checkpoint,
+        "fills": [f.to_dict() for f in fills],
+    }
+    if frozen.funding_events:
+        latest_economic_event_time_v1(payload)
+    by_id = {fill.fill_id: fill for fill in fills}
+    for event in economic_journal_events_v1(payload):
+        if event["kind"] == "FUNDING":
+            row = event["value"]
+            replay.apply_funding_observation_v1(
+                event_id=event["event_id"],
+                amount=row["amount"],
+                currency=row["currency"],
+                instrument_id=row["instrument_id"],
+                event_time_unix=row["event_time_unix"],
+            )
+            continue
+        fill = by_id[event["value"]["fill_id"]]
         time = fill.event_time_unix
         if time is not None and (
             type(time) not in (int, float) or not math.isfinite(time) or time <= 0
@@ -85,6 +145,7 @@ def _verify(*, identity, session, fills, closed=False):
         replay.portfolio_state().to_dict() != frozen.portfolio_state().to_dict()
         or replay.risk_state().to_dict() != frozen.risk_state().to_dict()
         or replay.last_fill_time != frozen.last_fill_time
+        or replay.funding_events != frozen.funding_events
     ):
         raise ValueError("SIMULATED_ENTRY_ACCOUNTING_REPLAY_MISMATCH")
     if closed:
@@ -101,12 +162,6 @@ def _verify(*, identity, session, fills, closed=False):
         identity=identity, opening_fill=opening
     ):
         raise ValueError("SIMULATED_ENTRY_EPISODE_ID_MISMATCH")
-    payload = {
-        "schema": FLAT_SCHEMA if closed else SCHEMA,
-        "identity": asdict(identity),
-        "accounting_checkpoint": checkpoint,
-        "fills": [f.to_dict() for f in fills],
-    }
     if closed:
         return payload, {
             "entry_event_time": opening.event_time_unix,
