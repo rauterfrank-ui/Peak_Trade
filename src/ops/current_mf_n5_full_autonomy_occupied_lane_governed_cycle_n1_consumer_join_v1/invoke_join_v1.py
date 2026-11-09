@@ -1057,6 +1057,11 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             isolate_known_lane_positions=bounded_slots,
         )
     except InstrumentRuntimeIdentityClosureError as exc:
+        if bounded_slots:
+            try:
+                portfolio_budget_owner.close()
+            except Exception as cleanup_error:
+                raise exc from cleanup_error
         _fail(exc.failure_code, exc.detail)
     if position_episode_bindings is not None:
         from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
