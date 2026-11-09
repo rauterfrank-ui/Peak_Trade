@@ -870,6 +870,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         risk_request: object | None = None,
         opening_cost_observation: object | None = None,
         funding_cost_observation: object | None = None,
+        native_initial_margin_observation: object | None = None,
     ) -> SizedReservationResultV1:
         """Reuse the acknowledged canonical result, never resize an old hold."""
         with self._lock:
@@ -911,6 +912,29 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         raise ValueError("FUNDING_COST_REPLAY_CONTEXT_CHANGED_OR_MISSING")
                 elif funding_cost_observation is not None:
                     raise ValueError("FUNDING_COST_UNBOUND_LEGACY_RESERVATION_NOT_UPGRADED")
+                if binding.native_initial_margin_binding is not None:
+                    from .native_initial_margin_v1 import (
+                        NativeInitialMarginObservationV1,
+                        require_native_margin_locked_v1,
+                    )
+                    from .durable_store_v1 import canonical
+                    from .entry_execution_cost_v1 import utc_now_iso_v1
+
+                    if (
+                        type(native_initial_margin_observation)
+                        is not NativeInitialMarginObservationV1
+                        or canonical(native_initial_margin_observation.to_dict_v1())
+                        != binding.native_initial_margin_binding.observation_json
+                    ):
+                        raise ValueError("NATIVE_INITIAL_MARGIN_REPLAY_CONTEXT_CHANGED_OR_MISSING")
+                    require_native_margin_locked_v1(
+                        self,
+                        binding,
+                        exclude_reservation_id=str(current.reservation_id),
+                        evaluated_at_utc=utc_now_iso_v1(),
+                    )
+                elif native_initial_margin_observation is not None:
+                    raise ValueError("NATIVE_INITIAL_MARGIN_LEGACY_HOLD_NOT_UPGRADED")
                 if binding.risk_binding is not None:
                     binding.risk_binding.validate_replay_v1(risk_request, request)
                 elif risk_request is not None:
@@ -1430,6 +1454,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             ):
                 policy_denial = "NEXT_FUNDING_COST_SOURCES_REQUIRED"
+            if (
+                policy_denial is None
+                and self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_native_initial_margin
+                and (
+                    not isinstance(sizing_binding, ReservationSizingBindingV1)
+                    or sizing_binding.native_initial_margin_binding is None
+                )
+            ):
+                policy_denial = "NATIVE_INITIAL_MARGIN_SOURCES_REQUIRED"
             if policy_denial is not None:
                 return self._result_locked(
                     disposition=ReserveDispositionV1.DENIED,
@@ -1526,6 +1560,26 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         disposition=ReserveDispositionV1.FAIL_CLOSED,
                         reservation=None,
                         reason_codes=("ENTRY_COST_ORIGINAL_BOUND_INSTRUMENT_MISMATCH",),
+                        mutated=False,
+                    )
+            if (
+                detached_sizing is not None
+                and detached_sizing.native_initial_margin_binding is not None
+            ):
+                from .native_initial_margin_v1 import require_native_margin_locked_v1
+                from .entry_execution_cost_v1 import utc_now_iso_v1
+
+                try:
+                    require_native_margin_locked_v1(
+                        self,
+                        detached_sizing,
+                        evaluated_at_utc=utc_now_iso_v1(),
+                    )
+                except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
+                    return self._result_locked(
+                        disposition=ReserveDispositionV1.DENIED,
+                        reservation=None,
+                        reason_codes=(str(exc), "NO_PARTIAL_MUTATION"),
                         mutated=False,
                     )
             if self._held_capital_locked() + money + fee + closing_cost + funding_cost > ceiling:
@@ -1886,6 +1940,21 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         decision=sizing.decision,
                         evaluated_at_utc=utc_now_iso_v1(),
                     )
+            if (
+                sizing is not None
+                and sizing.native_initial_margin_binding is not None
+                or self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_native_initial_margin
+            ):
+                from .native_initial_margin_v1 import require_native_margin_locked_v1
+                from .entry_execution_cost_v1 import utc_now_iso_v1
+
+                require_native_margin_locked_v1(
+                    self,
+                    sizing,
+                    exclude_reservation_id=str(reservation_id),
+                    evaluated_at_utc=utc_now_iso_v1(),
+                )
             if self._held_capital_locked() > self._budget:
                 raise ValueError("CURRENT_ENTRY_BUDGET_OPENING_FEES_UNCOVERED")
             if self._entry_budget_policy is not None:
@@ -2239,7 +2308,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         for binding in state["sizing_bindings"].values():
             binding.pop("risk_binding", None)
             binding["schema"] = (
-                "reservation_sizing_binding.v6"
+                "reservation_sizing_binding.v7"
+                if "native_initial_margin_binding" in binding
+                else "reservation_sizing_binding.v6"
                 if "funding_cost_binding" in binding
                 else "reservation_sizing_binding.v5"
                 if "close_cost_binding" in binding
@@ -2432,6 +2503,19 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
                 restored_sizing[key] = binding
             self._sizing_bindings = restored_sizing
+            if (
+                self._entry_budget_policy is not None
+                and self._entry_budget_policy.require_native_initial_margin
+                and any(
+                    r.counts_against_budget
+                    and (
+                        key not in restored_sizing
+                        or restored_sizing[key].native_initial_margin_binding is None
+                    )
+                    for key, r in records.items()
+                )
+            ):
+                raise ValueError("required native initial margin binding missing on active hold")
             if (
                 self._entry_budget_policy is not None
                 and self._entry_budget_policy.require_opening_execution_costs
@@ -2635,6 +2719,7 @@ def admit_sized_slot_reservation_v1(
     monetary_source: object | None = None,
     opening_cost_observation: object | None = None,
     funding_cost_observation: object | None = None,
+    native_initial_margin_observation: object | None = None,
     local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
 ) -> SizedReservationResultV1:
@@ -2750,6 +2835,7 @@ def admit_sized_slot_reservation_v1(
             risk_request=restrictive_risk,
             opening_cost_observation=opening_cost_observation,
             funding_cost_observation=funding_cost_observation,
+            native_initial_margin_observation=native_initial_margin_observation,
         )
         if (
             handoff_journal is not None
@@ -2942,6 +3028,36 @@ def admit_sized_slot_reservation_v1(
                 reason_codes=(str(exc), "FUNDING_COST_NOT_ADMITTED_NO_RESERVATION"),
                 sizing_decision=decision,
             )
+    native_initial_margin_binding = None
+    if native_initial_margin_observation is not None and not (
+        policy is not None and policy.require_native_initial_margin
+    ):
+        return _sized_deny(
+            owner,
+            disposition=ReserveDispositionV1.FAIL_CLOSED,
+            reason_codes=("NATIVE_INITIAL_MARGIN_EXPLICIT_POLICY_REQUIRED",),
+            sizing_decision=decision,
+        )
+    if policy is not None and policy.require_native_initial_margin:
+        from .native_initial_margin_v1 import bind_native_initial_margin_v1
+
+        try:
+            native_initial_margin_binding = bind_native_initial_margin_v1(
+                native_initial_margin_observation,
+                original_margin=observation,
+                entry_binding=entry_cost_binding,
+                monetary_source=monetary_source,
+                applied_input=patched,
+                decision=decision,
+                evaluated_at_utc=utc_now_iso_v1(),
+            )
+        except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
+            return _sized_deny(
+                owner,
+                disposition=ReserveDispositionV1.FAIL_CLOSED,
+                reason_codes=(str(exc), "NATIVE_INITIAL_MARGIN_NOT_ADMITTED_NO_RESERVATION"),
+                sizing_decision=decision,
+            )
     if restrictive_risk is not None:
         from .restrictive_risk_binding_v1 import bind_restrictive_risk_v1
 
@@ -2978,6 +3094,7 @@ def admit_sized_slot_reservation_v1(
             entry_cost_binding=entry_cost_binding,
             close_cost_binding=close_cost_binding,
             funding_cost_binding=funding_cost_binding,
+            native_initial_margin_binding=native_initial_margin_binding,
         ),
         max_active_sum=patched.total_capital_limit,
         expected_risk_snapshot_digest=risk_snapshot["digest"]
@@ -2996,6 +3113,7 @@ def admit_sized_slot_reservation_v1(
             risk_request=restrictive_risk,
             opening_cost_observation=opening_cost_observation,
             funding_cost_observation=funding_cost_observation,
+            native_initial_margin_observation=native_initial_margin_observation,
         )
     if reserved.disposition is not ReserveDispositionV1.ADMITTED:
         return _sized_deny(

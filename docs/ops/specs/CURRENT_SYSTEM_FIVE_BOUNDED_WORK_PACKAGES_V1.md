@@ -213,6 +213,17 @@ Der Umfang bleibt ausdrücklich intern simuliert. Vollständige Margin-/Liquidat
 zulassung und der gesamte vorab geprüfte Wirtschaftsrahmen bleiben offen;
 BWP1 wird dadurch nicht geschlossen.
 
+Die folgende [native Initialmarginprüfung](CURRENT_NATIVE_INITIAL_MARGIN_ADMISSION_V1.md)
+bindet beobachteten Instrumenthebel und tatsächlich vorhandene Free-Margin in
+der Instrumentwährung an die unveränderte native Menge. Derselbe Budgetowner
+prüft die gemeinsamen lokalen Initialmarginverpflichtungen atomar und erhält
+die Originalquellen im Replay, Cold-Read und späten Entryconsumer. Die zusätzliche
+Testpolicy vergibt weder Bewertungs-FX als Kollateral noch Margincredit für
+einen Fill. Der Umfang bleibt intern simuliert und auf den vorhandenen
+Futures-Cross-Netpfad mit USDT-/USDC-Abrechnung begrenzt. Native Kostendeckung,
+accountwirksame Erhaltungsmargin/Liquidationsdeckung und die numerische
+USD-X-Perp-Abrechnung bleiben ausdrücklich offen; dies schließt BWP1 nicht.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),
