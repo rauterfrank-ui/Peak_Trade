@@ -9,6 +9,8 @@ No POST. No mint without observation.
 from __future__ import annotations
 
 import json
+import gzip
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -68,7 +70,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz"
 MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 RUNBOOK_PATH = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1.md"
@@ -374,14 +376,30 @@ def test_canonical_pack_and_ssot() -> None:
     runbook = RUNBOOK_PATH.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    catalog = {
+        row["path"]: row
+        for row in map(json.loads, gzip.decompress(ATLAS_PATH.read_bytes()).splitlines())
+    }
+    development = json.loads(
+        (REPO_ROOT / "docs/system_atlas/source/development-binding-v1.json").read_text()
+    )
+    developed = {row["path"]: row for row in development["files"]}
     assert "FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1" in spec
-    assert (
-        "FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_"
-        "UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md"
-    ) in mot
-    assert "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1" in runbook
+    assert "current-files.jsonl.gz" in mot and "SYSTEM_ATLAS.md" in mot
+    assert "capital_risk_sizing_v1.py" in mot and "capital_risk_sizing_v1.py" in runbook
+    assert CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ALGEBRA == (
+        "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1"
+    )
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1" in spec
-    assert "11.2.1.CU" in atlas
-    assert "current_productive_29p_risk_capital_model_v1.py" in atlas
-    assert NEXT_OWNER_GO in runbook
+    # Current navigation catalogs original sources; it does not carry retired
+    # section numbers or old owner-GO instructions as operational authority.
+    for path in (
+        "src/ops/governed_productive_account_equity_authority_producer_v1/"
+        "current_productive_29p_risk_capital_model_v1.py",
+        str(SPEC_PATH.relative_to(REPO_ROOT)),
+    ):
+        expected = catalog[path]["sha256"]
+        if path in developed:
+            assert developed[path]["before_sha256"] == expected
+            expected = developed[path]["sha256"]
+        assert expected == hashlib.sha256((REPO_ROOT / path).read_bytes()).hexdigest()
