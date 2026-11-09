@@ -25,6 +25,7 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     require_next_funding_costs: bool = False
     enforce_open_slot_loss_protection: bool = False
     refresh_open_slot_cost_protection: bool = False
+    renew_open_slot_cost_reserves: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -77,6 +78,12 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             and not self.enforce_open_slot_loss_protection
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_CURRENT_OPEN_SLOT_COST_POLICY_INVALID")
+        if (
+            type(self.renew_open_slot_cost_reserves) is not bool
+            or self.renew_open_slot_cost_reserves
+            and not self.refresh_open_slot_cost_protection
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_COST_RENEWAL_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -103,25 +110,34 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             result.update(schema="entry_budget_policy.v7", enforce_open_slot_loss_protection=True)
         if self.refresh_open_slot_cost_protection:
             result.update(schema="entry_budget_policy.v8", refresh_open_slot_cost_protection=True)
+        if self.renew_open_slot_cost_reserves:
+            result.update(schema="entry_budget_policy.v9", renew_open_slot_cost_reserves=True)
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
-    refresh_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v8"
+    renewal_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v9"
+    refresh_mode = isinstance(payload, dict) and payload.get("schema") in {
+        "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
+    }
     protection_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
     }
     funding_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v6",
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
     }
     close_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v5",
         "entry_budget_policy.v6",
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
     }
     cost_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v4",
@@ -129,6 +145,7 @@ def parse_slot_entry_budget_v1(payload):
         "entry_budget_policy.v6",
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
     }
     loss_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v3",
@@ -137,6 +154,7 @@ def parse_slot_entry_budget_v1(payload):
         "entry_budget_policy.v6",
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
+        "entry_budget_policy.v9",
     }
     expected = {
         "schema",
@@ -166,6 +184,8 @@ def parse_slot_entry_budget_v1(payload):
         expected.add("enforce_open_slot_loss_protection")
     if refresh_mode:
         expected.add("refresh_open_slot_cost_protection")
+    if renewal_mode:
+        expected.add("renew_open_slot_cost_reserves")
     if (
         not isinstance(payload, dict)
         or set(payload) != expected
@@ -178,6 +198,7 @@ def parse_slot_entry_budget_v1(payload):
             "entry_budget_policy.v6",
             "entry_budget_policy.v7",
             "entry_budget_policy.v8",
+            "entry_budget_policy.v9",
         }
     ):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_SCHEMA_INVALID")
@@ -193,6 +214,8 @@ def parse_slot_entry_budget_v1(payload):
         raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_PROTECTION_POLICY_INVALID")
     if refresh_mode and data.get("refresh_open_slot_cost_protection") is not True:
         raise EntryBudgetPolicyError("TEST_PHASE_CURRENT_OPEN_SLOT_COST_POLICY_INVALID")
+    if renewal_mode and data.get("renew_open_slot_cost_reserves") is not True:
+        raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_COST_RENEWAL_POLICY_INVALID")
     if loss_mode:
         if (
             data.pop("loss_limit_scope") != "EXPLICIT_TEST_PHASE_ONLY"

@@ -755,6 +755,8 @@ class OpenSlotLossObservationV1:
     pair_instruments_json: str = "null"
     fx_acquired_at_utc: str = ""
     cost_sources_json: str = "null"
+    renewal_context_json: str = "null"
+    cost_reserve_ref: str = ""
 
     @classmethod
     def capture_v1(
@@ -767,9 +769,15 @@ class OpenSlotLossObservationV1:
         pair_instruments_payload=None,
         fx_acquired_at_utc="",
         cost_sources=None,
+        renewal_context=None,
     ):
         if type(mark_source) is not FreshPretradeGetTransportResultV1:
             raise ValueError("OPEN_SLOT_ORIGINAL_MARK_SOURCE_REQUIRED")
+        if renewal_context is not None:
+            from .open_slot_cost_renewal_v1 import OpenSlotCostRenewalContextV1
+
+            if type(renewal_context) is not OpenSlotCostRenewalContextV1:
+                raise ValueError("OPEN_SLOT_ORIGINAL_RENEWAL_CONTEXT_REQUIRED")
         if cost_sources is not None and (
             type(cost_sources) is not dict
             or set(cost_sources) != {"account", "instruments", "fees", "book", "funding"}
@@ -789,10 +797,15 @@ class OpenSlotLossObservationV1:
             "null"
             if cost_sources is None
             else canonical({k: asdict(v) for k, v in cost_sources.items()}),
+            "null" if renewal_context is None else canonical(renewal_context.to_dict_v1()),
         )
 
     def to_dict_v1(self):
         body = asdict(self)
+        if self.renewal_context_json != "null" or self.cost_reserve_ref:
+            return dict(schema="open_slot_loss_observation.v3", **body)
+        body.pop("renewal_context_json")
+        body.pop("cost_reserve_ref")
         if self.cost_sources_json == "null":
             body.pop("cost_sources_json")
             return dict(schema="open_slot_loss_observation.v1", **body)
@@ -801,13 +814,22 @@ class OpenSlotLossObservationV1:
     @classmethod
     def from_dict_v1(cls, raw):
         names = {f.name for f in fields(cls)}
+        if isinstance(raw, dict) and raw.get("schema") in {
+            "open_slot_loss_observation.v1",
+            "open_slot_loss_observation.v2",
+        }:
+            names -= {"renewal_context_json", "cost_reserve_ref"}
         if isinstance(raw, dict) and raw.get("schema") == "open_slot_loss_observation.v1":
             names.remove("cost_sources_json")
         if (
             type(raw) is not dict
             or set(raw) != {"schema", *names}
             or raw["schema"]
-            not in {"open_slot_loss_observation.v1", "open_slot_loss_observation.v2"}
+            not in {
+                "open_slot_loss_observation.v1",
+                "open_slot_loss_observation.v2",
+                "open_slot_loss_observation.v3",
+            }
         ):
             raise ValueError("OPEN_SLOT_LOSS_OBSERVATION_SCHEMA_INVALID")
         return cls(**{k: v for k, v in raw.items() if k != "schema"})
@@ -853,7 +875,9 @@ def _open_slot_fx_v1(currency, observation):
     return edge.normalized_rate, edge.payload_digest
 
 
-def assess_current_open_slot_cost_v1(owner, reservation_id, observation, loss_proof):
+def assess_current_open_slot_cost_v1(
+    owner, reservation_id, observation, loss_proof, *, funding_horizon_ms=None
+):
     """Protection-only repricing within the original next-settlement horizon.
 
     The original reservation, quantity authority and payment ledger are not
@@ -1004,6 +1028,8 @@ def assess_current_open_slot_cost_v1(owner, reservation_id, observation, loss_pr
     original_horizon = json.loads(binding.funding_cost_binding.receipt_json)[
         "upcoming_funding_time_ms"
     ]
+    if funding_horizon_ms is not None:
+        original_horizon = funding_horizon_ms
     now_ms = int(
         datetime.fromisoformat(observation.valuation_epoch.replace("Z", "+00:00")).timestamp()
         * 1000
@@ -1048,7 +1074,7 @@ def assess_current_open_slot_cost_v1(owner, reservation_id, observation, loss_pr
     return {**body, "digest": digest(body)}
 
 
-def assess_open_slot_loss_v1(owner, reservation_id, observation):
+def _assess_open_slot_loss_base_v1(owner, reservation_id, observation):
     """Original-kernel valuation; no fill, fee, funding payment or balance writer."""
     from .slot_economic_source_v1 import _fill
     from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
@@ -1207,9 +1233,18 @@ def assess_open_slot_loss_v1(owner, reservation_id, observation):
     funding = json.loads(binding.funding_cost_binding.receipt_json)
     horizon_valid = int(valuation.timestamp() * 1000) < funding["upcoming_funding_time_ms"]
     original_funding_provision = reserved_funding_cost_v1(binding)
+    if policy.renew_open_slot_cost_reserves:
+        from .open_slot_cost_renewal_v1 import effective_reserve_v1
+
+        close_cost, original_funding_provision, horizon = effective_reserve_v1(
+            owner, reservation_id, observation.cost_reserve_ref
+        )
+        horizon_valid = int(valuation.timestamp() * 1000) < horizon
     exhausted = allowance <= 0
     close_required = (
-        exhausted or horizon_valid and allowance <= close_cost + original_funding_provision
+        exhausted
+        or (horizon_valid or policy.renew_open_slot_cost_reserves)
+        and allowance <= close_cost + original_funding_provision
     )
     body = dict(
         schema="open_slot_loss_protection.v1",
@@ -1224,9 +1259,10 @@ def assess_open_slot_loss_v1(owner, reservation_id, observation):
         prior_closed_net_result_usdc=str(closed_net),
         prior_closed_records_digest=digest(prior),
         remaining_allowance_before_future_costs_usdc=str(allowance),
-        original_close_provision_usdc=str(close_cost),
-        original_next_funding_provision_usdc=str(original_funding_provision),
-        original_funding_horizon_valid=horizon_valid,
+        original_close_provision_usdc=str(reserved_closing_cost_v1(binding)),
+        original_next_funding_provision_usdc=str(reserved_funding_cost_v1(binding)),
+        original_funding_horizon_valid=int(valuation.timestamp() * 1000)
+        < funding["upcoming_funding_time_ms"],
         actual_loss_allowance_exhausted=exhausted,
         close_required=bool(close_required),
         reason="TEST_SLOT_MARK_VALUED_LOSS_ALLOWANCE_EXHAUSTED"
@@ -1244,7 +1280,7 @@ def assess_open_slot_loss_v1(owner, reservation_id, observation):
         runtime_authorization_effect="NONE",
         policy_digest=policy.digest_v1(),
     )
-    if policy.refresh_open_slot_cost_protection:
+    if policy.refresh_open_slot_cost_protection and not policy.renew_open_slot_cost_reserves:
         body.update(
             schema="open_slot_loss_protection.v2",
             current_cost_provision=None,
@@ -1272,6 +1308,16 @@ def assess_open_slot_loss_v1(owner, reservation_id, observation):
                     close_required=True, reason="TEST_SLOT_CURRENT_COST_PROVISIONS_UNCOVERED"
                 )
     return {**body, "digest": digest(body)}
+
+
+def assess_open_slot_loss_v1(owner, reservation_id, observation):
+    """Public valuation path shared by the original owner and cold readback."""
+    base = _assess_open_slot_loss_base_v1(owner, reservation_id, observation)
+    if owner._entry_budget_policy.renew_open_slot_cost_reserves:
+        from .open_slot_cost_renewal_v1 import assess_renewal_v1
+
+        return assess_renewal_v1(owner, reservation_id, observation, base)
+    return base
 
 
 def restore_open_slot_protection_v1(owner, raw):
@@ -1322,6 +1368,19 @@ def restore_open_slot_protection_v1(owner, raw):
                 and proof["actual_loss_allowance_exhausted"] is not True
             ):
                 raise ValueError("OPEN_SLOT_PROTECTION_SOURCE_OR_SUMMARY_MISMATCH")
+            if policy.renew_open_slot_cost_reserves:
+                history = owner._open_slot_cost_reserves.get(proof["reservation_id"], [])
+                renewal = proof["reserve_renewal"]
+                if renewal is not None and renewal not in history:
+                    raise ValueError("OPEN_SLOT_PROTECTION_RENEWAL_HOLD_MISSING")
+                if key == "latest" and (
+                    renewal is not None
+                    and history[-1] != renewal
+                    or renewal is None
+                    and proof["observation"]["cost_reserve_ref"]
+                    != (history[-1]["digest"] if history else "")
+                ):
+                    raise ValueError("OPEN_SLOT_PROTECTION_CURRENT_RESERVE_MISMATCH")
     return json.loads(canonical(raw))
 
 

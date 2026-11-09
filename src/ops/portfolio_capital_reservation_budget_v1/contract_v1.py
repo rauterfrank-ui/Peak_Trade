@@ -335,6 +335,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         self._capital_scope = {}
         self._sizing_bindings: dict[str, ReservationSizingBindingV1] = {}
         self._execution_links: dict[str, dict] = {}
+        self._open_slot_cost_reserves: dict[str, list[dict]] = {}
         self._entry_budget_policy = None
         if entry_budget_policy is not None:
             from .test_phase_limits_v1 import (
@@ -564,6 +565,22 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 != observed_unix
             ):
                 raise ValueError("OPEN_SLOT_CURRENT_EPISODE_OR_CYCLE_MISMATCH")
+            prior = self._open_slot_protection[slot_id]
+            if self._entry_budget_policy.renew_open_slot_cost_reserves:
+                from .entry_execution_cost_v1 import OpenSlotLossObservationV1
+                from .open_slot_cost_renewal_v1 import bind_observation_locked_v1
+
+                old_observation = None if prior is None else prior["latest"]["observation"]
+                if (
+                    old_observation is not None
+                    and replace(
+                        observation, cost_reserve_ref=old_observation.get("cost_reserve_ref", "")
+                    ).to_dict_v1()
+                    == old_observation
+                ):
+                    observation = OpenSlotLossObservationV1.from_dict_v1(old_observation)
+                else:
+                    observation = bind_observation_locked_v1(self, rid, observation)
             proof = assess_open_slot_loss_v1(self, rid, observation)
             # N1/Core consumes a float projection; accounting retains the
             # original Decimal mark in the proof. Compare the same projection
@@ -578,7 +595,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 or source_mark != cycle_mark
             ):
                 raise ValueError("OPEN_SLOT_CURRENT_MARK_CYCLE_MISMATCH")
-            prior = self._open_slot_protection[slot_id]
             if prior:
                 old = datetime.fromisoformat(
                     prior["latest"]["valuation_epoch"].replace("Z", "+00:00")
@@ -604,6 +620,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 else None,
             }
             if updated != prior:
+                if self._entry_budget_policy.renew_open_slot_cost_reserves:
+                    from .open_slot_cost_renewal_v1 import apply_renewal_locked_v1
+
+                    apply_renewal_locked_v1(self, rid, proof)
                 self._open_slot_protection[slot_id] = updated
                 self._persist_locked()
             pending = updated["pending_close"]
@@ -1122,19 +1142,31 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 ):
                     return deny("POST_CLOSE_ENTRY_RECONCILIATION_UNRESOLVED")
             from .entry_execution_cost_v1 import reserved_opening_fee_v1
-            from .entry_execution_cost_v1 import reserved_closing_cost_v1
-            from .entry_execution_cost_v1 import reserved_funding_cost_v1
 
             remaining = self._held_capital_locked() - sum(
                 (
                     r.amount
                     + reserved_opening_fee_v1(self._sizing_bindings.get(rid))
-                    + reserved_closing_cost_v1(self._sizing_bindings.get(rid))
-                    + reserved_funding_cost_v1(self._sizing_bindings.get(rid))
+                    + sum(self._reservation_cost_reserves_locked_v1(rid))
                     for rid, r in active.items()
                 ),
                 Decimal(0),
             )
+            from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
+
+            if enabled(self):
+                remaining = sum_money_v1(
+                    [self._held_capital_locked()]
+                    + [
+                        value.copy_negate()
+                        for rid, record in active.items()
+                        for value in (
+                            record.amount,
+                            reserved_opening_fee_v1(self._sizing_bindings.get(rid)),
+                            *self._reservation_cost_reserves_locked_v1(rid),
+                        )
+                    ]
+                )
             if value < remaining:
                 return deny("POST_CLOSE_REMAINING_HOLDS_EXCEED_FRESH_BUDGET", fence=True)
             for rid, reservation in active.items():
@@ -1277,6 +1309,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     disposition=ReserveDispositionV1.FAIL_CLOSED,
                     reservation=None,
                     reason_codes=("RESTART_OR_UNBOUND_BUDGET_FAIL_CLOSED",),
+                    mutated=False,
+                )
+            from .open_slot_cost_renewal_v1 import entry_blocker_locked_v1
+
+            renewal_blocker = entry_blocker_locked_v1(self)
+            if renewal_blocker is not None:
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.FAIL_CLOSED,
+                    reservation=None,
+                    reason_codes=(renewal_blocker,),
                     mutated=False,
                 )
             if self._store is not None:
@@ -1778,6 +1820,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise ValueError("CURRENT_ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED")
             if aggregate > policy.aggregate_reserved_notional_limit:
                 raise ValueError("CURRENT_ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED")
+            from .open_slot_cost_renewal_v1 import entry_blocker_locked_v1
+
+            renewal_blocker = entry_blocker_locked_v1(self)
+            if renewal_blocker is not None:
+                raise ValueError("CURRENT_ENTRY_BUDGET:" + renewal_blocker)
             sizing = self._sizing_bindings.get(str(reservation_id))
             if sizing is not None and sizing.entry_cost_binding is not None:
                 from .entry_execution_cost_v1 import (
@@ -2017,6 +2064,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         return key, current
 
     def _active_sum_locked(self, slot_id: str | None = None) -> Decimal:
+        from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
+
+        if enabled(self):
+            return sum_money_v1(
+                r.amount
+                for r in self._by_key.values()
+                if r.counts_against_budget and (slot_id is None or str(r.slot_id) == slot_id)
+            )
         total = Decimal("0")
         for reservation in self._by_key.values():
             if reservation.counts_against_budget and (
@@ -2027,8 +2082,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
     def _opening_fee_sum_locked(self, slot_id=None):
         from .entry_execution_cost_v1 import reserved_opening_fee_v1
+        from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
 
-        return sum(
+        return (sum_money_v1 if enabled(self) else sum)(
             (
                 reserved_opening_fee_v1(self._sizing_bindings.get(key))
                 for key, record in self._by_key.items()
@@ -2039,6 +2095,17 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         )
 
     def _held_capital_locked(self):
+        from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
+
+        if enabled(self):
+            return sum_money_v1(
+                (
+                    self._active_sum_locked(),
+                    self._opening_fee_sum_locked(),
+                    self._closing_cost_sum_locked(),
+                    self._funding_cost_sum_locked(),
+                )
+            )
         return (
             self._active_sum_locked()
             + self._opening_fee_sum_locked()
@@ -2047,11 +2114,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         )
 
     def _funding_cost_sum_locked(self, slot_id=None):
-        from .entry_execution_cost_v1 import reserved_funding_cost_v1
+        from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
 
-        return sum(
+        return (sum_money_v1 if enabled(self) else sum)(
             (
-                reserved_funding_cost_v1(self._sizing_bindings.get(key))
+                self._reservation_cost_reserves_locked_v1(key)[1]
                 for key, record in self._by_key.items()
                 if record.counts_against_budget
                 and (slot_id is None or str(record.slot_id) == slot_id)
@@ -2060,11 +2127,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         )
 
     def _closing_cost_sum_locked(self, slot_id=None):
-        from .entry_execution_cost_v1 import reserved_closing_cost_v1
+        from .open_slot_cost_renewal_v1 import enabled, sum_money_v1
 
-        return sum(
+        return (sum_money_v1 if enabled(self) else sum)(
             (
-                reserved_closing_cost_v1(self._sizing_bindings.get(key))
+                self._reservation_cost_reserves_locked_v1(key)[0]
                 for key, record in self._by_key.items()
                 if record.counts_against_budget
                 and (slot_id is None or str(record.slot_id) == slot_id)
@@ -2072,13 +2139,26 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             Decimal(0),
         )
 
+    def _reservation_cost_reserves_locked_v1(self, rid):
+        from .entry_execution_cost_v1 import reserved_closing_cost_v1, reserved_funding_cost_v1
+        from .open_slot_cost_renewal_v1 import enabled, effective_reserve_v1
+
+        if enabled(self):
+            return effective_reserve_v1(self, rid)[:2]
+        binding = self._sizing_bindings.get(rid)
+        return reserved_closing_cost_v1(binding), reserved_funding_cost_v1(binding)
+
     def _entry_budget_denial_locked(self, slot_id, amount):
         policy = self._entry_budget_policy
         if policy is None:
             return None
         if policy.allowed_slot_ids is not None and slot_id not in policy.allowed_slot_ids:
             return "ENTRY_BUDGET_SLOT_NOT_ALLOWED"
-        from .slot_loss_budget_v1 import admission_reason
+        from .open_slot_cost_renewal_v1 import entry_blocker_locked_v1
+
+        renewal_blocker = entry_blocker_locked_v1(self)
+        if renewal_blocker is not None:
+            return renewal_blocker
 
         loss_reason = self._test_slot_loss_entry_blocker_locked(slot_id)
         if loss_reason is not None:
@@ -2118,6 +2198,12 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 else {}
             ),
             "observation_id": self._observation_id,
+            **(
+                {"open_slot_cost_reserves": self._open_slot_cost_reserves}
+                if self._entry_budget_policy is not None
+                and self._entry_budget_policy.renew_open_slot_cost_reserves
+                else {}
+            ),
             "lane_bindings": self._lane_bindings,
             "close_refreshes": self._close_refreshes,
             "sizing_bindings": {
@@ -2214,6 +2300,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "entry_budget_policy",
                 "test_slot_economics",
                 "open_slot_protection",
+                "open_slot_cost_reserves",
             } != {
                 "schema",
                 "account_identity",
@@ -2345,8 +2432,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
                 restored_sizing[key] = binding
             self._sizing_bindings = restored_sizing
-            if self._held_capital_locked() > budget:
-                raise ValueError("held capital including opening fees exceeds stored budget")
             if (
                 self._entry_budget_policy is not None
                 and self._entry_budget_policy.require_opening_execution_costs
@@ -2397,6 +2482,13 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             from .slot_loss_budget_v1 import restore_state
 
             self._slot_test_economics = restore_state(self, payload.get("test_slot_economics"))
+            from .open_slot_cost_renewal_v1 import restore_reserves_v1
+
+            self._open_slot_cost_reserves = restore_reserves_v1(
+                self, payload.get("open_slot_cost_reserves")
+            )
+            if self._held_capital_locked() > budget:
+                raise ValueError("held capital including costs exceeds stored budget")
             from .entry_execution_cost_v1 import restore_open_slot_protection_v1
 
             self._open_slot_protection = restore_open_slot_protection_v1(

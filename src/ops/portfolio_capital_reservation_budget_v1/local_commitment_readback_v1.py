@@ -54,8 +54,6 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
         raise ValueError("LOCAL_COMMITMENT_SOURCE_UNAVAILABLE")
     rows = []
     from .entry_execution_cost_v1 import reserved_opening_fee_v1
-    from .entry_execution_cost_v1 import reserved_closing_cost_v1
-    from .entry_execution_cost_v1 import reserved_funding_cost_v1
 
     for key, reservation in sorted(owner._by_key.items()):
         rid = str(reservation.reservation_id)
@@ -64,6 +62,7 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
         link = owner._execution_links.get(rid, {})
         reconciliation = link.get("reconciliation") or {}
         sized = sizing.decision.canonical_position_sizing if sizing is not None else None
+        close_reserve, funding_reserve = owner._reservation_cost_reserves_locked_v1(rid)
         if sizing is not None and (sized is None or sized.resulting_notional != reservation.amount):
             raise ValueError("LOCAL_COMMITMENT_SIZING_AMOUNT_MISMATCH")
         rows.append(
@@ -89,8 +88,8 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
                 reconciliation_outcome=str(reconciliation.get("decision", {}).get("outcome", "")),
                 reconciliation_matched=reconciliation.get("matched") is True,
                 opening_fee_reserve=reserved_opening_fee_v1(sizing),
-                closing_cost_reserve=reserved_closing_cost_v1(sizing),
-                funding_cost_reserve=reserved_funding_cost_v1(sizing),
+                closing_cost_reserve=close_reserve,
+                funding_cost_reserve=funding_reserve,
             )
         )
     # Capital refresh/admission does not change the obligation generation. A

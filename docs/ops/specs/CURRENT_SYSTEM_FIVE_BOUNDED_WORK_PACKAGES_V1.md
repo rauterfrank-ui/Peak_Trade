@@ -203,6 +203,16 @@ Der Quellenbefund bleibt von Reservenmutation und gebuchter Zahlung getrennt.
 Der Abrechnungsübergang samt atomarer Anpassung der tatsächlichen Holds ist damit
 noch nicht geschlossen; BWP1 bleibt IN_BEARBEITUNG.
 
+Der folgende [Abrechnungs-/Reservenübergang](CURRENT_OPEN_SLOT_COST_RESERVE_RENEWAL_V1.md)
+bindet explizite Originalzahlungen an vollständig belegte Fundingperioden und
+erneuert tatsächlich gehaltene Kostenreserven, frischen Originalkapitalbezug und
+Schutzbefund in derselben Budgettransaktion. Frühe und späte Entryconsumer sowie
+Cold-Read berücksichtigen diesen Stand. Fehlende Abrechnung gibt keine alte
+Vorsorge frei; unzureichende Deckung erreicht den bestehenden Zielslot-Exit.
+Der Umfang bleibt ausdrücklich intern simuliert. Vollständige Margin-/Liquidations-
+zulassung und der gesamte vorab geprüfte Wirtschaftsrahmen bleiben offen;
+BWP1 wird dadurch nicht geschlossen.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),
