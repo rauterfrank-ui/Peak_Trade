@@ -325,6 +325,12 @@ def compose_post_close_feedback_v1(
                 and now - capital_time <= Decimal(str(NUMERIC_EQUITY_TTL_SECONDS)) * 1000
                 and output.bound_venue_identity.lower() == identity.venue.lower()
                 and output.bound_td_mode == envelope.td_mode
+                and handoff.step_29p_claim.expected_instrument_id == source.instrument_id
+                and handoff.step_29p_claim.observed_instrument_id == source.instrument_id
+                and handoff.capital_admission.expected_instrument_id == source.instrument_id
+                and handoff.capital_admission.observed_instrument_id == source.instrument_id
+                and handoff.capital_admission.expected_account_identity == identity.account_identity
+                and handoff.capital_admission.observed_account_identity == identity.account_identity
             )
         except ValueError:
             capital_fresh = False
@@ -342,6 +348,7 @@ def compose_post_close_feedback_v1(
                 expected_observation_id=request.expected_budget_observation_id,
                 account_identity=identity.account_identity,
                 close_evidence_ref=envelope.envelope_digest,
+                bound_instrument=request.bound_instrument,
             )
             reasons.extend(capital_refresh.reason_codes)
     membership = None

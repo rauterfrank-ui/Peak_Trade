@@ -88,3 +88,32 @@ def load_slot_entry_budget_v1(path):
         return parse_slot_entry_budget_v1(json.loads(path.read_text()))
     except (OSError, ValueError, TypeError, KeyError, InvalidOperation) as exc:
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_POLICY_UNAVAILABLE_OR_INVALID") from exc
+
+
+@dataclass(frozen=True)
+class BoundedSlotReconciliationScopeV1:
+    """Explicit simulated inventory scope; exact MATCH only, no repair grant."""
+
+    policy: BoundedSlotEntryBudgetV1
+    bindings: tuple
+    execution_environment: str
+
+    def known_instruments_v1(self):
+        from .recovery_v1 import lane_bindings_v1
+
+        if (
+            type(self.policy) is not BoundedSlotEntryBudgetV1
+            or self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or type(self.bindings) is not tuple
+        ):
+            raise ValueError("BOUNDED_RECONCILIATION_SCOPE_INVALID")
+        self.policy.validate_v1()
+        bindings = dict(self.bindings)
+        if (
+            len(bindings) != len(self.bindings)
+            or not bindings
+            or set(bindings) - set(self.policy.allowed_slot_ids)
+        ):
+            raise ValueError("BOUNDED_RECONCILIATION_SCOPE_INVALID")
+        rows = lane_bindings_v1(bindings)
+        return frozenset(row["bound"]["instrument_id"] for row in rows.values())

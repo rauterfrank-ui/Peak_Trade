@@ -102,6 +102,7 @@ def classify_productive_reconciliation_v1(
     persisted: PortfolioTruthSnapshotV1,
     observed: PortfolioTruthSnapshotV1,
     now_unix: Optional[float] = None,
+    bounded_reconciliation_scope=None,
 ) -> tuple[ProductiveReconciliationClass, MutationPlanV1, tuple[str, ...]]:
     """Return taxonomy class, optional recovery plan, and reason codes."""
     reasons: list[str] = []
@@ -159,9 +160,59 @@ def classify_productive_reconciliation_v1(
                     (f"STALE_SOURCE:{label}",),
                 )
 
+    if bounded_reconciliation_scope is not None:
+        from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+            BoundedSlotReconciliationScopeV1,
+        )
+
+        try:
+            if type(bounded_reconciliation_scope) is not BoundedSlotReconciliationScopeV1:
+                raise ValueError("scope")
+            known = bounded_reconciliation_scope.known_instruments_v1()
+            for snapshot in (persisted, observed):
+                if len({p.instrument_id for p in snapshot.positions}) != len(
+                    snapshot.positions
+                ) or any(
+                    p.instrument_id not in known
+                    or not p.signed_quantity.is_finite()
+                    or p.side
+                    != (
+                        "LONG"
+                        if p.signed_quantity > 0
+                        else "SHORT"
+                        if p.signed_quantity < 0
+                        else "FLAT"
+                    )
+                    for p in snapshot.positions
+                ):
+                    raise ValueError("position")
+            local = _nonzero_positions(persisted)
+            remote = _nonzero_positions(observed)
+            if local or remote:
+                if set(local) != set(remote) or any(
+                    local[i].signed_quantity != remote[i].signed_quantity
+                    or local[i].side != remote[i].side
+                    for i in local
+                ):
+                    raise ValueError("inventory mismatch")
+                return (
+                    ProductiveReconciliationClass.MATCH,
+                    MutationPlanV1(
+                        admissible=False, reason_codes=("BOUNDED_KNOWN_INVENTORY_EXACT_MATCH",)
+                    ),
+                    ("BOUNDED_KNOWN_INVENTORY_EXACT_MATCH",),
+                )
+        except (ValueError, TypeError, AttributeError):
+            return (
+                ProductiveReconciliationClass.UNRECOVERABLE_DRIFT,
+                MutationPlanV1(
+                    admissible=False, reason_codes=("BOUNDED_INVENTORY_SCOPE_OR_MATCH_UNPROVEN",)
+                ),
+                ("BOUNDED_INVENTORY_SCOPE_OR_MATCH_UNPROVEN",),
+            )
+
     local = _nonzero_positions(persisted)
     remote = _nonzero_positions(observed)
-
     if len(remote) > PHASE1_MAX_OPEN_POSITIONS:
         return (
             ProductiveReconciliationClass.UNRECOVERABLE_DRIFT,

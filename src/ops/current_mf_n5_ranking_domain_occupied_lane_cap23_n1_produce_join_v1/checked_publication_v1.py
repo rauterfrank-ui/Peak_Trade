@@ -5,7 +5,8 @@ An interrupted multi-owner write is fenced by the existing checkpoint owner.
 """
 
 from contextlib import ExitStack
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+import json
 from pathlib import Path
 from math import isfinite
 from typing import Mapping
@@ -101,11 +102,13 @@ def publish_checked_lane_selections_v1(
     producer_observed_at_unix,
     observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     replacement_admission_by_lane: Mapping[str, PositionAwareRotationDecisionV1] | None = None,
+    retained_bound_by_lane: Mapping | None = None,
 ) -> CheckedLanePublicationV1:
     from .produce_join_v1 import _assert_non_authority, _fail
 
     _assert_non_authority()
     writer.assert_held()
+    retained_bound_by_lane = dict(retained_bound_by_lane or {})
     resumed = resume_pending_lane_publication_v1(
         topology_state_root_base=topology_state_root_base,
         writer=writer,
@@ -155,8 +158,8 @@ def publish_checked_lane_selections_v1(
                 not loaded.ok
                 or selection is None
                 or selection.instrument_id != slot.canonical_instrument_id
-                or selection.ranking_snapshot_id != prior.ranking_snapshot_id
-                or selection.ranking_integrity_digest != prior.ranking_integrity_digest
+                or selection.ranking_snapshot_id != slot.ranking_snapshot_id
+                or selection.ranking_integrity_digest != slot.ranking_integrity_digest
                 or selection.integrity_digest != receipt["selection_digests"].get(slot.lane_id)
             ):
                 _fail("LANE_COMPLETED_PUBLICATION_SELECTION_MISMATCH", slot.lane_id)
@@ -170,6 +173,27 @@ def publish_checked_lane_selections_v1(
         topology_state_root_base=topology_state_root_base,
         prior_topology=prior,
     )
+    if retained_bound_by_lane:
+        if prior is None or set(retained_bound_by_lane) - {
+            s.lane_id for s in prior.occupied_slots()
+        }:
+            _fail("LANE_RETAINED_BINDING_SOURCE_REQUIRED")
+        old_slots = {s.lane_id: s for s in prior.occupied_slots()}
+        for slot in proposed.occupied_slots():
+            if (
+                slot.lane_id in retained_bound_by_lane
+                and slot.canonical_instrument_id != old_slots[slot.lane_id].canonical_instrument_id
+            ):
+                _fail("LANE_RETAINED_INSTRUMENT_CHANGED", slot.lane_id)
+        proposed = replace(
+            proposed,
+            slots=tuple(
+                old_slots[s.lane_id] if s.lane_id in retained_bound_by_lane else s
+                for s in proposed.slots
+            ),
+            retained_binding_lanes_v1=tuple(sorted(retained_bound_by_lane)),
+        )
+        proposed = isolated_lane_topology_from_dict(proposed.to_dict())
     pins = build_occupied_lane_pins_v1(proposed, ranking_snapshot=ranking_snapshot)
     old_by_lane = (
         {}
@@ -190,9 +214,45 @@ def publish_checked_lane_selections_v1(
 
     with ExitStack() as locks:
         prepared = {}
+        retained = {}
         # Locks stay held through assessment, publication and readback. No lane
         # is written when another lane rejects the same proposed transition.
         for lane, pin in sorted(pins.items()):
+            if lane in retained_bound_by_lane:
+                from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
+                    SingleSelectedFutureSingleWriterV1,
+                )
+                from src.ops.single_selected_future_policy_v1.constants_v1 import EVIDENCE_FILENAME
+
+                lane_writer = SingleSelectedFutureSingleWriterV1(Path(pin.lane_state_root))
+                lane_writer.acquire(now_unix=producer_observed_at_unix)
+                locks.callback(lane_writer.release)
+                loaded = load_and_validate_selection_v1(Path(pin.lane_state_root))
+                selection = loaded.selection
+                bound = retained_bound_by_lane[lane]
+                if (
+                    not loaded.ok
+                    or selection is None
+                    or pin.resolved_venue_native_id != bound.venue_native_id
+                    or bound.universe_snapshot_id != prior.universe_snapshot_id
+                    or any(
+                        getattr(selection, name) != getattr(bound, name)
+                        for name in (
+                            "instrument_id",
+                            "venue_native_id",
+                            "selection_id",
+                            "ranking_snapshot_id",
+                            "ranking_integrity_digest",
+                        )
+                    )
+                    or selection.integrity_digest != bound.selection_integrity_digest
+                ):
+                    _fail("LANE_RETAINED_SELECTION_UNPROVEN", lane)
+                retained[lane] = (
+                    selection,
+                    json.loads((Path(pin.lane_state_root) / EVIDENCE_FILENAME).read_text()),
+                )
+                continue
             open_instrument = None
             if observed_portfolio is not None:
                 old = old_by_lane.get(lane)
@@ -217,8 +277,14 @@ def publish_checked_lane_selections_v1(
                 assessed.previous is not None
                 and prior is not None
                 and (
-                    assessed.previous.ranking_snapshot_id != prior.ranking_snapshot_id
-                    or assessed.previous.ranking_integrity_digest != prior.ranking_integrity_digest
+                    assessed.previous.ranking_snapshot_id
+                    != next(
+                        s for s in prior.occupied_slots() if s.lane_id == lane
+                    ).ranking_snapshot_id
+                    or assessed.previous.ranking_integrity_digest
+                    != next(
+                        s for s in prior.occupied_slots() if s.lane_id == lane
+                    ).ranking_integrity_digest
                 )
             ):
                 _fail("LANE_SELECTION_TOPOLOGY_PROVENANCE_MISMATCH", lane)
@@ -241,20 +307,35 @@ def publish_checked_lane_selections_v1(
             if prior is None
             else topology_integrity_digest_v1(prior.to_dict()),
             recovery_plan={
-                lane: {
-                    "selection": item.publication_selection.to_dict(),
-                    "evidence": prepared_lane_publication_evidence_v1(item),
-                    "previous_digest": None
-                    if item.previous is None
-                    else item.previous.integrity_digest,
-                    "previous_instrument": None
-                    if item.previous is None
-                    else item.previous.instrument_id,
-                }
-                for lane, item in prepared.items()
+                **{
+                    lane: {
+                        "selection": item.publication_selection.to_dict(),
+                        "evidence": prepared_lane_publication_evidence_v1(item),
+                        "previous_digest": None
+                        if item.previous is None
+                        else item.previous.integrity_digest,
+                        "previous_instrument": None
+                        if item.previous is None
+                        else item.previous.instrument_id,
+                    }
+                    for lane, item in prepared.items()
+                },
+                **{
+                    lane: {
+                        "selection": selection.to_dict(),
+                        "evidence": evidence,
+                        "previous_digest": selection.integrity_digest,
+                        "previous_instrument": selection.instrument_id,
+                    }
+                    for lane, (selection, evidence) in retained.items()
+                },
             },
             selection_digests={
-                lane: item.publication_selection.integrity_digest for lane, item in prepared.items()
+                **{
+                    lane: item.publication_selection.integrity_digest
+                    for lane, item in prepared.items()
+                },
+                **{lane: selection.integrity_digest for lane, (selection, _) in retained.items()},
             },
         )
         # From this point, any exception deliberately leaves the durable barrier.
@@ -262,6 +343,7 @@ def publish_checked_lane_selections_v1(
         selections = {
             lane: commit_prepared_lane_selection_v1(item) for lane, item in prepared.items()
         }
+        selections.update({lane: selection for lane, (selection, _) in retained.items()})
         if any(
             selections[lane].to_dict() != item.publication_selection.to_dict()
             for lane, item in prepared.items()
@@ -328,8 +410,8 @@ def resume_pending_lane_publication_v1(
     }
     if any(
         selections[lane].instrument_id != slot.canonical_instrument_id
-        or selections[lane].ranking_snapshot_id != topology.ranking_snapshot_id
-        or selections[lane].ranking_integrity_digest != topology.ranking_integrity_digest
+        or selections[lane].ranking_snapshot_id != slot.ranking_snapshot_id
+        or selections[lane].ranking_integrity_digest != slot.ranking_integrity_digest
         or selections[lane].integrity_digest != receipt["selection_digests"][lane]
         for lane, slot in slots.items()
     ):

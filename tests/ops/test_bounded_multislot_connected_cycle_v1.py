@@ -68,8 +68,13 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
-def ports(bound, epoch, cycle, *, denied=False):
-    base = _injected(payload=_balance_payload(avail_eq="1000.00"))
+def ports(bound, epoch, cycle, *, denied=False, account=None):
+    payload = _balance_payload(avail_eq="1000.00")
+    if account is not None:
+        payload["data"][0]["uid"] = account
+    base = _injected(payload=payload)
+    if account is not None:
+        base = replace(base, expected_account_identity=account)
     instruments = json.loads(json.dumps(base.instruments_payload))
     row = next(r for r in instruments["data"] if r["instId"] == "ETH-USDT-SWAP")
     row.update(

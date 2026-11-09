@@ -99,6 +99,7 @@ def run_productive_reconciliation_startup_gate_v1(
     require_persisted_present: bool = False,
     simulate_crash_after_persist_before_verify: bool = False,
     inject_conflicting_writer: bool = False,
+    bounded_reconciliation_scope=None,
 ) -> ProductiveReconciliationGateResultV1:
     """Session-start reconciliation gate. Alpha only on MATCH or verified recovery."""
     wall = float(now_unix if now_unix is not None else time.time())
@@ -175,6 +176,7 @@ def run_productive_reconciliation_startup_gate_v1(
             persisted=persisted,
             observed=observed,
             now_unix=wall,
+            bounded_reconciliation_scope=bounded_reconciliation_scope,
         )
         pre_digest = persisted.digest()
         observed_digest = observed.digest()

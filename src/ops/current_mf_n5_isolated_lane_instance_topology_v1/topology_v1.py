@@ -209,6 +209,7 @@ class IsolatedLaneTopologyV1:
     entry_policy: str
     free_lane_assignment_policy: str
     restart_reconstruction_policy: str
+    retained_binding_lanes_v1: tuple[str, ...] = ()
 
     def occupied_slots(self) -> tuple[IsolatedLaneSlotV1, ...]:
         return tuple(slot for slot in self.slots if slot.occupancy == OCCUPANCY_OCCUPIED)
@@ -250,6 +251,11 @@ class IsolatedLaneTopologyV1:
             "slots": [slot.to_dict() for slot in self.slots],
             "topology_state_root_base": self.topology_state_root_base,
             "universe_snapshot_id": self.universe_snapshot_id,
+            **(
+                {"retained_binding_lanes_v1": list(self.retained_binding_lanes_v1)}
+                if self.retained_binding_lanes_v1
+                else {}
+            ),
         }
 
 
@@ -260,11 +266,22 @@ def _validate_slots(
     universe_snapshot_id: str,
     ranking_snapshot_id: str,
     ranking_integrity_digest: str,
+    retained_binding_lanes_v1: tuple[str, ...] = (),
 ) -> tuple[IsolatedLaneSlotV1, ...]:
     if len(slots) != MAX_LANE_COUNT:
         _fail(FAILURE_CORRUPT_PRIOR, f"slot_count={len(slots)}")
     expected_ids = list(LANE_IDS)
     actual_ids = [slot.lane_id for slot in slots]
+    if (
+        type(retained_binding_lanes_v1) is not tuple
+        or len(set(retained_binding_lanes_v1)) != len(retained_binding_lanes_v1)
+        or set(retained_binding_lanes_v1) - set(LANE_IDS)
+        or any(
+            slot.lane_id in retained_binding_lanes_v1 and slot.occupancy != OCCUPANCY_OCCUPIED
+            for slot in slots
+        )
+    ):
+        _fail(FAILURE_CORRUPT_PRIOR, "retained_binding_lanes_v1")
     if actual_ids != expected_ids:
         _fail(FAILURE_INVALID_LANE_ID, ",".join(actual_ids))
     occupied_ids: list[str] = []
@@ -295,7 +312,10 @@ def _validate_slots(
         occupied_ids.append(instrument_id)
         if slot.universe_snapshot_id != universe_snapshot_id:
             _fail(FAILURE_CROSS_UNIVERSE, slot.lane_id)
-        if (
+        if slot.lane_id in retained_binding_lanes_v1:
+            if not slot.ranking_snapshot_id or not slot.ranking_integrity_digest:
+                _fail(FAILURE_PROVENANCE_MISMATCH, slot.lane_id)
+        elif (
             slot.ranking_snapshot_id != ranking_snapshot_id
             or slot.ranking_integrity_digest != ranking_integrity_digest
         ):
@@ -400,12 +420,16 @@ def isolated_lane_topology_from_dict(payload: Mapping[str, Any]) -> IsolatedLane
         _fail(FAILURE_CORRUPT_PRIOR, "identity")
     if not ranking_integrity_digest or not base:
         _fail(FAILURE_CORRUPT_PRIOR, "identity")
+    retained = payload.get("retained_binding_lanes_v1", [])
+    if not isinstance(retained, list) or any(type(lane) is not str for lane in retained):
+        _fail(FAILURE_CORRUPT_PRIOR, "retained_binding_lanes_v1")
     validated = _validate_slots(
         slots,
         topology_state_root_base=base,
         universe_snapshot_id=universe_snapshot_id,
         ranking_snapshot_id=ranking_snapshot_id,
         ranking_integrity_digest=ranking_integrity_digest,
+        retained_binding_lanes_v1=tuple(retained),
     )
     occupied = tuple(
         str(slot.canonical_instrument_id)
@@ -418,6 +442,7 @@ def isolated_lane_topology_from_dict(payload: Mapping[str, Any]) -> IsolatedLane
         contract_id=str(payload.get("contract_id") or CONTRACT_ID),
         topology_state_root_base=lane_state_root_key(base),
         membership_instance_id=membership_instance_id,
+        retained_binding_lanes_v1=tuple(retained),
         universe_snapshot_id=universe_snapshot_id,
         ranking_snapshot_id=ranking_snapshot_id,
         ranking_integrity_digest=ranking_integrity_digest,
@@ -551,6 +576,7 @@ def apply_isolated_lane_topology_v1(
             universe_snapshot_id=prior_topology.universe_snapshot_id,
             ranking_snapshot_id=prior_topology.ranking_snapshot_id,
             ranking_integrity_digest=prior_topology.ranking_integrity_digest,
+            retained_binding_lanes_v1=prior_topology.retained_binding_lanes_v1,
         )
         prior_map = prior_topology.instrument_to_lane()
         prior_set = set(prior_map)

@@ -649,6 +649,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         expected_observation_id: str,
         account_identity: str,
         close_evidence_ref: str,
+        bound_instrument: object | None = None,
     ) -> ReserveResultV1:
         """Consume the feedback join's flat proof and fresh canonical capital.
 
@@ -656,6 +657,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         This N=1 refresh cannot retire another lane's or unlisted reservation.
         The caller must have reconciled the exact closing order and flat snapshot.
         """
+        if self._entry_budget_policy is not None:
+            return self._refresh_bounded_slot_after_flat_v1(
+                output=output,
+                slot_id=slot_id,
+                reservation_ids=reservation_ids,
+                expected_observation_id=expected_observation_id,
+                account_identity=account_identity,
+                close_evidence_ref=close_evidence_ref,
+                bound_instrument=bound_instrument,
+            )
         parsed = _producer_budget(output)
         if (
             parsed is None
@@ -725,6 +736,195 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 reason_codes=("RECONCILED_FLAT_CANONICAL_CAPITAL_REFRESHED",),
                 mutated=True,
             )
+
+    def _refresh_bounded_slot_after_flat_v1(
+        self,
+        *,
+        output,
+        slot_id,
+        reservation_ids,
+        expected_observation_id,
+        account_identity,
+        close_evidence_ref,
+        bound_instrument,
+    ):
+        """Retire only one proven flat slot; retain every other original hold.
+
+        The caller is the original close-feedback owner after its full fill,
+        position, pending and fresh-capital checks. No amount comes from a fill.
+        The immutable bounded test policy identifies this separate transition;
+        the ordinary N1 financial contract above remains unchanged.
+        """
+        parsed = _producer_budget(output)
+        with self._lock:
+
+            def deny(reason, *, fence=False):
+                if fence:
+                    self._admitted = False
+                    self._recovery_required = True
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.FAIL_CLOSED,
+                    reservation=None,
+                    reason_codes=(reason,),
+                    mutated=fence,
+                )
+
+            if self._closed_owner or self._storage_failed or self._store is None:
+                return deny("POST_CLOSE_BOUNDED_ORIGINAL_WRITER_UNAVAILABLE")
+            if (
+                parsed is None
+                or not _digest_identity_v1(close_evidence_ref)
+                or not _digest_identity_v1(expected_observation_id)
+                or type(reservation_ids) is not tuple
+                or not reservation_ids
+                or not all(_digest_identity_v1(rid) for rid in reservation_ids)
+                or len(set(reservation_ids)) != len(reservation_ids)
+                or slot_id not in self._lane_bindings
+            ):
+                return deny("POST_CLOSE_BOUNDED_SCOPE_OR_CAPITAL_INVALID")
+            try:
+                bound = lane_bindings_v1({slot_id: bound_instrument})[slot_id]
+                if (
+                    account_identity != self._account_identity
+                    or output.bound_account_identity != self._account_identity
+                    or capital_scope_v1(output) != self._capital_scope
+                ):
+                    return deny("POST_CLOSE_BOUNDED_ACCOUNT_OR_GENERATION_MISMATCH")
+            except (ValueError, TypeError, AttributeError):
+                return deny("POST_CLOSE_BOUNDED_ACCOUNT_OR_GENERATION_MISMATCH")
+            value, observation_id = parsed
+            fingerprint = _sha256_text(
+                _canonical_json(
+                    {
+                        "schema": "bounded_slot_close_refresh.v1",
+                        "slot_id": slot_id,
+                        "reservation_ids": sorted(reservation_ids),
+                        "prior_observation_id": expected_observation_id,
+                        "observation_id": observation_id,
+                        "account_identity": account_identity,
+                        "bound": bound,
+                        "policy": self._entry_budget_policy.digest_v1(),
+                    }
+                )
+            )
+            previous = self._close_refreshes.get(close_evidence_ref)
+            if previous is not None:
+                if previous != fingerprint:
+                    return deny("CLOSE_REFRESH_REPLAY_CONFLICT")
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.IDEMPOTENT_REPLAY,
+                    reservation=None,
+                    reason_codes=("POST_CLOSE_REFRESH_ALREADY_APPLIED",),
+                    mutated=False,
+                )
+            if (
+                not self._admitted
+                or self._recovery_required
+                or self._observation_id != expected_observation_id
+                or observation_id == self._observation_id
+            ):
+                return deny("POST_CLOSE_ACCOUNT_OR_OBSERVATION_MISMATCH")
+            if bound != self._lane_bindings[slot_id]:
+                return deny("POST_CLOSE_BOUNDED_ACCOUNT_OR_GENERATION_MISMATCH")
+            active = {
+                str(r.reservation_id): r
+                for r in self._by_key.values()
+                if r.counts_against_budget and str(r.slot_id) == slot_id
+            }
+            if set(active) != set(reservation_ids):
+                return deny("POST_CLOSE_RESERVATION_SET_MISMATCH")
+            if any(
+                r.state is not ReservationStateV1.COMMITTED
+                or self._reservation_bindings.get(rid) != bound
+                for rid, r in active.items()
+            ):
+                return deny("POST_CLOSE_FOREIGN_OR_UNCOMMITTED_RESERVATION")
+            for rid in active:
+                link = self._execution_links.get(rid)
+                if (
+                    link is not None
+                    and link["phase"] != "PLAN_BOUND"
+                    and (
+                        not (link.get("reconciliation") or {})
+                        .get("decision", {})
+                        .get("reconciliation_complete")
+                    )
+                ):
+                    return deny("POST_CLOSE_ENTRY_RECONCILIATION_UNRESOLVED")
+            remaining = self._active_sum_locked() - sum(
+                (r.amount for r in active.values()), Decimal(0)
+            )
+            if value < remaining:
+                return deny("POST_CLOSE_REMAINING_HOLDS_EXCEED_FRESH_BUDGET", fence=True)
+            for rid, reservation in active.items():
+                self._by_key[self._by_id[rid]] = replace(
+                    reservation,
+                    state=ReservationStateV1.RELEASED,
+                    transition_trace=reservation.transition_trace
+                    + (ReservationStateV1.RELEASED.value,),
+                    terminal_reason=ReleaseReasonV1.RECONCILED_POSITION_FLAT.value,
+                )
+            self._budget, self._observation_id = value, observation_id
+            self._close_refreshes[close_evidence_ref] = fingerprint
+            return self._result_locked(
+                disposition=ReserveDispositionV1.ADMITTED,
+                reservation=None,
+                reason_codes=("RECONCILED_SLOT_FLAT_CANONICAL_CAPITAL_REFRESHED",),
+                mutated=True,
+            )
+
+    def inspect_bounded_slot_close_refresh_v1(self, request):
+        """Read the original committed close marker before scoped rebinding."""
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+            PostCloseFeedbackRequestV1,
+        )
+
+        with self._lock:
+            if (
+                not isinstance(request, PostCloseFeedbackRequestV1)
+                or request.budget_owner is not self
+                or self._entry_budget_policy is None
+                or self._store is None
+                or self._closed_owner
+                or self._storage_failed
+            ):
+                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
+            slot = request.execution.source.quantity_handoff.lane_id
+            bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
+            output = request.capital_handoff.producer_output
+            fingerprint = _sha256_text(
+                _canonical_json(
+                    {
+                        "schema": "bounded_slot_close_refresh.v1",
+                        "slot_id": slot,
+                        "reservation_ids": sorted(request.closed_reservation_ids),
+                        "prior_observation_id": request.expected_budget_observation_id,
+                        "observation_id": observation_identity_v1(output),
+                        "account_identity": output.bound_account_identity,
+                        "bound": bound,
+                        "policy": self._entry_budget_policy.digest_v1(),
+                    }
+                )
+            )
+            if (
+                self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
+                or self._active_sum_locked(slot) != 0
+            ):
+                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
+            for rid in request.closed_reservation_ids:
+                current = self._by_key.get(self._by_id.get(rid))
+                if (
+                    current is None
+                    or current.state is not ReservationStateV1.RELEASED
+                    or current.terminal_reason != ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
+                    or self._reservation_bindings[rid] != bound
+                ):
+                    raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
+            return {
+                "slot_id": slot,
+                "close_ref": request.execution.envelope.envelope_digest,
+                "fingerprint": fingerprint,
+            }
 
     def try_reserve_v1(
         self,

@@ -73,9 +73,13 @@ def _case(
     initial_ranking=None,
     bound_instrument=None,
     prior_membership=None,
+    lane_id="LANE_1",
 ):
     initial = _five_ranking() if initial_ranking is None else initial_ranking
-    old = _cid(initial, "ETH-USDT-SWAP")
+    old = _cid(
+        initial,
+        bound_instrument.venue_native_id if bound_instrument is not None else "ETH-USDT-SWAP",
+    )
     # Keep one explicit universe; refreshing ranking does not merge universes.
     bound = bound_instrument or replace(
         execution_cases._bound(),
@@ -85,7 +89,7 @@ def _case(
     )
     monkeypatch.setattr(quantity_cases, "_bound", lambda: bound)
     monkeypatch.setattr(execution_cases, "_bound", lambda: bound)
-    args, source = execution_cases._prepared()
+    args, source = execution_cases._prepared(lane_id=lane_id)
     status, reasons, plan = execution_cases._bind(args, source)
     assert status.value == "PASS", reasons
     envelope = execution_cases._envelope(plan, source)
@@ -111,7 +115,7 @@ def _case(
     owner = PortfolioCapitalReservationBudgetOwnerV1()
     observed = _bind(owner, epoch="2026-11-03T00:00:00Z")
     reserved = owner.try_reserve_v1(
-        slot_id="LANE_1",
+        slot_id=lane_id,
         decision_id="original-entry",
         cycle_id="entry-cycle",
         observation_id=observed,

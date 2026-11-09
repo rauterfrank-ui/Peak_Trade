@@ -341,6 +341,12 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_AUTHORITY, "origin_main_sha")
     validate_membership_context_artifact_v1(membership)
+    from .bounded_slot_post_close_v1 import (
+        SCHEMA as BOUNDED_CLOSE_SCHEMA,
+        original_bounded_host_v1,
+        retained_bounds_v1,
+    )
+
     continuation_handle = None
     if post_close_continuation is not None:
         from .post_close_continuation_v1 import (
@@ -364,10 +370,20 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         if isinstance(prepared, PostCloseContinuationReplayV1):
             return prepared
         membership, continuation_handle = prepared
+    bounded_host = original_bounded_host_v1(
+        portfolio_budget_owner, cycle_kwargs.get("host_budget_recovery")
+    )
     membership = pin_open_positions_in_membership_v1(
         membership,
         portfolio=cap24_bind.observed_portfolio,
     )
+    retained = {}
+    if bounded_host is not None:
+        retained = dict(bounded_host.bindings)
+        if continuation_handle is not None:
+            if continuation_handle[1]["schema"] != BOUNDED_CLOSE_SCHEMA:
+                _fail(FAILURE_AUTHORITY, "bounded_close_context_required")
+            retained = retained_bounds_v1(continuation_handle[1])
 
     publication = publish_checked_lane_selections_v1(
         membership=membership,
@@ -378,21 +394,39 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         producer_observed_at_unix=producer_observed_at_unix,
         observed_portfolio=cap24_bind.observed_portfolio,
         replacement_admission_by_lane=replacement_admission_by_lane,
+        **({"retained_bound_by_lane": retained} if bounded_host is not None else {}),
     )
     selections = publication.selections
     topology = publication.topology
-    bound_by_lane = bind_occupied_lane_cap24_n1_instruments_v1(
-        selections=selections,
-        topology_state_root_base=topology_state_root_base,
-        ranking_state_root=cap24_bind.ranking_state_root,
-        universe_state_root=cap24_bind.universe_state_root,
-        reconciliation_state_root=cap24_bind.reconciliation_state_root,
-        observed_portfolio=cap24_bind.observed_portfolio,
-        mark_price_by_native_id=cap24_bind.mark_price_by_native_id,
-        repository_sha=repository_sha,
-        session_id=cap24_bind.session_id,
-        now_unix=cap24_bind.now_unix,
-    )
+    binding_scope = {}
+    if bounded_host is not None:
+        from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+            BoundedSlotReconciliationScopeV1,
+        )
+
+        binding_scope["bounded_reconciliation_scope"] = BoundedSlotReconciliationScopeV1(
+            policy=portfolio_budget_owner.entry_budget_policy_v1(),
+            bindings=tuple(sorted(bounded_host.bindings.items())),
+            execution_environment=bounded_host.execution_environment,
+        )
+    refreshed = {l: s for l, s in selections.items() if l not in retained}
+    bound_by_lane = dict(retained)
+    if refreshed:
+        bound_by_lane.update(
+            bind_occupied_lane_cap24_n1_instruments_v1(
+                selections=refreshed,
+                topology_state_root_base=topology_state_root_base,
+                ranking_state_root=cap24_bind.ranking_state_root,
+                universe_state_root=cap24_bind.universe_state_root,
+                reconciliation_state_root=cap24_bind.reconciliation_state_root,
+                observed_portfolio=cap24_bind.observed_portfolio,
+                mark_price_by_native_id=cap24_bind.mark_price_by_native_id,
+                repository_sha=repository_sha,
+                session_id=cap24_bind.session_id,
+                now_unix=cap24_bind.now_unix,
+                **binding_scope,
+            )
+        )
     admitted = admit_occupied_lane_bound_instruments_v1(bound_by_lane)
     composed = compose_occupied_lane_mv2_dp_handoff_v1(admitted, topology)
     selected_pairs = _select_target_lanes(composed, target_cardinality=target)
@@ -421,61 +455,74 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         readiness_kwargs["consumer_completion_binding_digest"] = continuation_handle[1][
             "binding_digest"
         ]
-        admit_post_close_target_v1(
-            post_close_continuation,
-            continuation_handle,
-            owner=owner,
-            pairs=selected_pairs,
-            now_unix=cap24_bind.now_unix,
-            repo_sha=repository_sha,
-            recon_root=cap24_bind.reconciliation_state_root,
-        )
-    readiness = compose_occupied_lane_n1_host_join_readiness_v1(
-        selected_pairs,
-        portfolio_budget_owner=owner,
-        **readiness_kwargs,
-    )
-    rollups = _rollup_from_readiness(readiness)
-    _assert_lane_root_isolation(rollups)
-
-    terminal = TERMINAL_BOUNDARY_PRE_EXTERNAL
-    for rollup in rollups:
-        if rollup.disposition not in _SUCCESS_DISPOSITIONS:
-            terminal = TERMINAL_BOUNDARY_FAIL_CLOSED
-        if rollup.disposition == DISPOSITION_FAIL_CLOSED:
-            _fail(FAILURE_TERMINAL, rollup.lane_id)
-
-    completion: OccupiedLaneRuntimeN5CompletionResultV1 | None = None
-    if include_host_completion_rollup:
-        completion = complete_occupied_lane_runtime_n5_from_readiness_v1(
+        try:
+            recovery = admit_post_close_target_v1(
+                post_close_continuation,
+                continuation_handle,
+                owner=owner,
+                pairs=selected_pairs,
+                now_unix=cap24_bind.now_unix,
+                repo_sha=repository_sha,
+                recon_root=cap24_bind.reconciliation_state_root,
+            )
+        except Exception:
+            if bounded_host is not None:
+                bounded_host.close()
+            raise
+        if recovery is not None:
+            readiness_kwargs["host_budget_recovery"] = recovery
+            readiness_kwargs["observed_portfolio"] = recovery.observed
+    try:
+        readiness = compose_occupied_lane_n1_host_join_readiness_v1(
             selected_pairs,
-            readiness,
-            target_cardinality=target,
-            origin_main_sha=origin_main_sha,
-            cycle_id_prefix=str(readiness_kwargs.get("cycle_id_prefix") or ""),
+            portfolio_budget_owner=owner,
+            **readiness_kwargs,
         )
-        if int(completion.post_count) != 0 or completion.permit_created:
-            _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
+        rollups = _rollup_from_readiness(readiness)
+        _assert_lane_root_isolation(rollups)
 
-    budget = owner.budget_state_v1()
-    result = ProductiveFullAutonomyN5RuntimeOrchestratorResultV1(
-        terminal_boundary=terminal,
-        target_cardinality=target,
-        occupied_lane_ids=tuple(sorted(readiness)),
-        lane_rollups=rollups,
-        readiness_projections=dict(readiness),
-        completion_result=completion,
-        portfolio_active_sum=budget.active_reservation_sum,
-        portfolio_admitted=budget.admitted,
-        external_effect_authorized=False,
-        post_allowed=False,
-        execution_schedule=EXECUTION_SCHEDULE,
-        lane_publication_resumed=publication.resumed,
-    )
-    if continuation_handle is not None:
-        from dataclasses import replace
-        from .post_close_continuation_v1 import acknowledge_post_close_consumer_v1
+        terminal = TERMINAL_BOUNDARY_PRE_EXTERNAL
+        for rollup in rollups:
+            if rollup.disposition not in _SUCCESS_DISPOSITIONS:
+                terminal = TERMINAL_BOUNDARY_FAIL_CLOSED
+            if rollup.disposition == DISPOSITION_FAIL_CLOSED:
+                _fail(FAILURE_TERMINAL, rollup.lane_id)
 
-        receipt = acknowledge_post_close_consumer_v1(continuation_handle, result)
-        result = replace(result, post_close_continuation_receipt=receipt)
-    return result
+        completion: OccupiedLaneRuntimeN5CompletionResultV1 | None = None
+        if include_host_completion_rollup:
+            completion = complete_occupied_lane_runtime_n5_from_readiness_v1(
+                selected_pairs,
+                readiness,
+                target_cardinality=target,
+                origin_main_sha=origin_main_sha,
+                cycle_id_prefix=str(readiness_kwargs.get("cycle_id_prefix") or ""),
+            )
+            if int(completion.post_count) != 0 or completion.permit_created:
+                _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
+
+        budget = owner.budget_state_v1()
+        result = ProductiveFullAutonomyN5RuntimeOrchestratorResultV1(
+            terminal_boundary=terminal,
+            target_cardinality=target,
+            occupied_lane_ids=tuple(sorted(readiness)),
+            lane_rollups=rollups,
+            readiness_projections=dict(readiness),
+            completion_result=completion,
+            portfolio_active_sum=budget.active_reservation_sum,
+            portfolio_admitted=budget.admitted,
+            external_effect_authorized=False,
+            post_allowed=False,
+            execution_schedule=EXECUTION_SCHEDULE,
+            lane_publication_resumed=publication.resumed,
+        )
+        if continuation_handle is not None:
+            from dataclasses import replace
+            from .post_close_continuation_v1 import acknowledge_post_close_consumer_v1
+
+            receipt = acknowledge_post_close_consumer_v1(continuation_handle, result)
+            result = replace(result, post_close_continuation_receipt=receipt)
+        return result
+    except Exception:
+        if bounded_host is not None and continuation_handle is not None:
+            bounded_host.close()
+        raise
