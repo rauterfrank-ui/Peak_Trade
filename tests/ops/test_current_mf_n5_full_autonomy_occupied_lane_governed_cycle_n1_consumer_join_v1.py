@@ -356,7 +356,7 @@ def test_authority_flags_and_s8_seam_are_pinned() -> None:
     assert CURSOR_SCHEMA_CHANGED is False
     assert NEW_STATE_OWNER_CREATED is False
     assert CURSOR_OWNER_CHANGE_REQUIRED is False
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert ATOMICITY_CLAIMED_SATISFIED is False
     assert JOIN_RANKING_AUTHORITY is False
     assert JOIN_SELECTION_AUTHORITY is False
@@ -504,7 +504,12 @@ def test_restart_reloads_lane_cursor_and_runs_again(tmp_path: Path) -> None:
     second_record = second["LANE_2"]
     assert second_record.bootstrap_used is False
     assert second_record.s7_invocation is not None
-    assert second_record.s7_invocation.incoming_cursor == first_outgoing.to_dict()
+    incoming = second_record.s7_invocation.incoming_cursor
+    assert {
+        **incoming,
+        "entry_assessment_frame": first_outgoing.entry_assessment_frame,
+    } == first_outgoing.to_dict()
+    assert incoming["entry_assessment_frame"]["status"] == "EVALUATION_NOT_COMMITTED"
     assert second_record.native_id == pairs["LANE_2"][1].venue_native_id
     assert second_record.governed_cycle_result.disposition in SUCCESS_DISPOSITIONS | {
         DISPOSITION_FAIL_CLOSED

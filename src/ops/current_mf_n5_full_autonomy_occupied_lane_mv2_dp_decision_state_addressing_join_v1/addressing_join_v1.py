@@ -658,6 +658,8 @@ def _incoming_from_loaded_cursor(
 def persist_occupied_lane_mv2_dp_decision_state_cursor_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     prior_invocations: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+    *,
+    expected_prior_digests: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     """Write each lane's outgoing cursor under that lane's existing store_root.
 
@@ -689,6 +691,11 @@ def persist_occupied_lane_mv2_dp_decision_state_cursor_v1(
         path = persist_current_productive_sidestate_confirmation_cursor_v1(
             cursor,
             store_root=Path(store_root),
+            **(
+                {"expected_prior_digest": expected_prior_digests[lane_id]}
+                if expected_prior_digests is not None
+                else {}
+            ),
         )
         actual = lane_state_root_key(path)
         if actual != cursor_address:
@@ -877,7 +884,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
-    """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
+    """Fence Entries, run Core, then CAS-publish an actual outgoing cursor.
 
     Reuses S6 restore (load + cycle) and S6 persist. Persist runs only when every
     occupied lane cycle produced a non-null outgoing_cursor; otherwise fail-closed
@@ -885,6 +892,23 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     external addressing. Cap61 remains unbound. S6 restore itself is unchanged.
     """
     _assert_non_authority()
+    prefix = str(cycle_id_prefix or "").strip()
+    if not prefix:
+        _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    from src.ops.full_core_live_path_composition_root_v1.current_core_entry_attempt_v1 import (
+        begin_current_core_entry_attempt_v1,
+    )
+
+    predecessors = {
+        lane_id: begin_current_core_entry_attempt_v1(
+            bound_instrument=bound,
+            store_root=store_root,
+            cycle_id=f"{prefix}:{lane_id}",
+            incoming_cursor_override=incoming_cursor_override,
+        )
+        for lane_id, (bound, store_root, _address) in bound_seam.items()
+    }
     restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
         composed_pairs,
         cycle_id_prefix=cycle_id_prefix,
@@ -931,7 +955,9 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 FAILURE_MISMATCHED_LANE_STATE,
                 f"{lane_id}:{','.join(bootstrap_failures)}",
             )
-    persist_occupied_lane_mv2_dp_decision_state_cursor_v1(composed_pairs, restored)
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        composed_pairs, restored, expected_prior_digests=predecessors
+    )
     composed: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
     for lane_id in LANE_IDS:
         record = restored.get(lane_id)

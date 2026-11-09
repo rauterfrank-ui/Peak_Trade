@@ -31,7 +31,7 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
 )
 
 
-def seed_core(root, monkeypatch, modern):
+def seed_core(root, monkeypatch, modern, *, cursor_root=None):
     """Same actual Core/LIVE-29P producer; original cursor persisted in a temp root."""
     from tests.ops import test_portfolio_execution_recovery_v1 as source
 
@@ -41,7 +41,7 @@ def seed_core(root, monkeypatch, modern):
         Owner.bind_execution_plan_v1,
     )
     captured = {}
-    cursor_root = root / "original-core-cursor"
+    cursor_root = root / "original-core-cursor" if cursor_root is None else cursor_root
 
     def original_cycle(*a, **kw):
         result = cycle(*a, **kw)

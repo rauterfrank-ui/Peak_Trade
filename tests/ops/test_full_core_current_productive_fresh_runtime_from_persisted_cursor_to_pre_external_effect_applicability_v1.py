@@ -93,6 +93,10 @@ from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24
     _eligible_transport,
     _EXPECTED_SELECTED,
     _identity_payloads,
+    _eligible_rows,
+)
+from tests.ops._productive_economic_md_inject_helpers_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
 )
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _envelope,
@@ -101,21 +105,11 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
 from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
     ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
 )
-from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
-    _mark_row,
-)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = (
     REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_"
     "PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md"
-)
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
-DU_HEADING = (
-    "### 11.2.1.DU FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_"
-    "CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY"
 )
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
@@ -126,9 +120,9 @@ PROTECTED_ALGORITHM_FILES = (
 )
 
 
-def _finalized_candles(count: int = 8) -> list[list[str]]:
+def _finalized_candles(count: int = 100) -> list[list[str]]:
     rows: list[list[str]] = []
-    base = 1_700_000_000_000
+    base = 1_699_994_100_000
     close = 100.0
     for index in range(count):
         ts = str(base + index * 60_000)
@@ -162,7 +156,9 @@ def _market_payloads(*, instrument_id: str = _EXPECTED_SELECTED) -> dict[str, ob
         },
         ENDPOINT_HISTORY_MARK_PRICE_CANDLES: {
             "code": "0",
-            "data": list(reversed([_mark_row(i) for i in range(61)])),
+            "data": list(
+                reversed([[row[0], *row[1:5], "1"] for row in _finalized_candles()[-61:]])
+            ),
         },
     }
 
@@ -185,6 +181,9 @@ def _run(tmp_path: Path, **overrides):
         "origin_main_sha": EXPECTED_ORIGIN_MAIN_SHA,
         "evidence_root": tmp_path / "store",
         "acquisition_transport": _eligible_transport(),
+        "economic_md_public_source": injected_economic_md_source_for_venue_native_ids_v1(
+            [row["instId"] for row in _eligible_rows()]
+        ),
         "fresh_get_transport": _fresh_get_transport(),
         "execute_network": False,
         "producer_observed_at_unix": 1_700_000_100.0,
@@ -261,6 +260,52 @@ def test_default_http_transport_still_forbids_socket() -> None:
         )
     assert transport.post_count == 0
     assert transport.venue_live_contact is False
+
+
+def test_offline_missing_md_source_refuses_without_creating_network_adapter(tmp_path, monkeypatch):
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1 as current,
+    )
+
+    def forbidden(**kwargs):
+        raise AssertionError("Offline fallback must never create a network adapter")
+
+    monkeypatch.setattr(current, "OkxPublicEconomicMdReadAdapterV1", forbidden)
+    with pytest.raises(
+        CurrentProductiveFreshRuntimeFromPersistedCursorError,
+        match="ECONOMIC_MD_PUBLIC_SOURCE_REQUIRED",
+    ):
+        _run(tmp_path, economic_md_public_source=None)
+
+
+def test_explicit_falsey_md_source_is_forwarded_unchanged(tmp_path, monkeypatch):
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1 as current,
+    )
+
+    source = injected_economic_md_source_for_venue_native_ids_v1(
+        [row["instId"] for row in _eligible_rows()]
+    )
+
+    class ExplicitSource:
+        def __bool__(self):
+            return False
+
+        def __getattr__(self, name):
+            return getattr(source, name)
+
+    explicit = ExplicitSource()
+    native = current._run_cap21_to_cap24_v1
+    observed = []
+
+    def consume(**kwargs):
+        observed.append(kwargs["economic_md_public_source"])
+        return native(**kwargs)
+
+    monkeypatch.setattr(current, "_run_cap21_to_cap24_v1", consume)
+    result = _run(tmp_path, economic_md_public_source=explicit)
+    assert observed == [explicit] and result.cap23_selected_instrument_id == _EXPECTED_SELECTED
+    assert result.post_count == "0"
 
 
 def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
@@ -480,30 +525,33 @@ def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DU_HEADING in runbook
-    assert THIS_SLICE in runbook
-    du_section = runbook[runbook.index(DU_HEADING) : runbook.index("## 11.3 Autonomy state model")]
-    assert "ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true" in du_section
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in du_section
-    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in du_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in du_section
-    assert "POST_COUNT=0" in du_section
-    assert "PERMIT_CREATED=false" in du_section
-    assert "EXTERNAL_EFFECT_PERMIT_CREATED=false" in du_section
-    assert SPEC_PATH.name in mot
+    from tests.ops._current_frozen_document_navigation_v1 import (
+        assert_current_frozen_document_navigation,
+    )
+
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        owners=(
+            REPO_ROOT
+            / "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+        ),
+    )
+    for fact in (
+        "ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true",
+        "EXTERNAL_EFFECT_AUTHORIZED=false",
+        "REAL_EXTERNAL_EFFECT_AUTHORIZED=false",
+        "STEP_29Q_STATUS=PLAN_ONLY",
+        "POST_COUNT=0",
+        "PERMIT_CREATED=false",
+        "EXTERNAL_EFFECT_PERMIT_CREATED=false",
+    ):
+        assert fact in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_"
         "PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1"
     ) in spec
-    assert "11.2.1.DU" in atlas
-    assert (
-        "current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_"
-        "effect_applicability_v1.py"
-    ) in atlas
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["OWNER_GO"] == OWNER_GO

@@ -64,6 +64,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     load_current_productive_sidestate_confirmation_cursor_v1,
     persist_current_productive_sidestate_confirmation_cursor_v1,
 )
+from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+    EconomicMdPublicSourceV1,
+    OkxPublicEconomicMdReadAdapterV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
     try_bind_current_productive_venue_plan_v1,
@@ -594,6 +598,7 @@ def execute_current_productive_fresh_runtime_from_persisted_cursor_to_pre_extern
     vault_file: Path | str | None = None,
     acquisition_transport: EeaPublicUniverseGetPortV1 | None = None,
     acquisition_result: EeaUniverseAcquisitionResultV1 | None = None,
+    economic_md_public_source: EconomicMdPublicSourceV1 | None = None,
     fresh_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     replay: Optional[IntegratedOfflineReplayResultV1] = None,
     execute_network: bool = False,
@@ -758,12 +763,24 @@ def execute_current_productive_fresh_runtime_from_persisted_cursor_to_pre_extern
             first_blocker = "EEA_UNIVERSE_ACQUISITION_FAIL_CLOSED"
             cap_status = first_blocker
         else:
+            md_source = economic_md_public_source
+            if md_source is None:
+                if execute_network is not True:
+                    raise CurrentProductiveFreshRuntimeFromPersistedCursorError(
+                        "ECONOMIC_MD_PUBLIC_SOURCE_REQUIRED"
+                    )
+                md_source = OkxPublicEconomicMdReadAdapterV1(
+                    capture_timestamp=datetime.fromtimestamp(
+                        observed_unix, tz=timezone.utc
+                    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+                )
             cap_status, identities, bound, _selection, mv2_reconciliation_admission = (
                 _run_cap21_to_cap24_v1(
                     acquisition=acquisition_result,
                     store=store,
                     repo_sha=repo_sha,
                     observed_unix=observed_unix,
+                    economic_md_public_source=md_source,
                 )
             )
             first_blocker = cap_status if cap_status != "PASS" else ""

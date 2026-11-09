@@ -82,3 +82,20 @@ single-use POST permit is not applicable from this cycle.
 not a 29P or equity finding. These values are cycle-bound evidence, not
 standing GET-count or 29P authority. A HOLD alone is not proof that
 arbitrarily many cycles are required.
+
+
+## Aktuelle Pflichtquelle und Cursorgrenze · 9. November 2026
+
+Der Adapter reicht `economic_md_public_source` nun ausdrücklich an den
+bestehenden Cap21–Cap24-Producer weiter. Ein injizierter Port wird identisch
+weitergegeben, auch wenn sein bool-Wert false ist. Im Offlinepfad ohne Quelle
+verweigert er mit `ECONOMIC_MD_PUBLIC_SOURCE_REQUIRED`, bevor ein öffentlicher
+Netzwerkadapter erstellt wird. Nur der bereits ausdrücklich angeforderte
+Netzwerkpfad darf den vorhandenen öffentlichen Readadapter verwenden. Dies
+behebt eine fehlende Argumentübergabe, ohne Ranking-/Selectionformeln, operative
+Flags oder Senderechte zu ändern. Die Marktquelle ist keine Herkunftszulassung
+der festen Survival-Kosten-/Metrikwerte.
+
+Die aktuelle Originalcursor-Publikationsgrenze wird separat im
+[Coreversuch-Vertrag](CURRENT_CORE_ENTRY_ATTEMPT_ADMISSION_V1.md) beschrieben.
+Dieser direkte Wrapper wird dadurch nicht zu einem neuen S7-/CAS-Owner.

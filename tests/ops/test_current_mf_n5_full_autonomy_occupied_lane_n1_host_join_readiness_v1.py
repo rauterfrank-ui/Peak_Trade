@@ -233,7 +233,7 @@ def test_authority_flags_and_host_seam_are_pinned() -> None:
         "ops.single_future_stateful_no_order_runtime_activation_v1"
     )
     assert "def ensure_host_activation_binding_v1" in HOST_BINDING_SOURCE
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert ATOMICITY_CLAIMED_SATISFIED is False
     assert CURSOR_SINGLE_WRITER is True
     assert NEW_CURSOR_WRITER is False
@@ -338,8 +338,11 @@ def test_n1_end_to_end_pre_external_effect_is_join_ready(tmp_path: Path) -> None
 
 
 def test_unknown_native_contract_identity_remains_rejected(tmp_path: Path) -> None:
-    pairs = {"LANE_1": _legacy_pair(tmp_path, "LANE_1")}
-    kwargs = _legacy_market_kwargs(cycle_id_prefix="unknown-native")
+    slot, bound = _legacy_pair(tmp_path, "LANE_1")
+    pairs = {"LANE_1": (slot, replace(bound, venue_native_id="UNKNOWN-CONTRACT"))}
+    kwargs = _legacy_market_kwargs(
+        cycle_id_prefix="unknown-native", venue_native_id="UNKNOWN-CONTRACT"
+    )
     kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
     with pytest.raises(ValueError, match="future_native_contract_identity_unknown"):
         compose_occupied_lane_n1_host_join_readiness_v1(pairs, **kwargs)
@@ -382,10 +385,12 @@ def test_restart_reloads_lane_cursor_and_stays_unjoined(tmp_path: Path) -> None:
     second_projection = second["LANE_2"]
     assert second_projection.n1_consumer_result.bootstrap_used is False
     assert second_projection.n1_consumer_result.s7_invocation is not None
-    assert (
-        second_projection.n1_consumer_result.s7_invocation.incoming_cursor
-        == first_outgoing.to_dict()
-    )
+    incoming = second_projection.n1_consumer_result.s7_invocation.incoming_cursor
+    assert {
+        **incoming,
+        "entry_assessment_frame": first_outgoing.entry_assessment_frame,
+    } == first_outgoing.to_dict()
+    assert incoming["entry_assessment_frame"]["status"] == "EVALUATION_NOT_COMMITTED"
     assert second_projection.native_id == pairs["LANE_2"][1].venue_native_id
     assert second_projection.host_join_invoked is False
     assert second_projection.host_enabled is False

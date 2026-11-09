@@ -438,8 +438,17 @@ def persist_current_productive_sidestate_confirmation_cursor_v1(
             fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as exc:
             raise CurrentProductiveCursorError("CURSOR_WRITER_CONFLICT") from exc
+        prior = load_current_productive_sidestate_confirmation_cursor_v1(root)
+        from .current_core_entry_assessment_frame_v1 import UNCOMMITTED_ATTEMPT_SCHEMA
+
+        if (
+            isinstance(prior, Mapping)
+            and isinstance(prior.get("entry_assessment_frame"), dict)
+            and prior["entry_assessment_frame"].get("schema") == UNCOMMITTED_ATTEMPT_SCHEMA
+            and expected_prior_digest is None
+        ):
+            raise CurrentProductiveCursorError("CURSOR_ENTRY_ATTEMPT_PREDECESSOR_REQUIRED")
         if expected_prior_digest is not None:
-            prior = load_current_productive_sidestate_confirmation_cursor_v1(root)
             if current_productive_cursor_digest_v1(prior) != expected_prior_digest:
                 raise CurrentProductiveCursorError("CURSOR_PUBLICATION_CONFLICT")
         fd, tmp_name = tempfile.mkstemp(prefix=CURSOR_FILENAME + ".", dir=root)

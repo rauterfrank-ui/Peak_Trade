@@ -37,7 +37,7 @@ CANONICAL_RUNTIME_OWNER=ops.single_future_stateful_no_order_runtime_activation_v
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
 CAP61_CYCLE_STATE_ROOT_BOUND=false
 MAY_BIND_CAP61_STATE_ROOT=false
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 ATOMICITY_CLAIMED_SATISFIED=false
 AUTHORITY_EFFECT=NONE
 RUNTIME_AUTHORIZATION_EFFECT=HOST_JOIN_AND_N5_CARDINALITY_ORCHESTRATION_NO_EXTERNAL_EFFECT
@@ -159,12 +159,15 @@ DISK_PATH_RULE={lane_state_root}/current_productive_sidestate_confirmation_curso
 N1_GLOBAL_CURSOR_REJECTED=true
 LOCKING_MODEL=AuthorizationLifecycleLockV1.CYCLE_EXCLUSION_LOCK
 CAP61_CYCLE_STATE_ROOT_BOUND=false
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 ATOMICITY_CLAIMED_SATISFIED=false
 HOST_ACTIVATION_ROOT={lane_state_root}/cap72_host_activation
 ```
 
-The inherited Runbook `ATOMIC_CHECKPOINT_REQUIRED=true` versus CURRENT
-cursor `NON_ATOMIC_DIRECT_WRITE_TEXT` is not repaired here and is not
-claimed satisfied. Cap 7.2 activation persist remains the existing host
+The original cursor owner now uses per-file atomic replacement, file fsync,
+readback and optional exact-predecessor CAS. This does not establish atomicity
+across the cursor, layered episode, DDO or other stores, directory fsync or
+physical power-loss recovery. The inherited Runbook
+`ATOMIC_CHECKPOINT_REQUIRED=true` remains unproven for the complete checkpoint;
+`ATOMICITY_CLAIMED_SATISFIED=false` remains unchanged. Cap 7.2 activation persist remains the existing host
 owner's persist, not a Cap 6.1 claim.
