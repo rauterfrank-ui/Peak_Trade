@@ -111,3 +111,9 @@ originaler Entscheid, Risikomengenrechnung, gespeicherte Reservation und finaler
 Envelope stimmen überein. Alle verwendeten Markt-/Accountports sind synthetisch;
 Netzwerkverbindungen sind in dieser Gegenprobe gesperrt. Es entstehen keine
 Orders oder produktiven Rechte.
+
+Die anschließende Nutzerpräzisierung verlangt bereits für die Testphase mehrere
+Slots und **25 USDC je Slot**, bei fünf Slots also 125 USDC unter originaler
+Kapitalzulassung. Die [Mehrslotanforderung](CURRENT_MULTISLOT_TEST_PHASE_REQUIREMENTS_V1.md)
+trennt dieses beauftragte Ziel von der hier beschriebenen heutigen aggregierten
+25-USDC-Konfiguration und den noch getrennt nachzuweisenden Hostanschlüssen.

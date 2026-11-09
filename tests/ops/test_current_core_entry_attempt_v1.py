@@ -518,7 +518,8 @@ def test_fence_write_failure_never_invokes_core_and_does_not_claim_publication(
             )
         assert not calls and load(root) == before
         # A failed durable write is NOT evidence of a negative published frame.
-        # Independent sender/storage-outage coordination remains outside this proof.
+        # Direct S7 has no original budget owner. Actual N1's owner withdrawal
+        # on this failure is covered separately; no negative cursor is invented.
         inspect_original_portfolio_execution_context_v1(**args)
     finally:
         host.close()
