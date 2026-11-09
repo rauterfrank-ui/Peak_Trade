@@ -516,7 +516,7 @@ def _compose_layered_lane_cycle_v1(
     index_px = float(mark_px) * 0.995
     bound = pair[1]
     return compose_occupied_lane_mv2_dp_durable_cycle_v1(
-        {"LANE_1": pair},
+        {pair[0].lane_id: pair},
         cycle_id_prefix=cycle_id_prefix,
         observed_unix=float(event_ts_unix) + 1.0,
         mark_px=float(mark_px),
@@ -530,13 +530,13 @@ def _compose_layered_lane_cycle_v1(
         last_finalized_event_ts_unix=float(event_ts_unix),
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
-        g17_typed_vol_producers={"LANE_1": g17_typed_vol_producer},
+        g17_typed_vol_producers={pair[0].lane_id: g17_typed_vol_producer},
         canonical_price_provenance=provenance_for_bound_v1(
             bound=bound,
             mark_px=float(mark_px),
             index_px=index_px,
         ),
-    )["LANE_1"].cycle_result
+    )[pair[0].lane_id].cycle_result
 
 
 def run_natural_enter_long_sequence_for_bound_v1(
@@ -695,6 +695,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     bound: BoundInstrumentV1,
     g17_typed_vol_producer: object,
     lane_state_root: Path,
+    lane_id: str = "LANE_1",
 ) -> tuple[Any, tuple[float, ...], float, float, object]:
     """Stop after layered ARM; leave store ready for one governed ENTER cycle."""
     enter_ts = governed_productive_c1_event_ts_unix_v1()
@@ -735,7 +736,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     arm_mark = float(arm_closes[-1])
     arm_ts = enter_ts
 
-    pair = _lane_pair_v1(lane_state_root=lane_state_root, bound=bound)
+    pair = _lane_pair_v1(lane_state_root=lane_state_root, bound=bound, lane_id=lane_id)
     store_root = Path(pair[0].lane_state_root)
     persist_current_productive_sidestate_confirmation_cursor_v1(
         upscope_candidate.outgoing_cursor,

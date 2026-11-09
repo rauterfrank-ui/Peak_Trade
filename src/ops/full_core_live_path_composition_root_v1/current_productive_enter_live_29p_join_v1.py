@@ -482,9 +482,20 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
 
     # An outer Ops policy, not an E2E profile or a Double-Play producer input.
     try:
+        from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+            BoundedSlotEntryBudgetV1,
+        )
+
+        bound_policy = (
+            portfolio_budget_owner.entry_budget_policy_v1()
+            if portfolio_budget_owner is not None
+            else None
+        )
         policy = (
             entry_budget_policy
             if entry_budget_policy is not None
+            else bound_policy
+            if bound_policy is not None
             else load_entry_budget_policy_v1()
         )
         if not isinstance(policy, EntryBudgetPolicyV1):
@@ -492,6 +503,18 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         policy.validate_v1()
         if portfolio_budget_owner is None:
             raise EntryBudgetPolicyError("ENTRY_BUDGET_REQUIRES_SHARED_RESERVATION_OWNER")
+        if bound_policy is not None and bound_policy.digest_v1() != policy.digest_v1():
+            raise EntryBudgetPolicyError("ENTRY_BUDGET_ORIGINAL_OWNER_POLICY_MISMATCH")
+        if isinstance(policy, BoundedSlotEntryBudgetV1) and bound_policy is None:
+            raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_POLICY_REQUIRES_BOUND_OWNER")
+        if isinstance(policy, BoundedSlotEntryBudgetV1) and (
+            injected is None
+            or host_budget_recovery is None
+            or host_budget_recovery.host.owner is not portfolio_budget_owner
+            or host_budget_recovery.host.closed
+            or host_budget_recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        ):
+            raise EntryBudgetPolicyError("SLOT_TEST_BUDGET_REQUIRES_ORIGINAL_SIMULATED_HOST")
     except EntryBudgetPolicyError as exc:
         return _deny(status=STATUS_FAIL, blocker=str(exc), replay=replay, get_count=0)
 
