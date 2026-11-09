@@ -50,8 +50,8 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import PositionState, Re
 from trading.master_v2.replay_execution_safety_contract_v1 import ReplayExecutionSafetyV1
 
 
-def _prepared(side="long"):
-    args = _case(side=side, action="exit")
+def _prepared(side="long", *, lane_id="LANE_1"):
+    args = _case(side=side, action="exit", lane_id=lane_id)
     args["position"] = _position(args["identity"], side=side, quantity="1.2")
     replay = args["replay"]
     replay.evidence.replay_id = "offline-full-close"

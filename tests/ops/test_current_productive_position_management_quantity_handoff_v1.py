@@ -31,9 +31,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_position
 )
 
 
-def _case(*, side="long", action="reduce"):
+def _case(*, side="long", action="reduce", lane_id="LANE_1"):
     bound = _bound()
-    identity = OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(lane_id="LANE_1", bound=bound)
+    identity = OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(lane_id=lane_id, bound=bound)
     metadata = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
         venue_native_id=bound.venue_native_id,
         bound_instrument_id=bound.instrument_id,
