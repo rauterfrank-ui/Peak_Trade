@@ -184,6 +184,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     funding_cost_observation: object | None = None
     open_slot_loss_observation: object | None = None
     native_initial_margin_observation: object | None = None
+    absolute_movement_cost_observation: object | None = None
 
 
 @dataclass(frozen=True)
@@ -866,7 +867,25 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     conversion_pair_payload = (
         injected.conversion_pair_instruments_payload if injected is not None else None
     )
-    if index_tickers_payload is None or not isinstance(index_tickers_payload, Mapping):
+    from src.ops.governed_productive_monetary_normalization_v1.instrument_monetary_identity_v1 import (
+        instrument_monetary_identity_from_okx_payload_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
+        MonetaryNormalizationError,
+    )
+
+    try:
+        requires_usdt_conversion = (
+            instrument_monetary_identity_from_okx_payload_v1(
+                instruments_payload, venue_native_id=venue_native_id
+            ).instrument_money_unit
+            == "USDT"
+        )
+    except (ValueError, MonetaryNormalizationError):
+        requires_usdt_conversion = True
+    if requires_usdt_conversion and (
+        index_tickers_payload is None or not isinstance(index_tickers_payload, Mapping)
+    ):
         return _deny(
             status=STATUS_FAIL,
             blocker="MONETARY_NORMALIZATION_INDEX_TICKERS_MISSING",
@@ -1076,6 +1095,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             else None,
             local_commitment_readback=margin_host_inputs.local_commitment_readback,
             native_initial_margin_observation=injected.native_initial_margin_observation
+            if injected is not None
+            else None,
+            absolute_movement_cost_observation=injected.absolute_movement_cost_observation
             if injected is not None
             else None,
             handoff_journal=handoff_journal,

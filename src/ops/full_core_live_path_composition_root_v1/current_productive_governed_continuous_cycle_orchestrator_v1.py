@@ -205,6 +205,7 @@ class InjectedContinuousObservationV1:
     occupancy_payloads: Mapping[str, Any]
     mark_price_payload: Mapping[str, Any] | None = None
     index_tickers_payload: Mapping[str, Any] | None = None
+    mark_acquired_at_utc: str = ""
 
 
 class ContinuousObservationSourceV1(Protocol):
@@ -993,6 +994,11 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     **(
                         {"index_tickers_payload": observation.index_tickers_payload}
                         if observation.index_tickers_payload is not None
+                        else {}
+                    ),
+                    **(
+                        {"mark_acquired_at_utc": observation.mark_acquired_at_utc}
+                        if observation.mark_acquired_at_utc
                         else {}
                     ),
                     execute_network=False,

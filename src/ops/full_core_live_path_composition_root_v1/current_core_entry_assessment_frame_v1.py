@@ -2,8 +2,11 @@
 
 import hashlib
 import json
+from dataclasses import asdict
+from datetime import datetime
 
 SCHEMA = "current_core_entry_assessment_frame.v1"
+PRICE_BOUND_SCHEMA = "current_core_entry_assessment_frame.v2"
 UNCOMMITTED_ATTEMPT_SCHEMA = "current_core_entry_attempt_uncommitted.v1"
 _COMPONENTS = {
     "parent",
@@ -24,7 +27,9 @@ def _digest(value):
     ).hexdigest()
 
 
-def build_current_core_entry_assessment_frame_v1(*, replay, confirmation_state):
+def build_current_core_entry_assessment_frame_v1(
+    *, replay, confirmation_state, price_provenance=None
+):
     from trading.master_v2.canonical_trading_decision_evidence_v1 import (
         serialize_canonical_trading_decision_evidence_canonical,
     )
@@ -75,6 +80,17 @@ def build_current_core_entry_assessment_frame_v1(*, replay, confirmation_state):
         components=values,
         runtime_authorization_effect="NONE",
     )
+    if price_provenance is not None and price_provenance.mark_clock_json != "null":
+        from trading.master_v2.canonical_market_context_v1 import (
+            serialize_canonical_market_context_canonical,
+        )
+
+        market = serialize_canonical_market_context_canonical(mid.market_context)
+        body.update(
+            schema=PRICE_BOUND_SCHEMA,
+            scope_price_source=asdict(price_provenance),
+            market_context=dict(canonical=market, input_digest=mid.market_context.input_digest),
+        )
     return {**body, "digest": _digest(body)}
 
 
@@ -88,19 +104,22 @@ def reject_uncommitted_core_entry_attempt_v1(cursor):
 def read_current_core_entry_assessment_frame_v1(cursor):
     reject_uncommitted_core_entry_attempt_v1(cursor)
     frame = cursor.entry_assessment_frame
+    fields = {
+        "schema",
+        "instrument_id",
+        "trading_epoch",
+        "confirmation_state_digest",
+        "components",
+        "runtime_authorization_effect",
+        "digest",
+    }
+    price_bound = isinstance(frame, dict) and frame.get("schema") == PRICE_BOUND_SCHEMA
+    if price_bound:
+        fields |= {"scope_price_source", "market_context"}
     if (
         not isinstance(frame, dict)
-        or set(frame)
-        != {
-            "schema",
-            "instrument_id",
-            "trading_epoch",
-            "confirmation_state_digest",
-            "components",
-            "runtime_authorization_effect",
-            "digest",
-        }
-        or frame["schema"] != SCHEMA
+        or set(frame) != fields
+        or frame["schema"] not in {SCHEMA, PRICE_BOUND_SCHEMA}
         or frame["digest"] != _digest({k: v for k, v in frame.items() if k != "digest"})
         or frame["runtime_authorization_effect"] != "NONE"
         or frame["instrument_id"] != cursor.instrument_id
@@ -155,11 +174,67 @@ def read_current_core_entry_assessment_frame_v1(cursor):
         or entry["composition_result_ref"] != composition["composition_id"]
     ):
         raise ValueError("CURRENT_CORE_ASSESSMENT_PARENT_MISMATCH")
+    if price_bound:
+        from .current_productive_canonical_price_provenance_v1 import (
+            ProductiveCycleCanonicalPriceProvenanceV1,
+        )
+
+        source = ProductiveCycleCanonicalPriceProvenanceV1(**frame["scope_price_source"])
+        market_ref = frame["market_context"]
+        if (
+            type(market_ref) is not dict
+            or set(market_ref) != {"canonical", "input_digest"}
+            or hashlib.sha256(market_ref["canonical"].encode()).hexdigest()
+            != market_ref["input_digest"]
+        ):
+            raise ValueError("CURRENT_CORE_SCOPE_MARK_CONTEXT_UNPROVEN")
+        market = json.loads(market_ref["canonical"])
+        expected_context = (
+            f"ctx-{cursor.instrument_id}-epoch{frame['trading_epoch']}-full-core-current-v1-mark-"
+            + hashlib.sha256(source.mark_clock_json.encode()).hexdigest()
+        )
+        if (
+            source.mark_clock_json == "null"
+            or source.venue_native_id != cursor.venue_native_id
+            or market["context_id"] != expected_context
+            or market["instrument_id"] != cursor.instrument_id
+            or parent["market_context_ref"] != expected_context
+            or market["trading_epoch"] != frame["trading_epoch"]
+        ):
+            raise ValueError("CURRENT_CORE_SCOPE_MARK_SOURCE_BINDING_INVALID")
+        source.validate_against_cycle_inputs_v1(
+            mark_px=market["mark_price"],
+            index_px=market["index_price"],
+            venue_native_id=cursor.venue_native_id,
+            observed_unix=datetime.fromisoformat(
+                market["decision_time"].replace("Z", "+00:00")
+            ).timestamp(),
+        )
+        source.require_current_mark_clock_v1(
+            observed_unix=datetime.fromisoformat(
+                market["decision_time"].replace("Z", "+00:00")
+            ).timestamp()
+        )
     return bodies
 
 
 def inspect_current_core_entry_assessment_v1(*, cursor, intent_side, original_strategy):
     bodies = read_current_core_entry_assessment_frame_v1(cursor)
+    price_bound = cursor.entry_assessment_frame.get("schema") == PRICE_BOUND_SCHEMA
+    if price_bound:
+        from .current_productive_canonical_price_provenance_v1 import (
+            ProductiveCycleCanonicalPriceProvenanceV1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1 import entry_execution_cost_v1 as cost
+
+        source = ProductiveCycleCanonicalPriceProvenanceV1(
+            **cursor.entry_assessment_frame["scope_price_source"]
+        )
+        source.require_current_mark_clock_v1(
+            observed_unix=datetime.fromisoformat(
+                cost.utc_now_iso_v1().replace("Z", "+00:00")
+            ).timestamp()
+        )
     entry, comp = bodies["entry"], bodies["composition"]
     side = intent_side.lower()
     if (
@@ -225,6 +300,9 @@ def inspect_current_core_entry_assessment_v1(*, cursor, intent_side, original_st
         frame_digest=cursor.entry_assessment_frame["digest"],
         runtime_authorization_effect="NONE",
         economic_input_provenance="NOT_ASSESSED",
+        scope_mark_price_provenance="CURRENT_SOURCE_BOUND"
+        if price_bound
+        else "LEGACY_SOURCE_TIME_UNPROVEN",
     )
 
 

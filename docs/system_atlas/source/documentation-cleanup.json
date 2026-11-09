@@ -383,8 +383,14 @@
     {
       "path": "config/governance/current_law_impact_map_v1/source_v1.json",
       "before_sha256": "5be6151720d0a0751c75170f52a5c5dd4742f04331b45faddce86fb240480fbb",
-      "after_sha256": "a9f379fa3c1a8aa1eedf1ff0bbc08c11315f7b826b728d742467431e1e859c86",
-      "before_git_blob_oid": "c07e3563522a1a7a3c3a9ee69dcbdea7d5563767"
+      "after_sha256": "229815df4f0bc93643296886a0223d46a245b3ee9a70d853cd87e81c462fcaec",
+      "before_git_blob_oid": "c07e3563522a1a7a3c3a9ee69dcbdea7d5563767",
+      "historical_cleanup_after_sha256": "a9f379fa3c1a8aa1eedf1ff0bbc08c11315f7b826b728d742467431e1e859c86",
+      "development_followup": {
+        "parent_commit": "9d2ff67b0ccfdc16d9641900a10f00b3c61eac67",
+        "contract": "docs/ops/specs/CURRENT_SCOPE_MARK_AND_USDC_MOVEMENT_ADMISSION_V1.md",
+        "scope": "Current evidence index source digest and proof references only; original cleanup after hash retained; no freeze tag or runtime authority change"
+      }
     },
     {
       "path": "config/ops/docs_truth_map.yaml",

@@ -76,11 +76,16 @@ def build_capital_risk_sizing_monetary_context_v1(
         instruments_payload,
         venue_native_id=venue_native_id,
     )
-    pair_payload = conversion_pair_instruments_payload or instruments_payload
-    pair_base, pair_quote = conversion_pair_monetary_identity_from_okx_payload_v1(
-        pair_payload,
-        pair_native_id=USDT_USDC_PAIR_NATIVE_ID,
-    )
+    pair_base = pair_quote = None
+    if (
+        instrument_identity.instrument_money_unit == "USDT"
+        or conversion_pair_instruments_payload is not None
+    ):
+        pair_payload = conversion_pair_instruments_payload or instruments_payload
+        pair_base, pair_quote = conversion_pair_monetary_identity_from_okx_payload_v1(
+            pair_payload,
+            pair_native_id=USDT_USDC_PAIR_NATIVE_ID,
+        )
 
     identity_edge = build_usdc_identity_conversion_edge_v1(
         decision_epoch=decision_epoch,

@@ -304,6 +304,11 @@ def require_native_margin_locked_v1(
         decision=sizing.decision,
         evaluated_at_utc=evaluated_at_utc,
     )
+    if (
+        getattr(owner._entry_budget_policy, "require_usdc_settlement", False)
+        and receipt["settlement_currency"] != "USDC"
+    ):
+        raise ValueError("TEST_PHASE_USDC_SETTLEMENT_REQUIRED")
     required = Fraction(int(receipt["required_numerator"]), int(receipt["required_denominator"]))
     for key, hold in owner._by_key.items():
         if not hold.counts_against_budget or str(hold.reservation_id) == exclude_reservation_id:
@@ -322,6 +327,11 @@ def require_native_margin_locked_v1(
         )
         if row["account_identity"] != receipt["account_identity"]:
             raise ValueError("NATIVE_INITIAL_MARGIN_OBLIGATION_ACCOUNT_MISMATCH")
+        if (
+            getattr(owner._entry_budget_policy, "require_usdc_settlement", False)
+            and row["settlement_currency"] != "USDC"
+        ):
+            raise ValueError("TEST_PHASE_USDC_OBLIGATION_REQUIRED")
         if row["settlement_currency"] == receipt["settlement_currency"]:
             required += Fraction(int(row["required_numerator"]), int(row["required_denominator"]))
     if required > Fraction(Decimal(receipt["available_native"])):

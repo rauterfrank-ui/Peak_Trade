@@ -71,16 +71,20 @@ class PublicMarketDataRuntimeV1:
     def run_observation_cycle(
         self,
         *,
-        captured_at: str = "2026-09-26T00:00:00Z",
+        captured_at: str,
         session_id: str = "public_md_runtime_v1",
         persist_normalized_facts: bool = True,
     ) -> list[Mapping[str, Any]]:
         if self.ws_transport is None:
             return []
         msgs = self.ws_transport.poll_messages()
-        envelopes, self.event_state, gaps = process_public_events_v1(
-            events=msgs, state=self.event_state
+        candidate = EventSequenceStateV1(
+            last_event_ts_ms=self.event_state.last_event_ts_ms,
+            seen_ids=set(self.event_state.seen_ids),
+            last_event_ts_ms_by_stream=dict(self.event_state.last_event_ts_ms_by_stream),
+            last_event_id_by_stream=dict(self.event_state.last_event_id_by_stream),
         )
+        envelopes, candidate, gaps = process_public_events_v1(events=msgs, state=candidate)
         inst_ref = {
             "canonical_instrument_id": self.canonical_instrument_id,
             "venue_native_id": self.venue_native_id,
@@ -91,6 +95,7 @@ class PublicMarketDataRuntimeV1:
         }
         if persist_normalized_facts:
             paths = default_store_paths_v1(self.store_root)
+            normalized = []
             for env in envelopes:
                 for raw in (env.payload,):
                     if not isinstance(raw, Mapping):
@@ -102,9 +107,13 @@ class PublicMarketDataRuntimeV1:
                         session_id=session_id,
                         duplicate=env.duplicate,
                         out_of_order=env.out_of_order,
+                        corrected=env.corrected,
                     ):
-                        append_fact_v1(paths, fact)
-        self.persist_durable_event_state()
+                        normalized.append(fact)
+            for fact in normalized:
+                append_fact_v1(paths, fact)
+        persist_event_sequence_state_v1(self.store_root, candidate)
+        self.event_state = candidate
         if gaps and self.rest_fetch_json is not None:
             inst_ref = {
                 "canonical_instrument_id": self.canonical_instrument_id,
@@ -119,7 +128,7 @@ class PublicMarketDataRuntimeV1:
                 venue_native_id=self.venue_native_id,
                 instrument_ref_dict=inst_ref,
                 missing_interval_starts_ms=gaps,
-                captured_at="2026-09-26T00:00:00Z",
+                captured_at=captured_at,
             )
             paths = default_store_paths_v1(self.store_root)
             for bar in recovery.recovered_bars:

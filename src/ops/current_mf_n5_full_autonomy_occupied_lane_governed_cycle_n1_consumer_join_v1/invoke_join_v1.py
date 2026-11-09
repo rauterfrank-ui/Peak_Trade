@@ -301,7 +301,8 @@ def _align_lane_s7_closes_to_injected_c1_v1(
         return aligned
     candle_last = float(last_ts)
     aligned["last_finalized_event_ts_unix"] = candle_last - 60.0
-    aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
+    if getattr(lane_s7.get("canonical_price_provenance"), "mark_clock_json", "null") == "null":
+        aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
     return aligned
 
 
@@ -429,6 +430,11 @@ def _t2_from_s7(
                     "observed_unix": (
                         offline_observation_clock_unix
                         if offline_observation_clock_unix is not None
+                        else datetime.now(timezone.utc).timestamp()
+                        if getattr(
+                            s7_base.get("canonical_price_provenance"), "mark_clock_json", "null"
+                        )
+                        != "null"
                         else float(s7_base["observed_unix"])
                         if s7_base.get("rotation_exit_requests") is not None
                         else float(accepted_c1_ts) + 1.0

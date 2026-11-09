@@ -4,7 +4,7 @@ No independent capital/sizing owner or automatic phase transition. Only the
 original reservation owner stores this immutable policy alongside its holds.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from decimal import Decimal, InvalidOperation
 import json
 
@@ -28,6 +28,8 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     renew_open_slot_cost_reserves: bool = False
     require_native_initial_margin: bool = False
     require_native_cost_cover: bool = False
+    require_absolute_movement_cost_cover: bool = False
+    require_usdc_settlement: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -98,6 +100,18 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             and not self.require_native_initial_margin
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_NATIVE_COST_COVER_POLICY_INVALID")
+        if (
+            type(self.require_absolute_movement_cost_cover) is not bool
+            or self.require_absolute_movement_cost_cover
+            and not self.require_native_cost_cover
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_ABSOLUTE_MOVEMENT_COST_POLICY_INVALID")
+        if (
+            type(self.require_usdc_settlement) is not bool
+            or self.require_usdc_settlement
+            and not self.require_absolute_movement_cost_cover
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_USDC_SETTLEMENT_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -130,10 +144,31 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             result.update(schema="entry_budget_policy.v10", require_native_initial_margin=True)
         if self.require_native_cost_cover:
             result.update(schema="entry_budget_policy.v11", require_native_cost_cover=True)
+        if self.require_absolute_movement_cost_cover:
+            result.update(
+                schema="entry_budget_policy.v12",
+                require_absolute_movement_cost_cover=True,
+                require_usdc_settlement=self.require_usdc_settlement,
+            )
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
+    if isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v12":
+        previous = dict(payload)
+        if previous.pop("require_absolute_movement_cost_cover", None) is not True:
+            raise EntryBudgetPolicyError("TEST_PHASE_ABSOLUTE_MOVEMENT_COST_POLICY_INVALID")
+        usdc = previous.pop("require_usdc_settlement", None)
+        if type(usdc) is not bool:
+            raise EntryBudgetPolicyError("TEST_PHASE_USDC_SETTLEMENT_POLICY_INVALID")
+        previous["schema"] = "entry_budget_policy.v11"
+        policy = replace(
+            parse_slot_entry_budget_v1(previous),
+            require_absolute_movement_cost_cover=True,
+            require_usdc_settlement=usdc,
+        )
+        policy.validate_v1()
+        return policy
     native_cost_mode = (
         isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v11"
     )

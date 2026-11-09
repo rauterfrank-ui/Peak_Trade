@@ -9,6 +9,10 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
 from typing import Any, Mapping
 
 
@@ -52,6 +56,7 @@ class ProductiveCycleCanonicalPriceProvenanceV1:
     mark_finalization_state: str
     mark_temporal_class: str
     index_temporal_class: str
+    mark_clock_json: str = "null"
 
     def validate_against_cycle_inputs_v1(
         self,
@@ -59,6 +64,7 @@ class ProductiveCycleCanonicalPriceProvenanceV1:
         mark_px: float,
         index_px: float,
         venue_native_id: str,
+        observed_unix: float | None = None,
     ) -> None:
         native = str(venue_native_id or "").strip()
         if native != str(self.venue_native_id or "").strip():
@@ -67,6 +73,13 @@ class ProductiveCycleCanonicalPriceProvenanceV1:
             raise ProductiveCanonicalPriceProvenanceError("CMC_MARK_PX_PROVENANCE_MISMATCH")
         if float(index_px) != float(self.index_px):
             raise ProductiveCanonicalPriceProvenanceError("INDEX_PX_PROVENANCE_MISMATCH")
+        if any(
+            isinstance(value, bool) or not math.isfinite(float(value)) or float(value) <= 0
+            for value in (mark_px, index_px, self.mark_px, self.index_px)
+        ):
+            raise ProductiveCanonicalPriceProvenanceError(
+                "CANONICAL_PRICE_FINITE_POSITIVE_REQUIRED"
+            )
         if self.mark_price_class != PRICE_CLASS_CMC_MARK:
             raise ProductiveCanonicalPriceProvenanceError("MARK_PRICE_CLASS_INVALID")
         if self.index_price_class != PRICE_CLASS_INDEX:
@@ -77,6 +90,77 @@ class ProductiveCycleCanonicalPriceProvenanceV1:
             INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         }:
             raise ProductiveCanonicalPriceProvenanceError("INDEX_MARK_SOURCE_COLLAPSE_FORBIDDEN")
+        if observed_unix is not None and self.mark_source != MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE:
+            self.require_current_mark_clock_v1(observed_unix=observed_unix)
+
+    def require_current_mark_clock_v1(self, *, observed_unix: float) -> float:
+        """Recheck venue and acquisition age at the actual Scope consumer clock."""
+        from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
+            classify_live_mark_price_freshness_v1,
+        )
+
+        try:
+            if (
+                isinstance(observed_unix, bool)
+                or not math.isfinite(observed_unix)
+                or observed_unix <= 0
+            ):
+                raise ValueError("evaluation clock invalid")
+            if self.mark_source not in {
+                MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD,
+                MARK_SOURCE_CAP24_MARK_SIDECAR,
+            }:
+                raise ValueError("mark source unproven")
+            if (
+                self.mark_finalization_state != FINALIZATION_CURRENT
+                or self.mark_temporal_class != TEMPORAL_DERIVED_CURRENT
+            ):
+                raise ValueError("current mark class required")
+            source = json.loads(self.mark_clock_json)
+            if type(source) is not dict or set(source) != {
+                "payload",
+                "captured_at_utc",
+                "payload_sha256",
+            }:
+                raise ValueError("original mark observation required")
+            payload = source["payload"]
+            if (
+                type(payload) is not dict
+                or payload.get("code") != "0"
+                or type(payload.get("data")) is not list
+            ):
+                raise ValueError("original mark payload invalid")
+            canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False)
+            if hashlib.sha256(canonical.encode()).hexdigest() != source["payload_sha256"]:
+                raise ValueError("original mark payload digest mismatch")
+            matches = [
+                row
+                for row in payload["data"]
+                if type(row) is dict and row.get("instId") == self.venue_native_id
+            ]
+            if len(matches) != 1 or float(matches[0]["markPx"]) != self.mark_px:
+                raise ValueError("original mark identity/value mismatch")
+            stamp = matches[0].get("ts")
+            if type(stamp) is not str or not stamp.isdigit() or int(stamp) <= 0:
+                raise ValueError("venue mark timestamp required")
+            event_unix = int(stamp) / 1000
+            capture = datetime.fromisoformat(source["captured_at_utc"].replace("Z", "+00:00"))
+            if capture.utcoffset() is None:
+                raise ValueError("acquisition timezone required")
+            captured_unix = capture.timestamp()
+            for age in (
+                captured_unix - event_unix,
+                observed_unix - captured_unix,
+                observed_unix - event_unix,
+            ):
+                verdict = classify_live_mark_price_freshness_v1(age_seconds=age)
+                if not verdict.publishable:
+                    raise ValueError(verdict.reason)
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError) as exc:
+            raise ProductiveCanonicalPriceProvenanceError(
+                "CURRENT_SCOPE_MARK_CLOCK_INVALID:" + str(exc)
+            ) from exc
+        return event_unix
 
 
 def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
@@ -85,6 +169,7 @@ def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
     venue_native_id: str,
     index_from_index_tickers: Mapping[str, Any] | None = None,
     index_from_ticker: Mapping[str, Any] | None = None,
+    mark_acquired_at_utc: str = "",
 ) -> ProductiveCycleCanonicalPriceProvenanceV1:
     """Resolve mark/index from OKX-shaped payloads with independent provenance."""
 
@@ -138,6 +223,20 @@ def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
         mark_finalization_state=FINALIZATION_CURRENT,
         mark_temporal_class=TEMPORAL_DERIVED_CURRENT,
         index_temporal_class=TEMPORAL_DERIVED_CURRENT,
+        mark_clock_json=json.dumps(
+            dict(
+                payload=mark_price_payload,
+                captured_at_utc=mark_acquired_at_utc,
+                payload_sha256=hashlib.sha256(
+                    json.dumps(
+                        mark_price_payload, sort_keys=True, separators=(",", ":"), allow_nan=False
+                    ).encode()
+                ).hexdigest(),
+            ),
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ),
     )
 
 

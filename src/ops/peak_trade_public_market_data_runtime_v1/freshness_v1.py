@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Optional
 
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
@@ -26,6 +27,12 @@ class LiveFreshnessVerdictV1:
 
 def classify_live_mark_price_freshness_v1(*, age_seconds: float) -> LiveFreshnessVerdictV1:
     max_age = float(PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS)
+    if (
+        isinstance(age_seconds, bool)
+        or not isinstance(age_seconds, (int, float))
+        or not math.isfinite(age_seconds)
+    ):
+        return LiveFreshnessVerdictV1(False, True, "AGE_INVALID")
     if age_seconds < 0:
         return LiveFreshnessVerdictV1(False, True, "CAPTURE_IN_FUTURE")
     if age_seconds > max_age:
@@ -35,6 +42,12 @@ def classify_live_mark_price_freshness_v1(*, age_seconds: float) -> LiveFreshnes
 
 def classify_live_best_bid_ask_freshness_v1(*, age_seconds: float) -> LiveFreshnessVerdictV1:
     max_age = float(PUBLIC_V1_BEST_BID_ASK_MAX_AGE_SECONDS)
+    if (
+        isinstance(age_seconds, bool)
+        or not isinstance(age_seconds, (int, float))
+        or not math.isfinite(age_seconds)
+    ):
+        return LiveFreshnessVerdictV1(False, True, "AGE_INVALID")
     if age_seconds < 0:
         return LiveFreshnessVerdictV1(False, True, "CAPTURE_IN_FUTURE")
     if age_seconds > max_age:

@@ -346,7 +346,7 @@ def test_ws_channel_normalizers_mark_trade_bba() -> None:
     }
     ticker = normalize_ws_payload_to_canonical_facts_v1(
         {
-            "arg": {"channel": "tickers", "instId": "ETH-USDT-SWAP"},
+            "arg": {"channel": "mark-price", "instId": "ETH-USDT-SWAP"},
             "data": [{"instId": "ETH-USDT-SWAP", "markPx": "100.1", "ts": "1000"}],
         },
         instrument_ref=inst,

@@ -49,6 +49,8 @@ def build_n5_lane_canonical_price_provenance_from_cap24_v1(
     *,
     index_px: float,
     index_source: str = INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    source_provenance_by_lane: Mapping[str, ProductiveCycleCanonicalPriceProvenanceV1]
+    | None = None,
 ) -> dict[str, ProductiveCycleCanonicalPriceProvenanceV1]:
     """One provenance object per occupied lane, keyed by lane_id."""
 
@@ -72,6 +74,27 @@ def build_n5_lane_canonical_price_provenance_from_cap24_v1(
                 f"CAP24_MARK_PRICE_SIDEcar_MISSING:{native}"
             )
         mark_px = _parse_positive_mark_v1(marks[native], venue_native_id=native)
+        if source_provenance_by_lane is not None:
+            # Cap24 binds the selected instrument and mark value. It must not
+            # erase an existing original observation's clocks or relabel an
+            # explicit synthetic source as a productive scalar sidecar.
+            original = source_provenance_by_lane.get(lane_id)
+            if type(original) is not ProductiveCycleCanonicalPriceProvenanceV1:
+                raise Cap24LaneCanonicalPriceProvenanceComposeError(
+                    f"CAP24_ORIGINAL_MARK_PROVENANCE_REQUIRED:{lane_id}"
+                )
+            try:
+                original.validate_against_cycle_inputs_v1(
+                    mark_px=mark_px,
+                    index_px=original.index_px,
+                    venue_native_id=native,
+                )
+            except ProductiveCanonicalPriceProvenanceError as exc:
+                raise Cap24LaneCanonicalPriceProvenanceComposeError(
+                    f"CAP24_ORIGINAL_MARK_PROVENANCE_MISMATCH:{lane_id}:{exc}"
+                ) from exc
+            out[str(lane_id)] = original
+            continue
         try:
             provenance = build_provenance_from_resolved_cmc_mark_and_index_v1(
                 venue_native_id=native,

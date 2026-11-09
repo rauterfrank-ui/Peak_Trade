@@ -79,10 +79,14 @@ def _extract_base_quote(inst: Mapping[str, Any], inst_id: str) -> tuple[str, str
                 base = match.group(1)
             if not quote:
                 quote = match.group(2)
-    if not base:
-        uly = str(inst.get("uly") or "").strip().upper()
-        if "-" in uly:
-            base = uly.split("-", 1)[0]
+    # OKX's baseCcy/quoteCcy fields are SPOT/MARGIN fields and may be empty
+    # for futures. Use the explicit underlying pair, never settlement as quote:
+    # USD-margined X-Perps can have a USD quote and account-specific USDC cash.
+    if (not base or not quote) and inst.get("instType") in {"SWAP", "FUTURES"}:
+        underlying = re.fullmatch(r"([A-Z0-9]+)-([A-Z0-9]+)", str(inst.get("uly") or "").upper())
+        if underlying:
+            base = base or underlying.group(1)
+            quote = quote or underlying.group(2)
     return base, quote
 
 

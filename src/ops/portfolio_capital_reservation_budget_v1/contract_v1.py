@@ -871,6 +871,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         opening_cost_observation: object | None = None,
         funding_cost_observation: object | None = None,
         native_initial_margin_observation: object | None = None,
+        absolute_movement_cost_observation: object | None = None,
     ) -> SizedReservationResultV1:
         """Reuse the acknowledged canonical result, never resize an old hold."""
         with self._lock:
@@ -935,6 +936,23 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     )
                 elif native_initial_margin_observation is not None:
                     raise ValueError("NATIVE_INITIAL_MARGIN_LEGACY_HOLD_NOT_UPGRADED")
+                if binding.absolute_movement_cost_binding is not None:
+                    from .absolute_movement_cost_v1 import AbsoluteMovementCostObservationV1
+                    from .durable_store_v1 import canonical
+                    from .entry_execution_cost_v1 import utc_now_iso_v1
+
+                    if (
+                        type(absolute_movement_cost_observation)
+                        is not AbsoluteMovementCostObservationV1
+                        or canonical(absolute_movement_cost_observation.to_dict_v1())
+                        != binding.absolute_movement_cost_binding.observation_json
+                    ):
+                        raise ValueError("MOVEMENT_REPLAY_CONTEXT_CHANGED_OR_MISSING")
+                    binding.absolute_movement_cost_binding.validate_v1(
+                        sizing=binding, evaluated_at_utc=utc_now_iso_v1()
+                    )
+                elif absolute_movement_cost_observation is not None:
+                    raise ValueError("MOVEMENT_LEGACY_HOLD_NOT_UPGRADED")
                 if binding.risk_binding is not None:
                     binding.risk_binding.validate_replay_v1(risk_request, request)
                 elif risk_request is not None:
@@ -1471,6 +1489,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     reason_codes=(policy_denial, "NO_PARTIAL_MUTATION"),
                     mutated=False,
                 )
+            if getattr(
+                self._entry_budget_policy, "require_absolute_movement_cost_cover", False
+            ) and (
+                not isinstance(sizing_binding, ReservationSizingBindingV1)
+                or sizing_binding.absolute_movement_cost_binding is None
+            ):
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.DENIED,
+                    reservation=None,
+                    reason_codes=("ABSOLUTE_MOVEMENT_COST_SOURCES_REQUIRED", "NO_PARTIAL_MUTATION"),
+                    mutated=False,
+                )
             active = self._active_sum_locked()
             ceiling = (
                 min(self._budget, max_active_sum) if max_active_sum is not None else self._budget
@@ -1575,6 +1605,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         detached_sizing,
                         evaluated_at_utc=utc_now_iso_v1(),
                     )
+                    if detached_sizing.absolute_movement_cost_binding is not None:
+                        detached_sizing.absolute_movement_cost_binding.validate_v1(
+                            sizing=detached_sizing, evaluated_at_utc=utc_now_iso_v1()
+                        )
                 except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
                     return self._result_locked(
                         disposition=ReserveDispositionV1.DENIED,
@@ -1957,6 +1991,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             if self._held_capital_locked() > self._budget:
                 raise ValueError("CURRENT_ENTRY_BUDGET_OPENING_FEES_UNCOVERED")
+            if getattr(self._entry_budget_policy, "require_absolute_movement_cost_cover", False):
+                from .entry_execution_cost_v1 import utc_now_iso_v1
+
+                if sizing is None or sizing.absolute_movement_cost_binding is None:
+                    raise ValueError("ABSOLUTE_MOVEMENT_COST_SOURCES_REQUIRED")
+                sizing.absolute_movement_cost_binding.validate_v1(
+                    sizing=sizing, evaluated_at_utc=utc_now_iso_v1()
+                )
             if self._entry_budget_policy is not None:
                 bound = self._entry_budget_policy
                 slot = str(found[1].slot_id)
@@ -2308,7 +2350,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         for binding in state["sizing_bindings"].values():
             binding.pop("risk_binding", None)
             binding["schema"] = (
-                "reservation_sizing_binding.v7"
+                "reservation_sizing_binding.v8"
+                if "absolute_movement_cost_binding" in binding
+                else "reservation_sizing_binding.v7"
                 if "native_initial_margin_binding" in binding
                 else "reservation_sizing_binding.v6"
                 if "funding_cost_binding" in binding
@@ -2503,6 +2547,17 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
                 restored_sizing[key] = binding
             self._sizing_bindings = restored_sizing
+            if getattr(
+                self._entry_budget_policy, "require_absolute_movement_cost_cover", False
+            ) and any(
+                r.counts_against_budget
+                and (
+                    key not in restored_sizing
+                    or restored_sizing[key].absolute_movement_cost_binding is None
+                )
+                for key, r in records.items()
+            ):
+                raise ValueError("required movement cost binding missing on active hold")
             if (
                 self._entry_budget_policy is not None
                 and self._entry_budget_policy.require_native_initial_margin
@@ -2522,6 +2577,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 for key, record in records.items():
                     if record.counts_against_budget:
                         margin, costs = original_costs_v1(restored_sizing[key])
+                        if (
+                            getattr(self._entry_budget_policy, "require_usdc_settlement", False)
+                            and margin["settlement_currency"] != "USDC"
+                        ):
+                            raise ValueError("required USDC settlement missing on active hold")
                         if sum(costs.values()) > _f(margin["available_native"]):
                             raise ValueError(
                                 "required original native cost cover missing on active hold"
@@ -2730,6 +2790,7 @@ def admit_sized_slot_reservation_v1(
     opening_cost_observation: object | None = None,
     funding_cost_observation: object | None = None,
     native_initial_margin_observation: object | None = None,
+    absolute_movement_cost_observation: object | None = None,
     local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
 ) -> SizedReservationResultV1:
@@ -2846,6 +2907,7 @@ def admit_sized_slot_reservation_v1(
             opening_cost_observation=opening_cost_observation,
             funding_cost_observation=funding_cost_observation,
             native_initial_margin_observation=native_initial_margin_observation,
+            absolute_movement_cost_observation=absolute_movement_cost_observation,
         )
         if (
             handoff_journal is not None
@@ -3089,23 +3151,48 @@ def admit_sized_slot_reservation_v1(
                 reason_codes=(str(exc), "RISK_NOT_ADMITTED_NO_RESERVATION"),
                 sizing_decision=decision,
             )
+    sizing_binding = ReservationSizingBindingV1(
+        request_digest=request_digest_v1(sizing_input),
+        applied_input=patched,
+        decision=decision,
+        risk_binding=risk_binding,
+        monetary_source=monetary_source,
+        entry_cost_binding=entry_cost_binding,
+        close_cost_binding=close_cost_binding,
+        funding_cost_binding=funding_cost_binding,
+        native_initial_margin_binding=native_initial_margin_binding,
+    )
+    if getattr(policy, "require_absolute_movement_cost_cover", False):
+        from .absolute_movement_cost_v1 import bind_absolute_movement_cost_v1
+
+        try:
+            movement = bind_absolute_movement_cost_v1(
+                absolute_movement_cost_observation,
+                sizing=sizing_binding,
+                evaluated_at_utc=utc_now_iso_v1(),
+            )
+            sizing_binding = replace(sizing_binding, absolute_movement_cost_binding=movement)
+        except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
+            return _sized_deny(
+                owner,
+                disposition=ReserveDispositionV1.FAIL_CLOSED,
+                reason_codes=(str(exc), "MOVEMENT_NOT_ADMITTED_NO_RESERVATION"),
+                sizing_decision=decision,
+            )
+    elif absolute_movement_cost_observation is not None:
+        return _sized_deny(
+            owner,
+            disposition=ReserveDispositionV1.FAIL_CLOSED,
+            reason_codes=("MOVEMENT_EXPLICIT_POLICY_REQUIRED",),
+            sizing_decision=decision,
+        )
     reserved = owner.try_reserve_v1(
         slot_id=slot_id,
         decision_id=decision_id,
         cycle_id=cycle_id,
         observation_id=observation_id,
         amount=amount,
-        sizing_binding=ReservationSizingBindingV1(
-            request_digest=request_digest_v1(sizing_input),
-            applied_input=patched,
-            decision=decision,
-            risk_binding=risk_binding,
-            monetary_source=monetary_source,
-            entry_cost_binding=entry_cost_binding,
-            close_cost_binding=close_cost_binding,
-            funding_cost_binding=funding_cost_binding,
-            native_initial_margin_binding=native_initial_margin_binding,
-        ),
+        sizing_binding=sizing_binding,
         max_active_sum=patched.total_capital_limit,
         expected_risk_snapshot_digest=risk_snapshot["digest"]
         if risk_snapshot is not None
@@ -3124,6 +3211,7 @@ def admit_sized_slot_reservation_v1(
             opening_cost_observation=opening_cost_observation,
             funding_cost_observation=funding_cost_observation,
             native_initial_margin_observation=native_initial_margin_observation,
+            absolute_movement_cost_observation=absolute_movement_cost_observation,
         )
     if reserved.disposition is not ReserveDispositionV1.ADMITTED:
         return _sized_deny(
