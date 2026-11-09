@@ -425,8 +425,22 @@ def _t2_from_s7(
                     ),
                 },
             )
-        except FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError as exc:
-            _fail(exc.failure_code, exc.detail)
+        except Exception as exc:
+            # A failed Core cycle may precede its durable negative cursor write.
+            # Fence this original host owner before returning the failure, so
+            # retained plans cannot keep using its old positive admission. Close
+            # retains all durable holds; no cursor, release or submit evidence
+            # is fabricated. A new owner still needs original recovery.
+            if portfolio_budget_owner is not None:
+                try:
+                    portfolio_budget_owner.close()
+                except Exception as close_error:
+                    # close() disarms before closing its writer lease. Keep the
+                    # original Core failure and expose failed cleanup as cause.
+                    raise exc from close_error
+            if isinstance(exc, FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError):
+                _fail(exc.failure_code, exc.detail)
+            raise
         if len(composed) != 1:
             _fail(FAILURE_OCCUPANCY, ",".join(sorted(composed)))
         invocation = next(iter(composed.values()))

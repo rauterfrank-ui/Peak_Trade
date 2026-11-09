@@ -498,14 +498,28 @@ def test_writer_reader_integration_at_most_one_new_artifact(tmp_path: Path) -> N
     assert readback.bootstrap is False
 
 
-def test_canonical_bootstrap_replay_does_not_write_second_instance() -> None:
-    store = REPO_ROOT / CANONICAL_STORE_RELATIVE_ROOT
+def test_canonical_bootstrap_replay_does_not_write_second_instance(tmp_path: Path) -> None:
+    canonical = REPO_ROOT / CANONICAL_STORE_RELATIVE_ROOT
+    original_sources = {p.name: p.read_bytes() for p in canonical.iterdir() if p.is_file()}
+    store = tmp_path / "current-canonical-replay"
     snapshot_path = REPO_ROOT / CANONICAL_CAP22_SNAPSHOT_RELATIVE_PATH
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     provenance, _loaded = cap22_provenance_from_snapshot_file(
         snapshot_path, source_relative_path=CANONICAL_CAP22_SNAPSHOT_RELATIVE_PATH
     )
-    prior = read_membership_context_artifact_v1("mca_bf0255a6007432e2", store_root=store)
+    # Declare the current snapshot as the bootstrap input. The retained older
+    # canonical membership belongs to another snapshot and is not its replay.
+    prior = write_membership_context_artifact_v1(
+        build_membership_context_artifact_v1(
+            ordered_instrument_ids=[
+                c.instrument_id for c in parse_eligible_cap22_top20(snapshot)[:5]
+            ],
+            cap22_provenance=provenance,
+            bootstrap=True,
+            prior_membership_reference=None,
+        ),
+        store_root=store,
+    )
     before = sorted(path.name for path in store.glob("mca_*.json"))
     result = run_isolated_selector_cycle_v1(
         snapshot=snapshot,
@@ -517,7 +531,8 @@ def test_canonical_bootstrap_replay_does_not_write_second_instance() -> None:
     after = sorted(path.name for path in store.glob("mca_*.json"))
     assert result.decision_status == STATUS_UNCHANGED_REPLAY
     assert result.write_policy == NO_NEW_INSTANCE
-    assert before == after == ["mca_bf0255a6007432e2.json"]
+    assert before == after == [prior.instance_id + ".json"]
+    assert {p.name: p.read_bytes() for p in canonical.iterdir() if p.is_file()} == original_sources
     assert [item.split(":")[2] for item in result.ordered_membership] == [
         "ADA",
         "APT",

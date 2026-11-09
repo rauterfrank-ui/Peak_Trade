@@ -238,13 +238,21 @@ def test_less_than_20_eligible() -> None:
 
 def test_no_eligible_candidates_persisted_state() -> None:
     # Cap 2.1 empty-eligible universe still yields a snapshot with zero instruments.
-    uni = _universe([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
+    # Absence of live eligibility is explicit; BTC is not a current exclusion.
+    uni = _universe([_perp(state="suspend")])
     assert uni["eligible_instrument_count"] == 0
     result = _rank(uni)
     assert result.snapshot.snapshot_state == SNAPSHOT_STATE_NO_ELIGIBLE
     assert result.snapshot.ranked_candidates == ()
     assert RankingFailureCodeV1.NO_ELIGIBLE_CANDIDATES.value in result.failure_codes
     assert result.snapshot.alpha_allowed is False
+
+
+def test_live_btc_follows_current_eligibility_and_economic_ranking() -> None:
+    uni = _universe([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
+    assert uni["eligible_instrument_count"] == 1
+    ranked = _rank(uni).snapshot.ranked_candidates
+    assert len(ranked) == 1 and ranked[0].venue_native_id == "BTC-USDT-SWAP"
 
 
 def test_deterministic_ranking_and_tie_break() -> None:
