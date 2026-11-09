@@ -1,10 +1,10 @@
-"""Observed opening-order costs, retained by the original reservation owner.
+"""Observed order costs, retained by the original reservation owner.
 
-No GET, order, forecast, close-fee promise, funding allowance or margin model.
+No implicit GET, order, profit forecast, future-fee guarantee or margin model.
 The fee schedule and immediately executable book are inputs, not constants.
 """
 
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, fields, replace
 from datetime import datetime, timezone
 from decimal import Decimal
 import json
@@ -407,3 +407,336 @@ def collect_entry_execution_cost_observation_v1(
         sources=sources,
         evaluated_at_utc=utc_now_iso_v1(),
     )
+
+
+def assess_closing_execution_cost_v1(
+    entry_binding, *, monetary_source, applied_input, decision, evaluated_at_utc=None
+):
+    if type(entry_binding) is not EntryExecutionCostBindingV1:
+        raise ValueError("CLOSE_COST_ORIGINAL_ENTRY_COST_BINDING_REQUIRED")
+    opening = entry_binding.validate_v1(
+        monetary_source=monetary_source, applied_input=applied_input, decision=decision
+    )
+    side = applied_input.selected_side.upper()
+    if side not in {"LONG", "SHORT"} or decision.selected_side.upper() != side:
+        raise ValueError("CLOSE_COST_ORIGINAL_POSITION_SIDE_MISMATCH")
+    observation = EntryExecutionCostObservationV1.from_dict_v1(
+        json.loads(entry_binding.observation_json)
+    )
+    # Reuse the original source parser and quantity/depth algorithm. This
+    # side-flipped pricing request is not a sizing or opposite-entry decision.
+    close_quote = assess_opening_execution_cost_v1(
+        observation,
+        monetary_source=monetary_source,
+        applied_input=replace(applied_input, selected_side="SHORT" if side == "LONG" else "LONG"),
+        decision=decision,
+        account_identity=opening["account_identity"],
+        slot_id=opening["slot_id"],
+        cycle_id=opening["cycle_id"],
+        evaluated_at_utc=evaluated_at_utc,
+    )
+    reference = _money(monetary_source.native_reference_price, positive=True)
+    stop = _money(monetary_source.native_protective_stop_price, positive=True)
+    # Fee planning also covers the original modeled adverse stop price. This
+    # remains a conditional price basis, not guaranteed stop execution.
+    fee_price = max(reference, stop, _money(close_quote["book_vwap"], positive=True))
+    fx = applied_input.reference_price / reference
+    fee = (
+        fee_price
+        * applied_input.instrument.contract_multiplier
+        * decision.final_quantity
+        * _money(close_quote["charged_rate"])
+        * fx
+    )
+    adverse = _money(close_quote["adverse_entry_cost_usdc"])
+    body = dict(
+        schema="closing_execution_cost_provision.v1",
+        account_identity=opening["account_identity"],
+        slot_id=opening["slot_id"],
+        cycle_id=opening["cycle_id"],
+        decision_id=opening["decision_id"],
+        canonical_id=opening["canonical_id"],
+        native_id=opening["native_id"],
+        position_side=side,
+        closing_order_side="SELL" if side == "LONG" else "BUY",
+        quantity=str(decision.final_quantity),
+        currency="USDC",
+        fee_group=opening["fee_group"],
+        charged_rate=close_quote["charged_rate"],
+        current_close_book_vwap=close_quote["book_vwap"],
+        fee_price_basis_native=str(fee_price),
+        fee_allowance_usdc=str(fee),
+        current_adverse_close_cost_usdc=str(adverse),
+        reserved_close_cost_usdc=str(fee + adverse),
+        total_roundtrip_cost_allowance_usdc=str(
+            _money(opening["total_opening_cost_usdc"]) + fee + adverse
+        ),
+        opening_observation_digest=opening["observation_digest"],
+        opposite_book_quote_digest=close_quote["digest"],
+        evaluated_at_utc=opening["evaluated_at_utc"],
+        basis="CURRENT_BOOK_AND_ACCOUNT_FEE_PLUS_ORIGINAL_MODELED_STOP_PRICE",
+        future_execution_or_fee_guaranteed=False,
+        funding_included=False,
+        runtime_authorization_effect="NONE",
+    )
+    return {**body, "digest": digest(body)}
+
+
+@dataclass(frozen=True)
+class CloseExecutionCostBindingV1:
+    receipt_json: str
+
+    def validate_v1(self, *, entry_binding, monetary_source, applied_input, decision):
+        receipt = json.loads(self.receipt_json)
+        rebuilt = assess_closing_execution_cost_v1(
+            entry_binding,
+            monetary_source=monetary_source,
+            applied_input=applied_input,
+            decision=decision,
+        )
+        if receipt != rebuilt:
+            raise ValueError("CLOSE_COST_SOURCE_OR_PROVISION_MISMATCH")
+        return rebuilt
+
+    def to_dict_v1(self):
+        return dict(
+            schema="closing_execution_cost_binding.v1", receipt=json.loads(self.receipt_json)
+        )
+
+    @classmethod
+    def from_dict_v1(cls, raw):
+        if (
+            type(raw) is not dict
+            or set(raw) != {"schema", "receipt"}
+            or raw["schema"] != "closing_execution_cost_binding.v1"
+        ):
+            raise ValueError("CLOSE_COST_BINDING_SCHEMA_INVALID")
+        return cls(canonical(raw["receipt"]))
+
+
+def bind_closing_execution_cost_v1(entry_binding, **kwargs):
+    return CloseExecutionCostBindingV1(
+        canonical(assess_closing_execution_cost_v1(entry_binding, **kwargs))
+    )
+
+
+def reserved_closing_cost_v1(sizing):
+    if sizing is None or sizing.close_cost_binding is None:
+        return Decimal(0)
+    result = _money(json.loads(sizing.close_cost_binding.receipt_json)["reserved_close_cost_usdc"])
+    if result < 0:
+        raise ValueError("CLOSE_COST_NEGATIVE_RESERVE")
+    return result
+
+
+@dataclass(frozen=True)
+class FundingCostObservationV1:
+    """A separately supplied public funding source, not an accounting debit."""
+
+    bound_instrument_json: str
+    decision_epoch: str
+    cycle_id: str
+    source_json: str
+    evaluated_at_utc: str
+
+    @classmethod
+    def capture_v1(cls, *, bound_instrument, decision_epoch, cycle_id, source, evaluated_at_utc):
+        if type(source) is not FreshPretradeGetTransportResultV1:
+            raise ValueError("FUNDING_COST_ORIGINAL_GET_SOURCE_REQUIRED")
+        return cls(
+            canonical(bound_instrument.to_dict()),
+            decision_epoch,
+            cycle_id,
+            canonical(asdict(source)),
+            evaluated_at_utc,
+        )
+
+    def to_dict_v1(self):
+        return dict(schema="funding_cost_observation.v1", **asdict(self))
+
+    @classmethod
+    def from_dict_v1(cls, raw):
+        if (
+            type(raw) is not dict
+            or raw.get("schema") != "funding_cost_observation.v1"
+            or set(raw) != {"schema", *(f.name for f in fields(cls))}
+        ):
+            raise ValueError("FUNDING_COST_OBSERVATION_SCHEMA_INVALID")
+        return cls(**{k: v for k, v in raw.items() if k != "schema"})
+
+
+def assess_next_funding_cost_v1(
+    observation,
+    *,
+    entry_binding,
+    close_binding,
+    monetary_source,
+    applied_input,
+    decision,
+    evaluated_at_utc=None,
+):
+    if type(observation) is not FundingCostObservationV1 or any(
+        type(getattr(observation, f.name)) is not str or not getattr(observation, f.name)
+        for f in fields(observation)
+    ):
+        raise ValueError("FUNDING_COST_COMPLETE_TYPED_OBSERVATION_REQUIRED")
+    if type(close_binding) is not CloseExecutionCostBindingV1:
+        raise ValueError("FUNDING_COST_ORIGINAL_CLOSE_PROVISION_REQUIRED")
+    closing = close_binding.validate_v1(
+        entry_binding=entry_binding,
+        monetary_source=monetary_source,
+        applied_input=applied_input,
+        decision=decision,
+    )
+    opening_observation = EntryExecutionCostObservationV1.from_dict_v1(
+        json.loads(entry_binding.observation_json)
+    )
+    if (observation.bound_instrument_json, observation.decision_epoch, observation.cycle_id) != (
+        opening_observation.bound_instrument_json,
+        opening_observation.decision_epoch,
+        opening_observation.cycle_id,
+    ):
+        raise ValueError("FUNDING_COST_ORIGINAL_INSTRUMENT_OR_DECISION_MISMATCH")
+    now = evaluated_at_utc or observation.evaluated_at_utc
+    acquisition_age_seconds_v1(acquired_at_utc=observation.evaluated_at_utc, now_utc=now)
+    # Revalidate the associated market/FX basis at this financial observation,
+    # without treating the two streams as one feed or replacing either source.
+    assess_closing_execution_cost_v1(
+        entry_binding,
+        monetary_source=monetary_source,
+        applied_input=applied_input,
+        decision=decision,
+        evaluated_at_utc=now,
+    )
+    source = FreshPretradeGetTransportResultV1(**json.loads(observation.source_json))
+    native = monetary_source.venue_native_id
+    acquisition = canonical(
+        dict(decision_epoch=observation.decision_epoch, cycle_id=observation.cycle_id)
+    )
+    if (
+        source.get_performed is not True
+        or source.method != "GET"
+        or source.http_status != 200
+        or source.historical_reuse is not False
+        or source.auth_header_sent is not False
+        or source.error_class
+        or source.pretrade_decision_id != acquisition
+        or not re.fullmatch("[0-9a-f]{64}", source.body_sha256)
+        or _query(source.endpoint, "/api/v5/public/funding-rate") != {"instId": [native]}
+    ):
+        raise ValueError("FUNDING_COST_CURRENT_PUBLIC_INSTRUMENT_GET_REQUIRED")
+    acquisition_age_seconds_v1(acquired_at_utc=source.acquired_at_utc, now_utc=now)
+    acquisition_age_seconds_v1(
+        acquired_at_utc=source.acquired_at_utc, now_utc=observation.evaluated_at_utc
+    )
+    row = _one(_rows(source.payload), "instId", native)
+    instrument = _one(_rows(json.loads(monetary_source.instruments_json)), "instId", native)
+    if (
+        row.get("instType") not in {"SWAP", "FUTURES"}
+        or row.get("instType") != instrument.get("instType")
+        or row.get("method") != "current_period"
+        or row.get("settState") != "settled"
+    ):
+        raise ValueError("FUNDING_COST_PRODUCT_OR_SETTLEMENT_STATE_UNPROVEN")
+    _event_clock(row.get("ts"), source.acquired_at_utc, now)
+    predicted, floor, ceiling = (
+        _money(row.get(k)) for k in ("fundingRate", "minFundingRate", "maxFundingRate")
+    )
+    if not floor <= predicted <= ceiling or floor > 0 or ceiling < 0:
+        raise ValueError("FUNDING_COST_RATE_LIMITS_INVALID")
+    times = [row.get(k) for k in ("fundingTime", "nextFundingTime")]
+    if any(type(t) is not str or not t.isdigit() or int(t) <= 0 for t in times):
+        raise ValueError("FUNDING_COST_INSTRUMENT_SETTLEMENT_CLOCK_REQUIRED")
+    now_ms = int(datetime.fromisoformat(now.replace("Z", "+00:00")).timestamp() * 1000)
+    if not now_ms < int(times[0]) < int(times[1]):
+        raise ValueError("FUNDING_COST_NEXT_SETTLEMENT_BOUND_EXPIRED_OR_INVALID")
+    exposure = (
+        _money(closing["fee_price_basis_native"], positive=True)
+        * applied_input.instrument.contract_multiplier
+        * decision.final_quantity
+        * (
+            applied_input.reference_price
+            / _money(monetary_source.native_reference_price, positive=True)
+        )
+    )
+    side = applied_input.selected_side.upper()
+    allowance_rate = ceiling if side == "LONG" else -floor
+    body = dict(
+        schema="next_funding_cost_provision.v1",
+        account_identity=closing["account_identity"],
+        slot_id=closing["slot_id"],
+        cycle_id=closing["cycle_id"],
+        decision_id=closing["decision_id"],
+        canonical_id=closing["canonical_id"],
+        native_id=native,
+        position_side=side,
+        quantity=str(decision.final_quantity),
+        currency="USDC",
+        exposure_basis_usdc=str(exposure),
+        predicted_rate=str(predicted),
+        lower_rate_limit=str(floor),
+        upper_rate_limit=str(ceiling),
+        adverse_rate_allowance=str(allowance_rate),
+        funding_allowance_usdc=str(exposure * allowance_rate),
+        upcoming_funding_time_ms=int(times[0]),
+        following_funding_time_forecast_ms=int(times[1]),
+        evaluated_at_utc=observation.evaluated_at_utc,
+        source_observation_digest=digest(observation.to_dict_v1()),
+        close_provision_digest=closing["digest"],
+        basis="CURRENT_INSTRUMENT_RATE_LIMIT_AND_MODELED_PRICE_NEXT_SETTLEMENT_ONLY",
+        actual_funding_payment=False,
+        future_rate_limit_or_execution_guaranteed=False,
+        future_credit_funds_reservation=False,
+        runtime_authorization_effect="NONE",
+    )
+    return {**body, "digest": digest(body)}
+
+
+@dataclass(frozen=True)
+class FundingCostBindingV1:
+    observation_json: str
+    receipt_json: str
+
+    def validate_v1(self, **kwargs):
+        receipt = json.loads(self.receipt_json)
+        rebuilt = assess_next_funding_cost_v1(
+            FundingCostObservationV1.from_dict_v1(json.loads(self.observation_json)), **kwargs
+        )
+        if receipt != rebuilt:
+            raise ValueError("FUNDING_COST_SOURCE_OR_PROVISION_MISMATCH")
+        return rebuilt
+
+    def to_dict_v1(self):
+        return dict(
+            schema="funding_cost_binding.v1",
+            observation=json.loads(self.observation_json),
+            receipt=json.loads(self.receipt_json),
+        )
+
+    @classmethod
+    def from_dict_v1(cls, raw):
+        if (
+            type(raw) is not dict
+            or set(raw) != {"schema", "observation", "receipt"}
+            or raw["schema"] != "funding_cost_binding.v1"
+        ):
+            raise ValueError("FUNDING_COST_BINDING_SCHEMA_INVALID")
+        return cls(canonical(raw["observation"]), canonical(raw["receipt"]))
+
+
+def bind_next_funding_cost_v1(observation, **kwargs):
+    return FundingCostBindingV1(
+        canonical(observation.to_dict_v1())
+        if type(observation) is FundingCostObservationV1
+        else "null",
+        canonical(assess_next_funding_cost_v1(observation, **kwargs)),
+    )
+
+
+def reserved_funding_cost_v1(sizing):
+    if sizing is None or sizing.funding_cost_binding is None:
+        return Decimal(0)
+    result = _money(json.loads(sizing.funding_cost_binding.receipt_json)["funding_allowance_usdc"])
+    if result < 0:
+        raise ValueError("FUNDING_COST_NEGATIVE_RESERVE")
+    return result

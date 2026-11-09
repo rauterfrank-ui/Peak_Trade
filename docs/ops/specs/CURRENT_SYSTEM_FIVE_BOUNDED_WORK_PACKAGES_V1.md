@@ -164,6 +164,27 @@ späteren finanziellen Consumer. Zukünftige Closekosten, Fundingvorsorge und
 vollständige Margin-/Liquidationsdeckung bleiben getrennt offen. Daraus wird
 kein Paketabschluss und keine neue positive native Survivalquote abgeleitet.
 
+Weitere Präzisierung: OKX-Demohandel ist für die Abnahme ausgeschlossen, da er
+laut Frank nicht alle benötigten Instrumente abdeckt. Paper und Shadow müssen
+das tatsächlich benötigte Originaluniversum mit nachgewiesener Datenabdeckung
+prüfen. Frank verlangt außerdem die vorzeitige Berücksichtigung von
+Schließkosten und bei tatsächlich verbrauchter Testverlustzulage den
+kontrollierten Close der betroffenen offenen Position. Die
+[Kosten-/Paper-/Shadow-Fortschreibung](CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md)
+trennt den vorhandenen Kostenanschluss von diesem noch nachzuweisenden
+laufenden Positionsschutz und der offenen Funding-/Marginzulassung.
+
+Der nachfolgende Entryanschluss bindet eine getrennte aktuelle Fundingquelle
+an dieselbe ursprüngliche Mengen-/Kostenrechnung und atomare Reservation.
+Die Vorsorge bis zur nächsten instrumentbezogenen Abrechnung wird im Readback,
+der späten Budgetzulassung und beim gezielten Slotclose erhalten. Die laufende
+Erneuerung offener Positionen und der kontrollierte Close bei tatsächlichem
+Verbrauch bleiben davon getrennte offene Anforderungen. Die
+[Paper-/Shadow-Semantikprüfung](CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md)
+verwendet auf Franks Hinweis Obsidian als datierte Wissensquelle und hält
+unterschiedliche Datenströme sowie öffentliche Raten und private Zahlungen
+ausdrücklich auseinander. Dies ist kein Paketabschluss.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),
