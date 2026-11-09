@@ -1,0 +1,122 @@
+{
+  "schema": "peaktrade.current_open_slot_cost_protection.v1",
+  "base_commit": "c54b18f8ae791e054327163de27a4302186a0c13",
+  "result": "PASS",
+  "selected_cases": 172,
+  "new_cases": 28,
+  "source_sha256": {
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V7.json": "f9f7a7e5c402a8283770cd96d52f544fc96602ded2cfc59991ebec8c9d00ec65",
+    "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md": "f1997fb4ee58acfdc2378fc9fb7ffbdc2db24757bf900c6eacc1d6e54b6c773f",
+    "docs/ops/specs/CURRENT_OPEN_SLOT_CURRENT_COST_PROTECTION_V1.md": "db49246da0deb27dd30be06f6cdf347951ff4ba0ea12b5d637f516f1704e225d",
+    "docs/ops/specs/CURRENT_SYSTEM_FIVE_BOUNDED_WORK_PACKAGES_V1.md": "6ce2db115ba0ba4ea7fddd1ba2e49d9bc6ae5f221232a582d28991fa98697792",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "e46703f2b092950f76149840ccd3a6b0a6dcae4d13a1da12c749e6f84bc656ac",
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "330051c6c0142ac5d4a3fa8453d6c2d6569fb918afef89f9764328452ba29900",
+    "tests/ops/test_current_open_slot_cost_protection_v1.py": "184b00c8a317f64b1d27cebf7087c8e577a8ef67ed31ff5ecc475e819d6afb5c",
+    "tests/ops/test_open_slot_loss_short_protection_v1.py": "bd45928ac4679b44ef790cede1575963159fe377c7da6be8f27ecd6ce8f2bb4e"
+  },
+  "completed_run": {
+    "xml": "BWP1 Aktuelle offene Kosten Endstand 2026-11-09.xml",
+    "xml_sha256": "bb76b61f100650ebbb0a590aa4441b3cabfae4397c9743079c88969a7ac1ee7e",
+    "log": "BWP1 Aktuelle offene Kosten Endstand 2026-11-09.log",
+    "log_sha256": "d7116f3121e1583212ca456b8c9dff669bef65fb060dde5f9b262dc9c6b9cf6d",
+    "exit_code": 0,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "deselected": 0
+  },
+  "covered_effects": [
+    "Current fee, executable close depth and same upcoming funding bound reach actual target-only N1 safety exit at two and five slots",
+    "Natural SHORT uses ask-side BUY close and negative lower funding bound at original S7",
+    "Natural LONG reaches close fill, flat and original reconciliation; existing holds still require original release transaction",
+    "Three writer-boundary and Decimal/float correction regressions retained",
+    "Cost proof replay, sticky close, cold read and rehashed summary/source rejection",
+    "Earlier policies and observation encoding remain explicit and unchanged"
+  ],
+  "knowledge_and_preservation": {
+    "base_commit": "c54b18f8ae791e054327163de27a4302186a0c13",
+    "preserved_source_sha256": {
+      "config/ops/current_productive_entry_budget_policy_v1.json": "d4c5e28f9f2725589abe853f54956cb7ad284520860141761cc596c9955459ed",
+      "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe",
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+      "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/bounded_slot_post_close_v1.py": "34cbb33104b490f8eb8d2bd536e3e96e9a2f988099ca289c4bcf679517b49a9d",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py": "fec15a06cc3504c4b37d6029dfa30980ddd3d74b22634712cdb56ef968b8a45c",
+      "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/rotation_plan_v1.py": "9f7322ff1fc357c3b828df4f6c0c73e74db0ee52350d7d90be434ed93255b96c",
+      "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de",
+      "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
+      "src/ops/exit_policy_producer_binding_v1/models_v1.py": "589dec4be5f00b4909c3aa511a600dfc63a31c92b018b20e9f437faa8334e9bc",
+      "src/ops/exit_policy_producer_binding_v1/persistence_v1.py": "adc66058a39f3c84e84fc47ca45fc60f6e99f4605e06dc79d58153fc5de76826",
+      "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py": "bf1c90a45a80171b5d3b1ed192a9348fe89271e71be490cff92fa2076e82569d",
+      "src/ops/exit_policy_producer_binding_v1/producers_v1.py": "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py": "946c35e6c540024679f1a8fb53c9e4b557e5f41ec13972557a1a8f89f52ea769",
+      "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py": "5b726daeddef92b7697e3a1ac8920bd0b1735b6913def8e41eeeb8f2817db86e",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "485af1635aecda0f570b4ff6a62ce7af2eaf8e539b61a0f2f85c8274e4289c5b",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
+      "src/ops/full_core_live_path_composition_root_v1/current_productive_rotation_close_v1.py": "843de05030c1a4bbb7420762c60fe3e16bfbdbe89b01a184ffe4f857969b69a2",
+      "src/ops/mf_membership_context_artifact_contract_v1.py": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8",
+      "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d",
+      "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py": "6c041991182a939e21c5226e87b9186b55014d6d5f797d0ffe73538cb9b788d8",
+      "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "9e23849986aecd43b48d55426bf8993a1f9f5e2f977f62d15890eeeaa9155af0",
+      "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+      "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py": "1a33a474ff398ca0969fb89a18b97bd9e7534b1b4d9d608c2adc26c0a48a6ef6",
+      "src/ops/single_selected_future_policy_v1/producer_v1.py": "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78"
+    },
+    "knowledge_sources": [
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/Start.md",
+        "sha256": "ea5479705662e82487fb05458fb14b9e2556dc0e8d4a1fee30e4b8acf0e9ca15",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/PeakTrade-Systemindex.md",
+        "sha256": "fe300e62024c1b18dacfccf7154a22dcf7dccc4a0a2d43b60ea0c61f4b055fe5",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S01.md",
+        "sha256": "872b668c8c8494bc8680a3a9fb2177f3ea2b3ed640aadbc7feab64ea35c0b0f2",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S11.md",
+        "sha256": "8e4c8ba92384d8e05db7f50e9942a9acb2b0a60e55be5313d7d73a9515dee1cb",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Semantik/S12.md",
+        "sha256": "9522fbfdad746b31dbc098cb0eed288cb598e38d158b18f1d9511d91d8c104e5",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      },
+      {
+        "path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/00 Systemindex/Runbook Aussenring/Kosten Funding und Schutz offener Testslots 2026-11-09.md",
+        "sha256": "1793b1b8784a3c286914086b8ec3d9915c139d2d69f642fe3e0056bbde28f697",
+        "role": "DATED_NAVIGATION_AND_SEMANTIC_CONTEXT_NOT_RUNTIME_AUTHORITY"
+      }
+    ],
+    "external_primary_source": {
+      "url": "https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate",
+      "verified_date": "2026-11-09",
+      "meaning": "upcoming rate forecast; following time forecast; bounds not a booked payment"
+    },
+    "native_master_v2_unchanged": true,
+    "limits": [
+      "Current protection repricing only, within original upcoming settlement",
+      "No reservation top-up or release; no accounting funding payment",
+      "Next settlement transition and atomic reserve renewal OPEN",
+      "Margin/liquidation and full financial framework OPEN"
+    ],
+    "runtime_authorization_effect": "NONE"
+  },
+  "freeze_tags": {
+    "freeze/clean-system-2026-11-06-v1": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "freeze/clean-system-complete-2026-11-06-v1": "160db0e90f1392c5caf3d115808f425d395b7c5e"
+  },
+  "runtime_authorization_effect": "NONE",
+  "scope": "PROTECTION_REPRICING_ONLY_NOT_RESERVATION_RENEWAL_OR_SETTLEMENT_TRANSITION"
+}

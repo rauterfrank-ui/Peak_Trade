@@ -38,9 +38,7 @@ from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
 )
 
 
-def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_request(
-    tmp_path, monkeypatch
-):
+def _run_original_short_loss_probe(tmp_path, monkeypatch, *, remaining=Decimal(0)):
     install_policy(monkeypatch, policy())
     attach_funding_probe(monkeypatch, funding_seconds=7200)
     install_cost_probe(monkeypatch)
@@ -96,7 +94,7 @@ def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_
         before = session.portfolio_state().equity - session.initial_equity
         session.apply_funding_observation_v1(
             event_id="explicit-short-loss-settlement",
-            amount=str(-Decimal(25) - before),
+            amount=str(remaining - Decimal(25) - before),
             currency=session.contract.quote_currency,
             instrument_id=session.contract.symbol,
             event_time_unix=epoch + 0.25,
@@ -133,7 +131,8 @@ def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_
         assert request.validate_v1(episode=episode, bound=bound, observed_unix=epoch + 1)
         state = owner.test_slot_loss_state_v1("LANE_1")
         proof = state["open_position_protection"]["latest"]
-        assert state["exhausted"] and proof["identity"]["position_side"] == "short"
+        assert state["exhausted"] is (remaining <= 0)
+        assert proof["identity"]["position_side"] == "short"
         assert Decimal(proof["quantity"]) == session.position.qty == Decimal(order.quantity)
         assert owner.budget_state_v1() == held
         from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
@@ -185,7 +184,7 @@ def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_
             == "safety_exit"
         )
         assert owner.budget_state_v1() == held
-        checked.append(proof["digest"])
+        checked.append(proof)
         return result
 
     errors = []
@@ -202,3 +201,10 @@ def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_
     if errors:
         raise errors[0]
     assert checked and run.policy_result.orchestrator_result.post_count == 0
+    return checked
+
+
+def test_original_short_entry_quantity_and_accounting_reach_the_slot_loss_close_request(
+    tmp_path, monkeypatch
+):
+    _run_original_short_loss_probe(tmp_path, monkeypatch)
