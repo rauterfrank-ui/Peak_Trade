@@ -229,16 +229,22 @@ def _inject_cap24_lane_canonical_price_provenance_v1(
     cap24_bind: ProductiveFullAutonomyCap24BindContextV1,
     readiness_kwargs: dict[str, Any],
 ) -> None:
-    """Replace caller provenance with Cap24-sidecar-aligned per-lane witnesses."""
+    """Bind source observations to Cap24's per-lane instrument and mark value."""
 
     index_px = readiness_kwargs.get("index_px")
     if index_px is None:
         _fail(FAILURE_CAP24_PROVENANCE, "index_px_required")
     try:
+        original_by_lane = readiness_kwargs.get("canonical_price_provenance_by_lane")
+        if original_by_lane is None and len(selected_pairs) == 1:
+            original = readiness_kwargs.get("canonical_price_provenance")
+            if original is not None:
+                original_by_lane = {next(iter(selected_pairs)): original}
         by_lane = build_n5_lane_canonical_price_provenance_from_cap24_v1(
             selected_pairs,
             cap24_bind.mark_price_by_native_id,
             index_px=float(index_px),
+            source_provenance_by_lane=original_by_lane,
         )
     except Cap24LaneCanonicalPriceProvenanceComposeError as exc:
         _fail(FAILURE_CAP24_PROVENANCE, str(exc))

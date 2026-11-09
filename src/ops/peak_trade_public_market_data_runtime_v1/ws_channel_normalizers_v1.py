@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping, Optional
 
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
@@ -41,13 +42,15 @@ def _instrument_ref(instrument_ref: Mapping[str, Any]) -> InstrumentRefV1:
     )
 
 
-def _quality(*, duplicate: bool = False, out_of_order: bool = False) -> DataQualityStateV1:
+def _quality(
+    *, duplicate: bool = False, out_of_order: bool = False, corrected: bool = False
+) -> DataQualityStateV1:
     return DataQualityStateV1(
         finalized=True,
         in_progress=False,
         missing=False,
         stale=False,
-        corrected=False,
+        corrected=corrected,
         duplicate=duplicate,
         out_of_order=out_of_order,
         gap_detected=False,
@@ -60,16 +63,27 @@ def normalize_ticker_row_to_mark_price_fact_v1(
     instrument_ref: Mapping[str, Any],
     captured_at: str,
     session_id: str,
-    channel: str = "tickers",
+    channel: str = "mark-price",
     duplicate: bool = False,
     out_of_order: bool = False,
+    corrected: bool = False,
 ) -> MarkPriceFactV1:
-    mark_px = str(row.get("markPx") or row.get("last") or "").strip()
-    if not mark_px:
-        raise PublicWsNormalizeError("TICKER_MARK_PX_MISSING")
+    if channel != "mark-price":
+        raise PublicWsNormalizeError("MARK_PRICE_CHANNEL_REQUIRED")
+    mark_px = str(row.get("markPx") or "").strip()
+    try:
+        value = Decimal(mark_px)
+        if not value.is_finite() or value <= 0:
+            raise ValueError("mark must be positive and finite")
+    except (InvalidOperation, ValueError) as exc:
+        raise PublicWsNormalizeError("MARK_PX_MISSING_OR_INVALID") from exc
     ts_raw = row.get("ts")
-    venue_event_ms = int(str(ts_raw)) if ts_raw not in (None, "") else None
+    if isinstance(ts_raw, bool) or not str(ts_raw).isdigit() or int(ts_raw) <= 0:
+        raise PublicWsNormalizeError("MARK_EVENT_TIME_MISSING_OR_INVALID")
+    venue_event_ms = int(ts_raw)
     inst = _instrument_ref(instrument_ref)
+    if not inst.venue_native_id or row.get("instId") != inst.venue_native_id:
+        raise PublicWsNormalizeError("MARK_INSTRUMENT_MISMATCH")
     prov = MarketFactProvenanceV1(
         transport="ws",
         endpoint_or_channel=channel,
@@ -87,7 +101,7 @@ def normalize_ticker_row_to_mark_price_fact_v1(
             source_clock_class="venue_event_ms",
         ),
         provenance=prov,
-        quality=_quality(duplicate=duplicate, out_of_order=out_of_order),
+        quality=_quality(duplicate=duplicate, out_of_order=out_of_order, corrected=corrected),
     )
 
 
@@ -187,13 +201,16 @@ def normalize_ws_payload_to_canonical_facts_v1(
     session_id: str,
     duplicate: bool = False,
     out_of_order: bool = False,
+    corrected: bool = False,
 ) -> list[Mapping[str, Any]]:
-    """Map one OKX public WS push (tickers / trades / books5) to canonical fact dicts."""
+    """Map genuine mark-price / trades / books5 pushes without price substitution."""
 
     arg = message.get("arg")
     channel: Optional[str] = None
     if isinstance(arg, Mapping):
         channel = str(arg.get("channel") or "").strip() or None
+        if arg.get("instId") not in (None, instrument_ref.get("venue_native_id")):
+            raise PublicWsNormalizeError("WS_INSTRUMENT_MISMATCH")
     data = message.get("data")
     if not isinstance(data, list):
         if channel is None and message.get("tradeId"):
@@ -206,12 +223,14 @@ def normalize_ws_payload_to_canonical_facts_v1(
     for row in data:
         if not isinstance(row, Mapping):
             continue
-        if channel == "tickers":
+        if channel == "mark-price":
             fact = normalize_ticker_row_to_mark_price_fact_v1(
                 row,
                 instrument_ref=instrument_ref,
                 captured_at=captured_at,
                 session_id=session_id,
+                channel=channel,
+                corrected=corrected,
                 duplicate=duplicate,
                 out_of_order=out_of_order,
             )

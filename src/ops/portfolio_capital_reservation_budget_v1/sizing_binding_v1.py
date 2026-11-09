@@ -80,6 +80,7 @@ class ReservationSizingBindingV1:
     close_cost_binding: object | None = None
     funding_cost_binding: object | None = None
     native_initial_margin_binding: object | None = None
+    absolute_movement_cost_binding: object | None = None
 
     def validate_v1(self, *, amount: Decimal, decision_id: str) -> None:
         decision, applied = self.decision, self.applied_input
@@ -191,6 +192,12 @@ class ReservationSizingBindingV1:
                 applied_input=applied,
                 decision=decision,
             )
+        if self.absolute_movement_cost_binding is not None:
+            from .absolute_movement_cost_v1 import AbsoluteMovementCostBindingV1
+
+            if type(self.absolute_movement_cost_binding) is not AbsoluteMovementCostBindingV1:
+                raise ValueError("RESERVATION_TYPED_MOVEMENT_BINDING_REQUIRED")
+            self.absolute_movement_cost_binding.validate_v1(sizing=self)
         if self.risk_binding is not None:
             from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
 
@@ -238,6 +245,11 @@ class ReservationSizingBindingV1:
             result["native_initial_margin_binding"] = (
                 self.native_initial_margin_binding.to_dict_v1()
             )
+        if self.absolute_movement_cost_binding is not None:
+            result["schema"] = "reservation_sizing_binding.v8"
+            result["absolute_movement_cost_binding"] = (
+                self.absolute_movement_cost_binding.to_dict_v1()
+            )
         return result
 
     @classmethod
@@ -253,24 +265,32 @@ class ReservationSizingBindingV1:
             "reservation_sizing_binding.v5",
             "reservation_sizing_binding.v6",
             "reservation_sizing_binding.v7",
+            "reservation_sizing_binding.v8",
         }
         version4 = isinstance(payload, dict) and payload.get("schema") in {
             "reservation_sizing_binding.v4",
             "reservation_sizing_binding.v5",
             "reservation_sizing_binding.v6",
             "reservation_sizing_binding.v7",
+            "reservation_sizing_binding.v8",
         }
         version5 = isinstance(payload, dict) and payload.get("schema") in {
             "reservation_sizing_binding.v5",
             "reservation_sizing_binding.v6",
             "reservation_sizing_binding.v7",
+            "reservation_sizing_binding.v8",
         }
         version6 = isinstance(payload, dict) and payload.get("schema") in {
             "reservation_sizing_binding.v6",
             "reservation_sizing_binding.v7",
+            "reservation_sizing_binding.v8",
         }
-        version7 = (
-            isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v7"
+        version7 = isinstance(payload, dict) and payload.get("schema") in {
+            "reservation_sizing_binding.v7",
+            "reservation_sizing_binding.v8",
+        }
+        version8 = (
+            isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v8"
         )
         required = {"schema", "request_digest", "applied_input", "decision"}
         if version2 or version3 and "risk_binding" in payload:
@@ -285,6 +305,8 @@ class ReservationSizingBindingV1:
             required.add("funding_cost_binding")
         if version7:
             required.add("native_initial_margin_binding")
+        if version8:
+            required.add("absolute_movement_cost_binding")
         if (
             not isinstance(payload, dict)
             or set(payload) != required
@@ -297,6 +319,7 @@ class ReservationSizingBindingV1:
                 "reservation_sizing_binding.v5",
                 "reservation_sizing_binding.v6",
                 "reservation_sizing_binding.v7",
+                "reservation_sizing_binding.v8",
             }
         ):
             raise ValueError("RESERVATION_SIZING_STATE_SCHEMA_INVALID")
@@ -307,6 +330,7 @@ class ReservationSizingBindingV1:
         from .entry_execution_cost_v1 import CloseExecutionCostBindingV1
         from .entry_execution_cost_v1 import FundingCostBindingV1
         from .native_initial_margin_v1 import NativeInitialMarginBindingV1
+        from .absolute_movement_cost_v1 import AbsoluteMovementCostBindingV1
 
         return cls(
             request_digest=payload["request_digest"],
@@ -332,6 +356,11 @@ class ReservationSizingBindingV1:
                 payload["native_initial_margin_binding"]
             )
             if version7
+            else None,
+            absolute_movement_cost_binding=AbsoluteMovementCostBindingV1.from_dict_v1(
+                payload["absolute_movement_cost_binding"]
+            )
+            if version8
             else None,
             funding_cost_binding=FundingCostBindingV1.from_dict_v1(payload["funding_cost_binding"])
             if version6

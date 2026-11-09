@@ -123,7 +123,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
 
     def _fetch_mark_price_payloads_for_native_v1(
         self, *, poll_index: int
-    ) -> tuple[Mapping[str, Any], Mapping[str, Any] | None] | None:
+    ) -> tuple[Mapping[str, Any], Mapping[str, Any] | None, str] | None:
         """Public GET mark-price (+ index-tickers when idx missing) for Cap24-bound native_id."""
         native = str(self.native_id or "").strip()
         if not native:
@@ -169,7 +169,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             )
         except ProductiveCanonicalPriceProvenanceError:
             return None
-        return mark_payload, index_payload
+        return mark_payload, index_payload, str(getattr(mark_result, "acquired_at_utc", ""))
 
     def poll(self) -> InjectedContinuousObservationV1 | None:
         ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1()
@@ -215,12 +215,13 @@ class LiveFreshC1ContinuousObservationSourceV1:
         mark_bundle = self._fetch_mark_price_payloads_for_native_v1(poll_index=poll_index)
         if mark_bundle is None:
             return None
-        mark_price_payload, index_tickers_payload = mark_bundle
+        mark_price_payload, index_tickers_payload, mark_acquired_at_utc = mark_bundle
         return InjectedContinuousObservationV1(
             candles_payload=candles_payload,
             occupancy_payloads=productive_auth_free_flat_occupancy_payloads_v1(),
             mark_price_payload=mark_price_payload,
             index_tickers_payload=index_tickers_payload,
+            mark_acquired_at_utc=mark_acquired_at_utc,
         )
 
 

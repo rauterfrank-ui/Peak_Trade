@@ -491,6 +491,7 @@ def _market_kwargs_from_observation_v1(
     cycle_id_prefix: str,
     origin_main_sha: str,
     g17_producers: Mapping[str, object],
+    mark_acquired_at_utc: str = "",
 ) -> dict[str, Any]:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
         finalized_candidate_candle_history_rejection_codes_v1,
@@ -509,6 +510,7 @@ def _market_kwargs_from_observation_v1(
             mark_price_payload=mark_price_payload,
             venue_native_id=venue_native_id,
             index_from_index_tickers=index_tickers_payload,
+            mark_acquired_at_utc=mark_acquired_at_utc,
         )
     except ProductiveCanonicalPriceProvenanceError as exc:
         raise PersistentNaturalEnterConvergenceError(
@@ -521,7 +523,7 @@ def _market_kwargs_from_observation_v1(
     return {
         "origin_main_sha": origin_main_sha,
         "cycle_id_prefix": cycle_id_prefix,
-        "observed_unix": event_ts + 1.0,
+        "observed_unix": datetime.now(timezone.utc).timestamp(),
         "mark_px": mark_px,
         "index_px": index_px,
         "bid_px": bid_px,
@@ -630,6 +632,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         t2_cycle_dispatch: Callable[..., Any] | None = None,
         mark_price_payload: Mapping[str, Any] | None = None,
         index_tickers_payload: Mapping[str, Any] | None = None,
+        mark_acquired_at_utc: str = "",
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
         if execute_network or perform_get:
@@ -673,6 +676,7 @@ def make_n1_occupied_lane_s5_runner_v1(
             cycle_id_prefix=prefix,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
+            mark_acquired_at_utc=mark_acquired_at_utc,
         )
         lane_pairs = {LANE_ID: composed_pairs[LANE_ID]}
         s7_base = {
@@ -781,6 +785,7 @@ def bootstrap_s8_lane_via_s7_compose_v1(
     index_tickers_payload: Mapping[str, Any] | None = None,
     cycle_id_prefix: str = "persistent-natural-enter-bootstrap",
     host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
+    mark_acquired_at_utc: str = "",
 ) -> None:
     """Cold-lane S7 compose only (cursor persist) without S5 governed-cycle ledger."""
     _ = origin_main_sha
@@ -793,6 +798,7 @@ def bootstrap_s8_lane_via_s7_compose_v1(
         cycle_id_prefix=cycle_id_prefix,
         origin_main_sha=origin_main_sha,
         g17_producers=g17_producers,
+        mark_acquired_at_utc=mark_acquired_at_utc,
     )
     s7 = {
         key: value
@@ -862,6 +868,7 @@ def run_offline_persistent_natural_enter_convergence_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
+            mark_acquired_at_utc=first_obs.mark_acquired_at_utc,
         )
     runner = make_n1_occupied_lane_s5_runner_v1(
         composed_pairs=pairs,
@@ -1104,6 +1111,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
+            mark_acquired_at_utc=first_obs.mark_acquired_at_utc,
             host_budget_recovery=bootstrap_host_recovery,
         )
 

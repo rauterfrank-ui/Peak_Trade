@@ -10,9 +10,10 @@ def resolve_selected_future_market_type_v1(
     *, instrument_id: str, venue_native_id: str
 ) -> FuturesMarketType:
     native = str(venue_native_id or "").strip().upper()
+    xperp = re.fullmatch(r"[A-Z0-9]+-USD_UM_XPERP-\d{6}", native) is not None
     if native.endswith("-SWAP"):
         market_type = FuturesMarketType.PERPETUAL
-    elif re.fullmatch(r"[A-Z0-9]+-[A-Z0-9]+-\d{6}", native):
+    elif xperp or re.fullmatch(r"[A-Z0-9]+-[A-Z0-9]+-\d{6}", native):
         market_type = FuturesMarketType.FUTURES
     else:
         raise ValueError("future_native_contract_identity_unknown")
@@ -29,11 +30,12 @@ def resolve_selected_future_market_type_v1(
         )
         if expected is not market_type:
             raise ValueError("future_contract_type_identity_mismatch")
-        if not native.startswith(f"{base}-{quote}-"):
+        expected_prefix = f"{base}-{quote}_UM_XPERP-" if xperp else f"{base}-{quote}-"
+        if not native.startswith(expected_prefix):
             raise ValueError("future_native_quote_identity_mismatch")
         if market_type is FuturesMarketType.PERPETUAL:
             if identity not in {"perp", native.lower()}:
                 raise ValueError("future_native_contract_identity_mismatch")
-        elif identity != f"20{native.rsplit('-', 1)[1]}":
+        elif identity not in {native.lower(), f"20{native.rsplit('-', 1)[1]}"}:
             raise ValueError("future_expiry_identity_mismatch")
     return market_type

@@ -67,7 +67,7 @@ def _run_with_fixed_offline_acquisition_clock_v1(**kwargs):
         current_productive_persistent_natural_enter_convergence_v1 as runner,
     )
 
-    instant = datetime.now(timezone.utc).replace(microsecond=0)
+    instant = datetime.now(timezone.utc)
 
     class OfflineDateTime(datetime):
         @classmethod
@@ -272,8 +272,15 @@ def _run_layered_entry_supervisor_v1(tmp_path: Path, *, short: bool, with_pretra
     mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
         bound=bound, mark_px=mark, index_px=mark * 0.995
     )
+    # Explicit offline source clocks. The old untimed OKX-shaped payload no
+    # longer qualifies as a current mark merely by arriving at the runner.
+    captured = datetime.now(timezone.utc)
+    mark_payload["data"][0]["ts"] = str(int(captured.timestamp() * 1000))
     observation = replace(
-        observation, mark_price_payload=mark_payload, index_tickers_payload=index_payload
+        observation,
+        mark_price_payload=mark_payload,
+        index_tickers_payload=index_payload,
+        mark_acquired_at_utc=captured.isoformat(),
     )
     # These are explicit original-owner test ports. Their productive-class
     # fixture labels do not attest actual venue contact or natural data.

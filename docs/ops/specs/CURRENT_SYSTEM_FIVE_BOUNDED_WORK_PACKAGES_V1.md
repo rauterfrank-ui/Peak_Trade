@@ -102,6 +102,76 @@ und absolute Handelbarkeit gegenüber tatsächlichen Kosten bleiben getrennt.
 Ein insgesamt bewegungsarmes Universum darf nicht allein wegen seiner weiterhin
 vorhandenen relativen Rangfolge als kostentragfähig behauptet werden.
 
+Weitere Nutzerpräzisierung vom 9. November: Maßgeblich bleiben die tatsächliche
+Double-Play-/Core-Kette, ihre Long-/Short-Scopegrenzen und die nachvollziehbare
+Aktualität ihrer Preisquelle. Volatilität und Amplitude bleiben beide relevant.
+Frank hat als zusätzliche notwendige Bedingung zugestimmt, die gemessene
+Amplitude des vorhandenen 60-Minuten-Fensters mit aktuellen Opening-, Closing-
+und Fundingkosten der tatsächlich zugelassenen Menge zu vergleichen. Das ist
+keine Prognose einer erreichbaren Kursbewegung, kein erwarteter Gewinn und
+keine neue Survival-Wahrscheinlichkeit. Die kanonische Volatilität behält ihre
+eigene Einheit und ihren GGE-/Rankingconsumer; eine frei gewählte zusätzliche
+Volatilitätsgrenze wird daraus nicht abgeleitet.
+
+Die historische Mindestzahl von 50 abgeschlossenen Trades wurde von Frank
+ausdrücklich als ungeklärt bezeichnet. Sie ist deshalb kein eigenständig
+ratifiziertes BWP1-Abschlusskriterium. Die bestehende historische Economic-
+Policy bleibt bei ihrem Owner erhalten; aus ihr wird keine neue Freigabe
+für diese Testphase abgeleitet. Ökonomischer Vorteil und fachlich/finanziell
+korrekte Verarbeitung bleiben unterschiedliche Nachweise.
+
+Eine gesonderte Anti-Latenz-Control hat Frank ausdrücklich auf später
+verschoben. Eine garantierte Millisekundenlatenz für Datenzufuhr, Orderversand
+oder bestätigten Positionswechsel wird in diesem Paket weder versprochen noch
+als bereits erfüllte Abnahmebedingung verwendet. Die Prüfung der Quellenzeit
+wird dadurch nicht aufgehoben. Die bestehende Public-MD-Fünfsekundenregel ist
+eine vorhandene Frischeobergrenze und keine gemessene End-to-End-Latenz.
+
+Frank möchte ausschließlich USDC zum Handeln verwenden. Am 9. November wurde
+in seiner angemeldeten Safari-Sitzung der Futures-Modus als aktueller
+Kontomodus und bei BTCUSD UM X-Perp die Abrechnungswährung USDC abgelesen.
+Die USD-Preisnotation ist davon zu unterscheiden. Eine UI-Beobachtung ist kein
+entscheidungsspezifischer API-Input und kein numerischer USD-/USDC-Operator.
+Die angezeigte Isolated-/Hebelauswahl wurde nicht geändert und legt keine
+abweichende Programmpolicy fest. Insbesondere wird der Kontomodus nicht allein
+wegen des Wortes „Margin“ auf Multi-Währung umgestellt. Kontowährung,
+Settlement, konkrete Instrumentmetadaten und Rechenvertrag müssen am
+ursprünglichen Finanzconsumer zusammenpassen.
+
+Der anschließende ausschließlich lesende Zugriff über den ursprünglichen
+GET-Port bestätigt `acctLv=2`, `posMode=net_mode`, `settleCcy=USDC` und
+`autoLoan=false`. Für `BTC-USD_UM_XPERP-310404` meldet der öffentliche
+Instrumentendpunkt `settleCcy=USD`, der authentifizierte kontobezogene Endpunkt
+hingegen `settleCcy=USDC`. Beide melden `FUTURES`, `linear`, `ctVal=0.0001 BTC`
+und `ctMult=1`. Der öffentliche Fundingendpunkt liefert ebenfalls diesen
+FUTURES-Kontrakt; die Risikostufen gehören zu `BTC-USD_UM_XPERP`.
+Diese Recherche ist keine entscheidungsspezifische Entryzulassung.
+Private Rohantworten verbleiben außerhalb des Repos; Kontokennungen,
+Kontostände und Credentialmaterial werden nicht veröffentlicht.
+
+Die [OKX-Produktdefinition](https://www.okx.com/en-eu/help/faq-on-usd-margined-futures-contracts)
+ordnet Gebühren, PnL, Funding, Initial- und Maintenance-Margin der gewählten
+Abrechnungswährung zu. Der [API-Vertrag](https://www.okx.com/docs-v5/en/)
+definiert den linearen PnL über Preisänderung, native Kontraktmenge und
+Kontraktwert in der Instrumentabrechnungswährung. Der begrenzte Anschluss nutzt
+deshalb die authentifizierten Instrumentmetadaten und den bestehenden linearen
+Geldvertrag. Er erzeugt weder einen externen USD-/USDC-Wechselkurs noch eine
+allgemeine USD-/USDC-Paritätsregel. Die kanonische Instrumentidentität aus dem
+öffentlichen Universum behält ihren USD-Quotebezug. Basis und Quote werden bei
+leeren Futuresfeldern aus dem ausdrücklich gelieferten Underlyingpaar gelesen;
+X-Perps werden als datierte `FUTURES` erkannt und nicht zu `SWAP` umbenannt.
+
+Das neue explizite interne Testprofil
+`BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V11.json` verlangt zusätzlich USDC als
+native Abrechnungswährung. Bestehende Profile und operative Defaults bleiben
+erhalten. Ein alter USDT-Hold wird dadurch weder automatisch migriert noch
+bei Cold-Read als USDC-Verpflichtung behandelt. Der verbundene finanzielle
+Simulationsnachweis ist von aktueller Venueausführung und einer vollständigen
+FUTURES-Positionserfassung durch den bestehenden Host getrennt: dessen
+bisherige SWAP-Abfrage belegt diesen zusätzlichen Accountscope nicht. Diese
+Verbindung und die accountwirksame Maintenance-/Liquidationszulassung bleiben
+vor einem Abschluss des betroffenen produktbezogenen BWP1-Pfads erforderlich.
+
 Die weiteren Anforderungen bleiben bis zum passenden verbundenen Nachweis offen.
 Ein ausgeschriebener Vertrag allein schließt dieses Paket nicht.
 

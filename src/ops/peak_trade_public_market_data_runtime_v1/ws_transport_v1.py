@@ -96,6 +96,12 @@ class PublicWsTransportV1:
             raise PublicWsTransportError("WS_NOT_CONNECTED")
         out: list[Mapping[str, Any]] = []
         for raw in self.message_source():
+            if isinstance(raw.get("arg"), Mapping) and raw["arg"].get("channel") == "mark-price":
+                # Snapshot dedup belongs to the original per-stream sequence
+                # owner. An ever-seen cache would discard valid A -> B -> A
+                # corrections and retain an unbounded mark history here.
+                out.append(raw)
+                continue
             msg_id = str(raw.get("msg_id") or raw.get("tradeId") or json.dumps(raw, sort_keys=True))
             if msg_id in self.state.seen_message_ids:
                 tagged = dict(raw)

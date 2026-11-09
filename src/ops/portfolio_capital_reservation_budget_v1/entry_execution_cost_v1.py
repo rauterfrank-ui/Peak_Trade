@@ -55,6 +55,45 @@ def _query(endpoint, path):
     return parse_qs(parsed.query, keep_blank_values=True, strict_parsing=True)
 
 
+def _instrument_source_path_v1(source, instrument, account):
+    """Account-specific USDs settlement is not inferred from public settleCcy.
+
+    The original linear cash calculation uses the private instrument's settlement
+    unit, as specified by the venue's linear PnL contract. No USD cash amount,
+    market FX parity, projected public row or conversion rate is introduced.
+    """
+    path = urlsplit(source.endpoint).path
+    family = str(instrument.get("instFamily", ""))
+    xperp = family.endswith("-USD_UM_XPERP")
+    if path == "/api/v5/public/instruments" and not xperp:
+        return path
+    if (
+        path != "/api/v5/account/instruments"
+        or source.auth_header_sent is not True
+        or account.get("acctLv") != "2"
+        or account.get("posMode") != "net_mode"
+        or account.get("settleCcy") != "USDC"
+        or type(account.get("settleCcyList")) is not list
+        or "USDC" not in account["settleCcyList"]
+        or account.get("autoLoan") is not False
+        or instrument.get("settleCcy") != "USDC"
+        or instrument.get("ctType") != "linear"
+        or instrument.get("instType") != "FUTURES"
+        or not xperp
+        or not re.fullmatch(r"[A-Z0-9]+-USD_UM_XPERP", family)
+        or not re.fullmatch(
+            re.escape(family) + r"-\d{6}",
+            str(instrument.get("instId", "")),
+        )
+        or instrument.get("uly") != family.removesuffix("_UM_XPERP")
+        or instrument.get("ctValCcy") != family.removesuffix("-USD_UM_XPERP")
+        or instrument.get("baseCcy") not in {None, "", family.removesuffix("-USD_UM_XPERP")}
+        or instrument.get("quoteCcy") not in {None, ""}
+    ):
+        raise ValueError("ENTRY_COST_ACCOUNT_USDC_SETTLEMENT_SOURCE_REQUIRED")
+    return path
+
+
 def _event_clock(value, acquired, evaluated):
     if type(value) is not str or not value.isdigit() or int(value) <= 0:
         raise ValueError("ENTRY_COST_EVENT_TIME_REQUIRED")
@@ -179,11 +218,12 @@ def assess_opening_execution_cost_v1(
     instrument = _one(_rows(public.payload), "instId", native)
     retained = _one(_rows(json.loads(monetary_source.instruments_json)), "instId", native)
     kind, family, group = (instrument.get(k) for k in ("instType", "instFamily", "groupId"))
+    instrument_source_path = _instrument_source_path_v1(public, instrument, accounts[0])
     if (
         instrument != retained
         or kind not in {"SWAP", "FUTURES"}
         or any(type(s) is not str or not s or s.strip() != s for s in (family, group))
-        or _query(public.endpoint, "/api/v5/public/instruments")
+        or _query(public.endpoint, instrument_source_path)
         != {"instType": [kind], "instId": [native]}
     ):
         raise ValueError("ENTRY_COST_INSTRUMENT_FEE_GROUP_UNPROVEN")
@@ -358,7 +398,14 @@ def reserved_opening_fee_v1(sizing):
 
 
 def collect_entry_execution_cost_observation_v1(
-    *, transport, account_identity, bound_instrument, inst_type, decision_epoch, cycle_id
+    *,
+    transport,
+    account_identity,
+    bound_instrument,
+    inst_type,
+    decision_epoch,
+    cycle_id,
+    use_account_instruments=False,
 ):
     """Four decision-bound GETs through a supplied original read-only port.
 
@@ -372,6 +419,8 @@ def collect_entry_execution_cost_observation_v1(
 
     if inst_type not in {"SWAP", "FUTURES"}:
         raise ValueError("ENTRY_COST_SUPPORTED_FUTURES_TYPE_REQUIRED")
+    if type(use_account_instruments) is not bool:
+        raise ValueError("ENTRY_COST_INSTRUMENT_SCOPE_MUST_BE_EXPLICIT_BOOLEAN")
     native = bound_instrument.venue_native_id
     acquisition = canonical(dict(decision_epoch=decision_epoch, cycle_id=cycle_id))
     sources = {}
@@ -391,7 +440,10 @@ def collect_entry_execution_cost_observation_v1(
 
     get("account", "/api/v5/account/config", {}, True)
     public = get(
-        "instruments", "/api/v5/public/instruments", dict(instType=inst_type, instId=native), False
+        "instruments",
+        "/api/v5/account/instruments" if use_account_instruments else "/api/v5/public/instruments",
+        dict(instType=inst_type, instId=native),
+        use_account_instruments,
     )
     row = _one(_rows(public.payload), "instId", native)
     family = row.get("instFamily")
@@ -915,7 +967,12 @@ def assess_current_open_slot_cost_v1(
             or source.method != "GET"
             or source.http_status != 200
             or source.historical_reuse is not False
-            or source.auth_header_sent is not (name in {"account", "fees"})
+            or source.auth_header_sent
+            is not (
+                name in {"account", "fees"}
+                or name == "instruments"
+                and urlsplit(source.endpoint).path == "/api/v5/account/instruments"
+            )
             or source.error_class
             or source.pretrade_decision_id != context
             or not re.fullmatch("[0-9a-f]{64}", source.body_sha256)
@@ -933,7 +990,9 @@ def assess_current_open_slot_cost_v1(
         raise ValueError("OPEN_SLOT_CURRENT_COST_ACCOUNT_UNPROVEN")
     _one(account_rows, "uid", owner._account_identity)
     if (
-        _query(instruments.endpoint, "/api/v5/public/instruments")
+        _query(
+            instruments.endpoint, _instrument_source_path_v1(instruments, retained, account_rows[0])
+        )
         != {"instType": [kind], "instId": [native]}
         or _one(_rows(instruments.payload), "instId", native) != retained
     ):

@@ -443,7 +443,7 @@
       "law_id": "PROD-CANONICAL-PRICE-PROVENANCE-V1",
       "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
       "canonical_anchor": "ProductiveCanonicalPriceProvenanceError",
-      "source_sha256": "cb7cd9839850753c39decd59c405d38159d1f8fd0de5862ebd5b49eeaad6adf0",
+      "source_sha256": "fd375822c19258f1610d27ed2dc5d03a1a1eb303835eca0763aea4e81a1ee5e5",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -453,7 +453,9 @@
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
-        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "tests/ops/test_current_scope_mark_clock_v1.py",
+        "docs/ops/evidence/CURRENT_SCOPE_MARK_AND_USDC_MOVEMENT_ADMISSION_V1_2026-11-09.json"
       ]
     },
     {

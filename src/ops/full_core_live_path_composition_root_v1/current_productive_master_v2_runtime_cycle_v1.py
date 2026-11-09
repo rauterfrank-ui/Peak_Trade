@@ -579,6 +579,7 @@ def _outgoing_cursor_from_replay_v1(
     now_tick: int,
     replay: IntegratedOfflineReplayResultV1,
     cap61_binding: HostConfirmationBindingV1 | None,
+    price_provenance: ProductiveCycleCanonicalPriceProvenanceV1 | None = None,
 ) -> Optional[CurrentProductiveSideStateConfirmationCursorV1]:
     if replay.intermediate is None:
         return None
@@ -611,7 +612,7 @@ def _outgoing_cursor_from_replay_v1(
             confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
             cap61_confirmation_state=cap61_state,
             entry_assessment_frame=build_current_core_entry_assessment_frame_v1(
-                replay=replay, confirmation_state=cap61_state
+                replay=replay, confirmation_state=cap61_state, price_provenance=price_provenance
             ),
         )
     except CurrentProductiveCursorError:
@@ -725,6 +726,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             mark_px=float(mark_px),
             index_px=float(index_px),
             venue_native_id=venue_native_id or instrument_id,
+            observed_unix=observed_unix,
         )
     except ProductiveCanonicalPriceProvenanceError as exc:
         return _blocked_cycle_result(
@@ -814,6 +816,11 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         )
     market_event_time = _iso_utc(last_finalized_event_ts_unix)
     decision_time = _iso_utc(max(float(observed_unix), last_finalized_event_ts_unix + 0.001))
+    if canonical_price_provenance.mark_clock_json != "null":
+        market_event_time = _iso_utc(
+            canonical_price_provenance.require_current_mark_clock_v1(observed_unix=observed_unix)
+        )
+        decision_time = _iso_utc(observed_unix)
     restored = restore.cursor if restore.disposition.value == "restored" else None
     trading_epoch = 1 if restored is None else int(restored.trading_epoch)
     last_evaluated = 0 if restored is None else int(restored.last_evaluated_trading_epoch)
@@ -846,7 +853,17 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         )
     market_context = with_computed_input_digest(
         CanonicalMarketContextV1(
-            context_id=f"ctx-{instrument_id}-epoch{trading_epoch}-full-core-current-v1",
+            context_id=(
+                f"ctx-{instrument_id}-epoch{trading_epoch}-full-core-current-v1"
+                + (
+                    "-mark-"
+                    + hashlib.sha256(
+                        canonical_price_provenance.mark_clock_json.encode()
+                    ).hexdigest()
+                    if canonical_price_provenance.mark_clock_json != "null"
+                    else ""
+                )
+            ),
             instrument_id=instrument_id,
             market_type=future_market_type,
             trading_epoch=trading_epoch,
@@ -1398,6 +1415,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         now_tick=now_tick,
         replay=replay,
         cap61_binding=cap61_binding,
+        price_provenance=canonical_price_provenance,
     )
     if (
         position_episode_binding is not None

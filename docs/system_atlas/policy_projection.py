@@ -146,6 +146,26 @@ OPEN_TEST_SLOT_LOSS_PROTECTION_DELTAS = {
 }
 
 
+# Current Scope/price-source instruction and the explicit PR/merge request:
+# retain source clocks through these three outer adapters. This is a complete
+# exact successor of the reviewed loss-protection bundle, not an admission for
+# native Core changes, other policy bodies or a development hash by itself.
+CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+        "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": (
+        "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01",
+        "91011736f288bd20d5744a883223a34b283f9fa6ff9ed044fe108e76bc53d665",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
+        "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff",
+        "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",
+    ),
+}
+
+
 def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | None = None) -> None:
     frozen = {} if policies is None else {row["path"]: row["frozen_sha256"] for row in policies}
     actual = {}
@@ -163,7 +183,12 @@ def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | No
         if path not in after or after[path] != parent:
             raise ValueError("OPEN_TEST_SLOT_LOSS_PROTECTION_PARENT_INVALID:" + path)
         protected_after[path] = successor
-    if actual not in (before, after, protected_after):
+    scope_bound_after = dict(protected_after)
+    for path, (parent, successor) in CURRENT_SCOPE_MARK_ADMISSION_DELTAS.items():
+        if path not in protected_after or protected_after[path] != parent:
+            raise ValueError("CURRENT_SCOPE_MARK_ADMISSION_PARENT_INVALID:" + path)
+        scope_bound_after[path] = successor
+    if actual not in (before, after, protected_after, scope_bound_after):
         raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
 
 

@@ -23,9 +23,11 @@ class OkxEeaPublicWsBindingV1:
     public_channel_trades: str
     public_channel_books5: str
     heartbeat_op: str
+    public_channel_mark_price: str = "mark-price"
 
     def subscribe_args_for_instrument(self, venue_native_id: str) -> list[dict[str, Any]]:
         return [
+            {"channel": self.public_channel_mark_price, "instId": venue_native_id},
             {"channel": self.public_channel_inst_tickers, "instId": venue_native_id},
             {"channel": self.public_channel_trades, "instId": venue_native_id},
             {"channel": self.public_channel_books5, "instId": venue_native_id},

@@ -115,6 +115,19 @@ def _run_orchestrator(
     )
     cycle = _market_kwargs(cycle_id_prefix="fa-orch")
     cycle.pop("origin_main_sha", None)
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        build_explicit_test_fixture_price_provenance_v1,
+    )
+
+    cycle.pop("canonical_price_provenance", None)
+    cycle["canonical_price_provenance_by_lane"] = {
+        LANE_IDS[i]: build_explicit_test_fixture_price_provenance_v1(
+            venue_native_id=native,
+            mark_px=float(chain["mark_price_by_native_id"][native]),
+            index_px=float(cycle["index_px"]),
+        )
+        for i, native in enumerate(instrument_rows[:target_cardinality])
+    }
     cycle["g17_typed_vol_producers"] = _g17_for_instruments(
         chain, instrument_rows, target_cardinality
     )

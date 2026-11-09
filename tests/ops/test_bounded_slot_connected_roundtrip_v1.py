@@ -681,6 +681,9 @@ def roundtrip(
             result = original(**args)
             refreshed.update(result)
             for l, b in result.items():
+                kwargs["canonical_price_provenance_by_lane"][l] = provenance_for_bound_v1(
+                    bound=b, mark_px=closes[-1], index_px=closes[-1] * 0.995
+                )
                 kwargs["live_29p_injected_by_lane"][l] = ports(
                     b, utc(T0 + 121), "post-close-next-core:" + l, account="acct-1"
                 )

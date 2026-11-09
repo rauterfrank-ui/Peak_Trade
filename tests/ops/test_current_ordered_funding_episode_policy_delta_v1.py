@@ -78,6 +78,25 @@ def test_actual_policy_inventory_accepts_reviewed_bundle_with_original_binding()
     assert result["runtime_effect_inferred"] is False
 
 
+@pytest.mark.parametrize("path", tuple(POLICY["CURRENT_SCOPE_MARK_ADMISSION_DELTAS"]))
+@pytest.mark.parametrize("damage", ["partial", "unreviewed-rebound"])
+def test_scope_source_successor_requires_the_complete_exact_reviewed_bundle(tmp_path, path, damage):
+    for relative in POLICY["RESERVED_SLOT_ROTATION_DELTAS"]:
+        source = ROOT / relative
+        if source.is_file():
+            destination = tmp_path / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(source.read_bytes())
+    parent, _successor = POLICY["CURRENT_SCOPE_MARK_ADMISSION_DELTAS"][path]
+    if damage == "partial":
+        (tmp_path / path).write_bytes(git_bytes("9d2ff67b0ccfdc16d9641900a10f00b3c61eac67", path))
+        assert hashlib.sha256((tmp_path / path).read_bytes()).hexdigest() == parent
+    else:
+        (tmp_path / path).write_bytes((tmp_path / path).read_bytes() + b"\n# unrelated successor\n")
+    with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
+        POLICY["validate_reserved_slot_rotation_bundle"](tmp_path, policies())
+
+
 @pytest.mark.parametrize("path", tuple(DELTAS))
 def test_actual_reader_rejects_missing_original_development_binding(monkeypatch, path):
     original = Path.read_bytes
