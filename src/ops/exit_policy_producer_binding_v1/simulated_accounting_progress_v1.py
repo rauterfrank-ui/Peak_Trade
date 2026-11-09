@@ -17,6 +17,8 @@ from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v
     _load_source,
     _ref,
     _verify,
+    require_economic_history_extension_v1,
+    latest_economic_event_time_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     load_current_productive_sidestate_confirmation_cursor_v1,
@@ -24,6 +26,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 )
 
 SCHEMA = "simulated_accounting_episode_progress.v1"
+FUNDING_SCHEMA = "simulated_accounting_episode_progress.v2"
 
 
 def _same_accounting_domain(previous, current):
@@ -51,23 +54,29 @@ def _source(ref, identity):
 
 def verify_simulated_accounting_progress_v1(episode):
     record = episode.binding.simulated_accounting_progress
+    funding_mode = isinstance(record, dict) and record.get("schema") == FUNDING_SCHEMA
+    time_key = "latest_economic_event_time" if funding_mode else "latest_fill_event_time"
+    required = {
+        "schema",
+        "initial_source_ref",
+        "previous_source_ref",
+        "current_source_ref",
+        "applied_fill_count",
+        time_key,
+    }
+    if funding_mode:
+        required.add("applied_funding_count")
     if (
         not isinstance(record, dict)
-        or set(record)
-        != {
-            "schema",
-            "initial_source_ref",
-            "previous_source_ref",
-            "current_source_ref",
-            "applied_fill_count",
-            "latest_fill_event_time",
-        }
-        or record["schema"] != SCHEMA
+        or set(record) != required
+        or record["schema"] not in {SCHEMA, FUNDING_SCHEMA}
         or record["initial_source_ref"] != episode.entry_source_ref
         or type(record["applied_fill_count"]) is not int
-        or type(record["latest_fill_event_time"]) not in (int, float)
-        or not math.isfinite(record["latest_fill_event_time"])
-        or record["latest_fill_event_time"] <= 0
+        or type(record[time_key]) not in (int, float)
+        or not math.isfinite(record[time_key])
+        or record[time_key] <= 0
+        or funding_mode
+        and type(record["applied_funding_count"]) is not int
     ):
         raise ValueError("SIMULATED_ENTRY_PROGRESS_RECORD_INVALID")
     initial, original_anchors = _source(episode.entry_source_ref, episode.identity)
@@ -76,14 +85,22 @@ def verify_simulated_accounting_progress_v1(episode):
     _same_accounting_domain(initial, previous)
     _same_accounting_domain(previous, current)
     old, now = previous["fills"], current["fills"]
+    before, after = require_economic_history_extension_v1(previous, current)
+    require_economic_history_extension_v1(initial, previous)
+    latest = latest_economic_event_time_v1(current) if funding_mode else now[-1]["event_time_unix"]
     if (
         len(old) < len(initial["fills"])
-        or len(old) >= len(now)
+        or len(before) >= len(after)
         or now[: len(old)] != old
         or now[: len(initial["fills"])] != initial["fills"]
         or len(now) != record["applied_fill_count"]
         or any(row["event_time_unix"] is None for row in now[len(initial["fills"]) :])
-        or now[-1]["event_time_unix"] != record["latest_fill_event_time"]
+        or latest != record[time_key]
+        or funding_mode
+        and record["applied_funding_count"]
+        != len(current["accounting_checkpoint"]["funding_events"])
+        or not funding_mode
+        and bool(current["accounting_checkpoint"]["funding_events"])
         or anchors["entry_event_time"] != original_anchors["entry_event_time"]
         or any(
             getattr(episode.binding, k) != anchors[k]
@@ -95,7 +112,8 @@ def verify_simulated_accounting_progress_v1(episode):
         "payload": current,
         "anchors": anchors,
         "quantity": Decimal(current["accounting_checkpoint"]["position"]["qty"]),
-        "latest_fill_event_time": record["latest_fill_event_time"],
+        "latest_fill_event_time": now[-1]["event_time_unix"],
+        "latest_economic_event_time": latest,
     }
 
 
@@ -159,7 +177,8 @@ def advance_position_episode_from_simulated_accounting_v1(
     old, now = old_payload["fills"], payload["fills"]
     if len(now) < len(old) or now[: len(old)] != old:
         raise ValueError("SIMULATED_ENTRY_PROGRESS_HISTORY_REWRITE")
-    if len(now) == len(old):
+    before, after = require_economic_history_extension_v1(old_payload, payload)
+    if len(after) == len(before):
         return {"status": "ALREADY_APPLIED", "commit_sequence": episode.binding.commit_sequence}
     if any(row["event_time_unix"] is None for row in now[len(old) :]):
         raise ValueError("SIMULATED_ENTRY_PROGRESS_NEW_FILL_TIME_REQUIRED")
@@ -194,6 +213,14 @@ def advance_position_episode_from_simulated_accounting_v1(
         "applied_fill_count": len(now),
         "latest_fill_event_time": now[-1]["event_time_unix"],
     }
+    if payload["accounting_checkpoint"]["funding_events"]:
+        record = evaluated.simulated_accounting_progress
+        record.update(
+            schema=FUNDING_SCHEMA,
+            applied_funding_count=len(payload["accounting_checkpoint"]["funding_events"]),
+            latest_economic_event_time=latest_economic_event_time_v1(payload),
+        )
+        record.pop("latest_fill_event_time")
     # Identity publication for this state-only update: the actual cursor stays unchanged.
     evaluated.current_cursor_publication = build_current_cursor_publication_v1(
         episode=episode,

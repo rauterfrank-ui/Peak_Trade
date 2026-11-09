@@ -57,6 +57,7 @@ class PostCloseFeedbackRequestV1:
     closed_reservation_ids: tuple[str, ...] = ()
     expected_budget_observation_id: str = ""
     ranking: PostCloseRankingReviewRequestV1 | None = None
+    slot_accounting_source: object | None = None
 
 
 @dataclass(frozen=True)
@@ -351,6 +352,21 @@ def compose_post_close_feedback_v1(
                 bound_instrument=request.bound_instrument,
             )
             reasons.extend(capital_refresh.reason_codes)
+            policy = request.budget_owner.entry_budget_policy_v1()
+            if policy is not None and policy.per_slot_test_loss_limit is not None:
+                try:
+                    request.budget_owner.record_test_slot_close_economics_v1(request)
+                except ValueError as exc:
+                    return PostCloseFeedbackResultV1(
+                        "RECONCILED_FLAT_ECONOMICS_PENDING",
+                        tuple(reasons) + (str(exc),),
+                        position,
+                        quantity,
+                        False,
+                        capital_refresh,
+                        None,
+                        digest,
+                    )
     membership = None
     if request.ranking is None:
         reasons.append("POST_CLOSE_RANKING_REVIEW_INPUT_REQUIRED")

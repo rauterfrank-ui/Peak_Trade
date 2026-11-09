@@ -85,3 +85,137 @@ Dieser erste Commit ist kein Beleg mehrerer fortgesetzter Handelszyklen.
 Der gemeinsame Zwei-/Fünfslot-Corepfad, Close/Rotation, Ausfälle und Wiederanlauf
 folgen als zweite und dritte Arbeitsschritte. Die produktiven N1-/N5-Pins,
 Handelsformeln, Freeze-Tags und vorhandenen Betriebsrechte bleiben erhalten.
+
+## BWP1-Fortschreibung: ausschließliches Test-Verlustbudget
+
+Auf Basis des Zwischencommits `d855ca546` präzisiert Frank am 9. November:
+Höchstens 25 USDC Verlustbudget je Testslot; nach Verbrauch keine neuen Entries.
+Diese Regel gilt **nur für die Testphase**. Der spätere kapitalabhängige Betrieb
+erhält seine eigene ausdrückliche Policyentscheidung. Es gibt keinen
+automatischen Phasenübergang und keine stillschweigende Recoverymigration.
+
+Die zusätzliche [Testpolicy Revision 2](BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V2.json)
+verwendet dafür `entry_budget_policy.v3`,
+`loss_limit_scope=EXPLICIT_TEST_PHASE_ONLY` und verbietet automatische Auffüllung.
+Die ältere V2-Policy bleibt lesbar und hat dieses neue Verlustbudget nicht.
+Die bisherige Standardpolicy wird unverändert weitergelesen. Das neue Artefakt
+ist ein explizit zu bindender Entwicklungsinput; es startet keine Session.
+
+Notional und Verlustbudget bleiben unterschiedliche Größen. Der
+[ursprüngliche Budgetowner](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py)
+speichert die Verlustfortschreibung im selben Store unter der stabilen Slot-ID,
+nicht unter dem austauschbaren Instrument. Ein neuer Tag, Rotation, verfügbares
+Kontokapital oder ein Prozessneustart setzt sie nicht zurück. Nach erstmaligem
+Verbrauch bleibt die Sperre innerhalb dieser Testpolicy gesetzt.
+
+Der [29P-Anschluss](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py)
+hält für neues Sizing zusätzlich die ursprünglichen Instrument-, Preis- und
+Währungsumrechnungsquellen in der
+[Sizingbindung](../../../src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py)
+fest. Ihr erneutes Lesen verwendet die Originalrechnungen, keine zweite
+FX-/Mengenformel. Ältere Holds werden nicht nachträglich als quellengebunden
+zertifiziert.
+
+Nach dem ursprünglichen bestätigten Full-Close und Kapitalrefresh liest der
+[wirtschaftliche Adapter](../../../src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py)
+die versiegelte ursprüngliche simulierte Episode. Originalaccounting liefert
+die Differenz vom Stand unmittelbar vor dem Öffnungsfill bis nach dem Closefill,
+einschließlich Gebühren und zugehöriger geordneter Fundingzahlungen. Slippage
+ist bereits im Fillpreis enthalten und wird nicht nochmals abgezogen. Bei
+USDT-Ergebnissen ist eine explizite frische USDT/USDC-Indexbewertung mit
+Währungsidentität, Ereignis- und Kenntniszeit erforderlich. Diese Bewertung
+ist kein Nachweis einer tatsächlichen Geldkonvertierung und erzeugt kein
+Kontokapital.
+
+Der [Loss-Adapter im Originalowner](../../../src/ops/portfolio_capital_reservation_budget_v1/slot_loss_budget_v1.py)
+führt die abgeschlossenen Nettoergebnisse je Slot fort. Restbudget ist die
+Startgrenze zuzüglich kumuliertem Nettoergebnis, für neue Risikozulassung auf
+0 bis 25 USDC begrenzt. Gewinne erhöhen damit die Risikogrenze nicht über 25 USDC.
+Der originale Sizer erhält die verbliebene Verlustzulage als zusätzliche obere
+Grenze seines bestehenden Stoprisikos; dieselbe Grenze wird atomar bei der
+Reservation geprüft. Die neue Policy verlangt dort die ursprünglichen
+Sizing-Geldquellen.
+
+Fehlt nach einem legitimen Flat-/Kapitalrefresh noch die wirtschaftliche
+Übergabe, bleiben die ursprüngliche Kapitalwahrheit und andere Slotbindungen
+erhalten. Der betroffene neue Entry bleibt bis zum Quellenabschluss gesperrt.
+Cold-Reopen prüft Policy, Summen, Reihenfolge und ursprüngliche Quellen erneut;
+ein beschädigter Nachweis wird nicht durch ein neues 25-USDC-Budget ersetzt.
+
+Die [verbundenen Prüfungen](../../../tests/ops/test_test_phase_slot_loss_budget_v1.py)
+verwenden echte Original-Corepläne und ausdrücklich simulierte Fills. Sie prüfen
+positive Fortsetzung, genau 25 USDC Nettoverlust, KEEP/REPLACE, erneutes Lesen,
+fünf Slots und fehlende oder verfälschte Nachweise. Das ist keine Venue-PnL-
+oder physische Stromausfallprobe.
+
+Offen in BWP1 bleiben insbesondere Gebühren-/Slippage-/Fundingvorsorge vor dem
+Entry sowie die gemeinsame Margin- und Verlustfolgenabnahme. Das Verlustergebnis
+wird derzeit am abgeschlossenen simulierten Zyklus fortgeschrieben. Der
+Stoprisikowert ist keine garantierte maximale Ausführungslast bei Preisgaps,
+Kosten oder Liquidation. Diese Anschlussarbeit schließt das Paket nicht ab.
+
+## BWP1-Fortschreibung: beobachtete Kosten des Öffnungsauftrags
+
+Der folgende Entwicklungsstand baut auf `6459cc6b0` auf. Die neue explizite
+[Testpolicy Revision 3](BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V3.json) verwendet
+`entry_budget_policy.v4` und verlangt Quellen für die Öffnungskosten. Die
+vorherigen Policyrevisionen bleiben unverändert lesbar und erhalten diese
+Pflicht nicht rückwirkend. Die Verlustsperre bleibt ausschließlich testbezogen;
+Frank entscheidet weiterhin über den Übergang zum späteren Betrieb.
+
+Der [Kostenproducer](../../../src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py)
+fragt über einen ausdrücklich übergebenen ursprünglichen Read-only-Port vier
+entscheidungsgebundene Quellen ab: Accountkonfiguration, Instrumentmetadaten,
+kontobezogene Gebühren und Orderbuch. Er erzeugt weder Transport noch Credentials,
+erweitert keine Endpointfreigabe und wiederholt keinen fehlgeschlagenen GET.
+Die vier Requests unterliegen den Rechten und Requestgrenzen des übergebenen
+Ports. Der tatsächliche Hostcollector und seine Betriebszulassung sind damit
+nicht automatisch aktiviert. Die verbundenen Nachweise verwenden ausdrücklich
+synthetische Antworten und keine privaten Kontozugriffe.
+
+Gebührensatz und Instrument werden über `instType`, `instFamily` und die
+eindeutige `feeGroup.groupId` verbunden. Die Abfrage verwendet die konkrete
+Instrumentfamilie; die veralteten obersten Maker-/Takerfelder liefern keinen
+Fallback. Das entspricht dem [aktuellen OKX-API-Vertrag](https://www.okx.com/docs-v5/en/).
+Negative Raten bedeuten eine Belastung. Eine positive Rebate finanziert keinen
+Hold. Dieser Anschluss unterstützt aktuell Marketorders auf ausdrücklich
+linearen Kontrakten mit `ctMult=1`, bekannten Währungen und vollständigen
+Metadaten; andere Modelle werden nicht mit derselben Formel bewertet.
+
+Für die endgültige unveränderte native Kontraktmenge konsumiert der Producer
+die tatsächlich erforderlichen Bid-/Ask-Level. Gebühren ergeben sich aus deren
+Notional, Kontraktmultiplikator und Kontosatz. Der nachteilige Unterschied zum
+ursprünglichen Referenzpreis wird als Öffnungsausführungskosten geführt; Spread
+wird nicht zusätzlich nochmals abgezogen. Die USDC-Bewertung benutzt die
+ursprüngliche monetäre Normalisierung. Account, Instrumentbindung, Cycle,
+Quellenidentität, Ereignis-, Acquisition- und finanzielle Bewertungszeit werden
+geprüft; die Coreentscheidungszeit ist kein neu behaupteter Acquisitionzeitpunkt.
+
+Die Originalreservation bleibt eine Notionalreservation. Der gleiche
+Budgetowner bindet die beobachtete Öffnungsgebühr zusätzlich in der gespeicherten
+Sizingbindung und seinem Kapitalreadback. Aktive Gebühren werden von freier
+Kapazität abgezogen und bei konkurrierender Reservation sowie frischem
+Kapital-/Recoveryabgleich mitgerechnet. Das Test-Restverlustbudget begrenzt
+zusätzlich Stoprisiko plus die beobachteten gesamten Öffnungskosten. Fehlende
+Quellen oder unzureichende Deckung verweigern die konkrete Menge; ein anderer
+Sizer und ein automatisches Aufstocken werden nicht eingeführt.
+
+Die persistierte Kostenbindung wird am ursprünglichen Ausführungslink auf die
+exakte Instrument-/Slot-/Cyclebindung und Marketorder geprüft. Replay verändert
+weder Menge noch Kosten und akzeptiert keine ausgetauschte oder fehlende Quelle.
+Der spätere ursprüngliche finanzielle Entryconsumer prüft die Acquisitionfrische
+erneut. Ein historischer Cold-Read erneuert keine Sendefähigkeit. Der bestehende
+Schutzkatalog des POST-Pfads umfasst auch den neuen Kostenproducer.
+
+Die [aktuellen Verbundtests](../../../tests/ops/test_opening_execution_cost_admission_v1.py)
+prüfen LONG/SHORT, eine wirtschaftlich geänderte Gebührenlast am tatsächlichen
+Entryconsumer, Rebate ohne Kapitalerzeugung, falsche Quellen, Replay, Ablauf am
+späteren Consumer und fünf Slots mit KEEP/REPLACE und ursprünglichem Cold-Read.
+Beim Close eines Slots werden Gebührenbindungen fremder offener Slots erhalten.
+
+Dieser Betrag ist eine aktuelle Planung anhand beobachteter Preise und Sätze,
+keine Ausführungsgarantie. Zukünftige Closegebühren und Funding sind ausdrücklich
+nicht enthalten und werden nicht zu null erklärt. Eine Venue-Mengenobergrenze
+bleibt ein eigener Consumer; sie wird nicht als vollständige Margin- oder
+Liquidationsvorsorge ausgegeben. Diese verbleibenden Fragen und die Verbindung
+zum gewählten vorab geprüften Handelsrahmen halten BWP1 weiterhin offen.

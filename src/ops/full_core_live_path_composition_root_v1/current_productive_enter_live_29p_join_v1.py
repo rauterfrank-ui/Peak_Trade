@@ -180,6 +180,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     acquisition_cycle_id: str = ""
     pretrade_acquired_at_utc: tuple[str, ...] = ()
     venue_quantity_limits: N1VenueQuantityLimitsObservationV1 | None = None
+    opening_cost_observation: object | None = None
 
 
 @dataclass(frozen=True)
@@ -1017,6 +1018,36 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 step_29p_risk_admissible=TRUE_TOKEN,
                 reasons=tuple(build_errors),
             )
+        from src.ops.governed_productive_monetary_normalization_v1.sizing_source_v1 import (
+            build_sizing_monetary_source_v1,
+        )
+
+        try:
+            monetary_source = build_sizing_monetary_source_v1(
+                canonical_instrument_id=selected_instrument,
+                venue_native_id=venue_native_id,
+                decision_epoch=str(decision_epoch or observed_at),
+                observed_at=observed_at,
+                fresh_pretrade_get_status=get_status,
+                account_equity_usdc=producer_equity,
+                native_reference_price=reference,
+                native_protective_stop_price=stop,
+                instruments_payload=instruments_payload,
+                index_tickers_payload=index_tickers_payload,
+                conversion_pair_instruments_payload=conversion_pair_payload,
+                normalization_digest=monetary_ctx.normalization_digest,
+            )
+        except ValueError as exc:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=str(exc),
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=(str(exc),),
+            )
         seam = admit_sized_slot_reservation_v1(
             portfolio_budget_owner,
             observation=observation,
@@ -1033,6 +1064,10 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             fresh_evidence_fetched=True,
             fresh_evidence_validated=produced,
             restrictive_risk=restrictive_risk,
+            monetary_source=monetary_source,
+            opening_cost_observation=injected.opening_cost_observation
+            if injected is not None
+            else None,
             local_commitment_readback=margin_host_inputs.local_commitment_readback,
             handoff_journal=handoff_journal,
         )

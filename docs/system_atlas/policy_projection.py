@@ -23,6 +23,42 @@ NUMERIC_ADMISSION_PATHS = (
 )
 NUMERIC_ADMISSION_ID = "CURRENT_NUMERIC_INPUT_ADMISSION_AND_EXPLICIT_OFFLINE_FINANCIAL_CONTEXT_V1"
 
+# Frank's separate 2026-11-09 approval covers this exact reviewed four-file
+# development bundle. Frozen records/tags and all other policy admission stay
+# intact. A new binding hash alone cannot authorize another implementation.
+ORDERED_FUNDING_EPISODE_DELTAS = {
+    "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py": (
+        "51c52f3caec87fd051343c1b47053da5f06dfd5812acca878c0f0d2bf5fe5a5d",
+        "bf1c90a45a80171b5d3b1ed192a9348fe89271e71be490cff92fa2076e82569d",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py": (
+        "300cb76643cb95e05c9abe2d5d53a09fadbead1724b414a4c5c4759ea47817b1",
+        "946c35e6c540024679f1a8fb53c9e4b557e5f41ec13972557a1a8f89f52ea769",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py": (
+        "853f2fb7fb2eede7b78673944e2118d82b4dadedf4bf0f93327ee9a850a8beed",
+        "5b726daeddef92b7697e3a1ac8920bd0b1735b6913def8e41eeeb8f2817db86e",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": (
+        "dd743daba0b43e378cd0c20811d6d6d1f9933a2af91ac58838061fe1c9f0597c",
+        "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
+    ),
+}
+
+
+def validate_ordered_funding_episode_bundle(root: Path, policies: list[dict]) -> None:
+    """Accept the original bundle or the separately reviewed exact successor."""
+    frozen = {row["path"]: row["frozen_sha256"] for row in policies}
+    actual = {}
+    for path, (before, _after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
+        if frozen.get(path) != before:
+            raise ValueError("ORDERED_FUNDING_EPISODE_BASELINE_INVALID:" + path)
+        actual[path] = hashlib.sha256((root / path).read_bytes()).hexdigest()
+    if any(actual[path] != before for path, (before, _) in ORDERED_FUNDING_EPISODE_DELTAS.items()):
+        for path, (_before, after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
+            if actual[path] != after:
+                raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)
+
 
 def validate_numeric_technical_admission_delta(original: bytes, current: bytes) -> None:
     """Admit only the owner-requested six-file extension of the frozen contract.
@@ -274,6 +310,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     ]
     frozen = {p["path"]: p for p in inventory}
     policies = load_policies(root, doc)
+    validate_ordered_funding_episode_bundle(root, policies)
     if {p["path"] for p in policies} != {p for p in frozen if policy_scope_kind(p)}:
         raise ValueError("POLICY_SCOPE_COVERAGE_MISMATCH")
     tree = {}
@@ -290,11 +327,15 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         actual = hashlib.sha256(raw).hexdigest()
         original = raw
         if actual != policy["frozen_sha256"]:
-            if path not in {
-                "config/governance/clean_core_seal_manifest_v1.json",
-                "src/ops/single_selected_future_policy_v1/selection_v1.py",
-                TECHNICAL_ADMISSION,
-            }:
+            if (
+                path
+                not in {
+                    "config/governance/clean_core_seal_manifest_v1.json",
+                    "src/ops/single_selected_future_policy_v1/selection_v1.py",
+                    TECHNICAL_ADMISSION,
+                }
+                and path not in ORDERED_FUNDING_EPISODE_DELTAS
+            ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
                 (root / "docs/system_atlas/source/development-binding-v1.json").read_bytes()

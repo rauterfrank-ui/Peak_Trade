@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from decimal import Decimal
+import math
 from typing import Any, Mapping, Optional
 
 from src.execution.paper.futures_accounting import (
@@ -53,6 +54,15 @@ def _to_decimal(name: str, value: Decimal | str | int | float) -> Decimal:
             AccountingFailureCodeV1.NON_REPRESENTABLE_QUANTITY, f"{name}_not_finite"
         )
     return d
+
+
+def _positive_finite_event_time(value: Any) -> bool:
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(value) and value > 0
+    except OverflowError:
+        return False
 
 
 def validate_contract_metadata_v1(contract: ContractMetadataV1) -> None:
@@ -122,7 +132,7 @@ class ProductiveFuturesAccountingSessionV1:
     applied_fill_results: dict[str, AccountingApplyResultV1] = field(default_factory=dict)
     fill_order: list[str] = field(default_factory=list)
     funding_pnl: Decimal = field(default_factory=lambda: Decimal("0"))
-    funding_events: dict[str, dict[str, str]] = field(default_factory=dict)
+    funding_events: dict[str, dict[str, Any]] = field(default_factory=dict)
     last_fill_time: Optional[float] = None
 
     def __post_init__(self) -> None:
@@ -314,6 +324,10 @@ class ProductiveFuturesAccountingSessionV1:
         if event_time is not None and (
             event_time < 0
             or (self.last_fill_time is not None and event_time < Decimal(str(self.last_fill_time)))
+            or any(
+                "event_time_unix" in event and event_time < Decimal(str(event["event_time_unix"]))
+                for event in self.funding_events.values()
+            )
         ):
             raise AccountingEngineError(
                 AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION,
@@ -501,7 +515,36 @@ class ProductiveFuturesAccountingSessionV1:
         return result
 
     def apply_funding_observation_v1(
-        self, *, event_id: str, amount: str, currency: str, instrument_id: str
+        self,
+        *,
+        event_id: str,
+        amount: str,
+        currency: str,
+        instrument_id: str,
+        event_time_unix: float | None = None,
+    ):
+        from copy import copy
+
+        candidate = copy(self)
+        candidate.funding_events = dict(self.funding_events)
+        result = candidate._apply_funding_observation_v1(
+            event_id=event_id,
+            amount=amount,
+            currency=currency,
+            instrument_id=instrument_id,
+            event_time_unix=event_time_unix,
+        )
+        self.__dict__.update(candidate.__dict__)
+        return result
+
+    def _apply_funding_observation_v1(
+        self,
+        *,
+        event_id: str,
+        amount: str,
+        currency: str,
+        instrument_id: str,
+        event_time_unix: float | None,
     ):
         """Post one observed signed funding amount, not a rate estimate.
 
@@ -521,7 +564,41 @@ class ProductiveFuturesAccountingSessionV1:
                 AccountingFailureCodeV1.PORTFOLIO_STATE_CONTRADICTION, "FUNDING_AMOUNT_REQUIRED"
             )
         delta = _to_decimal("funding_amount", amount)
-        event = {"amount": amount, "currency": currency, "instrument_id": instrument_id}
+        event: dict[str, Any] = {
+            "amount": amount,
+            "currency": currency,
+            "instrument_id": instrument_id,
+        }
+        if event_time_unix is not None:
+            if not _positive_finite_event_time(event_time_unix):
+                raise ValueError("FUNDING_EVENT_TIME_INVALID")
+            event["event_time_unix"] = float(event_time_unix)
+            if event_id in self.funding_events:
+                previous = self.funding_events[event_id]
+                event.update(
+                    {
+                        key: previous.get(key)
+                        for key in ("applied_after_fill_count", "funding_sequence")
+                    }
+                )
+            else:
+                if any(
+                    "event_time_unix" not in previous for previous in self.funding_events.values()
+                ):
+                    raise ValueError("FUNDING_ORDER_REQUIRES_EXPLICIT_REPLAY")
+                if (
+                    self.last_fill_time is not None
+                    and event_time_unix < self.last_fill_time
+                    or any(
+                        event_time_unix < previous["event_time_unix"]
+                        for previous in self.funding_events.values()
+                    )
+                ):
+                    raise ValueError("LATE_FUNDING_REQUIRES_RECONCILIATION")
+                event.update(
+                    applied_after_fill_count=len(self.fill_order),
+                    funding_sequence=len(self.funding_events),
+                )
         if event_id in self.funding_events:
             if self.funding_events[event_id] != event:
                 raise AccountingEngineError(
@@ -546,7 +623,7 @@ class ProductiveFuturesAccountingSessionV1:
             "cumulative_slippage": str(self.cumulative_slippage),
             "realized_pnl": str(self.realized_pnl),
             "funding_pnl": str(self.funding_pnl),
-            "funding_events": dict(self.funding_events),
+            "funding_events": {key: dict(value) for key, value in self.funding_events.items()},
             "last_fill_time": self.last_fill_time,
             "last_mark": None if self.last_mark is None else str(self.last_mark),
             "fill_order": list(self.fill_order),
@@ -623,12 +700,31 @@ class ProductiveFuturesAccountingSessionV1:
             raise ValueError("CHECKPOINT_NEGATIVE_COSTS")
         session.realized_pnl = _to_decimal("realized", payload["realized_pnl"])
         session.funding_pnl = _to_decimal("funding", payload["funding_pnl"])
-        session.funding_events = dict(payload["funding_events"])
+        session.funding_events = {
+            key: dict(value) for key, value in payload["funding_events"].items()
+        }
         for event_id, event in session.funding_events.items():
             if (
-                not event_id
+                not isinstance(event_id, str)
+                or not event_id
+                or event_id != event_id.strip()
+                or not isinstance(event, dict)
+                or set(event)
+                not in (
+                    {"amount", "currency", "instrument_id"},
+                    {
+                        "amount",
+                        "currency",
+                        "instrument_id",
+                        "event_time_unix",
+                        "applied_after_fill_count",
+                        "funding_sequence",
+                    },
+                )
                 or event["currency"] != contract.quote_currency
                 or event["instrument_id"] != contract.symbol
+                or type(event["amount"]) is not str
+                or not event["amount"].strip()
             ):
                 raise ValueError("FUNDING_JOURNAL_SCOPE_MISMATCH")
         if (
@@ -651,6 +747,23 @@ class ProductiveFuturesAccountingSessionV1:
             session.fill_order
         ) != set(payload["applied_fill_results"]):
             raise ValueError("FILL_JOURNAL_IDENTITY_MISMATCH")
+        timed = [event for event in session.funding_events.values() if "event_time_unix" in event]
+        if timed:
+            if len(timed) != len(session.funding_events) or any(
+                not _positive_finite_event_time(event["event_time_unix"])
+                or type(event["applied_after_fill_count"]) is not int
+                or not 0 <= event["applied_after_fill_count"] <= len(session.fill_order)
+                or type(event["funding_sequence"]) is not int
+                for event in timed
+            ):
+                raise ValueError("FUNDING_ORDER_INVALID")
+            ordered = sorted(timed, key=lambda event: event["funding_sequence"])
+            if [event["funding_sequence"] for event in ordered] != list(range(len(ordered))) or any(
+                a["event_time_unix"] > b["event_time_unix"]
+                or a["applied_after_fill_count"] > b["applied_after_fill_count"]
+                for a, b in zip(ordered, ordered[1:])
+            ):
+                raise ValueError("FUNDING_ORDER_INVALID")
         pos = payload.get("position")
         if pos:
             session.position = FuturesPosition(

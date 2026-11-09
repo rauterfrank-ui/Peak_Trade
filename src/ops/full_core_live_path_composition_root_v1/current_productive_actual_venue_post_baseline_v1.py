@@ -80,6 +80,7 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
     "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
     "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py",
     "src/risk/decision_bound_model_adapters_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_consumer_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/price_band_observation_v1.py",

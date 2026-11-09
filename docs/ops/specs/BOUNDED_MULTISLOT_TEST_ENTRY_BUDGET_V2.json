@@ -1,0 +1,15 @@
+{
+  "schema": "entry_budget_policy.v3",
+  "policy_id": "bounded-multislot-test-entry-budget",
+  "revision": 2,
+  "currency": "USDC",
+  "per_entry_notional_limit": "25",
+  "per_slot_reserved_notional_limit": "25",
+  "aggregate_reserved_notional_limit": "125",
+  "allowed_slot_ids": ["LANE_1", "LANE_2", "LANE_3", "LANE_4", "LANE_5"],
+  "automatic_increase_allowed": false,
+  "expiry": "UNTIL_EXPLICIT_POLICY_CHANGE",
+  "per_slot_test_loss_limit": "25",
+  "loss_limit_scope": "EXPLICIT_TEST_PHASE_ONLY",
+  "automatic_loss_budget_refill_allowed": false
+}

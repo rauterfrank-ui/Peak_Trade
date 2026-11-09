@@ -110,6 +110,74 @@ Vorhandene native Gates werden hier weder entfernt noch umgangen. Die
 [numerische Zulassung](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md) und die
 [Versuchssperre](CURRENT_CORE_ENTRY_ATTEMPT_ADMISSION_V1.md) bleiben erhalten.
 
+## Gegenprüfung: Stillstand, Rotation und native Quoten
+
+Franks Rückfrage vom 9. November wird im Arbeitsstand auf Basis von
+`304719c94030ff9aacdf2571e2ae56533f9e6a25` am heutigen Consumerpfad geprüft.
+Die heutige Implementierung belegt zwei unterschiedliche Verwendungen:
+
+- Gemessene Volatilität und Amplitude erreichen die relative Cap22-Rangfolge.
+  Der Membershipselector erhält Instrument-ID und Rang; der tatsächliche
+  [Post-Close-Consumer](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py)
+  ruft diesen Selector nach den getrennten Close-/Reconciliation- und
+  Kapitalprüfungen auf. Erwartete Bruttoedge und native Survival-Ratios sind
+  keine Inputs dieser Rotationsentscheidung.
+- Der native Replaybuilder setzt `expected_gross_edge=0.02`, drei Ratios auf
+  `0.8` und den Liquidationspuffer auf `0.2`. Nach der Richtungsbewertung werden
+  diese Werte vom Survivalowner für das bereits gebundene Instrument geprüft.
+  Survival erreicht Suitability und Composition und kann den neuen Entry
+  sperren. Daraus entsteht kein Instrumentwechselauftrag.
+
+Insbesondere ist `volatility_survival_ratio` keine gemessene Rankingvolatilität.
+Der [typisierte Volatilitätsvertrag](../../../src/trading/master_v2/canonical_volatility_estimate_typed_consumption_contract_v1.py)
+führt diese Größe ausdrücklich als Non-Alias. Eine Transformation aus
+Rankingamplitude oder -volatilität in die festen Quoten ist am untersuchten
+Pfad nicht implementiert. Der Name allein belegt auch keine frühere Absicht.
+
+Die ergänzte [Verbundprobe](../../../tests/ops/test_current_ranking_economic_semantics_v1.py)
+berechnet beide Merkmale mit den Originalrechnungen aus ausdrücklich
+synthetischen 61-Mark-Fenstern. Sie führt die Ergebnisse durch den Original-
+Cap22-Producer sowie Selector, Writer und Cold-Read der Membershipkette:
+
+- Nur ETH steht still: ETH fällt hinter die fünf weiter bewegten Kandidaten.
+  Die erste neue Beobachtung erhält die bisherigen Mitglieder; nach der
+  bestehenden Mindesthaltung ersetzt DOT das schwache ETH. Reordering der
+  gehaltenen Mitglieder bleibt vom tatsächlichen Austausch unterschieden.
+- Alle sechs stehen still: Beide Rohmerkmale sind null. Alle sechs bleiben
+  relativ zulässig und erhalten den gleichen Score `0.5`; die deterministische
+  Tie-Reihenfolge kann weiterhin die Membership ändern. Das ist keine
+  absolute Mindestbewegungs- oder Kostendeckungsprüfung.
+- Readback und Replay desselben Snapshots schaffen keine neue Beobachtung.
+
+Dabei wurde ein konkreter Identitätsfehler im
+[Rankingproducer](../../../src/ops/productive_futures_ranking_producer_v1/producer_v1.py)
+sichtbar: Seine bisherige Default-ID berücksichtigte die wirtschaftliche
+Merkmalsmessung nicht. Neue Merkmale bei gleichem Universum konnten deshalb
+dieselbe ID mit verändertem Integritätsdigest erhalten; der Selector verweigerte
+diese widersprüchliche Identität korrekt. Die Default-ID bindet nun zusätzlich
+den ursprünglichen Merkmalsdigest und den Universe-Payloaddigest. Unveränderte
+Messung und Quellen behalten bei späterer Neuberechnung ID und Integritätsdigest.
+Explizite Caller-IDs sowie die Lesbarkeit bestehender Records bleiben erhalten.
+Rankingformel, Haltebedingung und Survivalgates werden dadurch nicht geändert.
+
+Die ausdrückliche Erhaltungsbedingung für den Wiederanlauf bleibt bestehen:
+Der [ursprüngliche Topologieleser](../../../src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py)
+stellt exakt die gespeicherten Slot-/Instrumentzuordnungen wieder her und führt
+keine Mappingtransition aus. Der
+[Supervisor-Startadapter](../../../src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py)
+und die [Kapitalrecovery](../../../src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py)
+bleiben unverändert. Die neue Default-ID betrifft neue Rankingproduktion;
+beim Lesen alter Records wird keine ID neu berechnet oder migriert.
+Eine zusätzliche Kompatibilitätsprobe persistiert einen synthetischen Record
+mit dem exakten bisherigen ID-Algorithmus und prüft Original-Readback und
+Membership-Replay ohne Änderung seiner gespeicherten Dateien.
+
+Diese Probe belegt die numerische Verbindung und die dauerhafte
+Membershipentscheidung. Sie ersetzt weder die Zulassung öffentlicher Originalfacts
+noch echte Kontocustody, eine Venueausführung oder einen autonomen Dauerhost.
+Die fachlich belastbare absolute Kosten-/Risikozulassung bleibt Bestandteil des
+offenen [ersten Arbeitspakets](CURRENT_SYSTEM_FIVE_BOUNDED_WORK_PACKAGES_V1.md).
+
 ## Abschluss dieses Untersuchungsschritts
 
 Bestehende ökonomische Rankinginputs, Zeitverträge und tatsächliche Fortsetzung

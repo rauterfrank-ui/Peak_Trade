@@ -41,6 +41,8 @@ from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v
     _retain_payload_v1,
     _archive_verified_source_v1,
     create_position_episode_from_simulated_accounting_v1,
+    require_economic_history_extension_v1,
+    latest_economic_event_time_v1,
 )
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
     OccupiedLaneRuntimeInstrumentIdentityV1,
@@ -210,6 +212,7 @@ def seal_simulated_accounting_episode_flat_v1(
         or payload["fills"][: len(old["fills"])] != old["fills"]
     ):
         raise ValueError("SIMULATED_CLOSE_HISTORY_REWRITE")
+    require_economic_history_extension_v1(old, payload)
     if any(r["event_time_unix"] is None for r in payload["fills"][len(old["fills"]) :]):
         raise ValueError("SIMULATED_CLOSE_NEW_FILL_TIME_REQUIRED")
     _flat_observation(
@@ -218,7 +221,9 @@ def seal_simulated_accounting_episode_flat_v1(
         occupancy_payloads,
         observed_portfolio,
         observed_unix,
-        anchors["close_event_time"],
+        latest_economic_event_time_v1(payload)
+        if payload["accounting_checkpoint"]["funding_events"]
+        else anchors["close_event_time"],
     )
     cursor_root = Path(cursor_store_root)
     if not cursor_root.is_absolute():
@@ -389,6 +394,7 @@ def inspect_sealed_simulated_episode_v1(
     ):
         raise ValueError("SIMULATED_CLOSE_RETAINED_ANCHOR_MISMATCH")
     _same_accounting_domain(old, flat)
+    require_economic_history_extension_v1(old, flat)
     if (
         len(flat["fills"]) <= len(old["fills"])
         or flat["fills"][: len(old["fills"])] != old["fills"]
@@ -411,7 +417,9 @@ def inspect_sealed_simulated_episode_v1(
         payload["occupancy_payloads"],
         PortfolioTruthSnapshotV1(**portfolio),
         payload["observed_unix"],
-        anchors["close_event_time"],
+        latest_economic_event_time_v1(flat)
+        if flat["accounting_checkpoint"]["funding_events"]
+        else anchors["close_event_time"],
     )
     return {
         "status": "SEALED",
@@ -456,6 +464,7 @@ def create_successor_after_sealed_simulated_episode_v1(
     payload, _ = _verify(identity=identity, session=accounting_session, fills=fills)
     old = sealed["source_payload"]
     _same_accounting_domain(old, payload)
+    require_economic_history_extension_v1(old, payload)
     if (
         len(payload["fills"]) <= len(old["fills"])
         or payload["fills"][: len(old["fills"])] != old["fills"]

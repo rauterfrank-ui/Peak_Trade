@@ -14,6 +14,18 @@ Verpflichtungen. Die 25 USDC sind kein festes finales Systembudget. Das Ende der
 Testphase und der Übergang zur späteren kapitalabhängigen Dimensionierung
 erfolgen ausschließlich durch Franks ausdrückliche Entscheidung.
 
+Weitere Präzisierung vom selben Tag: Zusätzlich beträgt das Verlustbudget der
+Testphase **25 USDC je Slot**. Ist es verbraucht, erhält der betroffene Slot
+keine neuen Entries. Das ist ausschließlich eine Testphasenregel und keine
+allgemeine Verlustgrenze für den späteren kapitalabhängigen Betrieb. Rotation,
+Neustart und Tageswechsel füllen das Testbudget nicht automatisch auf. Auch
+der Wechsel in den späteren Betrieb erfolgt nicht automatisch.
+
+Eine offene Position wird in diesem Arbeitspaket nicht aufgestockt. 25 USDC
+bleiben die obere Notionalgrenze, keine vorgeschriebene Einsatzhöhe. Kleinere
+Mengen ergeben sich weiterhin aus der ursprünglichen finanziellen Admission;
+eine zusätzliche frei gewählte Startquote wird nicht eingeführt.
+
 Die heutige [Startpolicy](../../../config/ops/current_productive_entry_budget_policy_v1.json)
 enthält noch 25 USDC je Entry und 25 USDC aggregiert. Diese aktuelle technische
 Gesamtgrenze entspricht nicht dem jetzt präzisierten Fünfslot-Testbudget. Der

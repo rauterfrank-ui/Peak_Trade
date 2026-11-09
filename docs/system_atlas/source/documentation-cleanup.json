@@ -383,7 +383,7 @@
     {
       "path": "config/governance/current_law_impact_map_v1/source_v1.json",
       "before_sha256": "5be6151720d0a0751c75170f52a5c5dd4742f04331b45faddce86fb240480fbb",
-      "after_sha256": "101601d455ac88e347cb52367a2964be0fec6e18523fafd84567613ef9d5e1c5",
+      "after_sha256": "a9f379fa3c1a8aa1eedf1ff0bbc08c11315f7b826b728d742467431e1e859c86",
       "before_git_blob_oid": "c07e3563522a1a7a3c3a9ee69dcbdea7d5563767"
     },
     {
