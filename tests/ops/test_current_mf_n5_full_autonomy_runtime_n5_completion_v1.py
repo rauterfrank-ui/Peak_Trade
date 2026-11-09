@@ -230,7 +230,7 @@ def test_authority_flags_and_n5_target_are_pinned() -> None:
     )
     assert CANONICAL_RUNTIME_OWNER == CANONICAL_HOST_JOIN_PACKAGE
     assert "def ensure_host_activation_binding_v1" in HOST_BINDING_SOURCE
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert ATOMICITY_CLAIMED_SATISFIED is False
     assert CURSOR_SINGLE_WRITER is True
     assert NEW_CURSOR_WRITER is False

@@ -39,7 +39,7 @@ CANONICAL_HOST_JOIN_OWNER=stateful_no_order_host_join_v1
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
 CAP61_CYCLE_STATE_ROOT_BOUND=false
 MAY_BIND_CAP61_STATE_ROOT=false
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 ATOMICITY_CLAIMED_SATISFIED=false
 AUTHORITY_EFFECT=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -160,10 +160,13 @@ DISK_PATH_RULE={lane_state_root}/current_productive_sidestate_confirmation_curso
 N1_GLOBAL_CURSOR_REJECTED=true
 LOCKING_MODEL=AuthorizationLifecycleLockV1.CYCLE_EXCLUSION_LOCK
 CAP61_CYCLE_STATE_ROOT_BOUND=false
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 ATOMICITY_CLAIMED_SATISFIED=false
 ```
 
-The inherited Runbook `ATOMIC_CHECKPOINT_REQUIRED=true` versus CURRENT
-cursor `NON_ATOMIC_DIRECT_WRITE_TEXT` is not repaired here and is not
-claimed satisfied.
+The original cursor owner now uses per-file atomic replacement, file fsync,
+readback and optional exact-predecessor CAS. This does not establish atomicity
+across the cursor, layered episode, DDO or other stores, directory fsync or
+physical power-loss recovery. The inherited Runbook
+`ATOMIC_CHECKPOINT_REQUIRED=true` remains unproven for the complete checkpoint;
+`ATOMICITY_CLAIMED_SATISFIED=false` remains unchanged.

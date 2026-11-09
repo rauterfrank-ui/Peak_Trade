@@ -154,3 +154,17 @@ neuem Hash nicht geändert werden. Das vollständige Freeze-Inventar, die native
 Handelslogik, das Kernsiegel, die Format-Freeze-Liste und die Live-Grenzen bleiben
 erhalten. Der [Abschlussbeleg](../evidence/CURRENT_SURVIVAL_INPUT_ADMISSION_SEAL_CLOSURE_2026_11_08.md)
 trennt die 115 Governancefälle vom unveränderten 2120-Fachowner-Nachweis.
+
+
+## Aktueller Anschluss vom 9. November 2026
+
+Der [dauerhafte Coreversuch](CURRENT_CORE_ENTRY_ATTEMPT_ADMISSION_V1.md)
+veröffentlicht nun vor dem tatsächlichen N1/S7-Corelauf eine negative
+Entryzulassung im bestehenden Originalcursor und verlangt für den nativen
+Folgeausgang den exakten CAS-Vorgänger. Native C3-/Scope-/SideState-Felder
+bleiben bei dieser Markierung erhalten. Früher beschriebene unveränderte
+S7-Publikationssemantik beziehungsweise die Fehlerlücke vor einer verwendbaren
+Vorschau sind damit für diesen ausdrücklichen Anschluss fortgeschrieben.
+Einzeldatei-fsync/Replace/Readback belegt weiterhin keinen vollständigen
+atomaren Checkpoint oder physischen Stromausfall. Wirtschaftliche Inputherkunft
+und produktives numerisches Risiko bleiben offen.

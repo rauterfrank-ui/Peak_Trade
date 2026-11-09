@@ -4,6 +4,7 @@ import hashlib
 import json
 
 SCHEMA = "current_core_entry_assessment_frame.v1"
+UNCOMMITTED_ATTEMPT_SCHEMA = "current_core_entry_attempt_uncommitted.v1"
 _COMPONENTS = {
     "parent",
     "entry",
@@ -77,7 +78,15 @@ def build_current_core_entry_assessment_frame_v1(*, replay, confirmation_state):
     return {**body, "digest": _digest(body)}
 
 
+def reject_uncommitted_core_entry_attempt_v1(cursor):
+    frame = cursor.entry_assessment_frame
+    if isinstance(frame, dict) and frame.get("schema") == UNCOMMITTED_ATTEMPT_SCHEMA:
+        # A negative host fact, not an invented original assessment result.
+        raise ValueError("CURRENT_CORE_ASSESSMENT_ATTEMPT_NOT_COMMITTED")
+
+
 def read_current_core_entry_assessment_frame_v1(cursor):
+    reject_uncommitted_core_entry_attempt_v1(cursor)
     frame = cursor.entry_assessment_frame
     if (
         not isinstance(frame, dict)

@@ -55,6 +55,8 @@ PROTECTED_CURRENT_PRODUCTIVE_POST_SLICE_SURFACE_PATHS: tuple[str, ...] = (
     "src/trading/master_v2/survival_assessment_v1.py",
     "src/trading/master_v2/survival_numeric_admission_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_numeric_entry_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_core_entry_attempt_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/ops/stateful_confirmation_and_c1_productive_binding_v1/models_v1.py",
     "src/trading/market_state/directional_confirmation_progress_v1.py",

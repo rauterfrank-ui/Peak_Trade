@@ -97,7 +97,7 @@ GOVERNED_CYCLE_LOCK_ROOT_DIRNAME=governed_cycle_lock
 GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME=governed_cycle_evidence
 PERSIST_SURFACE_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
 DISK_PATH_RULE={store_root}/current_productive_sidestate_confirmation_cursor_v1.json
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 PERSIST_ENABLED=true
 IN_MEMORY_CURSOR_HOLDER=OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor
 IN_MEMORY_CURSOR_HOLDER_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
@@ -282,7 +282,7 @@ MAY_BIND_CAP61_STATE_ROOT=false
 HOST_JOIN=false
 MF_PRODUCTIVE_JOIN=false
 PERSIST_ENABLED=true
-ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+ATOMICITY_SEMANTICS=PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS
 MAY_INVOKE_GOVERNED_CYCLE=false
 S8_IMPLEMENTED=true
 ```
@@ -400,9 +400,9 @@ NO_CURSOR_SCHEMA_CHANGE
 NO_CURSOR_LANE_ID_FIELD
 NO_NEW_STATE_OWNER
 NO_CURSOR_OWNER_CHANGE
-NO_ATOMICITY_CHANGE
+NO_CROSS_STORE_ATOMICITY_CLAIM
 NO_S6_RESTORE_WRITEBACK
-NO_S7_COMPOSE_MUTATION
+NO_S7_CORE_DECISION_REWRITE
 NO_DISK_WRITE_BY_S8
 NO_PRODUCTIVE_MF_HOST_JOIN
 NO_FIVE_LANE_CONTINUOUS_RUNTIME
@@ -429,3 +429,17 @@ NO_MF_SINGLE_EGRESS_REWIRE
 NO_PRODUCTIVE_MF_CONSUMER_JOIN
 NO_HOST_JOIN
 ```
+
+
+## Aktueller Anschluss vom 9. November 2026
+
+Der [dauerhafte Coreversuch](CURRENT_CORE_ENTRY_ATTEMPT_ADMISSION_V1.md)
+veröffentlicht nun vor dem tatsächlichen N1/S7-Corelauf eine negative
+Entryzulassung im bestehenden Originalcursor und verlangt für den nativen
+Folgeausgang den exakten CAS-Vorgänger. Native C3-/Scope-/SideState-Felder
+bleiben bei dieser Markierung erhalten. Früher beschriebene unveränderte
+S7-Publikationssemantik beziehungsweise die Fehlerlücke vor einer verwendbaren
+Vorschau sind damit für diesen ausdrücklichen Anschluss fortgeschrieben.
+Einzeldatei-fsync/Replace/Readback belegt weiterhin keinen vollständigen
+atomaren Checkpoint oder physischen Stromausfall. Wirtschaftliche Inputherkunft
+und produktives numerisches Risiko bleiben offen.

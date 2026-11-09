@@ -68,6 +68,27 @@ def test_current_numeric_ingress_guard_drift_reaches_actual_post_integrity_gate(
         )
 
 
+@pytest.mark.parametrize(
+    "guard",
+    [
+        "src/ops/full_core_live_path_composition_root_v1/current_core_entry_attempt_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    ],
+)
+def test_attempt_producer_and_actual_join_are_protected_at_post_integrity_gate(guard):
+    class Drift(MockCurrentProductive29PIntegrityBackendV1):
+        def diff_origin_main_for_paths_v1(self, paths):
+            return guard if guard in paths else ""
+
+    with pytest.raises(
+        CurrentProductiveActualVenuePostBaselineError, match="PROTECTED_POST_SLICE_SURFACE_DRIFT"
+    ):
+        resolve_and_assert_live_post_execution_baseline_v1(
+            declared_baseline_origin_main_sha=RECORDED,
+            integrity_backend=Drift(origin_main=RECORDED, head=RECORDED),
+        )
+
+
 def test_head_not_at_origin_main_fail_closed() -> None:
     integrity = MockCurrentProductive29PIntegrityBackendV1(
         origin_main=RECORDED,

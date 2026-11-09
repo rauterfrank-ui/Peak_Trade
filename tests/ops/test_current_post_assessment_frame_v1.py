@@ -45,7 +45,7 @@ NUMERIC_FAULTS = [
 ]
 
 
-def seed_frame(root, monkeypatch, modern):
+def seed_frame(root, monkeypatch, modern, *, cursor_root=None):
     from src.ops.full_core_live_path_composition_root_v1 import (
         current_productive_master_v2_runtime_cycle_v1 as runtime,
     )
@@ -82,7 +82,7 @@ def seed_frame(root, monkeypatch, modern):
                 return _original(*a, **kw)
 
             patch.setattr(integrated, name, capture)
-        host, args, cursor_root = seed_core(root, monkeypatch, modern)
+        host, args, cursor_root = seed_core(root, monkeypatch, modern, cursor_root=cursor_root)
     assert "replay" in captured and captured["replay"].intermediate is not None
     return host, args, cursor_root, captured
 

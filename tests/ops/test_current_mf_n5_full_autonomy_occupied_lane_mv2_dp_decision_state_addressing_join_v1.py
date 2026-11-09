@@ -305,7 +305,7 @@ def _called_names(source: str) -> set[str]:
 def _bound(*, lane_id: str, instrument_id: str | None = None) -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id=instrument_id or f"INST-{lane_id}",
-        venue_native_id="VENUE-HARNESS",
+        venue_native_id="HARNESS-USD-SWAP",
         ranking_snapshot_id=RANKING_SNAPSHOT,
         ranking_integrity_digest=RANKING_DIGEST,
         universe_snapshot_id=UNIVERSE_SNAPSHOT,
@@ -456,7 +456,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
     assert PERSIST_ENABLED is True
     assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert MAY_CAP61_PERSIST is False
     assert MAY_CAP62_PERSIST is False
@@ -1052,7 +1052,7 @@ def test_s3_no_consumer_cursor_cap61_or_runtime_side_effects() -> None:
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
     assert PERSIST_ENABLED is True
     assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert inspect.getsource(bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1)
 
@@ -1070,12 +1070,13 @@ def _invoke_kwargs() -> dict[str, object]:
         "volume": 10.0,
         "open_interest": 20.0,
         "funding_rate": 0.0001,
-        "finalized_closes": (98.0, 99.0, 100.0),
+        # Explicit current test history; no product threshold override.
+        "finalized_closes": tuple(100.0 * math.exp(0.001 * (i - 99)) for i in range(100)),
         "last_finalized_event_ts_unix": 1_699_999_940.0,
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id="VENUE-HARNESS",
+            venue_native_id="HARNESS-USD-SWAP",
             mark_px=mark_px,
             index_px=index_px,
         ),
@@ -1184,7 +1185,7 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
     assert PERSIST_ENABLED is True
     assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert HOST_JOIN is False
     assert MF_PRODUCTIVE_JOIN is False
@@ -1195,7 +1196,8 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
 
 def _memory_g17_producer(*, instrument_id: str, venue_native_id: str) -> object:
     venue = "OKX"
-    t0 = 1_700_000_000.0
+    # Final estimate is available at the supplied finalized candle, never future.
+    t0 = 1_699_996_340.0
     producer = CanonicalVolatilityTypedRuntimeProducerScaffoldV1.create(
         venue=venue,
         canonical_instrument_id=instrument_id,
@@ -1265,7 +1267,17 @@ def test_s5_reuses_existing_invocation_cursor_without_new_owner() -> None:
     assert "CurrentProductiveSideStateConfirmationCursorV1" not in JOIN_SOURCE
 
 
-def test_s5_n1_two_cycle_parity(tmp_path: Path) -> None:
+def test_s5_n1_two_cycle_parity(tmp_path: Path, monkeypatch) -> None:
+    from src.ops.p5_productive_layered_core_authority_seam_v1 import seam_v1
+
+    # Both parity branches declare the same synthetic seal identity. The native
+    # builder still computes/validates every field and digest; real seals differ.
+    build_seal = seam_v1.build_layered_core_authority_seal_v1
+
+    def same_declared_seal(**kwargs):
+        return build_seal(**{**kwargs, "seal_id": "addressing-parity-fixture-seal"})
+
+    monkeypatch.setattr(seam_v1, "build_layered_core_authority_seal_v1", same_declared_seal)
     pair = _pair(tmp_path, "LANE_3")
     producers = _lane_g17_producers({"LANE_3": pair})
     first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
@@ -1546,7 +1558,7 @@ def test_s6_reuses_existing_cursor_owner_without_new_schema() -> None:
     assert S6_PERSIST_SYMBOL == "persist_occupied_lane_mv2_dp_decision_state_cursor_v1"
     assert PERSIST_ENABLED is True
     assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert NEW_STATE_OWNER_CREATED is False
     assert CURSOR_SCHEMA_CHANGED is False
     assert JOIN_PERSISTENCE_AUTHORITY is False
@@ -1558,9 +1570,11 @@ def test_s6_reuses_existing_cursor_owner_without_new_schema() -> None:
     assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in restore_source
     assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in persist_source
     owner_persist = inspect.getsource(persist_current_productive_sidestate_confirmation_cursor_v1)
-    assert "path.write_text" in owner_persist
-    assert "os.replace" not in owner_persist
-    assert "NamedTemporaryFile" not in owner_persist
+    assert "tempfile.mkstemp" in owner_persist
+    assert "os.fsync" in owner_persist
+    assert "os.replace" in owner_persist
+    assert "CURSOR_PUBLICATION_READBACK_MISMATCH" in owner_persist
+    assert "expected_prior_digest" in owner_persist
     assert "incoming_cursor=incoming" in restore_source
     assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_source
     assert "canonical_price_provenance=canonical_price_provenance" in restore_source
@@ -1758,7 +1772,7 @@ def test_s6_n1_global_root_still_rejected(tmp_path: Path) -> None:
 def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
     assert S7_IMPLEMENTED is True
     assert S7_JOIN_SYMBOL == "compose_occupied_lane_mv2_dp_durable_cycle_v1"
-    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert ATOMICITY_SEMANTICS == "PER_CURSOR_ATOMIC_REPLACE_FILE_FSYNC_READBACK_CAS"
     assert NEW_STATE_OWNER_CREATED is False
     assert CURSOR_OWNER_CHANGE_REQUIRED is False
     assert MAY_BIND_CAP61_STATE_ROOT is False
@@ -1807,7 +1821,12 @@ def test_s7_n1_durable_load_cycle_persist_then_restore(tmp_path: Path) -> None:
     )
     second_outgoing = composed["LANE_3"].cycle_result.outgoing_cursor
     assert second_outgoing is not None
-    assert composed["LANE_3"].incoming_cursor == first_outgoing.to_dict()
+    incoming = composed["LANE_3"].incoming_cursor
+    assert {
+        **incoming,
+        "entry_assessment_frame": first_outgoing.entry_assessment_frame,
+    } == first_outgoing.to_dict()
+    assert incoming["entry_assessment_frame"]["status"] == "EVALUATION_NOT_COMMITTED"
     assert composed["LANE_3"].persist_enabled is True
     assert composed["LANE_3"].cap61_state_root_bound is False
     loaded_after_s7 = load_current_productive_sidestate_confirmation_cursor_v1(

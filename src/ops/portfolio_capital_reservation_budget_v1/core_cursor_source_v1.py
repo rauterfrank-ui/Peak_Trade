@@ -188,6 +188,13 @@ def inspect_current_core_cursor_v1(source, *, intent_side):
     # Preserve the previous explicit KILL_ALL veto's precedence.
     if cursor.side_state is SideState.KILL_ALL:
         raise ValueError("CURRENT_CORE_CURSOR_KILL_ALL")
+    from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+        reject_uncommitted_core_entry_attempt_v1,
+    )
+
+    # Explicit negative admission also vetoes earlier cursor-source versions;
+    # it never turns those versions into positively assessed frame consumers.
+    reject_uncommitted_core_entry_attempt_v1(cursor)
     runtime_scope = raw.get("runtime_scope_state")
     if not isinstance(runtime_scope, dict) or type(runtime_scope.get("chop_latched")) is not bool:
         # The general restore adapter's bool conversion is not proof that an
