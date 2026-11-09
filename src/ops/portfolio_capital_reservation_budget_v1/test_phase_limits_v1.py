@@ -20,6 +20,7 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     per_slot_reserved_notional_limit: Decimal
     allowed_slot_ids: tuple[str, ...]
     per_slot_test_loss_limit: Decimal | None = None
+    require_opening_execution_costs: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -42,6 +43,12 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             or self.per_slot_test_loss_limit != Decimal("25")
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_SLOT_LOSS_LIMIT_MUST_BE_25_USDC")
+        if (
+            type(self.require_opening_execution_costs) is not bool
+            or self.require_opening_execution_costs
+            and self.per_slot_test_loss_limit is None
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_OPENING_COST_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -58,11 +65,17 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
                 loss_limit_scope="EXPLICIT_TEST_PHASE_ONLY",
                 automatic_loss_budget_refill_allowed=False,
             )
+        if self.require_opening_execution_costs:
+            result.update(schema="entry_budget_policy.v4", require_opening_execution_costs=True)
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
-    loss_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v3"
+    cost_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v4"
+    loss_mode = isinstance(payload, dict) and payload.get("schema") in {
+        "entry_budget_policy.v3",
+        "entry_budget_policy.v4",
+    }
     expected = {
         "schema",
         "policy_id",
@@ -81,14 +94,19 @@ def parse_slot_entry_budget_v1(payload):
             "loss_limit_scope",
             "automatic_loss_budget_refill_allowed",
         }
+    if cost_mode:
+        expected.add("require_opening_execution_costs")
     if (
         not isinstance(payload, dict)
         or set(payload) != expected
-        or payload["schema"] not in {"entry_budget_policy.v2", "entry_budget_policy.v3"}
+        or payload["schema"]
+        not in {"entry_budget_policy.v2", "entry_budget_policy.v3", "entry_budget_policy.v4"}
     ):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_SCHEMA_INVALID")
     data = dict(payload)
     data.pop("schema")
+    if cost_mode and data.get("require_opening_execution_costs") is not True:
+        raise EntryBudgetPolicyError("TEST_PHASE_OPENING_COST_POLICY_INVALID")
     if loss_mode:
         if (
             data.pop("loss_limit_scope") != "EXPLICIT_TEST_PHASE_ONLY"

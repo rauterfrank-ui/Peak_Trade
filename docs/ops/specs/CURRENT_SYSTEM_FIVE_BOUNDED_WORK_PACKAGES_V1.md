@@ -142,6 +142,16 @@ auch wenn frisches Kontokapital zugelassen ist. Dies ersetzt weder die noch
 offene Gebühren-/Slippage-/Fundingvorsorge vor einem Entry noch die vollständige
 Margin- und Verlustfolgenabnahme von BWP1.
 
+Der Zwischenstand `6459cc6b0` enthält die testbezogene Verlustfortschreibung und
+die ursprünglichen Sizing-Geldquellen. Darauf folgt der in der
+[Budgetfortschreibung](BOUNDED_MULTISLOT_ENTRY_BUDGET_V1.md) beschriebene
+Source-Producer-Consumer-Anschluss für beobachtete Öffnungsgebühren und
+Bookausführungskosten. Diese Beträge erreichen die unveränderte kanonische
+Menge, die atomare Reservation, ihren dauerhaften Ausführungslink und den
+späteren finanziellen Consumer. Zukünftige Closekosten, Fundingvorsorge und
+vollständige Margin-/Liquidationsdeckung bleiben getrennt offen. Daraus wird
+kein Paketabschluss und keine neue positive native Survivalquote abgeleitet.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),

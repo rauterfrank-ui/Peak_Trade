@@ -52,6 +52,21 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
     envelope = FinalOrderEnvelopeV1(**link["envelope"])
     assert_envelope_unmodified_v1(envelope)
     bound = owner._reservation_bindings[reservation_id]["bound"]
+    if sizing.entry_cost_binding is not None:
+        cost = sizing.entry_cost_binding.validate_v1(
+            monetary_source=sizing.monetary_source,
+            applied_input=sizing.applied_input,
+            decision=sizing.decision,
+        )
+        observation = json.loads(sizing.entry_cost_binding.observation_json)
+        record = owner._by_key[owner._by_id[reservation_id]]
+        if (
+            json.loads(observation["bound_instrument_json"]) != bound
+            or cost["order_type"] != envelope.order_type
+            or (cost["account_identity"], cost["slot_id"], cost["cycle_id"])
+            != (owner._account_identity, str(record.slot_id), record.cycle_id)
+        ):
+            raise ValueError("EXECUTION_ENTRY_COST_CONTEXT_MISMATCH")
     if sizing.monetary_source is not None and (
         sizing.monetary_source.venue_native_id != bound["venue_native_id"]
         or sizing.monetary_source.canonical_instrument_id != bound["instrument_id"]

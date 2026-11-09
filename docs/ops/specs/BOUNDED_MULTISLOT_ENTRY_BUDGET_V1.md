@@ -153,3 +153,69 @@ Entry sowie die gemeinsame Margin- und Verlustfolgenabnahme. Das Verlustergebnis
 wird derzeit am abgeschlossenen simulierten Zyklus fortgeschrieben. Der
 Stoprisikowert ist keine garantierte maximale Ausführungslast bei Preisgaps,
 Kosten oder Liquidation. Diese Anschlussarbeit schließt das Paket nicht ab.
+
+## BWP1-Fortschreibung: beobachtete Kosten des Öffnungsauftrags
+
+Der folgende Entwicklungsstand baut auf `6459cc6b0` auf. Die neue explizite
+[Testpolicy Revision 3](BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V3.json) verwendet
+`entry_budget_policy.v4` und verlangt Quellen für die Öffnungskosten. Die
+vorherigen Policyrevisionen bleiben unverändert lesbar und erhalten diese
+Pflicht nicht rückwirkend. Die Verlustsperre bleibt ausschließlich testbezogen;
+Frank entscheidet weiterhin über den Übergang zum späteren Betrieb.
+
+Der [Kostenproducer](../../../src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py)
+fragt über einen ausdrücklich übergebenen ursprünglichen Read-only-Port vier
+entscheidungsgebundene Quellen ab: Accountkonfiguration, Instrumentmetadaten,
+kontobezogene Gebühren und Orderbuch. Er erzeugt weder Transport noch Credentials,
+erweitert keine Endpointfreigabe und wiederholt keinen fehlgeschlagenen GET.
+Die vier Requests unterliegen den Rechten und Requestgrenzen des übergebenen
+Ports. Der tatsächliche Hostcollector und seine Betriebszulassung sind damit
+nicht automatisch aktiviert. Die verbundenen Nachweise verwenden ausdrücklich
+synthetische Antworten und keine privaten Kontozugriffe.
+
+Gebührensatz und Instrument werden über `instType`, `instFamily` und die
+eindeutige `feeGroup.groupId` verbunden. Die Abfrage verwendet die konkrete
+Instrumentfamilie; die veralteten obersten Maker-/Takerfelder liefern keinen
+Fallback. Das entspricht dem [aktuellen OKX-API-Vertrag](https://www.okx.com/docs-v5/en/).
+Negative Raten bedeuten eine Belastung. Eine positive Rebate finanziert keinen
+Hold. Dieser Anschluss unterstützt aktuell Marketorders auf ausdrücklich
+linearen Kontrakten mit `ctMult=1`, bekannten Währungen und vollständigen
+Metadaten; andere Modelle werden nicht mit derselben Formel bewertet.
+
+Für die endgültige unveränderte native Kontraktmenge konsumiert der Producer
+die tatsächlich erforderlichen Bid-/Ask-Level. Gebühren ergeben sich aus deren
+Notional, Kontraktmultiplikator und Kontosatz. Der nachteilige Unterschied zum
+ursprünglichen Referenzpreis wird als Öffnungsausführungskosten geführt; Spread
+wird nicht zusätzlich nochmals abgezogen. Die USDC-Bewertung benutzt die
+ursprüngliche monetäre Normalisierung. Account, Instrumentbindung, Cycle,
+Quellenidentität, Ereignis-, Acquisition- und finanzielle Bewertungszeit werden
+geprüft; die Coreentscheidungszeit ist kein neu behaupteter Acquisitionzeitpunkt.
+
+Die Originalreservation bleibt eine Notionalreservation. Der gleiche
+Budgetowner bindet die beobachtete Öffnungsgebühr zusätzlich in der gespeicherten
+Sizingbindung und seinem Kapitalreadback. Aktive Gebühren werden von freier
+Kapazität abgezogen und bei konkurrierender Reservation sowie frischem
+Kapital-/Recoveryabgleich mitgerechnet. Das Test-Restverlustbudget begrenzt
+zusätzlich Stoprisiko plus die beobachteten gesamten Öffnungskosten. Fehlende
+Quellen oder unzureichende Deckung verweigern die konkrete Menge; ein anderer
+Sizer und ein automatisches Aufstocken werden nicht eingeführt.
+
+Die persistierte Kostenbindung wird am ursprünglichen Ausführungslink auf die
+exakte Instrument-/Slot-/Cyclebindung und Marketorder geprüft. Replay verändert
+weder Menge noch Kosten und akzeptiert keine ausgetauschte oder fehlende Quelle.
+Der spätere ursprüngliche finanzielle Entryconsumer prüft die Acquisitionfrische
+erneut. Ein historischer Cold-Read erneuert keine Sendefähigkeit. Der bestehende
+Schutzkatalog des POST-Pfads umfasst auch den neuen Kostenproducer.
+
+Die [aktuellen Verbundtests](../../../tests/ops/test_opening_execution_cost_admission_v1.py)
+prüfen LONG/SHORT, eine wirtschaftlich geänderte Gebührenlast am tatsächlichen
+Entryconsumer, Rebate ohne Kapitalerzeugung, falsche Quellen, Replay, Ablauf am
+späteren Consumer und fünf Slots mit KEEP/REPLACE und ursprünglichem Cold-Read.
+Beim Close eines Slots werden Gebührenbindungen fremder offener Slots erhalten.
+
+Dieser Betrag ist eine aktuelle Planung anhand beobachteter Preise und Sätze,
+keine Ausführungsgarantie. Zukünftige Closegebühren und Funding sind ausdrücklich
+nicht enthalten und werden nicht zu null erklärt. Eine Venue-Mengenobergrenze
+bleibt ein eigener Consumer; sie wird nicht als vollständige Margin- oder
+Liquidationsvorsorge ausgegeben. Diese verbleibenden Fragen und die Verbindung
+zum gewählten vorab geprüften Handelsrahmen halten BWP1 weiterhin offen.

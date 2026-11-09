@@ -31,6 +31,7 @@ class LocalCapitalCommitmentV1:
     execution_phase: str
     reconciliation_outcome: str
     reconciliation_matched: bool
+    opening_fee_reserve: Decimal = Decimal("0")
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,8 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
     if owner._closed_owner or owner._storage_failed:
         raise ValueError("LOCAL_COMMITMENT_SOURCE_UNAVAILABLE")
     rows = []
+    from .entry_execution_cost_v1 import reserved_opening_fee_v1
+
     for key, reservation in sorted(owner._by_key.items()):
         rid = str(reservation.reservation_id)
         bound = owner._reservation_bindings.get(rid, {}).get("bound", {})
@@ -81,6 +84,7 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
                 execution_phase=str(link.get("phase", "NO_EXECUTION_LINK")),
                 reconciliation_outcome=str(reconciliation.get("decision", {}).get("outcome", "")),
                 reconciliation_matched=reconciliation.get("matched") is True,
+                opening_fee_reserve=reserved_opening_fee_v1(sizing),
             )
         )
     # Capital refresh/admission does not change the obligation generation. A
@@ -90,7 +94,14 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
             "domain": LOCAL_COMMITMENT_DOMAIN,
             "durable_account": owner._account_identity if owner._store is not None else "",
             "lane_bindings": owner._lane_bindings,
-            "commitments": [{**asdict(row), "amount": str(row.amount)} for row in rows],
+            "commitments": [
+                {
+                    **asdict(row),
+                    "amount": str(row.amount),
+                    "opening_fee_reserve": str(row.opening_fee_reserve),
+                }
+                for row in rows
+            ],
             "execution_links": owner._execution_links,
         }
     )
@@ -101,7 +112,7 @@ def read_local_commitments_locked_v1(owner) -> LocalCapitalCommitmentReadbackV1:
         venue_margin_coverage=VENUE_MARGIN_COVERAGE,
         durable_state_enabled=owner._store is not None,
         commitments=tuple(rows),
-        active_commitment_sum=owner._active_sum_locked(),
+        active_commitment_sum=owner._held_capital_locked(),
         generation_digest=generation,
     )
 
