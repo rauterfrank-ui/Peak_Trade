@@ -162,6 +162,11 @@ class HostBudgetRecoveryContextV1:
     pending_source: object | None = field(default=None, repr=False, compare=False)
 
     def recover_v1(self, owner, output):
+        return self._recover_with_bindings_v1(owner, output, self.host.bindings)
+
+    def _recover_with_bindings_v1(self, owner, output, bindings):
+        from .test_phase_limits_v1 import BoundedSlotReconciliationScopeV1
+
         if owner is not self.host.owner:
             raise ValueError("HOST_BUDGET_OWNER_MISMATCH")
         owner.restart_fail_closed_v1()
@@ -179,12 +184,23 @@ class HostBudgetRecoveryContextV1:
             owner,
             output=output,
             observed=self.observed,
-            lane_bindings=self.host.bindings,
+            lane_bindings=bindings,
             reconciliation_state_root=self.host.root / "reconciliation",
             session_id=self.host.session_id,
             repository_sha=self.host.repository_sha,
             now_unix=self.host.clock(),
             capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+            **(
+                {
+                    "bounded_reconciliation_scope": BoundedSlotReconciliationScopeV1(
+                        owner.entry_budget_policy_v1(),
+                        tuple(sorted(bindings.items())),
+                        self.host.execution_environment,
+                    )
+                }
+                if owner.entry_budget_policy_v1() is not None
+                else {}
+            ),
         )
         if owner.budget_state_v1().recovery_required:
             raise ValueError("HOST_BUDGET_RECOVERY_BLOCKED:" + ",".join(result.reason_codes))
@@ -282,7 +298,24 @@ class PortfolioBudgetHostV1:
                 self.transport_retry_count += 1
                 self.retry_sleep(self.retry_interval_seconds)
 
-    def _observe_once_v1(self, bindings):
+    def observe_after_bounded_slot_close_v1(self, bindings, *, request):
+        """Refresh original account truth and rebind only a proven flat test slot."""
+        if (
+            self.owner is None
+            or self.closed
+            or self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or self.owner.entry_budget_policy_v1() is None
+        ):
+            raise ValueError("BOUNDED_CLOSE_ORIGINAL_SIMULATED_HOST_REQUIRED")
+        proof = self.owner.inspect_bounded_slot_close_refresh_v1(request)
+        slot = proof["slot_id"]
+        if set(bindings) != set(self.bindings) or any(
+            bindings[lane] != old for lane, old in self.bindings.items() if lane != slot
+        ):
+            raise ValueError("BOUNDED_CLOSE_FOREIGN_HOST_BINDING_CHANGED")
+        return self._observe_once_v1(bindings, rebound_request=request)
+
+    def _observe_once_v1(self, bindings, *, rebound_request=None):
         if self.closed:
             raise ValueError("HOST_BUDGET_SESSION_CLOSED")
         if self.owner is None and self.durable_mode == "create" and self.root.exists():
@@ -300,7 +333,7 @@ class PortfolioBudgetHostV1:
             expected_account=self.expected_account_identity,
         )
         account = observation.account
-        if self.bindings is not None and self.bindings != bindings:
+        if self.bindings is not None and self.bindings != bindings and rebound_request is None:
             raise ValueError("HOST_BUDGET_LANE_GENERATION_CHANGED")
         if self.owner is None:
             # Normal start/restart restores only. Missing/deleted state is not
@@ -332,7 +365,22 @@ class PortfolioBudgetHostV1:
             pending_source=observation.pending_source,
             observed=observation.observed,
         )
-        return replace(context, execution_reconciliation=self._reconcile_executions_v1(context))
+        context = replace(context, execution_reconciliation=self._reconcile_executions_v1(context))
+        if rebound_request is not None:
+            slot = self.owner.inspect_bounded_slot_close_refresh_v1(rebound_request)["slot_id"]
+            target = bindings[slot]
+            if any(
+                p.instrument_id
+                in {target.instrument_id, rebound_request.bound_instrument.instrument_id}
+                and p.signed_quantity != 0
+                for p in context.observed.positions
+            ):
+                raise ValueError("BOUNDED_CLOSE_REBIND_POSITION_NOT_FLAT")
+            context._recover_with_bindings_v1(
+                self.owner, rebound_request.capital_handoff.producer_output, bindings
+            )
+            self.bindings = dict(bindings)
+        return context
 
     def _reconcile_executions_v1(self, context):
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (

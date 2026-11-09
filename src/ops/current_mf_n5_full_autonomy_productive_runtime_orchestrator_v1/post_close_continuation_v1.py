@@ -96,7 +96,10 @@ def _write_receipt(path, record):
 def _read_receipt(path):
     record = json.loads(path.read_text())
     body = {k: v for k, v in record.items() if k != "content_digest"}
-    if record.get("content_digest") != _digest(body) or record.get("schema") != SCHEMA:
+    if record.get("content_digest") != _digest(body) or record.get("schema") not in {
+        SCHEMA,
+        "bounded_slot_post_close_continuation.v1",
+    }:
         _fail("POST_CLOSE_RECEIPT_INTEGRITY_INVALID")
     if record.get("phase") not in {"MEMBERSHIP_STORED", "CONSUMING", "ACKED"}:
         _fail("POST_CLOSE_RECEIPT_PHASE_INVALID")
@@ -104,7 +107,10 @@ def _read_receipt(path):
         _fail("POST_CLOSE_RECEIPT_BINDING_INVALID")
     if record["phase"] in {"CONSUMING", "ACKED"}:
         bindings = record.get("bound_by_lane", {})
-        if len(bindings) != 1:
+        expected = (
+            1 if record["schema"] == SCHEMA else record["binding"].get("target_cardinality", 0)
+        )
+        if not 1 <= expected <= 5 or len(bindings) != expected:
             _fail("POST_CLOSE_RECEIPT_BOUND_TARGET_MISSING")
         if record["phase"] == "ACKED":
             consumed = record.get("consumed", {})

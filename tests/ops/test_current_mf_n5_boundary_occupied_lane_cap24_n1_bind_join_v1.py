@@ -404,7 +404,9 @@ def test_authority_signature_and_flags() -> None:
         "repository_sha",
         "session_id",
         "now_unix",
+        "bounded_reconciliation_scope",
     ]
+    assert join_sig.parameters["bounded_reconciliation_scope"].default is None
     hints = inspect.get_annotations(bind_occupied_lane_cap24_n1_instruments_v1, eval_str=True)
     assert hints["return"] == dict[str, BoundInstrumentV1]
     source = JOIN_SOURCE.read_text(encoding="utf-8")

@@ -125,6 +125,7 @@ def bind_occupied_lane_cap24_n1_instruments_v1(
     repository_sha: str,
     session_id: str,
     now_unix: float,
+    bounded_reconciliation_scope=None,
 ) -> dict[str, BoundInstrumentV1]:
     """Join occupied-lane Cap23 SSF map to isolated Cap 2.4 N=1 bind. Stop there."""
     _assert_non_authority()
@@ -158,6 +159,11 @@ def bind_occupied_lane_cap24_n1_instruments_v1(
             expected_selection_integrity_digest=selection.integrity_digest,
             mark_price_by_native_id=mark_price_by_native_id,
             skip_reconciliation=False,
+            **(
+                {"bounded_reconciliation_scope": bounded_reconciliation_scope}
+                if bounded_reconciliation_scope is not None
+                else {}
+            ),
         )
         if gate.ok is True and isinstance(gate.bound, BoundInstrumentV1):
             assert_handoff_invariants_v1(

@@ -169,6 +169,7 @@ def run_single_selected_future_runtime_binding_gate_v1(
     inject_conflicting_consumer: bool = False,
     skip_reconciliation: bool = False,
     require_position_truth_if_open_claimed: bool = True,
+    bounded_reconciliation_scope=None,
 ) -> RuntimeBindingGateResultV1:
     """Bind Cap 2.3 selection into the productive analytical runtime host.
 
@@ -633,6 +634,11 @@ def run_single_selected_future_runtime_binding_gate_v1(
             session_id=session_id,
             repository_sha=repository_sha,
             now_unix=now_unix,
+            **(
+                {"bounded_reconciliation_scope": bounded_reconciliation_scope}
+                if bounded_reconciliation_scope is not None
+                else {}
+            ),
         )
         recon_result = {
             "ok": gate.ok,

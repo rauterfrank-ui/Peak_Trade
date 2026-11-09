@@ -873,6 +873,59 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 mutated=True,
             )
 
+    def inspect_bounded_slot_close_refresh_v1(self, request):
+        """Read the original committed close marker before scoped rebinding."""
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+            PostCloseFeedbackRequestV1,
+        )
+
+        with self._lock:
+            if (
+                not isinstance(request, PostCloseFeedbackRequestV1)
+                or request.budget_owner is not self
+                or self._entry_budget_policy is None
+                or self._store is None
+                or self._closed_owner
+                or self._storage_failed
+            ):
+                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
+            slot = request.execution.source.quantity_handoff.lane_id
+            bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
+            output = request.capital_handoff.producer_output
+            fingerprint = _sha256_text(
+                _canonical_json(
+                    {
+                        "schema": "bounded_slot_close_refresh.v1",
+                        "slot_id": slot,
+                        "reservation_ids": sorted(request.closed_reservation_ids),
+                        "prior_observation_id": request.expected_budget_observation_id,
+                        "observation_id": observation_identity_v1(output),
+                        "account_identity": output.bound_account_identity,
+                        "bound": bound,
+                        "policy": self._entry_budget_policy.digest_v1(),
+                    }
+                )
+            )
+            if (
+                self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
+                or self._active_sum_locked(slot) != 0
+            ):
+                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
+            for rid in request.closed_reservation_ids:
+                current = self._by_key.get(self._by_id.get(rid))
+                if (
+                    current is None
+                    or current.state is not ReservationStateV1.RELEASED
+                    or current.terminal_reason != ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
+                    or self._reservation_bindings[rid] != bound
+                ):
+                    raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
+            return {
+                "slot_id": slot,
+                "close_ref": request.execution.envelope.envelope_digest,
+                "fingerprint": fingerprint,
+            }
+
     def try_reserve_v1(
         self,
         *,

@@ -160,6 +160,7 @@ def reconcile_durable_budget_startup_v1(
     repository_sha: str,
     now_unix: float,
     capital_max_age_seconds: float,
+    bounded_reconciliation_scope=None,
 ):
     """Compose the existing reconciliation gate and budget recovery automatically.
 
@@ -184,6 +185,11 @@ def reconcile_durable_budget_startup_v1(
             session_id=session_id,
             repository_sha=repository_sha,
             now_unix=now_unix,
+            **(
+                {"bounded_reconciliation_scope": bounded_reconciliation_scope}
+                if bounded_reconciliation_scope is not None
+                else {}
+            ),
         )
     except (ValueError, OSError):
         return owner._closed(("DURABLE_RECONCILIATION_SOURCE_UNAVAILABLE",))
