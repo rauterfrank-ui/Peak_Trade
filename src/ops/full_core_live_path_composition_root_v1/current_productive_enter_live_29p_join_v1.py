@@ -182,6 +182,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     venue_quantity_limits: N1VenueQuantityLimitsObservationV1 | None = None
     opening_cost_observation: object | None = None
     funding_cost_observation: object | None = None
+    open_slot_loss_observation: object | None = None
 
 
 @dataclass(frozen=True)

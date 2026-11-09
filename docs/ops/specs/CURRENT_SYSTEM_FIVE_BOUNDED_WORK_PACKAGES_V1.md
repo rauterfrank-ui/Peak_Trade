@@ -185,6 +185,17 @@ verwendet auf Franks Hinweis Obsidian als datierte Wissensquelle und hält
 unterschiedliche Datenströme sowie öffentliche Raten und private Zahlungen
 ausdrücklich auseinander. Dies ist kein Paketabschluss.
 
+Der nächste begrenzte Anschluss ist der
+[Verlustschutz offener Testslotpositionen](CURRENT_OPEN_TEST_SLOT_LOSS_PROTECTION_V1.md).
+Die ursprüngliche simulierte Accountingepisode wird mit eigenem frischen Mark-
+und gegebenenfalls FX-Bezug bewertet. Ein dauerhaft gespeicherter originaler
+Budgetbefund erreicht den bestehenden Safety-Exit des genauen Zielslots, ohne
+globale Killzustände, native Handelsformeln, fremde Holds oder die vorhandene
+Startup-/Recoverykette zu ersetzen. S01, S11 und S12 aus den datierten Obsidian-
+Wissensquellen wurden an den tatsächlichen Ownereingängen abgeglichen.
+Die laufende Kosten-/Fundingvorsorgeerneuerung, vollständige Margin-/Liquidations-
+zulassung und der gemeinsame Wirtschaftsrahmen bleiben offen.
+
 Quellen: [fortgesetzter Handelskreis](CURRENT_CONTINUOUS_DOUBLE_PLAY_ECONOMIC_SEMANTICS_V1.md),
 [heutige Risiko-/Mengenconsumer](CURRENT_N1_RISK_AND_QUANTITY_CONSUMPTION_V1.md),
 [numerische Grenze](CURRENT_SURVIVAL_NUMERIC_ADMISSION_V1.md),

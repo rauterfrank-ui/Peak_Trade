@@ -728,6 +728,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
     rotation_exit_requests: Mapping[str, object] | None = None,
+    slot_loss_exit_requests: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -747,6 +748,8 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     restored: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
     if position_episode_bindings is not None and set(position_episode_bindings) - set(bound_seam):
         _fail(FAILURE_MISMATCHED_LANE_STATE, "foreign_position_episode_lane")
+    if slot_loss_exit_requests is not None and set(slot_loss_exit_requests) - set(bound_seam):
+        _fail(FAILURE_MISMATCHED_LANE_STATE, "foreign_slot_loss_exit_lane")
     for lane_id in LANE_IDS:
         item = bound_seam.get(lane_id)
         if item is None:
@@ -782,6 +785,18 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             )
         elif position_episode_bindings is not None and venue_flat is not True:
             _fail(FAILURE_MISMATCHED_LANE_STATE, "position_episode_missing:" + lane_id)
+        loss_exit = False
+        if slot_loss_exit_requests is not None and lane_id in slot_loss_exit_requests:
+            from src.ops.portfolio_capital_reservation_budget_v1.entry_execution_cost_v1 import (
+                SlotLossExitRequestV1,
+            )
+
+            request = slot_loss_exit_requests[lane_id]
+            if type(request) is not SlotLossExitRequestV1:
+                _fail(FAILURE_AUTHORITY, "original_slot_loss_exit_request_required")
+            loss_exit = request.validate_v1(
+                episode=episode, bound=bound, observed_unix=observed_unix
+            )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
             cycle_id=f"{prefix}:{lane_id}",
@@ -813,6 +828,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             if rotation_exit_requests is None
             else rotation_exit_requests.get(lane_id),
             rotation_time_exit_only=rotation_exit_requests is not None,
+            explicit_killstate_active=loss_exit,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -889,6 +905,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
     rotation_exit_requests: Mapping[str, object] | None = None,
+    slot_loss_exit_requests: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Fence Entries, run Core, then CAS-publish an actual outgoing cursor.
 
@@ -938,6 +955,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         position_episode_bindings=position_episode_bindings,
         position_episode_scope=position_episode_scope,
         rotation_exit_requests=rotation_exit_requests,
+        slot_loss_exit_requests=slot_loss_exit_requests,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

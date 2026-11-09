@@ -740,3 +740,366 @@ def reserved_funding_cost_v1(sizing):
     if result < 0:
         raise ValueError("FUNDING_COST_NEGATIVE_RESERVE")
     return result
+
+
+@dataclass(frozen=True)
+class OpenSlotLossObservationV1:
+    """A point-in-time simulated accounting source and independent current mark/FX."""
+
+    identity_json: str
+    initial_source_ref: str
+    current_source_ref: str
+    mark_source_json: str
+    valuation_epoch: str
+    index_tickers_json: str = "null"
+    pair_instruments_json: str = "null"
+    fx_acquired_at_utc: str = ""
+
+    @classmethod
+    def capture_v1(
+        cls,
+        *,
+        episode,
+        mark_source,
+        valuation_epoch,
+        index_tickers_payload=None,
+        pair_instruments_payload=None,
+        fx_acquired_at_utc="",
+    ):
+        if type(mark_source) is not FreshPretradeGetTransportResultV1:
+            raise ValueError("OPEN_SLOT_ORIGINAL_MARK_SOURCE_REQUIRED")
+        progress = episode.binding.simulated_accounting_progress
+        return cls(
+            canonical(asdict(episode.identity)),
+            episode.entry_source_ref,
+            episode.entry_source_ref if progress is None else progress["current_source_ref"],
+            canonical(asdict(mark_source)),
+            valuation_epoch,
+            canonical(index_tickers_payload),
+            canonical(pair_instruments_payload),
+            fx_acquired_at_utc,
+        )
+
+    def to_dict_v1(self):
+        return dict(schema="open_slot_loss_observation.v1", **asdict(self))
+
+    @classmethod
+    def from_dict_v1(cls, raw):
+        if (
+            type(raw) is not dict
+            or set(raw) != {"schema", *(f.name for f in fields(cls))}
+            or raw["schema"] != "open_slot_loss_observation.v1"
+        ):
+            raise ValueError("OPEN_SLOT_LOSS_OBSERVATION_SCHEMA_INVALID")
+        return cls(**{k: v for k, v in raw.items() if k != "schema"})
+
+
+def open_slot_mark_acquisition_id_v1(identity, valuation_epoch):
+    # This is an observation context, never a fabricated trading decision.
+    return "open-slot-loss:" + digest(
+        dict(identity=asdict(identity), valuation_epoch=valuation_epoch)
+    )
+
+
+def assess_open_slot_loss_v1(owner, reservation_id, observation):
+    """Original-kernel valuation; no fill, fee, funding payment or balance writer."""
+    from .slot_economic_source_v1 import _fill
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        PositionEpisodeIdentityV1,
+        PositionEpisodeScopeV1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.simulated_accounting_progress_v1 import (
+        _source,
+        _same_accounting_domain,
+    )
+    from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v1 import (
+        bind_simulated_accounting_episode_identity_v1,
+        economic_journal_events_v1,
+        require_economic_history_extension_v1,
+        latest_economic_event_time_v1,
+    )
+    from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+        ProductiveFuturesAccountingSessionV1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.instrument_monetary_identity_v1 import (
+        conversion_pair_monetary_identity_from_okx_payload_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.usdt_usdc_index_observation_v1 import (
+        build_usdt_usdc_conversion_edge_from_index_tickers_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+        USDT_USDC_PAIR_NATIVE_ID,
+    )
+
+    if type(observation) is not OpenSlotLossObservationV1 or any(
+        type(getattr(observation, f.name)) is not str for f in fields(observation)
+    ):
+        raise ValueError("OPEN_SLOT_TYPED_OBSERVATION_REQUIRED")
+    policy = owner._entry_budget_policy
+    if not policy or not policy.enforce_open_slot_loss_protection:
+        raise ValueError("OPEN_SLOT_EXPLICIT_TEST_POLICY_REQUIRED")
+    record = owner._by_key.get(owner._by_id.get(reservation_id))
+    binding = owner._sizing_bindings.get(reservation_id)
+    link = owner._execution_links.get(reservation_id)
+    if record is None or binding is None or link is None or binding.monetary_source is None:
+        raise ValueError("OPEN_SLOT_ORIGINAL_RESERVATION_REQUIRED")
+    binding.validate_v1(amount=record.amount, decision_id=record.decision_id)
+    data = json.loads(observation.identity_json)
+    identity = PositionEpisodeIdentityV1(
+        **{**data, "account_scope": PositionEpisodeScopeV1(**data["account_scope"])}
+    )
+    identity.validate_v1()
+    bound = owner._reservation_bindings[reservation_id]["bound"]
+    if identity.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION" or (
+        identity.lane_id,
+        identity.account_scope.account_identity,
+        identity.instrument_id,
+        identity.venue_native_id,
+    ) != (
+        str(record.slot_id),
+        owner._account_identity,
+        bound["instrument_id"],
+        bound["venue_native_id"],
+    ):
+        raise ValueError("OPEN_SLOT_ACCOUNT_INSTRUMENT_OR_SLOT_MISMATCH")
+    initial, _ = _source(observation.initial_source_ref, identity)
+    current, anchors = _source(observation.current_source_ref, identity)
+    _same_accounting_domain(initial, current)
+    require_economic_history_extension_v1(initial, current)
+    valuation = datetime.fromisoformat(observation.valuation_epoch.replace("Z", "+00:00"))
+    if valuation.utcoffset() is None or valuation.timestamp() < latest_economic_event_time_v1(
+        current
+    ):
+        raise ValueError("OPEN_SLOT_ACCOUNTING_AFTER_VALUATION")
+    frozen = ProductiveFuturesAccountingSessionV1.from_durable_dict(
+        current["accounting_checkpoint"]
+    )
+    _, money_identity, constraints = binding.monetary_source.rebuild_v1()
+    if (
+        frozen.contract.quote_currency != money_identity.settle_currency
+        or money_identity.quote_currency != money_identity.settle_currency
+        or frozen.contract.contract_size != constraints.contract_multiplier
+        or frozen.contract.tick_size != constraints.tick_size
+        or frozen.contract.min_qty != constraints.minimum_quantity
+        or frozen.position is None
+        or frozen.position.qty <= 0
+        or frozen.position.side.value != identity.position_side
+        or frozen.position.qty > Decimal(link["envelope"]["quantity"])
+        or anchors["entry_event_time"] > valuation.timestamp()
+    ):
+        raise ValueError("OPEN_SLOT_ORIGINAL_OPEN_CONTRACT_OR_QUANTITY_MISMATCH")
+    opening_equity = None
+    replay = ProductiveFuturesAccountingSessionV1(
+        contract=frozen.contract,
+        initial_equity=frozen.initial_equity,
+        writer_identity=frozen.writer_identity,
+    )
+    for event in economic_journal_events_v1(initial):
+        row = event["value"]
+        if event["kind"] == "FUNDING":
+            replay.apply_funding_observation_v1(
+                event_id=event["event_id"],
+                amount=row["amount"],
+                currency=row["currency"],
+                instrument_id=row["instrument_id"],
+                event_time_unix=row["event_time_unix"],
+            )
+            continue
+        fill = _fill(row)
+        before = replay.portfolio_state().equity
+        result = replay.apply_fill(fill)
+        if (
+            result.action_code in {"LONG_OPEN", "SHORT_OPEN"}
+            and bind_simulated_accounting_episode_identity_v1(identity=identity, opening_fill=fill)
+            == identity
+        ):
+            if (
+                fill.fill_id
+                not in {
+                    p + link["envelope"]["envelope_digest"]
+                    for p in ("original-plan:", "next-original-plan:", "offline-envelope:")
+                }
+                or fill.side.lower() != link["envelope"]["side"]
+            ):
+                raise ValueError("OPEN_SLOT_ORIGINAL_ENTRY_FILL_REQUIRED")
+            opening_equity = before
+    if opening_equity is None:
+        raise ValueError("OPEN_SLOT_ORIGINAL_EPISODE_OPENING_REQUIRED")
+    mark_source = FreshPretradeGetTransportResultV1(**json.loads(observation.mark_source_json))
+    kind = _one(
+        _rows(json.loads(binding.monetary_source.instruments_json)),
+        "instId",
+        identity.venue_native_id,
+    )["instType"]
+    if (
+        mark_source.get_performed is not True
+        or mark_source.method != "GET"
+        or mark_source.http_status != 200
+        or mark_source.auth_header_sent is not False
+        or mark_source.historical_reuse is not False
+        or mark_source.error_class
+        or mark_source.pretrade_decision_id
+        != open_slot_mark_acquisition_id_v1(identity, observation.valuation_epoch)
+        or not re.fullmatch("[0-9a-f]{64}", mark_source.body_sha256)
+        or _query(mark_source.endpoint, "/api/v5/public/mark-price")
+        != {"instType": [kind], "instId": [identity.venue_native_id]}
+    ):
+        raise ValueError("OPEN_SLOT_CURRENT_PUBLIC_MARK_REQUIRED")
+    acquisition_age_seconds_v1(
+        acquired_at_utc=mark_source.acquired_at_utc, now_utc=observation.valuation_epoch
+    )
+    mark = _one(_rows(mark_source.payload), "instId", identity.venue_native_id)
+    if mark.get("instType") != kind:
+        raise ValueError("OPEN_SLOT_MARK_PRODUCT_MISMATCH")
+    _event_clock(mark.get("ts"), mark_source.acquired_at_utc, observation.valuation_epoch)
+    price = _money(mark.get("markPx"), positive=True)
+    frozen.mark_to_market(price)
+    native_result = frozen.portfolio_state().equity - opening_equity
+    rate = Decimal(1)
+    fx_digest = None
+    if frozen.contract.quote_currency == "USDT":
+        acquisition_age_seconds_v1(
+            acquired_at_utc=observation.fx_acquired_at_utc, now_utc=observation.valuation_epoch
+        )
+        base, quote = conversion_pair_monetary_identity_from_okx_payload_v1(
+            json.loads(observation.pair_instruments_json),
+            pair_native_id=USDT_USDC_PAIR_NATIVE_ID,
+        )
+        edge = build_usdt_usdc_conversion_edge_from_index_tickers_v1(
+            index_tickers_payload=json.loads(observation.index_tickers_json),
+            decision_epoch=observation.valuation_epoch,
+            observed_at=observation.fx_acquired_at_utc,
+            fresh_pretrade_get_status="TRUSTED_PRESENT",
+            pair_base_currency=base,
+            pair_quote_currency=quote,
+        )
+        _event_clock(
+            edge.source_timestamp, observation.fx_acquired_at_utc, observation.valuation_epoch
+        )
+        rate, fx_digest = edge.normalized_rate, edge.payload_digest
+    elif frozen.contract.quote_currency != "USDC":
+        raise ValueError("OPEN_SLOT_CURRENCY_UNSUPPORTED")
+    prior = [
+        r
+        for r in owner._slot_test_economics[identity.lane_id]["records"]
+        if r["reservation_id"] != reservation_id
+        and datetime.fromisoformat(r["valuation_epoch"].replace("Z", "+00:00")) <= valuation
+    ]
+    closed_net = sum((Decimal(r["net_result_usdc"]) for r in prior), Decimal(0))
+    limit = policy.per_slot_test_loss_limit
+    allowance = min(limit, max(Decimal(0), limit + closed_net)) + native_result * rate
+    close_cost = reserved_closing_cost_v1(binding)
+    funding = json.loads(binding.funding_cost_binding.receipt_json)
+    horizon_valid = int(valuation.timestamp() * 1000) < funding["upcoming_funding_time_ms"]
+    original_funding_provision = reserved_funding_cost_v1(binding)
+    exhausted = allowance <= 0
+    close_required = (
+        exhausted or horizon_valid and allowance <= close_cost + original_funding_provision
+    )
+    body = dict(
+        schema="open_slot_loss_protection.v1",
+        reservation_id=reservation_id,
+        slot_id=identity.lane_id,
+        identity=asdict(identity),
+        quantity=str(frozen.position.qty),
+        native_mark_price=str(price),
+        currency="USDC",
+        native_net_result=str(native_result),
+        mark_valued_open_net_result_usdc=str(native_result * rate),
+        prior_closed_net_result_usdc=str(closed_net),
+        prior_closed_records_digest=digest(prior),
+        remaining_allowance_before_future_costs_usdc=str(allowance),
+        original_close_provision_usdc=str(close_cost),
+        original_next_funding_provision_usdc=str(original_funding_provision),
+        original_funding_horizon_valid=horizon_valid,
+        actual_loss_allowance_exhausted=exhausted,
+        close_required=bool(close_required),
+        reason="TEST_SLOT_MARK_VALUED_LOSS_ALLOWANCE_EXHAUSTED"
+        if exhausted
+        else "TEST_SLOT_ORIGINAL_COST_PROVISIONS_UNCOVERED"
+        if close_required
+        else "NO_OBSERVED_LOSS_CLOSE_TRIGGER",
+        valuation_epoch=observation.valuation_epoch,
+        observation=observation.to_dict_v1(),
+        fx_payload_digest=fx_digest,
+        accounting_basis="ORIGINAL_SIMULATED_KERNEL_EQUITY_SINCE_TARGET_OPEN_INCLUDES_OBSERVED_FEES_AND_FUNDING_NO_EXTRA_SLIPPAGE_DEBIT",
+        future_liability_basis="ORIGINAL_ENTRY_PROVISIONS_NOT_RENEWED",
+        funding_or_cost_rollover_admitted=False,
+        private_venue_cash_observed=False,
+        runtime_authorization_effect="NONE",
+        policy_digest=policy.digest_v1(),
+    )
+    return {**body, "digest": digest(body)}
+
+
+def restore_open_slot_protection_v1(owner, raw):
+    policy = owner._entry_budget_policy
+    if policy is None or not policy.enforce_open_slot_loss_protection:
+        if raw is not None:
+            raise ValueError("OPEN_SLOT_PROTECTION_OUTSIDE_EXPLICIT_POLICY")
+        return {}
+    if type(raw) is not dict or set(raw) != set(policy.allowed_slot_ids):
+        raise ValueError("OPEN_SLOT_PROTECTION_STATE_REQUIRED")
+    for slot, row in raw.items():
+        if row is None:
+            continue
+        if (
+            type(row) is not dict
+            or set(row) != {"latest", "pending_close", "exhaustion"}
+            or row["latest"] is None
+        ):
+            raise ValueError("OPEN_SLOT_PROTECTION_STATE_INVALID")
+        latest = datetime.fromisoformat(row["latest"]["valuation_epoch"].replace("Z", "+00:00"))
+        if (
+            row["latest"]["close_required"]
+            and row["pending_close"] is None
+            or (
+                row["exhaustion"] is None
+                and any(
+                    proof is not None and proof["actual_loss_allowance_exhausted"]
+                    for proof in row.values()
+                )
+            )
+        ):
+            raise ValueError("OPEN_SLOT_PROTECTION_LATCH_MISSING")
+        for key, proof in row.items():
+            if proof is None:
+                continue
+            rebuilt = assess_open_slot_loss_v1(
+                owner,
+                proof["reservation_id"],
+                OpenSlotLossObservationV1.from_dict_v1(proof["observation"]),
+            )
+            if (
+                proof != rebuilt
+                or proof["slot_id"] != slot
+                or datetime.fromisoformat(proof["valuation_epoch"].replace("Z", "+00:00")) > latest
+                or key == "pending_close"
+                and proof["close_required"] is not True
+                or key == "exhaustion"
+                and proof["actual_loss_allowance_exhausted"] is not True
+            ):
+                raise ValueError("OPEN_SLOT_PROTECTION_SOURCE_OR_SUMMARY_MISMATCH")
+    return json.loads(canonical(raw))
+
+
+@dataclass(frozen=True)
+class SlotLossExitRequestV1:
+    """Reference to a durable original budget fact, never a free safety boolean."""
+
+    owner: object
+    reservation_id: str
+    proof_digest: str
+
+    def validate_v1(self, *, episode, bound, observed_unix):
+        from .contract_v1 import PortfolioCapitalReservationBudgetOwnerV1
+
+        if type(self.owner) is not PortfolioCapitalReservationBudgetOwnerV1 or episode is None:
+            raise ValueError("OPEN_SLOT_ORIGINAL_BUDGET_CLOSE_REQUEST_REQUIRED")
+        return self.owner.inspect_open_slot_loss_exit_v1(
+            reservation_id=self.reservation_id,
+            proof_digest=self.proof_digest,
+            episode=episode,
+            bound=bound,
+            observed_unix=observed_unix,
+        )

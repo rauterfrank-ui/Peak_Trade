@@ -141,8 +141,13 @@ belegt außerdem noch nicht alle hier verlangten Grenzen und Herkunftsfelder.
 
 ## Noch offene Anschlüsse und Quellen
 
-Die laufende erneute Deckungsprüfung und der kontrollierte Positionsschutz
-müssen noch bis zum tatsächlichen Consumer verbunden werden. Vollständige
+Der [Schutz einer offenen Testslotposition](CURRENT_OPEN_TEST_SLOT_LOSS_PROTECTION_V1.md)
+ergänzt die Entryvorsorge: Originalaccounting und frischer Mark-/FX-Bezug
+erreichen den ursprünglichen kontrollierten Safety-Exit. Ein begonnener Close
+und eine belegte markbewertete Erschöpfung werden dauerhaft gebunden. Die
+laufende Erneuerung zukünftiger Kosten-/Fundingverpflichtungen bleibt offen;
+ein abgelaufener Erstbeleg wird nicht zu einer neuen Deckungszulassung.
+Vollständige
 Margin-/Liquidationszulassung sowie die fachlich gewählte
 Wirtschaftsrahmenrolle gegenüber den festen nativen Replay-Survivalwerten bleiben
 eigene Anforderungen dieses Pakets. Diese Kostenergänzung schließt Paket 1 nicht.

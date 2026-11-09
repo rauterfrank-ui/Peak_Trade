@@ -23,6 +23,7 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     require_opening_execution_costs: bool = False
     require_closing_execution_costs: bool = False
     require_next_funding_costs: bool = False
+    enforce_open_slot_loss_protection: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -63,6 +64,12 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             and not self.require_closing_execution_costs
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_FUNDING_COST_POLICY_INVALID")
+        if (
+            type(self.enforce_open_slot_loss_protection) is not bool
+            or self.enforce_open_slot_loss_protection
+            and not self.require_next_funding_costs
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_PROTECTION_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -85,25 +92,36 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             result.update(schema="entry_budget_policy.v5", require_closing_execution_costs=True)
         if self.require_next_funding_costs:
             result.update(schema="entry_budget_policy.v6", require_next_funding_costs=True)
+        if self.enforce_open_slot_loss_protection:
+            result.update(schema="entry_budget_policy.v7", enforce_open_slot_loss_protection=True)
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
-    funding_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v6"
+    protection_mode = (
+        isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v7"
+    )
+    funding_mode = isinstance(payload, dict) and payload.get("schema") in {
+        "entry_budget_policy.v6",
+        "entry_budget_policy.v7",
+    }
     close_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v5",
         "entry_budget_policy.v6",
+        "entry_budget_policy.v7",
     }
     cost_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v4",
         "entry_budget_policy.v5",
         "entry_budget_policy.v6",
+        "entry_budget_policy.v7",
     }
     loss_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v3",
         "entry_budget_policy.v4",
         "entry_budget_policy.v5",
         "entry_budget_policy.v6",
+        "entry_budget_policy.v7",
     }
     expected = {
         "schema",
@@ -129,6 +147,8 @@ def parse_slot_entry_budget_v1(payload):
         expected.add("require_closing_execution_costs")
     if funding_mode:
         expected.add("require_next_funding_costs")
+    if protection_mode:
+        expected.add("enforce_open_slot_loss_protection")
     if (
         not isinstance(payload, dict)
         or set(payload) != expected
@@ -139,6 +159,7 @@ def parse_slot_entry_budget_v1(payload):
             "entry_budget_policy.v4",
             "entry_budget_policy.v5",
             "entry_budget_policy.v6",
+            "entry_budget_policy.v7",
         }
     ):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_SCHEMA_INVALID")
@@ -150,6 +171,8 @@ def parse_slot_entry_budget_v1(payload):
         raise EntryBudgetPolicyError("TEST_PHASE_CLOSING_COST_POLICY_INVALID")
     if funding_mode and data.get("require_next_funding_costs") is not True:
         raise EntryBudgetPolicyError("TEST_PHASE_FUNDING_COST_POLICY_INVALID")
+    if protection_mode and data.get("enforce_open_slot_loss_protection") is not True:
+        raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_PROTECTION_POLICY_INVALID")
     if loss_mode:
         if (
             data.pop("loss_limit_scope") != "EXPLICIT_TEST_PHASE_ONLY"
