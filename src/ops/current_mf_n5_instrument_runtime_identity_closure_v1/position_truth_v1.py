@@ -117,6 +117,7 @@ def resolve_all_lane_position_truths_v1(
     global_venue_flat: bool,
     global_existing_position_side: ExistingPositionSide,
     multi_lane: bool,
+    isolate_known_lane_positions: bool = False,
 ) -> dict[str, PerLanePositionTruthV1]:
     allow_global = not multi_lane
     if multi_lane:
@@ -124,10 +125,41 @@ def resolve_all_lane_position_truths_v1(
         if len(native_ids) == 1:
             allow_global = True
     out: dict[str, PerLanePositionTruthV1] = {}
+    lane_payloads = None
+    if (
+        isolate_known_lane_positions
+        and multi_lane
+        and len({identities[l].venue_native_id for l in identities}) > 1
+    ):
+        payload = _positions_payload(occupancy_payloads)
+        _validate_positions_payload_v1(payload)
+        known_native_ids = {identity.venue_native_id for identity in identities.values()}
+        if any(
+            Decimal(str(row["pos"])) != 0 and str(row["instId"]).strip() not in known_native_ids
+            for row in payload["data"]
+        ):
+            raise PerLanePositionTruthError(
+                FAILURE_POSITION_SHARED_FORBIDDEN, "unowned_open_position"
+            )
+        lane_payloads = {
+            lane: {
+                "POSITIONS": {
+                    **payload,
+                    "data": [
+                        row
+                        for row in payload["data"]
+                        if str(row["instId"]).strip() == identity.venue_native_id
+                    ],
+                }
+            }
+            for lane, identity in identities.items()
+        }
     for lane_id, identity in sorted(identities.items()):
         out[lane_id] = resolve_per_lane_position_truth_v1(
             identity=identity,
-            occupancy_payloads=occupancy_payloads,
+            occupancy_payloads=(
+                lane_payloads[lane_id] if lane_payloads is not None else occupancy_payloads
+            ),
             global_venue_flat=global_venue_flat,
             global_existing_side=global_existing_position_side,
             allow_global_fallback=allow_global,

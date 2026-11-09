@@ -371,15 +371,15 @@ def test_d6_global_stale_fail_closed() -> None:
 
 def test_invoke_two_lanes_distinct_c1(tmp_path: Path) -> None:
     pairs = {
-        "LANE_1": _pair(tmp_path, "LANE_1", native="VENUE-A"),
-        "LANE_2": _pair(tmp_path, "LANE_2", native="VENUE-B"),
+        "LANE_1": _pair(tmp_path, "LANE_1", native="ETH-USDT-SWAP"),
+        "LANE_2": _pair(tmp_path, "LANE_2", native="SOL-USDT-SWAP"),
     }
     mark = 100.0
     prov_a = build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-        venue_native_id="VENUE-A", mark_px=mark, index_px=99.5
+        venue_native_id="ETH-USDT-SWAP", mark_px=mark, index_px=99.5
     )
     prov_b = build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-        venue_native_id="VENUE-B", mark_px=mark + 10.0, index_px=99.5 + 10.0
+        venue_native_id="SOL-USDT-SWAP", mark_px=mark + 10.0, index_px=99.5 + 10.0
     )
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         pairs,
@@ -399,8 +399,10 @@ def test_invoke_two_lanes_distinct_c1(tmp_path: Path) -> None:
         existing_position_side=ExistingPositionSide.NONE,
         candles_payload=None,
         candles_payload_by_lane={
-            "LANE_1": _candles(inst_id="VENUE-A", last_ts_ms=int(C1_TS * 1000), close=mark),
-            "LANE_2": _candles(inst_id="VENUE-B", last_ts_ms=int(C1_TS * 1000), close=mark + 10.0),
+            "LANE_1": _candles(inst_id="ETH-USDT-SWAP", last_ts_ms=int(C1_TS * 1000), close=mark),
+            "LANE_2": _candles(
+                inst_id="SOL-USDT-SWAP", last_ts_ms=int(C1_TS * 1000), close=mark + 10.0
+            ),
         },
         canonical_price_provenance_by_lane={
             "LANE_1": prov_a,
@@ -408,13 +410,13 @@ def test_invoke_two_lanes_distinct_c1(tmp_path: Path) -> None:
         },
         occupancy_payloads=_occupancy_absent(),
         g17_typed_vol_producers={
-            "LANE_1": _g17("INST-LANE_1", "VENUE-A"),
-            "LANE_2": _g17("INST-LANE_2", "VENUE-B"),
+            "LANE_1": _g17("INST-LANE_1", "ETH-USDT-SWAP"),
+            "LANE_2": _g17("INST-LANE_2", "SOL-USDT-SWAP"),
         },
     )
     assert set(results) == {"LANE_1", "LANE_2"}
-    assert results["LANE_1"].native_id == "VENUE-A"
-    assert results["LANE_2"].native_id == "VENUE-B"
+    assert results["LANE_1"].native_id == "ETH-USDT-SWAP"
+    assert results["LANE_2"].native_id == "SOL-USDT-SWAP"
 
 
 def test_invoke_missing_lane_c1_fail_closed(tmp_path: Path) -> None:
@@ -451,7 +453,7 @@ def test_invoke_missing_lane_c1_fail_closed(tmp_path: Path) -> None:
 
 
 def test_n1_regression_single_lane_shared_c1(tmp_path: Path) -> None:
-    pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    pairs = {"LANE_1": _pair(tmp_path, "LANE_1", native="ETH-USDT-SWAP")}
     mark = 100.0
     invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         pairs,
@@ -469,9 +471,9 @@ def test_n1_regression_single_lane_shared_c1(tmp_path: Path) -> None:
         last_finalized_event_ts_unix=float(PREVIOUS_C1_VENUE_EVENT_TIME),
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
-        candles_payload=_candles(inst_id="VENUE-LANE_1", last_ts_ms=int(C1_TS * 1000), close=mark),
+        candles_payload=_candles(inst_id="ETH-USDT-SWAP", last_ts_ms=int(C1_TS * 1000), close=mark),
         canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id="VENUE-LANE_1", mark_px=mark, index_px=99.5
+            venue_native_id="ETH-USDT-SWAP", mark_px=mark, index_px=99.5
         ),
-        g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "VENUE-LANE_1")},
+        g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "ETH-USDT-SWAP")},
     )

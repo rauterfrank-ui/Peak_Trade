@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
+import hashlib
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Mapping, NoReturn, Sequence
@@ -407,6 +408,13 @@ def _t2_from_s7(
             if key not in {"cycle_evidence_root", "accepted_c1_venue_event_time_unix"}
         }
         eg_incoming_cursor = kwargs.get("incoming_cursor")
+        if position_management_only and s7_base.get("position_episode_bindings") is not None:
+            # Exit continuity consumes the exact last committed Core cursor.
+            # S7 still publishes its negative Entry marker before evaluation
+            # and CAS-publishes the actual result against that marker.
+            eg_incoming_cursor = load_current_productive_sidestate_confirmation_cursor_v1(
+                Path(lane_pairs[lane_id][0].lane_state_root)
+            )
         try:
             composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 lane_pairs,
@@ -908,6 +916,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     occupancy_payloads: Mapping[str, Any] | None = None,
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
+    live_29p_injected_by_lane: Mapping[str, CurrentProductiveEnterLive29PInjectedGetV1]
+    | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: object | None = None,
     canonical_price_provenance_by_lane: Mapping[str, object] | None = None,
@@ -925,6 +935,40 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     fail-closed load semantics.
     """
     _assert_non_authority()
+    from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+        BoundedSlotEntryBudgetV1,
+    )
+
+    bounded_slots = isinstance(
+        portfolio_budget_owner.entry_budget_policy_v1()
+        if portfolio_budget_owner is not None
+        else None,
+        BoundedSlotEntryBudgetV1,
+    )
+    if bounded_slots:
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            HostBudgetRecoveryContextV1,
+        )
+
+        if (
+            not isinstance(host_budget_recovery, HostBudgetRecoveryContextV1)
+            or host_budget_recovery.host.closed
+            or host_budget_recovery.host.owner is not portfolio_budget_owner
+            or host_budget_recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or offline_governed_attempt is not None
+            or live_29p_injected_by_lane is None
+        ):
+            _fail(FAILURE_AUTHORITY, "bounded_slots_original_simulated_host_required")
+    if live_29p_injected_by_lane is not None:
+        if live_29p_injected is not None:
+            _fail(FAILURE_AUTHORITY, "dual_live_29p_inputs_forbidden")
+        if set(live_29p_injected_by_lane) != set(composed_pairs):
+            _fail(FAILURE_AUTHORITY, "live_29p_lane_set_mismatch")
+        if any(
+            not isinstance(value, CurrentProductiveEnterLive29PInjectedGetV1)
+            for value in live_29p_injected_by_lane.values()
+        ):
+            _fail(FAILURE_AUTHORITY, "live_29p_lane_input_type")
     if position_episode_bindings is not None:
         from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
             PositionEpisodeScopeV1,
@@ -973,6 +1017,15 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if slot.occupancy != OCCUPANCY_OCCUPIED:
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
+    if bounded_slots:
+        # Keep the original durable cursor and exclusion lock. Each named
+        # bounded attempt retains its own original one-shot ledger; retries
+        # revisit that same ledger and remain subject to its replay refusal.
+        attempt = hashlib.sha256(prefix.encode()).hexdigest()
+        addressed = {
+            lane: (cursor, lock, str(Path(evidence) / "bounded_slot_attempts_v1" / attempt))
+            for lane, (cursor, lock, evidence) in addressed.items()
+        }
     if offline_governed_attempt is not None:
         from src.ops.bounded_peaktrade_system_composition_v1.governed_attempt_v1 import (
             OfflineGovernedAttemptV1,
@@ -1001,6 +1054,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             existing_position_side=existing_position_side,
             last_finalized_event_ts_unix=last_finalized_event_ts_unix,
             finalized_closes=tuple(finalized_closes),
+            isolate_known_lane_positions=bounded_slots,
         )
     except InstrumentRuntimeIdentityClosureError as exc:
         _fail(exc.failure_code, exc.detail)
@@ -1090,6 +1144,11 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             _fail(FAILURE_S8_ROOTS_MISSING, lane_id)
         cursor_store_root, lock_root, evidence_root = roots
         _slot, bound = pair
+        lane_29p = (
+            live_29p_injected_by_lane[lane_id]
+            if live_29p_injected_by_lane is not None
+            else live_29p_injected
+        )
         native_id = str(bound.venue_native_id or "").strip()
         if not native_id:
             _fail(FAILURE_NATIVE_ID_MISSING, lane_id)
@@ -1127,6 +1186,20 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             )
         )
         lane_candles = dict(ingress.candles_payload)
+        lane_occupancy = occupancy
+        if bounded_slots:
+            positions = occupancy.get("POSITIONS", {})
+            lane_occupancy = {
+                **occupancy,
+                "POSITIONS": {
+                    **positions,
+                    "data": [
+                        row
+                        for row in positions.get("data", [])
+                        if str(row.get("instId") or "").strip() == native_id
+                    ],
+                },
+            }
         if canonical_price_provenance_by_lane is not None:
             lane_prov = canonical_price_provenance_by_lane.get(lane_id)
             if lane_prov is None:
@@ -1153,7 +1226,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             native_id=native_id,
             lane_id=lane_id,
             s7_base={**lane_s7, "cycle_id_prefix": f"{prefix}:{lane_id}"},
-            live_29p_injected=live_29p_injected,
+            live_29p_injected=lane_29p,
             candles_payload=lane_candles,
             portfolio_budget_owner=portfolio_budget_owner,
             common_epoch_decision_epoch=common_epoch_decision_epoch,
@@ -1173,10 +1246,10 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         )
 
         handoff_meta = None
-        if live_29p_injected is not None and live_29p_injected.instruments_payload is not None:
+        if lane_29p is not None and lane_29p.instruments_payload is not None:
             try:
                 handoff_meta = extract_instrument_contract_metadata_v1(
-                    live_29p_injected.instruments_payload,
+                    lane_29p.instruments_payload,
                     instrument_id=str(bound.venue_native_id or native_id),
                 )
             except Exception:
@@ -1186,7 +1259,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 bound_instrument=bound,
                 canonical_decision_id=str(common_epoch_decision_epoch or ""),
                 account_identity=str(
-                    getattr(live_29p_injected, "expected_account_identity", "")
+                    getattr(lane_29p, "expected_account_identity", "")
                     or "REUSED_BINDING_ACCOUNT_SCOPE"
                 ),
                 environment="PRODUCTIVE_READ_ONLY",
@@ -1212,7 +1285,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 lock_root=Path(lock_root),
                 evidence_root=Path(evidence_root),
                 candles_payload=lane_candles,
-                occupancy_payloads=occupancy,
+                occupancy_payloads=lane_occupancy,
                 execute_network=False,
                 perform_get=False,
                 eg_cycle_dispatch=non_v5_eg_dispatch_v1,

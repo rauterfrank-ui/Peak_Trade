@@ -59,6 +59,7 @@ def compose_per_lane_n5_identity_closure_v1(
     last_finalized_event_ts_unix: float,
     finalized_closes: tuple[float, ...] | list[float],
     require_reconciliation_admission: bool = True,
+    isolate_known_lane_positions: bool = False,
 ) -> tuple[dict[str, PerLaneGovernedIngressV1], LaneOwnershipIndexV1]:
     try:
         identities = build_identities_from_composed_pairs_v1(composed_pairs)
@@ -82,6 +83,7 @@ def compose_per_lane_n5_identity_closure_v1(
             global_venue_flat=venue_flat,
             global_existing_position_side=existing_position_side,
             multi_lane=multi_lane,
+            isolate_known_lane_positions=isolate_known_lane_positions,
         )
     except (C1FanoutError, LaneOwnershipError, PerLanePositionTruthError) as exc:
         raise InstrumentRuntimeIdentityClosureError(exc.failure_code, exc.detail) from exc
