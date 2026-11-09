@@ -46,6 +46,106 @@ ORDERED_FUNDING_EPISODE_DELTAS = {
 }
 
 
+# Frank's 2026-11-09 instruction adds one fixed slot/incumbent/replacement
+# transaction, 1800 seconds from nomination, its cancellation/restart, and the
+# original GGE/Scope/C3/financial path. This is an exact development bundle;
+# it neither rewrites frozen inventories/tags nor grants an external effect.
+RESERVED_SLOT_ROTATION_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "84051cc3949a6736f1252cd425822397b7f80d7924f052746c3823d3c86450cf",
+        "bc04c096f9d20fa7dd360523f3d1f5d77f0d62e5e5afd5f32aefee69fc4609d3",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": (
+        "4e174b0048e8de66c5405235512f9da00e7da75b9a7c627b71096b4b888986f8",
+        "0e109341649d82a539e6395e784967645a0907b5bc49f41f4e40dff05da96df4",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/bounded_slot_post_close_v1.py": (
+        "42fac4a77874917184c0ad436b46d5860924c7c76b73e2dc030cf7cc5129428f",
+        "34cbb33104b490f8eb8d2bd536e3e96e9a2f988099ca289c4bcf679517b49a9d",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": (
+        "536e4827dfea87bcdcfee11234a38d0fb3589f6dd7ae2b073461ed0383c88664",
+        "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": (
+        "d7c213281a98075f54f1560bd8bd7e7b09f16f3c572f7c916043a691dad48477",
+        "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py": (
+        "adabcae2f9547c0cbf026f971138b31ba8712e8d16c51c0ebe37e2863dd24b1b",
+        "fec15a06cc3504c4b37d6029dfa30980ddd3d74b22634712cdb56ef968b8a45c",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/rotation_plan_v1.py": (
+        None,
+        "9f7322ff1fc357c3b828df4f6c0c73e74db0ee52350d7d90be434ed93255b96c",
+    ),
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": (
+        "5a12b8b0d2f69e74b43ae7e35cf93cdb44b7826f5b86b474d45387ee173d0647",
+        "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": (
+        "70a0fbe3bb90a9ae4bf9cfcda05f57964d0681a5a859e5df6dd36ad8766c22cb",
+        "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/models_v1.py": (
+        "d63f2f8ca211c2f613449d95a260f3e261672a6539e6e29152417f3ca6094e24",
+        "589dec4be5f00b4909c3aa511a600dfc63a31c92b018b20e9f437faa8334e9bc",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/persistence_v1.py": (
+        "77685dcbd323ebf8e1e35eada804add2cf7d795a05b4b9b8984cd2498f1fb396",
+        "adc66058a39f3c84e84fc47ca45fc60f6e99f4605e06dc79d58153fc5de76826",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py": (
+        "dbeb04582421be8b9891fafd810e5fedf0f4465647fbefa6e34b54b482784f8e",
+        "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": (
+        "ceda614f8f65ff18fd9be973968938bb78c41bbea91d9434d844c2626c85c48a",
+        "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
+        "c04f97c4fe0f405757661a715774ca4debf28d3d00c10c7077e5ed866e1c96d6",
+        "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
+        "a93c61c73ebbbc11402456b2fe4fa36ec3e761b49b3b24309c9f45bf353d944f",
+        "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_rotation_close_v1.py": (
+        None,
+        "843de05030c1a4bbb7420762c60fe3e16bfbdbe89b01a184ffe4f857969b69a2",
+    ),
+    "src/ops/mf_membership_context_artifact_contract_v1.py": (
+        "8dda221cd46158140531e0a1cebce689ffe135ee821975fb5d712bf5380ef2be",
+        "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8",
+    ),
+    "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py": (
+        "976131456817f30d0c8c6df37b6a986644ca0ddadfe14aa11918eef9901f808c",
+        "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d",
+    ),
+    "src/ops/single_selected_future_policy_v1/producer_v1.py": (
+        "fdceed28a977a871f826909320eedc7d72ec268cc8532e9218a83c48d89e06b8",
+        "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78",
+    ),
+}
+
+
+def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | None = None) -> None:
+    frozen = {} if policies is None else {row["path"]: row["frozen_sha256"] for row in policies}
+    actual = {}
+    for path, (before, _after) in RESERVED_SLOT_ROTATION_DELTAS.items():
+        if path in frozen and frozen[path] != before:
+            raise ValueError("RESERVED_SLOT_ROTATION_BASELINE_INVALID:" + path)
+        candidate = root / path
+        actual[path] = (
+            hashlib.sha256(candidate.read_bytes()).hexdigest() if candidate.is_file() else None
+        )
+    before = {path: pair[0] for path, pair in RESERVED_SLOT_ROTATION_DELTAS.items()}
+    after = {path: pair[1] for path, pair in RESERVED_SLOT_ROTATION_DELTAS.items()}
+    if actual != before and actual != after:
+        raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
+
+
 def validate_ordered_funding_episode_bundle(root: Path, policies: list[dict]) -> None:
     """Accept the original bundle or the separately reviewed exact successor."""
     frozen = {row["path"]: row["frozen_sha256"] for row in policies}
@@ -311,6 +411,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     frozen = {p["path"]: p for p in inventory}
     policies = load_policies(root, doc)
     validate_ordered_funding_episode_bundle(root, policies)
+    validate_reserved_slot_rotation_bundle(root, policies)
     if {p["path"] for p in policies} != {p for p in frozen if policy_scope_kind(p)}:
         raise ValueError("POLICY_SCOPE_COVERAGE_MISMATCH")
     tree = {}
@@ -335,6 +436,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                     TECHNICAL_ADMISSION,
                 }
                 and path not in ORDERED_FUNDING_EPISODE_DELTAS
+                and path not in RESERVED_SLOT_ROTATION_DELTAS
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

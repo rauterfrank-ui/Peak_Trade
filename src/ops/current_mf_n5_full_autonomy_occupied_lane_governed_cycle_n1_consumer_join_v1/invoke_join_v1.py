@@ -427,6 +427,8 @@ def _t2_from_s7(
                     "observed_unix": (
                         offline_observation_clock_unix
                         if offline_observation_clock_unix is not None
+                        else float(s7_base["observed_unix"])
+                        if s7_base.get("rotation_exit_requests") is not None
                         else float(accepted_c1_ts) + 1.0
                         if accepted_c1_ts is not None
                         else last_finalized_ts + 1.0
@@ -925,6 +927,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
     position_episode_bindings: Mapping[str, PositionEpisodeBindingV1] | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
+    rotation_exit_requests: Mapping[str, object] | None = None,
     common_epoch_decision_epoch: str | None = None,
     offline_governed_attempt: object | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
@@ -1140,7 +1143,15 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         canonical_price_provenance=base_provenance,
     )
     results: dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1] = {}
-    for lane_id in LANE_IDS:
+    lane_order = list(LANE_IDS)
+    if rotation_exit_requests is not None:
+        lane_order.sort(
+            key=lambda lane: (
+                per_lane_ingress[lane].position.venue_flat if lane in per_lane_ingress else True,
+                LANE_IDS.index(lane),
+            )
+        )
+    for lane_id in lane_order:
         pair = composed_pairs.get(lane_id)
         if pair is None:
             continue
@@ -1171,6 +1182,25 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         except LaneGenerationError as exc:
             _fail(exc.failure_code, exc.detail)
         lane_s7 = dict(s7_base)
+        if rotation_exit_requests is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+                bind_rotation_close_slot_scope_v1,
+            )
+
+            request = rotation_exit_requests.get(lane_id)
+            try:
+                request = bind_rotation_close_slot_scope_v1(
+                    request,
+                    bindings=(
+                        host_budget_recovery.host.bindings
+                        if host_budget_recovery is not None
+                        else {l: b for l, (_, b) in composed_pairs.items()}
+                    ),
+                )
+            except (ValueError, TypeError, KeyError, AttributeError):
+                # An invalid new rotation source cannot suppress other exits.
+                request = None
+            lane_s7["rotation_exit_requests"] = {} if request is None else {lane_id: request}
         lane_s7["finalized_closes"] = ingress.finalized_closes
         lane_s7["last_finalized_event_ts_unix"] = ingress.last_finalized_event_ts_unix
         lane_s7["venue_flat"] = ingress.position.venue_flat

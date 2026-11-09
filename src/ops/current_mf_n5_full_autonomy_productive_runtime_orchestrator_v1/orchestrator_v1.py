@@ -7,7 +7,7 @@ and rolls up PRE_EXTERNAL readiness. Does not decide trades.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, Mapping, NoReturn
@@ -161,6 +161,7 @@ class ProductiveFullAutonomyN5RuntimeOrchestratorResultV1:
     execution_schedule: str
     lane_publication_resumed: bool = False
     post_close_continuation_receipt: dict | None = None
+    rotation_status_v1: dict | None = None
 
 
 def _fail(code: str, detail: str = "") -> NoReturn:
@@ -328,11 +329,12 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     include_host_completion_rollup: bool = False,
     replacement_admission_by_lane=None,
     post_close_continuation: ProductiveN1PostCloseContinuationV1 | None = None,
+    rotation_ranking_review=None,
     **cycle_kwargs: Any,
 ) -> ProductiveFullAutonomyN5RuntimeOrchestratorResultV1 | PostCloseContinuationReplayV1:
     """Compose ranking→topology→Cap23/24→ingest→handoff→readiness (+ optional completion)."""
     _assert_orchestrator_authority()
-    forbidden = sorted(set(cycle_kwargs) & FORBIDDEN_COMPOSE_KWARGS)
+    forbidden = sorted(set(cycle_kwargs) & (FORBIDDEN_COMPOSE_KWARGS | {"rotation_exit_requests"}))
     if forbidden:
         _fail(FAILURE_FORBIDDEN_KWARG, ",".join(forbidden))
     target = int(target_cardinality)
@@ -341,6 +343,17 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_AUTHORITY, "origin_main_sha")
     validate_membership_context_artifact_v1(membership)
+    from .rotation_plan_v1 import load_slot_rotation_plan_owner_v1
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+        ROTATION_OBSERVATION_SECONDS_V1,
+    )
+
+    rotation_owner = load_slot_rotation_plan_owner_v1(
+        topology_root=topology_state_root_base, writer=lane_assignment_writer
+    )
+    post_close_continuation = rotation_owner.constrain_post_close_v1(
+        post_close_continuation, observed_unix=producer_observed_at_unix
+    )
     from .bounded_slot_post_close_v1 import (
         SCHEMA as BOUNDED_CLOSE_SCHEMA,
         original_bounded_host_v1,
@@ -394,6 +407,9 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         producer_observed_at_unix=producer_observed_at_unix,
         observed_portfolio=cap24_bind.observed_portfolio,
         replacement_admission_by_lane=replacement_admission_by_lane,
+        rotation_min_hold_seconds_v1=ROTATION_OBSERVATION_SECONDS_V1
+        if rotation_owner.active is not None
+        else None,
         **({"retained_bound_by_lane": retained} if bounded_host is not None else {}),
     )
     selections = publication.selections
@@ -437,6 +453,22 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         else PortfolioCapitalReservationBudgetOwnerV1()
     )
     readiness_kwargs = dict(cycle_kwargs)
+    if "rotation_exit_requests" in readiness_kwargs:
+        _fail(FAILURE_FORBIDDEN_KWARG, "rotation_exit_requests")
+    rotation_requests = rotation_owner.prepare_v1(
+        review=rotation_ranking_review
+        or (
+            post_close_continuation.request.ranking if post_close_continuation is not None else None
+        ),
+        selections=selections,
+        bindings=bound_by_lane,
+        episodes=cycle_kwargs.get("position_episode_bindings") or {},
+        observed_unix=producer_observed_at_unix,
+        portfolio=cap24_bind.observed_portfolio,
+    )
+    # This composition uses rotation-qualified time exits even when no fresh
+    # ranking review is supplied. A missing review cannot become an hourly exit.
+    readiness_kwargs["rotation_exit_requests"] = rotation_requests
     readiness_kwargs["origin_main_sha"] = origin_main_sha
     readiness_kwargs.setdefault("observed_portfolio", cap24_bind.observed_portfolio)
     _inject_cap24_lane_canonical_price_provenance_v1(
@@ -515,8 +547,14 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
             execution_schedule=EXECUTION_SCHEDULE,
             lane_publication_resumed=publication.resumed,
         )
+        rotation_owner.observe_close_v1(
+            cycle_kwargs.get("position_episode_bindings") or {},
+            result=result,
+            bindings=bound_by_lane,
+            portfolio=cap24_bind.observed_portfolio,
+        )
+        result = replace(result, rotation_status_v1=rotation_owner.status_v1())
         if continuation_handle is not None:
-            from dataclasses import replace
             from .post_close_continuation_v1 import acknowledge_post_close_consumer_v1
 
             receipt = acknowledge_post_close_consumer_v1(continuation_handle, result)

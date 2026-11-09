@@ -1,0 +1,209 @@
+{
+  "schema": "peaktrade.current_reserved_slot_rotation_evidence.v1",
+  "base_commit": "e2abdf73876b6f093347b27c4145b86cb7fc16c6",
+  "date": "2026-11-09",
+  "authority": "DEVELOPMENT_DELTA_ONLY",
+  "runtime_authorization_effect": "NONE",
+  "rotation_wait_seconds": 1800,
+  "ranking_max_age_seconds": 300,
+  "single_pending_rotation": true,
+  "slot_is_rank": false,
+  "test_groups": [
+    {
+      "command": [
+        "./scripts/pt",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/ops/test_current_ordered_funding_episode_policy_delta_v1.py",
+        "tests/ops/test_current_productive_rotation_close_v1.py",
+        "tests/ops/test_current_ranking_economic_semantics_v1.py",
+        "tests/ops/test_exit_policy_producer_binding_v1.py",
+        "tests/ops/test_exit_policy_restore_integrity_v1.py",
+        "tests/ops/test_ordered_funding_episode_continuity_v1.py",
+        "tests/ops/test_position_episode_cursor_recovery_v1.py",
+        "tests/ops/test_position_episode_exit_continuity_v1.py",
+        "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
+        "tests/ops/test_rotation_plan_state_v1.py",
+        "tests/test_mf_membership_context_artifact_contract_v1.py",
+        "tests/test_mf_membership_selector_and_rotation_runtime_contract_v1.py",
+        "--disable-warnings",
+        "--maxfail=3",
+        "--junitxml=/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Rotation30 Auswahl Exit und Governance Abschlussfinal 2026-11-09.xml"
+      ],
+      "cases": 233,
+      "exit_code": 0,
+      "full_run": true,
+      "result": "PASS",
+      "log": "BWP1 Rotation30 Auswahl Exit und Governance Abschlussfinal 2026-11-09.log",
+      "log_sha256": "e7809815d29985d747b1d1aa3d2620f7d898eead43ddb06937d9a9a4d501b2e1",
+      "junit": "BWP1 Rotation30 Auswahl Exit und Governance Abschlussfinal 2026-11-09.xml",
+      "junit_sha256": "69f408a6fa5d4e0759f6f72478a303eaeb68467219200e1413c5a894ef4fb03a"
+    },
+    {
+      "command": [
+        "./scripts/pt",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/ops/test_bounded_slot_connected_roundtrip_v1.py",
+        "tests/ops/test_bounded_slot_post_close_capital_v1.py",
+        "tests/ops/test_bounded_slot_post_close_rebinding_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py",
+        "tests/ops/test_current_mf_n5_isolated_lane_instance_topology_v1.py",
+        "tests/ops/test_current_post_original_budget_admission_v1.py",
+        "tests/ops/test_current_productive_actual_venue_post_baseline_v1.py",
+        "tests/ops/test_current_productive_occupied_scope_continuity_v1.py",
+        "tests/ops/test_current_productive_post_close_feedback_v1.py",
+        "tests/ops/test_n1_supervisor_post_close_startup_recovery_v1.py",
+        "tests/ops/test_opening_execution_cost_admission_v1.py",
+        "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+        "--disable-warnings",
+        "--maxfail=3",
+        "--junitxml=/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Rotation30 N1 Kapital und Wiederanlauf Abschlussfinal 2026-11-09.xml"
+      ],
+      "cases": 308,
+      "exit_code": 0,
+      "full_run": true,
+      "result": "PASS",
+      "log": "BWP1 Rotation30 N1 Kapital und Wiederanlauf Abschlussfinal 2026-11-09.log",
+      "log_sha256": "93637939a761924865fd667adb2040e9bb1e89e70ba7820781b62a344703859d",
+      "junit": "BWP1 Rotation30 N1 Kapital und Wiederanlauf Abschlussfinal 2026-11-09.xml",
+      "junit_sha256": "e87f876a0c2dc2493267ac1758b141b9ac16ce067193ba6d514176390060cc06"
+    }
+  ],
+  "total_distinct_cases": 541,
+  "source_sha256": {
+    "docs/system_atlas/policy_projection.py": "61a5f5950a3543b0a122acaa8f45464c1df637a01ecc9ce7afd43905653a6d66",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "bc04c096f9d20fa7dd360523f3d1f5d77f0d62e5e5afd5f32aefee69fc4609d3",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": "0e109341649d82a539e6395e784967645a0907b5bc49f41f4e40dff05da96df4",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/bounded_slot_post_close_v1.py": "34cbb33104b490f8eb8d2bd536e3e96e9a2f988099ca289c4bcf679517b49a9d",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py": "fec15a06cc3504c4b37d6029dfa30980ddd3d74b22634712cdb56ef968b8a45c",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/rotation_plan_v1.py": "9f7322ff1fc357c3b828df4f6c0c73e74db0ee52350d7d90be434ed93255b96c",
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de",
+    "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
+    "src/ops/exit_policy_producer_binding_v1/models_v1.py": "589dec4be5f00b4909c3aa511a600dfc63a31c92b018b20e9f437faa8334e9bc",
+    "src/ops/exit_policy_producer_binding_v1/persistence_v1.py": "adc66058a39f3c84e84fc47ca45fc60f6e99f4605e06dc79d58153fc5de76826",
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py": "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_rotation_close_v1.py": "843de05030c1a4bbb7420762c60fe3e16bfbdbe89b01a184ffe4f857969b69a2",
+    "src/ops/mf_membership_context_artifact_contract_v1.py": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8",
+    "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d",
+    "src/ops/single_selected_future_policy_v1/producer_v1.py": "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78",
+    "tests/ops/test_bounded_slot_connected_roundtrip_v1.py": "b95e2a8f8bcc69e05fbfbde16374f25e462bf8ff60d35507a4d969bd108364bf",
+    "tests/ops/test_current_ordered_funding_episode_policy_delta_v1.py": "85ce3ead546fff615213b5480aa786fd2ce88d8b0396feebae888b784b00737a",
+    "tests/ops/test_current_productive_rotation_close_v1.py": "de6af541b243ce4c707b387289baa7e47ed9d058bfb587c922c881077e77f3f2",
+    "tests/ops/test_reserved_slot_rotation_development_delta_v1.py": "4016b355fbbfef0a4a8e0bb1454c6747165d706d99ca5e23c5fd8e7f2392f72e",
+    "tests/ops/test_rotation_plan_state_v1.py": "a1a773a15f78790e359e975869e1e01be89d2c656799c821fed08d16fab8b1eb",
+    "tests/test_mf_membership_context_artifact_contract_v1.py": "7a7e5b182f54b92535f8dd1ffa60359e4a285820808dd9b36fb45e5172cf32c8"
+  },
+  "reviewed_runtime_bundle": {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": {
+      "before_sha256": "84051cc3949a6736f1252cd425822397b7f80d7924f052746c3823d3c86450cf",
+      "sha256": "bc04c096f9d20fa7dd360523f3d1f5d77f0d62e5e5afd5f32aefee69fc4609d3"
+    },
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": {
+      "before_sha256": "4e174b0048e8de66c5405235512f9da00e7da75b9a7c627b71096b4b888986f8",
+      "sha256": "0e109341649d82a539e6395e784967645a0907b5bc49f41f4e40dff05da96df4"
+    },
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/bounded_slot_post_close_v1.py": {
+      "before_sha256": "42fac4a77874917184c0ad436b46d5860924c7c76b73e2dc030cf7cc5129428f",
+      "sha256": "34cbb33104b490f8eb8d2bd536e3e96e9a2f988099ca289c4bcf679517b49a9d"
+    },
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": {
+      "before_sha256": "536e4827dfea87bcdcfee11234a38d0fb3589f6dd7ae2b073461ed0383c88664",
+      "sha256": "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a"
+    },
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": {
+      "before_sha256": "d7c213281a98075f54f1560bd8bd7e7b09f16f3c572f7c916043a691dad48477",
+      "sha256": "8a40e60459b3da835de3cb8d1649c1677043ce53c0825773b83c6fa7ee3aaf01"
+    },
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py": {
+      "before_sha256": "adabcae2f9547c0cbf026f971138b31ba8712e8d16c51c0ebe37e2863dd24b1b",
+      "sha256": "fec15a06cc3504c4b37d6029dfa30980ddd3d74b22634712cdb56ef968b8a45c"
+    },
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/rotation_plan_v1.py": {
+      "before_sha256": null,
+      "sha256": "9f7322ff1fc357c3b828df4f6c0c73e74db0ee52350d7d90be434ed93255b96c"
+    },
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": {
+      "before_sha256": "5a12b8b0d2f69e74b43ae7e35cf93cdb44b7826f5b86b474d45387ee173d0647",
+      "sha256": "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de"
+    },
+    "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": {
+      "before_sha256": "70a0fbe3bb90a9ae4bf9cfcda05f57964d0681a5a859e5df6dd36ad8766c22cb",
+      "sha256": "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4"
+    },
+    "src/ops/exit_policy_producer_binding_v1/models_v1.py": {
+      "before_sha256": "d63f2f8ca211c2f613449d95a260f3e261672a6539e6e29152417f3ca6094e24",
+      "sha256": "589dec4be5f00b4909c3aa511a600dfc63a31c92b018b20e9f437faa8334e9bc"
+    },
+    "src/ops/exit_policy_producer_binding_v1/persistence_v1.py": {
+      "before_sha256": "77685dcbd323ebf8e1e35eada804add2cf7d795a05b4b9b8984cd2498f1fb396",
+      "sha256": "adc66058a39f3c84e84fc47ca45fc60f6e99f4605e06dc79d58153fc5de76826"
+    },
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py": {
+      "before_sha256": "dbeb04582421be8b9891fafd810e5fedf0f4465647fbefa6e34b54b482784f8e",
+      "sha256": "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": {
+      "before_sha256": "ceda614f8f65ff18fd9be973968938bb78c41bbea91d9434d844c2626c85c48a",
+      "sha256": "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": {
+      "before_sha256": "c04f97c4fe0f405757661a715774ca4debf28d3d00c10c7077e5ed866e1c96d6",
+      "sha256": "ca2c078daeb147d6a2888add896dfc9c6785bfb2a1465a87bfe1aeba6f5869ff"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": {
+      "before_sha256": "a93c61c73ebbbc11402456b2fe4fa36ec3e761b49b3b24309c9f45bf353d944f",
+      "sha256": "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4"
+    },
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_rotation_close_v1.py": {
+      "before_sha256": null,
+      "sha256": "843de05030c1a4bbb7420762c60fe3e16bfbdbe89b01a184ffe4f857969b69a2"
+    },
+    "src/ops/mf_membership_context_artifact_contract_v1.py": {
+      "before_sha256": "8dda221cd46158140531e0a1cebce689ffe135ee821975fb5d712bf5380ef2be",
+      "sha256": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8"
+    },
+    "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py": {
+      "before_sha256": "976131456817f30d0c8c6df37b6a986644ca0ddadfe14aa11918eef9901f808c",
+      "sha256": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d"
+    },
+    "src/ops/single_selected_future_policy_v1/producer_v1.py": {
+      "before_sha256": "fdceed28a977a871f826909320eedc7d72ec268cc8532e9218a83c48d89e06b8",
+      "sha256": "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78"
+    }
+  },
+  "unchanged_recovery_and_funding": {
+    "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe",
+    "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_binding_v1.py": "6c041991182a939e21c5226e87b9186b55014d6d5f797d0ffe73538cb9b788d8",
+    "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+    "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py": "1a33a474ff398ca0969fb89a18b97bd9e7534b1b4d9d608c2adc26c0a48a6ef6",
+    "src/ops/exit_policy_producer_binding_v1/position_episode_binding_v1.py": "bf1c90a45a80171b5d3b1ed192a9348fe89271e71be490cff92fa2076e82569d",
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py": "946c35e6c540024679f1a8fb53c9e4b557e5f41ec13972557a1a8f89f52ea769",
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_progress_v1.py": "5b726daeddef92b7697e3a1ac8920bd0b1735b6913def8e41eeeb8f2817db86e",
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f"
+  },
+  "native_master_v2_unchanged": true,
+  "freeze_tags_unchanged": true,
+  "bwp1_status": "IN_BEARBEITUNG",
+  "remaining": [
+    "future close costs and funding provision",
+    "full margin liquidation and loss-consequence admission",
+    "complete native economic framework connection"
+  ],
+  "limitations": [
+    "explicit simulated integration only",
+    "no physical power-outage evidence",
+    "no live testnet order or capital authority",
+    "not a whole-repository test pass"
+  ],
+  "preexisting_fixture_failure_receipt_sha256": "ea15ad6319c6b3bc146f421c90903f617584dd23bc09d797d66d1617c17e3958"
+}

@@ -123,7 +123,7 @@ def portfolio_from_accounting(bounds, sessions, event):
     return PortfolioTruthSnapshotV1(
         positions=tuple(
             PositionTruthV1.from_signed(
-                instrument_id=bounds[l].instrument_id, signed_quantity=s.position.qty
+                instrument_id=bounds[l].instrument_id, signed_quantity=signed_accounting_quantity(s)
             )
             for l, s in sessions.items()
             if s.position is not None and s.position.qty != 0
@@ -133,6 +133,14 @@ def portfolio_from_accounting(bounds, sessions, event):
         source_id="explicit_applied_simulated_accounting",
         max_age_seconds=5,
     )
+
+
+def signed_accounting_quantity(session):
+    position = session.position
+    if position is None:
+        return Decimal(0)
+    assert position.side.value in {"long", "short"}
+    return position.qty if position.side.value == "long" else -position.qty
 
 
 def persist_applied_inventory(root, portfolio, sessions):
@@ -235,7 +243,9 @@ def capital(host, bound, event):
     return result
 
 
-def connected_close(tmp_path, monkeypatch, count, lane):
+def connected_close(
+    tmp_path, monkeypatch, count, lane, *, rotation_requests_factory=None, rotation_driver=None
+):
     monkeypatch.setattr(sources, "OBSERVED_UNIX", T0 - 3700)
     monkeypatch.setattr(sources, "SOURCE_EVENT", str(int((T0 - 3700) * 1000)))
     chain = sources._persist_universe_and_ranking(
@@ -335,6 +345,9 @@ def connected_close(tmp_path, monkeypatch, count, lane):
         episodes[l] = create_position_episode_from_simulated_accounting_v1(
             **_args(tmp_path / "episodes" / l, identity), session=session, fills=(fill,)
         )
+    if rotation_driver is not None:
+        recovery = rotation_driver.nominate(locals())
+        membership = rotation_driver.membership
     # Append 61 minute bars, preserving every overlapping historical event.
     mark = closes[-1]
     closes = tuple(closes) + tuple(mark + 0.1 * i for i in range(1, 62))
@@ -349,11 +362,31 @@ def connected_close(tmp_path, monkeypatch, count, lane):
         position_episode_bindings=episodes,
         position_episode_scope=scope,
         occupancy_payloads=_positions_payload(
-            *[(bounds[l].venue_native_id, "net", s.position.qty) for l, s in sessions.items()]
+            *[
+                (bounds[l].venue_native_id, "net", signed_accounting_quantity(s))
+                for l, s in sessions.items()
+            ]
         ),
     )
-    exits = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
+    if rotation_requests_factory is not None:
+        kwargs["rotation_exit_requests"] = rotation_requests_factory(
+            bounds=bounds,
+            episodes=episodes,
+            publication=publication,
+            membership=membership,
+            chain=chain,
+            event=event,
+        )
+    exits = (
+        rotation_driver.close(locals())
+        if rotation_driver is not None
+        else invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
+    )
     for l, r in exits.items():
+        if (rotation_requests_factory is not None or rotation_driver is not None) and l != lane:
+            assert r.position_management_close_intent is None
+            assert not episodes[l].binding.last_bundle["time_exit"]["triggered"]
+            continue
         assert r.position_management_close_intent is not None, (
             l,
             r.governed_cycle_result.first_genuine_blocker,
@@ -406,7 +439,11 @@ def connected_close(tmp_path, monkeypatch, count, lane):
     host.fetch = _fetch(
         uid="acct-1",
         positions=[
-            dict(instId=bounds[l].venue_native_id, posSide="net", pos=str(s.position.qty))
+            dict(
+                instId=bounds[l].venue_native_id,
+                posSide="net",
+                pos=str(signed_accounting_quantity(s)),
+            )
             for l, s in sessions.items()
             if s.position is not None and s.position.qty
         ],
@@ -429,13 +466,33 @@ def connected_close(tmp_path, monkeypatch, count, lane):
         recovery=recovery,
         execution=execution,
         fills=fills,
+        exits=exits,
+        pairs=pairs,
+        publication=publication,
     )
 
 
 def roundtrip(
-    tmp_path, monkeypatch, count, lane, replacement, fault=None, *, expected_loss_exhausted=False
+    tmp_path,
+    monkeypatch,
+    count,
+    lane,
+    replacement,
+    fault=None,
+    *,
+    expected_loss_exhausted=False,
+    rotation_requests_factory=None,
+    follow_direction=1,
+    rotation_driver=None,
 ):
-    world = connected_close(tmp_path, monkeypatch, count, lane)
+    world = connected_close(
+        tmp_path,
+        monkeypatch,
+        count,
+        lane,
+        rotation_requests_factory=rotation_requests_factory,
+        rotation_driver=rotation_driver,
+    )
     host = world["host"]
     writer = world["writer"]
     try:
@@ -566,19 +623,28 @@ def roundtrip(
                     ranking_event_time=ranking.event_time,
                 ),
                 prior,
-                (prior,),
+                tuple(chain.get("rotation_membership_chain", (prior,))),
             ),
         )
         context = BoundedSlotPostCloseContinuationV1(
             lifecycle, identity, request, tmp_path / "membership", recovery.observed, 5, host=host
         )
         closes = world["closes"] + (world["closes"][-1] + 2,)
+        foreign_start_closes = tuple(closes)
+        replacement_start_closes = (
+            tuple(5000.0 - i * 20.0 for i in range(len(closes)))
+            if replacement and follow_direction == -1
+            else tuple(closes)
+        )
         cap = ProductiveFullAutonomyCap24BindContextV1(
             chain["ranking_root"],
             chain["universe_root"],
             host.root / "reconciliation",
             recovery.observed,
-            {n: str(closes[-1]) for n in chain["mark_price_by_native_id"]},
+            {
+                n: str(replacement_start_closes[-1] if n == target else closes[-1])
+                for n in chain["mark_price_by_native_id"]
+            },
             "next-binding",
             T0 + 121,
         )
@@ -590,7 +656,7 @@ def roundtrip(
             position_episode_scope=world["scope"],
             occupancy_payloads=_positions_payload(
                 *[
-                    (old[l].venue_native_id, "net", s.position.qty)
+                    (old[l].venue_native_id, "net", signed_accounting_quantity(s))
                     for l, s in world["sessions"].items()
                     if s.position is not None and s.position.qty
                 ]
@@ -602,6 +668,7 @@ def roundtrip(
         refreshed = {}
 
         def capture(**args):
+            nonlocal closes
             result = original(**args)
             refreshed.update(result)
             for l, b in result.items():
@@ -615,6 +682,22 @@ def roundtrip(
                     mark_closes=closes,
                 )
                 kwargs["candles_payload_by_lane"][l]["instId"] = b.venue_native_id
+                if replacement and follow_direction == -1:
+                    own_market = market(
+                        {l: b},
+                        replacement_start_closes,
+                        T0 + 120,
+                        "post-close-short-candidate",
+                        tmp_path / "g17" / "replacement-start",
+                    )
+                    for key in (
+                        "candles_payload_by_lane",
+                        "canonical_price_provenance_by_lane",
+                        "g17_typed_vol_producers",
+                        "live_29p_injected_by_lane",
+                    ):
+                        kwargs[key][l] = own_market[key][l]
+                    closes = replacement_start_closes
             return result
 
         monkeypatch.setattr(orchestrator, "bind_occupied_lane_cap24_n1_instruments_v1", capture)
@@ -769,12 +852,35 @@ def roundtrip(
         next_bounds = dict(host.bindings)
         decisions = []
         foreign_holds = {l: host.owner.active_slot_sum_v1(l) for l in next_bounds if l != lane}
+        foreign_closes = foreign_start_closes
+
+        def follow_market(bounds, target_closes, event, prefix, root):
+            nonlocal foreign_closes
+            if follow_direction == 1:
+                return market(bounds, target_closes, event, prefix, root)
+            # Independent synthetic instruments: only the replacement is made
+            # to trend down; the other four retain their own overlapping series.
+            while len(foreign_closes) < len(target_closes):
+                foreign_closes += (foreign_closes[-1] + 0.1,)
+            common = market(bounds, foreign_closes, event, prefix, root)
+            target_market = market(
+                {lane: bounds[lane]}, target_closes, event, prefix, root / "replacement"
+            )
+            for key in (
+                "candles_payload_by_lane",
+                "canonical_price_provenance_by_lane",
+                "g17_typed_vol_producers",
+                "live_29p_injected_by_lane",
+            ):
+                common[key][lane] = target_market[key][lane]
+            return common
+
         for step in range(1, 9):
             event = T0 + 120 + step * 60
-            closes = closes + (closes[-1] + 20,)
+            closes = closes + (closes[-1] + follow_direction * 20,)
             host.clock = lambda: event + 1
             recovery = host.observe_v1(next_bounds)
-            next_kwargs = market(
+            next_kwargs = follow_market(
                 next_bounds, closes, event, f"natural-follow-{step}", tmp_path / "g17"
             )
             next_kwargs.update(
@@ -788,7 +894,12 @@ def roundtrip(
                 cap,
                 now_unix=event + 1,
                 observed_portfolio=recovery.observed,
-                mark_price_by_native_id={n: str(closes[-1]) for n in cap.mark_price_by_native_id},
+                mark_price_by_native_id={
+                    n: str(
+                        closes[-1] if follow_direction == 1 or n == target else foreign_closes[-1]
+                    )
+                    for n in cap.mark_price_by_native_id
+                },
             )
             next_args = {
                 **args,
@@ -886,14 +997,14 @@ def roundtrip(
                         dict(
                             instId=next_bounds[l].venue_native_id,
                             posSide="net",
-                            pos=str(s.position.qty),
+                            pos=str(signed_accounting_quantity(s)),
                         )
                         for l, s in world["sessions"].items()
                     ],
                 )
                 host.clock = lambda: occupied_event + 1
                 recovery = host.observe_v1(next_bounds)
-                occupied_kwargs = market(
+                occupied_kwargs = follow_market(
                     next_bounds, closes, occupied_event, "new-entry-filled", tmp_path / "g17"
                 )
                 occupied_kwargs.update(
@@ -903,7 +1014,7 @@ def roundtrip(
                     position_episode_scope=world["scope"],
                     occupancy_payloads=_positions_payload(
                         *[
-                            (next_bounds[l].venue_native_id, "net", s.position.qty)
+                            (next_bounds[l].venue_native_id, "net", signed_accounting_quantity(s))
                             for l, s in world["sessions"].items()
                         ]
                     ),
@@ -913,7 +1024,12 @@ def roundtrip(
                     now_unix=occupied_event + 1,
                     observed_portfolio=recovery.observed,
                     mark_price_by_native_id={
-                        n: str(closes[-1]) for n in cap.mark_price_by_native_id
+                        n: str(
+                            closes[-1]
+                            if follow_direction == 1 or n == target
+                            else foreign_closes[-1]
+                        )
+                        for n in cap.mark_price_by_native_id
                     },
                 )
                 occupied = run(

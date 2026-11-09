@@ -209,6 +209,9 @@ def evaluate_policy_a_v1(
     eligible: Sequence[EligibleCandidateV1],
     prior_membership: Sequence[str],
     holding_ages: Mapping[str, int],
+    reserved_challenger_v1: str | None = None,
+    rotation_waiting_v1: bool = False,
+    reserved_incumbent_v1: str | None = None,
 ) -> tuple[tuple[str, ...], tuple[dict[str, Any], ...]]:
     if len(eligible) != len({item.instrument_id for item in eligible}):
         raise MfSelectorError("DUPLICATE_CAP22_INPUT", "eligible")
@@ -256,8 +259,15 @@ def evaluate_policy_a_v1(
             member
             for member in working
             if int(holding_ages.get(member, 0)) >= MINIMUM_HOLDING_VALUE
+            and (reserved_incumbent_v1 is None or member == reserved_incumbent_v1)
         ]
-        challengers = [item for item in eligible if item.instrument_id not in working_set]
+        challengers = [
+            item
+            for item in eligible
+            if item.instrument_id not in working_set
+            and not rotation_waiting_v1
+            and (reserved_challenger_v1 is None or item.instrument_id == reserved_challenger_v1)
+        ]
         if not unprotected or not challengers:
             break
         chosen: Optional[tuple[EligibleCandidateV1, str]] = None
@@ -314,7 +324,28 @@ def select_membership_v1(
     cap22_provenance: Cap22ProvenanceV1,
     prior: MembershipContextArtifactV1,
     observation_chain: Sequence[MembershipContextArtifactV1],
+    reserved_challenger_v1: str | None = None,
+    rotation_waiting_v1: bool = False,
+    reserved_incumbent_v1: str | None = None,
 ) -> MfSelectorResultV1:
+    if (
+        type(rotation_waiting_v1) is not bool
+        or rotation_waiting_v1
+        and reserved_challenger_v1 is not None
+    ):
+        raise MfSelectorError("INVALID_ROTATION_WAITING_CONSTRAINT", "profile")
+    if reserved_incumbent_v1 is not None and (
+        type(reserved_incumbent_v1) is not str
+        or reserved_incumbent_v1 not in prior.ordered_instrument_ids
+        or reserved_challenger_v1 is None
+    ):
+        raise MfSelectorError("INVALID_RESERVED_INCUMBENT", str(reserved_incumbent_v1))
+    if reserved_challenger_v1 is not None and (
+        type(reserved_challenger_v1) is not str
+        or not reserved_challenger_v1.strip()
+        or reserved_challenger_v1 in prior.ordered_instrument_ids
+    ):
+        raise MfSelectorError("INVALID_RESERVED_CHALLENGER", str(reserved_challenger_v1))
     if not observation_chain or observation_chain[-1].instance_id != prior.instance_id:
         raise MfSelectorError("OBSERVATION_STATE_MISSING", "prior_not_chain_tip")
     if cap22_provenance.snapshot_state != SNAPSHOT_STATE_VALID:
@@ -355,12 +386,18 @@ def select_membership_v1(
         eligible=eligible,
         prior_membership=prior.ordered_instrument_ids,
         holding_ages=holding_ages,
+        reserved_challenger_v1=reserved_challenger_v1,
+        rotation_waiting_v1=rotation_waiting_v1,
+        reserved_incumbent_v1=reserved_incumbent_v1,
     )
     proposed = build_membership_context_artifact_v1(
         ordered_instrument_ids=ordered,
         cap22_provenance=cap22_provenance,
         bootstrap=False,
         prior_membership_reference=prior.instance_id,
+        reserved_challenger_v1=reserved_challenger_v1,
+        rotation_waiting_v1=rotation_waiting_v1,
+        reserved_incumbent_v1=reserved_incumbent_v1,
     )
     rotation = derive_rotation_delta_v1(proposed, prior)
     unchanged = list(ordered) == list(prior.ordered_instrument_ids)

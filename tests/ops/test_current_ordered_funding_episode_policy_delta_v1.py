@@ -109,8 +109,15 @@ def test_actual_reader_still_refuses_an_unrelated_frozen_policy(monkeypatch):
 
 
 @pytest.mark.parametrize("path", PRESERVED)
-def test_startup_topology_reconciliation_budget_and_rotation_owners_retain_exact_bytes(path):
-    assert (ROOT / path).read_bytes() == git_bytes(BASE, path)
+def test_startup_topology_reconciliation_budget_and_reviewed_rotation_owner(path):
+    # The later explicit rotation instruction extends the membership owner.
+    # The original Funding grant alone still cannot admit that extension.
+    rotation = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
+    if path in rotation:
+        POLICY["validate_reserved_slot_rotation_bundle"](ROOT, policies())
+        assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == rotation[path][1]
+    else:
+        assert (ROOT / path).read_bytes() == git_bytes(BASE, path)
 
 
 def test_frozen_inventory_and_tags_remain_original():

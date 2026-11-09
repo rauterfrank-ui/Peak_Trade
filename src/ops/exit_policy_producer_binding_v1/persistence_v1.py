@@ -107,6 +107,7 @@ def load_exit_policy_state_v1(
             "current_cursor_publication",
             "simulated_accounting_progress",
             "simulated_accounting_close",
+            "pending_rotation_close",
         }
         if not isinstance(payload, dict) or not fields - optional <= set(payload) <= fields:
             raise ValueError("exit state field contract")
@@ -131,6 +132,19 @@ def load_exit_policy_state_v1(
             if value is not None and (type(value) not in (int, float) or not math.isfinite(value)):
                 raise ValueError("exit state finite numeric")
         state = CanonicalExitPolicyStateV1.from_dict(payload)
+        if state.pending_rotation_close is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+                verify_pending_rotation_close_v1,
+            )
+
+            verify_pending_rotation_close_v1(state.pending_rotation_close)
+            if (
+                state.has_open_position
+                and state.pending_exit_class != "time_exit"
+                or not state.has_open_position
+                and (state.pending_exit_class or state.simulated_accounting_close is None)
+            ):
+                raise ValueError("rotation close without original pending exit")
     except Exception as exc:  # noqa: BLE001
         raise ExitPolicyPersistenceError(
             ExitPolicyBindingFailureCodeV1.EXIT_STATE_CORRUPT, str(exc)

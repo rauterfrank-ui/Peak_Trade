@@ -217,6 +217,7 @@ def evaluate_time_exit_producer_v1(
     entry_event_time: float | None,
     current_event_time: float,
     max_hold_seconds: float = CANONICAL_TIME_EXIT_MAX_HOLD_SECONDS,
+    rotation_time_exit: dict[str, Any] | None = None,
 ) -> ExitPolicySignalEvidenceV1:
     """Time exit via foundation wallclock_time_exit_due_v1 (Cap 6.5 binding)."""
     inputs = {
@@ -225,6 +226,22 @@ def evaluate_time_exit_producer_v1(
         "current_event_time": current_event_time,
         "max_hold_seconds": float(max_hold_seconds),
     }
+    if rotation_time_exit is not None:
+        inputs = {"has_open_position": has_open_position, "rotation_time_exit": rotation_time_exit}
+        allowed = rotation_time_exit.get("allowed") is True
+        if allowed:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+                verify_pending_rotation_close_v1,
+            )
+
+            verify_pending_rotation_close_v1(rotation_time_exit)
+        return _signal(
+            exit_class="time_exit",
+            triggered=bool(has_open_position and allowed),
+            reason_code=str(rotation_time_exit["reason"]),
+            producer_owner=TIME_FOUNDATION_OWNER,
+            inputs=inputs,
+        )
     if not has_open_position or entry_event_time is None:
         return _signal(
             exit_class="time_exit",
@@ -321,6 +338,7 @@ def evaluate_exit_policy_producers_v1(
     bridge_enabled: bool = True,
     pending_exit_class: str = "",
     duplicate_observation: bool = False,
+    rotation_time_exit: dict[str, Any] | None = None,
 ) -> ExitPolicyProducerBundleV1:
     """Evaluate all productive exit producers; never return unbound stub falses."""
     safety = _evaluate_bridge_safety_v2(
@@ -373,6 +391,7 @@ def evaluate_exit_policy_producers_v1(
             entry_event_time=entry_event_time,
             current_event_time=current_event_time,
             max_hold_seconds=max_hold_seconds,
+            rotation_time_exit=rotation_time_exit,
         )
         inval = evaluate_strategy_invalidation_producer_v1(
             has_open_position=has_open_position,
@@ -401,6 +420,7 @@ def evaluate_exit_policy_producers_v1(
             entry_event_time=entry_event_time,
             current_event_time=current_event_time,
             max_hold_seconds=max_hold_seconds,
+            rotation_time_exit=rotation_time_exit,
         )
         inval = evaluate_strategy_invalidation_producer_v1(
             has_open_position=has_open_position,
@@ -439,6 +459,15 @@ def evaluate_exit_policy_producers_v1(
                 producer_owner=OWNER,
                 inputs={"pending_exit_class": sticky_class},
             )
+
+    if sticky_class == "time_exit" and not time_ex.triggered:
+        time_ex = _signal(
+            exit_class="time_exit",
+            triggered=True,
+            reason_code="pending_exit_retained",
+            producer_owner=TIME_FOUNDATION_OWNER,
+            inputs={"pending_exit_class": sticky_class},
+        )
 
     bundle = ExitPolicyProducerBundleV1(
         scope_adverse_exit=adverse,

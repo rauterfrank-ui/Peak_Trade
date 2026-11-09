@@ -134,6 +134,7 @@ from trading.master_v2.double_play_composition_matrix_v1 import (
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     EntryExitDirectionState,
     ExistingPositionSide,
+    TradingGate,
     PositionState,
     ReconciliationState,
 )
@@ -648,6 +649,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     explicit_killstate_active: bool = False,
     position_episode_binding: PositionEpisodeBindingV1 | None = None,
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
+    rotation_exit_request: object | None = None,
+    rotation_time_exit_only: bool = False,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     # Candidate admission only. Never turn an occupied-position cycle into a
     # discarded candidate or bypass its existing risk/exit/reconciliation path.
@@ -989,6 +992,55 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             )
     else:
         exit_binding = HostExitPolicyBindingV1(instrument_id=instrument_id)
+    rotation_time_exit = None
+    rotation_entry_hold = False
+    rotation_entry_hold_digest = ""
+    if rotation_time_exit_only:
+        from .current_productive_rotation_close_v1 import (
+            assess_rotation_close_v1,
+            verify_pending_rotation_close_v1,
+            RotationEntryHoldV1,
+            RotationJournalEntryHoldV1,
+            rotation_entry_hold_digest_v1,
+        )
+
+        if checking_new_candidate and type(rotation_exit_request) in (
+            RotationEntryHoldV1,
+            RotationJournalEntryHoldV1,
+        ):
+            rotation_entry_hold_digest = rotation_entry_hold_digest_v1(rotation_exit_request)
+            try:
+                rotation_entry_hold = rotation_exit_request.validate_v1(
+                    bound=bound_instrument, now=observed_unix
+                )
+            except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError):
+                rotation_entry_hold = True
+            rotation_exit_request = None
+        rotation_time_exit = {"allowed": False, "reason": "ROTATION_CLOSE_SOURCES_MISSING"}
+        if exit_binding.pending_rotation_close is not None:
+            try:
+                rotation_time_exit = verify_pending_rotation_close_v1(
+                    exit_binding.pending_rotation_close,
+                    bound=bound_instrument,
+                    episode_identity=position_episode_binding.identity,
+                )
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
+                return _blocked_cycle_result(
+                    cycle_id=cycle_id,
+                    fail_reason=str(exc),
+                    provenance="ROTATION_CLOSE_PENDING_SOURCE_INVALID",
+                    cursor_restore_status=restore.disposition.value,
+                )
+        elif rotation_exit_request is not None and position_episode_binding is not None:
+            try:
+                rotation_time_exit = assess_rotation_close_v1(
+                    rotation_exit_request,
+                    bound=bound_instrument,
+                    episode_identity=position_episode_binding.identity,
+                    event_time=observed_unix,
+                )
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
+                rotation_time_exit = {"allowed": False, "reason": str(exc)}
     _bundle, exit_signals, exit_safety_mode, exit_trading_gate = (
         evaluate_host_exit_policy_producers_v1(
             exit_binding,
@@ -1007,9 +1059,15 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             price_basis_ok=bool(mark_px > 0),
             killstate_active=bool(durable_kill.killstate_active),
             killstate_trigger=str(durable_kill.killstate_trigger or ""),
+            rotation_time_exit=rotation_time_exit,
         )
     )
     root = repo_root or _REPO_ROOT
+    if rotation_entry_hold and exit_trading_gate in {
+        TradingGate.ENTRY_ALLOWED,
+        TradingGate.INCREASE_ALLOWED,
+    }:
+        exit_trading_gate = TradingGate.EXIT_ONLY
     governed_seam, seam_blocker = _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1(
         repo_root=root,
         apply_ledger_paths=f1_m9_productive_apply_ledger_paths,
@@ -1038,6 +1096,12 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             **position_episode_binding.input_binding_v1(),
             "exit_producer_digest": _bundle.producers_digest,
         }
+    if rotation_time_exit_only:
+        input_material["rotation_profile_v1"] = dict(
+            exit_producer_digest=_bundle.producers_digest,
+            entry_hold=rotation_entry_hold,
+            entry_hold_digest=rotation_entry_hold_digest,
+        )
     input_digest = hashlib.sha256(str(sorted(input_material.items())).encode("utf-8")).hexdigest()
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=replay_id,

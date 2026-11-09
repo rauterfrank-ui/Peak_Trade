@@ -105,6 +105,18 @@ vorhandenen relativen Rangfolge als kostentragfähig behauptet werden.
 Die weiteren Anforderungen bleiben bis zum passenden verbundenen Nachweis offen.
 Ein ausgeschriebener Vertrag allein schließt dieses Paket nicht.
 
+Weitere ausdrückliche Präzisierung vom 9. November: Ein gewöhnlicher
+Instrumentwechsel wird als einzelner fester Vorgang mit Slot, bisherigem
+Instrument und Ersatzkandidat geführt. Die neu gewählte Wartefrist beträgt
+1.800 Sekunden ab Vormerkung. Währenddessen wird genau dieses Paar erneut
+verglichen; andere Kandidaten oder Rangänderungen anderer Slots verschieben
+die Zuordnung nicht. Erholung hebt die Vormerkung auf. Anschließend bleiben
+ursprünglicher Close-/Flat-/Kapitalpfad und die eigene GGE-/Dynamic-Scope-/
+Double-Play-Kette samt zweifacher Richtungsbestätigung erforderlich. Die
+[Rotationsfortschreibung](CURRENT_RESERVED_SLOT_ROTATION_V1.md) beschreibt den
+zu prüfenden Anschluss. Dies ist weder eine maximale Positionsdauer noch ein
+Funding- oder Gewinnforecasthorizont.
+
 Entwicklungsfortschritt innerhalb dieses Pakets: Die Gegenprobe zum Stillstand
 verbindet Original-Merkmalsrechnung, Cap22, Membershiprotation, Persistenz und
 Cold-Read. Der dabei reproduzierte Default-ID-Konflikt bei neuen Merkmalen und
