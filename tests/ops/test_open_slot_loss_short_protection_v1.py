@@ -41,7 +41,7 @@ from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
 def _run_original_short_loss_probe(tmp_path, monkeypatch, *, remaining=Decimal(0)):
     install_policy(monkeypatch, policy())
     attach_funding_probe(monkeypatch, funding_seconds=7200)
-    install_cost_probe(monkeypatch)
+    financial_captures, _ = install_cost_probe(monkeypatch)
     bind = Owner.bind_execution_plan_v1
     checked = []
     from tests.ops import _current_productive_natural_mv2_dp_enter_fixture_v1 as seed
@@ -200,7 +200,9 @@ def _run_original_short_loss_probe(tmp_path, monkeypatch, *, remaining=Decimal(0
     run = _run_layered_entry_supervisor_v1(tmp_path, short=True)
     if errors:
         raise errors[0]
-    assert checked and run.policy_result.orchestrator_result.post_count == 0
+    assert checked and run.policy_result.orchestrator_result.post_count == 0, [
+        result.reason_codes for _kwargs, result, _state in financial_captures
+    ]
     return checked
 
 

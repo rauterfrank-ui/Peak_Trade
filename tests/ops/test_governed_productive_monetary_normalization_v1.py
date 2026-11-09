@@ -617,29 +617,17 @@ def test_productive_common_epoch_fx_transport_and_epoch_bound_v1() -> None:
     assert bound.venue_native_id == "API3-USDT-SWAP"
 
 
-def test_ghv_api3_productive_normalization_join_venue_plan_v1() -> None:
+def test_ghv_api3_productive_normalization_join_venue_plan_v1(tmp_path, monkeypatch) -> None:
     """API3-USDT-SWAP monetary chain + productive join/venue plan on host-enter replay."""
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
         STATUS_PASS,
     )
-    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_common_epoch_to_enter_live_29p_handoff_v1 import (
-        build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1,
+    from tests.ops import (
+        test_full_core_current_productive_pre_external_closure_v1 as account_fixture,
     )
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
-        join_current_productive_enter_live_29p_before_venue_plan_v1,
-    )
-    from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
-        _enter_replay,
-    )
-    from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1 import (
-        _host_enter_cycle,
-    )
-    from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
-        _compose_handoff,
-        _bound,
-    )
-    from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 import (
-        _EPOCH as _COMMON_EPOCH,
+    from tests.ops._wp03_supervisor_golden_harness_v1 import _run_layered_entry_supervisor_v1
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+        invoke_join_v1 as invoke,
     )
 
     bound_api3, _handoff_api3, injected_api3, _ = _api3_productive_handoff_injected_v1()
@@ -661,20 +649,39 @@ def test_ghv_api3_productive_normalization_join_venue_plan_v1() -> None:
     assert ctx.usdt_usdc_edge.inversion_applied is True
     assert bound_api3.venue_native_id == "API3-USDT-SWAP"
 
-    handoff, transport = _compose_handoff()
-    injected = build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
-        handoff=handoff,
-        transport=transport,
+    # The actual supervisor builds the decision and the financial carrier for
+    # this same bound instrument instead of mixing ADA account and ETH replay.
+    monkeypatch.setattr(account_fixture, "_bound", lambda: bound_api3)
+    monkeypatch.setattr(account_fixture, "_TEST_INST", bound_api3.venue_native_id)
+    original_row = account_fixture._productive_instruments_row_for_enter_metadata_v1
+    monkeypatch.setattr(
+        account_fixture,
+        "_productive_instruments_row_for_enter_metadata_v1",
+        lambda: {
+            **original_row(instrument_id=bound_api3.venue_native_id),
+            "baseCcy": "API3",
+            "ctValCcy": "API3",
+        },
     )
-    _, cycle_b, _path = _host_enter_cycle()
-    replay = _enter_replay(cycle_b)
-    join = join_with_portfolio_fixture_v1(
-        replay=replay,
-        injected=injected,
-        bound_instrument=_bound(),
-        decision_epoch=str(handoff.decision_epoch),
+    original = invoke.join_current_productive_enter_live_29p_before_venue_plan_v1
+    observed = []
+
+    def capture(**kwargs):
+        result = original(**kwargs)
+        observed.append(result)
+        return result
+
+    monkeypatch.setattr(
+        invoke, "join_current_productive_enter_live_29p_before_venue_plan_v1", capture
     )
-    assert join.status == STATUS_PASS
+    run = _run_layered_entry_supervisor_v1(tmp_path, short=False)
+    assert len(observed) == 1
+    join = observed[0]
+    envelope = run.policy_result.orchestrator_result.cycle_records[-1].final_order_envelope
+    assert join.status == STATUS_PASS, join.reason_codes
+    assert envelope is not None and envelope.instrument_id == bound_api3.venue_native_id, (
+        run.policy_result.orchestrator_result.cycle_records[-1].first_genuine_blocker
+    )
     assert join.venue_plan_authorized is True
     assert join.step_29p_risk_admissible == "true"
     rebound = join.replay
@@ -685,3 +692,39 @@ def test_ghv_api3_productive_normalization_join_venue_plan_v1() -> None:
     intent = rebound.intermediate.canonical_order_intent
     assert intent is not None
     assert intent.quantity_unit == "CONTRACTS"
+
+
+def test_productive_normalization_join_rejects_foreign_instrument_replay_v1() -> None:
+    """The old mixed ADA/ETH fixture must remain an actual financial deny."""
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_common_epoch_to_enter_live_29p_handoff_v1 import (
+        build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1,
+    )
+    from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import _enter_replay
+    from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1 import (
+        _host_enter_cycle,
+    )
+    from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+        _compose_handoff,
+        _bound,
+    )
+
+    handoff, transport = _compose_handoff()
+    injected = build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
+        handoff=handoff,
+        transport=transport,
+    )
+    _, cycle, _ = _host_enter_cycle()
+    replay = _enter_replay(cycle)
+    assert replay.evidence.instrument_id != _bound().instrument_id
+    result = join_with_portfolio_fixture_v1(
+        replay=replay,
+        injected=injected,
+        bound_instrument=_bound(),
+        decision_epoch=str(handoff.decision_epoch),
+    )
+    assert result.status == "FAIL"
+    assert (
+        "RESERVATION_MONETARY_SOURCE_INVALID:SIZING_MONETARY_SOURCE_OPERANDS_MISMATCH"
+        in result.reason_codes
+    )
+    assert not result.portfolio_reservation_id

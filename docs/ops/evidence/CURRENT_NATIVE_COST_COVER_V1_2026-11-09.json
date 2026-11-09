@@ -1,0 +1,84 @@
+{
+  "schema": "current_native_cost_cover_evidence.v1",
+  "date": "2026-11-09",
+  "base_commit": "eeb8246533fafaaeafefe755a1c10f820dd37430",
+  "status": "BOUNDED_INTERNAL_VALIDATION_COMPLETE",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "scope": "EXPLICIT_INTERNAL_SIMULATION_LINEAR_FUTURES_CROSS_NET_USDT_USDC",
+  "work_package": "BWP1_IN_BEARBEITUNG",
+  "venue_calls_performed": 0,
+  "orders_performed": 0,
+  "capital_movements_performed": 0,
+  "preserved_source_sha256": {
+    "src/governance/capital_risk_sizing_v1.py": "5beb463291672c5058724953b61c86d1ddbbbad8f2657f138bb0ffd2ac4ffce8",
+    "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py": "0af962af02e2907765701d9bfd47835ce75b28cce7d9fe39b8073050e2d82f34",
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "876b5931fda64420d3f17c7cb8128b1d4241ac7e04ce2c027943e3d7943bf13e",
+    "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+    "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py": "9f76d4fba0d78c2244ffbf1b96c4042fef68cbcf9eca14f490e40e925cb1d23f",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "68233ae376e01777a9b3dd7ac1c4481b55e1a642440ac38ea245737b7389b057",
+    "config/ops/current_productive_entry_budget_policy_v1.json": "d4c5e28f9f2725589abe853f54956cb7ad284520860141761cc596c9955459ed",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V1.json": "a1298b15bb9b78910c7db588e69b0be13e70b125e4f78e99862a601436c11b91",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V2.json": "db1a92a5d0c2d736bcaa7075c1e9c2f03b34160c5fd53de0f017744ab46144b8",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V3.json": "7053a35756ca347598f8b67ebac9b92fb6e0ed079ea6c6d1ee2eda3e949df795",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V4.json": "cb136ea60f0479c3dc2f2b314c976b761d89918a481b619ae07e5f212d3d7b00",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json": "7d0500d1ac9b3520e859097a9c025ea4094a1a5f73953519c830dbfe421671c5",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V6.json": "0e3a0b82a1d7d979d78896d6aaf0e285a4ed5e8315d68d63fca2dfae76e2f1b7",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V7.json": "f9f7a7e5c402a8283770cd96d52f544fc96602ded2cfc59991ebec8c9d00ec65",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V8.json": "871455d9726b8671b345e203472006fa3d2bfb74e54e45b7d1cb77e1690013b2",
+    "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V9.json": "654832709a00b6bc8949a95c533a32482954bf016770a216f6835c544dbba781"
+  },
+  "preserved_tree_roots": [
+    "src/trading",
+    "src/ops/exit_policy_producer_binding_v1"
+  ],
+  "freeze_tags": {
+    "freeze/clean-system-2026-11-06-v1": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "freeze/clean-system-complete-2026-11-06-v1": "160db0e90f1392c5caf3d115808f425d395b7c5e"
+  },
+  "knowledge_sources": {
+    "vault": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL",
+    "role": "DATED_KNOWLEDGE_NOT_RUNTIME_AUTHORITY",
+    "files": {
+      "00 Systemindex/Governance und Risk Sizing/03 Kapital und Limitquellen.md": "cb7e984d1bec002b19f40d79cfd5d6e07de21f5dbbf03c2f7b28ecb98ae2b339",
+      "00 Systemindex/Governance und Risk Sizing/Gesamtoffenlegung/A Kausalfluss und Verantwortungsgrenzen.md": "906a0ea5f5779f7f06e73eea5a469ad1175f438c02d33e5a812afd1df520a1e6"
+    }
+  },
+  "primary_sources": [
+    "https://www.okx.com/docs-v5/en/"
+  ],
+  "causal_path": [
+    "original_canonical_quantity_and_retained_cost_sources",
+    "exact_native_margin_open_close_funding_obligations",
+    "original_owner_locked_early_and_late_entry_comparison",
+    "current_account_bound_balance_and_original_preceding_budget_revision",
+    "atomic_original_cost_renewal_or_retained_holds_and_target_safety_exit",
+    "subsequent_entry_consumes_latest_owned_native_reserves",
+    "original_cold_read_source_reconstruction_and_uncertain_commit_recovery_fence"
+  ],
+  "conservative_limit": "NO_CREDIT_FOR_ORIGINAL_IM_OR_OPENING_COSTS_AFTER_FILL_OR_UNKNOWN_SUBMIT_MAY_REJECT_VENUE_POSSIBLE_ENTRY",
+  "open_requirements": [
+    "authentic_current_venue_inputs",
+    "exact_attribution_of_venue_margin_and_paid_cost_credit_to_local_holds",
+    "future_margin_changes",
+    "account_effective_maintenance_margin_and_liquidation_cover",
+    "numeric_USD_XPERP_USDC_settlement",
+    "entire_prevalidated_economic_framework",
+    "prior_transient_SHORT_test_failure_root_cause_unresolved",
+    "physical_power_loss_and_unbounded_autonomous_runtime"
+  ],
+  "validation": {
+    "selected_cases": 515,
+    "new_native_cost_cover_cases": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "source_count": 10048,
+    "changed_during_run": [],
+    "result_manifest": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Native Kostendeckung Endstand 2026-11-09 Ergebnis.json",
+    "source_manifest": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Native Kostendeckung Endstand 2026-11-09 Quellen.json",
+    "source_manifest_sha256": "2f48a8f7f595b210eb20a6b26994de22166334ff8fec699df0a51c935ddcc33e",
+    "log_sha256": "2ff6eac26e783ace82adb3480691b24b4dc3b72cbf15481d77b12ba576c707ea",
+    "junit_sha256": "61517a365b594e7ab8e439ff397838334f7636de2c161df4b92e2686f1204ab6"
+  }
+}

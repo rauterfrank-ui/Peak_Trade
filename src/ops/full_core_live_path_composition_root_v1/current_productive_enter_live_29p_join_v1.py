@@ -183,6 +183,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     opening_cost_observation: object | None = None
     funding_cost_observation: object | None = None
     open_slot_loss_observation: object | None = None
+    native_initial_margin_observation: object | None = None
 
 
 @dataclass(frozen=True)
@@ -1074,6 +1075,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             if injected is not None
             else None,
             local_commitment_readback=margin_host_inputs.local_commitment_readback,
+            native_initial_margin_observation=injected.native_initial_margin_observation
+            if injected is not None
+            else None,
             handoff_journal=handoff_journal,
         )
         portfolio_reservation_disposition = str(seam.disposition.value)

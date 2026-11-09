@@ -26,6 +26,8 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     enforce_open_slot_loss_protection: bool = False
     refresh_open_slot_cost_protection: bool = False
     renew_open_slot_cost_reserves: bool = False
+    require_native_initial_margin: bool = False
+    require_native_cost_cover: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -84,6 +86,18 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             and not self.refresh_open_slot_cost_protection
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_OPEN_SLOT_COST_RENEWAL_POLICY_INVALID")
+        if (
+            type(self.require_native_initial_margin) is not bool
+            or self.require_native_initial_margin
+            and not self.renew_open_slot_cost_reserves
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_NATIVE_INITIAL_MARGIN_POLICY_INVALID")
+        if (
+            type(self.require_native_cost_cover) is not bool
+            or self.require_native_cost_cover
+            and not self.require_native_initial_margin
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_NATIVE_COST_COVER_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -112,25 +126,46 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             result.update(schema="entry_budget_policy.v8", refresh_open_slot_cost_protection=True)
         if self.renew_open_slot_cost_reserves:
             result.update(schema="entry_budget_policy.v9", renew_open_slot_cost_reserves=True)
+        if self.require_native_initial_margin:
+            result.update(schema="entry_budget_policy.v10", require_native_initial_margin=True)
+        if self.require_native_cost_cover:
+            result.update(schema="entry_budget_policy.v11", require_native_cost_cover=True)
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
-    renewal_mode = isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v9"
+    native_cost_mode = (
+        isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v11"
+    )
+    margin_mode = isinstance(payload, dict) and payload.get("schema") in {
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
+    }
+    renewal_mode = isinstance(payload, dict) and payload.get("schema") in {
+        "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
+    }
     refresh_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     protection_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     funding_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v6",
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     close_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v5",
@@ -138,6 +173,8 @@ def parse_slot_entry_budget_v1(payload):
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     cost_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v4",
@@ -146,6 +183,8 @@ def parse_slot_entry_budget_v1(payload):
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     loss_mode = isinstance(payload, dict) and payload.get("schema") in {
         "entry_budget_policy.v3",
@@ -155,6 +194,8 @@ def parse_slot_entry_budget_v1(payload):
         "entry_budget_policy.v7",
         "entry_budget_policy.v8",
         "entry_budget_policy.v9",
+        "entry_budget_policy.v10",
+        "entry_budget_policy.v11",
     }
     expected = {
         "schema",
@@ -186,6 +227,10 @@ def parse_slot_entry_budget_v1(payload):
         expected.add("refresh_open_slot_cost_protection")
     if renewal_mode:
         expected.add("renew_open_slot_cost_reserves")
+    if margin_mode:
+        expected.add("require_native_initial_margin")
+    if native_cost_mode:
+        expected.add("require_native_cost_cover")
     if (
         not isinstance(payload, dict)
         or set(payload) != expected
@@ -199,11 +244,17 @@ def parse_slot_entry_budget_v1(payload):
             "entry_budget_policy.v7",
             "entry_budget_policy.v8",
             "entry_budget_policy.v9",
+            "entry_budget_policy.v10",
+            "entry_budget_policy.v11",
         }
     ):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_SCHEMA_INVALID")
     data = dict(payload)
     data.pop("schema")
+    if native_cost_mode and data.get("require_native_cost_cover") is not True:
+        raise EntryBudgetPolicyError("TEST_PHASE_NATIVE_COST_COVER_POLICY_INVALID")
+    if margin_mode and data.get("require_native_initial_margin") is not True:
+        raise EntryBudgetPolicyError("TEST_PHASE_NATIVE_INITIAL_MARGIN_POLICY_INVALID")
     if cost_mode and data.get("require_opening_execution_costs") is not True:
         raise EntryBudgetPolicyError("TEST_PHASE_OPENING_COST_POLICY_INVALID")
     if close_mode and data.get("require_closing_execution_costs") is not True:

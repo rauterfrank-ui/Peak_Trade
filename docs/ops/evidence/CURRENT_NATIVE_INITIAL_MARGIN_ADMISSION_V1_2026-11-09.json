@@ -1,0 +1,99 @@
+{
+  "schema": "current_native_initial_margin_admission_evidence.v1",
+  "date": "2026-11-09",
+  "base_commit": "1520d4ee74f2d117c1bf9a303de511e560d2b34c",
+  "status": "BOUNDED_INTERNAL_VALIDATION_COMPLETE_WITH_OPEN_REPRODUCIBILITY_FINDING",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "scope": "EXPLICIT_INTERNAL_SIMULATION_NATIVE_INITIAL_MARGIN_ONLY",
+  "work_package": "BWP1_IN_BEARBEITUNG",
+  "venue_calls_performed": 0,
+  "orders_performed": 0,
+  "capital_movements_performed": 0,
+  "knowledge_sources": {
+    "vault": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL",
+    "role": "DATED_KNOWLEDGE_NOT_RUNTIME_AUTHORITY",
+    "files": {
+      "00 Systemindex/Semantik/S01.md": "310251750f20a03447f9256f4b4582b99bd6a2ce3ef8c6d1fdce99d8f7e8617b",
+      "00 Systemindex/Semantik/S11.md": "28150d61f340da777ca63963123ec7a10fc48e5d25c6a68078d805e5f82a0eac",
+      "00 Systemindex/Semantik/S12.md": "e9350457664f4a9a269a10be11be52592f79adf4ac66af587b5e0dbfa3c5c6f6",
+      "00 Systemindex/Governance und Risk Sizing/03 Kapital und Limitquellen.md": "cb7e984d1bec002b19f40d79cfd5d6e07de21f5dbbf03c2f7b28ecb98ae2b339",
+      "00 Systemindex/Governance und Risk Sizing/05 Risikomodelle und wirkliche Reihenfolge.md": "7bae3f3d77d68a7ab2a2c4f5b6f2d7ea55da8360ffd9ae16ed438b0b2b2da883",
+      "00 Systemindex/Governance und Risk Sizing/Gesamtoffenlegung/A Kausalfluss und Verantwortungsgrenzen.md": "906a0ea5f5779f7f06e73eea5a469ad1175f438c02d33e5a812afd1df520a1e6"
+    }
+  },
+  "preserved_source_sha256": {
+    "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py": "0af962af02e2907765701d9bfd47835ce75b28cce7d9fe39b8073050e2d82f34",
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "876b5931fda64420d3f17c7cb8128b1d4241ac7e04ce2c027943e3d7943bf13e",
+    "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+    "src/ops/portfolio_capital_reservation_budget_v1/open_slot_cost_renewal_v1.py": "af5ec832ccab8148a8ce10068a6149430250541c07fc91e271e22f70f5ec8d8b",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "68233ae376e01777a9b3dd7ac1c4481b55e1a642440ac38ea245737b7389b057",
+    "src/governance/capital_risk_sizing_v1.py": "5beb463291672c5058724953b61c86d1ddbbbad8f2657f138bb0ffd2ac4ffce8"
+  },
+  "preserved_tree_roots": [
+    "src/trading",
+    "src/ops/exit_policy_producer_binding_v1"
+  ],
+  "freeze_tags": {
+    "freeze/clean-system-2026-11-06-v1": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "freeze/clean-system-complete-2026-11-06-v1": "160db0e90f1392c5caf3d115808f425d395b7c5e"
+  },
+  "primary_sources": [
+    "https://www.okx.com/docs-v5/en/",
+    "https://www.okx.com/help/iii-single-currency-margin-cross-margin-trading",
+    "https://www.okx.com/en-eu/help/okx-x-perps-eea-margin-assets"
+  ],
+  "causal_path": [
+    "original_29P_USDC_balance_and_original_opening_sources",
+    "canonical_unchanged_native_quantity",
+    "native_available_margin_and_current_instrument_leverage",
+    "original_owner_locked_native_obligation_comparison",
+    "original_SQLite_sizing_binding_v7",
+    "original_replay_and_late_entry_budget_consumer",
+    "original_cold_read_and_recovery_fence"
+  ],
+  "open_requirements": [
+    "authentic_current_venue_inputs",
+    "native_physical_cost_cover_and_cost_reserve_renewal",
+    "future_margin_changes",
+    "account_effective_maintenance_margin_and_liquidation_cover",
+    "numeric_USD_XPERP_USDC_settlement",
+    "entire_prevalidated_economic_framework",
+    "prior_transient_SHORT_test_failure_root_cause_unresolved"
+  ],
+  "validation": {
+    "selected_cases": 487,
+    "new_native_margin_cases": 36,
+    "new_identity_negative_cases": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "deselected": 0,
+    "source_count": 10045,
+    "changed_during_run": [],
+    "result_manifest": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Native Initialmargin Endstand 2026-11-09 Ergebnis.json",
+    "source_manifest": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Native Initialmargin Endstand 2026-11-09 Quellen.json",
+    "source_manifest_sha256": "ee0ff1896140c762029c8a53668aaf1b3fe55ca04b42c0355c6ba4344f9cf42d",
+    "log_sha256": "ce383f65018b6bb07fa25e66f39fad2a810ed21cf0d4381bac96fa5faaff54e5",
+    "junit_sha256": "ba0f6d1a0d6c7c195e3b1d80f78bf4b6885071092065a99b7cb9c0558d86ab6b",
+    "contract_checks_receipt": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 ZwischenstandNativeInitialmargin Checks 2026-11-09.json"
+  },
+  "prior_runs": [
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/Native Initialmargin Zwischenlauf 1 2026-11-09",
+      "outcome": "484_PASS_1_FAIL",
+      "reason": "OLD_MIXED_ADA_ETH_POSITIVE_FIXTURE_REPRODUCED_WITH_ORIGINAL_PARENT_RUNTIME_MODULES",
+      "disposition": "FIXED_WITH_COHERENT_API3_ORIGINAL_SUPERVISOR_AND_EXPLICIT_NEGATIVE_CONTROL"
+    },
+    {
+      "path": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/Native Initialmargin Zwischenlauf 2 2026-11-09",
+      "outcome": "485_PASS_1_FAIL",
+      "reason": "SHORT_ENTRY_NOT_REACHED_AT_TREASURY_HANDOFF",
+      "disposition": "NOT_REPRODUCED_IN_TARGETED_CASES_OR_FINAL_FULL_RUN_REASON_UNKNOWN_DIAGNOSTICS_ADDED"
+    }
+  ],
+  "baseline_identity_control": {
+    "path": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/.belege/BWP1 Native Initialmargin Baseline Identitaetsfehler 2026-11-09.json",
+    "sha256": "58e8b9c865d5ec6ca432caa5a19d37fc91211b8a64766a170baaa7151a23dab1"
+  }
+}

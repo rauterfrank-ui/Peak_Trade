@@ -43,13 +43,24 @@ class OpenSlotCostRenewalContextV1:
     capital_output_json: str
     settlements_json: str = "[]"
     history_sources_json: str = "[]"
+    native_balance_source_json: str = "null"
 
     @classmethod
-    def capture_v1(cls, *, owner, capital_output, settlements=(), history_sources=()):
+    def capture_v1(
+        cls,
+        *,
+        owner,
+        capital_output,
+        settlements=(),
+        history_sources=(),
+        native_balance_source=None,
+    ):
         if (
             type(capital_output) is not CurrentProductive29PRiskCapitalOutputV1
             or any(type(v) is not FundingSettlementAssignmentV1 for v in settlements)
             or any(type(v) is not FreshPretradeGetTransportResultV1 for v in history_sources)
+            or native_balance_source is not None
+            and type(native_balance_source) is not FreshPretradeGetTransportResultV1
         ):
             raise ValueError("OPEN_SLOT_RENEWAL_ORIGINAL_TYPED_INPUTS_REQUIRED")
         # Snapshot only. The original owner checks this epoch again under its
@@ -63,17 +74,27 @@ class OpenSlotCostRenewalContextV1:
                 canonical(asdict(capital_output)),
                 canonical([asdict(v) for v in settlements]),
                 canonical([asdict(v) for v in history_sources]),
+                canonical(None if native_balance_source is None else asdict(native_balance_source)),
             )
 
     def to_dict_v1(self):
-        return dict(schema="open_slot_cost_renewal_context.v1", **asdict(self))
+        result = asdict(self)
+        if self.native_balance_source_json == "null":
+            result.pop("native_balance_source_json")
+            return dict(schema="open_slot_cost_renewal_context.v1", **result)
+        return dict(schema="open_slot_cost_renewal_context.v2", **result)
 
     @classmethod
     def from_dict_v1(cls, raw):
+        version = raw.get("schema") if type(raw) is dict else None
+        expected = {"schema", *(f.name for f in fields(cls))}
+        if version == "open_slot_cost_renewal_context.v1":
+            expected.remove("native_balance_source_json")
         if (
             type(raw) is not dict
-            or set(raw) != {"schema", *(f.name for f in fields(cls))}
-            or raw["schema"] != "open_slot_cost_renewal_context.v1"
+            or set(raw) != expected
+            or version
+            not in {"open_slot_cost_renewal_context.v1", "open_slot_cost_renewal_context.v2"}
         ):
             raise ValueError("OPEN_SLOT_RENEWAL_CONTEXT_SCHEMA_INVALID")
         if (
@@ -84,6 +105,11 @@ class OpenSlotCostRenewalContextV1:
             or any(
                 type(raw[k]) is not str
                 for k in ("capital_output_json", "settlements_json", "history_sources_json")
+            )
+            or version == "open_slot_cost_renewal_context.v2"
+            and (
+                type(raw["native_balance_source_json"]) is not str
+                or raw["native_balance_source_json"] == "null"
             )
         ):
             raise ValueError("OPEN_SLOT_RENEWAL_CONTEXT_BINDING_INVALID")
@@ -383,11 +409,25 @@ def assess_renewal_v1(owner, rid, observation, base):
             (held, -old_close, -old_funding, Decimal(current["total_future_cost_provision_usdc"]))
         )
         allowance = Decimal(body["remaining_allowance_before_future_costs_usdc"])
+        native_cover = None
+        if getattr(owner._entry_budget_policy, "require_native_cost_cover", False):
+            from .native_cost_cover_v1 import assess_renewed_native_cover_v1
+
+            native_cover = assess_renewed_native_cover_v1(
+                owner, rid, observation, current, context, prior, output
+            )
         if projected > budget:
             body.update(
                 close_required=True,
                 reason="TEST_SLOT_RENEWED_CAPITAL_UNCOVERED",
                 reserve_renewal_status="INSUFFICIENT_CAPITAL_HELD_RESERVES_RETAINED",
+            )
+        elif native_cover is not None and not native_cover["covered"]:
+            body.update(
+                close_required=True,
+                reason="TEST_SLOT_RENEWED_NATIVE_CAPITAL_UNCOVERED",
+                reserve_renewal_status="INSUFFICIENT_NATIVE_CAPITAL_HELD_RESERVES_RETAINED",
+                native_cost_cover=native_cover,
             )
         elif allowance <= Decimal(current["total_future_cost_provision_usdc"]):
             body.update(
@@ -413,6 +453,10 @@ def assess_renewal_v1(owner, rid, observation, base):
                 cost_provision_digest=current["digest"],
                 runtime_authorization_effect="NONE",
             )
+            if native_cover is not None:
+                receipt.update(
+                    schema="open_slot_cost_reserve_renewal.v2", native_cost_cover=native_cover
+                )
             receipt = json.loads(canonical(receipt))
             receipt["digest"] = digest(receipt)
             body.update(
