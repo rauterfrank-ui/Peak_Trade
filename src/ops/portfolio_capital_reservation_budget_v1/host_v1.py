@@ -215,6 +215,7 @@ class PortfolioBudgetHostV1:
         retry_interval_seconds=1,
         reconciliation_transport=None,
         execution_environment="LIVE",
+        entry_budget_policy=None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -246,6 +247,21 @@ class PortfolioBudgetHostV1:
         self.transport_retry_count = 0
         self.reconciliation_transport = reconciliation_transport
         self.execution_environment = execution_environment
+        if entry_budget_policy is not None:
+            from .test_phase_limits_v1 import (
+                BoundedSlotEntryBudgetV1,
+            )
+
+            if type(entry_budget_policy) is not BoundedSlotEntryBudgetV1:
+                raise ValueError("ENTRY_BUDGET_POLICY_TYPE_INVALID")
+            entry_budget_policy.validate_v1()
+        if (
+            entry_budget_policy is not None
+            and entry_budget_policy.per_slot_reserved_notional_limit is not None
+            and execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        ):
+            raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
+        self.entry_budget_policy = entry_budget_policy
 
     def observe_v1(self, bindings):
         from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
@@ -295,7 +311,16 @@ class PortfolioBudgetHostV1:
                 durable_account_identity=account,
                 durable_mode=self.durable_mode,
                 durable_lane_bindings=bindings,
+                entry_budget_policy=self.entry_budget_policy,
             )
+            restored_policy = self.owner.entry_budget_policy_v1()
+            if (
+                restored_policy is not None
+                and restored_policy.per_slot_reserved_notional_limit is not None
+                and self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            ):
+                self.owner.close()
+                raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
             self.account = account
             self.durable_mode = "recover"
             self.bindings = dict(bindings)

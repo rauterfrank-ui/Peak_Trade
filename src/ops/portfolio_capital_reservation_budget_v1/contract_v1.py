@@ -311,6 +311,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         durable_account_identity: str | None = None,
         durable_mode: str | None = None,
         durable_lane_bindings: Mapping | None = None,
+        entry_budget_policy: object | None = None,
     ) -> None:
         self._lock = threading.Lock()
         self._admitted = False
@@ -329,6 +330,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         self._capital_scope = {}
         self._sizing_bindings: dict[str, ReservationSizingBindingV1] = {}
         self._execution_links: dict[str, dict] = {}
+        self._entry_budget_policy = None
+        if entry_budget_policy is not None:
+            from .test_phase_limits_v1 import (
+                BoundedSlotEntryBudgetV1,
+            )
+
+            if type(entry_budget_policy) is not BoundedSlotEntryBudgetV1:
+                raise PortfolioCapitalBudgetError("ENTRY_BUDGET_POLICY_TYPE_INVALID")
+            entry_budget_policy.validate_v1()
+            self._entry_budget_policy = entry_budget_policy
         supplied = (durable_root, durable_account_identity, durable_mode, durable_lane_bindings)
         if any(x is not None for x in supplied):
             if any(x is None for x in supplied):
@@ -439,6 +450,16 @@ class PortfolioCapitalReservationBudgetOwnerV1:
     def active_sum_v1(self) -> Decimal:
         with self._lock:
             return self._active_sum_locked()
+
+    def active_slot_sum_v1(self, slot_id) -> Decimal:
+        slot = str(SlotId(str(slot_id)))
+        with self._lock:
+            return self._active_sum_locked(slot)
+
+    def entry_budget_policy_v1(self):
+        """Original bound immutable policy, recovered with the same holds."""
+        with self._lock:
+            return self._entry_budget_policy
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""
@@ -847,6 +868,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     reason_codes=("IDEMPOTENT_REPLAY_NO_DOUBLE_COUNT",),
                     mutated=False,
                 )
+            policy_denial = self._entry_budget_denial_locked(str(slot), money)
+            if policy_denial is not None:
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.DENIED,
+                    reservation=None,
+                    reason_codes=(policy_denial, "NO_PARTIAL_MUTATION"),
+                    mutated=False,
+                )
             active = self._active_sum_locked()
             ceiling = (
                 min(self._budget, max_active_sum) if max_active_sum is not None else self._budget
@@ -1160,6 +1189,21 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise ValueError("CURRENT_ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED")
             if aggregate > policy.aggregate_reserved_notional_limit:
                 raise ValueError("CURRENT_ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED")
+            if self._entry_budget_policy is not None:
+                bound = self._entry_budget_policy
+                slot = str(found[1].slot_id)
+                if bound.allowed_slot_ids is not None and slot not in bound.allowed_slot_ids:
+                    raise ValueError("CURRENT_ENTRY_BUDGET_SLOT_NOT_ALLOWED")
+                if (
+                    bound.per_slot_reserved_notional_limit is not None
+                    and self._active_sum_locked(slot) > bound.per_slot_reserved_notional_limit
+                ):
+                    raise ValueError("CURRENT_ENTRY_BUDGET_SLOT_LIMIT_EXCEEDED")
+                if (
+                    amount > bound.per_entry_notional_limit
+                    or aggregate > bound.aggregate_reserved_notional_limit
+                ):
+                    raise ValueError("CURRENT_ENTRY_BUDGET_BOUND_POLICY_LIMIT_EXCEEDED")
             return {
                 "scope": "CURRENT_ORIGINAL_ENTRY_BUDGET_POLICY_ONLY",
                 "policy_digest": policy.digest_v1(),
@@ -1316,12 +1360,31 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             return None
         return key, current
 
-    def _active_sum_locked(self) -> Decimal:
+    def _active_sum_locked(self, slot_id: str | None = None) -> Decimal:
         total = Decimal("0")
         for reservation in self._by_key.values():
-            if reservation.counts_against_budget:
+            if reservation.counts_against_budget and (
+                slot_id is None or str(reservation.slot_id) == slot_id
+            ):
                 total += reservation.amount
         return total
+
+    def _entry_budget_denial_locked(self, slot_id, amount):
+        policy = self._entry_budget_policy
+        if policy is None:
+            return None
+        if policy.allowed_slot_ids is not None and slot_id not in policy.allowed_slot_ids:
+            return "ENTRY_BUDGET_SLOT_NOT_ALLOWED"
+        if amount > policy.per_entry_notional_limit:
+            return "ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED"
+        if (
+            policy.per_slot_reserved_notional_limit is not None
+            and self._active_sum_locked(slot_id) + amount > policy.per_slot_reserved_notional_limit
+        ):
+            return "ENTRY_BUDGET_SLOT_LIMIT_EXCEEDED"
+        if self._active_sum_locked() + amount > policy.aggregate_reserved_notional_limit:
+            return "ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED"
+        return None
 
     def _durable_payload_locked(self) -> dict:
         return {
@@ -1329,6 +1392,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             "account_identity": self._account_identity,
             "capital_scope": self._capital_scope,
             "budget": str(self._budget),
+            **(
+                {"entry_budget_policy": self._entry_budget_policy.to_dict_v1()}
+                if self._entry_budget_policy is not None
+                else {}
+            ),
             "observation_id": self._observation_id,
             "lane_bindings": self._lane_bindings,
             "close_refreshes": self._close_refreshes,
@@ -1410,7 +1478,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
     def _restore_locked(self, payload: Mapping) -> None:
         try:
-            if set(payload) - {"sizing_bindings", "execution_links"} != {
+            if set(payload) - {"sizing_bindings", "execution_links", "entry_budget_policy"} != {
                 "schema",
                 "account_identity",
                 "capital_scope",
@@ -1421,6 +1489,21 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "reservations",
             }:
                 raise ValueError("shape")
+            from .test_phase_limits_v1 import (
+                parse_slot_entry_budget_v1,
+            )
+
+            stored_policy = (
+                parse_slot_entry_budget_v1(payload["entry_budget_policy"])
+                if "entry_budget_policy" in payload
+                else None
+            )
+            if self._entry_budget_policy is not None and (
+                stored_policy is None
+                or stored_policy.digest_v1() != self._entry_budget_policy.digest_v1()
+            ):
+                raise ValueError("entry policy cannot be replaced during recovery")
+            self._entry_budget_policy = stored_policy
             if payload["schema"] != SCHEMA or payload["account_identity"] != self._account_identity:
                 raise ValueError("scope")
             budget = Decimal(payload["budget"])
@@ -1534,6 +1617,26 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             for reservation_id, link in links.items():
                 validate_link_v1(self, reservation_id, link)
             self._execution_links = detached(links)
+            policy = self._entry_budget_policy
+            if policy is not None:
+                active = [r for r in records.values() if r.counts_against_budget]
+                if (
+                    self._active_sum_locked() > policy.aggregate_reserved_notional_limit
+                    or any(r.amount > policy.per_entry_notional_limit for r in active)
+                    or (
+                        policy.allowed_slot_ids is not None
+                        and any(str(r.slot_id) not in policy.allowed_slot_ids for r in active)
+                    )
+                    or (
+                        policy.per_slot_reserved_notional_limit is not None
+                        and any(
+                            self._active_sum_locked(str(r.slot_id))
+                            > policy.per_slot_reserved_notional_limit
+                            for r in active
+                        )
+                    )
+                ):
+                    raise ValueError("stored entry policy limits exceeded")
             self._admitted = False
         except (ValueError, TypeError, KeyError, AttributeError, InvalidOperation) as exc:
             raise PortfolioCapitalBudgetError("DURABLE_BUDGET_SEMANTIC_RESTORE_UNPROVEN") from exc
@@ -1586,16 +1689,35 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
 def capital_context_facts_v1(
     owner: PortfolioCapitalReservationBudgetOwnerV1,
+    *,
+    slot_id=None,
 ) -> Mapping[str, Decimal]:
     """Facts the existing sizing seam was missing. Not a second quantity owner."""
-    state = owner.budget_state_v1()
-    if not state.admitted:
-        raise PortfolioCapitalBudgetError("CAPITAL_CONTEXT_REQUIRES_BOUND_PRODUCER_OUTPUT")
-    return {
-        "account_equity": state.canonical_available_capital,
-        "already_committed_capital": state.active_reservation_sum,
-        "current_reconciled_exposure": state.active_reservation_sum,
-    }
+    with owner._lock:
+        state = owner._state_locked()
+        if not state.admitted:
+            raise PortfolioCapitalBudgetError("CAPITAL_CONTEXT_REQUIRES_BOUND_PRODUCER_OUTPUT")
+        facts = {
+            "account_equity": state.canonical_available_capital,
+            "already_committed_capital": state.active_reservation_sum,
+            "current_reconciled_exposure": state.active_reservation_sum,
+        }
+        policy = owner._entry_budget_policy
+        if policy is not None:
+            slot = str(SlotId(str(slot_id)))
+            if policy.allowed_slot_ids is not None and slot not in policy.allowed_slot_ids:
+                raise PortfolioCapitalBudgetError("ENTRY_BUDGET_SLOT_NOT_ALLOWED")
+            remaining = (
+                policy.per_slot_reserved_notional_limit - owner._active_sum_locked(slot)
+                if policy.per_slot_reserved_notional_limit is not None
+                else policy.aggregate_reserved_notional_limit - state.active_reservation_sum
+            )
+            facts.update(
+                entry_notional_ceiling=policy.per_entry_notional_limit,
+                slot_remaining_notional=max(remaining, Decimal("0")),
+                aggregate_notional_ceiling=policy.aggregate_reserved_notional_limit,
+            )
+        return facts
 
 
 def admit_sized_slot_reservation_v1(
@@ -1769,13 +1891,30 @@ def admit_sized_slot_reservation_v1(
             return _sized_deny(
                 owner, disposition=ReserveDispositionV1.FAIL_CLOSED, reason_codes=(str(exc),)
             )
-    facts = capital_context_facts_v1(owner)
+    try:
+        facts = capital_context_facts_v1(owner, slot_id=slot_id)
+    except ValueError as exc:
+        return _sized_deny(
+            owner, disposition=ReserveDispositionV1.FAIL_CLOSED, reason_codes=(str(exc),)
+        )
     patched = replace(
         sizing_input,
         account_equity=facts["account_equity"],
         already_committed_capital=facts["already_committed_capital"],
         current_reconciled_exposure=facts["current_reconciled_exposure"],
     )
+    if "slot_remaining_notional" in facts:
+        patched = replace(
+            patched,
+            scope_capital_limit=min(
+                patched.scope_capital_limit,
+                facts["entry_notional_ceiling"],
+                facts["slot_remaining_notional"],
+            ),
+            total_capital_limit=min(
+                patched.total_capital_limit, facts["aggregate_notional_ceiling"]
+            ),
+        )
     if restrictive_risk is not None and restrictive_risk.configured_quantity_cap is not None:
         cap = restrictive_risk.configured_quantity_cap
         patched = replace(
