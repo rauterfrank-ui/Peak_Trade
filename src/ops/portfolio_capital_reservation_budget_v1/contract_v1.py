@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import threading
 from dataclasses import asdict, dataclass, replace
 from datetime import datetime
@@ -537,7 +538,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             if not self._open_slot_protection or slot_id not in self._open_slot_protection:
                 raise ValueError("OPEN_SLOT_EXPLICIT_TEST_POLICY_REQUIRED")
             if self._closed_owner or self._storage_failed or self._store is None:
-                raise ValueError("OPEN_SLOT_ORIGINAL_BUDGET_WRITER_UNAVAILABLE")
+                raise PortfolioCapitalBudgetError("OPEN_SLOT_ORIGINAL_BUDGET_WRITER_UNAVAILABLE")
             if type(episode) is not PositionEpisodeBindingV1:
                 raise ValueError("OPEN_SLOT_ORIGINAL_EPISODE_REQUIRED")
             rows = [
@@ -564,7 +565,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             ):
                 raise ValueError("OPEN_SLOT_CURRENT_EPISODE_OR_CYCLE_MISMATCH")
             proof = assess_open_slot_loss_v1(self, rid, observation)
-            if Decimal(proof["native_mark_price"]) != Decimal(str(mark_px)):
+            # N1/Core consumes a float projection; accounting retains the
+            # original Decimal mark in the proof. Compare the same projection
+            # exactly, without an epsilon or rounding the monetary valuation.
+            source_mark = float(Decimal(proof["native_mark_price"]))
+            cycle_mark = float(mark_px)
+            if (
+                not math.isfinite(source_mark)
+                or not math.isfinite(cycle_mark)
+                or source_mark <= 0
+                or cycle_mark <= 0
+                or source_mark != cycle_mark
+            ):
                 raise ValueError("OPEN_SLOT_CURRENT_MARK_CYCLE_MISMATCH")
             prior = self._open_slot_protection[slot_id]
             if prior:

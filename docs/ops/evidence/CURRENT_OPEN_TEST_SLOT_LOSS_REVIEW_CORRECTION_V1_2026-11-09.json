@@ -1,0 +1,52 @@
+{
+  "schema": "peaktrade.open_slot_review_correction.v1",
+  "base_commit": "353268855922f438200bf649a17af7ec94241455",
+  "source_sha256": {
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "9e23849986aecd43b48d55426bf8993a1f9f5e2f977f62d15890eeeaa9155af0",
+    "tests/ops/test_open_slot_loss_review_regressions_v1.py": "817b70b4b876521015208c7d8a489954864f01419c1e3bc9d7a1d49846b416c7",
+    "tests/ops/test_open_slot_loss_protection_v1.py": "bc294e708905e8fa7324b7f7871e168dc88341f410027032691f1c3cab398a2c",
+    "tests/ops/test_open_slot_loss_short_protection_v1.py": "fff4cfc2835f23d071e4ab708970ea58944bb30320444af6fb1149b670987424",
+    "tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py": "821d72cb54fc6dff2abc5b90d2665757971c5055b56d7b1c750e6b8081725a15",
+    "tests/ops/test_test_phase_slot_loss_budget_v1.py": "0b03c5458caa28afc0f919ee12d21f2ca35373a93983fc62b76f631ce0893c99",
+    "docs/ops/specs/CURRENT_OPEN_TEST_SLOT_LOSS_REVIEW_CORRECTION_V1.md": "4a8b2c930f27cdf9a68da49d5b5eacad323f6a248bd4514ce19fb02fb3bc6a7f"
+  },
+  "preserved_source_sha256": {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "9a2d6867a1bc4ccc6a9ab53e9d719d69945d5cdf7c435d62228443492ef2dec0",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "485af1635aecda0f570b4ff6a62ce7af2eaf8e539b61a0f2f85c8274e4289c5b",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "bb81041299a56b9e98065e0287dd3abfa6d29b60ca892ad7824ba6afb3d613b3",
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "5dc93a3e751426a2f8a955b70a44b26dcc6e911c05ea03ae04bdb30075d4a8be"
+  },
+  "tests": [
+    {
+      "xml": "BWP1 Reviewkorrektur 2026-11-09.xml",
+      "xml_sha256": "9c049665de6dd790d55bae5d2a4b3aad7f4def5b3ccb13fa2c9883352c398a21",
+      "log": "BWP1 Reviewkorrektur 2026-11-09.log",
+      "log_sha256": "af2be63d9c9bef994352e1414a32b313a2b5ee46dceb83343526cd9ef3fd7aa0",
+      "cases": 34,
+      "result": "PASS"
+    },
+    {
+      "xml": "BWP1 Reviewkorrektur Budget 2026-11-09.xml",
+      "xml_sha256": "fd83bd5cc6819a54a38cbba557d874d03d8e078afd0e5e6c678afbfcafc61a64",
+      "log": "BWP1 Reviewkorrektur Budget 2026-11-09.log",
+      "log_sha256": "99d195a573f487b91a3fc13a938d2977439fa864821384bfa063f41a5bbad52d",
+      "cases": 40,
+      "result": "PASS"
+    }
+  ],
+  "total_selected_cases": 74,
+  "new_regressions": 5,
+  "previous_433_case_evidence": "DATED_PR_7208_ONLY_NOT_RECLAIMED_FOR_CHANGED_OWNER",
+  "findings": [
+    "PR7208 discussion_r4513452294: unavailable owner uses propagated PortfolioCapitalBudgetError",
+    "PR7208 discussion_r4513452307: exact finite positive Core float projection, original Decimal accounting retained"
+  ],
+  "limitations": [
+    "BWP1 ongoing cost/funding renewal OPEN",
+    "full margin/liquidation admission OPEN",
+    "complete financial-framework connection OPEN",
+    "simulated inputs, no venue cash or physical power-loss proof"
+  ],
+  "runtime_authorization_effect": "NONE"
+}
