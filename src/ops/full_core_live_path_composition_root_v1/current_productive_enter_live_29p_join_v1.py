@@ -186,6 +186,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     native_initial_margin_observation: object | None = None
     absolute_movement_cost_observation: object | None = None
     futures_financial_custody: object | None = None
+    entry_public_mark_source: object | None = None
 
 
 @dataclass(frozen=True)
@@ -1071,6 +1072,33 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 step_29p_risk_admissible=TRUE_TOKEN,
                 reasons=(str(exc),),
             )
+        movement_observation = injected.absolute_movement_cost_observation if injected else None
+        if getattr(policy, "require_original_public_movement_facts", False):
+            from src.ops.portfolio_capital_reservation_budget_v1.absolute_movement_cost_v1 import (
+                EntryPublicMarkSourceV1,
+            )
+
+            try:
+                if (
+                    injected is None
+                    or type(injected.entry_public_mark_source) is not EntryPublicMarkSourceV1
+                    or movement_observation is not None
+                ):
+                    raise ValueError("MOVEMENT_ORIGINAL_PUBLIC_SOURCE_REQUIRED")
+                movement_observation = injected.entry_public_mark_source.observe_v1(
+                    bound=bound_instrument,
+                    opening_observation=injected.opening_cost_observation,
+                )
+            except (ValueError, RuntimeError, TypeError, AttributeError, KeyError, OSError) as exc:
+                return _deny(
+                    status=STATUS_FAIL,
+                    blocker=str(exc),
+                    replay=replay,
+                    get_count=get_count,
+                    producer_output_value=str(output.value),
+                    producer_output_status="PRODUCED",
+                    step_29p_risk_admissible=TRUE_TOKEN,
+                )
         seam = admit_sized_slot_reservation_v1(
             portfolio_budget_owner,
             observation=observation,
@@ -1098,9 +1126,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             native_initial_margin_observation=injected.native_initial_margin_observation
             if injected is not None
             else None,
-            absolute_movement_cost_observation=injected.absolute_movement_cost_observation
-            if injected is not None
-            else None,
+            absolute_movement_cost_observation=movement_observation,
             futures_financial_custody=injected.futures_financial_custody
             if injected is not None
             else None,

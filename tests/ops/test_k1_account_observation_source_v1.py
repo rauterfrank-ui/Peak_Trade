@@ -39,13 +39,13 @@ class InjectedOpener:
         pending=False,
         algo_pending=False,
         bot_fault=None,
-        allow_public_position_tiers=False,
+        public_paths=(),
     ):
         self.fetch = _fetch(uid=account, positions=positions)
         self.pending = pending
         self.algo_pending = algo_pending
         self.bot_fault = bot_fault
-        self.allow_public_position_tiers = allow_public_position_tiers
+        self.public_paths = public_paths
         self.requests = []
 
     @contextmanager
@@ -53,7 +53,7 @@ class InjectedOpener:
         assert req.get_method() == "GET"
         assert urlsplit(req.full_url).hostname == "eea.okx.com"
         url = urlsplit(req.full_url)
-        public = self.allow_public_position_tiers and url.path == "/api/v5/public/position-tiers"
+        public = url.path in self.public_paths
         assert req.has_header("Ok-access-sign") is (not public)
         self.requests.append(req.full_url)
         query = dict(parse_qsl(url.query))

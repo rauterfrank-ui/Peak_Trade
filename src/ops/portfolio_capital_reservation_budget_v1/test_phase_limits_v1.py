@@ -31,6 +31,7 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     require_absolute_movement_cost_cover: bool = False
     require_usdc_settlement: bool = False
     require_xperp_liquidation_projection: bool = False
+    require_original_public_movement_facts: bool = False
 
     def validate_v1(self):
         super().validate_v1()
@@ -117,6 +118,11 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             self.require_xperp_liquidation_projection and not self.require_usdc_settlement
         ):
             raise EntryBudgetPolicyError("TEST_PHASE_XPERP_LIQUIDATION_POLICY_INVALID")
+        if type(self.require_original_public_movement_facts) is not bool or (
+            self.require_original_public_movement_facts
+            and not self.require_xperp_liquidation_projection
+        ):
+            raise EntryBudgetPolicyError("TEST_PHASE_ORIGINAL_PUBLIC_MOVEMENT_POLICY_INVALID")
 
     def to_dict_v1(self):
         result = super().to_dict_v1()
@@ -159,10 +165,24 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
             result.update(
                 schema="entry_budget_policy.v13", require_xperp_liquidation_projection=True
             )
+        if self.require_original_public_movement_facts:
+            result.update(
+                schema="entry_budget_policy.v14", require_original_public_movement_facts=True
+            )
         return result
 
 
 def parse_slot_entry_budget_v1(payload):
+    if isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v14":
+        previous = dict(payload)
+        if previous.pop("require_original_public_movement_facts", None) is not True:
+            raise EntryBudgetPolicyError("TEST_PHASE_ORIGINAL_PUBLIC_MOVEMENT_POLICY_INVALID")
+        previous["schema"] = "entry_budget_policy.v13"
+        policy = replace(
+            parse_slot_entry_budget_v1(previous), require_original_public_movement_facts=True
+        )
+        policy.validate_v1()
+        return policy
     if isinstance(payload, dict) and payload.get("schema") == "entry_budget_policy.v13":
         previous = dict(payload)
         if previous.pop("require_xperp_liquidation_projection", None) is not True:

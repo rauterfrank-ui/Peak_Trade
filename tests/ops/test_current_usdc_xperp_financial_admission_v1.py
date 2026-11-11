@@ -123,6 +123,7 @@ def prepare(
     tier_evidence=False,
     tier_fault=None,
     liquidation_policy=False,
+    public_movement_policy=False,
     asset="BTC",
     slot="LANE_1",
     host_context=None,
@@ -146,12 +147,9 @@ def prepare(
     )(bound=bound, g17_typed_vol_producer=producer)
     cycle = run[3] if short else run[2]
     if host_context is None:
-        entry_policy = (
-            load_slot_entry_budget_v1(
-                ROOT / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V12.json"
-            )
-            if liquidation_policy
-            else policy()
+        policy_revision = 13 if public_movement_policy else 12 if liquidation_policy else 11
+        entry_policy = load_slot_entry_budget_v1(
+            ROOT / f"docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V{policy_revision}.json"
         )
         host = PortfolioBudgetHostV1(
             root=tmp_path / "host",
@@ -904,7 +902,7 @@ def test_xperp_liquidation_projection_retains_and_stresses_reconciled_other_lane
         liquidation_policy=True,
         extra_bindings={"LANE_2": second},
     )
-    opener = InjectedOpener(account=ACCOUNT, allow_public_position_tiers=True)
+    opener = InjectedOpener(account=ACCOUNT, public_paths=("/api/v5/public/position-tiers",))
     original_fetch = opener.fetch
     positions = []
     submitted = {}
@@ -1117,5 +1115,173 @@ def test_xperp_liquidation_projection_retains_and_stresses_reconciled_other_lane
                 assert Fraction(receipt["other_position_stress_and_cost_usdc"]) > 0
                 assert owner.active_sum_v1() > original_held
             assert first_rid in owner.execution_links_v1(active_only=True)
+    finally:
+        host.close()
+
+
+@pytest.mark.parametrize("fault", [None, "narrow", "stale", "gap", "raw-injection"])
+def test_original_public_mark_window_drives_current_usdc_economic_admission(
+    tmp_path, monkeypatch, fault
+):
+    from types import SimpleNamespace
+
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from src.ops.peak_trade_public_market_data_runtime_v1 import rest_recovery_v1 as rest
+    from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
+        query_historical_facts_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1 as Owner,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
+
+    host, kwargs, clock = prepare(
+        tmp_path, monkeypatch, tier_evidence=True, public_movement_policy=True
+    )
+    bound = kwargs["bound_instrument"]
+    store = tmp_path / "public-facts"
+    opener = InjectedOpener(account=ACCOUNT, public_paths=(rest.MARK_HISTORY_CANDLES_PATH,))
+    original_fetch = opener.fetch
+    public_requests = []
+    current = host.clock()
+    last_closed = int(current * 1000) // 60_000 * 60_000 - 60_000
+    mark = Decimal(str(kwargs["replay"].intermediate.market_context.mark_price))
+
+    def public_get(path, params):
+        public_requests.append((path, params))
+        assert path == rest.MARK_HISTORY_CANDLES_PATH
+        assert params == {"instId": bound.venue_native_id, "bar": "1m", "limit": "100"}
+        latest = last_closed - (60_000 if fault == "stale" else 0)
+        data = []
+        for offset in range(61):
+            if fault == "gap" and offset == 20:
+                continue
+            event_ms = str(latest - offset * 60_000)
+            px = str(mark if fault == "narrow" else mark + (offset % 2) * Decimal("50"))
+            data.append([event_ms, px, px, px, px, "1"])
+        return {"code": "0", "data": data}
+
+    def private_get(path, params):
+        if path == rest.MARK_HISTORY_CANDLES_PATH:
+            return public_get(path, params)
+        payload = original_fetch(path, params)
+        if path == "/api/v5/account/config":
+            payload["data"][0].update(settleCcy="USDC", autoLoan=False)
+        elif path == "/api/v5/account/balance":
+            payload["data"][0]["details"] = [dict(ccy="USDC", availEq="1000", frozenBal="0")]
+        return payload
+
+    opener.fetch = private_get
+    monkeypatch.setattr(rest, "time", SimpleNamespace(time=lambda: current))
+    monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0])
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    owner = host.owner
+    try:
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=ACCOUNT,
+            session_id="economic-source-admission-test",
+            max_request_count=40,
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+            clock=host.clock,
+            k1_lookup_backend=_FakeKeychainBackend(),
+        ) as source:
+            kwargs["injected"] = replace(
+                kwargs["injected"],
+                futures_financial_custody=host.capture_futures_financial_custody_v1(source),
+                absolute_movement_cost_observation=(
+                    kwargs["injected"].absolute_movement_cost_observation
+                    if fault == "raw-injection"
+                    else None
+                ),
+                entry_public_mark_source=movement.EntryPublicMarkSourceV1(
+                    store,
+                    wire.FullCoreProductiveReadOnlyGetTransportV1(handle=None, max_request_count=1),
+                ),
+            )
+            result = join(**kwargs)
+            if fault:
+                expected = {
+                    "narrow": "MOVEMENT_OBSERVED_AMPLITUDE_DOES_NOT_EXCEED_ROUNDTRIP_COSTS",
+                    "stale": "MOVEMENT_LATEST_COMPLETED_PT1M_WINDOW_REQUIRED",
+                    "gap": "PUBLIC_PT1M_WINDOW_UNPROVEN",
+                    "raw-injection": "MOVEMENT_ORIGINAL_PUBLIC_SOURCE_REQUIRED",
+                }[fault]
+                assert result.status != "PASS" and any(
+                    expected in reason for reason in result.reason_codes
+                ), result.reason_codes
+                assert owner.stored_reservation_count_v1() == 0
+                return
+            assert result.status == "PASS", result.reason_codes
+            rid = result.portfolio_reservation_id
+            binding = owner._sizing_bindings[rid]
+            receipt = json.loads(binding.absolute_movement_cost_binding.receipt_json)
+            facts = query_historical_facts_v1(
+                store, venue_native_id=NATIVE, fact_kind="FinalizedPt1mMarkFactV1"
+            )
+            assert len(public_requests) == 1 and len(facts.facts) == 61
+            assert receipt["schema"] == "absolute_movement_cost_receipt.v2"
+            assert receipt["original_public_facts_digest"] == movement.digest(
+                {movement.fact_digest(fact): fact for fact in facts.facts}
+            )
+            assert receipt["final_native_quantity"] == str(binding.decision.final_quantity)
+            assert receipt["expected_profit_forecast"] is False
+            status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+                replay=result.replay,
+                bound_instrument=bound,
+                session_id=host.session_id,
+                run_id=host.session_id,
+                composed_epoch=EPOCH,
+                execution_mode="INTERNAL_SIMULATED_EXECUTION",
+            )
+            assert status.value == "PASS", reasons
+            envelope = bind_final_order_envelope_from_venue_plan_v1(
+                plan,
+                admission_ref=host.session_id,
+                provenance_ref=host.session_id,
+                creation_epoch=EPOCH,
+            )
+            owner.commit_internal_pre_external_effect_v1(rid)
+            owner.bind_execution_plan_v1(
+                rid,
+                envelope,
+                canonical_intent=result.replay.intermediate.canonical_order_intent,
+                venue_plan=plan,
+            )
+            financial = host.capture_futures_financial_custody_v1(source)
+            assert (
+                owner.inspect_current_entry_budget_policy_v1(
+                    rid, envelope, futures_financial_custody=financial
+                )["xperp_liquidation_projection"]["quantity"]
+                == receipt["final_native_quantity"]
+            )
+            scope = owner.durable_scope_identity_v1()
+            profile = owner.entry_budget_policy_v1()
+        host.close()
+        cold = Owner(
+            durable_root=scope["root"],
+            durable_account_identity=ACCOUNT,
+            durable_mode="recover",
+            durable_lane_bindings={"LANE_1": bound},
+            entry_budget_policy=profile,
+        )
+        try:
+            assert cold._sizing_bindings[rid].absolute_movement_cost_binding == (
+                binding.absolute_movement_cost_binding
+            )
+            assert cold.budget_state_v1().recovery_required
+        finally:
+            cold.close()
     finally:
         host.close()

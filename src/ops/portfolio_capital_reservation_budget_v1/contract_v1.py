@@ -951,6 +951,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     binding.absolute_movement_cost_binding.validate_v1(
                         sizing=binding, evaluated_at_utc=utc_now_iso_v1()
                     )
+                    if self._entry_budget_policy is not None and getattr(
+                        self._entry_budget_policy, "require_original_public_movement_facts", False
+                    ):
+                        binding.absolute_movement_cost_binding.require_original_public_facts_v1()
                 elif absolute_movement_cost_observation is not None:
                     raise ValueError("MOVEMENT_LEGACY_HOLD_NOT_UPGRADED")
                 if binding.risk_binding is not None:
@@ -1546,6 +1550,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     if not isinstance(sizing_binding, ReservationSizingBindingV1):
                         raise ValueError("RESERVATION_SIZING_BINDING_TYPE_INVALID")
                     sizing_binding.validate_v1(amount=money, decision_id=decision)
+                    if getattr(
+                        self._entry_budget_policy, "require_original_public_movement_facts", False
+                    ):
+                        sizing_binding.absolute_movement_cost_binding.require_original_public_facts_v1()
                     if liquidation_snapshot is not None:
                         from .durable_store_v1 import canonical
                         from .entry_execution_cost_v1 import utc_now_iso_v1
@@ -2070,6 +2078,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 sizing.absolute_movement_cost_binding.validate_v1(
                     sizing=sizing, evaluated_at_utc=utc_now_iso_v1()
                 )
+                if getattr(
+                    self._entry_budget_policy, "require_original_public_movement_facts", False
+                ):
+                    sizing.absolute_movement_cost_binding.require_original_public_facts_v1()
             if self._entry_budget_policy is not None:
                 bound = self._entry_budget_policy
                 slot = str(found[1].slot_id)
@@ -2619,6 +2631,12 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 binding.validate_v1(
                     amount=records[key].amount, decision_id=records[key].decision_id
                 )
+                if records[key].counts_against_budget and getattr(
+                    self._entry_budget_policy, "require_original_public_movement_facts", False
+                ):
+                    if binding.absolute_movement_cost_binding is None:
+                        raise ValueError("MOVEMENT_ORIGINAL_PUBLIC_FACTS_REQUIRED")
+                    binding.absolute_movement_cost_binding.require_original_public_facts_v1()
                 restored_sizing[key] = binding
             self._sizing_bindings = restored_sizing
             if getattr(
