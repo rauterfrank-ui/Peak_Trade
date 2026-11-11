@@ -41,22 +41,26 @@ def main(argv=None):
     parser.add_argument(
         "--observe-once",
         action="store_true",
-        help="Explicit real K1 lookup and seven scope or three Treasury GETs; no retry",
+        help="Explicit real K1 lookup and bounded read-only GETs; no retry",
     )
-    parser.add_argument(
+    profiles = parser.add_mutually_exclusive_group()
+    profiles.add_argument(
         "--treasury-inputs",
         action="store_true",
         help="Choose three account/trading/funding reads instead of seven scope reads",
     )
     parser.add_argument("--output", type=Path)
-    parser.add_argument(
+    profiles.add_argument(
         "--accounting-bills",
         action="store_true",
         help="Inspect unfiltered account bills (one config plus at most six archive GETs)",
     )
+    profiles.add_argument(
+        "--futures-margin-state",
+        action="store_true",
+        help="Inspect current Futures-mode USDC cross-margin sources; no entry-risk projection",
+    )
     args = parser.parse_args(argv)
-    if args.accounting_bills and args.treasury_inputs:
-        parser.error("choose one observation profile")
     if args.config is not None:
         configured = load_k1_account_source_config_v1(args.config)
         if (
@@ -100,21 +104,20 @@ def main(argv=None):
                 max_request_count=10,
             ) as source:
                 try:
-                    report["observation"] = (
-                        source.inspect_accounting_bills_v1()
-                        if args.accounting_bills
-                        else (
-                            source.inspect_treasury_inputs_v1()
-                            if args.treasury_inputs
-                            else source.inspect_account_scope_v1()
-                        )
-                    )
                     if args.accounting_bills:
-                        # Successful observation is not a full accounting readiness PASS.
-                        rc = 2 if report["observation"]["blockers"] else 0
+                        observation = source.inspect_accounting_bills_v1()
+                        ready = not observation["blockers"]
+                    elif args.treasury_inputs:
+                        observation = source.inspect_treasury_inputs_v1()
+                        ready = observation["inputs_ready"]
+                    elif args.futures_margin_state:
+                        observation = source.inspect_futures_margin_state_v1()
+                        ready = observation["observation_complete"]
                     else:
-                        ready = "inputs_ready" if args.treasury_inputs else "supported_scope_clear"
-                        rc = 0 if report["observation"][ready] else 2
+                        observation = source.inspect_account_scope_v1()
+                        ready = observation["supported_scope_clear"]
+                    report["observation"] = observation
+                    rc = 0 if ready else 2
                 finally:
                     report["private_get_attempt_count"] = source.transport.read_count
                     report["last_read"] = source.transport.last_read

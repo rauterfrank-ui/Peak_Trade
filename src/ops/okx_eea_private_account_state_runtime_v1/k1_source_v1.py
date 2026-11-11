@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 import json
+import re
 from urllib.parse import parse_qsl, urlsplit
 import time
 
@@ -41,6 +42,7 @@ FUTURES_INVENTORY_BOT_QUERIES = (
     ("/api/v5/tradingBot/signal/orders-algo-pending", {"algoOrdType": "contract"}),
     ("/api/v5/tradingBot/recurring/orders-algo-pending", {}),
 )
+_SIGNED_FIXED_DECIMAL = re.compile(r"-?[0-9]+(?:\.[0-9]+)?")
 
 
 def _validate_inventory_scope_v1(guard, inst_type):
@@ -383,6 +385,96 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             "supported_scope_clear": not blockers,
             "blockers": blockers,
             "equity_reconstructed": False,
+            "capital_admitted": False,
+        }
+
+    def inspect_futures_margin_state_v1(self):
+        """Report current USDC cross-margin evidence from the original signed GETs."""
+        if self.closed:
+            raise AccountObservationSourceError("OBSERVATION_SESSION_CLOSED")
+        started = self.clock()
+        config = self("/api/v5/account/config", {})["data"][0]
+        self._assert_current_resource_pair_v1()
+        blockers = []
+        balance_row_present = None
+        cross_position_present = None
+        maintenance_fields_observed = False
+        if (config.get("acctLv"), config.get("posMode"), config.get("settleCcy")) != (
+            "2",
+            "net_mode",
+            "USDC",
+        ):
+            blockers.append("FUTURES_MARGIN_STATE_ACCOUNT_SCOPE_UNSUPPORTED")
+        else:
+            positions = self._verified_get_v1("/api/v5/account/positions", {})["data"]
+            self._assert_current_resource_pair_v1()
+            balances = self._verified_get_v1("/api/v5/account/balance", {})["data"]
+            self._assert_current_resource_pair_v1()
+            cross_position_present = False
+            for row in positions:
+                size = row.get("pos")
+                mode = row.get("mgnMode")
+                currency = row.get("ccy")
+                if (
+                    not isinstance(size, str)
+                    or not _SIGNED_FIXED_DECIMAL.fullmatch(size)
+                    or mode not in ("cross", "isolated")
+                    or (
+                        mode == "cross"
+                        and (
+                            not isinstance(currency, str)
+                            or not re.fullmatch(r"[A-Z0-9]+", currency)
+                        )
+                    )
+                ):
+                    blockers.append("FUTURES_MARGIN_STATE_POSITION_SCOPE_UNPROVEN")
+                    cross_position_present = None
+                    break
+                if mode == "cross" and currency == "USDC" and Decimal(size) != 0:
+                    cross_position_present = True
+
+            if len(balances) == 1 and balances[0].get("uid", self.expected_account_identity) != (
+                self.expected_account_identity
+            ):
+                raise AccountObservationSourceError("OBSERVATION_ACCOUNT_MISMATCH")
+            details = balances[0].get("details") if len(balances) == 1 else None
+            if not isinstance(details, list) or any(
+                not isinstance(row, dict)
+                or not isinstance(row.get("ccy"), str)
+                or not re.fullmatch(r"[A-Z0-9]+", row["ccy"])
+                for row in details
+            ):
+                blockers.append("FUTURES_MARGIN_STATE_BALANCE_SCOPE_UNPROVEN")
+            else:
+                usdc = [row for row in details if row.get("ccy") == "USDC"]
+                if len(usdc) > 1:
+                    blockers.append("FUTURES_MARGIN_STATE_USDC_BALANCE_AMBIGUOUS")
+                else:
+                    balance_row_present = bool(usdc)
+                    if cross_position_present:
+                        maintenance_fields_observed = bool(usdc) and all(
+                            isinstance(value, str)
+                            and _SIGNED_FIXED_DECIMAL.fullmatch(value)
+                            and Decimal(value) >= 0
+                            for value in (usdc[0].get("mmr"), usdc[0].get("mgnRatio"))
+                        )
+                        if not maintenance_fields_observed:
+                            blockers.append("FUTURES_MARGIN_STATE_USDC_MAINTENANCE_UNPROVEN")
+        completed = self.clock()
+        if not 0 <= completed - started <= 5:
+            blockers.append("FUTURES_MARGIN_STATE_OBSERVATION_STALE")
+        return {
+            "profile": K1_ACCOUNT_READ_PROFILE,
+            "configured_account_matched": True,
+            "observed_at_unix": started,
+            "completed_at_unix": completed,
+            "usdc_balance_row_present": balance_row_present,
+            "usdc_cross_position_observed": cross_position_present,
+            "usdc_maintenance_fields_observed": maintenance_fields_observed,
+            "observation_complete": not blockers,
+            "blockers": blockers,
+            "projected_entry_risk_proven": False,
+            "liquidation_cover_proven": False,
             "capital_admitted": False,
         }
 
