@@ -32,7 +32,7 @@ def attest_managed_replacement_authority_v1(
 ):
     """Observe a freshly issued original artifact without creating or consuming it."""
     if (
-        stop["causes"] != ["R06"]
+        "R06" not in stop["causes"]
         or not evidence_root.is_absolute()
         or evidence_root.resolve() != evidence_root
         or artifact_path.resolve() != artifact_path
@@ -75,6 +75,7 @@ def attest_managed_replacement_authority_v1(
         raise FilegateAuthorityError("FAULT_REPLACEMENT_AUTHORIZATION_UNPROVEN")
     return attest_filegate_owner_evidence_v1(
         role="CAUSE",
+        cause="R06",
         stop=stop,
         evidence_sha256=artifact.integrity_digest,
         observed_at=now,

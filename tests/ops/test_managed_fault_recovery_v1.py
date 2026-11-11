@@ -26,6 +26,7 @@ from src.ops.managed_account_recovery_v1 import attest_managed_stopped_account_v
 from src.ops.managed_authorization_recovery_v1 import attest_managed_replacement_authority_v1
 from src.ops.managed_fault_recovery_v1 import (
     ManagedFaultRecoveryV1,
+    attest_managed_filegate_integrity_v1,
     build_standing_managed_fault_recovery_v1,
     publish_managed_owner_proof_v1,
 )
@@ -47,9 +48,10 @@ from tests.ops.test_canonical_durable_authorization_lifecycle_and_revocation_v1 
 import json
 
 
-def _proof(*, role, stop, now, key, digest="a" * 64):
+def _proof(*, role, stop, now, key, digest="a" * 64, cause=None):
     return attest_filegate_owner_evidence_v1(
         role=role,
+        cause=cause,
         stop=stop,
         evidence_sha256=digest,
         observed_at=now,
@@ -58,7 +60,7 @@ def _proof(*, role, stop, now, key, digest="a" * 64):
     )
 
 
-def _provision(tmp_path, monkeypatch, scope, clock, causes):
+def _provision(tmp_path, monkeypatch, scope, clock, causes, *, cause_keys=None):
     paths = {}
     for label in ("managed-state", "independent", "diagnostics"):
         paths[label] = tmp_path / label
@@ -72,16 +74,24 @@ def _provision(tmp_path, monkeypatch, scope, clock, causes):
     monkeypatch.setenv(ROOT_ENV, str(writer.root))
     issuer = SigningKey.generate()
     keys = {role: SigningKey.generate() for role in ("CAUSE", "ACCOUNT", "HOST")}
+    cause_keys = cause_keys or {}
     stop = writer.provision_v1(
         scope=scope,
         issuer_public_key=bytes(issuer.verify_key),
         owner_public_keys={role: bytes(key.verify_key) for role, key in keys.items()},
         recoverable_causes=causes | {"R03"},
+        cause_public_keys={cause: bytes(key.verify_key) for cause, key in cause_keys.items()},
     )
     # Test-only readiness grants establish the starting managed ACTIVE state.
     evidence = {
         role: _proof(role=role, stop=stop, now=clock(), key=key) for role, key in keys.items()
     }
+    if "R03" in cause_keys:
+        with pytest.raises(FilegateAuthorityError, match="CAUSE_EVIDENCE_COVERAGE_UNPROVEN"):
+            writer.issue_release_v1(evidence=evidence, issuer_key=issuer)
+        evidence["CAUSE"] = {
+            "R03": _proof(role="CAUSE", stop=stop, now=clock(), key=cause_keys["R03"], cause="R03")
+        }
     release = writer.issue_release_v1(evidence=evidence, issuer_key=issuer)
     writer.release_v1(release=release, evidence=evidence)
     return writer, issuer, keys, paths["diagnostics"]
@@ -310,3 +320,76 @@ def test_host_persists_observation_under_stop_without_opening_trading_ports(tmp_
     assert resumed["last_fault_observation"]["stop"] == stop
     assert resumed["attempts"] == 0
     assert kill_switch_should_block_trading()
+
+
+def test_standing_recovery_requires_every_independent_cause_in_current_stop(tmp_path, monkeypatch):
+    import time
+
+    scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", ("instrument",), "c" * 64)
+    cause_keys = {cause: SigningKey.generate() for cause in ("R03", "R05")}
+    writer, issuer, keys, proof_root = _provision(
+        tmp_path, monkeypatch, scope, time.time, {"R05"}, cause_keys=cause_keys
+    )
+    writer.kill_v1(cause="R03", reason="FILEGATE state needed repair")
+    stop = writer.kill_v1(cause="R05", reason="session loss")
+    assert stop["causes"] == ["R03", "R05"]
+    issuer_path = tmp_path / "test-issuer"
+    issuer_path.write_bytes(bytes(issuer))
+    issuer_path.chmod(0o600)
+    service = build_standing_managed_fault_recovery_v1(
+        state_root=tmp_path / "controller",
+        runtime_config={
+            "proof_root": str(proof_root),
+            "issuer_seed_path": str(issuer_path),
+            "interval_seconds": 1,
+        },
+    )
+
+    def publish_other_owners(current_stop):
+        for role in ("ACCOUNT", "HOST"):
+            publish_managed_owner_proof_v1(
+                root=proof_root,
+                proof=_proof(role=role, stop=current_stop, now=time.time(), key=keys[role]),
+            )
+
+    def integrity(current_stop):
+        return attest_managed_filegate_integrity_v1(
+            writer=writer, stop=current_stop, expires_at=time.time() + 60, key=cause_keys["R03"]
+        )
+
+    def risk(current_stop, *, observed_at, expires_at):
+        limits = RiskLimits(max_session_loss_usd=10)
+        return attest_managed_risk_recovery_v1(
+            stop=current_stop,
+            limits=limits,
+            context=RiskContext(observed_at, 0, -9, 0, 1, 1),
+            original_policy_sha256=fact_digest(asdict(limits)),
+            original_observation_sha256="d" * 64,
+            expires_at=expires_at,
+            key=cause_keys["R05"],
+        )
+
+    publish_other_owners(stop)
+    publish_managed_owner_proof_v1(root=proof_root, proof=integrity(stop))
+    assert service.poll_v1()["missing_proofs"] == ["CAUSE"]
+    publish_managed_owner_proof_v1(
+        root=proof_root,
+        proof=_proof(role="CAUSE", stop=stop, now=time.time(), key=keys["CAUSE"], cause="R05"),
+    )
+    assert service.poll_v1()["status"] == "BLOCKED_OBSERVING"
+    risk_proof = risk(stop, observed_at=stop["killed_at"], expires_at=time.time())
+    publish_managed_owner_proof_v1(root=proof_root, proof=risk_proof)
+    assert service.poll_v1()["status"] == "BLOCKED_OBSERVING"
+
+    stop = writer.kill_v1(cause="R05", reason="new stop after risk observation")
+    publish_other_owners(stop)
+    publish_managed_owner_proof_v1(
+        root=proof_root, proof=risk(stop, observed_at=time.time(), expires_at=time.time() + 60)
+    )
+    assert service.poll_v1()["missing_proofs"] == ["CAUSE"]
+    assert kill_switch_should_block_trading()
+    publish_managed_owner_proof_v1(root=proof_root, proof=integrity(stop))
+    result = service.poll_v1()
+    assert result["status"] == "SAFETY_RELEASE_CONFIRMED", result
+    assert writer.read_v1()["filegate_release_sha256"] == result["release_sha256"]
+    assert not kill_switch_should_block_trading()

@@ -17,6 +17,7 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_
 )
 from src.ops.filegate_recovery_authority_v1 import (
     EVIDENCE_ROLES,
+    RECOVERABLE_CAUSES,
     FilegateAuthorityError,
     attest_filegate_owner_evidence_v1,
 )
@@ -114,9 +115,10 @@ class ManagedFaultRecoveryV1:
         return {"status": "FAULT_RECOVERY_SERVICE_STOPPED"}
 
 
-def _proof_path(root, *, stop, role):
+def _proof_path(root, *, stop, role, cause=None):
     if (
         role not in EVIDENCE_ROLES
+        or (cause is not None and (role != "CAUSE" or cause not in RECOVERABLE_CAUSES))
         or type(stop["generation"]) is not int
         or not re.fullmatch(r"(?:[0-9a-f]{32}|[0-9a-f]{64})", stop["stop_id"])
         or not root.is_absolute()
@@ -126,7 +128,8 @@ def _proof_path(root, *, stop, role):
         or root.stat().st_mode & 0o077
     ):
         raise FilegateAuthorityError("FAULT_OWNER_PROOF_SCOPE_UNPROVEN")
-    path = root / f"{stop['generation']}-{stop['stop_id']}-{role}.json"
+    identity = f"{role}-{cause}" if cause is not None else role
+    path = root / f"{stop['generation']}-{stop['stop_id']}-{identity}.json"
     if path.resolve() != path or (path.exists() and not path.is_file()):
         raise FilegateAuthorityError("FAULT_OWNER_PROOF_SCOPE_UNPROVEN")
     return path
@@ -135,7 +138,7 @@ def _proof_path(root, *, stop, role):
 def publish_managed_owner_proof_v1(*, root, proof):
     """Publish an already signed Owner receipt for the independent service."""
     body = proof["body"]
-    path = _proof_path(root, stop=body["stop"], role=body["role"])
+    path = _proof_path(root, stop=body["stop"], role=body["role"], cause=body.get("cause"))
     temp = path.with_suffix(".json.tmp")
     if temp.resolve() != temp or (temp.exists() and not temp.is_file()):
         raise FilegateAuthorityError("FAULT_OWNER_PROOF_SCOPE_UNPROVEN")
@@ -148,7 +151,7 @@ def attest_managed_filegate_integrity_v1(*, writer, stop, expires_at, key):
         read_durable_filegate_join_evidence_v1,
     )
 
-    if type(writer) is not ManagedFilegateV1 or stop["causes"] != ["R03"]:
+    if type(writer) is not ManagedFilegateV1 or "R03" not in stop["causes"]:
         raise FilegateAuthorityError("FAULT_FILEGATE_INTEGRITY_SCOPE_UNPROVEN")
     raw = writer.state_path.read_bytes()
     evidence = read_durable_filegate_join_evidence_v1(state_path=str(writer.state_path))
@@ -162,6 +165,7 @@ def attest_managed_filegate_integrity_v1(*, writer, stop, expires_at, key):
         raise FilegateAuthorityError("FAULT_FILEGATE_INTEGRITY_SCOPE_UNPROVEN")
     return attest_filegate_owner_evidence_v1(
         role="CAUSE",
+        cause="R03",
         stop=stop,
         evidence_sha256=sha256(raw).hexdigest(),
         observed_at=time.time(),
@@ -196,19 +200,30 @@ def build_standing_managed_fault_recovery_v1(*, state_root: Path, runtime_config
             raise FilegateAuthorityError("HOST_FAULT_RECOVERY_ISSUER_SCOPE_UNPROVEN")
         issuer = SigningKey(key_file.read(33))
 
-    def observe(role):
-        def read(stop):
-            path = _proof_path(root, stop=stop, role=role)
-            try:
-                return json.loads(path.read_bytes())
-            except FileNotFoundError:
-                return None
+    def read_proof(stop, role, cause=None):
+        path = _proof_path(root, stop=stop, role=role, cause=cause)
+        try:
+            return json.loads(path.read_bytes())
+        except FileNotFoundError:
+            return None
 
-        return read
+    def observe_causes(stop):
+        causes = stop["causes"]
+        if not causes or not set(causes) <= RECOVERABLE_CAUSES:
+            return None
+        if not writer.requires_cause_proof_set_v1(stop):
+            proof = read_proof(stop, "CAUSE", causes[0])
+            return read_proof(stop, "CAUSE") if proof is None else proof
+        proofs = {cause: read_proof(stop, "CAUSE", cause) for cause in causes}
+        return proofs if all(proof is not None for proof in proofs.values()) else None
 
     return ManagedFaultRecoveryV1(
         writer=writer,
         issuer_key=issuer,
-        observations={role: observe(role) for role in EVIDENCE_ROLES},
+        observations={
+            "CAUSE": observe_causes,
+            "ACCOUNT": lambda stop: read_proof(stop, "ACCOUNT"),
+            "HOST": lambda stop: read_proof(stop, "HOST"),
+        },
         interval_seconds=runtime_config["interval_seconds"],
     )

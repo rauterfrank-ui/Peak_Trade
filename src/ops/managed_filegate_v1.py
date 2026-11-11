@@ -24,6 +24,7 @@ from src.ops.filegate_recovery_authority_v1 import (
     FilegateRecoveryScopeV1,
     issue_filegate_release_v1,
     public_key_hex_v1,
+    requires_cause_proof_set_v1,
     verify_filegate_release_v1,
     verify_filegate_protection_v1,
     verify_filegate_revocation_v1,
@@ -238,6 +239,7 @@ class ManagedFilegateV1:
         owner_public_keys,
         recoverable_causes,
         protection_public_key=None,
+        cause_public_keys=None,
     ):
         """Initialize one new deployment in KILLED. Reopening never provisions a head."""
         causes = set(recoverable_causes)
@@ -248,19 +250,26 @@ class ManagedFilegateV1:
         ):
             raise FilegateAuthorityError("FILEGATE_TRUST_BINDING_INVALID")
         owners = {role: public_key_hex_v1(key) for role, key in owner_public_keys.items()}
+        cause_keys = {
+            cause: public_key_hex_v1(key) for cause, key in (cause_public_keys or {}).items()
+        }
+        if not cause_keys.keys() <= causes:
+            raise FilegateAuthorityError("FILEGATE_TRUST_BINDING_INVALID")
         issuer = public_key_hex_v1(issuer_public_key)
-        if len(set(owners.values()) | {issuer}) != len(EVIDENCE_ROLES) + 1:
-            raise FilegateAuthorityError("FILEGATE_INDEPENDENT_KEYS_REQUIRED")
         protection = (
             None if protection_public_key is None else public_key_hex_v1(protection_public_key)
         )
-        if protection in set(owners.values()) | {issuer}:
+        keys = [issuer, *owners.values(), *cause_keys.values()]
+        if protection is not None:
+            keys.append(protection)
+        if len(set(keys)) != len(keys):
             raise FilegateAuthorityError("FILEGATE_INDEPENDENT_KEYS_REQUIRED")
         binding = {
             "state_path": str(self.state_path),
             "scope": scope.binding_v1(),
             "issuer": issuer,
             "owners": owners,
+            "cause_keys": cause_keys,
             "recoverable_causes": sorted(causes),
             "protection": protection,
         }
@@ -469,6 +478,14 @@ class ManagedFilegateV1:
                     self._publish(pending)
                     return None
             return self.kill_v1(cause="R09", reason=reason)
+
+    def requires_cause_proof_set_v1(self, stop):
+        self._validate_paths()
+        with self._database(readonly=True) as conn:
+            binding, head = self._head(conn)
+            if head["stop"] is None or head["stop"] != stop:
+                raise FilegateAuthorityError("FILEGATE_STOP_UNPROVEN")
+            return requires_cause_proof_set_v1(stop, binding.get("cause_keys", {}))
 
     def issue_release_v1(self, *, evidence, issuer_key):
         self._validate_paths()
