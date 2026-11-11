@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 import time
+from typing import Callable
 
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
@@ -45,6 +46,17 @@ class HostAccountObservationV1:
     pending_source: object | None = field(default=None, repr=False, compare=False)
 
 
+@dataclass(frozen=True)
+class StandingStartupAccountObservationPortV1:
+    """Deliver the original startup observation before account admission."""
+
+    fetch: Callable
+    reconcile: Callable[[HostAccountObservationV1], None]
+
+    def __call__(self, path, query):
+        return self.fetch(path, query)
+
+
 def collect_host_account_observation_v1(
     *,
     private_rest_fetch,
@@ -55,9 +67,13 @@ def collect_host_account_observation_v1(
 ) -> HostAccountObservationV1:
     """Reuse host baseline checks before any budget-store or binding mutation.
 
-    The caller supplies its existing private read capability. This collector
-    does not create a budget owner, reconcile persisted state or grant alpha.
+    The scoped standing startup can consume the completed observation through
+    its existing budget host before the startup gate uses it.
     """
+    startup_port = None
+    if type(private_rest_fetch) is StandingStartupAccountObservationPortV1:
+        startup_port = private_rest_fetch
+        private_rest_fetch = startup_port.fetch
     started = clock()
     uids = set()
     pending = []
@@ -148,6 +164,8 @@ def collect_host_account_observation_v1(
     if is_original_account_observation_source_v1(private_rest_fetch):
         private_rest_fetch.bind_completed_host_observation_v1(observation)
         observation = replace(observation, pending_source=private_rest_fetch)
+    if startup_port is not None:
+        startup_port.reconcile(observation)
     return observation
 
 
@@ -232,6 +250,7 @@ class PortfolioBudgetHostV1:
         reconciliation_transport=None,
         execution_environment="LIVE",
         entry_budget_policy=None,
+        execution_incident_state_path: Path | None = None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -263,6 +282,9 @@ class PortfolioBudgetHostV1:
         self.transport_retry_count = 0
         self.reconciliation_transport = reconciliation_transport
         self.execution_environment = execution_environment
+        self.execution_incident_state_path = execution_incident_state_path
+        if execution_incident_state_path is not None and execution_environment != "LIVE":
+            raise ValueError("HOST_EXECUTION_INCIDENT_LIVE_SCOPE_REQUIRED")
         if entry_budget_policy is not None:
             from .test_phase_limits_v1 import (
                 BoundedSlotEntryBudgetV1,
@@ -281,6 +303,19 @@ class PortfolioBudgetHostV1:
 
     def observe_v1(self, bindings):
         return self._observe_with_retry_v1(bindings)
+
+    def reconcile_standing_startup_observation_v1(self, bindings, observation):
+        """Use the completed startup sample in the same owner used later by S5."""
+        if (
+            self.closed
+            or self.owner is not None
+            or self.durable_mode != "recover"
+            or self.execution_incident_state_path is None
+            or type(observation) is not HostAccountObservationV1
+            or observation.account != self.expected_account_identity
+        ):
+            raise ValueError("HOST_EXECUTION_STANDING_STARTUP_OBSERVATION_UNPROVEN")
+        self._bind_observation_v1(bindings, observation)
 
     def observe_execution_reconciliation_evidence_v1(self, bindings):
         """Expose original snapshots only for the explicit isolated SHADOW probe."""
@@ -364,6 +399,11 @@ class PortfolioBudgetHostV1:
             clock=self.clock,
             expected_account=self.expected_account_identity,
         )
+        return self._bind_observation_v1(
+            bindings, observation, rebound_request=rebound_request, capture=capture
+        )
+
+    def _bind_observation_v1(self, bindings, observation, *, rebound_request=None, capture=None):
         account = observation.account
         if self.bindings is not None and self.bindings != bindings and rebound_request is None:
             raise ValueError("HOST_BUDGET_LANE_GENERATION_CHANGED")
@@ -436,11 +476,25 @@ class PortfolioBudgetHostV1:
         }
         if not submitted:
             return {}
+        deliver_incidents = capture is None and self.execution_incident_state_path is not None
         if self.reconciliation_transport is None:
+            if deliver_incidents:
+                raise ValueError("HOST_EXECUTION_READ_PORT_MISSING")
             return {
                 rid: {"matched": False, "reason_codes": ["HOST_EXECUTION_READ_PORT_MISSING"]}
                 for rid in submitted
             }
+        if deliver_incidents:
+            from src.ops.execution_reconciliation_get_provenance_v1 import (
+                AuthenticatedReconciliationGetV1,
+            )
+
+            capture = AuthenticatedReconciliationGetV1(
+                self.reconciliation_transport,
+                account=self.account,
+                clock=self.clock,
+                retain_response_bodies=True,
+            )
         transport = self.reconciliation_transport if capture is None else capture
         config = transport.get(
             endpoint="/api/v5/account/config",
@@ -485,6 +539,25 @@ class PortfolioBudgetHostV1:
             )
             if capture is not None and type(identity) is PortfolioExecutionReconciliationIdentityV2:
                 capture.record_v1(self, rid, identity, snapshot, acquired, result[rid])
+                if deliver_incidents:
+                    from src.ops.execution_incident_host_v1 import (
+                        deliver_authenticated_host_execution_incident_v1,
+                    )
+
+                    deliver_authenticated_host_execution_incident_v1(
+                        host=self,
+                        capture=capture,
+                        reservation_id=rid,
+                        identity=identity,
+                        snapshot=snapshot,
+                        result=result[rid],
+                        observed_at=acquired,
+                    )
+        if deliver_incidents and any(
+            not item["matched"] or item["decision"]["reconciliation_complete"] is not True
+            for item in result.values()
+        ):
+            raise ValueError("HOST_BUDGET_EXECUTION_RECONCILIATION_UNRESOLVED")
         return result
 
     def close(self):

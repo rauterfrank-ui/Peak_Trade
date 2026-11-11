@@ -7,6 +7,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
+from src.ops.execution_incident_safety_v1 import ExecutionIncidentHaltV1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
     POST_ALLOWED,
@@ -31,6 +32,7 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     FullCoreFreshPretradeGetTransportV1,
     collect_fresh_pretrade_runtime_get_v1,
 )
+from src.ops.gates.risk_gate import canonical_kill_switch_state_path
 from src.ops.hard_facts_system_closure_v1.authority_proof_v1 import (
     prove_hard_facts_authority_invariants_v1,
 )
@@ -82,6 +84,17 @@ def _record_supervisor_outcome_v1(run):
         try:
             result = run(**kwargs)
         except Exception as exc:
+            extra = {
+                "exception_type": type(exc).__name__,
+                "automatic_restart_allowed": False,
+            }
+            if isinstance(exc.__cause__, ExecutionIncidentHaltV1):
+                receipt = exc.__cause__.receipt
+                extra["execution_incident_id"] = receipt["incident_id"]
+                extra["execution_incident_kill_revision"] = receipt["kill_revision"]
+                extra["execution_incident_raw_get_proof_status"] = (
+                    exc.__cause__.raw_get_proof_status
+                )
             try:
                 record_runtime_notice_v1(
                     evidence_root=config.evidence_root,
@@ -91,10 +104,7 @@ def _record_supervisor_outcome_v1(run):
                     action="Inspect the failing owner, reconcile durable state and verify authorization before a new run. Do not clear safety locks.",
                     owner_action_required=True,
                     notification_kind="FAULT",
-                    extra={
-                        "exception_type": type(exc).__name__,
-                        "automatic_restart_allowed": False,
-                    },
+                    extra=extra,
                 )
             except OSError:
                 pass  # local notice writer logs failure; preserve original exception
@@ -285,75 +295,103 @@ def run_n1_standing_pre_external_supervisor_v1(
         venue_native_id=config.venue_native_id,
     )
 
-    if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
-        from datetime import datetime, timezone
-        from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
-
-        if config.cap24_productivity_root is None or not config.expected_account_identity:
-            raise StandingSupervisorError("N1_START_ACCOUNT_AND_SELECTION_ROOT_REQUIRED")
-        if (
-            config.venue_native_id != bound.venue_native_id
-            or config.canonical_instrument_id != bound.instrument_id
-        ):
-            raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
-        startup = acquire_account_bound_n1_startup_v1(
-            productivity_root=config.cap24_productivity_root,
-            repository_sha=origin_main_sha,
-            binding_epoch=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            expected_account_identity=config.expected_account_identity,
-            session_id=run_id,
-            private_rest_fetch=private_rest_fetch,
-            expected_bound=bound,
-        )
-        bound = startup.handoff.bound_instrument
-        trace.extra["startup_account_bound"] = True
-        trace.extra["startup_selection_id"] = startup.handoff.selection_id
-
-    recovery = _run_unified_recovery_v1(
-        config=config,
-        public_rest_fetch=public_rest_fetch,
-        private_rest_fetch=private_rest_fetch,
+    owner_go_consumed = False
+    policy_result: PolicyGovernedContinuousRunResultV1 | None = None
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        PortfolioBudgetHostV1,
+        StandingStartupAccountObservationPortV1,
     )
-    if not recovery.ok:
-        raise StandingSupervisorError(
-            "UNIFIED_RECOVERY_FAIL_CLOSED",
-            recovery.fail_closed_reason,
-        )
-    trace.observation_recovery_completed = True
-    trace.recovery_completed = recovery.runtime_owner_recovery_complete
-    trace.recovery_steps = list(recovery.steps_completed)
-    trace.extra["recovery_evidence_scope"] = recovery.evidence_scope
-    trace.extra["pending_runtime_recovery_steps"] = list(recovery.pending_runtime_steps)
 
-    if config.simulate_restart_before_continuous:
-        recovery_restart = _run_unified_recovery_v1(
+    budget_host = None
+
+    def get_budget_host():
+        nonlocal budget_host
+        if budget_host is None:
+            incident_path = None
+            if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
+                incident_path = Path(canonical_kill_switch_state_path()).resolve()
+                if config.kill_switch_state_path is not None and (
+                    Path(config.kill_switch_state_path).resolve() != incident_path
+                ):
+                    raise StandingSupervisorError("INCIDENT_FILEGATE_SCOPE_MISMATCH")
+            budget_host = PortfolioBudgetHostV1(
+                root=budget_owner_root_for_config_v1(config),
+                private_rest_fetch=private_rest_fetch,
+                repository_sha=origin_main_sha,
+                session_id=str(config.evidence_root.name),
+                expected_account_identity=config.expected_account_identity,
+                durable_mode="recover",
+                reconciliation_transport=pretrade_transport,
+                execution_incident_state_path=incident_path,
+                retry_interval_seconds=authorization.wait_interval_seconds,
+                **({"retry_sleep": sleep_fn} if sleep_fn is not None else {}),
+            )
+        return budget_host
+
+    try:
+        if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
+            from datetime import datetime, timezone
+            from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
+
+            if config.cap24_productivity_root is None or not config.expected_account_identity:
+                raise StandingSupervisorError("N1_START_ACCOUNT_AND_SELECTION_ROOT_REQUIRED")
+            if (
+                config.venue_native_id != bound.venue_native_id
+                or config.canonical_instrument_id != bound.instrument_id
+            ):
+                raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
+
+            def reconcile_startup_observation(observation):
+                get_budget_host().reconcile_standing_startup_observation_v1(
+                    {"LANE_1": bound}, observation
+                )
+
+            startup = acquire_account_bound_n1_startup_v1(
+                productivity_root=config.cap24_productivity_root,
+                repository_sha=origin_main_sha,
+                binding_epoch=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                expected_account_identity=config.expected_account_identity,
+                session_id=run_id,
+                private_rest_fetch=StandingStartupAccountObservationPortV1(
+                    fetch=private_rest_fetch,
+                    reconcile=reconcile_startup_observation,
+                ),
+                expected_bound=bound,
+            )
+            bound = startup.handoff.bound_instrument
+            trace.extra["startup_account_bound"] = True
+            trace.extra["startup_selection_id"] = startup.handoff.selection_id
+
+        recovery = _run_unified_recovery_v1(
             config=config,
             public_rest_fetch=public_rest_fetch,
             private_rest_fetch=private_rest_fetch,
         )
-        if not recovery_restart.ok:
+        if not recovery.ok:
             raise StandingSupervisorError(
-                "UNIFIED_RECOVERY_RESTART_FAIL_CLOSED",
-                recovery_restart.fail_closed_reason,
+                "UNIFIED_RECOVERY_FAIL_CLOSED",
+                recovery.fail_closed_reason,
             )
-        trace.extra["recovery_restart_before_continuous"] = True
+        trace.observation_recovery_completed = True
+        trace.recovery_completed = recovery.runtime_owner_recovery_complete
+        trace.recovery_steps = list(recovery.steps_completed)
+        trace.extra["recovery_evidence_scope"] = recovery.evidence_scope
+        trace.extra["pending_runtime_recovery_steps"] = list(recovery.pending_runtime_steps)
 
-    owner_go_consumed = False
-    policy_result: PolicyGovernedContinuousRunResultV1 | None = None
-    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import PortfolioBudgetHostV1
+        if config.simulate_restart_before_continuous:
+            recovery_restart = _run_unified_recovery_v1(
+                config=config,
+                public_rest_fetch=public_rest_fetch,
+                private_rest_fetch=private_rest_fetch,
+            )
+            if not recovery_restart.ok:
+                raise StandingSupervisorError(
+                    "UNIFIED_RECOVERY_RESTART_FAIL_CLOSED",
+                    recovery_restart.fail_closed_reason,
+                )
+            trace.extra["recovery_restart_before_continuous"] = True
 
-    budget_host = PortfolioBudgetHostV1(
-        root=budget_owner_root_for_config_v1(config),
-        private_rest_fetch=private_rest_fetch,
-        repository_sha=origin_main_sha,
-        session_id=str(config.evidence_root.name),
-        expected_account_identity=config.expected_account_identity,
-        durable_mode="recover",
-        reconciliation_transport=pretrade_transport,
-        retry_interval_seconds=authorization.wait_interval_seconds,
-        **({"retry_sleep": sleep_fn} if sleep_fn is not None else {}),
-    )
-    try:
+        budget_host = get_budget_host()
         if post_close_startup_recovery is not None:
             from .startup_binding_v1 import recover_post_close_before_runtime_v1
 
@@ -460,25 +498,26 @@ def run_n1_standing_pre_external_supervisor_v1(
         owner_go_consumed = (
             config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json"
         ).is_file()
-    except PersistentNaturalEnterConvergenceError as exc:
+    except (PersistentNaturalEnterConvergenceError, ExecutionIncidentHaltV1) as exc:
         raise StandingSupervisorError(exc.reason_code, exc.detail) from exc
     finally:
-        budget_state = (
-            budget_host.owner.budget_state_v1() if budget_host.owner is not None else None
-        )
-        trace.extra["portfolio_budget_host"] = {
-            "durable_root": str(budget_host.root),
-            "owner_opened": budget_host.owner is not None,
-            "active_reservation_sum": str(budget_host.owner.active_sum_v1())
-            if budget_host.owner is not None
-            else "UNKNOWN",
-            "recovery_required_before_close": budget_state.recovery_required
-            if budget_state is not None
-            else True,
-            "transport_retry_count": budget_host.transport_retry_count,
-            "venue_fill_integrated": False,
-        }
-        budget_host.close()
+        if budget_host is not None:
+            budget_state = (
+                budget_host.owner.budget_state_v1() if budget_host.owner is not None else None
+            )
+            trace.extra["portfolio_budget_host"] = {
+                "durable_root": str(budget_host.root),
+                "owner_opened": budget_host.owner is not None,
+                "active_reservation_sum": str(budget_host.owner.active_sum_v1())
+                if budget_host.owner is not None
+                else "UNKNOWN",
+                "recovery_required_before_close": budget_state.recovery_required
+                if budget_state is not None
+                else True,
+                "transport_retry_count": budget_host.transport_retry_count,
+                "venue_fill_integrated": False,
+            }
+            budget_host.close()
 
     orch = policy_result.orchestrator_result
     trace.governed_cycle_count = int(orch.cycles_completed)

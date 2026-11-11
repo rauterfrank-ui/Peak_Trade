@@ -18,6 +18,26 @@ from src.webui.ops_cockpit import (
 )
 
 
+def test_standing_incident_panel_requires_explicit_readable_worker_output(monkeypatch, tmp_path):
+    from src.webui.app import app
+    from src.webui.standing_incident_panel_v1 import ENV_INCIDENT_DIAGNOSTICS_ROOT
+
+    client = TestClient(app)
+    monkeypatch.delenv(ENV_INCIDENT_DIAGNOSTICS_ROOT, raising=False)
+    assert "standing-incident-title" not in client.get("/ops").text
+    root = tmp_path / "diagnostics"
+    root.mkdir(mode=0o700)
+    foreign = tmp_path / "foreign.json"
+    foreign.write_text('{"private_data":"must-stay-private"}')
+    latest = root / "execution-incident-diagnostics-latest-v1.json"
+    latest.symlink_to(foreign)
+    monkeypatch.setenv(ENV_INCIDENT_DIAGNOSTICS_ROOT, str(root))
+    page = client.get("/ops")
+    assert page.status_code == 200 and page.headers["cache-control"] == "no-store"
+    assert "Kein lesbarer Diagnosebeleg vorhanden" in page.text
+    assert "must-stay-private" not in page.text
+
+
 def test_workflow_officer_panel_context_empty_repo(tmp_path: Path) -> None:
     ctx = build_workflow_officer_panel_context(tmp_path)
     assert ctx["present"] is False
