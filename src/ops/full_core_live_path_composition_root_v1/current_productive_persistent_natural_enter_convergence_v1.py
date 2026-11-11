@@ -633,6 +633,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         mark_price_payload: Mapping[str, Any] | None = None,
         index_tickers_payload: Mapping[str, Any] | None = None,
         mark_acquired_at_utc: str = "",
+        seal_no_effect_hold_v1: Callable[[Path, Mapping[str, Any]], None] | None = None,
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
         if execute_network or perform_get:
@@ -737,6 +738,7 @@ def make_n1_occupied_lane_s5_runner_v1(
             perform_get=False,
             eg_cycle_dispatch=eg_cycle_dispatch or non_v5_eg_dispatch_v1,
             t2_cycle_dispatch=t2_dispatch,
+            seal_no_effect_hold_v1=seal_no_effect_hold_v1,
         )
 
         from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (

@@ -404,14 +404,22 @@ class ManagedFilegateV1:
                 raise FilegateAuthorityError("FILEGATE_STOP_UNPROVEN")
             return head["stop"]
 
-    def set_host_checkpoint_v1(self, *, lock_path: Path, checkpoint: dict | None):
+    def set_host_checkpoint_v1(
+        self, *, lock_path: Path, checkpoint: dict | None, expected_release_sha256=None
+    ):
         """Fence old WAIT evidence before the original host advances to a cycle."""
         with self._lock(), self._database() as conn, conn:
             _, head = self._head(conn)
             if checkpoint is None:
                 conn.execute("DELETE FROM host_checkpoints WHERE lock_path = ?", (str(lock_path),))
                 return
-            if head["stop"] is not None or not self._matches(head) or self._has_pending_kill():
+            if (
+                head["stop"] is not None
+                or not self._matches(head)
+                or self._has_pending_kill()
+                or expected_release_sha256 is None
+                or head["projection"].get("filegate_release_sha256") != expected_release_sha256
+            ):
                 raise FilegateAuthorityError("FILEGATE_HOST_CHECKPOINT_ADMISSION_DENIED")
             conn.execute(
                 "INSERT INTO host_checkpoints VALUES (?, ?) ON CONFLICT(lock_path) "
@@ -427,6 +435,27 @@ class ManagedFilegateV1:
                 "SELECT checkpoint FROM host_checkpoints WHERE lock_path = ?", (str(lock_path),)
             ).fetchone()
             return None if row is None else json.loads(row[0])
+
+    def retire_host_checkpoint_v1(self, *, lock_path: Path, lock_receipt: bytes):
+        """Retain the confirmed WAIT claim before its owner releases exclusion."""
+        with self._lock(), self._database() as conn, conn:
+            self._head(conn)
+            row = conn.execute(
+                "SELECT checkpoint FROM host_checkpoints WHERE lock_path = ?", (str(lock_path),)
+            ).fetchone()
+            checkpoint = None if row is None else json.loads(row[0])
+            if (
+                checkpoint is None
+                or lock_path.read_bytes() != lock_receipt
+                or json.loads(lock_receipt).get("pid") != os.getpid()
+                or checkpoint["lock_sha256"] != sha256(lock_receipt).hexdigest()
+            ):
+                raise FilegateAuthorityError("FILEGATE_HOST_CHECKPOINT_RETIRE_UNPROVEN")
+            checkpoint["retired_lock_receipt"] = lock_receipt.decode()
+            conn.execute(
+                "UPDATE host_checkpoints SET checkpoint = ? WHERE lock_path = ?",
+                (canonical_json_text(checkpoint), str(lock_path)),
+            )
 
     def repair_projection_v1(self):
         """Record an integrity stop when the projection has been damaged or rolled back."""

@@ -11,6 +11,9 @@ import time
 
 import pytest
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+)
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
     UnattendedHostBoundsV1,
     run_unattended_n1_host_v1,
@@ -33,6 +36,11 @@ REPO = Path(__file__).resolve().parents[2]
         ("managed-hold-s5-changed", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("managed-restore-wait", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("managed-partial-s5", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("managed-sealed-partial-s5", None),
+        ("managed-sealed-partial-s5-changed", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("managed-sealed-partial-s5-kill", "HOST_RESTART_FILEGATE_BLOCKED"),
+        ("managed-orderly-stop", None),
+        ("managed-orderly-stop-unproven", "HOST_RESTART_FILEGATE_BLOCKED"),
         ("managed-joint-rollback", "HOST_RESTART_FILEGATE_BLOCKED"),
         ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
         ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
@@ -73,11 +81,22 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         writer = ManagedFilegateV1(state_path=filegate.state_file, root=separate)
         issuer = SigningKey.generate()
         keys = {role: SigningKey.generate() for role in ("CAUSE", "ACCOUNT", "HOST")}
+        orderly = phase.startswith("managed-orderly-stop")
+        if orderly:
+            (tmp_path / "fixture-keys.json").write_text(
+                json.dumps(
+                    {role: bytes(key).hex() for role, key in {"issuer": issuer, **keys}.items()}
+                )
+            )
         stop = writer.provision_v1(
             scope=FilegateRecoveryScopeV1(
                 "synthetic",
                 "SHADOW",
-                str(tmp_path / "private_store"),
+                str(
+                    tmp_path / "private_store" / "portfolio_budget_host_v1"
+                    if orderly
+                    else tmp_path / "private_store"
+                ),
                 (_bound_lane_1().venue_native_id,),
                 "a" * 64,
             ),
@@ -107,6 +126,29 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     if env.get("GITHUB_ACTIONS") == "true":
         env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     command = [str(REPO / "scripts/pt"), "-m", "tests.ops._unattended_n1_worker_v1", str(tmp_path)]
+    if phase.startswith("managed-orderly-stop"):
+        completed = subprocess.run(
+            [*command, phase], cwd=REPO, env=env, capture_output=True, text=True, timeout=25
+        )
+        assert completed.returncode == 0, completed.stderr
+        result = json.loads(completed.stdout.splitlines()[-1])
+        before = json.loads((tmp_path / "cursor-before-filegate-loss.json").read_bytes())
+        cursor = next((tmp_path / "lane_state").rglob(CURSOR_FILENAME))
+        after = json.loads(cursor.read_bytes())
+        proof = tmp_path / "retired-host-proof.json"
+        if blocker is not None:
+            assert result["status"] == "STOPPED" and result["checkpoint_blocker"] == blocker
+            assert result["attempts"] == 1
+            assert not proof.exists() and after == before
+            assert writer.inspect_stop_v1()["causes"] == ["R03"]
+        else:
+            assert result["status"] == "COMPLETED"
+            assert result["attempts"] == result["cycles_used"] == 2
+            assert result["last_fault_observation"]["status"] == "SAFETY_RELEASE_CONFIRMED"
+            assert json.loads(proof.read_bytes())["body"]["stop"]["causes"] == ["R03"]
+            assert writer.read_v1()["state"] == "ACTIVE"
+            assert after["trading_epoch"] == before["trading_epoch"] + 1
+        return
     with (tmp_path / "stderr").open("w") as stderr:
         start_phase = {
             "during": "during",
@@ -114,6 +156,9 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             "managed-hold-s5-changed": "managed-hold-publish",
             "managed-restore-wait": "managed-restore-wait",
             "managed-partial-s5": "managed-partial-s5",
+            "managed-sealed-partial-s5": "managed-sealed-partial-s5",
+            "managed-sealed-partial-s5-changed": "managed-sealed-partial-s5",
+            "managed-sealed-partial-s5-kill": "managed-sealed-partial-s5",
             "managed-joint-rollback": "managed-joint-rollback",
         }.get(phase, "before")
         child = subprocess.Popen(
@@ -217,6 +262,22 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         s5_ledger = Path(checkpoint["s5_ledger"])
         partial_s5 = s5_ledger.read_bytes()
         assert json.loads(partial_s5)["state"] == "IN_PROGRESS"
+    elif phase.startswith("managed-sealed-partial-s5"):
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
+            LOCK_NAME,
+        )
+
+        s5_ledger = Path(checkpoint["s5_ledger"])
+        assert json.loads(s5_ledger.read_bytes())["state"] == "IN_PROGRESS"
+        anchor = writer.read_host_checkpoint_v1(lock_path=Path(prior["lock_root"]) / LOCK_NAME)
+        assert anchor["s5_terminal_ledger"]["terminal_class"] == "MARKET_STATE_REQUIRED"
+        assert anchor["s5_terminal_ledger"]["portfolio_reservation_id"] == ""
+        assert anchor["wait_ledger"]["consumed_instance_ids"] == [s5_ledger.parents[1].name]
+        if phase.endswith("-changed"):
+            s5_ledger.write_bytes(s5_ledger.read_bytes() + b"\n")
+        if phase.endswith("-kill"):
+            writer.kill_v1(cause="R09", reason="fixture kill after sealed S5 HOLD")
+        partial_s5 = s5_ledger.read_bytes()
 
     def restart():
         restart_phase = (
@@ -250,7 +311,7 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         assert result["attempts"] == 1
         assert cursor.read_bytes() == old_cursor
         assert not (tmp_path / "controller/attempts/2").exists()
-        if phase == "managed-partial-s5":
+        if phase == "managed-partial-s5" or phase.startswith("managed-sealed-partial-s5"):
             assert s5_ledger.read_bytes() == partial_s5
         if phase == "managed-joint-rollback":
             stop = writer.inspect_stop_v1()
@@ -281,6 +342,9 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             json.loads(cursor.read_bytes())["trading_epoch"]
             == json.loads(old_cursor)["trading_epoch"] + 1
         )
+        if phase == "managed-sealed-partial-s5":
+            assert s5_ledger.read_bytes() == partial_s5
+            assert len(list(s5_ledger.parents[2].iterdir())) == 1
         before = (
             tmp_path / "controller/attempts/1/governed_continuous_cycle_run_ledger_v1.json"
         ).read_bytes()

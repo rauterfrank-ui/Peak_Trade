@@ -21,6 +21,10 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
+    atomic_write_text,
+    canonical_json_text,
+)
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
     AuthorizationLifecycleLockV1,
     LifecycleLockError,
@@ -195,11 +199,7 @@ def _token(value: bool) -> str:
 
 
 def _persist_json(*, path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n",
-        encoding="utf-8",
-    )
+    atomic_write_text(path=path, text=canonical_json_text(payload))
 
 
 def _binding_digest(authorization: CurrentProductiveGovernedCycleAuthorizationV1) -> str:
@@ -412,6 +412,7 @@ def run_current_productive_governed_cycle_v1(
     eg_cycle_dispatch: CycleDispatchV1 | None = None,
     t2_cycle_dispatch: CycleDispatchV1 | None = None,
     position_management_cycle_dispatch: CycleDispatchV1 | None = None,
+    seal_no_effect_hold_v1: Callable[[Path, Mapping[str, Any]], None] | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
@@ -486,7 +487,12 @@ def run_current_productive_governed_cycle_v1(
     reason_code = ""
     next_owner = ""
 
-    def _write_ledger(*, state: str, extra: Mapping[str, Any] | None = None) -> None:
+    def _write_ledger(
+        *,
+        state: str,
+        extra: Mapping[str, Any] | None = None,
+        seal_hold: bool = False,
+    ) -> None:
         payload = {
             "state": state,
             "binding_digest": digest,
@@ -504,7 +510,11 @@ def run_current_productive_governed_cycle_v1(
         payload.update(k1_ledger_extra)
         if extra:
             payload.update(dict(extra))
-        _persist_json(path=Path(evidence_root) / LEDGER_FILENAME, payload=payload)
+        path = Path(evidence_root) / LEDGER_FILENAME
+        if seal_hold and seal_no_effect_hold_v1 is not None:
+            lock.assert_held()
+            seal_no_effect_hold_v1(path, payload)
+        _persist_json(path=path, payload=payload)
         trans_path = Path(evidence_root) / "transitions.jsonl"
         with trans_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, sort_keys=True, ensure_ascii=True) + "\n")
@@ -1065,6 +1075,18 @@ def run_current_productive_governed_cycle_v1(
             )
         _write_ledger(
             state=STATE_COMPLETED,
+            seal_hold=(
+                disposition == DISPOSITION_HOLD
+                and terminal_class == "MARKET_STATE_REQUIRED"
+                and eligible.lower() == "false"
+                and not envelope_id
+                and not envelope_digest
+                and final_order_envelope is None
+                and close_execution_handoff is None
+                and not getattr(t2_result, "portfolio_reservation_id", "")
+                and getattr(t2_result, "canonical_order_intent", None) is None
+                and getattr(t2_result, "execution_plan_context", None) is None
+            ),
             extra={
                 "reason_code": reason_code,
                 "terminal_class": terminal_class,

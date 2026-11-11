@@ -70,6 +70,19 @@ def main():
 
             def poll(self):
                 self.polls += 1
+                if phase.startswith("managed-orderly-stop") and index == 1 and self.polls == 2:
+                    from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+                    writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
+                    (root / "cursor-before-filegate-loss.json").write_bytes(
+                        (cursor / CURSOR_FILENAME).read_bytes()
+                    )
+                    if phase.endswith("-unproven"):
+                        writer.set_host_checkpoint_v1(
+                            lock_path=root / "shared_lock" / s6.LOCK_NAME, checkpoint=None
+                        )
+                    writer.state_path.unlink()
+                    return None
                 if phase == "before" and index == 1 and self.polls == 2:
                     write_json(
                         root / "checkpoint.json",
@@ -178,14 +191,17 @@ def main():
                 original_write(path=path, payload=payload)
 
             stack.enter_context(patch.object(s6, "_persist_json", write))
-        if phase == "managed-partial-s5":
+        if phase in {"managed-partial-s5", "managed-sealed-partial-s5"}:
             original_s5_write = s5._persist_json
 
             def write_s5(*, path, payload):
                 if (
                     path.name == s5.LEDGER_FILENAME
                     and payload.get("state") == s5.STATE_COMPLETED
-                    and (root / "before-partial-s5-cursor.json").exists()
+                    and (
+                        phase == "managed-sealed-partial-s5"
+                        or (root / "before-partial-s5-cursor.json").exists()
+                    )
                 ):
                     signal_checkpoint(s5_ledger=str(path))
                 original_s5_write(path=path, payload=payload)
@@ -211,6 +227,68 @@ def main():
                     )
                 )
         host_options = {}
+        if phase.startswith("managed-orderly-stop"):
+            from nacl.signing import SigningKey
+
+            from src.ops.filegate_recovery_authority_v1 import attest_filegate_owner_evidence_v1
+            from src.ops.managed_fault_recovery_v1 import (
+                ManagedFaultRecoveryV1,
+                attest_managed_filegate_integrity_v1,
+            )
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+            from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
+                attest_managed_n1_wait_checkpoint_v1,
+            )
+
+            keys = {
+                role: SigningKey(bytes.fromhex(raw))
+                for role, raw in json.loads((root / "fixture-keys.json").read_bytes()).items()
+            }
+            writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
+
+            def attest_host(stop):
+                assert not (root / "shared_lock" / s6.LOCK_NAME).exists()
+                proof = attest_managed_n1_wait_checkpoint_v1(
+                    writer=writer,
+                    stop=stop,
+                    state_root=root / "controller",
+                    bounds=bounds,
+                    expires_at=time.time() + 4,
+                    key=keys["HOST"],
+                )
+                write_json(root / "retired-host-proof.json", proof)
+                return proof
+
+            def stop_if_unproven(_):
+                state = json.loads(
+                    (root / "controller" / "host_restart_state_v1.json").read_bytes()
+                )
+                assert state["last_fault_observation"]["missing_proofs"] == ["HOST"]
+                assert state["attempts"] == 1
+                (root / "controller" / "STOP").touch()
+
+            host_options = {
+                "fault_recovery": ManagedFaultRecoveryV1(
+                    writer=writer,
+                    issuer_key=keys["issuer"],
+                    observations={
+                        "CAUSE": lambda stop: attest_managed_filegate_integrity_v1(
+                            writer=writer, stop=stop, expires_at=time.time() + 4, key=keys["CAUSE"]
+                        ),
+                        "ACCOUNT": lambda stop: attest_filegate_owner_evidence_v1(
+                            role="ACCOUNT",
+                            stop=stop,
+                            evidence_sha256="b" * 64,
+                            observed_at=time.time(),
+                            expires_at=time.time() + 4,
+                            key=keys["ACCOUNT"],
+                        ),
+                        "HOST": attest_host,
+                    },
+                    interval_seconds=1,
+                ),
+                **({"sleeper": stop_if_unproven} if phase.endswith("-unproven") else {}),
+            }
         if phase in {"after-managed-monitor", "after-managed-joint-rollback"}:
             from nacl.signing import SigningKey
 

@@ -12,6 +12,7 @@ import json
 import math
 import os
 from pathlib import Path
+import sqlite3
 import time
 import uuid
 
@@ -24,6 +25,8 @@ from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 impor
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     read_dead_owner_wait_ledger_v1,
+    REASON_MANAGED_FILEGATE_ACTIVE_UNPROVEN,
+    REASON_MANAGED_FILEGATE_REVISION_CHANGED,
     LEDGER_FILENAME,
     LOCK_AUTHORIZATION_ID,
     LOCK_NAME,
@@ -145,17 +148,6 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
             or len(process["cmdline_fingerprint"]) != 64
         ):
             return None, "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
-        try:
-            os.kill(pid, 0)
-        except ProcessLookupError:
-            pass
-        except OSError:
-            return None, "HOST_RESTART_PREVIOUS_OWNER_UNPROVEN"
-        else:
-            # A reused PID also remains fenced. The original S6 lock has the
-            # same rule and will independently recheck before taking ownership.
-            return None, "HOST_RESTART_PREVIOUS_PID_PRESENT"
-
         evidence = root / "attempts" / str(state["attempts"])
         cursor_root = Path(state["roots"]["lane_state_root"]) / "LANE_1"
         ledger_path = evidence / LEDGER_FILENAME
@@ -166,7 +158,26 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
             or prior["cursor_root"] != str(cursor_root)
         ):
             return None, "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"
-        lock = json.loads(lock_path.read_bytes())
+        retired = not lock_path.exists()
+        if retired:
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+            writer = configured_filegate_writer_v1(Path(prior["filegate_path"]))
+            anchor = None if writer is None else writer.read_host_checkpoint_v1(lock_path=lock_path)
+            if not isinstance(anchor, dict) or "retired_lock_receipt" not in anchor:
+                return None, "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
+            lock = json.loads(anchor["retired_lock_receipt"])
+        else:
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                pass
+            except OSError:
+                return None, "HOST_RESTART_PREVIOUS_OWNER_UNPROVEN"
+            else:
+                # A reused PID still requires explicit retirement of its claim.
+                return None, "HOST_RESTART_PREVIOUS_PID_PRESENT"
+            lock = json.loads(lock_path.read_bytes())
         context = lock["recovery_context"]
         owner = "current_productive_governed_continuous_cycle_orchestrator_v1"
         if (
@@ -194,6 +205,7 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
             filegate_path=Path(prior["filegate_path"]),
             repository_sha=prior.get("repository_sha"),
             require_independent=other_boot,
+            retired=retired,
         )
         if ledger is None:
             return None, (
@@ -214,7 +226,7 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
         ):
             return None, "HOST_RESTART_CHECKPOINT_CYCLE_OR_CURSOR_CHANGED"
         return (consumed, floor), None
-    except (AttributeError, OSError, OverflowError, TypeError, ValueError, KeyError):
+    except (AttributeError, OSError, OverflowError, TypeError, ValueError, KeyError, sqlite3.Error):
         return None, "HOST_RESTART_CHECKPOINT_UNREADABLE"
 
 
@@ -588,13 +600,20 @@ def run_unattended_n1_host_v1(
                     continue
                 return stop("GOVERNED_RUNTIME_STOPPED")
             except StandingSupervisorError as exc:
-                if (
-                    fault_recovery is None
-                    or exc.reason_code != "EXECUTION_GHOSV_SAFETY_HALT"
-                    or _filegate_revision(filegate) is not None
-                ):
+                if fault_recovery is None:
                     raise
-                state["checkpoint_blocker"] = exc.reason_code
+                if exc.reason_code in {
+                    REASON_MANAGED_FILEGATE_ACTIVE_UNPROVEN,
+                    REASON_MANAGED_FILEGATE_REVISION_CHANGED,
+                }:
+                    state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                elif (
+                    exc.reason_code == "EXECUTION_GHOSV_SAFETY_HALT"
+                    and _filegate_revision(filegate) is None
+                ):
+                    state["checkpoint_blocker"] = exc.reason_code
+                else:
+                    raise
                 stop("RECOVERY_CHECKPOINT_REQUIRED")
                 continue
             except (TimeoutError, ConnectionError):

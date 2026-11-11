@@ -70,6 +70,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     OCCUPANCY_OWNER_GO,
+    cursor_last_accepted_c1_venue_event_time_v1,
     load_current_productive_c1_cursor_or_reason_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
@@ -183,6 +184,8 @@ DEFAULT_STALL_SECONDS = 30.0
 HARD_CAP_STALL_SECONDS = 60.0
 MIN_POSITIVE_SECONDS = 0.001
 BOUNDS_CLASS = "VALIDATION_DEFAULTS_NOT_PRODUCTIVE_POLICY"
+REASON_MANAGED_FILEGATE_ACTIVE_UNPROVEN = "S6_MANAGED_FILEGATE_ACTIVE_UNPROVEN"
+REASON_MANAGED_FILEGATE_REVISION_CHANGED = "S6_MANAGED_FILEGATE_REVISION_CHANGED"
 
 S5CycleRunnerV1 = Callable[..., CurrentProductiveGovernedCycleResultV1]
 TimeFnV1 = Callable[[], float]
@@ -198,6 +201,10 @@ class CurrentProductiveGovernedContinuousCycleOrchestratorError(ValueError):
         self.reason_code = reason_code
         self.detail = detail
         super().__init__(f"{reason_code}:{detail}" if detail else reason_code)
+
+
+class ManagedFilegateRevisionChangedV1(CurrentProductiveGovernedContinuousCycleOrchestratorError):
+    """Yield the attempt to the stopped host observer when Safety changes."""
 
 
 @dataclass(frozen=True)
@@ -367,8 +374,9 @@ def read_dead_owner_wait_ledger_v1(
     filegate_path: Path | None = None,
     repository_sha: str | None = None,
     require_independent: bool = False,
+    retired: bool = False,
 ) -> dict | None:
-    """Read a WAIT or its independently committed successor after a finished HOLD."""
+    """Verify the original WAIT after process death or independently recorded retirement."""
     from src.ops.managed_filegate_v1 import (
         configured_filegate_writer_v1,
         managed_filegate_configured_v1,
@@ -386,14 +394,22 @@ def read_dead_owner_wait_ledger_v1(
             return None
         ledger_raw = ledger_path.read_bytes()
         ledger = json.loads(ledger_raw)
-        if require_independent or (
-            filegate_path is not None and managed_filegate_configured_v1(filegate_path)
+        if (
+            retired
+            or require_independent
+            or (filegate_path is not None and managed_filegate_configured_v1(filegate_path))
         ):
             if filegate_path is None or lock_path is None:
                 return None
             writer = configured_filegate_writer_v1(filegate_path)
             anchor = None if writer is None else writer.read_host_checkpoint_v1(lock_path=lock_path)
-            lock_raw = lock_path.read_bytes()
+            if retired and (lock_path.exists() or lock_path.is_symlink()):
+                return None
+            lock_raw = (
+                anchor["retired_lock_receipt"].encode()
+                if retired and isinstance(anchor, dict)
+                else lock_path.read_bytes()
+            )
             if (
                 not isinstance(anchor, dict)
                 or json.loads(lock_raw) != receipt
@@ -423,9 +439,17 @@ def read_dead_owner_wait_ledger_v1(
                 if (
                     cycle_id != successor["consumed_instance_ids"][-1]
                     or s5_path.resolve() != s5_path
-                    or sha256(s5_path.read_bytes()).hexdigest() != anchor["s5_ledger_sha256"]
                 ):
                     return None
+                s5_digest = sha256(s5_path.read_bytes()).hexdigest()
+                if s5_digest != anchor["s5_ledger_sha256"]:
+                    terminal = anchor["s5_terminal_ledger"]
+                    if (
+                        s5_digest != anchor["prior_s5_ledger_sha256"]
+                        or sha256(canonical_json_text(terminal).encode()).hexdigest()
+                        != anchor["s5_ledger_sha256"]
+                    ):
+                        return None
                 ledger = successor
             if anchor.get("cursor_sha256") != ledger["checkpoint_cursor_sha256"]:
                 return None
@@ -750,6 +774,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(REASON_REPLAY)
 
     from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+    from src.ops.filegate_recovery_authority_v1 import FilegateAuthorityError
     from src.ops.managed_filegate_v1 import (
         configured_filegate_writer_v1,
         managed_filegate_configured_v1,
@@ -831,13 +856,11 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             os.environ.get("PEAK_KILL_SWITCH") == "1"
             or current.get("filegate_release_sha256") != managed_release
         ):
-            raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
-                "S6_MANAGED_FILEGATE_REVISION_CHANGED"
-            )
+            raise ManagedFilegateRevisionChangedV1(REASON_MANAGED_FILEGATE_REVISION_CHANGED)
 
-    def _write_ledger(
-        *, state: str, extra: Mapping[str, Any] | None = None, completed_hold_sha256=None
-    ) -> None:
+    ledger_path = Path(evidence_root) / LEDGER_FILENAME
+
+    def _ledger_payload(*, state: str, extra: Mapping[str, Any] | None = None) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "state": state,
             "binding_digest": digest,
@@ -873,7 +896,35 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             payload["completed_cursor_sha256"] = sha256(
                 (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
             ).hexdigest()
-        ledger_path = Path(evidence_root) / LEDGER_FILENAME
+        return payload
+
+    def _seal_wait(payload: dict[str, Any], *, s5_checkpoint: Mapping[str, Any] | None = None):
+        lock.assert_held()
+        _require_managed_release()
+        checkpoint = {
+            "lock_sha256": sha256(lock_path.read_bytes()).hexdigest(),
+            "ledger_sha256": sha256(canonical_json_text(payload).encode()).hexdigest(),
+            "cursor_sha256": payload["checkpoint_cursor_sha256"],
+            "repository_sha": origin_main_sha,
+        }
+        if s5_checkpoint is not None:
+            checkpoint.update(
+                wait_ledger=payload,
+                prior_ledger_sha256=sha256(ledger_path.read_bytes()).hexdigest(),
+                **s5_checkpoint,
+            )
+        try:
+            managed_filegate.set_host_checkpoint_v1(
+                lock_path=lock_path, checkpoint=checkpoint, expected_release_sha256=managed_release
+            )
+        except (FilegateAuthorityError, sqlite3.Error):
+            _require_managed_release()
+            raise
+
+    def _write_ledger(
+        *, state: str, extra: Mapping[str, Any] | None = None, completed_hold_sha256=None
+    ) -> None:
+        payload = _ledger_payload(state=state, extra=extra)
         if managed_filegate is not None and state != STATE_WAITING_FOR_NEXT_C1:
             lock.assert_held()
             managed_filegate.set_host_checkpoint_v1(
@@ -884,20 +935,14 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             and state == STATE_WAITING_FOR_NEXT_C1
             and "checkpoint_cursor_sha256" in payload
         ):
-            lock.assert_held()
-            checkpoint = {
-                "lock_sha256": sha256(lock_path.read_bytes()).hexdigest(),
-                "ledger_sha256": sha256(canonical_json_text(payload).encode()).hexdigest(),
-                "cursor_sha256": payload["checkpoint_cursor_sha256"],
-                "repository_sha": origin_main_sha,
-            }
-            if completed_hold_sha256 is not None:
-                checkpoint.update(
-                    wait_ledger=payload,
-                    prior_ledger_sha256=sha256(ledger_path.read_bytes()).hexdigest(),
-                    s5_ledger_sha256=completed_hold_sha256,
-                )
-            managed_filegate.set_host_checkpoint_v1(lock_path=lock_path, checkpoint=checkpoint)
+            _seal_wait(
+                payload,
+                s5_checkpoint=(
+                    {"s5_ledger_sha256": completed_hold_sha256}
+                    if completed_hold_sha256 is not None
+                    else None
+                ),
+            )
         _persist_json(path=ledger_path, payload=payload)
         trans_path = Path(evidence_root) / "transitions.jsonl"
         with trans_path.open("a", encoding="utf-8") as handle:
@@ -974,9 +1019,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             current = read_configured_filegate_v1(filegate_path) or {}
             managed_release = current.get("filegate_release_sha256")
             if current.get("state") != "ACTIVE" or managed_release is None:
-                raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
-                    "S6_MANAGED_FILEGATE_ACTIVE_UNPROVEN"
-                )
+                raise ManagedFilegateRevisionChangedV1(REASON_MANAGED_FILEGATE_ACTIVE_UNPROVEN)
             _require_managed_release()
         _write_ledger(state=STATE_IN_PROGRESS)
         while True:
@@ -1133,6 +1176,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 try:
                     iteration_authority_gate_v1(cycle_index)
                 except Exception as exc:
+                    _require_managed_release()
                     return _stop(
                         result_disposition=DISPOSITION_FAIL_CLOSED,
                         result_reason="ITERATION_AUTHORITY_GATE_DENIED",
@@ -1162,6 +1206,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             cycle_lock = Path(evidence_root) / "cycle_locks" / consume_id
             # End the safe wait checkpoint before any per-cycle authorization or
             # S5 effect. A SIGKILL here must not inherit the previous WAIT state.
+            _require_managed_release()
             _write_ledger(state=STATE_IN_PROGRESS, extra={"reason_code": "S5_CYCLE_STARTING"})
             auth_record = {
                 "cycle_index": cycle_index,
@@ -1195,6 +1240,51 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     blocker=REASON_S5_INVOKE_COUNT_DRIFT,
                     owner_next="S5 invoke cardinality drifted. Do not resume.",
                 )
+
+            def _seal_no_effect_hold(path: Path, terminal: Mapping[str, Any]) -> None:
+                # Only the already durable original S7 cursor can support this
+                # boundary. S6 cannot infer completion from a cursor advance.
+                expected_path = cycle_root.resolve() / "s5" / S5_LEDGER_FILENAME
+                if path.absolute() != expected_path or path.resolve() != expected_path:
+                    return
+                prior_s5 = path.read_bytes()
+                prior = json.loads(prior_s5)
+                if (
+                    prior["state"] != "IN_PROGRESS"
+                    or prior["binding_digest"] != terminal["binding_digest"]
+                    or terminal["native_id"] != authorization.native_id
+                    or terminal["expected_cursor_floor"] != last_accepted
+                ):
+                    return
+                cursor_path = Path(cursor_store_root) / CURSOR_FILENAME
+                cursor_raw = cursor_path.read_bytes()
+                cursor = json.loads(cursor_raw)
+                if (
+                    cursor.get("venue_native_id") != authorization.native_id
+                    or cursor_last_accepted_c1_venue_event_time_v1(cursor) != c1_time
+                ):
+                    return
+                successor = _ledger_payload(
+                    state=STATE_WAITING_FOR_NEXT_C1,
+                    extra={
+                        "reason_code": "HOLD_WAIT_NEXT_FRESH_C1",
+                        "consumed_instance_ids": [*consumed, consume_id],
+                        "last_accepted_c1": c1_time,
+                    },
+                )
+                if successor.get("checkpoint_cursor_sha256") != sha256(cursor_raw).hexdigest():
+                    return
+                _seal_wait(
+                    successor,
+                    s5_checkpoint={
+                        "prior_s5_ledger_sha256": sha256(prior_s5).hexdigest(),
+                        "s5_ledger_sha256": sha256(
+                            canonical_json_text(terminal).encode()
+                        ).hexdigest(),
+                        "s5_terminal_ledger": terminal,
+                    },
+                )
+
             try:
                 _require_managed_release()
                 s5_result = runner(
@@ -1224,6 +1314,12 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     perform_get=False,
                     eg_cycle_dispatch=eg_cycle_dispatch,
                     t2_cycle_dispatch=t2_cycle_dispatch,
+                    **(
+                        {"seal_no_effect_hold_v1": _seal_no_effect_hold}
+                        if managed_filegate is not None
+                        and cycle_index < authorization.max_cycles_per_run
+                        else {}
+                    ),
                 )
             except CurrentProductiveGovernedCycleOrchestratorError as exc:
                 consumed.append(consume_id)
@@ -1364,6 +1460,33 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 completed_hold_sha256=completed_hold,
             )
     except Exception as exc:
+        if isinstance(exc, ManagedFilegateRevisionChangedV1) and managed_filegate is not None:
+            try:
+                lock.assert_held()
+                lock_raw = lock_path.read_bytes()
+                if (
+                    read_dead_owner_wait_ledger_v1(
+                        json.loads(lock_raw),
+                        cursor_store_root=Path(cursor_store_root),
+                        native_id=authorization.native_id,
+                        lock_path=lock_path,
+                        filegate_path=filegate_path,
+                        repository_sha=origin_main_sha,
+                        require_independent=True,
+                    )
+                    is not None
+                ):
+                    managed_filegate.retire_host_checkpoint_v1(
+                        lock_path=lock_path, lock_receipt=lock_raw
+                    )
+                    retained_wait = True
+                else:
+                    retained_wait = False
+            except (KeyError, LifecycleLockError, OSError, TypeError, ValueError, sqlite3.Error):
+                retained_wait = False
+            if retained_wait:
+                # The host rechecks the new release before opening runtime ports.
+                raise
         # An unexpected failure may follow a consumed S5 instance. Preserve the
         # original exception and consumed ledger; never retry the trading cycle.
         try:
@@ -1388,7 +1511,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     "automatic_restart_allowed": False,
                 },
             )
-        except OSError:
+        except (FilegateAuthorityError, LifecycleLockError, OSError, sqlite3.Error):
             pass  # notice writer logs persistence failure; retain original error
         raise
     finally:

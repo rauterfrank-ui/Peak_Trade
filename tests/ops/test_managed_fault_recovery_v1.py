@@ -1,6 +1,7 @@
 """Independent original feed and financial observations drive the managed Safety gate."""
 
 from dataclasses import asdict, replace
+from datetime import datetime, timezone
 from hashlib import sha256
 
 import pytest
@@ -41,12 +42,20 @@ from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import
     run_unattended_n1_host_v1,
 )
 from src.ops.offline_public_feed_recovery_v1 import OfflinePublicFeedRecoveryError
+from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+    FUTURES_INVENTORY_REQUEST_COUNT,
+)
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
     PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1, fact_digest
 from tests.ops.test_current_futures_simulated_dispatch_v1 import seeded
 from tests.ops.test_current_scope_public_mark_source_v1 import push
+from tests.ops.test_current_usdc_xperp_financial_admission_v1 import join, prepare, xperp_bound
+from tests.ops.test_offline_public_feed_account_reconciliation_v1 import (
+    _inventory_venue,
+    _open_budget_host,
+)
 from tests.ops.test_offline_public_feed_recovery_v1 import FeedFixture
 from tests.ops.test_offline_public_feed_restart_v1 import scenario
 from tests.ops.test_canonical_durable_authorization_lifecycle_and_revocation_v1 import (
@@ -204,20 +213,42 @@ def test_managed_feed_and_original_account_drive_safety_release(scenario, tmp_pa
     assert scenario["send"]["simulated_transport"].post_count == 0
 
 
-@pytest.mark.parametrize("fault", [None, "new-kill", "expired-first-mark"])
+@pytest.mark.parametrize("fault", [None, "new-kill", "expired-first-mark", "missing-account-scope"])
 def test_managed_feed_scope_requires_every_original_futures_mark(tmp_path, monkeypatch, fault):
+    second_bound = xperp_bound("ETH")
+    old_host, args, _ = prepare(tmp_path, monkeypatch, extra_bindings={"LANE_2": second_bound})
+    bindings = {"LANE_1": args["bound_instrument"], "LANE_2": second_bound}
+    started_at = datetime.fromtimestamp(old_host.clock(), tz=timezone.utc)
+    original_entry = join(**args)
+    assert original_entry.status == "PASS", original_entry.reason_codes
+    original_commitments = old_host.owner.local_commitment_readback_v1().generation_digest
+    old_host.close()
     feeds = {}
-    for symbol in ("BTC", "ETH"):
-        native = f"{symbol}-USDC-261225"
-        root = tmp_path / symbol
+    for lane, bound in bindings.items():
+        native = bound.venue_native_id
+        root = tmp_path / lane
         root.mkdir(mode=0o700)
         feeds[native] = FeedFixture(
             root,
             monkeypatch,
-            instrument=InstrumentRefV1(symbol, native, "okx_eea", "FUTURES", "USDC", "fixture"),
-            session_id=f"futures-{symbol}",
+            instrument=InstrumentRefV1(
+                bound.instrument_id,
+                native,
+                "okx_eea",
+                "FUTURES",
+                "USD",
+                bound.selection_integrity_digest,
+            ),
+            session_id=f"futures-{lane}",
+            started_at=started_at,
         )
-    scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", tuple(feeds), "c" * 64)
+    scope = FilegateRecoveryScopeV1(
+        old_host.expected_account_identity,
+        old_host.execution_environment,
+        str(old_host.root),
+        tuple(feeds),
+        "c" * 64,
+    )
 
     def clock():
         return max(feed.now.timestamp() for feed in feeds.values())
@@ -256,22 +287,46 @@ def test_managed_feed_scope_requires_every_original_futures_mark(tmp_path, monke
         proofs.update(proof)
         return proof
 
+    venue = _inventory_venue(old_host.account)
+
+    def attest_account(current):
+        with _open_budget_host(
+            old_host,
+            max(feeds.values(), key=lambda feed: feed.now),
+            venue,
+            monkeypatch,
+            reads=FUTURES_INVENTORY_REQUEST_COUNT,
+        ) as host:
+            proof = attest_managed_stopped_account_v1(
+                writer=writer,
+                stop=current,
+                host=host,
+                bindings={"LANE_1": bindings["LANE_1"]}
+                if fault == "missing-account-scope"
+                else bindings,
+                transport_scope=tmp_path.resolve(),
+                key=keys["ACCOUNT"],
+            )
+            assert host.owner.budget_state_v1().recovery_required
+            assert (
+                host.owner.local_commitment_readback_v1().generation_digest == original_commitments
+            )
+            return proof
+
     service = ManagedFaultRecoveryV1(
         writer=writer,
         issuer_key=issuer,
         interval_seconds=1,
         observations={
             "CAUSE": attest_scope,
-            "ACCOUNT": lambda current: _proof(
-                role="ACCOUNT", stop=current, now=clock(), key=keys["ACCOUNT"]
-            ),
+            "ACCOUNT": attest_account,
             "HOST": lambda current: _proof(
                 role="HOST", stop=current, now=clock(), key=keys["HOST"]
             ),
         },
     )
     blocked = service.poll_v1()
-    assert blocked["missing_proofs"] == ["CAUSE"] and kill_switch_should_block_trading()
+    assert "CAUSE" in blocked["missing_proofs"] and kill_switch_should_block_trading()
     assert not proofs
     second.frames = [
         push(
@@ -280,7 +335,7 @@ def test_managed_feed_scope_requires_every_original_futures_mark(tmp_path, monke
             markPx="201",
         )
     ]
-    if fault is not None:
+    if fault in {"new-kill", "expired-first-mark"}:
         original = second.runtime.run_observation_cycle
 
         def observe_then_fault(**kwargs):
@@ -301,12 +356,17 @@ def test_managed_feed_scope_requires_every_original_futures_mark(tmp_path, monke
         assert result["status"] == "BLOCKED_OBSERVING"
         assert result["missing_proofs"] == ["CAUSE"]
         assert not proofs and kill_switch_should_block_trading()
+    elif fault == "missing-account-scope":
+        assert result["status"] == "BLOCKED_OBSERVING"
+        assert result["owner_blockers"] == {"ACCOUNT": "FAULT_ACCOUNT_ORIGINAL_SCOPE_CHANGED"}
+        assert proofs and kill_switch_should_block_trading()
     else:
         assert result["status"] == "SAFETY_RELEASE_CONFIRMED", result
         assert proofs["body"]["expires_at"] == (
             int(first.frames[0]["data"][0]["ts"]) / 1000 + PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS
         )
         assert not kill_switch_should_block_trading()
+        assert len(venue.requests) == 2 * FUTURES_INVENTORY_REQUEST_COUNT
     assert all(feed.transport.state.reconnect_count == 1 for feed in feeds.values())
 
 
