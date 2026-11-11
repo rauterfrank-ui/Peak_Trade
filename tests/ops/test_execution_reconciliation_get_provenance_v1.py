@@ -8,14 +8,22 @@ from decimal import Decimal
 from hashlib import sha256
 import hmac
 import json
+import os
 from pathlib import Path
+import plistlib
 import sqlite3
 import stat
 import subprocess
+import time
 from types import SimpleNamespace
 from urllib.parse import parse_qsl, urlsplit
 
 import pytest
+
+from src.ops.execution_incident_diagnostics_v1 import (
+    prepare_standing_diagnostics_launch_agent_v1,
+    run_standing_execution_incident_diagnostics_v1,
+)
 
 from src.ops.execution_incident_safety_v1 import (
     AuthenticatedExecutionIncidentScopeV1,
@@ -453,6 +461,207 @@ def test_scoped_s5_halts_before_core_with_the_same_host_incident(
     assert host.owner.budget_state_v1().recovery_required
     assert json.loads(scope.state_path.read_bytes())["state"] == "KILLED"
     assert len(opener.requests) == 6
+
+
+def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after_process_death(
+    authenticated_host, tmp_path
+):
+    host, identity, opener, scope, _ = authenticated_host
+    gate = scope.state_path
+    output = tmp_path / "diagnostic-output"
+    plist_path = tmp_path / "diagnostics.plist"
+    prepared = prepare_standing_diagnostics_launch_agent_v1(
+        destination=plist_path,
+        budget_host_root=host.root,
+        filegate=gate,
+        account=identity.account_identity,
+        output_root=output,
+        interval_seconds=0.02,
+    )
+    assert prepared["service_activated"] is False
+    assert stat.S_IMODE(plist_path.stat().st_mode) == 0o600
+    plist = plistlib.loads(plist_path.read_bytes())
+    assert plist["RunAtLoad"] and plist["KeepAlive"]
+    assert plist["EnvironmentVariables"] == {"PEAK_KILL_SWITCH_STATE_PATH": str(gate)}
+    assert not output.exists()
+    latest = output / "execution-incident-diagnostics-latest-v1.json"
+
+    def start():
+        return subprocess.Popen(
+            plist["ProgramArguments"],
+            cwd=plist["WorkingDirectory"],
+            env={**os.environ, **plist["EnvironmentVariables"]},
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+
+    def wait_for(process, **expected):
+        deadline = time.monotonic() + 10
+        observed = None
+        while time.monotonic() < deadline:
+            if process.poll() is not None:
+                pytest.fail(process.stderr.read().decode())
+            try:
+                observed = json.loads(latest.read_bytes())
+            except FileNotFoundError:
+                pass
+            else:
+                if observed["pid"] == process.pid and all(
+                    observed.get(key) == value for key, value in expected.items()
+                ):
+                    return observed
+            time.sleep(0.02)
+        pytest.fail(f"Expected {expected}, observed {observed}")
+
+    first = start()
+    second = None
+    try:
+        active = wait_for(first, state_name="ACTIVE", original_post_veto_checked=False)
+        assert active["runtime_authorization_effect"] == "NONE"
+        host.execution_incident_state_path = gate
+        with pytest.raises(ExecutionIncidentHaltV1) as stopped:
+            host.observe_v1({"LANE_1": _bound()})
+        host.close()
+        receipt = stopped.value.receipt
+        journal = host.root / "execution-incident-safety/execution-incident-receipts.json"
+        budget = host.root / "owner/reservations.sqlite3"
+        original = {path: path.read_bytes() for path in (gate, journal, budget)}
+        killed = wait_for(
+            first,
+            state_name="KILLED",
+            filegate_blocked=True,
+            incident_id=receipt["incident_id"],
+            kill_revision=receipt["kill_revision"],
+            correlated_incident_veto=True,
+        )
+        assert killed["sample_sequence"] > active["sample_sequence"]
+        assert killed["original_post_veto_checked"] is True
+        assert killed["reconciliation_reason"] == REASON_NEGATIVE_REMAINING
+        assert killed["source_scope"]["filegate"] == str(gate)
+        assert (
+            killed["incident_source"]["budget_revision_ref"]
+            == receipt["reconciliation_source"]["revision_ref"]
+        )
+        assert killed["incident_source"]["reservation_id"] == identity.portfolio_reservation_id
+        first.kill()
+        first.wait(timeout=5)
+
+        second = start()
+        cold = wait_for(
+            second,
+            state_name="KILLED",
+            incident_id=killed["incident_id"],
+            kill_revision=killed["kill_revision"],
+            correlated_incident_veto=True,
+        )
+        assert cold["process_started_at_utc"] != killed["process_started_at_utc"]
+        assert cold["pid"] != killed["pid"]
+        assert {path: path.read_bytes() for path in original} == original
+        assert len(opener.requests) == 6
+        with pytest.raises(BlockingIOError):
+            run_standing_execution_incident_diagnostics_v1(
+                budget_host_root=host.root,
+                filegate=gate,
+                account=identity.account_identity,
+                output_root=output,
+                interval_seconds=1,
+                samples=1,
+            )
+
+        # A missing owner revision removes correlation while the original stop stays visible.
+        moved_budget = tmp_path / "original-budget.sqlite3"
+        budget.rename(moved_budget)
+        wait_for(
+            second,
+            state_name="KILLED",
+            filegate_blocked=True,
+            incident_evidence_error="INCIDENT_BUDGET_REVISION_UNPROVEN",
+            original_post_veto_checked=False,
+            correlated_incident_veto=False,
+        )
+        moved_budget.rename(budget)
+        wait_for(second, state_name="KILLED", correlated_incident_veto=True)
+
+        journal.write_text("damaged journal")
+        wait_for(
+            second,
+            state_name="KILLED",
+            filegate_blocked=True,
+            incident_evidence_error="INCIDENT_JOURNAL_UNPROVEN",
+            correlated_incident_veto=False,
+        )
+        journal.write_bytes(original[journal])
+        gate_payload = json.loads(original[gate])
+        StatePersistence(str(gate)).save(
+            KillSwitchState.RECOVERING,
+            killed_at=datetime.fromisoformat(gate_payload["killed_at"]),
+            trigger_reason=gate_payload["trigger_reason"],
+        )
+        wait_for(
+            second,
+            state_name="RECOVERING",
+            kill_revision=killed["kill_revision"],
+            filegate_blocked=True,
+            correlated_incident_veto=False,
+        )
+        StatePersistence(str(gate)).save(
+            KillSwitchState.KILLED,
+            killed_at=datetime.fromisoformat(gate_payload["killed_at"]) + timedelta(seconds=1),
+            trigger_reason=gate_payload["trigger_reason"],
+        )
+        wait_for(
+            second,
+            state_name="KILLED",
+            incident_id=killed["incident_id"],
+            incident_evidence_error="INCIDENT_KILL_GENERATION_MISMATCH",
+            incident_source=None,
+            correlated_incident_veto=False,
+        )
+        StatePersistence(str(gate)).save(
+            KillSwitchState.KILLED, killed_at=NOW, trigger_reason="independent later kill"
+        )
+        newer = wait_for(
+            second,
+            state_name="KILLED",
+            incident_id=None,
+            filegate_blocked=True,
+            correlated_incident_veto=False,
+        )
+        assert newer["kill_revision"] and newer["kill_revision"] != killed["kill_revision"]
+        gate.write_text("damaged gate")
+        wait_for(second, evidence_status="UNKNOWN_BLOCKED", filegate_blocked=None)
+        gate.unlink()
+        wait_for(second, evidence_status="MISSING", filegate_blocked=None)
+        StatePersistence(str(gate)).save(
+            KillSwitchState.KILLED, killed_at=NOW, trigger_reason="independent later kill"
+        )
+        wait_for(second, observation_status="OBSERVED", kill_revision=newer["kill_revision"])
+        assert len(opener.requests) == 6
+        assert {path.name for path in output.iterdir()} <= {
+            latest.name,
+            latest.name + ".tmp",
+            "execution-incident-diagnostics.lock",
+        }
+    finally:
+        for process in (first, second):
+            if process is not None:
+                if process.poll() is None:
+                    process.kill()
+                process.communicate(timeout=5)
+
+
+def test_diagnostics_cannot_write_in_the_original_budget_root(authenticated_host):
+    host, identity, _, scope, _ = authenticated_host
+    with pytest.raises(ValueError, match="DIAGNOSTIC_OUTPUT_OVERLAPS_SOURCE"):
+        run_standing_execution_incident_diagnostics_v1(
+            budget_host_root=host.root,
+            filegate=scope.state_path,
+            account=identity.account_identity,
+            output_root=host.root / "diagnostics",
+            interval_seconds=1,
+            samples=1,
+        )
+    assert not (host.root / "diagnostics").exists()
 
 
 def test_original_signed_gets_bind_budget_and_quantity_incident_without_safety_write(

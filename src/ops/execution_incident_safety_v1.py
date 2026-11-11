@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import re
+import sqlite3
 import stat
 from dataclasses import dataclass
 from datetime import datetime
@@ -29,17 +30,23 @@ from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 im
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
+    FullCoreFinalOrderEnvelopeError,
+    assert_envelope_unmodified_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
     SIMULATION_OFFLINE,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
     RECONCILIATION_PROVIDER_OFFLINE_STUB,
+    OUTCOME_HALTED_UNRESOLVED,
+    REASON_FILL_EXCEEDS_ORDER,
+    REASON_NEGATIVE_REMAINING,
     FullCoreExchangeReconciliationIdentityV1,
     FullCoreExchangeReconciliationSnapshotV1,
     LocalSubmitOutcome,
     PortfolioExecutionReconciliationIdentityV2,
     adjudicate_full_core_exchange_reconciliation_v1,
+    parse_exchange_reconciliation_identity_v1,
 )
 from src.ops.gates.risk_gate import (
     canonical_kill_switch_state_path,
@@ -47,6 +54,9 @@ from src.ops.gates.risk_gate import (
 )
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
+from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
+    read_budget_revision_read_only_v1,
+)
 
 _SCHEMA = "offline_execution_incident_safety.v1"
 _AUTHENTICATED_SCHEMA = "authenticated_execution_incident_safety.v1"
@@ -55,6 +65,14 @@ _ALREADY_BLOCKED = "ALREADY_BLOCKED"
 _ENVIRONMENT = "SHADOW"
 _VETO_STAGE = "INCIDENT_REACTION_READBACK"
 _INCIDENT_REASON_PREFIX = "EXECUTION_GHOSV:"
+_INCIDENT_ORIGIN_FIELDS = (
+    "identity_digest",
+    "envelope_id",
+    "envelope_digest",
+    "evidence_sha256",
+    "incident_type",
+    "reconciliation_reason",
+)
 
 
 class ExecutionIncidentSafetyError(ValueError):
@@ -195,7 +213,7 @@ def _require_authenticated_scope(scope):
     if any(
         path.is_symlink()
         for path in (scope.state_path.with_suffix(".tmp"), scope.state_path.parent / "backups")
-    ):
+    ) or (scope.state_path.exists() and not scope.state_path.is_file()):
         raise ExecutionIncidentSafetyError("INCIDENT_FOREIGN_STORE_PATH")
 
 
@@ -206,6 +224,7 @@ def _require_private_incident_journal(scope):
         or not scope.root.is_dir()
         or scope.root.stat().st_uid != os.getuid()
         or scope.root.stat().st_mode & 0o077
+        or (scope.journal_path.exists() and not scope.journal_path.is_file())
         or any(
             path.is_symlink()
             for path in (
@@ -274,8 +293,9 @@ def _state_observation(scope):
     return evidence, payload
 
 
-def _kill_revision(payload):
-    if payload.get("state") != "KILLED" or not payload.get("killed_at"):
+def _kill_revision(payload, *, include_recovering=False):
+    states = {"KILLED", "RECOVERING"} if include_recovering else {"KILLED"}
+    if payload.get("state") not in states or not payload.get("killed_at"):
         return None
     return _digest(
         {"killed_at": payload["killed_at"], "trigger_reason": payload.get("trigger_reason")}
@@ -463,19 +483,84 @@ def observe_authenticated_execution_incident_v1(
     )
 
 
-def _observe_execution_incident_v1(scope, envelope, incident_id, require_scope):
-    require_scope(scope)
-    evidence, payload = _state_observation(scope)
-    veto_reason = None
+def observe_standing_execution_incident_v1(*, scope: AuthenticatedExecutionIncidentScopeV1) -> dict:
+    """Read the current FILEGATE and recover its original envelope without a host."""
+    return _observe_execution_incident_v1(
+        scope, None, None, _require_authenticated_scope, recover_envelope=True
+    )
+
+
+def _recover_standing_incident_envelope_v1(scope, receipt):
+    """Bind the historical incident revision using only the configured owner root."""
+    source = receipt["reconciliation_source"]
+    origin = {
+        key: receipt[key]
+        for key in (*_INCIDENT_ORIGIN_FIELDS, "session_id", "reconciliation_source")
+    }
+    budget_root = scope.root.parent / "owner"
+    reservation_id = source["reservation_id"]
+    sequence, checksum = source["revision_ref"]
+    if (
+        scope.root.name != "execution-incident-safety"
+        or source["budget_owner_root"] != str(budget_root)
+        or receipt["incident_id"] != _digest({"scope": scope.binding(), **origin})
+        or receipt["incident_type"] != ExecutionFillQuantityIncidentV1.incident_type
+        or receipt["reconciliation_reason"]
+        not in {REASON_FILL_EXCEEDS_ORDER, REASON_NEGATIVE_REMAINING}
+    ):
+        raise ExecutionIncidentObservationError("INCIDENT_BUDGET_SCOPE_UNPROVEN")
+    state = read_budget_revision_read_only_v1(
+        budget_root, account_identity=scope.account, sequence=sequence, expected_digest=checksum
+    )["state"]
+    link = state["execution_links"][reservation_id]
+    identity = parse_exchange_reconciliation_identity_v1(link["identity"])
+    envelope = FinalOrderEnvelopeV1(**link["envelope"])
+    assert_envelope_unmodified_v1(
+        envelope, expected_id=receipt["envelope_id"], expected_digest=receipt["envelope_digest"]
+    )
+    reconciliation = link["reconciliation"]
+    if (
+        type(identity) is not PortfolioExecutionReconciliationIdentityV2
+        or identity.execution_environment != "LIVE"
+        or identity.account_identity != scope.account
+        or identity.budget_owner_root != str(budget_root)
+        or identity.portfolio_reservation_id != reservation_id
+        or identity.envelope_identity != envelope.envelope_id
+        or identity.envelope_digest != envelope.envelope_digest
+        or identity.identity_digest() != receipt["identity_digest"]
+        or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
+        or reconciliation["identity_digest"] != receipt["identity_digest"]
+        or reconciliation["snapshot_digest"] != source["snapshot_digest"]
+        or reconciliation["decision"]["outcome"] != OUTCOME_HALTED_UNRESOLVED
+        or reconciliation["decision"]["reasons"] != [receipt["reconciliation_reason"]]
+        or reconciliation["matched"] is not False
+        or reconciliation["local_submit_outcome"] != LocalSubmitOutcome.TRANSPORT_UNKNOWN.value
+        or reconciliation["reservation_released"] is not False
+    ):
+        raise ExecutionIncidentObservationError("INCIDENT_BUDGET_REVISION_UNPROVEN")
+    return envelope
+
+
+def _original_post_veto_reason_v1(scope, envelope):
     try:
         CurrentPostSafetyContextV1(envelope, str(scope.state_path)).inspect_v1(stage=_VETO_STAGE)
     except CurrentPostSafetyVetoError as exc:
-        veto_reason = str(exc)
+        return str(exc)
+    return None
+
+
+def _observe_execution_incident_v1(
+    scope, envelope, incident_id, require_scope, *, recover_envelope=False
+):
+    require_scope(scope)
+    evidence, payload = _state_observation(scope)
+    veto_reason = None if recover_envelope else _original_post_veto_reason_v1(scope, envelope)
 
     requested_id = incident_id
     reason = payload.get("trigger_reason")
     if (
         incident_id is None
+        and (not recover_envelope or evidence.state_name in {"KILLED", "RECOVERING"})
         and isinstance(reason, str)
         and reason.startswith(_INCIDENT_REASON_PREFIX)
     ):
@@ -494,7 +579,19 @@ def _observe_execution_incident_v1(scope, envelope, incident_id, require_scope):
                 receipt_error = "INCIDENT_RECEIPT_MISSING"
             else:
                 receipt = entry["receipt"]
-                if (
+                if recover_envelope:
+                    try:
+                        envelope = _recover_standing_incident_envelope_v1(scope, receipt)
+                    except (
+                        KeyError,
+                        TypeError,
+                        ValueError,
+                        OSError,
+                        sqlite3.Error,
+                        FullCoreFinalOrderEnvelopeError,
+                    ):
+                        receipt_error = "INCIDENT_BUDGET_REVISION_UNPROVEN"
+                elif (
                     receipt["envelope_id"] != envelope.envelope_id
                     or receipt["envelope_digest"] != envelope.envelope_digest
                 ):
@@ -503,11 +600,15 @@ def _observe_execution_incident_v1(scope, envelope, incident_id, require_scope):
                         raise ExecutionIncidentSafetyError(receipt_error)
                     receipt = None
 
+    if recover_envelope and envelope is not None:
+        veto_reason = _original_post_veto_reason_v1(scope, envelope)
     if _state_observation(scope) != (evidence, payload):
         raise ExecutionIncidentObservationError("INCIDENT_FILEGATE_CHANGED_DURING_VETO")
     require_scope(scope)
-    revision = _kill_revision(payload)
-    return {
+    revision = _kill_revision(payload, include_recovering=recover_envelope)
+    if recover_envelope and receipt is not None and receipt.get("kill_revision") != revision:
+        receipt_error = "INCIDENT_KILL_GENERATION_MISMATCH"
+    result = {
         "incident_id": incident_id,
         "acceptance": None if receipt is None else receipt["disposition"],
         "evidence_status": evidence.evidence_status,
@@ -519,7 +620,26 @@ def _observe_execution_incident_v1(scope, envelope, incident_id, require_scope):
             receipt
             and receipt["disposition"] == _APPLIED
             and revision is not None
-            and receipt["kill_revision"] == revision
+            and receipt.get("kill_revision") == revision
             and veto_reason == f"POST_SAFETY_DURABLE_VETO:{_VETO_STAGE}:TRUSTED_PRESENT:KILLED"
         ),
     }
+    if recover_envelope:
+        incident_source = None
+        if receipt is not None and envelope is not None and receipt_error is None:
+            source = receipt["reconciliation_source"]
+            incident_source = {
+                "reservation_id": source["reservation_id"],
+                "budget_revision_ref": source["revision_ref"],
+                "session_id": receipt["session_id"],
+                "snapshot_digest": source["snapshot_digest"],
+                "envelope_digest": envelope.envelope_digest,
+            }
+        result.update(
+            filegate_blocked=evidence.blocked,
+            original_post_veto_checked=envelope is not None,
+            incident_type=None if receipt is None else receipt.get("incident_type"),
+            reconciliation_reason=None if receipt is None else receipt.get("reconciliation_reason"),
+            incident_source=incident_source,
+        )
+    return result
