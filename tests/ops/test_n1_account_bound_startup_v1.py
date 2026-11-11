@@ -299,6 +299,7 @@ def test_supervisor_requires_account_bound_start_before_recovery(state, tmp_path
         ("FUTURES", "wp02-gap"),
         ("FUTURES", "wp02-future"),
         ("FUTURES", "wp02-universe-mismatch"),
+        ("FUTURES", "wp02-foreign-pretrade-account"),
     ],
 )
 def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
@@ -347,6 +348,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     )
     from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
     from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import _continuous_auth
+    from tests.ops.test_prepost_original_budget_context_v1 import AccountPort
     from tests.ops.test_single_selected_future_runtime_binding_v1 import _marks, _payload
 
     account = "account-injected"
@@ -404,6 +406,10 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         durable_account_identity=account,
         durable_mode="create",
         durable_lane_bindings={"LANE_1": bound},
+    )
+    pretrade = AccountPort(
+        {"envelope": SimpleNamespace(instrument_id=native), "portfolio_budget_owner": seed},
+        uid="foreign" if public_fault == "wp02-foreign-pretrade-account" else None,
     )
     seed.close()
     opener = InjectedOpener(
@@ -473,13 +479,17 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
 
     def stop_after_wp02(**kwargs):
         assert kwargs["bound"] == bound
-        raise ValueError("WP02_COMPLETE")
+        raise ValueError("PRETRADE_COMPLETE")
 
     with (
         patch.object(wire, "build_opener", return_value=opener),
         patch.object(supervisor, "canonical_kill_switch_state_path", return_value=str(gate)),
         patch.object(PortfolioBudgetHostV1, "reconcile_standing_startup_observation_v1", receive),
-        patch.object(supervisor, "_refresh_pretrade_truth_v1", stop_after_wp02),
+        patch.object(
+            supervisor,
+            "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
+            stop_after_wp02,
+        ),
     ):
         source_context = (
             open_k1_account_observation_source_v1(
@@ -497,13 +507,15 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
             if product != "FUTURES":
                 expected = "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"
             elif public_fault == "wp02":
-                expected = "WP02_COMPLETE"
+                expected = "PRETRADE_COMPLETE"
             elif public_fault == "wp02-gap":
                 expected = "WP02_PUBLIC_PT1M_FAIL_CLOSED:PUBLIC_PT1M_WINDOW_UNPROVEN:MISSING_MARK_BAR_NO_IMPLICIT_FILL"
             elif public_fault == "wp02-future":
                 expected = "WP02_PUBLIC_PT1M_FAIL_CLOSED:PUBLIC_PT1M_INTERVAL_UNPROVEN"
             elif public_fault == "wp02-universe-mismatch":
                 expected = "PUBLIC_PT1M_BOUND_WINDOW_UNIVERSE_MISMATCH"
+            elif public_fault == "wp02-foreign-pretrade-account":
+                expected = "N1_PRETRADE_ACCOUNT_BINDING_UNPROVEN:.*LIVE_ACCOUNT_BOUND_DUPLICATE_AMBIGUOUS_ACCOUNT"
             elif public_fault:
                 source_kind = "TICKER" if public_fault == "wrong-ticker-product" else "MARK"
                 expected = f"UNIFIED_RECOVERY_FAIL_CLOSED:PUBLIC_{source_kind}_BOOTSTRAP_UNPROVEN"
@@ -511,7 +523,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
                 expected = "PUBLIC_SUPPLY_COMPLETE"
             with pytest.raises(ValueError, match=expected):
                 supervisor.run_n1_standing_pre_external_supervisor_v1(
-                    config=config,
+                    config=replace(config, require_pretrade_collection=exercise_wp02),
                     origin_main_sha=chain["repository_sha"],
                     bound=bound,
                     authorization=_continuous_auth(native_id=native, max_cycles=1),
@@ -520,6 +532,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
                     f1_m9_cycle_evaluator=None,
                     public_rest_fetch=public_fetch,
                     private_rest_fetch=source,
+                    pretrade_transport=pretrade,
                     public_ws_messages=[
                         {
                             "arg": {"channel": "mark-price", "instId": native},
@@ -529,7 +542,19 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
                     wp02_hook=None if exercise_wp02 else stop_after_supply,
                     skip_owner_go_validation=True,
                 )
-    assert config.lane_state_root.exists() is (public_fault in {"wp02", "wp02-universe-mismatch"})
+    reached_pretrade = public_fault in {"wp02", "wp02-foreign-pretrade-account"}
+    assert config.lane_state_root.exists() is (
+        reached_pretrade or public_fault == "wp02-universe-mismatch"
+    )
+    pretrade_endpoints = [endpoint for endpoint, _, _ in pretrade.requests]
+    if reached_pretrade:
+        assert f"/api/v5/public/instruments?instType=FUTURES&instId={native}" in pretrade_endpoints
+        assert (
+            "/api/v5/public/instruments?instType=SWAP&instId=USDC-USDT-SWAP" in pretrade_endpoints
+        )
+        assert all(bound.instrument_id not in endpoint for endpoint in pretrade_endpoints)
+    else:
+        assert not pretrade_endpoints
     assert gate.read_bytes() == gate_before
     assert not (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").exists()
     private_paths = default_private_store_paths_v1(config.private_store_root)
@@ -588,7 +613,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
                 venue_native_id=native,
                 fact_kind="FinalizedPt1mMarkFactV1",
             ).facts
-            if public_fault == "wp02":
+            if reached_pretrade:
                 assert len(candles) == 61
                 assert [fact["interval_start_ms"] for fact in candles] == list(
                     range(current_minute - 61 * 60_000, current_minute, 60_000)

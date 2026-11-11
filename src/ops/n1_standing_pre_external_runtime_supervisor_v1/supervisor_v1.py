@@ -241,14 +241,40 @@ def _refresh_pretrade_truth_v1(
     bound: BoundInstrumentV1,
     transport: FullCoreFreshPretradeGetTransportV1 | None,
     require_collection: bool,
+    expected_account_identity: str,
 ) -> str:
+    from src.ops.execution_reconciliation_get_provenance_v1 import (
+        resolve_reconciliation_query_options_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
+        LiveAccountBoundStatusV1,
+        evaluate_live_account_bound_v1,
+    )
+
+    inst_type = "FUTURES"
+    if require_collection:
+        inst_type = resolve_reconciliation_query_options_v1(
+            instrument_id=bound.instrument_id, native_id=bound.venue_native_id
+        ).inst_type
     evidence = collect_fresh_pretrade_runtime_get_v1(
         pretrade_decision_id=PRETRADE_DECISION_ID_SUPERVISOR_TICK,
-        instrument_id=str(bound.instrument_id),
+        instrument_id=bound.venue_native_id,
         td_mode="cross",
+        inst_type=inst_type,
         transport=transport,
         require_collection=require_collection,
     )
+    if require_collection:
+        account = evaluate_live_account_bound_v1(
+            get_evidence=evidence,
+            expected_account_identity=expected_account_identity,
+            expected_instrument_id=bound.venue_native_id,
+            expected_td_mode="cross",
+        )
+        if account.evidence_status != LiveAccountBoundStatusV1.TRUSTED_PRESENT.value:
+            raise StandingSupervisorError(
+                "N1_PRETRADE_ACCOUNT_BINDING_UNPROVEN", ",".join(account.reason_codes)
+            )
     return str(evidence.pretrade_freshness_status)
 
 
@@ -505,6 +531,7 @@ def run_n1_standing_pre_external_supervisor_v1(
             bound=bound,
             transport=pretrade_transport,
             require_collection=config.require_pretrade_collection,
+            expected_account_identity=config.expected_account_identity,
         )
         trace.pretrade_truth_refreshed = True
 
