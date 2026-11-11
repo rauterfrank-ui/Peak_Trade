@@ -5,6 +5,7 @@ single-writer process recovery only; no host/power-loss proof is claimed.
 """
 
 import fcntl
+from contextlib import closing
 from hashlib import sha256
 import json
 import os
@@ -25,6 +26,45 @@ def canonical(value):
 
 def digest(value):
     return sha256(canonical(value).encode()).hexdigest()
+
+
+def _read_revision(connection, account, sequence, expected_digest):
+    if type(sequence) is not int or sequence <= 0:
+        raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_INVALID")
+    row = connection.execute(
+        "SELECT previous, digest, payload FROM states WHERE seq = ?", (sequence,)
+    ).fetchone()
+    if row is None:
+        raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_MISSING")
+    prior, checksum, body = row
+    payload = json.loads(body)
+    if (
+        checksum != digest({"seq": sequence, "previous": prior, "state": payload})
+        or (expected_digest is not None and checksum != expected_digest)
+        or payload.get("schema") != SCHEMA
+        or payload.get("account_identity") != account
+    ):
+        raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_UNPROVEN")
+    return {"sequence": sequence, "digest": checksum, "previous": prior, "state": payload}
+
+
+def read_budget_revision_read_only_v1(root: Path, *, account_identity, sequence, expected_digest):
+    """Read a digest-pinned original revision without acquiring the writer lock."""
+    database = root / "reservations.sqlite3"
+    if (
+        not root.is_absolute()
+        or root.resolve() != root
+        or database.is_symlink()
+        or not database.is_file()
+        or not expected_digest
+    ):
+        raise DurableBudgetStoreError("DURABLE_BUDGET_READ_SCOPE_UNPROVEN")
+    with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True, timeout=0)) as db:
+        if db.execute("PRAGMA journal_mode").fetchone() != ("delete",):
+            raise DurableBudgetStoreError("DURABLE_BUDGET_JOURNAL_MODE_MISMATCH")
+        if db.execute("SELECT * FROM metadata").fetchall() != [(SCHEMA, OWNER, account_identity)]:
+            raise DurableBudgetStoreError("DURABLE_BUDGET_IDENTITY_MISMATCH")
+        return _read_revision(db, account_identity, sequence, expected_digest)
 
 
 class DurableBudgetStoreV1:
@@ -143,23 +183,9 @@ class DurableBudgetStoreV1:
 
     def read_revision_v1(self, sequence, expected_digest=None):
         """Read an exact owned history revision without moving the writer cursor."""
-        if self.connection is None or type(sequence) is not int or sequence <= 0:
+        if self.connection is None:
             raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_INVALID")
-        row = self.connection.execute(
-            "SELECT previous, digest, payload FROM states WHERE seq = ?", (sequence,)
-        ).fetchone()
-        if row is None:
-            raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_MISSING")
-        prior, checksum, body = row
-        payload = json.loads(body)
-        if (
-            checksum != digest({"seq": sequence, "previous": prior, "state": payload})
-            or (expected_digest is not None and checksum != expected_digest)
-            or payload.get("schema") != SCHEMA
-            or payload.get("account_identity") != self.account
-        ):
-            raise DurableBudgetStoreError("DURABLE_BUDGET_REVISION_UNPROVEN")
-        return {"sequence": sequence, "digest": checksum, "previous": prior, "state": payload}
+        return _read_revision(self.connection, self.account, sequence, expected_digest)
 
     def close(self):
         if self.connection is not None:

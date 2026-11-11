@@ -91,6 +91,35 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         pretrade_decision_id: str,
         get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> FreshPretradeGetTransportResultV1:
+        result, _ = self._get_v1(
+            endpoint=endpoint,
+            auth_required=auth_required,
+            pretrade_decision_id=pretrade_decision_id,
+            get_cache_policy=get_cache_policy,
+        )
+        return result
+
+    def get_authenticated_response_v1(
+        self, *, endpoint: str, pretrade_decision_id: str
+    ) -> tuple[FreshPretradeGetTransportResultV1, bytes]:
+        """Return a private GET and its response bytes from the same uncached call."""
+        return self._get_v1(
+            endpoint=endpoint,
+            auth_required=True,
+            pretrade_decision_id=pretrade_decision_id,
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+            require_exact_response_url=True,
+        )
+
+    def _get_v1(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str,
+        require_exact_response_url: bool = False,
+    ) -> tuple[FreshPretradeGetTransportResultV1, bytes]:
         decision = str(pretrade_decision_id or "")
         if get_cache_policy == GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT and (
             not decision or decision != decision.strip()
@@ -109,7 +138,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         if decision_cacheable:
             cached = self._decision_cache.get(decision_key)
         if cached is not None:
-            return cached
+            return cached, b""
         if self.request_count >= self.max_request_count:
             raise FullCoreProductiveReadOnlyGetError("MAX_REQUEST_COUNT_EXCEEDED")
         path = str(endpoint or "").split("?", 1)[0]
@@ -145,7 +174,10 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 body = bytes(resp.read() or b"")
-                loc_host = str(urlparse(str(getattr(resp, "url", url) or url)).hostname or "")
+                response_url = getattr(resp, "url", None)
+                if require_exact_response_url and response_url != url:
+                    raise FullCoreProductiveReadOnlyGetError("GET_RESPONSE_URL_MISMATCH")
+                loc_host = str(urlparse(str(response_url or url)).hostname or "")
                 if loc_host and loc_host != AUTHORIZED_HOST:
                     raise FullCoreProductiveReadOnlyGetError("REDIRECT_OFF_HOST_FORBIDDEN")
             self.venue_live_contact = True
@@ -200,4 +232,4 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             self._decision_cache[decision_key] = result
         path_only = str(endpoint).split("?", 1)[0]
         self.payloads_by_path[path_only] = payload
-        return result
+        return result, body

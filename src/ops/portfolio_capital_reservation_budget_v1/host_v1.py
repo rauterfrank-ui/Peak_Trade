@@ -280,14 +280,46 @@ class PortfolioBudgetHostV1:
         self.entry_budget_policy = entry_budget_policy
 
     def observe_v1(self, bindings):
+        return self._observe_with_retry_v1(bindings)
+
+    def observe_execution_reconciliation_evidence_v1(self, bindings):
+        """Expose original snapshots only for the explicit isolated SHADOW probe."""
+        from src.ops.execution_incident_host_v1 import InjectedReconciliationGetV1
+
+        if self.execution_environment != "SHADOW":
+            raise ValueError("HOST_EXECUTION_EVIDENCE_SHADOW_REQUIRED")
+        capture = InjectedReconciliationGetV1(self.reconciliation_transport)
+        context = self._observe_with_retry_v1(bindings, capture=capture)
+        return context, capture.evidence
+
+    def observe_authenticated_execution_reconciliation_v1(self, bindings, *, proof_root=None):
+        """Observe the original LIVE chain with a per-request GET proof and no Safety delivery."""
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+        )
+
+        if self.execution_environment != "LIVE":
+            raise ValueError("HOST_EXECUTION_EVIDENCE_LIVE_IDENTITY_REQUIRED")
+        capture = AuthenticatedReconciliationGetV1(
+            self.reconciliation_transport,
+            account=self.expected_account_identity,
+            clock=self.clock,
+            proof_root=proof_root,
+        )
+        context = self._observe_with_retry_v1(bindings, capture=capture)
+        return context, capture.evidence
+
+    def _observe_with_retry_v1(self, bindings, *, capture=None):
         from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
             bounded_retry_policy_v1,
         )
 
         attempt = 0
         while True:
+            if capture is not None:
+                capture.reset_v1()
             try:
-                return self._observe_once_v1(bindings)
+                return self._observe_once_v1(bindings, capture=capture)
             except (TimeoutError, ConnectionError):
                 if not bounded_retry_policy_v1(
                     attempt=attempt,
@@ -315,7 +347,7 @@ class PortfolioBudgetHostV1:
             raise ValueError("BOUNDED_CLOSE_FOREIGN_HOST_BINDING_CHANGED")
         return self._observe_once_v1(bindings, rebound_request=request)
 
-    def _observe_once_v1(self, bindings, *, rebound_request=None):
+    def _observe_once_v1(self, bindings, *, rebound_request=None, capture=None):
         if self.closed:
             raise ValueError("HOST_BUDGET_SESSION_CLOSED")
         if self.owner is None and self.durable_mode == "create" and self.root.exists():
@@ -365,7 +397,10 @@ class PortfolioBudgetHostV1:
             pending_source=observation.pending_source,
             observed=observation.observed,
         )
-        context = replace(context, execution_reconciliation=self._reconcile_executions_v1(context))
+        context = replace(
+            context,
+            execution_reconciliation=self._reconcile_executions_v1(context, capture=capture),
+        )
         if rebound_request is not None:
             slot = self.owner.inspect_bounded_slot_close_refresh_v1(rebound_request)["slot_id"]
             target = bindings[slot]
@@ -382,8 +417,9 @@ class PortfolioBudgetHostV1:
             self.bindings = dict(bindings)
         return context
 
-    def _reconcile_executions_v1(self, context):
+    def _reconcile_executions_v1(self, context, *, capture=None):
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            PortfolioExecutionReconciliationIdentityV2,
             parse_exchange_reconciliation_identity_v1,
         )
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
@@ -405,7 +441,7 @@ class PortfolioBudgetHostV1:
                 rid: {"matched": False, "reason_codes": ["HOST_EXECUTION_READ_PORT_MISSING"]}
                 for rid in submitted
             }
-        transport = self.reconciliation_transport
+        transport = self.reconciliation_transport if capture is None else capture
         config = transport.get(
             endpoint="/api/v5/account/config",
             auth_required=True,
@@ -433,12 +469,12 @@ class PortfolioBudgetHostV1:
             identity = parse_exchange_reconciliation_identity_v1(link["identity"])
             if identity.execution_environment != self.execution_environment:
                 raise ValueError("HOST_EXECUTION_ENVIRONMENT_MISMATCH")
-            acquired = datetime.fromtimestamp(self.clock(), timezone.utc).isoformat()
+            acquired = datetime.fromtimestamp(self.clock(), timezone.utc)
             snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
                 identity=identity,
                 read_only_get_transport=transport,
                 pretrade_decision_id=f"{self.session_id}:{rid}",
-                received_at=acquired,
+                received_at=acquired.isoformat(),
             )
             result[rid] = self.owner.reconcile_execution_v1(
                 rid,
@@ -447,6 +483,8 @@ class PortfolioBudgetHostV1:
                 account=context.account,
                 now_unix=self.clock(),
             )
+            if capture is not None and type(identity) is PortfolioExecutionReconciliationIdentityV2:
+                capture.record_v1(self, rid, identity, snapshot, acquired, result[rid])
         return result
 
     def close(self):
