@@ -83,13 +83,15 @@ class PublicMarketDataRuntimeV1:
     def run_observation_cycle(
         self,
         *,
-        captured_at: str,
+        captured_at: str | Callable[[], str],
         session_id: str = "public_md_runtime_v1",
         persist_normalized_facts: bool = True,
     ) -> list[Mapping[str, Any]]:
         if self.ws_transport is None:
             return []
         msgs = self.ws_transport.poll_messages()
+        if callable(captured_at):
+            captured_at = captured_at()
         candidate = EventSequenceStateV1(
             last_event_ts_ms=self.event_state.last_event_ts_ms,
             seen_ids=set(self.event_state.seen_ids),
