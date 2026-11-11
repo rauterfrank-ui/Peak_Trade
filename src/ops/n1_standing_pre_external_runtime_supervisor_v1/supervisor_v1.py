@@ -340,6 +340,12 @@ def run_n1_standing_pre_external_supervisor_v1(
                 or config.canonical_instrument_id != bound.instrument_id
             ):
                 raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
+
+            def reconcile_startup_observation(observation):
+                get_budget_host().reconcile_standing_startup_observation_v1(
+                    {"LANE_1": bound}, observation
+                )
+
             startup = acquire_account_bound_n1_startup_v1(
                 productivity_root=config.cap24_productivity_root,
                 repository_sha=origin_main_sha,
@@ -348,9 +354,7 @@ def run_n1_standing_pre_external_supervisor_v1(
                 session_id=run_id,
                 private_rest_fetch=StandingStartupAccountObservationPortV1(
                     fetch=private_rest_fetch,
-                    reconcile=lambda observation: get_budget_host().reconcile_standing_startup_observation_v1(
-                        {"LANE_1": bound}, observation
-                    ),
+                    reconcile=reconcile_startup_observation,
                 ),
                 expected_bound=bound,
             )
