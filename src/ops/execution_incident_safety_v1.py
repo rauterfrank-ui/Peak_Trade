@@ -1,16 +1,13 @@
-"""Bounded Execution GHOSV incident handoff to the original Safety owner.
-
-Only an explicitly isolated, offline reconciliation profile can use this entry
-point. The journal records incident acceptance. FILEGATE remains the authority
-for the POST veto and is independently read by the reaction observer.
-"""
+"""Bound Execution GHOSV incident acceptance and FILEGATE reaction readback."""
 
 from __future__ import annotations
 
 import fcntl
 import hashlib
 import json
+import os
 import re
+import stat
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -44,11 +41,15 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     PortfolioExecutionReconciliationIdentityV2,
     adjudicate_full_core_exchange_reconciliation_v1,
 )
-from src.ops.gates.risk_gate import kill_switch_state_path_from_env
+from src.ops.gates.risk_gate import (
+    canonical_kill_switch_state_path,
+    kill_switch_state_path_from_env,
+)
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
 
 _SCHEMA = "offline_execution_incident_safety.v1"
+_AUTHENTICATED_SCHEMA = "authenticated_execution_incident_safety.v1"
 _APPLIED = "KILL_PERSISTED"
 _ALREADY_BLOCKED = "ALREADY_BLOCKED"
 _ENVIRONMENT = "SHADOW"
@@ -62,6 +63,17 @@ class ExecutionIncidentSafetyError(ValueError):
 
 class ExecutionIncidentObservationError(ExecutionIncidentSafetyError):
     """The reader could not bind one observation to a consistent state."""
+
+
+class ExecutionIncidentHaltV1(RuntimeError):
+    """Stop the standing cycle after the original Safety writer accepts an incident."""
+
+    reason_code = "EXECUTION_GHOSV_SAFETY_HALT"
+
+    def __init__(self, receipt: dict):
+        self.receipt = receipt
+        self.detail = receipt["incident_id"]
+        super().__init__(f"{self.reason_code}:{self.detail}")
 
 
 def _digest(value):
@@ -127,6 +139,29 @@ class OfflineExecutionIncidentDeliveryV1:
             raise ExecutionIncidentSafetyError("INCIDENT_OBSERVATION_OUTSIDE_SESSION")
 
 
+@dataclass(frozen=True)
+class AuthenticatedExecutionIncidentScopeV1:
+    root: Path
+    account: str
+    state_path: Path
+
+    @property
+    def journal_path(self):
+        return self.root / "execution-incident-receipts.json"
+
+    @property
+    def lock_path(self):
+        return self.state_path.with_name(self.state_path.name + ".execution-incident.lock")
+
+    def binding(self):
+        return {
+            "root": str(self.root),
+            "account": self.account,
+            "environment": "LIVE",
+            "filegate": str(self.state_path),
+        }
+
+
 def _require_isolated_scope(scope):
     if (
         type(scope) is not OfflineExecutionIncidentScopeV1
@@ -146,8 +181,48 @@ def _require_isolated_scope(scope):
         raise ExecutionIncidentSafetyError("INCIDENT_FOREIGN_STORE_PATH")
 
 
+def _require_authenticated_scope(scope):
+    if (
+        type(scope) is not AuthenticatedExecutionIncidentScopeV1
+        or not scope.state_path.is_absolute()
+        or scope.state_path.resolve() != scope.state_path
+        or Path(canonical_kill_switch_state_path()).resolve() != scope.state_path
+        or type(scope.account) is not str
+        or not scope.account
+        or scope.account.strip() != scope.account
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_SCOPE_MISMATCH")
+    if any(
+        path.is_symlink()
+        for path in (scope.state_path.with_suffix(".tmp"), scope.state_path.parent / "backups")
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_FOREIGN_STORE_PATH")
+
+
+def _require_private_incident_journal(scope):
+    if (
+        not scope.root.is_absolute()
+        or scope.root.resolve() != scope.root
+        or not scope.root.is_dir()
+        or scope.root.stat().st_uid != os.getuid()
+        or scope.root.stat().st_mode & 0o077
+        or any(
+            path.is_symlink()
+            for path in (
+                scope.journal_path,
+                scope.journal_path.with_suffix(".json.tmp"),
+            )
+        )
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_FOREIGN_STORE_PATH")
+
+
 def _read_journal(scope):
-    binding = {"schema": _SCHEMA, "scope": scope.binding()}
+    schema = _SCHEMA
+    if type(scope) is AuthenticatedExecutionIncidentScopeV1:
+        _require_private_incident_journal(scope)
+        schema = _AUTHENTICATED_SCHEMA
+    binding = {"schema": schema, "scope": scope.binding()}
     try:
         contents = scope.journal_path.read_text()
     except FileNotFoundError:
@@ -269,11 +344,14 @@ def accept_offline_execution_incident_v1(
 def _apply_confirmed_execution_incident_v1(
     *, scope, identity, expected: ExecutionFillQuantityIncidentV1, reconciliation_source=None
 ) -> dict:
-    _require_isolated_scope(scope)
+    live = type(scope) is AuthenticatedExecutionIncidentScopeV1
+    require_scope = _require_authenticated_scope if live else _require_isolated_scope
+    require_scope(scope)
     if (
-        identity.execution_environment != _ENVIRONMENT
+        identity.execution_environment != ("LIVE" if live else _ENVIRONMENT)
         or identity.account_identity != scope.account
-        or expected.session_id != scope.session_id
+        or (not live and expected.session_id != scope.session_id)
+        or (live and reconciliation_source is None)
         or expected.identity_digest != identity.identity_digest()
     ):
         raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_SOURCE_SCOPE_MISMATCH")
@@ -288,13 +366,31 @@ def _apply_confirmed_execution_incident_v1(
     }
     if reconciliation_source is not None:
         original["reconciliation_source"] = reconciliation_source
+    if live:
+        original["session_id"] = expected.session_id
     incident_id = _digest({"scope": scope.binding(), **original})
     reason = _INCIDENT_REASON_PREFIX + incident_id
 
-    with (scope.root / "execution-incident.lock").open("a+b") as lock:
+    if live:
+        flags = os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK
+        lock_file = os.fdopen(os.open(scope.lock_path, flags, 0o600), "r+b")
+    else:
+        lock_file = (scope.root / "execution-incident.lock").open("a+b")
+    with lock_file as lock:
+        if live:
+            info = os.fstat(lock.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_LOCK_UNPROVEN")
         fcntl.flock(lock, fcntl.LOCK_EX)
-        _require_isolated_scope(scope)
-        journal = _read_journal(scope)
+        require_scope(scope)
+        try:
+            if live:
+                scope.root.mkdir(mode=0o700, exist_ok=True)
+            journal = _read_journal(scope)
+        except (ExecutionIncidentSafetyError, OSError):
+            if live:
+                _ensure_incident_kill_v1(scope, reason)
+            raise
         entries = journal["receipts"]
         if incident_id in entries:
             return entries[incident_id]["receipt"]
@@ -303,18 +399,7 @@ def _apply_confirmed_execution_incident_v1(
             for e in entries.values()
         ):
             raise ExecutionIncidentSafetyError("INCIDENT_STALE_OR_AMBIGUOUS_ORDER")
-        evidence, payload = _state_observation(scope)
-        if evidence.evidence_status != "TRUSTED_PRESENT" or evidence.state_name == "DISABLED":
-            raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_UNPROVEN")
-        if evidence.state_name != "KILLED":
-            writer = KillSwitch({}, persistence=StatePersistence(str(scope.state_path)))
-            if writer.state.name != evidence.state_name:
-                raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_CHANGED_BEFORE_WRITE")
-            if not writer.trigger(reason, triggered_by="execution_ghosv"):
-                raise ExecutionIncidentSafetyError("INCIDENT_KILL_REFUSED")
-            evidence, payload = _state_observation(scope)
-            if evidence.state_name != "KILLED" or payload.get("trigger_reason") != reason:
-                raise ExecutionIncidentSafetyError("INCIDENT_KILL_READBACK_UNPROVEN")
+        payload = _ensure_incident_kill_v1(scope, reason)
         revision = _kill_revision(payload)
         disposition = (
             _APPLIED if revision and payload.get("trigger_reason") == reason else _ALREADY_BLOCKED
@@ -339,6 +424,23 @@ def _apply_confirmed_execution_incident_v1(
         return receipt
 
 
+def _ensure_incident_kill_v1(scope, reason):
+    evidence, payload = _state_observation(scope)
+    if evidence.evidence_status != "TRUSTED_PRESENT" or evidence.state_name == "DISABLED":
+        raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_UNPROVEN")
+    if evidence.state_name == "KILLED":
+        return payload
+    writer = KillSwitch({}, persistence=StatePersistence(str(scope.state_path)))
+    if writer.state.name != evidence.state_name:
+        raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_CHANGED_BEFORE_WRITE")
+    if not writer.trigger(reason, triggered_by="execution_ghosv"):
+        raise ExecutionIncidentSafetyError("INCIDENT_KILL_REFUSED")
+    evidence, payload = _state_observation(scope)
+    if evidence.state_name != "KILLED" or payload.get("trigger_reason") != reason:
+        raise ExecutionIncidentSafetyError("INCIDENT_KILL_READBACK_UNPROVEN")
+    return payload
+
+
 def observe_offline_execution_incident_v1(
     *,
     scope: OfflineExecutionIncidentScopeV1,
@@ -346,7 +448,23 @@ def observe_offline_execution_incident_v1(
     incident_id: str | None = None,
 ) -> dict:
     """Read the current FILEGATE and discover its incident when no ID is supplied."""
-    _require_isolated_scope(scope)
+    return _observe_execution_incident_v1(scope, envelope, incident_id, _require_isolated_scope)
+
+
+def observe_authenticated_execution_incident_v1(
+    *,
+    scope: AuthenticatedExecutionIncidentScopeV1,
+    envelope: FinalOrderEnvelopeV1,
+    incident_id: str | None = None,
+) -> dict:
+    """Independently read the live-shaped FILEGATE and its bound incident receipt."""
+    return _observe_execution_incident_v1(
+        scope, envelope, incident_id, _require_authenticated_scope
+    )
+
+
+def _observe_execution_incident_v1(scope, envelope, incident_id, require_scope):
+    require_scope(scope)
     evidence, payload = _state_observation(scope)
     veto_reason = None
     try:
@@ -387,7 +505,7 @@ def observe_offline_execution_incident_v1(
 
     if _state_observation(scope) != (evidence, payload):
         raise ExecutionIncidentObservationError("INCIDENT_FILEGATE_CHANGED_DURING_VETO")
-    _require_isolated_scope(scope)
+    require_scope(scope)
     revision = _kill_revision(payload)
     return {
         "incident_id": incident_id,

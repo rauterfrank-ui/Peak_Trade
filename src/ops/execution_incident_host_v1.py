@@ -1,4 +1,4 @@
-"""Bind the original portfolio-host GET reconciliation to isolated SHADOW Safety."""
+"""Bind the original portfolio-host GET reconciliation to Safety."""
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -10,10 +10,19 @@ from src.ops.execution_ghosv_fill_quantity_v1 import (
     build_execution_fill_quantity_incident_v1,
 )
 from src.ops.execution_incident_safety_v1 import (
+    AuthenticatedExecutionIncidentScopeV1,
     ExecutionIncidentSafetyError,
     OfflineExecutionIncidentScopeV1,
     _apply_confirmed_execution_incident_v1,
     _require_isolated_scope,
+)
+from src.ops.execution_reconciliation_get_provenance_v1 import (
+    AuthenticatedExecutionReconciliationProofV1,
+    AuthenticatedReconciliationGetV1,
+    adjudicate_reconciliation_quantity_incident_v1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+    POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
@@ -36,6 +45,96 @@ from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
     HostBudgetRecoveryContextV1,
     PortfolioBudgetHostV1,
 )
+
+
+def deliver_authenticated_host_execution_incident_v1(
+    *,
+    host: PortfolioBudgetHostV1,
+    capture: AuthenticatedReconciliationGetV1,
+    reservation_id: str,
+    identity: PortfolioExecutionReconciliationIdentityV2,
+    snapshot: FullCoreExchangeReconciliationSnapshotV1,
+    result: dict,
+) -> dict | None:
+    """Recheck current GET evidence and the original budget revision before the kill."""
+    if (
+        type(capture) is not AuthenticatedReconciliationGetV1
+        or capture.transport is not host.reconciliation_transport
+        or type(identity) is not PortfolioExecutionReconciliationIdentityV2
+        or host.closed
+        or host.execution_environment != "LIVE"
+        or host.execution_incident_state_path is None
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_AUTHENTICATED_HOST_SOURCE_UNPROVEN")
+    proof = capture.evidence.get(reservation_id)
+    if (
+        type(proof) is not AuthenticatedExecutionReconciliationProofV1
+        or not (proof.account == host.account == identity.account_identity)
+        or proof.session_id != host.session_id
+        or proof.reservation_id != reservation_id
+        or identity.portfolio_reservation_id != reservation_id
+        or identity.budget_owner_root != str(host.root / "owner")
+        or proof.identity_digest != identity.identity_digest()
+        or len(proof.gets) != 6
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_AUTHENTICATED_HOST_SOURCE_UNPROVEN")
+    if proof.quantity_incident is None:
+        return None
+    seq, checksum, link = read_persisted_execution_reconciliation_v1(
+        host.owner, reservation_id, revision_ref=proof.revision_ref
+    )
+    if (
+        (seq, checksum) != proof.revision_ref
+        or link["identity"] != identity.to_dict()
+        or link["reconciliation"] != result
+        or result["snapshot_digest"] != proof.snapshot_digest
+        or result["reservation_released"] is not False
+        or result["matched"] is not False
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_AUTHENTICATED_BUDGET_READBACK_UNPROVEN")
+    expected = adjudicate_reconciliation_quantity_incident_v1(
+        session_id=host.session_id,
+        observed_at=proof.gets[-1].acquired_at.astimezone(timezone.utc),
+        identity=identity,
+        snapshot=snapshot,
+        result=result,
+    )
+    if (
+        expected is None
+        or expected != proof.quantity_incident
+        or not (
+            proof.gets[-1].acquired_at.timestamp()
+            <= host.clock()
+            <= proof.gets[0].acquired_at.timestamp()
+            + POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        )
+    ):
+        raise ExecutionIncidentSafetyError("INCIDENT_AUTHENTICATED_PROOF_STALE_OR_CHANGED")
+    root = host.root / "execution-incident-safety"
+    scope = AuthenticatedExecutionIncidentScopeV1(
+        root, host.account, host.execution_incident_state_path
+    )
+    return _apply_confirmed_execution_incident_v1(
+        scope=scope,
+        identity=identity,
+        expected=expected,
+        reconciliation_source={
+            "budget_owner_root": identity.budget_owner_root,
+            "reservation_id": reservation_id,
+            "revision_ref": list(proof.revision_ref),
+            "snapshot_digest": proof.snapshot_digest,
+            "venue_host": proof.venue_host,
+            "gets": [
+                {
+                    "endpoint": read.endpoint,
+                    "decision_id": read.decision_id,
+                    "acquired_at": read.acquired_at.isoformat(),
+                    "body_sha256": read.body_sha256,
+                }
+                for read in proof.gets
+            ],
+        },
+    )
 
 
 class InjectedReconciliationGetV1:
