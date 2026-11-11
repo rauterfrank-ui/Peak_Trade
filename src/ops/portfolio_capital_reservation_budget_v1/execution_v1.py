@@ -338,7 +338,9 @@ def _confirmed_fill_floor_v1(owner, reservation_id, identity, prior):
     return confirmed
 
 
-def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, now_unix):
+def reconcile_locked_v1(
+    owner, reservation_id, *, snapshot, observed, account, now_unix, confirm_released_no_fill=False
+):
     """Resolve evidence while fenced; capital admission is a separate fresh gate."""
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReservationStateV1
     from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
@@ -392,6 +394,16 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
     matched = decision.outcome != OUTCOME_HALTED_UNRESOLVED
     release = False
     prior = link["reconciliation"] or {}
+    current = owner._by_key[owner._by_id[reservation_id]]
+    if confirm_released_no_fill and (
+        current.state is not ReservationStateV1.RELEASED
+        or current.terminal_reason != "RECONCILED_ENTRY_NO_FILL"
+        or prior.get("matched") is not True
+        or prior.get("reservation_released") is not True
+        or prior["identity_digest"] != identity.identity_digest()
+        or Decimal(prior["decision"]["cumulative_filled_qty"]) != 0
+    ):
+        raise ValueError("EXECUTION_ORIGINAL_NO_FILL_RELEASE_UNPROVEN")
     confirmed_fill = _confirmed_fill_floor_v1(owner, reservation_id, identity, prior)
     if decision.outcome != OUTCOME_HALTED_UNRESOLVED:
         filled = Decimal(decision.cumulative_filled_qty)
@@ -428,6 +440,8 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
             if not release:
                 reasons.append("EXECUTION_PENDING_CUSTODY_UNPROVEN")
                 matched = False
+    if confirm_released_no_fill and not (matched and release and decision.reconciliation_complete):
+        raise ValueError("EXECUTION_ORIGINAL_NO_FILL_RELEASE_NOT_RECONFIRMED")
     evidence = {
         "local_submit_outcome": local_outcome.value,
         "local_submit_evidence": local_evidence,
@@ -443,16 +457,13 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
     }
     if confirmed_fill > 0 or type(identity) is PortfolioExecutionReconciliationIdentityV2:
         evidence["confirmed_filled_qty_floor"] = str(confirmed_fill)
-    if release:
-        key = owner._by_id[reservation_id]
-        current = owner._by_key[key]
-        if current.counts_against_budget:
-            owner._by_key[key] = replace(
-                current,
-                state=ReservationStateV1.RELEASED,
-                transition_trace=current.transition_trace + ("RELEASED",),
-                terminal_reason="RECONCILED_ENTRY_NO_FILL",
-            )
+    if release and current.counts_against_budget:
+        owner._by_key[owner._by_id[reservation_id]] = replace(
+            current,
+            state=ReservationStateV1.RELEASED,
+            transition_trace=current.transition_trace + ("RELEASED",),
+            terminal_reason="RECONCILED_ENTRY_NO_FILL",
+        )
     owner._execution_links[reservation_id] = detached({**link, "reconciliation": evidence})
     owner._persist_locked()
     return detached(evidence)

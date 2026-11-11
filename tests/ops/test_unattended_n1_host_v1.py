@@ -446,18 +446,22 @@ def test_canonical_host_service_observes_after_expiry_and_process_death(tmp_path
     seed_path = proof_root / "issuer.seed"
     seed_path.write_bytes(bytes(issuer))
     seed_path.chmod(0o600)
+    cause_key = SigningKey.generate()
+    cause_seed = proof_root / "cause.seed"
+    cause_seed.write_bytes(bytes(cause_key))
+    cause_seed.chmod(0o600)
     writer = ManagedFilegateV1(state_path=filegate, root=authority)
-    writer.provision_v1(
+    integrity_stop = writer.provision_v1(
         scope=FilegateRecoveryScopeV1(
             "fixture-account", "SHADOW", "fixture-host", ("FUTURES",), "a" * 64
         ),
         issuer_public_key=bytes(issuer.verify_key),
         owner_public_keys={
-            role: bytes(SigningKey.generate().verify_key) for role in ("CAUSE", "ACCOUNT", "HOST")
+            "CAUSE": bytes(cause_key.verify_key),
+            **{role: bytes(SigningKey.generate().verify_key) for role in ("ACCOUNT", "HOST")},
         },
         recoverable_causes={"R03"},
     )
-    stop = writer.kill_v1(cause="R09", reason="fixture persistent emergency")
     bounds = UnattendedHostBoundsV1("fixture-host", "revision", "config", time.time() - 1, 1, 30, 1)
     state_root = tmp_path / "controller"
     manifest = tmp_path / "manifest.json"
@@ -500,6 +504,39 @@ def test_canonical_host_service_observes_after_expiry_and_process_death(tmp_path
         "--manifest",
         str(manifest),
     ]
+
+    def owner_poll(owner_seed):
+        owner_command = command.copy()
+        owner_command[owner_command.index("run")] = "owner-poll"
+        result = subprocess.run(
+            [*owner_command, "--owner-role", "R03", "--owner-seed-path", str(owner_seed)],
+            cwd=REPO,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        )
+        return json.loads(result.stdout[result.stdout.index("{") :])
+
+    result = owner_poll(cause_seed)
+    assert result["result"] == {
+        "status": "OWNER_PROOF_PUBLISHED",
+        "generation": integrity_stop["generation"],
+    }
+    assert result["external_effect_authorized"] is False
+    proof_path = proof_root / (
+        f"{integrity_stop['generation']}-{integrity_stop['stop_id']}-CAUSE-R03.json"
+    )
+    proof = proof_path.read_bytes()
+    assert json.loads(proof)["body"]["stop"] == integrity_stop
+    assert owner_poll(seed_path)["result"] == {
+        "status": "OWNER_OBSERVATION_BLOCKED",
+        "reason": "FILEGATE_SIGNATURE_UNPROVEN",
+    }
+    assert proof_path.read_bytes() == proof
+    assert writer.inspect_stop_v1() == integrity_stop
+    stop = writer.kill_v1(cause="R09", reason="fixture persistent emergency")
     observation = state_root / "stopped_fault_observation_v1.json"
     previous_write = None
     for restart in (False, True):

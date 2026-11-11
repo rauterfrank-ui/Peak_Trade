@@ -362,8 +362,10 @@ class PortfolioBudgetHostV1:
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
         self.entry_budget_policy = entry_budget_policy
 
-    def observe_v1(self, bindings):
-        return self._observe_with_retry_v1(bindings)
+    def observe_v1(self, bindings, *, required_execution_attempts=None):
+        return self._observe_with_retry_v1(
+            bindings, required_execution_attempts=required_execution_attempts
+        )
 
     def capture_futures_financial_custody_v1(self, source):
         """Take a read-only sample with the original durable owner already open."""
@@ -473,7 +475,7 @@ class PortfolioBudgetHostV1:
         context = self._observe_with_retry_v1(bindings, capture=capture)
         return context, capture.evidence
 
-    def _observe_with_retry_v1(self, bindings, *, capture=None):
+    def _observe_with_retry_v1(self, bindings, *, capture=None, required_execution_attempts=None):
         from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
             bounded_retry_policy_v1,
         )
@@ -483,7 +485,11 @@ class PortfolioBudgetHostV1:
             if capture is not None:
                 capture.reset_v1()
             try:
-                return self._observe_once_v1(bindings, capture=capture)
+                return self._observe_once_v1(
+                    bindings,
+                    capture=capture,
+                    required_execution_attempts=required_execution_attempts,
+                )
             except (TimeoutError, ConnectionError):
                 if not bounded_retry_policy_v1(
                     attempt=attempt,
@@ -511,7 +517,9 @@ class PortfolioBudgetHostV1:
             raise ValueError("BOUNDED_CLOSE_FOREIGN_HOST_BINDING_CHANGED")
         return self._observe_once_v1(bindings, rebound_request=request)
 
-    def _observe_once_v1(self, bindings, *, rebound_request=None, capture=None):
+    def _observe_once_v1(
+        self, bindings, *, rebound_request=None, capture=None, required_execution_attempts=None
+    ):
         if self.closed:
             raise ValueError("HOST_BUDGET_SESSION_CLOSED")
         if self.owner is None and self.durable_mode == "create" and self.root.exists():
@@ -529,10 +537,22 @@ class PortfolioBudgetHostV1:
             expected_account=self.expected_account_identity,
         )
         return self._bind_observation_v1(
-            bindings, observation, rebound_request=rebound_request, capture=capture
+            bindings,
+            observation,
+            rebound_request=rebound_request,
+            capture=capture,
+            required_execution_attempts=required_execution_attempts,
         )
 
-    def _bind_observation_v1(self, bindings, observation, *, rebound_request=None, capture=None):
+    def _bind_observation_v1(
+        self,
+        bindings,
+        observation,
+        *,
+        rebound_request=None,
+        capture=None,
+        required_execution_attempts=None,
+    ):
         account = observation.account
         if self.bindings is not None and self.bindings != bindings and rebound_request is None:
             raise ValueError("HOST_BUDGET_LANE_GENERATION_CHANGED")
@@ -573,7 +593,9 @@ class PortfolioBudgetHostV1:
         )
         context = replace(
             context,
-            execution_reconciliation=self._reconcile_executions_v1(context, capture=capture),
+            execution_reconciliation=self._reconcile_executions_v1(
+                context, capture=capture, required_execution_attempts=required_execution_attempts
+            ),
         )
         if rebound_request is not None:
             slot = self.owner.inspect_bounded_slot_close_refresh_v1(rebound_request)["slot_id"]
@@ -591,7 +613,7 @@ class PortfolioBudgetHostV1:
             self.bindings = dict(bindings)
         return context
 
-    def _reconcile_executions_v1(self, context, *, capture=None):
+    def _reconcile_executions_v1(self, context, *, capture=None, required_execution_attempts=None):
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
             require_futures_reconciliation_product_v1,
@@ -616,6 +638,21 @@ class PortfolioBudgetHostV1:
             for rid, link in self.owner.execution_links_v1(active_only=True).items()
             if link["phase"] == "SUBMIT_MAY_HAVE_OCCURRED"
         }
+        released = set()
+        if required_execution_attempts:
+            retained = self.owner.execution_links_v1()
+            for rid, expected_digest in required_execution_attempts.items():
+                link = retained.get(rid)
+                if (
+                    link is None
+                    or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
+                    or parse_exchange_reconciliation_identity_v1(link["identity"]).identity_digest()
+                    != expected_digest
+                ):
+                    raise ValueError("HOST_REQUIRED_EXECUTION_ATTEMPT_UNPROVEN")
+                if rid not in submitted:
+                    released.add(rid)
+                    submitted[rid] = link
         if not submitted:
             return {}
         deliver_incidents = capture is None and self.execution_incident_state_path is not None
@@ -713,6 +750,7 @@ class PortfolioBudgetHostV1:
                 observed=context.observed,
                 account=context.account,
                 now_unix=self.clock(),
+                confirm_released_no_fill=rid in released,
             )
             if capture is not None and type(identity) is PortfolioExecutionReconciliationIdentityV2:
                 capture.record_v1(self, rid, identity, snapshot, acquired, result[rid])

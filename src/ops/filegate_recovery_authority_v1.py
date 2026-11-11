@@ -54,6 +54,33 @@ def is_digest_v1(value):
     return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
+def require_filegate_execution_incidents_v1(stop):
+    """Return every incident that must be resolved for the current R04 stop."""
+    incidents = stop.get("execution_incident_ids")
+    if (
+        "R04" not in stop["causes"]
+        or type(incidents) is not list
+        or not incidents
+        or not all(is_digest_v1(incident) for incident in incidents)
+        or incidents != sorted(set(incidents))
+    ):
+        raise FilegateAuthorityError("FILEGATE_EXECUTION_INCIDENT_BINDING_UNPROVEN")
+    return tuple(incidents)
+
+
+def require_filegate_loss_violation_v1(violation, *, scope):
+    if (
+        type(violation) is not dict
+        or set(violation) != {"rule", "scope", "policy_sha256", "observation_sha256"}
+        or violation["rule"] != "RISK_GATE_SESSION_LOSS_LIMIT_V1"
+        or violation["scope"] != scope
+        or not is_digest_v1(violation["policy_sha256"])
+        or not is_digest_v1(violation["observation_sha256"])
+    ):
+        raise FilegateAuthorityError("FILEGATE_RISK_VIOLATION_BINDING_UNPROVEN")
+    return violation
+
+
 def public_key_hex_v1(key):
     if type(key) is not bytes or len(key) != 32:
         raise FilegateAuthorityError("FILEGATE_AUTHORITY_KEY_INVALID")
@@ -119,7 +146,7 @@ def requires_cause_proof_set_v1(stop, cause_keys):
     return len(stop["causes"]) != 1 or stop["causes"][0] in cause_keys
 
 
-def _verify_owner_proof(*, proof, key, role, stop, now, cause=None, require_cause=False):
+def verify_filegate_owner_proof_v1(*, proof, key, role, stop, now, cause=None, require_cause=False):
     body = _verify(proof, key)
     _current(body, now)
     if (
@@ -139,6 +166,10 @@ def _release_body(*, stop, evidence, trust, now):
     causes = set(stop["causes"])
     if not causes or not causes <= set(trust["recoverable_causes"]):
         raise FilegateAuthorityError("FILEGATE_CAUSE_REQUIRES_SEPARATE_AUTHORITY")
+    if "R04" in causes:
+        require_filegate_execution_incidents_v1(stop)
+    if "R05" in causes:
+        require_filegate_loss_violation_v1(stop.get("risk_violation"), scope=stop["scope"])
     owners = trust["owners"]
     if not isinstance(evidence, dict) or set(evidence) != EVIDENCE_ROLES:
         raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_COVERAGE_UNPROVEN")
@@ -147,7 +178,9 @@ def _release_body(*, stop, evidence, trust, now):
     for role in ("ACCOUNT", "HOST"):
         proof = evidence[role]
         expirations.append(
-            _verify_owner_proof(proof=proof, key=owners[role], role=role, stop=stop, now=now)
+            verify_filegate_owner_proof_v1(
+                proof=proof, key=owners[role], role=role, stop=stop, now=now
+            )
         )
         signatures[role] = proof["signature"]
 
@@ -164,7 +197,7 @@ def _release_body(*, stop, evidence, trust, now):
         for cause in stop["causes"]:
             proof = cause_proof[cause]
             expirations.append(
-                _verify_owner_proof(
+                verify_filegate_owner_proof_v1(
                     proof=proof,
                     key=cause_keys[cause],
                     role="CAUSE",
@@ -177,7 +210,7 @@ def _release_body(*, stop, evidence, trust, now):
             signatures["CAUSE"][cause] = proof["signature"]
     else:
         expirations.append(
-            _verify_owner_proof(
+            verify_filegate_owner_proof_v1(
                 proof=cause_proof,
                 key=owners["CAUSE"],
                 role="CAUSE",

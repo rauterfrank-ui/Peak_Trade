@@ -545,6 +545,29 @@ def observe_standing_execution_incident_v1(*, scope: AuthenticatedExecutionIncid
     )
 
 
+def read_authenticated_execution_incident_origin_v1(
+    *, scope: AuthenticatedExecutionIncidentScopeV1, incident_id: str
+) -> dict:
+    """Re-read the original Incident, budget revision and authenticated GETs by ID."""
+    _require_authenticated_scope(scope)
+    receipt = _read_journal(scope)["receipts"].get(incident_id)
+    if receipt is None:
+        raise ExecutionIncidentObservationError("INCIDENT_RECEIPT_MISSING")
+    receipt = receipt["receipt"]
+    if receipt["incident_id"] != incident_id:
+        raise ExecutionIncidentObservationError("INCIDENT_RECEIPT_IDENTITY_CHANGED")
+    _, _, identity = _recover_standing_incident_execution_v1(scope, receipt)
+    if _standing_raw_get_proof_status_v1(scope, receipt) != "VERIFIED":
+        raise ExecutionIncidentObservationError("INCIDENT_ORIGINAL_GETS_UNPROVEN")
+    return {
+        "incident_id": incident_id,
+        "reservation_id": identity.portfolio_reservation_id,
+        "identity_digest": identity.identity_digest(),
+        "native_id": identity.native_id,
+        "incident_receipt_sha256": _digest(receipt),
+    }
+
+
 def _recover_standing_incident_execution_v1(scope, receipt):
     """Bind the historical incident revision using only the configured owner root."""
     source = receipt["reconciliation_source"]

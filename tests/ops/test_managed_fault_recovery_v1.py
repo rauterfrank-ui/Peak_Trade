@@ -36,7 +36,10 @@ from src.ops.managed_public_feed_recovery_v1 import (
     ManagedPublicFeedRecoveryV1,
     attest_managed_public_feed_scope_v1,
 )
-from src.ops.managed_risk_recovery_v1 import attest_managed_risk_recovery_v1
+from src.ops.managed_risk_recovery_v1 import (
+    attest_managed_risk_recovery_v1,
+    record_managed_session_loss_stop_v1,
+)
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
     UnattendedHostBoundsV1,
     run_unattended_n1_host_v1,
@@ -376,14 +379,21 @@ def test_loss_and_emergency_hold_recovery_until_original_risk_rule_allows(tmp_pa
 
     scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", ("instrument",), "c" * 64)
     writer, issuer, keys, _ = _provision(tmp_path, monkeypatch, scope, clock, {"R05"})
-    stop = writer.kill_v1(cause="R05", reason="session loss")
     limits = RiskLimits(max_session_loss_usd=10)
+    stop = record_managed_session_loss_stop_v1(
+        writer=writer,
+        scope=scope,
+        limits=limits,
+        context=RiskContext(clock(), 0, -11, 0, 1, 1),
+        observation_sha256="c" * 64,
+    )
     limit_digest = fact_digest(asdict(limits))
     capital = [-11.0]
 
     def risk(current_stop):
         return attest_managed_risk_recovery_v1(
             stop=current_stop,
+            scope=scope,
             limits=limits,
             context=RiskContext(clock(), 0, capital[0], 0, 1, 1),
             original_policy_sha256=limit_digest,
@@ -410,6 +420,53 @@ def test_loss_and_emergency_hold_recovery_until_original_risk_rule_allows(tmp_pa
     assert coordinator.poll_v1()["status"] == "SAFETY_RELEASE_CONFIRMED"
     writer.emergency_v1("explicit emergency")
     assert coordinator.poll_v1()["status"] == "BLOCKED_OBSERVING"
+    assert kill_switch_should_block_trading()
+
+
+@pytest.mark.parametrize(
+    "fault", ["unbound-margin", "changed-policy", "foreign-scope", "reused-observation"]
+)
+def test_loss_recovery_requires_the_bound_original_violation(tmp_path, monkeypatch, fault):
+    def clock():
+        return 1000
+
+    scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", ("instrument",), "c" * 64)
+    writer, issuer, keys, _ = _provision(tmp_path, monkeypatch, scope, clock, {"R05"})
+    limits = RiskLimits(max_session_loss_usd=10)
+    if fault == "unbound-margin":
+        stop = writer.kill_v1(cause="R05", reason="margin condition")
+    else:
+        stop = record_managed_session_loss_stop_v1(
+            writer=writer,
+            scope=scope,
+            limits=limits,
+            context=RiskContext(clock(), 0, -11, 0, 1, 1),
+            observation_sha256="c" * 64,
+        )
+    if fault == "changed-policy":
+        limits = replace(limits, max_session_loss_usd=20)
+    if fault == "foreign-scope":
+        scope = replace(scope, account="foreign-account")
+    with pytest.raises(
+        FilegateAuthorityError, match="(RISK_VIOLATION_BINDING|FAULT_RISK_ORIGINAL)"
+    ):
+        attest_managed_risk_recovery_v1(
+            stop=stop,
+            scope=scope,
+            limits=limits,
+            context=RiskContext(clock(), 0, -9, 0, 1, 1),
+            original_policy_sha256=fact_digest(asdict(limits)),
+            original_observation_sha256="c" * 64 if fault == "reused-observation" else "d" * 64,
+            expires_at=clock() + 4,
+            key=keys["CAUSE"],
+        )
+    if fault == "unbound-margin":
+        proofs = {
+            role: _proof(role=role, stop=stop, now=clock(), key=key) for role, key in keys.items()
+        }
+        with pytest.raises(FilegateAuthorityError, match="RISK_VIOLATION_BINDING_UNPROVEN"):
+            writer.issue_release_v1(evidence=proofs, issuer_key=issuer)
+    assert writer.inspect_stop_v1() == stop
     assert kill_switch_should_block_trading()
 
 
@@ -506,7 +563,18 @@ def test_standing_recovery_requires_every_independent_cause_in_current_stop(tmp_
         tmp_path, monkeypatch, scope, time.time, {"R05"}, cause_keys=cause_keys
     )
     writer.kill_v1(cause="R03", reason="FILEGATE state needed repair")
-    stop = writer.kill_v1(cause="R05", reason="session loss")
+    limits = RiskLimits(max_session_loss_usd=10)
+
+    def record_loss(observation_sha256):
+        return record_managed_session_loss_stop_v1(
+            writer=writer,
+            scope=scope,
+            limits=limits,
+            context=RiskContext(time.time(), 0, -11, 0, 1, 1),
+            observation_sha256=observation_sha256,
+        )
+
+    stop = record_loss("c" * 64)
     assert stop["causes"] == ["R03", "R05"]
     issuer_path = tmp_path / "test-issuer"
     issuer_path.write_bytes(bytes(issuer))
@@ -533,9 +601,9 @@ def test_standing_recovery_requires_every_independent_cause_in_current_stop(tmp_
         )
 
     def risk(current_stop, *, observed_at, expires_at):
-        limits = RiskLimits(max_session_loss_usd=10)
         return attest_managed_risk_recovery_v1(
             stop=current_stop,
+            scope=scope,
             limits=limits,
             context=RiskContext(observed_at, 0, -9, 0, 1, 1),
             original_policy_sha256=fact_digest(asdict(limits)),
@@ -556,7 +624,7 @@ def test_standing_recovery_requires_every_independent_cause_in_current_stop(tmp_
     publish_managed_owner_proof_v1(root=proof_root, proof=risk_proof)
     assert service.poll_v1()["status"] == "BLOCKED_OBSERVING"
 
-    stop = writer.kill_v1(cause="R05", reason="new stop after risk observation")
+    stop = record_loss("e" * 64)
     publish_other_owners(stop)
     publish_managed_owner_proof_v1(
         root=proof_root, proof=risk(stop, observed_at=time.time(), expires_at=time.time() + 60)

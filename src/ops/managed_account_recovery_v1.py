@@ -2,9 +2,14 @@
 
 from pathlib import Path
 
+from src.ops.execution_incident_safety_v1 import (
+    AuthenticatedExecutionIncidentScopeV1,
+    read_authenticated_execution_incident_origin_v1,
+)
 from src.ops.filegate_recovery_authority_v1 import (
     FilegateAuthorityError,
     attest_filegate_owner_evidence_v1,
+    require_filegate_execution_incidents_v1,
 )
 from src.ops.managed_filegate_v1 import ManagedFilegateV1
 from src.ops.offline_public_feed_account_reconciliation_v1 import _inspect_original_futures_account
@@ -16,7 +21,9 @@ from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
 
-def capture_managed_stopped_account_v1(*, writer, stop, host, bindings, transport_scope):
+def capture_managed_stopped_account_v1(
+    *, writer, stop, host, bindings, transport_scope, required_execution_attempts=None
+):
     """Reconcile through GET and the original stores. Unknown remains explicit."""
     if type(writer) is not ManagedFilegateV1 or type(host) is not PortfolioBudgetHostV1:
         raise FilegateAuthorityError("FAULT_ACCOUNT_ORIGINAL_OWNER_REQUIRED")
@@ -48,6 +55,7 @@ def capture_managed_stopped_account_v1(*, writer, stop, host, bindings, transpor
         bindings=bindings,
         require_stop=require_stop,
         transport_scope=transport_scope,
+        required_execution_attempts=required_execution_attempts,
     )
     if (
         observation["account"] != scope["account"]
@@ -82,19 +90,46 @@ def attest_managed_stopped_account_v1(*, writer, stop, host, bindings, transport
 
 
 def attest_managed_execution_resolution_v1(*, writer, stop, host, bindings, transport_scope, key):
-    """Require the original attempt, Order/Fills result and submit barrier for R04."""
+    """Reconcile the exact attempts that caused the current authenticated R04 stop."""
+    if type(writer) is not ManagedFilegateV1 or type(host) is not PortfolioBudgetHostV1:
+        raise FilegateAuthorityError("FAULT_ACCOUNT_ORIGINAL_OWNER_REQUIRED")
+    if (
+        writer.inspect_stop_v1() != stop
+        or stop["scope"]["environment"] != "LIVE"
+        or str(host.root) != stop["scope"]["host"]
+        or host.expected_account_identity != stop["scope"]["account"]
+        or host.execution_incident_state_path != writer.state_path
+    ):
+        raise FilegateAuthorityError("FAULT_EXECUTION_ORIGINAL_INCIDENT_SCOPE_CHANGED")
+    incident_ids = require_filegate_execution_incidents_v1(stop)
+    incident_scope = AuthenticatedExecutionIncidentScopeV1(
+        host.root / "execution-incident-safety", host.expected_account_identity, writer.state_path
+    )
+    origins = [
+        read_authenticated_execution_incident_origin_v1(
+            scope=incident_scope, incident_id=incident_id
+        )
+        for incident_id in incident_ids
+    ]
+    attempts = {}
+    for origin in origins:
+        rid, digest = origin["reservation_id"], origin["identity_digest"]
+        if (
+            origin["native_id"] not in stop["scope"]["instruments"]
+            or attempts.setdefault(rid, digest) != digest
+        ):
+            raise FilegateAuthorityError("FAULT_EXECUTION_ORIGINAL_INCIDENT_SCOPE_CHANGED")
     observed = capture_managed_stopped_account_v1(
         writer=writer,
         stop=stop,
         host=host,
         bindings=bindings,
         transport_scope=transport_scope,
+        required_execution_attempts=attempts,
     )
     reconciled = observed["execution_reconciliation"]
     if (
-        "R04" not in stop["causes"]
-        or not reconciled
-        or observed["execution_blocker"] is not None
+        observed["execution_blocker"] is not None
         or observed["portfolio_classification"] != ProductiveReconciliationClass.MATCH.value
         or any(
             result.get("matched") is not True or result.get("original_submit_barrier") is None
@@ -102,11 +137,15 @@ def attest_managed_execution_resolution_v1(*, writer, stop, host, bindings, tran
         )
     ):
         raise FilegateAuthorityError("FAULT_EXECUTION_OBLIGATIONS_UNRESOLVED")
+    for rid, expected_digest in attempts.items():
+        result = reconciled.get(rid)
+        if result is None or result["identity_digest"] != expected_digest:
+            raise FilegateAuthorityError("FAULT_EXECUTION_ORIGINAL_ATTEMPT_UNRESOLVED")
     return attest_filegate_owner_evidence_v1(
         role="CAUSE",
         cause="R04",
         stop=stop,
-        evidence_sha256=fact_digest(observed),
+        evidence_sha256=fact_digest({"incident_origins": origins, "account": observed}),
         observed_at=observed["account_inventory_completed_unix"],
         expires_at=observed["observed_at_unix"] + observed["account_inventory_max_age_seconds"],
         key=key,
