@@ -94,7 +94,7 @@ def assess_absolute_movement_cost_v1(observation, *, sizing, evaluated_at_utc=No
     cost.acquisition_age_seconds_v1(acquired_at_utc=observation.evaluated_at_utc, now_utc=now)
     # Reuse every original source validation. Remove only this new binding to
     # avoid recursive validation when rereading the original sizing envelope.
-    prior = replace(sizing, absolute_movement_cost_binding=None)
+    prior = replace(sizing, absolute_movement_cost_binding=None, xperp_liquidation_binding=None)
     margin, values = original_costs_v1(prior)
     if sizing.entry_cost_binding is None:
         raise ValueError("MOVEMENT_ORIGINAL_COST_BINDINGS_REQUIRED")

@@ -56,9 +56,19 @@ class FuturesFinancialCustodyV1:
     """Same-account inventory and local commitments for a financial reader."""
 
     local_commitments: LocalCapitalCommitmentReadbackV1 = field(repr=False)
+    _host: "PortfolioBudgetHostV1" = field(repr=False, compare=False)
     _observation: HostAccountObservationV1 = field(repr=False)
     _bindings: tuple = field(repr=False)
     _read_count: int
+
+    def read_v1(self):
+        return self._host.inspect_futures_financial_custody_v1(self)
+
+    def fetch_xperp_position_terms_v1(self, native_ids):
+        self.read_v1()
+        terms = self._observation.account_inventory_source.fetch_xperp_position_terms_v1(native_ids)
+        self.read_v1()
+        return terms
 
 
 @dataclass(frozen=True)
@@ -396,7 +406,7 @@ class PortfolioBudgetHostV1:
         )
         if transport.read_count - initial_reads != FUTURES_INVENTORY_REQUEST_COUNT:
             raise ValueError("FUTURES_FINANCIAL_INVENTORY_GET_COUNT_MISMATCH")
-        proof = FuturesFinancialCustodyV1(local, observation, bindings, transport.read_count)
+        proof = FuturesFinancialCustodyV1(local, self, observation, bindings, transport.read_count)
         self._inspect_futures_financial_custody_v1(proof)
         return proof
 

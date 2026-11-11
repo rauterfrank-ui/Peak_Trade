@@ -185,6 +185,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     open_slot_loss_observation: object | None = None
     native_initial_margin_observation: object | None = None
     absolute_movement_cost_observation: object | None = None
+    futures_financial_custody: object | None = None
 
 
 @dataclass(frozen=True)
@@ -1098,6 +1099,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             if injected is not None
             else None,
             absolute_movement_cost_observation=injected.absolute_movement_cost_observation
+            if injected is not None
+            else None,
+            futures_financial_custody=injected.futures_financial_custody
             if injected is not None
             else None,
             handoff_journal=handoff_journal,

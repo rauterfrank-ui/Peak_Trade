@@ -4,7 +4,7 @@ This is decision-state serialization, not another sizing algorithm or learning
 producer. Replaying an acknowledged hold must preserve its quantity provenance.
 """
 
-from dataclasses import asdict, dataclass, fields, is_dataclass
+from dataclasses import asdict, dataclass, fields, is_dataclass, replace
 from collections.abc import Mapping
 from decimal import Decimal
 from enum import Enum
@@ -81,6 +81,7 @@ class ReservationSizingBindingV1:
     funding_cost_binding: object | None = None
     native_initial_margin_binding: object | None = None
     absolute_movement_cost_binding: object | None = None
+    xperp_liquidation_binding: object | None = None
 
     def validate_v1(self, *, amount: Decimal, decision_id: str) -> None:
         decision, applied = self.decision, self.applied_input
@@ -198,6 +199,12 @@ class ReservationSizingBindingV1:
             if type(self.absolute_movement_cost_binding) is not AbsoluteMovementCostBindingV1:
                 raise ValueError("RESERVATION_TYPED_MOVEMENT_BINDING_REQUIRED")
             self.absolute_movement_cost_binding.validate_v1(sizing=self)
+        if self.xperp_liquidation_binding is not None:
+            from .xperp_liquidation_projection_v1 import XPerpLiquidationBindingV1
+
+            if type(self.xperp_liquidation_binding) is not XPerpLiquidationBindingV1:
+                raise ValueError("RESERVATION_TYPED_XPERP_LIQUIDATION_BINDING_REQUIRED")
+            self.xperp_liquidation_binding.validate_v1(sizing=self)
         if self.risk_binding is not None:
             from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
 
@@ -250,11 +257,27 @@ class ReservationSizingBindingV1:
             result["absolute_movement_cost_binding"] = (
                 self.absolute_movement_cost_binding.to_dict_v1()
             )
+        if self.xperp_liquidation_binding is not None:
+            result["schema"] = "reservation_sizing_binding.v9"
+            result["xperp_liquidation_binding"] = self.xperp_liquidation_binding.to_dict_v1()
         return result
 
     @classmethod
     def from_dict_v1(cls, payload):
         from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
+
+        if isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v9":
+            from .xperp_liquidation_projection_v1 import XPerpLiquidationBindingV1
+
+            previous = dict(payload)
+            liquidation = previous.pop("xperp_liquidation_binding", None)
+            if not isinstance(liquidation, dict):
+                raise ValueError("RESERVATION_SIZING_STATE_SCHEMA_INVALID")
+            previous["schema"] = "reservation_sizing_binding.v8"
+            return replace(
+                cls.from_dict_v1(previous),
+                xperp_liquidation_binding=XPerpLiquidationBindingV1.from_dict_v1(liquidation),
+            )
 
         version2 = (
             isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v2"
