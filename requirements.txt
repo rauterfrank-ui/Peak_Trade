@@ -53,7 +53,9 @@ certifi==2025.11.12
     #   kubernetes
     #   requests
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
-    # via cryptography
+    # via
+    #   cryptography
+    #   pynacl
 cfgv==3.5.0
     # via pre-commit
 charset-normalizer==3.4.4
@@ -439,6 +441,8 @@ pygments==2.19.2
     # via
     #   pytest
     #   rich
+pynacl==1.6.2
+    # via peak-trade
 pyparsing==3.2.5
     # via
     #   matplotlib

@@ -25,6 +25,7 @@ TOOLS = {
 
 # The Safety signature implementation adds PyNaCl and preserves the locked web extra.
 FILEGATE_DEPENDENCY_DELTA = {
+    "requirements.txt": "4f5666c408eebfa758db3112a12e8234900336f06aa223b6898f90b549b174d6",
     "pyproject.toml": "060a5b5751e1b2b6188fcb1c33c879101c11cee03d2b2494d859fa934915c014",
     "uv.lock": "3f522959780c4a36ba3cd739cb7b6edd5e96ee0cab3c5c64e5ffba413acba280",
 }
