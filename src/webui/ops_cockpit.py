@@ -3771,6 +3771,8 @@ def render_ops_cockpit_html(
     update_officer_form_run_dir: str = "",
     update_officer_source_preset: str = "manual",
 ) -> str:
+    from .standing_incident_panel_v1 import render_standing_incident_panel_v1
+
     payload = build_ops_cockpit_payload(
         repo_root=repo_root,
         update_officer_notifier_path=update_officer_notifier_path,
@@ -3882,6 +3884,7 @@ def render_ops_cockpit_html(
   {policy_governance_observation_surface_html}
   {phase57_snapshot_discoverability_html}
   {incident_observation_html}
+  {render_standing_incident_panel_v1()}
   {run_state_observation_html}
   {workflow_officer_observation_html}
   {phase83_eligibility_html}

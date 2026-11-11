@@ -495,7 +495,7 @@ def observe_standing_execution_incident_v1(*, scope: AuthenticatedExecutionIncid
     )
 
 
-def _recover_standing_incident_envelope_v1(scope, receipt):
+def _recover_standing_incident_execution_v1(scope, receipt):
     """Bind the historical incident revision using only the configured owner root."""
     source = receipt["reconciliation_source"]
     origin = {
@@ -543,7 +543,50 @@ def _recover_standing_incident_envelope_v1(scope, receipt):
         or reconciliation["reservation_released"] is not False
     ):
         raise ExecutionIncidentObservationError("INCIDENT_BUDGET_REVISION_UNPROVEN")
-    return envelope
+    return envelope, link, identity
+
+
+def _standing_transport_abort_v1(link, identity):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        durable_consume_path_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.execution_v1 import (
+        _original_never_submitted_v1,
+    )
+
+    original_root = link.get("transport_store_root")
+    if not isinstance(original_root, str):
+        return None
+    root = Path(original_root)
+    try:
+        if not root.is_absolute() or root.resolve() != root:
+            return None
+        directory = root.stat()
+        record_file = durable_consume_path_v1(root).lstat()
+        if (
+            not stat.S_ISDIR(directory.st_mode)
+            or not stat.S_ISREG(record_file.st_mode)
+            or record_file.st_nlink != 1
+            or any(
+                info.st_uid != os.getuid() or info.st_mode & 0o022
+                for info in (directory, record_file)
+            )
+        ):
+            return None
+    except (OSError, RuntimeError, ValueError):
+        return None
+    proof = _original_never_submitted_v1(link, identity)
+    if proof is None:
+        return None
+    record = proof["record"]
+    attempt = record["transport_attempt"]
+    return {
+        "state": record["durable_state"],
+        "reason_code": attempt["reason_code"],
+        "aborted_at_utc": attempt["aborted_at_utc"],
+        "record_sha256": proof["record_digest"],
+        "kill_revision": None,
+    }
 
 
 def _original_post_veto_reason_v1(scope, envelope):
@@ -609,6 +652,7 @@ def _observe_execution_incident_v1(
             incident_id = found
     receipt = None
     receipt_error = None
+    transport_abort = None
     if incident_id is not None:
         try:
             entry = _read_journal(scope)["receipts"].get(incident_id)
@@ -621,7 +665,9 @@ def _observe_execution_incident_v1(
                 receipt = entry["receipt"]
                 if recover_envelope:
                     try:
-                        envelope = _recover_standing_incident_envelope_v1(scope, receipt)
+                        envelope, link, identity = _recover_standing_incident_execution_v1(
+                            scope, receipt
+                        )
                     except (
                         KeyError,
                         TypeError,
@@ -631,6 +677,8 @@ def _observe_execution_incident_v1(
                         FullCoreFinalOrderEnvelopeError,
                     ):
                         receipt_error = "INCIDENT_BUDGET_REVISION_UNPROVEN"
+                    else:
+                        transport_abort = _standing_transport_abort_v1(link, identity)
                 elif (
                     receipt["envelope_id"] != envelope.envelope_id
                     or receipt["envelope_digest"] != envelope.envelope_digest
@@ -652,6 +700,7 @@ def _observe_execution_incident_v1(
     if recover_envelope and receipt is not None and receipt.get("kill_revision") != revision:
         receipt_error = "INCIDENT_KILL_GENERATION_MISMATCH"
         raw_get_proof_status = None
+        transport_abort = None
     result = {
         "incident_id": incident_id,
         "acceptance": None if receipt is None else receipt["disposition"],
@@ -686,5 +735,6 @@ def _observe_execution_incident_v1(
             reconciliation_reason=None if receipt is None else receipt.get("reconciliation_reason"),
             incident_source=incident_source,
             raw_get_proof_status=raw_get_proof_status,
+            transport_abort=transport_abort,
         )
     return result

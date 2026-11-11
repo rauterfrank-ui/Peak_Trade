@@ -2051,6 +2051,10 @@ def ops_cockpit(
     update_officer_source_preset: Optional[str] = None,
 ) -> HTMLResponse:
     """Read-only Ops Cockpit from local artifacts."""
+    from os import getenv
+
+    from .standing_incident_panel_v1 import ENV_INCIDENT_DIAGNOSTICS_ROOT
+
     qs_n = (update_officer_notifier_path or "").strip()
     qs_r = (update_officer_run_dir or "").strip()
     np, rd, conflict = resolve_update_officer_route_inputs(
@@ -2071,7 +2075,8 @@ def ops_cockpit(
             update_officer_form_notifier_path=form_np,
             update_officer_form_run_dir=form_rd,
             update_officer_source_preset=preset,
-        )
+        ),
+        headers={"Cache-Control": "no-store"} if getenv(ENV_INCIDENT_DIAGNOSTICS_ROOT) else None,
     )
 
 

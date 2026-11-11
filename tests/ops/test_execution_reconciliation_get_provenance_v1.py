@@ -486,6 +486,8 @@ def test_scoped_s5_halts_before_core_with_the_same_host_incident(
 
 
 def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
     )
@@ -498,6 +500,8 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
         _clean_post_integrity,
         caller,
     )
+    from src.webui.app import app
+    from src.webui.standing_incident_panel_v1 import ENV_INCIDENT_DIAGNOSTICS_ROOT
 
     host, rid, _, envelope, _, _ = seed_with_origin(tmp_path, monkeypatch)
     gate = tmp_path / "pre-socket-filegate.json"
@@ -582,19 +586,58 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
         host.close()
 
     output = tmp_path / "diagnostics"
-    run_standing_execution_incident_diagnostics_v1(
-        budget_host_root=host.root,
-        filegate=gate,
-        account=account,
-        output_root=output,
-        interval_seconds=1,
-        samples=1,
-    )
-    status = json.loads((output / "execution-incident-diagnostics-latest-v1.json").read_bytes())
+
+    def read_status():
+        run_standing_execution_incident_diagnostics_v1(
+            budget_host_root=host.root,
+            filegate=gate,
+            account=account,
+            output_root=output,
+            interval_seconds=1,
+            samples=1,
+        )
+        return json.loads((output / "execution-incident-diagnostics-latest-v1.json").read_bytes())
+
+    status = read_status()
     assert status["incident_id"] == receipt["incident_id"]
     assert status["kill_revision"] == receipt["kill_revision"]
     assert status["raw_get_proof_status"] == "VERIFIED"
     assert status["correlated_incident_veto"] is True
+    assert status["transport_abort"] == {
+        "state": "ABORTED_BEFORE_TRANSPORT",
+        "reason_code": veto,
+        "aborted_at_utc": attempt["aborted_at_utc"],
+        "record_sha256": sha256(json.dumps(permit, sort_keys=True).encode()).hexdigest(),
+        "kill_revision": None,
+    }
+    monkeypatch.setenv(ENV_INCIDENT_DIAGNOSTICS_ROOT, str(output))
+    client = TestClient(app)
+    page = client.get("/ops")
+    assert page.status_code == 200 and page.headers["cache-control"] == "no-store"
+    assert "EXECUTION GHOSV · Incident-Diagnose" in page.text
+    assert "POST-Veto derselben Sperrgeneration" in page.text and "Bestätigt" in page.text
+    assert "ABORTED_BEFORE_TRANSPORT" in page.text
+    assert "Zuordnung zur Sperrgeneration offen" in page.text
+    assert receipt["incident_id"] in page.text
+    assert str(host.root) not in page.text and str(store_root) not in page.text
+
+    permit_path = Path(consumed["path"])
+    original_bytes = permit_path.read_bytes()
+    permit_path.write_text(json.dumps({**permit, "execution_identity_digest": "f" * 64}))
+    damaged = read_status()
+    assert damaged["transport_abort"] is None
+    assert damaged["correlated_incident_veto"] is True
+    assert "ABORTED_BEFORE_TRANSPORT" not in client.get("/ops").text
+    permit_path.write_bytes(original_bytes)
+    gate_payload = json.loads(gate.read_bytes())
+    StatePersistence(str(gate)).save(
+        KillSwitchState.KILLED,
+        killed_at=datetime.fromisoformat(gate_payload["killed_at"]) + timedelta(seconds=1),
+        trigger_reason=gate_payload["trigger_reason"],
+    )
+    newer = read_status()
+    assert newer["state_name"] == "KILLED" and newer["transport_abort"] is None
+    assert newer["incident_evidence_error"] == "INCIDENT_KILL_GENERATION_MISMATCH"
 
 
 def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after_process_death(
