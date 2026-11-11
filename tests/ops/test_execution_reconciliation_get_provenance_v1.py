@@ -485,10 +485,15 @@ def test_scoped_s5_halts_before_core_with_the_same_host_incident(
     assert len(opener.requests) == 6
 
 
-def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, monkeypatch):
+@pytest.mark.parametrize("new_kill", [None, "before-veto", "after-veto"])
+def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, monkeypatch, new_kill):
     from fastapi.testclient import TestClient
 
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+        CurrentPostSafetyContextV1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        OriginalPermitTransportAttemptV1,
         load_external_effect_durable_consume_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
@@ -515,13 +520,47 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
     store_root = tmp_path / "send"
     receipt = None
     before_socket = None
+    incident_killed_at = None
+    kill_at_veto = []
+    kill_at_abort = []
+
+    def killed_at():
+        return json.loads(gate.read_bytes())["killed_at"]
+
+    def supersede_kill():
+        payload = json.loads(gate.read_bytes())
+        StatePersistence(str(gate)).save(
+            KillSwitchState.KILLED,
+            killed_at=datetime.fromisoformat(payload["killed_at"]) + timedelta(microseconds=1),
+            trigger_reason=payload["trigger_reason"],
+        )
+
+    original_inspect = CurrentPostSafetyContextV1.inspect_v1
+    original_abort = OriginalPermitTransportAttemptV1.abort_before_transport_v1
+
+    def inspect(context, *, stage):
+        if stage == "BEFORE_SOCKET":
+            assert context.state_path == str(gate)
+            kill_at_veto.append(killed_at())
+        return original_inspect(context, stage=stage)
+
+    def persist_abort(attempt, *, reason_code):
+        if new_kill == "after-veto":
+            supersede_kill()
+        kill_at_abort.append(killed_at())
+        return original_abort(attempt, reason_code=reason_code)
+
+    monkeypatch.setattr(CurrentPostSafetyContextV1, "inspect_v1", inspect)
+    monkeypatch.setattr(
+        OriginalPermitTransportAttemptV1, "abort_before_transport_v1", persist_abort
+    )
 
     class ForbiddenHttp:
         def open(self, *args, **kwargs):
             pytest.fail("authenticated incident must veto before HTTP")
 
     def inject_incident_before_final_check():
-        nonlocal receipt, before_socket
+        nonlocal receipt, before_socket, incident_killed_at
         before_socket = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
         assert before_socket["transport_attempt"]["phase"] == "PRE_SOCKET"
         link = host.owner.execution_links_v1()[rid]
@@ -537,6 +576,9 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
             assert transport.methods_used == ["GET"] * 6
         assert stopped.value.raw_get_proof_status == "PERSISTED"
         receipt = stopped.value.receipt
+        incident_killed_at = killed_at()
+        if new_kill == "before-veto":
+            supersede_kill()
         return ForbiddenHttp()
 
     veto = "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET:TRUSTED_PRESENT:KILLED"
@@ -579,6 +621,10 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
         assert attempt["claim_id"] == before_socket["transport_attempt"]["claim_id"]
         assert attempt["phase"] == "ABORTED" and attempt["reason_code"] == veto
         assert "socket_boundary_at_utc" not in attempt
+        assert "kill_revision" not in attempt
+        assert kill_at_veto == [killed_at() if new_kill == "before-veto" else incident_killed_at]
+        assert kill_at_abort == [killed_at()]
+        assert (killed_at() != incident_killed_at) is (new_kill is not None)
         assert host.owner.active_sum_v1() == held > 0
         assert host.owner.budget_state_v1().recovery_required
         assert not host.owner.execution_links_v1()[rid]["reconciliation"]["reservation_released"]
@@ -600,6 +646,16 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
 
     status = read_status()
     assert status["incident_id"] == receipt["incident_id"]
+    monkeypatch.setenv(ENV_INCIDENT_DIAGNOSTICS_ROOT, str(output))
+    client = TestClient(app)
+    if new_kill is not None:
+        assert status["state_name"] == "KILLED" and status["filegate_blocked"] is True
+        assert status["kill_revision"] != receipt["kill_revision"]
+        assert status["incident_evidence_error"] == "INCIDENT_KILL_GENERATION_MISMATCH"
+        assert status["transport_abort"] is None and status["correlated_incident_veto"] is False
+        assert "ABORTED_BEFORE_TRANSPORT" not in client.get("/ops").text
+        return
+
     assert status["kill_revision"] == receipt["kill_revision"]
     assert status["raw_get_proof_status"] == "VERIFIED"
     assert status["correlated_incident_veto"] is True
@@ -610,8 +666,6 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
         "record_sha256": sha256(json.dumps(permit, sort_keys=True).encode()).hexdigest(),
         "kill_revision": None,
     }
-    monkeypatch.setenv(ENV_INCIDENT_DIAGNOSTICS_ROOT, str(output))
-    client = TestClient(app)
     page = client.get("/ops")
     assert page.status_code == 200 and page.headers["cache-control"] == "no-store"
     assert "EXECUTION GHOSV · Incident-Diagnose" in page.text
@@ -629,12 +683,7 @@ def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, mon
     assert damaged["correlated_incident_veto"] is True
     assert "ABORTED_BEFORE_TRANSPORT" not in client.get("/ops").text
     permit_path.write_bytes(original_bytes)
-    gate_payload = json.loads(gate.read_bytes())
-    StatePersistence(str(gate)).save(
-        KillSwitchState.KILLED,
-        killed_at=datetime.fromisoformat(gate_payload["killed_at"]) + timedelta(seconds=1),
-        trigger_reason=gate_payload["trigger_reason"],
-    )
+    supersede_kill()
     newer = read_status()
     assert newer["state_name"] == "KILLED" and newer["transport_abort"] is None
     assert newer["incident_evidence_error"] == "INCIDENT_KILL_GENERATION_MISMATCH"
