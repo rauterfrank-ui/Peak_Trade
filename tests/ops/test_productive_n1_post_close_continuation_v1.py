@@ -29,6 +29,9 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_post_submit_excha
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_integration_v1 import (
     identity_from_full_core_binding_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
     execute_current_productive_treasury_single_source_capital_handoff_v1,
     build_full_core_margin_inputs_from_budget_owner_v1,
@@ -239,9 +242,14 @@ def _fixture(
         cycle_id_prefix="after-close", last_ts=T0 + 60, venue_native_id=target
     )
     cycle.pop("origin_main_sha")
+    mark = float(chain["mark_price_by_native_id"][target])
     cycle.update(
         observed_unix=NOW,
         last_finalized_event_ts_unix=T0 + 60,
+        mark_px=mark,
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=target, mark_px=mark, index_px=cycle["index_px"]
+        ),
         g17_typed_vol_producers={
             "LANE_1": market._memory_g17_producer(
                 instrument_id=sources._cid(chain["ranking"], target), venue_native_id=target
@@ -249,7 +257,7 @@ def _fixture(
         },
         candles_payload_by_lane={
             "LANE_1": {
-                **market._mv2_aligned_candles(last_ts_ms=int((T0 + 60) * 1000), mark_px=100.5),
+                **market._mv2_aligned_candles(last_ts_ms=int((T0 + 60) * 1000), mark_px=mark),
                 "instId": target,
             }
         },

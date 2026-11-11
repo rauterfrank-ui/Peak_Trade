@@ -495,7 +495,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
             open_k1_account_observation_source_v1(
                 expected_account_identity=account,
                 session_id=config.evidence_root.name,
-                max_request_count=42,
+                max_request_count=60,
                 k1_lookup_backend=_FakeKeychainBackend(),
                 account_inventory_guard=True,
                 inventory_inst_type=product,
@@ -565,7 +565,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         assert observation.observed.source_id == "host-private-rest-futures"
         assert observation.observed.positions[0].signed_quantity == Decimal("-2")
         early_public_failure = public_fault and not exercise_wp02
-        assert len(opener.requests) == (14 if early_public_failure else 42)
+        assert len(opener.requests) == (20 if early_public_failure else 60)
         queries = [urlsplit(url) for url in opener.requests]
         for request in queries:
             query = parse_qs(request.query)

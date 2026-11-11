@@ -159,7 +159,7 @@ class SignedReconciliationHttpFixture:
         elif "instId" not in params:
             payload = (
                 {"code": "0", "data": []}
-                if path.endswith("orders-algo-pending")
+                if path.endswith("orders-algo-pending") or "/tradingBot/" in path
                 else self.baseline(path, params)
             )
             return json.dumps(payload, separators=(",", ":")).encode()
@@ -1015,6 +1015,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "foreign-product-row",
         "canceled-after-partial",
         "incomplete-page",
+        "existing-post-scope",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1059,6 +1060,60 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
             canonical_intent=entry.replay.intermediate.canonical_order_intent,
             venue_plan=plan,
         )
+        if path == "existing-post-scope":
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pending_observation_v1 import (
+                capture_current_post_pending_v1,
+            )
+            from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+                open_k1_account_observation_source_v1,
+            )
+            from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener
+            from tests.ops.test_prepost_original_budget_context_v1 import caller, execute
+
+            account = seeded.owner.durable_scope_identity_v1()["account"]
+            gate = tmp_path / "futures-scope-filegate.json"
+            StatePersistence(str(gate)).save(KillSwitchState.ACTIVE)
+            monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(gate))
+            monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+            monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+            opener = InjectedOpener(account=account)
+            monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+
+            class ForbiddenPost:
+                def open(self, *args, **kwargs):
+                    pytest.fail("the SWAP POST scope must not open a FUTURES socket")
+
+            before = seeded.owner.risk_snapshot_v1()
+            with open_k1_account_observation_source_v1(
+                expected_account_identity=account,
+                session_id=SESSION,
+                max_request_count=20,
+                k1_lookup_backend=_FakeKeychainBackend(),
+                account_inventory_guard=True,
+                inventory_inst_type="FUTURES",
+            ) as source:
+                observation = source.collect_v1(
+                    instrument_ids_by_native_id={bound.venue_native_id: bound.instrument_id}
+                )
+                assert observation.account_inventory_source is source
+                request = dict(
+                    envelope=envelope,
+                    portfolio_budget_owner=seeded.owner,
+                    portfolio_reservation_id=rid,
+                    execution_plan_context=seeded.owner.execution_plan_context_v1(rid, envelope),
+                    post_pending_context=capture_current_post_pending_v1(
+                        envelope=envelope, source=source
+                    ),
+                )
+                with pytest.raises(
+                    caller.CurrentProductiveActualVenuePostError,
+                    match="SUPPORTED_NEW_ENTRY_SWAP_SCOPE_REQUIRED",
+                ):
+                    execute(request, tmp_path, opener=ForbiddenPost())
+            assert len(opener.requests) == 20
+            assert seeded.owner.risk_snapshot_v1() == before
+            assert not list((tmp_path / "send").glob("*.json"))
+            return
         identity = seeded.owner.begin_execution_submit_v2(
             rid, envelope, seeded.owner.execution_plan_context_v1(rid, envelope), _permit(envelope)
         )
@@ -1080,7 +1135,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=20, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=26, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1112,7 +1167,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     host.observe_authenticated_execution_reconciliation_v1(
                         {"LANE_1": bound}, proof_root=proof_root
                     )
-                assert len(opener.requests) == (0 if path == "no-custody" else 20)
+                assert len(opener.requests) == (0 if path == "no-custody" else 26)
                 assert not list(proof_root.iterdir())
                 assert host.owner.execution_links_v1()[rid]["reconciliation"] is None
                 assert host.owner.active_sum_v1() == held > 0
@@ -1144,8 +1199,8 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     if path == "canceled-after-partial":
                         assert reconciliation["decision"]["cumulative_filled_qty"] == "1"
                         assert reconciliation["decision"]["exposure_retained"] is True
-            assert source.transport.read_count == 14
-            assert transport.methods_used == ["GET"] * 20
+            assert source.transport.read_count == 20
+            assert transport.methods_used == ["GET"] * 26
             assert host.owner.active_sum_v1() == held > 0
             assert host.owner.budget_state_v1().recovery_required
         finally:
@@ -1256,6 +1311,10 @@ def test_swap_original_one_shot_uses_signed_custody_and_cold_order_readback(
             assert host.owner.active_sum_v1() == held > 0
             with pytest.raises(caller.CurrentProductiveActualVenuePostError):
                 execute(args, tmp_path, opener=LostResponse())
+            other_send_root = tmp_path / "second-send-scope"
+            with pytest.raises(caller.CurrentProductiveActualVenuePostError):
+                execute(args, other_send_root, opener=LostResponse())
+            assert not other_send_root.exists()
             (identity,) = attempts
             assert len(account_get.requests) == 10
     finally:

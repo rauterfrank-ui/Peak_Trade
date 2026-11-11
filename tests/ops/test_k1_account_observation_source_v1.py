@@ -31,10 +31,13 @@ ACCOUNT = "injected-k1-account"
 
 
 class InjectedOpener:
-    def __init__(self, *, account=ACCOUNT, positions=(), pending=False, algo_pending=False):
+    def __init__(
+        self, *, account=ACCOUNT, positions=(), pending=False, algo_pending=False, bot_fault=None
+    ):
         self.fetch = _fetch(uid=account, positions=positions)
         self.pending = pending
         self.algo_pending = algo_pending
+        self.bot_fault = bot_fault
         self.requests = []
 
     @contextmanager
@@ -52,9 +55,17 @@ class InjectedOpener:
                 if self.algo_pending is True or self.algo_pending == query.get("ordType")
                 else [],
             }
-            if url.path.endswith("orders-algo-pending")
+            if url.path.endswith("orders-algo-pending") or "/tradingBot/" in url.path
             else self.fetch(url.path, query)
         )
+        if "/tradingBot/" in url.path:
+            payload = {"code": "0", "data": []}
+            if query.get("algoOrdType") == self.bot_fault == "contract_grid":
+                payload["data"] = [{"algoId": "1"}]
+            if "/signal/" in url.path and self.bot_fault == "bot-continuation":
+                payload["cursor"] = "unread-page"
+            if "/dca/" in url.path and self.bot_fault == "bot-missing":
+                payload["code"] = "50000"
         if self.pending and url.path.endswith("/orders-pending") and "instType" not in query:
             payload["data"] = [{"instType": "FUTURES", "instId": "BTC-USD_UM_XPERP-310404"}]
 
@@ -208,6 +219,9 @@ def test_scope_probe_exposes_other_or_unknown_products_without_adopting_account(
         ("iceberg", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
         ("twap", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
         ("smart_iceberg", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("contract_grid", "K1_FUTURES_ACCOUNT_BOT_CUSTODY_PRESENT"),
+        ("bot-continuation", "OBSERVATION_RESPONSE_SCOPE_UNPROVEN"),
+        ("bot-missing", "OBSERVATION_RESPONSE_INVALID"),
         ("futures-binding", "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"),
     ],
 )
@@ -229,7 +243,8 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
             {"instId": BOUND.venue_native_id, "instType": "SWAP", "posSide": "net", "pos": "-2"}
         )
     advanced_types = {"chase", "iceberg", "twap", "smart_iceberg"}
-    if fault in {"supported-futures-position", "swap-in-futures"} | advanced_types:
+    bot_faults = {"contract_grid", "bot-continuation", "bot-missing"}
+    if fault in {"supported-futures-position", "swap-in-futures"} | advanced_types | bot_faults:
         product = "FUTURES"
         bound = replace(
             BOUND,
@@ -253,12 +268,13 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         positions=positions,
         pending=fault == "pending",
         algo_pending=fault if fault in advanced_types else fault == "algo-pending",
+        bot_fault=fault if fault in bot_faults else None,
     )
     with patch.object(wire, "build_opener", return_value=opener):
         with open_k1_account_observation_source_v1(
             expected_account_identity=ACCOUNT,
             session_id="account-inventory",
-            max_request_count=14 if product == "FUTURES" else 10,
+            max_request_count=20 if product == "FUTURES" else 10,
             k1_lookup_backend=_FakeKeychainBackend(),
             account_inventory_guard=True,
             inventory_inst_type=product,
@@ -282,7 +298,7 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
                     else:
                         assert result.observed.positions == ()
                     assert host.owner.budget_state_v1().recovery_required
-                    assert len(opener.requests) == (14 if product == "FUTURES" else 10)
+                    assert len(opener.requests) == (20 if product == "FUTURES" else 10)
                 else:
                     with pytest.raises(ValueError, match=expected):
                         host.observe_v1({"LANE_1": bound})
@@ -295,7 +311,8 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     inventory = [
         url
         for url in urls
-        if url.path.endswith(("positions", "orders-pending", "orders-algo-pending"))
+        if "/tradingBot/" not in url.path
+        and url.path.endswith(("positions", "orders-pending", "orders-algo-pending"))
     ]
     if fault == "futures-binding":
         assert not urls
@@ -307,6 +324,7 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
             assert advanced_types <= {
                 dict(parse_qsl(url.query)).get("ordType") for url in inventory
             }
+            assert len([url for url in urls if "/tradingBot/" in url.path]) == 6
         assert all(
             dict(parse_qsl(url.query)) == {"instType": product}
             for url in urls
