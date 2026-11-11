@@ -63,6 +63,10 @@ from src.ops.n1_whole_system_hard_facts_integration_wp_v1.unified_recovery_orche
     UnifiedRecoveryOrchestrationResultV1,
     execute_unified_recovery_orchestration_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
+from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
+    public_instrument_ref_for_binding_v1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from src.governance.current_continuous_run_runtime_binding_v1 import (
     PolicyGovernedContinuousRunResultV1,
@@ -195,6 +199,7 @@ def _run_unified_recovery_v1(
     config: StandingSupervisorConfigV1,
     public_rest_fetch: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
     private_rest_fetch: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
+    public_instrument_ref: InstrumentRefV1 | None = None,
 ) -> UnifiedRecoveryOrchestrationResultV1:
     return execute_unified_recovery_orchestration_v1(
         public_store_root=config.public_store_root,
@@ -202,6 +207,7 @@ def _run_unified_recovery_v1(
         public_rest_fetch=public_rest_fetch,
         private_rest_fetch=private_rest_fetch,
         venue_native_id=config.venue_native_id,
+        public_instrument_ref=public_instrument_ref,
         kill_switch_state_path=config.kill_switch_state_path,
         unresolved_venue_order=False,
     )
@@ -212,6 +218,7 @@ def _refresh_public_supply_v1(
     config: StandingSupervisorConfigV1,
     ws_messages: list[Mapping[str, Any]],
     public_rest_fetch: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
+    public_instrument_ref: InstrumentRefV1 | None = None,
 ) -> int:
     config.public_store_root.mkdir(parents=True, exist_ok=True)
     run_public_runtime_ws_normalization_cycle_v1(
@@ -220,6 +227,7 @@ def _refresh_public_supply_v1(
         canonical_instrument_id=config.canonical_instrument_id,
         ws_messages=ws_messages,
         rest_fetch_json=public_rest_fetch,
+        instrument_ref=public_instrument_ref,
     )
     adapter = PublicRuntimeEconomicMdPublicSourceV1(store_root=config.public_store_root)
     bundle = adapter.collect_instrument_raw_input_v1(venue_native_id=config.venue_native_id)
@@ -329,6 +337,7 @@ def run_n1_standing_pre_external_supervisor_v1(
         return budget_host
 
     try:
+        public_instrument_ref = None
         if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
             from datetime import datetime, timezone
             from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
@@ -359,6 +368,7 @@ def run_n1_standing_pre_external_supervisor_v1(
                 expected_bound=bound,
             )
             bound = startup.handoff.bound_instrument
+            public_instrument_ref = public_instrument_ref_for_binding_v1(bound)
             trace.extra["startup_account_bound"] = True
             trace.extra["startup_selection_id"] = startup.handoff.selection_id
 
@@ -366,6 +376,7 @@ def run_n1_standing_pre_external_supervisor_v1(
             config=config,
             public_rest_fetch=public_rest_fetch,
             private_rest_fetch=private_rest_fetch,
+            public_instrument_ref=public_instrument_ref,
         )
         if not recovery.ok:
             raise StandingSupervisorError(
@@ -383,6 +394,7 @@ def run_n1_standing_pre_external_supervisor_v1(
                 config=config,
                 public_rest_fetch=public_rest_fetch,
                 private_rest_fetch=private_rest_fetch,
+                public_instrument_ref=public_instrument_ref,
             )
             if not recovery_restart.ok:
                 raise StandingSupervisorError(
@@ -406,6 +418,7 @@ def run_n1_standing_pre_external_supervisor_v1(
             config=config,
             ws_messages=ws_msgs,
             public_rest_fetch=public_rest_fetch,
+            public_instrument_ref=public_instrument_ref,
         )
         trace.public_supply_refreshed = True
         trace.public_marks_count = mark_count

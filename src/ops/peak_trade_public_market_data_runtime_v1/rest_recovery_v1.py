@@ -4,16 +4,22 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from decimal import Decimal, InvalidOperation
 from typing import Any, Callable, Mapping, Optional
 
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
     EEA_REST_HOST,
     MARK_HISTORY_CANDLES_PATH,
+    MARK_PRICE_REST_PATH,
+    TICKER_REST_PATH,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import (
     DataQualityStateV1,
     FinalizedPt1mMarkFactV1,
+    InstrumentRefV1,
+    fact_digest,
 )
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
 
 class PublicRestRecoveryError(RuntimeError):
@@ -153,7 +159,79 @@ def recover_pt1m_gaps_via_rest_v1(
     )
 
 
-def bootstrap_rest_snapshot_v1(fetch_json: RestGetJson, venue_native_id: str) -> dict[str, Any]:
-    mark = fetch_json("/api/v5/public/mark-price", {"instType": "SWAP", "instId": venue_native_id})
-    ticker = fetch_json("/api/v5/market/ticker", {"instId": venue_native_id})
+def public_instrument_ref_for_binding_v1(bound: BoundInstrumentV1) -> InstrumentRefV1:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_future_identity_semantics_v1 import (
+        resolve_selected_future_market_type_v1,
+    )
+    from trading.master_v2.double_play_futures_input import FuturesMarketType
+
+    canonical = bound.instrument_id
+    fields = canonical.split(":")
+    if len(fields) != 6 or fields[0] != "okx_eea":
+        raise PublicRestRecoveryError("PUBLIC_BOOTSTRAP_BOUND_INSTRUMENT_UNPROVEN")
+    try:
+        market_type = resolve_selected_future_market_type_v1(
+            instrument_id=canonical, venue_native_id=bound.venue_native_id
+        )
+    except ValueError as exc:
+        raise PublicRestRecoveryError("PUBLIC_BOOTSTRAP_BOUND_INSTRUMENT_UNPROVEN") from exc
+    return InstrumentRefV1(
+        canonical_instrument_id=canonical,
+        venue_native_id=bound.venue_native_id,
+        venue=fields[0],
+        instrument_type="FUTURES" if market_type is FuturesMarketType.FUTURES else "SWAP",
+        settlement_asset=fields[4],
+        mapping_provenance_digest=fact_digest(
+            {
+                "instrument_id": canonical,
+                "venue_native_id": bound.venue_native_id,
+                "selection_integrity_digest": bound.selection_integrity_digest,
+            }
+        ),
+    )
+
+
+def _require_bound_public_row(
+    payload: Mapping[str, Any], instrument_ref: InstrumentRefV1, reason: str
+) -> Mapping[str, Any]:
+    rows = payload.get("data") if isinstance(payload, Mapping) else None
+    if (
+        not isinstance(rows, list)
+        or len(rows) != 1
+        or not isinstance(rows[0], Mapping)
+        or payload.get("code") != "0"
+        or rows[0].get("instId") != instrument_ref.venue_native_id
+        or rows[0].get("instType") != instrument_ref.instrument_type
+    ):
+        raise PublicRestRecoveryError(reason)
+    return rows[0]
+
+
+def bootstrap_rest_snapshot_v1(
+    fetch_json: RestGetJson,
+    venue_native_id: str,
+    *,
+    instrument_ref: InstrumentRefV1 | None = None,
+) -> dict[str, Any]:
+    inst_type = "SWAP"
+    if instrument_ref is not None:
+        if instrument_ref.venue_native_id != venue_native_id:
+            raise PublicRestRecoveryError("PUBLIC_BOOTSTRAP_BOUND_INSTRUMENT_UNPROVEN")
+        inst_type = instrument_ref.instrument_type
+    mark = fetch_json(MARK_PRICE_REST_PATH, {"instType": inst_type, "instId": venue_native_id})
+    if instrument_ref is not None:
+        reason = "PUBLIC_MARK_BOOTSTRAP_UNPROVEN"
+        row = _require_bound_public_row(mark, instrument_ref, reason)
+        try:
+            price = Decimal(str(row.get("markPx")))
+        except InvalidOperation as exc:
+            raise PublicRestRecoveryError(reason) from exc
+        ts = str(row.get("ts"))
+        if not price.is_finite() or price <= 0 or not ts.isascii() or not ts.isdecimal():
+            raise PublicRestRecoveryError(reason)
+        if not ts.lstrip("0"):
+            raise PublicRestRecoveryError(reason)
+    ticker = fetch_json(TICKER_REST_PATH, {"instId": venue_native_id})
+    if instrument_ref is not None:
+        _require_bound_public_row(ticker, instrument_ref, "PUBLIC_TICKER_BOOTSTRAP_UNPROVEN")
     return {"mark": mark, "ticker": ticker, "host": EEA_REST_HOST}

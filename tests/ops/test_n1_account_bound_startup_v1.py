@@ -2,6 +2,7 @@
 
 from contextlib import nullcontext
 from dataclasses import replace
+from datetime import datetime, timezone
 from decimal import Decimal
 import json
 from types import SimpleNamespace
@@ -283,8 +284,22 @@ def test_supervisor_requires_account_bound_start_before_recovery(state, tmp_path
     assert start.call_args.kwargs["expected_account_identity"] == "account-injected"
 
 
-@pytest.mark.parametrize("product", ["FUTURES", "SWAP", None])
-def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_path, product):
+@pytest.mark.parametrize(
+    "product,public_fault",
+    [
+        ("FUTURES", None),
+        ("SWAP", None),
+        (None, None),
+        ("FUTURES", "empty-mark"),
+        ("FUTURES", "foreign-mark"),
+        ("FUTURES", "invalid-mark-price"),
+        ("FUTURES", "invalid-mark-time"),
+        ("FUTURES", "wrong-ticker-product"),
+    ],
+)
+def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
+    tmp_path, product, public_fault
+):
     from src.ops.full_core_live_path_composition_root_v1 import (
         productive_read_only_get_transport_v1 as wire,
     )
@@ -292,13 +307,22 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1.constants_v1 import (
         TRANSPORT_SCOPE_SCOPED_READONLY_GET,
     )
+    from src.ops.okx_eea_private_account_state_runtime_v1.durable_store_v1 import (
+        default_private_store_paths_v1,
+        load_all_private_state_v1,
+    )
     from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
         open_k1_account_observation_source_v1,
     )
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
         PortfolioCapitalReservationBudgetOwnerV1,
     )
+    from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
+        query_historical_facts_v1,
+    )
     from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PositionTruthV1
+    from src.risk_layer.kill_switch.persistence import StatePersistence
+    from src.risk_layer.kill_switch.state import KillSwitchState
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import instrument
     from tests.ops.test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
         _build_fresh_chain,
@@ -333,6 +357,10 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
         (recon / PORTFOLIO_STATE_FILENAME).write_text(json.dumps(snapshot.to_dict()))
     before = tree_bytes(prod)
     gate = tmp_path / "filegate.json"
+    StatePersistence(str(gate)).save(
+        KillSwitchState.KILLED, killed_at=datetime.now(timezone.utc), trigger_reason="test"
+    )
+    gate_before = gate.read_bytes()
     config = supervisor.StandingSupervisorConfigV1(
         public_store_root=tmp_path / "public",
         private_store_root=tmp_path / "private",
@@ -344,6 +372,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
         canonical_instrument_id=bound.instrument_id,
         transport_scope=TRANSPORT_SCOPE_SCOPED_READONLY_GET,
         kill_switch_state_path=str(gate),
+        simulate_restart_before_continuous=True,
     )
     owner_root = supervisor.budget_owner_root_for_config_v1(config) / "owner"
     seed = PortfolioCapitalReservationBudgetOwnerV1(
@@ -362,6 +391,12 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
     legacy_requests = []
     reconcile = PortfolioBudgetHostV1.reconcile_standing_startup_observation_v1
     received = []
+    public_requests = []
+    mark_path = "/api/v5/public/mark-price"
+    ticker_path = "/api/v5/market/ticker"
+    mark_query = {"instType": "FUTURES", "instId": native}
+    ticker_query = {"instId": native}
+    event_time = str(int(datetime.now(timezone.utc).timestamp() * 1000))
 
     def receive(host, bindings, observation):
         reconcile(host, bindings, observation)
@@ -369,19 +404,43 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
         assert host.owner.budget_state_v1().recovery_required
         received.append((host.fetch, observation))
 
+    def public_fetch(path, query):
+        public_requests.append((path, query))
+        assert product == "FUTURES" and len(received) == 1
+        row = {"instType": "FUTURES", "instId": native, "ts": event_time}
+        if path == mark_path:
+            assert query == mark_query
+            row["markPx"] = "100.5"
+            if public_fault == "empty-mark":
+                return {"code": "0", "data": []}
+            if public_fault == "foreign-mark":
+                row["instId"] = "SOL-USD_UM_XPERP-310404"
+            if public_fault == "invalid-mark-price":
+                row["markPx"] = "NaN"
+            if public_fault == "invalid-mark-time":
+                row["ts"] = "0"
+        else:
+            assert path == ticker_path and query == ticker_query
+            row["last"] = "100.2"
+            if public_fault == "wrong-ticker-product":
+                row["instType"] = "SWAP"
+        return {"code": "0", "data": [row]}
+
+    def stop_after_supply(context):
+        assert context.venue_native_id == native
+        assert context.canonical_instrument_id == bound.instrument_id
+        raise ValueError("PUBLIC_SUPPLY_COMPLETE")
+
     with (
         patch.object(wire, "build_opener", return_value=opener),
         patch.object(supervisor, "canonical_kill_switch_state_path", return_value=str(gate)),
         patch.object(PortfolioBudgetHostV1, "reconcile_standing_startup_observation_v1", receive),
-        patch.object(
-            supervisor, "_run_unified_recovery_v1", side_effect=ValueError("STARTUP_COMPLETE")
-        ) as recovery,
     ):
         source_context = (
             open_k1_account_observation_source_v1(
                 expected_account_identity=account,
                 session_id=config.evidence_root.name,
-                max_request_count=10,
+                max_request_count=30,
                 k1_lookup_backend=_FakeKeychainBackend(),
                 account_inventory_guard=True,
                 inventory_inst_type=product,
@@ -390,11 +449,13 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
             else nullcontext(_fetch(uid=account, calls=legacy_requests))
         )
         with source_context as source:
-            expected = (
-                "STARTUP_COMPLETE"
-                if product == "FUTURES"
-                else "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"
-            )
+            if product != "FUTURES":
+                expected = "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"
+            elif public_fault:
+                source_kind = "TICKER" if public_fault == "wrong-ticker-product" else "MARK"
+                expected = f"UNIFIED_RECOVERY_FAIL_CLOSED:PUBLIC_{source_kind}_BOOTSTRAP_UNPROVEN"
+            else:
+                expected = "PUBLIC_SUPPLY_COMPLETE"
             with pytest.raises(ValueError, match=expected):
                 supervisor.run_n1_standing_pre_external_supervisor_v1(
                     config=config,
@@ -404,20 +465,28 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
                     observation_source=None,
                     g17_producers={},
                     f1_m9_cycle_evaluator=None,
-                    public_rest_fetch=None,
+                    public_rest_fetch=public_fetch,
                     private_rest_fetch=source,
+                    public_ws_messages=[
+                        {
+                            "arg": {"channel": "mark-price", "instId": native},
+                            "data": [{"instId": native, "markPx": "100.7", "ts": event_time}],
+                        }
+                    ],
+                    wp02_hook=stop_after_supply,
                     skip_owner_go_validation=True,
                 )
     assert not config.lane_state_root.exists()
-    assert not gate.exists()
+    assert gate.read_bytes() == gate_before
+    assert not (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").exists()
+    private_paths = default_private_store_paths_v1(config.private_store_root)
     if product == "FUTURES":
-        recovery.assert_called_once()
         assert len(received) == 1
         fetch, observation = received[0]
         assert observation.account_inventory_source is fetch
         assert observation.observed.source_id == "host-private-rest-futures"
         assert observation.observed.positions[0].signed_quantity == Decimal("-2")
-        assert len(opener.requests) == 10
+        assert len(opener.requests) == (10 if public_fault else 30)
         queries = [urlsplit(url) for url in opener.requests]
         for request in queries:
             query = parse_qs(request.query)
@@ -437,8 +506,28 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_
             for path, value in tree_bytes(prod).items()
             if not path.startswith("runtime_state/recon")
         }
+        assert public_requests[:1] == [(mark_path, mark_query)]
+        if public_fault:
+            assert len(public_requests) == (2 if public_fault == "wrong-ticker-product" else 1)
+            assert not private_paths.normalized_state.exists()
+            assert not config.public_store_root.exists()
+        else:
+            assert public_requests == [(mark_path, mark_query), (ticker_path, ticker_query)] * 3
+            private_records = load_all_private_state_v1(private_paths)
+            assert len(private_records) == 2
+            assert all(record["trusted_boundary_established"] for record in private_records)
+            (mark,) = query_historical_facts_v1(
+                config.public_store_root, venue_native_id=native
+            ).facts
+            assert mark["fact_kind"] == "MarkPriceFactV1" and mark["mark_px"] == "100.7"
+            assert mark["instrument"]["canonical_instrument_id"] == bound.instrument_id
+            assert mark["instrument"]["instrument_type"] == "FUTURES"
+            assert mark["instrument"]["settlement_asset"] == "USD"
+            assert mark["timestamps"]["venue_event_time_ms"] == int(event_time)
+            capture = datetime.fromisoformat(mark["timestamps"]["captured_at"])
+            assert int(capture.timestamp() * 1000) >= int(event_time)
     else:
-        recovery.assert_not_called()
         assert received == []
         assert not opener.requests and not legacy_requests
+        assert not public_requests and not private_paths.normalized_state.exists()
         assert tree_bytes(prod) == before

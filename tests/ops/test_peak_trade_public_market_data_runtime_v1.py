@@ -37,6 +37,7 @@ from src.ops.peak_trade_public_market_data_runtime_v1.event_sequence_persistence
     load_event_sequence_state_v1,
     persist_event_sequence_state_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
 from src.ops.peak_trade_public_market_data_runtime_v1.ws_channel_normalizers_v1 import (
     normalize_ws_payload_to_canonical_facts_v1,
 )
@@ -102,12 +103,34 @@ class _FakeConnector:
         self.subscribed = False
 
 
-def test_rest_bootstrap_fixture() -> None:
-    def fetch(path: str, params: dict) -> dict:
-        return {"code": "0", "data": [{"instId": params.get("instId", ""), "markPx": "1"}]}
+@pytest.mark.parametrize("bound", [False, True])
+def test_rest_bootstrap_fixture(bound) -> None:
+    native = "ETH-USDT-SWAP"
+    instrument_ref = (
+        InstrumentRefV1(
+            "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
+            native,
+            "okx_eea",
+            "SWAP",
+            "USDT",
+            "injected-digest",
+        )
+        if bound
+        else None
+    )
+    requests = []
 
-    snap = bootstrap_rest_snapshot_v1(fetch, "ETH-USDT-SWAP")
+    def fetch(path: str, params: dict) -> dict:
+        requests.append((path, params))
+        row = {"instId": native, "instType": "SWAP", "markPx": "1", "ts": str(BASE_TS)}
+        return {"code": "0", "data": [row]}
+
+    snap = bootstrap_rest_snapshot_v1(fetch, native, instrument_ref=instrument_ref)
     assert snap["host"] == "eea.okx.com"
+    assert requests == [
+        ("/api/v5/public/mark-price", {"instType": "SWAP", "instId": native}),
+        ("/api/v5/market/ticker", {"instId": native}),
+    ]
 
 
 def test_ws_connect_subscribe_state() -> None:

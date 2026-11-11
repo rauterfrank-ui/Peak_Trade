@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
@@ -27,6 +28,7 @@ from src.ops.economic_md_input_producer_v1.constants_v1 import PUBLIC_HTTP_HOST
 from src.ops.peak_trade_public_market_data_runtime_v1.event_pipeline_v1 import (
     EventSequenceStateV1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
 from src.ops.peak_trade_public_market_data_runtime_v1.runtime_orchestrator_v1 import (
     PublicMarketDataRuntimeV1,
 )
@@ -59,7 +61,8 @@ def run_public_runtime_ws_normalization_cycle_v1(
     canonical_instrument_id: str,
     ws_messages: list[Mapping[str, Any]],
     rest_fetch_json: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
-    captured_at: str = "2026-09-26T00:00:00Z",
+    captured_at: str | None = None,
+    instrument_ref: InstrumentRefV1 | None = None,
 ) -> PublicMarketDataRuntimeV1:
     """Single observation cycle with durable sequence + canonical fact persistence."""
 
@@ -91,7 +94,14 @@ def run_public_runtime_ws_normalization_cycle_v1(
         ws_transport=transport,
         rest_fetch_json=rest_fetch_json,
         event_state=EventSequenceStateV1(),
+        instrument_ref=instrument_ref,
     )
+    if captured_at is None:
+        captured_at = (
+            datetime.now(timezone.utc).isoformat()
+            if instrument_ref is not None
+            else "2026-09-26T00:00:00Z"
+        )
     runtime.bootstrap(captured_at=captured_at)
     runtime.load_durable_event_state()
     runtime.run_observation_cycle(captured_at=captured_at, persist_normalized_facts=True)
