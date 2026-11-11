@@ -689,6 +689,14 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             payload["checkpoint_cursor_sha256"] = sha256(
                 (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
             ).hexdigest()
+        if (
+            state == STATE_COMPLETED
+            and last_accepted > cursor_floor_before
+            and (Path(cursor_store_root) / CURSOR_FILENAME).is_file()
+        ):
+            payload["completed_cursor_sha256"] = sha256(
+                (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
+            ).hexdigest()
         _persist_json(path=Path(evidence_root) / LEDGER_FILENAME, payload=payload)
         trans_path = Path(evidence_root) / "transitions.jsonl"
         with trans_path.open("a", encoding="utf-8") as handle:

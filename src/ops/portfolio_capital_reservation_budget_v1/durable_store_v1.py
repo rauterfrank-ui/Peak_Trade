@@ -5,7 +5,7 @@ single-writer process recovery only; no host/power-loss proof is claimed.
 """
 
 import fcntl
-from contextlib import closing
+from contextlib import closing, contextmanager
 from hashlib import sha256
 import json
 import os
@@ -48,8 +48,8 @@ def _read_revision(connection, account, sequence, expected_digest):
     return {"sequence": sequence, "digest": checksum, "previous": prior, "state": payload}
 
 
-def read_budget_revision_read_only_v1(root: Path, *, account_identity, sequence, expected_digest):
-    """Read a digest-pinned original revision without acquiring the writer lock."""
+@contextmanager
+def _read_budget_v1(root, *, account_identity, expected_digest):
     database = root / "reservations.sqlite3"
     if (
         not root.is_absolute()
@@ -64,7 +64,25 @@ def read_budget_revision_read_only_v1(root: Path, *, account_identity, sequence,
             raise DurableBudgetStoreError("DURABLE_BUDGET_JOURNAL_MODE_MISMATCH")
         if db.execute("SELECT * FROM metadata").fetchall() != [(SCHEMA, OWNER, account_identity)]:
             raise DurableBudgetStoreError("DURABLE_BUDGET_IDENTITY_MISMATCH")
+        yield db
+
+
+def read_budget_revision_read_only_v1(root: Path, *, account_identity, sequence, expected_digest):
+    """Read a digest-pinned original revision without acquiring the writer lock."""
+    with _read_budget_v1(
+        root, account_identity=account_identity, expected_digest=expected_digest
+    ) as db:
         return _read_revision(db, account_identity, sequence, expected_digest)
+
+
+def require_budget_head_read_only_v1(root: Path, *, account_identity, expected_digest):
+    """Check the latest original durable revision without opening a budget writer."""
+    with _read_budget_v1(
+        root, account_identity=account_identity, expected_digest=expected_digest
+    ) as db:
+        db.execute("BEGIN")
+        row = db.execute("SELECT MAX(seq) FROM states").fetchone()
+        return _read_revision(db, account_identity, row[0], expected_digest)["digest"]
 
 
 class DurableBudgetStoreV1:
