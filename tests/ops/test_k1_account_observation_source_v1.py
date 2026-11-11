@@ -386,6 +386,129 @@ def test_readiness_cli_redacts_unknown_provider_exception(monkeypatch, capsys):
 
 
 @pytest.mark.parametrize(
+    "fault, expected_blocker, expected_cross, expected_usdc, expected_fields",
+    [
+        ("", None, True, True, True),
+        ("flat", None, False, False, False),
+        ("other-currency", None, False, False, False),
+        ("isolated", None, False, True, False),
+        ("zero-position", None, False, True, False),
+        ("empty-mmr", "USDC_MAINTENANCE_UNPROVEN", True, True, False),
+        ("negative-mmr", "USDC_MAINTENANCE_UNPROVEN", True, True, False),
+        ("nonfinite-ratio", "USDC_MAINTENANCE_UNPROVEN", True, True, False),
+        ("cross-without-usdc", "USDC_MAINTENANCE_UNPROVEN", True, False, False),
+        ("duplicate-usdc", "USDC_BALANCE_AMBIGUOUS", True, None, False),
+        ("bad-balance-currency", "BALANCE_SCOPE_UNPROVEN", True, None, False),
+        ("bad-position-currency", "POSITION_SCOPE_UNPROVEN", None, True, False),
+        ("unknown-position-size", "POSITION_SCOPE_UNPROVEN", None, True, False),
+        ("stale", "OBSERVATION_STALE", True, True, True),
+        ("other-mode", "ACCOUNT_SCOPE_UNSUPPORTED", None, None, False),
+        ("other-settlement", "ACCOUNT_SCOPE_UNSUPPORTED", None, None, False),
+        ("wrong-config-account", "OBSERVATION_ACCOUNT_MISMATCH", None, None, False),
+        ("wrong-balance-account", "OBSERVATION_ACCOUNT_MISMATCH", None, None, False),
+    ],
+)
+def test_futures_margin_cli_reports_only_current_usdc_cross_evidence(
+    fault, expected_blocker, expected_cross, expected_usdc, expected_fields, monkeypatch, capsys
+):
+    from scripts.ops import run_k1_account_observation_readiness_v1 as cli
+
+    opener = InjectedOpener()
+    now = [1000]
+    position = dict(
+        instType="FUTURES", instId="BTC-USD_UM_XPERP-310404", mgnMode="cross", ccy="USDC", pos="-2"
+    )
+    usdc = dict(ccy="USDC", mmr="45.654321", mgnRatio="3.765432")
+    other = dict(ccy="USD", mmr="98.765432", mgnRatio="9")
+
+    def fetch(path, params):
+        assert params == {}
+        if path == "/api/v5/account/config":
+            rows = [
+                dict(
+                    uid="wrong-config-account" if fault == "wrong-config-account" else ACCOUNT,
+                    acctLv="3" if fault == "other-mode" else "2",
+                    posMode="net_mode",
+                    settleCcy="USD" if fault == "other-settlement" else "USDC",
+                )
+            ]
+        elif path == "/api/v5/account/positions":
+            if fault == "other-currency":
+                position["ccy"] = "USD"
+            elif fault == "bad-position-currency":
+                position["ccy"] = " USDC"
+            elif fault == "isolated":
+                position["mgnMode"] = "isolated"
+            elif fault == "zero-position":
+                position["pos"] = "0.0"
+            elif fault == "unknown-position-size":
+                position["pos"] = ""
+            rows = [] if fault == "flat" else [position]
+        else:
+            assert path == "/api/v5/account/balance"
+            if fault == "stale":
+                now[0] += 6
+            if fault in {"empty-mmr", "negative-mmr"}:
+                usdc["mmr"] = "" if fault == "empty-mmr" else "-2"
+            if fault == "nonfinite-ratio":
+                usdc["mgnRatio"] = "Infinity"
+            if fault == "bad-balance-currency":
+                other["ccy"] = ""
+            details = [other]
+            if fault not in {"flat", "other-currency", "cross-without-usdc"}:
+                details.append(usdc)
+            if fault == "duplicate-usdc":
+                details.append(usdc)
+            rows = [
+                dict(
+                    uid="wrong-balance-account" if fault == "wrong-balance-account" else ACCOUNT,
+                    mmr="123.45678",
+                    mgnRatio="15",
+                    details=details,
+                )
+            ]
+        return {"code": "0", "data": rows}
+
+    opener.fetch = fetch
+
+    @contextmanager
+    def injected(**kwargs):
+        with open_k1_account_observation_source_v1(
+            **kwargs, k1_lookup_backend=_FakeKeychainBackend(), clock=lambda: now[0]
+        ) as source:
+            yield source
+
+    monkeypatch.setattr(cli, "open_k1_account_observation_source_v1", injected)
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    assert cli.main(
+        ["--expected-account-identity", ACCOUNT, "--observe-once", "--futures-margin-state"]
+    ) == (2 if expected_blocker else 0)
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert all(
+        secret not in output for secret in (ACCOUNT, position["instId"], "45.654321", "123.45678")
+    )
+    assert report["result"] == ("BLOCKED" if expected_blocker else "PASS")
+    assert report["order_or_transfer_count"] == 0 and not report["capital_admitted"]
+    expected_paths = ["/api/v5/account/config"]
+    if fault not in {"wrong-config-account", "other-mode", "other-settlement"}:
+        expected_paths += ["/api/v5/account/positions", "/api/v5/account/balance"]
+    assert report["private_get_attempt_count"] == len(expected_paths)
+    assert [urlsplit(url).path for url in opener.requests] == expected_paths
+    if expected_blocker == "OBSERVATION_ACCOUNT_MISMATCH":
+        assert report["error_code"] == expected_blocker
+    else:
+        result = report["observation"]
+        assert result["usdc_cross_position_observed"] is expected_cross
+        assert result["usdc_balance_row_present"] is expected_usdc
+        assert result["usdc_maintenance_fields_observed"] is expected_fields
+        assert result["blockers"] == (
+            ["FUTURES_MARGIN_STATE_" + expected_blocker] if expected_blocker else []
+        )
+        assert not result["projected_entry_risk_proven"] and not result["liquidation_cover_proven"]
+
+
+@pytest.mark.parametrize(
     "details,status",
     [
         ([], "ABSENT_NOT_ZERO"),
