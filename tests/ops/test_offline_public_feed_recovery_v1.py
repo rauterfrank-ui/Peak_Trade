@@ -4,8 +4,10 @@ from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
+import sys
 
 import pytest
 
@@ -143,6 +145,10 @@ def test_cold_read_in_fresh_process_needs_no_connector(feed):
     feed.frames = [push(timestamp=feed.event_ms(1), markPx="101")]
     result = feed.run()
     repo = Path(__file__).resolve().parents[2]
+    env = os.environ.copy()
+    if env.get("GITHUB_ACTIONS") == "true":
+        # The CI matrix provisions its interpreter without a checkout-local venv.
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     restarted = subprocess.run(
         [
             str(repo / "scripts/pt"),
@@ -171,6 +177,7 @@ print(json.dumps(recovery.read_verified_repair_v1()))
             feed.now.isoformat(),
         ],
         cwd=repo,
+        env=env,
         capture_output=True,
         text=True,
         check=True,

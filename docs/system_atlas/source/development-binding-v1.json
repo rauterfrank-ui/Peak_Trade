@@ -2714,7 +2714,7 @@
     {
       "path": "tests/ops/test_offline_public_feed_recovery_v1.py",
       "before_sha256": null,
-      "sha256": "528eea36e348cbdc550a3821caf5a7dda89c1be264cb8ad7bee22f31a698dce6"
+      "sha256": "39a9190b1236048d21d6c691c4b34b009ae7121aefc54540af694f76e2b844f7"
     },
     {
       "path": "tests/ops/test_offline_public_feed_restart_v1.py",
