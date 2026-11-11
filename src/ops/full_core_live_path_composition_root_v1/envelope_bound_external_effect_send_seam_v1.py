@@ -258,6 +258,22 @@ def attempt_envelope_bound_external_effect_send_v1(
         execution_plan_context=execution_plan_context,
         futures_financial_custody=futures_financial_custody,
     )
+    if context is not None and futures_financial_custody is not None:
+        from .current_futures_simulated_dispatch_v1 import _FuturesSimulatedTransportV1
+
+        if (
+            type(transport) is not _FuturesSimulatedTransportV1
+            or context.get("order_environment") != "INTERNAL_SIMULATED_EXECUTION"
+            or permit_authorizes_one_shot_real_post_v1(permit)
+        ):
+            raise FullCoreEnvelopeBoundSendSeamError("FUTURES_SCOPED_SIMULATED_DISPATCH_REQUIRED")
+        transport.inspect_scope_v1(
+            owner=portfolio_budget_owner,
+            reservation_id=portfolio_reservation_id,
+            envelope=envelope,
+            permit=permit,
+            store_root=store_root,
+        )
     owned_identity = None
     if post_pending_context is not None:
         try:
@@ -337,7 +353,9 @@ def attempt_envelope_bound_external_effect_send_v1(
         )
     except FullCoreProductiveHttpPostError as exc:
         msg = str(exc)
-        if msg.startswith(("POST_SAFETY", "POST_QUANTITY", "POST_PENDING", "POST_BUDGET")):
+        if msg.startswith(
+            ("POST_SAFETY", "POST_QUANTITY", "POST_PENDING", "POST_BUDGET", "POST_AUTHORITY")
+        ):
             raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
         if msg in {
             "REDIRECT_OFF_HOST_FORBIDDEN",

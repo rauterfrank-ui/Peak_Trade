@@ -131,6 +131,7 @@ class FullCoreNonNetworkingTestPostTransportV1:
     methods_used: list[str] = field(default_factory=list)
     transport_class: str = TRANSPORT_CLASS_NON_NETWORKING_TEST
     venue_live_contact: bool = False
+    simulated_response: FullCoreTradeOrderPostResultV1 | None = None
 
     def post_trade_order(
         self,
@@ -141,13 +142,24 @@ class FullCoreNonNetworkingTestPostTransportV1:
         envelope_digest: str,
         one_shot_real_post: bool = False,
     ) -> FullCoreTradeOrderPostResultV1:
-        del permit_id, envelope_id, envelope_digest, one_shot_real_post
+        del permit_id, envelope_id, envelope_digest
         if self.venue_live_contact is True:
             raise FullCoreProductiveHttpPostError("TEST_TRANSPORT_LIVE_CONTACT_FORBIDDEN")
+        response = self.simulated_response
+        if response is not None and (
+            one_shot_real_post is not False
+            or type(response) is not FullCoreTradeOrderPostResultV1
+            or response.venue_live_contact is not False
+            or response.post_attempted is not True
+            or response.method != "POST"
+            or response.endpoint != TRADE_ORDER_PATH
+            or response.transport_class != TRANSPORT_CLASS_NON_NETWORKING_TEST
+        ):
+            raise FullCoreProductiveHttpPostError("TEST_TRANSPORT_SIMULATED_RESPONSE_INVALID")
         self.post_count += 1
         self.methods_used.append("POST")
         self.last_payload = dict(payload)
-        return FullCoreTradeOrderPostResultV1(
+        return response or FullCoreTradeOrderPostResultV1(
             post_attempted=True,
             venue_live_contact=False,
             method="POST",
