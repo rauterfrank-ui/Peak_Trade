@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import os
 import re
 
 from src.ops.execution_ghosv_fill_quantity_v1 import (
@@ -11,6 +12,7 @@ from src.ops.execution_ghosv_fill_quantity_v1 import (
 )
 from src.ops.execution_incident_safety_v1 import (
     AuthenticatedExecutionIncidentScopeV1,
+    ExecutionIncidentHaltV1,
     ExecutionIncidentSafetyError,
     OfflineExecutionIncidentScopeV1,
     _apply_confirmed_execution_incident_v1,
@@ -19,8 +21,10 @@ from src.ops.execution_incident_safety_v1 import (
 from src.ops.execution_reconciliation_get_provenance_v1 import (
     AuthenticatedExecutionReconciliationProofV1,
     AuthenticatedReconciliationGetV1,
+    ExecutionReconciliationSourceError,
     adjudicate_reconciliation_quantity_incident_v1,
 )
+from src.ops.execution_reconciliation_proof_store_v1 import ExecutionReconciliationProofStoreError
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
 )
@@ -55,7 +59,8 @@ def deliver_authenticated_host_execution_incident_v1(
     identity: PortfolioExecutionReconciliationIdentityV2,
     snapshot: FullCoreExchangeReconciliationSnapshotV1,
     result: dict,
-) -> dict | None:
+    observed_at: datetime,
+) -> None:
     """Recheck current GET evidence and the original budget revision before the kill."""
     if (
         type(capture) is not AuthenticatedReconciliationGetV1
@@ -114,7 +119,7 @@ def deliver_authenticated_host_execution_incident_v1(
     scope = AuthenticatedExecutionIncidentScopeV1(
         root, host.account, host.execution_incident_state_path
     )
-    return _apply_confirmed_execution_incident_v1(
+    receipt = _apply_confirmed_execution_incident_v1(
         scope=scope,
         identity=identity,
         expected=expected,
@@ -124,17 +129,26 @@ def deliver_authenticated_host_execution_incident_v1(
             "revision_ref": list(proof.revision_ref),
             "snapshot_digest": proof.snapshot_digest,
             "venue_host": proof.venue_host,
-            "gets": [
-                {
-                    "endpoint": read.endpoint,
-                    "decision_id": read.decision_id,
-                    "acquired_at": read.acquired_at.isoformat(),
-                    "body_sha256": read.body_sha256,
-                }
-                for read in proof.gets
-            ],
+            "gets": [read.to_reference_v1() for read in proof.gets],
         },
     )
+    try:
+        scope.get_proof_root.mkdir(mode=0o700, exist_ok=True)
+        capture.publish_incident_proof_v1(
+            root=scope.get_proof_root, identity=identity, snapshot=snapshot, observed_at=observed_at
+        )
+        parent_fd = os.open(scope.root, os.O_RDONLY)
+        try:
+            os.fsync(parent_fd)
+        finally:
+            os.close(parent_fd)
+    except (
+        OSError,
+        ExecutionReconciliationProofStoreError,
+        ExecutionReconciliationSourceError,
+    ) as exc:
+        raise ExecutionIncidentHaltV1(receipt, raw_get_proof_status="UNAVAILABLE") from exc
+    raise ExecutionIncidentHaltV1(receipt, raw_get_proof_status="PERSISTED")
 
 
 class InjectedReconciliationGetV1:

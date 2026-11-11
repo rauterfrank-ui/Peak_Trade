@@ -205,6 +205,7 @@ def authenticated_host(tmp_path, monkeypatch):
         ("pending", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("already-killed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "ALREADY_BLOCKED"),
         ("recovering", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
+        ("raw-proof-write-failed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("corrupt-journal", "INCIDENT_JOURNAL_UNPROVEN", "KILLED", None),
         ("foreign-account", "RECONCILIATION_GET_ACCOUNT_UNPROVEN", "ACTIVE", None),
         ("foreign-filegate", "INCIDENT_FILEGATE_SCOPE_MISMATCH", "ACTIVE", None),
@@ -245,6 +246,14 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
     if case == "corrupt-journal":
         live_scope.root.mkdir(mode=0o700)
         live_scope.journal_path.write_text("invalid journal")
+    if case == "raw-proof-write-failed":
+
+        def fail_raw_proof_publication(path, data):
+            assert json.loads(gate.read_bytes())["state"] == "KILLED"
+            assert live_scope.journal_path.is_file()
+            raise OSError("synthetic proof storage failure")
+
+        monkeypatch.setattr(store, "_publish", fail_raw_proof_publication)
     if case == "foreign-account":
         opener.fault = "account"
     elif case == "unresolved":
@@ -328,19 +337,32 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
         assert gate.read_bytes() == original_gate
     if case == "corrupt-journal":
         assert live_scope.journal_path.read_text() == "invalid journal"
+    if disposition is None:
+        assert not live_scope.get_proof_root.exists()
     if disposition is not None:
-        receipt = caught.value.__cause__.receipt
+        halt = caught.value.__cause__
+        receipt = halt.receipt
+        proof_status = "UNAVAILABLE" if case == "raw-proof-write-failed" else "PERSISTED"
+        assert halt.raw_get_proof_status == proof_status
         assert receipt["disposition"] == disposition
         notice = json.loads((config.evidence_root / "runtime_liveness_latest_v1.json").read_bytes())
         assert notice["reason_code"] == "EXECUTION_GHOSV_SAFETY_HALT"
         assert notice["extra"]["execution_incident_id"] == receipt["incident_id"]
         assert notice["extra"]["execution_incident_kill_revision"] == receipt["kill_revision"]
+        assert notice["extra"]["execution_incident_raw_get_proof_status"] == proof_status
         assert notice["extra"]["automatic_restart_allowed"] is False
         assert receipt["session_id"] == config.evidence_root.name
         assert receipt["reconciliation_source"]["reservation_id"] == rid
         assert [row["body_sha256"] for row in receipt["reconciliation_source"]["gets"]] == [
             body_hash for _, body_hash in opener.requests
         ]
+        assert stat.S_IMODE(live_scope.get_proof_root.stat().st_mode) == 0o700
+        proof_files = list(live_scope.get_proof_root.glob("*.json"))
+        if case == "raw-proof-write-failed":
+            assert not proof_files
+        else:
+            (proof_file,) = proof_files
+            assert stat.S_IMODE(proof_file.stat().st_mode) == 0o600
         restored = PortfolioCapitalReservationBudgetOwnerV1(
             durable_root=host.root / "owner",
             durable_account_identity=identity.account_identity,
@@ -525,7 +547,8 @@ def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after
         receipt = stopped.value.receipt
         journal = host.root / "execution-incident-safety/execution-incident-receipts.json"
         budget = host.root / "owner/reservations.sqlite3"
-        original = {path: path.read_bytes() for path in (gate, journal, budget)}
+        (proof,) = tuple((journal.parent / "authenticated-get-proofs").glob("*.json"))
+        original = {path: path.read_bytes() for path in (gate, journal, budget, proof)}
         killed = wait_for(
             first,
             state_name="KILLED",
@@ -533,6 +556,7 @@ def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after
             incident_id=receipt["incident_id"],
             kill_revision=receipt["kill_revision"],
             correlated_incident_veto=True,
+            raw_get_proof_status="VERIFIED",
         )
         assert killed["sample_sequence"] > active["sample_sequence"]
         assert killed["original_post_veto_checked"] is True
@@ -553,6 +577,7 @@ def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after
             incident_id=killed["incident_id"],
             kill_revision=killed["kill_revision"],
             correlated_incident_veto=True,
+            raw_get_proof_status="VERIFIED",
         )
         assert cold["process_started_at_utc"] != killed["process_started_at_utc"]
         assert cold["pid"] != killed["pid"]
@@ -567,6 +592,17 @@ def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after
                 interval_seconds=1,
                 samples=1,
             )
+
+        proof.write_text("damaged raw GET proof")
+        wait_for(
+            second,
+            state_name="KILLED",
+            filegate_blocked=True,
+            correlated_incident_veto=True,
+            raw_get_proof_status="UNPROVEN",
+        )
+        proof.write_bytes(original[proof])
+        wait_for(second, state_name="KILLED", raw_get_proof_status="VERIFIED")
 
         # A missing owner revision removes correlation while the original stop stays visible.
         moved_budget = tmp_path / "original-budget.sqlite3"
@@ -616,6 +652,7 @@ def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after
             incident_evidence_error="INCIDENT_KILL_GENERATION_MISMATCH",
             incident_source=None,
             correlated_incident_veto=False,
+            raw_get_proof_status=None,
         )
         StatePersistence(str(gate)).save(
             KillSwitchState.KILLED, killed_at=NOW, trigger_reason="independent later kill"

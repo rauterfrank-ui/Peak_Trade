@@ -174,6 +174,7 @@ def run_standing_execution_incident_diagnostics_v1(
                     "incident_type": None,
                     "reconciliation_reason": None,
                     "incident_source": None,
+                    "raw_get_proof_status": None,
                     "post_safety_veto": None,
                     "original_post_veto_checked": False,
                     "correlated_incident_veto": False,

@@ -88,8 +88,9 @@ class ExecutionIncidentHaltV1(RuntimeError):
 
     reason_code = "EXECUTION_GHOSV_SAFETY_HALT"
 
-    def __init__(self, receipt: dict):
+    def __init__(self, receipt: dict, *, raw_get_proof_status: str):
         self.receipt = receipt
+        self.raw_get_proof_status = raw_get_proof_status
         self.detail = receipt["incident_id"]
         super().__init__(f"{self.reason_code}:{self.detail}")
 
@@ -166,6 +167,10 @@ class AuthenticatedExecutionIncidentScopeV1:
     @property
     def journal_path(self):
         return self.root / "execution-incident-receipts.json"
+
+    @property
+    def get_proof_root(self):
+        return self.root / "authenticated-get-proofs"
 
     @property
     def lock_path(self):
@@ -549,6 +554,41 @@ def _original_post_veto_reason_v1(scope, envelope):
     return None
 
 
+def _standing_raw_get_proof_status_v1(scope, receipt):
+    from src.ops.execution_reconciliation_proof_store_v1 import (
+        ExecutionReconciliationProofStoreError,
+        read_authenticated_execution_reconciliation_proof_v1,
+    )
+
+    source = receipt["reconciliation_source"]
+    try:
+        proof = read_authenticated_execution_reconciliation_proof_v1(
+            root=scope.get_proof_root,
+            budget_owner_root=scope.root.parent / "owner",
+            account=scope.account,
+            session_id=receipt["session_id"],
+            reservation_id=source["reservation_id"],
+            revision_ref=tuple(source["revision_ref"]),
+        )
+        finding = proof.quantity_incident
+        if (
+            finding is None
+            or proof.venue_host != source["venue_host"]
+            or proof.snapshot_digest != source["snapshot_digest"]
+            or [read.to_reference_v1() for read in proof.gets] != source["gets"]
+            or finding.observed_at.isoformat() != receipt["observed_at"]
+            or finding.identity_digest != receipt["identity_digest"]
+            or finding.venue_order_id != receipt["venue_order_id"]
+            or finding.snapshot_sha256 != receipt["evidence_sha256"]
+            or list(finding.evidence_refs) != receipt["evidence_refs"]
+            or finding.reconciliation_reason != receipt["reconciliation_reason"]
+        ):
+            return "UNPROVEN"
+    except (ExecutionReconciliationProofStoreError, KeyError, TypeError):
+        return "UNPROVEN"
+    return "VERIFIED"
+
+
 def _observe_execution_incident_v1(
     scope, envelope, incident_id, require_scope, *, recover_envelope=False
 ):
@@ -602,12 +642,16 @@ def _observe_execution_incident_v1(
 
     if recover_envelope and envelope is not None:
         veto_reason = _original_post_veto_reason_v1(scope, envelope)
+    raw_get_proof_status = None
+    if recover_envelope and envelope is not None and receipt is not None:
+        raw_get_proof_status = _standing_raw_get_proof_status_v1(scope, receipt)
     if _state_observation(scope) != (evidence, payload):
         raise ExecutionIncidentObservationError("INCIDENT_FILEGATE_CHANGED_DURING_VETO")
     require_scope(scope)
     revision = _kill_revision(payload, include_recovering=recover_envelope)
     if recover_envelope and receipt is not None and receipt.get("kill_revision") != revision:
         receipt_error = "INCIDENT_KILL_GENERATION_MISMATCH"
+        raw_get_proof_status = None
     result = {
         "incident_id": incident_id,
         "acceptance": None if receipt is None else receipt["disposition"],
@@ -641,5 +685,6 @@ def _observe_execution_incident_v1(
             incident_type=None if receipt is None else receipt.get("incident_type"),
             reconciliation_reason=None if receipt is None else receipt.get("reconciliation_reason"),
             incident_source=incident_source,
+            raw_get_proof_status=raw_get_proof_status,
         )
     return result

@@ -490,7 +490,10 @@ class PortfolioBudgetHostV1:
             )
 
             capture = AuthenticatedReconciliationGetV1(
-                self.reconciliation_transport, account=self.account, clock=self.clock
+                self.reconciliation_transport,
+                account=self.account,
+                clock=self.clock,
+                retain_response_bodies=True,
             )
         transport = self.reconciliation_transport if capture is None else capture
         config = transport.get(
@@ -540,18 +543,16 @@ class PortfolioBudgetHostV1:
                     from src.ops.execution_incident_host_v1 import (
                         deliver_authenticated_host_execution_incident_v1,
                     )
-                    from src.ops.execution_incident_safety_v1 import ExecutionIncidentHaltV1
 
-                    receipt = deliver_authenticated_host_execution_incident_v1(
+                    deliver_authenticated_host_execution_incident_v1(
                         host=self,
                         capture=capture,
                         reservation_id=rid,
                         identity=identity,
                         snapshot=snapshot,
                         result=result[rid],
+                        observed_at=acquired,
                     )
-                    if receipt is not None:
-                        raise ExecutionIncidentHaltV1(receipt)
         if deliver_incidents and any(
             not item["matched"] or item["decision"]["reconciliation_complete"] is not True
             for item in result.values()

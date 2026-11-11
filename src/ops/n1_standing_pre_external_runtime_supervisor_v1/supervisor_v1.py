@@ -92,6 +92,9 @@ def _record_supervisor_outcome_v1(run):
                 receipt = exc.__cause__.receipt
                 extra["execution_incident_id"] = receipt["incident_id"]
                 extra["execution_incident_kill_revision"] = receipt["kill_revision"]
+                extra["execution_incident_raw_get_proof_status"] = (
+                    exc.__cause__.raw_get_proof_status
+                )
             try:
                 record_runtime_notice_v1(
                     evidence_root=config.evidence_root,

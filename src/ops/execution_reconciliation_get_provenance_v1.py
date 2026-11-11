@@ -74,6 +74,14 @@ class ReconciliationGetProvenanceV1:
     acquired_at: datetime
     body_sha256: str
 
+    def to_reference_v1(self) -> dict[str, str]:
+        return {
+            "endpoint": self.endpoint,
+            "decision_id": self.decision_id,
+            "acquired_at": self.acquired_at.isoformat(),
+            "body_sha256": self.body_sha256,
+        }
+
 
 @dataclass(frozen=True)
 class AuthenticatedExecutionReconciliationProofV1:
@@ -115,7 +123,7 @@ def adjudicate_reconciliation_quantity_incident_v1(
 class AuthenticatedReconciliationGetV1:
     """Observe the concrete K1 transport and bind every raw response before consumption."""
 
-    def __init__(self, transport, *, account, clock, proof_root=None):
+    def __init__(self, transport, *, account, clock, proof_root=None, retain_response_bodies=False):
         if type(transport) is not FullCoreProductiveReadOnlyGetTransportV1:
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_ORIGINAL_PORT_REQUIRED")
         handle = transport._handle
@@ -132,6 +140,7 @@ class AuthenticatedReconciliationGetV1:
 
             proof_root = require_private_proof_root_v1(proof_root)
         self.proof_root = proof_root
+        self._retain_bodies = proof_root is not None or retain_response_bodies
         self.evidence: dict[str, AuthenticatedExecutionReconciliationProofV1] = {}
         self._gets: dict[str, list[ReconciliationGetProvenanceV1]] = {}
         self._bodies: dict[str, list[bytes]] = {}
@@ -217,7 +226,7 @@ class AuthenticatedReconciliationGetV1:
                 body_sha256=result.body_sha256,
             )
         )
-        if self.proof_root is not None:
+        if self._retain_bodies:
             self._bodies.setdefault(pretrade_decision_id, []).append(body)
         return result
 
@@ -272,19 +281,36 @@ class AuthenticatedReconciliationGetV1:
             quantity_incident=finding,
         )
         if self.proof_root is not None:
-            from src.ops.execution_reconciliation_proof_store_v1 import (
-                publish_authenticated_execution_reconciliation_proof_v1,
-            )
-
-            publish_authenticated_execution_reconciliation_proof_v1(
+            self._publish_proof_v1(
                 root=self.proof_root,
                 proof=proof,
-                budget_owner_root=identity.budget_owner_root,
-                snapshot_received_at=observed_at,
-                position_coverage=(snapshot.positions_observation or {}).get("query_coverage"),
-                bodies=(
-                    *self._bodies[f"{host.session_id}:execution-recovery"],
-                    *self._bodies[f"{host.session_id}:{rid}"],
-                ),
+                identity=identity,
+                snapshot=snapshot,
+                observed_at=observed_at,
             )
         self.evidence[rid] = proof
+
+    def publish_incident_proof_v1(self, *, root, identity, snapshot, observed_at):
+        proof = self.evidence[identity.portfolio_reservation_id]
+        if not self._retain_bodies or proof.quantity_incident is None:
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_INCIDENT_PROOF_MISSING")
+        self._publish_proof_v1(
+            root=root, proof=proof, identity=identity, snapshot=snapshot, observed_at=observed_at
+        )
+
+    def _publish_proof_v1(self, *, root, proof, identity, snapshot, observed_at):
+        from src.ops.execution_reconciliation_proof_store_v1 import (
+            publish_authenticated_execution_reconciliation_proof_v1,
+        )
+
+        publish_authenticated_execution_reconciliation_proof_v1(
+            root=root,
+            proof=proof,
+            budget_owner_root=identity.budget_owner_root,
+            snapshot_received_at=observed_at,
+            position_coverage=(snapshot.positions_observation or {}).get("query_coverage"),
+            bodies=(
+                *self._bodies[f"{proof.session_id}:execution-recovery"],
+                *self._bodies[f"{proof.session_id}:{proof.reservation_id}"],
+            ),
+        )
