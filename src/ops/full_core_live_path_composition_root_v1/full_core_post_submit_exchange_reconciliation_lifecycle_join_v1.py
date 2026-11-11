@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     POST_SUBMIT_RECON,
@@ -67,6 +67,9 @@ CONTRACT_ID = "FULL_CORE_POST_SUBMIT_EXCHANGE_RECONCILIATION_LIFECYCLE_JOIN_V1"
 NETWORK_REQUEST_COUNT = 0
 REAL_ORDER_COUNT = 0
 
+if TYPE_CHECKING:
+    from src.ops.execution_incident_safety_v1 import OfflineExecutionIncidentDeliveryV1
+
 _TERMINAL_CONFIRMED_OUTCOMES = frozenset(
     {
         OUTCOME_CONFIRMED_FILLED,
@@ -93,7 +96,7 @@ class FullCorePostSubmitLifecycleReconciliationJoinResultV1:
     post_close_feedback: Any = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "contract_id": CONTRACT_ID,
             "post_submit_join": {
                 "typed_outcome": self.post_submit_join.typed_outcome,
@@ -113,6 +116,11 @@ class FullCorePostSubmitLifecycleReconciliationJoinResultV1:
                 None if self.post_close_feedback is None else self.post_close_feedback.to_dict()
             ),
         }
+        if self.reconciliation.execution_incident_receipt is not None:
+            result["execution_incident_receipt"] = dict(
+                self.reconciliation.execution_incident_receipt
+            )
+        return result
 
 
 def local_submit_outcome_from_post_submit_join_v1(
@@ -218,6 +226,7 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
     apply_durable_state: bool = False,
     proven_never_submitted: bool = False,
     post_close_feedback_request: Any = None,
+    incident_delivery: OfflineExecutionIncidentDeliveryV1 | None = None,
 ) -> FullCorePostSubmitLifecycleReconciliationJoinResultV1:
     """Run exchange reconciliation immediately after a post-submit lifecycle join."""
 
@@ -230,6 +239,10 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
         )
     if has_okx and not str(pretrade_decision_id or "").strip():
         raise FullCorePostSubmitLifecycleReconciliationJoinError("PRETRADE_DECISION_ID_REQUIRED")
+    if incident_delivery is not None and (has_okx or post_close_feedback_request is not None):
+        raise FullCorePostSubmitLifecycleReconciliationJoinError(
+            "INCIDENT_DELIVERY_REQUIRES_ISOLATED_OFFLINE_RECONCILIATION"
+        )
 
     local_outcome = local_submit_outcome_from_post_submit_join_v1(post_submit_join)
     exchange_ord_id = (
@@ -254,6 +267,7 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
             state_dir=state_dir,
             apply_durable_state=apply_durable_state,
             proven_never_submitted=proven_never_submitted,
+            incident_delivery=incident_delivery,
         )
         provider_mode = "OFFLINE_STUB"
         simulation_mode = "OFFLINE_SIMULATED"
@@ -289,14 +303,7 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
         session_id=binding.session_id,
         stages_observed=[join_stage, *prior_stages],
     )
-    recon = FullCoreOfflineReconciliationRunResultV1(
-        decision=recon.decision,
-        snapshot=recon.snapshot,
-        ghv_bundle=merged_ghv,
-        atomic_state_after=recon.atomic_state_after,
-        post_count=recon.post_count,
-        provider=recon.provider,
-    )
+    recon = replace(recon, ghv_bundle=merged_ghv)
 
     forward = verify_ghv_forward_join_v1(
         join=post_submit_join,

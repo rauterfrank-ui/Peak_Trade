@@ -420,3 +420,22 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
     owner._execution_links[reservation_id] = detached({**link, "reconciliation": evidence})
     owner._persist_locked()
     return detached(evidence)
+
+
+def read_persisted_execution_reconciliation_v1(owner, reservation_id, *, revision_ref=None):
+    """Read an owned reconciliation revision that still agrees with the current link."""
+    with owner._lock:
+        store = owner._store
+        if owner._closed_owner or owner._storage_failed or store is None:
+            raise ValueError("EXECUTION_RECONCILIATION_READBACK_UNAVAILABLE")
+        sequence, checksum = (store.sequence, store.head) if revision_ref is None else revision_ref
+        revision = store.read_revision_v1(sequence, checksum)
+        link = revision["state"].get("execution_links", {}).get(reservation_id)
+        if (
+            not link
+            or link != owner._execution_links.get(reservation_id)
+            or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
+            or link["reconciliation"] is None
+        ):
+            raise ValueError("EXECUTION_RECONCILIATION_READBACK_UNPROVEN")
+        return revision["sequence"], revision["digest"], link

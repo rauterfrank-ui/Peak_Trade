@@ -5,9 +5,9 @@ PRODUCTION provider remains unwired (OWNER_PRIVATE_GET_GO=NOT_GRANTED).
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
     FullCoreAuthorizationBindingV1,
@@ -53,6 +53,9 @@ POST_COUNT = 0
 PRIVATE_GET_COUNT = 0
 NETWORK_REQUEST_COUNT = 0
 
+if TYPE_CHECKING:
+    from src.ops.execution_incident_safety_v1 import OfflineExecutionIncidentDeliveryV1
+
 
 @dataclass(frozen=True)
 class FullCoreOfflineReconciliationRunResultV1:
@@ -62,9 +65,10 @@ class FullCoreOfflineReconciliationRunResultV1:
     atomic_state_after: str | None
     post_count: int
     provider: str
+    execution_incident_receipt: Mapping[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "decision": self.decision.to_dict(),
             "snapshot": dict(self.snapshot),
             "ghv_bundle": dict(self.ghv_bundle),
@@ -73,6 +77,9 @@ class FullCoreOfflineReconciliationRunResultV1:
             "provider": self.provider,
             "contract_id": CONTRACT_ID,
         }
+        if self.execution_incident_receipt is not None:
+            result["execution_incident_receipt"] = dict(self.execution_incident_receipt)
+        return result
 
 
 def identity_from_full_core_binding_v1(
@@ -242,10 +249,39 @@ def run_full_core_offline_exchange_reconciliation_v1(
     state_dir: Path | None = None,
     apply_durable_state: bool = False,
     proven_never_submitted: bool = False,
+    incident_delivery: OfflineExecutionIncidentDeliveryV1 | None = None,
 ) -> FullCoreOfflineReconciliationRunResultV1:
     """Offline reconciliation cycle: snapshot → adjudicate → optional durable update → GHV."""
+    if incident_delivery is not None:
+        from src.ops.execution_ghosv_fill_quantity_v1 import (
+            build_offline_execution_fill_quantity_incident_v1,
+        )
+        from src.ops.execution_incident_safety_v1 import (
+            ExecutionIncidentSafetyError,
+            OfflineExecutionIncidentDeliveryV1,
+            accept_offline_execution_incident_v1,
+        )
+
+        if (
+            type(incident_delivery) is not OfflineExecutionIncidentDeliveryV1
+            or binding.execution_mode != "OFFLINE_STUB"
+            or apply_durable_state is not False
+            or proven_never_submitted is not False
+            or identity
+            != identity_from_full_core_binding_v1(
+                binding,
+                decision_outcome=identity.decision_outcome,
+                venue_plan_identity=identity.venue_plan_identity,
+                envelope_identity=identity.envelope_identity,
+                submit_attempt_id=identity.submit_attempt_id,
+                local_durable_state_version=identity.local_durable_state_version,
+                exchange_ord_id=identity.exchange_ord_id,
+            )
+        ):
+            raise ExecutionIncidentSafetyError("INCIDENT_OFFLINE_RECONCILIATION_BINDING_REQUIRED")
+
     snapshot = fetch_offline_reconciliation_snapshot_v1(identity=identity, fixture=fixture)
-    return _run_full_core_exchange_reconciliation_pipeline_v1(
+    result = _run_full_core_exchange_reconciliation_pipeline_v1(
         identity=identity,
         binding=binding,
         snapshot=snapshot,
@@ -256,6 +292,27 @@ def run_full_core_offline_exchange_reconciliation_v1(
         apply_durable_state=apply_durable_state,
         proven_never_submitted=proven_never_submitted,
     )
+    if incident_delivery is None:
+        return result
+    source_incident = build_offline_execution_fill_quantity_incident_v1(
+        session_id=binding.session_id,
+        observed_at=incident_delivery.observed_at,
+        identity=identity,
+        snapshot=snapshot,
+        decision=result.decision,
+        local_submit_outcome=local_submit_outcome,
+    )
+    receipt = accept_offline_execution_incident_v1(
+        scope=incident_delivery.scope,
+        session_id=binding.session_id,
+        identity=identity,
+        snapshot=snapshot,
+        local_submit_outcome=local_submit_outcome,
+        observed_at=incident_delivery.observed_at,
+        evaluated_at=incident_delivery.evaluated_at,
+        source_incident=source_incident,
+    )
+    return replace(result, execution_incident_receipt=receipt)
 
 
 def run_full_core_okx_injected_exchange_reconciliation_v1(
