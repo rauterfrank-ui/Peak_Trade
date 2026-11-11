@@ -52,6 +52,7 @@ from src.ops.gates.risk_gate import (
     canonical_kill_switch_state_path,
     kill_switch_state_path_from_env,
 )
+from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
@@ -65,6 +66,7 @@ _ALREADY_BLOCKED = "ALREADY_BLOCKED"
 _ENVIRONMENT = "SHADOW"
 _VETO_STAGE = "INCIDENT_REACTION_READBACK"
 _INCIDENT_REASON_PREFIX = "EXECUTION_GHOSV:"
+_LATEST_EXECUTION_INCIDENT = "latest_authenticated_execution_incident"
 _INCIDENT_ORIGIN_FIELDS = (
     "identity_digest",
     "envelope_id",
@@ -217,7 +219,11 @@ def _require_authenticated_scope(scope):
         raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_SCOPE_MISMATCH")
     if any(
         path.is_symlink()
-        for path in (scope.state_path.with_suffix(".tmp"), scope.state_path.parent / "backups")
+        for path in (
+            scope.state_path.with_suffix(".tmp"),
+            scope.state_path.with_suffix(scope.state_path.suffix + ".tmp"),
+            scope.state_path.parent / "backups",
+        )
     ) or (scope.state_path.exists() and not scope.state_path.is_file()):
         raise ExecutionIncidentSafetyError("INCIDENT_FOREIGN_STORE_PATH")
 
@@ -302,9 +308,15 @@ def _kill_revision(payload, *, include_recovering=False):
     states = {"KILLED", "RECOVERING"} if include_recovering else {"KILLED"}
     if payload.get("state") not in states or not payload.get("killed_at"):
         return None
-    return _digest(
-        {"killed_at": payload["killed_at"], "trigger_reason": payload.get("trigger_reason")}
-    )
+    generation = {
+        "killed_at": payload["killed_at"],
+        "trigger_reason": payload.get("trigger_reason"),
+    }
+    if _LATEST_EXECUTION_INCIDENT in payload:
+        generation[_LATEST_EXECUTION_INCIDENT] = payload[_LATEST_EXECUTION_INCIDENT]
+    if "filegate_generation" in payload:
+        generation["filegate_generation"] = payload["filegate_generation"]
+    return _digest(generation)
 
 
 def accept_offline_execution_incident_v1(
@@ -414,7 +426,7 @@ def _apply_confirmed_execution_incident_v1(
             journal = _read_journal(scope)
         except (ExecutionIncidentSafetyError, OSError):
             if live:
-                _ensure_incident_kill_v1(scope, reason)
+                _ensure_incident_kill_v1(scope, reason, native_id=identity.native_id)
             raise
         entries = journal["receipts"]
         if incident_id in entries:
@@ -424,7 +436,7 @@ def _apply_confirmed_execution_incident_v1(
             for e in entries.values()
         ):
             raise ExecutionIncidentSafetyError("INCIDENT_STALE_OR_AMBIGUOUS_ORDER")
-        payload = _ensure_incident_kill_v1(scope, reason)
+        payload = _ensure_incident_kill_v1(scope, reason, native_id=identity.native_id)
         revision = _kill_revision(payload)
         disposition = (
             _APPLIED if revision and payload.get("trigger_reason") == reason else _ALREADY_BLOCKED
@@ -449,11 +461,49 @@ def _apply_confirmed_execution_incident_v1(
         return receipt
 
 
-def _ensure_incident_kill_v1(scope, reason):
+def _ensure_incident_kill_v1(scope, reason, *, native_id):
+    if type(scope) is AuthenticatedExecutionIncidentScopeV1:
+        writer = configured_filegate_writer_v1(scope.state_path)
+        if writer is not None:
+            writer.kill_v1(
+                cause="R04",
+                reason=reason,
+                incident_id=reason.removeprefix(_INCIDENT_REASON_PREFIX),
+                incident_scope={
+                    "account": scope.account,
+                    "environment": "LIVE",
+                    "host": str(scope.root.parent),
+                    "instrument": native_id,
+                },
+            )
+            evidence, payload = _state_observation(scope)
+            if evidence.state_name != "KILLED" or payload.get(_LATEST_EXECUTION_INCIDENT) != (
+                reason.removeprefix(_INCIDENT_REASON_PREFIX)
+            ):
+                raise ExecutionIncidentSafetyError("INCIDENT_KILL_READBACK_UNPROVEN")
+            return payload
     evidence, payload = _state_observation(scope)
     if evidence.evidence_status != "TRUSTED_PRESENT" or evidence.state_name == "DISABLED":
         raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_UNPROVEN")
     if evidence.state_name == "KILLED":
+        if type(scope) is AuthenticatedExecutionIncidentScopeV1:
+            incident_id = reason.removeprefix(_INCIDENT_REASON_PREFIX)
+            if payload.get(_LATEST_EXECUTION_INCIDENT) != incident_id and (
+                payload.get("trigger_reason") != reason or _LATEST_EXECUTION_INCIDENT in payload
+            ):
+                # The authenticated incident writer lock is held. Keep the
+                # original Safety cause, but fence any earlier recovery scope.
+                if _kill_revision(payload) is None or _state_observation(scope) != (
+                    evidence,
+                    payload,
+                ):
+                    raise ExecutionIncidentSafetyError("INCIDENT_FILEGATE_CHANGED_BEFORE_WRITE")
+                updated = {**payload, _LATEST_EXECUTION_INCIDENT: incident_id}
+                _require_authenticated_scope(scope)
+                atomic_write_json(path=scope.state_path, payload=updated)
+                if _state_observation(scope) != (evidence, updated):
+                    raise ExecutionIncidentSafetyError("INCIDENT_KILL_READBACK_UNPROVEN")
+                return updated
         return payload
     writer = KillSwitch({}, persistence=StatePersistence(str(scope.state_path)))
     if writer.state.name != evidence.state_name:
@@ -641,6 +691,15 @@ def _observe_execution_incident_v1(
 
     requested_id = incident_id
     reason = payload.get("trigger_reason")
+    latest = payload.get(_LATEST_EXECUTION_INCIDENT)
+    if (
+        incident_id is None
+        and type(scope) is AuthenticatedExecutionIncidentScopeV1
+        and evidence.state_name in {"KILLED", "RECOVERING"}
+        and isinstance(latest, str)
+        and re.fullmatch(r"[0-9a-f]{64}", latest)
+    ):
+        incident_id = latest
     if (
         incident_id is None
         and (not recover_envelope or evidence.state_name in {"KILLED", "RECOVERING"})

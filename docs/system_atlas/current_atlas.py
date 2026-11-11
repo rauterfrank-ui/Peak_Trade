@@ -23,6 +23,14 @@ TOOLS = {
 }
 
 
+# The Safety signature implementation adds PyNaCl and preserves the locked web extra.
+FILEGATE_DEPENDENCY_DELTA = {
+    "requirements.txt": "4f5666c408eebfa758db3112a12e8234900336f06aa223b6898f90b549b174d6",
+    "pyproject.toml": "060a5b5751e1b2b6188fcb1c33c879101c11cee03d2b2494d859fa934915c014",
+    "uv.lock": "3f522959780c4a36ba3cd739cb7b6edd5e96ee0cab3c5c64e5ffba413acba280",
+}
+
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -198,6 +206,12 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
     assert isinstance(rows, list) and rows, "DEVELOPMENT_BINDING_EMPTY"
     indexed = {}
     actual_changes = set(changed + extras)
+    if actual_changes & FILEGATE_DEPENDENCY_DELTA.keys():
+        assert FILEGATE_DEPENDENCY_DELTA.keys() <= actual_changes
+        assert all(
+            digest((root / name).read_bytes()) == expected
+            for name, expected in FILEGATE_DEPENDENCY_DELTA.items()
+        ), "FILEGATE_DEPENDENCY_BUNDLE_DRIFT"
     for row in rows:
         rel = row["path"]
         assert (
@@ -214,6 +228,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel == "config/governance/clean_core_seal_manifest_v1.json"
             or rel == "config/governance/technical_canonical_wiring_authorization_v1.json"
             or rel == "static/js/market_surface_greenfield_v1/surface_app_v1.js"
+            or rel in FILEGATE_DEPENDENCY_DELTA
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]

@@ -78,6 +78,11 @@ class StatePersistence:
             trigger_reason: Reason for trigger (if KILLED)
             recovery_started_at: Timestamp when recovery started (if RECOVERING)
         """
+        if self.managed_filegate_v1():
+            if state is not KillSwitchState.KILLED:
+                raise ValueError("FILEGATE_MANAGED_RELEASE_REQUIRED")
+            self.record_managed_emergency_v1(trigger_reason)
+            return
         data = {
             "state": state.name,
             "saved_at": datetime.utcnow().isoformat(),
@@ -115,12 +120,33 @@ class StatePersistence:
                 tmp_file.unlink()
             raise
 
+    def managed_filegate_v1(self) -> bool:
+        from src.ops.managed_filegate_v1 import managed_filegate_configured_v1
+
+        return managed_filegate_configured_v1(self.state_file)
+
+    def record_managed_emergency_v1(self, reason: Optional[str]) -> None:
+        from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+        writer = configured_filegate_writer_v1(self.state_file)
+        if writer is None:
+            raise ValueError("FILEGATE_MANAGED_WRITER_UNPROVEN")
+        writer.emergency_v1(reason or "LEGACY_EMERGENCY_STOP")
+
     def load(self) -> Optional[dict]:
         """Load saved state from disk.
 
         Returns:
             State dictionary or None if not found
         """
+        if self.managed_filegate_v1():
+            import os
+
+            from src.ops.managed_filegate_v1 import read_configured_filegate_v1
+
+            if os.environ.get("PEAK_KILL_SWITCH") == "1":
+                return {"state": "KILLED"}
+            return read_configured_filegate_v1(self.state_file) or {"state": "KILLED"}
         if not self.state_file.exists():
             self._logger.debug("No saved state found")
             return None
@@ -142,6 +168,8 @@ class StatePersistence:
 
     def clear(self):
         """Clear saved state."""
+        if self.managed_filegate_v1():
+            raise ValueError("FILEGATE_MANAGED_CLEAR_FORBIDDEN")
         if self.state_file.exists():
             self.state_file.unlink()
             self._logger.info("State cleared")
@@ -168,6 +196,8 @@ class StatePersistence:
         Returns:
             True if successful
         """
+        if self.managed_filegate_v1():
+            raise ValueError("FILEGATE_MANAGED_BACKUP_RESTORE_FORBIDDEN")
         if backup_file:
             backup_path = Path(backup_file)
         else:

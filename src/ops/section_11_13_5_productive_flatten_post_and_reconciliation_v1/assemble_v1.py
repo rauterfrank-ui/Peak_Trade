@@ -229,6 +229,8 @@ def assemble_productive_flatten_post_and_reconciliation_v1(
         "RETRY_USED": False,
         "MERGE_AUTHORIZED_BY_THIS_PERSIST": False,
     }
+    if "FILEGATE_PROTECTION" in runtime_facts:
+        post_action_sanitized["FILEGATE_PROTECTION"] = runtime_facts["FILEGATE_PROTECTION"]
     claims = {
         **CLAIMS,
         "GET_PERFORMED_THIS_PERSIST": verdict["GET_PERFORMED_THIS_PERSIST"],

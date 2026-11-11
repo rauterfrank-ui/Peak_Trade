@@ -142,7 +142,16 @@ class FlattenGatedSubmitBoundaryV1:
         transport: Any,
         extra_headers: Mapping[str, str] | None = None,
         header_builder: Callable[[FlattenPreSendGateReceiptV1], Mapping[str, str]] | None = None,
+        managed_protection_permit: Mapping[str, Any] | None = None,
     ) -> FlattenGatedSubmitResultV1:
+        import sqlite3
+
+        from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+        from src.ops.managed_filegate_v1 import (
+            configured_filegate_writer_v1,
+            managed_filegate_configured_v1,
+        )
+
         receipt = evaluate_flatten_pre_send_gate_v1(gate_input)
         transport_class = str(getattr(transport, "transport_class", type(transport).__name__))
         fake = isinstance(transport, RecordingFakeCanaryTransportV1) or bool(
@@ -185,6 +194,16 @@ class FlattenGatedSubmitBoundaryV1:
             return _denied(("REQUEST_BODY_MISSING",))
         if str(self.rest_host or "") != REUSED_BINDING_REST_HOST:
             return _denied(("REST_HOST_BINDING_MISMATCH",))
+        state_path = canonical_kill_switch_state_path()
+        writer = None
+        if managed_protection_permit is not None or managed_filegate_configured_v1(state_path):
+            writer = configured_filegate_writer_v1(state_path)
+            if writer is None or managed_protection_permit is None:
+                return _denied(("FILEGATE_PROTECTION_PERMIT_REQUIRED",))
+            try:
+                writer.claim_reduce_only_v1(permit=managed_protection_permit, receipt=receipt)
+            except (KeyError, OSError, TypeError, ValueError, sqlite3.Error):
+                return _denied(("FILEGATE_PROTECTION_PERMIT_DENIED",))
         try:
             transport.attach_pre_send_receipt(receipt)
         except LiveCanaryFlattenProductiveTransportError as exc:
@@ -211,6 +230,12 @@ class FlattenGatedSubmitBoundaryV1:
             timeout_seconds=self.timeout_seconds,
             body_text=body_text,
         )
+        if writer is not None:
+            try:
+                if writer.inspect_stop_v1() != managed_protection_permit["body"]["stop"]:
+                    return _denied(("FILEGATE_PROTECTION_STOP_SUPERSEDED",))
+            except (KeyError, OSError, TypeError, ValueError, sqlite3.Error):
+                return _denied(("FILEGATE_PROTECTION_STOP_UNPROVEN",))
         self._submitted = True
         try:
             response = transport.send(request)
@@ -270,6 +295,7 @@ def submit_productive_flatten_v1(
     rest_host: str = REUSED_BINDING_REST_HOST,
     extra_headers: Mapping[str, str] | None = None,
     header_builder: Callable[[FlattenPreSendGateReceiptV1], Mapping[str, str]] | None = None,
+    managed_protection_permit: Mapping[str, Any] | None = None,
 ) -> FlattenGatedSubmitResultV1:
     """One-shot helper around FlattenGatedSubmitBoundaryV1."""
     boundary = FlattenGatedSubmitBoundaryV1(rest_base=rest_base, rest_host=rest_host)
@@ -278,6 +304,7 @@ def submit_productive_flatten_v1(
         transport=transport,
         extra_headers=extra_headers,
         header_builder=header_builder,
+        managed_protection_permit=managed_protection_permit,
     )
 
 

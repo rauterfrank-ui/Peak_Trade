@@ -62,10 +62,10 @@ def execute_unified_recovery_orchestration_v1(
     venue_native_id: str = "ETH-USDT-SWAP",
     public_instrument_ref: InstrumentRefV1 | None = None,
     kill_switch_state_path: Optional[str] = None,
-    unresolved_venue_order: bool = False,
+    unresolved_venue_order: bool | None = None,
 ) -> UnifiedRecoveryOrchestrationResultV1:
     result = UnifiedRecoveryOrchestrationResultV1(ok=False)
-    if unresolved_venue_order:
+    if unresolved_venue_order is True:
         result.fail_closed_reason = "UNRESOLVED_VENUE_ORDER_STATE"
         return result
 

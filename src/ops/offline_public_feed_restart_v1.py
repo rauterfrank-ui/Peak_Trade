@@ -15,6 +15,7 @@ from uuid import uuid4
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
     atomic_write_json,
     canonical_json_dumps,
+    canonical_json_text,
 )
 from src.ops.full_core_live_path_composition_root_v1 import (
     current_productive_governed_continuous_cycle_orchestrator_v1 as s6,
@@ -37,8 +38,10 @@ from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 im
     read_durable_filegate_join_evidence_v1,
 )
 from src.ops.offline_public_feed_account_reconciliation_v1 import (
+    _inspect_stopped_account,
     capture_offline_feed_account_reconciliation_v1,
 )
+from src.ops.offline_filegate_witness_v1 import OfflineFilegateWitnessV1
 from src.ops.offline_public_feed_recovery_v1 import (
     OfflinePublicFeedRecoveryError,
     OfflinePublicFeedRecoveryV1,
@@ -75,13 +78,28 @@ RECEIPT_SCHEMA = "offline_public_feed_restart_release.v1"
 class OfflinePublicFeedRestartV1:
     """Explicit one-cycle R01 profile with a provisioned, scoped Safety mandate."""
 
-    def __init__(self, repair: OfflinePublicFeedRecoveryV1, *, authority_key: bytes):
+    def __init__(
+        self,
+        repair: OfflinePublicFeedRecoveryV1,
+        *,
+        authority_key: bytes,
+        witness_directory: Path | None = None,
+    ):
         if type(repair) is not OfflinePublicFeedRecoveryV1:
             raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_BOUND_REPAIR_REQUIRED")
         if type(authority_key) is not bytes or len(authority_key) < 32:
             raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_AUTHORITY_KEY_REQUIRED")
         self.repair = repair
         self._key = authority_key
+        self._witness = (
+            None
+            if witness_directory is None
+            else OfflineFilegateWitnessV1(
+                directory=witness_directory,
+                state_path=repair.incident.state_path,
+                key=hmac.digest(authority_key, b"offline-filegate-witness.v1", "sha256"),
+            )
+        )
 
     @contextmanager
     def _writer(self):
@@ -97,6 +115,16 @@ class OfflinePublicFeedRestartV1:
         with lock.open("a") as handle:
             fcntl.flock(handle, fcntl.LOCK_EX)
             self.repair._require_scope()
+            yield
+
+    @contextmanager
+    def _resume_lock(self):
+        self.repair._require_scope()
+        lock = self.repair.incident.root / "offline-feed-resume.lock"
+        if lock.resolve() != lock or (lock.exists() and not lock.is_file()):
+            raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_WRITER_SCOPE_UNPROVEN")
+        with lock.open("a") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX)
             yield
 
     def _mac(self, body):
@@ -137,14 +165,106 @@ class OfflinePublicFeedRestartV1:
             or release["account_evidence"]["feed_binding"] != self.repair.incident.binding()
         ):
             raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_RELEASE_BINDING_CHANGED")
+        if self._witness is not None:
+            self._witness.require_match_v1(raw, state="ACTIVE")
         return release, sha256(raw).hexdigest()
+
+    def initialize_witness_v1(self):
+        """Provision once while the exact original stop can still be proved."""
+        if self._witness is None:
+            raise OfflinePublicFeedRecoveryError("FILEGATE_WITNESS_REQUIRED")
+        with self._writer():
+            self.repair._require_stop()
+            raw = self.repair.incident.state_path.read_bytes()
+            if sha256(raw).hexdigest() != self.repair.incident.filegate_sha256:
+                raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_STOP_CHANGED_OR_UNPROVEN")
+            self._witness.bootstrap_v1(raw)
+            self._witness.require_match_v1(raw, state="KILLED")
+
+    def _require_stop(self):
+        self.repair._require_stop()
+        raw = self.repair.incident.state_path.read_bytes()
+        if sha256(raw).hexdigest() != self.repair.incident.filegate_sha256:
+            raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_STOP_CHANGED_OR_UNPROVEN")
+        if self._witness is not None:
+            self._witness.require_match_v1(raw, state="KILLED")
+        return raw
+
+    def observe_filegate_integrity_v1(self):
+        """Fence missing, contradictory or rolled-back state with a new original kill."""
+        if self._witness is None:
+            raise OfflinePublicFeedRecoveryError("FILEGATE_WITNESS_REQUIRED")
+        with self._writer():
+            path = self.repair.incident.state_path
+            raw = path.read_bytes() if path.is_file() else None
+            evidence = read_durable_filegate_join_evidence_v1(state_path=str(path))
+            if raw is not None and path.read_bytes() != raw:
+                raise OfflinePublicFeedRecoveryError("FILEGATE_OBSERVATION_CHANGED")
+            anchored = False
+            try:
+                head = self._witness.read_v1()
+                anchored = (
+                    raw is not None
+                    and evidence.evidence_status == "TRUSTED_PRESENT"
+                    and evidence.state_name == head["state"]
+                    and sha256(raw).hexdigest() == head["filegate_sha256"]
+                )
+            except OfflinePublicFeedRecoveryError:
+                head = None
+            if anchored:
+                return {
+                    "status": "STOP_CONFIRMED" if evidence.blocked else "ACTIVE_HEAD_CONFIRMED",
+                    "filegate_sha256": head["filegate_sha256"],
+                    "witness_generation": head["generation"],
+                    "stop_reason": json.loads(raw).get("trigger_reason")
+                    if evidence.blocked
+                    else None,
+                }
+            if evidence.evidence_status == "TRUSTED_PRESENT" and evidence.blocked:
+                # An original stop from another writer may be newer. Preserve it.
+                return {"status": "BLOCKED_UNANCHORED", "reason": "FILEGATE_STOP_NOT_WITNESSED"}
+            if (raw is None and path.exists()) or (raw is not None and path.read_bytes() != raw):
+                raise OfflinePublicFeedRecoveryError("FILEGATE_OBSERVATION_CHANGED")
+            reason = "FILEGATE_INTEGRITY_UNPROVEN"
+            self._kill_locked(reason)
+            return {
+                "status": "BLOCKED_INTEGRITY_KILL",
+                "reason": reason,
+                "filegate_sha256": self._read_kill(reason),
+                "previous_witness_generation": None if head is None else head["generation"],
+            }
 
     def record_kill_v1(self, *, reason: str) -> str:
         """The isolated Safety entry publishes a new revision even when already stopped."""
         if type(reason) is not str or not reason or reason != reason.strip():
             raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_KILL_REASON_REQUIRED")
         with self._writer():
-            path = self._kill_locked(reason)
+            self._kill_locked(reason)
+            return self._read_kill(reason)
+
+    def _read_kill(self, reason):
+        path = self.repair.incident.state_path
+        raw = path.read_bytes()
+        evidence = read_durable_filegate_join_evidence_v1(state_path=str(path))
+        if (
+            evidence.evidence_status != "TRUSTED_PRESENT"
+            or evidence.state_name != "KILLED"
+            or evidence.blocked is not True
+            or evidence.boolean_reader_blocked is not True
+            or json.loads(raw)["trigger_reason"] != reason
+            or path.read_bytes() != raw
+        ):
+            raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_KILL_READBACK_UNPROVEN")
+        return sha256(raw).hexdigest()
+
+    def inspect_stopped_account_v1(self, *, host, bound, stop_sha256):
+        """Reconcile the bound account under the witnessed stop, including unresolved orders."""
+        if self._witness is None:
+            raise OfflinePublicFeedRecoveryError("FILEGATE_WITNESS_REQUIRED")
+        path = self.repair.incident.state_path
+
+        def require_stop():
+            self.repair._require_scope()
             raw = path.read_bytes()
             evidence = read_durable_filegate_join_evidence_v1(state_path=str(path))
             if (
@@ -152,11 +272,19 @@ class OfflinePublicFeedRestartV1:
                 or evidence.state_name != "KILLED"
                 or evidence.blocked is not True
                 or evidence.boolean_reader_blocked is not True
-                or json.loads(raw)["trigger_reason"] != reason
+                or sha256(raw).hexdigest() != stop_sha256
                 or path.read_bytes() != raw
             ):
-                raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_KILL_READBACK_UNPROVEN")
-            return sha256(raw).hexdigest()
+                raise OfflinePublicFeedRecoveryError("FILEGATE_OBSERVATION_STOP_CHANGED")
+            self._witness.require_match_v1(raw, state="KILLED")
+
+        require_stop()
+        return _inspect_stopped_account(
+            self.repair.incident,
+            host=host,
+            bindings={"LANE_1": bound},
+            require_stop=require_stop,
+        )
 
     def _kill_locked(self, reason):
         path = self.repair.incident.state_path
@@ -165,8 +293,14 @@ class OfflinePublicFeedRestartV1:
             killed = store.load()
         if killed is None or killed.get("state") != "KILLED":
             raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_ORIGINAL_KILL_UNPROVEN")
-        atomic_write_json(path=path, payload={**killed, "offline_kill_id": uuid4().hex})
-        return path
+        payload = {**killed, "offline_kill_id": uuid4().hex}
+        if self._witness is not None:
+            try:
+                self._witness.publish_v1(payload)
+            except (OSError, OfflinePublicFeedRecoveryError):
+                # KILL has priority even when the witness is unavailable.
+                pass
+        atomic_write_json(path=path, payload=payload)
 
     @contextmanager
     def _staged_original_store(self):
@@ -290,7 +424,7 @@ class OfflinePublicFeedRestartV1:
         with self._writer():
             if json.loads(path.read_bytes()).get("state") == "ACTIVE":
                 return self._read_active(mandate)[0]
-            self.repair._require_stop()
+            self._require_stop()
             self._require_approval_time(approval, now=self.repair._now())
             if (
                 sha256(cursor_path.read_bytes()).hexdigest() != approval["cursor_sha256"]
@@ -302,7 +436,7 @@ class OfflinePublicFeedRestartV1:
             self.repair, host=host, bindings={"LANE_1": bound}
         )
         with self._writer():
-            self.repair._require_stop()
+            self._require_stop()
             self._require_fresh(approval, account)
             self._require_original_sources(host, account)
             if (
@@ -321,9 +455,9 @@ class OfflinePublicFeedRestartV1:
                 "account_evidence": account,
                 "activated_at": self.repair._now().isoformat(),
             }
-            self.repair._require_stop()
+            stopped = self._require_stop()
             with self._staged_original_store() as store:
-                store.state_file.write_bytes(path.read_bytes())
+                store.state_file.write_bytes(stopped)
                 # The original writer stages RECOVERING while FILEGATE stays KILLED.
                 switch = KillSwitch({"recovery_cooldown_seconds": 0}, persistence=store)
                 if (
@@ -336,14 +470,20 @@ class OfflinePublicFeedRestartV1:
                 active = store.load()
             if active is None or active.get("state") != "ACTIVE":
                 raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_ORIGINAL_TRANSITION_DENIED")
-            self.repair._require_stop()
-            atomic_write_json(
-                path=path,
-                payload={
-                    **active,
-                    "offline_recovery_release": {"body": body, "signature": self._mac(body)},
-                },
-            )
+            self._require_stop()
+            payload = {
+                **active,
+                "offline_recovery_release": {"body": body, "signature": self._mac(body)},
+            }
+            if self._witness is not None:
+                # A crash between the stores leaves the original consumer blocked.
+                self._witness.publish_v1(payload)
+                if path.read_bytes() != stopped:
+                    raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_STOP_CHANGED_OR_UNPROVEN")
+                self._witness.require_match_v1(
+                    canonical_json_text(payload).encode(), state="ACTIVE"
+                )
+            atomic_write_json(path=path, payload=payload)
             return self._read_active(mandate)[0]
 
     def resume_v1(self, *, host, bound, authorization, mandate, observation, g17_producers):
@@ -352,7 +492,7 @@ class OfflinePublicFeedRestartV1:
         approval = self._require_mandate(
             mandate, host=host, bound=bound, authorization=authorization, cursor_path=cursor_path
         )
-        with self._writer():
+        with self._resume_lock():
             release, active_revision = self._read_active(mandate)
             account = release["account_evidence"]
             evidence_root = self.repair.incident.root / "host-restart" / release["mandate_sha256"]
@@ -361,7 +501,9 @@ class OfflinePublicFeedRestartV1:
                 raise OfflinePublicFeedRecoveryError("OFFLINE_RESTART_HOST_LEDGER_SCOPE_UNPROVEN")
             try:
                 if ledger.is_file():
-                    return self._read_host_result(ledger, cursor_root, bound, authorization)
+                    result = self._read_host_result(ledger, cursor_root, bound, authorization)
+                    self._read_active(mandate)
+                    return result
                 self._require_fresh(approval, account)
                 if (
                     sha256(cursor_path.read_bytes()).hexdigest() != approval["cursor_sha256"]
@@ -383,6 +525,10 @@ class OfflinePublicFeedRestartV1:
                     self._require_fresh(approval, account)
                     self._require_original_sources(host, account)
 
+                def guarded_runner(**kwargs):
+                    check_admission(1)
+                    return runner(**kwargs)
+
                 result = s6.run_current_productive_governed_continuous_cycle_run_v1(
                     authorization=authorization,
                     origin_main_sha=host.repository_sha,
@@ -390,7 +536,7 @@ class OfflinePublicFeedRestartV1:
                     lock_root=evidence_root / "lock",
                     evidence_root=evidence_root,
                     observation_source=s6.ScriptedContinuousObservationSourceV1([observation]),
-                    s5_runner=runner,
+                    s5_runner=guarded_runner,
                     iteration_authority_gate_v1=check_admission,
                 )
                 check_admission(1)
@@ -404,9 +550,10 @@ class OfflinePublicFeedRestartV1:
                 return self._read_host_result(ledger, cursor_root, bound, authorization)
             except Exception:
                 # Preserve a newer independent veto if it is already on disk.
-                path = self.repair.incident.state_path
-                if sha256(path.read_bytes()).hexdigest() == active_revision:
-                    self._kill_locked("OFFLINE_RESTART_ADMISSION_FAILED")
+                with self._writer():
+                    path = self.repair.incident.state_path
+                    if path.is_file() and sha256(path.read_bytes()).hexdigest() == active_revision:
+                        self._kill_locked("OFFLINE_RESTART_ADMISSION_FAILED")
                 raise
 
     def recover_and_resume_v1(
@@ -422,7 +569,7 @@ class OfflinePublicFeedRestartV1:
                 json.loads(self.repair.incident.state_path.read_bytes())["state"] == "KILLED"
             )
             if needs_repair:
-                self.repair._require_stop()
+                self._require_stop()
                 self._require_approval_time(approval, now=self.repair._now())
         if needs_repair:
             self.repair.repair_and_observe_v1(runtime)
