@@ -5,7 +5,7 @@ No fallback from the dedicated observer credential contract and no POST port.
 """
 
 from contextlib import contextmanager
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
@@ -50,6 +50,25 @@ FUTURES_INVENTORY_REQUEST_COUNT = (
     6 + len(FUTURES_INVENTORY_ALGO_TYPES) + len(FUTURES_INVENTORY_BOT_QUERIES)
 )
 _SIGNED_FIXED_DECIMAL = re.compile(r"-?[0-9]+(?:\.[0-9]+)?")
+FUTURES_FINANCIAL_BASE_GETS = (
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/positions",
+)
+
+
+def futures_financial_pending_gets_v1():
+    return (
+        "/api/v5/trade/orders-pending",
+        *(
+            f"{ALGO_PENDING_PATH}?{urlencode({'ordType': kind})}"
+            for kind in FUTURES_INVENTORY_ALGO_TYPES
+        ),
+        *(
+            path + ("?" + urlencode(query) if query else "")
+            for path, query in FUTURES_INVENTORY_BOT_QUERIES
+        ),
+    )
 
 
 @dataclass(frozen=True)
@@ -328,21 +347,9 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             or not 0 <= now - completed <= now - started <= max_age
         ):
             raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_WINDOW_INVALID")
-        config_path = "/api/v5/account/config"
-        balance_path = "/api/v5/account/balance"
-        positions_path = "/api/v5/account/positions"
-        pending_path = "/api/v5/trade/orders-pending"
-        empty_paths = [
-            pending_path,
-            *(
-                f"{ALGO_PENDING_PATH}?{urlencode({'ordType': kind})}"
-                for kind in self._pending_algo_types_v1()
-            ),
-            *(
-                path + ("?" + urlencode(query) if query else "")
-                for path, query in FUTURES_INVENTORY_BOT_QUERIES
-            ),
-        ]
+        config_path, balance_path, positions_path = FUTURES_FINANCIAL_BASE_GETS
+        empty_paths = futures_financial_pending_gets_v1()
+        pending_path = empty_paths[0]
         gets = {}
         for endpoint in (config_path, balance_path, positions_path, *empty_paths):
             record = self._observation_gets.get(endpoint)
@@ -387,6 +394,54 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             gets=json.loads(json.dumps(gets, allow_nan=False)),
             current_cross_balance_with_pnl_usdc=_cross_balance_with_pnl_v1(usdc[0]),
         )
+
+    def fetch_xperp_position_terms_v1(self, native_ids):
+        """Fresh terms on the same K1 handle and quota as the signed inventory."""
+        from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+            GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+
+        if self.closed or not self.account_inventory_guard or self.inventory_inst_type != "FUTURES":
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_SCOPE_CHANGED")
+        self._assert_current_resource_pair_v1()
+        terms = {}
+        for native in native_ids:
+            if not re.fullmatch(r"[A-Z0-9]+-USD_UM_XPERP-[0-9]{6}", native):
+                raise AccountObservationSourceError("XPERP_LIQUIDATION_POSITION_PRODUCT_UNPROVEN")
+            family = native.rsplit("-", 1)[0]
+            sources = {}
+            for key, path, query, private in (
+                (
+                    "instrument",
+                    "/api/v5/account/instruments",
+                    {"instType": "FUTURES", "instId": native},
+                    True,
+                ),
+                (
+                    "fees",
+                    "/api/v5/account/trade-fee",
+                    {"instType": "FUTURES", "instFamily": family},
+                    True,
+                ),
+                (
+                    "tiers",
+                    "/api/v5/public/position-tiers",
+                    {"instType": "FUTURES", "tdMode": "cross", "instFamily": family},
+                    False,
+                ),
+            ):
+                self._assert_current_resource_pair_v1()
+                sources[key] = asdict(
+                    self.transport._transport.get(
+                        endpoint=path + "?" + urlencode(query),
+                        auth_required=private,
+                        pretrade_decision_id=self.session_id,
+                        get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+                    )
+                )
+                self._assert_current_resource_pair_v1()
+            terms[native] = sources
+        return terms
 
     def inspect_accounting_bills_v1(self, *, max_pages=6):
         """Bounded, unfiltered archive pagination; no stock or sizing adoption.

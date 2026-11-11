@@ -951,6 +951,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     binding.absolute_movement_cost_binding.validate_v1(
                         sizing=binding, evaluated_at_utc=utc_now_iso_v1()
                     )
+                    if self._entry_budget_policy is not None and getattr(
+                        self._entry_budget_policy, "require_original_public_movement_facts", False
+                    ):
+                        binding.absolute_movement_cost_binding.require_original_public_facts_v1()
                 elif absolute_movement_cost_observation is not None:
                     raise ValueError("MOVEMENT_LEGACY_HOLD_NOT_UPGRADED")
                 if binding.risk_binding is not None:
@@ -1294,6 +1298,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         expected_risk_snapshot_digest: str | None = None,
         expected_local_commitment_generation: str | None = None,
         handoff_journal: object | None = None,
+        futures_financial_custody: object | None = None,
     ) -> ReserveResultV1:
         try:
             slot = SlotId(str(slot_id))
@@ -1309,6 +1314,32 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             return self._closed(("REQUESTED_AMOUNT_INVALID",))
         if max_active_sum is not None and _money(max_active_sum) is None:
             return self._closed(("RESERVATION_ACTIVE_CEILING_INVALID",))
+        liquidation_snapshot = None
+        if getattr(self._entry_budget_policy, "require_xperp_liquidation_projection", False):
+            from .xperp_liquidation_projection_v1 import capture_liquidation_custody_v1
+
+            try:
+                liquidation_snapshot = capture_liquidation_custody_v1(
+                    self, futures_financial_custody
+                )
+                generation = liquidation_snapshot["local_generation"]
+                if expected_local_commitment_generation not in (None, generation):
+                    raise ValueError("XPERP_LIQUIDATION_LOCAL_GENERATION_MISMATCH")
+                expected_local_commitment_generation = generation
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                ArithmeticError,
+                RuntimeError,
+            ) as exc:
+                return self._closed((str(exc), "NO_PARTIAL_MUTATION"))
+        elif futures_financial_custody is not None or (
+            isinstance(sizing_binding, ReservationSizingBindingV1)
+            and sizing_binding.xperp_liquidation_binding is not None
+        ):
+            return self._closed(("XPERP_LIQUIDATION_EXPLICIT_POLICY_REQUIRED",))
         with self._lock:
             if expected_local_commitment_generation is not None:
                 from .local_commitment_readback_v1 import read_local_commitments_locked_v1
@@ -1519,10 +1550,33 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     if not isinstance(sizing_binding, ReservationSizingBindingV1):
                         raise ValueError("RESERVATION_SIZING_BINDING_TYPE_INVALID")
                     sizing_binding.validate_v1(amount=money, decision_id=decision)
+                    if getattr(
+                        self._entry_budget_policy, "require_original_public_movement_facts", False
+                    ):
+                        sizing_binding.absolute_movement_cost_binding.require_original_public_facts_v1()
+                    if liquidation_snapshot is not None:
+                        from .durable_store_v1 import canonical
+                        from .entry_execution_cost_v1 import utc_now_iso_v1
+                        from .xperp_liquidation_projection_v1 import (
+                            XPerpLiquidationBindingV1,
+                            assess_xperp_liquidation_v1,
+                        )
+
+                        assessment = assess_xperp_liquidation_v1(
+                            liquidation_snapshot,
+                            sizing=sizing_binding,
+                            evaluated_at_utc=utc_now_iso_v1(),
+                        )
+                        sizing_binding = replace(
+                            sizing_binding,
+                            xperp_liquidation_binding=XPerpLiquidationBindingV1(
+                                canonical(liquidation_snapshot), canonical(assessment)
+                            ),
+                        )
                     detached_sizing = ReservationSizingBindingV1.from_dict_v1(
                         sizing_binding.to_dict_v1()
                     )
-                except ValueError as exc:
+                except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
                     return self._result_locked(
                         disposition=ReserveDispositionV1.FAIL_CLOSED,
                         reservation=None,
@@ -1873,13 +1927,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return inspect_submit_context_locked_v1(self, str(reservation_id), envelope, identity)
 
-    def inspect_current_entry_budget_policy_v1(self, reservation_id, envelope):
-        """Current original Ops ceilings over unchanged original notional holds.
-
-        This reads policy and the two monetary operands under this owner's lock.
-        It neither renews Core/risk inputs nor resizes, persists or releases a hold.
-        Generic historical link validation and reconciliation remain separate.
-        """
+    def inspect_current_entry_budget_policy_v1(
+        self, reservation_id, envelope, *, futures_financial_custody=None
+    ):
+        """Inspect current Ops ceilings and the selected financial policy for this hold."""
         from src.ops.full_core_live_path_composition_root_v1.current_productive_entry_budget_policy_v1 import (
             load_entry_budget_policy_v1,
         )
@@ -1887,6 +1938,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             assert_envelope_unmodified_v1,
         )
 
+        liquidation_snapshot = None
+        if getattr(self._entry_budget_policy, "require_xperp_liquidation_projection", False):
+            from .xperp_liquidation_projection_v1 import capture_liquidation_custody_v1
+
+            try:
+                liquidation_snapshot = capture_liquidation_custody_v1(
+                    self, futures_financial_custody, candidate_id=str(reservation_id)
+                )
+            except (TypeError, KeyError, AttributeError, ArithmeticError, RuntimeError) as exc:
+                raise ValueError("XPERP_LIQUIDATION_CURRENT_CUSTODY_UNAVAILABLE") from exc
+        elif futures_financial_custody is not None:
+            raise ValueError("XPERP_LIQUIDATION_EXPLICIT_POLICY_REQUIRED")
         with self._lock:
             found = self._require_locked(reservation_id)
             if (
@@ -1914,6 +1977,22 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             if renewal_blocker is not None:
                 raise ValueError("CURRENT_ENTRY_BUDGET:" + renewal_blocker)
             sizing = self._sizing_bindings.get(str(reservation_id))
+            liquidation_result = {}
+            if liquidation_snapshot is not None:
+                from .entry_execution_cost_v1 import utc_now_iso_v1
+                from .local_commitment_readback_v1 import read_local_commitments_locked_v1
+                from .xperp_liquidation_projection_v1 import assess_xperp_liquidation_v1
+
+                if sizing is None or sizing.xperp_liquidation_binding is None:
+                    raise ValueError("XPERP_LIQUIDATION_ORIGINAL_PROJECTION_REQUIRED")
+                if (
+                    liquidation_snapshot["local_generation"]
+                    != read_local_commitments_locked_v1(self).generation_digest
+                ):
+                    raise ValueError("XPERP_LIQUIDATION_LOCAL_GENERATION_CHANGED")
+                liquidation_result["xperp_liquidation_projection"] = assess_xperp_liquidation_v1(
+                    liquidation_snapshot, sizing=sizing, evaluated_at_utc=utc_now_iso_v1()
+                )
             if sizing is not None and sizing.entry_cost_binding is not None:
                 from .entry_execution_cost_v1 import (
                     EntryExecutionCostObservationV1,
@@ -1999,6 +2078,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 sizing.absolute_movement_cost_binding.validate_v1(
                     sizing=sizing, evaluated_at_utc=utc_now_iso_v1()
                 )
+                if getattr(
+                    self._entry_budget_policy, "require_original_public_movement_facts", False
+                ):
+                    sizing.absolute_movement_cost_binding.require_original_public_facts_v1()
             if self._entry_budget_policy is not None:
                 bound = self._entry_budget_policy
                 slot = str(found[1].slot_id)
@@ -2024,6 +2107,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "currency": policy.currency,
                 "reserved_notional": str(amount),
                 "aggregate_reserved_notional": str(aggregate),
+                **liquidation_result,
             }
 
     def inspect_current_core_cursor_v1(self, reservation_id, envelope):
@@ -2350,7 +2434,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         for binding in state["sizing_bindings"].values():
             binding.pop("risk_binding", None)
             binding["schema"] = (
-                "reservation_sizing_binding.v8"
+                "reservation_sizing_binding.v9"
+                if "xperp_liquidation_binding" in binding
+                else "reservation_sizing_binding.v8"
                 if "absolute_movement_cost_binding" in binding
                 else "reservation_sizing_binding.v7"
                 if "native_initial_margin_binding" in binding
@@ -2545,8 +2631,25 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 binding.validate_v1(
                     amount=records[key].amount, decision_id=records[key].decision_id
                 )
+                if records[key].counts_against_budget and getattr(
+                    self._entry_budget_policy, "require_original_public_movement_facts", False
+                ):
+                    if binding.absolute_movement_cost_binding is None:
+                        raise ValueError("MOVEMENT_ORIGINAL_PUBLIC_FACTS_REQUIRED")
+                    binding.absolute_movement_cost_binding.require_original_public_facts_v1()
                 restored_sizing[key] = binding
             self._sizing_bindings = restored_sizing
+            if getattr(
+                self._entry_budget_policy, "require_xperp_liquidation_projection", False
+            ) and any(
+                r.counts_against_budget
+                and (
+                    key not in restored_sizing
+                    or restored_sizing[key].xperp_liquidation_binding is None
+                )
+                for key, r in records.items()
+            ):
+                raise ValueError("required xperp liquidation binding missing on active hold")
             if getattr(
                 self._entry_budget_policy, "require_absolute_movement_cost_cover", False
             ) and any(
@@ -2793,6 +2896,7 @@ def admit_sized_slot_reservation_v1(
     absolute_movement_cost_observation: object | None = None,
     local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
+    futures_financial_custody: object | None = None,
 ) -> SizedReservationResultV1:
     """Producer, 29P admissibility, existing sizing, then atomic reserve.
 
@@ -3199,6 +3303,7 @@ def admit_sized_slot_reservation_v1(
         else None,
         expected_local_commitment_generation=local_generation,
         handoff_journal=handoff_journal,
+        futures_financial_custody=futures_financial_custody,
     )
     if (
         reserved.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY

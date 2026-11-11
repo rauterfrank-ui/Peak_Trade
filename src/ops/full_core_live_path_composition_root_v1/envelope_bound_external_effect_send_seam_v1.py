@@ -118,6 +118,7 @@ def inspect_original_portfolio_execution_context_v1(
     execution_identity=None,
     execution_plan_context=None,
     required_execution_environment=None,
+    futures_financial_custody=None,
 ):
     """Inspect original owner/hold/plan identity; never create or recover an owner."""
     if ":portfolio-reservation:" in envelope.admission_ref:
@@ -130,6 +131,7 @@ def inspect_original_portfolio_execution_context_v1(
             portfolio_reservation_id,
             execution_identity is not None,
             execution_plan_context is not None,
+            futures_financial_custody is not None,
         )
     ):
         return None
@@ -167,7 +169,9 @@ def inspect_original_portfolio_execution_context_v1(
             ):
                 raise FullCoreEnvelopeBoundSendSeamError("PORTFOLIO_EXECUTION_ENVIRONMENT_MISMATCH")
             portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
-                portfolio_reservation_id, envelope
+                portfolio_reservation_id,
+                envelope,
+                futures_financial_custody=futures_financial_custody,
             )
             portfolio_budget_owner.inspect_current_core_cursor_v1(
                 portfolio_reservation_id, envelope
@@ -177,7 +181,9 @@ def inspect_original_portfolio_execution_context_v1(
             portfolio_reservation_id, envelope, execution_identity
         )
         portfolio_budget_owner.inspect_current_entry_budget_policy_v1(
-            portfolio_reservation_id, envelope
+            portfolio_reservation_id,
+            envelope,
+            futures_financial_custody=futures_financial_custody,
         )
         portfolio_budget_owner.inspect_current_core_cursor_v1(portfolio_reservation_id, envelope)
         return proof
@@ -200,6 +206,7 @@ def attempt_envelope_bound_external_effect_send_v1(
     post_safety_context=None,
     post_quantity_context=None,
     post_pending_context=None,
+    futures_financial_custody=None,
 ) -> EnvelopeBoundSendSeamResultV1:
     if canonical_intent is not None:
         try:
@@ -249,6 +256,7 @@ def attempt_envelope_bound_external_effect_send_v1(
         portfolio_reservation_id=portfolio_reservation_id,
         execution_identity=execution_identity,
         execution_plan_context=execution_plan_context,
+        futures_financial_custody=futures_financial_custody,
     )
     owned_identity = None
     if post_pending_context is not None:

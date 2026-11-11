@@ -46,24 +46,23 @@ from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import
 
 NATIVE = "BTC-USD_UM_XPERP-310404"
 FAMILY = "BTC-USD_UM_XPERP"
-TIER_ENDPOINT = f"/api/v5/public/position-tiers?instType=FUTURES&tdMode=cross&instFamily={FAMILY}"
 
 
-def position_tiers():
+def position_tiers(asset="BTC"):
     return [
         dict(
-            instFamily=FAMILY,
+            instFamily=f"{asset}-USD_UM_XPERP",
             instId="",
-            uly="BTC-USD",
+            uly=f"{asset}-USD",
             tier="1",
             minSz="0",
             maxSz="1",
             mmr="0.0065",
         ),
         dict(
-            instFamily=FAMILY,
+            instFamily=f"{asset}-USD_UM_XPERP",
             instId="",
-            uly="BTC-USD",
+            uly=f"{asset}-USD",
             tier="2",
             minSz="2",
             maxSz="45000",
@@ -72,19 +71,20 @@ def position_tiers():
     ]
 
 
-def instrument(*, settlement="USDC"):
+def instrument(*, settlement="USDC", asset="BTC"):
+    family = f"{asset}-USD_UM_XPERP"
     return dict(
-        instId=NATIVE,
+        instId=f"{family}-310404",
         instType="FUTURES",
         state="live",
-        uly="BTC-USD",
-        instFamily=FAMILY,
+        uly=f"{asset}-USD",
+        instFamily=family,
         baseCcy="",
         quoteCcy="",
         settleCcy=settlement,
         ctVal="0.0001",
         ctMult="1",
-        ctValCcy="BTC",
+        ctValCcy=asset,
         ctType="linear",
         tickSz="0.1",
         lotSz="1",
@@ -103,6 +103,16 @@ def policy():
     )
 
 
+def xperp_bound(asset):
+    from tests.ops.test_governed_futures_universe_producer_v1 import _produce
+
+    public = instrument(settlement="USD", asset=asset)
+    native = public["instId"]
+    universe = _produce([public], marks=[native])
+    (eligible,) = universe.snapshot.instruments
+    return replace(_bound(instrument_id=eligible.canonical_instrument_id), venue_native_id=native)
+
+
 def prepare(
     tmp_path,
     monkeypatch,
@@ -112,40 +122,53 @@ def prepare(
     scoped_reconciliation=False,
     tier_evidence=False,
     tier_fault=None,
+    liquidation_policy=False,
+    public_movement_policy=False,
+    asset="BTC",
+    slot="LANE_1",
+    host_context=None,
+    extra_bindings=None,
 ):
     clock = [EPOCH]
     monkeypatch.setattr(cost, "utc_now_iso_v1", lambda: clock[0])
     # Canonical identity follows the public instrument, not its account's cash
     # preference. Derive it through the original universe producer below.
-    from tests.ops.test_governed_futures_universe_producer_v1 import _produce
-
-    universe = _produce([instrument(settlement="USD")], marks=[NATIVE])
-    eligible = list(universe.snapshot.instruments)
-    assert len(eligible) == 1, universe
-    bound = replace(
-        _bound(instrument_id=eligible[0].canonical_instrument_id), venue_native_id=NATIVE
+    bound = xperp_bound(asset)
+    native = bound.venue_native_id
+    family = native.rsplit("-", 1)[0]
+    tier_endpoint = (
+        f"/api/v5/public/position-tiers?instType=FUTURES&tdMode=cross&instFamily={family}"
     )
-    producer = _produced_g17_producer(instrument_id=bound.instrument_id, venue_native_id=NATIVE)
+    producer = _produced_g17_producer(instrument_id=bound.instrument_id, venue_native_id=native)
     run = (
         run_natural_enter_short_sequence_for_bound_v1
         if short
         else run_natural_enter_long_sequence_for_bound_v1
     )(bound=bound, g17_typed_vol_producer=producer)
     cycle = run[3] if short else run[2]
-    host = PortfolioBudgetHostV1(
-        root=tmp_path / "host",
-        private_rest_fetch=_fetch(uid=ACCOUNT),
-        repository_sha="explicit-offline-usdc-financial-test",
-        session_id="usdc-financial-test",
-        expected_account_identity=ACCOUNT,
-        durable_mode="create",
-        clock=lambda: datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp(),
-        execution_environment="LIVE" if scoped_reconciliation else "INTERNAL_SIMULATED_EXECUTION",
-        entry_budget_policy=None if scoped_reconciliation else policy(),
-    )
-    context = host.observe_v1({"LANE_1": bound})
+    if host_context is None:
+        policy_revision = 13 if public_movement_policy else 12 if liquidation_policy else 11
+        entry_policy = load_slot_entry_budget_v1(
+            ROOT / f"docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V{policy_revision}.json"
+        )
+        host = PortfolioBudgetHostV1(
+            root=tmp_path / "host",
+            private_rest_fetch=_fetch(uid=ACCOUNT),
+            repository_sha="explicit-offline-usdc-financial-test",
+            session_id="usdc-financial-test",
+            expected_account_identity=ACCOUNT,
+            durable_mode="create",
+            clock=lambda: datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp(),
+            execution_environment="LIVE"
+            if scoped_reconciliation
+            else "INTERNAL_SIMULATED_EXECUTION",
+            entry_budget_policy=None if scoped_reconciliation else entry_policy,
+        )
+        context = host.observe_v1({slot: bound, **(extra_bindings or {})})
+    else:
+        host, context = host_context
     payload = _balance_payload(avail_eq="1000")
-    row = instrument()
+    row = instrument(asset=asset)
     if fault == "wrong-underlying":
         row["uly"] = "ETH-USD"
     elif fault == "wrong-contract-unit":
@@ -165,7 +188,9 @@ def prepare(
         decision_epoch=EPOCH,
         injected=injected,
         portfolio_budget_owner=host.owner,
-        portfolio_slot=Slot("LANE_1", cycle.replay.evidence.decision_id, "usdc-financial-entry"),
+        portfolio_slot=Slot(
+            slot, cycle.replay.evidence.decision_id, f"usdc-financial-entry-{slot}"
+        ),
         host_budget_recovery=context,
     )
     now_ms = int(datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp() * 1000)
@@ -211,13 +236,13 @@ def prepare(
         "/api/v5/account/config": source(
             "/api/v5/account/config", dict(code="0", data=[account]), True
         ),
-        f"/api/v5/account/instruments?instType=FUTURES&instId={NATIVE}": source(
-            f"/api/v5/account/instruments?instType=FUTURES&instId={NATIVE}",
+        f"/api/v5/account/instruments?instType=FUTURES&instId={native}": source(
+            f"/api/v5/account/instruments?instType=FUTURES&instId={native}",
             dict(code="0", data=[row]),
             True,
         ),
-        f"/api/v5/account/trade-fee?instType=FUTURES&instFamily={FAMILY}": source(
-            f"/api/v5/account/trade-fee?instType=FUTURES&instFamily={FAMILY}",
+        f"/api/v5/account/trade-fee?instType=FUTURES&instFamily={family}": source(
+            f"/api/v5/account/trade-fee?instType=FUTURES&instFamily={family}",
             dict(
                 code="0",
                 data=[
@@ -230,8 +255,8 @@ def prepare(
             ),
             True,
         ),
-        f"/api/v5/market/books?instId={NATIVE}&sz=20": source(
-            f"/api/v5/market/books?instId={NATIVE}&sz=20",
+        f"/api/v5/market/books?instId={native}&sz=20": source(
+            f"/api/v5/market/books?instId={native}&sz=20",
             dict(
                 code="0",
                 data=[
@@ -245,7 +270,7 @@ def prepare(
         ),
     }
     if fault in {"unauthenticated-instrument", "public-instrument-label", "public-usd-row"}:
-        endpoint = f"/api/v5/account/instruments?instType=FUTURES&instId={NATIVE}"
+        endpoint = f"/api/v5/account/instruments?instType=FUTURES&instId={native}"
         original = rows[endpoint]
         if fault == "unauthenticated-instrument":
             rows[endpoint] = replace(original, auth_header_sent=False)
@@ -254,7 +279,7 @@ def prepare(
                 original, endpoint=original.endpoint.replace("/account/", "/public/")
             )
         else:
-            public = dict(code="0", data=[instrument(settlement="USD")])
+            public = dict(code="0", data=[instrument(settlement="USD", asset=asset)])
             rows[endpoint] = replace(original, payload=public, body_sha256=cost.digest(public))
 
     class Port:
@@ -279,20 +304,20 @@ def prepare(
         cycle_id=kwargs["portfolio_slot"].cycle_id,
         use_account_instruments=True,
     )
-    assert port.calls[1] == (f"/api/v5/account/instruments?instType=FUTURES&instId={NATIVE}", True)
+    assert port.calls[1] == (f"/api/v5/account/instruments?instType=FUTURES&instId={native}", True)
     balance = source("/api/v5/account/balance", payload, True)
     leverage = source(
-        f"/api/v5/account/leverage-info?instId={NATIVE}&mgnMode=cross",
-        dict(code="0", data=[dict(instId=NATIVE, mgnMode="cross", posSide="net", lever="3")]),
+        f"/api/v5/account/leverage-info?instId={native}&mgnMode=cross",
+        dict(code="0", data=[dict(instId=native, mgnMode="cross", posSide="net", lever="3")]),
         True,
     )
     rows[leverage.endpoint] = leverage
     if tier_evidence:
-        tiers = position_tiers()
+        tiers = position_tiers(asset)
         if tier_fault == "foreign-family":
             tiers[1]["instFamily"] = "ETH-USD_UM_XPERP"
         elif tier_fault == "instrument-specific":
-            tiers[1]["instId"] = NATIVE
+            tiers[1]["instId"] = native
         elif tier_fault == "ambiguous":
             tiers[0]["maxSz"] = tiers[1]["maxSz"]
         elif tier_fault == "out-of-range":
@@ -302,22 +327,22 @@ def prepare(
         payload_tiers = dict(code="0", data=tiers)
         if tier_fault == "continuation":
             payload_tiers["cursor"] = "opaque-next-page"
-        observed_tiers = source(TIER_ENDPOINT, payload_tiers)
+        observed_tiers = source(tier_endpoint, payload_tiers)
         acquired = datetime.fromisoformat(EPOCH.replace("Z", "+00:00"))
         changes = {
             "decision": dict(pretrade_decision_id="foreign-decision"),
-            "wrong-query": dict(endpoint=TIER_ENDPOINT + "&tier=1"),
+            "wrong-query": dict(endpoint=tier_endpoint + "&tier=1"),
             "private": dict(auth_header_sent=True),
             "historical": dict(historical_reuse=True),
             "stale": dict(acquired_at_utc=(acquired - timedelta(seconds=6)).isoformat()),
             "future": dict(acquired_at_utc=(acquired + timedelta(seconds=1)).isoformat()),
         }
-        rows[TIER_ENDPOINT] = replace(
+        rows[tier_endpoint] = replace(
             observed_tiers,
             acquired_at_utc=(acquired - timedelta(seconds=5)).isoformat(),
         )
         if tier_fault in changes:
-            rows[TIER_ENDPOINT] = replace(rows[TIER_ENDPOINT], **changes[tier_fault])
+            rows[tier_endpoint] = replace(rows[tier_endpoint], **changes[tier_fault])
     margin_observation = margin.collect_native_initial_margin_observation_v1(
         transport=port,
         balance_source=balance,
@@ -325,15 +350,15 @@ def prepare(
         include_xperp_position_tiers=tier_evidence,
     )
     assert port.calls[4:] == [(leverage.endpoint, True)] + (
-        [(TIER_ENDPOINT, False)] if tier_evidence else []
+        [(tier_endpoint, False)] if tier_evidence else []
     )
     funding = source(
-        f"/api/v5/public/funding-rate?instId={NATIVE}",
+        f"/api/v5/public/funding-rate?instId={native}",
         dict(
             code="0",
             data=[
                 dict(
-                    instId=NATIVE,
+                    instId=native,
                     instType="FUTURES",
                     method="current_period",
                     settState="settled",
@@ -652,3 +677,611 @@ def test_xperp_quote_contract_and_exact_native_identity_remain_bound(canonical, 
 
     with pytest.raises(ValueError):
         resolve_selected_future_market_type_v1(instrument_id=canonical, venue_native_id=native)
+
+
+@pytest.mark.parametrize("short", [False, True])
+@pytest.mark.parametrize("fault", [None, "position", "changed-balance", "missing-proof"])
+def test_xperp_liquidation_projection_at_original_budget_boundaries(
+    tmp_path, monkeypatch, short, fault
+):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1 as Owner,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
+
+    host, kwargs, clock = prepare(
+        tmp_path, monkeypatch, short=short, tier_evidence=True, liquidation_policy=True
+    )
+    bound = kwargs["bound_instrument"]
+    opener = InjectedOpener(
+        account=ACCOUNT,
+        positions=[dict(instId=NATIVE, instType="FUTURES", posSide="net", pos="1")]
+        if fault == "position"
+        else [],
+    )
+    original = opener.fetch
+
+    def fetch(path, params):
+        payload = original(path, params)
+        if path == "/api/v5/account/config":
+            payload["data"][0].update(settleCcy="USDC", autoLoan=False)
+        elif path == "/api/v5/account/balance":
+            payload["data"][0]["details"] = [
+                dict(
+                    ccy="USDC",
+                    availEq="999" if fault == "changed-balance" else "1000",
+                    frozenBal="0",
+                )
+            ]
+        return payload
+
+    opener.fetch = fetch
+    monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0])
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    try:
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=ACCOUNT,
+            session_id="xperp-liquidation-injected",
+            max_request_count=40,
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+            clock=host.clock,
+            k1_lookup_backend=_FakeKeychainBackend(),
+        ) as source:
+            proof = host.capture_futures_financial_custody_v1(source)
+            if fault != "missing-proof":
+                kwargs["injected"] = replace(kwargs["injected"], futures_financial_custody=proof)
+            result = join(**kwargs)
+            if fault:
+                expected = {
+                    "position": "XPERP_LIQUIDATION_EXISTING_POSITION_UNPROVEN",
+                    "changed-balance": "XPERP_LIQUIDATION_FLAT_CAPITAL_BASIS_UNPROVEN",
+                    "missing-proof": "XPERP_LIQUIDATION_ORIGINAL_CUSTODY_REQUIRED",
+                }
+                assert result.status != "PASS"
+                assert expected[fault] in result.reason_codes
+                assert host.owner.stored_reservation_count_v1() == 0
+                return
+            assert result.status == "PASS", result.reason_codes
+            rid = result.portfolio_reservation_id
+            (sizing,) = host.owner._sizing_bindings.values()
+            historical = json.loads(sizing.xperp_liquidation_binding.receipt_json)
+            assert historical["quantity"] == str(sizing.decision.final_quantity)
+            assert historical["side"] == ("SHORT" if short else "LONG")
+            assert Fraction(historical["surplus_at_stop_usdc"]) > 0
+            assert historical["runtime_authorization_effect"] == "NONE"
+            if short:
+                assert Fraction(historical["positive_boundary_price"]) > Fraction(
+                    sizing.monetary_source.native_protective_stop_price
+                )
+            else:
+                assert historical["positive_boundary_price"] is None
+
+            session = host.session_id
+            status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+                replay=result.replay,
+                bound_instrument=bound,
+                session_id=session,
+                run_id=session,
+                composed_epoch=EPOCH,
+                execution_mode="INTERNAL_SIMULATED_EXECUTION",
+            )
+            assert status.value == "PASS", reasons
+            envelope = bind_final_order_envelope_from_venue_plan_v1(
+                plan, admission_ref=session, provenance_ref=session, creation_epoch=EPOCH
+            )
+            owner = host.owner
+            owner.commit_internal_pre_external_effect_v1(rid)
+            owner.bind_execution_plan_v1(
+                rid,
+                envelope,
+                canonical_intent=result.replay.intermediate.canonical_order_intent,
+                venue_plan=plan,
+            )
+            before = owner._store.sequence, owner.active_sum_v1()
+            with pytest.raises(ValueError, match="LOCAL_COMMITMENT_GENERATION_OR_CONTENT_CHANGED"):
+                owner.inspect_current_entry_budget_policy_v1(
+                    rid, envelope, futures_financial_custody=proof
+                )
+            fresh = host.capture_futures_financial_custody_v1(source)
+            late = owner.inspect_current_entry_budget_policy_v1(
+                rid, envelope, futures_financial_custody=fresh
+            )["xperp_liquidation_projection"]
+            from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+                FullCoreEnvelopeBoundSendSeamError,
+                inspect_original_portfolio_execution_context_v1,
+            )
+
+            late_args = dict(
+                envelope=envelope,
+                portfolio_budget_owner=owner,
+                portfolio_reservation_id=rid,
+                execution_plan_context=owner.execution_plan_context_v1(rid, envelope),
+            )
+            with pytest.raises(
+                FullCoreEnvelopeBoundSendSeamError,
+                match="XPERP_LIQUIDATION_ORIGINAL_CUSTODY_REQUIRED",
+            ):
+                inspect_original_portfolio_execution_context_v1(**late_args)
+            assert (
+                inspect_original_portfolio_execution_context_v1(
+                    **late_args, futures_financial_custody=fresh
+                )["account"]
+                == ACCOUNT
+            )
+            assert late["surplus_at_stop_usdc"] == historical["surplus_at_stop_usdc"]
+            assert late["custody_digest"] != historical["custody_digest"]
+            assert before == (owner._store.sequence, owner.active_sum_v1())
+            root = owner.durable_scope_identity_v1()["root"]
+            selected_policy = owner.entry_budget_policy_v1()
+            retained_state = owner.risk_snapshot_v1()["state"]
+        host.close()
+        cold = Owner(
+            durable_root=root,
+            durable_account_identity=ACCOUNT,
+            durable_mode="recover",
+            durable_lane_bindings={"LANE_1": bound},
+            entry_budget_policy=selected_policy,
+        )
+        try:
+            (restored,) = cold._sizing_bindings.values()
+            assert restored.xperp_liquidation_binding == sizing.xperp_liquidation_binding
+            assert cold.active_sum_v1() == before[1]
+            assert cold.budget_state_v1().recovery_required
+        finally:
+            cold.close()
+        if not short:
+            from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+                PortfolioCapitalBudgetError,
+            )
+            from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
+                DurableBudgetStoreV1,
+            )
+
+            receipt = retained_state["sizing_bindings"][rid]["xperp_liquidation_binding"]["receipt"]
+            receipt["surplus_at_stop_usdc"] = "1000000"
+            changed_root = tmp_path / "changed-liq-receipt"
+            store = DurableBudgetStoreV1(changed_root, account_identity=ACCOUNT, mode="create")
+            try:
+                store.save(retained_state)
+            finally:
+                store.close()
+            with pytest.raises(PortfolioCapitalBudgetError) as error:
+                Owner(
+                    durable_root=changed_root,
+                    durable_account_identity=ACCOUNT,
+                    durable_mode="recover",
+                    durable_lane_bindings={"LANE_1": bound},
+                    entry_budget_policy=selected_policy,
+                )
+            assert "XPERP_LIQUIDATION_RECEIPT_MISMATCH" in str(error.value.__cause__)
+    finally:
+        host.close()
+
+
+@pytest.mark.parametrize(
+    "fault", [None, "foreign-quantity", "stale-fee", "unknown-submit", "boundary-before-stop"]
+)
+def test_xperp_liquidation_projection_retains_and_stresses_reconciled_other_lane(
+    tmp_path, monkeypatch, fault
+):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
+        _permit,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
+
+    second = xperp_bound("ETH")
+    host, first_args, clock = prepare(
+        tmp_path,
+        monkeypatch,
+        tier_evidence=True,
+        liquidation_policy=True,
+        extra_bindings={"LANE_2": second},
+    )
+    opener = InjectedOpener(account=ACCOUNT, public_paths=("/api/v5/public/position-tiers",))
+    original_fetch = opener.fetch
+    positions = []
+    submitted = {}
+    now_ms = int(host.clock() * 1000)
+
+    def fetch(path, params):
+        if path == "/api/v5/account/instruments":
+            assert params == {"instType": "FUTURES", "instId": NATIVE}
+            return dict(code="0", data=[instrument()])
+        if path == "/api/v5/account/trade-fee":
+            assert params == {"instType": "FUTURES", "instFamily": FAMILY}
+            timestamp = now_ms - 6000 if fault == "stale-fee" else now_ms
+            return dict(
+                code="0",
+                data=[
+                    dict(
+                        instType="FUTURES",
+                        ts=str(timestamp),
+                        feeGroup=[dict(groupId="7", taker="-0.0005")],
+                    )
+                ],
+            )
+        if path == "/api/v5/public/position-tiers":
+            assert params == {"instType": "FUTURES", "tdMode": "cross", "instFamily": FAMILY}
+            return dict(code="0", data=position_tiers())
+        if "instId" in params and submitted:
+            assert params.get("instType", "FUTURES") == "FUTURES"
+            if path.endswith(("/order", "/orders-history")):
+                return dict(code="0", data=[submitted])
+            if path.endswith("/fills"):
+                return dict(
+                    code="0",
+                    data=[dict(submitted, tradeId="venue-fill", fillSz=submitted["accFillSz"])],
+                )
+        payload = original_fetch(path, params)
+        if path == "/api/v5/account/config":
+            payload["data"][0].update(settleCcy="USDC", settleCcyList=["USDC"], autoLoan=False)
+        elif path == "/api/v5/account/balance":
+            payload["data"][0]["details"] = [
+                dict(ccy="USDC", availEq="1000", frozenBal="6" if positions else "0")
+            ]
+        elif path == "/api/v5/account/positions":
+            payload["data"] = positions
+        return payload
+
+    opener.fetch = fetch
+    monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0])
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    try:
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=ACCOUNT,
+            session_id="two-lane-liquidation-injected",
+            max_request_count=75,
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+            clock=host.clock,
+            k1_lookup_backend=_FakeKeychainBackend(),
+        ) as source:
+            first_args["injected"] = replace(
+                first_args["injected"],
+                futures_financial_custody=host.capture_futures_financial_custody_v1(source),
+            )
+            first = join(**first_args)
+            assert first.status == "PASS", first.reason_codes
+            first_rid = first.portfolio_reservation_id
+            status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+                replay=first.replay,
+                bound_instrument=first_args["bound_instrument"],
+                session_id=host.session_id,
+                run_id=host.session_id,
+                composed_epoch=EPOCH,
+                execution_mode="INTERNAL_SIMULATED_EXECUTION",
+            )
+            assert status.value == "PASS", reasons
+            envelope = bind_final_order_envelope_from_venue_plan_v1(
+                plan,
+                admission_ref=host.session_id,
+                provenance_ref=host.session_id,
+                creation_epoch=EPOCH,
+            )
+            owner = host.owner
+            owner.commit_internal_pre_external_effect_v1(first_rid)
+            owner.bind_execution_plan_v1(
+                first_rid,
+                envelope,
+                canonical_intent=first.replay.intermediate.canonical_order_intent,
+                venue_plan=plan,
+            )
+            identity = owner.begin_execution_submit_v2(
+                first_rid,
+                envelope,
+                owner.execution_plan_context_v1(first_rid, envelope),
+                _permit(envelope),
+            )
+            first_mark = str(first.replay.intermediate.market_context.mark_price)
+            positions.append(
+                dict(
+                    instId=NATIVE,
+                    instType="FUTURES",
+                    pos=identity.final_quantity,
+                    posSide="net",
+                    mgnMode="cross",
+                    ccy="USDC",
+                    markPx=first_mark,
+                )
+            )
+            submitted.update(
+                instId=NATIVE,
+                instType="FUTURES",
+                clOrdId=identity.clordid,
+                ordId="venue-order",
+                state="filled",
+                sz=identity.final_quantity,
+                accFillSz=identity.final_quantity,
+            )
+            context = first_args["host_budget_recovery"]
+            if fault != "unknown-submit":
+                from src.ops.execution_reconciliation_get_provenance_v1 import (
+                    resolve_reconciliation_query_options_v1,
+                )
+                from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+                    fetch_okx_read_only_reconciliation_snapshot_v1,
+                )
+                from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+                    ProductiveFuturesAccountingSessionV1,
+                )
+                from src.ops.productive_futures_accounting_runtime_binding_v1.fill_model_v1 import (
+                    build_simulated_fill_v1,
+                )
+                from tests.ops.test_bounded_slot_connected_roundtrip_v1 import (
+                    persist_applied_inventory,
+                    portfolio_from_accounting,
+                )
+                from tests.ops.test_productive_futures_accounting_runtime_binding_v1 import (
+                    _contract,
+                )
+
+                host.fetch = source
+                context = host.observe_v1(host.bindings)
+                snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
+                    identity=identity,
+                    options=resolve_reconciliation_query_options_v1(
+                        instrument_id=identity.instrument_id, native_id=identity.native_id
+                    ),
+                    read_only_get_transport=source.transport._transport,
+                    pretrade_decision_id="simulated-filled-other-lane",
+                    received_at=EPOCH,
+                )
+                reconciliation = owner.reconcile_execution_v1(
+                    first_rid,
+                    snapshot=snapshot,
+                    observed=context.observed,
+                    account=ACCOUNT,
+                    now_unix=host.clock(),
+                )
+                assert reconciliation["matched"] is True, reconciliation
+                context = replace(context, execution_reconciliation={first_rid: reconciliation})
+                session = ProductiveFuturesAccountingSessionV1(
+                    contract=replace(
+                        _contract(NATIVE, contract_size="0.0001"), quote_currency="USDC"
+                    )
+                )
+                session.apply_fill(
+                    build_simulated_fill_v1(
+                        fill_id="venue-fill",
+                        instrument_id=NATIVE,
+                        side=envelope.side.upper(),
+                        quantity=envelope.quantity,
+                        mark_price=first_mark,
+                        contract=session.contract,
+                        event_time_unix=host.clock(),
+                    )
+                )
+                sessions = {"LANE_1": session}
+                portfolio = portfolio_from_accounting(host.bindings, sessions, host.clock())
+                persist_applied_inventory(host.root / "reconciliation", portfolio, sessions)
+            if fault == "foreign-quantity":
+                positions[0]["pos"] = str(Decimal(identity.final_quantity) + 1)
+            elif fault == "boundary-before-stop":
+                positions[0]["markPx"] = "1000000000"
+            _, second_args, _ = prepare(
+                tmp_path,
+                monkeypatch,
+                asset="ETH",
+                slot="LANE_2",
+                tier_evidence=True,
+                host_context=(host, context),
+            )
+            second_args["injected"] = replace(
+                second_args["injected"],
+                futures_financial_custody=host.capture_futures_financial_custody_v1(source),
+            )
+            original_held = owner.active_sum_v1()
+            outcome = join(**second_args)
+            if fault:
+                assert outcome.status != "PASS"
+                reason = {
+                    "unknown-submit": "XPERP_LIQUIDATION_OTHER_LOCAL_OBLIGATIONS_UNPROVEN",
+                    "foreign-quantity": "XPERP_LIQUIDATION_OPEN_POSITION_SCOPE_UNPROVEN",
+                    "stale-fee": "STALE",
+                    "boundary-before-stop": "XPERP_LIQUIDATION_BOUNDARY_REACHED_BEFORE_OR_AT_STOP",
+                }[fault]
+                assert any(reason in code for code in outcome.reason_codes), outcome.reason_codes
+                assert owner.active_sum_v1() == original_held
+            else:
+                assert outcome.status == "PASS", outcome.reason_codes
+                binding = owner._sizing_bindings[outcome.portfolio_reservation_id]
+                receipt = json.loads(binding.xperp_liquidation_binding.receipt_json)
+                assert Fraction(receipt["cross_balance_usdc"]) == 1006
+                assert Fraction(receipt["other_position_stress_and_cost_usdc"]) > 0
+                assert owner.active_sum_v1() > original_held
+            assert first_rid in owner.execution_links_v1(active_only=True)
+    finally:
+        host.close()
+
+
+@pytest.mark.parametrize("fault", [None, "narrow", "stale", "gap", "raw-injection"])
+def test_original_public_mark_window_drives_current_usdc_economic_admission(
+    tmp_path, monkeypatch, fault
+):
+    from types import SimpleNamespace
+
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from src.ops.peak_trade_public_market_data_runtime_v1 import rest_recovery_v1 as rest
+    from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
+        query_historical_facts_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1 as Owner,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
+
+    host, kwargs, clock = prepare(
+        tmp_path, monkeypatch, tier_evidence=True, public_movement_policy=True
+    )
+    bound = kwargs["bound_instrument"]
+    store = tmp_path / "public-facts"
+    opener = InjectedOpener(account=ACCOUNT, public_paths=(rest.MARK_HISTORY_CANDLES_PATH,))
+    original_fetch = opener.fetch
+    public_requests = []
+    current = host.clock()
+    last_closed = int(current * 1000) // 60_000 * 60_000 - 60_000
+    mark = Decimal(str(kwargs["replay"].intermediate.market_context.mark_price))
+
+    def public_get(path, params):
+        public_requests.append((path, params))
+        assert path == rest.MARK_HISTORY_CANDLES_PATH
+        assert params == {"instId": bound.venue_native_id, "bar": "1m", "limit": "100"}
+        latest = last_closed - (60_000 if fault == "stale" else 0)
+        data = []
+        for offset in range(61):
+            if fault == "gap" and offset == 20:
+                continue
+            event_ms = str(latest - offset * 60_000)
+            px = str(mark if fault == "narrow" else mark + (offset % 2) * Decimal("50"))
+            data.append([event_ms, px, px, px, px, "1"])
+        return {"code": "0", "data": data}
+
+    def private_get(path, params):
+        if path == rest.MARK_HISTORY_CANDLES_PATH:
+            return public_get(path, params)
+        payload = original_fetch(path, params)
+        if path == "/api/v5/account/config":
+            payload["data"][0].update(settleCcy="USDC", autoLoan=False)
+        elif path == "/api/v5/account/balance":
+            payload["data"][0]["details"] = [dict(ccy="USDC", availEq="1000", frozenBal="0")]
+        return payload
+
+    opener.fetch = private_get
+    monkeypatch.setattr(rest, "time", SimpleNamespace(time=lambda: current))
+    monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0])
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    owner = host.owner
+    try:
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=ACCOUNT,
+            session_id="economic-source-admission-test",
+            max_request_count=40,
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+            clock=host.clock,
+            k1_lookup_backend=_FakeKeychainBackend(),
+        ) as source:
+            kwargs["injected"] = replace(
+                kwargs["injected"],
+                futures_financial_custody=host.capture_futures_financial_custody_v1(source),
+                absolute_movement_cost_observation=(
+                    kwargs["injected"].absolute_movement_cost_observation
+                    if fault == "raw-injection"
+                    else None
+                ),
+                entry_public_mark_source=movement.EntryPublicMarkSourceV1(
+                    store,
+                    wire.FullCoreProductiveReadOnlyGetTransportV1(handle=None, max_request_count=1),
+                ),
+            )
+            result = join(**kwargs)
+            if fault:
+                expected = {
+                    "narrow": "MOVEMENT_OBSERVED_AMPLITUDE_DOES_NOT_EXCEED_ROUNDTRIP_COSTS",
+                    "stale": "MOVEMENT_LATEST_COMPLETED_PT1M_WINDOW_REQUIRED",
+                    "gap": "PUBLIC_PT1M_WINDOW_UNPROVEN",
+                    "raw-injection": "MOVEMENT_ORIGINAL_PUBLIC_SOURCE_REQUIRED",
+                }[fault]
+                assert result.status != "PASS" and any(
+                    expected in reason for reason in result.reason_codes
+                ), result.reason_codes
+                assert owner.stored_reservation_count_v1() == 0
+                return
+            assert result.status == "PASS", result.reason_codes
+            rid = result.portfolio_reservation_id
+            binding = owner._sizing_bindings[rid]
+            receipt = json.loads(binding.absolute_movement_cost_binding.receipt_json)
+            facts = query_historical_facts_v1(
+                store, venue_native_id=NATIVE, fact_kind="FinalizedPt1mMarkFactV1"
+            )
+            assert len(public_requests) == 1 and len(facts.facts) == 61
+            assert receipt["schema"] == "absolute_movement_cost_receipt.v2"
+            assert receipt["original_public_facts_digest"] == movement.digest(
+                {movement.fact_digest(fact): fact for fact in facts.facts}
+            )
+            assert receipt["final_native_quantity"] == str(binding.decision.final_quantity)
+            assert receipt["expected_profit_forecast"] is False
+            status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+                replay=result.replay,
+                bound_instrument=bound,
+                session_id=host.session_id,
+                run_id=host.session_id,
+                composed_epoch=EPOCH,
+                execution_mode="INTERNAL_SIMULATED_EXECUTION",
+            )
+            assert status.value == "PASS", reasons
+            envelope = bind_final_order_envelope_from_venue_plan_v1(
+                plan,
+                admission_ref=host.session_id,
+                provenance_ref=host.session_id,
+                creation_epoch=EPOCH,
+            )
+            owner.commit_internal_pre_external_effect_v1(rid)
+            owner.bind_execution_plan_v1(
+                rid,
+                envelope,
+                canonical_intent=result.replay.intermediate.canonical_order_intent,
+                venue_plan=plan,
+            )
+            financial = host.capture_futures_financial_custody_v1(source)
+            assert (
+                owner.inspect_current_entry_budget_policy_v1(
+                    rid, envelope, futures_financial_custody=financial
+                )["xperp_liquidation_projection"]["quantity"]
+                == receipt["final_native_quantity"]
+            )
+            scope = owner.durable_scope_identity_v1()
+            profile = owner.entry_budget_policy_v1()
+        host.close()
+        cold = Owner(
+            durable_root=scope["root"],
+            durable_account_identity=ACCOUNT,
+            durable_mode="recover",
+            durable_lane_bindings={"LANE_1": bound},
+            entry_budget_policy=profile,
+        )
+        try:
+            assert cold._sizing_bindings[rid].absolute_movement_cost_binding == (
+                binding.absolute_movement_cost_binding
+            )
+            assert cold.budget_state_v1().recovery_required
+        finally:
+            cold.close()
+    finally:
+        host.close()

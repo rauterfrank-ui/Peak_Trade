@@ -32,21 +32,30 @@ ACCOUNT = "injected-k1-account"
 
 class InjectedOpener:
     def __init__(
-        self, *, account=ACCOUNT, positions=(), pending=False, algo_pending=False, bot_fault=None
+        self,
+        *,
+        account=ACCOUNT,
+        positions=(),
+        pending=False,
+        algo_pending=False,
+        bot_fault=None,
+        public_paths=(),
     ):
         self.fetch = _fetch(uid=account, positions=positions)
         self.pending = pending
         self.algo_pending = algo_pending
         self.bot_fault = bot_fault
+        self.public_paths = public_paths
         self.requests = []
 
     @contextmanager
     def open(self, req, timeout):
         assert req.get_method() == "GET"
         assert urlsplit(req.full_url).hostname == "eea.okx.com"
-        assert req.has_header("Ok-access-sign")
-        self.requests.append(req.full_url)
         url = urlsplit(req.full_url)
+        public = url.path in self.public_paths
+        assert req.has_header("Ok-access-sign") is (not public)
+        self.requests.append(req.full_url)
         query = dict(parse_qsl(url.query))
         payload = (
             {
