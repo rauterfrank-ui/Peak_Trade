@@ -32,6 +32,7 @@ REPO = Path(__file__).resolve().parents[2]
         ("managed-hold-publish", None),
         ("managed-hold-s5-changed", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("managed-restore-wait", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("managed-joint-rollback", "HOST_RESTART_FILEGATE_BLOCKED"),
         ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
         ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("foreign-checkpoint", "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"),
@@ -111,6 +112,7 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             "managed-hold-publish": "managed-hold-publish",
             "managed-hold-s5-changed": "managed-hold-publish",
             "managed-restore-wait": "managed-restore-wait",
+            "managed-joint-rollback": "managed-joint-rollback",
         }.get(phase, "before")
         child = subprocess.Popen(
             [*command, start_phase],
@@ -190,10 +192,23 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         assert json.loads(s5.read_bytes())["state"] == "COMPLETED"
         if phase == "managed-hold-s5-changed":
             s5.write_bytes(s5.read_bytes() + b"\n")
-    elif phase == "managed-restore-wait":
+    elif phase in {"managed-restore-wait", "managed-joint-rollback"}:
         ledger = Path(prior["evidence_root"]) / "governed_continuous_cycle_run_ledger_v1.json"
         assert json.loads(ledger.read_bytes())["reason_code"] == "S5_CYCLE_STARTING"
         ledger.write_bytes((tmp_path / "earlier-wait.json").read_bytes())
+        if phase == "managed-joint-rollback":
+            newer_stop = writer.kill_v1(cause="R09", reason="fixture kill after later S5")
+            earlier_cursor = (tmp_path / "earlier-cursor.json").read_bytes()
+            assert earlier_cursor != old_cursor
+            assert (
+                json.loads(earlier_cursor)["trading_epoch"]
+                < json.loads(old_cursor)["trading_epoch"]
+            )
+            earlier_filegate = (tmp_path / "earlier-filegate.json").read_bytes()
+            assert json.loads(earlier_filegate)["state"] == "ACTIVE"
+            filegate.state_file.write_bytes(earlier_filegate)
+            cursor.write_bytes(earlier_cursor)
+            old_cursor = earlier_cursor
 
     def restart():
         restart_phase = (
@@ -203,6 +218,8 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             restart_phase = "after-managed-boot"
         if phase == "managed-restore-wait":
             restart_phase = "after-managed-monitor"
+        if phase == "managed-joint-rollback":
+            restart_phase = "after-managed-joint-rollback"
         return subprocess.run(
             [*command, restart_phase],
             cwd=REPO,
@@ -217,12 +234,20 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     result = json.loads(completed.stdout.splitlines()[-1])
     if blocker is not None:
         assert result["status"] == (
-            "STOPPED" if phase == "managed-restore-wait" else "RECOVERY_CHECKPOINT_REQUIRED"
+            "STOPPED"
+            if phase in {"managed-restore-wait", "managed-joint-rollback"}
+            else "RECOVERY_CHECKPOINT_REQUIRED"
         )
         assert result["checkpoint_blocker"] == blocker
         assert result["attempts"] == 1
         assert cursor.read_bytes() == old_cursor
         assert not (tmp_path / "controller/attempts/2").exists()
+        if phase == "managed-joint-rollback":
+            stop = writer.inspect_stop_v1()
+            assert stop["causes"] == ["R03", "R09"]
+            assert stop["generation"] > newer_stop["generation"]
+            assert writer.read_v1()["state"] == "KILLED"
+            assert ledger.read_bytes() == (tmp_path / "earlier-wait.json").read_bytes()
         if phase == "filegate":
             assert filegate.load()["state"] == "KILLED"
             filegate.save(KillSwitchState.ACTIVE)

@@ -154,7 +154,7 @@ def main():
         stack.enter_context(
             patch.object(convergence, "make_n1_occupied_lane_s5_runner_v1", wrapped_factory)
         )
-        if phase in {"managed-hold-publish", "managed-restore-wait"}:
+        if phase in {"managed-hold-publish", "managed-restore-wait", "managed-joint-rollback"}:
             original_write = s6._persist_json
 
             def write(*, path, payload):
@@ -163,10 +163,26 @@ def main():
                         signal_checkpoint(consume_id=payload["consumed_instance_ids"][-1])
                     else:
                         (root / "earlier-wait.json").write_text(s6.canonical_json_text(payload))
+                        if phase == "managed-joint-rollback":
+                            (root / "earlier-cursor.json").write_bytes(
+                                (cursor / CURSOR_FILENAME).read_bytes()
+                            )
+                            (root / "earlier-filegate.json").write_bytes(
+                                Path(canonical_kill_switch_state_path()).read_bytes()
+                            )
                 original_write(path=path, payload=payload)
 
             stack.enter_context(patch.object(s6, "_persist_json", write))
-        if phase == "after-managed-boot":
+        if phase == "managed-joint-rollback":
+            original_advance = s6._advance_persisted_c1_cursor_floor_v1
+
+            def advance(**kwargs):
+                original_advance(**kwargs)
+                if (root / "earlier-cursor.json").exists():
+                    signal_checkpoint()
+
+            stack.enter_context(patch.object(s6, "_advance_persisted_c1_cursor_floor_v1", advance))
+        if phase in {"after-managed-boot", "after-managed-joint-rollback"}:
             for module in (
                 "src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1",
                 "src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1",
@@ -177,7 +193,7 @@ def main():
                     )
                 )
         host_options = {}
-        if phase == "after-managed-monitor":
+        if phase in {"after-managed-monitor", "after-managed-joint-rollback"}:
             from nacl.signing import SigningKey
 
             from src.ops.managed_fault_recovery_v1 import ManagedFaultRecoveryV1
@@ -191,6 +207,10 @@ def main():
                 persisted = json.loads(receipt.read_bytes())
                 assert persisted["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
                 assert persisted["attempts"] == 1
+                if phase == "after-managed-joint-rollback":
+                    observed = persisted["last_fault_observation"]
+                    assert observed["status"] == "BLOCKED_OBSERVING"
+                    assert observed["stop"]["causes"] == ["R03", "R09"]
                 held_polls += 1
                 if held_polls == 2:
                     (root / "controller" / "STOP").touch()
