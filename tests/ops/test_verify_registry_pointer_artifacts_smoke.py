@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -445,3 +446,35 @@ def test_verify_from_registry_wrapper_forwards_allow_expired() -> None:
     text = _WRAPPER.read_text(encoding="utf-8")
     assert "--allow-expired) ALLOW_EXPIRED=" in text
     assert "ARGS+=(--allow-expired)" in text
+
+
+def test_verify_from_registry_wrapper_works_without_ripgrep(tmp_path: Path) -> None:
+    bash = shutil.which("bash")
+    awk = shutil.which("awk")
+    assert bash and awk
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    (bin_dir / "awk").symlink_to(awk)
+    verifier_stub = bin_dir / "python3"
+    verifier_stub.write_text("#!/bin/sh\nprintf '%s\\n' \"$@\"\n", encoding="utf-8")
+    verifier_stub.chmod(0o755)
+    pointer = tmp_path / "fixture.pointer"
+    pointer.write_text("other_key=wrong\nrun_id=123456\n", encoding="utf-8")
+    result = subprocess.run(
+        [bash, str(_WRAPPER), str(pointer), "--download", "--allow-expired", "--pack"],
+        cwd=tmp_path,
+        env={"PATH": str(bin_dir), "PT_ALLOW_ARBITRARY_POINTER": "YES"},
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert result.stdout.splitlines()[:8] == [
+        "scripts/ops/verify_registry_pointer_artifacts.py",
+        str(pointer),
+        "--out-base",
+        "out/ops/gh_runs",
+        "--download",
+        "--allow-expired",
+        "--pack-out",
+        "out/ops/evidence_packs/pack_verify_123456",
+    ]

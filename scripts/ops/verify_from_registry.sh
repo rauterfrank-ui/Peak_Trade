@@ -40,7 +40,7 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-RID="$(rg -m1 '^run_id=' "${PTR}" | cut -d= -f2- || true)"
+RID="$(awk '/^run_id=/ { print substr($0, 8); exit }' < "${PTR}" || true)"
 if [[ -z "${RID}" ]]; then
   echo "ERR: run_id missing in pointer: ${PTR}" >&2
   exit 2
