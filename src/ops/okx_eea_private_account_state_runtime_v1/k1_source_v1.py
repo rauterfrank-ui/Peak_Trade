@@ -32,6 +32,15 @@ from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
 )
 
 K1_ACCOUNT_READ_PROFILE = "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1"
+FUTURES_INVENTORY_ALGO_TYPES = SUPPORTED_ALGO_TYPES + ("chase", "iceberg", "twap", "smart_iceberg")
+FUTURES_INVENTORY_BOT_QUERIES = (
+    ("/api/v5/tradingBot/grid/orders-algo-pending", {"algoOrdType": "grid"}),
+    ("/api/v5/tradingBot/grid/orders-algo-pending", {"algoOrdType": "contract_grid"}),
+    ("/api/v5/tradingBot/dca/ongoing-list", {"algoOrdType": "spot_dca"}),
+    ("/api/v5/tradingBot/dca/ongoing-list", {"algoOrdType": "contract_dca"}),
+    ("/api/v5/tradingBot/signal/orders-algo-pending", {"algoOrdType": "contract"}),
+    ("/api/v5/tradingBot/recurring/orders-algo-pending", {}),
+)
 
 
 def _validate_inventory_scope_v1(guard, inst_type):
@@ -86,6 +95,11 @@ class _AccountReadTransportV1:
     def __init__(self, transport, *, inventory_inst_type):
         self._transport = transport
         self._inventory_inst_type = inventory_inst_type
+        self._algo_types = (
+            FUTURES_INVENTORY_ALGO_TYPES
+            if inventory_inst_type == "FUTURES"
+            else SUPPORTED_ALGO_TYPES
+        )
         self.last_read = None
         self.read_count = 0
 
@@ -133,9 +147,14 @@ class _AccountReadTransportV1:
             else {"instType": "SWAP"}
         )
         if path == ALGO_PENDING_PATH:
-            if params.get("ordType") not in SUPPORTED_ALGO_TYPES:
+            if params.get("ordType") not in self._algo_types:
                 raise AccountObservationSourceError("K1_ALGO_TYPE_UNSUPPORTED")
             expected = {"instType": "SWAP", "ordType": params["ordType"]}
+        elif (
+            self._inventory_inst_type == "FUTURES"
+            and (path, params) in FUTURES_INVENTORY_BOT_QUERIES
+        ):
+            expected = params
         elif path in {
             "/api/v5/account/bills-archive",
             "/api/v5/account/bills",
@@ -155,7 +174,7 @@ class _AccountReadTransportV1:
         ) or (
             path == ALGO_PENDING_PATH
             and params == {"ordType": params.get("ordType")}
-            and params.get("ordType") in SUPPORTED_ALGO_TYPES
+            and params.get("ordType") in self._algo_types
         )
         if params != expected and not full_scope:
             raise AccountObservationSourceError("K1_ACCOUNT_READ_SCOPE_INVALID")
@@ -209,6 +228,13 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         self.account_inventory_guard = account_inventory_guard
         self.inventory_inst_type = inventory_inst_type
 
+    def _pending_algo_types_v1(self):
+        return (
+            FUTURES_INVENTORY_ALGO_TYPES
+            if self.inventory_inst_type == "FUTURES"
+            else SUPPORTED_ALGO_TYPES
+        )
+
     def _verified_get_v1(self, path, params):
         if not self.account_inventory_guard or params.get("instType") != "SWAP":
             return super()._verified_get_v1(path, params)
@@ -228,6 +254,16 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             raise AccountObservationSourceError(
                 f"ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_{self.inventory_inst_type}_CONSUMER"
             )
+        if (
+            path == "/api/v5/trade/orders-pending"
+            and self.inventory_inst_type == "FUTURES"
+            and not payload["data"]
+        ):
+            for bot_path, bot_query in FUTURES_INVENTORY_BOT_QUERIES:
+                bot = super()._verified_get_v1(bot_path, bot_query)
+                self._assert_current_resource_pair_v1()
+                if bot["data"]:
+                    raise AccountObservationSourceError("K1_FUTURES_ACCOUNT_BOT_CUSTODY_PRESENT")
         return payload
 
     def export_startup_document_v1(self, path, *, instrument_ids_by_native_id):
@@ -320,7 +356,7 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         pending = self._verified_get_v1("/api/v5/trade/orders-pending", {})["data"]
         algos = {
             kind: len(self._verified_get_v1(ALGO_PENDING_PATH, {"ordType": kind})["data"])
-            for kind in SUPPORTED_ALGO_TYPES
+            for kind in self._pending_algo_types_v1()
         }
         product_counts = {}
         for row in positions:
@@ -481,10 +517,15 @@ def open_k1_account_observation_source_v1(
     if not isinstance(session_id, str) or not session_id.strip():
         raise AccountObservationSourceError("OBSERVATION_SESSION_REQUIRED")
     _validate_inventory_scope_v1(account_inventory_guard, inventory_inst_type)
+    minimum_requests = 6 + (
+        len(FUTURES_INVENTORY_ALGO_TYPES) + len(FUTURES_INVENTORY_BOT_QUERIES)
+        if inventory_inst_type == "FUTURES"
+        else len(SUPPORTED_ALGO_TYPES)
+    )
     if (
         isinstance(max_request_count, bool)
         or not isinstance(max_request_count, int)
-        or max_request_count < 10
+        or max_request_count < minimum_requests
     ):
         raise AccountObservationSourceError("K1_ACCOUNT_BASELINE_QUOTA_REQUIRED")
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(

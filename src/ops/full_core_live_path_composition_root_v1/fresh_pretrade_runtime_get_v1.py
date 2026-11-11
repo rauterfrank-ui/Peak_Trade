@@ -286,7 +286,12 @@ def build_required_get_endpoint_v1(
         inst_for_query = fixed_inst if fixed_inst else inst
         if not inst_for_query:
             raise ValueError("PUBLIC_INSTRUMENTS_REQUIRES_INST_ID")
-        return f"{path}?{urlencode({'instType': itype, 'instId': inst_for_query})}"
+        query_type = (
+            "SWAP"
+            if spec.item_id == MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS_ITEM_ID
+            else itype
+        )
+        return f"{path}?{urlencode({'instType': query_type, 'instId': inst_for_query})}"
     if path == ENDPOINT_PUBLIC_PRICE_LIMIT:
         return f"{path}?{urlencode({'instId': inst})}"
     if path == ENDPOINT_ACCOUNT_MAX_SIZE:
