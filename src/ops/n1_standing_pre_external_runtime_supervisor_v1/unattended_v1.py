@@ -259,7 +259,9 @@ def _filegate_revision(expected_path):
     return None
 
 
-def attest_managed_n1_wait_checkpoint_v1(*, writer, stop, state_root, bounds, expires_at, key):
+def attest_managed_n1_wait_checkpoint_v1(
+    *, writer, stop, state_root, bounds, expires_at, key, cause=None
+):
     """Sign the actual N1 takeover checkpoint only after the old writer is fenced."""
     from src.ops.filegate_recovery_authority_v1 import (
         FilegateAuthorityError,
@@ -269,6 +271,7 @@ def attest_managed_n1_wait_checkpoint_v1(*, writer, stop, state_root, bounds, ex
 
     if (
         type(writer) is not ManagedFilegateV1
+        or (cause is not None and (cause != "R02" or cause not in stop["causes"]))
         or type(bounds) is not UnattendedHostBoundsV1
         or not state_root.is_absolute()
         or state_root.resolve() != state_root
@@ -302,7 +305,8 @@ def attest_managed_n1_wait_checkpoint_v1(*, writer, stop, state_root, bounds, ex
         raw + json.dumps(checkpoint, sort_keys=True, allow_nan=False).encode()
     ).hexdigest()
     return attest_filegate_owner_evidence_v1(
-        role="HOST",
+        role="HOST" if cause is None else "CAUSE",
+        cause=cause,
         stop=stop,
         evidence_sha256=digest,
         observed_at=time.time(),
@@ -720,7 +724,14 @@ def load_host_service_manifest_v1(path: Path):
     return value, bounds
 
 
-def host_service_v1(*, manifest_path: Path, action: str, output_path: Path | None = None):
+def host_service_v1(
+    *,
+    manifest_path: Path,
+    action: str,
+    output_path: Path | None = None,
+    owner_role: str | None = None,
+    owner_seed_path: Path | None = None,
+):
     """Canonical CLI adapter. Preparing a plist never loads a macOS service."""
     import importlib
     import plistlib
@@ -735,6 +746,31 @@ def host_service_v1(*, manifest_path: Path, action: str, output_path: Path | Non
         if recovery is not None
         else {}
     )
+    if action in {"owner-poll", "owner-run"}:
+        from src.ops.managed_fault_recovery_v1 import run_standing_managed_owner_publisher_v1
+
+        if recovery is None or recovery["factory"] != (
+            "src.ops.managed_fault_recovery_v1:build_standing_managed_fault_recovery_v1"
+        ):
+            raise ValueError("HOST_FAULT_RECOVERY_OWNER_CONFIG_UNPROVEN")
+        if any(os.environ.get(key, expected) != expected for key, expected in recovery_env.items()):
+            raise ValueError("HOST_FAULT_RECOVERY_ENVIRONMENT_CHANGED")
+        os.environ.update(recovery_env)
+        return {
+            "ok": True,
+            "result": run_standing_managed_owner_publisher_v1(
+                state_root=Path(value["state_root"]),
+                bounds=bounds,
+                runtime_config=recovery["config"],
+                owner=owner_role,
+                seed_path=owner_seed_path,
+                once=action == "owner-poll",
+            ),
+            "service_activated": False,
+            "external_effect_authorized": False,
+        }
+    if owner_role is not None or owner_seed_path is not None:
+        raise ValueError("HOST_FAULT_RECOVERY_OWNER_ACTION_REQUIRED")
     if action == "validate":
         return {
             "ok": True,

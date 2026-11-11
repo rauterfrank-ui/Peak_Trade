@@ -23,6 +23,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_p
 from src.ops.gates.risk_gate import kill_switch_should_block_trading
 from src.ops.offline_fault_monitor_v1 import OfflineFaultMonitorV1, OfflineFaultPortsV1
 from src.ops.offline_public_feed_account_reconciliation_v1 import (
+    _inspect_original_futures_account,
     capture_offline_feed_account_reconciliation_v1,
 )
 from src.ops.offline_public_feed_recovery_v1 import OfflinePublicFeedRecoveryError
@@ -264,6 +265,64 @@ def test_original_owned_order_and_fill_reconciliation_preserves_hold(seeded, mon
         assert host.fetch.transport._transport.methods_used == ["GET"] * 26
     assert send["simulated_transport"].post_count == 1
     assert kill_switch_should_block_trading(explicit_active=False)
+
+
+@pytest.mark.parametrize("second_read", ["healthy-canceled", "missing-order", "foreign-attempt"])
+def test_reobserve_exact_released_no_fill_after_cold_restart(seeded, monkeypatch, second_read):
+    old_host, bound, _, send = seeded
+    identity = _simulated_unknown_submission(send)
+    rid = identity.portfolio_reservation_id
+    bindings = {"LANE_1": bound}
+    old_host.close()
+    feed, _ = _mark_feed(old_host, bound, monkeypatch)
+    venue = ReconciliationVenue(identity)
+    venue.fault = "healthy-canceled"
+    consume = load_external_effect_durable_consume_v1(store_root=send["store_root"])
+    with _open_budget_host(old_host, feed, venue, monkeypatch, reads=26) as host:
+        first = capture_offline_feed_account_reconciliation_v1(
+            feed.repair, host=host, bindings=bindings
+        )["execution_reconciliation"][rid]
+        assert first["matched"] and first["reservation_released"]
+        assert host.owner.active_sum_v1() == 0
+        previous = host.owner.execution_links_v1()[rid]["reconciliation"]
+
+    def require_stop():
+        assert feed.incident.state_path.read_bytes() == feed.initial_state
+        assert kill_switch_should_block_trading(explicit_active=False)
+
+    feed.advance(1)
+    venue.fault = "missing-order" if second_read == "missing-order" else "healthy-canceled"
+    attempts = {rid: "0" * 64 if second_read == "foreign-attempt" else identity.identity_digest()}
+    with _open_budget_host(old_host, feed, venue, monkeypatch, reads=26) as host:
+        args = dict(
+            host=host,
+            bindings=bindings,
+            require_stop=require_stop,
+            transport_scope=feed.incident.root,
+            required_execution_attempts=attempts,
+        )
+        if second_read == "foreign-attempt":
+            with pytest.raises(ValueError, match="HOST_REQUIRED_EXECUTION_ATTEMPT_UNPROVEN"):
+                _inspect_original_futures_account(**args)
+        elif second_read == "missing-order":
+            with pytest.raises(ValueError, match="ORIGINAL_NO_FILL_RELEASE_NOT_RECONFIRMED"):
+                _inspect_original_futures_account(**args)
+        else:
+            second = _inspect_original_futures_account(**args)["execution_reconciliation"][rid]
+            assert second["matched"] and second["reservation_released"]
+            assert second["confirmed_filled_qty"] == "0"
+            assert second["budget_sequence"] > first["budget_sequence"]
+            assert (
+                second["order_and_fill_snapshot_digest"] != first["order_and_fill_snapshot_digest"]
+            )
+            assert second["original_submit_barrier"] == first["original_submit_barrier"]
+        if second_read != "healthy-canceled":
+            assert host.owner.execution_links_v1()[rid]["reconciliation"] == previous
+        assert host.owner.active_sum_v1() == 0
+        assert host.owner.budget_state_v1().recovery_required
+    assert send["simulated_transport"].post_count == 1
+    assert load_external_effect_durable_consume_v1(store_root=send["store_root"]) == consume
+    require_stop()
 
 
 @pytest.mark.parametrize("fault", ["missing-order", "canceled-after-partial"])

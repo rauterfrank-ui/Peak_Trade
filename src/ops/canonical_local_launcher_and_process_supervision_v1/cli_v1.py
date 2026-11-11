@@ -102,7 +102,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_host = sub.add_parser(
         "host-service", help="Validate, prepare or run the bounded N1 host restart controller."
     )
-    p_host.add_argument("action", choices=("validate", "prepare", "run"))
+    p_host.add_argument("action", choices=("validate", "prepare", "run", "owner-poll", "owner-run"))
+    p_host.add_argument("--owner-role", choices=("HOST", "R02", "R03"))
+    p_host.add_argument("--owner-seed-path", type=Path)
     p_host.add_argument("--manifest", type=Path, required=True)
     p_host.add_argument("--output-path", type=Path)
 
@@ -180,7 +182,11 @@ def dispatch(argv: Optional[Sequence[str]] = None) -> int:
 
             try:
                 result = host_service_v1(
-                    manifest_path=args.manifest, action=args.action, output_path=args.output_path
+                    manifest_path=args.manifest,
+                    action=args.action,
+                    output_path=args.output_path,
+                    owner_role=args.owner_role,
+                    owner_seed_path=args.owner_seed_path,
                 )
             except (ValueError, OSError) as exc:
                 result = {

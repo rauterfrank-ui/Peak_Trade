@@ -1,7 +1,7 @@
 """Original K1 signing and HTTP GET code with simulated Keychain and HTTP boundaries."""
 
 from base64 import b64encode
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
@@ -33,6 +33,7 @@ from src.ops.execution_incident_safety_v1 import (
     _apply_confirmed_execution_incident_v1,
     observe_authenticated_execution_incident_v1,
     observe_standing_execution_incident_v1,
+    read_authenticated_execution_incident_origin_v1,
 )
 from src.ops.execution_reconciliation_get_provenance_v1 import ExecutionReconciliationSourceError
 from src.ops import execution_reconciliation_proof_store_v1 as store
@@ -455,6 +456,74 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
                 assert cold["incident_evidence_error"] is None
         finally:
             restored.close()
+        if case == "managed":
+            from src.ops import managed_account_recovery_v1 as recovery
+            from src.ops.filegate_recovery_authority_v1 import FilegateAuthorityError
+
+            incident_id = receipt["incident_id"]
+            assert stop["execution_incident_ids"] == [incident_id]
+            origin = read_authenticated_execution_incident_origin_v1(
+                scope=live_scope, incident_id=incident_id
+            )
+            assert origin["reservation_id"] == rid
+            assert origin["identity_digest"] == identity.identity_digest()
+            assert origin["native_id"] == identity.native_id
+            with pytest.raises(ExecutionIncidentSafetyError, match="INCIDENT_RECEIPT_MISSING"):
+                read_authenticated_execution_incident_origin_v1(
+                    scope=live_scope, incident_id="b" * 64
+                )
+
+            # The historical source is original. Isolate the exact join against
+            # both unrelated and correct current stopped-account readbacks.
+            stop = managed.kill_v1(cause="R03", reason="new integrity stop")
+            assert stop["execution_incident_ids"] == [incident_id]
+            host.execution_incident_state_path = gate
+            result = {
+                "matched": True,
+                "original_submit_barrier": {"resubmit_allowed": False},
+                "identity_digest": origin["identity_digest"],
+            }
+            account_readback = {
+                "execution_reconciliation": {"unrelated-reservation": result},
+                "execution_blocker": None,
+                "portfolio_classification": recovery.ProductiveReconciliationClass.MATCH.value,
+                "observed_at_unix": stop["killed_at"],
+                "account_inventory_completed_unix": stop["killed_at"],
+                "account_inventory_max_age_seconds": 5,
+            }
+
+            def capture_stopped_account(**kwargs):
+                assert kwargs["required_execution_attempts"] == {rid: identity.identity_digest()}
+                return account_readback
+
+            monkeypatch.setattr(
+                recovery, "capture_managed_stopped_account_v1", capture_stopped_account
+            )
+            args = dict(
+                writer=managed,
+                stop=stop,
+                host=host,
+                bindings={"LANE_1": bound},
+                transport_scope=tmp_path,
+                key=SigningKey.generate(),
+            )
+            with pytest.raises(FilegateAuthorityError, match="ORIGINAL_ATTEMPT_UNRESOLVED"):
+                recovery.attest_managed_execution_resolution_v1(**args)
+            account_readback["execution_reconciliation"] = {
+                rid: {**result, "identity_digest": "f" * 64}
+            }
+            with pytest.raises(FilegateAuthorityError, match="ORIGINAL_ATTEMPT_UNRESOLVED"):
+                recovery.attest_managed_execution_resolution_v1(**args)
+            account_readback["execution_reconciliation"] = {rid: result}
+            proof = recovery.attest_managed_execution_resolution_v1(**args)
+            assert proof["body"]["stop"] == stop
+            assert proof["body"]["cause"] == "R04"
+            assert managed.inspect_stop_v1() == stop
+            proof_file.unlink()
+            with pytest.raises(
+                ExecutionIncidentSafetyError, match="INCIDENT_ORIGINAL_GETS_UNPROVEN"
+            ):
+                recovery.attest_managed_execution_resolution_v1(**args)
         if case == "confirmed":
             gate_before = gate.read_bytes()
             journal_before = live_scope.journal_path.read_bytes()
@@ -1058,6 +1127,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
     [
         "archive",
         "standing",
+        "managed-r04",
         "unknown",
         "no-custody",
         "foreign-product-row",
@@ -1078,6 +1148,9 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
+    managed_case = path == "managed-r04"
+    standing = path in {"standing", "managed-r04"}
+    send_root = tmp_path / "send" if managed_case else None
     bound = args["bound_instrument"]
     args["injected"] = replace(
         args["injected"],
@@ -1162,9 +1235,36 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
             assert seeded.owner.risk_snapshot_v1() == before
             assert not list((tmp_path / "send").glob("*.json"))
             return
+        permit = _permit(envelope)
         identity = seeded.owner.begin_execution_submit_v2(
-            rid, envelope, seeded.owner.execution_plan_context_v1(rid, envelope), _permit(envelope)
+            rid,
+            envelope,
+            seeded.owner.execution_plan_context_v1(rid, envelope),
+            permit,
+            transport_store_root=send_root,
         )
+        if managed_case:
+            from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+                DURABLE_STATE_SENT_INITIATED,
+                claim_original_permit_transport_attempt_v1,
+                persist_external_effect_durable_consume_v1,
+            )
+
+            persist_external_effect_durable_consume_v1(
+                store_root=send_root,
+                permit=permit,
+                envelope=envelope,
+                durable_state=DURABLE_STATE_SENT_INITIATED,
+                post_count=0,
+                outcome="SUBMIT_ATTEMPT_STARTED",
+                execution_identity=identity,
+            )
+            claim_original_permit_transport_attempt_v1(
+                store_root=send_root,
+                permit_id=permit.permit_id,
+                envelope_id=envelope.envelope_id,
+                envelope_digest=envelope.envelope_digest,
+            ).mark_socket_boundary_v1()
         held = seeded.owner.active_sum_v1()
     finally:
         seeded.close()
@@ -1174,14 +1274,62 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     )
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(scope.state_path))
     monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
-    StatePersistence(str(scope.state_path)).save(KillSwitchState.ACTIVE)
-    opener = SignedReconciliationHttpFixture(identity)
+    clock = [NOW]
+    if managed_case:
+        from nacl.signing import SigningKey
+        from src.ops.filegate_recovery_authority_v1 import (
+            FilegateRecoveryScopeV1,
+            attest_filegate_owner_evidence_v1,
+        )
+        from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+        from tests.ops.test_offline_public_feed_account_reconciliation_v1 import ReconciliationVenue
+
+        independent = tmp_path.with_name(tmp_path.name + "-authority")
+        independent.mkdir(mode=0o700)
+        monkeypatch.setenv(ROOT_ENV, str(independent))
+        writer = ManagedFilegateV1(
+            state_path=scope.state_path, root=independent, clock=lambda: clock[0].timestamp()
+        )
+        issuer = SigningKey.generate()
+        keys = {role: SigningKey.generate() for role in ("CAUSE", "ACCOUNT", "HOST")}
+        initial_stop = writer.provision_v1(
+            scope=FilegateRecoveryScopeV1(
+                identity.account_identity,
+                "LIVE",
+                str(seeded.root),
+                (bound.venue_native_id,),
+                "a" * 64,
+            ),
+            issuer_public_key=bytes(issuer.verify_key),
+            owner_public_keys={role: bytes(key.verify_key) for role, key in keys.items()},
+            recoverable_causes={"R03", "R04"},
+        )
+
+        def proof_for(role, stop):
+            return attest_filegate_owner_evidence_v1(
+                role=role,
+                stop=stop,
+                evidence_sha256="b" * 64,
+                observed_at=clock[0].timestamp(),
+                expires_at=clock[0].timestamp() + 5,
+                key=keys[role],
+            )
+
+        initial_proofs = {role: proof_for(role, initial_stop) for role in keys}
+        writer.release_v1(
+            release=writer.issue_release_v1(evidence=initial_proofs, issuer_key=issuer),
+            evidence=initial_proofs,
+        )
+        opener = ReconciliationVenue(identity)
+    else:
+        StatePersistence(str(scope.state_path)).save(KillSwitchState.ACTIVE)
+        opener = SignedReconciliationHttpFixture(identity)
     if path in {"foreign-product-row", "canceled-after-partial", "incomplete-page"}:
         opener.fault = path
     elif path == "unknown":
         opener.fault = "missing-order"
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
-    monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0].isoformat())
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
         max_request_count=26, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
@@ -1197,12 +1345,12 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         host = PortfolioBudgetHostV1(
             root=seeded.root,
             private_rest_fetch=_fetch(uid=scope.account) if path == "no-custody" else source,
-            repository_sha="test-futures-reconciliation",
+            repository_sha=seeded.repository_sha if managed_case else "test-futures-reconciliation",
             session_id=SESSION,
             expected_account_identity=scope.account,
-            clock=NOW.timestamp,
+            clock=lambda: clock[0].timestamp(),
             reconciliation_transport=transport,
-            execution_incident_state_path=scope.state_path if path == "standing" else None,
+            execution_incident_state_path=scope.state_path if standing else None,
         )
         try:
             if path in {"no-custody", "foreign-product-row"}:
@@ -1220,7 +1368,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                 assert host.owner.execution_links_v1()[rid]["reconciliation"] is None
                 assert host.owner.active_sum_v1() == held > 0
                 return
-            if path == "standing":
+            if standing:
                 with pytest.raises(ExecutionIncidentHaltV1) as stopped:
                     host.observe_v1({"LANE_1": bound})
                 assert stopped.value.raw_get_proof_status == "PERSISTED"
@@ -1265,7 +1413,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     for read in proof.gets[1:4]:
         query = dict(parse_qsl(urlsplit(read.endpoint).query))
         assert query["instType"] == "FUTURES" and query["instId"] == bound.venue_native_id
-    if path == "standing":
+    if standing:
         output = tmp_path / "diagnostics"
         run_standing_execution_incident_diagnostics_v1(
             budget_host_root=host.root,
@@ -1278,6 +1426,80 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         sample = json.loads((output / "execution-incident-diagnostics-latest-v1.json").read_bytes())
         assert sample["correlated_incident_veto"] is True
         assert sample["raw_get_proof_status"] == "VERIFIED"
+    if managed_case:
+        from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+            load_external_effect_durable_consume_v1,
+        )
+        from src.ops.managed_account_recovery_v1 import (
+            attest_managed_execution_resolution_v1,
+            attest_managed_stopped_account_v1,
+        )
+        from src.ops.gates.risk_gate import kill_switch_should_block_trading
+
+        stop = writer.inspect_stop_v1()
+        assert stop["execution_incident_ids"] == [stop["stop_id"]]
+        clock[0] = datetime.fromtimestamp(stop["killed_at"] + 1, timezone.utc)
+        barrier = load_external_effect_durable_consume_v1(store_root=send_root)
+        opener.fault = "healthy-canceled"
+
+        @contextmanager
+        def reopen():
+            with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+                max_request_count=26, k1_lookup_backend=_FakeKeychainBackend()
+            ) as (get_port, _):
+                with closing(
+                    K1AccountObservationSourceV1(
+                        credential=get_port._handle,
+                        transport=get_port,
+                        expected_account_identity=scope.account,
+                        session_id=SESSION,
+                        clock=lambda: clock[0].timestamp(),
+                        account_inventory_guard=True,
+                        inventory_inst_type="FUTURES",
+                    )
+                ) as inventory:
+                    reopened = PortfolioBudgetHostV1(
+                        root=seeded.root,
+                        private_rest_fetch=inventory,
+                        repository_sha=seeded.repository_sha,
+                        session_id=SESSION,
+                        expected_account_identity=scope.account,
+                        clock=lambda: clock[0].timestamp(),
+                        reconciliation_transport=get_port,
+                        execution_incident_state_path=scope.state_path,
+                    )
+                    try:
+                        yield reopened, get_port
+                    finally:
+                        reopened.close()
+
+        for run in range(2):
+            with reopen() as (reopened, port):
+                source_args = dict(
+                    writer=writer,
+                    stop=stop,
+                    host=reopened,
+                    bindings={"LANE_1": bound},
+                    transport_scope=tmp_path,
+                )
+                proof = attest_managed_execution_resolution_v1(**source_args, key=keys["CAUSE"])
+                assert proof["body"]["cause"] == "R04"
+                assert reopened.owner.active_sum_v1() == 0
+                assert port.methods_used == ["GET"] * 26
+            clock[0] += timedelta(seconds=1)
+        with reopen() as (reopened, port):
+            account = attest_managed_stopped_account_v1(
+                **{**source_args, "host": reopened}, key=keys["ACCOUNT"]
+            )
+            assert port.methods_used == ["GET"] * 20
+        assert load_external_effect_durable_consume_v1(store_root=send_root) == barrier
+        assert kill_switch_should_block_trading()
+        evidence = {"CAUSE": proof, "ACCOUNT": account, "HOST": proof_for("HOST", stop)}
+        release = writer.issue_release_v1(evidence=evidence, issuer_key=issuer)
+        writer.release_v1(release=release, evidence=evidence)
+        assert not kill_switch_should_block_trading()
+        return
+
     (stored,) = tuple(proof_root.glob("*.json"))
     wrapper = json.loads(stored.read_bytes())
     for row in wrapper["record"]["gets"][1:4]:

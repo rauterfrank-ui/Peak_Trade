@@ -172,7 +172,13 @@ def _inspect_stopped_account(incident, *, host, bindings, require_stop, feed_ver
 
 
 def _inspect_original_futures_account(
-    *, host, bindings, require_stop, transport_scope, feed_verified_at=None
+    *,
+    host,
+    bindings,
+    require_stop,
+    transport_scope,
+    feed_verified_at=None,
+    required_execution_attempts=None,
 ):
     source = host.fetch
     portfolio_root = host.root / "reconciliation"
@@ -220,7 +226,7 @@ def _inspect_original_futures_account(
         persisted, manifest_digest = _read_original_portfolio(host, portfolio_root)
         require_stop()
         initial_reads = source.transport.read_count
-        context = host.observe_v1(bindings)
+        context = host.observe_v1(bindings, required_execution_attempts=required_execution_attempts)
         observed = context.observed
         read_count = source.transport.read_count
         if (

@@ -120,6 +120,41 @@ def test_new_authenticated_kill_invalidates_old_release_and_duplicate_is_idempot
     assert kill_switch_should_block_trading()
 
 
+def test_concurrent_r04_incidents_survive_projection_repair_and_new_causes(safety):
+    writer = safety.writer
+    writer.release_v1(**_approved(safety))
+    older = safety.path.read_bytes()
+    scope = dict(account="account", environment="SHADOW", host="host", instrument="BTC-FUTURES")
+    for incident in ("c" * 64, "b" * 64):
+        writer.kill_v1(
+            cause="R04", reason="execution incident", incident_id=incident, incident_scope=scope
+        )
+    assert writer.inspect_stop_v1()["execution_incident_ids"] == ["b" * 64, "c" * 64]
+    safety.path.write_bytes(older)
+    recovered = writer.repair_projection_v1()
+    assert recovered["causes"] == ["R03", "R04"]
+    assert recovered["execution_incident_ids"] == ["b" * 64, "c" * 64]
+    assert kill_switch_should_block_trading()
+
+
+def test_unbound_r04_stays_unbound_after_a_new_authenticated_incident(safety):
+    writer = safety.writer
+    writer.release_v1(**_approved(safety))
+    writer.kill_v1(cause="R04", reason="unbound unknown outcome")
+    bound = writer.kill_v1(
+        cause="R04",
+        reason="another execution incident",
+        incident_id="b" * 64,
+        incident_scope=dict(
+            account="account", environment="SHADOW", host="host", instrument="BTC-FUTURES"
+        ),
+    )
+    assert "execution_incident_ids" not in bound
+    with pytest.raises(FilegateAuthorityError, match="EXECUTION_INCIDENT_BINDING_UNPROVEN"):
+        _approved(safety)
+    assert kill_switch_should_block_trading()
+
+
 @pytest.mark.parametrize("fault", ["absent", "invalid", "rollback", "foreign-active"])
 def test_rollback_or_damaged_projection_is_fenced_until_repaired(safety, fault):
     safety.writer.release_v1(**_approved(safety))

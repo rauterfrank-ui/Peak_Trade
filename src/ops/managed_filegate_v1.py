@@ -22,9 +22,12 @@ from src.ops.filegate_recovery_authority_v1 import (
     RECOVERABLE_CAUSES,
     FilegateAuthorityError,
     FilegateRecoveryScopeV1,
+    is_digest_v1,
     issue_filegate_release_v1,
     public_key_hex_v1,
+    require_filegate_loss_violation_v1,
     requires_cause_proof_set_v1,
+    verify_filegate_owner_proof_v1,
     verify_filegate_release_v1,
     verify_filegate_protection_v1,
     verify_filegate_revocation_v1,
@@ -305,7 +308,9 @@ class ManagedFilegateV1:
             self._publish(head["projection"])
             return head["stop"]
 
-    def _stop(self, binding, head, event, cause, reason, *, execution_incident=False):
+    def _stop(
+        self, binding, head, event, cause, reason, *, execution_incident=False, risk_violation=None
+    ):
         sequence = 1 if head is None else head["generation"] + 1
         previous = head["stop"] if head is not None else None
         if previous is not None:
@@ -319,6 +324,34 @@ class ManagedFilegateV1:
             "killed_at": self._clock(),
             "causes": sorted(set(() if previous is None else previous["causes"]) | {cause}),
         }
+        incidents = (
+            previous.get("execution_incident_ids")
+            if previous is not None and "R04" in previous["causes"]
+            else []
+        )
+        if cause == "R04":
+            if execution_incident and is_digest_v1(event) and incidents is not None:
+                incidents = sorted({*incidents, event})
+            else:
+                incidents = None
+        if incidents:
+            stop["execution_incident_ids"] = incidents
+        prior_risk = None if previous is None else previous.get("risk_violation")
+        if cause == "R05":
+            if (
+                previous is not None
+                and "R05" in previous["causes"]
+                and (
+                    prior_risk is None
+                    or risk_violation is None
+                    or prior_risk["policy_sha256"] != risk_violation["policy_sha256"]
+                )
+            ):
+                risk_violation = None
+        else:
+            risk_violation = prior_risk
+        if risk_violation is not None:
+            stop["risk_violation"] = risk_violation
         projection.update(filegate_generation=sequence, filegate_stop_id=event)
         if execution_incident:
             projection["latest_authenticated_execution_incident"] = event
@@ -331,7 +364,7 @@ class ManagedFilegateV1:
                 "UPDATE authority SET head = ? WHERE singleton = 1", (canonical_json_text(head),)
             )
 
-    def kill_v1(self, *, cause, reason, incident_id=None, incident_scope=None):
+    def kill_v1(self, *, cause, reason, incident_id=None, incident_scope=None, risk_violation=None):
         """Record a newly accepted incident or emergency under the same lock as release."""
         if (
             cause not in RECOVERABLE_CAUSES | {"R08", "R09"}
@@ -349,6 +382,12 @@ class ManagedFilegateV1:
             "reason": reason,
             "incident_scope": incident_scope,
         }
+        if risk_violation is not None:
+            if cause != "R05" or type(risk_violation) is not dict:
+                raise FilegateAuthorityError("FILEGATE_KILL_CAUSE_INVALID")
+            intent["risk_violation"] = require_filegate_loss_violation_v1(
+                risk_violation, scope=risk_violation.get("scope")
+            )
         path = self.root / f"kill-intent-{event}.json"
         # Declare the veto before waiting for an in-flight release. A crash
         # here leaves a durable pending intent for the standing controller.
@@ -366,6 +405,13 @@ class ManagedFilegateV1:
         ):
             path.unlink(missing_ok=True)
             raise FilegateAuthorityError("FILEGATE_KILL_INCIDENT_SCOPE_CHANGED")
+        risk_violation = intent.get("risk_violation")
+        if risk_violation is not None:
+            try:
+                require_filegate_loss_violation_v1(risk_violation, scope=bound)
+            except FilegateAuthorityError:
+                path.unlink(missing_ok=True)
+                raise
         duplicate = conn.execute(
             "SELECT generation, kind FROM events WHERE id = ?", (event,)
         ).fetchone()
@@ -382,6 +428,7 @@ class ManagedFilegateV1:
                 intent["cause"],
                 intent["reason"],
                 execution_incident=source is not None,
+                risk_violation=risk_violation,
             )
             if not self._matches(old):
                 head["stop"]["causes"] = sorted(set(head["stop"]["causes"]) | {"R03"})
@@ -515,6 +562,36 @@ class ManagedFilegateV1:
             if head["stop"] is None or head["stop"] != stop:
                 raise FilegateAuthorityError("FILEGATE_STOP_UNPROVEN")
             return requires_cause_proof_set_v1(stop, binding.get("cause_keys", {}))
+
+    def validate_owner_publication_v1(self, *, proof, stop, role, cause=None):
+        """Check the proof against the current stop and the registered owner's key."""
+        self._validate_paths()
+        with self._database(readonly=True) as conn:
+            binding, head = self._head(conn)
+            if head["stop"] != stop or not self._matches(head) or self._has_pending_kill():
+                raise FilegateAuthorityError("FILEGATE_STOP_UNPROVEN")
+            key = binding["owners"].get(role)
+            require_cause = False
+            if role == "CAUSE":
+                if cause not in stop["causes"] or cause not in binding["recoverable_causes"]:
+                    raise FilegateAuthorityError("FILEGATE_OWNER_CAUSE_UNPROVEN")
+                cause_keys = binding.get("cause_keys", {})
+                require_cause = requires_cause_proof_set_v1(stop, cause_keys)
+                if require_cause:
+                    key = cause_keys.get(cause)
+            if key is None:
+                raise FilegateAuthorityError("FILEGATE_OWNER_KEY_UNPROVEN")
+            verify_filegate_owner_proof_v1(
+                proof=proof,
+                key=key,
+                role=role,
+                stop=stop,
+                now=self._clock(),
+                cause=cause,
+                require_cause=require_cause,
+            )
+            if self._head(conn)[1] != head or self._has_pending_kill():
+                raise FilegateAuthorityError("FILEGATE_STOP_UNPROVEN")
 
     def issue_release_v1(self, *, evidence, issuer_key):
         self._validate_paths()

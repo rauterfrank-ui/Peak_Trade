@@ -12,9 +12,6 @@ import time
 
 from nacl.signing import SigningKey
 
-from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
-    atomic_write_json,
-)
 from src.ops.filegate_recovery_authority_v1 import (
     EVIDENCE_ROLES,
     RECOVERABLE_CAUSES,
@@ -139,10 +136,7 @@ def publish_managed_owner_proof_v1(*, root, proof):
     """Publish an already signed Owner receipt for the independent service."""
     body = proof["body"]
     path = _proof_path(root, stop=body["stop"], role=body["role"], cause=body.get("cause"))
-    temp = path.with_suffix(".json.tmp")
-    if temp.resolve() != temp or (temp.exists() and not temp.is_file()):
-        raise FilegateAuthorityError("FAULT_OWNER_PROOF_SCOPE_UNPROVEN")
-    atomic_write_json(path=path, payload=proof)
+    ManagedFilegateV1._publish_json(path, proof)
 
 
 def attest_managed_filegate_integrity_v1(*, writer, stop, expires_at, key):
@@ -174,6 +168,92 @@ def attest_managed_filegate_integrity_v1(*, writer, stop, expires_at, key):
     )
 
 
+def _read_managed_signing_key(path):
+    if not path.is_absolute() or path.resolve() != path:
+        raise FilegateAuthorityError("HOST_FAULT_RECOVERY_SIGNER_SCOPE_UNPROVEN")
+    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+    with os.fdopen(os.open(path, flags), "rb") as key_file:
+        info = os.fstat(key_file.fileno())
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != os.getuid()
+            or info.st_nlink != 1
+            or info.st_mode & 0o077
+            or info.st_size != 32
+        ):
+            raise FilegateAuthorityError("HOST_FAULT_RECOVERY_SIGNER_SCOPE_UNPROVEN")
+        return SigningKey(key_file.read(33))
+
+
+def run_standing_managed_owner_publisher_v1(
+    *, state_root, bounds, runtime_config, owner, seed_path, once
+):
+    """Publish independent HOST, R02 or R03 evidence for the original service."""
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
+        attest_managed_n1_wait_checkpoint_v1,
+    )
+
+    writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
+    interval = runtime_config.get("interval_seconds")
+    if (
+        writer is None
+        or owner not in {"HOST", "R02", "R03"}
+        or type(runtime_config.get("proof_root")) is not str
+        or type(interval) not in {float, int}
+        or not 1 <= interval <= 60
+        or seed_path is None
+        or not state_root.is_absolute()
+        or state_root.resolve() != state_root
+    ):
+        raise FilegateAuthorityError("HOST_FAULT_RECOVERY_OWNER_CONFIG_UNPROVEN")
+    proof_root = Path(runtime_config["proof_root"])
+    key = _read_managed_signing_key(seed_path)
+    cause = None if owner == "HOST" else owner
+    role = "HOST" if cause is None else "CAUSE"
+
+    def observe():
+        projection = writer.read_v1()
+        if projection["state"] == "ACTIVE":
+            return {"status": "NO_CURRENT_STOP"}
+        stop = writer.inspect_stop_v1()
+        if cause is not None and cause not in stop["causes"]:
+            return {"status": "OWNER_CAUSE_INACTIVE"}
+        expires_at = time.time() + 2 * interval
+        if owner == "R03":
+            proof = attest_managed_filegate_integrity_v1(
+                writer=writer, stop=stop, expires_at=expires_at, key=key
+            )
+        else:
+            proof = attest_managed_n1_wait_checkpoint_v1(
+                writer=writer,
+                stop=stop,
+                state_root=state_root,
+                bounds=bounds,
+                expires_at=min(expires_at, bounds.expires_at_unix),
+                key=key,
+                cause=cause,
+            )
+        writer.validate_owner_publication_v1(proof=proof, stop=stop, role=role, cause=cause)
+        publish_managed_owner_proof_v1(root=proof_root, proof=proof)
+        return {"status": "OWNER_PROOF_PUBLISHED", "generation": stop["generation"]}
+
+    while not (state_root / "STOP").exists():
+        try:
+            outcome = observe()
+        except (ValueError, OSError, RuntimeError, KeyError, sqlite3.Error) as exc:
+            code = str(exc).split(":", 1)[0]
+            outcome = {
+                "status": "OWNER_OBSERVATION_BLOCKED",
+                "reason": code
+                if re.fullmatch(r"[A-Z][A-Z0-9_]{3,95}", code)
+                else "OWNER_OBSERVATION_UNAVAILABLE",
+            }
+        if once:
+            return outcome
+        time.sleep(interval)
+    return {"status": "OWNER_SERVICE_STOPPED"}
+
+
 def build_standing_managed_fault_recovery_v1(*, state_root: Path, runtime_config):
     """Provision the canonical service with signed original proofs from separate owners."""
     if (
@@ -185,20 +265,9 @@ def build_standing_managed_fault_recovery_v1(*, state_root: Path, runtime_config
     root = Path(runtime_config["proof_root"])
     key_path = Path(runtime_config["issuer_seed_path"])
     writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
-    if writer is None or not key_path.is_absolute() or key_path.resolve() != key_path:
+    if writer is None:
         raise FilegateAuthorityError("HOST_FAULT_RECOVERY_CONFIG_UNPROVEN")
-    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-    with os.fdopen(os.open(key_path, flags), "rb") as key_file:
-        info = os.fstat(key_file.fileno())
-        if (
-            not stat.S_ISREG(info.st_mode)
-            or info.st_uid != os.getuid()
-            or info.st_nlink != 1
-            or info.st_mode & 0o077
-            or info.st_size != 32
-        ):
-            raise FilegateAuthorityError("HOST_FAULT_RECOVERY_ISSUER_SCOPE_UNPROVEN")
-        issuer = SigningKey(key_file.read(33))
+    issuer = _read_managed_signing_key(key_path)
 
     def read_proof(stop, role, cause=None):
         path = _proof_path(root, stop=stop, role=role, cause=cause)

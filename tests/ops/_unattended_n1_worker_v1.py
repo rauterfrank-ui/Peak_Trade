@@ -233,12 +233,9 @@ def main():
             from src.ops.filegate_recovery_authority_v1 import attest_filegate_owner_evidence_v1
             from src.ops.managed_fault_recovery_v1 import (
                 ManagedFaultRecoveryV1,
-                attest_managed_filegate_integrity_v1,
+                run_standing_managed_owner_publisher_v1,
             )
             from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
-            from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
-                attest_managed_n1_wait_checkpoint_v1,
-            )
 
             keys = {
                 role: SigningKey(bytes.fromhex(raw))
@@ -246,17 +243,34 @@ def main():
             }
             writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
 
-            def attest_host(stop):
-                assert not (root / "shared_lock" / s6.LOCK_NAME).exists()
-                proof = attest_managed_n1_wait_checkpoint_v1(
-                    writer=writer,
-                    stop=stop,
+            proof_root = root / "standing-owner-proofs"
+            proof_root.mkdir(mode=0o700, exist_ok=True)
+            for role in ("CAUSE", "HOST"):
+                seed = proof_root / f"{role}.seed"
+                seed.write_bytes(bytes(keys[role]))
+                seed.chmod(0o600)
+
+            def publish_owner(stop, owner):
+                role = "HOST" if owner == "HOST" else "CAUSE"
+                result = run_standing_managed_owner_publisher_v1(
                     state_root=root / "controller",
                     bounds=bounds,
-                    expires_at=time.time() + 4,
-                    key=keys["HOST"],
+                    runtime_config={"proof_root": str(proof_root), "interval_seconds": 4},
+                    owner=owner,
+                    seed_path=proof_root / f"{role}.seed",
+                    once=True,
                 )
-                write_json(root / "retired-host-proof.json", proof)
+                if result["status"] != "OWNER_PROOF_PUBLISHED":
+                    return None
+                suffix = "HOST" if owner == "HOST" else "CAUSE-R03"
+                path = proof_root / f"{stop['generation']}-{stop['stop_id']}-{suffix}.json"
+                return json.loads(path.read_bytes())
+
+            def attest_host(stop):
+                assert not (root / "shared_lock" / s6.LOCK_NAME).exists()
+                proof = publish_owner(stop, "HOST")
+                if proof is not None:
+                    write_json(root / "retired-host-proof.json", proof)
                 return proof
 
             def stop_if_unproven(_):
@@ -272,9 +286,7 @@ def main():
                     writer=writer,
                     issuer_key=keys["issuer"],
                     observations={
-                        "CAUSE": lambda stop: attest_managed_filegate_integrity_v1(
-                            writer=writer, stop=stop, expires_at=time.time() + 4, key=keys["CAUSE"]
-                        ),
+                        "CAUSE": lambda stop: publish_owner(stop, "R03"),
                         "ACCOUNT": lambda stop: attest_filegate_owner_evidence_v1(
                             role="ACCOUNT",
                             stop=stop,
