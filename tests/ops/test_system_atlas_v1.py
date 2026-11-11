@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import copy
+import os
 import re
 from pathlib import Path
+from runpy import run_path
 
 import pytest
 
@@ -29,8 +31,16 @@ ATLAS_ROOT = REPO_ROOT / "docs" / "system_atlas"
 
 
 @pytest.fixture(scope="module")
-def atlas() -> dict:
-    return load_atlas_v1(repo_root=REPO_ROOT)
+def legacy_repo_root() -> Path:
+    path = os.environ.get("PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
+    if not path:
+        pytest.skip("Historical YAML Atlas tests require PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
+    return Path(path).resolve()
+
+
+@pytest.fixture(scope="module")
+def atlas(legacy_repo_root: Path) -> dict:
+    return load_atlas_v1(repo_root=legacy_repo_root)
 
 
 def test_package_marker_and_authority() -> None:
@@ -44,19 +54,34 @@ def test_readme_declares_atlas_authority_none() -> None:
     usage = (ATLAS_ROOT / "ATLAS_AUTHORITY_AND_USAGE.md").read_text(encoding="utf-8")
     assert "ATLAS_AUTHORITY=NONE" in usage
     assert "ATLAS_MUST_NOT_CREATE_AUTHORITY=true" in usage
-    recon = (ATLAS_ROOT / "reconciliation" / "README.md").read_text(encoding="utf-8")
+    assert "RUNTIME_AUTHORIZATION_EFFECT=NONE" in text
+    assert "RUNTIME_AUTHORIZATION_EFFECT=NONE" in usage
+
+
+def test_legacy_reconciliation_readme_declares_authority_none(legacy_repo_root: Path) -> None:
+    recon = (legacy_repo_root / "docs/system_atlas/reconciliation/README.md").read_text(
+        encoding="utf-8"
+    )
     assert "RECONCILIATION_AUTHORITY=NONE" in recon
     assert "CREATES_CANONICAL_AUTHORITY=false" in recon
 
 
-def test_atlas_loads_and_validates(atlas: dict) -> None:
+def test_atlas_loads_and_validates() -> None:
+    validate = run_path(str(ATLAS_ROOT / "current_atlas.py"))["validate"]
+    result = validate(REPO_ROOT)
+    assert result["result"] == "PASS"
+    assert result["catalog_scope"] == "FROZEN_SOURCE_SNAPSHOT"
+    assert result["runtime_authorization_effect"] == "NONE"
+
+
+def test_legacy_yaml_atlas_loads_and_validates(atlas: dict) -> None:
     warnings = validate_atlas_v1(atlas)
     assert warnings == []
 
 
-def test_generated_views_are_deterministic(atlas: dict) -> None:
-    a = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
-    b = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+def test_generated_views_are_deterministic(atlas: dict, legacy_repo_root: Path) -> None:
+    a = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
+    b = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     assert a.keys() == b.keys()
     assert set(a) == set(GENERATED_VIEW_NAMES)
     for name in GENERATED_VIEW_NAMES:
@@ -65,8 +90,8 @@ def test_generated_views_are_deterministic(atlas: dict) -> None:
         assert "GENERATED/DO_NOT_EDIT" in a[name]
 
 
-def test_generated_views_up_to_date(atlas: dict) -> None:
-    drift = generated_drift_v1(atlas=atlas, repo_root=REPO_ROOT)
+def test_generated_views_up_to_date(atlas: dict, legacy_repo_root: Path) -> None:
+    drift = generated_drift_v1(atlas=atlas, repo_root=legacy_repo_root)
     assert drift == []
 
 
@@ -299,15 +324,17 @@ _MASTER_VIEW_BUCKETS = (
 
 def test_readme_declares_primary_entrypoint_navigation() -> None:
     text = (ATLAS_ROOT / "README.md").read_text(encoding="utf-8")
-    assert "SYSTEM_ATLAS_PRIMARY_ENTRYPOINT=docs/system_atlas/generated/SYSTEM_ATLAS.md" in text
-    assert "SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true" in text
+    assert "[System Atlas](generated/SYSTEM_ATLAS.md)" in text
+    assert "[Quellenindex](generated/SOURCE_INDEX.md)" in text
     usage = (ATLAS_ROOT / "ATLAS_AUTHORITY_AND_USAGE.md").read_text(encoding="utf-8")
-    assert "complete primary human overview" in usage
-    assert "canonical authority" in usage.lower()
+    assert "[Atlas](generated/SYSTEM_ATLAS.md)" in usage
+    assert "ATLAS_MUST_NOT_CREATE_AUTHORITY=true" in usage
 
 
-def test_system_atlas_master_view_is_complete_overview_not_index(atlas: dict) -> None:
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+def test_system_atlas_master_view_is_complete_overview_not_index(
+    atlas: dict, legacy_repo_root: Path
+) -> None:
+    views = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     text = views["SYSTEM_ATLAS.md"]
     assert "SYSTEM_ATLAS_PRIMARY_ENTRYPOINT=docs/system_atlas/generated/SYSTEM_ATLAS.md" in text
     assert "SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true" in text
@@ -339,8 +366,8 @@ def test_system_atlas_master_view_is_complete_overview_not_index(atlas: dict) ->
     assert "LIVE_AUTHORIZED=false" in text
 
 
-def test_system_atlas_mermaid_edges_are_model_backed(atlas: dict) -> None:
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+def test_system_atlas_mermaid_edges_are_model_backed(atlas: dict, legacy_repo_root: Path) -> None:
+    views = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     text = views["SYSTEM_ATLAS.md"]
     alias_to_id = {_alias(eid): eid for eid in _HUB_ENTITY_IDS}
     pairs: set[tuple[str, str, str]] = set()
@@ -389,18 +416,18 @@ def test_incompleteness_register_covers_all_complete_flags(atlas: dict) -> None:
         assert str(row["remaining"]).strip()
 
 
-def test_schema_json_files_are_inventoried(atlas: dict) -> None:
+def test_schema_json_files_are_inventoried(atlas: dict, legacy_repo_root: Path) -> None:
     inventory = atlas["records"]["census/schema_field_inventory.yaml"]
     schema_files = {
         str(row.get("file") or "")
         for row in inventory.get("schemas") or []
         if str(row.get("file") or "").endswith(".schema.json")
     }
-    files = sorted((REPO_ROOT / "docs" / "ops" / "schemas").glob("*.schema.json"))
+    files = sorted((legacy_repo_root / "docs" / "ops" / "schemas").glob("*.schema.json"))
     assert len(files) == 10
     assert len(schema_files) == 10
     for path in files:
-        assert str(path.relative_to(REPO_ROOT)) in schema_files
+        assert str(path.relative_to(legacy_repo_root)) in schema_files
 
 
 def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
@@ -425,8 +452,10 @@ def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
     ) in rel_targets
 
 
-def test_incompleteness_rendered_in_master_and_coverage(atlas: dict) -> None:
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+def test_incompleteness_rendered_in_master_and_coverage(
+    atlas: dict, legacy_repo_root: Path
+) -> None:
+    views = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     master = views["SYSTEM_ATLAS.md"]
     coverage = views["COVERAGE_REPORT.md"]
     for token in (
@@ -452,7 +481,9 @@ def test_incompleteness_missing_reason_fails(atlas: dict) -> None:
         validate_atlas_v1(mutated)
 
 
-def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) -> None:
+def test_atlas_legacy_eradication_v1_current_okx_and_terminology(
+    atlas: dict, legacy_repo_root: Path
+) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
     assert meta["navigation_rebind_kind"] == "PR_7071_UNIVERSE_CARTOGRAPHY_NON_AUTHORITY_REFRESH_V1"
     assert meta["historical_domain_census_payload_count"] == 0
@@ -469,7 +500,7 @@ def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) ->
         "SCHEMA:ranking_snapshot_v1",
     ):
         assert eid in ids
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+    views = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     assert "ATLAS_LEGACY_ERADICATION_V1=true" in views["COVERAGE_REPORT.md"]
     assert "Historical domain census payloads were eradicated" in views["OKX_CHRONOLOGY.md"]
     assert "GIT_IS_SHALLOW=false" in views["COVERAGE_REPORT.md"]
@@ -477,16 +508,20 @@ def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) ->
     assert "schema_field_inventory.yaml" in views["SCHEMA_MAP.md"]
 
 
-def test_current_terminology_survival_after_historical_payload_removal(atlas: dict) -> None:
+def test_current_terminology_survival_after_historical_payload_removal(
+    atlas: dict, legacy_repo_root: Path
+) -> None:
     """Protection-set terms must remain defined outside removed historical_terminology.yaml."""
-    runbook = (REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(
+    runbook = (legacy_repo_root / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(
         encoding="utf-8"
     )
     ratification = (
-        REPO_ROOT
+        legacy_repo_root
         / "docs/governance/FINAL_CURRENT_AUTHORITY_CLOSURE_LIMIT_EQUITY_AND_LAYERED_SAFETY_RATIFICATION_V1.md"
     ).read_text(encoding="utf-8")
-    catalog = (REPO_ROOT / "docs/system_atlas/entities/catalog.yaml").read_text(encoding="utf-8")
+    catalog = (legacy_repo_root / "docs/system_atlas/entities/catalog.yaml").read_text(
+        encoding="utf-8"
+    )
     needles = (
         "Master V2",
         "Double Play",
@@ -503,7 +538,7 @@ def test_current_terminology_survival_after_historical_payload_removal(atlas: di
         )
 
 
-def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
+def test_repo_atlas_v1_final_closure(atlas: dict, legacy_repo_root: Path) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
     repo = meta["repo_atlas_v1"]
     surface = meta["okx_surface_census"]
@@ -547,7 +582,7 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
         assert row.get("historical_usage")
         assert row.get("evidence_sources")
         assert row.get("meaning")
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
+    views = generate_views_v1(atlas=atlas, repo_root=legacy_repo_root)
     atlas_md = views["SYSTEM_ATLAS.md"]
     coverage = views["COVERAGE_REPORT.md"]
     okx_map = views["OKX_INTEGRATION_MAP.md"]

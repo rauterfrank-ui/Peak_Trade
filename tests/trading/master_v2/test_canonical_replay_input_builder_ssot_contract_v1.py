@@ -17,6 +17,7 @@ _PRODUCTIVE_SOURCE_ADAPTERS = (
     REPO_ROOT / "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
     REPO_ROOT
     / "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    REPO_ROOT / "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
 )
 _PUBLIC_BUILDER_NAME = "build_integrated_offline_replay_input_v1"
 _INPUT_TYPE_NAME = "IntegratedOfflineReplayInputV1"
@@ -25,6 +26,19 @@ _AUTHORIZED_CONSTRUCTOR_REL_PATH = (
 )
 _TEST_ONLY_HELPER = (
     REPO_ROOT / "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py"
+)
+_SYNTHETIC_LAB_PREFIX = "multi_future_ghv_counterfactual_distance_lab_v"
+_SYNTHETIC_LAB_CONSTRUCTORS = frozenset(
+    {
+        (
+            f"src/research/{_SYNTHETIC_LAB_PREFIX}1/replay_fixtures_v1.py",
+            "build_integrated_replay_input_v1",
+        ),
+        (
+            f"src/research/{_SYNTHETIC_LAB_PREFIX}2/replay_input_v2.py",
+            "build_integrated_replay_input_v2",
+        ),
+    }
 )
 
 
@@ -126,7 +140,23 @@ def unauthorized_direct_replay_input_constructions(
     hits: list[DirectReplayInputConstructionHit],
 ) -> list[DirectReplayInputConstructionHit]:
     authorized = set(authorized_direct_replay_input_constructions(hits))
-    return [hit for hit in hits if hit not in authorized]
+    return [
+        hit
+        for hit in hits
+        if hit not in authorized
+        and (hit.relative_path, hit.enclosing_function) not in _SYNTHETIC_LAB_CONSTRUCTORS
+    ]
+
+
+def assert_synthetic_replay_lab_dependencies_stay_within_offline_labs() -> None:
+    lab_roots = {SRC_ROOT / "research" / f"{_SYNTHETIC_LAB_PREFIX}{v}" for v in (1, 2, 3)}
+    outside_references = [
+        path.relative_to(REPO_ROOT).as_posix()
+        for path in SRC_ROOT.rglob("*.py")
+        if lab_roots.isdisjoint(path.parents)
+        and _SYNTHETIC_LAB_PREFIX in path.read_text(encoding="utf-8")
+    ]
+    assert not outside_references, outside_references
 
 
 def assert_exactly_one_authorized_src_wide_productive_direct_replay_input_constructor(

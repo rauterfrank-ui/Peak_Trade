@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from dataclasses import replace
 
 from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
@@ -64,6 +65,7 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayInputV1,
     IntegratedOfflineReplayPoliciesV1,
+    build_integrated_offline_replay_input_v1,
 )
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -159,7 +161,7 @@ def build_productive_replay_baseline_input_v1(
         "composition": DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
         "entry_exit": ENTRY_EXIT_POLICY_VERSION,
     }
-    return IntegratedOfflineReplayInputV1(
+    replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"productive-offline-replay-{trading_epoch}",
         instrument_id=REPLAY_INSTRUMENT_ID,
         trading_epoch=trading_epoch,
@@ -195,7 +197,6 @@ def build_productive_replay_baseline_input_v1(
             last_signal_strength=0.02,
         ),
         strategy_registry=registry,
-        registry_snapshot_digest=BASELINE_REGISTRY_SNAPSHOT_DIGEST,
         regime_id="trending",
         regime_status=SuitabilityRegimeStatus.KNOWN,
         previous_composition_direction_state=CompositionDirectionState.NEUTRAL,
@@ -263,3 +264,4 @@ def build_productive_replay_baseline_input_v1(
         context_reference=f"trading-context-epoch-{trading_epoch}",
         now_tick=0,
     )
+    return replace(replay_input, registry_snapshot_digest=BASELINE_REGISTRY_SNAPSHOT_DIGEST)

@@ -57,13 +57,12 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
 from tests.ops.test_full_core_execution_admission_contract_v1 import _live_inputs
-from tests.ops.test_full_core_live_path_composition_root_v1 import _run
-from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
-    _confirmed_replay_input,
+from tests.ops._current_frozen_document_navigation_v1 import (
+    assert_current_frozen_document_navigation,
 )
+from tests.ops.test_full_core_live_path_composition_root_v1 import _actual_enter_replay, _run
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md"
 
 _OK_PAYLOAD = {"code": "0", "data": [{"row": "1"}]}
@@ -482,7 +481,7 @@ def test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post(
     StatePersistence(str(path)).save(KillSwitchState.ACTIVE)
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         mode="LIVE",
         fresh_pretrade_get_transport=InjectedFreshGetTransportV1(),
     )
@@ -500,11 +499,13 @@ def test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post(
 
 
 def test_live_path_without_transport_denies_missing_get(
-    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    path = _bind_state_path(tmp_path, monkeypatch)
+    StatePersistence(str(path)).save(KillSwitchState.ACTIVE)
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         mode="LIVE",
     )
     assert result.boundary is not None
@@ -557,24 +558,21 @@ def test_empty_margin_mode_positions_are_trusted_flat_account() -> None:
     )
     assert evidence.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     assert "MARGIN_MODE_EMPTY_POSITIONS_NO_OPEN_POSITION" in evidence.reason_codes
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    spec = SPEC_PATH.read_text(encoding="utf-8")
-    start = runbook.index("11.2.1.L FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
-    assert "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true" in section
-    assert "LIVE_ENABLED=false" in section
-    assert "LIVE_ARMED=false" in section
-    assert "WIRE_SEND_PERMITTED=false" in section
-    assert "POST_PERFORMED=false" in section
-    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in section
-    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in section
-    assert "FRESH_GET_ALONE_CAN_ADMIT=false" in section
-    assert "FRESH_GET_CAN_OVERRIDE_OTHER_GATES=false" in section
-    assert "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ACCOUNT_BOUND_IMPLEMENTED" in section
-    assert "docs_token:" in spec
-    assert "DOCS_TOKEN_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1" in spec
-    prior = runbook[runbook.index("11.2.1.K FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM") : start]
-    assert "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true" in prior
-    assert (
-        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED" in prior
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        expected_spec_identifier="DOCS_TOKEN_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1",
+        owners=(
+            REPO_ROOT
+            / "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+            REPO_ROOT
+            / "src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py",
+        ),
     )
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    for pin in (
+        "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true",
+        "FRESH_GET_ALONE_CAN_ADMIT=false",
+        "FRESH_GET_CAN_OVERRIDE_OTHER_GATES=false",
+    ):
+        assert pin in spec

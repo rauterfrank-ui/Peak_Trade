@@ -167,6 +167,7 @@ def _bootstrap_lane(tmp_path: Path) -> tuple[Any, Any, Any, str]:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        mark_acquired_at_utc=obs_boot.mark_acquired_at_utc,
     )
     return bound, g17, pairs, native_id
 

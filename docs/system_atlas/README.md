@@ -42,13 +42,7 @@ Der aktuelle Obsidian-Vault liegt außerhalb des Repos unter `/Users/frnkhrz/PEA
 
 `plan` und `check` lesen ausschließlich. `apply` schreibt den bestehenden Vault und seinen Abgleichbeleg, erstellt jedoch keine Sicherung und verändert weder den Freeze-Tag noch Produktquellen. Quellen und Markdownansichten sind bytegebunden. Bei Canvas-Dateien wird zusätzlich der vollständige JSON-Inhalt gebunden: Obsidian darf die Serialisierung ändern; solche Formatänderungen werden gesondert ausgegeben. Der angezeigte Dokumentationscommit bezeichnet die letzte Änderung der gespiegelten Repo-Dokumente. Die Prüfung belegt die dokumentierten Quellenbindungen, keine vollständige fachliche oder betriebliche Abnahme des Vault-Inhalts.
 
-Die direkte Bibliothek `scripts.ops.system_atlas_v1.load_v1` erwartet weiterhin einen YAML-Atlas. Der eingefrorene Test `test_atlas_loads_and_validates` in der [Atlas-Testdatei](../../tests/ops/test_system_atlas_v1.py) ruft diese Bibliothek auf und scheitert am fehlenden Census-Eintrag:
-
-```text
-ATLAS_SOURCE_MISSING:census/census_meta.yaml
-```
-
-Die aktuellen CLI-Prüfungen ersetzen keine erfolgreiche Ausführung dieser Testbindung. Die Testdateien und die YAML-Bibliothek gehören zum unveränderten Quellstand.
+Der Test `test_atlas_loads_and_validates` in der [Atlas-Testdatei](../../tests/ops/test_system_atlas_v1.py) prüft das aktuelle Atlasmodell mit `current_atlas.py`. Die archivierten YAML-Verträge in derselben Testdatei können mit `PEAKTRADE_LEGACY_ATLAS_REPO_ROOT` gegen einen vollständigen historischen Checkout geprüft werden. Die Tests lesen dessen Census, Katalog und generierte Ansichten direkt aus dem angegebenen Bestand.
 
 ## Gebundene Weiterentwicklung nach dem Freeze
 

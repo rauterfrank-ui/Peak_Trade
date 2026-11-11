@@ -914,7 +914,7 @@
     {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
-      "sha256": "0769b96a1aa5ad14a8f0f607730864a38b088edc9291e149f6bd0769d11ceb7b"
+      "sha256": "74c56ae0f0096c69b0beec4386e9b57cb6540056c7f45384b508ed6ca96a6d8e"
     },
     {
       "path": "docs/system_atlas/current_atlas.py",
@@ -1642,6 +1642,11 @@
       "sha256": "a8247764460b58a1447c49321637198309cbd7c8d74e0ae90749ac2db05ed8e3"
     },
     {
+      "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
+      "before_sha256": "dcceb4ad7cad8f39fbcb665070c6420e2effcc8730fc327d6f5b056395258ace",
+      "sha256": "d84c593068f57100fd09dc20d7615396ac817b5c479f6bcfd6e570c3d23229b7"
+    },
+    {
       "path": "src/ops/mf_membership_context_artifact_contract_v1.py",
       "before_sha256": "8dda221cd46158140531e0a1cebce689ffe135ee821975fb5d712bf5380ef2be",
       "sha256": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8"
@@ -2079,7 +2084,7 @@
     {
       "path": "tests/ops/_current_frozen_document_navigation_v1.py",
       "before_sha256": null,
-      "sha256": "f4c2fa22d46942c7cbe9c9692e232414234e9a8a2aec3822b5e582805d43366b"
+      "sha256": "3693b499543f9eb3f3c8bb362a15a5b8c26cba0efbdbc26c61510b1dac99e4df"
     },
     {
       "path": "tests/ops/_current_post_safety_fixture_v1.py",
@@ -2329,7 +2334,7 @@
     {
       "path": "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
       "before_sha256": "da5c8091b3b7604f0e26c6849fe16167ea8b4f9698f4112316e484efc7034100",
-      "sha256": "fc920418f42585a329b1a41a0357667c84336b9c01a827aec563863c9cb5079d"
+      "sha256": "ea5376204a6d4e8e42e190b5609eee31926e5c2185a0438106ee4cdd039ef428"
     },
     {
       "path": "tests/ops/test_current_productive_position_management_quantity_handoff_v1.py",
@@ -2432,6 +2437,11 @@
       "sha256": "3daa03739fb939c4a67fdd34d53b6a1a17a61ed8721b4e6deb43b014f56fa752"
     },
     {
+      "path": "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py",
+      "before_sha256": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3",
+      "sha256": "a0c2dc285f680f68845f6523dd5c2a8f414f101a21902a5809bec2803a320153"
+    },
+    {
       "path": "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
       "before_sha256": "1f7b10e87d0c0dca4803816609303d160bfb798210ddccc95b57ea90c19afcc4",
       "sha256": "133d0343c081cbcb6139b877916d824e8affe7fa69161ada36770e3bc331fac6"
@@ -2479,7 +2489,7 @@
     {
       "path": "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
       "before_sha256": "1d25c3c3fcc2eb52968ba873a95f640cce7e5384d02c302f8a81b13bfdaed6b5",
-      "sha256": "19632b94ebaf724688539990a1a2806fde5d305551d731e8c82891eda24fb59d"
+      "sha256": "7ba744a70e7917b9b2a1f1ac0c79fa4d660d31706de96044d02f99de1d64f80e"
     },
     {
       "path": "tests/ops/test_full_core_live_path_composition_root_v1.py",
@@ -2512,6 +2522,11 @@
       "sha256": "9029324d04b4f018d0e841ab37a1b3e5c73c87ea461f49de466b5418b767adb9"
     },
     {
+      "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
+      "before_sha256": "12500ead36b695bd9e354221e0a911c3cc4ffc92d1ecf0c85cbf1cb319c1390d",
+      "sha256": "ec62586263de6a71713b1cbd36593852fb92680d01ec24cb43360f4be6d3af22"
+    },
+    {
       "path": "tests/ops/test_legacy_startup_observed_portfolio_migration_v1.py",
       "before_sha256": "e9401142ba301438dca3d9182a340c0b899b81319772eb0c583bdecf3b35b965",
       "sha256": "52d980debe874508dd711960f2c2a773ac202abf965565cef790cdb620f300fa"
@@ -2539,7 +2554,7 @@
     {
       "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
       "before_sha256": "e5413bec76a85eab72f5f2963bef254343003cf100a5d7ba9d46328521a4ae78",
-      "sha256": "85c8f97724d0101df39e78c5ae42806c7f37c2117a0402838a27a14df53eeb41"
+      "sha256": "fd288a9f75c1639e60432c9d939e996376a782250e1e89be4fac1d2ccb85bec5"
     },
     {
       "path": "tests/ops/test_n1_startup_recovery_scope_v1.py",
@@ -2717,6 +2732,11 @@
       "sha256": "80a8628b5c08b97ae6ec0e7afaf5aeff7cc6ae90c2f1e29a35d4a57fd5ea556a"
     },
     {
+      "path": "tests/ops/test_system_atlas_v1.py",
+      "before_sha256": "035096c4006ed1179f89e7cbedb86ba652cd1053e3b028179dd098a80aaae95d",
+      "sha256": "bfa65499d9ea5f4f16803cd5bd3d9d575d2aede9f2e316b9a3ba204f02756dda"
+    },
+    {
       "path": "tests/ops/test_test_phase_slot_loss_budget_v1.py",
       "before_sha256": null,
       "sha256": "0b03c5458caa28afc0f919ee12d21f2ca35373a93983fc62b76f631ce0893c99"
@@ -2732,6 +2752,11 @@
       "sha256": "9a13fa6785f8c5fdbaf9b9d073b7e239cc0664908aafb688ece7399499b93aae"
     },
     {
+      "path": "tests/ops/test_treasury_phase_1_canonical_and_authority_v1.py",
+      "before_sha256": "03f14f041b06949d1c0d10f2bf3d19d0b2736c0aabf8cb436504f1672df1725e",
+      "sha256": "178ce75de2a42c2bc78d02b6e0887ca1d8f56acf9c39876f2be91cb828810b1e"
+    },
+    {
       "path": "tests/test_mf_membership_context_artifact_contract_v1.py",
       "before_sha256": "9bdaa5c5a48c380c19808074ecfc93fd7f6bc1925b34a05996fbcc1e2ed73888",
       "sha256": "7a7e5b182f54b92535f8dd1ffa60359e4a285820808dd9b36fb45e5172cf32c8"
@@ -2745,6 +2770,16 @@
       "path": "tests/trading/master_v2/_surface_p_current_manifest_fixture_v1.py",
       "before_sha256": null,
       "sha256": "c94224b374d8ae39c953ce909ca59f19b02505241c7da7294e917b4089312634"
+    },
+    {
+      "path": "tests/trading/master_v2/test_canonical_architecture_drift_guard_v1.py",
+      "before_sha256": "5f5e13fc154ac0d96fd097a603f9ee116aaca973a173fcd10860477bb1744507",
+      "sha256": "0f095aaf681e1005d371f1d92025b92c686e9ab6a5f9b42c9f037e2fd70cf413"
+    },
+    {
+      "path": "tests/trading/master_v2/test_canonical_replay_input_builder_ssot_contract_v1.py",
+      "before_sha256": "932dc9467dfd2e65516eb198c172366016cb982f2e94e6072dc8ddc0dbf9c16b",
+      "sha256": "8435d84d67218be1406864121fa297fef5ad151df1909467e811910b018730ac"
     },
     {
       "path": "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
