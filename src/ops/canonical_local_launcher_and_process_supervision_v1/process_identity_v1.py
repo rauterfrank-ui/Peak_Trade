@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import os
+from pathlib import Path
 import subprocess
+import sys
 from typing import Optional
+from uuid import UUID
 
 from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 import (
     ProcessIdentityMismatchError,
@@ -88,6 +91,22 @@ def read_process_start_identity(pid: int) -> str:
         if value:
             return value
     return ""
+
+
+def read_local_boot_identity_v1() -> str | None:
+    """Read the kernel's per-boot identity for local writer recovery."""
+    try:
+        if sys.platform == "darwin":
+            value = subprocess.check_output(
+                ["/usr/sbin/sysctl", "-n", "kern.bootsessionuuid"], text=True, timeout=2
+            )
+        elif sys.platform.startswith("linux"):
+            value = Path("/proc/sys/kernel/random/boot_id").read_text(encoding="utf-8")
+        else:
+            return None
+        return str(UUID(value.strip()))
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
 
 
 def read_cmdline_fingerprint(pid: int) -> str:

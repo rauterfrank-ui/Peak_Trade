@@ -15,12 +15,32 @@ from pathlib import Path
 import time
 import uuid
 
+from src.ops.canonical_local_launcher_and_process_supervision_v1.process_identity_v1 import (
+    capture_process_identity,
+    read_local_boot_identity_v1,
+)
+from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 import (
+    ProcessIdentityMismatchError,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     _dead_owner_wait_checkpoint_proven_v1,
     LEDGER_FILENAME,
+    LOCK_AUTHORIZATION_ID,
     LOCK_NAME,
     ABSOLUTE_MAX_CYCLES_PER_RUN,
     ABSOLUTE_MAX_RUN_DURATION_SECONDS,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    cursor_last_accepted_c1_venue_event_time_v1,
+    load_current_productive_c1_cursor_or_reason_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 import (
+    read_durable_filegate_join_evidence_v1,
+)
+from src.ops.gates.risk_gate import (
+    canonical_kill_switch_state_path,
+    kill_switch_should_block_trading,
+    kill_switch_state_path_from_env,
 )
 from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
     bounded_retry_policy_v1,
@@ -106,6 +126,138 @@ def unattended_request_digest_v1(request):
     return sha256(json.dumps(value, sort_keys=True, default=str).encode()).hexdigest()
 
 
+def _proven_wait_checkpoint(root, state, *, boot_identity):
+    prior = state["previous"]
+    try:
+        process = prior["process_identity"]
+        pid = process["pid"]
+        if (
+            not boot_identity
+            or prior["boot_identity"] != boot_identity
+            or type(pid) is not int
+            or pid <= 0
+            or type(process["pgid"]) is not int
+            or process["pgid"] <= 0
+            or not isinstance(process["process_start_identity"], str)
+            or not process["process_start_identity"]
+            or not isinstance(process["cmdline_fingerprint"], str)
+            or len(process["cmdline_fingerprint"]) != 64
+        ):
+            return None, "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            pass
+        except OSError:
+            return None, "HOST_RESTART_PREVIOUS_OWNER_UNPROVEN"
+        else:
+            # A reused PID also remains fenced. The original S6 lock has the
+            # same rule and will independently recheck before taking ownership.
+            return None, "HOST_RESTART_PREVIOUS_PID_PRESENT"
+
+        evidence = root / "attempts" / str(state["attempts"])
+        cursor_root = Path(state["roots"]["lane_state_root"]) / "LANE_1"
+        ledger_path = evidence / LEDGER_FILENAME
+        lock_path = Path(state["shared_lock"]) / LOCK_NAME
+        if any(path.resolve() != path for path in (ledger_path, lock_path, cursor_root)) or (
+            prior["evidence_root"] != str(evidence)
+            or prior["lock_root"] != str(lock_path.parent)
+            or prior["cursor_root"] != str(cursor_root)
+        ):
+            return None, "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"
+        lock = json.loads(lock_path.read_bytes())
+        context = lock["recovery_context"]
+        owner = "current_productive_governed_continuous_cycle_orchestrator_v1"
+        if (
+            lock.get("pid") != pid
+            or lock.get("owner") != owner
+            or lock.get("writer_identity") != f"{owner}:{LOCK_AUTHORIZATION_ID}"
+            or lock.get("authorization_id") != LOCK_AUTHORIZATION_ID
+            or not lock.get("claim_id")
+            or context.get("evidence_root") != str(evidence)
+            or context.get("process_identity") != process
+            or context.get("boot_identity") != boot_identity
+            or not _dead_owner_wait_checkpoint_proven_v1(
+                lock, cursor_store_root=cursor_root, native_id=prior["native_id"]
+            )
+        ):
+            return None, "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
+        ledger = json.loads(ledger_path.read_bytes())
+        cursor, _ = load_current_productive_c1_cursor_or_reason_v1(cursor_root)
+        floor = cursor_last_accepted_c1_venue_event_time_v1(cursor)
+        consumed = ledger["s5_invoke_count"]
+        if (
+            not math.isfinite(floor)
+            or cursor.get("venue_native_id") != prior["native_id"]
+            or floor != ledger["last_accepted_c1"]
+            or type(consumed) is not int
+            or not 0 <= consumed <= prior["max_cycles"]
+            or prior["cycles_before"] != state["cycles_used"]
+        ):
+            return None, "HOST_RESTART_CHECKPOINT_CYCLE_OR_CURSOR_CHANGED"
+        return (consumed, floor), None
+    except (AttributeError, OSError, OverflowError, TypeError, ValueError, KeyError):
+        return None, "HOST_RESTART_CHECKPOINT_UNREADABLE"
+
+
+def _filegate_revision(expected_path):
+    """Return the current admissible revision for one pre-external attempt."""
+    try:
+        path = Path(canonical_kill_switch_state_path()).resolve()
+        if (
+            path != expected_path
+            or os.environ.get("PEAK_KILL_SWITCH") == "1"
+            or kill_switch_should_block_trading(explicit_active=False)
+        ):
+            return None
+        if kill_switch_state_path_from_env() is None and not path.exists():
+            return "UNCONFIGURED"  # Legacy unconfigured, pre-external host.
+        raw = path.read_bytes()
+        evidence = read_durable_filegate_join_evidence_v1(state_path=str(path))
+        if (
+            evidence.evidence_status == "TRUSTED_PRESENT"
+            and evidence.state_name == "ACTIVE"
+            and evidence.blocked is False
+            and evidence.boolean_reader_blocked is False
+            and path.read_bytes() == raw
+            and Path(canonical_kill_switch_state_path()).resolve() == expected_path
+            and os.environ.get("PEAK_KILL_SWITCH") != "1"
+        ):
+            return sha256(raw).hexdigest()
+    except (OSError, RuntimeError):
+        pass
+    return None
+
+
+class _FilegateObservationSource:
+    def __init__(self, source, *, path, revision):
+        self.source = source
+        self.path = path
+        self.revision = revision
+
+    def poll(self):
+        if _filegate_revision(self.path) != self.revision:
+            return None
+        observation = self.source.poll()
+        return observation if _filegate_revision(self.path) == self.revision else None
+
+
+class _FilegateRevisionChanged(RuntimeError):
+    pass
+
+
+def _filegate_cycle_evaluator(evaluator, *, path, revision):
+    def evaluate(cycle_index):
+        if _filegate_revision(path) != revision:
+            raise _FilegateRevisionChanged("HOST_RESTART_FILEGATE_BLOCKED")
+        result = evaluator(cycle_index)
+        if _filegate_revision(path) != revision:
+            raise _FilegateRevisionChanged("HOST_RESTART_FILEGATE_BLOCKED")
+        return result
+
+    return evaluate
+
+
 def run_unattended_n1_host_v1(
     *,
     bounds: UnattendedHostBoundsV1,
@@ -132,6 +284,8 @@ def run_unattended_n1_host_v1(
         raise ValueError("HOST_RESTART_REGISTERED_STATE_MISSING")
     with (root / "host_controller.lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        boot_identity = read_local_boot_identity_v1()
+        filegate = Path(canonical_kill_switch_state_path()).resolve()
         if receipt.exists():
             state = json.loads(receipt.read_text())
             if (
@@ -189,6 +343,11 @@ def run_unattended_n1_host_v1(
             if now < state["started_at"] or remaining_seconds <= 0:
                 return stop("BOUNDS_EXHAUSTED")
             prior = state.get("previous")
+            cycles_used = state["cycles_used"]
+            cursor_floor = None
+            if state["attempts"] and not isinstance(prior, dict):
+                state["checkpoint_blocker"] = "HOST_RESTART_PREVIOUS_ATTEMPT_UNPROVEN"
+                return stop("RECOVERY_CHECKPOINT_REQUIRED")
             if prior is not None:
                 if not state.get("incident_id"):
                     fault = record_runtime_notice_v1(
@@ -202,27 +361,22 @@ def run_unattended_n1_host_v1(
                     )
                     state["incident_id"] = fault["event_id"]
                     _write(receipt, state)
-                # Reuse the exact existing S6 proof, rather than treating process
-                # death or an empty order list as a safe restart checkpoint.
-                ledger_path = Path(prior["evidence_root"]) / LEDGER_FILENAME
-                lock_path = Path(prior["lock_root"]) / LOCK_NAME
-                try:
-                    ledger = json.loads(ledger_path.read_text())
-                    receipt_value = json.loads(lock_path.read_text())
-                    proven = _dead_owner_wait_checkpoint_proven_v1(
-                        receipt_value,
-                        cursor_store_root=Path(prior["cursor_root"]),
-                        native_id=prior["native_id"],
-                    )
-                except (OSError, ValueError, KeyError):
-                    proven = False
-                if not proven:
+                checkpoint, blocker = _proven_wait_checkpoint(
+                    root, state, boot_identity=boot_identity
+                )
+                if checkpoint is None:
+                    state["checkpoint_blocker"] = blocker
                     return stop("RECOVERY_CHECKPOINT_REQUIRED")
-                consumed = ledger["s5_invoke_count"]
-                if not 0 <= consumed <= prior["max_cycles"]:
+                if prior.get("filegate_path") != str(filegate):
+                    state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_SCOPE_CHANGED"
                     return stop("RECOVERY_CHECKPOINT_REQUIRED")
-                state["cycles_used"] = prior["cycles_before"] + consumed
-            remaining_cycles = bounds.max_total_cycles - state["cycles_used"]
+                consumed, cursor_floor = checkpoint
+                cycles_used = prior["cycles_before"] + consumed
+            filegate_revision = _filegate_revision(filegate)
+            if filegate_revision is None:
+                state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                return stop("RECOVERY_CHECKPOINT_REQUIRED")
+            remaining_cycles = bounds.max_total_cycles - cycles_used
             if remaining_cycles <= 0:
                 return stop("BOUNDS_EXHAUSTED")
             if (
@@ -257,6 +411,12 @@ def run_unattended_n1_host_v1(
                 or unattended_request_digest_v1(request) != bounds.runtime_config_digest
             ):
                 raise ValueError("HOST_RESTART_REQUEST_BINDING_MISMATCH")
+            if cursor_floor is not None and (
+                authorization.expected_cursor_floor != cursor_floor
+                or authorization.native_id != prior["native_id"]
+            ):
+                state["checkpoint_blocker"] = "HOST_RESTART_REQUEST_CURSOR_CHANGED"
+                return stop("RECOVERY_CHECKPOINT_REQUIRED")
             # Account/lane/private roots must not follow the new evidence folder.
             roots = {
                 key: str(Path(getattr(config, key)).resolve())
@@ -274,8 +434,18 @@ def run_unattended_n1_host_v1(
             )
             original_cancel = request.get("cancel_requested")
             request["cancel_requested"] = lambda: (
-                (root / "STOP").exists() or (original_cancel is not None and original_cancel())
+                (root / "STOP").exists()
+                or _filegate_revision(filegate) != filegate_revision
+                or (original_cancel is not None and original_cancel())
             )
+            if request.get("observation_source") is not None:
+                request["observation_source"] = _FilegateObservationSource(
+                    request["observation_source"], path=filegate, revision=filegate_revision
+                )
+            if request.get("f1_m9_cycle_evaluator") is not None:
+                request["f1_m9_cycle_evaluator"] = _filegate_cycle_evaluator(
+                    request["f1_m9_cycle_evaluator"], path=filegate, revision=filegate_revision
+                )
             from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
                 build_s8_occupied_lane_pairs_v1,
             )
@@ -287,9 +457,18 @@ def run_unattended_n1_host_v1(
             shared_lock = config.lock_root or (config.evidence_root / "continuous_lock")
             if state.get("shared_lock") not in (None, str(Path(shared_lock).resolve())):
                 raise ValueError("HOST_RESTART_SHARED_LOCK_CHANGED")
+            if _filegate_revision(filegate) != filegate_revision:
+                state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                return stop("RECOVERY_CHECKPOINT_REQUIRED")
+            try:
+                process = capture_process_identity(os.getpid()).to_dict()
+            except ProcessIdentityMismatchError:
+                process = None  # First run still follows the original admission.
             state["shared_lock"] = str(Path(shared_lock).resolve())
             state["attempts"] += 1
+            state["cycles_used"] = cycles_used
             state["status"] = "RUNNING"
+            state.pop("checkpoint_blocker", None)
             state["previous"] = {
                 "evidence_root": str(evidence),
                 "cursor_root": str(cursor.resolve()),
@@ -297,10 +476,17 @@ def run_unattended_n1_host_v1(
                 "native_id": authorization.native_id,
                 "cycles_before": state["cycles_used"],
                 "max_cycles": request["authorization"].max_cycles_per_run,
+                "process_identity": process,
+                "boot_identity": boot_identity,
+                "filegate_path": str(filegate),
+                "filegate_revision": filegate_revision,
             }
             _write(receipt, state)
             try:
                 result = run_n1_standing_pre_external_supervisor_v1(**request)
+            except _FilegateRevisionChanged:
+                state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                return stop("GOVERNED_RUNTIME_STOPPED")
             except (TimeoutError, ConnectionError):
                 record_runtime_notice_v1(
                     evidence_root=root,

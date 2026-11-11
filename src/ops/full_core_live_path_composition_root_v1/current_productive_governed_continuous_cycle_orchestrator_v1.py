@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import time
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
@@ -31,6 +32,13 @@ from typing import Any, Callable, Mapping, Protocol, Sequence
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
     AuthorizationLifecycleLockV1,
     LifecycleLockError,
+)
+from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 import (
+    ProcessIdentityMismatchError,
+)
+from src.ops.canonical_local_launcher_and_process_supervision_v1.process_identity_v1 import (
+    capture_process_identity,
+    read_local_boot_identity_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -613,6 +621,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     if prior_state in {STATE_COMPLETED, STATE_CANCELLED}:
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(REASON_REPLAY)
 
+    try:
+        process_identity = capture_process_identity(os.getpid()).to_dict()
+    except ProcessIdentityMismatchError:
+        process_identity = None
     lock = AuthorizationLifecycleLockV1(
         lock_path=Path(lock_root) / LOCK_NAME,
         authorization_id=LOCK_AUTHORIZATION_ID,
@@ -622,6 +634,8 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             "evidence_root": str(Path(evidence_root).resolve()),
             "cursor_store_root": str(Path(cursor_store_root).resolve()),
             "binding_digest": digest,
+            "process_identity": process_identity,
+            "boot_identity": read_local_boot_identity_v1(),
         },
         dead_owner_validator=lambda receipt: _dead_owner_wait_checkpoint_proven_v1(
             receipt, cursor_store_root=Path(cursor_store_root), native_id=authorization.native_id
