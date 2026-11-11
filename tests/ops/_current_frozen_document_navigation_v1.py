@@ -5,8 +5,12 @@ import gzip
 import hashlib
 import json
 
+import yaml
 
-def assert_current_frozen_document_navigation(root: Path, *, spec: Path, owners=()):
+
+def assert_current_frozen_document_navigation(
+    root: Path, *, spec: Path, owners=(), expected_spec_identifier: str | None = None
+):
     model = json.loads((root / "docs/system_atlas/source/current-model.json").read_bytes())
     runbook = (root / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text()
     mapping = (root / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md").read_text()
@@ -45,4 +49,9 @@ def assert_current_frozen_document_navigation(root: Path, *, spec: Path, owners=
             later = [row for row in development["files"] if row["path"] == relative]
             assert len(later) == 1 and later[0]["sha256"] == actual, relative
             assert later[0]["before_sha256"] == original[0]["sha256"], relative
+    if expected_spec_identifier is not None:
+        opening, _, rest = spec.read_text(encoding="utf-8").partition("\n")
+        frontmatter, closing, _ = rest.partition("\n---\n")
+        assert opening == "---" and closing, spec
+        assert yaml.safe_load(frontmatter)["docs_token"] == expected_spec_identifier, spec
     return model["source_commit"]

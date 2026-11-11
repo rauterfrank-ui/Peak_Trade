@@ -561,6 +561,7 @@ def test_empty_margin_mode_positions_are_trusted_flat_account() -> None:
     assert_current_frozen_document_navigation(
         REPO_ROOT,
         spec=SPEC_PATH,
+        expected_spec_identifier="DOCS_TOKEN_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1",
         owners=(
             REPO_ROOT
             / "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -569,7 +570,6 @@ def test_empty_margin_mode_positions_are_trusted_flat_account() -> None:
         ),
     )
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    assert "docs_token: DOCS_TOKEN_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1" in spec
     for pin in (
         "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true",
         "FRESH_GET_ALONE_CAN_ADMIT=false",

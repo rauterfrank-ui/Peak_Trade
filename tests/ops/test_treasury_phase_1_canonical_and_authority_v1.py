@@ -123,6 +123,7 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     assert_current_frozen_document_navigation(
         REPO_ROOT,
         spec=SPEC_PATH,
+        expected_spec_identifier="DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1",
         owners=(
             PACKAGE_DIR / "constants_v1.py",
             REPO_ROOT / "src/ops/treasury_phase_2_read_only_reconciliation_v1/constants_v1.py",
@@ -141,7 +142,6 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     assert TREASURY_SEPARATION_GATE_WIRED is False
     assert PHASE_3_SEPARATION_GATE_WIRED is True
     for pin in (
-        "docs_token: DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1",
         f"TREASURY_PHASE_1_STATUS={TREASURY_PHASE_1_STATUS}",
         f"TREASURY_PHASE_2_STATUS={TREASURY_PHASE_2_STATUS}",
         f"PL_TF_002_STATUS={PL_TF_002_STATUS}",

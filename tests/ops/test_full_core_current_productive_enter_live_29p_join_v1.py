@@ -222,6 +222,10 @@ def test_created_flag_pins_and_docs() -> None:
     assert_current_frozen_document_navigation(
         REPO_ROOT,
         spec=SPEC_PATH,
+        expected_spec_identifier=(
+            "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_"
+            "BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1"
+        ),
         owners=(
             REPO_ROOT
             / "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
@@ -230,10 +234,6 @@ def test_created_flag_pins_and_docs() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     assert "EVALUATE_STEP_29P_JOINED_THIS_WP=true" in spec
     assert f"JOIN_SEAM_ID={JOIN_SEAM_ID}" in spec
-    assert (
-        "docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_"
-        "BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1"
-    ) in spec
     for path in (*PROTECTED_ALGORITHM_FILES, *SEALED_CORE_MEMBERS):
         assert (REPO_ROOT / path).is_file()
 

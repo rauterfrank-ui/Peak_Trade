@@ -2084,7 +2084,7 @@
     {
       "path": "tests/ops/_current_frozen_document_navigation_v1.py",
       "before_sha256": null,
-      "sha256": "f4c2fa22d46942c7cbe9c9692e232414234e9a8a2aec3822b5e582805d43366b"
+      "sha256": "3693b499543f9eb3f3c8bb362a15a5b8c26cba0efbdbc26c61510b1dac99e4df"
     },
     {
       "path": "tests/ops/_current_post_safety_fixture_v1.py",
@@ -2439,7 +2439,7 @@
     {
       "path": "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3",
-      "sha256": "860c21ee6add0fe30fcb0bb3eeb6126e090c120de02ef72b23191aa999fc5819"
+      "sha256": "a0c2dc285f680f68845f6523dd5c2a8f414f101a21902a5809bec2803a320153"
     },
     {
       "path": "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
@@ -2489,7 +2489,7 @@
     {
       "path": "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
       "before_sha256": "1d25c3c3fcc2eb52968ba873a95f640cce7e5384d02c302f8a81b13bfdaed6b5",
-      "sha256": "400d2d2aa7b4bbe58fbe801f89e07d5f6e0ef6b78f206fb730f34c577bf51601"
+      "sha256": "7ba744a70e7917b9b2a1f1ac0c79fa4d660d31706de96044d02f99de1d64f80e"
     },
     {
       "path": "tests/ops/test_full_core_live_path_composition_root_v1.py",
@@ -2754,7 +2754,7 @@
     {
       "path": "tests/ops/test_treasury_phase_1_canonical_and_authority_v1.py",
       "before_sha256": "03f14f041b06949d1c0d10f2bf3d19d0b2736c0aabf8cb436504f1672df1725e",
-      "sha256": "eaaf00633a7f9de207507537c06cb73d03ec4e0828f3745f967d71f08613fc2f"
+      "sha256": "178ce75de2a42c2bc78d02b6e0887ca1d8f56acf9c39876f2be91cb828810b1e"
     },
     {
       "path": "tests/test_mf_membership_context_artifact_contract_v1.py",
