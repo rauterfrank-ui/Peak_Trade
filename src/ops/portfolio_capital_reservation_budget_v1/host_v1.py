@@ -160,8 +160,17 @@ def collect_host_account_observation_v1(
     from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
         is_original_account_observation_source_v1,
     )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        K1AccountObservationSourceV1,
+    )
 
-    if is_original_account_observation_source_v1(private_rest_fetch):
+    if (
+        type(private_rest_fetch) is K1AccountObservationSourceV1
+        and private_rest_fetch.account_inventory_guard
+    ):
+        if any(not native_id.endswith("-SWAP") for native_id in native):
+            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN")
+    elif is_original_account_observation_source_v1(private_rest_fetch):
         private_rest_fetch.bind_completed_host_observation_v1(observation)
         observation = replace(observation, pending_source=private_rest_fetch)
     if startup_port is not None:

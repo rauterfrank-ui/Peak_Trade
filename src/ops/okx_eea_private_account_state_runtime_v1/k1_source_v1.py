@@ -172,7 +172,7 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         ):
             raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_BINDING_REQUIRED")
 
-    def __init__(self, *, credential, transport, **kwargs):
+    def __init__(self, *, credential, transport, account_inventory_guard=False, **kwargs):
         if (
             not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1)
             or transport._handle is not credential
@@ -181,6 +181,30 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         super().__init__(
             credential=credential, transport=_AccountReadTransportV1(transport), **kwargs
         )
+        self.account_inventory_guard = account_inventory_guard
+
+    def _verified_get_v1(self, path, params):
+        # Replace the scoped reads inside this same collection, including the
+        # four pending algo types. History and fills retain their old scope.
+        if (
+            self.account_inventory_guard
+            and params.get("instType") == "SWAP"
+            and path
+            in {"/api/v5/account/positions", "/api/v5/trade/orders-pending", ALGO_PENDING_PATH}
+        ):
+            self._assert_current_resource_pair_v1()
+            payload = super()._verified_get_v1(
+                path, {key: value for key, value in params.items() if key != "instType"}
+            )
+            self._assert_current_resource_pair_v1()
+            if path == "/api/v5/account/positions" and any(
+                row.get("instType") != "SWAP" for row in payload["data"]
+            ):
+                raise AccountObservationSourceError(
+                    "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"
+                )
+            return payload
+        return super()._verified_get_v1(path, params)
 
     def inspect_accounting_bills_v1(self, *, max_pages=6):
         """Bounded, unfiltered archive pagination; no stock or sizing adoption.
@@ -408,6 +432,7 @@ def open_k1_account_observation_source_v1(
     max_request_count,
     k1_lookup_backend=None,
     clock=time.time,
+    account_inventory_guard=False,
 ):
     """Explicit K1 source selection, bounded by its existing acquisition gates.
 
@@ -423,6 +448,8 @@ def open_k1_account_observation_source_v1(
         raise AccountObservationSourceError("OBSERVATION_EXPECTED_ACCOUNT_REQUIRED")
     if not isinstance(session_id, str) or not session_id.strip():
         raise AccountObservationSourceError("OBSERVATION_SESSION_REQUIRED")
+    if type(account_inventory_guard) is not bool:
+        raise AccountObservationSourceError("K1_ACCOUNT_INVENTORY_GUARD_INVALID")
     if (
         isinstance(max_request_count, bool)
         or not isinstance(max_request_count, int)
@@ -438,6 +465,7 @@ def open_k1_account_observation_source_v1(
             expected_account_identity=expected_account_identity,
             session_id=session_id,
             clock=clock,
+            account_inventory_guard=account_inventory_guard,
         )
         try:
             yield source

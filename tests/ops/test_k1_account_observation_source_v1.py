@@ -31,8 +31,10 @@ ACCOUNT = "injected-k1-account"
 
 
 class InjectedOpener:
-    def __init__(self, *, account=ACCOUNT, positions=()):
+    def __init__(self, *, account=ACCOUNT, positions=(), pending=False, algo_pending=False):
         self.fetch = _fetch(uid=account, positions=positions)
+        self.pending = pending
+        self.algo_pending = algo_pending
         self.requests = []
 
     @contextmanager
@@ -42,11 +44,14 @@ class InjectedOpener:
         assert req.has_header("Ok-access-sign")
         self.requests.append(req.full_url)
         url = urlsplit(req.full_url)
+        query = dict(parse_qsl(url.query))
         payload = (
-            {"code": "0", "data": []}
+            {"code": "0", "data": [{"instType": "FUTURES"}] if self.algo_pending else []}
             if url.path.endswith("orders-algo-pending")
-            else self.fetch(url.path, dict(parse_qsl(url.query)))
+            else self.fetch(url.path, query)
         )
+        if self.pending and url.path.endswith("/orders-pending") and "instType" not in query:
+            payload["data"] = [{"instType": "FUTURES", "instId": "BTC-USD_UM_XPERP-310404"}]
 
         class Response:
             status = 200
@@ -179,6 +184,84 @@ def test_scope_probe_exposes_other_or_unknown_products_without_adopting_account(
     assert len(opener.requests) == 7
     assert all("instType" not in url for url in opener.requests)
     assert ACCOUNT not in json.dumps(result)
+
+
+@pytest.mark.parametrize(
+    "fault,expected",
+    [
+        (None, None),
+        ("swap-position", None),
+        ("futures-position", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"),
+        ("missing-product", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"),
+        ("pending", "STARTUP_PENDING_ORDERS_UNRESOLVED"),
+        ("algo-pending", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("futures-binding", "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"),
+    ],
+)
+def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expected):
+    from dataclasses import replace
+
+    from tests.ops.test_portfolio_budget_host_v1 import BOUND, _host
+
+    bound = BOUND
+    positions = []
+    if fault in {"futures-position", "missing-product"}:
+        position = {"instId": "BTC-USD_UM_XPERP-310404", "posSide": "net", "pos": "1"}
+        if fault == "futures-position":
+            position["instType"] = "FUTURES"
+        positions.append(position)
+    if fault == "swap-position":
+        positions.append(
+            {"instId": BOUND.venue_native_id, "instType": "SWAP", "posSide": "net", "pos": "-2"}
+        )
+    if fault == "futures-binding":
+        bound = replace(BOUND, venue_native_id="BTC-USD_UM_XPERP-310404")
+    opener = InjectedOpener(
+        positions=positions, pending=fault == "pending", algo_pending=fault == "algo-pending"
+    )
+    with patch.object(wire, "build_opener", return_value=opener):
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=ACCOUNT,
+            session_id="account-inventory",
+            max_request_count=10,
+            k1_lookup_backend=_FakeKeychainBackend(),
+            account_inventory_guard=True,
+        ) as source:
+            host = _host(tmp_path, source, expected_account=ACCOUNT)
+            try:
+                if expected is None:
+                    result = host.observe_v1({"LANE_1": bound})
+                    assert not result.pending_orders
+                    if fault == "swap-position":
+                        (position,) = result.observed.positions
+                        assert position.instrument_id == BOUND.instrument_id
+                        assert position.signed_quantity == -2
+                    else:
+                        assert result.observed.positions == ()
+                    assert host.owner.budget_state_v1().recovery_required
+                    assert len(opener.requests) == 10
+                else:
+                    with pytest.raises(ValueError, match=expected):
+                        host.observe_v1({"LANE_1": bound})
+                    assert host.owner is None and not host.root.exists()
+                assert source.pending_observation_v1() is None
+            finally:
+                host.close()
+
+    urls = [urlsplit(request) for request in opener.requests]
+    inventory = [
+        url
+        for url in urls
+        if url.path.endswith(("positions", "orders-pending", "orders-algo-pending"))
+    ]
+    assert inventory and all("instType" not in url.query for url in inventory)
+    if expected is None:
+        assert len(inventory) == 6
+        assert all(
+            dict(parse_qsl(url.query)) == {"instType": "SWAP"}
+            for url in urls
+            if url.path.endswith(("orders-history", "fills"))
+        )
 
 
 def test_readiness_cli_defaults_to_no_keychain_or_network(monkeypatch, capsys):

@@ -50,6 +50,49 @@ def test_flat_account_binding_uses_shared_collector_without_budget_store(state):
     assert not list(state[1].rglob("*.sqlite*"))
 
 
+@pytest.mark.parametrize("futures_position", [False, True])
+def test_k1_inventory_guard_at_original_startup_binding(state, futures_position):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import (
+        InjectedOpener,
+        _FakeKeychainBackend,
+    )
+
+    account = "account-injected"
+    position = {
+        "instId": "BTC-USD_UM_XPERP-310404",
+        "instType": "FUTURES",
+        "posSide": "net",
+        "pos": "1",
+    }
+    opener = InjectedOpener(account=account, positions=[position] if futures_position else [])
+    with patch.object(wire, "build_opener", return_value=opener):
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=account,
+            session_id="n1-start",
+            max_request_count=10,
+            k1_lookup_backend=_FakeKeychainBackend(),
+            account_inventory_guard=True,
+        ) as source:
+            if futures_position:
+                before = tree_bytes(state[1])
+                with pytest.raises(
+                    ValueError, match="ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"
+                ):
+                    call(state, private_rest_fetch=source)
+                assert tree_bytes(state[1]) == before
+            else:
+                result = call(state, private_rest_fetch=source)
+                assert result.handoff.selection_id == state[0]["selection"].selection_id
+                assert result.observation.pending_source is None
+    assert any(url.endswith("/api/v5/account/positions") for url in opener.requests)
+
+
 @pytest.mark.parametrize("qty", ["2", "-2"])
 def test_private_open_position_is_retained_when_matched(state, qty):
     from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PositionTruthV1
