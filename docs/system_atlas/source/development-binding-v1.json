@@ -934,7 +934,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "21d87fdb837d599f71bc47dc316555e127b6490d5a5c0525ec01c7876adb5c20"
+      "sha256": "c65803ca2a4b168bf079fa0bfb50cbc176db90e4dba9251977d9dc910a27977e"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1010,6 +1010,11 @@
       "path": "pyproject.toml",
       "before_sha256": "7ef8f54894a9811bce57f2c0fed5279de8ce4be39be4b3cca00a6de0d6a4c9ab",
       "sha256": "060a5b5751e1b2b6188fcb1c33c879101c11cee03d2b2494d859fa934915c014"
+    },
+    {
+      "path": "requirements.txt",
+      "before_sha256": "2dc43df75bc4fefebfd7e0e6b3d980b223480eb9f23b2467e19ebe406d7e7cb3",
+      "sha256": "4f5666c408eebfa758db3112a12e8234900336f06aa223b6898f90b549b174d6"
     },
     {
       "path": "scripts/ci/check_ruff_frozen_format_v1.py",
