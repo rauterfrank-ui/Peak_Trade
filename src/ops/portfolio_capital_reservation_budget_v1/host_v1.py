@@ -75,14 +75,46 @@ def collect_host_account_observation_v1(
     if type(private_rest_fetch) is StandingStartupAccountObservationPortV1:
         startup_port = private_rest_fetch
         private_rest_fetch = startup_port.fetch
+    native = dict(instrument_ids_by_native_id)
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        K1AccountObservationSourceV1,
+    )
+
+    inventory_source = None
+    if (
+        type(private_rest_fetch) is K1AccountObservationSourceV1
+        and private_rest_fetch.account_inventory_guard
+    ):
+        inventory_source = private_rest_fetch
+    # The legacy baseline observes SWAP. At standing startup, only the
+    # guarded K1 source can provide account custody for a FUTURES selection.
+    observed_product = (
+        inventory_source.inventory_inst_type if inventory_source is not None else "SWAP"
+    )
+    if startup_port is not None or inventory_source is not None:
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            resolve_reconciliation_query_options_v1,
+        )
+
+        try:
+            bound_products = {
+                resolve_reconciliation_query_options_v1(
+                    instrument_id=instrument_id, native_id=native_id
+                ).inst_type
+                for native_id, instrument_id in native.items()
+            }
+        except ValueError as exc:
+            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN") from exc
+        if bound_products - {observed_product}:
+            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN")
     started = clock()
     uids = set()
     pending = []
     occupancy = {}
 
     def fetch(path, params):
-        # Baseline defaults filter orders by one instrument. The shared
-        # budget must observe the account's SWAP scope instead.
+        # The budget needs account scope. K1 custody expands the position
+        # and pending reads and selects the product for history and fills.
         query = {k: v for k, v in params.items() if k != "instId"}
         payload = private_rest_fetch(path, query)
         key = {
@@ -123,35 +155,7 @@ def collect_host_account_observation_v1(
         rest_baseline=baseline,
     ).trusted:
         raise ValueError("HOST_BUDGET_PRIVATE_RECONCILIATION_REQUIRED")
-    native = dict(instrument_ids_by_native_id)
-    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
-        K1AccountObservationSourceV1,
-    )
-
-    inventory_source = None
-    source_id = "host-private-rest-swap"
-    if (
-        type(private_rest_fetch) is K1AccountObservationSourceV1
-        and private_rest_fetch.account_inventory_guard
-    ):
-        from src.ops.execution_reconciliation_get_provenance_v1 import (
-            resolve_reconciliation_query_options_v1,
-        )
-
-        try:
-            bound_products = {
-                resolve_reconciliation_query_options_v1(
-                    instrument_id=instrument_id, native_id=native_id
-                ).inst_type
-                for native_id, instrument_id in native.items()
-            }
-        except ValueError as exc:
-            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN") from exc
-        if bound_products - {private_rest_fetch.inventory_inst_type}:
-            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN")
-        inventory_source = private_rest_fetch
-        if inventory_source.inventory_inst_type == "FUTURES":
-            source_id = "host-private-rest-futures"
+    source_id = f"host-private-rest-{observed_product.lower()}"
     positions = []
     seen = set()
     for p in baseline.positions:

@@ -284,7 +284,10 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         for url in urls
         if url.path.endswith(("positions", "orders-pending", "orders-algo-pending"))
     ]
-    assert inventory and all("instType" not in url.query for url in inventory)
+    if fault == "futures-binding":
+        assert not urls
+    else:
+        assert inventory and all("instType" not in url.query for url in inventory)
     if expected is None:
         assert len(inventory) == 6
         assert all(

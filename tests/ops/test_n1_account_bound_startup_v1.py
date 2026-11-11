@@ -1,10 +1,12 @@
 """Account-aware startup against the real selection/reconciliation seam, offline."""
 
+from contextlib import nullcontext
 from dataclasses import replace
 from decimal import Decimal
 import json
 from types import SimpleNamespace
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
@@ -279,3 +281,164 @@ def test_supervisor_requires_account_bound_start_before_recovery(state, tmp_path
             )
     assert start.call_args.kwargs["expected_bound"] is bound
     assert start.call_args.kwargs["expected_account_identity"] == "account-injected"
+
+
+@pytest.mark.parametrize("product", ["FUTURES", "SWAP", None])
+def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(tmp_path, product):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as wire,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1.constants_v1 import (
+        TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+    from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PositionTruthV1
+    from tests.ops.test_current_usdc_xperp_financial_admission_v1 import instrument
+    from tests.ops.test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
+        _build_fresh_chain,
+        _materialize_productivity_root,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
+    from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import _continuous_auth
+
+    account = "account-injected"
+    native = "ETH-USD_UM_XPERP-310404"
+    row = instrument(settlement="USD")
+    row.update(instId=native, uly="ETH-USD", instFamily="ETH-USD_UM_XPERP", ctValCcy="ETH")
+    chain = _build_fresh_chain(tmp_path / "source", instrument_rows=[row])
+    prod = _materialize_productivity_root(tmp_path, chain)
+    state = chain, prod
+    initial = component.acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+        **kwargs(state), observed_portfolio=observed(state)
+    )
+    bound = initial.bound_instrument
+    assert bound.venue_native_id == native
+    assert bound.instrument_id == "okx_eea:linear_dated_future:ETH:USD:USD:eth-usd_um_xperp-310404"
+    recon = prod / "runtime_state/recon"
+    if product == "FUTURES":
+        snapshot = observed(
+            state,
+            positions=(
+                PositionTruthV1.from_signed(
+                    instrument_id=bound.instrument_id, signed_quantity="-2"
+                ),
+            ),
+        )
+        (recon / PORTFOLIO_STATE_FILENAME).write_text(json.dumps(snapshot.to_dict()))
+    before = tree_bytes(prod)
+    gate = tmp_path / "filegate.json"
+    config = supervisor.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=tmp_path / "lane",
+        evidence_root=tmp_path / "standing",
+        cap24_productivity_root=prod,
+        expected_account_identity=account,
+        venue_native_id=native,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+        kill_switch_state_path=str(gate),
+    )
+    owner_root = supervisor.budget_owner_root_for_config_v1(config) / "owner"
+    seed = PortfolioCapitalReservationBudgetOwnerV1(
+        durable_root=owner_root,
+        durable_account_identity=account,
+        durable_mode="create",
+        durable_lane_bindings={"LANE_1": bound},
+    )
+    seed.close()
+    opener = InjectedOpener(
+        account=account,
+        positions=[{"instId": native, "instType": "FUTURES", "posSide": "net", "pos": "-2"}]
+        if product == "FUTURES"
+        else [],
+    )
+    legacy_requests = []
+    reconcile = PortfolioBudgetHostV1.reconcile_standing_startup_observation_v1
+    received = []
+
+    def receive(host, bindings, observation):
+        reconcile(host, bindings, observation)
+        assert bindings == {"LANE_1": bound}
+        assert host.owner.budget_state_v1().recovery_required
+        received.append((host.fetch, observation))
+
+    with (
+        patch.object(wire, "build_opener", return_value=opener),
+        patch.object(supervisor, "canonical_kill_switch_state_path", return_value=str(gate)),
+        patch.object(PortfolioBudgetHostV1, "reconcile_standing_startup_observation_v1", receive),
+        patch.object(
+            supervisor, "_run_unified_recovery_v1", side_effect=ValueError("STARTUP_COMPLETE")
+        ) as recovery,
+    ):
+        source_context = (
+            open_k1_account_observation_source_v1(
+                expected_account_identity=account,
+                session_id=config.evidence_root.name,
+                max_request_count=10,
+                k1_lookup_backend=_FakeKeychainBackend(),
+                account_inventory_guard=True,
+                inventory_inst_type=product,
+            )
+            if product is not None
+            else nullcontext(_fetch(uid=account, calls=legacy_requests))
+        )
+        with source_context as source:
+            expected = (
+                "STARTUP_COMPLETE"
+                if product == "FUTURES"
+                else "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"
+            )
+            with pytest.raises(ValueError, match=expected):
+                supervisor.run_n1_standing_pre_external_supervisor_v1(
+                    config=config,
+                    origin_main_sha=chain["repository_sha"],
+                    bound=bound,
+                    authorization=_continuous_auth(native_id=native, max_cycles=1),
+                    observation_source=None,
+                    g17_producers={},
+                    f1_m9_cycle_evaluator=None,
+                    public_rest_fetch=None,
+                    private_rest_fetch=source,
+                    skip_owner_go_validation=True,
+                )
+    assert not config.lane_state_root.exists()
+    assert not gate.exists()
+    if product == "FUTURES":
+        recovery.assert_called_once()
+        assert len(received) == 1
+        fetch, observation = received[0]
+        assert observation.account_inventory_source is fetch
+        assert observation.observed.source_id == "host-private-rest-futures"
+        assert observation.observed.positions[0].signed_quantity == Decimal("-2")
+        assert len(opener.requests) == 10
+        queries = [urlsplit(url) for url in opener.requests]
+        for request in queries:
+            query = parse_qs(request.query)
+            if request.path.endswith(("/orders-history", "/fills")):
+                assert query == {"instType": ["FUTURES"]}
+            else:
+                assert "instType" not in query and "instId" not in query
+        restored = load_persisted_portfolio_state(recon, require_present=True)
+        assert restored.positions[0].instrument_id == bound.instrument_id
+        assert restored.positions[0].signed_quantity == Decimal("-2")
+        assert {
+            path: value
+            for path, value in before.items()
+            if not path.startswith("runtime_state/recon")
+        } == {
+            path: value
+            for path, value in tree_bytes(prod).items()
+            if not path.startswith("runtime_state/recon")
+        }
+    else:
+        recovery.assert_not_called()
+        assert received == []
+        assert not opener.requests and not legacy_requests
+        assert tree_bytes(prod) == before
