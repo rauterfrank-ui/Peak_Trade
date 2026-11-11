@@ -343,6 +343,9 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         "stale",
         "foreign-usdc",
         "bot",
+        "clipped",
+        "missing-in-use",
+        "negative-in-use",
     ],
 )
 def test_futures_financial_custody_binds_original_host_inventory_and_local_revision(
@@ -350,6 +353,7 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
 ):
     from dataclasses import replace
     from datetime import datetime, timezone
+    from fractions import Fraction
 
     from tests.ops.test_portfolio_budget_host_v1 import (
         ACCOUNT as OWNER_ACCOUNT,
@@ -383,13 +387,17 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
         if path == "/api/v5/account/config":
             payload["data"][0]["settleCcy"] = "USDC"
         if path == "/api/v5/account/balance":
-            payload["data"][0]["details"] = [
-                {
-                    "ccy": "USD" if financial_capture and fault == "foreign-usdc" else "USDC",
-                    "cashBal": "119",
-                    "availEq": "98",
-                }
-            ]
+            detail = {"ccy": "USDC", "cashBal": "119", "availEq": "98", "frozenBal": "20.125"}
+            if financial_capture:
+                if fault == "foreign-usdc":
+                    detail["ccy"] = "USD"
+                elif fault == "clipped":
+                    detail["availEq"] = "0"
+                elif fault == "missing-in-use":
+                    del detail["frozenBal"]
+                elif fault == "negative-in-use":
+                    detail["frozenBal"] = "-1"
+            payload["data"][0]["details"] = [detail]
             if financial_capture and fault == "local-during":
                 assert _reserve(host.owner).disposition.value == "ADMITTED"
         if path == "/api/v5/account/positions" and financial_capture:
@@ -454,7 +462,13 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
             assert commitment.reservation_id == str(hold.reservation_id)
             assert commitment.state == "RESERVED"
             assert proof.local_commitments.venue_margin_coverage == "UNPROVEN_NO_MARGIN_CREDIT"
-            gets = host.inspect_futures_financial_custody_v1(proof)
+            readback = host.inspect_futures_financial_custody_v1(proof)
+            assert readback.current_cross_balance_with_pnl_usdc == (
+                None
+                if fault in {"clipped", "missing-in-use", "negative-in-use"}
+                else Fraction("118.125")
+            )
+            gets = readback.gets
             assert len(gets) == 18
             assert all(
                 row["pretrade_decision_id"] == "futures-financial-k1" for row in gets.values()
@@ -464,10 +478,11 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
             )
             assert gets["/api/v5/account/positions"]["payload"]["data"][0]["pos"] == "-2"
             detail = gets["/api/v5/account/balance"]["payload"]["data"][0]["details"][0]
-            assert detail["cashBal"] == "119" and detail["availEq"] == "98"
+            assert detail["cashBal"] == "119"
+            assert detail["availEq"] == ("0" if fault == "clipped" else "98")
             detail["cashBal"] = "9999"
             assert (
-                host.inspect_futures_financial_custody_v1(proof)["/api/v5/account/balance"][
+                host.inspect_futures_financial_custody_v1(proof).gets["/api/v5/account/balance"][
                     "payload"
                 ]["data"][0]["details"][0]["cashBal"]
                 == "119"
@@ -480,7 +495,7 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
                 source.close()
             elif fault == "stale":
                 now[0] += 6
-            if fault:
+            if fault in {"local-after", "new-read", "closed-source", "stale"}:
                 before = host.owner._store.load(), host.owner._store.sequence
                 with pytest.raises(
                     ValueError, match="(LOCAL_COMMITMENT_GENERATION|FUTURES_FINANCIAL_INVENTORY)"

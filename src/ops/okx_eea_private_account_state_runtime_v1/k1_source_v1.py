@@ -5,9 +5,11 @@ No fallback from the dedicated observer credential contract and no POST port.
 """
 
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+from fractions import Fraction
 import json
 import math
 import re
@@ -48,6 +50,27 @@ FUTURES_INVENTORY_REQUEST_COUNT = (
     6 + len(FUTURES_INVENTORY_ALGO_TYPES) + len(FUTURES_INVENTORY_BOT_QUERIES)
 )
 _SIGNED_FIXED_DECIMAL = re.compile(r"-?[0-9]+(?:\.[0-9]+)?")
+
+
+@dataclass(frozen=True)
+class FuturesFinancialVenueInputsV1:
+    gets: dict = field(repr=False)
+    current_cross_balance_with_pnl_usdc: Fraction | None = field(repr=False)
+
+
+def _cross_balance_with_pnl_v1(usdc):
+    """Invert the documented floor only when the observed free margin is positive."""
+    amounts = (usdc.get("availEq"), usdc.get("frozenBal"))
+    if any(
+        not isinstance(value, str) or len(value) > 128 or not _SIGNED_FIXED_DECIMAL.fullmatch(value)
+        for value in amounts
+    ):
+        return None
+    free, in_use = map(Fraction, amounts)
+    # OKX Futures cross: availEq = max(0, cross balance + cross PnL - frozenBal).
+    if free <= 0 or in_use < 0:
+        return None
+    return free + in_use
 
 
 def _validate_inventory_scope_v1(guard, inst_type):
@@ -353,12 +376,17 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             not isinstance(details, list)
             or balance[0].get("uid", observation.account) != observation.account
             or any(not isinstance(row, dict) for row in details)
-            or sum(row.get("ccy") == "USDC" for row in details) != 1
         ):
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_USDC_BALANCE_SCOPE_UNPROVEN")
+        usdc = [row for row in details if row.get("ccy") == "USDC"]
+        if len(usdc) != 1:
             raise AccountObservationSourceError("FUTURES_FINANCIAL_USDC_BALANCE_SCOPE_UNPROVEN")
         if self.transport.read_count != read_count:
             raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_SCOPE_CHANGED")
-        return json.loads(json.dumps(gets, allow_nan=False))
+        return FuturesFinancialVenueInputsV1(
+            gets=json.loads(json.dumps(gets, allow_nan=False)),
+            current_cross_balance_with_pnl_usdc=_cross_balance_with_pnl_v1(usdc[0]),
+        )
 
     def inspect_accounting_bills_v1(self, *, max_pages=6):
         """Bounded, unfiltered archive pagination; no stock or sizing adoption.

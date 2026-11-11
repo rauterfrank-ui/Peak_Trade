@@ -415,13 +415,13 @@ class PortfolioBudgetHostV1:
             or tuple(sorted(self.bindings.items())) != proof._bindings
         ):
             raise ValueError("FUTURES_FINANCIAL_HOST_SCOPE_CHANGED")
-        gets = proof._observation.account_inventory_source.inspect_futures_financial_gets_v1(
+        inputs = proof._observation.account_inventory_source.inspect_futures_financial_gets_v1(
             proof._observation, read_count=proof._read_count
         )
         self.owner.require_local_commitment_readback_v1(
             proof.local_commitments, account_identity=self.account
         )
-        return gets
+        return inputs
 
     def reconcile_standing_startup_observation_v1(self, bindings, observation):
         """Use the completed startup sample in the same owner used later by S5."""
