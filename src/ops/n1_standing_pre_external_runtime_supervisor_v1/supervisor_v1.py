@@ -58,6 +58,7 @@ from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_real_md_cap22_n
 )
 from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_runtime_economic_md_adapter_v1 import (
     PublicRuntimeEconomicMdPublicSourceV1,
+    persist_bound_ranking_mark_window_v1,
 )
 from src.ops.n1_whole_system_hard_facts_integration_wp_v1.unified_recovery_orchestration_v1 import (
     UnifiedRecoveryOrchestrationResultV1,
@@ -65,6 +66,7 @@ from src.ops.n1_whole_system_hard_facts_integration_wp_v1.unified_recovery_orche
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
 from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
+    PublicRestRecoveryError,
     public_instrument_ref_for_binding_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
@@ -421,7 +423,6 @@ def run_n1_standing_pre_external_supervisor_v1(
             public_instrument_ref=public_instrument_ref,
         )
         trace.public_supply_refreshed = True
-        trace.public_marks_count = mark_count
 
         wp02_chain_error: type[Exception] | None = None
         if wp02_hook is not None:
@@ -445,6 +446,21 @@ def run_n1_standing_pre_external_supervisor_v1(
             topo_base = config.wp02_topology_state_root_base or (
                 config.lane_state_root / "topology"
             )
+            bound_mark_window = None
+            if (
+                public_instrument_ref is not None
+                and public_instrument_ref.instrument_type == "FUTURES"
+            ):
+                try:
+                    bound_mark_window = persist_bound_ranking_mark_window_v1(
+                        store_root=config.public_store_root,
+                        fetch_json=public_rest_fetch,
+                        instrument_ref=public_instrument_ref,
+                        session_id=run_id,
+                    )
+                except PublicRestRecoveryError as exc:
+                    raise StandingSupervisorError("WP02_PUBLIC_PT1M_FAIL_CLOSED", str(exc)) from exc
+                mark_count = len(bound_mark_window.fact_digests)
             binding = Wp02HookBindingV1(
                 wp02_state_root=wp02_state,
                 topology_state_root_base=topo_base,
@@ -452,10 +468,12 @@ def run_n1_standing_pre_external_supervisor_v1(
                 universe_source_payload=config.wp02_universe_source_payload,
                 universe_mark_price_payload=config.wp02_universe_mark_price_payload,
                 source_event_time=config.wp02_universe_source_event_time,
+                bound_mark_window=bound_mark_window,
             )
             hook = build_default_wp02_hook_v1(binding)
         else:
             hook = noop_wp02_hook_v1
+        trace.public_marks_count = mark_count
         wp02_result_sink: dict[str, Any] = {}
         try:
             hook(

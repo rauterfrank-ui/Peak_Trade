@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+import time
 from typing import Any, Callable, Mapping, Optional
 
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
     EEA_REST_HOST,
     MARK_HISTORY_CANDLES_PATH,
     MARK_PRICE_REST_PATH,
+    PT1M_STEP_MS,
     TICKER_REST_PATH,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import (
@@ -34,6 +37,82 @@ class GapRecoveryResultV1:
     gaps_detected: int
     recovered_bars: tuple[FinalizedPt1mMarkFactV1, ...]
     notes: tuple[str, ...] = field(default_factory=tuple)
+
+
+def collect_bound_rest_pt1m_mark_window_v1(
+    fetch_json: RestGetJson,
+    *,
+    instrument_ref: InstrumentRefV1,
+    session_id: str,
+) -> tuple[tuple[FinalizedPt1mMarkFactV1, ...], float, float]:
+    from src.ops.economic_md_input_producer_v1.constants_v1 import MARK_BAR, MARK_HISTORY_LIMIT
+    from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+        parse_okx_mark_candles_v1,
+    )
+    from src.ops.economic_md_input_producer_v1.validation_v1 import (
+        select_finalized_contiguous_pt1m_marks_v1,
+    )
+
+    started = time.time()
+    payload = fetch_json(
+        MARK_HISTORY_CANDLES_PATH,
+        {"instId": instrument_ref.venue_native_id, "bar": MARK_BAR, "limit": MARK_HISTORY_LIMIT},
+    )
+    captured = time.time()
+    data = payload.get("data") if isinstance(payload, Mapping) else None
+    if (
+        captured < started
+        or not isinstance(data, list)
+        or len(data) > int(MARK_HISTORY_LIMIT)
+        or payload.get("code") != "0"
+        or any(
+            not isinstance(row, list)
+            or len(row) != 6
+            or row[5] not in ("0", "1")
+            or not isinstance(row[0], str)
+            or not row[0].isascii()
+            or not row[0].isdigit()
+            or not isinstance(row[4], str)
+            for row in data
+        )
+    ):
+        raise PublicRestRecoveryError("PUBLIC_PT1M_HISTORY_RESPONSE_UNPROVEN")
+    captured_at = datetime.fromtimestamp(captured, timezone.utc).isoformat()
+    raw = parse_okx_mark_candles_v1(
+        payload,
+        venue_native_id=instrument_ref.venue_native_id,
+        receive_or_capture_timestamp=captured_at,
+    )
+    try:
+        marks, failures = select_finalized_contiguous_pt1m_marks_v1(raw)
+    except ValueError as exc:
+        raise PublicRestRecoveryError("PUBLIC_PT1M_HISTORY_RESPONSE_UNPROVEN") from exc
+    if failures:
+        raise PublicRestRecoveryError("PUBLIC_PT1M_WINDOW_UNPROVEN:" + ",".join(failures))
+    intervals = [int(mark.event_timestamp) for mark in marks]
+    if any(ts % PT1M_STEP_MS or ts + PT1M_STEP_MS > int(captured * 1000) for ts in intervals):
+        raise PublicRestRecoveryError("PUBLIC_PT1M_INTERVAL_UNPROVEN")
+    normalized = parse_finalized_pt1m_mark_rows_v1(
+        payload,
+        instrument_ref_dict=instrument_ref.to_dict(),
+        captured_at=captured_at,
+        transport="public_rest",
+    )
+    by_interval = {fact.interval_start_ms: fact for fact in normalized}
+    payload_digest = fact_digest(payload)
+    return (
+        tuple(
+            replace(
+                fact,
+                provenance=replace(
+                    fact.provenance, raw_payload_digest=payload_digest, session_id=session_id
+                ),
+            )
+            for fact in (by_interval[ts] for ts in intervals)
+        ),
+        started,
+        captured,
+    )
 
 
 def assert_eea_rest_host_v1(url_or_host: str) -> None:

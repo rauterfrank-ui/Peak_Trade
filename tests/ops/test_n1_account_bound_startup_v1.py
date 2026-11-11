@@ -295,17 +295,27 @@ def test_supervisor_requires_account_bound_start_before_recovery(state, tmp_path
         ("FUTURES", "invalid-mark-price"),
         ("FUTURES", "invalid-mark-time"),
         ("FUTURES", "wrong-ticker-product"),
+        ("FUTURES", "wp02"),
+        ("FUTURES", "wp02-gap"),
+        ("FUTURES", "wp02-future"),
+        ("FUTURES", "wp02-universe-mismatch"),
     ],
 )
 def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     tmp_path, product, public_fault
 ):
+    from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1 import (
+        recover_durable_lane_assignment_v1,
+    )
     from src.ops.full_core_live_path_composition_root_v1 import (
         productive_read_only_get_transport_v1 as wire,
     )
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1.constants_v1 import (
         TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_runtime_economic_md_adapter_v1 import (
+        persist_bound_ranking_mark_window_v1,
     )
     from src.ops.okx_eea_private_account_state_runtime_v1.durable_store_v1 import (
         default_private_store_paths_v1,
@@ -320,6 +330,13 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
         query_historical_facts_v1,
     )
+    from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
+        PublicRestRecoveryError,
+        public_instrument_ref_for_binding_v1,
+    )
+    from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
+        load_and_validate_ranking_snapshot_v1,
+    )
     from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PositionTruthV1
     from src.risk_layer.kill_switch.persistence import StatePersistence
     from src.risk_layer.kill_switch.state import KillSwitchState
@@ -330,6 +347,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     )
     from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener, _FakeKeychainBackend
     from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import _continuous_auth
+    from tests.ops.test_single_selected_future_runtime_binding_v1 import _marks, _payload
 
     account = "account-injected"
     native = "ETH-USD_UM_XPERP-310404"
@@ -361,6 +379,9 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         KillSwitchState.KILLED, killed_at=datetime.now(timezone.utc), trigger_reason="test"
     )
     gate_before = gate.read_bytes()
+    event_time = str(int(datetime.now(timezone.utc).timestamp() * 1000))
+    exercise_wp02 = public_fault is not None and public_fault.startswith("wp02")
+    universe_row = dict(row, settleCcy="USDC") if public_fault == "wp02-universe-mismatch" else row
     config = supervisor.StandingSupervisorConfigV1(
         public_store_root=tmp_path / "public",
         private_store_root=tmp_path / "private",
@@ -373,6 +394,9 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         transport_scope=TRANSPORT_SCOPE_SCOPED_READONLY_GET,
         kill_switch_state_path=str(gate),
         simulate_restart_before_continuous=True,
+        wp02_universe_source_payload=_payload([universe_row]),
+        wp02_universe_mark_price_payload=_marks(native),
+        wp02_universe_source_event_time=event_time,
     )
     owner_root = supervisor.budget_owner_root_for_config_v1(config) / "owner"
     seed = PortfolioCapitalReservationBudgetOwnerV1(
@@ -394,9 +418,21 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     public_requests = []
     mark_path = "/api/v5/public/mark-price"
     ticker_path = "/api/v5/market/ticker"
+    history_path = "/api/v5/market/history-mark-price-candles"
     mark_query = {"instType": "FUTURES", "instId": native}
     ticker_query = {"instId": native}
-    event_time = str(int(datetime.now(timezone.utc).timestamp() * 1000))
+    history_query = {"instId": native, "bar": "1m", "limit": "100"}
+    current_minute = int(event_time) // 60_000 * 60_000
+    history = [
+        [str(current_minute - offset * 60_000), "100", "200", "99", str(100 + offset), "1"]
+        for offset in range(1, 63)
+    ]
+    history.insert(0, [str(current_minute), "100", "200", "99", "999", "0"])
+    if public_fault == "wp02-gap":
+        history.pop(20)
+    if public_fault == "wp02-future":
+        for candle in history:
+            candle[0] = str(int(candle[0]) + 86_400_000)
 
     def receive(host, bindings, observation):
         reconcile(host, bindings, observation)
@@ -407,6 +443,9 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
     def public_fetch(path, query):
         public_requests.append((path, query))
         assert product == "FUTURES" and len(received) == 1
+        if path == history_path:
+            assert exercise_wp02 and query == history_query
+            return _payload(history)
         row = {"instType": "FUTURES", "instId": native, "ts": event_time}
         if path == mark_path:
             assert query == mark_query
@@ -422,6 +461,7 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         else:
             assert path == ticker_path and query == ticker_query
             row["last"] = "100.2"
+            row.update(bidPx="100.1", askPx="100.3")
             if public_fault == "wrong-ticker-product":
                 row["instType"] = "SWAP"
         return {"code": "0", "data": [row]}
@@ -431,10 +471,15 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         assert context.canonical_instrument_id == bound.instrument_id
         raise ValueError("PUBLIC_SUPPLY_COMPLETE")
 
+    def stop_after_wp02(**kwargs):
+        assert kwargs["bound"] == bound
+        raise ValueError("WP02_COMPLETE")
+
     with (
         patch.object(wire, "build_opener", return_value=opener),
         patch.object(supervisor, "canonical_kill_switch_state_path", return_value=str(gate)),
         patch.object(PortfolioBudgetHostV1, "reconcile_standing_startup_observation_v1", receive),
+        patch.object(supervisor, "_refresh_pretrade_truth_v1", stop_after_wp02),
     ):
         source_context = (
             open_k1_account_observation_source_v1(
@@ -451,6 +496,14 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         with source_context as source:
             if product != "FUTURES":
                 expected = "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"
+            elif public_fault == "wp02":
+                expected = "WP02_COMPLETE"
+            elif public_fault == "wp02-gap":
+                expected = "WP02_PUBLIC_PT1M_FAIL_CLOSED:PUBLIC_PT1M_WINDOW_UNPROVEN:MISSING_MARK_BAR_NO_IMPLICIT_FILL"
+            elif public_fault == "wp02-future":
+                expected = "WP02_PUBLIC_PT1M_FAIL_CLOSED:PUBLIC_PT1M_INTERVAL_UNPROVEN"
+            elif public_fault == "wp02-universe-mismatch":
+                expected = "PUBLIC_PT1M_BOUND_WINDOW_UNIVERSE_MISMATCH"
             elif public_fault:
                 source_kind = "TICKER" if public_fault == "wrong-ticker-product" else "MARK"
                 expected = f"UNIFIED_RECOVERY_FAIL_CLOSED:PUBLIC_{source_kind}_BOOTSTRAP_UNPROVEN"
@@ -473,10 +526,10 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
                             "data": [{"instId": native, "markPx": "100.7", "ts": event_time}],
                         }
                     ],
-                    wp02_hook=stop_after_supply,
+                    wp02_hook=None if exercise_wp02 else stop_after_supply,
                     skip_owner_go_validation=True,
                 )
-    assert not config.lane_state_root.exists()
+    assert config.lane_state_root.exists() is (public_fault in {"wp02", "wp02-universe-mismatch"})
     assert gate.read_bytes() == gate_before
     assert not (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").exists()
     private_paths = default_private_store_paths_v1(config.private_store_root)
@@ -486,7 +539,8 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
         assert observation.account_inventory_source is fetch
         assert observation.observed.source_id == "host-private-rest-futures"
         assert observation.observed.positions[0].signed_quantity == Decimal("-2")
-        assert len(opener.requests) == (10 if public_fault else 30)
+        early_public_failure = public_fault and not exercise_wp02
+        assert len(opener.requests) == (10 if early_public_failure else 30)
         queries = [urlsplit(url) for url in opener.requests]
         for request in queries:
             query = parse_qs(request.query)
@@ -507,17 +561,20 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
             if not path.startswith("runtime_state/recon")
         }
         assert public_requests[:1] == [(mark_path, mark_query)]
-        if public_fault:
+        if early_public_failure:
             assert len(public_requests) == (2 if public_fault == "wrong-ticker-product" else 1)
             assert not private_paths.normalized_state.exists()
             assert not config.public_store_root.exists()
         else:
-            assert public_requests == [(mark_path, mark_query), (ticker_path, ticker_query)] * 3
+            expected_requests = [(mark_path, mark_query), (ticker_path, ticker_query)] * 3
+            if exercise_wp02:
+                expected_requests.append((history_path, history_query))
+            assert public_requests == expected_requests
             private_records = load_all_private_state_v1(private_paths)
             assert len(private_records) == 2
             assert all(record["trusted_boundary_established"] for record in private_records)
             (mark,) = query_historical_facts_v1(
-                config.public_store_root, venue_native_id=native
+                config.public_store_root, venue_native_id=native, fact_kind="MarkPriceFactV1"
             ).facts
             assert mark["fact_kind"] == "MarkPriceFactV1" and mark["mark_px"] == "100.7"
             assert mark["instrument"]["canonical_instrument_id"] == bound.instrument_id
@@ -526,6 +583,58 @@ def test_standing_xperp_startup_preserves_persisted_selection_and_inventory(
             assert mark["timestamps"]["venue_event_time_ms"] == int(event_time)
             capture = datetime.fromisoformat(mark["timestamps"]["captured_at"])
             assert int(capture.timestamp() * 1000) >= int(event_time)
+            candles = query_historical_facts_v1(
+                config.public_store_root,
+                venue_native_id=native,
+                fact_kind="FinalizedPt1mMarkFactV1",
+            ).facts
+            if public_fault == "wp02":
+                assert len(candles) == 61
+                assert [fact["interval_start_ms"] for fact in candles] == list(
+                    range(current_minute - 61 * 60_000, current_minute, 60_000)
+                )
+                assert all(fact["instrument"] == mark["instrument"] for fact in candles)
+                assert all(fact["confirm"] == "1" for fact in candles)
+                rank = load_and_validate_ranking_snapshot_v1(
+                    config.lane_state_root / "wp02_runtime/ranking",
+                    expected_repository_sha=chain["repository_sha"],
+                )
+                assert rank.ok and rank.snapshot.eligible_candidate_count == 1
+                (candidate,) = rank.snapshot.ranked_candidates
+                assert candidate.canonical_instrument_id == bound.instrument_id
+                assert candidate.venue_native_id == native
+                topology = recover_durable_lane_assignment_v1(
+                    topology_state_root_base=config.lane_state_root / "topology",
+                    recovery_mode="RESTART",
+                    expected_universe_snapshot_id=rank.snapshot.universe_snapshot_id,
+                    expected_ranking_snapshot_id=rank.snapshot.ranking_snapshot_id,
+                    expected_ranking_integrity_digest=rank.snapshot.integrity_digest,
+                )
+                assert topology.occupied_instrument_ids == (bound.instrument_id,)
+
+                public_before = tree_bytes(config.public_store_root)
+                params = dict(
+                    store_root=config.public_store_root,
+                    fetch_json=public_fetch,
+                    instrument_ref=public_instrument_ref_for_binding_v1(bound),
+                    session_id="replay",
+                )
+                window = persist_bound_ranking_mark_window_v1(**params)
+                assert len(window.fact_digests) == 61
+                assert tree_bytes(config.public_store_root) == public_before
+                history[1][4] = "202"
+                with pytest.raises(
+                    PublicRestRecoveryError, match="PUBLIC_PT1M_STORED_FACT_CONFLICT"
+                ):
+                    persist_bound_ranking_mark_window_v1(**params)
+                assert tree_bytes(config.public_store_root) == public_before
+            elif public_fault == "wp02-universe-mismatch":
+                assert len(candles) == 61
+                assert not list(
+                    config.lane_state_root.rglob("productive_futures_ranking_snapshot_v1.json")
+                )
+            else:
+                assert candles == ()
     else:
         assert received == []
         assert not opener.requests and not legacy_requests
