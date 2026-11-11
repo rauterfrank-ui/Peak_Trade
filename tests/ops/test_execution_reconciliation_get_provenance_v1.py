@@ -485,6 +485,118 @@ def test_scoped_s5_halts_before_core_with_the_same_host_incident(
     assert len(opener.requests) == 6
 
 
+def test_authenticated_incident_aborts_original_post_before_socket(tmp_path, monkeypatch):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+        parse_exchange_reconciliation_identity_v1,
+    )
+    from tests.ops._current_post_safety_fixture_v1 import synthetic_current_post_pending_context_v1
+    from tests.ops.test_prepost_original_budget_context_v1 import (
+        AccountPort,
+        _clean_post_integrity,
+        caller,
+    )
+
+    host, rid, _, envelope, _, _ = seed_with_origin(tmp_path, monkeypatch)
+    gate = tmp_path / "pre-socket-filegate.json"
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(gate))
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    StatePersistence(str(gate)).save(KillSwitchState.ACTIVE)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
+    host.execution_incident_state_path = gate
+    host.clock = NOW.timestamp
+    store_root = tmp_path / "send"
+    receipt = None
+    before_socket = None
+
+    class ForbiddenHttp:
+        def open(self, *args, **kwargs):
+            pytest.fail("authenticated incident must veto before HTTP")
+
+    def inject_incident_before_final_check():
+        nonlocal receipt, before_socket
+        before_socket = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
+        assert before_socket["transport_attempt"]["phase"] == "PRE_SOCKET"
+        link = host.owner.execution_links_v1()[rid]
+        identity = parse_exchange_reconciliation_identity_v1(link["identity"])
+        opener = SignedReconciliationHttpFixture(identity)
+        monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+        with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+            max_request_count=6, k1_lookup_backend=_FakeKeychainBackend()
+        ) as (transport, _):
+            host.reconciliation_transport = transport
+            with pytest.raises(ExecutionIncidentHaltV1) as stopped:
+                host.observe_v1({"LANE_1": _bound()})
+            assert transport.methods_used == ["GET"] * 6
+        assert stopped.value.raw_get_proof_status == "PERSISTED"
+        receipt = stopped.value.receipt
+        return ForbiddenHttp()
+
+    veto = "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET:TRUSTED_PRESENT:KILLED"
+    try:
+        account = host.owner.durable_scope_identity_v1()["account"]
+        held = host.owner.active_sum_v1()
+        args = dict(
+            envelope=envelope,
+            portfolio_budget_owner=host.owner,
+            portfolio_reservation_id=rid,
+            execution_plan_context=host.owner.execution_plan_context_v1(rid, envelope),
+            post_pending_context=synthetic_current_post_pending_context_v1(
+                envelope, account=account
+            ),
+        )
+        with pytest.raises(caller.CurrentProductiveActualVenuePostError, match=veto):
+            caller.execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+                **args,
+                owner_go=caller.OWNER_GO,
+                baseline_origin_main_sha=caller.EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                store_root=store_root,
+                evidence_root=tmp_path / "send-evidence",
+                perform_real_venue_post=True,
+                k1_backend=_FakeKeychainBackend(),
+                opener_factory=inject_incident_before_final_check,
+                read_only_get_transport=AccountPort(args),
+                execution_integrity_backend=_clean_post_integrity(),
+            )
+        assert receipt["envelope_id"] == envelope.envelope_id
+        assert receipt["envelope_digest"] == envelope.envelope_digest
+        consumed = load_external_effect_durable_consume_v1(store_root=store_root)
+        assert consumed["durable_consumed"] is True
+        assert consumed["retry_allowed"] is consumed["resubmit_allowed"] is False
+        permit = consumed["record"]
+        assert permit["durable_state"] == "ABORTED_BEFORE_TRANSPORT"
+        assert permit["permit_id"] == before_socket["permit_id"]
+        assert permit["execution_identity_digest"] == receipt["identity_digest"]
+        assert permit["envelope_digest"] == receipt["envelope_digest"]
+        attempt = permit["transport_attempt"]
+        assert attempt["claim_id"] == before_socket["transport_attempt"]["claim_id"]
+        assert attempt["phase"] == "ABORTED" and attempt["reason_code"] == veto
+        assert "socket_boundary_at_utc" not in attempt
+        assert host.owner.active_sum_v1() == held > 0
+        assert host.owner.budget_state_v1().recovery_required
+        assert not host.owner.execution_links_v1()[rid]["reconciliation"]["reservation_released"]
+    finally:
+        host.close()
+
+    output = tmp_path / "diagnostics"
+    run_standing_execution_incident_diagnostics_v1(
+        budget_host_root=host.root,
+        filegate=gate,
+        account=account,
+        output_root=output,
+        interval_seconds=1,
+        samples=1,
+    )
+    status = json.loads((output / "execution-incident-diagnostics-latest-v1.json").read_bytes())
+    assert status["incident_id"] == receipt["incident_id"]
+    assert status["kill_revision"] == receipt["kill_revision"]
+    assert status["raw_get_proof_status"] == "VERIFIED"
+    assert status["correlated_incident_veto"] is True
+
+
 def test_independent_standing_diagnostics_continues_under_kill_and_reopens_after_process_death(
     authenticated_host, tmp_path
 ):
