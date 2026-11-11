@@ -46,6 +46,7 @@ from tests.ops.test_full_core_current_productive_governed_continuous_cycle_orche
 )
 import src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 as convergence
 import src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 as s6
+import src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 as s5
 
 
 def main():
@@ -69,6 +70,19 @@ def main():
 
             def poll(self):
                 self.polls += 1
+                if phase.startswith("managed-orderly-stop") and index == 1 and self.polls == 2:
+                    from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+                    writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
+                    (root / "cursor-before-filegate-loss.json").write_bytes(
+                        (cursor / CURSOR_FILENAME).read_bytes()
+                    )
+                    if phase.endswith("-unproven"):
+                        writer.set_host_checkpoint_v1(
+                            lock_path=root / "shared_lock" / s6.LOCK_NAME, checkpoint=None
+                        )
+                    writer.state_path.unlink()
+                    return None
                 if phase == "before" and index == 1 and self.polls == 2:
                     write_json(
                         root / "checkpoint.json",
@@ -146,6 +160,10 @@ def main():
             calls += 1
             if phase in {"during", "managed-restore-wait"} and calls == 2:
                 signal_checkpoint()
+            if phase == "managed-partial-s5" and calls == 2:
+                (root / "before-partial-s5-cursor.json").write_bytes(
+                    (cursor / CURSOR_FILENAME).read_bytes()
+                )
             return runner(**kw)
 
         return run
@@ -154,7 +172,7 @@ def main():
         stack.enter_context(
             patch.object(convergence, "make_n1_occupied_lane_s5_runner_v1", wrapped_factory)
         )
-        if phase in {"managed-hold-publish", "managed-restore-wait"}:
+        if phase in {"managed-hold-publish", "managed-restore-wait", "managed-joint-rollback"}:
             original_write = s6._persist_json
 
             def write(*, path, payload):
@@ -163,10 +181,42 @@ def main():
                         signal_checkpoint(consume_id=payload["consumed_instance_ids"][-1])
                     else:
                         (root / "earlier-wait.json").write_text(s6.canonical_json_text(payload))
+                        if phase == "managed-joint-rollback":
+                            (root / "earlier-cursor.json").write_bytes(
+                                (cursor / CURSOR_FILENAME).read_bytes()
+                            )
+                            (root / "earlier-filegate.json").write_bytes(
+                                Path(canonical_kill_switch_state_path()).read_bytes()
+                            )
                 original_write(path=path, payload=payload)
 
             stack.enter_context(patch.object(s6, "_persist_json", write))
-        if phase == "after-managed-boot":
+        if phase in {"managed-partial-s5", "managed-sealed-partial-s5"}:
+            original_s5_write = s5._persist_json
+
+            def write_s5(*, path, payload):
+                if (
+                    path.name == s5.LEDGER_FILENAME
+                    and payload.get("state") == s5.STATE_COMPLETED
+                    and (
+                        phase == "managed-sealed-partial-s5"
+                        or (root / "before-partial-s5-cursor.json").exists()
+                    )
+                ):
+                    signal_checkpoint(s5_ledger=str(path))
+                original_s5_write(path=path, payload=payload)
+
+            stack.enter_context(patch.object(s5, "_persist_json", write_s5))
+        if phase == "managed-joint-rollback":
+            original_advance = s6._advance_persisted_c1_cursor_floor_v1
+
+            def advance(**kwargs):
+                original_advance(**kwargs)
+                if (root / "earlier-cursor.json").exists():
+                    signal_checkpoint()
+
+            stack.enter_context(patch.object(s6, "_advance_persisted_c1_cursor_floor_v1", advance))
+        if phase in {"after-managed-boot", "after-managed-joint-rollback"}:
             for module in (
                 "src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1",
                 "src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1",
@@ -177,7 +227,69 @@ def main():
                     )
                 )
         host_options = {}
-        if phase == "after-managed-monitor":
+        if phase.startswith("managed-orderly-stop"):
+            from nacl.signing import SigningKey
+
+            from src.ops.filegate_recovery_authority_v1 import attest_filegate_owner_evidence_v1
+            from src.ops.managed_fault_recovery_v1 import (
+                ManagedFaultRecoveryV1,
+                attest_managed_filegate_integrity_v1,
+            )
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+            from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
+                attest_managed_n1_wait_checkpoint_v1,
+            )
+
+            keys = {
+                role: SigningKey(bytes.fromhex(raw))
+                for role, raw in json.loads((root / "fixture-keys.json").read_bytes()).items()
+            }
+            writer = configured_filegate_writer_v1(canonical_kill_switch_state_path())
+
+            def attest_host(stop):
+                assert not (root / "shared_lock" / s6.LOCK_NAME).exists()
+                proof = attest_managed_n1_wait_checkpoint_v1(
+                    writer=writer,
+                    stop=stop,
+                    state_root=root / "controller",
+                    bounds=bounds,
+                    expires_at=time.time() + 4,
+                    key=keys["HOST"],
+                )
+                write_json(root / "retired-host-proof.json", proof)
+                return proof
+
+            def stop_if_unproven(_):
+                state = json.loads(
+                    (root / "controller" / "host_restart_state_v1.json").read_bytes()
+                )
+                assert state["last_fault_observation"]["missing_proofs"] == ["HOST"]
+                assert state["attempts"] == 1
+                (root / "controller" / "STOP").touch()
+
+            host_options = {
+                "fault_recovery": ManagedFaultRecoveryV1(
+                    writer=writer,
+                    issuer_key=keys["issuer"],
+                    observations={
+                        "CAUSE": lambda stop: attest_managed_filegate_integrity_v1(
+                            writer=writer, stop=stop, expires_at=time.time() + 4, key=keys["CAUSE"]
+                        ),
+                        "ACCOUNT": lambda stop: attest_filegate_owner_evidence_v1(
+                            role="ACCOUNT",
+                            stop=stop,
+                            evidence_sha256="b" * 64,
+                            observed_at=time.time(),
+                            expires_at=time.time() + 4,
+                            key=keys["ACCOUNT"],
+                        ),
+                        "HOST": attest_host,
+                    },
+                    interval_seconds=1,
+                ),
+                **({"sleeper": stop_if_unproven} if phase.endswith("-unproven") else {}),
+            }
+        if phase in {"after-managed-monitor", "after-managed-joint-rollback"}:
             from nacl.signing import SigningKey
 
             from src.ops.managed_fault_recovery_v1 import ManagedFaultRecoveryV1
@@ -191,6 +303,10 @@ def main():
                 persisted = json.loads(receipt.read_bytes())
                 assert persisted["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
                 assert persisted["attempts"] == 1
+                if phase == "after-managed-joint-rollback":
+                    observed = persisted["last_fault_observation"]
+                    assert observed["status"] == "BLOCKED_OBSERVING"
+                    assert observed["stop"]["causes"] == ["R03", "R09"]
                 held_polls += 1
                 if held_polls == 2:
                     (root / "controller" / "STOP").touch()
