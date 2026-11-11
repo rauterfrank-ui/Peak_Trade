@@ -6,7 +6,7 @@ native Core produces each side for the same bound FUTURES instrument.
 """
 
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from fractions import Fraction
 import json
@@ -46,6 +46,30 @@ from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import
 
 NATIVE = "BTC-USD_UM_XPERP-310404"
 FAMILY = "BTC-USD_UM_XPERP"
+TIER_ENDPOINT = f"/api/v5/public/position-tiers?instType=FUTURES&tdMode=cross&instFamily={FAMILY}"
+
+
+def position_tiers():
+    return [
+        dict(
+            instFamily=FAMILY,
+            instId="",
+            uly="BTC-USD",
+            tier="1",
+            minSz="0",
+            maxSz="1",
+            mmr="0.0065",
+        ),
+        dict(
+            instFamily=FAMILY,
+            instId="",
+            uly="BTC-USD",
+            tier="2",
+            minSz="2",
+            maxSz="45000",
+            mmr="0.01",
+        ),
+    ]
 
 
 def instrument(*, settlement="USDC"):
@@ -79,7 +103,16 @@ def policy():
     )
 
 
-def prepare(tmp_path, monkeypatch, *, short=False, fault=None, scoped_reconciliation=False):
+def prepare(
+    tmp_path,
+    monkeypatch,
+    *,
+    short=False,
+    fault=None,
+    scoped_reconciliation=False,
+    tier_evidence=False,
+    tier_fault=None,
+):
     clock = [EPOCH]
     monkeypatch.setattr(cost, "utc_now_iso_v1", lambda: clock[0])
     # Canonical identity follows the public instrument, not its account's cash
@@ -253,6 +286,47 @@ def prepare(tmp_path, monkeypatch, *, short=False, fault=None, scoped_reconcilia
         dict(code="0", data=[dict(instId=NATIVE, mgnMode="cross", posSide="net", lever="3")]),
         True,
     )
+    rows[leverage.endpoint] = leverage
+    if tier_evidence:
+        tiers = position_tiers()
+        if tier_fault == "foreign-family":
+            tiers[1]["instFamily"] = "ETH-USD_UM_XPERP"
+        elif tier_fault == "instrument-specific":
+            tiers[1]["instId"] = NATIVE
+        elif tier_fault == "ambiguous":
+            tiers[0]["maxSz"] = tiers[1]["maxSz"]
+        elif tier_fault == "out-of-range":
+            tiers.pop()
+        elif tier_fault == "invalid-rate":
+            tiers[1]["mmr"] = "NaN"
+        payload_tiers = dict(code="0", data=tiers)
+        if tier_fault == "continuation":
+            payload_tiers["cursor"] = "opaque-next-page"
+        observed_tiers = source(TIER_ENDPOINT, payload_tiers)
+        acquired = datetime.fromisoformat(EPOCH.replace("Z", "+00:00"))
+        changes = {
+            "decision": dict(pretrade_decision_id="foreign-decision"),
+            "wrong-query": dict(endpoint=TIER_ENDPOINT + "&tier=1"),
+            "private": dict(auth_header_sent=True),
+            "historical": dict(historical_reuse=True),
+            "stale": dict(acquired_at_utc=(acquired - timedelta(seconds=6)).isoformat()),
+            "future": dict(acquired_at_utc=(acquired + timedelta(seconds=1)).isoformat()),
+        }
+        rows[TIER_ENDPOINT] = replace(
+            observed_tiers,
+            acquired_at_utc=(acquired - timedelta(seconds=5)).isoformat(),
+        )
+        if tier_fault in changes:
+            rows[TIER_ENDPOINT] = replace(rows[TIER_ENDPOINT], **changes[tier_fault])
+    margin_observation = margin.collect_native_initial_margin_observation_v1(
+        transport=port,
+        balance_source=balance,
+        opening_observation=opening,
+        include_xperp_position_tiers=tier_evidence,
+    )
+    assert port.calls[4:] == [(leverage.endpoint, True)] + (
+        [(TIER_ENDPOINT, False)] if tier_evidence else []
+    )
     funding = source(
         f"/api/v5/public/funding-rate?instId={NATIVE}",
         dict(
@@ -276,11 +350,7 @@ def prepare(tmp_path, monkeypatch, *, short=False, fault=None, scoped_reconcilia
     kwargs["injected"] = replace(
         injected,
         opening_cost_observation=opening,
-        native_initial_margin_observation=margin.NativeInitialMarginObservationV1.capture_v1(
-            sources=dict(balance=balance, leverage=leverage),
-            opening_observation=opening,
-            evaluated_at_utc=EPOCH,
-        ),
+        native_initial_margin_observation=margin_observation,
         funding_cost_observation=cost.FundingCostObservationV1.capture_v1(
             bound_instrument=bound,
             decision_epoch=EPOCH,
@@ -298,8 +368,11 @@ def prepare(tmp_path, monkeypatch, *, short=False, fault=None, scoped_reconcilia
 
 
 @pytest.mark.parametrize("short", [False, True])
-def test_usdc_xperp_original_core_quantity_hold_and_cold_read(tmp_path, monkeypatch, short):
-    host, kwargs, clock = prepare(tmp_path, monkeypatch, short=short)
+@pytest.mark.parametrize("tier_evidence", [False, True])
+def test_usdc_xperp_original_core_quantity_hold_and_cold_read(
+    tmp_path, monkeypatch, short, tier_evidence
+):
+    host, kwargs, clock = prepare(tmp_path, monkeypatch, short=short, tier_evidence=tier_evidence)
     try:
         admitted = join(**kwargs)
         assert admitted.status == "PASS", admitted.reason_codes
@@ -317,6 +390,29 @@ def test_usdc_xperp_original_core_quantity_hold_and_cold_read(tmp_path, monkeypa
         assert required == Fraction(binding.decision.final_quantity) * Fraction(
             "0.0001"
         ) * Fraction(conservative_price)
+        assert receipt["liquidation_cover_proven"] is False
+        if tier_evidence:
+            position_maintenance = receipt["xperp_position_maintenance"]
+            expected = (
+                Fraction(binding.decision.final_quantity)
+                * Fraction("0.0001")
+                * Fraction(price)
+                * Fraction("0.01")
+            )
+            assert position_maintenance["instrument_family"] == FAMILY
+            assert position_maintenance["settlement_currency"] == "USDC"
+            assert position_maintenance["tier"] == "2"
+            assert position_maintenance["account_effective_maintenance_proven"] is False
+            assert (
+                Fraction(
+                    int(position_maintenance["required_numerator"]),
+                    int(position_maintenance["required_denominator"]),
+                )
+                == expected
+            )
+            _check_late_xperp_maintenance_source(host, admitted, kwargs["bound_instrument"], clock)
+        else:
+            assert "xperp_position_maintenance" not in receipt
         before = host.owner.active_sum_v1()
         assert 0 < before <= 25
         owner_path = host.owner.durable_scope_identity_v1()["root"]
@@ -351,6 +447,119 @@ def test_usdc_xperp_original_core_quantity_hold_and_cold_read(tmp_path, monkeypa
             cold.close()
     finally:
         host.close()
+
+
+def _check_late_xperp_maintenance_source(host, entry, bound, clock):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+
+    session = "usdc-financial-test"
+    status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+        replay=entry.replay,
+        bound_instrument=bound,
+        session_id=session,
+        run_id=session,
+        composed_epoch=EPOCH,
+        execution_mode="INTERNAL_SIMULATED_EXECUTION",
+    )
+    assert status.value == "PASS", reasons
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan, admission_ref=session, provenance_ref=session, creation_epoch=EPOCH
+    )
+    rid = entry.portfolio_reservation_id
+    owner = host.owner
+    owner.commit_internal_pre_external_effect_v1(rid)
+    owner.bind_execution_plan_v1(
+        rid,
+        envelope,
+        canonical_intent=entry.replay.intermediate.canonical_order_intent,
+        venue_plan=plan,
+    )
+    owner.inspect_current_entry_budget_policy_v1(rid, envelope)
+    before = owner.budget_state_v1(), owner._store.sequence
+    clock[0] = (
+        datetime.fromisoformat(EPOCH.replace("Z", "+00:00")) + timedelta(seconds=1)
+    ).isoformat()
+    try:
+        # The tier read alone has crossed the original acquisition window.
+        with pytest.raises(ValueError, match="ACQUISITION_STALE"):
+            owner.inspect_current_entry_budget_policy_v1(rid, envelope)
+    finally:
+        clock[0] = EPOCH
+    assert before == (owner.budget_state_v1(), owner._store.sequence)
+
+
+@pytest.mark.parametrize(
+    "fault,reason",
+    [
+        ("foreign-family", "XPERP_MAINTENANCE_TIER_FAMILY_SCOPE_MISMATCH"),
+        ("instrument-specific", "XPERP_MAINTENANCE_TIER_FAMILY_SCOPE_MISMATCH"),
+        ("ambiguous", "XPERP_MAINTENANCE_QUANTITY_TIER_NOT_UNIQUE"),
+        ("out-of-range", "XPERP_MAINTENANCE_QUANTITY_TIER_NOT_UNIQUE"),
+        ("invalid-rate", "XPERP_MAINTENANCE_TIER_DECIMAL_INVALID"),
+        ("continuation", "XPERP_MAINTENANCE_TIER_RESPONSE_SCOPE_UNPROVEN"),
+        ("wrong-query", "XPERP_MAINTENANCE_TIER_QUERY_MISMATCH"),
+        ("private", "XPERP_MAINTENANCE_FRESH_BOUND_PUBLIC_GET_REQUIRED"),
+        ("historical", "XPERP_MAINTENANCE_FRESH_BOUND_PUBLIC_GET_REQUIRED"),
+        ("decision", "XPERP_MAINTENANCE_FRESH_BOUND_PUBLIC_GET_REQUIRED"),
+        ("stale", "ACQUISITION_STALE"),
+        ("future", "ACQUISITION_TIME_IN_FUTURE"),
+    ],
+)
+def test_invalid_tier_source_cannot_enter_original_budget(tmp_path, monkeypatch, fault, reason):
+    host, kwargs, _ = prepare(tmp_path, monkeypatch, tier_evidence=True, tier_fault=fault)
+    try:
+        result = join(**kwargs)
+        assert result.status != "PASS"
+        assert reason in result.reason_codes
+        assert host.owner.active_sum_v1() == 0
+        assert host.owner.stored_reservation_count_v1() == 0
+    finally:
+        host.close()
+
+
+def test_cold_budget_rejects_changed_maintenance_component_with_valid_checksums(
+    tmp_path, monkeypatch
+):
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalBudgetError,
+        PortfolioCapitalReservationBudgetOwnerV1 as Owner,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
+        DurableBudgetStoreV1,
+    )
+
+    host, kwargs, _ = prepare(tmp_path, monkeypatch, tier_evidence=True)
+    try:
+        result = join(**kwargs)
+        assert result.status == "PASS", result.reason_codes
+        state = host.owner._store.load()
+        (binding,) = state["sizing_bindings"].values()
+        receipt = binding["native_initial_margin_binding"]["receipt"]
+        receipt["xperp_position_maintenance"]["required_numerator"] = "0"
+        receipt["digest"] = cost.digest({k: v for k, v in receipt.items() if k != "digest"})
+    finally:
+        host.close()
+
+    root = tmp_path / "rehashed-tier"
+    store = DurableBudgetStoreV1(root, account_identity=ACCOUNT, mode="create")
+    try:
+        store.save(state)
+    finally:
+        store.close()
+    with pytest.raises(PortfolioCapitalBudgetError, match="SEMANTIC_RESTORE_UNPROVEN") as error:
+        Owner(
+            durable_root=root,
+            durable_account_identity=ACCOUNT,
+            durable_mode="recover",
+            durable_lane_bindings={"LANE_1": kwargs["bound_instrument"]},
+            entry_budget_policy=policy(),
+        )
+    assert "NATIVE_INITIAL_MARGIN_RECEIPT_SOURCE_OR_QUANTITY_MISMATCH" in str(error.value.__cause__)
 
 
 @pytest.mark.parametrize(

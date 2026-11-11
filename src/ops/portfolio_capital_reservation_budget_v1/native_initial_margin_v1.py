@@ -1,8 +1,8 @@
 """Decision-bound native initial margin, retained by the original budget owner.
 
-Only acctLv=2, cross, net-mode linear USDT/USDC contracts are supported. A
-valuation FX edge never supplies collateral. Public tiers, liquidation estimates,
-cost cover and future margin changes are not inferred from this admission.
+Only acctLv=2, cross, net-mode linear USDT/USDC contracts are supported.
+An explicit public tier observation can add a standalone X-Perp maintenance
+component to the original binding. Account-wide liquidation cover is separate.
 """
 
 from dataclasses import asdict, dataclass, fields
@@ -10,6 +10,7 @@ from decimal import Decimal
 from fractions import Fraction
 import json
 import re
+from urllib.parse import urlencode
 
 from .durable_store_v1 import canonical, digest
 from . import entry_execution_cost_v1 as cost
@@ -18,6 +19,15 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     OBSERVATION_FACT_ID,
     OBSERVATION_SURFACE,
 )
+
+_POSITION_TIERS_PATH = "/api/v5/public/position-tiers"
+_POSITION_TIERS_SOURCE = "position_tiers"
+_INITIAL_MARGIN_SOURCES = {"balance", "leverage"}
+_SUPPORTED_SOURCE_SETS = (
+    _INITIAL_MARGIN_SOURCES,
+    _INITIAL_MARGIN_SOURCES | {_POSITION_TIERS_SOURCE},
+)
+_TIER_DECIMAL = re.compile(r"[0-9]{1,64}(?:\.[0-9]{1,64})?")
 
 
 def _number(value, *, positive=False):
@@ -36,7 +46,7 @@ class NativeInitialMarginObservationV1:
     @classmethod
     def capture_v1(cls, *, sources, opening_observation, evaluated_at_utc):
         if (
-            set(sources) != {"balance", "leverage"}
+            set(sources) not in _SUPPORTED_SOURCE_SETS
             or any(type(r) is not cost.FreshPretradeGetTransportResultV1 for r in sources.values())
             or type(opening_observation) is not cost.EntryExecutionCostObservationV1
         ):
@@ -59,6 +69,87 @@ class NativeInitialMarginObservationV1:
         ):
             raise ValueError("NATIVE_INITIAL_MARGIN_OBSERVATION_SCHEMA_INVALID")
         return cls(**{k: v for k, v in raw.items() if k != "schema"})
+
+
+def _xperp_tier_query(opening_sources, native, account_identity):
+    source = cost.FreshPretradeGetTransportResultV1(**opening_sources["instruments"])
+    instrument = cost._one(cost._rows(source.payload), "instId", native)
+    accounts = cost._rows(opening_sources["account"]["payload"])
+    if len(accounts) != 1 or accounts[0].get("uid") != account_identity:
+        raise ValueError("XPERP_MAINTENANCE_ACCOUNT_SCOPE_MISMATCH")
+    account = accounts[0]
+    path = cost._instrument_source_path_v1(source, instrument, account)
+    if path != "/api/v5/account/instruments":
+        raise ValueError("XPERP_MAINTENANCE_PRIVATE_USDC_INSTRUMENT_REQUIRED")
+    return dict(instType="FUTURES", tdMode="cross", instFamily=instrument["instFamily"]), instrument
+
+
+def _tier_number(raw):
+    if not isinstance(raw, str) or not _TIER_DECIMAL.fullmatch(raw):
+        raise ValueError("XPERP_MAINTENANCE_TIER_DECIMAL_INVALID")
+    return Decimal(raw)
+
+
+def _select_xperp_position_tier(payload, instrument, quantity):
+    rows = cost._rows(payload)
+    if set(payload) - {"code", "msg", "data"}:
+        raise ValueError("XPERP_MAINTENANCE_TIER_RESPONSE_SCOPE_UNPROVEN")
+    tier_ids = set()
+    matches = []
+    for row in rows:
+        if (
+            row.get("instId") != ""
+            or row.get("instFamily") != instrument["instFamily"]
+            or row.get("uly") != instrument["uly"]
+        ):
+            raise ValueError("XPERP_MAINTENANCE_TIER_FAMILY_SCOPE_MISMATCH")
+        tier = row.get("tier")
+        if not isinstance(tier, str) or not re.fullmatch(r"[1-9][0-9]*", tier) or tier in tier_ids:
+            raise ValueError("XPERP_MAINTENANCE_TIER_ID_INVALID")
+        tier_ids.add(tier)
+        lower, upper, rate = (_tier_number(row.get(key)) for key in ("minSz", "maxSz", "mmr"))
+        if lower > upper or upper <= 0 or not 0 < rate < 1:
+            raise ValueError("XPERP_MAINTENANCE_TIER_DOMAIN_INVALID")
+        if lower <= quantity <= upper:
+            matches.append((tier, lower, upper, rate))
+    if len(matches) != 1:
+        raise ValueError("XPERP_MAINTENANCE_QUANTITY_TIER_NOT_UNIQUE")
+    return matches[0]
+
+
+def _xperp_maintenance_component(
+    source, opening_sources, *, native, account_identity, quantity, mark
+):
+    query, instrument = _xperp_tier_query(opening_sources, native, account_identity)
+    if cost._query(source.endpoint, _POSITION_TIERS_PATH) != {
+        key: [value] for key, value in query.items()
+    }:
+        raise ValueError("XPERP_MAINTENANCE_TIER_QUERY_MISMATCH")
+    tier, lower, upper, rate = _select_xperp_position_tier(source.payload, instrument, quantity)
+    # OKX EEA single-currency, linear X-Perp position formula at the
+    # bound mark. The private instrument supplies the settlement unit.
+    required = (
+        Fraction(quantity)
+        * Fraction(_number(instrument["ctVal"], positive=True))
+        * Fraction(_number(instrument["ctMult"], positive=True))
+        * Fraction(mark)
+        * Fraction(rate)
+    )
+    return dict(
+        schema="xperp_position_maintenance_component.v1",
+        basis="STANDALONE_CANDIDATE_QUANTITY_AT_BOUND_MARK",
+        settlement_currency=instrument["settleCcy"],
+        instrument_family=instrument["instFamily"],
+        tier=tier,
+        tier_min_contracts=str(lower),
+        tier_max_contracts=str(upper),
+        maintenance_rate=str(rate),
+        required_numerator=str(required.numerator),
+        required_denominator=str(required.denominator),
+        tier_source_body_sha256=source.body_sha256,
+        tier_acquired_at_utc=source.acquired_at_utc,
+        account_effective_maintenance_proven=False,
+    )
 
 
 def assess_native_initial_margin_v1(
@@ -91,28 +182,32 @@ def assess_native_initial_margin_v1(
     now = evaluated_at_utc or observation.evaluated_at_utc
     cost.acquisition_age_seconds_v1(acquired_at_utc=observation.evaluated_at_utc, now_utc=now)
     sources = json.loads(observation.sources_json)
-    if set(sources) != {"balance", "leverage"}:
+    if set(sources) not in _SUPPORTED_SOURCE_SETS:
         raise ValueError("NATIVE_INITIAL_MARGIN_COMPLETE_SOURCES_REQUIRED")
     parsed = {}
     for key, raw in sources.items():
         result = cost.FreshPretradeGetTransportResultV1(**raw)
+        is_public_tier = key == _POSITION_TIERS_SOURCE
         if (
             result.get_performed is not True
             or result.method != "GET"
             or result.http_status != 200
-            or result.auth_header_sent is not True
+            or result.auth_header_sent is not (not is_public_tier)
             or result.historical_reuse is not False
             or result.error_class
             or result.pretrade_decision_id != opening.acquisition_decision_id
-            or not re.fullmatch("[0-9a-f]{64}", result.body_sha256)
+            or not re.fullmatch("[0-9a-f]{64}", result.body_sha256 or "")
         ):
+            if is_public_tier:
+                raise ValueError("XPERP_MAINTENANCE_FRESH_BOUND_PUBLIC_GET_REQUIRED")
             raise ValueError("NATIVE_INITIAL_MARGIN_FRESH_BOUND_PRIVATE_GET_REQUIRED:" + key)
         cost.acquisition_age_seconds_v1(acquired_at_utc=result.acquired_at_utc, now_utc=now)
         cost.acquisition_age_seconds_v1(
             acquired_at_utc=result.acquired_at_utc, now_utc=observation.evaluated_at_utc
         )
         parsed[key] = result
-    config = cost._rows(json.loads(opening.sources_json)["account"]["payload"])[0]
+    opening_sources = json.loads(opening.sources_json)
+    config = cost._rows(opening_sources["account"]["payload"])[0]
     if config.get("acctLv") != "2" or config.get("posMode") != "net_mode":
         raise ValueError("NATIVE_INITIAL_MARGIN_FUTURES_CROSS_NET_SCOPE_REQUIRED")
     # Revalidate the original config/instrument acquisitions at the late clock.
@@ -188,7 +283,7 @@ def assess_native_initial_margin_v1(
     reference = _number(monetary_source.native_reference_price, positive=True)
     # Reuse the validated book levels, retaining exact fractional quote value;
     # the displayed VWAP can be a repeating rounded decimal.
-    book = cost._rows(json.loads(opening.sources_json)["book"]["payload"])[0]
+    book = cost._rows(opening_sources["book"]["payload"])[0]
     remaining, quote_value = Fraction(decision.final_quantity), Fraction(0)
     for price, size, *_ in book["asks" if entry["side"] == "LONG" else "bids"]:
         take = min(remaining, Fraction(Decimal(size)))
@@ -229,6 +324,15 @@ def assess_native_initial_margin_v1(
         native_cost_cover_proven=False,
         runtime_authorization_effect="NONE",
     )
+    if _POSITION_TIERS_SOURCE in parsed:
+        result["xperp_position_maintenance"] = _xperp_maintenance_component(
+            parsed[_POSITION_TIERS_SOURCE],
+            opening_sources,
+            native=native,
+            account_identity=entry["account_identity"],
+            quantity=decision.final_quantity,
+            mark=reference,
+        )
     return dict(**result, digest=digest(result))
 
 
@@ -345,8 +449,10 @@ def require_native_margin_locked_v1(
     return receipt
 
 
-def collect_native_initial_margin_observation_v1(*, transport, opening_observation, balance_source):
-    """Explicit port only: reuse original 29P balance, request one leverage GET.
+def collect_native_initial_margin_observation_v1(
+    *, transport, opening_observation, balance_source, include_xperp_position_tiers=False
+):
+    """Reuse the original 29P balance; collect leverage and an optional public tier.
 
     No credentials, default transport, writes or automatic acquisition on import.
     The account/instrument sources remain owned by the original cost collector.
@@ -355,15 +461,35 @@ def collect_native_initial_margin_observation_v1(*, transport, opening_observati
         GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
     )
 
+    if type(include_xperp_position_tiers) is not bool:
+        raise ValueError("XPERP_MAINTENANCE_TIER_COLLECTION_REQUIRES_EXPLICIT_BOOLEAN")
     native = json.loads(opening_observation.bound_instrument_json)["venue_native_id"]
-    leverage = transport.get(
-        endpoint=f"/api/v5/account/leverage-info?instId={native}&mgnMode=cross",
-        auth_required=True,
-        pretrade_decision_id=opening_observation.acquisition_decision_id,
-        get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    tier_query = None
+    if include_xperp_position_tiers:
+        tier_query, _ = _xperp_tier_query(
+            json.loads(opening_observation.sources_json),
+            native,
+            opening_observation.account_identity,
+        )
+
+    def get(endpoint, *, private):
+        return transport.get(
+            endpoint=endpoint,
+            auth_required=private,
+            pretrade_decision_id=opening_observation.acquisition_decision_id,
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+
+    sources = dict(
+        balance=balance_source,
+        leverage=get(f"/api/v5/account/leverage-info?instId={native}&mgnMode=cross", private=True),
     )
+    if tier_query is not None:
+        sources[_POSITION_TIERS_SOURCE] = get(
+            f"{_POSITION_TIERS_PATH}?{urlencode(tier_query)}", private=False
+        )
     return NativeInitialMarginObservationV1.capture_v1(
-        sources=dict(balance=balance_source, leverage=leverage),
+        sources=sources,
         opening_observation=opening_observation,
         evaluated_at_utc=cost.utc_now_iso_v1(),
     )
