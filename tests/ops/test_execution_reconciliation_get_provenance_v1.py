@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from contextlib import contextmanager
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from hashlib import sha256
@@ -125,6 +125,8 @@ class SignedReconciliationHttpFixture:
             "sz": identity.final_quantity,
             "accFillSz": filled,
         }
+        if self.fault == "foreign-product-row":
+            row["instType"] = "SWAP"
         code = "0"
         rows = []
         if path.endswith("/config"):
@@ -979,6 +981,169 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         assert not scope.journal_path.exists()
     finally:
         source.close()
+
+
+@pytest.mark.parametrize(
+    "path", ["archive", "standing", "unknown", "no-custody", "foreign-product-row"]
+)
+def test_futures_reconciliation_uses_bound_product_through_private_replay(
+    tmp_path, monkeypatch, proof_root, path
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
+
+    seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
+    bound = args["bound_instrument"]
+    args["injected"] = replace(
+        args["injected"],
+        funding_cost_observation=None,
+        native_initial_margin_observation=None,
+        absolute_movement_cost_observation=None,
+    )
+    try:
+        entry = join(**args)
+        assert entry.status == "PASS", entry.reason_codes
+        status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+            replay=entry.replay,
+            bound_instrument=bound,
+            session_id=SESSION,
+            run_id=SESSION,
+            composed_epoch=EPOCH,
+            execution_mode="LIVE",
+        )
+        assert status.value == "PASS", reasons
+        envelope = bind_final_order_envelope_from_venue_plan_v1(
+            plan, admission_ref=SESSION, provenance_ref=SESSION, creation_epoch=EPOCH
+        )
+        rid = entry.portfolio_reservation_id
+        seeded.owner.commit_internal_pre_external_effect_v1(rid)
+        seeded.owner.bind_execution_plan_v1(
+            rid,
+            envelope,
+            canonical_intent=entry.replay.intermediate.canonical_order_intent,
+            venue_plan=plan,
+        )
+        identity = seeded.owner.begin_execution_submit_v2(
+            rid, envelope, seeded.owner.execution_plan_context_v1(rid, envelope), _permit(envelope)
+        )
+        held = seeded.owner.active_sum_v1()
+    finally:
+        seeded.close()
+
+    scope = OfflineExecutionIncidentScopeV1(
+        tmp_path.resolve(), identity.account_identity, SESSION, NOW - timedelta(seconds=10)
+    )
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(scope.state_path))
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    StatePersistence(str(scope.state_path)).save(KillSwitchState.ACTIVE)
+    opener = SignedReconciliationHttpFixture(identity)
+    if path == "foreign-product-row":
+        opener.fault = path
+    elif path == "unknown":
+        opener.fault = "missing-order"
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
+    with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+        max_request_count=16, k1_lookup_backend=_FakeKeychainBackend()
+    ) as (transport, _):
+        source = K1AccountObservationSourceV1(
+            credential=transport._handle,
+            transport=transport,
+            expected_account_identity=scope.account,
+            session_id=SESSION,
+            clock=NOW.timestamp,
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+        )
+        host = PortfolioBudgetHostV1(
+            root=seeded.root,
+            private_rest_fetch=_fetch(uid=scope.account) if path == "no-custody" else source,
+            repository_sha="test-futures-reconciliation",
+            session_id=SESSION,
+            expected_account_identity=scope.account,
+            clock=NOW.timestamp,
+            reconciliation_transport=transport,
+            execution_incident_state_path=scope.state_path if path == "standing" else None,
+        )
+        try:
+            if path in {"no-custody", "foreign-product-row"}:
+                reason = (
+                    "HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN"
+                    if path == "no-custody"
+                    else "RECONCILIATION_GET_FUTURES_PRODUCT_MISMATCH"
+                )
+                with pytest.raises(ValueError, match=reason):
+                    host.observe_authenticated_execution_reconciliation_v1(
+                        {"LANE_1": bound}, proof_root=proof_root
+                    )
+                assert len(opener.requests) == (0 if path == "no-custody" else 16)
+                assert not list(proof_root.iterdir())
+                assert host.owner.execution_links_v1()[rid]["reconciliation"] is None
+                assert host.owner.active_sum_v1() == held > 0
+                return
+            if path == "standing":
+                with pytest.raises(ExecutionIncidentHaltV1) as stopped:
+                    host.observe_v1({"LANE_1": bound})
+                assert stopped.value.raw_get_proof_status == "PERSISTED"
+                assert json.loads(scope.state_path.read_bytes())["state"] == "KILLED"
+                revision = tuple(stopped.value.receipt["reconciliation_source"]["revision_ref"])
+                proof_root = host.root / "execution-incident-safety" / "authenticated-get-proofs"
+            else:
+                context, proofs = host.observe_authenticated_execution_reconciliation_v1(
+                    {"LANE_1": bound}, proof_root=proof_root
+                )
+                assert context.account_inventory_source is source and context.pending_source is None
+                revision = proofs[rid].revision_ref
+                if path == "unknown":
+                    reconciliation = context.execution_reconciliation[rid]
+                    assert reconciliation["decision"]["reasons"] == [REASON_TRANSPORT_UNKNOWN]
+                    assert reconciliation["reservation_released"] is False
+            assert source.transport.read_count == 10
+            assert transport.methods_used == ["GET"] * 16
+            assert host.owner.active_sum_v1() == held > 0
+            assert host.owner.budget_state_v1().recovery_required
+        finally:
+            host.close()
+            source.close()
+
+    proof_args = _receipt_args(host, scope, identity, proof_root, revision)
+    proof = store.read_authenticated_execution_reconciliation_proof_v1(**proof_args)
+    if path == "unknown":
+        assert proof.quantity_incident is None
+    else:
+        assert proof.quantity_incident.reconciliation_reason == REASON_NEGATIVE_REMAINING
+    assert [(read.endpoint, read.body_sha256) for read in proof.gets] == opener.requests[-6:]
+    for read in proof.gets[1:4]:
+        query = dict(parse_qsl(urlsplit(read.endpoint).query))
+        assert query["instType"] == "FUTURES" and query["instId"] == bound.venue_native_id
+    if path == "standing":
+        output = tmp_path / "diagnostics"
+        run_standing_execution_incident_diagnostics_v1(
+            budget_host_root=host.root,
+            filegate=scope.state_path,
+            account=scope.account,
+            output_root=output,
+            interval_seconds=1,
+            samples=1,
+        )
+        sample = json.loads((output / "execution-incident-diagnostics-latest-v1.json").read_bytes())
+        assert sample["correlated_incident_veto"] is True
+        assert sample["raw_get_proof_status"] == "VERIFIED"
+    (stored,) = tuple(proof_root.glob("*.json"))
+    wrapper = json.loads(stored.read_bytes())
+    for row in wrapper["record"]["gets"][1:4]:
+        row["endpoint"] = row["endpoint"].replace("instType=FUTURES", "instType=SWAP")
+    wrapper["sha256"] = sha256(store._encode(wrapper["record"])).hexdigest()
+    stored.write_bytes(store._encode(wrapper))
+    with pytest.raises(
+        store.ExecutionReconciliationProofStoreError, match="REPLAY_REQUEST_MISMATCH"
+    ):
+        store.read_authenticated_execution_reconciliation_proof_v1(**proof_args)
 
 
 @pytest.mark.parametrize(

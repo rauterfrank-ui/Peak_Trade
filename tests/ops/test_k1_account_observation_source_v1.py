@@ -122,6 +122,8 @@ def test_wrong_account_blocks_before_other_private_reads(tmp_path):
         ("session_id", ""),
         ("max_request_count", 9),
         ("max_request_count", True),
+        ("inventory_inst_type", "FUTURES"),
+        ("inventory_inst_type", "OPTION"),
     ],
 )
 def test_configuration_denied_before_keychain_lookup(field, value):
@@ -191,6 +193,8 @@ def test_scope_probe_exposes_other_or_unknown_products_without_adopting_account(
     [
         (None, None),
         ("swap-position", None),
+        ("supported-futures-position", None),
+        ("swap-in-futures", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_FUTURES_CONSUMER"),
         ("futures-position", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"),
         ("missing-product", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"),
         ("pending", "STARTUP_PENDING_ORDERS_UNRESOLVED"),
@@ -204,6 +208,7 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     from tests.ops.test_portfolio_budget_host_v1 import BOUND, _host
 
     bound = BOUND
+    product = "SWAP"
     positions = []
     if fault in {"futures-position", "missing-product"}:
         position = {"instId": "BTC-USD_UM_XPERP-310404", "posSide": "net", "pos": "1"}
@@ -213,6 +218,23 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     if fault == "swap-position":
         positions.append(
             {"instId": BOUND.venue_native_id, "instType": "SWAP", "posSide": "net", "pos": "-2"}
+        )
+    if fault in {"supported-futures-position", "swap-in-futures"}:
+        product = "FUTURES"
+        bound = replace(
+            BOUND,
+            instrument_id="okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310404",
+            venue_native_id="BTC-USD_UM_XPERP-310404",
+        )
+        positions.append(
+            {
+                "instId": bound.venue_native_id
+                if fault == "supported-futures-position"
+                else BOUND.venue_native_id,
+                "instType": "FUTURES" if fault == "supported-futures-position" else "SWAP",
+                "posSide": "net",
+                "pos": "-2",
+            }
         )
     if fault == "futures-binding":
         bound = replace(BOUND, venue_native_id="BTC-USD_UM_XPERP-310404")
@@ -226,15 +248,23 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
             max_request_count=10,
             k1_lookup_backend=_FakeKeychainBackend(),
             account_inventory_guard=True,
+            inventory_inst_type=product,
         ) as source:
+            if product == "FUTURES":
+                with pytest.raises(ValueError, match="LEGACY_STARTUP_DOCUMENT_UNSUPPORTED"):
+                    source.export_startup_document_v1(
+                        tmp_path / "startup.json", instrument_ids_by_native_id={}
+                    )
+                assert not opener.requests and not (tmp_path / "startup.json").exists()
             host = _host(tmp_path, source, expected_account=ACCOUNT)
             try:
                 if expected is None:
                     result = host.observe_v1({"LANE_1": bound})
                     assert not result.pending_orders
-                    if fault == "swap-position":
+                    assert result.observed.source_id == f"host-private-rest-{product.lower()}"
+                    if positions:
                         (position,) = result.observed.positions
-                        assert position.instrument_id == BOUND.instrument_id
+                        assert position.instrument_id == bound.instrument_id
                         assert position.signed_quantity == -2
                     else:
                         assert result.observed.positions == ()
@@ -258,7 +288,7 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     if expected is None:
         assert len(inventory) == 6
         assert all(
-            dict(parse_qsl(url.query)) == {"instType": "SWAP"}
+            dict(parse_qsl(url.query)) == {"instType": product}
             for url in urls
             if url.path.endswith(("orders-history", "fills"))
         )

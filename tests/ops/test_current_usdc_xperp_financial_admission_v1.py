@@ -79,7 +79,7 @@ def policy():
     )
 
 
-def prepare(tmp_path, monkeypatch, *, short=False, fault=None):
+def prepare(tmp_path, monkeypatch, *, short=False, fault=None, scoped_reconciliation=False):
     clock = [EPOCH]
     monkeypatch.setattr(cost, "utc_now_iso_v1", lambda: clock[0])
     # Canonical identity follows the public instrument, not its account's cash
@@ -107,8 +107,8 @@ def prepare(tmp_path, monkeypatch, *, short=False, fault=None):
         expected_account_identity=ACCOUNT,
         durable_mode="create",
         clock=lambda: datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp(),
-        execution_environment="INTERNAL_SIMULATED_EXECUTION",
-        entry_budget_policy=policy(),
+        execution_environment="LIVE" if scoped_reconciliation else "INTERNAL_SIMULATED_EXECUTION",
+        entry_budget_policy=None if scoped_reconciliation else policy(),
     )
     context = host.observe_v1({"LANE_1": bound})
     payload = _balance_payload(avail_eq="1000")

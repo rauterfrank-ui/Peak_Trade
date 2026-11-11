@@ -44,6 +44,7 @@ class HostAccountObservationV1:
     pending_orders: bool
     occupancy_payloads: dict
     pending_source: object | None = field(default=None, repr=False, compare=False)
+    account_inventory_source: object | None = field(default=None, repr=False, compare=False)
 
 
 @dataclass(frozen=True)
@@ -123,6 +124,34 @@ def collect_host_account_observation_v1(
     ).trusted:
         raise ValueError("HOST_BUDGET_PRIVATE_RECONCILIATION_REQUIRED")
     native = dict(instrument_ids_by_native_id)
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        K1AccountObservationSourceV1,
+    )
+
+    inventory_source = None
+    source_id = "host-private-rest-swap"
+    if (
+        type(private_rest_fetch) is K1AccountObservationSourceV1
+        and private_rest_fetch.account_inventory_guard
+    ):
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            resolve_reconciliation_query_options_v1,
+        )
+
+        try:
+            bound_products = {
+                resolve_reconciliation_query_options_v1(
+                    instrument_id=instrument_id, native_id=native_id
+                ).inst_type
+                for native_id, instrument_id in native.items()
+            }
+        except ValueError as exc:
+            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN") from exc
+        if bound_products - {private_rest_fetch.inventory_inst_type}:
+            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN")
+        inventory_source = private_rest_fetch
+        if inventory_source.inventory_inst_type == "FUTURES":
+            source_id = "host-private-rest-futures"
     positions = []
     seen = set()
     for p in baseline.positions:
@@ -138,7 +167,7 @@ def collect_host_account_observation_v1(
             PositionTruthV1.from_signed(
                 instrument_id=native[p.inst_id],
                 signed_quantity=quantity,
-                source_id="host-private-rest-swap",
+                source_id=source_id,
                 event_time_unix=started,
                 wall_time_unix=now,
             )
@@ -147,9 +176,10 @@ def collect_host_account_observation_v1(
         account=account,
         pending_orders=bool(pending),
         occupancy_payloads=occupancy,
+        account_inventory_source=inventory_source,
         observed=PortfolioTruthSnapshotV1(
             positions=tuple(positions),
-            source_id="host-private-rest-swap",
+            source_id=source_id,
             event_time_unix=started,
             wall_time_unix=now,
             max_age_seconds=position_max_age,
@@ -160,17 +190,8 @@ def collect_host_account_observation_v1(
     from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
         is_original_account_observation_source_v1,
     )
-    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
-        K1AccountObservationSourceV1,
-    )
 
-    if (
-        type(private_rest_fetch) is K1AccountObservationSourceV1
-        and private_rest_fetch.account_inventory_guard
-    ):
-        if any(not native_id.endswith("-SWAP") for native_id in native):
-            raise ValueError("HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN")
-    elif is_original_account_observation_source_v1(private_rest_fetch):
+    if inventory_source is None and is_original_account_observation_source_v1(private_rest_fetch):
         private_rest_fetch.bind_completed_host_observation_v1(observation)
         observation = replace(observation, pending_source=private_rest_fetch)
     if startup_port is not None:
@@ -187,6 +208,7 @@ class HostBudgetRecoveryContextV1:
     occupancy_payloads: dict
     execution_reconciliation: dict = field(default_factory=dict)
     pending_source: object | None = field(default=None, repr=False, compare=False)
+    account_inventory_source: object | None = field(default=None, repr=False, compare=False)
 
     def recover_v1(self, owner, output):
         return self._recover_with_bindings_v1(owner, output, self.host.bindings)
@@ -444,6 +466,11 @@ class PortfolioBudgetHostV1:
             pending_orders=observation.pending_orders,
             occupancy_payloads=observation.occupancy_payloads,
             pending_source=observation.pending_source,
+            account_inventory_source=(
+                observation.account_inventory_source
+                if observation.account_inventory_source is self.fetch
+                else None
+            ),
             observed=observation.observed,
         )
         context = replace(
@@ -467,6 +494,11 @@ class PortfolioBudgetHostV1:
         return context
 
     def _reconcile_executions_v1(self, context, *, capture=None):
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+            require_futures_reconciliation_product_v1,
+            resolve_reconciliation_query_options_v1,
+        )
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
             PortfolioExecutionReconciliationIdentityV2,
             parse_exchange_reconciliation_identity_v1,
@@ -476,6 +508,9 @@ class PortfolioBudgetHostV1:
         )
         from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
             GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+        from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+            K1AccountObservationSourceV1,
         )
 
         submitted = {
@@ -494,16 +529,36 @@ class PortfolioBudgetHostV1:
                 for rid in submitted
             }
         if deliver_incidents:
-            from src.ops.execution_reconciliation_get_provenance_v1 import (
-                AuthenticatedReconciliationGetV1,
-            )
-
             capture = AuthenticatedReconciliationGetV1(
                 self.reconciliation_transport,
                 account=self.account,
                 clock=self.clock,
                 retain_response_bodies=True,
             )
+        inventory = context.account_inventory_source
+        futures_custody = (
+            type(inventory) is K1AccountObservationSourceV1
+            and not inventory.closed
+            and inventory.account_inventory_guard
+            and inventory.inventory_inst_type == "FUTURES"
+            and inventory.expected_account_identity == context.account
+        )
+        requests = []
+        for rid, link in submitted.items():
+            identity = parse_exchange_reconciliation_identity_v1(link["identity"])
+            if identity.execution_environment != self.execution_environment:
+                raise ValueError("HOST_EXECUTION_ENVIRONMENT_MISMATCH")
+            options = None
+            if type(identity) is PortfolioExecutionReconciliationIdentityV2:
+                options = resolve_reconciliation_query_options_v1(
+                    instrument_id=identity.instrument_id, native_id=identity.native_id
+                )
+            futures_order = options is not None and options.inst_type == "FUTURES"
+            if futures_order != futures_custody or (
+                futures_order and type(capture) is not AuthenticatedReconciliationGetV1
+            ):
+                raise ValueError("HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN")
+            requests.append((rid, identity, options))
         transport = self.reconciliation_transport if capture is None else capture
         config = transport.get(
             endpoint="/api/v5/account/config",
@@ -528,17 +583,17 @@ class PortfolioBudgetHostV1:
         ):
             raise ValueError("HOST_EXECUTION_READ_PORT_ACCOUNT_UNPROVEN")
         result = {}
-        for rid, link in submitted.items():
-            identity = parse_exchange_reconciliation_identity_v1(link["identity"])
-            if identity.execution_environment != self.execution_environment:
-                raise ValueError("HOST_EXECUTION_ENVIRONMENT_MISMATCH")
+        for rid, identity, options in requests:
             acquired = datetime.fromtimestamp(self.clock(), timezone.utc)
             snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
                 identity=identity,
+                options=options,
                 read_only_get_transport=transport,
                 pretrade_decision_id=f"{self.session_id}:{rid}",
                 received_at=acquired.isoformat(),
             )
+            if options is not None and options.inst_type == "FUTURES":
+                require_futures_reconciliation_product_v1(snapshot)
             result[rid] = self.owner.reconcile_execution_v1(
                 rid,
                 snapshot=snapshot,
