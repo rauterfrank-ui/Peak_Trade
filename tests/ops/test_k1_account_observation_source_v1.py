@@ -46,7 +46,12 @@ class InjectedOpener:
         url = urlsplit(req.full_url)
         query = dict(parse_qsl(url.query))
         payload = (
-            {"code": "0", "data": [{"instType": "FUTURES"}] if self.algo_pending else []}
+            {
+                "code": "0",
+                "data": [{"instType": "FUTURES"}]
+                if self.algo_pending is True or self.algo_pending == query.get("ordType")
+                else [],
+            }
             if url.path.endswith("orders-algo-pending")
             else self.fetch(url.path, query)
         )
@@ -199,6 +204,10 @@ def test_scope_probe_exposes_other_or_unknown_products_without_adopting_account(
         ("missing-product", "ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_SWAP_CONSUMER"),
         ("pending", "STARTUP_PENDING_ORDERS_UNRESOLVED"),
         ("algo-pending", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("chase", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("iceberg", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("twap", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
+        ("smart_iceberg", "STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED"),
         ("futures-binding", "HOST_BUDGET_BOUND_PRODUCT_SCOPE_UNPROVEN"),
     ],
 )
@@ -219,13 +228,15 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         positions.append(
             {"instId": BOUND.venue_native_id, "instType": "SWAP", "posSide": "net", "pos": "-2"}
         )
-    if fault in {"supported-futures-position", "swap-in-futures"}:
+    advanced_types = {"chase", "iceberg", "twap", "smart_iceberg"}
+    if fault in {"supported-futures-position", "swap-in-futures"} | advanced_types:
         product = "FUTURES"
         bound = replace(
             BOUND,
             instrument_id="okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310404",
             venue_native_id="BTC-USD_UM_XPERP-310404",
         )
+    if fault in {"supported-futures-position", "swap-in-futures"}:
         positions.append(
             {
                 "instId": bound.venue_native_id
@@ -239,13 +250,15 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     if fault == "futures-binding":
         bound = replace(BOUND, venue_native_id="BTC-USD_UM_XPERP-310404")
     opener = InjectedOpener(
-        positions=positions, pending=fault == "pending", algo_pending=fault == "algo-pending"
+        positions=positions,
+        pending=fault == "pending",
+        algo_pending=fault if fault in advanced_types else fault == "algo-pending",
     )
     with patch.object(wire, "build_opener", return_value=opener):
         with open_k1_account_observation_source_v1(
             expected_account_identity=ACCOUNT,
             session_id="account-inventory",
-            max_request_count=10,
+            max_request_count=14 if product == "FUTURES" else 10,
             k1_lookup_backend=_FakeKeychainBackend(),
             account_inventory_guard=True,
             inventory_inst_type=product,
@@ -269,7 +282,7 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
                     else:
                         assert result.observed.positions == ()
                     assert host.owner.budget_state_v1().recovery_required
-                    assert len(opener.requests) == 10
+                    assert len(opener.requests) == (14 if product == "FUTURES" else 10)
                 else:
                     with pytest.raises(ValueError, match=expected):
                         host.observe_v1({"LANE_1": bound})
@@ -289,7 +302,11 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
     else:
         assert inventory and all("instType" not in url.query for url in inventory)
     if expected is None:
-        assert len(inventory) == 6
+        assert len(inventory) == (10 if product == "FUTURES" else 6)
+        if product == "FUTURES":
+            assert advanced_types <= {
+                dict(parse_qsl(url.query)).get("ordType") for url in inventory
+            }
         assert all(
             dict(parse_qsl(url.query)) == {"instType": product}
             for url in urls

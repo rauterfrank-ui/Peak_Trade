@@ -42,6 +42,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+    REASON_INCOMPLETE_PAGINATION,
     REASON_NEGATIVE_REMAINING,
     REASON_TRANSPORT_UNKNOWN,
 )
@@ -117,6 +118,9 @@ class SignedReconciliationHttpFixture:
         state = "filled" if self.fault == "filled-anchor" else "partially_filled"
         if self.fault == "healthy-canceled":
             filled, state = "0", "canceled"
+        if self.fault == "canceled-after-partial":
+            assert Decimal(identity.final_quantity) > 1
+            filled, state = "1", "canceled"
         row = {
             "instId": identity.native_id,
             "clOrdId": identity.clordid,
@@ -129,6 +133,19 @@ class SignedReconciliationHttpFixture:
             row["instType"] = "SWAP"
         code = "0"
         rows = []
+        if self.fault == "canceled-after-partial" and path.endswith("/positions"):
+            signed = (
+                filled if identity.selected_side.upper() in {"LONG", "ENTER_LONG"} else "-" + filled
+            )
+            rows = [
+                {
+                    "instId": identity.native_id,
+                    "instType": "FUTURES" if not identity.native_id.endswith("-SWAP") else "SWAP",
+                    "pos": signed,
+                    "posSide": "net",
+                }
+            ]
+            return json.dumps({"code": "0", "data": rows}, separators=(",", ":")).encode()
         if path.endswith("/config"):
             account = "foreign-account" if self.fault == "account" else identity.account_identity
             if self.fault == "duplicate-account-field":
@@ -151,6 +168,11 @@ class SignedReconciliationHttpFixture:
                 code = "51603"
         elif path.endswith(("orders-history", "/order")):
             rows = [row]
+            if self.fault == "incomplete-page" and path.endswith("orders-history"):
+                rows += [
+                    dict(row, clOrdId=f"other{i}", ordId=f"other{i}")
+                    for i in range(int(params["limit"]) - 1)
+                ]
         elif path.endswith("/fills") and self.fault != "healthy-canceled":
             rows = [
                 {
@@ -984,7 +1006,16 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
 
 
 @pytest.mark.parametrize(
-    "path", ["archive", "standing", "unknown", "no-custody", "foreign-product-row"]
+    "path",
+    [
+        "archive",
+        "standing",
+        "unknown",
+        "no-custody",
+        "foreign-product-row",
+        "canceled-after-partial",
+        "incomplete-page",
+    ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
     tmp_path, monkeypatch, proof_root, path
@@ -1042,14 +1073,14 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     StatePersistence(str(scope.state_path)).save(KillSwitchState.ACTIVE)
     opener = SignedReconciliationHttpFixture(identity)
-    if path == "foreign-product-row":
+    if path in {"foreign-product-row", "canceled-after-partial", "incomplete-page"}:
         opener.fault = path
     elif path == "unknown":
         opener.fault = "missing-order"
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=16, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=20, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1081,7 +1112,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     host.observe_authenticated_execution_reconciliation_v1(
                         {"LANE_1": bound}, proof_root=proof_root
                     )
-                assert len(opener.requests) == (0 if path == "no-custody" else 16)
+                assert len(opener.requests) == (0 if path == "no-custody" else 20)
                 assert not list(proof_root.iterdir())
                 assert host.owner.execution_links_v1()[rid]["reconciliation"] is None
                 assert host.owner.active_sum_v1() == held > 0
@@ -1099,12 +1130,22 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                 )
                 assert context.account_inventory_source is source and context.pending_source is None
                 revision = proofs[rid].revision_ref
-                if path == "unknown":
+                if path in {"unknown", "incomplete-page", "canceled-after-partial"}:
                     reconciliation = context.execution_reconciliation[rid]
-                    assert reconciliation["decision"]["reasons"] == [REASON_TRANSPORT_UNKNOWN]
+                    assert reconciliation["decision"]["reasons"] == [
+                        {
+                            "unknown": REASON_TRANSPORT_UNKNOWN,
+                            "incomplete-page": REASON_INCOMPLETE_PAGINATION,
+                            "canceled-after-partial": "CANCELED_AFTER_PARTIAL",
+                        }[path]
+                    ]
                     assert reconciliation["reservation_released"] is False
-            assert source.transport.read_count == 10
-            assert transport.methods_used == ["GET"] * 16
+                    assert reconciliation["matched"] is (path == "canceled-after-partial")
+                    if path == "canceled-after-partial":
+                        assert reconciliation["decision"]["cumulative_filled_qty"] == "1"
+                        assert reconciliation["decision"]["exposure_retained"] is True
+            assert source.transport.read_count == 14
+            assert transport.methods_used == ["GET"] * 20
             assert host.owner.active_sum_v1() == held > 0
             assert host.owner.budget_state_v1().recovery_required
         finally:
@@ -1113,7 +1154,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
 
     proof_args = _receipt_args(host, scope, identity, proof_root, revision)
     proof = store.read_authenticated_execution_reconciliation_proof_v1(**proof_args)
-    if path == "unknown":
+    if path in {"unknown", "incomplete-page", "canceled-after-partial"}:
         assert proof.quantity_incident is None
     else:
         assert proof.quantity_incident.reconciliation_reason == REASON_NEGATIVE_REMAINING
@@ -1144,6 +1185,122 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         store.ExecutionReconciliationProofStoreError, match="REPLAY_REQUEST_MISMATCH"
     ):
         store.read_authenticated_execution_reconciliation_proof_v1(**proof_args)
+
+
+def test_swap_original_one_shot_uses_signed_custody_and_cold_order_readback(
+    tmp_path, monkeypatch, proof_root
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pending_observation_v1 import (
+        capture_current_post_pending_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+        parse_exchange_reconciliation_identity_v1,
+    )
+    from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+        open_k1_account_observation_source_v1,
+    )
+    from tests.ops.test_k1_account_observation_source_v1 import InjectedOpener
+    from tests.ops.test_prepost_original_budget_context_v1 import caller, execute
+
+    host, rid, _, envelope, _, _ = seed_with_origin(tmp_path, monkeypatch)
+    bound = _bound()
+    account = host.owner.durable_scope_identity_v1()["account"]
+    held = host.owner.active_sum_v1()
+    gate = tmp_path / "one-shot-filegate.json"
+    StatePersistence(str(gate)).save(KillSwitchState.ACTIVE)
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(gate))
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    account_get = InjectedOpener(account=account)
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: account_get)
+    attempts = []
+
+    class LostResponse:
+        def open(self, request, timeout=0):
+            assert request.get_method() == "POST"
+            original_link = host.owner.execution_links_v1()[rid]
+            record = load_external_effect_durable_consume_v1(store_root=tmp_path / "send")["record"]
+            assert record["durable_state"] == "SENT_INITIATED"
+            assert original_link["phase"] == "SUBMIT_MAY_HAVE_OCCURRED"
+            submitted = parse_exchange_reconciliation_identity_v1(original_link["identity"])
+            assert submitted.identity_digest() == record["execution_identity_digest"]
+            assert submitted.envelope_digest == envelope.envelope_digest
+            attempts.append(submitted)
+            raise TimeoutError("injected missing response")
+
+    try:
+        with open_k1_account_observation_source_v1(
+            expected_account_identity=account,
+            session_id=SESSION,
+            max_request_count=10,
+            k1_lookup_backend=_FakeKeychainBackend(),
+        ) as source:
+            sample = source.collect_v1(
+                instrument_ids_by_native_id={bound.venue_native_id: bound.instrument_id}
+            )
+            assert sample.pending_source is source
+            args = dict(
+                envelope=envelope,
+                portfolio_budget_owner=host.owner,
+                portfolio_reservation_id=rid,
+                execution_plan_context=host.owner.execution_plan_context_v1(rid, envelope),
+                post_pending_context=capture_current_post_pending_v1(
+                    envelope=envelope, source=source
+                ),
+            )
+            result = execute(args, tmp_path, opener=LostResponse())
+            assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
+            assert host.owner.active_sum_v1() == held > 0
+            with pytest.raises(caller.CurrentProductiveActualVenuePostError):
+                execute(args, tmp_path, opener=LostResponse())
+            (identity,) = attempts
+            assert len(account_get.requests) == 10
+    finally:
+        host.close()
+
+    venue_get = SignedReconciliationHttpFixture(identity)
+    venue_get.fault = "healthy-canceled"
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: venue_get)
+    with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+        max_request_count=16, k1_lookup_backend=_FakeKeychainBackend()
+    ) as (transport, _):
+        source = K1AccountObservationSourceV1(
+            credential=transport._handle,
+            transport=transport,
+            expected_account_identity=account,
+            session_id=SESSION,
+        )
+        reopened = PortfolioBudgetHostV1(
+            root=host.root,
+            private_rest_fetch=source,
+            repository_sha=host.repository_sha,
+            session_id=SESSION,
+            expected_account_identity=account,
+            reconciliation_transport=transport,
+        )
+        try:
+            context, proofs = reopened.observe_authenticated_execution_reconciliation_v1(
+                {"LANE_1": bound}, proof_root=proof_root
+            )
+            decision = context.execution_reconciliation[rid]
+            assert decision["matched"] and decision["reservation_released"]
+            assert decision["decision"]["cumulative_filled_qty"] == "0"
+            assert reopened.owner.active_sum_v1() == 0
+            assert reopened.owner.budget_state_v1().recovery_required
+            assert transport.methods_used == ["GET"] * 16
+            revision = proofs[rid].revision_ref
+        finally:
+            reopened.close()
+            source.close()
+    scope = OfflineExecutionIncidentScopeV1(tmp_path.resolve(), account, SESSION, NOW)
+    proof = store.read_authenticated_execution_reconciliation_proof_v1(
+        **_receipt_args(reopened, scope, identity, proof_root, revision)
+    )
+    assert proof.identity_digest == identity.identity_digest()
+    assert proof.quantity_incident is None
 
 
 @pytest.mark.parametrize(

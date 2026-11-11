@@ -32,6 +32,7 @@ from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
 )
 
 K1_ACCOUNT_READ_PROFILE = "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1"
+FUTURES_INVENTORY_ALGO_TYPES = SUPPORTED_ALGO_TYPES + ("chase", "iceberg", "twap", "smart_iceberg")
 
 
 def _validate_inventory_scope_v1(guard, inst_type):
@@ -86,6 +87,11 @@ class _AccountReadTransportV1:
     def __init__(self, transport, *, inventory_inst_type):
         self._transport = transport
         self._inventory_inst_type = inventory_inst_type
+        self._algo_types = (
+            FUTURES_INVENTORY_ALGO_TYPES
+            if inventory_inst_type == "FUTURES"
+            else SUPPORTED_ALGO_TYPES
+        )
         self.last_read = None
         self.read_count = 0
 
@@ -133,7 +139,7 @@ class _AccountReadTransportV1:
             else {"instType": "SWAP"}
         )
         if path == ALGO_PENDING_PATH:
-            if params.get("ordType") not in SUPPORTED_ALGO_TYPES:
+            if params.get("ordType") not in self._algo_types:
                 raise AccountObservationSourceError("K1_ALGO_TYPE_UNSUPPORTED")
             expected = {"instType": "SWAP", "ordType": params["ordType"]}
         elif path in {
@@ -155,7 +161,7 @@ class _AccountReadTransportV1:
         ) or (
             path == ALGO_PENDING_PATH
             and params == {"ordType": params.get("ordType")}
-            and params.get("ordType") in SUPPORTED_ALGO_TYPES
+            and params.get("ordType") in self._algo_types
         )
         if params != expected and not full_scope:
             raise AccountObservationSourceError("K1_ACCOUNT_READ_SCOPE_INVALID")
@@ -208,6 +214,13 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         )
         self.account_inventory_guard = account_inventory_guard
         self.inventory_inst_type = inventory_inst_type
+
+    def _pending_algo_types_v1(self):
+        return (
+            FUTURES_INVENTORY_ALGO_TYPES
+            if self.inventory_inst_type == "FUTURES"
+            else SUPPORTED_ALGO_TYPES
+        )
 
     def _verified_get_v1(self, path, params):
         if not self.account_inventory_guard or params.get("instType") != "SWAP":
@@ -320,7 +333,7 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         pending = self._verified_get_v1("/api/v5/trade/orders-pending", {})["data"]
         algos = {
             kind: len(self._verified_get_v1(ALGO_PENDING_PATH, {"ordType": kind})["data"])
-            for kind in SUPPORTED_ALGO_TYPES
+            for kind in self._pending_algo_types_v1()
         }
         product_counts = {}
         for row in positions:
@@ -484,7 +497,13 @@ def open_k1_account_observation_source_v1(
     if (
         isinstance(max_request_count, bool)
         or not isinstance(max_request_count, int)
-        or max_request_count < 10
+        or max_request_count
+        < 6
+        + len(
+            FUTURES_INVENTORY_ALGO_TYPES
+            if inventory_inst_type == "FUTURES"
+            else SUPPORTED_ALGO_TYPES
+        )
     ):
         raise AccountObservationSourceError("K1_ACCOUNT_BASELINE_QUOTA_REQUIRED")
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
