@@ -675,6 +675,29 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     next_owner = ""
     ledger_state = STATE_FAILED_STOP
 
+    from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+    from src.ops.managed_filegate_v1 import (
+        configured_filegate_writer_v1,
+        managed_filegate_configured_v1,
+        read_configured_filegate_v1,
+    )
+
+    filegate_path = canonical_kill_switch_state_path()
+    managed_filegate = configured_filegate_writer_v1(filegate_path)
+    managed_release = None
+
+    def _require_managed_release():
+        if managed_release is None:
+            return
+        current = read_configured_filegate_v1(filegate_path) or {}
+        if (
+            os.environ.get("PEAK_KILL_SWITCH") == "1"
+            or current.get("filegate_release_sha256") != managed_release
+        ):
+            raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
+                "S6_MANAGED_FILEGATE_REVISION_CHANGED"
+            )
+
     def _write_ledger(*, state: str, extra: Mapping[str, Any] | None = None) -> None:
         payload: dict[str, Any] = {
             "state": state,
@@ -711,7 +734,28 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             payload["completed_cursor_sha256"] = sha256(
                 (Path(cursor_store_root) / CURSOR_FILENAME).read_bytes()
             ).hexdigest()
-        _persist_json(path=Path(evidence_root) / LEDGER_FILENAME, payload=payload)
+        ledger_path = Path(evidence_root) / LEDGER_FILENAME
+        if managed_filegate is not None and state != STATE_WAITING_FOR_NEXT_C1:
+            lock.assert_held()
+            managed_filegate.set_host_checkpoint_v1(
+                lock_path=lock.lock_path.resolve(), checkpoint=None
+            )
+        _persist_json(path=ledger_path, payload=payload)
+        if (
+            managed_filegate is not None
+            and state == STATE_WAITING_FOR_NEXT_C1
+            and "checkpoint_cursor_sha256" in payload
+        ):
+            lock.assert_held()
+            managed_filegate.set_host_checkpoint_v1(
+                lock_path=lock.lock_path.resolve(),
+                checkpoint={
+                    "lock_sha256": sha256(lock.lock_path.read_bytes()).hexdigest(),
+                    "ledger_sha256": sha256(ledger_path.read_bytes()).hexdigest(),
+                    "cursor_sha256": payload["checkpoint_cursor_sha256"],
+                    "repository_sha": origin_main_sha,
+                },
+            )
         trans_path = Path(evidence_root) / "transitions.jsonl"
         with trans_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, sort_keys=True, ensure_ascii=True) + "\n")
@@ -783,8 +827,17 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         )
 
     try:
+        if managed_filegate_configured_v1(filegate_path):
+            current = read_configured_filegate_v1(filegate_path) or {}
+            managed_release = current.get("filegate_release_sha256")
+            if current.get("state") != "ACTIVE" or managed_release is None:
+                raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
+                    "S6_MANAGED_FILEGATE_ACTIVE_UNPROVEN"
+                )
+            _require_managed_release()
         _write_ledger(state=STATE_IN_PROGRESS)
         while True:
+            _require_managed_release()
             if cancel_requested is not None and cancel_requested() is True:
                 return _stop(
                     result_disposition=DISPOSITION_CANCELLED,
@@ -1000,6 +1053,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     owner_next="S5 invoke cardinality drifted. Do not resume.",
                 )
             try:
+                _require_managed_release()
                 s5_result = runner(
                     authorization=s5_auth,
                     origin_main_sha=origin_main_sha,

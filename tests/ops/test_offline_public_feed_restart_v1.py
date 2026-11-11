@@ -1,6 +1,7 @@
 """R01 through original Safety, S6, S5 and S7 with isolated account and market ports."""
 
 from dataclasses import asdict, replace
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import hmac
@@ -27,6 +28,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     CURSOR_FILENAME,
 )
 from src.ops.gates.risk_gate import kill_switch_should_block_trading
+from src.ops.offline_fault_monitor_v1 import OfflineFaultMonitorV1, OfflineFaultPortsV1
 from src.ops.offline_public_feed_recovery_v1 import OfflinePublicFeedRecoveryError
 from src.ops.offline_public_feed_restart_v1 import MANDATE_SCHEMA, OfflinePublicFeedRestartV1
 from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
@@ -282,6 +284,155 @@ def test_new_kill_after_release_blocks_the_actual_host(scenario):
     with pytest.raises(OfflinePublicFeedRecoveryError, match="ACTIVE_UNPROVEN"):
         _resume(scenario)
     assert scenario["cursor_path"].read_bytes() == scenario["initial_cursor"]
+    assert kill_switch_should_block_trading(explicit_active=False)
+
+
+def _witnessed_safety(feed, tmp_path):
+    directory = tmp_path.resolve().with_name(tmp_path.name + "-witness")
+    directory.mkdir(mode=0o700)
+    safety = OfflinePublicFeedRestartV1(feed.repair, authority_key=KEY, witness_directory=directory)
+    safety.initialize_witness_v1()
+    return safety, directory
+
+
+@pytest.mark.parametrize("fault", ["missing", "corrupt", "foreign-active", "contradictory"])
+def test_witnessed_monitor_recovers_original_blocking_filegate(scenario, tmp_path, fault):
+    feed = scenario["feed"]
+    safety, directory = _witnessed_safety(feed, tmp_path)
+    path = feed.incident.state_path
+    if fault == "missing":
+        path.unlink()
+    else:
+        path.write_bytes(
+            {
+                "corrupt": b"{",
+                "foreign-active": b'{"state":"ACTIVE"}',
+                "contradictory": b'{"state":"ACTIVE","status":"KILLED"}',
+            }[fault]
+        )
+    cold = OfflinePublicFeedRestartV1(
+        feed.cold_reader(), authority_key=KEY, witness_directory=directory
+    )
+    outcome = OfflineFaultMonitorV1(cold).poll_v1(
+        lambda: pytest.fail("must fence before opening owner ports")
+    )
+    assert outcome["status"] == "BLOCKED_OBSERVING"
+    assert outcome["filegate"]["previous_witness_generation"] == 1
+    assert feed.store.load()["trigger_reason"] == "FILEGATE_INTEGRITY_UNPROVEN"
+    assert cold.observe_filegate_integrity_v1()["witness_generation"] == 2
+    assert kill_switch_should_block_trading(explicit_active=False)
+    with pytest.raises(OfflinePublicFeedRecoveryError, match="STOP_CHANGED_OR_UNPROVEN"):
+        safety.activate_v1(**scenario["common"])
+    assert scenario["venue"].requests == []
+
+
+@pytest.mark.parametrize("scenario", [False], indirect=True)
+def test_monitor_recovers_then_rejects_joint_runtime_store_rollback(scenario, tmp_path):
+    feed = scenario["feed"]
+    safety, directory = _witnessed_safety(feed, tmp_path)
+    common = scenario["common"]
+
+    @contextmanager
+    def open_ports():
+        yield OfflineFaultPortsV1(
+            host=common["host"],
+            bound=common["bound"],
+            feed_restart={
+                "authorization": common["authorization"],
+                "mandate": common["mandate"],
+                "runtime": feed.runtime,
+                "observation": scenario["observation"],
+                "g17_producers": scenario["producers"],
+            },
+        )
+
+    result = OfflineFaultMonitorV1(safety).run_v1(
+        open_ports=open_ports,
+        stop_requested=lambda: False,
+        sleeper=lambda _: pytest.fail("original host should resume on first pass"),
+    )
+    assert result["status"] == "HOST_CONTINUATION_CONFIRMED", result.get("reason")
+    assert result["host_result"]["cursor_after"] == result["host_result"]["cursor_before"] + 60
+    assert feed.transport.state.reconnect_count == 1
+    assert scenario["send"]["simulated_transport"].post_count == 0
+    local_paths = (
+        feed.incident.state_path,
+        feed.incident.root / "offline-fault-observation.json",
+        feed.incident.root / "public-feed-repair.json",
+    )
+    old_generation = {path: path.read_bytes() for path in local_paths}
+    safety.record_kill_v1(reason="NEW_EMERGENCY")
+    for path, data in old_generation.items():
+        path.write_bytes(data)
+
+    cold = OfflinePublicFeedRestartV1(
+        feed.cold_reader(), authority_key=KEY, witness_directory=directory
+    )
+    with pytest.raises(OfflinePublicFeedRecoveryError, match="FILEGATE_WITNESS_STATE_MISMATCH"):
+        _resume(scenario, safety=cold)
+    blocked = OfflineFaultMonitorV1(cold).poll_v1(
+        lambda: pytest.fail("rolled-back state must be fenced before owner access")
+    )
+    assert blocked["status"] == "BLOCKED_OBSERVING"
+    assert blocked["filegate"]["previous_witness_generation"] == 3
+    assert kill_switch_should_block_trading(explicit_active=False)
+    assert scenario["send"]["simulated_transport"].post_count == 0
+
+
+def test_kill_can_publish_between_s6_gate_and_actual_s5(scenario, tmp_path, monkeypatch):
+    safety, _ = _witnessed_safety(scenario["feed"], tmp_path)
+    safety.activate_v1(**scenario["common"])
+    run_s6 = s6.run_current_productive_governed_continuous_cycle_run_v1
+
+    def kill_after_gate(**kwargs):
+        original = kwargs["iteration_authority_gate_v1"]
+
+        def gate(cycle):
+            original(cycle)
+            safety.record_kill_v1(reason="NEW_EMERGENCY")
+
+        return run_s6(**{**kwargs, "iteration_authority_gate_v1": gate})
+
+    monkeypatch.setattr(
+        s6, "run_current_productive_governed_continuous_cycle_run_v1", kill_after_gate
+    )
+    with pytest.raises(OfflinePublicFeedRecoveryError, match="ACTIVE_UNPROVEN"):
+        _resume(scenario, safety=safety)
+    assert scenario["cursor_path"].read_bytes() == scenario["initial_cursor"]
+    assert scenario["feed"].store.load()["trigger_reason"] == "NEW_EMERGENCY"
+
+
+def test_missing_witness_after_release_never_bootstraps_from_active(scenario, tmp_path):
+    feed = scenario["feed"]
+    safety, directory = _witnessed_safety(feed, tmp_path)
+    safety.activate_v1(**scenario["common"])
+    (head,) = directory.glob("*.json")
+    head.unlink()
+    with pytest.raises(OfflinePublicFeedRecoveryError, match="WITNESS_HEAD_UNPROVEN"):
+        _resume(scenario, safety=safety)
+    outcome = safety.observe_filegate_integrity_v1()
+    assert outcome["status"] == "BLOCKED_INTEGRITY_KILL"
+    assert not head.exists()
+    assert safety.observe_filegate_integrity_v1()["status"] == "BLOCKED_UNANCHORED"
+    assert kill_switch_should_block_trading(explicit_active=False)
+
+
+def test_damaged_diagnostics_kept_and_safety_observation_continues(scenario, tmp_path):
+    feed = scenario["feed"]
+    safety, _ = _witnessed_safety(feed, tmp_path)
+    diagnosis = feed.incident.root / "offline-fault-observation.json"
+    diagnosis.write_bytes(b"{")
+    feed.incident.state_path.write_bytes(b'{"state":"ACTIVE"}')
+    sleeps = []
+    result = OfflineFaultMonitorV1(safety, interval_seconds=1).run_v1(
+        open_ports=lambda: pytest.fail("unproven journal cannot authorize owner calls"),
+        stop_requested=lambda: len(sleeps) == 3,
+        sleeper=sleeps.append,
+    )
+    assert result == {"status": "MONITOR_STOPPED"}
+    assert sleeps == [1, 1, 1]
+    assert diagnosis.read_bytes() == b"{"
+    assert feed.store.load()["trigger_reason"] == "FILEGATE_INTEGRITY_UNPROVEN"
     assert kill_switch_should_block_trading(explicit_active=False)
 
 

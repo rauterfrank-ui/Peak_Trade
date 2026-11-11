@@ -91,11 +91,23 @@ def resolve_kill_switch_limit_from_state_file(
       this as ACTIVE.
     """
     path = Path(state_path or DEFAULT_KILL_SWITCH_STATE_PATH)
+    from src.ops.managed_filegate_v1 import (
+        managed_filegate_configured_v1,
+        read_configured_filegate_v1,
+    )
+
+    if managed_filegate_configured_v1(path):
+        data = read_configured_filegate_v1(path)
+        if data is None:
+            return None
+        return data["state"] != "ACTIVE" or os.environ.get("PEAK_KILL_SWITCH") == "1"
     if not path.is_file():
         return None
     try:
         with path.open(encoding="utf-8") as f:
             data = json.load(f)
+        if "filegate_generation" in data:
+            return None
         state = str(data.get("state", "")).strip().upper()
     except Exception:
         return None
@@ -131,7 +143,9 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
     if resolved is False:
         return False
     file_present = Path(path).is_file()
-    if file_present or env_path:
+    from src.ops.managed_filegate_v1 import managed_filegate_configured_v1
+
+    if file_present or env_path or managed_filegate_configured_v1(path):
         return True
     return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
 

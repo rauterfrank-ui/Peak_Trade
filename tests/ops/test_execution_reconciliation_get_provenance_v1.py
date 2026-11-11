@@ -32,6 +32,7 @@ from src.ops.execution_incident_safety_v1 import (
     OfflineExecutionIncidentScopeV1,
     _apply_confirmed_execution_incident_v1,
     observe_authenticated_execution_incident_v1,
+    observe_standing_execution_incident_v1,
 )
 from src.ops.execution_reconciliation_get_provenance_v1 import ExecutionReconciliationSourceError
 from src.ops import execution_reconciliation_proof_store_v1 as store
@@ -228,6 +229,7 @@ def authenticated_host(tmp_path, monkeypatch):
         ("confirmed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("pending", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("already-killed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "ALREADY_BLOCKED"),
+        ("managed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "ALREADY_BLOCKED"),
         ("recovering", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("raw-proof-write-failed", "EXECUTION_GHOSV_SAFETY_HALT", "KILLED", "KILL_PERSISTED"),
         ("corrupt-journal", "INCIDENT_JOURNAL_UNPROVEN", "KILLED", None),
@@ -267,6 +269,32 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
     if case in {"already-killed", "recovering"}:
         state = KillSwitchState.KILLED if case == "already-killed" else KillSwitchState.RECOVERING
         StatePersistence(str(gate)).save(state, killed_at=NOW, trigger_reason="manual-incident")
+    if case == "managed":
+        from nacl.signing import SigningKey
+
+        from src.ops.filegate_recovery_authority_v1 import FilegateRecoveryScopeV1
+        from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+
+        independent = tmp_path.resolve().with_name(tmp_path.name + "-filegate-authority")
+        independent.mkdir(mode=0o700)
+        gate.unlink()
+        managed = ManagedFilegateV1(state_path=gate, root=independent)
+        monkeypatch.setenv(ROOT_ENV, str(independent))
+        first_stop = managed.provision_v1(
+            scope=FilegateRecoveryScopeV1(
+                identity.account_identity,
+                "LIVE",
+                str(host.root),
+                (bound.venue_native_id,),
+                "a" * 64,
+            ),
+            issuer_public_key=bytes(SigningKey.generate().verify_key),
+            owner_public_keys={
+                role: bytes(SigningKey.generate().verify_key)
+                for role in ("CAUSE", "ACCOUNT", "HOST")
+            },
+            recoverable_causes={"R03", "R04"},
+        )
     if case == "corrupt-journal":
         live_scope.root.mkdir(mode=0o700)
         live_scope.journal_path.write_text("invalid journal")
@@ -357,8 +385,22 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
     assert json.loads(gate.read_bytes())["state"] == final_state
     assert not config.lane_state_root.exists()
     assert not (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").exists()
-    if final_state == "ACTIVE" or case == "already-killed":
+    if final_state == "ACTIVE":
         assert gate.read_bytes() == original_gate
+    if case == "already-killed":
+        before = json.loads(original_gate)
+        after = json.loads(gate.read_bytes())
+        assert after["trigger_reason"] == before["trigger_reason"]
+        assert after["killed_at"] == before["killed_at"]
+        assert (
+            after["latest_authenticated_execution_incident"]
+            == caught.value.__cause__.receipt["incident_id"]
+        )
+    if case == "managed":
+        stop = managed.inspect_stop_v1()
+        assert stop["generation"] == first_stop["generation"] + 1
+        assert stop["causes"] == ["R03", "R04"]
+        assert stop["stop_id"] == caught.value.__cause__.receipt["incident_id"]
     if case == "corrupt-journal":
         assert live_scope.journal_path.read_text() == "invalid journal"
     if disposition is None:
@@ -405,6 +447,12 @@ def test_standing_supervisor_delivers_confirmed_incident_before_startup_admissio
             assert observed["state_name"] == "KILLED"
             assert observed["correlated_incident_veto"] is (disposition == "KILL_PERSISTED")
             assert observed["post_safety_veto"].endswith(":TRUSTED_PRESENT:KILLED")
+            if case in {"already-killed", "managed"}:
+                cold = observe_standing_execution_incident_v1(scope=live_scope)
+                assert cold["kill_revision"] == receipt["kill_revision"]
+                assert cold["incident_id"] == receipt["incident_id"]
+                assert cold["original_post_veto_checked"] is True
+                assert cold["incident_evidence_error"] is None
         finally:
             restored.close()
         if case == "confirmed":

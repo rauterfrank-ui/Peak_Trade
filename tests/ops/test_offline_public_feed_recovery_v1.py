@@ -238,6 +238,22 @@ def test_freshness_checked_again_at_cold_read(feed):
     feed.advance(6)
     with pytest.raises(OfflinePublicFeedRecoveryError, match="FRESH_BOUND_MARK_UNPROVEN"):
         feed.cold_reader().read_verified_repair_v1()
+
+
+def test_running_owner_refreshes_stale_mark_on_same_transport(feed):
+    feed.frames = [push(timestamp=feed.event_ms(1), markPx="101")]
+    first = feed.run()
+    feed.advance(120)
+    feed.frames = [
+        push(
+            native=feed.incident.instrument.venue_native_id, timestamp=feed.event_ms(), markPx="102"
+        )
+    ]
+    second = feed.run()
+    assert second["mark"]["event_ms"] > first["mark"]["event_ms"]
+    assert second["mark"]["mark_px"] == "102"
+    assert feed.cold_reader().read_verified_repair_v1() == second
+    assert feed.transport.state.reconnect_count == 1
     assert kill_switch_should_block_trading(explicit_active=False)
 
 

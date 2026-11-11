@@ -27,6 +27,8 @@ REPO = Path(__file__).resolve().parents[2]
         ("before", None),
         ("during", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("other-boot", "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"),
+        ("managed-other-boot", None),
+        ("managed-other-boot-no-anchor", "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"),
         ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
         ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("foreign-checkpoint", "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"),
@@ -50,9 +52,53 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     # workers must recover this same store; they cannot create their own.
     initialize_synthetic_host_budget_v1(tmp_path / "private_store", _bound_lane_1())
     filegate = StatePersistence(str(tmp_path / "filegate.json"))
-    filegate.save(KillSwitchState.ACTIVE)
     env = {**os.environ, "PEAK_KILL_SWITCH_STATE_PATH": str(filegate.state_file)}
     env.pop("PEAK_KILL_SWITCH", None)
+    if phase.startswith("managed-"):
+        from nacl.signing import SigningKey
+
+        from src.ops.filegate_recovery_authority_v1 import (
+            FilegateRecoveryScopeV1,
+            attest_filegate_owner_evidence_v1,
+        )
+        from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+
+        separate = tmp_path.resolve().with_name(tmp_path.name + "-independent")
+        separate.mkdir(mode=0o700)
+        writer = ManagedFilegateV1(state_path=filegate.state_file, root=separate)
+        issuer = SigningKey.generate()
+        keys = {role: SigningKey.generate() for role in ("CAUSE", "ACCOUNT", "HOST")}
+        stop = writer.provision_v1(
+            scope=FilegateRecoveryScopeV1(
+                "synthetic",
+                "SHADOW",
+                str(tmp_path / "private_store"),
+                (_bound_lane_1().venue_native_id,),
+                "a" * 64,
+            ),
+            issuer_public_key=bytes(issuer.verify_key),
+            owner_public_keys={role: bytes(key.verify_key) for role, key in keys.items()},
+            recoverable_causes={"R03"},
+        )
+        now = time.time()
+        evidence = {
+            role: attest_filegate_owner_evidence_v1(
+                role=role,
+                stop=stop,
+                evidence_sha256="b" * 64,
+                observed_at=now,
+                expires_at=now + 5,
+                key=key,
+            )
+            for role, key in keys.items()
+        }
+        writer.release_v1(
+            release=writer.issue_release_v1(evidence=evidence, issuer_key=issuer),
+            evidence=evidence,
+        )
+        env[ROOT_ENV] = str(separate)
+    else:
+        filegate.save(KillSwitchState.ACTIVE)
     if env.get("GITHUB_ACTIONS") == "true":
         env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     command = [str(REPO / "scripts/pt"), "-m", "tests.ops._unattended_n1_worker_v1", str(tmp_path)]
@@ -112,11 +158,22 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         foreign = StatePersistence(str(tmp_path / "foreign-filegate.json"))
         foreign.save(KillSwitchState.ACTIVE)
         env["PEAK_KILL_SWITCH_STATE_PATH"] = str(foreign.state_file)
+    elif phase == "managed-other-boot-no-anchor":
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
+            LOCK_NAME,
+        )
+
+        writer.set_host_checkpoint_v1(
+            lock_path=Path(prior["lock_root"]) / LOCK_NAME,
+            checkpoint=None,
+        )
 
     def restart():
         restart_phase = (
             phase if phase in {"kill-during-admission", "reactivated-during-admission"} else "after"
         )
+        if phase.startswith("managed-"):
+            restart_phase = "after-managed-boot"
         return subprocess.run(
             [*command, restart_phase],
             cwd=REPO,
@@ -224,6 +281,21 @@ def test_launch_agent_preparation_has_no_activation_and_rejects_test_source_fact
     assert not (tmp_path / "controller").exists()
     with pytest.raises(FileExistsError):
         host_service_v1(manifest_path=path, action="prepare", output_path=output)
+    manifest["fault_recovery"] = {
+        "factory": "src.ops.managed_fault_recovery_v1:build_standing_managed_fault_recovery_v1",
+        "filegate_state_path": str(tmp_path / "filegate.json"),
+        "authority_root": str(tmp_path / "authority"),
+        "config": {},
+    }
+    path.write_text(json.dumps(manifest))
+    managed_output = tmp_path / "managed-host.plist"
+    prepared = host_service_v1(manifest_path=path, action="prepare", output_path=managed_output)
+    assert prepared["service_activated"] is False
+    managed_plist = plistlib.loads(managed_output.read_bytes())
+    assert managed_plist["EnvironmentVariables"] == {
+        "PEAK_KILL_SWITCH_STATE_PATH": str(tmp_path / "filegate.json"),
+        "PEAK_FILEGATE_AUTHORITY_ROOT": str(tmp_path / "authority"),
+    }
     manifest["runtime_factory"] = "tests.ops._unattended_n1_worker_v1:main"
     path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="SOURCE_FACTORY_REQUIRED"):

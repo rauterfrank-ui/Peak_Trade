@@ -177,6 +177,8 @@ class KillSwitch:
     @property
     def state(self) -> KillSwitchState:
         """Current state (thread-safe read)."""
+        if self._persistence is not None and self._persistence.managed_filegate_v1():
+            return KillSwitchState[self._persistence.load()["state"]]
         with self._lock:
             return self._state
 
@@ -263,7 +265,10 @@ class KillSwitch:
             True if successfully triggered or already killed
             False if disabled
         """
+        managed = self._persistence is not None and self._persistence.managed_filegate_v1()
         with self._lock:
+            if managed:
+                self._restore_from_persistence()
             if self._state == KillSwitchState.DISABLED:
                 self._logger.warning("⚠️  Kill Switch is DISABLED (Backtest Mode) - Trigger ignored")
                 return False
@@ -293,9 +298,12 @@ class KillSwitch:
                 )
                 callbacks = list(self._on_kill_callbacks)
 
+        if managed:
+            self._persistence.record_managed_emergency_v1(reason)
         if event is not None:
             self._execute_callbacks(callbacks, event)
-        self._persist_current_state()
+        if not managed:
+            self._persist_current_state()
         return True
 
     def request_recovery(
@@ -313,6 +321,8 @@ class KillSwitch:
             True if recovery started
             False if not in KILLED state or validation failed
         """
+        if self._persistence is not None and self._persistence.managed_filegate_v1():
+            return False
         with self._lock:
             # Idempotent: if already RECOVERING, return True
             if self._state == KillSwitchState.RECOVERING:
@@ -357,6 +367,8 @@ class KillSwitch:
             True if successfully recovered
             False if not in RECOVERING state or cooldown not complete
         """
+        if self._persistence is not None and self._persistence.managed_filegate_v1():
+            return False
         with self._lock:
             if self._state != KillSwitchState.RECOVERING:
                 self._logger.warning(
@@ -451,6 +463,16 @@ class KillSwitch:
             Dictionary with current status
         """
         with self._lock:
+            if self._persistence is not None and self._persistence.managed_filegate_v1():
+                current = self._persistence.load()
+                return {
+                    "state": current["state"],
+                    "is_killed": current["state"] == "KILLED",
+                    "is_active": current["state"] == "ACTIVE",
+                    "killed_at": current.get("killed_at"),
+                    "recovery_started_at": None,
+                    "event_count": len(self._events),
+                }
             status = {
                 "state": self._state.name,
                 "is_killed": self.is_killed,

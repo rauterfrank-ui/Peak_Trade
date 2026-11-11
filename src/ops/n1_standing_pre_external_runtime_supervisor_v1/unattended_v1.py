@@ -52,6 +52,7 @@ from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.constants_
     DEFAULT_BOUNDED_RETRY_LIMIT,
 )
 from .supervisor_v1 import run_n1_standing_pre_external_supervisor_v1
+from .errors_v1 import StandingSupervisorError
 
 
 @dataclass(frozen=True)
@@ -133,7 +134,7 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
         pid = process["pid"]
         if (
             not boot_identity
-            or prior["boot_identity"] != boot_identity
+            or not prior["boot_identity"]
             or type(pid) is not int
             or pid <= 0
             or type(process["pgid"]) is not int
@@ -176,13 +177,39 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
             or not lock.get("claim_id")
             or context.get("evidence_root") != str(evidence)
             or context.get("process_identity") != process
-            or context.get("boot_identity") != boot_identity
+            or context.get("boot_identity") != prior["boot_identity"]
             or not _dead_owner_wait_checkpoint_proven_v1(
                 lock, cursor_store_root=cursor_root, native_id=prior["native_id"]
             )
         ):
-            return None, "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
+            blocker = (
+                "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
+                if prior["boot_identity"] != boot_identity
+                else "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
+            )
+            return None, blocker
         ledger = json.loads(ledger_path.read_bytes())
+        if prior["boot_identity"] != boot_identity:
+            import sqlite3
+
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+            try:
+                managed = configured_filegate_writer_v1(prior["filegate_path"])
+                independent = (
+                    None
+                    if managed is None
+                    else managed.read_host_checkpoint_v1(lock_path=lock_path)
+                )
+            except (OSError, ValueError, sqlite3.Error):
+                independent = None
+            if independent != {
+                "lock_sha256": sha256(lock_path.read_bytes()).hexdigest(),
+                "ledger_sha256": sha256(ledger_path.read_bytes()).hexdigest(),
+                "cursor_sha256": ledger["checkpoint_cursor_sha256"],
+                "repository_sha": prior.get("repository_sha"),
+            }:
+                return None, "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
         cursor, _ = load_current_productive_c1_cursor_or_reason_v1(cursor_root)
         floor = cursor_last_accepted_c1_venue_event_time_v1(cursor)
         consumed = ledger["s5_invoke_count"]
@@ -229,6 +256,58 @@ def _filegate_revision(expected_path):
     return None
 
 
+def attest_managed_n1_wait_checkpoint_v1(*, writer, stop, state_root, bounds, expires_at, key):
+    """Sign the actual N1 takeover checkpoint only after the old writer is fenced."""
+    from src.ops.filegate_recovery_authority_v1 import (
+        FilegateAuthorityError,
+        attest_filegate_owner_evidence_v1,
+    )
+    from src.ops.managed_filegate_v1 import ManagedFilegateV1
+
+    if (
+        type(writer) is not ManagedFilegateV1
+        or type(bounds) is not UnattendedHostBoundsV1
+        or not state_root.is_absolute()
+        or state_root.resolve() != state_root
+        or writer.inspect_stop_v1() != stop
+    ):
+        raise FilegateAuthorityError("HOST_RECOVERY_SCOPE_UNPROVEN")
+    bounds.validate_v1()
+    path = state_root / "host_restart_state_v1.json"
+    if path.resolve() != path or not path.is_file():
+        raise FilegateAuthorityError("HOST_RECOVERY_SCOPE_UNPROVEN")
+    raw = path.read_bytes()
+    state = json.loads(raw)
+    prior = state["previous"]
+    if (
+        not isinstance(prior, dict)
+        or state["binding"]
+        != sha256(json.dumps(bounds.__dict__, sort_keys=True).encode()).hexdigest()
+        or prior["filegate_path"] != str(writer.state_path)
+        or prior["native_id"] not in stop["scope"]["instruments"]
+        or stop["scope"]["host"]
+        != str(Path(state["roots"]["private_store_root"]) / "portfolio_budget_host_v1")
+        or expires_at > bounds.expires_at_unix
+    ):
+        raise FilegateAuthorityError("HOST_RECOVERY_SCOPE_UNPROVEN")
+    checkpoint, _ = _proven_wait_checkpoint(
+        state_root, state, boot_identity=read_local_boot_identity_v1()
+    )
+    if checkpoint is None or writer.inspect_stop_v1() != stop or path.read_bytes() != raw:
+        raise FilegateAuthorityError("HOST_RECOVERY_CHECKPOINT_UNPROVEN")
+    digest = sha256(
+        raw + json.dumps(checkpoint, sort_keys=True, allow_nan=False).encode()
+    ).hexdigest()
+    return attest_filegate_owner_evidence_v1(
+        role="HOST",
+        stop=stop,
+        evidence_sha256=digest,
+        observed_at=time.time(),
+        expires_at=expires_at,
+        key=key,
+    )
+
+
 class _FilegateObservationSource:
     def __init__(self, source, *, path, revision):
         self.source = source
@@ -265,6 +344,7 @@ def run_unattended_n1_host_v1(
     request_factory,
     clock=time.time,
     sleeper=time.sleep,
+    fault_recovery=None,
 ):
     """Call the actual supervisor with fresh ports and the remaining original bounds.
 
@@ -286,6 +366,18 @@ def run_unattended_n1_host_v1(
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         boot_identity = read_local_boot_identity_v1()
         filegate = Path(canonical_kill_switch_state_path()).resolve()
+        if fault_recovery is not None:
+            from src.ops.managed_fault_recovery_v1 import ManagedFaultRecoveryV1
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+            configured = configured_filegate_writer_v1(filegate)
+            if (
+                type(fault_recovery) is not ManagedFaultRecoveryV1
+                or configured is None
+                or fault_recovery.writer.state_path != filegate
+                or fault_recovery.writer.root != configured.root
+            ):
+                raise ValueError("HOST_FAULT_RECOVERY_FILEGATE_SCOPE_UNPROVEN")
         if receipt.exists():
             state = json.loads(receipt.read_text())
             if (
@@ -342,6 +434,15 @@ def run_unattended_n1_host_v1(
             )
             if now < state["started_at"] or remaining_seconds <= 0:
                 return stop("BOUNDS_EXHAUSTED")
+            if fault_recovery is not None and _filegate_revision(filegate) is None:
+                state["last_fault_observation"] = fault_recovery.poll_v1()
+                state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                stop("RECOVERY_CHECKPOINT_REQUIRED")
+                if (root / "STOP").exists():
+                    return stop("STOPPED")
+                if _filegate_revision(filegate) is None:
+                    sleeper(min(bounds.wait_interval_seconds, remaining_seconds))
+                    continue
             prior = state.get("previous")
             cycles_used = state["cycles_used"]
             cursor_floor = None
@@ -480,13 +581,27 @@ def run_unattended_n1_host_v1(
                 "boot_identity": boot_identity,
                 "filegate_path": str(filegate),
                 "filegate_revision": filegate_revision,
+                "repository_sha": bounds.repository_sha,
             }
             _write(receipt, state)
             try:
                 result = run_n1_standing_pre_external_supervisor_v1(**request)
             except _FilegateRevisionChanged:
                 state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                if fault_recovery is not None and _filegate_revision(filegate) is None:
+                    stop("RECOVERY_CHECKPOINT_REQUIRED")
+                    continue
                 return stop("GOVERNED_RUNTIME_STOPPED")
+            except StandingSupervisorError as exc:
+                if (
+                    fault_recovery is None
+                    or exc.reason_code != "EXECUTION_GHOSV_SAFETY_HALT"
+                    or _filegate_revision(filegate) is not None
+                ):
+                    raise
+                state["checkpoint_blocker"] = exc.reason_code
+                stop("RECOVERY_CHECKPOINT_REQUIRED")
+                continue
             except (TimeoutError, ConnectionError):
                 record_runtime_notice_v1(
                     evidence_root=root,
@@ -498,6 +613,10 @@ def run_unattended_n1_host_v1(
                     notification_kind="FAULT",
                 )
                 sleeper(min(bounds.wait_interval_seconds, max(0, remaining_seconds)))
+                continue
+            if fault_recovery is not None and _filegate_revision(filegate) is None:
+                state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
+                stop("RECOVERY_CHECKPOINT_REQUIRED")
                 continue
             state["cycles_used"] += result.trace.governed_cycle_count
             state["previous"] = None
@@ -530,14 +649,15 @@ def load_host_service_manifest_v1(path: Path):
     import re
 
     value = json.loads(Path(path).read_text())
-    if set(value) != {
+    required = {
         "schema",
         "bounds",
         "state_root",
         "repository_root",
         "runtime_factory",
         "runtime_request_config",
-    }:
+    }
+    if set(value) not in (required, required | {"fault_recovery"}):
         raise ValueError("HOST_SERVICE_MANIFEST_SHAPE_INVALID")
     if value["schema"] != "n1_unattended_host_service.v1":
         raise ValueError("HOST_SERVICE_MANIFEST_SCHEMA_INVALID")
@@ -557,6 +677,30 @@ def load_host_service_manifest_v1(path: Path):
     state = Path(value["state_root"])
     if not state.is_absolute() or not (repo / "scripts/pt").is_file():
         raise ValueError("HOST_SERVICE_CANONICAL_PATH_REQUIRED")
+    recovery = value.get("fault_recovery")
+    if "fault_recovery" in value:
+        if (
+            type(recovery) is not dict
+            or set(recovery) != {"factory", "filegate_state_path", "authority_root", "config"}
+            or type(recovery["config"]) is not dict
+            or not isinstance(recovery["factory"], str)
+            or re.fullmatch(r"src\.ops\.[a-zA-Z0-9_.]+:[a-zA-Z_][a-zA-Z0-9_]*", recovery["factory"])
+            is None
+        ):
+            raise ValueError("HOST_FAULT_RECOVERY_MANIFEST_INVALID")
+        recovery_module, _ = recovery["factory"].split(":")
+        recovery_source = repo.joinpath(*recovery_module.split(".")).with_suffix(".py")
+        if (
+            not recovery_source.is_file()
+            or not recovery_source.resolve().is_relative_to(repo / "src/ops")
+            or any(
+                type(recovery[key]) is not str
+                or not Path(recovery[key]).is_absolute()
+                or Path(recovery[key]).resolve() != Path(recovery[key])
+                for key in ("filegate_state_path", "authority_root")
+            )
+        ):
+            raise ValueError("HOST_FAULT_RECOVERY_SOURCE_UNPROVEN")
     bounds = UnattendedHostBoundsV1(**value["bounds"])
     bounds.validate_v1()
     return value, bounds
@@ -568,6 +712,15 @@ def host_service_v1(*, manifest_path: Path, action: str, output_path: Path | Non
     import plistlib
 
     value, bounds = load_host_service_manifest_v1(manifest_path)
+    recovery = value.get("fault_recovery")
+    recovery_env = (
+        {
+            "PEAK_KILL_SWITCH_STATE_PATH": recovery["filegate_state_path"],
+            "PEAK_FILEGATE_AUTHORITY_ROOT": recovery["authority_root"],
+        }
+        if recovery is not None
+        else {}
+    )
     if action == "validate":
         return {
             "ok": True,
@@ -602,6 +755,8 @@ def host_service_v1(*, manifest_path: Path, action: str, output_path: Path | Non
             "StandardOutPath": str(root.parent / "host-service.stdout.log"),
             "StandardErrorPath": str(root.parent / "host-service.stderr.log"),
         }
+        if recovery_env:
+            payload["EnvironmentVariables"] = recovery_env
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         with Path(output_path).open("xb") as stream:
             plistlib.dump(payload, stream)
@@ -623,11 +778,37 @@ def host_service_v1(*, manifest_path: Path, action: str, output_path: Path | Non
             runtime_config=value["runtime_request_config"],
         )
 
+    fault_recovery = None
+    if recovery is not None:
+        if any(os.environ.get(key, expected) != expected for key, expected in recovery_env.items()):
+            raise ValueError("HOST_FAULT_RECOVERY_ENVIRONMENT_CHANGED")
+        os.environ.update(recovery_env)
+        module, symbol = recovery["factory"].split(":")
+        factory = getattr(importlib.import_module(module), symbol)
+        fault_recovery = factory(
+            state_root=Path(value["state_root"]),
+            runtime_config=recovery["config"],
+        )
+
     result = run_unattended_n1_host_v1(
         bounds=bounds,
         state_root=Path(value["state_root"]),
         request_factory=request_factory,
+        fault_recovery=fault_recovery,
     )
+    if (
+        fault_recovery is not None
+        and result["status"] != "STOPPED"
+        and _filegate_revision(fault_recovery.writer.state_path) is None
+    ):
+        root = Path(value["state_root"])
+        fault_recovery.run_v1(
+            stop_requested=(root / "STOP").exists,
+            publish_observation=lambda observed: _write(
+                root / "stopped_fault_observation_v1.json", observed
+            ),
+            allow_release=False,
+        )
     return {
         "ok": result["status"]
         in {

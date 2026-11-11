@@ -1,0 +1,312 @@
+"""Independent original feed and financial observations drive the managed Safety gate."""
+
+from dataclasses import asdict, replace
+from hashlib import sha256
+
+import pytest
+from nacl.signing import SigningKey
+
+from src.ops.filegate_recovery_authority_v1 import (
+    FilegateAuthorityError,
+    FilegateRecoveryScopeV1,
+    attest_filegate_owner_evidence_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    cursor_last_accepted_c1_venue_event_time_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1 import (
+    current_productive_governed_continuous_cycle_orchestrator_v1 as s6,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+    build_s8_occupied_lane_pairs_v1,
+    make_n1_occupied_lane_s5_runner_v1,
+)
+from src.ops.gates.risk_gate import RiskContext, RiskLimits, kill_switch_should_block_trading
+from src.ops.managed_account_recovery_v1 import attest_managed_stopped_account_v1
+from src.ops.managed_authorization_recovery_v1 import attest_managed_replacement_authority_v1
+from src.ops.managed_fault_recovery_v1 import (
+    ManagedFaultRecoveryV1,
+    build_standing_managed_fault_recovery_v1,
+    publish_managed_owner_proof_v1,
+)
+from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+from src.ops.managed_public_feed_recovery_v1 import ManagedPublicFeedRecoveryV1
+from src.ops.managed_risk_recovery_v1 import attest_managed_risk_recovery_v1
+from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import (
+    UnattendedHostBoundsV1,
+    run_unattended_n1_host_v1,
+)
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import fact_digest
+from tests.ops.test_current_futures_simulated_dispatch_v1 import seeded
+from tests.ops.test_offline_public_feed_restart_v1 import scenario
+from tests.ops.test_canonical_durable_authorization_lifecycle_and_revocation_v1 import (
+    _write_v2,
+    issue_token_exposure_revocation_v1,
+)
+
+import json
+
+
+def _proof(*, role, stop, now, key, digest="a" * 64):
+    return attest_filegate_owner_evidence_v1(
+        role=role,
+        stop=stop,
+        evidence_sha256=digest,
+        observed_at=now,
+        expires_at=now + 4,
+        key=key,
+    )
+
+
+def _provision(tmp_path, monkeypatch, scope, clock, causes):
+    paths = {}
+    for label in ("managed-state", "independent", "diagnostics"):
+        paths[label] = tmp_path / label
+        paths[label].mkdir(mode=0o700)
+    writer = ManagedFilegateV1(
+        state_path=paths["managed-state"] / "state.json",
+        root=paths["independent"],
+        clock=clock,
+    )
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(writer.state_path))
+    monkeypatch.setenv(ROOT_ENV, str(writer.root))
+    issuer = SigningKey.generate()
+    keys = {role: SigningKey.generate() for role in ("CAUSE", "ACCOUNT", "HOST")}
+    stop = writer.provision_v1(
+        scope=scope,
+        issuer_public_key=bytes(issuer.verify_key),
+        owner_public_keys={role: bytes(key.verify_key) for role, key in keys.items()},
+        recoverable_causes=causes | {"R03"},
+    )
+    # Test-only readiness grants establish the starting managed ACTIVE state.
+    evidence = {
+        role: _proof(role=role, stop=stop, now=clock(), key=key) for role, key in keys.items()
+    }
+    release = writer.issue_release_v1(evidence=evidence, issuer_key=issuer)
+    writer.release_v1(release=release, evidence=evidence)
+    return writer, issuer, keys, paths["diagnostics"]
+
+
+@pytest.mark.parametrize("scenario", [False], indirect=True)
+def test_managed_feed_and_original_account_drive_safety_release(scenario, tmp_path, monkeypatch):
+    feed, common = scenario["feed"], scenario["common"]
+    host, bound = common["host"], common["bound"]
+    scope = FilegateRecoveryScopeV1(
+        host.expected_account_identity,
+        host.execution_environment,
+        str(host.root),
+        (bound.venue_native_id,),
+        "c" * 64,
+    )
+
+    def clock():
+        return feed.now.timestamp()
+
+    writer, issuer, keys, journal_root = _provision(tmp_path, monkeypatch, scope, clock, {"R01"})
+    writer.kill_v1(cause="R01", reason="native public feed lost")
+    feed_owner = ManagedPublicFeedRecoveryV1(
+        writer=writer,
+        runtime=feed.runtime,
+        session_id=feed.incident.session_id,
+        journal_root=journal_root,
+        clock=lambda: feed.now,
+    )
+
+    def attest_host(stop):
+        raw = scenario["cursor_path"].read_bytes()
+        assert raw == scenario["initial_cursor"]
+        assert cursor_last_accepted_c1_venue_event_time_v1(json.loads(raw)) == (
+            common["authorization"].expected_cursor_floor
+        )
+        return _proof(
+            role="HOST", stop=stop, now=clock(), key=keys["HOST"], digest=sha256(raw).hexdigest()
+        )
+
+    mark = {}
+
+    def attest_feed(stop):
+        proof = feed_owner.attest_v1(stop, key=keys["CAUSE"])
+        mark.update(feed_owner.read_verified_repair_v1()["mark"])
+        return proof
+
+    coordinator = ManagedFaultRecoveryV1(
+        writer=writer,
+        issuer_key=issuer,
+        interval_seconds=1,
+        observations={
+            "CAUSE": attest_feed,
+            "ACCOUNT": lambda stop: attest_managed_stopped_account_v1(
+                writer=writer,
+                stop=stop,
+                host=host,
+                bindings={"LANE_1": bound},
+                transport_scope=feed.incident.root,
+                key=keys["ACCOUNT"],
+            ),
+            "HOST": attest_host,
+        },
+    )
+    result = coordinator.poll_v1()
+    assert result["status"] == "SAFETY_RELEASE_CONFIRMED", result
+    assert feed.transport.state.reconnect_count == 1
+    assert not kill_switch_should_block_trading()
+    assert scenario["send"]["simulated_transport"].post_count == 0
+    assert scenario["cursor_path"].read_bytes() == scenario["initial_cursor"]
+    pairs = build_s8_occupied_lane_pairs_v1(
+        lane_state_root=feed.incident.root / "lanes",
+        bound=bound,
+    )
+
+    def require_release(_):
+        assert writer.read_v1()["filegate_release_sha256"] == result["release_sha256"]
+
+    original = s6.run_current_productive_governed_continuous_cycle_run_v1(
+        authorization=common["authorization"],
+        origin_main_sha=host.repository_sha,
+        cursor_store_root=scenario["cursor_path"].parent,
+        lock_root=tmp_path / "recovered-host-lock",
+        evidence_root=tmp_path / "recovered-host",
+        observation_source=s6.ScriptedContinuousObservationSourceV1(
+            [replace(scenario["observation"], mark_acquired_at_utc=mark["captured_at"])]
+        ),
+        s5_runner=make_n1_occupied_lane_s5_runner_v1(
+            composed_pairs=pairs,
+            g17_producers=scenario["producers"],
+            cycle_id_prefix_base="managed-fault-recovery",
+        ),
+        iteration_authority_gate_v1=require_release,
+    )
+    assert original.disposition == s6.DISPOSITION_MAX_CYCLES, original.reason_code
+    after = json.loads(scenario["cursor_path"].read_bytes())
+    assert (
+        cursor_last_accepted_c1_venue_event_time_v1(after)
+        == common["authorization"].expected_cursor_floor + 60
+    )
+    assert scenario["send"]["simulated_transport"].post_count == 0
+
+
+def test_loss_and_emergency_hold_recovery_until_original_risk_rule_allows(tmp_path, monkeypatch):
+    def clock():
+        return 1000
+
+    scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", ("instrument",), "c" * 64)
+    writer, issuer, keys, _ = _provision(tmp_path, monkeypatch, scope, clock, {"R05"})
+    stop = writer.kill_v1(cause="R05", reason="session loss")
+    limits = RiskLimits(max_session_loss_usd=10)
+    limit_digest = fact_digest(asdict(limits))
+    capital = [-11.0]
+
+    def risk(current_stop):
+        return attest_managed_risk_recovery_v1(
+            stop=current_stop,
+            limits=limits,
+            context=RiskContext(clock(), 0, capital[0], 0, 1, 1),
+            original_policy_sha256=limit_digest,
+            original_observation_sha256="d" * 64,
+            expires_at=clock() + 4,
+            key=keys["CAUSE"],
+        )
+
+    coordinator = ManagedFaultRecoveryV1(
+        writer=writer,
+        issuer_key=issuer,
+        interval_seconds=1,
+        observations={
+            "CAUSE": risk,
+            "ACCOUNT": lambda stop: _proof(
+                role="ACCOUNT", stop=stop, now=clock(), key=keys["ACCOUNT"]
+            ),
+            "HOST": lambda stop: _proof(role="HOST", stop=stop, now=clock(), key=keys["HOST"]),
+        },
+    )
+    assert coordinator.poll_v1()["missing_proofs"] == ["CAUSE"]
+    assert writer.inspect_stop_v1() == stop and kill_switch_should_block_trading()
+    capital[0] = -9.0
+    assert coordinator.poll_v1()["status"] == "SAFETY_RELEASE_CONFIRMED"
+    writer.emergency_v1("explicit emergency")
+    assert coordinator.poll_v1()["status"] == "BLOCKED_OBSERVING"
+    assert kill_switch_should_block_trading()
+
+
+def test_replacement_authority_uses_original_durable_revocation_registry(tmp_path):
+    path, _, payload = _write_v2(tmp_path)
+    stop = {"causes": ["R06"], "killed_at": payload["created_at"] - 1}
+    arguments = dict(
+        stop=stop,
+        artifact_path=path,
+        evidence_root=tmp_path,
+        prior_authorization_id="original-revoked",
+        repository_sha=payload["repository_sha"],
+        runbook_sha256=payload["runbook_sha256"],
+        preregistration_id=payload["preregistration_id"],
+        preregistration_digest=payload["preregistration_digest"],
+        original_session_config_digest=payload["session_config_digest"],
+        now=payload["created_at"] + 1,
+        key=SigningKey.generate(),
+    )
+    receipt = attest_managed_replacement_authority_v1(**arguments)
+    assert receipt["body"]["evidence_sha256"] == payload["integrity_digest"]
+    with pytest.raises(FilegateAuthorityError, match="REPLACEMENT_AUTHORIZATION_UNPROVEN"):
+        attest_managed_replacement_authority_v1(
+            **{**arguments, "prior_authorization_id": payload["authorization_id"]}
+        )
+    revocation = issue_token_exposure_revocation_v1(
+        evidence_root=tmp_path,
+        authorization_id=payload["authorization_id"],
+        authorization_digest=payload["integrity_digest"],
+        preregistration_id=payload["preregistration_id"],
+        preregistration_digest=payload["preregistration_digest"],
+        repository_sha=payload["repository_sha"],
+        previous_state=payload["state"],
+        capability=payload["capability"],
+    )
+    assert revocation.ok
+    with pytest.raises(FilegateAuthorityError, match="REPLACEMENT_AUTHORIZATION_UNPROVEN"):
+        attest_managed_replacement_authority_v1(**arguments)
+
+
+def test_host_persists_observation_under_stop_without_opening_trading_ports(tmp_path, monkeypatch):
+    import time
+
+    scope = FilegateRecoveryScopeV1("account", "SHADOW", "host", ("instrument",), "c" * 64)
+    writer, issuer, keys, proof_root = _provision(tmp_path, monkeypatch, scope, time.time, {"R01"})
+    stop = writer.emergency_v1("explicit emergency")
+    for role, key in keys.items():
+        proof = _proof(role=role, stop=stop, now=time.time(), key=key)
+        publish_managed_owner_proof_v1(root=proof_root, proof=proof)
+    issuer_path = tmp_path / "test-issuer"
+    issuer_path.write_bytes(bytes(issuer))
+    issuer_path.chmod(0o600)
+    state_root = tmp_path / "controller"
+    config = {
+        "proof_root": str(proof_root),
+        "issuer_seed_path": str(issuer_path),
+        "interval_seconds": 1,
+    }
+    bounds = UnattendedHostBoundsV1("host", "revision", "config", time.time() + 20, 1, 20, 1)
+
+    def run(sleeper):
+        return run_unattended_n1_host_v1(
+            bounds=bounds,
+            state_root=state_root,
+            request_factory=lambda *_: pytest.fail("closed FILEGATE cannot open trading ports"),
+            fault_recovery=build_standing_managed_fault_recovery_v1(
+                state_root=state_root,
+                runtime_config=config,
+            ),
+            sleeper=sleeper,
+        )
+
+    def interrupt(_):
+        raise RuntimeError("controller interrupted")
+
+    with pytest.raises(RuntimeError, match="controller interrupted"):
+        run(interrupt)
+    stored = json.loads((state_root / "host_restart_state_v1.json").read_bytes())
+    assert stored["last_fault_observation"]["stop"] == stop
+    assert stored["last_fault_observation"]["status"] == "BLOCKED_OBSERVING"
+    resumed = run(lambda _: (state_root / "STOP").touch())
+    assert resumed["status"] == "STOPPED"
+    assert resumed["last_fault_observation"]["stop"] == stop
+    assert resumed["attempts"] == 0
+    assert kill_switch_should_block_trading()

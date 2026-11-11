@@ -1,6 +1,7 @@
 """Disposable real N1 worker for physical technical-restart tests only."""
 
 from dataclasses import asdict, replace
+from contextlib import ExitStack
 import json
 import os
 from pathlib import Path
@@ -145,7 +146,20 @@ def main():
 
         return run
 
-    with patch.object(convergence, "make_n1_occupied_lane_s5_runner_v1", wrapped_factory):
+    with ExitStack() as stack:
+        stack.enter_context(
+            patch.object(convergence, "make_n1_occupied_lane_s5_runner_v1", wrapped_factory)
+        )
+        if phase == "after-managed-boot":
+            for module in (
+                "src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1",
+                "src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1",
+            ):
+                stack.enter_context(
+                    patch(
+                        module + ".read_local_boot_identity_v1", return_value="synthetic-new-boot"
+                    )
+                )
         result = run_unattended_n1_host_v1(
             bounds=bounds, state_root=root / "controller", request_factory=factory
         )

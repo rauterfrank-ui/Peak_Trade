@@ -21,10 +21,12 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_p
     TRANSPORT_CLASS_NON_NETWORKING_TEST,
 )
 from src.ops.gates.risk_gate import kill_switch_should_block_trading
+from src.ops.offline_fault_monitor_v1 import OfflineFaultMonitorV1, OfflineFaultPortsV1
 from src.ops.offline_public_feed_account_reconciliation_v1 import (
     capture_offline_feed_account_reconciliation_v1,
 )
 from src.ops.offline_public_feed_recovery_v1 import OfflinePublicFeedRecoveryError
+from src.ops.offline_public_feed_restart_v1 import OfflinePublicFeedRestartV1
 from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
     FUTURES_INVENTORY_REQUEST_COUNT,
     open_k1_account_observation_source_v1,
@@ -260,6 +262,66 @@ def test_original_owned_order_and_fill_reconciliation_preserves_hold(seeded, mon
         assert host.owner.active_sum_v1() == hold > 0
         assert host.owner.budget_state_v1().recovery_required
         assert host.fetch.transport._transport.methods_used == ["GET"] * 26
+    assert send["simulated_transport"].post_count == 1
+    assert kill_switch_should_block_trading(explicit_active=False)
+
+
+@pytest.mark.parametrize("fault", ["missing-order", "canceled-after-partial"])
+def test_monitor_reobserves_original_obligation_after_cold_restart(
+    seeded, monkeypatch, tmp_path, fault
+):
+    old_host, bound, _, send = seeded
+    identity = _simulated_unknown_submission(send)
+    hold = old_host.owner.active_sum_v1()
+    if fault == "canceled-after-partial":
+        _store_preincident_position(old_host, bound)
+    old_host.close()
+    feed, _ = _mark_feed(old_host, bound, monkeypatch, repair=False)
+    directory = tmp_path.resolve().with_name(tmp_path.name + "-witness")
+    directory.mkdir(mode=0o700)
+    key = b"isolated test for read-only monitoring"
+
+    def monitor():
+        safety = OfflinePublicFeedRestartV1(
+            feed.cold_reader(), authority_key=key, witness_directory=directory
+        )
+        return safety, OfflineFaultMonitorV1(
+            safety, interval_seconds=1, clock=lambda: feed.now.timestamp()
+        )
+
+    safety, first = monitor()
+    safety.initialize_witness_v1()
+    safety.record_kill_v1(reason="EMERGENCY")
+
+    @contextmanager
+    def open_ports():
+        venue = ReconciliationVenue(identity)
+        venue.fault = fault
+        with _open_budget_host(old_host, feed, venue, monkeypatch, reads=26) as host:
+            yield OfflineFaultPortsV1(host=host, bound=bound)
+            assert host.owner.active_sum_v1() == hold
+            assert host.fetch.transport._transport.methods_used == ["GET"] * 26
+
+    initial = first.poll_v1(open_ports)
+    assert initial["status"] == "BLOCKED_OBSERVING", initial.get("reason")
+    _, cold = monitor()
+    assert cold.poll_v1(lambda: pytest.fail("must obey persisted cadence"))["status"] == (
+        "WAITING_FOR_NEXT_OBSERVATION"
+    )
+    feed.advance(2)
+    result = cold.poll_v1(open_ports)
+    assert result["observed_at"] > initial["observed_at"]
+    order = result["account_observation"]["execution_reconciliation"][
+        identity.portfolio_reservation_id
+    ]
+    assert order["identity_digest"] == identity.identity_digest()
+    assert order["reservation_released"] is False
+    assert order["original_submit_barrier"]["permit_id"] == identity.send_permit_id
+    assert order["original_submit_barrier"]["resubmit_allowed"] is False
+    if fault == "canceled-after-partial":
+        assert order["confirmed_filled_qty"] == "1"
+    else:
+        assert order["matched"] is False
     assert send["simulated_transport"].post_count == 1
     assert kill_switch_should_block_trading(explicit_active=False)
 

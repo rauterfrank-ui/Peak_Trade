@@ -6,7 +6,7 @@ The selected original path and exact envelope stay pinned throughout a call.
 Every check reads again; a previous ACTIVE read never authorizes a later send.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 from pathlib import Path
 
@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     assert_envelope_unmodified_v1,
 )
 from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+from src.ops.managed_filegate_v1 import managed_filegate_configured_v1, read_configured_filegate_v1
 
 
 class CurrentPostSafetyVetoError(ValueError):
@@ -33,6 +34,12 @@ class CurrentPostSafetyContextV1:
 
     envelope: FinalOrderEnvelopeV1
     state_path: str
+    _managed_release: str | None = field(init=False, repr=False, compare=False, default=None)
+
+    def __post_init__(self):
+        if isinstance(self.state_path, str) and managed_filegate_configured_v1(self.state_path):
+            current = read_configured_filegate_v1(self.state_path) or {}
+            object.__setattr__(self, "_managed_release", current.get("filegate_release_sha256"))
 
     def inspect_v1(self, *, stage):
         assert_envelope_unmodified_v1(self.envelope)
@@ -65,6 +72,14 @@ class CurrentPostSafetyContextV1:
             raise CurrentPostSafetyVetoError(
                 f"POST_SAFETY_DURABLE_VETO:{stage}:{evidence.evidence_status}:{evidence.state_name}"
             )
+        if self._managed_release is not None or managed_filegate_configured_v1(self.state_path):
+            current = read_configured_filegate_v1(self.state_path)
+            if (
+                current is None
+                or self._managed_release is None
+                or current.get("filegate_release_sha256") != self._managed_release
+            ):
+                raise CurrentPostSafetyVetoError(f"POST_SAFETY_FILEGATE_REVISION_CHANGED:{stage}")
         return evidence
 
     def inspect_wire_v1(self, *, payload, stage, envelope_id=None, envelope_digest=None):

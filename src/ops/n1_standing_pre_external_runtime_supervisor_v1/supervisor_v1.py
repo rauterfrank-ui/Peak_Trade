@@ -211,7 +211,6 @@ def _run_unified_recovery_v1(
         venue_native_id=config.venue_native_id,
         public_instrument_ref=public_instrument_ref,
         kill_switch_state_path=config.kill_switch_state_path,
-        unresolved_venue_order=False,
     )
 
 

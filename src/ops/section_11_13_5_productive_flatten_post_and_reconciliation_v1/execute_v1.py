@@ -333,6 +333,7 @@ def execute_productive_flatten_post_and_reconciliation_v1(
     get_transport: LiveCanaryTransportV1 | None = None,
     post_transport: Any | None = None,
     persist: bool = True,
+    managed_protection_permit: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Fresh reads, one-shot flatten POST if all gates pass, then recon GETs."""
     from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.assemble_v1 import (
@@ -594,6 +595,7 @@ def execute_productive_flatten_post_and_reconciliation_v1(
                         transport=post_transport,
                         extra_headers=extra_headers,
                         header_builder=header_builder,
+                        managed_protection_permit=managed_protection_permit,
                     )
                     if extra_headers is not None:
                         extra_headers.clear()
@@ -831,6 +833,16 @@ def execute_productive_flatten_post_and_reconciliation_v1(
         "CANONICAL_OWNER_GO_TOKEN": FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
         "PRE_WIRE_POSITION_RESULT": obs_class,
     }
+    if (
+        managed_protection_permit is not None
+        and submit_result is not None
+        and submit_result.allowed
+    ):
+        protection = managed_protection_permit["body"]
+        runtime_facts["FILEGATE_PROTECTION"] = {
+            "permit_id": protection["permit_id"],
+            "stop_generation": protection["stop"]["generation"],
+        }
     assembled = assemble_productive_flatten_post_and_reconciliation_v1(
         origin_main_sha=bound_sha,
         runtime_facts=runtime_facts,

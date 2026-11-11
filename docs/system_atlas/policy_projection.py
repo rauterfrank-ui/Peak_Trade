@@ -166,6 +166,32 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 }
 
 
+# Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
+# The frozen policy sources, inventory and all other policy checks remain bound.
+MANAGED_FILEGATE_OWNER_DELTAS = {
+    "src/risk_layer/kill_switch/core.py": (
+        "050e370eba75fa418fc89a7c3860119178bdde6903c92bba2e1ed1089f340210",
+        "c171e4288eca2942dc955a377c3ce58147ae767eb32b8c5aa19897cfbcc2a05f",
+    ),
+    "src/risk_layer/kill_switch/persistence.py": (
+        "95700e7929ce355245a4c9f2ca4ddee07337c65bf4884ca65a95e473ca3ae57e",
+        "00b467776cdcec3c7fe32b075a03a89989d819d4684d6b6beaed6f83707dadc2",
+    ),
+}
+
+
+def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> None:
+    frozen = {row["path"]: row["frozen_sha256"] for row in policies}
+    pairs = MANAGED_FILEGATE_OWNER_DELTAS
+    if any(frozen.get(path) != before for path, (before, _) in pairs.items()):
+        raise ValueError("MANAGED_FILEGATE_BASELINE_INVALID")
+    actual = {path: hashlib.sha256((root / path).read_bytes()).hexdigest() for path in pairs}
+    baseline = {path: pair[0] for path, pair in pairs.items()}
+    successor = {path: pair[1] for path, pair in pairs.items()}
+    if actual not in (baseline, successor):
+        raise ValueError("MANAGED_FILEGATE_REVIEWED_BUNDLE_REQUIRED")
+
+
 def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | None = None) -> None:
     frozen = {} if policies is None else {row["path"]: row["frozen_sha256"] for row in policies}
     actual = {}
@@ -458,6 +484,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     policies = load_policies(root, doc)
     validate_ordered_funding_episode_bundle(root, policies)
     validate_reserved_slot_rotation_bundle(root, policies)
+    validate_managed_filegate_owner_bundle(root, policies)
     if {p["path"] for p in policies} != {p for p in frozen if policy_scope_kind(p)}:
         raise ValueError("POLICY_SCOPE_COVERAGE_MISMATCH")
     tree = {}
@@ -483,6 +510,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 }
                 and path not in ORDERED_FUNDING_EPISODE_DELTAS
                 and path not in RESERVED_SLOT_ROTATION_DELTAS
+                and path not in MANAGED_FILEGATE_OWNER_DELTAS
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

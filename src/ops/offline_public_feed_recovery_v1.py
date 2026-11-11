@@ -255,7 +255,19 @@ class OfflinePublicFeedRecoveryV1:
             journal = self._read_journal()
             paths = default_store_paths_v1(incident.fact_root)
             if journal is not None and journal["stage"] == "MARK_VERIFIED":
-                return self._verify_journal(journal)
+                age = self._now().timestamp() - journal["mark"]["event_ms"] / 1000
+                if (
+                    age < 0
+                    or not classify_live_mark_price_freshness_v1(age_seconds=age).stale
+                    or self._reconnected_transport is not transport
+                ):
+                    return self._verify_journal(journal)
+                # Reuse only the still-owned transport and require a strictly newer fact.
+                journal = {
+                    **journal,
+                    "stage": "RECONNECTED",
+                    "previous_mark_ms": journal["mark"]["event_ms"],
+                }
             runtime.load_durable_event_state()
             if journal is None:
                 previous = runtime.event_state.last_event_ts_ms_by_stream.get(incident.mark_stream)

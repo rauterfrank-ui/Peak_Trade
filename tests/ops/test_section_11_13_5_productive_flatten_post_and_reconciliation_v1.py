@@ -242,6 +242,101 @@ def test_exact_permit_binding_and_flatten_lineage(tmp_path: Path) -> None:
     assert_no_secrets_in_payload_v1(payload)
 
 
+def test_managed_stop_requires_separate_one_shot_exact_protection_authority(tmp_path, monkeypatch):
+    from nacl.signing import SigningKey
+
+    from src.ops.filegate_recovery_authority_v1 import (
+        FilegateRecoveryScopeV1,
+        sign_filegate_protection_v1,
+    )
+    from src.ops.gates.risk_gate import kill_switch_should_block_trading
+    from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_gated_submit_v1 import (
+        serialize_approved_flatten_body_text_v1,
+    )
+
+    baseline = _run(
+        tmp_path,
+        _happy_get_queue(),
+        post_transport=RecordingAuthenticatedProductiveFlattenTransportV1(),
+        persist=False,
+    )["runtime_facts"]
+    body = baseline["GATE_RECEIPT"]["request_body"]
+    assert body["reduceOnly"] is True
+    for label in ("filegate", "authority"):
+        (tmp_path / label).mkdir(mode=0o700)
+    writer = ManagedFilegateV1(
+        state_path=tmp_path / "filegate" / "state.json",
+        root=tmp_path / "authority",
+    )
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(writer.state_path))
+    monkeypatch.setenv(ROOT_ENV, str(writer.root))
+    protector = SigningKey.generate()
+    stop = writer.provision_v1(
+        scope=FilegateRecoveryScopeV1("account", "SHADOW", "host", (TARGET,), "a" * 64),
+        issuer_public_key=bytes(SigningKey.generate().verify_key),
+        owner_public_keys={
+            role: bytes(SigningKey.generate().verify_key) for role in ("CAUSE", "ACCOUNT", "HOST")
+        },
+        recoverable_causes={"R03"},
+        protection_public_key=bytes(protector.verify_key),
+    )
+
+    def run(permit=None, *, persist=False):
+        result = execute_productive_flatten_post_and_reconciliation_v1(
+            owner_go=OWNER_GO,
+            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            evidence_root=tmp_path,
+            get_transport=_happy_get_queue(),
+            post_transport=RecordingAuthenticatedProductiveFlattenTransportV1(),
+            persist=persist,
+            managed_protection_permit=permit,
+        )
+        if persist:
+            action = Path(result["EVIDENCE_PACK"]) / "POST_ACTION.sanitized.json"
+            assert (
+                json.loads(action.read_bytes())["FILEGATE_PROTECTION"]
+                == (result["runtime_facts"]["FILEGATE_PROTECTION"])
+            )
+        return result["runtime_facts"]
+
+    denied = run()
+    assert "FILEGATE_PROTECTION_PERMIT_REQUIRED" in denied["FAIL_CLOSED_REASON"]
+    assert denied["POST_COUNT"] == 0
+    now = time.time()
+    permit = sign_filegate_protection_v1(
+        stop=stop,
+        permit_id="b" * 64,
+        approved_body_sha256=hashlib.sha256(
+            serialize_approved_flatten_body_text_v1(body).encode()
+        ).hexdigest(),
+        observed_at=now,
+        expires_at=now + 5,
+        key=protector,
+    )
+    confirmed = run(permit, persist=True)
+    assert confirmed["POST_COUNT"] == 1, confirmed["FAIL_CLOSED_REASON"]
+    assert confirmed["POST_ACTION_VERDICT"]["offline_contract_satisfied"] is True
+    assert confirmed["POST_ACTION_VERDICT"]["no_flip"] is True
+    assert confirmed["TARGET_POSITION_ZERO_PROVEN"] is True
+    assert confirmed["FILEGATE_PROTECTION"] == {
+        "permit_id": permit["body"]["permit_id"],
+        "stop_generation": stop["generation"],
+    }
+    assert run(permit)["POST_COUNT"] == 0
+    reissued = sign_filegate_protection_v1(
+        stop=stop,
+        permit_id="c" * 64,
+        approved_body_sha256=permit["body"]["approved_body_sha256"],
+        observed_at=now,
+        expires_at=now + 5,
+        key=protector,
+    )
+    assert run(reissued)["POST_COUNT"] == 0
+    assert writer.inspect_stop_v1() == stop
+    assert kill_switch_should_block_trading()
+
+
 def test_already_zero_does_not_post(tmp_path: Path) -> None:
     transport = SequentialRecordingGetTransportV1(
         get_bodies=[_ticker_body(), PENDING_EMPTY, ZERO_BODY]

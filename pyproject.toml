@@ -21,6 +21,7 @@ dependencies = [
     "toml>=0.10.2",
     "pyarrow>=23.0.1",
     "urllib3>=2.7.0,<3",
+    "PyNaCl>=1.6.2,<2",
 ]
 
 [project.optional-dependencies]
@@ -44,6 +45,7 @@ web = [
     "jinja2>=3.1.0",
     "httpx>=0.25.0",  # Required by FastAPI TestClient
     "prometheus-client>=0.19.0",
+    "websocket-client",
 ]
 webui_browser = [
     "playwright>=1.40.0",  # Chrome-primary dashboard evidence harness (channel=chrome)
