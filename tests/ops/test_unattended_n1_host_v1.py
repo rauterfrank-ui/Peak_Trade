@@ -29,6 +29,9 @@ REPO = Path(__file__).resolve().parents[2]
         ("other-boot", "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"),
         ("managed-other-boot", None),
         ("managed-other-boot-no-anchor", "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"),
+        ("managed-hold-publish", None),
+        ("managed-hold-s5-changed", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("managed-restore-wait", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
         ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("foreign-checkpoint", "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"),
@@ -103,8 +106,14 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     command = [str(REPO / "scripts/pt"), "-m", "tests.ops._unattended_n1_worker_v1", str(tmp_path)]
     with (tmp_path / "stderr").open("w") as stderr:
+        start_phase = {
+            "during": "during",
+            "managed-hold-publish": "managed-hold-publish",
+            "managed-hold-s5-changed": "managed-hold-publish",
+            "managed-restore-wait": "managed-restore-wait",
+        }.get(phase, "before")
         child = subprocess.Popen(
-            [*command, "during" if phase == "during" else "before"],
+            [*command, start_phase],
             cwd=REPO,
             env=env,
             stdout=subprocess.DEVNULL,
@@ -167,13 +176,33 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             lock_path=Path(prior["lock_root"]) / LOCK_NAME,
             checkpoint=None,
         )
+    elif phase in {"managed-hold-publish", "managed-hold-s5-changed"}:
+        evidence = Path(prior["evidence_root"])
+        ledger = evidence / "governed_continuous_cycle_run_ledger_v1.json"
+        assert json.loads(ledger.read_bytes())["reason_code"] == "S5_CYCLE_STARTING"
+        s5 = (
+            evidence
+            / "cycles"
+            / checkpoint["consume_id"]
+            / "s5"
+            / "governed_cycle_orchestrator_ledger_v1.json"
+        )
+        assert json.loads(s5.read_bytes())["state"] == "COMPLETED"
+        if phase == "managed-hold-s5-changed":
+            s5.write_bytes(s5.read_bytes() + b"\n")
+    elif phase == "managed-restore-wait":
+        ledger = Path(prior["evidence_root"]) / "governed_continuous_cycle_run_ledger_v1.json"
+        assert json.loads(ledger.read_bytes())["reason_code"] == "S5_CYCLE_STARTING"
+        ledger.write_bytes((tmp_path / "earlier-wait.json").read_bytes())
 
     def restart():
         restart_phase = (
             phase if phase in {"kill-during-admission", "reactivated-during-admission"} else "after"
         )
-        if phase.startswith("managed-"):
+        if phase in {"managed-other-boot", "managed-other-boot-no-anchor", "managed-hold-publish"}:
             restart_phase = "after-managed-boot"
+        if phase == "managed-restore-wait":
+            restart_phase = "after-managed-monitor"
         return subprocess.run(
             [*command, restart_phase],
             cwd=REPO,
@@ -187,7 +216,9 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     assert completed.returncode == 0, completed.stderr
     result = json.loads(completed.stdout.splitlines()[-1])
     if blocker is not None:
-        assert result["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+        assert result["status"] == (
+            "STOPPED" if phase == "managed-restore-wait" else "RECOVERY_CHECKPOINT_REQUIRED"
+        )
         assert result["checkpoint_blocker"] == blocker
         assert result["attempts"] == 1
         assert cursor.read_bytes() == old_cursor

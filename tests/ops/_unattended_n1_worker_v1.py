@@ -45,6 +45,7 @@ from tests.ops.test_full_core_current_productive_governed_continuous_cycle_orche
     _FakeClock,
 )
 import src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 as convergence
+import src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 as s6
 
 
 def main():
@@ -129,6 +130,13 @@ def main():
     bounds = UnattendedHostBoundsV1(**json.loads(ticket.read_text()))
     original = convergence.make_n1_occupied_lane_s5_runner_v1
 
+    def signal_checkpoint(**details):
+        write_json(
+            root / "checkpoint.json",
+            {"pid": os.getpid(), "cursor": str(cursor / CURSOR_FILENAME), **details},
+        )
+        threading.Event().wait()
+
     def wrapped_factory(**kwargs):
         runner = original(**kwargs)
         calls = 0
@@ -136,12 +144,8 @@ def main():
         def run(**kw):
             nonlocal calls
             calls += 1
-            if phase == "during" and calls == 2:
-                write_json(
-                    root / "checkpoint.json",
-                    {"pid": os.getpid(), "cursor": str(cursor / CURSOR_FILENAME)},
-                )
-                threading.Event().wait()
+            if phase in {"during", "managed-restore-wait"} and calls == 2:
+                signal_checkpoint()
             return runner(**kw)
 
         return run
@@ -150,6 +154,18 @@ def main():
         stack.enter_context(
             patch.object(convergence, "make_n1_occupied_lane_s5_runner_v1", wrapped_factory)
         )
+        if phase in {"managed-hold-publish", "managed-restore-wait"}:
+            original_write = s6._persist_json
+
+            def write(*, path, payload):
+                if payload.get("reason_code") == "HOLD_WAIT_NEXT_FRESH_C1":
+                    if phase == "managed-hold-publish":
+                        signal_checkpoint(consume_id=payload["consumed_instance_ids"][-1])
+                    else:
+                        (root / "earlier-wait.json").write_text(s6.canonical_json_text(payload))
+                original_write(path=path, payload=payload)
+
+            stack.enter_context(patch.object(s6, "_persist_json", write))
         if phase == "after-managed-boot":
             for module in (
                 "src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1",
@@ -160,8 +176,36 @@ def main():
                         module + ".read_local_boot_identity_v1", return_value="synthetic-new-boot"
                     )
                 )
+        host_options = {}
+        if phase == "after-managed-monitor":
+            from nacl.signing import SigningKey
+
+            from src.ops.managed_fault_recovery_v1 import ManagedFaultRecoveryV1
+            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
+
+            held_polls = 0
+
+            def confirm_hold(_):
+                nonlocal held_polls
+                receipt = root / "controller" / "host_restart_state_v1.json"
+                persisted = json.loads(receipt.read_bytes())
+                assert persisted["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+                assert persisted["attempts"] == 1
+                held_polls += 1
+                if held_polls == 2:
+                    (root / "controller" / "STOP").touch()
+
+            host_options = {
+                "fault_recovery": ManagedFaultRecoveryV1(
+                    writer=configured_filegate_writer_v1(canonical_kill_switch_state_path()),
+                    issuer_key=SigningKey.generate(),
+                    observations={role: lambda _: None for role in ("CAUSE", "ACCOUNT", "HOST")},
+                    interval_seconds=1,
+                ),
+                "sleeper": confirm_hold,
+            }
         result = run_unattended_n1_host_v1(
-            bounds=bounds, state_root=root / "controller", request_factory=factory
+            bounds=bounds, state_root=root / "controller", request_factory=factory, **host_options
         )
     print(json.dumps(result))
 

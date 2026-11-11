@@ -60,6 +60,7 @@ def main():
             mark_price_payload=boot.mark_price_payload,
             venue_native_id=str(bound.venue_native_id),
             index_tickers_payload=boot.index_tickers_payload,
+            mark_acquired_at_utc=boot.mark_acquired_at_utc,
         )
     floor = _cursor_floor_or_zero(cursor_root)
 

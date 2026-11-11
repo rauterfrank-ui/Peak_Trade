@@ -82,7 +82,7 @@ def _verify(envelope, key):
 
 
 def _current(body, now):
-    issued_at, expires_at = body["observed_at"], body["expires_at"]
+    issued_at, expires_at = body.get("observed_at"), body.get("expires_at")
     if not (
         all(
             type(value) in {float, int} and math.isfinite(value)
@@ -93,7 +93,9 @@ def _current(body, now):
         raise FilegateAuthorityError("FILEGATE_AUTHORITY_EXPIRED_OR_NOT_YET_VALID")
 
 
-def attest_filegate_owner_evidence_v1(*, role, stop, evidence_sha256, observed_at, expires_at, key):
+def attest_filegate_owner_evidence_v1(
+    *, role, stop, evidence_sha256, observed_at, expires_at, key, cause=None
+):
     """Called by the responsible owner after it has independently verified its result."""
     if role not in EVIDENCE_ROLES or not is_digest_v1(evidence_sha256):
         raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_INVALID")
@@ -105,46 +107,97 @@ def attest_filegate_owner_evidence_v1(*, role, stop, evidence_sha256, observed_a
         "observed_at": observed_at,
         "expires_at": expires_at,
     }
+    if cause is not None:
+        if role != "CAUSE" or cause not in RECOVERABLE_CAUSES or cause not in stop["causes"]:
+            raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_INVALID")
+        body["cause"] = cause
     _current(body, observed_at)
     return _signed(body, key)
 
 
-def verify_filegate_owner_evidence_v1(*, evidence, stop, owner_keys, now):
-    if set(evidence) != EVIDENCE_ROLES or set(owner_keys) != EVIDENCE_ROLES:
-        raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_COVERAGE_UNPROVEN")
-    proofs = {}
-    for role in sorted(EVIDENCE_ROLES):
-        body = _verify(evidence[role], owner_keys[role])
-        _current(body, now)
-        if (
-            body["schema"] != "filegate_owner_evidence.v1"
-            or body["role"] != role
-            or body["stop"] != stop
-            or body["observed_at"] < stop["killed_at"]
-            or not is_digest_v1(body["evidence_sha256"])
-        ):
-            raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_BINDING_CHANGED")
-        proofs[role] = body
-    return proofs
+def requires_cause_proof_set_v1(stop, cause_keys):
+    return len(stop["causes"]) != 1 or stop["causes"][0] in cause_keys
+
+
+def _verify_owner_proof(*, proof, key, role, stop, now, cause=None, require_cause=False):
+    body = _verify(proof, key)
+    _current(body, now)
+    if (
+        body.get("schema") != "filegate_owner_evidence.v1"
+        or body.get("role") != role
+        or body.get("stop") != stop
+        or body["observed_at"] < stop["killed_at"]
+        or not is_digest_v1(body.get("evidence_sha256"))
+        or ("cause" in body and (cause is None or body["cause"] != cause))
+        or (require_cause and "cause" not in body)
+    ):
+        raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_BINDING_CHANGED")
+    return body["expires_at"]
 
 
 def _release_body(*, stop, evidence, trust, now):
-    if not set(stop["causes"]) <= set(trust["recoverable_causes"]):
+    causes = set(stop["causes"])
+    if not causes or not causes <= set(trust["recoverable_causes"]):
         raise FilegateAuthorityError("FILEGATE_CAUSE_REQUIRES_SEPARATE_AUTHORITY")
-    proofs = verify_filegate_owner_evidence_v1(
-        evidence=evidence, stop=stop, owner_keys=trust["owners"], now=now
-    )
+    owners = trust["owners"]
+    if not isinstance(evidence, dict) or set(evidence) != EVIDENCE_ROLES:
+        raise FilegateAuthorityError("FILEGATE_OWNER_EVIDENCE_COVERAGE_UNPROVEN")
+    signatures = {}
+    expirations = []
+    for role in ("ACCOUNT", "HOST"):
+        proof = evidence[role]
+        expirations.append(
+            _verify_owner_proof(proof=proof, key=owners[role], role=role, stop=stop, now=now)
+        )
+        signatures[role] = proof["signature"]
+
+    cause_keys = trust.get("cause_keys", {})
+    cause_proof = evidence["CAUSE"]
+    if requires_cause_proof_set_v1(stop, cause_keys):
+        if (
+            not isinstance(cause_proof, dict)
+            or set(cause_proof) != causes
+            or not causes <= cause_keys.keys()
+        ):
+            raise FilegateAuthorityError("FILEGATE_CAUSE_EVIDENCE_COVERAGE_UNPROVEN")
+        signatures["CAUSE"] = {}
+        for cause in stop["causes"]:
+            proof = cause_proof[cause]
+            expirations.append(
+                _verify_owner_proof(
+                    proof=proof,
+                    key=cause_keys[cause],
+                    role="CAUSE",
+                    stop=stop,
+                    now=now,
+                    cause=cause,
+                    require_cause=True,
+                )
+            )
+            signatures["CAUSE"][cause] = proof["signature"]
+    else:
+        expirations.append(
+            _verify_owner_proof(
+                proof=cause_proof,
+                key=owners["CAUSE"],
+                role="CAUSE",
+                stop=stop,
+                now=now,
+                cause=stop["causes"][0],
+            )
+        )
+        signatures["CAUSE"] = cause_proof["signature"]
     return {
         "schema": "filegate_release.v1",
         "stop": stop,
         "observed_at": now,
-        "expires_at": min(proof["expires_at"] for proof in proofs.values()),
-        "owner_signatures": {role: evidence[role]["signature"] for role in sorted(proofs)},
+        "expires_at": min(expirations),
+        "owner_signatures": signatures,
     }
 
 
 def issue_filegate_release_v1(*, stop, evidence, trust, issuer_key, now):
-    """Issue only for a ratified cause with all three independent, fresh owner proofs."""
+    """Issue only with fresh evidence from every responsible owner."""
     if not isinstance(issuer_key, SigningKey) or (
         bytes(issuer_key.verify_key).hex() != trust["issuer"]
     ):
@@ -155,6 +208,8 @@ def issue_filegate_release_v1(*, stop, evidence, trust, issuer_key, now):
 def verify_filegate_release_v1(*, release, stop, evidence, trust, now):
     body = _verify(release, trust["issuer"])
     _current(body, now)
+    if body.get("stop") != stop:
+        raise FilegateAuthorityError("FILEGATE_RELEASE_BINDING_CHANGED")
     expected = _release_body(
         stop=stop,
         evidence=evidence,

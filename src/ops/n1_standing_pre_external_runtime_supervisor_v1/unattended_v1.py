@@ -23,7 +23,7 @@ from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 impor
     ProcessIdentityMismatchError,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
-    _dead_owner_wait_checkpoint_proven_v1,
+    read_dead_owner_wait_ledger_v1,
     LEDGER_FILENAME,
     LOCK_AUTHORIZATION_ID,
     LOCK_NAME,
@@ -178,9 +178,6 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
             or context.get("evidence_root") != str(evidence)
             or context.get("process_identity") != process
             or context.get("boot_identity") != prior["boot_identity"]
-            or not _dead_owner_wait_checkpoint_proven_v1(
-                lock, cursor_store_root=cursor_root, native_id=prior["native_id"]
-            )
         ):
             blocker = (
                 "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
@@ -188,28 +185,22 @@ def _proven_wait_checkpoint(root, state, *, boot_identity):
                 else "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
             )
             return None, blocker
-        ledger = json.loads(ledger_path.read_bytes())
-        if prior["boot_identity"] != boot_identity:
-            import sqlite3
-
-            from src.ops.managed_filegate_v1 import configured_filegate_writer_v1
-
-            try:
-                managed = configured_filegate_writer_v1(prior["filegate_path"])
-                independent = (
-                    None
-                    if managed is None
-                    else managed.read_host_checkpoint_v1(lock_path=lock_path)
-                )
-            except (OSError, ValueError, sqlite3.Error):
-                independent = None
-            if independent != {
-                "lock_sha256": sha256(lock_path.read_bytes()).hexdigest(),
-                "ledger_sha256": sha256(ledger_path.read_bytes()).hexdigest(),
-                "cursor_sha256": ledger["checkpoint_cursor_sha256"],
-                "repository_sha": prior.get("repository_sha"),
-            }:
-                return None, "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
+        other_boot = prior["boot_identity"] != boot_identity
+        ledger = read_dead_owner_wait_ledger_v1(
+            lock,
+            cursor_store_root=cursor_root,
+            native_id=prior["native_id"],
+            lock_path=lock_path,
+            filegate_path=Path(prior["filegate_path"]),
+            repository_sha=prior.get("repository_sha"),
+            require_independent=other_boot,
+        )
+        if ledger is None:
+            return None, (
+                "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"
+                if other_boot
+                else "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
+            )
         cursor, _ = load_current_productive_c1_cursor_or_reason_v1(cursor_root)
         floor = cursor_last_accepted_c1_venue_event_time_v1(cursor)
         consumed = ledger["s5_invoke_count"]
@@ -467,7 +458,11 @@ def run_unattended_n1_host_v1(
                 )
                 if checkpoint is None:
                     state["checkpoint_blocker"] = blocker
-                    return stop("RECOVERY_CHECKPOINT_REQUIRED")
+                    blocked = stop("RECOVERY_CHECKPOINT_REQUIRED")
+                    if fault_recovery is None:
+                        return blocked
+                    sleeper(min(bounds.wait_interval_seconds, remaining_seconds))
+                    continue
                 if prior.get("filegate_path") != str(filegate):
                     state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_SCOPE_CHANGED"
                     return stop("RECOVERY_CHECKPOINT_REQUIRED")

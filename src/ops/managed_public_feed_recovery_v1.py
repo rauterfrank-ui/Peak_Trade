@@ -131,13 +131,13 @@ class ManagedPublicFeedRecoveryV1(OfflinePublicFeedRecoveryV1):
 
     def attest_v1(self, stop, *, key):
         receipt = self.observe_v1(stop)
-        # Other causes require their own checks before the CAUSE owner can attest.
-        if stop["causes"] != ["R01"] or stop["scope"]["instruments"] != [
+        if "R01" not in stop["causes"] or stop["scope"]["instruments"] != [
             self.incident.instrument.venue_native_id
         ]:
             raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_CAUSE_COVERAGE_UNPROVEN")
         return attest_filegate_owner_evidence_v1(
             role="CAUSE",
+            cause="R01",
             stop=stop,
             evidence_sha256=fact_digest(receipt),
             observed_at=datetime.fromisoformat(receipt["verified_at"]).timestamp(),

@@ -92,7 +92,7 @@ def attest_managed_execution_resolution_v1(*, writer, stop, host, bindings, tran
     )
     reconciled = observed["execution_reconciliation"]
     if (
-        stop["causes"] != ["R04"]
+        "R04" not in stop["causes"]
         or not reconciled
         or observed["execution_blocker"] is not None
         or observed["portfolio_classification"] != ProductiveReconciliationClass.MATCH.value
@@ -104,6 +104,7 @@ def attest_managed_execution_resolution_v1(*, writer, stop, host, bindings, tran
         raise FilegateAuthorityError("FAULT_EXECUTION_OBLIGATIONS_UNRESOLVED")
     return attest_filegate_owner_evidence_v1(
         role="CAUSE",
+        cause="R04",
         stop=stop,
         evidence_sha256=fact_digest(observed),
         observed_at=observed["account_inventory_completed_unix"],

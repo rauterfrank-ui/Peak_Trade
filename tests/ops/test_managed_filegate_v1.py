@@ -115,6 +115,8 @@ def test_new_authenticated_kill_invalidates_old_release_and_duplicate_is_idempot
     assert safety.writer.kill_v1(**args) == newer
     with pytest.raises(FilegateAuthorityError, match="BINDING_CHANGED"):
         safety.writer.release_v1(**approval)
+    with pytest.raises(FilegateAuthorityError, match="CAUSE_EVIDENCE_COVERAGE_UNPROVEN"):
+        _approved(safety)
     assert kill_switch_should_block_trading()
 
 

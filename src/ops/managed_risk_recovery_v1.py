@@ -24,7 +24,7 @@ def attest_managed_risk_recovery_v1(
 ):
     """Use the existing quantitative decision. The Safety state is read separately."""
     if (
-        stop["causes"] != ["R05"]
+        "R05" not in stop["causes"]
         or type(limits) is not RiskLimits
         or type(context) is not RiskContext
         or fact_digest(asdict(limits)) != original_policy_sha256
@@ -43,6 +43,7 @@ def attest_managed_risk_recovery_v1(
         raise FilegateAuthorityError("FAULT_RISK_STILL_DENIED")
     return attest_filegate_owner_evidence_v1(
         role="CAUSE",
+        cause="R05",
         stop=stop,
         evidence_sha256=fact_digest(
             {
