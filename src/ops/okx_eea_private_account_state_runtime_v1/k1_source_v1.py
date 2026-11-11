@@ -34,6 +34,17 @@ from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
 K1_ACCOUNT_READ_PROFILE = "K1_ACCOUNT_OBSERVATION_GET_ONLY_V1"
 
 
+def _validate_inventory_scope_v1(guard, inst_type):
+    if type(guard) is not bool:
+        raise AccountObservationSourceError("K1_ACCOUNT_INVENTORY_GUARD_INVALID")
+    if (
+        type(inst_type) is not str
+        or inst_type not in ("SWAP", "FUTURES")
+        or (inst_type == "FUTURES" and not guard)
+    ):
+        raise AccountObservationSourceError("K1_ACCOUNT_INVENTORY_PRODUCT_INVALID")
+
+
 def load_k1_account_source_config_v1(path):
     """Load identifier-only explicit K1 selection; never acquire a credential."""
     from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_concrete_backend_item_identity_v1 import (
@@ -72,8 +83,9 @@ def load_k1_account_source_config_v1(path):
 
 
 class _AccountReadTransportV1:
-    def __init__(self, transport):
+    def __init__(self, transport, *, inventory_inst_type):
         self._transport = transport
+        self._inventory_inst_type = inventory_inst_type
         self.last_read = None
         self.read_count = 0
 
@@ -132,6 +144,8 @@ class _AccountReadTransportV1:
             expected = params
         elif path == "/api/v5/account/subtypes":
             expected = {}
+        elif path in {"/api/v5/trade/orders-history", "/api/v5/trade/fills"}:
+            expected = {"instType": self._inventory_inst_type}
         elif path not in BASELINE_REST_RECOVERY_ALLOWLIST and path != "/api/v5/asset/balances":
             raise AccountObservationSourceError("K1_ACCOUNT_READ_ENDPOINT_FORBIDDEN")
         # Fixed scope-inspection reads may omit instType to expose products
@@ -172,14 +186,55 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         ):
             raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_BINDING_REQUIRED")
 
-    def __init__(self, *, credential, transport, **kwargs):
+    def __init__(
+        self,
+        *,
+        credential,
+        transport,
+        account_inventory_guard=False,
+        inventory_inst_type="SWAP",
+        **kwargs,
+    ):
+        _validate_inventory_scope_v1(account_inventory_guard, inventory_inst_type)
         if (
             not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1)
             or transport._handle is not credential
         ):
             raise AccountObservationSourceError("K1_ACCOUNT_READ_HANDLE_BINDING_REQUIRED")
         super().__init__(
-            credential=credential, transport=_AccountReadTransportV1(transport), **kwargs
+            credential=credential,
+            transport=_AccountReadTransportV1(transport, inventory_inst_type=inventory_inst_type),
+            **kwargs,
+        )
+        self.account_inventory_guard = account_inventory_guard
+        self.inventory_inst_type = inventory_inst_type
+
+    def _verified_get_v1(self, path, params):
+        if not self.account_inventory_guard or params.get("instType") != "SWAP":
+            return super()._verified_get_v1(path, params)
+        # Position and pending custody is account-wide. History and fills
+        # are bounded to the one product selected for this observer.
+        query = dict(params)
+        if path in {"/api/v5/account/positions", "/api/v5/trade/orders-pending", ALGO_PENDING_PATH}:
+            query.pop("instType")
+        else:
+            query["instType"] = self.inventory_inst_type
+        self._assert_current_resource_pair_v1()
+        payload = super()._verified_get_v1(path, query)
+        self._assert_current_resource_pair_v1()
+        if path == "/api/v5/account/positions" and any(
+            row.get("instType") != self.inventory_inst_type for row in payload["data"]
+        ):
+            raise AccountObservationSourceError(
+                f"ACCOUNT_PRODUCTS_OUTSIDE_CURRENT_{self.inventory_inst_type}_CONSUMER"
+            )
+        return payload
+
+    def export_startup_document_v1(self, path, *, instrument_ids_by_native_id):
+        if self.inventory_inst_type == "FUTURES":
+            raise AccountObservationSourceError("K1_FUTURES_LEGACY_STARTUP_DOCUMENT_UNSUPPORTED")
+        return super().export_startup_document_v1(
+            path, instrument_ids_by_native_id=instrument_ids_by_native_id
         )
 
     def inspect_accounting_bills_v1(self, *, max_pages=6):
@@ -408,6 +463,8 @@ def open_k1_account_observation_source_v1(
     max_request_count,
     k1_lookup_backend=None,
     clock=time.time,
+    account_inventory_guard=False,
+    inventory_inst_type="SWAP",
 ):
     """Explicit K1 source selection, bounded by its existing acquisition gates.
 
@@ -423,6 +480,7 @@ def open_k1_account_observation_source_v1(
         raise AccountObservationSourceError("OBSERVATION_EXPECTED_ACCOUNT_REQUIRED")
     if not isinstance(session_id, str) or not session_id.strip():
         raise AccountObservationSourceError("OBSERVATION_SESSION_REQUIRED")
+    _validate_inventory_scope_v1(account_inventory_guard, inventory_inst_type)
     if (
         isinstance(max_request_count, bool)
         or not isinstance(max_request_count, int)
@@ -438,6 +496,8 @@ def open_k1_account_observation_source_v1(
             expected_account_identity=expected_account_identity,
             session_id=session_id,
             clock=clock,
+            account_inventory_guard=account_inventory_guard,
+            inventory_inst_type=inventory_inst_type,
         )
         try:
             yield source

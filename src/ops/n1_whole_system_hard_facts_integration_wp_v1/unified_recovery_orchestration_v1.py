@@ -17,8 +17,10 @@ from src.ops.n1_whole_system_hard_facts_integration_wp_v1.private_observation_ch
     private_restart_reconciliation_trusted_v1,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
+    PublicRestRecoveryError,
     bootstrap_rest_snapshot_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
 from src.ops.peak_trade_public_market_data_runtime_v1.event_sequence_persistence_v1 import (
     load_event_sequence_state_v1,
 )
@@ -58,6 +60,7 @@ def execute_unified_recovery_orchestration_v1(
     public_rest_fetch: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
     private_rest_fetch: Callable[[str, Mapping[str, str]], Mapping[str, Any]],
     venue_native_id: str = "ETH-USDT-SWAP",
+    public_instrument_ref: InstrumentRefV1 | None = None,
     kill_switch_state_path: Optional[str] = None,
     unresolved_venue_order: bool = False,
 ) -> UnifiedRecoveryOrchestrationResultV1:
@@ -70,7 +73,13 @@ def execute_unified_recovery_orchestration_v1(
     result.steps_completed.append(RECOVERY_STEP_ORDER[0])
     result.trace.append({"step": RECOVERY_STEP_ORDER[0], "ok": True})
 
-    bootstrap_rest_snapshot_v1(public_rest_fetch, venue_native_id)
+    try:
+        bootstrap_rest_snapshot_v1(
+            public_rest_fetch, venue_native_id, instrument_ref=public_instrument_ref
+        )
+    except PublicRestRecoveryError as exc:
+        result.fail_closed_reason = str(exc)
+        return result
     result.steps_completed.append(RECOVERY_STEP_ORDER[1])
 
     private_restart = prove_private_restart_recovery_order_v1(

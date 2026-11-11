@@ -98,15 +98,19 @@ def _epoch_rfc(unix: float) -> str:
     return datetime.fromtimestamp(unix, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _build_fresh_chain(tmp: Path, *, repository_sha: str = REPO_SHA) -> dict:
+def _build_fresh_chain(tmp: Path, *, repository_sha: str = REPO_SHA, instrument_rows=None) -> dict:
     tmp.mkdir(parents=True, exist_ok=True)
     observed = time.time() - 30.0
     source_event = str(int(observed * 1000))
-    rows = [
-        _perp("SOL-USDT-SWAP", base="SOL"),
-        _perp("ETH-USDT-SWAP"),
-        _perp("ADA-USDT-SWAP", base="ADA"),
-    ]
+    rows = (
+        instrument_rows
+        if instrument_rows is not None
+        else [
+            _perp("SOL-USDT-SWAP", base="SOL"),
+            _perp("ETH-USDT-SWAP"),
+            _perp("ADA-USDT-SWAP", base="ADA"),
+        ]
+    )
     mark_ids = [r["instId"] for r in rows]
     uni_root = tmp / "universe"
     rank_root = tmp / "ranking"

@@ -32,6 +32,7 @@ from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
     classify_live_best_bid_ask_freshness_v1,
     classify_live_mark_price_freshness_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import InstrumentRefV1
 from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
     query_historical_facts_v1,
 )
@@ -39,6 +40,7 @@ from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import
     load_finalized_pt1h_o4_bar_elements_v1,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
+    PublicRestRecoveryError,
     bootstrap_rest_snapshot_v1,
     recover_pt1m_gaps_via_rest_v1,
 )
@@ -54,11 +56,21 @@ class PublicMarketDataRuntimeV1:
     rest_fetch_json: Optional[Callable[[str, Mapping[str, str]], Mapping[str, Any]]] = None
     event_state: EventSequenceStateV1 = field(default_factory=EventSequenceStateV1)
     lifecycle_events: list[dict[str, Any]] = field(default_factory=list)
+    instrument_ref: InstrumentRefV1 | None = None
+
+    def __post_init__(self) -> None:
+        if self.instrument_ref is not None and (
+            self.instrument_ref.canonical_instrument_id != self.canonical_instrument_id
+            or self.instrument_ref.venue_native_id != self.venue_native_id
+        ):
+            raise PublicRestRecoveryError("PUBLIC_BOOTSTRAP_BOUND_INSTRUMENT_UNPROVEN")
 
     def bootstrap(self, *, captured_at: str) -> dict[str, Any]:
         if self.rest_fetch_json is None:
             raise RuntimeError("REST_FETCH_UNBOUND")
-        snap = bootstrap_rest_snapshot_v1(self.rest_fetch_json, self.venue_native_id)
+        snap = bootstrap_rest_snapshot_v1(
+            self.rest_fetch_json, self.venue_native_id, instrument_ref=self.instrument_ref
+        )
         self.lifecycle_events.append({"phase": "bootstrap", "host": snap["host"]})
         return snap
 
@@ -85,14 +97,18 @@ class PublicMarketDataRuntimeV1:
             last_event_id_by_stream=dict(self.event_state.last_event_id_by_stream),
         )
         envelopes, candidate, gaps = process_public_events_v1(events=msgs, state=candidate)
-        inst_ref = {
-            "canonical_instrument_id": self.canonical_instrument_id,
-            "venue_native_id": self.venue_native_id,
-            "venue": "okx_eea",
-            "instrument_type": "SWAP",
-            "settlement_asset": "USDT",
-            "mapping_provenance_digest": "runtime_v1",
-        }
+        inst_ref = (
+            self.instrument_ref.to_dict()
+            if self.instrument_ref is not None
+            else {
+                "canonical_instrument_id": self.canonical_instrument_id,
+                "venue_native_id": self.venue_native_id,
+                "venue": "okx_eea",
+                "instrument_type": "SWAP",
+                "settlement_asset": "USDT",
+                "mapping_provenance_digest": "runtime_v1",
+            }
+        )
         if persist_normalized_facts:
             paths = default_store_paths_v1(self.store_root)
             normalized = []
@@ -115,14 +131,6 @@ class PublicMarketDataRuntimeV1:
         persist_event_sequence_state_v1(self.store_root, candidate)
         self.event_state = candidate
         if gaps and self.rest_fetch_json is not None:
-            inst_ref = {
-                "canonical_instrument_id": self.canonical_instrument_id,
-                "venue_native_id": self.venue_native_id,
-                "venue": "okx_eea",
-                "instrument_type": "SWAP",
-                "settlement_asset": "USDT",
-                "mapping_provenance_digest": "runtime_v1",
-            }
             recovery = recover_pt1m_gaps_via_rest_v1(
                 fetch_json=self.rest_fetch_json,
                 venue_native_id=self.venue_native_id,

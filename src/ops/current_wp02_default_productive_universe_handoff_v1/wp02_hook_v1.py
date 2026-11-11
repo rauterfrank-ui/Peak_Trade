@@ -21,6 +21,9 @@ from src.ops.n1_standing_pre_external_runtime_supervisor_v1.wp02_insertion_v1 im
     Wp02HookV1,
     Wp02InsertionContextV1,
 )
+from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_runtime_economic_md_adapter_v1 import (
+    BoundRankingMarkWindowV1,
+)
 
 
 @dataclass(frozen=True)
@@ -33,6 +36,7 @@ class Wp02HookBindingV1:
     source_event_time: str
     lane_assignment_writer: Any = None
     producer_observed_at_unix: float | None = None
+    bound_mark_window: BoundRankingMarkWindowV1 | None = None
 
 
 def build_default_wp02_hook_v1(binding: Wp02HookBindingV1) -> Wp02HookV1:
@@ -59,6 +63,7 @@ def build_default_wp02_hook_v1(binding: Wp02HookBindingV1) -> Wp02HookV1:
                 ),
                 session_id_prefix=f"supervisor-tick-{ctx.tick_index}",
                 lane_assignment_writer=binding.lane_assignment_writer,
+                bound_mark_window=binding.bound_mark_window,
             )
         )
         ctx.wp02_result_sink["chain_result"] = result

@@ -18,6 +18,8 @@ from src.ops.execution_reconciliation_get_provenance_v1 import (
     _reject_json_constant,
     _unique_json_object,
     adjudicate_reconciliation_quantity_incident_v1,
+    require_futures_reconciliation_product_v1,
+    resolve_reconciliation_query_options_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_CONFIG,
@@ -298,13 +300,19 @@ def _replay(record, identity, result, revision_ref):
     ):
         raise ExecutionReconciliationProofStoreError("GET_PROOF_POSITION_INTERVAL_UNPROVEN")
     times = iter(interval if interval is not None else (received_at.isoformat(),) * 2)
+    options = resolve_reconciliation_query_options_v1(
+        instrument_id=identity.instrument_id, native_id=identity.native_id
+    )
     snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
         identity=identity,
+        options=options,
         read_only_get_transport=_RecordedReconciliationGets(recorded_gets[1:]),
         pretrade_decision_id=f"{record['session_id']}:{record['reservation_id']}",
         received_at=received_at.isoformat(),
         acquisition_clock=lambda: next(times),
     )
+    if options.inst_type == "FUTURES":
+        require_futures_reconciliation_product_v1(snapshot)
     snapshot_digest = sha256(json.dumps(snapshot.to_dict(), sort_keys=True).encode()).hexdigest()
     if (
         snapshot_digest != result["snapshot_digest"]

@@ -41,6 +41,7 @@ from src.ops.mf_membership_context_artifact_contract_v1 import (
     read_membership_context_artifact_v1,
 )
 from src.ops.n1_whole_system_hard_facts_integration_wp_v1.public_runtime_economic_md_adapter_v1 import (
+    BoundRankingMarkWindowV1,
     PublicRuntimeEconomicMdPublicSourceV1,
 )
 from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
@@ -65,6 +66,7 @@ class Wp02ProductiveDefaultChainRequestV1:
     prior_membership: MembershipContextArtifactV1 | None = None
     economic_md_public_source: EconomicMdPublicSourceV1 | None = None
     persist_handoff: bool = True
+    bound_mark_window: BoundRankingMarkWindowV1 | None = None
 
 
 @dataclass(frozen=True)
@@ -127,6 +129,16 @@ def run_wp02_productive_default_chain_v1(
         if request.producer_observed_at_unix is not None
         else producer_observed_at_unix_from_source_event_v1(request.source_event_time)
     )
+    collection_started = observed - 1.0
+    window = request.bound_mark_window
+    if window is not None:
+        if (
+            window.instrument_ref.venue_native_id != request.venue_native_id
+            or request.economic_md_public_source is not None
+        ):
+            raise Wp02ProductiveDefaultChainError("PUBLIC_PT1M_BOUND_WINDOW_SCOPE_MISMATCH")
+        collection_started = window.collection_started_at_unix
+        observed = window.collection_completed_at_unix
     state = Path(request.wp02_state_root)
     uni_root = state / DEFAULT_UNIVERSE_SUBDIR
     rank_root = state / DEFAULT_RANKING_SUBDIR
@@ -174,10 +186,20 @@ def run_wp02_productive_default_chain_v1(
             failure_code="CAP21_SNAPSHOT_MISSING",
         )
 
+    if window is not None and not any(
+        instrument["venue_native_inst_id"] == window.instrument_ref.venue_native_id
+        and instrument["canonical_instrument_id"] == window.instrument_ref.canonical_instrument_id
+        and instrument["eligibility"] is True
+        for instrument in uni_snap["instruments"]
+    ):
+        raise Wp02ProductiveDefaultChainError("PUBLIC_PT1M_BOUND_WINDOW_UNIVERSE_MISMATCH")
+
     if request.economic_md_public_source is not None:
         md_source = request.economic_md_public_source
     else:
-        md_source = PublicRuntimeEconomicMdPublicSourceV1(store_root=request.public_store_root)
+        md_source = PublicRuntimeEconomicMdPublicSourceV1(
+            store_root=request.public_store_root, bound_mark_window=window
+        )
     bundle = md_source.collect_instrument_raw_input_v1(venue_native_id=request.venue_native_id)
     if len(bundle.marks) < MINIMUM_ECONOMIC_MD_MARKS or bundle.failure_codes:
         return Wp02ProductiveDefaultChainResultV1(
@@ -194,7 +216,6 @@ def run_wp02_productive_default_chain_v1(
             failure_code="ECONOMIC_MD_FAIL_CLOSED",
         )
 
-    collection_started = observed - 1.0
     feature_snap = build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
         universe_snapshot=uni_snap,
         public_md_source=md_source,

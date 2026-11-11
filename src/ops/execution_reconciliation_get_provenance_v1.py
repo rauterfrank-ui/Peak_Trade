@@ -25,6 +25,10 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_ORDERS_PENDING,
     ENDPOINT_TRADE_FILLS,
+    OkxReadOnlyReconciliationQueryOptionsV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_future_identity_semantics_v1 import (
+    resolve_selected_future_market_type_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
     LocalSubmitOutcome,
@@ -41,6 +45,7 @@ from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
 from src.ops.portfolio_capital_reservation_budget_v1.execution_v1 import (
     read_persisted_execution_reconciliation_v1,
 )
+from trading.master_v2.double_play_futures_input import FuturesMarketType
 
 _MAX_AGE_SECONDS = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
 _ORDER_GETS = (
@@ -54,6 +59,22 @@ _ORDER_GETS = (
 
 class ExecutionReconciliationSourceError(ValueError):
     """The GET result could not be bound to the original source."""
+
+
+def resolve_reconciliation_query_options_v1(*, instrument_id, native_id):
+    market_type = resolve_selected_future_market_type_v1(
+        instrument_id=instrument_id, venue_native_id=native_id
+    )
+    return OkxReadOnlyReconciliationQueryOptionsV1(
+        inst_type="FUTURES" if market_type is FuturesMarketType.FUTURES else "SWAP"
+    )
+
+
+def require_futures_reconciliation_product_v1(snapshot):
+    if any(
+        item.payload.get("instType", "FUTURES") != "FUTURES" for item in snapshot.evidence_items
+    ):
+        raise ExecutionReconciliationSourceError("RECONCILIATION_GET_FUTURES_PRODUCT_MISMATCH")
 
 
 def _unique_json_object(pairs):
