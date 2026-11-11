@@ -13,7 +13,7 @@ _CAPTURE_SCHEMA = "xperp_liquidation_custody.v1"
 _BINDING_SCHEMA = "xperp_liquidation_binding.v1"
 
 
-def capture_liquidation_custody_v1(owner, proof, *, candidate_id=None):
+def capture_liquidation_custody_v1(owner, proof, *, candidate_id=None, started_attempt=None):
     from .host_v1 import FuturesFinancialCustodyV1
 
     if (
@@ -31,9 +31,11 @@ def capture_liquidation_custody_v1(owner, proof, *, candidate_id=None):
         if row.state in {"RESERVED", "COMMITTED"}
     }
     candidate = active.pop(candidate_id, None)
+    phase = "PLAN_BOUND" if started_attempt is None else "SUBMIT_MAY_HAVE_OCCURRED"
     if candidate_id is not None and (
         candidate is None
-        or (candidate.state, candidate.execution_phase) != ("COMMITTED", "PLAN_BOUND")
+        or (candidate.state, candidate.execution_phase) != ("COMMITTED", phase)
+        or candidate.reconciliation_outcome
     ):
         raise ValueError("XPERP_LIQUIDATION_LATE_CANDIDATE_CUSTODY_UNPROVEN")
     positions = _capture_original_open_positions(owner, active, local.generation_digest)

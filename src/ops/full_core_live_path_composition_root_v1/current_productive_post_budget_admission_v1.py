@@ -28,6 +28,7 @@ class CurrentPostBudgetAdmissionContextV1:
     identity: object
     permit: ExternalEffectPermitV1
     transport_attempt: OriginalPermitTransportAttemptV1
+    futures_financial_custody: object | None = field(default=None, repr=False)
 
     def inspect_v1(self, *, envelope, stage):
         from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
@@ -83,7 +84,13 @@ class CurrentPostBudgetAdmissionContextV1:
             )
             if actual != self.identity.to_dict():
                 raise ValueError("ORIGINAL_CURRENT_READBACK_MISMATCH")
-            self.owner.inspect_current_entry_budget_policy_v1(self.reservation_id, envelope)
+            financial = self.futures_financial_custody
+            self.owner.inspect_current_entry_budget_policy_v1(
+                self.reservation_id,
+                envelope,
+                futures_financial_custody=financial,
+                started_attempt=self.identity if financial is not None else None,
+            )
             self.owner.inspect_current_core_cursor_v1(self.reservation_id, envelope)
             return {
                 "scope": "CURRENT_ORIGINAL_BUDGET_EXECUTION_ADMISSION_ONLY",
@@ -99,7 +106,14 @@ class CurrentPostBudgetAdmissionContextV1:
 
 
 def capture_current_post_budget_admission_v1(
-    *, owner, reservation_id, envelope, identity, permit, transport_attempt
+    *,
+    owner,
+    reservation_id,
+    envelope,
+    identity,
+    permit,
+    transport_attempt,
+    futures_financial_custody=None,
 ):
     """Bind the actual original owner and the identity already committed by it."""
     try:
@@ -118,7 +132,13 @@ def capture_current_post_budget_admission_v1(
             # capital admission and cannot discharge a V2 reference.
             return None
         return CurrentPostBudgetAdmissionContextV1(
-            owner, reservation_id, envelope, identity, permit, transport_attempt
+            owner,
+            reservation_id,
+            envelope,
+            identity,
+            permit,
+            transport_attempt,
+            futures_financial_custody,
         )
     except Exception as exc:
         raise CurrentPostBudgetAdmissionError(f"POST_BUDGET_SOURCE_UNPROVEN:{exc}") from exc

@@ -1928,7 +1928,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             return inspect_submit_context_locked_v1(self, str(reservation_id), envelope, identity)
 
     def inspect_current_entry_budget_policy_v1(
-        self, reservation_id, envelope, *, futures_financial_custody=None
+        self, reservation_id, envelope, *, futures_financial_custody=None, started_attempt=None
     ):
         """Inspect current Ops ceilings and the selected financial policy for this hold."""
         from src.ops.full_core_live_path_composition_root_v1.current_productive_entry_budget_policy_v1 import (
@@ -1944,11 +1944,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
             try:
                 liquidation_snapshot = capture_liquidation_custody_v1(
-                    self, futures_financial_custody, candidate_id=str(reservation_id)
+                    self,
+                    futures_financial_custody,
+                    candidate_id=str(reservation_id),
+                    started_attempt=started_attempt,
                 )
             except (TypeError, KeyError, AttributeError, ArithmeticError, RuntimeError) as exc:
                 raise ValueError("XPERP_LIQUIDATION_CURRENT_CUSTODY_UNAVAILABLE") from exc
-        elif futures_financial_custody is not None:
+        elif futures_financial_custody is not None or started_attempt is not None:
             raise ValueError("XPERP_LIQUIDATION_EXPLICIT_POLICY_REQUIRED")
         with self._lock:
             found = self._require_locked(reservation_id)
@@ -1963,6 +1966,19 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             link = self._execution_links.get(str(reservation_id))
             if not link or link["envelope"] != envelope.to_runtime_json_v1():
                 raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_PLAN_MISMATCH")
+            if started_attempt is not None:
+                from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+                    PortfolioExecutionReconciliationIdentityV2,
+                )
+
+                if (
+                    type(started_attempt) is not PortfolioExecutionReconciliationIdentityV2
+                    or started_attempt.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+                    or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
+                    or link["identity"] != started_attempt.to_dict()
+                    or link["reconciliation"] is not None
+                ):
+                    raise ValueError("CURRENT_ENTRY_BUDGET_ORIGINAL_ATTEMPT_MISMATCH")
             policy = load_entry_budget_policy_v1()
             if self._capital_scope["settlement_currency"] != policy.currency:
                 raise ValueError("CURRENT_ENTRY_BUDGET_CURRENCY_MISMATCH")

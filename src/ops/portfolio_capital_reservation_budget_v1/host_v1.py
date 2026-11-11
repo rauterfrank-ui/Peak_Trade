@@ -652,8 +652,23 @@ class PortfolioBudgetHostV1:
                     instrument_id=identity.instrument_id, native_id=identity.native_id
                 )
             futures_order = options is not None and options.inst_type == "FUTURES"
+            simulated_futures = (
+                futures_order
+                and futures_custody
+                and self.execution_environment == "INTERNAL_SIMULATED_EXECUTION"
+                and capture is None
+                and self.reconciliation_transport is inventory.transport._transport
+                and getattr(
+                    self.owner.entry_budget_policy_v1(),
+                    "require_original_public_movement_facts",
+                    False,
+                )
+                and identity.send_authority_ref.startswith("futures-simulated-dispatch:")
+            )
             if futures_order != futures_custody or (
-                futures_order and type(capture) is not AuthenticatedReconciliationGetV1
+                futures_order
+                and not simulated_futures
+                and type(capture) is not AuthenticatedReconciliationGetV1
             ):
                 raise ValueError("HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN")
             requests.append((rid, identity, options))

@@ -310,6 +310,34 @@ def _original_never_submitted_v1(link, identity):
         return None
 
 
+def _confirmed_fill_floor_v1(owner, reservation_id, identity, prior):
+    if "confirmed_filled_qty_floor" in prior:
+        return Decimal(prior["confirmed_filled_qty_floor"])
+    confirmed = Decimal(0)
+    if prior.get("matched") is True:
+        confirmed = Decimal(prior["decision"]["cumulative_filled_qty"])
+    final = Decimal(identity.final_quantity)
+    if prior and confirmed < final and type(identity) is PortfolioExecutionReconciliationIdentityV2:
+        # Older unknown reads could have replaced an already matched partial
+        # fill. Recover it once from the original owned attempt history.
+        store = owner._store
+        expected_digest = store.head
+        identity_digest = identity.identity_digest()
+        for sequence in range(store.sequence, identity.budget_submit_sequence, -1):
+            revision = store.read_revision_v1(sequence, expected_digest)
+            expected_digest = revision["previous"]
+            link = revision["state"]["execution_links"].get(reservation_id, {})
+            readback = link.get("reconciliation") or {}
+            if (
+                readback.get("matched") is True
+                and readback.get("identity_digest") == identity_digest
+            ):
+                confirmed = max(confirmed, Decimal(readback["decision"]["cumulative_filled_qty"]))
+                if confirmed == final:
+                    break
+    return confirmed
+
+
 def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, now_unix):
     """Resolve evidence while fenced; capital admission is a separate fresh gate."""
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReservationStateV1
@@ -363,13 +391,19 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
     reasons = list(decision.reasons)
     matched = decision.outcome != OUTCOME_HALTED_UNRESOLVED
     release = False
+    prior = link["reconciliation"] or {}
+    confirmed_fill = _confirmed_fill_floor_v1(owner, reservation_id, identity, prior)
     if decision.outcome != OUTCOME_HALTED_UNRESOLVED:
         filled = Decimal(decision.cumulative_filled_qty)
         expected = filled if identity.selected_side.upper() in {"LONG", "ENTER_LONG"} else -filled
-        if quantity != expected:
+        if filled < confirmed_fill:
+            reasons.append("EXECUTION_CONFIRMED_FILL_QUANTITY_REGRESSED")
+            matched = False
+        elif quantity != expected:
             reasons.append("EXECUTION_FILL_POSITION_CONTRADICTION")
             matched = False
         else:
+            confirmed_fill = filled
             release = (
                 decision.outcome in {OUTCOME_CONFIRMED_CANCELED, OUTCOME_CONFIRMED_REJECTED}
                 and filled == 0
@@ -407,6 +441,8 @@ def reconcile_locked_v1(owner, reservation_id, *, snapshot, observed, account, n
         "reason_codes": reasons,
         "reservation_released": release,
     }
+    if confirmed_fill > 0 or type(identity) is PortfolioExecutionReconciliationIdentityV2:
+        evidence["confirmed_filled_qty_floor"] = str(confirmed_fill)
     if release:
         key = owner._by_id[reservation_id]
         current = owner._by_key[key]
