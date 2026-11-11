@@ -12,7 +12,10 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_OUTCOME_RECORD,
 )
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
-from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
+    DdoDuplicateConflictError,
+    DdoValidationError,
+)
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     validate_attribution_record_v0,
     validate_counterfactual_record_v0,
@@ -23,7 +26,8 @@ from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
     build_learning_state_record_v0,
-    validate_learning_state_record_v0,
+    learning_event_time_key_v0,
+    learning_state_head_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import validate_outcome_record_v0
 from src.learning.deterministic_decision_outcome_v0.self_learning_provenance_eligibility_v1 import (
@@ -116,18 +120,7 @@ def latest_learning_state_for_scope_v1(
     *,
     state_scope_id: str,
 ) -> Mapping[str, Any] | None:
-    latest: Mapping[str, Any] | None = None
-    latest_version = 0
-    for row in ledger.read_all():
-        if row.get("schema_name") != SCHEMA_NAME_LEARNING_STATE_RECORD:
-            continue
-        if str(row.get("state_scope_id")) != state_scope_id:
-            continue
-        version = int(row["state_version"])
-        if version >= latest_version:
-            latest_version = version
-            latest = row
-    return latest
+    return learning_state_head_v0(ledger.read_all(), state_scope_id=state_scope_id)
 
 
 def _derive_next_cycle_economic_score_label_v1(outcome: Mapping[str, Any]) -> str:
@@ -164,6 +157,7 @@ def reduce_learning_state_transition_v1(
     code_sha, config_hash = source_code, source_config
     fingerprint = validated["evaluation_bundle_fingerprint"]
     outcome_time = str(outcome["event_time_utc"])
+    outcome_time_key = learning_event_time_key_v0(outcome_time)
     prior_class = str(prior_state["outcome_semantic_class"]) if prior_state is not None else None
     eligibility = require_self_learning_provenance_eligibility_v1(
         outcome, prior_outcome_semantic_class=prior_class
@@ -177,7 +171,7 @@ def reduce_learning_state_transition_v1(
         if str(prior_state.get("evaluation_bundle_fingerprint")) == fingerprint:
             return dict(prior_state)
         prior_time = str(prior_state["last_event_time_utc"])
-        if outcome_time < prior_time:
+        if outcome_time_key < learning_event_time_key_v0(prior_time):
             raise DdoValidationError("LEARNING_INGEST_OUT_OF_ORDER_EVENT_TIME")
         state_version = int(prior_state["state_version"]) + 1
         ingest_sequence = int(prior_state["ingest_sequence"]) + 1
@@ -247,6 +241,17 @@ def derive_learning_state_record_id_v1(*, state_scope_id: str, fingerprint: str)
     return f"ls.{digest[:48]}"
 
 
+def _ingest_result(record: Mapping[str, Any], status: str) -> dict[str, Any]:
+    return {
+        "ok": True,
+        "idempotent_replay": status == "IDEMPOTENT_REPLAY",
+        "append_status": status,
+        "learning_state_record": dict(record),
+        "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
+        "ingest_id": INGEST_ID,
+    }
+
+
 def ingest_evaluation_bundle_into_learning_state_v1(
     ledger: AppendOnlyDdoLedgerV0,
     *,
@@ -260,20 +265,29 @@ def ingest_evaluation_bundle_into_learning_state_v1(
 ) -> dict[str, Any]:
     bundle = validate_evaluation_bundle_for_ingest_v1(outcome, attribution, counterfactual)
     fingerprint = bundle["evaluation_bundle_fingerprint"]
-    prior = latest_learning_state_for_scope_v1(ledger, state_scope_id=state_scope_id)
     record_id = derive_learning_state_record_id_v1(
         state_scope_id=state_scope_id, fingerprint=fingerprint
     )
-    if prior is not None and str(prior.get("record_id")) == record_id:
-        if any(prior.get(key) != bundle["outcome"].get(key) for key in ("code_sha", "config_hash")):
+    records = {row["record_id"]: row for row in ledger.read_all()}
+    for role in ("outcome", "attribution", "counterfactual"):
+        submitted = bundle[role]
+        original = records.get(submitted["record_id"])
+        if original is None or original["content_hash"] != submitted["content_hash"]:
+            raise DdoValidationError(f"LEARNING_INGEST_ORIGINAL_EVIDENCE_MISMATCH:{role}")
+    existing = records.get(record_id)
+    if existing is not None:
+        if (
+            existing["schema_name"] != SCHEMA_NAME_LEARNING_STATE_RECORD
+            or existing["state_scope_id"] != state_scope_id
+            or existing["evaluation_bundle_fingerprint"] != fingerprint
+        ):
+            raise DdoDuplicateConflictError(f"DUPLICATE_RECORD_ID_CONFLICT:{record_id}")
+        if any(
+            existing[field] != bundle["outcome"][field] for field in ("code_sha", "config_hash")
+        ):
             raise DdoValidationError("LEARNING_INGEST_CONFIGURATION_POOL_MISMATCH")
-        return {
-            "ok": True,
-            "idempotent_replay": True,
-            "learning_state_record": dict(prior),
-            "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
-            "ingest_id": INGEST_ID,
-        }
+        return _ingest_result(existing, "IDEMPOTENT_REPLAY")
+    prior = learning_state_head_v0(records.values(), state_scope_id=state_scope_id)
     next_state = reduce_learning_state_transition_v1(
         state_scope_id=state_scope_id,
         bundle={
@@ -288,13 +302,4 @@ def ingest_evaluation_bundle_into_learning_state_v1(
         cycle_id=cycle_id,
     )
     append_result: AppendResultV0 = ledger.append(next_state)
-    status = append_result.status
-    stored = validate_learning_state_record_v0(next_state)
-    return {
-        "ok": True,
-        "idempotent_replay": status == "IDEMPOTENT_REPLAY",
-        "append_status": status,
-        "learning_state_record": dict(stored),
-        "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
-        "ingest_id": INGEST_ID,
-    }
+    return _ingest_result(next_state, append_result.status)

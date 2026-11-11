@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from src.governance.live_mode_gate import ExecutionEnvironment
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_LEARNING_STATE_RECORD,
 )
@@ -34,14 +36,18 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1 import (
     materialize_o4_n_bars_bar_evidence_snapshot_v1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_learning_outcome_evidence_ingest_host_binding_v1 import (
+    apply_learning_state_feedback_to_next_cycle_v1,
+    invoke_productive_learning_outcome_evidence_ingest_v1,
+)
 from tests.learning.test_ddo_o4_n_bars_productive_chain_v1 import _decision, _identity, _snapshot
 from tests.learning.test_ddo_n_bars_productive_upstream_auto_bind_v1 import (
     _producer_with_two_gapless_finalized_bars,
 )
 
 
-def _bundle(tmp_path: Path):
-    decision = build_decision_event_v0(_decision())
+def _bundle(tmp_path: Path, **revision):
+    decision = build_decision_event_v0(_decision(**revision))
     ledger = AppendOnlyDdoLedgerV0(tmp_path / "ingest.jsonl")
     ledger.append(decision)
     horizon = produce_real_outcome_horizon_evaluation_observation_v1(
@@ -50,7 +56,7 @@ def _bundle(tmp_path: Path):
     bundle = evaluate_offline_bundle_v0(
         decision,
         horizon["evaluation_observation"],
-        identity=_identity(),
+        identity=_identity(**revision),
         ledger=ledger,
     )
     return ledger, bundle, decision
@@ -156,6 +162,145 @@ def test_ledger_reopen_reconstructs_latest_learning_state(tmp_path: Path) -> Non
     reconstructed = latest_learning_state_for_scope_v1(reopened, state_scope_id=scope)
     assert reconstructed is not None
     assert reconstructed["next_cycle_economic_score_label"] == "LABEL_A"
+
+
+def _next_bundle(ledger, decision, *, label, suffix, event_time, persist=True):
+    horizon = produce_real_outcome_horizon_evaluation_observation_v1(
+        decision, _snapshot(), economic_score=label
+    )
+    return evaluate_offline_bundle_v0(
+        decision,
+        horizon["evaluation_observation"],
+        identity=_identity(
+            outcome_record_id=f"out-chain-{suffix}",
+            attribution_record_id=f"attr-chain-{suffix}",
+            counterfactual_record_id=f"cf-chain-{suffix}",
+            event_time_utc=event_time,
+            code_sha=decision["code_sha"],
+            config_hash=decision["config_hash"],
+        ),
+        ledger=ledger if persist else None,
+    )
+
+
+def _ingest(ledger, bundle):
+    outcome = bundle["outcome_record"]
+    return ingest_evaluation_bundle_into_learning_state_v1(
+        ledger,
+        state_scope_id="ddo.lscope.regression",
+        outcome=outcome,
+        attribution=bundle["attribution_record"],
+        counterfactual=bundle["counterfactual_record"],
+        event_time_utc=outcome["event_time_utc"],
+        correlation_id=outcome["record_id"],
+    )
+
+
+def test_replaying_an_old_bundle_returns_its_original_state_without_advancing_head(
+    tmp_path: Path,
+) -> None:
+    ledger, first_bundle, decision = _bundle(tmp_path)
+    first = _ingest(ledger, first_bundle)
+    second = _ingest(
+        ledger,
+        _next_bundle(
+            ledger,
+            decision,
+            label="LABEL_B",
+            suffix="0002",
+            event_time="2026-09-01T14:00:00.000000001Z",
+        ),
+    )
+    reopened = AppendOnlyDdoLedgerV0(ledger.ledger_path)
+    original_bytes = reopened.ledger_path.read_bytes()
+    replay = _ingest(reopened, first_bundle)
+    assert replay["idempotent_replay"] is True
+    assert replay["learning_state_record"] == first["learning_state_record"]
+    previous_id = first["learning_state_record"]["record_id"]
+    assert second["learning_state_record"]["prior_state_record_ref"] == previous_id
+    assert (
+        latest_learning_state_for_scope_v1(reopened, state_scope_id="ddo.lscope.regression")
+        == second["learning_state_record"]
+    )
+    assert reopened.ledger_path.read_bytes() == original_bytes
+
+
+def test_ingest_requires_exact_evaluation_bytes_already_in_ledger(tmp_path: Path) -> None:
+    ledger, _, decision = _bundle(tmp_path)
+    different_bundle = _next_bundle(
+        ledger,
+        decision,
+        label="CHANGED_LABEL",
+        suffix="0001",
+        event_time="2026-09-01T14:00:00Z",
+        persist=False,
+    )
+    original_bytes = ledger.ledger_path.read_bytes()
+    with pytest.raises(
+        DdoValidationError, match="LEARNING_INGEST_ORIGINAL_EVIDENCE_MISMATCH:outcome"
+    ):
+        _ingest(ledger, different_bundle)
+    assert ledger.ledger_path.read_bytes() == original_bytes
+
+
+def test_concurrent_transition_cannot_fork_the_scope(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ledger, first_bundle, decision = _bundle(tmp_path)
+    second_bundle = _next_bundle(
+        ledger,
+        decision,
+        label="LABEL_B",
+        suffix="0002",
+        event_time="2026-09-01T14:00:00.000000001Z",
+    )
+    other_writer = AppendOnlyDdoLedgerV0(ledger.ledger_path)
+    append = ledger.append
+
+    def append_after_other_writer(record):
+        _ingest(other_writer, first_bundle)
+        return append(record)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(ledger, "append", append_after_other_writer)
+        with pytest.raises(DdoValidationError, match="LEARNING_STATE_PREDECESSOR_CHANGED"):
+            _ingest(ledger, second_bundle)
+    head = _ingest(ledger, second_bundle)["learning_state_record"]
+    assert head["state_version"] == 2
+    ledger.verify_integrity()
+
+
+def test_host_does_not_regress_to_replayed_economic_label(tmp_path: Path) -> None:
+    config_hash = "a" * 64
+    ledger, first, decision = _bundle(tmp_path, code_sha="b" * 64, config_hash=config_hash)
+    second = _next_bundle(
+        ledger,
+        decision,
+        label="LABEL_B",
+        suffix="0002",
+        event_time="2026-09-01T14:00:00.000000001Z",
+    )
+    binding = DdoCaptureBindingV0(
+        ledger_path=ledger.ledger_path, capture_scope_config_hash=config_hash
+    )
+
+    def ingest_on_host(host_state, bundle):
+        return invoke_productive_learning_outcome_evidence_ingest_v1(
+            host_state,
+            evaluation_runtime={"ok": True, "bundle": bundle},
+            session_id="same-session",
+        )
+
+    host = SimpleNamespace(ddo_capture_binding=binding)
+    ingest_on_host(host, first)
+    ingest_on_host(host, second)
+
+    resumed_host = SimpleNamespace(ddo_capture_binding=binding)
+    replay = ingest_on_host(resumed_host, first)
+    assert replay["learning_state_record"]["next_cycle_economic_score_label"] == "LABEL_A"
+    assert resumed_host.last_ddo_learning_state["state_version"] == 2
+    apply_learning_state_feedback_to_next_cycle_v1(resumed_host)
+    assert resumed_host.ddo_n_bars_economic_score == "LABEL_B"
 
 
 def test_productive_closed_loop_keeps_unknown_provenance_out_of_feedback(tmp_path: Path) -> None:

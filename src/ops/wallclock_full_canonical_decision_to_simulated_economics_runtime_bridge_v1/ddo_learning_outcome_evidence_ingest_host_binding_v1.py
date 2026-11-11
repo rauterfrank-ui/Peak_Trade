@@ -10,6 +10,7 @@ from src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_in
     EXTERNAL_EFFECT_AUTHORIZED,
     derive_learning_state_scope_id_v1,
     ingest_evaluation_bundle_into_learning_state_v1,
+    latest_learning_state_for_scope_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 
@@ -129,6 +130,11 @@ def invoke_productive_learning_outcome_evidence_ingest_v1(
     payload = dict(result)
     payload["binding_id"] = BINDING_ID
     payload["state_scope_id"] = scope_id
-    state.last_ddo_learning_state = payload.get("learning_state_record")
+    if payload["idempotent_replay"]:
+        state.last_ddo_learning_state = latest_learning_state_for_scope_v1(
+            ledger, state_scope_id=scope_id
+        )
+    else:
+        state.last_ddo_learning_state = payload["learning_state_record"]
     state.last_ddo_learning_outcome_ingest = payload
     return payload
