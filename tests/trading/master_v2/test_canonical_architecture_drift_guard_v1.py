@@ -28,6 +28,8 @@ from tests.trading.master_v2._canonical_architecture_drift_guard_helpers_v1 impo
     count_strategy_bypass_paths_by_kind,
 )
 from tests.trading.master_v2.test_canonical_replay_input_builder_ssot_contract_v1 import (
+    _SYNTHETIC_LAB_CONSTRUCTORS,
+    assert_synthetic_replay_lab_dependencies_stay_within_offline_labs,
     unauthorized_direct_replay_input_constructions,
 )
 
@@ -61,7 +63,10 @@ def test_invariant_b_single_productive_replay_input_constructor() -> None:
     assert sole.enclosing_function == _BUILDER_NAME
     hits = collect_direct_replay_input_constructions(scan_root=SRC_ROOT, path_root=REPO_ROOT)
     assert unauthorized_direct_replay_input_constructions(hits) == []
-    assert len(hits) == 1
+    assert sorted((hit.relative_path, hit.enclosing_function) for hit in hits if hit != sole) == (
+        sorted(_SYNTHETIC_LAB_CONSTRUCTORS)
+    )
+    assert_synthetic_replay_lab_dependencies_stay_within_offline_labs()
 
 
 def test_invariant_c_no_direct_strategy_authority_bypass() -> None:

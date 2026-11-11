@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import subprocess
 
 from src.ops.integrated_offline_economic_evidence_v1.integrated_offline_economic_validity_adjudication_v1 import (
     evaluate_integrated_offline_economic_validity_v1,
@@ -18,10 +19,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_productive_offline_economic_e2e_completion(tmp_path: Path) -> None:
+    for directory in ("config", "scripts", "src"):
+        (tmp_path / directory).symlink_to(REPO_ROOT / directory, target_is_directory=True)
+    source_sha = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=REPO_ROOT, text=True
+    ).strip()
     rel = "evidence/ops/integrated_offline_economic_evidence_v1/e2e_test_bundle_v1"
     produced = produce_productive_offline_economic_completion_bundle_v1(
-        repo_root=REPO_ROOT,
+        repo_root=tmp_path,
         evidence_relpath=rel,
+        proven_source_sha=source_sha,
     )
     assert produced.md_bridge_verified is True
     assert produced.productive_decision_equivalence_verified is True
@@ -29,8 +36,8 @@ def test_productive_offline_economic_e2e_completion(tmp_path: Path) -> None:
     assert not produced.blockers
 
     verified = verify_integrated_offline_economic_evidence_v1(
-        repo_root=REPO_ROOT,
-        evidence_root=REPO_ROOT / rel,
+        repo_root=tmp_path,
+        evidence_root=tmp_path / rel,
         expected_proven_source_sha=produced.proven_source_sha,
     )
     assert verified.canonical_identity_verified is True
@@ -38,8 +45,8 @@ def test_productive_offline_economic_e2e_completion(tmp_path: Path) -> None:
     assert verified.offline_economic_evidence_complete is True
 
     adjudicated = evaluate_integrated_offline_economic_validity_v1(
-        repo_root=REPO_ROOT,
-        evidence_root=REPO_ROOT / rel,
+        repo_root=tmp_path,
+        evidence_root=tmp_path / rel,
         expected_proven_source_sha=produced.proven_source_sha,
         verification=verified,
     )

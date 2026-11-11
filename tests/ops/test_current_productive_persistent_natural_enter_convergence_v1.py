@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -118,11 +119,14 @@ def _observation_from_closes(
     mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
         bound=b, mark_px=mark_px, index_px=index_px
     )
+    captured = datetime.now(timezone.utc)
+    mark_payload["data"][0]["ts"] = str(int(captured.timestamp() * 1000))
     return InjectedContinuousObservationV1(
         candles_payload=candles,
         occupancy_payloads=_occupancy_absent(),
         mark_price_payload=mark_payload,
         index_tickers_payload=index_payload,
+        mark_acquired_at_utc=captured.isoformat(),
     )
 
 
@@ -316,6 +320,7 @@ def test_max_cycles_bound_enforced(tmp_path: Path) -> None:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        mark_acquired_at_utc=obs_boot.mark_acquired_at_utc,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     obs = ScriptedContinuousObservationSourceV1(
@@ -430,6 +435,7 @@ def test_cap24_writer_not_reinvoked_per_s6_cycle(tmp_path: Path) -> None:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        mark_acquired_at_utc=obs_boot.mark_acquired_at_utc,
     )
     with patch(
         "src.ops.governed_productive_account_equity_authority_producer_v1."
@@ -452,7 +458,6 @@ def test_cap24_writer_not_reinvoked_per_s6_cycle(tmp_path: Path) -> None:
 
 def test_pre_external_terminal_on_natural_enter_long(tmp_path: Path) -> None:
     from dataclasses import replace
-    from datetime import datetime, timezone
     from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
         prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
     )
@@ -490,9 +495,8 @@ def test_pre_external_terminal_on_natural_enter_long(tmp_path: Path) -> None:
     assert arm.decision_outcome not in {"enter_long", "enter_short"}
     cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
     floor = _cursor_floor_or_zero(cursor_root)
-    obs = ScriptedContinuousObservationSourceV1(
-        [_observation_from_closes(closes=enter_closes, event_ts=enter_ts, bound=bound)]
-    )
+    observation = _observation_from_closes(closes=enter_closes, event_ts=enter_ts, bound=bound)
+    obs = ScriptedContinuousObservationSourceV1([observation])
     auth = replace(
         _continuous_auth(native_id=native_id, max_cycles=1), expected_cursor_floor=float(floor)
     )
@@ -528,12 +532,16 @@ def test_pre_external_terminal_on_natural_enter_long(tmp_path: Path) -> None:
         )
         assert result.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT, result.first_genuine_blocker
         assert result.cycles_completed == 1
-        context = result.cycle_records[0].pending_decision_context
+        cycle = result.cycle_records[0]
+        context = cycle.pending_decision_context
         assert context is not None
         assert context.instrument_id == bound.instrument_id
         assert context.native_id == native_id
         assert context.reference_price == float(enter_closes[-1]) + 1.0
-        assert context.decision_timestamp_unix == enter_ts + 1.0
+        mark_acquired = datetime.fromisoformat(observation.mark_acquired_at_utc).timestamp()
+        assert cycle.c1_venue_event_time == enter_ts
+        assert enter_ts < mark_acquired <= context.decision_timestamp_unix
+        assert context.decision_timestamp_unix <= datetime.now(timezone.utc).timestamp()
         from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
             evaluate_natural_enter_reporting_v1,
         )

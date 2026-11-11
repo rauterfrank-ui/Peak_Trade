@@ -10,6 +10,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FULL_CORE_SYSTEM_E2E_PROVEN,
     LIVE_ARMED as FULL_CORE_LIVE_ARMED,
     LIVE_ENABLED as FULL_CORE_LIVE_ENABLED,
+    RISK_SIZING_OWNER,
     WIRE_SEND_PERMITTED as FULL_CORE_WIRE_SEND,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
@@ -26,11 +27,23 @@ from src.ops.treasury_phase_1_offline_contracts_v1.constants_v1 import (
     FORBIDDEN_IMPORT_TOKENS,
     PL_TF_002_STATUS,
     TREASURY_PHASE_1_STATUS,
+    TREASURY_MUTATION_REACHABLE_FROM_TRADING,
     TREASURY_SEPARATION_GATE_WIRED,
+)
+from src.ops.treasury_phase_2_read_only_reconciliation_v1.constants_v1 import (
+    TREASURY_PHASE_2_STATUS,
+)
+from src.ops.treasury_phase_3_shadow_enforcement_v1.constants_v1 import (
+    TREASURY_MUTATION_REACHABLE,
+    TREASURY_PHASE_3_STATUS,
+    TREASURY_SEPARATION_GATE_WIRED as PHASE_3_SEPARATION_GATE_WIRED,
 )
 from src.ops.treasury_separation_gate import TREASURY_ONLY_OPERATIONS, evaluate_treasury_policy
 from src.trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+)
+from tests.ops._current_frozen_document_navigation_v1 import (
+    assert_current_frozen_document_navigation,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -38,7 +51,7 @@ PACKAGE_DIR = REPO_ROOT / "src/ops/treasury_phase_1_offline_contracts_v1"
 FULL_CORE_DIR = REPO_ROOT / "src/ops/full_core_live_path_composition_root_v1"
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md"
-MOT = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+PHASE_3_SPEC = REPO_ROOT / "docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md"
 
 
 def test_at07_trading_authority_cannot_mint_treasury() -> None:
@@ -107,32 +120,50 @@ def test_capital_admission_authority_reused_not_replaced() -> None:
 
 
 def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        owners=(
+            PACKAGE_DIR / "constants_v1.py",
+            REPO_ROOT / "src/ops/treasury_phase_2_read_only_reconciliation_v1/constants_v1.py",
+            REPO_ROOT / "src/ops/treasury_phase_3_shadow_enforcement_v1/constants_v1.py",
+            PHASE_3_SPEC,
+        ),
+    )
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    mot = MOT.read_text(encoding="utf-8")
-    start = runbook.index("## CURRENT Treasury Phase Bindings")
-    section = runbook[
-        start : runbook.index("## CURRENT Order-Intent and Execution Boundaries", start)
-    ]
-    assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" in section
-    assert "TREASURY_PHASE_2_STATUS=READ_ONLY_FOUNDATION_BOUND" in section
-    assert "TREASURY_PHASE_3_STATUS=SHADOW_ENFORCEMENT_BOUND" in section
-    assert "PL_TF_002_STATUS=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN" in section
-    assert "TREASURY_MUTATION_REACHABLE=false" in section
-    assert "TREASURY_PHASE_1_SEPARATION_GATE_WIRED=false" in section
-    assert "TREASURY_PHASE_3_SEPARATION_GATE_WIRED=true" in section
-    assert "BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e" in runbook
-    assert "docs_token:" in spec
-    assert "DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1" in spec
-    assert "TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md" in mot
+    shadow = PHASE_3_SPEC.read_text(encoding="utf-8")
     assert TREASURY_PHASE_1_STATUS == "CLOSED_OFFLINE_CONTRACTS"
+    assert TREASURY_PHASE_2_STATUS == "READ_ONLY_FOUNDATION_BOUND"
+    assert TREASURY_PHASE_3_STATUS == "SHADOW_ENFORCEMENT_BOUND"
     assert PL_TF_002_STATUS == "CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN"
+    assert TREASURY_MUTATION_REACHABLE_FROM_TRADING is False
+    assert TREASURY_MUTATION_REACHABLE is False
+    assert TREASURY_SEPARATION_GATE_WIRED is False
+    assert PHASE_3_SEPARATION_GATE_WIRED is True
+    for pin in (
+        "docs_token: DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1",
+        f"TREASURY_PHASE_1_STATUS={TREASURY_PHASE_1_STATUS}",
+        f"TREASURY_PHASE_2_STATUS={TREASURY_PHASE_2_STATUS}",
+        f"PL_TF_002_STATUS={PL_TF_002_STATUS}",
+        "TREASURY_MUTATION_REACHABLE_FROM_TRADING=false",
+        "TREASURY_SEPARATION_GATE_WIRED=false",
+    ):
+        assert pin in spec
+    assert f"TREASURY_PHASE_3_STATUS={TREASURY_PHASE_3_STATUS}" in shadow
+    assert "TREASURY_MUTATION_REACHABLE=false" in shadow
+    assert "TREASURY_SEPARATION_GATE_WIRED=true" in shadow
 
 
 def test_capital_admission_runbook_slice_excludes_phase1() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    risk_start = runbook.index("## CURRENT Risk and Capital Admissibility")
-    risk_end = runbook.index("## CURRENT Treasury Phase Bindings", risk_start)
-    risk_section = runbook[risk_start:risk_end]
-    assert "RISK_SIZING_OWNER=capital_risk_admissibility_owner_v1" in risk_section
-    assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" not in risk_section
+    risk_section = runbook.split("### Risiko, Budget, Intent und Ausführung\n", 1)[1].split(
+        "\n## ", 1
+    )[0]
+    assert RISK_SIZING_OWNER == "capital_risk_admissibility_owner_v1"
+    assert "../../../src/governance/capital_risk_sizing_v1.py" in risk_section
+    assert "../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py" in risk_section
+    assert "treasury_phase_1_offline_contracts_v1" not in risk_section.lower()
+    assert (
+        phase_1_no_authority_proof_v1()["TREASURY_PHASE_1_CAN_MINT_RISK_ADMISSIBLE_CAPITAL"]
+        is False
+    )
