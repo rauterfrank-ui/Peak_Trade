@@ -9,6 +9,7 @@ from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
+from threading import Lock
 import time
 from typing import Callable
 
@@ -28,6 +29,9 @@ from src.ops.okx_eea_private_account_state_runtime_v1.reconciliation_v1 import (
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
     PortfolioCapitalReservationBudgetOwnerV1,
 )
+from src.ops.portfolio_capital_reservation_budget_v1.local_commitment_readback_v1 import (
+    LocalCapitalCommitmentReadbackV1,
+)
 from src.ops.portfolio_capital_reservation_budget_v1.recovery_v1 import (
     reconcile_durable_budget_startup_v1,
 )
@@ -45,6 +49,16 @@ class HostAccountObservationV1:
     occupancy_payloads: dict
     pending_source: object | None = field(default=None, repr=False, compare=False)
     account_inventory_source: object | None = field(default=None, repr=False, compare=False)
+
+
+@dataclass(frozen=True)
+class FuturesFinancialCustodyV1:
+    """Same-account inventory and local commitments for a financial reader."""
+
+    local_commitments: LocalCapitalCommitmentReadbackV1 = field(repr=False)
+    _observation: HostAccountObservationV1 = field(repr=False)
+    _bindings: tuple = field(repr=False)
+    _read_count: int
 
 
 @dataclass(frozen=True)
@@ -310,6 +324,8 @@ class PortfolioBudgetHostV1:
         self.clock = clock
         self.owner = None
         self.bindings = None
+        self._futures_financial_lock = Lock()
+        self._futures_financial_custody = None
         self.account = expected_account_identity
         self.closed = False
         self.retry_sleep = retry_sleep
@@ -338,6 +354,74 @@ class PortfolioBudgetHostV1:
 
     def observe_v1(self, bindings):
         return self._observe_with_retry_v1(bindings)
+
+    def capture_futures_financial_custody_v1(self, source):
+        """Take a read-only sample with the original durable owner already open."""
+        with self._futures_financial_lock:
+            self._futures_financial_custody = None
+            proof = self._capture_futures_financial_custody_v1(source)
+            self._futures_financial_custody = proof
+            return proof
+
+    def _capture_futures_financial_custody_v1(self, source):
+        from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+            FUTURES_INVENTORY_REQUEST_COUNT,
+            K1AccountObservationSourceV1,
+        )
+
+        if self.closed or self.owner is None or not self.bindings:
+            raise ValueError("FUTURES_FINANCIAL_ORIGINAL_OWNER_REQUIRED")
+        if (
+            type(source) is not K1AccountObservationSourceV1
+            or source.closed
+            or not source.account_inventory_guard
+            or source.inventory_inst_type != "FUTURES"
+            or source.expected_account_identity != self.account
+        ):
+            raise ValueError("FUTURES_FINANCIAL_ORIGINAL_K1_SCOPE_REQUIRED")
+        local = self.owner.local_commitment_readback_v1()
+        if not local.durable_state_enabled or local.account_identity != self.account:
+            raise ValueError("FUTURES_FINANCIAL_DURABLE_ACCOUNT_REQUIRED")
+        bindings = tuple(sorted(self.bindings.items()))
+        transport = source.transport
+        initial_reads = transport.read_count
+        observation = collect_host_account_observation_v1(
+            private_rest_fetch=source,
+            instrument_ids_by_native_id={
+                bound.venue_native_id: bound.instrument_id for _, bound in bindings
+            },
+            session_id=self.session_id,
+            clock=self.clock,
+            expected_account=self.account,
+        )
+        if transport.read_count - initial_reads != FUTURES_INVENTORY_REQUEST_COUNT:
+            raise ValueError("FUTURES_FINANCIAL_INVENTORY_GET_COUNT_MISMATCH")
+        proof = FuturesFinancialCustodyV1(local, observation, bindings, transport.read_count)
+        self._inspect_futures_financial_custody_v1(proof)
+        return proof
+
+    def inspect_futures_financial_custody_v1(self, proof):
+        """Read current sources and recheck the original local generation."""
+        with self._futures_financial_lock:
+            if proof is None or proof is not self._futures_financial_custody:
+                raise ValueError("FUTURES_FINANCIAL_ORIGINAL_HOST_PROOF_REQUIRED")
+            return self._inspect_futures_financial_custody_v1(proof)
+
+    def _inspect_futures_financial_custody_v1(self, proof):
+        if (
+            self.closed
+            or self.owner is not proof.local_commitments.source_owner
+            or self.account != proof._observation.account
+            or tuple(sorted(self.bindings.items())) != proof._bindings
+        ):
+            raise ValueError("FUTURES_FINANCIAL_HOST_SCOPE_CHANGED")
+        inputs = proof._observation.account_inventory_source.inspect_futures_financial_gets_v1(
+            proof._observation, read_count=proof._read_count
+        )
+        self.owner.require_local_commitment_readback_v1(
+            proof.local_commitments, account_identity=self.account
+        )
+        return inputs
 
     def reconcile_standing_startup_observation_v1(self, bindings, observation):
         """Use the completed startup sample in the same owner used later by S5."""
@@ -630,5 +714,6 @@ class PortfolioBudgetHostV1:
 
     def close(self):
         self.closed = True
+        self._futures_financial_custody = None
         if self.owner is not None:
             self.owner.close()

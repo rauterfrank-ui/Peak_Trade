@@ -5,12 +5,15 @@ No fallback from the dedicated observer credential contract and no POST port.
 """
 
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from pathlib import Path
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+from fractions import Fraction
 import json
+import math
 import re
-from urllib.parse import parse_qsl, urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit
 import time
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
@@ -24,6 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     BASELINE_REST_RECOVERY_ALLOWLIST,
+    POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.startup_source_v1 import (
     ALGO_PENDING_PATH,
@@ -42,7 +46,31 @@ FUTURES_INVENTORY_BOT_QUERIES = (
     ("/api/v5/tradingBot/signal/orders-algo-pending", {"algoOrdType": "contract"}),
     ("/api/v5/tradingBot/recurring/orders-algo-pending", {}),
 )
+FUTURES_INVENTORY_REQUEST_COUNT = (
+    6 + len(FUTURES_INVENTORY_ALGO_TYPES) + len(FUTURES_INVENTORY_BOT_QUERIES)
+)
 _SIGNED_FIXED_DECIMAL = re.compile(r"-?[0-9]+(?:\.[0-9]+)?")
+
+
+@dataclass(frozen=True)
+class FuturesFinancialVenueInputsV1:
+    gets: dict = field(repr=False)
+    current_cross_balance_with_pnl_usdc: Fraction | None = field(repr=False)
+
+
+def _cross_balance_with_pnl_v1(usdc):
+    """Invert the documented floor only when the observed free margin is positive."""
+    amounts = (usdc.get("availEq"), usdc.get("frozenBal"))
+    if any(
+        not isinstance(value, str) or len(value) > 128 or not _SIGNED_FIXED_DECIMAL.fullmatch(value)
+        for value in amounts
+    ):
+        return None
+    free, in_use = map(Fraction, amounts)
+    # OKX Futures cross: availEq = max(0, cross balance + cross PnL - frozenBal).
+    if free <= 0 or in_use < 0:
+        return None
+    return free + in_use
 
 
 def _validate_inventory_scope_v1(guard, inst_type):
@@ -273,6 +301,91 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             raise AccountObservationSourceError("K1_FUTURES_LEGACY_STARTUP_DOCUMENT_UNSUPPORTED")
         return super().export_startup_document_v1(
             path, instrument_ids_by_native_id=instrument_ids_by_native_id
+        )
+
+    def inspect_futures_financial_gets_v1(self, observation, *, read_count):
+        """Read the completed original FUTURES inventory for financial observation."""
+        if (
+            self.closed
+            or not self.account_inventory_guard
+            or self.inventory_inst_type != "FUTURES"
+            or self.transport.read_count != read_count
+            or observation.account_inventory_source is not self
+            or observation.account != self.expected_account_identity
+            or observation.pending_orders
+        ):
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_SCOPE_CHANGED")
+        self._assert_current_resource_pair_v1()
+        self._validate_credential_v1(self.credential)
+        snapshot = observation.observed
+        started, completed = snapshot.event_time_unix, snapshot.wall_time_unix
+        max_age = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        now = self.clock()
+        if (
+            snapshot.source_id != "host-private-rest-futures"
+            or snapshot.max_age_seconds != max_age
+            or not all(math.isfinite(t) for t in (started, completed, now))
+            or not 0 <= now - completed <= now - started <= max_age
+        ):
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_WINDOW_INVALID")
+        config_path = "/api/v5/account/config"
+        balance_path = "/api/v5/account/balance"
+        positions_path = "/api/v5/account/positions"
+        pending_path = "/api/v5/trade/orders-pending"
+        empty_paths = [
+            pending_path,
+            *(
+                f"{ALGO_PENDING_PATH}?{urlencode({'ordType': kind})}"
+                for kind in self._pending_algo_types_v1()
+            ),
+            *(
+                path + ("?" + urlencode(query) if query else "")
+                for path, query in FUTURES_INVENTORY_BOT_QUERIES
+            ),
+        ]
+        gets = {}
+        for endpoint in (config_path, balance_path, positions_path, *empty_paths):
+            record = self._observation_gets.get(endpoint)
+            if record is None or record["pretrade_decision_id"] != self.session_id:
+                raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_GET_REQUIRED")
+            acquired = datetime.fromisoformat(record["acquired_at_utc"].replace("Z", "+00:00"))
+            if acquired.tzinfo is None or not started <= acquired.timestamp() <= completed:
+                raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_GET_TIME_INVALID")
+            if endpoint in empty_paths and record["payload"]["data"] != []:
+                raise AccountObservationSourceError("FUTURES_FINANCIAL_PENDING_CUSTODY_PRESENT")
+            gets[endpoint] = record
+        for endpoint, key in (
+            (config_path, "CONFIG"),
+            (positions_path, "POSITIONS"),
+            (pending_path, "PENDING"),
+        ):
+            if gets[endpoint]["payload"] != observation.occupancy_payloads.get(key):
+                raise AccountObservationSourceError("FUTURES_FINANCIAL_HOST_EVIDENCE_MISMATCH")
+        config = gets[config_path]["payload"]["data"]
+        if (
+            len(config) != 1
+            or config[0].get("uid") != observation.account
+            or config[0].get("acctLv") != "2"
+            or config[0].get("posMode") != "net_mode"
+            or config[0].get("settleCcy") != "USDC"
+        ):
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_USDC_NET_ACCOUNT_REQUIRED")
+        balance = gets[balance_path]["payload"]["data"]
+        details = balance[0].get("details") if len(balance) == 1 else None
+        if (
+            not isinstance(details, list)
+            or balance[0].get("uid", observation.account) != observation.account
+            or any(not isinstance(row, dict) for row in details)
+        ):
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_USDC_BALANCE_SCOPE_UNPROVEN")
+        usdc = [row for row in details if row.get("ccy") == "USDC"]
+        if len(usdc) != 1:
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_USDC_BALANCE_SCOPE_UNPROVEN")
+        if self.transport.read_count != read_count:
+            raise AccountObservationSourceError("FUTURES_FINANCIAL_INVENTORY_SCOPE_CHANGED")
+        return FuturesFinancialVenueInputsV1(
+            gets=json.loads(json.dumps(gets, allow_nan=False)),
+            current_cross_balance_with_pnl_usdc=_cross_balance_with_pnl_v1(usdc[0]),
         )
 
     def inspect_accounting_bills_v1(self, *, max_pages=6):
@@ -609,10 +722,10 @@ def open_k1_account_observation_source_v1(
     if not isinstance(session_id, str) or not session_id.strip():
         raise AccountObservationSourceError("OBSERVATION_SESSION_REQUIRED")
     _validate_inventory_scope_v1(account_inventory_guard, inventory_inst_type)
-    minimum_requests = 6 + (
-        len(FUTURES_INVENTORY_ALGO_TYPES) + len(FUTURES_INVENTORY_BOT_QUERIES)
+    minimum_requests = (
+        FUTURES_INVENTORY_REQUEST_COUNT
         if inventory_inst_type == "FUTURES"
-        else len(SUPPORTED_ALGO_TYPES)
+        else 6 + len(SUPPORTED_ALGO_TYPES)
     )
     if (
         isinstance(max_request_count, bool)
