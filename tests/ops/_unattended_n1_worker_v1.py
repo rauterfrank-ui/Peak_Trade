@@ -46,6 +46,7 @@ from tests.ops.test_full_core_current_productive_governed_continuous_cycle_orche
 )
 import src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 as convergence
 import src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 as s6
+import src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 as s5
 
 
 def main():
@@ -146,6 +147,10 @@ def main():
             calls += 1
             if phase in {"during", "managed-restore-wait"} and calls == 2:
                 signal_checkpoint()
+            if phase == "managed-partial-s5" and calls == 2:
+                (root / "before-partial-s5-cursor.json").write_bytes(
+                    (cursor / CURSOR_FILENAME).read_bytes()
+                )
             return runner(**kw)
 
         return run
@@ -173,6 +178,19 @@ def main():
                 original_write(path=path, payload=payload)
 
             stack.enter_context(patch.object(s6, "_persist_json", write))
+        if phase == "managed-partial-s5":
+            original_s5_write = s5._persist_json
+
+            def write_s5(*, path, payload):
+                if (
+                    path.name == s5.LEDGER_FILENAME
+                    and payload.get("state") == s5.STATE_COMPLETED
+                    and (root / "before-partial-s5-cursor.json").exists()
+                ):
+                    signal_checkpoint(s5_ledger=str(path))
+                original_s5_write(path=path, payload=payload)
+
+            stack.enter_context(patch.object(s5, "_persist_json", write_s5))
         if phase == "managed-joint-rollback":
             original_advance = s6._advance_persisted_c1_cursor_floor_v1
 

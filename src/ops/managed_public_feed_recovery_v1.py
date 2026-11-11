@@ -130,17 +130,53 @@ class ManagedPublicFeedRecoveryV1(OfflinePublicFeedRecoveryV1):
         return self.read_verified_repair_v1()
 
     def attest_v1(self, stop, *, key):
-        receipt = self.observe_v1(stop)
-        if "R01" not in stop["causes"] or stop["scope"]["instruments"] != [
-            self.incident.instrument.venue_native_id
-        ]:
-            raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_CAUSE_COVERAGE_UNPROVEN")
-        return attest_filegate_owner_evidence_v1(
-            role="CAUSE",
-            cause="R01",
-            stop=stop,
-            evidence_sha256=fact_digest(receipt),
-            observed_at=datetime.fromisoformat(receipt["verified_at"]).timestamp(),
-            expires_at=receipt["mark"]["event_ms"] / 1000 + PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS,
-            key=key,
-        )
+        return attest_managed_public_feed_scope_v1(stop=stop, recoveries=(self,), key=key)
+
+
+def attest_managed_public_feed_scope_v1(*, stop, recoveries, key):
+    """Sign the R01 cause only after all original instrument readers agree on the stop."""
+    recoveries = tuple(recoveries)
+    if not recoveries or any(
+        type(owner) is not ManagedPublicFeedRecoveryV1 for owner in recoveries
+    ):
+        raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_CAUSE_COVERAGE_UNPROVEN")
+    writer = recoveries[0]._writer
+    by_native = {owner.incident.instrument.venue_native_id: owner for owner in recoveries}
+    if (
+        "R01" not in stop["causes"]
+        or len(by_native) != len(recoveries)
+        or sorted(by_native) != stop["scope"]["instruments"]
+        or len({owner.incident.fact_root for owner in recoveries}) != len(recoveries)
+        or any(owner._writer is not writer or owner._stop != stop for owner in recoveries)
+    ):
+        raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_CAUSE_COVERAGE_UNPROVEN")
+
+    for native in stop["scope"]["instruments"]:
+        owner = by_native[native]
+        owner.repair_and_observe_v1(owner._runtime)
+    # Recheck the earliest repair after the last reconnect, which may have
+    # consumed its freshness window or crossed a newer kill.
+    receipts = {native: owner.read_verified_repair_v1() for native, owner in by_native.items()}
+    expires_at = min(
+        receipt["mark"]["event_ms"] / 1000 + PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS
+        for receipt in receipts.values()
+    )
+    observed_at = max(owner._now().timestamp() for owner in recoveries)
+    if observed_at >= expires_at:
+        raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_SCOPE_MARK_STALE")
+    if writer.inspect_stop_v1() != stop:
+        raise OfflinePublicFeedRecoveryError("FEED_RECOVERY_STOP_CHANGED_OR_UNPROVEN")
+    evidence = (
+        next(iter(receipts.values()))
+        if len(receipts) == 1
+        else {"schema": "managed_public_feed_scope_repair.v1", "receipts": receipts}
+    )
+    return attest_filegate_owner_evidence_v1(
+        role="CAUSE",
+        cause="R01",
+        stop=stop,
+        evidence_sha256=fact_digest(evidence),
+        observed_at=observed_at,
+        expires_at=expires_at,
+        key=key,
+    )

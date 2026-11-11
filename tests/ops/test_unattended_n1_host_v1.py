@@ -1,6 +1,6 @@
 """Physical N1 host process death, durable total bounds, fresh governed restart."""
 
-from dataclasses import replace
+from dataclasses import asdict, replace
 import json
 import os
 from pathlib import Path
@@ -32,6 +32,7 @@ REPO = Path(__file__).resolve().parents[2]
         ("managed-hold-publish", None),
         ("managed-hold-s5-changed", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("managed-restore-wait", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("managed-partial-s5", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
         ("managed-joint-rollback", "HOST_RESTART_FILEGATE_BLOCKED"),
         ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
         ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
@@ -112,6 +113,7 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             "managed-hold-publish": "managed-hold-publish",
             "managed-hold-s5-changed": "managed-hold-publish",
             "managed-restore-wait": "managed-restore-wait",
+            "managed-partial-s5": "managed-partial-s5",
             "managed-joint-rollback": "managed-joint-rollback",
         }.get(phase, "before")
         child = subprocess.Popen(
@@ -209,6 +211,12 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             filegate.state_file.write_bytes(earlier_filegate)
             cursor.write_bytes(earlier_cursor)
             old_cursor = earlier_cursor
+    elif phase == "managed-partial-s5":
+        earlier = json.loads((tmp_path / "before-partial-s5-cursor.json").read_bytes())
+        assert json.loads(old_cursor)["trading_epoch"] == earlier["trading_epoch"] + 1
+        s5_ledger = Path(checkpoint["s5_ledger"])
+        partial_s5 = s5_ledger.read_bytes()
+        assert json.loads(partial_s5)["state"] == "IN_PROGRESS"
 
     def restart():
         restart_phase = (
@@ -216,7 +224,7 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         )
         if phase in {"managed-other-boot", "managed-other-boot-no-anchor", "managed-hold-publish"}:
             restart_phase = "after-managed-boot"
-        if phase == "managed-restore-wait":
+        if phase in {"managed-restore-wait", "managed-partial-s5"}:
             restart_phase = "after-managed-monitor"
         if phase == "managed-joint-rollback":
             restart_phase = "after-managed-joint-rollback"
@@ -235,13 +243,15 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     if blocker is not None:
         assert result["status"] == (
             "STOPPED"
-            if phase in {"managed-restore-wait", "managed-joint-rollback"}
+            if phase in {"managed-restore-wait", "managed-partial-s5", "managed-joint-rollback"}
             else "RECOVERY_CHECKPOINT_REQUIRED"
         )
         assert result["checkpoint_blocker"] == blocker
         assert result["attempts"] == 1
         assert cursor.read_bytes() == old_cursor
         assert not (tmp_path / "controller/attempts/2").exists()
+        if phase == "managed-partial-s5":
+            assert s5_ledger.read_bytes() == partial_s5
         if phase == "managed-joint-rollback":
             stop = writer.inspect_stop_v1()
             assert stop["causes"] == ["R03", "R09"]
@@ -306,7 +316,6 @@ def test_expired_stopped_or_lost_receipt_never_calls_runtime_factory(tmp_path):
 
 
 def test_launch_agent_preparation_has_no_activation_and_rejects_test_source_factory(tmp_path):
-    from dataclasses import asdict
     import plistlib
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import host_service_v1
 
@@ -356,3 +365,105 @@ def test_launch_agent_preparation_has_no_activation_and_rejects_test_source_fact
     path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="SOURCE_FACTORY_REQUIRED"):
         host_service_v1(manifest_path=path, action="validate")
+
+
+def test_canonical_host_service_observes_after_expiry_and_process_death(tmp_path):
+    from nacl.signing import SigningKey
+
+    from src.ops.filegate_recovery_authority_v1 import FilegateRecoveryScopeV1
+    from src.ops.managed_filegate_v1 import ROOT_ENV, ManagedFilegateV1
+
+    authority = tmp_path.resolve().with_name(tmp_path.name + "-authority")
+    authority.mkdir(mode=0o700)
+    proof_root = tmp_path / "proofs"
+    proof_root.mkdir(mode=0o700)
+    filegate = tmp_path / "filegate.json"
+    issuer = SigningKey.generate()
+    seed_path = proof_root / "issuer.seed"
+    seed_path.write_bytes(bytes(issuer))
+    seed_path.chmod(0o600)
+    writer = ManagedFilegateV1(state_path=filegate, root=authority)
+    writer.provision_v1(
+        scope=FilegateRecoveryScopeV1(
+            "fixture-account", "SHADOW", "fixture-host", ("FUTURES",), "a" * 64
+        ),
+        issuer_public_key=bytes(issuer.verify_key),
+        owner_public_keys={
+            role: bytes(SigningKey.generate().verify_key) for role in ("CAUSE", "ACCOUNT", "HOST")
+        },
+        recoverable_causes={"R03"},
+    )
+    stop = writer.kill_v1(cause="R09", reason="fixture persistent emergency")
+    bounds = UnattendedHostBoundsV1("fixture-host", "revision", "config", time.time() - 1, 1, 30, 1)
+    state_root = tmp_path / "controller"
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": "n1_unattended_host_service.v1",
+                "bounds": asdict(bounds),
+                "state_root": str(state_root),
+                "repository_root": str(REPO),
+                # This symbol cannot supply the factory arguments. Expiry must
+                # stop the service before it tries to open any runtime ports.
+                "runtime_factory": "src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1:run_n1_standing_pre_external_supervisor_v1",
+                "runtime_request_config": {},
+                "fault_recovery": {
+                    "factory": "src.ops.managed_fault_recovery_v1:build_standing_managed_fault_recovery_v1",
+                    "filegate_state_path": str(filegate),
+                    "authority_root": str(authority),
+                    "config": {
+                        "proof_root": str(proof_root),
+                        "issuer_seed_path": str(seed_path),
+                        "interval_seconds": 1,
+                    },
+                },
+            }
+        )
+    )
+    env = {**os.environ}
+    for key in (ROOT_ENV, "PEAK_KILL_SWITCH_STATE_PATH", "PEAK_KILL_SWITCH"):
+        env.pop(key, None)
+    if env.get("GITHUB_ACTIONS") == "true":
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
+    command = [
+        str(REPO / "scripts/pt"),
+        str(REPO / "scripts/ops/peak_trade_runtime.py"),
+        "--repository-root",
+        str(REPO),
+        "host-service",
+        "run",
+        "--manifest",
+        str(manifest),
+    ]
+    observation = state_root / "stopped_fault_observation_v1.json"
+    previous_write = None
+    for restart in (False, True):
+        with subprocess.Popen(
+            command, cwd=REPO, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ) as child:
+            try:
+                deadline = time.monotonic() + 20
+                while child.poll() is None and time.monotonic() < deadline:
+                    if observation.exists() and observation.stat().st_mtime_ns != previous_write:
+                        break
+                    time.sleep(0.05)
+                assert child.poll() is None, child.communicate()
+                assert observation.exists() and observation.stat().st_mtime_ns != previous_write
+                previous_write = observation.stat().st_mtime_ns
+                observed = json.loads(observation.read_bytes())
+                assert observed["status"] == "BLOCKED_OBSERVING"
+                assert observed["stop"] == stop
+                if restart:
+                    (state_root / "STOP").touch()
+                    stdout, stderr = child.communicate(timeout=10)
+                    assert child.returncode == 0, (stdout, stderr)
+                else:
+                    child.send_signal(signal.SIGKILL)
+                    assert child.wait(timeout=5) == -signal.SIGKILL
+            finally:
+                if child.poll() is None:
+                    child.kill()
+                    child.wait(timeout=5)
+    assert writer.inspect_stop_v1() == stop
+    assert not (state_root / "attempts").exists()
