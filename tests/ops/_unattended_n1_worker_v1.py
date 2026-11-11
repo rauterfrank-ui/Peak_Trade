@@ -18,6 +18,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     CURSOR_FILENAME,
 )
 from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.evidence_v1 import write_json
+from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+from src.risk_layer.kill_switch.persistence import StatePersistence
+from src.risk_layer.kill_switch.state import KillSwitchState
 from tests.ops._n1_standing_supervisor_offline_inject_harness_v1 import (
     bootstrap_lane,
     supervisor_config_from_roots,
@@ -73,6 +76,19 @@ def main():
                 return first if self.polls == 1 else second
 
         clock = _FakeClock()
+        original_evaluator = f1_m9_evaluator_factory(repo_root=repo, ledger_root=root / "f1")
+
+        def evaluate(cycle_index):
+            decision = original_evaluator(cycle_index)
+            if phase in {"kill-during-admission", "reactivated-during-admission"} and index == 2:
+                filegate = StatePersistence(canonical_kill_switch_state_path())
+                filegate.save(
+                    KillSwitchState.KILLED, trigger_reason="fixture kill during N1 admission"
+                )
+                if phase == "reactivated-during-admission":
+                    filegate.save(KillSwitchState.ACTIVE)
+            return decision
+
         return dict(
             config=supervisor_config_from_roots(
                 public_store=root / "public_store",
@@ -89,7 +105,7 @@ def main():
             ),
             observation_source=Source(),
             g17_producers=g17,
-            f1_m9_cycle_evaluator=f1_m9_evaluator_factory(repo_root=repo, ledger_root=root / "f1"),
+            f1_m9_cycle_evaluator=evaluate,
             repo_root=repo,
             public_rest_fetch=public_rest_empty,
             private_rest_fetch=_fixture_rest,

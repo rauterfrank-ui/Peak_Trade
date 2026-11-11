@@ -2,9 +2,11 @@
 
 from dataclasses import replace
 import json
+import os
 from pathlib import Path
 import signal
 import subprocess
+import sys
 import time
 
 import pytest
@@ -13,13 +15,31 @@ from src.ops.n1_standing_pre_external_runtime_supervisor_v1.unattended_v1 import
     UnattendedHostBoundsV1,
     run_unattended_n1_host_v1,
 )
+from src.risk_layer.kill_switch.persistence import StatePersistence
+from src.risk_layer.kill_switch.state import KillSwitchState
 
 REPO = Path(__file__).resolve().parents[2]
 
 
-@pytest.mark.parametrize("phase", ["before", "during"])
+@pytest.mark.parametrize(
+    ("phase", "blocker"),
+    [
+        ("before", None),
+        ("during", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("other-boot", "HOST_RESTART_PROCESS_OR_BOOT_UNPROVEN"),
+        ("pid-present", "HOST_RESTART_PREVIOUS_PID_PRESENT"),
+        ("foreign-start", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("foreign-checkpoint", "HOST_RESTART_CHECKPOINT_SCOPE_CHANGED"),
+        ("changed-cursor", "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"),
+        ("missing-attempt", "HOST_RESTART_PREVIOUS_ATTEMPT_UNPROVEN"),
+        ("filegate", "HOST_RESTART_FILEGATE_BLOCKED"),
+        ("foreign-filegate", "HOST_RESTART_FILEGATE_SCOPE_CHANGED"),
+        ("kill-during-admission", None),
+        ("reactivated-during-admission", None),
+    ],
+)
 def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_budget(
-    tmp_path, phase
+    tmp_path, phase, blocker
 ):
     from tests.ops._host_private_rest_fixture_v1 import initialize_synthetic_host_budget_v1
     from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
@@ -29,10 +49,20 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
     # One explicit temporary bootstrap before the first process. Restarted
     # workers must recover this same store; they cannot create their own.
     initialize_synthetic_host_budget_v1(tmp_path / "private_store", _bound_lane_1())
+    filegate = StatePersistence(str(tmp_path / "filegate.json"))
+    filegate.save(KillSwitchState.ACTIVE)
+    env = {**os.environ, "PEAK_KILL_SWITCH_STATE_PATH": str(filegate.state_file)}
+    env.pop("PEAK_KILL_SWITCH", None)
+    if env.get("GITHUB_ACTIONS") == "true":
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     command = [str(REPO / "scripts/pt"), "-m", "tests.ops._unattended_n1_worker_v1", str(tmp_path)]
     with (tmp_path / "stderr").open("w") as stderr:
         child = subprocess.Popen(
-            [*command, phase], cwd=REPO, stdout=subprocess.DEVNULL, stderr=stderr
+            [*command, "during" if phase == "during" else "before"],
+            cwd=REPO,
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=stderr,
         )
         try:
             deadline = time.monotonic() + 25
@@ -52,14 +82,73 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
             if child.poll() is None:
                 child.kill()
             child.wait(timeout=5)
-    completed = subprocess.run(
-        [*command, "after"], cwd=REPO, capture_output=True, text=True, timeout=25
-    )
+    receipt = tmp_path / "controller" / "host_restart_state_v1.json"
+    state = json.loads(receipt.read_bytes())
+    prior = state["previous"]
+    assert prior["process_identity"]["pid"] == checkpoint["pid"] == child.pid
+    assert prior["process_identity"]["process_start_identity"]
+    assert prior["boot_identity"]
+    if phase == "other-boot":
+        prior["boot_identity"] = "00000000-0000-0000-0000-000000000001"
+        receipt.write_text(json.dumps(state))
+    elif phase == "pid-present":
+        prior["process_identity"]["pid"] = os.getpid()
+        receipt.write_text(json.dumps(state))
+    elif phase == "foreign-start":
+        prior["process_identity"]["process_start_identity"] = "foreign start identity"
+        receipt.write_text(json.dumps(state))
+    elif phase == "foreign-checkpoint":
+        prior["evidence_root"] = str(tmp_path / "foreign")
+        receipt.write_text(json.dumps(state))
+    elif phase == "missing-attempt":
+        state["previous"] = None
+        receipt.write_text(json.dumps(state))
+    elif phase == "changed-cursor":
+        cursor.write_bytes(old_cursor + b"\n")
+        old_cursor = cursor.read_bytes()
+    elif phase == "filegate":
+        filegate.save(KillSwitchState.KILLED, trigger_reason="fixture emergency")
+    elif phase == "foreign-filegate":
+        foreign = StatePersistence(str(tmp_path / "foreign-filegate.json"))
+        foreign.save(KillSwitchState.ACTIVE)
+        env["PEAK_KILL_SWITCH_STATE_PATH"] = str(foreign.state_file)
+
+    def restart():
+        restart_phase = (
+            phase if phase in {"kill-during-admission", "reactivated-during-admission"} else "after"
+        )
+        return subprocess.run(
+            [*command, restart_phase],
+            cwd=REPO,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=25,
+        )
+
+    completed = restart()
     assert completed.returncode == 0, completed.stderr
     result = json.loads(completed.stdout.splitlines()[-1])
-    if phase == "during":
+    if blocker is not None:
         assert result["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+        assert result["checkpoint_blocker"] == blocker
         assert result["attempts"] == 1
+        assert cursor.read_bytes() == old_cursor
+        assert not (tmp_path / "controller/attempts/2").exists()
+        if phase == "filegate":
+            assert filegate.load()["state"] == "KILLED"
+            filegate.save(KillSwitchState.ACTIVE)
+            completed = restart()
+            assert completed.returncode == 0, completed.stderr
+            resumed = json.loads(completed.stdout.splitlines()[-1])
+            assert resumed["status"] == "COMPLETED"
+            assert resumed["attempts"] == resumed["cycles_used"] == 2
+    elif phase in {"kill-during-admission", "reactivated-during-admission"}:
+        assert result["status"] == "GOVERNED_RUNTIME_STOPPED"
+        assert result["attempts"] == 2 and result["cycles_used"] == 1
+        assert filegate.load()["state"] == (
+            "KILLED" if phase == "kill-during-admission" else "ACTIVE"
+        )
         assert cursor.read_bytes() == old_cursor
     else:
         assert result["status"] == "COMPLETED"
@@ -72,9 +161,7 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         before = (
             tmp_path / "controller/attempts/1/governed_continuous_cycle_run_ledger_v1.json"
         ).read_bytes()
-        repeated = subprocess.run(
-            [*command, "after"], cwd=REPO, capture_output=True, text=True, timeout=25
-        )
+        repeated = restart()
         assert repeated.returncode == 0, repeated.stderr
         assert json.loads(repeated.stdout.splitlines()[-1])["attempts"] == 2
         assert (
