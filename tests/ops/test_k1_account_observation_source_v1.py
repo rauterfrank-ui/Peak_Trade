@@ -332,6 +332,165 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         )
 
 
+@pytest.mark.parametrize(
+    "fault",
+    [
+        None,
+        "local-during",
+        "local-after",
+        "new-read",
+        "closed-source",
+        "stale",
+        "foreign-usdc",
+        "bot",
+    ],
+)
+def test_futures_financial_custody_binds_original_host_inventory_and_local_revision(
+    tmp_path, monkeypatch, fault
+):
+    from dataclasses import replace
+    from datetime import datetime, timezone
+
+    from tests.ops.test_portfolio_budget_host_v1 import (
+        ACCOUNT as OWNER_ACCOUNT,
+        BOUND,
+        EPOCH,
+        NOW,
+        _host,
+        _produce,
+        _reserve,
+    )
+
+    bound = replace(
+        BOUND,
+        instrument_id="okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310404",
+        venue_native_id="BTC-USD_UM_XPERP-310404",
+    )
+    now = [NOW]
+
+    def clock():
+        return now[0]
+
+    monkeypatch.setattr(
+        wire, "utc_now_iso_v1", lambda: datetime.fromtimestamp(clock(), timezone.utc).isoformat()
+    )
+    opener = InjectedOpener(account=OWNER_ACCOUNT)
+    original = opener.fetch
+    financial_capture = False
+
+    def fetch(path, params):
+        payload = original(path, params)
+        if path == "/api/v5/account/config":
+            payload["data"][0]["settleCcy"] = "USDC"
+        if path == "/api/v5/account/balance":
+            payload["data"][0]["details"] = [
+                {
+                    "ccy": "USD" if financial_capture and fault == "foreign-usdc" else "USDC",
+                    "cashBal": "119",
+                    "availEq": "98",
+                }
+            ]
+            if financial_capture and fault == "local-during":
+                assert _reserve(host.owner).disposition.value == "ADMITTED"
+        if path == "/api/v5/account/positions" and financial_capture:
+            payload["data"] = [
+                {
+                    "instId": bound.venue_native_id,
+                    "instType": "FUTURES",
+                    "posSide": "net",
+                    "mgnMode": "cross",
+                    "ccy": "USDC",
+                    "pos": "-2",
+                }
+            ]
+        return payload
+
+    opener.fetch = fetch
+    monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
+    with open_k1_account_observation_source_v1(
+        expected_account_identity=OWNER_ACCOUNT,
+        session_id="futures-financial-k1",
+        max_request_count=41,
+        k1_lookup_backend=_FakeKeychainBackend(),
+        account_inventory_guard=True,
+        inventory_inst_type="FUTURES",
+        clock=clock,
+    ) as source:
+        host = _host(tmp_path, source, clock=clock, expected_account=OWNER_ACCOUNT)
+        try:
+            observed = host.observe_v1({"LANE_1": bound})
+            observed.recover_v1(host.owner, _produce(epoch=EPOCH))
+            hold = None
+            if fault != "local-during":
+                reserved = _reserve(host.owner)
+                assert reserved.disposition.value == "ADMITTED"
+                hold = reserved.reservation
+            baseline = host.owner._store.load(), host.owner._store.sequence
+            financial_capture = True
+            if fault == "bot":
+                opener.bot_fault = "contract_grid"
+            expected_failure = {
+                "local-during": "LOCAL_COMMITMENT_GENERATION_OR_CONTENT_CHANGED",
+                "foreign-usdc": "FUTURES_FINANCIAL_USDC_BALANCE_SCOPE_UNPROVEN",
+                "bot": "K1_FUTURES_ACCOUNT_BOT_CUSTODY_PRESENT",
+            }.get(fault)
+            if expected_failure:
+                with pytest.raises(ValueError, match=expected_failure):
+                    host.capture_futures_financial_custody_v1(source)
+                if fault == "local-during":
+                    assert host.owner._store.sequence == baseline[1] + 1
+                    assert host.owner.active_sum_v1() == 60
+                else:
+                    assert baseline == (host.owner._store.load(), host.owner._store.sequence)
+                return
+
+            proof = host.capture_futures_financial_custody_v1(source)
+            assert len(opener.requests) == 40
+            assert source.pending_observation_v1() is None
+            assert baseline == (host.owner._store.load(), host.owner._store.sequence)
+            with pytest.raises(ValueError, match="FUTURES_FINANCIAL_ORIGINAL_HOST_PROOF_REQUIRED"):
+                host.inspect_futures_financial_custody_v1(replace(proof))
+            (commitment,) = proof.local_commitments.commitments
+            assert commitment.reservation_id == str(hold.reservation_id)
+            assert commitment.state == "RESERVED"
+            assert proof.local_commitments.venue_margin_coverage == "UNPROVEN_NO_MARGIN_CREDIT"
+            gets = host.inspect_futures_financial_custody_v1(proof)
+            assert len(gets) == 18
+            assert all(
+                row["pretrade_decision_id"] == "futures-financial-k1" for row in gets.values()
+            )
+            assert all(
+                row["auth_header_sent"] and len(row["body_sha256"]) == 64 for row in gets.values()
+            )
+            assert gets["/api/v5/account/positions"]["payload"]["data"][0]["pos"] == "-2"
+            detail = gets["/api/v5/account/balance"]["payload"]["data"][0]["details"][0]
+            assert detail["cashBal"] == "119" and detail["availEq"] == "98"
+            detail["cashBal"] = "9999"
+            assert (
+                host.inspect_futures_financial_custody_v1(proof)["/api/v5/account/balance"][
+                    "payload"
+                ]["data"][0]["details"][0]["cashBal"]
+                == "119"
+            )
+            if fault == "local-after":
+                host.owner.commit_internal_pre_external_effect_v1(str(hold.reservation_id))
+            elif fault == "new-read":
+                source("/api/v5/account/config", {})
+            elif fault == "closed-source":
+                source.close()
+            elif fault == "stale":
+                now[0] += 6
+            if fault:
+                before = host.owner._store.load(), host.owner._store.sequence
+                with pytest.raises(
+                    ValueError, match="(LOCAL_COMMITMENT_GENERATION|FUTURES_FINANCIAL_INVENTORY)"
+                ):
+                    host.inspect_futures_financial_custody_v1(proof)
+                assert before == (host.owner._store.load(), host.owner._store.sequence)
+        finally:
+            host.close()
+
+
 def test_readiness_cli_defaults_to_no_keychain_or_network(monkeypatch, capsys):
     from scripts.ops import run_k1_account_observation_readiness_v1 as cli
 
