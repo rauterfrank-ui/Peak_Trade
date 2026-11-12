@@ -45,7 +45,7 @@ def _venue_positive_int(value: object) -> int:
 
 def _entry_anchors_v1(
     source: AuthenticatedExecutionReconciliationSourceV1, *, side: str
-) -> tuple[Decimal, int]:
+) -> tuple[Decimal, int, str]:
     result = source.reconciliation
     decision = result["decision"]
     if (
@@ -125,7 +125,17 @@ def _entry_anchors_v1(
     price = _venue_number(position.get("avgPx"))
     if price <= 0:
         raise ValueError("VENUE_ENTRY_PRICE_UNPROVEN")
-    return price, min(fill[0] for fill in fills.values())
+    anchors_digest = canonical_digest_v1(
+        {
+            "order": decision["venue_ord_id"],
+            "entry_price": str(price.normalize()),
+            "fills": [
+                [trade_id, time_ms, str(qty.normalize()), str(fill_price.normalize())]
+                for trade_id, (time_ms, qty, fill_price) in sorted(fills.items())
+            ],
+        }
+    )
+    return price, min(fill[0] for fill in fills.values()), anchors_digest
 
 
 def open_position_episode_from_authenticated_execution_v1(
@@ -166,7 +176,7 @@ def open_position_episode_from_authenticated_execution_v1(
     ):
         raise ValueError("VENUE_ENTRY_BOUND_SCOPE_MISMATCH")
 
-    price, fill_time_ms = _entry_anchors_v1(source, side=side)
+    price, fill_time_ms, anchors_digest = _entry_anchors_v1(source, side=side)
     episode = PositionEpisodeIdentityV1(
         lane_id=lane_id,
         instrument_id=bound.instrument_id,
@@ -176,6 +186,9 @@ def open_position_episode_from_authenticated_execution_v1(
         account_scope=account_scope,
     )
     source_ref = "authenticated_execution_entry.v1:" + canonical_digest_v1(
+        {"attempt": episode.episode_id, "anchors": anchors_digest}
+    )
+    legacy_source_ref = "authenticated_execution_entry.v1:" + canonical_digest_v1(
         {
             "attempt": episode.episode_id,
             "revision": list(revision_ref),
@@ -193,11 +206,13 @@ def open_position_episode_from_authenticated_execution_v1(
         repository_sha=repository_sha,
         config_digest=config_digest,
         writer_session_id=writer_session_id,
-        entry_source_ref=source_ref,
+        entry_source_ref=source_ref if mode == "create" else None,
         entry_price_basis="CONFIRMED_POSITION_ENTRY_PRICE",
         entry_price=entry_price if mode == "create" else None,
         entry_event_time=entry_event_time if mode == "create" else None,
     )
+    if binding.entry_source_ref not in {source_ref, legacy_source_ref}:
+        raise ValueError("VENUE_ENTRY_SOURCE_READBACK_MISMATCH")
     if (binding.binding.entry_price, binding.binding.entry_event_time) != (
         entry_price,
         entry_event_time,

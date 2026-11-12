@@ -14,6 +14,9 @@ import time
 from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from src.ops.execution_reconciliation_get_provenance_v1 import (
+        AuthenticatedExecutionReconciliationProofV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
     )
@@ -230,6 +233,12 @@ def collect_host_account_observation_v1(
     if startup_port is not None:
         startup_port.reconcile(observation)
     return observation
+
+
+@dataclass(frozen=True)
+class AuthenticatedEntryEpisodeRequestV1:
+    proof_root: Path
+    proof: "AuthenticatedExecutionReconciliationProofV1"
 
 
 @dataclass(frozen=True)

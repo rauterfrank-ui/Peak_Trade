@@ -1718,6 +1718,7 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
     "fault,reason",
     [
         (None, None),
+        ("occupied-mark", None),
         ("terminal-partial", None),
         ("missing-fills", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
         ("wrong-position-trade", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
@@ -1740,6 +1741,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
     stamp = int(NOW.timestamp() * 1000)
     filled_at = stamp - 1000
     long = attempt.selected_side == "LONG"
+    entry_price = "2000" if fault == "occupied-mark" else "98.25"
     quantity = (
         str(Decimal(attempt.final_quantity) / 2)
         if fault == "terminal-partial"
@@ -1750,7 +1752,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "instType": "SWAP",
         "pos": quantity if long else "-" + quantity,
         "posSide": "net",
-        "avgPx": "98.25",
+        "avgPx": entry_price,
         "tradeId": "23" if fault == "wrong-position-trade" else "22",
         "uTime": str(stamp - 500),
     }
@@ -1772,7 +1774,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
                     row.update(
                         tradeId="22",
                         fillSz=quantity,
-                        fillPx="98.25",
+                        fillPx=entry_price,
                         side="buy" if long else "sell",
                         posSide="net",
                         fillTime=str(stamp + 1 if fault == "future-fill" else filled_at),
@@ -1787,6 +1789,13 @@ def test_owned_entry_proof_reaches_original_position_episode(
     rid = attempt.portfolio_reservation_id
     account_scope = PositionEpisodeScopeV1(scope.account, "LIVE")
     episode_root = host.root / "position-episodes" / attempt.identity_digest()
+    from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+        FROZEN_PROFIT_PROTECTION_DISTANCE,
+    )
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        layer_c_derived_exit_policy_adverse_config_digest_v1,
+    )
+
     args = dict(
         bound=bound,
         lane_id="LANE_1",
@@ -1798,7 +1807,9 @@ def test_owned_entry_proof_reaches_original_position_episode(
         revision_ref=proofs[rid].revision_ref,
         state_root=episode_root,
         repository_sha=host.repository_sha,
-        config_digest="exit-test-config",
+        config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+            profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
+        ),
         writer_session_id=SESSION,
     )
     host_args = dict(
@@ -1823,6 +1834,34 @@ def test_owned_entry_proof_reaches_original_position_episode(
     episode = context.bind_current_authenticated_entry_episode_v1(**host_args)
     replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
     assert replayed.input_binding_v1() == episode.input_binding_v1()
+    if fault == "occupied-mark":
+        _assert_authenticated_occupied_mark_close(
+            tmp_path=tmp_path,
+            monkeypatch=monkeypatch,
+            context=context,
+            bound=bound,
+            proof_root=proof_root,
+            proof=proofs[rid],
+            quantity=quantity,
+        )
+        assert len(opener.requests) == request_count
+        assert host.owner.active_sum_v1() == held
+        return
+    if fault is None:
+        later = NOW + timedelta(seconds=1)
+        monkeypatch.setattr(host, "clock", later.timestamp)
+        monkeypatch.setattr(wire, "utc_now_iso_v1", later.isoformat)
+        refreshed_context, refreshed = host.observe_authenticated_execution_reconciliation_v1(
+            {"LANE_1": bound}, proof_root=proof_root
+        )
+        assert refreshed[rid].revision_ref != proofs[rid].revision_ref
+        assert (
+            refreshed_context.bind_current_authenticated_entry_episode_v1(
+                **{**host_args, "proof": refreshed[rid]}
+            ).input_binding_v1()
+            == episode.input_binding_v1()
+        )
+        request_count = len(opener.requests)
     assert episode.identity.episode_id == attempt.identity_digest()
     assert episode.identity.position_side == ("long" if long else "short")
     host.close()
@@ -1840,6 +1879,95 @@ def test_owned_entry_proof_reaches_original_position_episode(
     assert prepared.entry_price == 98.25
     assert prepared.entry_event_time == filled_at / 1000
     assert len(opener.requests) == request_count
+
+
+def _assert_authenticated_occupied_mark_close(
+    *, tmp_path, monkeypatch, context, bound, proof_root, proof, quantity
+):
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+        invoke_join_v1 as occupied,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+        build_s8_occupied_lane_pairs_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        read_retained_occupied_scope_close_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+    )
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        restore_layered_core_episode_v1,
+    )
+    from tests.ops import test_bounded_slot_connected_roundtrip_v1 as fixture
+    from tests.ops.test_current_scope_mark_clock_v1 import provenance
+
+    now = NOW.timestamp()
+    event = now - 2
+    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=tmp_path / "scope", bound=bound)
+    root = Path(pairs["LANE_1"][0].lane_state_root)
+    _, closes, _, _, _ = fixture.prepare(
+        bound=bound,
+        g17_typed_vol_producer=None,
+        lane_state_root=root.parent,
+        lane_id="LANE_1",
+        arm_event_ts_unix=event - 20,
+        g17_evidence_root=root,
+    )
+    prior = restore_layered_core_episode_v1(root, expected_instrument_id=bound.instrument_id)
+    assert prior.regime.value == "bull"
+    fixture.persist_applied_inventory(context.host.root / "reconciliation", context.observed, {})
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls.fromtimestamp(now, tz)
+
+    monkeypatch.setattr(occupied, "datetime", Clock)
+    inputs = fixture.market(
+        {"LANE_1": bound}, closes, event, "authenticated-mark", tmp_path / "g17"
+    )
+    mark = prior.running_reference.reference_price_r_t - 1.5 * prior.scope.d_t
+    inputs.update(
+        observed_unix=now,
+        portfolio_budget_owner=context.host.owner,
+        host_budget_recovery=context,
+        occupied_scope_mark_lane_id="LANE_1",
+        canonical_price_provenance_by_lane={
+            "LANE_1": provenance(
+                native=bound.venue_native_id,
+                mark=mark,
+                index=mark * 0.995,
+                event=now - 0.125,
+                captured=now,
+            ),
+        },
+        authenticated_entry=AuthenticatedEntryEpisodeRequestV1(proof_root, proof),
+    )
+    without_metadata = {**inputs, "live_29p_injected_by_lane": None}
+    with pytest.raises(
+        occupied.FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError,
+        match="authenticated_scope_mark_close_metadata_required",
+    ):
+        occupied.invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **without_metadata)
+    assert (
+        restore_layered_core_episode_v1(root, expected_instrument_id=bound.instrument_id) == prior
+    )
+    lane = occupied.invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **inputs)["LANE_1"]
+    result = lane.governed_cycle_result
+    handoff = result.position_management_execution_handoff
+    assert handoff is not None, (result.first_genuine_blocker, result.reason_code)
+    decision = lane.s7_invocation.cycle_result.replay.intermediate.entry_exit_decision
+    assert handoff.l10_close is not None, (decision.exit_class, decision.reason_codes)
+    assert handoff.l10_close.episode.episode_id == proof.identity_digest
+    assert handoff.l10_close.target_side == "short"
+    assert handoff.envelope.instrument_id == bound.venue_native_id
+    assert handoff.envelope.reduce_only is True
+    assert Decimal(handoff.envelope.quantity) == Decimal(quantity)
+    assert not result.permit_created and result.post_count == 0
+    retained = read_retained_occupied_scope_close_v1(Path(lane.evidence_root))
+    assert retained["envelope"]["envelope_digest"] == handoff.envelope.envelope_digest
+    assert retained["binding"]["entry_source_ref"] == handoff.l10_close.entry_source_ref
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])

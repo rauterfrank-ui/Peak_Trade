@@ -308,6 +308,7 @@ class PositionManagementL10CloseV1:
     episode: PositionEpisodeIdentityV1
     scope_digest: str
     scope_seal_id: str
+    entry_source_ref: str | None = None
 
     @property
     def target_side(self) -> str:
@@ -315,8 +316,17 @@ class PositionManagementL10CloseV1:
 
     def admission_ref_v1(self) -> str:
         self.episode.validate_v1()
+        environment = self.episode.account_scope.execution_environment
         if (
-            self.episode.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            environment not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE"}
+            or (
+                environment == "LIVE"
+                and (
+                    not isinstance(self.entry_source_ref, str)
+                    or not self.entry_source_ref.startswith("authenticated_execution_entry.v1:")
+                )
+            )
+            or (environment == "INTERNAL_SIMULATED_EXECUTION" and self.entry_source_ref is not None)
             or not isinstance(self.scope_digest, str)
             or len(self.scope_digest) != 64
             or any(c not in "0123456789abcdef" for c in self.scope_digest)
@@ -324,7 +334,10 @@ class PositionManagementL10CloseV1:
             or not self.scope_seal_id.strip()
         ):
             raise ValueError("OCCUPIED_L10_CLOSE_PROOF_INVALID")
-        return _OCCUPIED_L10_CLOSE_ADMISSION_PREFIX + _retained_close_digest_v1(asdict(self))
+        payload = asdict(self)
+        if self.entry_source_ref is None:
+            payload.pop("entry_source_ref")
+        return _OCCUPIED_L10_CLOSE_ADMISSION_PREFIX + _retained_close_digest_v1(payload)
 
 
 def occupied_l10_close_from_binding_v1(binding: dict[str, Any]) -> PositionManagementL10CloseV1:
@@ -334,6 +347,7 @@ def occupied_l10_close_from_binding_v1(binding: dict[str, Any]) -> PositionManag
         episode=PositionEpisodeIdentityV1(**episode),
         scope_digest=binding["scope_digest"],
         scope_seal_id=binding["scope_seal_id"],
+        entry_source_ref=binding.get("entry_source_ref"),
     )
 
 
