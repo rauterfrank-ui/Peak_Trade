@@ -546,20 +546,55 @@ def _blocked_cycle_result(
 def _bind_cap61_confirmation_v1(
     *,
     instrument_id: str,
+    venue_native_id: str,
     restored: CurrentProductiveSideStateConfirmationCursorV1 | None,
 ) -> HostConfirmationBindingV1:
-    binding = HostConfirmationBindingV1()
+    binding = HostConfirmationBindingV1(
+        venue=DEFAULT_VENUE,
+        instrument_id=instrument_id,
+        venue_instrument_id=venue_native_id,
+    )
     if restored is not None and restored.cap61_confirmation_state is not None:
         state = restored.cap61_confirmation_state
+        expected_key = binding.instrument_key()
+        observation = state.observation_acceptance_state
+        carrier = state.confirmation_side_carrier
+        persisted_keys = (
+            observation.bound_instrument_key,
+            carrier.bull_confirmation_state.instrument,
+        )
+        if state.venue != expected_key.venue or state.instrument_id != instrument_id:
+            raise ValueError("CAP61_CURSOR_INSTRUMENT_MISMATCH")
+        if persisted_keys != (expected_key, expected_key):
+            # The old host used the canonical ID in both nested venue ID fields.
+            # The outer cursor has already been matched against both Cap24 IDs.
+            legacy_key = replace(expected_key, venue_instrument_id=instrument_id)
+            if persisted_keys != (legacy_key, legacy_key):
+                raise ValueError("CAP61_CURSOR_INSTRUMENT_MISMATCH")
+            identity = observation.last_accepted_observation_identity
+            observation = replace(
+                observation,
+                bound_instrument_key=expected_key,
+                last_accepted_observation_identity=(
+                    None
+                    if identity is None
+                    else replace(identity, venue_instrument_id=venue_native_id)
+                ),
+            )
+            carrier = replace(
+                carrier,
+                bull_confirmation_state=replace(
+                    carrier.bull_confirmation_state, instrument=expected_key
+                ),
+                bear_confirmation_state=replace(
+                    carrier.bear_confirmation_state, instrument=expected_key
+                ),
+            )
         binding.confirmation_session_id = state.confirmation_session_id
-        binding.observation_acceptance_state = state.observation_acceptance_state
-        binding.confirmation_side_carrier = state.confirmation_side_carrier
+        binding.observation_acceptance_state = observation
+        binding.confirmation_side_carrier = carrier
         binding.commit_sequence = int(state.commit_sequence)
         binding.prior_commit_seen = True
-        binding.enabled = True
-        binding.venue = state.venue
-        binding.instrument_id = state.instrument_id
-        binding.venue_instrument_id = instrument_id
         binding.repository_sha = state.repository_sha
         binding.config_digest = state.config_digest
         binding.initialized = True
@@ -568,7 +603,7 @@ def _bind_cap61_confirmation_v1(
         binding,
         instrument_id=instrument_id,
         venue=DEFAULT_VENUE,
-        venue_instrument_id=instrument_id,
+        venue_instrument_id=venue_native_id,
         repository_sha=CURSOR_LINEAGE_ID,
         state_root=None,
         require_load_if_prior_commit=False,
@@ -855,7 +890,9 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
     )
     try:
-        cap61_binding = _bind_cap61_confirmation_v1(instrument_id=instrument_id, restored=restored)
+        cap61_binding = _bind_cap61_confirmation_v1(
+            instrument_id=instrument_id, venue_native_id=venue_native_id, restored=restored
+        )
         observation_acceptance_result = evaluate_host_observation_acceptance_v1(
             cap61_binding,
             mid_price=float(mark_px),
