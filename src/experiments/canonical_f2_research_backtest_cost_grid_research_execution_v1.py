@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import itertools
+import json
 import sys
+from io import BytesIO
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 import pandas as pd
 
+from src.backtest import admissible_versioned_futures_dataset_v1 as dataset
 from src.backtest.okx_eth_perp_research_cost_grid_v1_constants import (
     BASELINE_FEE_BPS,
     BASELINE_SLIPPAGE_BPS,
@@ -22,6 +26,7 @@ from src.backtest.okx_eth_perp_research_cost_grid_v1_constants import (
 from src.backtest.parameter_sensitivity_v1 import (
     ParameterSensitivityError,
     run_parameter_sensitivity_v1,
+    split_bars_train_validation_oos_v1,
 )
 from src.experiments.canonical_experiment_identity_v1 import (
     CanonicalExperimentIdentityRequestV1,
@@ -41,8 +46,8 @@ from src.experiments.f2_research_evidence_materialization_v1 import (
     materialize_f2_required_evidence_v1,
 )
 from src.experiments.f2_step29m_config_authority_v1 import (
-    F2Step29mConfigAuthorityError,
     IMPLEMENTATION_BLOCKED_CONFIG_AUTHORITY,
+    F2Step29mConfigAuthorityError,
     load_f2_authoritative_step29m_config_v1,
     resolve_f2_step29m_config_authority_v1,
 )
@@ -50,6 +55,10 @@ from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
     F2_TEST_ENTRY_GATE,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    mandatory_bindings_to_mv2_wiring_kwargs_v0,
+    resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0,
+)
 
 SCHEMA_VERSION: Final[str] = "canonical_f2_research_backtest_cost_grid_research_execution_v1"
 EXECUTION_DOMAIN: Final[str] = (
@@ -171,10 +180,90 @@ def _identity_request_for_point_v1(
     )
 
 
+def _read_bound_research_bars(
+    dataset_dir: Path, cfg: Mapping[str, Any]
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    binding = cfg["real_admissible_futures_evaluation_binding_v1"]
+    manifest_path = dataset_dir / "dataset_manifest.json"
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = json.loads(manifest_bytes)
+    if not isinstance(manifest, dict):
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_MANIFEST_INVALID")
+    manifest_body = {key: value for key, value in manifest.items() if key != "manifest_digest"}
+    # Use the Step29M dataset manifest's JSON digest domain.
+    manifest_digest = hashlib.sha256(
+        json.dumps(manifest_body, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    if manifest_digest != manifest.get("manifest_digest") or manifest_digest != binding.get(
+        "expected_manifest_digest"
+    ):
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_MANIFEST_DIGEST_MISMATCH")
+
+    descriptor, provenance = (
+        dataset.load_dataset_admissibility_from_flat_economic_research_manifest_v1(
+            manifest, manifest_path=str(manifest_path)
+        )
+    )
+    profile = dataset.load_profile_binding_from_manifest(manifest)
+    integrity = manifest.get("integrity_results")
+    if (
+        descriptor.dataset_version != "v1"
+        or descriptor.instrument_id != binding["canonical_instrument_id"]
+        or manifest.get("native_instrument_id") != binding["native_instrument_id"]
+        or provenance.venue_id != binding["source_venue"]
+        or profile.dataset_profile.value != binding["dataset_profile"]
+        or manifest.get("l1_observation_status") != binding["expected_l1_observation_status"]
+        or profile != dataset.load_profile_binding_from_cfg(cfg)
+        or manifest.get("observed_l1_used") is not False
+        or not isinstance(integrity, dict)
+        or integrity.get("integrity_pass") is not True
+        or integrity.get("dataset_admissible") is not True
+    ):
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_DATASET_BINDING_MISMATCH")
+    if descriptor.dataset_digest != binding["expected_dataset_digest"]:
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_DATASET_DIGEST_MISMATCH")
+
+    parquet_bytes = (dataset_dir / "bars.parquet").read_bytes()
+    bars = pd.read_parquet(BytesIO(parquet_bytes))
+    if "timestamp" in bars.columns:
+        bars = bars.set_index("timestamp")
+        bars.index = pd.to_datetime(bars.index, utc=True)
+    if not isinstance(bars.index, pd.DatetimeIndex) or str(bars.index.tz) != "UTC":
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_TIMESTAMP_INDEX_INVALID")
+    admission = dataset.evaluate_admissible_versioned_futures_dataset_v1(
+        bars=bars,
+        descriptor=descriptor,
+        provenance=provenance,
+        instrument_id=binding["canonical_instrument_id"],
+        profile_binding=profile,
+    )
+    if not admission.is_admissible() or admission.reason_codes:
+        reasons = ",".join(admission.reason_codes)
+        raise F2ResearchBacktestCostGridExecutionError(f"F2_ARCHIVE_DATASET_REJECTED:{reasons}")
+
+    splits = split_bars_train_validation_oos_v1(bars)
+    periods = tuple(f"{split.index[0]}..{split.index[-1]}" for split in splits)
+    period_keys = ("training_period", "validation_period", "out_of_sample_period")
+    if periods != tuple(manifest.get(key) for key in period_keys) or periods != tuple(
+        binding.get(key) for key in period_keys
+    ):
+        raise F2ResearchBacktestCostGridExecutionError("F2_ARCHIVE_SPLIT_MISMATCH")
+    return bars, {
+        "manifest_digest": manifest_digest,
+        "manifest_file_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        "bars_file_sha256": hashlib.sha256(parquet_bytes).hexdigest(),
+        "native_instrument_id": binding["native_instrument_id"],
+        "source_venue": provenance.venue_id,
+        "dataset_profile_binding": profile.to_dict(),
+        "dataset_admissibility": admission.to_dict(),
+    }
+
+
 def run_f2_research_backtest_cost_grid_offline_v1(
     *,
     native_baseline_evidence_v1: Mapping[str, Any],
     research_bars_v1: pd.DataFrame | None = None,
+    research_dataset_dir_v1: Path | None = None,
     repo_root: Path | None = None,
     require_clean_git_provenance: bool = True,
 ) -> MappingProxyType[str, Any]:
@@ -205,6 +294,8 @@ def run_f2_research_backtest_cost_grid_offline_v1(
         cfg = load_f2_authoritative_step29m_config_v1(repo_root=root)
     except F2Step29mConfigAuthorityError as exc:
         raise F2ResearchBacktestCostGridExecutionError(str(exc)) from exc
+    if compute_content_sha256(dict(cfg)) != authority.config_content_digest:
+        raise F2ResearchBacktestCostGridExecutionError("F2_CONFIG_AUTHORITY_SNAPSHOT_MISMATCH")
 
     provenance = inspect_code_provenance_v1(root)
     if require_clean_git_provenance and provenance.working_tree_status != "CLEAN":
@@ -212,11 +303,31 @@ def run_f2_research_backtest_cost_grid_offline_v1(
             "F2_PROVENANCE_FAIL_CLOSED:git_working_tree_not_clean"
         )
 
-    if research_bars_v1 is None:
-        raise F2ResearchBacktestCostGridExecutionError(
-            "F2_RESEARCH_BARS_REQUIRED:dataset_path_load_not_implemented_fail_closed"
+    archive_evidence = None
+    mv2_wiring_kwargs = None
+    if research_dataset_dir_v1 is not None:
+        if research_bars_v1 is not None:
+            raise F2ResearchBacktestCostGridExecutionError("F2_RESEARCH_SOURCE_CONFLICT")
+        try:
+            bars, archive_evidence = _read_bound_research_bars(research_dataset_dir_v1, cfg)
+        except F2ResearchBacktestCostGridExecutionError:
+            raise
+        except (OSError, ValueError) as exc:
+            raise F2ResearchBacktestCostGridExecutionError(f"F2_ARCHIVE_READ_FAILED:{exc}") from exc
+        bindings, reasons = resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(
+            root, cfg
         )
-    bars = research_bars_v1
+        if bindings is None:
+            reason = ",".join(reasons)
+            raise F2ResearchBacktestCostGridExecutionError(
+                f"F2_ARCHIVE_MV2_BOUNDARY_REJECTED:{reason}"
+            )
+        mv2_wiring_kwargs = mandatory_bindings_to_mv2_wiring_kwargs_v0(bindings)
+        mv2_wiring_kwargs["profile_binding"] = dataset.load_profile_binding_from_cfg(cfg)
+    elif research_bars_v1 is None:
+        raise F2ResearchBacktestCostGridExecutionError("F2_RESEARCH_BARS_REQUIRED")
+    else:
+        bars = research_bars_v1
     if bars.empty:
         raise F2ResearchBacktestCostGridExecutionError("F2_RESEARCH_BARS_EMPTY")
 
@@ -229,6 +340,7 @@ def run_f2_research_backtest_cost_grid_offline_v1(
             strategy_version=authority.strategy_version,
             data_digest=authority.dataset_digest,
             instrument_id=authority.instrument_id,
+            mv2_wiring_extra_kwargs=mv2_wiring_kwargs,
         )
     except ParameterSensitivityError as exc:
         raise F2ResearchBacktestCostGridExecutionError(
@@ -325,6 +437,9 @@ def run_f2_research_backtest_cost_grid_offline_v1(
         "d27_test_entry_lifecycle_admission": d27_admission.to_dict(),
         "d27_baseline_reference_identity": d27_admission.baseline_reference_identity,
     }
+    if archive_evidence is not None:
+        body["research_dataset_evidence"] = archive_evidence
+        body["parameter_sensitivity_result"] = sensitivity.to_dict()
     body["execution_digest"] = compute_content_sha256(
         {key: value for key, value in body.items() if key != "execution_digest"}
     )
