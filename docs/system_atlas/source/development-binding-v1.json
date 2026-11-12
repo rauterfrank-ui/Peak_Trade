@@ -1517,6 +1517,11 @@
       "sha256": "5b726daeddef92b7697e3a1ac8920bd0b1735b6913def8e41eeeb8f2817db86e"
     },
     {
+      "path": "src/ops/f1_m9_applied_offline_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "bf22bd800c4803899ef681fb7b39c96e484a73d2b553033ae3592b64f50733ba"
+    },
+    {
       "path": "src/ops/filegate_recovery_authority_v1.py",
       "before_sha256": null,
       "sha256": "dc986a6c7a59ea3fe7dacb1b689e6b5ed8de63acf9e2fb78a093e34611f1fc88"
@@ -2207,6 +2212,21 @@
       "sha256": "10da3989aee2956174758d79d813a3855f361fa4a567a7ca2d36d5116119c391"
     },
     {
+      "path": "src/trading/master_v2/double_play_old_effective_host_contract_v1.py",
+      "before_sha256": "414d12504d90af702fb46c0fd15b5e13212004475338de481dd2e7d29e9b6f1d",
+      "sha256": "07af5fdfa5ae1b435e61ca785b0c76d39a9a3aa0150d15feb2ffcf71c3044a5f"
+    },
+    {
+      "path": "src/trading/master_v2/f1_m9_replay_host_observation_v1.py",
+      "before_sha256": null,
+      "sha256": "dd8f379a5d6e2d7a34a40cc1d34fc22f6f9e821322d2135bb7f06e6595e15019"
+    },
+    {
+      "path": "src/trading/master_v2/integrated_offline_replay_evidence_writer_v1.py",
+      "before_sha256": "62c7d3004e7a15d07a4b0c2bc03e874f59a0373572ecfaa5c6a4f875399ec6c9",
+      "sha256": "6e81afc351e5e349693bb89b3950702a699277da1e36ae819a6c9a51250d8206"
+    },
+    {
       "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
       "before_sha256": "0526835913d62efa3c33a08cda7557f03ee8d7918311c9794611314fa90ba68c",
       "sha256": "4d63799f7dd0d619bc760924a9efd2190bf01fd37c9065ddbc8a92324037a29b"
@@ -2767,6 +2787,11 @@
       "sha256": "9a263a9d8029724bbdd46a7dee4aa19647a00b6a0dcbac256c3ebcc753a38a48"
     },
     {
+      "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "b6fa1417ea1d74fdfbda5877060a98893dc9c29e0b102bdf89f6d85edf77be9e"
+    },
+    {
       "path": "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
       "before_sha256": "ddb1e8dc9293c651213f9a55508035237b9b096cff797c3e509391e7bebee341",
       "sha256": "ecdfd0ff8a9b48bc086418f7423039e842035c74426bcacd388680e75766ea08"
@@ -3182,9 +3207,24 @@
       "sha256": "8435d84d67218be1406864121fa297fef5ad151df1909467e811910b018730ac"
     },
     {
+      "path": "tests/trading/master_v2/test_double_play_old_effective_host_contract_v1.py",
+      "before_sha256": "dbeca8d669fc4b95af4d1b2402f8cc6cb74c17ea5997c770cffff7a04fa8fc29",
+      "sha256": "69a4b351fa75c329fb66a23937e447221f4ae39341c71690e6d0422e5e8c7a9a"
+    },
+    {
+      "path": "tests/trading/master_v2/test_f1_m9_replay_host_observation_v1.py",
+      "before_sha256": null,
+      "sha256": "07551e1c2142c5eb95e2500a56a53e7ec6e14e5bb53f4fa650e66c79423f6878"
+    },
+    {
       "path": "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
       "before_sha256": "a505481c82c350b5d3b710528a110275805151a959afe92481ac0d85fc8bd317",
       "sha256": "0ea167874e013993512a127e11495732bfb24b54219599fe34ce747a27816eb2"
+    },
+    {
+      "path": "tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py",
+      "before_sha256": "1a8784f74cd5cde95e3bd7734301629ca27f57a1a603e89e734058d11cd281d6",
+      "sha256": "7de9eefcd7ca921ee66754ab518f74730e3599be20cf3798774accc1ad66d079"
     },
     {
       "path": "tests/trading/master_v2/test_surface_p_explicit_financial_context_v1.py",

@@ -162,6 +162,7 @@ def test_g17_duplicate_noop_does_not_bind_under_old_contract(tmp_path: Path) -> 
         **g17_ingest_kwargs_from_extracted_sample_v1(samples[-1])
     )
     assert dup.outcome is TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP
-    out = apply_current_productive_g17_typed_vol_cmc_bind_v1(_context(), producer=producer)
+    context = _context(instrument_id=producer.history.canonical_instrument_id)
+    out = apply_current_productive_g17_typed_vol_cmc_bind_v1(context, producer=producer)
     assert out.bind_performed is False
     assert out.outcome == TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP.value

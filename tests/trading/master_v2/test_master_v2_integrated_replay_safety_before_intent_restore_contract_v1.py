@@ -11,6 +11,9 @@ from pathlib import Path
 import pytest
 
 from src.governance.canonical_order_intent_v1 import IntentAction
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+    build_simulated_economics_crs_boundary_state_file_v1,
+)
 from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
     initial_directional_confirmation_side_state_carrier_v1,
 )
@@ -69,36 +72,35 @@ _ENTER_OUTCOMES = frozenset({DecisionOutcome.ENTER_LONG.value, DecisionOutcome.E
 
 
 def _confirmed_replay_input(*, side: str) -> IntegratedOfflineReplayInputV1:
-    acceptor, _committed = _distinct_acceptor()
+    is_long = side == "LONG"
+    price_path = (3500.0, 3570.0 if is_long else 3430.0)
+    acceptor, _committed = _distinct_acceptor(previous_mark=price_path[0], mark=price_path[1])
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
         instrument=_key(),
     )
-    if side == "LONG":
-        return _replay_input(
-            side_state=SideState.LONG_ARMED,
-            direction_state=EntryExitDirectionState.LONG_ARMED,
-            scope_direction_state=ScopeDirectionState.LONG,
-            policies=_policies_confirm_once(),
-            price_path=(3500.0, 3570.0),
-            directional_confirmation_progress=carrier,
-            observation_acceptance_result=acceptor,
-            confirmation_progress_session_id=_session(),
-            confirmation_progress_venue="okx_eea",
-            confirmation_progress_instrument=_key(),
-        )
-    return _replay_input(
-        side_state=SideState.SHORT_ARMED,
-        direction_state=EntryExitDirectionState.SHORT_ARMED,
-        scope_direction_state=ScopeDirectionState.SHORT,
+    replay_input = _replay_input(
+        side_state=SideState.LONG_ARMED if is_long else SideState.SHORT_ARMED,
+        direction_state=(
+            EntryExitDirectionState.LONG_ARMED if is_long else EntryExitDirectionState.SHORT_ARMED
+        ),
+        scope_direction_state=ScopeDirectionState.LONG if is_long else ScopeDirectionState.SHORT,
         policies=_policies_confirm_once(),
-        price_path=(3500.0, 3430.0),
+        price_path=price_path,
         directional_confirmation_progress=carrier,
         observation_acceptance_result=acceptor,
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
         confirmation_progress_instrument=_key(),
+    )
+    return replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=(
+            build_simulated_economics_crs_boundary_state_file_v1(
+                instrument_id=replay_input.instrument_id
+            )
+        ),
     )
 
 

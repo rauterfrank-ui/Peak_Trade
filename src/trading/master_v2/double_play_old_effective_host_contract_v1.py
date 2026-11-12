@@ -18,6 +18,9 @@ from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import
 from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
     DoublePlayTypedVolatilityPresenceGateResultV1,
 )
+from trading.master_v2.f1_m9_replay_host_observation_v1 import (
+    record_f1_m9_replay_host_observation_v1,
+)
 
 SCHEMA_VERSION = "double_play_old_effective_host_contract/v1"
 DECISION_CONFIG = "config/governance/double_play_old_effective_host_contract_v1_decision_v1.json"
@@ -72,11 +75,21 @@ def resolve_alpha_scope_entry_for_integrated_replay_v1(
     """Map F1/M9 consumer output to OLD effective DP admission at integrated replay."""
     enforced_alpha = bool(consumer_path.alpha_scope_entry_authority_allowed)
     presence_alpha = bool(presence_gate.alpha_scope_entry_authority_allowed)
-    if not integrated_replay_presence_alpha_at_dp_boundary_v1(repo_root=repo_root):
-        return enforced_alpha, ()
-    if enforced_alpha == presence_alpha:
-        return presence_alpha, ()
-    return presence_alpha, (REASON_PRESENCE_ALPHA_AT_DP_BOUNDARY,)
+    use_presence_alpha = integrated_replay_presence_alpha_at_dp_boundary_v1(repo_root=repo_root)
+    effective_alpha = presence_alpha if use_presence_alpha else enforced_alpha
+    reasons = (
+        (REASON_PRESENCE_ALPHA_AT_DP_BOUNDARY,)
+        if use_presence_alpha and enforced_alpha != presence_alpha
+        else ()
+    )
+    record_f1_m9_replay_host_observation_v1(
+        presence=presence_gate,
+        consumer_path=consumer_path,
+        use_presence_alpha=use_presence_alpha,
+        effective_alpha=effective_alpha,
+        compatibility_reasons=reasons,
+    )
+    return effective_alpha, reasons
 
 
 def audit_consumer_enforcement_without_dp_block_v1(
