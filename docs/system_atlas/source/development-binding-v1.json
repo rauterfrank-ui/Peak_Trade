@@ -1522,6 +1522,16 @@
       "sha256": "bf22bd800c4803899ef681fb7b39c96e484a73d2b553033ae3592b64f50733ba"
     },
     {
+      "path": "src/ops/f1_m9_applied_replay_market_outcome_v1.py",
+      "before_sha256": null,
+      "sha256": "49cfea7ee6c2bd2bcdfbd5853ff0a547929f772c646d72e79db38d04bcf6a8af"
+    },
+    {
+      "path": "src/ops/f1_m9_proposal_apply_offline_proof_v1.py",
+      "before_sha256": null,
+      "sha256": "913e96af938e2e009923e7f52bcf8fb3058fb3fd0528ebabaccb05dcda858d33"
+    },
+    {
       "path": "src/ops/filegate_recovery_authority_v1.py",
       "before_sha256": null,
       "sha256": "dc986a6c7a59ea3fe7dacb1b689e6b5ed8de63acf9e2fb78a093e34611f1fc88"
@@ -2790,6 +2800,16 @@
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
       "before_sha256": null,
       "sha256": "b6fa1417ea1d74fdfbda5877060a98893dc9c29e0b102bdf89f6d85edf77be9e"
+    },
+    {
+      "path": "tests/ops/test_f1_m9_applied_replay_market_outcome_v1.py",
+      "before_sha256": null,
+      "sha256": "76d998055bd484e641c594b1300e08deddeab1c993ecfcf3ac7f34de849fa216"
+    },
+    {
+      "path": "tests/ops/test_f1_m9_proposal_apply_offline_proof_v1.py",
+      "before_sha256": null,
+      "sha256": "e6cc3282a269183c5d142a162db280e0db992b03e2121b7cd8b6a512cb2bb9fc"
     },
     {
       "path": "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
