@@ -1859,8 +1859,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
     replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
     assert replayed.input_binding_v1() == episode.input_binding_v1()
     if fault in {"occupied-mark", "polled-mark"}:
-        if fault == "polled-mark":
-            host.execution_incident_state_path = scope.state_path
+        host.execution_incident_state_path = scope.state_path
         _assert_authenticated_occupied_mark_close(
             tmp_path=tmp_path,
             monkeypatch=monkeypatch,
@@ -1871,7 +1870,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
             quantity=quantity,
             polled=fault == "polled-mark",
         )
-        assert len(opener.requests) - request_count == (12 if fault == "polled-mark" else 0)
+        assert len(opener.requests) - request_count == 12
         assert host.owner.active_sum_v1() == held
         return
     if fault is None:
@@ -1918,6 +1917,7 @@ def _assert_authenticated_occupied_mark_close(
         build_s8_occupied_lane_pairs_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        LEDGER_FILENAME,
         read_retained_occupied_scope_close_v1,
     )
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
@@ -2083,6 +2083,76 @@ def _assert_authenticated_occupied_mark_close(
     retained = read_retained_occupied_scope_close_v1(Path(lane.evidence_root))
     assert retained["envelope"]["envelope_digest"] == handoff.envelope.envelope_digest
     assert retained["binding"]["entry_source_ref"] == handoff.l10_close.entry_source_ref
+    floor = occupied._cursor_floor_or_zero(root)
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _continuous_auth,
+    )
+
+    previous_host = context.host
+    previous_hold = previous_host.owner.active_sum_v1()
+    previous_host.close()
+    restarted_at = NOW + timedelta(seconds=1)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", restarted_at.isoformat)
+    restarted_hosts = []
+
+    def open_host(**kwargs):
+        # The original fixture's durable root predates the supervisor layout.
+        host = PortfolioBudgetHostV1(
+            **{**kwargs, "root": previous_host.root, "clock": restarted_at.timestamp}
+        )
+        restarted_hosts.append(host)
+        return host
+
+    monkeypatch.setattr(budget_host, "PortfolioBudgetHostV1", open_host)
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Pending close must resume before public data, ranking and new cycle admission")
+
+    config = supervisor.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=tmp_path / "scope",
+        evidence_root=tmp_path / "restart" / "new-host-session",
+        expected_account_identity=previous_host.expected_account_identity,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    run_args = dict(
+        config=config,
+        origin_main_sha=previous_host.repository_sha,
+        bound=bound,
+        authorization=replace(
+            _continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+            expected_cursor_floor=floor,
+        ),
+        observation_source=None,
+        g17_producers={},
+        f1_m9_cycle_evaluator=forbidden,
+        public_rest_fetch=forbidden,
+        private_rest_fetch=previous_host.fetch,
+        pretrade_transport=previous_host.reconciliation_transport,
+        wp02_hook=forbidden,
+        skip_owner_go_validation=True,
+        occupied_mark_proof_root=proof_root,
+    )
+    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
+    assert resumed.resumed_position_management_close == handoff
+    assert resumed.ok and not resumed.owner_go_consumed and resumed.policy_result is None
+    assert not resumed.trace.wp02_hook_invoked and resumed.trace.post_count == 0
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
+    assert occupied._cursor_floor_or_zero(root) == floor
+    assert read_retained_occupied_scope_close_v1(Path(lane.evidence_root)) == retained
+
+    ledger_path = Path(lane.evidence_root) / LEDGER_FILENAME
+    ledger = json.loads(ledger_path.read_bytes())
+    ledger["occupied_scope_close"]["binding"]["scope_digest"] = "0" * 64
+    ledger_path.write_text(json.dumps(ledger))
+    with pytest.raises(ValueError, match="RETAINED_CLOSE_READBACK_INVALID"):
+        supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])

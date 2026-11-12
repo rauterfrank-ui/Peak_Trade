@@ -305,7 +305,7 @@ class HostBudgetRecoveryContextV1:
         return position.side if position is not None else "FLAT"
 
     def bind_current_authenticated_entry_episode_v1(
-        self, *, lane_id, proof_root, proof, config_digest
+        self, *, lane_id, proof_root, proof, config_digest, recover_only=False
     ):
         """Publish the observed entry through the original position-episode writer."""
         from src.ops.execution_reconciliation_get_provenance_v1 import (
@@ -361,6 +361,8 @@ class HostBudgetRecoveryContextV1:
             config_digest=config_digest,
             writer_session_id=host.session_id,
         )
+        if recover_only:
+            return open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
         try:
             return open_position_episode_from_authenticated_execution_v1(**args, mode="create")
         except FileExistsError:

@@ -26,6 +26,9 @@ from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_docu
 )
 
 if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementExecutionHandoffV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
         PortfolioBudgetHostV1,
         HostBudgetRecoveryContextV1,
@@ -37,6 +40,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
     _t2_from_s7,
     invoke_occupied_lane_governed_cycle_n1_consumer_v1,
     non_v5_eg_dispatch_v1,
+    recover_occupied_scope_close_for_reconciliation_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     DISPOSITION_FAIL_CLOSED as CONTINUOUS_DISPOSITION_FAIL_CLOSED,
@@ -344,6 +348,48 @@ def build_s8_occupied_lane_pairs_v1(
         ranking_integrity_digest=str(bound.ranking_integrity_digest),
     )
     return {LANE_ID: (slot, bound)}
+
+
+def recover_current_n1_occupied_scope_close_v1(
+    *,
+    lane_state_root: Path,
+    bound: BoundInstrumentV1,
+    budget_host: PortfolioBudgetHostV1,
+    proof_root: Path,
+) -> PositionManagementExecutionHandoffV1 | None:
+    """Hand the pending original close to execution before admitting another market event."""
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        PositionEpisodeScopeV1,
+    )
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+    )
+
+    pair = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state_root, bound=bound)[LANE_ID]
+    scope = read_occupied_scope_mark_snapshot_v1(Path(pair[0].lane_state_root))
+    if scope is None or scope["mark"]["pending_close_episode_id"] is None:
+        return None
+    if scope["snapshot"]["instrument_id"] != bound.instrument_id:
+        raise PersistentNaturalEnterConvergenceError(
+            "OCCUPIED_SCOPE_CLOSE_BOUND_INSTRUMENT_MISMATCH"
+        )
+    pending_id = scope["mark"]["pending_close_episode_id"]
+    recovery, proofs = budget_host.observe_authenticated_execution_reconciliation_v1(
+        {LANE_ID: bound}, proof_root=proof_root, deliver_authenticated_incidents=True
+    )
+    matching = [proof for proof in proofs.values() if proof.identity_digest == pending_id]
+    if len(matching) != 1:
+        raise PersistentNaturalEnterConvergenceError("OCCUPIED_SCOPE_CLOSE_ENTRY_UNPROVEN")
+    return recover_occupied_scope_close_for_reconciliation_v1(
+        lane_id=LANE_ID,
+        lane_pair=pair,
+        expected_scope=PositionEpisodeScopeV1(recovery.account, budget_host.execution_environment),
+        authenticated_entry=AuthenticatedEntryEpisodeRequestV1(proof_root, matching[0]),
+        host_budget_recovery=recovery,
+    )
 
 
 def preflight_current_productive_persistent_natural_enter_v1(
