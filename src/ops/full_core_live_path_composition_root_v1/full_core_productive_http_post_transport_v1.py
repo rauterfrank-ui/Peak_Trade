@@ -35,6 +35,10 @@ from .current_productive_post_budget_admission_v1 import (
     CurrentPostBudgetAdmissionError,
     inspect_current_post_budget_admission_v1,
 )
+from .current_productive_post_position_close_v1 import (
+    CurrentPostPositionCloseError,
+    inspect_current_post_position_close_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
     OriginalPermitTransportAttemptV1,
@@ -92,6 +96,10 @@ class FullCoreCurrentPostPendingVetoError(FullCoreProductiveHttpPostError):
 
 class FullCoreCurrentPostBudgetVetoError(FullCoreProductiveHttpPostError):
     """Actual original budget-owner/current-attempt readback denial."""
+
+
+class FullCoreCurrentPostPositionCloseVetoError(FullCoreProductiveHttpPostError):
+    """Original position custody or close envelope denied the current send."""
 
 
 @dataclass(frozen=True)
@@ -186,6 +194,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         post_quantity_context=None,
         post_pending_context=None,
         post_budget_context=None,
+        post_position_close_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
@@ -195,6 +204,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._post_quantity_context = post_quantity_context
         self._post_pending_context = post_pending_context
         self._post_budget_context = post_budget_context
+        self._post_position_close_context = post_position_close_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -225,7 +235,10 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             envelope_digest=envelope_digest,
         )
         self._check_original_transport_v1(
-            permit_id=permit_id, envelope_id=envelope_id, envelope_digest=envelope_digest
+            permit_id=permit_id,
+            envelope_id=envelope_id,
+            envelope_digest=envelope_digest,
+            verify_retained=True,
         )
         return self._perform_http_post_v1(payload=payload)
 
@@ -237,7 +250,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         except CurrentPostSafetyVetoError as exc:
             raise FullCoreCurrentPostSafetyVetoError(str(exc)) from exc
 
-    def _check_original_transport_v1(self, **identity):
+    def _check_original_transport_v1(self, *, verify_retained=False, **identity):
         if type(self._transport_attempt) is not OriginalPermitTransportAttemptV1:
             raise FullCoreProductiveHttpPostError("ORIGINAL_TRANSPORT_CLAIM_REQUIRED")
         try:
@@ -248,11 +261,19 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             )
         except FullCoreExternalEffectDurableConsumeError as exc:
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        if self._post_position_close_context is not None:
+            self._check_current_position_close_v1(
+                stage="HTTP_POSITION_CLOSE", verify_retained=verify_retained
+            )
+            return
+        self._check_current_entry_v1()
+
+    def _check_current_entry_v1(self, *, stage=None):
         try:
             inspect_current_post_venue_quantity_v1(
                 self._post_quantity_context,
                 envelope=self._post_safety_context.envelope,
-                stage="HTTP_QUANTITY",
+                stage=stage or "HTTP_QUANTITY",
             )
         except CurrentPostVenueQuantityError as exc:
             raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
@@ -260,11 +281,28 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             inspect_current_post_pending_v1(
                 self._post_pending_context,
                 envelope=self._post_safety_context.envelope,
-                stage="HTTP_PENDING",
+                stage=stage or "HTTP_PENDING",
             )
         except CurrentPostPendingObservationError as exc:
             raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
-        self._check_current_budget_v1(stage="HTTP_BUDGET")
+        self._check_current_budget_v1(stage=stage or "HTTP_BUDGET")
+
+    def _check_current_position_close_v1(self, *, stage, verify_retained=False):
+        if self._signing_handle is None:
+            raise FullCoreCurrentPostPositionCloseVetoError(
+                f"POST_AUTHORITY_CLOSE_DENIED:{stage}:SIGNING_HANDLE_MISSING"
+            )
+        try:
+            inspect_current_post_position_close_v1(
+                self._post_position_close_context,
+                envelope=self._post_safety_context.envelope,
+                transport_attempt=self._transport_attempt,
+                signing_handle=self._signing_handle,
+                stage=stage,
+                verify_retained=verify_retained,
+            )
+        except CurrentPostPositionCloseError as exc:
+            raise FullCoreCurrentPostPositionCloseVetoError(str(exc)) from exc
 
     def _check_current_budget_v1(self, *, stage):
         try:
@@ -310,23 +348,10 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         try:
             socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
-            try:
-                inspect_current_post_venue_quantity_v1(
-                    self._post_quantity_context,
-                    envelope=self._post_safety_context.envelope,
-                    stage="BEFORE_SOCKET",
-                )
-            except CurrentPostVenueQuantityError as exc:
-                raise FullCoreCurrentPostQuantityVetoError(str(exc)) from exc
-            try:
-                inspect_current_post_pending_v1(
-                    self._post_pending_context,
-                    envelope=self._post_safety_context.envelope,
-                    stage="BEFORE_SOCKET",
-                )
-            except CurrentPostPendingObservationError as exc:
-                raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
-            self._check_current_budget_v1(stage="BEFORE_SOCKET")
+            if self._post_position_close_context is not None:
+                self._check_current_position_close_v1(stage="BEFORE_SOCKET")
+            else:
+                self._check_current_entry_v1(stage="BEFORE_SOCKET")
             try:
                 self._transport_attempt.mark_socket_boundary_v1()
             except FullCoreExternalEffectDurableConsumeError as exc:

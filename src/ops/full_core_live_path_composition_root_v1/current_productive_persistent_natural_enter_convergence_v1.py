@@ -26,6 +26,9 @@ from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_docu
 )
 
 if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
+        CurrentPostPositionCloseContextV1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
         PositionManagementExecutionHandoffV1,
     )
@@ -358,6 +361,22 @@ def recover_current_n1_occupied_scope_close_v1(
     proof_root: Path,
 ) -> PositionManagementExecutionHandoffV1 | None:
     """Hand the pending original close to execution before admitting another market event."""
+    context = recover_current_n1_occupied_scope_close_post_context_v1(
+        lane_state_root=lane_state_root, bound=bound, budget_host=budget_host, proof_root=proof_root
+    )
+    return context.execution if context is not None else None
+
+
+def recover_current_n1_occupied_scope_close_post_context_v1(
+    *,
+    lane_state_root: Path,
+    bound: BoundInstrumentV1,
+    budget_host: PortfolioBudgetHostV1,
+    proof_root: Path,
+) -> CurrentPostPositionCloseContextV1 | None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
+        CurrentPostPositionCloseContextV1,
+    )
     from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
         PositionEpisodeScopeV1,
     )
@@ -383,13 +402,15 @@ def recover_current_n1_occupied_scope_close_v1(
     matching = [proof for proof in proofs.values() if proof.identity_digest == pending_id]
     if len(matching) != 1:
         raise PersistentNaturalEnterConvergenceError("OCCUPIED_SCOPE_CLOSE_ENTRY_UNPROVEN")
-    return recover_occupied_scope_close_for_reconciliation_v1(
+    entry = AuthenticatedEntryEpisodeRequestV1(proof_root, matching[0])
+    execution = recover_occupied_scope_close_for_reconciliation_v1(
         lane_id=LANE_ID,
         lane_pair=pair,
         expected_scope=PositionEpisodeScopeV1(recovery.account, budget_host.execution_environment),
-        authenticated_entry=AuthenticatedEntryEpisodeRequestV1(proof_root, matching[0]),
+        authenticated_entry=entry,
         host_budget_recovery=recovery,
     )
+    return CurrentPostPositionCloseContextV1(execution, pair, entry, recovery)
 
 
 def preflight_current_productive_persistent_natural_enter_v1(
@@ -701,6 +722,10 @@ def make_n1_occupied_lane_s5_runner_v1(
             )
         prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).name}"
         if occupied_mark_proof_root is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
+                CurrentPostPositionCloseContextV1,
+            )
+
             prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).parent.name}"
         native_id = str(authorization.native_id or "").strip()
         if mark_price_payload is None or not native_id:
@@ -772,6 +797,7 @@ def make_n1_occupied_lane_s5_runner_v1(
             if len(proofs) != 1:
                 raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_OWNED_ENTRY_UNPROVEN")
             proof = next(iter(proofs.values()))
+            entry = AuthenticatedEntryEpisodeRequestV1(occupied_mark_proof_root, proof)
             lane = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 lane_pairs,
                 **mk,
@@ -780,13 +806,18 @@ def make_n1_occupied_lane_s5_runner_v1(
                 portfolio_budget_owner=portfolio_budget_host.owner,
                 host_budget_recovery=context,
                 occupied_scope_mark_lane_id=LANE_ID,
-                authenticated_entry=AuthenticatedEntryEpisodeRequestV1(
-                    occupied_mark_proof_root, proof
-                ),
+                authenticated_entry=entry,
             )[LANE_ID]
             result = lane.governed_cycle_result
+            close = result.position_management_execution_handoff
             return replace(
-                result, extra={**result.extra, "OCCUPIED_MARK_EVIDENCE_ROOT": lane.evidence_root}
+                result,
+                extra={**result.extra, "OCCUPIED_MARK_EVIDENCE_ROOT": lane.evidence_root},
+                position_close_post_context=(
+                    CurrentPostPositionCloseContextV1(close, lane_pairs[LANE_ID], entry, context)
+                    if close is not None and close.l10_close is not None
+                    else None
+                ),
             )
         host_recovery = None
         if portfolio_budget_host is not None:

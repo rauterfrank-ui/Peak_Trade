@@ -163,11 +163,15 @@ class AuthenticatedReconciliationGetV1:
         self.proof_root = proof_root
         self._retain_bodies = proof_root is not None or retain_response_bodies
         self.evidence: dict[str, AuthenticatedExecutionReconciliationProofV1] = {}
+        self.account_position_mode = None
+        self.position_margin_modes = {}
         self._gets: dict[str, list[ReconciliationGetProvenanceV1]] = {}
         self._bodies: dict[str, list[bytes]] = {}
 
     def reset_v1(self):
         self.evidence.clear()
+        self.account_position_mode = None
+        self.position_margin_modes.clear()
         self._gets.clear()
         self._bodies.clear()
 
@@ -239,6 +243,8 @@ class AuthenticatedReconciliationGetV1:
             or payload["data"][0].get("uid") != self.account
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_ACCOUNT_UNPROVEN")
+        if endpoint == ENDPOINT_ACCOUNT_CONFIG:
+            self.account_position_mode = payload["data"][0].get("posMode")
         self._gets.setdefault(pretrade_decision_id, []).append(
             ReconciliationGetProvenanceV1(
                 endpoint=endpoint,
@@ -250,6 +256,14 @@ class AuthenticatedReconciliationGetV1:
         if self._retain_bodies:
             self._bodies.setdefault(pretrade_decision_id, []).append(body)
         return result
+
+    def original_handle_v1(self):
+        if self.transport._handle is not self._handle:
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_HANDLE_CHANGED")
+        return self._handle
+
+    def discard_response_bodies_v1(self):
+        self._bodies.clear()
 
     def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
         account_reads = self._gets.get(f"{host.session_id}:execution-recovery", ())
@@ -310,6 +324,12 @@ class AuthenticatedReconciliationGetV1:
                 observed_at=observed_at,
             )
         self.evidence[rid] = proof
+        positions = (snapshot.positions_observation or {}).get("response") or {}
+        self.position_margin_modes[rid] = tuple(
+            row.get("mgnMode")
+            for row in positions.get("data", ())
+            if row.get("instId") == identity.native_id
+        )
 
     def publish_current_proof_v1(self, *, identity, snapshot, observed_at):
         if self.proof_root is None:

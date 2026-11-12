@@ -1134,6 +1134,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "canceled-after-partial",
         "incomplete-page",
         "existing-post-scope",
+        "double-play-close",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1148,6 +1149,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
+    close_case = path == "double-play-close"
     managed_case = path == "managed-r04"
     standing = path in {"standing", "managed-r04"}
     send_root = tmp_path / "send" if managed_case else None
@@ -1328,10 +1330,45 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         opener.fault = path
     elif path == "unknown":
         opener.fault = "missing-order"
+    if close_case:
+        original_body = opener.body
+        quantity = identity.final_quantity
+        timestamp = int(NOW.timestamp() * 1000)
+        long = identity.selected_side == "LONG"
+        position = {
+            "instId": bound.venue_native_id,
+            "instType": "FUTURES",
+            "pos": quantity if long else "-" + quantity,
+            "posSide": "net",
+            "mgnMode": "cross",
+            "avgPx": "2000",
+            "tradeId": "22",
+            "uTime": str(timestamp - 500),
+        }
+
+        def filled_entry_body(endpoint, params):
+            response = json.loads(original_body(endpoint, params))
+            if endpoint.endswith("/positions"):
+                response["data"] = [position]
+            if endpoint.endswith(("orders-history", "/order", "/fills")):
+                for row in response["data"]:
+                    row.update(state="filled", accFillSz=quantity, instType="FUTURES")
+                    if endpoint.endswith("/fills"):
+                        row.update(
+                            tradeId="22",
+                            fillSz=quantity,
+                            fillPx="2000",
+                            fillTime=str(timestamp - 1000),
+                            posSide="net",
+                            side="buy" if long else "sell",
+                        )
+            return json.dumps(response).encode()
+
+        monkeypatch.setattr(opener, "body", filled_entry_body)
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0].isoformat())
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=26, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=78 if close_case else 26, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1345,14 +1382,38 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         host = PortfolioBudgetHostV1(
             root=seeded.root,
             private_rest_fetch=_fetch(uid=scope.account) if path == "no-custody" else source,
-            repository_sha=seeded.repository_sha if managed_case else "test-futures-reconciliation",
+            repository_sha=(
+                seeded.repository_sha
+                if managed_case
+                else "b707632c51a3c192337ec181825697c15bac5ddf"
+                if close_case
+                else "test-futures-reconciliation"
+            ),
             session_id=SESSION,
             expected_account_identity=scope.account,
             clock=lambda: clock[0].timestamp(),
             reconciliation_transport=transport,
-            execution_incident_state_path=scope.state_path if standing else None,
+            execution_incident_state_path=scope.state_path if standing or close_case else None,
         )
         try:
+            if close_case:
+                context, proofs = host.observe_authenticated_execution_reconciliation_v1(
+                    {"LANE_1": bound}, proof_root=proof_root, deliver_authenticated_incidents=True
+                )
+                _assert_authenticated_occupied_mark_close(
+                    tmp_path=tmp_path,
+                    monkeypatch=monkeypatch,
+                    context=context,
+                    bound=bound,
+                    proof_root=proof_root,
+                    proof=proofs[rid],
+                    quantity=quantity,
+                    polled=True,
+                    dispatch="ack",
+                )
+                assert transport.methods_used == ["GET"] * 78
+                assert host.owner.active_sum_v1() == held
+                return
             if path in {"no-custody", "foreign-product-row"}:
                 reason = (
                     "HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN"
@@ -1743,6 +1804,11 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         (None, None),
         ("occupied-mark", None),
         ("polled-mark", None),
+        ("polled-mark-close-ack", None),
+        ("polled-mark-close-timeout", None),
+        ("polled-mark-close-wrong-key", None),
+        ("polled-mark-close-kill", None),
+        ("polled-mark-close-stale-position", None),
         ("terminal-partial", None),
         ("missing-fills", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
         ("wrong-position-trade", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
@@ -1761,11 +1827,20 @@ def test_owned_entry_proof_reaches_original_position_episode(
     )
 
     host, attempt, opener, scope, held = authenticated_host
+    dispatch = (
+        fault.removeprefix("polled-mark-close-")
+        if fault and fault.startswith("polled-mark-close-")
+        else None
+    )
+    polled = fault == "polled-mark" or dispatch is not None
+    occupied_mark = fault == "occupied-mark" or polled
+    if dispatch is not None:
+        host.repository_sha = "b707632c51a3c192337ec181825697c15bac5ddf"
     body = opener.body
     stamp = int(NOW.timestamp() * 1000)
     filled_at = stamp - 1000
     long = attempt.selected_side == "LONG"
-    entry_price = "2000" if fault in {"occupied-mark", "polled-mark"} else "98.25"
+    entry_price = "2000" if occupied_mark else "98.25"
     quantity = (
         str(Decimal(attempt.final_quantity) / 2)
         if fault == "terminal-partial"
@@ -1776,6 +1851,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "instType": "SWAP",
         "pos": quantity if long else "-" + quantity,
         "posSide": "net",
+        "mgnMode": "cross",
         "avgPx": entry_price,
         "tradeId": "23" if fault == "wrong-position-trade" else "22",
         "uTime": str(stamp - 500),
@@ -1858,7 +1934,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
     episode = context.bind_current_authenticated_entry_episode_v1(**host_args)
     replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
     assert replayed.input_binding_v1() == episode.input_binding_v1()
-    if fault in {"occupied-mark", "polled-mark"}:
+    if occupied_mark:
         host.execution_incident_state_path = scope.state_path
         _assert_authenticated_occupied_mark_close(
             tmp_path=tmp_path,
@@ -1868,7 +1944,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
             proof_root=proof_root,
             proof=proofs[rid],
             quantity=quantity,
-            polled=fault == "polled-mark",
+            polled=polled,
+            dispatch=dispatch,
         )
         assert len(opener.requests) - request_count == 12
         assert host.owner.active_sum_v1() == held
@@ -1908,7 +1985,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
 
 
 def _assert_authenticated_occupied_mark_close(
-    *, tmp_path, monkeypatch, context, bound, proof_root, proof, quantity, polled
+    *, tmp_path, monkeypatch, context, bound, proof_root, proof, quantity, polled, dispatch
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2058,6 +2135,11 @@ def _assert_authenticated_occupied_mark_close(
             == handoff.envelope.envelope_digest
         )
         assert not run.permit_created and run.post_count == 0
+        assert run.cycle_records[0].position_close_post_context is None
+        close_context = terminal.position_close_post_context
+        assert close_context.execution == handoff
+        if dispatch is not None:
+            _assert_original_close_dispatch(close_context, dispatch, tmp_path)
         return
     without_metadata = {**inputs, "live_29p_injected_by_lane": None}
     with pytest.raises(
@@ -2153,6 +2235,143 @@ def _assert_authenticated_occupied_mark_close(
     with pytest.raises(ValueError, match="RETAINED_CLOSE_READBACK_INVALID"):
         supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
     assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
+
+
+def _assert_original_close_dispatch(context, case, tmp_path):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        POST_OWNER_GO,
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as send,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as actual,
+    )
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        MockCurrentProductive29PIntegrityBackendV1,
+    )
+
+    host = context.recovery.host
+    envelope = context.execution.envelope
+    store_root = context.store_root_v1()
+    requests = []
+
+    class Opener:
+        @contextmanager
+        def open(self, request, timeout):
+            assert request.get_method() == "POST"
+            payload = json.loads(request.data)
+            assert payload == {
+                "clOrdId": envelope.client_order_id,
+                "instId": envelope.instrument_id,
+                "side": envelope.side,
+                "ordType": "market",
+                "sz": envelope.quantity,
+                "tdMode": envelope.td_mode,
+                "reduceOnly": True,
+                **({"posSide": envelope.pos_side} if envelope.pos_side else {}),
+            }
+            record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
+            assert record["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            requests.append(payload)
+            if case == "timeout":
+                raise TimeoutError("intercepted close submit")
+
+            class Response:
+                status = 200
+                url = request.full_url
+
+                def read(self):
+                    return json.dumps(
+                        {
+                            "code": "0",
+                            "data": [
+                                {
+                                    "sCode": "0",
+                                    "clOrdId": envelope.client_order_id,
+                                    "ordId": "91234",
+                                }
+                            ],
+                        }
+                    ).encode()
+
+            yield Response()
+
+    class ForeignKeychain(_FakeKeychainBackend):
+        def copy_matching_generic_password_value_data_v1(self, **kwargs):
+            material = json.loads(super().copy_matching_generic_password_value_data_v1(**kwargs))
+            material["apiKey"] = "different-test-key"
+            return json.dumps(material).encode()
+
+    def opener_factory():
+        if case == "kill":
+            StatePersistence(str(host.execution_incident_state_path)).save(KillSwitchState.KILLED)
+        if case == "stale-position":
+            host.clock = lambda: NOW.timestamp() + 6
+        return Opener()
+
+    signing_backend = ForeignKeychain() if case == "wrong-key" else _FakeKeychainBackend()
+    low_args = dict(
+        envelope=envelope,
+        post_position_close_context=context,
+        post_owner_go=POST_OWNER_GO,
+        store_root=store_root,
+        k1_backend=signing_backend,
+        opener_factory=opener_factory,
+    )
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError, match="CLOSE_POST_OWNER_GO_REQUIRED"
+    ):
+        send(**low_args)
+    assert not store_root.exists()
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError, match="CLOSE_SUBMIT_STORE_MISMATCH"
+    ):
+        send(**{**low_args, "store_root": tmp_path / "foreign-close-submit"})
+    submit = actual.execute_current_productive_actual_l10_close_v1
+    args = dict(
+        context=context,
+        owner_go=POST_OWNER_GO,
+        baseline_origin_main_sha=actual.EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        perform_real_venue_post=True,
+        k1_backend=signing_backend,
+        opener_factory=opener_factory,
+        execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+            origin_main=host.repository_sha, head=host.repository_sha, drift=""
+        ),
+    )
+    with pytest.raises(
+        actual.CurrentProductiveActualVenuePostError, match="ACTUAL_CLOSE_POST_OWNER_GO_REQUIRED"
+    ):
+        submit(**{**args, "owner_go": ""})
+    assert not load_external_effect_durable_consume_v1(store_root=store_root)["durable_consumed"]
+    denials = {
+        "wrong-key": "K1_VENUE_CREDENTIAL_MISMATCH",
+        "kill": "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET",
+        "stale-position": "BEFORE_SOCKET:HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN",
+    }
+    if case in denials:
+        reason = denials[case]
+        with pytest.raises(actual.CurrentProductiveActualVenuePostError, match=reason):
+            submit(**args)
+        assert requests == []
+        record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
+        assert record["durable_state"] == "ABORTED_BEFORE_TRANSPORT"
+        return
+
+    result = submit(**args)
+    assert result.http_post_attempts == 1 and result.external_effect_count == 0
+    assert result.post_submit_join.client_order_id == envelope.client_order_id
+    assert result.post_submit_join.typed_outcome == (
+        "UNKNOWN" if case == "timeout" else "ACKNOWLEDGED"
+    )
+    assert result.post_submit_join.resubmit_allowed is False
+    assert result.post_submit_join.fill_observed is False
+    with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):
+        submit(**args)
+    assert len(requests) == 1
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])

@@ -38,6 +38,10 @@ from .current_productive_post_budget_admission_v1 import (
     capture_current_post_budget_admission_v1,
     inspect_current_post_budget_admission_v1,
 )
+from .current_productive_post_position_close_v1 import (
+    CurrentPostPositionCloseError,
+    inspect_current_post_position_close_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -82,9 +86,11 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_p
     FullCoreCurrentPostQuantityVetoError,
     FullCoreCurrentPostPendingVetoError,
     FullCoreCurrentPostBudgetVetoError,
+    FullCoreCurrentPostPositionCloseVetoError,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveHttpTradeOrderTransportV1,
 )
+from .full_core_post_response_to_ack_mapper_v1 import FullCorePostSubmitJoinResultV1
 from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
     FullCoreSendCredentialHandleV1,
 )
@@ -142,6 +148,7 @@ class OneShotJoinResultV1:
     step_29q_status: str
     http_status: int = 0
     post_outcome_phase: str = ""
+    post_submit_join: FullCorePostSubmitJoinResultV1 | None = None
 
 
 def _assert_standing_pins_v1() -> None:
@@ -234,6 +241,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         portfolio_reservation_id="",
         execution_identity=None,
         permit=None,
+        post_position_close_context=None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -248,6 +256,50 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._portfolio_reservation_id = portfolio_reservation_id
         self._execution_identity = execution_identity
         self._permit = permit
+        self._post_position_close_context = post_position_close_context
+
+    def _inspect_order_v1(self, attempt):
+        if self._post_position_close_context is not None:
+            try:
+                inspect_current_post_position_close_v1(
+                    self._post_position_close_context,
+                    envelope=self._envelope,
+                    transport_attempt=attempt,
+                    stage="BEFORE_K1",
+                )
+            except CurrentPostPositionCloseError as exc:
+                attempt.abort_before_transport_v1(reason_code=str(exc))
+                raise FullCoreCurrentPostPositionCloseVetoError(str(exc)) from exc
+            return None
+        try:
+            inspect_current_post_venue_quantity_v1(
+                self._post_quantity_context, envelope=self._envelope, stage="BEFORE_K1"
+            )
+            inspect_current_post_pending_v1(
+                self._post_pending_context, envelope=self._envelope, stage="BEFORE_K1"
+            )
+        except (CurrentPostVenueQuantityError, CurrentPostPendingObservationError) as exc:
+            attempt.abort_before_transport_v1(reason_code=str(exc))
+            raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        try:
+            budget_context = capture_current_post_budget_admission_v1(
+                owner=self._portfolio_budget_owner,
+                reservation_id=self._portfolio_reservation_id,
+                envelope=self._envelope,
+                identity=self._execution_identity,
+                permit=self._permit,
+                transport_attempt=attempt,
+            )
+            inspect_current_post_budget_admission_v1(
+                budget_context,
+                envelope=self._envelope,
+                transport_attempt=attempt,
+                stage="BEFORE_K1",
+            )
+            return budget_context
+        except CurrentPostBudgetAdmissionError as exc:
+            attempt.abort_before_transport_v1(reason_code=str(exc))
+            raise FullCoreCurrentPostBudgetVetoError(str(exc)) from exc
 
     def post_trade_order(
         self,
@@ -291,38 +343,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         except CurrentPostSafetyVetoError as exc:
             attempt.abort_before_transport_v1(reason_code=str(exc))
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
-        try:
-            inspect_current_post_venue_quantity_v1(
-                self._post_quantity_context, envelope=self._envelope, stage="BEFORE_K1"
-            )
-        except CurrentPostVenueQuantityError as exc:
-            attempt.abort_before_transport_v1(reason_code=str(exc))
-            raise FullCoreProductiveHttpPostError(str(exc)) from exc
-        try:
-            inspect_current_post_pending_v1(
-                self._post_pending_context, envelope=self._envelope, stage="BEFORE_K1"
-            )
-        except CurrentPostPendingObservationError as exc:
-            attempt.abort_before_transport_v1(reason_code=str(exc))
-            raise FullCoreProductiveHttpPostError(str(exc)) from exc
-        try:
-            budget_context = capture_current_post_budget_admission_v1(
-                owner=self._portfolio_budget_owner,
-                reservation_id=self._portfolio_reservation_id,
-                envelope=self._envelope,
-                identity=self._execution_identity,
-                permit=self._permit,
-                transport_attempt=attempt,
-            )
-            inspect_current_post_budget_admission_v1(
-                budget_context,
-                envelope=self._envelope,
-                transport_attempt=attempt,
-                stage="BEFORE_K1",
-            )
-        except CurrentPostBudgetAdmissionError as exc:
-            attempt.abort_before_transport_v1(reason_code=str(exc))
-            raise FullCoreCurrentPostBudgetVetoError(str(exc)) from exc
+        budget_context = self._inspect_order_v1(attempt)
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
         try:
@@ -341,6 +362,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     post_quantity_context=self._post_quantity_context,
                     post_pending_context=self._post_pending_context,
                     post_budget_context=budget_context,
+                    post_position_close_context=self._post_position_close_context,
                 )
                 try:
                     result = http.post_trade_order(
@@ -362,6 +384,7 @@ class _DurableConsumeThenK1HttpTransportV1:
             FullCoreCurrentPostQuantityVetoError,
             FullCoreCurrentPostPendingVetoError,
             FullCoreCurrentPostBudgetVetoError,
+            FullCoreCurrentPostPositionCloseVetoError,
         ) as exc:
             # K1 context has exited. Only the original still-PRE_SOCKET claim
             # can close negatively; a matching error string or zero counter
@@ -399,6 +422,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     post_safety_context=None,
     post_quantity_context=None,
     post_pending_context=None,
+    post_position_close_context=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -427,17 +451,30 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     if envelope.issued_for_exact_action != ISSUED_FOR_EXACT_ACTION:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError("ISSUED_FOR_EXACT_ACTION_MISMATCH")
-    try:
-        original_context = inspect_original_portfolio_execution_context_v1(
-            envelope=envelope,
-            portfolio_budget_owner=portfolio_budget_owner,
-            portfolio_reservation_id=portfolio_reservation_id,
-            execution_identity=execution_identity,
-            execution_plan_context=execution_plan_context,
-            required_execution_environment="LIVE",
+    original_context = None
+    if post_position_close_context is None:
+        try:
+            original_context = inspect_original_portfolio_execution_context_v1(
+                envelope=envelope,
+                portfolio_budget_owner=portfolio_budget_owner,
+                portfolio_reservation_id=portfolio_reservation_id,
+                execution_identity=execution_identity,
+                execution_plan_context=execution_plan_context,
+                required_execution_environment="LIVE",
+            )
+        except FullCoreEnvelopeBoundSendSeamError as exc:
+            raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    elif (
+        portfolio_budget_owner is not None
+        or portfolio_reservation_id
+        or execution_identity is not None
+        or execution_plan_context is not None
+        or post_quantity_context is not None
+        or post_pending_context is not None
+    ):
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(
+            "POSITION_CLOSE_ENTRY_CONTEXT_CONFLICT"
         )
-    except FullCoreEnvelopeBoundSendSeamError as exc:
-        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     try:
         safety = resolve_current_post_safety_context_v1(
             envelope, post_safety_context, stage="BEFORE_ACTUAL_PERMIT"
@@ -446,19 +483,31 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     except CurrentPostSafetyVetoError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     try:
-        inspect_current_post_venue_quantity_v1(
-            post_quantity_context, envelope=envelope, stage="BEFORE_ACTUAL_PERMIT"
-        )
-    except CurrentPostVenueQuantityError as exc:
-        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
-    try:
-        inspect_current_post_pending_v1(
-            post_pending_context,
-            envelope=envelope,
-            stage="BEFORE_ACTUAL_PERMIT",
-            expected_account=original_context["account"] if original_context is not None else None,
-        )
-    except CurrentPostPendingObservationError as exc:
+        if post_position_close_context is not None:
+            inspect_current_post_position_close_v1(
+                post_position_close_context,
+                envelope=envelope,
+                store_root=store_root,
+                stage="BEFORE_ACTUAL_PERMIT",
+                verify_retained=True,
+            )
+        else:
+            inspect_current_post_venue_quantity_v1(
+                post_quantity_context, envelope=envelope, stage="BEFORE_ACTUAL_PERMIT"
+            )
+            inspect_current_post_pending_v1(
+                post_pending_context,
+                envelope=envelope,
+                stage="BEFORE_ACTUAL_PERMIT",
+                expected_account=original_context["account"]
+                if original_context is not None
+                else None,
+            )
+    except (
+        CurrentPostPositionCloseError,
+        CurrentPostVenueQuantityError,
+        CurrentPostPendingObservationError,
+    ) as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     permit = issue_external_effect_permit_v1(
         envelope,
@@ -502,6 +551,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         portfolio_reservation_id=portfolio_reservation_id,
         execution_identity=execution_identity,
         permit=permit,
+        post_position_close_context=post_position_close_context,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(
@@ -538,6 +588,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         step_29q_status=STEP_29Q_PLAN_ONLY,
         http_status=join_http,
         post_outcome_phase=join_phase,
+        post_submit_join=seam.post_submit_join,
     )
 
 

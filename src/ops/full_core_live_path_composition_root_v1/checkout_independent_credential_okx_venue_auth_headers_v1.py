@@ -148,6 +148,23 @@ def release_k1_venue_auth_session_v1(handle: FullCoreK1BoundVenueAuthHandleV1) -
     _SESSION_FIELDS.pop(handle.handle_id, None)
 
 
+def require_same_k1_venue_credential_v1(observed_handle, signing_handle) -> None:
+    """Compare two active opaque sessions without returning any credential material."""
+    if any(
+        type(handle) is not FullCoreK1BoundVenueAuthHandleV1 or not handle.can_sign
+        for handle in (observed_handle, signing_handle)
+    ):
+        raise FullCoreK1OkxVenueAuthError("K1_VENUE_CREDENTIAL_UNPROVEN")
+    if not all(
+        hmac.compare_digest(observed.encode(), signing.encode())
+        for observed, signing in zip(
+            _borrow_session_fields_v1(observed_handle),
+            _borrow_session_fields_v1(signing_handle),
+        )
+    ):
+        raise FullCoreK1OkxVenueAuthError("K1_VENUE_CREDENTIAL_MISMATCH")
+
+
 def build_k1_okx_venue_auth_headers_v1(
     *,
     handle: FullCoreK1BoundVenueAuthHandleV1,

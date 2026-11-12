@@ -166,7 +166,7 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 }
 
 
-# Double Play's bounded close, recovery and 29P assessment policy sources.
+# Double Play's bounded close, recovery, POST integrity and 29P assessment sources.
 # Each pair pins the reviewed parent and its exact successor.
 DOUBLE_PLAY_POLICY_DELTAS = {
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
@@ -184,6 +184,10 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": (
         "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
         "a56910653c688a597c7fa9cf8ba06f76fee3d0529e45ad8a9d1c0ae47bc9deff",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": (
+        "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+        "46064d0180972b2ecbd7f32db5daea76b5201064ff73816a6a905846fa929cb4",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
         "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",

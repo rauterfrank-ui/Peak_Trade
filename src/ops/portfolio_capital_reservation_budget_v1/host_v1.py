@@ -251,6 +251,7 @@ class HostBudgetRecoveryContextV1:
     execution_reconciliation: dict = field(default_factory=dict)
     pending_source: object | None = field(default=None, repr=False, compare=False)
     account_inventory_source: object | None = field(default=None, repr=False, compare=False)
+    authenticated_reconciliation: object | None = field(default=None, repr=False, compare=False)
 
     def recover_v1(self, owner, output):
         return self._recover_with_bindings_v1(owner, output, self.host.bindings)
@@ -304,18 +305,10 @@ class HostBudgetRecoveryContextV1:
         )
         return position.side if position is not None else "FLAT"
 
-    def bind_current_authenticated_entry_episode_v1(
-        self, *, lane_id, proof_root, proof, config_digest, recover_only=False
-    ):
-        """Publish the observed entry through the original position-episode writer."""
+    def inspect_current_authenticated_entry_v1(self, *, lane_id, proof):
+        """Require the exact current observation and its durable entry revision."""
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedExecutionReconciliationProofV1,
-        )
-        from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
-            open_position_episode_from_authenticated_execution_v1,
-        )
-        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
-            PositionEpisodeScopeV1,
         )
         from .execution_v1 import read_persisted_execution_reconciliation_v1
 
@@ -346,6 +339,21 @@ class HostBudgetRecoveryContextV1:
             or result["snapshot_digest"] != proof.snapshot_digest
         ):
             raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        return link
+
+    def bind_current_authenticated_entry_episode_v1(
+        self, *, lane_id, proof_root, proof, config_digest, recover_only=False
+    ):
+        """Publish the observed entry through the original position-episode writer."""
+        from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
+            open_position_episode_from_authenticated_execution_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeScopeV1,
+        )
+
+        self.inspect_current_authenticated_entry_v1(lane_id=lane_id, proof=proof)
+        host = self.host
         state_root = host.root / "position-episodes" / proof.identity_digest
         args = dict(
             bound=host.bindings[lane_id],
@@ -569,7 +577,8 @@ class PortfolioBudgetHostV1:
             capture=capture,
             deliver_authenticated_incidents=deliver_authenticated_incidents,
         )
-        return context, capture.evidence
+        capture.discard_response_bodies_v1()
+        return replace(context, authenticated_reconciliation=capture), capture.evidence
 
     def _observe_with_retry_v1(
         self,
