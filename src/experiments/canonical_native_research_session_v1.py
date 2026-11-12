@@ -26,6 +26,7 @@ from src.experiments.canonical_advanced_search_v1 import (
 )
 from src.experiments.canonical_comparison_ssot_v1 import ComparisonCandidateV1
 from src.experiments.canonical_experiment_identity_v1 import domain_separated_digest
+from src.experiments.canonical_experiment_memory_v1 import derive_experiment_id_v1
 from src.experiments.canonical_failure_memory_v1 import derive_hypothesis_fingerprint_v1
 from src.experiments.canonical_meta_learning_v1 import MetaLearningPolicyV1
 from src.experiments.canonical_native_research_measurements_v1 import (
@@ -41,6 +42,7 @@ from src.experiments.canonical_robustness_suite_v1 import (
 )
 from src.experiments.canonical_search_candidate_research_execution_v1 import (
     ExecutedSearchResearchV1,
+    _time_key,
     build_research_execution_gvef_reference_v1,
     read_research_execution_gvef_reference_v1,
     run_search_candidate_research_execution_v1,
@@ -270,6 +272,9 @@ class NativeResearchExecutionArchiveV1:
         return artifact_id
 
     def get(self, artifact_id: str) -> ExecutedSearchResearchV1:
+        return self._read_packet(artifact_id)[0]
+
+    def _read_packet(self, artifact_id: str) -> tuple[ExecutedSearchResearchV1, Mapping[str, Any]]:
         raw = self._path(artifact_id).read_bytes()
         if hashlib.sha256(raw).hexdigest() != artifact_id:
             raise NativeResearchSessionError("ARCHIVE_BYTE_DIGEST_MISMATCH")
@@ -280,7 +285,7 @@ class NativeResearchExecutionArchiveV1:
             body["gvef_reference"], artifact_bytes=body["execution_utf8"].encode()
         )
         _validate_measurement(body["measurement_receipt"], executed)
-        return executed
+        return executed, body["measurement_receipt"]
 
 
 @dataclass(frozen=True)
@@ -302,8 +307,9 @@ def run_native_research_session_step_v1(
     evidence_source_class: str,
     meta_created_at: str | None = None,
     meta_policy: MetaLearningPolicyV1 | None = None,
+    continuation_artifact_ids: Sequence[str] = (),
 ) -> NativeResearchSessionStepV1:
-    """One explicit measured/reused/resumed trial, with a shared existing-memory lease."""
+    """One measured/reused/resumed trial. Continuation ids identify prior measured coverage."""
     kwargs = dict(
         search_request=search_request,
         provider=provider,
@@ -313,6 +319,7 @@ def run_native_research_session_step_v1(
         evidence_source_class=evidence_source_class,
         meta_created_at=meta_created_at,
         meta_policy=meta_policy,
+        continuation_artifact_ids=continuation_artifact_ids,
     )
     from src.experiments.canonical_research_prepared_execution_v1 import research_step_lease_v1
 
@@ -339,6 +346,7 @@ def _run_native_research_session_step_locked_v1(
     evidence_source_class: str,
     meta_created_at: str | None = None,
     meta_policy: MetaLearningPolicyV1 | None = None,
+    continuation_artifact_ids: Sequence[str] = (),
 ) -> NativeResearchSessionStepV1:
     """Resume explicit measured packets and read current Failure/Gap owners before Search.
 
@@ -356,6 +364,8 @@ def _run_native_research_session_step_locked_v1(
         raise NativeResearchSessionError("EXPLICIT_EXISTING_MEMORY_STORES_REQUIRED")
     if len(set(prior_artifact_ids)) != len(prior_artifact_ids):
         raise NativeResearchSessionError("DUPLICATE_PRIOR_ARTIFACT_FORBIDDEN")
+    if len(set(continuation_artifact_ids)) != len(continuation_artifact_ids):
+        raise NativeResearchSessionError("DUPLICATE_CONTINUATION_ARTIFACT_FORBIDDEN")
     # Do not permit a second policy/identity under the provider's exact template.
     if search_request.identity_template != ctx.identity_template:
         raise NativeResearchSessionError("SEARCH_PROVIDER_TEMPLATE_MISMATCH")
@@ -377,6 +387,17 @@ def _run_native_research_session_step_locked_v1(
     intent = intent_digest_v1(
         search_request, prior_artifact_ids, provider_ref, evidence_source_class, meta_policy
     )
+    archived_experiments = None
+    if continuation_artifact_ids:
+        archived_experiments = _continuation_bindings_v1(
+            archive,
+            provider,
+            search_request,
+            artifact_ids=continuation_artifact_ids,
+            provider_ref=provider_ref,
+            evidence_source_class=evidence_source_class,
+        )
+        intent = digest_v1({"base_intent": intent, "continuation_artifacts": archived_experiments})
     context_digest = digest_v1(
         encode_request_value_v1(
             replace(ctx, created_at="ORIGINAL_CLOCK_RETAINED", existing_failure_records=())
@@ -417,6 +438,10 @@ def _run_native_research_session_step_locked_v1(
         return finish_prepared_v1(incomplete[0], archive, ctx)
     failures = ctx.failure_memory_store.list_records()
     gaps = ctx.reality_gap_store.list_records()
+    if archived_experiments:
+        search_time = _time_key(search_request.created_at)
+        if any(_time_key(row["created_at"]) > search_time for row in (*failures, *gaps)):
+            raise NativeResearchSessionError("CONTINUATION_MEMORY_AFTER_SEARCH")
     # Caller-supplied lists are accepted only if identical to the durable owners.
     for supplied, stored in (
         (search_request.failure_records, failures),
@@ -439,12 +464,15 @@ def _run_native_research_session_step_locked_v1(
             policy=meta_policy,
             next_search_request=request,
             compatibility_contract=ctx.compatibility_contract,
+            archived_experiment_artifacts=archived_experiments,
         )
         search = feedback["next_search_record"]
     else:
         if meta_created_at is not None or meta_policy is not None:
             raise NativeResearchSessionError("META_WITHOUT_PRIOR_EVIDENCE_FORBIDDEN")
-        search = build_canonical_advanced_search_v1(request)
+        search = build_canonical_advanced_search_v1(
+            request, archived_experiment_artifacts=archived_experiments
+        )
     proposed = [row for row in search["candidates"] if row["status"] == "PROPOSED"]
     if not proposed:
         return NativeResearchSessionStepV1(search, feedback, None, None, "NO_PROPOSED_CANDIDATE")
@@ -547,11 +575,80 @@ def _run_native_research_session_step_locked_v1(
     return NativeResearchSessionStepV1(search, feedback, executed, key, "EXECUTED_AND_ARCHIVED")
 
 
+def _continuation_bindings_v1(
+    archive: NativeResearchExecutionArchiveV1,
+    provider: NativeResearchExperimentProviderV1,
+    search_request: CanonicalAdvancedSearchRequestV1,
+    *,
+    artifact_ids: Sequence[str],
+    provider_ref: str,
+    evidence_source_class: str,
+) -> dict[str, str]:
+    from src.experiments.canonical_research_prepared_execution_v1 import (
+        digest_v1,
+        journal_root_v1,
+        read_v1,
+        verify_owner_records_v1,
+    )
+
+    context = provider.context
+    champion_id = derive_experiment_id_v1(
+        str(context.champion.experiment_identity["identity_digest"])
+    )
+    search_time = _time_key(search_request.created_at)
+    bindings = {}
+    for artifact_id in artifact_ids:
+        executed, receipt = archive._read_packet(artifact_id)
+        source = executed.next_meta_input
+        loop = source.research_loop_record
+        experiment_id = loop["selected_experiment_id"]
+        if _time_key(loop["created_at"]) > search_time:
+            raise NativeResearchSessionError("CONTINUATION_ARCHIVE_AFTER_SEARCH")
+        if (
+            executed.evidence["provider_ref"] != provider_ref
+            or executed.evidence["declared_evidence_source_class"] != evidence_source_class
+            or source.time_horizon != context.time_horizon
+            or tuple(source.market_universe) != tuple(context.market_universe)
+            or loop["champion_experiment_id"] != champion_id
+            or loop["hypothesis_preparation"]["robustness_policy_digest"]
+            != search_request.robustness_policy_digest
+            or loop["reality_gap_record"]["threshold_policy_digest"]
+            != context.threshold_policy_digest
+            or loop["reality_gap_record"]["observed_surface"] != context.observed_surface
+        ):
+            raise NativeResearchSessionError("CONTINUATION_ARCHIVE_CONTEXT_MISMATCH")
+        verify_owner_records_v1(executed, context)
+        step_path = journal_root_v1(context) / experiment_id
+        if step_path.exists() and (
+            not (step_path / "ack.json").is_file()
+            or read_v1(step_path / "ack.json")
+            != {
+                "artifact_id": artifact_id,
+                "prepared_digest": digest_v1(read_v1(step_path / "prepared.json")),
+            }
+        ):
+            raise NativeResearchSessionError("CONTINUATION_ORIGINAL_STEP_NOT_ACKNOWLEDGED")
+        (selected,) = (
+            row
+            for row in source.search_record["candidates"]
+            if row["experiment_id"] == experiment_id and row["status"] == "PROPOSED"
+        )
+        _require_measurement_inputs_v1(provider, selected, receipt)
+        if experiment_id in bindings:
+            raise NativeResearchSessionError("MULTIPLE_CONTINUATION_PACKETS_FOR_EXPERIMENT")
+        bindings[experiment_id] = artifact_id
+    return bindings
+
+
 def _require_reuse_inputs_v1(provider, selected, archive, key):
+    _, receipt = archive._read_packet(key)
+    _require_measurement_inputs_v1(provider, selected, receipt)
+
+
+def _require_measurement_inputs_v1(provider, selected, receipt):
     from src.experiments.canonical_research_prepared_execution_v1 import ResearchRecoveryError
 
     ctx = provider.context
-    receipt = json.loads((archive.root / (key + ".json")).read_bytes())["measurement_receipt"]
     if (
         receipt.get(
             "instrument_admission_mode", STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0

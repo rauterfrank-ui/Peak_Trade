@@ -387,47 +387,51 @@ def test_declared_cohort_routes_its_comparison_and_drives_a_later_replication(
     assert output.read_bytes() == bytes_v1(receipt)
     comparison_path.write_bytes(original_bytes)
 
-    # The next seed uses a new context acquired after the preceding holdout was known.
-    previous_job = comparison["cases"][-1]["job_key"]
-    previous_archive = (
-        store
-        / ".intelligence-integration-v1"
-        / digest_v1(previous_job)
-        / "recorded_outcome_archive"
-    )
-    next_context_root = tmp_path / "next-seed"
-    last_close = clock[0].replace(second=0, microsecond=0) - timedelta(minutes=1)
-    next_context = representation.capture_representation_context_v1(
-        **{
-            **inputs,
-            "output": next_context_root,
-            "mark_archive": previous_archive,
-            "ohlcv_end_utc": utc(last_close),
-            "fetch": capture_context,
-        }
-    )
-    next_start = last_close + timedelta(hours=1)
-    next_request = {**market_request(next_start), "market_identity": next_context["identity"]}
-    next_seed = seed_frozen_forecast(store, next_context, next_request)
-    next_archive = mark.read_captured_mark_archive_v1(previous_archive)
-    measurement.schedule_recorded_market_measurement_v1(
-        store_root=store,
-        job_key=next_seed["job_key"],
-        binding_path=next_archive.binding_path,
-        binding_sha256=next_archive.binding_sha256,
-        repository_sha=archive.repository_sha,
-        capture_delay_seconds=60,
-    )
-    following = {
-        "parent_store_root": store,
-        "parent_seed_job_key": seed["job_key"],
-        "store_root": store,
-        "seed_job_key": next_seed["job_key"],
-        "seed_context_root": next_context_root,
-        "next_starts_utc": [utc(next_start + timedelta(hours=3 * index)) for index in range(1, 8)],
-        "repository_sha": archive.repository_sha,
-        "wait": False,
-    }
+    def prospective_cohort(parent_job, comparison, name):
+        previous_job = comparison["cases"][-1]["job_key"]
+        previous_archive = (
+            store
+            / ".intelligence-integration-v1"
+            / digest_v1(previous_job)
+            / "recorded_outcome_archive"
+        )
+        next_context_root = tmp_path / name
+        last_close = clock[0].replace(second=0, microsecond=0) - timedelta(minutes=1)
+        next_context = representation.capture_representation_context_v1(
+            **{
+                **inputs,
+                "output": next_context_root,
+                "mark_archive": previous_archive,
+                "ohlcv_end_utc": utc(last_close),
+                "fetch": capture_context,
+            }
+        )
+        next_start = last_close + timedelta(hours=1)
+        next_request = {**market_request(next_start), "market_identity": next_context["identity"]}
+        next_seed = seed_frozen_forecast(store, next_context, next_request)
+        next_archive = mark.read_captured_mark_archive_v1(previous_archive)
+        measurement.schedule_recorded_market_measurement_v1(
+            store_root=store,
+            job_key=next_seed["job_key"],
+            binding_path=next_archive.binding_path,
+            binding_sha256=next_archive.binding_sha256,
+            repository_sha=archive.repository_sha,
+            capture_delay_seconds=60,
+        )
+        return {
+            "parent_store_root": store,
+            "parent_seed_job_key": parent_job,
+            "store_root": store,
+            "seed_job_key": next_seed["job_key"],
+            "seed_context_root": next_context_root,
+            "next_starts_utc": [
+                utc(next_start + timedelta(hours=3 * index)) for index in range(1, 8)
+            ],
+            "repository_sha": archive.repository_sha,
+            "wait": False,
+        }, next_start
+
+    following, next_start = prospective_cohort(seed["job_key"], comparison, "next-seed")
     with pytest.raises(ValueError, match="^RESEARCH_FOLLOW_UP_REQUIRES_LATER_ORIGINAL_CONTEXT$"):
         follow_up.run_paired_representation_follow_up_v1(
             **{**following, "seed_job_key": seed["job_key"]}
@@ -466,6 +470,50 @@ def test_declared_cohort_routes_its_comparison_and_drives_a_later_replication(
     assert child_plan["validation_fraction"] == follow_plan["inputs"]["validation_fraction"] == 0.25
     assert measurement.instant_v1(follow_plan["declared_at_utc"]) < next_start
     assert len(captures) == 16 and len(contexts) == 15 * 3
+    child_comparison = json.loads(
+        plan_path.with_name("paired_representation_comparison.json").read_bytes()
+    )
+    continuing, later_start = prospective_cohort(
+        following["seed_job_key"], child_comparison, "later-seed"
+    )
+    assert follow_up.run_paired_representation_follow_up_v1(**continuing) == {
+        "status": "WAITING_FOR_PRIOR_RESEARCH_PARENT_LOCATOR"
+    }
+    continuing.update(prior_parent_store_root=store, prior_parent_seed_job_key=seed["job_key"])
+    receipt_path = plan_path.with_name(follow_up.RECEIPT_FILE)
+    answer_bytes = receipt_path.read_bytes()
+    receipt_path.unlink()
+    assert follow_up.run_paired_representation_follow_up_v1(**continuing) == {
+        "status": "WAITING_FOR_PARENT_FOLLOW_UP_ANSWER"
+    }
+    forged = {name: value for name, value in result.items() if name != "exact_content_digest"}
+    forged["follow_up_measurement"] = {
+        **forged["follow_up_measurement"],
+        "delta_b0_minus_b1": 99.0,
+    }
+    receipt_path.write_bytes(bytes_v1(seal_v1(forged)))
+    with pytest.raises(ValueError, match="^RESEARCH_FOLLOW_UP_ORIGINAL_ANSWER_MISMATCH$"):
+        follow_up.run_paired_representation_follow_up_v1(**continuing)
+    receipt_path.write_bytes(answer_bytes)
+    assert len(captures) == 16
+    assert list(store.glob(f".intelligence-integration-v1/*/{follow_up.PLAN_FILE}")) == [plan_path]
+
+    continued = follow_up.run_paired_representation_follow_up_v1(**continuing)
+    assert continued["status"] == "FOLLOW_UP_REMEASURED"
+    assert continued["parent_comparison_digest"] == result["follow_up_comparison_digest"]
+    assert continued["parent_measurement"] == result["follow_up_measurement"]
+    (continuation_path,) = (
+        path
+        for path in store.glob(f".intelligence-integration-v1/*/{follow_up.PLAN_FILE}")
+        if path != plan_path
+    )
+    continuation_plan = json.loads(continuation_path.read_bytes())
+    assert (
+        continuation_plan["inputs"]["parent_follow_up_receipt_digest"]
+        == result["exact_content_digest"]
+    )
+    assert measurement.instant_v1(continuation_plan["declared_at_utc"]) < later_start
+    assert len(captures) == 24 and len(contexts) == 23 * 3
     repo = Path(__file__).resolve().parents[2]
     replay = subprocess.check_output(
         [
@@ -488,9 +536,9 @@ mark.HTTPSConnection = representation.HTTPSConnection = unexpected_capture
 print(bytes_v1(follow_up.run_paired_representation_follow_up_v1(**json.loads(sys.argv[2]))).decode())
 """,
             utc(clock[0]),
-            json.dumps(following, default=str),
+            json.dumps(continuing, default=str),
         ],
         cwd=repo,
         text=True,
     )
-    assert replay.splitlines()[-1].encode() == bytes_v1(result)
+    assert replay.splitlines()[-1].encode() == bytes_v1(continued)

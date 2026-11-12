@@ -202,6 +202,7 @@ def run_research_result_meta_search_feedback_v1(
     policy: MetaLearningPolicyV1,
     next_search_request: CanonicalAdvancedSearchRequestV1,
     compatibility_contract: ComparisonCompatibilityContractV1 | None = None,
+    archived_experiment_artifacts: Mapping[str, str] | None = None,
 ) -> Mapping[str, Any]:
     """One bounded feedback step into existing Search; never runs an experiment."""
     if next_search_request.meta_learning_signals or next_search_request.meta_learning_identity:
@@ -217,7 +218,8 @@ def run_research_result_meta_search_feedback_v1(
             meta_learning_identity=(
                 meta["meta_learning_identity"] if meta["research_proposals"] else None
             ),
-        )
+        ),
+        archived_experiment_artifacts=archived_experiment_artifacts,
     )
     if _created_at_key(search["created_at"]) < _created_at_key(meta["created_at"]):
         raise ResearchResultMetaBindingError("NEXT_SEARCH_PRECEDES_META_EVIDENCE")

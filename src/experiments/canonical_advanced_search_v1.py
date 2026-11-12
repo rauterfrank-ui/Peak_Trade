@@ -125,6 +125,7 @@ CANONICAL_LINEAGE_KINDS: Final[tuple[str, ...]] = (LINEAGE_KIND_ROOT, LINEAGE_KI
 
 STATUS_PROPOSED: Final[str] = "PROPOSED"
 STATUS_BUDGET_EXCLUDED: Final[str] = "BUDGET_EXCLUDED"
+STATUS_ALREADY_MEASURED: Final[str] = "ALREADY_MEASURED"
 STATUS_DEPRIORITIZED_KNOWN_FAILURE: Final[str] = "DEPRIORITIZED_KNOWN_FAILURE"
 STATUS_REJECTED_DUPLICATE_WITHOUT_RETEST: Final[str] = "REJECTED_DUPLICATE_WITHOUT_RETEST"
 STATUS_REJECTED_IDENTITY: Final[str] = "REJECTED_IDENTITY"
@@ -132,6 +133,7 @@ STATUS_REJECTED_CONSTRAINT: Final[str] = "REJECTED_CONSTRAINT"
 CANONICAL_CANDIDATE_STATUSES: Final[tuple[str, ...]] = (
     STATUS_PROPOSED,
     STATUS_BUDGET_EXCLUDED,
+    STATUS_ALREADY_MEASURED,
     STATUS_DEPRIORITIZED_KNOWN_FAILURE,
     STATUS_REJECTED_DUPLICATE_WITHOUT_RETEST,
     STATUS_REJECTED_IDENTITY,
@@ -337,6 +339,8 @@ def canonical_advanced_search_constraint_v1() -> SearchConstraintV1:
 
 def build_canonical_advanced_search_v1(
     request: CanonicalAdvancedSearchRequestV1,
+    *,
+    archived_experiment_artifacts: Mapping[str, str] | None = None,
 ) -> Mapping[str, Any]:
     created_at = _require_created_at(request.created_at)
     search_method = _require_search_method(request.search_method)
@@ -376,6 +380,7 @@ def build_canonical_advanced_search_v1(
         request.meta_learning_signals,
         meta_learning_identity=request.meta_learning_identity,
     )
+    archives = _canonicalize_archived_experiments(archived_experiment_artifacts)
     candidates = [
         _evaluate_combination(
             combination,
@@ -396,6 +401,12 @@ def build_canonical_advanced_search_v1(
         )
         for combination in combinations
     ]
+    if not retest_reason:
+        for candidate in candidates:
+            if candidate["status"] == STATUS_PROPOSED and candidate["experiment_id"] in archives:
+                candidate["status"] = STATUS_ALREADY_MEASURED
+                candidate["reason"] = "exact experiment already has an archived measurement"
+                candidate["offline_experiment_request"] = None
     _assign_proposal_budget(candidates, budget=budget)
     proposed = [item for item in candidates if item["status"] == STATUS_PROPOSED]
     hypotheses = [_hypothesis_projection(item) for item in proposed]
@@ -435,6 +446,8 @@ def build_canonical_advanced_search_v1(
         "parent_hypothesis_id": parent_hypothesis_id,
         "reality_gap_record_ids": [item["reality_gap_record_id"] for item in gap_records],
     }
+    if archives:
+        input_lineage["archived_experiment_artifacts"] = archives
     body = {
         "advanced_search_authority": ADVANCED_SEARCH_AUTHORITY,
         "advanced_search_domain": ADVANCED_SEARCH_DOMAIN,
@@ -511,6 +524,10 @@ def build_canonical_advanced_search_v1(
         "self_learning_self_authorizing_separation": SELF_LEARNING_SELF_AUTHORIZING_SEPARATION,
         "supported_search_mechanisms": list(SUPPORTED_SEARCH_METHODS),
     }
+    if archives:
+        body["search_evidence"]["already_measured_count"] = _count_status(
+            candidates, STATUS_ALREADY_MEASURED
+        )
     search_identity = derive_search_identity_v1(body)
     record = dict(body)
     record["search_identity"] = search_identity
@@ -606,6 +623,15 @@ def validate_canonical_advanced_search_v1(record: Mapping[str, Any]) -> None:
     candidates = payload.get("candidates")
     if not isinstance(candidates, list) or not candidates:
         raise AdvancedSearchValidationError("candidates must be a non-empty list")
+    archives = _canonicalize_archived_experiments(
+        payload.get("input_lineage", {}).get("archived_experiment_artifacts")
+    )
+    measured = [row for row in candidates if row.get("status") == STATUS_ALREADY_MEASURED]
+    if any(row.get("experiment_id") not in archives for row in measured) or (
+        archives
+        and payload.get("search_evidence", {}).get("already_measured_count") != len(measured)
+    ):
+        raise AdvancedSearchValidationError("archived measurement lineage mismatch")
     for candidate in candidates:
         if candidate.get("status") not in CANONICAL_CANDIDATE_STATUSES:
             raise AdvancedSearchValidationError("candidate status is not canonical")
@@ -796,6 +822,24 @@ def _assign_proposal_budget(candidates: list[dict[str, Any]], *, budget: int) ->
         item["status"] = STATUS_BUDGET_EXCLUDED
         item["reason"] = "eligible candidate excluded by explicit search budget"
         item["offline_experiment_request"] = None
+
+
+def _canonicalize_archived_experiments(
+    archives: Mapping[str, str] | None,
+) -> dict[str, str]:
+    if archives is None:
+        return {}
+    if not isinstance(archives, Mapping):
+        raise AdvancedSearchValidationError("archived experiment artifacts must be a mapping")
+    return dict(
+        sorted(
+            (
+                _require_sha256("archived_experiment_id", experiment_id),
+                _require_sha256("measurement_archive_id", artifact_id),
+            )
+            for experiment_id, artifact_id in archives.items()
+        )
+    )
 
 
 def _bind_candidate_identity(
