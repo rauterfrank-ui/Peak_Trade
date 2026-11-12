@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,6 +8,10 @@ from types import MappingProxyType
 
 import pytest
 
+from src.ops.f1_m9_replay_host_observation_v1 import (
+    read_f1_m9_replay_host_observation_v1,
+    run_and_write_f1_m9_replay_host_observation_v1,
+)
 from tests.governance.test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
     _canonical_seam,
 )
@@ -15,6 +20,9 @@ from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 imp
     _replay_input,
 )
 from trading.master_v2 import double_play_old_effective_host_contract_v1 as host_contract
+from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+    serialize_canonical_trading_decision_evidence_canonical,
+)
 from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
     bind_typed_canonical_volatility_estimate_into_market_context_v1,
     evaluate_typed_volatility_binding_eligibility_v1,
@@ -23,16 +31,13 @@ from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_
     build_canonical_volatility_estimate_v1,
 )
 from trading.master_v2.integrated_offline_replay_evidence_writer_v1 import (
-    read_f1_m9_replay_host_observation_v1,
-    run_and_write_f1_m9_replay_host_observation_v1,
     verify_evidence_manifest_v1,
-    write_integrated_offline_replay_evidence_bundle_v1,
 )
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
 )
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[2]
 _OBSERVATION = "f1_m9_replay_host_observation.json"
 
 
@@ -62,9 +67,6 @@ def test_real_replay_exports_effective_alpha_and_preserves_original_evidence(tmp
     replay_input = _input(seam, hour=10, minute=0)
     assert host_contract.integrated_replay_presence_alpha_at_dp_boundary_v1() is True
     default_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
-    default_manifest = write_integrated_offline_replay_evidence_bundle_v1(
-        out_dir=tmp_path / "default", replay_input=replay_input, replay_result=default_result
-    )
     manifest, digest = run_and_write_f1_m9_replay_host_observation_v1(
         out_dir=tmp_path / "observed", replay_input=replay_input
     )
@@ -95,22 +97,23 @@ def test_real_replay_exports_effective_alpha_and_preserves_original_evidence(tmp
     assert record["decision_outcome"] == default_result.evidence.decision_outcome == "no_action"
     assert record["execution_eligible"] is False
     assert record["authority"] == "NONE"
+    assert record["observation_source"] == "OFFLINE_PROFILE_ORIGINAL_HOST_RETURN"
 
-    default_files = {path.name: path.read_bytes() for path in default_manifest.parent.iterdir()}
     observed_files = {path.name: path.read_bytes() for path in manifest.parent.iterdir()}
-    assert _OBSERVATION not in default_files
-    assert set(observed_files) == set(default_files) | {_OBSERVATION}
-    assert all(
-        observed_files[name] == data
-        for name, data in default_files.items()
-        if name != "MANIFEST.sha256"
+    canonical_evidence = serialize_canonical_trading_decision_evidence_canonical(
+        default_result.evidence
     )
+    assert (
+        observed_files["canonical_trading_decision_evidence.canonical.json"]
+        == (canonical_evidence + "\n").encode()
+    )
+    assert sys.getprofile() is None
     assert verify_evidence_manifest_v1(manifest) == 0
 
     code = """
 import json, sys
 from pathlib import Path
-from trading.master_v2.integrated_offline_replay_evidence_writer_v1 import read_f1_m9_replay_host_observation_v1
+from src.ops.f1_m9_replay_host_observation_v1 import read_f1_m9_replay_host_observation_v1
 print(json.dumps(read_f1_m9_replay_host_observation_v1(
     manifest_path=Path(sys.argv[1]), expected_manifest_sha256=sys.argv[2]
 )))
@@ -177,3 +180,22 @@ def test_fresh_and_blocked_replay_keep_separate_host_dispositions(tmp_path, monk
             replay_input=replace(stale, require_productive_typed_volatility_presence_gate=False),
         )
     assert not absent.exists()
+
+
+def test_active_thread_profiler_is_preserved(tmp_path):
+    replay_input = _input(_canonical_seam(tmp_path), hour=10, minute=0)
+    output = tmp_path / "observed"
+
+    def existing_profile(_frame, _event, _arg):
+        pass
+
+    sys.setprofile(existing_profile)
+    try:
+        with pytest.raises(ValueError, match="F1_M9_REPLAY_HOST_PROFILE_ALREADY_ACTIVE"):
+            run_and_write_f1_m9_replay_host_observation_v1(
+                out_dir=output, replay_input=replay_input
+            )
+        assert sys.getprofile() is existing_profile
+    finally:
+        sys.setprofile(None)
+    assert not output.exists()

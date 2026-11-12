@@ -33,7 +33,7 @@ from src.governance.governed_f1_m9_scoped_owner_productive_runtime_apply_start_r
     run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_v1,
 )
 from src.meta.learning_loop.contract_safety_v1 import deterministic_json_dumps
-from trading.master_v2.integrated_offline_replay_evidence_writer_v1 import (
+from src.ops.f1_m9_replay_host_observation_v1 import (
     read_f1_m9_replay_host_observation_v1,
     run_and_write_f1_m9_replay_host_observation_v1,
 )
