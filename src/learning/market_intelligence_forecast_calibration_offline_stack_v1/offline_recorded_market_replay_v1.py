@@ -10,12 +10,24 @@ from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v
 from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier_v1 import (
     materialize_independent_market_horizon_v1,
 )
-from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.context_admission_v1 import (
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
+from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import fact_digest
+from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import (
+    FinalizedPt1hO4BarFactV1,
+)
+from src.research.offline_recorded_mark_horizon_source_v1 import (
+    load_archive_source,
+    read_bound_json,
+)
+
+from .context_admission_v1 import (
     ContextAdmissionPolicyV1,
     FactAdmissionReceiptV1,
     compose_admitted_market_context_v1,
 )
-from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+from .integration_contracts_v1 import (
     MarketIdentityV1,
     assert_offline_v1,
     bytes_v1,
@@ -23,16 +35,11 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.inte
     instant_v1,
     require_v1,
 )
-from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_existing_fact_materialization_v1 import (
+from .market_context_existing_fact_materialization_v1 import (
     WP_A_PRODUCER,
     ExistingFactMaterializationRequestV1,
     GovernedCanonicalFactV1,
 )
-from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import fact_digest
-from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import (
-    FinalizedPt1hO4BarFactV1,
-)
-from src.research.offline_recorded_mark_horizon_source_v1 import load_archive_source
 
 
 @dataclass(frozen=True)
@@ -46,17 +53,28 @@ class RecordedMarkArchiveV1:
     repository_sha: str
 
 
+def _require_received(archive, cutoff):
+    log = read_bound_json(archive.request_log_path, archive.request_log_sha256)
+    matching = [row for row in log if row.get("raw_response_sha256") == archive.raw_sha256]
+    require_v1(len(matching) == 1, "EXACT_UNIQUE_ARCHIVED_REQUEST_REQUIRED")
+    received = capture_order_key_v1(matching[0]["response_time_utc"])
+    require_v1(received <= capture_order_key_v1(cutoff), "ARCHIVE_RESPONSE_NOT_YET_AVAILABLE")
+    require_v1(received[1] % 1000 == 0, "ARCHIVE_RESPONSE_CLOCK_PRECISION_UNSUPPORTED")
+
+
 def _load(archive, identity, *, start, count, cutoff):
     assert_offline_v1()
     identity.payload()
     instant_v1(cutoff)
+    # Check the pinned log before reading the response. The original source
+    # loader verifies the same pin again when it binds the full source.
+    _require_received(archive, cutoff)
     source = load_archive_source(
         **asdict(archive),
         canonical_instrument_id=identity.instrument_ref,
         native_instrument_id=identity.native_instrument_ref,
         horizon_start_utc=start,
         n_bars=count,
-        available_by_utc=cutoff,
     )
     require_v1(source["venue"] == identity.venue, "ARCHIVE_MARKET_VENUE_MISMATCH")
     files = {key: info["sha256"] for key, info in source["archive_file_bindings"].items()}

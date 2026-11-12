@@ -4,31 +4,13 @@ from __future__ import annotations
 
 import copy
 from datetime import datetime, timezone
-import hashlib
-import json
-import math
 
 import pytest
 
-from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v1 import (
-    REQUEST_SCHEMA,
-)
-from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.context_admission_v1 import (
-    ContextAdmissionPolicyV1,
-    replay_admitted_market_context_v1,
-)
-from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
-    MarketIdentityV1,
-)
 from src.research.offline_recorded_mark_horizon_source_v1 import (
     ENDPOINT,
     aggregate_recorded_mark_minutes,
     read_bound_json,
-)
-from src.research.offline_recorded_market_replay_v1 import (
-    RecordedMarkArchiveV1,
-    compose_recorded_market_context_v1,
-    measure_recorded_market_horizon_v1,
 )
 
 
@@ -126,59 +108,3 @@ def test_raw_file_hash_is_checked_before_parsing(tmp_path):
     path.write_text("{}")
     with pytest.raises(ValueError, match="SOURCE_SHA256_MISMATCH"):
         read_bound_json(path, "a" * 64)
-
-
-def test_archived_consumers_bind_files_and_reject_early_reads(tmp_path, source_args):
-    def write(name, value):
-        data = json.dumps(value).encode("utf-8")
-        path = tmp_path / name
-        path.write_bytes(data)
-        return path, hashlib.sha256(data).hexdigest()
-
-    page = source_args["pages"][0]
-    page["payload"]["data"][119][4] = "102"
-    raw = write("raw.json", page["payload"])
-    request_record = {**page["request_record"], "raw_response_sha256": raw[1]}
-    received = "2026-10-09T20:03:11.123456Z"
-    request_record["response_time_utc"] = received
-    log = write("requests.json", [request_record])
-    binding = write("binding.json", source_args["instrument_binding"])
-    archive = RecordedMarkArchiveV1(*raw, *log, *binding, source_args["repository_sha"])
-    identity = MarketIdentityV1("archive.test", "OKX", "inst-eth-usdt-perp", "ETH-USDT-SWAP")
-    context_args = {
-        "archive": archive,
-        "identity": identity,
-        "bar_open_utc": source_args["horizon_start_utc"],
-        "policy": ContextAdmissionPolicyV1(
-            "explicit.test", {"price_o4": 36000}, ("price_state_ref",)
-        ),
-    }
-    context = compose_recorded_market_context_v1(**context_args, observed_at=received)
-    assert replay_admitted_market_context_v1(context) == context
-    assert context["source_bindings"][0]["captured_at"] == "2026-10-09T20:03:11.123456+00:00"
-    request = {
-        "schema_version": REQUEST_SCHEMA,
-        "market_identity": identity.payload(),
-        "horizon_start_time_utc": source_args["horizon_start_utc"],
-        "n_bars": 2,
-        "o4_interval_id": "PT1H",
-        "price_unit": "USDT per ETH",
-        "price_family": "MARK_PRICE",
-        "source_kind": "RECORDED_PUBLIC_MD",
-        "max_end_age_seconds": 36000,
-        "expected_price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
-    }
-    observation = measure_recorded_market_horizon_v1(
-        archive=archive, request=request, evaluated_at_utc=received
-    )
-    assert observation["measurement"]["log_return"] == pytest.approx(math.log(102 / 101))
-    assert observation["evaluated_at_utc"] == received
-
-    archive.raw_path.unlink()
-    earlier = "2026-10-09T20:03:11.123455999Z"
-    with pytest.raises(ValueError, match="^ARCHIVE_RESPONSE_NOT_YET_AVAILABLE$"):
-        compose_recorded_market_context_v1(**context_args, observed_at=earlier)
-    with pytest.raises(ValueError, match="^ARCHIVE_RESPONSE_NOT_YET_AVAILABLE$"):
-        measure_recorded_market_horizon_v1(
-            archive=archive, request=request, evaluated_at_utc=earlier
-        )

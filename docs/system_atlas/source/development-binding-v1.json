@@ -1207,6 +1207,11 @@
       "sha256": "b71d672fba972b42f1478e97fd0d6ead2c1e80063861e2bb1db2c354d2f69e95"
     },
     {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "3af6fd97b4ad7f0a2131dbf21ba509c806f9ca7831a4742c1b8fcc9f040ea7c3"
+    },
+    {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
       "before_sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
       "sha256": "f27767168b3fd347087455f7aa9abe3cc6ed19f57c7f5cdfd2e89b1fd6a584f6"
@@ -2112,16 +2117,6 @@
       "sha256": "7a627bcdb9a0716a77c5b5c5c4dd963dd7bf74117cf78fbee6cddab4a6a4e7d3"
     },
     {
-      "path": "src/research/offline_recorded_mark_horizon_source_v1.py",
-      "before_sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
-      "sha256": "ec209401b196cd30e5574c088a90da3abe817f39263962c8a68aedfb6a7160b8"
-    },
-    {
-      "path": "src/research/offline_recorded_market_replay_v1.py",
-      "before_sha256": null,
-      "sha256": "678c53ca887ab8caa1ae829d35d0f2c95f2f6db804d0057fc37a20a2fc221c0c"
-    },
-    {
       "path": "src/risk_layer/kill_switch/core.py",
       "before_sha256": "050e370eba75fa418fc89a7c3860119178bdde6903c92bba2e1ed1089f340210",
       "sha256": "c171e4288eca2942dc955a377c3ce58147ae767eb32b8c5aa19897cfbcc2a05f"
@@ -2310,6 +2305,11 @@
       "path": "tests/learning/test_n_bars_measurement_artifact_handoff_v1.py",
       "before_sha256": "5bdace9df1bccaf9a356468051ed14d4910cf55042fab94fabd5d153456fb96f",
       "sha256": "05199c5f82ba8df12b8ddd5113909ea3f2d61ef910773a70c227d68dbc115ea8"
+    },
+    {
+      "path": "tests/learning/test_offline_recorded_market_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "db832d3790dfedbfe850c98577dab381ded0aa7c10701e3d7c2a5fd50df557fd"
     },
     {
       "path": "tests/ops/_continuous_crash_checkpoint_worker_v1.py",
@@ -3060,11 +3060,6 @@
       "path": "tests/ops/test_verify_registry_pointer_artifacts_smoke.py",
       "before_sha256": "25a09bccde4ed69c5605775a44dbd3a33075df49857c8ec166747c8fff4a1d2e",
       "sha256": "21ca4cf471f2d123233c555de73e352da881102f1ff763f855846c1cfe9f62b9"
-    },
-    {
-      "path": "tests/research/test_offline_recorded_mark_horizon_source_v1.py",
-      "before_sha256": "a6f459e2f83ed33fd6973f28f4913c00c5bbedf67310e47413b84175bf939543",
-      "sha256": "9d71f794ad4f1f5469f5f498d8463af3830c934c8caa3b8673961a9a3bc37cba"
     },
     {
       "path": "tests/test_mf_membership_context_artifact_contract_v1.py",

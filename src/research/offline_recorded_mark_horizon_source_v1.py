@@ -13,9 +13,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
-    capture_order_key_v1,
-)
 from src.research.offline_n_bars_semantic_repair_v1 import RECORDED, canonical, digest_bytes
 
 ENDPOINT = "/api/v5/market/history-mark-price-candles"
@@ -196,21 +193,14 @@ def load_archive_source(
     horizon_start_utc: str,
     n_bars: int,
     repository_sha: str,
-    available_by_utc: str | None = None,
 ) -> dict[str, Any]:
     """Read-only, exact named files only. No network/import of ingestion runner."""
+    payload = read_bound_json(raw_path, raw_sha256)
     log = read_bound_json(request_log_path, request_log_sha256)
+    binding = read_bound_json(binding_path, binding_sha256)
     matching = [r for r in log if r.get("raw_response_sha256") == raw_sha256]
     if len(matching) != 1:
         raise ValueError("EXACT_UNIQUE_ARCHIVED_REQUEST_REQUIRED")
-    if available_by_utc is not None:
-        received = capture_order_key_v1(matching[0]["response_time_utc"])
-        if received > capture_order_key_v1(available_by_utc):
-            raise ValueError("ARCHIVE_RESPONSE_NOT_YET_AVAILABLE")
-        if received[1] % 1000:
-            raise ValueError("ARCHIVE_RESPONSE_CLOCK_PRECISION_UNSUPPORTED")
-    payload = read_bound_json(raw_path, raw_sha256)
-    binding = read_bound_json(binding_path, binding_sha256)
     result = aggregate_recorded_mark_minutes(
         pages=[{"payload": payload, "raw_sha256": raw_sha256, "request_record": matching[0]}],
         instrument_binding=binding,
