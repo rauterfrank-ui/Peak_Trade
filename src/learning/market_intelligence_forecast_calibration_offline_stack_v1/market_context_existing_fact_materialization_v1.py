@@ -10,6 +10,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
+from math import isfinite
 from types import MappingProxyType
 from typing import Any, Final, Mapping, Sequence
 
@@ -276,6 +277,14 @@ def derive_price_state_slot_v1(
         "close": bar.get("close"),
         "bar_open_time": bar.get("bar_open_time"),
     }
+    # WP-A emits floats. Encode them losslessly in the float-free DDO state
+    # identity; the original fact and its digest stay bound to the source bytes.
+    for field in ("close", "bar_open_time"):
+        value = identity[field]
+        if isinstance(value, float):
+            if not isfinite(value):
+                raise ExistingFactMaterializationError(f"O4_BAR_NONFINITE:{field}")
+            identity[field] = repr(value)
     return _present_slot_from_derivation(
         field_name="price_state_ref",
         state_ref=_state_ref_for_family(
