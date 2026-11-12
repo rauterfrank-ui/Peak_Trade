@@ -225,6 +225,7 @@ def prepare_productive_layered_core_replay_bind_v1(
     side_state_from_transition_carryforward: bool = False,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1 | None = None,
     existing_scope_present: bool,
+    occupied_mark: tuple[float, str, str, str] | None = None,
 ) -> Tuple[IntegratedOfflineReplayInputV1, ProductiveLayeredCoreBindCarryV1]:
     """Attach layered-core seal for CZ-4 delegation when bind is requested and enabled."""
     if not productive_layered_core_bind_requested:
@@ -319,7 +320,9 @@ def prepare_productive_layered_core_replay_bind_v1(
     restore_existing = True
     try:
         restore_episode_from_store_v1(store_root, expected_instrument_id=instrument_id)
-    except NakedLayeredCoreDurableStateError:
+    except NakedLayeredCoreDurableStateError as exc:
+        if occupied_mark is not None:
+            return replay_input, _fail_carry(str(exc))
         restore_existing = False
         if not observations:
             return replay_input, _fail_carry("layered_core_initialization_observations_required")
@@ -332,6 +335,7 @@ def prepare_productive_layered_core_replay_bind_v1(
         p4_identity_context=p4_identity,
         restore_existing=restore_existing,
         initialization_observations=observations if not restore_existing else None,
+        occupied_mark=occupied_mark,
     )
     if not seam.ok or seam.seal is None:
         return replay_input, _fail_carry(*(seam.failure_codes or ("p5_seam_failed",)))

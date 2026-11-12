@@ -11,6 +11,7 @@ POLICY = run_path(str(ROOT / "docs/system_atlas/policy_projection.py"))
 EXTENSION = POLICY["OPEN_TEST_SLOT_LOSS_PROTECTION_DELTAS"]
 ROTATION = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
 PARENT = "6b132fa1bd4788a937243c179cf294658c5389f7"
+DOUBLE_PLAY_PARENT = "835185fb1c22055ff16ea198e7a4643bf8ecec4e"
 
 
 def seed(root, *, current):
@@ -18,9 +19,10 @@ def seed(root, *, current):
         target = root / path
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(
-            (ROOT / path).read_bytes()
-            if current
-            else subprocess.check_output(["git", "show", PARENT + ":" + path], cwd=ROOT)
+            subprocess.check_output(
+                ["git", "show", (DOUBLE_PLAY_PARENT if current else PARENT) + ":" + path],
+                cwd=ROOT,
+            )
         )
 
 

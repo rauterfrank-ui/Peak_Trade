@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 POLICY = run_path(str(ROOT / "docs/system_atlas/policy_projection.py"))
 DELTAS = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
 BASE = "e2abdf73876b6f093347b27c4145b86cb7fc16c6"
+DOUBLE_PLAY_PARENT = "835185fb1c22055ff16ea198e7a4643bf8ecec4e"
 LAW = json.loads((ROOT / POLICY["LAW"]).read_text())
 ROWS = POLICY["load_policies"](ROOT, LAW)
 BEFORE = {
@@ -24,7 +25,11 @@ BEFORE = {
 
 def seed(root, *, before=False):
     for path in DELTAS:
-        body = BEFORE[path] if before else (ROOT / path).read_bytes()
+        body = (
+            BEFORE[path]
+            if before
+            else subprocess.check_output(["git", "show", DOUBLE_PLAY_PARENT + ":" + path], cwd=ROOT)
+        )
         if body is not None:
             destination = root / path
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -80,6 +85,13 @@ def test_actual_reader_binds_the_new_policies_and_preserves_startup_and_funding(
         "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py",
         *POLICY["ORDERED_FUNDING_EPISODE_DELTAS"],
     ):
-        assert (ROOT / path).read_bytes() == subprocess.check_output(
-            ["git", "show", BASE + ":" + path], cwd=ROOT
-        )
+        current = (ROOT / path).read_bytes()
+        if path in POLICY["DOUBLE_PLAY_POLICY_DELTAS"]:
+            parent, successor = POLICY["DOUBLE_PLAY_POLICY_DELTAS"][path]
+            original = subprocess.check_output(
+                ["git", "show", DOUBLE_PLAY_PARENT + ":" + path], cwd=ROOT
+            )
+            assert hashlib.sha256(original).hexdigest() == parent
+            assert hashlib.sha256(current).hexdigest() == successor
+        else:
+            assert current == subprocess.check_output(["git", "show", BASE + ":" + path], cwd=ROOT)

@@ -288,8 +288,15 @@ def seal_simulated_accounting_episode_flat_v1(
 
 
 def inspect_sealed_simulated_episode_v1(
-    *, identity, state_root, repository_sha, config_digest, expected_initial_source_ref
+    *,
+    identity,
+    state_root,
+    repository_sha,
+    config_digest,
+    expected_initial_source_ref,
+    expected_current_cursor_root: Path | None = None,
 ):
+    """Read the retained flat and optionally require its exact current Core cursor."""
     state = load_exit_policy_state_v1(
         Path(state_root),
         expected_repository_sha=repository_sha,
@@ -421,13 +428,32 @@ def inspect_sealed_simulated_episode_v1(
         if flat["accounting_checkpoint"]["funding_events"]
         else anchors["close_event_time"],
     )
-    return {
+    result = {
         "status": "SEALED",
         "closure_ref": record["closure_ref"],
         "close_event_time": anchors["close_event_time"],
         "source_payload": flat,
         "retained_cursor_root": payload["cursor_root"],
     }
+    if expected_current_cursor_root is not None:
+        root = Path(expected_current_cursor_root)
+        if (
+            not root.is_absolute()
+            or payload["cursor_root"] != str(root.resolve())
+            or prior.current_cursor_publication is None
+        ):
+            raise ValueError("SIMULATED_CLOSE_RETAINED_CURRENT_CURSOR_REQUIRED")
+        require_current_cursor_continuity_v1(
+            episode=SimpleNamespace(identity=identity, binding=prior),
+            incoming=load_current_productive_sidestate_confirmation_cursor_v1(root),
+            store_root=root,
+        )
+        result.update(
+            prior_exit_state_digest=prior.digest(),
+            prior_cursor_digest=prior.current_cursor_publication["outgoing_digest"],
+            bound_instrument=payload["bound_instrument"],
+        )
+    return result
 
 
 def create_successor_after_sealed_simulated_episode_v1(

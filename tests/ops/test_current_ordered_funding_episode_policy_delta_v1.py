@@ -14,6 +14,7 @@ DELTAS = POLICY["ORDERED_FUNDING_EPISODE_DELTAS"]
 LAW = json.loads((ROOT / "config/governance/current_law_impact_map_v1/source_v1.json").read_text())
 FROZEN = LAW["baseline_sha"]
 BASE = "304719c94030ff9aacdf2571e2ae56533f9e6a25"
+DOUBLE_PLAY_PARENT = "835185fb1c22055ff16ea198e7a4643bf8ecec4e"
 BINDING = ROOT / "docs/system_atlas/source/development-binding-v1.json"
 PRESERVED = (
     "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
@@ -36,7 +37,7 @@ def seed(root, *, original=False):
     for path in DELTAS:
         destination = root / path
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(git_bytes(FROZEN, path) if original else (ROOT / path).read_bytes())
+        destination.write_bytes(git_bytes(FROZEN if original else DOUBLE_PLAY_PARENT, path))
 
 
 @pytest.mark.parametrize("original", [True, False], ids=["frozen-originals", "reviewed-successor"])
@@ -86,7 +87,7 @@ def test_scope_source_successor_requires_the_complete_exact_reviewed_bundle(tmp_
         if source.is_file():
             destination = tmp_path / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.write_bytes(source.read_bytes())
+            destination.write_bytes(git_bytes(DOUBLE_PLAY_PARENT, relative))
     parent, _successor = POLICY["CURRENT_SCOPE_MARK_ADMISSION_DELTAS"][path]
     if damage == "partial":
         (tmp_path / path).write_bytes(git_bytes("9d2ff67b0ccfdc16d9641900a10f00b3c61eac67", path))
@@ -114,7 +115,7 @@ def test_actual_reader_rejects_missing_original_development_binding(monkeypatch,
         POLICY["validate_policy_inventory"](ROOT, LAW)
 
 
-def test_actual_reader_still_refuses_an_unrelated_frozen_policy(monkeypatch):
+def test_actual_reader_refuses_different_double_play_exit_policy(monkeypatch):
     path = ROOT / "src/trading/master_v2/double_play_entry_exit_policy_v0.py"
     original = Path.read_bytes
 
@@ -133,7 +134,9 @@ def test_startup_topology_reconciliation_budget_and_reviewed_rotation_owner(path
     # The original Funding grant alone still cannot admit that extension.
     rotation = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
     if path in rotation:
-        POLICY["validate_reserved_slot_rotation_bundle"](ROOT, policies())
+        POLICY["validate_reserved_slot_rotation_bundle"](
+            ROOT, policies(), double_play=POLICY["_uses_double_play_policy_bundle"](ROOT)
+        )
         assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == rotation[path][1]
     else:
         assert (ROOT / path).read_bytes() == git_bytes(BASE, path)

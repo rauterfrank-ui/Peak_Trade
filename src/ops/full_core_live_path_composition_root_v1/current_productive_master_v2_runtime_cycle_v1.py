@@ -14,6 +14,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -67,6 +68,7 @@ from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 imp
 from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 import (
     HostConfirmationBindingV1,
     commit_host_confirmation_after_replay_v1,
+    ObservationCycleKindV1,
     ensure_host_confirmation_binding_v1,
     evaluate_host_observation_acceptance_v1,
 )
@@ -134,6 +136,7 @@ from trading.master_v2.double_play_composition_matrix_v1 import (
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     EntryExitDirectionState,
     ExistingPositionSide,
+    PolicySignalV0,
     TradingGate,
     PositionState,
     ReconciliationState,
@@ -652,12 +655,21 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
     rotation_exit_request: object | None = None,
     rotation_time_exit_only: bool = False,
+    occupied_scope_mark: bool = False,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     # Candidate admission only. Never turn an occupied-position cycle into a
     # discarded candidate or bypass its existing risk/exit/reconciliation path.
     checking_new_candidate = (
         venue_flat is True and existing_position_side is ExistingPositionSide.NONE
     )
+    if occupied_scope_mark and (
+        venue_flat or position_episode_binding is None or not productive_layered_core_bind_requested
+    ):
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason="OCCUPIED_SCOPE_MARK_REQUIRES_BOUND_POSITION",
+            provenance=CYCLE_OWNER,
+        )
     if checking_new_candidate:
         input_codes = invalid_candidate_cycle_input_codes_v1(
             values={
@@ -816,11 +828,22 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         )
     market_event_time = _iso_utc(last_finalized_event_ts_unix)
     decision_time = _iso_utc(max(float(observed_unix), last_finalized_event_ts_unix + 0.001))
+    mark_event_unix = None
     if canonical_price_provenance.mark_clock_json != "null":
-        market_event_time = _iso_utc(
-            canonical_price_provenance.require_current_mark_clock_v1(observed_unix=observed_unix)
+        mark_event_unix = canonical_price_provenance.require_current_mark_clock_v1(
+            observed_unix=observed_unix
         )
+        market_event_time = _iso_utc(mark_event_unix)
         decision_time = _iso_utc(observed_unix)
+    if occupied_scope_mark and mark_event_unix is None:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason="OCCUPIED_SCOPE_MARK_CLOCK_REQUIRED",
+            provenance=CYCLE_OWNER,
+        )
+    position_event_unix = (
+        mark_event_unix if occupied_scope_mark else float(last_finalized_event_ts_unix)
+    )
     restored = restore.cursor if restore.disposition.value == "restored" else None
     trading_epoch = 1 if restored is None else int(restored.trading_epoch)
     last_evaluated = 0 if restored is None else int(restored.last_evaluated_trading_epoch)
@@ -838,6 +861,11 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             mid_price=float(mark_px),
             event_ts_unix=float(host_market_sample_venue_event_time_unix),
             cycle_index=int(now_tick),
+            kind=(
+                ObservationCycleKindV1.DECISION_CYCLE_ONLY
+                if occupied_scope_mark
+                else ObservationCycleKindV1.MARKET_SAMPLE
+            ),
         )
         elementary_direction = evaluate_elementary_direction_from_observation_acceptance_v1(
             observation_acceptance_result,
@@ -997,7 +1025,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
                 venue_native_id=venue_native_id,
                 position_side=str(existing_position_side.value),
                 venue_flat=venue_flat,
-                event_time=float(last_finalized_event_ts_unix),
+                event_time=position_event_unix,
                 expected_scope=position_episode_scope,
             )
         except ValueError as exc:
@@ -1062,7 +1090,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         evaluate_host_exit_policy_producers_v1(
             exit_binding,
             mark_price=float(mark_px),
-            event_ts_unix=float(last_finalized_event_ts_unix),
+            event_ts_unix=position_event_unix,
             observation_digest=str(market_context.input_digest or ""),
             has_open_position=venue_flat is not True,
             existing_position_side=str(existing_position_side.value),
@@ -1077,6 +1105,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             killstate_active=bool(durable_kill.killstate_active),
             killstate_trigger=str(durable_kill.killstate_trigger or ""),
             rotation_time_exit=rotation_time_exit,
+            occupied_scope_mark=occupied_scope_mark,
         )
     )
     root = repo_root or _REPO_ROOT
@@ -1212,6 +1241,16 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         side_state_from_transition_carryforward=side_state_from_transition_carryforward,
         canonical_price_provenance=canonical_price_provenance,
         existing_scope_present=existing_scope is not None,
+        occupied_mark=(
+            (
+                mark_event_unix,
+                position_episode_binding.identity.episode_id,
+                cycle_id,
+                json.loads(canonical_price_provenance.mark_clock_json)["payload_sha256"],
+            )
+            if occupied_scope_mark
+            else None
+        ),
     )
     if bind_carry.failure_codes:
         return _blocked_cycle_result(
@@ -1220,6 +1259,40 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance=",".join(bind_carry.failure_codes),
             cursor_restore_status=restore.disposition.value,
         )
+    if occupied_scope_mark:
+        from trading.master_v2.layered_core_authority_seal_v1 import (
+            validate_layered_core_authority_seal_v1,
+        )
+
+        seal = bind_input.layered_core_authority_seal
+        if (
+            seal is None
+            or not validate_layered_core_authority_seal_v1(seal, instrument_id=instrument_id).ok
+        ):
+            return _blocked_cycle_result(
+                cycle_id=cycle_id,
+                fail_reason="OCCUPIED_SCOPE_SWITCH_SEAL_UNPROVEN",
+                provenance="OCCUPIED_SCOPE_SWITCH_SEAL_UNPROVEN",
+                cursor_restore_status=restore.disposition.value,
+            )
+        opposite_regimes = {
+            ExistingPositionSide.LONG: ("bull", "bear"),
+            ExistingPositionSide.SHORT: ("bear", "bull"),
+        }
+        if (
+            seal.switch_condition_met
+            and seal.cm_t >= seal.d_t
+            and opposite_regimes.get(existing_position_side) == (seal.regime_pre, seal.regime_post)
+        ):
+            bind_input = replace(
+                bind_input,
+                strategy_invalidation_signal=PolicySignalV0(
+                    triggered=True, reason_code="l10_scope_switch_exit:" + seal.seal_id
+                ),
+                input_digest=hashlib.sha256(
+                    (bind_input.input_digest + ":" + seal.seal_digest).encode()
+                ).hexdigest(),
+            )
     bind_input = _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
         bind_input,
         instrument_id=instrument_id,

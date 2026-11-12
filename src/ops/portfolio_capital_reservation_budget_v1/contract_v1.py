@@ -23,12 +23,24 @@ import hashlib
 import json
 import math
 import threading
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, replace
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+        PostCloseDoublePlayContinuationV1,
+        PostCloseFeedbackRequestV1,
+    )
+    from .slot_loss_budget_v1 import (
+        SlotCapitalAllocationV1,
+        SlotCapitalBasisV1,
+        SlotCloseNetBookingV1,
+    )
 
 from .durable_store_v1 import DurableBudgetStoreV1, SCHEMA
 from .recovery_v1 import capital_scope_v1, lane_bindings_v1, verify_recovery_inputs_v1
@@ -208,6 +220,12 @@ class SizedReservationResultV1:
     sizing_owner: str = SIZING_OWNER
 
 
+@dataclass(frozen=True)
+class DoublePlayReservationSourceV1:
+    close: PostCloseFeedbackRequestV1
+    continuation: PostCloseDoublePlayContinuationV1
+
+
 def observation_identity_v1(output: CurrentProductive29PRiskCapitalOutputV1) -> str:
     return _sha256_text(
         _canonical_json(
@@ -317,6 +335,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         durable_mode: str | None = None,
         durable_lane_bindings: Mapping | None = None,
         entry_budget_policy: object | None = None,
+        slot_capital_allocation: SlotCapitalAllocationV1 | None = None,
     ) -> None:
         self._lock = threading.Lock()
         self._admitted = False
@@ -349,12 +368,37 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .slot_loss_budget_v1 import empty_state
 
         self._slot_test_economics = empty_state(self._entry_budget_policy)
+        self._slot_capital_allocation = None
         self._open_slot_protection = (
             {slot: None for slot in self._entry_budget_policy.allowed_slot_ids}
             if self._entry_budget_policy is not None
             and self._entry_budget_policy.enforce_open_slot_loss_protection
             else {}
         )
+        if slot_capital_allocation is not None:
+            from .slot_loss_budget_v1 import SlotCapitalAllocationV1
+
+            if (
+                type(slot_capital_allocation) is not SlotCapitalAllocationV1
+                or self._entry_budget_policy is None
+                or durable_mode != "create"
+                or durable_root is None
+                or durable_lane_bindings is None
+            ):
+                raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_BOOTSTRAP_REQUIRED")
+            declaration = slot_capital_allocation.to_dict_v1()
+            allocated = set(declaration["initial_usdc_by_slot"])
+            if (
+                declaration["account_identity"] != durable_account_identity
+                or allocated != set(durable_lane_bindings)
+                or allocated - set(self._entry_budget_policy.allowed_slot_ids)
+            ):
+                raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_SCOPE_MISMATCH")
+            self._slot_capital_allocation = {
+                "schema": "slot_capital_allocation.v1",
+                "declaration": declaration,
+                "funding": None,
+            }
         supplied = (durable_root, durable_account_identity, durable_mode, durable_lane_bindings)
         if any(x is not None for x in supplied):
             if any(x is None for x in supplied):
@@ -437,7 +481,28 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                         raise ValueError("DURABLE_ACTIVE_LANE_GENERATION_MISMATCH")
                 if parsed[0] < self._held_capital_locked():
                     raise ValueError("DURABLE_HELD_CAPITAL_EXCEEDS_FRESH_BUDGET")
-            except (ValueError, TypeError, AttributeError) as exc:
+                allocation = self._slot_capital_allocation
+                if allocation is not None and allocation["funding"] is None:
+                    amounts = allocation["declaration"]["initial_usdc_by_slot"]
+                    if (
+                        set(amounts) != set(current)
+                        or self._by_key
+                        or any(p.signed_quantity != 0 for p in observed.positions)
+                    ):
+                        raise ValueError("SLOT_CAPITAL_ALLOCATION_FLAT_BOOTSTRAP_REQUIRED")
+                    if sum(map(Decimal, amounts.values()), Decimal(0)) > parsed[0]:
+                        raise ValueError("SLOT_CAPITAL_ALLOCATION_EXCEEDS_OBSERVED_FUNDS")
+                    allocation = {
+                        **allocation,
+                        "funding": {
+                            "observation_id": parsed[1],
+                            "producer_output": {
+                                **asdict(output),
+                                "reason_codes": list(output.reason_codes),
+                            },
+                        },
+                    }
+            except (ValueError, TypeError, AttributeError, ArithmeticError) as exc:
                 self._admitted = False
                 self._recovery_required = True
                 return self._result_locked(
@@ -448,6 +513,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             self._budget, self._observation_id = parsed
             self._capital_scope = scope
+            self._slot_capital_allocation = allocation
             self._lane_bindings = current
             self._admitted = True
             self._recovery_required = False
@@ -475,6 +541,65 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         """Original bound immutable policy, recovered with the same holds."""
         with self._lock:
             return self._entry_budget_policy
+
+    def requires_slot_close_economics_v1(self, slot_id: str) -> bool:
+        from .slot_loss_budget_v1 import requires_close_accounting
+
+        with self._lock:
+            return requires_close_accounting(self, slot_id)
+
+    def slot_capital_basis_v1(
+        self, slot_id: str, *, close_booking: SlotCloseNetBookingV1 | None = None
+    ) -> SlotCapitalBasisV1 | None:
+        """Read an allocated slot and its verified cumulative settlement."""
+        with self._lock:
+            return self._slot_capital_basis_locked_v1(slot_id, close_booking=close_booking)
+
+    def _slot_capital_basis_locked_v1(
+        self, slot_id: str, *, close_booking: SlotCloseNetBookingV1 | None
+    ) -> SlotCapitalBasisV1 | None:
+        from .slot_loss_budget_v1 import SlotCapitalBasisV1
+        from .durable_store_v1 import digest
+
+        allocation = self._slot_capital_allocation
+        if allocation is None:
+            return None
+        initial = allocation["declaration"]["initial_usdc_by_slot"].get(slot_id)
+        funding = allocation["funding"]
+        if initial is None or slot_id not in self._lane_bindings:
+            raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_SLOT_MISMATCH")
+        if funding is None or self._closed_owner or self._storage_failed:
+            raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_FUNDING_UNPROVEN")
+        economics = self._slot_test_economics[slot_id]
+        records = economics["records"]
+        booked_ids = {record["reservation_id"] for record in records}
+        if any(
+            str(reservation.slot_id) == slot_id
+            and reservation.terminal_reason == ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
+            and str(reservation.reservation_id) not in booked_ids
+            for reservation in self._by_key.values()
+        ):
+            raise PortfolioCapitalBudgetError("SLOT_CAPITAL_CLOSE_ECONOMICS_PENDING")
+        latest = records[-1] if records else None
+        net = Decimal(economics["net_result_usdc"])
+        if close_booking is not None and (
+            latest is None
+            or latest["reservation_id"] != close_booking.reservation_id
+            or latest["episode_id"] != close_booking.episode_id
+            or latest["digest"] != close_booking.booking_digest
+            or Decimal(latest["net_result_usdc"]) != close_booking.episode_net_usdc
+            or net != close_booking.slot_booked_net_usdc
+        ):
+            raise PortfolioCapitalBudgetError("SLOT_CAPITAL_LATEST_BOOKING_MISMATCH")
+        return SlotCapitalBasisV1(
+            slot_id=slot_id,
+            account_identity=self._account_identity,
+            initial_usdc=Decimal(initial),
+            booked_net_usdc=net,
+            allocation_digest=digest(allocation),
+            funding_observation_id=funding["observation_id"],
+            latest_booking_digest=None if latest is None else latest["digest"],
+        )
 
     def reservation_monetary_source_v1(self, reservation_id):
         """Read the original normalization sources; never upgrade a legacy hold."""
@@ -684,14 +809,19 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             )
 
     def record_test_slot_close_economics_v1(self, request):
-        from .slot_loss_budget_v1 import record_closed_locked
+        from .slot_loss_budget_v1 import enabled, record_closed_locked, remaining_loss
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+            validates_position_management_envelope_v1,
+        )
         from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
             MonetaryNormalizationError,
         )
 
-        # Original flat/capital marker is required; this never substitutes for it.
-        self.inspect_bounded_slot_close_refresh_v1(request)
+        # Require the original flat/capital marker in the same lock as booking.
         with self._lock:
+            self._inspect_bounded_slot_close_refresh_locked_v1(request)
+            if not validates_position_management_envelope_v1(request.execution):
+                raise ValueError("TEST_SLOT_CLOSE_EXECUTION_UNPROVEN")
             if (
                 self._closed_owner
                 or self._storage_failed
@@ -700,7 +830,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             ):
                 raise ValueError("TEST_SLOT_ORIGINAL_BUDGET_OWNER_FENCED")
             try:
-                changed = record_closed_locked(self, request)
+                changed, booking = record_closed_locked(self, request)
             except (
                 ValueError,
                 TypeError,
@@ -712,14 +842,14 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise ValueError("TEST_SLOT_ECONOMIC_CLOSE_NOT_ADMITTED:" + str(exc)) from exc
             if changed:
                 self._persist_locked()
-            from .slot_loss_budget_v1 import remaining_loss
-
-            slot_id = request.execution.source.quantity_handoff.lane_id
-            return {
-                "scope": "EXPLICIT_TEST_PHASE_ONLY",
-                "remaining_loss_allowance_usdc": str(remaining_loss(self, slot_id)),
-                "exhausted": self._slot_test_economics[slot_id]["exhausted"],
-            }
+            result = {"scope": "EXPLICIT_TEST_PHASE_ONLY", "net_booking": booking}
+            if enabled(self._entry_budget_policy):
+                slot_id = request.execution.source.quantity_handoff.lane_id
+                result.update(
+                    remaining_loss_allowance_usdc=str(remaining_loss(self, slot_id)),
+                    exhausted=self._slot_test_economics[slot_id]["exhausted"],
+                )
+            return result
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""
@@ -1232,58 +1362,156 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 mutated=True,
             )
 
-    def inspect_bounded_slot_close_refresh_v1(self, request):
-        """Read the original committed close marker before scoped rebinding."""
+    def inspect_bounded_slot_close_refresh_v1(self, request, *, reserved_id: str | None = None):
+        """Read the close marker before rebinding or planning its reserved reversal."""
+        with self._lock:
+            return self._inspect_bounded_slot_close_refresh_locked_v1(
+                request, reserved_id=reserved_id
+            )
+
+    def _inspect_bounded_slot_close_refresh_locked_v1(self, request, *, reserved_id=None):
         from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
             PostCloseFeedbackRequestV1,
         )
 
-        with self._lock:
-            if (
-                not isinstance(request, PostCloseFeedbackRequestV1)
-                or request.budget_owner is not self
-                or self._entry_budget_policy is None
-                or self._store is None
-                or self._closed_owner
-                or self._storage_failed
-            ):
-                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
-            slot = request.execution.source.quantity_handoff.lane_id
-            bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
-            output = request.capital_handoff.producer_output
-            fingerprint = _sha256_text(
-                _canonical_json(
-                    {
-                        "schema": "bounded_slot_close_refresh.v1",
-                        "slot_id": slot,
-                        "reservation_ids": sorted(request.closed_reservation_ids),
-                        "prior_observation_id": request.expected_budget_observation_id,
-                        "observation_id": observation_identity_v1(output),
-                        "account_identity": output.bound_account_identity,
-                        "bound": bound,
-                        "policy": self._entry_budget_policy.digest_v1(),
-                    }
-                )
+        if (
+            not isinstance(request, PostCloseFeedbackRequestV1)
+            or request.budget_owner is not self
+            or self._entry_budget_policy is None
+            or self._store is None
+            or self._closed_owner
+            or self._storage_failed
+        ):
+            raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
+        slot = request.execution.source.quantity_handoff.lane_id
+        bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
+        output = request.capital_handoff.producer_output
+        fingerprint = _sha256_text(
+            _canonical_json(
+                {
+                    "schema": "bounded_slot_close_refresh.v1",
+                    "slot_id": slot,
+                    "reservation_ids": sorted(request.closed_reservation_ids),
+                    "prior_observation_id": request.expected_budget_observation_id,
+                    "observation_id": observation_identity_v1(output),
+                    "account_identity": output.bound_account_identity,
+                    "bound": bound,
+                    "policy": self._entry_budget_policy.digest_v1(),
+                }
             )
+        )
+        expected_active = Decimal(0)
+        if reserved_id is not None:
+            found = self._require_locked(reserved_id)
             if (
-                self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
-                or self._active_sum_locked(slot) != 0
+                not self._admitted
+                or found is None
+                or str(found[1].slot_id) != slot
+                or found[1].decision_id != "l10:" + request.execution.envelope.envelope_digest
+                or (
+                    found[1].state is not ReservationStateV1.RESERVED
+                    and (
+                        found[1].state is not ReservationStateV1.COMMITTED
+                        or "double_play" not in self._execution_links.get(reserved_id, {})
+                    )
+                )
             ):
-                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
-            for rid in request.closed_reservation_ids:
-                current = self._by_key.get(self._by_id.get(rid))
-                if (
-                    current is None
-                    or current.state is not ReservationStateV1.RELEASED
-                    or current.terminal_reason != ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
-                    or self._reservation_bindings[rid] != bound
-                ):
-                    raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
-            return {
-                "slot_id": slot,
-                "close_ref": request.execution.envelope.envelope_digest,
-                "fingerprint": fingerprint,
-            }
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_PLAN_REQUIRES_ORIGINAL_UNBOUND_HOLD")
+            expected_active = found[1].amount
+        if (
+            self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
+            or self._active_sum_locked(slot) != expected_active
+        ):
+            raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
+        for rid in request.closed_reservation_ids:
+            current = self._by_key.get(self._by_id.get(rid))
+            if (
+                current is None
+                or current.state is not ReservationStateV1.RELEASED
+                or current.terminal_reason != ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
+                or self._reservation_bindings[rid] != bound
+            ):
+                raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
+        return {
+            "slot_id": slot,
+            "close_ref": request.execution.envelope.envelope_digest,
+            "fingerprint": fingerprint,
+        }
+
+    def _require_double_play_reservation_source_locked_v1(
+        self,
+        source: DoublePlayReservationSourceV1,
+        *,
+        slot: SlotId,
+        decision: str,
+        cycle: str,
+        sizing: ReservationSizingBindingV1 | None,
+        reserved_id: str | None = None,
+    ) -> None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+            PostCloseDoublePlayContinuationV1,
+        )
+
+        if (
+            type(source) is not DoublePlayReservationSourceV1
+            or type(source.continuation) is not PostCloseDoublePlayContinuationV1
+            or not isinstance(sizing, ReservationSizingBindingV1)
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_RESERVATION_SOURCE_REQUIRED")
+        close = source.close
+        continuation = source.continuation
+        original = self._inspect_bounded_slot_close_refresh_locked_v1(
+            close, reserved_id=reserved_id
+        )
+        episode = continuation.switch.episode
+        scope = episode.account_scope
+        slot_id = str(slot)
+        expected_id = "l10:" + original["close_ref"]
+        if (
+            scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or scope.account_identity != self._account_identity
+            or slot_id != episode.lane_id
+            or slot_id != original["slot_id"]
+            or decision != expected_id
+            or cycle != expected_id
+            or continuation.switch != close.execution.l10_close
+            or continuation.bound_instrument != close.bound_instrument
+            or continuation.close_envelope_digest != original["close_ref"]
+            or continuation.capital_refresh_fingerprint != original["fingerprint"]
+            or continuation.net_booking.reservation_id not in close.closed_reservation_ids
+            or sizing.applied_input.instrument_id != close.bound_instrument.instrument_id
+            or sizing.applied_input.selected_side != continuation.target_side.upper()
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_RESERVATION_CLOSE_BINDING_MISMATCH")
+        basis = self._slot_capital_basis_locked_v1(slot_id, close_booking=continuation.net_booking)
+        if (
+            basis is None
+            or basis != continuation.capital_basis
+            or not 0 < sizing.applied_input.scope_capital_limit <= basis.net_basis_usdc
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_RESERVATION_SLOT_BASIS_CHANGED")
+
+    def read_double_play_reservation_sizing_v1(
+        self, reservation_id: str, *, source: DoublePlayReservationSourceV1
+    ) -> ReservationSizingBindingV1:
+        """Return the saved sizing for this exact unbound L10 hold."""
+        with self._lock:
+            found = self._require_locked(reservation_id)
+            if not reservation_id or found is None:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_PLAN_REQUIRES_ORIGINAL_UNBOUND_HOLD")
+            key, reservation = found
+            sizing = self._sizing_bindings.get(key)
+            self._require_double_play_reservation_source_locked_v1(
+                source,
+                slot=reservation.slot_id,
+                decision=reservation.decision_id,
+                cycle=reservation.cycle_id,
+                sizing=sizing,
+                reserved_id=reservation_id,
+            )
+            assert sizing is not None
+            sizing.validate_v1(amount=reservation.amount, decision_id=reservation.decision_id)
+            return ReservationSizingBindingV1.from_dict_v1(sizing.to_dict_v1())
 
     def try_reserve_v1(
         self,
@@ -1299,6 +1527,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         expected_local_commitment_generation: str | None = None,
         handoff_journal: object | None = None,
         futures_financial_custody: object | None = None,
+        double_play_source: DoublePlayReservationSourceV1 | None = None,
     ) -> ReserveResultV1:
         try:
             slot = SlotId(str(slot_id))
@@ -1309,6 +1538,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         observed = str(observation_id or "")
         if decision == "" or decision != decision.strip() or cycle == "" or cycle != cycle.strip():
             return self._closed(("DECISION_OR_CYCLE_IDENTITY_MISSING",))
+        if decision.startswith("l10:") and double_play_source is None:
+            return self._closed(("DOUBLE_PLAY_RESERVATION_SOURCE_REQUIRED",))
         money = _money(amount)
         if money is None:
             return self._closed(("REQUESTED_AMOUNT_INVALID",))
@@ -1384,6 +1615,22 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     reason_codes=("RESTART_OR_UNBOUND_BUDGET_FAIL_CLOSED",),
                     mutated=False,
                 )
+            if double_play_source is not None:
+                try:
+                    self._require_double_play_reservation_source_locked_v1(
+                        double_play_source,
+                        slot=slot,
+                        decision=decision,
+                        cycle=cycle,
+                        sizing=sizing_binding,
+                    )
+                except (ValueError, TypeError, AttributeError, KeyError, ArithmeticError) as exc:
+                    return self._result_locked(
+                        disposition=ReserveDispositionV1.FAIL_CLOSED,
+                        reservation=None,
+                        reason_codes=(str(exc),),
+                        mutated=False,
+                    )
             from .open_slot_cost_renewal_v1 import entry_blocker_locked_v1
 
             renewal_blocker = entry_blocker_locked_v1(self)
@@ -1767,6 +2014,13 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     reason_codes=("COMMIT_REPLAY", "VENUE_FILL_NOT_INTEGRATED"),
                     mutated=False,
                 )
+            if current.decision_id.startswith("l10:"):
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.FAIL_CLOSED,
+                    reservation=current,
+                    reason_codes=("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED",),
+                    mutated=False,
+                )
             if current.state is not ReservationStateV1.RESERVED:
                 return self._result_locked(
                     disposition=ReserveDispositionV1.FAIL_CLOSED,
@@ -1853,6 +2107,101 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 entry_frame_required=entry_frame_required,
             )
 
+    def bind_double_play_execution_plan_v1(
+        self, plan, envelope, *, source: DoublePlayReservationSourceV1
+    ):
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+            CurrentProductiveDoublePlay29QPlanV1,
+        )
+        from .execution_v1 import bind_plan_locked_v1
+
+        if (
+            type(plan) is not CurrentProductiveDoublePlay29QPlanV1
+            or not plan.quantity_admission.allowed
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
+        with self._lock:
+            reservation_id = plan.reservation_id
+            found = self._require_locked(reservation_id)
+            if found is None:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_PLAN_REQUIRES_ORIGINAL_UNBOUND_HOLD")
+            key, reservation = found
+            sizing = self._sizing_bindings.get(key)
+            self._require_double_play_reservation_source_locked_v1(
+                source,
+                slot=reservation.slot_id,
+                decision=reservation.decision_id,
+                cycle=reservation.cycle_id,
+                sizing=sizing,
+                reserved_id=reservation_id,
+            )
+            assert sizing is not None
+            continuation = source.continuation
+            switch = continuation.switch
+            if (
+                plan.scope_digest != switch.scope_digest
+                or plan.close_envelope_digest != continuation.close_envelope_digest
+            ):
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_EXECUTION_PLAN_LINEAGE_MISMATCH")
+            return bind_plan_locked_v1(
+                self,
+                reservation_id,
+                envelope,
+                canonical_intent=plan.canonical_intent,
+                venue_plan=plan.venue_plan,
+                double_play_origin={
+                    "position_episode": asdict(switch.episode),
+                    "scope_digest": switch.scope_digest,
+                    "scope_seal_id": switch.scope_seal_id,
+                    "close_envelope_digest": continuation.close_envelope_digest,
+                    "capital_refresh_fingerprint": continuation.capital_refresh_fingerprint,
+                    "sizing_input_digest": sizing.applied_input.input_digest,
+                    "quantity_observation_digest": plan.quantity_admission.observation_digest,
+                    "quantity_plan_digest": plan.quantity_admission.plan_digest,
+                },
+            )
+
+    def read_bound_double_play_execution_plan_v1(self, reservation_id: str):
+        """Read the original plan, including from a cold fenced budget store."""
+        from .execution_v1 import detached, validate_link_v1
+
+        with self._lock:
+            link = self._execution_links.get(reservation_id)
+            if self._closed_owner or self._storage_failed or not link or "double_play" not in link:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
+            validate_link_v1(self, reservation_id, link)
+            return detached(link)
+
+    @contextmanager
+    def guard_bound_double_play_simulated_fill_v1(self, reservation_id, envelope, *, fill_digest):
+        """Keep the original committed hold in place during local episode publication."""
+        from .execution_v1 import validate_link_v1
+
+        with self._lock:
+            found = self._require_locked(reservation_id)
+            link = self._execution_links.get(reservation_id, {})
+            if (
+                not self._admitted
+                or found is None
+                or found[1].state is not ReservationStateV1.COMMITTED
+                or "double_play" not in link
+                or link["envelope"] != envelope.to_runtime_json_v1()
+            ):
+                raise PortfolioCapitalBudgetError(
+                    "DOUBLE_PLAY_SIMULATED_FILL_ORIGINAL_HOLD_REQUIRED"
+                )
+            previous = link.get("simulated_fill_digest")
+            if previous is not None and previous != fill_digest:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_SIMULATED_FILL_ALREADY_BOUND")
+            if previous is None:
+                link = {**link, "simulated_fill_digest": fill_digest}
+                validate_link_v1(self, reservation_id, link)
+                self._execution_links[reservation_id] = link
+                self._persist_locked()
+            else:
+                validate_link_v1(self, reservation_id, link)
+            yield
+
     def mark_execution_submit_boundary_v1(
         self, reservation_id, identity, *, external_effect_permit=None
     ):
@@ -1867,6 +2216,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .attempt_v2 import plan_context_locked_v1
 
         with self._lock:
+            if "double_play" in self._execution_links.get(str(reservation_id), {}):
+                raise ValueError("DOUBLE_PLAY_SIMULATED_PLAN_HAS_NO_EXTERNAL_SUBMIT_CONTEXT")
             return plan_context_locked_v1(self, str(reservation_id), envelope)
 
     def inspect_execution_plan_context_v1(self, reservation_id, envelope, context):
@@ -2144,6 +2495,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             if not link or link["envelope"] != envelope.to_runtime_json_v1():
                 raise ValueError("CURRENT_CORE_CURSOR_ORIGINAL_PLAN_MISMATCH")
             validate_link_v1(self, str(reservation_id), link)
+            if "double_play" in link:
+                raise ValueError("DOUBLE_PLAY_SIMULATED_PLAN_HAS_NO_EXTERNAL_SUBMIT_CONTEXT")
             origin = link.get("plan_origin", {})
             if origin.get("schema") != CORE_CURSOR_SCHEMA:
                 return {"scope": "LEGACY_ORIGINAL_CORE_CURSOR_NOT_ASSESSED"}
@@ -2212,10 +2565,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     mutated=False,
                 )
             key, current = found
-            if (
-                self._execution_links.get(str(reservation_id), {}).get("phase")
-                == "SUBMIT_MAY_HAVE_OCCURRED"
-            ):
+            link = self._execution_links.get(str(reservation_id), {})
+            if "simulated_fill_digest" in link and current.state.value not in _TERMINAL:
+                return self._result_locked(
+                    disposition=ReserveDispositionV1.FAIL_CLOSED,
+                    reservation=current,
+                    reason_codes=("DOUBLE_PLAY_SIMULATED_FILL_RECONCILIATION_REQUIRED",),
+                    mutated=False,
+                )
+            if link.get("phase") == "SUBMIT_MAY_HAVE_OCCURRED":
                 return self._result_locked(
                     disposition=ReserveDispositionV1.FAIL_CLOSED,
                     reservation=current,
@@ -2399,7 +2757,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             **(
                 {"test_slot_economics": self._slot_test_economics}
                 if self._entry_budget_policy is not None
-                and self._entry_budget_policy.per_slot_test_loss_limit is not None
+                and (
+                    self._entry_budget_policy.per_slot_test_loss_limit is not None
+                    or any(state["records"] for state in self._slot_test_economics.values())
+                )
                 else {}
             ),
             **(
@@ -2409,6 +2770,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 else {}
             ),
             "observation_id": self._observation_id,
+            **(
+                {"slot_capital_allocation": self._slot_capital_allocation}
+                if self._slot_capital_allocation is not None
+                else {}
+            ),
             **(
                 {"open_slot_cost_reserves": self._open_slot_cost_reserves}
                 if self._entry_budget_policy is not None
@@ -2516,6 +2882,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "execution_links",
                 "entry_budget_policy",
                 "test_slot_economics",
+                "slot_capital_allocation",
                 "open_slot_protection",
                 "open_slot_cost_reserves",
             } != {
@@ -2752,6 +3119,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             for reservation_id, link in links.items():
                 validate_link_v1(self, reservation_id, link)
             self._execution_links = detached(links)
+            if "slot_capital_allocation" in payload:
+                self._restore_slot_capital_allocation_locked(payload["slot_capital_allocation"])
             from .slot_loss_budget_v1 import restore_state
 
             self._slot_test_economics = restore_state(self, payload.get("test_slot_economics"))
@@ -2788,8 +3157,46 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 ):
                     raise ValueError("stored entry policy limits exceeded")
             self._admitted = False
-        except (ValueError, TypeError, KeyError, AttributeError, InvalidOperation) as exc:
+        except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
             raise PortfolioCapitalBudgetError("DURABLE_BUDGET_SEMANTIC_RESTORE_UNPROVEN") from exc
+
+    def _restore_slot_capital_allocation_locked(self, record):
+        from .slot_loss_budget_v1 import SlotCapitalAllocationV1
+
+        if (
+            self._entry_budget_policy is None
+            or not isinstance(record, dict)
+            or set(record) != {"schema", "declaration", "funding"}
+            or record["schema"] != "slot_capital_allocation.v1"
+        ):
+            raise ValueError("SLOT_CAPITAL_ALLOCATION_STATE_INVALID")
+        allocation = SlotCapitalAllocationV1.from_dict_v1(record["declaration"])
+        amounts = dict(allocation.initial_usdc_by_slot)
+        if allocation.account_identity != self._account_identity or set(amounts) - set(
+            self._entry_budget_policy.allowed_slot_ids
+        ):
+            raise ValueError("SLOT_CAPITAL_ALLOCATION_SCOPE_MISMATCH")
+        funding = record["funding"]
+        if funding is None:
+            if self._by_key or self._budget or set(amounts) != set(self._lane_bindings):
+                raise ValueError("SLOT_CAPITAL_ALLOCATION_FLAT_BOOTSTRAP_REQUIRED")
+        else:
+            if not isinstance(funding, dict) or set(funding) != {
+                "observation_id",
+                "producer_output",
+            }:
+                raise ValueError("SLOT_CAPITAL_ALLOCATION_FUNDING_UNPROVEN")
+            output = CurrentProductive29PRiskCapitalOutputV1(**funding["producer_output"])
+            parsed = _producer_budget(output)
+            if (
+                parsed is None
+                or parsed[1] != funding["observation_id"]
+                or output.bound_account_identity != self._account_identity
+                or capital_scope_v1(output) != self._capital_scope
+                or sum(amounts.values(), Decimal(0)) > parsed[0]
+            ):
+                raise ValueError("SLOT_CAPITAL_ALLOCATION_FUNDING_UNPROVEN")
+        self._slot_capital_allocation = json.loads(json.dumps(record))
 
     def _state_locked(self) -> PortfolioBudgetStateV1:
         active = self._active_sum_locked()
@@ -2888,6 +3295,38 @@ def capital_context_facts_v1(
         return facts
 
 
+def apply_capital_context_facts_v1(
+    sizing_input: CapitalRiskSizingInputV1, facts: Mapping[str, Decimal]
+) -> CapitalRiskSizingInputV1:
+    """Use the current account and slot limits in the canonical sizer."""
+    patched = replace(
+        sizing_input,
+        account_equity=facts["account_equity"],
+        already_committed_capital=facts["already_committed_capital"],
+        current_reconciled_exposure=facts["current_reconciled_exposure"],
+    )
+    if "slot_remaining_notional" in facts:
+        patched = replace(
+            patched,
+            scope_capital_limit=min(
+                patched.scope_capital_limit,
+                facts["entry_notional_ceiling"],
+                facts["slot_remaining_notional"],
+            ),
+            total_capital_limit=min(
+                patched.total_capital_limit, facts["aggregate_notional_ceiling"]
+            ),
+        )
+    if "slot_remaining_loss_allowance" in facts:
+        patched = replace(
+            patched,
+            per_trade_risk_limit=min(
+                patched.per_trade_risk_limit, facts["slot_remaining_loss_allowance"]
+            ),
+        )
+    return patched
+
+
 def admit_sized_slot_reservation_v1(
     owner: PortfolioCapitalReservationBudgetOwnerV1,
     *,
@@ -2913,12 +3352,19 @@ def admit_sized_slot_reservation_v1(
     local_commitment_readback: object | None = None,
     handoff_journal: object | None = None,
     futures_financial_custody: object | None = None,
+    double_play_source: DoublePlayReservationSourceV1 | None = None,
 ) -> SizedReservationResultV1:
     """Producer, 29P admissibility, existing sizing, then atomic reserve.
 
     Sizing runs against a budget snapshot. Admission is only the later atomic
     reserve of ``resulting_notional``. A lost race denies with no partial hold.
     """
+    if str(decision_id).startswith("l10:") and double_play_source is None:
+        return _sized_deny(
+            owner,
+            disposition=ReserveDispositionV1.FAIL_CLOSED,
+            reason_codes=("DOUBLE_PLAY_RESERVATION_SOURCE_REQUIRED",),
+        )
     local_generation = None
     if local_commitment_readback is not None:
         try:
@@ -3020,6 +3466,12 @@ def admit_sized_slot_reservation_v1(
         observation_id=observation_id,
     )
     if existing is not None:
+        if double_play_source is not None:
+            return _sized_deny(
+                owner,
+                disposition=ReserveDispositionV1.FAIL_CLOSED,
+                reason_codes=("DOUBLE_PLAY_RESERVATION_ALREADY_CONSUMED",),
+            )
         replay = owner.replay_sized_reservation_v1(
             str(existing.reservation_id),
             request=sizing_input,
@@ -3077,31 +3529,7 @@ def admit_sized_slot_reservation_v1(
         return _sized_deny(
             owner, disposition=ReserveDispositionV1.FAIL_CLOSED, reason_codes=(str(exc),)
         )
-    patched = replace(
-        sizing_input,
-        account_equity=facts["account_equity"],
-        already_committed_capital=facts["already_committed_capital"],
-        current_reconciled_exposure=facts["current_reconciled_exposure"],
-    )
-    if "slot_remaining_notional" in facts:
-        patched = replace(
-            patched,
-            scope_capital_limit=min(
-                patched.scope_capital_limit,
-                facts["entry_notional_ceiling"],
-                facts["slot_remaining_notional"],
-            ),
-            total_capital_limit=min(
-                patched.total_capital_limit, facts["aggregate_notional_ceiling"]
-            ),
-        )
-    if "slot_remaining_loss_allowance" in facts:
-        patched = replace(
-            patched,
-            per_trade_risk_limit=min(
-                patched.per_trade_risk_limit, facts["slot_remaining_loss_allowance"]
-            ),
-        )
+    patched = apply_capital_context_facts_v1(sizing_input, facts)
     if restrictive_risk is not None and restrictive_risk.configured_quantity_cap is not None:
         cap = restrictive_risk.configured_quantity_cap
         patched = replace(
@@ -3320,6 +3748,7 @@ def admit_sized_slot_reservation_v1(
         expected_local_commitment_generation=local_generation,
         handoff_journal=handoff_journal,
         futures_financial_custody=futures_financial_custody,
+        double_play_source=double_play_source,
     )
     if (
         reserved.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY

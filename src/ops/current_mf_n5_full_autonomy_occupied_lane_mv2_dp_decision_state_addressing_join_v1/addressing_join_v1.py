@@ -729,6 +729,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
     rotation_exit_requests: Mapping[str, object] | None = None,
     slot_loss_exit_requests: Mapping[str, object] | None = None,
+    occupied_scope_mark: bool = False,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -779,7 +780,13 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
                 venue_native_id=str(bound.venue_native_id),
                 position_side=str(existing_position_side.value),
                 venue_flat=venue_flat,
-                event_time=float(last_finalized_event_ts_unix),
+                event_time=(
+                    canonical_price_provenance.require_current_mark_clock_v1(
+                        observed_unix=observed_unix
+                    )
+                    if occupied_scope_mark
+                    else float(last_finalized_event_ts_unix)
+                ),
                 lane_id=lane_id,
                 expected_scope=position_episode_scope,
             )
@@ -829,6 +836,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             else rotation_exit_requests.get(lane_id),
             rotation_time_exit_only=rotation_exit_requests is not None,
             explicit_killstate_active=loss_exit,
+            occupied_scope_mark=occupied_scope_mark,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -906,6 +914,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     position_episode_scope: PositionEpisodeScopeV1 | None = None,
     rotation_exit_requests: Mapping[str, object] | None = None,
     slot_loss_exit_requests: Mapping[str, object] | None = None,
+    occupied_scope_mark: bool = False,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Fence Entries, run Core, then CAS-publish an actual outgoing cursor.
 
@@ -922,6 +931,37 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     from src.ops.full_core_live_path_composition_root_v1.current_core_entry_attempt_v1 import (
         begin_current_core_entry_attempt_v1,
     )
+
+    if occupied_scope_mark:
+        from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+            NakedLayeredCoreDurableStateError,
+            require_new_occupied_scope_mark_v1,
+            restore_episode_from_store_v1,
+        )
+
+        for lane_id, (bound, store_root, _address) in bound_seam.items():
+            episode = (
+                None
+                if position_episode_bindings is None
+                else position_episode_bindings.get(lane_id)
+            )
+            if venue_flat or episode is None:
+                _fail(FAILURE_AUTHORITY, "occupied_scope_mark_position_required")
+            try:
+                mark_event = canonical_price_provenance.require_current_mark_clock_v1(
+                    observed_unix=observed_unix
+                )
+                restore_episode_from_store_v1(
+                    Path(store_root), expected_instrument_id=bound.instrument_id
+                )
+                require_new_occupied_scope_mark_v1(
+                    Path(store_root),
+                    event_unix=mark_event,
+                    price=mark_px,
+                    episode_id=episode.identity.episode_id,
+                )
+            except (NakedLayeredCoreDurableStateError, ValueError) as exc:
+                _fail(FAILURE_AUTHORITY, str(exc))
 
     predecessors = {
         lane_id: begin_current_core_entry_attempt_v1(
@@ -956,6 +996,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         position_episode_scope=position_episode_scope,
         rotation_exit_requests=rotation_exit_requests,
         slot_loss_exit_requests=slot_loss_exit_requests,
+        occupied_scope_mark=occupied_scope_mark,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

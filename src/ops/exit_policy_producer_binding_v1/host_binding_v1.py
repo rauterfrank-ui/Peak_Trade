@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from copy import deepcopy
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
@@ -219,6 +219,7 @@ def evaluate_host_exit_policy_producers_v1(
     price_basis_ok: bool = True,
     max_drawdown: float = 0.0,
     rotation_time_exit: dict[str, Any] | None = None,
+    occupied_scope_mark: bool = False,
 ) -> tuple[ExitPolicyProducerBundleV1, dict[str, PolicySignalV0], SafetyMode, TradingGate]:
     if binding.alpha_blocked:
         raise ExitPolicyPersistenceError(
@@ -284,6 +285,13 @@ def evaluate_host_exit_policy_producers_v1(
         duplicate_observation=duplicate,
         rotation_time_exit=rotation_time_exit,
     )
+    if occupied_scope_mark:
+        bundle = replace(
+            bundle,
+            scope_adverse_exit=replace(
+                bundle.scope_adverse_exit, triggered=False, reason_code="l10_owns_scope_switch"
+            ),
+        )
     signals = bundle_to_policy_signals_v1(bundle)
     # Arm pending exit on first true mandatory/safety trigger.
     for evidence in (

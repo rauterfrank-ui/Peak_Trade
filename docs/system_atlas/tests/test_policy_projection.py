@@ -3,6 +3,7 @@
 from copy import deepcopy
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from runpy import run_path
 import sys
@@ -89,13 +90,49 @@ def test_selection_policy_delta_still_rejects_unbound_working_bytes(monkeypatch)
         PROJECTION["validate_policy_inventory"](ROOT, LAW)
 
 
-def test_exact_selection_delta_is_explicit_in_policy_validation_result():
+def test_reviewed_development_policies_are_explicit_in_validation_result():
     result = PROJECTION["validate_policy_inventory"](ROOT, LAW)
-    assert set(result["development_policy_files"]) == {
+    reviewed = {
         "config/governance/clean_core_seal_manifest_v1.json",
         "src/ops/single_selected_future_policy_v1/selection_v1.py",
         "config/governance/technical_canonical_wiring_authorization_v1.json",
+        *PROJECTION["ORDERED_FUNDING_EPISODE_DELTAS"],
+        *PROJECTION["RESERVED_SLOT_ROTATION_DELTAS"],
+        *PROJECTION["MANAGED_FILEGATE_OWNER_DELTAS"],
+        *PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"],
     }
+    frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}
+    assert set(result["development_policy_files"]) == reviewed & frozen
+
+
+@pytest.mark.parametrize("path", tuple(PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"]))
+@pytest.mark.parametrize("rebound", [False, True], ids=["prior-bytes", "different-rebound-bytes"])
+def test_double_play_requires_exact_complete_policy_bundle(monkeypatch, path, rebound):
+    source = ROOT / path
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    original = Path.read_bytes
+    raw = (
+        original(source) + b"\n# different implementation\n"
+        if rebound
+        else subprocess.check_output(["git", "show", "835185fb1:" + path], cwd=ROOT)
+    )
+    binding = json.loads(original(binding_path))
+    row = next(row for row in binding["files"] if row["path"] == path)
+    row["sha256"] = hashlib.sha256(raw).hexdigest()
+
+    def read(file):
+        if file == source:
+            return raw
+        if file == binding_path:
+            return json.dumps(binding).encode()
+        return original(file)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(
+        ValueError,
+        match="(DOUBLE_PLAY_POLICY_REVIEWED_BUNDLE_REQUIRED|POLICY_SOURCE_DRIFT):" + path,
+    ):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
 
 
 @pytest.mark.parametrize("field", ["before_sha256", "sha256"])

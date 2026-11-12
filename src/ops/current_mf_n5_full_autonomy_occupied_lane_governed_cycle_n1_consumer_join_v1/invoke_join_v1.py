@@ -6,15 +6,20 @@ Does not bind Cap61, join a host, call V5, or POST.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
+from decimal import Decimal
 import hashlib
+import json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Mapping, NoReturn, Sequence
 
 if TYPE_CHECKING:
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_economic_source_v1 import (
+        SlotCloseAccountingSourceV1,
+    )
     from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
         PositionEpisodeBindingV1,
         PositionEpisodeScopeV1,
@@ -24,9 +29,11 @@ from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 impo
     PerLaneGovernedIngressV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+    PositionManagementExecutionHandoffV1,
     PositionManagementQuantityHandoffV1,
     bind_position_management_quantity_handoff_v1,
     compose_position_management_full_close_intent_v1,
+    occupied_l10_close_from_binding_v1,
 )
 from src.governance.canonical_order_intent_v1 import (
     CanonicalOrderIntentV1,
@@ -370,6 +377,223 @@ def _finalize_portfolio_reservation_after_enter_join_v1(
     owner.release_plan_failure_v1(str(reservation_id))
 
 
+def _occupied_scope_close_binding_v1(
+    *, lane_identity, episode, cursor_root: Path
+) -> dict[str, Any]:
+    from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+        require_current_cursor_continuity_v1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.persistence_v1 import load_exit_policy_state_v1
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+        current_productive_cursor_digest_v1,
+    )
+
+    identity = episode.identity
+    if (
+        not episode.binding.has_open_position
+        or episode.binding.alpha_blocked
+        or episode.binding.existing_position_side != identity.position_side
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_EPISODE_MISMATCH")
+    exit_state = load_exit_policy_state_v1(
+        Path(episode.binding.state_root),
+        expected_repository_sha=episode.binding.repository_sha,
+        expected_config_digest=episode.binding.config_digest,
+        expected_instrument_id=identity.instrument_id,
+    )
+    if exit_state.to_dict() != episode.binding.to_canonical_state().to_dict():
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_EPISODE_READBACK_MISMATCH")
+    cursor = load_current_productive_sidestate_confirmation_cursor_v1(cursor_root)
+    if cursor is None or episode.binding.current_cursor_publication is None:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_PROOF_UNAVAILABLE")
+    require_current_cursor_continuity_v1(episode=episode, incoming=cursor, store_root=cursor_root)
+    return _scope_switch_close_binding_v1(
+        lane_identity=lane_identity,
+        identity=identity,
+        cursor_root=cursor_root,
+        exit_state_digest=exit_state.digest(),
+        cursor_digest=current_productive_cursor_digest_v1(cursor),
+    )
+
+
+def _scope_switch_close_binding_v1(
+    *, lane_identity, identity, cursor_root: Path, exit_state_digest: str, cursor_digest: str
+) -> dict[str, Any]:
+    from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+        restore_episode_from_store_v1,
+    )
+
+    identity.validate_v1()
+    if (
+        identity.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        or identity.lane_id != lane_identity.lane_id
+        or identity.instrument_id != lane_identity.canonical_instrument_id
+        or identity.venue_native_id != lane_identity.venue_native_id
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_EPISODE_MISMATCH")
+    scope = read_occupied_scope_mark_snapshot_v1(cursor_root)
+    snapshot = restore_episode_from_store_v1(
+        cursor_root, expected_instrument_id=identity.instrument_id
+    )
+    expected_regimes = {"long": ("bull", "bear"), "short": ("bear", "bull")}
+    if (
+        scope is None
+        or scope["mark"]["pending_close_episode_id"] != identity.episode_id
+        or scope["mark"].get("switch_condition_met") is not True
+        or scope["snapshot"]["snapshot_id"] != snapshot.snapshot_id
+        or (scope["mark"].get("regime_pre"), snapshot.regime.value)
+        != expected_regimes[identity.position_side]
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_PROOF_UNAVAILABLE")
+    return {
+        "lane_instrument": lane_identity.to_manifest_dict(),
+        "position_episode": asdict(identity),
+        "exit_state_digest": exit_state_digest,
+        "cursor_digest": cursor_digest,
+        "scope_digest": scope["digest"],
+        "scope_seal_id": scope["mark"]["seal_id"],
+        "cycle_id": scope["mark"]["cycle_id"],
+    }
+
+
+def recover_occupied_scope_close_for_reconciliation_v1(
+    *,
+    lane_id: str,
+    lane_pair: tuple[IsolatedLaneSlotV1, BoundInstrumentV1],
+    expected_scope: PositionEpisodeScopeV1,
+    episode: PositionEpisodeBindingV1 | None = None,
+    sealed_accounting_source: SlotCloseAccountingSourceV1 | None = None,
+) -> PositionManagementExecutionHandoffV1:
+    """Read the exact close for reconciliation, before or after sealing simulated flat."""
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
+        OccupiedLaneRuntimeInstrumentIdentityV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        occupied_scope_mark_cycle_lock_v1,
+        read_retained_occupied_scope_close_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        restore_retained_position_management_close_v1,
+    )
+
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_economic_source_v1 import (
+        SlotCloseAccountingSourceV1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.simulated_accounting_close_v1 import (
+        inspect_sealed_simulated_episode_v1,
+    )
+
+    if (episode is None) == (sealed_accounting_source is None):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_EXACTLY_ONE_EPISODE_SOURCE_REQUIRED")
+    if sealed_accounting_source is not None:
+        if type(sealed_accounting_source) is not SlotCloseAccountingSourceV1:
+            raise ValueError("OCCUPIED_SCOPE_CLOSE_SEALED_ACCOUNTING_SOURCE_INVALID")
+        identity = sealed_accounting_source.identity_v1()
+    else:
+        identity = episode.identity
+    if identity.account_scope != expected_scope:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_ACCOUNT_SCOPE_MISMATCH")
+    cursor, lock_root, evidence_root = bind_occupied_lane_governed_cycle_store_roots_v1(
+        {lane_id: lane_pair}
+    )[lane_id]
+    lane_identity = OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(
+        lane_id=lane_id, bound=lane_pair[1]
+    )
+    cursor_root = Path(cursor)
+
+    def read_binding():
+        if sealed_accounting_source is None:
+            return (
+                _occupied_scope_close_binding_v1(
+                    lane_identity=lane_identity, episode=episode, cursor_root=cursor_root
+                ),
+                None,
+            )
+        sealed = inspect_sealed_simulated_episode_v1(
+            identity=identity,
+            state_root=Path(sealed_accounting_source.state_root),
+            repository_sha=sealed_accounting_source.repository_sha,
+            config_digest=sealed_accounting_source.config_digest,
+            expected_initial_source_ref=sealed_accounting_source.initial_source_ref,
+            expected_current_cursor_root=cursor_root,
+        )
+        if sealed["bound_instrument"] != lane_pair[1].to_dict():
+            raise ValueError("OCCUPIED_SCOPE_CLOSE_FLAT_INSTRUMENT_BINDING_MISMATCH")
+        return (
+            _scope_switch_close_binding_v1(
+                lane_identity=lane_identity,
+                identity=identity,
+                cursor_root=cursor_root,
+                exit_state_digest=sealed["prior_exit_state_digest"],
+                cursor_digest=sealed["prior_cursor_digest"],
+            ),
+            sealed["source_payload"]["fills"][-1],
+        )
+
+    binding, closing_fill = read_binding()
+    suffix = f":{lane_id}:{lane_id}"
+    cycle_id = binding["cycle_id"]
+    if not isinstance(cycle_id, str) or not cycle_id.endswith(suffix):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
+    prefix = cycle_id.removesuffix(suffix)
+    if not prefix:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
+    attempt = hashlib.sha256(prefix.encode()).hexdigest()
+    attempt_root = Path(evidence_root) / "bounded_slot_attempts_v1" / attempt
+
+    def read_completed_close(current, fill):
+        if current != binding or fill != closing_fill:
+            raise ValueError("OCCUPIED_SCOPE_CLOSE_PROOF_CHANGED")
+        retained = read_retained_occupied_scope_close_v1(attempt_root)
+        handoff = restore_retained_position_management_close_v1(retained, expected_binding=current)
+        quantity = handoff.source.quantity_handoff
+        if (
+            handoff.source.close_quantity_decision.binding_ref
+            != hashlib.sha256(
+                json.dumps(lane_identity.to_manifest_dict(), sort_keys=True).encode()
+            ).hexdigest()
+            or quantity.lane_id != lane_id
+            or quantity.instrument_id != lane_identity.canonical_instrument_id
+            or quantity.venue_native_id != lane_identity.venue_native_id
+            or quantity.instrument_epoch != lane_identity.lane_identity.instrument_epoch
+            or quantity.position_side != identity.position_side
+        ):
+            raise ValueError("OCCUPIED_SCOPE_CLOSE_HANDOFF_IDENTITY_MISMATCH")
+        if fill is not None:
+            envelope = handoff.envelope
+            if (
+                fill["fill_id"] != "original-close:" + envelope.envelope_digest
+                or fill["instrument_id"] != envelope.instrument_id
+                or fill["side"].lower() != envelope.side
+                or Decimal(fill["quantity"]) != Decimal(envelope.quantity)
+                or fill["reduce_only"] is not True
+            ):
+                raise ValueError("OCCUPIED_SCOPE_CLOSE_SEALED_FILL_MISMATCH")
+        return handoff
+
+    def verify_completed_close():
+        try:
+            read_completed_close(*read_binding())
+        except ValueError:
+            return False
+        return True
+
+    # Refuse incomplete/foreign records before attempting stale lock recovery.
+    read_completed_close(binding, closing_fill)
+    lock = occupied_scope_mark_cycle_lock_v1(
+        lock_root=Path(lock_root),
+        evidence_root=attempt_root,
+        native_id=lane_identity.venue_native_id,
+        verify_completed_close=verify_completed_close,
+    )
+    lock.acquire()
+    try:
+        return read_completed_close(*read_binding())
+    finally:
+        lock.release()
+
+
 def _t2_from_s7(
     *,
     lane_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
@@ -418,6 +642,25 @@ def _t2_from_s7(
             eg_incoming_cursor = load_current_productive_sidestate_confirmation_cursor_v1(
                 Path(lane_pairs[lane_id][0].lane_state_root)
             )
+        if s7_base.get("occupied_scope_mark"):
+            from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+                NakedLayeredCoreDurableStateError,
+                require_new_occupied_scope_mark_v1,
+            )
+
+            mark = s7_base["canonical_price_provenance"]
+            episode = s7_base["position_episode_bindings"][lane_id]
+            try:
+                require_new_occupied_scope_mark_v1(
+                    Path(lane_pairs[lane_id][0].lane_state_root),
+                    event_unix=mark.require_current_mark_clock_v1(
+                        observed_unix=float(s7_base["observed_unix"])
+                    ),
+                    price=float(s7_base["mark_px"]),
+                    episode_id=episode.identity.episode_id,
+                )
+            except NakedLayeredCoreDurableStateError as exc:
+                _fail(FAILURE_AUTHORITY, str(exc))
         try:
             composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 lane_pairs,
@@ -477,6 +720,7 @@ def _t2_from_s7(
             close_intent = None
             close_quantity_decision = None
             close_execution_handoff = None
+            occupied_scope_close_binding = None
             close_plan_reasons = ()
             if action_pending:
                 if position_management_ingress is None:
@@ -513,10 +757,6 @@ def _t2_from_s7(
                     if close_intent is not None and not net_mode:
                         close_plan_reasons = ("FULL_CLOSE_NET_POSITION_MODE_REQUIRED",)
                     if close_intent is not None and net_mode:
-                        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
-                            PositionManagementExecutionHandoffV1,
-                        )
-
                         status, close_plan_reasons, plan = (
                             try_bind_current_productive_venue_plan_v1(
                                 replay=replay,
@@ -533,14 +773,40 @@ def _t2_from_s7(
                             )
                         )
                         if status is CompositionStatusV1.PASS and plan is not None:
+                            l10_close = None
+                            policy = replay.intermediate.entry_exit_decision
+                            if (
+                                s7_base.get("occupied_scope_mark")
+                                and policy.exit_class.value == "strategy_invalidation_exit"
+                                and any(
+                                    reason.startswith("l10_scope_switch_exit:")
+                                    for reason in policy.reason_codes
+                                )
+                            ):
+                                occupied_scope_close_binding = _occupied_scope_close_binding_v1(
+                                    lane_identity=position_management_ingress.identity,
+                                    episode=s7_base["position_episode_bindings"][lane_id],
+                                    cursor_root=Path(lane_pairs[lane_id][0].lane_state_root),
+                                )
+                                l10_close = occupied_l10_close_from_binding_v1(
+                                    occupied_scope_close_binding
+                                )
+                                if (
+                                    "l10_scope_switch_exit:" + l10_close.scope_seal_id
+                                ) not in policy.reason_codes:
+                                    _fail(FAILURE_AUTHORITY, "occupied_scope_close_seal_mismatch")
                             envelope = bind_final_order_envelope_from_venue_plan_v1(
                                 plan,
-                                admission_ref=f"{s7_base['cycle_id_prefix']}:position-management",
+                                admission_ref=(
+                                    l10_close.admission_ref_v1()
+                                    if l10_close is not None
+                                    else f"{s7_base['cycle_id_prefix']}:position-management"
+                                ),
                                 provenance_ref=close_intent.semantic_digest,
                                 creation_epoch=epoch,
                             )
                             close_execution_handoff = PositionManagementExecutionHandoffV1(
-                                source=close_handoff, envelope=envelope
+                                source=close_handoff, envelope=envelope, l10_close=l10_close
                             )
                 else:
                     quantity_handoff = bind_position_management_quantity_handoff_v1(**quantity_args)
@@ -577,6 +843,7 @@ def _t2_from_s7(
                 final_envelope_digest=(envelope.envelope_digest if close_execution_handoff else ""),
                 final_order_envelope=(envelope if close_execution_handoff else None),
                 position_management_execution_handoff=close_execution_handoff,
+                occupied_scope_close_binding=occupied_scope_close_binding,
                 canonical_order_intent=close_intent if close_execution_handoff else None,
                 permit_created=_FALSE,
                 post_count="0",
@@ -938,6 +1205,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     rotation_exit_requests: Mapping[str, object] | None = None,
     common_epoch_decision_epoch: str | None = None,
     offline_governed_attempt: object | None = None,
+    occupied_scope_mark_lane_id: str | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -956,6 +1224,13 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         else None,
         BoundedSlotEntryBudgetV1,
     )
+    if occupied_scope_mark_lane_id is not None and (
+        not bounded_slots
+        or occupied_scope_mark_lane_id not in composed_pairs
+        or position_episode_bindings is None
+        or rotation_exit_requests is not None
+    ):
+        _fail(FAILURE_AUTHORITY, "occupied_scope_mark_requires_bound_offline_lane")
     if bounded_slots:
         from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
             HostBudgetRecoveryContextV1,
@@ -1081,6 +1356,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
 
         # Reject an incompatible episode before consuming a governed-cycle token.
         for lane_id, ingress in per_lane_ingress.items():
+            if occupied_scope_mark_lane_id is not None and lane_id != occupied_scope_mark_lane_id:
+                continue
             episode = position_episode_bindings.get(lane_id)
             if episode is None:
                 if not ingress.position.venue_flat:
@@ -1089,12 +1366,22 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             if not isinstance(episode, PositionEpisodeBindingV1):
                 _fail(FAILURE_AUTHORITY, "position_episode_binding_invalid:" + lane_id)
             try:
+                episode_event_unix = float(ingress.last_finalized_event_ts_unix)
+                if lane_id == occupied_scope_mark_lane_id:
+                    mark = (
+                        canonical_price_provenance_by_lane.get(lane_id)
+                        if canonical_price_provenance_by_lane is not None
+                        else canonical_price_provenance
+                    )
+                    episode_event_unix = mark.require_current_mark_clock_v1(
+                        observed_unix=observed_unix
+                    )
                 episode.prepare_for_cycle_v1(
                     instrument_id=str(composed_pairs[lane_id][1].instrument_id),
                     venue_native_id=str(composed_pairs[lane_id][1].venue_native_id),
                     position_side=str(ingress.position.existing_position_side.value),
                     venue_flat=ingress.position.venue_flat,
-                    event_time=float(ingress.last_finalized_event_ts_unix),
+                    event_time=episode_event_unix,
                     lane_id=lane_id,
                     expected_scope=position_episode_scope,
                 )
@@ -1119,7 +1406,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                     incoming=load_current_productive_sidestate_confirmation_cursor_v1(cursor_root),
                     store_root=cursor_root,
                 )
-            except ValueError as exc:
+            except (AttributeError, ValueError) as exc:
                 _fail(FAILURE_AUTHORITY, str(exc))
     base_mark_px = mark_px
     base_index_px = index_px
@@ -1163,6 +1450,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             )
         )
     for lane_id in lane_order:
+        if occupied_scope_mark_lane_id is not None and lane_id != occupied_scope_mark_lane_id:
+            continue
         pair = composed_pairs.get(lane_id)
         if pair is None:
             continue
@@ -1253,6 +1542,17 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             lane_s7["canonical_price_provenance"] = lane_prov
             lane_s7["mark_px"] = float(getattr(lane_prov, "mark_px", lane_s7["mark_px"]))
             lane_s7["index_px"] = float(getattr(lane_prov, "index_px", lane_s7["index_px"]))
+        occupied_mark_event = None
+        if lane_id == occupied_scope_mark_lane_id:
+            if ingress.position.venue_flat or lane_id not in position_episode_bindings:
+                _fail(FAILURE_AUTHORITY, "occupied_scope_mark_position_required")
+            try:
+                occupied_mark_event = lane_s7[
+                    "canonical_price_provenance"
+                ].require_current_mark_clock_v1(observed_unix=observed_unix)
+            except (AttributeError, ValueError) as exc:
+                _fail(FAILURE_AUTHORITY, str(exc))
+            lane_s7["occupied_scope_mark"] = True
         loss_protection_status = "NOT_APPLICABLE"
         loss_protection_reasons = ()
         if (
@@ -1306,6 +1606,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         cursor_path = Path(cursor_store_root) / CURSOR_FILENAME
         bootstrap_used = False
         if not cursor_path.is_file():
+            if occupied_mark_event is not None:
+                _fail(FAILURE_AUTHORITY, "occupied_scope_mark_cursor_required")
             lane_s7 = _align_lane_s7_closes_to_injected_c1_v1(
                 lane_s7,
                 lane_candles,
@@ -1327,7 +1629,9 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             position_management_ingress=ingress,
             position_management_config_payload=(occupancy_payloads or {}).get("CONFIG"),
             offline_observation_clock_unix=(
-                observed_unix if offline_governed_attempt is not None else None
+                observed_unix
+                if offline_governed_attempt is not None or occupied_mark_event is not None
+                else None
             ),
         )
         from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
@@ -1385,6 +1689,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 position_management_cycle_dispatch=(
                     t2_dispatch if not ingress.position.venue_flat else None
                 ),
+                occupied_scope_mark_event_unix=occupied_mark_event,
             )
         finally:
             reset_full_core_capital_guard_handoff_context_v1(handoff_ctx_reset)

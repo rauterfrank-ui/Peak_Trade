@@ -11,6 +11,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import math
 import traceback
 from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
     PendingDecisionContextV1,
@@ -227,6 +228,50 @@ def _load_ledger(evidence_root: Path) -> dict[str, Any]:
     return payload
 
 
+def read_retained_occupied_scope_close_v1(evidence_root: Path) -> dict[str, Any]:
+    """Read only an original completed close-plan ledger."""
+    ledger = _load_ledger(evidence_root)
+    record = ledger.get("occupied_scope_close")
+    if (
+        ledger.get("state") != STATE_COMPLETED
+        or ledger.get("terminal_class") != "POSITION_MANAGEMENT_PRE_EXTERNAL_EFFECT"
+        or not isinstance(record, dict)
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_LEDGER_NOT_COMPLETE")
+    return record
+
+
+def occupied_scope_mark_cycle_lock_v1(
+    *,
+    lock_root: Path,
+    evidence_root: Path,
+    native_id: str,
+    verify_completed_close: Callable[[], bool] | None = None,
+) -> AuthorizationLifecycleLockV1:
+    """Reclaim a dead mark-cycle lock only while reading its completed close."""
+    context = {
+        "path": str(evidence_root.resolve()),
+        "native_id": native_id,
+        "operation": "occupied_scope_mark",
+    }
+
+    def verify_owner(receipt):
+        return (
+            receipt.get("recovery_context") == context
+            and verify_completed_close is not None
+            and verify_completed_close()
+        )
+
+    return AuthorizationLifecycleLockV1(
+        lock_path=lock_root / CYCLE_EXCLUSION_LOCK_NAME,
+        authorization_id=CYCLE_EXCLUSION_AUTHORIZATION_ID,
+        owner="current_productive_governed_cycle_orchestrator_v1",
+        recover_dead_local_owner=True,
+        recovery_context=context,
+        dead_owner_validator=verify_owner,
+    )
+
+
 def _assert_standing_pins() -> None:
     if int(MAX_POSITIONS_EFFECTIVE) != 1:
         raise CurrentProductiveGovernedCycleOrchestratorError("MAX_POSITIONS_DRIFT")
@@ -413,9 +458,20 @@ def run_current_productive_governed_cycle_v1(
     t2_cycle_dispatch: CycleDispatchV1 | None = None,
     position_management_cycle_dispatch: CycleDispatchV1 | None = None,
     seal_no_effect_hold_v1: Callable[[Path, Mapping[str, Any]], None] | None = None,
+    occupied_scope_mark_event_unix: float | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
+    mark_driven = occupied_scope_mark_event_unix is not None
+    if mark_driven and (
+        position_management_cycle_dispatch is None
+        or type(occupied_scope_mark_event_unix) not in (float, int)
+        or not math.isfinite(occupied_scope_mark_event_unix)
+        or occupied_scope_mark_event_unix <= 0
+    ):
+        raise CurrentProductiveGovernedCycleOrchestratorError(
+            "OCCUPIED_SCOPE_MARK_REQUIRES_POSITION_MANAGEMENT"
+        )
     if execute_network is True or perform_get is True:
         raise CurrentProductiveGovernedCycleOrchestratorError(REASON_NETWORK_NOT_AUTHORIZED)
     if candles_payload is None:
@@ -449,10 +505,18 @@ def run_current_productive_governed_cycle_v1(
     if prior_state == STATE_COMPLETED:
         raise CurrentProductiveGovernedCycleOrchestratorError(REASON_REPLAY)
 
-    lock = AuthorizationLifecycleLockV1(
-        lock_path=Path(lock_root) / CYCLE_EXCLUSION_LOCK_NAME,
-        authorization_id=CYCLE_EXCLUSION_AUTHORIZATION_ID,
-        owner="current_productive_governed_cycle_orchestrator_v1",
+    lock = (
+        occupied_scope_mark_cycle_lock_v1(
+            lock_root=Path(lock_root),
+            evidence_root=Path(evidence_root),
+            native_id=authorization.native_id,
+        )
+        if mark_driven
+        else AuthorizationLifecycleLockV1(
+            lock_path=Path(lock_root) / CYCLE_EXCLUSION_LOCK_NAME,
+            authorization_id=CYCLE_EXCLUSION_AUTHORIZATION_ID,
+            owner="current_productive_governed_cycle_orchestrator_v1",
+        )
     )
     try:
         lock.acquire()
@@ -507,6 +571,8 @@ def run_current_productive_governed_cycle_v1(
             "POST_COUNT": "0",
             "PERMIT_CREATED": FALSE_TOKEN,
         }
+        if mark_driven:
+            payload["occupied_scope_mark_event_unix"] = occupied_scope_mark_event_unix
         payload.update(k1_ledger_extra)
         if extra:
             payload.update(dict(extra))
@@ -559,6 +625,7 @@ def run_current_productive_governed_cycle_v1(
             observation.native_id != authorization.native_id
             or observation.bar != authorization.bar
             or str(observation.confirm) != "1"
+            or (mark_driven and occupied_scope_mark_event_unix < observation.venue_event_time)
         ):
             first_blocker = "BOUND_C1_IDENTITY_MISMATCH"
             reason_code = first_blocker
@@ -602,7 +669,14 @@ def run_current_productive_governed_cycle_v1(
                 cursor_floor_before=cursor_floor_before,
             )
         c1_used = _c1_text(observation)
-        if freshness.disposition != DISPOSITION_EMITTED:
+        retained_c1_context = (
+            mark_driven
+            and cursor_floor_before is not None
+            and cursor_floor_before > 0
+            and observation.venue_event_time == cursor_floor_before
+            and freshness.reason_code == "DUPLICATE_C1"
+        )
+        if freshness.disposition != DISPOSITION_EMITTED and not retained_c1_context:
             first_blocker = freshness.reason_code or "C1_NOT_FRESH_VS_CURSOR"
             blocker_class = "MARKET_STATE_REQUIRED"
             terminal_class = "FRESHNESS_FAILURE"
@@ -625,87 +699,88 @@ def run_current_productive_governed_cycle_v1(
                 c1_used=c1_used,
                 cursor_floor_before=cursor_floor_before,
             )
-        gate = _evaluate_c1_gate_v1(payload=dict(observation.payload or {}))
-        if str(gate.get("CONDITION_GATE") or "") != "SATISFIED":
-            first_blocker = "T2_GATE_NOT_SATISFIED"
-            reason_code = first_blocker
-            _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
-                disposition=DISPOSITION_FAIL_CLOSED,
-                reason_code=reason_code,
-                terminal_class="T2_GATE_FAILURE",
-                get_consumed=True,
-                first_genuine_blocker=first_blocker,
-                blocker_class="AUTHORITY_REQUIRED",
-                next_required_owner_decision=(
-                    f"Bound C1 must have venue_event_time > {PREVIOUS_C1_VENUE_EVENT_TIME}."
-                ),
-                lock_released=_token(True),
-                ledger_state=STATE_FAILED_STOP,
-                transitions=tuple(transitions + [STATE_FAILED_STOP]),
-                c1_used=c1_used,
-                cursor_floor_before=cursor_floor_before,
-            )
+        if not mark_driven:
+            gate = _evaluate_c1_gate_v1(payload=dict(observation.payload or {}))
+            if str(gate.get("CONDITION_GATE") or "") != "SATISFIED":
+                first_blocker = "T2_GATE_NOT_SATISFIED"
+                reason_code = first_blocker
+                _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
+                return _result(
+                    disposition=DISPOSITION_FAIL_CLOSED,
+                    reason_code=reason_code,
+                    terminal_class="T2_GATE_FAILURE",
+                    get_consumed=True,
+                    first_genuine_blocker=first_blocker,
+                    blocker_class="AUTHORITY_REQUIRED",
+                    next_required_owner_decision=(
+                        f"Bound C1 must have venue_event_time > {PREVIOUS_C1_VENUE_EVENT_TIME}."
+                    ),
+                    lock_released=_token(True),
+                    ledger_state=STATE_FAILED_STOP,
+                    transitions=tuple(transitions + [STATE_FAILED_STOP]),
+                    c1_used=c1_used,
+                    cursor_floor_before=cursor_floor_before,
+                )
 
-        try:
-            eg_result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-                owner_go=authorization.eg_owner_go,
-                origin_main_sha=origin_main_sha,
-                observation=CurrentProductiveC1ObservationV1(
-                    venue_event_time=observation.venue_event_time,
-                    confirm=observation.confirm,
-                    native_id=observation.native_id,
-                    bar=observation.bar,
-                    payload=observation.payload,
-                ),
-                cursor_store_root=Path(cursor_store_root),
-                lock_root=Path(evidence_root) / "eg_lock",
-                evidence_root=Path(evidence_root) / "eg",
-                cycle_dispatch=eg_cycle_dispatch or _reject_default_v5_as_t2_substitute,
-            )
-        except (
-            CurrentProductiveGovernedNextC1OrchestrationError,
-            CurrentProductiveGovernedCycleOrchestratorError,
-        ) as exc:
-            first_blocker = exc.reason_code
-            reason_code = first_blocker
-            _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
-                disposition=DISPOSITION_FAIL_CLOSED,
-                reason_code=reason_code,
-                terminal_class="EG_FAILURE",
-                get_consumed=True,
-                first_genuine_blocker=first_blocker,
-                blocker_class="UNKNOWN_OR_CONFLICTING",
-                next_required_owner_decision="EG failed closed. Do not resume this partial cycle.",
-                lock_released=_token(True),
-                ledger_state=STATE_FAILED_STOP,
-                transitions=tuple(transitions + [STATE_FAILED_STOP]),
-                c1_used=c1_used,
-                cursor_floor_before=cursor_floor_before,
-            )
-        eg_consumed = True
-        eg_dispatch_count = int(eg_result.dispatch_count)
-        if eg_dispatch_count != 1:
-            first_blocker = f"EG_DISPATCH_COUNT_NOT_1:{eg_result.reason_code}"
-            reason_code = first_blocker
-            _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
-                disposition=DISPOSITION_FAIL_CLOSED,
-                reason_code=reason_code,
-                terminal_class="EG_FAILURE",
-                get_consumed=True,
-                eg_consumed=True,
-                eg_dispatch_count=eg_dispatch_count,
-                first_genuine_blocker=first_blocker,
-                blocker_class="UNKNOWN_OR_CONFLICTING",
-                next_required_owner_decision="EG did not dispatch exactly once. Do not resume.",
-                lock_released=_token(True),
-                ledger_state=STATE_FAILED_STOP,
-                transitions=tuple(transitions + [STATE_FAILED_STOP]),
-                c1_used=c1_used,
-                cursor_floor_before=cursor_floor_before,
-            )
+            try:
+                eg_result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+                    owner_go=authorization.eg_owner_go,
+                    origin_main_sha=origin_main_sha,
+                    observation=CurrentProductiveC1ObservationV1(
+                        venue_event_time=observation.venue_event_time,
+                        confirm=observation.confirm,
+                        native_id=observation.native_id,
+                        bar=observation.bar,
+                        payload=observation.payload,
+                    ),
+                    cursor_store_root=Path(cursor_store_root),
+                    lock_root=Path(evidence_root) / "eg_lock",
+                    evidence_root=Path(evidence_root) / "eg",
+                    cycle_dispatch=eg_cycle_dispatch or _reject_default_v5_as_t2_substitute,
+                )
+            except (
+                CurrentProductiveGovernedNextC1OrchestrationError,
+                CurrentProductiveGovernedCycleOrchestratorError,
+            ) as exc:
+                first_blocker = exc.reason_code
+                reason_code = first_blocker
+                _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
+                return _result(
+                    disposition=DISPOSITION_FAIL_CLOSED,
+                    reason_code=reason_code,
+                    terminal_class="EG_FAILURE",
+                    get_consumed=True,
+                    first_genuine_blocker=first_blocker,
+                    blocker_class="UNKNOWN_OR_CONFLICTING",
+                    next_required_owner_decision="EG failed closed. Do not resume this partial cycle.",
+                    lock_released=_token(True),
+                    ledger_state=STATE_FAILED_STOP,
+                    transitions=tuple(transitions + [STATE_FAILED_STOP]),
+                    c1_used=c1_used,
+                    cursor_floor_before=cursor_floor_before,
+                )
+            eg_consumed = True
+            eg_dispatch_count = int(eg_result.dispatch_count)
+            if eg_dispatch_count != 1:
+                first_blocker = f"EG_DISPATCH_COUNT_NOT_1:{eg_result.reason_code}"
+                reason_code = first_blocker
+                _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
+                return _result(
+                    disposition=DISPOSITION_FAIL_CLOSED,
+                    reason_code=reason_code,
+                    terminal_class="EG_FAILURE",
+                    get_consumed=True,
+                    eg_consumed=eg_consumed,
+                    eg_dispatch_count=eg_dispatch_count,
+                    first_genuine_blocker=first_blocker,
+                    blocker_class="UNKNOWN_OR_CONFLICTING",
+                    next_required_owner_decision="EG did not dispatch exactly once. Do not resume.",
+                    lock_released=_token(True),
+                    ledger_state=STATE_FAILED_STOP,
+                    transitions=tuple(transitions + [STATE_FAILED_STOP]),
+                    c1_used=c1_used,
+                    cursor_floor_before=cursor_floor_before,
+                )
 
         k1_bind = bind_k1_credential_capability_for_governed_cycle_occupancy_v1()
         if k1_bind.material_loaded != FALSE_TOKEN:
@@ -717,7 +792,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=reason_code,
                 terminal_class="K1_BIND_FAILURE",
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 eg_dispatch_count=eg_dispatch_count,
                 first_genuine_blocker=first_blocker,
                 blocker_class="UNKNOWN_OR_CONFLICTING",
@@ -753,7 +828,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=reason_code,
                 terminal_class="OCCUPANCY_FAILURE",
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 eg_dispatch_count=eg_dispatch_count,
                 first_genuine_blocker=first_blocker,
                 blocker_class="IMPLEMENTATION_REQUIRED",
@@ -785,12 +860,9 @@ def run_current_productive_governed_cycle_v1(
             )
         )
         if not managing_position and (
-            occupancy_disposition not in {"OCCUPANCY_ABSENT"}
-            or pending_status
-            not in {
-                "NONE_OBSERVED",
-                "",
-            }
+            mark_driven
+            or occupancy_disposition not in {"OCCUPANCY_ABSENT"}
+            or pending_status not in {"NONE_OBSERVED", ""}
         ):
             first_blocker = (
                 occupancy_disposition
@@ -811,7 +883,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=reason_code,
                 terminal_class=terminal_class,
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 occupancy_consumed=True,
                 eg_dispatch_count=eg_dispatch_count,
                 occupancy_disposition=occupancy_disposition,
@@ -848,7 +920,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 occupancy_consumed=True,
                 eg_dispatch_count=eg_dispatch_count,
                 occupancy_disposition=occupancy_disposition,
@@ -876,7 +948,7 @@ def run_current_productive_governed_cycle_v1(
                     reason_code=first_blocker,
                     terminal_class="T2_FAILURE",
                     get_consumed=True,
-                    eg_consumed=True,
+                    eg_consumed=eg_consumed,
                     occupancy_consumed=True,
                     eg_dispatch_count=eg_dispatch_count,
                     occupancy_disposition=occupancy_disposition,
@@ -910,7 +982,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 occupancy_consumed=True,
                 eg_dispatch_count=eg_dispatch_count,
                 occupancy_disposition=occupancy_disposition,
@@ -987,7 +1059,7 @@ def run_current_productive_governed_cycle_v1(
                 reason_code=reason_code,
                 terminal_class="T2_FAILURE",
                 get_consumed=True,
-                eg_consumed=True,
+                eg_consumed=eg_consumed,
                 occupancy_consumed=True,
                 t2_consumed=True,
                 get_consume_count=1,
@@ -1073,6 +1145,16 @@ def run_current_productive_governed_cycle_v1(
                 "HOLD/non-executable is a valid terminal trading outcome. Do not force ENTER. "
                 f"Remainder {REMAINDER_OWNER_GO} is not a consume license. POST unauthorized."
             )
+        occupied_close_record = None
+        close_binding = getattr(t2_result, "occupied_scope_close_binding", None)
+        if mark_driven and management_close_bound and close_binding is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+                retain_position_management_close_v1,
+            )
+
+            occupied_close_record = retain_position_management_close_v1(
+                close_execution_handoff, binding=close_binding
+            )
         _write_ledger(
             state=STATE_COMPLETED,
             seal_hold=(
@@ -1091,6 +1173,11 @@ def run_current_productive_governed_cycle_v1(
                 "reason_code": reason_code,
                 "terminal_class": terminal_class,
                 "decision_result": decision_result,
+                **(
+                    {"occupied_scope_close": occupied_close_record}
+                    if occupied_close_record is not None
+                    else {}
+                ),
                 "portfolio_reservation_id": str(
                     getattr(t2_result, "portfolio_reservation_id", "") or ""
                 ),
@@ -1166,7 +1253,7 @@ def run_current_productive_governed_cycle_v1(
                     terminal_class=terminal_class,
                     cycle_go_status_after="",
                     get_consumed=True,
-                    eg_consumed=True,
+                    eg_consumed=eg_consumed,
                     occupancy_consumed=True,
                     t2_consumed=True,
                     get_consume_count=1,
@@ -1228,7 +1315,7 @@ def run_current_productive_governed_cycle_v1(
             reason_code=reason_code,
             terminal_class=terminal_class,
             get_consumed=True,
-            eg_consumed=True,
+            eg_consumed=eg_consumed,
             occupancy_consumed=True,
             t2_consumed=True,
             get_consume_count=1,

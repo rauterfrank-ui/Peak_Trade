@@ -954,7 +954,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "b719373f52970249452ec68031ddb65ab3fbe647c4a650aa8c46288c8108608f"
+      "sha256": "0207157fca64c1bf2b094d4192baf6fc0b09c6b5599012ac5998caf0b88defd2"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1004,7 +1004,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "459a679d73e9c4135cd66c1cf628378a156cfb6bdb85c35b1ba8e8a47e26a653"
+      "sha256": "49d97a9ce105e7ba1d9b39289c9748abb037a5306ea4f6bd93f7b8acff468865"
     },
     {
       "path": "pyproject.toml",
@@ -1329,12 +1329,12 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
       "before_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
-      "sha256": "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af"
+      "sha256": "f057e8f3c1baa68dafb59c491d193c232a2008670ed855658a9513dcdfb660f1"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
       "before_sha256": "d54582b65b96f61375180c0abaa5df3279495b17307162820e50e8923025a57b",
-      "sha256": "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06"
+      "sha256": "5a30568df81a4d316f138df9d317f2ce2ec136ea76de0e160907704025c04fda"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
@@ -1489,7 +1489,7 @@
     {
       "path": "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py",
       "before_sha256": "70a0fbe3bb90a9ae4bf9cfcda05f57964d0681a5a859e5df6dd36ad8766c22cb",
-      "sha256": "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4"
+      "sha256": "d35b5c2eab4dbd51f42b52126861f0965cf652f8637156057ddf69d36719182a"
     },
     {
       "path": "src/ops/exit_policy_producer_binding_v1/models_v1.py",
@@ -1514,7 +1514,7 @@
     {
       "path": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py",
       "before_sha256": "dd743daba0b43e378cd0c20811d6d6d1f9933a2af91ac58838061fe1c9f0597c",
-      "sha256": "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f"
+      "sha256": "a56910653c688a597c7fa9cf8ba06f76fee3d0529e45ad8a9d1c0ae47bc9deff"
     },
     {
       "path": "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py",
@@ -1594,7 +1594,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "a36056c519b6d0409504b27b1cf57fcfaa2f532b82458cd47e57724aeabcdb5c"
+      "sha256": "308baacb462760a56d9a35801e9128bda5c8341853b132adefdc8b15afea9486"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -1609,12 +1609,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
       "before_sha256": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
-      "sha256": "8f25fe5633dad669ff553f50f6f276e892b5b983642e913281c613f86ed11e3c"
+      "sha256": "b4c35c069993501c0426d697c00f333fe3944d6d2156feb7b609edcbfaef90cf"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
       "before_sha256": "e27fab1fb95999d8033e2c586fbc3c3a9deadf969fa53a5d582583728bf61e75",
-      "sha256": "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425"
+      "sha256": "ccb96ea50e65384ca12b740e98d70c4ebeb4c5eb4aa74a4ec1f4112c392be51f"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
@@ -1647,6 +1647,11 @@
       "sha256": "9dba65595b39b10c685ab5931d48013c231b5fc848bae8dc0cbe509653e0d483"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_position_management_quantity_handoff_v1.py",
+      "before_sha256": "20fc76c40a19b41096af9157376d5954b814b57ab12a49a038f85d0bd44ead20",
+      "sha256": "2082ade35cfa81b97fbf9060d635133998fdfb3cf9ac397b9503eb53a6592ab7"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_budget_admission_v1.py",
       "before_sha256": null,
       "sha256": "6c97451d8b6e3456af7e108088022e566236a5c8dfd98c70d1c02e6df27341e4"
@@ -1654,7 +1659,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py",
       "before_sha256": "dbd8f6ae734aff189e25b0fb3fffe0256b6fe98459950aecc456fa094b34cb52",
-      "sha256": "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4"
+      "sha256": "e584bbde6ca55dd3e1cda50c7584c5b3be51deead087419c5ad9c618797fd388"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_pending_observation_v1.py",
@@ -1690,6 +1695,11 @@
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
       "sha256": "4d0b445b374370c7b600ef3a9786a2fa1f724d1e0a599df48639a94a62dcb92b"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
+      "before_sha256": "beab8cb58e27b25e616c3820999c489fa470965426cdf8d6639e3769fec07bc6",
+      "sha256": "3d76d42c486354dba0afbb1d716811ceb7a7737f04556af622b49956e8da9e1a"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
@@ -1967,6 +1977,16 @@
       "sha256": "978cbd7cc2036a16793f59aea82aef62cb0a2272888c09d19545a31ac8c0b0e1"
     },
     {
+      "path": "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+      "before_sha256": "7f1fc3c29b9f07452635738abd3b7d64b6401db3dbdd2c30b2a6869e44b5cf47",
+      "sha256": "9afc8c391a49f851f38979de22681f2a7ba406fd9ca00e43f9f940ae8db64c39"
+    },
+    {
+      "path": "src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py",
+      "before_sha256": "574e310e580b3e44d842faec383e459e64cf3f2c2f360f3b9bb78240bf3b8ee9",
+      "sha256": "32ff8157532f6ecf5c2ccfa24280f92b85c9c8b027de7f61f46ad10c593694f9"
+    },
+    {
       "path": "src/ops/peak_trade_public_market_data_runtime_v1/event_pipeline_v1.py",
       "before_sha256": "253c04ab144f68868ee7f27780d1df48072ba4a20e1076db37703ec67972fad9",
       "sha256": "4491921de7074b292ec9685c3b796a91a6584415b11e6dddc71efc6d052f5f3c"
@@ -2019,7 +2039,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "ceec4eb7bdafd84da34ec9f6e3826c24dc9b92e6b90e8565a4cc858ac9d6412f"
+      "sha256": "33b8e81e562e8786ae54feae750cdaac8f77e679ee5c8225c1097fa189b32096"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -2044,12 +2064,12 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "e1768f7a4ef486399592e70f4a218774c666e05437da15ce7dfc09b5d1895e1b"
+      "sha256": "541244f697b8362cda13cf980ade71ccd450ff3c19dc26c3ab29dd14216de2a1"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
       "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
-      "sha256": "b10663b74bcfcf7995ff11e4d3991db47cdfc531ad1a92c62a327556a0056678"
+      "sha256": "88222852b013f038f72725c4543544c3f97f2567b00a08ea1dce5a1884a57a8f"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -2094,7 +2114,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/slot_loss_budget_v1.py",
       "before_sha256": null,
-      "sha256": "fb1a89865a5b2710d78e0c9c186d0123406b2ca3bd325d2c5662215a54d88489"
+      "sha256": "57b57d8c5b59acc895b933dde42e9e419c4c98af0ef265f66c5464c5bc99d3a6"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py",
@@ -2227,6 +2247,11 @@
       "sha256": "00b467776cdcec3c7fe32b075a03a89989d819d4684d6b6beaed6f83707dadc2"
     },
     {
+      "path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
+      "before_sha256": "209a515d62c87c50329d8999d3d376367668c4ac04e93c8f1ce2750929a2abfb",
+      "sha256": "ecc0086d2f8827c7a2413681986101140aef00f3fe48c9befc2ef903e01dc6ef"
+    },
+    {
       "path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
       "before_sha256": "7d66acfcd6db53fec0efb4de6f794f77f4608d35af36fbeff3ca083d3e41ac0a",
       "sha256": "78c9d0b8d546906920c496ba88d455e48d89106377aeb512cc8ec791def3cf7d"
@@ -2240,6 +2265,11 @@
       "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
       "before_sha256": "0526835913d62efa3c33a08cda7557f03ee8d7918311c9794611314fa90ba68c",
       "sha256": "4d63799f7dd0d619bc760924a9efd2190bf01fd37c9065ddbc8a92324037a29b"
+    },
+    {
+      "path": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py",
+      "before_sha256": "e044fccc4104a51138e080d29773d865009a0b30294a2e39e2e39f7f5942ab39",
+      "sha256": "05f98a70d74bbd22e577a1dabef7161912a997344b7760a60e5c7aa87345fcce"
     },
     {
       "path": "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
@@ -2427,6 +2457,11 @@
       "sha256": "85da32a207da75bb538d379b71f2997e1caec4996ff7e31cf4d0b232817e3fad"
     },
     {
+      "path": "tests/ops/_bounded_system_episode_fixture_v1.py",
+      "before_sha256": "c00c1da83cd40bd321315a0fefd915d6e39dc417e22e55ab959c22f6164697f6",
+      "sha256": "104d4034ab7b91165f87f721e1d58d06477644a952337286fd5293e5b3410cdb"
+    },
+    {
       "path": "tests/ops/_continuous_crash_checkpoint_worker_v1.py",
       "before_sha256": "6c550a72559edbb8cd8860c022d492e30c391474aa4df5778d4ea1d24c1f2c3a",
       "sha256": "2a2d99da3ff3491e86caacf3ef46629b2ab53e9509f33aab8f62a6c139b106e9"
@@ -2444,7 +2479,7 @@
     {
       "path": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
       "before_sha256": "b8a3e0b178cc14089718c53e902bb16cfc0a2e5d2f353a6c0993b13132cfdf7c",
-      "sha256": "dceec056cf37249978afc00957ca080c6a6638d58906b87acc7b77822f382461"
+      "sha256": "7989d2883fbfce4bc0873b9bb4096f8388c58ac2c09829b3ca633d2ca7a098d7"
     },
     {
       "path": "tests/ops/_host_private_rest_fixture_v1.py",
@@ -2519,7 +2554,7 @@
     {
       "path": "tests/ops/test_bounded_slot_connected_roundtrip_v1.py",
       "before_sha256": null,
-      "sha256": "721104c3021b715d43611e6621b2cab7707ee8f4d955aa839eb75014b4d17640"
+      "sha256": "7c4026a3dc8049614d3b1c0094d4c3258611c8e362bb4f17c664aa0596797d08"
     },
     {
       "path": "tests/ops/test_bounded_slot_post_close_capital_v1.py",
@@ -2530,6 +2565,21 @@
       "path": "tests/ops/test_bounded_slot_post_close_rebinding_v1.py",
       "before_sha256": null,
       "sha256": "28b7813dc1da9aac5d2cfe6d3a6b950420e3d99ad836d72943f189d2bf970ae0"
+    },
+    {
+      "path": "tests/ops/test_bounded_slot_reversal_direction_evidence_v1.py",
+      "before_sha256": null,
+      "sha256": "1b85d496c0294ad2f716fbe6cda7e14f6b5e5ffbe3401f33e072c4b9ded44e25"
+    },
+    {
+      "path": "tests/ops/test_bounded_slot_scope_close_v1.py",
+      "before_sha256": null,
+      "sha256": "f7008e6ea636164cdf827ab1fc032280201f1f95b5f193f14b1299aa11b0cee3"
+    },
+    {
+      "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",
+      "before_sha256": null,
+      "sha256": "89aecccd848372a19677402ced9d5a2cbf36e0724a3240287a195734a86b4ee3"
     },
     {
       "path": "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
@@ -2624,7 +2674,7 @@
     {
       "path": "tests/ops/test_current_ordered_funding_episode_policy_delta_v1.py",
       "before_sha256": null,
-      "sha256": "8447dc94451061fbf6b600cf963bee3c45d9b9db789d374ef8f3737687e8f9ef"
+      "sha256": "d8bb4015161f2d53c3aa5f6efb94da1607f1ec1548c5424ab089947803cdda55"
     },
     {
       "path": "tests/ops/test_current_post_assessment_frame_v1.py",
@@ -3039,7 +3089,7 @@
     {
       "path": "tests/ops/test_open_slot_loss_protection_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "0c455d83de07d553dda07f20779ef591df58c3729982ce5e20a045f63d8dbd85"
+      "sha256": "03d8800c9685cefcd430b7866276661f9eb4df52a5adde3cf28bcb3d237d3344"
     },
     {
       "path": "tests/ops/test_open_slot_loss_protection_v1.py",
@@ -3149,7 +3199,7 @@
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "4016b355fbbfef0a4a8e0bb1454c6747165d706d99ca5e23c5fd8e7f2392f72e"
+      "sha256": "60a470221e3ccec5d511c846a380ce1a6ef2481aea4b447f683d9d9c3a876785"
     },
     {
       "path": "tests/ops/test_rotation_plan_state_v1.py",
