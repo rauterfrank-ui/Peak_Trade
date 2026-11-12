@@ -41,6 +41,15 @@ class CurrentPostPositionCloseError(ValueError):
     """The original close or its current account custody could not be proven."""
 
 
+def occupied_close_submit_root_v1(host_root: Path, episode_id: str) -> Path:
+    if len(episode_id) != 64 or any(c not in "0123456789abcdef" for c in episode_id):
+        raise CurrentPostPositionCloseError("ORIGINAL_ENTRY_DIGEST_REQUIRED")
+    root = host_root / "position-episodes" / episode_id / "l10-close-submit"
+    if root.resolve() != root or not root.parent.is_dir():
+        raise CurrentPostPositionCloseError("ORIGINAL_CLOSE_STORE_REQUIRED")
+    return root
+
+
 @dataclass(frozen=True)
 class CurrentPostPositionCloseContextV1:
     execution: PositionManagementExecutionHandoffV1
@@ -51,14 +60,9 @@ class CurrentPostPositionCloseContextV1:
     def store_root_v1(self) -> Path:
         if self.execution.l10_close is None:
             raise CurrentPostPositionCloseError("ORIGINAL_L10_CLOSE_CONTEXT_REQUIRED")
-        episode = self.execution.l10_close.episode
-        digest = episode.episode_id
-        if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
-            raise CurrentPostPositionCloseError("ORIGINAL_ENTRY_DIGEST_REQUIRED")
-        root = self.recovery.host.root / "position-episodes" / digest / "l10-close-submit"
-        if root.resolve() != root or not root.parent.is_dir():
-            raise CurrentPostPositionCloseError("ORIGINAL_CLOSE_STORE_REQUIRED")
-        return root
+        return occupied_close_submit_root_v1(
+            self.recovery.host.root, self.execution.l10_close.episode.episode_id
+        )
 
 
 def inspect_current_post_position_close_v1(

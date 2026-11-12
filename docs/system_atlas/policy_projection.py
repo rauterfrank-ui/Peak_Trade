@@ -171,7 +171,7 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 DOUBLE_PLAY_POLICY_DELTAS = {
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
         "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af",
-        "da831e7a83bab49a02265315338538b5c2ba9fb56a0ce2d39eadfb6799c420f0",
+        "54b3e4304c56871e332cde526d052158ad4bd693f8c401d24a4a45a7350d9d14",
     ),
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": (
         "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
@@ -195,7 +195,7 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
         "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
-        "e584bbde6ca55dd3e1cda50c7584c5b3be51deead087419c5ad9c618797fd388",
+        "75831f7b37a4a6e46e40f0ca6861d0ad3b78b34f98bb39d806e3810b388fb73e",
     ),
 }
 

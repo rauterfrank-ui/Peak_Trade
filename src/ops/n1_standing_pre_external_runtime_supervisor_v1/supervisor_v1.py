@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional
 
 if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        AuthenticatedL10CloseReadbackV1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
         PositionManagementExecutionHandoffV1,
     )
@@ -32,6 +35,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
     PersistentNaturalEnterConvergenceError,
+    build_s8_occupied_lane_pairs_v1,
     recover_current_n1_occupied_scope_close_v1,
     run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1,
 )
@@ -127,6 +131,11 @@ def _record_supervisor_outcome_v1(run):
         action = "Inspect missing runtime result before a new authorized run."
         if terminal is not None:
             reason, action = terminal.reason_code, terminal.next_required_owner_decision
+        elif result.close_readback is not None:
+            reason = result.close_readback.status
+            action = "Keep the original close and reconcile venue custody before any continuation."
+            if result.ok:
+                action = "Hand the authenticated flat close to the original accounting owner."
         elif result.resumed_position_management_close is not None:
             reason = "OCCUPIED_SCOPE_CLOSE_RECOVERED"
             action = (
@@ -199,6 +208,7 @@ class StandingSupervisorRunResultV1:
     owner_go_consumed: bool
     authority_invariants_ok: bool
     resumed_position_management_close: PositionManagementExecutionHandoffV1 | None = None
+    close_readback: AuthenticatedL10CloseReadbackV1 | None = None
 
 
 def assert_supervisor_authority_boundary_v1() -> None:
@@ -398,9 +408,35 @@ def run_n1_standing_pre_external_supervisor_v1(
                 raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
 
             if occupied_mark_proof_root is not None:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+                    reconcile_submitted_occupied_scope_close_v1,
+                )
+
                 if authorization.native_id != bound.venue_native_id:
                     raise StandingSupervisorError(
                         "OCCUPIED_SCOPE_CLOSE_AUTHORIZED_INSTRUMENT_MISMATCH"
+                    )
+                lane_pair = build_s8_occupied_lane_pairs_v1(
+                    lane_state_root=config.lane_state_root, bound=bound
+                )["LANE_1"]
+                close_readback = reconcile_submitted_occupied_scope_close_v1(
+                    lane_pair=lane_pair,
+                    budget_host=get_budget_host(),
+                    proof_root=occupied_mark_proof_root,
+                )
+                if close_readback is not None:
+                    trace.terminal_disposition = close_readback.status
+                    trace.extra["close_envelope_digest"] = close_readback.envelope_digest
+                    trace.extra["close_readback_reasons"] = list(close_readback.reason_codes)
+                    return StandingSupervisorRunResultV1(
+                        ok=close_readback.status == "CLOSE_FLAT_CONFIRMED",
+                        run_id=run_id,
+                        trace=trace,
+                        recovery=None,
+                        policy_result=None,
+                        owner_go_consumed=False,
+                        authority_invariants_ok=auth_proof.ok,
+                        close_readback=close_readback,
                     )
                 resumed_close = recover_current_n1_occupied_scope_close_v1(
                     lane_state_root=config.lane_state_root,

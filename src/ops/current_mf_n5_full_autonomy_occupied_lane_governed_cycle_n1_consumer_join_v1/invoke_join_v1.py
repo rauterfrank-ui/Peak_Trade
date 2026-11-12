@@ -479,6 +479,81 @@ def _occupied_attempt_root_v1(
     return Path(evidence_root) / attempt_dir / hashlib.sha256(prefix.encode()).hexdigest()
 
 
+def _occupied_close_attempt_root_v1(evidence_root, *, cycle_id, lane_id, authenticated):
+    suffix = f":{lane_id}:{lane_id}"
+    if not isinstance(cycle_id, str) or not cycle_id.endswith(suffix) or cycle_id == suffix:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
+    return _occupied_attempt_root_v1(
+        evidence_root, prefix=cycle_id.removesuffix(suffix), authenticated=authenticated
+    )
+
+
+def read_submitted_occupied_scope_close_v1(
+    *,
+    lane_pair: tuple[IsolatedLaneSlotV1, BoundInstrumentV1],
+    expected_scope: PositionEpisodeScopeV1,
+    episode_id: str,
+    episode_root: Path,
+    repository_sha: str,
+    session_id: str,
+) -> PositionManagementExecutionHandoffV1:
+    """Read the retained LIVE decision against its pre-submit durable position episode."""
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
+        OccupiedLaneRuntimeInstrumentIdentityV1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        open_position_episode_binding_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        read_retained_occupied_scope_close_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        restore_retained_position_management_close_v1,
+    )
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+    )
+
+    slot, bound = lane_pair
+    lane_id = slot.lane_id
+    cursor, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1({lane_id: lane_pair})[
+        lane_id
+    ]
+    cursor_root = Path(cursor)
+    scope = read_occupied_scope_mark_snapshot_v1(cursor_root)
+    if scope is None or scope["mark"]["pending_close_episode_id"] != episode_id:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_ORIGINAL_EPISODE_REQUIRED")
+    attempt_root = _occupied_close_attempt_root_v1(
+        evidence, cycle_id=scope["mark"]["cycle_id"], lane_id=lane_id, authenticated=True
+    )
+    retained = read_retained_occupied_scope_close_v1(attempt_root)
+    switch = occupied_l10_close_from_binding_v1(retained["binding"])
+    if (
+        expected_scope.execution_environment != "LIVE"
+        or switch.episode.account_scope != expected_scope
+        or switch.episode.episode_id != episode_id
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_ACCOUNT_SCOPE_MISMATCH")
+    episode = open_position_episode_binding_v1(
+        identity=switch.episode,
+        state_root=episode_root,
+        mode="recover",
+        repository_sha=repository_sha,
+        config_digest=_occupied_scope_exit_config_digest_v1(),
+        writer_session_id=session_id,
+        entry_source_ref=switch.entry_source_ref,
+        entry_price_basis="CONFIRMED_POSITION_ENTRY_PRICE",
+    )
+    binding = _occupied_scope_close_binding_v1(
+        lane_identity=OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(
+            lane_id=lane_id, bound=bound
+        ),
+        episode=episode,
+        cursor_root=cursor_root,
+    )
+    return restore_retained_position_management_close_v1(retained, expected_binding=binding)
+
+
 def recover_occupied_scope_close_for_reconciliation_v1(
     *,
     lane_id: str,
@@ -591,15 +666,11 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         )
 
     binding, closing_fill = read_binding()
-    suffix = f":{lane_id}:{lane_id}"
-    cycle_id = binding["cycle_id"]
-    if not isinstance(cycle_id, str) or not cycle_id.endswith(suffix):
-        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
-    prefix = cycle_id.removesuffix(suffix)
-    if not prefix:
-        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
-    attempt_root = _occupied_attempt_root_v1(
-        evidence_root, prefix=prefix, authenticated=authenticated_entry is not None
+    attempt_root = _occupied_close_attempt_root_v1(
+        evidence_root,
+        cycle_id=binding["cycle_id"],
+        lane_id=lane_id,
+        authenticated=authenticated_entry is not None,
     )
 
     def read_completed_close(current, fill):

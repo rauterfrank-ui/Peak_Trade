@@ -207,7 +207,7 @@ def authenticated_host(tmp_path, monkeypatch):
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=20, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=24, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
@@ -1368,7 +1368,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0].isoformat())
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=78 if close_case else 26, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=84 if close_case else 26, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1409,9 +1409,10 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     proof=proofs[rid],
                     quantity=quantity,
                     polled=True,
-                    dispatch="ack",
+                    dispatch="readback-flat",
+                    opener=opener,
                 )
-                assert transport.methods_used == ["GET"] * 78
+                assert transport.methods_used == ["GET"] * 84
                 assert host.owner.active_sum_v1() == held
                 return
             if path in {"no-custody", "foreign-product-row"}:
@@ -1809,6 +1810,13 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-wrong-key", None),
         ("polled-mark-close-kill", None),
         ("polled-mark-close-stale-position", None),
+        ("polled-mark-close-readback-flat", None),
+        ("polled-mark-close-readback-partial", None),
+        ("polled-mark-close-readback-unseen", None),
+        ("polled-mark-close-readback-missing-fill", None),
+        ("polled-mark-close-readback-wrong-order", None),
+        ("polled-mark-close-readback-stale-residual", None),
+        ("polled-mark-close-readback-no-flat-anchor", None),
         ("terminal-partial", None),
         ("missing-fills", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
         ("wrong-position-trade", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
@@ -1946,8 +1954,11 @@ def test_owned_entry_proof_reaches_original_position_episode(
             quantity=quantity,
             polled=polled,
             dispatch=dispatch,
+            opener=opener,
         )
-        assert len(opener.requests) - request_count == 12
+        assert len(opener.requests) - request_count == (
+            18 if dispatch and dispatch.startswith("readback-") else 12
+        )
         assert host.owner.active_sum_v1() == held
         return
     if fault is None:
@@ -1985,7 +1996,17 @@ def test_owned_entry_proof_reaches_original_position_episode(
 
 
 def _assert_authenticated_occupied_mark_close(
-    *, tmp_path, monkeypatch, context, bound, proof_root, proof, quantity, polled, dispatch
+    *,
+    tmp_path,
+    monkeypatch,
+    context,
+    bound,
+    proof_root,
+    proof,
+    quantity,
+    polled,
+    dispatch,
+    opener,
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2139,7 +2160,31 @@ def _assert_authenticated_occupied_mark_close(
         close_context = terminal.position_close_post_context
         assert close_context.execution == handoff
         if dispatch is not None:
-            _assert_original_close_dispatch(close_context, dispatch, tmp_path)
+            from src.ops.full_core_live_path_composition_root_v1 import (
+                external_effect_permit_durable_consume_v1 as consume,
+            )
+
+            readback = (
+                dispatch.removeprefix("readback-") if dispatch.startswith("readback-") else None
+            )
+            with monkeypatch.context() as patch:
+                if readback is not None:
+                    patch.setattr(
+                        consume, "_utc_now_iso_v1", (NOW + timedelta(milliseconds=250)).isoformat
+                    )
+                _assert_original_close_dispatch(
+                    close_context, "timeout" if readback is not None else dispatch, tmp_path
+                )
+            if readback is not None or dispatch == "kill":
+                _assert_restarted_close_readback(
+                    tmp_path,
+                    monkeypatch,
+                    close_context,
+                    proof_root,
+                    opener,
+                    floor,
+                    readback or "not-sent",
+                )
         return
     without_metadata = {**inputs, "live_29p_injected_by_lane": None}
     with pytest.raises(
@@ -2372,6 +2417,176 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):
         submit(**args)
     assert len(requests) == 1
+
+
+def _assert_restarted_close_readback(
+    tmp_path, monkeypatch, context, proof_root, opener, floor, case
+):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _continuous_auth,
+    )
+
+    original_host = context.recovery.host
+    envelope = context.execution.envelope
+    _, bound = context.lane_pair
+    product = "SWAP" if envelope.instrument_id.endswith("-SWAP") else "FUTURES"
+    quantity = Decimal(envelope.quantity)
+    partial = case in {"partial", "stale-residual"}
+    filled = quantity / 2 if partial else quantity
+    stamp = int(NOW.timestamp() * 1000)
+    order = {
+        "instId": envelope.instrument_id,
+        "instType": product,
+        "clOrdId": envelope.client_order_id,
+        "ordId": "91234",
+        "side": envelope.side,
+        "posSide": "net",
+        "tdMode": envelope.td_mode,
+        "ordType": envelope.order_type,
+        "reduceOnly": "false" if case == "wrong-order" else "true",
+        "state": "canceled" if partial else "filled",
+        "sz": str(quantity),
+        "accFillSz": str(filled),
+        "uTime": str(stamp + 500),
+    }
+    fill = {
+        **{
+            key: order[key] for key in ("instId", "instType", "clOrdId", "ordId", "side", "posSide")
+        },
+        "tradeId": "123",
+        "fillSz": str(filled),
+        "fillPx": "1996",
+        "fillTime": str(stamp + 400),
+        "fillPnl": "0.15",
+        "fee": "-0.02",
+        "feeCcy": "USDC",
+    }
+    original_body = opener.body
+
+    def close_body(path, params):
+        if path.endswith("/config"):
+            return original_body(path, params)
+        assert params["instId"] == envelope.instrument_id
+        code, rows = "0", []
+        if case == "unseen":
+            if path.endswith("/order"):
+                code = "51603"
+        elif path.endswith("/order") or (
+            path.endswith("/orders-history") and case != "no-flat-anchor"
+        ):
+            rows = [order]
+        elif path.endswith("/fills") and case != "missing-fill":
+            rows = [fill]
+        elif path.endswith("/positions") and partial:
+            remaining = quantity - filled
+            rows = [
+                {
+                    "instId": envelope.instrument_id,
+                    "instType": product,
+                    "posSide": "net",
+                    "mgnMode": envelope.td_mode,
+                    "pos": str(remaining if envelope.side == "sell" else -remaining),
+                    "uTime": str(stamp + (300 if case == "stale-residual" else 600)),
+                }
+            ]
+        return json.dumps({"code": code, "data": rows}).encode()
+
+    restarted_at = NOW + timedelta(seconds=1)
+    monkeypatch.setattr(opener, "body", close_body)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", restarted_at.isoformat)
+    restarted_hosts = []
+
+    def open_host(**kwargs):
+        host = PortfolioBudgetHostV1(
+            **{**kwargs, "root": original_host.root, "clock": restarted_at.timestamp}
+        )
+        restarted_hosts.append(host)
+        return host
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Close readback must precede market data, new admission and POST")
+
+    monkeypatch.setattr(budget_host, "PortfolioBudgetHostV1", open_host)
+    config = supervisor.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=tmp_path / "scope",
+        evidence_root=tmp_path / "restart" / "post-close-session",
+        expected_account_identity=original_host.expected_account_identity,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    store_root = context.store_root_v1()
+    original_send = load_external_effect_durable_consume_v1(store_root=store_root)
+    request_count = len(opener.requests)
+    held = original_host.owner.active_sum_v1()
+    original_host.close()
+    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(
+        config=config,
+        origin_main_sha=original_host.repository_sha,
+        bound=bound,
+        authorization=replace(
+            _continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+            expected_cursor_floor=floor,
+        ),
+        observation_source=None,
+        g17_producers={},
+        f1_m9_cycle_evaluator=forbidden,
+        public_rest_fetch=forbidden,
+        private_rest_fetch=forbidden,
+        pretrade_transport=original_host.reconciliation_transport,
+        wp02_hook=forbidden,
+        skip_owner_go_validation=True,
+        occupied_mark_proof_root=proof_root,
+    )
+    readback = resumed.close_readback
+    assert readback is not None
+    assert (
+        readback.status
+        == {
+            "flat": "CLOSE_FLAT_CONFIRMED",
+            "partial": "CLOSE_PARTIAL",
+            "unseen": "CLOSE_AWAITING_VENUE",
+            "missing-fill": "CLOSE_READBACK_BLOCKED",
+            "wrong-order": "CLOSE_READBACK_BLOCKED",
+            "stale-residual": "CLOSE_READBACK_BLOCKED",
+            "no-flat-anchor": "CLOSE_READBACK_BLOCKED",
+            "not-sent": "CLOSE_SUBMIT_NOT_PROVEN",
+        }[case]
+    ), readback.reason_codes
+    assert readback.envelope_digest == envelope.envelope_digest
+    assert resumed.ok is (case == "flat")
+    assert resumed.trace.post_count == 0 and not resumed.owner_go_consumed
+    assert resumed.policy_result is None
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner is None
+    assert original_host.owner.active_sum_v1() == held
+    assert load_external_effect_durable_consume_v1(store_root=store_root) == original_send
+    assert len(opener.requests) - request_count == (0 if case == "not-sent" else 6)
+    if case == "flat":
+        assert readback.remaining_quantity == 0 and readback.filled_quantity == quantity
+        path = readback.proof_path
+        assert stat.S_IMODE(path.stat().st_mode) == 0o600
+        record = json.loads(path.read_bytes())["record"]
+        assert record["identity"]["envelope_digest"] == envelope.envelope_digest
+        assert record["position_coverage"]["endpoint"] == (
+            f"/api/v5/account/positions?instId={envelope.instrument_id}"
+        )
+        assert [
+            (row["endpoint"], sha256(row["body"].encode()).hexdigest()) for row in record["gets"]
+        ] == opener.requests[-6:]
+        assert json.loads(record["gets"][3]["body"])["data"] == [fill]
+    else:
+        assert readback.proof_path is None
+        assert not list(proof_root.glob("close-*.json"))
+        if case == "partial":
+            assert readback.filled_quantity == filled
+            assert readback.remaining_quantity == quantity - filled
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])

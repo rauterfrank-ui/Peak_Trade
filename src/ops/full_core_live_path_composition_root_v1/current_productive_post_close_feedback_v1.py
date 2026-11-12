@@ -119,6 +119,7 @@ class PostCloseFeedbackResultV1:
     evidence_digest: str = ""
     execution_authority_effect: str = "NONE"
     double_play_continuation: PostCloseDoublePlayContinuationV1 | None = None
+    confirmed_position_time_ms: Decimal | None = None
 
     def to_dict(self):
         payload = {
@@ -156,9 +157,16 @@ def _event_ms(value: str) -> Decimal:
         return _utc_ms(value)
 
 
-def compose_post_close_feedback_v1(
-    *, lifecycle: Any, identity: Any, request: PostCloseFeedbackRequestV1
+def verify_post_close_position_v1(
+    *,
+    snapshot: Mapping[str, Any],
+    decision: Any,
+    identity: Any,
+    request: PostCloseFeedbackRequestV1,
+    submitted_clordid: str,
+    reconciliation_proven: bool,
 ) -> PostCloseFeedbackResultV1:
+    """Prove the position boundary before any post-close financial effects."""
     from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
         OccupiedLaneRuntimeInstrumentIdentityV1,
     )
@@ -186,7 +194,7 @@ def compose_post_close_feedback_v1(
         or identity.canonical_decision_id != source.decision_id
         or identity.native_id != envelope.instrument_id
         or identity.final_quantity != envelope.quantity
-        or lifecycle.post_submit_join.client_order_id != envelope.client_order_id
+        or submitted_clordid != envelope.client_order_id
         or request.bound_instrument.instrument_id != source.instrument_id
         or request.bound_instrument.venue_native_id != source.venue_native_id
     ):
@@ -210,10 +218,8 @@ def compose_post_close_feedback_v1(
             or account.execution_environment != identity.execution_environment
         ):
             return closed("POST_CLOSE_L10_ACCOUNT_SCOPE_MISMATCH")
-    snapshot = lifecycle.reconciliation.snapshot
     if (
-        lifecycle.ghv_forward_join != "PASS"
-        or lifecycle.ghv_reverse_join != "PASS"
+        reconciliation_proven is not True
         or snapshot.get("identity_digest") != identity.identity_digest()
         or snapshot.get("snapshot_freshness_proven") is not True
         or any(
@@ -319,7 +325,6 @@ def compose_post_close_feedback_v1(
         return PostCloseFeedbackResultV1(
             "POSITION_REMAINS_OPEN", ("OPEN_POSITION_CUSTODY_RETAINED",), position, quantity
         )
-    decision = lifecycle.reconciliation.decision
     if decision.outcome != "CONFIRMED_FILLED" or not decision.reconciliation_complete:
         return PostCloseFeedbackResultV1(
             "FLAT_NOT_RELEASED", ("CONFIRMED_CLOSING_ORDER_REQUIRED",), position, quantity
@@ -367,6 +372,40 @@ def compose_post_close_feedback_v1(
             {"identity": identity.identity_digest(), "snapshot": snapshot}, sort_keys=True
         ).encode()
     ).hexdigest()
+    return PostCloseFeedbackResultV1(
+        "RECONCILED_FLAT",
+        (),
+        position,
+        quantity,
+        evidence_digest=digest,
+        confirmed_position_time_ms=position_time,
+    )
+
+
+def compose_post_close_feedback_v1(
+    *, lifecycle: Any, identity: Any, request: PostCloseFeedbackRequestV1
+) -> PostCloseFeedbackResultV1:
+    if not isinstance(request, PostCloseFeedbackRequestV1):
+        return PostCloseFeedbackResultV1("BLOCKED", ("POST_CLOSE_REQUEST_INVALID",))
+    verified = verify_post_close_position_v1(
+        snapshot=lifecycle.reconciliation.snapshot,
+        decision=lifecycle.reconciliation.decision,
+        identity=identity,
+        request=request,
+        submitted_clordid=lifecycle.post_submit_join.client_order_id,
+        reconciliation_proven=(
+            lifecycle.ghv_forward_join == "PASS" and lifecycle.ghv_reverse_join == "PASS"
+        ),
+    )
+    if verified.status != "RECONCILED_FLAT":
+        return verified
+    execution = request.execution
+    envelope = execution.envelope
+    source = execution.source.quantity_handoff
+    l10_close = execution.l10_close
+    position, quantity = verified.position, verified.remaining_quantity
+    position_time, digest = verified.confirmed_position_time_ms, verified.evidence_digest
+    now = _utc_ms(request.observed_at_utc)
     reasons = []
     capital_refresh = None
     net_booking = None

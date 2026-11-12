@@ -265,17 +265,15 @@ class AuthenticatedReconciliationGetV1:
     def discard_response_bodies_v1(self):
         self._bodies.clear()
 
-    def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
-        account_reads = self._gets.get(f"{host.session_id}:execution-recovery", ())
-        order_reads = self._gets.get(f"{host.session_id}:{rid}", ())
+    def completed_order_read_set_v1(self, *, account_decision_id, order_decision_id, observed_at):
+        self.original_handle_v1()
+        account_reads = self._gets.get(account_decision_id, ())
+        order_reads = self._gets.get(order_decision_id, ())
         reads = (*account_reads, *order_reads)
         if (
             len(account_reads) != 1
             or account_reads[0].endpoint != ENDPOINT_ACCOUNT_CONFIG
             or tuple(urlsplit(read.endpoint).path for read in order_reads) != _ORDER_GETS
-            or not (host.account == identity.account_identity == self.account)
-            or identity.execution_environment != "LIVE"
-            or identity.portfolio_reservation_id != rid
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")
         first = reads[0].acquired_at.timestamp()
@@ -285,6 +283,24 @@ class AuthenticatedReconciliationGetV1:
             or not reads[-1].acquired_at.timestamp() <= self.clock() <= first + _MAX_AGE_SECONDS
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_WINDOW_UNPROVEN")
+        bodies = (
+            *self._bodies.get(account_decision_id, ()),
+            *self._bodies.get(order_decision_id, ()),
+        )
+        return reads, bodies
+
+    def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
+        if (
+            not (host.account == identity.account_identity == self.account)
+            or identity.execution_environment != "LIVE"
+            or identity.portfolio_reservation_id != rid
+        ):
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")
+        reads, _ = self.completed_order_read_set_v1(
+            account_decision_id=f"{host.session_id}:execution-recovery",
+            order_decision_id=f"{host.session_id}:{rid}",
+            observed_at=observed_at,
+        )
         sequence, checksum, link = read_persisted_execution_reconciliation_v1(host.owner, rid)
         snapshot_digest = sha256(
             json.dumps(snapshot.to_dict(), sort_keys=True).encode()
