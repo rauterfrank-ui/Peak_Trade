@@ -1027,6 +1027,11 @@
       "sha256": "bc2535fc6ca3e4deff6d6a6141903573bec07ffd6db0ac572dad6ff9c7774956"
     },
     {
+      "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
+      "before_sha256": null,
+      "sha256": "cc93b5b4dbbe6fd835b89b448d1c7060279b8ed863daad029b5174254f5c06f2"
+    },
+    {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
@@ -1090,6 +1095,16 @@
       "path": "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
       "before_sha256": "07360a51f360866b31f0034d11e439679d53d142135cd7d0d5417b3ba289b5b4",
       "sha256": "7db32ee8e30d1a297dd7286365ae5ebd1b0b6ec0cd805c5e5511da479ab2381d"
+    },
+    {
+      "path": "scripts/ops/run_offline_learning_mark_measurement_v1.py",
+      "before_sha256": null,
+      "sha256": "18b7a92f0a00165004595c27ac9f7f5f5e6b7adf32c43d9db19c9cdaac904d4a"
+    },
+    {
+      "path": "scripts/ops/run_offline_learning_mark_sequence_v1.py",
+      "before_sha256": null,
+      "sha256": "8b49049285c29d330fb7d5e4a58f1e2f75a1f4e0bfad33ab4a76191db36bdc55"
     },
     {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
@@ -1192,6 +1207,11 @@
       "sha256": "02e7a9daf5d842e4c9051a0bef8e89a486b2acdb7bff9890000cf3057d98ee92"
     },
     {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
+      "before_sha256": "dcb00c640bf97c0a47d14c1cc621aba38301ba30d8f39e29136aa7555a4c528e",
+      "sha256": "9079f11189de6df20716b76532125f39596febc187ff00b137ba27f1f0926e17"
+    },
+    {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
       "before_sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
       "sha256": "78f989329346d3e24cbf3aa6d53a1fa57cc01839972cbe950bbe810ca424518f"
@@ -1209,7 +1229,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
       "before_sha256": null,
-      "sha256": "3af6fd97b4ad7f0a2131dbf21ba509c806f9ca7831a4742c1b8fcc9f040ea7c3"
+      "sha256": "5a3a238bdd90726146c5872eda952e3e2c7cdd45de4b1fe2ad60255b2a32fea1"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
@@ -2309,7 +2329,7 @@
     {
       "path": "tests/learning/test_offline_recorded_market_replay_v1.py",
       "before_sha256": null,
-      "sha256": "db832d3790dfedbfe850c98577dab381ded0aa7c10701e3d7c2a5fd50df557fd"
+      "sha256": "85da32a207da75bb538d379b71f2997e1caec4996ff7e31cf4d0b232817e3fad"
     },
     {
       "path": "tests/ops/_continuous_crash_checkpoint_worker_v1.py",
@@ -2425,6 +2445,11 @@
       "path": "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
       "before_sha256": null,
       "sha256": "7d9c0d868c0c074b7c8d0d2193662bad3707909027407d23957cf671e4c65c46"
+    },
+    {
+      "path": "tests/ops/test_capture_offline_learning_mark_window_v1.py",
+      "before_sha256": null,
+      "sha256": "f18eaf5e17ba8c395fe27912ac18f8f063630d7b68680a782dcb5cd9a460c2be"
     },
     {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",
@@ -3010,6 +3035,11 @@
       "path": "tests/ops/test_rotation_plan_state_v1.py",
       "before_sha256": null,
       "sha256": "a1a773a15f78790e359e975869e1e01be89d2c656799c821fed08d16fab8b1eb"
+    },
+    {
+      "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
+      "before_sha256": null,
+      "sha256": "fa35782cc65f236254268f058a8b9f5ab35a5869a7701643360f16e564be82f2"
     },
     {
       "path": "tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_v1.py",
