@@ -15,6 +15,7 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1 impo
     market_ols_next_forecast_v1 as learner,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.context_admission_v1 import (
+    FactAdmissionReceiptV1,
     compose_admitted_market_context_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_evidence_v1 import (
@@ -35,6 +36,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.inte
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_ols_store_training_v1 import (
     train_market_ols_model_from_store_v1,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.phase_22_paired_market_research_v1 import (
+    compare_paired_market_b1_to_b0_v1,
+)
 from src.learning.deterministic_decision_outcome_v0 import (
     n_bars_bar_evidence_supplier_v1 as supplier,
 )
@@ -50,7 +54,9 @@ FEATURE = learner.MarketOlsFeatureV1(
 POLICY = learner.MarketOlsPolicyV1(0.25, 4, 2, 0, 10 * 86400)
 
 
-def market_case(index, *, mark=None, realized=None, generation="market.synthetic.1"):
+def market_case(
+    index, *, mark=None, realized=None, generation="market.synthetic.1", context_inputs=None
+):
     args, freeze, owner, _ = case(generation=generation)
     offset = timedelta(days=index)
     price = 100 + index if mark is None else mark
@@ -74,6 +80,8 @@ def market_case(index, *, mark=None, realized=None, generation="market.synthetic
         observed_at=utc(learner.instant_v1(args["request"].observed_at) + offset),
         price_mark_fact=fact,
     )
+    if context_inputs is not None:
+        context_inputs(args, index)
     context = compose_admitted_market_context_v1(**args)
     request = owner["request"]
     request["horizon_start_time_utc"] = utc(
@@ -156,6 +164,142 @@ def next_forecast_args(tmp_path, model, index=12):
 
 def forbidden(*args, **kwargs):
     raise AssertionError("FIT_OR_FORECAST_RECOMPUTATION_FORBIDDEN")
+
+
+def _representation_inputs(args, index, *, include_proxy=True):
+    request = args["request"]
+    mark = request.price_mark_fact
+    trade = deepcopy(mark.payload)
+    trade.update(
+        fact_kind="TradeFactV1",
+        trade_id=f"trade.{index}",
+        price=trade["mark_px"],
+        size=str(1 + index % 3),
+        side="buy" if index % 2 else "sell",
+    )
+
+    def admit(payload, units):
+        digest = fact_digest(payload)
+        captured = payload["timestamps"]["captured_at"]
+        args["receipts_by_digest"][digest] = FactAdmissionReceiptV1(
+            f"original.{digest}",
+            args["identity"].dataset_generation,
+            bytes_v1(payload),
+            captured,
+            captured,
+            units,
+        )
+        return replace(mark, fact_kind=payload["fact_kind"], fact_digest=digest, payload=payload)
+
+    trades = (admit(trade, {"price": "USDT_PER_ETH", "size": "BASE"}),)
+    bars = []
+    if include_proxy:
+        last = learner.instant_v1(mark.payload["timestamps"]["effective_at"])
+        for minute in range(21):
+            at = last - timedelta(minutes=20 - minute)
+            close = 99 + 0.1 * minute
+            payload = {
+                "fact_kind": "OhlcvIntervalFactV1",
+                "instrument": mark.payload["instrument"],
+                "interval_id": "PT1M",
+                "interval_start_ms": int(at.timestamp() * 1000),
+                "timestamps": {
+                    "effective_at": utc(at),
+                    "captured_at": utc(at + timedelta(seconds=61)),
+                },
+                "quality": {"finalized": True},
+                "open_px": str(close),
+                "high_px": str(close + 1),
+                "low_px": str(close - 1),
+                "close_px": str(close),
+                "volume": str(2 + (index * index + 3 * index) % 11),
+                "volume_unit_semantics": "base",
+            }
+            bars.append(admit(payload, {"price": "USDT_PER_ETH", "volume": "BASE"}))
+    args["request"] = replace(request, trade_facts=trades, ohlcv_facts=bars)
+    args["policy"] = replace(
+        args["policy"],
+        max_age_seconds_by_role={
+            **args["policy"].max_age_seconds_by_role,
+            "flow": 180,
+            "microstructure": 180,
+        },
+    )
+
+
+def test_paired_b1_computes_holdout_error_from_the_original_proxy(tmp_path):
+    fit = [
+        original_job(tmp_path / "fit", i, context_inputs=_representation_inputs) for i in range(6)
+    ]
+    holdout = [
+        original_job(tmp_path / "holdout", i, context_inputs=_representation_inputs) for i in (6, 7)
+    ]
+    args = {
+        "fit_jobs": fit,
+        "holdout_jobs": holdout,
+        "fit_cutoff_utc": market_case(5)[1]["evaluated_at_utc"],
+        "evaluated_at_utc": market_case(7)[1]["evaluated_at_utc"],
+        "validation_fraction": 0.25,
+    }
+    measured = compare_paired_market_b1_to_b0_v1(**args)
+    assert measured["status"] == "MEASURED_CHRONOLOGICAL_HOLDOUT"
+    assert measured["paired_case_count"] == 8
+    comparison = measured["stage_comparison"]
+    assert comparison["predecessor_stage_id"] == "B0" and comparison["stage_id"] == "B1"
+    assert comparison["walk_forward_summary"] == {
+        "kind": "SINGLE_CHRONOLOGICAL_HOLDOUT",
+        "training_rows": 4,
+        "fit_validation_rows": 2,
+        "holdout_rows": 2,
+    }
+    assert measured["fits"]["B0"]["target_digest"] == measured["fits"]["B1"]["target_digest"]
+    assert "signed_return_volume_pressure" not in measured["fits"]["B0"]["coefficients"]
+    last = measured["cases"][-1]
+    assert last["features"]["signed_return_volume_pressure"] == pytest.approx(math.log1p(6))
+    weights = measured["fits"]["B1"]["coefficients"]
+    expected = weights["intercept"] + sum(
+        weight * last["features"][name] for name, weight in weights.items() if name != "intercept"
+    )
+    assert last["holdout_errors"]["B1"] == pytest.approx(last["realized_log_return"] - expected)
+    scores = comparison["calibration_summary"]["rmse_by_stage"]
+    assert comparison["challenger_delta"] == pytest.approx(scores["B0"] - scores["B1"])
+    assert measured["independent_quality_proven"] is False
+
+    changed = original_job(
+        tmp_path / "other-holdout", 7, realized=0.2, context_inputs=_representation_inputs
+    )
+    repeated = compare_paired_market_b1_to_b0_v1(**{**args, "holdout_jobs": [holdout[0], changed]})
+    assert repeated["fits"] == measured["fits"]
+    assert (
+        repeated["stage_comparison"]["stage_information_set_id"]
+        == comparison["stage_information_set_id"]
+    )
+    assert repeated["stage_comparison"]["challenger_delta"] != comparison["challenger_delta"]
+
+
+def test_paired_b1_does_not_fill_missing_proxy_or_use_a_late_label(tmp_path):
+    def flow_only(args, index):
+        _representation_inputs(args, index, include_proxy=False)
+
+    fit = original_job(tmp_path / "fit", 0, context_inputs=flow_only)
+    holdout = original_job(tmp_path / "holdout", 1, context_inputs=flow_only)
+    args = {
+        "fit_jobs": [fit],
+        "holdout_jobs": [holdout],
+        "fit_cutoff_utc": market_case(0)[1]["evaluated_at_utc"],
+        "evaluated_at_utc": market_case(1)[1]["evaluated_at_utc"],
+        "validation_fraction": 0.25,
+    }
+    missing = compare_paired_market_b1_to_b0_v1(**args)
+    assert missing["status"] == "INSUFFICIENT_EVIDENCE"
+    assert missing["paired_case_count"] == 0
+    assert missing["stage_comparison"] is None
+    assert [row["status"] for row in missing["cases"]] == ["B1_PROXY_MISSING"] * 2
+    assert all(row["baseline_context_available"] for row in missing["cases"])
+    cutoff = utc(learner.instant_v1(args["fit_cutoff_utc"]) - timedelta(seconds=1))
+    late = compare_paired_market_b1_to_b0_v1(**{**args, "fit_cutoff_utc": cutoff})
+    assert late["cases"][0]["status"] == "LABEL_NOT_AVAILABLE_AT_CUTOFF"
+    assert "realized_log_return" not in late["cases"][0]
 
 
 def test_original_numeric_training_next_inference_measurement_and_child(tmp_path):

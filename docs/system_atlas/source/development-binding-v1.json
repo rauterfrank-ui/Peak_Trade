@@ -1242,6 +1242,11 @@
       "sha256": "f27767168b3fd347087455f7aa9abe3cc6ed19f57c7f5cdfd2e89b1fd6a584f6"
     },
     {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_paired_market_research_v1.py",
+      "before_sha256": null,
+      "sha256": "c9caa2dea74cc35ac51e3f6064c3622e3c149b032e619d56224a8d7fe83dfaeb"
+    },
+    {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
       "before_sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
       "sha256": "3130457a9e30cf254de94abbb908a26637f7f87707faea8ec03a5476d76f9352"
@@ -2309,7 +2314,7 @@
     {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
       "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
-      "sha256": "6b746fe1823c1ddbc048dcbf112f2b2984f4eba188818b62f2a4059173d5d361"
+      "sha256": "992b2b144d34bbbe273c09037584aeccd3c30deb96425924b92f36162ea31359"
     },
     {
       "path": "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",
