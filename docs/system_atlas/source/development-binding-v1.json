@@ -1027,6 +1027,11 @@
       "sha256": "bc2535fc6ca3e4deff6d6a6141903573bec07ffd6db0ac572dad6ff9c7774956"
     },
     {
+      "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
+      "before_sha256": null,
+      "sha256": "cc93b5b4dbbe6fd835b89b448d1c7060279b8ed863daad029b5174254f5c06f2"
+    },
+    {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
@@ -1214,7 +1219,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
       "before_sha256": null,
-      "sha256": "229f0511cc78dcc87f728fcf8f67bf02aa1ca056b8de78490b080e780d903565"
+      "sha256": "519b9b07c09cabb1c55babdaf9d906e43f40e1acaf8306601ff6da48caad9f78"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
@@ -2430,6 +2435,11 @@
       "path": "tests/ops/test_capital_decision_epoch_observation_time_v1.py",
       "before_sha256": null,
       "sha256": "7d9c0d868c0c074b7c8d0d2193662bad3707909027407d23957cf671e4c65c46"
+    },
+    {
+      "path": "tests/ops/test_capture_offline_learning_mark_window_v1.py",
+      "before_sha256": null,
+      "sha256": "f18eaf5e17ba8c395fe27912ac18f8f063630d7b68680a782dcb5cd9a460c2be"
     },
     {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",

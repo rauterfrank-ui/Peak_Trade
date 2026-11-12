@@ -1,6 +1,6 @@
 """Connect recorded mark archive files to the existing offline market consumers."""
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -19,7 +19,7 @@ from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import
     FinalizedPt1hO4BarFactV1,
 )
 from src.research.offline_recorded_mark_horizon_source_v1 import (
-    load_archive_source,
+    aggregate_recorded_mark_minutes,
     read_bound_json,
 )
 
@@ -47,6 +47,12 @@ from .market_ols_next_forecast_v1 import forecast_from_market_ols_model_v1
 
 
 @dataclass(frozen=True)
+class RecordedMarkPageV1:
+    raw_path: Path
+    raw_sha256: str
+
+
+@dataclass(frozen=True)
 class RecordedMarkArchiveV1:
     raw_path: Path
     raw_sha256: str
@@ -55,34 +61,62 @@ class RecordedMarkArchiveV1:
     binding_path: Path
     binding_sha256: str
     repository_sha: str
+    additional_pages: tuple[RecordedMarkPageV1, ...] = ()
 
 
-def _require_received(archive, cutoff):
+def _received_pages(archive, cutoff):
+    pages = (RecordedMarkPageV1(archive.raw_path, archive.raw_sha256), *archive.additional_pages)
+    require_v1(len({page.raw_sha256 for page in pages}) == len(pages), "DUPLICATE_ARCHIVE_PAGE")
+    limit = capture_order_key_v1(cutoff)
     log = read_bound_json(archive.request_log_path, archive.request_log_sha256)
-    matching = [row for row in log if row.get("raw_response_sha256") == archive.raw_sha256]
-    require_v1(len(matching) == 1, "EXACT_UNIQUE_ARCHIVED_REQUEST_REQUIRED")
-    received = capture_order_key_v1(matching[0]["response_time_utc"])
-    require_v1(received <= capture_order_key_v1(cutoff), "ARCHIVE_RESPONSE_NOT_YET_AVAILABLE")
-    require_v1(received[1] % 1000 == 0, "ARCHIVE_RESPONSE_CLOCK_PRECISION_UNSUPPORTED")
+    matched = []
+    for page in pages:
+        matching = [row for row in log if row.get("raw_response_sha256") == page.raw_sha256]
+        require_v1(len(matching) == 1, "EXACT_UNIQUE_ARCHIVED_REQUEST_REQUIRED")
+        received = capture_order_key_v1(matching[0]["response_time_utc"])
+        require_v1(received <= limit, "ARCHIVE_RESPONSE_NOT_YET_AVAILABLE")
+        require_v1(received[1] % 1000 == 0, "ARCHIVE_RESPONSE_CLOCK_PRECISION_UNSUPPORTED")
+        matched.append((page, matching[0]))
+    return matched
 
 
 def _load(archive, identity, *, start, count, cutoff):
     assert_offline_v1()
     identity.payload()
     instant_v1(cutoff)
-    # Check the pinned log before reading the response. The original source
-    # loader verifies the same pin again when it binds the full source.
-    _require_received(archive, cutoff)
-    source = load_archive_source(
-        **asdict(archive),
+    # Check every receipt before opening any response. A bar can span pages.
+    matched = _received_pages(archive, cutoff)
+    source = aggregate_recorded_mark_minutes(
+        pages=[
+            {
+                "payload": read_bound_json(page.raw_path, page.raw_sha256),
+                "raw_sha256": page.raw_sha256,
+                "request_record": record,
+            }
+            for page, record in matched
+        ],
+        instrument_binding=read_bound_json(archive.binding_path, archive.binding_sha256),
         canonical_instrument_id=identity.instrument_ref,
         native_instrument_id=identity.native_instrument_ref,
         horizon_start_utc=start,
         n_bars=count,
+        repository_sha=archive.repository_sha,
     )
     require_v1(source["venue"] == identity.venue, "ARCHIVE_MARKET_VENUE_MISMATCH")
-    files = {key: info["sha256"] for key, info in source["archive_file_bindings"].items()}
+    # Preserve the original reference for single-page recordings.
+    files = {
+        "raw": archive.raw_sha256,
+        "request_log": archive.request_log_sha256,
+        "instrument_binding": archive.binding_sha256,
+    }
+    if archive.additional_pages:
+        files["additional_raw_pages"] = [page.raw_sha256 for page in archive.additional_pages]
     return source, "archive.sha256:" + digest_v1(files)
+
+
+def _canonical_event_time(value: str) -> str:
+    # The DDO context and forecast contracts require a trailing Z.
+    return value[:-6] + "Z" if value.endswith("+00:00") else value
 
 
 def compose_recorded_market_context_v1(
@@ -106,7 +140,10 @@ def compose_recorded_market_context_v1(
     return compose_admitted_market_context_v1(
         identity=identity,
         request=ExistingFactMaterializationRequestV1(
-            observed_at, identity.instrument_ref, (ref,), price_o4_bar_fact=fact
+            _canonical_event_time(observed_at),
+            identity.instrument_ref,
+            (ref,),
+            price_o4_bar_fact=fact,
         ),
         receipts_by_digest={
             fact.fact_digest: FactAdmissionReceiptV1(
@@ -191,7 +228,7 @@ def forecast_from_recorded_market_context_v1(
         store_root=store_root,
         context_package=context,
         market_request=market_request,
-        forecast_created_at=forecast_created_at,
+        forecast_created_at=_canonical_event_time(forecast_created_at),
         attempt_generation=attempt_generation,
     )
 
