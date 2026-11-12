@@ -8,6 +8,7 @@ import pytest
 
 from scripts.ops import capture_offline_learning_mark_window_v1 as capture
 from scripts.ops import run_offline_learning_mark_measurement_v1 as scheduler
+from scripts.ops import run_offline_learning_mark_ols_follow_up_v1 as follow_up
 from scripts.ops import run_offline_learning_mark_sequence_v1 as sequence
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_measurement_integration_v1 import (
     read_frozen_market_forecast_v1,
@@ -22,6 +23,7 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mark
     MarketOlsFeatureV1,
     MarketOlsPolicyV1,
     read_market_model_forecast_v1,
+    read_market_ols_model_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_ols_store_training_v1 import (
     train_market_ols_model_from_store_v1,
@@ -304,3 +306,108 @@ def test_four_scheduled_windows_train_and_feed_existing_ols_forecast(scheduled_j
         == result
     )
     assert train_market_ols_model_from_store_v1(**training) == model
+
+
+def test_declared_cohort_publishes_then_measures_one_prospective_ols_forecast(
+    scheduled_job, tmp_path, monkeypatch
+):
+    inputs, first, clock = scheduled_job
+    scheduler.schedule_recorded_market_measurement_v1(**inputs)
+    store = inputs["store_root"]
+    model_store = tmp_path / "models"
+    starts = [first + timedelta(hours=3 * index) for index in range(6)]
+    next_start = starts[-1] + timedelta(hours=3)
+    release = next_start - timedelta(minutes=25)
+    args = {
+        "store_root": store,
+        "model_store_root": model_store,
+        "seed_job_key": inputs["job_key"],
+        "sample_starts_utc": [utc(start) for start in starts],
+        "model_available_at_utc": utc(release),
+        "next_start_utc": utc(next_start),
+        "context_max_age_seconds": 3600,
+        "repository_sha": inputs["repository_sha"],
+        "training": {
+            "features": [
+                {
+                    "name": "mark",
+                    "role": "price_o4",
+                    "ordinal": 0,
+                    "fact_kind": "FinalizedPt1hO4BarFactV1",
+                    "field": "close",
+                    "unit": "USDT per ETH",
+                }
+            ],
+            "policy": {
+                "validation_fraction": 0.25,
+                "min_training_rows": 4,
+                "min_validation_rows": 2,
+                "max_context_age_seconds": 0,
+                "max_training_evidence_age_seconds": 3600,
+            },
+            "parent_model_ref": None,
+        },
+    }
+    assert follow_up.prepare_recorded_market_ols_follow_up_v1(**args) == {
+        "status": "WAITING_FOR_COHORT",
+        "completed_samples": 0,
+    }
+    locator = {"store_root": store, "job_key": inputs["job_key"]}
+    jobs = []
+    for index, (start, close) in enumerate(zip(starts, (101, 104, 103, 108, 109, 110))):
+        jobs.append(locator["job_key"])
+        _complete_window(locator, start, clock, (100 + index, close))
+        if index < len(starts) - 1:
+            pending = follow_up.prepare_recorded_market_ols_follow_up_v1(**args)
+            assert pending == {"status": "WAITING_FOR_COHORT", "completed_samples": index + 1}
+            schedule = sequence.prepare_recorded_market_successor_v1(
+                **locator,
+                next_start_utc=utc(starts[index + 1]),
+                context_max_age_seconds=3600,
+                repository_sha=inputs["repository_sha"],
+            )
+            locator["job_key"] = schedule["plan"]["job_key"]
+    assert not model_store.exists()
+
+    last_receipt = clock[0]
+    clock[0] = release
+    with pytest.raises(ValueError, match="^MODEL_RELEASE_ALREADY_PASSED$"):
+        follow_up.prepare_recorded_market_ols_follow_up_v1(**args)
+    clock[0] = last_receipt
+    waiting = follow_up.prepare_recorded_market_ols_follow_up_v1(**args)
+    assert waiting["status"] == "WAITING_FOR_MODEL_RELEASE"
+    model = read_market_ols_model_v1(model_store_root=model_store, model_ref=waiting["model_ref"])
+    assert model["request"]["trained_as_of"] == utc(last_receipt)
+    assert model["request"]["available_at"] == utc(release)
+    assert [sample["job_key"] for sample in model["request"]["samples"]] == jobs
+    assert model["validation"]["training_rows"] == 4
+    assert model["validation"]["validation_rows"] == 2
+
+    clock[0] = release + timedelta(seconds=1)
+    forecast_at = utc(clock[0])
+    with monkeypatch.context() as crash:
+        crash.setattr(scheduler, "schedule_recorded_market_measurement_v1", unexpected)
+        with pytest.raises(AssertionError, match="Unexpected capture or measurement"):
+            follow_up.prepare_recorded_market_ols_follow_up_v1(**args)
+    clock[0] += timedelta(seconds=1)
+    prepared = follow_up.prepare_recorded_market_ols_follow_up_v1(**args)
+    assert prepared["status"] == "FORECAST_SCHEDULED"
+    assert prepared["schedule"]["forecast_verified_at_utc"] == utc(clock[0])
+    provider = prepared["provider"]
+    assert provider["feature_values"] == {"mark": 110.0}
+    assert provider["computation"]["forecast_created_at"] == forecast_at
+    coefficients = model["coefficients"]
+    expected = coefficients["intercept"] + coefficients["mark"] * 110
+    assert provider["computed_payload"]["mean_return"] == pytest.approx(expected)
+
+    learned_job = {"store_root": store, "job_key": prepared["job_key"]}
+    result = _complete_window(learned_job, next_start, clock, (111, 112))
+    assert result["calibration_ack"]["calibration_result"]["realized_return"] == pytest.approx(
+        math.log(112 / 111)
+    )
+    assert (
+        read_independent_market_calibration_v1(**learned_job)["calibration_ack"]
+        == result["calibration_ack"]
+    )
+    assert follow_up.prepare_recorded_market_ols_follow_up_v1(**args) == prepared
+    assert len(list((model_store / "models").glob("*.json"))) == 1
