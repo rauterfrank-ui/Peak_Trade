@@ -38,6 +38,7 @@ from src.learning.deterministic_decision_outcome_v0.serialization_v0 import cano
 
 INGEST_ID: Final[str] = "peak_trade.learning.ddo.learning_outcome_evidence_ingest_v1"
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
+_UNBOUND_PREDECESSOR = object()
 
 
 def derive_learning_state_scope_id_v1(
@@ -262,6 +263,7 @@ def ingest_evaluation_bundle_into_learning_state_v1(
     event_time_utc: str,
     correlation_id: str,
     cycle_id: str | None = None,
+    expected_prior_state_record_ref: str | None | object = _UNBOUND_PREDECESSOR,
 ) -> dict[str, Any]:
     bundle = validate_evaluation_bundle_for_ingest_v1(outcome, attribution, counterfactual)
     fingerprint = bundle["evaluation_bundle_fingerprint"]
@@ -286,8 +288,18 @@ def ingest_evaluation_bundle_into_learning_state_v1(
             existing[field] != bundle["outcome"][field] for field in ("code_sha", "config_hash")
         ):
             raise DdoValidationError("LEARNING_INGEST_CONFIGURATION_POOL_MISMATCH")
+        if (
+            expected_prior_state_record_ref is not _UNBOUND_PREDECESSOR
+            and existing["prior_state_record_ref"] != expected_prior_state_record_ref
+        ):
+            raise DdoValidationError("LEARNING_STATE_PREDECESSOR_CHANGED")
         return _ingest_result(existing, "IDEMPOTENT_REPLAY")
     prior = learning_state_head_v0(records.values(), state_scope_id=state_scope_id)
+    if (
+        expected_prior_state_record_ref is not _UNBOUND_PREDECESSOR
+        and (prior["record_id"] if prior is not None else None) != expected_prior_state_record_ref
+    ):
+        raise DdoValidationError("LEARNING_STATE_PREDECESSOR_CHANGED")
     next_state = reduce_learning_state_transition_v1(
         state_scope_id=state_scope_id,
         bundle={
