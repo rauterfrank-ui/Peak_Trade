@@ -1057,6 +1057,11 @@
       "sha256": "5264e6206f3e72df0b9c8ed252746be116d9cca5d95e20a49d5bd886e7b65125"
     },
     {
+      "path": "scripts/ops/route_offline_paired_market_representation_meta_v1.py",
+      "before_sha256": null,
+      "sha256": "466fe876281fb0e98fc311d5f8b9378a29730f9df7d8e2db0a296bfd083d7992"
+    },
+    {
       "path": "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
       "before_sha256": "565b91b8147bab999719c055a83fbe1fd092ce791f0ea2e02f7d0f624f915e56",
       "sha256": "3160177c6622f48db3ed9a8a8f5021960dda08275b7951f58585cd034fc59689"
@@ -1115,6 +1120,11 @@
       "path": "scripts/ops/run_offline_learning_mark_sequence_v1.py",
       "before_sha256": null,
       "sha256": "8b49049285c29d330fb7d5e4a58f1e2f75a1f4e0bfad33ab4a76191db36bdc55"
+    },
+    {
+      "path": "scripts/ops/run_offline_learning_representation_sequence_v1.py",
+      "before_sha256": null,
+      "sha256": "91a57cc9f422106dbfd335fc49b8876f2a2d07f92cfb320925ab6cc2d235d631"
     },
     {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
@@ -1255,6 +1265,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
       "before_sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
       "sha256": "3130457a9e30cf254de94abbb908a26637f7f87707faea8ec03a5476d76f9352"
+    },
+    {
+      "path": "src/meta/learning_loop/paired_market_representation_meta_v1.py",
+      "before_sha256": null,
+      "sha256": "a41db1668bed0fff18febe20fb86fa54d65af3db1a11b58460c397a4aac361b1"
     },
     {
       "path": "src/ops/canonical_local_launcher_and_process_supervision_v1/cli_v1.py",
@@ -2319,7 +2334,7 @@
     {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
       "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
-      "sha256": "992b2b144d34bbbe273c09037584aeccd3c30deb96425924b92f36162ea31359"
+      "sha256": "ad5e09b08ab8e6e060ccebf1745bda447f97cfa6ec088d2d492e8e34a6dfeb19"
     },
     {
       "path": "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",
@@ -2469,7 +2484,7 @@
     {
       "path": "tests/ops/test_capture_offline_learning_representation_context_v1.py",
       "before_sha256": null,
-      "sha256": "8db53c2c27ef992a1dbc45a808e1279877b5a28cbf56f1db3940b6b1e5bfb965"
+      "sha256": "8b64811be5247fef0217dfda0adff1f53457845bef32959efa2f0a7d7f08b4bf"
     },
     {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",

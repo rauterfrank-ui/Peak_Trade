@@ -46,6 +46,9 @@ from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v
     build_independent_market_return_target_v1,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import fact_digest
+from src.meta.learning_loop.paired_market_representation_meta_v1 import (
+    route_paired_market_representation_v1,
+)
 from tests.learning.test_independent_market_forecast_measurement_v1 import case, utc
 
 FEATURE = learner.MarketOlsFeatureV1(
@@ -296,6 +299,15 @@ def test_paired_b1_does_not_fill_missing_proxy_or_use_a_late_label(tmp_path):
     assert missing["stage_comparison"] is None
     assert [row["status"] for row in missing["cases"]] == ["B1_PROXY_MISSING"] * 2
     assert all(row["baseline_context_available"] for row in missing["cases"])
+    unresolved = route_paired_market_representation_v1(stored_comparison=missing, **args)
+    assert unresolved["status"] == "UNRESOLVED_REPRESENTATION_QUESTION"
+    route = unresolved["routing_cycle"]["routing_result"]
+    assert route["semantic_routing_class"] == "UNKNOWN"
+    assert (
+        route["learning_consumer_invoked"] is False
+        and route["optimization_consumer_invoked"] is False
+    )
+    assert unresolved["research_plan"] is None
     cutoff = utc(learner.instant_v1(args["fit_cutoff_utc"]) - timedelta(seconds=1))
     late = compare_paired_market_b1_to_b0_v1(**{**args, "fit_cutoff_utc": cutoff})
     assert late["cases"][0]["status"] == "LABEL_NOT_AVAILABLE_AT_CUTOFF"
