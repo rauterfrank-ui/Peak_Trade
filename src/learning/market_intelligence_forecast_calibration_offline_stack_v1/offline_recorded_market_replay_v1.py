@@ -233,6 +233,21 @@ def forecast_from_recorded_market_context_v1(
     )
 
 
+def recorded_market_target_from_frozen_v1(frozen: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Recover and verify the target recorded by the market forecast owner."""
+    target = frozen["forecast_evidence"]["provenance"].get("measured_return_target_v1")
+    require_v1(isinstance(target, Mapping), "EXPLICIT_LOG_RETURN_TARGET_REQUIRED")
+    request = target.get("market_request")
+    require_v1(
+        isinstance(request, Mapping)
+        and digest_v1(target) == frozen["job_key"].get("target_spec_digest")
+        and build_independent_market_return_target_v1(request) == target,
+        "MARKET_MEASUREMENT_TARGET_MISMATCH",
+    )
+    _recorded_target_identity(request)
+    return target
+
+
 def complete_recorded_market_forecast_v1(
     *,
     store_root: Path | str,
@@ -242,15 +257,7 @@ def complete_recorded_market_forecast_v1(
 ) -> dict[str, Any]:
     """Resume measurement from a durable forecast and its original target only."""
     frozen = read_frozen_market_forecast_v1(store_root=store_root, job_key=job_key)
-    target = frozen["forecast_evidence"]["provenance"].get("measured_return_target_v1")
-    require_v1(isinstance(target, Mapping), "EXPLICIT_LOG_RETURN_TARGET_REQUIRED")
-    request = target.get("market_request")
-    require_v1(
-        isinstance(request, Mapping)
-        and digest_v1(target) == job_key.get("target_spec_digest")
-        and build_independent_market_return_target_v1(request) == target,
-        "MARKET_MEASUREMENT_TARGET_MISMATCH",
-    )
+    request = recorded_market_target_from_frozen_v1(frozen)["market_request"]
     observation = measure_recorded_market_horizon_v1(
         archive=archive, request=request, evaluated_at_utc=evaluated_at_utc
     )

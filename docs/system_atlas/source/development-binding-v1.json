@@ -1097,6 +1097,16 @@
       "sha256": "7db32ee8e30d1a297dd7286365ae5ebd1b0b6ec0cd805c5e5511da479ab2381d"
     },
     {
+      "path": "scripts/ops/run_offline_learning_mark_measurement_v1.py",
+      "before_sha256": null,
+      "sha256": "18b7a92f0a00165004595c27ac9f7f5f5e6b7adf32c43d9db19c9cdaac904d4a"
+    },
+    {
+      "path": "scripts/ops/run_offline_learning_mark_sequence_v1.py",
+      "before_sha256": null,
+      "sha256": "8b49049285c29d330fb7d5e4a58f1e2f75a1f4e0bfad33ab4a76191db36bdc55"
+    },
+    {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
       "before_sha256": "1f9acf391f453d2a0735bb01d39116d1e78e231920566a5091f15ba102215539",
       "sha256": "4c7992a6a30dff9c63972ea1717d8236570a542868726a5ba191b70de8792d30"
@@ -1219,7 +1229,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
       "before_sha256": null,
-      "sha256": "519b9b07c09cabb1c55babdaf9d906e43f40e1acaf8306601ff6da48caad9f78"
+      "sha256": "5a3a238bdd90726146c5872eda952e3e2c7cdd45de4b1fe2ad60255b2a32fea1"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
@@ -3025,6 +3035,11 @@
       "path": "tests/ops/test_rotation_plan_state_v1.py",
       "before_sha256": null,
       "sha256": "a1a773a15f78790e359e975869e1e01be89d2c656799c821fed08d16fab8b1eb"
+    },
+    {
+      "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
+      "before_sha256": null,
+      "sha256": "fa35782cc65f236254268f058a8b9f5ab35a5869a7701643360f16e564be82f2"
     },
     {
       "path": "tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_v1.py",
