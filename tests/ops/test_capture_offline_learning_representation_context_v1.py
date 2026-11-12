@@ -5,6 +5,7 @@ from functools import partial
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
@@ -13,6 +14,7 @@ from scripts.ops import capture_offline_learning_representation_context_v1 as re
 from scripts.ops import route_offline_paired_market_representation_meta_v1 as meta_route
 from scripts.ops import run_offline_learning_mark_measurement_v1 as measurement
 from scripts.ops import run_offline_learning_representation_sequence_v1 as cohort
+from scripts.ops import run_offline_paired_market_representation_follow_up_v1 as follow_up
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.context_admission_v1 import (
     replay_admitted_market_context_v1,
 )
@@ -211,7 +213,7 @@ def test_invalid_originals_do_not_publish(public_capture, corruption, reason):
     assert not Path(inputs["output"]).exists()
 
 
-def test_declared_cohort_builds_eight_original_jobs_and_persists_the_comparison(
+def test_declared_cohort_routes_its_comparison_and_drives_a_later_replication(
     public_capture, tmp_path, monkeypatch
 ):
     inputs, clock, responses, _ = public_capture
@@ -383,3 +385,112 @@ def test_declared_cohort_builds_eight_original_jobs_and_persists_the_comparison(
     with pytest.raises(ValueError, match="^PAIRED_META_ORIGINAL_COMPARISON_MISMATCH$"):
         meta_route.route_recorded_representation_cohort_v1(**locator)
     assert output.read_bytes() == bytes_v1(receipt)
+    comparison_path.write_bytes(original_bytes)
+
+    # The next seed uses a new context acquired after the preceding holdout was known.
+    previous_job = comparison["cases"][-1]["job_key"]
+    previous_archive = (
+        store
+        / ".intelligence-integration-v1"
+        / digest_v1(previous_job)
+        / "recorded_outcome_archive"
+    )
+    next_context_root = tmp_path / "next-seed"
+    last_close = clock[0].replace(second=0, microsecond=0) - timedelta(minutes=1)
+    next_context = representation.capture_representation_context_v1(
+        **{
+            **inputs,
+            "output": next_context_root,
+            "mark_archive": previous_archive,
+            "ohlcv_end_utc": utc(last_close),
+            "fetch": capture_context,
+        }
+    )
+    next_start = last_close + timedelta(hours=1)
+    next_request = {**market_request(next_start), "market_identity": next_context["identity"]}
+    next_seed = seed_frozen_forecast(store, next_context, next_request)
+    next_archive = mark.read_captured_mark_archive_v1(previous_archive)
+    measurement.schedule_recorded_market_measurement_v1(
+        store_root=store,
+        job_key=next_seed["job_key"],
+        binding_path=next_archive.binding_path,
+        binding_sha256=next_archive.binding_sha256,
+        repository_sha=archive.repository_sha,
+        capture_delay_seconds=60,
+    )
+    following = {
+        "parent_store_root": store,
+        "parent_seed_job_key": seed["job_key"],
+        "store_root": store,
+        "seed_job_key": next_seed["job_key"],
+        "seed_context_root": next_context_root,
+        "next_starts_utc": [utc(next_start + timedelta(hours=3 * index)) for index in range(1, 8)],
+        "repository_sha": archive.repository_sha,
+        "wait": False,
+    }
+    with pytest.raises(ValueError, match="^RESEARCH_FOLLOW_UP_REQUIRES_LATER_ORIGINAL_CONTEXT$"):
+        follow_up.run_paired_representation_follow_up_v1(
+            **{**following, "seed_job_key": seed["job_key"]}
+        )
+
+    before_window = clock[0]
+    clock[0] = next_start
+    with pytest.raises(ValueError, match="^RESEARCH_FOLLOW_UP_MUST_BE_DECLARED_BEFORE_WINDOW$"):
+        follow_up.run_paired_representation_follow_up_v1(**following)
+    clock[0] = before_window
+    with monkeypatch.context() as interrupted:
+
+        def fail_before_measurement(**kwargs):
+            raise RuntimeError("interrupted before cohort execution")
+
+        interrupted.setattr(cohort, "run_representation_cohort_v1", fail_before_measurement)
+        with pytest.raises(RuntimeError, match="^interrupted before cohort execution$"):
+            follow_up.run_paired_representation_follow_up_v1(**following)
+    (plan_path,) = store.glob(
+        ".intelligence-integration-v1/*/paired_representation_follow_up_plan.json"
+    )
+    declaration = plan_path.read_bytes()
+    result = follow_up.run_paired_representation_follow_up_v1(**following)
+    assert result["status"] == "FOLLOW_UP_REMEASURED"
+    assert result["parent_research_plan_identity"] == handoff["research_plan"]["plan_identity"]
+    assert result["parent_comparison_digest"] == comparison["exact_content_digest"]
+    assert result["follow_up_comparison_digest"] != result["parent_comparison_digest"]
+    assert result["follow_up_measurement"]["split"] == evidence["measurement"]["split"]
+    assert (
+        result["follow_up_measurement"]["rmse_by_stage"] != evidence["measurement"]["rmse_by_stage"]
+    )
+    follow_plan = json.loads(declaration)
+    child_plan = json.loads(plan_path.with_name("representation_cohort_plan.json").read_bytes())
+    assert plan_path.read_bytes() == declaration
+    assert child_plan["fit_window_count"] == follow_plan["inputs"]["fit_window_count"] == 6
+    assert child_plan["validation_fraction"] == follow_plan["inputs"]["validation_fraction"] == 0.25
+    assert measurement.instant_v1(follow_plan["declared_at_utc"]) < next_start
+    assert len(captures) == 16 and len(contexts) == 15 * 3
+    repo = Path(__file__).resolve().parents[2]
+    replay = subprocess.check_output(
+        [
+            str(repo / "scripts/pt"),
+            "-c",
+            """
+import json
+import sys
+from scripts.ops import capture_offline_learning_mark_window_v1 as mark
+from scripts.ops import capture_offline_learning_representation_context_v1 as representation
+from scripts.ops import run_offline_learning_mark_measurement_v1 as measurement
+from scripts.ops import run_offline_paired_market_representation_follow_up_v1 as follow_up
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import bytes_v1
+
+def unexpected_capture(*args, **kwargs):
+    raise AssertionError("Unexpected capture during cold read")
+
+representation._utc_now = measurement._utc_now = lambda: sys.argv[1]
+mark.HTTPSConnection = representation.HTTPSConnection = unexpected_capture
+print(bytes_v1(follow_up.run_paired_representation_follow_up_v1(**json.loads(sys.argv[2]))).decode())
+""",
+            utc(clock[0]),
+            json.dumps(following, default=str),
+        ],
+        cwd=repo,
+        text=True,
+    )
+    assert replay.splitlines()[-1].encode() == bytes_v1(result)

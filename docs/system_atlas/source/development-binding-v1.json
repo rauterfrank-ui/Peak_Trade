@@ -1127,6 +1127,11 @@
       "sha256": "91a57cc9f422106dbfd335fc49b8876f2a2d07f92cfb320925ab6cc2d235d631"
     },
     {
+      "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
+      "before_sha256": null,
+      "sha256": "9aaeb545e901b1923345c92893a7dd340400a40b6f9574fcc8757154050f2b71"
+    },
+    {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
       "before_sha256": "1f9acf391f453d2a0735bb01d39116d1e78e231920566a5091f15ba102215539",
       "sha256": "4c7992a6a30dff9c63972ea1717d8236570a542868726a5ba191b70de8792d30"
@@ -2484,7 +2489,7 @@
     {
       "path": "tests/ops/test_capture_offline_learning_representation_context_v1.py",
       "before_sha256": null,
-      "sha256": "8b64811be5247fef0217dfda0adff1f53457845bef32959efa2f0a7d7f08b4bf"
+      "sha256": "14177e13506f2febb3f2732be89652d31a940673bc08b5e085b9e2da9cdd4a5f"
     },
     {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",
