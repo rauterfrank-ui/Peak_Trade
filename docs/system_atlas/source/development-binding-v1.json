@@ -1179,12 +1179,37 @@
     {
       "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
       "before_sha256": "8ef851d0700db991875ae4efbccc1d5bb5b95ac9c3026e0607638dfa06b5474d",
-      "sha256": "bf54873a5be5f11d3da411cd43ab8a1b3add68373e713ae5cb73843707cad910"
+      "sha256": "41dad4318e2602c3836690d8973ae2065f5d1fba1262128361ab56c7adffe17b"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py",
+      "before_sha256": "c4d818ba74b85349fc2af15c0c884a157639865d8c346f6aec143c7a0ae2187b",
+      "sha256": "905f0391418ac609fd87642b797e006e0998657225c8c8df0da9d309bbff406b"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
+      "before_sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
+      "sha256": "02e7a9daf5d842e4c9051a0bef8e89a486b2acdb7bff9890000cf3057d98ee92"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
       "before_sha256": "ca74b2f8361ae527d409ae3037452c845c580ce3ae12044f003cab5ee3e71d49",
       "sha256": "78f989329346d3e24cbf3aa6d53a1fa57cc01839972cbe950bbe810ca424518f"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+      "before_sha256": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
+      "sha256": "16e19c329cb8c9ab223a0ac77ae79caef64879dabf86ece58d66530711de65a4"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_store_training_v1.py",
+      "before_sha256": null,
+      "sha256": "b71d672fba972b42f1478e97fd0d6ead2c1e80063861e2bb1db2c354d2f69e95"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "3af6fd97b4ad7f0a2131dbf21ba509c806f9ca7831a4742c1b8fcc9f040ea7c3"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
@@ -2084,7 +2109,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
       "before_sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
-      "sha256": "ed7d86770ece226928941e1e465b7cc477f55a56084fec2618e218bbadfe2a11"
+      "sha256": "bbda0fc66838e42bfbbae14d25bdc7fd90b2465e0682faeb2399d96cd61f08c4"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
@@ -2242,9 +2267,24 @@
       "sha256": "5ed3f16bc82b2c8413ba8123e362c62ed59bcd063f6893579ab9626601e432d9"
     },
     {
+      "path": "tests/learning/test_intelligence_context_admission_v1.py",
+      "before_sha256": "5ecb6af7704a97f0c42b98747b959c15e5c4ac12b1ae7bdb5144f525e17be516",
+      "sha256": "8f2e62c8e549bf2c9cbb8dd443798514a25229fd5299c1973fbb9482876ed0ba"
+    },
+    {
+      "path": "tests/learning/test_learning_outcome_evidence_ingest_v1.py",
+      "before_sha256": "d50065d48df7f2a45e83676f04aebab1e626b6205057fc59de07a77e199791fc",
+      "sha256": "0f936921a3c16d02b22809024a4c479be0c12d1f60c78310a29db9dee5b565d7"
+    },
+    {
       "path": "tests/learning/test_learning_provenance_envelope_consistency_v1.py",
       "before_sha256": "b4e29d6853d012c9155e20c76f3fcadb71ebee9c73ed09823835247a272f3df7",
       "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb"
+    },
+    {
+      "path": "tests/learning/test_market_ols_next_forecast_v1.py",
+      "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
+      "sha256": "6b746fe1823c1ddbc048dcbf112f2b2984f4eba188818b62f2a4059173d5d361"
     },
     {
       "path": "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",
@@ -2265,6 +2305,11 @@
       "path": "tests/learning/test_n_bars_measurement_artifact_handoff_v1.py",
       "before_sha256": "5bdace9df1bccaf9a356468051ed14d4910cf55042fab94fabd5d153456fb96f",
       "sha256": "05199c5f82ba8df12b8ddd5113909ea3f2d61ef910773a70c227d68dbc115ea8"
+    },
+    {
+      "path": "tests/learning/test_offline_recorded_market_replay_v1.py",
+      "before_sha256": null,
+      "sha256": "db832d3790dfedbfe850c98577dab381ded0aa7c10701e3d7c2a5fd50df557fd"
     },
     {
       "path": "tests/ops/_continuous_crash_checkpoint_worker_v1.py",

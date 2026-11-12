@@ -129,6 +129,7 @@ from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
     validate_validation_evidence_pack_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+    learning_state_head_v0,
     validate_learning_state_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.lineage_v0 import validate_record_lineage_v0
@@ -501,6 +502,22 @@ class AppendOnlyDdoLedgerV0:
                 )
             raise DdoDuplicateConflictError(f"DUPLICATE_RECORD_ID_CONFLICT:{record['record_id']}")
         validate_record_lineage_v0(record, existing_by_id=by_id)
+        if record["schema_name"] == SCHEMA_NAME_LEARNING_STATE_RECORD:
+            prior = learning_state_head_v0(by_id.values(), state_scope_id=record["state_scope_id"])
+            if prior is None:
+                expected = (None, 1, 1)
+            else:
+                expected = (
+                    prior["record_id"],
+                    prior["state_version"] + 1,
+                    prior["ingest_sequence"] + 1,
+                )
+            if (
+                record["prior_state_record_ref"],
+                record["state_version"],
+                record["ingest_sequence"],
+            ) != expected:
+                raise DdoValidationError("LEARNING_STATE_PREDECESSOR_CHANGED")
         if ingested_at_utc is not None:
             require_event_time_utc(ingested_at_utc, "ingested_at_utc")
         sequence = len(envelopes) + 1

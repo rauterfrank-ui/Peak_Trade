@@ -11,9 +11,12 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.cont
     ContextAdmissionPolicyV1,
     FactAdmissionReceiptV1,
     compose_admitted_intelligence_context_v1,
+    compose_admitted_market_context_v1,
+    replay_admitted_market_context_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
     IntelligenceIdentityV1,
+    MarketIdentityV1,
     bytes_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_existing_fact_materialization_v1 import (
@@ -26,6 +29,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1 impo
     market_context_existing_fact_mi_bridge_v1 as bridge,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import fact_digest
+from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import (
+    FinalizedPt1hO4BarFactV1,
+)
 
 BASE = datetime(2026, 6, 1, tzinfo=timezone.utc)
 IDENTITY = IntelligenceIdentityV1(
@@ -100,6 +106,63 @@ def test_original_ids_values_and_inputs_survive_sidecar_and_abstention():
     assert math.isfinite(float(result["derivations"][ref]["volatility_estimate"]))
     assert result == compose_admitted_intelligence_context_v1(**args)
     assert result["source_authenticated"] is False
+
+
+def test_finalized_o4_float_values_keep_original_bytes_and_replay_exactly():
+    identity = MarketIdentityV1(
+        IDENTITY.dataset_generation,
+        IDENTITY.venue,
+        IDENTITY.instrument_ref,
+        IDENTITY.native_instrument_ref,
+    )
+    captured = "2026-06-01T01:02:00Z"
+    close = 100.12345678901235
+    opened = BASE.timestamp()
+    payload = FinalizedPt1hO4BarFactV1(
+        bar={
+            "canonical_instrument_id": identity.instrument_ref,
+            "venue_instrument_id": identity.native_instrument_ref,
+            "venue": identity.venue,
+            "interval": "PT1H",
+            "bar_open_time": opened,
+            "bar_close_time": opened + 3600,
+            "close": close,
+            "finalization_state": "FINALIZED_BAR",
+            "quality_state": "FINALIZED_BAR",
+        }
+    ).to_dict()
+    payload["timestamps"] = {"captured_at": captured}
+    payload["quality"] = {"finalized": True, "missing": False}
+    original = bytes_v1(payload)
+    fact = GovernedCanonicalFactV1(
+        payload["fact_kind"], fact_digest(payload), payload, WP_A_PRODUCER
+    )
+    package = compose_admitted_market_context_v1(
+        identity=identity,
+        request=ExistingFactMaterializationRequestV1(
+            captured, identity.instrument_ref, ("prov.original",), price_o4_bar_fact=fact
+        ),
+        receipts_by_digest={
+            fact.fact_digest: FactAdmissionReceiptV1(
+                "prov.original",
+                identity.dataset_generation,
+                original,
+                captured,
+                captured,
+                {"price": "USDT_PER_SUI"},
+            )
+        },
+        policy=ContextAdmissionPolicyV1(
+            "explicit.test.policy", {"price_o4": 120}, ("price_state_ref",)
+        ),
+    )
+    state_ref = package["market_context"]["price_state_ref"]["state_ref"]
+    derived = package["derivations"][state_ref]
+    assert float(derived["close"]) == close
+    assert float(derived["bar_open_time"]) == opened
+    assert package["source_bindings"][0]["original_payload_json"].encode() == original
+    assert bytes_v1(fact.payload) == original
+    assert replay_admitted_market_context_v1(package) == package
 
 
 @pytest.mark.parametrize("pin", [True, None, "OFFLINE_ONLY", 0])

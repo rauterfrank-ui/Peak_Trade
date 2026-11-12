@@ -6,6 +6,8 @@ Does not confer trading, promotion, drift-monitor, or calibration authority.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+from datetime import datetime
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
@@ -295,3 +297,30 @@ def build_learning_state_record_v0(payload: Mapping[str, Any]) -> MappingProxyTy
 
 def validate_learning_state_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
     return build_learning_state_record_v0(payload)
+
+
+def learning_state_head_v0(
+    records: Iterable[Mapping[str, Any]], *, state_scope_id: str
+) -> Mapping[str, Any] | None:
+    versions: dict[int, Mapping[str, Any]] = {}
+    for row in records:
+        if (
+            row["schema_name"] != SCHEMA_NAME_LEARNING_STATE_RECORD
+            or row["state_scope_id"] != state_scope_id
+        ):
+            continue
+        version = row["state_version"]
+        if version in versions:
+            raise DdoValidationError("LEARNING_STATE_SCOPE_HAS_COMPETING_VERSIONS")
+        versions[version] = row
+    return versions[max(versions)] if versions else None
+
+
+def learning_event_time_key_v0(value: str) -> tuple[datetime, str]:
+    require_event_time_utc(value, "learning_event_time_utc")
+    seconds, _, fraction = value[:-1].partition(".")
+    try:
+        timestamp = datetime.fromisoformat(seconds)
+    except ValueError as exc:
+        raise DdoValidationError("INVALID_EVENT_TIME_UTC:learning_event_time_utc") from exc
+    return timestamp, fraction.ljust(9, "0")

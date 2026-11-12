@@ -32,6 +32,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.inte
     digest_v1,
     seal_v1,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_ols_store_training_v1 import (
+    train_market_ols_model_from_store_v1,
+)
 from src.learning.deterministic_decision_outcome_v0 import (
     n_bars_bar_evidence_supplier_v1 as supplier,
 )
@@ -220,6 +223,69 @@ def test_exact_retry_and_cold_model_read_never_refit(tmp_path, monkeypatch):
         == model
     )
     assert len(list((args["model_store_root"] / "models").glob("*.json"))) == 1
+
+
+def test_store_training_uses_completed_target_jobs_and_the_next_measured_forecast(tmp_path):
+    args = setup_training(tmp_path)
+    evidence = tmp_path / "mi"
+    explicit_model = learner.train_market_ols_model_v1(**args)
+    original_job(evidence, 14)  # Measurement after both test cutoffs.
+    original_job(evidence, 4, generation="market.synthetic.foreign")
+    pending, _ = market_case(4)
+    pending["attempt_generation"] = "pending-retry"
+    freeze_existing_market_forecast_v1(store_root=evidence, **pending)
+
+    freeze, owner = market_case(11, realized=0.02)
+    selection = {
+        **{key: value for key, value in args.items() if key != "evidence_jobs"},
+        "evidence_store_root": evidence,
+        "market_request": owner["request"],
+    }
+    model = train_market_ols_model_from_store_v1(**selection)
+    assert model == explicit_model
+    forecast = learner.forecast_from_market_ols_model_v1(
+        model_store_root=args["model_store_root"],
+        model_ref=model["model_ref"],
+        store_root=evidence,
+        context_package=freeze["context_package"],
+        market_request=owner["request"],
+        forecast_created_at=freeze["context_package"]["as_of"],
+        attempt_generation="stored-followup",
+    )
+    observation = supplier.materialize_independent_market_horizon_v1(**owner)
+    ack = calibrate_frozen_market_forecast_v1(
+        store_root=evidence, frozen=forecast["frozen"], market_observation=observation
+    )
+    for index in range(8, 11):
+        original_job(evidence, index, realized=0.02)
+    cutoff = utc(learner.instant_v1(owner["evaluated_at_utc"]) + timedelta(seconds=10))
+    child = train_market_ols_model_from_store_v1(
+        **{
+            **selection,
+            "trained_as_of": cutoff,
+            "available_at": cutoff,
+            "parent_model_ref": model["model_ref"],
+        }
+    )
+    samples = child["request"]["samples"]
+    assert child["model_version"] == 2
+    assert samples[:-4] == model["request"]["samples"]
+    assert samples[-1]["job_key"] == forecast["frozen"]["job_key"]
+    assert samples[-1]["actual_outcome_ref"] == ack["actual_outcome_ref"]
+    assert child["coefficients"] != model["coefficients"]
+    assert train_market_ols_model_from_store_v1(**selection) == model
+
+    next_args, _ = next_forecast_args(tmp_path, child, index=13)
+    current = learner.forecast_from_market_ols_model_v1(**next_args)["provider"]
+    previous = learner.forecast_from_market_ols_model_v1(
+        **{**next_args, "model_ref": model["model_ref"]}
+    )["provider"]
+    assert current["feature_values"] == previous["feature_values"]
+    assert current["computed_payload"]["mean_return"] != previous["computed_payload"]["mean_return"]
+
+    other_target = {**owner["request"], "max_end_age_seconds": 1}
+    with pytest.raises(ValueError, match="MODEL_TRAINING_EVIDENCE_REQUIRED"):
+        train_market_ols_model_from_store_v1(**{**selection, "market_request": other_target})
 
 
 def test_cold_provider_read_never_infers_or_reads_training_source(tmp_path, monkeypatch):
