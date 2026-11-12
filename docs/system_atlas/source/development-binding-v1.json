@@ -1032,6 +1032,11 @@
       "sha256": "cc93b5b4dbbe6fd835b89b448d1c7060279b8ed863daad029b5174254f5c06f2"
     },
     {
+      "path": "scripts/ops/capture_offline_learning_representation_context_v1.py",
+      "before_sha256": null,
+      "sha256": "02dc15791bbb055c95c83d92077e412907170a1e42dd80ab9c8b0ada65593c2a"
+    },
+    {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
@@ -2460,6 +2465,11 @@
       "path": "tests/ops/test_capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
       "sha256": "f18eaf5e17ba8c395fe27912ac18f8f063630d7b68680a782dcb5cd9a460c2be"
+    },
+    {
+      "path": "tests/ops/test_capture_offline_learning_representation_context_v1.py",
+      "before_sha256": null,
+      "sha256": "8db53c2c27ef992a1dbc45a808e1279877b5a28cbf56f1db3940b6b1e5bfb965"
     },
     {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",
