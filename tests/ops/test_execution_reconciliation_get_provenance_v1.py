@@ -1714,6 +1714,134 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
     }
 
 
+@pytest.mark.parametrize(
+    "fault,reason",
+    [
+        (None, None),
+        ("terminal-partial", None),
+        ("missing-fills", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
+        ("wrong-position-trade", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
+        ("future-fill", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
+        ("nonterminal", "VENUE_ENTRY_TERMINAL_FILL_UNPROVEN"),
+    ],
+)
+def test_owned_entry_proof_reaches_original_position_episode(
+    authenticated_host, proof_root, tmp_path, monkeypatch, fault, reason
+):
+    from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
+        open_position_episode_from_authenticated_execution_v1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        PositionEpisodeScopeV1,
+    )
+
+    host, attempt, opener, scope, held = authenticated_host
+    body = opener.body
+    stamp = int(NOW.timestamp() * 1000)
+    filled_at = stamp - 1000
+    long = attempt.selected_side == "LONG"
+    quantity = (
+        str(Decimal(attempt.final_quantity) / 2)
+        if fault == "terminal-partial"
+        else attempt.final_quantity
+    )
+    position = {
+        "instId": attempt.native_id,
+        "instType": "SWAP",
+        "pos": quantity if long else "-" + quantity,
+        "posSide": "net",
+        "avgPx": "98.25",
+        "tradeId": "23" if fault == "wrong-position-trade" else "22",
+        "uTime": str(stamp - 500),
+    }
+    host.fetch = _fetch(uid=scope.account, positions=(position,))
+
+    def entry_body(path, params):
+        response = json.loads(body(path, params))
+        if path.endswith("/positions"):
+            response["data"] = [position]
+        if path.endswith("/fills") and fault == "missing-fills":
+            response["data"] = []
+        if path.endswith(("orders-history", "/order", "/fills")):
+            state = {"nonterminal": "partially_filled", "terminal-partial": "canceled"}.get(
+                fault, "filled"
+            )
+            for row in response["data"]:
+                row.update(state=state, accFillSz=quantity)
+                if path.endswith("/fills"):
+                    row.update(
+                        tradeId="22",
+                        fillSz=quantity,
+                        fillPx="98.25",
+                        side="buy" if long else "sell",
+                        posSide="net",
+                        fillTime=str(stamp + 1 if fault == "future-fill" else filled_at),
+                    )
+        return json.dumps(response).encode()
+
+    monkeypatch.setattr(opener, "body", entry_body)
+    bound = _bound()
+    context, proofs = host.observe_authenticated_execution_reconciliation_v1(
+        {"LANE_1": bound}, proof_root=proof_root
+    )
+    rid = attempt.portfolio_reservation_id
+    account_scope = PositionEpisodeScopeV1(scope.account, "LIVE")
+    episode_root = host.root / "position-episodes" / attempt.identity_digest()
+    args = dict(
+        bound=bound,
+        lane_id="LANE_1",
+        account_scope=account_scope,
+        proof_root=proof_root,
+        budget_owner_root=host.root / "owner",
+        source_session_id=SESSION,
+        reservation_id=rid,
+        revision_ref=proofs[rid].revision_ref,
+        state_root=episode_root,
+        repository_sha=host.repository_sha,
+        config_digest="exit-test-config",
+        writer_session_id=SESSION,
+    )
+    host_args = dict(
+        lane_id="LANE_1",
+        proof_root=proof_root,
+        proof=proofs[rid],
+        config_digest=args["config_digest"],
+    )
+    if reason is not None:
+        with pytest.raises(ValueError, match=reason):
+            context.bind_current_authenticated_entry_episode_v1(**host_args)
+        assert not episode_root.exists()
+        return
+
+    assert host.owner.active_sum_v1() == held
+    request_count = len(opener.requests)
+    with monkeypatch.context() as patch:
+        patch.setattr(host, "clock", lambda: NOW.timestamp() + 6)
+        with pytest.raises(ValueError, match="HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN"):
+            context.bind_current_authenticated_entry_episode_v1(**host_args)
+    assert not episode_root.exists()
+    episode = context.bind_current_authenticated_entry_episode_v1(**host_args)
+    replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
+    assert replayed.input_binding_v1() == episode.input_binding_v1()
+    assert episode.identity.episode_id == attempt.identity_digest()
+    assert episode.identity.position_side == ("long" if long else "short")
+    host.close()
+    restored = open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
+    assert restored.input_binding_v1() == episode.input_binding_v1()
+    prepared = restored.prepare_for_cycle_v1(
+        instrument_id=bound.instrument_id,
+        venue_native_id=bound.venue_native_id,
+        position_side=episode.identity.position_side,
+        venue_flat=False,
+        event_time=NOW.timestamp(),
+        lane_id="LANE_1",
+        expected_scope=account_scope,
+    )
+    assert prepared.entry_price == 98.25
+    assert prepared.entry_event_time == filled_at / 1000
+    assert len(opener.requests) == request_count
+
+
 @pytest.mark.parametrize("filled_anchor", [False, True])
 def test_private_receipt_rebuilds_in_a_fresh_process(authenticated_host, proof_root, filled_anchor):
     host, identity, opener, scope, held = authenticated_host

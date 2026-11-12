@@ -295,6 +295,68 @@ class HostBudgetRecoveryContextV1:
         )
         return position.side if position is not None else "FLAT"
 
+    def bind_current_authenticated_entry_episode_v1(
+        self, *, lane_id, proof_root, proof, config_digest
+    ):
+        """Publish the observed entry through the original position-episode writer."""
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedExecutionReconciliationProofV1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
+            open_position_episode_from_authenticated_execution_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeScopeV1,
+        )
+        from .execution_v1 import read_persisted_execution_reconciliation_v1
+
+        host = self.host
+        if (
+            host.closed
+            or host.execution_environment != "LIVE"
+            or self.pending_orders
+            or host.owner is None
+            or lane_id not in (host.bindings or {})
+            or type(proof) is not AuthenticatedExecutionReconciliationProofV1
+            or proof.session_id != host.session_id
+            or proof.account != self.account
+            or not proof.gets
+            or not 0
+            <= host.clock() - proof.gets[0].acquired_at.timestamp()
+            <= POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        ):
+            raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        _, _, link = read_persisted_execution_reconciliation_v1(
+            host.owner, proof.reservation_id, revision_ref=proof.revision_ref
+        )
+        result = link["reconciliation"]
+        if (
+            result != self.execution_reconciliation.get(proof.reservation_id)
+            or result["portfolio_digest"] != self.observed.digest()
+            or result["identity_digest"] != proof.identity_digest
+            or result["snapshot_digest"] != proof.snapshot_digest
+        ):
+            raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        state_root = host.root / "position-episodes" / proof.identity_digest
+        args = dict(
+            bound=host.bindings[lane_id],
+            lane_id=lane_id,
+            account_scope=PositionEpisodeScopeV1(self.account, host.execution_environment),
+            proof_root=proof_root,
+            budget_owner_root=host.root / "owner",
+            source_session_id=proof.session_id,
+            reservation_id=proof.reservation_id,
+            revision_ref=proof.revision_ref,
+            state_root=state_root,
+            repository_sha=host.repository_sha,
+            config_digest=config_digest,
+            writer_session_id=host.session_id,
+        )
+        try:
+            return open_position_episode_from_authenticated_execution_v1(**args, mode="create")
+        except FileExistsError:
+            return open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
+
 
 class PortfolioBudgetHostV1:
     """One session, one writer, stable account scope outside lane/run roots."""
