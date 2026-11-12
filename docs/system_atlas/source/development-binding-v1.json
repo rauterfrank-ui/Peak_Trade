@@ -1212,6 +1212,11 @@
       "sha256": "15d56285589843b6e455617bb825f531364e839585a8e95796da6fb6009c3f22"
     },
     {
+      "path": "src/governance/f1_m9_proposal_review_feedback_v1.py",
+      "before_sha256": null,
+      "sha256": "8dd82570262ababb2a2d10671d580119221219c304ea50613a8220a7db437dcd"
+    },
+    {
       "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
       "before_sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
       "sha256": "b32f5e246addf6648b52eb58bd2bd575290a4b2ab573874201e648f80e8f2b7c"
@@ -2305,6 +2310,11 @@
       "path": "tests/governance/test_clean_core_seal_v1.py",
       "before_sha256": "e3ee55d2bfd7c0db74319049de562f2fc423fd03ea8107f66286749f3983569a",
       "sha256": "dad74b7e4bc999a527e18c4dfad82595234b2173631eb181007d266a0918249e"
+    },
+    {
+      "path": "tests/governance/test_f1_m9_proposal_review_feedback_v1.py",
+      "before_sha256": null,
+      "sha256": "44374a4a2fd78aee7a34f9e9ad371a0f840dd74fe7c41a423f616b19ac68ba33"
     },
     {
       "path": "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
