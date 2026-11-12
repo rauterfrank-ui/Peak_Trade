@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -243,6 +244,103 @@ def test_t_plus_01_supervisor_single_cycle(tmp_path: Path) -> None:
     assert result.recovery.contract_checks["simulated_order_lifecycle"]
     assert result.trace.public_supply_refreshed is True
     assert result.trace.public_marks_count >= MINIMUM_FINALIZED_PT1M_MARKS
+
+
+def test_scoped_supervisor_counts_occupied_marks_without_wp02(tmp_path, monkeypatch):
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import (
+        startup_binding_v1 as startup,
+        supervisor_v1 as supervisor,
+    )
+
+    bound = replace(
+        _bound_lane_1(),
+        instrument_id="okx_eea:linear_dated_future:ETH:USD:USD:eth-usd_um_xperp-310404",
+        venue_native_id="ETH-USD_UM_XPERP-310404",
+    )
+    config = replace(
+        _supervisor_config(tmp_path),
+        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+        cap24_productivity_root=tmp_path / "cap24",
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+    )
+    proof_root = tmp_path / "proofs"
+    proof_root.mkdir(mode=0o700)
+    monkeypatch.setattr(
+        startup,
+        "acquire_account_bound_n1_startup_v1",
+        lambda **_: SimpleNamespace(
+            handoff=SimpleNamespace(bound_instrument=bound, selection_id="bound")
+        ),
+    )
+    monkeypatch.setattr(
+        supervisor, "canonical_kill_switch_state_path", lambda: tmp_path / "safety.json"
+    )
+    monkeypatch.setattr(
+        supervisor,
+        "_run_unified_recovery_v1",
+        lambda **_: SimpleNamespace(
+            ok=True,
+            runtime_owner_recovery_complete=False,
+            steps_completed=(),
+            evidence_scope="OBSERVATION",
+            pending_runtime_steps=(),
+        ),
+    )
+    monkeypatch.setattr(supervisor, "_refresh_public_supply_v1", lambda **_: 100)
+    monkeypatch.setattr(supervisor, "_refresh_pretrade_truth_v1", lambda **_: "CURRENT")
+
+    def run_bound_mark(**kwargs):
+        assert kwargs["occupied_mark_proof_root"] == proof_root
+        assert kwargs["bound"] == bound
+        assert (
+            kwargs["portfolio_budget_host"].execution_incident_state_path
+            == tmp_path / "safety.json"
+        )
+        config.evidence_root.mkdir()
+        (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").touch()
+        return SimpleNamespace(
+            orchestrator_result=SimpleNamespace(
+                cycles_completed=1,
+                accepted_c1_count=0,
+                cycle_records=(SimpleNamespace(mark_venue_event_time=1.0),),
+                disposition=DISPOSITION_MAX_CYCLES,
+                reason_code="MAX_CYCLES",
+                next_required_owner_decision="Evaluate next run.",
+                post_count=0,
+            ),
+            iteration_evidence=(),
+            post_allowed=False,
+            external_effect_authorized=False,
+        )
+
+    monkeypatch.setattr(
+        supervisor,
+        "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
+        run_bound_mark,
+    )
+
+    def reject_wp02(_context):
+        pytest.fail("Occupied mark run called the ranking hook")
+
+    result = run_n1_standing_pre_external_supervisor_v1(
+        config=config,
+        origin_main_sha=OWNER_GO_BASELINE_SHA,
+        bound=bound,
+        authorization=_continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+        observation_source=ScriptedContinuousObservationSourceV1([]),
+        g17_producers={},
+        f1_m9_cycle_evaluator=lambda _: None,
+        repo_root=REPO,
+        public_rest_fetch=_public_rest_empty,
+        private_rest_fetch=_fixture_rest,
+        wp02_hook=reject_wp02,
+        occupied_mark_proof_root=proof_root,
+    )
+    assert result.ok
+    assert not result.trace.wp02_hook_invoked
+    assert result.trace.accepted_c1_count == 0
+    assert result.trace.extra["occupied_mark_cycle_count"] == 1
 
 
 def test_t_plus_02_two_distinct_c1_epochs(tmp_path: Path) -> None:

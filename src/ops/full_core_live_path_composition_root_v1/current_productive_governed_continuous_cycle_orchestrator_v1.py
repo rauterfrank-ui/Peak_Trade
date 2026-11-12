@@ -257,6 +257,8 @@ class ContinuousCycleRecordV1:
     # Original producer reference only; not owner recovery or submit admission.
     portfolio_reservation_id: str = ""
     execution_plan_context: Any | None = None
+    mark_venue_event_time: float | None = None
+    mark_evidence_root: str = ""
 
 
 @dataclass(frozen=True)
@@ -394,6 +396,9 @@ def read_dead_owner_wait_ledger_v1(
             return None
         ledger_raw = ledger_path.read_bytes()
         ledger = json.loads(ledger_raw)
+        if ledger.get("occupied_mark_only") is True:
+            # The C1 checkpoint does not attest the occupied Scope snapshot.
+            return None
         if (
             retired
             or require_independent
@@ -732,6 +737,43 @@ def _completed_s5_hold_digest(path: Path, *, result, native_id: str, prior_floor
     return None
 
 
+def _new_occupied_mark_time_v1(
+    *,
+    observation: InjectedContinuousObservationV1,
+    native_id: str,
+    cursor_store_root: Path,
+    observed_unix: float,
+) -> float | None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+    )
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+    )
+
+    if observation.mark_price_payload is None:
+        return None
+    try:
+        provenance = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+            mark_price_payload=observation.mark_price_payload,
+            venue_native_id=native_id,
+            index_from_index_tickers=observation.index_tickers_payload,
+            mark_acquired_at_utc=observation.mark_acquired_at_utc,
+        )
+        event_time = provenance.require_current_mark_clock_v1(observed_unix=observed_unix)
+    except ValueError:
+        return None
+    prior = read_occupied_scope_mark_snapshot_v1(cursor_store_root)
+    if prior is None:
+        return event_time
+    mark = prior["mark"]
+    if event_time < mark["event_unix"] or (
+        event_time == mark["event_unix"] and provenance.mark_px in mark["prices"]
+    ):
+        return None
+    return event_time
+
+
 def run_current_productive_governed_continuous_cycle_run_v1(
     *,
     authorization: CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
@@ -749,6 +791,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     sleep_fn: SleepFnV1 | None = None,
     cancel_requested: CancelFnV1 | None = None,
     iteration_authority_gate_v1: IterationAuthorityGateV1 | None = None,
+    occupied_mark_only: bool = False,
 ) -> CurrentProductiveGovernedContinuousCycleRunResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
@@ -759,6 +802,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     if observation_source is None:
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
             REASON_INJECTED_SOURCE_REQUIRED
+        )
+    if occupied_mark_only and s5_runner is None:
+        raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
+            "OCCUPIED_MARK_RUNNER_REQUIRED"
         )
 
     Path(evidence_root).mkdir(parents=True, exist_ok=True)
@@ -833,6 +880,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     poll_retry_count = 0
     recovery_incident_id = None
     last_fresh_c1_at = started_at
+    latest_context_c1 = last_accepted
     max_poll_iterations = compute_max_canonical_continuous_poll_iterations_v1(
         max_run_duration_seconds=authorization.max_run_duration_seconds,
         wait_interval_seconds=authorization.wait_interval_seconds,
@@ -881,6 +929,17 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         }
         if extra:
             payload.update(dict(extra))
+        if occupied_mark_only:
+            payload["occupied_mark_only"] = True
+            payload["occupied_mark_cycles"] = [
+                {
+                    "consume_instance_id": record.consume_instance_id,
+                    "mark_venue_event_time": record.mark_venue_event_time,
+                    "s5_evidence_root": record.mark_evidence_root,
+                    "envelope_identity": record.envelope_identity,
+                }
+                for record in records
+            ]
         if (
             state == STATE_WAITING_FOR_NEXT_C1
             and (Path(cursor_store_root) / CURSOR_FILENAME).is_file()
@@ -933,6 +992,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         if (
             managed_filegate is not None
             and state == STATE_WAITING_FOR_NEXT_C1
+            and not occupied_mark_only
             and "checkpoint_cursor_sha256" in payload
         ):
             _seal_wait(
@@ -1152,7 +1212,22 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 )
             c1_obs = mapped.observation
             c1_time = float(c1_obs.venue_event_time)
-            if c1_time <= float(last_accepted):
+            mark_time = (
+                _new_occupied_mark_time_v1(
+                    observation=observation,
+                    native_id=authorization.native_id,
+                    cursor_store_root=Path(cursor_store_root),
+                    observed_unix=time.time(),
+                )
+                if occupied_mark_only and c1_time >= float(latest_context_c1)
+                else None
+            )
+            if occupied_mark_only and mark_time is not None and c1_time > latest_context_c1:
+                latest_context_c1 = c1_time
+                last_fresh_c1_at = float(clock())
+            if (occupied_mark_only and mark_time is None) or (
+                not occupied_mark_only and c1_time <= float(last_accepted)
+            ):
                 _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
                 sleeper(float(authorization.wait_interval_seconds))
@@ -1162,7 +1237,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 cursor_store_root=Path(cursor_store_root),
                 observation=c1_obs,
             )
-            if freshness.disposition != DISPOSITION_EMITTED:
+            if not occupied_mark_only and freshness.disposition != DISPOSITION_EMITTED:
                 return _stop(
                     result_disposition=DISPOSITION_FAIL_CLOSED,
                     result_reason=freshness.reason_code or REASON_STALE_OR_EQUAL_C1,
@@ -1191,7 +1266,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             consume_id = mint_s5_cycle_consume_instance_id_v1(
                 run_id=run_id,
                 cycle_index=cycle_index,
-                c1_venue_event_time=c1_time,
+                c1_venue_event_time=c1_time if mark_time is None else mark_time,
             )
             if consume_id in consumed:
                 return _stop(
@@ -1214,6 +1289,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 "consume_instance_id": consume_id,
                 "evidence_root": str(cycle_root),
                 "c1_venue_event_time": c1_time,
+                **({"mark_venue_event_time": mark_time} if mark_time is not None else {}),
                 "logical_tokens": {
                     "SEQUENCING": S5_RUNTIME_OWNER_GO,
                     "GET": GET_OWNER_GO,
@@ -1317,6 +1393,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     **(
                         {"seal_no_effect_hold_v1": _seal_no_effect_hold}
                         if managed_filegate is not None
+                        and not occupied_mark_only
                         and cycle_index < authorization.max_cycles_per_run
                         else {}
                     ),
@@ -1356,6 +1433,8 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     envelope_identity=s5_result.envelope_identity,
                     portfolio_reservation_id=s5_result.extra.get("PORTFOLIO_RESERVATION_ID", ""),
                     execution_plan_context=getattr(s5_result, "execution_plan_context", None),
+                    mark_venue_event_time=mark_time,
+                    mark_evidence_root=str(s5_result.extra.get("OCCUPIED_MARK_EVIDENCE_ROOT", "")),
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:
@@ -1367,18 +1446,39 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     blocker="EXTERNAL_EFFECT_OR_POST_LEAK",
                     owner_next="POST/permit leak is forbidden in continuous sequencing.",
                 )
+            if occupied_mark_only and (
+                s5_result.extra.get("PORTFOLIO_RESERVATION_ID")
+                or (
+                    s5_result.disposition == S5_DISPOSITION_PRE_EXTERNAL_EFFECT
+                    and s5_result.position_management_execution_handoff is None
+                )
+            ):
+                return _stop(
+                    result_disposition=DISPOSITION_FAIL_CLOSED,
+                    result_reason="OCCUPIED_MARK_ENTRY_FORBIDDEN",
+                    result_terminal="AUTHORITY_VIOLATION",
+                    state=STATE_FAILED_STOP,
+                    blocker="OCCUPIED_MARK_ENTRY_FORBIDDEN",
+                    owner_next="Reconcile the occupied position before a new run.",
+                )
             prior_floor = last_accepted
-            last_accepted = c1_time
             last_progress_at = float(clock())
-            _advance_persisted_c1_cursor_floor_v1(
-                cursor_store_root=Path(cursor_store_root),
-                venue_event_time=c1_time,
-            )
-            last_fresh_c1_at = float(clock())
-            if recovery_incident_id is not None and s5_result.disposition in {
-                S5_DISPOSITION_HOLD,
-                S5_DISPOSITION_PRE_EXTERNAL_EFFECT,
-            }:
+            if not occupied_mark_only:
+                last_accepted = c1_time
+                _advance_persisted_c1_cursor_floor_v1(
+                    cursor_store_root=Path(cursor_store_root),
+                    venue_event_time=c1_time,
+                )
+                last_fresh_c1_at = float(clock())
+            if (
+                not occupied_mark_only
+                and recovery_incident_id is not None
+                and s5_result.disposition
+                in {
+                    S5_DISPOSITION_HOLD,
+                    S5_DISPOSITION_PRE_EXTERNAL_EFFECT,
+                }
+            ):
                 # Report recovery after real S5 processing and durable cursor
                 # advancement, never merely after a GET or a component restart.
                 cursor_digest = sha256(
@@ -1412,7 +1512,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     state=STATE_COMPLETED,
                     blocker=s5_result.first_genuine_blocker or POST_NEXT_OWNER_GO,
                     owner_next=(
-                        "ENTER stopped at PRE_EXTERNAL_EFFECT. Continuous GO does not compose "
+                        "Cycle stopped at PRE_EXTERNAL_EFFECT. Continuous GO does not compose "
                         f"{POST_NEXT_OWNER_GO}. No subsequent S5 cycle."
                     ),
                 )
@@ -1425,7 +1525,12 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     blocker=s5_result.first_genuine_blocker or s5_result.reason_code,
                     owner_next="S5 fail-closed terminated the continuous run. Do not resume.",
                 )
-            if s5_result.disposition != S5_DISPOSITION_HOLD:
+            occupied_hold = occupied_mark_only and (
+                s5_result.disposition == "COMPLETED"
+                and s5_result.terminal_class == "POSITION_MANAGEMENT_EVALUATED"
+                and s5_result.final_order_envelope is None
+            )
+            if s5_result.disposition != S5_DISPOSITION_HOLD and not occupied_hold:
                 return _stop(
                     result_disposition=DISPOSITION_FAIL_CLOSED,
                     result_reason=f"UNKNOWN_S5_DISPOSITION:{s5_result.disposition}",
@@ -1447,7 +1552,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     ),
                 )
             completed_hold = None
-            if managed_filegate is not None:
+            if managed_filegate is not None and not occupied_mark_only:
                 completed_hold = _completed_s5_hold_digest(
                     cycle_root.resolve() / "s5" / S5_LEDGER_FILENAME,
                     result=s5_result,
@@ -1551,7 +1656,7 @@ def _result(
         continuous_go_status_after=consumed,
         cycles_completed=cycles_completed,
         s5_invoke_count=s5_invoke_count,
-        accepted_c1_count=cycles_completed,
+        accepted_c1_count=sum(record.mark_venue_event_time is None for record in cycle_records),
         consume_instance_ids=consume_instance_ids,
         cycle_records=cycle_records,
         last_accepted_c1=last_accepted_c1,

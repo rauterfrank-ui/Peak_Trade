@@ -16,7 +16,10 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Mapping, NoReturn, Sequence
 
 if TYPE_CHECKING:
-    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+        HostBudgetRecoveryContextV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.slot_economic_source_v1 import (
         SlotCloseAccountingSourceV1,
     )
@@ -413,11 +416,22 @@ def _occupied_scope_close_binding_v1(
         cursor_root=cursor_root,
         exit_state_digest=exit_state.digest(),
         cursor_digest=current_productive_cursor_digest_v1(cursor),
+        entry_source_ref=(
+            episode.entry_source_ref
+            if identity.account_scope.execution_environment == "LIVE"
+            else None
+        ),
     )
 
 
 def _scope_switch_close_binding_v1(
-    *, lane_identity, identity, cursor_root: Path, exit_state_digest: str, cursor_digest: str
+    *,
+    lane_identity,
+    identity,
+    cursor_root: Path,
+    exit_state_digest: str,
+    cursor_digest: str,
+    entry_source_ref: str | None = None,
 ) -> dict[str, Any]:
     from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
         read_occupied_scope_mark_snapshot_v1,
@@ -426,7 +440,7 @@ def _scope_switch_close_binding_v1(
 
     identity.validate_v1()
     if (
-        identity.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        identity.account_scope.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE"}
         or identity.lane_id != lane_identity.lane_id
         or identity.instrument_id != lane_identity.canonical_instrument_id
         or identity.venue_native_id != lane_identity.venue_native_id
@@ -454,6 +468,7 @@ def _scope_switch_close_binding_v1(
         "scope_digest": scope["digest"],
         "scope_seal_id": scope["mark"]["seal_id"],
         "cycle_id": scope["mark"]["cycle_id"],
+        **({"entry_source_ref": entry_source_ref} if entry_source_ref is not None else {}),
     }
 
 
@@ -494,6 +509,8 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         identity = episode.identity
     if identity.account_scope != expected_scope:
         raise ValueError("OCCUPIED_SCOPE_CLOSE_ACCOUNT_SCOPE_MISMATCH")
+    if expected_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION":
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_SIMULATED_RECOVERY_REQUIRED")
     cursor, lock_root, evidence_root = bind_occupied_lane_governed_cycle_store_roots_v1(
         {lane_id: lane_pair}
     )[lane_id]
@@ -1208,6 +1225,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     common_epoch_decision_epoch: str | None = None,
     offline_governed_attempt: object | None = None,
     occupied_scope_mark_lane_id: str | None = None,
+    authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -1227,12 +1245,121 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         BoundedSlotEntryBudgetV1,
     )
     if occupied_scope_mark_lane_id is not None and (
-        not bounded_slots
-        or occupied_scope_mark_lane_id not in composed_pairs
-        or position_episode_bindings is None
+        occupied_scope_mark_lane_id not in composed_pairs
+        or (
+            authenticated_entry is None and (not bounded_slots or position_episode_bindings is None)
+        )
         or rotation_exit_requests is not None
     ):
         _fail(FAILURE_AUTHORITY, "occupied_scope_mark_requires_bound_offline_lane")
+    authenticated_admission = None
+    if authenticated_entry is not None:
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            AuthenticatedEntryEpisodeRequestV1,
+            HostBudgetRecoveryContextV1,
+        )
+        from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+            POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+            build_productive_master_v2_reconciliation_admission_from_gate_v1,
+        )
+        from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import (
+            run_productive_reconciliation_startup_gate_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+            FROZEN_PROFIT_PROTECTION_DISTANCE,
+        )
+        from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+            layer_c_derived_exit_policy_adverse_config_digest_v1,
+        )
+
+        if (
+            type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+            or type(host_budget_recovery) is not HostBudgetRecoveryContextV1
+            or occupied_scope_mark_lane_id is None
+            or len(composed_pairs) != 1
+            or bounded_slots
+            or offline_governed_attempt is not None
+            or position_episode_bindings is not None
+            or position_episode_scope is not None
+            or observed_portfolio is not None
+            or occupancy_payloads is not None
+        ):
+            _fail(FAILURE_AUTHORITY, "authenticated_scope_mark_requires_original_n1_host")
+        host = host_budget_recovery.host
+        pair = composed_pairs[occupied_scope_mark_lane_id]
+        if (
+            not isinstance(pair, tuple)
+            or len(pair) != 2
+            or not isinstance(pair[1], BoundInstrumentV1)
+        ):
+            _fail(FAILURE_PAIR_TYPE, occupied_scope_mark_lane_id)
+        bound = pair[1]
+        if (
+            host.closed
+            or host.owner is None
+            or host.owner is not portfolio_budget_owner
+            or host.execution_environment != "LIVE"
+            or host.bindings != {occupied_scope_mark_lane_id: bound}
+            or not 0
+            <= host.clock() - observed_unix
+            <= POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        ):
+            _fail(FAILURE_AUTHORITY, "authenticated_scope_mark_requires_original_n1_host")
+        observed_portfolio = host_budget_recovery.observed
+        occupancy_payloads = host_budget_recovery.occupancy_payloads
+        config_rows = occupancy_payloads.get("CONFIG", {}).get("data", [])
+        if len(config_rows) != 1 or config_rows[0].get("posMode") != "net_mode":
+            _fail(FAILURE_AUTHORITY, "FULL_CLOSE_NET_POSITION_MODE_REQUIRED")
+        close_input = (
+            live_29p_injected_by_lane.get(occupied_scope_mark_lane_id)
+            if live_29p_injected_by_lane is not None
+            else live_29p_injected
+        )
+        if (
+            not isinstance(close_input, CurrentProductiveEnterLive29PInjectedGetV1)
+            or close_input.instruments_payload is None
+            or not produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
+                venue_native_id=bound.venue_native_id,
+                bound_instrument_id=bound.instrument_id,
+                instruments_payload=close_input.instruments_payload,
+                observed_at_as_of=close_input.observed_at,
+            ).produced
+        ):
+            _fail(FAILURE_AUTHORITY, "authenticated_scope_mark_close_metadata_required")
+        try:
+            episode = host_budget_recovery.bind_current_authenticated_entry_episode_v1(
+                lane_id=occupied_scope_mark_lane_id,
+                proof_root=authenticated_entry.proof_root,
+                proof=authenticated_entry.proof,
+                config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+                    profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
+                ),
+            )
+            gate = run_productive_reconciliation_startup_gate_v1(
+                state_root=host.root / "reconciliation",
+                observed=observed_portfolio,
+                session_id=host.session_id,
+                repository_sha=host.repository_sha,
+                now_unix=host.clock(),
+                require_persisted_present=True,
+            )
+            authenticated_admission = (
+                build_productive_master_v2_reconciliation_admission_from_gate_v1(
+                    gate=gate,
+                    session_id=host.session_id,
+                    repository_sha=host.repository_sha,
+                    bound_instrument_id=bound.instrument_id,
+                )
+            )
+            authenticated_admission.validate_for_productive_master_v2_entry_v1(
+                instrument_id=bound.instrument_id
+            )
+        except (OSError, ValueError) as exc:
+            _fail(FAILURE_AUTHORITY, str(exc))
+        position_episode_bindings = {occupied_scope_mark_lane_id: episode}
+        position_episode_scope = episode.identity.account_scope
     if bounded_slots:
         from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
             HostBudgetRecoveryContextV1,
@@ -1305,13 +1432,14 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if slot.occupancy != OCCUPANCY_OCCUPIED:
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
-    if bounded_slots:
-        # Keep the original durable cursor and exclusion lock. Each named
-        # bounded attempt retains its own original one-shot ledger; retries
-        # revisit that same ledger and remain subject to its replay refusal.
+    if bounded_slots or authenticated_entry is not None:
+        # Keep the original cursor and exclusion lock; each attempt owns its ledger.
         attempt = hashlib.sha256(prefix.encode()).hexdigest()
+        attempt_dir = (
+            "bounded_slot_attempts_v1" if bounded_slots else "authenticated_mark_attempts_v1"
+        )
         addressed = {
-            lane: (cursor, lock, str(Path(evidence) / "bounded_slot_attempts_v1" / attempt))
+            lane: (cursor, lock, str(Path(evidence) / attempt_dir / attempt))
             for lane, (cursor, lock, evidence) in addressed.items()
         }
     if offline_governed_attempt is not None:
@@ -1514,7 +1642,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             lane_s7["position_episode_bindings"] = {} if episode is None else {lane_id: episode}
             lane_s7["position_episode_scope"] = position_episode_scope
         lane_s7["master_v2_reconciliation_admission"] = (
-            build_master_v2_reconciliation_admission_for_lane_v1(
+            authenticated_admission
+            or build_master_v2_reconciliation_admission_for_lane_v1(
                 identity=ingress.identity,
                 per_lane=ingress.reconciliation,
                 session_id=prefix,
@@ -1632,7 +1761,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             position_management_config_payload=(occupancy_payloads or {}).get("CONFIG"),
             offline_observation_clock_unix=(
                 observed_unix
-                if offline_governed_attempt is not None or occupied_mark_event is not None
+                if offline_governed_attempt is not None
+                or (occupied_mark_event is not None and authenticated_entry is None)
                 else None
             ),
         )

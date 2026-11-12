@@ -298,11 +298,18 @@ def run_n1_standing_pre_external_supervisor_v1(
     skip_owner_go_validation: bool = False,
     cancel_requested: Callable[[], bool] | None = None,
     post_close_startup_recovery: Any | None = None,
+    occupied_mark_proof_root: Path | None = None,
 ) -> StandingSupervisorRunResultV1:
     """Single standing supervisor session: recovery → supply → pretrade → continuous PRE_EXTERNAL run."""
 
     root = repo_root or Path(__file__).resolve().parents[3]
     assert_supervisor_authority_boundary_v1()
+    if occupied_mark_proof_root is not None:
+        if config.transport_scope != TRANSPORT_SCOPE_SCOPED_READONLY_GET:
+            raise StandingSupervisorError("OCCUPIED_MARK_SCOPED_READONLY_HOST_REQUIRED")
+        from src.ops.execution_reconciliation_proof_store_v1 import require_private_proof_root_v1
+
+        require_private_proof_root_v1(occupied_mark_proof_root)
 
     if not skip_owner_go_validation:
         ok_go, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
@@ -450,7 +457,9 @@ def run_n1_standing_pre_external_supervisor_v1(
         trace.public_supply_refreshed = True
 
         wp02_chain_error: type[Exception] | None = None
-        if wp02_hook is not None:
+        if occupied_mark_proof_root is not None:
+            hook = noop_wp02_hook_v1
+        elif wp02_hook is not None:
             hook = wp02_hook
         elif config.wp02_productive_default_enabled:
             from src.ops.current_wp02_default_productive_universe_handoff_v1.errors_v1 import (
@@ -515,7 +524,7 @@ def run_n1_standing_pre_external_supervisor_v1(
             if wp02_chain_error is not None and isinstance(exc, wp02_chain_error):
                 raise StandingSupervisorError(getattr(exc, "code", "WP02_FAIL"), str(exc)) from exc
             raise
-        trace.wp02_hook_invoked = True
+        trace.wp02_hook_invoked = occupied_mark_proof_root is None
         chain_result = wp02_result_sink.get("chain_result")
         if chain_result is not None:
             trace.wp02_cap21_refresh_invoked = bool(chain_result.cap21_refresh_invoked)
@@ -550,6 +559,11 @@ def run_n1_standing_pre_external_supervisor_v1(
             fresh_pretrade_get_transport=pretrade_transport,
             cap24_productivity_root=config.cap24_productivity_root,
             portfolio_budget_host=budget_host,
+            **(
+                {"occupied_mark_proof_root": occupied_mark_proof_root}
+                if occupied_mark_proof_root is not None
+                else {}
+            ),
             cancel_requested=cancel_requested,
         )
         owner_go_consumed = (
@@ -592,7 +606,12 @@ def run_n1_standing_pre_external_supervisor_v1(
     if policy_result.post_allowed or policy_result.external_effect_authorized:
         raise StandingSupervisorError("POLICY_RESULT_EXTERNAL_EFFECT_LEAK")
 
-    if trace.accepted_c1_count != trace.governed_cycle_count:
+    if occupied_mark_proof_root is not None:
+        mark_count = sum(record.mark_venue_event_time is not None for record in orch.cycle_records)
+        trace.extra["occupied_mark_cycle_count"] = mark_count
+        if trace.accepted_c1_count != 0 or mark_count != trace.governed_cycle_count:
+            raise StandingSupervisorError("OCCUPIED_MARK_CYCLE_COUNT_MISMATCH")
+    elif trace.accepted_c1_count != trace.governed_cycle_count:
         raise StandingSupervisorError(
             "C1_CYCLE_COUNT_MISMATCH",
             f"{trace.accepted_c1_count}!={trace.governed_cycle_count}",

@@ -251,7 +251,7 @@ class AuthenticatedReconciliationGetV1:
             self._bodies.setdefault(pretrade_decision_id, []).append(body)
         return result
 
-    def record_v1(self, host, rid, identity, snapshot, observed_at, result):
+    def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
         account_reads = self._gets.get(f"{host.session_id}:execution-recovery", ())
         order_reads = self._gets.get(f"{host.session_id}:{rid}", ())
         reads = (*account_reads, *order_reads)
@@ -301,7 +301,7 @@ class AuthenticatedReconciliationGetV1:
             gets=reads,
             quantity_incident=finding,
         )
-        if self.proof_root is not None:
+        if self.proof_root is not None and publish_proof:
             self._publish_proof_v1(
                 root=self.proof_root,
                 proof=proof,
@@ -310,6 +310,17 @@ class AuthenticatedReconciliationGetV1:
                 observed_at=observed_at,
             )
         self.evidence[rid] = proof
+
+    def publish_current_proof_v1(self, *, identity, snapshot, observed_at):
+        if self.proof_root is None:
+            return
+        self._publish_proof_v1(
+            root=self.proof_root,
+            proof=self.evidence[identity.portfolio_reservation_id],
+            identity=identity,
+            snapshot=snapshot,
+            observed_at=observed_at,
+        )
 
     def publish_incident_proof_v1(self, *, root, identity, snapshot, observed_at):
         proof = self.evidence[identity.portfolio_reservation_id]

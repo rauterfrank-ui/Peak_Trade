@@ -1,6 +1,6 @@
 """Private immutable GET receipts and a credential-free historical readback."""
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
@@ -31,6 +31,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     fetch_okx_read_only_reconciliation_snapshot_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+    FullCoreExchangeReconciliationSnapshotV1,
     PortfolioExecutionReconciliationIdentityV2,
     parse_exchange_reconciliation_identity_v1,
 )
@@ -46,6 +47,15 @@ _SCHEMA = "peaktrade.execution_reconciliation_get_proof.v1"
 
 class ExecutionReconciliationProofStoreError(ValueError):
     """The private receipt or its budget binding could not be verified."""
+
+
+@dataclass(frozen=True)
+class AuthenticatedExecutionReconciliationSourceV1:
+    proof: AuthenticatedExecutionReconciliationProofV1
+    identity: PortfolioExecutionReconciliationIdentityV2
+    snapshot: FullCoreExchangeReconciliationSnapshotV1 = field(repr=False)
+    reconciliation: dict = field(repr=False)
+    lane_binding: dict = field(repr=False)
 
 
 def require_private_proof_root_v1(root) -> Path:
@@ -219,6 +229,19 @@ class _RecordedReconciliationGets:
 def read_authenticated_execution_reconciliation_proof_v1(
     *, root, budget_owner_root, account, session_id, reservation_id, revision_ref
 ) -> AuthenticatedExecutionReconciliationProofV1:
+    return read_authenticated_execution_reconciliation_source_v1(
+        root=root,
+        budget_owner_root=budget_owner_root,
+        account=account,
+        session_id=session_id,
+        reservation_id=reservation_id,
+        revision_ref=revision_ref,
+    ).proof
+
+
+def read_authenticated_execution_reconciliation_source_v1(
+    *, root, budget_owner_root, account, session_id, reservation_id, revision_ref
+) -> AuthenticatedExecutionReconciliationSourceV1:
     """Read a historical receipt, then rebuild and verify its original budget input."""
     try:
         path = _proof_path(root, revision_ref)
@@ -259,7 +282,14 @@ def read_authenticated_execution_reconciliation_proof_v1(
             or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
         ):
             raise ExecutionReconciliationProofStoreError("GET_PROOF_BUDGET_IDENTITY_UNPROVEN")
-        return _replay(record, identity, link["reconciliation"], revision_ref)
+        proof, snapshot = _replay(record, identity, link["reconciliation"], revision_ref)
+        return AuthenticatedExecutionReconciliationSourceV1(
+            proof,
+            identity,
+            snapshot,
+            link["reconciliation"],
+            revision["state"]["lane_bindings"].get(identity.slot_id, {}),
+        )
     except ExecutionReconciliationProofStoreError:
         raise
     except (
@@ -329,7 +359,7 @@ def _replay(record, identity, result, revision_ref):
     )
     if _incident_payload(finding) != record["quantity_incident"]:
         raise ExecutionReconciliationProofStoreError("GET_PROOF_INCIDENT_UNPROVEN")
-    return AuthenticatedExecutionReconciliationProofV1(
+    proof = AuthenticatedExecutionReconciliationProofV1(
         venue_host=record["venue_host"],
         account=record["account"],
         session_id=record["session_id"],
@@ -340,3 +370,4 @@ def _replay(record, identity, result, revision_ref):
         gets=reads,
         quantity_incident=finding,
     )
+    return proof, snapshot

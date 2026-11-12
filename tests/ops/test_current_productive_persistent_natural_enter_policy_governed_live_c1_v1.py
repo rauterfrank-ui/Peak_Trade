@@ -314,9 +314,9 @@ def test_policy_governed_persistent_path_integrated(tmp_path: Path) -> None:
     evidence = tmp_path / "evidence"
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state, bound=bound)
     g17 = _lane_g17(pairs)
-    path = strong_uptrend_closes_v1()
+    path = strong_uptrend_closes_v1(count=101)
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
-    obs_boot = _observation_from_closes(closes=path[:14], event_ts=t0 - 60.0)
+    obs_boot = _observation_from_closes(closes=path[:-1], event_ts=t0 - 60.0)
     bootstrap_s8_lane_via_s7_compose_v1(
         composed_pairs=pairs,
         origin_main_sha=BASELINE_SHA,
@@ -325,6 +325,7 @@ def test_policy_governed_persistent_path_integrated(tmp_path: Path) -> None:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        mark_acquired_at_utc=obs_boot.mark_acquired_at_utc,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
@@ -341,7 +342,7 @@ def test_policy_governed_persistent_path_integrated(tmp_path: Path) -> None:
     )
     clock = _FakeClock()
     obs_source = ScriptedContinuousObservationSourceV1(
-        [_observation_from_closes(closes=path[:16], event_ts=t0)]
+        [_observation_from_closes(closes=path, event_ts=t0)]
     )
     result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         authorization=auth,

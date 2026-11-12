@@ -14,6 +14,9 @@ import time
 from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from src.ops.execution_reconciliation_get_provenance_v1 import (
+        AuthenticatedExecutionReconciliationProofV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
     )
@@ -233,6 +236,12 @@ def collect_host_account_observation_v1(
 
 
 @dataclass(frozen=True)
+class AuthenticatedEntryEpisodeRequestV1:
+    proof_root: Path
+    proof: "AuthenticatedExecutionReconciliationProofV1"
+
+
+@dataclass(frozen=True)
 class HostBudgetRecoveryContextV1:
     host: "PortfolioBudgetHostV1"
     account: str
@@ -294,6 +303,68 @@ class HostBudgetRecoveryContextV1:
             (p for p in self.observed.positions if p.instrument_id == bound.instrument_id), None
         )
         return position.side if position is not None else "FLAT"
+
+    def bind_current_authenticated_entry_episode_v1(
+        self, *, lane_id, proof_root, proof, config_digest
+    ):
+        """Publish the observed entry through the original position-episode writer."""
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedExecutionReconciliationProofV1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
+            open_position_episode_from_authenticated_execution_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            PositionEpisodeScopeV1,
+        )
+        from .execution_v1 import read_persisted_execution_reconciliation_v1
+
+        host = self.host
+        if (
+            host.closed
+            or host.execution_environment != "LIVE"
+            or self.pending_orders
+            or host.owner is None
+            or lane_id not in (host.bindings or {})
+            or type(proof) is not AuthenticatedExecutionReconciliationProofV1
+            or proof.session_id != host.session_id
+            or proof.account != self.account
+            or not proof.gets
+            or not 0
+            <= host.clock() - proof.gets[0].acquired_at.timestamp()
+            <= POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+        ):
+            raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        _, _, link = read_persisted_execution_reconciliation_v1(
+            host.owner, proof.reservation_id, revision_ref=proof.revision_ref
+        )
+        result = link["reconciliation"]
+        if (
+            result != self.execution_reconciliation.get(proof.reservation_id)
+            or result["portfolio_digest"] != self.observed.digest()
+            or result["identity_digest"] != proof.identity_digest
+            or result["snapshot_digest"] != proof.snapshot_digest
+        ):
+            raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        state_root = host.root / "position-episodes" / proof.identity_digest
+        args = dict(
+            bound=host.bindings[lane_id],
+            lane_id=lane_id,
+            account_scope=PositionEpisodeScopeV1(self.account, host.execution_environment),
+            proof_root=proof_root,
+            budget_owner_root=host.root / "owner",
+            source_session_id=proof.session_id,
+            reservation_id=proof.reservation_id,
+            revision_ref=proof.revision_ref,
+            state_root=state_root,
+            repository_sha=host.repository_sha,
+            config_digest=config_digest,
+            writer_session_id=host.session_id,
+        )
+        try:
+            return open_position_episode_from_authenticated_execution_v1(**args, mode="create")
+        except FileExistsError:
+            return open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
 
 
 class PortfolioBudgetHostV1:
@@ -471,24 +542,41 @@ class PortfolioBudgetHostV1:
         context = self._observe_with_retry_v1(bindings, capture=capture)
         return context, capture.evidence
 
-    def observe_authenticated_execution_reconciliation_v1(self, bindings, *, proof_root=None):
-        """Observe the original LIVE chain with a per-request GET proof and no Safety delivery."""
+    def observe_authenticated_execution_reconciliation_v1(
+        self, bindings, *, proof_root=None, deliver_authenticated_incidents=False
+    ):
+        """Observe the original LIVE chain with per-request GET proof."""
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
         )
 
         if self.execution_environment != "LIVE":
             raise ValueError("HOST_EXECUTION_EVIDENCE_LIVE_IDENTITY_REQUIRED")
+        if deliver_authenticated_incidents and (
+            proof_root is None or self.execution_incident_state_path is None
+        ):
+            raise ValueError("HOST_EXECUTION_SAFETY_AND_PROOF_SCOPE_REQUIRED")
         capture = AuthenticatedReconciliationGetV1(
             self.reconciliation_transport,
             account=self.expected_account_identity,
             clock=self.clock,
             proof_root=proof_root,
         )
-        context = self._observe_with_retry_v1(bindings, capture=capture)
+        context = self._observe_with_retry_v1(
+            bindings,
+            capture=capture,
+            deliver_authenticated_incidents=deliver_authenticated_incidents,
+        )
         return context, capture.evidence
 
-    def _observe_with_retry_v1(self, bindings, *, capture=None, required_execution_attempts=None):
+    def _observe_with_retry_v1(
+        self,
+        bindings,
+        *,
+        capture=None,
+        required_execution_attempts=None,
+        deliver_authenticated_incidents=False,
+    ):
         from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.recovery_v1 import (
             bounded_retry_policy_v1,
         )
@@ -502,6 +590,7 @@ class PortfolioBudgetHostV1:
                     bindings,
                     capture=capture,
                     required_execution_attempts=required_execution_attempts,
+                    deliver_authenticated_incidents=deliver_authenticated_incidents,
                 )
             except (TimeoutError, ConnectionError):
                 if not bounded_retry_policy_v1(
@@ -791,7 +880,13 @@ class PortfolioBudgetHostV1:
         return self._observe_once_v1(bindings, rebound_request=request)
 
     def _observe_once_v1(
-        self, bindings, *, rebound_request=None, capture=None, required_execution_attempts=None
+        self,
+        bindings,
+        *,
+        rebound_request=None,
+        capture=None,
+        required_execution_attempts=None,
+        deliver_authenticated_incidents=False,
     ):
         if self.closed:
             raise ValueError("HOST_BUDGET_SESSION_CLOSED")
@@ -815,6 +910,7 @@ class PortfolioBudgetHostV1:
             rebound_request=rebound_request,
             capture=capture,
             required_execution_attempts=required_execution_attempts,
+            deliver_authenticated_incidents=deliver_authenticated_incidents,
         )
 
     def _bind_observation_v1(
@@ -825,6 +921,7 @@ class PortfolioBudgetHostV1:
         rebound_request=None,
         capture=None,
         required_execution_attempts=None,
+        deliver_authenticated_incidents=False,
     ):
         account = observation.account
         if self.bindings is not None and self.bindings != bindings and rebound_request is None:
@@ -868,7 +965,10 @@ class PortfolioBudgetHostV1:
         context = replace(
             context,
             execution_reconciliation=self._reconcile_executions_v1(
-                context, capture=capture, required_execution_attempts=required_execution_attempts
+                context,
+                capture=capture,
+                required_execution_attempts=required_execution_attempts,
+                deliver_authenticated_incidents=deliver_authenticated_incidents,
             ),
         )
         if rebound_request is not None:
@@ -887,7 +987,14 @@ class PortfolioBudgetHostV1:
             self.bindings = dict(bindings)
         return context
 
-    def _reconcile_executions_v1(self, context, *, capture=None, required_execution_attempts=None):
+    def _reconcile_executions_v1(
+        self,
+        context,
+        *,
+        capture=None,
+        required_execution_attempts=None,
+        deliver_authenticated_incidents=False,
+    ):
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
             require_futures_reconciliation_product_v1,
@@ -929,7 +1036,9 @@ class PortfolioBudgetHostV1:
                     submitted[rid] = link
         if not submitted:
             return {}
-        deliver_incidents = capture is None and self.execution_incident_state_path is not None
+        deliver_incidents = (
+            capture is None or deliver_authenticated_incidents
+        ) and self.execution_incident_state_path is not None
         if self.reconciliation_transport is None:
             if deliver_incidents:
                 raise ValueError("HOST_EXECUTION_READ_PORT_MISSING")
@@ -937,7 +1046,7 @@ class PortfolioBudgetHostV1:
                 rid: {"matched": False, "reason_codes": ["HOST_EXECUTION_READ_PORT_MISSING"]}
                 for rid in submitted
             }
-        if deliver_incidents:
+        if deliver_incidents and capture is None:
             capture = AuthenticatedReconciliationGetV1(
                 self.reconciliation_transport,
                 account=self.account,
@@ -1027,7 +1136,15 @@ class PortfolioBudgetHostV1:
                 confirm_released_no_fill=rid in released,
             )
             if capture is not None and type(identity) is PortfolioExecutionReconciliationIdentityV2:
-                capture.record_v1(self, rid, identity, snapshot, acquired, result[rid])
+                capture.record_v1(
+                    self,
+                    rid,
+                    identity,
+                    snapshot,
+                    acquired,
+                    result[rid],
+                    **({"publish_proof": False} if deliver_incidents else {}),
+                )
                 if deliver_incidents:
                     from src.ops.execution_incident_host_v1 import (
                         deliver_authenticated_host_execution_incident_v1,
@@ -1041,6 +1158,9 @@ class PortfolioBudgetHostV1:
                         snapshot=snapshot,
                         result=result[rid],
                         observed_at=acquired,
+                    )
+                    capture.publish_current_proof_v1(
+                        identity=identity, snapshot=snapshot, observed_at=acquired
                     )
         if deliver_incidents and any(
             not item["matched"] or item["decision"]["reconciliation_complete"] is not True
