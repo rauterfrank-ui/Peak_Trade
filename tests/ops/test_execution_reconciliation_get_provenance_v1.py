@@ -207,7 +207,7 @@ def authenticated_host(tmp_path, monkeypatch):
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=20, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=24, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
@@ -1134,6 +1134,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "canceled-after-partial",
         "incomplete-page",
         "existing-post-scope",
+        "double-play-close",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1148,6 +1149,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
+    close_case = path == "double-play-close"
     managed_case = path == "managed-r04"
     standing = path in {"standing", "managed-r04"}
     send_root = tmp_path / "send" if managed_case else None
@@ -1328,10 +1330,45 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         opener.fault = path
     elif path == "unknown":
         opener.fault = "missing-order"
+    if close_case:
+        original_body = opener.body
+        quantity = identity.final_quantity
+        timestamp = int(NOW.timestamp() * 1000)
+        long = identity.selected_side == "LONG"
+        position = {
+            "instId": bound.venue_native_id,
+            "instType": "FUTURES",
+            "pos": quantity if long else "-" + quantity,
+            "posSide": "net",
+            "mgnMode": "cross",
+            "avgPx": "2000",
+            "tradeId": "22",
+            "uTime": str(timestamp - 500),
+        }
+
+        def filled_entry_body(endpoint, params):
+            response = json.loads(original_body(endpoint, params))
+            if endpoint.endswith("/positions"):
+                response["data"] = [position]
+            if endpoint.endswith(("orders-history", "/order", "/fills")):
+                for row in response["data"]:
+                    row.update(state="filled", accFillSz=quantity, instType="FUTURES")
+                    if endpoint.endswith("/fills"):
+                        row.update(
+                            tradeId="22",
+                            fillSz=quantity,
+                            fillPx="2000",
+                            fillTime=str(timestamp - 1000),
+                            posSide="net",
+                            side="buy" if long else "sell",
+                        )
+            return json.dumps(response).encode()
+
+        monkeypatch.setattr(opener, "body", filled_entry_body)
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0].isoformat())
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=26, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=84 if close_case else 26, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1345,14 +1382,39 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         host = PortfolioBudgetHostV1(
             root=seeded.root,
             private_rest_fetch=_fetch(uid=scope.account) if path == "no-custody" else source,
-            repository_sha=seeded.repository_sha if managed_case else "test-futures-reconciliation",
+            repository_sha=(
+                seeded.repository_sha
+                if managed_case
+                else "b707632c51a3c192337ec181825697c15bac5ddf"
+                if close_case
+                else "test-futures-reconciliation"
+            ),
             session_id=SESSION,
             expected_account_identity=scope.account,
             clock=lambda: clock[0].timestamp(),
             reconciliation_transport=transport,
-            execution_incident_state_path=scope.state_path if standing else None,
+            execution_incident_state_path=scope.state_path if standing or close_case else None,
         )
         try:
+            if close_case:
+                context, proofs = host.observe_authenticated_execution_reconciliation_v1(
+                    {"LANE_1": bound}, proof_root=proof_root, deliver_authenticated_incidents=True
+                )
+                _assert_authenticated_occupied_mark_close(
+                    tmp_path=tmp_path,
+                    monkeypatch=monkeypatch,
+                    context=context,
+                    bound=bound,
+                    proof_root=proof_root,
+                    proof=proofs[rid],
+                    quantity=quantity,
+                    polled=True,
+                    dispatch="readback-flat",
+                    opener=opener,
+                )
+                assert transport.methods_used == ["GET"] * 84
+                assert host.owner.active_sum_v1() == held
+                return
             if path in {"no-custody", "foreign-product-row"}:
                 reason = (
                     "HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN"
@@ -1743,6 +1805,18 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         (None, None),
         ("occupied-mark", None),
         ("polled-mark", None),
+        ("polled-mark-close-ack", None),
+        ("polled-mark-close-timeout", None),
+        ("polled-mark-close-wrong-key", None),
+        ("polled-mark-close-kill", None),
+        ("polled-mark-close-stale-position", None),
+        ("polled-mark-close-readback-flat", None),
+        ("polled-mark-close-readback-partial", None),
+        ("polled-mark-close-readback-unseen", None),
+        ("polled-mark-close-readback-missing-fill", None),
+        ("polled-mark-close-readback-wrong-order", None),
+        ("polled-mark-close-readback-stale-residual", None),
+        ("polled-mark-close-readback-no-flat-anchor", None),
         ("terminal-partial", None),
         ("missing-fills", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
         ("wrong-position-trade", "VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN"),
@@ -1761,11 +1835,20 @@ def test_owned_entry_proof_reaches_original_position_episode(
     )
 
     host, attempt, opener, scope, held = authenticated_host
+    dispatch = (
+        fault.removeprefix("polled-mark-close-")
+        if fault and fault.startswith("polled-mark-close-")
+        else None
+    )
+    polled = fault == "polled-mark" or dispatch is not None
+    occupied_mark = fault == "occupied-mark" or polled
+    if dispatch is not None:
+        host.repository_sha = "b707632c51a3c192337ec181825697c15bac5ddf"
     body = opener.body
     stamp = int(NOW.timestamp() * 1000)
     filled_at = stamp - 1000
     long = attempt.selected_side == "LONG"
-    entry_price = "2000" if fault in {"occupied-mark", "polled-mark"} else "98.25"
+    entry_price = "2000" if occupied_mark else "98.25"
     quantity = (
         str(Decimal(attempt.final_quantity) / 2)
         if fault == "terminal-partial"
@@ -1776,6 +1859,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "instType": "SWAP",
         "pos": quantity if long else "-" + quantity,
         "posSide": "net",
+        "mgnMode": "cross",
         "avgPx": entry_price,
         "tradeId": "23" if fault == "wrong-position-trade" else "22",
         "uTime": str(stamp - 500),
@@ -1858,9 +1942,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
     episode = context.bind_current_authenticated_entry_episode_v1(**host_args)
     replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
     assert replayed.input_binding_v1() == episode.input_binding_v1()
-    if fault in {"occupied-mark", "polled-mark"}:
-        if fault == "polled-mark":
-            host.execution_incident_state_path = scope.state_path
+    if occupied_mark:
+        host.execution_incident_state_path = scope.state_path
         _assert_authenticated_occupied_mark_close(
             tmp_path=tmp_path,
             monkeypatch=monkeypatch,
@@ -1869,9 +1952,13 @@ def test_owned_entry_proof_reaches_original_position_episode(
             proof_root=proof_root,
             proof=proofs[rid],
             quantity=quantity,
-            polled=fault == "polled-mark",
+            polled=polled,
+            dispatch=dispatch,
+            opener=opener,
         )
-        assert len(opener.requests) - request_count == (12 if fault == "polled-mark" else 0)
+        assert len(opener.requests) - request_count == (
+            18 if dispatch and dispatch.startswith("readback-") else 12
+        )
         assert host.owner.active_sum_v1() == held
         return
     if fault is None:
@@ -1909,7 +1996,17 @@ def test_owned_entry_proof_reaches_original_position_episode(
 
 
 def _assert_authenticated_occupied_mark_close(
-    *, tmp_path, monkeypatch, context, bound, proof_root, proof, quantity, polled
+    *,
+    tmp_path,
+    monkeypatch,
+    context,
+    bound,
+    proof_root,
+    proof,
+    quantity,
+    polled,
+    dispatch,
+    opener,
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -1918,6 +2015,7 @@ def _assert_authenticated_occupied_mark_close(
         build_s8_occupied_lane_pairs_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        LEDGER_FILENAME,
         read_retained_occupied_scope_close_v1,
     )
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
@@ -2058,6 +2156,35 @@ def _assert_authenticated_occupied_mark_close(
             == handoff.envelope.envelope_digest
         )
         assert not run.permit_created and run.post_count == 0
+        assert run.cycle_records[0].position_close_post_context is None
+        close_context = terminal.position_close_post_context
+        assert close_context.execution == handoff
+        if dispatch is not None:
+            from src.ops.full_core_live_path_composition_root_v1 import (
+                external_effect_permit_durable_consume_v1 as consume,
+            )
+
+            readback = (
+                dispatch.removeprefix("readback-") if dispatch.startswith("readback-") else None
+            )
+            with monkeypatch.context() as patch:
+                if readback is not None:
+                    patch.setattr(
+                        consume, "_utc_now_iso_v1", (NOW + timedelta(milliseconds=250)).isoformat
+                    )
+                _assert_original_close_dispatch(
+                    close_context, "timeout" if readback is not None else dispatch, tmp_path
+                )
+            if readback is not None or dispatch == "kill":
+                _assert_restarted_close_readback(
+                    tmp_path,
+                    monkeypatch,
+                    close_context,
+                    proof_root,
+                    opener,
+                    floor,
+                    readback or "not-sent",
+                )
         return
     without_metadata = {**inputs, "live_29p_injected_by_lane": None}
     with pytest.raises(
@@ -2083,6 +2210,383 @@ def _assert_authenticated_occupied_mark_close(
     retained = read_retained_occupied_scope_close_v1(Path(lane.evidence_root))
     assert retained["envelope"]["envelope_digest"] == handoff.envelope.envelope_digest
     assert retained["binding"]["entry_source_ref"] == handoff.l10_close.entry_source_ref
+    floor = occupied._cursor_floor_or_zero(root)
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _continuous_auth,
+    )
+
+    previous_host = context.host
+    previous_hold = previous_host.owner.active_sum_v1()
+    previous_host.close()
+    restarted_at = NOW + timedelta(seconds=1)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", restarted_at.isoformat)
+    restarted_hosts = []
+
+    def open_host(**kwargs):
+        # The original fixture's durable root predates the supervisor layout.
+        host = PortfolioBudgetHostV1(
+            **{**kwargs, "root": previous_host.root, "clock": restarted_at.timestamp}
+        )
+        restarted_hosts.append(host)
+        return host
+
+    monkeypatch.setattr(budget_host, "PortfolioBudgetHostV1", open_host)
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Pending close must resume before public data, ranking and new cycle admission")
+
+    config = supervisor.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=tmp_path / "scope",
+        evidence_root=tmp_path / "restart" / "new-host-session",
+        expected_account_identity=previous_host.expected_account_identity,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    run_args = dict(
+        config=config,
+        origin_main_sha=previous_host.repository_sha,
+        bound=bound,
+        authorization=replace(
+            _continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+            expected_cursor_floor=floor,
+        ),
+        observation_source=None,
+        g17_producers={},
+        f1_m9_cycle_evaluator=forbidden,
+        public_rest_fetch=forbidden,
+        private_rest_fetch=previous_host.fetch,
+        pretrade_transport=previous_host.reconciliation_transport,
+        wp02_hook=forbidden,
+        skip_owner_go_validation=True,
+        occupied_mark_proof_root=proof_root,
+    )
+    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
+    assert resumed.resumed_position_management_close == handoff
+    assert resumed.ok and not resumed.owner_go_consumed and resumed.policy_result is None
+    assert not resumed.trace.wp02_hook_invoked and resumed.trace.post_count == 0
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
+    assert occupied._cursor_floor_or_zero(root) == floor
+    assert read_retained_occupied_scope_close_v1(Path(lane.evidence_root)) == retained
+
+    ledger_path = Path(lane.evidence_root) / LEDGER_FILENAME
+    ledger = json.loads(ledger_path.read_bytes())
+    ledger["occupied_scope_close"]["binding"]["scope_digest"] = "0" * 64
+    ledger_path.write_text(json.dumps(ledger))
+    with pytest.raises(ValueError, match="RETAINED_CLOSE_READBACK_INVALID"):
+        supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
+
+
+def _assert_original_close_dispatch(context, case, tmp_path):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        POST_OWNER_GO,
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as send,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as actual,
+    )
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        MockCurrentProductive29PIntegrityBackendV1,
+    )
+
+    host = context.recovery.host
+    envelope = context.execution.envelope
+    store_root = context.store_root_v1()
+    requests = []
+
+    class Opener:
+        @contextmanager
+        def open(self, request, timeout):
+            assert request.get_method() == "POST"
+            payload = json.loads(request.data)
+            assert payload == {
+                "clOrdId": envelope.client_order_id,
+                "instId": envelope.instrument_id,
+                "side": envelope.side,
+                "ordType": "market",
+                "sz": envelope.quantity,
+                "tdMode": envelope.td_mode,
+                "reduceOnly": True,
+                **({"posSide": envelope.pos_side} if envelope.pos_side else {}),
+            }
+            record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
+            assert record["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            requests.append(payload)
+            if case == "timeout":
+                raise TimeoutError("intercepted close submit")
+
+            class Response:
+                status = 200
+                url = request.full_url
+
+                def read(self):
+                    return json.dumps(
+                        {
+                            "code": "0",
+                            "data": [
+                                {
+                                    "sCode": "0",
+                                    "clOrdId": envelope.client_order_id,
+                                    "ordId": "91234",
+                                }
+                            ],
+                        }
+                    ).encode()
+
+            yield Response()
+
+    class ForeignKeychain(_FakeKeychainBackend):
+        def copy_matching_generic_password_value_data_v1(self, **kwargs):
+            material = json.loads(super().copy_matching_generic_password_value_data_v1(**kwargs))
+            material["apiKey"] = "different-test-key"
+            return json.dumps(material).encode()
+
+    def opener_factory():
+        if case == "kill":
+            StatePersistence(str(host.execution_incident_state_path)).save(KillSwitchState.KILLED)
+        if case == "stale-position":
+            host.clock = lambda: NOW.timestamp() + 6
+        return Opener()
+
+    signing_backend = ForeignKeychain() if case == "wrong-key" else _FakeKeychainBackend()
+    low_args = dict(
+        envelope=envelope,
+        post_position_close_context=context,
+        post_owner_go=POST_OWNER_GO,
+        store_root=store_root,
+        k1_backend=signing_backend,
+        opener_factory=opener_factory,
+    )
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError, match="CLOSE_POST_OWNER_GO_REQUIRED"
+    ):
+        send(**low_args)
+    assert not store_root.exists()
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError, match="CLOSE_SUBMIT_STORE_MISMATCH"
+    ):
+        send(**{**low_args, "store_root": tmp_path / "foreign-close-submit"})
+    submit = actual.execute_current_productive_actual_l10_close_v1
+    args = dict(
+        context=context,
+        owner_go=POST_OWNER_GO,
+        baseline_origin_main_sha=actual.EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        perform_real_venue_post=True,
+        k1_backend=signing_backend,
+        opener_factory=opener_factory,
+        execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+            origin_main=host.repository_sha, head=host.repository_sha, drift=""
+        ),
+    )
+    with pytest.raises(
+        actual.CurrentProductiveActualVenuePostError, match="ACTUAL_CLOSE_POST_OWNER_GO_REQUIRED"
+    ):
+        submit(**{**args, "owner_go": ""})
+    assert not load_external_effect_durable_consume_v1(store_root=store_root)["durable_consumed"]
+    denials = {
+        "wrong-key": "K1_VENUE_CREDENTIAL_MISMATCH",
+        "kill": "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET",
+        "stale-position": "BEFORE_SOCKET:HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN",
+    }
+    if case in denials:
+        reason = denials[case]
+        with pytest.raises(actual.CurrentProductiveActualVenuePostError, match=reason):
+            submit(**args)
+        assert requests == []
+        record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
+        assert record["durable_state"] == "ABORTED_BEFORE_TRANSPORT"
+        return
+
+    result = submit(**args)
+    assert result.http_post_attempts == 1 and result.external_effect_count == 0
+    assert result.post_submit_join.client_order_id == envelope.client_order_id
+    assert result.post_submit_join.typed_outcome == (
+        "UNKNOWN" if case == "timeout" else "ACKNOWLEDGED"
+    )
+    assert result.post_submit_join.resubmit_allowed is False
+    assert result.post_submit_join.fill_observed is False
+    with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):
+        submit(**args)
+    assert len(requests) == 1
+
+
+def _assert_restarted_close_readback(
+    tmp_path, monkeypatch, context, proof_root, opener, floor, case
+):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _continuous_auth,
+    )
+
+    original_host = context.recovery.host
+    envelope = context.execution.envelope
+    _, bound = context.lane_pair
+    product = "SWAP" if envelope.instrument_id.endswith("-SWAP") else "FUTURES"
+    quantity = Decimal(envelope.quantity)
+    partial = case in {"partial", "stale-residual"}
+    filled = quantity / 2 if partial else quantity
+    stamp = int(NOW.timestamp() * 1000)
+    order = {
+        "instId": envelope.instrument_id,
+        "instType": product,
+        "clOrdId": envelope.client_order_id,
+        "ordId": "91234",
+        "side": envelope.side,
+        "posSide": "net",
+        "tdMode": envelope.td_mode,
+        "ordType": envelope.order_type,
+        "reduceOnly": "false" if case == "wrong-order" else "true",
+        "state": "canceled" if partial else "filled",
+        "sz": str(quantity),
+        "accFillSz": str(filled),
+        "uTime": str(stamp + 500),
+    }
+    fill = {
+        **{
+            key: order[key] for key in ("instId", "instType", "clOrdId", "ordId", "side", "posSide")
+        },
+        "tradeId": "123",
+        "fillSz": str(filled),
+        "fillPx": "1996",
+        "fillTime": str(stamp + 400),
+        "fillPnl": "0.15",
+        "fee": "-0.02",
+        "feeCcy": "USDC",
+    }
+    original_body = opener.body
+
+    def close_body(path, params):
+        if path.endswith("/config"):
+            return original_body(path, params)
+        assert params["instId"] == envelope.instrument_id
+        code, rows = "0", []
+        if case == "unseen":
+            if path.endswith("/order"):
+                code = "51603"
+        elif path.endswith("/order") or (
+            path.endswith("/orders-history") and case != "no-flat-anchor"
+        ):
+            rows = [order]
+        elif path.endswith("/fills") and case != "missing-fill":
+            rows = [fill]
+        elif path.endswith("/positions") and partial:
+            remaining = quantity - filled
+            rows = [
+                {
+                    "instId": envelope.instrument_id,
+                    "instType": product,
+                    "posSide": "net",
+                    "mgnMode": envelope.td_mode,
+                    "pos": str(remaining if envelope.side == "sell" else -remaining),
+                    "uTime": str(stamp + (300 if case == "stale-residual" else 600)),
+                }
+            ]
+        return json.dumps({"code": code, "data": rows}).encode()
+
+    restarted_at = NOW + timedelta(seconds=1)
+    monkeypatch.setattr(opener, "body", close_body)
+    monkeypatch.setattr(wire, "utc_now_iso_v1", restarted_at.isoformat)
+    restarted_hosts = []
+
+    def open_host(**kwargs):
+        host = PortfolioBudgetHostV1(
+            **{**kwargs, "root": original_host.root, "clock": restarted_at.timestamp}
+        )
+        restarted_hosts.append(host)
+        return host
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Close readback must precede market data, new admission and POST")
+
+    monkeypatch.setattr(budget_host, "PortfolioBudgetHostV1", open_host)
+    config = supervisor.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=tmp_path / "scope",
+        evidence_root=tmp_path / "restart" / "post-close-session",
+        expected_account_identity=original_host.expected_account_identity,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    store_root = context.store_root_v1()
+    original_send = load_external_effect_durable_consume_v1(store_root=store_root)
+    request_count = len(opener.requests)
+    held = original_host.owner.active_sum_v1()
+    original_host.close()
+    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(
+        config=config,
+        origin_main_sha=original_host.repository_sha,
+        bound=bound,
+        authorization=replace(
+            _continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+            expected_cursor_floor=floor,
+        ),
+        observation_source=None,
+        g17_producers={},
+        f1_m9_cycle_evaluator=forbidden,
+        public_rest_fetch=forbidden,
+        private_rest_fetch=forbidden,
+        pretrade_transport=original_host.reconciliation_transport,
+        wp02_hook=forbidden,
+        skip_owner_go_validation=True,
+        occupied_mark_proof_root=proof_root,
+    )
+    readback = resumed.close_readback
+    assert readback is not None
+    assert (
+        readback.status
+        == {
+            "flat": "CLOSE_FLAT_CONFIRMED",
+            "partial": "CLOSE_PARTIAL",
+            "unseen": "CLOSE_AWAITING_VENUE",
+            "missing-fill": "CLOSE_READBACK_BLOCKED",
+            "wrong-order": "CLOSE_READBACK_BLOCKED",
+            "stale-residual": "CLOSE_READBACK_BLOCKED",
+            "no-flat-anchor": "CLOSE_READBACK_BLOCKED",
+            "not-sent": "CLOSE_SUBMIT_NOT_PROVEN",
+        }[case]
+    ), readback.reason_codes
+    assert readback.envelope_digest == envelope.envelope_digest
+    assert resumed.ok is (case == "flat")
+    assert resumed.trace.post_count == 0 and not resumed.owner_go_consumed
+    assert resumed.policy_result is None
+    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner is None
+    assert original_host.owner.active_sum_v1() == held
+    assert load_external_effect_durable_consume_v1(store_root=store_root) == original_send
+    assert len(opener.requests) - request_count == (0 if case == "not-sent" else 6)
+    if case == "flat":
+        assert readback.remaining_quantity == 0 and readback.filled_quantity == quantity
+        path = readback.proof_path
+        assert stat.S_IMODE(path.stat().st_mode) == 0o600
+        record = json.loads(path.read_bytes())["record"]
+        assert record["identity"]["envelope_digest"] == envelope.envelope_digest
+        assert record["position_coverage"]["endpoint"] == (
+            f"/api/v5/account/positions?instId={envelope.instrument_id}"
+        )
+        assert [
+            (row["endpoint"], sha256(row["body"].encode()).hexdigest()) for row in record["gets"]
+        ] == opener.requests[-6:]
+        assert json.loads(record["gets"][3]["body"])["data"] == [fill]
+    else:
+        assert readback.proof_path is None
+        assert not list(proof_root.glob("close-*.json"))
+        if case == "partial":
+            assert readback.filled_quantity == filled
+            assert readback.remaining_quantity == quantity - filled
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])

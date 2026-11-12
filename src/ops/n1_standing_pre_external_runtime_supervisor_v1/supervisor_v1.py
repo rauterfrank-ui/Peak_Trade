@@ -5,7 +5,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional
+
+if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        AuthenticatedL10CloseReadbackV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementExecutionHandoffV1,
+    )
 
 from src.ops.execution_incident_safety_v1 import ExecutionIncidentHaltV1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
@@ -21,11 +29,14 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     DISPOSITION_FAIL_CLOSED,
     DISPOSITION_STALL,
     DISPOSITION_CANCELLED,
+    DISPOSITION_PRE_EXTERNAL_EFFECT,
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     mint_continuous_run_id_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
     PersistentNaturalEnterConvergenceError,
+    build_s8_occupied_lane_pairs_v1,
+    recover_current_n1_occupied_scope_close_v1,
     run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
@@ -116,14 +127,26 @@ def _record_supervisor_outcome_v1(run):
                 pass  # local notice writer logs failure; preserve original exception
             raise
         terminal = result.policy_result.orchestrator_result if result.policy_result else None
+        reason = "SUPERVISOR_NO_RUNTIME_RESULT"
+        action = "Inspect missing runtime result before a new authorized run."
+        if terminal is not None:
+            reason, action = terminal.reason_code, terminal.next_required_owner_decision
+        elif result.close_readback is not None:
+            reason = result.close_readback.status
+            action = "Keep the original close and reconcile venue custody before any continuation."
+            if result.ok:
+                action = "Hand the authenticated flat close to the original accounting owner."
+        elif result.resumed_position_management_close is not None:
+            reason = "OCCUPIED_SCOPE_CLOSE_RECOVERED"
+            action = (
+                "Hand the retained close to its original execution owner under current admission."
+            )
         record_runtime_notice_v1(
             evidence_root=config.evidence_root,
             component="STANDING_N1_SUPERVISOR",
             run_id=result.run_id,
-            reason_code=terminal.reason_code if terminal else "SUPERVISOR_NO_RUNTIME_RESULT",
-            action=terminal.next_required_owner_decision
-            if terminal
-            else "Inspect missing runtime result before a new authorized run.",
+            reason_code=reason,
+            action=action,
             owner_action_required=terminal is None or terminal.disposition != DISPOSITION_CANCELLED,
             extra={
                 "disposition": result.trace.terminal_disposition,
@@ -180,10 +203,12 @@ class StandingSupervisorRunResultV1:
     ok: bool
     run_id: str
     trace: StandingSupervisorTraceV1
-    recovery: UnifiedRecoveryOrchestrationResultV1
+    recovery: UnifiedRecoveryOrchestrationResultV1 | None
     policy_result: PolicyGovernedContinuousRunResultV1 | None
     owner_go_consumed: bool
     authority_invariants_ok: bool
+    resumed_position_management_close: PositionManagementExecutionHandoffV1 | None = None
+    close_readback: AuthenticatedL10CloseReadbackV1 | None = None
 
 
 def assert_supervisor_authority_boundary_v1() -> None:
@@ -376,13 +401,67 @@ def run_n1_standing_pre_external_supervisor_v1(
             from datetime import datetime, timezone
             from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
 
-            if config.cap24_productivity_root is None or not config.expected_account_identity:
-                raise StandingSupervisorError("N1_START_ACCOUNT_AND_SELECTION_ROOT_REQUIRED")
             if (
                 config.venue_native_id != bound.venue_native_id
                 or config.canonical_instrument_id != bound.instrument_id
             ):
                 raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
+
+            if occupied_mark_proof_root is not None:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+                    reconcile_submitted_occupied_scope_close_v1,
+                )
+
+                if authorization.native_id != bound.venue_native_id:
+                    raise StandingSupervisorError(
+                        "OCCUPIED_SCOPE_CLOSE_AUTHORIZED_INSTRUMENT_MISMATCH"
+                    )
+                lane_pair = build_s8_occupied_lane_pairs_v1(
+                    lane_state_root=config.lane_state_root, bound=bound
+                )["LANE_1"]
+                close_readback = reconcile_submitted_occupied_scope_close_v1(
+                    lane_pair=lane_pair,
+                    budget_host=get_budget_host(),
+                    proof_root=occupied_mark_proof_root,
+                )
+                if close_readback is not None:
+                    trace.terminal_disposition = close_readback.status
+                    trace.extra["close_envelope_digest"] = close_readback.envelope_digest
+                    trace.extra["close_readback_reasons"] = list(close_readback.reason_codes)
+                    return StandingSupervisorRunResultV1(
+                        ok=close_readback.status == "CLOSE_FLAT_CONFIRMED",
+                        run_id=run_id,
+                        trace=trace,
+                        recovery=None,
+                        policy_result=None,
+                        owner_go_consumed=False,
+                        authority_invariants_ok=auth_proof.ok,
+                        close_readback=close_readback,
+                    )
+                resumed_close = recover_current_n1_occupied_scope_close_v1(
+                    lane_state_root=config.lane_state_root,
+                    bound=bound,
+                    budget_host=get_budget_host(),
+                    proof_root=occupied_mark_proof_root,
+                )
+                if resumed_close is not None:
+                    trace.terminal_disposition = DISPOSITION_PRE_EXTERNAL_EFFECT
+                    trace.extra["resumed_close_envelope_digest"] = (
+                        resumed_close.envelope.envelope_digest
+                    )
+                    return StandingSupervisorRunResultV1(
+                        ok=True,
+                        run_id=run_id,
+                        trace=trace,
+                        recovery=None,
+                        policy_result=None,
+                        owner_go_consumed=False,
+                        authority_invariants_ok=auth_proof.ok,
+                        resumed_position_management_close=resumed_close,
+                    )
+
+            if config.cap24_productivity_root is None:
+                raise StandingSupervisorError("N1_START_ACCOUNT_AND_SELECTION_ROOT_REQUIRED")
 
             def reconcile_startup_observation(observation):
                 get_budget_host().reconcile_standing_startup_observation_v1(

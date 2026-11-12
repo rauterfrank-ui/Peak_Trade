@@ -27,6 +27,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_post_pen
     CurrentPostPendingObservationError,
     inspect_current_post_pending_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
+    CurrentPostPositionCloseContextV1,
+    CurrentPostPositionCloseError,
+    inspect_current_post_position_close_v1,
+)
 
 from src.governance.current_productive_real_venue_post_admission_v1 import (
     evaluate_real_venue_post_admission_v1,
@@ -49,6 +54,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
     POST_OWNER_GO,
     CurrentProductiveOneShotFreshEnvelopeJoinError,
     OneShotJoinProbeV1,
+    OneShotJoinResultV1,
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
     prove_one_shot_join_standing_boundary_v1,
 )
@@ -135,7 +141,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class CurrentProductiveActualVenuePostError(RuntimeError):
-    """Fail-closed actual-venue Enter POST violation."""
+    """Fail-closed actual-venue POST violation."""
 
 
 @dataclass(frozen=True)
@@ -312,6 +318,67 @@ def prove_pre_live_actual_venue_post_readiness_v1(
         "SECRET_DISCLOSED": "false",
         "SECRET_PERSISTED": "false",
     }
+
+
+def execute_current_productive_actual_l10_close_v1(
+    *,
+    context: CurrentPostPositionCloseContextV1,
+    owner_go: str,
+    baseline_origin_main_sha: str,
+    perform_real_venue_post: bool,
+    k1_backend: OsNativeStoreLookupBackendV1,
+    opener_factory: Callable[[], OpenerDirector] | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+) -> OneShotJoinResultV1:
+    """Dispatch the original occupied-position close under the existing POST owner."""
+    if owner_go != OWNER_GO or perform_real_venue_post is not True:
+        raise CurrentProductiveActualVenuePostError("ACTUAL_CLOSE_POST_OWNER_GO_REQUIRED")
+    if type(context) is not CurrentPostPositionCloseContextV1 or k1_backend is None:
+        raise CurrentProductiveActualVenuePostError("ACTUAL_CLOSE_CONTEXT_AND_K1_REQUIRED")
+    try:
+        prove_one_shot_join_standing_boundary_v1()
+        live_sha = resolve_and_assert_live_post_execution_baseline_v1(
+            declared_baseline_origin_main_sha=baseline_origin_main_sha,
+            repo_root=_REPO_ROOT,
+            integrity_backend=execution_integrity_backend,
+        )
+        if context.recovery.host.repository_sha != live_sha:
+            raise CurrentProductiveActualVenuePostError("CLOSE_HOST_REPOSITORY_MISMATCH")
+        root = context.store_root_v1()
+        assert_post_durable_store_root_isolation_v1(store_root=root)
+        if load_external_effect_durable_consume_v1(store_root=root)["durable_consumed"]:
+            raise CurrentProductiveActualVenuePostError("CONSUMED_PERMIT")
+        envelope = context.execution.envelope
+        safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_CLOSE_PREFLIGHT")
+        inspect_current_post_position_close_v1(
+            context,
+            envelope=envelope,
+            stage="BEFORE_CLOSE_POST_GO_CONSUME",
+            verify_retained=True,
+            require_post_go=False,
+        )
+        safety.inspect_v1(stage="BEFORE_CLOSE_POST_GO_CONSUME")
+        persist_durable_post_owner_go_consume_v1(
+            store_root=root,
+            owner_go_token=owner_go,
+            baseline_origin_main_sha=live_sha,
+        )
+        return attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+            envelope=envelope,
+            post_owner_go=owner_go,
+            store_root=root,
+            k1_backend=k1_backend,
+            opener_factory=opener_factory,
+            post_safety_context=safety,
+            post_position_close_context=context,
+        )
+    except (
+        CurrentProductiveActualVenuePostBaselineError,
+        CurrentPostPositionCloseError,
+        CurrentPostSafetyVetoError,
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+    ) as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
 
 
 def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
@@ -604,6 +671,7 @@ __all__ = [
     "THIS_SLICE",
     "CurrentProductiveActualVenuePostError",
     "CurrentProductiveActualVenuePostResultV1",
+    "execute_current_productive_actual_l10_close_v1",
     "execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
     "prove_pre_live_actual_venue_post_readiness_from_pre_external_closure_v1",
     "prove_pre_live_actual_venue_post_readiness_v1",

@@ -166,12 +166,12 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 }
 
 
-# Double Play's bounded close, recovery and 29P assessment policy sources.
+# Double Play's bounded close, recovery, POST integrity and 29P assessment sources.
 # Each pair pins the reviewed parent and its exact successor.
 DOUBLE_PLAY_POLICY_DELTAS = {
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
         "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af",
-        "1fe8fe31181b245f5a6ca14657018f51616c06954304eab754b6b00204edc79c",
+        "54b3e4304c56871e332cde526d052158ad4bd693f8c401d24a4a45a7350d9d14",
     ),
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": (
         "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
@@ -185,13 +185,17 @@ DOUBLE_PLAY_POLICY_DELTAS = {
         "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
         "a56910653c688a597c7fa9cf8ba06f76fee3d0529e45ad8a9d1c0ae47bc9deff",
     ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py": (
+        "196e7da42a39e625ea4de756df9fc1b3f6533f97a4df7392ae9f94f854bedace",
+        "46064d0180972b2ecbd7f32db5daea76b5201064ff73816a6a905846fa929cb4",
+    ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
         "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",
         "ccb96ea50e65384ca12b740e98d70c4ebeb4c5eb4aa74a4ec1f4112c392be51f",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
         "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
-        "e584bbde6ca55dd3e1cda50c7584c5b3be51deead087419c5ad9c618797fd388",
+        "75831f7b37a4a6e46e40f0ca6861d0ad3b78b34f98bb39d806e3810b388fb73e",
     ),
 }
 

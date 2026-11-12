@@ -472,6 +472,88 @@ def _scope_switch_close_binding_v1(
     }
 
 
+def _occupied_attempt_root_v1(
+    evidence_root: str | Path, *, prefix: str, authenticated: bool
+) -> Path:
+    attempt_dir = "authenticated_mark_attempts_v1" if authenticated else "bounded_slot_attempts_v1"
+    return Path(evidence_root) / attempt_dir / hashlib.sha256(prefix.encode()).hexdigest()
+
+
+def _occupied_close_attempt_root_v1(evidence_root, *, cycle_id, lane_id, authenticated):
+    suffix = f":{lane_id}:{lane_id}"
+    if not isinstance(cycle_id, str) or not cycle_id.endswith(suffix) or cycle_id == suffix:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
+    return _occupied_attempt_root_v1(
+        evidence_root, prefix=cycle_id.removesuffix(suffix), authenticated=authenticated
+    )
+
+
+def read_submitted_occupied_scope_close_v1(
+    *,
+    lane_pair: tuple[IsolatedLaneSlotV1, BoundInstrumentV1],
+    expected_scope: PositionEpisodeScopeV1,
+    episode_id: str,
+    episode_root: Path,
+    repository_sha: str,
+    session_id: str,
+) -> PositionManagementExecutionHandoffV1:
+    """Read the retained LIVE decision against its pre-submit durable position episode."""
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
+        OccupiedLaneRuntimeInstrumentIdentityV1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+        open_position_episode_binding_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+        read_retained_occupied_scope_close_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        restore_retained_position_management_close_v1,
+    )
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+    )
+
+    slot, bound = lane_pair
+    lane_id = slot.lane_id
+    cursor, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1({lane_id: lane_pair})[
+        lane_id
+    ]
+    cursor_root = Path(cursor)
+    scope = read_occupied_scope_mark_snapshot_v1(cursor_root)
+    if scope is None or scope["mark"]["pending_close_episode_id"] != episode_id:
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_ORIGINAL_EPISODE_REQUIRED")
+    attempt_root = _occupied_close_attempt_root_v1(
+        evidence, cycle_id=scope["mark"]["cycle_id"], lane_id=lane_id, authenticated=True
+    )
+    retained = read_retained_occupied_scope_close_v1(attempt_root)
+    switch = occupied_l10_close_from_binding_v1(retained["binding"])
+    if (
+        expected_scope.execution_environment != "LIVE"
+        or switch.episode.account_scope != expected_scope
+        or switch.episode.episode_id != episode_id
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_ACCOUNT_SCOPE_MISMATCH")
+    episode = open_position_episode_binding_v1(
+        identity=switch.episode,
+        state_root=episode_root,
+        mode="recover",
+        repository_sha=repository_sha,
+        config_digest=_occupied_scope_exit_config_digest_v1(),
+        writer_session_id=session_id,
+        entry_source_ref=switch.entry_source_ref,
+        entry_price_basis="CONFIRMED_POSITION_ENTRY_PRICE",
+    )
+    binding = _occupied_scope_close_binding_v1(
+        lane_identity=OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(
+            lane_id=lane_id, bound=bound
+        ),
+        episode=episode,
+        cursor_root=cursor_root,
+    )
+    return restore_retained_position_management_close_v1(retained, expected_binding=binding)
+
+
 def recover_occupied_scope_close_for_reconciliation_v1(
     *,
     lane_id: str,
@@ -479,8 +561,10 @@ def recover_occupied_scope_close_for_reconciliation_v1(
     expected_scope: PositionEpisodeScopeV1,
     episode: PositionEpisodeBindingV1 | None = None,
     sealed_accounting_source: SlotCloseAccountingSourceV1 | None = None,
+    authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
+    host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
 ) -> PositionManagementExecutionHandoffV1:
-    """Read the exact close for reconciliation, before or after sealing simulated flat."""
+    """Read the exact close for its authenticated position or sealed simulated episode."""
     from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
         OccupiedLaneRuntimeInstrumentIdentityV1,
     )
@@ -499,8 +583,43 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         inspect_sealed_simulated_episode_v1,
     )
 
-    if (episode is None) == (sealed_accounting_source is None):
+    if (
+        sum(
+            source is not None
+            for source in (episode, sealed_accounting_source, authenticated_entry)
+        )
+        != 1
+    ):
         raise ValueError("OCCUPIED_SCOPE_CLOSE_EXACTLY_ONE_EPISODE_SOURCE_REQUIRED")
+    if authenticated_entry is not None:
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            AuthenticatedEntryEpisodeRequestV1,
+            HostBudgetRecoveryContextV1,
+        )
+
+        if (
+            type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+            or type(host_budget_recovery) is not HostBudgetRecoveryContextV1
+            or expected_scope.execution_environment != "LIVE"
+            or expected_scope.account_identity != host_budget_recovery.account
+            or host_budget_recovery.host.bindings != {lane_id: lane_pair[1]}
+        ):
+            raise ValueError("OCCUPIED_SCOPE_CLOSE_AUTHENTICATED_HOST_REQUIRED")
+        config_rows = host_budget_recovery.occupancy_payloads.get("CONFIG", {}).get("data", [])
+        if len(config_rows) != 1 or config_rows[0].get("posMode") != "net_mode":
+            raise ValueError("FULL_CLOSE_NET_POSITION_MODE_REQUIRED")
+        episode = host_budget_recovery.bind_current_authenticated_entry_episode_v1(
+            lane_id=lane_id,
+            proof_root=authenticated_entry.proof_root,
+            proof=authenticated_entry.proof,
+            config_digest=_occupied_scope_exit_config_digest_v1(),
+            recover_only=True,
+        )
+    elif (
+        host_budget_recovery is not None
+        or expected_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+    ):
+        raise ValueError("OCCUPIED_SCOPE_CLOSE_SIMULATED_RECOVERY_REQUIRED")
     if sealed_accounting_source is not None:
         if type(sealed_accounting_source) is not SlotCloseAccountingSourceV1:
             raise ValueError("OCCUPIED_SCOPE_CLOSE_SEALED_ACCOUNTING_SOURCE_INVALID")
@@ -509,8 +628,6 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         identity = episode.identity
     if identity.account_scope != expected_scope:
         raise ValueError("OCCUPIED_SCOPE_CLOSE_ACCOUNT_SCOPE_MISMATCH")
-    if expected_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION":
-        raise ValueError("OCCUPIED_SCOPE_CLOSE_SIMULATED_RECOVERY_REQUIRED")
     cursor, lock_root, evidence_root = bind_occupied_lane_governed_cycle_store_roots_v1(
         {lane_id: lane_pair}
     )[lane_id]
@@ -549,15 +666,12 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         )
 
     binding, closing_fill = read_binding()
-    suffix = f":{lane_id}:{lane_id}"
-    cycle_id = binding["cycle_id"]
-    if not isinstance(cycle_id, str) or not cycle_id.endswith(suffix):
-        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
-    prefix = cycle_id.removesuffix(suffix)
-    if not prefix:
-        raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
-    attempt = hashlib.sha256(prefix.encode()).hexdigest()
-    attempt_root = Path(evidence_root) / "bounded_slot_attempts_v1" / attempt
+    attempt_root = _occupied_close_attempt_root_v1(
+        evidence_root,
+        cycle_id=binding["cycle_id"],
+        lane_id=lane_id,
+        authenticated=authenticated_entry is not None,
+    )
 
     def read_completed_close(current, fill):
         if current != binding or fill != closing_fill:
@@ -577,6 +691,18 @@ def recover_occupied_scope_close_for_reconciliation_v1(
             or quantity.position_side != identity.position_side
         ):
             raise ValueError("OCCUPIED_SCOPE_CLOSE_HANDOFF_IDENTITY_MISMATCH")
+        if authenticated_entry is not None:
+            positions = tuple(
+                position
+                for position in host_budget_recovery.observed.positions
+                if position.instrument_id == identity.instrument_id
+            )
+            if (
+                len(positions) != 1
+                or positions[0].side != identity.position_side.upper()
+                or abs(positions[0].signed_quantity) != Decimal(handoff.envelope.quantity)
+            ):
+                raise ValueError("OCCUPIED_SCOPE_CLOSE_CURRENT_POSITION_MISMATCH")
         if fill is not None:
             envelope = handoff.envelope
             if (
@@ -609,6 +735,19 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         return read_completed_close(*read_binding())
     finally:
         lock.release()
+
+
+def _occupied_scope_exit_config_digest_v1() -> str:
+    from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+        FROZEN_PROFIT_PROTECTION_DISTANCE,
+    )
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        layer_c_derived_exit_policy_adverse_config_digest_v1,
+    )
+
+    return layer_c_derived_exit_policy_adverse_config_digest_v1(
+        profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
+    )
 
 
 def _t2_from_s7(
@@ -1267,12 +1406,6 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         from src.ops.productive_reconciliation_runtime_binding_v1.startup_gate_v1 import (
             run_productive_reconciliation_startup_gate_v1,
         )
-        from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
-            FROZEN_PROFIT_PROTECTION_DISTANCE,
-        )
-        from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
-            layer_c_derived_exit_policy_adverse_config_digest_v1,
-        )
 
         if (
             type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
@@ -1333,9 +1466,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 lane_id=occupied_scope_mark_lane_id,
                 proof_root=authenticated_entry.proof_root,
                 proof=authenticated_entry.proof,
-                config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
-                    profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
-                ),
+                config_digest=_occupied_scope_exit_config_digest_v1(),
             )
             gate = run_productive_reconciliation_startup_gate_v1(
                 state_root=host.root / "reconciliation",
@@ -1434,12 +1565,16 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
     if bounded_slots or authenticated_entry is not None:
         # Keep the original cursor and exclusion lock; each attempt owns its ledger.
-        attempt = hashlib.sha256(prefix.encode()).hexdigest()
-        attempt_dir = (
-            "bounded_slot_attempts_v1" if bounded_slots else "authenticated_mark_attempts_v1"
-        )
         addressed = {
-            lane: (cursor, lock, str(Path(evidence) / attempt_dir / attempt))
+            lane: (
+                cursor,
+                lock,
+                str(
+                    _occupied_attempt_root_v1(
+                        evidence, prefix=prefix, authenticated=not bounded_slots
+                    )
+                ),
+            )
             for lane, (cursor, lock, evidence) in addressed.items()
         }
     if offline_governed_attempt is not None:

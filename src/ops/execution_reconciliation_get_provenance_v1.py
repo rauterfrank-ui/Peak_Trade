@@ -163,11 +163,15 @@ class AuthenticatedReconciliationGetV1:
         self.proof_root = proof_root
         self._retain_bodies = proof_root is not None or retain_response_bodies
         self.evidence: dict[str, AuthenticatedExecutionReconciliationProofV1] = {}
+        self.account_position_mode = None
+        self.position_margin_modes = {}
         self._gets: dict[str, list[ReconciliationGetProvenanceV1]] = {}
         self._bodies: dict[str, list[bytes]] = {}
 
     def reset_v1(self):
         self.evidence.clear()
+        self.account_position_mode = None
+        self.position_margin_modes.clear()
         self._gets.clear()
         self._bodies.clear()
 
@@ -239,6 +243,8 @@ class AuthenticatedReconciliationGetV1:
             or payload["data"][0].get("uid") != self.account
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_ACCOUNT_UNPROVEN")
+        if endpoint == ENDPOINT_ACCOUNT_CONFIG:
+            self.account_position_mode = payload["data"][0].get("posMode")
         self._gets.setdefault(pretrade_decision_id, []).append(
             ReconciliationGetProvenanceV1(
                 endpoint=endpoint,
@@ -251,17 +257,23 @@ class AuthenticatedReconciliationGetV1:
             self._bodies.setdefault(pretrade_decision_id, []).append(body)
         return result
 
-    def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
-        account_reads = self._gets.get(f"{host.session_id}:execution-recovery", ())
-        order_reads = self._gets.get(f"{host.session_id}:{rid}", ())
+    def original_handle_v1(self):
+        if self.transport._handle is not self._handle:
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_HANDLE_CHANGED")
+        return self._handle
+
+    def discard_response_bodies_v1(self):
+        self._bodies.clear()
+
+    def completed_order_read_set_v1(self, *, account_decision_id, order_decision_id, observed_at):
+        self.original_handle_v1()
+        account_reads = self._gets.get(account_decision_id, ())
+        order_reads = self._gets.get(order_decision_id, ())
         reads = (*account_reads, *order_reads)
         if (
             len(account_reads) != 1
             or account_reads[0].endpoint != ENDPOINT_ACCOUNT_CONFIG
             or tuple(urlsplit(read.endpoint).path for read in order_reads) != _ORDER_GETS
-            or not (host.account == identity.account_identity == self.account)
-            or identity.execution_environment != "LIVE"
-            or identity.portfolio_reservation_id != rid
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")
         first = reads[0].acquired_at.timestamp()
@@ -271,6 +283,24 @@ class AuthenticatedReconciliationGetV1:
             or not reads[-1].acquired_at.timestamp() <= self.clock() <= first + _MAX_AGE_SECONDS
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_WINDOW_UNPROVEN")
+        bodies = (
+            *self._bodies.get(account_decision_id, ()),
+            *self._bodies.get(order_decision_id, ()),
+        )
+        return reads, bodies
+
+    def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
+        if (
+            not (host.account == identity.account_identity == self.account)
+            or identity.execution_environment != "LIVE"
+            or identity.portfolio_reservation_id != rid
+        ):
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")
+        reads, _ = self.completed_order_read_set_v1(
+            account_decision_id=f"{host.session_id}:execution-recovery",
+            order_decision_id=f"{host.session_id}:{rid}",
+            observed_at=observed_at,
+        )
         sequence, checksum, link = read_persisted_execution_reconciliation_v1(host.owner, rid)
         snapshot_digest = sha256(
             json.dumps(snapshot.to_dict(), sort_keys=True).encode()
@@ -310,6 +340,12 @@ class AuthenticatedReconciliationGetV1:
                 observed_at=observed_at,
             )
         self.evidence[rid] = proof
+        positions = (snapshot.positions_observation or {}).get("response") or {}
+        self.position_margin_modes[rid] = tuple(
+            row.get("mgnMode")
+            for row in positions.get("data", ())
+            if row.get("instId") == identity.native_id
+        )
 
     def publish_current_proof_v1(self, *, identity, snapshot, observed_at):
         if self.proof_root is None:

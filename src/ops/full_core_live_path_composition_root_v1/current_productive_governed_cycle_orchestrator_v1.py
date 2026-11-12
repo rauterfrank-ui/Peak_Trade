@@ -20,7 +20,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import TYPE_CHECKING, Any, Callable, Mapping
+
+if TYPE_CHECKING:
+    from .current_productive_post_position_close_v1 import CurrentPostPositionCloseContextV1
 
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
     atomic_write_text,
@@ -193,6 +196,9 @@ class CurrentProductiveGovernedCycleResultV1:
     canonical_order_intent: Any | None = None
     position_management_execution_handoff: Any | None = None
     execution_plan_context: Any | None = None
+    position_close_post_context: CurrentPostPositionCloseContextV1 | None = field(
+        default=None, repr=False, compare=False
+    )
 
 
 def _token(value: bool) -> str:

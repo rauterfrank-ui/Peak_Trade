@@ -29,7 +29,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Callable, Mapping, Protocol, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Protocol, Sequence
+
+if TYPE_CHECKING:
+    from .current_productive_post_position_close_v1 import CurrentPostPositionCloseContextV1
 
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
     canonical_json_text,
@@ -259,6 +262,9 @@ class ContinuousCycleRecordV1:
     execution_plan_context: Any | None = None
     mark_venue_event_time: float | None = None
     mark_evidence_root: str = ""
+    position_close_post_context: CurrentPostPositionCloseContextV1 | None = field(
+        default=None, repr=False, compare=False
+    )
 
 
 @dataclass(frozen=True)
@@ -1435,6 +1441,9 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     execution_plan_context=getattr(s5_result, "execution_plan_context", None),
                     mark_venue_event_time=mark_time,
                     mark_evidence_root=str(s5_result.extra.get("OCCUPIED_MARK_EVIDENCE_ROOT", "")),
+                    position_close_post_context=getattr(
+                        s5_result, "position_close_post_context", None
+                    ),
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:

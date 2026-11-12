@@ -126,6 +126,23 @@ def _publish(path, data):
             temporary.unlink(missing_ok=True)
 
 
+def publish_authenticated_close_readback_v1(*, root, close_record, reads, bodies) -> Path:
+    """Persist verified close inputs in the existing private GET evidence store."""
+    root = require_private_proof_root_v1(root)
+    if len(reads) != 6 or len(bodies) != len(reads):
+        raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_SET_UNPROVEN")
+    gets = []
+    for read, body in zip(reads, bodies):
+        if sha256(body).hexdigest() != read.body_sha256:
+            raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_BODY_UNPROVEN")
+        gets.append({**read.to_reference_v1(), "body": body.decode("utf-8")})
+    record = {**close_record, "schema": "peaktrade.authenticated_close_get_proof.v1", "gets": gets}
+    digest = sha256(_encode(record)).hexdigest()
+    path = root / f"close-{digest}.json"
+    _publish(path, _encode({"record": record, "sha256": digest}) + b"\n")
+    return path
+
+
 def publish_authenticated_execution_reconciliation_proof_v1(
     *, root, proof, budget_owner_root, snapshot_received_at, position_coverage, bodies
 ):
