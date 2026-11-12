@@ -3,15 +3,20 @@
 No sizing policy, fraction, order construction, execution or authority is added.
 """
 
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 import hashlib
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
     assert_envelope_unmodified_v1,
     FullCoreFinalOrderEnvelopeError,
+)
+
+from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+    PositionEpisodeIdentityV1,
+    PositionEpisodeScopeV1,
 )
 
 from src.governance.canonical_order_intent_v1 import (
@@ -20,9 +25,13 @@ from src.governance.canonical_order_intent_v1 import (
     compute_quantity_provenance_ref,
     validate_canonical_order_intent_v1,
     build_canonical_full_close_intent_v1,
+    canonical_order_intent_to_semantic_dict,
 )
 from src.governance.capital_risk_sizing_v1 import (
+    CapitalRiskSizingOutcome,
     CloseOnlyQuantityDecisionV1,
+    FinalQuantityStatus,
+    QuantityProvenanceV1,
     evaluate_full_position_close_quantity_v1,
 )
 from trading.master_v2.replay_execution_safety_contract_v1 import ReplayExecutionSafetyV1
@@ -291,10 +300,48 @@ def validate_full_close_execution_source_v1(
     )
 
 
+_OCCUPIED_L10_CLOSE_ADMISSION_PREFIX = "occupied-l10-close:"
+
+
+@dataclass(frozen=True)
+class PositionManagementL10CloseV1:
+    episode: PositionEpisodeIdentityV1
+    scope_digest: str
+    scope_seal_id: str
+
+    @property
+    def target_side(self) -> str:
+        return {"long": "short", "short": "long"}[self.episode.position_side]
+
+    def admission_ref_v1(self) -> str:
+        self.episode.validate_v1()
+        if (
+            self.episode.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or not isinstance(self.scope_digest, str)
+            or len(self.scope_digest) != 64
+            or any(c not in "0123456789abcdef" for c in self.scope_digest)
+            or not isinstance(self.scope_seal_id, str)
+            or not self.scope_seal_id.strip()
+        ):
+            raise ValueError("OCCUPIED_L10_CLOSE_PROOF_INVALID")
+        return _OCCUPIED_L10_CLOSE_ADMISSION_PREFIX + _retained_close_digest_v1(asdict(self))
+
+
+def occupied_l10_close_from_binding_v1(binding: dict[str, Any]) -> PositionManagementL10CloseV1:
+    episode = dict(binding["position_episode"])
+    episode["account_scope"] = PositionEpisodeScopeV1(**episode["account_scope"])
+    return PositionManagementL10CloseV1(
+        episode=PositionEpisodeIdentityV1(**episode),
+        scope_digest=binding["scope_digest"],
+        scope_seal_id=binding["scope_seal_id"],
+    )
+
+
 @dataclass(frozen=True)
 class PositionManagementExecutionHandoffV1:
     source: PositionManagementCloseIntentHandoffV1
     envelope: FinalOrderEnvelopeV1
+    l10_close: PositionManagementL10CloseV1 | None = None
 
 
 def validates_position_management_envelope_v1(handoff: Any) -> bool:
@@ -311,6 +358,23 @@ def validates_position_management_envelope_v1(handoff: Any) -> bool:
     try:
         assert_envelope_unmodified_v1(envelope)
     except FullCoreFinalOrderEnvelopeError:
+        return False
+    switch = handoff.l10_close
+    if envelope.admission_ref.startswith(_OCCUPIED_L10_CLOSE_ADMISSION_PREFIX):
+        if not isinstance(switch, PositionManagementL10CloseV1):
+            return False
+        try:
+            if (
+                switch.admission_ref_v1() != envelope.admission_ref
+                or switch.episode.lane_id != receipt.lane_id
+                or switch.episode.instrument_id != receipt.instrument_id
+                or switch.episode.venue_native_id != receipt.venue_native_id
+                or switch.episode.position_side != receipt.position_side
+            ):
+                return False
+        except (AttributeError, ValueError):
+            return False
+    elif switch is not None:
         return False
     return (
         receipt.venue_native_id == envelope.instrument_id
@@ -336,6 +400,104 @@ def validates_position_management_execution_handoff_v1(
         handoff.envelope.instrument_id == native_id
         and snapshot_digest == handoff.source.quantity_handoff.position_snapshot_digest
     )
+
+
+def _retained_close_digest_v1(record: dict[str, Any]) -> str:
+    return hashlib.sha256(
+        json.dumps(record, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    ).hexdigest()
+
+
+def retain_position_management_close_v1(
+    handoff: PositionManagementExecutionHandoffV1, *, binding: dict[str, Any]
+) -> dict[str, Any]:
+    """Serialize the original plan for reconciliation without granting submission."""
+    if not validates_position_management_envelope_v1(handoff):
+        raise ValueError("RETAINED_CLOSE_HANDOFF_INVALID")
+    if handoff.l10_close is not None and handoff.l10_close != occupied_l10_close_from_binding_v1(
+        binding
+    ):
+        raise ValueError("RETAINED_CLOSE_SCOPE_PROOF_MISMATCH")
+    source = handoff.source
+    intent = source.canonical_intent
+    record = {
+        "schema": "occupied_scope_close_for_reconciliation.v1",
+        "binding": binding,
+        "envelope": handoff.envelope.to_runtime_json_v1(),
+        "quantity": source.quantity_handoff.to_dict(),
+        "assessment": source.close_quantity_decision.to_dict(),
+        "intent": {
+            **canonical_order_intent_to_semantic_dict(intent),
+            "semantic_digest": intent.semantic_digest,
+        },
+    }
+    return {**record, "digest": _retained_close_digest_v1(record)}
+
+
+def restore_retained_position_management_close_v1(
+    payload: object, *, expected_binding: dict[str, Any]
+) -> PositionManagementExecutionHandoffV1:
+    """Read the previously admitted plan. No price, quantity or identity is reselected."""
+    if not isinstance(payload, dict) or set(payload) != {
+        "schema",
+        "binding",
+        "envelope",
+        "quantity",
+        "assessment",
+        "intent",
+        "digest",
+    }:
+        raise ValueError("RETAINED_CLOSE_RECORD_REQUIRED")
+    try:
+        record = {key: value for key, value in payload.items() if key != "digest"}
+        if (
+            record["schema"] != "occupied_scope_close_for_reconciliation.v1"
+            or record["binding"] != expected_binding
+            or _retained_close_digest_v1(record) != payload["digest"]
+        ):
+            raise ValueError("RETAINED_CLOSE_BINDING_OR_DIGEST_MISMATCH")
+        assessment = dict(record["assessment"])
+        provenance = dict(assessment["quantity_provenance"])
+        provenance["source_contract_refs"] = tuple(provenance["source_contract_refs"])
+        provenance["final_quantity"] = Decimal(provenance["final_quantity"])
+        provenance["final_quantity_status"] = FinalQuantityStatus(
+            provenance["final_quantity_status"]
+        )
+        assessment["quantity_provenance"] = QuantityProvenanceV1(**provenance)
+        assessment["outcome"] = CapitalRiskSizingOutcome(assessment["outcome"])
+        assessment["reason_codes"] = tuple(assessment["reason_codes"])
+        assessment["open_quantity"] = Decimal(assessment["open_quantity"])
+        assessment["final_quantity"] = Decimal(assessment["final_quantity"])
+        close = CloseOnlyQuantityDecisionV1(**assessment)
+        intent_record = record["intent"]
+        built = build_canonical_full_close_intent_v1(
+            close=close,
+            intent_id=intent_record["intent_id"],
+            canonical_trading_logic_version=intent_record["canonical_trading_logic_version"],
+        )
+        quantity = dict(record["quantity"])
+        quantity["reason_codes"] = tuple(quantity["reason_codes"])
+        quantity["open_quantity"] = Decimal(quantity["open_quantity"])
+        quantity["requested_quantity"] = Decimal(quantity["requested_quantity"])
+        envelope = FinalOrderEnvelopeV1(**record["envelope"])
+        handoff = PositionManagementExecutionHandoffV1(
+            source=PositionManagementCloseIntentHandoffV1(
+                PositionManagementQuantityHandoffV1(**quantity), close, built.intent, ()
+            ),
+            envelope=envelope,
+            l10_close=(
+                occupied_l10_close_from_binding_v1(expected_binding)
+                if envelope.admission_ref.startswith(_OCCUPIED_L10_CLOSE_ADMISSION_PREFIX)
+                else None
+            ),
+        )
+        # Re-encoding must reproduce the exact stored record as well as passing
+        # the existing cross-checks on close assessment, intent and envelope.
+        if retain_position_management_close_v1(handoff, binding=expected_binding) != payload:
+            raise ValueError("RETAINED_CLOSE_READBACK_MISMATCH")
+        return handoff
+    except (AttributeError, InvalidOperation, KeyError, TypeError, ValueError) as exc:
+        raise ValueError("RETAINED_CLOSE_READBACK_INVALID") from exc
 
 
 def compose_position_management_full_close_intent_v1(

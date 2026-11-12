@@ -30,10 +30,13 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
     NakedLayeredCoreEpisodeV1,
-    atomic_persist_episode_v1,
     execute_naked_layered_core_mechanical_step_v1,
     initialize_naked_layered_core_episode_v1,
-    restore_episode_from_store_v1,
+)
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    persist_layered_core_episode_v1,
+    require_new_occupied_scope_mark_v1,
+    restore_layered_core_episode_v1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
     ExplicitPassthroughDynamicScopeGeneratorV1,
@@ -95,6 +98,7 @@ def run_p5_layered_core_authority_seam_v1(
     p4_identity_context: Optional[P4ExplicitDtProposalIdentityContextV1] = None,
     initialization_observations: Optional[Sequence[ObservationCandidateV1]] = None,
     restore_existing: bool = True,
+    occupied_mark: tuple[float, str, str, str] | None = None,
 ) -> P5LayeredCoreAuthoritySeamResultV1:
     """Run one mechanical L1–L10 step and emit seal. Does not activate productive cutover."""
     if P5_AUTHORITY_CUTOVER_AUTHORIZED or PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED:
@@ -132,7 +136,7 @@ def run_p5_layered_core_authority_seam_v1(
     scope_generator = ExplicitPassthroughDynamicScopeGeneratorV1()
     try:
         if restore_existing:
-            episode = restore_episode_from_store_v1(
+            episode = restore_layered_core_episode_v1(
                 store_root,
                 expected_instrument_id=selected.instrument_id,
             )
@@ -172,14 +176,39 @@ def run_p5_layered_core_authority_seam_v1(
             store_manifest_digest=None,
         )
 
-    manifest_digest = atomic_persist_episode_v1(store_root, step_result.episode)
+    seal_id = uuid.uuid4().hex
+    mark_record = None
+    if occupied_mark is not None:
+        event_unix, episode_id, cycle_id, mark_payload_digest = occupied_mark
+        try:
+            prices = require_new_occupied_scope_mark_v1(
+                store_root, event_unix=event_unix, price=mark_price_m_t, episode_id=episode_id
+            )
+        except NakedLayeredCoreDurableStateError as exc:
+            return P5LayeredCoreAuthoritySeamResultV1(False, (str(exc),), None, None, None)
+        mark_record = {
+            "event_unix": event_unix,
+            "prices": prices,
+            "position_episode_id": episode_id,
+            "pending_close_episode_id": episode_id if step_result.switch_condition_met else None,
+            "previous_snapshot_id": episode.snapshot_id,
+            "mark_payload_sha256": mark_payload_digest,
+            "regime_pre": episode.regime.value,
+            "switch_condition_met": step_result.switch_condition_met,
+            "counter_move": step_result.cm_t,
+            "seal_id": seal_id,
+            "cycle_id": cycle_id,
+        }
+    manifest_digest = persist_layered_core_episode_v1(
+        store_root, step_result.episode, occupied_mark=mark_record
+    )
     regime_pre = (
         episode.regime
         if isinstance(episode.regime, NakedRegimeV1)
         else NakedRegimeV1(str(episode.regime))
     )
     seal = build_layered_core_authority_seal_v1(
-        seal_id=uuid.uuid4().hex,
+        seal_id=seal_id,
         instrument_id=step_result.episode.instrument_id,
         episode_snapshot_id=step_result.episode.snapshot_id,
         store_manifest_digest=manifest_digest,

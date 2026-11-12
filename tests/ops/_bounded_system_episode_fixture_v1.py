@@ -98,6 +98,17 @@ def five_lane_episode(root, monkeypatch):
         session_id="e6-five-lane",
         now_unix=at,
     )
+    from tests.ops.test_current_scope_mark_clock_v1 import provenance
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+        invoke_join_v1,
+    )
+
+    class ReplayClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls.fromtimestamp(at, tz)
+
+    monkeypatch.setattr(invoke_join_v1, "datetime", ReplayClock)
     cycle = _market_kwargs(cycle_id_prefix="e6-five-lane", last_ts=at - 60)
     cycle.pop("origin_main_sha")
     cycle.update(
@@ -109,6 +120,12 @@ def five_lane_episode(root, monkeypatch):
         last_finalized_event_ts_unix=at - 60,
         candles_payload=None,
         candles_payload_by_lane=payloads,
+        canonical_price_provenance_by_lane={
+            f"LANE_{i + 1}": provenance(
+                native=native, mark=float(marks[native]), index=1014.9, event=at
+            )
+            for i, native in enumerate(natives)
+        },
         g17_typed_vol_producers=_g17_for_instruments(chain, natives, 5),
     )
     writer = f._held_writer(topology)

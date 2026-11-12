@@ -4,7 +4,7 @@ No second ledger, venue calls, permits, capital calculation or submit retries.
 An uncertain submission remains an obligation until exact exchange evidence.
 """
 
-from dataclasses import replace
+from dataclasses import asdict, replace
 from decimal import Decimal
 from datetime import datetime
 from hashlib import sha256
@@ -36,8 +36,14 @@ def detached(value):
     return json.loads(json.dumps(value, allow_nan=False))
 
 
-def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
-    if set(link) - {"external_effect_permit", "plan_origin", "transport_store_root"} != {
+def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False, committing=False):
+    if set(link) - {
+        "external_effect_permit",
+        "plan_origin",
+        "transport_store_root",
+        "double_play",
+        "simulated_fill_digest",
+    } != {
         "envelope",
         "identity",
         "phase",
@@ -97,6 +103,20 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
             reservation=reservation,
             bound=bound,
             envelope=envelope,
+        )
+    if (
+        reservation.decision_id.startswith("l10:")
+        or {"double_play", "simulated_fill_digest"} & link.keys()
+    ):
+        _validate_double_play_plan_v1(
+            owner,
+            reservation,
+            sizing,
+            bound,
+            envelope,
+            link,
+            order_environment,
+            committing=committing,
         )
     if link["phase"] == "PLAN_BOUND":
         if (
@@ -163,6 +183,63 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False):
         validate_attempt_locked_v2(owner, reservation_id, link, identity, pending=pending_attempt)
 
 
+def _validate_double_play_plan_v1(
+    owner, reservation, sizing, bound, envelope, link, environment, *, committing
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+        occupied_l10_close_from_binding_v1,
+    )
+    from .durable_store_v1 import digest
+
+    origin = link.get("double_play")
+    if (
+        type(origin) is not dict
+        or set(origin)
+        != {
+            "position_episode",
+            "scope_digest",
+            "scope_seal_id",
+            "close_envelope_digest",
+            "capital_refresh_fingerprint",
+            "sizing_input_digest",
+            "quantity_observation_digest",
+            "quantity_plan_digest",
+        }
+        or link["phase"] != "PLAN_BOUND"
+        or (reservation.state.value == "RESERVED") != committing
+        or environment != "INTERNAL_SIMULATED_EXECUTION"
+        or "core_cursor_source" in link["plan_origin"]
+    ):
+        raise ValueError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
+    fill_digest = link.get("simulated_fill_digest")
+    if "simulated_fill_digest" in link and (
+        type(fill_digest) is not str
+        or len(fill_digest) != 64
+        or any(char not in "0123456789abcdef" for char in fill_digest)
+    ):
+        raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_DIGEST_INVALID")
+    switch = occupied_l10_close_from_binding_v1(origin)
+    episode = switch.episode
+    close_ref = origin["close_envelope_digest"]
+    if (
+        owner._close_refreshes.get(close_ref) != origin["capital_refresh_fingerprint"]
+        or not origin["capital_refresh_fingerprint"]
+        or reservation.decision_id != "l10:" + close_ref
+        or reservation.cycle_id != reservation.decision_id
+        or str(reservation.slot_id) != episode.lane_id
+        or episode.account_scope.account_identity != owner._account_identity
+        or episode.instrument_id != bound["instrument_id"]
+        or episode.venue_native_id != bound["venue_native_id"]
+        or switch.target_side.upper() != sizing.decision.selected_side
+        or origin["sizing_input_digest"] != sizing.applied_input.input_digest
+        or origin["quantity_plan_digest"] != digest(link["plan_origin"]["venue_plan"])
+        or not origin["quantity_observation_digest"]
+        or envelope.admission_ref != "double-play-reservation:" + str(reservation.reservation_id)
+        or envelope.provenance_ref != switch.admission_ref_v1()
+    ):
+        raise ValueError("DOUBLE_PLAY_EXECUTION_PLAN_LINEAGE_MISMATCH")
+
+
 def bind_plan_locked_v1(
     owner,
     reservation_id,
@@ -173,9 +250,14 @@ def bind_plan_locked_v1(
     core_parent=None,
     core_cursor_root=None,
     entry_frame_required=False,
+    double_play_origin=None,
 ):
-    if owner._store is None or owner._require_locked(reservation_id) is None:
+    found = owner._require_locked(reservation_id)
+    if owner._store is None or found is None:
         raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
+    key, reservation = found
+    if reservation.decision_id.startswith("l10:") != (double_play_origin is not None):
+        raise ValueError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
     link = {
         "envelope": envelope.to_runtime_json_v1(),
         "identity": None,
@@ -194,7 +276,18 @@ def bind_plan_locked_v1(
             core_cursor_root=core_cursor_root,
             entry_frame_required=entry_frame_required,
         )
-    validate_link_v1(owner, reservation_id, link)
+    committed = None
+    if double_play_origin is not None:
+        if not owner._admitted or reservation.state.value not in {"RESERVED", "COMMITTED"}:
+            raise ValueError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
+        link["double_play"] = double_play_origin
+        if reservation.state.value == "RESERVED":
+            committed = replace(
+                reservation,
+                state=type(reservation.state).COMMITTED,
+                transition_trace=reservation.transition_trace + ("COMMITTED",),
+            )
+    validate_link_v1(owner, reservation_id, link, committing=committed is not None)
     if any(
         rid != reservation_id and old["envelope"]["client_order_id"] == envelope.client_order_id
         for rid, old in owner._execution_links.items()
@@ -204,10 +297,14 @@ def bind_plan_locked_v1(
     if old is not None:
         if old["envelope"] != link["envelope"]:
             raise ValueError("EXECUTION_PLAN_CHANGED")
-        if old.get("plan_origin") != link.get("plan_origin"):
+        if old.get("plan_origin") != link.get("plan_origin") or old.get("double_play") != link.get(
+            "double_play"
+        ):
             raise ValueError("EXECUTION_PLAN_ORIGIN_CHANGED")
         return detached(old)
     owner._execution_links[reservation_id] = detached(link)
+    if committed is not None:
+        owner._by_key[key] = committed
     owner._persist_locked()
     return detached(link)
 

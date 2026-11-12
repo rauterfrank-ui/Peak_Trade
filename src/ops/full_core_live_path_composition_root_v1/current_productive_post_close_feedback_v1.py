@@ -19,16 +19,21 @@ if TYPE_CHECKING:
     from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
         PerLanePositionTruthV1,
     )
-    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReserveResultV1
     from src.ops.mf_membership_selector_and_rotation_runtime_contract_v1 import MfSelectorResultV1
     from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
         PositionManagementExecutionHandoffV1,
+        PositionManagementL10CloseV1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
         CurrentProductiveTreasurySingleSourceCapitalHandoffV1,
     )
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+        SlotCapitalBasisV1,
+        SlotCloseNetBookingV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
         PortfolioCapitalReservationBudgetOwnerV1,
+        ReserveResultV1,
     )
     from src.ops.mf_membership_context_artifact_contract_v1 import (
         MembershipContextArtifactV1,
@@ -64,6 +69,45 @@ class PostCloseFeedbackRequestV1:
 
 
 @dataclass(frozen=True)
+class PostCloseDoublePlayContinuationV1:
+    """The same bound Future and the direction of its reconciled L10 close."""
+
+    switch: PositionManagementL10CloseV1
+    bound_instrument: BoundInstrumentV1
+    close_envelope_digest: str
+    close_evidence_digest: str
+    capital_refresh_fingerprint: str
+    net_booking: SlotCloseNetBookingV1
+    capital_basis: SlotCapitalBasisV1 | None = None
+
+    @property
+    def target_side(self) -> str:
+        return self.switch.target_side
+
+    def to_dict(self):
+        episode = self.switch.episode
+        return {
+            "lane_id": episode.lane_id,
+            "account_identity": episode.account_scope.account_identity,
+            "execution_environment": episode.account_scope.execution_environment,
+            "closed_episode_id": episode.episode_id,
+            "bound_instrument": self.bound_instrument.to_dict(),
+            "target_side": self.target_side,
+            "scope_seal_id": self.switch.scope_seal_id,
+            "scope_digest": self.switch.scope_digest,
+            "close_envelope_digest": self.close_envelope_digest,
+            "close_evidence_digest": self.close_evidence_digest,
+            "capital_refresh_fingerprint": self.capital_refresh_fingerprint,
+            "net_booking": self.net_booking.to_dict(),
+            **(
+                {"capital_basis": self.capital_basis.to_dict()}
+                if self.capital_basis is not None
+                else {}
+            ),
+        }
+
+
+@dataclass(frozen=True)
 class PostCloseFeedbackResultV1:
     status: str
     reason_codes: tuple[str, ...]
@@ -74,9 +118,10 @@ class PostCloseFeedbackResultV1:
     membership_review: MfSelectorResultV1 | None = None
     evidence_digest: str = ""
     execution_authority_effect: str = "NONE"
+    double_play_continuation: PostCloseDoublePlayContinuationV1 | None = None
 
     def to_dict(self):
-        return {
+        payload = {
             "status": self.status,
             "reason_codes": list(self.reason_codes),
             "remaining_quantity": None
@@ -92,6 +137,9 @@ class PostCloseFeedbackResultV1:
             "evidence_digest": self.evidence_digest,
             "execution_authority_effect": self.execution_authority_effect,
         }
+        if self.double_play_continuation is not None:
+            payload["double_play_continuation"] = self.double_play_continuation.to_dict()
+        return payload
 
 
 def _utc_ms(value: str) -> Decimal:
@@ -154,6 +202,14 @@ def compose_post_close_feedback_v1(
         or binding_ref != execution.source.close_quantity_decision.binding_ref
     ):
         return closed("POST_CLOSE_LANE_GENERATION_MISMATCH")
+    l10_close = execution.l10_close
+    if l10_close is not None:
+        account = l10_close.episode.account_scope
+        if (
+            account.account_identity != identity.account_identity
+            or account.execution_environment != identity.execution_environment
+        ):
+            return closed("POST_CLOSE_L10_ACCOUNT_SCOPE_MISMATCH")
     snapshot = lifecycle.reconciliation.snapshot
     if (
         lifecycle.ghv_forward_join != "PASS"
@@ -313,6 +369,7 @@ def compose_post_close_feedback_v1(
     ).hexdigest()
     reasons = []
     capital_refresh = None
+    net_booking = None
     if request.capital_handoff is None or request.budget_owner is None:
         reasons.append("POST_CLOSE_FRESH_CAPITAL_HANDOFF_REQUIRED")
     else:
@@ -356,20 +413,69 @@ def compose_post_close_feedback_v1(
             )
             reasons.extend(capital_refresh.reason_codes)
             policy = request.budget_owner.entry_budget_policy_v1()
-            if policy is not None and policy.per_slot_test_loss_limit is not None:
+            if policy is not None and (
+                l10_close is not None
+                or request.budget_owner.requires_slot_close_economics_v1(source.lane_id)
+            ):
                 try:
-                    request.budget_owner.record_test_slot_close_economics_v1(request)
+                    economics = request.budget_owner.record_test_slot_close_economics_v1(request)
                 except ValueError as exc:
-                    return PostCloseFeedbackResultV1(
-                        "RECONCILED_FLAT_ECONOMICS_PENDING",
-                        tuple(reasons) + (str(exc),),
-                        position,
-                        quantity,
-                        False,
-                        capital_refresh,
-                        None,
-                        digest,
-                    )
+                    reasons.append(str(exc))
+                    if l10_close is None:
+                        return PostCloseFeedbackResultV1(
+                            "RECONCILED_FLAT_ECONOMICS_PENDING",
+                            tuple(reasons),
+                            position,
+                            quantity,
+                            capital_refresh=capital_refresh,
+                            evidence_digest=digest,
+                        )
+                else:
+                    net_booking = economics["net_booking"]
+    if l10_close is not None:
+        from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+            PortfolioCapitalBudgetError,
+            ReserveDispositionV1,
+        )
+
+        continuation = None
+        if (
+            net_booking is not None
+            and capital_refresh is not None
+            and capital_refresh.disposition
+            in {
+                ReserveDispositionV1.ADMITTED,
+                ReserveDispositionV1.IDEMPOTENT_REPLAY,
+            }
+        ):
+            try:
+                release = request.budget_owner.inspect_bounded_slot_close_refresh_v1(request)
+                capital_basis = request.budget_owner.slot_capital_basis_v1(
+                    source.lane_id, close_booking=net_booking
+                )
+            except PortfolioCapitalBudgetError as exc:
+                reasons.append(str(exc))
+            else:
+                continuation = PostCloseDoublePlayContinuationV1(
+                    switch=l10_close,
+                    bound_instrument=request.bound_instrument,
+                    close_envelope_digest=envelope.envelope_digest,
+                    close_evidence_digest=digest,
+                    capital_refresh_fingerprint=release["fingerprint"],
+                    net_booking=net_booking,
+                    capital_basis=capital_basis,
+                )
+        return PostCloseFeedbackResultV1(
+            "RECONCILED_FLAT_DOUBLE_PLAY_READY"
+            if continuation is not None
+            else "RECONCILED_FLAT_DOUBLE_PLAY_PENDING",
+            tuple(reasons),
+            position=position,
+            remaining_quantity=quantity,
+            capital_refresh=capital_refresh,
+            evidence_digest=digest,
+            double_play_continuation=continuation,
+        )
     membership = None
     if request.ranking is None:
         reasons.append("POST_CLOSE_RANKING_REVIEW_INPUT_REQUIRED")

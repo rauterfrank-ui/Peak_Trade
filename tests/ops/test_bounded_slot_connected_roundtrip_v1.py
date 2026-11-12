@@ -93,6 +93,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
 from tests.ops import test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 as sources
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1 as prepare,
+    prepare_layered_short_armed_seed_for_pre_external_invoke_v1 as prepare_short,
     governed_c1_aligned_g17_dk_producer_v1,
 )
 from tests.ops.test_bounded_multislot_connected_cycle_v1 import ports
@@ -243,16 +244,8 @@ def capital(host, bound, event):
     return result
 
 
-def connected_close(
-    tmp_path,
-    monkeypatch,
-    count,
-    lane,
-    *,
-    rotation_requests_factory=None,
-    rotation_driver=None,
-    expected_exit_class="time_exit",
-):
+def connected_open_positions(tmp_path, monkeypatch, count, *, opening_side="long"):
+    """Open positions through the existing bound host and apply their simulated fills."""
     monkeypatch.setattr(sources, "OBSERVED_UNIX", T0 - 3700)
     monkeypatch.setattr(sources, "SOURCE_EVENT", str(int((T0 - 3700) * 1000)))
     chain = sources._persist_universe_and_ranking(
@@ -288,10 +281,11 @@ def connected_close(
     )
     pairs = {}
     closes = None
+    prepare_position = {"long": prepare, "short": prepare_short}[opening_side]
     for l, b in bounds.items():
         slot = next(s for s in publication.topology.occupied_slots() if s.lane_id == l)
         root = Path(slot.lane_state_root)
-        _, closes, _, event, _ = prepare(
+        _, closes, _, event, _ = prepare_position(
             bound=b,
             g17_typed_vol_producer=None,
             lane_state_root=root.parent,
@@ -325,7 +319,7 @@ def connected_close(
         cycle = r.governed_cycle_result
         order = cycle.final_order_envelope
         assert order is not None, (l, cycle.first_genuine_blocker)
-        assert r.s7_invocation.cycle_result.decision_outcome == "enter_long"
+        assert r.s7_invocation.cycle_result.decision_outcome == f"enter_{opening_side}"
         holds[l] = cycle.extra["PORTFOLIO_RESERVATION_ID"]
         session = ProductiveFuturesAccountingSessionV1(
             contract=_contract(order.instrument_id, contract_size="0.01", min_qty="1")
@@ -345,15 +339,55 @@ def connected_close(
         b = bounds[l]
         identity = bind_simulated_accounting_episode_identity_v1(
             identity=PositionEpisodeIdentityV1(
-                l, b.instrument_id, b.venue_native_id, "pending-opening", "long", scope
+                l, b.instrument_id, b.venue_native_id, "pending-opening", opening_side, scope
             ),
             opening_fill=fill,
         )
         episodes[l] = create_position_episode_from_simulated_accounting_v1(
             **_args(tmp_path / "episodes" / l, identity), session=session, fills=(fill,)
         )
+    return dict(
+        chain=chain,
+        membership=membership,
+        topology=topology,
+        writer=writer,
+        publication=publication,
+        bounds=bounds,
+        pairs=pairs,
+        closes=closes,
+        event=event,
+        host=host,
+        recovery=recovery,
+        kwargs=kwargs,
+        entries=entries,
+        scope=scope,
+        sessions=sessions,
+        episodes=episodes,
+        fills=fills,
+        holds=holds,
+    )
+
+
+def connected_close(
+    tmp_path,
+    monkeypatch,
+    count,
+    lane,
+    *,
+    rotation_requests_factory=None,
+    rotation_driver=None,
+    expected_exit_class="time_exit",
+):
+    world = connected_open_positions(tmp_path, monkeypatch, count)
+    bounds, closes, host, sessions = (
+        world["bounds"],
+        world["closes"],
+        world["host"],
+        world["sessions"],
+    )
+    membership, recovery = world["membership"], world["recovery"]
     if rotation_driver is not None:
-        recovery = rotation_driver.nominate(locals())
+        recovery = rotation_driver.nominate(world)
         membership = rotation_driver.membership
     # Append 61 minute bars, preserving every overlapping historical event.
     mark = closes[-1]
@@ -366,8 +400,8 @@ def connected_close(
         portfolio_budget_owner=host.owner,
         host_budget_recovery=recovery,
         observed_portfolio=observed,
-        position_episode_bindings=episodes,
-        position_episode_scope=scope,
+        position_episode_bindings=world["episodes"],
+        position_episode_scope=world["scope"],
         occupancy_payloads=_positions_payload(
             *[
                 (bounds[l].venue_native_id, "net", signed_accounting_quantity(s))
@@ -378,14 +412,25 @@ def connected_close(
     if rotation_requests_factory is not None:
         kwargs["rotation_exit_requests"] = rotation_requests_factory(
             bounds=bounds,
-            episodes=episodes,
-            publication=publication,
+            episodes=world["episodes"],
+            publication=world["publication"],
             membership=membership,
-            chain=chain,
+            chain=world["chain"],
             event=event,
         )
+    pairs, episodes = world["pairs"], world["episodes"]
     exits = (
-        rotation_driver.close(locals())
+        rotation_driver.close(
+            {
+                **world,
+                "membership": membership,
+                "recovery": recovery,
+                "closes": closes,
+                "event": event,
+                "kwargs": kwargs,
+                "observed": observed,
+            }
+        )
         if rotation_driver is not None
         else invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     )
@@ -417,11 +462,11 @@ def connected_close(
         reduce_only=True,
     )
     sessions[lane].apply_fill(fill)
-    fills[lane].append(fill)
+    world["fills"][lane].append(fill)
     seal_simulated_accounting_episode_flat_v1(
         episode=episodes[lane],
         accounting_session=sessions[lane],
-        fills=tuple(fills[lane]),
+        fills=tuple(world["fills"][lane]),
         bound=bounds[lane],
         occupancy_payloads=_positions_payload((bounds[lane].venue_native_id, "net", Decimal(0))),
         observed_portfolio=PortfolioTruthSnapshotV1(
@@ -437,7 +482,7 @@ def connected_close(
         observed_unix=T0 + 63,
         source_archive_root=tmp_path / "episodes" / lane / "sources",
         cursor_store_root=Path(pairs[lane][0].lane_state_root),
-        expected_scope=scope,
+        expected_scope=world["scope"],
         writer_session_id="applied-original-close",
     )
     assert sessions[lane].position is None
@@ -458,25 +503,16 @@ def connected_close(
     host.clock = lambda: T0 + 65
     recovery = host.observe_v1(bounds)
     recovery.recover_v1(host.owner, _produce(value="1000", epoch=utc(T0 + 64)))
-    return dict(
-        chain=chain,
-        membership=membership,
-        topology=topology,
-        writer=writer,
-        bounds=bounds,
-        host=host,
-        holds=holds,
-        episodes=episodes,
-        sessions=sessions,
-        scope=scope,
-        closes=closes,
-        recovery=recovery,
-        execution=execution,
-        fills=fills,
-        exits=exits,
-        pairs=pairs,
-        publication=publication,
-    )
+    return {
+        **world,
+        "membership": membership,
+        "closes": closes,
+        "event": event,
+        "kwargs": kwargs,
+        "recovery": recovery,
+        "execution": execution,
+        "exits": exits,
+    }
 
 
 def roundtrip(

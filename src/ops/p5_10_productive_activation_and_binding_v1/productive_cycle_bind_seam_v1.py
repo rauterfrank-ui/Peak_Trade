@@ -25,9 +25,11 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
-    atomic_persist_episode_v1,
     initialize_naked_layered_core_episode_v1,
-    restore_episode_from_store_v1,
+)
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    persist_layered_core_episode_v1,
+    restore_layered_core_episode_v1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
     ExplicitPassthroughDynamicScopeGeneratorV1,
@@ -225,6 +227,7 @@ def prepare_productive_layered_core_replay_bind_v1(
     side_state_from_transition_carryforward: bool = False,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1 | None = None,
     existing_scope_present: bool,
+    occupied_mark: tuple[float, str, str, str] | None = None,
 ) -> Tuple[IntegratedOfflineReplayInputV1, ProductiveLayeredCoreBindCarryV1]:
     """Attach layered-core seal for CZ-4 delegation when bind is requested and enabled."""
     if not productive_layered_core_bind_requested:
@@ -318,8 +321,10 @@ def prepare_productive_layered_core_replay_bind_v1(
     )
     restore_existing = True
     try:
-        restore_episode_from_store_v1(store_root, expected_instrument_id=instrument_id)
-    except NakedLayeredCoreDurableStateError:
+        restore_layered_core_episode_v1(store_root, expected_instrument_id=instrument_id)
+    except NakedLayeredCoreDurableStateError as exc:
+        if occupied_mark is not None:
+            return replay_input, _fail_carry(str(exc))
         restore_existing = False
         if not observations:
             return replay_input, _fail_carry("layered_core_initialization_observations_required")
@@ -332,6 +337,7 @@ def prepare_productive_layered_core_replay_bind_v1(
         p4_identity_context=p4_identity,
         restore_existing=restore_existing,
         initialization_observations=observations if not restore_existing else None,
+        occupied_mark=occupied_mark,
     )
     if not seam.ok or seam.seal is None:
         return replay_input, _fail_carry(*(seam.failure_codes or ("p5_seam_failed",)))
@@ -512,7 +518,7 @@ def ensure_productive_layered_core_episode_store_v1(
         return ("layered_core_bootstrap_instrument_missing",)
     root = Path(store_root)
     try:
-        restore_episode_from_store_v1(root, expected_instrument_id=instrument_id)
+        restore_layered_core_episode_v1(root, expected_instrument_id=instrument_id)
         return ()
     except NakedLayeredCoreDurableStateError:
         pass
@@ -547,7 +553,7 @@ def ensure_productive_layered_core_episode_store_v1(
         return (f"layered_core_bootstrap_init_fail_closed:{exc}",)
     if init_failures:
         return tuple(init_failures)
-    atomic_persist_episode_v1(root, episode)
+    persist_layered_core_episode_v1(root, episode)
     return ()
 
 

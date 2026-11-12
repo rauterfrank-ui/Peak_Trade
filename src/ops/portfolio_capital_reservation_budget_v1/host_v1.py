@@ -11,7 +11,12 @@ from decimal import Decimal
 from pathlib import Path
 from threading import Lock
 import time
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+        SlotCapitalAllocationV1,
+    )
 
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
     POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
@@ -310,6 +315,7 @@ class PortfolioBudgetHostV1:
         execution_environment="LIVE",
         entry_budget_policy=None,
         execution_incident_state_path: Path | None = None,
+        slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -360,7 +366,14 @@ class PortfolioBudgetHostV1:
             and execution_environment != "INTERNAL_SIMULATED_EXECUTION"
         ):
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
+        if slot_capital_allocation is not None and (
+            durable_mode != "create"
+            or execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or entry_budget_policy is None
+        ):
+            raise ValueError("HOST_SLOT_CAPITAL_SIMULATED_BOOTSTRAP_REQUIRED")
         self.entry_budget_policy = entry_budget_policy
+        self._slot_capital_allocation = slot_capital_allocation
 
     def observe_v1(self, bindings, *, required_execution_attempts=None):
         return self._observe_with_retry_v1(
@@ -500,6 +513,266 @@ class PortfolioBudgetHostV1:
                 self.transport_retry_count += 1
                 self.retry_sleep(self.retry_interval_seconds)
 
+    def prepare_simulated_double_play_reversal_v1(
+        self, *, double_play, injected, decision_epoch, recovery
+    ):
+        """Continue the reconciled switch through its original 29P and 29Q owners."""
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+            STATUS_DOUBLE_PLAY_RESERVED,
+            join_current_productive_enter_live_29p_before_venue_plan_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+            bind_current_productive_double_play_execution_plan_v1,
+        )
+
+        if (
+            self.closed
+            or self.owner is None
+            or self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or type(recovery) is not HostBudgetRecoveryContextV1
+            or recovery.host is not self
+            or double_play.close_request.budget_owner is not self.owner
+        ):
+            raise ValueError("DOUBLE_PLAY_29P_ORIGINAL_SIMULATED_HOST_REQUIRED")
+        continuation = double_play.continuation
+        bound = continuation.bound_instrument
+        decision_id = "l10:" + continuation.close_envelope_digest
+        previous = self.owner.lookup_v1(
+            slot_id=continuation.switch.episode.lane_id,
+            decision_id=decision_id,
+            cycle_id=decision_id,
+            observation_id=self.owner.budget_state_v1().observation_id,
+        )
+        if previous is None:
+            reserved = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                replay=None,
+                bound_instrument=bound,
+                injected=injected,
+                decision_epoch=decision_epoch,
+                portfolio_budget_owner=self.owner,
+                host_budget_recovery=recovery,
+                double_play=replace(double_play, reserve=True),
+            )
+            if reserved.status != STATUS_DOUBLE_PLAY_RESERVED:
+                raise ValueError(reserved.first_blocker)
+            reservation_id = reserved.portfolio_reservation_id
+        else:
+            reservation_id = str(previous.reservation_id)
+        envelope = bind_current_productive_double_play_execution_plan_v1(
+            reservation_id=reservation_id,
+            double_play=double_play,
+            bound_instrument=bound,
+            injected=injected,
+            decision_epoch=decision_epoch,
+            host_budget_recovery=recovery,
+        )
+        return reservation_id, envelope
+
+    def open_simulated_double_play_episode_v1(
+        self, *, reservation_id, double_play, injected, decision_epoch, recovery, fill
+    ):
+        """Apply the exact simulated opening fill and retain the successor episode."""
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            canonical_digest_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.simulated_accounting_close_v1 import (
+            create_successor_after_sealed_simulated_episode_v1,
+            inspect_sealed_simulated_episode_v1,
+        )
+        from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v1 import (
+            _verify,
+            bind_simulated_accounting_episode_identity_v1,
+            recover_position_episode_from_simulated_accounting_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+            bind_current_productive_double_play_execution_plan_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+            FinalOrderEnvelopeV1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.slot_economic_source_v1 import (
+            SlotCloseAccountingSourceV1,
+            _fill,
+        )
+        from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+            ProductiveFuturesAccountingSessionV1,
+        )
+        from src.ops.productive_futures_accounting_runtime_binding_v1.models_v1 import (
+            SimulatedFillInputV1,
+        )
+
+        if (
+            self.closed
+            or self.owner is None
+            or self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or type(recovery) is not HostBudgetRecoveryContextV1
+            or recovery.host is not self
+            or type(fill) is not SimulatedFillInputV1
+        ):
+            raise ValueError("DOUBLE_PLAY_ORIGINAL_SIMULATED_HOST_AND_FILL_REQUIRED")
+        continuation = double_play.continuation
+        close = double_play.close_request
+        source = close.slot_accounting_source
+        prior = continuation.switch.episode
+        if (
+            close.budget_owner is not self.owner
+            or type(source) is not SlotCloseAccountingSourceV1
+            or source.identity_v1() != prior
+            or self.bindings.get(prior.lane_id) != continuation.bound_instrument
+        ):
+            raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_CLOSE_SOURCE_MISMATCH")
+        retained = self.owner.read_bound_double_play_execution_plan_v1(reservation_id)
+        envelope = retained["envelope"]
+        bound_fill = retained.get("simulated_fill_digest")
+        if bound_fill is not None and bound_fill != fill.digest():
+            raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_ALREADY_BOUND")
+        opening_epoch = datetime.fromisoformat(envelope["creation_epoch"].replace("Z", "+00:00"))
+        if (
+            retained["double_play"]["close_envelope_digest"] != continuation.close_envelope_digest
+            or envelope["provenance_ref"] != continuation.switch.admission_ref_v1()
+            or fill.fill_id != "original-plan:" + envelope["envelope_digest"]
+            or fill.instrument_id != envelope["instrument_id"]
+            or fill.side != envelope["side"].upper()
+            or fill.quantity != Decimal(envelope["quantity"])
+            or fill.reduce_only is not False
+            or type(fill.event_time_unix) not in (float, int)
+            or not opening_epoch.timestamp() <= fill.event_time_unix <= self.clock()
+        ):
+            raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_ENVELOPE_MISMATCH")
+
+        sealed = inspect_sealed_simulated_episode_v1(
+            identity=prior,
+            state_root=Path(source.state_root),
+            repository_sha=source.repository_sha,
+            config_digest=source.config_digest,
+            expected_initial_source_ref=source.initial_source_ref,
+        )
+        flat = sealed["source_payload"]
+        accounting = ProductiveFuturesAccountingSessionV1.from_durable_dict(
+            flat["accounting_checkpoint"]
+        )
+        applied = accounting.apply_fill(fill)
+        if applied.action_code != continuation.target_side.upper() + "_OPEN":
+            raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_DID_NOT_OPEN_TARGET_SIDE")
+        fills = (*(_fill(row) for row in flat["fills"]), fill)
+        identity = bind_simulated_accounting_episode_identity_v1(
+            identity=replace(prior, position_side=continuation.target_side),
+            opening_fill=fill,
+        )
+        root = self.root / "double_play_simulated_episodes" / reservation_id
+        archive_root = root / "accounting"
+        episode_args = {
+            "identity": identity,
+            "state_root": root / "position",
+            "repository_sha": source.repository_sha,
+            "config_digest": source.config_digest,
+            "writer_session_id": self.session_id,
+        }
+        from hashlib import sha256
+        from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+            bind_occupied_lane_governed_cycle_store_roots_v1,
+            recover_occupied_scope_close_for_reconciliation_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
+            CYCLE_EXCLUSION_LOCK_NAME,
+            occupied_scope_mark_cycle_lock_v1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.core_cursor_source_v1 import (
+            _read_original_cursor,
+        )
+        from trading.master_v2.double_play_state import SideState
+        from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+            read_occupied_scope_mark_snapshot_v1,
+        )
+
+        pair = (double_play.lane, continuation.bound_instrument)
+        cursor_root, lock_root, evidence_root = bind_occupied_lane_governed_cycle_store_roots_v1(
+            {prior.lane_id: pair}
+        )[prior.lane_id]
+        if episode_args["state_root"].exists():
+            if bound_fill is None:
+                raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_ALREADY_BOUND")
+            if (Path(lock_root) / CYCLE_EXCLUSION_LOCK_NAME).exists():
+                recover_occupied_scope_close_for_reconciliation_v1(
+                    lane_id=prior.lane_id,
+                    lane_pair=pair,
+                    expected_scope=prior.account_scope,
+                    sealed_accounting_source=source,
+                )
+            payload, _ = _verify(identity=identity, session=accounting, fills=fills)
+            episode = recover_position_episode_from_simulated_accounting_v1(
+                source_path=archive_root / (canonical_digest_v1(payload) + ".json"),
+                **episode_args,
+            )
+        else:
+            if bound_fill is None:
+                current = bind_current_productive_double_play_execution_plan_v1(
+                    reservation_id=reservation_id,
+                    double_play=double_play,
+                    bound_instrument=continuation.bound_instrument,
+                    injected=injected,
+                    decision_epoch=decision_epoch,
+                    host_budget_recovery=recovery,
+                )
+            else:
+                # This exact simulated fill was retained before the interruption.
+                # Resume its accounting from the original plan and sealed flat.
+                if (Path(lock_root) / CYCLE_EXCLUSION_LOCK_NAME).exists():
+                    recover_occupied_scope_close_for_reconciliation_v1(
+                        lane_id=prior.lane_id,
+                        lane_pair=pair,
+                        expected_scope=prior.account_scope,
+                        sealed_accounting_source=source,
+                    )
+                current = FinalOrderEnvelopeV1(**envelope)
+            if current.to_runtime_json_v1() != envelope:
+                raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_BOUND_PLAN_CHANGED")
+            scope = read_occupied_scope_mark_snapshot_v1(Path(cursor_root))
+            if scope is None or scope["digest"] != continuation.switch.scope_digest:
+                raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_CURRENT_SCOPE_CHANGED")
+            suffix = f":{prior.lane_id}:{prior.lane_id}"
+            cycle = scope["mark"]["cycle_id"]
+            if not cycle.endswith(suffix) or not cycle.removesuffix(suffix):
+                raise ValueError("OCCUPIED_SCOPE_CLOSE_CYCLE_ID_INVALID")
+            attempt = sha256(cycle.removesuffix(suffix).encode()).hexdigest()
+            lock = occupied_scope_mark_cycle_lock_v1(
+                lock_root=Path(lock_root),
+                evidence_root=Path(evidence_root) / "bounded_slot_attempts_v1" / attempt,
+                native_id=envelope["instrument_id"],
+            )
+            lock.acquire()
+            try:
+                scope = read_occupied_scope_mark_snapshot_v1(Path(cursor_root))
+                cursor, _, raw = _read_original_cursor(
+                    cursor_root, instrument_id=prior.instrument_id, native_id=prior.venue_native_id
+                )
+                if (
+                    scope is None
+                    or scope["digest"] != continuation.switch.scope_digest
+                    or cursor.side_state is SideState.KILL_ALL
+                    or (raw.get("runtime_scope_state") or {}).get("chop_latched") is not False
+                ):
+                    raise ValueError("DOUBLE_PLAY_SIMULATED_FILL_CURRENT_SCOPE_CHANGED")
+                if bound_fill is None:
+                    double_play.mark.require_current_mark_clock_v1(observed_unix=self.clock())
+                with self.owner.guard_bound_double_play_simulated_fill_v1(
+                    reservation_id, current, fill_digest=fill.digest()
+                ):
+                    episode = create_successor_after_sealed_simulated_episode_v1(
+                        prior_identity=prior,
+                        prior_state_root=Path(source.state_root),
+                        prior_repository_sha=source.repository_sha,
+                        prior_config_digest=source.config_digest,
+                        prior_initial_source_ref=source.initial_source_ref,
+                        accounting_session=accounting,
+                        fills=fills,
+                        source_archive_root=archive_root,
+                        **episode_args,
+                    )
+            finally:
+                lock.release()
+        return episode, accounting, fills
+
     def observe_after_bounded_slot_close_v1(self, bindings, *, request):
         """Refresh original account truth and rebind only a proven flat test slot."""
         if (
@@ -566,6 +839,7 @@ class PortfolioBudgetHostV1:
                 durable_mode=self.durable_mode,
                 durable_lane_bindings=bindings,
                 entry_budget_policy=self.entry_budget_policy,
+                slot_capital_allocation=self._slot_capital_allocation,
             )
             restored_policy = self.owner.entry_budget_policy_v1()
             if (

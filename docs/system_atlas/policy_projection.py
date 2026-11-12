@@ -166,6 +166,36 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 }
 
 
+# Double Play's bounded close, recovery and 29P assessment policy sources.
+# Each pair pins the reviewed parent and its exact successor.
+DOUBLE_PLAY_POLICY_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af",
+        "2cda933befdd66fd4a45ac8e637a3ca4e360f7660f453a97b50085cefbd230bc",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py": (
+        "214b7b0ddfe42517b801098d87e60bb6df3adffada3a43cf33d6c73f0aa56c06",
+        "1349b51057f4d5e590f304c3bd7677c5d0883e3421d0b5036d896e6a659d5af0",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": (
+        "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
+        "d35b5c2eab4dbd51f42b52126861f0965cf652f8637156057ddf69d36719182a",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": (
+        "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
+        "a56910653c688a597c7fa9cf8ba06f76fee3d0529e45ad8a9d1c0ae47bc9deff",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
+        "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",
+        "ccb96ea50e65384ca12b740e98d70c4ebeb4c5eb4aa74a4ec1f4112c392be51f",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
+        "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
+        "e584bbde6ca55dd3e1cda50c7584c5b3be51deead087419c5ad9c618797fd388",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 MANAGED_FILEGATE_OWNER_DELTAS = {
@@ -192,7 +222,32 @@ def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> 
         raise ValueError("MANAGED_FILEGATE_REVIEWED_BUNDLE_REQUIRED")
 
 
-def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | None = None) -> None:
+def _uses_double_play_policy_bundle(root: Path) -> bool:
+    actual = {}
+    for path in DOUBLE_PLAY_POLICY_DELTAS:
+        source = root / path
+        actual[path] = hashlib.sha256(source.read_bytes()).hexdigest() if source.is_file() else None
+    if not any(actual[path] == after for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items()):
+        return False
+    for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items():
+        if actual[path] != after:
+            raise ValueError("DOUBLE_PLAY_POLICY_REVIEWED_BUNDLE_REQUIRED:" + path)
+    return True
+
+
+def _double_play_bundle_successor(parent: dict[str, str | None]) -> dict[str, str | None]:
+    successor = dict(parent)
+    for path in parent.keys() & DOUBLE_PLAY_POLICY_DELTAS.keys():
+        before, after = DOUBLE_PLAY_POLICY_DELTAS[path]
+        if parent[path] != before:
+            raise ValueError("DOUBLE_PLAY_POLICY_PARENT_INVALID:" + path)
+        successor[path] = after
+    return successor
+
+
+def validate_reserved_slot_rotation_bundle(
+    root: Path, policies: list[dict] | None = None, *, double_play: bool = False
+) -> None:
     frozen = {} if policies is None else {row["path"]: row["frozen_sha256"] for row in policies}
     actual = {}
     for path, (before, _after) in RESERVED_SLOT_ROTATION_DELTAS.items():
@@ -214,11 +269,18 @@ def validate_reserved_slot_rotation_bundle(root: Path, policies: list[dict] | No
         if path not in protected_after or protected_after[path] != parent:
             raise ValueError("CURRENT_SCOPE_MARK_ADMISSION_PARENT_INVALID:" + path)
         scope_bound_after[path] = successor
-    if actual not in (before, after, protected_after, scope_bound_after):
+    accepted = (
+        (_double_play_bundle_successor(scope_bound_after),)
+        if double_play
+        else (before, after, protected_after, scope_bound_after)
+    )
+    if actual not in accepted:
         raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
 
 
-def validate_ordered_funding_episode_bundle(root: Path, policies: list[dict]) -> None:
+def validate_ordered_funding_episode_bundle(
+    root: Path, policies: list[dict], *, double_play: bool = False
+) -> None:
     """Accept the original bundle or the separately reviewed exact successor."""
     frozen = {row["path"]: row["frozen_sha256"] for row in policies}
     actual = {}
@@ -226,10 +288,16 @@ def validate_ordered_funding_episode_bundle(root: Path, policies: list[dict]) ->
         if frozen.get(path) != before:
             raise ValueError("ORDERED_FUNDING_EPISODE_BASELINE_INVALID:" + path)
         actual[path] = hashlib.sha256((root / path).read_bytes()).hexdigest()
-    if any(actual[path] != before for path, (before, _) in ORDERED_FUNDING_EPISODE_DELTAS.items()):
-        for path, (_before, after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
-            if actual[path] != after:
-                raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)
+    if not double_play and all(
+        actual[path] == before for path, (before, _) in ORDERED_FUNDING_EPISODE_DELTAS.items()
+    ):
+        return
+    expected = {path: after for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items()}
+    if double_play:
+        expected = _double_play_bundle_successor(expected)
+    for path, digest in expected.items():
+        if actual[path] != digest:
+            raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)
 
 
 def validate_numeric_technical_admission_delta(original: bytes, current: bytes) -> None:
@@ -482,8 +550,9 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     ]
     frozen = {p["path"]: p for p in inventory}
     policies = load_policies(root, doc)
-    validate_ordered_funding_episode_bundle(root, policies)
-    validate_reserved_slot_rotation_bundle(root, policies)
+    double_play = _uses_double_play_policy_bundle(root)
+    validate_ordered_funding_episode_bundle(root, policies, double_play=double_play)
+    validate_reserved_slot_rotation_bundle(root, policies, double_play=double_play)
     validate_managed_filegate_owner_bundle(root, policies)
     if {p["path"] for p in policies} != {p for p in frozen if policy_scope_kind(p)}:
         raise ValueError("POLICY_SCOPE_COVERAGE_MISMATCH")

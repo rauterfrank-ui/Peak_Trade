@@ -14,10 +14,26 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass, replace
+from datetime import datetime
+from functools import partial
+from pathlib import Path
 from decimal import Decimal, InvalidOperation
 from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 if TYPE_CHECKING:
+    from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+        IsolatedLaneSlotV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        ProductiveCycleCanonicalPriceProvenanceV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+        PostCloseDoublePlayContinuationV1,
+        PostCloseFeedbackRequestV1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+        SlotCapitalBasisV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
     from src.ops.full_core_live_path_composition_root_v1.current_productive_n1_venue_quantity_limit_admission_v1 import (
         N1VenueQuantityLimitsObservationV1,
@@ -76,8 +92,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_REST_HOST,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    DoublePlayReservationSourceV1,
     PortfolioCapitalReservationBudgetOwnerV1,
     ReserveDispositionV1,
+    SizedReservationResultV1,
+    apply_capital_context_facts_v1,
+    capital_context_facts_v1,
     admit_sized_slot_reservation_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
@@ -94,7 +114,9 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
 from src.governance.canonical_order_intent_v1 import compute_quantity_provenance_ref
 from src.governance.capital_risk_sizing_v1 import (
     CapitalRiskSizingDecisionV1,
+    CapitalRiskSizingInputV1,
     CapitalRiskSizingOutcome,
+    evaluate_capital_risk_sizing_v1,
 )
 from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
     REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED,
@@ -130,6 +152,9 @@ STATUS_MISSING = "MISSING"
 DECISION_HOLD = "HOLD"
 DECISION_ENTER = "ENTER"
 DECISION_OTHER = "OTHER"
+DECISION_DOUBLE_PLAY = "DOUBLE_PLAY_COUNTER_SIZING"
+STATUS_DOUBLE_PLAY_ASSESSED = "DOUBLE_PLAY_SIZING_ASSESSED"
+STATUS_DOUBLE_PLAY_RESERVED = "DOUBLE_PLAY_SIZING_RESERVED"
 DECISION_POSITION_MANAGEMENT = "POSITION_MANAGEMENT"
 STATUS_NOT_CALLED_POSITION_MANAGEMENT = "NOT_CALLED_POSITION_MANAGEMENT"
 POSITION_MANAGEMENT_HANDOFF_REQUIRED = "POSITION_MANAGEMENT_EXECUTION_HANDOFF_REQUIRED"
@@ -190,6 +215,43 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
 
 
 @dataclass(frozen=True)
+class DoublePlay29PTestStopV1:
+    venue_native_id: str
+    target_side: str
+    reference_mark: Decimal
+    stop_price: Decimal
+    source_ref: str
+
+
+@dataclass(frozen=True)
+class CurrentProductiveDoublePlay29PInputV1:
+    continuation: PostCloseDoublePlayContinuationV1
+    close_request: PostCloseFeedbackRequestV1
+    lane: IsolatedLaneSlotV1
+    mark: ProductiveCycleCanonicalPriceProvenanceV1
+    test_stop: DoublePlay29PTestStopV1
+    reserve: bool = False
+
+
+@dataclass(frozen=True)
+class _DoublePlaySizingDecisionV1:
+    decision_id: str
+    semantic_digest: str
+    instrument_id: str
+    selected_side: str
+    decision_outcome: str
+
+
+@dataclass(frozen=True)
+class DoublePlay29PSizingAssessmentV1:
+    close_envelope_digest: str
+    capital_basis: SlotCapitalBasisV1
+    test_stop: DoublePlay29PTestStopV1
+    sizing_decision: CapitalRiskSizingDecisionV1
+    execution_authority_effect: str = "NONE"
+
+
+@dataclass(frozen=True)
 class CurrentProductiveEnterLive29PJoinResultV1:
     decision_class: str
     called: bool
@@ -211,6 +273,7 @@ class CurrentProductiveEnterLive29PJoinResultV1:
     portfolio_reservation_id: str = ""
     portfolio_reservation_disposition: str = ""
     reason_codes: tuple[str, ...] = ()
+    double_play_sizing: DoublePlay29PSizingAssessmentV1 | None = None
 
 
 def _canonical_json(payload: Mapping[str, Any]) -> str:
@@ -290,7 +353,7 @@ def _hold_result(
     )
 
 
-def _deny(
+def _denied_result(
     *,
     status: str,
     blocker: str,
@@ -300,9 +363,10 @@ def _deny(
     producer_output_status: str = "FAIL_CLOSED",
     step_29p_risk_admissible: str = FALSE_TOKEN,
     reasons: tuple[str, ...] = (),
+    decision_class: str = DECISION_ENTER,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     return CurrentProductiveEnterLive29PJoinResultV1(
-        decision_class=DECISION_ENTER,
+        decision_class=decision_class,
         called=True,
         get_count=get_count,
         status=status,
@@ -396,6 +460,236 @@ def _classify_fail_status(reasons: tuple[str, ...], *, error_class: str) -> str:
     return STATUS_FAIL
 
 
+def read_current_double_play_sizing_source_v1(
+    request: CurrentProductiveDoublePlay29PInputV1,
+    *,
+    bound_instrument: BoundInstrumentV1 | None,
+    owner: PortfolioCapitalReservationBudgetOwnerV1 | None,
+    recovery: HostBudgetRecoveryContextV1 | None,
+    injected: CurrentProductiveEnterLive29PInjectedGetV1 | None,
+    decision_epoch: str,
+    reserved_id: str | None = None,
+) -> _DoublePlaySizingDecisionV1:
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+        recover_occupied_scope_close_for_reconciliation_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        ProductiveCycleCanonicalPriceProvenanceV1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_post_close_feedback_v1 import (
+        PostCloseDoublePlayContinuationV1,
+        PostCloseFeedbackRequestV1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.core_cursor_source_v1 import (
+        _read_original_cursor,
+    )
+    from trading.master_v2.double_play_state import SideState
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+        read_occupied_scope_mark_snapshot_v1,
+    )
+
+    if (
+        type(request) is not CurrentProductiveDoublePlay29PInputV1
+        or type(request.reserve) is not bool
+        or type(request.continuation) is not PostCloseDoublePlayContinuationV1
+        or type(request.close_request) is not PostCloseFeedbackRequestV1
+        or type(request.mark) is not ProductiveCycleCanonicalPriceProvenanceV1
+        or type(recovery) is not HostBudgetRecoveryContextV1
+        or type(injected) is not CurrentProductiveEnterLive29PInjectedGetV1
+        or owner is None
+        or recovery.host.owner is not owner
+        or recovery.host.closed
+        or recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_ORIGINAL_SIMULATED_HOST_REQUIRED")
+    continuation, close = request.continuation, request.close_request
+    episode = continuation.switch.episode
+    lane_id, account = episode.lane_id, episode.account_scope.account_identity
+    if (
+        bound_instrument is None
+        or bound_instrument != continuation.bound_instrument
+        or close.bound_instrument != bound_instrument
+        or recovery.host.bindings.get(lane_id) != bound_instrument
+        or close.budget_owner is not owner
+        or recovery.account != account
+        or injected.expected_account_identity != account
+        or recovery.pending_orders
+        or recovery.position_side_v1(bound_instrument) != "FLAT"
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_FLAT_ACCOUNT_BINDING_REQUIRED")
+    recovered = recover_occupied_scope_close_for_reconciliation_v1(
+        lane_id=lane_id,
+        lane_pair=(request.lane, bound_instrument),
+        expected_scope=episode.account_scope,
+        sealed_accounting_source=close.slot_accounting_source,
+    )
+    release = owner.inspect_bounded_slot_close_refresh_v1(close, reserved_id=reserved_id)
+    basis = owner.slot_capital_basis_v1(lane_id, close_booking=continuation.net_booking)
+    if (
+        recovered != close.execution
+        or recovered.l10_close != continuation.switch
+        or recovered.envelope.envelope_digest != continuation.close_envelope_digest
+        or release["fingerprint"] != continuation.capital_refresh_fingerprint
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_CLOSE_PROOF_MISMATCH")
+    if basis is None or basis != continuation.capital_basis or basis.net_basis_usdc <= 0:
+        raise ValueError("DOUBLE_PLAY_29P_POSITIVE_CURRENT_SLOT_BASIS_REQUIRED")
+    cursor, _, raw = _read_original_cursor(
+        request.lane.lane_state_root,
+        instrument_id=bound_instrument.instrument_id,
+        native_id=bound_instrument.venue_native_id,
+    )
+    if cursor.side_state is SideState.KILL_ALL:
+        raise ValueError("DOUBLE_PLAY_29P_CURRENT_CORE_KILL_ALL")
+    if (raw.get("runtime_scope_state") or {}).get("chop_latched") is not False:
+        raise ValueError("DOUBLE_PLAY_29P_CURRENT_CORE_CHOP_OR_SCOPE_UNPROVEN")
+
+    decision_time = datetime.fromisoformat(decision_epoch.replace("Z", "+00:00"))
+    close_time = datetime.fromisoformat(close.observed_at_utc.replace("Z", "+00:00"))
+    host_time = recovery.host.clock()
+    if (
+        decision_time.utcoffset() is None
+        or close_time.utcoffset() is None
+        or decision_time < close_time
+        or not 0 <= host_time - decision_time.timestamp() <= NUMERIC_EQUITY_TTL_SECONDS
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_DECISION_CLOCK_INVALID")
+    mark = request.mark
+    mark.validate_against_cycle_inputs_v1(
+        mark_px=mark.mark_px,
+        index_px=mark.index_px,
+        venue_native_id=bound_instrument.venue_native_id,
+    )
+    event_unix = mark.require_current_mark_clock_v1(observed_unix=host_time)
+    scope = read_occupied_scope_mark_snapshot_v1(Path(request.lane.lane_state_root))
+    if scope is None or scope["digest"] != continuation.switch.scope_digest:
+        raise ValueError("DOUBLE_PLAY_29P_SWITCH_SCOPE_CHANGED")
+    switch_mark = scope["mark"]
+    if not switch_mark["event_unix"] <= event_unix <= decision_time.timestamp() or (
+        event_unix == switch_mark["event_unix"]
+        and json.loads(mark.mark_clock_json)["payload_sha256"] != switch_mark["mark_payload_sha256"]
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_CURRENT_SWITCH_MARK_UNPROVEN")
+
+    stop = request.test_stop
+    reference = Decimal(str(mark.mark_px))
+    side = continuation.target_side
+    if (
+        type(stop) is not DoublePlay29PTestStopV1
+        or stop.venue_native_id != bound_instrument.venue_native_id
+        or stop.target_side != side
+        or type(stop.reference_mark) is not Decimal
+        or stop.reference_mark != reference
+        or type(stop.stop_price) is not Decimal
+        or not stop.stop_price.is_finite()
+        or stop.stop_price <= 0
+        or (side == "long" and stop.stop_price >= reference)
+        or (side == "short" and stop.stop_price <= reference)
+        or type(stop.source_ref) is not str
+        or not stop.source_ref.strip()
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_BOUND_TEST_STOP_REQUIRED")
+    return _DoublePlaySizingDecisionV1(
+        decision_id="l10:" + continuation.close_envelope_digest,
+        semantic_digest=hashlib.sha256(
+            json.dumps(
+                {
+                    "continuation": continuation.to_dict(),
+                    "mark": mark.mark_clock_json,
+                    "test_stop": str(stop.stop_price),
+                    "test_stop_source": stop.source_ref,
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest(),
+        instrument_id=bound_instrument.instrument_id,
+        selected_side=side,
+        decision_outcome="enter_" + side,
+    )
+
+
+def _build_double_play_sizing_input_v1(
+    *,
+    request: CurrentProductiveDoublePlay29PInputV1,
+    decision: _DoublePlaySizingDecisionV1,
+    live_ctx: CanonicalCoreRuntimeCapitalContextV0,
+    owner: PortfolioCapitalReservationBudgetOwnerV1,
+) -> CapitalRiskSizingInputV1:
+    continuation = request.continuation
+    lane_id = continuation.switch.episode.lane_id
+    owner.inspect_bounded_slot_close_refresh_v1(request.close_request)
+    basis = owner.slot_capital_basis_v1(lane_id, close_booking=continuation.net_booking)
+    if basis is None or basis != continuation.capital_basis or basis.net_basis_usdc <= 0:
+        raise ValueError("DOUBLE_PLAY_29P_POSITIVE_CURRENT_SLOT_BASIS_REQUIRED")
+    context = replace(
+        live_ctx, scope_capital_limit=min(live_ctx.scope_capital_limit, basis.net_basis_usdc)
+    )
+    return bind_double_play_sizing_input_v1(decision=decision, capital_context=context)
+
+
+def bind_double_play_sizing_input_v1(
+    *,
+    decision: _DoublePlaySizingDecisionV1,
+    capital_context: CanonicalCoreRuntimeCapitalContextV0 | CapitalRiskSizingInputV1,
+) -> CapitalRiskSizingInputV1:
+    """Use the original builder on the L10 decision and initial or retained sizing context."""
+    # Both sources expose the original builder's decision and capital fields.
+    sizing_input, reasons = build_capital_risk_sizing_input_from_decision_v0(
+        decision=decision,  # type: ignore[arg-type]
+        capital_context=capital_context,  # type: ignore[arg-type]
+    )
+    if sizing_input is None:
+        raise ValueError(reasons[0] if reasons else "DOUBLE_PLAY_29P_SIZING_INPUT_UNPROVEN")
+    return sizing_input
+
+
+def _double_play_sizing_result_v1(
+    *,
+    request: CurrentProductiveDoublePlay29PInputV1,
+    sizing: CapitalRiskSizingDecisionV1,
+    get_count: int,
+    producer_output_value: str,
+    policy: EntryBudgetPolicyV1,
+    reserve_result: SizedReservationResultV1 | None = None,
+) -> CurrentProductiveEnterLive29PJoinResultV1:
+    reservation = reserve_result.reservation if reserve_result is not None else None
+    status = STATUS_DOUBLE_PLAY_RESERVED if reservation is not None else STATUS_DOUBLE_PLAY_ASSESSED
+    continuation = request.continuation
+    reasons = reserve_result.reason_codes if reserve_result is not None else sizing.reason_codes
+    return CurrentProductiveEnterLive29PJoinResultV1(
+        decision_class=DECISION_DOUBLE_PLAY,
+        called=True,
+        get_count=get_count,
+        status=status,
+        venue_plan_authorized=False,
+        first_blocker=""
+        if sizing.outcome is CapitalRiskSizingOutcome.PASS
+        else sizing.reason_codes[0],
+        producer_output_value=producer_output_value,
+        producer_output_status="PRODUCED",
+        step_29p_risk_admissible=TRUE_TOKEN,
+        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        used_offline_default_equity=FALSE_TOKEN,
+        sizing_outcome=sizing.outcome.value,
+        replay=None,
+        reason_codes=(JOIN_SEAM_ID, status, *reasons),
+        entry_budget_policy_id=policy.policy_id,
+        entry_budget_policy_digest=policy.digest_v1(),
+        portfolio_reservation_id=str(reservation.reservation_id) if reservation is not None else "",
+        portfolio_reservation_disposition=reserve_result.disposition.value
+        if reserve_result is not None
+        else "",
+        double_play_sizing=DoublePlay29PSizingAssessmentV1(
+            close_envelope_digest=continuation.close_envelope_digest,
+            capital_basis=continuation.capital_basis,
+            test_stop=request.test_stop,
+            sizing_decision=sizing,
+        ),
+    )
+
+
 def join_current_productive_enter_live_29p_before_venue_plan_v1(
     *,
     replay: IntegratedOfflineReplayResultV1 | None,
@@ -409,9 +703,44 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
     restrictive_risk: object | None = None,
     handoff_journal: object | None = None,
+    double_play: CurrentProductiveDoublePlay29PInputV1 | None = None,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
-    """Consume Live-29P only on ENTER. HOLD does not private-GET."""
+    """Consume Live-29P on ENTER or assess and optionally reserve a simulated reversal."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
+    native_decision = None
+    if double_play is not None:
+        try:
+            if any(
+                value is not None
+                for value in (replay, portfolio_slot, handoff_journal, restrictive_risk)
+            ):
+                raise ValueError("DOUBLE_PLAY_29P_EXPLICIT_ASSESSMENT_INPUT_REQUIRED")
+            native_decision = read_current_double_play_sizing_source_v1(
+                double_play,
+                bound_instrument=bound_instrument,
+                owner=portfolio_budget_owner,
+                recovery=host_budget_recovery,
+                injected=injected,
+                decision_epoch=decision_epoch,
+            )
+            portfolio_slot = CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+                double_play.continuation.switch.episode.lane_id,
+                native_decision.decision_id,
+                native_decision.decision_id,
+            )
+        except (ValueError, OSError, TypeError, AttributeError, ArithmeticError) as exc:
+            return _denied_result(
+                status=STATUS_FAIL,
+                blocker=str(exc),
+                replay=None,
+                get_count=0,
+                decision_class=DECISION_DOUBLE_PLAY,
+            )
+    _deny = (
+        partial(_denied_result, decision_class=DECISION_DOUBLE_PLAY)
+        if native_decision is not None
+        else _denied_result
+    )
     if (portfolio_budget_owner is None) ^ (portfolio_slot is None):
         raise CurrentProductiveEnterLive29PJoinError("PORTFOLIO_OWNER_SLOT_CONTEXT_PAIR_REQUIRED")
     if portfolio_slot is not None:
@@ -437,7 +766,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 POSITION_MANAGEMENT_HANDOFF_REQUIRED,
             ),
         )
-    if decision_class != DECISION_ENTER:
+    if native_decision is None and decision_class != DECISION_ENTER:
         return _hold_result(replay=replay)
 
     if handoff_journal is not None and restrictive_risk is None:
@@ -733,7 +1062,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=eval_reasons,
         )
 
-    if replay is None or replay.intermediate is None:
+    if native_decision is None and (replay is None or replay.intermediate is None):
         return _deny(
             status=STATUS_FAIL,
             blocker="ENTER_REPLAY_MISSING_FOR_LIVE_29P_SIZING",
@@ -773,10 +1102,15 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         # by itself, but ENTER must still rebind from the producer output object.
         pass
 
-    mark = replay.intermediate.market_context.mark_price
+    if native_decision is None:
+        mark = replay.intermediate.market_context.mark_price
+        decision_instrument_id = str(replay.evidence.instrument_id)
+    else:
+        mark = double_play.mark.mark_px
+        decision_instrument_id = native_decision.instrument_id
     price_output = produce_current_productive_reference_price_from_mv2_mark_v1(
         mark_price=mark,
-        instrument_id=str(replay.evidence.instrument_id),
+        instrument_id=decision_instrument_id,
         observed_at_as_of=observed_at,
     )
     if price_output.produced is not True or price_output.reference_price is None:
@@ -796,26 +1130,29 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=tuple(str(code) for code in price_output.reason_codes),
         )
     reference = price_output.reference_price
-    adverse_exit_distance, adverse_reasons = (
-        resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
-    )
-    if adverse_exit_distance is None:
-        return _deny(
-            status=STATUS_FAIL,
-            blocker="LAYER_C_ADVERSE_EXIT_DISTANCE_UNRESOLVED",
-            replay=replay,
-            get_count=get_count,
-            producer_output_value=str(output.value),
-            producer_output_status="PRODUCED",
-            step_29p_risk_admissible=TRUE_TOKEN,
-            reasons=adverse_reasons,
+    if native_decision is not None:
+        stop = double_play.test_stop.stop_price
+    else:
+        adverse_exit_distance, adverse_reasons = (
+            resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
         )
-    protective_sizing_side = resolve_protective_stop_sizing_side_for_live_29p_join_v1(replay)
-    stop = derive_protective_stop_price_from_adverse_exit_v0(
-        selected_side=str(protective_sizing_side or ""),
-        reference_price=reference,
-        adverse_exit_distance=adverse_exit_distance,
-    )
+        if adverse_exit_distance is None:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker="LAYER_C_ADVERSE_EXIT_DISTANCE_UNRESOLVED",
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=adverse_reasons,
+            )
+        protective_sizing_side = resolve_protective_stop_sizing_side_for_live_29p_join_v1(replay)
+        stop = derive_protective_stop_price_from_adverse_exit_v0(
+            selected_side=str(protective_sizing_side or ""),
+            reference_price=reference,
+            adverse_exit_distance=adverse_exit_distance,
+        )
     if stop is None:
         return _deny(
             status=STATUS_FAIL,
@@ -846,7 +1183,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         venue_native_id=venue_native_id,
         instruments_payload=instruments_payload,
         observed_at_as_of=observed_at,
-        bound_instrument_id=str(replay.evidence.instrument_id),
+        bound_instrument_id=decision_instrument_id,
     )
     if metadata_output.produced is not True or metadata_output.constraints is None:
         meta_blocker = (
@@ -938,7 +1275,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
 
     try:
         live_ctx = build_current_productive_live_account_capital_context_v1(
-            instrument_id=str(replay.evidence.instrument_id),
+            instrument_id=decision_instrument_id,
             typed_account_equity=canonical_equity,
             reference_price=canonical_reference,
             protective_stop_price=canonical_stop,
@@ -1021,16 +1358,47 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 step_29p_risk_admissible=TRUE_TOKEN,
             )
 
+    double_play_source = None
+    if native_decision is not None:
+        try:
+            sizing_input = _build_double_play_sizing_input_v1(
+                request=double_play,
+                decision=native_decision,
+                live_ctx=live_ctx,
+                owner=portfolio_budget_owner,
+            )
+            if not double_play.reserve:
+                patched = apply_capital_context_facts_v1(
+                    sizing_input,
+                    capital_context_facts_v1(
+                        portfolio_budget_owner, slot_id=portfolio_slot.slot_id
+                    ),
+                )
+                return _double_play_sizing_result_v1(
+                    request=double_play,
+                    sizing=evaluate_capital_risk_sizing_v1(patched),
+                    get_count=get_count,
+                    producer_output_value=str(output.value),
+                    policy=policy,
+                )
+            double_play_source = DoublePlayReservationSourceV1(
+                close=double_play.close_request, continuation=double_play.continuation
+            )
+        except (ValueError, OSError, ArithmeticError) as exc:
+            return _deny(status=STATUS_FAIL, blocker=str(exc), replay=None, get_count=get_count)
+
     portfolio_reservation_id = ""
     portfolio_reservation_disposition = ""
     sizing_decision: CapitalRiskSizingDecisionV1 | None = None
     reservation_for_final_check = None
     if portfolio_budget_owner is not None and portfolio_slot is not None:
-        assert replay is not None and replay.evidence is not None
-        sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
-            decision=replay.evidence,
-            capital_context=live_ctx,
-        )
+        build_errors = ()
+        if double_play_source is None:
+            assert replay is not None and replay.evidence is not None
+            sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
+                decision=replay.evidence,
+                capital_context=live_ctx,
+            )
         if sizing_input is None:
             return _deny(
                 status=STATUS_FAIL,
@@ -1131,7 +1499,34 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             if injected is not None
             else None,
             handoff_journal=handoff_journal,
+            double_play_source=double_play_source,
         )
+        if double_play_source is not None:
+            if seam.sizing_decision is not None and (
+                (seam.disposition is ReserveDispositionV1.ADMITTED and seam.reservation is not None)
+                or seam.disposition is ReserveDispositionV1.DENIED
+                and seam.sizing_decision.outcome is not CapitalRiskSizingOutcome.PASS
+            ):
+                return _double_play_sizing_result_v1(
+                    request=double_play,
+                    sizing=seam.sizing_decision,
+                    get_count=get_count,
+                    producer_output_value=str(output.value),
+                    policy=policy,
+                    reserve_result=seam,
+                )
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=seam.reason_codes[0]
+                if seam.reason_codes
+                else "DOUBLE_PLAY_RESERVATION_NOT_ADMITTED",
+                replay=None,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=seam.reason_codes,
+            )
         portfolio_reservation_disposition = str(seam.disposition.value)
         reservation_for_final_check = seam.reservation
         if seam.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY:
