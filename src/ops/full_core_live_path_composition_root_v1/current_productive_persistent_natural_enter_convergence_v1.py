@@ -35,6 +35,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
     _align_lane_s7_closes_to_injected_c1_v1,
     _cursor_floor_or_zero,
     _t2_from_s7,
+    invoke_occupied_lane_governed_cycle_n1_consumer_v1,
     non_v5_eg_dispatch_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
@@ -614,8 +615,11 @@ def make_n1_occupied_lane_s5_runner_v1(
     fresh_pretrade_get_transport: Any | None = None,
     cap24_productivity_root: Path | None = None,
     portfolio_budget_host: PortfolioBudgetHostV1 | None = None,
+    occupied_mark_proof_root: Path | None = None,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
+
+    occupied_close_input = None
 
     def _runner(
         *,
@@ -636,6 +640,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         seal_no_effect_hold_v1: Callable[[Path, Mapping[str, Any]], None] | None = None,
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
+        nonlocal occupied_close_input
         if execute_network or perform_get:
             raise PersistentNaturalEnterConvergenceError("NETWORK_FORBIDDEN_THIS_RUNNER")
         addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
@@ -649,6 +654,8 @@ def make_n1_occupied_lane_s5_runner_v1(
                 f"expected={expected_cursor_root} actual={cursor_store_root}",
             )
         prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).name}"
+        if occupied_mark_proof_root is not None:
+            prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).parent.name}"
         native_id = str(authorization.native_id or "").strip()
         if mark_price_payload is None or not native_id:
             raise PersistentNaturalEnterConvergenceError("CMC_MARK_PRICE_PAYLOAD_REQUIRED")
@@ -690,6 +697,51 @@ def make_n1_occupied_lane_s5_runner_v1(
             s7_base["cycle_evidence_root"] = str(Path(evidence_root).resolve())
         _bound = composed_pairs[LANE_ID][1]
         decision_epoch = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        if occupied_mark_proof_root is not None:
+            from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+                AuthenticatedEntryEpisodeRequestV1,
+            )
+
+            if portfolio_budget_host is None or len(composed_pairs) != 1:
+                raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_N1_HOST_REQUIRED")
+            if occupied_close_input is None:
+                occupied_close_input = resolve_live_29p_injected_for_productive_s5_cycle_v1(
+                    bound=_bound,
+                    fresh_pretrade_get_transport=fresh_pretrade_get_transport,
+                    productivity_root=cap24_productivity_root,
+                    decision_epoch=decision_epoch,
+                    pretrade_cycle_id=f"{prefix}:{LANE_ID}",
+                )
+            if occupied_close_input is None:
+                raise PersistentNaturalEnterConvergenceError(
+                    "OCCUPIED_MARK_CLOSE_METADATA_REQUIRED"
+                )
+            context, proofs = (
+                portfolio_budget_host.observe_authenticated_execution_reconciliation_v1(
+                    {LANE_ID: _bound},
+                    proof_root=occupied_mark_proof_root,
+                    deliver_authenticated_incidents=True,
+                )
+            )
+            if len(proofs) != 1:
+                raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_OWNED_ENTRY_UNPROVEN")
+            proof = next(iter(proofs.values()))
+            lane = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
+                lane_pairs,
+                **mk,
+                candles_payload=candles_payload,
+                live_29p_injected=occupied_close_input,
+                portfolio_budget_owner=portfolio_budget_host.owner,
+                host_budget_recovery=context,
+                occupied_scope_mark_lane_id=LANE_ID,
+                authenticated_entry=AuthenticatedEntryEpisodeRequestV1(
+                    occupied_mark_proof_root, proof
+                ),
+            )[LANE_ID]
+            result = lane.governed_cycle_result
+            return replace(
+                result, extra={**result.extra, "OCCUPIED_MARK_EVIDENCE_ROOT": lane.evidence_root}
+            )
         host_recovery = None
         if portfolio_budget_host is not None:
             try:
@@ -925,6 +977,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     fresh_pretrade_get_transport: Any | None = None,
     cap24_productivity_root: Path | None = None,
     portfolio_budget_host: PortfolioBudgetHostV1 | None = None,
+    occupied_mark_proof_root: Path | None = None,
     cancel_requested: Callable[[], bool] | None = None,
 ) -> PolicyGovernedContinuousRunResultV1:
     """S8→policy binding→S6 (live or test observation source)→N1/S5/S7→PRE_EXTERNAL."""
@@ -963,6 +1016,13 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     if cursor_store_root.resolve() != Path(pairs[LANE_ID][0].lane_state_root).resolve():
         raise PersistentNaturalEnterConvergenceError("FIXED_LANE_ROOT_VIOLATION")
 
+    if occupied_mark_proof_root is not None:
+        from src.ops.execution_reconciliation_proof_store_v1 import require_private_proof_root_v1
+
+        require_private_proof_root_v1(occupied_mark_proof_root)
+        cursor = load_current_productive_sidestate_confirmation_cursor_v1(cursor_store_root)
+        if cursor is None or persisted_cursor_venue_native_id_v1(cursor) != bound.venue_native_id:
+            raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_EXISTING_CURSOR_REQUIRED")
     reconciliation = reconcile_selection_rotation_with_persisted_cursor_v1(
         cursor_store_root=cursor_store_root,
         bound=bound,
@@ -1133,6 +1193,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         fresh_pretrade_get_transport=fresh_pretrade_get_transport,
         cap24_productivity_root=cap24_productivity_root,
         portfolio_budget_host=portfolio_budget_host,
+        occupied_mark_proof_root=occupied_mark_proof_root,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -1149,6 +1210,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             require_f1_m9_each_cycle=True,
             cancel_requested=cancel_requested,
             s5_runner=runner,
+            occupied_mark_only=occupied_mark_proof_root is not None,
             time_fn=time_fn,
             sleep_fn=sleep_fn,
         )
