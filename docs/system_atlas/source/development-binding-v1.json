@@ -954,7 +954,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "0207157fca64c1bf2b094d4192baf6fc0b09c6b5599012ac5998caf0b88defd2"
+      "sha256": "127217eaea84702861a570f48f4d0e456c624daca60bce747f750102fe20cf98"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1329,12 +1329,12 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
       "before_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
-      "sha256": "f057e8f3c1baa68dafb59c491d193c232a2008670ed855658a9513dcdfb660f1"
+      "sha256": "2cda933befdd66fd4a45ac8e637a3ca4e360f7660f453a97b50085cefbd230bc"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
       "before_sha256": "d54582b65b96f61375180c0abaa5df3279495b17307162820e50e8923025a57b",
-      "sha256": "5a30568df81a4d316f138df9d317f2ce2ec136ea76de0e160907704025c04fda"
+      "sha256": "1349b51057f4d5e590f304c3bd7677c5d0883e3421d0b5036d896e6a659d5af0"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
@@ -1594,7 +1594,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "308baacb462760a56d9a35801e9128bda5c8341853b132adefdc8b15afea9486"
+      "sha256": "5963c1875d75cb5e3ecdd5c8d24e47d8abb54c74302a292941eb65ef7fb5ed84"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -1699,7 +1699,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
       "before_sha256": "beab8cb58e27b25e616c3820999c489fa470965426cdf8d6639e3769fec07bc6",
-      "sha256": "3d76d42c486354dba0afbb1d716811ceb7a7737f04556af622b49956e8da9e1a"
+      "sha256": "406ff88db1a9438c3e691a9a3b43bdb075551e8b86bcea357dbd90b6d34a39c6"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
@@ -1979,12 +1979,17 @@
     {
       "path": "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
       "before_sha256": "7f1fc3c29b9f07452635738abd3b7d64b6401db3dbdd2c30b2a6869e44b5cf47",
-      "sha256": "9afc8c391a49f851f38979de22681f2a7ba406fd9ca00e43f9f940ae8db64c39"
+      "sha256": "119dde107c6e55f494ed788e818a325a27de5f775113f31bb5b7bffd426f0827"
+    },
+    {
+      "path": "src/ops/p5_productive_layered_core_authority_seam_v1/occupied_mark_state_v1.py",
+      "before_sha256": null,
+      "sha256": "7e41a6ebd636af731eab54a1463a9cc4525599854ccd89a52f694029f6f26f08"
     },
     {
       "path": "src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py",
       "before_sha256": "574e310e580b3e44d842faec383e459e64cf3f2c2f360f3b9bb78240bf3b8ee9",
-      "sha256": "32ff8157532f6ecf5c2ccfa24280f92b85c9c8b027de7f61f46ad10c593694f9"
+      "sha256": "32cbc515b68414fc09f7c628d730b9996908631b0275a0c6bc5d578013f19033"
     },
     {
       "path": "src/ops/peak_trade_public_market_data_runtime_v1/event_pipeline_v1.py",
@@ -2069,7 +2074,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
       "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
-      "sha256": "88222852b013f038f72725c4543544c3f97f2567b00a08ea1dce5a1884a57a8f"
+      "sha256": "d54b59286d4471d0d39680cc59c3a42da701b0aa72e484d7888be09781729fb9"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -2247,11 +2252,6 @@
       "sha256": "00b467776cdcec3c7fe32b075a03a89989d819d4684d6b6beaed6f83707dadc2"
     },
     {
-      "path": "src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py",
-      "before_sha256": "209a515d62c87c50329d8999d3d376367668c4ac04e93c8f1ce2750929a2abfb",
-      "sha256": "ecc0086d2f8827c7a2413681986101140aef00f3fe48c9befc2ef903e01dc6ef"
-    },
-    {
       "path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
       "before_sha256": "7d66acfcd6db53fec0efb4de6f794f77f4608d35af36fbeff3ca083d3e41ac0a",
       "sha256": "78c9d0b8d546906920c496ba88d455e48d89106377aeb512cc8ec791def3cf7d"
@@ -2265,11 +2265,6 @@
       "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
       "before_sha256": "0526835913d62efa3c33a08cda7557f03ee8d7918311c9794611314fa90ba68c",
       "sha256": "4d63799f7dd0d619bc760924a9efd2190bf01fd37c9065ddbc8a92324037a29b"
-    },
-    {
-      "path": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py",
-      "before_sha256": "e044fccc4104a51138e080d29773d865009a0b30294a2e39e2e39f7f5942ab39",
-      "sha256": "05f98a70d74bbd22e577a1dabef7161912a997344b7760a60e5c7aa87345fcce"
     },
     {
       "path": "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
@@ -2569,17 +2564,17 @@
     {
       "path": "tests/ops/test_bounded_slot_reversal_direction_evidence_v1.py",
       "before_sha256": null,
-      "sha256": "1b85d496c0294ad2f716fbe6cda7e14f6b5e5ffbe3401f33e072c4b9ded44e25"
+      "sha256": "5d6cdeca917f89bc20d4aa2114e4c6b9399254dcc634420c9ff826cf4512d8c6"
     },
     {
       "path": "tests/ops/test_bounded_slot_scope_close_v1.py",
       "before_sha256": null,
-      "sha256": "f7008e6ea636164cdf827ab1fc032280201f1f95b5f193f14b1299aa11b0cee3"
+      "sha256": "508dfb97cfce83bd3ededcb1c619971088d7f9f04e2ea69c34e86a6c5d6a5148"
     },
     {
       "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",
       "before_sha256": null,
-      "sha256": "89aecccd848372a19677402ced9d5a2cbf36e0724a3240287a195734a86b4ee3"
+      "sha256": "c56cf304f953a2b6fe6bffca182d49689d047538c2d19360b624ee34933b22aa"
     },
     {
       "path": "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",

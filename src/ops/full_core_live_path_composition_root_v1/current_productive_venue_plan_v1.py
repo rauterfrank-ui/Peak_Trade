@@ -194,6 +194,7 @@ def try_prepare_current_productive_double_play_venue_plan_v1(
         build_canonical_order_intent_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        bind_double_play_sizing_input_v1,
         read_current_double_play_sizing_source_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_n1_venue_quantity_limit_admission_v1 import (
@@ -201,9 +202,6 @@ def try_prepare_current_productive_double_play_venue_plan_v1(
     )
     from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
         DoublePlayReservationSourceV1,
-    )
-    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
-        compute_capital_sizing_input_digest_v0,
     )
     from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l10_bull_bear_switch_v1 import (
         L10_OWNER,
@@ -233,11 +231,9 @@ def try_prepare_current_productive_double_play_venue_plan_v1(
             sizing.monetary_source is None
             or sizing.monetary_source.decision_epoch != decision_epoch
             or applied.input_digest
-            != compute_capital_sizing_input_digest_v0(
-                decision=decision,
-                selected_side=applied.selected_side,
-                reference_price=applied.reference_price,
-            )
+            != bind_double_play_sizing_input_v1(
+                decision=decision, capital_context=applied
+            ).input_digest
         ):
             raise ValueError("DOUBLE_PLAY_PLAN_ORIGINAL_SIZING_SOURCE_CHANGED")
         account_scope = continuation.switch.episode.account_scope

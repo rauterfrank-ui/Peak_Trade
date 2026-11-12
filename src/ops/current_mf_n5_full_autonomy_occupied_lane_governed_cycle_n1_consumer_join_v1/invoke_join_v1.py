@@ -419,9 +419,9 @@ def _occupied_scope_close_binding_v1(
 def _scope_switch_close_binding_v1(
     *, lane_identity, identity, cursor_root: Path, exit_state_digest: str, cursor_digest: str
 ) -> dict[str, Any]:
-    from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
         read_occupied_scope_mark_snapshot_v1,
-        restore_episode_from_store_v1,
+        restore_layered_core_episode_v1,
     )
 
     identity.validate_v1()
@@ -433,7 +433,7 @@ def _scope_switch_close_binding_v1(
     ):
         raise ValueError("OCCUPIED_SCOPE_CLOSE_EPISODE_MISMATCH")
     scope = read_occupied_scope_mark_snapshot_v1(cursor_root)
-    snapshot = restore_episode_from_store_v1(
+    snapshot = restore_layered_core_episode_v1(
         cursor_root, expected_instrument_id=identity.instrument_id
     )
     expected_regimes = {"long": ("bull", "bear"), "short": ("bear", "bull")}
@@ -645,6 +645,8 @@ def _t2_from_s7(
         if s7_base.get("occupied_scope_mark"):
             from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
                 NakedLayeredCoreDurableStateError,
+            )
+            from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
                 require_new_occupied_scope_mark_v1,
             )
 

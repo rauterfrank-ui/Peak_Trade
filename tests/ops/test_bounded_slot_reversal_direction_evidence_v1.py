@@ -25,8 +25,8 @@ from trading.master_v2.layered_core_authority_seal_v1 import validate_layered_co
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import (
     SelectedFutureInputV1,
 )
-from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
-    restore_episode_from_store_v1,
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    restore_layered_core_episode_v1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.orchestrator_v1 import (
     MechanicalStepSpecV1,
@@ -68,7 +68,7 @@ def test_original_scope_switch_does_not_need_new_c3_to_prove_direction(
     root = Path(source["cursor_root"])
     raw = cursors.load_current_productive_sidestate_confirmation_cursor_v1(root)
     cursor = cursors.parse_current_productive_sidestate_confirmation_cursor_v1(raw)
-    initial = restore_episode_from_store_v1(root, expected_instrument_id=cursor.instrument_id)
+    initial = restore_layered_core_episode_v1(root, expected_instrument_id=cursor.instrument_id)
     assert initial.regime.value == prior_regime
 
     selected = SelectedFutureInputV1(
@@ -92,7 +92,9 @@ def test_original_scope_switch_does_not_need_new_c3_to_prove_direction(
         assert native.ok and native.seal is not None, native.failure_codes
         seal = native.seal
         assert validate_layered_core_authority_seal_v1(seal, instrument_id=cursor.instrument_id).ok
-        restored = restore_episode_from_store_v1(root, expected_instrument_id=cursor.instrument_id)
+        restored = restore_layered_core_episode_v1(
+            root, expected_instrument_id=cursor.instrument_id
+        )
         assert restored.snapshot_id == seal.episode_snapshot_id
         assert restored.regime.value == seal.regime_post
         if distance_fraction < 1:

@@ -30,11 +30,13 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
     NakedLayeredCoreEpisodeV1,
-    atomic_persist_episode_v1,
     execute_naked_layered_core_mechanical_step_v1,
     initialize_naked_layered_core_episode_v1,
+)
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    persist_layered_core_episode_v1,
     require_new_occupied_scope_mark_v1,
-    restore_episode_from_store_v1,
+    restore_layered_core_episode_v1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
     ExplicitPassthroughDynamicScopeGeneratorV1,
@@ -134,7 +136,7 @@ def run_p5_layered_core_authority_seam_v1(
     scope_generator = ExplicitPassthroughDynamicScopeGeneratorV1()
     try:
         if restore_existing:
-            episode = restore_episode_from_store_v1(
+            episode = restore_layered_core_episode_v1(
                 store_root,
                 expected_instrument_id=selected.instrument_id,
             )
@@ -197,7 +199,7 @@ def run_p5_layered_core_authority_seam_v1(
             "seal_id": seal_id,
             "cycle_id": cycle_id,
         }
-    manifest_digest = atomic_persist_episode_v1(
+    manifest_digest = persist_layered_core_episode_v1(
         store_root, step_result.episode, occupied_mark=mark_record
     )
     regime_pre = (

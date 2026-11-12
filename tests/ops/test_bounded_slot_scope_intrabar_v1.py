@@ -18,8 +18,10 @@ from tests.ops import test_bounded_slot_connected_roundtrip_v1 as fixture
 from tests.ops.test_current_scope_mark_clock_v1 import provenance
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     SNAPSHOT_FILENAME,
+)
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
     read_occupied_scope_mark_snapshot_v1,
-    restore_episode_from_store_v1,
+    restore_layered_core_episode_v1,
 )
 from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
     synthetic_ports_and_isolation as synthetic_ports_and_isolation,
@@ -131,7 +133,7 @@ def test_valid_scope_mark_at_the_original_five_slot_host_boundary(
             accepted_candles = prior_inputs["candles_payload_by_lane"]
 
         root = Path(world["pairs"][target][0].lane_state_root)
-        before = restore_episode_from_store_v1(
+        before = restore_layered_core_episode_v1(
             root, expected_instrument_id=bounds[target].instrument_id
         )
         target_mark = closes[-1] * 0.98

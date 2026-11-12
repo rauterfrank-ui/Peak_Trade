@@ -485,7 +485,7 @@ def read_current_double_play_sizing_source_v1(
         _read_original_cursor,
     )
     from trading.master_v2.double_play_state import SideState
-    from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
         read_occupied_scope_mark_snapshot_v1,
     )
 
@@ -626,8 +626,19 @@ def _build_double_play_sizing_input_v1(
     context = replace(
         live_ctx, scope_capital_limit=min(live_ctx.scope_capital_limit, basis.net_basis_usdc)
     )
+    return bind_double_play_sizing_input_v1(decision=decision, capital_context=context)
+
+
+def bind_double_play_sizing_input_v1(
+    *,
+    decision: _DoublePlaySizingDecisionV1,
+    capital_context: CanonicalCoreRuntimeCapitalContextV0 | CapitalRiskSizingInputV1,
+) -> CapitalRiskSizingInputV1:
+    """Use the original builder on the L10 decision and initial or retained sizing context."""
+    # Both sources expose the original builder's decision and capital fields.
     sizing_input, reasons = build_capital_risk_sizing_input_from_decision_v0(
-        decision=decision, capital_context=context
+        decision=decision,  # type: ignore[arg-type]
+        capital_context=capital_context,  # type: ignore[arg-type]
     )
     if sizing_input is None:
         raise ValueError(reasons[0] if reasons else "DOUBLE_PLAY_29P_SIZING_INPUT_UNPROVEN")

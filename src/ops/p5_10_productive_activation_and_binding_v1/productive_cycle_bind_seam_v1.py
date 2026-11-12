@@ -25,9 +25,11 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
-    atomic_persist_episode_v1,
     initialize_naked_layered_core_episode_v1,
-    restore_episode_from_store_v1,
+)
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    persist_layered_core_episode_v1,
+    restore_layered_core_episode_v1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
     ExplicitPassthroughDynamicScopeGeneratorV1,
@@ -319,7 +321,7 @@ def prepare_productive_layered_core_replay_bind_v1(
     )
     restore_existing = True
     try:
-        restore_episode_from_store_v1(store_root, expected_instrument_id=instrument_id)
+        restore_layered_core_episode_v1(store_root, expected_instrument_id=instrument_id)
     except NakedLayeredCoreDurableStateError as exc:
         if occupied_mark is not None:
             return replay_input, _fail_carry(str(exc))
@@ -516,7 +518,7 @@ def ensure_productive_layered_core_episode_store_v1(
         return ("layered_core_bootstrap_instrument_missing",)
     root = Path(store_root)
     try:
-        restore_episode_from_store_v1(root, expected_instrument_id=instrument_id)
+        restore_layered_core_episode_v1(root, expected_instrument_id=instrument_id)
         return ()
     except NakedLayeredCoreDurableStateError:
         pass
@@ -551,7 +553,7 @@ def ensure_productive_layered_core_episode_store_v1(
         return (f"layered_core_bootstrap_init_fail_closed:{exc}",)
     if init_failures:
         return tuple(init_failures)
-    atomic_persist_episode_v1(root, episode)
+    persist_layered_core_episode_v1(root, episode)
     return ()
 
 

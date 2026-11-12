@@ -681,7 +681,7 @@ class PortfolioBudgetHostV1:
             _read_original_cursor,
         )
         from trading.master_v2.double_play_state import SideState
-        from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+        from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
             read_occupied_scope_mark_snapshot_v1,
         )
 

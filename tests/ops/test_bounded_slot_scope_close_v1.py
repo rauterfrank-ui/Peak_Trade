@@ -69,9 +69,9 @@ from tests.ops.test_current_scope_mark_clock_v1 import provenance
 from tests.ops.test_n1_original_reservation_host_handoff_v1 import (
     synthetic_ports_and_isolation as synthetic_ports_and_isolation,
 )
-from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
     read_occupied_scope_mark_snapshot_v1,
-    restore_episode_from_store_v1,
+    restore_layered_core_episode_v1,
 )
 
 
@@ -519,7 +519,7 @@ def test_same_candle_scope_switch_reaches_full_close_and_original_budget(
         )
         assert intrabar["candles_payload_by_lane"] == baseline["candles_payload_by_lane"]
         root = Path(world["pairs"][lane][0].lane_state_root)
-        before_scope = restore_episode_from_store_v1(
+        before_scope = restore_layered_core_episode_v1(
             root, expected_instrument_id=bounds[lane].instrument_id
         )
         cursor_file = root / occupied.CURSOR_FILENAME

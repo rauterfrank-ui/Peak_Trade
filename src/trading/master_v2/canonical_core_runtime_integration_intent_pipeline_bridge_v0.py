@@ -19,7 +19,7 @@ import json
 import re
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Mapping, Optional, Protocol, Tuple
+from typing import Mapping, Optional, Tuple
 
 from src.execution_pipeline.contracts import ExecutionPlan, OrderPlan
 from src.execution_pipeline.plan_only_boundary_v0 import (
@@ -233,44 +233,9 @@ def _instrument_forbidden(instrument_id: str) -> Tuple[str, ...]:
     return tuple(dict.fromkeys(reasons))
 
 
-class CapitalSizingDecisionSourceV0(Protocol):
-    @property
-    def decision_id(self) -> str: ...
-
-    @property
-    def semantic_digest(self) -> str: ...
-
-    @property
-    def instrument_id(self) -> str: ...
-
-    @property
-    def selected_side(self) -> str: ...
-
-    @property
-    def decision_outcome(self) -> str: ...
-
-
-def compute_capital_sizing_input_digest_v0(
-    *, decision: CapitalSizingDecisionSourceV0, selected_side: str, reference_price: Decimal
-) -> str:
-    """Bind the original decision and reference used by the canonical sizer."""
-    input_material = json.dumps(
-        {
-            "bridge_version": CANONICAL_CORE_RUNTIME_INTEGRATION_INTENT_PIPELINE_BRIDGE_LAYER_VERSION,
-            "decision_id": decision.decision_id,
-            "decision_semantic_digest": decision.semantic_digest,
-            "instrument_id": decision.instrument_id,
-            "selected_side": selected_side,
-            "reference_price": str(reference_price),
-        },
-        sort_keys=True,
-    )
-    return hashlib.sha256(input_material.encode("utf-8")).hexdigest()
-
-
 def build_capital_risk_sizing_input_from_decision_v0(
     *,
-    decision: CapitalSizingDecisionSourceV0,
+    decision: CanonicalTradingDecisionEvidenceV1,
     capital_context: CanonicalCoreRuntimeCapitalContextV0,
 ) -> Tuple[Optional[CapitalRiskSizingInputV1], Tuple[str, ...]]:
     """Build STEP-29P sizing input from canonical decision evidence without duplication."""
@@ -287,11 +252,18 @@ def build_capital_risk_sizing_input_from_decision_v0(
     if reasons:
         return None, tuple(dict.fromkeys(reasons))
 
-    input_digest = compute_capital_sizing_input_digest_v0(
-        decision=decision,
-        selected_side=selected_side,
-        reference_price=capital_context.reference_price,
+    input_material = json.dumps(
+        {
+            "bridge_version": CANONICAL_CORE_RUNTIME_INTEGRATION_INTENT_PIPELINE_BRIDGE_LAYER_VERSION,
+            "decision_id": decision.decision_id,
+            "decision_semantic_digest": decision.semantic_digest,
+            "instrument_id": decision.instrument_id,
+            "selected_side": selected_side,
+            "reference_price": str(capital_context.reference_price),
+        },
+        sort_keys=True,
     )
+    input_digest = hashlib.sha256(input_material.encode("utf-8")).hexdigest()
 
     sizing_input = CapitalRiskSizingInputV1(
         decision_id=decision.decision_id,

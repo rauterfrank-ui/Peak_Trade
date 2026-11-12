@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 import os
 import uuid
 from dataclasses import dataclass
@@ -598,87 +597,15 @@ def execute_naked_layered_core_mechanical_step_v1(
     )
 
 
-def _occupied_scope_mark_snapshot_v1(text: str) -> dict[str, Any] | None:
-    try:
-        body = json.loads(text)
-    except ValueError:
-        # The legacy reader verifies the manifest before decoding the snapshot.
-        return None
-    if isinstance(body, dict) and body.get("schema_name") == SNAPSHOT_SCHEMA_NAME:
-        return None
-    if not isinstance(body, dict) or set(body) != {"snapshot", "mark", "digest"}:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_MARK_SNAPSHOT_INVALID")
-    expected = _snapshot_digest({"snapshot": body["snapshot"], "mark": body["mark"]})
-    mark = body["mark"]
-    if body["digest"] != expected:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_MARK_SNAPSHOT_DIGEST_MISMATCH")
-    if (
-        not isinstance(mark, dict)
-        or type(mark.get("event_unix")) not in (int, float)
-        or not math.isfinite(mark["event_unix"])
-        or mark["event_unix"] <= 0
-        or not isinstance(mark.get("prices"), list)
-        or not mark["prices"]
-        or any(
-            type(p) not in (int, float) or not math.isfinite(p) or p <= 0 for p in mark["prices"]
-        )
-        or not isinstance(mark.get("position_episode_id"), str)
-        or not mark["position_episode_id"]
-        or "pending_close_episode_id" not in mark
-        or mark["pending_close_episode_id"] not in (None, mark["position_episode_id"])
-    ):
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_MARK_SNAPSHOT_INVALID")
-    return body
-
-
-def read_occupied_scope_mark_snapshot_v1(store_root: Path) -> dict[str, Any] | None:
-    try:
-        text = (store_root / SNAPSHOT_FILENAME).read_text(encoding="utf-8")
-    except FileNotFoundError:
-        return None
-    except OSError as exc:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_MARK_SNAPSHOT_UNREADABLE") from exc
-    return _occupied_scope_mark_snapshot_v1(text)
-
-
-def require_new_occupied_scope_mark_v1(
-    store_root: Path, *, event_unix: float, price: float, episode_id: str
-) -> list[float]:
-    record = read_occupied_scope_mark_snapshot_v1(store_root)
-    if record is None:
-        return [price]
-    mark = record["mark"]
-    if event_unix < mark["event_unix"]:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_MARK_OUT_OF_ORDER")
-    if event_unix == mark["event_unix"] and price in mark["prices"]:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_MARK_DUPLICATE")
-    if mark["pending_close_episode_id"] == episode_id:
-        raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_CLOSE_ALREADY_PLANNED")
-    return [*mark["prices"], price] if event_unix == mark["event_unix"] else [price]
-
-
 def atomic_persist_episode_v1(
     store_root: Path,
     episode: NakedLayeredCoreEpisodeV1,
-    *,
-    occupied_mark: Mapping[str, Any] | None = None,
 ) -> str:
-    """Write a bound snapshot atomically for a store consuming occupied marks."""
+    """Atomic write episode JSON + MANIFEST.sha256 under store_root."""
     store_root.mkdir(parents=True, exist_ok=True)
     snapshot = episode_to_snapshot_v1(episode)
     body = _canonical_json(snapshot)
     digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
-    prior = read_occupied_scope_mark_snapshot_v1(store_root)
-    if occupied_mark is not None or prior is not None:
-        from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
-            atomic_write_text,
-        )
-
-        mark = dict(occupied_mark) if occupied_mark is not None else prior["mark"]
-        record = {"snapshot": snapshot, "mark": mark}
-        record["digest"] = _snapshot_digest(record)
-        atomic_write_text(path=store_root / SNAPSHOT_FILENAME, text=_canonical_json(record))
-        return digest
     snapshot_path = store_root / SNAPSHOT_FILENAME
     manifest_path = store_root / MANIFEST_FILENAME
     tmp_snapshot = snapshot_path.with_suffix(".json.tmp")
@@ -697,16 +624,9 @@ def restore_episode_from_store_v1(
 ) -> NakedLayeredCoreEpisodeV1:
     snapshot_path = store_root / SNAPSHOT_FILENAME
     manifest_path = store_root / MANIFEST_FILENAME
-    if not snapshot_path.is_file():
+    if not snapshot_path.is_file() or not manifest_path.is_file():
         raise NakedLayeredCoreDurableStateError("SNAPSHOT_STORE_INCOMPLETE")
     body = snapshot_path.read_text(encoding="utf-8")
-    occupied = _occupied_scope_mark_snapshot_v1(body)
-    if occupied is not None:
-        return episode_from_snapshot_v1(
-            occupied["snapshot"], expected_instrument_id=expected_instrument_id
-        )
-    if not manifest_path.is_file():
-        raise NakedLayeredCoreDurableStateError("SNAPSHOT_STORE_INCOMPLETE")
     digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
     manifest_line = manifest_path.read_text(encoding="utf-8").strip().split()
     if not manifest_line or manifest_line[0] != digest:

@@ -935,8 +935,10 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     if occupied_scope_mark:
         from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
             NakedLayeredCoreDurableStateError,
+        )
+        from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
             require_new_occupied_scope_mark_v1,
-            restore_episode_from_store_v1,
+            restore_layered_core_episode_v1,
         )
 
         for lane_id, (bound, store_root, _address) in bound_seam.items():
@@ -951,7 +953,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 mark_event = canonical_price_provenance.require_current_mark_clock_v1(
                     observed_unix=observed_unix
                 )
-                restore_episode_from_store_v1(
+                restore_layered_core_episode_v1(
                     Path(store_root), expected_instrument_id=bound.instrument_id
                 )
                 require_new_occupied_scope_mark_v1(
