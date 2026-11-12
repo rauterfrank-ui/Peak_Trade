@@ -1062,6 +1062,11 @@
       "sha256": "466fe876281fb0e98fc311d5f8b9378a29730f9df7d8e2db0a296bfd083d7992"
     },
     {
+      "path": "scripts/ops/run_canonical_volatility_numeric_max_age_parameter_research_execution_v1.py",
+      "before_sha256": "b788132b72d6ef127370fcd706a9295262cdc59b6b6c744279a71dc1177b3961",
+      "sha256": "67e5a1453936d441b3754b3e23ef2ebb8fee3e2ac528fbfbc742e97ddf5f040b"
+    },
+    {
       "path": "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
       "before_sha256": "565b91b8147bab999719c055a83fbe1fd092ce791f0ea2e02f7d0f624f915e56",
       "sha256": "3160177c6622f48db3ed9a8a8f5021960dda08275b7951f58585cd034fc59689"
@@ -1210,6 +1215,11 @@
       "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
       "before_sha256": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
       "sha256": "15d56285589843b6e455617bb825f531364e839585a8e95796da6fb6009c3f22"
+    },
+    {
+      "path": "src/experiments/f1_m9_proposal_review_research_follow_up_v1.py",
+      "before_sha256": null,
+      "sha256": "8aaa352f5eb316004c533d870601791dec20ecadd0ac75189cf93fe0c42d2cf2"
     },
     {
       "path": "src/governance/f1_m9_proposal_review_feedback_v1.py",
@@ -2265,6 +2275,11 @@
       "path": "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
       "before_sha256": "92209011781f0aaf46cc386b880c0b1c58299b874097bc569db90ac98143c942",
       "sha256": "f1a774407aa18e10a69b763cd71b319eadaacacfedf04a59fa5ec3dd95f1f386"
+    },
+    {
+      "path": "tests/experiments/test_f1_m9_proposal_review_research_follow_up_v1.py",
+      "before_sha256": null,
+      "sha256": "4216fc74ebcf3cb89b85fdf417733a29ba64d9f08b4355f1f5be5043abecaf3d"
     },
     {
       "path": "tests/experiments/test_meta_association_bucket_sample_v1.py",
