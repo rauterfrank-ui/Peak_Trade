@@ -143,6 +143,19 @@ def freeze_existing_market_forecast_v1(
     )
 
 
+def read_frozen_market_forecast_v1(
+    *, store_root: Path | str, job_key: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Read the immutable forecast while its outcome can still be pending."""
+    assert_offline_v1()
+    require_v1(job_key.get("identity_kind") == "MARKET_ONLY_V1", "MARKET_JOB_REQUIRED")
+    path = Path(store_root) / ".intelligence-integration-v1" / digest_v1(job_key) / "forecast.json"
+    require_v1(path.is_file(), "MARKET_FORECAST_MUST_BE_FROZEN_FIRST")
+    frozen = _read(path, MARKET_FROZEN_SCHEMA)
+    require_v1(frozen["job_key"] == dict(job_key), "READBACK_JOB_MISMATCH")
+    return frozen
+
+
 def _freeze_existing_forecast_v1(
     *,
     store_root: Path | str,

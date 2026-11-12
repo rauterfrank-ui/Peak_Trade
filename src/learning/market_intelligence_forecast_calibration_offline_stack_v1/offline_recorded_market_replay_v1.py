@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v1 import (
+    build_independent_market_return_target_v1,
     validate_market_horizon_request_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.n_bars_bar_evidence_supplier_v1 import (
@@ -27,6 +28,8 @@ from .context_admission_v1 import (
     FactAdmissionReceiptV1,
     compose_admitted_market_context_v1,
 )
+from .forecast_measurement_integration_v1 import read_frozen_market_forecast_v1
+from .independent_market_forecast_measurement_v1 import calibrate_frozen_market_forecast_v1
 from .integration_contracts_v1 import (
     MarketIdentityV1,
     assert_offline_v1,
@@ -40,6 +43,7 @@ from .market_context_existing_fact_materialization_v1 import (
     ExistingFactMaterializationRequestV1,
     GovernedCanonicalFactV1,
 )
+from .market_ols_next_forecast_v1 import forecast_from_market_ols_model_v1
 
 
 @dataclass(frozen=True)
@@ -118,15 +122,21 @@ def compose_recorded_market_context_v1(
     )
 
 
+def _recorded_target_identity(request: Mapping[str, Any]) -> MarketIdentityV1:
+    identity, _, interval, _ = validate_market_horizon_request_v1(request)
+    require_v1(interval == "PT1H", "ARCHIVE_PT1H_TARGET_REQUIRED")
+    require_v1(request["source_kind"] == "RECORDED_PUBLIC_MD", "MARKET_SOURCE_KIND_MISMATCH")
+    return MarketIdentityV1(**identity)
+
+
 def measure_recorded_market_horizon_v1(
     *, archive: RecordedMarkArchiveV1, request: Mapping[str, Any], evaluated_at_utc: str
 ) -> dict[str, Any]:
     """Supply recorded receipts to the N_BARS measurement owner for an explicit target."""
-    identity, _, interval, _ = validate_market_horizon_request_v1(request)
-    require_v1(interval == "PT1H", "ARCHIVE_PT1H_TARGET_REQUIRED")
+    identity = _recorded_target_identity(request)
     source, ref = _load(
         archive,
-        MarketIdentityV1(**identity),
+        identity,
         start=request["horizon_start_time_utc"],
         count=request["n_bars"],
         cutoff=evaluated_at_utc,
@@ -138,7 +148,7 @@ def measure_recorded_market_horizon_v1(
         receipts.append(
             {
                 "source_ref": f"{ref}:{int(bar['bar_open_time'])}",
-                "dataset_generation": identity["dataset_generation"],
+                "dataset_generation": identity.dataset_generation,
                 "original_bar_json": bytes_v1(bar).decode("utf-8"),
                 "original_bar_sha256": digest_v1(bar),
                 "known_at_utc": captured,
@@ -150,4 +160,63 @@ def measure_recorded_market_horizon_v1(
         )
     return materialize_independent_market_horizon_v1(
         request=request, source_receipts=receipts, evaluated_at_utc=evaluated_at_utc
+    )
+
+
+def forecast_from_recorded_market_context_v1(
+    *,
+    archive: RecordedMarkArchiveV1,
+    bar_open_utc: str,
+    observed_at: str,
+    context_policy: ContextAdmissionPolicyV1,
+    model_store_root: Path | str,
+    model_ref: str,
+    store_root: Path | str,
+    market_request: Mapping[str, Any],
+    forecast_created_at: str,
+    attempt_generation: str,
+) -> dict[str, Any]:
+    """Admit an archived context and freeze a forecast from a specified stored OLS model."""
+    identity = _recorded_target_identity(market_request)
+    context = compose_recorded_market_context_v1(
+        archive=archive,
+        identity=identity,
+        bar_open_utc=bar_open_utc,
+        observed_at=observed_at,
+        policy=context_policy,
+    )
+    return forecast_from_market_ols_model_v1(
+        model_store_root=model_store_root,
+        model_ref=model_ref,
+        store_root=store_root,
+        context_package=context,
+        market_request=market_request,
+        forecast_created_at=forecast_created_at,
+        attempt_generation=attempt_generation,
+    )
+
+
+def complete_recorded_market_forecast_v1(
+    *,
+    store_root: Path | str,
+    job_key: Mapping[str, Any],
+    archive: RecordedMarkArchiveV1,
+    evaluated_at_utc: str,
+) -> dict[str, Any]:
+    """Resume measurement from a durable forecast and its original target only."""
+    frozen = read_frozen_market_forecast_v1(store_root=store_root, job_key=job_key)
+    target = frozen["forecast_evidence"]["provenance"].get("measured_return_target_v1")
+    require_v1(isinstance(target, Mapping), "EXPLICIT_LOG_RETURN_TARGET_REQUIRED")
+    request = target.get("market_request")
+    require_v1(
+        isinstance(request, Mapping)
+        and digest_v1(target) == job_key.get("target_spec_digest")
+        and build_independent_market_return_target_v1(request) == target,
+        "MARKET_MEASUREMENT_TARGET_MISMATCH",
+    )
+    observation = measure_recorded_market_horizon_v1(
+        archive=archive, request=request, evaluated_at_utc=evaluated_at_utc
+    )
+    return calibrate_frozen_market_forecast_v1(
+        store_root=store_root, frozen=frozen, market_observation=observation
     )
