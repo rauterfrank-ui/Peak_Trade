@@ -201,6 +201,10 @@ JSON_SYNTAX_REPAIRS = {
     "config/ops/presentation_archive_root_v1.json",
     "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_v0.json",
 }
+RETIRED_AUTOMATION_CONFIG_DELTAS = {
+    "config/scheduler/jobs.toml": "82b06be58e36b86313a43f7cdf2ebd4b1d720ac936f1ee56600da0d573e53274",
+    "config/test_health_profiles.toml": "f644372502396a8a388bb107635718ee0debf6cf1c8580a963cacea0de1ecf12",
+}
 
 
 def validate_development_binding(root, model, frozen, changed, extras, cleanup):
@@ -245,6 +249,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel == "static/js/market_surface_greenfield_v1/surface_app_v1.js"
             or rel in FILEGATE_DEPENDENCY_DELTA
             or rel in JSON_SYNTAX_REPAIRS
+            or rel in RETIRED_AUTOMATION_CONFIG_DELTAS
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
@@ -265,6 +270,11 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
                 rel,
             ]
             json.loads(file.read_bytes())
+        if rel in RETIRED_AUTOMATION_CONFIG_DELTAS:
+            assert row["sha256"] == RETIRED_AUTOMATION_CONFIG_DELTAS[rel], [
+                "RETIRED_AUTOMATION_CONFIG_DRIFT",
+                rel,
+            ]
         indexed[rel] = row
     assert unexpected <= indexed.keys(), ["UNSCOPED_CHANGE", *sorted(unexpected - indexed.keys())]
     return indexed

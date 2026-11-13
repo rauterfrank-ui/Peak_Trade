@@ -136,8 +136,9 @@ timeout_seconds = 60
 
 
 # =============================================================================
-# AUTONOMOUS AI-DRIVEN WORKFLOWS
+# RETIRED AUTONOMOUS AI-DRIVEN WORKFLOWS
 # =============================================================================
+# Kept as disabled references. The src.autonomous runtime was retired.
 
 [[job]]
 name = "autonomous_morning_analysis"
@@ -146,7 +147,7 @@ command = "python"
 args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-morning" }
 schedule_type = "daily"
 daily_time = "08:15"
-enabled = true
+enabled = false
 tags = ["autonomous", "ai", "daily", "prod"]
 timeout_seconds = 300
 
@@ -157,7 +158,7 @@ command = "python"
 args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-midday" }
 schedule_type = "daily"
 daily_time = "12:00"
-enabled = true
+enabled = false
 tags = ["autonomous", "ai", "daily", "prod"]
 timeout_seconds = 300
 
@@ -168,7 +169,7 @@ command = "python"
 args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "portfolio_analysis", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-evening" }
 schedule_type = "daily"
 daily_time = "20:00"
-enabled = true
+enabled = false
 tags = ["autonomous", "ai", "daily", "prod"]
 timeout_seconds = 300
 
@@ -179,7 +180,7 @@ command = "python"
 args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-hourly" }
 schedule_type = "interval"
 interval_seconds = 3600  # 1 Stunde
-enabled = false  # Manuell aktivieren bei Bedarf
+enabled = false
 tags = ["autonomous", "ai", "monitoring"]
 timeout_seconds = 180
 
