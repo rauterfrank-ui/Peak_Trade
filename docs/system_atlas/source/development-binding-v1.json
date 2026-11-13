@@ -694,7 +694,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "796a2baa54d8c595bad70a3469d605abc9ceb929ea3fc1c02edeff8384e45ec3"
+      "sha256": "91857feb4a1be36d356ef0dd4e0d89de62d926e8f6462e7d8f123d3f83d96434"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1454,7 +1454,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
       "before_sha256": "1fbf724e19342f7011cb2cda1e2dde19f8f5347e5b5c60fe986e6a1184ea3a4a",
-      "sha256": "0f4a861bace9b643b8b03744adc3d2fb22ad2a17a818a2fd7592440c8bffe594"
+      "sha256": "c3cb947e994e130659ded31608609d525e38eb71563ce5a31bdd162056b27dfb"
     },
     {
       "path": "scripts/ops/run_k1_account_observation_readiness_v1.py",
@@ -2349,12 +2349,12 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "df6608cdb69d945b6222a73207bfdacfbbdbb76dccb435e075d0bca3e712a20e"
+      "sha256": "d27bdb18b6e9cb744b4de915d1b30b04f8e4e85c3d39fa4da17e65572a5e408b"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "c150cfe71a36f0df783d28ce5210ca8205380d9d84e8d4d5bdad5537f484080f"
+      "sha256": "9dfc1e22ce45da5275ad2d9905c3d1584183b374701ecbf617bc358a72378590"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3704,7 +3704,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "6652a08b6afda2f31398b2e15d69085cc6caec56677d77242c1ba1cb3b22e70d"
+      "sha256": "f05849ba671a1c11f4dfaa59a6f1880e184fb5a3a8187fd8b7acad3991c2d46b"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

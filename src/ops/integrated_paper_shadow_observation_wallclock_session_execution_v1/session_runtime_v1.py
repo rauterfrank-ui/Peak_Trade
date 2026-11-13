@@ -923,15 +923,25 @@ class WallclockSessionRuntimeV1:
                             self._post_reconnect_reconciliation_required = False
                             self.post_reconnect_continuation_count += 1
                         ddo_capture_binding.clear_cycle_observations()
-                        outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
-                            bridge_state=self.bridge_state,
-                            ticks=[tick],
-                            reference_price=Decimal(str(price)),
-                            wall_now_unix=now_wall,
-                            session_id=session_id,
-                            ddo_capture_binding=ddo_capture_binding,
-                            ddo_repository_sha=self._expected_repository_sha,
-                        )
+                        try:
+                            outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
+                                bridge_state=self.bridge_state,
+                                ticks=[tick],
+                                reference_price=Decimal(str(price)),
+                                wall_now_unix=now_wall,
+                                session_id=session_id,
+                                ddo_capture_binding=ddo_capture_binding,
+                                ddo_repository_sha=self._expected_repository_sha,
+                            )
+                        except ValueError as exc:
+                            # The core has rejected this input. Preserve earlier cycles and
+                            # seal the abort without turning the rejected cycle into a decision.
+                            detail = "SHADOW_BRIDGE_CYCLE_VALUE_ERROR"
+                            if str(exc) == "gge_base_geometry_unavailable:volatility_non_positive":
+                                detail = "SHADOW_BRIDGE_ZERO_OR_NEGATIVE_VOLATILITY"
+                            self.blockers.append(detail)
+                            self._abort("INVARIANT_VIOLATION", detail)
+                            break
                         self.cycle_count += 1
                         if outcome_bridge.bridge_cycle is not None:
                             cycle = outcome_bridge.bridge_cycle

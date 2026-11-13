@@ -5,9 +5,14 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
+from math import isfinite
 from pathlib import Path
 from typing import Any
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    DdoCaptureBindingV0,
+    bind_host_cycle_capture_context_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
@@ -40,6 +45,9 @@ from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_bin
 )
 from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.outcome_completeness_verifier_v1 import (
     verify_wallclock_outcome_completeness_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.market_data_price_basis_v2 import (
+    build_explicit_mid_price_basis_v2,
 )
 
 VERIFIER_ID = "ops.paper_shadow_wallclock_evidence_verifier_v1"
@@ -74,18 +82,156 @@ class WallclockEvidenceVerificationResultV1:
         return asdict(self)
 
 
+def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
+    """Rebuild the bridge's price reference and return the recorded DDO host clock."""
+    timing = cycle["shadow_decision_timing"]
+    event = timing["mark_event_ts_unix"]
+    receive = timing["mark_receive_ts_unix"]
+    available = timing["decision_input_available_ts_unix"]
+    decided = timing["decision_cycle_ts_unix"]
+    if (
+        not all(
+            type(value) in (int, float) and isfinite(value)
+            for value in (event, receive, available, decided)
+        )
+        or not receive <= available <= decided
+    ):
+        raise ValueError("DDO_MARKET_DECISION_CLOCK_INVALID")
+    if (
+        event != mark["event_ts_unix"]
+        or receive != mark["mark_receive_ts_unix"]
+        or cycle["session_id"] != session["session_id"]
+        or cycle["instrument_id"] != session["canonical_instrument_id"]
+        or mark["canonical_instrument_id"] != session["canonical_instrument_id"]
+        or mark["venue_instrument_id"] != session["venue_instrument_id"]
+        or mark["mapping_digest"] != session["mapping_digest"]
+        or mark["mid_price"] != mark["mark_px"]
+    ):
+        raise ValueError("DDO_MARKET_CYCLE_BINDING_MISMATCH")
+    price = mark["mid_price"]
+    local_receive = mark["receive_ts_unix"]
+    if (
+        type(price) not in (int, float)
+        or not isfinite(price)
+        or type(local_receive) not in (int, float)
+        or not isfinite(local_receive)
+    ):
+        raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+    basis = build_explicit_mid_price_basis_v2(
+        mid_price=float(price),
+        event_ts_unix=float(mark["event_ts_unix"]),
+        receive_ts_unix=float(local_receive),
+    )
+    if (
+        cycle["market_data_reference"] != basis.market_data_reference
+        or cycle["price_basis"] != basis.to_dict()
+    ):
+        raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+    return float(decided)
+
+
+def _verify_typed_cycle_bindings(
+    root, manifest_names, typed_cycles, records, complete_cycles, blockers
+) -> int:
+    if not typed_cycles:
+        return 0
+    validated = 0
+    try:
+        if not {"session_manifest.json", "repo_sha.txt"} <= manifest_names:
+            raise ValueError("DDO_SESSION_MANIFEST_NOT_BOUND")
+        session = json.loads((root / "session_manifest.json").read_bytes())
+        session_revision = (root / "repo_sha.txt").read_text(encoding="utf-8").strip()
+        if not isinstance(session, dict):
+            raise ValueError("DDO_SESSION_MANIFEST_INVALID")
+        marks = {}
+        for mark in load_bridge_cycle_ledger_v1(root / "market_data_sequence.jsonl"):
+            seq = mark["sequence"]
+            if type(seq) is not int or seq <= 0 or seq in marks:
+                raise ValueError("DDO_MARKET_SEQUENCE_INVALID")
+            marks[seq] = mark
+    except (OSError, KeyError, ValueError, TypeError) as exc:
+        blockers.append(f"DDO_MARKET_READBACK:{type(exc).__name__}")
+    else:
+        previous_sequence = previous_index = 0
+        binding = DdoCaptureBindingV0(enabled=True, precise_host_decision_time=True)
+        for cycle in typed_cycles:
+            capture = cycle.get("ddo_capture")
+            if not isinstance(capture, dict):
+                continue
+            try:
+                index = cycle["cycle_index"]
+                sequence = cycle["shadow_decision_timing"]["market_sequence"]
+                if (
+                    type(sequence) is not int
+                    or sequence <= previous_sequence
+                    or type(index) is not int
+                    or index <= previous_index
+                ):
+                    raise ValueError("DDO_MARKET_OR_CYCLE_SEQUENCE_INVALID")
+                decided = _typed_cycle_market_time(cycle, marks[sequence], session)
+                bind_host_cycle_capture_context_v0(
+                    binding,
+                    event_ts_unix=decided,
+                    session_id=session["session_id"],
+                    cycle_index=index,
+                    repository_sha=session_revision,
+                )
+                previous_sequence, previous_index = sequence, index
+                capture_id = capture["cycle_id"]
+                if capture_id != binding.capture_cycle_id:
+                    raise ValueError("DDO_CAPTURE_CYCLE_ID_MISMATCH")
+                refs = capture["record_ids"]
+                if (
+                    not isinstance(refs, list)
+                    or not refs
+                    or any(
+                        not isinstance(ref, str)
+                        or ref not in records
+                        or records[ref]["cycle_id"] != capture_id
+                        for ref in refs
+                    )
+                    or len(refs) != len(set(refs))
+                ):
+                    raise ValueError("DDO_CAPTURE_RECORD_CYCLE_MISMATCH")
+                bundles = complete_cycles.get(capture_id, [])
+                if len(bundles) != 1:
+                    raise ValueError("DDO_TYPED_CYCLE_BUNDLE_REQUIRED")
+                bundle = bundles[0]
+                if (
+                    bundle.decision_event_ref not in refs
+                    or bundle.instrument_id != cycle["instrument_id"]
+                ):
+                    raise ValueError("DDO_TYPED_CYCLE_DECISION_MISMATCH")
+                if any(
+                    records[ref]["cycle_id"] != capture_id
+                    or records[ref]["event_time_utc"] != binding.capture_event_time_utc
+                    for ref in (
+                        bundle.decision_event_ref,
+                        bundle.observation_ref,
+                        bundle.input_evidence_ref,
+                    )
+                ):
+                    raise ValueError("DDO_TYPED_CYCLE_DECISION_CLOCK_MISMATCH")
+            except (KeyError, TypeError, OverflowError, OSError):
+                blockers.append("DDO_TYPED_CYCLE_EVIDENCE_INVALID")
+            except ValueError as exc:
+                blockers.append(
+                    str(exc) if str(exc).startswith("DDO_") else "DDO_TYPED_CYCLE_EVIDENCE_INVALID"
+                )
+            else:
+                validated += 1
+    return validated
+
+
 def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | None:
     cycles = load_bridge_cycle_ledger_v1(root / BRIDGE_CYCLE_LEDGER_FILENAME)
     capture_cycles = [row for row in cycles if "ddo_capture" in row]
-    if not capture_cycles:
+    typed_cycles = [
+        row for row in cycles if row.get("canonical_market_context_typed_estimate_present") is True
+    ]
+    if not capture_cycles and not typed_cycles:
         return None
     captures = [row["ddo_capture"] for row in capture_cycles]
-    typed_cycles = [
-        row["ddo_capture"].get("cycle_id")
-        for row in capture_cycles
-        if isinstance(row["ddo_capture"], dict)
-        and row.get("canonical_market_context_typed_estimate_present") is True
-    ]
     result: dict[str, Any] = {
         "decision_bundles_readable": False,
         "capture_cycles": len(captures),
@@ -103,6 +249,15 @@ def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | 
     blockers = result["blockers"]
     if result["durability_failed_cycles"]:
         blockers.append("DDO_CAPTURE_DURABILITY_FAILURE")
+    if any(not isinstance(row.get("ddo_capture"), dict) for row in typed_cycles):
+        blockers.append("DDO_TYPED_CYCLE_CAPTURE_REQUIRED")
+    for row in cycles:
+        hot_path = row.get("canonical_volatility_hot_path_evidence")
+        if isinstance(hot_path, dict) and (
+            (hot_path.get("volatility_value") is not None)
+            is not row.get("canonical_market_context_typed_estimate_present")
+        ):
+            blockers.append("DDO_TYPED_CYCLE_VOLATILITY_FLAG_MISMATCH")
     if LEDGER_FILENAME_DEFAULT not in manifest_names:
         blockers.append("DDO_LEDGER_NOT_IN_MANIFEST")
         return result
@@ -124,7 +279,7 @@ def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | 
         ):
             blockers.append("DDO_CAPTURE_RECORD_MISSING")
         by_decision = {}
-        complete_cycles = set()
+        complete_cycles = {}
         for row in records.values():
             if row["schema_name"] in {
                 SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
@@ -140,14 +295,14 @@ def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | 
                     blockers.append("DDO_DOUBLE_PLAY_INPUT_MISSING")
                 else:
                     result["complete_double_play_bundles"] += 1
-                    complete_cycles.add(records[ref]["cycle_id"])
+                    complete_cycles.setdefault(records[ref]["cycle_id"], []).append(bundle)
             except (DdoError, KeyError) as exc:
                 blockers.append(f"DDO_DOUBLE_PLAY_READBACK:{type(exc).__name__}")
     except (DdoError, OSError, ValueError) as exc:
         blockers.append(f"DDO_LEDGER_READBACK:{type(exc).__name__}")
     else:
-        result["typed_volatility_cycles_with_double_play_bundle"] = sum(
-            isinstance(cycle_id, str) and cycle_id in complete_cycles for cycle_id in typed_cycles
+        result["typed_volatility_cycles_with_double_play_bundle"] = _verify_typed_cycle_bindings(
+            root, manifest_names, typed_cycles, records, complete_cycles, blockers
         )
     if not result["complete_double_play_bundles"]:
         blockers.append("DDO_NO_COMPLETE_DOUBLE_PLAY_BUNDLE")
