@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from io import BytesIO
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -15,9 +16,35 @@ if str(ROOT) not in sys.path:
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError  # noqa: E402
 from src.learning.deterministic_decision_outcome_v0.offline_learning_follow_up_v1 import (  # noqa: E402
     complete_offline_learning_follow_up_v1,
+    export_completed_offline_learning_evidence_v1,
     prepare_offline_learning_follow_up_v1,
     read_offline_learning_follow_up_v1,
 )
+
+
+def _research(args):
+    import pandas as pd
+
+    from src.experiments.canonical_experiment_identity_v1 import inspect_code_provenance_v1
+    from src.experiments.offline_ddo_research_cycle_v1 import (
+        OfflineDdoResearchRequestV1,
+        run_offline_ddo_research_cycle_v1,
+    )
+
+    request = OfflineDdoResearchRequestV1.model_validate_json(args.request.read_bytes())
+    frame = pd.read_csv(BytesIO(args.bars.read_bytes()), index_col=0, float_precision="round_trip")
+    if any(pd.Timestamp(value).tzinfo is None for value in frame.index):
+        raise ValueError("EXPLICIT_BAR_TIMEZONE_REQUIRED")
+    frame.index = pd.to_datetime(frame.index, utc=True, format="ISO8601")
+    return run_offline_ddo_research_cycle_v1(
+        args.root,
+        args.cycle,
+        plan_digest=args.plan_digest,
+        request=request,
+        bars=frame,
+        cfg=json.loads(args.config.read_bytes()),
+        code=inspect_code_provenance_v1(ROOT),
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -46,6 +73,21 @@ def main(argv: list[str] | None = None) -> int:
     )
     readback = sub.add_parser("readback")
     readback.add_argument("--plan-digest", required=True)
+    export = sub.add_parser("export-evidence", help="Export the verified completed learning state")
+    export.add_argument("--plan-digest", required=True)
+    research = sub.add_parser(
+        "research", help="Run two bounded native trials and scoped GVEF replay"
+    )
+    research.add_argument("--plan-digest", required=True)
+    research.add_argument(
+        "--request", type=Path, required=True, help="Offline research declaration JSON"
+    )
+    research.add_argument(
+        "--bars", type=Path, required=True, help="Explicit timestamp-indexed UTC CSV"
+    )
+    research.add_argument(
+        "--config", type=Path, required=True, help="Explicit resolved backtest JSON"
+    )
     args = parser.parse_args(argv)
     try:
         if args.action == "plan":
@@ -59,6 +101,12 @@ def main(argv: list[str] | None = None) -> int:
                 plan_digest=args.plan_digest,
                 source=json.loads(args.source.read_bytes()),
             )
+        elif args.action == "export-evidence":
+            result = export_completed_offline_learning_evidence_v1(
+                args.root, args.cycle, plan_digest=args.plan_digest
+            )
+        elif args.action == "research":
+            result = _research(args)
         else:
             result = read_offline_learning_follow_up_v1(
                 args.root, args.cycle, plan_digest=args.plan_digest
