@@ -37,6 +37,13 @@ evidence is missing or inconsistent. Partial fills do not book. This step
 does not release the capital hold, convert currencies, authorize a counter
 order or activate the standing profile.
 
+On `CLOSE_NET_BOOKED`, the supervisor submits a planning request to 29P for
+the opposite side of the retained L10 switch on the same bound instrument.
+29P verifies the original booking and hold with the reservation owner. The
+supervisor reports a blocked sizing attempt until the productive protective
+stop and funded slot capital basis are available. The original booking
+remains readable after restart.
+
 ## WP-02 seam (CURRENT-WP-02 closed)
 
 When `StandingSupervisorConfigV1.wp02_productive_default_enabled=true` (default) and

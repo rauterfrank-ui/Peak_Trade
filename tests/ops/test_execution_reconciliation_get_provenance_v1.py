@@ -2624,7 +2624,7 @@ def _assert_restarted_close_readback(
         }[case]
     ), readback.reason_codes
     assert readback.envelope_digest == envelope.envelope_digest
-    assert resumed.ok is (case == "flat" or with_history)
+    assert resumed.ok is (case == "flat" or case.startswith("history-"))
     assert resumed.trace.post_count == 0 and not resumed.owner_go_consumed
     assert resumed.policy_result is None
     assert restarted_hosts[-1].closed
@@ -2649,6 +2649,13 @@ def _assert_restarted_close_readback(
         ] == opener.requests[request_count : request_count + 6]
         assert json.loads(record["gets"][3]["body"])["data"] == [fill]
         if case == "booked":
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+                check_authenticated_double_play_29p_admission_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
+                DISPOSITION_FAIL_CLOSED,
+            )
+
             booking = readback.net_booking
             assert booking["net_result"] == ("0.13" if product == "FUTURES" else "0.09")
             assert booking["currency"] == currency
@@ -2656,6 +2663,22 @@ def _assert_restarted_close_readback(
             assert booking["reservation_id"] == context.authenticated_entry.proof.reservation_id
             assert booking["slot_id"] == "LANE_1"
             assert resumed.trace.extra["close_booking_digest"] == booking["booking_digest"]
+            counter = readback.counter_order_request
+            assert counter is not None
+            assert counter.execution == context.execution
+            assert counter.bound_instrument == bound
+            assert counter.target_side == ("short" if envelope.side == "sell" else "long")
+            assert counter.decision_id == f"l10:{envelope.envelope_digest}"
+            assert counter.net_booking.to_dict_v1() == booking
+            sizing = resumed.counter_order_sizing
+            assert sizing is not None
+            assert sizing.first_blocker == "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED"
+            assert "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED" in sizing.reason_codes
+            assert sizing.get_count == 0
+            assert not sizing.portfolio_reservation_id and not sizing.venue_plan_authorized
+            assert resumed.trace.terminal_disposition == DISPOSITION_FAIL_CLOSED
+            assert resumed.trace.extra["counter_order"]["decision_id"] == counter.decision_id
+            assert resumed.trace.extra["counter_order"]["target_side"] == counter.target_side
             database = original_host.root / "owner" / "reservations.sqlite3"
             committed = database.read_bytes()
             before = len(opener.requests)
@@ -2663,13 +2686,53 @@ def _assert_restarted_close_readback(
                 **{**run_args, "config": replace(config, evidence_root=tmp_path / "restart-again")}
             )
             assert replay.close_readback == readback
+            assert replay.counter_order_sizing == sizing
             assert len(opener.requests) == before
+            assert database.read_bytes() == committed
+
+            verification_host = PortfolioBudgetHostV1(
+                root=original_host.root,
+                private_rest_fetch=forbidden,
+                repository_sha=original_host.repository_sha,
+                session_id="counter-order-proof-check",
+                expected_account_identity=original_host.expected_account_identity,
+            )
+            try:
+                owner = verification_host.recover_owner_for_l10_close_booking_v1({"LANE_1": bound})
+                for changed, blocker in (
+                    (
+                        replace(counter, net_booking=replace(counter.net_booking, net_result="99")),
+                        "DOUBLE_PLAY_29P_BOOKED_CLOSE_BINDING_MISMATCH",
+                    ),
+                    (
+                        replace(counter, bound_instrument=replace(bound, selection_id="foreign")),
+                        "DOUBLE_PLAY_29P_BOOKED_CLOSE_BINDING_MISMATCH",
+                    ),
+                    (
+                        replace(counter, execution=replace(counter.execution, l10_close=None)),
+                        "DOUBLE_PLAY_29P_BOOKED_CLOSE_EXECUTION_MISMATCH",
+                    ),
+                ):
+                    blocked = check_authenticated_double_play_29p_admission_v1(
+                        request=changed,
+                        bound_instrument=changed.bound_instrument,
+                        owner=owner,
+                    )
+                    assert blocked.first_blocker == blocker
+                    assert not blocked.venue_plan_authorized
+                assert owner.active_sum_v1() == held
+            finally:
+                verification_host.close()
             assert database.read_bytes() == committed
         else:
             assert readback.net_booking is None
+            assert readback.counter_order_request is None
+            assert resumed.counter_order_sizing is None
             assert readback.reason_codes[0] == "L10_CLOSE_NET_BOOKING_PENDING"
     else:
         assert readback.proof_path is None
+        assert readback.counter_order_request is None
+        assert resumed.counter_order_sizing is None
         assert not list(proof_root.glob("close-*.json"))
         if case == "partial":
             assert readback.filled_quantity == filled

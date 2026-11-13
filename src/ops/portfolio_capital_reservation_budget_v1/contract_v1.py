@@ -36,6 +36,9 @@ if TYPE_CHECKING:
         PostCloseDoublePlayContinuationV1,
         PostCloseFeedbackRequestV1,
     )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        PostCloseDoublePlayCounterOrderRequestV1,
+    )
     from .slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
         SlotCapitalBasisV1,
@@ -901,6 +904,56 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_READER_UNAVAILABLE")
             row = self._live_l10_close_bookings.get(episode_id)
             return None if row is None else dict(row)
+
+    def require_authenticated_l10_counter_order_source_v1(
+        self, request: PostCloseDoublePlayCounterOrderRequestV1
+    ) -> None:
+        """Prove the planning input against the original booking and held slot."""
+        from .live_l10_close_booking_v1 import validate_live_l10_booking_v1
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            parse_exchange_reconciliation_identity_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+            validates_position_management_envelope_v1,
+        )
+
+        switch = request.execution.l10_close
+        if (
+            switch is None
+            or not validates_position_management_envelope_v1(request.execution)
+            or request.execution.envelope.envelope_digest
+            != request.net_booking.close_envelope_digest
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_BOOKED_CLOSE_EXECUTION_MISMATCH")
+        episode = switch.episode
+        bound = lane_bindings_v1({episode.lane_id: request.bound_instrument})[episode.lane_id]
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_OWNER_REQUIRED")
+            row = self._live_l10_close_bookings.get(episode.episode_id)
+            if (
+                row is None
+                or request.net_booking.to_dict_v1() != row
+                or episode.account_scope.execution_environment != "LIVE"
+                or episode.account_scope.account_identity != self._account_identity
+                or (episode.instrument_id, episode.venue_native_id)
+                != (
+                    request.bound_instrument.instrument_id,
+                    request.bound_instrument.venue_native_id,
+                )
+                or self._lane_bindings.get(episode.lane_id) != bound
+                or self._reservation_bindings.get(request.net_booking.reservation_id) != bound
+            ):
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_BOOKED_CLOSE_BINDING_MISMATCH")
+            booking = validate_live_l10_booking_v1(self, row)
+            original = self._by_key[self._by_id[booking.reservation_id]]
+            if original.state is not ReservationStateV1.COMMITTED:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_HOLD_REQUIRED")
+            entry = parse_exchange_reconciliation_identity_v1(
+                self._execution_links[booking.reservation_id]["identity"]
+            )
+            if entry.selected_side.lower() != episode.position_side:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_DIRECTION_MISMATCH")
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""

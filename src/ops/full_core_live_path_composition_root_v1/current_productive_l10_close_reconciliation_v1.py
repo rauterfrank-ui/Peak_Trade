@@ -6,6 +6,13 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+    from .current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementExecutionHandoffV1,
+    )
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
     read_submitted_occupied_scope_close_v1,
@@ -27,6 +34,7 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1
     read_occupied_scope_mark_snapshot_v1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.live_l10_close_booking_v1 import (
+    AuthenticatedSlotCloseBookingV1,
     close_history_endpoint_v1,
     entry_source_v1,
 )
@@ -66,6 +74,25 @@ from .productive_read_only_get_transport_v1 import FullCoreProductiveReadOnlyGet
 
 
 @dataclass(frozen=True)
+class PostCloseDoublePlayCounterOrderRequestV1:
+    """Request 29P sizing for the opposite side of the booked LIVE episode."""
+
+    execution: PositionManagementExecutionHandoffV1
+    bound_instrument: BoundInstrumentV1
+    net_booking: AuthenticatedSlotCloseBookingV1
+
+    @property
+    def decision_id(self) -> str:
+        return "l10:" + self.net_booking.close_envelope_digest
+
+    @property
+    def target_side(self) -> str:
+        if self.execution.l10_close is None:
+            raise ValueError("DOUBLE_PLAY_29P_LIVE_SWITCH_REQUIRED")
+        return self.execution.l10_close.target_side
+
+
+@dataclass(frozen=True)
 class AuthenticatedL10CloseReadbackV1:
     status: str
     envelope_digest: str
@@ -74,6 +101,25 @@ class AuthenticatedL10CloseReadbackV1:
     remaining_quantity: Decimal | None = None
     proof_path: Path | None = None
     net_booking: dict | None = None
+    counter_order_request: PostCloseDoublePlayCounterOrderRequestV1 | None = None
+
+
+def _booked_close_readback_v1(*, execution, bound, proof_root, booked):
+    # The original budget writer has already replayed the settlement proof.
+    booking = AuthenticatedSlotCloseBookingV1(
+        **{key: value for key, value in booked.items() if key != "booking_digest"}
+    )
+    return AuthenticatedL10CloseReadbackV1(
+        status="CLOSE_NET_BOOKED",
+        envelope_digest=execution.envelope.envelope_digest,
+        filled_quantity=Decimal(execution.envelope.quantity),
+        remaining_quantity=Decimal(0),
+        proof_path=proof_root / f"close-{booking.close_proof_digest}.json",
+        net_booking=booked,
+        counter_order_request=PostCloseDoublePlayCounterOrderRequestV1(
+            execution=execution, bound_instrument=bound, net_booking=booking
+        ),
+    )
 
 
 def _validate_close_order_and_fills_v1(
@@ -197,14 +243,8 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof_path=root / f"close-history-{booked['history_proof_digest']}.json",
             proof_root=root,
         )
-        return AuthenticatedL10CloseReadbackV1(
-            "CLOSE_NET_BOOKED",
-            digest,
-            (),
-            Decimal(envelope.quantity),
-            Decimal(0),
-            root / f"close-{booked['close_proof_digest']}.json",
-            booked,
+        return _booked_close_readback_v1(
+            execution=execution, bound=bound, proof_root=root, booked=booked
         )
     socket_ms = _utc_ms(attempt["socket_boundary_at_utc"])
 
@@ -403,6 +443,6 @@ def reconcile_submitted_occupied_scope_close_v1(
             Decimal(0),
             proof,
         )
-    return AuthenticatedL10CloseReadbackV1(
-        "CLOSE_NET_BOOKED", digest, (), filled, Decimal(0), proof, booked
+    return _booked_close_readback_v1(
+        execution=execution, bound=bound, proof_root=root, booked=booked
     )
