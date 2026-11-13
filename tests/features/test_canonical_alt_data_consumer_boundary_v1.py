@@ -30,6 +30,7 @@ from src.features.canonical_alt_data_consumer_boundary_v1.models_v1 import (
     PathClass,
 )
 from src.features.canonical_alt_data_consumer_boundary_v1.verifier_v1 import (
+    assert_i55_loader_not_imported_by_authority_trees_v1,
     evaluate_eg_alt_consumer_v1,
     validate_layer_config_v1,
 )
@@ -98,6 +99,14 @@ def test_i55_briefing_must_not_replace_r3_or_master() -> None:
     assert tilt.consumer_class.value == "NON_AUTHORITY_BRIEFING_METADATA"
 
 
+def test_authority_import_of_i55_is_rejected_without_loader(tmp_path) -> None:
+    source = tmp_path / "src" / "authority.py"
+    source.parent.mkdir()
+    source.write_text("from src.macro_regimes.loader import MacroRegimeConfig\n")
+    with pytest.raises(AltDataConsumerBoundaryError, match="i55_authority_or_runtime_consumer"):
+        assert_i55_loader_not_imported_by_authority_trees_v1(tmp_path)
+
+
 def test_unknown_producer_schema_consumer_fail_closed() -> None:
     with pytest.raises(AltDataConsumerBoundaryError, match="unknown_producer"):
         require_producer("not_a_producer")
@@ -150,9 +159,23 @@ def test_config_activation_and_max_age_fail_closed() -> None:
         validate_layer_config_v1(payload)
 
 
-def test_evaluate_pass_and_r1_r2_r3_remain_green() -> None:
+def test_full_boundary_still_requires_i55_artifacts(tmp_path, monkeypatch) -> None:
+    from src.features.canonical_alt_data_consumer_boundary_v1 import verifier_v1
+
+    monkeypatch.setattr(verifier_v1, "I55_PRODUCER_PATH", tmp_path / "missing_loader.py")
+    with pytest.raises(AltDataConsumerBoundaryError, match="i55_producer_artifact_missing"):
+        evaluate_eg_alt_consumer_v1()
+
+
+def test_evaluate_full_boundary_with_i55_and_r1_r2_r3_remain_green(tmp_path, monkeypatch) -> None:
+    from src.features.canonical_alt_data_consumer_boundary_v1 import verifier_v1
+
+    loader = tmp_path / "loader.py"
+    loader.write_text("# I55 artifact for the file-presence contract\n")
+    monkeypatch.setattr(verifier_v1, "I55_PRODUCER_PATH", loader)
     claims = evaluate_eg_alt_consumer_v1()
     assert claims["verdict"] == "PASS_EG_ALT_CONSUMER_BOUNDARY_V1"
+    assert claims["i55_briefing_artifacts_checked"] is True
     assert claims["eg_alt_consumer_status"] == "CLOSED_PROVEN_FORENSIC"
     assert claims["implementation_required"] is False
     assert claims["consumer_matrix_complete"] is True

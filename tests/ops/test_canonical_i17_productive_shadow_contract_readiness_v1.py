@@ -171,7 +171,8 @@ def test_evaluate_pass_does_not_claim_productive_evidence() -> None:
     assert claims["r1_verdict"] == "PASS_R1_UQ6_FEATURE_DATA_CONTRACT_LAYER_V1"
     assert claims["r2_verdict"] == "PASS_R2_STRATEGY_REGISTRY_SUITABILITY_SELECTION_V1"
     assert claims["r3_verdict"] == "PASS_R3_REGIME_META_GATED_SELECTION_V1"
-    assert claims["eg_alt_verdict"] == "PASS_EG_ALT_CONSUMER_BOUNDARY_V1"
+    assert claims["eg_alt_verdict"] == "PASS_EG_ALT_AUTHORITY_ISOLATION_V1"
+    assert claims["i55_briefing_artifacts_checked"] is False
     assert claims["i17_canonical_duration_seconds"] == 7200
     assert claims["i17_extended_soak_duration_seconds"] == 21600
     assert claims["i17_extended_soak_blocks_next_phase"] is False
