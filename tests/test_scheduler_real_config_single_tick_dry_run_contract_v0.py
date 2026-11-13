@@ -123,7 +123,9 @@ def test_tmp_copy_force_one_due_job_only_in_copy(tmp_path: Path, monkeypatch) ->
         jobs = real_load(p)
         if Path(p).resolve() != dest.resolve():
             return jobs
-        anchor = next(j for j in jobs if j.name == "daily_forward_signals_btc")
+        anchor = next(
+            j for j in jobs if j.name == "paper_shadow_247_paper_only_preflight_status_v0"
+        )
         for j in jobs:
             j.schedule.next_run_at = NOW + timedelta(days=30)
         anchor.schedule.next_run_at = NOW - timedelta(seconds=5)
@@ -140,6 +142,18 @@ def test_tmp_copy_force_one_due_job_only_in_copy(tmp_path: Path, monkeypatch) ->
     assert repo_before == _read_bytes(SCHEDULER_JOBS_TOML)
     assert summary.due >= 1
     assert summary.dispatched == summary.due
+
+
+def test_disabled_forward_jobs_are_not_dispatched_even_when_due() -> None:
+    from src.scheduler.config_loader import load_jobs_from_toml
+    from src.scheduler.runner import get_due_jobs
+
+    names = {"daily_forward_signals_btc", "daily_forward_signals_eth", "morning_market_scan"}
+    jobs = [job for job in load_jobs_from_toml(SCHEDULER_JOBS_TOML) if job.name in names]
+    assert {job.name for job in jobs} == names
+    for job in jobs:
+        job.schedule.next_run_at = NOW - timedelta(seconds=5)
+    assert get_due_jobs(jobs, now=NOW) == []
 
 
 def test_no_sleep_and_loop_hooks(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

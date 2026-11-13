@@ -819,7 +819,9 @@ def test_fail_closed_cli_on_validation(tmp_path: Path) -> None:
 
 def test_strict_matching_snapshots_fixture(tmp_path: Path) -> None:
     root = tmp_path / "strict_match"
-    _write_fixture_tree(root, census=_minimal_census())
+    census = _minimal_census()
+    census["semantic_edges"][1]["contract_or_payload"] = "decision.v1"
+    _write_fixture_tree(root, census=census)
     head = _git_init_commit(root)
     _sync_governance_baselines_to_head(root, head)
     result = run_forensic_crosswalk_v1(
@@ -831,6 +833,40 @@ def test_strict_matching_snapshots_fixture(tmp_path: Path) -> None:
     )
     assert result.coverage["SNAPSHOT_BINDING_VERIFIED"] is True
     assert result.coverage["GRAPH_MODE"] == "STRICT_CURRENT"
+    assert result.coverage["CURRENT_GRAPH_VERIFIED"] is True
+    assert result.ok is True
+
+
+def test_strict_graph_with_unresolved_edge_fails_after_successful_composition(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "strict_unresolved_edge"
+    census = _minimal_census(
+        extra_edge={
+            "edge_id": "UNRESOLVED",
+            "source_object": "SO-A",
+            "target_object": "SO-B",
+            "flow_type": "UNMAPPED_TEST_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+            "contract_or_payload": "test.v1",
+        }
+    )
+    census["semantic_edges"][1]["contract_or_payload"] = "decision.v1"
+    _write_fixture_tree(root, census=census)
+    head = _git_init_commit(root)
+    _sync_governance_baselines_to_head(root, head)
+    result = run_forensic_crosswalk_v1(
+        repo_root=root,
+        output_dir=root / "out",
+        rules_path=RULES,
+        graph_mode=GraphMode.STRICT_CURRENT,
+        strict_repo_invariants=False,
+    )
+    assert result.coverage["SNAPSHOT_BINDING_VERIFIED"] is True
+    assert result.coverage["CROSSWALK_EXECUTION_SUCCESS"] is True
+    assert result.coverage["unresolved_edge_count"] == 1
+    assert result.coverage["CURRENT_GRAPH_VERIFIED"] is False
+    assert result.ok is False
 
 
 def test_navigation_only_with_drift(tmp_path: Path) -> None:

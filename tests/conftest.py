@@ -35,6 +35,19 @@ if find_spec("src.autonomous") is None:
 if find_spec("src.trigger_training") is None:
     collect_ignore.append("trigger_training")
 
+# Each suite below exclusively tests the corresponding retired package.
+_RETIRED_COMPONENT_SUITES = {
+    "src.ops.p98": (
+        "p98/test_p98_smoke.py",
+        "p117/test_p117_ops_loop_includes_exec_evidence_step.py",
+    ),
+    "src.macro_regimes": ("test_macro_regime_loader.py", "test_macro_regime_integration.py"),
+    "src.notifications": ("notifications/test_slack_notifier.py",),
+}
+for _package, _suites in _RETIRED_COMPONENT_SUITES.items():
+    if find_spec(_package) is None:
+        collect_ignore.extend(_suites)
+
 
 @pytest.fixture(autouse=True)
 def _legacy_runtime_entrypoint_test_only_bypass(request: pytest.FixtureRequest, monkeypatch):

@@ -641,6 +641,12 @@ def run_unattended_n1_host_v1(
             state["last_disposition"] = result.trace.terminal_disposition
             if (root / "STOP").exists():
                 return stop("STOPPED")
+            if result.close_readback is not None:
+                state["close_readback_status"] = result.close_readback.status
+                state["close_booking_pending"] = (
+                    "L10_CLOSE_NET_BOOKING_PENDING" in result.close_readback.reason_codes
+                )
+                return stop("GOVERNED_RUNTIME_STOPPED")
             if result.ok:
                 # Successful PRE_EXTERNAL is a deliberate terminal, not a crash.
                 if state["attempts"] > 1:

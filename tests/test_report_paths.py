@@ -3,12 +3,7 @@
 Peak_Trade – Phase 16L: Tests for report_paths utilities
 """
 
-import os
-from pathlib import Path
-
-import pytest
-
-from src.utils.report_paths import ensure_dir, get_repo_root, get_reports_root
+from src.obs.stage1.io import ensure_dir, get_repo_root, get_reports_root
 
 
 def test_get_repo_root():

@@ -356,6 +356,79 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         ).read_bytes() == before
 
 
+def test_unattended_host_does_not_complete_on_flat_with_pending_booking(tmp_path, monkeypatch):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        AuthenticatedL10CloseReadbackV1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import (
+        StandingSupervisorRunResultV1,
+        unattended_v1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1.trace_v1 import (
+        StandingSupervisorTraceV1,
+    )
+    from tests.ops._n1_standing_supervisor_offline_inject_harness_v1 import (
+        OWNER_GO_BASELINE_SHA,
+        supervisor_config_from_roots,
+    )
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _bound_lane_1,
+        _continuous_auth,
+    )
+
+    bound = _bound_lane_1()
+
+    def request_factory(_, evidence):
+        return dict(
+            config=supervisor_config_from_roots(
+                public_store=tmp_path / "public",
+                private_store=tmp_path / "private",
+                lane_state=tmp_path / "lane",
+                evidence_root=evidence,
+                lock_root=tmp_path / "lock",
+            ),
+            origin_main_sha=OWNER_GO_BASELINE_SHA,
+            bound=bound,
+            authorization=_continuous_auth(native_id=bound.venue_native_id),
+        )
+
+    readback = AuthenticatedL10CloseReadbackV1(
+        "CLOSE_FLAT_CONFIRMED", "a" * 64, ("L10_CLOSE_NET_BOOKING_PENDING",)
+    )
+    result = StandingSupervisorRunResultV1(
+        ok=True,
+        run_id="close-readback",
+        trace=StandingSupervisorTraceV1("close-readback", terminal_disposition=readback.status),
+        recovery=None,
+        policy_result=None,
+        owner_go_consumed=False,
+        authority_invariants_ok=True,
+        close_readback=readback,
+    )
+    monkeypatch.setattr(unattended_v1, "_filegate_revision", lambda path: "fixture-active")
+    monkeypatch.setattr(
+        unattended_v1, "run_n1_standing_pre_external_supervisor_v1", lambda **kwargs: result
+    )
+    bounds = UnattendedHostBoundsV1(
+        "flat-close",
+        OWNER_GO_BASELINE_SHA,
+        unattended_v1.unattended_request_digest_v1(request_factory(1, tmp_path / "unused")),
+        120,
+        1,
+        30,
+        1,
+    )
+    controller = tmp_path / "controller"
+    stopped = run_unattended_n1_host_v1(
+        bounds=bounds, state_root=controller, request_factory=request_factory, clock=lambda: 100
+    )
+    assert stopped["status"] == "GOVERNED_RUNTIME_STOPPED"
+    assert stopped["close_readback_status"] == "CLOSE_FLAT_CONFIRMED"
+    assert stopped["close_booking_pending"] is True
+    assert stopped["cycles_used"] == 0
+    assert json.loads((controller / "host_restart_state_v1.json").read_bytes()) == stopped
+
+
 def test_expired_stopped_or_lost_receipt_never_calls_runtime_factory(tmp_path):
     bounds = UnattendedHostBoundsV1("test", "revision", "config", 90, 2, 30, 1)
 

@@ -194,7 +194,8 @@ def test_canonical_docs_persist_current_contract() -> None:
     assert "MF_EGRESS_NOT_THIS_HANDOFF=true" in spec
     assert "LAST_RANKING_UNIVERSE_AUTHORITY" in owner
     assert "AUTHORITY_EFFECT=NONE" in spec
-    assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in nav
+    assert "MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY" in nav
+    assert "MAP_OF_TRUTH_SEMANTIC_AUTHORITY_EFFECT=NONE" in nav
 
 
 def test_cap22_has_no_selection_trading_or_wire_authority() -> None:
