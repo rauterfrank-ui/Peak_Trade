@@ -14,6 +14,7 @@ from typing import Any, Mapping
 import pytest
 
 from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    is_double_play_decision_event_v0,
     require_current_double_play_bundle_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.double_play_input_evidence_v1 import (
@@ -909,6 +910,156 @@ def test_strict_shadow_readback_binds_every_typed_cycle(run_two_hour_shadow, cap
         assert reason in payload["ddo_readback"]["blockers"], case
         if case == "missing_capture":
             assert payload["ddo_readback"]["typed_volatility_cycles"] == typed_count
+
+
+def test_offline_o4_receipt_binds_the_original_shadow_decision(
+    run_two_hour_shadow, tmp_path, monkeypatch, capsys
+):
+    from datetime import datetime, timedelta, timezone
+    from math import log
+
+    from scripts.ops import capture_offline_learning_mark_window_v1 as capture
+    from scripts.ops.run_integrated_paper_shadow_observation_wallclock_session_v1 import main
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+        validate_seal_v1,
+    )
+
+    root, run, _ = run_two_hour_shadow(flat=False)
+    assert run.terminal_verdict == "PASS"
+    rows = [
+        json.loads(line) for line in (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    cycle = next(row for row in rows if row["canonical_market_context_typed_estimate_present"])
+    ledger = AppendOnlyDdoLedgerV0((root / "ddo_ledger_v0.jsonl").absolute()).read_all()
+    decision = next(
+        record
+        for record in ledger
+        if record["record_id"] in cycle["ddo_capture"]["record_ids"]
+        and record["schema_name"] == "decision_event"
+        and is_double_play_decision_event_v0(record)
+    )
+    decided = datetime.fromisoformat(decision["event_time_utc"].replace("Z", "+00:00"))
+    start = decided.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+    assert start > decided and start.minute == 0
+    end = start + timedelta(hours=2)
+    received = end + timedelta(seconds=5)
+    monkeypatch.setattr(capture, "_utc_now", received.isoformat)
+    session_binding = json.loads((root / "venue_instrument_binding.json").read_bytes())
+    native = session_binding["venue_instrument_id"]
+    inventory = REPO_ROOT / (
+        "tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1"
+        "/instruments_futures_live.json"
+    )
+    metadata = next(
+        row for row in json.loads(inventory.read_bytes())["data"] if row["instId"] == native
+    )
+    binding_path = tmp_path / "binding.json"
+    binding_path.write_text(
+        json.dumps(
+            {
+                "canonical_instrument_id": session_binding["canonical_instrument_id"],
+                "native_instrument_id": native,
+                "venue": session_binding["venue"],
+                "mapping_digest": session_binding["mapping_digest"],
+                "instrument_metadata": metadata,
+            }
+        )
+    )
+
+    def fetch(query):
+        assert query["instId"] == native
+        rows = []
+        for i in range(int(query["limit"])):
+            opened = int(query["after"]) - (i + 1) * 60_000
+            price = "100" if opened < (start.timestamp() + 3600) * 1000 else "102"
+            rows.append([str(opened), price, price, price, price, "1"])
+        return 200, json.dumps({"code": "0", "data": rows}).encode()
+
+    archive = tmp_path / "archived-market-fixture"
+    capture.capture_public_mark_window_v1(
+        output=archive,
+        start_utc=start.isoformat(),
+        hours=2,
+        binding_path=binding_path,
+        binding_sha256=sha256(binding_path.read_bytes()).hexdigest(),
+        repository_sha=SHA,
+        fetch_page=fetch,
+    )
+    args = [
+        "measure-shadow-outcome",
+        "--evidence-root",
+        str(root),
+        "--o4-mark-archive",
+        str(archive),
+        "--n-bars",
+        "2",
+        "--max-end-age-seconds",
+        "60",
+    ]
+
+    def archive_digests():
+        return {
+            p.relative_to(tmp_path): sha256(p.read_bytes()).hexdigest()
+            for directory in (root, archive)
+            for p in directory.rglob("*")
+            if p.is_file()
+        }
+
+    original_digests = archive_digests()
+    assert (
+        main(
+            [
+                *args,
+                "--decision-event-ref",
+                decision["record_id"],
+                "--evaluated-at-utc",
+                received.isoformat(),
+            ]
+        )
+        == 0
+    )
+    receipt = validate_seal_v1(
+        json.loads(capsys.readouterr().out), "i17_shadow_o4_market_measurement_readback_v1"
+    )
+    selected = receipt["shadow_decision"]
+    assert selected["decision_event_ref"] == decision["record_id"]
+    assert selected["decision_event_time_utc"] == decision["event_time_utc"]
+    assert selected["cycle_id"] == cycle["ddo_capture"]["cycle_id"]
+    assert selected["market_sequence"] == cycle["shadow_decision_timing"]["market_sequence"]
+    assert (
+        selected["shadow_manifest_sha256"]
+        == sha256((root / "evidence_manifest.sha256").read_bytes()).hexdigest()
+    )
+    observation = receipt["market_observation"]
+    assert observation["request"]["horizon_start_time_utc"] == start.astimezone(
+        timezone.utc
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert observation["measurement"]["log_return"] == pytest.approx(log(1.02))
+    assert receipt["fill_source_type"] == "NO_FILL"
+    assert not receipt["source_authenticated"] and not receipt["learning_input_authorized"]
+    assert archive_digests() == original_digests
+
+    def fails(ref, at, reason):
+        assert main([*args, "--decision-event-ref", ref, "--evaluated-at-utc", at.isoformat()]) == 1
+        assert json.loads(capsys.readouterr().out)["blockers"] == [reason]
+
+    fails("unknown-original-decision", received, "DECISION_NOT_IN_VERIFIED_TYPED_SHADOW_CYCLE")
+    other_decision = next(
+        record
+        for record in ledger
+        if record["record_id"] in cycle["ddo_capture"]["record_ids"]
+        and record["schema_name"] == "decision_event"
+        and not is_double_play_decision_event_v0(record)
+    )
+    fails(other_decision["record_id"], received, "DECISION_NOT_IN_VERIFIED_TYPED_SHADOW_CYCLE")
+    fails(
+        decision["record_id"],
+        received - timedelta(microseconds=1),
+        "ARCHIVE_RESPONSE_NOT_YET_AVAILABLE",
+    )
+    fails(decision["record_id"], end + timedelta(seconds=61), "MARKET_MEASUREMENT_STALE")
+    (archive / "page-00.json").write_bytes(b"{}")
+    fails(decision["record_id"], received, "SOURCE_SHA256_MISMATCH")
 
 
 def test_flat_shadow_mark_window_seals_abort_without_completed_decision(run_two_hour_shadow):

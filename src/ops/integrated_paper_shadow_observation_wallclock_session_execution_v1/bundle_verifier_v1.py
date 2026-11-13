@@ -29,6 +29,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     AUTHORITY_EFFECT_NONE,
     CAPABILITY_ID,
     EVIDENCE_SCHEMA_ID,
+    EXECUTION_CLASS_ANALYTICAL,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1 import (
     TerminalVerdict,
@@ -77,9 +78,32 @@ class WallclockEvidenceVerificationResultV1:
     economic_validity_pass: bool = False
     promotion_pass: bool = False
     ddo_readback: dict[str, Any] | None = None
+    selected_shadow_decision: dict[str, Any] | None = None
+
+    @property
+    def typed_ddo_requirement_met(self) -> bool:
+        readback = self.ddo_readback or {}
+        return (
+            self.verified
+            and self.verdict == TerminalVerdict.PASS.value
+            and not self.incomplete
+            and readback.get("decision_bundles_readable") is True
+            and readback.get("typed_volatility_cycles_with_double_play_bundle", 0)
+            == readback.get("typed_volatility_cycles", 0)
+            > 0
+        )
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        if self.selected_shadow_decision is None:
+            payload.pop("selected_shadow_decision")
+        return payload
+
+
+@dataclass
+class _ShadowDecisionSelection:
+    ref: str
+    decision: dict[str, Any] | None = None
 
 
 def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
@@ -131,7 +155,13 @@ def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
 
 
 def _verify_typed_cycle_bindings(
-    root, manifest_names, typed_cycles, records, complete_cycles, blockers
+    root,
+    manifest_names,
+    typed_cycles,
+    records,
+    complete_cycles,
+    blockers,
+    selection: _ShadowDecisionSelection | None,
 ) -> int:
     if not typed_cycles:
         return 0
@@ -220,10 +250,45 @@ def _verify_typed_cycle_bindings(
                 )
             else:
                 validated += 1
+                if selection is not None and bundle.decision_event_ref == selection.ref:
+                    if (
+                        session.get("capability_id") != CAPABILITY_ID
+                        or session.get("execution_class") != EXECUTION_CLASS_ANALYTICAL
+                        or session.get("paper_execution") is not False
+                    ):
+                        blockers.append("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
+                        continue
+                    timing = cycle["shadow_decision_timing"]
+                    selection.decision = {
+                        "session_id": session["session_id"],
+                        "repository_sha": session_revision,
+                        "cycle_id": capture_id,
+                        "cycle_index": index,
+                        "decision_event_ref": bundle.decision_event_ref,
+                        "observation_ref": bundle.observation_ref,
+                        "input_evidence_ref": bundle.input_evidence_ref,
+                        "decision_event_time_utc": records[bundle.decision_event_ref][
+                            "event_time_utc"
+                        ],
+                        "decision_semantic_digest": bundle.semantic_digest,
+                        "decision_input_digest": bundle.input_digest,
+                        "market_sequence": sequence,
+                        "market_data_reference": cycle["market_data_reference"],
+                        "mark_event_ts_unix": timing["mark_event_ts_unix"],
+                        "mark_receive_ts_unix": timing["mark_receive_ts_unix"],
+                        "decision_input_available_ts_unix": timing[
+                            "decision_input_available_ts_unix"
+                        ],
+                        "canonical_instrument_id": session["canonical_instrument_id"],
+                        "venue_instrument_id": session["venue_instrument_id"],
+                        "mapping_digest": session["mapping_digest"],
+                    }
     return validated
 
 
-def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | None:
+def _read_ddo_capture(
+    root: Path, manifest_names: set[str], selection: _ShadowDecisionSelection | None
+) -> dict[str, Any] | None:
     cycles = load_bridge_cycle_ledger_v1(root / BRIDGE_CYCLE_LEDGER_FILENAME)
     capture_cycles = [row for row in cycles if "ddo_capture" in row]
     typed_cycles = [
@@ -302,7 +367,7 @@ def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | 
         blockers.append(f"DDO_LEDGER_READBACK:{type(exc).__name__}")
     else:
         result["typed_volatility_cycles_with_double_play_bundle"] = _verify_typed_cycle_bindings(
-            root, manifest_names, typed_cycles, records, complete_cycles, blockers
+            root, manifest_names, typed_cycles, records, complete_cycles, blockers, selection
         )
     if not result["complete_double_play_bundles"]:
         blockers.append("DDO_NO_COMPLETE_DOUBLE_PLAY_BUNDLE")
@@ -314,6 +379,7 @@ def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | 
 def verify_wallclock_evidence_bundle_v1(
     *,
     evidence_root: Path,
+    select_shadow_decision_ref: str | None = None,
 ) -> WallclockEvidenceVerificationResultV1:
     notes = [
         f"VERIFIER_ID={VERIFIER_ID}",
@@ -337,7 +403,8 @@ def verify_wallclock_evidence_bundle_v1(
         blockers.append("EVIDENCE_MANIFEST_MISSING")
     else:
         try:
-            for line in manifest_path.read_text(encoding="utf-8").splitlines():
+            manifest_bytes = manifest_path.read_bytes()
+            for line in manifest_bytes.decode("utf-8").splitlines():
                 if not line.strip():
                     continue
                 digest, sep, name = line.partition("  ")
@@ -444,12 +511,17 @@ def verify_wallclock_evidence_bundle_v1(
             notes=notes,
         )
 
-    ddo_readback = _read_ddo_capture(root, set(manifest_digests))
+    selection = (
+        None
+        if select_shadow_decision_ref is None
+        else _ShadowDecisionSelection(select_shadow_decision_ref)
+    )
+    ddo_readback = _read_ddo_capture(root, set(manifest_digests), selection)
     if verdict == TerminalVerdict.ABORT.value:
         result = RESULT_ABORT_VERIFIED
     else:
         result = RESULT_PASS
-    return WallclockEvidenceVerificationResultV1(
+    verification = WallclockEvidenceVerificationResultV1(
         result=result,
         verified=True,
         verdict=verdict,
@@ -457,3 +529,28 @@ def verify_wallclock_evidence_bundle_v1(
         notes=notes + [f"APPEND_ONLY={list(APPEND_ONLY)}"],
         ddo_readback=ddo_readback,
     )
+    if verification.typed_ddo_requirement_met and selection and selection.decision is not None:
+        try:
+            unchanged = manifest_path.read_bytes() == manifest_bytes and all(
+                not (root / name).is_symlink()
+                and hashlib.sha256((root / name).read_bytes()).hexdigest() == manifest_digests[name]
+                for name in (
+                    "session_manifest.json",
+                    "repo_sha.txt",
+                    "market_data_sequence.jsonl",
+                    BRIDGE_CYCLE_LEDGER_FILENAME,
+                    LEDGER_FILENAME_DEFAULT,
+                )
+            )
+        except OSError:
+            unchanged = False
+        if not unchanged:
+            verification.result = RESULT_FAIL
+            verification.verified = False
+            verification.blockers.append("SHADOW_EVIDENCE_CHANGED_DURING_READBACK")
+            return verification
+        verification.selected_shadow_decision = {
+            **selection.decision,
+            "shadow_manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        }
+    return verification
