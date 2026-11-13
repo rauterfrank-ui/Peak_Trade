@@ -68,8 +68,8 @@ jobs:
 
       - name: Paper Tests + Audit Evidence (offline)
         env:
-          AUDIT_SCOPE: ${{ inputs.scope }}
-          AUDIT_NOTE: ${{ inputs.note }}
+          AUDIT_SCOPE: ${{ github.event.inputs.scope }}
+          AUDIT_NOTE: ${{ github.event.inputs.note }}
         run: |
           set -euo pipefail
 

@@ -39,7 +39,7 @@
     {
       "path": ".github/workflows/paper_tests_audit_evidence.yml",
       "before_sha256": "9bf9dfe36ac54632cd6e786ba6254ffdd0d319e9ca3cee88fd68c67e2c59fd2b",
-      "sha256": "01ffed628fdb4fc7891cff6f343290af3c0eaf08ea0607cd5aa1bb6aa4e3ebfb"
+      "sha256": "d63f5539f1f617d80f711c23d0b062e569df25d3ce7ebbb5caf893fe0a5f75f2"
     },
     {
       "path": ".github/workflows/policy_critic_gate.yml",
