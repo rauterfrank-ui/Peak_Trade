@@ -34,6 +34,9 @@ from src.learning.deterministic_decision_outcome_v0.evaluation_runtime_productiv
     derive_productive_n_bars_evaluation_identity_v1,
     ledger_records_index_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
+    export_learning_evidence_from_state_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_ingest_v1 import (
     compute_evaluation_bundle_fingerprint_v1,
     derive_learning_state_record_id_v1,
@@ -543,3 +546,18 @@ def read_offline_learning_follow_up_v1(
     ):
         raise DdoValidationError("SL_FOLLOW_UP_READBACK_MISMATCH")
     return result
+
+
+def export_completed_offline_learning_evidence_v1(
+    root: Path, cycle_key: str, *, plan_digest: str
+) -> dict[str, Any]:
+    """Export only the exact learning state verified by the completed offline cycle."""
+    result = read_offline_learning_follow_up_v1(root, cycle_key, plan_digest=plan_digest)
+    plan = _read_plan(_cycle_directory(root, cycle_key), plan_digest)
+    ledger = AppendOnlyDdoLedgerV0(
+        offline_learning_ledger_path_v1(root, plan["request"]["scope"]["account_scope"])
+    )
+    state = ledger.get(result["learning_state_record_ref"])
+    if state["content_hash"] != result["learning_state_content_hash"]:
+        raise DdoValidationError("SL_FOLLOW_UP_EXPORT_STATE_MISMATCH")
+    return export_learning_evidence_from_state_v1(state)
