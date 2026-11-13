@@ -658,6 +658,64 @@ def test_snapshot_mismatch_fail_closed_on_repo(tmp_path: Path) -> None:
     assert result.ok is False
 
 
+def test_strict_source_binding_distinguishes_frozen_navigation_and_semantic_drift(
+    tmp_path: Path,
+) -> None:
+    from hashlib import sha256
+
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
+        CENSUS_PATH,
+        LANDSCAPE_PATH,
+    )
+
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT, output_dir=tmp_path, rules_path=RULES, **_STRICT
+    )
+    report = json.loads((tmp_path / "snapshot_drift_report.v1.json").read_bytes())
+    binding = report["source_binding"]
+    assert binding["authority"] == "NONE"
+    records = binding["sources"]
+    assert set(records) == {CENSUS_PATH, LANDSCAPE_PATH, ATLAS_MODEL, ATLAS_BOUNDARIES}
+    for path, record in records.items():
+        assert record["bytes_match_head"]
+        assert record["sha256"] == sha256((REPO_ROOT / path).read_bytes()).hexdigest()
+        assert record["declared_revision"] != binding["reviewed_checkout"]
+    for path in (ATLAS_MODEL, ATLAS_BOUNDARIES):
+        assert records[path]["status"] == "BOUND_FOR_FILTERED_NAVIGATION"
+        assert records[path]["unchanged_reference_paths"] > 0
+    for path in (CENSUS_PATH, LANDSCAPE_PATH):
+        assert records[path]["status"] == "SEMANTIC_REVIEW_REQUIRED"
+    assert not result.ok
+    assert not result.coverage["SNAPSHOT_BINDING_VERIFIED"]
+    assert not result.coverage["CAUSAL_CLOSURE_PROVEN"]
+    assert len(result.errors) == 2
+
+
+def test_strict_source_binding_rejects_dirty_input_even_with_matching_declarations(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1 import source_validation_v1 as sv
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import CENSUS_PATH
+
+    root = tmp_path / "repo"
+    _write_fixture_tree(root, census=_minimal_census())
+    head = _git_init_commit(root)
+    _sync_governance_baselines_to_head(root, head)
+    # Keep the current-SHA declarations; exercise strict binding without unrelated
+    # production schema or validator-checkout requirements on this fixture.
+    monkeypatch.setattr(sv, "validate_census_document", lambda *args, **kwargs: ([], True))
+    monkeypatch.setattr(sv, "run_atlas_validator_subprocess", lambda **kwargs: ([], True))
+    monkeypatch.setattr(sv, "run_landscape_validator_subprocess", lambda **kwargs: ([], True))
+    (root / "scripts").mkdir()
+    (root / "scripts/pt").touch()
+    result = run_forensic_crosswalk_v1(
+        repo_root=root, output_dir=tmp_path / "out", rules_path=RULES, **_STRICT
+    )
+    assert f"source_bytes_differ_from_head:{CENSUS_PATH}" in result.errors
+    assert not result.coverage["SNAPSHOT_BINDING_VERIFIED"]
+    assert not result.ok
+
+
 def test_validator_coverage_repo_root_mismatch_skipped(tmp_path: Path) -> None:
     root = tmp_path / "aligned_fixture_skip"
     _write_fixture_tree(root, census=_minimal_census())
@@ -1044,6 +1102,17 @@ def test_navigation_requires_source_validation_pass(tmp_path: Path) -> None:
     )
     assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is True
     assert result.coverage["SOURCE_VALIDATION_PASS"] is True
+    assert result.coverage["unresolved_edge_count"] == 18
+    assert result.coverage["unresolved_edges_with_review_note"] == 18
+    assert {e["edge_id"] for e in result.unresolved_edges} == set(
+        json.loads(RULES.read_bytes())["edge_review_notes"]
+    )
+    assert all(
+        edge["review_note"]["review_kind"] == "STATIC_REVIEW_NOTE_ONLY"
+        and edge["review_note"]["source_refs_complete"]
+        for edge in result.unresolved_edges
+    )
+    assert not result.coverage["CURRENT_GRAPH_VERIFIED"]
 
 
 def test_evidence_flow_maps_to_observes_structural() -> None:

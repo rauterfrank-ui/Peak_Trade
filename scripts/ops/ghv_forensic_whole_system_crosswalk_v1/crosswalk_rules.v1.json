@@ -1,5 +1,143 @@
 {
   "authority": "NONE",
+  "edge_review_notes": {
+    "CE-001": {
+      "authority_or_effect": "Instrument rows, mark inputs and source clock reach Cap21. The upstream acquisition does not authorize selection.",
+      "direction": "EEA public inventory -> Cap21 persistence",
+      "source_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ]
+    },
+    "CE-002": {
+      "authority_or_effect": "The typed USDC result is scoped to account and decision time before binding. Venue equity and local commitments remain distinct.",
+      "direction": "29P risk-capital result -> budget owner",
+      "source_refs": [
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
+      ]
+    },
+    "CE-003": {
+      "authority_or_effect": "This is a static check and feeds policy eligibility. The separately verified simulated POST cannot grant policy admission.",
+      "direction": "Pre-external proof -> Full Core source inspection",
+      "source_refs": [
+        "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
+        "src/governance/external_effect_authorization_policy_v1.py"
+      ]
+    },
+    "CE-004": {
+      "authority_or_effect": "Static proof reads the core path; no returned proof becomes a core trade signal here.",
+      "direction": "Whole-system proof -> core source inspection",
+      "source_refs": [
+        "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py"
+      ]
+    },
+    "CE-005": {
+      "authority_or_effect": "Presentation uses the read-model endpoint. It does not write trading state.",
+      "direction": "Public-MD read model -> GET route -> browser",
+      "source_refs": [
+        "src/webui/market_dashboard_landscape_shell_router_v2.py",
+        "static/js/market_dashboard_landscape_v2.js"
+      ]
+    },
+    "CE-006": {
+      "authority_or_effect": "The source arrow follows the call. The public bootstrap and publication results flow back.",
+      "direction": "Convergence -> Public Runtime; public facts -> Convergence",
+      "source_refs": [
+        "src/ops/market_data_private_state_runtime_convergence_v1/restart_reconciliation_closure_v1.py"
+      ]
+    },
+    "CE-007": {
+      "authority_or_effect": "The source arrow follows the call. Restored account state, baseline and reconciliation return to the caller.",
+      "direction": "Convergence -> Private Runtime; account state -> Convergence",
+      "source_refs": [
+        "src/ops/market_data_private_state_runtime_convergence_v1/restart_reconciliation_closure_v1.py"
+      ]
+    },
+    "CE-008": {
+      "authority_or_effect": "The selected instrument and generation are preserved. The validator checks identity and does not select again.",
+      "direction": "Cap23 selection -> Cap24 bound identity; N1 -> validator",
+      "source_refs": [
+        "src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+      ]
+    },
+    "CE-009": {
+      "authority_or_effect": "Core consumes instrument-bound volatility with warmup and provenance. Presence alone does not prove productive operation.",
+      "direction": "Typed G17 observation -> canonical market context",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/productive_typed_volatility_producer_and_cmc_hot_path_binding_v1/constants_v1.py"
+      ]
+    },
+    "c1_injected_governed_cycle": {
+      "authority_or_effect": "Finality and native instrument bind the C1 observation. Invalid input blocks the next stage.",
+      "direction": "Cycle -> C1 mapper; mapped observation -> cycle",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py"
+      ]
+    },
+    "fa_compose_governed_cycle_n1": {
+      "authority_or_effect": "Invocation and response differ in direction. The observed composition is bounded and disables network execution.",
+      "direction": "Readiness -> N1 cycle; cycle result -> Readiness",
+      "source_refs": [
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py"
+      ]
+    },
+    "fa_compose_portfolio_budget": {
+      "authority_or_effect": "The reference travels into the join; the original budget owner retains reservation authority and persistence.",
+      "direction": "N5 composition -> readiness join (owner reference)",
+      "source_refs": [
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
+      ]
+    },
+    "intent_to_execution": {
+      "authority_or_effect": "Intent alone cannot be sent; the final envelope, permit, durable attempt and bound transport are separate.",
+      "direction": "Intent owner -> separate execution gate",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
+      ]
+    },
+    "k1_bind_governed_cycle_occupancy": {
+      "authority_or_effect": "The consumer checks the no-material-loaded status. A bind result grants no send authority.",
+      "direction": "Cycle -> K1 binder; bind status -> cycle",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py"
+      ]
+    },
+    "mv2_executable_pre_external_terminal": {
+      "authority_or_effect": "The cycle can emit a plan and stop. An order attempt requires its own downstream authority.",
+      "direction": "Bound executable plan -> PRE_EXTERNAL terminal",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py"
+      ]
+    },
+    "mv2_to_sizing": {
+      "authority_or_effect": "Decision, monetary basis and size constraints go to the sizer; the budget owner alone persists any hold.",
+      "direction": "29P -> canonical risk sizer",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+        "src/governance/capital_risk_sizing_v1.py"
+      ]
+    },
+    "mv2_valid_no_trade_terminal": {
+      "authority_or_effect": "HOLD_CLOSED ends the cycle without POST. Quantity rejection is a separate outcome.",
+      "direction": "Core outcome -> governed cycle terminal",
+      "source_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py"
+      ]
+    },
+    "reconciliation_startup_before_cap24_bind": {
+      "authority_or_effect": "A hard stop or disabled alpha blocks binding; the startup reader does not choose the instrument.",
+      "direction": "Cap24 -> startup reconciliation; reconciliation status -> Cap24",
+      "source_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
+      ]
+    }
+  },
   "rules": [],
   "schema_version": "crosswalk_rules.v1"
 }

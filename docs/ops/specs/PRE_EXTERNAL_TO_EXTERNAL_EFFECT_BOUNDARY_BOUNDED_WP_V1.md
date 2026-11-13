@@ -60,3 +60,10 @@ lift STEP-29Q, select a final `d_t` formula, or authorize venue POST / wire send
 - Execution boundary + envelope seam + live admission gap DAG chain present
 
 Code: `src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py`
+
+The separate audit function `read_simulated_post_isolation_v1` reports on
+the exact reviewed Futures dispatch, shared attempt seam, permit predicate and
+non-networking transport. A changed or missing source invalidates this
+observation. It covers the simulated POST only; quantity and custody GETs
+are outside that claim. The observation does not classify the caller for the
+policy gate or grant eligibility for standing lift, permit mint or real POST.
