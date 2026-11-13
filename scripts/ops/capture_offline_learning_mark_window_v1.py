@@ -35,11 +35,11 @@ from src.ops.economic_md_input_producer_v1.constants_v1 import (
 from src.research.offline_recorded_mark_horizon_source_v1 import (
     aggregate_recorded_mark_minutes,
     read_bound_json,
+    recorded_mark_price_unit_v1,
     utc_seconds,
 )
 
 SCHEMA = "recorded_public_mark_window_v1"
-NATIVE_INSTRUMENT = "ETH-USDT-SWAP"
 
 
 def _utc_now():
@@ -126,9 +126,13 @@ def capture_public_mark_window_v1(
     binding_bytes = binding_path.read_bytes()
     require_v1(_sha(binding_bytes) == binding_sha256, "SOURCE_SHA256_MISMATCH")
     binding = strict_json_v1(binding_bytes)
-    require_v1(
-        isinstance(binding, dict) and binding.get("native_instrument_id") == NATIVE_INSTRUMENT,
-        "CAPTURE_MARKET_MISMATCH",
+    require_v1(isinstance(binding, dict), "CAPTURE_MARKET_MISMATCH")
+    native = binding.get("native_instrument_id")
+    canonical = binding.get("canonical_instrument_id")
+    if not isinstance(native, str) or not isinstance(canonical, str):
+        raise ValueError("PILOT_INSTRUMENT_BINDING_MISMATCH")
+    recorded_mark_price_unit_v1(
+        instrument_binding=binding, canonical_instrument_id=canonical, native_instrument_id=native
     )
     plan = {
         "start_utc": start_utc,
@@ -158,7 +162,7 @@ def capture_public_mark_window_v1(
             minute_count = hours * 60
             for index, offset in enumerate(range(0, minute_count, page_size)):
                 query = {
-                    "instId": NATIVE_INSTRUMENT,
+                    "instId": native,
                     "bar": MARK_BAR,
                     "after": str(int(end * 1000) - offset * PT1M_STEP_MS),
                     "limit": str(min(page_size, minute_count - offset)),
@@ -191,8 +195,8 @@ def capture_public_mark_window_v1(
             aggregate_recorded_mark_minutes(
                 pages=pages,
                 instrument_binding=binding,
-                canonical_instrument_id=binding["canonical_instrument_id"],
-                native_instrument_id=NATIVE_INSTRUMENT,
+                canonical_instrument_id=canonical,
+                native_instrument_id=native,
                 horizon_start_utc=start_utc,
                 n_bars=hours,
                 repository_sha=repository_sha,

@@ -146,3 +146,26 @@ Backtestwerte von gesondert gelieferten Shadowbeobachtungen. Der aktuelle
 übernimmt Gapdimensionen aus seinem expliziten Context; er erzeugt damit keine
 unabhängige natürliche Slippage- oder Fundingmessung. Genau diese Provenienz
 muss auch eine spätere Paper-/Shadow-Datennachführung erhalten.
+
+## Unabhängige O4-Messquelle für das I17-Instrument
+
+Der [Archivsammler](../../../scripts/ops/capture_offline_learning_mark_window_v1.py)
+und der [Archivleser](../../../src/research/offline_recorded_mark_horizon_source_v1.py)
+prüfen dieselbe Instrumentbindung. Für das aktuelle I17-Profil sind kanonische
+und native ID `ETH-USD_UM_XPERP-310404`. Die Bindungsdatei enthält beide IDs,
+`venue=OKX`, den `mapping_digest` des kanonischen OKX-Resolvers sowie die
+passende öffentliche Instrumentzeile unter `instrument_metadata`. Deren
+Instrumenttyp, Status, Kontraktart, Settlement und Underlier müssen zum
+gebundenen Profil passen. Die Bindungsdatei wird über SHA256 angegeben.
+Alle Seiten dieses Profils müssen den öffentlichen EEA-Host und die native ID
+im Requestbeleg führen. Das ältere `ETH-USDT-SWAP` bleibt ein separates
+Archivprofil. Die Preiseinheiten sind USD pro ETH für XPERP und USDT pro ETH für
+SWAP.
+
+Das ausdrücklich angeforderte Stundenfenster muss vollständig aus originalen,
+finalisierten Minuten bestehen. Die resultierenden O4-Bars stehen für die
+Messung frühestens beim tatsächlichen Empfang aller zugehörigen Seiten zur
+Verfügung. Die Offline-Gegenprobe verwendet Testantworten. Sie belegt den Weg
+vom Sammler bis zum unabhängigen O4-Consumer; sie liefert weder ein ausgeführtes
+Geschäft noch die Attribution an eine versiegelte I17-DDO-Entscheidung oder eine
+Zulassung für GVEF.

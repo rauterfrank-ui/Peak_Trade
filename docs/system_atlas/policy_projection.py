@@ -232,6 +232,12 @@ G2_ARCHIVE_PROJECTION_DELTA = (
     "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
     "f98f3e3b0119b0981b74e12e1e1f8fb10999b92a67b701fbbfc2dcfa6183d85a",
 )
+OWNER_ADJUDICATION_CONFIG_DELTAS = {
+    "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": (
+        "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
+        "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
+    ),
+}
 
 
 def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> None:
@@ -619,6 +625,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in MANAGED_FILEGATE_OWNER_DELTAS
                 and path not in opt_handoff
                 and not g2_archive_delta
+                and OWNER_ADJUDICATION_CONFIG_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
