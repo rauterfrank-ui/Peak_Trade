@@ -32,7 +32,7 @@ GUARD_BANNER = (
     "Cron/schedule is not reactivated by this tool."
 )
 
-# Workflows that lost schedule in PR #3896 (manual dispatch retained).
+# Available workflows that lost their schedule in PR #3896.
 MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "ci-scheduled-paper-and-export-smoke.yml",
@@ -41,7 +41,6 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
         "full_audit_weekly.yml",
         "infostream-automation.yml",
         "knowledge_extras_chromadb.yml",
-        "market_outlook_automation.yml",
         "offline_suites.yml",
         "ops_doctor_dashboard.yml",
         "ops_doctor_pages.yml",
@@ -103,11 +102,11 @@ INTENT_LABELS: dict[str, str] = {
     "paper_shadow_evidence": "Paper / shadow / scheduled-smoke orchestration",
     "paper_test_evidence": "Direct paper-tests-audit-evidence run",
     "health_suite": "Test health profiles and weekly core audit",
-    "market_info_daily": "Market outlook and InfoStream (AI-capable)",
+    "market_info_daily": "InfoStream (AI-capable)",
     "ops_hygiene": "Ops doctor, offline suites, knowledge extras",
     "docs_hygiene": "Docs reference full scan",
     "security_audit": "Weekly security and quality audit",
-    "all": "All manual-only workflows in the PR #3896 set",
+    "all": "Available manual-only workflows in the PR #3896 set",
     **RESIDUAL_INTENT_LABELS,
 }
 
@@ -123,10 +122,7 @@ INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
         "test_health.yml",
         "weekly_core_audit.yml",
     ),
-    "market_info_daily": (
-        "infostream-automation.yml",
-        "market_outlook_automation.yml",
-    ),
+    "market_info_daily": ("infostream-automation.yml",),
     "ops_hygiene": (
         "offline_suites.yml",
         "ops_doctor_dashboard.yml",
@@ -197,13 +193,6 @@ STATIC_META: dict[str, dict[str, Any]] = {
         "ai": True,
         "default_flags": {"skip_ai": "true", "dry_run": "true"},
         "ai_note": "Prefer -f skip_ai=true unless explicit AI cost approval.",
-    },
-    "market_outlook_automation.yml": {
-        "why": "MarketSentinel daily outlook (former 05:00 UTC schedule).",
-        "risk": "AI cost — uses OPENAI_API_KEY; scheduled runs used --skip-llm in CI cron.",
-        "variable_gates": "",
-        "ai": True,
-        "ai_note": "Confirm OPENAI usage / use repo skip-llm patterns before paid run.",
     },
     "offline_suites.yml": {
         "why": "Offline daily/weekly test suites (former schedule).",

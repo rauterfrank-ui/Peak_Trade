@@ -25,20 +25,15 @@ Peak_Trade keeps **kostenpflichtige AI/KI/LLM** usage **default-off** in CI and 
 |--------|-------------------------|--------------------------------|-------|
 | **AI-Ops Promptfoo Evals** | Active; PR/push run cost-safe path | **Only** manual `workflow_dispatch` with `run_paid_openai_evals=true` **and** repo var `PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS=true` | After PR #3461; see also [`AI_EVALS_RUNBOOK.md`](../ai/AI_EVALS_RUNBOOK.md). |
 | **InfoStream Automation** (`.github/workflows/infostream-automation.yml`) | Schedule + manual | **Schedule:** only if affirmative repo variables (e.g. `PT_AI_MODELS_ENABLED`, `PT_PAPERTRAIL_READY`) and runtime gates allow; keep vars **absent/false** unless owner-approved. | Treat scheduled model clients as **high sensitivity**. |
-| **MarketSentinel – Daily Market Outlook** (`.github/workflows/market_outlook_automation.yml`) | Schedule + manual | **Schedule:** uses `--skip-llm` (placeholder path; no billable outbound LLM on cron). **Manual `workflow_dispatch`:** runs the script **without** `--skip-llm` today — **operator-initiated only**, not schedule-default, **not** autonomous spend; still **Principle 2** (secret ≠ spend permission) + **Principle 5** (no trading/live authority). No dedicated “paid LLM” workflow input yet. | Outputs are advisory/reporting; optional explicit paid opt-in inputs are a future guardrail slice. |
+| **MarketSentinel – Daily Market Outlook** (`.github/workflows/market_outlook_automation.yml`) | Retired | **No** — the runner and workflow deny execution. | The v0 producer was removed in PR #6579. |
 | **AIOps trend seed / ledger** | `workflow_run` / dispatch | **No** OpenAI secret in workflow (artifact chain) | Offline/deterministic chain. |
 | **Cursor Auto-PR / Auto-merge** | Push / PR automation | **No LLM cost**; uses `GITHUB_TOKEN` | **Repo autonomy** (PRs, labels, merge) — separate governance from LLM cost. |
 | **`ai-model-cards-validate`** | PR | **No** — local validation of docs | Safe. |
 | **Audit workflow** | Various | Dummy `OPENAI_API_KEY` in CI only where documented | No live key dependency for audit path. |
 
-## Market Outlook — manual `workflow_dispatch` (operator clarification)
+## Market Outlook retirement
 
-This section restates repo-verified behavior from `.github/workflows/market_outlook_automation.yml` only; it does **not** grant authority.
-
-- **Scheduled runs** always pass `--skip-llm` → placeholder path; routine automation does **not** turn on billable LLM by default.
-- **Manual runs** follow the workflow `else` path **without** `--skip-llm`; any outbound LLM therefore requires a deliberate operator action in GitHub plus whatever keys/vars exist — **not** silent or autonomous CI spend.
-- **Presence of `OPENAI_API_KEY`** (or other secrets) is **not** approval, **not** Freigabe, and **not** trading/live enablement; spending posture remains gated by operator intent, repo variables, and runtime/workflow rules elsewhere.
-- **Documentation** and CI outputs **must not** be interpreted as order placement, risk override, or execution gates (see [`AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`](../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)).
+The retained workflow reports retirement if enabled and dispatched. It has no secret references, report generation, or artifact uploads. The local entrypoint exits with `MARKET_SENTINEL_V0_RETIRED`.
 
 ## Repository variables (cost-relevant)
 

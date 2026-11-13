@@ -43,9 +43,12 @@ _RETIRED_COMPONENT_SUITES = {
     ),
     "src.macro_regimes": ("test_macro_regime_loader.py", "test_macro_regime_integration.py"),
     "src.notifications": ("notifications/test_slack_notifier.py",),
+    "src.market_sentinel": ("test_market_sentinel_v0_daily.py",),
 }
 for _package, _suites in _RETIRED_COMPONENT_SUITES.items():
-    if find_spec(_package) is None:
+    _spec = find_spec(_package)
+    # Stale __pycache__ directories can leave a namespace without source.
+    if _spec is None or _spec.origin is None:
         collect_ignore.extend(_suites)
 
 

@@ -122,7 +122,7 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/knowledge_extras_chromadb.yml`
 - `.github/workflows/l4_critic_replay_determinism.yml`
 - `.github/workflows/lint_gate.yml`
-- `.github/workflows/market_outlook_automation.yml`
+- `.github/workflows/market_outlook_automation.yml` (retired; failure notice only)
 - `.github/workflows/master_v2_dry_smoke.yml`
 - `.github/workflows/mcp_smoke_preflight.yml`
 - `.github/workflows/merge_log_hygiene.yml`
@@ -212,7 +212,6 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/cursor_auto_automerge.yml`
 - `.github/workflows/cursor_auto_pr.yml`
 - `.github/workflows/infostream-automation.yml`
-- `.github/workflows/market_outlook_automation.yml`
 - `.github/workflows/paper_session_audit_evidence.yml`
 - `.github/workflows/paper_tests_audit_evidence.yml`
 - `.github/workflows/pr-head-sha-required-checks-liveness-guard.yml`
@@ -243,7 +242,6 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/knowledge_extras_chromadb.yml`
 - `.github/workflows/l4_critic_replay_determinism.yml`
 - `.github/workflows/l4_critic_replay_determinism_v2.yml`
-- `.github/workflows/market_outlook_automation.yml`
 - `.github/workflows/offline_suites.yml`
 - `.github/workflows/ops_doctor_dashboard.yml`
 - `.github/workflows/ops_doctor_pages.yml`
