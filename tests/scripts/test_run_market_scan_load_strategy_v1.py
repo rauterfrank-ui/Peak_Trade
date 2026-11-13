@@ -445,6 +445,31 @@ def test_main_dry_run_calls_load_strategy_not_executed() -> None:
     load_strategy_mock.assert_not_called()
 
 
+def test_main_returns_failure_when_no_symbol_can_be_scanned() -> None:
+    with (
+        patch.object(
+            market_scan_runner,
+            "scan_symbol_forward",
+            return_value={"error": "missing exchange.id"},
+        ) as scan,
+        patch.object(market_scan_runner, "log_market_scan_result") as publish,
+    ):
+        code = market_scan_runner.main(
+            [
+                "--config",
+                str(project_root / "config" / "config.toml"),
+                "--strategy",
+                MA_CROSSOVER_KEY,
+                "--symbols",
+                "BTC/EUR,ETH/EUR",
+            ]
+        )
+
+    assert code == 1
+    assert scan.call_count == 2
+    publish.assert_not_called()
+
+
 def test_unknown_strategy_fails_closed() -> None:
     from src.strategies import load_strategy
 

@@ -691,6 +691,7 @@ def run_forensic_crosswalk_v1(
         and filters_ok
         and len(result.unresolved_edges) == 0
         and len(result.collisions) == 0
+        and len(result.ambiguous) == 0
     )
     authority = build_graph_authority_coverage(
         graph_mode=graph_mode,
@@ -741,8 +742,10 @@ def run_forensic_crosswalk_v1(
             **counts,
         }
     )
-    if graph_mode == GraphMode.STRICT_CURRENT and not snapshot_binding_verified:
+    if graph_mode == GraphMode.STRICT_CURRENT and not current_graph_verified:
         result.ok = False
+        result.errors.append("current_graph_verification_incomplete")
+        result.coverage["validation_errors"] = result.errors
 
     composed = {
         "schema_version": COMPOSED_GRAPH_SCHEMA,

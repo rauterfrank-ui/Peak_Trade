@@ -11,12 +11,12 @@ import sys
 # Add repo root to Python path for src imports
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
 
-from src.utils.report_paths import get_reports_root
+from src.obs.stage1.io import get_reports_root
 
 RE_NEW_ALERTS = re.compile(r"New-alerts heuristic.*\*\*(\d+)\*\*", re.I)
 RE_LEGACY = re.compile(r"Legacy-keyword hits.*\*\*(\d+)\*\*", re.I)
 RE_ACTIONS = re.compile(r"ack/snooze/resolve/silence.*\*\*(\d+)\*\*", re.I)
-RE_CRITICAL = re.compile(r"Severity top:.*critical['\"]:\s*(\d+)", re.I)
+RE_CRITICAL = re.compile(r"['\"]critical['\"]\s*[:,]\s*(\d+)", re.I)
 
 
 def read_int(pat, text):
@@ -46,6 +46,9 @@ def main():
         d = pathlib.Path(args.dir)
     files = sorted(d.glob("*_snapshot.md"))
     files = files[-args.days :] if len(files) > args.days else files
+    if not files:
+        print(f"Keine Stage1-Snapshots für die Trendprüfung in {d}", file=sys.stderr)
+        return 1
 
     rows = []
     for fp in files:
@@ -57,7 +60,12 @@ def main():
                 "new_alerts_24h": read_int(RE_NEW_ALERTS, txt),
                 "legacy_hits": read_int(RE_LEGACY, txt),
                 "operator_actions": read_int(RE_ACTIONS, txt),
-                "critical_alerts": read_int(RE_CRITICAL, txt) or 0,
+                "critical_alerts": sum(
+                    int(count)
+                    for line in txt.splitlines()
+                    if line.startswith("- Severity top:")
+                    for count in RE_CRITICAL.findall(line)
+                ),
             }
         )
 
@@ -146,4 +154,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

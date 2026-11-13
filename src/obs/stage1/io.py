@@ -9,12 +9,30 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import List, Optional
 
 from .models import Stage1Summary
 
 logger = logging.getLogger(__name__)
+
+
+def get_repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
+def get_reports_root(default_rel: str = "reports") -> Path:
+    """Resolve the Stage1 reports root against the checkout or an explicit override."""
+    override = os.environ.get("PEAK_REPORTS_DIR", "").strip()
+    if override and Path(override).is_absolute():
+        return Path(override)
+    return (get_repo_root() / (override or default_rel)).resolve()
+
+
+def ensure_dir(path: Path) -> Path:
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def discover_stage1_days(report_root: Path) -> List[Path]:

@@ -12,8 +12,7 @@ from collections import Counter
 # Add repo root to Python path for src imports
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
 
-from src.utils.md_helpers import ensure_section_insert_at_top, pick_first_existing
-from src.utils.report_paths import get_reports_root, ensure_dir
+from src.obs.stage1.io import ensure_dir, get_reports_root
 
 
 def parse_ts(d):

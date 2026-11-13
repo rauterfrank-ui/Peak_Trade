@@ -503,6 +503,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Ergebnistabelle
     print_scan_results(results, args.mode)
 
+    if not successful:
+        return 1
+
     if args.tag:
         print(f"\nTag: {args.tag}")
 

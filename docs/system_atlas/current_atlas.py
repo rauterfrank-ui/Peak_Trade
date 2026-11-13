@@ -202,7 +202,7 @@ JSON_SYNTAX_REPAIRS = {
     "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_v0.json",
 }
 RETIRED_AUTOMATION_CONFIG_DELTAS = {
-    "config/scheduler/jobs.toml": "82b06be58e36b86313a43f7cdf2ebd4b1d720ac936f1ee56600da0d573e53274",
+    "config/scheduler/jobs.toml": "d0dec42e721f4520f8a75a6cd1c489a4cff3c349487456d5ffef127a2f5a6557",
     "config/test_health_profiles.toml": "f644372502396a8a388bb107635718ee0debf6cf1c8580a963cacea0de1ecf12",
 }
 
