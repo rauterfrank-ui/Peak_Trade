@@ -309,13 +309,19 @@ def test_offline_probe_and_runtime_call_graph_to_first_normalization() -> None:
     transport = EeaPublicMdTransportV1(fetcher=fetcher, environ={})
     transport.open()
     mapping = resolve_mapping_with_transport_inventory_v1(transport=transport)
+
+    def mark_receipt_clock() -> float:
+        assert "/public/mark-price" in urls[-1]
+        return RECEIVE_TS
+
     normalized = fetch_normalized_public_market_data_v1(
         transport=transport,
         mapping=mapping,
-        receive_ts_unix=RECEIVE_TS,
+        receive_ts_unix=mark_receipt_clock,
         max_stale_seconds=5.0,
     )
     assert normalized.mark_px == 3500.5
+    assert normalized.receive_ts_unix == RECEIVE_TS
     assert any("/public/mark-price" in u for u in urls)
     assert all("instId=ETH-USD_UM_XPERP-310404" in u for u in urls)
 

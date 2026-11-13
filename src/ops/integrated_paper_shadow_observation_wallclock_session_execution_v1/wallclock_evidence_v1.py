@@ -9,6 +9,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
     CAPABILITY_ID,
@@ -163,10 +164,13 @@ class WallclockEvidenceWriterV1:
             raise WallclockEvidenceError("ALREADY_FINALIZED")
         self.incomplete = incomplete
         # digest append-only files at finalize
-        for name in APPEND_ONLY:
+        for name in (*APPEND_ONLY, LEDGER_FILENAME_DEFAULT):
             path = self.evidence_root / name
             if path.is_file():
-                self.digests[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                try:
+                    self.digests[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                except OSError as exc:
+                    raise WallclockEvidenceError(f"EVIDENCE_SINK_FAILURE:{exc}") from exc
         terminal = {
             "schema_id": EVIDENCE_SCHEMA_ID,
             "schema_version": EVIDENCE_SCHEMA_VERSION,

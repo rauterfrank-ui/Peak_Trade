@@ -9,6 +9,8 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable, Literal, Mapping, Optional, Set
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     ObservationMarketTickV1,
 )
@@ -747,6 +749,10 @@ class WallclockSessionRuntimeV1:
             int(self.config.max_session_duration_seconds),
         )
         last_tick: ObservationMarketTickV1 | None = None
+        ddo_capture_binding = DdoCaptureBindingV0(
+            ledger_path=self.evidence_root.absolute() / LEDGER_FILENAME_DEFAULT,
+            reuse_validated_append_index=True,
+        )
 
         try:
             while True:
@@ -788,16 +794,18 @@ class WallclockSessionRuntimeV1:
                     normalized = fetch_normalized_public_market_data_v1(
                         transport=self.transport,
                         mapping=self.venue_mapping,
-                        receive_ts_unix=now_wall,
+                        receive_ts_unix=self.clock_wall,
                         max_stale_seconds=float(self.config.max_stale_seconds),
                         include_ticker=True,
                     )
+                    now_wall = self.clock_wall()
+                    now_mono = self.clock_mono()
                     price = float(normalized.mark_px)
                     self.sequence += 1
                     # Natural receive timestamp from wall clock; optional Step-6
                     # governed stale control may adjust receive_ts for classification
                     # only (RECEIVE_LAG / DATA_HOLD). Observation payload stays natural.
-                    receive_ts = float(now_wall)
+                    receive_ts = normalized.receive_ts_unix
                     stale_ctrl = self._governed_stale_data_control
                     if stale_ctrl is not None and hasattr(stale_ctrl, "resolve_receive_ts_v1"):
                         faults_before = int(
@@ -913,12 +921,15 @@ class WallclockSessionRuntimeV1:
                                 break
                             self._post_reconnect_reconciliation_required = False
                             self.post_reconnect_continuation_count += 1
+                        ddo_capture_binding.clear_cycle_observations()
                         outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
                             bridge_state=self.bridge_state,
                             ticks=[tick],
                             reference_price=Decimal(str(price)),
                             wall_now_unix=now_wall,
                             session_id=session_id,
+                            ddo_capture_binding=ddo_capture_binding,
+                            ddo_repository_sha=self._expected_repository_sha,
                         )
                         self.cycle_count += 1
                         if outcome_bridge.bridge_cycle is not None:

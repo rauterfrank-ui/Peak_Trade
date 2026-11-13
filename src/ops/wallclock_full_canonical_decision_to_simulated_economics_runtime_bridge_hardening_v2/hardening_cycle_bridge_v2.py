@@ -10,6 +10,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_CONFIRMATION_EPOCHS,
@@ -752,11 +753,15 @@ def run_hardened_bridge_cycle_v2(
     finalized_pt1m_mark_price: float | None = None,
     finalized_pt1m_event_time_unix_seconds: float | None = None,
     finalized_pt1m_transport: ObservationTransportMetadataV1 | None = None,
+    ddo_capture_binding: DdoCaptureBindingV0 | None = None,
+    ddo_repository_sha: str | None = None,
 ) -> dict[str, Any]:
     if state.session_restart_policy != SESSION_RESTART_POLICY:
         raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
     if state.session_id and state.session_id != session_id:
         raise RuntimeError("SESSION_ID_MUTATION_FORBIDDEN_NO_IMPLICIT_RESUME")
+    if ddo_capture_binding is not None and ddo_repository_sha is None:
+        raise ValueError("DDO_CAPTURE_REPOSITORY_SHA_REQUIRED")
     state.session_id = session_id
     ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         state,
@@ -1074,7 +1079,26 @@ def run_hardened_bridge_cycle_v2(
         ),
     )
 
-    replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    ddo_capture = None
+    if ddo_capture_binding is not None and ddo_repository_sha is not None:
+        # The full-core package also imports the wallclock entrypoint during startup.
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+            run_integrated_offline_replay_with_productive_ddo_capture_v1,
+        )
+
+        replay, ddo_capture = run_integrated_offline_replay_with_productive_ddo_capture_v1(
+            replay_input,
+            ddo_capture_binding=ddo_capture_binding,
+            repository_sha=ddo_repository_sha,
+            session_id=session_id,
+            cycle_index=state.cycle_index,
+            event_ts_unix=event_ts_unix,
+            observation_acceptance_result=None,
+            features=features,
+            confirmation_binding=None,
+        )
+    else:
+        replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
     intended = map_replay_result_to_intended_analytical_action_v1(
         replay,
         instrument_id=state.instrument_id,
@@ -1262,6 +1286,12 @@ def run_hardened_bridge_cycle_v2(
             "AI_LAYER_NON_AUTHORITY",
         ],
     }
+    if ddo_capture is not None:
+        ddo_capture["cycle_id"] = ddo_capture_binding.capture_cycle_id
+        ddo_capture["unpersisted_record_count"] = len(
+            set(ddo_capture_binding.captured_ids) - set(ddo_capture_binding.persisted_ids)
+        )
+        cycle["ddo_capture"] = ddo_capture
     research_join = accumulate_max_age_research_evidence_record_from_cycle_v1(
         cycle,
         ledger_path=state.max_age_research_evidence_ledger_path,

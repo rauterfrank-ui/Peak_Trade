@@ -340,6 +340,14 @@ class AppendResultV0:
     ledger_entry_hash: str
 
 
+@dataclass
+class _ValidatedAppendIndexV0:
+    file_version: tuple[int, int, int, int, int] | None
+    records_by_id: dict[str, dict[str, Any]]
+    results_by_id: dict[str, AppendResultV0]
+    tip_hash: str
+
+
 def validate_canonical_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
     schema_name = payload.get("schema_name")
     schema_version = payload.get("schema_version")
@@ -453,13 +461,17 @@ def _in_process_append_lock(path_key: str) -> threading.Lock:
 class AppendOnlyDdoLedgerV0:
     """File-backed append-only JSONL ledger for DDO v0 records."""
 
-    def __init__(self, ledger_path: Path | str) -> None:
+    def __init__(
+        self, ledger_path: Path | str, *, reuse_validated_append_index: bool = False
+    ) -> None:
         path = Path(ledger_path)
         if not path.is_absolute():
             raise DdoValidationError("LEDGER_PATH_MUST_BE_ABSOLUTE")
         if path.exists() and path.is_dir():
             raise DdoValidationError("LEDGER_PATH_MUST_BE_FILE")
         self._path = path
+        self._reuse_validated_append_index = reuse_validated_append_index
+        self._append_index: _ValidatedAppendIndexV0 | None = None
 
     @property
     def ledger_path(self) -> Path:
@@ -484,26 +496,24 @@ class AppendOnlyDdoLedgerV0:
         *,
         ingested_at_utc: str | None,
     ) -> AppendResultV0:
-        envelopes, by_id = self._load()
-        existing = by_id.get(str(record["record_id"]))
+        index = self._load_append_index()
+        record_id = str(record["record_id"])
+        existing = index.results_by_id.get(record_id)
         if existing is not None:
-            if existing["content_hash"] == record["content_hash"]:
-                env = next(
-                    item["envelope"]
-                    for item in envelopes
-                    if item["record"]["record_id"] == record["record_id"]
-                )
+            if existing.content_hash == record["content_hash"]:
                 return AppendResultV0(
                     status="IDEMPOTENT_REPLAY",
-                    record_id=str(record["record_id"]),
-                    content_hash=str(record["content_hash"]),
-                    sequence=int(env["sequence"]),
-                    ledger_entry_hash=str(env["ledger_entry_hash"]),
+                    record_id=record_id,
+                    content_hash=existing.content_hash,
+                    sequence=existing.sequence,
+                    ledger_entry_hash=existing.ledger_entry_hash,
                 )
-            raise DdoDuplicateConflictError(f"DUPLICATE_RECORD_ID_CONFLICT:{record['record_id']}")
-        validate_record_lineage_v0(record, existing_by_id=by_id)
+            raise DdoDuplicateConflictError(f"DUPLICATE_RECORD_ID_CONFLICT:{record_id}")
+        validate_record_lineage_v0(record, existing_by_id=index.records_by_id)
         if record["schema_name"] == SCHEMA_NAME_LEARNING_STATE_RECORD:
-            prior = learning_state_head_v0(by_id.values(), state_scope_id=record["state_scope_id"])
+            prior = learning_state_head_v0(
+                index.records_by_id.values(), state_scope_id=record["state_scope_id"]
+            )
             if prior is None:
                 expected = (None, 1, 1)
             else:
@@ -520,12 +530,8 @@ class AppendOnlyDdoLedgerV0:
                 raise DdoValidationError("LEARNING_STATE_PREDECESSOR_CHANGED")
         if ingested_at_utc is not None:
             require_event_time_utc(ingested_at_utc, "ingested_at_utc")
-        sequence = len(envelopes) + 1
-        prev = (
-            GENESIS_LEDGER_HASH
-            if not envelopes
-            else str(envelopes[-1]["envelope"]["ledger_entry_hash"])
-        )
+        sequence = len(index.records_by_id) + 1
+        prev = index.tip_hash
         entry_hash = compute_ledger_entry_hash_v0(
             sequence=sequence,
             prev_ledger_hash=prev,
@@ -549,14 +555,63 @@ class AppendOnlyDdoLedgerV0:
             "sequence": sequence,
         }
         line = canonical_json_dumps_v0(envelope) + "\n"
+        # A failed write or fsync may still leave changed bytes on disk.
+        self._append_index = None
         self._append_line(line)
-        return AppendResultV0(
+        result = AppendResultV0(
             status="APPENDED",
-            record_id=str(record["record_id"]),
+            record_id=record_id,
             content_hash=str(record["content_hash"]),
             sequence=sequence,
             ledger_entry_hash=entry_hash,
         )
+        if self._reuse_validated_append_index:
+            current = self._file_version()
+            previous = index.file_version
+            previous_size = 0 if previous is None else previous[2]
+            if (
+                current is not None
+                and (previous is None or current[:2] == previous[:2])
+                and current[2] == previous_size + len(line.encode("utf-8"))
+            ):
+                index.file_version = current
+                index.records_by_id[record_id] = dict(record)
+                index.results_by_id[record_id] = result
+                index.tip_hash = entry_hash
+                self._append_index = index
+        return result
+
+    def _file_version(self) -> tuple[int, int, int, int, int] | None:
+        try:
+            stat = self._path.stat()
+        except FileNotFoundError:
+            return None
+        except OSError as exc:
+            raise DdoLedgerCorruptionError("LEDGER_UNREADABLE") from exc
+        return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns
+
+    def _load_append_index(self) -> _ValidatedAppendIndexV0:
+        version = self._file_version() if self._reuse_validated_append_index else None
+        if self._append_index is not None and self._append_index.file_version == version:
+            return self._append_index
+        self._append_index = None
+        envelopes, records = self._load()
+        if self._reuse_validated_append_index and self._file_version() != version:
+            raise DdoLedgerCorruptionError("LEDGER_CHANGED_DURING_READ")
+        results = {}
+        tip = GENESIS_LEDGER_HASH
+        for item in envelopes:
+            envelope = item["envelope"]
+            tip = envelope["ledger_entry_hash"]
+            record_id = envelope["record_id"]
+            results[record_id] = AppendResultV0(
+                status="APPENDED",
+                record_id=record_id,
+                content_hash=envelope["content_hash"],
+                sequence=envelope["sequence"],
+                ledger_entry_hash=tip,
+            )
+        return _ValidatedAppendIndexV0(version, records, results, tip)
 
     @contextmanager
     def _exclusive_writer(self) -> Iterator[None]:

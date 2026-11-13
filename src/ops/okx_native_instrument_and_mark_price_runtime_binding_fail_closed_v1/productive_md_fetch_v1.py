@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional, Protocol
+from typing import Any, Callable, Mapping, Optional, Protocol
 
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
@@ -69,7 +69,7 @@ def fetch_normalized_public_market_data_v1(
     *,
     transport: PublicMdTransportProtocolV1,
     mapping: VenueInstrumentMappingV1,
-    receive_ts_unix: float,
+    receive_ts_unix: float | Callable[[], float],
     max_stale_seconds: float,
     include_ticker: bool = True,
 ) -> NormalizedPublicMarketDataV1:
@@ -88,7 +88,7 @@ def fetch_normalized_public_market_data_v1(
     mark = parse_public_mark_price_response_v1(
         mark_fetch.payload,
         expected_venue_instrument_id=mapping.venue_instrument_id,
-        receive_ts_unix=receive_ts_unix,
+        receive_ts_unix=receive_ts_unix() if callable(receive_ts_unix) else receive_ts_unix,
         max_stale_seconds=max_stale_seconds,
     )
 

@@ -7,6 +7,18 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from src.learning.deterministic_decision_outcome_v0.common_v0 import (
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
+)
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    require_current_double_play_bundle_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
+    AppendOnlyDdoLedgerV0,
+    LEDGER_FILENAME_DEFAULT,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
     CAPABILITY_ID,
@@ -18,6 +30,12 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
     APPEND_ONLY,
     REQUIRED_IMMUTABLE,
+)
+from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.constants_v1 import (
+    BRIDGE_CYCLE_LEDGER_FILENAME,
+)
+from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.ledger_summary_aggregator_v1 import (
+    load_bridge_cycle_ledger_v1,
 )
 from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.outcome_completeness_verifier_v1 import (
     verify_wallclock_outcome_completeness_v1,
@@ -40,9 +58,92 @@ class WallclockEvidenceVerificationResultV1:
     authority_effect: str = AUTHORITY_EFFECT_NONE
     economic_validity_pass: bool = False
     promotion_pass: bool = False
+    ddo_readback: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _read_ddo_capture(root: Path, manifest_names: set[str]) -> dict[str, Any] | None:
+    cycles = load_bridge_cycle_ledger_v1(root / BRIDGE_CYCLE_LEDGER_FILENAME)
+    capture_cycles = [row for row in cycles if "ddo_capture" in row]
+    if not capture_cycles:
+        return None
+    captures = [row["ddo_capture"] for row in capture_cycles]
+    typed_cycles = [
+        row["ddo_capture"].get("cycle_id")
+        for row in capture_cycles
+        if isinstance(row["ddo_capture"], dict)
+        and row.get("canonical_market_context_typed_estimate_present") is True
+    ]
+    result: dict[str, Any] = {
+        "decision_bundles_readable": False,
+        "capture_cycles": len(captures),
+        "durability_failed_cycles": sum(
+            not isinstance(row, dict)
+            or row.get("durable_ok") is not True
+            or bool(row.get("unpersisted_record_count"))
+            for row in captures
+        ),
+        "typed_volatility_cycles": len(typed_cycles),
+        "typed_volatility_cycles_with_double_play_bundle": 0,
+        "complete_double_play_bundles": 0,
+        "blockers": [],
+    }
+    blockers = result["blockers"]
+    if result["durability_failed_cycles"]:
+        blockers.append("DDO_CAPTURE_DURABILITY_FAILURE")
+    if LEDGER_FILENAME_DEFAULT not in manifest_names:
+        blockers.append("DDO_LEDGER_NOT_IN_MANIFEST")
+        return result
+
+    try:
+        ledger_path = root / LEDGER_FILENAME_DEFAULT
+        if not ledger_path.is_file() or ledger_path.is_symlink():
+            blockers.append("DDO_LEDGER_MISSING_OR_UNSAFE")
+            return result
+        records = {
+            row["record_id"]: row
+            for row in AppendOnlyDdoLedgerV0(ledger_path.absolute()).read_all()
+        }
+        if any(
+            not isinstance(ref, str) or ref not in records
+            for row in captures
+            if isinstance(row, dict) and isinstance(row.get("record_ids"), list)
+            for ref in row["record_ids"]
+        ):
+            blockers.append("DDO_CAPTURE_RECORD_MISSING")
+        by_decision = {}
+        complete_cycles = set()
+        for row in records.values():
+            if row["schema_name"] in {
+                SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+                SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
+            }:
+                by_decision.setdefault(row["decision_event_ref"], {})[row["record_id"]] = row
+        for ref, siblings in by_decision.items():
+            try:
+                bundle = require_current_double_play_bundle_v1(
+                    records_by_id={ref: records[ref], **siblings}, decision_event_ref=ref
+                )
+                if bundle.input_evidence_ref is None:
+                    blockers.append("DDO_DOUBLE_PLAY_INPUT_MISSING")
+                else:
+                    result["complete_double_play_bundles"] += 1
+                    complete_cycles.add(records[ref]["cycle_id"])
+            except (DdoError, KeyError) as exc:
+                blockers.append(f"DDO_DOUBLE_PLAY_READBACK:{type(exc).__name__}")
+    except (DdoError, OSError, ValueError) as exc:
+        blockers.append(f"DDO_LEDGER_READBACK:{type(exc).__name__}")
+    else:
+        result["typed_volatility_cycles_with_double_play_bundle"] = sum(
+            isinstance(cycle_id, str) and cycle_id in complete_cycles for cycle_id in typed_cycles
+        )
+    if not result["complete_double_play_bundles"]:
+        blockers.append("DDO_NO_COMPLETE_DOUBLE_PLAY_BUNDLE")
+    result["blockers"] = sorted(set(blockers))
+    result["decision_bundles_readable"] = not blockers
+    return result
 
 
 def verify_wallclock_evidence_bundle_v1(
@@ -66,6 +167,7 @@ def verify_wallclock_evidence_bundle_v1(
         )
 
     manifest_path = root / "evidence_manifest.sha256"
+    manifest_names: set[str] = set()
     if not manifest_path.is_file():
         blockers.append("EVIDENCE_MANIFEST_MISSING")
     else:
@@ -78,6 +180,7 @@ def verify_wallclock_evidence_bundle_v1(
             except ValueError:
                 blockers.append("EVIDENCE_MANIFEST_MALFORMED")
                 continue
+            manifest_names.add(name)
             path = root / name
             if not path.is_file():
                 blockers.append(f"MANIFEST_FILE_MISSING:{name}")
@@ -149,6 +252,7 @@ def verify_wallclock_evidence_bundle_v1(
             notes=notes,
         )
 
+    ddo_readback = _read_ddo_capture(root, manifest_names)
     if verdict == TerminalVerdict.ABORT.value:
         result = RESULT_ABORT_VERIFIED
     else:
@@ -159,4 +263,5 @@ def verify_wallclock_evidence_bundle_v1(
         verdict=verdict,
         incomplete=incomplete,
         notes=notes + [f"APPEND_ONLY={list(APPEND_ONLY)}"],
+        ddo_readback=ddo_readback,
     )
