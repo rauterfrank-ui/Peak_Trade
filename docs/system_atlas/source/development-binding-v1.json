@@ -1117,6 +1117,11 @@
       "sha256": "011aff43a5ca64297f5a103f1b8eae2a669e4248722f25aed00f363d8e4aec2e"
     },
     {
+      "path": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md",
+      "before_sha256": "784c935b0982252b6b0a5e9a93da55b1c673792fe3a29c04d7275a2de1cb5fc3",
+      "sha256": "a6c115d03394c527ba485d9db04261ffccef838693e7beb76b6e76fbad29555e"
+    },
+    {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
       "sha256": "58830cd2f2ee64f15c2a48dce31016feba80b7a82610d1c1241b87b9867c8785"
@@ -1149,7 +1154,7 @@
     {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
-      "sha256": "91a1237292e96c79197fd563c2e584cda1a23257c8977f7551d1df21adce6b07"
+      "sha256": "73ce17347f9ca2b32295be1800c87955a499096d9bcc094b4bcabf278b22b62f"
     },
     {
       "path": "docs/system_atlas/current_atlas.py",
@@ -1309,12 +1314,17 @@
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
       "before_sha256": "3e6c24e60fc09f9b2ef6ebc6b322ad8dbd49916f458c808f5879120d3b26268c",
-      "sha256": "5742747c72a2ddd2be9f4e41ef65744e0e72255c233013e8a90065bc50d59a58"
+      "sha256": "1286601c09d1c60b03eff897c58c75ab34c405800653184f6f9dabe1ed4a5720"
     },
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/constants_v1.py",
       "before_sha256": "dd4643632bb21c62efc63dcf9413223b15e36797ddfc4acf9264ffc8419c64ef",
       "sha256": "c6c671406af249ec3d5f52e076cb56bc7c1723fcdc4592d2a2d407841aada55f"
+    },
+    {
+      "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/crosswalk_rules.v1.json",
+      "before_sha256": "5ea9d3022c7db0843c8905a9afa8d2edd321df6776f3f002cf6136b3030f90f9",
+      "sha256": "0c20d8b5fb5aa1b74f4e690bbe9d1ef3f85a07f5a960b0453e84a4d050711dac"
     },
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/edges_v1.py",
@@ -1329,7 +1339,7 @@
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/load_sources_v1.py",
       "before_sha256": "9974aabbebc3f8b0f98b256fdbc4142ec79b064e613e61d596f4c8dda93ffeef",
-      "sha256": "dfb323ea6d4dc84f866eec5f70c4ef23a48aab4eaee882bd0b8b445ca3b387e3"
+      "sha256": "fee79b5a9b71cb02f1c7783df8ca24ecfff707657c519c1cea604e845bdd72a8"
     },
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/snapshot_drift_report_v1.py",
@@ -1344,7 +1354,7 @@
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/source_validation_v1.py",
       "before_sha256": "d2bdc7c3afcb6393893aa7f9e4f4636f8deb65ead5336a2a7c3e4ce4ca080c36",
-      "sha256": "acb190733ece8ed2d97372f068ebe0bce8d577935f560c3f01588cdaa2353681"
+      "sha256": "94772d04b697f6a7f90856fc0c6bdf78bd8d719d9ba2a0faaf05405ae18393be"
     },
     {
       "path": "scripts/ops/online_readiness_daemon_v1.sh",
@@ -2677,6 +2687,11 @@
       "sha256": "2e70fb2d3ad061f23f8c4480405c846a147583f72a04fcc13728275a3d226a8e"
     },
     {
+      "path": "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
+      "before_sha256": "0c94f7ee8ca862fc579b9013766900543d24efd439f615850f96a4270254d17e",
+      "sha256": "6f7ff2d0be859f882645d9b891ef37789ef8da6686708d28e545c0019a05a783"
+    },
+    {
       "path": "src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py",
       "before_sha256": "5622a632cfcd28bb31a194d81efea55edd68a04df830d6cdcded3c51b3335283",
       "sha256": "6daa799ca99fbd202c203c6fc2414095cce4838ca770be02d413a5ca7720edce"
@@ -3699,7 +3714,7 @@
     {
       "path": "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py",
       "before_sha256": "616dcb74d2916a951320572ec56b4198a57fc299c46990ffa1a9696ddd551b4a",
-      "sha256": "58084d57bde679b1a727993095200b0274a3c89ca6f61f3c9ffd1e9a230c47e0"
+      "sha256": "8cf3389cebdadd44014446f51a7114fd45471a41d5fe9f0fc874d0d0bab59a87"
     },
     {
       "path": "tests/ops/test_ghv_productive_mark_cache_freshness_ab_proof_v1.py",
@@ -3930,6 +3945,11 @@
       "path": "tests/ops/test_portfolio_owned_execution_identity_v2.py",
       "before_sha256": null,
       "sha256": "40ecb3252e23e43f2a90674158d528f360405bd4575bf72f3f8551063b7477ae"
+    },
+    {
+      "path": "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py",
+      "before_sha256": "26fa88e00ce566c94bbd3b03ad3f6bdf5d8b38a77188a65fe4d27bee9af64c05",
+      "sha256": "c2ec7cf7cc249e934e9487f7aaa2d9dbec86d8a9af6c89282a244833883e0067"
     },
     {
       "path": "tests/ops/test_prepost_original_budget_context_v1.py",

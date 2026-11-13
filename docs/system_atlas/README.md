@@ -33,6 +33,16 @@ Erzeugen und prüfen, aus dem Repository-Stamm:
 Diese Einstiegspunkte verwenden für dieses Atlasmodell `current_atlas.py`. Die Prüfung kontrolliert Quellstand, vollständige Dateimenge, Quelldigests, Literalverträge, Dokumentlinks und deterministische Ausgabe. Sie weist ausgeführte Laufzeitwirkung nicht aus.
 
 Der [forensische GHV-Crosswalk](../../scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.py) liest dieses Modell und das versionierte Übergaberegister. Er nimmt nur explizite Repo-Verträge mit unveränderten Quellpfaden und im Census verankerten Endpunkten als Navigationskanten auf. Die importierten Routen aus älteren Ansichten, offenen Endpunkte und Offline-Belege bleiben außerhalb dieser Projektion. Das Prüfwerkzeug schreibt seine Berichte in den gewählten Ausgabeordner. Bei abweichenden Quellrevisionen bleibt die strenge Verifikation gesperrt. Der Modus `--navigation-only` liefert in diesem Fall eine Ansicht ohne Laufzeitnachweis.
+Der Driftbericht trennt die geladenen Dateibytes von den Revisionsaussagen.
+Atlas-Freeze und Übergaberegister behalten ihre jeweiligen Revisionen; für
+die gefilterte Navigation zählen ihre unveränderten Quellreferenzen.
+Census und Landschaft müssen für eine strenge Verifikation weiterhin zum
+geprüften Stand passen. Der strenge Modus weist abweichende Eingabebytes
+zurück. Ein Prüfsummenabgleich belegt keine kausale Wirkung.
+Für die im Census ungeklärten Kanten führt die Navigation einzelne
+Prüfnotizen mit Richtung, Wirkung beim Consumer und Quellpfaden samt
+Prüfsummen. Sie erscheinen im Ambiguitätsbericht und ändern die
+Kantentypen oder Freigaben nicht.
 
 ## Außenstruktur und aktuelles Dateiregister
 

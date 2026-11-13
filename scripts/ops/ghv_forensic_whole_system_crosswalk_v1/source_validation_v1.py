@@ -6,8 +6,16 @@ import importlib.util
 import os
 import subprocess
 from dataclasses import dataclass, field
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
+
+from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
+    ATLAS_BOUNDARIES,
+    ATLAS_MODEL,
+    CENSUS_PATH,
+    LANDSCAPE_PATH,
+)
 
 _CENSUS_VALIDATOR = (
     Path(__file__).resolve().parents[1] / "validate_current_system_census_graph_v1.py"
@@ -174,7 +182,64 @@ def validate_snapshot_compatibility(
         )
     if not baseline:
         errors.append("missing_census_source_revision")
+    if not land_sha:
+        errors.append("missing_landscape_source_revision")
     return errors
+
+
+def inspect_source_binding_v1(
+    *,
+    repo_root: Path,
+    code_snapshot,
+    sources,
+) -> dict[str, Any]:
+    """Separate recorded source bytes from the scope of each revision claim."""
+    head = code_snapshot.git_head
+    records = {}
+    for path, revision, role, scope_count in (
+        (CENSUS_PATH, code_snapshot.census_revision, "CENSUS_SEMANTIC_INPUT", None),
+        (LANDSCAPE_PATH, code_snapshot.landscape_revision, "LANDSCAPE_SEMANTIC_INPUT", None),
+        (
+            ATLAS_MODEL,
+            code_snapshot.atlas_model_revision,
+            "FROZEN_NAVIGATION_MODEL",
+            sources.atlas_meta.get("model_reference_paths"),
+        ),
+        (
+            ATLAS_BOUNDARIES,
+            code_snapshot.atlas_revision,
+            "REVIEWED_NAVIGATION_REGISTER",
+            sources.atlas_meta.get("boundary_reference_paths"),
+        ),
+    ):
+        actual = sources.source_sha256.get(path)
+        if actual is None:
+            continue
+        blob = subprocess.run(
+            ["git", "-C", str(repo_root), "cat-file", "blob", f"{head}:{path}"],
+            capture_output=True,
+            check=False,
+        )
+        bytes_match_head = blob.returncode == 0 and sha256(blob.stdout).hexdigest() == actual
+        if not bytes_match_head:
+            status = "SOURCE_BYTES_NOT_BOUND_TO_CHECKOUT_HEAD"
+        elif scope_count is not None:
+            # The loader already restricts the projection to references whose
+            # Git bytes match the declared anchor and the checked-out files.
+            status = "BOUND_FOR_FILTERED_NAVIGATION"
+        elif revision == head:
+            status = "DECLARED_CURRENT_REVISION"
+        else:
+            status = "SEMANTIC_REVIEW_REQUIRED"
+        records[path] = {
+            "role": role,
+            "declared_revision": revision,
+            "sha256": actual,
+            "bytes_match_head": bytes_match_head,
+            "status": status,
+            "unchanged_reference_paths": scope_count,
+        }
+    return {"authority": "NONE", "reviewed_checkout": head, "sources": records}
 
 
 def _finalize_validation_result(

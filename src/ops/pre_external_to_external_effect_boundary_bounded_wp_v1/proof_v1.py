@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from hashlib import sha256
 from pathlib import Path
 from typing import FrozenSet, Tuple
 
@@ -43,6 +44,26 @@ _SINK_CALL_MARKERS = (
     "issue_external_effect_permit_v1(",
 )
 
+_FULL_CORE = "src/ops/full_core_live_path_composition_root_v1/"
+_FUTURES_SIM_DISPATCH = _FULL_CORE + "current_futures_simulated_dispatch_v1.py"
+# Exact sources reviewed for POST transport isolation. Changes require a fresh
+# review of the composed path, even when they preserve a function's name.
+_FUTURES_SIM_POST_SOURCES = (
+    (_FUTURES_SIM_DISPATCH, "a417915895a2a86a31e04b5a060ea047366a90743fc70c02c57752c9704be68f"),
+    (
+        _FULL_CORE + "envelope_bound_external_effect_send_seam_v1.py",
+        "c68b956e578251c5861bcdb27d208d422f13b83ee525b3cb4422123927fd8d3c",
+    ),
+    (
+        _FULL_CORE + "full_core_productive_http_post_transport_v1.py",
+        "c1b891fdd4c24ed04f7ffa0d35383ab6d111d26e8512d90ea90492ed2782f649",
+    ),
+    (
+        _FULL_CORE + "external_effect_permit_v1.py",
+        "b0fb193d4d650a7a7a4c59319dcf8a257319affb6cf993883914e055a9f5d2ef",
+    ),
+)
+
 _ALLOWED_SINK_CALLER_PREFIXES = (
     "src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
@@ -63,6 +84,39 @@ class PreExternalToExternalEffectBoundaryProofResultV1:
     unclassified_sink_callers: Tuple[str, ...]
     boundary_chain_failures: Tuple[str, ...]
     whole_system_connection_ok: bool
+
+
+@dataclass(frozen=True)
+class SimulatedPostIsolationReadbackV1:
+    path: str
+    source_binding_verified: bool
+    mismatched_paths: Tuple[str, ...]
+    scope: str = "FUTURES_SIMULATED_POST_TRANSPORT_ONLY"
+    policy_authority_effect: str = "NONE"
+
+
+def read_simulated_post_isolation_v1() -> SimulatedPostIsolationReadbackV1:
+    """Report the exact reviewed simulation POST path, independently of admission.
+
+    The dispatch requires the exact non-networking transport. The shared seam
+    verifies the simulation wrapper and excludes a real one-shot permit. The
+    wrapper rechecks transport type and sends with one_shot_real_post=False.
+    Its quantity and custody GETs are outside this POST-only claim.
+    """
+    mismatched = []
+    for rel, expected in _FUTURES_SIM_POST_SOURCES:
+        path = _REPO_ROOT / rel
+        try:
+            matches = path.resolve() == path and sha256(path.read_bytes()).hexdigest() == expected
+        except (OSError, RuntimeError):
+            matches = False
+        if not matches:
+            mismatched.append(rel)
+    return SimulatedPostIsolationReadbackV1(
+        path=_FUTURES_SIM_DISPATCH,
+        source_binding_verified=not mismatched,
+        mismatched_paths=tuple(mismatched),
+    )
 
 
 def _rel(path: Path) -> str:
@@ -198,4 +252,5 @@ def prove_pre_external_to_external_effect_boundary_v1() -> (
 __all__ = [
     "PreExternalToExternalEffectBoundaryProofResultV1",
     "prove_pre_external_to_external_effect_boundary_v1",
+    "read_simulated_post_isolation_v1",
 ]

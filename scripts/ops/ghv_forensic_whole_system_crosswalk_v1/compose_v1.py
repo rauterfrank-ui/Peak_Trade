@@ -41,6 +41,7 @@ from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.load_sources_v1 import (
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.snapshot_v1 import (
     build_code_snapshot_v1,
     build_evidence_snapshot_v1,
+    file_sha256,
 )
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.graph_mode_v1 import (
     GraphMode,
@@ -50,6 +51,7 @@ from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.snapshot_drift_report_v1
     build_snapshot_drift_report_v1,
 )
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.source_validation_v1 import (
+    inspect_source_binding_v1,
     validate_sources_v1,
 )
 
@@ -172,6 +174,26 @@ def _apply_explicit_rules(
         result.coverage.setdefault("explicit_rules_applied", []).append(rule.get("SOURCE_ID"))
 
 
+def _edge_review_notes(repo_root: Path, rules: dict[str, Any]) -> dict[str, Any]:
+    """Attach static reviewer observations without changing graph edges or authority."""
+    notes = {}
+    for edge_id, row in (rules.get("edge_review_notes") or {}).items():
+        refs = {}
+        for ref in row["source_refs"]:
+            path = repo_root / ref
+            if not path.resolve().is_relative_to(repo_root.resolve()) or not path.is_file():
+                continue
+            refs[ref] = file_sha256(path)
+        notes[edge_id] = {
+            "direction": row["direction"],
+            "authority_or_effect": row["authority_or_effect"],
+            "review_kind": "STATIC_REVIEW_NOTE_ONLY",
+            "source_refs_sha256": refs,
+            "source_refs_complete": len(refs) == len(row["source_refs"]),
+        }
+    return notes
+
+
 def _write_outputs(
     *,
     output_dir: Path,
@@ -234,7 +256,12 @@ def run_forensic_crosswalk_v1(
         atlas_meta=sources.atlas_meta,
     )
     evidence_snap = build_evidence_snapshot_v1(evidence_root=evidence_root)
-    snapshot_id = snapshot_id_from_bindings(code_snap.bindings_for_snapshot_id())
+    snapshot_id = snapshot_id_from_bindings(
+        {
+            **code_snap.bindings_for_snapshot_id(),
+            **{f"source:{path}": digest for path, digest in sources.source_sha256.items()},
+        }
+    )
 
     result = CrosswalkResultV1(ok=True, snapshot_id=snapshot_id)
     code_rev = code_snap.git_head
@@ -261,15 +288,15 @@ def run_forensic_crosswalk_v1(
         strict_repo_invariants=strict_repo_invariants,
         pt_launcher=pt if strict_repo_invariants else None,
     )
-    if strict_repo_invariants and include_atlas:
-        for label, revision in (
-            ("atlas_model", code_snap.atlas_model_revision),
-            ("atlas_boundaries", code_snap.atlas_revision),
-        ):
-            if revision != code_rev:
-                validation.snapshot_errors.append(
-                    f"{label}_revision_mismatch: head={code_rev} baseline={revision}"
-                )
+    source_binding = inspect_source_binding_v1(
+        repo_root=repo_root, code_snapshot=code_snap, sources=sources
+    )
+    drift_report["source_binding"] = source_binding
+    drift_report["loaded_source_sha256"] = sources.source_sha256
+    if strict_repo_invariants:
+        for path, binding in source_binding["sources"].items():
+            if not binding["bytes_match_head"]:
+                validation.snapshot_errors.append(f"source_bytes_differ_from_head:{path}")
     snapshot_binding_verified = len(validation.snapshot_errors) == 0
     if graph_mode == GraphMode.NAVIGATION_ONLY:
         validation.snapshot_errors = []
@@ -555,6 +582,7 @@ def run_forensic_crosswalk_v1(
             counts["CURRENT_EDGES_INCLUDED"] += 1
 
     census_edges_included = 0
+    review_notes = _edge_review_notes(repo_root, sources.crosswalk_rules)
     obj_ids = {str(o["object_id"]) for o in sources.census.get("census_objects", [])}
     for edge in sources.census.get("semantic_edges", []):
         edge_verdict = classify_census_edge(
@@ -586,12 +614,14 @@ def run_forensic_crosswalk_v1(
             continue
         edge_type, note = census_flow_to_typed_edge(edge)
         if edge_type is None:
+            edge_id = edge.get("edge_id")
             result.unresolved_edges.append(
                 {
-                    "edge_id": edge.get("edge_id"),
+                    "edge_id": edge_id,
                     "source_system": "CURRENT_SYSTEM_CENSUS",
                     "reason": note,
                     "current_relevance": edge_verdict.to_record(),
+                    **({"review_note": review_notes[edge_id]} if edge_id in review_notes else {}),
                 }
             )
             continue
@@ -730,6 +760,9 @@ def run_forensic_crosswalk_v1(
             "census_edges_included": census_edges_included,
             "census_edges_total": total_edges,
             "unresolved_edge_count": len(result.unresolved_edges),
+            "unresolved_edges_with_review_note": sum(
+                "review_note" in edge for edge in result.unresolved_edges
+            ),
             "collision_count": len(result.collisions),
             "ambiguous_count": len(result.ambiguous),
             "excluded_count": len(result.excluded),
@@ -751,7 +784,7 @@ def run_forensic_crosswalk_v1(
         "schema_version": COMPOSED_GRAPH_SCHEMA,
         "authority": CROSSWALK_AUTHORITY,
         "snapshot_id": snapshot_id,
-        "source_validation_pass": True,
+        "source_validation_pass": validation_contract_ok,
         **authority,
         "code_snapshot": code_snap.to_dict(),
         "evidence_snapshot": evidence_snap.to_dict(),
