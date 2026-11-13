@@ -136,7 +136,10 @@ def _record_supervisor_outcome_v1(run):
             reason, action = terminal.reason_code, terminal.next_required_owner_decision
         elif result.counter_order_sizing is not None:
             reason = result.counter_order_sizing.first_blocker
-            action = "Supply the governed protective stop and funded slot capital basis to 29P."
+            action = (
+                "Inspect the 29P sizing reference and funding provenance for the original slot. "
+                "Retain the original hold."
+            )
         elif result.close_readback is not None:
             reason = result.close_readback.status
             action = "Keep the original close and reconcile venue custody before any continuation."

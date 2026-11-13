@@ -2719,6 +2719,13 @@ def _assert_restarted_close_readback(
             assert "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED" in sizing.reason_codes
             assert sizing.get_count == 0
             assert not sizing.portfolio_reservation_id and not sizing.venue_plan_authorized
+            notice = json.loads(
+                (config.evidence_root / "runtime_liveness_latest_v1.json").read_bytes()
+            )
+            assert notice["reason_code"] == sizing.first_blocker
+            assert "original slot" in notice["recovery_action"]
+            assert "Retain the original hold." in notice["recovery_action"]
+            assert not notice["post_allowed"] and not notice["external_effect_authorized"]
             assert resumed.trace.terminal_disposition == DISPOSITION_FAIL_CLOSED
             assert resumed.trace.extra["counter_order"]["decision_id"] == counter.decision_id
             assert resumed.trace.extra["counter_order"]["target_side"] == counter.target_side
