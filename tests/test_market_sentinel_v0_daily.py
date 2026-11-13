@@ -606,57 +606,6 @@ class TestSmokeTests:
         assert (df1["close"].values == df2["close"].values).all()
 
 
-# ============================================================================
-# CLI TESTS (optional)
-# ============================================================================
-
-
-class TestCLI:
-    """Tests für das CLI-Script."""
-
-    def test_cli_script_exists(self) -> None:
-        """Test: CLI-Script existiert."""
-        cli_path = Path("scripts/generate_market_outlook_daily.py")
-        assert cli_path.exists()
-
-    def test_cli_can_be_imported(self) -> None:
-        """Test: CLI-Script kann importiert werden."""
-        import importlib.util
-
-        spec = importlib.util.spec_from_file_location(
-            "generate_market_outlook_daily",
-            "scripts/generate_market_outlook_daily.py",
-        )
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            # Nur prüfen dass Import klappt, nicht ausführen
-            assert module is not None
-
-
-def test_generate_market_outlook_daily_help_subprocess_smoke():
-    import subprocess
-    import sys
-    from pathlib import Path
-
-    root = Path(__file__).resolve().parents[1]
-    script = root / "scripts" / "generate_market_outlook_daily.py"
-
-    result = subprocess.run(
-        [sys.executable, str(script), "--help"],
-        cwd=root,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-
-    assert result.returncode == 0, result.stderr
-    combined_output = result.stdout + result.stderr
-    assert "usage:" in combined_output.lower()
-    assert "--skip-llm" in combined_output
-    assert "--config-path" in combined_output
-
-
 def test_market_sentinel_daily_outlook_sensitive_output_visibility_contract_v0() -> None:
     """Static owner-review surface for Market Sentinel daily-outlook sensitive output markers.
 

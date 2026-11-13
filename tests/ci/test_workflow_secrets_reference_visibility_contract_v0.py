@@ -59,7 +59,6 @@ KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
         "cursor_auto_automerge.yml",
         "cursor_auto_pr.yml",
         "infostream-automation.yml",
-        "market_outlook_automation.yml",
         "pr-head-sha-required-checks-liveness-guard.yml",
     }
 )
@@ -265,7 +264,7 @@ def test_workflow_secrets_reference_visibility_contract_classifies_current_secre
 
 def test_workflow_secrets_reference_visibility_contract_known_sets_stay_documentary() -> None:
     """Known sets are owner-review surfaces, not workflow-change mandates."""
-    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 9
+    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 8
     assert len(KNOWN_SECRET_REFERENCE_NAMES) == 3
 
 

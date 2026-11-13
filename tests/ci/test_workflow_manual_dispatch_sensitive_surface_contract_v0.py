@@ -41,7 +41,6 @@ KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES = frozenset(
         "knowledge_extras_chromadb.yml",
         "l4_critic_replay_determinism.yml",
         "lint_gate.yml",
-        "market_outlook_automation.yml",
         "offline_suites.yml",
         "ops_doctor_dashboard.yml",
         "ops_doctor_pages.yml",
@@ -364,7 +363,7 @@ def test_manual_dispatch_sensitive_surface_contract_classifies_current_set() -> 
 
 def test_manual_dispatch_sensitive_surface_contract_known_set_stays_documentary() -> None:
     """The known set is an owner-review surface, not a workflow-change mandate."""
-    assert len(KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES) == 41
+    assert len(KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES) == 40
 
 
 def test_manual_dispatch_sensitive_surface_contract_requires_signals_for_known_set() -> None:

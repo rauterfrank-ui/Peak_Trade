@@ -20,7 +20,6 @@ WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
 
 KNOWN_UPLOAD_ARTIFACT_WORKFLOWS_WITHOUT_RETENTION_DAYS = {
     "audit.yml",
-    "market_outlook_automation.yml",
     "paper_session_audit_evidence.yml",
     "paper_session_telemetry_summary.yml",
     "paper_tests_audit_evidence.yml",
@@ -114,7 +113,6 @@ def test_workflow_artifact_retention_visibility_contract_known_missing_list_stay
     """The known list is an owner-review surface, not an automatic YAML-change mandate."""
     assert KNOWN_UPLOAD_ARTIFACT_WORKFLOWS_WITHOUT_RETENTION_DAYS == {
         "audit.yml",
-        "market_outlook_automation.yml",
         "paper_session_audit_evidence.yml",
         "paper_session_telemetry_summary.yml",
         "paper_tests_audit_evidence.yml",

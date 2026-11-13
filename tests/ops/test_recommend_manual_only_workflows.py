@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 from scripts.ops.recommend_manual_only_workflows import (
     RESIDUAL_SCHEDULE_WORKFLOW_FILES,
@@ -148,7 +149,8 @@ def test_market_info_daily_includes_ai_cost_hint() -> None:
     proc = _run_cli("--intent", "market_info_daily", "--include-commands")
     assert proc.returncode == 0, proc.stderr
     lowered = proc.stdout.lower()
-    assert "infostream" in lowered or "market" in lowered
+    assert "infostream" in lowered
+    assert "market_outlook_automation.yml" not in lowered
     assert "ai" in lowered or "openai" in lowered or "skip_ai" in lowered
 
 
@@ -160,6 +162,7 @@ def test_json_mode_valid_and_contains_guard() -> None:
     assert payload["executes_workflows"] is False
     assert payload["guard"]
     assert payload["recommendations"]
+    assert "market_outlook_automation.yml" not in proc.stdout
 
 
 def test_doc_manual_only_section_no_auto_cron_reactivation() -> None:
@@ -456,3 +459,51 @@ def test_residual_active_schedule_allowlist_each_has_schedule_v0() -> None:
     for fname in sorted(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST):
         rec = _parse_workflow_file(fname)
         assert rec.has_active_schedule, fname
+
+
+def test_legacy_invocation_reports_retirement_without_output(tmp_path):
+    output = tmp_path / "reports"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "scripts/generate_market_outlook_daily.py"),
+            "--skip-llm",
+            "--out-dir",
+            str(output),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "MARKET_SENTINEL_V0_RETIRED" in result.stderr
+    assert not output.exists()
+
+
+def test_retired_entrypoint_help_is_available():
+    result = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts/generate_market_outlook_daily.py"), "--help"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0
+    assert "Retired MarketSentinel v0" in result.stdout
+
+
+def test_workflow_only_reports_retirement_if_accidentally_enabled():
+    workflow = yaml.load(
+        (WORKFLOWS_DIR / "market_outlook_automation.yml").read_text(), Loader=yaml.BaseLoader
+    )
+    assert set(workflow["on"]) == {"workflow_dispatch"}
+    assert workflow["permissions"] == {}
+    jobs = workflow["jobs"]
+    assert set(jobs) == {"market_outlook_daily"}
+    job = jobs["market_outlook_daily"]
+    assert set(job) == {"runs-on", "steps"}
+    [step] = job["steps"]
+    assert set(step) == {"name", "run"}
+    assert "::error::MarketSentinel v0 was retired" in step["run"]
+    assert step["run"].strip().endswith("exit 1")
