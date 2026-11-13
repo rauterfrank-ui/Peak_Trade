@@ -11,7 +11,7 @@ Supervisor nutzt standardmäßig den P86-Gate (Readiness + Ingest) statt nur P76
 - **scripts/ops/online_readiness_supervisor_v1.sh**: `CHECK_MODE=p76|p86` (default: p86)
   - `p86`: Ruft `p86_gate_v1.sh` pro Tick (P85 Live Ingest + P76 Go/No-Go)
   - `p76`: Legacy-Verhalten, nur `online_readiness_go_no_go_v1.sh`
-- **src/ops/p78/online_readiness_supervisor_plan_v1.py**: Feld `gate_variant` ("p76"|"p86", default "p86")
+- [Historischer P78-Plan](https://github.com/rauterfrank-ui/Peak_Trade/blob/93fe5c549adef56c6dab5d5a5319a6349aa80c65/src/ops/p78/online_readiness_supervisor_plan_v1.py): Feld `gate_variant` ("p76"|"p86", default "p86")
 - **Tests**: Supervisor-Tick schreibt P86-Artefakte (P86_GATE_RESULT.json, p86_result.json) in tick_* Verzeichnisse
 
 ## Nutzung
