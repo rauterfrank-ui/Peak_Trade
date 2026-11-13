@@ -127,6 +127,11 @@ def unattended_request_digest_v1(request):
         "source_digest": source.hexdigest(),
         "origin_main_sha": request["origin_main_sha"],
     }
+    proof_root = request.get("occupied_mark_proof_root")
+    if proof_root is not None:
+        from src.ops.execution_reconciliation_proof_store_v1 import require_private_proof_root_v1
+
+        value["occupied_mark_proof_root"] = str(require_private_proof_root_v1(proof_root))
     return sha256(json.dumps(value, sort_keys=True, default=str).encode()).hexdigest()
 
 
