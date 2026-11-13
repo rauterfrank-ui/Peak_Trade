@@ -148,25 +148,48 @@ def write_manifest_sha256(root: Path) -> None:
     manifest.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
 
-def verify_manifest_sha256(root: Path) -> tuple[bool, str]:
-    """Verify MANIFEST.sha256 against files under root. Fail closed on any mismatch."""
+def verify_manifest_sha256(
+    root: Path, *, required_rel_paths: tuple[str, ...] = ()
+) -> tuple[bool, str]:
+    """Verify listed files and require coverage of the specified evidence files."""
+    root = root.resolve()
     manifest = root / MANIFEST_FILENAME
     if not manifest.is_file():
         return False, "MANIFEST.sha256 missing"
-    for raw in manifest.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        parts = line.split(None, 1)
-        if len(parts) != 2:
-            return False, f"invalid manifest line: {line!r}"
-        digest, rel = parts
-        path = root / rel
-        if not path.is_file():
-            return False, f"missing manifest entry: {rel}"
-        actual = hashlib.sha256(path.read_bytes()).hexdigest()
-        if actual != digest:
-            return False, f"checksum mismatch: {rel}"
+    if manifest.is_symlink():
+        return False, "MANIFEST.sha256 symlink is forbidden"
+    seen: set[str] = set()
+    try:
+        for raw in manifest.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            parts = line.split(None, 1)
+            if len(parts) != 2:
+                return False, f"invalid manifest line: {line!r}"
+            digest, rel = parts
+            if (
+                rel == MANIFEST_FILENAME
+                or any(part in {"", ".", ".."} for part in rel.split("/"))
+                or "\\" in rel
+                or "\x00" in rel
+                or rel in seen
+            ):
+                return False, f"unsafe or duplicate manifest entry: {rel!r}"
+            path = root / rel
+            if path.resolve() != path:
+                return False, f"manifest entry must resolve to its own archive path: {rel}"
+            if not path.is_file():
+                return False, f"missing manifest entry: {rel}"
+            actual = hashlib.sha256(path.read_bytes()).hexdigest()
+            if actual != digest:
+                return False, f"checksum mismatch: {rel}"
+            seen.add(rel)
+    except (OSError, RuntimeError, UnicodeError) as exc:
+        return False, f"manifest read failed: {exc}"
+    missing = sorted(set(required_rel_paths) - seen - {MANIFEST_FILENAME})
+    if missing:
+        return False, f"required files missing from manifest: {', '.join(missing)}"
     return True, ""
 
 
@@ -228,17 +251,28 @@ def validate_durable_primary_evidence_root(
         if not present:
             issues.append(f"missing durable required file: {rel}")
 
+    if issues:
+        return False, issues[0], {"checks": checks, "issues": issues}
+
+    ok, msg = verify_manifest_sha256(root, required_rel_paths=required_rel_paths)
+    checks["manifest_sha256_verify"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
     if WALLCLOCK_EVIDENCE_FILENAME in required_rel_paths:
         wallclock_path = root / WALLCLOCK_EVIDENCE_FILENAME
         if wallclock_path.is_file():
             try:
                 wallclock_payload = json.loads(wallclock_path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError) as exc:
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
                 msg = f"WALLCLOCK_EVIDENCE.json invalid: {exc}"
                 checks["durable_wallclock_evidence_valid"] = False
                 issues.append(msg)
             else:
-                evaluation = evaluate_wallclock_evidence_fields(wallclock_payload)
+                evaluation = evaluate_wallclock_evidence_fields(
+                    wallclock_payload if isinstance(wallclock_payload, dict) else {}
+                )
                 wallclock_valid = bool(evaluation.get("duration_evidence_valid"))
                 checks["durable_wallclock_evidence_valid"] = wallclock_valid
                 if not wallclock_valid:
@@ -248,22 +282,16 @@ def validate_durable_primary_evidence_root(
     if issues:
         return False, issues[0], {"checks": checks, "issues": issues}
 
-    ok, msg = verify_manifest_sha256(root)
-    checks["manifest_sha256_verify"] = ok
-    if not ok:
-        issues.append(msg)
-        return False, msg, {"checks": checks, "issues": issues}
-
     review_path = root / "review" / "REVIEW_RESULT.json"
     try:
         review_payload = json.loads(review_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         msg = f"review/REVIEW_RESULT.json invalid: {exc}"
         checks["durable_review_verdict_pass"] = False
         issues.append(msg)
         return False, msg, {"checks": checks, "issues": issues}
 
-    review_pass = review_payload.get("verdict") == "PASS"
+    review_pass = isinstance(review_payload, dict) and review_payload.get("verdict") == "PASS"
     checks["durable_review_verdict_pass"] = review_pass
     if not review_pass:
         msg = "review/REVIEW_RESULT.json verdict must be PASS"

@@ -54,6 +54,18 @@ identity, instrument, observation time, or config identity where required by sou
 
 Do not fabricate missing downstream fields. Do not mutate primary evidence archives.
 
+The original `MANIFEST.sha256` must cover each file required by the selected
+archive contract. Its entries resolve to regular files at their declared
+paths inside the archive. The projection records `MANIFEST.sha256` and the
+mode-specific evidence manifest as `STORE_RELATIVE` artifact references. Resolve
+them against `source_archive_root_ref` in the projection provenance and verify
+the recorded digests. This works with the original durable archive outside the
+checkout, without staging a copy in Git. Archive integrity and a PASS review
+do not establish the provenance of an individual outcome or fill.
+
+The I17 wallclock Shadow writer has its own session bundle and DDO verifier.
+That bundle does not implement the bounded archive layout consumed here.
+
 ## M10 / P5 isolation
 
 Primary runtime evidence and this projection output do **not** authorize M10 promotion,

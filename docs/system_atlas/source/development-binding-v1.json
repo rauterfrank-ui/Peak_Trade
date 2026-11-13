@@ -1067,6 +1067,11 @@
       "sha256": "1028b13ea993bf1f5ca7349dd00bae5d029ed36cf69912b7217a225fce021ab0"
     },
     {
+      "path": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+      "before_sha256": "159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18",
+      "sha256": "1790adda6d5d8acfda61dbf030451945bf20e02894110e4e6f6625b3f3a0f619"
+    },
+    {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
@@ -1159,7 +1164,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "267906a0a43993919df1a8c6f8737b6f5dc1a30867058adc7c3ac9a75ed7058c"
+      "sha256": "e4f4d6774326db39b937a4694a50c5bd5a97970201872ffc55203c53cd9e3fd7"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1365,6 +1370,11 @@
       "path": "scripts/ops/prepare_bounded_paper_start_v1.py",
       "before_sha256": null,
       "sha256": "fb9c93b4e003b5517a60c94dcc2d87f6381aa699ddd5fd0c58d95b1629d7bf79"
+    },
+    {
+      "path": "scripts/ops/primary_evidence_retention_v0.py",
+      "before_sha256": "f967201dff0828c4544423039fec3ea72e98dc11b5d18811f29235a01529b3de",
+      "sha256": "a6b44a6f7229be99f8e1c2c96bc40544534f9b07388d545411b6a4cc085c6be9"
     },
     {
       "path": "scripts/ops/prove_productive_offline_portfolio_state_desync_v1.py",
@@ -1625,6 +1635,11 @@
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
       "before_sha256": "ac896c8001617c2cc8cdcfca5225f1afa81bc03524244cfcc1ec44dda04062a5",
       "sha256": "0265a99e89dcf920eaf545de9d8f88078799fd14b6a9c8752858b0d11c30d3dd"
+    },
+    {
+      "path": "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+      "before_sha256": "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
+      "sha256": "f98f3e3b0119b0981b74e12e1e1f8fb10999b92a67b701fbbfc2dcfa6183d85a"
     },
     {
       "path": "src/governance/optimization_proposal_governance_ingress_v1.py",
@@ -2995,6 +3010,11 @@
       "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
       "before_sha256": "35b578f97fc53e28d079df76f996b8e849105eba8ec474fa8a8a27ec7bd7124c",
       "sha256": "b3e55f90b509bc00e8c9a35c794f7233c0dbf35ba67cdc8beb68fd79985a72ea"
+    },
+    {
+      "path": "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
+      "before_sha256": "857b1379182d41ad4d09628995c0ac90ec34a1b89a77d3e48f74bc4c3b7f5d7a",
+      "sha256": "78f9c5eaa9c7e06d866d6881c9daa430efe0ce8acce3336a7ddc404078193a82"
     },
     {
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",
