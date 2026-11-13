@@ -7,9 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1 import (
-    SURFACE_ID as M9_SURFACE_ID,
-)
 from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
     P5_PRODUCER_BRIDGE_PERFORMED,
     SEARCH_EXECUTED,
@@ -30,7 +27,6 @@ from src.governance.ghv_referenced_static_semantic_look_ahead_v1 import (
 )
 from src.governance.m10_promotion_boundary_v1 import (
     AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY,
-    M10PromotionState,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.constants_v1 import (
     PRODUCTIVE_ACTIVATION_AUTHORIZED,
@@ -70,8 +66,6 @@ def _offline_request(tmp_path: Path) -> GhvReferencedIntelligenceOfflineCycleReq
     return GhvReferencedIntelligenceOfflineCycleRequestV1(
         learning_evidence=evidence,
         plane_request=_plane_request(evidence),
-        optimization_surface_id=M9_SURFACE_ID,
-        parameter_config_delta={"max_age_seconds": 600},
         replay_seed=3,
     )
 
@@ -83,7 +77,7 @@ def test_ghv_reference_artifacts_and_manifest_prove(tmp_path: Path) -> None:
     assert proof["missing_artifacts"] == ()
 
 
-def test_offline_cycle_composes_m4_m8_through_m10_hard_stop(tmp_path: Path) -> None:
+def test_offline_cycle_completes_m4_m8_with_governance_disconnected(tmp_path: Path) -> None:
     first = run_ghv_referenced_intelligence_superstructure_offline_cycle_v1(
         _offline_request(tmp_path)
     )
@@ -96,9 +90,15 @@ def test_offline_cycle_composes_m4_m8_through_m10_hard_stop(tmp_path: Path) -> N
     assert first["gvef_authority"] == "NONE"
     assert first["post_allowed"] is False
     assert first["productive_config_mutation_performed"] is False
-    assert first["m10_promotion_state"] == M10PromotionState.VALIDATED.value
+    assert first["optimization_governance_ingress_digest"] is None
+    assert first["m10_promotion_state"] is None
+    loop = first["m4_m8_loop"]
+    assert loop["cycle"]["return_input_ack"]["status"] == "ACCEPTED_OFFLINE_EVIDENCE_INPUT"
+    assert loop["cycle"]["meta_learning_evidence"]
     lineage = first["intelligence_lineage"]
-    assert lineage["m10_hard_stop"] is True
+    assert lineage["proposal_ref"] == {"status": "INTENTIONALLY_DISCONNECTED", "ref": ""}
+    assert lineage["m10_ref"] == {"status": "INTENTIONALLY_DISCONNECTED", "ref": ""}
+    assert lineage["m10_hard_stop"] is False
     assert lineage["mi_ref"]["status"] == "INTENTIONALLY_DISCONNECTED"
     gvef = first["gvef_reproof"]
     assert gvef["gvef_authority"] == "NONE"

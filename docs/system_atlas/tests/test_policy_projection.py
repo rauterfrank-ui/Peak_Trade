@@ -99,6 +99,7 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["ORDERED_FUNDING_EPISODE_DELTAS"],
         *PROJECTION["RESERVED_SLOT_ROTATION_DELTAS"],
         *PROJECTION["MANAGED_FILEGATE_OWNER_DELTAS"],
+        *PROJECTION["OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS"],
         *PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"],
     }
     frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}

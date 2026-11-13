@@ -41,11 +41,9 @@ from src.governance.optimization_proposal_governance_ingress_v1 import (
     evaluate_optimization_proposal_governance_admission_v1,
 )
 from tests.governance.test_optimization_proposal_governance_ingress_v1 import (
+    _build_legacy_plane_ingress_fixture,
     _ingress_for_m9,
     _plane_and_evidence,
-)
-from src.governance.optimization_proposal_governance_ingress_v1 import (
-    build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1,
 )
 from trading.master_v2.naked_mv2_double_play_core_authority_hardening_v1 import (
     LEARNING_CORE_MUTATION_AUTHORITY,
@@ -56,7 +54,7 @@ from trading.master_v2.naked_mv2_double_play_core_authority_hardening_v1 import 
 
 def _ingress_for_surface(tmp_path: Path, surface_id: str, delta: dict[str, Any]):
     plane, opt_evidence = _plane_and_evidence(tmp_path)
-    return build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1(
+    return _build_legacy_plane_ingress_fixture(
         plane_result=plane,
         optimization_experiment_evidence=opt_evidence,
         optimization_surface_id=surface_id,

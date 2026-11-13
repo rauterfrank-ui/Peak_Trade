@@ -16,7 +16,6 @@ from src.governance.optimization_proposal_governance_ingress_v1 import (
     DISPOSITION_PROPOSAL_ONLY,
     OptimizationProposalGovernanceAdmissionRequestV1,
     evaluate_optimization_proposal_governance_admission_v1,
-    build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
     export_learning_evidence_from_state_v1,
@@ -37,6 +36,10 @@ from tests.learning.test_learning_evidence_export_v1 import _learning_state
 from tests.learning.test_unified_blueprint_phase_8_mi_to_learning_integration_v1 import (
     _directional_payload,
     _observation_for_n,
+)
+
+from tests.governance.test_optimization_proposal_governance_ingress_v1 import (
+    _build_legacy_plane_ingress_fixture,
 )
 
 
@@ -77,7 +80,7 @@ def test_orchestrator_reaches_m4_and_proposal_ingress(tmp_path: Path) -> None:
     assert opt_evidence is not None
     assert opt_evidence["provenance"]["mi_lineage_refs"]["forecast_evidence_id"]
 
-    ingress = build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1(
+    ingress = _build_legacy_plane_ingress_fixture(
         plane_result=plane,
         optimization_experiment_evidence=opt_evidence,
         optimization_surface_id=M9_SURFACE_ID,

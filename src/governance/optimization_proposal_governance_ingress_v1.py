@@ -1,13 +1,12 @@
 """Optimization proposal → Governance/Risk ingress v1 (M10 edge, fail-closed).
 
-Admits canonical optimization plane/evidence into governance review only.
+Validates supplied governance ingress records for review admission.
 Does not authorize productive apply, promotion decisions, or config mutation.
 """
 
 from __future__ import annotations
 
 import json
-import logging
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -15,34 +14,13 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
-from src.experiments.canonical_f2_research_backtest_cost_grid_optimizable_surface_v1 import (
-    RISK_CONSTRAINTS_REF as F2_RISK_CONSTRAINTS_REF,
-    SURFACE_ID as F2_SURFACE_ID,
-    SURFACE_OWNER_REF as F2_SURFACE_OWNER_REF,
-)
-from src.experiments.canonical_f5_fresh_futures_input_freshness_optimizable_surface_v1 import (
-    RISK_CONSTRAINTS_REF as F5_RISK_CONSTRAINTS_REF,
-    SURFACE_ID as F5_SURFACE_ID,
-    SURFACE_OWNER_REF as F5_SURFACE_OWNER_REF,
-)
 from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1 import (
-    RISK_CONSTRAINTS_REF as M9_RISK_CONSTRAINTS_REF,
     SURFACE_ID as M9_SURFACE_ID,
-    SURFACE_OWNER_REF as M9_SURFACE_OWNER_REF,
 )
 from src.experiments.canonical_optimizable_envelope_v1 import (
     RESOLUTION_AUTHORIZED_RESEARCH_OPTIMIZATION,
     OptimizableEnvelopeResolveRequestV1,
     resolve_optimizable_envelope_v1,
-)
-from src.experiments.canonical_optimization_experiment_evidence_v1 import (
-    SCHEMA_VERSION as OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION,
-    validate_optimization_experiment_evidence_v1,
-)
-from src.experiments.canonical_optimization_universe_experiment_plane_v1 import (
-    PLANE_STATUS_COMPLETE,
-    PROPOSAL_DISPOSITION,
-    SCHEMA_VERSION as EXPERIMENT_PLANE_SCHEMA_VERSION,
 )
 from src.governance.offline_observation_proposal_contract_fences_v1 import CONTRACT_LAYERS
 from src.governance.promotion_loop.promotion_economic_gate_v1 import (
@@ -80,7 +58,6 @@ EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 OPTIMIZATION_CAN_WRITE_PRODUCTIVE_CONFIG: Final[bool] = False
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_LOGGER = logging.getLogger(__name__)
 
 _REQUIRED_INGRESS_KEYS: Final[frozenset[str]] = frozenset(
     {
@@ -132,132 +109,6 @@ class OptimizationProposalGovernanceAdmissionResultV1:
     economic_gate_authority_effect: str = ECONOMIC_GATE_AUTHORITY_EFFECT_NONE
 
 
-def build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1(
-    *,
-    plane_result: Mapping[str, Any],
-    optimization_experiment_evidence: Mapping[str, Any],
-    optimization_surface_id: str,
-    parameter_config_delta: Mapping[str, Any] | None = None,
-    requested_productive_target: str | None = None,
-) -> MappingProxyType[str, Any]:
-    """Single canonical adapter: M4 plane + M5 evidence → typed ingress record."""
-    if plane_result.get("schema_version") != EXPERIMENT_PLANE_SCHEMA_VERSION:
-        raise OptimizationProposalGovernanceIngressError("PLANE_SCHEMA_VERSION_MISMATCH")
-    if plane_result.get("status") != PLANE_STATUS_COMPLETE:
-        raise OptimizationProposalGovernanceIngressError("PLANE_STATUS_NOT_COMPLETE")
-
-    evidence = validate_optimization_experiment_evidence_v1(optimization_experiment_evidence)
-    plane_identity = str(plane_result.get("plane_identity") or "")
-    if plane_identity != str(evidence.get("plane_identity") or ""):
-        raise OptimizationProposalGovernanceIngressError("PLANE_IDENTITY_MISMATCH")
-    plane_digest = plane_result.get("result_digest")
-    if plane_digest and evidence.get("provenance", {}).get("plane_result_digest") != plane_digest:
-        raise OptimizationProposalGovernanceIngressError("PLANE_RESULT_DIGEST_MISMATCH")
-
-    chain = plane_result.get("chain")
-    if not isinstance(chain, Mapping):
-        raise OptimizationProposalGovernanceIngressError("PLANE_CHAIN_MISSING")
-    proposal = chain.get("proposal")
-    selected = chain.get("selected_candidate")
-    learning_input = chain.get("learning_input_validation")
-    if not isinstance(proposal, Mapping) or not isinstance(selected, Mapping):
-        raise OptimizationProposalGovernanceIngressError("PROPOSAL_OR_CANDIDATE_MISSING")
-    if not isinstance(learning_input, Mapping):
-        raise OptimizationProposalGovernanceIngressError("LEARNING_INPUT_VALIDATION_MISSING")
-
-    if proposal.get("disposition") != PROPOSAL_DISPOSITION:
-        raise OptimizationProposalGovernanceIngressError("PROPOSAL_DISPOSITION_NOT_PROPOSAL_ONLY")
-
-    surface_id = optimization_surface_id.strip()
-    if not surface_id:
-        raise OptimizationProposalGovernanceIngressError("OPTIMIZATION_SURFACE_ID_REQUIRED")
-
-    delta = (
-        dict(parameter_config_delta)
-        if parameter_config_delta is not None
-        else dict(selected.get("parameter_region") or {})
-    )
-    if not delta:
-        raise OptimizationProposalGovernanceIngressError("PARAMETER_CONFIG_DELTA_EMPTY")
-
-    envelope_resolution = resolve_optimizable_envelope_v1(
-        OptimizableEnvelopeResolveRequestV1(surface_id=surface_id)
-    )
-    if envelope_resolution.get("resolution") != RESOLUTION_AUTHORIZED_RESEARCH_OPTIMIZATION:
-        raise OptimizationProposalGovernanceIngressError(
-            f"ENVELOPE_NOT_AUTHORIZED:{envelope_resolution.get('reason')}"
-        )
-
-    envelope_identity = str(envelope_resolution.get("envelope_identity") or "")
-    if not is_valid_sha256_hex(envelope_identity):
-        raise OptimizationProposalGovernanceIngressError("ENVELOPE_IDENTITY_INVALID")
-
-    risk_constraints_ref, owner_auth_ref = _surface_constraint_refs_v1(surface_id)
-    if not risk_constraints_ref:
-        raise OptimizationProposalGovernanceIngressError("RISK_CONSTRAINTS_REF_MISSING")
-
-    experiment_id = str(selected.get("experiment_id") or proposal.get("experiment_id") or "")
-    candidate_ref = str(selected.get("candidate_ref") or proposal.get("candidate_ref") or "")
-    if not experiment_id or not candidate_ref:
-        raise OptimizationProposalGovernanceIngressError("EXPERIMENT_OR_CANDIDATE_REF_MISSING")
-
-    learning_digest = str(learning_input.get("learning_evidence_digest") or "")
-    if not is_valid_sha256_hex(learning_digest):
-        raise OptimizationProposalGovernanceIngressError("LEARNING_EVIDENCE_DIGEST_INVALID")
-
-    body: dict[str, Any] = {
-        "schema_version": SCHEMA_VERSION,
-        "domain": INGRESS_DOMAIN,
-        "disposition": DISPOSITION_PROPOSAL_ONLY,
-        "plane_identity": plane_identity,
-        "experiment_id": experiment_id,
-        "candidate_ref": candidate_ref,
-        "optimization_surface_id": surface_id,
-        "parameter_config_delta": delta,
-        "requested_productive_target": requested_productive_target,
-        "optimization_evidence_record_id": evidence.get("record_id"),
-        "optimization_evidence_content_hash": evidence.get("content_hash"),
-        "optimization_evidence_reproducibility_digest": evidence.get("reproducibility_digest"),
-        "learning_evidence_digest": learning_digest,
-        "plane_result_digest": plane_digest,
-        "search_identity": chain.get("search_identity"),
-        "template_identity_digest": chain.get("template_identity_digest"),
-        "envelope_identity": envelope_identity,
-        "envelope_owner_authorization_ref": owner_auth_ref,
-        "risk_constraints_ref": risk_constraints_ref,
-        "governance_risk_constraints_ref": risk_constraints_ref,
-        "envelope_resolution_digest": envelope_resolution.get("result_digest"),
-        "promotion_authority": PROMOTION_AUTHORITY,
-        "productive_apply_authority": PRODUCTIVE_APPLY_AUTHORITY,
-        "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
-        "optimization_provenance": {
-            "source_plane_schema_version": EXPERIMENT_PLANE_SCHEMA_VERSION,
-            "source_evidence_schema_version": OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION,
-            "plane_result_digest": plane_digest,
-            "evidence_content_hash": evidence.get("content_hash"),
-            "evidence_record_id": evidence.get("record_id"),
-            "reproducibility_digest": evidence.get("reproducibility_digest"),
-            "proposal_disposition": proposal.get("disposition"),
-            "proposal_not_authority": proposal.get("proposal_not_authority"),
-            "identity_digest": proposal.get("identity_digest"),
-            "robustness_suite_identity": proposal.get("robustness_suite_identity"),
-            "evidence_slices_digest": compute_content_sha256(
-                {"evidence_slices": evidence.get("evidence_slices")}
-            ),
-            "ingress_is_not_config_patch": True,
-            "config_patch_is_downstream_projection_only": True,
-        },
-    }
-    body["ingress_digest"] = compute_content_sha256(
-        {key: value for key, value in body.items() if key != "ingress_digest"}
-    )
-    validated = validate_optimization_proposal_governance_ingress_v1(body)
-    _LOGGER.debug(
-        "built optimization governance ingress digest=%s", validated.get("ingress_digest")
-    )
-    return validated
-
-
 def validate_optimization_proposal_governance_ingress_v1(
     payload: Mapping[str, Any],
 ) -> MappingProxyType[str, Any]:
@@ -293,6 +144,8 @@ def validate_optimization_proposal_governance_ingress_v1(
     provenance = payload.get("optimization_provenance")
     if not isinstance(provenance, Mapping) or not provenance:
         raise OptimizationProposalGovernanceIngressError("OPTIMIZATION_PROVENANCE_REQUIRED")
+    if "source_plane_schema_version" in provenance:
+        raise OptimizationProposalGovernanceIngressError("DIRECT_M4_M5_GOVERNANCE_HANDOFF_RETIRED")
     return MappingProxyType(dict(payload))
 
 
@@ -375,23 +228,6 @@ def project_optimization_ingress_to_config_patch_manifest_v1(
         metadata=dict(manifest_body_without_integrity["metadata"]),
         integrity=ManifestIntegrity(content_sha256=content_hash),
     )
-
-
-_SURFACE_CONSTRAINT_REFS: Final[dict[str, tuple[str, str]]] = {
-    M9_SURFACE_ID: (M9_RISK_CONSTRAINTS_REF, M9_SURFACE_OWNER_REF),
-    F2_SURFACE_ID: (F2_RISK_CONSTRAINTS_REF, F2_SURFACE_OWNER_REF),
-    F5_SURFACE_ID: (F5_RISK_CONSTRAINTS_REF, F5_SURFACE_OWNER_REF),
-}
-
-
-def _surface_constraint_refs_v1(surface_id: str) -> tuple[str, str]:
-    entry = _SURFACE_CONSTRAINT_REFS.get(surface_id)
-    if entry is None:
-        raise OptimizationProposalGovernanceIngressError(
-            f"UNKNOWN_OPTIMIZATION_SURFACE:{surface_id}"
-        )
-    risk_ref, owner_ref = entry
-    return risk_ref, owner_ref
 
 
 def _load_json_ref(relative_path: str) -> dict[str, Any]:

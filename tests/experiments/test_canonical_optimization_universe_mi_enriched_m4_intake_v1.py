@@ -27,7 +27,6 @@ from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface
 )
 from src.governance.optimization_proposal_governance_ingress_v1 import (
     DISPOSITION_PROPOSAL_ONLY,
-    build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
     export_learning_evidence_from_state_v1,
@@ -53,6 +52,10 @@ MODULE_PATH = (
     / "src"
     / "experiments"
     / "canonical_optimization_universe_mi_enriched_m4_intake_v1.py"
+)
+
+from tests.governance.test_optimization_proposal_governance_ingress_v1 import (
+    _build_legacy_plane_ingress_fixture,
 )
 
 
@@ -123,7 +126,7 @@ def test_mi_lineage_in_optimization_experiment_evidence(tmp_path: Path) -> None:
 def test_proposal_only_ingress_with_m9_surface(tmp_path: Path) -> None:
     plane = run_mi_enriched_optimization_universe_experiment_plane_v1(_intake_request(tmp_path))
     opt_evidence = build_optimization_experiment_evidence_from_plane_v1(plane)
-    ingress = build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1(
+    ingress = _build_legacy_plane_ingress_fixture(
         plane_result=plane,
         optimization_experiment_evidence=opt_evidence,
         optimization_surface_id=M9_SURFACE_ID,

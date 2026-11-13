@@ -20,7 +20,15 @@ PRODUCTIVE_APPLY_AUTHORITY=NONE
 MV2_DOUBLE_PLAY_SOLE_TRADING_DECISION_AUTHORITY=true
 ```
 
-## Implemented edge
+## Current scope
+
+The direct M4/M5 proposal and experiment-evidence handoff introduced by #6639 is
+retired. The offline learning cycle completes at M8. Governance denies ingress
+records produced by the retired adapter with DIRECT_M4_M5_GOVERNANCE_HANDOFF_RETIRED.
+The separate F1/M9 owner path starts from verified campaign evidence and
+continues to use its existing admission and explicit authorization contracts.
+
+## Historical M4/M5 edge
 
 ```text
 M4_PLANE + M5_EVIDENCE

@@ -1,7 +1,6 @@
 """GHV-referenced complete intelligence superstructure offline cycle v1 (compose-only).
 
-Single bounded offline entrypoint composing existing M4–M8, governance ingress, M10 boundary,
-and GVEF-style reproof. Terminates at M10 HARD STOP (no Owner-GO, no apply, no POST).
+Bounded offline entrypoint for the M4–M8 evidence return loop and its structural reproof.
 """
 
 from __future__ import annotations
@@ -17,9 +16,6 @@ from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
     M4M8EvidenceReturnLoopRequestV1,
     run_m4_m8_evidence_return_loop_v1,
 )
-from src.experiments.canonical_optimization_experiment_evidence_v1 import (
-    build_optimization_experiment_evidence_from_plane_v1,
-)
 from src.experiments.canonical_optimization_universe_experiment_plane_v1 import (
     OptimizationUniverseExperimentPlaneRequestV1,
 )
@@ -28,18 +24,7 @@ from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     CanonicalOptimizationUniverseLearningInputRequestV1,
     validate_canonical_optimization_universe_learning_input_v1,
 )
-from src.governance.m10_promotion_boundary_v1 import (
-    AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY,
-    M10PromotionBoundaryEvaluateRequestV1,
-    M10PromotionState,
-    build_m10_promotion_proposal_from_ingress_v1,
-    evaluate_m10_promotion_boundary_v1,
-)
-from src.governance.optimization_proposal_governance_ingress_v1 import (
-    OptimizationProposalGovernanceAdmissionRequestV1,
-    build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1,
-    evaluate_optimization_proposal_governance_admission_v1,
-)
+from src.governance.m10_promotion_boundary_v1 import AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY
 from src.governance.ghv_intelligence_lineage_completeness_v1 import (
     derive_realized_economic_completeness_v1,
     derive_structural_outcome_completeness_v1,
@@ -48,7 +33,7 @@ from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 SCHEMA_VERSION: Final[str] = "ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1"
 CYCLE_DOMAIN: Final[str] = "peak_trade.ghv_referenced_intelligence_superstructure_offline.v1"
-CYCLE_STATUS_COMPLETE: Final[str] = "INTELLIGENCE_OFFLINE_CYCLE_COMPLETE_M10_HARD_STOP"
+CYCLE_STATUS_COMPLETE: Final[str] = "INTELLIGENCE_OFFLINE_CYCLE_COMPLETE_M8"
 CYCLE_STATUS_REJECTED: Final[str] = "INTELLIGENCE_OFFLINE_CYCLE_REJECTED"
 
 GHV_AUTHORITY: Final[str] = "NONE"
@@ -78,8 +63,6 @@ class GhvReferencedIntelligenceOfflineCycleError(ValueError):
 class GhvReferencedIntelligenceOfflineCycleRequestV1:
     learning_evidence: Mapping[str, Any]
     plane_request: OptimizationUniverseExperimentPlaneRequestV1
-    optimization_surface_id: str
-    parameter_config_delta: Mapping[str, Any] | None = None
     replay_seed: int = 0
     cycle_index: int = 0
     productive_cycle_id: str | None = None
@@ -105,8 +88,6 @@ def run_ghv_referenced_intelligence_superstructure_offline_cycle_v1(
                 optimization_input_status=LineageSlotStatusV1.INSUFFICIENT_EVIDENCE,
             ),
             m4_m8=None,
-            ingress=None,
-            m10=None,
             gvef=None,
         )
 
@@ -128,56 +109,23 @@ def run_ghv_referenced_intelligence_superstructure_offline_cycle_v1(
             reason=str(m4_m8.get("reason") or "M4_M8_LOOP_INCOMPLETE"),
             lineage=_lineage_from_m4_partial(request, m4_m8),
             m4_m8=m4_m8,
-            ingress=None,
-            m10=None,
             gvef=None,
         )
 
-    cycle = m4_m8.get("cycle") or {}
-    plane = cycle.get("experiment_plane_result") or {}
-    opt_evidence = cycle.get("optimization_experiment_evidence")
-    if opt_evidence is None:
-        opt_evidence = build_optimization_experiment_evidence_from_plane_v1(plane)
-
-    ingress = build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1(
-        plane_result=plane,
-        optimization_experiment_evidence=opt_evidence,
-        optimization_surface_id=request.optimization_surface_id,
-        parameter_config_delta=request.parameter_config_delta,
-    )
-    admission = evaluate_optimization_proposal_governance_admission_v1(
-        OptimizationProposalGovernanceAdmissionRequestV1(ingress=ingress)
-    )
-    proposal = build_m10_promotion_proposal_from_ingress_v1(ingress)
-    m10 = evaluate_m10_promotion_boundary_v1(
-        M10PromotionBoundaryEvaluateRequestV1(
-            promotion_proposal=proposal,
-            governance_admission=admission,
-            owner_authorization_input=None,
-        ),
-        ingress=ingress,
-    )
     gvef = build_gvef_intelligence_superstructure_reproof_v1(
         learning_evidence=request.learning_evidence,
         m4_m8_loop=m4_m8,
-        ingress=ingress,
-        m10_result=m10,
     )
     lineage = _lineage_from_complete_cycle(
         request=request,
         m4_m8=m4_m8,
-        ingress=ingress,
-        proposal=proposal,
-        m10=m10,
         gvef=gvef,
     )
     return _cycle_result(
         status=CYCLE_STATUS_COMPLETE,
-        reason="M10_HARD_STOP_EXPLICIT_AUTHORIZATION_REQUIRED",
+        reason="M4_M8_EVIDENCE_RETURN_COMPLETE",
         lineage=lineage,
         m4_m8=m4_m8,
-        ingress=ingress,
-        m10=m10,
         gvef=gvef,
     )
 
@@ -186,8 +134,6 @@ def build_gvef_intelligence_superstructure_reproof_v1(
     *,
     learning_evidence: Mapping[str, Any],
     m4_m8_loop: Mapping[str, Any],
-    ingress: Mapping[str, Any],
-    m10_result: Any,
 ) -> MappingProxyType[str, Any]:
     """Lightweight GVEF reproof bundle (AUTHORITY=NONE; architectural invariants only)."""
     meta = (m4_m8_loop.get("cycle") or {}).get("meta_learning_evidence") or {}
@@ -200,10 +146,6 @@ def build_gvef_intelligence_superstructure_reproof_v1(
         checks.append("SEARCH_EXECUTED")
     if meta.get("meta_evidence_authority") not in (None, "NONE"):
         checks.append("META_EVIDENCE_AUTHORITY_NOT_NONE")
-    if ingress.get("disposition") != "PROPOSAL_ONLY":
-        checks.append("INGRESS_DISPOSITION_NOT_PROPOSAL_ONLY")
-    if getattr(m10_result, "promotion_state", None) == M10PromotionState.AUTHORIZED:
-        checks.append("M10_AUTHORIZED_WITHOUT_EXPLICIT_OWNER_INPUT")
     if AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY is True:
         checks.append("M10_RUNTIME_APPLY_IMPLIES_VIOLATION")
     body: dict[str, Any] = {
@@ -213,10 +155,8 @@ def build_gvef_intelligence_superstructure_reproof_v1(
         "learning_evidence_digest": learning_evidence.get("content_hash")
         or learning_evidence.get("learning_evidence_digest"),
         "m4_m8_loop_identity": m4_m8_loop.get("loop_identity"),
-        "ingress_digest": ingress.get("ingress_digest"),
-        "m10_promotion_state": getattr(
-            getattr(m10_result, "promotion_state", None), "value", m10_result.promotion_state
-        ),
+        "ingress_digest": None,
+        "m10_promotion_state": None,
         "invariant_violations": tuple(checks),
         "reproof_pass": not checks,
     }
@@ -282,9 +222,6 @@ def _lineage_from_complete_cycle(
     *,
     request: GhvReferencedIntelligenceOfflineCycleRequestV1,
     m4_m8: Mapping[str, Any],
-    ingress: Mapping[str, Any],
-    proposal: Mapping[str, Any],
-    m10: Any,
     gvef: Mapping[str, Any],
 ) -> dict[str, Any]:
     cycle = m4_m8.get("cycle") or {}
@@ -375,20 +312,12 @@ def _lineage_from_complete_cycle(
         "gvef_ref": _slot(
             str(gvef.get("reproof_digest") or ""), status=LineageSlotStatusV1.PRESENT
         ),
-        "proposal_ref": _slot(
-            str(proposal.get("proposal_digest") or ""),
-            status=LineageSlotStatusV1.PRESENT,
-        ),
-        "m10_ref": _slot(
-            str(getattr(m10, "replay_bundle_digest", None) or ""),
-            status=LineageSlotStatusV1.PRESENT,
-        ),
+        "proposal_ref": _slot(None, status=LineageSlotStatusV1.INTENTIONALLY_DISCONNECTED),
+        "m10_ref": _slot(None, status=LineageSlotStatusV1.INTENTIONALLY_DISCONNECTED),
         "structural_outcome_completeness": structural,
         "realized_economic_completeness": realized,
-        "m10_hard_stop": True,
-        "m10_promotion_state": getattr(
-            getattr(m10, "promotion_state", None), "value", m10.promotion_state
-        ),
+        "m10_hard_stop": False,
+        "m10_promotion_state": None,
     }
 
 
@@ -416,8 +345,6 @@ def _cycle_result(
     reason: str,
     lineage: Mapping[str, Any],
     m4_m8: Mapping[str, Any] | None,
-    ingress: Mapping[str, Any] | None,
-    m10: Any,
     gvef: Mapping[str, Any] | None,
 ) -> MappingProxyType[str, Any]:
     payload: dict[str, Any] = {
@@ -436,14 +363,8 @@ def _cycle_result(
         "m10_authorized_promotion_implies_runtime_apply": AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY,
         "intelligence_lineage": dict(lineage),
         "m4_m8_loop": _json_safe(m4_m8) if m4_m8 is not None else None,
-        "optimization_governance_ingress_digest": (
-            str(ingress.get("ingress_digest") or "") if ingress is not None else None
-        ),
-        "m10_promotion_state": (
-            getattr(getattr(m10, "promotion_state", None), "value", None)
-            if m10 is not None
-            else None
-        ),
+        "optimization_governance_ingress_digest": None,
+        "m10_promotion_state": None,
         "gvef_reproof": _json_safe(gvef) if gvef is not None else None,
     }
     payload["result_digest"] = compute_content_sha256(
