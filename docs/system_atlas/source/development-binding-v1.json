@@ -12,6 +12,11 @@
       "sha256": "c73c32ff7278d084d8b5e990a19013e37341e2e17e7c20872be7b04f3a997510"
     },
     {
+      "path": ".github/workflows/aiops-promptfoo-evals.yml",
+      "before_sha256": "36401551dfe8cc57aa7708268f039c264f4ab6eb74ab6e7acd8a6866d5af059a",
+      "sha256": "c8fb5490ff4d82a7ad0c28d03eaa3368ce3467dd66523fc54b43d35b2bd408fc"
+    },
+    {
       "path": ".github/workflows/ci-export-pack-download-verify.yml",
       "before_sha256": "77b89293db609852acf2fddbad645e5785c238631939e0cffe1b11e847c18f41",
       "sha256": null
@@ -2705,6 +2710,11 @@
       "path": "static/js/market_surface_greenfield_v1/surface_app_v1.js",
       "before_sha256": "fb5ffb587ed09acf69fc1b4ad87c822893dc0f66576bb2585d9849d99a4dc188",
       "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
+    },
+    {
+      "path": "tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py",
+      "before_sha256": "50dd1642351da25cda79d5175debec9e829af45c8c65985da64b668b4ae238dc",
+      "sha256": "4801e39f5df00242f9c528a2ec04269f95237c8684b7b701a1d02c3a043bd5ee"
     },
     {
       "path": "tests/ci/test_ci_diff_aware_test_selection_v1.py",

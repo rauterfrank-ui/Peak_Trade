@@ -44,3 +44,13 @@ def test_aiops_promptfoo_workflow_pr_push_skips_paid_path() -> None:
     assert "pr_push_cost_gate.json" in text
     assert "github.event_name == 'pull_request'" in text
     assert "github.event_name == 'push'" in text
+
+
+def test_paid_eval_dependencies_follow_the_same_opt_in_gate() -> None:
+    text = WORKFLOW.read_text(encoding="utf-8")
+    step_blocks = text.split("      - name: ")
+    steps = {block.splitlines()[0]: block for block in step_blocks if block.strip()}
+    paid = steps["Run paid Promptfoo Eval (OpenAI)"].split("if: >-\n")[1].split("        env:")[0]
+    for title in ("Validate paid eval inputs", "Setup Node.js"):
+        assert "if: >-\n" + paid in steps[title]
+    assert ".nvmrc evals/aiops/promptfooconfig.yaml" in steps["Validate paid eval inputs"]
