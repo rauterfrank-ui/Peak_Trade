@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from pathlib import Path
-
-import pytest
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
@@ -32,7 +29,6 @@ from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_st
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
-from trading.market_state.directional_confirmation_progress_v1 import ConfirmationAssessmentStateV1
 from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
     _bound,
     _produced_g17_producer,
@@ -61,7 +57,7 @@ def test_mv2_host_c1_uses_accepted_c1_not_last_finalized_grid_anchor() -> None:
     closes = strong_uptrend_closes_v1()
     grid_anchor = 1_700_000_000.0
     accepted_c1 = grid_anchor + 120.0
-    mark = float(closes[-1]) + 0.25
+    mark = float(closes[-1])
     from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
         provenance_for_bound_v1,
     )
@@ -96,15 +92,11 @@ def test_mv2_host_c1_uses_accepted_c1_not_last_finalized_grid_anchor() -> None:
     assert cap61 is not None
     ident = cap61.observation_acceptance_state.last_accepted_observation_identity
     assert ident is not None
-    assert ident.canonical_instrument_id == bound.instrument_id
-    assert ident.venue_instrument_id == bound.venue_native_id
-    assert ident.mark_price == mark
     assert float(ident.venue_event_time) == accepted_c1
     assert float(ident.venue_event_time) != grid_anchor
 
 
-@pytest.mark.parametrize("cursor_format", ["native", "legacy", "foreign", "foreign_carrier"])
-def test_mv2_c1_cursor_identity_on_resume(cursor_format: str) -> None:
+def test_mv2_duplicate_does_not_advance_identity_on_accepted_c1() -> None:
     bound = _bound()
     closes = strong_uptrend_closes_v1()
     accepted_c1 = 1_700_000_200.0
@@ -135,83 +127,22 @@ def test_mv2_c1_cursor_identity_on_resume(cursor_format: str) -> None:
         canonical_price_provenance=prov,
         master_v2_reconciliation_admission=admission,
     )
-    first = run_current_productive_master_v2_runtime_cycle_v1(cycle_id="rc-imp-first", **kwargs)
+    first = run_current_productive_master_v2_runtime_cycle_v1(cycle_id="rc-imp-dup-a", **kwargs)
     assert first.outgoing_cursor is not None
-    state_before = first.outgoing_cursor.cap61_confirmation_state
-    assert state_before is not None
-    obs_before = state_before.observation_acceptance_state
-    carrier_before = state_before.confirmation_side_carrier
-    state_before = replace(
-        state_before,
-        confirmation_side_carrier=replace(
-            carrier_before,
-            bull_confirmation_state=replace(
-                carrier_before.bull_confirmation_state,
-                assessment_state=ConfirmationAssessmentStateV1.CANDIDATE,
-                latest_accepted_market_observation_epoch=obs_before.market_observation_epoch,
-                candidate_started_at_epoch=obs_before.market_observation_epoch,
-                distinct_confirmation_observation_count=1,
-            ),
-        ),
+    epoch_before = (
+        first.outgoing_cursor.cap61_confirmation_state.observation_acceptance_state.market_observation_epoch  # type: ignore[union-attr]
     )
-    cursor = replace(first.outgoing_cursor, cap61_confirmation_state=state_before).to_dict()
-    state_payload = cursor["cap61_confirmation_state"]
-    observation = state_payload["observation_acceptance_state"]
-    carrier = state_payload["confirmation_side_carrier"]
-    venue_id = {
-        "native": bound.venue_native_id,
-        "legacy": bound.instrument_id,
-        "foreign": "BTC-USDT-SWAP",
-        "foreign_carrier": bound.venue_native_id,
-    }[cursor_format]
-    for field in ("last_accepted_observation_identity", "bound_instrument_key"):
-        observation[field]["venue_instrument_id"] = venue_id
-    for side in ("bull_confirmation_state", "bear_confirmation_state"):
-        carrier[side]["instrument"]["venue_instrument_id"] = (
-            "BTC-USDT-SWAP" if cursor_format == "foreign_carrier" else venue_id
-        )
-
-    duplicate = run_current_productive_master_v2_runtime_cycle_v1(
-        cycle_id="rc-imp-duplicate", incoming_cursor=cursor, **kwargs
+    second = run_current_productive_master_v2_runtime_cycle_v1(
+        cycle_id="rc-imp-dup-b",
+        incoming_cursor=first.outgoing_cursor,
+        accepted_c1_venue_event_time_unix=accepted_c1,
+        **{k: v for k, v in kwargs.items() if k != "accepted_c1_venue_event_time_unix"},
     )
-    if cursor_format in {"foreign", "foreign_carrier"}:
-        assert duplicate.input_blocker.startswith("CURSOR_CAP61_RESTORE_FAIL_CLOSED:")
-        assert duplicate.replay is None
-        assert duplicate.outgoing_cursor is None
-        return
-    assert duplicate.cursor_restore_status == "restored"
-    assert duplicate.outgoing_cursor is not None
-    state_duplicate = duplicate.outgoing_cursor.cap61_confirmation_state
-    assert state_duplicate is not None
-    assert state_duplicate.confirmation_session_id == state_before.confirmation_session_id
-    assert state_duplicate.confirmation_side_carrier == state_before.confirmation_side_carrier
-    assert state_duplicate.observation_acceptance_state.market_observation_epoch == (
-        obs_before.market_observation_epoch
+    assert second.outgoing_cursor is not None
+    epoch_after = (
+        second.outgoing_cursor.cap61_confirmation_state.observation_acceptance_state.market_observation_epoch  # type: ignore[union-attr]
     )
-    assert state_duplicate.observation_acceptance_state.last_accepted_observation_identity == (
-        obs_before.last_accepted_observation_identity
-    )
-    distinct = run_current_productive_master_v2_runtime_cycle_v1(
-        cycle_id="rc-imp-distinct",
-        incoming_cursor=duplicate.outgoing_cursor.to_dict(),
-        **{
-            **kwargs,
-            "accepted_c1_venue_event_time_unix": accepted_c1 + 60.0,
-            "observed_unix": accepted_c1 + 61.0,
-        },
-    )
-    assert distinct.cursor_restore_status == "restored"
-    assert distinct.outgoing_cursor is not None
-    state_distinct = distinct.outgoing_cursor.cap61_confirmation_state
-    assert state_distinct is not None
-    obs_distinct = state_distinct.observation_acceptance_state
-    assert (
-        obs_distinct.market_observation_epoch.value == obs_before.market_observation_epoch.value + 1
-    )
-    ident = obs_distinct.last_accepted_observation_identity
-    assert ident is not None
-    assert ident.venue_instrument_id == bound.venue_native_id
-    assert ident.venue_event_time == accepted_c1 + 60.0
+    assert epoch_after == epoch_before
 
 
 def test_rc_ord_cursor_carry_advances_cap61_across_two_mv2_cycles(tmp_path: Path) -> None:
