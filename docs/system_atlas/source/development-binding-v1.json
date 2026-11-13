@@ -1364,7 +1364,7 @@
     {
       "path": "scripts/ops/recommend_manual_only_workflows.py",
       "before_sha256": "60392fe8aa5cc720d7dbdede9fd6286ea457d80efc7713b1f1a326c2eff7c845",
-      "sha256": "5b25d3e4d10b3d99981c38dca00ebf90a06941c5528ad0cebbfa6c2276f71dff"
+      "sha256": "20032ca3931a2e36163dc1739cee091a48c09f9d5d52a08cb18dc453c63c8267"
     },
     {
       "path": "scripts/ops/route_offline_paired_market_representation_meta_v1.py",

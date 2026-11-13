@@ -122,9 +122,7 @@ INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
         "test_health.yml",
         "weekly_core_audit.yml",
     ),
-    "market_info_daily": (
-        "infostream-automation.yml",
-    ),
+    "market_info_daily": ("infostream-automation.yml",),
     "ops_hygiene": (
         "offline_suites.yml",
         "ops_doctor_dashboard.yml",
