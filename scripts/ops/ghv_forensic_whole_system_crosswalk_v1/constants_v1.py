@@ -10,9 +10,8 @@ MANIFEST_SCHEMA = "crosswalk_manifest.v1"
 
 CENSUS_PATH = "config/governance/current_system_census_graph_v1/source_v1.json"
 LANDSCAPE_PATH = "config/governance/current_universe_landscape_snapshot_v1/source_v1.json"
-ATLAS_CENSUS_META = "docs/system_atlas/census/census_meta.yaml"
-ATLAS_CATALOG = "docs/system_atlas/entities/catalog.yaml"
-ATLAS_STRUCTURAL = "docs/system_atlas/relations/structural.yaml"
+ATLAS_MODEL = "docs/system_atlas/source/current-model.json"
+ATLAS_BOUNDARIES = "docs/system_atlas/source/boundaries.json"
 
 CURRENT_EPISTEMIC_ALLOW = frozenset({"PROVEN_CURRENT"})
 CURRENT_CENSUS_STATUS_ALLOW = frozenset({"PROVEN_CURRENT"})

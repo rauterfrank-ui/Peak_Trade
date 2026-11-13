@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 import json
+import socket
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -40,7 +41,11 @@ def local_wire(monkeypatch):
     monkeypatch.setattr(common, "_utc_now_iso_v1", lambda: state["now"])
     monkeypatch.setattr(mapping, "utc_now_iso_v1", lambda: state["now"])
     monkeypatch.setattr(wire, "build_k1_okx_venue_auth_headers_v1", lambda **_: {})
-    monkeypatch.setattr(wire.socket, "setdefaulttimeout", lambda _: None)
+
+    def reject_global_timeout_change(_):
+        pytest.fail("GET transport changed the process-wide socket timeout")
+
+    monkeypatch.setattr(socket, "setdefaulttimeout", reject_global_timeout_change)
 
     class Response:
         status = 200
@@ -60,6 +65,7 @@ def local_wire(monkeypatch):
     class Opener:
         def open(self, request, **kwargs):
             assert request.method == "GET"
+            assert kwargs["timeout"] == wire.DEFAULT_TIMEOUT_SECONDS
             parsed = urlparse(request.full_url)
             assert parsed.hostname == wire.AUTHORIZED_HOST
             state["calls"].append(request.full_url)

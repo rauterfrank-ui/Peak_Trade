@@ -271,6 +271,24 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
             return replace(
                 result, get_performed=False, error_class="RECONCILIATION_ENDPOINT_MISMATCH"
             )
+        if result.http_status == 200 and not result.error_class:
+            payload = result.payload
+            code = payload.get("code") if isinstance(payload, Mapping) else None
+            data = payload.get("data") if isinstance(payload, Mapping) else None
+            if (
+                type(code) is not str
+                or not code.isascii()
+                or not code.isdecimal()
+                or (
+                    code == "0"
+                    and (
+                        not isinstance(data, list) or any(not isinstance(row, dict) for row in data)
+                    )
+                )
+            ):
+                return replace(
+                    result, get_performed=False, error_class="RECONCILIATION_RESPONSE_UNPROVEN"
+                )
         return result
 
     def _ingest_order_rows(

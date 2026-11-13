@@ -71,7 +71,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      - name: Validate paid eval inputs
+        if: >-
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.run_paid_openai_evals == 'true'
+          && vars.PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS == 'true'
+        run: |
+          set -euo pipefail
+          for source in .nvmrc evals/aiops/promptfooconfig.yaml; do
+            if [ ! -s "$source" ]; then
+              echo "::error::Missing required paid eval source: $source"
+              exit 1
+            fi
+          done
+
       - name: Setup Node.js
+        if: >-
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.run_paid_openai_evals == 'true'
+          && vars.PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS == 'true'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'

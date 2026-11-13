@@ -6,6 +6,7 @@ from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from hashlib import sha256
+from io import BytesIO
 import hmac
 import json
 import os
@@ -16,7 +17,10 @@ import stat
 import subprocess
 import time
 from types import SimpleNamespace
+from urllib.error import HTTPError
 from urllib.parse import parse_qsl, urlsplit
+from urllib.request import BaseHandler, build_opener
+from urllib.response import addinfourl
 
 import pytest
 
@@ -1813,6 +1817,8 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark", None),
         ("polled-mark-close-ack", None),
         ("polled-mark-close-timeout", None),
+        ("polled-mark-close-venue-timeout", None),
+        ("polled-mark-close-redirect", None),
         ("polled-mark-close-wrong-key", None),
         ("polled-mark-close-kill", None),
         ("polled-mark-close-stale-position", None),
@@ -2303,6 +2309,9 @@ def _assert_authenticated_occupied_mark_close(
 
 
 def _assert_original_close_dispatch(context, case, tmp_path):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        full_core_productive_http_post_transport_v1 as http_post,
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
         POST_OWNER_GO,
         CurrentProductiveOneShotFreshEnvelopeJoinError,
@@ -2343,6 +2352,10 @@ def _assert_original_close_dispatch(context, case, tmp_path):
             requests.append(payload)
             if case == "timeout":
                 raise TimeoutError("intercepted close submit")
+            if case == "venue-timeout":
+                raise HTTPError(
+                    request.full_url, 400, "Bad Request", {}, BytesIO(b'{"code":"50004"}')
+                )
 
             class Response:
                 status = 200
@@ -2363,6 +2376,22 @@ def _assert_original_close_dispatch(context, case, tmp_path):
                     ).encode()
 
             yield Response()
+
+    class RedirectResponseHandler(BaseHandler):
+        handler_order = 100
+
+        def https_open(self, request):
+            assert request.host == http_post.AUTHORIZED_HOST
+            assert request.has_header("Ok-access-sign")
+            requests.append(request)
+            response = addinfourl(
+                BytesIO(b'{"code":"1"}'),
+                {"location": "https://redirect.invalid/api/v5/trade/order"},
+                request.full_url,
+                302,
+            )
+            response.msg = "Found"
+            return response
 
     class ForeignKeychain(_FakeKeychainBackend):
         def copy_matching_generic_password_value_data_v1(self, **kwargs):
@@ -2426,12 +2455,26 @@ def _assert_original_close_dispatch(context, case, tmp_path):
         assert record["durable_state"] == "ABORTED_BEFORE_TRANSPORT"
         return
 
-    result = submit(**args)
-    assert result.http_post_attempts == 1 and result.external_effect_count == 0
+    if case == "redirect":
+        from unittest.mock import patch
+
+        def build_with_redirect(*handlers):
+            return build_opener(RedirectResponseHandler(), *handlers)
+
+        with patch.object(http_post, "build_opener", build_with_redirect):
+            result = submit(**{**args, "opener_factory": None})
+    else:
+        result = submit(**args)
+    assert result.http_post_attempts == 1
+    # The production opener branch counts a response even when urllib's HTTPS
+    # handler was replaced by a local fixture.
+    assert result.external_effect_count == int(case == "redirect")
     assert result.post_submit_join.client_order_id == envelope.client_order_id
     assert result.post_submit_join.typed_outcome == (
-        "UNKNOWN" if case == "timeout" else "ACKNOWLEDGED"
+        "UNKNOWN" if case in {"timeout", "venue-timeout", "redirect"} else "ACKNOWLEDGED"
     )
+    if case in {"venue-timeout", "redirect"}:
+        assert result.post_submit_join.exchange_query_before_retry_required
     assert result.post_submit_join.resubmit_allowed is False
     assert result.post_submit_join.fill_observed is False
     with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):

@@ -24,7 +24,7 @@ If there is **any** doubt whether trading is allowed, apply [Entry Contract §5]
 
 - substitute **[Dry validation](RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md)** — dry validation must already be **complete** per your procedure before this flow;
 - redefine **Master V2** promotion or enablement semantics — it is **bounded-pilot operator procedure** only;
-- **imply** L4/L1 or any gate is **passed** or **unblocked** in enablement report surfaces — visibility and docs alignment remain **non-authorizing** (see [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §4 / §7).
+- **imply** L4/L1 or any gate is **passed** or **unblocked** in enablement report surfaces — visibility and docs alignment remain **non-authorizing** (see [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen)).
 
 **Prefer specialized paths when:**
 
@@ -95,4 +95,4 @@ State **session id** (if any), **UTC window**, and whether posture is **known**,
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 - [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md); [Session end mismatch](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md); [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md); [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md)
 
-**Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md).
+**Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen).

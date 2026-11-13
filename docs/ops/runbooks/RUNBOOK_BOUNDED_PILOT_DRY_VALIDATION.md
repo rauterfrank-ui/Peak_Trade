@@ -13,7 +13,7 @@ This runbook is an **operator aid** only. It does **not**:
 - authorize a **real-funds** bounded pilot session, broad live trading, or any gate closure;
 - replace [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md), [Go/No-Go checklist](../specs/PILOT_GO_NO_GO_CHECKLIST.md) / eval semantics, incident runbooks, or org kill-switch procedures;
 - prove safety from read-only CLI output or in-repo documentation alone;
-- **imply** that **L1** or any enablement gate is **passed**, **unblocked**, or **verified** in [First-live gate status report surface](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) or elsewhere—interpretation and authority remain **outside** this document (see [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §4 / §7).
+- **imply** that **L1** or any enablement gate is **passed**, **unblocked**, or **verified** in [First-live gate status report surface](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) or elsewhere—interpretation and authority remain **outside** this document (see [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen)).
 
 If there is **any** doubt whether trading is allowed, apply [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria): **ambiguity ⇒ `NO_TRADE` / safe stop**.
 
@@ -156,7 +156,7 @@ State **UTC window**, **step** that failed, and whether cockpit posture is **kno
 - [Go/No-Go checklist](../specs/PILOT_GO_NO_GO_CHECKLIST.md); [Go/No-Go operational slice](../specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
 - [Live pilot execution plan](live_pilot_execution_plan.md)
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
-- **Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Readiness ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+- **Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen); [Readiness ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
 
 **Explicit non-goals (unchanged in intent)**
 

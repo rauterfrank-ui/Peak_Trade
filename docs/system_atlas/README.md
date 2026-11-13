@@ -32,6 +32,8 @@ Erzeugen und prüfen, aus dem Repository-Stamm:
 
 Diese Einstiegspunkte verwenden für dieses Atlasmodell `current_atlas.py`. Die Prüfung kontrolliert Quellstand, vollständige Dateimenge, Quelldigests, Literalverträge, Dokumentlinks und deterministische Ausgabe. Sie weist ausgeführte Laufzeitwirkung nicht aus.
 
+Der [forensische GHV-Crosswalk](../../scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.py) liest dieses Modell und das versionierte Übergaberegister. Er nimmt nur explizite Repo-Verträge mit unveränderten Quellpfaden und im Census verankerten Endpunkten als Navigationskanten auf. Die importierten Routen aus älteren Ansichten, offenen Endpunkte und Offline-Belege bleiben außerhalb dieser Projektion. Das Prüfwerkzeug schreibt seine Berichte in den gewählten Ausgabeordner. Bei abweichenden Quellrevisionen bleibt die strenge Verifikation gesperrt. Der Modus `--navigation-only` liefert in diesem Fall eine Ansicht ohne Laufzeitnachweis.
+
 ## Außenstruktur und aktuelles Dateiregister
 
 Die [Fachbereiche und Außenkanten](generated/BOUNDARIES.md) erschließen die sechs Universen, den Außenring mit fünf Rubriken und acht überlappenden Sichten sowie die externe Metaebene. Die inneren Gruppen verweisen auf die Originalverträge des Repo-Atlas und den nativen Core-Katalog. Das [Übergabe- und Signalregister](source/boundaries.json) führt die Obsidian-Quellen mit Hash, ihre ursprünglichen Kantenadressen, Richtung und Semantik. Die Repo-Belege kennzeichnen abweichende oder fehlende Quelldateien und ergänzen den Offline-Pfad nach PR #7241.

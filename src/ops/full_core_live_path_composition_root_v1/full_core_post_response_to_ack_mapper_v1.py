@@ -91,15 +91,6 @@ def _nonempty(value: Any) -> bool:
     return bool(str(value or "").strip())
 
 
-def _data_rows(payload: Any) -> list[Mapping[str, Any]]:
-    if not isinstance(payload, Mapping):
-        return []
-    rows = payload.get("data")
-    if not isinstance(rows, list):
-        return []
-    return [row for row in rows if isinstance(row, Mapping)]
-
-
 def _error_text(transport_error: str | None) -> str:
     return str(transport_error or "")
 
@@ -121,9 +112,9 @@ def classify_full_core_post_result_v1(
     payload: Any = result.payload if result is not None else None
     parsed = isinstance(payload, Mapping)
     code = str(payload.get("code") or "") if parsed else ""
-    rows = _data_rows(payload) if parsed else []
-    data_count = len(rows)
-    row = rows[0] if data_count == 1 else {}
+    rows = payload.get("data") if parsed else None
+    data_count = len(rows) if isinstance(rows, list) else 0
+    row = rows[0] if data_count == 1 and isinstance(rows[0], Mapping) else {}
     scode = str(row.get("sCode") or "") if row else ""
     ord_id = str(row.get("ordId") or "").strip() if row else ""
     returned = str(row.get("clOrdId") or "").strip() if row else ""
@@ -135,12 +126,15 @@ def classify_full_core_post_result_v1(
     elif any(token in err for token in _TIMEOUT_TOKENS):
         classification = UNKNOWN
         reason = "TIMEOUT_AFTER_POSSIBLE_SEND"
+    elif redirect is True or 300 <= http_status < 400:
+        classification = UNKNOWN
+        reason = "REDIRECT_IS_UNKNOWN_NOT_ACK"
+    elif code == "50004":
+        classification = UNKNOWN
+        reason = "OKX_ENDPOINT_TIMEOUT_AFTER_POSSIBLE_SEND"
     elif any(token in err for token in _NETWORK_TOKENS) or transport_unknown:
         classification = UNKNOWN
         reason = "CONNECTION_OR_TRANSPORT_FAILURE_AFTER_SEND_ATTEMPTED"
-    elif redirect is True:
-        classification = UNKNOWN
-        reason = "REDIRECT_IS_UNKNOWN_NOT_ACK"
     elif result is None:
         classification = UNKNOWN
         reason = "POST_RESULT_MISSING"

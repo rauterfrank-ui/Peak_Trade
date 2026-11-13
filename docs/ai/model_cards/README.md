@@ -7,4 +7,5 @@ They exist to ensure:
 - Explicit intent, scopes, and constraints per model
 - Reproducibility and auditability
 
-Validator: `python -m src.ops.p51.ai_model_cards_validate_v1 --paths docs/ai/model_cards`
+The [AI model card workflow](../../../.github/workflows/ai-model-cards-validate.yml)
+checks the YAML format, required sections and unique card IDs.

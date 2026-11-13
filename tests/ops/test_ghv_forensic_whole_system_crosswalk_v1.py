@@ -12,6 +12,13 @@ import pytest
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.compose_v1 import (
     run_forensic_crosswalk_v1,
 )
+from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
+    ATLAS_BOUNDARIES,
+    ATLAS_MODEL,
+)
+from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.filter_current_v1 import (
+    classify_atlas_entity,
+)
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.graph_mode_v1 import GraphMode
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.edges_v1 import (
     assert_known_edge_type,
@@ -127,35 +134,42 @@ def _write_fixture_tree(root: Path, *, census: dict, landscape: dict | None = No
     land_path = root / "config/governance/current_universe_landscape_snapshot_v1/source_v1.json"
     land_path.parent.mkdir(parents=True, exist_ok=True)
     land_path.write_text(json.dumps(land), encoding="utf-8")
-    atlas_dir = root / "docs/system_atlas"
-    (atlas_dir / "entities").mkdir(parents=True)
-    (atlas_dir / "relations").mkdir(parents=True)
-    (atlas_dir / "census").mkdir(parents=True)
-    (atlas_dir / "entities/catalog.yaml").write_text(
-        "entities:\n"
-        "  - id: ENT-1\n"
-        "    kind: COMPONENT\n"
-        "    current_canonical: true\n"
-        "    current_status: CURRENT\n"
-        "    evidence_sources:\n"
-        "      - src/a.py\n",
-        encoding="utf-8",
-    )
-    (atlas_dir / "relations/structural.yaml").write_text(
-        "relations:\n"
-        "  - id: R1\n"
-        "    type: DEPENDS_ON\n"
-        "    source: ENT-1\n"
-        "    target: ENT-1\n"
-        "    epistemic_status: ADJUDICATED\n"
-        "    evidence_sources:\n"
-        "      - src/a.py\n",
-        encoding="utf-8",
-    )
-    (atlas_dir / "census/census_meta.yaml").write_text(
-        "origin_main_sha: meta1\n",
-        encoding="utf-8",
-    )
+    (root / "src").mkdir()
+    for module in ("a", "b", "not_in_census"):
+        (root / f"src/{module}.py").write_text(f"# {module}\n", encoding="utf-8")
+
+
+def _write_current_atlas(root: Path, head: str, *, source: str = "src/a.py") -> None:
+    (root / ATLAS_MODEL).parent.mkdir(parents=True, exist_ok=True)
+    common = {"authority": "NONE", "runtime_authorization_effect": "NONE"}
+    model = {
+        **common,
+        "schema": "peaktrade.current_frozen_atlas.v1",
+        "source_commit": head,
+        "domains": [
+            {"id": "ENT-1", "name": "Sender", "layers": [{"source": source}]},
+            {"id": "ENT-2", "name": "Empfänger", "layers": [{"source": "src/b.py"}]},
+        ],
+    }
+    contract = {
+        "id": "REPO-AB",
+        "from": "ENT-1",
+        "to": "ENT-2",
+        "status": "repo_contract",
+        "source_refs": [source, "src/b.py"],
+    }
+    boundaries = {
+        **common,
+        "schema": "peaktrade.atlas_boundary_projection.v1",
+        "reviewed_repo_commit": head,
+        "routes": [
+            {**contract, "id": f"IMPORTED-{status}", "status": status}
+            for status in ("historical_claim", "retired_direct_path", "endpoint_open")
+        ],
+        "repo_contracts": [contract, {**contract, "id": "OFFLINE", "status": "offline_tested"}],
+    }
+    (root / ATLAS_MODEL).write_text(json.dumps(model), encoding="utf-8")
+    (root / ATLAS_BOUNDARIES).write_text(json.dumps(boundaries), encoding="utf-8")
 
 
 def test_valid_identity_mapping_and_cfi_deterministic() -> None:
@@ -238,9 +252,16 @@ def test_schema_mismatch_unknown_edge() -> None:
         assert_known_edge_type("NOT_A_REAL_EDGE")
 
 
-def test_dirty_worktree_snapshot_changes_fingerprint() -> None:
-    fp = dirty_fingerprint(REPO_ROOT)
-    assert len(fp) == 16
+def test_dirty_worktree_snapshot_changes_fingerprint(tmp_path: Path) -> None:
+    _write_fixture_tree(tmp_path, census=_minimal_census())
+    _git_init_commit(tmp_path)
+    path = tmp_path / "src/a.py"
+    path.write_text("value = 1\n", encoding="utf-8")
+    first = dirty_fingerprint(tmp_path)
+    path.write_text("value = 2\n", encoding="utf-8")
+    second = dirty_fingerprint(tmp_path)
+    assert len(first) == len(second) == 16
+    assert first != second
 
 
 def test_baseline_c1_isolation_cli_blocks_c1_path() -> None:
@@ -271,7 +292,9 @@ def _git_init_commit(root: Path) -> str:
         check=True,
         capture_output=True,
     )
-    return subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+    head = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+    _write_current_atlas(root, head)
+    return head
 
 
 def _sync_governance_baselines_to_head(root: Path, head: str) -> None:
@@ -285,26 +308,23 @@ def _sync_governance_baselines_to_head(root: Path, head: str) -> None:
     land_path.write_text(json.dumps(land), encoding="utf-8")
 
 
-def test_historical_entity_exclusion_atlas() -> None:
-    root = Path("/tmp/ghv_crosswalk_hist_entity")
-    root.mkdir(exist_ok=True)
-    census = _minimal_census()
-    _write_fixture_tree(root, census=census)
-    catalog = root / "docs/system_atlas/entities/catalog.yaml"
-    catalog.write_text(
-        "entities:\n  - id: HIST-1\n    kind: COMPONENT\n    epistemic_class: HISTORICAL\n",
-        encoding="utf-8",
-    )
+def test_atlas_reads_only_current_repo_contract_navigation(tmp_path: Path) -> None:
+    root = tmp_path / "current_repo_atlas"
+    _write_fixture_tree(root, census=_minimal_census())
     _git_init_commit(root)
-    out = root / "out"
     result = run_forensic_crosswalk_v1(
         repo_root=root,
-        output_dir=out,
+        output_dir=root / "out",
         rules_path=RULES,
         **_RELAX,
     )
-    ids = {e["id"] for e in result.excluded if e.get("kind") == "atlas_entity"}
-    assert "HIST-1" in ids
+    (edge,) = [edge for edge in result.edges if edge["source_system"] == "SYSTEM_ATLAS"]
+    assert edge["edge_id"] == "atlas:REPO-AB"
+    assert (edge["source_native_id"], edge["target_native_id"]) == ("ENT-1", "ENT-2")
+    assert edge["typed_edge"]["edge_type"] == "OBSERVES"
+    assert edge["causal_traversal_eligible"] is False
+    assert edge["provenance"]["SOURCE_ARTIFACT"] == ATLAS_BOUNDARIES
+    assert edge["provenance"]["OBSERVED_OR_INFERRED"] == "INFERRED"
 
 
 def test_historical_edge_exclusion_census_epistemic() -> None:
@@ -533,45 +553,58 @@ def test_full_repo_crosswalk_smoke(tmp_path: Path) -> None:
     assert result.coverage["CURRENT_GRAPH_VERIFIED"] is False
     assert result.coverage["CURRENT_ONLY_GRAPH"] is False
     assert result.coverage["ATLAS_CURRENT_ANCHOR_ENFORCED"] is True
+    assert result.coverage["ATLAS_SUBPROCESS_EXECUTED"] is True
+    assert result.coverage["CENSUS_SUBPROCESS_EXECUTED"] is False
+    assert any(node["source_system"] == "SYSTEM_ATLAS" for node in result.nodes)
+    assert any(edge["source_system"] == "SYSTEM_ATLAS" for edge in result.edges)
+    equity_edge = next(
+        edge for edge in result.edges if edge["edge_id"] == "census:equity_value_unbound"
+    )
+    assert equity_edge["typed_edge"]["structural_only"] is True
+    assert equity_edge["causal_traversal_eligible"] is False
+    assert equity_edge["provenance"]["EVIDENCE_TYPE"] == "STATIC_SOURCE_EVIDENCE"
 
 
-def test_missing_retirement_marker_atlas_unknown(tmp_path: Path) -> None:
-    root = tmp_path / "no_marker"
-    census = _minimal_census()
-    _write_fixture_tree(root, census=census)
-    (root / "docs/system_atlas/entities/catalog.yaml").write_text(
-        "entities:\n  - id: NO-MARKER\n    kind: COMPONENT\n    name: x\n",
-        encoding="utf-8",
+@pytest.mark.parametrize(
+    ("fields", "expected"),
+    [
+        ({}, "UNKNOWN"),
+        ({"epistemic_class": "HISTORICAL"}, "NON_CURRENT"),
+        ({"epistemic_class": "HYPOTHESIS", "current_canonical": True}, "NON_CURRENT"),
+    ],
+)
+def test_atlas_unproven_entity_excluded(fields: dict, expected: str) -> None:
+    verdict = classify_atlas_entity(
+        {"id": "UNPROVEN", "evidence_sources": ["src/a.py"], **fields},
+        evidence_revision="test-revision",
+        census_object_ids=set(),
+        census_paths={"src/a.py"},
     )
-    _git_init_commit(root)
-    result = run_forensic_crosswalk_v1(
-        repo_root=root,
-        output_dir=root / "out",
-        rules_path=RULES,
-        **_RELAX,
-    )
-    assert any(
-        e.get("id") == "NO-MARKER" and e.get("relevance_state") == "UNKNOWN"
-        for e in result.excluded
-    )
+    assert verdict.state.value == expected
 
 
 def test_atlas_without_census_anchor_excluded(tmp_path: Path) -> None:
     root = tmp_path / "no_anchor"
     _write_fixture_tree(root, census=_minimal_census())
-    (root / "docs/system_atlas/entities/catalog.yaml").write_text(
-        "entities:\n"
-        "  - id: ORPHAN\n    kind: COMPONENT\n"
-        "    current_canonical: true\n"
-        "    evidence_sources:\n"
-        "      - src/not_in_census.py\n",
-        encoding="utf-8",
-    )
-    _git_init_commit(root)
+    head = _git_init_commit(root)
+    _write_current_atlas(root, head, source="src/not_in_census.py")
     result = run_forensic_crosswalk_v1(
         repo_root=root, output_dir=root / "out", rules_path=RULES, **_RELAX
     )
     assert result.coverage["UNKNOWN_ENTITIES_EXCLUDED"] >= 1
+    assert not any(edge["source_system"] == "SYSTEM_ATLAS" for edge in result.edges)
+
+
+def test_atlas_does_not_reuse_changed_source_anchor(tmp_path: Path) -> None:
+    root = tmp_path / "atlas_source_drift"
+    _write_fixture_tree(root, census=_minimal_census())
+    _git_init_commit(root)
+    (root / "src/a.py").write_text("# changed\n", encoding="utf-8")
+    result = run_forensic_crosswalk_v1(
+        repo_root=root, output_dir=root / "out", rules_path=RULES, **_RELAX
+    )
+    assert not any(node["source_native_id"] == "ENT-1" for node in result.nodes)
+    assert not any(edge["source_system"] == "SYSTEM_ATLAS" for edge in result.edges)
 
 
 def test_valid_conditional_offline_research_included(tmp_path: Path) -> None:
@@ -642,7 +675,7 @@ def test_validator_coverage_repo_root_mismatch_skipped(tmp_path: Path) -> None:
     assert result.ok is False
     assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is False
     assert result.coverage["SOURCE_VALIDATION_PASS"] is False
-    assert result.coverage["CENSUS_SUBPROCESS_EXECUTED"] is False
+    assert result.coverage["ATLAS_SUBPROCESS_EXECUTED"] is False
 
 
 def test_validator_coverage_subprocess_fail(
@@ -650,10 +683,10 @@ def test_validator_coverage_subprocess_fail(
 ) -> None:
     from scripts.ops.ghv_forensic_whole_system_crosswalk_v1 import source_validation_v1 as sv
 
-    def _fail_census(*, repo_root: Path, pt_launcher: Path) -> tuple[list[str], bool]:
-        return (["census_subprocess_failed:test"], True)
+    def _fail_atlas(*, repo_root: Path, pt_launcher: Path) -> tuple[list[str], bool]:
+        return (["atlas_subprocess_failed:test"], True)
 
-    monkeypatch.setattr(sv, "run_census_validator_subprocess", _fail_census)
+    monkeypatch.setattr(sv, "run_atlas_validator_subprocess", _fail_atlas)
     out = tmp_path / "subprocess_fail"
     result = run_forensic_crosswalk_v1(
         repo_root=REPO_ROOT,
@@ -725,7 +758,7 @@ def test_source_validation_connected_on_repo() -> None:
         strict_repo_invariants=True,
         pt_launcher=REPO_ROOT / "scripts/pt",
     )
-    assert vr.census_subprocess_executed is True
+    assert vr.atlas_subprocess_executed is True
     assert vr.landscape_subprocess_executed is True
     assert vr.every_required_validator_executed_and_passed is True
     assert vr.census_validator_connected is True
@@ -935,7 +968,7 @@ def test_source_validation_repo_root_mismatch_fails_strict(tmp_path: Path) -> No
     )
     assert vr.ok is False
     assert vr.every_required_validator_executed_and_passed is False
-    assert vr.census_subprocess_executed is False
+    assert vr.atlas_subprocess_executed is False
     assert vr.landscape_subprocess_executed is False
     assert any("repo_root_mismatch" in e for e in vr.all_errors())
 
@@ -960,7 +993,7 @@ def test_source_validation_aligned_repo_executes_subprocess() -> None:
         strict_repo_invariants=True,
         pt_launcher=REPO_ROOT / "scripts/pt",
     )
-    assert vr.census_subprocess_executed is True
+    assert vr.atlas_subprocess_executed is True
     assert vr.landscape_subprocess_executed is True
     assert not vr.census_errors
     assert not vr.landscape_errors
@@ -975,24 +1008,6 @@ def test_navigation_requires_source_validation_pass(tmp_path: Path) -> None:
     )
     assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is True
     assert result.coverage["SOURCE_VALIDATION_PASS"] is True
-
-
-def test_atlas_hypothesis_entity_excluded(tmp_path: Path) -> None:
-    root = tmp_path / "hypothesis"
-    _write_fixture_tree(root, census=_minimal_census())
-    (root / "docs/system_atlas/entities/catalog.yaml").write_text(
-        "entities:\n"
-        "  - id: HYP-1\n    kind: COMPONENT\n"
-        "    epistemic_class: HYPOTHESIS\n"
-        "    current_canonical: true\n"
-        "    evidence_sources:\n      - src/a.py\n",
-        encoding="utf-8",
-    )
-    _git_init_commit(root)
-    result = run_forensic_crosswalk_v1(
-        repo_root=root, output_dir=root / "out", rules_path=RULES, **_RELAX
-    )
-    assert any(e.get("id") == "HYP-1" for e in result.excluded)
 
 
 def test_evidence_flow_maps_to_observes_structural() -> None:

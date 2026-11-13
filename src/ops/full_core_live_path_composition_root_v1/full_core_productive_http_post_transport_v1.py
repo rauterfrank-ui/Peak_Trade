@@ -12,12 +12,11 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
-import socket
 from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping, Optional, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import OpenerDirector, ProxyHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, OpenerDirector, ProxyHandler, Request, build_opener
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
     CurrentPostSafetyContextV1,
@@ -75,11 +74,17 @@ REST_BASE = f"https://{AUTHORIZED_HOST}"
 TRANSPORT_CLASS_NON_NETWORKING_TEST = "FULL_CORE_NON_NETWORKING_TEST_POST_V1"
 TRANSPORT_CLASS_PRODUCTIVE_HTTP = "FULL_CORE_PRODUCTIVE_HTTP_TRADE_ORDER_POST_V1"
 DEFAULT_TIMEOUT_SECONDS = 20.0
-CONNECT_TIMEOUT_SECONDS = 10.0
 
 
 class FullCoreProductiveHttpPostError(RuntimeError):
     """Fail-closed productive HTTP POST transport violation."""
+
+
+class _RejectOrderRedirectsV1(HTTPRedirectHandler):
+    """Leave the original 3xx response to urllib's HTTP error handler."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 class FullCoreCurrentPostSafetyVetoError(FullCoreProductiveHttpPostError):
@@ -337,16 +342,21 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             method="POST",
             body=body,
         )
-        headers["User-Agent"] = USER_AGENT
-        req = Request(url, data=body.encode("utf-8"), method="POST", headers=headers)
-        factory = self._opener_factory or (lambda: build_opener(ProxyHandler({})))
-        opener = factory()
+        req = Request(
+            url, data=body.encode("utf-8"), method="POST", headers={"User-Agent": USER_AGENT}
+        )
+        for name, value in headers.items():
+            req.add_unredirected_header(name, value)
+        opener = (
+            self._opener_factory()
+            if self._opener_factory is not None
+            else build_opener(ProxyHandler({}), _RejectOrderRedirectsV1())
+        )
         raw = b""
         status = 0
         transport_error_class = ""
         outcome_phase = NOT_ATTEMPTED
         try:
-            socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
             if self._post_position_close_context is not None:
                 self._check_current_position_close_v1(stage="BEFORE_SOCKET")
@@ -389,7 +399,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             transport_error_class = "HTTPError"
             self.venue_live_contact = True
             outcome_phase = HTTP_RESPONSE_RECEIVED
-        except (URLError, OSError, socket.timeout) as exc:
+        except (URLError, OSError) as exc:
             transport_error_class = type(exc).__name__
             return FullCoreTradeOrderPostResultV1(
                 post_attempted=True,
@@ -403,8 +413,6 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 outcome_phase=TRANSPORT_FAILURE_BEFORE_RESPONSE,
                 transport_error_class=transport_error_class,
             )
-        finally:
-            socket.setdefaulttimeout(None)
         parsed_payload: Mapping[str, Any]
         parse_failed = False
         try:

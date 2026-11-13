@@ -51,7 +51,7 @@ Non-goals:
 - [Readiness Ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
 - [Gate Status Index](../specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md)
 - [Operator / Audit Flat Path Index](../specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md)
-- [Decision Authority Map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)
+- [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen)
 - [Promotion State Machine](../specs/MASTER_V2_PROMOTION_STATE_MACHINE_V1.md)
 - [Session Review Pack Contract](../specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)
 - [Source-Bound SRP Report Implementation Plan](../specs/MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_REPORT_IMPLEMENTATION_PLAN_V0.md)
@@ -121,7 +121,7 @@ uv run python scripts/report_live_sessions.py --pre-live-package-status --json -
 uv run python scripts/report_live_sessions.py --bounded-pilot-open-session-triage --json --log-level ERROR
 ```
 
-**GLB-018 (blocker):** when either payload lists **`GLB-018`** under **`blockers`**, treat it as the **bounded-pilot open-session / non-terminal closeout posture** signal (open bounded-pilot sessions or equivalent gap items per the Pre-Live contract). It is **not** an instruction to change registry or `out/ops` files from the CLI, and it is **not** live authorization.
+**GLB-018 (blocker):** when either payload lists **`GLB-018`** under **`blockers`**, treat it as the **bounded-pilot open-session / non-terminal closeout posture** signal (open bounded-pilot sessions or equivalent gap items per the Pre-Live contract). It is **not** an instruction to change registry or `out&#47;ops` files from the CLI, and it is **not** live authorization.
 
 **Per-session `triage_state` (bounded-pilot open-session triage):**
 
@@ -142,7 +142,7 @@ Before any handoff toward bounded pilot **as described in the bounded-pilot runb
 - [ ] Preflight and readiness scripts referenced in [Bounded Pilot Live Entry](./RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) are identified (read the bounded-pilot runbook for the **authoritative** command surface).
 - [ ] Operator preflight packet / stop-snapshot posture in that runbook is understood — **ambiguity → STOP**.
 - [ ] Capital, instrument, and session scope for the **bounded** pilot are **written down** (external/program constraints may apply).
-- [ ] [Decision Authority Map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — who can say Go/No-Go is clear.
+- [ ] [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen) — who can say Go/No-Go is clear.
 
 **Hard STOP if:** preflight cannot be run as documented, or pass/fail is unclear.
 

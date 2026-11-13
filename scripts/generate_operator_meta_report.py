@@ -34,12 +34,6 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from src.trigger_training.operator_meta_report import build_operator_meta_report
-from src.trigger_training.session_store import (
-    load_sessions_from_store,
-    list_session_ids,
-)
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -76,6 +70,17 @@ def main():
     )
 
     args = parser.parse_args()
+    try:
+        from src.trigger_training.operator_meta_report import build_operator_meta_report
+        from src.trigger_training.session_store import list_session_ids, load_sessions_from_store
+    except ModuleNotFoundError as exc:
+        if exc.name not in {
+            "src.trigger_training",
+            "src.trigger_training.operator_meta_report",
+            "src.trigger_training.session_store",
+        }:
+            raise
+        parser.exit(2, f"Operator meta report unavailable: {exc.name} is absent.\n")
 
     # List-Modus: Nur Session-IDs anzeigen
     if args.list:

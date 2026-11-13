@@ -28,6 +28,11 @@ The join does **not** rewrite Master-V2, Double Play, universe, dimensions,
 is not ACK. Ambiguous, malformed, and timeout outcomes remain UNKNOWN.
 This slice does not POST.
 
+The authenticated HTTP adapter stops redirects at the original response. A
+3xx response or OKX code `50004` leaves the submit outcome UNKNOWN. The
+original client order ID stays bound for reconciliation and automatic retry
+remains forbidden. [OKX REST error codes](https://my.okx.com/docs-v5/en/#error-code)
+
 ```text
 OWNER_GO=BOUNDED_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1
 OWNER_GO_STATUS=CONSUMED

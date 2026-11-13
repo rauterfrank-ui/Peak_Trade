@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,6 +15,7 @@ _CENSUS_VALIDATOR = (
 _LANDSCAPE_VALIDATOR = (
     Path(__file__).resolve().parents[1] / "validate_current_universe_landscape_snapshot_v1.py"
 )
+_ATLAS_VALIDATOR = Path(__file__).resolve().parents[1] / "validate_system_atlas_v1.py"
 
 
 def _validator_script_repo_root() -> Path:
@@ -31,15 +33,21 @@ class SourceValidationResultV1:
     ok: bool
     census_errors: list[str] = field(default_factory=list)
     landscape_errors: list[str] = field(default_factory=list)
+    atlas_errors: list[str] = field(default_factory=list)
     snapshot_errors: list[str] = field(default_factory=list)
     census_validator_connected: bool = False
     landscape_validator_connected: bool = False
-    census_subprocess_executed: bool = False
+    atlas_subprocess_executed: bool = False
     landscape_subprocess_executed: bool = False
     every_required_validator_executed_and_passed: bool = False
 
     def all_errors(self) -> list[str]:
-        return [*self.census_errors, *self.landscape_errors, *self.snapshot_errors]
+        return [
+            *self.census_errors,
+            *self.landscape_errors,
+            *self.atlas_errors,
+            *self.snapshot_errors,
+        ]
 
 
 def _load_census_validator_module() -> Any:
@@ -116,28 +124,27 @@ def run_landscape_validator_subprocess(
     return [], True
 
 
-def run_census_validator_subprocess(
-    *, repo_root: Path, pt_launcher: Path
-) -> tuple[list[str], bool]:
+def run_atlas_validator_subprocess(*, repo_root: Path, pt_launcher: Path) -> tuple[list[str], bool]:
     if repo_root.resolve() != _validator_script_repo_root().resolve():
         return (
-            ["census_subprocess_validator_skipped:repo_root_mismatch_with_validator_checkout"],
+            ["atlas_subprocess_validator_skipped:repo_root_mismatch_with_validator_checkout"],
             False,
         )
-    if not _CENSUS_VALIDATOR.is_file():
-        return ["census_validator_missing"], False
+    if not _ATLAS_VALIDATOR.is_file():
+        return ["atlas_validator_missing"], False
     try:
         proc = subprocess.run(
-            [str(pt_launcher), str(_CENSUS_VALIDATOR)],
+            [str(pt_launcher), str(_ATLAS_VALIDATOR)],
             cwd=str(repo_root),
+            env={**os.environ, "GIT_WORK_TREE": str(repo_root.resolve())},
             capture_output=True,
             text=True,
         )
     except OSError as exc:
-        return [f"census_subprocess_validator_start_failed:{exc}"], False
+        return [f"atlas_subprocess_validator_start_failed:{exc}"], False
     if proc.returncode != 0:
-        msg = (proc.stderr or proc.stdout or "census_validation_failed").strip()
-        return [msg.splitlines()[-1] if msg else "census_validation_failed"], True
+        msg = (proc.stderr or proc.stdout or "atlas_validation_failed").strip()
+        return [msg.splitlines()[-1] if msg else "atlas_validation_failed"], True
     return [], True
 
 
@@ -176,11 +183,14 @@ def _finalize_validation_result(
     subprocess_required: bool,
 ) -> None:
     if subprocess_required:
-        executed = result.census_subprocess_executed and result.landscape_subprocess_executed
-        passed = executed and not result.census_errors and not result.landscape_errors
+        executed = result.atlas_subprocess_executed and result.landscape_subprocess_executed
+        passed = executed and not (
+            result.census_errors or result.landscape_errors or result.atlas_errors
+        )
         result.every_required_validator_executed_and_passed = passed
-        if not executed and not result.census_errors and not result.landscape_errors:
-            result.census_errors.append("required_census_subprocess_validator_not_executed")
+        if not result.atlas_subprocess_executed and not result.atlas_errors:
+            result.atlas_errors.append("required_atlas_subprocess_validator_not_executed")
+        if not result.landscape_subprocess_executed and not result.landscape_errors:
             result.landscape_errors.append("required_landscape_subprocess_validator_not_executed")
     else:
         result.every_required_validator_executed_and_passed = (
@@ -212,13 +222,11 @@ def validate_sources_v1(
     )
     if subprocess_required:
         assert pt_launcher is not None
-        census_sub_err, census_executed = run_census_validator_subprocess(
+        atlas_errors, atlas_executed = run_atlas_validator_subprocess(
             repo_root=repo_root, pt_launcher=pt_launcher
         )
-        result.census_subprocess_executed = census_executed
-        result.census_validator_connected = census_connected and census_executed
-        if census_sub_err:
-            result.census_errors.extend(census_sub_err)
+        result.atlas_subprocess_executed = atlas_executed
+        result.atlas_errors.extend(atlas_errors)
 
         land_sub_err, land_executed = run_landscape_validator_subprocess(
             repo_root=repo_root, pt_launcher=pt_launcher
