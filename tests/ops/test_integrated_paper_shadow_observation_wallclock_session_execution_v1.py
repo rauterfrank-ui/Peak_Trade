@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
+from datetime import datetime
+from math import ceil
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -701,6 +703,92 @@ def test_short_fake_clock_session_pass(
         assert f"EVIDENCE_TAMPER:{LEDGER_FILENAME_DEFAULT}" in tampered.blockers
     finally:
         ledger_path.write_bytes(ledger_bytes)
+
+
+def test_double_play_readback_preserves_decision_clock_after_hour_boundary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
+    prereg = _load_wallclock_prereg()
+    go = _load_wallclock_go()
+    token = _material()
+    artifact = _write_v2_auth(tmp_path, prereg=prereg, token=token)
+    boundary = ceil(NOW / 3600) * 3600
+    clock = FakeClock(wall=boundary - 0.1)
+    source = _fake_ticker_fetcher(clock=clock)
+
+    def fetch_with_delay(url, *args):
+        response = source(url, *args)
+        if "/mark-price" in url:
+            clock.sleep(0.25)
+        if "/market/ticker" in url:
+            clock.sleep(0.08)
+        return response
+
+    evidence = tmp_path / "hour-boundary-evidence"
+    runtime = WallclockSessionRuntimeV1(
+        evidence_root=evidence,
+        transport=EeaPublicMdTransportV1(fetcher=fetch_with_delay, sleep=clock.sleep, environ={}),
+        config=WallclockRuntimeConfigV1(
+            max_cycles=3,
+            poll_interval_seconds=0.01,
+            min_quality_window_seconds=0,
+            heartbeat_interval_seconds=1.0,
+            heartbeat_loss_seconds=100.0,
+        ),
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+    )
+    runtime.run(
+        prereg=prereg,
+        go=go,
+        confirm_token=token,
+        artifact_path=artifact,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fingerprints.jsonl",
+    )
+    verified = verify_wallclock_evidence_bundle_v1(evidence_root=evidence)
+    assert verified.verified and verified.ddo_readback["decision_bundles_readable"]
+    records = {
+        row["record_id"]: row
+        for row in AppendOnlyDdoLedgerV0(evidence / LEDGER_FILENAME_DEFAULT).read_all()
+    }
+    cycles = {
+        row["ddo_capture"]["cycle_id"]: row
+        for row in map(
+            json.loads, (evidence / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+        )
+    }
+    marks = {
+        row["sequence"]: row
+        for row in map(
+            json.loads, (evidence / "market_data_sequence.jsonl").read_text().splitlines()
+        )
+    }
+    assert marks[1]["event_ts_unix"] < boundary < marks[1]["receive_ts_unix"]
+    inputs = [
+        row
+        for row in records.values()
+        if row["schema_name"] == "double_play_entry_exit_policy_input_evidence"
+    ]
+    assert inputs
+    for row in inputs:
+        decision = records[row["decision_event_ref"]]
+        timestamp = datetime.fromisoformat(decision["event_time_utc"].replace("Z", "+00:00"))
+        assert ceil(timestamp.timestamp() / 3600) * 3600 == boundary + 3600
+        timing = cycles[decision["cycle_id"]]["shadow_decision_timing"]
+        mark = marks[timing["market_sequence"]]
+        assert timing["mark_event_ts_unix"] == mark["event_ts_unix"]
+        assert timing["mark_receive_ts_unix"] == mark["receive_ts_unix"]
+        assert timing["decision_input_available_ts_unix"] - mark[
+            "receive_ts_unix"
+        ] == pytest.approx(0.08, abs=1e-6)
+        assert timestamp.timestamp() == pytest.approx(
+            timing["decision_input_available_ts_unix"], rel=0, abs=1e-6
+        )
+        assert row["event_time_utc"] == decision["event_time_utc"]
 
 
 def test_401_aborts_credential_surface(tmp_path: Path) -> None:

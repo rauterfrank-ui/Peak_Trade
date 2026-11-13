@@ -159,6 +159,14 @@ def test_capture_unlock_and_engine_wired() -> None:
     assert SEAM_REAL_OUTCOME_HORIZON in IMPLEMENTED_CAPTURE_SEAMS_V0
 
 
+def test_supplier_rejects_horizon_start_before_subsecond_decision() -> None:
+    decision = build_decision_event_v0(_decision(event_time_utc="2026-09-01T12:00:00.150000Z"))
+    with pytest.raises(DdoValidationError, match="HORIZON_START_BEFORE_DECISION_EVENT"):
+        materialize_real_outcome_horizon_supplier_input_v1(
+            decision, _snapshot(), outcome_scalar_kind="LOG_RETURN"
+        )
+
+
 def test_log_return_offline_e2e_real_claim() -> None:
     decision = build_decision_event_v0(_decision())
     result = run_offline_n_bars_horizon_pipeline_v1(

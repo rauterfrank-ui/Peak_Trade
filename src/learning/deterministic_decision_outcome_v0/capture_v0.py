@@ -582,6 +582,7 @@ class DdoCaptureBindingV0:
     evidence_environment_binding_status: str = "UNBOUND"
     evidence_account_binding_status: str = "UNBOUND"
     reuse_validated_append_index: bool = False
+    precise_host_decision_time: bool = False
     _ledger: AppendOnlyDdoLedgerV0 | None = field(default=None, repr=False)
 
     @property
@@ -694,7 +695,9 @@ def bind_host_cycle_capture_context_v0(
     """
     if binding is None or not binding.enabled:
         return
-    binding.capture_event_time_utc = _from_unix(event_ts_unix)
+    binding.capture_event_time_utc = _from_unix(
+        event_ts_unix, precise=binding.precise_host_decision_time
+    )
     binding.capture_correlation_id = _as_record_id(f"ddo.corr.{session_id}"[:128])
     binding.capture_cycle_id = _optional_record_id(f"{session_id}:cycle:{cycle_index}")
     binding.capture_repository_sha = repository_sha
@@ -810,6 +813,11 @@ def observe_producer_result_v0(
             decision_result = generic_decision_result_for_producer_outcome_v1(producer_outcome)
     event_time = (
         event_time_utc
+        or (
+            binding.capture_event_time_utc
+            if binding.precise_host_decision_time and seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT
+            else None
+        )
         or _event_time_from_kwargs(kwargs)
         or _event_time_from_args(args)
         or _event_time_from_view(view)
@@ -1084,7 +1092,7 @@ def record_productive_cycle_capture_v0(
     if binding is None or not binding.enabled:
         return {"ok": True, "skipped": True, "reason": "CAPTURE_DISABLED"}
     try:
-        event_time = _from_unix(event_ts_unix)
+        event_time = _from_unix(event_ts_unix, precise=binding.precise_host_decision_time)
         correlation_id = _as_record_id(f"ddo.corr.{session_id}"[:128])
         cycle_id = _optional_record_id(f"{session_id}:cycle:{cycle_index}")
         intermediate = getattr(replay, "intermediate", None) if replay is not None else None
@@ -1617,9 +1625,12 @@ def _event_time_from_rfc3339(value: Any) -> str | None:
     return None
 
 
-def _from_unix(value: Any) -> str:
+def _from_unix(value: Any, *, precise: bool = False) -> str:
     ts = float(value)
-    return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    instant = datetime.fromtimestamp(ts, tz=timezone.utc)
+    if precise:
+        return instant.isoformat().replace("+00:00", "Z")
+    return instant.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _sha_or_unknown(value: Any) -> str:
