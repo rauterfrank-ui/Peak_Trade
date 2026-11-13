@@ -522,13 +522,77 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
     assert any("CONFIRM_TOKEN_REPLAY" in b for b in replay.blockers)
 
 
-@pytest.mark.parametrize("ddo_writable", [True, False])
+@pytest.mark.parametrize(
+    ("configured_root", "blocker"),
+    [
+        (None, "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED"),
+        ("   ", "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED"),
+        (".", "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_NOT_ABSOLUTE"),
+        ("./dashboard-state", "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_NOT_ABSOLUTE"),
+    ],
+)
+def test_o7_invalid_root_refuses_start_before_consumption(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, configured_root: str | None, blocker: str
+) -> None:
+    monkeypatch.setenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", "1")
+    if configured_root is None:
+        monkeypatch.delenv("PEAK_TRADE_STATE_ROOT", raising=False)
+    else:
+        monkeypatch.setenv("PEAK_TRADE_STATE_ROOT", configured_root)
+    prereg = _load_wallclock_prereg()
+    go = _load_wallclock_go()
+    token = _material()
+    artifact = _write_v2_auth(tmp_path, prereg=prereg, token=token)
+    original = artifact.read_bytes()
+    evidence_root = tmp_path / "session_ev"
+    fingerprint_ledger = tmp_path / "fingerprints.jsonl"
+    clock = FakeClock()
+
+    def reject_request(*args, **kwargs):
+        pytest.fail("invalid O7 state must not reach the transport")
+
+    transport = EeaPublicMdTransportV1(fetcher=reject_request, sleep=clock.sleep, environ={})
+    runtime = WallclockSessionRuntimeV1(
+        evidence_root=evidence_root,
+        transport=transport,
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+    )
+    preflight = preflight_wallclock_session_v1(repo_root=REPO_ROOT)
+    result = runtime.run(
+        prereg=prereg,
+        go=go,
+        confirm_token=token,
+        artifact_path=artifact,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=fingerprint_ledger,
+    )
+    assert preflight["ok"] is False and blocker in preflight["blockers"]
+    assert result.terminal_verdict == "ABORT" and blocker in result.blockers
+    assert not result.consumed and not result.network_opened and not transport.opened
+    assert artifact.read_bytes() == original
+    assert not evidence_root.exists()
+    assert not fingerprint_ledger.exists()
+
+
+@pytest.mark.parametrize(
+    ("ddo_writable", "o7_enabled"), [(True, False), (False, False), (True, True)]
+)
 def test_short_fake_clock_session_pass(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture,
     ddo_writable: bool,
+    o7_enabled: bool,
 ) -> None:
+    o7_root = tmp_path / "o7-state"
+    monkeypatch.setenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", "1" if o7_enabled else "0")
+    if o7_enabled:
+        monkeypatch.setenv("PEAK_TRADE_STATE_ROOT", str(o7_root))
+    else:
+        monkeypatch.delenv("PEAK_TRADE_STATE_ROOT", raising=False)
     if not ddo_writable:
 
         def fail_ddo_write(self: AppendOnlyDdoLedgerV0, line: str) -> None:
@@ -577,6 +641,13 @@ def test_short_fake_clock_session_pass(
     assert result.economic_validity_pass is False
     assert result.paper_execution is False
     assert result.orders_submitted is False
+    if o7_enabled:
+        from src.ops.canonical_derived_public_md_read_model_v1.durable_read_model_store_v1 import (
+            load_durable_read_model_v1,
+        )
+
+        read_model = load_durable_read_model_v1(o7_root)
+        assert read_model is not None and read_model["durable"] is True
     verified = verify_wallclock_evidence_bundle_v1(evidence_root=evidence_root)
     assert verified.verified is True
     assert verified.economic_validity_pass is False

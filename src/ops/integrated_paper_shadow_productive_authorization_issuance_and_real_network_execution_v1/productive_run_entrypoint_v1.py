@@ -17,6 +17,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     WallclockRuntimeConfigV1,
     WallclockSessionResultV1,
     WallclockSessionRuntimeV1,
+    preflight_o7_state_root_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     CANONICAL_HOST,
@@ -214,6 +215,10 @@ def run_productive_wallclock_session_v1(
     blockers = [b for b in blockers if b]
     if blockers:
         return ProductiveRunGateResultV1(ok=False, blockers=blockers, notes=notes)
+
+    _, o7_blocker = preflight_o7_state_root_v1()
+    if o7_blocker is not None:
+        return ProductiveRunGateResultV1(ok=False, blockers=[o7_blocker], notes=notes)
 
     if transport is None:
         if not use_real_network:
