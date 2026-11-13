@@ -23,7 +23,9 @@ def test_run_end_to_end_verification_network_marker_contract_v0() -> None:
     assert script.exists()
     assert "run_end_to_end_verification.sh" in str(script)
     assert "gh " in source
-    assert "aws" in lowered or "AWS" in source
+    assert "aws" not in lowered
+    assert "rclone" not in lowered
+    assert "confirm_token" not in lowered
     assert "workflow" in lowered or "verification" in lowered
     assert "runtime" in lowered or "testnet" in lowered or "live" in lowered
     assert "set -euo pipefail" in source

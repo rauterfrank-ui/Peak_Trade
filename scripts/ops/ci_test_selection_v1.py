@@ -1190,7 +1190,6 @@ REQUIRED_WALLCLOCK_TEST_OWNERS: tuple[str, ...] = (
 CI_INFRA_WORKFLOW_ALLOWLIST = frozenset(
     {
         ".github/workflows/ci.yml",
-        ".github/workflows/ci-export-pack-download-verify.yml",
         ".github/workflows/ci-scheduled-paper-and-export-smoke.yml",
         ".github/workflows/full_audit_weekly.yml",
         ".github/workflows/offline_suites.yml",

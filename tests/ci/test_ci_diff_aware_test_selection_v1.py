@@ -3637,7 +3637,6 @@ PR4489_WALLCLOCK_FILES: tuple[str, ...] = (
 )
 
 PR4491_CI_BOOTSTRAP_FILES: tuple[str, ...] = (
-    ".github/workflows/ci-export-pack-download-verify.yml",
     ".github/workflows/ci-scheduled-paper-and-export-smoke.yml",
     ".github/workflows/ci.yml",
     ".github/workflows/full_audit_weekly.yml",

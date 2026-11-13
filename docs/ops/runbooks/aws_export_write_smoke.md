@@ -1,7 +1,9 @@
 # AWS Export Write Smoke (PR-CD)
 
+**Retired.** The AWS GitHub export path was removed. The original instructions below record its former configuration.
+
 Workflow:
-- ``.github&#47;workflows&#47;prcd-aws-export-write-smoke.yml``
+- [Workflow definition at retirement](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml)
 
 Purpose:
 - Optional write+delete smoke test to prove GitHub Actions can write to the export target.

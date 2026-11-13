@@ -1,5 +1,7 @@
 # Phase W — GitHub Consumer: Download + Verify Export Packs (S3-compatible)
 
+**Retired.** The AWS GitHub export path was removed. The original instructions below record its former configuration.
+
 ## Goal
 GitHub Actions downloads an export pack from S3-compatible object storage and verifies:
 - `manifest.json` present

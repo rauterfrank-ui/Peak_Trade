@@ -186,6 +186,17 @@ LAW_NAMES = {
 }
 LAW_ROOT = "docs/governance/current_law_impact_map_v1/generated"
 DEVELOPMENT_BINDING = ATLAS + "source/development-binding-v1.json"
+AWS_EXPORT_RETIRED_PATHS = {
+    ".github/workflows/ci-export-pack-download-verify.yml",
+    ".github/workflows/prcc-aws-export-smoke.yml",
+    ".github/workflows/prcd-aws-export-write-smoke.yml",
+    "scripts/ops/aws_export_smoke.py",
+    "scripts/ops/aws_export_write_smoke.py",
+    "tests/ci/test_ci_export_pack_download_verify_workflow_contract_v0.py",
+    "tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py",
+    "tests/ops/test_aws_export_smoke_contract.py",
+    "tests/ops/test_aws_export_write_smoke_contract.py",
+}
 
 
 def validate_development_binding(root, model, frozen, changed, extras, cleanup):
@@ -233,8 +244,15 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
         file = root / rel
-        assert file.is_file() and not file.is_symlink(), ["DEVELOPMENT_SOURCE_MISSING", rel]
-        assert row["sha256"] == digest(file.read_bytes()), ["DEVELOPMENT_SOURCE_DRIFT", rel]
+        if rel in AWS_EXPORT_RETIRED_PATHS:
+            assert expected_before and row["sha256"] is None, ["AWS_RETIREMENT_BINDING", rel]
+            assert not file.exists() and not file.is_symlink(), [
+                "RETIRED_AWS_EXPORT_REAPPEARED",
+                rel,
+            ]
+        else:
+            assert file.is_file() and not file.is_symlink(), ["DEVELOPMENT_SOURCE_MISSING", rel]
+            assert row["sha256"] == digest(file.read_bytes()), ["DEVELOPMENT_SOURCE_DRIFT", rel]
         indexed[rel] = row
     assert unexpected <= indexed.keys(), ["UNSCOPED_CHANGE", *sorted(unexpected - indexed.keys())]
     return indexed

@@ -18,12 +18,12 @@ if [ -x "./scripts/ops/rotate_launchd_logs.sh" ]; then
   ./scripts/ops/rotate_launchd_logs.sh || true
 fi
 
-if [ "${RUN_E2E}" = "true" ] && [ -x "./scripts/ops/run_end_to_end_verification.sh" ]; then
+if [ "${RUN_E2E}" = "true" ]; then
   ./scripts/ops/run_end_to_end_verification.sh
 fi
 
 if [ "${RUN_ONE_SHOT}" = "true" ] && [ -x "./scripts/ops/run_morning_one_shot.sh" ]; then
-  ./scripts/ops/run_morning_one_shot.sh
+  RUN_E2E=false ./scripts/ops/run_morning_one_shot.sh
 fi
 
 if [ "${RUN_REGISTRY}" = "true" ] && [ -x "./scripts/ops/run_registry_suite.sh" ]; then

@@ -115,8 +115,6 @@ for WF in \
   prbg-execution-evidence.yml \
   prbi-live-pilot-scorecard.yml \
   prbj-testnet-exec-events.yml \
-  prcc-aws-export-smoke.yml \
-  prcd-aws-export-write-smoke.yml \
   ci.yml
 do
   gh run list --workflow "$WF" --branch main --limit 20 \

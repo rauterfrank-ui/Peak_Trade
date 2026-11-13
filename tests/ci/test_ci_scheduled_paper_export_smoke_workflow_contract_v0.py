@@ -16,14 +16,6 @@ yaml = pytest.importorskip("yaml")
 
 WORKFLOW = Path(".github/workflows/ci-scheduled-paper-and-export-smoke.yml")
 
-_ALLOWED_SECRETS = frozenset(
-    {
-        "PT_RCLONE_CONF_B64",
-        "PT_EXPORT_REMOTE",
-        "PT_EXPORT_PREFIX",
-    }
-)
-
 _SECRETS_TOKEN_RE = re.compile(r"\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}")
 
 
@@ -59,7 +51,7 @@ def _secret_names_in_text(text: str) -> set[str]:
 
 def test_workflow_exists_parseable_and_named() -> None:
     data = _workflow()
-    assert data.get("name") == "CI / Scheduled Paper + Export Smoke"
+    assert data.get("name") == "CI / Scheduled Paper Smoke"
 
 
 def test_workflow_dispatch_only_without_active_schedule() -> None:
@@ -102,7 +94,7 @@ def test_workflow_has_cancel_in_progress_concurrency() -> None:
 
 def test_workflow_jobs_have_expected_timeouts() -> None:
     jobs = _jobs(_workflow())
-    assert len(jobs) >= 2
+    assert set(jobs) == {"paper_tests_audit_evidence"}
     for job_body in jobs.values():
         assert isinstance(job_body, dict)
         timeout = job_body.get("timeout-minutes")
@@ -113,19 +105,19 @@ def test_workflow_jobs_have_expected_timeouts() -> None:
 def test_workflow_schedule_gate_vars_present() -> None:
     text = _workflow_text()
     assert "vars.PT_SCHEDULED_PAPER_TESTS_ENABLED" in text
-    assert "vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED" in text
+    assert "vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED" not in text
 
 
 def test_workflow_only_uses_allowlisted_secrets() -> None:
     names = _secret_names_in_text(_workflow_text())
-    assert names == _ALLOWED_SECRETS
+    assert names == set()
 
 
-def test_workflow_export_secret_placeholder_names_in_env() -> None:
+def test_workflow_has_no_export_secret_placeholders() -> None:
     text = _workflow_text()
-    assert "${{ secrets.PT_RCLONE_CONF_B64 }}" in text
-    assert "${{ secrets.PT_EXPORT_REMOTE }}" in text
-    assert "${{ secrets.PT_EXPORT_PREFIX }}" in text
+    assert "${{ secrets.PT_RCLONE_CONF_B64 }}" not in text
+    assert "${{ secrets.PT_EXPORT_REMOTE }}" not in text
+    assert "${{ secrets.PT_EXPORT_PREFIX }}" not in text
 
 
 def test_workflow_runs_guardrails_before_each_dispatch() -> None:
@@ -133,9 +125,9 @@ def test_workflow_runs_guardrails_before_each_dispatch() -> None:
     guard = "bash scripts/ci/scheduled_guardrails.sh"
     dispatch_token = "gh workflow run"
 
-    assert text.count(guard) >= 2
+    assert text.count(guard) == 1
     chunks = text.split(dispatch_token)
-    assert len(chunks) >= 3
+    assert len(chunks) == 2
     for chunk in chunks[:-1]:
         assert guard in chunk
 
@@ -143,7 +135,7 @@ def test_workflow_runs_guardrails_before_each_dispatch() -> None:
 def test_workflow_dispatches_expected_downstream_workflows() -> None:
     text = _workflow_text()
     assert 'gh workflow run "paper-tests-audit-evidence"' in text
-    assert 'gh workflow run "CI / Export Pack Download + Verify"' in text
+    assert 'gh workflow run "CI / Export Pack Download + Verify"' not in text
 
 
 def test_workflow_dispatch_steps_use_github_token() -> None:

@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-wf_exists() { gh workflow view "$1" >/dev/null 2>&1; }
-wf_run() { local wf="$1"; shift; if wf_exists "$wf"; then gh workflow run "$wf" --ref main "$@" || true; else echo "SKIP: $wf not found"; fi }
+dispatch_failed=0
+wf_run() {
+  local workflow="$1"
+  if ! gh workflow view "$workflow" >/dev/null; then
+    echo "ERROR: could not resolve $workflow" >&2
+    dispatch_failed=1
+  elif ! gh workflow run "$workflow" --ref main; then
+    echo "ERROR: dispatch failed for $workflow" >&2
+    dispatch_failed=1
+  fi
+}
 
-echo "GIT-KONTEXT: expected main (read-only verification; no live execution)."
+echo "GIT-KONTEXT: dispatching evidence and scorecard workflows on main."
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
@@ -15,16 +24,13 @@ mkdir -p "$OUT"
 
 step() { echo ""; echo "==> $*"; }
 
-step "1) PRCD AWS Export Write Smoke (gated by confirm_token + repo var)"
-wf_run prcd-aws-export-write-smoke.yml -f confirm_token=YES_WRITE_SMOKE
-
-step "2) PRBG Execution Evidence (uses bundled input if available)"
+step "1) PRBG Execution Evidence (uses bundled input if available)"
 wf_run prbg-execution-evidence.yml
 
-step "3) PRBE Shadow/Testnet Scorecard"
+step "2) PRBE Shadow/Testnet Scorecard"
 wf_run prbe-shadow-testnet-scorecard.yml
 
-step "4) PRBI Live Pilot Scorecard"
+step "3) PRBI Live Pilot Scorecard"
 wf_run prbi-live-pilot-scorecard.yml
 
 step "Artifacts: operator pulls latest PRBI scorecard to out/ops/prbi_latest/"
@@ -39,3 +45,4 @@ fi
 
 echo ""
 echo "E2E_VERIFY_OUT=${OUT}"
+exit "$dispatch_failed"
