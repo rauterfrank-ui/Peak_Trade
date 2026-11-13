@@ -642,10 +642,21 @@ def run_unattended_n1_host_v1(
             if (root / "STOP").exists():
                 return stop("STOPPED")
             if result.close_readback is not None:
-                state["close_readback_status"] = result.close_readback.status
+                close = result.close_readback
+                state["close_readback_status"] = close.status
+                state["close_envelope_digest"] = close.envelope_digest
                 state["close_booking_pending"] = (
-                    "L10_CLOSE_NET_BOOKING_PENDING" in result.close_readback.reason_codes
+                    "L10_CLOSE_NET_BOOKING_PENDING" in close.reason_codes
                 )
+                if close.net_booking is not None:
+                    state["close_booking_digest"] = close.net_booking["booking_digest"]
+                if result.counter_order_sizing is not None:
+                    sizing = result.counter_order_sizing
+                    state["counter_order_sizing"] = {
+                        "status": sizing.status,
+                        "first_blocker": sizing.first_blocker,
+                        "venue_plan_authorized": sizing.venue_plan_authorized,
+                    }
                 return stop("GOVERNED_RUNTIME_STOPPED")
             if result.ok:
                 # Successful PRE_EXTERNAL is a deliberate terminal, not a crash.

@@ -356,7 +356,9 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         ).read_bytes() == before
 
 
-def test_unattended_host_does_not_complete_on_flat_with_pending_booking(tmp_path, monkeypatch):
+@pytest.mark.parametrize("booked", [False, True])
+def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monkeypatch, booked):
+    from types import SimpleNamespace
     from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
         AuthenticatedL10CloseReadbackV1,
     )
@@ -393,10 +395,22 @@ def test_unattended_host_does_not_complete_on_flat_with_pending_booking(tmp_path
         )
 
     readback = AuthenticatedL10CloseReadbackV1(
-        "CLOSE_FLAT_CONFIRMED", "a" * 64, ("L10_CLOSE_NET_BOOKING_PENDING",)
+        "CLOSE_NET_BOOKED" if booked else "CLOSE_FLAT_CONFIRMED",
+        "a" * 64,
+        () if booked else ("L10_CLOSE_NET_BOOKING_PENDING",),
+        net_booking={"booking_digest": "b" * 64} if booked else None,
+    )
+    sizing = (
+        SimpleNamespace(
+            status="FAIL_CLOSED",
+            first_blocker="DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED",
+            venue_plan_authorized=False,
+        )
+        if booked
+        else None
     )
     result = StandingSupervisorRunResultV1(
-        ok=True,
+        ok=not booked,
         run_id="close-readback",
         trace=StandingSupervisorTraceV1("close-readback", terminal_disposition=readback.status),
         recovery=None,
@@ -404,6 +418,7 @@ def test_unattended_host_does_not_complete_on_flat_with_pending_booking(tmp_path
         owner_go_consumed=False,
         authority_invariants_ok=True,
         close_readback=readback,
+        counter_order_sizing=sizing,
     )
     monkeypatch.setattr(unattended_v1, "_filegate_revision", lambda path: "fixture-active")
     monkeypatch.setattr(
@@ -423,10 +438,30 @@ def test_unattended_host_does_not_complete_on_flat_with_pending_booking(tmp_path
         bounds=bounds, state_root=controller, request_factory=request_factory, clock=lambda: 100
     )
     assert stopped["status"] == "GOVERNED_RUNTIME_STOPPED"
-    assert stopped["close_readback_status"] == "CLOSE_FLAT_CONFIRMED"
-    assert stopped["close_booking_pending"] is True
+    assert stopped["close_readback_status"] == readback.status
+    assert stopped["close_booking_pending"] is (not booked)
+    assert stopped["close_envelope_digest"] == readback.envelope_digest
+    if booked:
+        assert stopped["close_booking_digest"] == "b" * 64
+        assert stopped["counter_order_sizing"] == {
+            "status": sizing.status,
+            "first_blocker": sizing.first_blocker,
+            "venue_plan_authorized": False,
+        }
+    else:
+        assert "close_booking_digest" not in stopped and "counter_order_sizing" not in stopped
     assert stopped["cycles_used"] == 0
     assert json.loads((controller / "host_restart_state_v1.json").read_bytes()) == stopped
+
+    def forbidden_factory(*_):
+        pytest.fail("a close readback must not restart the host")
+
+    assert (
+        run_unattended_n1_host_v1(
+            bounds=bounds, state_root=controller, request_factory=forbidden_factory
+        )
+        == stopped
+    )
 
 
 def test_expired_stopped_or_lost_receipt_never_calls_runtime_factory(tmp_path):

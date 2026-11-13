@@ -41,8 +41,11 @@ On `CLOSE_NET_BOOKED`, the supervisor submits a planning request to 29P for
 the opposite side of the retained L10 switch on the same bound instrument.
 29P verifies the original booking and hold with the reservation owner. The
 supervisor reports a blocked sizing attempt until the productive protective
-stop and funded slot capital basis are available. The original booking
-remains readable after restart.
+stop and funded slot capital basis are available. The check reads the
+original slot and its booking; it does not request another allocation. The
+original booking remains readable after restart. The unattended host's stop
+receipt retains the close envelope digest, booking digest when present,
+and the 29P sizing disposition when reached.
 
 ## WP-02 seam (CURRENT-WP-02 closed)
 
