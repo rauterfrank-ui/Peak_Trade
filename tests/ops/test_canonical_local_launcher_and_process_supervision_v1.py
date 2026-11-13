@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 import signal
+import socket
 import time
 from pathlib import Path
 
@@ -81,6 +82,30 @@ def _start(launcher: CanonicalLocalLauncherV1, cfg: Path, **kwargs):
     }
     defaults.update(kwargs)
     return launcher.start(**defaults)
+
+
+def test_occupied_dashboard_port_cannot_be_reported_running(launcher_env, monkeypatch) -> None:
+    from src.ops.canonical_local_launcher_and_process_supervision_v1 import lifecycle_v1
+
+    launcher, cfg = launcher_env
+    make_parent = lifecycle_v1._minimal_allowlist_parent
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+        listener.bind(("127.0.0.1", 0))
+        listener.listen()
+        port = listener.getsockname()[1]
+
+        def use_occupied_port(**kwargs):
+            return {**make_parent(**kwargs), "PEAK_TRADE_DASHBOARD_HTTP_PORT": str(port)}
+
+        monkeypatch.setattr(lifecycle_v1, "_minimal_allowlist_parent", use_occupied_port)
+        with pytest.raises(
+            CanonicalLauncherError, match="DASHBOARD_WORKER_EXITED_OR_IDENTITY_CHANGED"
+        ):
+            _start(launcher, cfg, session_id="sess-occupied-port")
+
+    record = launcher.registry.require_session("sess-occupied-port")
+    assert record.lifecycle_state == "FAILED"
+    assert launcher.registry.get_active_session_id_for_mode(MODE_DASHBOARD_ONLY) is None
 
 
 def test_macos_portability_without_setsid_cli() -> None:

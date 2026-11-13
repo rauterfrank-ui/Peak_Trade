@@ -274,7 +274,6 @@ class CanonicalLocalLauncherV1:
         graceful_timeout_seconds: float = DEFAULT_GRACEFUL_STOP_TIMEOUT_SECONDS,
         expected_prior_session: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
-        del graceful_timeout_seconds  # reserved for stop/restart symmetry
         sid = session_id or f"o2-{uuid.uuid4().hex[:12]}"
         preflight = self.preflight(
             mode=mode,
@@ -502,11 +501,26 @@ class CanonicalLocalLauncherV1:
             record.process_identity = identity
             self.registry.write_session(record)
             # Wait for heartbeat/marker (HTTP bind may take longer than scaffold-only).
-            deadline = time.time() + 8.0
-            while time.time() < deadline:
+            deadline = time.monotonic() + 8.0
+            while time.monotonic() < deadline and process_alive(identity.pid):
                 if heartbeat_path.is_file() and marker_path.is_file():
                     break
                 time.sleep(0.05)
+            try:
+                verify_process_identity(identity)
+            except ProcessIdentityMismatchError:
+                startup_reason = "DASHBOARD_WORKER_EXITED_OR_IDENTITY_CHANGED"
+            else:
+                startup_reason = ""
+                if not (heartbeat_path.is_file() and marker_path.is_file()):
+                    startup_reason = "DASHBOARD_WORKER_READINESS_TIMEOUT"
+                    terminate_process_group(
+                        identity, graceful_timeout_seconds=graceful_timeout_seconds
+                    )
+            if startup_reason:
+                self.registry.transition(record, new_state="FAILED", reason_code=startup_reason)
+                self.registry.release_mode(mode=mode, session_id=sid)
+                raise CanonicalLauncherError(startup_reason, payload={"session_id": sid})
             self.registry.transition(record, new_state="RUNNING", reason_code="CHILD_RUNNING")
             return {
                 "ok": True,
