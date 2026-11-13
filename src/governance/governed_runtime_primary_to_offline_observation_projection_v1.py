@@ -28,6 +28,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
 from src.experiments.canonical_automated_offline_research_loop_v1 import (
     OfflineExperimentObservationsV1,
 )
+from src.experiments.canonical_experiment_memory_v1 import ARTIFACT_KIND_STORE_RELATIVE
 from src.experiments.canonical_identity_bound_offline_observation_binding_v1 import (
     CanonicalIdentityBoundOfflineObservationBindingRequestV1,
     OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1,
@@ -91,8 +92,8 @@ _ENV_BY_MODE: Final[dict[str, str]] = {
     "TESTNET": "TESTNET_BOUNDED_OBSERVATION",
 }
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-
+_PAPER_MANIFEST_REL = "runtime_out/evidence_manifest.json"
+_WRAPPER_MANIFEST_REL = "wrapper_evidence/manifest.json"
 _REQUIRED_PATHS_BY_MODE: Final[dict[str, tuple[str, ...]]] = {
     "PAPER": PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
     "SHADOW": BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
@@ -180,16 +181,6 @@ def _file_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _repo_relative_ref(path: Path) -> str:
-    resolved = path.resolve()
-    try:
-        return resolved.relative_to(_REPO_ROOT.resolve()).as_posix()
-    except ValueError:
-        raise GovernedRuntimePrimaryProjectionError(
-            "PRIMARY_EVIDENCE_ROOT_OUTSIDE_REPO_FOR_ARTIFACT_REF"
-        ) from None
-
-
 def _load_json_object(path: Path, label: str) -> dict[str, Any]:
     if not path.is_file():
         raise GovernedRuntimePrimaryProjectionError(f"missing {label}")
@@ -224,28 +215,14 @@ def validate_primary_evidence_for_projection_v1(
         return False, "SOURCE_ARCHIVE_MISSING", {"root": str(root)}
     if is_under_tmp(root):
         return False, "TMP_ONLY_SOURCE_REJECTED", {"root": str(root)}
-    metadata_path = root / "RUN_METADATA.json"
-    if metadata_path.is_file():
-        try:
-            metadata = _load_json_object(metadata_path, "RUN_METADATA.json")
-        except GovernedRuntimePrimaryProjectionError:
-            metadata = {}
-        else:
-            declared = str(metadata.get("source_execution_mode", "")).upper()
-            if declared and declared != source_mode.value:
-                return (
-                    False,
-                    "SOURCE_MODE_MISMATCH",
-                    {
-                        "declared": declared,
-                        "expected": source_mode.value,
-                    },
-                )
     required = _REQUIRED_PATHS_BY_MODE[source_mode.value]
     ok, msg, detail = validate_durable_primary_evidence_root(root, required_rel_paths=required)
     if not ok:
         return False, "DURABLE_PRIMARY_VALIDATION_FAILED", {"message": msg, **detail}
-    metadata = _load_json_object(root / "RUN_METADATA.json", "RUN_METADATA.json")
+    try:
+        metadata = _load_json_object(root / "RUN_METADATA.json", "RUN_METADATA.json")
+    except (GovernedRuntimePrimaryProjectionError, OSError, UnicodeError) as exc:
+        return False, "SOURCE_METADATA_INVALID", {"message": str(exc)}
     declared = str(metadata.get("source_execution_mode", "")).upper()
     if declared and declared != source_mode.value:
         return False, "SOURCE_MODE_MISMATCH", {"declared": declared, "expected": source_mode.value}
@@ -258,6 +235,11 @@ def extract_runtime_primary_provenance_binding_v1(
     primary_evidence_root: Path,
 ) -> RuntimePrimaryProvenanceBindingV1:
     root = primary_evidence_root.resolve()
+    ok, msg = verify_manifest_sha256(
+        root, required_rel_paths=_REQUIRED_PATHS_BY_MODE[source_mode.value]
+    )
+    if not ok:
+        raise GovernedRuntimePrimaryProjectionError(f"MANIFEST_VERIFY_FAILED: {msg}")
     metadata = _load_json_object(root / "RUN_METADATA.json", "RUN_METADATA.json")
     review = _load_json_object(root / "review" / "REVIEW_RESULT.json", "review/REVIEW_RESULT.json")
 
@@ -279,28 +261,14 @@ def extract_runtime_primary_provenance_binding_v1(
         observation_time = wallclock.get("end_wall_clock_iso") or observation_time
     observation_time_utc = _require_non_empty_str(observation_time, field_name="observation_time")
 
-    manifest_path = root / MANIFEST_FILENAME
-    if not manifest_path.is_file():
-        raise GovernedRuntimePrimaryProjectionError("MANIFEST_SHA256_MISSING")
-    ok, msg = verify_manifest_sha256(root)
-    if not ok:
-        raise GovernedRuntimePrimaryProjectionError(f"MANIFEST_VERIFY_FAILED: {msg}")
-    primary_manifest_digest = _file_digest(manifest_path)
+    primary_manifest_digest = _file_digest(root / MANIFEST_FILENAME)
 
     runtime_out_digest: str | None = None
-    paper_manifest = root / "runtime_out" / "evidence_manifest.json"
-    if paper_manifest.is_file():
-        runtime_out_digest = _file_digest(paper_manifest)
-
     wrapper_digest: str | None = None
-    wrapper_manifest = root / "wrapper_evidence" / "manifest.json"
-    if wrapper_manifest.is_file():
-        wrapper_digest = _file_digest(wrapper_manifest)
-
-    if source_mode is RuntimePrimarySourceModeV1.PAPER and runtime_out_digest is None:
-        raise GovernedRuntimePrimaryProjectionError("PAPER_EVIDENCE_MANIFEST_MISSING")
-    if source_mode is not RuntimePrimarySourceModeV1.PAPER and wrapper_digest is None:
-        raise GovernedRuntimePrimaryProjectionError("WRAPPER_EVIDENCE_MANIFEST_MISSING")
+    if source_mode is RuntimePrimarySourceModeV1.PAPER:
+        runtime_out_digest = _file_digest(root / _PAPER_MANIFEST_REL)
+    else:
+        wrapper_digest = _file_digest(root / _WRAPPER_MANIFEST_REL)
 
     verdict = str(review.get("verdict", ""))
     if verdict != "PASS":
@@ -328,6 +296,8 @@ def build_offline_experiment_observations_from_primary_v1(
     provenance: RuntimePrimaryProvenanceBindingV1,
     primary_evidence_root: Path,
 ) -> OfflineExperimentObservationsV1:
+    if str(primary_evidence_root.resolve()) != provenance.source_archive_root_ref:
+        raise GovernedRuntimePrimaryProjectionError("PRIMARY_EVIDENCE_ROOT_MISMATCH")
     review = _load_json_object(
         primary_evidence_root / "review" / "REVIEW_RESULT.json",
         "review/REVIEW_RESULT.json",
@@ -339,20 +309,21 @@ def build_offline_experiment_observations_from_primary_v1(
     else:
         metrics = {"primary_review_verdict": provenance.review_verdict}
 
-    bundle_ref = _repo_relative_ref(primary_evidence_root)
+    # Artifact paths are relative to the validated primary archive, whose absolute
+    # root is carried separately in the projection's provenance.
     artifacts: list[dict[str, Any]] = [
         {
-            "kind": "REPO_RELATIVE",
-            "ref": bundle_ref,
+            "kind": ARTIFACT_KIND_STORE_RELATIVE,
+            "ref": MANIFEST_FILENAME,
             "digest": provenance.primary_evidence_manifest_digest,
-            "media_type": "application/x-peak-trade-primary-evidence-bundle",
+            "media_type": "text/plain",
         }
     ]
     if provenance.runtime_out_evidence_manifest_digest:
         artifacts.append(
             {
-                "kind": "REPO_RELATIVE",
-                "ref": "runtime_out/evidence_manifest.json",
+                "kind": ARTIFACT_KIND_STORE_RELATIVE,
+                "ref": _PAPER_MANIFEST_REL,
                 "digest": provenance.runtime_out_evidence_manifest_digest,
                 "media_type": "application/json",
             }
@@ -360,8 +331,8 @@ def build_offline_experiment_observations_from_primary_v1(
     if provenance.wrapper_evidence_manifest_digest:
         artifacts.append(
             {
-                "kind": "REPO_RELATIVE",
-                "ref": "wrapper_evidence/manifest.json",
+                "kind": ARTIFACT_KIND_STORE_RELATIVE,
+                "ref": _WRAPPER_MANIFEST_REL,
                 "digest": provenance.wrapper_evidence_manifest_digest,
                 "media_type": "application/json",
             }
@@ -519,7 +490,7 @@ def run_governed_runtime_primary_to_offline_observation_projection_v1(
             provenance=provenance,
             primary_evidence_root=request.primary_evidence_root,
         )
-    except GovernedRuntimePrimaryProjectionError as exc:
+    except (GovernedRuntimePrimaryProjectionError, OSError, UnicodeError) as exc:
         return GovernedRuntimePrimaryProjectionResultV1(
             status="REJECTED",
             decision_code=str(exc),

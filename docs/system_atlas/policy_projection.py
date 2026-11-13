@@ -224,6 +224,15 @@ MANAGED_FILEGATE_OWNER_DELTAS = {
     ),
 }
 
+# Exact offline G2 archive projection delta. Frozen inventory and authority stay bound.
+G2_ARCHIVE_PROJECTION_PATH = (
+    "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py"
+)
+G2_ARCHIVE_PROJECTION_DELTA = (
+    "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
+    "f98f3e3b0119b0981b74e12e1e1f8fb10999b92a67b701fbbfc2dcfa6183d85a",
+)
+
 
 def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> None:
     frozen = {row["path"]: row["frozen_sha256"] for row in policies}
@@ -594,6 +603,10 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         actual = hashlib.sha256(raw).hexdigest()
         original = raw
         if actual != policy["frozen_sha256"]:
+            g2_archive_delta = (
+                path == G2_ARCHIVE_PROJECTION_PATH
+                and (policy["frozen_sha256"], actual) == G2_ARCHIVE_PROJECTION_DELTA
+            )
             if (
                 path
                 not in {
@@ -605,6 +618,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in RESERVED_SLOT_ROTATION_DELTAS
                 and path not in MANAGED_FILEGATE_OWNER_DELTAS
                 and path not in opt_handoff
+                and not g2_archive_delta
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

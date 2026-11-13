@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import pytest
 
+from scripts.ops.primary_evidence_retention_v0 import MANIFEST_FILENAME
 from src.governance.governed_productive_configuration_apply_authority_v1 import (
     primary_runtime_evidence_implies_apply_authorization_v1,
 )
@@ -35,6 +38,7 @@ from tests.governance.governed_runtime_primary_to_offline_observation_projection
     build_mode_bundle,
     cleanup_durable_archive_roots,
     projection_request,
+    write_paper_primary_bundle,
 )
 
 pytest_plugins = [
@@ -164,6 +168,65 @@ def test_fail_closed_manifest_tamper(tmp_path: Path) -> None:
         projection_request(source_mode=RuntimePrimarySourceModeV1.SHADOW, primary_root=root)
     )
     assert result.status == "REJECTED"
+
+
+def test_external_archive_artifacts_resolve_against_the_bound_primary_store() -> None:
+    mode = RuntimePrimarySourceModeV1.PAPER
+    with TemporaryDirectory(prefix=".g2-test-", dir=REPO_ROOT.parent) as directory:
+        root = Path(directory).resolve()
+        write_paper_primary_bundle(root)
+        before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+        result = run_governed_runtime_primary_to_offline_observation_projection_v1(
+            projection_request(source_mode=mode, primary_root=root)
+        )
+        assert result.status == "PROJECTED", result.blocking_reasons
+        assert result.provenance.source_archive_root_ref == str(root)
+        artifacts = result.offline_observations.artifacts
+        assert {a["ref"] for a in artifacts} == {
+            MANIFEST_FILENAME,
+            "runtime_out/evidence_manifest.json",
+        }
+        for artifact in artifacts:
+            assert artifact["kind"] == "STORE_RELATIVE"
+            assert artifact["digest"] == hashlib.sha256(before[root / artifact["ref"]]).hexdigest()
+        assert {p: p.read_bytes() for p in root.rglob("*") if p.is_file()} == before
+
+
+@pytest.mark.parametrize(
+    "problem", ["empty", "omitted_review", "absolute_entry", "outside_symlink"]
+)
+def test_unbound_or_unsafe_archive_files_never_reach_projection(
+    tmp_path: Path, problem: str
+) -> None:
+    mode = RuntimePrimarySourceModeV1.PAPER
+    root = build_mode_bundle(tmp_path, mode)
+    review = root / "review" / "REVIEW_RESULT.json"
+    manifest = root / MANIFEST_FILENAME
+    lines = manifest.read_text(encoding="utf-8").splitlines()
+    if problem == "empty":
+        lines = []
+    elif problem == "omitted_review":
+        lines = [line for line in lines if not line.endswith("  review/REVIEW_RESULT.json")]
+    elif problem == "absolute_entry":
+        lines.append(f"{hashlib.sha256(review.read_bytes()).hexdigest()}  {review}")
+    else:
+        external = tmp_path / review.name
+        external.write_bytes(review.read_bytes())
+        review.unlink()
+        review.symlink_to(external)
+    manifest.write_text("".join(f"{line}\n" for line in lines), encoding="utf-8")
+    ok, reason, detail = validate_primary_evidence_for_projection_v1(
+        source_mode=mode, primary_evidence_root=root
+    )
+    assert ok is False
+    assert reason == "DURABLE_PRIMARY_VALIDATION_FAILED"
+    assert not detail["checks"]["manifest_sha256_verify"]
+    assert (
+        run_governed_runtime_primary_to_offline_observation_projection_v1(
+            projection_request(source_mode=mode, primary_root=root)
+        ).runtime_learning_input
+        is None
+    )
 
 
 def test_fail_closed_promotion_and_apply_requests(tmp_path: Path) -> None:
