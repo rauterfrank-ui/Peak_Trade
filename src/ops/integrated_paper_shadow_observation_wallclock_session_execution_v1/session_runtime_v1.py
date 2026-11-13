@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import platform
 import time
 from dataclasses import asdict, dataclass, field
@@ -221,24 +222,15 @@ class WallclockSessionRuntimeV1:
         self.duplicate_confirmation_advance_detected = False
         self.duplicate_fill_detected = False
 
-    def _maybe_init_o7_live_ohlcv_bridge_v1(
+    def _init_o7_live_ohlcv_bridge_v1(
         self,
         *,
         session_id: str,
         repository_sha: str,
         config_digest: str,
+        state_root: Path,
     ) -> None:
-        """Optional PSO→O4→O5 bridge (env-gated; no config mutation)."""
-        import os
-
-        if str(os.environ.get("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED") or "0") != "1":
-            self._o7_live_ohlcv_bridge = None
-            return
-        state_root = Path(str(os.environ.get("PEAK_TRADE_STATE_ROOT") or "")).expanduser()
-        if not str(state_root):
-            self.blockers.append("O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED")
-            self._o7_live_ohlcv_bridge = None
-            return
+        """Initialize the optional PSO→O4→O5 bridge using the checked path."""
         from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.pso_to_o4_o5_live_bridge_v1 import (
             PsoToO4O5LiveBridgeV1,
         )
@@ -571,6 +563,16 @@ class WallclockSessionRuntimeV1:
                 force_verdict=TerminalVerdict.ABORT,
             )
 
+        o7_state_root, o7_blocker = preflight_o7_state_root_v1()
+        if o7_blocker is not None:
+            self.state = WallclockSessionState.INVALID
+            self.blockers.append(o7_blocker)
+            return self._finalize_result(
+                session_id=session_id,
+                incomplete=False,
+                force_verdict=TerminalVerdict.ABORT,
+            )
+
         # Atomic canonical v2 consumption BEFORE any session lock / evidence / transport.
         consumption = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             prereg=prereg,
@@ -611,21 +613,17 @@ class WallclockSessionRuntimeV1:
             self._abort("ABORT_AFTER_CONSUMPTION", str(exc))
             return self._finalize_result(session_id=session_id, incomplete=True)
 
-        import os
-
-        self.session_id = session_id
-        self._maybe_init_o7_live_ohlcv_bridge_v1(
-            session_id=session_id,
-            repository_sha=str(expected_repository_sha),
-            config_digest=str(
-                os.environ.get("PEAK_TRADE_CONFIG_DIGEST")
-                or (config_snapshot or {}).get("config_digest")
-                or "unspecified_config_digest"
-            ),
-        )
-        if "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED" in self.blockers:
-            self._abort("O7_LIVE_OHLCV_BRIDGE_MISCONFIGURED", "STATE_ROOT_REQUIRED")
-            return self._finalize_result(session_id=session_id, incomplete=True)
+        if o7_state_root is not None:
+            self._init_o7_live_ohlcv_bridge_v1(
+                session_id=session_id,
+                repository_sha=str(expected_repository_sha),
+                config_digest=str(
+                    os.environ.get("PEAK_TRADE_CONFIG_DIGEST")
+                    or (config_snapshot or {}).get("config_digest")
+                    or "unspecified_config_digest"
+                ),
+                state_root=o7_state_root,
+            )
 
         # Write remaining immutable snapshots.
         try:
@@ -1314,6 +1312,22 @@ class WallclockSessionRuntimeV1:
         )
 
 
+def preflight_o7_state_root_v1() -> tuple[Path | None, str | None]:
+    """Read the optional dashboard output root without opening the state store."""
+    if os.environ.get("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED") != "1":
+        return None, None
+    configured_root = os.environ.get("PEAK_TRADE_STATE_ROOT", "")
+    if not configured_root.strip():
+        return None, "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED"
+    try:
+        state_root = Path(configured_root).expanduser()
+    except RuntimeError:
+        return None, "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_NOT_ABSOLUTE"
+    if not state_root.is_absolute():
+        return None, "O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_NOT_ABSOLUTE"
+    return state_root, None
+
+
 def preflight_wallclock_session_v1(
     *,
     repo_root: Path | None = None,
@@ -1321,9 +1335,13 @@ def preflight_wallclock_session_v1(
     """Offline preflight: no network, no consumption, no mutation of auth artifacts."""
     root = repo_root or Path(__file__).resolve().parents[3]
     import_att = attest_wallclock_import_surface_v1(repo_root=root)
+    _, o7_blocker = preflight_o7_state_root_v1()
+    blockers = list(import_att.blockers)
+    if o7_blocker is not None:
+        blockers.append(o7_blocker)
     return {
-        "ok": import_att.ok,
-        "blockers": list(import_att.blockers),
+        "ok": import_att.ok and o7_blocker is None,
+        "blockers": blockers,
         "network_used": False,
         "consumed": False,
         "capability_id": CAPABILITY_ID,

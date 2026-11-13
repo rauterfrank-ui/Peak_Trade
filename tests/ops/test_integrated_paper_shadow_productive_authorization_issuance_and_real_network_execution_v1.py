@@ -459,6 +459,44 @@ def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str, duration: int = 
     return path
 
 
+def test_productive_start_refuses_o7_without_state_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", "1")
+    monkeypatch.delenv("PEAK_TRADE_STATE_ROOT", raising=False)
+    prereg, go, _artifact, token, _art_path = _issue_bundle(tmp_path, duration=30)
+    art_path = _write_v2_for_prereg(tmp_path, prereg=prereg, token=token)
+    original = art_path.read_bytes()
+    evidence_root = tmp_path / "evidence"
+    fingerprint_ledger = tmp_path / "ledger.txt"
+    calls: list = []
+    clock = FakeClock()
+    transport = EeaPublicMdTransportV1(
+        fetcher=_fake_ticker_fetcher(calls=calls, clock=clock),
+        sleep=clock.sleep,
+        environ={},
+    )
+    result = run_productive_wallclock_session_v1(
+        prereg=prereg,
+        go=go,
+        confirm_token=token,
+        artifact_path=art_path,
+        evidence_root=evidence_root,
+        expected_repository_sha=REPO_SHA,
+        fingerprint_ledger_path=fingerprint_ledger,
+        transport=transport,
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+    )
+    assert result.ok is False
+    assert result.blockers == ["O7_LIVE_OHLCV_BRIDGE_STATE_ROOT_REQUIRED"]
+    assert not result.network_opened and not calls and not transport.opened
+    assert art_path.read_bytes() == original
+    assert not evidence_root.exists() and not fingerprint_ledger.exists()
+
+
 def test_consumption_before_network_and_single_use(tmp_path: Path) -> None:
     prereg, go, _artifact, token, _art_path = _issue_bundle(tmp_path, duration=30)
     art_path = _write_v2_for_prereg(tmp_path, prereg=prereg, token=token)

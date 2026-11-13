@@ -694,7 +694,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "b82809bf30f176df5f5566654908025513cd900b144c69337dbf2ec6735bfd43"
+      "sha256": "15319c1f8a7875f24fdaab425a68659ac9706040d2625563ba730e5276aa00f8"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -2339,7 +2339,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "4984fdfbfbb6e0141ee87b434e5ffd395c6552ab884b035f293f65b5199043d8"
+      "sha256": "a6ab1d8fd1e753bd86339e44ff90118f3b6a8a5257019641313d85e4f7f83cf1"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -2360,6 +2360,11 @@
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_operator_go_producer_v1.py",
       "before_sha256": "56b2e3197340577bf9b39d495d4e018a31d62fb04323b49eae873c7f8ecd321c",
       "sha256": "bf43f86746a683dad15822f7361363128714f57254ecf6eb74fd70f8bd190977"
+    },
+    {
+      "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
+      "before_sha256": "6573921fe3e81d08ec04caff74c1cd6446916f03074f79e7c8d0cd69aecce66a",
+      "sha256": "208b13ad4f563877c1c817eb356d3d1774eecc1fdf3a6bae76b5bec997843caf"
     },
     {
       "path": "src/ops/managed_account_recovery_v1.py",
@@ -3679,12 +3684,12 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "3c554218b2f6f96d2f56307b14c4f36fe7c29c08e949606dd914031a40dfd173"
+      "sha256": "e7f55d97459ced5908ac614b39758ba6d267313d1cbcf65562128ab8ad8bc9dd"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
       "before_sha256": "a047c136438e4a496910ffbbf8478d5e048056da843f165c5cbe3c0d85706246",
-      "sha256": "91152ec37bc50cccbb3d0f9ddd74157f1a9fb595ebbc68bdc37eaf8b83729c83"
+      "sha256": "1696f5dc3c5f8f47476a6ead7d2e4e0b4f425822031bc5be842ca39a2e8995b3"
     },
     {
       "path": "tests/ops/test_k1_account_observation_source_v1.py",

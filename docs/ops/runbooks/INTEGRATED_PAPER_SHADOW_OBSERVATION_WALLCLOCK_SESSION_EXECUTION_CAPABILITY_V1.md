@@ -118,6 +118,12 @@ einen Markpreis und modellierte Zusatzinputs. Die Wirtschaftlichkeitsprüfung
 braucht separat gebundene Originalquellen für Quotes, Tiefe, Kosten und
 Funding.
 
+Die optionale O7-Anbindung an das Dashboard (`PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED=1`)
+braucht einen ausdrücklich gesetzten absoluten `PEAK_TRADE_STATE_ROOT`.
+Vorprüfung und Laufzeitstart weisen einen fehlenden oder relativen Pfad ab,
+bevor der Start die einmalige Autorisierung verbraucht. Ohne O7 benötigt die
+DDO-Aufzeichnung nur das Evidenzverzeichnis der Shadow-Sitzung.
+
 Paper verwendet eigene Evidenz- und Zustandswurzeln. Die lokalen
 Roundtrip-Tests verwenden den Original-Core und simuliertes Accounting
 mit einem DDO-Ledger je Slot. Der vorhandene Scheduler-Adapter mit
