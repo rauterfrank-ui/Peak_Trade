@@ -82,6 +82,16 @@
       "sha256": "a8ee51e50e49d3843f56bbf9c4ddca21258e96e56dfdadbd20bb3ee278b213dc"
     },
     {
+      "path": "config/scheduler/jobs.toml",
+      "before_sha256": "ff71a5b44fd87b09e307f0b5b68723a8e68c000b143ca04373d12596161bd3d3",
+      "sha256": "82b06be58e36b86313a43f7cdf2ebd4b1d720ac936f1ee56600da0d573e53274"
+    },
+    {
+      "path": "config/test_health_profiles.toml",
+      "before_sha256": "16512208e810789441eba234480529651e5d8537e222b6588ab90d1b7d93b83a",
+      "sha256": "f644372502396a8a388bb107635718ee0debf6cf1c8580a963cacea0de1ecf12"
+    },
+    {
       "path": "docs/ai/model_cards/README.md",
       "before_sha256": "b1e69e62c711ee4e1374009b285dfe51555ab3a9b1a9c66ca6c4847c2f1b68d0",
       "sha256": "9fff7702db4af95dffc0a880edeb6526e27e9bcaf1aa1e9e18ef0f49015ae4d5"
@@ -1109,7 +1119,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "134e83ab9f04d3037ccedc80618c66371c996ec4877219d534837bb0f9e84b56"
+      "sha256": "aec96ab5fdf9f2d036c2079cb3def6435bc62b32483dfceb702b64b8127552b9"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
