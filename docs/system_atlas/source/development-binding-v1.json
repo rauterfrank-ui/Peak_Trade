@@ -3792,6 +3792,11 @@
       "sha256": "9a13fa6785f8c5fdbaf9b9d073b7e239cc0664908aafb688ece7399499b93aae"
     },
     {
+      "path": "tests/ops/test_treasury_external_capital_decrease_s2_admission_runtime_join_v1.py",
+      "before_sha256": "827815648ee402837fc1496e617e9727f6306880f470ee374e0574bc11484ca8",
+      "sha256": "d92340481b724b2a4f8539d1b7e60da8ef1b4a688ec1b121df2ec9d39093ecfc"
+    },
+    {
       "path": "tests/ops/test_treasury_phase_1_canonical_and_authority_v1.py",
       "before_sha256": "03f14f041b06949d1c0d10f2bf3d19d0b2736c0aabf8cb436504f1672df1725e",
       "sha256": "178ce75de2a42c2bc78d02b6e0887ca1d8f56acf9c39876f2be91cb828810b1e"

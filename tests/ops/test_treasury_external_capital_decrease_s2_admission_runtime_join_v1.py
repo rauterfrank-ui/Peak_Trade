@@ -294,7 +294,14 @@ def test_s1_binding_package_unchanged() -> None:
 def test_treasury_interference_proof_and_external_effect_unreachable() -> None:
     proof = prove_treasury_interference_absent_v1()
     assert proof["ok"] is True
-    assert proof["TREASURY_HAS_PRODUCTIVE_CALL_GRAPH_REACHABILITY"] is False
+    assert proof["TREASURY_HAS_PRODUCTIVE_CALL_GRAPH_REACHABILITY"] is True
+    assert proof["TREASURY_IS_IN_CURRENT_LIVE_ADMISSION_DAG"] is False
+    assert proof["TREASURY_CAN_OVERRIDE_STEP_29P_RISK_ADMISSION"] is False
+    assert proof["TREASURY_CAN_OVERRIDE_WIRE_SEND_PERMISSION"] is False
+    assert proof["TREASURY_CAN_CONSTRUCT_LIVE_EXECUTION_PORT"] is False
+    assert proof["TREASURY_CAN_MOVE_FUNDS_FROM_CURRENT_FULL_CORE_PATH"] is False
+    assert proof["TREASURY_MUTATION_AUTHORIZED"] is False
+    assert proof["hits"] == []
     assert FULL_CORE_EXTERNAL_EFFECT is False
     with pytest.raises(FullCoreExternalEffectNotAuthorizedError):
         refuse_external_effect_v1(reason="S2_TEST_EXTERNAL_EFFECT_DENIED")
