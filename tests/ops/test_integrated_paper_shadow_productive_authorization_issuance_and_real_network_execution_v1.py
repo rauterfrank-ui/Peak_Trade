@@ -25,6 +25,9 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (
     WallclockRuntimeConfigV1,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
+    WallclockEvidenceWriterV1,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_authorization_verifier_v1 import (
     verify_productive_authorization_bundle_v1,
 )
@@ -52,6 +55,9 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
     AUTHORIZED_NETWORK_SCOPE,
     AUTHORIZED_VENUE,
     CANONICAL_RUNBOOK_SHA256,
+)
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.wallclock_v2_gatekeeper_v1 import (
+    consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     fingerprint_confirm_token,
@@ -416,7 +422,7 @@ def test_real_fetcher_redirect_and_size_and_content_type(tmp_path: Path) -> None
         )
 
 
-def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str) -> Path:
+def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str, duration: int = 3600) -> Path:
     from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.authorization_writer_v2 import (
         build_authorization_artifact_dict_v2,
         new_authorization_id_v2,
@@ -437,7 +443,7 @@ def _write_v2_for_prereg(tmp_path: Path, *, prereg, token: str) -> Path:
         preregistration_digest=prereg.scope_digest(),
         repository_sha=REPO_SHA,
         runbook_sha256="a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a",
-        session_duration_seconds=3600,
+        session_duration_seconds=duration,
         config_digests={"fixture.toml": "b" * 64},
         safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
         confirm_token=token,
@@ -602,8 +608,9 @@ def test_canonical_7200_is_productive_qualification_without_test_flag(
 
     assert I17_CANONICAL_DURATION_SECONDS == 7200
     assert classify_productive_planned_duration_v1(7200) == (DURATION_CLASS_CANONICAL_QUALIFICATION)
-    prereg, go, artifact, _token, _ = _issue_bundle(tmp_path, duration=7200)
+    prereg, go, artifact, token, artifact_path = _issue_bundle(tmp_path, duration=7200)
     assert prereg.planned_duration_seconds == 7200
+    assert go.planned_duration_seconds == artifact.session_duration_seconds == 7200
     assert prereg.no_orders is True
     manifest = json.loads(
         (tmp_path / "issuance" / "issuance_manifest_preregistration.json").read_text(
@@ -624,6 +631,91 @@ def test_canonical_7200_is_productive_qualification_without_test_flag(
     assert blockers == ()
     assert I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE is False
 
+    clock = FakeClock()
+    request_times = []
+
+    def fetcher(url, method, headers, timeout):
+        elapsed = clock.time() - NOW
+        request_times.append(elapsed)
+        price = str(3500 + (int(elapsed) // 60) % 11)
+        return _fake_ticker_fetcher(price=price, clock=clock)(url, method, headers, timeout)
+
+    evidence_root = tmp_path / "qualification"
+    result = run_productive_wallclock_session_v1(
+        prereg=prereg,
+        go=go,
+        artifact=None,
+        confirm_token=token,
+        artifact_path=artifact_path,
+        evidence_root=evidence_root,
+        expected_repository_sha=REPO_SHA,
+        fingerprint_ledger_path=tmp_path / "ledger.txt",
+        transport=EeaPublicMdTransportV1(fetcher=fetcher, sleep=clock.sleep, environ={}),
+        use_real_network=False,
+        runtime_config=WallclockRuntimeConfigV1(
+            poll_interval_seconds=10.0,
+            heartbeat_interval_seconds=5.0,
+            heartbeat_loss_seconds=30.0,
+            max_stale_seconds=30.0,
+            max_gap_seconds=60.0,
+            shutdown_grace_seconds=0.0,
+        ),
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+    )
+    assert result.blockers == []
+    assert result.session_result["terminal_verdict"] == "PASS"
+    assert result.session_result["state"] == "TIMED_OUT"
+    assert clock.time() - NOW == 7200
+    assert 3600 < max(request_times) < 7200
+    receipt = json.loads((evidence_root / "authorization_consumption_record.json").read_bytes())
+    assert receipt["authorized_duration_seconds"] == 7200
+
+
+@pytest.mark.parametrize(
+    ("duration", "blocker"),
+    [
+        (3600, "PLANNED_DURATION_EXCEEDS_AUTHORIZATION"),
+        (21600, "PLANNED_DURATION_AUTHORIZATION_MISMATCH"),
+    ],
+)
+def test_i17_duration_mismatch_cannot_consume_authorization(
+    tmp_path: Path, duration: int, blocker: str
+) -> None:
+    prereg, go, _, token, _ = _issue_bundle(tmp_path, duration=7200)
+    artifact_path = _write_v2_for_prereg(tmp_path, prereg=prereg, token=token, duration=duration)
+    artifact = parse_authorization_artifact_v2(json.loads(artifact_path.read_bytes()))
+    preflight = verify_productive_authorization_bundle_v1(
+        prereg=prereg,
+        go=go,
+        artifact=artifact,
+        confirm_token=token,
+        now_unix=NOW,
+        expected_repository_sha=REPO_SHA,
+    )
+    assert preflight.blockers == [blocker]
+    root = tmp_path / "blocked_session"
+    fingerprint_ledger = tmp_path / "ledger.txt"
+    result = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
+        prereg=prereg,
+        go=go,
+        confirm_token=token,
+        artifact_path=artifact_path,
+        evidence_writer=WallclockEvidenceWriterV1(evidence_root=root),
+        now_unix=NOW,
+        expected_repository_sha=REPO_SHA,
+        fingerprint_ledger_path=fingerprint_ledger,
+        expected_venue=AUTHORIZED_VENUE,
+        expected_network_scope=AUTHORIZED_NETWORK_SCOPE,
+    )
+    assert result.blockers == [blocker]
+    assert not result.transport_open_allowed
+    assert result.session_side_effects == 0
+    assert not root.exists()
+    assert not fingerprint_ledger.exists()
+
 
 def test_extended_soak_21600_supported_and_non_blocking(tmp_path: Path) -> None:
     from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
@@ -637,6 +729,7 @@ def test_extended_soak_21600_supported_and_non_blocking(tmp_path: Path) -> None:
     assert classify_productive_planned_duration_v1(21600) == DURATION_CLASS_EXTENDED_SOAK
     prereg, go, artifact, _token, _ = _issue_bundle(tmp_path, duration=21600)
     assert prereg.planned_duration_seconds == 21600
+    assert go.planned_duration_seconds == artifact.session_duration_seconds == 21600
     manifest = json.loads(
         (tmp_path / "issuance" / "issuance_manifest_preregistration.json").read_text(
             encoding="utf-8"

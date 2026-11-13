@@ -28,6 +28,9 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.evidence_sink_protocol_v1 import (
     AuthorizationEvidenceSinkV1,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.mandatory_bindings_v1 import (
+    wallclock_duration_binding_blockers_v1,
+)
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
     classify_authorization_schema_for_wallclock_v1,
     quarantine_authorization_artifact_v1_result,
@@ -183,6 +186,12 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
         blockers.append(f"NETWORK_SCOPE_REJECTED:{artifact.network_scope}")
     if prereg.venue != artifact.venue:
         blockers.append("PREREG_VENUE_MISMATCH")
+    blockers.extend(
+        wallclock_duration_binding_blockers_v1(
+            planned_seconds=go.planned_duration_seconds,
+            authorized_seconds=artifact.session_duration_seconds,
+        )
+    )
 
     live_digest = compute_effective_session_config_digest_v1(
         capability=artifact.capability or TARGET_RUNTIME_CAPABILITY,
@@ -278,6 +287,7 @@ def consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             "transport_open_allowed_after_persist": True,
             "revocation_checked_before_consumption": True,
             "session_config_digest": artifact.session_config_digest,
+            "authorized_duration_seconds": artifact.session_duration_seconds,
             "venue": artifact.venue,
             "network_scope": artifact.network_scope,
         }

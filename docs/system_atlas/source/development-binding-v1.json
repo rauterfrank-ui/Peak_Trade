@@ -77,6 +77,11 @@
       "sha256": "42d80a318e200ac82219c73de0667d757f40abe008a86d23a8456bdf4479799d"
     },
     {
+      "path": "config/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.toml",
+      "before_sha256": "6e3cb678dfed3ea992faf68d6e553c4f885242ced6a567a589cd20272dd44161",
+      "sha256": "be7be51d93c921a315c7bc981b90c9686b6a245a47d6408cb659b5d31a0c7796"
+    },
+    {
       "path": "config/ops/presentation_archive_root_v1.json",
       "before_sha256": "579802d8d60b0e0685961327ff6e6db8775d5e7169e9d9e563e73507d9bc73ab",
       "sha256": "f0b55a36504db56e5f732faafd0f8392fcdc3c297a9cfc8c3f5e9ba02821ff39"
@@ -682,9 +687,14 @@
       "sha256": "f88e00f6d595c413fd3121420699c42a789d8885e2f1c275bd09e52589b8eca6"
     },
     {
+      "path": "docs/ops/runbooks/CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1.md",
+      "before_sha256": "64b0651a052d26b8023c25cb2e538aec69726358dff478d424a394e61bad7bf5",
+      "sha256": "4c78ad60848fa32d70a0d23c7becd0ba4da232acd87c4b7feed326f842e3a33b"
+    },
+    {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "7c0aba5562202e3eea2dd6335bee546948a1c84cac937708ff3b46494e0e10d5"
+      "sha256": "b82809bf30f176df5f5566654908025513cd900b144c69337dbf2ec6735bfd43"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1129,7 +1139,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "0c971eb0d9b2ef10fc27437980b13dbea5adb3e73272282c04999fd19c725ff6"
+      "sha256": "b528660b0af11ddef75592150b30eece5f5210619bf10771b4871b8bfcab41b0"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1717,6 +1727,21 @@
       "sha256": "bd5b7eb231794bad7127555cbecbaeb7904d93dfa3e6d7c12368c4dee16988c4"
     },
     {
+      "path": "src/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1/constants_v1.py",
+      "before_sha256": "8814f4e257eede664bd8b75de920ba441d0bc23cf8e8b54fd6055bd39a4e9285",
+      "sha256": "fd61ae9f1e7d385da7641db233896442d20853065d3c6cb0e93609b6a8caa56b"
+    },
+    {
+      "path": "src/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1/mandatory_bindings_v1.py",
+      "before_sha256": "d23322e1f293bfcb341fec9cc5029b1339846257c472df6b285670967be80a68",
+      "sha256": "aa9d1a5b239b3fa0267c4ffc62d15763583f72a637a5f4d40c6d513f1470ac28"
+    },
+    {
+      "path": "src/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1/wallclock_v2_gatekeeper_v1.py",
+      "before_sha256": "f4c4b0928b8c87c38cf5ca88c80a9d2df91bdcdb522b60e94fb78c3be4695312",
+      "sha256": "6bda8cbac7673df0a77322c7d0bf3df64dd2f1b4d9d6acfb68470a8fcf7ffd8f"
+    },
+    {
       "path": "src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py",
       "before_sha256": "08b17c56069d4f5ab1ad7ac6494409ccefe8723aea369c24c52929ef1a4f7ac6",
       "sha256": "53211f089a6d202371c9bd5ca4131c4c2ed27c85a0ac3f8eccb284989910cfcb"
@@ -2300,6 +2325,21 @@
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
       "before_sha256": "d2764e2542423673303e5b9d01d08b92063f398d696141a34d348623434fa27a",
       "sha256": "b872080b9eca2c01ae6c104cff8fc512e010ce716e5e994930cbdeef08669e2c"
+    },
+    {
+      "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/constants_v1.py",
+      "before_sha256": "171fb6be80cbcfc1c8eceffe5f2621be5af464c2564d40a22e950b83bbed66ed",
+      "sha256": "b050367e716481391d32ae3b270c20b84319ef185268be8de8a9484aaf9484b7"
+    },
+    {
+      "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_authorization_verifier_v1.py",
+      "before_sha256": "5f410f833837ac84a06755cbf4c54ccfe6ba4a3122c4c0bb1ea78ce5ad3ed398",
+      "sha256": "cec2efcc0c1ae2112c884ee54409d4a35df09b62b17570b24658fc8b9f02bdf4"
+    },
+    {
+      "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_operator_go_producer_v1.py",
+      "before_sha256": "56b2e3197340577bf9b39d495d4e018a31d62fb04323b49eae873c7f8ecd321c",
+      "sha256": "bf43f86746a683dad15822f7361363128714f57254ecf6eb74fd70f8bd190977"
     },
     {
       "path": "src/ops/managed_account_recovery_v1.py",
@@ -3605,6 +3645,11 @@
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
       "sha256": "3c554218b2f6f96d2f56307b14c4f36fe7c29c08e949606dd914031a40dfd173"
+    },
+    {
+      "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
+      "before_sha256": "a047c136438e4a496910ffbbf8478d5e048056da843f165c5cbe3c0d85706246",
+      "sha256": "91152ec37bc50cccbb3d0f9ddd74157f1a9fb595ebbc68bdc37eaf8b83729c83"
     },
     {
       "path": "tests/ops/test_k1_account_observation_source_v1.py",

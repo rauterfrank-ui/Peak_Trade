@@ -31,6 +31,7 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
     REQUIRED_SESSION_DURATION_SECONDS,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
+    ALLOWED_PRODUCTIVE_DURATIONS,
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
     ISSUANCE_MANIFEST_SCHEMA,
@@ -221,6 +222,12 @@ def issue_productive_authorization_v1(
     )
     blockers.extend(gr.blockers)
 
+    duration = go.planned_duration_seconds
+    if duration not in ALLOWED_PRODUCTIVE_DURATIONS:
+        if duration > REQUIRED_SESSION_DURATION_SECONDS:
+            blockers.append("SESSION_DURATION_REJECTED")
+        duration = REQUIRED_SESSION_DURATION_SECONDS
+
     auth_id = authorization_id or new_authorization_id_v2()
     if known_authorization_ids and auth_id in known_authorization_ids:
         blockers.append("DUPLICATE_AUTHORIZATION_ID")
@@ -248,7 +255,7 @@ def issue_productive_authorization_v1(
         preregistration_digest=prereg.scope_digest(),
         repository_sha=prereg.expected_repository_sha,
         runbook_sha256=runbook_sha256,
-        session_duration_seconds=REQUIRED_SESSION_DURATION_SECONDS,
+        session_duration_seconds=duration,
         config_digests=config_digests,
         safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
         confirm_token=confirm_token,
@@ -305,6 +312,7 @@ def issue_productive_authorization_v1(
         "earliest_start": prereg.earliest_start,
         "expires_at": prereg.expires_at,
         "planned_duration_seconds": prereg.planned_duration_seconds,
+        "authorized_duration_seconds": artifact.session_duration_seconds,
         "orders_authorized": False,
         "paper_execution_authorized": False,
         "testnet_authorized": False,

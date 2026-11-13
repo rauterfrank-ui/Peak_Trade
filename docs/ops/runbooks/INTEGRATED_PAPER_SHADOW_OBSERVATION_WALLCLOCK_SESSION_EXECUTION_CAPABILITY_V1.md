@@ -96,12 +96,11 @@ Library tests continue to inject fake transport and fake clocks.
 Der Shadow-Preflight prüft den lokalen Startpfad. Die Sitzung liest den
 öffentlichen OKX-EEA-Markpreis für `ETH-USD_UM_XPERP-310404`. Der
 Volatilitätsproducer benötigt 61 aufeinanderfolgende finalisierte
-Minuten-Markpreise. Eine kalte Sitzung von 3.600 Sekunden kann diese Menge
-innerhalb ihres Zeitlimits nicht finalisieren. Die I17-Preregistrierung
-kennt 7.200 Sekunden als Qualifikationsdauer. Das separat geparste
-Wallclock-V2-Artefakt verlangt weiterhin den Wert 3.600 in seinem
-Pflichtfeld. Vor einem Start müssen beide Artefakte durch ihre vorhandenen
-Owner für die konkrete Sitzung geprüft werden.
+Minuten-Markpreise. Die reguläre I17-Qualifikation bindet 7.200 Sekunden in
+Preregistrierung, Operator-GO und Wallclock-V2-Autorisierung. Der optionale
+verlängerte Lauf bindet 21.600 Sekunden. Vor der einmaligen Nutzung der
+Autorisierung prüft der Gatekeeper die genehmigte Dauer. Die Marktdatenprüfung
+weist die 61 finalisierten Werte für den konkreten Lauf nach.
 
 ```bash
 ./scripts/pt scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py preflight
