@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -45,6 +46,15 @@ VERIFIER_ID = "ops.paper_shadow_wallclock_evidence_verifier_v1"
 RESULT_PASS = "WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED"
 RESULT_FAIL = "WALLCLOCK_OBSERVATION_EVIDENCE_INVALID"
 RESULT_ABORT_VERIFIED = "WALLCLOCK_OBSERVATION_ABORT_VERIFIED"
+_MANIFEST_REQUIRED_FILES = frozenset(
+    {
+        "integrity_manifest.json",
+        "terminal_verdict.json",
+        "observation_cycle_counters.json",
+        "market_data_sequence.jsonl",
+        BRIDGE_CYCLE_LEDGER_FILENAME,
+    }
+)
 
 
 @dataclass
@@ -167,27 +177,51 @@ def verify_wallclock_evidence_bundle_v1(
         )
 
     manifest_path = root / "evidence_manifest.sha256"
-    manifest_names: set[str] = set()
-    if not manifest_path.is_file():
+    manifest_digests: dict[str, str] = {}
+    if manifest_path.is_symlink() or not manifest_path.is_file():
         blockers.append("EVIDENCE_MANIFEST_MISSING")
     else:
-        for line in manifest_path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                digest, name = line.split("  ", 1)
-            except ValueError:
-                blockers.append("EVIDENCE_MANIFEST_MALFORMED")
-                continue
-            manifest_names.add(name)
-            path = root / name
-            if not path.is_file():
-                blockers.append(f"MANIFEST_FILE_MISSING:{name}")
-                continue
-            actual = hashlib.sha256(path.read_bytes()).hexdigest()
-            if actual != digest:
-                blockers.append(f"EVIDENCE_TAMPER:{name}")
+        try:
+            for line in manifest_path.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                digest, sep, name = line.partition("  ")
+                if (
+                    not sep
+                    or name in {"", ".", "..", manifest_path.name}
+                    or any(char in name for char in ("/", "\\", "\x00"))
+                    or name in manifest_digests
+                ):
+                    blockers.append("EVIDENCE_MANIFEST_MALFORMED")
+                    continue
+                manifest_digests[name] = digest
+                path = root / name
+                if path.is_symlink():
+                    blockers.append(f"MANIFEST_FILE_UNSAFE:{name}")
+                elif not path.is_file():
+                    blockers.append(f"MANIFEST_FILE_MISSING:{name}")
+                elif hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+                    blockers.append(f"EVIDENCE_TAMPER:{name}")
+        except (OSError, UnicodeError):
+            blockers.append("EVIDENCE_MANIFEST_UNREADABLE")
+
+    blockers.extend(
+        f"EVIDENCE_MANIFEST_ENTRY_REQUIRED:{name}"
+        for name in sorted(_MANIFEST_REQUIRED_FILES - manifest_digests.keys())
+    )
+    if not blockers:
+        try:
+            inner = json.loads((root / "integrity_manifest.json").read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, ValueError):
+            blockers.append("INTEGRITY_MANIFEST_UNREADABLE")
+        else:
+            outer = {
+                name: digest
+                for name, digest in manifest_digests.items()
+                if name != "integrity_manifest.json"
+            }
+            if not isinstance(inner, dict) or inner.get("digests") != outer:
+                blockers.append("EVIDENCE_MANIFEST_DIGEST_MAP_MISMATCH")
 
     for name in REQUIRED_IMMUTABLE:
         if not (root / name).is_file():
@@ -199,12 +233,15 @@ def verify_wallclock_evidence_bundle_v1(
             }:
                 blockers.append(f"REQUIRED_MISSING:{name}")
 
+    if blockers:
+        return WallclockEvidenceVerificationResultV1(
+            result=RESULT_FAIL, verified=False, blockers=sorted(set(blockers)), notes=notes
+        )
+
     verdict = ""
     incomplete = False
     terminal_path = root / "terminal_verdict.json"
     if terminal_path.is_file():
-        import json
-
         terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
         verdict = str(terminal.get("verdict") or "")
         incomplete = bool(terminal.get("incomplete"))
@@ -252,7 +289,7 @@ def verify_wallclock_evidence_bundle_v1(
             notes=notes,
         )
 
-    ddo_readback = _read_ddo_capture(root, manifest_names)
+    ddo_readback = _read_ddo_capture(root, set(manifest_digests))
     if verdict == TerminalVerdict.ABORT.value:
         result = RESULT_ABORT_VERIFIED
     else:

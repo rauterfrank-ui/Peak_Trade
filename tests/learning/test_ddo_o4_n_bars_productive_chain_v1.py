@@ -306,3 +306,24 @@ def test_provenance_mismatch_rejected() -> None:
     bars[1] = {**bars[1], "session_id": "other-session"}
     with pytest.raises(DdoValidationError, match="O4_PROVENANCE_SESSION_MISMATCH"):
         translate_o4_snapshot_to_ddo_n_bars_bindings_v1(_snapshot(o4_bars=bars))
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "reason"),
+    [
+        ("venue", "different-venue", "O4_BAR_VENUE_MISMATCH"),
+        ("venue_instrument_id", "ETH-OTHER-SWAP", "O4_BAR_NATIVE_INSTRUMENT_MISMATCH"),
+        ("interval", "PT1M", "O4_BAR_INTERVAL_MISMATCH"),
+    ],
+)
+def test_supplier_cannot_measure_a_chain_with_a_foreign_bar(field, value, reason) -> None:
+    decision = build_decision_event_v0(_decision())
+    snapshot = _snapshot()
+    second_bar = snapshot["o4_bars"][1]
+    second_bar[field] = value
+    if field in {"venue", "venue_instrument_id"}:
+        second_bar["last_observation_identity"][field] = value
+    with pytest.raises(DdoValidationError, match=reason):
+        materialize_real_outcome_horizon_supplier_input_v1(
+            decision, snapshot, outcome_scalar_kind="LOG_RETURN"
+        )

@@ -766,7 +766,8 @@ def test_duplicate_session_lock(tmp_path: Path) -> None:
     )
 
 
-def test_evidence_tamper_detected(tmp_path: Path) -> None:
+@pytest.mark.parametrize("omit_market_entry", [False, True])
+def test_evidence_tamper_detected(tmp_path: Path, omit_market_entry: bool) -> None:
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
@@ -790,11 +791,23 @@ def test_evidence_tamper_detected(tmp_path: Path) -> None:
         expected_repository_sha=SHA,
         fingerprint_ledger_path=tmp_path / "fptamper.ledger",
     )
-    target = evidence_root / "session_manifest.json"
+    target = evidence_root / (
+        "market_data_sequence.jsonl" if omit_market_entry else "session_manifest.json"
+    )
     target.write_text(target.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    if omit_market_entry:
+        manifest = evidence_root / "evidence_manifest.sha256"
+        lines = manifest.read_text(encoding="utf-8").splitlines(keepends=True)
+        manifest.write_text(
+            "".join(line for line in lines if not line.endswith(f"  {target.name}\n")),
+            encoding="utf-8",
+        )
     verified = verify_wallclock_evidence_bundle_v1(evidence_root=evidence_root)
     assert verified.verified is False
-    assert any("EVIDENCE_TAMPER" in b for b in verified.blockers)
+    if omit_market_entry:
+        assert f"EVIDENCE_MANIFEST_ENTRY_REQUIRED:{target.name}" in verified.blockers
+    else:
+        assert f"EVIDENCE_TAMPER:{target.name}" in verified.blockers
 
 
 def test_capability_id_constant() -> None:
