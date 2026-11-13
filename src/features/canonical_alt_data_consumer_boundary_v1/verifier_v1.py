@@ -301,11 +301,22 @@ def validate_layer_config_v1(payload: Mapping[str, Any]) -> None:
 
 
 def evaluate_eg_alt_consumer_v1(*, root: Path | None = None) -> Mapping[str, Any]:
+    """Verify the full alt-data boundary, including I55 briefing artifacts."""
+    return _evaluate_eg_alt_v1(root=root, require_i55_artifacts=True)
+
+
+def evaluate_eg_alt_authority_isolation_v1(*, root: Path | None = None) -> Mapping[str, Any]:
+    """Verify authority isolation for callers that consume no I55 briefing."""
+    return _evaluate_eg_alt_v1(root=root, require_i55_artifacts=False)
+
+
+def _evaluate_eg_alt_v1(*, root: Path | None, require_i55_artifacts: bool) -> Mapping[str, Any]:
     payload = load_layer_config_v1(root)
     validate_layer_config_v1(payload)
     assert_package_has_no_intent_or_order_imports_v1(root)
     assert_unknown_producer_packages_absent_v1(root)
-    assert_i55_briefing_files_exist_v1(root)
+    if require_i55_artifacts:
+        assert_i55_briefing_files_exist_v1(root)
     assert_i55_loader_not_imported_by_authority_trees_v1(root)
     assert_r1_research_feeder_rights_v1()
     assert_primary_rows_keep_research_feeder_v1()
@@ -363,12 +374,15 @@ def evaluate_eg_alt_consumer_v1(*, root: Path | None = None) -> Mapping[str, Any
         "direct_research_to_intent_path": DIRECT_RESEARCH_TO_INTENT_PATH,
         "direct_research_to_order_path": DIRECT_RESEARCH_TO_ORDER_PATH,
         "done_criterion": DONE_CRITERION,
-        "eg_alt_consumer_status": "CLOSED_PROVEN_FORENSIC",
+        "eg_alt_consumer_status": (
+            "CLOSED_PROVEN_FORENSIC" if require_i55_artifacts else "AUTHORITY_ISOLATION_PROVEN"
+        ),
         "g14_non_authoritative_until_promotion": G14_NON_AUTHORITATIVE_UNTIL_PROMOTION,
         "i04_path_class": require_row("I04_PRIMARY").path_class.value,
         "i05_execution_authority": I05_EXECUTION_AUTHORITY,
         "i05_path_class": require_row("I05_PRIMARY").path_class.value,
         "i55_path_class": require_row("I55_PRIMARY").path_class.value,
+        "i55_briefing_artifacts_checked": require_i55_artifacts,
         "i55_replaces_double_play": I55_REPLACES_DOUBLE_PLAY,
         "i55_replaces_master_v2": I55_REPLACES_MASTER_V2,
         "i55_replaces_r3": I55_REPLACES_R3,
@@ -403,6 +417,10 @@ def evaluate_eg_alt_consumer_v1(*, root: Path | None = None) -> Mapping[str, Any
         "source_intents": list(SOURCE_INTENTS),
         "target_binding": TARGET_BINDING,
         "testnet_authorized": TESTNET_AUTHORIZED,
-        "verdict": "PASS_EG_ALT_CONSUMER_BOUNDARY_V1",
+        "verdict": (
+            "PASS_EG_ALT_CONSUMER_BOUNDARY_V1"
+            if require_i55_artifacts
+            else "PASS_EG_ALT_AUTHORITY_ISOLATION_V1"
+        ),
     }
     return MappingProxyType(claims)

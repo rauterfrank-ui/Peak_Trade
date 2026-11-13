@@ -8,7 +8,7 @@ from types import MappingProxyType
 from typing import Any, Mapping
 
 from src.features.canonical_alt_data_consumer_boundary_v1.verifier_v1 import (
-    evaluate_eg_alt_consumer_v1,
+    evaluate_eg_alt_authority_isolation_v1,
 )
 from src.ops.canonical_i17_productive_shadow_contract_readiness_v1.constants_v1 import (
     ACTIVATED,
@@ -201,8 +201,8 @@ def evaluate_r4_i17_shadow_contract_readiness_v1(*, root: Path | None = None) ->
     ):
         _reject("authority_or_execution_flag_raised")
     preflight = run_shadow_readiness_preflight_v1(_fixture_input(), root=root)
-    alt = evaluate_eg_alt_consumer_v1(root=root)
-    if alt["verdict"] != "PASS_EG_ALT_CONSUMER_BOUNDARY_V1":
+    alt = evaluate_eg_alt_authority_isolation_v1(root=root)
+    if alt["verdict"] != "PASS_EG_ALT_AUTHORITY_ISOLATION_V1":
         _reject(f"eg_alt_regression:{alt['verdict']}")
     claims = {
         "activated": ACTIVATED,
@@ -217,6 +217,7 @@ def evaluate_r4_i17_shadow_contract_readiness_v1(*, root: Path | None = None) ->
         "config_digest": digest_mapping(payload),
         "core_logic_change": CORE_LOGIC_CHANGE,
         "eg_alt_verdict": alt["verdict"],
+        "i55_briefing_artifacts_checked": alt["i55_briefing_artifacts_checked"],
         "eg_i17_shadow_status": "READY_BLOCKED_PENDING_SEPARATE_SHADOW_EXECUTE_GO",
         "i17_canonical_duration_seconds": I17_CANONICAL_DURATION_SECONDS,
         "i17_duration_owner": I17_DURATION_OWNER_FAMILY,
