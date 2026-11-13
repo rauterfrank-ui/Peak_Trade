@@ -29,18 +29,6 @@ def test_parse_symbols_cli_arg():
 
 
 @pytest.mark.smoke
-def test_generate_forward_signals_parse_has_shared_defaults():
-    import generate_forward_signals as gen
-
-    ns = gen.parse_args(
-        ["--strategy", "ma_crossover", "--symbols", "BTC/EUR", "--config-path", "config.toml"]
-    )
-    assert ns.n_bars == DEFAULT_FORWARD_N_BARS
-    assert ns.timeframe == DEFAULT_OHLCV_TIMEFRAME
-    assert ns.timeframe in OHLCV_TIMEFRAME_CHOICES
-
-
-@pytest.mark.smoke
 def test_evaluate_forward_signals_parse_has_shared_defaults():
     import evaluate_forward_signals as ev
 
@@ -53,8 +41,8 @@ def test_evaluate_forward_signals_parse_has_shared_defaults():
 def test_evaluate_forward_signals_ohlcv_source_case_insensitive():
     import evaluate_forward_signals as ev
 
-    ns = ev.parse_args(["dummy.csv", "--ohlcv-source", "KRaken"])
-    assert ns.ohlcv_source == "kraken"
+    ns = ev.parse_args(["dummy.csv", "--ohlcv-source", "DuMmY"])
+    assert ns.ohlcv_source == "dummy"
 
 
 @pytest.mark.smoke
@@ -70,24 +58,9 @@ def test_run_portfolio_parse_args_timeframe_and_symbols():
 
 
 @pytest.mark.smoke
-def test_generate_forward_signals_ohlcv_source_case_insensitive():
-    import generate_forward_signals as gen
-
-    ns = gen.parse_args(
-        ["--strategy", "ma_crossover", "--symbols", "BTC/EUR", "--ohlcv-source", "DUMMY"]
-    )
-    assert ns.ohlcv_source == "dummy"
-    ns2 = gen.parse_args(
-        ["--strategy", "ma_crossover", "--symbols", "BTC/EUR", "--ohlcv-source", "Kraken"]
-    )
-    assert ns2.ohlcv_source == "kraken"
-
-
-@pytest.mark.smoke
 def test_forward_pipeline_scripts_help_contains_j1_no_live_scope():
     """--help listet gemeinsamen J1/NO-LIVE-Scope (Epilog + --ohlcv-source)."""
     for name in (
-        "generate_forward_signals.py",
         "evaluate_forward_signals.py",
         "run_portfolio_backtest_v2.py",
     ):

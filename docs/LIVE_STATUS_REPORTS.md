@@ -15,7 +15,8 @@ Live-Status-Reports bieten einen **strukturierten Snapshot** des aktuellen Zusta
 - **Post-Mortems & Reviews**: Referenz für Incident-Analysen
 - **Governance**: Nachvollziehbarkeit für Entscheidungen
 
-**Wichtig:** Reports basieren auf dem `live_ops`-CLI und wachsen automatisch mit zukünftigen Erweiterungen mit.
+> **Historischer Pfad:** Der frühere CSV-`live_ops`-Provider ist stillgelegt. Der CLI-Aufruf erzeugt deshalb keinen Statusreport. Die reinen Formatter bleiben für vorhandene Snapshots verfügbar. Die folgenden Beispiele dokumentieren den damaligen Vertrag.
+> Der deaktivierte Scheduler-Eintrag `daily_risk_check` gehört zum selben historischen CSV-Pfad und ist kein aktiver Risikocheck.
 
 ---
 

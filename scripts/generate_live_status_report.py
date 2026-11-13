@@ -6,7 +6,7 @@ Peak_Trade: Live Status Report Generator (Phase 57)
 ====================================================
 
 Generiert Daily/Weekly Live-Status-Reports (Markdown/HTML) basierend auf
-live_ops health und portfolio Commands.
+live_ops health und portfolio Commands. Dieser historische Provider ist stillgelegt.
 
 Kanonische Doku: docs/LIVE_STATUS_REPORTS.md · Finish Plan PR 7 (Observability/status report hardening; snapshot-only).
 
@@ -45,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Baut den Argument-Parser."""
     parser = argparse.ArgumentParser(
         prog="generate_live_status_report",
-        description="Peak_Trade Live Status Report Generator",
+        description="Historical status report; its Live-Ops provider is retired.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
@@ -190,7 +190,6 @@ def main() -> int:
 
         tag_suffix = f"_{args.tag}" if args.tag else ""
         output_dir = Path(args.output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
 
         # 2. Health- & Portfolio-Daten via live_ops holen
         config_path = Path(args.config).resolve()
@@ -203,7 +202,7 @@ def main() -> int:
         health_data = run_subprocess_json(
             [
                 sys.executable,
-                "scripts/live_ops.py",
+                str(ROOT_DIR / "scripts" / "live_ops.py"),
                 "health",
                 "--config",
                 str(config_path),
@@ -215,13 +214,15 @@ def main() -> int:
         portfolio_data = run_subprocess_json(
             [
                 sys.executable,
-                "scripts/live_ops.py",
+                str(ROOT_DIR / "scripts" / "live_ops.py"),
                 "portfolio",
                 "--config",
                 str(config_path),
                 "--json",
             ]
         )
+
+        output_dir.mkdir(parents=True, exist_ok=True)
 
         # 3. Notes laden (optional)
         notes = load_notes(args.notes_file)

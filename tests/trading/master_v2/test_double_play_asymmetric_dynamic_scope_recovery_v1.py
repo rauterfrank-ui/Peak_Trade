@@ -26,6 +26,7 @@ from trading.master_v2.canonical_market_context_v1 import (
     WarmupStatus,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
     CanonicalScopeLifecycleState,
     CanonicalScopeSnapshotV1,
 )
@@ -54,14 +55,12 @@ from trading.master_v2.double_play_state import (
     RuntimeScopeState,
     ScopeEvent,
     SideState,
-    clamp_band_width,
     derive_active_side,
     transition_state,
     update_dynamic_boundaries,
 )
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     _DEFAULT_RUNTIME_ENVELOPE,
-    _effective_dynamic_scope_band_window_v1,
     _resolve_runtime_scope_state_for_cycle_v1,
     _rules_for_cycle_v1,
     _runtime_envelope_containing_scope_v1,
@@ -92,7 +91,7 @@ def _snapshot(
     volatility_estimate: float = 0.02,
     mark: float = 2000.0,
 ) -> CanonicalScopeSnapshotV1:
-    band = max(volatility_estimate * mark, min_scope_band)
+    band = volatility_estimate * mark
     return CanonicalScopeSnapshotV1(
         scope_id="scope-ds-recovery",
         instrument_id="inst-eth-usdt-perp",
@@ -109,7 +108,7 @@ def _snapshot(
         trailing_anchor=mark,
         min_scope_band=min_scope_band,
         max_scope_band=max_scope_band,
-        policy_version="v1",
+        policy_version=SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
         semantic_digest="b" * 64,
         reason_codes=(),
     )
@@ -162,32 +161,20 @@ def _productive_rules(
 # --- DS-A ---
 
 
-def test_canonical_productive_defaults_do_not_collapse_min_equals_max() -> None:
-    rules, snap = _productive_rules()
-    env = _runtime_envelope_containing_scope_v1(snap)
-    lo, hi = _effective_dynamic_scope_band_window_v1(rules=rules, env=env)
-    assert lo == pytest.approx(CANONICAL_MIN_SCOPE_BAND)
-    assert hi == pytest.approx(CANONICAL_MAX_SCOPE_BAND)
-    assert hi > lo
-
-
-def test_two_admissible_vol_mark_inputs_produce_distinct_bands_inside_window() -> None:
-    rules, snap = _productive_rules()
-    env = _runtime_envelope_containing_scope_v1(snap)
-    band_a = clamp_band_width(0.05 * 2000.0, rules, env)  # 100
-    band_b = clamp_band_width(0.10 * 3000.0, rules, env)  # 300
-    assert band_a != band_b
-    assert CANONICAL_MIN_SCOPE_BAND <= band_a <= CANONICAL_MAX_SCOPE_BAND
-    assert CANONICAL_MIN_SCOPE_BAND <= band_b <= CANONICAL_MAX_SCOPE_BAND
-
-
-def test_lower_and_upper_snapshot_bounds_respected() -> None:
-    rules, snap = _productive_rules()
-    env = _runtime_envelope_containing_scope_v1(snap)
-    below = clamp_band_width(1.0, rules, env)
-    above = clamp_band_width(10_000.0, rules, env)
-    assert below == pytest.approx(CANONICAL_MIN_SCOPE_BAND)
-    assert above == pytest.approx(CANONICAL_MAX_SCOPE_BAND)
+@pytest.mark.parametrize(
+    ("mark", "volatility", "expected"), [(80.0, 0.005, 0.4), (10_000.0, 0.1, 1000.0)]
+)
+def test_raw_geometry_survives_historical_band_fields(mark, volatility, expected) -> None:
+    rules, snap = _productive_rules(snapshot=_snapshot(mark=mark, volatility_estimate=volatility))
+    result = update_dynamic_boundaries(
+        mark_price=mark,
+        side=ActiveSide.LONG,
+        st=RuntimeScopeState(anchor_price=mark, now_tick=1),
+        rules=rules,
+        env=_runtime_envelope_containing_scope_v1(snap),
+    )
+    assert result.current_hysteresis_band == pytest.approx(expected)
+    assert result.current_downscope_boundary == pytest.approx(mark - expected)
 
 
 def test_long_active_anchor_still_max_previous_mark() -> None:
@@ -257,7 +244,7 @@ def test_typed_admitted_volatility_reaches_dynamic_scope_rules() -> None:
     assert rules.volatility_estimate == pytest.approx(0.05)
 
 
-def test_different_typed_volatility_changes_runtime_band_inside_window() -> None:
+def test_different_typed_volatility_changes_raw_runtime_band() -> None:
     snap = _snapshot()
     env = _runtime_envelope_containing_scope_v1(snap)
     ctx_a = bind_typed_canonical_volatility_estimate_into_market_context_v1(
@@ -268,11 +255,15 @@ def test_different_typed_volatility_changes_runtime_band_inside_window() -> None
     )
     rules_a = _rules_for_cycle_v1(provided=None, snapshot=snap, bound_context=ctx_a)
     rules_b = _rules_for_cycle_v1(provided=None, snapshot=snap, bound_context=ctx_b)
-    band_a = clamp_band_width(float(rules_a.volatility_estimate) * 2000.0, rules_a, env)
-    band_b = clamp_band_width(float(rules_b.volatility_estimate) * 3000.0, rules_b, env)
-    assert band_a != band_b
-    assert CANONICAL_MIN_SCOPE_BAND <= band_a <= CANONICAL_MAX_SCOPE_BAND
-    assert CANONICAL_MIN_SCOPE_BAND <= band_b <= CANONICAL_MAX_SCOPE_BAND
+    for rules, mark, expected in ((rules_a, 2000.0, 100.0), (rules_b, 3000.0, 300.0)):
+        result = update_dynamic_boundaries(
+            mark_price=mark,
+            side=ActiveSide.LONG,
+            st=RuntimeScopeState(anchor_price=mark, now_tick=1),
+            rules=rules,
+            env=env,
+        )
+        assert result.current_hysteresis_band == pytest.approx(expected)
 
 
 def test_missing_required_typed_volatility_fails_closed_via_existing_gate() -> None:
@@ -423,6 +414,3 @@ def test_model_c_bind_not_claimed_complete() -> None:
 def test_owner_recalled_parameter_one_not_bound() -> None:
     replay_src = REPLAY_PATH.read_text(encoding="utf-8")
     assert "OWNER_RECALLED_SWITCH_REGION_PARAMETER" not in replay_src
-    rules, snap = _productive_rules()
-    assert rules.min_band_width == pytest.approx(CANONICAL_MIN_SCOPE_BAND)
-    assert rules.max_band_width == pytest.approx(CANONICAL_MAX_SCOPE_BAND)

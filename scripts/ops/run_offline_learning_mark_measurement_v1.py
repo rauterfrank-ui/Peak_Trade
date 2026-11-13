@@ -7,7 +7,6 @@ import re
 import time
 
 from scripts.ops.capture_offline_learning_mark_window_v1 import (
-    NATIVE_INSTRUMENT,
     _read_manifest,
     _utc_now,
     capture_public_mark_window_v1,
@@ -30,6 +29,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.inte
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offline_recorded_market_replay_v1 import (
     complete_recorded_market_forecast_v1,
     recorded_market_target_from_frozen_v1,
+)
+from src.research.offline_recorded_mark_horizon_source_v1 import (
+    LEGACY_NATIVE_INSTRUMENT as NATIVE_INSTRUMENT,
 )
 from src.research.offline_recorded_mark_horizon_source_v1 import read_bound_json
 

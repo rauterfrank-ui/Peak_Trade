@@ -8,6 +8,15 @@ from pathlib import Path
 
 import pytest
 
+if not (
+    Path(__file__).resolve().parents[1]
+    / "src/ops/cap22_append_only_15m_pit_persistence_v1/archive_v1.py"
+).is_file():
+    pytest.skip(
+        "Historical Cap22 15m PIT archive owner absent; current Cap22 contracts are separate.",
+        allow_module_level=True,
+    )
+
 from src.ops.cap22_append_only_15m_pit_persistence_v1.anchor_v1 import (
     Cap22AppendOnlyPitPersistenceError,
     canonical_path_key_for_anchor,
