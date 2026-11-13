@@ -954,7 +954,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "ef4043a5e9ae1027f740ac51d40957be02c0890ca92695edf12d388f54d135cd"
+      "sha256": "1459e3b16c323b1cf41ec45076529cfe3f66d87b08cb8b485fc513302809b9c5"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1279,7 +1279,7 @@
     {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
-      "sha256": "cc93b5b4dbbe6fd835b89b448d1c7060279b8ed863daad029b5174254f5c06f2"
+      "sha256": "de2d21de9fd6227247527a236bd8ebad420e74e2b19287a19dc23e6140939ec3"
     },
     {
       "path": "scripts/ops/capture_offline_learning_representation_context_v1.py",
@@ -2797,6 +2797,11 @@
       "sha256": "7a627bcdb9a0716a77c5b5c5c4dd963dd7bf74117cf78fbee6cddab4a6a4e7d3"
     },
     {
+      "path": "src/research/offline_recorded_mark_horizon_source_v1.py",
+      "before_sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
+      "sha256": "9f181956c1d1ae631bd0878e554b1da35a307a512e0b03138d2c4e1420e3dcba"
+    },
+    {
       "path": "src/risk_layer/kill_switch/core.py",
       "before_sha256": "050e370eba75fa418fc89a7c3860119178bdde6903c92bba2e1ed1089f340210",
       "sha256": "c171e4288eca2942dc955a377c3ce58147ae767eb32b8c5aa19897cfbcc2a05f"
@@ -3294,7 +3299,7 @@
     {
       "path": "tests/ops/test_capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
-      "sha256": "f18eaf5e17ba8c395fe27912ac18f8f063630d7b68680a782dcb5cd9a460c2be"
+      "sha256": "5938721b2be29f07e7af4222d127eca40b9d7c8461cee5db067472857c4b7b01"
     },
     {
       "path": "tests/ops/test_capture_offline_learning_representation_context_v1.py",

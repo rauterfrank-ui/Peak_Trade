@@ -4,6 +4,7 @@ from dataclasses import replace
 import hashlib
 import json
 import math
+from pathlib import Path
 
 import pytest
 
@@ -21,9 +22,17 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offl
     compose_recorded_market_context_v1,
     measure_recorded_market_horizon_v1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.venue_instrument_mapping_v1 import (
+    resolve_okx_venue_instrument_mapping_v1,
+)
 
 START = "2026-10-09T11:00:00Z"
 RECEIVED = "2026-10-09T13:00:05.000003+00:00"
+XPERP_INVENTORY = (
+    Path(__file__).parents[1]
+    / "fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1"
+    / "instruments_futures_live.json"
+)
 
 
 @pytest.fixture
@@ -49,16 +58,37 @@ def capture_args(tmp_path, monkeypatch):
             "uly": "ETH-USDT",
         },
     }
+    return with_binding(
+        {
+            "output": tmp_path / "archive",
+            "start_utc": START,
+            "hours": 2,
+            "binding_path": tmp_path / "binding.json",
+            "repository_sha": "a" * 40,
+        },
+        binding,
+    )
+
+
+def with_binding(args, binding):
     raw = json.dumps(binding).encode()
-    path = tmp_path / "binding.json"
-    path.write_bytes(raw)
+    args["binding_path"].write_bytes(raw)
+    return {**args, "binding_sha256": hashlib.sha256(raw).hexdigest()}
+
+
+@pytest.fixture
+def xperp_binding():
+    inventory = json.loads(XPERP_INVENTORY.read_bytes())["data"]
+    instrument = inventory[0]["instId"]
+    mapping = resolve_okx_venue_instrument_mapping_v1(
+        canonical_instrument_id=instrument, instruments_inventory=inventory
+    )
     return {
-        "output": tmp_path / "archive",
-        "start_utc": START,
-        "hours": 2,
-        "binding_path": path,
-        "binding_sha256": hashlib.sha256(raw).hexdigest(),
-        "repository_sha": "a" * 40,
+        "canonical_instrument_id": instrument,
+        "native_instrument_id": mapping.venue_instrument_id,
+        "venue": mapping.venue,
+        "mapping_digest": mapping.mapping_digest,
+        "instrument_metadata": inventory[0],
     }
 
 
@@ -74,7 +104,15 @@ def mark_page(query, *, omit_last=False):
     return 200, json.dumps({"code": "0", "data": rows}).encode()
 
 
-def test_captured_pages_feed_existing_measurement_with_their_own_clocks(capture_args):
+@pytest.mark.parametrize("is_xperp", [False, True], ids=["legacy-swap", "current-i17-xperp"])
+def test_captured_pages_feed_existing_measurement_with_their_own_clocks(
+    capture_args, xperp_binding, is_xperp
+):
+    if is_xperp:
+        capture_args = with_binding(capture_args, xperp_binding)
+    binding = json.loads(capture_args["binding_path"].read_bytes())
+    native = binding["native_instrument_id"]
+    price_unit = "USD per ETH" if is_xperp else "USDT per ETH"
     queries = []
 
     def fetch(query):
@@ -83,6 +121,7 @@ def test_captured_pages_feed_existing_measurement_with_their_own_clocks(capture_
 
     manifest = capture.capture_public_mark_window_v1(**capture_args, fetch_page=fetch)
     assert manifest["available_at_utc"] == RECEIVED
+    assert [q["instId"] for q in queries] == [native, native]
     assert [q["limit"] for q in queries] == ["100", "20"]
     assert int(queries[0]["after"]) - int(queries[1]["after"]) == 100 * 60_000
     archive = capture.read_captured_mark_archive_v1(capture_args["output"])
@@ -91,13 +130,13 @@ def test_captured_pages_feed_existing_measurement_with_their_own_clocks(capture_
         "market_identity": {
             "dataset_generation": "archive.fixture",
             "venue": "OKX",
-            "instrument_ref": "inst-eth-usdt-perp",
-            "native_instrument_ref": "ETH-USDT-SWAP",
+            "instrument_ref": binding["canonical_instrument_id"],
+            "native_instrument_ref": native,
         },
         "horizon_start_time_utc": START,
         "n_bars": 2,
         "o4_interval_id": "PT1H",
-        "price_unit": "USDT per ETH",
+        "price_unit": price_unit,
         "price_family": "MARK_PRICE",
         "source_kind": "RECORDED_PUBLIC_MD",
         "max_end_age_seconds": 300,
@@ -117,6 +156,7 @@ def test_captured_pages_feed_existing_measurement_with_their_own_clocks(capture_
         "2026-10-09T13:00:05.000003Z",
         "2026-10-09T13:00:03.000002Z",
     ]
+    assert all(row["price_unit"] == price_unit for row in measured["source_receipts"])
     context = compose_recorded_market_context_v1(
         archive=archive,
         identity=MarketIdentityV1(**request["market_identity"]),
@@ -129,6 +169,67 @@ def test_captured_pages_feed_existing_measurement_with_their_own_clocks(capture_
     assert context["as_of"] == "2026-10-09T13:00:05.000003Z"
     assert capture.capture_public_mark_window_v1(**capture_args, fetch_page=fetch) == manifest
     assert len(queries) == 2
+    if is_xperp:
+        with pytest.raises(ValueError, match="^MARKET_SOURCE_PRICE_UNIT_OR_FAMILY_MISMATCH$"):
+            measure_recorded_market_horizon_v1(
+                archive=archive,
+                request={**request, "price_unit": "USDT per ETH"},
+                evaluated_at_utc=RECEIVED,
+            )
+        log = json.loads(archive.request_log_path.read_bytes())
+        log[0]["request_host"] = "www.okx.com"
+        raw = json.dumps(log).encode()
+        wrong_host_log = archive.request_log_path.with_name("wrong-host.json")
+        wrong_host_log.write_bytes(raw)
+        with pytest.raises(ValueError, match="^ORIGINAL_REQUEST_CONTRACT_MISMATCH$"):
+            measure_recorded_market_horizon_v1(
+                archive=replace(
+                    archive,
+                    request_log_path=wrong_host_log,
+                    request_log_sha256=hashlib.sha256(raw).hexdigest(),
+                ),
+                request=request,
+                evaluated_at_utc=RECEIVED,
+            )
+
+
+@pytest.mark.parametrize(
+    "binding_patch,metadata_patch",
+    [
+        ({"canonical_instrument_id": "inst-eth-usdt-perp"}, {}),
+        ({"mapping_digest": "0" * 64}, {}),
+        ({}, {"instType": "SWAP"}),
+        ({}, {"ctType": "inverse"}),
+        ({}, {"settleCcy": "USDT"}),
+        ({}, {"uly": "ETH-USDT"}),
+        ({}, {"state": "suspend"}),
+        (
+            {
+                "canonical_instrument_id": "ETH-USD_UM_XPERP-310328",
+                "native_instrument_id": "ETH-USD_UM_XPERP-310328",
+            },
+            {"instId": "ETH-USD_UM_XPERP-310328"},
+        ),
+    ],
+)
+def test_wrong_xperp_binding_is_rejected_before_fetch_or_publish(
+    capture_args, xperp_binding, binding_patch, metadata_patch
+):
+    args = with_binding(
+        capture_args,
+        {
+            **xperp_binding,
+            **binding_patch,
+            "instrument_metadata": {**xperp_binding["instrument_metadata"], **metadata_patch},
+        },
+    )
+
+    def must_not_fetch(_query):
+        pytest.fail("must reject the binding before the first request")
+
+    with pytest.raises(ValueError, match="^PILOT_INSTRUMENT_BINDING_MISMATCH$"):
+        capture.capture_public_mark_window_v1(**args, fetch_page=must_not_fetch)
+    assert not args["output"].exists()
 
 
 def test_incomplete_window_is_not_published(capture_args):

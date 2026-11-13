@@ -13,9 +13,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from src.ops.economic_md_input_producer_v1.constants_v1 import PUBLIC_HTTP_HOST
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.error_classes_v1 import (
+    MarketDataBindingErrorV1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.venue_instrument_mapping_v1 import (
+    resolve_okx_venue_instrument_mapping_v1,
+)
 from src.research.offline_n_bars_semantic_repair_v1 import RECORDED, canonical, digest_bytes
 
 ENDPOINT = "/api/v5/market/history-mark-price-candles"
+LEGACY_NATIVE_INSTRUMENT = "ETH-USDT-SWAP"
 
 
 def utc_seconds(value: str) -> float:
@@ -34,6 +42,60 @@ def read_bound_json(path: Path, expected_sha256: str) -> Any:
     if digest_bytes(raw) != expected_sha256:
         raise ValueError("SOURCE_SHA256_MISMATCH")
     return json.loads(raw)
+
+
+def recorded_mark_price_unit_v1(
+    *,
+    instrument_binding: Mapping[str, Any],
+    canonical_instrument_id: str,
+    native_instrument_id: str,
+) -> str:
+    """Validate the exact archived market before capture or offline replay."""
+    binding = instrument_binding
+    metadata = binding.get("instrument_metadata")
+    mismatch = "PILOT_INSTRUMENT_BINDING_MISMATCH"
+    if (
+        not isinstance(canonical_instrument_id, str)
+        or not canonical_instrument_id
+        or binding.get("canonical_instrument_id") != canonical_instrument_id
+        or binding.get("native_instrument_id") != native_instrument_id
+        or binding.get("venue") != "OKX"
+        or not isinstance(metadata, Mapping)
+        or metadata.get("instId") != native_instrument_id
+    ):
+        raise ValueError(mismatch)
+    if native_instrument_id == LEGACY_NATIVE_INSTRUMENT:
+        if (
+            metadata.get("instType") != "SWAP"
+            or metadata.get("settleCcy") != "USDT"
+            or metadata.get("uly") != "ETH-USDT"
+        ):
+            raise ValueError(mismatch)
+        return "USDT per ETH"
+    if (
+        canonical_instrument_id != native_instrument_id
+        or metadata.get("instType") != "FUTURES"
+        or metadata.get("ctType") != "linear"
+        or metadata.get("settleCcy") != "USD"
+        or metadata.get("uly") != "ETH-USD"
+    ):
+        raise ValueError(mismatch)
+    try:
+        mapping = resolve_okx_venue_instrument_mapping_v1(
+            canonical_instrument_id=canonical_instrument_id,
+            instruments_inventory=[metadata],
+        )
+    except MarketDataBindingErrorV1 as exc:
+        raise ValueError(mismatch) from exc
+    if (
+        mapping.venue_instrument_id != native_instrument_id
+        or mapping.instrument_type != metadata["instType"]
+        or mapping.contract_family != "xperp"
+        or mapping.settlement_currency != metadata["settleCcy"]
+        or mapping.mapping_digest != binding.get("mapping_digest")
+    ):
+        raise ValueError(mismatch)
+    return "USD per ETH"
 
 
 def aggregate_recorded_mark_minutes(
@@ -58,19 +120,11 @@ def aggregate_recorded_mark_minutes(
     start = utc_seconds(horizon_start_utc)
     if start % 3600:
         raise ValueError("EXPLICIT_HOURLY_GRID_REQUIRED")
-    binding = instrument_binding
-    metadata = binding.get("instrument_metadata") or {}
-    if (
-        binding.get("canonical_instrument_id") != canonical_instrument_id
-        or binding.get("native_instrument_id") != native_instrument_id
-        or metadata.get("instId") != native_instrument_id
-        or metadata.get("instType") != "SWAP"
-        or metadata.get("settleCcy") != "USDT"
-        or metadata.get("uly") != "ETH-USDT"
-        or native_instrument_id != "ETH-USDT-SWAP"
-        or binding.get("venue") != "OKX"
-    ):
-        raise ValueError("PILOT_INSTRUMENT_BINDING_MISMATCH")
+    price_unit = recorded_mark_price_unit_v1(
+        instrument_binding=instrument_binding,
+        canonical_instrument_id=canonical_instrument_id,
+        native_instrument_id=native_instrument_id,
+    )
     end = start + n_bars * 3600
     selected: dict[int, dict[str, Any]] = {}
     page_proofs = []
@@ -86,6 +140,10 @@ def aggregate_recorded_mark_minutes(
             or record.get("http_status") != 200
             or record.get("okx_code") != "0"
             or payload.get("code") != "0"
+            or (
+                native_instrument_id != LEGACY_NATIVE_INSTRUMENT
+                and record.get("request_host") != PUBLIC_HTTP_HOST
+            )
         ):
             raise ValueError("ORIGINAL_REQUEST_CONTRACT_MISMATCH")
         received = utc_seconds(record["response_time_utc"])
@@ -130,7 +188,7 @@ def aggregate_recorded_mark_minutes(
         "canonical_instrument_id": canonical_instrument_id,
         "venue_instrument_id": native_instrument_id,
         "venue": "OKX",
-        "price_unit": "USDT per ETH",
+        "price_unit": price_unit,
         "price_basis": "EXPLICIT_BAR_CLOSE",
         "price_family": "MARK_PRICE",
         "input_interval": "PT1M",
