@@ -207,7 +207,7 @@ def authenticated_host(tmp_path, monkeypatch):
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=24, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=25, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
@@ -1135,6 +1135,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "incomplete-page",
         "existing-post-scope",
         "double-play-close",
+        "double-play-net",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1149,7 +1150,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
-    close_case = path == "double-play-close"
+    close_case = path in {"double-play-close", "double-play-net"}
     managed_case = path == "managed-r04"
     standing = path in {"standing", "managed-r04"}
     send_root = tmp_path / "send" if managed_case else None
@@ -1345,6 +1346,8 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
             "tradeId": "22",
             "uTime": str(timestamp - 500),
         }
+        if path == "double-play-net":
+            position.update(posId="8923", cTime=str(timestamp - 1000), ccy="USDC")
 
         def filled_entry_body(endpoint, params):
             response = json.loads(original_body(endpoint, params))
@@ -1361,6 +1364,8 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                             fillTime=str(timestamp - 1000),
                             posSide="net",
                             side="buy" if long else "sell",
+                            fee="-0.03",
+                            feeCcy="USDC",
                         )
             return json.dumps(response).encode()
 
@@ -1368,7 +1373,8 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", lambda: clock[0].isoformat())
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=84 if close_case else 26, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=(85 if path == "double-play-net" else 84) if close_case else 26,
+        k1_lookup_backend=_FakeKeychainBackend(),
     ) as (transport, _):
         source = K1AccountObservationSourceV1(
             credential=transport._handle,
@@ -1409,10 +1415,10 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     proof=proofs[rid],
                     quantity=quantity,
                     polled=True,
-                    dispatch="readback-flat",
+                    dispatch="readback-booked" if path == "double-play-net" else "readback-flat",
                     opener=opener,
                 )
-                assert transport.methods_used == ["GET"] * 84
+                assert transport.methods_used == ["GET"] * (85 if path == "double-play-net" else 84)
                 assert host.owner.active_sum_v1() == held
                 return
             if path in {"no-custody", "foreign-product-row"}:
@@ -1811,6 +1817,10 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-kill", None),
         ("polled-mark-close-stale-position", None),
         ("polled-mark-close-readback-flat", None),
+        ("polled-mark-close-readback-booked", None),
+        ("polled-mark-close-readback-history-missing", None),
+        ("polled-mark-close-readback-history-conflict", None),
+        ("polled-mark-close-readback-history-foreign", None),
         ("polled-mark-close-readback-partial", None),
         ("polled-mark-close-readback-unseen", None),
         ("polled-mark-close-readback-missing-fill", None),
@@ -1864,6 +1874,14 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "tradeId": "23" if fault == "wrong-position-trade" else "22",
         "uTime": str(stamp - 500),
     }
+    with_history = dispatch in {
+        "readback-booked",
+        "readback-history-missing",
+        "readback-history-conflict",
+        "readback-history-foreign",
+    }
+    if with_history:
+        position.update(posId="8923", cTime=str(filled_at), ccy="USDT")
     host.fetch = _fetch(uid=scope.account, positions=(position,))
 
     def entry_body(path, params):
@@ -1886,6 +1904,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
                         side="buy" if long else "sell",
                         posSide="net",
                         fillTime=str(stamp + 1 if fault == "future-fill" else filled_at),
+                        fee="-0.03",
+                        feeCcy="USDT",
                     )
         return json.dumps(response).encode()
 
@@ -1957,7 +1977,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
             opener=opener,
         )
         assert len(opener.requests) - request_count == (
-            18 if dispatch and dispatch.startswith("readback-") else 12
+            18 + int(with_history) if dispatch and dispatch.startswith("readback-") else 12
         )
         assert host.owner.active_sum_v1() == held
         return
@@ -2435,6 +2455,7 @@ def _assert_restarted_close_readback(
     envelope = context.execution.envelope
     _, bound = context.lane_pair
     product = "SWAP" if envelope.instrument_id.endswith("-SWAP") else "FUTURES"
+    currency = "USDC" if product == "FUTURES" else "USDT"
     quantity = Decimal(envelope.quantity)
     partial = case in {"partial", "stale-residual"}
     filled = quantity / 2 if partial else quantity
@@ -2464,16 +2485,53 @@ def _assert_restarted_close_readback(
         "fillTime": str(stamp + 400),
         "fillPnl": "0.15",
         "fee": "-0.02",
-        "feeCcy": "USDC",
+        "feeCcy": currency,
     }
     original_body = opener.body
+    with_history = case == "booked" or case.startswith("history-")
 
     def close_body(path, params):
         if path.endswith("/config"):
             return original_body(path, params)
         assert params["instId"] == envelope.instrument_id
         code, rows = "0", []
-        if case == "unseen":
+        if path.endswith("/positions-history"):
+            assert with_history
+            assert params == {
+                "instId": envelope.instrument_id,
+                "instType": product,
+                "mgnMode": "cross",
+                "posId": "8923",
+                "limit": "100",
+            }
+            if case != "history-missing":
+                rows = [
+                    {
+                        "instId": envelope.instrument_id if case != "history-foreign" else "other",
+                        "instType": product,
+                        "posSide": "net",
+                        "mgnMode": "cross",
+                        "ccy": currency,
+                        "direction": "long" if envelope.side == "sell" else "short",
+                        "posId": "8923",
+                        "cTime": str(stamp - 1000),
+                        "uTime": str(stamp + 500),
+                        "type": "2",
+                        "openMaxPos": str(quantity),
+                        "closeTotalPos": str(quantity),
+                        "pnl": "0.15",
+                        "fee": "-0.05",
+                        "fundingFee": "-0.01",
+                        "liqPenalty": "0",
+                        "settledPnl": "0.04" if product == "FUTURES" else "",
+                        "realizedPnl": "0.13"
+                        if product == "FUTURES"
+                        else "0.99"
+                        if case == "history-conflict"
+                        else "0.09",
+                    }
+                ]
+        elif case == "unseen":
             if path.endswith("/order"):
                 code = "51603"
         elif path.endswith("/order") or (
@@ -2527,7 +2585,7 @@ def _assert_restarted_close_readback(
     request_count = len(opener.requests)
     held = original_host.owner.active_sum_v1()
     original_host.close()
-    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(
+    run_args = dict(
         config=config,
         origin_main_sha=original_host.repository_sha,
         bound=bound,
@@ -2545,12 +2603,17 @@ def _assert_restarted_close_readback(
         skip_owner_go_validation=True,
         occupied_mark_proof_root=proof_root,
     )
+    resumed = supervisor.run_n1_standing_pre_external_supervisor_v1(**run_args)
     readback = resumed.close_readback
     assert readback is not None
     assert (
         readback.status
         == {
             "flat": "CLOSE_FLAT_CONFIRMED",
+            "booked": "CLOSE_NET_BOOKED",
+            "history-missing": "CLOSE_FLAT_CONFIRMED",
+            "history-conflict": "CLOSE_FLAT_CONFIRMED",
+            "history-foreign": "CLOSE_FLAT_CONFIRMED",
             "partial": "CLOSE_PARTIAL",
             "unseen": "CLOSE_AWAITING_VENUE",
             "missing-fill": "CLOSE_READBACK_BLOCKED",
@@ -2561,14 +2624,18 @@ def _assert_restarted_close_readback(
         }[case]
     ), readback.reason_codes
     assert readback.envelope_digest == envelope.envelope_digest
-    assert resumed.ok is (case == "flat")
+    assert resumed.ok is (case == "flat" or with_history)
     assert resumed.trace.post_count == 0 and not resumed.owner_go_consumed
     assert resumed.policy_result is None
-    assert restarted_hosts[-1].closed and restarted_hosts[-1].owner is None
+    assert restarted_hosts[-1].closed
+    if restarted_hosts[-1].owner is not None:
+        assert restarted_hosts[-1].owner.active_sum_v1() == held
     assert original_host.owner.active_sum_v1() == held
     assert load_external_effect_durable_consume_v1(store_root=store_root) == original_send
-    assert len(opener.requests) - request_count == (0 if case == "not-sent" else 6)
-    if case == "flat":
+    assert len(opener.requests) - request_count == (
+        0 if case == "not-sent" else 6 + int(with_history)
+    )
+    if case == "flat" or with_history:
         assert readback.remaining_quantity == 0 and readback.filled_quantity == quantity
         path = readback.proof_path
         assert stat.S_IMODE(path.stat().st_mode) == 0o600
@@ -2579,8 +2646,28 @@ def _assert_restarted_close_readback(
         )
         assert [
             (row["endpoint"], sha256(row["body"].encode()).hexdigest()) for row in record["gets"]
-        ] == opener.requests[-6:]
+        ] == opener.requests[request_count : request_count + 6]
         assert json.loads(record["gets"][3]["body"])["data"] == [fill]
+        if case == "booked":
+            booking = readback.net_booking
+            assert booking["net_result"] == ("0.13" if product == "FUTURES" else "0.09")
+            assert booking["currency"] == currency
+            assert booking["episode_id"] == context.execution.l10_close.episode.episode_id
+            assert booking["reservation_id"] == context.authenticated_entry.proof.reservation_id
+            assert booking["slot_id"] == "LANE_1"
+            assert resumed.trace.extra["close_booking_digest"] == booking["booking_digest"]
+            database = original_host.root / "owner" / "reservations.sqlite3"
+            committed = database.read_bytes()
+            before = len(opener.requests)
+            replay = supervisor.run_n1_standing_pre_external_supervisor_v1(
+                **{**run_args, "config": replace(config, evidence_root=tmp_path / "restart-again")}
+            )
+            assert replay.close_readback == readback
+            assert len(opener.requests) == before
+            assert database.read_bytes() == committed
+        else:
+            assert readback.net_booking is None
+            assert readback.reason_codes[0] == "L10_CLOSE_NET_BOOKING_PENDING"
     else:
         assert readback.proof_path is None
         assert not list(proof_root.glob("close-*.json"))

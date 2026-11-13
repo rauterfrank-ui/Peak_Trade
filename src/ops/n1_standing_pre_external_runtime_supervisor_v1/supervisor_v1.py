@@ -134,8 +134,10 @@ def _record_supervisor_outcome_v1(run):
         elif result.close_readback is not None:
             reason = result.close_readback.status
             action = "Keep the original close and reconcile venue custody before any continuation."
-            if result.ok:
-                action = "Hand the authenticated flat close to the original accounting owner."
+            if reason == "CLOSE_NET_BOOKED":
+                action = "Retain the original booking for the governed continuation."
+            elif reason == "CLOSE_FLAT_CONFIRMED":
+                action = "Resolve the missing settlement evidence before continuation."
         elif result.resumed_position_management_close is not None:
             reason = "OCCUPIED_SCOPE_CLOSE_RECOVERED"
             action = (
@@ -428,8 +430,12 @@ def run_n1_standing_pre_external_supervisor_v1(
                     trace.terminal_disposition = close_readback.status
                     trace.extra["close_envelope_digest"] = close_readback.envelope_digest
                     trace.extra["close_readback_reasons"] = list(close_readback.reason_codes)
+                    if close_readback.net_booking is not None:
+                        trace.extra["close_booking_digest"] = close_readback.net_booking[
+                            "booking_digest"
+                        ]
                     return StandingSupervisorRunResultV1(
-                        ok=close_readback.status == "CLOSE_FLAT_CONFIRMED",
+                        ok=close_readback.status in {"CLOSE_FLAT_CONFIRMED", "CLOSE_NET_BOOKED"},
                         run_id=run_id,
                         trace=trace,
                         recovery=None,

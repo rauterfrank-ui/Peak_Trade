@@ -19,6 +19,24 @@ Production/scoped runs require:
 
 The launcher performs **one supervisor session** (recovery → public refresh → pretrade refresh → policy-governed continuous run). It does not activate POST or flip `CONTINUOUS_RUN_AUTHORIZED`.
 
+## Recovery of a submitted Double Play close
+
+When the scoped supervisor is explicitly supplied the private occupied-mark
+proof root, it recovers the original L10 close before admitting another cycle.
+After exact order and fill reconciliation and confirmed flat, it reads the
+authenticated OKX closed position for the original entry episode. The existing
+reservation owner verifies the episode, settlement currency, fill PnL and
+entry/close fees against the history row. Funding and futures settlement must
+reconcile with the venue's realized PnL.
+
+`CLOSE_NET_BOOKED` records the native-currency net result once in the original
+owner's durable store. Restart replays the stored proof and booking without
+another GET or economic write. `CLOSE_FLAT_CONFIRMED` with
+`L10_CLOSE_NET_BOOKING_PENDING` retains the confirmed close while settlement
+evidence is missing or inconsistent. Partial fills do not book. This step
+does not release the capital hold, convert currencies, authorize a counter
+order or activate the standing profile.
+
 ## WP-02 seam (CURRENT-WP-02 closed)
 
 When `StandingSupervisorConfigV1.wp02_productive_default_enabled=true` (default) and
