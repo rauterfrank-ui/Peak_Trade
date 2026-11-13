@@ -49,7 +49,7 @@ replay reference is the first native result. The backtest comparison
 reference remains the measured configuration. The result keeps economic
 qualification blocked and carries authority `NONE`.
 
-Outputs are under `offline-ddo-research/<cycle>` in the offline root. A retry
+Outputs are under the cycle directory inside `offline-ddo-research`. A retry
 with identical bindings reads the original baseline, owner records and
 receipts. A conflicting request for the same cycle is rejected. If either
 search is exhausted, the result retains that disposition. An interrupted
