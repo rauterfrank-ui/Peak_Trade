@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import sys
 import json
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -259,7 +260,7 @@ def test_end_to_end_materialize_to_autobind_consumer(
 
 def test_materializer_and_projection_have_no_forbidden_imports() -> None:
     for relative in (
-        "src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_v1.py",
+        "src/webui/workflow_dashboard_readmodel_v1/safety_authority_presentation_projection_v1.py",
         "src/ops/presentation_archive_materializers_v1/"
         "safety_authority_presentation_projection_materializer_v1.py",
     ):
@@ -284,8 +285,13 @@ def test_materializer_and_projection_have_no_forbidden_imports() -> None:
                     "evaluate_offline_killswitch_boundary_v0",
                     "bind_killswitch_boundary_offline_replay_evidence_v0",
                 }
-        for module in imported:
-            root = module.split(".", 1)[0]
-            assert root not in {"trading", "src", "risk_layer"}
-            assert not module.startswith("src.risk_layer")
-            assert "killswitch_boundary" not in module
+        local_imports = {
+            module for module in imported if module.split(".", 1)[0] not in sys.stdlib_module_names
+        }
+        if path.name.endswith("_materializer_v1.py"):
+            assert local_imports == {
+                "src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1",
+                "src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1",
+            }
+        else:
+            assert not local_imports

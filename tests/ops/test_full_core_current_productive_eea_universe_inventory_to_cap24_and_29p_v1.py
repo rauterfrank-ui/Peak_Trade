@@ -100,8 +100,7 @@ SPEC_PATH = (
     / "specs"
     / "FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md"
 )
-ATLAS_PATH = REPO_ROOT / "docs" / "system_atlas" / "entities" / "catalog.yaml"
-CZ_HEADING = "### 11.2.1.CZ FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P"
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/source/boundaries.json"
 _TEST_TD = "cross"
 _EXPECTED_SELECTED = "ADA-USDT-SWAP"
 PROTECTED_ALGORITHM_FILES = (
@@ -471,16 +470,24 @@ def test_ssot_docs_once_present() -> None:
     runbook = RUNBOOK_PATH.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert (
-        CZ_HEADING in runbook or "EEA_UNIVERSE_INVENTORY_TO_CAP24" in runbook or SPEC_PATH.is_file()
-    )
-    assert SPEC_PATH.name in mot or "NAVIGATION_ONLY" in mot or "MAP_OF_TRUTH" in mot
+    atlas = json.loads(ATLAS_PATH.read_text(encoding="utf-8"))
+    assert "### Daten und Instrumentbindung" in runbook and "BoundInstrumentV1" in runbook
+    assert "MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY" in mot
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1" in spec
     )
-    assert "11.2.1.CZ" in atlas
-    assert "current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py" in atlas
+    assert "11.2.1.CZ" in spec
+    assert atlas["runtime_authorization_effect"] == "NONE"
+    handoff = next(row for row in atlas["routes"] if row["id"] == "HANDOFF-H034")
+    assert handoff["original_direction"] == [
+        "eea_universe_inventory_acquisition_v1",
+        "cap21_cap23_productive_persistence_v1",
+    ]
+    assert {
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/"
+        "current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+    } <= {ref["path"] for ref in handoff["source_refs"]}
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["CANARY_INSTRUMENT_AUTHORITY_IMPORTED"] == "false"

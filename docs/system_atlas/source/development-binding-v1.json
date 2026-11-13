@@ -2772,6 +2772,21 @@
       "sha256": "037650213d00b976a16e686ee82871427898137a808bf53c74b4b41ee209f6e4"
     },
     {
+      "path": "tests/conftest.py",
+      "before_sha256": "217d7e2f0f81bddc40afcfabaa00f9db6b0f7461b7e68e747de8dd2c6dd0e4d3",
+      "sha256": "b07d385fc3283f54cfaa4ff8e02676a1603119b10f4d9a25b14e72110d13e554"
+    },
+    {
+      "path": "tests/core/test_kraken_legacy_default_and_ccxt_fallback_removal_v1.py",
+      "before_sha256": "65c8b00174e7a678dea11657ccbde616472fab4de9223102301d1487c071d7ff",
+      "sha256": "cf3dc4d324eaa6790c98782ed6bc5c039e123796f26a4842e9a4264aaae72e60"
+    },
+    {
+      "path": "tests/core/test_pkg_noncore_authority_quarantine_tests_only_v1.py",
+      "before_sha256": "03c1fd1db9b5f83277ddea0fbcbc2ac3a31406867c63615ea6e3f4927488a2e5",
+      "sha256": "67dfa51209cdd177357bdf699caa596f275428f0106372ed48e907c26be42ca3"
+    },
+    {
       "path": "tests/experiments/test_canonical_f2_research_backtest_cost_grid_v1.py",
       "before_sha256": "a2cf3c4a1c915b8be89b36a1d7a7557f86af79643b2a3479e597326d7336dc87",
       "sha256": "d26cb8ce02e2861f0fb84a6d625671c186769bc3af50079352daf731585287cd"
@@ -3397,6 +3412,11 @@
       "sha256": "3daa03739fb939c4a67fdd34d53b6a1a17a61ed8721b4e6deb43b014f56fa752"
     },
     {
+      "path": "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+      "before_sha256": "2d6ad74a814ae6f6c27ca038138f7693eec4e7eef280be000c88f88a611f39a0",
+      "sha256": "79097811f6e8c682127b9078459a28b2a421ad28d8ed2490c98e4d4f6ddeaeb6"
+    },
+    {
       "path": "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "beb00efe934c30829ce9fa92291ce4261645045cec873abf376a4f15e4f5ebd3",
       "sha256": "a0c2dc285f680f68845f6523dd5c2a8f414f101a21902a5809bec2803a320153"
@@ -3877,6 +3897,36 @@
       "sha256": "127084d293999f1bea9d74737f7dd0d32f1a237c80ad6f62d2e9ca023ba3d1ca"
     },
     {
+      "path": "tests/webui/test_bull_bear_regime_presentation_projection_materializer_v1.py",
+      "before_sha256": "8e42b1c30a9007b596390ffb58abf5a7b5645035331c69cc9ddd98849eb31707",
+      "sha256": "05714ea2e21f4a0f9d4cef09c15291772674c9592e0e39c9066c22b3a98d3c3d"
+    },
+    {
+      "path": "tests/webui/test_canonical_decision_presentation_projection_materializer_v1.py",
+      "before_sha256": "fa7039784f666a5682123ebf3312fd6e26ba6e86e36b7f752c38460cb564eb7d",
+      "sha256": "0aab02b2d2e2c88b08fa57a7932a69577a2a2661588692087a884a5a0d2c3ef2"
+    },
+    {
+      "path": "tests/webui/test_double_play_presentation_projection_materializer_v1.py",
+      "before_sha256": "acf91a5c1aee6da37d1a1b94c99f5c1b539fddf0eabedc6103c2a2d36d294eb9",
+      "sha256": "f116270d315efff915015f2587a1a2b4045bb24946a08bbb069f6fa23c053376"
+    },
+    {
+      "path": "tests/webui/test_dynamic_scope_presentation_projection_materializer_v1.py",
+      "before_sha256": "6dee18ec469ac8cfd2a22aca63aecfc9d86027fb429c415ed2f04519b85776b2",
+      "sha256": "624f65fca4de58586feb56a03d0c1edebd1bc84d639ff8009ef84aee48102d56"
+    },
+    {
+      "path": "tests/webui/test_economic_summary_presentation_projection_materializer_v1.py",
+      "before_sha256": "97408c6b821bbd7d045c82f05540fd17bc7fd0603084b9ff2e6e6455f73745e4",
+      "sha256": "d2f34eeb66cbf42312ac78ccbcb3b697c8dc58157111a7318518dcaea4b07821"
+    },
+    {
+      "path": "tests/webui/test_execution_reconciliation_presentation_projection_materializer_v1.py",
+      "before_sha256": "4195bccf8ad8ffc95b384028aa7e68f379dc5473c0f57809dc1571ae0737c499",
+      "sha256": "767ce0161b8d1cc88c586591c7c399b55b4eb80f1c3d3e0b7f07752900c8dd28"
+    },
+    {
       "path": "tests/webui/test_flat_position_live_mark_semantics_v1.py",
       "before_sha256": null,
       "sha256": "71ad04f51b04a61f21f770ce246aeedaa51b20de534c4ae0f7c548daabb20db0"
@@ -3885,6 +3935,16 @@
       "path": "tests/webui/test_ops_cockpit.py",
       "before_sha256": "92899d9cd47a7999e109da5ecb5d31332b9b390b1353f62f40f7513b5a7f137f",
       "sha256": "6731eb1e29d29b7fbc9792f0db6218ebeb3f8efb656ac899d8918ca567824b2b"
+    },
+    {
+      "path": "tests/webui/test_risk_sizing_capital_presentation_projection_materializer_v1.py",
+      "before_sha256": "b6f9789b69b63fe62593fa38d997aeb9ae66619c4d039375292c4ceb3544b7e4",
+      "sha256": "f209a14c247190215b95be11328a60735be9b4423d1b4e30f258cf7c4de1292c"
+    },
+    {
+      "path": "tests/webui/test_safety_authority_presentation_projection_materializer_v1.py",
+      "before_sha256": "0fdf902e9ad35c2c0b5ffb3f390320732fa46f5b091f047e462cbd0f7ad3a69d",
+      "sha256": "256d67f196efd68091d7ca470acd26b2641527a356a4e3ffa2e51d22aacf247c"
     },
     {
       "path": "uv.lock",
