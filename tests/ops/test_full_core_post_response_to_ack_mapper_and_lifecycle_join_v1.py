@@ -5,6 +5,7 @@ Non-networking fixtures only. REAL_POST_COUNT=0. No venue POST.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
@@ -58,12 +59,13 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import VenuePlanC
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
+from tests.ops._current_frozen_document_navigation_v1 import (
+    assert_current_frozen_document_navigation,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1.md"
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+ATLAS_PATH = REPO_ROOT / "docs/system_atlas/source/boundaries.json"
 MAPPER_PATH = (
     REPO_ROOT
     / "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py"
@@ -72,7 +74,6 @@ SEND_SEAM_PATH = (
     REPO_ROOT
     / "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
 )
-DW_HEADING = "### 11.2.1.DW FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN"
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
@@ -91,7 +92,6 @@ PROTECTED_AUTHORITY_FILES = (
     "src/governance/canonical_order_intent_v1.py",
     "src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/order_lifecycle_state_machine_v1.py",
     "src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/submission_semantics_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
 )
 SENT_CLORDID = "pt-fc-post-submit-join-ack-v1"
 VENUE_ORD_ID = "3926112627662393999"
@@ -295,6 +295,21 @@ def test_malformed_response_is_unknown() -> None:
     assert prove_unknown_blocks_blind_resubmit_v1(joined) is True
 
 
+@pytest.mark.parametrize("extra_row", [False, None, "unexpected"])
+def test_malformed_extra_row_cannot_turn_into_valid_ack(extra_row: object) -> None:
+    payload = {
+        "code": "0",
+        "data": [
+            {"sCode": "0", "ordId": "venue-order-id", "clOrdId": SENT_CLORDID},
+            extra_row,
+        ],
+    }
+    result = _post_result(payload=payload, http_status=200)
+    joined = join_full_core_post_result_to_lifecycle_v1(result=result, sent_clordid=SENT_CLORDID)
+    assert joined.typed_outcome == UNKNOWN
+    assert joined.recon_class == UNKNOWN_OUTCOME_RECON
+
+
 def test_timeout_exception_is_unknown() -> None:
     joined = join_full_core_post_result_to_lifecycle_v1(
         result=None,
@@ -316,6 +331,24 @@ def test_timeout_token_is_unknown() -> None:
     )
     assert joined.typed_outcome == UNKNOWN
     assert joined.reason == "TIMEOUT_AFTER_POSSIBLE_SEND"
+
+
+@pytest.mark.parametrize("transport_unknown", [False, True])
+def test_okx_endpoint_timeout_requires_reconciliation(transport_unknown: bool) -> None:
+    joined = join_full_core_post_result_to_lifecycle_v1(
+        result=_post_result(
+            payload={"code": "50004", "data": []},
+            http_status=400,
+            unknown_outcome=transport_unknown,
+        ),
+        sent_clordid=SENT_CLORDID,
+    )
+    assert joined.reason == "OKX_ENDPOINT_TIMEOUT_AFTER_POSSIBLE_SEND"
+    assert joined.typed_outcome == UNKNOWN
+    assert joined.recon_class == UNKNOWN_OUTCOME_RECON
+    assert joined.client_order_id == SENT_CLORDID
+    assert joined.restart_blocked and joined.exchange_query_before_retry_required
+    assert not joined.resubmit_allowed and not joined.fill_observed
 
 
 def test_clordid_mismatch_is_unknown_not_ack_or_reject() -> None:
@@ -463,21 +496,27 @@ def test_protected_surfaces_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
+    assert_current_frozen_document_navigation(
+        REPO_ROOT,
+        spec=SPEC_PATH,
+        owners=(MAPPER_PATH,),
+        expected_spec_identifier="DOCS_TOKEN_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1",
+    )
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DW_HEADING in runbook
-    assert "FULL_CORE_POST_RESPONSE_TO_ACK_MAPPER" in runbook
-    assert "ACKNOWLEDGED | REJECTED | UNKNOWN" in runbook
-    assert "UNKNOWN_SUBMIT_RESULT_NEVER_BLINDLY_RETRIED=true" in runbook
-    dw_section = runbook[runbook.index(DW_HEADING) : runbook.index("## 11.3 Autonomy state model")]
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in dw_section
-    assert "REAL_VENUE_POST_ALLOWED=false" in dw_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in dw_section
-    assert "POST_COUNT=0" in dw_section
-    assert "SECTION_11_14_PROMOTED=false" in dw_section
-    assert SPEC_PATH.name in mot
-    assert "DOCS_TOKEN_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1" in spec
-    assert "11.2.1.DW" in atlas
-    assert "full_core_post_response_to_ack_mapper_v1.py" in atlas
+    atlas = json.loads(ATLAS_PATH.read_text(encoding="utf-8"))
+    for token in (
+        "FULL_CORE_POST_RESPONSE_TO_ACK_MAPPER=true",
+        "ACKNOWLEDGED | REJECTED | UNKNOWN",
+        "UNKNOWN_SUBMIT_RESULT_NEVER_BLINDLY_RETRIED=true",
+        "EXCHANGE_QUERY_BEFORE_RETRY=true",
+        "EXTERNAL_EFFECT_AUTHORIZED=false",
+        "REAL_VENUE_POST_ALLOWED=false",
+        "STEP_29Q_STATUS=PLAN_ONLY",
+        "POST_COUNT=0",
+        "SECTION_11_14_PROMOTED=false",
+    ):
+        assert token in spec
+    assert atlas["authority"] == atlas["runtime_authorization_effect"] == "NONE"
+    (contract,) = [row for row in atlas["repo_contracts"] if row["id"] == "REPO-EXEC-ACCOUNTING"]
+    assert (contract["from"], contract["to"]) == ("EXEC", "ACCOUNTING")
+    assert MAPPER_PATH.relative_to(REPO_ROOT).as_posix() in contract["source_refs"]

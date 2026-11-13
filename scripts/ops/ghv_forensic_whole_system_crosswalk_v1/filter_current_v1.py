@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import PurePosixPath
 from typing import Any
 
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
+    ATLAS_BOUNDARIES,
     ATLAS_EPISTEMIC_EXCLUDE,
+    ATLAS_MODEL,
     ATLAS_RELATION_EPISTEMIC_ALLOW,
     CURRENT_CENSUS_STATUS_ALLOW,
     CURRENT_EPISTEMIC_ALLOW,
@@ -237,6 +240,11 @@ def atlas_entity_has_current_anchor(
             norm = _normalize_repo_path(str(raw))
             if norm in census_paths:
                 return True, f"path_anchor:{norm}"
+            # Census package entries denote a recursive subtree with a literal prefix.
+            for parent in PurePosixPath(norm).parents:
+                package_anchor = f"{parent}/**"
+                if package_anchor in census_paths:
+                    return True, f"path_anchor:{package_anchor}"
     return False, "no_verified_census_anchor"
 
 
@@ -247,7 +255,7 @@ def classify_atlas_entity(
     census_object_ids: set[str],
     census_paths: set[str],
 ) -> CurrentRelevanceVerdict:
-    artifact = "docs/system_atlas/entities/catalog.yaml"
+    artifact = ATLAS_MODEL
     epistemic = str(entity.get("epistemic_class") or entity.get("epistemic_status") or "").upper()
     if epistemic in ATLAS_EPISTEMIC_EXCLUDE or epistemic == "HISTORICAL":
         return CurrentRelevanceVerdict(
@@ -309,7 +317,7 @@ def classify_atlas_relation(
     evidence_revision: str,
     included_entity_ids: set[str],
 ) -> CurrentRelevanceVerdict:
-    artifact = "docs/system_atlas/relations/structural.yaml"
+    artifact = ATLAS_BOUNDARIES
     status = str(rel.get("epistemic_status") or "").upper()
     if status in ATLAS_EPISTEMIC_EXCLUDE:
         return CurrentRelevanceVerdict(

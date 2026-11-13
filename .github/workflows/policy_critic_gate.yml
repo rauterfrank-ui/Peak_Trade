@@ -153,7 +153,9 @@ jobs:
           )
 
           # Get changed files
-          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || echo "")
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" --)
+          echo "base_sha=$BASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "No files changed"
@@ -195,24 +197,21 @@ jobs:
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         id: critic
         continue-on-error: true
+        env:
+          BASE_SHA: ${{ steps.detect.outputs.base_sha }}
+          HEAD_SHA: ${{ steps.detect.outputs.head_sha }}
         run: |
           set -euo pipefail
 
-          # Run the existing Policy Critic script/module
-          # Adjust this to your actual Policy Critic invocation
-          if [ -f "scripts/ops/policy_critic.py" ]; then
-            python scripts/ops/policy_critic.py --pr-mode
-          else
-            echo "⚠️ Policy Critic script not found, using placeholder"
-            echo "In production, call your actual Policy Critic tool here"
-            exit 0
-          fi
+          changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- | paste -sd, -)"
+          git diff "$BASE_SHA" "$HEAD_SHA" -- |
+            python scripts/run_policy_critic.py --diff-stdin --changed-files="$changed_files"
 
       - name: Report Results
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
         run: |
-          if [ "${{ steps.critic.outcome }}" = "failure" ]; then
-            echo "❌ Policy Critic found issues in policy-sensitive paths"
+          if [ "${{ steps.critic.outcome }}" != "success" ]; then
+            echo "❌ Policy Critic did not complete successfully"
             exit 1
           else
             echo "✅ Policy Critic analysis passed"

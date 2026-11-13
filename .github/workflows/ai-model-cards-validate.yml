@@ -18,10 +18,29 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install pyyaml
-      - name: Validate AI model cards
+      - name: Check AI model card format
         run: |
-          if [ ! -f src/ops/p51/ai_model_cards_validate_v1.py ]; then
-            echo "p51 validator absent after KEEP29 external separation; no-op."
-            exit 0
-          fi
-          python -m src.ops.p51.ai_model_cards_validate_v1 --paths docs/ai/model_cards
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          cards = sorted(Path("docs/ai/model_cards").glob("*.y*ml"))
+          if not cards:
+              raise SystemExit("No AI model cards found.")
+          ids = set()
+          for path in cards:
+              card = yaml.safe_load(path.read_text(encoding="utf-8"))
+              if not isinstance(card, dict):
+                  raise SystemExit(f"{path}: expected a YAML mapping")
+              for key in ("id", "provider", "model", "purpose"):
+                  value = card.get(key)
+                  if not isinstance(value, str) or not value.strip():
+                      raise SystemExit(f"{path}: missing or invalid {key}")
+              for key in ("data_handling", "guardrails", "risk", "ops"):
+                  if not isinstance(card.get(key), dict) or not card[key]:
+                      raise SystemExit(f"{path}: missing or invalid {key}")
+              if card["id"] in ids:
+                  raise SystemExit(f"{path}: duplicate model card id")
+              ids.add(card["id"])
+          print(f"Validated the format of {len(cards)} AI model card(s).")
+          PY

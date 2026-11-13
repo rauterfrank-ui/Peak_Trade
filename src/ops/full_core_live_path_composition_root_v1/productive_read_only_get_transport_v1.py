@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import socket
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -37,6 +36,7 @@ AUTHORIZED_HOST = "eea.okx.com"
 REST_BASE = f"https://{AUTHORIZED_HOST}"
 USER_AGENT = "PeakTrade-FullCore-CZ-Productive-ReadOnly-GET/1"
 DEFAULT_TIMEOUT_SECONDS = 20.0
+# Retained for the scoped C1 evidence contract. The opener receives its own timeout.
 CONNECT_TIMEOUT_SECONDS = 10.0
 FORBIDDEN_METHODS = frozenset({"POST", "PUT", "DELETE", "PATCH"})
 # GET /api/v5/trade/order?instId=&clOrdId= is read-only exact-order lookup (not POST).
@@ -170,7 +170,6 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         self.request_count += 1
         self.methods_used.append(METHOD_GET)
         try:
-            socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 body = bytes(resp.read() or b"")
@@ -189,10 +188,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             status = int(getattr(exc, "code", 0) or 0)
             body = bytes(exc.read() or b"") if hasattr(exc, "read") else b""
             error_class = "AUTH_FAILURE" if status in {401, 403} else "HTTP_ERROR"
-        except (URLError, OSError, socket.timeout) as exc:
+        except (URLError, OSError) as exc:
             error_class = type(exc).__name__[:80]
-        finally:
-            socket.setdefaulttimeout(None)
         if any(method in FORBIDDEN_METHODS for method in self.methods_used):
             raise FullCoreProductiveReadOnlyGetError("NON_GET_FORBIDDEN")
         if body:

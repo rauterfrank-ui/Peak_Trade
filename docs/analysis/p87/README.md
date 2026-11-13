@@ -1,5 +1,9 @@
 # P87 — online-readiness-supervisor-plus-ingest-v1
 
+**Historical.** The P76 and P86 readiness chains are retired. The
+supervisor declines an armed start and retains its stop interface.
+The original commands below describe the former behavior.
+
 Supervisor nutzt standardmäßig den P86-Gate (Readiness + Ingest) statt nur P76 (Go/No-Go).
 
 ## Änderungen

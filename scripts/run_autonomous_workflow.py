@@ -39,14 +39,6 @@ from typing import Optional
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.autonomous import (
-    WorkflowEngine,
-    DecisionEngine,
-    MarketMonitor,
-    SignalMonitor,
-    PerformanceMonitor,
-)
-
 # Optional imports
 try:
     from src.notifications import Alert, ConsoleNotifier, FileNotifier, CombinedNotifier
@@ -384,6 +376,19 @@ def run_autonomous_loop(
 def main(argv=None) -> int:
     """Main entry point."""
     args = parse_args(argv)
+    try:
+        from src.autonomous import (
+            DecisionEngine,
+            MarketMonitor,
+            PerformanceMonitor,
+            SignalMonitor,
+            WorkflowEngine,
+        )
+    except ModuleNotFoundError as exc:
+        if exc.name != "src.autonomous":
+            raise
+        print("Autonomous workflow unavailable: src.autonomous is absent.", file=sys.stderr)
+        return 2
 
     # Register signal handlers
     signal.signal(signal.SIGINT, signal_handler)

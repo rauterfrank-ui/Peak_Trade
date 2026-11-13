@@ -178,7 +178,9 @@ class FixtureBackedOkxReadOnlyTransport:
             )
 
         return _result(
-            payload if isinstance(payload, dict) else _ok_payload(), fresh=fresh, endpoint=endpoint
+            {"code": "0", **payload} if isinstance(payload, dict) else _ok_payload(),
+            fresh=fresh,
+            endpoint=endpoint,
         )
 
 
@@ -409,6 +411,43 @@ def test_incomplete_pagination_halts() -> None:
     )
     assert dec.outcome == OUTCOME_HALTED_UNRESOLVED
     assert REASON_INCOMPLETE_PAGINATION in dec.reasons
+
+
+@pytest.mark.parametrize(
+    "bad_payload",
+    [
+        {"code": "0", "data": [False]},
+        {"code": "0", "data": {}},
+        {"code": "0"},
+        {"data": []},
+    ],
+)
+def test_malformed_pending_page_cannot_prove_reconciliation(bad_payload) -> None:
+    identity = _identity()
+
+    class MalformedPendingTransport(FixtureBackedOkxReadOnlyTransport):
+        def get(self, *, endpoint, **kwargs):
+            if endpoint.startswith(ENDPOINT_ORDERS_PENDING + "?"):
+                return _result(bad_payload, endpoint=endpoint)
+            return super().get(endpoint=endpoint, **kwargs)
+
+    fixture = OfflineExchangeFixtureV1(
+        order_history=_ok_payload([_order_row(state="canceled")]),
+    )
+    snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
+        identity=identity,
+        read_only_get_transport=MalformedPendingTransport(fixture),
+        pretrade_decision_id="pretrade-malformed-pending",
+    )
+    decision = adjudicate_full_core_exchange_reconciliation_v1(
+        identity=identity,
+        snapshot=snapshot,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert not snapshot.snapshot_freshness_proven
+    assert snapshot.api_errors
+    assert decision.outcome == OUTCOME_HALTED_UNRESOLVED
+    assert decision.exposure_retained
 
 
 def test_wrong_inst_id_row_records_conflict_not_silent() -> None:

@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
+    ATLAS_BOUNDARIES,
+    ATLAS_MODEL,
     COMPOSED_GRAPH_SCHEMA,
     CROSSWALK_AUTHORITY,
     MANIFEST_SCHEMA,
@@ -111,6 +113,7 @@ def _add_node(
     evidence_type: str,
     metadata: dict[str, Any],
     current_relevance: dict[str, Any],
+    observed: str = "OBSERVED",
 ) -> str | None:
     cfi = build_cfi_v1(
         entity_type=entity_type,
@@ -147,6 +150,7 @@ def _add_node(
                 native_id=native_id,
                 canonical_id=cfi,
                 evidence_type=evidence_type,
+                observed=observed,
                 activation_conditions=((act,) if act else ()),
             ),
         }
@@ -220,7 +224,9 @@ def run_forensic_crosswalk_v1(
     pt_launcher: Path | None = None,
 ) -> CrosswalkResultV1:
     output_dir.mkdir(parents=True, exist_ok=True)
-    sources = load_sources_v1(repo_root=repo_root, rules_path=rules_path)
+    sources = load_sources_v1(
+        repo_root=repo_root, rules_path=rules_path, include_atlas=include_atlas
+    )
     code_snap = build_code_snapshot_v1(
         repo_root=repo_root,
         census_doc=sources.census,
@@ -255,12 +261,22 @@ def run_forensic_crosswalk_v1(
         strict_repo_invariants=strict_repo_invariants,
         pt_launcher=pt if strict_repo_invariants else None,
     )
+    if strict_repo_invariants and include_atlas:
+        for label, revision in (
+            ("atlas_model", code_snap.atlas_model_revision),
+            ("atlas_boundaries", code_snap.atlas_revision),
+        ):
+            if revision != code_rev:
+                validation.snapshot_errors.append(
+                    f"{label}_revision_mismatch: head={code_rev} baseline={revision}"
+                )
     snapshot_binding_verified = len(validation.snapshot_errors) == 0
     if graph_mode == GraphMode.NAVIGATION_ONLY:
         validation.snapshot_errors = []
         validation.ok = (
             not validation.census_errors
             and not validation.landscape_errors
+            and not validation.atlas_errors
             and validation.every_required_validator_executed_and_passed
         )
         snapshot_binding_verified = False
@@ -303,7 +319,8 @@ def run_forensic_crosswalk_v1(
                     validation.every_required_validator_executed_and_passed
                 ),
                 "SOURCE_VALIDATION_PASS": validation_contract_ok,
-                "CENSUS_SUBPROCESS_EXECUTED": validation.census_subprocess_executed,
+                "CENSUS_SUBPROCESS_EXECUTED": False,
+                "ATLAS_SUBPROCESS_EXECUTED": validation.atlas_subprocess_executed,
                 "LANDSCAPE_SUBPROCESS_EXECUTED": validation.landscape_subprocess_executed,
                 "CENSUS_VALIDATOR_CONNECTED": validation.census_validator_connected,
                 "LANDSCAPE_VALIDATOR_CONNECTED": validation.landscape_validator_connected,
@@ -447,7 +464,7 @@ def run_forensic_crosswalk_v1(
                 continue
             verdict = classify_atlas_entity(
                 ent,
-                evidence_revision=atlas_revision,
+                evidence_revision=code_snap.atlas_model_revision,
                 census_object_ids=census_ids,
                 census_paths=census_paths,
             )
@@ -476,11 +493,12 @@ def run_forensic_crosswalk_v1(
                 native_id=str(ent["id"]),
                 snapshot_id=snapshot_id,
                 code_revision=code_rev,
-                artifact="docs/system_atlas/entities/catalog.yaml",
-                revision=atlas_revision,
-                evidence_type="CONTRACT_EVIDENCE",
+                artifact=ATLAS_MODEL,
+                revision=code_snap.atlas_model_revision,
+                evidence_type="STATIC_SOURCE_EVIDENCE",
                 metadata={"kind": kind, "name": ent.get("name")},
                 current_relevance=verdict.to_record(),
+                observed="INFERRED",
             )
             included_atlas_ids.add(str(ent["id"]))
             atlas_included += 1
@@ -522,12 +540,14 @@ def run_forensic_crosswalk_v1(
                     "causal_traversal_eligible": flags["causal_propagation_allowed"],
                     "provenance": _provenance(
                         tool="ghv_forensic_whole_system_crosswalk_v1",
-                        artifact="docs/system_atlas/relations/structural.yaml",
+                        artifact=ATLAS_BOUNDARIES,
                         revision=atlas_revision,
                         code_revision=code_rev,
                         native_id=str(rel.get("id")),
                         canonical_id=str(rel.get("id")),
-                        evidence_type="CONTRACT_EVIDENCE",
+                        evidence_type="STATIC_SOURCE_EVIDENCE",
+                        observed="INFERRED",
+                        limitations=("REPO_CONTRACT_NAVIGATION_ONLY",),
                         activation_conditions=((act,) if act else ()),
                     ),
                 }
@@ -604,7 +624,8 @@ def run_forensic_crosswalk_v1(
                     code_revision=code_rev,
                     native_id=str(edge.get("edge_id")),
                     canonical_id=str(edge.get("edge_id")),
-                    evidence_type="CONTRACT_EVIDENCE",
+                    evidence_type=note,
+                    observed="INFERRED",
                     activation_conditions=((act,) if act else ()),
                 ),
             }
@@ -688,7 +709,8 @@ def run_forensic_crosswalk_v1(
             "EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED": (
                 validation.every_required_validator_executed_and_passed
             ),
-            "CENSUS_SUBPROCESS_EXECUTED": validation.census_subprocess_executed,
+            "CENSUS_SUBPROCESS_EXECUTED": False,
+            "ATLAS_SUBPROCESS_EXECUTED": validation.atlas_subprocess_executed,
             "LANDSCAPE_SUBPROCESS_EXECUTED": validation.landscape_subprocess_executed,
             "CURRENT_RELEVANCE_VERIFIED": counts["CURRENT_ENTITIES_INCLUDED"]
             + counts["CURRENT_EDGES_INCLUDED"],

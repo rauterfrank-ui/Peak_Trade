@@ -8,7 +8,9 @@ from typing import Any
 
 
 def _git(repo_root: Path, *args: str) -> str:
-    return subprocess.check_output(["git", "-C", str(repo_root), *args], text=True).strip()
+    return subprocess.check_output(
+        ["git", "-C", str(repo_root), *args], text=True, stderr=subprocess.PIPE
+    ).strip()
 
 
 def classify_commit_message(subject: str) -> str:

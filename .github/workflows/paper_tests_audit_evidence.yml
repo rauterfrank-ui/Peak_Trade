@@ -37,6 +37,7 @@ jobs:
       PEAK_TRADE_LIVE_ENABLED: "false"
       PEAK_TRADE_LIVE_ARMED: "false"
       PT_DRY_RUN: "1"
+      EVI_DIR: "out/ops/gh_paper_tests_audit/${{ github.run_id }}_${{ github.run_attempt }}_py${{ matrix.python-version }}"
 
     strategy:
       fail-fast: false
@@ -67,7 +68,8 @@ jobs:
 
       - name: Paper Tests + Audit Evidence (offline)
         env:
-          EVI_DIR: "out/ops/gh_paper_tests_audit/${{ github.run_id }}_${{ github.run_attempt }}_py${{ matrix.python-version }}"
+          AUDIT_SCOPE: ${{ inputs.scope }}
+          AUDIT_NOTE: ${{ inputs.note }}
         run: |
           set -euo pipefail
 
@@ -84,8 +86,8 @@ jobs:
             echo "ref=${{ github.ref }}"
             echo "sha=${{ github.sha }}"
             echo "actor=${{ github.actor }}"
-            echo "scope=${{ github.event.inputs.scope }}"
-            echo "note=${{ github.event.inputs.note }}"
+            printf 'scope=%s\n' "$AUDIT_SCOPE"
+            printf 'note=%s\n' "$AUDIT_NOTE"
             echo "safety.PEAK_TRADE_LIVE_ENABLED=${PEAK_TRADE_LIVE_ENABLED}"
             echo "safety.PEAK_TRADE_LIVE_ARMED=${PEAK_TRADE_LIVE_ARMED}"
             echo "safety.PT_DRY_RUN=${PT_DRY_RUN}"
@@ -94,7 +96,7 @@ jobs:
           python -V | tee "${EVI_DIR}/python_version.txt"
 
           # --- test run (scope) ---
-          if [ "${{ github.event.inputs.scope }}" = "full" ]; then
+          if [ "$AUDIT_SCOPE" = "full" ]; then
             python -m pytest -q | tee "${EVI_DIR}/pytest_full.txt"
           else
             python -m pytest -q tests/execution | tee "${EVI_DIR}/pytest_execution.txt"
@@ -116,28 +118,6 @@ jobs:
             --evidence 1
           test -f "${EVI_DIR}/session_out/evidence_manifest.json"
 
-          # --- manifest (audit index for artifact contents) ---
-          python3 - <<'PY'
-          import json, os, hashlib
-          from pathlib import Path
-
-          evi_dir = Path(os.environ["EVI_DIR"])
-          items = []
-          for p in sorted(evi_dir.rglob("*")):
-              if p.is_file():
-                  h = hashlib.sha256(p.read_bytes()).hexdigest()
-                  items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
-          manifest = {
-              "schema": "pt.audit.evidence.manifest.v1",
-              "evidence_dir": str(evi_dir),
-              "n_items": len(items),
-              "items": items,
-          }
-          (evi_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
-          (evi_dir / "SHA256SUMS.txt").write_text("\n".join([f'{it["sha256"]}  {it["path"]}' for it in items]) + "\n", encoding="utf-8")
-          print("MANIFEST_OK", len(items))
-          PY
-
           # --- policy telemetry summary (Phase L: real policy from evidence_manifest) ---
           python3 scripts/aiops/extract_policy_telemetry_summary.py \
             --manifest "${EVI_DIR}/session_out/evidence_manifest.json" \
@@ -154,14 +134,14 @@ jobs:
           assert "AUDIT_MANIFEST_NO_DECISION_CONTEXT" not in rc, "policy must be real, not fallback"
           print("policy_action=",pol.get("action"),"reason_codes_n=",len(rc))
           '
-          # Re-run manifest to include telemetry_summary.json in items + SHA256SUMS
+          # Index the final files, including telemetry, before publishing the bundle.
           python3 - <<'PY'
           import json, os, hashlib
           from pathlib import Path
           evi_dir = Path(os.environ["EVI_DIR"])
           items = []
           for p in sorted(evi_dir.rglob("*")):
-              if p.is_file():
+              if p.is_file() and p not in (evi_dir / "manifest.json", evi_dir / "SHA256SUMS.txt"):
                   h = hashlib.sha256(p.read_bytes()).hexdigest()
                   items.append({"path": str(p.relative_to(evi_dir)), "sha256": h, "bytes": p.stat().st_size})
           manifest = {"schema": "pt.audit.evidence.manifest.v1", "evidence_dir": str(evi_dir), "n_items": len(items), "items": items}
@@ -170,15 +150,13 @@ jobs:
           print("MANIFEST_OK", len(items))
           PY
 
-      - name: Evidence Pack Gate (best-effort)
-        if: always()
+      - name: Verify Paper audit evidence checksums
         run: |
           set -euo pipefail
-          if [ -x scripts/governance/validate_evidence_pack.sh ]; then
-            scripts/governance/validate_evidence_pack.sh || true
-          else
-            echo "SKIP: scripts/governance/validate_evidence_pack.sh not found"
-          fi
+          cd "$EVI_DIR"
+          test -s manifest.json
+          test -s SHA256SUMS.txt
+          sha256sum --strict --check SHA256SUMS.txt
 
       - name: Upload artifact (audit evidence)
         if: always()

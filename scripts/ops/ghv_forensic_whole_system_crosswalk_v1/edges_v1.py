@@ -13,6 +13,8 @@ ALL_TYPED_EDGE_TYPES = CAUSAL_EDGE_TYPES | STRUCTURAL_EDGE_TYPES
 
 
 def census_flow_to_typed_edge(edge: dict[str, Any]) -> tuple[str | None, str]:
+    if edge.get("map_relationship") == "MAP_ONLY":
+        return "OBSERVES", "STATIC_SOURCE_EVIDENCE"
     flow = str(edge.get("flow_type") or "")
     contract = edge.get("contract_or_payload")
     if flow == "DECISION_FLOW":

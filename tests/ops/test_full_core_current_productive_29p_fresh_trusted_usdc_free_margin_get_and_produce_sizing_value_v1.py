@@ -5,6 +5,7 @@ Injected transport only. No productive network. No POST.
 
 from __future__ import annotations
 
+import gzip
 import json
 from pathlib import Path
 from typing import Any
@@ -56,11 +57,10 @@ SPEC_PATH = (
     / "docs/ops/specs"
     / "FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md"
 )
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
-CU_HEADING = "11.2.1.CU FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL"
-CV_HEADING = (
-    "11.2.1.CV FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_"
-    "FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE"
+ATLAS_INVENTORY = REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz"
+PRODUCER_PATH = (
+    "src/ops/governed_productive_account_equity_authority_producer_v1/"
+    "current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py"
 )
 
 
@@ -222,21 +222,18 @@ def test_wrong_payload_uid_fail_closed(tmp_path: Path) -> None:
     assert "ACCOUNT_IDENTITY_SCOPE_MISMATCH" in claims["GET_FAILURE_REASONS"]
 
 
-def test_ssot_docs_once_present() -> None:
+def test_29p_observation_contract_and_recorded_pack() -> None:
     runbook = RUNBOOK_PATH.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
+    assert "### Risiko, Budget, Intent und Ausführung" in runbook
+    assert "MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY" in MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert CV_HEADING in runbook or "FRESH_TRUSTED" in runbook
-    assert "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1" in runbook
-    assert SPEC_PATH.is_file()
-    assert "MAP_OF_TRUTH" in mot or "NAVIGATION_ONLY" in mot
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_"
         "FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1"
     ) in spec
-    assert "11.2.1.CV" in atlas
-    assert "current_productive_29p_fresh_trusted_usdc_free_margin_get" in atlas
+    assert CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ALGEBRA in spec
+    with gzip.open(ATLAS_INVENTORY, mode="rt", encoding="utf-8") as inventory:
+        assert any(json.loads(line)["path"] == PRODUCER_PATH for line in inventory)
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["FRESH_GET_EXECUTED"] == "true"

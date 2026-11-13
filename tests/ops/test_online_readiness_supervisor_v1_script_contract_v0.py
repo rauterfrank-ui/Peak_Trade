@@ -93,43 +93,19 @@ def test_online_readiness_supervisor_v1_contract_requires_explicit_paper_allowan
     assert not missing, f"missing explicit paper allowance markers: {missing}"
 
 
-def test_online_readiness_supervisor_v1_contract_preserves_interval_and_iteration_controls() -> (
-    None
-):
+def test_retired_readiness_supervisor_refuses_start_and_keeps_stop_mode() -> None:
     text = _script_text()
-
-    required_markers = ("INTERVAL", "ITERATIONS")
-    missing = [marker for marker in required_markers if marker not in text]
-    assert not missing, f"missing supervisor loop control markers: {missing}"
-
-
-def test_online_readiness_supervisor_v1_contract_preserves_output_and_log_surface() -> None:
-    text = _script_text()
-
-    required_markers = ("OUT_DIR", "P78_SUPERVISOR.ndjson", "supervisor_meta.json")
-    missing = [marker for marker in required_markers if marker not in text]
-    assert not missing, f"missing supervisor output/log markers: {missing}"
-
-
-def test_online_readiness_supervisor_v1_contract_preserves_tick_observability_surface() -> None:
-    text = _script_text()
-
-    required_markers = ("tick", "P78_TICK")
-    missing = [marker for marker in required_markers if marker not in text]
-    assert not missing, f"missing tick observability markers: {missing}"
+    assert "ACTION" in text and "kill -TERM" in text
+    assert "SUPERVISOR_NOT_READY" in text
+    assert 'exit "$EXIT_GATE_FAIL"' in text
+    assert "mkdir -p" not in text
+    assert "P78_TICK_OK" not in text
 
 
 def test_online_readiness_supervisor_v1_contract_preserves_gate_selection_surface() -> None:
     text = _script_text()
 
-    expected_markers = (
-        "CHECK_MODE",
-        "p86",
-        "p76",
-        "p86_gate_v1.sh",
-        "online_readiness_go_no_go_v1.sh",
-    )
-
+    expected_markers = ("CHECK_MODE", "p86", "p76", "was retired")
     missing = [marker for marker in expected_markers if marker not in text]
     assert not missing, f"missing gate selection markers: {missing}"
 

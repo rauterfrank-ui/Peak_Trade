@@ -17,7 +17,7 @@ decisions are fail-closed disabled for Double Play authority.
 - **Productive module:** `src/ops/double_play/specialists.py` — `evaluate_double_play` projects frozen input labels only
 - **Canonical offline Bull/Bear + Switch authority:** `trading.master_v2.double_play_state.transition_state` / `integrated_offline_trading_logic_replay_v1`
 - **Canonical offline composition authority:** `trading.master_v2.double_play_composition_matrix_v1`
-- **Normative map:** [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — section **Slice E authority boundary**
+- **Runtime boundary:** [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen).
 
 Specialists do **not** grant live, order, runtime, scheduler, or Master-V2 decision authority.
 

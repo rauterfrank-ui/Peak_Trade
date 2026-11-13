@@ -369,7 +369,7 @@ A **reproducible preflight packet** presented for operator/reviewer inspection m
 
 Reproduction must yield the **same static content** or **same manifest-verified durable references** — not a re-interpreted, partial, or `/tmp`-substituted substitute.
 
-Crosslink: [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) §2a.1 (criteria blocks authoritative per [GLB-015](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.1). Authority-route legibility: [Decision Authority Map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §10.
+Crosslink: [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) §2a.1 (criteria blocks authoritative per [GLB-015](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.1). Authority-route legibility: [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen).
 
 Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_CROSSLINK_GUARD_V1`). Register crosslink: `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_GUARD_V1`).
 
@@ -391,7 +391,7 @@ EXECUTION_AUTHORIZED=false
 LIVE_AUTHORIZED=false
 ```
 
-This section closes the **static closeout-path legibility boundary** for [GLB-018](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.5. It **does not** close **GLB-018**, **does not** execute closeout scripts, **does not** mutate registry, `out/ops`, or existing run-evidence datasets, and **does not** grant arming, execution, or live authority.
+This section closes the **static closeout-path legibility boundary** for [GLB-018](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.5. It **does not** close **GLB-018**, **does not** execute closeout scripts, **does not** mutate registry, `out&#47;ops`, or existing run-evidence datasets, and **does not** grant arming, execution, or live authority.
 
 ### Mandatory closeout path steps (legibility SSOT)
 
@@ -436,7 +436,7 @@ LIVE_AUTHORIZED=false
 PROMOTION_EXECUTED=false
 ```
 
-This section closes the **static event-stream legibility boundary** for [GLB-019](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.6. It **does not** close **GLB-019**, **does not** emit, replay, sync, or mutate event streams, **does not** mutate registry, `out/ops`, or existing run-evidence datasets, and **does not** grant arming, execution, promotion, or live authority.
+This section closes the **static event-stream legibility boundary** for [GLB-019](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.6. It **does not** close **GLB-019**, **does not** emit, replay, sync, or mutate event streams, **does not** mutate registry, `out&#47;ops`, or existing run-evidence datasets, and **does not** grant arming, execution, promotion, or live authority.
 
 ### Minimum event classes (legibility SSOT)
 
@@ -599,7 +599,7 @@ READY_FOR_START=false
 | Tool / surface | Role today | Closeout completion? |
 |---|---|---|
 | [post_merge_closeout.sh](../../../scripts/governance/post_merge_closeout.sh) | Git sync to `origin&#47;main`, optional PR branch cleanup, `safe_delete_merged_branches` dry-run | **`CLOSEOUT_ENFORCEMENT_POST_MERGE_CLOSEOUT_SH_NOT_COMPLETION=true`** — **not** §2b.1 durable copy/verify/index |
-| [append_closeout_index.py](../../../scripts/ops/append_closeout_index.py) | Appends JSONL under repo-local `out/ops/index_post_merge_closeouts.jsonl` (or `PT_CLOSEOUT_INDEX` override) | **`CLOSEOUT_ENFORCEMENT_APPEND_CLOSEOUT_INDEX_NOT_CANONICAL_ARCHIVE_INDEX=true`** — navigation aid only; **not** canonical durable archive index |
+| [append_closeout_index.py](../../../scripts/ops/append_closeout_index.py) | Appends JSONL under repo-local `out&#47;ops&#47;index_post_merge_closeouts.jsonl` (or `PT_CLOSEOUT_INDEX` override) | **`CLOSEOUT_ENFORCEMENT_APPEND_CLOSEOUT_INDEX_NOT_CANONICAL_ARCHIVE_INDEX=true`** — navigation aid only; **not** canonical durable archive index |
 | [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) | Operator-invoked local copy + `DURABLE_COPY_README.md` + `MANIFEST.sha256` + verify RC=0 (`OP-CLOSEOUT-HELPER-IMPL-V0`) | **`CLOSEOUT_ENFORCEMENT_HELPER_NON_AUTHORIZING=true`** — supports §2b.1 copy/readme/manifest/verify; **does not** auto-index archive `closeout&#47;`, authorize runtime, or lift gates |
 | `{operator_home}&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_*&#47;closeout&#47;` | Observed canonical durable closeout owner pattern (example archive id `20260520T161443Z`) | **Target owner** for material closeout bytes + manifest + durable index/pointer when §2b.1 complete |
 

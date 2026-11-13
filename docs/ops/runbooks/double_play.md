@@ -15,7 +15,7 @@ SwitchGate authority is **fail-closed disabled** — `evaluate_double_play` does
 - **Ops evaluator:** `src.ops.double_play.specialists.evaluate_double_play` — productive projection/diagnostic path; **not** system economic / Master-V2 decision authority
 - **Canonical offline Bull/Bear + Switch authority:** `trading.master_v2.double_play_state.transition_state` via `integrated_offline_trading_logic_replay_v1`
 - **Canonical offline composition authority:** `trading.master_v2.double_play_composition_matrix_v1`
-- **Normative map:** [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — section **Slice E authority boundary**
+- **Runtime boundary:** [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#betriebsgrenzen).
 - **Contract:** [DOUBLE_PLAY_SOLE_AUTHORITY_FAIL_CLOSED_QUARANTINE_CONTRACT_V1.md](../specs/DOUBLE_PLAY_SOLE_AUTHORITY_FAIL_CLOSED_QUARANTINE_CONTRACT_V1.md)
 
 This runbook does **not** authorize live trading, orders, runtime rewire, promotion, or Master-V2 decision authority.

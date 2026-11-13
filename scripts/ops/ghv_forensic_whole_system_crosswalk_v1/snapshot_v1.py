@@ -19,6 +19,7 @@ class CodeSnapshotV1:
     census_revision: str
     landscape_revision: str
     atlas_revision: str
+    atlas_model_revision: str
 
     def bindings_for_snapshot_id(self) -> dict[str, str]:
         return {
@@ -26,6 +27,7 @@ class CodeSnapshotV1:
             "census_revision": self.census_revision,
             "landscape_revision": self.landscape_revision,
             "atlas_revision": self.atlas_revision,
+            "atlas_model_revision": self.atlas_model_revision,
             "dirty_fingerprint": self.dirty_fingerprint,
         }
 
@@ -39,6 +41,7 @@ class CodeSnapshotV1:
             "census_revision": self.census_revision,
             "landscape_revision": self.landscape_revision,
             "atlas_revision": self.atlas_revision,
+            "atlas_model_revision": self.atlas_model_revision,
         }
 
 
@@ -64,13 +67,36 @@ def _git_head(repo_root: Path) -> str:
 
 def _git_porcelain(repo_root: Path) -> str:
     return subprocess.check_output(
-        ["git", "-C", str(repo_root), "status", "--porcelain"],
+        [
+            "git",
+            "-C",
+            str(repo_root),
+            f"--work-tree={repo_root.resolve()}",
+            "status",
+            "--porcelain",
+        ],
         text=True,
     )
 
 
 def dirty_fingerprint(repo_root: Path) -> str:
-    return hashlib.sha256(_git_porcelain(repo_root).encode("utf-8")).hexdigest()[:16]
+    tracked_diff = subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(repo_root),
+            f"--work-tree={repo_root.resolve()}",
+            "diff",
+            "--binary",
+            "--no-ext-diff",
+            "--no-textconv",
+            "HEAD",
+            "--",
+        ]
+    )
+    digest = hashlib.sha256(_git_porcelain(repo_root).encode("utf-8"))
+    digest.update(tracked_diff)
+    return digest.hexdigest()[:16]
 
 
 def worktree_identity(repo_root: Path) -> str:
@@ -106,6 +132,7 @@ def build_code_snapshot_v1(
         atlas_revision=str(
             atlas_meta.get("origin_main_sha") or atlas_meta.get("current_reviewed_at_sha", "")
         ),
+        atlas_model_revision=str(atlas_meta.get("model_revision", "")),
     )
 
 

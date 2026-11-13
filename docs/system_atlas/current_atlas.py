@@ -197,6 +197,10 @@ AWS_EXPORT_RETIRED_PATHS = {
     "tests/ops/test_aws_export_smoke_contract.py",
     "tests/ops/test_aws_export_write_smoke_contract.py",
 }
+JSON_SYNTAX_REPAIRS = {
+    "config/ops/presentation_archive_root_v1.json",
+    "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_v0.json",
+}
 
 
 def validate_development_binding(root, model, frozen, changed, extras, cleanup):
@@ -240,6 +244,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel == "config/governance/technical_canonical_wiring_authorization_v1.json"
             or rel == "static/js/market_surface_greenfield_v1/surface_app_v1.js"
             or rel in FILEGATE_DEPENDENCY_DELTA
+            or rel in JSON_SYNTAX_REPAIRS
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
@@ -253,6 +258,13 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
         else:
             assert file.is_file() and not file.is_symlink(), ["DEVELOPMENT_SOURCE_MISSING", rel]
             assert row["sha256"] == digest(file.read_bytes()), ["DEVELOPMENT_SOURCE_DRIFT", rel]
+        if rel in JSON_SYNTAX_REPAIRS:
+            original = git(root, "show", model["source_commit"] + ":" + rel)
+            assert file.read_bytes() == re.sub(rb",(\s*[}\]])", rb"\1", original), [
+                "CONFIG_JSON_SYNTAX_REPAIR_CHANGED_VALUES",
+                rel,
+            ]
+            json.loads(file.read_bytes())
         indexed[rel] = row
     assert unexpected <= indexed.keys(), ["UNSCOPED_CHANGE", *sorted(unexpected - indexed.keys())]
     return indexed
