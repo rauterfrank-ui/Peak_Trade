@@ -413,6 +413,35 @@ def test_incomplete_pagination_halts() -> None:
     assert REASON_INCOMPLETE_PAGINATION in dec.reasons
 
 
+@pytest.mark.parametrize("count", [99, 100])
+def test_pending_page_coverage_at_okx_default_limit(count) -> None:
+    ident = _identity()
+    pending = [
+        {**_order_row(state="live"), "clOrdId": f"other{i}", "ordId": str(1000 - i)}
+        for i in range(count)
+    ]
+    fixture = OfflineExchangeFixtureV1(
+        pending_orders={"data": pending},
+        order_history={"data": [_order_row(state="filled", acc=ident.final_quantity)]},
+    )
+    snap = fetch_okx_read_only_reconciliation_snapshot_v1(
+        identity=ident,
+        read_only_get_transport=FixtureBackedOkxReadOnlyTransport(fixture),
+        pretrade_decision_id="pretrade-pending-page",
+    )
+    decision = adjudicate_full_core_exchange_reconciliation_v1(
+        identity=ident,
+        snapshot=snap,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert snap.incomplete_pagination is (count == 100)
+    if count == 100:
+        assert decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert decision.reasons == (REASON_INCOMPLETE_PAGINATION,)
+    else:
+        assert decision.outcome == OUTCOME_CONFIRMED_FILLED
+
+
 @pytest.mark.parametrize(
     "bad_payload",
     [
