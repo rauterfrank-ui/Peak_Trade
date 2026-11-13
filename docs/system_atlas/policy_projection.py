@@ -191,7 +191,7 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
         "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",
-        "569e6eb4861b8c267541e23b2ce5fc7aad14e74791f5d7450c6f9f876692ac81",
+        "ccb96ea50e65384ca12b740e98d70c4ebeb4c5eb4aa74a4ec1f4112c392be51f",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
         "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
