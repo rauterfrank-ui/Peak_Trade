@@ -87,6 +87,11 @@
       "sha256": "b312bd8fd6929f868820a62977a88a4374c109b757bbc742f3ecbeb2204fc0e3"
     },
     {
+      "path": "docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md",
+      "before_sha256": "a14ea51b07b32c6130006e67c8e1cbd74bf44b46fc168d3e2327706619b49e1e",
+      "sha256": "c9b97554d9e0caf212e3f007e440345edd9318c2e14a64355f058aa353e923be"
+    },
+    {
       "path": "docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md",
       "before_sha256": "b40cf5fca2c2624711e87a5bff55df57e0dad5e3eb622699f71d0e763c5df551",
       "sha256": "138e2fcc777269b102fe9bfaae1f4f502e8d9386af6ba5494c325b5539445c84"
@@ -990,6 +995,11 @@
       "path": "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md",
       "before_sha256": "a37fa823e22ed17544b3c19e1bbfb9624aa024d47cfb2ff62182d1fffe0806ae",
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
+    },
+    {
+      "path": "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_EXECUTION_V0.md",
+      "before_sha256": "e8f894f27cbb0b3e27b7eb776e8cf1c4c56a641b3712b57384a43c579b246595",
+      "sha256": "34a81c24753f2fa408a7e4522bd28f30455b95725d6347ed9e8ff8f11bfeeb4e"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",

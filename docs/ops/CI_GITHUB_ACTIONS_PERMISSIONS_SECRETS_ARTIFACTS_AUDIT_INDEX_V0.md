@@ -102,7 +102,7 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/aiops-promptfoo-evals.yml`
 - `.github/workflows/aiops-trend-ledger-from-seed.yml`
 - `.github/workflows/audit.yml`
-- `.github/workflows/ci-export-pack-download-verify.yml`
+- [ci-export-pack-download-verify.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/ci-export-pack-download-verify.yml) (retired)
 - `.github/workflows/ci-operator-verify-registry.yml`
 - `.github/workflows/ci-scheduled-paper-and-export-smoke.yml`
 - `.github/workflows/ci-workflow-dispatch-guard.yml`
@@ -141,8 +141,8 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/prbg-execution-evidence.yml`
 - `.github/workflows/prbi-live-pilot-scorecard.yml`
 - `.github/workflows/prbj-testnet-exec-events.yml`
-- `.github/workflows/prcc-aws-export-smoke.yml`
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [prcc-aws-export-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml) (retired)
+- [prcd-aws-export-write-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml) (retired)
 - `.github/workflows/prj-scheduled-shadow-paper-features-smoke.yml`
 - `.github/workflows/prk-prj-status-report.yml`
 - `.github/workflows/pro-prk-nightly-selfcheck.yml`
@@ -163,7 +163,7 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 
 - `.github/workflows/aiops-trend-ledger-from-seed.yml`
 - `.github/workflows/aiops-trend-seed-from-normalized-report.yml`
-- `.github/workflows/ci-export-pack-download-verify.yml`
+- [ci-export-pack-download-verify.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/ci-export-pack-download-verify.yml) (retired)
 - `.github/workflows/ci-operator-verify-registry.yml`
 - `.github/workflows/ci-pr-merge-state-signal.yml`
 - `.github/workflows/ci-scheduled-paper-and-export-smoke.yml`
@@ -191,8 +191,8 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/prbg-execution-evidence.yml`
 - `.github/workflows/prbi-live-pilot-scorecard.yml`
 - `.github/workflows/prbj-testnet-exec-events.yml`
-- `.github/workflows/prcc-aws-export-smoke.yml`
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [prcc-aws-export-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml) (retired)
+- [prcd-aws-export-write-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml) (retired)
 - `.github/workflows/prj-scheduled-shadow-paper-features-smoke.yml`
 - `.github/workflows/prk-prj-status-report.yml`
 - `.github/workflows/pro-prk-nightly-selfcheck.yml`
@@ -205,7 +205,7 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 
 - `.github/workflows/add-to-project.yml`
 - `.github/workflows/aiops-promptfoo-evals.yml`
-- `.github/workflows/ci-export-pack-download-verify.yml`
+- [ci-export-pack-download-verify.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/ci-export-pack-download-verify.yml) (retired)
 - `.github/workflows/ci-operator-verify-registry.yml`
 - `.github/workflows/ci-scheduled-paper-and-export-smoke.yml`
 - `.github/workflows/ci.yml`
@@ -217,8 +217,8 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/paper_tests_audit_evidence.yml`
 - `.github/workflows/pr-head-sha-required-checks-liveness-guard.yml`
 - `.github/workflows/prbj-testnet-exec-events.yml`
-- `.github/workflows/prcc-aws-export-smoke.yml`
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [prcc-aws-export-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml) (retired)
+- [prcd-aws-export-write-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml) (retired)
 
 ### `github_token`
 
@@ -258,8 +258,8 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/prbg-execution-evidence.yml`
 - `.github/workflows/prbi-live-pilot-scorecard.yml`
 - `.github/workflows/prbj-testnet-exec-events.yml`
-- `.github/workflows/prcc-aws-export-smoke.yml`
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [prcc-aws-export-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml) (retired)
+- [prcd-aws-export-write-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml) (retired)
 - `.github/workflows/prj-scheduled-shadow-paper-features-smoke.yml`
 - `.github/workflows/prk-prj-status-report.yml`
 - `.github/workflows/pro-prk-nightly-selfcheck.yml`
@@ -302,8 +302,8 @@ Optional dynamic analysis (**OWASP ZAP** or similar **DAST**) against **explicit
 - `.github/workflows/prbg-execution-evidence.yml`
 - `.github/workflows/prbi-live-pilot-scorecard.yml`
 - `.github/workflows/prbj-testnet-exec-events.yml`
-- `.github/workflows/prcc-aws-export-smoke.yml`
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [prcc-aws-export-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml) (retired)
+- [prcd-aws-export-write-smoke.yml](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml) (retired)
 - `.github/workflows/prj-scheduled-shadow-paper-features-smoke.yml`
 - `.github/workflows/prk-prj-status-report.yml`
 - `.github/workflows/pro-prk-nightly-selfcheck.yml`
@@ -366,31 +366,31 @@ Existing tests should be extended before new parallel surfaces are created.
 
 ### Workflow contract-style tests
 
-- `tests/ci/test_ci_export_pack_download_verify_workflow_contract_v0.py`
+- [test_ci_export_pack_download_verify_workflow_contract_v0.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ci/test_ci_export_pack_download_verify_workflow_contract_v0.py)
 - `tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py`
 - `tests/ci/test_class_a_shadow_paper_scheduled_probe_workflow_contract_v0.py`
 - `tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py`
 - `tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py`
-- `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py`
+- [test_prcd_aws_export_write_smoke_workflow_contract_v0.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py)
 - `tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py`
 - `tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py`
 
 ### Broader CI / dispatch / artifact / guard tests
 
 - `tests/ci/test_check_docs_diff_guard_section_contract_v0.py`
-- `tests/ci/test_ci_export_pack_download_verify_workflow_contract_v0.py`
+- [test_ci_export_pack_download_verify_workflow_contract_v0.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ci/test_ci_export_pack_download_verify_workflow_contract_v0.py)
 - `tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py`
 - `tests/ci/test_class_a_shadow_paper_scheduled_probe_workflow_contract_v0.py`
 - `tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py`
 - `tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py`
 - `tests/ci/test_pr_head_sha_required_checks_liveness_guard.py`
-- `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py`
+- [test_prcd_aws_export_write_smoke_workflow_contract_v0.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py)
 - `tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py`
 - `tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py`
 - `tests/ci/test_workflow_no_fallback_policy_json.py`
 - `tests/ops/test_autofix_docs_token_policy_inline_code_smoke.py`
-- `tests/ops/test_aws_export_smoke_contract.py`
-- `tests/ops/test_aws_export_write_smoke_contract.py`
+- [test_aws_export_smoke_contract.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ops/test_aws_export_smoke_contract.py)
+- [test_aws_export_write_smoke_contract.py](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/tests/ops/test_aws_export_write_smoke_contract.py)
 - `tests/ops/test_check_docs_drift_guard.py`
 - `tests/ops/test_execution_guards.py`
 - `tests/ops/test_fetch_prk_dashboard_artifacts_syntax.py`
