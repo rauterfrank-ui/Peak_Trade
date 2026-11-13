@@ -18,7 +18,7 @@ Der [Abgrenzungsbeleg](source/successor-disposition.json) unterscheidet den aktu
 
 Der historische Wiederherstellungsprüfer war am aktuellen Baum bereits vor seiner Auslagerung mit `CURRENT_CORPUS_PARITY_DRIFT` am N-Bars-Supplier fehlgeschlagen. Er und sein damaliges Eingabepaket bilden eine archivierte, datierte Prüfeinheit. Dieser Befund wird nicht in einen heutigen PASS umgedeutet. Produktimplementierungen, aktuelle Corpus-/Researchinputs und gespeicherte Runtimezustände werden dadurch nicht aus historischen Worktrees ersetzt.
 
-Die [Law Impact Map](../governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md) ergänzt diesen Atlas um Originalregelquellen und den [Policy-Katalog](source/current-policies.jsonl.gz). Zusätzliche Kartenansichten sind gemäß [Bereinigungsregister](source/documentation-cleanup.json) entfernt und ihre Erzeugung ist gesperrt. Ein bereits konsumiertes maschinelles Quellenobjekt bleibt als Eingabevertrag für seine bestehenden Codeconsumer erhalten; daraus entsteht keine zusätzliche aktuelle Kartenansicht. Der Katalog belegt Referenzstellen, keine vollständige fachliche Wirksamkeit aller Policies.
+Die [Law Impact Map](../governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md) ergänzt diesen Atlas um Originalregelquellen und den [Policy-Katalog](source/current-policies.jsonl.gz). Das [Bereinigungsregister](source/documentation-cleanup.json) führt die früheren separaten Karten und die erhaltenen maschinellen Verträge. Die folgende Außenansicht ist Teil des System Atlas. Der Katalog belegt Referenzstellen und ihren jeweiligen Prüfstatus.
 
 Die Grundlage ist [current-model.json](source/current-model.json) mit den vollständigen Datei-, Python-Definitions- und Importkatalogen unter [source](source/). Das [Master Runbook](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) ist die primäre Betriebs-/Entwicklungsorientierung. Der Atlas schafft keine zusätzliche Fach-, Apply- oder Ausführungsauthority.
 
@@ -31,6 +31,21 @@ Erzeugen und prüfen, aus dem Repository-Stamm:
 ```
 
 Diese Einstiegspunkte verwenden für dieses Atlasmodell `current_atlas.py`. Die Prüfung kontrolliert Quellstand, vollständige Dateimenge, Quelldigests, Literalverträge, Dokumentlinks und deterministische Ausgabe. Sie weist ausgeführte Laufzeitwirkung nicht aus.
+
+## Außenstruktur und aktuelles Dateiregister
+
+Die [Fachbereiche und Außenkanten](generated/BOUNDARIES.md) erschließen die sechs Universen, den Außenring mit fünf Rubriken und acht überlappenden Sichten sowie die externe Metaebene. Die inneren Gruppen verweisen auf die Originalverträge des Repo-Atlas und den nativen Core-Katalog. Das [Übergabe- und Signalregister](source/boundaries.json) führt die Obsidian-Quellen mit Hash, ihre ursprünglichen Kantenadressen, Richtung und Semantik. Die Repo-Belege kennzeichnen abweichende oder fehlende Quelldateien und ergänzen den Offline-Pfad nach PR #7241.
+
+Der [Zuordnungskatalog](source/artifact-assignments.jsonl.gz) enthält eine primäre Adresse und eine Artefaktrolle pro Pfad. Gemeinsame Zuständigkeiten bleiben als Querbezüge erhalten. Evidence- und Testartefakte beschreiben ihre dokumentarische oder prüfende Funktion. Der [Manifestbeleg](source/artifact-assignments.json) bindet die Zuordnungen an einen Git-Baum. Archiv, Entwicklungsdaten und neue Atlasdateien sind im selben Katalog adressierbar.
+
+```bash
+./scripts/pt docs/system_atlas/coverage.py check
+./scripts/pt docs/system_atlas/coverage.py area SL
+./scripts/pt docs/system_atlas/coverage.py edge REPO-7241-SL-OPT
+./scripts/pt docs/system_atlas/coverage.py path src/experiments/offline_ddo_research_cycle_v1.py
+```
+
+Der normale Atlas-Check validiert den gebundenen Stand und zählt neue oder entfernte Pfade im Checkout. Die strikte Dateiprüfung meldet die einzelnen fehlenden oder überholten Zuordnungen als Fehler. Bei einer Nachführung die betroffenen Pfade, ihre Rolle und bei einer neuen Referenzrevision auch die Git-Objekte sowie die Manifestzählung aktualisieren. Ignorierte lokale Laufzeitdateien und externe Bestände liegen außerhalb dieses Git-Katalogs.
 
 Der aktuelle Obsidian-Vault liegt außerhalb des Repos unter `/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL`. Die Projektion aktualisiert seine Einstiege, die beiden Hauptkarten und die Quellenansichten; vorhandene Bereichsdossiers und ihre datierten Nachweise bleiben erhalten. Originale Bindungswerte werden nicht zu neuen Laufzeitnachweisen umgeschrieben. Der Abgleichbeleg im Vault bindet Quellen und Ansichten per SHA256:
 

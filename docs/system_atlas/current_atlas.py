@@ -434,6 +434,14 @@ def validate(root, check_outputs=True):
                 anchors = {re.sub(r"[^\w\- ]", "", h.lower()).replace(" ", "-") for h in headings}
                 assert fragment in anchors, [p, target, "MISSING_ANCHOR"]
             link_count += 1
+    coverage = {}
+    if (root / ATLAS / "source/boundaries.json").is_file():
+        projection = run_path(str(root / ATLAS / "coverage.py"))
+        boundary, assignments, _, _, coverage = projection["load_coverage"](root, m)
+        if check_outputs:
+            assert (root / projection["VIEW"]).read_text() == projection["render_boundaries"](
+                boundary, assignments, m
+            ), "ATLAS_BOUNDARIES_VIEW_DRIFT"
     return {
         "result": "PASS",
         "source_commit": m["source_commit"],
@@ -453,6 +461,7 @@ def validate(root, check_outputs=True):
         if cleanup
         else 0,
         **policy_result,
+        **coverage,
     }
 
 
@@ -466,6 +475,12 @@ def main(argv=None):
     if args.mode == "generate":
         for name, text in views(model).items():
             (root / ATLAS / "generated" / name).write_text(text)
+        if (root / ATLAS / "source/boundaries.json").is_file():
+            projection = run_path(str(root / ATLAS / "coverage.py"))
+            boundary, assignments, _, _, _ = projection["load_coverage"](root, model)
+            (root / projection["VIEW"]).write_text(
+                projection["render_boundaries"](boundary, assignments, model)
+            )
         if model.get("policy_files"):
             projection = run_path(str(root / ATLAS / "policy_projection.py"))
             law = json.loads(
