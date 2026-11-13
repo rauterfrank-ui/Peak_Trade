@@ -109,11 +109,14 @@ weist die 61 finalisierten Werte für den konkreten Lauf nach.
 ```
 
 Die zweite Prüfung liest das versiegelte Sitzungsledger mit dem DDO-Owner
-und dem Double-Play-Consumer. Sie verlangt mindestens einen Zyklus, in dem
-der Core einen typisierten Volatilitätswert erhielt und das dazugehörige
-Entscheidungsbündel vollständig wieder gelesen werden kann. Das JSON-Feld
-`ddo_readback` meldet auch Schreibfehler und die Zahl der vollständigen
-Bündel. Marktbeobachtung und analytische Fills in dieser Sitzung verwenden
+und dem Double-Play-Consumer. Sie verlangt einen vollständigen Abschluss mit
+`PASS`, mindestens einen Zyklus mit typisierter Volatilität und für jeden
+solchen Zyklus das vollständige Entscheidungsbündel mit exakt zugeordneter
+Marktsequenz, Preisreferenz und Entscheidungszeit. Ein Zyklus ohne eigenen
+Capture-Beleg bleibt im Nenner. Ein versiegelter Abbruch kann im allgemeinen
+Archivcheck lesbar sein und erfüllt die strenge DDO-Prüfung nicht. Das JSON-Feld
+`ddo_readback` meldet Schreibfehler, unpassende Zuordnungen und die Zahl der
+vollständigen Bündel. Marktbeobachtung und analytische Fills verwenden
 einen Markpreis und modellierte Zusatzinputs. Die Wirtschaftlichkeitsprüfung
 braucht separat gebundene Originalquellen für Quotes, Tiefe, Kosten und
 Funding.
@@ -128,6 +131,11 @@ Die zugehörige Double-Play-Aufzeichnung erhält den Zykluszeitpunkt in UTC
 mit Subsekunden. Diese Zeit beschreibt die für die Entscheidung verwendete
 Host-Uhr; sie ist keine separat gemessene Dauer der Core-Berechnung.
 O4 vergleicht UTC-Zeitpunkte einschließlich ihrer Nachkommastellen.
+
+Lehnt der Core einen Zyklus wegen nicht positiver Volatilität bei der
+Geometrieinitialisierung ab, schließt I17 den Transport, gibt das Sitzungsschloss
+frei und versiegelt die bis dahin vorhandene Aufzeichnung mit `ABORT`.
+Der abgelehnte Zyklus wird nicht als abgeschlossene Entscheidung gezählt.
 
 Die optionale O7-Anbindung an das Dashboard (`PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED=1`)
 braucht einen ausdrücklich gesetzten absoluten `PEAK_TRADE_STATE_ROOT`.
