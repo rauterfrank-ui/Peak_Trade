@@ -889,7 +889,7 @@
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
-      "sha256": "b45cc4fd18572bb0f2619c92afb305d0b084e2b48e0b236ac9cc9e05dddf680d"
+      "sha256": "b375b4adb733fbebae3bc361857a558845c8feef743183ef9d8c7e689c8dd60d"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
@@ -1129,7 +1129,7 @@
     {
       "path": "scripts/ops/run_offline_ddo_learning_follow_up_v1.py",
       "before_sha256": null,
-      "sha256": "5cc968f4f31c1c423715148fd210bf09614737a8f0040a9437f7fb908563cb4a"
+      "sha256": "a60dc097957535da9a821a657e621cd04cd8a79364dea2c9d56d66d25f3d2d11"
     },
     {
       "path": "scripts/ops/run_offline_learning_mark_measurement_v1.py",
@@ -1269,7 +1269,7 @@
     {
       "path": "src/experiments/offline_ddo_research_cycle_v1.py",
       "before_sha256": null,
-      "sha256": "4855bdc48bc5a17422fc7c459ad5220ab45e04829d9c186366cf5f2289bd4edc"
+      "sha256": "74eda1beb33881c1f5542bf161fe609c45fe2df517ea0b005b4166effddfa887"
     },
     {
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
@@ -2544,7 +2544,7 @@
     {
       "path": "tests/learning/test_offline_ddo_research_cycle_v1.py",
       "before_sha256": null,
-      "sha256": "2b0b5dcd26e5194e898dd59942e1279c90dc2bb004e2c5e2d0d7626292311e4f"
+      "sha256": "b89208432ed2370ba5bded4bcd1e46b470bc9d5087f0566ffc736bade51e171f"
     },
     {
       "path": "tests/learning/test_offline_recorded_market_replay_v1.py",

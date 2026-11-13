@@ -27,11 +27,16 @@ def _research(args):
 
     from src.experiments.canonical_experiment_identity_v1 import inspect_code_provenance_v1
     from src.experiments.offline_ddo_research_cycle_v1 import (
+        OfflineDdoResearchProfileV1,
         OfflineDdoResearchRequestV1,
         run_offline_ddo_research_cycle_v1,
     )
 
-    request = OfflineDdoResearchRequestV1.model_validate_json(args.request.read_bytes())
+    declaration = (
+        OfflineDdoResearchProfileV1.model_validate_json(args.profile.read_bytes())
+        if args.profile is not None
+        else OfflineDdoResearchRequestV1.model_validate_json(args.request.read_bytes())
+    )
     frame = pd.read_csv(BytesIO(args.bars.read_bytes()), index_col=0, float_precision="round_trip")
     if any(pd.Timestamp(value).tzinfo is None for value in frame.index):
         raise ValueError("EXPLICIT_BAR_TIMEZONE_REQUIRED")
@@ -40,7 +45,7 @@ def _research(args):
         args.root,
         args.cycle,
         plan_digest=args.plan_digest,
-        request=request,
+        request=declaration,
         bars=frame,
         cfg=json.loads(args.config.read_bytes()),
         code=inspect_code_provenance_v1(ROOT),
@@ -75,12 +80,12 @@ def main(argv: list[str] | None = None) -> int:
     readback.add_argument("--plan-digest", required=True)
     export = sub.add_parser("export-evidence", help="Export the verified completed learning state")
     export.add_argument("--plan-digest", required=True)
-    research = sub.add_parser(
-        "research", help="Run two bounded native trials and scoped GVEF replay"
-    )
+    research = sub.add_parser("research", help="Run bounded native trials and scoped GVEF replay")
     research.add_argument("--plan-digest", required=True)
-    research.add_argument(
-        "--request", type=Path, required=True, help="Offline research declaration JSON"
+    declaration = research.add_mutually_exclusive_group(required=True)
+    declaration.add_argument("--request", type=Path, help="Bound offline research request JSON")
+    declaration.add_argument(
+        "--profile", type=Path, help="Offline profile with one GVEF-gated follow-up"
     )
     research.add_argument(
         "--bars", type=Path, required=True, help="Explicit timestamp-indexed UTC CSV"
