@@ -539,7 +539,9 @@ def test_o7_invalid_root_refuses_start_before_consumption(
         monkeypatch.delenv("PEAK_TRADE_STATE_ROOT", raising=False)
     else:
         monkeypatch.setenv("PEAK_TRADE_STATE_ROOT", configured_root)
-    prereg, go, token = _load_wallclock_prereg(), _load_wallclock_go(), _material()
+    prereg = _load_wallclock_prereg()
+    go = _load_wallclock_go()
+    token = _material()
     artifact = _write_v2_auth(tmp_path, prereg=prereg, token=token)
     original = artifact.read_bytes()
     evidence_root = tmp_path / "session_ev"
