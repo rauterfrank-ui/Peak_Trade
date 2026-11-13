@@ -25,7 +25,8 @@ import ast
 import dataclasses
 from pathlib import Path
 
-from src.autonomous.decision_engine import DecisionAction, WorkflowDecision
+import pytest
+
 from src.live.live_gates import LiveGateResult
 from src.trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
     LIVE_GATES_DOUBLE_PLAY_ANNOTATION_ROLE,
@@ -320,6 +321,7 @@ def test_package_surfaces_do_not_flip_activation_or_submit_orders() -> None:
 
 
 def test_autonomy_has_no_core_execution_or_live_authority_imports() -> None:
+    pytest.importorskip("src.autonomous", reason="Package retired in PR #6579")
     import_hits: list[tuple[str, str]] = []
     for path in _iter_python_files(_repo_path(AUTONOMOUS_ROOT_REL)):
         rel = str(path.relative_to(REPO_ROOT))
@@ -330,6 +332,9 @@ def test_autonomy_has_no_core_execution_or_live_authority_imports() -> None:
 
 
 def test_decision_action_execute_is_workflow_enum_not_order_permit() -> None:
+    pytest.importorskip("src.autonomous", reason="Package retired in PR #6579")
+    from src.autonomous.decision_engine import DecisionAction, WorkflowDecision
+
     assert DecisionAction.EXECUTE.value == "execute"
     assert set(DecisionAction) == {
         DecisionAction.EXECUTE,
@@ -356,6 +361,7 @@ def test_decision_action_execute_is_workflow_enum_not_order_permit() -> None:
 
 
 def test_autonomy_workflow_script_map_is_not_submit_or_live_activation() -> None:
+    pytest.importorskip("src.autonomous", reason="Package retired in PR #6579")
     fn = _function_def(
         _parse_path(_repo_path("src/autonomous/workflow_engine.py")), "_execute_workflow_internal"
     )

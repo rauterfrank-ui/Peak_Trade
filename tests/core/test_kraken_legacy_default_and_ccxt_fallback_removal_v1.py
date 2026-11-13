@@ -13,7 +13,6 @@ from pathlib import Path
 
 import pytest
 
-from src.autonomous.monitors import MarketMonitor
 from src.core.config_pydantic import LiveConfig
 from src.core.peak_config import PeakConfig
 from src.data.feeds.live_feed import FeedConfig
@@ -163,6 +162,9 @@ def test_g_shadow_tick_requires_explicit_source() -> None:
 
 
 def test_h_autonomous_monitor_requires_explicit_exchange() -> None:
+    pytest.importorskip("src.autonomous", reason="Package retired in PR #6579")
+    from src.autonomous.monitors import MarketMonitor
+
     param = inspect.signature(MarketMonitor.is_market_hours).parameters["exchange"]
     assert param.default is inspect.Parameter.empty
     _assert_no_implicit_venue_default(param.default)
@@ -191,9 +193,11 @@ def test_i_slice1_introduces_no_replacement_venue_defaults() -> None:
     assert 'source: str = "kraken_ws"' not in models_src
     assert 'source: str = "okx_ws"' not in models_src
 
-    monitors_src = (REPO_ROOT / "src" / "autonomous" / "monitors.py").read_text(encoding="utf-8")
-    assert 'exchange: str = "kraken"' not in monitors_src
-    assert 'exchange: str = "okx"' not in monitors_src
+    monitors = REPO_ROOT / "src" / "autonomous" / "monitors.py"
+    if monitors.is_file():
+        monitors_src = monitors.read_text(encoding="utf-8")
+        assert 'exchange: str = "kraken"' not in monitors_src
+        assert 'exchange: str = "okx"' not in monitors_src
 
     pydantic_src = (REPO_ROOT / "src" / "core" / "config_pydantic.py").read_text(encoding="utf-8")
     assert 'default="kraken"' not in pydantic_src
@@ -231,6 +235,7 @@ def test_k_master_v2_and_double_play_paths_unmodified() -> None:
 
 
 def test_l_wp_a6_file_untouched() -> None:
-    assert WP_A6_PATH.is_file()
+    if not WP_A6_PATH.is_file():
+        pytest.skip("Historical WP-A6 test was retired in PR #6821")
     digest = hashlib.sha256(WP_A6_PATH.read_bytes()).hexdigest()
     assert digest == WP_A6_SHA256

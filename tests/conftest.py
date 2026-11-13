@@ -6,6 +6,7 @@ Historical runtime/session tests may construct legacy entrypoints only when
 
 from __future__ import annotations
 
+from importlib.util import find_spec
 import sys
 from pathlib import Path
 
@@ -19,6 +20,20 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 _SLICE_D_TEST_MODULE = "test_canonical_core_runtime_integration_bridge_slice_d_v0"
+
+# The pure historical suites require the packages retired in PR #6579.
+# Mixed test modules keep their current contracts in collection.
+collect_ignore = []
+if find_spec("src.autonomous") is None:
+    collect_ignore.extend(
+        [
+            "test_autonomous_decision_engine.py",
+            "test_autonomous_monitors.py",
+            "test_autonomous_workflow_engine.py",
+        ]
+    )
+if find_spec("src.trigger_training") is None:
+    collect_ignore.append("trigger_training")
 
 
 @pytest.fixture(autouse=True)

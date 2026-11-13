@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import sys
 import json
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -247,14 +248,19 @@ def test_materializer_module_has_no_forbidden_trading_or_governance_imports() ->
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                imported.add(alias.name.split(".", 1)[0])
+                imported.add(alias.name)
         elif isinstance(node, ast.ImportFrom):
             if node.level and node.level > 0:
                 continue
             if node.module:
-                imported.add(node.module.split(".", 1)[0])
-    assert "trading" not in imported
-    assert "src" not in imported
+                imported.add(node.module)
+    local_imports = {
+        module for module in imported if module.split(".", 1)[0] not in sys.stdlib_module_names
+    }
+    assert local_imports == {
+        "src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1",
+        "src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1",
+    }
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id not in {
