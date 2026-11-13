@@ -699,7 +699,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "91857feb4a1be36d356ef0dd4e0d89de62d926e8f6462e7d8f123d3f83d96434"
+      "sha256": "9c5c21d35fce32b073e3a0a17a974d102aad8236c5f5f94a5b3af46e2a5f1e04"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1459,7 +1459,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
       "before_sha256": "1fbf724e19342f7011cb2cda1e2dde19f8f5347e5b5c60fe986e6a1184ea3a4a",
-      "sha256": "c3cb947e994e130659ded31608609d525e38eb71563ce5a31bdd162056b27dfb"
+      "sha256": "10433f5fbe3b5548cb7cea617d3203b733c9535ad16be782619163f14d32d763"
     },
     {
       "path": "scripts/ops/run_k1_account_observation_readiness_v1.py",
@@ -2354,7 +2354,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "d27bdb18b6e9cb744b4de915d1b30b04f8e4e85c3d39fa4da17e65572a5e408b"
+      "sha256": "fbff8d8d700843611c0d04baf0eb1ff8ad694c6282047edc92ee50bf020401b7"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
@@ -3719,7 +3719,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "f05849ba671a1c11f4dfaa59a6f1880e184fb5a3a8187fd8b7acad3991c2d46b"
+      "sha256": "c90215f37ad781261c12c1210736bcdaca5c90df0dffe20f9335f8c34ec34b98"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

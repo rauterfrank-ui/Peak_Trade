@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CLI for Paper-Shadow wallclock MD-observe capability.
 
-preflight / verify-evidence: offline only.
+preflight / verify-evidence / measure-shadow-outcome: offline only.
 run: delegates to productive successor path
   INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1
   — requires verified productive (non-fixture) authorization; real network additionally
@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -54,7 +55,9 @@ def build_parser() -> argparse.ArgumentParser:
             "No orders/paper/testnet/live/credentials."
         )
     )
-    p.add_argument("command", choices=("preflight", "verify-evidence", "run"))
+    p.add_argument(
+        "command", choices=("preflight", "verify-evidence", "measure-shadow-outcome", "run")
+    )
     p.add_argument("--preregistration", type=Path, default=None)
     p.add_argument("--operator-go", type=Path, default=None)
     p.add_argument("--authorization-artifact", type=Path, default=None)
@@ -65,6 +68,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Require a completed archive with DDO and market evidence for every typed cycle.",
     )
+    p.add_argument("--decision-event-ref")
+    p.add_argument("--o4-mark-archive", type=Path)
+    p.add_argument("--n-bars", type=int)
+    p.add_argument("--evaluated-at-utc")
+    p.add_argument("--max-end-age-seconds", type=int)
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
     p.add_argument(
@@ -87,11 +95,128 @@ def _load_confirm_token(args: argparse.Namespace) -> str:
     raise SystemExit("CONFIRM_TOKEN_SOURCE_REQUIRED")
 
 
+def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
+    from scripts.ops.capture_offline_learning_mark_window_v1 import read_captured_mark_archive_v1
+    from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v1 import (
+        REQUEST_SCHEMA,
+    )
+    from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+        learning_event_time_key_v0,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+        seal_v1,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offline_recorded_market_replay_v1 import (
+        measure_recorded_market_horizon_v1,
+    )
+    from src.research.offline_recorded_mark_horizon_source_v1 import (
+        read_bound_json,
+        recorded_mark_price_unit_v1,
+    )
+
+    verification = verify_wallclock_evidence_bundle_v1(
+        evidence_root=args.evidence_root, select_shadow_decision_ref=args.decision_event_ref
+    )
+    if not verification.typed_ddo_requirement_met:
+        raise ValueError("COMPLETED_TYPED_SHADOW_EVIDENCE_REQUIRED")
+    decision = verification.selected_shadow_decision
+    if decision is None:
+        raise ValueError("DECISION_NOT_IN_VERIFIED_TYPED_SHADOW_CYCLE")
+
+    archive = read_captured_mark_archive_v1(args.o4_mark_archive)
+    binding = read_bound_json(archive.binding_path, archive.binding_sha256)
+    canonical = decision["canonical_instrument_id"]
+    native = decision["venue_instrument_id"]
+    if not isinstance(binding, dict) or binding.get("mapping_digest") != decision["mapping_digest"]:
+        raise ValueError("SHADOW_O4_MAPPING_MISMATCH")
+    price_unit = recorded_mark_price_unit_v1(
+        instrument_binding=binding, canonical_instrument_id=canonical, native_instrument_id=native
+    )
+    # The record has up to nine fractional digits. Avoid rounding a just-after-hour
+    # decision back onto the hour, which would include a bar already underway.
+    seconds, fraction = learning_event_time_key_v0(decision["decision_event_time_utc"])
+    start = seconds.replace(minute=0, second=0)
+    if start != seconds or int(fraction) != 0:
+        start += timedelta(hours=1)
+    measurement = measure_recorded_market_horizon_v1(
+        archive=archive,
+        request={
+            "schema_version": REQUEST_SCHEMA,
+            "market_identity": {
+                "dataset_generation": "archived-okx-mark-minute-replay-v1",
+                "venue": binding["venue"],
+                "instrument_ref": canonical,
+                "native_instrument_ref": native,
+            },
+            "horizon_start_time_utc": start.isoformat() + "Z",
+            "n_bars": args.n_bars,
+            "o4_interval_id": "PT1H",
+            "price_unit": price_unit,
+            "price_family": "MARK_PRICE",
+            "source_kind": "RECORDED_PUBLIC_MD",
+            "max_end_age_seconds": args.max_end_age_seconds,
+            "expected_price_basis_kind": "O4_BAR_CLOSE_FINALIZED",
+        },
+        evaluated_at_utc=args.evaluated_at_utc,
+    )
+    return seal_v1(
+        {
+            "schema_version": "i17_shadow_o4_market_measurement_readback_v1",
+            "authority": "NONE",
+            "ok": True,
+            "shadow_decision": decision,
+            "market_observation": measurement,
+            "market_archive": {
+                "repository_sha": archive.repository_sha,
+                "instrument_binding_sha256": archive.binding_sha256,
+                "request_log_sha256": archive.request_log_sha256,
+                "page_sha256": [
+                    archive.raw_sha256,
+                    *(page.raw_sha256 for page in archive.additional_pages),
+                ],
+            },
+            "meaning": "FORWARD_MARK_PRICE_LOG_RETURN_ONLY",
+            "fill_source_type": "NO_FILL",
+            "source_authenticated": False,
+            "learning_input_authorized": False,
+        }
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.require_typed_ddo and args.command != "verify-evidence":
         parser.error("--require-typed-ddo requires verify-evidence")
+    outcome_args = (
+        args.decision_event_ref,
+        args.o4_mark_archive,
+        args.n_bars,
+        args.evaluated_at_utc,
+        args.max_end_age_seconds,
+    )
+    if args.command == "measure-shadow-outcome":
+        if args.evidence_root is None or any(val is None for val in outcome_args):
+            parser.error(
+                "measure-shadow-outcome requires --evidence-root, --decision-event-ref, "
+                "--o4-mark-archive, --n-bars, --evaluated-at-utc and --max-end-age-seconds"
+            )
+        if args.real_network or not 2 <= args.n_bars <= 24:
+            parser.error("measure-shadow-outcome is offline and requires 2 to 24 bars")
+        try:
+            payload = _measure_shadow_outcome(args)
+        except ValueError as exc:
+            print(json.dumps({"ok": False, "blockers": [str(exc)]}))
+            return 1
+        except (OSError, KeyError, TypeError, AttributeError, OverflowError) as exc:
+            print(
+                json.dumps({"ok": False, "blockers": [f"SHADOW_O4_READBACK:{type(exc).__name__}"]})
+            )
+            return 1
+        print(json.dumps(payload, sort_keys=True, indent=2))
+        return 0
+    if any(val is not None for val in outcome_args):
+        parser.error("outcome options require measure-shadow-outcome")
     if args.command == "preflight":
         payload = preflight_wallclock_session_v1(repo_root=_REPO_ROOT)
         print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
@@ -104,16 +229,7 @@ def main(argv: list[str] | None = None) -> int:
         result = verify_wallclock_evidence_bundle_v1(evidence_root=args.evidence_root)
         payload = result.to_dict()
         if args.require_typed_ddo:
-            readback = result.ddo_readback or {}
-            payload["typed_ddo_requirement_met"] = (
-                result.verified
-                and result.verdict == "PASS"
-                and not result.incomplete
-                and readback.get("decision_bundles_readable") is True
-                and readback.get("typed_volatility_cycles_with_double_play_bundle", 0)
-                == readback.get("typed_volatility_cycles", 0)
-                > 0
-            )
+            payload["typed_ddo_requirement_met"] = result.typed_ddo_requirement_met
         print(json.dumps(payload, sort_keys=True, indent=2))
         return 0 if result.verified and payload.get("typed_ddo_requirement_met", True) else 1
 

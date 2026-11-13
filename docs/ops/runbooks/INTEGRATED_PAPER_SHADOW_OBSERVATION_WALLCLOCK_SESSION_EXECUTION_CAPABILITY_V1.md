@@ -84,7 +84,7 @@ python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.
 python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py run ...
 ```
 
-`preflight` and `verify-evidence` are offline.
+`preflight`, `verify-evidence` and `measure-shadow-outcome` are offline.
 `run` delegates to the successor productive path
 `INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1`
 (verified non-fixture authorization required; real network additionally needs
@@ -178,7 +178,29 @@ Für die spätere [DDO-/GVEF-Auswertung](../specs/OFFLINE_DDO_NATIVE_RESEARCH_CY
 müssen die vollständigen Entscheidungsbelege erhalten bleiben. Die
 Outcome-Messung benötigt mindestens zwei lückenlose finalisierte
 O4-Stundenbars nach dem eingefrorenen Startzeitpunkt des Messfensters,
-passend zu Venue und Instrument. Der vorhandene Offline-Follow-up-Worker
+passend zu Venue und Instrument. Für eine ausdrücklich ausgewählte,
+typisierte I17-Double-Play-Entscheidung kann der Offline-Befehl
+beide Originalarchive zusammen lesen:
+
+```bash
+./scripts/pt scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py \
+  measure-shadow-outcome --evidence-root /absolute/shadow-evidence \
+  --decision-event-ref "$shadow_decision_event_ref" --o4-mark-archive /absolute/recorded \
+  --n-bars 2 --evaluated-at-utc "$evaluation_utc" --max-end-age-seconds "$end_age_limit_seconds"
+```
+
+Die Entscheidungsreferenz ist die Original-ID aus dem typisierten DDO-Zyklus.
+Das Fenster beginnt an der ersten vollen UTC-Stunde auf oder nach dem
+Entscheidungszeitpunkt. Die Kursmessung reicht vom Schluss der ersten bis
+zum Schluss der letzten angeforderten Stundenkerze. Das Archiv muss zum
+angegebenen Auswertungszeitpunkt nachweislich verfügbar sein und dieselbe
+Instrumentbindung führen. Der Befehl gibt einen prüfsummengebundenen
+Lesebeleg aus. Er verändert weder Archiv noch DDO-Ledger. Die Messung ist
+ein späterer Markpreis-Logreturn ohne Fill, ohne Kontorendite und ohne
+Lern- oder Freigabewirkung. Die lokalen Prüfsummen sind keine unabhängige
+Bestätigung der Marktdaten durch die Börse.
+
+Der vorhandene Offline-Follow-up-Worker
 verwendet den Herkunftstyp `SYNTHETIC_OFFLINE`. Die Abnahme mit
 beobachteten Originaldaten braucht einen eigenen Herkunftsnachweis über
 die zuständigen Consumer. Forschungsprofil, finalisierte Backtestdaten
