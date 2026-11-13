@@ -12,8 +12,6 @@ Several scheduled workflows run only when specific repository variables are set 
 |----------|----------|--------|---------------------|
 | `PT_PRJ_FEATURES_SMOKE_ENABLED` | prj-scheduled-shadow-paper-features-smoke | prj-features-smoke | Job skipped on schedule |
 | `PT_SCHEDULED_PAPER_TESTS_ENABLED` | ci-scheduled-paper-and-export-smoke | paper_tests_audit_evidence | Job skipped |
-| `PT_SCHEDULED_EXPORT_VERIFY_ENABLED` | ci-scheduled-paper-and-export-smoke | export_pack_verify | Job skipped |
-| `PT_EXPORT_CI_ENABLED` | ci-export-pack-download-verify | export-pack-verify | Job skipped on PR |
 
 ---
 
@@ -41,57 +39,28 @@ if: ${{ vars.PT_PRJ_FEATURES_SMOKE_ENABLED == 'true' || github.event_name == 'wo
 
 | Field | Value |
 |-------|-------|
-| **Purpose** | Enable scheduled paper-tests-audit-evidence trigger (hourly) |
+| **Purpose** | Enable the Paper audit dispatch |
 | **Workflow** | `.github/workflows/ci-scheduled-paper-and-export-smoke.yml` |
 | **Job** | paper_tests_audit_evidence |
 | **When unset** | Job skipped |
 | **Where to set** | GitHub repo: Settings → Secrets and variables → Actions → Variables |
-| **Verification** | `gh run list --workflow="CI / Scheduled Paper + Export Smoke" --limit 5` |
+| **Verification** | `gh run list --workflow="CI / Scheduled Paper Smoke" --limit 5` |
 
 **Workflow condition:**
 ```yaml
 if: vars.PT_SCHEDULED_PAPER_TESTS_ENABLED == 'true'
 ```
 
-**Note:** Job also requires `scripts/ci/scheduled_guardrails.sh` to pass (vars + secrets for export channel).
+**Note:** Job also requires `scripts/ci/scheduled_guardrails.sh` to pass.
 
 ---
 
-## PT_SCHEDULED_EXPORT_VERIFY_ENABLED
+## AWS export retirement
 
-| Field | Value |
-|-------|-------|
-| **Purpose** | Enable scheduled export-pack verify trigger (hourly) |
-| **Workflow** | `.github/workflows/ci-scheduled-paper-and-export-smoke.yml` |
-| **Job** | export_pack_verify |
-| **When unset** | Job skipped |
-| **Where to set** | GitHub repo: Settings → Secrets and variables → Actions → Variables |
-| **Verification** | Same as above; when enabled, also requires `PT_RCLONE_CONF_B64`, `PT_EXPORT_REMOTE`, `PT_EXPORT_PREFIX` secrets |
-
-**Workflow condition:**
-```yaml
-if: vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED == 'true'
-```
-
----
-
-## PT_EXPORT_CI_ENABLED
-
-| Field | Value |
-|-------|-------|
-| **Purpose** | Enable export-pack download+verify job on pull_request (otherwise workflow_dispatch only) |
-| **Workflow** | `.github/workflows/ci-export-pack-download-verify.yml` |
-| **Job** | export-pack-verify |
-| **When unset** | Job skipped on PR; runs on `workflow_dispatch` |
-| **Where to set** | GitHub repo: Settings → Secrets and variables → Actions → Variables |
-| **Verification** | Open a PR; job appears only if var is `true` |
-
-**Workflow condition:**
-```yaml
-if: github.event_name == 'workflow_dispatch' || vars.PT_EXPORT_CI_ENABLED == 'true'
-```
-
-**Related runbook:** `docs/ops/runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md`
+The former AWS Export Smoke, AWS Export Write Smoke and Export Pack Download + Verify
+workflows have been retired. The Paper workflow only uses its own scheduling variable.
+The read-only recommender lists 12 residual workflows (5 with active schedules and
+7 manual-only). The counts in the release records below describe their original revision.
 
 ---
 
@@ -104,7 +73,6 @@ gh variable list
 # Recent runs for scheduled workflows
 gh run list --workflow="prj-scheduled-shadow-paper-features-smoke.yml" --limit 5
 gh run list --workflow="ci-scheduled-paper-and-export-smoke.yml" --limit 5
-gh run list --workflow="ci-export-pack-download-verify.yml" --limit 5
 ```
 
 ---

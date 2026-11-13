@@ -28,7 +28,6 @@ KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES = frozenset(
         "aiops-promptfoo-evals.yml",
         "aiops-trend-ledger-from-seed.yml",
         "audit.yml",
-        "ci-export-pack-download-verify.yml",
         "ci-operator-verify-registry.yml",
         "ci-scheduled-paper-and-export-smoke.yml",
         "ci.yml",
@@ -41,6 +40,7 @@ KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES = frozenset(
         "infostream-automation.yml",
         "knowledge_extras_chromadb.yml",
         "l4_critic_replay_determinism.yml",
+        "lint_gate.yml",
         "market_outlook_automation.yml",
         "offline_suites.yml",
         "ops_doctor_dashboard.yml",
@@ -48,14 +48,13 @@ KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES = frozenset(
         "paper_session_audit_evidence.yml",
         "paper_session_telemetry_summary.yml",
         "paper_tests_audit_evidence.yml",
+        "policy_critic_gate.yml",
         "prbc-stability-gate.yml",
         "prbd-live-readiness-scorecard.yml",
         "prbe-shadow-testnet-scorecard.yml",
         "prbg-execution-evidence.yml",
         "prbi-live-pilot-scorecard.yml",
         "prbj-testnet-exec-events.yml",
-        "prcc-aws-export-smoke.yml",
-        "prcd-aws-export-write-smoke.yml",
         "prj-scheduled-shadow-paper-features-smoke.yml",
         "prk-prj-status-report.yml",
         "pro-prk-nightly-selfcheck.yml",
@@ -365,7 +364,7 @@ def test_manual_dispatch_sensitive_surface_contract_classifies_current_set() -> 
 
 def test_manual_dispatch_sensitive_surface_contract_known_set_stays_documentary() -> None:
     """The known set is an owner-review surface, not a workflow-change mandate."""
-    assert len(KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES) == 42
+    assert len(KNOWN_MANUAL_DISPATCH_WORKFLOWS_WITH_SENSITIVE_SURFACES) == 41
 
 
 def test_manual_dispatch_sensitive_surface_contract_requires_signals_for_known_set() -> None:
@@ -427,16 +426,6 @@ def test_workflow_dispatch_inputs_visibility_followup_v1_some_workflows_define_i
     assert any(row["defines_inputs_block"] for row in inventory.values())
 
 
-def test_workflow_dispatch_inputs_visibility_followup_v1_prcd_write_smoke_lists_confirm_token() -> (
-    None
-):
-    inventory = _workflow_dispatch_inputs_inventory_v1()
-    row = inventory.get("prcd-aws-export-write-smoke.yml")
-    assert row is not None
-    assert "confirm_token" in row["input_keys"]
-    assert "confirm_token" in row["sensitive_input_name_markers"]
-
-
 def test_workflow_dispatch_inputs_visibility_followup_v1_weekly_audit_lists_note_input() -> None:
     inventory = _workflow_dispatch_inputs_inventory_v1()
     row = inventory.get("weekly_core_audit.yml")
@@ -473,16 +462,6 @@ def test_workflow_dispatch_input_metadata_visibility_v1_inventory_sorted_determi
     first = _workflow_dispatch_inputs_inventory_v1()
     second = _workflow_dispatch_inputs_inventory_v1()
     assert first == second
-
-
-def test_workflow_dispatch_input_metadata_visibility_v1_prcd_confirm_token_metadata_smoke() -> None:
-    inventory = _workflow_dispatch_inputs_inventory_v1()
-    row = inventory.get("prcd-aws-export-write-smoke.yml")
-    assert row is not None
-    meta = row["inputs_metadata"]["confirm_token"]
-    assert meta["required"] is True
-    assert meta["default"] == ""
-    assert meta["type"] is None
 
 
 def test_workflow_dispatch_input_metadata_visibility_v1_weekly_note_metadata_smoke() -> None:

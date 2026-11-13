@@ -16,14 +16,6 @@ yaml = pytest.importorskip("yaml")
 
 WORKFLOW = Path(".github/workflows/paper_tests_audit_evidence.yml")
 
-_ALLOWED_SECRETS = frozenset(
-    {
-        "PT_RCLONE_CONF_B64",
-        "PT_EXPORT_REMOTE",
-        "PT_EXPORT_PREFIX",
-    }
-)
-
 _SECRETS_TOKEN_RE = re.compile(r"\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}")
 
 
@@ -148,20 +140,20 @@ def test_workflow_guardrails_script_present() -> None:
 
 
 def test_workflow_only_uses_allowlisted_secrets() -> None:
-    assert _secret_names_in_text(_workflow_text()) == _ALLOWED_SECRETS
+    assert _secret_names_in_text(_workflow_text()) == set()
 
 
-def test_workflow_lists_expected_guardrail_secret_placeholders() -> None:
+def test_workflow_has_no_export_secret_placeholders() -> None:
     text = _workflow_text()
-    assert "${{ secrets.PT_RCLONE_CONF_B64 }}" in text
-    assert "${{ secrets.PT_EXPORT_REMOTE }}" in text
-    assert "${{ secrets.PT_EXPORT_PREFIX }}" in text
+    assert "${{ secrets.PT_RCLONE_CONF_B64 }}" not in text
+    assert "${{ secrets.PT_EXPORT_REMOTE }}" not in text
+    assert "${{ secrets.PT_EXPORT_PREFIX }}" not in text
 
 
 def test_workflow_schedule_gate_vars_present_in_guardrail_env() -> None:
     text = _workflow_text()
     assert "vars.PT_SCHEDULED_PAPER_TESTS_ENABLED" in text
-    assert "vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED" in text
+    assert "vars.PT_SCHEDULED_EXPORT_VERIFY_ENABLED" not in text
 
 
 def test_workflow_uploads_audit_evidence_without_readiness_claims() -> None:

@@ -54,19 +54,13 @@ KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
     {
         "add-to-project.yml",
         "aiops-promptfoo-evals.yml",
-        "ci-export-pack-download-verify.yml",
         "ci-operator-verify-registry.yml",
-        "ci-scheduled-paper-and-export-smoke.yml",
         "ci.yml",
         "cursor_auto_automerge.yml",
         "cursor_auto_pr.yml",
         "infostream-automation.yml",
         "market_outlook_automation.yml",
-        "paper_session_audit_evidence.yml",
-        "paper_tests_audit_evidence.yml",
         "pr-head-sha-required-checks-liveness-guard.yml",
-        "prcc-aws-export-smoke.yml",
-        "prcd-aws-export-write-smoke.yml",
     }
 )
 
@@ -75,10 +69,6 @@ KNOWN_SECRET_REFERENCE_NAMES = frozenset(
         "ADD_TO_PROJECT_PAT",
         "GITHUB_TOKEN",
         "OPENAI_API_KEY",
-        "PT_EXPORT_ID",
-        "PT_EXPORT_PREFIX",
-        "PT_EXPORT_REMOTE",
-        "PT_RCLONE_CONF_B64",
     }
 )
 
@@ -275,8 +265,8 @@ def test_workflow_secrets_reference_visibility_contract_classifies_current_secre
 
 def test_workflow_secrets_reference_visibility_contract_known_sets_stay_documentary() -> None:
     """Known sets are owner-review surfaces, not workflow-change mandates."""
-    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 15
-    assert len(KNOWN_SECRET_REFERENCE_NAMES) == 7
+    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 9
+    assert len(KNOWN_SECRET_REFERENCE_NAMES) == 3
 
 
 def test_workflow_secrets_reference_visibility_contract_requires_names_for_known_set() -> None:
@@ -369,8 +359,7 @@ def test_github_actions_vars_context_visibility_v1_ci_scheduled_smoke_lists_sche
     inventory = _sorted_vars_reference_inventory()
     row = inventory.get("ci-scheduled-paper-and-export-smoke.yml")
     assert row is not None
-    assert "PT_SCHEDULED_PAPER_TESTS_ENABLED" in row
-    assert "PT_SCHEDULED_EXPORT_VERIFY_ENABLED" in row
+    assert row == ["PT_SCHEDULED_PAPER_TESTS_ENABLED"]
 
 
 def test_github_actions_vars_context_visibility_v1_never_checks_variable_values() -> None:
@@ -533,15 +522,6 @@ def test_github_actions_braced_needs_github_event_inputs_visibility_v1_ci_needs_
     assert row is not None
     assert "changes" in row
     assert "fast-lane" in row
-
-
-def test_github_actions_braced_needs_github_event_inputs_visibility_v1_prcd_github_event_inputs_smoke() -> (
-    None
-):
-    inventory = _sorted_braced_github_event_inputs_inventory()
-    row = inventory.get("prcd-aws-export-write-smoke.yml")
-    assert row is not None
-    assert "confirm_token" in row
 
 
 def test_cybersecurity_visibility_chain_owner_registry_crosslink_v0() -> None:

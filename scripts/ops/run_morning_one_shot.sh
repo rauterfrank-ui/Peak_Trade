@@ -13,11 +13,10 @@ TS="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT="out/ops/morning_one_shot_${TS}"
 mkdir -p "$OUT"
 
-echo "1) E2E runner (best-effort)"
-if [ -x scripts/ops/run_end_to_end_verification.sh ]; then
-  ./scripts/ops/run_end_to_end_verification.sh || true
-else
-  echo "SKIP: scripts/ops/run_end_to_end_verification.sh missing"
+E2E_EXIT=0
+if [ "${RUN_E2E:-true}" = "true" ]; then
+  echo "1) E2E evidence workflow dispatch"
+  ./scripts/ops/run_end_to_end_verification.sh || E2E_EXIT=$?
 fi
 
 echo "1b) Pull PRBG latest execution evidence (best-effort)"
@@ -106,6 +105,7 @@ DONE="out/ops/MORNING_ONE_SHOT_DONE_${TS}.txt"
 cat > "$DONE" <<EOF
 DONE: morning_one_shot
 ts_utc: ${TS}
+e2e_dispatch_exit: ${E2E_EXIT}
 ops_status_exit: ${OPS_EXIT}
 prbi_decision: ${PRBI_DECISION}
 prbi_score: ${PRBI_SCORE}
@@ -132,4 +132,7 @@ if [ -f "${DONE}" ] && [ -x scripts/ops/append_done_registry.py ]; then
 fi
 
 echo "DONE=${DONE}"
+if [ "$E2E_EXIT" -ne 0 ]; then
+  exit "$E2E_EXIT"
+fi
 exit "${OPS_EXIT}"

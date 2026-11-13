@@ -57,7 +57,6 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
         "prbg-execution-evidence.yml",
         "prbi-live-pilot-scorecard.yml",
         "prbj-testnet-exec-events.yml",
-        "prcc-aws-export-smoke.yml",
         "prk-prj-status-report.yml",
         "pro-prk-nightly-selfcheck.yml",
         "pru-required-checks-drift-detector.yml",
@@ -65,7 +64,7 @@ RESIDUAL_SCHEDULE_FILES = frozenset(
     }
 )
 
-# SLICE-GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B: schedule removed; other triggers retained.
+# SLICE-GH-001..004 + GH-CI + PRK/PRBD Option2 + PRBJ Option B: schedule removed; other triggers retained.
 GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
     {
         "ci.yml",
@@ -73,7 +72,6 @@ GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
         "real-market-forward-evidence-smoke.yml",
         "audit.yml",
         "pru-required-checks-drift-detector.yml",
-        "prcc-aws-export-smoke.yml",
         "prk-prj-status-report.yml",
         "prbj-testnet-exec-events.yml",
     }
@@ -90,9 +88,9 @@ PRU_REQUIRED_CHECKS_DRIFT_DETECTOR_WORKFLOW = (
     REPO_ROOT / ".github" / "workflows" / "pru-required-checks-drift-detector.yml"
 )
 
-RESIDUAL_INVENTORY_COUNT = 13
+RESIDUAL_INVENTORY_COUNT = 12
 RESIDUAL_ACTIVE_SCHEDULE_COUNT = 5
-RESIDUAL_MANUAL_ONLY_COUNT = 8
+RESIDUAL_MANUAL_ONLY_COUNT = 7
 RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
 
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
@@ -191,7 +189,7 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     assert proc.returncode == 0, proc.stderr
     lowered = proc.stdout.lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in lowered
-    assert "13 inventory" in lowered
+    assert "12 inventory" in lowered
     assert "5 active schedule" in lowered
     assert "manual-only" in lowered
 
@@ -201,13 +199,13 @@ def test_residual_all_intent_label_inventory_split_v0() -> None:
     row = next(r for r in payload["intents"] if r["id"] == "residual_all")
     label = row["label"].lower()
     assert RESIDUAL_ALL_INTENT_MISLEADING_PHRASE not in label
-    assert "13 inventory" in label
+    assert "12 inventory" in label
     assert "5 active schedule" in label
     assert "manual-only" in label
     assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
 
 
-def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
+def test_residual_all_json_covers_twelve_without_duplicates() -> None:
     proc = _run_cli("--intent", "residual_all", "--json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
@@ -320,16 +318,6 @@ def test_pru_required_checks_drift_detector_manual_only_yaml_shape() -> None:
     assert ".github/workflows/**" in text
 
 
-PRCC_AWS_EXPORT_SMOKE_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "prcc-aws-export-smoke.yml"
-
-
-def test_prcc_aws_export_smoke_manual_only_yaml_shape() -> None:
-    """PRCC schedule-manual-only: cron removed; dispatch retained (signed AWS policy Option B)."""
-    text = PRCC_AWS_EXPORT_SMOKE_WORKFLOW.read_text(encoding="utf-8")
-    assert "workflow_dispatch" in text
-    assert "schedule:" not in text
-
-
 PRK_PRJ_STATUS_REPORT_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "prk-prj-status-report.yml"
 PRBJ_TESTNET_EXEC_EVENTS_WORKFLOW = (
     REPO_ROOT / ".github" / "workflows" / "prbj-testnet-exec-events.yml"
@@ -391,7 +379,7 @@ def test_residual_intents_listed_with_manual_only_intents() -> None:
         "residual_data_smoke",
     ):
         assert intent in intent_ids
-    assert payload["residual_schedule_count"] == 13
+    assert payload["residual_schedule_count"] == RESIDUAL_INVENTORY_COUNT
 
 
 def test_ci_audit_opds1_lists_manual_only_recommender_owner_v0() -> None:

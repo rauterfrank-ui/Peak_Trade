@@ -8,6 +8,8 @@ docs_token: "DOCS_TOKEN_PRCD_AWS_EXPORT_WRITE_SMOKE_CI_AUTHORITY_BOUNDARY_V1"
 
 # PR-CD AWS Export Write-Smoke CI Authority Boundary
 
+**Retired.** The AWS GitHub export path was removed. The original instructions below record its former configuration.
+
 ## 1) Purpose
 
 This runbook defines the authority boundary for the PR-CD AWS export write-smoke workflow.
@@ -16,9 +18,9 @@ The workflow is an export and remote-storage smoke support surface. It is not an
 
 ## 2) Workflow Surface
 
-Canonical workflow path:
+Former workflow definition:
 
-- `.github/workflows/prcd-aws-export-write-smoke.yml`
+- [Workflow definition at retirement](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcd-aws-export-write-smoke.yml)
 
 This runbook describes the authority boundary of that workflow. It does not change the workflow, does not approve any workflow run, and does not assert that any export target, artifact, or remote object is valid evidence.
 

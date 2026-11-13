@@ -1,7 +1,9 @@
 # AWS Export Smoke (PR-CC)
 
+**Retired.** The AWS GitHub export path was removed. The original instructions below record its former configuration.
+
 Workflow:
-- ``.github&#47;workflows&#47;prcc-aws-export-smoke.yml``
+- [Workflow definition at retirement](https://github.com/rauterfrank-ui/Peak_Trade/blob/72aa9b1d1219080b1344b668ab7dfebba5c15f75/.github/workflows/prcc-aws-export-smoke.yml)
 
 Purpose:
 - Read-only verification that the configured export target is reachable from GitHub Actions.

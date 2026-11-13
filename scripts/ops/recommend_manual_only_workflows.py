@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Residual schedule inventory (13 files): 5 active schedule + 8 manual-only (GH-001..004 + GH-CI + PRCC + PRK + PRBJ).
+# Residual schedule inventory (12 files): 5 active schedule + 7 manual-only.
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -66,7 +66,6 @@ RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
         "prbg-execution-evidence.yml",
         "prbi-live-pilot-scorecard.yml",
         "prbj-testnet-exec-events.yml",
-        "prcc-aws-export-smoke.yml",
         "prk-prj-status-report.yml",
         "pro-prk-nightly-selfcheck.yml",
         "pru-required-checks-drift-detector.yml",
@@ -78,7 +77,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "13 inventory workflows (5 active schedule + 8 manual-only; read-only)",
+    "residual_all": "12 inventory workflows (5 active schedule + 7 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -96,7 +95,6 @@ RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
         "prbe-shadow-testnet-scorecard.yml",
         "prbi-live-pilot-scorecard.yml",
         "prbd-live-readiness-scorecard.yml",
-        "prcc-aws-export-smoke.yml",
     ),
     "residual_data_smoke": ("real-market-forward-evidence-smoke.yml",),
 }
@@ -141,9 +139,9 @@ INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
 
 STATIC_META: dict[str, dict[str, Any]] = {
     "ci-scheduled-paper-and-export-smoke.yml": {
-        "why": "Orchestrates paper-tests-audit-evidence and export-pack verify (former hourly schedule).",
-        "risk": "medium — may dispatch child workflows; check PT_SCHEDULED_* vars and export secrets.",
-        "variable_gates": "PT_SCHEDULED_PAPER_TESTS_ENABLED, PT_SCHEDULED_EXPORT_VERIFY_ENABLED",
+        "why": "Dispatches paper-tests-audit-evidence.",
+        "risk": "medium — may dispatch the Paper audit workflow.",
+        "variable_gates": "PT_SCHEDULED_PAPER_TESTS_ENABLED",
         "ai": False,
     },
     "class-a-shadow-paper-scheduled-probe-v1.yml": {
@@ -329,13 +327,6 @@ RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
         "why": "Daily live readiness scorecard; downloads upstream artifacts.",
         "risk": "BLOCKED — chain dependency with prbc/prk/prbe.",
         "variable_gates": "",
-        "ai": False,
-        "residual_schedule": True,
-    },
-    "prcc-aws-export-smoke.yml": {
-        "why": "AWS export smoke (dispatch-only; schedule removed per signed AWS policy).",
-        "risk": "BLOCKED — AWS_READ secrets surface.",
-        "variable_gates": "PT_* export secrets",
         "ai": False,
         "residual_schedule": True,
     },
