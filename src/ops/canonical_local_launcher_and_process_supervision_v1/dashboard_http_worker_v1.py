@@ -66,14 +66,16 @@ def run_dashboard_http_worker(
     thread = threading.Thread(target=_serve, name="o2-dashboard-http", daemon=True)
     thread.start()
 
-    # Wait until port accepts connections.
-    deadline = time.time() + 5.0
-    while time.time() < deadline:
-        try:
-            with socket.create_connection((http_host, port), timeout=0.2):
-                break
-        except OSError:
-            time.sleep(0.05)
+    # An unrelated listener on the requested port cannot prove this worker is ready.
+    deadline = time.monotonic() + 5.0
+    while not server.started and thread.is_alive() and not stopping["value"]:
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(0.05)
+    if not server.started or not thread.is_alive() or stopping["value"]:
+        server.should_exit = True
+        thread.join(timeout=1.0)
+        raise SystemExit("DASHBOARD_HTTP_STARTUP_UNPROVEN")
 
     _write_json(
         marker_path,

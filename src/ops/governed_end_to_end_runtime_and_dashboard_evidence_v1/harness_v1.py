@@ -39,14 +39,14 @@ from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     READ_MODEL_CLASSIFICATION,
     READ_MODEL_SSOT,
 )
-from src.ops.canonical_derived_public_md_read_model_v1.dashboard_lifecycle_v1 import (
-    assert_dashboard_has_no_trading_authority_v1,
-    materialize_dashboard_lifecycle_status_v1,
-)
 from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
     bind_dashboard_backend_to_read_model_v1,
     build_missing_source_read_model_v1,
     project_o4_envelopes_to_canonical_dashboard_read_model_v1,
+)
+from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.dashboard_lifecycle_v1 import (
+    assert_dashboard_has_no_trading_authority_v1,
+    materialize_dashboard_lifecycle_status_v1,
 )
 from src.ops.governed_end_to_end_runtime_and_dashboard_evidence_v1.constants_v1 import (
     DEFERRED_CLASSIFICATIONS,
