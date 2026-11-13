@@ -55,6 +55,16 @@ def test_fixture_archive_classified_not_observed_runtime(tmp_path: Path) -> None
     assert select_legitimate_observed_primary_archive_v1((report,)) is None
 
 
+def test_paper_g2_runner_rejects_fixture_before_continuation(tmp_path: Path) -> None:
+    from scripts.ops.run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1 import (
+        continue_g2_from_primary_root,
+    )
+
+    root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
+    with pytest.raises(ValueError, match="PAPER_OBSERVED_PRIMARY_ARCHIVE_REQUIRED"):
+        continue_g2_from_primary_root(root, projection_inputs={})
+
+
 def test_fixture_control_g2_m8_reaches_m8(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)

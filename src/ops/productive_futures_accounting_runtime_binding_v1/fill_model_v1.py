@@ -85,7 +85,11 @@ def build_simulated_fill_v1(
     raw_fill = (
         mark * (Decimal("1") + slip_mult) if side_u == "BUY" else mark * (Decimal("1") - slip_mult)
     )
-    fill_price = raw_fill.quantize(contract.tick_size, rounding=ROUND_HALF_EVEN)
+    tick_size = contract.tick_size
+    if not tick_size.is_finite() or tick_size <= 0:
+        raise FillModelError(AccountingFailureCodeV1.INVALID_CONTRACT_METADATA, "tick_size")
+    ticks = (raw_fill / tick_size).quantize(Decimal("1"), rounding=ROUND_HALF_EVEN)
+    fill_price = ticks * tick_size
     if fill_price <= 0:
         raise FillModelError(AccountingFailureCodeV1.INVALID_MARK_PRICE, "fill_price")
 
