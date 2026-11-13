@@ -1,4 +1,4 @@
-"""Run two explicitly bounded native research steps from verified offline DDO evidence."""
+"""Run bounded native research from verified offline DDO evidence."""
 
 from __future__ import annotations
 
@@ -110,6 +110,12 @@ class ResearchCycleTimesV1(_RequestModel):
     evaluation: str
 
 
+class ResearchFollowUpTimesV1(_RequestModel):
+    meta: str
+    search: str
+    measurement: str
+
+
 class ResearchGapDimensionV1(_RequestModel):
     name: str = Field(min_length=1)
     expected: float = Field(allow_inf_nan=False)
@@ -118,9 +124,7 @@ class ResearchGapDimensionV1(_RequestModel):
     unit: str = Field(min_length=1)
 
 
-class OfflineDdoResearchRequestV1(_RequestModel):
-    schema_version: Literal["offline_ddo_research_request.v1"]
-    learning_evidence_digest: str
+class _ResearchInputsV1(_RequestModel):
     instrument_id: str
     strategy_id: str
     strategy_version: str
@@ -143,6 +147,16 @@ class OfflineDdoResearchRequestV1(_RequestModel):
     threshold_policy_digest: str
     protected_digest_baseline: ProtectedSemanticDigestsV1
     times: ResearchCycleTimesV1
+
+
+class OfflineDdoResearchRequestV1(_ResearchInputsV1):
+    schema_version: Literal["offline_ddo_research_request.v1"]
+    learning_evidence_digest: str
+
+
+class OfflineDdoResearchProfileV1(_ResearchInputsV1):
+    schema_version: Literal["offline_ddo_research_profile.v1"]
+    follow_up_times: ResearchFollowUpTimesV1
 
 
 def _space(name, axes):
@@ -247,12 +261,12 @@ def run_offline_ddo_research_cycle_v1(
     cycle_key: str,
     *,
     plan_digest: str,
-    request: OfflineDdoResearchRequestV1,
+    request: OfflineDdoResearchRequestV1 | OfflineDdoResearchProfileV1,
     bars: pd.DataFrame,
     cfg: dict[str, Any],
     code: CanonicalCodeProvenanceV1,
 ) -> dict[str, Any]:
-    """Consume one completed DDO cycle and a separate offline research declaration."""
+    """Consume one completed DDO cycle and a bounded request or research profile."""
     evidence = export_completed_offline_learning_evidence_v1(
         root, cycle_key, plan_digest=plan_digest
     )
@@ -263,9 +277,10 @@ def run_offline_ddo_research_cycle_v1(
     )
     if admission["status"] != STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT:
         raise ValueError("OFFLINE_RESEARCH_LEARNING_EVIDENCE_NOT_ADMITTED")
-    if (
-        request.learning_evidence_digest != evidence["content_hash"]
-        or request.instrument_id != evidence["outcome_evidence_provenance"]["instrument_id"]
+    instrument_id = evidence["outcome_evidence_provenance"]["instrument_id"]
+    if request.instrument_id != instrument_id or (
+        isinstance(request, OfflineDdoResearchRequestV1)
+        and request.learning_evidence_digest != evidence["content_hash"]
     ):
         raise ValueError("OFFLINE_RESEARCH_REQUEST_LEARNING_BINDING_MISMATCH")
     if (
@@ -281,10 +296,26 @@ def run_offline_ddo_research_cycle_v1(
     if hashes != {"dataset_sha256": request.dataset_sha256, "config_sha256": request.config_sha256}:
         raise ValueError("OFFLINE_RESEARCH_INPUT_DIGEST_MISMATCH")
 
+    profile = request if isinstance(request, OfflineDdoResearchProfileV1) else None
+    if profile is not None:
+        request = OfflineDdoResearchRequestV1.model_validate(
+            {
+                **profile.model_dump(exclude={"follow_up_times"}),
+                **hashes,
+                "schema_version": "offline_ddo_research_request.v1",
+                "learning_evidence_digest": evidence["content_hash"],
+                "instrument_id": instrument_id,
+            }
+        )
     times = [
         learning_event_time_key_v0(require_iso8601_utc_z(value, field=name))
         for name, value in request.times.model_dump().items()
     ]
+    if profile is not None:
+        times.extend(
+            learning_event_time_key_v0(require_iso8601_utc_z(value, field=f"follow_up_{name}"))
+            for name, value in profile.follow_up_times.model_dump().items()
+        )
     if times != sorted(set(times)) or times[0] <= learning_event_time_key_v0(
         evidence["observed_at_utc"]
     ):
@@ -343,6 +374,9 @@ def run_offline_ddo_research_cycle_v1(
         "source_tree_digest": source_digest,
         "authority": "NONE",
     }
+    if profile is not None:
+        bound["profile_digest"] = digest_v1(profile.model_dump(mode="json"))
+        bound["follow_up_times"] = profile.follow_up_times.model_dump(mode="json")
 
     directory = EvaluationReceiptArchiveV1(root).safe_path_v1(
         Path("offline-ddo-research") / cycle_key
@@ -362,6 +396,7 @@ def run_offline_ddo_research_cycle_v1(
             gaps=gaps,
             horizon=horizon,
             policy=policy,
+            follow_up_times=profile.follow_up_times if profile is not None else None,
         )
 
 
@@ -379,6 +414,7 @@ def _execute(
     gaps,
     horizon,
     policy,
+    follow_up_times,
 ):
     publish_v1(workspace.safe_path_v1("request.json"), bound)
     champion, measurements = _baseline(
@@ -435,6 +471,8 @@ def _execute(
         "status": "FIRST_SEARCH_EXHAUSTED",
         "authority": "NONE",
     }
+    if follow_up_times is not None:
+        result["follow_up"] = None
     if first.artifact_id is not None:
         artifact_ids = (first.artifact_id,)
         second = run_native_research_session_step_v1(
@@ -471,7 +509,64 @@ def _execute(
                 if evaluation["mechanism_status"] == "PASS"
                 else "MECHANISM_BLOCKED",
             )
+            if follow_up_times is not None:
+                result["follow_up"] = _run_follow_up(
+                    workspace,
+                    result["request_digest"],
+                    evaluation,
+                    artifact_ids=(first.artifact_id, second.artifact_id),
+                    times=follow_up_times,
+                    search=next_search,
+                    provider=provider,
+                    step_args=step_args,
+                )
+                if evaluation["mechanism_status"] == "INCOMPLETE":
+                    result["status"] = "MECHANISM_INCOMPLETE"
+                    return result
 
     result_path = workspace.safe_path_v1("result.json")
     publish_v1(result_path, result)
     return read_v1(result_path)
+
+
+def _run_follow_up(
+    workspace, request_digest, evaluation, *, artifact_ids, times, search, provider, step_args
+):
+    # The replay owner supplies this verdict only after verifying the saved receipt
+    # against the plan and the original numeric packets.
+    decision = {
+        "schema_version": "offline_ddo_research_follow_up_decision.v1",
+        "request_digest": request_digest,
+        "evaluation": evaluation,
+        "prior_artifact_ids": list(artifact_ids),
+        "action": "SEARCH_ONCE" if evaluation["mechanism_status"] == "PASS" else "HOLD",
+        "authority": "NONE",
+    }
+    path = workspace.safe_path_v1(
+        Path("follow-up-decisions") / (evaluation["receipt_id"] + ".json")
+    )
+    publish_v1(path, decision)
+    decision = read_v1(path)
+    if decision["action"] == "HOLD":
+        return {
+            "decision": decision,
+            "status": "WAITING_FOR_EVALUATION"
+            if evaluation["mechanism_status"] == "INCOMPLETE"
+            else "HELD_BY_EVALUATION",
+        }
+    step = run_native_research_session_step_v1(
+        search_request=replace(search, created_at=times.search),
+        provider=replace(provider, context=replace(provider.context, created_at=times.measurement)),
+        prior_artifact_ids=artifact_ids,
+        continuation_artifact_ids=artifact_ids,
+        meta_created_at=times.meta,
+        meta_policy=canonical_meta_learning_policy_v1(),
+        **step_args,
+    )
+    return {
+        "decision": decision,
+        "status": "MEASURED" if step.artifact_id is not None else "SEARCH_EXHAUSTED",
+        "artifact_id": step.artifact_id,
+        "search": canonical_record_payload_v1(step.search_record),
+        "meta_feedback": canonical_record_payload_v1(step.feedback_record),
+    }

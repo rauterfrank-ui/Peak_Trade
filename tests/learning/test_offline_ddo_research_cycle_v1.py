@@ -4,14 +4,19 @@ from dataclasses import asdict
 import json
 import math
 
+import pandas as pd
 import pytest
 
+from scripts.ops.run_offline_ddo_learning_follow_up_v1 import main
+from src.evaluation.golden_vectors.evaluators.self_learning_v1 import SelfLearningEvaluatorV1
+from src.evaluation.golden_vectors.integration import offline_native_learning_replay_v1 as replay
 from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
 from src.experiments.canonical_native_research_measurements_v1 import (
     native_research_input_hashes_v1,
 )
-from src.experiments.canonical_research_prepared_execution_v1 import read_v1
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, read_v1
 from src.experiments.offline_ddo_research_cycle_v1 import (
+    OfflineDdoResearchProfileV1,
     OfflineDdoResearchRequestV1,
     ResearchIdentitySourcesV1,
     run_offline_ddo_research_cycle_v1,
@@ -33,7 +38,8 @@ from tests.learning.test_offline_ddo_learning_follow_up_v1 import (
 from tests.trading.master_v2 import test_double_play_entry_exit_policy_v0 as policy_inputs
 
 
-def test_ddo_evidence_drives_archived_native_continuation_and_gvef(tmp_path, monkeypatch):
+@pytest.fixture
+def offline_cycle(tmp_path, monkeypatch):
     instrument = "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap"
     monkeypatch.setitem(SCOPE, "instrument_id", instrument)
     monkeypatch.setattr(policy_inputs, "_INSTRUMENT", instrument)
@@ -107,6 +113,11 @@ def test_ddo_evidence_drives_archived_native_continuation_and_gvef(tmp_path, mon
         },
     }
     request = OfflineDdoResearchRequestV1.model_validate(raw)
+    return root, ledger, completion, plan_digest, bars, cfg, request
+
+
+def test_ddo_evidence_drives_archived_native_continuation_and_gvef(offline_cycle, monkeypatch):
+    root, ledger, completion, plan_digest, bars, cfg, request = offline_cycle
 
     def run(value=request, *, source_bars=bars):
         return run_offline_ddo_research_cycle_v1(
@@ -173,3 +184,155 @@ def test_ddo_evidence_drives_archived_native_continuation_and_gvef(tmp_path, mon
     assert ledger.read_bytes() == before
     with pytest.raises(ValueError, match="IMMUTABLE_CONFLICT"):
         run(request.model_copy(update={"seed": 56}))
+
+
+@pytest.mark.parametrize("first_verdict", ["PASS", "BLOCKED", "INCOMPLETE"])
+def test_profile_cli_consumes_saved_gvef_verdict(offline_cycle, monkeypatch, capsys, first_verdict):
+    root, ledger, _, plan_digest, bars, cfg, request = offline_cycle
+    bars_path = root / "bars.csv"
+    cfg_path = root / "config.json"
+    profile_path = root / "profile.json"
+    bars.to_csv(bars_path)
+    cfg_path.write_text(json.dumps(cfg))
+    loaded = pd.read_csv(bars_path, index_col=0, float_precision="round_trip")
+    loaded.index = pd.to_datetime(loaded.index, utc=True, format="ISO8601")
+    profile = OfflineDdoResearchProfileV1.model_validate(
+        {
+            **request.model_dump(exclude={"learning_evidence_digest"}),
+            **native_research_input_hashes_v1(loaded, cfg),
+            "schema_version": "offline_ddo_research_profile.v1",
+            "follow_up_times": {
+                "meta": _time(16, 8),
+                "search": _time(16, 9),
+                "measurement": _time(16, 10),
+            },
+        }
+    )
+    monkeypatch.setattr(
+        "src.experiments.canonical_experiment_identity_v1.inspect_code_provenance_v1",
+        lambda _: CanonicalCodeProvenanceV1("b" * 40, "CLEAN"),
+    )
+    args = [
+        "--root",
+        str(root),
+        "--cycle",
+        "first",
+        "research",
+        "--plan-digest",
+        plan_digest,
+        "--profile",
+        str(profile_path),
+        "--bars",
+        str(bars_path),
+        "--config",
+        str(cfg_path),
+    ]
+
+    def run():
+        assert main(args) == 0
+        return json.loads(capsys.readouterr().out)
+
+    directory = root / "offline-ddo-research" / "first"
+    if first_verdict == "PASS":
+        profile_path.write_text(
+            profile.model_copy(update={"dataset_sha256": "0" * 64}).model_dump_json()
+        )
+        with pytest.raises(SystemExit) as exc:
+            main(args)
+        assert exc.value.code == 2
+        assert "OFFLINE_RESEARCH_INPUT_DIGEST_MISMATCH" in capsys.readouterr().err
+        assert not directory.exists()
+    profile_path.write_text(profile.model_dump_json())
+
+    before = ledger.read_bytes()
+    with monkeypatch.context() as scoped:
+        if first_verdict == "BLOCKED":
+            scoped.setattr(
+                SelfLearningEvaluatorV1, "_authority_violation", lambda *_: "test writeback"
+            )
+        if first_verdict == "INCOMPLETE":
+            original_fanout = replay.run_required_domain_fanout_v1
+
+            def omit_domain(**kwargs):
+                return original_fanout(**(kwargs | {"inputs": {}}))
+
+            scoped.setattr(replay, "run_required_domain_fanout_v1", omit_domain)
+        result = run()
+    assert result["evaluation"]["mechanism_status"] == first_verdict
+    assert result["evaluation"]["economic_status"] == "BLOCKED"
+    binding = read_v1(directory / "request.json")
+    assert binding["profile_digest"] == digest_v1(profile.model_dump(mode="json"))
+    assert binding["request"]["learning_evidence_digest"] == request.learning_evidence_digest
+    assert "learning_evidence_digest" not in json.loads(profile_path.read_text())
+    follow_up_result = result["follow_up"]
+    decision = follow_up_result["decision"]
+    decision_path = (
+        directory / "follow-up-decisions" / (result["evaluation"]["receipt_id"] + ".json")
+    )
+    assert read_v1(decision_path) == decision
+    assert decision["evaluation"] == result["evaluation"]
+    assert decision["prior_artifact_ids"] == [
+        result["first_artifact_id"],
+        result["next_artifact_id"],
+    ]
+
+    if first_verdict != "PASS":
+        assert decision["action"] == "HOLD"
+        assert len(list((directory / "native-archive").glob("*.json"))) == 2
+        if first_verdict == "BLOCKED":
+            assert follow_up_result["status"] == "HELD_BY_EVALUATION"
+            assert run() == result
+            assert ledger.read_bytes() == before
+            return
+        assert follow_up_result["status"] == "WAITING_FOR_EVALUATION"
+        assert not (directory / "result.json").exists()
+        result = run()
+        assert read_v1(decision_path) == decision
+        assert result["evaluation"]["receipt_id"] != decision["evaluation"]["receipt_id"]
+        follow_up_result = result["follow_up"]
+
+    assert follow_up_result["decision"]["action"] == "SEARCH_ONCE"
+    assert follow_up_result["status"] == "MEASURED"
+    search = follow_up_result["search"]
+    measured = [row for row in search["candidates"] if row["status"] == "ALREADY_MEASURED"]
+    assert len(measured) == 2
+    (proposed,) = [row for row in search["candidates"] if row["status"] == "PROPOSED"]
+    assert {row["parameter_region"]["slow_window"] for row in [*measured, proposed]} == {
+        75,
+        100,
+        125,
+    }
+    packet = json.loads(
+        (directory / "native-archive" / (follow_up_result["artifact_id"] + ".json")).read_bytes()
+    )
+    assert packet["measurement_receipt"]["engine_invocations"] == 4
+    assert (
+        packet["measurement_receipt"]["source_hashes"]["dataset_sha256"] == profile.dataset_sha256
+    )
+
+    def unexpected_measurement(*args, **kwargs):
+        pytest.fail("reopening the profile cycle must not remeasure")
+
+    monkeypatch.setattr(
+        "src.experiments.canonical_native_research_measurements_v1.measure_native_research_candidate_v1",
+        unexpected_measurement,
+    )
+    assert run() == result
+    assert ledger.read_bytes() == before
+
+    if first_verdict == "PASS":
+        receipt_path = (
+            directory
+            / "gvef"
+            / "evidence"
+            / "records"
+            / "system"
+            / (result["evaluation"]["receipt_id"] + ".json")
+        )
+        corrupt = json.loads(receipt_path.read_bytes())
+        corrupt["body"]["mechanism_status"] = "BLOCKED"
+        receipt_path.write_text(json.dumps(corrupt))
+        with pytest.raises(SystemExit) as exc:
+            main(args)
+        assert exc.value.code == 2
+        assert "IMMUTABLE_EVALUATION_RECEIPT_CONFLICT" in capsys.readouterr().err
