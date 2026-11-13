@@ -750,6 +750,7 @@ class WallclockSessionRuntimeV1:
         ddo_capture_binding = DdoCaptureBindingV0(
             ledger_path=self.evidence_root.absolute() / LEDGER_FILENAME_DEFAULT,
             reuse_validated_append_index=True,
+            precise_host_decision_time=True,
         )
 
         try:
@@ -797,6 +798,7 @@ class WallclockSessionRuntimeV1:
                         include_ticker=True,
                     )
                     now_wall = self.clock_wall()
+                    decision_input_available_ts = now_wall
                     now_mono = self.clock_mono()
                     price = float(normalized.mark_px)
                     self.sequence += 1
@@ -852,6 +854,7 @@ class WallclockSessionRuntimeV1:
                             "mid_price": tick.mid_price,
                             "mark_px": normalized.mark_px,
                             "receive_ts_unix": tick.receive_ts_unix,
+                            "mark_receive_ts_unix": normalized.receive_ts_unix,
                             "event_ts_unix": tick.event_ts_unix,
                             "canonical_instrument_id": normalized.canonical_instrument_id,
                             "venue_instrument_id": normalized.venue_instrument_id,
@@ -932,6 +935,13 @@ class WallclockSessionRuntimeV1:
                         self.cycle_count += 1
                         if outcome_bridge.bridge_cycle is not None:
                             cycle = outcome_bridge.bridge_cycle
+                            cycle["shadow_decision_timing"] = {
+                                "market_sequence": tick.sequence,
+                                "mark_event_ts_unix": tick.event_ts_unix,
+                                "mark_receive_ts_unix": normalized.receive_ts_unix,
+                                "decision_input_available_ts_unix": decision_input_available_ts,
+                                "decision_cycle_ts_unix": now_wall,
+                            }
                             self.writer.append_event(
                                 "decision_trace.jsonl",
                                 {

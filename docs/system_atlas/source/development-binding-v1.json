@@ -694,7 +694,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "21d831663bdb95c9e1e60007ad080e95be03e5bee9022eacc8bfad96f36d7b6e"
+      "sha256": "796a2baa54d8c595bad70a3469d605abc9ceb929ea3fc1c02edeff8384e45ec3"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1654,7 +1654,7 @@
     {
       "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
       "before_sha256": "11ad22654c1284b5d589b74b922c612c8744afc126bafacbf6fe261a728393b1",
-      "sha256": "895ceff35467a605aecb147febce66903b8aafd45fa992674cc999112fafd572"
+      "sha256": "6fdfa4abfb8fba79234634dc79ad3a5be01e1daff8c5d7aa6b88a3d66a83d0c8"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
@@ -1670,6 +1670,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
       "before_sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
       "sha256": "3e6045b871f5279d9fcab2fdc3888eeb1e4496e0be1685a5d88be321cd547d81"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
+      "before_sha256": "aed5dc58465fa862623f9b4183d47ad72cc31912ee41129bf9e8456e8444b35a",
+      "sha256": "d95081ba0aba6fd4bbf30f568cef3365b7affbd02095ed3a03b11b13060629b5"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
@@ -2349,7 +2354,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "a6ab1d8fd1e753bd86339e44ff90118f3b6a8a5257019641313d85e4f7f83cf1"
+      "sha256": "c150cfe71a36f0df783d28ce5210ca8205380d9d84e8d4d5bdad5537f484080f"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3059,7 +3064,7 @@
     {
       "path": "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py",
       "before_sha256": "4f2fc48f7dd542363ced6633a036315d80ce42a198bc308688717e6b2ea89966",
-      "sha256": "521ecd7cb2c2868954300d40c14b67cef74e46c26368061cb5132b7aa893f5cd"
+      "sha256": "718d96f0a671ac9863181203e3c91021b4c9e5173f0e0eeab8490f934885ffc9"
     },
     {
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
@@ -3699,7 +3704,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "3986590a4a120190a04bae186d9f4301700683d7e4820f1e9069674ff2dce856"
+      "sha256": "6652a08b6afda2f31398b2e15d69085cc6caec56677d77242c1ba1cb3b22e70d"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

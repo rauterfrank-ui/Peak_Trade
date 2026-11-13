@@ -15,6 +15,9 @@ from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import OUTCOME_SCALAR_KIND_V0
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+    learning_event_time_key_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.o4_n_bars_bar_evidence_bridge_contracts_v1 import (
     CHAIN_GAPLESS_FINALIZED,
     O4_N_BARS_BAR_EVIDENCE_BRIDGE_ID,
@@ -174,7 +177,7 @@ def _assert_pit_observation_boundary(
             obs_time = require_event_time_utc(venue_event_time, f"venue_event_time[{index}]")
         else:
             raise DdoValidationError(f"PIT_OBSERVATION_TIME_INVALID:{index}")
-        if obs_time > boundary:
+        if learning_event_time_key_v0(obs_time) > learning_event_time_key_v0(boundary):
             raise DdoValidationError("PIT_POST_BOUNDARY_OBSERVATION")
 
 
@@ -242,7 +245,9 @@ def materialize_real_outcome_horizon_supplier_input_v1(
         {key: (list(value) if key == "o4_bars" else value) for key, value in snapshot.items()}
     )
     decision_time = require_event_time_utc(decision["event_time_utc"], "event_time_utc")
-    if translation.horizon_start_time_utc < decision_time:
+    if learning_event_time_key_v0(translation.horizon_start_time_utc) < learning_event_time_key_v0(
+        decision_time
+    ):
         raise DdoValidationError("HORIZON_START_BEFORE_DECISION_EVENT")
 
     bars = snapshot["o4_bars"]

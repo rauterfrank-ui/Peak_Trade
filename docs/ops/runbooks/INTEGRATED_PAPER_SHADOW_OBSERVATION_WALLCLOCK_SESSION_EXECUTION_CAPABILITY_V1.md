@@ -122,6 +122,13 @@ Der Bundle-Prüfer verlangt Prüfsummeneinträge für Marktsequenz, Zyklusledger
 Zähler, Abschlussurteil und inneres Integritätsmanifest. Die beiden
 Manifestlisten müssen für die enthaltenen Dateien übereinstimmen.
 
+Das Zyklusledger bindet die zugehörige Marktsequenz, Venue-Zeit, den
+tatsächlichen Markempfang und die Zeit nach Empfang aller Zyklusinputs.
+Die zugehörige Double-Play-Aufzeichnung erhält den Zykluszeitpunkt in UTC
+mit Subsekunden. Diese Zeit beschreibt die für die Entscheidung verwendete
+Host-Uhr; sie ist keine separat gemessene Dauer der Core-Berechnung.
+O4 vergleicht UTC-Zeitpunkte einschließlich ihrer Nachkommastellen.
+
 Die optionale O7-Anbindung an das Dashboard (`PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED=1`)
 braucht einen ausdrücklich gesetzten absoluten `PEAK_TRADE_STATE_ROOT`.
 Vorprüfung und Laufzeitstart weisen einen fehlenden oder relativen Pfad ab,
