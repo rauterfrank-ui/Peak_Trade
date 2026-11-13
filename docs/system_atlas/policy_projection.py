@@ -202,6 +202,17 @@ DOUBLE_PLAY_POLICY_DELTAS = {
 
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
+OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
+    "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py": (
+        "ac896c8001617c2cc8cdcfca5225f1afa81bc03524244cfcc1ec44dda04062a5",
+        "0265a99e89dcf920eaf545de9d8f88078799fd14b6a9c8752858b0d11c30d3dd",
+    ),
+    "src/governance/optimization_proposal_governance_ingress_v1.py": (
+        "2ae0bf6eae57ad8a9d3ffe50c05aa1cbd20f1c1a98aa098f41c9a1c7faa77481",
+        "eb2c479ed37e5c88ae3a5876f6ccf8577172edca279dc244ed3d22220a9d378e",
+    ),
+}
+
 MANAGED_FILEGATE_OWNER_DELTAS = {
     "src/risk_layer/kill_switch/core.py": (
         "050e370eba75fa418fc89a7c3860119178bdde6903c92bba2e1ed1089f340210",
@@ -558,6 +569,15 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     validate_ordered_funding_episode_bundle(root, policies, double_play=double_play)
     validate_reserved_slot_rotation_bundle(root, policies, double_play=double_play)
     validate_managed_filegate_owner_bundle(root, policies)
+    opt_handoff = OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS
+    actual_opt_handoff = {
+        path: hashlib.sha256((root / path).read_bytes()).hexdigest() for path in opt_handoff
+    }
+    if actual_opt_handoff not in (
+        {path: before for path, (before, _) in opt_handoff.items()},
+        {path: after for path, (_, after) in opt_handoff.items()},
+    ):
+        raise ValueError("OPT_GOVERNANCE_HANDOFF_BUNDLE_DRIFT")
     if {p["path"] for p in policies} != {p for p in frozen if policy_scope_kind(p)}:
         raise ValueError("POLICY_SCOPE_COVERAGE_MISMATCH")
     tree = {}
@@ -584,6 +604,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in ORDERED_FUNDING_EPISODE_DELTAS
                 and path not in RESERVED_SLOT_ROTATION_DELTAS
                 and path not in MANAGED_FILEGATE_OWNER_DELTAS
+                and path not in opt_handoff
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
