@@ -6,6 +6,13 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+    from .current_productive_position_management_quantity_handoff_v1 import (
+        PositionManagementExecutionHandoffV1,
+    )
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
     read_submitted_occupied_scope_close_v1,
@@ -16,6 +23,7 @@ from src.ops.execution_reconciliation_get_provenance_v1 import (
     resolve_reconciliation_query_options_v1,
 )
 from src.ops.execution_reconciliation_proof_store_v1 import (
+    publish_authenticated_close_history_v1,
     publish_authenticated_close_readback_v1,
     require_private_proof_root_v1,
 )
@@ -24,6 +32,14 @@ from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import 
 )
 from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
     read_occupied_scope_mark_snapshot_v1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.live_l10_close_booking_v1 import (
+    AuthenticatedSlotCloseBookingV1,
+    close_history_endpoint_v1,
+    entry_source_v1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalBudgetError,
 )
 
 from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
@@ -54,6 +70,26 @@ from .full_core_exchange_reconciliation_v1 import (
     REASON_TRANSPORT_UNKNOWN,
     adjudicate_full_core_exchange_reconciliation_v1,
 )
+from .productive_read_only_get_transport_v1 import FullCoreProductiveReadOnlyGetError
+
+
+@dataclass(frozen=True)
+class PostCloseDoublePlayCounterOrderRequestV1:
+    """Request 29P sizing for the opposite side of the booked LIVE episode."""
+
+    execution: PositionManagementExecutionHandoffV1
+    bound_instrument: BoundInstrumentV1
+    net_booking: AuthenticatedSlotCloseBookingV1
+
+    @property
+    def decision_id(self) -> str:
+        return "l10:" + self.net_booking.close_envelope_digest
+
+    @property
+    def target_side(self) -> str:
+        if self.execution.l10_close is None:
+            raise ValueError("DOUBLE_PLAY_29P_LIVE_SWITCH_REQUIRED")
+        return self.execution.l10_close.target_side
 
 
 @dataclass(frozen=True)
@@ -64,6 +100,26 @@ class AuthenticatedL10CloseReadbackV1:
     filled_quantity: Decimal | None = None
     remaining_quantity: Decimal | None = None
     proof_path: Path | None = None
+    net_booking: dict | None = None
+    counter_order_request: PostCloseDoublePlayCounterOrderRequestV1 | None = None
+
+
+def _booked_close_readback_v1(*, execution, bound, proof_root, booked):
+    # The original budget writer has already replayed the settlement proof.
+    booking = AuthenticatedSlotCloseBookingV1(
+        **{key: value for key, value in booked.items() if key != "booking_digest"}
+    )
+    return AuthenticatedL10CloseReadbackV1(
+        status="CLOSE_NET_BOOKED",
+        envelope_digest=execution.envelope.envelope_digest,
+        filled_quantity=Decimal(execution.envelope.quantity),
+        remaining_quantity=Decimal(0),
+        proof_path=proof_root / f"close-{booking.close_proof_digest}.json",
+        net_booking=booked,
+        counter_order_request=PostCloseDoublePlayCounterOrderRequestV1(
+            execution=execution, bound_instrument=bound, net_booking=booking
+        ),
+    )
 
 
 def _validate_close_order_and_fills_v1(
@@ -176,6 +232,20 @@ def reconcile_submitted_occupied_scope_close_v1(
     attempt = record.get("transport_attempt", {})
     if attempt.get("phase") != "MAY_HAVE_SENT":
         return AuthenticatedL10CloseReadbackV1("CLOSE_SUBMIT_NOT_PROVEN", digest)
+    owner = budget_host.recover_owner_for_l10_close_booking_v1({slot.lane_id: bound})
+    booked = owner.read_authenticated_l10_close_v1(episode_id)
+    if booked is not None:
+        if booked["close_envelope_digest"] != digest:
+            raise ValueError("L10_CLOSE_BOOKING_REPLAY_CONFLICT")
+        root = require_private_proof_root_v1(proof_root)
+        booked = owner.record_authenticated_l10_close_v1(
+            execution=execution,
+            proof_path=root / f"close-history-{booked['history_proof_digest']}.json",
+            proof_root=root,
+        )
+        return _booked_close_readback_v1(
+            execution=execution, bound=bound, proof_root=root, booked=booked
+        )
     socket_ms = _utc_ms(attempt["socket_boundary_at_utc"])
 
     root = require_private_proof_root_v1(proof_root)
@@ -319,9 +389,60 @@ def reconcile_submitted_occupied_scope_close_v1(
             "position_time_ms": str(verified.confirmed_position_time_ms),
             "evidence_digest": verified.evidence_digest,
             "position_coverage": (snapshot.positions_observation or {}).get("query_coverage"),
+            "snapshot_received_at": observed.isoformat(),
             "socket_boundary_at_utc": attempt["socket_boundary_at_utc"],
         },
     )
-    return AuthenticatedL10CloseReadbackV1(
-        "CLOSE_FLAT_CONFIRMED", digest, (), filled, Decimal(0), proof
+    try:
+        entry = entry_source_v1(
+            links=owner.execution_links_v1(),
+            execution=execution,
+            proof_root=root,
+            budget_owner_root=budget_host.root / "owner",
+            inst_type=options.inst_type,
+        )
+        endpoint = close_history_endpoint_v1(entry=entry, inst_type=options.inst_type)
+        history_decision = f"{budget_host.session_id}:close-history:{digest}"
+        source.get(
+            endpoint=endpoint,
+            auth_required=True,
+            pretrade_decision_id=history_decision,
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+        read, body = source.completed_close_history_get_v1(
+            decision_id=history_decision, after=reads[-1].acquired_at
+        )
+        if read_submitted_occupied_scope_close_v1(**close_args) != execution:
+            raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_SCOPE_CHANGED")
+        history = publish_authenticated_close_history_v1(
+            root=root,
+            close_proof_digest=proof.stem.removeprefix("close-"),
+            entry_proof=entry.proof,
+            read=read,
+            body=body,
+        )
+        booked = owner.record_authenticated_l10_close_v1(
+            execution=execution, proof_path=history, proof_root=root
+        )
+    except PortfolioCapitalBudgetError:
+        # A lost commit acknowledgement must be resolved by reopening the owner.
+        raise
+    except (
+        OSError,
+        KeyError,
+        TypeError,
+        ValueError,
+        ArithmeticError,
+        FullCoreProductiveReadOnlyGetError,
+    ) as exc:
+        return AuthenticatedL10CloseReadbackV1(
+            "CLOSE_FLAT_CONFIRMED",
+            digest,
+            ("L10_CLOSE_NET_BOOKING_PENDING", str(exc)),
+            filled,
+            Decimal(0),
+            proof,
+        )
+    return _booked_close_readback_v1(
+        execution=execution, bound=bound, proof_root=root, booked=booked
     )

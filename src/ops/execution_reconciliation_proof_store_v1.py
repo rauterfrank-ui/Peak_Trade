@@ -143,6 +143,77 @@ def publish_authenticated_close_readback_v1(*, root, close_record, reads, bodies
     return path
 
 
+def read_private_close_document_v1(*, root, path, prefix, schema):
+    root = require_private_proof_root_v1(root)
+    path = Path(path)
+    if path.parent != root or re.fullmatch(prefix + r"[a-f0-9]{64}\.json", path.name) is None:
+        raise ExecutionReconciliationProofStoreError("CLOSE_PROOF_PATH_UNPROVEN")
+    document = json.loads(
+        _read_private_file(path),
+        object_pairs_hook=_unique_json_object,
+        parse_constant=_reject_json_constant,
+    )
+    record = document["record"]
+    checksum = sha256(_encode(record)).hexdigest()
+    if (
+        set(document) != {"record", "sha256"}
+        or document["sha256"] != checksum
+        or path.name != f"{prefix}{checksum}.json"
+        or record["schema"] != schema
+    ):
+        raise ExecutionReconciliationProofStoreError("CLOSE_PROOF_CONTENT_UNPROVEN")
+    return record, checksum
+
+
+def publish_authenticated_close_history_v1(*, root, close_proof_digest, entry_proof, read, body):
+    root = require_private_proof_root_v1(root)
+    if sha256(body).hexdigest() != read.body_sha256:
+        raise ExecutionReconciliationProofStoreError("CLOSE_HISTORY_BODY_UNPROVEN")
+    record = {
+        "schema": "peaktrade.authenticated_close_history.v1",
+        "close_proof_digest": close_proof_digest,
+        "entry_proof": {
+            "reservation_id": entry_proof.reservation_id,
+            "revision_ref": list(entry_proof.revision_ref),
+            "session_id": entry_proof.session_id,
+        },
+        "get": {**read.to_reference_v1(), "body": body.decode("utf-8")},
+    }
+    checksum = sha256(_encode(record)).hexdigest()
+    path = root / f"close-history-{checksum}.json"
+    _publish(path, _encode({"record": record, "sha256": checksum}) + b"\n")
+    return path
+
+
+def find_authenticated_entry_sources_v1(
+    *, root, budget_owner_root, account, reservation_id, episode_id
+):
+    """Discover private historical proofs for an existing exact budget attempt."""
+    root = require_private_proof_root_v1(root)
+    for path in root.glob("*.json"):
+        if re.fullmatch(r"[a-f0-9]{64}\.json", path.name) is None:
+            continue
+        record = json.loads(_read_private_file(path), object_pairs_hook=_unique_json_object)[
+            "record"
+        ]
+        if (record.get("reservation_id"), record.get("identity_digest")) != (
+            reservation_id,
+            episode_id,
+        ):
+            continue
+        revision = tuple(record["revision_ref"])
+        if _proof_path(root, revision) != path:
+            raise ExecutionReconciliationProofStoreError("GET_PROOF_REVISION_REF_INVALID")
+        yield read_authenticated_execution_reconciliation_source_v1(
+            root=root,
+            budget_owner_root=budget_owner_root,
+            account=account,
+            session_id=record["session_id"],
+            reservation_id=reservation_id,
+            revision_ref=revision,
+        )
+
+
 def publish_authenticated_execution_reconciliation_proof_v1(
     *, root, proof, budget_owner_root, snapshot_received_at, position_coverage, bodies
 ):

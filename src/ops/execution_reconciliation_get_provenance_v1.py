@@ -48,6 +48,7 @@ from src.ops.portfolio_capital_reservation_budget_v1.execution_v1 import (
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 
 _MAX_AGE_SECONDS = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
+ENDPOINT_ACCOUNT_POSITIONS_HISTORY = "/api/v5/account/positions-history"
 _ORDER_GETS = (
     ENDPOINT_ORDERS_PENDING,
     ENDPOINT_ORDERS_HISTORY,
@@ -184,7 +185,8 @@ class AuthenticatedReconciliationGetV1:
             or parsed.scheme
             or parsed.netloc
             or parsed.fragment
-            or parsed.path not in (ENDPOINT_ACCOUNT_CONFIG, *_ORDER_GETS)
+            or parsed.path
+            not in (ENDPOINT_ACCOUNT_CONFIG, *_ORDER_GETS, ENDPOINT_ACCOUNT_POSITIONS_HISTORY)
             or (parsed.path == ENDPOINT_ACCOUNT_CONFIG and endpoint != ENDPOINT_ACCOUNT_CONFIG)
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_REQUEST_UNPROVEN")
@@ -288,6 +290,20 @@ class AuthenticatedReconciliationGetV1:
             *self._bodies.get(order_decision_id, ()),
         )
         return reads, bodies
+
+    def completed_close_history_get_v1(self, *, decision_id, after):
+        self.original_handle_v1()
+        (read,) = self._gets.get(decision_id, ())
+        (body,) = self._bodies.get(decision_id, ())
+        if (
+            urlsplit(read.endpoint).path != ENDPOINT_ACCOUNT_POSITIONS_HISTORY
+            or not after <= read.acquired_at
+            or not read.acquired_at.timestamp()
+            <= self.clock()
+            <= after.timestamp() + _MAX_AGE_SECONDS
+        ):
+            raise ExecutionReconciliationSourceError("CLOSE_HISTORY_GET_WINDOW_UNPROVEN")
+        return read, body
 
     def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
         if (

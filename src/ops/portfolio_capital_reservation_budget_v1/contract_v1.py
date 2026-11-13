@@ -36,6 +36,9 @@ if TYPE_CHECKING:
         PostCloseDoublePlayContinuationV1,
         PostCloseFeedbackRequestV1,
     )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        PostCloseDoublePlayCounterOrderRequestV1,
+    )
     from .slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
         SlotCapitalBasisV1,
@@ -354,6 +357,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         self._capital_scope = {}
         self._sizing_bindings: dict[str, ReservationSizingBindingV1] = {}
         self._execution_links: dict[str, dict] = {}
+        self._live_l10_close_bookings: dict[str, dict] = {}
         self._open_slot_cost_reserves: dict[str, list[dict]] = {}
         self._entry_budget_policy = None
         if entry_budget_policy is not None:
@@ -850,6 +854,106 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     exhausted=self._slot_test_economics[slot_id]["exhausted"],
                 )
             return result
+
+    def record_authenticated_l10_close_v1(self, *, execution, proof_path, proof_root):
+        """Persist the original close settlement without changing the capital hold."""
+        from .live_l10_close_booking_v1 import (
+            build_live_l10_booking_v1,
+            validate_live_l10_booking_v1,
+        )
+
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_WRITER_UNAVAILABLE")
+            booking = build_live_l10_booking_v1(
+                self, execution=execution, proof_path=proof_path, proof_root=proof_root
+            )
+            episode = booking.episode_id
+            row = booking.to_dict_v1()
+            validate_live_l10_booking_v1(self, row)
+            prior = self._live_l10_close_bookings.get(episode)
+            if prior is not None:
+                stable = (
+                    "reservation_id",
+                    "episode_id",
+                    "account_identity",
+                    "slot_id",
+                    "native_id",
+                    "close_envelope_digest",
+                    "settlement_digest",
+                    "currency",
+                    "net_result",
+                )
+                if any(prior[key] != row[key] for key in stable):
+                    raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_REPLAY_CONFLICT")
+                return dict(prior)
+            if any(
+                other["close_envelope_digest"] == booking.close_envelope_digest
+                for other in self._live_l10_close_bookings.values()
+            ):
+                raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_ENVELOPE_ALREADY_BOUND")
+            if not self._by_key[self._by_id[booking.reservation_id]].counts_against_budget:
+                raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_ORIGINAL_HOLD_REQUIRED")
+            self._live_l10_close_bookings[episode] = row
+            self._persist_locked()
+            return dict(row)
+
+    def read_authenticated_l10_close_v1(self, episode_id):
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_READER_UNAVAILABLE")
+            row = self._live_l10_close_bookings.get(episode_id)
+            return None if row is None else dict(row)
+
+    def require_authenticated_l10_counter_order_source_v1(
+        self, request: PostCloseDoublePlayCounterOrderRequestV1
+    ) -> None:
+        """Prove the planning input against the original booking and held slot."""
+        from .live_l10_close_booking_v1 import validate_live_l10_booking_v1
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            parse_exchange_reconciliation_identity_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
+            validates_position_management_envelope_v1,
+        )
+
+        switch = request.execution.l10_close
+        if (
+            switch is None
+            or not validates_position_management_envelope_v1(request.execution)
+            or request.execution.envelope.envelope_digest
+            != request.net_booking.close_envelope_digest
+        ):
+            raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_BOOKED_CLOSE_EXECUTION_MISMATCH")
+        episode = switch.episode
+        bound = lane_bindings_v1({episode.lane_id: request.bound_instrument})[episode.lane_id]
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_OWNER_REQUIRED")
+            row = self._live_l10_close_bookings.get(episode.episode_id)
+            if (
+                row is None
+                or request.net_booking.to_dict_v1() != row
+                or episode.account_scope.execution_environment != "LIVE"
+                or episode.account_scope.account_identity != self._account_identity
+                or (episode.instrument_id, episode.venue_native_id)
+                != (
+                    request.bound_instrument.instrument_id,
+                    request.bound_instrument.venue_native_id,
+                )
+                or self._lane_bindings.get(episode.lane_id) != bound
+                or self._reservation_bindings.get(request.net_booking.reservation_id) != bound
+            ):
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_BOOKED_CLOSE_BINDING_MISMATCH")
+            booking = validate_live_l10_booking_v1(self, row)
+            original = self._by_key[self._by_id[booking.reservation_id]]
+            if original.state is not ReservationStateV1.COMMITTED:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_HOLD_REQUIRED")
+            entry = parse_exchange_reconciliation_identity_v1(
+                self._execution_links[booking.reservation_id]["identity"]
+            )
+            if entry.selected_side.lower() != episode.position_side:
+                raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_DIRECTION_MISMATCH")
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""
@@ -2787,6 +2891,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 key: binding.to_dict_v1() for key, binding in self._sizing_bindings.items()
             },
             "execution_links": self._execution_links,
+            **(
+                {"live_l10_close_bookings": self._live_l10_close_bookings}
+                if self._live_l10_close_bookings
+                else {}
+            ),
             "reservations": [
                 {
                     "reservation_id": str(r.reservation_id),
@@ -2885,6 +2994,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "slot_capital_allocation",
                 "open_slot_protection",
                 "open_slot_cost_reserves",
+                "live_l10_close_bookings",
             } != {
                 "schema",
                 "account_identity",
@@ -3119,6 +3229,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             for reservation_id, link in links.items():
                 validate_link_v1(self, reservation_id, link)
             self._execution_links = detached(links)
+            from .live_l10_close_booking_v1 import restore_live_l10_bookings_v1
+
+            self._live_l10_close_bookings = detached(
+                restore_live_l10_bookings_v1(self, payload.get("live_l10_close_bookings", {}))
+            )
             if "slot_capital_allocation" in payload:
                 self._restore_slot_capital_allocation_locked(payload["slot_capital_allocation"])
             from .slot_loss_budget_v1 import restore_state

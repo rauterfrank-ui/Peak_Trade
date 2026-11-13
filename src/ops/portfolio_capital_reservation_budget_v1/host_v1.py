@@ -461,6 +461,22 @@ class PortfolioBudgetHostV1:
             bindings, required_execution_attempts=required_execution_attempts
         )
 
+    def recover_owner_for_l10_close_booking_v1(self, bindings):
+        """Open the original writer without reconciling or admitting new capital."""
+        if self.closed or self.execution_environment != "LIVE" or self.durable_mode != "recover":
+            raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_HOST_REQUIRED")
+        if self.owner is None:
+            self.owner = PortfolioCapitalReservationBudgetOwnerV1(
+                durable_root=self.root / "owner",
+                durable_account_identity=self.expected_account_identity,
+                durable_mode="recover",
+                durable_lane_bindings=bindings,
+            )
+            self.bindings = dict(bindings)
+        elif self.bindings != bindings:
+            raise ValueError("L10_CLOSE_BOOKING_LANE_MISMATCH")
+        return self.owner
+
     def capture_futures_financial_custody_v1(self, source):
         """Take a read-only sample with the original durable owner already open."""
         with self._futures_financial_lock:
