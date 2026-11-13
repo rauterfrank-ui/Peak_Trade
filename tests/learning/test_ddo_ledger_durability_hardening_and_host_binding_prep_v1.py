@@ -149,6 +149,39 @@ def test_identical_replay_idempotent_and_restart(tmp_path: Path) -> None:
     assert len(reopened.read_all()) == 1
 
 
+def test_reused_append_index_checks_changes_and_recovers_after_uncertain_write(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / LEDGER_FILENAME_DEFAULT
+    ledger = AppendOnlyDdoLedgerV0(path, reuse_validated_append_index=True)
+    first = ledger.append(_decision())
+    assert ledger.append(_decision()).ledger_entry_hash == first.ledger_entry_hash
+    other = AppendOnlyDdoLedgerV0(path)
+    other.append(_decision(record_id="dec-0002", event_id="evt-0002"))
+    third = _decision(record_id="dec-0003", event_id="evt-0003")
+    append_line = ledger._append_line
+
+    def fail_after_write(line: str) -> None:
+        append_line(line)
+        raise OSError(errno.EIO, "uncertain append")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(ledger, "_append_line", fail_after_write)
+        with pytest.raises(OSError, match="uncertain append"):
+            ledger.append(third)
+    retry = ledger.append(third)
+    assert (retry.status, retry.sequence) == ("IDEMPOTENT_REPLAY", 3)
+    other.verify_integrity()
+
+    original = path.read_bytes()
+    stat = path.stat()
+    path.write_bytes(original.replace(b"offline-test-producer", b"offline-test-imposter", 1))
+    assert path.stat().st_size == stat.st_size
+    os.utime(path, ns=(stat.st_atime_ns, stat.st_mtime_ns))
+    with pytest.raises(DdoIntegrityError, match="PAYLOAD_CONTENT_HASH_MISMATCH"):
+        ledger.append(_decision())
+
+
 def test_same_id_different_content_conflict(tmp_path: Path) -> None:
     path = tmp_path / "ddo_ledger_v0.jsonl"
     ledger = AppendOnlyDdoLedgerV0(path)

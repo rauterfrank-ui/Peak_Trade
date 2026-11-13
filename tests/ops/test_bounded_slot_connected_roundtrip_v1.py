@@ -9,6 +9,13 @@ import json
 
 import pytest
 
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    require_current_double_play_bundle_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
+    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+)
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 import (
     ProductiveFullAutonomyCap24BindContextV1,
     BoundedSlotPostCloseContinuationV1,
@@ -1161,6 +1168,24 @@ def test_original_natural_entry_fill_close_rebind_and_next_entry_fill(
     tmp_path, monkeypatch, count, lane, replacement
 ):
     roundtrip(tmp_path, monkeypatch, count, lane, replacement)
+    ledgers = sorted(
+        (tmp_path / "topology").glob(f"LANE_*/{DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1}")
+    )
+    assert len(ledgers) == count
+    assert len({path.resolve() for path in ledgers}) == count
+    for ledger_path in ledgers:
+        records = {row["record_id"]: row for row in AppendOnlyDdoLedgerV0(ledger_path).read_all()}
+        inputs = [
+            row
+            for row in records.values()
+            if row["schema_name"] == "double_play_entry_exit_policy_input_evidence"
+        ]
+        assert inputs, ledger_path
+        for row in inputs:
+            bundle = require_current_double_play_bundle_v1(
+                records_by_id=records, decision_event_ref=row["decision_event_ref"]
+            )
+            assert bundle.input_evidence_ref == row["record_id"]
 
 
 @pytest.mark.parametrize("fault", ["missing_lane", "pending_lane", "group_ack"])

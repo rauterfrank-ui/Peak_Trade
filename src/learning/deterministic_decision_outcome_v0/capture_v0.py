@@ -581,6 +581,7 @@ class DdoCaptureBindingV0:
     evidence_account_scope: str | None = None
     evidence_environment_binding_status: str = "UNBOUND"
     evidence_account_binding_status: str = "UNBOUND"
+    reuse_validated_append_index: bool = False
     _ledger: AppendOnlyDdoLedgerV0 | None = field(default=None, repr=False)
 
     @property
@@ -591,8 +592,19 @@ class DdoCaptureBindingV0:
         if self.ledger_path is None:
             return None
         if self._ledger is None:
-            self._ledger = AppendOnlyDdoLedgerV0(self.ledger_path)
+            self._ledger = AppendOnlyDdoLedgerV0(
+                self.ledger_path, reuse_validated_append_index=self.reuse_validated_append_index
+            )
         return self._ledger
+
+    def clear_cycle_observations(self) -> None:
+        """Keep the ledger owner and release observations already reported for a cycle."""
+        self.captured_records.clear()
+        self.captured_ids.clear()
+        self.persisted_ids.clear()
+        self.last_error = None
+        self.last_result = None
+        self.last_durability_evidence = None
 
 
 _CAPTURE_SESSION: ContextVar[DdoCaptureBindingV0 | None] = ContextVar(

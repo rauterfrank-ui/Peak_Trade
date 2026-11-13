@@ -9,6 +9,16 @@ from typing import Any, Mapping
 
 import pytest
 
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    require_current_double_play_bundle_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.double_play_input_evidence_v1 import (
+    CAPTURE_TIMING_BEFORE_PRODUCER_CALL,
+)
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
+    AppendOnlyDdoLedgerV0,
+    LEDGER_FILENAME_DEFAULT,
+)
 from src.ops.integrated_paper_shadow_observation_session_v1.readiness_producer_v1 import (
     produce_paper_shadow_observation_readiness_v1,
 )
@@ -512,7 +522,19 @@ def test_consume_before_transport_and_replay_guard(tmp_path: Path) -> None:
     assert any("CONFIRM_TOKEN_REPLAY" in b for b in replay.blockers)
 
 
-def test_short_fake_clock_session_pass(tmp_path: Path) -> None:
+@pytest.mark.parametrize("ddo_writable", [True, False])
+def test_short_fake_clock_session_pass(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture,
+    ddo_writable: bool,
+) -> None:
+    if not ddo_writable:
+
+        def fail_ddo_write(self: AppendOnlyDdoLedgerV0, line: str) -> None:
+            raise OSError("simulated DDO write failure")
+
+        monkeypatch.setattr(AppendOnlyDdoLedgerV0, "_append_line", fail_ddo_write)
     prereg = _load_wallclock_prereg()
     go = _load_wallclock_go()
     material = _material()
@@ -558,6 +580,56 @@ def test_short_fake_clock_session_pass(tmp_path: Path) -> None:
     verified = verify_wallclock_evidence_bundle_v1(evidence_root=evidence_root)
     assert verified.verified is True
     assert verified.economic_validity_pass is False
+
+    ledger_path = evidence_root / LEDGER_FILENAME_DEFAULT
+    cycle_rows = [
+        json.loads(line)
+        for line in (evidence_root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    capture_summaries = [row["ddo_capture"] for row in cycle_rows if "ddo_capture" in row]
+    assert capture_summaries
+    assert all(summary["durable_ok"] is ddo_writable for summary in capture_summaries)
+    assert verified.ddo_readback is not None
+    assert verified.ddo_readback["decision_bundles_readable"] is ddo_writable
+    assert verified.ddo_readback["typed_volatility_cycles"] == 0
+    from scripts.ops.run_integrated_paper_shadow_observation_wallclock_session_v1 import main
+
+    assert (
+        main(["verify-evidence", "--evidence-root", str(evidence_root), "--require-typed-ddo"]) == 1
+    )
+    assert json.loads(capsys.readouterr().out)["typed_ddo_requirement_met"] is False
+    if not ddo_writable:
+        assert "DDO_CAPTURE_DURABILITY_FAILURE" in verified.ddo_readback["blockers"]
+        assert not ledger_path.exists()
+        return
+
+    records = {row["record_id"]: row for row in AppendOnlyDdoLedgerV0(ledger_path).read_all()}
+    inputs = [
+        row
+        for row in records.values()
+        if row["schema_name"] == "double_play_entry_exit_policy_input_evidence"
+    ]
+    assert inputs
+    assert verified.ddo_readback["complete_double_play_bundles"] == len(inputs)
+    for row in inputs:
+        assert row["cycle_id"].startswith(f"{go.session_id}:cycle:")
+        assert row["capture_timing"] == CAPTURE_TIMING_BEFORE_PRODUCER_CALL
+        bundle = require_current_double_play_bundle_v1(
+            records_by_id=records, decision_event_ref=row["decision_event_ref"]
+        )
+        assert bundle.input_evidence_ref == row["record_id"]
+        assert bundle.instrument_id == CANONICAL_INSTRUMENT_ID
+
+    assert (
+        f"  {LEDGER_FILENAME_DEFAULT}\n" in (evidence_root / "evidence_manifest.sha256").read_text()
+    )
+    ledger_bytes = ledger_path.read_bytes()
+    try:
+        ledger_path.write_bytes(ledger_bytes + b"\n")
+        tampered = verify_wallclock_evidence_bundle_v1(evidence_root=evidence_root)
+        assert f"EVIDENCE_TAMPER:{LEDGER_FILENAME_DEFAULT}" in tampered.blockers
+    finally:
+        ledger_path.write_bytes(ledger_bytes)
 
 
 def test_401_aborts_credential_surface(tmp_path: Path) -> None:

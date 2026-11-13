@@ -178,6 +178,56 @@ def test_actual_numeric_data_consumers_and_missing_liquidity_are_distinct(tmp_pa
     assert snapshot["o4_interval_id"] == "PT1H" and len(snapshot["o4_bars"]) == 2
 
 
+def test_paper_start_preflight_reads_original_input_consumers_without_starting(tmp_path, capsys):
+    import json
+
+    from scripts.ops.prepare_bounded_paper_start_v1 import main
+    from tests.ops.test_productive_futures_accounting_runtime_binding_v1 import _contract
+
+    sources = _profiles(tmp_path / "facts")
+    native = "ETH-USDT-SWAP"
+    profile = tmp_path / "profile.json"
+    accounting = tmp_path / "accounting.json"
+    profile.write_text(json.dumps({key: source.profile_v1() for key, source in sources.items()}))
+    accounting.write_text(
+        json.dumps({"initial_equity": "1000", "contract": _contract(native).to_dict()})
+    )
+    before = {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()}
+    args = [
+        "--data-profile",
+        str(profile),
+        "--virtual-accounting",
+        str(accounting),
+        "--native-instrument",
+        native,
+        "--run-root",
+        str(tmp_path / "paper-run"),
+        "--as-of-ms",
+        str(sources["TRADING"].as_of_ms),
+    ]
+    assert main(args) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["input_preflight_ok"] is True
+    assert result["launch_ready"] is result["session_started"] is False
+    assert result["data_profile_digest"] == purpose_profile_digest_v1(sources)
+    assert result["checks"]["TRADING"]["finalized_bars"] == 100
+    assert result["checks"]["RANKING"]["finalized_mark_prices"] == 61
+    assert result["checks"]["ACCOUNTING"]["fill_count"] == 0
+    assert result["checks"]["LIQUIDITY"]["missing_features"] == ["DEPTH", "ADV", "SLIPPAGE"]
+    assert "PAPER_LIQUIDITY_RISK_INPUT_UNPROVEN" in result["launch_blockers"]
+    assert {path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()} == before
+    assert not (tmp_path / "paper-run").exists()
+
+    args[-1] = str(sources["TRADING"].as_of_ms - 1)
+    assert main(args) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert result["checks"]["TRADING"]["status"] == "BLOCKED"
+    args[args.index("--run-root") + 1] = str(tmp_path / "facts" / "overlap")
+    with pytest.raises(SystemExit, match="2"):
+        main(args)
+    assert "PAPER_NEW_ISOLATED_RUN_ROOT_REQUIRED" in capsys.readouterr().err
+
+
 @pytest.mark.parametrize("purpose", ["TRADING", "RESEARCH", "LIQUIDITY", "OUTCOME"])
 def test_foreign_purpose_rejected_at_each_actual_consumer(tmp_path, purpose):
     sources = _profiles(tmp_path / "facts")

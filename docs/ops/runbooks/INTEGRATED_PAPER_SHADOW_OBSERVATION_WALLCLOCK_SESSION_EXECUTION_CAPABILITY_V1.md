@@ -91,6 +91,75 @@ python scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.
 `PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK=1`, which is never sufficient alone).
 Library tests continue to inject fake transport and fake clocks.
 
+## Datenprüfung für den Paper-/Shadow-Pilot
+
+Der Shadow-Preflight prüft den lokalen Startpfad. Die Sitzung liest den
+öffentlichen OKX-EEA-Markpreis für `ETH-USD_UM_XPERP-310404`. Der
+Volatilitätsproducer benötigt 61 aufeinanderfolgende finalisierte
+Minuten-Markpreise. Eine kalte Sitzung von 3.600 Sekunden kann diese Menge
+innerhalb ihres Zeitlimits nicht finalisieren. Die I17-Preregistrierung
+kennt 7.200 Sekunden als Qualifikationsdauer. Das separat geparste
+Wallclock-V2-Artefakt verlangt weiterhin den Wert 3.600 in seinem
+Pflichtfeld. Vor einem Start müssen beide Artefakte durch ihre vorhandenen
+Owner für die konkrete Sitzung geprüft werden.
+
+```bash
+./scripts/pt scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py preflight
+./scripts/pt scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py \
+  verify-evidence --evidence-root /absolute/shadow-evidence --require-typed-ddo
+```
+
+Die zweite Prüfung liest das versiegelte Sitzungsledger mit dem DDO-Owner
+und dem Double-Play-Consumer. Sie verlangt mindestens einen Zyklus, in dem
+der Core einen typisierten Volatilitätswert erhielt und das dazugehörige
+Entscheidungsbündel vollständig wieder gelesen werden kann. Das JSON-Feld
+`ddo_readback` meldet auch Schreibfehler und die Zahl der vollständigen
+Bündel. Marktbeobachtung und analytische Fills in dieser Sitzung verwenden
+einen Markpreis und modellierte Zusatzinputs. Die Wirtschaftlichkeitsprüfung
+braucht separat gebundene Originalquellen für Quotes, Tiefe, Kosten und
+Funding.
+
+Paper verwendet eigene Evidenz- und Zustandswurzeln. Die lokalen
+Roundtrip-Tests verwenden den Original-Core und simuliertes Accounting
+mit einem DDO-Ledger je Slot. Der vorhandene Scheduler-Adapter mit
+`high_vol_no_trade` deckt die Start- und Beobachtungsstrecke ab. Für den
+Pilot mit simulierten Fills braucht es eine konkrete Bindung des
+Paper-Starts an den Core, das Accounting und die vorgesehenen Datenprofile.
+Der [Datenvertrag](../specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md)
+führt die zuständigen Eingangsconsumer und ihre Zeit- und Quellenbezüge.
+
+Der [Paper-Vorcheck](../../../scripts/ops/prepare_bounded_paper_start_v1.py)
+prüft am expliziten As-of die gespeicherten Facts durch die Ranking- und
+C1-Consumer sowie die virtuelle Startbilanz im originalen Accounting.
+Er öffnet keine Sitzung und meldet die offenen Startbindungen.
+
+```bash
+./scripts/pt scripts/ops/prepare_bounded_paper_start_v1.py \
+  --data-profile /absolute/paper-data-profile.json \
+  --virtual-accounting /absolute/paper-virtual-accounting.json \
+  --run-root /absolute/new-paper-run \
+  --native-instrument "$paper_native_instrument" --as-of-ms "$paper_as_of_ms"
+```
+
+Das Datenprofil enthält die fünf Zweckschlüssel und je Zweck die
+serialisierte Ausgabe von `PurposeBoundPublicFactSourceV1.profile_v1()`.
+Die Accounting-Datei enthält `initial_equity` und `contract` mit den
+Feldern aus `ContractMetadataV1.to_dict()`. Menge, Multiplikator,
+Tickgröße, Währung und Marginsätze stammen aus dem gewählten
+Simulationsprofil. Ein erfolgreicher Input-Vorcheck ist ein Teilbefund.
+Die Ausgabe `launch_blockers` führt die noch fehlende Hostbindung und
+die Prüfung von Core-Marktinputs und Kosten auf.
+
+Für die spätere [DDO-/GVEF-Auswertung](../specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md)
+müssen die vollständigen Entscheidungsbelege erhalten bleiben. Die
+Outcome-Messung benötigt mindestens zwei lückenlose finalisierte
+O4-Stundenbars nach dem eingefrorenen Startzeitpunkt des Messfensters,
+passend zu Venue und Instrument. Der vorhandene Offline-Follow-up-Worker
+verwendet den Herkunftstyp `SYNTHETIC_OFFLINE`. Die Abnahme mit
+beobachteten Originaldaten braucht einen eigenen Herkunftsnachweis über
+die zuständigen Consumer. Forschungsprofil, finalisierte Backtestdaten
+und aufgelöste Konfiguration bleiben explizite Eingaben.
+
 ## Explicit non-goals (this capability PR #5592)
 
 - Productive preregistration / Operator-GO / confirm token issuance

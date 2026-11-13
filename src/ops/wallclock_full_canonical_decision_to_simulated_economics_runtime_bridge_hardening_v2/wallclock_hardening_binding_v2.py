@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Any, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     MarketDataPolicyParamsV1,
     ObservationMarketTickV1,
@@ -69,6 +70,8 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     wall_now_unix: float,
     session_id: str,
     price_field: str = REQUIRED_TICKER_PRICE_FIELD,
+    ddo_capture_binding: DdoCaptureBindingV0 | None = None,
+    ddo_repository_sha: str | None = None,
 ) -> HardenedWallclockBridgeOutcomeV2:
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
@@ -125,6 +128,8 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         event_ts_unix=wall_now_unix,
         session_id=session_id,
         price_basis=basis,
+        ddo_capture_binding=ddo_capture_binding,
+        ddo_repository_sha=ddo_repository_sha,
         **finalized_kwargs,
     )
     labels = {

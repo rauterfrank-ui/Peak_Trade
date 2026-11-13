@@ -429,7 +429,8 @@ def test_warmup_complete_true_features_ok_false_no_required_window_incomplete() 
             volume=1_000_000.0,
             open_interest=50_000_000.0,
             funding_rate=0.0001,
-            volatility_estimate=0.0,
+            # Keep GGE inputs valid while exercising regime vs. window completeness.
+            volatility_estimate=0.001,
             trend_feature_set=dict(features.trend_features),
             momentum_feature_set=dict(features.momentum_features),
             liquidity_feature_set=dict(features.liquidity_features),

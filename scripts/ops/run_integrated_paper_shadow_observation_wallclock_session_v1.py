@@ -60,6 +60,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--authorization-artifact", type=Path, default=None)
     p.add_argument("--confirm-token-file", type=Path, default=None)
     p.add_argument("--evidence-root", type=Path, default=None)
+    p.add_argument(
+        "--require-typed-ddo",
+        action="store_true",
+        help="Require a complete DDO decision bundle from a typed-volatility cycle (verify-evidence).",
+    )
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
     p.add_argument(
@@ -83,7 +88,10 @@ def _load_confirm_token(args: argparse.Namespace) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.require_typed_ddo and args.command != "verify-evidence":
+        parser.error("--require-typed-ddo requires verify-evidence")
     if args.command == "preflight":
         payload = preflight_wallclock_session_v1(repo_root=_REPO_ROOT)
         print(json.dumps(redact_mapping_for_logs(payload), sort_keys=True, indent=2))
@@ -94,8 +102,16 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"ok": False, "blockers": ["EVIDENCE_ROOT_REQUIRED"]}))
             return 2
         result = verify_wallclock_evidence_bundle_v1(evidence_root=args.evidence_root)
-        print(json.dumps(result.to_dict(), sort_keys=True, indent=2))
-        return 0 if result.verified else 1
+        payload = result.to_dict()
+        if args.require_typed_ddo:
+            readback = result.ddo_readback or {}
+            payload["typed_ddo_requirement_met"] = (
+                result.verified
+                and readback.get("decision_bundles_readable") is True
+                and readback.get("typed_volatility_cycles_with_double_play_bundle", 0) > 0
+            )
+        print(json.dumps(payload, sort_keys=True, indent=2))
+        return 0 if result.verified and payload.get("typed_ddo_requirement_met", True) else 1
 
     # run — productive successor path (fixtures rejected; env alone insufficient).
     missing = []
