@@ -285,17 +285,31 @@ def _translate_o4_bar_chain_v1(validated):
     horizon_start = validated["horizon_start_time_utc"]
 
     first_bar = bars_list[0]
+    identity_fields = (
+        ("canonical_instrument_id", "O4_BAR_INSTRUMENT_MISMATCH"),
+        ("venue", "O4_BAR_VENUE_MISMATCH"),
+        ("venue_instrument_id", "O4_BAR_NATIVE_INSTRUMENT_MISMATCH"),
+    )
+    for field, reason in identity_fields:
+        value = first_bar[field]
+        if not isinstance(value, str) or not value.strip():
+            raise DdoValidationError(f"O4_BAR_IDENTITY_REQUIRED:{field}")
+        if any(bar[field] != value for bar in bars_list[1:]):
+            raise DdoValidationError(reason)
+    for bar in bars_list:
+        try:
+            bar_interval, _ = _normalize_o4_interval_id(bar["interval"])
+        except DdoValidationError as exc:
+            raise DdoValidationError("O4_BAR_INTERVAL_MISMATCH") from exc
+        if bar_interval != interval_token:
+            raise DdoValidationError("O4_BAR_INTERVAL_MISMATCH")
+
     instrument_ref = derive_o4_instrument_ref_v1(
-        str(first_bar["canonical_instrument_id"]),
-        str(first_bar["venue"]),
-        str(first_bar["venue_instrument_id"]),
+        first_bar["canonical_instrument_id"],
+        first_bar["venue"],
+        first_bar["venue_instrument_id"],
     )
     bar_spec_ref = derive_o4_bar_spec_ref_v1(interval_token)
-
-    for bar in bars_list:
-        expected_inst = str(first_bar["canonical_instrument_id"])
-        if str(bar["canonical_instrument_id"]) != expected_inst:
-            raise DdoValidationError("O4_BAR_INSTRUMENT_MISMATCH")
 
     status = "OK"
     reason: str | None = None

@@ -694,7 +694,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "15319c1f8a7875f24fdaab425a68659ac9706040d2625563ba730e5276aa00f8"
+      "sha256": "21d831663bdb95c9e1e60007ad080e95be03e5bee9022eacc8bfad96f36d7b6e"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1045,6 +1045,11 @@
       "path": "docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md",
       "before_sha256": "fc3aaa7b0fd28a9ac42e15db130912790807bd730cb3861ce622390f99071285",
       "sha256": "f8f82314209e7f9d440bdf5d85d57ef910771c121d0767319b03de65a514c744"
+    },
+    {
+      "path": "docs/ops/specs/DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1.md",
+      "before_sha256": "ff6e0e95d6961879bab138d1869f7483d477056d397b6ed81f881a53bc884e38",
+      "sha256": "45574a4080d885955c29a6be9b4d00b90bd848a107066f67d5c86fc7c995ab0e"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md",
@@ -1665,6 +1670,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
       "before_sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
       "sha256": "3e6045b871f5279d9fcab2fdc3888eeb1e4496e0be1685a5d88be321cd547d81"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+      "before_sha256": "c1c8cca0088947b8dd7d4cd3867d752669e7f887e5fcd44158315399eca1c17d",
+      "sha256": "45e6dec8eb252500bbf6e4d4fdac5d95ba509746a51ec6f204edda9d79724344"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/offline_learning_follow_up_v1.py",
@@ -2334,7 +2344,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "2d2701c90e16ca829c3f22f3d04f90cccdc6e5e40aaa5c649be29144bb320969"
+      "sha256": "df6608cdb69d945b6222a73207bfdacfbbdbb76dccb435e075d0bca3e712a20e"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
@@ -3047,6 +3057,11 @@
       "sha256": "d82529f224a17b9ca25f6c96da96c221a76a6c05f40b0180b96af9cb7fefa394"
     },
     {
+      "path": "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py",
+      "before_sha256": "4f2fc48f7dd542363ced6633a036315d80ce42a198bc308688717e6b2ea89966",
+      "sha256": "521ecd7cb2c2868954300d40c14b67cef74e46c26368061cb5132b7aa893f5cd"
+    },
+    {
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
       "before_sha256": "658bfb6c7dc38d5c5d90d1d7a9e9b0774bc74142a2adb944d62f3c510c96df33",
       "sha256": "5ed3f16bc82b2c8413ba8123e362c62ed59bcd063f6893579ab9626601e432d9"
@@ -3684,7 +3699,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "4612374ab0304ae414056e93dbec6d2206ed7e715f87a9bfc804e2341735a438"
+      "sha256": "3986590a4a120190a04bae186d9f4301700683d7e4820f1e9069674ff2dce856"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

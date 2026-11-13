@@ -294,6 +294,8 @@ Bridge MUST NOT emit `evaluation_time_information_set_ref`,
 Gapless chain under `bar_spec_ref` [A] REAL horizon predecessor:
 
 - Bars sorted by `bar_open_time` ascending.
+- Every bar must bind the same canonical instrument, venue and venue-native
+  instrument. Its normalized interval must match the declared O4 interval.
 - For each consecutive pair: `next.bar_open_time == prev.bar_open_time + interval_duration_seconds`.
 - Each bar window: `bar_close_time - bar_open_time == interval_duration_seconds`.
 - First bar: `bar_close_times_utc[0] >= horizon_start_time_utc`.
