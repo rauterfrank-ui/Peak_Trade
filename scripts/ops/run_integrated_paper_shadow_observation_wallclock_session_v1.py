@@ -63,7 +63,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--require-typed-ddo",
         action="store_true",
-        help="Require a complete DDO decision bundle from a typed-volatility cycle (verify-evidence).",
+        help="Require a completed archive with DDO and market evidence for every typed cycle.",
     )
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
@@ -107,8 +107,12 @@ def main(argv: list[str] | None = None) -> int:
             readback = result.ddo_readback or {}
             payload["typed_ddo_requirement_met"] = (
                 result.verified
+                and result.verdict == "PASS"
+                and not result.incomplete
                 and readback.get("decision_bundles_readable") is True
-                and readback.get("typed_volatility_cycles_with_double_play_bundle", 0) > 0
+                and readback.get("typed_volatility_cycles_with_double_play_bundle", 0)
+                == readback.get("typed_volatility_cycles", 0)
+                > 0
             )
         print(json.dumps(payload, sort_keys=True, indent=2))
         return 0 if result.verified and payload.get("typed_ddo_requirement_met", True) else 1

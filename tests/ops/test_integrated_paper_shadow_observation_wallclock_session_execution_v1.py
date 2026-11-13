@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
+from dataclasses import replace
 from datetime import datetime
+from hashlib import sha256
 from math import ceil
 from pathlib import Path
 from typing import Any, Mapping
@@ -120,14 +122,21 @@ def _material() -> str:
 RUNBOOK_SHA = "a7529ef8ba8c5950f6372822b71ac2a5304ae037013288d48d53306d4105ff5a"
 
 
-def _write_v2_auth(tmp_path: Path, *, prereg, token: str, auth_id: str | None = None) -> Path:
+def _write_v2_auth(
+    tmp_path: Path,
+    *,
+    prereg,
+    token: str,
+    auth_id: str | None = None,
+    duration_seconds: int = 3600,
+) -> Path:
     payload = build_authorization_artifact_dict_v2(
         authorization_id=auth_id or new_authorization_id_v2(),
         preregistration_id=prereg.session_id,
         preregistration_digest=prereg.scope_digest(),
         repository_sha=SHA,
         runbook_sha256=RUNBOOK_SHA,
-        session_duration_seconds=3600,
+        session_duration_seconds=duration_seconds,
         config_digests={"fixture.toml": "a" * 64},
         safety_boundaries=dict(MANDATORY_SAFETY_BOUNDARIES),
         confirm_token=token,
@@ -789,6 +798,136 @@ def test_double_play_readback_preserves_decision_clock_after_hour_boundary(
             timing["decision_input_available_ts_unix"], rel=0, abs=1e-6
         )
         assert row["event_time_utc"] == decision["event_time_utc"]
+
+
+@pytest.fixture
+def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
+
+    def run(*, flat: bool):
+        prereg = replace(_load_wallclock_prereg(), planned_duration_seconds=7200)
+        go = replace(
+            _load_wallclock_go(), planned_duration_seconds=7200, scope_digest=prereg.scope_digest()
+        )
+        material = _material()
+        artifact = _write_v2_auth(tmp_path, prereg=prereg, token=material, duration_seconds=7200)
+        clock = FakeClock()
+
+        def fetch(url, *args):
+            minute = int((clock.time() - NOW) // 60)
+            price = "3500" if flat else str(3500 + (minute % 17) * 0.73 + (minute % 5) * 0.19)
+            return _fake_ticker_fetcher(price, clock=clock)(url, *args)
+
+        root = tmp_path / "shadow-evidence"
+        transport = EeaPublicMdTransportV1(fetcher=fetch, sleep=clock.sleep, environ={})
+        runtime = WallclockSessionRuntimeV1(
+            evidence_root=root,
+            transport=transport,
+            config=WallclockRuntimeConfigV1(
+                poll_interval_seconds=10.0,
+                min_quality_window_seconds=0,
+                heartbeat_loss_seconds=120.0,
+            ),
+            clock_wall=clock.time,
+            clock_mono=clock.monotonic,
+            sleep=clock.sleep,
+            repo_root=REPO_ROOT,
+        )
+        result = runtime.run(
+            prereg=prereg,
+            go=go,
+            confirm_token=material,
+            artifact_path=artifact,
+            expected_repository_sha=SHA,
+            fingerprint_ledger_path=tmp_path / "fingerprints.jsonl",
+        )
+        assert not transport.opened
+        assert not runtime.lock.acquired
+        return root, result, clock.time() - NOW
+
+    return run
+
+
+def _replace_cycle_rows_and_reseal(root, rows):
+    ledger = root / "bridge_cycle_ledger.jsonl"
+    inner = root / "integrity_manifest.json"
+    manifest = json.loads(inner.read_bytes())
+    ledger.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
+    manifest["digests"][ledger.name] = sha256(ledger.read_bytes()).hexdigest()
+    inner.write_text(json.dumps(manifest, sort_keys=True) + "\n")
+    digests = {**manifest["digests"], inner.name: sha256(inner.read_bytes()).hexdigest()}
+    (root / "evidence_manifest.sha256").write_text(
+        "".join(f"{digest}  {name}\n" for name, digest in sorted(digests.items()))
+    )
+
+
+def test_strict_shadow_readback_binds_every_typed_cycle(run_two_hour_shadow, capsys):
+    from scripts.ops.run_integrated_paper_shadow_observation_wallclock_session_v1 import main
+
+    root, run, elapsed = run_two_hour_shadow(flat=False)
+    assert elapsed == 7200 and run.terminal_verdict == "PASS" and not run.incomplete
+    args = ["verify-evidence", "--evidence-root", str(root), "--require-typed-ddo"]
+    assert main(args) == 0
+    original = json.loads(capsys.readouterr().out)
+    readback = original["ddo_readback"]
+    typed_count = readback["typed_volatility_cycles"]
+    assert typed_count == readback["typed_volatility_cycles_with_double_play_bundle"] > 1
+    rows = [
+        json.loads(line) for line in (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    left, right = [
+        i for i, row in enumerate(rows) if row["canonical_market_context_typed_estimate_present"]
+    ][:2]
+
+    for case, reason in (
+        ("wrong_market", "DDO_MARKET_CYCLE_BINDING_MISMATCH"),
+        ("foreign_capture", "DDO_CAPTURE_RECORD_CYCLE_MISMATCH"),
+        ("before_inputs", "DDO_MARKET_DECISION_CLOCK_INVALID"),
+        ("wrong_decision_clock", "DDO_TYPED_CYCLE_DECISION_CLOCK_MISMATCH"),
+        ("missing_capture", "DDO_TYPED_CYCLE_CAPTURE_REQUIRED"),
+        ("hidden_typed_cycle", "DDO_TYPED_CYCLE_VOLATILITY_FLAG_MISMATCH"),
+    ):
+        changed = deepcopy(rows)
+        cycle, other = changed[left], changed[right]
+        timing = cycle["shadow_decision_timing"]
+        if case == "wrong_market":
+            timing["market_sequence"] = other["shadow_decision_timing"]["market_sequence"]
+        elif case == "foreign_capture":
+            cycle["ddo_capture"]["record_ids"] = other["ddo_capture"]["record_ids"]
+        elif case == "before_inputs":
+            timing["decision_input_available_ts_unix"] = timing["decision_cycle_ts_unix"] + 0.5
+        elif case == "wrong_decision_clock":
+            timing["decision_cycle_ts_unix"] += 0.5
+        elif case == "missing_capture":
+            cycle.pop("ddo_capture")
+        else:
+            cycle["canonical_market_context_typed_estimate_present"] = False
+        _replace_cycle_rows_and_reseal(root, changed)
+        assert main(args) == 1, case
+        payload = json.loads(capsys.readouterr().out)
+        assert payload["verified"] is True and payload["typed_ddo_requirement_met"] is False
+        assert reason in payload["ddo_readback"]["blockers"], case
+        if case == "missing_capture":
+            assert payload["ddo_readback"]["typed_volatility_cycles"] == typed_count
+
+
+def test_flat_shadow_mark_window_seals_abort_without_completed_decision(run_two_hour_shadow):
+    root, run, elapsed = run_two_hour_shadow(flat=True)
+    assert run.terminal_verdict == "ABORT" and run.incomplete and 3600 < elapsed < 7200
+    reason = "SHADOW_BRIDGE_ZERO_OR_NEGATIVE_VOLATILITY"
+    assert reason in run.blockers
+    assert (root / "authorization_consumption_record.json").is_file()
+    shutdown = json.loads((root / "shutdown_reason.json").read_bytes())
+    assert shutdown["killstate"]["events"][-1]["detail"] == reason
+    terminal = json.loads((root / "terminal_verdict.json").read_bytes())
+    assert terminal["verdict"] == "ABORT" and terminal["incomplete"] is True
+    assert terminal["orders_submitted"] is False and terminal["paper_execution"] is False
+    verified = verify_wallclock_evidence_bundle_v1(evidence_root=root)
+    assert verified.verified and verified.verdict == "ABORT"
+    cycles = (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    marks = (root / "market_data_sequence.jsonl").read_text().splitlines()
+    assert len(cycles) == run.cycle_count > 0
+    assert len(marks) == len(cycles) + 1
 
 
 def test_401_aborts_credential_surface(tmp_path: Path) -> None:

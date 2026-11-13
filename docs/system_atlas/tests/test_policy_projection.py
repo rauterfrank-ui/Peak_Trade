@@ -101,6 +101,8 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["MANAGED_FILEGATE_OWNER_DELTAS"],
         *PROJECTION["OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS"],
         *PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"],
+        PROJECTION["G2_ARCHIVE_PROJECTION_PATH"],
+        *PROJECTION["OWNER_ADJUDICATION_CONFIG_DELTAS"],
     }
     frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}
     assert set(result["development_policy_files"]) == reviewed & frozen

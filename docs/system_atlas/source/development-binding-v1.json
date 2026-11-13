@@ -72,6 +72,11 @@
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
     },
     {
+      "path": "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
+      "before_sha256": "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
+      "sha256": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f"
+    },
+    {
       "path": "config/governance/technical_canonical_wiring_authorization_v1.json",
       "before_sha256": "4a13942ec8ba81b1d066a4507a4e720f8bd0eea606451b3ba0b43ab4bacb1bf7",
       "sha256": "42d80a318e200ac82219c73de0667d757f40abe008a86d23a8456bdf4479799d"
@@ -694,7 +699,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "796a2baa54d8c595bad70a3469d605abc9ceb929ea3fc1c02edeff8384e45ec3"
+      "sha256": "91857feb4a1be36d356ef0dd4e0d89de62d926e8f6462e7d8f123d3f83d96434"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1149,7 +1154,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "b528660b0af11ddef75592150b30eece5f5210619bf10771b4871b8bfcab41b0"
+      "sha256": "1ec9302a2bcfbca7a511806b99323d721ea11590eb9bedd86f97c0c753b3533a"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1169,7 +1174,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "e4f4d6774326db39b937a4694a50c5bd5a97970201872ffc55203c53cd9e3fd7"
+      "sha256": "50481d7263bce6c4d48259bc4f7973dbf6d050f1bb9704c9d97da91a087d0b68"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1219,7 +1224,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "dc3f01c1264f84dd769237955705cf299ac4f9ebd96b779117fceed3e9500e7d"
+      "sha256": "9bfc4b1dbfcc4d2fe8f9a29b61f851733c5d1c4be038352929394f1e95c10050"
     },
     {
       "path": "pyproject.toml",
@@ -1454,7 +1459,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
       "before_sha256": "1fbf724e19342f7011cb2cda1e2dde19f8f5347e5b5c60fe986e6a1184ea3a4a",
-      "sha256": "0f4a861bace9b643b8b03744adc3d2fb22ad2a17a818a2fd7592440c8bffe594"
+      "sha256": "c3cb947e994e130659ded31608609d525e38eb71563ce5a31bdd162056b27dfb"
     },
     {
       "path": "scripts/ops/run_k1_account_observation_readiness_v1.py",
@@ -2349,12 +2354,12 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "df6608cdb69d945b6222a73207bfdacfbbdbb76dccb435e075d0bca3e712a20e"
+      "sha256": "d27bdb18b6e9cb744b4de915d1b30b04f8e4e85c3d39fa4da17e65572a5e408b"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "c150cfe71a36f0df783d28ce5210ca8205380d9d84e8d4d5bdad5537f484080f"
+      "sha256": "9dfc1e22ce45da5275ad2d9905c3d1584183b374701ecbf617bc358a72378590"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3025,6 +3030,11 @@
       "path": "tests/governance/test_clean_core_seal_v1.py",
       "before_sha256": "e3ee55d2bfd7c0db74319049de562f2fc423fd03ea8107f66286749f3983569a",
       "sha256": "dad74b7e4bc999a527e18c4dfad82595234b2173631eb181007d266a0918249e"
+    },
+    {
+      "path": "tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py",
+      "before_sha256": "03abdfa319010e3fcc26a366af731cdf4fbc69e6054a954e7f606e795de7a946",
+      "sha256": "b75ee534ba369c8a53f70bc78bc7edbacfdc4b9ccec611304ddbc29f2d31af6a"
     },
     {
       "path": "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
@@ -3709,7 +3719,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "6652a08b6afda2f31398b2e15d69085cc6caec56677d77242c1ba1cb3b22e70d"
+      "sha256": "f05849ba671a1c11f4dfaa59a6f1880e184fb5a3a8187fd8b7acad3991c2d46b"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
