@@ -71,6 +71,12 @@ from .full_core_exchange_reconciliation_v1 import (
     adjudicate_full_core_exchange_reconciliation_v1,
 )
 from .productive_read_only_get_transport_v1 import FullCoreProductiveReadOnlyGetError
+from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+    derive_protective_stop_price_from_adverse_exit_v0,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1,
+)
 
 
 @dataclass(frozen=True)
@@ -102,13 +108,94 @@ class AuthenticatedL10CloseReadbackV1:
     proof_path: Path | None = None
     net_booking: dict | None = None
     counter_order_request: PostCloseDoublePlayCounterOrderRequestV1 | None = None
+    historical_sizing_reference: HistoricalL10CounterSideReferenceV1 | None = None
 
 
-def _booked_close_readback_v1(*, execution, bound, proof_root, booked):
+@dataclass(frozen=True)
+class HistoricalL10CounterSideReferenceV1:
+    """Reconstruct 29P price algebra at the original switch; never a fresh sizing input."""
+
+    scope_digest: str
+    scope_seal_id: str
+    market_payload_sha256: str
+    market_event_unix: float
+    canonical_instrument_id: str
+    venue_native_id: str
+    target_side: str
+    switch_mark_price: str
+    scope_magnitude: str
+    adverse_exit_distance: str
+    counter_side_reference_price: str
+    source_role: str = "HISTORICAL_SWITCH_READBACK_ONLY"
+
+
+def _historical_counter_side_reference_v1(*, execution, scope):
+    """Use the original L10 switch and the existing Layer-C/29P transforms."""
+    switch = execution.l10_close
+    if switch is None or scope["digest"] != switch.scope_digest:
+        return None
+    mark, snapshot = scope["mark"], scope["snapshot"]
+    if (
+        mark.get("seal_id") != switch.scope_seal_id
+        or mark.get("pending_close_episode_id") != switch.episode.episode_id
+        or mark.get("switch_condition_met") is not True
+        or snapshot.get("instrument_id") != switch.episode.instrument_id
+    ):
+        return None
+    scope_state = snapshot.get("scope")
+    if (
+        not isinstance(scope_state, dict)
+        or scope_state.get("valid") is not True
+        or scope_state.get("instrument_id") != switch.episode.instrument_id
+    ):
+        return None
+    magnitude = scope_state.get("d_t")
+    if type(magnitude) not in (int, float) or not Decimal(str(magnitude)).is_finite():
+        return None
+    distances = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(magnitude)
+    if not distances.ok or distances.adverse_exit_distance is None:
+        return None
+    switch_price = Decimal(str(mark["prices"][-1]))
+    reference = derive_protective_stop_price_from_adverse_exit_v0(
+        selected_side=switch.target_side,
+        reference_price=switch_price,
+        adverse_exit_distance=distances.adverse_exit_distance,
+    )
+    payload_sha = mark.get("mark_payload_sha256")
+    if (
+        reference is None
+        or not isinstance(payload_sha, str)
+        or len(payload_sha) != 64
+        or any(c not in "0123456789abcdef" for c in payload_sha)
+    ):
+        return None
+    return HistoricalL10CounterSideReferenceV1(
+        scope_digest=switch.scope_digest,
+        scope_seal_id=switch.scope_seal_id,
+        market_payload_sha256=payload_sha,
+        market_event_unix=mark["event_unix"],
+        canonical_instrument_id=switch.episode.instrument_id,
+        venue_native_id=switch.episode.venue_native_id,
+        target_side=switch.target_side,
+        switch_mark_price=str(switch_price),
+        scope_magnitude=str(magnitude),
+        adverse_exit_distance=str(distances.adverse_exit_distance),
+        counter_side_reference_price=str(reference),
+    )
+
+
+def _booked_close_readback_v1(*, execution, bound, proof_root, booked, scope):
     # The original budget writer has already replayed the settlement proof.
     booking = AuthenticatedSlotCloseBookingV1(
         **{key: value for key, value in booked.items() if key != "booking_digest"}
     )
+    try:
+        historical_reference = _historical_counter_side_reference_v1(
+            execution=execution, scope=scope
+        )
+    except (ArithmeticError, ValueError):
+        # The diagnostic cannot veto or alter the already verified booking.
+        historical_reference = None
     return AuthenticatedL10CloseReadbackV1(
         status="CLOSE_NET_BOOKED",
         envelope_digest=execution.envelope.envelope_digest,
@@ -119,6 +206,7 @@ def _booked_close_readback_v1(*, execution, bound, proof_root, booked):
         counter_order_request=PostCloseDoublePlayCounterOrderRequestV1(
             execution=execution, bound_instrument=bound, net_booking=booking
         ),
+        historical_sizing_reference=historical_reference,
     )
 
 
@@ -244,7 +332,7 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof_root=root,
         )
         return _booked_close_readback_v1(
-            execution=execution, bound=bound, proof_root=root, booked=booked
+            execution=execution, bound=bound, proof_root=root, booked=booked, scope=scope
         )
     socket_ms = _utc_ms(attempt["socket_boundary_at_utc"])
 
@@ -444,5 +532,5 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof,
         )
     return _booked_close_readback_v1(
-        execution=execution, bound=bound, proof_root=root, booked=booked
+        execution=execution, bound=bound, proof_root=root, booked=booked, scope=scope
     )

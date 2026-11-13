@@ -1089,7 +1089,7 @@
     {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
-      "sha256": "058c6aa9578057b992391d904562fdcb68b6c475e2bd13b8b12c8216382ddfe1"
+      "sha256": "f7249209fcbcd12d5eeedfa09e6c2a75f43126de24d01aa101eec34a70e4b406"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -2094,7 +2094,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_l10_close_reconciliation_v1.py",
       "before_sha256": null,
-      "sha256": "5136c966f28a34910b63b95bc087aeae7529b76c40f086d211dc9d5fcaaba81c"
+      "sha256": "a7d3944b808de036dc9e588b1d29fbe916f0662bb1bf3153ceacbb111e60e765"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -2214,7 +2214,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
       "before_sha256": "6c9258fba9a99d1ef97d571c47cca2bb358c8018491d4aa984ea4f6fbe53d7ad",
-      "sha256": "1fe049d5acfdb6e51cdb6063f025c4fe36f4e4fd27ddae1689998de6b007dd5c"
+      "sha256": "d00e1b82650bb412f1d915bc77f08b4a1c2666c2d3e626b030ae72c5930caf20"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -2439,7 +2439,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "e56993e5703198b76380c0078b6fbaa60f64a6f2a4b62a8f1d14f5afc88fa58c"
+      "sha256": "5fe51b71af9f49c640821d60fb14f3eef089de51ced968f3a907fafcf7c02ade"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -3569,7 +3569,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "01b5f0a4d68f52e72ee8c42bf972bdc5da3252d963785dae2db4b92be7506d76"
+      "sha256": "c6eb84d3b2f7438d96eedab89ebb8ad53287cb8ed293f9c9d5ba4a7c9ec75981"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -3664,7 +3664,7 @@
     {
       "path": "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
       "before_sha256": "6740ef32b959283c48ad960508524fea4eed2ef336ed17466c946bbe01dc92c7",
-      "sha256": "b80dbc89df56d45f3e2f42a4fcc842de65308c401f012efa5fe6784ab2529420"
+      "sha256": "6c332979a04d4af0dc1ecd7dc7d961d1507ef7c47b9d1d18716b3eb22bea26a6"
     },
     {
       "path": "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",

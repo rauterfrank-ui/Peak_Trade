@@ -2210,6 +2210,7 @@ def _assert_authenticated_occupied_mark_close(
                     opener,
                     floor,
                     readback or "not-sent",
+                    expected_switch_mark=mark,
                 )
         return
     without_metadata = {**inputs, "live_29p_injected_by_lane": None}
@@ -2483,7 +2484,7 @@ def _assert_original_close_dispatch(context, case, tmp_path):
 
 
 def _assert_restarted_close_readback(
-    tmp_path, monkeypatch, context, proof_root, opener, floor, case
+    tmp_path, monkeypatch, context, proof_root, opener, floor, case, *, expected_switch_mark
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
@@ -2713,6 +2714,21 @@ def _assert_restarted_close_readback(
             assert counter.target_side == ("short" if envelope.side == "sell" else "long")
             assert counter.decision_id == f"l10:{envelope.envelope_digest}"
             assert counter.net_booking.to_dict_v1() == booking
+            historical = readback.historical_sizing_reference
+            assert historical is not None
+            assert historical.source_role == "HISTORICAL_SWITCH_READBACK_ONLY"
+            assert historical.scope_digest == context.execution.l10_close.scope_digest
+            assert historical.scope_seal_id == context.execution.l10_close.scope_seal_id
+            assert historical.canonical_instrument_id == bound.instrument_id
+            assert historical.venue_native_id == envelope.instrument_id
+            assert historical.target_side == counter.target_side
+            assert float(historical.switch_mark_price) == expected_switch_mark
+            distance = Decimal(historical.adverse_exit_distance)
+            assert float(distance) == pytest.approx(float(historical.scope_magnitude) * 0.4)
+            assert Decimal(historical.counter_side_reference_price) == (
+                Decimal(historical.switch_mark_price)
+                + (distance if counter.target_side == "short" else -distance)
+            )
             sizing = resumed.counter_order_sizing
             assert sizing is not None
             assert sizing.first_blocker == "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED"
@@ -2729,6 +2745,10 @@ def _assert_restarted_close_readback(
             assert resumed.trace.terminal_disposition == DISPOSITION_FAIL_CLOSED
             assert resumed.trace.extra["counter_order"]["decision_id"] == counter.decision_id
             assert resumed.trace.extra["counter_order"]["target_side"] == counter.target_side
+            assert (
+                resumed.trace.extra["counter_order"]["historical_sizing_reference"]["source_role"]
+                == "HISTORICAL_SWITCH_READBACK_ONLY"
+            )
             database = original_host.root / "owner" / "reservations.sqlite3"
             committed = database.read_bytes()
             before = len(opener.requests)
@@ -2749,6 +2769,15 @@ def _assert_restarted_close_readback(
             )
             try:
                 owner = verification_host.recover_owner_for_l10_close_booking_v1({"LANE_1": bound})
+                original_commitment = next(
+                    row
+                    for row in owner.local_commitment_readback_v1().commitments
+                    if row.reservation_id == booking["reservation_id"]
+                )
+                assert original_commitment.state == "COMMITTED"
+                assert original_commitment.slot_id == booking["slot_id"]
+                assert original_commitment.venue_native_id == historical.venue_native_id
+                assert owner.slot_capital_basis_v1(booking["slot_id"]) is None
                 for changed, blocker in (
                     (
                         replace(counter, net_booking=replace(counter.net_booking, net_result="99")),
@@ -2777,9 +2806,11 @@ def _assert_restarted_close_readback(
         else:
             assert readback.net_booking is None
             assert readback.counter_order_request is None
+            assert readback.historical_sizing_reference is None
             assert resumed.counter_order_sizing is None
             assert readback.reason_codes[0] == "L10_CLOSE_NET_BOOKING_PENDING"
     else:
+        assert readback.historical_sizing_reference is None
         assert readback.proof_path is None
         assert readback.counter_order_request is None
         assert resumed.counter_order_sizing is None

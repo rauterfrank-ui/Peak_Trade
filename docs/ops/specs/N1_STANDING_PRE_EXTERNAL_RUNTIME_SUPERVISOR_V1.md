@@ -40,10 +40,21 @@ evidence is missing or inconsistent. Partial fills do not book. This step
 does not release the capital hold, convert currencies, authorize a counter
 order or activate the standing profile.
 
+The order reconciliation snapshot marks a full pending-order page as
+incomplete, alongside full order-history or fills pages. This preserves the
+hold when the required coverage is not proven. It does not fetch additional
+pages or change the retained GET sequence.
+
 On `CLOSE_NET_BOOKED`, the supervisor submits a planning request to 29P for
 the opposite side of the retained L10 switch on the same bound instrument.
 29P verifies the original booking and hold with the reservation owner. The
-supervisor reports a blocked sizing attempt until the productive protective
+readback also records the historical mark and the opposite-side reference
+derived from the retained switch through the existing Layer-C and 29P
+formulas. It binds the original instrument, seal, snapshot and mark-response
+digest. The reference belongs to the original switch time. It is a diagnostic
+only and cannot supply a current sizing input or an order.
+
+The supervisor reports a blocked sizing attempt until the productive protective
 stop and funded slot capital basis are available. The check reads the
 original slot and its booking; it does not request another allocation. The
 original booking remains readable after restart. The unattended host's stop

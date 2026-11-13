@@ -40,6 +40,8 @@ ENDPOINT_TRADE_FILLS = "/api/v5/trade/fills"
 
 DEFAULT_HISTORY_LIMIT = 100
 DEFAULT_FILLS_LIMIT = 100
+# OKX /trade/orders-pending uses 100 when no explicit limit is sent.
+_PENDING_DEFAULT_PAGE_SIZE = 100
 
 _OKX_RATE_LIMIT_CODES = frozenset({"50011", "50061"})
 # OKX GET /api/v5/trade/order negative hit (order not on book); not a transport/API fault.
@@ -364,6 +366,8 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
         {"instType": itype, "instId": inst},
     )
     pending_rows = _rows(pending_res.payload)
+    if len(pending_rows) >= _PENDING_DEFAULT_PAGE_SIZE:
+        incomplete_pagination = True
     _ingest_order_rows(
         result=pending_res,
         source="orders-pending",

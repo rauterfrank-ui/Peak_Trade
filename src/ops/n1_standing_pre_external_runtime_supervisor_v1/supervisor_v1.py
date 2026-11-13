@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from functools import wraps
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional
@@ -463,6 +463,10 @@ def run_n1_standing_pre_external_supervisor_v1(
                             "sizing_reasons": list(counter_order_sizing.reason_codes),
                             "venue_plan_authorized": counter_order_sizing.venue_plan_authorized,
                         }
+                        if close_readback.historical_sizing_reference is not None:
+                            trace.extra["counter_order"]["historical_sizing_reference"] = asdict(
+                                close_readback.historical_sizing_reference
+                            )
                         trace.terminal_disposition = DISPOSITION_FAIL_CLOSED
                     return StandingSupervisorRunResultV1(
                         ok=close_readback.status == "CLOSE_FLAT_CONFIRMED",
