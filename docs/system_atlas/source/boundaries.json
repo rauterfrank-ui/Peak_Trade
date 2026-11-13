@@ -2,7 +2,7 @@
   "schema": "peaktrade.atlas_boundary_projection.v1",
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
-  "reviewed_repo_commit": "ac76f82e74b8341cc2eb1387ba765116e9369065",
+  "reviewed_repo_commit": "898bc69b25981edb67569689789ee8667f7ea639",
   "obsidian_baseline": "e6994ec60d357576c0c42aef3e4733fe60c25e91",
   "obsidian_register": {
     "path": "00 Systemindex/SL OPT Trennung/Rekonstruktion 2026-11-10/Gesamtzuordnung Universen und Signalfluesse/Maschinelle Register/Universen Ports und Zuordnung.json",
@@ -1530,7 +1530,7 @@
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
           "obsidian_sha256": "d4c667fc8f1aff8b280cc7d946efff38ef73c828e8782ba651fb830deb0a2e9f",
-          "repo_blob": "60b4e89e555e766556413662c5de081e0e703647",
+          "repo_blob": "645c437a9940cb184e54952b71950c36d21185e0",
           "repo_match": "changed"
         },
         {
@@ -1582,7 +1582,7 @@
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
           "obsidian_sha256": "d4c667fc8f1aff8b280cc7d946efff38ef73c828e8782ba651fb830deb0a2e9f",
-          "repo_blob": "60b4e89e555e766556413662c5de081e0e703647",
+          "repo_blob": "645c437a9940cb184e54952b71950c36d21185e0",
           "repo_match": "changed"
         }
       ],
@@ -1840,8 +1840,8 @@
         {
           "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
           "obsidian_sha256": "b32f5e246addf6648b52eb58bd2bd575290a4b2ab573874201e648f80e8f2b7c",
-          "repo_blob": "a7decc1d190ccd1c03ebd9528cdf72acbf52c3d9",
-          "repo_match": "same_bytes"
+          "repo_blob": "e6b3c988f73647897c7aba29961eb752ef82bcab",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
@@ -1852,7 +1852,9 @@
       ],
       "open_refs": [],
       "current": {},
-      "source_drift": []
+      "source_drift": [
+        "src/learning/deterministic_decision_outcome_v0/capture_v0.py"
+      ]
     },
     {
       "id": "GRENZE-P16",
@@ -3053,7 +3055,7 @@
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
           "obsidian_sha256": "d4c667fc8f1aff8b280cc7d946efff38ef73c828e8782ba651fb830deb0a2e9f",
-          "repo_blob": "60b4e89e555e766556413662c5de081e0e703647",
+          "repo_blob": "645c437a9940cb184e54952b71950c36d21185e0",
           "repo_match": "changed"
         },
         {
@@ -3099,7 +3101,7 @@
         {
           "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
           "obsidian_sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
-          "repo_blob": "9fb1258ce9bfac4c7bee042497a8cd2a8e789aa8",
+          "repo_blob": "d6452d7f4cb4d0c11a7b6333194f3b01cb2a7615",
           "repo_match": "changed"
         }
       ],
@@ -3834,7 +3836,7 @@
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
           "obsidian_sha256": "876b5931fda64420d3f17c7cb8128b1d4241ac7e04ce2c027943e3d7943bf13e",
-          "repo_blob": "8d17f57c9ac3d2110b5f8648fc5cf6fe1a9a5b25",
+          "repo_blob": "54a277332509c27c2839e4bcaf43e36df2d254a3",
           "repo_match": "changed"
         }
       ],
@@ -3873,8 +3875,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -3885,7 +3887,9 @@
       ],
       "open_refs": [],
       "current": {},
-      "source_drift": []
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
+      ]
     },
     {
       "id": "GRENZE-P60",
@@ -4646,8 +4650,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -4664,7 +4668,9 @@
       ],
       "open_refs": [],
       "current": {},
-      "source_drift": []
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
+      ]
     },
     {
       "id": "SIGNAL-E11",
@@ -4787,19 +4793,20 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
           "obsidian_sha256": "9dd9e8a43dc0a2879107f702832b153b5c22c37fb0f0fe3f2c2f4badbf804050",
-          "repo_blob": "a1bc8b014c7790d234eaaf0df723fd6758beca36",
-          "repo_match": "same_bytes"
+          "repo_blob": "836f780e8b72066f8c6956849ab17073bd1f91f3",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
           "obsidian_sha256": "4df71693da2d95e73149f5a7b889f7a966dccce5989c48e5717f6fb6877cd8c0",
-          "repo_blob": "32385aec7ad1ea3c72c6594eee81c774b57ebb69",
+          "repo_blob": "841dfd9f2aeb7f8b9cba3c06e5caa2bd17fe61ce",
           "repo_match": "changed"
         }
       ],
       "open_refs": [],
       "current": {},
       "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
       ]
     },
@@ -4932,8 +4939,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py",
@@ -4956,7 +4963,9 @@
       ],
       "open_refs": [],
       "current": {},
-      "source_drift": []
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
+      ]
     },
     {
       "id": "SIGNAL-E17",
@@ -7784,7 +7793,7 @@
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
           "obsidian_sha256": "d4c667fc8f1aff8b280cc7d946efff38ef73c828e8782ba651fb830deb0a2e9f",
-          "repo_blob": "60b4e89e555e766556413662c5de081e0e703647",
+          "repo_blob": "645c437a9940cb184e54952b71950c36d21185e0",
           "repo_match": "changed"
         }
       ],
@@ -8582,8 +8591,8 @@
         {
           "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
           "obsidian_sha256": "b32f5e246addf6648b52eb58bd2bd575290a4b2ab573874201e648f80e8f2b7c",
-          "repo_blob": "a7decc1d190ccd1c03ebd9528cdf72acbf52c3d9",
-          "repo_match": "same_bytes"
+          "repo_blob": "e6b3c988f73647897c7aba29961eb752ef82bcab",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
@@ -8619,6 +8628,7 @@
       "open_refs": [],
       "current": {},
       "source_drift": [
+        "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
       ]
     },
@@ -9077,7 +9087,7 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
           "obsidian_sha256": "62846965e8f029589ee9e99723013fd3086c88f9ff206785a9dfa4351aa86d7f",
-          "repo_blob": "2179d5201cb42dffd82b7adc926203f68a746c8a",
+          "repo_blob": "37d014662caf8136c32b4073f08b10929066d2d5",
           "repo_match": "changed"
         },
         {
@@ -9304,13 +9314,13 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
           "obsidian_sha256": "62846965e8f029589ee9e99723013fd3086c88f9ff206785a9dfa4351aa86d7f",
-          "repo_blob": "2179d5201cb42dffd82b7adc926203f68a746c8a",
+          "repo_blob": "37d014662caf8136c32b4073f08b10929066d2d5",
           "repo_match": "changed"
         },
         {
           "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
           "obsidian_sha256": "d4c667fc8f1aff8b280cc7d946efff38ef73c828e8782ba651fb830deb0a2e9f",
-          "repo_blob": "60b4e89e555e766556413662c5de081e0e703647",
+          "repo_blob": "645c437a9940cb184e54952b71950c36d21185e0",
           "repo_match": "changed"
         }
       ],
@@ -11235,8 +11245,8 @@
         {
           "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
           "obsidian_sha256": "b32f5e246addf6648b52eb58bd2bd575290a4b2ab573874201e648f80e8f2b7c",
-          "repo_blob": "a7decc1d190ccd1c03ebd9528cdf72acbf52c3d9",
-          "repo_match": "same_bytes"
+          "repo_blob": "e6b3c988f73647897c7aba29961eb752ef82bcab",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
@@ -11247,7 +11257,9 @@
       ],
       "open_refs": [],
       "current": {},
-      "source_drift": []
+      "source_drift": [
+        "src/learning/deterministic_decision_outcome_v0/capture_v0.py"
+      ]
     },
     {
       "id": "REK-P16",
@@ -11671,7 +11683,7 @@
         {
           "path": "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
           "obsidian_sha256": "4065b266d31d2b969118d3b6c39c5294d08416cfca06200235821a3e1fc50787",
-          "repo_blob": "9fb1258ce9bfac4c7bee042497a8cd2a8e789aa8",
+          "repo_blob": "d6452d7f4cb4d0c11a7b6333194f3b01cb2a7615",
           "repo_match": "changed"
         }
       ],
@@ -12973,8 +12985,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py",
@@ -13040,6 +13052,9 @@
       "status": "VERTRAGSFAMILIE_KEINE_AUSFUEHRUNGSFREIGABE",
       "related_areas": [
         "DATA"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
       ]
     },
     {
@@ -13186,8 +13201,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -13198,7 +13213,7 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
           "obsidian_sha256": "1fb5335f6e1d9253027e6cb5d70f17d917a80b6c9a244229453f3389f9e09365",
-          "repo_blob": "ea1a437a1a38468f47488da9c4ec527c46047056",
+          "repo_blob": "f2aa44013260e37361af15da32465d2c91c13086",
           "repo_match": "changed"
         },
         {
@@ -13273,6 +13288,10 @@
         "ACCOUNTING",
         "DATA",
         "EXEC"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py"
       ]
     },
     {
@@ -13305,8 +13324,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -13317,13 +13336,13 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
           "obsidian_sha256": "9dd9e8a43dc0a2879107f702832b153b5c22c37fb0f0fe3f2c2f4badbf804050",
-          "repo_blob": "a1bc8b014c7790d234eaaf0df723fd6758beca36",
-          "repo_match": "same_bytes"
+          "repo_blob": "836f780e8b72066f8c6956849ab17073bd1f91f3",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
           "obsidian_sha256": "4df71693da2d95e73149f5a7b889f7a966dccce5989c48e5717f6fb6877cd8c0",
-          "repo_blob": "32385aec7ad1ea3c72c6594eee81c774b57ebb69",
+          "repo_blob": "841dfd9f2aeb7f8b9cba3c06e5caa2bd17fe61ce",
           "repo_match": "changed"
         },
         {
@@ -13354,6 +13373,11 @@
       "status": "VERTRAGSFAMILIE_KEINE_AUSFUEHRUNGSFREIGABE",
       "related_areas": [
         "EXEC"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
       ]
     },
     {
@@ -13384,8 +13408,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -13396,19 +13420,19 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
           "obsidian_sha256": "9dd9e8a43dc0a2879107f702832b153b5c22c37fb0f0fe3f2c2f4badbf804050",
-          "repo_blob": "a1bc8b014c7790d234eaaf0df723fd6758beca36",
-          "repo_match": "same_bytes"
+          "repo_blob": "836f780e8b72066f8c6956849ab17073bd1f91f3",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
           "obsidian_sha256": "4df71693da2d95e73149f5a7b889f7a966dccce5989c48e5717f6fb6877cd8c0",
-          "repo_blob": "32385aec7ad1ea3c72c6594eee81c774b57ebb69",
+          "repo_blob": "841dfd9f2aeb7f8b9cba3c06e5caa2bd17fe61ce",
           "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
           "obsidian_sha256": "1fb5335f6e1d9253027e6cb5d70f17d917a80b6c9a244229453f3389f9e09365",
-          "repo_blob": "ea1a437a1a38468f47488da9c4ec527c46047056",
+          "repo_blob": "f2aa44013260e37361af15da32465d2c91c13086",
           "repo_match": "changed"
         },
         {
@@ -13421,6 +13445,12 @@
       "status": "VERTRAGSFAMILIE_KEINE_AUSFUEHRUNGSFREIGABE",
       "related_areas": [
         "EXEC"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py"
       ]
     },
     {
@@ -14224,7 +14254,7 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
           "obsidian_sha256": "1fb5335f6e1d9253027e6cb5d70f17d917a80b6c9a244229453f3389f9e09365",
-          "repo_blob": "ea1a437a1a38468f47488da9c4ec527c46047056",
+          "repo_blob": "f2aa44013260e37361af15da32465d2c91c13086",
           "repo_match": "changed"
         },
         {
@@ -14261,6 +14291,9 @@
       "status": "VERTRAGSFAMILIE_KEINE_AUSFUEHRUNGSFREIGABE",
       "related_areas": [
         "TREASURY"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py"
       ]
     },
     {
@@ -14770,8 +14803,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -14791,6 +14824,9 @@
         "ACCOUNTING",
         "DATA",
         "EXEC"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
       ]
     },
     {
@@ -14908,13 +14944,13 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
           "obsidian_sha256": "9dd9e8a43dc0a2879107f702832b153b5c22c37fb0f0fe3f2c2f4badbf804050",
-          "repo_blob": "a1bc8b014c7790d234eaaf0df723fd6758beca36",
-          "repo_match": "same_bytes"
+          "repo_blob": "836f780e8b72066f8c6956849ab17073bd1f91f3",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
           "obsidian_sha256": "4df71693da2d95e73149f5a7b889f7a966dccce5989c48e5717f6fb6877cd8c0",
-          "repo_blob": "32385aec7ad1ea3c72c6594eee81c774b57ebb69",
+          "repo_blob": "841dfd9f2aeb7f8b9cba3c06e5caa2bd17fe61ce",
           "repo_match": "changed"
         }
       ],
@@ -14922,6 +14958,10 @@
       "related_areas": [
         "ACCOUNTING",
         "EXEC"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py"
       ]
     },
     {
@@ -15045,8 +15085,8 @@
         {
           "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
           "obsidian_sha256": "5fa7ecc2d46ab4be6340172d4721a72fdaddc7b9b005dad86f2f46042f7e0012",
-          "repo_blob": "7ed0881f360376facced54928d586805c7f13af9",
-          "repo_match": "same_bytes"
+          "repo_blob": "3d231750d3ae1a26ab5e6bdef67614faeea2ac1b",
+          "repo_match": "changed"
         },
         {
           "path": "src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py",
@@ -15071,6 +15111,9 @@
       "related_areas": [
         "DATA",
         "HOST"
+      ],
+      "source_drift": [
+        "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
       ]
     },
     {
