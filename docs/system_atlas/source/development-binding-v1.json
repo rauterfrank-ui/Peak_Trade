@@ -1544,7 +1544,7 @@
     {
       "path": "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
       "before_sha256": "92d54223d4625f363b7dad4b39436d059aaef606846a2a07fd4c4bfe5d9b6ca3",
-      "sha256": "eb26addad2ac41d86e2ede14df4b7d5bc6195c93e5b0df2a4c38307239709fcf"
+      "sha256": "89a9215c21e0ac9b8e05f069f58b3c67c653e1986620510ff11982489a6d0291"
     },
     {
       "path": "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
@@ -2994,7 +2994,7 @@
     {
       "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
       "before_sha256": "35b578f97fc53e28d079df76f996b8e849105eba8ec474fa8a8a27ec7bd7124c",
-      "sha256": "911d5ae93611b6ae3f9a63d203b8112cb678caaa5e350d70f7e478ac7165ac0a"
+      "sha256": "b3e55f90b509bc00e8c9a35c794f7233c0dbf35ba67cdc8beb68fd79985a72ea"
     },
     {
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",

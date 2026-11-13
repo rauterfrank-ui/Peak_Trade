@@ -65,6 +65,52 @@ def test_paper_g2_runner_rejects_fixture_before_continuation(tmp_path: Path) -> 
         continue_g2_from_primary_root(root, projection_inputs={})
 
 
+def test_paper_g2_runner_reports_incomplete_continuation(tmp_path: Path, monkeypatch) -> None:
+    import json
+    import subprocess
+    import sys
+
+    from scripts.ops import (
+        run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1 as cli,
+    )
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
+    metadata_path = root / "RUN_METADATA.json"
+    metadata = json.loads(metadata_path.read_bytes())
+    metadata.update(
+        run_id="paper-wrapper-test",
+        strategy_version="paper-wrapper-test.v1",
+        repo_head_sha_prefix=subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=cli.REPO, text=True
+        ).strip()[:16],
+    )
+    metadata_path.write_text(json.dumps(metadata))
+    write_manifest_sha256(root)
+    request = vars(
+        projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
+    ).copy()
+    request.pop("source_mode")
+    request.pop("primary_evidence_root")
+    request_path = tmp_path / "request.json"
+    from collections.abc import Mapping
+
+    def serialize_mapping(value):
+        if isinstance(value, Mapping):
+            return dict(value)
+        raise TypeError(f"Unexpected projection value: {type(value).__name__}")
+
+    request_path.write_text(json.dumps(request, default=serialize_mapping))
+    monkeypatch.setattr(cli, "PACK", tmp_path / "result")
+    monkeypatch.setattr(
+        sys, "argv", ["paper-g2", str(root), "--projection-request", str(request_path)]
+    )
+    assert cli.main() == 1
+    report = json.loads((cli.PACK / cli.RUN_TS / "ORCHESTRATOR.json").read_bytes())
+    assert report["G2_CONTINUATION"]["classification"]["root"] == str(root)
+    assert report["G2_CONTINUATION"]["g2_m8"]["m8_reached"] is False
+
+
 def test_fixture_control_g2_m8_reaches_m8(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)

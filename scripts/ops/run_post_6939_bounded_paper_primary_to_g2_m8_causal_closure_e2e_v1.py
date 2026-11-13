@@ -54,7 +54,7 @@ def continue_g2_from_primary_root(primary_root: Path, *, projection_inputs: dict
         req,
         classification="OBSERVED_BOUNDED_RUNTIME_PRIMARY_ARCHIVE",
     )
-    return {"classification": report.__dict__, "g2_m8": g2.__dict__}
+    return {"classification": {**report.__dict__, "root": str(report.root)}, "g2_m8": g2.__dict__}
 
 
 def main() -> int:
@@ -74,23 +74,26 @@ def main() -> int:
         "APPROVAL_RECORD": str(APPROVAL),
         "E2E_RUN_ID": f"post6939-paper-{RUN_TS}-{uuid.uuid4().hex[:8]}",
     }
+    exit_code = 0
     if args.primary_root is not None:
         try:
             projection_inputs = json.loads(args.projection_request.read_bytes())
             if not isinstance(projection_inputs, dict):
                 raise ValueError("PAPER_PROJECTION_REQUEST_OBJECT_REQUIRED")
-            out["G2_CONTINUATION"] = continue_g2_from_primary_root(
+            continuation = continue_g2_from_primary_root(
                 args.primary_root.resolve(), projection_inputs=projection_inputs
             )
         except (TypeError, ValueError, OSError) as exc:
             parser.error(str(exc))
+        out["G2_CONTINUATION"] = continuation
+        exit_code = 0 if continuation["g2_m8"]["m8_reached"] else 1
     else:
         out["NOTE"] = "Pass the durable PAPER archive path and --projection-request after closeout."
     dest = PACK / RUN_TS
     dest.mkdir(parents=True, exist_ok=True)
     (dest / "ORCHESTRATOR.json").write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(out, indent=2))
-    return 0
+    return exit_code
 
 
 if __name__ == "__main__":
