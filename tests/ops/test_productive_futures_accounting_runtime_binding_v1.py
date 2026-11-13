@@ -273,6 +273,32 @@ def test_zero_quantity_invalid_contract_missing_mark() -> None:
     assert c.value.code == AccountingFailureCodeV1.INVALID_CONTRACT_METADATA
 
 
+@pytest.mark.parametrize(
+    ("side", "expected_price", "expected_fee"),
+    [("BUY", "100.05", "0.00100050"), ("SELL", "100.00", "0.00100000")],
+)
+def test_fill_prices_follow_non_power_of_ten_tick_grid(
+    side: str, expected_price: str, expected_fee: str
+) -> None:
+    session = _session(tick="0.05")
+    fill = build_simulated_fill_v1(
+        fill_id="tick-grid",
+        instrument_id=session.contract.symbol,
+        side=side,
+        quantity="2",
+        mark_price="100.02",
+        contract=session.contract,
+        fee_rate_bps="5",
+        slippage_bps="1",
+    )
+    assert fill.fill_price == Decimal(expected_price)
+    assert fill.fill_price % session.contract.tick_size == 0
+    assert fill.fee == Decimal(expected_fee)
+    assert fill.slippage_cost == abs(fill.fill_price - fill.mark_price) * Decimal("0.02")
+    assert session.apply_fill(fill).ok
+    assert session.apply_fill(fill).idempotent_replay
+
+
 def test_reduce_only_over_reduce_flip_blocked() -> None:
     session = _session()
     session.apply_fill(_fill(session, fill_id="x1", side="BUY", qty="5", mark="10"))

@@ -1542,6 +1542,11 @@
       "sha256": "7459fb84aaf3cff42d635c50939e76e336dedbd15421731cd59fdcf94b51eccf"
     },
     {
+      "path": "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
+      "before_sha256": "92d54223d4625f363b7dad4b39436d059aaef606846a2a07fd4c4bfe5d9b6ca3",
+      "sha256": "89a9215c21e0ac9b8e05f069f58b3c67c653e1986620510ff11982489a6d0291"
+    },
+    {
       "path": "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
       "before_sha256": "b67870a50828c63051529b9f2e1316fc0c57ed78b3b113fc5f91ec00ce86b370",
       "sha256": "0ce63d4f0d299bd4afcde0389e4c4acbc844cad602c2761e7c8c35d867b5c90c"
@@ -2637,6 +2642,11 @@
       "sha256": "6daa799ca99fbd202c203c6fc2414095cce4838ca770be02d413a5ca7720edce"
     },
     {
+      "path": "src/ops/productive_futures_accounting_runtime_binding_v1/fill_model_v1.py",
+      "before_sha256": "2e13f4684a5187cc344c98c4bf3efd6e475456f8c4c49c92930e1a276001b734",
+      "sha256": "e65af37e0b4a756db170bf6d94246ad24a7970becde33a5cbd2ee854b4aea070"
+    },
+    {
       "path": "src/ops/productive_futures_ranking_producer_v1/models_v1.py",
       "before_sha256": "fd02b4d6b24ed916c5b485944f631fc93a7e3b9506a0c14d8b2ec6977ab7fd1d",
       "sha256": "9d991f76a6aae1c2ee18f151151f93fb13fe7c1a75d89e89f6c7c52a598ade21"
@@ -2980,6 +2990,11 @@
       "path": "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
       "before_sha256": "815db78f7d9e1ba0071e4c45def5f1757bea782cf933ef4e31a764f1c1cd81ff",
       "sha256": "13903d94c6e46a5617b0214476ef75ed23a968bb889f4b246fd5599c0c91d226"
+    },
+    {
+      "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+      "before_sha256": "35b578f97fc53e28d079df76f996b8e849105eba8ec474fa8a8a27ec7bd7124c",
+      "sha256": "b3e55f90b509bc00e8c9a35c794f7233c0dbf35ba67cdc8beb68fd79985a72ea"
     },
     {
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",
@@ -3870,6 +3885,11 @@
       "path": "tests/ops/test_pretrade_acquisition_freshness_v1.py",
       "before_sha256": null,
       "sha256": "fe7bc06d175e36536b628eb9453a6b271143d271fbc126c19bfd1f5e21d34a40"
+    },
+    {
+      "path": "tests/ops/test_productive_futures_accounting_runtime_binding_v1.py",
+      "before_sha256": "902ed9e52f06dfbf75ad2c989dbcc28aed86fd5c3f815f4cefba4f63d6eab556",
+      "sha256": "33391c13ebc19f73c99f616e6c950671a8e131234e053b105c3a389cd6cb6f3c"
     },
     {
       "path": "tests/ops/test_productive_futures_ranking_producer_v1.py",
