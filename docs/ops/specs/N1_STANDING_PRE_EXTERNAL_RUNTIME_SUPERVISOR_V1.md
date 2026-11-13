@@ -23,6 +23,9 @@ The launcher performs **one supervisor session** (recovery â†’ public refresh â†
 
 When the scoped supervisor is explicitly supplied the private occupied-mark
 proof root, it recovers the original L10 close before admitting another cycle.
+The unattended host binds that exact private path into its request digest.
+An omitted or different proof root fails the request binding before the
+supervisor runs.
 After exact order and fill reconciliation and confirmed flat, it reads the
 authenticated OKX closed position for the original entry episode. The existing
 reservation owner verifies the episode, settlement currency, fill PnL and

@@ -356,8 +356,13 @@ def test_unattended_actual_n1_restart_after_sigkill_obeys_checkpoint_and_total_b
         ).read_bytes() == before
 
 
-@pytest.mark.parametrize("booked", [False, True])
-def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monkeypatch, booked):
+@pytest.mark.parametrize(
+    ("booked", "changed_proof_root"),
+    [(False, None), (True, None), (True, "omitted"), (True, "foreign")],
+)
+def test_unattended_host_preserves_close_and_blocked_continuation(
+    tmp_path, monkeypatch, booked, changed_proof_root
+):
     from types import SimpleNamespace
     from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
         AuthenticatedL10CloseReadbackV1,
@@ -379,6 +384,10 @@ def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monk
     )
 
     bound = _bound_lane_1()
+    proof_root = tmp_path / "proof"
+    proof_root.mkdir(mode=0o700)
+    other_proof_root = tmp_path / "other-proof"
+    other_proof_root.mkdir(mode=0o700)
 
     def request_factory(_, evidence):
         return dict(
@@ -392,6 +401,7 @@ def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monk
             origin_main_sha=OWNER_GO_BASELINE_SHA,
             bound=bound,
             authorization=_continuous_auth(native_id=bound.venue_native_id),
+            occupied_mark_proof_root=proof_root,
         )
 
     readback = AuthenticatedL10CloseReadbackV1(
@@ -421,9 +431,12 @@ def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monk
         counter_order_sizing=sizing,
     )
     monkeypatch.setattr(unattended_v1, "_filegate_revision", lambda path: "fixture-active")
-    monkeypatch.setattr(
-        unattended_v1, "run_n1_standing_pre_external_supervisor_v1", lambda **kwargs: result
-    )
+
+    def supervisor(**kwargs):
+        assert kwargs["occupied_mark_proof_root"] == proof_root
+        return result
+
+    monkeypatch.setattr(unattended_v1, "run_n1_standing_pre_external_supervisor_v1", supervisor)
     bounds = UnattendedHostBoundsV1(
         "flat-close",
         OWNER_GO_BASELINE_SHA,
@@ -434,6 +447,33 @@ def test_unattended_host_preserves_close_and_blocked_continuation(tmp_path, monk
         1,
     )
     controller = tmp_path / "controller"
+    if changed_proof_root is not None:
+
+        def changed_factory(attempt, evidence):
+            request = request_factory(attempt, evidence)
+            if changed_proof_root == "omitted":
+                request.pop("occupied_mark_proof_root")
+            else:
+                request["occupied_mark_proof_root"] = other_proof_root
+            return request
+
+        def forbidden_supervisor(**_):
+            pytest.fail("a different close-proof root reached the supervisor")
+
+        monkeypatch.setattr(
+            unattended_v1, "run_n1_standing_pre_external_supervisor_v1", forbidden_supervisor
+        )
+        with pytest.raises(ValueError, match="HOST_RESTART_REQUEST_BINDING_MISMATCH"):
+            run_unattended_n1_host_v1(
+                bounds=bounds,
+                state_root=controller,
+                request_factory=changed_factory,
+                clock=lambda: 100,
+            )
+        state = json.loads((controller / "host_restart_state_v1.json").read_bytes())
+        assert state["attempts"] == state["cycles_used"] == 0
+        return
+
     stopped = run_unattended_n1_host_v1(
         bounds=bounds, state_root=controller, request_factory=request_factory, clock=lambda: 100
     )
