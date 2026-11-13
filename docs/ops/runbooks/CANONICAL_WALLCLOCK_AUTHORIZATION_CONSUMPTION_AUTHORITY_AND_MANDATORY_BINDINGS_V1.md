@@ -31,7 +31,7 @@ Parser and gate reject missing/null/wrong-type/unsafe values for:
 
 - identity: authorization_id, schema/schema_version, preregistration_id/digest, repository_sha, runbook_sha256, capability, session_config_digest, created_at/expires_at
 - safety_boundaries (exact bools): wallclock_mode=true, public_market_data_only=true, analytical_simulated_execution=true, external_paper_order_execution=false, real_order_routing=false, private_api=false, forced_wiring_fixture_mode=false, no_implicit_resume=true
-- session_duration_seconds=3600
+- session_duration_seconds is one of 3600, 7200 or 21600. The canonical I17 authorization binds 7200 seconds and the optional extended soak binds 21600 seconds. The gate rejects an Operator-GO whose planned duration exceeds the authorization before consumption.
 - config: `session_config_digest` must equal `config_digests.effective_session_config`
 
 No silent coercion (`"false"`/0/1/missing→default).

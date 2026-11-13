@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    WALLCLOCK_EXTENDED_SOAK_DURATION_SECONDS,
+    WALLCLOCK_QUALIFICATION_DURATION_SECONDS,
+)
+
 CAPABILITY_ID = (
     "INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_"
     "AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1"
@@ -39,8 +44,8 @@ REQUIRED_MODE = "observation"
 # does not block the next phase after a successful canonical 2h I17 closeout.
 # The 6h ceiling stays so soak sessions can still be planned. Test-only
 # --allow-noncanonical-duration never grants order/live/canary authority.
-I17_CANONICAL_DURATION_SECONDS = 7200
-I17_EXTENDED_SOAK_DURATION_SECONDS = 21600
+I17_CANONICAL_DURATION_SECONDS = WALLCLOCK_QUALIFICATION_DURATION_SECONDS
+I17_EXTENDED_SOAK_DURATION_SECONDS = WALLCLOCK_EXTENDED_SOAK_DURATION_SECONDS
 I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE = False
 CANONICAL_PRODUCTIVE_DURATION_SECONDS = I17_CANONICAL_DURATION_SECONDS
 EXTENDED_SOAK_DURATION_SECONDS = I17_EXTENDED_SOAK_DURATION_SECONDS

@@ -21,6 +21,9 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
     AUTHORIZED_VENUE,
     CANONICAL_RUNBOOK_SHA256,
 )
+from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.mandatory_bindings_v1 import (
+    wallclock_duration_binding_blockers_v1,
+)
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.v1_quarantine_v1 import (
     classify_authorization_schema_for_wallclock_v1,
 )
@@ -227,6 +230,12 @@ def verify_productive_authorization_bundle_v1(
         blockers.append("PREREGISTRATION_ID_MISMATCH")
     if artifact.preregistration_digest != prereg.scope_digest():
         blockers.append("PREREGISTRATION_DIGEST_MISMATCH")
+    blockers.extend(
+        wallclock_duration_binding_blockers_v1(
+            planned_seconds=go.planned_duration_seconds,
+            authorized_seconds=artifact.session_duration_seconds,
+        )
+    )
     token_res = verify_productive_confirm_token_challenge_v1(
         confirm_token=confirm_token,
         prereg=prereg,

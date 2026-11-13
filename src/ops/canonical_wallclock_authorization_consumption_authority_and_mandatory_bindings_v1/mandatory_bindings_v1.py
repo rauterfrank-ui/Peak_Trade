@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.constants_v1 import (
+    ALLOWED_SESSION_DURATION_SECONDS,
     AUTHORIZED_NETWORK_SCOPE,
     AUTHORIZED_VENUE,
     EFFECTIVE_SESSION_CONFIG_DIGEST_KEY,
@@ -73,9 +74,23 @@ def validate_mandatory_top_level_safety_flags_v1(raw: Mapping[str, Any]) -> list
 def validate_mandatory_session_duration_v1(duration: object) -> int:
     if type(duration) is not int:
         raise MandatoryBindingError("SESSION_DURATION_TYPE")
-    if duration != REQUIRED_SESSION_DURATION_SECONDS:
+    if duration not in ALLOWED_SESSION_DURATION_SECONDS:
         raise MandatoryBindingError("SESSION_DURATION_REJECTED")
     return duration
+
+
+def wallclock_duration_binding_blockers_v1(
+    *, planned_seconds: int, authorized_seconds: int
+) -> tuple[str, ...]:
+    if planned_seconds > authorized_seconds:
+        return ("PLANNED_DURATION_EXCEEDS_AUTHORIZATION",)
+    # Existing shorter observation plans may use the original one-hour ceiling.
+    if (
+        authorized_seconds != REQUIRED_SESSION_DURATION_SECONDS
+        and planned_seconds != authorized_seconds
+    ):
+        return ("PLANNED_DURATION_AUTHORIZATION_MISMATCH",)
+    return ()
 
 
 def validate_mandatory_session_config_digest_binding_v1(

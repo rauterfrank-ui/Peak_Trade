@@ -205,6 +205,9 @@ RETIRED_AUTOMATION_CONFIG_DELTAS = {
     "config/scheduler/jobs.toml": "d0dec42e721f4520f8a75a6cd1c489a4cff3c349487456d5ffef127a2f5a6557",
     "config/test_health_profiles.toml": "f644372502396a8a388bb107635718ee0debf6cf1c8580a963cacea0de1ecf12",
 }
+WALLCLOCK_DURATION_CONFIG_DELTA = {
+    "config/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.toml": "be7be51d93c921a315c7bc981b90c9686b6a245a47d6408cb659b5d31a0c7796",
+}
 
 
 def validate_development_binding(root, model, frozen, changed, extras, cleanup):
@@ -250,6 +253,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel in FILEGATE_DEPENDENCY_DELTA
             or rel in JSON_SYNTAX_REPAIRS
             or rel in RETIRED_AUTOMATION_CONFIG_DELTAS
+            or rel in WALLCLOCK_DURATION_CONFIG_DELTA
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
@@ -273,6 +277,11 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
         if rel in RETIRED_AUTOMATION_CONFIG_DELTAS:
             assert row["sha256"] == RETIRED_AUTOMATION_CONFIG_DELTAS[rel], [
                 "RETIRED_AUTOMATION_CONFIG_DRIFT",
+                rel,
+            ]
+        if rel in WALLCLOCK_DURATION_CONFIG_DELTA:
+            assert row["sha256"] == WALLCLOCK_DURATION_CONFIG_DELTA[rel], [
+                "WALLCLOCK_DURATION_CONFIG_DRIFT",
                 rel,
             ]
         indexed[rel] = row
