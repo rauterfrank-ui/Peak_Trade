@@ -128,11 +128,14 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
     )
 
     f1_m9 = materialize_f1_m9_runtime_applied_seam_ledgers_v1(tmp_path / "f1_m9")
+    mark_payload = _mark_payload()
+    latest_mark_open_ms = max(int(row[0]) for row in mark_payload["data"])
+    observed_ms = latest_mark_open_ms + 61_000
     join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
         evidence_store_root=tmp_path,
         bound_instrument=_bound(),
-        mark_candles_payload=_mark_payload(),
-        receive_or_capture_timestamp=CAPTURE_TS,
+        mark_candles_payload=mark_payload,
+        receive_or_capture_timestamp=str(observed_ms),
     )
     assert join.fail_closed is False
     assert join.producer is not None
@@ -146,7 +149,7 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=bound,
         cycle_id="dk-g17-hot-path-proof",
-        observed_unix=1_700_000_100.0,
+        observed_unix=observed_ms / 1000,
         mark_px=last,
         index_px=index_px,
         bid_px=last - 0.5,
@@ -155,7 +158,7 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
         open_interest=1_000.0,
         funding_rate=0.0001,
         finalized_closes=closes,
-        last_finalized_event_ts_unix=1_700_000_000.0,
+        last_finalized_event_ts_unix=latest_mark_open_ms / 1000,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=join.producer,
