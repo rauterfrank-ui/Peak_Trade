@@ -31,9 +31,9 @@ Owner GO:
 
 | Layer | Meaning |
 | --- | --- |
-| Prerequisites | Valid STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1 (#6895) + governed standing. |
-| Policy admission | `evaluate_external_effect_permit_mint_admission_v1()` — fail-closed; no runtime mint. |
-| Permit producer | `external_effect_permit_v1.issue_external_effect_permit_v1` remains gated by import-time LIVE predicates. |
+| Prerequisites | Valid standing-lift policy record and a passing current PRE_EXTERNAL boundary proof. |
+| Policy admission | Read `permit_mint_policy_granted` from `evaluate_external_effect_permit_mint_admission_v1()`. The evaluator only returns an admission decision. |
+| Permit producer | `issue_external_effect_permit_v1()` validates the concrete envelope, execution predicates and durable safety evidence. |
 | Binding | `evaluate_permit_mint_bound_external_effect_permit_seam_v1()` — digest lineage only. |
 
 ## Authority lattice
@@ -44,10 +44,13 @@ PERMIT_MINT_POLICY => GOVERNED_PERMIT_MINT_ADMISSION (policy layer)
 PERMIT_MINT_POLICY -/-> PERMIT_MINT_PERFORMED / CREDENTIAL / POST / REAL_VENUE_POST / AUTONOMY_CAN_MINT_PERMIT
 ```
 
-## Next Owner boundary (superseded by credential-access WP)
+## Concrete issuance
 
-Credential access policy admission: `CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1`.
-Next seam: **REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_OWNER_GO**.
+The true values above describe the policy scope and its successful admission
+case. A valid policy record can coexist with a denied evaluation.
+The [single-order path](FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md)
+binds a concrete permit to the final envelope and consumes it before
+transport. Credential use and actual submission have their own checks.
 
 Code: `src/governance/external_effect_permit_mint_policy_v1.py`  
 Gate binding: `src/governance/external_effect_permit_mint_gate_binding_v1.py`

@@ -31,8 +31,12 @@ and cannot be composed, inferred, minted, or executed here. Direct V5
 remains forbidden. Canonical policy does not set productive
 `MAX_CYCLES_PER_RUN` / `MAX_RUN_DURATION`; validation-only fail-closed
 defaults and hard caps apply. This persist does not execute the
-continuous runtime. Offline tests require injected observation sources.
-Network GET and `execute_network=true` remain unauthorized.
+continuous runtime. The S6 entry point requires an injected observation
+source and refuses `perform_get=true` and `execute_network=true`.
+A source that performs its own GET needs the authority of its own caller and
+source owner. An executable ENTER ends this sequencer at
+`PRE_EXTERNAL_EFFECT`. Starting another cycle or minting a POST permit is
+outside that terminal transition.
 
 C1 cursor durable commits on the productive path are owned by S7
 (`compose_occupied_lane_mv2_dp_durable_cycle_v1` →
