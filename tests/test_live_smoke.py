@@ -1,14 +1,11 @@
 """
 Peak_Trade Live/Paper Smoke Tests
 =================================
-Tests für Live-Risk-Limits und Workflows.
+Tests für die weiterhin vorhandenen Order- und Risikoverträge.
 """
-
-import pytest
 
 from src.live.orders import LiveOrderRequest, side_from_direction
 from src.live.risk_limits import LiveRiskLimits, LiveRiskConfig, LiveRiskCheckResult
-from src.live.workflows import validate_risk_flags, RiskCheckContext
 from src.core.peak_config import load_config
 
 
@@ -99,34 +96,3 @@ def test_live_risk_check_orders_valid():
     assert isinstance(result, LiveRiskCheckResult)
     assert "n_orders" in result.metrics
     assert "total_notional" in result.metrics
-
-
-def test_validate_risk_flags_both_set():
-    """Test: Konflikt-Check für Risk-Flags."""
-    with pytest.raises(ValueError):
-        validate_risk_flags(enforce=True, skip=True)
-
-
-def test_validate_risk_flags_valid():
-    """Test: Gültige Risk-Flag-Kombinationen."""
-    # Keine Exception erwartet
-    validate_risk_flags(enforce=True, skip=False)
-    validate_risk_flags(enforce=False, skip=True)
-    validate_risk_flags(enforce=False, skip=False)
-
-
-def test_risk_check_context_creation():
-    """Test: RiskCheckContext erstellen."""
-    cfg = load_config()
-
-    ctx = RiskCheckContext(
-        config=cfg,
-        starting_cash=10000.0,
-        enforce=False,
-        skip=False,
-        tag="test",
-        runner_name="test_smoke",
-    )
-
-    assert ctx.config == cfg
-    assert ctx.starting_cash == 10000.0

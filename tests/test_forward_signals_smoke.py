@@ -187,40 +187,6 @@ class TestForwardSignalGeneration:
             assert len(signals) > 0
 
 
-class TestForwardSignalScript:
-    """Tests für das run_forward_signals.py Script."""
-
-    def test_format_signal_long(self):
-        """Test: format_signal für Long-Signal."""
-        # Import aus dem Script
-        import sys
-
-        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-        from run_forward_signals import format_signal
-
-        assert format_signal(1.0) == "+1 (LONG)"
-        assert format_signal(0.5) == "+0 (LONG)"
-
-    def test_format_signal_short(self):
-        """Test: format_signal für Short-Signal."""
-        import sys
-
-        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-        from run_forward_signals import format_signal
-
-        assert format_signal(-1.0) == "-1 (SHORT)"
-        assert format_signal(-0.5) == "-0 (SHORT)"
-
-    def test_format_signal_flat(self):
-        """Test: format_signal für Flat-Signal."""
-        import sys
-
-        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-        from run_forward_signals import format_signal
-
-        assert format_signal(0.0) == "0 (FLAT)"
-
-
 class TestEndToEndForwardSignal:
     """End-to-End Test für den Forward-Signal-Flow."""
 

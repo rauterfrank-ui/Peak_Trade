@@ -20,6 +20,10 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "scripts"))
 
+pytestmark = pytest.mark.skip(
+    reason="generate_forward_signals.py is retired; see tests/test_live_ops_cli.py"
+)
+
 import generate_forward_signals as forward_script
 
 TARGET_SCRIPT = project_root / "scripts/generate_forward_signals.py"

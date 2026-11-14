@@ -17,7 +17,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         prog="pipeline_cli.py",
         description=(
-            "Unified pipeline CLI (offline-first): research / live_ops (no-live) / risk / "
+            "Unified pipeline CLI (offline-first): research / risk / "
             "master_v2 (non-production dry smoke; no live; no orders)"
         ),
     )
@@ -38,8 +38,8 @@ def main() -> int:
         "args", nargs=argparse.REMAINDER, help="Args forwarded to research_cli.py (prefix with --)"
     )
 
-    # live ops passthrough (no-live)
-    p_l = sub.add_parser("live_ops", help="Delegate to scripts/live_ops.py (NO-LIVE)")
+    # Keep the retired command address for a controlled refusal.
+    p_l = sub.add_parser("live_ops", help="Retired historical live_ops entrypoint")
     p_l.add_argument(
         "args", nargs=argparse.REMAINDER, help="Args forwarded to live_ops.py (prefix with --)"
     )
@@ -81,11 +81,11 @@ def main() -> int:
         return run(cmd, env)
 
     if args.cmd == "live_ops":
-        cmd = [sys.executable, str(ROOT / "scripts" / "live_ops.py")]
-        if run_id:
-            cmd += ["--run-id", run_id]
-        cmd += args.args
-        return run(cmd, env)
+        print(
+            "LIVE_OPS_RETIRED: no historical order, portfolio or health command was run.",
+            file=sys.stderr,
+        )
+        return 2
 
     if args.cmd == "risk":
         cmd = [sys.executable, str(ROOT / "scripts" / "risk_cli.py")]

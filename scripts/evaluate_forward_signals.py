@@ -78,7 +78,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "signals_csv",
-        help="Pfad zur Signal-CSV (erzeugt von generate_forward_signals.py).",
+        help="Pfad zu einer vorhandenen Signal-CSV.",
     )
     parser.add_argument(
         "--horizon-bars",
@@ -164,7 +164,7 @@ def evaluate_signals_for_symbol(
 
     Args:
         n_bars: Länge der OHLCV-Preisreihe (``load_ohlcv_with_meta``).
-        ohlcv_source: ``dummy`` | ``csv`` (mit ``generate_forward_signals`` abstimmen).
+        ohlcv_source: ``dummy`` | ``csv`` (passend zur Eingabe wählen).
         timeframe: OHLCV-Timeframe; Dummy siehe Loader.
         ohlcv_csv_path: CSV-Pfad bei ``csv``.
 

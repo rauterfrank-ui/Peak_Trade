@@ -1,6 +1,7 @@
 # Stage 1 Monitoring - LaunchAgents Management
 
-**Status:** ✅ FULLY OPERATIONAL  
+**Status:** Repo-Einstiege separat prüfbar; geladene Hostdienste brauchen einen eigenen Funktionsbeleg.
+
 **Setup Date:** 2025-12-20  
 **Platform:** macOS (launchd)
 
@@ -10,8 +11,8 @@
 
 | Label | Schedule | Script | Status |
 |-------|----------|--------|--------|
-| `com.peaktrade.stage1.daily` | Daily 09:05 | `stage1_run_daily.sh` | ✅ Active |
-| `com.peaktrade.stage1.weekly` | Sunday 10:00 | `stage1_run_weekly.sh` | ✅ Active |
+| `com.peaktrade.stage1.daily` | Daily 09:05 | `stage1_run_daily.sh` | Installationsbeispiel |
+| `com.peaktrade.stage1.weekly` | Sunday 10:00 | `stage1_run_weekly.sh` | Installationsbeispiel |
 
 ---
 
@@ -23,9 +24,7 @@
 # List running jobs
 launchctl list | grep com.peaktrade.stage1
 
-# Expected output:
-# -	0	com.peaktrade.stage1.daily
-# -	0	com.peaktrade.stage1.weekly
+# PID und letzter Exit hängen vom tatsächlich geladenen Job ab.
 ```
 
 ### Detailed Info
@@ -37,6 +36,21 @@ launchctl print gui/$(id -u)/com.peaktrade.stage1.weekly
 ```
 
 ---
+
+## Abnahme vor Deployment
+
+`launchctl print` zeigt den geladenen Einstieg, sein Arbeitsverzeichnis und den letzten Exit.
+Vergleiche beide Einträge mit dem vorgesehenen, sauberen Deployment-Checkout und prüfe dort
+`./scripts/pt runtime-check`. Ein Repo-Merge aktualisiert keine geladenen Plists.
+Daily und Weekly verwenden denselben Stage1-Ausgabepfad. `REPORT_ROOT` überschreibt ihn
+explizit; sonst gilt der Stage1-IO-Vertrag. Der Daily-Wrapper schreibt und validiert seinen
+Snapshot auch bei Warnstatus 2. Der Weekly-Wrapper liest die Snapshots und veröffentlicht
+erst nach erfolgreicher Trendberechnung einen Trendbericht. Ein nachgelagertes Monitoring
+darf einen vorhandenen alten Trend nicht als neuen Laufbeleg lesen.
+
+Für die isolierte Probe kann `STAGE1_INPUT_ROOT` am Daily-Wrapper auf einen Eingabeordner
+mit kontrollierten Testereignissen zeigen. Ein Repo-Test mit diesen Eingaben belegt weder
+die Hostausführung noch die Zustellung des separaten Recovery-Mail-Dienstes.
 
 ## 🎮 Management Commands
 

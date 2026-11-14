@@ -13,7 +13,6 @@ from tempfile import TemporaryDirectory
 from urllib.parse import urlencode
 
 from scripts.ops.capture_offline_learning_mark_window_v1 import (
-    NATIVE_INSTRUMENT,
     _read_manifest as _read_mark_manifest,
     _sha,
     _sync_directory,
@@ -63,6 +62,9 @@ from src.ops.peak_trade_public_market_data_runtime_v1.facts_v1 import (
 )
 from src.research.bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0 import (
     REQUIRED_WARMUP_ROWS,
+)
+from src.research.offline_recorded_mark_horizon_source_v1 import (
+    LEGACY_NATIVE_INSTRUMENT as NATIVE_INSTRUMENT,
 )
 from src.research.offline_recorded_mark_horizon_source_v1 import read_bound_json
 

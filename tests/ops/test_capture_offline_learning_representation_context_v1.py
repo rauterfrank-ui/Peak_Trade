@@ -48,9 +48,9 @@ def public_capture(tmp_path, monkeypatch):
             {
                 "venue": "OKX",
                 "canonical_instrument_id": "inst-eth-usdt-perp",
-                "native_instrument_id": mark.NATIVE_INSTRUMENT,
+                "native_instrument_id": representation.NATIVE_INSTRUMENT,
                 "instrument_metadata": {
-                    "instId": mark.NATIVE_INSTRUMENT,
+                    "instId": representation.NATIVE_INSTRUMENT,
                     "instType": "SWAP",
                     "settleCcy": "USDT",
                     "uly": "ETH-USDT",
@@ -91,7 +91,7 @@ def public_capture(tmp_path, monkeypatch):
     responses = {
         representation.INSTRUMENTS_PATH: [
             {
-                "instId": mark.NATIVE_INSTRUMENT,
+                "instId": representation.NATIVE_INSTRUMENT,
                 "instType": "SWAP",
                 "uly": "ETH-USDT",
                 "instFamily": "ETH-USDT",
@@ -119,7 +119,7 @@ def public_capture(tmp_path, monkeypatch):
         ],
         representation.TRADES_REST_PATH: [
             {
-                "instId": mark.NATIVE_INSTRUMENT,
+                "instId": representation.NATIVE_INSTRUMENT,
                 "tradeId": "2",
                 "side": "sell",
                 "px": "100",
@@ -127,7 +127,7 @@ def public_capture(tmp_path, monkeypatch):
                 "ts": str(end_ms + 2000),
             },
             {
-                "instId": mark.NATIVE_INSTRUMENT,
+                "instId": representation.NATIVE_INSTRUMENT,
                 "tradeId": "1",
                 "side": "buy",
                 "px": "100",
@@ -298,7 +298,7 @@ def test_declared_cohort_routes_its_comparison_and_drives_a_later_replication(
             event_ms = int(clock[0].timestamp() * 1000) - 1000
             rows = [
                 {
-                    "instId": mark.NATIVE_INSTRUMENT,
+                    "instId": representation.NATIVE_INSTRUMENT,
                     "tradeId": str(2 * index + offset),
                     "side": "buy" if index % 2 else "sell",
                     "px": "100",
