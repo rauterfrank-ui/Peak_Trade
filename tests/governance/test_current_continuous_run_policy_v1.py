@@ -159,11 +159,11 @@ def _f1_m9_evaluator_factory(tmp_path: Path):
     return _eval
 
 
-def test_policy_valid_and_standing_authorized() -> None:
+def test_policy_valid_and_standing_authorized_with_runtime_closure_pending() -> None:
     policy = validate_continuous_run_policy_record_v1(repo_root=REPO_ROOT)
     assert policy.policy_authorized is True, policy.reason_codes
     assert standing_continuous_run_authorized_v1(repo_root=REPO_ROOT) is True
-    assert prove_governed_current_continuous_run_policy_v1(repo_root=REPO_ROOT)
+    assert prove_governed_current_continuous_run_policy_v1(repo_root=REPO_ROOT) is False
 
 
 def test_f1_m9_lineage_unchanged() -> None:

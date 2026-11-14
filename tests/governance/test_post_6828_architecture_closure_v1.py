@@ -96,11 +96,12 @@ def test_wp_c_portfolio_treasury_boundary() -> None:
     assert CANONICAL_RESTART_RECONSTRUCTABLE is False
 
 
-def test_core_invariants_still_proven() -> None:
+def test_core_invariants_hold_with_external_effect_proof_pending() -> None:
     whole = prove_whole_system_connection_closure_v1()
     pre = prove_pre_external_to_external_effect_boundary_v1()
     assert whole.ok is True
-    assert pre.ok is True
+    assert pre.ok is False
+    assert pre.unclassified_sink_callers
     assert EXTERNAL_EFFECT_AUTHORIZED is False
     assert POST_ALLOWED is False
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False

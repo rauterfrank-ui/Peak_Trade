@@ -71,21 +71,22 @@ def test_census_verdict_frozen() -> None:
     assert "post_trade_order" in VENUE_POST_SINK_OWNER
 
 
-def test_forensic_proof_and_closure() -> None:
+def test_forensic_proof_reports_open_upstream_boundary() -> None:
     result = prove_external_effect_boundary_forensic_review_v1(repo_root=REPO_ROOT)
-    assert result.ok is True, (
-        f"guard={result.guard_failures} decision={result.decision_failures} "
-        f"chain={result.chain_failures} simulated={result.simulated_failures} "
-        f"upstream={result.upstream_closure_failures}"
-    )
-    assert prove_governed_external_effect_boundary_forensic_review_v1(repo_root=REPO_ROOT)
+    assert result.ok is False
+    assert "PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY" in result.upstream_closure_failures
+    assert all(reason.startswith("RUNBOOK_MISSING:") for reason in result.guard_failures)
+    assert not result.decision_failures
+    assert not result.chain_failures
+    assert not result.simulated_failures
+    assert not prove_governed_external_effect_boundary_forensic_review_v1(repo_root=REPO_ROOT)
 
 
-def test_end_to_end_chain_closure() -> None:
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+def test_end_to_end_chain_stays_fail_closed() -> None:
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
-    assert prove_pre_external_to_external_effect_boundary_v1().ok is True
+    assert prove_pre_external_to_external_effect_boundary_v1().ok is False
 
 
 def test_standing_authority_pins_and_non_implications() -> None:

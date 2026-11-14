@@ -70,7 +70,7 @@ def test_lift_policy_record_valid() -> None:
     assert standing_external_effect_lift_granted_v1(repo_root=REPO_ROOT)
 
 
-def test_positive_lift_admission_and_gate_standing() -> None:
+def test_positive_lift_admission_and_gate_standing(pre_simulation_sink_inventory) -> None:
     assert standing_external_effect_authorization_policy_authorized_v1(repo_root=REPO_ROOT)
     admission = evaluate_standing_external_effect_lift_admission_v1(repo_root=REPO_ROOT)
     assert admission.admission_status == STATUS_LIFT_GRANTED
@@ -84,7 +84,7 @@ def test_positive_lift_admission_and_gate_standing() -> None:
     assert governed_standing_external_effect_authorized_v1(repo_root=REPO_ROOT) is True
 
 
-def test_gate_binding_lift_vs_import_standing() -> None:
+def test_gate_binding_lift_vs_import_standing(pre_simulation_sink_inventory) -> None:
     bound = evaluate_lift_bound_external_effect_gate_v1(repo_root=REPO_ROOT)
     assert bound.lift_admission_granted is True
     assert bound.policy_bound_admission_granted is True
@@ -106,9 +106,9 @@ def test_authority_separation_proofs() -> None:
     assert AUTONOMY_CAN_POST is False
 
 
-def test_closure_and_chain() -> None:
-    assert prove_governed_standing_external_effect_lift_policy_v1(repo_root=REPO_ROOT)
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+def test_closure_and_chain_fail_closed() -> None:
+    assert prove_governed_standing_external_effect_lift_policy_v1(repo_root=REPO_ROOT) is False
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
 

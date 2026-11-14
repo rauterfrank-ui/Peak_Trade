@@ -65,7 +65,7 @@ def test_credential_access_policy_record_valid() -> None:
     assert checkout_independent_credential_access_policy_granted_v1(repo_root=REPO_ROOT)
 
 
-def test_positive_credential_access_admission() -> None:
+def test_positive_credential_access_admission(pre_simulation_sink_inventory) -> None:
     assert governed_permit_mint_authorized_v1(repo_root=REPO_ROOT)
     admission = evaluate_checkout_independent_credential_access_admission_v1(repo_root=REPO_ROOT)
     assert admission.admission_status == STATUS_ADMISSION_GRANTED
@@ -79,7 +79,7 @@ def test_positive_credential_access_admission() -> None:
     assert governed_credential_access_authorized_v1(repo_root=REPO_ROOT) is True
 
 
-def test_credential_access_gate_binding() -> None:
+def test_credential_access_gate_binding(pre_simulation_sink_inventory) -> None:
     bound = evaluate_credential_access_bound_checkout_independent_capability_seam_v1(
         repo_root=REPO_ROOT
     )
@@ -96,9 +96,12 @@ def test_authority_separation_proofs() -> None:
     assert AUTONOMY_CAN_POST is False
 
 
-def test_closure_and_chain() -> None:
-    assert prove_governed_checkout_independent_credential_access_policy_v1(repo_root=REPO_ROOT)
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+def test_closure_and_chain_fail_closed() -> None:
+    assert (
+        prove_governed_checkout_independent_credential_access_policy_v1(repo_root=REPO_ROOT)
+        is False
+    )
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
 

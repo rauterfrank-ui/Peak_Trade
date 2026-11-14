@@ -76,7 +76,7 @@ def test_policy_valid_and_standing_authorized() -> None:
     policy = validate_productive_activation_policy_record_v1(repo_root=REPO_ROOT)
     assert policy.policy_authorized is True, policy.reason_codes
     assert standing_productive_activation_authorized_v1(repo_root=REPO_ROOT) is True
-    assert prove_governed_current_productive_activation_policy_v1(repo_root=REPO_ROOT)
+    assert prove_governed_current_productive_activation_policy_v1(repo_root=REPO_ROOT) is False
 
 
 def test_f1_m9_lineage_unchanged() -> None:
@@ -203,7 +203,8 @@ def test_e2e_activation_to_f1_m9_consumer_pre_external_guards(tmp_path: Path) ->
     assert path.productive_activation_authorized is True
     assert path.external_effect_authorized is False
     pre = prove_pre_external_to_external_effect_boundary_v1()
-    assert pre.ok is True
+    assert pre.ok is False
+    assert pre.unclassified_sink_callers
 
 
 def test_policy_record_digest_recomputable() -> None:

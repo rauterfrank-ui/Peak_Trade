@@ -161,6 +161,11 @@ def attempt_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v
     ):
         raise K1RuntimeBindingOneShotPostPreLiveBoundaryError("K1_CHAIN_UNEXPECTED_STATUS")
     if chain.pre_post_validated is not True:
+        if chain.reason_codes:
+            reasons = ",".join(chain.reason_codes)
+            raise K1RuntimeBindingOneShotPostPreLiveBoundaryError(
+                f"K1_PRE_POST_NOT_VALIDATED:{reasons}"
+            )
         raise K1RuntimeBindingOneShotPostPreLiveBoundaryError("K1_PRE_POST_NOT_VALIDATED")
     pre = prove_pre_live_actual_venue_post_readiness_v1(
         owner_go=post_owner_go,

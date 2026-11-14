@@ -61,9 +61,14 @@ lift STEP-29Q, select a final `d_t` formula, or authorize venue POST / wire send
 
 Code: `src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py`
 
-The separate audit function `read_simulated_post_isolation_v1` reports on
-the exact reviewed Futures dispatch, shared attempt seam, permit predicate and
-non-networking transport. A changed or missing source invalidates this
-observation. It covers the simulated POST only; quantity and custody GETs
-are outside that claim. The observation does not classify the caller for the
-policy gate or grant eligibility for standing lift, permit mint or real POST.
+The source audit `read_simulated_post_isolation_v1` binds the simulated POST to
+the reviewed Futures dispatch, shared attempt seam, permit predicate and
+non-networking transport. A changed or missing source invalidates that audit
+result. Quantity and custody GETs have their own evidence requirements.
+
+The policy census still lists the Futures simulation dispatch in
+`unclassified_sink_callers`. That result blocks the policy proof and the
+admissions that require it, including credential-material acquisition and K1
+signing-handle construction. The live-readiness report carries the caller
+list and keeps the static proof blocked even when the treasury run reached
+PRE_EXTERNAL.

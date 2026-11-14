@@ -6,6 +6,8 @@ import copy
 import json
 from pathlib import Path
 
+import pytest
+
 from src.governance.governed_current_productive_chain_pre_external_to_external_effect_boundary_closure_v1 import (
     CANONICAL_EXTERNAL_EFFECT_BOUNDARY,
     prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1,
@@ -105,7 +107,7 @@ def test_material_load_policy_record_valid() -> None:
     assert real_keychain_access_or_credential_material_load_policy_granted_v1(repo_root=REPO_ROOT)
 
 
-def test_positive_material_load_admission() -> None:
+def test_positive_material_load_admission(pre_simulation_sink_inventory) -> None:
     assert governed_credential_access_authorized_v1(repo_root=REPO_ROOT)
     admission = evaluate_real_keychain_access_or_credential_material_load_admission_v1(
         repo_root=REPO_ROOT
@@ -117,13 +119,15 @@ def test_positive_material_load_admission() -> None:
     assert governed_credential_material_load_authorized_v1(repo_root=REPO_ROOT) is True
 
 
-def test_material_load_gate_binding() -> None:
+def test_material_load_gate_binding(pre_simulation_sink_inventory) -> None:
     bound = evaluate_material_load_bound_credential_acquisition_seam_v1(repo_root=REPO_ROOT)
     assert bound.material_load_admission_granted is True
     assert bound.request_signing_authorized is False
 
 
-def test_governed_acquisition_with_fake_backend_no_secret_in_public_dict() -> None:
+def test_governed_acquisition_with_fake_backend_no_secret_in_public_dict(
+    pre_simulation_sink_inventory,
+) -> None:
     fake = _bound_fake()
     result = attempt_governed_credential_material_acquisition_v1(
         repo_root=REPO_ROOT,
@@ -140,7 +144,7 @@ def test_governed_acquisition_with_fake_backend_no_secret_in_public_dict() -> No
     assert "OPAQUE-TEST-VECTOR" not in blob
 
 
-def test_governed_acquisition_scope_wipes_material() -> None:
+def test_governed_acquisition_scope_wipes_material(pre_simulation_sink_inventory) -> None:
     fake = _bound_fake()
     adapter_holder_check = False
     with governed_credential_material_acquisition_scope_v1(
@@ -158,11 +162,35 @@ def test_acquisition_without_backend_fail_closed() -> None:
     assert "LOOKUP_BACKEND_REQUIRED" in result.reason_codes[0]
 
 
-def test_closure_and_chain() -> None:
-    assert prove_governed_real_keychain_access_or_credential_material_load_policy_v1(
+@pytest.mark.parametrize("scoped", [False, True])
+def test_direct_material_acquisition_honors_denied_pre_external_admission(scoped) -> None:
+    class ForbiddenBackend:
+        calls = 0
+
+        def copy_matching_generic_password_value_data_v1(self, **kwargs):
+            self.calls += 1
+            return FAKE_OPAQUE
+
+    backend = ForbiddenBackend()
+    if scoped:
+        with governed_credential_material_acquisition_scope_v1(
+            repo_root=REPO_ROOT, backend=backend
+        ) as result:
+            assert result.credential_material_held is False
+    else:
+        result = attempt_governed_credential_material_acquisition_v1(
+            repo_root=REPO_ROOT, backend=backend
+        )
+    assert result.acquisition_performed is False
+    assert "PRE_EXTERNAL_BOUNDARY_PROOF_FAILED" in result.reason_codes
+    assert backend.calls == 0
+
+
+def test_closure_and_chain_fail_closed() -> None:
+    assert not prove_governed_real_keychain_access_or_credential_material_load_policy_v1(
         repo_root=REPO_ROOT
     )
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
 

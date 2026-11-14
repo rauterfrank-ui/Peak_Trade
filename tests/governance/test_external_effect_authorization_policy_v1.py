@@ -67,7 +67,7 @@ def test_policy_record_valid_and_standing_authorized() -> None:
     assert standing_external_effect_authorization_policy_authorized_v1(repo_root=REPO_ROOT)
 
 
-def test_policy_admission_granted_standing_flags_false() -> None:
+def test_policy_admission_granted_standing_flags_false(pre_simulation_sink_inventory) -> None:
     admission = evaluate_external_effect_policy_admission_v1(repo_root=REPO_ROOT)
     assert admission.admission_status == STATUS_ADMISSION_GRANTED
     assert admission.policy_admission_granted is True
@@ -81,7 +81,7 @@ def test_policy_admission_granted_standing_flags_false() -> None:
     assert admission.gate_decision.fail_closed is True
 
 
-def test_gate_binding_matches_admission() -> None:
+def test_gate_binding_matches_admission(pre_simulation_sink_inventory) -> None:
     bound = evaluate_policy_bound_external_effect_gate_v1(repo_root=REPO_ROOT)
     assert bound.policy_admission_granted is True
     assert bound.gate_decision.external_effect_authorized is False
@@ -94,7 +94,7 @@ def test_gate_binding_matches_admission() -> None:
     assert bound.credential_access_performed is False
 
 
-def test_authority_separation_proofs() -> None:
+def test_authority_separation_proofs(pre_simulation_sink_inventory) -> None:
     assert prove_pre_external_reachability_does_not_imply_external_effect_authorization_v1()
     assert prove_policy_does_not_authorize_permit_mint_v1()
     assert prove_policy_does_not_authorize_credential_access_v1()
@@ -102,9 +102,9 @@ def test_authority_separation_proofs() -> None:
     assert prove_standing_gate_chain_present_v1(repo_root=REPO_ROOT)
 
 
-def test_closure_and_chain() -> None:
-    assert prove_governed_external_effect_authorization_policy_v1(repo_root=REPO_ROOT)
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+def test_closure_and_chain_fail_closed() -> None:
+    assert prove_governed_external_effect_authorization_policy_v1(repo_root=REPO_ROOT) is False
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
 
