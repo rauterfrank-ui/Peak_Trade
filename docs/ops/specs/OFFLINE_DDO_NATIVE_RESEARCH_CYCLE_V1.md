@@ -255,6 +255,16 @@ decision has no available warmup. Each cycle records the selected close time,
 receipt time and capture digest along with the consumed strategy material.
 `--verify` replays the same inputs and checks the stored result.
 
+The Last-candle capture entry point is `capture_decision_time_last_v1`.
+It takes an isolated archive, the frozen plan, the intended I17
+preregistration scope digest, an explicit transport and a UTC clock. It
+stamps the request and receipt around the transport call, validates the
+finalized OHLCV and both MA warmups, and stores one immutable response per
+hour. A repeated request for that hour reads the saved response.
+`seal_decision_time_last_v1` checks the original I17 manifest and the scope
+bound by its preregistration, then writes the archive consumed by
+`--decision-time-last-captures`. The comparison verifies the scope again.
+
 This mode reads archived evidence offline and emits
 `I17_DECISION_TIME_OFFLINE_PREFLIGHT` with authority `NONE`. A future
 independent observation needs the I17 host to retain the actual Last capture

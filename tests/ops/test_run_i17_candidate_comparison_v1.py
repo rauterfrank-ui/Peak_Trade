@@ -19,6 +19,9 @@ from src.experiments.canonical_research_prepared_execution_v1 import digest_v1
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
 )
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_preregistration_producer_v1 import (
+    build_productive_preregistration_dict_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2 import (
     hardening_cycle_bridge_v2,
 )
@@ -139,6 +142,8 @@ def _capture_last(bars, requested_at, received_at):
 def _decision_time_inputs():
     plan, bars = _pair_and_candles()
     plan.update(
+        schema_version=comparison.PLAN_SCHEMA,
+        authority="NONE",
         mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
         candidate_known_at_utc="2026-11-14T16:10:00+00:00",
         parent_data_known_at_utc="2026-11-14T16:00:00+00:00",
@@ -265,6 +270,91 @@ def test_i17_preflight_rejects_revised_finalized_warmup():
         comparison._decision_time_last_snapshots(
             plan, rows, archive, manifest_sha=archive["original_i17_manifest_sha256"]
         )
+
+
+def test_i17_last_capture_preserves_transport_time_and_binds_the_sealed_scope(
+    tmp_path, monkeypatch
+):
+    plan, rows, source = _decision_time_inputs()
+    evidence_root = tmp_path / "i17"
+    evidence_root.mkdir()
+    prereg = build_productive_preregistration_dict_v1(
+        session_id="i17-capture-fixture",
+        expected_repository_sha="2" * 40,
+        planned_duration_seconds=7200,
+        earliest_start=datetime.fromisoformat(plan["start_utc"]).timestamp(),
+        expires_at=datetime.fromisoformat(plan["end_utc"]).timestamp(),
+        evidence_root=str(evidence_root),
+        operator_identity="fixture-operator",
+        approval_identity="fixture-approval",
+        confirm_token="synthetic-token",
+    )
+    scope = comparison.parse_preregistration_contract_v1(prereg).scope_digest()
+    files = {"prereg.json": json.dumps(prereg).encode(), "scope_digest.txt": scope.encode()}
+    for name, raw in files.items():
+        (evidence_root / name).write_bytes(raw)
+    manifest = "".join(
+        f"{sha256(raw).hexdigest()}  {name}\n" for name, raw in files.items()
+    ).encode()
+    (evidence_root / "evidence_manifest.sha256").write_bytes(manifest)
+    manifest_sha = sha256(manifest).hexdigest()
+    monkeypatch.setattr(comparison, "_read_i17", lambda *_: (manifest_sha, rows))
+
+    journal = EvaluationReceiptArchiveV1(tmp_path / "journal")
+    calls = []
+    for saved in source["captures"]:
+        now = datetime.fromisoformat(saved["requested_at_utc"])
+
+        def fetch(path, query):
+            nonlocal now
+            assert path == comparison.LAST_ENDPOINT
+            assert query == saved["query"]
+            calls.append(query["after"])
+            now = datetime.fromisoformat(saved["received_at_utc"])
+            return bytes.fromhex(saved["raw_hex"])
+
+        args = dict(plan=plan, scope_digest=scope, fetch=fetch, clock=lambda: now)
+        assert comparison.capture_decision_time_last_v1(journal, **args) == saved
+        assert comparison.capture_decision_time_last_v1(journal, **args) == saved
+
+    assert len(calls) == 2
+    result = comparison.seal_decision_time_last_v1(journal, plan=plan, evidence_root=evidence_root)
+    assert (
+        comparison.seal_decision_time_last_v1(journal, plan=plan, evidence_root=evidence_root)
+        == result
+    )
+    archive = comparison.read_v1(result)
+    assert archive["original_i17_scope_digest"] == scope
+    assert archive["original_i17_manifest_sha256"] == manifest_sha
+    assert archive["plan_digest"] == digest_v1(plan)
+    assert archive["captures"] == source["captures"]
+
+    workspace = EvaluationReceiptArchiveV1(tmp_path / "comparison")
+    preflight_args = dict(plan=plan, evidence_root=evidence_root, code_sha="2" * 40)
+    wrong_scope = {**archive, "original_i17_scope_digest": "b" * 64}
+    with pytest.raises(ValueError, match="I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH"):
+        comparison.compare_v1(workspace, **preflight_args, decision_time_archive=wrong_scope)
+    assert not (workspace.root / "result.json").exists()
+    proof = comparison.compare_v1(workspace, **preflight_args, decision_time_archive=archive)
+    assert proof["original_i17_scope_digest"] == scope
+    assert proof["different_strategy_states"] == 1
+
+
+def test_i17_last_capture_rejects_receipt_after_the_planned_window(tmp_path):
+    plan, _, source = _decision_time_inputs()
+    now = datetime.fromisoformat(source["captures"][-1]["requested_at_utc"])
+    journal = EvaluationReceiptArchiveV1(tmp_path / "journal")
+
+    def fetch(*_):
+        nonlocal now
+        now = datetime.fromisoformat(plan["end_utc"])
+        return bytes.fromhex(source["captures"][-1]["raw_hex"])
+
+    with pytest.raises(ValueError, match="I17_DECISION_TIME_CAPTURE_CLOCK_INVALID"):
+        comparison.capture_decision_time_last_v1(
+            journal, plan=plan, scope_digest="a" * 64, fetch=fetch, clock=lambda: now
+        )
+    assert not list(journal.root.rglob("*.json"))
 
 
 def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):

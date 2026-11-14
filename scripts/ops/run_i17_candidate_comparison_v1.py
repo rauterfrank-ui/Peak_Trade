@@ -12,6 +12,7 @@ from hashlib import sha256
 import json
 import math
 from pathlib import Path
+import re
 import sys
 
 REPO = Path(__file__).resolve().parents[2]
@@ -52,8 +53,12 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     verify_wallclock_evidence_bundle_v1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (  # noqa: E402
+    CANONICAL_INSTRUMENT_ID,
     MARKET_TYPE_FUTURES,
     VENUE_OKX,
+)
+from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (  # noqa: E402
+    parse_preregistration_contract_v1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (  # noqa: E402
     HardenedBridgeSessionStateV2,
@@ -79,17 +84,25 @@ LAST_ENDPOINT = ROLE_PATHS["last"]
 DECISION_TIME_LAST_SCHEMA = "i17_decision_time_last_captures.v1"
 
 
+def _pinned_i17_file(root, manifest, name):
+    pins = dict(line.split("  ", 1)[::-1] for line in manifest.decode().splitlines() if line)
+    path = root / name
+    if path.is_symlink():
+        raise ValueError("I17_COMPARISON_UNSAFE_ORIGINAL_FILE")
+    raw = path.read_bytes()
+    if sha256(raw).hexdigest() != pins.get(name):
+        raise ValueError("I17_COMPARISON_ORIGINAL_LEDGER_CHANGED")
+    return raw
+
+
 def _read_i17(root, instrument):
     manifest = (root / "evidence_manifest.sha256").read_bytes()
     check = verify_wallclock_evidence_bundle_v1(evidence_root=root)
     if not check.typed_ddo_requirement_met:
         raise ValueError("I17_COMPARISON_REQUIRES_VERIFIED_TYPED_ARCHIVE")
-    pins = dict(line.split("  ", 1)[::-1] for line in manifest.decode().splitlines() if line)
 
     def read_rows(name):
-        raw = (root / name).read_bytes()
-        if sha256(raw).hexdigest() != pins[name]:
-            raise ValueError("I17_COMPARISON_ORIGINAL_LEDGER_CHANGED")
+        raw = _pinned_i17_file(root, manifest, name)
         return [json.loads(line) for line in raw.splitlines() if line]
 
     ticks = read_rows("market_data_sequence.jsonl")
@@ -111,6 +124,19 @@ def _read_i17(root, instrument):
             raise ValueError("I17_COMPARISON_TICK_DECISION_MISMATCH")
         rows.append((decided, tick, cycle["decision_id"]))
     return sha256(manifest).hexdigest(), rows
+
+
+def _read_i17_scope(root, manifest_sha):
+    manifest = (root / "evidence_manifest.sha256").read_bytes()
+    if sha256(manifest).hexdigest() != manifest_sha:
+        raise ValueError("I17_COMPARISON_ORIGINAL_MANIFEST_CHANGED")
+    prereg = parse_preregistration_contract_v1(
+        json.loads(_pinned_i17_file(root, manifest, "prereg.json"))
+    )
+    scope = _pinned_i17_file(root, manifest, "scope_digest.txt").decode().strip()
+    if scope != prereg.scope_digest():
+        raise ValueError("I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH")
+    return scope
 
 
 def _last_query(instrument, last_decision):
@@ -169,22 +195,26 @@ def _parse_last(capture, query):
     )
 
 
+def _capture_last_response(query, *, fetch, clock, requested):
+    raw = fetch(LAST_ENDPOINT, query.copy())
+    received = clock()
+    return {
+        "host": PUBLIC_HTTP_HOST,
+        "endpoint": LAST_ENDPOINT,
+        "query": query,
+        "requested_at_utc": requested.isoformat(),
+        "received_at_utc": received.isoformat(),
+        "raw_sha256": sha256(raw).hexdigest(),
+        "raw_hex": raw.hex(),
+    }
+
+
 def _last_source(workspace, query, *, capture_last, fetch=_public_get):
     path = workspace.safe_path_v1("last-candles.json")
     if path.exists() or not capture_last:
         record = read_v1(path)
         return record, _parse_last(record, query)
-    requested = _clock()
-    raw = fetch(LAST_ENDPOINT, query)
-    record = {
-        "host": PUBLIC_HTTP_HOST,
-        "endpoint": LAST_ENDPOINT,
-        "query": query,
-        "requested_at_utc": requested.isoformat(),
-        "received_at_utc": _clock().isoformat(),
-        "raw_sha256": sha256(raw).hexdigest(),
-        "raw_hex": raw.hex(),
-    }
+    record = _capture_last_response(query, fetch=fetch, clock=_clock, requested=_clock())
     frame = _parse_last(record, query)
     publish_v1(path, record)
     return record, frame
@@ -206,19 +236,115 @@ def _strategy_binding(plan, profile, bars):
     return binding
 
 
-def _decision_time_last_snapshots(plan, rows, archive, *, manifest_sha):
+def _decision_time_window(plan):
     start = _utc(plan["start_utc"])
     end = _utc(plan["end_utc"])
     registered = _utc(plan["registered_at_utc"])
     if (
-        plan["mode"] != "PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY"
-        or archive["schema_version"] != DECISION_TIME_LAST_SCHEMA
-        or archive["plan_digest"] != digest_v1(plan)
-        or archive["original_i17_manifest_sha256"] != manifest_sha
+        plan["schema_version"] != PLAN_SCHEMA
+        or plan["authority"] != "NONE"
+        or plan["mode"] != "PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY"
+        or plan["instrument_id"] != CANONICAL_INSTRUMENT_ID
+        or plan["strategy_id"] != "ma_crossover"
+        or set(plan["profiles"]) != {"reference", "candidate"}
         or not max(_utc(plan["candidate_known_at_utc"]), _utc(plan["parent_data_known_at_utc"]))
         <= registered
         < start
         < end
+    ):
+        raise ValueError("I17_DECISION_TIME_WINDOW_OR_PLAN_MISMATCH")
+    return registered, start, end
+
+
+def _capture_scope_path(plan, scope_digest):
+    if not isinstance(scope_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", scope_digest):
+        raise ValueError("I17_DECISION_TIME_SCOPE_DIGEST_REQUIRED")
+    return Path(digest_v1(plan)) / scope_digest
+
+
+def _assert_capture_journal_separate(journal, *sources):
+    if any(
+        journal.root.is_relative_to(path) or path.is_relative_to(journal.root)
+        for path in (REPO, *sources)
+    ):
+        raise ValueError("I17_DECISION_TIME_JOURNAL_MUST_BE_SEPARATE")
+
+
+def capture_decision_time_last_v1(journal, *, plan, scope_digest, fetch, clock):
+    """Record one finalized hour from an explicitly injected capture transport and clock."""
+    _assert_capture_journal_separate(journal)
+    registered, _, end = _decision_time_window(plan)
+    namespace = _capture_scope_path(plan, scope_digest)
+    binding = {"plan_digest": namespace.parts[0], "original_i17_scope_digest": scope_digest}
+    with journal.lease_v1():
+        selected = _utc(clock().isoformat())
+        if not registered <= selected < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_OUTSIDE_WINDOW")
+        query = _last_query(plan["instrument_id"], selected.timestamp())
+        target = journal.safe_path_v1(namespace / "hours" / f"{query['after']}.json")
+        if target.exists():
+            stored = read_v1(target)
+            if (
+                any(stored[key] != value for key, value in binding.items())
+                or _utc(stored["capture"]["received_at_utc"]) > selected
+            ):
+                raise ValueError("I17_DECISION_TIME_CAPTURE_BINDING_OR_CLOCK_CHANGED")
+            _parse_last(stored["capture"], query)
+            return stored["capture"]
+        if journal.safe_path_v1(namespace / "captures.json").exists():
+            raise ValueError("I17_DECISION_TIME_CAPTURES_ALREADY_SEALED")
+        requested = _utc(clock().isoformat())
+        if not selected <= requested < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
+        capture = _capture_last_response(query, fetch=fetch, clock=clock, requested=requested)
+        if not requested <= _utc(capture["received_at_utc"]) < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
+        candles = _parse_last(capture, query)
+        for profile in plan["profiles"].values():
+            _strategy_binding(plan, profile, candles)
+        publish_v1(target, {**binding, "capture": capture})
+        return capture
+
+
+def seal_decision_time_last_v1(journal, *, plan, evidence_root):
+    """Join the pre-bound capture receipts to their sealed I17 session archive."""
+    _assert_capture_journal_separate(journal, evidence_root.resolve())
+    manifest_sha, rows = _read_i17(evidence_root, plan["instrument_id"])
+    scope = _read_i17_scope(evidence_root, manifest_sha)
+    namespace = _capture_scope_path(plan, scope)
+    binding = {"plan_digest": namespace.parts[0], "original_i17_scope_digest": scope}
+    with journal.lease_v1():
+        hours = journal.safe_path_v1(namespace / "hours")
+        captures = []
+        for item in sorted(hours.glob("*.json"), key=lambda path: int(path.stem)):
+            stored = read_v1(journal.safe_path_v1(item.relative_to(journal.root)))
+            capture = stored["capture"]
+            if (
+                any(stored[key] != value for key, value in binding.items())
+                or item.stem != capture["query"]["after"]
+            ):
+                raise ValueError("I17_DECISION_TIME_CAPTURE_BINDING_OR_CLOCK_CHANGED")
+            captures.append(capture)
+        archive = {
+            "schema_version": DECISION_TIME_LAST_SCHEMA,
+            "original_i17_manifest_sha256": manifest_sha,
+            **binding,
+            "captures": captures,
+        }
+        snapshots = _decision_time_last_snapshots(plan, rows, archive, manifest_sha=manifest_sha)
+        if snapshots[0][0].timestamp() > rows[0][0]:
+            raise ValueError("I17_DECISION_TIME_LAST_NOT_YET_AVAILABLE")
+        target = journal.safe_path_v1(namespace / "captures.json")
+        publish_v1(target, archive)
+        return target
+
+
+def _decision_time_last_snapshots(plan, rows, archive, *, manifest_sha):
+    registered, start, end = _decision_time_window(plan)
+    if (
+        archive["schema_version"] != DECISION_TIME_LAST_SCHEMA
+        or archive["plan_digest"] != digest_v1(plan)
+        or archive["original_i17_manifest_sha256"] != manifest_sha
         or not rows
         or not start.timestamp() <= rows[0][0] <= rows[-1][0] < end.timestamp()
     ):
@@ -411,6 +537,10 @@ def compare_v1(
                 raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
             scope = "I17_DECISION_TIME_OFFLINE_PREFLIGHT"
             source, candles = decision_time_archive, None
+            if "original_i17_scope_digest" in source and source[
+                "original_i17_scope_digest"
+            ] != _read_i17_scope(evidence_root, manifest_sha):
+                raise ValueError("I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH")
             snapshots = _decision_time_last_snapshots(plan, rows, source, manifest_sha=manifest_sha)
             last_received = snapshots[-1][0].isoformat()
         binding = {
@@ -419,6 +549,8 @@ def compare_v1(
             "last_candle_archive_digest": digest_v1(source),
             "code_sha": code_sha,
         }
+        if decision_time_archive is not None and "original_i17_scope_digest" in source:
+            binding["original_i17_scope_digest"] = source["original_i17_scope_digest"]
         if output.exists() and not verify:
             saved = read_v1(output)
             if any(saved[key] != value for key, value in binding.items()):
