@@ -64,7 +64,7 @@ def test_permit_mint_policy_record_valid() -> None:
     assert external_effect_permit_mint_policy_granted_v1(repo_root=REPO_ROOT)
 
 
-def test_positive_permit_mint_admission() -> None:
+def test_positive_permit_mint_admission(pre_simulation_sink_inventory) -> None:
     assert governed_standing_external_effect_authorized_v1(repo_root=REPO_ROOT)
     admission = evaluate_external_effect_permit_mint_admission_v1(repo_root=REPO_ROOT)
     assert admission.admission_status == STATUS_MINT_ADMISSION_GRANTED
@@ -77,7 +77,7 @@ def test_positive_permit_mint_admission() -> None:
     assert governed_permit_mint_authorized_v1(repo_root=REPO_ROOT) is True
 
 
-def test_permit_mint_gate_binding() -> None:
+def test_permit_mint_gate_binding(pre_simulation_sink_inventory) -> None:
     bound = evaluate_permit_mint_bound_external_effect_permit_seam_v1(repo_root=REPO_ROOT)
     assert bound.permit_mint_admission_granted is True
     assert bound.lift_bound_admission_granted is True
@@ -94,9 +94,9 @@ def test_authority_separation_proofs() -> None:
     assert AUTONOMY_CAN_POST is False
 
 
-def test_closure_and_chain() -> None:
-    assert prove_governed_external_effect_permit_mint_policy_v1(repo_root=REPO_ROOT)
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+def test_closure_and_chain_fail_closed() -> None:
+    assert prove_governed_external_effect_permit_mint_policy_v1(repo_root=REPO_ROOT) is False
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
 

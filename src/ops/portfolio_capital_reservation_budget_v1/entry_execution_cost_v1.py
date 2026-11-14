@@ -52,6 +52,8 @@ def _query(endpoint, path):
     parsed = urlsplit(endpoint)
     if parsed.scheme or parsed.netloc or parsed.fragment or parsed.path != path:
         raise ValueError("ENTRY_COST_ENDPOINT_SCOPE_MISMATCH")
+    if not parsed.query:
+        return {}
     return parse_qs(parsed.query, keep_blank_values=True, strict_parsing=True)
 
 

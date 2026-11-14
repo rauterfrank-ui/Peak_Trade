@@ -15,8 +15,7 @@ from typing import Final, Iterator
 
 from src.governance.real_keychain_access_or_credential_material_load_policy_v1 import (
     EPHEMERAL_KEYCHAIN_CONSUMER_ID,
-    governed_credential_material_load_authorized_v1,
-    validate_real_keychain_access_or_credential_material_load_policy_record_v1,
+    evaluate_real_keychain_access_or_credential_material_load_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_capability_v1 import (
     FullCoreCheckoutIndependentCredentialCapabilityError,
@@ -143,24 +142,18 @@ def attempt_governed_credential_material_acquisition_v1(
 ) -> GovernedCredentialMaterialAcquisitionResultV1:
     """Acquire opaque material under governed policy. Requires explicit backend in tests."""
 
-    root = repo_root or Path(__file__).resolve().parents[2]
-    policy = validate_real_keychain_access_or_credential_material_load_policy_record_v1(
-        repo_root=root
+    admission = evaluate_real_keychain_access_or_credential_material_load_admission_v1(
+        repo_root=repo_root
     )
-    if policy.material_load_policy_authorized is not True:
-        return _denied(
-            reasons=policy.reason_codes or ("MATERIAL_LOAD_POLICY_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
-        )
-    if not governed_credential_material_load_authorized_v1(repo_root=root):
-        return _denied(
-            reasons=("GOVERNED_CREDENTIAL_MATERIAL_LOAD_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
-        )
     if backend is None:
         return _denied(
             reasons=("LOOKUP_BACKEND_REQUIRED_NO_DEFAULT_REAL_KEYCHAIN_IN_THIS_WP",),
-            policy_digest=policy.policy_record_digest,
+            policy_digest=admission.policy_record_digest,
+        )
+    if admission.material_load_policy_granted is not True:
+        return _denied(
+            reasons=admission.reason_codes or ("MATERIAL_LOAD_ADMISSION_DENIED",),
+            policy_digest=admission.policy_record_digest,
         )
 
     ref = str(source_ref or SOURCE_REF_URI)
@@ -176,17 +169,17 @@ def attempt_governed_credential_material_acquisition_v1(
             except FullCoreCheckoutIndependentCredentialCapabilityError as exc:
                 return _denied(
                     reasons=(str(exc),),
-                    policy_digest=policy.policy_record_digest,
+                    policy_digest=admission.policy_record_digest,
                 )
             except Exception:
                 return _denied(
                     reasons=("ACQUISITION_FAIL_CLOSED",),
-                    policy_digest=policy.policy_record_digest,
+                    policy_digest=admission.policy_record_digest,
                 )
             if not opaque_os_native_store_material_is_held_v1(holder_id):
                 return _denied(
                     reasons=("OPAQUE_MATERIAL_NOT_HELD",),
-                    policy_digest=policy.policy_record_digest,
+                    policy_digest=admission.policy_record_digest,
                 )
             opaque = borrow_held_opaque_bytes_for_bounded_parse_v1(holder_id=holder_id)
             public_surfaces_must_not_contain_opaque_material_v1(
@@ -198,7 +191,7 @@ def attempt_governed_credential_material_acquisition_v1(
             result = _proof_to_result_v1(
                 proof=proof,
                 holder_id=holder_id,
-                policy_digest=policy.policy_record_digest,
+                policy_digest=admission.policy_record_digest,
                 performed=True,
             )
     finally:
@@ -207,7 +200,7 @@ def attempt_governed_credential_material_acquisition_v1(
     if opaque_os_native_store_material_is_held_v1(holder_id):
         return _denied(
             reasons=("OPAQUE_MATERIAL_LEAK_AFTER_WIPE",),
-            policy_digest=policy.policy_record_digest,
+            policy_digest=admission.policy_record_digest,
         )
     return result
 
@@ -221,20 +214,13 @@ def governed_credential_material_acquisition_scope_v1(
 ) -> Iterator[GovernedCredentialMaterialAcquisitionResultV1]:
     """Hold opaque bytes only inside the context; wiped before exit completes."""
 
-    root = repo_root or Path(__file__).resolve().parents[2]
-    policy = validate_real_keychain_access_or_credential_material_load_policy_record_v1(
-        repo_root=root
+    admission = evaluate_real_keychain_access_or_credential_material_load_admission_v1(
+        repo_root=repo_root
     )
-    if policy.material_load_policy_authorized is not True:
+    if admission.material_load_policy_granted is not True:
         yield _denied(
-            reasons=policy.reason_codes or ("MATERIAL_LOAD_POLICY_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
-        )
-        return
-    if not governed_credential_material_load_authorized_v1(repo_root=root):
-        yield _denied(
-            reasons=("GOVERNED_CREDENTIAL_MATERIAL_LOAD_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
+            reasons=admission.reason_codes or ("MATERIAL_LOAD_ADMISSION_DENIED",),
+            policy_digest=admission.policy_record_digest,
         )
         return
 
@@ -252,14 +238,14 @@ def governed_credential_material_acquisition_scope_v1(
             except FullCoreCheckoutIndependentCredentialCapabilityError as exc:
                 result = _denied(
                     reasons=(str(exc),),
-                    policy_digest=policy.policy_record_digest,
+                    policy_digest=admission.policy_record_digest,
                 )
                 yield result
                 return
             result = _proof_to_result_v1(
                 proof=proof,
                 holder_id=holder_id,
-                policy_digest=policy.policy_record_digest,
+                policy_digest=admission.policy_record_digest,
                 performed=True,
             )
             yield result

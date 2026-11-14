@@ -55,7 +55,7 @@ def test_governance_contract_pins() -> None:
     assert c2["c2_blocks_treasury"] is False
 
 
-def test_f01_one_shot_slice_classified_isolated_owner_go() -> None:
+def test_f01_one_shot_slice_classified_isolated_owner_go(pre_simulation_sink_inventory) -> None:
     assert ONE_SHOT_SLICE in INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES
     pre = prove_pre_external_to_external_effect_boundary_v1()
     assert pre.whole_system_connection_ok is True

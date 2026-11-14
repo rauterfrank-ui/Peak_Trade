@@ -32,8 +32,8 @@ Owner GO:
 | Layer | Meaning |
 | --- | --- |
 | Prerequisites | Valid CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1 (#6897). |
-| Policy admission | `evaluate_real_keychain_access_or_credential_material_load_admission_v1()`. |
-| Runtime acquisition | `attempt_governed_credential_material_acquisition_v1()` — ephemeral consumer + explicit backend; wipe on exit. |
+| Policy admission | `evaluate_real_keychain_access_or_credential_material_load_admission_v1()` checks the Owner record, PRE_EXTERNAL proof and upstream policy. |
+| Runtime acquisition | The one-shot and scoped acquisition entry points check runtime admission before calling the supplied backend. Both wipe ephemeral material on exit. |
 | Standing pins | Module `REAL_KEYCHAIN_ACCESS_*` and `MATERIAL_LOADED_TRUE_REACHABLE` remain false. |
 
 ## Authority lattice

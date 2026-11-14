@@ -118,7 +118,7 @@ def test_k1_pre_post_policy_record_valid() -> None:
     assert governed_k1_opaque_signing_handle_pre_post_authorized_v1(repo_root=REPO_ROOT)
 
 
-def test_admission_and_gate_binding() -> None:
+def test_admission_and_gate_binding(pre_simulation_sink_inventory) -> None:
     admission = evaluate_k1_opaque_signing_handle_pre_post_admission_v1(repo_root=REPO_ROOT)
     assert admission.admission_status == STATUS_PRE_POST_ADMISSION_GRANTED
     assert admission.request_signing_authorized is True
@@ -128,7 +128,9 @@ def test_admission_and_gate_binding() -> None:
     assert bound.request_signing_authorized is True
 
 
-def test_governed_construction_and_productive_chain_stops_at_post_admission() -> None:
+def test_governed_construction_and_productive_chain_stops_at_post_admission(
+    pre_simulation_sink_inventory,
+) -> None:
     backend = FakeOsNativeStoreLookupBackendV1()
     with governed_k1_opaque_signing_handle_construction_scope_v1(
         repo_root=REPO_ROOT,
@@ -165,11 +167,11 @@ def test_governed_construction_and_productive_chain_stops_at_post_admission() ->
     assert "ak-test" not in public
 
 
-def test_closure_and_canonical_boundary() -> None:
-    assert prove_governed_current_productive_k1_opaque_signing_handle_pre_post_policy_v1(
+def test_closure_denied_at_canonical_boundary() -> None:
+    assert not prove_governed_current_productive_k1_opaque_signing_handle_pre_post_policy_v1(
         repo_root=REPO_ROOT
     )
-    assert prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
+    assert not prove_governed_current_productive_chain_pre_external_to_external_effect_boundary_v1(
         repo_root=REPO_ROOT
     )
     assert CANONICAL_EXTERNAL_EFFECT_BOUNDARY == (
@@ -187,6 +189,25 @@ def test_owner_go_mismatch_fail_closed() -> None:
         assert construction.construction_performed is False
         assert session is None
         assert "OWNER_GO_MISMATCH" in construction.reason_codes
+
+
+def test_direct_k1_scope_honors_denied_pre_external_admission(monkeypatch) -> None:
+    backend = FakeOsNativeStoreLookupBackendV1()
+    called = False
+
+    def lookup_forbidden(**kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("DENIED_K1_MUST_NOT_LOOK_UP_CREDENTIALS")
+
+    monkeypatch.setattr(backend, "copy_matching_generic_password_value_data_v1", lookup_forbidden)
+    with governed_k1_opaque_signing_handle_construction_scope_v1(
+        repo_root=REPO_ROOT, owner_go=OWNER_GO_TOKEN, backend=backend
+    ) as (construction, session):
+        assert session is None
+        assert construction.construction_performed is False
+        assert "PRE_EXTERNAL_BOUNDARY_PROOF_FAILED" in construction.reason_codes
+    assert called is False
 
 
 def test_policy_digest_stable() -> None:

@@ -21,14 +21,15 @@ def test_census_verdict_frozen() -> None:
     assert F1_M9_CONSUMER_REACHABILITY_ADJUDICATION_CLASS == "WIRED_NOT_ACTIVATION"
 
 
-def test_static_productive_activation_boundary_forensic_proof() -> None:
+def test_static_productive_activation_review_reports_open_pre_external_proof() -> None:
     result = prove_productive_activation_boundary_forensic_review_v1()
-    assert result.ok is True, (
-        f"guard={result.guard_failures} decisions={result.decision_failures} "
-        f"runtime={result.runtime_path_failures} semantic={result.semantic_collision_failures} "
-        f"upstream={result.upstream_closure_failures}"
-    )
+    assert result.ok is False
+    assert "PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY" in result.upstream_closure_failures
+    assert all(reason.startswith("RUNBOOK_MISSING:") for reason in result.guard_failures)
+    assert not result.decision_failures
+    assert not result.runtime_path_failures
+    assert not result.semantic_collision_failures
 
 
-def test_governed_closure() -> None:
-    assert prove_governed_productive_activation_boundary_forensic_review_v1() is True
+def test_governed_closure_fail_closed() -> None:
+    assert prove_governed_productive_activation_boundary_forensic_review_v1() is False

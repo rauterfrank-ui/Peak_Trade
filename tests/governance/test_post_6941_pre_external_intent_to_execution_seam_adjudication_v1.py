@@ -34,8 +34,15 @@ def test_canonical_decision_chain_loads() -> None:
 
 def test_seam_probe_fail_closed_without_post() -> None:
     seam = probe_intent_to_execution_seam_v1(repo_root=REPO)
-    assert seam["PRE_EXTERNAL_BOUNDARY_OK"] is True
-    assert seam["POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is True
+    assert seam["PRE_EXTERNAL_BOUNDARY_OK"] is False
+    assert seam["POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is False
+    layer = next(row for row in seam["SEAM_LAYERS"] if row["LAYER_ID"] == "pre_external_boundary")
+    assert layer["ADMISSION_GRANTED"] is False
+    assert any(
+        reason.startswith("UNCLASSIFIED_SINK_CALLER:")
+        and reason.endswith("/current_futures_simulated_dispatch_v1.py")
+        for reason in layer["REASON_CODES"]
+    )
     assert seam["INVOKE_SINK_PROBE"] == "FullCoreExternalEffectNotAuthorizedError"
     assert seam["ENVELOPE_SEAM_PROBE"] == "NO_PERMIT"
     standing = seam["STANDING_IMPORT_CONSTANTS"]
@@ -43,7 +50,7 @@ def test_seam_probe_fail_closed_without_post() -> None:
     assert standing["POST_ALLOWED"] is False
 
 
-def test_resolve_blocker_at_pre_external_fixpoint() -> None:
+def test_resolve_blocker_at_pre_external_fixpoint(pre_simulation_sink_inventory) -> None:
     treasury = {"PRE_EXTERNAL_REACHED": True}
     seam = probe_intent_to_execution_seam_v1(repo_root=REPO)
     blocker, blocker_class, subtype = resolve_first_real_blocker_v1(
@@ -55,7 +62,7 @@ def test_resolve_blocker_at_pre_external_fixpoint() -> None:
     assert subtype == "ENVELOPE_BOUND_ACTUAL_POST_REQUIRES_SCOPED_OWNER_GO"
 
 
-def test_build_report_marks_fixpoint() -> None:
+def test_build_report_marks_fixpoint(pre_simulation_sink_inventory) -> None:
     treasury = {
         "PRE_EXTERNAL_REACHED": True,
         "WHOLE_SYSTEM_E2E_RUN_ID": "test",

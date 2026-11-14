@@ -81,7 +81,10 @@ def prove_actual_venue_post_admission_requires_durable_owner_go_v1(
         permit=None,
         store_root=store_root,
     )
-    return admission.post_admission_granted is not True
+    return (
+        admission.post_admission_granted is False
+        and "POST_OWNER_GO_NOT_DURABLE_CONSUMED" in admission.reason_codes
+    )
 
 
 __all__ = [

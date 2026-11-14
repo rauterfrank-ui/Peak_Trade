@@ -133,7 +133,15 @@ def probe_intent_to_execution_seam_v1(*, repo_root: Path) -> dict[str, Any]:
             runtime_status="RUNTIME_PROVEN" if pre_external.ok else "AUTHORITY_BLOCKED",
             admission_granted=pre_external.ok is True,
             performed=None,
-            reason_codes=tuple(pre_external.guard_failures or ()),
+            reason_codes=(
+                *pre_external.guard_failures,
+                *pre_external.pre_external_sink_violations,
+                *(
+                    f"UNCLASSIFIED_SINK_CALLER:{path}"
+                    for path in pre_external.unclassified_sink_callers
+                ),
+                *pre_external.boundary_chain_failures,
+            ),
             canonical_next_blocker=None,
         ),
         SeamLayerProbeV1(

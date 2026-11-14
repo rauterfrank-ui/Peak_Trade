@@ -49,10 +49,17 @@ EXTERNAL_EFFECT_POLICY -/-> AUTONOMY_CAN_MINT_PERMIT / AUTONOMY_CAN_POST
 PRODUCTIVE_ACTIVATION + CONTINUOUS_RUN => POLICY PREREQUISITE ONLY
 ```
 
-## Next Owner boundary
+## Admission and subsequent steps
 
-First authority required to lift standing `EXTERNAL_EFFECT_AUTHORIZED` or mint permits:
-**scoped EXTERNAL_EFFECT standing-lift Owner-GO** (distinct from this policy WP).
+The versioned policy record and its Owner-GO establish a policy prerequisite.
+The caller must also receive a passing PRE_EXTERNAL boundary proof and a
+fail-closed standing gate decision. Treat `PRE_EXTERNAL_BOUNDARY_PROOF_FAILED`
+as a denied admission even when the policy record passes validation.
+
+The [standing lift](STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md) evaluates a
+scoped gate. The [permit mint policy](EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md)
+handles the separate permit-policy admission. Actual order submission uses
+the [explicit single-order path](FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md).
 
 Code: `src/governance/external_effect_authorization_policy_v1.py`  
 Gate binding: `src/governance/external_effect_authorization_policy_gate_binding_v1.py`

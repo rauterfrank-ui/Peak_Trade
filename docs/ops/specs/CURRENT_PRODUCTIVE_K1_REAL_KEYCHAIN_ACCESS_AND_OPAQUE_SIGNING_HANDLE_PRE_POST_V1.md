@@ -31,8 +31,8 @@ Owner GO:
 | Layer | Meaning |
 | --- | --- |
 | Prerequisites | Valid REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1 (#6898). |
-| Policy admission | `evaluate_current_productive_k1_opaque_signing_handle_pre_post_admission_v1()`. |
-| Opaque handle | `attempt_governed_k1_opaque_signing_handle_construction_v1()` — ephemeral Keychain → parse → bind; wipe on exit. |
+| Policy admission | `evaluate_k1_opaque_signing_handle_pre_post_admission_v1()` checks the Owner record, PRE_EXTERNAL proof and upstream policy. |
+| Opaque handle | `governed_k1_opaque_signing_handle_construction_scope_v1()` requires successful runtime admission and the K1 Owner-GO before it calls the Keychain backend. The scope wipes the ephemeral material on exit. |
 | Request signing | OKX venue auth headers via opaque handle; no secret export. |
 | PRE-POST envelope | `build_and_validate_current_productive_k1_pre_post_request_envelope_v1()`. |
 | POST admission | `evaluate_real_venue_post_admission_v1()` — fail-closed without actual-POST Owner-GO. |

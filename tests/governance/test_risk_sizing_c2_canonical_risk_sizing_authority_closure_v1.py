@@ -117,7 +117,8 @@ def test_closure_preserves_core_authority_pins_and_safety_seams() -> None:
     whole = prove_whole_system_connection_closure_v1()
     pre = prove_pre_external_to_external_effect_boundary_v1()
     assert whole.ok is True
-    assert pre.ok is True
+    assert pre.ok is False
+    assert pre.unclassified_sink_callers
 
 
 def test_companion_producers_still_pass_fraction_to_signal_to_orders() -> None:

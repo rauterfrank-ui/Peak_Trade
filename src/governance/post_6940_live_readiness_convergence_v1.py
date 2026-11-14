@@ -103,17 +103,22 @@ def prove_pre_external_boundary_v1() -> dict[str, Any]:
     proof = prove_pre_external_to_external_effect_boundary_v1()
     return {
         "boundary_proof_ok": proof.ok is True,
-        "guard_failures": list(getattr(proof, "guard_failures", ()) or ()),
-        "whole_system_connection_ok": getattr(proof, "whole_system_connection_ok", None),
+        "guard_failures": list(proof.guard_failures),
+        "pre_external_sink_violations": list(proof.pre_external_sink_violations),
+        "unclassified_sink_callers": list(proof.unclassified_sink_callers),
+        "boundary_chain_failures": list(proof.boundary_chain_failures),
+        "whole_system_connection_ok": proof.whole_system_connection_ok,
     }
 
 
 def readjudicate_historical_blockers_v1(
     *,
     treasury_report: Mapping[str, Any] | None = None,
+    pre_external_boundary_ok: bool | None = None,
 ) -> dict[str, str]:
     treasury_report = treasury_report or {}
-    pre_external = bool(treasury_report.get("PRE_EXTERNAL_REACHED"))
+    if pre_external_boundary_ok is None:
+        pre_external_boundary_ok = prove_pre_external_boundary_v1()["boundary_proof_ok"]
     enter_live = (treasury_report.get("ADMISSION_RESULT") or {}).get("enter_live_status")
     return {
         "fresh_trusted_account_equity_acquisition": (
@@ -130,7 +135,9 @@ def readjudicate_historical_blockers_v1(
         "companion_c2_fraction_to_units": "NOT_ON_CURRENT_PRODUCTIVE_PRE_EXTERNAL_PATH",
         "selection_binding_singular_owner": "RESOLVED_CURRENT",
         "downstream_execution_rerank_reselect": "RESOLVED_CURRENT_NO_RERANK",
-        "pre_external_static_proof": "RESOLVED_CURRENT" if pre_external else "BLOCKED_CURRENT",
+        "pre_external_static_proof": (
+            "RESOLVED_CURRENT" if pre_external_boundary_ok else "BLOCKED_CURRENT"
+        ),
         "productive_optimization_apply_promotion": "BLOCKED_CURRENT_BY_POLICY",
         "paper_g2_learning_branch": "PARKED_NOT_ON_LIVE_READINESS_WP",
         "external_effect_permit_mint": "BLOCKED_CURRENT_FAIL_CLOSED",
@@ -231,7 +238,11 @@ def build_convergence_report_v1(
 ) -> dict[str, Any]:
     standing = prove_standing_external_effect_fail_closed_v1()
     boundary = prove_pre_external_boundary_v1()
-    blockers = readjudicate_historical_blockers_v1(treasury_report=treasury_report)
+    boundary_ok = boundary["boundary_proof_ok"]
+    blockers = readjudicate_historical_blockers_v1(
+        treasury_report=treasury_report,
+        pre_external_boundary_ok=boundary_ok,
+    )
     census = build_live_edge_census_v1(repo_root=repo_root, treasury_report=treasury_report)
     pre_external = bool(treasury_report.get("PRE_EXTERNAL_REACHED"))
     mechanical_exhausted = bool(treasury_report.get("ALL_IMMEDIATE_MECHANICAL_CLOSURES_EXHAUSTED"))
@@ -240,11 +251,16 @@ def build_convergence_report_v1(
         if pre_external and mechanical_exhausted
         else str(treasury_report.get("FIRST_REAL_BLOCKER") or "PRODUCTIVE_GRAPH_INCOMPLETE")
     )
+    if first_blocker == "EXTERNAL_EFFECT_AUTHORIZATION":
+        next_owner_decision = (
+            "SCOPED_OWNER_GO_FOR_EXTERNAL_EFFECT_AUTHORIZATION_AND_VENUE_POST"
+            if boundary_ok
+            else ""
+        )
+    else:
+        next_owner_decision = str(treasury_report.get("FIRST_REMAINING_AUTHORITY_DECISION") or "")
     live_mechanically_complete = (
-        pre_external
-        and mechanical_exhausted
-        and boundary.get("boundary_proof_ok") is True
-        and not any(standing.values())
+        pre_external and mechanical_exhausted and boundary_ok is True and not any(standing.values())
     )
     return {
         "WP": WORKPACKAGE_ID,
@@ -278,11 +294,7 @@ def build_convergence_report_v1(
         "EXACT_NEXT_EDGE": str(
             treasury_report.get("EXECUTION_BRANCH_FIRST_UNCLOSED_EDGE") or "intent_to_execution"
         ),
-        "EXACT_NEXT_OWNER_DECISION_REQUIRED": (
-            "SCOPED_OWNER_GO_FOR_EXTERNAL_EFFECT_AUTHORIZATION_AND_VENUE_POST"
-            if first_blocker == "EXTERNAL_EFFECT_AUTHORIZATION"
-            else str(treasury_report.get("FIRST_REMAINING_AUTHORITY_DECISION") or "")
-        ),
+        "EXACT_NEXT_OWNER_DECISION_REQUIRED": next_owner_decision,
         "LIVE_READINESS_MECHANICALLY_COMPLETE": live_mechanically_complete,
         "ACTUAL_LIVE_EXTERNAL_EFFECT_AUTHORIZED": False,
         "TREASURY_E2E_REFERENCE": {

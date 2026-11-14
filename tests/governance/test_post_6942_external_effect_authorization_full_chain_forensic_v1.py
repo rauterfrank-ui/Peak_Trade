@@ -33,16 +33,23 @@ def test_canonical_decision_chain_has_six_layers() -> None:
 
 def test_full_chain_probe_extends_6941_without_perform() -> None:
     chain = probe_downstream_policy_and_sink_chain_v1(repo_root=REPO)
+    post_row = next(
+        row
+        for row in chain["AUTHORITY_LAYERS"]
+        if row["LAYER_ID"] == "actual_venue_post_owner_go_record"
+    )
+    assert post_row["ADMISSION_GRANTED"] is False
+    assert post_row["REASON_CODES"] == chain["VENUE_POST_ADMISSION"]["reason_codes"]
     seam = chain["POST_6941_SEAM_PROBE"]
-    assert seam["POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is True
-    assert chain["FULL_POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is True
+    assert seam["POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is False
+    assert chain["FULL_POLICY_CHAIN_ADMISSIONS_RUNTIME_PROVEN"] is False
     assert chain["CREDENTIAL_ACCESS_BOUND"]["credential_access_performed"] is False
-    assert chain["MATERIAL_LOAD_BOUND"]["material_load_admission_granted"] is True
+    assert chain["MATERIAL_LOAD_BOUND"]["material_load_admission_granted"] is False
     assert chain["VENUE_POST_ADMISSION"]["post_admission_granted"] is False
     assert seam["ENVELOPE_SEAM_PROBE"] == "NO_PERMIT"
 
 
-def test_build_report_marks_fixpoint() -> None:
+def test_build_report_marks_fixpoint(pre_simulation_sink_inventory) -> None:
     treasury = {
         "PRE_EXTERNAL_REACHED": True,
         "WHOLE_SYSTEM_E2E_RUN_ID": "test",

@@ -4,9 +4,9 @@ Fresh final-order envelope → envelope-bound single-use permit → durable
 SENT_INITIATED consume (existing send seam) → K1 opaque signing handle
 (#6746 seam) → existing HTTP trade-order transport.
 
-Actual venue POST stays unreachable unless the caller passes the exact
-unconsumed POST Owner-GO. This module does not consume that GO, does not
-open the real Keychain, and does not flip standing pins.
+The join checks the supplied POST Owner-GO against the durable consume
+record in the bound store. It uses the supplied K1 backend only after
+admission and durable permit consumption.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -19,6 +19,7 @@ from typing import Any, Callable, Mapping
 from urllib.request import OpenerDirector
 
 from src.governance.current_productive_real_venue_post_admission_v1 import (
+    STATUS_POST_ADMISSION_GRANTED,
     evaluate_real_venue_post_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
@@ -526,7 +527,11 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         permit=permit,
         store_root=store_root,
     )
-    if admission.post_admission_granted is not True:
+    if (
+        admission.post_admission_granted is not True
+        or admission.admission_status != STATUS_POST_ADMISSION_GRANTED
+        or admission.reason_codes
+    ):
         codes = ",".join(admission.reason_codes) or admission.admission_status
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(
             f"REAL_VENUE_POST_ADMISSION_DENIED:{codes}"

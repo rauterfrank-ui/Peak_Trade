@@ -42,10 +42,17 @@ STANDING_LIFT -/-> PERMIT_MINT / CREDENTIAL / POST / REAL_VENUE_POST / AUTONOMY_
 EXTERNAL_EFFECT_AUTHORIZATION_POLICY => LIFT PREREQUISITE
 ```
 
-## Next Owner boundary (superseded by #6896 policy WP)
+## Where the lift applies
 
-Permit mint policy admission is owned by `EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1`.
-Next seam after permit mint: **CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_OWNER_GO**.
+The true standing value is local to a successful parameterized evaluation.
+The import-time standing value stays false. If the current PRE_EXTERNAL
+boundary proof fails, the lift is denied. Read
+`standing_external_effect_lift_granted` from the evaluation result for the
+admission decision.
+
+The [permit mint policy](EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md) owns the
+next admission. The [single-order path](FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md)
+owns the concrete permit and the separate submission checks.
 
 Code: `src/governance/standing_external_effect_lift_policy_v1.py`  
 Gate binding: `src/governance/standing_external_effect_lift_gate_binding_v1.py`

@@ -7,6 +7,9 @@ from pathlib import Path
 
 import pytest
 
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_concrete_backend_item_identity_v1 import (
     KEYCHAIN_ACCOUNT_ID,
     KEYCHAIN_SERVICE_ID,
@@ -85,7 +88,9 @@ def test_baseline_pin_is_post_6946_recorded_rebind() -> None:
     assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "fca07afa1fa74a94cdecde3876c9c30ad79ba828"
 
 
-def test_k1_runtime_binding_pre_live_boundary_fake_keychain(tmp_path: Path) -> None:
+def test_k1_runtime_binding_pre_live_boundary_fake_keychain(
+    tmp_path: Path, pre_simulation_sink_inventory
+) -> None:
     backend = FakeOsNativeStoreLookupBackendV1()
     envelope = _sample_envelope()
     result = attempt_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1(
@@ -104,6 +109,33 @@ def test_k1_runtime_binding_pre_live_boundary_fake_keychain(tmp_path: Path) -> N
     assert result.next_true_blocker == NEXT_OWNER_GO
     public = json.dumps(result.to_public_dict_v1())
     assert "sk-test" not in public
+
+
+def test_k1_runtime_binding_reports_the_current_pre_external_denial(tmp_path: Path) -> None:
+    class NoLookup:
+        calls = 0
+
+        def copy_matching_generic_password_value_data_v1(self, **kwargs):
+            self.calls += 1
+            return FAKE_K1_OPAQUE
+
+    backend = NoLookup()
+    store_root = tmp_path / "send"
+    with pytest.raises(
+        K1RuntimeBindingOneShotPostPreLiveBoundaryError,
+        match="K1_PRE_POST_NOT_VALIDATED:PRE_EXTERNAL_BOUNDARY_PROOF_FAILED",
+    ):
+        attempt_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1(
+            k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
+            post_owner_go=POST_OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=_sample_envelope(),
+            store_root=store_root,
+            k1_backend=backend,
+            repo_root=REPO_ROOT,
+        )
+    assert backend.calls == 0
+    assert list(store_root.iterdir()) == []
 
 
 def test_k1_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:

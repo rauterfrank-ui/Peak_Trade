@@ -41,6 +41,13 @@ effects.
 This authority stops at typed **apply-record** artifacts (`APPLY_ELIGIBLE`, `APPLY_DENIED`,
 `APPLY_AUTHORIZED`). State `APPLIED` is reserved and not reachable in this work package.
 
+The [scoped F1/M9 Owner Apply](F1_M9_SCOPED_OWNER_APPLY_AUTHORITY_NORMATIVE_V1.md)
+is a separate entry point. It checks a dedicated authorization record bound to
+the ingress and exact configuration, verifies its validity period, and reads
+the revocation and apply ledgers. This work package's apply record and a
+Research or GVEF result supply no such authorization. A persisted Apply
+result and its use by a runtime consumer are separate verification steps.
+
 ## Bounded productive proof target
 
 Positive ratification is limited to **F1/M9-S1** (`canonical_m9_volatility_numeric_max_age`).

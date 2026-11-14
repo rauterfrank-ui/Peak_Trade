@@ -102,6 +102,7 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS"],
         *PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"],
         PROJECTION["G2_ARCHIVE_PROJECTION_PATH"],
+        *PROJECTION["EXECUTION_AUTHORITY_AUDIT_DELTAS"],
         *PROJECTION["OWNER_ADJUDICATION_CONFIG_DELTAS"],
     }
     frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}
@@ -114,11 +115,11 @@ def test_double_play_requires_exact_complete_policy_bundle(monkeypatch, path, re
     source = ROOT / path
     binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
     original = Path.read_bytes
-    raw = (
-        original(source) + b"\n# different implementation\n"
-        if rebound
-        else subprocess.check_output(["git", "show", "835185fb1:" + path], cwd=ROOT)
-    )
+    if rebound:
+        raw = original(source) + b"\n# different implementation\n"
+    else:
+        raw = subprocess.check_output(["git", "show", "fd5e14ed6:" + path], cwd=ROOT)
+        assert hashlib.sha256(raw).hexdigest() == PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"][path][0]
     binding = json.loads(original(binding_path))
     row = next(row for row in binding["files"] if row["path"] == path)
     row["sha256"] = hashlib.sha256(raw).hexdigest()

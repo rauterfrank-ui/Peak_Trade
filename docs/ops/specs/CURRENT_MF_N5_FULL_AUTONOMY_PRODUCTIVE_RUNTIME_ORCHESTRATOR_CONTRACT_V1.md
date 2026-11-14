@@ -62,7 +62,12 @@ Single productive Full-Autonomy **orchestration** entrypoint that composes exist
 2. sequential occupied-lane governed cycles with shared portfolio budget owner (PR #6621 seam)
 3. PRE_EXTERNAL host-join readiness rollup (optional N=5 completion rollup stays off by default)
 
-This module does **not** replace per-lane harness joins, rerank, resize, or invoke host join.
+Cap23 owns the selection, Cap24 binds the native instrument, Master V2 with
+Double Play owns the trading decision, and the portfolio and sizing owners
+control the reservation and final quantity. The orchestrator coordinates these
+calls and rejects a readiness result that carries a permit or external effect.
+The declared topology has five lane addresses. The current authority pins
+allow one productive position and keep the five-lane host join disabled.
 
 Implementation:
 `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`

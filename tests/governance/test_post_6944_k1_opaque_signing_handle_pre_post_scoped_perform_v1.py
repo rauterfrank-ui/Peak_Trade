@@ -41,7 +41,7 @@ def test_owner_go_validation_fail_closed() -> None:
     assert good.ok is True
 
 
-def test_perform_with_fake_backend_and_owner_go() -> None:
+def test_perform_with_fake_backend_and_owner_go(pre_simulation_sink_inventory) -> None:
     fake = _bound_fake()
     payload = perform_scoped_k1_pre_post_boundary_v1(
         repo_root=REPO,
@@ -69,7 +69,7 @@ def test_perform_without_owner_go_token_fail_closed() -> None:
     assert payload["PERFORM_ATTEMPTED"] is False
 
 
-def test_build_report_fixpoint_on_success() -> None:
+def test_build_report_fixpoint_on_success(pre_simulation_sink_inventory) -> None:
     fake = _bound_fake()
     perform = perform_scoped_k1_pre_post_boundary_v1(
         repo_root=REPO,

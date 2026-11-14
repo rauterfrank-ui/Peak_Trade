@@ -15,8 +15,7 @@ from typing import Final, Iterator
 
 from src.governance.current_productive_k1_opaque_signing_handle_pre_post_policy_v1 import (
     OWNER_GO_TOKEN,
-    governed_k1_opaque_signing_handle_pre_post_authorized_v1,
-    validate_k1_opaque_signing_handle_pre_post_policy_record_v1,
+    evaluate_k1_opaque_signing_handle_pre_post_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     OsNativeStoreLookupBackendV1,
@@ -101,26 +100,18 @@ def governed_k1_opaque_signing_handle_construction_scope_v1(
 ]:
     """Construct opaque signing handle under K1 PRE-POST policy. Session only inside context."""
 
-    root = repo_root or Path(__file__).resolve().parents[2]
-    policy = validate_k1_opaque_signing_handle_pre_post_policy_record_v1(repo_root=root)
-    if policy.k1_pre_post_policy_authorized is not True:
-        denied = _denied(
-            reasons=policy.reason_codes or ("K1_PRE_POST_POLICY_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
-        )
-        yield denied, None
-        return
-    if not governed_k1_opaque_signing_handle_pre_post_authorized_v1(repo_root=root):
-        denied = _denied(
-            reasons=("GOVERNED_K1_PRE_POST_NOT_AUTHORIZED",),
-            policy_digest=policy.policy_record_digest,
-        )
-        yield denied, None
-        return
+    admission = evaluate_k1_opaque_signing_handle_pre_post_admission_v1(repo_root=repo_root)
     if owner_go != OWNER_GO_TOKEN:
         denied = _denied(
             reasons=("OWNER_GO_MISMATCH",),
-            policy_digest=policy.policy_record_digest,
+            policy_digest=admission.policy_record_digest,
+        )
+        yield denied, None
+        return
+    if admission.k1_pre_post_policy_granted is not True:
+        denied = _denied(
+            reasons=admission.reason_codes or ("K1_PRE_POST_ADMISSION_DENIED",),
+            policy_digest=admission.policy_record_digest,
         )
         yield denied, None
         return
@@ -140,7 +131,7 @@ def governed_k1_opaque_signing_handle_construction_scope_v1(
                 real_credential_access_performed=True,
                 credential_material_loaded_standing=False,
                 handle_id=proof.handle_id,
-                policy_record_digest=policy.policy_record_digest,
+                policy_record_digest=admission.policy_record_digest,
                 reason_codes=(),
                 secret_disclosed=False,
                 secret_persisted=False,
@@ -149,7 +140,7 @@ def governed_k1_opaque_signing_handle_construction_scope_v1(
     except Exception:
         denied = _denied(
             reasons=("K1_OPAQUE_SIGNING_HANDLE_CONSTRUCTION_FAIL_CLOSED",),
-            policy_digest=policy.policy_record_digest,
+            policy_digest=admission.policy_record_digest,
         )
         yield denied, None
 

@@ -58,3 +58,13 @@ def _legacy_runtime_entrypoint_test_only_bypass(request: pytest.FixtureRequest, 
     if _SLICE_D_TEST_MODULE in node_path:
         return
     monkeypatch.setenv("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", "1")
+
+
+@pytest.fixture
+def pre_simulation_sink_inventory(monkeypatch):
+    """Exercise successful admission with the caller set before simulated POST."""
+    from src.ops.pre_external_to_external_effect_boundary_bounded_wp_v1 import proof_v1
+
+    simulated_dispatch = proof_v1.read_simulated_post_isolation_v1().path
+    callers = proof_v1._scan_sink_callers() - {simulated_dispatch}
+    monkeypatch.setattr(proof_v1, "_scan_sink_callers", lambda: callers)

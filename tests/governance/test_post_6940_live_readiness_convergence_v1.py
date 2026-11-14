@@ -53,6 +53,19 @@ def test_convergence_report_identifies_external_effect_blocker() -> None:
     assert report["PAPER_STATUS"] == "PARKED"
     assert report["FIRST_REAL_BLOCKER"] == "EXTERNAL_EFFECT_AUTHORIZATION"
     assert report["ACTUAL_LIVE_EXTERNAL_EFFECT_AUTHORIZED"] is False
+    assert report["PRE_EXTERNAL_REACHED"] is True
+    assert report["LIVE_READINESS_MECHANICALLY_COMPLETE"] is False
+    assert report["EXACT_NEXT_OWNER_DECISION_REQUIRED"] == ""
+    proof = report["PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_PROOF"]
+    assert proof["boundary_proof_ok"] is False
+    assert any(
+        path.endswith("/current_futures_simulated_dispatch_v1.py")
+        for path in proof["unclassified_sink_callers"]
+    )
+    assert (
+        report["HISTORICAL_BLOCKERS_READJUDICATED"]["pre_external_static_proof"]
+        == "BLOCKED_CURRENT"
+    )
     blockers = readjudicate_historical_blockers_v1(treasury_report=treasury)
     assert blockers["paper_g2_learning_branch"] == "PARKED_NOT_ON_LIVE_READINESS_WP"
 
