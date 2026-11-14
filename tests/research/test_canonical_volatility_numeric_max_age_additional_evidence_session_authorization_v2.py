@@ -363,7 +363,9 @@ def test_22_revoked_authorization_rejected(tmp_path: Path) -> None:
     rev_abs = str((auth_dir / "revocation_ledger.jsonl").resolve())
     cons_abs = str((auth_dir / "consumption_ledger.jsonl").resolve())
     artifact = _build_from_readiness(
-        revocation_ledger_path=rev_abs, consumption_ledger_path=cons_abs
+        revocation_ledger_path=rev_abs,
+        consumption_ledger_path=cons_abs,
+        issued_at=datetime.now(timezone.utc),
     )
     path = auth_dir / "additional_evidence_session_authorization_v2.json"
     write_additional_evidence_session_authorization_v2(output_path=path, artifact=artifact)
@@ -385,7 +387,9 @@ def test_23_consumed_authorization_rejected(tmp_path: Path) -> None:
     rev_abs = str((auth_dir / "revocation_ledger.jsonl").resolve())
     cons_abs = str((auth_dir / "consumption_ledger.jsonl").resolve())
     artifact = _build_from_readiness(
-        revocation_ledger_path=rev_abs, consumption_ledger_path=cons_abs
+        revocation_ledger_path=rev_abs,
+        consumption_ledger_path=cons_abs,
+        issued_at=datetime.now(timezone.utc),
     )
     path = auth_dir / "additional_evidence_session_authorization_v2.json"
     write_additional_evidence_session_authorization_v2(output_path=path, artifact=artifact)
