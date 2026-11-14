@@ -73,6 +73,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--n-bars", type=int)
     p.add_argument("--evaluated-at-utc")
     p.add_argument("--max-end-age-seconds", type=int)
+    receipts = p.add_mutually_exclusive_group()
+    receipts.add_argument(
+        "--outcome-receipt-out",
+        type=Path,
+        help="Save the Shadow outcome receipt outside both source archives.",
+    )
+    receipts.add_argument(
+        "--verify-outcome-receipt",
+        type=Path,
+        help="Recompute a saved Shadow receipt against both source archives.",
+    )
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
     p.add_argument(
@@ -93,6 +104,9 @@ def _load_confirm_token(args: argparse.Namespace) -> str:
     if args.confirm_token_file is not None:
         return load_confirm_token_from_file_v1(args.confirm_token_file)
     raise SystemExit("CONFIRM_TOKEN_SOURCE_REQUIRED")
+
+
+SHADOW_OUTCOME_RECEIPT_SCHEMA = "i17_shadow_o4_market_measurement_readback_v1"
 
 
 def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
@@ -161,7 +175,7 @@ def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     )
     return seal_v1(
         {
-            "schema_version": "i17_shadow_o4_market_measurement_readback_v1",
+            "schema_version": SHADOW_OUTCOME_RECEIPT_SCHEMA,
             "authority": "NONE",
             "ok": True,
             "shadow_decision": decision,
@@ -183,11 +197,66 @@ def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     )
 
 
+def _shadow_outcome_receipt(args: argparse.Namespace) -> dict:
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_measurement_integration_v1 import (
+        _append,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+        strict_json_v1,
+        validate_seal_v1,
+    )
+
+    def read_receipt(path: Path) -> dict:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_FILE_REQUIRED")
+        return validate_seal_v1(strict_json_v1(path.read_bytes()), SHADOW_OUTCOME_RECEIPT_SCHEMA)
+
+    if args.verify_outcome_receipt is not None:
+        saved = read_receipt(args.verify_outcome_receipt)
+        observation = saved["market_observation"]
+        args.decision_event_ref = saved["shadow_decision"]["decision_event_ref"]
+        args.n_bars = observation["request"]["n_bars"]
+        args.max_end_age_seconds = observation["request"]["max_end_age_seconds"]
+        args.evaluated_at_utc = observation["evaluated_at_utc"]
+        if (
+            not isinstance(args.decision_event_ref, str)
+            or not args.decision_event_ref
+            or type(args.n_bars) is not int
+            or not 2 <= args.n_bars <= 24
+        ):
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_REQUEST_INVALID")
+        actual = _measure_shadow_outcome(args)
+        if actual["exact_content_digest"] != saved["exact_content_digest"]:
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_SOURCE_MISMATCH")
+        return actual
+
+    output = args.outcome_receipt_out
+    if output is not None:
+        if output.is_symlink() or (output.exists() and not output.is_file()):
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_FILE_REQUIRED")
+        output = output.resolve()
+        if any(
+            output.is_relative_to(root.resolve())
+            for root in (args.evidence_root, args.o4_mark_archive)
+        ):
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_INSIDE_SOURCE_ARCHIVE")
+    actual = _measure_shadow_outcome(args)
+    if output is not None:
+        _append(output, actual)
+        if read_receipt(output)["exact_content_digest"] != actual["exact_content_digest"]:
+            raise ValueError("SHADOW_OUTCOME_RECEIPT_WRITE_MISMATCH")
+    return actual
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.require_typed_ddo and args.command != "verify-evidence":
         parser.error("--require-typed-ddo requires verify-evidence")
+    if (
+        args.outcome_receipt_out is not None or args.verify_outcome_receipt is not None
+    ) and args.command != "measure-shadow-outcome":
+        parser.error("outcome receipt options require measure-shadow-outcome")
     outcome_args = (
         args.decision_event_ref,
         args.o4_mark_archive,
@@ -196,15 +265,29 @@ def main(argv: list[str] | None = None) -> int:
         args.max_end_age_seconds,
     )
     if args.command == "measure-shadow-outcome":
-        if args.evidence_root is None or any(val is None for val in outcome_args):
-            parser.error(
-                "measure-shadow-outcome requires --evidence-root, --decision-event-ref, "
-                "--o4-mark-archive, --n-bars, --evaluated-at-utc and --max-end-age-seconds"
-            )
-        if args.real_network or not 2 <= args.n_bars <= 24:
-            parser.error("measure-shadow-outcome is offline and requires 2 to 24 bars")
+        if args.evidence_root is None or args.o4_mark_archive is None:
+            parser.error("measure-shadow-outcome requires --evidence-root and --o4-mark-archive")
+        if args.real_network:
+            parser.error("measure-shadow-outcome is offline")
+        measurement_args = (
+            args.decision_event_ref,
+            args.n_bars,
+            args.evaluated_at_utc,
+            args.max_end_age_seconds,
+        )
+        if args.verify_outcome_receipt is not None:
+            if any(val is not None for val in measurement_args):
+                parser.error("--verify-outcome-receipt uses the saved measurement arguments")
+        else:
+            if any(val is None for val in measurement_args):
+                parser.error(
+                    "measurement requires --decision-event-ref, --n-bars, "
+                    "--evaluated-at-utc and --max-end-age-seconds"
+                )
+            if not 2 <= args.n_bars <= 24:
+                parser.error("measure-shadow-outcome requires 2 to 24 bars")
         try:
-            payload = _measure_shadow_outcome(args)
+            payload = _shadow_outcome_receipt(args)
         except ValueError as exc:
             print(json.dumps({"ok": False, "blockers": [str(exc)]}))
             return 1
