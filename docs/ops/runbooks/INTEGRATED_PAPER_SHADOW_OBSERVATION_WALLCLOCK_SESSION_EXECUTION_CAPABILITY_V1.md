@@ -200,7 +200,7 @@ ein späterer Markpreis-Logreturn ohne Fill, ohne Kontorendite und ohne
 Lern- oder Freigabewirkung. Die lokalen Prüfsummen sind keine unabhängige
 Bestätigung der Marktdaten durch die Börse.
 
-Mit `--outcome-receipt-out /absolute/auswertung/shadow-o4.json` speichert der
+Mit der Option `--outcome-receipt-out` speichert der
 Messbefehl den Beleg zusätzlich in einem bestehenden Ausgabeverzeichnis
 außerhalb der beiden Quellarchive. Eine identische Wiederholung akzeptiert
 die bereits gespeicherten Bytes. Abweichender Inhalt am selben Ziel führt
