@@ -51,13 +51,14 @@ Independent store roots have independent consume records. A mandate for
 unattended operation across store roots would require an independently
 verified grant and a shared consumption boundary.
 
-The governance policy evaluators and this explicit submit path are separate.
-A denied PRE_EXTERNAL policy proof blocks that policy admission. The explicit
-submit path evaluates its own POST admission and transport checks.
-The submit join reads `post_admission_granted` from that evaluation. The
-current evaluator can return a granted boolean with a denial status string.
-That contradiction leaves the status string unreliable as an audit signal.
-The transport result records whether a send was attempted.
+A denied PRE_EXTERNAL policy proof blocks its policy admission. The explicit
+submit join calls the POST admission evaluator with a single-use permit for
+the same Owner-GO. That evaluator checks the durable Owner-GO consume record
+and reports `REAL_VENUE_POST_ADMISSION_GRANTED_ONE_SHOT` on success. The join
+requires that status, a true `post_admission_granted`, and an empty list of
+denial reasons before permit consumption or signing. The forensics report
+preserves the admission decision and its reasons. The transport result
+records whether a send was attempted.
 
 Owner records:
 `config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json`,

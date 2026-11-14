@@ -33,6 +33,7 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 )
 
 ADMISSION_OWNER: Final[str] = "governance.current_productive_real_venue_post_admission_v1"
+STATUS_POST_ADMISSION_GRANTED: Final[str] = "REAL_VENUE_POST_ADMISSION_GRANTED_ONE_SHOT"
 STATUS_POST_ADMISSION_DENIED: Final[str] = "REAL_VENUE_POST_ADMISSION_DENIED_FAIL_CLOSED"
 STATUS_POST_ADMISSION_REQUIRES_OWNER_GO: Final[str] = (
     "REAL_VENUE_POST_ADMISSION_REQUIRES_ACTUAL_POST_OWNER_GO"
@@ -65,7 +66,7 @@ def evaluate_real_venue_post_admission_v1(
     permit: ExternalEffectPermitV1 | None = None,
     store_root: Path | str | None = None,
 ) -> RealVenuePostAdmissionResultV1:
-    """Evaluate whether a real venue POST may proceed. Always fail-closed here."""
+    """Evaluate one-shot admission against the permit and durable Owner-GO record."""
 
     reasons: list[str] = []
     if POST_ALLOWED is True or REAL_VENUE_POST_ALLOWED is True:
@@ -85,8 +86,10 @@ def evaluate_real_venue_post_admission_v1(
     if one_shot_real_post is not True:
         reasons.append("ONE_SHOT_REAL_POST_FLAG_REQUIRED")
 
-    if permit is not None and not permit_authorizes_one_shot_real_post_v1(permit):
+    if permit is None or not permit_authorizes_one_shot_real_post_v1(permit):
         reasons.append("PERMIT_DOES_NOT_AUTHORIZE_ONE_SHOT_REAL_POST")
+    elif permit.authority_ref != POST_OWNER_GO:
+        reasons.append("PERMIT_POST_OWNER_GO_MISMATCH")
 
     if go == POST_OWNER_GO:
         if store_root is None:
@@ -99,9 +102,12 @@ def evaluate_real_venue_post_admission_v1(
                 reasons.append("POST_OWNER_GO_DURABLE_TOKEN_MISMATCH")
 
     granted = not reasons
-    status = STATUS_POST_ADMISSION_DENIED
-    if "POST_OWNER_GO_REQUIRED" in reasons or go != POST_OWNER_GO:
+    if granted:
+        status = STATUS_POST_ADMISSION_GRANTED
+    elif go != POST_OWNER_GO:
         status = STATUS_POST_ADMISSION_REQUIRES_OWNER_GO
+    else:
+        status = STATUS_POST_ADMISSION_DENIED
 
     return RealVenuePostAdmissionResultV1(
         admission_status=status,
@@ -124,6 +130,7 @@ __all__ = [
     "ADMISSION_OWNER",
     "BLOCKER_CLASS",
     "NEXT_OWNER_GO",
+    "STATUS_POST_ADMISSION_GRANTED",
     "RealVenuePostAdmissionResultV1",
     "evaluate_real_venue_post_admission_v1",
 ]

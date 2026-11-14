@@ -15,6 +15,13 @@ from tests.ops._current_post_safety_fixture_v1 import (
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
 )
 
+from src.governance import current_productive_real_venue_post_admission_v1 as post_admission
+from src.governance.current_productive_actual_venue_post_admission_policy_v1 import (
+    prove_actual_venue_post_admission_requires_durable_owner_go_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1 import (
+    current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as post_join,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
     serialize_canonical_okx_post_body_v1,
 )
@@ -323,6 +330,107 @@ def test_forged_permit_constraints_deny() -> None:
     mismatched = replace(wrong_authority, envelope_digest="ab" * 32)
     with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="DIGEST_MISMATCH"):
         assert_one_shot_join_permit_constraints_v1(mismatched, envelope)
+
+
+@pytest.mark.parametrize(
+    ("owner_go", "permit_authority", "consumed", "granted", "status", "reason"),
+    [
+        (
+            POST_OWNER_GO,
+            POST_OWNER_GO,
+            True,
+            True,
+            "REAL_VENUE_POST_ADMISSION_GRANTED_ONE_SHOT",
+            "",
+        ),
+        (
+            POST_OWNER_GO,
+            POST_OWNER_GO,
+            False,
+            False,
+            "REAL_VENUE_POST_ADMISSION_DENIED_FAIL_CLOSED",
+            "POST_OWNER_GO_NOT_DURABLE_CONSUMED",
+        ),
+        (
+            POST_OWNER_GO,
+            None,
+            True,
+            False,
+            "REAL_VENUE_POST_ADMISSION_DENIED_FAIL_CLOSED",
+            "PERMIT_DOES_NOT_AUTHORIZE_ONE_SHOT_REAL_POST",
+        ),
+        (
+            POST_OWNER_GO,
+            "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_EXACT_OBJECT_FLATTEN_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+            True,
+            False,
+            "REAL_VENUE_POST_ADMISSION_DENIED_FAIL_CLOSED",
+            "PERMIT_POST_OWNER_GO_MISMATCH",
+        ),
+        (
+            None,
+            POST_OWNER_GO,
+            True,
+            False,
+            "REAL_VENUE_POST_ADMISSION_REQUIRES_ACTUAL_POST_OWNER_GO",
+            "POST_OWNER_GO_REQUIRED",
+        ),
+    ],
+)
+def test_post_admission_reports_the_bound_decision(
+    tmp_path, owner_go, permit_authority, consumed, granted, status, reason
+):
+    if consumed:
+        _persist_post_go(tmp_path)
+    permit = (
+        issue_external_effect_permit_v1(_envelope(), authority_ref=permit_authority)
+        if permit_authority
+        else None
+    )
+    decision = post_admission.evaluate_real_venue_post_admission_v1(
+        post_owner_go=owner_go, one_shot_real_post=True, permit=permit, store_root=tmp_path
+    )
+
+    assert decision.post_admission_granted is granted
+    assert decision.admission_status == status
+    assert decision.reason_codes == ((reason,) if reason else ())
+    assert decision.post_allowed is False
+    assert decision.real_venue_post_allowed is False
+    assert decision.real_venue_post_performed is False
+
+
+def test_owner_go_proof_distinguishes_missing_record_from_missing_permit(tmp_path):
+    assert prove_actual_venue_post_admission_requires_durable_owner_go_v1(
+        repo_root=Path.cwd(), store_root=tmp_path
+    )
+    _persist_post_go(tmp_path)
+    assert not prove_actual_venue_post_admission_requires_durable_owner_go_v1(
+        repo_root=Path.cwd(), store_root=tmp_path
+    )
+
+
+def test_conflicting_admission_stops_before_permit_consume_or_transport(tmp_path, monkeypatch):
+    evaluate = post_join.evaluate_real_venue_post_admission_v1
+
+    def contradict(**kwargs):
+        result = evaluate(**kwargs)
+        assert result.post_admission_granted is True
+        return replace(result, admission_status=post_admission.STATUS_POST_ADMISSION_DENIED)
+
+    monkeypatch.setattr(post_join, "evaluate_real_venue_post_admission_v1", contradict)
+    probe = OneShotJoinProbeV1()
+    opener = _TimeoutOpener()
+    backend = _FakeKeychainBackend()
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        match=post_admission.STATUS_POST_ADMISSION_DENIED,
+    ):
+        _attempt(tmp_path, probe=probe, opener=opener, backend=backend)
+
+    assert probe.events == ["PERMIT_MINTED"]
+    assert backend.calls == 0
+    assert opener.requests == []
+    assert not (tmp_path / "full_core_external_effect_permit_consume_v1.json").exists()
 
 
 def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(

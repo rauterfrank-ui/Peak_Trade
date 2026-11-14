@@ -140,6 +140,7 @@ def probe_downstream_policy_and_sink_chain_v1(*, repo_root: Path) -> dict[str, A
     layers: list[AuthorityLayerRowV1] = []
     for layer_id, rel in CANONICAL_DECISION_CHAIN:
         decision = load_canonical_decision_v1(repo_root, rel)
+        reasons = ()
         if layer_id == "external_effect_authorization_policy":
             admission = seam_6941.get("POLICY_BOUND_GATE", {}).get("policy_admission_granted")
             performed = None
@@ -158,8 +159,9 @@ def probe_downstream_policy_and_sink_chain_v1(*, repo_root: Path) -> dict[str, A
             admission = material_bound.material_load_admission_granted
             performed = None
         else:
-            admission = post_admission.post_admission_granted is False
+            admission = post_admission.post_admission_granted
             performed = post_admission.real_venue_post_performed
+            reasons = post_admission.reason_codes
 
         layers.append(
             AuthorityLayerRowV1(
@@ -169,7 +171,7 @@ def probe_downstream_policy_and_sink_chain_v1(*, repo_root: Path) -> dict[str, A
                 decision_record=rel,
                 admission_granted=admission if isinstance(admission, bool) else bool(admission),
                 performed=performed if isinstance(performed, (bool, type(None))) else False,
-                reason_codes=(),
+                reason_codes=reasons,
             )
         )
 
