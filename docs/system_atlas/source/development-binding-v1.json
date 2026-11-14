@@ -709,7 +709,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "9c5c21d35fce32b073e3a0a17a974d102aad8236c5f5f94a5b3af46e2a5f1e04"
+      "sha256": "87fbfae4eeadc8f1cc0e7d259f5fd29b69465ab9aa0e7cc88440544638fc27f3"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1519,7 +1519,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
       "before_sha256": "1fbf724e19342f7011cb2cda1e2dde19f8f5347e5b5c60fe986e6a1184ea3a4a",
-      "sha256": "10433f5fbe3b5548cb7cea617d3203b733c9535ad16be782619163f14d32d763"
+      "sha256": "b255f20b074a236ec6d6835b71c7379eeae7628d26eaba6662aa323fdbea061a"
     },
     {
       "path": "scripts/ops/run_k1_account_observation_readiness_v1.py",
@@ -3804,7 +3804,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "c90215f37ad781261c12c1210736bcdaca5c90df0dffe20f9335f8c34ec34b98"
+      "sha256": "0af726f767335a1862995f6981e56d8f9fd7d72467567a442ccc62cb780a103e"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

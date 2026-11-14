@@ -1039,6 +1039,58 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert not receipt["source_authenticated"] and not receipt["learning_input_authorized"]
     assert archive_digests() == original_digests
 
+    def invoke_receipt(*options):
+        code = main(
+            [
+                "measure-shadow-outcome",
+                "--evidence-root",
+                str(root),
+                "--o4-mark-archive",
+                str(archive),
+                *options,
+            ]
+        )
+        return code, json.loads(capsys.readouterr().out)
+
+    stored = tmp_path / "outcome.json"
+    measure_options = [
+        "--decision-event-ref",
+        decision["record_id"],
+        "--evaluated-at-utc",
+        received.isoformat(),
+        "--n-bars",
+        "2",
+        "--max-end-age-seconds",
+        "60",
+    ]
+    assert invoke_receipt(*measure_options, "--outcome-receipt-out", str(stored)) == (0, receipt)
+    persisted = stored.read_bytes()
+    assert invoke_receipt(*measure_options, "--outcome-receipt-out", str(stored)) == (0, receipt)
+    assert invoke_receipt("--verify-outcome-receipt", str(stored)) == (0, receipt)
+    assert invoke_receipt(
+        *measure_options, "--outcome-receipt-out", str(root / "unexpected.json")
+    ) == (1, {"ok": False, "blockers": ["SHADOW_OUTCOME_RECEIPT_INSIDE_SOURCE_ARCHIVE"]})
+    assert invoke_receipt(*measure_options[:-1], "90", "--outcome-receipt-out", str(stored)) == (
+        1,
+        {"ok": False, "blockers": ["IMMUTABLE_ATTACHMENT_CONFLICT"]},
+    )
+    assert stored.read_bytes() == persisted
+
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+        seal_v1,
+    )
+
+    altered = json.loads(persisted)
+    altered.pop("exact_content_digest")
+    altered["shadow_decision"]["market_sequence"] += 1
+    forged = tmp_path / "forged-outcome.json"
+    forged.write_text(json.dumps(seal_v1(altered)))
+    assert invoke_receipt("--verify-outcome-receipt", str(forged)) == (
+        1,
+        {"ok": False, "blockers": ["SHADOW_OUTCOME_RECEIPT_SOURCE_MISMATCH"]},
+    )
+    assert archive_digests() == original_digests
+
     def fails(ref, at, reason):
         assert main([*args, "--decision-event-ref", ref, "--evaluated-at-utc", at.isoformat()]) == 1
         assert json.loads(capsys.readouterr().out)["blockers"] == [reason]
@@ -1060,6 +1112,10 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     fails(decision["record_id"], end + timedelta(seconds=61), "MARKET_MEASUREMENT_STALE")
     (archive / "page-00.json").write_bytes(b"{}")
     fails(decision["record_id"], received, "SOURCE_SHA256_MISMATCH")
+    assert invoke_receipt("--verify-outcome-receipt", str(stored)) == (
+        1,
+        {"ok": False, "blockers": ["SOURCE_SHA256_MISMATCH"]},
+    )
 
 
 def test_flat_shadow_mark_window_seals_abort_without_completed_decision(run_two_hour_shadow):

@@ -200,6 +200,24 @@ ein späterer Markpreis-Logreturn ohne Fill, ohne Kontorendite und ohne
 Lern- oder Freigabewirkung. Die lokalen Prüfsummen sind keine unabhängige
 Bestätigung der Marktdaten durch die Börse.
 
+Mit `--outcome-receipt-out /absolute/auswertung/shadow-o4.json` speichert der
+Messbefehl den Beleg zusätzlich in einem bestehenden Ausgabeverzeichnis
+außerhalb der beiden Quellarchive. Eine identische Wiederholung akzeptiert
+die bereits gespeicherten Bytes. Abweichender Inhalt am selben Ziel führt
+zum Abbruch.
+
+Für den späteren Readback genügt der Beleg zusammen mit den zwei
+Originalarchiven. Der Befehl übernimmt die Messparameter aus dem Beleg,
+prüft beide Archive erneut und vergleicht die Prüfsumme der neu berechneten
+Messung mit der gespeicherten.
+
+```bash
+./scripts/pt scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py \
+  measure-shadow-outcome --evidence-root /absolute/shadow-evidence \
+  --o4-mark-archive /absolute/recorded \
+  --verify-outcome-receipt /absolute/auswertung/shadow-o4.json
+```
+
 Der vorhandene Offline-Follow-up-Worker
 verwendet den Herkunftstyp `SYNTHETIC_OFFLINE`. Die Abnahme mit
 beobachteten Originaldaten braucht einen eigenen Herkunftsnachweis über
