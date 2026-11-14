@@ -67,6 +67,11 @@
       "sha256": null
     },
     {
+      "path": ".github/workflows/test-health-automation.yml",
+      "before_sha256": "6f8f1b4d501574228f91891b7ba9735552438ec2f247ae474119eecffde21aca",
+      "sha256": "dfb2cef949cb7dc19f65ca0dc8ed39978744ce456616584efac11c30a99411bb"
+    },
+    {
       "path": "config/governance/clean_core_seal_manifest_v1.json",
       "before_sha256": "592d7fe3aec571f18f222b74a1373c80688963c072edcb8c20091c4ef584cfe5",
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
@@ -4150,6 +4155,11 @@
       "path": "tests/ops/test_wallclock_bridge_hardening_v2.py",
       "before_sha256": "a0b4c16d80b2eea508339f6197f35928ae36c26f047e2d17753a1b81a6805bb9",
       "sha256": "1b3ea0e4d02585e2fb7f65ca47317ba324a05e535330eb18118dd9b9b58f9c6c"
+    },
+    {
+      "path": "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2.py",
+      "before_sha256": "a601b2be458a48b7d7b911517aa68b103d95890ec6ad01ac2c8ede8ec8543d0b",
+      "sha256": "b247441d34ec6bfbaebb0a9f681a8ec967818e005fa7c5f6afe6c6063adf4f16"
     },
     {
       "path": "tests/scripts/test_generate_forward_signals_load_strategy_v1.py",
