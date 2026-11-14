@@ -48,6 +48,7 @@ from src.experiments.canonical_search_candidate_research_execution_v1 import (
     run_search_candidate_research_execution_v1,
 )
 from src.experiments.canonical_research_result_to_meta_input_v1 import (
+    ResearchResultMetaInputV1,
     run_research_result_meta_search_feedback_v1,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
@@ -308,6 +309,8 @@ def run_native_research_session_step_v1(
     meta_created_at: str | None = None,
     meta_policy: MetaLearningPolicyV1 | None = None,
     continuation_artifact_ids: Sequence[str] = (),
+    campaign_history: Sequence[ResearchResultMetaInputV1] = (),
+    campaign_regions: Sequence[Mapping[str, Any]] = (),
 ) -> NativeResearchSessionStepV1:
     """One measured/reused/resumed trial. Continuation ids identify prior measured coverage."""
     kwargs = dict(
@@ -320,6 +323,8 @@ def run_native_research_session_step_v1(
         meta_created_at=meta_created_at,
         meta_policy=meta_policy,
         continuation_artifact_ids=continuation_artifact_ids,
+        campaign_history=campaign_history,
+        campaign_regions=campaign_regions,
     )
     from src.experiments.canonical_research_prepared_execution_v1 import research_step_lease_v1
 
@@ -347,6 +352,8 @@ def _run_native_research_session_step_locked_v1(
     meta_created_at: str | None = None,
     meta_policy: MetaLearningPolicyV1 | None = None,
     continuation_artifact_ids: Sequence[str] = (),
+    campaign_history: Sequence[ResearchResultMetaInputV1] = (),
+    campaign_regions: Sequence[Mapping[str, Any]] = (),
 ) -> NativeResearchSessionStepV1:
     """Resume explicit measured packets and read current Failure/Gap owners before Search.
 
@@ -387,6 +394,16 @@ def _run_native_research_session_step_locked_v1(
     intent = intent_digest_v1(
         search_request, prior_artifact_ids, provider_ref, evidence_source_class, meta_policy
     )
+    if campaign_history or campaign_regions:
+        intent = digest_v1(
+            {
+                "base_intent": intent,
+                "campaign_history": [
+                    _plain(unit.research_loop_record)["integrity"] for unit in campaign_history
+                ],
+                "campaign_regions": _plain(campaign_regions),
+            }
+        )
     archived_experiments = None
     if continuation_artifact_ids:
         archived_experiments = _continuation_bindings_v1(
@@ -453,11 +470,30 @@ def _run_native_research_session_step_locked_v1(
     request = replace(
         search_request, failure_records=tuple(failures), reality_gap_records=tuple(gaps)
     )
+    if campaign_regions:
+        # Same dataset and execution profile. A fresh learning parent changes the
+        # experiment ID, so coverage must be matched by the actual parameter region.
+        candidates = build_canonical_advanced_search_v1(request)["candidates"]
+        covered = {
+            digest_v1(row["parameter_region"]): row["artifact_id"] for row in campaign_regions
+        }
+        archived_experiments = {
+            **(archived_experiments or {}),
+            **{
+                row["experiment_id"]: covered[digest_v1(_plain(row["parameter_region"]))]
+                for row in candidates
+                if row.get("experiment_id")
+                and digest_v1(_plain(row["parameter_region"])) in covered
+            },
+        }
     feedback = None
-    if prior_artifact_ids:
+    if prior_artifact_ids or campaign_history:
         if meta_created_at is None or meta_policy is None:
             raise NativeResearchSessionError("EXPLICIT_META_CONTEXT_REQUIRED")
-        inputs = [archive.get(key).next_meta_input for key in prior_artifact_ids]
+        inputs = [
+            *campaign_history,
+            *(archive.get(key).next_meta_input for key in prior_artifact_ids),
+        ]
         feedback = run_research_result_meta_search_feedback_v1(
             inputs,
             created_at=meta_created_at,
@@ -601,6 +637,7 @@ def _continuation_bindings_v1(
         executed, receipt = archive._read_packet(artifact_id)
         source = executed.next_meta_input
         loop = source.research_loop_record
+        gap = loop["reality_gap_record"]
         experiment_id = loop["selected_experiment_id"]
         if _time_key(loop["created_at"]) > search_time:
             raise NativeResearchSessionError("CONTINUATION_ARCHIVE_AFTER_SEARCH")
@@ -612,9 +649,14 @@ def _continuation_bindings_v1(
             or loop["champion_experiment_id"] != champion_id
             or loop["hypothesis_preparation"]["robustness_policy_digest"]
             != search_request.robustness_policy_digest
-            or loop["reality_gap_record"]["threshold_policy_digest"]
-            != context.threshold_policy_digest
-            or loop["reality_gap_record"]["observed_surface"] != context.observed_surface
+            or (gap is None and not context.allow_unmeasured_reality_gap)
+            or (
+                gap is not None
+                and (
+                    gap["threshold_policy_digest"] != context.threshold_policy_digest
+                    or gap["observed_surface"] != context.observed_surface
+                )
+            )
         ):
             raise NativeResearchSessionError("CONTINUATION_ARCHIVE_CONTEXT_MISMATCH")
         verify_owner_records_v1(executed, context)

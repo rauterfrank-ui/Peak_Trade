@@ -136,8 +136,10 @@ CANONICAL_LOOP_STEPS: Final[tuple[str, ...]] = (
 )
 STEP_STATUS_COMPLETE: Final[str] = "COMPLETE"
 STEP_STATUS_FAILED: Final[str] = "FAILED"
+STEP_STATUS_INCOMPLETE: Final[str] = "INCOMPLETE"
 LOOP_COMPLETE: Final[str] = "LOOP_COMPLETE"
 LOOP_FAILED: Final[str] = "LOOP_FAILED"
+LOOP_INCOMPLETE: Final[str] = "LOOP_INCOMPLETE"
 
 _CREATED_AT_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$")
 _TOKEN_RE = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
@@ -210,6 +212,7 @@ class CanonicalAutomatedOfflineResearchLoopRequestV1:
     failure_memory_store: CanonicalFailureMemoryStoreV1 | None = None
     reality_gap_store: CanonicalRealityGapStoreV1 | None = None
     metric_definitions: str = METRIC_DEFINITION_VERSION
+    allow_unmeasured_reality_gap: bool = False
     robustness_suite_version: str = ROBUSTNESS_SUITE_VERSION
 
 
@@ -307,24 +310,27 @@ def run_canonical_automated_offline_research_loop_v1(
             compatibility_contract=request.compatibility_contract,
         )
     )
-    reality_gap_record = build_canonical_reality_gap_record_v1(
-        CanonicalRealityGapRecordRequestV1(
-            experiment_identity=identity,
-            observed_surface=request.observed_surface,
-            metric_definitions=metric_definitions,
-            threshold_policy_digest=request.threshold_policy_digest,
-            gap_dimensions=request.gap_dimensions,
-            evidence_refs=[
-                {
-                    "kind": EVIDENCE_KIND_EXPERIMENT_RECORD,
-                    "ref": experiment_id,
-                    "digest": str(identity["identity_digest"]),
-                }
-            ],
-            created_at=created_at,
-            experiment_id=experiment_id,
+    if request.gap_dimensions or not request.allow_unmeasured_reality_gap:
+        reality_gap_record = build_canonical_reality_gap_record_v1(
+            CanonicalRealityGapRecordRequestV1(
+                experiment_identity=identity,
+                observed_surface=request.observed_surface,
+                metric_definitions=metric_definitions,
+                threshold_policy_digest=request.threshold_policy_digest,
+                gap_dimensions=request.gap_dimensions,
+                evidence_refs=[
+                    {
+                        "kind": EVIDENCE_KIND_EXPERIMENT_RECORD,
+                        "ref": experiment_id,
+                        "digest": str(identity["identity_digest"]),
+                    }
+                ],
+                created_at=created_at,
+                experiment_id=experiment_id,
+            )
         )
-    )
+    else:
+        reality_gap_record = None
     failure_records = _collect_failure_records(
         robustness_evidence=robustness_evidence,
         comparison_result=comparison_result,
@@ -337,9 +343,11 @@ def run_canonical_automated_offline_research_loop_v1(
         retest_reason=request.retest_reason,
     )
     failure_persisted_ids = _append_failure_records(request.failure_memory_store, failure_records)
-    reality_gap_persisted = _optional_append(
-        request.reality_gap_store, reality_gap_record, "reality_gap_record_id"
-    )
+    reality_gap_persisted = None
+    if reality_gap_record is not None:
+        reality_gap_persisted = _optional_append(
+            request.reality_gap_store, reality_gap_record, "reality_gap_record_id"
+        )
 
     robustness_status = (
         STEP_STATUS_FAILED
@@ -351,11 +359,15 @@ def run_canonical_automated_offline_research_loop_v1(
         if comparison_result["overall_comparability"] == OVERALL_COMPARABLE
         else STEP_STATUS_FAILED
     )
-    reality_gap_status = (
-        STEP_STATUS_FAILED
-        if reality_gap_record["overall_disposition"] == DISPOSITION_REJECTED_REALITY_GAP
-        else STEP_STATUS_COMPLETE
-    )
+    reality_gap_status = STEP_STATUS_INCOMPLETE
+    reality_gap_disposition = "COMPARABLE_OBSERVATION_NOT_AVAILABLE"
+    if reality_gap_record is not None:
+        reality_gap_disposition = str(reality_gap_record["overall_disposition"])
+        reality_gap_status = (
+            STEP_STATUS_FAILED
+            if reality_gap_disposition == DISPOSITION_REJECTED_REALITY_GAP
+            else STEP_STATUS_COMPLETE
+        )
     step_results = [
         _step(STEP_HYPOTHESIS_SELECTION, STEP_STATUS_COMPLETE, selected.hypothesis_id),
         _step(STEP_HYPOTHESIS_PREPARATION, STEP_STATUS_COMPLETE, experiment_id),
@@ -375,7 +387,7 @@ def run_canonical_automated_offline_research_loop_v1(
         _step(
             STEP_REALITY_GAP,
             reality_gap_status,
-            str(reality_gap_record["overall_disposition"]),
+            reality_gap_disposition,
         ),
         _step(STEP_METADATA, STEP_STATUS_COMPLETE, SCHEMA_VERSION),
     ]
@@ -383,6 +395,8 @@ def run_canonical_automated_offline_research_loop_v1(
         item["step_id"] for item in step_results if item["status"] == STEP_STATUS_FAILED
     ]
     overall_status = LOOP_FAILED if failed_steps else LOOP_COMPLETE
+    if not failed_steps and reality_gap_record is None:
+        overall_status = LOOP_INCOMPLETE
     research_metadata = {
         "champion_experiment_id": champion_id,
         "comparison_ssot_version": COMPARISON_SSOT_VERSION,
@@ -587,7 +601,7 @@ def validate_canonical_automated_offline_research_loop_v1(record: Mapping[str, A
         raise AutomatedOfflineResearchLoopValidationError(
             "canonical_trading_decision_core_bound must be true"
         )
-    if payload.get("overall_status") not in {LOOP_COMPLETE, LOOP_FAILED}:
+    if payload.get("overall_status") not in {LOOP_COMPLETE, LOOP_FAILED, LOOP_INCOMPLETE}:
         raise AutomatedOfflineResearchLoopValidationError("overall_status is not a canonical value")
     _require_created_at(payload.get("created_at"))
     _require_token("selected_hypothesis_id", payload.get("selected_hypothesis_id"))
@@ -607,7 +621,10 @@ def validate_canonical_automated_offline_research_loop_v1(record: Mapping[str, A
         if step_id in seen:
             raise AutomatedOfflineResearchLoopValidationError(f"duplicate loop step_id: {step_id}")
         seen.append(str(step_id))
-        if item.get("status") not in {STEP_STATUS_COMPLETE, STEP_STATUS_FAILED}:
+        allowed_statuses = {STEP_STATUS_COMPLETE, STEP_STATUS_FAILED}
+        if step_id == STEP_REALITY_GAP:
+            allowed_statuses.add(STEP_STATUS_INCOMPLETE)
+        if item.get("status") not in allowed_statuses:
             raise AutomatedOfflineResearchLoopValidationError(f"invalid status for {step_id}")
     if tuple(seen) != CANONICAL_LOOP_STEPS:
         raise AutomatedOfflineResearchLoopValidationError("loop step order is not canonical")
@@ -616,10 +633,16 @@ def validate_canonical_automated_offline_research_loop_v1(record: Mapping[str, A
     ]
     if failed_steps and payload.get("overall_status") != LOOP_FAILED:
         raise AutomatedOfflineResearchLoopValidationError("FAILED steps require LOOP_FAILED")
-    if not failed_steps and payload.get("overall_status") != LOOP_COMPLETE:
+    gap_step = next(item for item in step_results if item["step_id"] == STEP_REALITY_GAP)
+    gap_missing = payload.get("reality_gap_record") is None
+    if gap_missing != (gap_step["status"] == STEP_STATUS_INCOMPLETE):
         raise AutomatedOfflineResearchLoopValidationError(
-            "LOOP_COMPLETE requires every step COMPLETE"
+            "reality gap status disagrees with record"
         )
+    if not failed_steps:
+        expected_status = LOOP_INCOMPLETE if gap_missing else LOOP_COMPLETE
+        if payload["overall_status"] != expected_status:
+            raise AutomatedOfflineResearchLoopValidationError("overall_status disagrees with steps")
     identity = payload.get("experiment_record", {}).get("experiment_identity")
     _require_identity(identity)
     _require_observation_binding(
@@ -786,7 +809,7 @@ def _collect_failure_records(
     *,
     robustness_evidence: Mapping[str, Any],
     comparison_result: Mapping[str, Any],
-    reality_gap_record: Mapping[str, Any],
+    reality_gap_record: Mapping[str, Any] | None,
     identity: Mapping[str, Any],
     experiment_id: str,
     selected: ResearchHypothesisCandidateV1,
@@ -808,7 +831,10 @@ def _collect_failure_records(
                 cost_sensitivity={"comparison_rejected": 1},
             )
         )
-    if reality_gap_record["overall_disposition"] == DISPOSITION_REJECTED_REALITY_GAP:
+    if (
+        reality_gap_record is not None
+        and reality_gap_record["overall_disposition"] == DISPOSITION_REJECTED_REALITY_GAP
+    ):
         records.append(
             _failure_record(
                 identity=identity,

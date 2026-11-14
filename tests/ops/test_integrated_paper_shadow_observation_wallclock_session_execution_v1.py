@@ -1089,6 +1089,94 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
         1,
         {"ok": False, "blockers": ["SHADOW_OUTCOME_RECEIPT_SOURCE_MISMATCH"]},
     )
+
+    from scripts.ops.run_offline_ddo_learning_follow_up_v1 import main as learning_main
+
+    offline_root = tmp_path / "offline"
+    sources = [
+        "--shadow-evidence",
+        str(root),
+        "--o4-mark-archive",
+        str(archive),
+        "--shadow-outcome-receipt",
+        str(stored),
+    ]
+    learning_args = ["--root", str(offline_root), "--cycle", "i17", "complete-shadow"]
+    assert learning_main([*learning_args, *sources]) == 0
+    handoff = json.loads(capsys.readouterr().out)
+    evidence = handoff["learning_evidence"]
+    provenance = evidence["outcome_evidence_provenance"]
+    assert provenance["lineage_digest"] == receipt["exact_content_digest"]
+    assert provenance["decision_event_ref"] == decision["record_id"]
+    assert provenance["market_observation_source"] == "PUBLIC_MD"
+    assert provenance["fill_source_type"] == "NO_FILL"
+    assert evidence["evidence_pool_class"] == "SHADOW_COUNTERFACTUAL"
+    assert evidence["economic_score_label"] == "UNKNOWN"
+    assert handoff["source_class"] == "TEST_ONLY_SYNTHETIC"
+    learning_ledger = offline_root / "shadow-ddo-learning" / "i17" / "ddo_ledger_v0.jsonl"
+    learning_bytes = learning_ledger.read_bytes()
+    assert learning_main([*learning_args, *sources]) == 0
+    assert json.loads(capsys.readouterr().out) == handoff
+    assert learning_ledger.read_bytes() == learning_bytes
+
+    import pandas as pd
+
+    from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
+    from src.experiments.canonical_native_research_measurements_v1 import (
+        native_research_input_hashes_v1,
+    )
+    from src.experiments.canonical_research_prepared_execution_v1 import read_v1
+    from tests.learning.test_offline_ddo_research_cycle_v1 import native_research_fixture
+
+    bars, config, request = native_research_fixture(native, evidence["content_hash"])
+    research_clock = max(received, bars.index[-1].to_pydatetime()) + timedelta(days=1)
+    bars_path, config_path, request_path = (
+        tmp_path / name for name in ("bars.csv", "config.json", "request.json")
+    )
+    bars.to_csv(bars_path)
+    config_path.write_text(json.dumps(config))
+    loaded = pd.read_csv(bars_path, index_col=0, float_precision="round_trip")
+    loaded.index = pd.to_datetime(loaded.index, utc=True, format="ISO8601")
+    raw = request.model_dump(mode="json")
+    raw.update(native_research_input_hashes_v1(loaded, config))
+    raw["times"] = {
+        key: (research_clock + timedelta(minutes=i)).isoformat().replace("+00:00", "Z")
+        for i, key in enumerate(raw["times"])
+    }
+    request_path.write_text(json.dumps(raw))
+    monkeypatch.setattr(
+        "src.experiments.canonical_experiment_identity_v1.inspect_code_provenance_v1",
+        lambda _: CanonicalCodeProvenanceV1(SHA, "CLEAN"),
+    )
+    research_args = [
+        *learning_args[:-1],
+        "research",
+        *sources,
+        "--shadow-handoff-digest",
+        handoff["handoff_digest"],
+        "--request",
+        str(request_path),
+        "--bars",
+        str(bars_path),
+        "--config",
+        str(config_path),
+    ]
+    request_path.write_text(json.dumps({**raw, "evidence_source_class": "DECLARED_OFFLINE_DATA"}))
+    with pytest.raises(SystemExit, match="2"):
+        learning_main(research_args)
+    assert "OFFLINE_RESEARCH_I17_SHADOW_HANDOFF_MISMATCH" in capsys.readouterr().err
+    assert not (offline_root / "offline-ddo-research" / "i17").exists()
+    request_path.write_text(json.dumps(raw))
+    assert learning_main(research_args) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["status"] == "MECHANISM_PASS", result
+    assert result["evaluation"]["economic_status"] == "BLOCKED"
+    research = offline_root / "offline-ddo-research" / "i17"
+    bound = read_v1(research / "request.json")
+    assert bound["learning_evidence"] == evidence
+    assert bound["shadow_handoff_digest"] == handoff["handoff_digest"]
+    assert bound["optimization_admission"]["status"] == "ACCEPTED_OFFLINE_RESEARCH_INPUT"
+    assert bound["request"]["instrument_id"] == native
     assert archive_digests() == original_digests
 
     def fails(ref, at, reason):
@@ -1116,6 +1204,13 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
         1,
         {"ok": False, "blockers": ["SOURCE_SHA256_MISMATCH"]},
     )
+    with pytest.raises(SystemExit, match="2"):
+        learning_main([*learning_args, *sources])
+    assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
+    assert learning_ledger.read_bytes() == learning_bytes
+    with pytest.raises(SystemExit, match="2"):
+        learning_main(research_args)
+    assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
 
 
 def test_flat_shadow_mark_window_seals_abort_without_completed_decision(run_two_hour_shadow):

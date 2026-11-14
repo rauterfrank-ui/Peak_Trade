@@ -81,3 +81,61 @@ receipts. A conflicting request for the same cycle is rejected. If either
 search is exhausted, the result retains that disposition. An interrupted
 native measurement whose original prepared request is missing stays fenced
 by the native research owner.
+
+## Recurring offline research
+
+The [campaign command](../../../scripts/ops/run_recurrent_offline_research_v1.py)
+performs one bounded tick. Schedule it with the host scheduler at the desired
+interval. Each tick discovers finalized Paper archives and completed I17
+follow-ups, checks their original evidence, and handles up to the configured
+number of jobs. Each admitted learning digest gets one durable job and one
+completion record. A retry uses the original paths, exact dataset and
+configuration hashes, profile, original logical phase clocks, and selected
+history. Blocked sources get a retry time.
+
+The campaign file is local JSON. Set absolute canonical paths for `state`,
+`paper_runs`, `shadow_runs`, and `shadow_follow_ups`. Set positive
+`jobs_per_tick`, `retry_seconds`, and `history_jobs`. Map each canonical
+instrument ID in `research_inputs` to a list of descriptors containing
+`template`, `bars`, and `config` paths. Each template is an
+`offline_research_input.v1` JSON object with `schema_version`,
+`instrument_id`, `bars_csv_sha256`, `backtest_json_sha256`, and `profile`.
+The profile uses the existing research profile fields. Set
+`gap_dimensions` to an empty list and omit phase clocks. The tick supplies
+phase clocks and the actual observed surface. New dataset versions have
+distinct `bars_known_at` values. Keep previously selected files available
+for restart. New jobs use the latest version already available at the tick.
+With no eligible dataset, the source waits. The state is outside the repo
+and source archives.
+
+```bash
+./scripts/pt scripts/ops/run_recurrent_offline_research_v1.py --campaign /absolute/campaign.json
+```
+
+- Paper uses the sealed original decision, fills and Accounting close. The
+  learning horizon is `SIMULATED_POSITION_LIFECYCLE`. The research request
+  retains net PnL as a decimal string in the original quote currency.
+- Shadow verifies the original I17 archive, O4 archive and saved DDO state.
+  The binding retains the Mark log return, start/end and bar count. The
+  observation has no fills.
+- The native provider measures the declared backtest CSV and config. A
+  candidate inherits the learning digest as lineage. Meta reads prior
+  measured packets of the same instrument and strategy version after the
+  earlier jobs have completed. For an identical input descriptor and
+  observation surface, the search counts already measured regions as
+  covered, including receipts outside the current Meta window. A new
+  dataset gets its own measurements.
+- A Paper descriptor may supply `paper_fee_tolerance_bps`. The Reality Gap
+  compares the backtest taker fee in bps with the original simulated fees
+  divided by total simulated fill notional in the same quote currency.
+  The comparison measures model parity. Without a comparable observation
+  the gap step is `INCOMPLETE`.
+- GVEF compares the two new native packets when both exist. Its mechanical
+  verdict determines the bounded follow-up. Economic qualification and
+  trading authority retain their existing owners. The campaign consumes
+  saved observations and research datasets.
+
+The saved Paper and I17 observations precede the new parameter candidate.
+A candidate-specific Reality Gap requires a separate, later observation of
+that candidate under a comparable measurement contract. The campaign records
+exploratory feedback and leaves that comparative evidence open.

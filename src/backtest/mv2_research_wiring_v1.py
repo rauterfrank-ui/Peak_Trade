@@ -81,6 +81,9 @@ from src.experiments.stress_tests import (
     StressTestSuiteResult,
     run_stress_test_suite,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.constants_v1 import (
+    CANONICAL_INSTRUMENT_ID as OKX_EEA_XPERP_CANONICAL_INSTRUMENT_ID,
+)
 from src.risk.limits import RiskLimits, RiskLimitsConfig
 from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0 import (
     DecisionFunnelAccumulatorV0,
@@ -626,7 +629,8 @@ def _ensure_supported_instrument(
         )
     elif admission_mode == STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1:
         _fail_closed(
-            not instrument_id.startswith("okx_eea:"),
+            not instrument_id.startswith("okx_eea:")
+            and instrument_id != OKX_EEA_XPERP_CANONICAL_INSTRUMENT_ID,
             "instrument_not_okx_eea_canonical_for_current_admission",
         )
     else:

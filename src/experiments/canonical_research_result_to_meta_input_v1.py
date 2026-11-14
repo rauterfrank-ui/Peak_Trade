@@ -160,7 +160,8 @@ def _bind_unit(request: ResearchResultMetaInputV1):
         "robustness_content_sha256": robustness["integrity"]["content_sha256"],
         "comparison_identity": comparison["comparison_identity"],
     }
-    return unit, loop["failure_records"], [loop["reality_gap_record"]], binding
+    gap = loop["reality_gap_record"]
+    return unit, loop["failure_records"], [gap] if gap is not None else [], binding
 
 
 def build_meta_learning_from_research_results_v1(

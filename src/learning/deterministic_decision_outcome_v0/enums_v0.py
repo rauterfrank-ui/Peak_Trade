@@ -114,12 +114,15 @@ OUTCOME_SCALAR_KIND_V0: Final[tuple[str, ...]] = (
 )
 
 # Explicit evaluation horizons. Numeric bar/count policy remains unbound.
+SIMULATED_POSITION_LIFECYCLE_V1: Final[str] = "SIMULATED_POSITION_LIFECYCLE"
+NET_PNL_QUOTE_CURRENCY_V1: Final[str] = "NET_PNL_QUOTE_CURRENCY"
 EVALUATION_HORIZON_V0: Final[tuple[str, ...]] = (
     "DECISION_TIME",
     "IMMEDIATE_POST_EVENT",
     "EVENT_RECOVERY",
     "N_BARS",
     "POSITION_LIFECYCLE",
+    SIMULATED_POSITION_LIFECYCLE_V1,
     UNKNOWN,
 )
 
