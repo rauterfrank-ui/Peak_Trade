@@ -107,6 +107,9 @@ PAPER_SHADOW_FILES = frozenset(
 RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST = (
     RESIDUAL_SCHEDULE_WORKFLOW_FILES - GH001_MANUAL_ONLY_FORMER_RESIDUAL
 )
+# The independent offline full-suite workflow has its own nightly trigger
+# contract in test_ci_full_suite_shard_v1. It is not a PR-B scorecard.
+FULL_HEALTH_WORKFLOW = "test-health-automation.yml"
 
 
 def _all_workflow_filenames() -> frozenset[str]:
@@ -152,6 +155,15 @@ def test_market_info_daily_includes_ai_cost_hint() -> None:
     assert "infostream" in lowered
     assert "market_outlook_automation.yml" not in lowered
     assert "ai" in lowered or "openai" in lowered or "skip_ai" in lowered
+
+
+def test_active_full_health_workflow_is_not_listed_as_manual_only() -> None:
+    path = f".github/workflows/{FULL_HEALTH_WORKFLOW}"
+    manual = json.loads(_run_cli("--intent", "all", "--json").stdout)
+    assert path not in {row["workflow_file"] for row in manual["recommendations"]}
+    health = json.loads(_run_cli("--intent", "health_suite", "--json").stdout)
+    full = next(row for row in health["recommendations"] if row["workflow_file"] == path)
+    assert full["has_active_schedule"] is True
 
 
 def test_json_mode_valid_and_contains_guard() -> None:
@@ -432,7 +444,7 @@ def test_residual_schedule_files_match_script_inventory_v0() -> None:
 
 
 def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
-    """Repo-wide: only GH residual allowlist workflows may have active on.schedule."""
+    """Require the five residual cron workflows and the independently tested offline suite."""
     pytest.importorskip("yaml")
     on_disk = _all_workflow_filenames()
     missing_inventory = RESIDUAL_SCHEDULE_WORKFLOW_FILES - on_disk
@@ -444,7 +456,7 @@ def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
         if rec.has_active_schedule:
             active.add(fname)
 
-    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST)
+    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST) | {FULL_HEALTH_WORKFLOW}
     extra = active - allowlist
     missing_active = allowlist - active
     assert not extra, f"unexpected active schedule workflows: {sorted(extra)}"

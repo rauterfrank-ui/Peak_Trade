@@ -1110,7 +1110,15 @@ def test_navigation_requires_source_validation_pass(tmp_path: Path) -> None:
     assert all(
         edge["review_note"]["review_kind"] == "STATIC_REVIEW_NOTE_ONLY"
         and edge["review_note"]["source_refs_complete"]
+        and edge["review_note"]["handoff_kind"] != "UNCLASSIFIED"
+        and edge["census_source_object"]
+        and edge["census_target_object"]
+        and edge["census_contract_or_payload"]
         for edge in result.unresolved_edges
+    )
+    unresolved_ids = {edge["edge_id"] for edge in result.unresolved_edges}
+    assert unresolved_ids.isdisjoint(
+        edge["edge_id"].removeprefix("census:") for edge in result.edges
     )
     assert not result.coverage["CURRENT_GRAPH_VERIFIED"]
 

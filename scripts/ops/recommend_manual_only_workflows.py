@@ -45,7 +45,6 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
         "ops_doctor_dashboard.yml",
         "ops_doctor_pages.yml",
         "prj-scheduled-shadow-paper-features-smoke.yml",
-        "test-health-automation.yml",
         "test_health.yml",
         "weekly_core_audit.yml",
     }
@@ -162,7 +161,7 @@ STATIC_META: dict[str, dict[str, Any]] = {
         },
     },
     "test-health-automation.yml": {
-        "why": "Full test-health automation suite (former nightly schedule).",
+        "why": "Full test-health automation suite with an active nightly schedule and manual dispatch.",
         "risk": "high — long-running matrix; use profile wisely.",
         "variable_gates": "",
         "ai": False,
