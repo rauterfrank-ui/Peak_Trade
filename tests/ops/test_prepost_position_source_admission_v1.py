@@ -7,6 +7,7 @@ import socket
 import pytest
 from tests.ops._current_post_safety_fixture_v1 import (
     synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+    synthetic_current_post_pending_context_v1,
 )
 
 from src.data.safety import DataSourceKind
@@ -18,6 +19,7 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     build_final_order_envelope_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
@@ -284,17 +286,21 @@ def test_original_post_caller_preserves_reason_before_any_durable_go_or_send(tmp
         forbid,
     )
     rows = [row("2")]
+    order = envelope()
+    read_transport = Port(global_rows=rows, scoped_rows=rows)
+    account = read_transport.base.payloads[ENDPOINT_ACCOUNT_CONFIG]["data"][0]["uid"]
     with pytest.raises(
         caller.CurrentProductiveActualVenuePostError, match="NEW_ENTRY_REQUIRES_ACCOUNT_FLAT"
     ):
         caller.execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
             owner_go=caller.OWNER_GO,
             baseline_origin_main_sha=caller.EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            envelope=envelope(),
+            envelope=order,
             store_root=tmp_path,
             perform_real_venue_post=True,
             k1_backend=object(),
-            read_only_get_transport=Port(global_rows=rows, scoped_rows=rows),
+            read_only_get_transport=read_transport,
+            post_pending_context=synthetic_current_post_pending_context_v1(order, account=account),
             execution_integrity_backend=_clean_post_integrity(),
         )
     assert not list(tmp_path.glob("*.json"))

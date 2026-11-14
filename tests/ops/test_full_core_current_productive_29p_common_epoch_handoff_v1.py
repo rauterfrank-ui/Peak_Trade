@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 import json
 from pathlib import Path
 from typing import Any
@@ -83,7 +84,7 @@ _INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md"
-ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+ATLAS_INVENTORY = REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz"
 _TEST_INST = "ADA-USDT-SWAP"
 _TEST_TD = "cross"
 _EPOCH = "2026-09-22T05:14:58Z"
@@ -551,9 +552,14 @@ def test_producer_and_step29p_evaluator_invoked() -> None:
 
 def test_ssot_docs_once_present() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert SPEC_PATH.is_file()
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1" in spec
-    assert "11.2.1.EI" in atlas
-    assert "current_productive_29p_common_epoch_handoff_v1.py" in atlas
+    assert "11.2.1.EI" in spec
     assert "COMMON_EPOCH" in spec or "common-epoch" in spec.lower()
+    owner = (
+        "src/ops/governed_productive_account_equity_authority_producer_v1/"
+        "current_productive_29p_common_epoch_handoff_v1.py"
+    )
+    with gzip.open(ATLAS_INVENTORY, "rt", encoding="utf-8") as inventory:
+        paths = {json.loads(row)["path"] for row in inventory}
+    assert owner in paths
+    assert SPEC_PATH.relative_to(REPO_ROOT).as_posix() in paths

@@ -177,16 +177,18 @@ def test_baseline_pin_is_post_6946_recorded_rebind() -> None:
 
 
 def test_direct_envelope_path_without_read_transport_blocks_post(tmp_path: Path) -> None:
+    envelope = _envelope()
     with pytest.raises(CurrentProductiveActualVenuePostError, match="PRE_MUTATION_READ_TRANSPORT"):
         execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
             owner_go=OWNER_GO,
             baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            envelope=_envelope(),
+            envelope=envelope,
             store_root=tmp_path,
             evidence_root=tmp_path / "ev",
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             read_only_get_transport=None,
+            post_pending_context=synthetic_current_post_pending_context_v1(envelope),
             execution_integrity_backend=_clean_post_integrity(),
         )
     assert not (

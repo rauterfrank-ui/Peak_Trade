@@ -32,12 +32,16 @@ Real execution is explicit via
 
 ## Scope of the current controls
 
-The POST Owner-GO string names the capability. The operator CLI supplies that
-string after explicit confirmation. The consume record binds the string and
-repository baseline to the selected store root. A separate permit binds the
-envelope digest and has its own durable consume record. The transport rechecks
-the safety veto and the original execution context before signing and before
-opening the socket.
+The POST Owner-GO string names the capability. The direct runtime requires the
+original pending-order observation before private preflight GETs and rechecks
+it before consuming POST Owner-GO. The operator CLI offers the local
+pre-live checklist. It refuses the historical submit flag before envelope
+read or K1 access because it cannot supply the original account observer.
+
+The consume record binds the string and repository baseline to the selected
+store root. A separate permit binds the envelope digest and has its own
+durable consume record. The transport rechecks the safety veto and the
+original execution context before signing and before opening the socket.
 
 The current POST Owner-GO verifier checks the consume record in the supplied
 root. Its record carries no authenticated per-order grant ID, expiry or

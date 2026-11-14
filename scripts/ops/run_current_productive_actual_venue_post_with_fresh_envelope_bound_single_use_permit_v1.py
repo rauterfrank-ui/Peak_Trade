@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Explicit governed runtime: one bounded Enter-order POST (Owner-GO scoped)."""
+"""Local Enter pre-live checklist. The CLI cannot supply the original account observer."""
 
 from __future__ import annotations
 
@@ -54,23 +54,36 @@ def _load_envelope(path: Path):
 
 
 def _main() -> int:
-    parser = argparse.ArgumentParser(description="One-shot Enter POST (governed)")
+    parser = argparse.ArgumentParser(description="One-shot Enter pre-live checklist")
     parser.add_argument("--store-root", type=Path, required=True)
     parser.add_argument("--envelope-json", type=Path, required=True)
-    parser.add_argument("--evidence-root", type=Path, default=None)
+    # Keep old invocations parseable so they receive the explicit submit refusal.
+    parser.add_argument("--evidence-root", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--pre-live-only", action="store_true")
     parser.add_argument(
         "--confirm-real-venue-post",
         action="store_true",
-        help="Required to perform the single authorized HTTP POST",
+        help="Legacy submit flag. Refused because the CLI lacks the original pending observation.",
     )
     parser.add_argument(
         "--k1-backend",
         choices=("none", "macos"),
         default="none",
-        help="Pre-live / POST join K1 lookup backend (macos requires canonical K1 Owner-GO scope)",
+        help="Pre-live K1 lookup backend configuration",
     )
     args = parser.parse_args()
+    if args.confirm_real_venue_post:
+        print("FAIL_CLOSED:POST_PENDING_CONTEXT_REQUIRED:OPERATOR_CLI", file=sys.stderr)
+        return 2
+    if not args.pre_live_only:
+        print("FAIL_CLOSED: pass --pre-live-only for the local checklist", file=sys.stderr)
+        return 2
+    if args.k1_backend != "macos":
+        print(
+            "FAIL_CLOSED: --pre-live-only requires --k1-backend macos for PRE_LIVE_PROOF_COMPLETE",
+            file=sys.stderr,
+        )
+        return 2
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 import (
         K1_OPAQUE_SIGNING_OWNER_GO,
@@ -79,86 +92,22 @@ def _main() -> int:
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
         EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
         OWNER_GO,
-        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
         prove_pre_live_actual_venue_post_readiness_v1,
     )
 
-    def _resolve_k1_backend():
-        if args.k1_backend == "macos":
-            return resolve_macos_security_framework_k1_lookup_backend_v1(
-                k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO
-            )
-        return None
-
     envelope = _load_envelope(args.envelope_json)
-    if args.pre_live_only:
-        k1_backend = _resolve_k1_backend()
-        if k1_backend is None:
-            print(
-                "FAIL_CLOSED: --pre-live-only requires --k1-backend macos for PRE_LIVE_PROOF_COMPLETE",
-                file=sys.stderr,
-            )
-            return 2
-        proof = prove_pre_live_actual_venue_post_readiness_v1(
-            owner_go=OWNER_GO,
-            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            envelope=envelope,
-            store_root=args.store_root,
-            k1_backend=k1_backend,
-        )
-        print(json.dumps(proof, sort_keys=True))
-        return 0 if proof.get("PRE_LIVE_PROOF_COMPLETE") == "true" else 2
-    if args.confirm_real_venue_post is not True:
-        print(
-            "FAIL_CLOSED: pass --confirm-real-venue-post to authorize the single POST",
-            file=sys.stderr,
-        )
-        return 2
-    k1_backend = _resolve_k1_backend()
-    if k1_backend is None:
-        print(
-            "FAIL_CLOSED: real POST requires --k1-backend macos",
-            file=sys.stderr,
-        )
-        return 2
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
-        open_current_productive_k1_opaque_signing_handle_session_v1,
+    k1_backend = resolve_macos_security_framework_k1_lookup_backend_v1(
+        k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO
     )
-    from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
-        FullCoreProductiveReadOnlyGetTransportV1,
+    proof = prove_pre_live_actual_venue_post_readiness_v1(
+        owner_go=OWNER_GO,
+        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        envelope=envelope,
+        store_root=args.store_root,
+        k1_backend=k1_backend,
     )
-
-    with open_current_productive_k1_opaque_signing_handle_session_v1(
-        owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
-        backend=k1_backend,
-    ) as session:
-        read_transport = FullCoreProductiveReadOnlyGetTransportV1(
-            handle=session.signing_handle,
-            max_request_count=24,
-        )
-        result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-            owner_go=OWNER_GO,
-            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            envelope=envelope,
-            store_root=args.store_root,
-            evidence_root=args.evidence_root,
-            perform_real_venue_post=True,
-            k1_backend=k1_backend,
-            opener_factory=None,
-            read_only_get_transport=read_transport,
-        )
-    print(
-        json.dumps(
-            {
-                "POST_OUTCOME": result.post_outcome,
-                "REAL_VENUE_POST_PERFORMED": result.real_venue_post_performed,
-                "EVIDENCE_ROOT": result.evidence_root,
-                "MANIFEST_VERIFY_RC": result.manifest_verify_rc,
-            },
-            sort_keys=True,
-        )
-    )
-    return 0
+    print(json.dumps(proof, sort_keys=True))
+    return 0 if proof.get("PRE_LIVE_PROOF_COMPLETE") == "true" else 2
 
 
 if __name__ == "__main__":
