@@ -117,14 +117,14 @@ def resolve_strategy_signal_encoding_class_v1(
 def _extract_cycle_signal_value(
     binding: StrategySignalBindingResultV1,
     *,
-    trading_epoch: int,
+    signal_index: int,
 ) -> int:
     signals = binding.signals
     if signals is None or len(signals) == 0:
         raise StrategySuitabilityAgreementErrorV1("missing_cycle_signal")
-    if trading_epoch < 0 or trading_epoch >= len(signals):
+    if signal_index < 0 or signal_index >= len(signals):
         raise StrategySuitabilityAgreementErrorV1("missing_cycle_signal")
-    raw = signals.iloc[trading_epoch]
+    raw = signals.iloc[signal_index]
     try:
         value = int(raw)
     except (TypeError, ValueError) as exc:
@@ -215,13 +215,14 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
     *,
     instrument_id: str,
     trading_epoch: int,
+    signal_index: int | None = None,
     expected_configured_strategy_id: Optional[str] = None,
     expected_executed_strategy_id: Optional[str] = None,
     expected_strategy_version: Optional[str] = None,
     expected_strategy_params_digest: Optional[str] = None,
     expected_strategy_signal_digest: Optional[str] = None,
 ) -> StrategySuitabilityAgreementMaterialV1:
-    """Normalize a bound strategy signal cycle into master_v2 agreement material."""
+    """Bind the selected signal to a decision epoch, defaulting to the same index."""
     if not isinstance(binding, StrategySignalBindingResultV1):
         raise StrategySuitabilityAgreementErrorV1("stub_or_unknown_strategy_semantics")
     provenance: StrategySignalProvenanceV1 = binding.provenance
@@ -263,7 +264,9 @@ def normalize_strategy_signal_to_suitability_agreement_material_v1(
     if encoding_class is StrategySignalEncodingClassV1.UNKNOWN_OR_STUB_V1:
         raise StrategySuitabilityAgreementErrorV1("stub_or_unknown_strategy_semantics")
 
-    cycle_signal_value = _extract_cycle_signal_value(binding, trading_epoch=trading_epoch)
+    cycle_signal_value = _extract_cycle_signal_value(
+        binding, signal_index=trading_epoch if signal_index is None else signal_index
+    )
     if executed_id == _BOLLINGER_EVENT_ONLY_OWNER:
         # OBL_B07: Bollinger EVENT_ONLY contract is the event authority.
         # Does not invent LONG/SHORT or classic-engine direction.

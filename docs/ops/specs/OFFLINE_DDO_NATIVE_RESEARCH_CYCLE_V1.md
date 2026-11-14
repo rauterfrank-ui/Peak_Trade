@@ -196,3 +196,35 @@ uncertainty estimate with that difference. A two-hour observation can test the
 data flow. The responsible owner must ratify the evaluation horizon, required
 sample size, uncertainty method and pass thresholds before a quality claim.
 Incomplete or incomparable evidence leaves the verdict `BLOCKED`.
+
+## Historical I17 candidate comparison
+
+The [I17 comparison command](../../../scripts/ops/run_i17_candidate_comparison_v1.py)
+revalidates the frozen GVEF pair and the original sealed I17 decision and
+market ledgers. It runs the existing I17 observation bridge twice, starting
+each profile in its own local state. The strategy registry in both runs
+contains the same canonical `ma_crossover` entry. Both runs use the same
+recorded Mark observations, original decision times and I17 safety inputs.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py \
+  --state /absolute/i17-comparison --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/qualified-i17/evidence --capture-public-last
+```
+
+The optional capture performs one public OKX EEA request for finalized hourly
+Last candles and retains the original response and capture times. Replace
+`--capture-public-last` with `--verify` to recompute the result from the saved
+inputs. For each cycle, the MA uses only candles that had closed by the
+original decision time. The hourly candle index and I17 decision epoch are
+different coordinates. The receipt records both, the strategy parameter and
+signal digests, the Suitability output when that owner was reached, and the
+Double Play outcome. The bridge reads the same existing governed parameter
+seam for both arms. The comparison carries authority `NONE`.
+
+The hourly Last data was retrieved retrospectively. This fixture shows
+historical decision behavior under the specified profiles. A prospective
+I17 observation requires the profiles and candle availability to be bound
+before the decisions under study, followed by independent, comparable
+measurements for any Reality Gap.

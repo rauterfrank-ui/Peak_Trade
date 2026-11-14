@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, field
+import re
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -191,6 +192,10 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
     scope_direction_from_side_state_v1,
+)
+from trading.master_v2.strategy_suitability_agreement_material_v1 import (
+    StrategySuitabilityAgreementMaterialV1,
+    serialize_strategy_suitability_agreement_material_v1,
 )
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -583,6 +588,43 @@ class HardenedBridgeSessionStateV2:
         return self.typed_volatility_cmc_binding_host
 
 
+@dataclass(frozen=True)
+class I17OfflineCandidateInputV2:
+    artifact_digest: str
+    entry: SuitabilityStrategyEntryV1
+    material: StrategySuitabilityAgreementMaterialV1
+
+    def __post_init__(self) -> None:
+        if (
+            not re.fullmatch(r"[a-f0-9]{64}", self.artifact_digest)
+            or self.entry.disabled
+            or self.entry.strategy_id != self.material.executed_strategy_id
+            or self.entry.strategy_id != self.material.configured_strategy_id
+        ):
+            raise ValueError("I17_CANDIDATE_PROFILE_MISMATCH")
+
+
+def _candidate_receipt(candidate: I17OfflineCandidateInputV2, replay: Any) -> dict[str, Any]:
+    suitability = {}
+    if replay.intermediate is not None:
+        for side, result in (
+            ("long", replay.intermediate.bull_suitability),
+            ("short", replay.intermediate.bear_suitability),
+        ):
+            if result is not None:
+                suitability[side] = {
+                    "status": result.status.value,
+                    "eligible_strategy_ids": list(result.eligible_strategy_ids),
+                    "selected_strategy_id": result.selected_strategy_id,
+                    "reason_codes": list(result.reason_codes),
+                }
+    return {
+        "artifact_digest": candidate.artifact_digest,
+        "material": serialize_strategy_suitability_agreement_material_v1(candidate.material),
+        "suitability": suitability,
+    }
+
+
 def _update_session_state_from_replay(state: HardenedBridgeSessionStateV2, *, result: Any) -> None:
     if result.intermediate is None:
         state.last_evaluated_trading_epoch = state.trading_epoch
@@ -651,6 +693,7 @@ def _resolve_hardening_v2_layer_c_volatility_estimate_v1(raw_volatility_estimate
 def _resolve_governed_seam_record_for_hardening_v2_session_bind_v1(
     *,
     repo_root: Path,
+    allow_bootstrap: bool = True,
 ) -> tuple[Mapping[str, Any] | None, str]:
     """Canonical F1/M9 runtime-applied seam for Hardening-V2 session bind (no parallel authority)."""
     from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
@@ -684,7 +727,7 @@ def _resolve_governed_seam_record_for_hardening_v2_session_bind_v1(
         repo_root=repo_root,
     )
     seam = resolve_runtime_applied_seam_for_consumer_wiring_v1(wiring_request)
-    if seam is None:
+    if seam is None and allow_bootstrap:
         bootstrap = ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1(
             repo_root=repo_root,
             apply_ledger_paths=apply_paths,
@@ -708,6 +751,7 @@ def ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
     *,
     session_id: str,
     repo_root: Path | None = None,
+    allow_bootstrap: bool = True,
 ) -> None:
     """Session-bind authorized productive parameter seam before F1/M9 consumer evaluation."""
     from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
@@ -725,7 +769,7 @@ def ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
     if read_session_bound_seam_for_runtime_transport_v1(state) is not None:
         return
     seam, fail_reason = _resolve_governed_seam_record_for_hardening_v2_session_bind_v1(
-        repo_root=root
+        repo_root=root, allow_bootstrap=allow_bootstrap
     )
     if seam is None:
         code = fail_reason or "GOVERNED_SEAM_RECORD_UNAVAILABLE"
@@ -755,6 +799,7 @@ def run_hardened_bridge_cycle_v2(
     finalized_pt1m_transport: ObservationTransportMetadataV1 | None = None,
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
+    offline_candidate: I17OfflineCandidateInputV2 | None = None,
 ) -> dict[str, Any]:
     if state.session_restart_policy != SESSION_RESTART_POLICY:
         raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
@@ -762,10 +807,22 @@ def run_hardened_bridge_cycle_v2(
         raise RuntimeError("SESSION_ID_MUTATION_FORBIDDEN_NO_IMPLICIT_RESUME")
     if ddo_capture_binding is not None and ddo_repository_sha is None:
         raise ValueError("DDO_CAPTURE_REPOSITORY_SHA_REQUIRED")
+    if offline_candidate is not None and (
+        offline_candidate.material.instrument_id != state.instrument_id
+        or offline_candidate.material.trading_epoch != state.trading_epoch
+        or forced_actionable is not None
+        or ddo_capture_binding is not None
+        or state.decision_config_state_root is not None
+        or state.typed_volatility_persistence_path is not None
+        or state.max_age_research_evidence_ledger_path is not None
+        or state.productive_evidence_accumulation_state is not None
+    ):
+        raise ValueError("I17_CANDIDATE_REQUIRES_ISOLATED_OFFLINE_CYCLE")
     state.session_id = session_id
     ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         state,
         session_id=session_id,
+        allow_bootstrap=offline_candidate is None,
     )
     state.cycle_index += 1
     state.append_mid(mid_price)
@@ -807,6 +864,19 @@ def run_hardened_bridge_cycle_v2(
         initial_equity=str(params.initial_equity),
         feature_window_min=FEATURE_WINDOW_MIN,
     )
+    if offline_candidate is not None:
+        config_digest = hashlib.sha256(
+            json.dumps(
+                {
+                    "bridge_config_digest": config_digest,
+                    "artifact_digest": offline_candidate.artifact_digest,
+                    "parameters_digest": offline_candidate.material.strategy_params_digest,
+                    "strategy_version": offline_candidate.material.strategy_version,
+                    "entry": asdict(offline_candidate.entry),
+                },
+                sort_keys=True,
+            ).encode()
+        ).hexdigest()
     if state.config_digest and state.config_digest != config_digest:
         raise RuntimeError(f"CONFIG_DRIFT:{state.config_digest}:{config_digest}")
     state.config_digest = config_digest
@@ -832,6 +902,11 @@ def run_hardened_bridge_cycle_v2(
             sort_keys=True,
         ).encode("utf-8")
     ).hexdigest()
+
+    if offline_candidate is not None:
+        input_digest = hashlib.sha256(
+            f"{input_digest}:{offline_candidate.material.material_digest}".encode()
+        ).hexdigest()
 
     market_context = with_computed_input_digest(
         CanonicalMarketContextV1(
@@ -1040,7 +1115,14 @@ def run_hardened_bridge_cycle_v2(
             last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
             last_signal_strength=float(features.momentum_features.get("roc", 0.0)),
         ),
-        strategy_registry=_strategy_registry(),
+        strategy_registry=(
+            _strategy_registry()
+            if offline_candidate is None
+            else SuitabilityStrategyRegistryV1(entries=(offline_candidate.entry,))
+        ),
+        strategy_suitability_agreement_material=(
+            None if offline_candidate is None else offline_candidate.material
+        ),
         regime_id=features.regime_id if features.ok else "unclassified",
         regime_status=(
             SuitabilityRegimeStatus.KNOWN if features.ok else SuitabilityRegimeStatus.UNKNOWN
@@ -1286,6 +1368,10 @@ def run_hardened_bridge_cycle_v2(
             "AI_LAYER_NON_AUTHORITY",
         ],
     }
+    if offline_candidate is not None:
+        cycle["offline_candidate"] = _candidate_receipt(offline_candidate, replay)
+        seam = state.governed_authorized_productive_parameter_seam_record or {}
+        cycle["offline_candidate"]["governed_seam_digest"] = seam.get("seam_digest")
     if ddo_capture is not None:
         ddo_capture["cycle_id"] = ddo_capture_binding.capture_cycle_id
         ddo_capture["unpersisted_record_count"] = len(
