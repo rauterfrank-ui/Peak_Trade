@@ -86,6 +86,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     map_replay_result_to_intended_analytical_action_v1,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationAcceptanceResultV1,
     ObservationTransportMetadataV1,
 )
 from trading.market_state.time_sample_epoch_semantics_v1 import MarketSampleIdentityV1
@@ -165,6 +166,9 @@ from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentPolicyV1,
     DirectionalAssessmentSide,
     DirectionalConfirmationStateV1,
+)
+from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
+    DirectionalConfirmationSideStateCarrierV1,
 )
 from trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
@@ -567,6 +571,7 @@ class HardenedBridgeSessionStateV2:
     # Optional: pre-bound authorized productive parameter seam (transport-only join).
     governed_authorized_productive_parameter_seam_record: Mapping[str, Any] | None = None
     last_f1_m9_threshold_consumer_wiring: dict[str, Any] | None = None
+    offline_confirmation_progress: DirectionalConfirmationSideStateCarrierV1 | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -593,13 +598,18 @@ class I17OfflineCandidateInputV2:
     artifact_digest: str
     entry: SuitabilityStrategyEntryV1
     material: StrategySuitabilityAgreementMaterialV1
+    observation: ObservationAcceptanceResultV1
 
     def __post_init__(self) -> None:
+        instrument_key = self.observation.state_before.bound_instrument_key
         if (
             not re.fullmatch(r"[a-f0-9]{64}", self.artifact_digest)
             or self.entry.disabled
             or self.entry.strategy_id != self.material.executed_strategy_id
             or self.entry.strategy_id != self.material.configured_strategy_id
+            or self.observation.fail_closed
+            or instrument_key is None
+            or instrument_key.canonical_instrument_id != self.material.instrument_id
         ):
             raise ValueError("I17_CANDIDATE_PROFILE_MISMATCH")
 
@@ -618,9 +628,17 @@ def _candidate_receipt(candidate: I17OfflineCandidateInputV2, replay: Any) -> di
                     "selected_strategy_id": result.selected_strategy_id,
                     "reason_codes": list(result.reason_codes),
                 }
+    progress = (
+        None
+        if replay.intermediate is None
+        else replay.intermediate.directional_confirmation_progress_after
+    )
     return {
         "artifact_digest": candidate.artifact_digest,
         "material": serialize_strategy_suitability_agreement_material_v1(candidate.material),
+        "market_observation_classification": candidate.observation.classification.value,
+        "market_observation_epoch": candidate.observation.state_after.market_observation_epoch.value,
+        "directional_confirmation_progress": None if progress is None else progress.to_dict(),
         "suitability": suitability,
     }
 
@@ -818,6 +836,16 @@ def run_hardened_bridge_cycle_v2(
         or state.productive_evidence_accumulation_state is not None
     ):
         raise ValueError("I17_CANDIDATE_REQUIRES_ISOLATED_OFFLINE_CYCLE")
+    if offline_candidate is not None:
+        identity = offline_candidate.observation.observation_identity
+        if (
+            price_basis is None
+            or identity is None
+            or identity.venue_event_time != price_basis.event_ts_unix
+            or identity.mark_price != mid_price
+            or identity.mark_price != price_basis.mid_price
+        ):
+            raise ValueError("I17_CANDIDATE_MARK_OBSERVATION_MISMATCH")
     state.session_id = session_id
     ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         state,
@@ -905,7 +933,14 @@ def run_hardened_bridge_cycle_v2(
 
     if offline_candidate is not None:
         input_digest = hashlib.sha256(
-            f"{input_digest}:{offline_candidate.material.material_digest}".encode()
+            json.dumps(
+                {
+                    "bridge_input_digest": input_digest,
+                    "strategy_material_digest": offline_candidate.material.material_digest,
+                    "market_observation": offline_candidate.observation.to_dict(),
+                },
+                sort_keys=True,
+            ).encode()
         ).hexdigest()
 
     market_context = with_computed_input_digest(
@@ -1080,6 +1115,18 @@ def run_hardened_bridge_cycle_v2(
     risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
     intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
 
+    confirmation_inputs = {}
+    if offline_candidate is not None:
+        observation = offline_candidate.observation
+        bound = observation.state_before.bound_instrument_key
+        assert bound is not None  # checked by I17OfflineCandidateInputV2
+        confirmation_inputs = {
+            "observation_acceptance_result": observation,
+            "directional_confirmation_progress": state.offline_confirmation_progress,
+            "confirmation_progress_session_id": session_id,
+            "confirmation_progress_venue": bound.venue,
+            "confirmation_progress_instrument": bound,
+        }
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
@@ -1159,6 +1206,7 @@ def run_hardened_bridge_cycle_v2(
         governed_authorized_productive_parameter_seam_record=(
             state.governed_authorized_productive_parameter_seam_record
         ),
+        **confirmation_inputs,
     )
 
     ddo_capture = None
@@ -1372,6 +1420,10 @@ def run_hardened_bridge_cycle_v2(
         cycle["offline_candidate"] = _candidate_receipt(offline_candidate, replay)
         seam = state.governed_authorized_productive_parameter_seam_record or {}
         cycle["offline_candidate"]["governed_seam_digest"] = seam.get("seam_digest")
+        if replay.intermediate is not None:
+            progress = replay.intermediate.directional_confirmation_progress_after
+            if progress is not None:
+                state.offline_confirmation_progress = progress
     if ddo_capture is not None:
         ddo_capture["cycle_id"] = ddo_capture_binding.capture_cycle_id
         ddo_capture["unpersisted_record_count"] = len(

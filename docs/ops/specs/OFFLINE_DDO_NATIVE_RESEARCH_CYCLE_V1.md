@@ -205,6 +205,11 @@ market ledgers. It runs the existing I17 observation bridge twice, starting
 each profile in its own local state. The strategy registry in both runs
 contains the same canonical `ma_crossover` entry. Both runs use the same
 recorded Mark observations, original decision times and I17 safety inputs.
+The market observation acceptor evaluates the archived venue event time and
+Mark for the same instrument in both arms. A repeated event with a new receive
+time does not advance the market observation epoch. The direction confirmation
+owner consumes this accepted observation through the integrated replay and
+retains its own Long and Short progress separately for each profile.
 
 ```bash
 ./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py \
@@ -218,9 +223,10 @@ Last candles and retains the original response and capture times. Replace
 `--capture-public-last` with `--verify` to recompute the result from the saved
 inputs. For each cycle, the MA uses only candles that had closed by the
 original decision time. The hourly candle index and I17 decision epoch are
-different coordinates. The receipt records both, the strategy parameter and
-signal digests, the Suitability output when that owner was reached, and the
-Double Play outcome. The bridge reads the same existing governed parameter
+different coordinates. The receipt records both, the market observation
+epoch and classification, directional confirmation progress, and the strategy
+parameter and signal digests. It records the actual Suitability output when
+that owner is reached, the decision reasons and the Double Play outcome. The bridge reads the same existing governed parameter
 seam for both arms. The comparison carries authority `NONE`.
 
 The hourly Last data was retrieved retrospectively. This fixture shows

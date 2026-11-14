@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from datetime import datetime, timezone
 from decimal import Decimal
 from hashlib import sha256
@@ -63,6 +64,14 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.strategies.registry import build_registry_snapshot  # noqa: E402
 from src.strategies.suitability_registry_adapter_v1 import (  # noqa: E402
     build_suitability_registry_from_snapshot,
+)
+from trading.market_state.distinct_market_observation_acceptor_v1 import (  # noqa: E402
+    InstrumentObservationKeyV1,
+    ObservationCandidateV1,
+    ObservationTransportMetadataV1,
+    commit_observation_acceptance_v1,
+    evaluate_distinct_market_observation_v1,
+    initial_observation_acceptance_state_v1,
 )
 
 LAST_ENDPOINT = ROLE_PATHS["last"]
@@ -205,6 +214,11 @@ def _compare(plan, rows, candles, *, identifier):
     entry = entries[0]
     profiles = plan["profiles"]
     states = {role: HardenedBridgeSessionStateV2(instrument_id=scope) for role in profiles}
+    acceptance_state = initial_observation_acceptance_state_v1(
+        bound_instrument_key=InstrumentObservationKeyV1(
+            venue=VENUE_OKX, canonical_instrument_id=scope, venue_instrument_id=scope
+        )
+    )
     first_received = rows[0][1]["receive_ts_unix"]
     bindings = {}
     prior_close = None
@@ -231,6 +245,25 @@ def _compare(plan, rows, candles, *, identifier):
             mid_price=original["mid_price"],
             source="caller_supplied_offline",
         )
+        accepted = evaluate_distinct_market_observation_v1(
+            acceptance_state,
+            ObservationCandidateV1(
+                venue=tick.venue,
+                canonical_instrument_id=tick.instrument_id,
+                venue_instrument_id=scope,
+                venue_event_time=tick.event_ts_unix,
+                mark_price=tick.mid_price,
+                transport=ObservationTransportMetadataV1(
+                    receive_time=tick.receive_ts_unix, wallclock_now=decided
+                ),
+            ),
+        )
+        if accepted.fail_closed:
+            raise ValueError(f"I17_COMPARISON_C1_REJECTED:{accepted.reason_code}")
+        if accepted.strategy_advance_allowed:
+            acceptance_state = commit_observation_acceptance_v1(
+                current_state=acceptance_state, result=accepted
+            )
         arms = {}
         for role, binding in bindings.items():
             state = states[role]
@@ -249,7 +282,7 @@ def _compare(plan, rows, candles, *, identifier):
                 wall_now_unix=decided,
                 session_id=f"i17-offline-{identifier[:20]}-{role}",
                 offline_candidate=I17OfflineCandidateInputV2(
-                    profiles[role]["packet"], entry, material
+                    profiles[role]["packet"], entry, material, accepted
                 ),
             )
             cycle = observation.bridge_cycle
@@ -261,6 +294,7 @@ def _compare(plan, rows, candles, *, identifier):
                 "selected_side": cycle["selected_side"],
                 "intended_action": cycle["intended_action"]["intent_action"],
                 "safety_result": cycle["safety_result"],
+                "decision_reason_codes": cycle["reason_codes"],
                 "analytical_equity": cycle["economic_metrics"]["equity"],
                 "typed_volatility_present": cycle[
                     "canonical_market_context_typed_estimate_present"
@@ -311,7 +345,17 @@ def compare_v1(workspace, *, plan, evidence_root, code_sha, capture_last=False, 
             },
             **binding,
             "cycle_count": len(cycles),
+            "market_observation_classifications": dict(
+                Counter(a["market_observation_classification"] for a, _ in results)
+            ),
             "typed_volatility_cycles": sum(a["typed_volatility_present"] for a, _ in results),
+            "directional_confirmation_cycles": {
+                role: sum(
+                    row["arms"][role]["directional_confirmation_progress"] is not None
+                    for row in cycles
+                )
+                for role in plan["profiles"]
+            },
             "suitability_cycles": {
                 "reference": sum(bool(a["suitability"]) for a, _ in results),
                 "candidate": sum(bool(b["suitability"]) for _, b in results),

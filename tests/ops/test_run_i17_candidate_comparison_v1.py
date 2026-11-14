@@ -19,6 +19,12 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.strategies.registry import build_registry_snapshot
 from src.strategies.suitability_registry_adapter_v1 import build_suitability_registry_from_snapshot
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    InstrumentObservationKeyV1,
+    ObservationCandidateV1,
+    evaluate_distinct_market_observation_v1,
+    initial_observation_acceptance_state_v1,
+)
 
 
 def _pair_and_candles():
@@ -67,15 +73,24 @@ def test_same_final_hour_prefix_binds_two_real_i17_epochs():
                 f"original-{sequence}",
             )
         )
+    now, repeated, decision_id = rows[-1]
+    rows.append(
+        (now + 1.0, dict(repeated, sequence=3, receive_ts_unix=now + 0.1), decision_id + "-repeat")
+    )
     cycles = _compare(plan, rows, bars, identifier="1" * 64)
     assert [cycle["last_candle_close_utc"] for cycle in cycles] == [
         "2026-11-14T17:00:00+00:00",
+        "2026-11-14T18:00:00+00:00",
         "2026-11-14T18:00:00+00:00",
     ]
     for epoch, cycle in enumerate(cycles, 1):
         for role, arm in cycle["arms"].items():
             material = arm["material"]
             assert material["trading_epoch"] == epoch
+            assert arm["market_observation_epoch"] == min(epoch, 2)
+            assert arm["market_observation_classification"] == (
+                "distinct" if epoch < 3 else "transport_only_duplicate"
+            )
             assert material["instrument_id"] == CANONICAL_INSTRUMENT_ID
             assert arm["artifact_digest"] == plan["profiles"][role]["packet"]
             prefix = bars.loc[: cycle["last_candle_close_utc"]]
@@ -92,15 +107,25 @@ def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):
     )
     registry = build_suitability_registry_from_snapshot(build_registry_snapshot())
     entry = next(item for item in registry.entries if item.strategy_id == "ma_crossover")
+    tick_time = datetime(2026, 11, 14, tzinfo=timezone.utc).timestamp()
+    instrument_key = InstrumentObservationKeyV1(
+        "okx", CANONICAL_INSTRUMENT_ID, CANONICAL_INSTRUMENT_ID
+    )
+    accepted = evaluate_distinct_market_observation_v1(
+        initial_observation_acceptance_state_v1(bound_instrument_key=instrument_key),
+        ObservationCandidateV1(
+            "okx", CANONICAL_INSTRUMENT_ID, CANONICAL_INSTRUMENT_ID, tick_time, 1800.0
+        ),
+    )
     state = HardenedBridgeSessionStateV2(instrument_id=CANONICAL_INSTRUMENT_ID)
     state.decision_config_state_root = str(tmp_path / "runtime")
     with pytest.raises(ValueError, match="I17_CANDIDATE_REQUIRES_ISOLATED_OFFLINE_CYCLE"):
         run_hardened_bridge_cycle_v2(
             state,
             mid_price=1800.0,
-            event_ts_unix=datetime(2026, 11, 14, tzinfo=timezone.utc).timestamp(),
+            event_ts_unix=tick_time,
             session_id="candidate-test",
-            offline_candidate=I17OfflineCandidateInputV2("a" * 64, entry, material),
+            offline_candidate=I17OfflineCandidateInputV2("a" * 64, entry, material, accepted),
         )
     assert state.cycle_index == 0
     assert not (tmp_path / "runtime").exists()
