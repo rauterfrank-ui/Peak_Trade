@@ -15,10 +15,14 @@ import os
 import signal
 import tempfile
 import time
-import tomllib
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Protocol
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 from src.ops.pre_economic_zero_order_evidence_session_authorization_v1 import (
     CAPABILITY_ID,

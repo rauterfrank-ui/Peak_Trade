@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 PREFLIGHT_CONFIG_RELPATH = "config/ops/paper_shadow_247_preflight.toml"
 

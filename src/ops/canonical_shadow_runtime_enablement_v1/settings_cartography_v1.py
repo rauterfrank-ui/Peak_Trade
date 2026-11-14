@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
-import tomllib
 from pathlib import Path
 from typing import Any
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 from src.ops.canonical_shadow_runtime_enablement_v1 import constants_v1 as shadow_const
 from src.ops.ghv_regression_corpus_provenance_v1 import (
