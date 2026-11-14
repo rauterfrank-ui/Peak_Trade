@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlparse
@@ -35,6 +36,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
     PRODUCTION_PROVIDER_WIRING as OKX_PROVIDER_WIRING,
+    OkxReadOnlyReconciliationQueryOptionsV1,
     fetch_okx_read_only_reconciliation_snapshot_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
@@ -440,6 +442,129 @@ def test_pending_page_coverage_at_okx_default_limit(count) -> None:
         assert decision.reasons == (REASON_INCOMPLETE_PAGINATION,)
     else:
         assert decision.outcome == OUTCOME_CONFIRMED_FILLED
+
+
+class _PagedTransport:
+    def __init__(self, responses, *, live_contact=False):
+        self.responses = responses
+        self.requests = []
+        self.live_contact = live_contact
+
+    def get(self, *, endpoint, auth_required, pretrade_decision_id, get_cache_policy):
+        assert auth_required is True
+        assert pretrade_decision_id == "paged-reconciliation"
+        assert get_cache_policy == GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED
+        parsed = urlparse(endpoint)
+        query = parse_qs(parsed.query)
+        assert query["instId"] == [INST]
+        request = (parsed.path, query.get("after", [None])[0])
+        self.requests.append(request)
+        return replace(
+            _result(self.responses[request], endpoint=endpoint),
+            venue_live_contact=self.live_contact,
+        )
+
+
+def _paged_snapshot(transport, identity, *, pages=2):
+    return fetch_okx_read_only_reconciliation_snapshot_v1(
+        identity=identity,
+        read_only_get_transport=transport,
+        pretrade_decision_id="paged-reconciliation",
+        options=OkxReadOnlyReconciliationQueryOptionsV1(
+            history_limit=2, fills_limit=2, offline_max_pages_per_surface=pages
+        ),
+        acquisition_clock=lambda: "2026-11-13T22:00:00+00:00",
+    )
+
+
+def _paged_responses(identity):
+    pending = [
+        {**_order_row(state="live"), "clOrdId": f"other-{i}", "ordId": str(i)}
+        for i in range(199, 99, -1)
+    ]
+    history = [
+        {**_order_row(state="canceled"), "clOrdId": f"other-{i}", "ordId": str(i)} for i in (80, 79)
+    ]
+    order = {**_order_row(state="filled", acc=identity.final_quantity), "ordId": "71"}
+    fills = [
+        {"instId": INST, "billId": str(i), "ordId": "80", "clOrdId": "other-80"} for i in (95, 94)
+    ]
+    fill = {
+        "instId": INST,
+        "clOrdId": CL,
+        "billId": "90",
+        "ordId": "71",
+        "tradeId": "402",
+        "fillSz": identity.final_quantity,
+        "fillPx": "2200",
+    }
+    return {
+        (ENDPOINT_ORDERS_PENDING, None): _ok_payload(pending),
+        (ENDPOINT_ORDERS_PENDING, "100"): _ok_payload(),
+        (ENDPOINT_ORDERS_HISTORY, None): _ok_payload(history),
+        (ENDPOINT_ORDERS_HISTORY, "79"): _ok_payload([order]),
+        (ENDPOINT_TRADE_FILLS, None): _ok_payload(fills),
+        (ENDPOINT_TRADE_FILLS, "94"): _ok_payload([fill]),
+        (ENDPOINT_ACCOUNT_POSITIONS, None): _ok_payload(),
+        (READ_ONLY_EXACT_ORDER_LOOKUP_PATH, None): _ok_payload([order]),
+    }
+
+
+def test_paged_injected_get_uses_original_order_and_bill_cursors() -> None:
+    identity = _identity()
+    responses = _paged_responses(identity)
+    transport = _PagedTransport(responses)
+    snapshot = _paged_snapshot(transport, identity)
+    assert transport.requests == list(responses)
+    assert snapshot.incomplete_pagination is False
+    assert (
+        snapshot.pending_orders_observation["response"]
+        == responses[(ENDPOINT_ORDERS_PENDING, None)]
+    )
+    assert any(
+        item.source == "orders-history" and item.payload["ordId"] == "71"
+        for item in snapshot.evidence_items
+    )
+    assert any(
+        item.source == "fills" and item.payload["billId"] == "90"
+        for item in snapshot.evidence_items
+    )
+    decision = adjudicate_full_core_exchange_reconciliation_v1(
+        identity=identity, snapshot=snapshot, local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK
+    )
+    assert decision.outcome == OUTCOME_CONFIRMED_FILLED
+    assert decision.cumulative_filled_qty == identity.final_quantity
+    assert _paged_snapshot(_PagedTransport(responses), identity).to_dict() == snapshot.to_dict()
+
+
+@pytest.mark.parametrize("fault", ["repeat", "bad-id", "wrong-instrument", "cap", "live"])
+def test_unproven_injected_pagination_cannot_confirm_fill(fault) -> None:
+    identity = _identity()
+    responses = _paged_responses(identity)
+    if fault == "repeat":
+        responses[(ENDPOINT_ORDERS_HISTORY, "79")] = responses[(ENDPOINT_ORDERS_HISTORY, None)]
+    if fault == "bad-id":
+        responses[(ENDPOINT_TRADE_FILLS, None)]["data"][-1]["billId"] = ""
+    if fault == "wrong-instrument":
+        responses[(ENDPOINT_ORDERS_PENDING, "100")] = _ok_payload(
+            [{"instId": "other-future", "ordId": "99"}]
+        )
+    if fault == "cap":
+        responses[(ENDPOINT_TRADE_FILLS, "94")]["data"].append(
+            {"instId": INST, "billId": "89", "ordId": "70"}
+        )
+    transport = _PagedTransport(responses, live_contact=(fault == "live"))
+    snapshot = _paged_snapshot(transport, identity)
+    assert snapshot.incomplete_pagination is True
+    decision = adjudicate_full_core_exchange_reconciliation_v1(
+        identity=identity, snapshot=snapshot, local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK
+    )
+    assert decision.outcome == OUTCOME_HALTED_UNRESOLVED
+    assert REASON_INCOMPLETE_PAGINATION in decision.reasons
+    if fault == "live":
+        assert len(transport.requests) == 5 and all(
+            after is None for _, after in transport.requests
+        )
 
 
 @pytest.mark.parametrize(

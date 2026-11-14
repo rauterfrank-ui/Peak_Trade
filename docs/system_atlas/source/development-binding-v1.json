@@ -1087,6 +1087,11 @@
       "sha256": "1028b13ea993bf1f5ca7349dd00bae5d029ed36cf69912b7217a225fce021ab0"
     },
     {
+      "path": "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
+      "before_sha256": "fce5ec1aa8012a24b635eed9d44a5b0b5946352609a3d062680b901971e0d09e",
+      "sha256": "5ec18709162587045859cbf8391b10c20fc2df690aeeb8185194870105404d3a"
+    },
+    {
       "path": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
       "before_sha256": "159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18",
       "sha256": "1790adda6d5d8acfda61dbf030451945bf20e02894110e4e6f6625b3f3a0f619"
@@ -2294,7 +2299,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
       "before_sha256": "6c9258fba9a99d1ef97d571c47cca2bb358c8018491d4aa984ea4f6fbe53d7ad",
-      "sha256": "d00e1b82650bb412f1d915bc77f08b4a1c2666c2d3e626b030ae72c5930caf20"
+      "sha256": "8a7d03f727b57682b1decee0a171155d58db0869601d07faec11da4a0e5a2b23"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
@@ -3749,7 +3754,7 @@
     {
       "path": "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
       "before_sha256": "6740ef32b959283c48ad960508524fea4eed2ef336ed17466c946bbe01dc92c7",
-      "sha256": "6c332979a04d4af0dc1ecd7dc7d961d1507ef7c47b9d1d18716b3eb22bea26a6"
+      "sha256": "d4e01c7ad1f7551e429a2fd334a1005e1a62a5efe287e486092a30ec179bfdd4"
     },
     {
       "path": "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",

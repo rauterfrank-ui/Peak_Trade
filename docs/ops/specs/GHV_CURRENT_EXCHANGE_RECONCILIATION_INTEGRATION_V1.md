@@ -23,6 +23,18 @@ Before: any productive private GET or live POST.
 injected GET transport. `PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED`; importing the
 adapter does not create a transport, access credentials, or contact the venue.
 
+The injected transport can explicitly exercise up to eight pages per surface
+with `offline_max_pages_per_surface`. Pending orders and order history use the
+oldest order ID for the next `after` request. Fills use the oldest bill ID.
+The adapter requires a fresh, successful response for the same instrument and
+a strictly older page with unique IDs. A short page finishes that surface.
+A full last page or an unproven cursor leaves reconciliation incomplete.
+The pending-orders observation still contains the original first response.
+The default and authenticated proof reader continue to use one page per
+surface. See [OKX order list](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-order-list),
+[order history](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-order-history-last-7-days),
+and [fills](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-transaction-details-last-3-days).
+
 Local dependency repair on 2026-11-02 restores the adapter and integration from
 commit `b48094917d2575e806610cb2d9569bf75929ebc9` (PR #7094), including fail-closed
 identity-conflict handling. The post-submit observation stage comes from preserved

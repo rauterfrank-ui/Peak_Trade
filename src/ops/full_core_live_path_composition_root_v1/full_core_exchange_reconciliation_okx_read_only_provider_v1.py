@@ -16,6 +16,7 @@ from urllib.parse import urlencode
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_POSITIONS,
     GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
     FullCoreFreshPretradeGetTransportV1,
     FreshPretradeGetTransportResultV1,
 )
@@ -42,6 +43,8 @@ DEFAULT_HISTORY_LIMIT = 100
 DEFAULT_FILLS_LIMIT = 100
 # OKX /trade/orders-pending uses 100 when no explicit limit is sent.
 _PENDING_DEFAULT_PAGE_SIZE = 100
+_OKX_MAX_PAGE_SIZE = 100
+_MAX_OFFLINE_PAGES_PER_SURFACE = 8
 
 _OKX_RATE_LIMIT_CODES = frozenset({"50011", "50061"})
 # OKX GET /api/v5/trade/order negative hit (order not on book); not a transport/API fault.
@@ -58,6 +61,7 @@ class OkxReadOnlyReconciliationQueryOptionsV1:
     inst_type: str = "SWAP"
     history_limit: int = DEFAULT_HISTORY_LIMIT
     fills_limit: int = DEFAULT_FILLS_LIMIT
+    offline_max_pages_per_surface: int = 1
 
 
 def _rows(payload: Any) -> list[dict[str, Any]]:
@@ -73,6 +77,22 @@ def _api_code(payload: Any) -> str:
     if not isinstance(payload, Mapping):
         return ""
     return str(payload.get("code") or "")
+
+
+def _cursor_ids(rows: list[dict[str, Any]], field: str) -> list[int] | None:
+    ids = []
+    for row in rows:
+        value = row.get(field)
+        if (
+            type(value) is not str
+            or not value.isascii()
+            or not value.isdecimal()
+            or value.startswith("0")
+            or len(value) > 32
+        ):
+            return None
+        ids.append(int(value))
+    return ids
 
 
 def _okx_exact_order_not_found_v1(result: FreshPretradeGetTransportResultV1) -> bool:
@@ -247,6 +267,14 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
 ) -> FullCoreExchangeReconciliationSnapshotV1:
     """Issue bounded OKX read-only GET set and map into Full-Core reconciliation snapshot."""
     opts = options or OkxReadOnlyReconciliationQueryOptionsV1()
+    max_pages = opts.offline_max_pages_per_surface
+    if type(max_pages) is not int or not 1 <= max_pages <= _MAX_OFFLINE_PAGES_PER_SURFACE:
+        raise OkxReadOnlyReconciliationProviderError("RECONCILIATION_PAGE_BUDGET_INVALID")
+    if any(
+        type(limit) is not int or not 1 <= limit <= _OKX_MAX_PAGE_SIZE
+        for limit in (opts.history_limit, opts.fills_limit)
+    ):
+        raise OkxReadOnlyReconciliationProviderError("RECONCILIATION_PAGE_LIMIT_INVALID")
     clock = acquisition_clock or (lambda: datetime.now(timezone.utc).isoformat())
     cl = identity.clordid.strip()
     inst = identity.native_id.strip()
@@ -360,22 +388,49 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
                 )
             )
 
-    pending_res = _get(
+    def _read_pages(surface, path, query, limit, cursor_field):
+        """Replay bounded pages on an injected transport, using the oldest page ID."""
+        pages = []
+        after = None
+        for _ in range(max_pages):
+            result = _get(surface, path, query if after is None else {**query, "after": str(after)})
+            rows = _rows(result.payload)
+            pages.append((result, rows))
+            if max_pages == 1:
+                return pages, len(rows) >= limit
+            if (
+                result.transport_class != TRANSPORT_CLASS_INJECTED_TEST_DOUBLE
+                or result.venue_live_contact is not False
+                or not _freshness_proven_from_get_v1(result, surface=surface)
+                or _api_code(result.payload) != "0"
+                or len(rows) > limit
+            ):
+                return pages, True
+            ids = _cursor_ids(rows, cursor_field)
+            if (
+                ids is None
+                or any(row.get("instId") != inst for row in rows)
+                or len(ids) != len(set(ids))
+                or (after is not None and ids and max(ids) >= after)
+            ):
+                return pages, True
+            if len(rows) < limit:
+                return pages, False
+            after = min(ids)
+        return pages, True
+
+    pending_pages, pending_incomplete = _read_pages(
         "orders_pending",
         ENDPOINT_ORDERS_PENDING,
         {"instType": itype, "instId": inst},
+        _PENDING_DEFAULT_PAGE_SIZE,
+        "ordId",
     )
-    pending_rows = _rows(pending_res.payload)
-    if len(pending_rows) >= _PENDING_DEFAULT_PAGE_SIZE:
-        incomplete_pagination = True
-    _ingest_order_rows(
-        result=pending_res,
-        source="orders-pending",
-        query_scope="instId",
-        rows=pending_rows,
-    )
+    pending_res = pending_pages[0][0]
+    for result, rows in pending_pages:
+        _ingest_order_rows(result=result, source="orders-pending", query_scope="instId", rows=rows)
 
-    history_res = _get(
+    history_pages, history_incomplete = _read_pages(
         "orders_history",
         ENDPOINT_ORDERS_HISTORY,
         {
@@ -383,32 +438,30 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
             "instId": inst,
             "limit": str(opts.history_limit),
         },
+        opts.history_limit,
+        "ordId",
     )
-    history_rows = _rows(history_res.payload)
-    if len(history_rows) >= opts.history_limit:
-        incomplete_pagination = True
-    hist_err = _collect_api_error_v1(history_res, surface="orders_history")
-    if hist_err:
-        history_unavailable = True
-        api_errors.append(hist_err)
-        snapshot_freshness_flags.append(False)
-    else:
-        _ingest_order_rows(
-            result=history_res,
-            source="orders-history",
-            query_scope="history",
-            rows=history_rows,
-        )
+    for result, rows in history_pages:
+        hist_err = _collect_api_error_v1(result, surface="orders_history")
+        if hist_err:
+            history_unavailable = True
+            api_errors.append(hist_err)
+            snapshot_freshness_flags.append(False)
+        else:
+            _ingest_order_rows(
+                result=result, source="orders-history", query_scope="history", rows=rows
+            )
 
-    fills_res = _get(
+    fills_pages, fills_incomplete = _read_pages(
         "fills",
         ENDPOINT_TRADE_FILLS,
         {"instType": itype, "instId": inst, "limit": str(opts.fills_limit)},
+        opts.fills_limit,
+        "billId",
     )
-    fills_rows = _rows(fills_res.payload)
-    if len(fills_rows) >= opts.fills_limit:
-        incomplete_pagination = True
-    _ingest_fill_rows(result=fills_res, rows=fills_rows)
+    for result, rows in fills_pages:
+        _ingest_fill_rows(result=result, rows=rows)
+    incomplete_pagination = pending_incomplete or history_incomplete or fills_incomplete
 
     preceding_orders = tuple(
         dict(item.payload) for item in items if item.layer == EvidenceLayer.EXCHANGE_ORDER_STATE
