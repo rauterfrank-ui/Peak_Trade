@@ -442,22 +442,20 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     if pre.get("PRE_LIVE_PROOF_COMPLETE") != "true":
         raise CurrentProductiveActualVenuePostError("PRE_LIVE_PROOF_INCOMPLETE")
     pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
-    pending_proof = None
     expected_account = (
         portfolio_budget_owner.durable_scope_identity_v1()["account"]
         if portfolio_budget_owner is not None
         else None
     )
-    if post_pending_context is not None:
-        try:
-            pending_proof = inspect_current_post_pending_v1(
-                post_pending_context,
-                envelope=envelope,
-                stage="BEFORE_PREFLIGHT_GET",
-                expected_account=expected_account,
-            )
-        except CurrentPostPendingObservationError as exc:
-            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    try:
+        pending_proof = inspect_current_post_pending_v1(
+            post_pending_context,
+            envelope=envelope,
+            stage="BEFORE_PREFLIGHT_GET",
+            expected_account=expected_account,
+        )
+    except CurrentPostPendingObservationError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     try:
         freshness = prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
             envelope=envelope,
@@ -467,9 +465,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             portfolio_reservation_id=portfolio_reservation_id,
             execution_identity=execution_identity,
             execution_plan_context=execution_plan_context,
-            expected_account_identity=pending_proof["account"]
-            if pending_proof is not None
-            else None,
+            expected_account_identity=pending_proof["account"],
         )
     except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc

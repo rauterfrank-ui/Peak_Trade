@@ -43,7 +43,16 @@ def test_actual_post_cannot_use_missing_pending_observation_as_a_clear_account(
     sequence = host.owner._store.sequence
     try:
         if entry == "upper":
-            with pytest.raises(caller.CurrentProductiveActualVenuePostError, match="POST_PENDING"):
+
+            def unexpected_get(**_request):
+                pytest.fail("Missing pending observation must be rejected before private GET")
+
+            read_transport = AccountPort(args)
+            monkeypatch.setattr(read_transport, "get", unexpected_get)
+            with pytest.raises(
+                caller.CurrentProductiveActualVenuePostError,
+                match="^POST_PENDING_CONTEXT_REQUIRED:BEFORE_PREFLIGHT_GET$",
+            ):
                 caller.execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
                     **args,
                     owner_go=caller.OWNER_GO,
@@ -53,7 +62,7 @@ def test_actual_post_cannot_use_missing_pending_observation_as_a_clear_account(
                     perform_real_venue_post=True,
                     k1_backend=_FakeKeychainBackend(),
                     opener_factory=lambda: _TimeoutOpener(),
-                    read_only_get_transport=AccountPort(args),
+                    read_only_get_transport=read_transport,
                     execution_integrity_backend=_clean_post_integrity(),
                 )
         else:
@@ -73,6 +82,12 @@ def test_actual_post_cannot_use_missing_pending_observation_as_a_clear_account(
         assert host.owner.execution_links_v1()[rid]["identity"] is None
         assert host.owner.active_sum_v1() > 0
         assert not (tmp_path / "send/full_core_external_effect_permit_consume_v1.json").exists()
+        if entry == "upper":
+            assert not (
+                tmp_path
+                / "send"
+                / "full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"
+            ).exists()
     finally:
         host.close()
 

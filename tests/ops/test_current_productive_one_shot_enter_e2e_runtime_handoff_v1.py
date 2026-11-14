@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import runpy
+import sys
 from pathlib import Path
+from shlex import split
 from unittest.mock import patch
 
 import pytest
@@ -29,6 +32,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveOneShotEnterE2ERuntimeHandoffError,
     prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1,
 )
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
 )
@@ -51,6 +57,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC_PATH = (
     REPO_ROOT
     / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md"
+)
+POST_CLI = (
+    REPO_ROOT
+    / "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
 )
 
 
@@ -136,6 +146,45 @@ def test_spec_present() -> None:
     assert OWNER_GO.startswith("OWNER_GO_")
 
 
+@pytest.mark.parametrize("extra_flags", [[], ["--pre-live-only"]])
+def test_legacy_submit_flag_stops_before_envelope_or_k1(
+    tmp_path: Path, monkeypatch, capsys, extra_flags
+) -> None:
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 as k1,
+    )
+
+    def unexpected_backend(**_kwargs):
+        pytest.fail("The legacy submit mode must stop before resolving K1")
+
+    monkeypatch.setattr(
+        k1, "resolve_macos_security_framework_k1_lookup_backend_v1", unexpected_backend
+    )
+    store = tmp_path / "send"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            str(POST_CLI),
+            "--store-root",
+            str(store),
+            "--envelope-json",
+            str(tmp_path / "missing.json"),
+            "--k1-backend",
+            "macos",
+            "--confirm-real-venue-post",
+            *extra_flags,
+        ],
+    )
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_path(str(POST_CLI), run_name="__main__")
+    assert exc.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.err.strip() == "FAIL_CLOSED:POST_PENDING_CONTEXT_REQUIRED:OPERATOR_CLI"
+    assert not captured.out
+    assert not store.exists()
+
+
 def test_fail_closed_when_cap24_runtime_missing(tmp_path: Path) -> None:
     from tests.ops.test_single_selected_future_runtime_binding_v1 import _empty_portfolio
 
@@ -160,7 +209,9 @@ def test_fail_closed_when_cap24_runtime_missing(tmp_path: Path) -> None:
     assert "CAP24_RUNTIME_STATE_ROOT_MISSING" in str(exc.value)
 
 
-def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) -> None:
+def test_prepare_handoff_from_pre_external_closure_without_post(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
     origin_sha = _origin_main_sha()
     integrity = MockCurrentProductive29PIntegrityBackendV1(
         origin_main=origin_sha,
@@ -168,7 +219,7 @@ def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) 
     )
     bound = _bound()
     envelope = _sample_envelope()
-    closure_store = tmp_path / "closure"
+    closure_store = tmp_path / "closure with spaces"
     closure_store.mkdir()
     (closure_store / "FINAL_ORDER_ENVELOPE.json").write_text(
         json.dumps(envelope.to_runtime_json_v1(), sort_keys=True),
@@ -201,13 +252,46 @@ def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) 
             prove_k1_pre_live=False,
         )
     assert result.terminal_disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
-    assert result.e2e_runtime_ready == "true"
+    assert result.e2e_runtime_ready == "false"
     assert Path(result.envelope_json_path).is_file()
     handoff_path = Path(result.handoff_store_root) / HANDOFF_FILENAME
     payload = json.loads(handoff_path.read_text(encoding="utf-8"))
     assert payload["REAL_VENUE_POST_PERFORMED"] == "false"
-    assert "--confirm-real-venue-post" in result.final_operator_command
+    assert payload["E2E_RUNTIME_READY"] == "false"
+    assert payload["POST_HANDOFF_BLOCKER"] == result.post_handoff_blocker
+    assert result.post_handoff_blocker == "POST_PENDING_CONTEXT_REQUIRED:OPERATOR_CLI"
+    assert payload["FINAL_OPERATOR_COMMAND"] == result.final_operator_command == ""
+    pre_live_args = split(result.final_pre_live_command)[2:]
+    assert pre_live_args == [
+        "--store-root",
+        str(post_store),
+        "--envelope-json",
+        result.envelope_json_path,
+        "--k1-backend",
+        "macos",
+        "--pre-live-only",
+    ]
     assert result.manifest_verify_rc == 0
+    from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
+        MacosSecurityFrameworkLookupBackendV1,
+    )
+
+    def unexpected_lookup(*_args, **_kwargs):
+        pytest.fail("The pre-live CLI checklist must not read the Keychain")
+
+    monkeypatch.setattr(
+        MacosSecurityFrameworkLookupBackendV1,
+        "copy_matching_generic_password_value_data_v1",
+        unexpected_lookup,
+    )
+    monkeypatch.setattr(sys, "argv", [str(POST_CLI), *pre_live_args])
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_path(str(POST_CLI), run_name="__main__")
+    assert exc.value.code == 0
+    proof = json.loads(capsys.readouterr().out)
+    assert proof["PRE_LIVE_PROOF_COMPLETE"] == "true"
+    assert proof["POST_ADMISSION_GRANTED"] == "false"
+    assert not list(post_store.iterdir())
 
 
 def _run_layered_enter_e2e_handoff_once_v1(
@@ -276,7 +360,7 @@ def _run_layered_enter_e2e_handoff_once_v1(
         prove_k1_pre_live=False,
     )
     assert result.terminal_disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
-    assert result.e2e_runtime_ready == "true"
+    assert result.e2e_runtime_ready == "false"
     assert Path(result.envelope_json_path).is_file()
     handoff_path = Path(result.handoff_store_root) / HANDOFF_FILENAME
     payload = json.loads(handoff_path.read_text(encoding="utf-8"))

@@ -441,6 +441,12 @@ def execute_current_productive_full_core_pre_external_closure_v1(
     )
 
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    lane_id = "LANE_1"
+    cycle_id_prefix = str(
+        (market_kwargs or {}).get("cycle_id_prefix", f"pre-ext-closure-{run_id}") or ""
+    ).strip()
+    if not cycle_id_prefix:
+        raise CurrentProductiveFullCorePreExternalClosureError("CYCLE_ID_PREFIX_REQUIRED")
     store = (
         Path(evidence_root)
         if evidence_root is not None
@@ -585,6 +591,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             bound_instrument=bound_instrument,
             fresh_get_transport=transport,
             inst_type=resolved_inst_type,
+            pretrade_cycle_id=f"{cycle_id_prefix}:{lane_id}",
         )
         gets_performed = int(getattr(transport, "request_count", 0) or 0)
 
@@ -663,13 +670,11 @@ def execute_current_productive_full_core_pre_external_closure_v1(
                     },
                 )
             mk.setdefault("origin_main_sha", base_sha)
-            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
         else:
             mk = dict(market_kwargs or {})
             mk.pop("candles_payload", None)
             mk.pop("g17_typed_vol_producers", None)
             mk.setdefault("origin_main_sha", base_sha)
-            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
             mk.setdefault("observed_unix", observed_unix)
             mk.setdefault("mark_px", 100.0)
             mk.setdefault("index_px", 100.0)
@@ -683,8 +688,11 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             mk.setdefault("venue_flat", True)
             mk.setdefault("existing_position_side", ExistingPositionSide.NONE)
 
-        pair = _lane_pair_v1(lane_state_root=Path(lane_state_root), bound=bound_instrument)
-        pairs = {"LANE_1": pair}
+        mk["cycle_id_prefix"] = cycle_id_prefix
+        pair = _lane_pair_v1(
+            lane_state_root=Path(lane_state_root), bound=bound_instrument, lane_id=lane_id
+        )
+        pairs = {lane_id: pair}
         invoke_kwargs = dict(mk)
         resolved_g17_producers = g17_typed_vol_producers
         if resolved_g17_producers is None:
@@ -727,7 +735,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
                         "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
                     },
                 )
-            resolved_g17_producers = {"LANE_1": g17_join.producer}
+            resolved_g17_producers = {lane_id: g17_join.producer}
         invoke_kwargs["g17_typed_vol_producers"] = resolved_g17_producers
 
         if (
@@ -756,7 +764,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             common_epoch_decision_epoch=decision_epoch,
             **invoke_kwargs,
         )
-        lane_result = results["LANE_1"]
+        lane_result = results[lane_id]
         cycle = lane_result.governed_cycle_result
         terminal = str(cycle.disposition)
         post_count = int(cycle.post_count)

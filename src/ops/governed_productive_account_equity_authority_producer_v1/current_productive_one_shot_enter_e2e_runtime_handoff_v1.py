@@ -1,8 +1,8 @@
 """CURRENT productive Enter one-shot E2E runtime handoff (prepare only).
 
 Chains Cap-2.4 provenance → Full-Core PRE_EXTERNAL closure → fresh
-FINAL_ORDER_ENVELOPE.json → optional K1 pre-live boundary proof → governed
-POST CLI handoff. Does not consume POST Owner-GO durably. Does not POST.
+FINAL_ORDER_ENVELOPE.json → optional K1 pre-live boundary proof. The original
+pending observation cannot be transferred through the operator CLI.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -13,6 +13,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from shlex import quote
 from typing import TYPE_CHECKING, Any, Mapping
 
 if TYPE_CHECKING:
@@ -87,6 +88,7 @@ HANDOFF_FILENAME = "ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF.json"
 ENVELOPE_FILENAME = "FINAL_ORDER_ENVELOPE.json"
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
+POST_HANDOFF_BLOCKER = "POST_PENDING_CONTEXT_REQUIRED:OPERATOR_CLI"
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -111,6 +113,7 @@ class CurrentProductiveOneShotEnterE2ERuntimeHandoffResultV1:
     pre_live_proof_complete: str
     k1_pre_live_attempted: str
     e2e_runtime_ready: str
+    post_handoff_blocker: str
     final_operator_command: str
     final_pre_live_command: str
     manifest_verify_rc: int
@@ -155,25 +158,6 @@ def _assert_post_store_fresh_v1(store_root: Path) -> None:
             )
 
 
-def _build_final_post_command_v1(
-    *,
-    post_store_root: Path,
-    envelope_json: Path,
-    k1_backend_flag: str,
-) -> str:
-    script = (
-        "./scripts/pt scripts/ops/"
-        "run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
-    )
-    return (
-        f"{script} "
-        f"--store-root {post_store_root} "
-        f"--envelope-json {envelope_json} "
-        f"--k1-backend {k1_backend_flag} "
-        f"--confirm-real-venue-post"
-    )
-
-
 def _build_pre_live_command_v1(
     *,
     post_store_root: Path,
@@ -186,8 +170,8 @@ def _build_pre_live_command_v1(
     )
     return (
         f"{script} "
-        f"--store-root {post_store_root} "
-        f"--envelope-json {envelope_json} "
+        f"--store-root {quote(str(post_store_root))} "
+        f"--envelope-json {quote(str(envelope_json))} "
         f"--k1-backend {k1_backend_flag} "
         f"--pre-live-only"
     )
@@ -322,7 +306,6 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
             "FINAL_ORDER_ENVELOPE_JSON_MISSING"
         )
 
-    k1_flag = "macos" if (prove_k1_pre_live or use_macos_k1) else "none"
     pre_live_ok = FALSE_TOKEN
     k1_attempted = FALSE_TOKEN
     if prove_k1_pre_live:
@@ -372,20 +355,11 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
     )
     handoff_store.mkdir(parents=True, exist_ok=True)
 
-    final_post_cmd = _build_final_post_command_v1(
-        post_store_root=post_root,
-        envelope_json=envelope_path,
-        k1_backend_flag="macos",
-    )
     final_pre_live_cmd = _build_pre_live_command_v1(
         post_store_root=post_root,
         envelope_json=envelope_path,
         k1_backend_flag="macos",
     )
-
-    e2e_ready = TRUE_TOKEN
-    if prove_k1_pre_live and pre_live_ok != TRUE_TOKEN:
-        e2e_ready = FALSE_TOKEN
 
     claims: dict[str, Any] = {
         "DOCUMENT_CLASS": THIS_SLICE,
@@ -403,11 +377,12 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
         "TERMINAL_DISPOSITION": closure.terminal_disposition,
         "PRE_LIVE_PROOF_COMPLETE": pre_live_ok,
         "K1_PRE_LIVE_ATTEMPTED": k1_attempted,
-        "E2E_RUNTIME_READY": e2e_ready,
+        "E2E_RUNTIME_READY": FALSE_TOKEN,
+        "POST_HANDOFF_BLOCKER": POST_HANDOFF_BLOCKER,
         "REAL_VENUE_POST_ATTEMPTED": FALSE_TOKEN,
         "REAL_VENUE_POST_PERFORMED": FALSE_TOKEN,
         "PERMIT_CONSUMED_DURABLE": FALSE_TOKEN,
-        "FINAL_OPERATOR_COMMAND": final_post_cmd,
+        "FINAL_OPERATOR_COMMAND": "",
         "FINAL_PRE_LIVE_COMMAND": final_pre_live_cmd,
     }
     _assert_no_secrets(claims)
@@ -430,8 +405,9 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
         envelope_digest=envelope.envelope_digest,
         pre_live_proof_complete=pre_live_ok,
         k1_pre_live_attempted=k1_attempted,
-        e2e_runtime_ready=e2e_ready,
-        final_operator_command=final_post_cmd,
+        e2e_runtime_ready=FALSE_TOKEN,
+        post_handoff_blocker=POST_HANDOFF_BLOCKER,
+        final_operator_command="",
         final_pre_live_command=final_pre_live_cmd,
         manifest_verify_rc=manifest_rc,
     )

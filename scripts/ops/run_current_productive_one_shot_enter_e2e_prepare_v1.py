@@ -75,6 +75,7 @@ def _main() -> int:
         json.dumps(
             {
                 "E2E_RUNTIME_READY": result.e2e_runtime_ready,
+                "POST_HANDOFF_BLOCKER": result.post_handoff_blocker,
                 "HANDOFF_STORE_ROOT": result.handoff_store_root,
                 "ENVELOPE_JSON_PATH": result.envelope_json_path,
                 "POST_DURABLE_STORE_ROOT": result.post_durable_store_root,
