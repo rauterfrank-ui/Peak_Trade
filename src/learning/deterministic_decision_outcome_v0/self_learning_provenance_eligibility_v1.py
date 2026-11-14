@@ -22,6 +22,7 @@ _ADMITTED_CLASSES: Final[frozenset[str]] = frozenset(
         OutcomeSemanticClassV1.OBSERVED_PRODUCTIVE_PRE_EXTERNAL.value,
         OutcomeSemanticClassV1.INTERNAL_SIMULATED_OUTCOME.value,
         OutcomeSemanticClassV1.I67_PAPER_SIM_OUTCOME.value,
+        OutcomeSemanticClassV1.PAPER_SIMULATED_POSITION_OUTCOME.value,
         OutcomeSemanticClassV1.SHADOW_COUNTERFACTUAL.value,
         OutcomeSemanticClassV1.TESTNET_VENUE_EVIDENCE.value,
         OutcomeSemanticClassV1.REPLAY_HISTORICAL.value,

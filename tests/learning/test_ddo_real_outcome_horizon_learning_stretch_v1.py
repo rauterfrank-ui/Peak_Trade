@@ -15,7 +15,10 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
 )
-from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
+from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
+    SIMULATED_POSITION_LIFECYCLE_V1,
+    UNKNOWN,
+)
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import (
     evaluate_offline_bundle_v0,
@@ -188,15 +191,31 @@ def test_missing_evaluation_time_information_set_ref_for_ok_rejected() -> None:
         )
 
 
-def test_deferred_horizon_rejects_real_outcome_ref() -> None:
+@pytest.mark.parametrize("horizon", ["IMMEDIATE_POST_EVENT", "POSITION_LIFECYCLE"])
+def test_deferred_horizon_rejects_real_outcome_ref(horizon: str) -> None:
     with pytest.raises(DdoValidationError, match="DEFERRED_HORIZON_REAL_OUTCOME_REF_REJECTED"):
         validate_evaluation_observation_v0(
             {
                 "decision_event_ref": "dec-roh-0001",
-                "evaluation_horizon": "IMMEDIATE_POST_EVENT",
+                "evaluation_horizon": horizon,
                 "evaluation_time_utc": "2026-09-01T12:05:00Z",
                 "actual_outcome_ref": "evidence/forbidden",
             }
+        )
+
+
+def test_simulated_paper_horizon_requires_paper_provenance_binding() -> None:
+    decision = build_decision_event_v0(_decision())
+    with pytest.raises(DdoValidationError, match="PAPER_POSITION_HORIZON_BINDING_MISMATCH"):
+        evaluate_offline_bundle_v0(
+            decision,
+            {
+                "decision_event_ref": decision["record_id"],
+                "evaluation_horizon": SIMULATED_POSITION_LIFECYCLE_V1,
+                "evaluation_time_utc": "2026-09-01T13:00:00Z",
+                "actual_outcome_ref": "paper.outcome.measurement:" + "a" * 64,
+            },
+            identity=_identity(),
         )
 
 

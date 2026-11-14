@@ -56,7 +56,9 @@ def encode_request_value_v1(value):
         return {
             "dataclass": type(value).__name__,
             "fields": {
-                f.name: encode_request_value_v1(getattr(value, f.name)) for f in fields(value)
+                f.name: encode_request_value_v1(getattr(value, f.name))
+                for f in fields(value)
+                if f.name != "allow_unmeasured_reality_gap" or getattr(value, f.name)
             },
         }
     if isinstance(value, Mapping):
@@ -81,7 +83,12 @@ def decode_request_value_v1(value, owners):
             return {k: decode_request_value_v1(v, owners) for k, v in value["mapping"].items()}
         if set(value) == {"dataclass", "fields"} and value["dataclass"] in _TYPES:
             cls = _TYPES[value["dataclass"]]
-            if set(value["fields"]) != {f.name for f in fields(cls)}:
+            names = {f.name for f in fields(cls)}
+            present = set(value["fields"])
+            if present != names and not (
+                cls is CanonicalAutomatedOfflineResearchLoopRequestV1
+                and present == names - {"allow_unmeasured_reality_gap"}
+            ):
                 raise ResearchRecoveryError("PREPARED_DATACLASS_FIELDS_MISMATCH")
             return cls(
                 **{k: decode_request_value_v1(v, owners) for k, v in value["fields"].items()}
@@ -182,8 +189,11 @@ def verify_owner_records_v1(executed, context):
     loop = executed.next_meta_input.research_loop_record
     rows = [
         (context.experiment_memory_store, loop["experiment_record"], "experiment_id"),
-        (context.reality_gap_store, loop["reality_gap_record"], "reality_gap_record_id"),
     ]
+    if loop["reality_gap_record"] is not None:
+        rows.append(
+            (context.reality_gap_store, loop["reality_gap_record"], "reality_gap_record_id")
+        )
     rows += [
         (context.failure_memory_store, r, "failure_record_id") for r in loop["failure_records"]
     ]

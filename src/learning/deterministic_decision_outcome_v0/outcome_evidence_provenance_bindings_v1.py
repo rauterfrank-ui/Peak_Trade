@@ -27,6 +27,7 @@ class ProvenanceProducerBindingV1(str, Enum):
     PRODUCTIVE_PRE_EXTERNAL_N_BARS = "PRODUCTIVE_PRE_EXTERNAL_N_BARS"
     INTERNAL_SIM_BRIDGE = "INTERNAL_SIM_BRIDGE"
     I67_PAPER_SIM = "I67_PAPER_SIM"
+    BOUNDED_PAPER_POSITION = "BOUNDED_PAPER_POSITION"
     I17_SHADOW_COUNTERFACTUAL = "I17_SHADOW_COUNTERFACTUAL"
     TESTNET_BOUNDED_OBSERVATION = "TESTNET_BOUNDED_OBSERVATION"
     EXPLICIT_OFFLINE_SYNTHETIC_N_BARS = "EXPLICIT_OFFLINE_SYNTHETIC_N_BARS"
@@ -130,6 +131,19 @@ def resolve_provenance_for_binding_v1(
                 "accounting_source": "I67_LOCAL",
                 "outcome_source": "I67_PAPER_SIMULATOR",
                 "outcome_semantic_class": OutcomeSemanticClassV1.I67_PAPER_SIM_OUTCOME.value,
+                "outcome_realization_kind": OutcomeRealizationKindV1.SIMULATED.value,
+            }
+        )
+    elif binding is ProvenanceProducerBindingV1.BOUNDED_PAPER_POSITION:
+        base.update(
+            {
+                "market_observation_source": MarketObservationSourceV1.PUBLIC_MD.value,
+                "decision_source": DecisionSourceV1.INTERNAL_SIM_BRIDGE.value,
+                "execution_mode_label": ExecutionModeLabelV1.INTERNAL_SIMULATED_EXECUTION.value,
+                "fill_source_type": FillSourceTypeV1.SIMULATED.value,
+                "accounting_source": "PRODUCTIVE_FUTURES_ACCOUNTING_SIMULATION",
+                "outcome_source": "SEALED_BOUNDED_PAPER_EPISODE",
+                "outcome_semantic_class": OutcomeSemanticClassV1.PAPER_SIMULATED_POSITION_OUTCOME.value,
                 "outcome_realization_kind": OutcomeRealizationKindV1.SIMULATED.value,
             }
         )

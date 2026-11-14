@@ -10,7 +10,10 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
-from src.learning.deterministic_decision_outcome_v0.common_v0 import freeze_record
+from src.learning.deterministic_decision_outcome_v0.common_v0 import (
+    freeze_record,
+    require_sha256_or_unknown,
+)
 from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
     classify_current_double_play_decision_v0,
     decision_score_from_current_bundle_v1,
@@ -22,6 +25,8 @@ from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     validate_decision_event_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
+    NET_PNL_QUOTE_CURRENCY_V1,
+    SIMULATED_POSITION_LIFECYCLE_V1,
     UNKNOWN,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
@@ -42,6 +47,9 @@ from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
     AppendOnlyDdoLedgerV0,
     AppendResultV0,
+)
+from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+    learning_event_time_key_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_bindings_v1 import (
     ProvenanceBindingContextV1,
@@ -73,7 +81,13 @@ _SAFETY_INCIDENT_CLASSES: Final[frozenset[str]] = frozenset(
     {"KILL_SWITCH", "STALE", "RISK", "RECONCILIATION"}
 )
 _LATER_HORIZONS: Final[frozenset[str]] = frozenset(
-    {"IMMEDIATE_POST_EVENT", "EVENT_RECOVERY", "N_BARS", "POSITION_LIFECYCLE"}
+    {
+        "IMMEDIATE_POST_EVENT",
+        "EVENT_RECOVERY",
+        "N_BARS",
+        "POSITION_LIFECYCLE",
+        SIMULATED_POSITION_LIFECYCLE_V1,
+    }
 )
 
 REQUIRED_IDENTITY_FIELDS: Final[frozenset[str]] = frozenset(
@@ -194,6 +208,30 @@ def evaluate_offline_bundle_v0(
     require_records_index_for_double_play_semantic_evaluation_v1(decision, records_by_id)
     obs = validate_evaluation_observation_v0(observation)
     ids = _require_identity(identity)
+    is_paper_position = provenance_binding is ProvenanceProducerBindingV1.BOUNDED_PAPER_POSITION
+    if (obs["evaluation_horizon"] == SIMULATED_POSITION_LIFECYCLE_V1) != is_paper_position:
+        raise DdoValidationError("PAPER_POSITION_HORIZON_BINDING_MISMATCH")
+    if is_paper_position and (
+        provenance_context is None
+        or provenance_context.decision_event_ref != decision["record_id"]
+        or provenance_context.evaluation_horizon != SIMULATED_POSITION_LIFECYCLE_V1
+        or provenance_context.outcome_scalar_kind != NET_PNL_QUOTE_CURRENCY_V1
+        or require_sha256_or_unknown(provenance_context.lineage_digest, "lineage_digest") == UNKNOWN
+        or provenance_context.cycle_id != decision["cycle_id"]
+        or provenance_context.evaluation_timestamp_utc != obs["evaluation_time_utc"]
+        or provenance_context.decision_timestamp_utc != decision["event_time_utc"]
+        or obs["evaluation_time_utc"] != ids["event_time_utc"]
+        or learning_event_time_key_v0(obs["evaluation_time_utc"])
+        < learning_event_time_key_v0(decision["event_time_utc"])
+        or obs["actual_outcome_ref"]
+        != f"paper.outcome.measurement:{provenance_context.lineage_digest}"
+        or obs["evaluation_time_information_set_ref"] != obs["actual_outcome_ref"]
+        or ids["code_sha"] != decision["code_sha"]
+        or ids["config_hash"] != decision["config_hash"]
+        or UNKNOWN in (ids["code_sha"], ids["config_hash"])
+        or obs["economic_score"] not in (None, UNKNOWN)
+    ):
+        raise DdoValidationError("PAPER_POSITION_MEASUREMENT_BINDING_MISMATCH")
     current_dp_bundle = None
     current_dp_classification: Mapping[str, Any] | None = None
     if is_double_play_decision_event_v0(decision):

@@ -122,6 +122,27 @@ When status is not `OK` or completion rules fail:
   the observation input (S2 schema).
 - Safety correctness MUST continue to use **DECISION_TIME** information set only.
 
+### 3.3 Simulated Paper position outcome
+
+The offline Paper importer binds `SIMULATED_POSITION_LIFECYCLE` to a sealed
+episode with an original opening decision, intent, simulated fills and
+accounting replay. The measurement is net PnL in the contract quote currency
+between the flat states before entry and after close. It includes booked
+funding and fees. Fill prices already reflect slippage. The importer stores
+the measurement separately and binds its digest to the DDO evaluation and
+the exported `PAPER_SIMULATED_POSITION_OUTCOME` learning evidence. The
+existing Optimization input validator checks that evidence for offline
+research admission. The `POSITION_LIFECYCLE` REAL horizon remains deferred.
+
+Use the same command to publish or reverify an episode, passing a separate
+offline directory via `--handoff-root` or `--verify-handoff-root`.
+
+```bash
+./scripts/pt -m scripts.ops.read_bounded_paper_episode_outcome_v1 \
+  --run-root "$completed_paper_archive" --episode-id "$sealed_episode_id" \
+  --handoff-root "$offline_learning_root"
+```
+
 ## 4. Outcome scalar kinds (D6 B — kind binding without price-source defaults)
 
 v1 binds **kind labels only**. Each kind maps to an evidence payload schema

@@ -56,6 +56,11 @@ def offline_cycle(tmp_path, monkeypatch):
     learning = follow_up.export_completed_offline_learning_evidence_v1(
         root, "first", plan_digest=plan_digest
     )
+    bars, cfg, request = native_research_fixture(instrument, learning["content_hash"])
+    return root, ledger, completion, plan_digest, bars, cfg, request
+
+
+def native_research_fixture(instrument_id, learning_digest):
     bars, cfg = _inputs()
     prices = [
         105 + 4.1 * math.sin(i / 13 + 0.23) + 0.013 * i + 0.15 * math.sin(i / 3)
@@ -74,8 +79,8 @@ def offline_cycle(tmp_path, monkeypatch):
         bars[name] = [price + shift for price in prices]
     raw = {
         "schema_version": "offline_ddo_research_request.v1",
-        "learning_evidence_digest": learning["content_hash"],
-        "instrument_id": SCOPE["instrument_id"],
+        "learning_evidence_digest": learning_digest,
+        "instrument_id": instrument_id,
         "strategy_id": "ma_crossover",
         "strategy_version": "v1",
         **native_research_input_hashes_v1(bars, cfg),
@@ -112,8 +117,7 @@ def offline_cycle(tmp_path, monkeypatch):
             "evaluation": _time(16, 7),
         },
     }
-    request = OfflineDdoResearchRequestV1.model_validate(raw)
-    return root, ledger, completion, plan_digest, bars, cfg, request
+    return bars, cfg, OfflineDdoResearchRequestV1.model_validate(raw)
 
 
 def test_ddo_evidence_drives_archived_native_continuation_and_gvef(offline_cycle, monkeypatch):

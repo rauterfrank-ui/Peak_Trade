@@ -18,6 +18,11 @@ from typing import Any, Callable, Mapping, Sequence
 
 import pandas as pd
 
+from src.backtest.admissible_versioned_futures_dataset_v1 import (
+    dataset_admissibility_binding_requested,
+    load_profile_binding_from_cfg,
+    validate_profile_binding_consistency,
+)
 from src.backtest.cost_config_v0 import resolve_effective_backtest_cost_config
 from src.backtest.mv2_research_wiring_v1 import (
     run_mv2_research_backtest_wiring_v1,
@@ -258,6 +263,12 @@ def measure_native_research_candidate_v1(
         if identity[field] != domain_separated_digest(domain, {"source_digest": raw_digest}):
             raise NativeResearchMeasurementError(f"CANONICAL_CONFIG_SOURCE_MISMATCH:{field}")
     expected_cost = resolve_effective_backtest_cost_config(local_cfg)
+    profile = None
+    if dataset_admissibility_binding_requested(local_cfg):
+        profile = load_profile_binding_from_cfg(local_cfg)
+        reasons: list[str] = []
+        if not validate_profile_binding_consistency(profile, reason_codes=reasons):
+            raise NativeResearchMeasurementError("DATASET_PROFILE_INVALID:" + ",".join(reasons))
     raw_stats: dict[str, Mapping[str, float]] = {}
     runs = []
     full_returns = None
@@ -269,6 +280,7 @@ def measure_native_research_candidate_v1(
             cfg=deepcopy(local_cfg),
             instrument_id=instrument_id,
             step29l_instrument_admission_mode=instrument_admission_mode,
+            profile_binding=profile,
         )
         if wiring.effective_cost_config.config_digest != expected_cost.config_digest:
             raise NativeResearchMeasurementError("EXECUTED_COST_CONFIG_MISMATCH")
@@ -403,6 +415,7 @@ class NativeResearchExecutionContextV1:
     reality_gap_store: CanonicalRealityGapStoreV1 | None = None
     compatibility_contract: ComparisonCompatibilityContractV1 | None = None
     instrument_admission_mode: str = STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    allow_unmeasured_reality_gap: bool = False
 
 
 @dataclass(frozen=True)
@@ -453,7 +466,7 @@ class NativeResearchExperimentProviderV1:
             ctx.champion.experiment_identity["identity_digest"]
         ):
             raise NativeResearchMeasurementError("CHAMPION_EXPERIMENT_ID_MISMATCH")
-        if not ctx.gap_dimensions:
+        if not ctx.gap_dimensions and not ctx.allow_unmeasured_reality_gap:
             raise NativeResearchMeasurementError("EXPLICIT_REALITY_GAP_CONTEXT_REQUIRED")
         if not isinstance(ctx.time_horizon, Mapping) or set(ctx.time_horizon) != {"start", "end"}:
             raise NativeResearchMeasurementError("EXPLICIT_BAR_INDEX_HORIZON_REQUIRED")
@@ -545,6 +558,7 @@ class NativeResearchExperimentProviderV1:
             champion_score=full["statistics"]["sharpe"]["value"],
             challenger_score=measured.observations.metrics["engine_pre_funding_sharpe"],
             gap_dimensions=tuple(ctx.gap_dimensions),
+            allow_unmeasured_reality_gap=ctx.allow_unmeasured_reality_gap,
             observed_surface=ctx.observed_surface,
             threshold_policy_digest=ctx.threshold_policy_digest,
             parent_experiment=ctx.parent_experiment,

@@ -197,38 +197,53 @@ def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     )
 
 
-def _shadow_outcome_receipt(args: argparse.Namespace) -> dict:
-    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_measurement_integration_v1 import (
-        _append,
-    )
+def _read_shadow_outcome_receipt(path: Path) -> dict:
     from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
         strict_json_v1,
         validate_seal_v1,
     )
 
-    def read_receipt(path: Path) -> dict:
-        if path.is_symlink() or not path.is_file():
-            raise ValueError("SHADOW_OUTCOME_RECEIPT_FILE_REQUIRED")
-        return validate_seal_v1(strict_json_v1(path.read_bytes()), SHADOW_OUTCOME_RECEIPT_SCHEMA)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("SHADOW_OUTCOME_RECEIPT_FILE_REQUIRED")
+    return validate_seal_v1(strict_json_v1(path.read_bytes()), SHADOW_OUTCOME_RECEIPT_SCHEMA)
+
+
+def reverify_shadow_outcome_receipt_v1(
+    *, evidence_root: Path, o4_mark_archive: Path, outcome_receipt: Path
+) -> dict:
+    """Recompute a saved receipt from both original archives."""
+    saved = _read_shadow_outcome_receipt(outcome_receipt)
+    observation = saved["market_observation"]
+    ref = saved["shadow_decision"]["decision_event_ref"]
+    n_bars = observation["request"]["n_bars"]
+    if not isinstance(ref, str) or not ref or type(n_bars) is not int or not 2 <= n_bars <= 24:
+        raise ValueError("SHADOW_OUTCOME_RECEIPT_REQUEST_INVALID")
+    actual = _measure_shadow_outcome(
+        argparse.Namespace(
+            evidence_root=evidence_root,
+            o4_mark_archive=o4_mark_archive,
+            decision_event_ref=ref,
+            n_bars=n_bars,
+            max_end_age_seconds=observation["request"]["max_end_age_seconds"],
+            evaluated_at_utc=observation["evaluated_at_utc"],
+        )
+    )
+    if actual["exact_content_digest"] != saved["exact_content_digest"]:
+        raise ValueError("SHADOW_OUTCOME_RECEIPT_SOURCE_MISMATCH")
+    return actual
+
+
+def _shadow_outcome_receipt(args: argparse.Namespace) -> dict:
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_measurement_integration_v1 import (
+        _append,
+    )
 
     if args.verify_outcome_receipt is not None:
-        saved = read_receipt(args.verify_outcome_receipt)
-        observation = saved["market_observation"]
-        args.decision_event_ref = saved["shadow_decision"]["decision_event_ref"]
-        args.n_bars = observation["request"]["n_bars"]
-        args.max_end_age_seconds = observation["request"]["max_end_age_seconds"]
-        args.evaluated_at_utc = observation["evaluated_at_utc"]
-        if (
-            not isinstance(args.decision_event_ref, str)
-            or not args.decision_event_ref
-            or type(args.n_bars) is not int
-            or not 2 <= args.n_bars <= 24
-        ):
-            raise ValueError("SHADOW_OUTCOME_RECEIPT_REQUEST_INVALID")
-        actual = _measure_shadow_outcome(args)
-        if actual["exact_content_digest"] != saved["exact_content_digest"]:
-            raise ValueError("SHADOW_OUTCOME_RECEIPT_SOURCE_MISMATCH")
-        return actual
+        return reverify_shadow_outcome_receipt_v1(
+            evidence_root=args.evidence_root,
+            o4_mark_archive=args.o4_mark_archive,
+            outcome_receipt=args.verify_outcome_receipt,
+        )
 
     output = args.outcome_receipt_out
     if output is not None:
@@ -243,7 +258,10 @@ def _shadow_outcome_receipt(args: argparse.Namespace) -> dict:
     actual = _measure_shadow_outcome(args)
     if output is not None:
         _append(output, actual)
-        if read_receipt(output)["exact_content_digest"] != actual["exact_content_digest"]:
+        if (
+            _read_shadow_outcome_receipt(output)["exact_content_digest"]
+            != actual["exact_content_digest"]
+        ):
             raise ValueError("SHADOW_OUTCOME_RECEIPT_WRITE_MISMATCH")
     return actual
 

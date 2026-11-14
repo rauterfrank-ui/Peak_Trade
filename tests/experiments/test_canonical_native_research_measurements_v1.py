@@ -33,8 +33,21 @@ from tests.experiments.test_canonical_search_candidate_research_execution_v1 imp
 )
 
 
-def _case():
+def _case(*, modelled_l1=False):
     bars, cfg = _inputs()
+    if modelled_l1:
+        bars = bars.drop(columns=["best_bid", "best_ask", "spread"])
+        cost = {
+            "spread_model_version": "research_conservative_bps_v1",
+            "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+            "conservative_half_spread_bps": 5.0,
+        }
+        cfg["backtest"]["dataset_admissibility"] = {
+            "bind": True,
+            "dataset_profile": "economic_research_v1",
+            "execution_cost_binding": cost,
+        }
+        cfg["backtest"]["economic_research_execution_cost"] = cost
     hashes = native_research_input_hashes_v1(bars, cfg)
     template = _identity_request(
         strategy_params=dict(cfg["economic_evaluation_v1"]["strategy_params"]),
@@ -136,6 +149,16 @@ def test_four_actual_runs_use_full_path_returns_not_joined_split_resets(measured
     assert (
         result.observations.robustness_observations["split_metrics"]["holdout"]["sample_size"]
         == result.receipt["runs"][-1]["return_observations"]
+    )
+
+
+def test_native_measurement_honors_explicit_modelled_l1_profile():
+    bars, cfg, hashes, _, search = _case(modelled_l1=True)
+    measured = _measure(bars, cfg, hashes, _proposed(search))
+    assert measured.receipt["engine_invocations"] == 4
+    assert all(
+        run["cost_binding"]["spread_model_version"] == "research_conservative_bps_v1"
+        for run in measured.receipt["runs"]
     )
 
 
