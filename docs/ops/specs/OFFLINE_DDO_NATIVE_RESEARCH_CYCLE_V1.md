@@ -234,3 +234,29 @@ historical decision behavior under the specified profiles. A prospective
 I17 observation requires the profiles and candle availability to be bound
 before the decisions under study, followed by independent, comparable
 measurements for any Reality Gap.
+
+### I17 decision-time input preflight
+
+The same command accepts `--decision-time-last-captures` in place of
+`--capture-public-last`. Supply a separate sealed JSON archive with schema
+`i17_decision_time_last_captures.v1`, the frozen `plan_digest`, the
+`original_i17_manifest_sha256` and an ordered `captures` array. Each entry
+keeps the request, raw response, response hash, and request and receipt times
+in the Last-candle archive format. Use captures that extend a contiguous
+prefix of finalized Last hours. Earlier warmup bars must agree where they
+overlap.
+
+Both profiles and their research input must be known at preregistration
+before the window opens. The I17 mark archive must lie inside that window.
+Each decision uses the latest finalized hour from the captures received by
+its own decision time. While a just-closed candle is in transit, both arms
+continue with the previous available hour. The preflight stops if the first
+decision has no available warmup. Each cycle records the selected close time,
+receipt time and capture digest along with the consumed strategy material.
+`--verify` replays the same inputs and checks the stored result.
+
+This mode reads archived evidence offline and emits
+`I17_DECISION_TIME_OFFLINE_PREFLIGHT` with authority `NONE`. A future
+independent observation needs the I17 host to retain the actual Last capture
+clocks and bind the two profiles at its decision producer. Evidence from that
+observation still needs a comparable economic measurement.

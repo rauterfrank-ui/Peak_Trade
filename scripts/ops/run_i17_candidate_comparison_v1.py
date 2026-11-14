@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from bisect import bisect_right
 from collections import Counter
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -75,6 +76,7 @@ from trading.market_state.distinct_market_observation_acceptor_v1 import (  # no
 )
 
 LAST_ENDPOINT = ROLE_PATHS["last"]
+DECISION_TIME_LAST_SCHEMA = "i17_decision_time_last_captures.v1"
 
 
 def _read_i17(root, instrument):
@@ -204,7 +206,66 @@ def _strategy_binding(plan, profile, bars):
     return binding
 
 
-def _compare(plan, rows, candles, *, identifier):
+def _decision_time_last_snapshots(plan, rows, archive, *, manifest_sha):
+    start = _utc(plan["start_utc"])
+    end = _utc(plan["end_utc"])
+    registered = _utc(plan["registered_at_utc"])
+    if (
+        plan["mode"] != "PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY"
+        or archive["schema_version"] != DECISION_TIME_LAST_SCHEMA
+        or archive["plan_digest"] != digest_v1(plan)
+        or archive["original_i17_manifest_sha256"] != manifest_sha
+        or not max(_utc(plan["candidate_known_at_utc"]), _utc(plan["parent_data_known_at_utc"]))
+        <= registered
+        < start
+        < end
+        or not rows
+        or not start.timestamp() <= rows[0][0] <= rows[-1][0] < end.timestamp()
+    ):
+        raise ValueError("I17_DECISION_TIME_WINDOW_OR_PLAN_MISMATCH")
+
+    snapshots = []
+    previous = None
+    for capture in archive["captures"]:
+        requested = _utc(capture["requested_at_utc"])
+        received = _utc(capture["received_at_utc"])
+        cutoff = int(capture["query"]["after"])
+        if (
+            not registered <= requested <= received < end
+            or not 0 < cutoff <= _milliseconds(requested)
+            or (snapshots and received <= snapshots[-1][0])
+        ):
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
+        query = _last_query(plan["instrument_id"], cutoff / 1000)
+        frame = _parse_last(capture, query)
+        if previous is not None:
+            overlap = frame.index.intersection(previous.index)
+            new_bars = frame.loc[frame.index > previous.index[-1]]
+            if (
+                overlap.empty
+                or new_bars.empty
+                or new_bars.index[0] - previous.index[-1] != HOUR
+                or not previous.loc[overlap].equals(frame.loc[overlap])
+            ):
+                raise ValueError("I17_DECISION_TIME_LAST_PREFIX_CHANGED_OR_NOT_EXTENDED")
+            frame = pd.concat([previous, new_bars])
+        snapshots.append(
+            (
+                received,
+                frame,
+                {
+                    "received_at_utc": received.isoformat(),
+                    "source_capture_digest": digest_v1(capture),
+                },
+            )
+        )
+        previous = frame
+    if not snapshots:
+        raise ValueError("I17_DECISION_TIME_LAST_CAPTURES_REQUIRED")
+    return snapshots
+
+
+def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
     strategy = plan["strategy_id"]
     scope = plan["instrument_id"]
     registry = build_suitability_registry_from_snapshot(build_registry_snapshot())
@@ -223,9 +284,18 @@ def _compare(plan, rows, candles, *, identifier):
     bindings = {}
     prior_close = None
     compared = []
+    receipt_times = [] if decision_time_last is None else [row[0] for row in decision_time_last]
     for decided, original, decision_id in rows:
         decision_time = datetime.fromtimestamp(decided, timezone.utc)
         close_time = decision_time.replace(minute=0, second=0, microsecond=0)
+        candle_input = {}
+        if decision_time_last is not None:
+            available_index = bisect_right(receipt_times, decision_time) - 1
+            if available_index < 0:
+                raise ValueError("I17_DECISION_TIME_LAST_NOT_YET_AVAILABLE")
+            _, candles, trace = decision_time_last[available_index]
+            close_time = candles.index[-1]
+            candle_input = {"last_candle_input": trace}
         if close_time != prior_close:
             if close_time not in candles.index:
                 raise ValueError("I17_COMPARISON_HOUR_MISSING_AT_DECISION")
@@ -308,18 +378,41 @@ def _compare(plan, rows, candles, *, identifier):
                 "historical_decision_id": decision_id,
                 "decision_time_utc": decision_time.isoformat(),
                 "last_candle_close_utc": close_time.isoformat(),
+                **candle_input,
                 "arms": arms,
             }
         )
     return compared
 
 
-def compare_v1(workspace, *, plan, evidence_root, code_sha, capture_last=False, verify=False):
+def compare_v1(
+    workspace,
+    *,
+    plan,
+    evidence_root,
+    code_sha,
+    capture_last=False,
+    verify=False,
+    decision_time_archive=None,
+):
     manifest_sha, rows = _read_i17(evidence_root, plan["instrument_id"])
-    query = _last_query(plan["instrument_id"], rows[-1][0])
     output = workspace.safe_path_v1("result.json")
     with workspace.lease_v1():
-        source, candles = _last_source(workspace, query, capture_last=capture_last and not verify)
+        scope = "HISTORICAL_I17_COMPARISON"
+        snapshots = None
+        if decision_time_archive is None:
+            query = _last_query(plan["instrument_id"], rows[-1][0])
+            source, candles = _last_source(
+                workspace, query, capture_last=capture_last and not verify
+            )
+            last_received = source["received_at_utc"]
+        else:
+            if capture_last:
+                raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
+            scope = "I17_DECISION_TIME_OFFLINE_PREFLIGHT"
+            source, candles = decision_time_archive, None
+            snapshots = _decision_time_last_snapshots(plan, rows, source, manifest_sha=manifest_sha)
+            last_received = snapshots[-1][0].isoformat()
         binding = {
             "plan_digest": digest_v1(plan),
             "original_i17_manifest_sha256": manifest_sha,
@@ -331,13 +424,15 @@ def compare_v1(workspace, *, plan, evidence_root, code_sha, capture_last=False, 
             if any(saved[key] != value for key, value in binding.items()):
                 raise ValueError("I17_COMPARISON_ORIGINAL_BINDING_CHANGED")
             return saved
-        cycles = _compare(plan, rows, candles, identifier=digest_v1(binding))
+        cycles = _compare(
+            plan, rows, candles, identifier=digest_v1(binding), decision_time_last=snapshots
+        )
         results = [(row["arms"]["reference"], row["arms"]["candidate"]) for row in cycles]
         result = {
             "schema_version": "i17_offline_candidate_comparison.v1",
             "authority": "NONE",
-            "scope": "HISTORICAL_I17_COMPARISON",
-            "last_inputs_captured_at_utc": source["received_at_utc"],
+            "scope": scope,
+            "last_inputs_captured_at_utc": last_received,
             "strategy_id": plan["strategy_id"],
             "strategy_version": plan["strategy_version"],
             "parameters": {
@@ -389,6 +484,7 @@ def main(argv=None):
     parser.add_argument("--campaign-state", type=Path, required=True)
     parser.add_argument("--base-config", type=Path, required=True)
     parser.add_argument("--i17-evidence", type=Path, required=True)
+    parser.add_argument("--decision-time-last-captures", type=Path)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--capture-public-last", action="store_true")
     mode.add_argument("--verify", action="store_true")
@@ -402,6 +498,10 @@ def main(argv=None):
             _absolute(args.base_config),
             _absolute(args.i17_evidence),
         ]
+        if args.decision_time_last_captures is not None:
+            if args.capture_public_last:
+                raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
+            source_paths.append(_absolute(args.decision_time_last_captures))
         if any(state.is_relative_to(path) or path.is_relative_to(state) for path in source_paths):
             raise ValueError("I17_COMPARISON_STATE_MUST_BE_SEPARATE")
         plan = read_v1(args.pair_plan)
@@ -422,6 +522,11 @@ def main(argv=None):
             code_sha=_head(),
             capture_last=args.capture_public_last,
             verify=args.verify,
+            decision_time_archive=(
+                None
+                if args.decision_time_last_captures is None
+                else read_v1(args.decision_time_last_captures)
+            ),
         )
         print(
             json.dumps(
