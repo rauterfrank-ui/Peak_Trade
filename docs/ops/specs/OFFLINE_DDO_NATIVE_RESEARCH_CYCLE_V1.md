@@ -139,3 +139,60 @@ The saved Paper and I17 observations precede the new parameter candidate.
 A candidate-specific Reality Gap requires a separate, later observation of
 that candidate under a comparable measurement contract. The campaign records
 exploratory feedback and leaves that comparative evidence open.
+
+## Prospective candidate replay
+
+The [candidate replay command](../../../scripts/ops/run_research_candidate_shadow_v1.py)
+freezes both original numeric packets from a passing GVEF mechanism receipt.
+It checks the strategy version, effective parameter values, original data
+digest and resolved configuration of both packets before registering a
+future UTC window. The first packet is the GVEF reference. The second is the
+candidate under observation for this experiment. The later follow-up experiment
+has its own identity.
+
+```bash
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state prepare \
+  --campaign-state /absolute/campaign-state --learning-digest "$learning_digest" \
+  --config /absolute/resolved.json --instrument-binding /absolute/instrument-binding.json \
+  --start-utc "$window_start_utc" --hours 2
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state observe
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state verify
+```
+
+After the registered window closes, `observe` requests original finalized
+hourly Last, Mark and Index candles and settled funding-rate history from
+public OKX EEA endpoints. The original response bytes, endpoint, query and
+receipt time are retained. Both profiles consume the same complete window.
+The earlier warmup initializes each replay's simulated state and the existing
+hourly research volatility feature. The score starts from the simulated equity
+at the window boundary and uses candle-close timestamps. The funding series is
+a market context input dated by the funding event. The replay result reports
+engine equity before verified funding cashflows, with the execution cost model
+from the original experiment, including the engine's closing convention.
+
+This is a forward replay on newly captured market inputs. It records the actual
+parameters consumed by the replay, the Master V2 engine signals and the
+simulated equity series. The observations needed for an I17 candidate-specific
+Reality Gap include which configuration the I17 decision producer actually used
+and an independent measurement of the same metric. The replay receipt carries
+`reality_gap_status=INCOMPLETE`, `economic_qualification_status=BLOCKED`, and
+authority `NONE`. It has no promotion or apply consumer.
+
+### Draft for an economic comparison
+
+The [original self-learning master](../evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_core_bound.original.txt)
+specifies the sequence from candidate to Shadow evidence, Reality Gap,
+research memory and the next hypothesis. GVEF binds the evidence for an
+evaluation. The economic judgement needs a versioned owner policy.
+
+The proposed primary metric is net return on beginning equity, measured for both
+profiles over the same independent observation horizon. Use fees and slippage
+from the measurement's accounting basis and reconcile funding against applied
+position quantities and event times. Count each cost once. Specify the position
+state at both boundaries, the settlement and price basis, and the unit. Pair the
+candidate and reference observations by window and use the difference in returns.
+Keep drawdown, sample sizes and an
+uncertainty estimate with that difference. A two-hour observation can test the
+data flow. The responsible owner must ratify the evaluation horizon, required
+sample size, uncertainty method and pass thresholds before a quality claim.
+Incomplete or incomparable evidence leaves the verdict `BLOCKED`.
