@@ -91,8 +91,9 @@ def _fault_and_recovery(root):
 
 @pytest.mark.parametrize("failure_stage", ["candles", "mark", "index"])
 @pytest.mark.parametrize("fault", ["timeout", "http503"])
+@pytest.mark.parametrize("use_market_adapter", [False, True])
 def test_actual_get_result_reaches_recovery_and_matching_email_after_progress(
-    tmp_path, monkeypatch, failure_stage, fault
+    tmp_path, monkeypatch, failure_stage, fault, use_market_adapter
 ):
     cursor = _seed_cursor(tmp_path / "cursor", event_time=CURSOR_FLOOR)
     root = tmp_path / "evidence"
@@ -151,9 +152,14 @@ def test_actual_get_result_reaches_recovery_and_matching_email_after_progress(
     def runner(**kwargs):
         mark = kwargs.pop("mark_price_payload")
         index = kwargs.pop("index_tickers_payload")
+        captured_at = kwargs.pop("mark_acquired_at_utc")
+        assert captured_at
         observed_marks.append(
             build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
-                mark_price_payload=mark, venue_native_id=NATIVE_ID, index_from_index_tickers=index
+                mark_price_payload=mark,
+                venue_native_id=NATIVE_ID,
+                index_from_index_tickers=index,
+                mark_acquired_at_utc=captured_at,
             )
         )
         # S5/T2 fixture is injected: this proves the recovery wiring/cursor,
@@ -165,9 +171,12 @@ def test_actual_get_result_reaches_recovery_and_matching_email_after_progress(
         cursor_store_root=cursor,
         observation_source=source,
         authorization=_auth(max_cycles_per_run=1),
-        s5_runner=runner,
+        s5_runner=runner if use_market_adapter else None,
     )
-    assert result.cycles_completed == result.s5_invoke_count == 1 and len(observed_marks) == 1
+    assert result.cycles_completed == result.s5_invoke_count == 1
+    assert len(observed_marks) == int(use_market_adapter)
+    assert result.post_count == result.external_effect_count == 0
+    assert result.permit_created is False
     assert failures == [failure_stage] and calls.count(failure_stage) == 2
     assert transport.request_count == len(calls) <= transport.max_request_count
     events = _notices(root)

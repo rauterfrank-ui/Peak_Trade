@@ -1364,7 +1364,7 @@
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
       "before_sha256": "3e6c24e60fc09f9b2ef6ebc6b322ad8dbd49916f458c808f5879120d3b26268c",
-      "sha256": "1286601c09d1c60b03eff897c58c75ab34c405800653184f6f9dabe1ed4a5720"
+      "sha256": "0cfae15b78d7662e759e0fcd5d5bb68ba80923bf635e3493046142b97dc04460"
     },
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/constants_v1.py",
@@ -1374,7 +1374,7 @@
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/crosswalk_rules.v1.json",
       "before_sha256": "5ea9d3022c7db0843c8905a9afa8d2edd321df6776f3f002cf6136b3030f90f9",
-      "sha256": "0c20d8b5fb5aa1b74f4e690bbe9d1ef3f85a07f5a960b0453e84a4d050711dac"
+      "sha256": "c3ab0d4cacfb4eba96478fb2e6153b7bec217d17f596fb7cec278d4801dcaa57"
     },
     {
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/edges_v1.py",
@@ -1459,7 +1459,7 @@
     {
       "path": "scripts/ops/recommend_manual_only_workflows.py",
       "before_sha256": "60392fe8aa5cc720d7dbdede9fd6286ea457d80efc7713b1f1a326c2eff7c845",
-      "sha256": "20032ca3931a2e36163dc1739cee091a48c09f9d5d52a08cb18dc453c63c8267"
+      "sha256": "6ab102e0d15e5a1cd3f0df83dd895d4b73e3b3fe1b078ee9bf37ae4a180f6dd2"
     },
     {
       "path": "scripts/ops/route_offline_paired_market_representation_meta_v1.py",
@@ -2169,7 +2169,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
       "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
-      "sha256": "7360fccef0328bf713ba28d58cb79cc1b68f5170ce456b45690865fe5b5866cf"
+      "sha256": "4f3968552cd5bd30d19099ed93a08094bf179a36151c1dd7f6dcaf92eff0c5c7"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
@@ -3789,7 +3789,7 @@
     {
       "path": "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py",
       "before_sha256": "616dcb74d2916a951320572ec56b4198a57fc299c46990ffa1a9696ddd551b4a",
-      "sha256": "8cf3389cebdadd44014446f51a7114fd45471a41d5fe9f0fc874d0d0bab59a87"
+      "sha256": "8f7c0e48fcdf0ff3be959ca0fe760f99ce7f5a10101c5737ed7de9e9d3aadb66"
     },
     {
       "path": "tests/ops/test_ghv_productive_mark_cache_freshness_ab_proof_v1.py",
@@ -4064,7 +4064,7 @@
     {
       "path": "tests/ops/test_recommend_manual_only_workflows.py",
       "before_sha256": "cb8638d10c5bd087e99e4be4847cc7da2f259a078760319e74ea4e7383364851",
-      "sha256": "2f5dba07db18e33bc1298e48b82ef96e97df753c2983c150dd787733805c76ab"
+      "sha256": "9164fbf8d8dcbca7fe2ef9bed5f5f4f53fd9432b3038e69173feeb8bdd5603cd"
     },
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
@@ -4085,6 +4085,11 @@
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
       "before_sha256": null,
       "sha256": "8e2734668bcae4fd87f7b97ab58f7b9ce6101fcede2e15c639a91a4aa50dd25c"
+    },
+    {
+      "path": "tests/ops/test_runtime_recovery_email_v1.py",
+      "before_sha256": "ce09ef4fadcd0fb75c9eea5bf7745149d29955453dc953270412f221b75936a3",
+      "sha256": "3a7b4e25c2613f30c28b214aa0271c76a477b7cb71c485a3b68b4c3db0bc6ef3"
     },
     {
       "path": "tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_v1.py",

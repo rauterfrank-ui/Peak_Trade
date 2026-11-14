@@ -187,6 +187,7 @@ def _edge_review_notes(repo_root: Path, rules: dict[str, Any]) -> dict[str, Any]
         notes[edge_id] = {
             "direction": row["direction"],
             "authority_or_effect": row["authority_or_effect"],
+            "handoff_kind": row.get("handoff_kind", "UNCLASSIFIED"),
             "review_kind": "STATIC_REVIEW_NOTE_ONLY",
             "source_refs_sha256": refs,
             "source_refs_complete": len(refs) == len(row["source_refs"]),
@@ -620,6 +621,9 @@ def run_forensic_crosswalk_v1(
                     "edge_id": edge_id,
                     "source_system": "CURRENT_SYSTEM_CENSUS",
                     "reason": note,
+                    "census_source_object": edge.get("source_object"),
+                    "census_target_object": edge.get("target_object"),
+                    "census_contract_or_payload": edge.get("contract_or_payload"),
                     "current_relevance": edge_verdict.to_record(),
                     **({"review_note": review_notes[edge_id]} if edge_id in review_notes else {}),
                 }

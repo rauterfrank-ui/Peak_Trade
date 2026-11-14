@@ -893,6 +893,9 @@ def run_current_productive_governed_continuous_cycle_run_v1(
         max_cycles_per_run=authorization.max_cycles_per_run,
     )
     runner = s5_runner or run_current_productive_governed_cycle_v1
+    # The standard S5 cycle consumes finalized C1 and occupancy. The N1 adapter
+    # uses the original Mark/Index bundle to build its own market context.
+    runner_accepts_market_bundle = runner is not run_current_productive_governed_cycle_v1
     disposition = DISPOSITION_FAIL_CLOSED
     reason_code = ""
     terminal_class = ""
@@ -1379,17 +1382,19 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     occupancy_payloads=observation.occupancy_payloads,
                     **(
                         {"mark_price_payload": observation.mark_price_payload}
-                        if observation.mark_price_payload is not None
+                        if runner_accepts_market_bundle
+                        and observation.mark_price_payload is not None
                         else {}
                     ),
                     **(
                         {"index_tickers_payload": observation.index_tickers_payload}
-                        if observation.index_tickers_payload is not None
+                        if runner_accepts_market_bundle
+                        and observation.index_tickers_payload is not None
                         else {}
                     ),
                     **(
                         {"mark_acquired_at_utc": observation.mark_acquired_at_utc}
-                        if observation.mark_acquired_at_utc
+                        if runner_accepts_market_bundle and observation.mark_acquired_at_utc
                         else {}
                     ),
                     execute_network=False,
