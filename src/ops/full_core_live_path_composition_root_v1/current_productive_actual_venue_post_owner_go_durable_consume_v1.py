@@ -11,6 +11,8 @@ RUNTIME_AUTHORIZATION_EFFECT=POST_OWNER_GO_DURABLE_CONSUME_ONLY
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Final, Mapping
@@ -97,9 +99,6 @@ def persist_durable_post_owner_go_consume_v1(
     sha = str(baseline_origin_main_sha or "").strip()
     if len(sha) != 40:
         raise CurrentProductiveActualVenuePostOwnerGoConsumeError("BASELINE_SHA_INVALID")
-    existing = load_durable_post_owner_go_consume_v1(store_root=store_root)
-    if existing.get("consumed") is True:
-        raise CurrentProductiveActualVenuePostOwnerGoConsumeError("POST_OWNER_GO_ALREADY_CONSUMED")
     bound = {
         "consumed": True,
         "owner_go_token": go,
@@ -109,12 +108,41 @@ def persist_durable_post_owner_go_consume_v1(
         "second_post_authorized": False,
     }
     _assert_no_secrets(bound)
-    root = Path(store_root)
-    root.mkdir(parents=True, exist_ok=True)
+    root = Path(store_root).resolve()
     path = durable_post_owner_go_path_v1(root)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(_canonical_json(bound) + "\n", encoding="utf-8")
-    tmp.replace(path)
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+        fd, temporary_name = tempfile.mkstemp(prefix=".post-owner-go-", dir=root)
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                stream.write(_canonical_json(bound) + "\n")
+                stream.flush()
+                os.fsync(stream.fileno())
+            # Publish the complete record once. Concurrent processes cannot replace it.
+            try:
+                os.link(temporary, path)
+            except FileExistsError as exc:
+                existing = load_durable_post_owner_go_consume_v1(store_root=root)
+                reason = (
+                    "POST_OWNER_GO_ALREADY_CONSUMED"
+                    if existing["consumed"]
+                    else "DURABLE_POST_GO_RECORD_CONFLICT"
+                )
+                raise CurrentProductiveActualVenuePostOwnerGoConsumeError(reason) from exc
+        finally:
+            temporary.unlink(missing_ok=True)
+        # The store and its ancestors may have been created for this attempt.
+        for directory in (root, *root.parents):
+            dir_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+    except OSError as exc:
+        raise CurrentProductiveActualVenuePostOwnerGoConsumeError(
+            "DURABLE_POST_GO_PERSISTENCE_FAILED"
+        ) from exc
     return bound
 
 

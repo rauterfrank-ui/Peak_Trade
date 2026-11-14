@@ -3,7 +3,7 @@ docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH
 status: active
 scope: One bounded Enter-order POST to eea.okx.com via envelope-bound single-use permit
 capability: FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
-last_updated: 2026-09-27
+last_updated: 2026-11-14
 ---
 
 # Full Core Current Productive Actual Venue POST With Fresh Envelope Bound Single Use Permit V1
@@ -41,12 +41,15 @@ opening the socket.
 
 The current POST Owner-GO verifier checks the consume record in the supplied
 root. Its record carries no authenticated per-order grant ID, expiry or
-revocation check. The consume writer uses a file replacement and has no
-common lock across its read and write. The envelope permit has a separate
-writer lock scoped to its own store. The single-attempt checks therefore
-provide evidence for the bound store and transport attempt. A mandate for
-unattended operation across processes, store roots and restarts would require
-an independently verified grant and a shared consumption boundary.
+revocation check. The consume writer synchronizes the complete record,
+publishes it atomically without replacing a record at the destination, and
+synchronizes the directory entries before returning success. Concurrent
+callers sharing that store root can consume the Owner-GO only once. A
+published record also blocks a retry if a later synchronization step fails.
+The envelope permit has a separate writer lock scoped to its own store.
+Independent store roots have independent consume records. A mandate for
+unattended operation across store roots would require an independently
+verified grant and a shared consumption boundary.
 
 The governance policy evaluators and this explicit submit path are separate.
 A denied PRE_EXTERNAL policy proof blocks that policy admission. The explicit
