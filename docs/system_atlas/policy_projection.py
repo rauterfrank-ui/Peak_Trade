@@ -232,6 +232,38 @@ G2_ARCHIVE_PROJECTION_DELTA = (
     "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
     "f98f3e3b0119b0981b74e12e1e1f8fb10999b92a67b701fbbfc2dcfa6183d85a",
 )
+# Reviewed policy-source changes for the execution authority audit.
+EXECUTION_AUTHORITY_AUDIT_DELTAS = {
+    "src/governance/current_productive_actual_venue_post_admission_policy_v1.py": (
+        "9e642bd18b5067dd5ca03513d40fd67a951db194ac72d28f9e75a9b5861148bb",
+        "ac0b163ba31e2e1fa73d0bb398c51da4f238551de8e679fed63a2f2f7c18b7e4",
+    ),
+    "src/governance/current_productive_real_venue_post_admission_v1.py": (
+        "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
+        "b621c691a22fd6560814f3243796155c1d4f0d0ee0e6dbbe1c302137a161a7aa",
+    ),
+    "src/governance/k1_opaque_signing_handle_governed_construction_v1.py": (
+        "036b586eeefcd14ca54acfb18059a5aea3f17e374fad3bc41977e4a034ec2929",
+        "a51b7a409d69b2fdabfc04f62864b31d61c3912d98681e36d19381704114600c",
+    ),
+    "src/governance/post_6940_live_readiness_convergence_v1.py": (
+        "302251e5dda81aac4acca9e017825654c25ed29a6de033eb2ba8a1640624a490",
+        "e1b1d170fb30399dedd1465b80d18d62e1df16db697e82a545f7b07f5765fc46",
+    ),
+    "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py": (
+        "6544ad9470a29e83881986a3a24e8318238321ca0ed6975841b40b99f3ae5056",
+        "7a7104d720db8f9b26a17a42dd89b823f9b9458070eca1e59829aee4d2529afe",
+    ),
+    "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py": (
+        "19f2d5e8f98a16a1cc02ef4a8e2e42f3b4d96e14cdb28872602fe391444792c5",
+        "0e5d788025f1556a37705d84c7e48bb2554d185edd5316ed15da8e339bfaa084",
+    ),
+    "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py": (
+        "f0c07693ccce9cb0649bc26d116b1a5a71125762767408daab23c92dcf31fa11",
+        "0ff9dcf45a087da77eba1a45d0374fcba954cc996478207b01d0975c0af7e08a",
+    ),
+}
+
 OWNER_ADJUDICATION_CONFIG_DELTAS = {
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": (
         "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
@@ -625,6 +657,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in MANAGED_FILEGATE_OWNER_DELTAS
                 and path not in opt_handoff
                 and not g2_archive_delta
+                and EXECUTION_AUTHORITY_AUDIT_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and OWNER_ADJUDICATION_CONFIG_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
