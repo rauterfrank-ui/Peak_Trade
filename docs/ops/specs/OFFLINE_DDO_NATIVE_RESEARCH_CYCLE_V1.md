@@ -197,6 +197,36 @@ data flow. The responsible owner must ratify the evaluation horizon, required
 sample size, uncertainty method and pass thresholds before a quality claim.
 Incomplete or incomparable evidence leaves the verdict `BLOCKED`.
 
+### November 15 candidate comparison evidence
+
+Both archives bind MA 10/30 and MA 10/40 to the same OKX ETH-X-PERP
+instrument and USD settlement. The forward replay window was 00:00–02:00
+CET. Both profiles produced two neutral hourly engine signals and a 0.00%
+modelled equity return before verified funding cashflows. The replay result
+body digest is
+`5aef5b589331e97ff237cc44b051eb16bfc743f417120248a4c97fd69ab4ff90`.
+The recorded funding rates describe market events. An applied cashflow also
+requires the position quantity and accounting entry at the event.
+
+The 17:01–19:01 CET I17 Shadow observed 3,007 distinct Mark events.
+The two profiles differed in 1,496 raw MA outputs. Both profiles recorded
+the same intended action, `NONE`, throughout the window. The paired
+bridge ledger SHA-256 is
+`231ddecb043b6ae1b8cf15c6e90d544c036e63ef59888520a05f692274579e15`.
+The paired analytical equity was constant and the sealed fill ledger was
+empty. The I17 reconstruction verifier reconciled the session at zero
+fills. The session verdict retained `economic_validity_pass=false`.
+
+SL05 requires comparable economics, including the horizon, model and risk
+bindings. SL07 compares an expected and observed measurement of the same
+profile. A difference between the two profiles on one surface alone
+answers the separate candidate comparison question. This evidence leaves
+the economic comparison blocked and the Reality Gap incomplete. A
+decision-bound chain through position state, simulated execution and
+accounting per profile is still required to measure the proposed return.
+The [SL07 consumer](../../../src/experiments/canonical_reality_gap_store_v1.py)
+also requires a versioned metric, unit, threshold policy and evidence references.
+
 ## Historical I17 candidate comparison
 
 The [I17 comparison command](../../../scripts/ops/run_i17_candidate_comparison_v1.py)
