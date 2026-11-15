@@ -266,7 +266,29 @@ bound by its preregistration, then writes the archive consumed by
 `--decision-time-last-captures`. The comparison verifies the scope again.
 
 This mode reads archived evidence offline and emits
-`I17_DECISION_TIME_OFFLINE_PREFLIGHT` with authority `NONE`. A future
-independent observation needs the I17 host to retain the actual Last capture
-clocks and bind the two profiles at its decision producer. Evidence from that
-observation still needs a comparable economic measurement.
+`I17_DECISION_TIME_OFFLINE_PREFLIGHT` with authority `NONE`.
+
+### I17 host comparison
+
+An I17 host can receive an explicit `I17CandidateHostObservationV1` bound to
+the frozen plan and its local Last-capture journal. The preregistration's
+strategy components must carry the plan digest produced by
+`candidate_plan_component_v1`. The existing preregistration scope digest binds
+that identity before authorization consumption. A mismatched plan or a
+candidate preregistration without its observer stops at preflight.
+
+The observer consumes the host's Mark event and natural receipt time. It
+reads the scoped journal and stamps its own paired decision cutoff. Both
+profiles then use the latest available finalized Last prefix. The canonical
+market observation acceptor handles event identity, and each arm retains its
+own direction confirmation and simulation state. The MA value enters
+Suitability. The receipt records that owner's actual response when reached
+and the subsequent Double Play outcome. Each paired receipt in the bridge
+cycle ledger references the original host decision, the original Mark clocks
+and the Last close and receipt clocks.
+
+Missing initial Last evidence marks the candidate comparison failed for that
+session. The ordinary Shadow observation continues through its owners. An
+independent venue observation still requires a session-bound operator GO and
+an approved public Last capture source. The comparison carries authority
+`NONE`. Economic qualification also requires a comparable measurement.

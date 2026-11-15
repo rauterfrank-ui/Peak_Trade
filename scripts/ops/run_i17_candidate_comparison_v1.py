@@ -7,35 +7,21 @@ import argparse
 from bisect import bisect_right
 from collections import Counter
 from datetime import datetime, timezone
-from decimal import Decimal
 from hashlib import sha256
 import json
-import math
 from pathlib import Path
-import re
 import sys
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-import pandas as pd  # noqa: E402
-
 from scripts.ops.run_research_candidate_shadow_v1 import (  # noqa: E402
-    HOUR,
-    PLAN_SCHEMA,
-    ROLE_PATHS,
     _absolute,
     _clock,
     _head,
-    _milliseconds,
     _pair,
     _public_get,
-    _utc,
-)
-from src.backtest.strategy_signal_binding_v1 import execute_configured_strategy_signal_series_v1  # noqa: E402
-from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (  # noqa: E402
-    normalize_strategy_signal_to_suitability_agreement_material_v1,
 )
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (  # noqa: E402
     EvaluationReceiptArchiveV1,
@@ -52,35 +38,29 @@ from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (  # noqa: E402
     verify_wallclock_evidence_bundle_v1,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (  # noqa: E402
+    HOUR as HOUR,
+    I17CandidatePairV1,
+    LAST_ENDPOINT,
+    PLAN_SCHEMA,
+    _capture_journal_paths,
+    _capture_scope_path,
+    _decision_time_window,
+    _last_query,
+    _parse_last,
+    _read_capture_journal,
+    _strategy_binding,
+    _utc,
+    _validated_last_snapshots,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (  # noqa: E402
-    CANONICAL_INSTRUMENT_ID,
     MARKET_TYPE_FUTURES,
     VENUE_OKX,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (  # noqa: E402
     parse_preregistration_contract_v1,
 )
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (  # noqa: E402
-    HardenedBridgeSessionStateV2,
-    I17OfflineCandidateInputV2,
-)
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.wallclock_hardening_binding_v2 import (  # noqa: E402
-    run_hardened_wallclock_bridge_observation_cycle_v2,
-)
-from src.strategies.registry import build_registry_snapshot  # noqa: E402
-from src.strategies.suitability_registry_adapter_v1 import (  # noqa: E402
-    build_suitability_registry_from_snapshot,
-)
-from trading.market_state.distinct_market_observation_acceptor_v1 import (  # noqa: E402
-    InstrumentObservationKeyV1,
-    ObservationCandidateV1,
-    ObservationTransportMetadataV1,
-    commit_observation_acceptance_v1,
-    evaluate_distinct_market_observation_v1,
-    initial_observation_acceptance_state_v1,
-)
 
-LAST_ENDPOINT = ROLE_PATHS["last"]
 DECISION_TIME_LAST_SCHEMA = "i17_decision_time_last_captures.v1"
 
 
@@ -139,62 +119,6 @@ def _read_i17_scope(root, manifest_sha):
     return scope
 
 
-def _last_query(instrument, last_decision):
-    cutoff = datetime.fromtimestamp(last_decision, timezone.utc).replace(
-        minute=0, second=0, microsecond=0
-    )
-    return {"instId": instrument, "bar": "1H", "after": str(_milliseconds(cutoff)), "limit": "100"}
-
-
-def _parse_last(capture, query):
-    raw = bytes.fromhex(capture["raw_hex"])
-    if (
-        capture["host"] != PUBLIC_HTTP_HOST
-        or capture["endpoint"] != LAST_ENDPOINT
-        or capture["query"] != query
-        or sha256(raw).hexdigest() != capture["raw_sha256"]
-        or _utc(capture["received_at_utc"]) < _utc(capture["requested_at_utc"])
-    ):
-        raise ValueError("I17_COMPARISON_LAST_ARCHIVE_MISMATCH")
-    payload = json.loads(raw)
-    if payload["code"] != "0" or not isinstance(payload["data"], list):
-        raise ValueError("I17_COMPARISON_LAST_SOURCE_REJECTED")
-    rows = {}
-    for row in payload["data"]:
-        if not isinstance(row, list) or len(row) != 9:
-            raise ValueError("I17_COMPARISON_LAST_CANDLE_SHAPE")
-        opened = int(row[0])
-        if opened >= int(query["after"]):
-            continue
-        close_time = datetime.fromtimestamp(opened / 1000, timezone.utc) + HOUR
-        o, high, low, close = map(float, row[1:5])
-        volume = float(row[6])
-        if (
-            row[-1] != "1"
-            or opened % 3_600_000
-            or close_time in rows
-            or close_time > _utc(capture["received_at_utc"])
-            or not all(math.isfinite(value) and value > 0 for value in (o, high, low, close))
-            or not low <= min(o, close) <= max(o, close) <= high
-            or not math.isfinite(volume)
-            or volume < 0
-        ):
-            raise ValueError("I17_COMPARISON_LAST_CANDLE_INVALID")
-        rows[close_time] = (o, high, low, close, volume)
-    times = sorted(rows)
-    if (
-        not times
-        or _milliseconds(times[-1]) != int(query["after"])
-        or any(right - left != HOUR for left, right in zip(times, times[1:]))
-    ):
-        raise ValueError("I17_COMPARISON_LAST_CANDLE_COVERAGE")
-    return pd.DataFrame(
-        [rows[time] for time in times],
-        index=pd.DatetimeIndex(times),
-        columns=("open", "high", "low", "close", "volume"),
-    )
-
-
 def _capture_last_response(query, *, fetch, clock, requested):
     raw = fetch(LAST_ENDPOINT, query.copy())
     received = clock()
@@ -218,48 +142,6 @@ def _last_source(workspace, query, *, capture_last, fetch=_public_get):
     frame = _parse_last(record, query)
     publish_v1(path, record)
     return record, frame
-
-
-def _strategy_binding(plan, profile, bars):
-    if len(bars) < profile["parameters"]["slow_window"]:
-        raise ValueError("I17_COMPARISON_MA_WARMUP_INCOMPLETE")
-    binding = execute_configured_strategy_signal_series_v1(
-        bars, strategy_id=plan["strategy_id"], cfg=profile["config"]
-    )
-    provenance = binding.provenance
-    if (
-        dict(provenance.effective_strategy_params) != profile["parameters"]
-        or dict(provenance.configured_strategy_params) != profile["parameters"]
-        or provenance.strategy_version != plan["strategy_version"]
-    ):
-        raise ValueError("I17_COMPARISON_EFFECTIVE_PARAMETERS_MISMATCH")
-    return binding
-
-
-def _decision_time_window(plan):
-    start = _utc(plan["start_utc"])
-    end = _utc(plan["end_utc"])
-    registered = _utc(plan["registered_at_utc"])
-    if (
-        plan["schema_version"] != PLAN_SCHEMA
-        or plan["authority"] != "NONE"
-        or plan["mode"] != "PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY"
-        or plan["instrument_id"] != CANONICAL_INSTRUMENT_ID
-        or plan["strategy_id"] != "ma_crossover"
-        or set(plan["profiles"]) != {"reference", "candidate"}
-        or not max(_utc(plan["candidate_known_at_utc"]), _utc(plan["parent_data_known_at_utc"]))
-        <= registered
-        < start
-        < end
-    ):
-        raise ValueError("I17_DECISION_TIME_WINDOW_OR_PLAN_MISMATCH")
-    return registered, start, end
-
-
-def _capture_scope_path(plan, scope_digest):
-    if not isinstance(scope_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", scope_digest):
-        raise ValueError("I17_DECISION_TIME_SCOPE_DIGEST_REQUIRED")
-    return Path(digest_v1(plan)) / scope_digest
 
 
 def _assert_capture_journal_separate(journal, *sources):
@@ -314,17 +196,9 @@ def seal_decision_time_last_v1(journal, *, plan, evidence_root):
     namespace = _capture_scope_path(plan, scope)
     binding = {"plan_digest": namespace.parts[0], "original_i17_scope_digest": scope}
     with journal.lease_v1():
-        hours = journal.safe_path_v1(namespace / "hours")
-        captures = []
-        for item in sorted(hours.glob("*.json"), key=lambda path: int(path.stem)):
-            stored = read_v1(journal.safe_path_v1(item.relative_to(journal.root)))
-            capture = stored["capture"]
-            if (
-                any(stored[key] != value for key, value in binding.items())
-                or item.stem != capture["query"]["after"]
-            ):
-                raise ValueError("I17_DECISION_TIME_CAPTURE_BINDING_OR_CLOCK_CHANGED")
-            captures.append(capture)
+        captures = _read_capture_journal(
+            journal, _capture_journal_paths(journal, namespace), binding
+        )
         archive = {
             "schema_version": DECISION_TIME_LAST_SCHEMA,
             "original_i17_manifest_sha256": manifest_sha,
@@ -350,65 +224,12 @@ def _decision_time_last_snapshots(plan, rows, archive, *, manifest_sha):
     ):
         raise ValueError("I17_DECISION_TIME_WINDOW_OR_PLAN_MISMATCH")
 
-    snapshots = []
-    previous = None
-    for capture in archive["captures"]:
-        requested = _utc(capture["requested_at_utc"])
-        received = _utc(capture["received_at_utc"])
-        cutoff = int(capture["query"]["after"])
-        if (
-            not registered <= requested <= received < end
-            or not 0 < cutoff <= _milliseconds(requested)
-            or (snapshots and received <= snapshots[-1][0])
-        ):
-            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
-        query = _last_query(plan["instrument_id"], cutoff / 1000)
-        frame = _parse_last(capture, query)
-        if previous is not None:
-            overlap = frame.index.intersection(previous.index)
-            new_bars = frame.loc[frame.index > previous.index[-1]]
-            if (
-                overlap.empty
-                or new_bars.empty
-                or new_bars.index[0] - previous.index[-1] != HOUR
-                or not previous.loc[overlap].equals(frame.loc[overlap])
-            ):
-                raise ValueError("I17_DECISION_TIME_LAST_PREFIX_CHANGED_OR_NOT_EXTENDED")
-            frame = pd.concat([previous, new_bars])
-        snapshots.append(
-            (
-                received,
-                frame,
-                {
-                    "received_at_utc": received.isoformat(),
-                    "source_capture_digest": digest_v1(capture),
-                },
-            )
-        )
-        previous = frame
-    if not snapshots:
-        raise ValueError("I17_DECISION_TIME_LAST_CAPTURES_REQUIRED")
-    return snapshots
+    return _validated_last_snapshots(plan, archive["captures"], registered=registered, end=end)
 
 
 def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
-    strategy = plan["strategy_id"]
-    scope = plan["instrument_id"]
-    registry = build_suitability_registry_from_snapshot(build_registry_snapshot())
-    entries = tuple(entry for entry in registry.entries if entry.strategy_id == strategy)
-    if len(entries) != 1:
-        raise ValueError("I17_COMPARISON_STRATEGY_REGISTRY_BINDING_MISSING")
-    entry = entries[0]
-    profiles = plan["profiles"]
-    states = {role: HardenedBridgeSessionStateV2(instrument_id=scope) for role in profiles}
-    acceptance_state = initial_observation_acceptance_state_v1(
-        bound_instrument_key=InstrumentObservationKeyV1(
-            venue=VENUE_OKX, canonical_instrument_id=scope, venue_instrument_id=scope
-        )
-    )
+    pair = I17CandidatePairV1(plan, session_prefix=f"i17-offline-{identifier[:20]}")
     first_received = rows[0][1]["receive_ts_unix"]
-    bindings = {}
-    prior_close = None
     compared = []
     receipt_times = [] if decision_time_last is None else [row[0] for row in decision_time_last]
     for decided, original, decision_id in rows:
@@ -422,16 +243,8 @@ def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
             _, candles, trace = decision_time_last[available_index]
             close_time = candles.index[-1]
             candle_input = {"last_candle_input": trace}
-        if close_time != prior_close:
-            if close_time not in candles.index:
-                raise ValueError("I17_COMPARISON_HOUR_MISSING_AT_DECISION")
-            prefix = candles.loc[:close_time]
-            bindings = {
-                role: _strategy_binding(plan, profile, prefix) for role, profile in profiles.items()
-            }
-            prior_close = close_time
         tick = ObservationMarketTickV1(
-            instrument_id=scope,
+            instrument_id=pair.instrument,
             venue=VENUE_OKX,
             market_type=MARKET_TYPE_FUTURES,
             sequence=original["sequence"],
@@ -441,63 +254,7 @@ def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
             mid_price=original["mid_price"],
             source="caller_supplied_offline",
         )
-        accepted = evaluate_distinct_market_observation_v1(
-            acceptance_state,
-            ObservationCandidateV1(
-                venue=tick.venue,
-                canonical_instrument_id=tick.instrument_id,
-                venue_instrument_id=scope,
-                venue_event_time=tick.event_ts_unix,
-                mark_price=tick.mid_price,
-                transport=ObservationTransportMetadataV1(
-                    receive_time=tick.receive_ts_unix, wallclock_now=decided
-                ),
-            ),
-        )
-        if accepted.fail_closed:
-            raise ValueError(f"I17_COMPARISON_C1_REJECTED:{accepted.reason_code}")
-        if accepted.strategy_advance_allowed:
-            acceptance_state = commit_observation_acceptance_v1(
-                current_state=acceptance_state, result=accepted
-            )
-        arms = {}
-        for role, binding in bindings.items():
-            state = states[role]
-            material = normalize_strategy_signal_to_suitability_agreement_material_v1(
-                binding,
-                instrument_id=scope,
-                trading_epoch=state.trading_epoch,
-                signal_index=len(binding.signals) - 1,
-                expected_configured_strategy_id=strategy,
-                expected_strategy_version=plan["strategy_version"],
-            )
-            observation = run_hardened_wallclock_bridge_observation_cycle_v2(
-                bridge_state=state,
-                ticks=(tick,),
-                reference_price=Decimal(str(tick.mid_price)),
-                wall_now_unix=decided,
-                session_id=f"i17-offline-{identifier[:20]}-{role}",
-                offline_candidate=I17OfflineCandidateInputV2(
-                    profiles[role]["packet"], entry, material, accepted
-                ),
-            )
-            cycle = observation.bridge_cycle
-            if not observation.ok or cycle is None or cycle["execution_eligible"]:
-                raise ValueError(f"I17_COMPARISON_BRIDGE_REJECTED:{observation.md_blockers}")
-            arms[role] = {
-                **cycle["offline_candidate"],
-                "decision_outcome": cycle["decision_outcome"],
-                "selected_side": cycle["selected_side"],
-                "intended_action": cycle["intended_action"]["intent_action"],
-                "safety_result": cycle["safety_result"],
-                "decision_reason_codes": cycle["reason_codes"],
-                "analytical_equity": cycle["economic_metrics"]["equity"],
-                "typed_volatility_present": cycle[
-                    "canonical_market_context_typed_estimate_present"
-                ],
-            }
-        if arms["reference"]["governed_seam_digest"] != arms["candidate"]["governed_seam_digest"]:
-            raise ValueError("I17_COMPARISON_GOVERNED_SEAM_MISMATCH")
+        arms = pair.evaluate(tick, decided=decided, close_time=close_time, candles=candles)
         compared.append(
             {
                 "observed_mark_sequence": tick.sequence,

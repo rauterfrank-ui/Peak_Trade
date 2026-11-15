@@ -3,6 +3,8 @@
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+from dataclasses import replace
+from math import ceil
 
 import pandas as pd
 import pytest
@@ -19,6 +21,20 @@ from src.experiments.canonical_research_prepared_execution_v1 import digest_v1
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
+    verify_wallclock_evidence_bundle_v1,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (
+    I17CandidateHostObservationV1,
+    candidate_plan_component_v1,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
+    EeaPublicMdTransportV1,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (
+    WallclockRuntimeConfigV1,
+    WallclockSessionRuntimeV1,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_preregistration_producer_v1 import (
     build_productive_preregistration_dict_v1,
 )
@@ -32,6 +48,17 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.strategies.registry import build_registry_snapshot
 from src.strategies.suitability_registry_adapter_v1 import build_suitability_registry_from_snapshot
+from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+    FakeClock,
+    NOW,
+    REPO_ROOT,
+    SHA,
+    _fake_ticker_fetcher,
+    _load_wallclock_go,
+    _load_wallclock_prereg,
+    _material,
+    _write_v2_auth,
+)
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     InstrumentObservationKeyV1,
     ObservationCandidateV1,
@@ -355,6 +382,153 @@ def test_i17_last_capture_rejects_receipt_after_the_planned_window(tmp_path):
             journal, plan=plan, scope_digest="a" * 64, fetch=fetch, clock=lambda: now
         )
     assert not list(journal.root.rglob("*.json"))
+
+
+@pytest.mark.parametrize("case", ("compared", "wrong_plan", "no_initial_last"))
+def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
+    tmp_path, monkeypatch, case
+):
+    monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
+    plan, bars = _pair_and_candles()
+    boundary = ceil(NOW / 3600) * 3600
+
+    def utc(at):
+        return datetime.fromtimestamp(at, timezone.utc)
+
+    plan.update(
+        schema_version=comparison.PLAN_SCHEMA,
+        authority="NONE",
+        mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
+        candidate_known_at_utc=utc(boundary - 4000).isoformat(),
+        parent_data_known_at_utc=utc(boundary - 4100).isoformat(),
+        registered_at_utc=utc(boundary - 3900).isoformat(),
+        start_utc=utc(boundary - 3600).isoformat(),
+        end_utc=utc(boundary + 3600).isoformat(),
+    )
+    prices = [1900.0 - n for n in range(len(bars))]
+    prices[-1] += 175.0
+    for field in ("open", "high", "low", "close"):
+        bars[field] = prices
+    bars.index = pd.date_range(end=utc(boundary), periods=len(bars), freq="h")
+    journal = EvaluationReceiptArchiveV1(tmp_path / "last-journal")
+    anchor = _load_wallclock_prereg()
+    component = candidate_plan_component_v1(plan)
+    if case == "wrong_plan":
+        component = candidate_plan_component_v1({**plan, "case": case})
+    prereg = replace(
+        anchor, strategy_component_identities=(*anchor.strategy_component_identities, component)
+    )
+    go = replace(_load_wallclock_go(), scope_digest=prereg.scope_digest())
+    token = _material()
+    artifact = _write_v2_auth(tmp_path, prereg=prereg, token=token)
+
+    def publish_last(frame, clock):
+        expected = _capture_last(
+            frame, utc(clock.time()).isoformat(), utc(clock.time() + 0.0625).isoformat()
+        )
+
+        def fetch_last(path, query):
+            assert path == comparison.LAST_ENDPOINT and query == expected["query"]
+            clock.sleep(0.0625)
+            return bytes.fromhex(expected["raw_hex"])
+
+        return comparison.capture_decision_time_last_v1(
+            journal,
+            plan=plan,
+            scope_digest=prereg.scope_digest(),
+            fetch=fetch_last,
+            clock=lambda: utc(clock.time()),
+        )
+
+    first = None
+    if case == "compared":
+        first = publish_last(bars.iloc[:-1], FakeClock(wall=boundary - 1))
+    latest = []
+    clock = FakeClock(wall=boundary + 0.125)
+    polls = 0
+
+    def fetch_market(url, *args):
+        nonlocal polls
+        assert comparison.LAST_ENDPOINT not in url
+        if "/market/ticker?" in url:
+            polls += 1
+            if polls == 2:
+                latest.append(publish_last(bars.iloc[1:], clock))
+        return _fake_ticker_fetcher(str(3500 + polls), clock=clock)(url, *args)
+
+    root = tmp_path / "host"
+    transport = EeaPublicMdTransportV1(fetcher=fetch_market, sleep=clock.sleep, environ={})
+    runtime = WallclockSessionRuntimeV1(
+        evidence_root=root,
+        transport=transport,
+        config=WallclockRuntimeConfigV1(
+            max_cycles=3, poll_interval_seconds=0.25, min_quality_window_seconds=0
+        ),
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+        candidate_observation=I17CandidateHostObservationV1(plan=plan, journal=journal),
+    )
+    result = runtime.run(
+        prereg=prereg,
+        go=go,
+        confirm_token=token,
+        artifact_path=artifact,
+        expected_repository_sha=SHA,
+        fingerprint_ledger_path=tmp_path / "fp.ledger",
+    )
+    if case == "wrong_plan":
+        assert result.blockers == ["I17_CANDIDATE_HOST_PREREGISTRATION_MISMATCH"]
+        assert not result.consumed and not result.network_opened and transport.fetch_count == 0
+        assert not root.exists()
+        return
+    assert result.consumed and not result.orders_submitted
+    assert verify_wallclock_evidence_bundle_v1(evidence_root=root).verified
+    assert len(latest) == 1
+    cycles = [
+        json.loads(line) for line in (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    assert len(cycles) == 3
+    pairs = [cycle["i17_candidate_comparison"] for cycle in cycles]
+    assert [pair["parent_decision_id"] for pair in pairs] == [row["decision_id"] for row in cycles]
+    assert {pair["plan_digest"] for pair in pairs} == {digest_v1(plan)}
+    assert {pair["original_i17_scope_digest"] for pair in pairs} == {prereg.scope_digest()}
+    if case == "no_initial_last":
+        assert {pair["status"] for pair in pairs} == {"FAILED"}
+        assert {pair["reason"] for pair in pairs} == {"I17_DECISION_TIME_LAST_NOT_YET_AVAILABLE"}
+        return
+    assert {pair["status"] for pair in pairs} == {"COMPARED"}
+    assert [pair["last_candle_close_utc"] for pair in pairs] == [
+        utc(boundary - 3600).isoformat(),
+        utc(boundary).isoformat(),
+        utc(boundary).isoformat(),
+    ]
+    assert [pair["last_candle_input"]["source_capture_digest"] for pair in pairs] == [
+        digest_v1(first),
+        digest_v1(latest[0]),
+        digest_v1(latest[0]),
+    ]
+    assert [pair["mark_sequence"] for pair in pairs] == [
+        row["shadow_decision_timing"]["market_sequence"] for row in cycles
+    ]
+    for cycle, pair in zip(cycles, pairs, strict=True):
+        timing = cycle["shadow_decision_timing"]
+        assert pair["mark_event_ts_unix"] == timing["mark_event_ts_unix"]
+        assert pair["mark_receive_ts_unix"] == timing["mark_receive_ts_unix"]
+        assert (
+            pair["last_candle_close_utc"]
+            <= pair["last_candle_input"]["received_at_utc"]
+            <= pair["decision_time_utc"]
+        )
+        assert (
+            pair["arms"]["reference"]["market_observation_epoch"]
+            == (pair["arms"]["candidate"]["market_observation_epoch"])
+        )
+    for role, expected in (("reference", [0, 1, 1]), ("candidate", [0, 0, 0])):
+        values = [pair["arms"][role]["material"] for pair in pairs]
+        assert [value["cycle_signal_value"] for value in values] == expected
+        assert [value["trading_epoch"] for value in values] == [1, 2, 3]
 
 
 def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):

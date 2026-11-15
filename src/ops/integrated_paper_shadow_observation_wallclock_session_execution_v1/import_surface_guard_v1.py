@@ -38,6 +38,7 @@ CAPABILITY_SOURCE_RELPATHS: tuple[str, ...] = (
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/eea_public_md_transport_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/authorization_consumption_runtime_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
+    "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_state_machine_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/heartbeat_staleness_v1.py",
     "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_lock_v1.py",
