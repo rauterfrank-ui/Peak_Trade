@@ -33,6 +33,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
     HardenedBridgeSessionStateV2,
+    I17OfflineCandidateInputV2,
     ensure_pt1m_mark_observation_finalizer_v1,
     run_hardened_bridge_cycle_v2,
 )
@@ -72,6 +73,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     price_field: str = REQUIRED_TICKER_PRICE_FIELD,
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
+    offline_candidate: I17OfflineCandidateInputV2 | None = None,
 ) -> HardenedWallclockBridgeOutcomeV2:
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
@@ -130,6 +132,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         price_basis=basis,
         ddo_capture_binding=ddo_capture_binding,
         ddo_repository_sha=ddo_repository_sha,
+        offline_candidate=offline_candidate,
         **finalized_kwargs,
     )
     labels = {

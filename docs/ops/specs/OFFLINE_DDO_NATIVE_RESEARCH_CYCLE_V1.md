@@ -139,3 +139,98 @@ The saved Paper and I17 observations precede the new parameter candidate.
 A candidate-specific Reality Gap requires a separate, later observation of
 that candidate under a comparable measurement contract. The campaign records
 exploratory feedback and leaves that comparative evidence open.
+
+## Prospective candidate replay
+
+The [candidate replay command](../../../scripts/ops/run_research_candidate_shadow_v1.py)
+freezes both original numeric packets from a passing GVEF mechanism receipt.
+It checks the strategy version, effective parameter values, original data
+digest and resolved configuration of both packets before registering a
+future UTC window. The first packet is the GVEF reference. The second is the
+candidate under observation for this experiment. The later follow-up experiment
+has its own identity.
+
+```bash
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state prepare \
+  --campaign-state /absolute/campaign-state --learning-digest "$learning_digest" \
+  --config /absolute/resolved.json --instrument-binding /absolute/instrument-binding.json \
+  --start-utc "$window_start_utc" --hours 2
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state observe
+./scripts/pt scripts/ops/run_research_candidate_shadow_v1.py --state /absolute/forward-state verify
+```
+
+After the registered window closes, `observe` requests original finalized
+hourly Last, Mark and Index candles and settled funding-rate history from
+public OKX EEA endpoints. The original response bytes, endpoint, query and
+receipt time are retained. Both profiles consume the same complete window.
+The earlier warmup initializes each replay's simulated state and the existing
+hourly research volatility feature. The score starts from the simulated equity
+at the window boundary and uses candle-close timestamps. The funding series is
+a market context input dated by the funding event. The replay result reports
+engine equity before verified funding cashflows, with the execution cost model
+from the original experiment, including the engine's closing convention.
+
+This is a forward replay on newly captured market inputs. It records the actual
+parameters consumed by the replay, the Master V2 engine signals and the
+simulated equity series. The observations needed for an I17 candidate-specific
+Reality Gap include which configuration the I17 decision producer actually used
+and an independent measurement of the same metric. The replay receipt carries
+`reality_gap_status=INCOMPLETE`, `economic_qualification_status=BLOCKED`, and
+authority `NONE`. It has no promotion or apply consumer.
+
+### Draft for an economic comparison
+
+The [original self-learning master](../evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_core_bound.original.txt)
+specifies the sequence from candidate to Shadow evidence, Reality Gap,
+research memory and the next hypothesis. GVEF binds the evidence for an
+evaluation. The economic judgement needs a versioned owner policy.
+
+The proposed primary metric is net return on beginning equity, measured for both
+profiles over the same independent observation horizon. Use fees and slippage
+from the measurement's accounting basis and reconcile funding against applied
+position quantities and event times. Count each cost once. Specify the position
+state at both boundaries, the settlement and price basis, and the unit. Pair the
+candidate and reference observations by window and use the difference in returns.
+Keep drawdown, sample sizes and an
+uncertainty estimate with that difference. A two-hour observation can test the
+data flow. The responsible owner must ratify the evaluation horizon, required
+sample size, uncertainty method and pass thresholds before a quality claim.
+Incomplete or incomparable evidence leaves the verdict `BLOCKED`.
+
+## Historical I17 candidate comparison
+
+The [I17 comparison command](../../../scripts/ops/run_i17_candidate_comparison_v1.py)
+revalidates the frozen GVEF pair and the original sealed I17 decision and
+market ledgers. It runs the existing I17 observation bridge twice, starting
+each profile in its own local state. The strategy registry in both runs
+contains the same canonical `ma_crossover` entry. Both runs use the same
+recorded Mark observations, original decision times and I17 safety inputs.
+The market observation acceptor evaluates the archived venue event time and
+Mark for the same instrument in both arms. A repeated event with a new receive
+time does not advance the market observation epoch. The direction confirmation
+owner consumes this accepted observation through the integrated replay and
+retains its own Long and Short progress separately for each profile.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py \
+  --state /absolute/i17-comparison --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/qualified-i17/evidence --capture-public-last
+```
+
+The optional capture performs one public OKX EEA request for finalized hourly
+Last candles and retains the original response and capture times. Replace
+`--capture-public-last` with `--verify` to recompute the result from the saved
+inputs. For each cycle, the MA uses only candles that had closed by the
+original decision time. The hourly candle index and I17 decision epoch are
+different coordinates. The receipt records both, the market observation
+epoch and classification, directional confirmation progress, and the strategy
+parameter and signal digests. It records the actual Suitability output when
+that owner is reached, the decision reasons and the Double Play outcome. The bridge reads the same existing governed parameter
+seam for both arms. The comparison carries authority `NONE`.
+
+The hourly Last data was retrieved retrospectively. This fixture shows
+historical decision behavior under the specified profiles. A prospective
+I17 observation requires the profiles and candle availability to be bound
+before the decisions under study, followed by independent, comparable
+measurements for any Reality Gap.
