@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import secrets
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
+
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (
+    CANDIDATE_COMPONENT_PREFIX,
+)
 
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     CANONICAL_HOST,
@@ -119,7 +124,13 @@ def build_productive_preregistration_dict_v1(
     purpose: str = "PRODUCTIVE_PAPER_SHADOW_WALLCLOCK_MD_OBSERVE",
     config_identity: str = WALLCLOCK_CONFIG_IDENTITY,
     code_identity: str = WALLCLOCK_CODE_IDENTITY,
+    candidate_plan_digest: str | None = None,
 ) -> dict[str, Any]:
+    components = list(STRATEGY_COMPONENT_IDENTITIES)
+    if candidate_plan_digest is not None:
+        if re.fullmatch(r"[0-9a-f]{64}", candidate_plan_digest) is None:
+            raise ValueError("I17_CANDIDATE_PLAN_DIGEST_INVALID")
+        components.append(CANDIDATE_COMPONENT_PREFIX + candidate_plan_digest)
     provisional = {
         "contract_version": "v1",
         "schema_version": PREREGISTRATION_SCHEMA_VERSION,
@@ -131,7 +142,7 @@ def build_productive_preregistration_dict_v1(
         "instrument_allowlist": [CANONICAL_INSTRUMENT_ID],
         "instrument_denylist": ["BTC-USD_UM_XPERP-1"],
         "strategy_portfolio_id": STRATEGY_PORTFOLIO_ID,
-        "strategy_component_identities": list(STRATEGY_COMPONENT_IDENTITIES),
+        "strategy_component_identities": components,
         "config_identity": config_identity,
         "code_identity": code_identity,
         "expected_repository_sha": expected_repository_sha,
@@ -218,6 +229,7 @@ def issue_productive_preregistration_v1(
     now_unix: Optional[float] = None,
     allow_noncanonical_duration: bool = False,
     purpose: str = "PRODUCTIVE_PAPER_SHADOW_WALLCLOCK_MD_OBSERVE",
+    candidate_plan_digest: str | None = None,
 ) -> ProductivePreregistrationIssueResultV1:
     notes = [
         "PRODUCTIVE_PREREGISTRATION_ISSUANCE",
@@ -268,6 +280,7 @@ def issue_productive_preregistration_v1(
         approval_identity=approval_identity,
         confirm_token=confirm_token,
         purpose=purpose,
+        candidate_plan_digest=candidate_plan_digest,
     )
     contract = parse_preregistration_contract_v1(raw)
     validated = validate_preregistration_contract_v1(

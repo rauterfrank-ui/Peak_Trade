@@ -234,3 +234,75 @@ historical decision behavior under the specified profiles. A prospective
 I17 observation requires the profiles and candle availability to be bound
 before the decisions under study, followed by independent, comparable
 measurements for any Reality Gap.
+
+### I17 decision-time input preflight
+
+The same command accepts `--decision-time-last-captures` in place of
+`--capture-public-last`. Supply a separate sealed JSON archive with schema
+`i17_decision_time_last_captures.v1`, the frozen `plan_digest`, the
+`original_i17_manifest_sha256` and an ordered `captures` array. Each entry
+keeps the request, raw response, response hash, and request and receipt times
+in the Last-candle archive format. Use captures that extend a contiguous
+prefix of finalized Last hours. Earlier warmup bars must agree where they
+overlap.
+
+Both profiles and their research input must be known at preregistration
+before the window opens. The I17 mark archive must lie inside that window.
+Each decision uses the latest finalized hour from the captures received by
+its own decision time. While a just-closed candle is in transit, both arms
+continue with the previous available hour. The preflight stops if the first
+decision has no available warmup. Each cycle records the selected close time,
+receipt time and capture digest along with the consumed strategy material.
+`--verify` replays the same inputs and checks the stored result.
+
+The Last-candle capture entry point is `capture_decision_time_last_v1`.
+It takes an isolated archive, the frozen plan, the intended I17
+preregistration scope digest, an explicit transport and a UTC clock. It
+stamps the request and receipt around the transport call, validates the
+finalized OHLCV and both MA warmups, and stores one immutable response per
+hour. A repeated request for that hour reads the saved response.
+`seal_decision_time_last_v1` checks the original I17 manifest and the scope
+bound by its preregistration, then writes the archive consumed by
+`--decision-time-last-captures`. The comparison verifies the scope again.
+
+This mode reads archived evidence offline and emits
+`I17_DECISION_TIME_OFFLINE_PREFLIGHT` with authority `NONE`.
+
+### I17 host comparison
+
+An I17 host can receive an explicit `I17CandidateHostObservationV1` bound to
+the frozen plan and its local Last-capture journal. The preregistration's
+strategy components must carry the plan digest produced by
+`candidate_plan_component_v1`. The existing preregistration scope digest binds
+that identity before authorization consumption. A mismatched plan or a
+candidate preregistration without its observer stops at preflight.
+
+The observer consumes the host's Mark event and natural receipt time. It
+reads the scoped journal and stamps its own paired decision cutoff. Both
+profiles then use the latest available finalized Last prefix. The canonical
+market observation acceptor handles event identity, and each arm retains its
+own direction confirmation and simulation state. The MA value enters
+Suitability. The receipt records that owner's actual response when reached
+and the subsequent Double Play outcome. Each paired receipt in the bridge
+cycle ledger references the original host decision, the original Mark clocks
+and the Last close and receipt clocks.
+
+The [productive observation CLI](../../../scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py)
+accepts the same sealed `--candidate-plan` at token issuance, preregistration
+and run. Set `--earliest-start-unix` explicitly and keep the planned session
+inside the frozen plan window. The run also takes a separate
+`--candidate-journal` directory. The existing session-bound operator GO and
+authorization consumption gate apply before the transport opens.
+
+The candidate session admits only the additional public OKX EEA GET for
+ETH-X-PERP Last candles with a UTC-aligned one-hour cutoff. The first poll
+loads the previous completed hour before requesting the Mark price. Later
+polls capture the newly closed hour and retain the earlier available prefix
+while a new candle is unavailable. A failed candle-data validation pauses
+capture retries for 15 seconds. The transport's authorization, network and
+rate-limit boundaries apply to this request.
+
+Missing initial Last evidence marks the candidate comparison failed for that
+session. The ordinary Shadow observation continues through its owners when
+the Last data is missing. The comparison carries authority `NONE`.
+Economic qualification also requires a comparable measurement.

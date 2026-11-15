@@ -19,7 +19,6 @@ from urllib.request import (
 )
 
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
-    ALLOWED_PATHS,
     CANONICAL_HOST,
     USER_AGENT,
 )
@@ -29,6 +28,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
     NetworkBoundaryError,
+    allowed_paths_v1,
     validate_request_boundary_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
@@ -114,6 +114,7 @@ def make_real_eea_public_md_fetcher_v1(
     environ: Optional[Mapping[str, str]] = None,
     sleep: Callable[[float], None] = time.sleep,
     resolve_private_check: bool = True,
+    candidate_last: bool = False,
 ) -> tuple[HttpFetcher, RealHttpFetcherTelemetryV1]:
     """Return a boundary-enforcing HTTPS GET fetcher for eea.okx.com only."""
     from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
@@ -129,7 +130,12 @@ def make_real_eea_public_md_fetcher_v1(
     def fetcher(url: str, method: str, headers: Mapping[str, str], _timeout: float):
         telemetry.attempts += 1
         boundary = validate_request_boundary_v1(
-            url=url, method=method, headers=headers, environ=environ, allow_proxy=False
+            url=url,
+            method=method,
+            headers=headers,
+            environ=environ,
+            allow_proxy=False,
+            candidate_last=candidate_last,
         )
         if not boundary.ok:
             raise NetworkBoundaryError(",".join(boundary.blockers))
@@ -139,7 +145,7 @@ def make_real_eea_public_md_fetcher_v1(
         path = parsed.path or ""
         if host != CANONICAL_HOST:
             raise NetworkBoundaryError(f"HOST_FORBIDDEN:{host}")
-        if path not in ALLOWED_PATHS:
+        if path not in allowed_paths_v1(candidate_last=candidate_last):
             raise NetworkBoundaryError(f"PATH_NOT_ALLOWED:{path}")
         if resolve_private_check and _is_private_or_loopback(host):
             raise NetworkBoundaryError("PRIVATE_OR_LOOPBACK_TARGET_FORBIDDEN")
@@ -220,6 +226,7 @@ def build_real_eea_public_md_transport_v1(
     session_http_429_budget: int = 20,
     resolve_private_check: bool = True,
     governed_fault_schedule: Any = None,
+    candidate_last: bool = False,
 ) -> tuple[EeaPublicMdTransportV1, RealHttpFetcherTelemetryV1]:
     """Build productive EEA Public-MD transport.
 
@@ -236,6 +243,7 @@ def build_real_eea_public_md_transport_v1(
         environ=environ,
         sleep=sleep,
         resolve_private_check=resolve_private_check,
+        candidate_last=candidate_last,
     )
     fetcher = wrap_fetcher_with_governed_fault_control_v1(
         real_fetcher=fetcher,
@@ -259,5 +267,6 @@ def build_real_eea_public_md_transport_v1(
         sleep=sleep,
         environ=environ,
         rate_limit_policy=rate_limit_policy,
+        candidate_last=candidate_last,
     )
     return transport, telemetry

@@ -10,6 +10,15 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Set
 
+from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
+    EvaluationReceiptArchiveV1,
+)
+from src.experiments.canonical_research_prepared_execution_v1 import read_v1
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (
+    CANDIDATE_COMPONENT_PREFIX,
+    I17CandidateHostObservationV1,
+    LAST_ENDPOINT,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
     EeaPublicMdTransportV1,
 )
@@ -172,6 +181,7 @@ def run_productive_wallclock_session_v1(
     previously_seen_fingerprints: frozenset[str] | None = None,
     stop_flag: Optional[Callable[[], bool]] = None,
     runtime_overrides: Mapping[str, Any] | None = None,
+    candidate_observation: I17CandidateHostObservationV1 | None = None,
 ) -> ProductiveRunGateResultV1:
     """Fail-closed productive run. Network only after canonical v2 consumption inside runtime."""
     notes = [
@@ -216,6 +226,23 @@ def run_productive_wallclock_session_v1(
     if blockers:
         return ProductiveRunGateResultV1(ok=False, blockers=blockers, notes=notes)
 
+    if candidate_observation is not None:
+        try:
+            candidate_observation.validate_preregistration(
+                prereg,
+                evidence_root=evidence_root,
+                repo_root=repo_root or Path(__file__).resolve().parents[3],
+            )
+        except ValueError as exc:
+            return ProductiveRunGateResultV1(ok=False, blockers=[str(exc)], notes=notes)
+    elif (transport is not None and transport.candidate_last) or any(
+        identity.startswith(CANDIDATE_COMPONENT_PREFIX)
+        for identity in prereg.strategy_component_identities
+    ):
+        return ProductiveRunGateResultV1(
+            ok=False, blockers=["I17_CANDIDATE_HOST_OBSERVATION_REQUIRED"], notes=notes
+        )
+
     _, o7_blocker = preflight_o7_state_root_v1()
     if o7_blocker is not None:
         return ProductiveRunGateResultV1(ok=False, blockers=[o7_blocker], notes=notes)
@@ -233,6 +260,7 @@ def run_productive_wallclock_session_v1(
             environ=environ if environ is not None else os.environ,
             sleep=sleep or time.sleep,
             governed_fault_schedule=governed_fault_schedule,
+            candidate_last=candidate_observation is not None,
         )
         if governed_fault_schedule is not None and bool(
             getattr(governed_fault_schedule, "enabled", False)
@@ -277,7 +305,9 @@ def run_productive_wallclock_session_v1(
             transport_open_at=transport_open_at_box["ts"],
             host=CANONICAL_HOST,
             method="GET",
-            paths=["/api/v5/market/ticker"],
+            paths=["/api/v5/market/ticker", LAST_ENDPOINT]
+            if transport.candidate_last
+            else ["/api/v5/market/ticker"],
         )
 
     transport.open = _tracked_open  # type: ignore[method-assign]
@@ -313,6 +343,7 @@ def run_productive_wallclock_session_v1(
         sleep=sleep,
         repo_root=repo_root,
         stop_flag=stop_flag,
+        candidate_observation=candidate_observation,
     )
 
     # Monkey-patch consume timing: wrap run by observing consumption file mtime after return
@@ -378,11 +409,28 @@ def run_productive_wallclock_session_from_paths_v1(
     sleep: Callable[[float], None] | None = None,
     repo_root: Path | None = None,
     environ: Mapping[str, str] | None = None,
+    candidate_plan_path: Path | None = None,
+    candidate_journal_path: Path | None = None,
 ) -> ProductiveRunGateResultV1:
     prereg = parse_preregistration_contract_v1(
         load_preregistration_contract_dict_v1(preregistration_path)
     )
     go = parse_operator_go_contract_v1(load_operator_go_contract_dict_v1(operator_go_path))
+    if (candidate_plan_path is None) != (candidate_journal_path is None):
+        return ProductiveRunGateResultV1(
+            ok=False, blockers=["I17_CANDIDATE_PLAN_AND_JOURNAL_REQUIRED"]
+        )
+    candidate = None
+    if candidate_plan_path is not None and candidate_journal_path is not None:
+        try:
+            candidate = I17CandidateHostObservationV1(
+                plan=read_v1(candidate_plan_path),
+                journal=EvaluationReceiptArchiveV1(candidate_journal_path),
+            )
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return ProductiveRunGateResultV1(
+                ok=False, blockers=[f"I17_CANDIDATE_INPUT_INVALID:{exc}"]
+            )
     return run_productive_wallclock_session_v1(
         prereg=prereg,
         go=go,
@@ -400,4 +448,5 @@ def run_productive_wallclock_session_from_paths_v1(
         sleep=sleep,
         repo_root=repo_root,
         environ=environ,
+        candidate_observation=candidate,
     )

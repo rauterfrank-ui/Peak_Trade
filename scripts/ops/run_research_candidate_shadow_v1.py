@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 from contextlib import closing
 from copy import deepcopy
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from hashlib import sha256
 from http.client import HTTPSConnection
 import json
@@ -46,6 +46,13 @@ from src.ops.economic_md_input_producer_v1.constants_v1 import (  # noqa: E402
     HTTP_TIMEOUT_SECONDS,
     PUBLIC_HTTP_HOST,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (  # noqa: E402
+    HOUR,
+    LAST_ENDPOINT,
+    PLAN_SCHEMA,
+    _milliseconds,
+    _utc,
+)
 from src.research.offline_recorded_mark_horizon_source_v1 import (  # noqa: E402
     recorded_mark_price_unit_v1,
 )
@@ -56,29 +63,16 @@ from src.trading.master_v2.canonical_volatility_estimate_feature_contract_v1 imp
     LOOKBACK_BARS,
 )
 
-HOUR = timedelta(hours=1)
 ROLE_PATHS = {
-    "last": "/api/v5/market/history-candles",
+    "last": LAST_ENDPOINT,
     "mark": "/api/v5/market/history-mark-price-candles",
     "index": "/api/v5/market/history-index-candles",
     "funding": "/api/v5/public/funding-rate-history",
 }
-PLAN_SCHEMA = "native_research_candidate_forward_plan.v1"
 
 
 def _clock():
     return datetime.now(timezone.utc)
-
-
-def _utc(value):
-    result = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    if result.utcoffset() != timedelta(0):
-        raise ValueError("EXPLICIT_UTC_REQUIRED")
-    return result.astimezone(timezone.utc)
-
-
-def _milliseconds(value):
-    return int(value.timestamp()) * 1000
 
 
 def _absolute(path):

@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import platform
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable, Literal, Mapping, Optional, Set
@@ -24,6 +24,10 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
     verify_wallclock_evidence_bundle_v1,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (
+    CANDIDATE_COMPONENT_PREFIX,
+    I17CandidateHostObservationV1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
@@ -175,6 +179,7 @@ class WallclockSessionRuntimeV1:
         sleep: Callable[[float], None] | None = None,
         repo_root: Path | None = None,
         stop_flag: Optional[Callable[[], bool]] = None,
+        candidate_observation: I17CandidateHostObservationV1 | None = None,
     ) -> None:
         self.evidence_root = evidence_root
         self.transport = transport
@@ -184,6 +189,7 @@ class WallclockSessionRuntimeV1:
         self.sleep = sleep or time.sleep
         self.repo_root = repo_root or Path(__file__).resolve().parents[3]
         self.stop_flag = stop_flag or (lambda: False)
+        self.candidate_observation = candidate_observation
         self.state = WallclockSessionState.CREATED
         self.killstate = KillstateRuntimeV1()
         self.writer = WallclockEvidenceWriterV1(evidence_root=evidence_root)
@@ -573,6 +579,25 @@ class WallclockSessionRuntimeV1:
                 force_verdict=TerminalVerdict.ABORT,
             )
 
+        try:
+            if self.candidate_observation is not None:
+                self.candidate_observation.bind(
+                    prereg, evidence_root=self.evidence_root, repo_root=self.repo_root
+                )
+            elif self.transport.candidate_last or any(
+                identity.startswith(CANDIDATE_COMPONENT_PREFIX)
+                for identity in prereg.strategy_component_identities
+            ):
+                raise ValueError("I17_CANDIDATE_HOST_OBSERVATION_REQUIRED")
+        except ValueError as exc:
+            self.state = WallclockSessionState.INVALID
+            self.blockers.append(str(exc))
+            return self._finalize_result(
+                session_id=session_id,
+                incomplete=False,
+                force_verdict=TerminalVerdict.ABORT,
+            )
+
         # Atomic canonical v2 consumption BEFORE any session lock / evidence / transport.
         consumption = consume_authorization_for_wallclock_start_via_v2_gatekeeper_v1(
             prereg=prereg,
@@ -790,6 +815,10 @@ class WallclockSessionRuntimeV1:
                             "CANONICAL_INSTRUMENT_MAPPING_MISSING",
                             "venue_mapping_unset",
                         )
+                    if self.transport.candidate_last and self.candidate_observation is not None:
+                        self.candidate_observation.refresh_last(
+                            transport=self.transport, clock=self.clock_wall
+                        )
                     normalized = fetch_normalized_public_market_data_v1(
                         transport=self.transport,
                         mapping=self.venue_mapping,
@@ -952,6 +981,14 @@ class WallclockSessionRuntimeV1:
                                 "decision_input_available_ts_unix": decision_input_available_ts,
                                 "decision_cycle_ts_unix": now_wall,
                             }
+                            if self.candidate_observation is not None:
+                                cycle["i17_candidate_comparison"] = (
+                                    self.candidate_observation.observe(
+                                        replace(tick, receive_ts_unix=normalized.receive_ts_unix),
+                                        parent_decision_id=cycle["decision_id"],
+                                        clock=self.clock_wall,
+                                    )
+                                )
                             self.writer.append_event(
                                 "decision_trace.jsonl",
                                 {
@@ -1174,6 +1211,7 @@ class WallclockSessionRuntimeV1:
                     headers={"Accept": "application/json", "User-Agent": "x"},
                     environ={},
                     allow_proxy=True,
+                    candidate_last=self.transport.candidate_last,
                 )
                 # re-validate with UA from constants via transport headers in real path
                 self.writer.write_immutable_json(
@@ -1183,6 +1221,11 @@ class WallclockSessionRuntimeV1:
                         "host": CANONICAL_HOST,
                         "network_opened": self.network_opened,
                         "notes": att.notes,
+                        **(
+                            {"allowed_paths": att.allowed_paths}
+                            if self.transport.candidate_last
+                            else {}
+                        ),
                     },
                 )
             if not (self.evidence_root / "observation_cycle_counters.json").exists():

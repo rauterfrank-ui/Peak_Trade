@@ -56,6 +56,7 @@ ALLOWED_PATHS = frozenset(
     }
 )
 ALLOWED_METHODS = frozenset({"GET"})
+CANDIDATE_LAST_CANDLE_PATH = "/api/v5/market/history-candles"
 ALLOWED_HEADERS = frozenset({"accept", "user-agent"})
 USER_AGENT = (
     "PeakTradePaperShadowWallclockObserve/1.0 "
