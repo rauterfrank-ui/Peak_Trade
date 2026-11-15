@@ -2,6 +2,7 @@
 
 from dataclasses import asdict, dataclass
 from decimal import Decimal, localcontext
+from pathlib import Path
 import re
 
 from .durable_store_v1 import digest
@@ -39,6 +40,65 @@ class AuthenticatedSlotCloseBookingV1:
     def to_dict_v1(self):
         result = asdict(self)
         return {**result, "booking_digest": digest(result)}
+
+
+@dataclass(frozen=True)
+class AuthenticatedL10CloseTimingV1:
+    close_proof_digest: str
+    history_proof_digest: str
+    position_time_ms: str
+    close_readback_acquired_at_utc: str
+    settlement_acquired_at_utc: str
+
+
+def _read_live_l10_close_proofs_v1(*, proof_root, proof_path):
+    from src.ops.execution_reconciliation_proof_store_v1 import read_private_close_document_v1
+
+    history, history_digest = read_private_close_document_v1(
+        root=proof_root,
+        path=proof_path,
+        prefix="close-history-",
+        schema="peaktrade.authenticated_close_history.v1",
+    )
+    close, close_digest = read_private_close_document_v1(
+        root=proof_root,
+        path=Path(proof_root) / f"close-{history['close_proof_digest']}.json",
+        prefix="close-",
+        schema="peaktrade.authenticated_close_get_proof.v1",
+    )
+    return history, history_digest, close, close_digest
+
+
+def read_booked_l10_close_timing_v1(
+    *, booking: AuthenticatedSlotCloseBookingV1, proof_root: Path
+) -> AuthenticatedL10CloseTimingV1:
+    """Read the original position and GET clocks from the owner's booked proof digests."""
+    from src.ops.execution_reconciliation_proof_store_v1 import _aware
+
+    try:
+        history, history_digest, close, close_digest = _read_live_l10_close_proofs_v1(
+            proof_root=proof_root,
+            proof_path=Path(proof_root) / f"close-history-{booking.history_proof_digest}.json",
+        )
+        position_time_ms = venue_decimal_v1(close["position_time_ms"])
+        readback_at = _aware(close["gets"][-1]["acquired_at"])
+        settlement_at = _aware(history["get"]["acquired_at"])
+        if (
+            close_digest != booking.close_proof_digest
+            or history_digest != booking.history_proof_digest
+            or not 0 < position_time_ms <= Decimal(str(readback_at.timestamp())) * 1000
+            or readback_at > settlement_at
+        ):
+            raise ValueError("booked proof binding or chronology invalid")
+    except (OSError, ValueError, TypeError, KeyError, IndexError, ArithmeticError) as exc:
+        raise ValueError("DOUBLE_PLAY_29P_BOOKED_CLOSE_PROOF_UNPROVEN") from exc
+    return AuthenticatedL10CloseTimingV1(
+        close_proof_digest=close_digest,
+        history_proof_digest=history_digest,
+        position_time_ms=str(position_time_ms),
+        close_readback_acquired_at_utc=readback_at.isoformat(),
+        settlement_acquired_at_utc=settlement_at.isoformat(),
+    )
 
 
 def validate_live_l10_booking_v1(owner, row):
@@ -183,13 +243,11 @@ def close_history_endpoint_v1(*, entry, inst_type):
 
 
 def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repository_sha):
-    from pathlib import Path
     from src.ops.execution_reconciliation_proof_store_v1 import (
         _RecordedReconciliationGets,
         _aware,
         _decode_get,
         read_authenticated_execution_reconciliation_source_v1,
-        read_private_close_document_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
         _validate_close_order_and_fills_v1,
@@ -228,18 +286,8 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repos
 
     if not validates_position_management_envelope_v1(execution) or execution.l10_close is None:
         raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_EXECUTION_REQUIRED")
-    history, history_digest = read_private_close_document_v1(
-        root=proof_root,
-        path=proof_path,
-        prefix="close-history-",
-        schema="peaktrade.authenticated_close_history.v1",
-    )
-    close_digest = history["close_proof_digest"]
-    close, _ = read_private_close_document_v1(
-        root=proof_root,
-        path=Path(proof_root) / f"close-{close_digest}.json",
-        prefix="close-",
-        schema="peaktrade.authenticated_close_get_proof.v1",
+    history, history_digest, close, close_digest = _read_live_l10_close_proofs_v1(
+        proof_root=proof_root, proof_path=proof_path
     )
     switch, envelope = execution.l10_close, execution.envelope
     episode = switch.episode

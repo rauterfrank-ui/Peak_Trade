@@ -2750,11 +2750,22 @@ def _assert_restarted_close_readback(
             assert "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED" in sizing.reason_codes
             assert sizing.get_count == 0
             assert not sizing.portfolio_reservation_id and not sizing.venue_plan_authorized
+            history_path = proof_root / f"close-history-{booking['history_proof_digest']}.json"
+            history = json.loads(history_path.read_bytes())["record"]
+            close_timing = {
+                "close_proof_digest": booking["close_proof_digest"],
+                "history_proof_digest": booking["history_proof_digest"],
+                "position_time_ms": record["position_time_ms"],
+                "close_readback_acquired_at_utc": record["gets"][-1]["acquired_at"],
+                "settlement_acquired_at_utc": history["get"]["acquired_at"],
+            }
+            assert asdict(sizing.authenticated_close_timing) == close_timing
             notice = json.loads(
                 (config.evidence_root / "runtime_liveness_latest_v1.json").read_bytes()
             )
             assert notice["reason_code"] == sizing.first_blocker
             assert notice["extra"]["counter_order_sizing_reasons"] == list(sizing.reason_codes)
+            assert notice["extra"]["counter_order_close_timing"] == close_timing
             assert "original slot" in notice["recovery_action"]
             assert "Retain the original hold." in notice["recovery_action"]
             assert not notice["post_allowed"] and not notice["external_effect_authorized"]
@@ -2794,6 +2805,23 @@ def _assert_restarted_close_readback(
                 assert original_commitment.slot_id == booking["slot_id"]
                 assert original_commitment.venue_native_id == historical.venue_native_id
                 assert owner.slot_capital_basis_v1(booking["slot_id"]) is None
+                for retained_proof in (path, history_path):
+                    backup = retained_proof.with_suffix(".saved")
+                    retained_proof.rename(backup)
+                    try:
+                        blocked = check_authenticated_double_play_29p_admission_v1(
+                            request=counter,
+                            bound_instrument=bound,
+                            owner=owner,
+                            proof_root=proof_root,
+                        )
+                        assert (
+                            blocked.first_blocker == "DOUBLE_PLAY_29P_BOOKED_CLOSE_PROOF_UNPROVEN"
+                        )
+                        assert blocked.get_count == 0 and not blocked.venue_plan_authorized
+                        assert blocked.authenticated_close_timing is None
+                    finally:
+                        backup.rename(retained_proof)
                 for changed, blocker in (
                     (
                         replace(counter, net_booking=replace(counter.net_booking, net_result="99")),
@@ -2812,6 +2840,7 @@ def _assert_restarted_close_readback(
                         request=changed,
                         bound_instrument=changed.bound_instrument,
                         owner=owner,
+                        proof_root=proof_root,
                     )
                     assert blocked.first_blocker == blocker
                     assert not blocked.venue_plan_authorized

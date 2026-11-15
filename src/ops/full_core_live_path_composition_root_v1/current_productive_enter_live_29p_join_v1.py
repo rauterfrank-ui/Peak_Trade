@@ -34,6 +34,9 @@ if TYPE_CHECKING:
     from .current_productive_l10_close_reconciliation_v1 import (
         PostCloseDoublePlayCounterOrderRequestV1,
     )
+    from src.ops.portfolio_capital_reservation_budget_v1.live_l10_close_booking_v1 import (
+        AuthenticatedL10CloseTimingV1,
+    )
     from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
         SlotCapitalBasisV1,
     )
@@ -277,6 +280,7 @@ class CurrentProductiveEnterLive29PJoinResultV1:
     portfolio_reservation_disposition: str = ""
     reason_codes: tuple[str, ...] = ()
     double_play_sizing: DoublePlay29PSizingAssessmentV1 | None = None
+    authenticated_close_timing: AuthenticatedL10CloseTimingV1 | None = None
 
 
 def _canonical_json(payload: Mapping[str, Any]) -> str:
@@ -700,12 +704,17 @@ def check_authenticated_double_play_29p_admission_v1(
     request: PostCloseDoublePlayCounterOrderRequestV1,
     bound_instrument: BoundInstrumentV1,
     owner: PortfolioCapitalReservationBudgetOwnerV1,
+    proof_root: Path,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Check the booked LIVE reversal at the 29P boundary."""
     from .current_productive_l10_close_reconciliation_v1 import (
         PostCloseDoublePlayCounterOrderRequestV1,
     )
+    from src.ops.portfolio_capital_reservation_budget_v1.live_l10_close_booking_v1 import (
+        read_booked_l10_close_timing_v1,
+    )
 
+    close_timing = None
     reasons = ()
     if (
         type(request) is not PostCloseDoublePlayCounterOrderRequestV1
@@ -715,20 +724,24 @@ def check_authenticated_double_play_29p_admission_v1(
         blocker = "DOUBLE_PLAY_29P_LIVE_COUNTER_ORDER_CONTEXT_MISMATCH"
     else:
         try:
-            owner.require_authenticated_l10_counter_order_source_v1(request)
+            booking = owner.require_authenticated_l10_counter_order_source_v1(request)
+            close_timing = read_booked_l10_close_timing_v1(booking=booking, proof_root=proof_root)
         except ValueError as exc:
             blocker = str(exc)
         else:
             # The simulation's stop and capital basis have no LIVE source.
             blocker = "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED"
             reasons = ("DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED",)
-    return _denied_result(
-        status=STATUS_FAIL,
-        blocker=blocker,
-        reasons=reasons,
-        replay=None,
-        get_count=0,
-        decision_class=DECISION_DOUBLE_PLAY,
+    return replace(
+        _denied_result(
+            status=STATUS_FAIL,
+            blocker=blocker,
+            reasons=reasons,
+            replay=None,
+            get_count=0,
+            decision_class=DECISION_DOUBLE_PLAY,
+        ),
+        authenticated_close_timing=close_timing,
     )
 
 

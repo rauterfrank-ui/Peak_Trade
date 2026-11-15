@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
         PostCloseDoublePlayCounterOrderRequestV1,
     )
+    from .live_l10_close_booking_v1 import AuthenticatedSlotCloseBookingV1
     from .slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
         SlotCapitalBasisV1,
@@ -913,8 +914,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
     def require_authenticated_l10_counter_order_source_v1(
         self, request: PostCloseDoublePlayCounterOrderRequestV1
-    ) -> None:
-        """Prove the planning input against the original booking and held slot."""
+    ) -> AuthenticatedSlotCloseBookingV1:
+        """Return the original booking after checking the held slot."""
         from .live_l10_close_booking_v1 import validate_live_l10_booking_v1
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
             parse_exchange_reconciliation_identity_v1,
@@ -960,6 +961,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             )
             if entry.selected_side.lower() != episode.position_side:
                 raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_DIRECTION_MISMATCH")
+            return booking
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""

@@ -1159,7 +1159,7 @@
     {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
-      "sha256": "c283a919f668961f237b6d7d5b28546fbc9a22845a9192f500c26b87835958dd"
+      "sha256": "f0ce1a90638f3cee6e05d35353ed1918ef579925379e0792f1885e8fe30b2502"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -2369,7 +2369,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "08572e1b30dc41620e70c699f9731d702fcc4a34c16d92a839ca2eb51a02c0ed"
+      "sha256": "fc5e29aa7595a7a76ba7b024b8391a259df91896f06ccb6764cb8e8d95247b54"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -2749,7 +2749,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "90283bb3ef1e31ec74e62e1c5802f6dc932519a3363c8b7d31ebb88ebc9c4b70"
+      "sha256": "4834027d22ae307571759d6fd48f86de04e322f4ec160ad67464e41760602a71"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -2894,7 +2894,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "da983c41ae4a1dd798343af77a891c8ef7c59442a7d61772d2d23a0f3b343bdb"
+      "sha256": "a02a41cc7af1298d1fd25d99823910ccef6671e989f7d3110fa3a10ec74e5449"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -2929,7 +2929,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
       "before_sha256": null,
-      "sha256": "e20dd048ac68f4d3c7843a9319b0177a52a2a1129eb5a7e5e842c2cec91f8244"
+      "sha256": "b1096528210b19870787c3815aac734ceb0c9aaf2a9357d14e7d6cbc842ededf"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -4019,7 +4019,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "4db9185a4bfd451235d975c22261d20663d80c97715eb230229057c09f3b68f4"
+      "sha256": "984f3f74bb0b9f5d388fea06a9f61bbc9b4b64a094f0d913ffdc3d6b1d9a3f5d"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

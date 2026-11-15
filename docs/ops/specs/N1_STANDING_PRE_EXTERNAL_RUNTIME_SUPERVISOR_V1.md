@@ -60,8 +60,13 @@ pages or change the retained GET sequence.
 
 On `CLOSE_NET_BOOKED`, the supervisor submits a planning request to 29P for
 the opposite side of the retained L10 switch on the same bound instrument.
-29P verifies the original booking and hold with the reservation owner. The
-readback also records the historical mark and the opposite-side reference
+29P verifies the original booking and hold with the reservation owner.
+It reads the confirmed flat time and the acquisition times of the completed
+close readback and settlement from the private proofs named by that booking.
+A missing or invalid proof stops the precheck with
+`DOUBLE_PLAY_29P_BOOKED_CLOSE_PROOF_UNPROVEN`. The liveness notice records
+the verified times and both proof digests. The readback also records the
+historical mark and the opposite-side reference
 derived from the retained switch through the existing Layer-C and 29P
 formulas. It binds the original instrument, seal, snapshot and mark-response
 digest. The reference belongs to the original switch time. It is a diagnostic

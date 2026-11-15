@@ -143,6 +143,8 @@ def _record_supervisor_outcome_v1(run):
             sizing = result.counter_order_sizing
             reason = sizing.first_blocker
             extra["counter_order_sizing_reasons"] = list(sizing.reason_codes)
+            if sizing.authenticated_close_timing is not None:
+                extra["counter_order_close_timing"] = asdict(sizing.authenticated_close_timing)
             action = (
                 "Verify the booked close and original slot binding with the reservation owner. "
                 "Retain the original hold."
@@ -470,6 +472,7 @@ def run_n1_standing_pre_external_supervisor_v1(
                             request=counter_order,
                             bound_instrument=bound,
                             owner=host.owner,
+                            proof_root=occupied_mark_proof_root,
                         )
                         trace.extra["counter_order"] = {
                             "decision_id": counter_order.decision_id,
