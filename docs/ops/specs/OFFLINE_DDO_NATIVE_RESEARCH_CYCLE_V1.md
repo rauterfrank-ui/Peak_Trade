@@ -345,3 +345,142 @@ Missing initial Last evidence marks the candidate comparison failed for that
 session. The ordinary Shadow observation continues through its owners when
 the Last data is missing. The comparison carries authority `NONE`.
 Economic qualification also requires a comparable measurement.
+
+### Offline readback of simulated I17 accounting
+
+Use the same original GVEF plan, campaign and resolved config with a completed
+I17 candidate observation archived with per-profile `simulated_economics`.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py --host-economics \
+  --state /absolute/i17-accounting --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/qualified-i17/evidence
+```
+
+The readback checks the sealed host archive, the preregistered profile plan
+and the original Mark and decision clocks. It applies the archived intents
+to the existing isolated analytical portfolio model for each profile. The
+calculated fills, fees, slippage and per-cycle portfolio states must match the
+sealed records. The resulting `host-economics.json` binds the archive, plan,
+model, code revisions and decision window to the reconstructed states. Add
+`--verify` to rebuild the result and compare it with the saved receipt.
+Archives without the per-profile records fail before a receipt is written.
+
+The receipt carries the analytical portfolio's accounting units and modelled
+funding. Its prices and position state support archival reconstruction.
+The analytical portfolio multiplies quantity by price without the venue
+contract size and debits purchase notional from cash. Its equity is an
+analytical trace.
+
+Add `--paper-terms-evidence` with the path of the sealed Paper archive to rebook
+the same archived actions with the existing futures fill builder and accounting owner.
+The original Paper profile supplies the explicit contract and margin terms.
+Its instrument, contract size, lot, tick, settlement currency and leverage
+must agree with the instrument metadata bound to the GVEF plan. Candidate
+cycles retain the original typed order intent when it exists. Opening fills
+require that intent's native contract quantity. A position-derived exit can
+reduce the verified position according to the futures owner's size and side
+checks. Missing opening quantity provenance prevents a futures receipt.
+The separate `host-futures-accounting.json` records the source manifest and
+contract digests and the resulting futures portfolios in settlement currency.
+The archived decision sequence itself stays fixed during this rebooking.
+
+Add `--funding-evidence` with the original `public-input.json` for the same
+frozen plan to also book funding in that replay. The reader checks the
+original endpoint, query, response hashes and post-window capture times. The
+history page must reach the window start and supplies the timestamps and
+realized rates. Settlement frequency follows the archived events. The
+simulated price basis is the finalized hourly OKX Mark candle whose close
+coincides with the funding timestamp.
+
+Each archived settlement from the first through the last observed decision
+uses the native contracts held immediately before it. A fill with the same
+timestamp follows the funding event in the simulation. The existing futures
+accounting owner posts the signed amount once per instrument and event. The
+separate `host-futures-funding.json` retains the realized rate, price basis,
+position side and size, applied fill references and source and knowledge
+times. An incomplete history or missing finalized settlement Mark stops
+before the funded receipt is published. Rates acquired after the window
+are used only for this later rebooking.
+
+The funded receipt leaves the economic qualification blocked and the Reality
+Gap incomplete. The booking uses the specified simulation basis. SL07 still
+requires a comparable expected measurement and a versioned threshold policy.
+See the [OKX funding history API](https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate-history),
+the [linear contract funding basis](https://www.okx.com/en-eu/help/funding-fee-mechanism-eea)
+and the [adjustable settlement schedule](https://www.okx.com/en-eu/help/perps-funding-fee-mechanism).
+
+### Backtest valuation on the I17 accounting basis
+
+Use `--backtest-economics` with the sealed decision-time Last archive,
+Paper terms and the frozen plan's public funding evidence.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py --backtest-economics \
+  --state /absolute/i17-backtest --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/verified-market-tape/evidence \
+  --decision-time-last-captures /absolute/scoped-last/captures.json \
+  --paper-terms-evidence /absolute/sealed-paper-archive \
+  --funding-evidence /absolute/forward-state/public-input.json
+```
+
+The sealed I17 archive verifies market events and their original decision
+clocks. The backtest recomputes the two decisions on those market inputs
+with separate replay states. Each decision uses the latest finalized Last
+prefix available at its cutoff. Observed actions and fills do not feed
+the replay. The same futures-accounting owner used for host readback
+handles the replayed fills and settled funding.
+
+Both receipts include net change in equity divided by beginning equity,
+a flat opening state, terminal Mark valuation of any open positions,
+and model, decision-configuration and governed-seam digests. The backtest
+receipt also binds its tape and scoped Last archive. It writes
+`backtest-futures-funding.json` and supports deterministic `--verify`.
+This is a window-specific expected value. SL07 still needs the independent
+observation, admission of matching measurement conditions and the
+versioned threshold policy before producing a Reality Gap record.
+
+### Prepare comparable I17 measurements for SL07
+
+Freeze the funded backtest receipt before registering the later Shadow plan.
+Pass the versioned policy JSON as `--reality-gap-policy` to the existing
+`prepare` command. The plan stores its digest, and the I17 preregistration
+scope already binds the plan digest. Use a new forward-state directory for
+the later window.
+
+The `i17_reality_gap_policy.v1` JSON includes `schema_version`,
+`registered_at_utc`, `expected_plan_digest`, and `expected_receipt_digest`.
+Use the `sha256` fields of the original plan and backtest receipt envelopes.
+Declare the UTC bounds with `expected_window_start_utc`,
+`expected_window_end_utc`, `observed_window_start_utc`, and
+`observed_window_end_utc`. Declare `minimum_cycles`,
+`minimum_fills_per_profile`, `max_boundary_skew_seconds`, and
+`max_abs_net_return_gap`. The windows must have equal planned duration.
+The threshold is an absolute difference in net-return fractions, so a
+fraction of 0.01 represents one percentage point.
+
+After the later Shadow has its own funded host readback, prepare the dimensions.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py reality-gap \
+  --state /absolute/i17-gap-inputs \
+  --expected-plan /absolute/backtest-plan/plan.json \
+  --pair-plan /absolute/later-shadow-plan/plan.json \
+  --expected /absolute/i17-backtest/backtest-futures-funding.json \
+  --observed /absolute/i17-shadow/host-futures-funding.json \
+  --policy /absolute/reality-gap-policy.json
+```
+
+The reader verifies the precommitment, distinct observation sources,
+actual coverage, sample bounds, and matching profile, model, contract,
+currency and valuation semantics. It checks the equity arithmetic and
+emits one typed `pnl` ratio dimension per profile in
+`i17-reality-gap-inputs.json`, with policy and source digests. Run the same
+command with `--verify` for deterministic readback.
+
+A durable record still belongs to the
+[canonical SL07 store](CANONICAL_REALITY_GAP_STORE_V1.md) and requires an
+exactly bound complete experiment record. The next research iteration may
+consume a gap after that owner records it under a compatible identity.

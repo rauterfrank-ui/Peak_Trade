@@ -7,6 +7,7 @@ import argparse
 from contextlib import closing
 from copy import deepcopy
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from http.client import HTTPSConnection
 import json
@@ -185,8 +186,50 @@ def _require_original_replay_code(parent_revision, revision):
         raise ValueError("FORWARD_REPLAY_OWNERS_CHANGED_SINCE_PARENT")
 
 
+def _reality_gap_policy_window(policy, *, registered, start, end):
+    """Validate the precommitment before it is incorporated into a Shadow plan."""
+    expected = tuple(_utc(policy[f"expected_window_{bound}_utc"]) for bound in ("start", "end"))
+    observed = tuple(_utc(policy[f"observed_window_{bound}_utc"]) for bound in ("start", "end"))
+    policy_at = _utc(policy["registered_at_utc"])
+    if (
+        policy["schema_version"] != "i17_reality_gap_policy.v1"
+        or any(
+            not re.fullmatch(r"[0-9a-f]{64}", policy[key])
+            for key in ("expected_plan_digest", "expected_receipt_digest")
+        )
+        or not expected[0] < expected[1] <= policy_at <= registered < start
+        or not start <= observed[0] < observed[1] <= end
+        or expected[1] - expected[0] != observed[1] - observed[0]
+        or type(policy["minimum_cycles"]) is not int
+        or policy["minimum_cycles"] < 2
+        or type(policy["minimum_fills_per_profile"]) is not int
+        or policy["minimum_fills_per_profile"] < 0
+    ):
+        raise ValueError("I17_REALITY_GAP_PREDECLARED_POLICY_REQUIRED")
+    numbers = []
+    for key in ("max_boundary_skew_seconds", "max_abs_net_return_gap"):
+        try:
+            number = Decimal(str(policy[key]))
+        except InvalidOperation as exc:
+            raise ValueError("I17_REALITY_GAP_POLICY_NUMBER_INVALID") from exc
+        if not number.is_finite() or number < 0:
+            raise ValueError("I17_REALITY_GAP_POLICY_NUMBER_INVALID")
+        numbers.append(number)
+    return expected, observed, *numbers
+
+
 def prepare_v1(
-    workspace, *, campaign, evidence_digest, config, binding, start, hours, revision, now
+    workspace,
+    *,
+    campaign,
+    evidence_digest,
+    config,
+    binding,
+    start,
+    hours,
+    revision,
+    now,
+    reality_gap_policy=None,
 ):
     pair = _pair(campaign, evidence_digest, config)
     _require_original_replay_code(pair["parent_revision"], revision)
@@ -224,6 +267,11 @@ def prepare_v1(
         "instrument_binding": binding,
         **pair,
     }
+    if reality_gap_policy is not None:
+        _reality_gap_policy_window(
+            reality_gap_policy, registered=registered, start=start, end=_utc(plan["end_utc"])
+        )
+        plan["reality_gap_policy_digest"] = digest_v1(reality_gap_policy)
     publish_v1(target, plan)
     return read_v1(target)
 
@@ -492,6 +540,7 @@ def main(argv=None):
     prepare.add_argument("--instrument-binding", type=Path, required=True)
     prepare.add_argument("--start-utc", required=True)
     prepare.add_argument("--hours", type=int, required=True)
+    prepare.add_argument("--reality-gap-policy", type=Path)
     subcommands.add_parser("observe")
     subcommands.add_parser("verify")
     args = parser.parse_args(argv)
@@ -504,9 +553,9 @@ def main(argv=None):
         if args.action == "prepare":
             campaign = _absolute(args.campaign_state)
             source_paths = (campaign, _absolute(args.config), _absolute(args.instrument_binding))
-            if any(
-                path.is_relative_to(state) or state.is_relative_to(path) for path in source_paths
-            ):
+            policy = _absolute(args.reality_gap_policy) if args.reality_gap_policy else None
+            inputs = source_paths + ((policy,) if policy is not None else ())
+            if any(path.is_relative_to(state) or state.is_relative_to(path) for path in inputs):
                 raise ValueError("FORWARD_STATE_MUST_BE_SEPARATE_FROM_INPUTS")
             config, binding = (json.loads(path.read_bytes()) for path in source_paths[1:])
             plan = prepare_v1(
@@ -519,6 +568,7 @@ def main(argv=None):
                 hours=args.hours,
                 revision=revision,
                 now=_clock(),
+                reality_gap_policy=json.loads(policy.read_bytes()) if policy else None,
             )
             payload = {
                 "plan_digest": digest_v1(plan),

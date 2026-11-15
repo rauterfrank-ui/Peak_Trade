@@ -397,6 +397,9 @@ class I17CandidatePairV1:
                         for key in ("model_id", "model_version", "model_digest", "params")
                     },
                 }
+                original_intent = cycle.get("offline_candidate_canonical_order_intent")
+                if original_intent is not None:
+                    arms[role]["simulated_economics"]["canonical_order_intent"] = original_intent
         if arms["reference"]["governed_seam_digest"] != arms["candidate"]["governed_seam_digest"]:
             raise ValueError("I17_COMPARISON_GOVERNED_SEAM_MISMATCH")
         return arms

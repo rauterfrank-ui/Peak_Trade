@@ -1,6 +1,7 @@
 """The hourly MA input and the I17 decision epoch have separate clocks."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from hashlib import sha256
 import json
 from dataclasses import replace
@@ -10,6 +11,8 @@ import pandas as pd
 import pytest
 
 from scripts.ops import run_i17_candidate_comparison_v1 as comparison
+from scripts.ops import run_research_candidate_shadow_v1 as forward
+from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 from scripts.ops.run_i17_candidate_comparison_v1 import _compare, _strategy_binding
 from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
     normalize_strategy_signal_to_suitability_agreement_material_v1,
@@ -17,7 +20,7 @@ from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
     EvaluationReceiptArchiveV1,
 )
-from src.experiments.canonical_research_prepared_execution_v1 import digest_v1
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
 )
@@ -49,6 +52,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.strategies.registry import build_registry_snapshot
 from src.strategies.suitability_registry_adapter_v1 import build_suitability_registry_from_snapshot
+from tests.governance.test_canonical_order_intent_v1 import _instrument, _intent
 from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
     FakeClock,
     NOW,
@@ -58,6 +62,7 @@ from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execut
     _load_wallclock_go,
     _load_wallclock_prereg,
     _material,
+    _replace_cycle_rows_and_reseal,
     _write_v2_auth,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
@@ -388,7 +393,7 @@ def test_i17_last_capture_rejects_receipt_after_the_planned_window(tmp_path):
 
 @pytest.mark.parametrize("case", ("compared", "simulated_fill", "wrong_plan", "no_initial_last"))
 def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
-    tmp_path, monkeypatch, case
+    tmp_path, monkeypatch, capsys, case
 ):
     monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
     plan, bars = _pair_and_candles()
@@ -403,6 +408,21 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
         candidate_known_at_utc=utc(boundary - 4000).isoformat(),
         parent_data_known_at_utc=utc(boundary - 4100).isoformat(),
+        learning_digest="a" * 64,
+        public_source={"index_id": "ETH-USD"},
+        instrument_binding={
+            "instrument_metadata": {
+                "instId": CANONICAL_INSTRUMENT_ID,
+                "ctType": "linear",
+                "settleCcy": "USD",
+                "ctVal": "0.001",
+                "ctMult": "1",
+                "lotSz": "1",
+                "minSz": "1",
+                "tickSz": "0.01",
+                "lever": "50",
+            }
+        },
         registered_at_utc=utc(boundary - 3900).isoformat(),
         start_utc=utc(boundary - 3600).isoformat(),
         end_utc=utc(boundary + 3600).isoformat(),
@@ -458,8 +478,8 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
                     "apply_hardening_v2_downstream_new_exposure_guard_v2",
                     lambda *args, **options: {
                         "intended_side": "BUY",
-                        "intended_quantity": "0.1",
-                        "intent_action": "TEST_SIMULATED_BUY",
+                        "intended_quantity": "1",
+                        "intent_action": "ENTER_LONG",
                         "safety_blocked": False,
                         "reason_codes": [],
                     },
@@ -476,7 +496,7 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
     if case in {"compared", "simulated_fill"}:
         first = publish_last(bars.iloc[:-1], FakeClock(wall=boundary - 1))
     latest = []
-    clock = FakeClock(wall=boundary + 0.125)
+    clock = FakeClock(wall=boundary + (-0.125 if case == "simulated_fill" else 0.125))
     polls = 0
 
     def fetch_market(url, *args):
@@ -526,7 +546,12 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
     assert [pair["parent_decision_id"] for pair in pairs] == [row["decision_id"] for row in cycles]
     assert {pair["plan_digest"] for pair in pairs} == {digest_v1(plan)}
     assert {pair["original_i17_scope_digest"] for pair in pairs} == {prereg.scope_digest()}
+    economics_workspace = EvaluationReceiptArchiveV1(tmp_path / "economics")
+    economics_args = dict(plan=plan, evidence_root=root, code_sha="3" * 40)
     if case == "no_initial_last":
+        with pytest.raises(ValueError, match="I17_HOST_PAIRED_OBSERVATION_INCOMPLETE"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args)
+        assert not (economics_workspace.root / "host-economics.json").exists()
         assert {pair["status"] for pair in pairs} == {"FAILED"}
         assert {pair["reason"] for pair in pairs} == {"I17_DECISION_TIME_LAST_NOT_YET_AVAILABLE"}
         return
@@ -575,13 +600,13 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
                 assert recorded["portfolio_after"]["fill_count"] == 1
                 assert (
                     recorded["portfolio_after"]["positions"][CANONICAL_INSTRUMENT_ID]["quantity"]
-                    == "0.1"
+                    == "1"
                 )
                 if arm["material"]["trading_epoch"] == 1:
                     assert fill["decision_id"] == action["decision_id"]
                     assert fill["intent_id"] == action["intent_id"]
                     assert fill["side"] == "BUY"
-                    assert fill["quantity"] == "0.1"
+                    assert fill["quantity"] == "1"
                 else:
                     assert fill is None
             else:
@@ -606,6 +631,467 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         values = [pair["arms"][role]["material"] for pair in pairs]
         assert [value["cycle_signal_value"] for value in values] == expected
         assert [value["trading_epoch"] for value in values] == [1, 2, 3]
+
+    result = comparison.measure_host_economics_v1(economics_workspace, **economics_args)
+    assert result["cycle_count"] == 3
+    assert result["reality_gap_status"] == "INCOMPLETE"
+    assert result["economic_qualification_status"] == "BLOCKED"
+    assert result["funding_semantics"] == "MODELLED_FUNDING_ONLY"
+    for role, profile in result["profiles"].items():
+        assert profile["initial_equity"] == "100000"
+        assert profile["packet"] == plan["profiles"][role]["packet"]
+        assert (
+            profile["portfolio_snapshot"]["state"]
+            == (pairs[-1]["arms"][role]["simulated_economics"]["portfolio_after"])
+        )
+    output = economics_workspace.root / "host-economics.json"
+    before = output.read_bytes()
+    assert (
+        comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+        == result
+    )
+
+    if case == "simulated_fill":
+        plan_path = tmp_path / "registered-plan" / "plan.json"
+        plan_path.parent.mkdir()
+        comparison.publish_v1(plan_path, plan)
+        config_path = tmp_path / "resolved.json"
+        config_path.write_text("{}")
+        # The campaign binding has its own tests. Keep the sealed original,
+        # CLI dispatch, portfolio replay and receipt verification in this test.
+        monkeypatch.setattr(comparison, "_pair", lambda *_: {"profiles": plan["profiles"]})
+        monkeypatch.setattr(comparison, "_head", lambda: economics_args["code_sha"])
+        assert (
+            comparison.main(
+                [
+                    "--host-economics",
+                    "--verify",
+                    "--state",
+                    str(economics_workspace.root),
+                    "--pair-plan",
+                    str(plan_path),
+                    "--campaign-state",
+                    str(tmp_path / "campaign"),
+                    "--base-config",
+                    str(config_path),
+                    "--i17-evidence",
+                    str(root),
+                ]
+            )
+            == 0
+        )
+        assert json.loads(capsys.readouterr().out) == result
+        native_terms_root = tmp_path / "paper-terms"
+        native_terms_root.mkdir()
+        (native_terms_root / "paper-profile.json").write_text(
+            json.dumps(
+                {
+                    "schema": comparison.PAPER_PROFILE,
+                    "execution_environment": comparison.SIMULATION,
+                    "venue_order_transport": False,
+                    "instrument_binding": {
+                        "instrument_id": CANONICAL_INSTRUMENT_ID,
+                        "venue_native_id": CANONICAL_INSTRUMENT_ID,
+                    },
+                    "contract": {
+                        "symbol": CANONICAL_INSTRUMENT_ID,
+                        "contract_type": "linear",
+                        "contract_size": "0.001",
+                        "tick_size": "0.01",
+                        "min_qty": "1",
+                        "quote_currency": "USD",
+                        "initial_margin_rate": "0.02",
+                        "maintenance_margin_rate": "0.0065",
+                        "max_leverage": "50",
+                    },
+                }
+            )
+        )
+        write_manifest_sha256(native_terms_root)
+        native_args = dict(economics_args, paper_terms_evidence=native_terms_root)
+        with pytest.raises(ValueError, match="I17_FUTURES_CONTRACT_QUANTITY_PROOF_REQUIRED"):
+            comparison.measure_host_economics_v1(economics_workspace, **native_args)
+        native_output = economics_workspace.root / "host-futures-accounting.json"
+        assert not native_output.exists()
+
+        pair = cycles[0]["i17_candidate_comparison"]
+        candidate_record = pair["arms"]["candidate"]["simulated_economics"]
+        canonical = _intent(
+            sizing_overrides={
+                "instrument_id": CANONICAL_INSTRUMENT_ID,
+                "configured_quantity_cap": Decimal("1"),
+                "instrument": _instrument(
+                    instrument_id=CANONICAL_INSTRUMENT_ID,
+                    contract_multiplier=Decimal("0.001"),
+                    lot_size=Decimal("1"),
+                    minimum_quantity=Decimal("1"),
+                    minimum_notional=Decimal("0.1"),
+                ),
+            }
+        )
+        assert canonical.quantity == 1
+        candidate_record["canonical_order_intent"] = {
+            **hardening_cycle_bridge_v2.canonical_order_intent_to_semantic_dict(canonical),
+            "semantic_digest": canonical.semantic_digest,
+        }
+        _replace_cycle_rows_and_reseal(root, cycles)
+        native = comparison.measure_host_economics_v1(economics_workspace, **native_args)
+        assert native["futures_funding_semantics"] == "EXCHANGE_EVENTS_NOT_APPLIED"
+        assert native["reality_gap_status"] == "INCOMPLETE"
+        assert native["futures_portfolios"]["reference"]["fill_count"] == 0
+        next_candidate = native["futures_portfolios"]["candidate"]
+        assert next_candidate["positions"][0]["quantity"] == "1"
+        assert Decimal(next_candidate["equity"]) > Decimal("99999")
+        legacy = native["profiles"]["candidate"]["portfolio_snapshot"]["state"]
+        assert Decimal(legacy["equity"]) < Decimal("97000")
+        ratio = Decimal(next_candidate["cumulative_fees"]) / Decimal(legacy["cumulative_fees"])
+        assert abs(ratio - Decimal("0.001")) < Decimal("0.0000001")
+        assert (
+            comparison.measure_host_economics_v1(economics_workspace, **native_args, verify=True)
+            == native
+        )
+
+        def write_funding_archive(*, include_mark, cover_start=True):
+            payloads = {
+                "funding": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instType": "FUTURES",
+                        "fundingTime": str(boundary * 1000),
+                        "fundingRate": "-0.02",
+                        "realizedRate": "0.01",
+                    },
+                ],
+                "mark": [],
+                "last": [],
+                "index": [],
+            }
+            if cover_start:
+                payloads["funding"].append(
+                    {
+                        **payloads["funding"][0],
+                        "fundingTime": str((boundary - 3600) * 1000),
+                    }
+                )
+            if include_mark:
+                payloads["mark"].append(
+                    [
+                        str((boundary - 3600) * 1000),
+                        "3500",
+                        "3500",
+                        "3500",
+                        "3500",
+                        "1",
+                    ]
+                )
+            archive = {"plan_digest": digest_v1(plan), "records": {}}
+            for role, endpoint, query in forward._requests(plan):
+                raw = json.dumps({"code": "0", "data": payloads[role]}).encode()
+                archive["records"][role] = {
+                    "endpoint": endpoint,
+                    "query": query,
+                    "host": forward.PUBLIC_HTTP_HOST,
+                    "requested_at_utc": plan["end_utc"],
+                    "received_at_utc": utc(boundary + 3601).isoformat(),
+                    "raw_hex": raw.hex(),
+                    "raw_sha256": sha256(raw).hexdigest(),
+                }
+            source = tmp_path / f"funding-{include_mark}-{cover_start}.json"
+            comparison.publish_v1(source, archive)
+            return source
+
+        funded_output = economics_workspace.root / "host-futures-funding.json"
+        with pytest.raises(ValueError, match="I17_FUNDING_HISTORY_DOES_NOT_COVER_WINDOW"):
+            comparison.measure_host_economics_v1(
+                economics_workspace,
+                **native_args,
+                funding_evidence=write_funding_archive(include_mark=True, cover_start=False),
+            )
+        with pytest.raises(ValueError, match="I17_FUNDING_FINAL_SETTLEMENT_MARK_MISSING"):
+            comparison.measure_host_economics_v1(
+                economics_workspace,
+                **native_args,
+                funding_evidence=write_funding_archive(include_mark=False),
+            )
+        assert not funded_output.exists()
+
+        funded_args = dict(native_args, funding_evidence=write_funding_archive(include_mark=True))
+        funded = comparison.measure_host_economics_v1(economics_workspace, **funded_args)
+        (reference,) = funded["funding_bookings"]["reference"]
+        (booking,) = funded["funding_bookings"]["candidate"]
+        assert booking["funding_time_utc"] == utc(boundary).isoformat()
+        assert booking["realized_rate"] == "0.01"
+        assert booking["mark_close"] == "3500"
+        assert booking["position_contracts"] == "1"
+        assert booking["applied_after_fill_count"] == 1
+        assert booking["last_applied_fill_id"] == candidate_record["fill"]["fill_id"]
+        assert booking["currency"] == "USD"
+        assert Decimal(booking["amount"]) == Decimal("-0.035")
+        assert reference["position_contracts"] == reference["amount"] == "0"
+        assert Decimal(funded["futures_portfolios"]["candidate"]["equity"]) == (
+            Decimal(native["futures_portfolios"]["candidate"]["equity"]) - Decimal("0.035")
+        )
+        assert (
+            comparison.measure_host_economics_v1(economics_workspace, **funded_args, verify=True)
+            == funded
+        )
+
+        # This short test fixture verifies the sealed market and clock rows. The
+        # complete-archive typed DDO gate is exercised separately.
+        def short_fixture_market_readback(evidence_root, instrument):
+            manifest, market_rows = comparison._read_i17_archive(
+                evidence_root, instrument, require_typed_ddo=False
+            )
+            return sha256(manifest).hexdigest(), [
+                (decided, tick, cycle["decision_id"]) for decided, tick, cycle in market_rows
+            ]
+
+        monkeypatch.setattr(comparison, "_read_i17", short_fixture_market_readback)
+        monkeypatch.setattr(
+            wallclock_hardening_binding_v2,
+            "run_hardened_bridge_cycle_v2",
+            run_hardened_bridge_cycle_v2,
+        )
+        last_archive = {
+            "schema_version": comparison.DECISION_TIME_LAST_SCHEMA,
+            "plan_digest": digest_v1(plan),
+            "original_i17_manifest_sha256": sha256(
+                (root / "evidence_manifest.sha256").read_bytes()
+            ).hexdigest(),
+            "original_i17_scope_digest": prereg.scope_digest(),
+            "captures": [first, latest[0]],
+        }
+        backtest = comparison.measure_backtest_economics_v1(
+            economics_workspace, **funded_args, decision_time_archive=last_archive
+        )
+        assert backtest["measurement_surface"] == "BACKTEST_REPLAY_FROM_MARKET_TAPE"
+        assert backtest["cycle_count"] == funded["cycle_count"]
+        assert backtest["funding_source_digest"] == funded["funding_source_digest"]
+        assert backtest["futures_contract_digest"] == funded["futures_contract_digest"]
+        assert (
+            backtest["futures_measurement"]["definition"]
+            == funded["futures_measurement"]["definition"]
+        )
+        assert backtest["futures_portfolios"]["candidate"]["fill_count"] == 0
+        assert backtest["funding_bookings"]["candidate"][0]["amount"] == "0"
+        assert (
+            backtest["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"] == "0"
+        )
+        assert (
+            Decimal(funded["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"])
+            < 0
+        )
+        assert backtest["reality_gap_status"] == "INCOMPLETE"
+        assert (
+            comparison.measure_backtest_economics_v1(
+                economics_workspace, **funded_args, decision_time_archive=last_archive, verify=True
+            )
+            == backtest
+        )
+        with pytest.raises(ValueError, match="I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH"):
+            comparison.measure_backtest_economics_v1(
+                economics_workspace,
+                **funded_args,
+                decision_time_archive={**last_archive, "original_i17_scope_digest": "b" * 64},
+            )
+
+        fill = candidate_record["fill"]
+        fill["fee"] = "0"
+        _replace_cycle_rows_and_reseal(root, cycles)
+        assert verify_wallclock_evidence_bundle_v1(evidence_root=root).verified
+        with pytest.raises(ValueError, match="I17_HOST_SIMULATED_FILL_MISMATCH"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+    else:
+        for cycle in cycles:
+            for arm in cycle["i17_candidate_comparison"]["arms"].values():
+                arm.pop("simulated_economics")
+        _replace_cycle_rows_and_reseal(root, cycles)
+        with pytest.raises(ValueError, match="I17_HOST_SIMULATED_ECONOMICS_NOT_RECORDED"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+    assert output.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "failure",
+    ("", "unbound_policy", "reused_tape", "window", "model", "fill_count", "net_return"),
+)
+def test_i17_reality_gap_admits_only_prebound_comparable_receipts(tmp_path, failure):
+    expected_plan, _ = _pair_and_candles()
+    start = datetime(2026, 11, 14, 17, tzinfo=timezone.utc)
+    end = start + timedelta(hours=2)
+    expected_plan.update(
+        schema_version=comparison.PLAN_SCHEMA,
+        authority="NONE",
+        mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
+        start_utc=start.isoformat(),
+        end_utc=end.isoformat(),
+        registered_at_utc=(start - timedelta(minutes=5)).isoformat(),
+        candidate_known_at_utc=(start - timedelta(hours=1)).isoformat(),
+        parent_data_known_at_utc=(start - timedelta(hours=2)).isoformat(),
+    )
+    observed_start = start + timedelta(days=1)
+    observed_end = end + timedelta(days=1)
+
+    def measurement(plan, start, end, *, backtest):
+        raw_pins = ("a", "b", "c", "d") if backtest else ("e", "f", "1", "2")
+        scope, manifest, tape, funding = (char * 64 for char in raw_pins)
+        terminal_equity, net = ("100500", "0.005") if backtest else ("100400", "0.004")
+        return {
+            "schema_version": f"i17_{'backtest' if backtest else 'host'}_futures_funding_readback.v1",
+            "measurement_surface": (
+                "BACKTEST_REPLAY_FROM_MARKET_TAPE"
+                if backtest
+                else "SHADOW_ARCHIVE_SIMULATION_READBACK"
+            ),
+            "plan_digest": digest_v1(plan),
+            "authority": "NONE",
+            "instrument_id": plan["instrument_id"],
+            "futures_funding_semantics": "OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION",
+            "original_i17_scope_digest": scope,
+            "original_i17_manifest_sha256": manifest,
+            "original_market_sequence_sha256": tape,
+            "funding_source_digest": funding,
+            "code_sha": "8" * 40,
+            "futures_contract_digest": "9" * 64,
+            "futures_contract": {"quote_currency": "USD"},
+            "futures_accounting_owner": "test-owner",
+            "first_decision_utc": (start + timedelta(seconds=5)).isoformat(),
+            "last_decision_utc": (end - timedelta(seconds=5)).isoformat(),
+            "funding_source_known_at_utc": end.isoformat(),
+            "cycle_count": 100,
+            "profiles": plan["profiles"],
+            "futures_portfolios": {
+                role: {"initial_equity": "100000", "equity": terminal_equity, "fill_count": 2}
+                for role in plan["profiles"]
+            },
+            "futures_measurement": {
+                "definition": "NET_RETURN_ON_BEGINNING_EQUITY_V1",
+                "currency": "USD",
+                "initial_position": "FLAT",
+                "terminal_valuation": "MARK_TO_MARKET_WITHOUT_FORCED_CLOSE",
+                "profiles": {
+                    role: {
+                        "net_return_fraction": net,
+                        "execution_model_digests": ["3" * 64],
+                        "decision_config_digests": ["4" * 64],
+                        "governed_parameter_seam_digests": ["5" * 64],
+                    }
+                    for role in plan["profiles"]
+                },
+            },
+        }
+
+    expected = measurement(expected_plan, start, end, backtest=True)
+    registered = observed_start - timedelta(hours=1)
+    policy = {
+        "schema_version": "i17_reality_gap_policy.v1",
+        "registered_at_utc": registered.isoformat(),
+        "expected_plan_digest": digest_v1(expected_plan),
+        "expected_receipt_digest": digest_v1(expected),
+        "expected_window_start_utc": start.isoformat(),
+        "expected_window_end_utc": end.isoformat(),
+        "observed_window_start_utc": observed_start.isoformat(),
+        "observed_window_end_utc": observed_end.isoformat(),
+        "minimum_cycles": 100,
+        "minimum_fills_per_profile": 2,
+        "max_boundary_skew_seconds": "5",
+        "max_abs_net_return_gap": "0.002",
+    }
+    observed_plan = {
+        **expected_plan,
+        "registered_at_utc": registered.isoformat(),
+        "start_utc": observed_start.isoformat(),
+        "end_utc": observed_end.isoformat(),
+        "reality_gap_policy_digest": digest_v1(policy),
+    }
+    observed = measurement(observed_plan, observed_start, observed_end, backtest=False)
+    if failure == "unbound_policy":
+        policy["max_abs_net_return_gap"] = "0.003"
+    elif failure == "reused_tape":
+        observed["original_market_sequence_sha256"] = expected["original_market_sequence_sha256"]
+    elif failure == "window":
+        observed["last_decision_utc"] = (observed_end - timedelta(minutes=1)).isoformat()
+    elif failure == "model":
+        observed["futures_measurement"]["profiles"]["candidate"]["execution_model_digests"] = [
+            "6" * 64
+        ]
+    elif failure == "fill_count":
+        observed["futures_portfolios"]["candidate"]["fill_count"] = 0
+    elif failure == "net_return":
+        observed["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"] = "0.006"
+
+    root = tmp_path.resolve()
+    expected_path, observed_path, policy_path = (
+        root / name for name in ("expected.json", "observed.json", "policy.json")
+    )
+    for path, body in (
+        (expected_path, expected),
+        (observed_path, observed),
+        (root / "expected-plan.json", expected_plan),
+        (root / "observed-plan.json", observed_plan),
+    ):
+        publish_v1(path, body)
+    policy_path.write_text(json.dumps(policy), encoding="utf-8")
+    state = root / "result"
+    workspace = EvaluationReceiptArchiveV1(state)
+    args = dict(
+        expected_plan=expected_plan,
+        observed_plan=observed_plan,
+        expected_path=expected_path,
+        observed_path=observed_path,
+        policy_path=policy_path,
+    )
+    if failure:
+        errors = {
+            "unbound_policy": "PREDECLARED_POLICY_REQUIRED",
+            "reused_tape": "INDEPENDENT_OBSERVATION_REQUIRED",
+            "window": "WINDOW_OR_SAMPLE_MISMATCH",
+            "model": "RISK_OR_EXECUTION_MODEL_MISMATCH",
+            "fill_count": "EQUITY_OR_SAMPLE_INVALID",
+            "net_return": "RETURN_READBACK_MISMATCH",
+        }
+        with pytest.raises(ValueError, match=errors[failure]):
+            comparison.prepare_i17_reality_gap_input_v1(workspace, **args)
+        assert not (state / "i17-reality-gap-inputs.json").exists()
+        return
+
+    result = comparison.prepare_i17_reality_gap_input_v1(workspace, **args)
+    assert result["authority"] == "NONE"
+    assert result["threshold_policy_digest"] == digest_v1(policy)
+    assert result["expected_receipt_digest"] == digest_v1(expected)
+    assert result["observed_receipt_digest"] == digest_v1(observed)
+    for role, profile in result["profiles"].items():
+        assert profile["packet"] == observed_plan["profiles"][role]["packet"]
+        assert profile["gap_dimensions"] == [
+            {
+                "name": "pnl",
+                "expected": 0.005,
+                "observed": 0.004,
+                "threshold": 0.002,
+                "unit": "ratio",
+            }
+        ]
+    assert (
+        comparison.main(
+            [
+                "reality-gap",
+                "--state",
+                str(state),
+                "--pair-plan",
+                str(root / "observed-plan.json"),
+                "--expected-plan",
+                str(root / "expected-plan.json"),
+                "--expected",
+                str(expected_path),
+                "--observed",
+                str(observed_path),
+                "--policy",
+                str(policy_path),
+                "--verify",
+            ]
+        )
+        == 0
+    )
 
 
 def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):

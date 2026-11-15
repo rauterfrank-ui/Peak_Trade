@@ -1164,7 +1164,7 @@
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
-      "sha256": "9b31f5da65e695b73398ab4bc487f7ddc4a35ef4bd85767d202ccd5eabf558af"
+      "sha256": "942950a795f2fadaeb3842a238231c5e12060fc7c26e2dae97b7b9f33299f8be"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
@@ -1604,7 +1604,7 @@
     {
       "path": "scripts/ops/run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "b5b1f80f77045d3501e5d71de1b2aad7df240d5aea58abd98df5935a0fc755c9"
+      "sha256": "fe70ff474df3fefff8aad3904d1edfdbd6bcf22f12bc43570205853119c998c9"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -1734,7 +1734,7 @@
     {
       "path": "scripts/ops/run_research_candidate_shadow_v1.py",
       "before_sha256": null,
-      "sha256": "fc44bf93692991e67c72083dd6de4908734607c9e08c415217d890f6a909bd7d"
+      "sha256": "4e118578a11ac118f045f3b7adcb1fefb5f0ae28f2f7d32809aef0192aa8b22d"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -2674,7 +2674,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
       "before_sha256": null,
-      "sha256": "dded495166753c542b26d93e748ef855d4f50067718d666c3602e516a31ebef7"
+      "sha256": "eed15f0e4da7ea1fe5e70787552d2f246a3482ced9f28fc1990e68e90ff50c98"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/constants_v1.py",
@@ -3149,7 +3149,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "679f5b8149ce476e76d0b4d2e7e5f79bc545f919b8dfe52c1378587316975aff"
+      "sha256": "720c9317b8eb2e423443b3c77b56fff3319bc51fb4eb142180e6a6eb52f8f128"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py",
@@ -4484,7 +4484,7 @@
     {
       "path": "tests/ops/test_run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "65c7a488a06b1df27e6096834d5b7e260d0b6cfabf207123c87b19c963db2e7a"
+      "sha256": "9b43b333e5849bc9eff09ccf9d6978b7e04f5997caf513e1f935eca13d9a58be"
     },
     {
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
@@ -4494,7 +4494,7 @@
     {
       "path": "tests/ops/test_run_research_candidate_shadow_v1.py",
       "before_sha256": null,
-      "sha256": "8ee2344a1e039208ef1b41c3b3590859dd6d94e86f3a968aab172e3edd66497a"
+      "sha256": "4c7fc238931064283650adc894ec49d205887fe12c1230090387c5a82d88a008"
     },
     {
       "path": "tests/ops/test_runtime_recovery_email_v1.py",
