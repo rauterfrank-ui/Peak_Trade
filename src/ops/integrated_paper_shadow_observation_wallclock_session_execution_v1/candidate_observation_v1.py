@@ -291,10 +291,11 @@ def _read_capture_journal(journal, paths, binding):
 class I17CandidatePairV1:
     """Evaluate two isolated arms through the original bridge on one Mark input."""
 
-    def __init__(self, plan, *, session_prefix):
+    def __init__(self, plan, *, session_prefix, record_simulated_economics=False):
         self.plan = deepcopy(plan)
         self.instrument = self.plan["instrument_id"]
         self.session_prefix = session_prefix
+        self.record_simulated_economics = record_simulated_economics
         registry = build_suitability_registry_from_snapshot(build_registry_snapshot())
         entries = tuple(
             entry for entry in registry.entries if entry.strategy_id == self.plan["strategy_id"]
@@ -381,6 +382,21 @@ class I17CandidatePairV1:
                     "canonical_market_context_typed_estimate_present"
                 ],
             }
+            if self.record_simulated_economics:
+                portfolio = cycle["portfolio_snapshot"]
+                arms[role]["simulated_economics"] = {
+                    "execution_class": cycle["execution_class"],
+                    "cycle_id": cycle["cycle_id"],
+                    "intended_action": cycle["intended_action"],
+                    "fill": cycle["fill"],
+                    "portfolio_state_before_hash": cycle["portfolio_state_before_hash"],
+                    "portfolio_state_after_hash": cycle["portfolio_state_after_hash"],
+                    "portfolio_after": portfolio["state"],
+                    "portfolio_model": {
+                        key: portfolio[key]
+                        for key in ("model_id", "model_version", "model_digest", "params")
+                    },
+                }
         if arms["reference"]["governed_seam_digest"] != arms["candidate"]["governed_seam_digest"]:
             raise ValueError("I17_COMPARISON_GOVERNED_SEAM_MISMATCH")
         return arms
@@ -432,7 +448,9 @@ class I17CandidateHostObservationV1:
         self.scope_digest = prereg.scope_digest()
         self.namespace = _capture_scope_path(self.plan, self.scope_digest)
         self.pair = I17CandidatePairV1(
-            self.plan, session_prefix=f"{prereg.session_id}-i17-candidate"
+            self.plan,
+            session_prefix=f"{prereg.session_id}-i17-candidate",
+            record_simulated_economics=True,
         )
 
     def refresh_last(self, *, transport, clock):

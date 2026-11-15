@@ -317,6 +317,15 @@ and the subsequent Double Play outcome. Each paired receipt in the bridge
 cycle ledger references the original host decision, the original Mark clocks
 and the Last close and receipt clocks.
 
+The host also retains `simulated_economics` per profile in the sealed bridge
+cycle ledger. This carries the arm's original cycle, decision, risk and
+intent identities, the simulated fill where present, and the resulting
+position and accounting state. The portfolio hashes identify the pre-cycle
+and post-cycle states. The model digest and parameters identify the modelled
+fees, slippage and funding. These values belong to the analytical simulation.
+Venue funding cashflows and SL07 comparability still require their own
+evidence. The historical comparison receipt keeps its existing format.
+
 The [productive observation CLI](../../../scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py)
 accepts the same sealed `--candidate-plan` at token issuance, preregistration
 and run. Set `--earliest-start-unix` explicitly and keep the planned session

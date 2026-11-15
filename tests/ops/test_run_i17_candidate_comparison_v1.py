@@ -40,6 +40,7 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2 import (
     hardening_cycle_bridge_v2,
+    wallclock_hardening_binding_v2,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
     HardenedBridgeSessionStateV2,
@@ -133,6 +134,7 @@ def test_same_final_hour_prefix_binds_two_real_i17_epochs():
             )
             assert material["instrument_id"] == CANONICAL_INSTRUMENT_ID
             assert arm["artifact_digest"] == plan["profiles"][role]["packet"]
+            assert "simulated_economics" not in arm
             prefix = bars.loc[: cycle["last_candle_close_utc"]]
             binding = _strategy_binding(plan, plan["profiles"][role], prefix)
             assert material["strategy_signal_digest"] == binding.provenance.strategy_signal_digest
@@ -384,7 +386,7 @@ def test_i17_last_capture_rejects_receipt_after_the_planned_window(tmp_path):
     assert not list(journal.root.rglob("*.json"))
 
 
-@pytest.mark.parametrize("case", ("compared", "wrong_plan", "no_initial_last"))
+@pytest.mark.parametrize("case", ("compared", "simulated_fill", "wrong_plan", "no_initial_last"))
 def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
     tmp_path, monkeypatch, case
 ):
@@ -440,8 +442,38 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
             clock=lambda: utc(clock.time()),
         )
 
+    if case == "simulated_fill":
+        # Exercise the real simulation and archive writer with one test-only intent.
+        def cycle_with_simulated_intent(state, **kwargs):
+            candidate = kwargs["offline_candidate"]
+            if (
+                candidate is None
+                or candidate.artifact_digest != plan["profiles"]["candidate"]["packet"]
+                or state.cycle_index != 0
+            ):
+                return run_hardened_bridge_cycle_v2(state, **kwargs)
+            with monkeypatch.context() as context:
+                context.setattr(
+                    hardening_cycle_bridge_v2,
+                    "apply_hardening_v2_downstream_new_exposure_guard_v2",
+                    lambda *args, **options: {
+                        "intended_side": "BUY",
+                        "intended_quantity": "0.1",
+                        "intent_action": "TEST_SIMULATED_BUY",
+                        "safety_blocked": False,
+                        "reason_codes": [],
+                    },
+                )
+                return run_hardened_bridge_cycle_v2(state, **kwargs)
+
+        monkeypatch.setattr(
+            wallclock_hardening_binding_v2,
+            "run_hardened_bridge_cycle_v2",
+            cycle_with_simulated_intent,
+        )
+
     first = None
-    if case == "compared":
+    if case in {"compared", "simulated_fill"}:
         first = publish_last(bars.iloc[:-1], FakeClock(wall=boundary - 1))
     latest = []
     clock = FakeClock(wall=boundary + 0.125)
@@ -525,6 +557,51 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
             pair["arms"]["reference"]["market_observation_epoch"]
             == (pair["arms"]["candidate"]["market_observation_epoch"])
         )
+        economics = []
+        for role, arm in pair["arms"].items():
+            recorded = arm["simulated_economics"]
+            owner = runtime.candidate_observation.pair.states[role].cycle_ledger[
+                arm["material"]["trading_epoch"] - 1
+            ]
+            action = recorded["intended_action"]
+            assert recorded["execution_class"] == owner["execution_class"]
+            assert recorded["cycle_id"] == owner["cycle_id"] == action["cycle_id"]
+            assert action["decision_id"] == owner["decision_id"] != pair["parent_decision_id"]
+            assert action["intent_id"] == owner["intent_id"]
+            fill = recorded["fill"]
+            assert fill == owner["fill"]
+            assert recorded["portfolio_after"] == owner["portfolio_snapshot"]["state"]
+            if case == "simulated_fill" and role == "candidate":
+                assert recorded["portfolio_after"]["fill_count"] == 1
+                assert (
+                    recorded["portfolio_after"]["positions"][CANONICAL_INSTRUMENT_ID]["quantity"]
+                    == "0.1"
+                )
+                if arm["material"]["trading_epoch"] == 1:
+                    assert fill["decision_id"] == action["decision_id"]
+                    assert fill["intent_id"] == action["intent_id"]
+                    assert fill["side"] == "BUY"
+                    assert fill["quantity"] == "0.1"
+                else:
+                    assert fill is None
+            else:
+                assert fill is None
+                assert recorded["portfolio_after"]["positions"] == {}
+                assert recorded["portfolio_after"]["fill_count"] == 0
+            assert recorded["portfolio_after"]["equity"] == arm["analytical_equity"]
+            assert (
+                recorded["portfolio_model"]["model_digest"]
+                == owner["portfolio_snapshot"]["model_digest"]
+            )
+            assert recorded["portfolio_state_before_hash"] == owner["portfolio_state_before_hash"]
+            assert recorded["portfolio_state_after_hash"] == owner["portfolio_state_after_hash"]
+            economics.append(recorded)
+        assert (
+            economics[0]["intended_action"]["decision_id"]
+            != economics[1]["intended_action"]["decision_id"]
+        )
+        assert economics[0]["portfolio_model"] == economics[1]["portfolio_model"]
+    assert not (root / "bridge_fill_ledger.jsonl").read_bytes()
     for role, expected in (("reference", [0, 1, 1]), ("candidate", [0, 0, 0])):
         values = [pair["arms"][role]["material"] for pair in pairs]
         assert [value["cycle_signal_value"] for value in values] == expected
