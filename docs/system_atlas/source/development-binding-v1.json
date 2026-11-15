@@ -1184,7 +1184,7 @@
     {
       "path": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md",
       "before_sha256": "784c935b0982252b6b0a5e9a93da55b1c673792fe3a29c04d7275a2de1cb5fc3",
-      "sha256": "694d98bda7e23bb9a6384e330c83d0acf19eb74cd38e095879a3f1ed614f1d34"
+      "sha256": "aaabc4fb71297993de3880bd21507eb7a7362c862bdcc12255c114412bdd9e51"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
@@ -1254,7 +1254,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "5ac33fc421e1b1a704f0127a1cffda01c912a3764cdc83458b5290920b787761"
+      "sha256": "962684a1658663e659e49d6ad87e51b80ff5547ff76b6cb2af2d6b056273104d"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1879,7 +1879,7 @@
     {
       "path": "src/governance/post_6940_live_readiness_convergence_v1.py",
       "before_sha256": "302251e5dda81aac4acca9e017825654c25ed29a6de033eb2ba8a1640624a490",
-      "sha256": "e1b1d170fb30399dedd1465b80d18d62e1df16db697e82a545f7b07f5765fc46"
+      "sha256": "e0af832064e4c44587b7cf093f95a4170ce072265c157d9c5a72bb2f0f26a22b"
     },
     {
       "path": "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",
@@ -3424,7 +3424,7 @@
     {
       "path": "tests/governance/test_post_6940_live_readiness_convergence_v1.py",
       "before_sha256": "0aec9f54d027d6b211643a35bebc1b977b181da4514b5b81937da283666082b9",
-      "sha256": "4b890bd1ebd5afb587bdbf96457b8d918a173a05de99ace01b00c1d03cba7023"
+      "sha256": "4a4e5cdbc053b02706321f5a7e2f3e1fa72a33d829be6eb7a6c5f35e6e789d14"
     },
     {
       "path": "tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",

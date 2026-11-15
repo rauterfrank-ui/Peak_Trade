@@ -248,7 +248,7 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
     ),
     "src/governance/post_6940_live_readiness_convergence_v1.py": (
         "302251e5dda81aac4acca9e017825654c25ed29a6de033eb2ba8a1640624a490",
-        "e1b1d170fb30399dedd1465b80d18d62e1df16db697e82a545f7b07f5765fc46",
+        "e0af832064e4c44587b7cf093f95a4170ce072265c157d9c5a72bb2f0f26a22b",
     ),
     "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py": (
         "6544ad9470a29e83881986a3a24e8318238321ca0ed6975841b40b99f3ae5056",
