@@ -132,19 +132,39 @@ def _record_supervisor_outcome_v1(run):
         terminal = result.policy_result.orchestrator_result if result.policy_result else None
         reason = "SUPERVISOR_NO_RUNTIME_RESULT"
         action = "Inspect missing runtime result before a new authorized run."
+        extra: dict[str, Any] = {
+            "disposition": result.trace.terminal_disposition,
+            "ok": result.ok,
+            "automatic_restart_allowed": False,
+        }
         if terminal is not None:
             reason, action = terminal.reason_code, terminal.next_required_owner_decision
         elif result.counter_order_sizing is not None:
-            reason = result.counter_order_sizing.first_blocker
+            sizing = result.counter_order_sizing
+            reason = sizing.first_blocker
+            extra["counter_order_sizing_reasons"] = list(sizing.reason_codes)
             action = (
-                "Inspect the 29P sizing reference and funding provenance for the original slot. "
+                "Verify the booked close and original slot binding with the reservation owner. "
                 "Retain the original hold."
             )
+            if reason == "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED":
+                action = (
+                    "Inspect the current 29P sizing reference and funding provenance for the "
+                    "original slot. Retain the original hold."
+                )
         elif result.close_readback is not None:
-            reason = result.close_readback.status
+            close = result.close_readback
+            reason = close.status
             action = "Keep the original close and reconcile venue custody before any continuation."
             if reason == "CLOSE_FLAT_CONFIRMED":
                 action = "Resolve the missing settlement evidence before continuation."
+                if "L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN" in close.reason_codes:
+                    reason = "L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN"
+                    extra["close_readback_status"] = close.status
+                    action = (
+                        "Verify the original consumed POST Owner-GO in the submitted close store. "
+                        "Retain the confirmed flat readback and the original hold."
+                    )
         elif result.resumed_position_management_close is not None:
             reason = "OCCUPIED_SCOPE_CLOSE_RECOVERED"
             action = (
@@ -157,11 +177,7 @@ def _record_supervisor_outcome_v1(run):
             reason_code=reason,
             action=action,
             owner_action_required=terminal is None or terminal.disposition != DISPOSITION_CANCELLED,
-            extra={
-                "disposition": result.trace.terminal_disposition,
-                "ok": result.ok,
-                "automatic_restart_allowed": False,
-            },
+            extra=extra,
         )
         return result
 

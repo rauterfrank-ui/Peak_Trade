@@ -1159,7 +1159,7 @@
     {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
-      "sha256": "39e24f97139d33f0c5afdb8eced8eb4bc43f30117dc98d3258bc331cfd77c921"
+      "sha256": "c2de78bdc338a56ce736c1cb01d66a3e21676695d6f7549403136fcdcd526224"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -2749,7 +2749,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "5fe51b71af9f49c640821d60fb14f3eef089de51ced968f3a907fafcf7c02ade"
+      "sha256": "90283bb3ef1e31ec74e62e1c5802f6dc932519a3363c8b7d31ebb88ebc9c4b70"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -2759,7 +2759,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/unattended_v1.py",
       "before_sha256": "810da1d3ed28b604f141206fdc412ccdf2e15547e3976ae90f4bccc4cde17c18",
-      "sha256": "b6379604e6e9de1f9c6c5c61013c2888623ed5740d3291a21a240bd864c51985"
+      "sha256": "7fe2d865dafda108b256692f77c388b3121172576df5c84247a1e178900a0211"
     },
     {
       "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py",
@@ -4019,7 +4019,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "142a4bd9de9d704d897cd2422d144c8e741cb2d8d873de0ad882a5852beaa59e"
+      "sha256": "4db9185a4bfd451235d975c22261d20663d80c97715eb230229057c09f3b68f4"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -4509,7 +4509,7 @@
     {
       "path": "tests/ops/test_unattended_n1_host_v1.py",
       "before_sha256": "3e857f51b9b43a362351025458d5815bce229faebfbc9dbd3aa254bba1ba8e94",
-      "sha256": "e7fe861c9fcc336024308eda9900d210471ff4c90353efeb8f441735a57dc3a3"
+      "sha256": "0bbe9c81efbd3435ae59855d8f16b42411cbc3a94b4732b7431926515650a210"
     },
     {
       "path": "tests/ops/test_verify_registry_pointer_artifacts_smoke.py",

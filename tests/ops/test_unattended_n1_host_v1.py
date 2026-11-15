@@ -414,6 +414,10 @@ def test_unattended_host_preserves_close_and_blocked_continuation(
         SimpleNamespace(
             status="FAIL_CLOSED",
             first_blocker="DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED",
+            reason_codes=(
+                "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED",
+                "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED",
+            ),
             venue_plan_authorized=False,
         )
         if booked
@@ -486,6 +490,7 @@ def test_unattended_host_preserves_close_and_blocked_continuation(
         assert stopped["counter_order_sizing"] == {
             "status": sizing.status,
             "first_blocker": sizing.first_blocker,
+            "reason_codes": list(sizing.reason_codes),
             "venue_plan_authorized": False,
         }
     else:

@@ -37,6 +37,8 @@ close submit store at booking and on verification replay. The record must
 match the host repository revision. If it is lost during the GET sequence
 or is invalid at booking, the verified flat readback is retained with
 `L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN` as the reason for pending settlement.
+The liveness notice exposes this reason alongside the confirmed flat status
+and points to the original consumed record in the submitted close store.
 Once the original record is readable again, a fresh admitted GET readback
 can complete the booking against the same hold and original submit record.
 
@@ -62,12 +64,15 @@ formulas. It binds the original instrument, seal, snapshot and mark-response
 digest. The reference belongs to the original switch time. It is a diagnostic
 only and cannot supply a current sizing input or an order.
 
-The supervisor reports a blocked sizing attempt until the productive protective
-stop and funded slot capital basis are available. The check reads the
-original slot and its booking; it does not request another allocation. The
-original booking remains readable after restart. The unattended host's stop
-receipt retains the close envelope digest, booking digest when present,
-and the 29P sizing disposition when reached.
+The supervisor reports a blocked sizing attempt until 29P has the current
+protective reference for quantity sizing and proof of funding for the original
+slot. The reference is a price input to the sizing equation. The reservation
+owner checks the booked close, slot binding and original committed hold.
+The hold records an existing commitment. Current free margin and funded slot
+capital each require their own evidence. The check consumes no new allocation.
+The liveness notice and unattended host's stop receipt retain both 29P
+blockers. The stop receipt also retains the close envelope digest and the
+booking digest when present. The booking remains readable after restart.
 
 ## WP-02 seam (CURRENT-WP-02 closed)
 

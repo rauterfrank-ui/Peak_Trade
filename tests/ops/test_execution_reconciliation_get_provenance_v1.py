@@ -2754,6 +2754,7 @@ def _assert_restarted_close_readback(
                 (config.evidence_root / "runtime_liveness_latest_v1.json").read_bytes()
             )
             assert notice["reason_code"] == sizing.first_blocker
+            assert notice["extra"]["counter_order_sizing_reasons"] == list(sizing.reason_codes)
             assert "original slot" in notice["recovery_action"]
             assert "Retain the original hold." in notice["recovery_action"]
             assert not notice["post_allowed"] and not notice["external_effect_authorized"]
@@ -2826,6 +2827,13 @@ def _assert_restarted_close_readback(
             assert readback.reason_codes[0] == "L10_CLOSE_NET_BOOKING_PENDING"
             if case == "owner-go-lost":
                 assert readback.reason_codes[1] == "L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN"
+                notice = json.loads(
+                    (config.evidence_root / "runtime_liveness_latest_v1.json").read_bytes()
+                )
+                assert notice["reason_code"] == readback.reason_codes[1]
+                assert notice["extra"]["close_readback_status"] == "CLOSE_FLAT_CONFIRMED"
+                assert "original consumed POST Owner-GO" in notice["recovery_action"]
+                assert not notice["post_allowed"] and not notice["external_effect_authorized"]
                 mandate = durable_post_owner_go_path_v1(store_root)
                 assert not mandate.exists()
                 assert not restarted_hosts[-1].owner._live_l10_close_bookings
