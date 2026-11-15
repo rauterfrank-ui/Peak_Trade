@@ -1137,6 +1137,11 @@
       "sha256": "5ec18709162587045859cbf8391b10c20fc2df690aeeb8185194870105404d3a"
     },
     {
+      "path": "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
+      "before_sha256": "9d95228060ba92987f3e0d66efbd4f2addf8e14f42a8572376b35a7cf8e8f79e",
+      "sha256": "0d785db658c905502fb9fe8840534b07898629e7a0eae516a85d70e90367d3d4"
+    },
+    {
       "path": "docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_NORMATIVE_V1.md",
       "before_sha256": "df4714609343f334437c435f6e0a0ec5965b7e0dc614c9573bfd06f93726d5d9",
       "sha256": "2bdd6adc93001797f4475f56c5dcba0d5e9017aafa64d0a8a0f7acb09908febf"
@@ -1254,7 +1259,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "65a9f6f20a8d49ea4f607e57ed20699c03a104dfbf8d4409fead6fc439db2696"
+      "sha256": "aba337a76f6e09e7972a73f68e6282dd262dd076440ce0d637687fdb1cde0090"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1855,6 +1860,11 @@
       "path": "src/governance/current_productive_real_venue_post_admission_v1.py",
       "before_sha256": "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
       "sha256": "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960"
+    },
+    {
+      "path": "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
+      "before_sha256": "109cbc001d92daf042409b052530338cfa3575d057e5c3932fa4f07e3bb49279",
+      "sha256": "b6a6f0f877a05ac0083fa50bbbde4e5b78209aef2c73e14b2403de0fe988547b"
     },
     {
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
@@ -3400,6 +3410,11 @@
       "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
       "before_sha256": "35b578f97fc53e28d079df76f996b8e849105eba8ec474fa8a8a27ec7bd7124c",
       "sha256": "b3e55f90b509bc00e8c9a35c794f7233c0dbf35ba67cdc8beb68fd79985a72ea"
+    },
+    {
+      "path": "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
+      "before_sha256": "2bee373160c04b30c482c1cec8162106eff61d8b17942fa9571139f5e5009860",
+      "sha256": "99e5423330c00fe06e7cfe57a3c47192146a413a417c3cd4f60aefe14605f935"
     },
     {
       "path": "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",

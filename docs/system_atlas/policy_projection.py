@@ -242,6 +242,10 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
         "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
         "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960",
     ),
+    "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py": (
+        "109cbc001d92daf042409b052530338cfa3575d057e5c3932fa4f07e3bb49279",
+        "b6a6f0f877a05ac0083fa50bbbde4e5b78209aef2c73e14b2403de0fe988547b",
+    ),
     "src/governance/k1_opaque_signing_handle_governed_construction_v1.py": (
         "036b586eeefcd14ca54acfb18059a5aea3f17e374fad3bc41977e4a034ec2929",
         "a51b7a409d69b2fdabfc04f62864b31d61c3912d98681e36d19381704114600c",
