@@ -1104,7 +1104,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
       "before_sha256": "7b5c49cd02520f0e11fcdba74bce9d33e7a4311b190d4fd9a38d0e2c64cf690a",
-      "sha256": "2081df15585bda6d8921581bb2af9a529b150289a5c1cad1c6a2b796ea0cd21e"
+      "sha256": "106b4540f2c39df98c47c9cc90b3ce43038a36decac3f16a6b2c03e7fec50185"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
@@ -1254,7 +1254,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "962684a1658663e659e49d6ad87e51b80ff5547ff76b6cb2af2d6b056273104d"
+      "sha256": "65a9f6f20a8d49ea4f607e57ed20699c03a104dfbf8d4409fead6fc439db2696"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1854,7 +1854,7 @@
     {
       "path": "src/governance/current_productive_real_venue_post_admission_v1.py",
       "before_sha256": "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
-      "sha256": "b621c691a22fd6560814f3243796155c1d4f0d0ee0e6dbbe1c302137a161a7aa"
+      "sha256": "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960"
     },
     {
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
@@ -2344,7 +2344,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
       "before_sha256": "7264cae74b6152f64383d5a5feccccd2ab5ec64c1474b2e728a9522ab691fe66",
-      "sha256": "eca97c6178f0b8794b948ac73219cd37f0b536f561f1292d5c240902ae2a648e"
+      "sha256": "c725f5fe6f0aabf17a1da72c37aa6a0742f6ad213a234ea978f32bb665ec627b"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
@@ -3869,7 +3869,7 @@
     {
       "path": "tests/ops/test_current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
       "before_sha256": null,
-      "sha256": "52d276b1f8cc155646b6f47018e7846632ce6ef5dc0033c350b605520e490bb4"
+      "sha256": "43689906f88dcb3e108f146463f45c2f03527e7b823726dd46a967c5841c8a90"
     },
     {
       "path": "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
@@ -3904,7 +3904,7 @@
     {
       "path": "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
       "before_sha256": "69fa21ac7113bec42b1f21737e94b470315b109d9122d4c4a0a885dba009c513",
-      "sha256": "57e29ed48da752ab5149204b9bc259540e89e4ebca41b5ff819f95524ce6e816"
+      "sha256": "f8c5c1b3a575a5f22a877afc4c377b4172bceea9e87694d7659e81f9b7d572d3"
     },
     {
       "path": "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
