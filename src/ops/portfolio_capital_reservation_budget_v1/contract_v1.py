@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
         PostCloseDoublePlayCounterOrderRequestV1,
     )
+    from .live_l10_close_booking_v1 import AuthenticatedSlotCloseBookingV1
     from .slot_loss_budget_v1 import (
         SlotCapitalAllocationV1,
         SlotCapitalBasisV1,
@@ -855,7 +856,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             return result
 
-    def record_authenticated_l10_close_v1(self, *, execution, proof_path, proof_root):
+    def record_authenticated_l10_close_v1(
+        self, *, execution, proof_path, proof_root, repository_sha
+    ):
         """Persist the original close settlement without changing the capital hold."""
         from .live_l10_close_booking_v1 import (
             build_live_l10_booking_v1,
@@ -866,7 +869,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             if self._store is None or self._storage_failed or self._closed_owner:
                 raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_WRITER_UNAVAILABLE")
             booking = build_live_l10_booking_v1(
-                self, execution=execution, proof_path=proof_path, proof_root=proof_root
+                self,
+                execution=execution,
+                proof_path=proof_path,
+                proof_root=proof_root,
+                repository_sha=repository_sha,
             )
             episode = booking.episode_id
             row = booking.to_dict_v1()
@@ -907,8 +914,8 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
     def require_authenticated_l10_counter_order_source_v1(
         self, request: PostCloseDoublePlayCounterOrderRequestV1
-    ) -> None:
-        """Prove the planning input against the original booking and held slot."""
+    ) -> AuthenticatedSlotCloseBookingV1:
+        """Return the original booking after checking the held slot."""
         from .live_l10_close_booking_v1 import validate_live_l10_booking_v1
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
             parse_exchange_reconciliation_identity_v1,
@@ -954,6 +961,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             )
             if entry.selected_side.lower() != episode.position_side:
                 raise PortfolioCapitalBudgetError("DOUBLE_PLAY_29P_ORIGINAL_DIRECTION_MISMATCH")
+            return booking
 
     def local_commitment_readback_v1(self):
         """Atomic projection of this owner's obligations, never venue margin."""
@@ -1488,6 +1496,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         ):
             raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
         slot = request.execution.source.quantity_handoff.lane_id
+        close_ref = request.execution.envelope.envelope_digest
         bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
         output = request.capital_handoff.producer_output
         fingerprint = _sha256_text(
@@ -1511,7 +1520,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 not self._admitted
                 or found is None
                 or str(found[1].slot_id) != slot
-                or found[1].decision_id != "l10:" + request.execution.envelope.envelope_digest
+                or found[1].decision_id != "l10:" + close_ref
                 or (
                     found[1].state is not ReservationStateV1.RESERVED
                     and (
@@ -1523,7 +1532,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise PortfolioCapitalBudgetError("DOUBLE_PLAY_PLAN_REQUIRES_ORIGINAL_UNBOUND_HOLD")
             expected_active = found[1].amount
         if (
-            self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
+            self._close_refreshes.get(close_ref) != fingerprint
             or self._active_sum_locked(slot) != expected_active
         ):
             raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
@@ -1536,9 +1545,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 or self._reservation_bindings[rid] != bound
             ):
                 raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
+        if any(
+            record["close_envelope"]["envelope_digest"] == close_ref
+            and record["valuation_epoch"] != request.observed_at_utc
+            for record in self._slot_test_economics[slot]["records"]
+        ):
+            raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH")
         return {
             "slot_id": slot,
-            "close_ref": request.execution.envelope.envelope_digest,
+            "close_ref": close_ref,
             "fingerprint": fingerprint,
         }
 

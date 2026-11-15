@@ -660,6 +660,7 @@ def run_unattended_n1_host_v1(
                     state["counter_order_sizing"] = {
                         "status": sizing.status,
                         "first_blocker": sizing.first_blocker,
+                        "reason_codes": list(sizing.reason_codes),
                         "venue_plan_authorized": sizing.venue_plan_authorized,
                     }
                 return stop("GOVERNED_RUNTIME_STOPPED")

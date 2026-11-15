@@ -370,6 +370,58 @@ def test_pending_slot_allocation_survives_restart_and_needs_original_funds(tmp_p
         owner.close()
 
 
+def test_live_close_recovery_rejects_a_funded_simulated_owner(tmp_path):
+    root = tmp_path / "host"
+    bindings = durable_fixture.BINDINGS
+    account = durable_fixture.ACCOUNT
+    owner_args = dict(
+        durable_root=root / "owner",
+        durable_account_identity=account,
+        durable_lane_bindings=bindings,
+    )
+    original = PortfolioCapitalReservationBudgetOwnerV1(
+        **owner_args,
+        durable_mode="create",
+        entry_budget_policy=fixture.policy(),
+        slot_capital_allocation=SlotCapitalAllocationV1(
+            account, "fixture:explicit-slot-allocation", (("LANE_1", Decimal(40)),)
+        ),
+    )
+    try:
+        assert (
+            durable_fixture._auto(original, tmp_path).disposition is ReserveDispositionV1.ADMITTED
+        )
+        funded_basis = original.slot_capital_basis_v1("LANE_1")
+        assert funded_basis.net_basis_usdc == Decimal(40)
+    finally:
+        original.close()
+
+    def forbidden_fetch(*_):
+        pytest.fail("Close recovery must validate the original store before private GETs")
+
+    host = fixture.PortfolioBudgetHostV1(
+        root=root,
+        private_rest_fetch=forbidden_fetch,
+        expected_account_identity=account,
+        repository_sha="close-recovery-test-revision",
+        session_id="close-recovery",
+        execution_environment="LIVE",
+    )
+    try:
+        with pytest.raises(ValueError, match="SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST"):
+            host.recover_owner_for_l10_close_booking_v1(bindings)
+        assert host.owner is None and host.bindings is None
+    finally:
+        host.close()
+
+    reopened = PortfolioCapitalReservationBudgetOwnerV1(**owner_args, durable_mode="recover")
+    try:
+        assert reopened.slot_capital_basis_v1("LANE_1") == funded_basis
+        assert not reopened.budget_state_v1().admitted
+    finally:
+        reopened.close()
+
+
 def test_allocated_slot_also_books_original_non_switch_close(tmp_path, monkeypatch):
     policy_factory = fixture.policy
     worlds = loss_fixture._install_test_path(monkeypatch, exhausted=False)
@@ -932,6 +984,7 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
             mark=current_mark,
             test_stop=stop,
         )
+        backdated_close = replace(request, observed_at_utc=fixture.utc(now))
         sizing_args = dict(
             replay=None,
             bound_instrument=bounds[lane],
@@ -986,6 +1039,45 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                     double_play=replace(double_play, mark=wrong_mark), **sizing_args
                 )
                 assert denied.first_blocker == "DOUBLE_PLAY_29P_CURRENT_SWITCH_MARK_UNPROVEN"
+                late_capture = provenance(
+                    native=bounds[lane].venue_native_id,
+                    mark=mark,
+                    index=mark * 0.995,
+                    event=now - 0.125,
+                    captured=counter_now + 0.125,
+                )
+                with monkeypatch.context() as clocks:
+                    clocks.setattr(host, "clock", lambda: counter_now + 0.25)
+                    assert late_capture.require_current_mark_clock_v1(
+                        observed_unix=host.clock()
+                    ) == pytest.approx(now - 0.125)
+                    denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                        double_play=replace(double_play, mark=late_capture), **sizing_args
+                    )
+                assert denied.first_blocker == "CURRENT_SCOPE_MARK_CLOCK_INVALID:CAPTURE_IN_FUTURE"
+                assert denied.get_count == 0 and denied.double_play_sizing is None
+                pre_flat_epoch = fixture.utc(now + 0.375)
+                pre_flat_args = dict(
+                    sizing_args,
+                    decision_epoch=pre_flat_epoch,
+                    injected=fixture.ports(
+                        bounds[lane],
+                        pre_flat_epoch,
+                        "l10:" + order.envelope_digest,
+                        account="acct-1",
+                    ),
+                )
+                denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                    double_play=double_play, **pre_flat_args
+                )
+                assert denied.first_blocker == "DOUBLE_PLAY_29P_DECISION_CLOCK_INVALID"
+                altered = replace(double_play, close_request=backdated_close)
+                for attempt in (sizing_args, pre_flat_args):
+                    denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                        double_play=altered, **attempt
+                    )
+                    assert denied.first_blocker == "BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH"
+                    assert denied.get_count == 0 and denied.double_play_sizing is None
                 forged = replace(
                     double_play,
                     continuation=replace(
@@ -1152,6 +1244,12 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                     unbound = original_try_reserve(**dict(kwargs, double_play_source=None))
                     assert unbound.reason_codes == ("DOUBLE_PLAY_RESERVATION_SOURCE_REQUIRED",)
                     source = kwargs["double_play_source"]
+                    backdated = replace(source, close=backdated_close)
+                    denied = original_try_reserve(**dict(kwargs, double_play_source=backdated))
+                    assert denied.reason_codes == (
+                        "BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH",
+                    )
+                    assert not denied.mutated and denied.reservation is None
                     wrong_basis = replace(
                         source,
                         continuation=replace(

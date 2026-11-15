@@ -44,16 +44,31 @@ durable consume record. The transport rechecks the safety veto and the
 original execution context before signing and before opening the socket.
 
 The current POST Owner-GO verifier checks the consume record in the supplied
-root. Its record carries no authenticated per-order grant ID, expiry or
-revocation check. The consume writer synchronizes the complete record,
+root. Admission requires a complete writer record with a JSON boolean
+`consumed=true`, both retry flags false, a hexadecimal Git revision and a
+valid UTC consume timestamp. An invalid record denies admission before durable
+permit consumption, K1 access or HTTP. Its timestamp records the local
+consume time. The record carries no authenticated per-order grant ID, expiry
+or revocation check. The consume writer synchronizes the complete record,
 publishes it atomically without replacing a record at the destination, and
 synchronizes the directory entries before returning success. Concurrent
 callers sharing that store root can consume the Owner-GO only once. A
 published record also blocks a retry if a later synchronization step fails.
 The envelope permit has a separate writer lock scoped to its own store.
-Independent store roots have independent consume records. A mandate for
-unattended operation across store roots would require an independently
-verified grant and a shared consumption boundary.
+Independent store roots have independent consume records. In an offline
+probe at `678dea7a4`, the same Owner-GO and order envelope reached the fake
+HTTP opener once in each of two roots. A fresh process retrying the first root
+stopped with `CONSUMED_PERMIT` before the fake K1 backend or opener. A partial
+record with the string `"false"` previously also reached the opener. The
+regression check now rejects that record through the actual admission call.
+
+An unattended mandate across store roots requires an independently verified
+issuer and current grant, scoped to the account, execution environment and
+exact order or explicitly authorized order set. Admission needs one atomic
+consume decision against shared durable state, including revocation, that
+survives process restart. The [original budget attempt](PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2.md)
+tracks decision and transport lineage in its own store. [FILEGATE](FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md)
+provides the safety veto. These owners retain their respective scope.
 
 A denied PRE_EXTERNAL policy proof blocks its policy admission. The explicit
 submit join calls the POST admission evaluator with a single-use permit for

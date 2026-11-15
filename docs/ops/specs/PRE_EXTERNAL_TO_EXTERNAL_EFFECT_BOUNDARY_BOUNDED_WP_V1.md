@@ -70,5 +70,15 @@ The policy census still lists the Futures simulation dispatch in
 `unclassified_sink_callers`. That result blocks the policy proof and the
 admissions that require it, including credential-material acquisition and K1
 signing-handle construction. The live-readiness report carries the caller
-list and keeps the static proof blocked even when the treasury run reached
-PRE_EXTERNAL.
+list and the separate `simulated_post_isolation` finding, including the source
+binding status, scope and any mismatched paths. Its policy verdict stays
+blocked even when the treasury run reaches PRE_EXTERNAL.
+
+In an offline counterfactual at `7e5262c14`, removing only the simulated
+dispatch from the scanned caller set was sufficient for the checked-in policy
+records to admit External Effect policy, Standing Lift, Permit Mint,
+credential access, credential-material load and K1 construction. The
+counterfactual evaluated policy decisions only. The POST-isolation evidence
+covers the simulated transport and carries `policy_authority_effect=NONE`.
+Treating it as sufficient for the policy verdict would admit a broader chain
+than the isolation finding covers.

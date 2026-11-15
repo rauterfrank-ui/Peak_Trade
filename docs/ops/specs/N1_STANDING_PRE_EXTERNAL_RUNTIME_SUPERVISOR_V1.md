@@ -26,11 +26,24 @@ proof root, it recovers the original L10 close before admitting another cycle.
 The unattended host binds that exact private path into its request digest.
 An omitted or different proof root fails the request binding before the
 supervisor runs.
+The close-booking reader applies the same stored budget-policy check as normal
+startup before attaching the original budget owner. A stored test budget
+remains restricted to the simulated host, including its funded slot basis.
 After exact order and fill reconciliation and confirmed flat, it reads the
 authenticated OKX closed position for the original entry episode. The existing
 reservation owner verifies the episode, settlement currency, fill PnL and
 entry/close fees against the history row. Funding and futures settlement must
 reconcile with the venue's realized PnL.
+
+The reservation owner rechecks the original consumed POST Owner-GO in the
+close submit store at booking and on verification replay. The record must
+match the host repository revision. If it is lost during the GET sequence
+or is invalid at booking, the verified flat readback is retained with
+`L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN` as the reason for pending settlement.
+The liveness notice exposes this reason alongside the confirmed flat status
+and points to the original consumed record in the submitted close store.
+Once the original record is readable again, a fresh admitted GET readback
+can complete the booking against the same hold and original submit record.
 
 `CLOSE_NET_BOOKED` records the native-currency net result once in the original
 owner's durable store. Restart replays the stored proof and booking without
@@ -47,19 +60,27 @@ pages or change the retained GET sequence.
 
 On `CLOSE_NET_BOOKED`, the supervisor submits a planning request to 29P for
 the opposite side of the retained L10 switch on the same bound instrument.
-29P verifies the original booking and hold with the reservation owner. The
-readback also records the historical mark and the opposite-side reference
+29P verifies the original booking and hold with the reservation owner.
+It reads the confirmed flat time and the acquisition times of the completed
+close readback and settlement from the private proofs named by that booking.
+A missing or invalid proof stops the precheck with
+`DOUBLE_PLAY_29P_BOOKED_CLOSE_PROOF_UNPROVEN`. The liveness notice records
+the verified times and both proof digests. The readback also records the
+historical mark and the opposite-side reference
 derived from the retained switch through the existing Layer-C and 29P
 formulas. It binds the original instrument, seal, snapshot and mark-response
 digest. The reference belongs to the original switch time. It is a diagnostic
 only and cannot supply a current sizing input or an order.
 
-The supervisor reports a blocked sizing attempt until the productive protective
-stop and funded slot capital basis are available. The check reads the
-original slot and its booking; it does not request another allocation. The
-original booking remains readable after restart. The unattended host's stop
-receipt retains the close envelope digest, booking digest when present,
-and the 29P sizing disposition when reached.
+The supervisor reports a blocked sizing attempt until 29P has the current
+protective reference for quantity sizing and proof of funding for the original
+slot. The reference is a price input to the sizing equation. The reservation
+owner checks the booked close, slot binding and original committed hold.
+The hold records an existing commitment. Current free margin and funded slot
+capital each require their own evidence. The check consumes no new allocation.
+The liveness notice and unattended host's stop receipt retain both 29P
+blockers. The stop receipt also retains the close envelope digest and the
+booking digest when present. The booking remains readable after restart.
 
 ## WP-02 seam (CURRENT-WP-02 closed)
 

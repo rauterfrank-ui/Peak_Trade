@@ -330,6 +330,7 @@ def reconcile_submitted_occupied_scope_close_v1(
             execution=execution,
             proof_path=root / f"close-history-{booked['history_proof_digest']}.json",
             proof_root=root,
+            repository_sha=budget_host.repository_sha,
         )
         return _booked_close_readback_v1(
             execution=execution, bound=bound, proof_root=root, booked=booked, scope=scope
@@ -510,7 +511,10 @@ def reconcile_submitted_occupied_scope_close_v1(
             body=body,
         )
         booked = owner.record_authenticated_l10_close_v1(
-            execution=execution, proof_path=history, proof_root=root
+            execution=execution,
+            proof_path=history,
+            proof_root=root,
+            repository_sha=budget_host.repository_sha,
         )
     except PortfolioCapitalBudgetError:
         # A lost commit acknowledgement must be resolved by reopening the owner.

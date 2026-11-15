@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,6 +26,18 @@ DURABLE_POST_OWNER_GO_FILENAME: Final[str] = (
     "full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"
 )
 _SECRET_TOKENS = ("secret", "passphrase", "api_key", "apikey", "private_key")
+_RECORD_FIELDS = frozenset(
+    {
+        "consumed",
+        "owner_go_token",
+        "baseline_origin_main_sha",
+        "consumed_at_utc",
+        "retry_authorized",
+        "second_post_authorized",
+    }
+)
+_BASELINE_SHA = re.compile(r"[0-9a-f]{40}")
+_CONSUMED_AT_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
 class CurrentProductiveActualVenuePostOwnerGoConsumeError(RuntimeError):
@@ -32,7 +45,7 @@ class CurrentProductiveActualVenuePostOwnerGoConsumeError(RuntimeError):
 
 
 def _utc_now_iso_v1() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    return datetime.now(timezone.utc).strftime(_CONSUMED_AT_FORMAT)
 
 
 def _canonical_json(payload: Mapping[str, Any]) -> str:
@@ -61,6 +74,8 @@ def load_durable_post_owner_go_consume_v1(*, store_root: Path | str | None) -> d
             "record": None,
         }
     path = durable_post_owner_go_path_v1(store_root)
+    if path.is_symlink():
+        raise CurrentProductiveActualVenuePostOwnerGoConsumeError("DURABLE_POST_GO_MALFORMED")
     if not path.is_file():
         return {
             "present": False,
@@ -69,16 +84,35 @@ def load_durable_post_owner_go_consume_v1(*, store_root: Path | str | None) -> d
             "record": None,
             "path": str(path),
         }
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(payload, dict):
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise CurrentProductiveActualVenuePostOwnerGoConsumeError(
+            "DURABLE_POST_GO_MALFORMED"
+        ) from exc
+    if not (
+        isinstance(payload, dict)
+        and payload.keys() == _RECORD_FIELDS
+        and payload["consumed"] is True
+        and payload["retry_authorized"] is False
+        and payload["second_post_authorized"] is False
+        and isinstance(payload["owner_go_token"], str)
+        and payload["owner_go_token"]
+        and isinstance(payload["baseline_origin_main_sha"], str)
+        and _BASELINE_SHA.fullmatch(payload["baseline_origin_main_sha"])
+    ):
         raise CurrentProductiveActualVenuePostOwnerGoConsumeError("DURABLE_POST_GO_MALFORMED")
-    consumed = bool(payload.get("consumed")) is True
-    token = str(payload.get("owner_go_token") or "")
+    try:
+        datetime.strptime(payload["consumed_at_utc"], _CONSUMED_AT_FORMAT)
+    except (TypeError, ValueError) as exc:
+        raise CurrentProductiveActualVenuePostOwnerGoConsumeError(
+            "DURABLE_POST_GO_MALFORMED"
+        ) from exc
     _assert_no_secrets(payload)
     return {
         "present": True,
-        "consumed": consumed,
-        "owner_go_token": token,
+        "consumed": True,
+        "owner_go_token": payload["owner_go_token"],
         "record": payload,
         "path": str(path),
     }
@@ -97,7 +131,7 @@ def persist_durable_post_owner_go_consume_v1(
     if go != POST_OWNER_GO:
         raise CurrentProductiveActualVenuePostOwnerGoConsumeError("POST_OWNER_GO_MISMATCH")
     sha = str(baseline_origin_main_sha or "").strip()
-    if len(sha) != 40:
+    if not _BASELINE_SHA.fullmatch(sha):
         raise CurrentProductiveActualVenuePostOwnerGoConsumeError("BASELINE_SHA_INVALID")
     bound = {
         "consumed": True,
@@ -123,12 +157,15 @@ def persist_durable_post_owner_go_consume_v1(
             try:
                 os.link(temporary, path)
             except FileExistsError as exc:
-                existing = load_durable_post_owner_go_consume_v1(store_root=root)
-                reason = (
-                    "POST_OWNER_GO_ALREADY_CONSUMED"
-                    if existing["consumed"]
-                    else "DURABLE_POST_GO_RECORD_CONFLICT"
-                )
+                try:
+                    existing = load_durable_post_owner_go_consume_v1(store_root=root)
+                    reason = (
+                        "POST_OWNER_GO_ALREADY_CONSUMED"
+                        if existing["consumed"]
+                        else "DURABLE_POST_GO_RECORD_CONFLICT"
+                    )
+                except CurrentProductiveActualVenuePostOwnerGoConsumeError:
+                    reason = "DURABLE_POST_GO_RECORD_CONFLICT"
                 raise CurrentProductiveActualVenuePostOwnerGoConsumeError(reason) from exc
         finally:
             temporary.unlink(missing_ok=True)
