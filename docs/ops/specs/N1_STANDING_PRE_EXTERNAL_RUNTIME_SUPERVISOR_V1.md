@@ -26,6 +26,9 @@ proof root, it recovers the original L10 close before admitting another cycle.
 The unattended host binds that exact private path into its request digest.
 An omitted or different proof root fails the request binding before the
 supervisor runs.
+The close-booking reader applies the same stored budget-policy check as normal
+startup before attaching the original budget owner. A stored test budget
+remains restricted to the simulated host, including its funded slot basis.
 After exact order and fill reconciliation and confirmed flat, it reads the
 authenticated OKX closed position for the original entry episode. The existing
 reservation owner verifies the episode, settlement currency, fill PnL and

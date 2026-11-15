@@ -370,6 +370,58 @@ def test_pending_slot_allocation_survives_restart_and_needs_original_funds(tmp_p
         owner.close()
 
 
+def test_live_close_recovery_rejects_a_funded_simulated_owner(tmp_path):
+    root = tmp_path / "host"
+    bindings = durable_fixture.BINDINGS
+    account = durable_fixture.ACCOUNT
+    owner_args = dict(
+        durable_root=root / "owner",
+        durable_account_identity=account,
+        durable_lane_bindings=bindings,
+    )
+    original = PortfolioCapitalReservationBudgetOwnerV1(
+        **owner_args,
+        durable_mode="create",
+        entry_budget_policy=fixture.policy(),
+        slot_capital_allocation=SlotCapitalAllocationV1(
+            account, "fixture:explicit-slot-allocation", (("LANE_1", Decimal(40)),)
+        ),
+    )
+    try:
+        assert (
+            durable_fixture._auto(original, tmp_path).disposition is ReserveDispositionV1.ADMITTED
+        )
+        funded_basis = original.slot_capital_basis_v1("LANE_1")
+        assert funded_basis.net_basis_usdc == Decimal(40)
+    finally:
+        original.close()
+
+    def forbidden_fetch(*_):
+        pytest.fail("Close recovery must validate the original store before private GETs")
+
+    host = fixture.PortfolioBudgetHostV1(
+        root=root,
+        private_rest_fetch=forbidden_fetch,
+        expected_account_identity=account,
+        repository_sha="close-recovery-test-revision",
+        session_id="close-recovery",
+        execution_environment="LIVE",
+    )
+    try:
+        with pytest.raises(ValueError, match="SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST"):
+            host.recover_owner_for_l10_close_booking_v1(bindings)
+        assert host.owner is None and host.bindings is None
+    finally:
+        host.close()
+
+    reopened = PortfolioCapitalReservationBudgetOwnerV1(**owner_args, durable_mode="recover")
+    try:
+        assert reopened.slot_capital_basis_v1("LANE_1") == funded_basis
+        assert not reopened.budget_state_v1().admitted
+    finally:
+        reopened.close()
+
+
 def test_allocated_slot_also_books_original_non_switch_close(tmp_path, monkeypatch):
     policy_factory = fixture.policy
     worlds = loss_fixture._install_test_path(monkeypatch, exhausted=False)

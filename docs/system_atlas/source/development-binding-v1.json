@@ -1159,7 +1159,7 @@
     {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
-      "sha256": "c2de78bdc338a56ce736c1cb01d66a3e21676695d6f7549403136fcdcd526224"
+      "sha256": "c283a919f668961f237b6d7d5b28546fbc9a22845a9192f500c26b87835958dd"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -2924,7 +2924,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
       "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
-      "sha256": "3cf43cceafa42afd334c84663b8e83f51df72fbd2d5353f9f586b784c65288fe"
+      "sha256": "45ed0199f0cd5c106fec54a21c2159a96e26e6dd75386acf69d1a148cf418bcc"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
@@ -3709,7 +3709,7 @@
     {
       "path": "tests/ops/test_bounded_slot_scope_close_v1.py",
       "before_sha256": null,
-      "sha256": "508dfb97cfce83bd3ededcb1c619971088d7f9f04e2ea69c34e86a6c5d6a5148"
+      "sha256": "5290fd922694f9fded619263fdffccb441cd6987463d6724e755c255ce1a72c8"
     },
     {
       "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",
