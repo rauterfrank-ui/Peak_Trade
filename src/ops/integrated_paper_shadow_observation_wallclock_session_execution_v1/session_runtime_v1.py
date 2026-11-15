@@ -584,7 +584,7 @@ class WallclockSessionRuntimeV1:
                 self.candidate_observation.bind(
                     prereg, evidence_root=self.evidence_root, repo_root=self.repo_root
                 )
-            elif any(
+            elif self.transport.candidate_last or any(
                 identity.startswith(CANDIDATE_COMPONENT_PREFIX)
                 for identity in prereg.strategy_component_identities
             ):
@@ -814,6 +814,10 @@ class WallclockSessionRuntimeV1:
                         raise MarketDataBindingErrorV1(
                             "CANONICAL_INSTRUMENT_MAPPING_MISSING",
                             "venue_mapping_unset",
+                        )
+                    if self.transport.candidate_last and self.candidate_observation is not None:
+                        self.candidate_observation.refresh_last(
+                            transport=self.transport, clock=self.clock_wall
                         )
                     normalized = fetch_normalized_public_market_data_v1(
                         transport=self.transport,
@@ -1207,6 +1211,7 @@ class WallclockSessionRuntimeV1:
                     headers={"Accept": "application/json", "User-Agent": "x"},
                     environ={},
                     allow_proxy=True,
+                    candidate_last=self.transport.candidate_last,
                 )
                 # re-validate with UA from constants via transport headers in real path
                 self.writer.write_immutable_json(
@@ -1216,6 +1221,11 @@ class WallclockSessionRuntimeV1:
                         "host": CANONICAL_HOST,
                         "network_opened": self.network_opened,
                         "notes": att.notes,
+                        **(
+                            {"allowed_paths": att.allowed_paths}
+                            if self.transport.candidate_last
+                            else {}
+                        ),
                     },
                 )
             if not (self.evidence_root / "observation_cycle_counters.json").exists():

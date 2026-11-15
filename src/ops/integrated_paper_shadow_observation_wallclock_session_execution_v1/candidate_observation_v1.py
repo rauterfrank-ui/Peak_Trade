@@ -18,11 +18,18 @@ from src.backtest.strategy_signal_binding_v1 import execute_configured_strategy_
 from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
     normalize_strategy_signal_to_suitability_agreement_material_v1,
 )
-from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, read_v1
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1, read_v1
 from src.ops.economic_md_input_producer_v1.constants_v1 import PUBLIC_HTTP_HOST
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
+    CANDIDATE_LAST_CANDLE_PATH,
     VENUE_OKX,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
+    EeaPublicMdTransportError,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
+    NetworkBoundaryError,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
     HardenedBridgeSessionStateV2,
@@ -44,8 +51,9 @@ from trading.market_state.distinct_market_observation_acceptor_v1 import (
 
 HOUR = timedelta(hours=1)
 PLAN_SCHEMA = "native_research_candidate_forward_plan.v1"
-LAST_ENDPOINT = "/api/v5/market/history-candles"
+LAST_ENDPOINT = CANDIDATE_LAST_CANDLE_PATH
 CANDIDATE_COMPONENT_PREFIX = "i17_candidate_plan_sha256:"
+LAST_CAPTURE_RETRY_SECONDS = 15
 
 
 def _utc(value):
@@ -155,6 +163,68 @@ def _capture_scope_path(plan, scope_digest):
     if not isinstance(scope_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", scope_digest):
         raise ValueError("I17_DECISION_TIME_SCOPE_DIGEST_REQUIRED")
     return Path(digest_v1(plan)) / scope_digest
+
+
+def _capture_last_response(query, *, fetch, clock, requested):
+    raw = fetch(LAST_ENDPOINT, query.copy())
+    received = clock()
+    return {
+        "host": PUBLIC_HTTP_HOST,
+        "endpoint": LAST_ENDPOINT,
+        "query": query,
+        "requested_at_utc": requested.isoformat(),
+        "received_at_utc": received.isoformat(),
+        "raw_sha256": sha256(raw).hexdigest(),
+        "raw_hex": raw.hex(),
+    }
+
+
+def _assert_capture_journal_separate(journal, *sources):
+    if any(
+        journal.root.is_relative_to(path) or path.is_relative_to(journal.root)
+        for path in (Path(__file__).resolve().parents[3], *sources)
+    ):
+        raise ValueError("I17_DECISION_TIME_JOURNAL_MUST_BE_SEPARATE")
+
+
+def capture_decision_time_last_v1(journal, *, plan, scope_digest, fetch, clock, close_at=None):
+    """Record one finalized hour from an explicitly injected capture transport and clock."""
+    _assert_capture_journal_separate(journal)
+    registered, _, end = _decision_time_window(plan)
+    namespace = _capture_scope_path(plan, scope_digest)
+    binding = {"plan_digest": namespace.parts[0], "original_i17_scope_digest": scope_digest}
+    with journal.lease_v1():
+        selected = _utc(clock().isoformat())
+        if not registered <= selected < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_OUTSIDE_WINDOW")
+        query = _last_query(
+            plan["instrument_id"], selected.timestamp() if close_at is None else close_at
+        )
+        if not 0 < int(query["after"]) <= _milliseconds(selected):
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CUTOFF_INVALID")
+        target = journal.safe_path_v1(namespace / "hours" / f"{query['after']}.json")
+        if target.exists():
+            stored = read_v1(target)
+            if (
+                any(stored[key] != value for key, value in binding.items())
+                or _utc(stored["capture"]["received_at_utc"]) > selected
+            ):
+                raise ValueError("I17_DECISION_TIME_CAPTURE_BINDING_OR_CLOCK_CHANGED")
+            _parse_last(stored["capture"], query)
+            return stored["capture"]
+        if journal.safe_path_v1(namespace / "captures.json").exists():
+            raise ValueError("I17_DECISION_TIME_CAPTURES_ALREADY_SEALED")
+        requested = _utc(clock().isoformat())
+        if not selected <= requested < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
+        capture = _capture_last_response(query, fetch=fetch, clock=clock, requested=requested)
+        if not requested <= _utc(capture["received_at_utc"]) < end:
+            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
+        candles = _parse_last(capture, query)
+        for profile in plan["profiles"].values():
+            _strategy_binding(plan, profile, candles)
+        publish_v1(target, {**binding, "capture": capture})
+        return capture
 
 
 def _validated_last_snapshots(plan, captures, *, registered, end):
@@ -334,8 +404,11 @@ class I17CandidateHostObservationV1:
         self.snapshots = ()
         self.last_decision_time = None
         self.failure = None
+        self.captured_close_ms = None
+        self.last_capture_error = None
+        self.next_capture_attempt = 0.0
 
-    def bind(self, prereg, *, evidence_root, repo_root):
+    def validate_preregistration(self, prereg, *, evidence_root, repo_root):
         components = tuple(
             identity
             for identity in prereg.strategy_component_identities
@@ -346,23 +419,58 @@ class I17CandidateHostObservationV1:
             or components != (candidate_plan_component_v1(self.plan),)
             or prereg.instrument_allowlist != (self.plan["instrument_id"],)
             or not self.start.timestamp() <= prereg.earliest_start < self.end.timestamp()
+            or prereg.earliest_start + prereg.planned_duration_seconds > self.end.timestamp()
             or any(
                 self.journal.root.is_relative_to(path) or path.is_relative_to(self.journal.root)
                 for path in (evidence_root.resolve(), repo_root.resolve())
             )
         ):
             raise ValueError("I17_CANDIDATE_HOST_PREREGISTRATION_MISMATCH")
+
+    def bind(self, prereg, *, evidence_root, repo_root):
+        self.validate_preregistration(prereg, evidence_root=evidence_root, repo_root=repo_root)
         self.scope_digest = prereg.scope_digest()
         self.namespace = _capture_scope_path(self.plan, self.scope_digest)
         self.pair = I17CandidatePairV1(
             self.plan, session_prefix=f"{prereg.session_id}-i17-candidate"
         )
 
+    def refresh_last(self, *, transport, clock):
+        """Fetch before the Mark request so candle latency cannot age an accepted Mark."""
+        now = clock()
+        if self.failure or now < self.next_capture_attempt:
+            return
+        latest = int(_last_query(self.plan["instrument_id"], now)["after"])
+        # Prime from the previous finalized hour. Its publication does not depend on
+        # the newly closed candle being available on the first session poll.
+        target = latest - 3_600_000 if self.captured_close_ms is None else latest
+        if self.captured_close_ms == target:
+            return
+        try:
+            capture_decision_time_last_v1(
+                self.journal,
+                plan=self.plan,
+                scope_digest=self.scope_digest,
+                fetch=lambda path, query: transport.get_json(path, query).body,
+                clock=lambda: datetime.fromtimestamp(clock(), timezone.utc),
+                close_at=target / 1000,
+            )
+        except (EeaPublicMdTransportError, NetworkBoundaryError):
+            raise
+        except (OSError, ValueError, RuntimeError, KeyError, TypeError) as exc:
+            self.last_capture_error = str(exc)
+            self.next_capture_attempt = clock() + LAST_CAPTURE_RETRY_SECONDS
+            return
+        self.captured_close_ms = target
+        self.last_capture_error = None
+
     def observe(self, tick, *, parent_decision_id, clock):
         binding = {
             "plan_digest": self.plan_digest,
             "original_i17_scope_digest": self.scope_digest,
         }
+        if self.last_capture_error is not None:
+            binding["last_capture_error"] = self.last_capture_error
         if self.failure is None:
             try:
                 return self._evaluate(tick, parent_decision_id, clock, binding)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import asdict, dataclass, field
 from typing import Any, Mapping, Optional
 from urllib.parse import parse_qs, urlparse
@@ -11,6 +12,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     ALLOWED_HEADERS,
     ALLOWED_METHODS,
     ALLOWED_PATHS,
+    CANDIDATE_LAST_CANDLE_PATH,
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
 )
@@ -101,7 +103,11 @@ def assert_method_allowed_v1(method: str) -> list[str]:
     return []
 
 
-def assert_url_allowed_v1(url: str) -> list[str]:
+def allowed_paths_v1(*, candidate_last: bool = False) -> frozenset[str]:
+    return ALLOWED_PATHS | {CANDIDATE_LAST_CANDLE_PATH} if candidate_last else ALLOWED_PATHS
+
+
+def assert_url_allowed_v1(url: str, *, candidate_last: bool = False) -> list[str]:
     blockers: list[str] = []
     parsed = urlparse(str(url or ""))
     scheme = (parsed.scheme or "").lower()
@@ -117,13 +123,14 @@ def assert_url_allowed_v1(url: str) -> list[str]:
     if parsed.port not in (None, 443):
         blockers.append(f"PORT_FORBIDDEN:{parsed.port}")
     path = parsed.path or ""
-    if path not in ALLOWED_PATHS:
+    paths = allowed_paths_v1(candidate_last=candidate_last)
+    if path not in paths:
         blockers.append(f"PATH_NOT_ALLOWED:{path}")
     path_l = path.lower()
     for frag in _FORBIDDEN_PATH_FRAGMENTS:
         if f"/{frag}" in path_l or path_l.endswith(frag):
             # allowlist paths already checked; extra fragments in non-allowlisted paths
-            if path not in ALLOWED_PATHS:
+            if path not in paths:
                 blockers.append(f"PATH_FRAGMENT_FORBIDDEN:{frag}")
     if parsed.username or parsed.password:
         blockers.append("URL_USERINFO_FORBIDDEN")
@@ -131,6 +138,21 @@ def assert_url_allowed_v1(url: str) -> list[str]:
         blockers.append("URL_FRAGMENT_FORBIDDEN")
     # Query binding checks
     qs = parse_qs(parsed.query, keep_blank_values=True)
+    if candidate_last and path == CANDIDATE_LAST_CANDLE_PATH:
+        close = qs.get("after", [""])[0]
+        if (
+            qs
+            != {
+                "instId": [CANONICAL_INSTRUMENT_ID],
+                "bar": ["1H"],
+                "after": [close],
+                "limit": ["100"],
+            }
+            or re.fullmatch(r"[1-9][0-9]{12}", close) is None
+            or int(close) % 3_600_000 != 0
+        ):
+            blockers.append("I17_CANDIDATE_LAST_QUERY_FORBIDDEN")
+        return sorted(set(blockers))
     for key, values in qs.items():
         kl = key.lower()
         if kl not in _ALLOWED_QUERY_KEYS:
@@ -156,10 +178,11 @@ def validate_request_boundary_v1(
     body: Optional[bytes] = None,
     environ: Optional[Mapping[str, str]] = None,
     allow_proxy: bool = False,
+    candidate_last: bool = False,
 ) -> NetworkBoundaryAttestationV1:
     blockers: list[str] = []
     blockers.extend(assert_method_allowed_v1(method))
-    blockers.extend(assert_url_allowed_v1(url))
+    blockers.extend(assert_url_allowed_v1(url, candidate_last=candidate_last))
     blockers.extend(assert_headers_allowed_v1(headers or {}))
     blockers.extend(assert_no_okx_credentials_in_env_v1(environ=environ))
     if not allow_proxy:
@@ -173,6 +196,7 @@ def validate_request_boundary_v1(
     return NetworkBoundaryAttestationV1(
         ok=ok,
         blockers=sorted(set(blockers)),
+        allowed_paths=sorted(allowed_paths_v1(candidate_last=candidate_last)),
         notes=[
             f"GUARD_ID={NETWORK_BOUNDARY_GUARD_ID}",
             "TLS_VERIFY_REQUIRED",

@@ -7,11 +7,19 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping
+from urllib.parse import parse_qs, urlencode, urlparse
 
+import pandas as pd
 import pytest
 
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (
+    LAST_ENDPOINT,
+    PLAN_SCHEMA,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
@@ -43,6 +51,7 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1 import (
     run_productive_wallclock_session_v1,
+    run_productive_wallclock_session_from_paths_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1 import (
     RealHttpFetcherError,
@@ -160,7 +169,7 @@ def _fake_ticker_fetcher(
     return fetcher
 
 
-def _issue_bundle(tmp_path: Path, *, duration: int = 120):
+def _issue_bundle(tmp_path: Path, *, duration: int = 120, candidate_plan_digest=None):
     from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
         ALLOWED_PRODUCTIVE_DURATIONS,
     )
@@ -190,6 +199,7 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120):
         operator_identity="operator_test",
         approval_identity="approver_test",
         confirm_token=placeholder,
+        candidate_plan_digest=candidate_plan_digest,
     )
     scope = parse_preregistration_contract_v1(provisional).scope_digest()
     minted = issue_productive_confirm_token_v1(
@@ -217,6 +227,7 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120):
         session_id=sid,
         now_unix=NOW,
         allow_noncanonical_duration=duration not in ALLOWED_PRODUCTIVE_DURATIONS,
+        candidate_plan_digest=candidate_plan_digest,
     )
     assert prereg_res.ok, prereg_res.blockers
     prereg = parse_preregistration_contract_v1(
@@ -409,6 +420,158 @@ def test_network_boundary_allow_and_block() -> None:
         headers={"Accept": "application/json", "User-Agent": "x"},
         environ={},
     ).ok
+
+
+def test_candidate_last_boundary_requires_exact_hour_and_bound_instrument():
+    def url(**changes):
+        query = {
+            "instId": CANONICAL_INSTRUMENT_ID,
+            "bar": "1H",
+            "after": str(int(NOW * 1000)),
+            "limit": "100",
+            **changes,
+        }
+        return f"https://{CANONICAL_HOST}{LAST_ENDPOINT}?{urlencode(query)}"
+
+    assert not validate_request_boundary_v1(url=url(), environ={}).ok
+    assert validate_request_boundary_v1(url=url(), environ={}, candidate_last=True).ok
+    assert not validate_request_boundary_v1(
+        url=url(), method="POST", environ={}, candidate_last=True
+    ).ok
+    for values in (
+        {"bar": "1m"},
+        {"limit": "101"},
+        {"instId": "BTC-USDT-SWAP"},
+        {"after": str(int(NOW * 1000) + 1)},
+        {"token": "fixture"},
+    ):
+        assert not validate_request_boundary_v1(
+            url=url(**values), environ={}, candidate_last=True
+        ).ok
+    assert not validate_request_boundary_v1(
+        url=url() + "&limit=100", environ={}, candidate_last=True
+    ).ok
+
+
+@pytest.mark.parametrize("last_status", [200, 403])
+def test_candidate_public_start_enforces_plan_then_reads_last_before_mark(
+    tmp_path, monkeypatch, last_status
+):
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1 import (
+        productive_run_entrypoint_v1,
+    )
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        REAL_NETWORK_ENV,
+    )
+    from tests.ops.test_run_i17_candidate_comparison_v1 import _capture_last, _pair_and_candles
+
+    monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
+    plan, bars = _pair_and_candles()
+
+    def utc(at):
+        return datetime.fromtimestamp(at, timezone.utc)
+
+    plan.update(
+        schema_version=PLAN_SCHEMA,
+        authority="NONE",
+        mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
+        candidate_known_at_utc=utc(NOW - 3601).isoformat(),
+        parent_data_known_at_utc=utc(NOW - 4000).isoformat(),
+        registered_at_utc=utc(NOW - 3600).isoformat(),
+        start_utc=utc(NOW).isoformat(),
+        end_utc=utc(NOW + 7200).isoformat(),
+    )
+    prices = [1900.0 - n for n in range(len(bars))]
+    prices[-1] += 175.0
+    for field in ("open", "high", "low", "close"):
+        bars[field] = prices
+    bars.index = pd.date_range(end=utc(NOW), periods=len(bars), freq="h")
+    plan_path = tmp_path / "plan.json"
+    publish_v1(plan_path, plan)
+    wrong_path = tmp_path / "wrong.json"
+    publish_v1(wrong_path, {**plan, "metadata": "different"})
+    prereg, _, _, token, art_path = _issue_bundle(
+        tmp_path, duration=30, candidate_plan_digest=digest_v1(plan)
+    )
+    evidence = tmp_path / "evidence"
+    clock = FakeClock()
+    last_queries = []
+    requested_paths = []
+
+    def fetch(url, *args):
+        path = urlparse(url).path
+        requested_paths.append(path)
+        assert (evidence / "authorization_consumption_record.json").is_file()
+        if path != LAST_ENDPOINT:
+            return _fake_ticker_fetcher(str(3500 + len(requested_paths)), clock=clock)(url, *args)
+        query = parse_qs(urlparse(url).query)
+        close = int(query["after"][0]) / 1000
+        last_queries.append(close)
+        capture = _capture_last(
+            bars.loc[: utc(close)], utc(close).isoformat(), utc(close).isoformat()
+        )
+        clock.sleep(0.125)
+        return last_status, bytes.fromhex(capture["raw_hex"]), {"Content-Type": "application/json"}
+
+    def fake_transport(**kwargs):
+        assert kwargs["candidate_last"]
+        return EeaPublicMdTransportV1(
+            fetcher=fetch, sleep=clock.sleep, environ={}, candidate_last=True
+        ), None
+
+    monkeypatch.setattr(
+        productive_run_entrypoint_v1, "build_real_eea_public_md_transport_v1", fake_transport
+    )
+    args = dict(
+        preregistration_path=art_path.parent / "preregistration.json",
+        operator_go_path=art_path.parent / "operator_go.json",
+        authorization_artifact_path=art_path,
+        confirm_token=token,
+        evidence_root=evidence,
+        expected_repository_sha=REPO_SHA,
+        fingerprint_ledger_path=tmp_path / "fingerprints.jsonl",
+        use_real_network=True,
+        runtime_config=WallclockRuntimeConfigV1(
+            max_cycles=3, poll_interval_seconds=1.0, min_quality_window_seconds=0
+        ),
+        clock_wall=clock.time,
+        clock_mono=clock.monotonic,
+        sleep=clock.sleep,
+        repo_root=REPO_ROOT,
+        environ={REAL_NETWORK_ENV: "1"},
+        candidate_journal_path=tmp_path / "last-journal",
+    )
+    wrong = run_productive_wallclock_session_from_paths_v1(**args, candidate_plan_path=wrong_path)
+    assert not wrong.ok and wrong.blockers == ["I17_CANDIDATE_HOST_PREREGISTRATION_MISMATCH"]
+    assert not evidence.exists() and not requested_paths
+    result = run_productive_wallclock_session_from_paths_v1(**args, candidate_plan_path=plan_path)
+    assert result.network_opened, result.blockers
+    if last_status == 403:
+        shutdown = json.loads((evidence / "shutdown_reason.json").read_text())
+        assert shutdown["killstate"]["last_trigger"] == "ABORT_CREDENTIAL_OR_AUTH_SURFACE"
+        assert result.session_result["terminal_verdict"] == "ABORT"
+        assert last_queries == [NOW - 3600]
+        assert "/api/v5/public/mark-price" not in requested_paths
+        assert not (evidence / "bridge_cycle_ledger.jsonl").read_text()
+        return
+    assert last_queries == [NOW - 3600, NOW]
+    assert requested_paths.index(LAST_ENDPOINT) < requested_paths.index("/api/v5/public/mark-price")
+    pairs = [
+        json.loads(line)["i17_candidate_comparison"]
+        for line in (evidence / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    assert len(pairs) == 3 and {pair["status"] for pair in pairs} == {"COMPARED"}
+    assert {pair["original_i17_scope_digest"] for pair in pairs} == {prereg.scope_digest()}
+    assert [pair["last_candle_close_utc"] for pair in pairs] == [
+        utc(NOW - 3600).isoformat(),
+        utc(NOW).isoformat(),
+        utc(NOW).isoformat(),
+    ]
+    assert datetime.fromisoformat(
+        pairs[1]["last_candle_input"]["received_at_utc"]
+    ) <= datetime.fromisoformat(pairs[1]["decision_time_utc"])
+    for role, expected in (("reference", [0, 1, 1]), ("candidate", [0, 0, 0])):
+        assert [pair["arms"][role]["material"]["cycle_signal_value"] for pair in pairs] == expected
 
 
 def test_real_fetcher_redirect_and_size_and_content_type(tmp_path: Path) -> None:

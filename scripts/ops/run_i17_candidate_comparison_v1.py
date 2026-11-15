@@ -31,7 +31,6 @@ from src.experiments.canonical_research_prepared_execution_v1 import (  # noqa: 
     publish_v1,
     read_v1,
 )
-from src.ops.economic_md_input_producer_v1.constants_v1 import PUBLIC_HTTP_HOST  # noqa: E402
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (  # noqa: E402
     ObservationMarketTickV1,
 )
@@ -43,7 +42,10 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     I17CandidatePairV1,
     LAST_ENDPOINT,
     PLAN_SCHEMA,
+    PUBLIC_HTTP_HOST as PUBLIC_HTTP_HOST,
+    _assert_capture_journal_separate,
     _capture_journal_paths,
+    _capture_last_response,
     _capture_scope_path,
     _decision_time_window,
     _last_query,
@@ -52,6 +54,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     _strategy_binding,
     _utc,
     _validated_last_snapshots,
+    capture_decision_time_last_v1 as capture_decision_time_last_v1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (  # noqa: E402
     MARKET_TYPE_FUTURES,
@@ -119,20 +122,6 @@ def _read_i17_scope(root, manifest_sha):
     return scope
 
 
-def _capture_last_response(query, *, fetch, clock, requested):
-    raw = fetch(LAST_ENDPOINT, query.copy())
-    received = clock()
-    return {
-        "host": PUBLIC_HTTP_HOST,
-        "endpoint": LAST_ENDPOINT,
-        "query": query,
-        "requested_at_utc": requested.isoformat(),
-        "received_at_utc": received.isoformat(),
-        "raw_sha256": sha256(raw).hexdigest(),
-        "raw_hex": raw.hex(),
-    }
-
-
 def _last_source(workspace, query, *, capture_last, fetch=_public_get):
     path = workspace.safe_path_v1("last-candles.json")
     if path.exists() or not capture_last:
@@ -142,50 +131,6 @@ def _last_source(workspace, query, *, capture_last, fetch=_public_get):
     frame = _parse_last(record, query)
     publish_v1(path, record)
     return record, frame
-
-
-def _assert_capture_journal_separate(journal, *sources):
-    if any(
-        journal.root.is_relative_to(path) or path.is_relative_to(journal.root)
-        for path in (REPO, *sources)
-    ):
-        raise ValueError("I17_DECISION_TIME_JOURNAL_MUST_BE_SEPARATE")
-
-
-def capture_decision_time_last_v1(journal, *, plan, scope_digest, fetch, clock):
-    """Record one finalized hour from an explicitly injected capture transport and clock."""
-    _assert_capture_journal_separate(journal)
-    registered, _, end = _decision_time_window(plan)
-    namespace = _capture_scope_path(plan, scope_digest)
-    binding = {"plan_digest": namespace.parts[0], "original_i17_scope_digest": scope_digest}
-    with journal.lease_v1():
-        selected = _utc(clock().isoformat())
-        if not registered <= selected < end:
-            raise ValueError("I17_DECISION_TIME_CAPTURE_OUTSIDE_WINDOW")
-        query = _last_query(plan["instrument_id"], selected.timestamp())
-        target = journal.safe_path_v1(namespace / "hours" / f"{query['after']}.json")
-        if target.exists():
-            stored = read_v1(target)
-            if (
-                any(stored[key] != value for key, value in binding.items())
-                or _utc(stored["capture"]["received_at_utc"]) > selected
-            ):
-                raise ValueError("I17_DECISION_TIME_CAPTURE_BINDING_OR_CLOCK_CHANGED")
-            _parse_last(stored["capture"], query)
-            return stored["capture"]
-        if journal.safe_path_v1(namespace / "captures.json").exists():
-            raise ValueError("I17_DECISION_TIME_CAPTURES_ALREADY_SEALED")
-        requested = _utc(clock().isoformat())
-        if not selected <= requested < end:
-            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
-        capture = _capture_last_response(query, fetch=fetch, clock=clock, requested=requested)
-        if not requested <= _utc(capture["received_at_utc"]) < end:
-            raise ValueError("I17_DECISION_TIME_CAPTURE_CLOCK_INVALID")
-        candles = _parse_last(capture, query)
-        for profile in plan["profiles"].values():
-            _strategy_binding(plan, profile, candles)
-        publish_v1(target, {**binding, "capture": capture})
-        return capture
 
 
 def seal_decision_time_last_v1(journal, *, plan, evidence_root):

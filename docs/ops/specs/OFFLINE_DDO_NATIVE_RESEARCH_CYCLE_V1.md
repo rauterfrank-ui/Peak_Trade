@@ -287,8 +287,22 @@ and the subsequent Double Play outcome. Each paired receipt in the bridge
 cycle ledger references the original host decision, the original Mark clocks
 and the Last close and receipt clocks.
 
+The [productive observation CLI](../../../scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py)
+accepts the same sealed `--candidate-plan` at token issuance, preregistration
+and run. Set `--earliest-start-unix` explicitly and keep the planned session
+inside the frozen plan window. The run also takes a separate
+`--candidate-journal` directory. The existing session-bound operator GO and
+authorization consumption gate apply before the transport opens.
+
+The candidate session admits only the additional public OKX EEA GET for
+ETH-X-PERP Last candles with a UTC-aligned one-hour cutoff. The first poll
+loads the previous completed hour before requesting the Mark price. Later
+polls capture the newly closed hour and retain the earlier available prefix
+while a new candle is unavailable. A failed candle-data validation pauses
+capture retries for 15 seconds. The transport's authorization, network and
+rate-limit boundaries apply to this request.
+
 Missing initial Last evidence marks the candidate comparison failed for that
-session. The ordinary Shadow observation continues through its owners. An
-independent venue observation still requires a session-bound operator GO and
-an approved public Last capture source. The comparison carries authority
-`NONE`. Economic qualification also requires a comparable measurement.
+session. The ordinary Shadow observation continues through its owners when
+the Last data is missing. The comparison carries authority `NONE`.
+Economic qualification also requires a comparable measurement.

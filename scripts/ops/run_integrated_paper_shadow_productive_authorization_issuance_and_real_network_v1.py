@@ -34,6 +34,10 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     I17_EXTENDED_SOAK_DURATION_SECONDS,
     REAL_NETWORK_ENV,
 )
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, read_v1  # noqa: E402
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.candidate_observation_v1 import (  # noqa: E402
+    _decision_time_window,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_authorization_verifier_v1 import (  # noqa: E402,E501
     verify_productive_authorization_bundle_paths_v1,
 )
@@ -127,6 +131,7 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     pr.add_argument("--json", action="store_true")
+    pr.add_argument("--candidate-plan", type=Path)
 
     tok = sub.add_parser("issue-confirm-token", help="Mint confirm token bound to session digest.")
     tok.add_argument("--token-out", type=Path, required=True)
@@ -139,6 +144,7 @@ def build_parser() -> argparse.ArgumentParser:
     tok.add_argument("--operator-identity", required=True)
     tok.add_argument("--approval-identity", required=True)
     tok.add_argument("--json", action="store_true")
+    tok.add_argument("--candidate-plan", type=Path)
 
     auth = sub.add_parser(
         "authorize", help="Issue productive Operator-GO + authorization artifact."
@@ -176,12 +182,31 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"Use real HTTPS transport (also requires {REAL_NETWORK_ENV}=1).",
     )
     run.add_argument("--json", action="store_true")
+    run.add_argument("--candidate-plan", type=Path)
+    run.add_argument("--candidate-journal", type=Path)
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     now = time.time()
+    candidate_digest = None
+    candidate_path = getattr(args, "candidate_plan", None)
+    if candidate_path is not None and args.command in {"issue-confirm-token", "preregister"}:
+        try:
+            plan = read_v1(candidate_path)
+            _, start, end = _decision_time_window(plan)
+            earliest = args.earliest_start_unix
+            if (
+                earliest is None
+                or not start.timestamp() <= earliest < end.timestamp()
+                or earliest + args.planned_duration_seconds > end.timestamp()
+            ):
+                raise ValueError("I17_CANDIDATE_SESSION_OUTSIDE_PLAN_WINDOW")
+            candidate_digest = digest_v1(plan)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"ok": False, "blockers": [str(exc)]}))
+            return 2
 
     if args.command == "preflight":
         payload = {
@@ -215,6 +240,7 @@ def main(argv: list[str] | None = None) -> int:
             operator_identity=args.operator_identity,
             approval_identity=args.approval_identity,
             confirm_token=placeholder,
+            candidate_plan_digest=candidate_digest,
         )
         scope_digest = parse_preregistration_contract_v1(provisional).scope_digest()
         issued = issue_productive_confirm_token_v1(
@@ -259,6 +285,7 @@ def main(argv: list[str] | None = None) -> int:
                 operator_identity=args.operator_identity,
                 approval_identity=args.approval_identity,
                 confirm_token=placeholder,
+                candidate_plan_digest=candidate_digest,
             )
             scope_digest = parse_preregistration_contract_v1(provisional).scope_digest()
             minted = issue_productive_confirm_token_v1(
@@ -292,6 +319,7 @@ def main(argv: list[str] | None = None) -> int:
             session_id=args.session_id,
             now_unix=now,
             allow_noncanonical_duration=bool(args.allow_noncanonical_duration),
+            candidate_plan_digest=candidate_digest,
         )
         print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
         return 0 if result.ok else 1
@@ -336,6 +364,8 @@ def main(argv: list[str] | None = None) -> int:
             use_real_network=bool(args.real_network),
             repo_root=_REPO_ROOT,
             environ=os.environ,
+            candidate_plan_path=args.candidate_plan,
+            candidate_journal_path=args.candidate_journal,
         )
         print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
         return 0 if result.ok else 1

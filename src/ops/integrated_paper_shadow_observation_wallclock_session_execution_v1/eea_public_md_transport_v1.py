@@ -10,7 +10,6 @@ from typing import Any, Callable, Mapping, Optional, Protocol
 from urllib.parse import urlencode
 
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
-    ALLOWED_PATHS,
     CANONICAL_HOST,
     DEFAULT_PER_REQUEST_MAX_RETRIES,
     DEFAULT_SESSION_HTTP_429_BUDGET,
@@ -18,6 +17,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
     NetworkBoundaryError,
+    allowed_paths_v1,
     validate_request_boundary_v1,
 )
 
@@ -158,6 +158,7 @@ class EeaPublicMdTransportV1:
     monotonic_clock: Callable[[], float] = time.monotonic
     wall_clock: Callable[[], float] = time.time
     jitter_unit_fn: Optional[Callable[[int], float]] = None
+    candidate_last: bool = False
 
     def open(self) -> None:
         if self.opened:
@@ -171,7 +172,7 @@ class EeaPublicMdTransportV1:
         self.events.append({"event": "transport_closed"})
 
     def _build_url(self, path: str, params: Mapping[str, str]) -> str:
-        if path not in ALLOWED_PATHS:
+        if path not in allowed_paths_v1(candidate_last=self.candidate_last):
             raise NetworkBoundaryError(f"PATH_NOT_ALLOWED:{path}")
         query = {str(k): str(v) for k, v in params.items()}
         url = f"https://{CANONICAL_HOST}{path}"
@@ -222,7 +223,11 @@ class EeaPublicMdTransportV1:
         url = self._build_url(path, params)
         headers = {"Accept": "application/json", "User-Agent": USER_AGENT}
         boundary = validate_request_boundary_v1(
-            url=url, method="GET", headers=headers, environ=self.environ
+            url=url,
+            method="GET",
+            headers=headers,
+            environ=self.environ,
+            candidate_last=self.candidate_last,
         )
         if not boundary.ok:
             raise NetworkBoundaryError(",".join(boundary.blockers))
