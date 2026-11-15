@@ -367,8 +367,28 @@ model, code revisions and decision window to the reconstructed states. Add
 `--verify` to rebuild the result and compare it with the saved receipt.
 Archives without the per-profile records fail before a receipt is written.
 
-The receipt carries the model's accounting units and modelled funding.
-It leaves the economic qualification blocked and the Reality Gap incomplete.
-SL07 still requires an expected and observed measurement with matching
-definitions, plus evidence of the applied funding at the original event
-times and the versioned threshold policy.
+The receipt carries the analytical portfolio's accounting units and modelled
+funding. Its prices and position state support archival reconstruction.
+The analytical portfolio multiplies quantity by price without the venue
+contract size and debits purchase notional from cash. Its equity is an
+analytical trace.
+
+Add `--paper-terms-evidence` with the path of the sealed Paper archive to rebook
+the same archived actions with the existing futures fill builder and accounting owner.
+The original Paper profile supplies the explicit contract and margin terms.
+Its instrument, contract size, lot, tick, settlement currency and leverage
+must agree with the instrument metadata bound to the GVEF plan. Candidate
+cycles retain the original typed order intent when it exists. Opening fills
+require that intent's native contract quantity. A position-derived exit can
+reduce the verified position according to the futures owner's size and side
+checks. Missing opening quantity provenance prevents a futures receipt.
+The separate `host-futures-accounting.json` records the source manifest and
+contract digests and the resulting futures portfolios in settlement currency.
+The archived decision sequence itself stays fixed during this rebooking.
+
+The futures receipt leaves the economic qualification blocked and the Reality
+Gap incomplete. SL07 still requires a comparable expected measurement,
+funding tied to the held contracts and the original settlement-time Mark,
+and a versioned threshold policy. OKX publishes the
+[linear contract funding basis](https://www.okx.com/en-eu/help/funding-fee-mechanism-eea)
+and the [adjustable settlement schedule](https://www.okx.com/en-eu/help/perps-funding-fee-mechanism).

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
+from src.governance.canonical_order_intent_v1 import canonical_order_intent_to_semantic_dict
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_CONFIRMATION_EPOCHS,
@@ -1421,6 +1422,12 @@ def run_hardened_bridge_cycle_v2(
         seam = state.governed_authorized_productive_parameter_seam_record or {}
         cycle["offline_candidate"]["governed_seam_digest"] = seam.get("seam_digest")
         if replay.intermediate is not None:
+            original_intent = replay.intermediate.canonical_order_intent
+            if original_intent is not None:
+                cycle["offline_candidate_canonical_order_intent"] = {
+                    **canonical_order_intent_to_semantic_dict(original_intent),
+                    "semantic_digest": original_intent.semantic_digest,
+                }
             progress = replay.intermediate.directional_confirmation_progress_after
             if progress is not None:
                 state.offline_confirmation_progress = progress

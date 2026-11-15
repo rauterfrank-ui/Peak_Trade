@@ -1164,7 +1164,7 @@
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
-      "sha256": "58c9071c8d8a4cbc420b77a7e44d01b0ae1806eb84a967b83a01729eff0347bd"
+      "sha256": "cb9d6a2eaddc54cf6f6e985976980a6dfb0baa42169d630b01351158685aa5dc"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
@@ -1604,7 +1604,7 @@
     {
       "path": "scripts/ops/run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "d6185f182449e064f5f4db3feea3a2ee508714e082db366def82d56e85c890b8"
+      "sha256": "6d53ec9dd303a5d2c23de87ba1ef199e5b28cac6c8ee97f0e177406d02a456c3"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -2674,7 +2674,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
       "before_sha256": null,
-      "sha256": "dded495166753c542b26d93e748ef855d4f50067718d666c3602e516a31ebef7"
+      "sha256": "eed15f0e4da7ea1fe5e70787552d2f246a3482ced9f28fc1990e68e90ff50c98"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/constants_v1.py",
@@ -3149,7 +3149,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "679f5b8149ce476e76d0b4d2e7e5f79bc545f919b8dfe52c1378587316975aff"
+      "sha256": "720c9317b8eb2e423443b3c77b56fff3319bc51fb4eb142180e6a6eb52f8f128"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py",
@@ -4484,7 +4484,7 @@
     {
       "path": "tests/ops/test_run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "f296d90ecc0e8d463038ffadd2975c30e04078f4bf6104cc0529e9d0d510c502"
+      "sha256": "a96f3cbb41971a3e8b25f698e4e0161314768d7dd7c03b01a78133bccc31fdd5"
     },
     {
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",

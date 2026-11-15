@@ -1,6 +1,7 @@
 """The hourly MA input and the I17 decision epoch have separate clocks."""
 
 from datetime import datetime, timezone
+from decimal import Decimal
 from hashlib import sha256
 import json
 from dataclasses import replace
@@ -10,6 +11,7 @@ import pandas as pd
 import pytest
 
 from scripts.ops import run_i17_candidate_comparison_v1 as comparison
+from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 from scripts.ops.run_i17_candidate_comparison_v1 import _compare, _strategy_binding
 from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
     normalize_strategy_signal_to_suitability_agreement_material_v1,
@@ -49,6 +51,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 )
 from src.strategies.registry import build_registry_snapshot
 from src.strategies.suitability_registry_adapter_v1 import build_suitability_registry_from_snapshot
+from tests.governance.test_canonical_order_intent_v1 import _instrument, _intent
 from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
     FakeClock,
     NOW,
@@ -405,6 +408,19 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         candidate_known_at_utc=utc(boundary - 4000).isoformat(),
         parent_data_known_at_utc=utc(boundary - 4100).isoformat(),
         learning_digest="a" * 64,
+        instrument_binding={
+            "instrument_metadata": {
+                "instId": CANONICAL_INSTRUMENT_ID,
+                "ctType": "linear",
+                "settleCcy": "USD",
+                "ctVal": "0.001",
+                "ctMult": "1",
+                "lotSz": "1",
+                "minSz": "1",
+                "tickSz": "0.01",
+                "lever": "50",
+            }
+        },
         registered_at_utc=utc(boundary - 3900).isoformat(),
         start_utc=utc(boundary - 3600).isoformat(),
         end_utc=utc(boundary + 3600).isoformat(),
@@ -460,8 +476,8 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
                     "apply_hardening_v2_downstream_new_exposure_guard_v2",
                     lambda *args, **options: {
                         "intended_side": "BUY",
-                        "intended_quantity": "0.1",
-                        "intent_action": "TEST_SIMULATED_BUY",
+                        "intended_quantity": "1",
+                        "intent_action": "ENTER_LONG",
                         "safety_blocked": False,
                         "reason_codes": [],
                     },
@@ -582,13 +598,13 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
                 assert recorded["portfolio_after"]["fill_count"] == 1
                 assert (
                     recorded["portfolio_after"]["positions"][CANONICAL_INSTRUMENT_ID]["quantity"]
-                    == "0.1"
+                    == "1"
                 )
                 if arm["material"]["trading_epoch"] == 1:
                     assert fill["decision_id"] == action["decision_id"]
                     assert fill["intent_id"] == action["intent_id"]
                     assert fill["side"] == "BUY"
-                    assert fill["quantity"] == "0.1"
+                    assert fill["quantity"] == "1"
                 else:
                     assert fill is None
             else:
@@ -663,8 +679,77 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
             == 0
         )
         assert json.loads(capsys.readouterr().out) == result
+        native_terms_root = tmp_path / "paper-terms"
+        native_terms_root.mkdir()
+        (native_terms_root / "paper-profile.json").write_text(
+            json.dumps(
+                {
+                    "schema": comparison.PAPER_PROFILE,
+                    "execution_environment": comparison.SIMULATION,
+                    "venue_order_transport": False,
+                    "instrument_binding": {
+                        "instrument_id": CANONICAL_INSTRUMENT_ID,
+                        "venue_native_id": CANONICAL_INSTRUMENT_ID,
+                    },
+                    "contract": {
+                        "symbol": CANONICAL_INSTRUMENT_ID,
+                        "contract_type": "linear",
+                        "contract_size": "0.001",
+                        "tick_size": "0.01",
+                        "min_qty": "1",
+                        "quote_currency": "USD",
+                        "initial_margin_rate": "0.02",
+                        "maintenance_margin_rate": "0.0065",
+                        "max_leverage": "50",
+                    },
+                }
+            )
+        )
+        write_manifest_sha256(native_terms_root)
+        native_args = dict(economics_args, paper_terms_evidence=native_terms_root)
+        with pytest.raises(ValueError, match="I17_FUTURES_CONTRACT_QUANTITY_PROOF_REQUIRED"):
+            comparison.measure_host_economics_v1(economics_workspace, **native_args)
+        native_output = economics_workspace.root / "host-futures-accounting.json"
+        assert not native_output.exists()
+
         pair = cycles[0]["i17_candidate_comparison"]
-        fill = pair["arms"]["candidate"]["simulated_economics"]["fill"]
+        candidate_record = pair["arms"]["candidate"]["simulated_economics"]
+        canonical = _intent(
+            sizing_overrides={
+                "instrument_id": CANONICAL_INSTRUMENT_ID,
+                "configured_quantity_cap": Decimal("1"),
+                "instrument": _instrument(
+                    instrument_id=CANONICAL_INSTRUMENT_ID,
+                    contract_multiplier=Decimal("0.001"),
+                    lot_size=Decimal("1"),
+                    minimum_quantity=Decimal("1"),
+                    minimum_notional=Decimal("0.1"),
+                ),
+            }
+        )
+        assert canonical.quantity == 1
+        candidate_record["canonical_order_intent"] = {
+            **hardening_cycle_bridge_v2.canonical_order_intent_to_semantic_dict(canonical),
+            "semantic_digest": canonical.semantic_digest,
+        }
+        _replace_cycle_rows_and_reseal(root, cycles)
+        native = comparison.measure_host_economics_v1(economics_workspace, **native_args)
+        assert native["futures_funding_semantics"] == "EXCHANGE_EVENTS_NOT_APPLIED"
+        assert native["reality_gap_status"] == "INCOMPLETE"
+        assert native["futures_portfolios"]["reference"]["fill_count"] == 0
+        next_candidate = native["futures_portfolios"]["candidate"]
+        assert next_candidate["positions"][0]["quantity"] == "1"
+        assert Decimal(next_candidate["equity"]) > Decimal("99999")
+        legacy = native["profiles"]["candidate"]["portfolio_snapshot"]["state"]
+        assert Decimal(legacy["equity"]) < Decimal("97000")
+        ratio = Decimal(next_candidate["cumulative_fees"]) / Decimal(legacy["cumulative_fees"])
+        assert abs(ratio - Decimal("0.001")) < Decimal("0.0000001")
+        assert (
+            comparison.measure_host_economics_v1(economics_workspace, **native_args, verify=True)
+            == native
+        )
+
+        fill = candidate_record["fill"]
         fill["fee"] = "0"
         _replace_cycle_rows_and_reseal(root, cycles)
         assert verify_wallclock_evidence_bundle_v1(evidence_root=root).verified

@@ -18,6 +18,7 @@ REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256  # noqa: E402
 from scripts.ops.run_research_candidate_shadow_v1 import (  # noqa: E402
     _absolute,
     _clock,
@@ -32,6 +33,14 @@ from src.experiments.canonical_research_prepared_execution_v1 import (  # noqa: 
     digest_v1,
     publish_v1,
     read_v1,
+)
+from src.governance.canonical_order_intent_v1 import (  # noqa: E402
+    canonical_order_intent_from_dict,
+    validate_canonical_order_intent_v1,
+)
+from src.ops.bounded_peaktrade_system_composition_v1.paper_episode_outcome_v1 import (  # noqa: E402
+    PAPER_PROFILE,
+    SIMULATION,
 )
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (  # noqa: E402
     ObservationMarketTickV1,
@@ -68,6 +77,16 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
     parse_preregistration_contract_v1,
 )
 
+from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (  # noqa: E402
+    AccountingEngineError,
+    ProductiveFuturesAccountingSessionV1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.fill_model_v1 import (  # noqa: E402
+    build_simulated_fill_v1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.models_v1 import (  # noqa: E402
+    ContractMetadataV1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (  # noqa: E402
     _fill_to_dict,
 )
@@ -418,7 +437,108 @@ def _replay_simulated_arm(portfolio, *, arm, packet, session, index, instrument,
         raise ValueError("I17_HOST_SIMULATED_PORTFOLIO_MISMATCH")
 
 
-def measure_host_economics_v1(workspace, *, plan, evidence_root, code_sha, verify=False):
+def _paper_contract(root, plan):
+    manifest = _pinned_paper_manifest(root)
+    profile = json.loads(_pinned_i17_file(root, manifest, "paper-profile.json"))
+    contract_fields = profile["contract"]
+    decimal_fields = {
+        "contract_size",
+        "tick_size",
+        "min_qty",
+        "initial_margin_rate",
+        "maintenance_margin_rate",
+        "max_leverage",
+    }
+    if set(contract_fields) != set(ContractMetadataV1.__dataclass_fields__):
+        raise ValueError("I17_PAPER_CONTRACT_FIELDS_MISMATCH")
+    contract = ContractMetadataV1(
+        **{
+            key: Decimal(value) if key in decimal_fields else value
+            for key, value in contract_fields.items()
+        }
+    )
+    native = plan["instrument_binding"]["instrument_metadata"]
+    instrument = plan["instrument_id"]
+    binding = profile["instrument_binding"]
+    if (
+        profile["schema"] != PAPER_PROFILE
+        or profile["execution_environment"] != SIMULATION
+        or profile["venue_order_transport"] is not False
+        or binding["instrument_id"] != instrument
+        or binding["venue_native_id"] != instrument
+        or contract.symbol != instrument
+        or native["instId"] != instrument
+        or contract.contract_type != native["ctType"]
+        or contract.quote_currency != native["settleCcy"]
+        or contract.contract_size != Decimal(native["ctVal"]) * Decimal(native["ctMult"])
+        or contract.tick_size != Decimal(native["tickSz"])
+        or contract.min_qty != Decimal(native["lotSz"])
+        or contract.min_qty < Decimal(native["minSz"])
+        or contract.max_leverage != Decimal(native["lever"])
+    ):
+        raise ValueError("I17_PAPER_CONTRACT_OR_SCOPE_MISMATCH")
+    return contract, sha256(manifest).hexdigest()
+
+
+def _pinned_paper_manifest(root):
+    manifest = root / "MANIFEST.sha256"
+    original = manifest.read_bytes()
+    valid, reason = verify_manifest_sha256(root, required_rel_paths=("paper-profile.json",))
+    if not valid or manifest.read_bytes() != original:
+        raise ValueError(f"I17_PAPER_TERMS_MANIFEST_INVALID:{reason}")
+    return original
+
+
+def _apply_futures_cycle(account, record, observed_at, mark):
+    """Book one replayed action in the canonical native-contract accounting."""
+    saved_fill = record["fill"]
+    if saved_fill is None:
+        account.mark_to_market(mark)
+        return
+    side, quantity = saved_fill["side"], Decimal(saved_fill["quantity"])
+    action = record["intended_action"]
+    payload = record.get("canonical_order_intent")
+    if payload is None:
+        # The original analytical exit mapper takes its quantity from the open
+        # position. The futures owner checks that it only reduces exposure.
+        if action.get("quantity_source") != "exit_or_reduce" or account.position is None:
+            raise ValueError("I17_FUTURES_CONTRACT_QUANTITY_PROOF_REQUIRED")
+        reduce_only = True
+    else:
+        intent = canonical_order_intent_from_dict(payload)
+        valid = validate_canonical_order_intent_v1(intent)
+        derived_side = "BUY" if (intent.side == "LONG") != intent.reduce_only else "SELL"
+        if (
+            payload.get("semantic_digest") != intent.semantic_digest
+            or valid.validation_status != "VALID"
+            or intent.instrument_id != account.contract.symbol
+            or intent.quantity_unit != "CONTRACTS"
+            or side != derived_side
+            or action["intent_action"] != intent.intent_action
+            or (quantity > intent.quantity if intent.reduce_only else quantity != intent.quantity)
+        ):
+            raise ValueError("I17_FUTURES_CONTRACT_QUANTITY_MISMATCH")
+        reduce_only = intent.reduce_only
+
+    params = record["portfolio_model"]["params"]
+    fill = build_simulated_fill_v1(
+        fill_id=saved_fill["fill_id"],
+        instrument_id=account.contract.symbol,
+        side=side,
+        quantity=quantity,
+        mark_price=mark,
+        contract=account.contract,
+        fee_rate_bps=params["fee_rate_bps"],
+        slippage_bps=params["slippage_bps"],
+        reduce_only=reduce_only,
+        event_time_unix=observed_at.timestamp(),
+    )
+    account.apply_fill(fill)
+
+
+def measure_host_economics_v1(
+    workspace, *, plan, evidence_root, code_sha, verify=False, paper_terms_evidence=None
+):
     """Reconcile archived I17 simulations under their original model."""
     _assert_capture_journal_separate(workspace, evidence_root, REPO)
     instrument = plan["instrument_id"]
@@ -442,6 +562,16 @@ def measure_host_economics_v1(workspace, *, plan, evidence_root, code_sha, verif
         role: portfolio.model.snapshot()["state"]["equity"]
         for role, portfolio in portfolios.items()
     }
+    futures_accounts = {}
+    if paper_terms_evidence is not None:
+        _assert_capture_journal_separate(workspace, paper_terms_evidence)
+        contract, paper_manifest = _paper_contract(paper_terms_evidence, plan)
+        futures_accounts = {
+            role: ProductiveFuturesAccountingSessionV1(
+                contract=contract, initial_equity=Decimal(initial_equity[role])
+            )
+            for role in profiles
+        }
     window_start = window_end = None
     cycle_count = 0
     for cycle_count, (decided, tick, parent) in enumerate(rows, start=1):
@@ -480,6 +610,13 @@ def measure_host_economics_v1(workspace, *, plan, evidence_root, code_sha, verif
                 instrument=instrument,
                 mark=mark,
             )
+            if role in futures_accounts:
+                _apply_futures_cycle(
+                    futures_accounts[role],
+                    pair["arms"][role]["simulated_economics"],
+                    observed_at,
+                    Decimal(str(mark)),
+                )
         if window_start is None:
             window_start = observed_at
         window_end = observed_at
@@ -516,7 +653,22 @@ def measure_host_economics_v1(workspace, *, plan, evidence_root, code_sha, verif
     }
     if (evidence_root / "evidence_manifest.sha256").read_bytes() != manifest:
         raise ValueError("I17_HOST_ORIGINAL_MANIFEST_CHANGED")
-    output = workspace.safe_path_v1("host-economics.json")
+    output_name = "host-economics.json"
+    if futures_accounts:
+        output_name = "host-futures-accounting.json"
+        result.update(
+            schema_version="i17_host_futures_accounting_readback.v1",
+            paper_contract_manifest_sha256=paper_manifest,
+            futures_contract=contract.to_dict(),
+            futures_contract_digest=contract.digest(),
+            futures_accounting_owner=next(iter(futures_accounts.values())).kernel_owner,
+            futures_portfolios={
+                role: account.portfolio_state().to_dict()
+                for role, account in futures_accounts.items()
+            },
+            futures_funding_semantics="EXCHANGE_EVENTS_NOT_APPLIED",
+        )
+    output = workspace.safe_path_v1(output_name)
     with workspace.lease_v1():
         if verify:
             if read_v1(output) != result:
@@ -536,6 +688,7 @@ def main(argv=None):
     inputs = parser.add_mutually_exclusive_group()
     inputs.add_argument("--decision-time-last-captures", type=Path)
     inputs.add_argument("--host-economics", action="store_true")
+    parser.add_argument("--paper-terms-evidence", type=Path)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--capture-public-last", action="store_true")
     mode.add_argument("--verify", action="store_true")
@@ -549,6 +702,10 @@ def main(argv=None):
             _absolute(args.base_config),
             _absolute(args.i17_evidence),
         ]
+        if args.paper_terms_evidence is not None:
+            if not args.host_economics:
+                raise ValueError("I17_PAPER_TERMS_REQUIRE_HOST_ECONOMICS_MODE")
+            source_paths.append(_absolute(args.paper_terms_evidence))
         if args.decision_time_last_captures is not None:
             if args.capture_public_last:
                 raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
@@ -575,6 +732,7 @@ def main(argv=None):
                 evidence_root=args.i17_evidence,
                 code_sha=_head(),
                 verify=args.verify,
+                paper_terms_evidence=args.paper_terms_evidence,
             )
             print(json.dumps(result, sort_keys=True))
             return 0
@@ -597,7 +755,15 @@ def main(argv=None):
             )
         )
         return 0
-    except (OSError, ValueError, KeyError, TypeError, IndexError, InvalidOperation) as exc:
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        IndexError,
+        InvalidOperation,
+        AccountingEngineError,
+    ) as exc:
         parser.exit(2, f"I17 candidate comparison stopped: {exc}\n")
 
 
