@@ -6,6 +6,8 @@ import copy
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pytest
+
 from src.governance.f1_m9_productive_apply_ledger_v1 import (
     F1M9ProductiveApplyLedgerPathsV1,
     initialize_empty_revocation_ledger_v1,
@@ -19,6 +21,7 @@ from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import
     FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULTS,
     RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS,
     REAL_P4_TO_F1_M9_JOIN_STATUS,
+    STATUS_DENIED,
     STATUS_WIRED,
     consumer_wiring_authorized_v1,
     evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
@@ -168,6 +171,39 @@ def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
     assert path.alpha_scope_entry_authority_allowed is True
     assert path.productive_runtime_admission is True
     assert path.productive_activation_authorized is True
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "reason"),
+    [
+        (
+            "owner_apply_authorization_record_digest",
+            "a" * 64,
+            "F1_M9_APPLY_OWNER_DIGEST_MISMATCH",
+        ),
+        ("productive_apply_authorization_digest", "a" * 64, "F1_M9_APPLY_OWNER_DIGEST_MISMATCH"),
+        ("threshold_value_authorization_digest", "a" * 64, "F1_M9_THRESHOLD_DIGEST_MISMATCH"),
+        ("threshold_numeric_max_age_seconds", 601.0, "RATIFIED_THRESHOLD_VALUE_MISMATCH"),
+    ],
+)
+def test_resealed_seam_cannot_replace_apply_or_threshold_authority(
+    tmp_path: Path, field: str, value: str | float, reason: str
+) -> None:
+    seam = _re_digest_seam({**_canonical_seam(tmp_path), field: value})
+    ctx, eligibility = _bound_context(_valid_estimate())
+    path = evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
+        market_context=ctx,
+        eligibility=eligibility,
+        governed_seam_record=seam,
+        require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
+        repo_root=REPO_ROOT,
+    )
+    assert path.wiring_status == STATUS_DENIED
+    assert path.reason_codes == (reason,)
+    assert path.presence_gate is None
+    assert path.enforcement_applied is False
+    assert path.alpha_scope_entry_authority_allowed is False
 
 
 def test_stale_rejection_and_boundary_600_inclusive(tmp_path: Path) -> None:

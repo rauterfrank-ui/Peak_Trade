@@ -19,6 +19,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
     POST_OWNER_GO,
+    CurrentProductiveActualVenuePostOwnerGoConsumeError,
     load_durable_post_owner_go_consume_v1,
 )
 
@@ -95,11 +96,15 @@ def evaluate_real_venue_post_admission_v1(
         if store_root is None:
             reasons.append("DURABLE_POST_OWNER_GO_STORE_REQUIRED")
         else:
-            durable_go = load_durable_post_owner_go_consume_v1(store_root=store_root)
-            if durable_go.get("consumed") is not True:
-                reasons.append("POST_OWNER_GO_NOT_DURABLE_CONSUMED")
-            elif str(durable_go.get("owner_go_token") or "") != POST_OWNER_GO:
-                reasons.append("POST_OWNER_GO_DURABLE_TOKEN_MISMATCH")
+            try:
+                durable_go = load_durable_post_owner_go_consume_v1(store_root=store_root)
+            except CurrentProductiveActualVenuePostOwnerGoConsumeError:
+                reasons.append("DURABLE_POST_GO_RECORD_INVALID")
+            else:
+                if durable_go["consumed"] is not True:
+                    reasons.append("POST_OWNER_GO_NOT_DURABLE_CONSUMED")
+                elif durable_go["owner_go_token"] != POST_OWNER_GO:
+                    reasons.append("POST_OWNER_GO_DURABLE_TOKEN_MISMATCH")
 
     granted = not reasons
     if granted:

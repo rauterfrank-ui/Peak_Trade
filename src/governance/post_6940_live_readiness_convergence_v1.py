@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Final, Mapping
 
@@ -98,6 +98,7 @@ def prove_standing_external_effect_fail_closed_v1() -> dict[str, bool]:
 def prove_pre_external_boundary_v1() -> dict[str, Any]:
     from src.ops.pre_external_to_external_effect_boundary_bounded_wp_v1.proof_v1 import (
         prove_pre_external_to_external_effect_boundary_v1,
+        read_simulated_post_isolation_v1,
     )
 
     proof = prove_pre_external_to_external_effect_boundary_v1()
@@ -108,6 +109,7 @@ def prove_pre_external_boundary_v1() -> dict[str, Any]:
         "unclassified_sink_callers": list(proof.unclassified_sink_callers),
         "boundary_chain_failures": list(proof.boundary_chain_failures),
         "whole_system_connection_ok": proof.whole_system_connection_ok,
+        "simulated_post_isolation": asdict(read_simulated_post_isolation_v1()),
     }
 
 

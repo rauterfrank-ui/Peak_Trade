@@ -60,13 +60,46 @@ def test_overlapping_consumers_cannot_replace_the_winner(tmp_path, monkeypatch):
 )
 def test_existing_ledger_entry_is_never_replaced(tmp_path, consumed, reason):
     path = consume.durable_post_owner_go_path_v1(tmp_path)
-    existing = json.dumps({"consumed": consumed, "owner_go_token": consume.POST_OWNER_GO})
+    record = _consume(tmp_path, "a" * 40)
+    existing = json.dumps({**record, "consumed": consumed})
     path.write_text(existing, encoding="utf-8")
 
     with pytest.raises(consume.CurrentProductiveActualVenuePostOwnerGoConsumeError, match=reason):
         _consume(tmp_path, "a" * 40)
 
     assert path.read_text(encoding="utf-8") == existing
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("consumed", "false"),
+        ("consumed", 1),
+        ("retry_authorized", True),
+        ("second_post_authorized", 0),
+        ("baseline_origin_main_sha", "g" * 40),
+        ("consumed_at_utc", "2026-02-30T12:00:00.000000Z"),
+    ],
+)
+def test_consume_readback_rejects_invalid_fields(tmp_path, field, value):
+    record = _consume(tmp_path, "a" * 40)
+    path = consume.durable_post_owner_go_path_v1(tmp_path)
+    path.write_text(json.dumps({**record, field: value}), encoding="utf-8")
+
+    with pytest.raises(
+        consume.CurrentProductiveActualVenuePostOwnerGoConsumeError,
+        match="^DURABLE_POST_GO_MALFORMED$",
+    ):
+        consume.load_durable_post_owner_go_consume_v1(store_root=tmp_path)
+
+
+def test_consume_writer_rejects_invalid_baseline_before_writing(tmp_path):
+    with pytest.raises(
+        consume.CurrentProductiveActualVenuePostOwnerGoConsumeError,
+        match="^BASELINE_SHA_INVALID$",
+    ):
+        _consume(tmp_path, "g" * 40)
+    assert not list(tmp_path.iterdir())
 
 
 def test_directory_sync_failure_fences_retry(tmp_path, monkeypatch):

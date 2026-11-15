@@ -58,10 +58,13 @@ def test_convergence_report_identifies_external_effect_blocker() -> None:
     assert report["EXACT_NEXT_OWNER_DECISION_REQUIRED"] == ""
     proof = report["PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_PROOF"]
     assert proof["boundary_proof_ok"] is False
-    assert any(
-        path.endswith("/current_futures_simulated_dispatch_v1.py")
-        for path in proof["unclassified_sink_callers"]
-    )
+    simulation = proof["simulated_post_isolation"]
+    assert simulation["path"].endswith("/current_futures_simulated_dispatch_v1.py")
+    assert simulation["source_binding_verified"] is True
+    assert not simulation["mismatched_paths"]
+    assert simulation["scope"] == "FUTURES_SIMULATED_POST_TRANSPORT_ONLY"
+    assert simulation["policy_authority_effect"] == "NONE"
+    assert proof["unclassified_sink_callers"] == [simulation["path"]]
     assert (
         report["HISTORICAL_BLOCKERS_READJUDICATED"]["pre_external_static_proof"]
         == "BLOCKED_CURRENT"

@@ -152,7 +152,7 @@ def _deny(
 def _forbidden_numeric_default(value: Any) -> bool:
     try:
         numeric = int(float(value))
-    except (TypeError, ValueError):
+    except (OverflowError, TypeError, ValueError):
         return False
     return numeric in FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULTS
 
@@ -182,6 +182,8 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
     activation_authorized = False
     if require_governed_seam:
         from src.governance.current_productive_activation_policy_v1 import (
+            BOUND_APPLY_OWNER_RECORD_DIGEST,
+            RATIFIED_F1_M9_THRESHOLD_DIGEST,
             evaluate_productive_runtime_admission_v1,
         )
 
@@ -198,14 +200,37 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
 
     transport = resolve_governed_runtime_seam_for_presence_gate_v1(governed_seam_record)
     transport_ready = transport.transport_status == STATUS_TRANSPORT_READY
+    seam_for_gate = transport.seam_for_consumer
 
     if require_governed_seam:
         if governed_seam_record is None:
             return _deny(["GOVERNED_SEAM_RECORD_REQUIRED"])
-        if not transport_ready or transport.seam_for_consumer is None:
+        if not transport_ready or seam_for_gate is None:
             return _deny(list(transport.reason_codes) or ["RUNTIME_SEAM_TRANSPORT_DENIED"])
+        if seam_for_gate.get("runtime_applied") is not True:
+            return _deny(["CONFIGURATION_RUNTIME_APPLIED_REQUIRED"])
+        if (
+            seam_for_gate.get("owner_apply_authorization_record_digest")
+            != BOUND_APPLY_OWNER_RECORD_DIGEST
+            or seam_for_gate.get("productive_apply_authorization_digest")
+            != BOUND_APPLY_OWNER_RECORD_DIGEST
+        ):
+            return _deny(["F1_M9_APPLY_OWNER_DIGEST_MISMATCH"])
+        if (
+            seam_for_gate.get("threshold_value_authorization_digest")
+            != RATIFIED_F1_M9_THRESHOLD_DIGEST
+        ):
+            return _deny(["F1_M9_THRESHOLD_DIGEST_MISMATCH"])
+        numeric = seam_for_gate.get("numeric_max_age_seconds")
+        if _forbidden_numeric_default(numeric):
+            return _deny(["FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULT"])
+        if (
+            numeric != RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS
+            or seam_for_gate.get("threshold_numeric_max_age_seconds")
+            != RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS
+        ):
+            return _deny(["RATIFIED_THRESHOLD_VALUE_MISMATCH"])
 
-    seam_for_gate = transport.seam_for_consumer
     presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         market_context,
         binding_outcome=binding_outcome,
@@ -231,15 +256,8 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
         owner_threshold_digest = str(seam_record.get("threshold_value_authorization_digest") or "")
         runtime_applied = seam_record.get("runtime_applied") is True
         numeric = seam_record.get("numeric_max_age_seconds")
-        if _forbidden_numeric_default(numeric):
+        if not require_governed_seam and _forbidden_numeric_default(numeric):
             return _deny(["FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULT"], presence_gate=presence_gate)
-        if require_governed_seam:
-            if not runtime_applied:
-                return _deny(
-                    ["CONFIGURATION_RUNTIME_APPLIED_REQUIRED"], presence_gate=presence_gate
-                )
-            if float(numeric) != float(RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS):
-                return _deny(["RATIFIED_THRESHOLD_VALUE_MISMATCH"], presence_gate=presence_gate)
         try:
             threshold_seconds = float(numeric)
         except (TypeError, ValueError):

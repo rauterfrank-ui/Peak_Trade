@@ -29,6 +29,13 @@ Post-#6887 threshold ratification and post-#6888 governed productive runtime app
 (`configuration.runtime_applied=true`, digest **3f089595…** / **e556ea63…**). This WP wires the
 already-ratified/applied value into the **CURRENT** productive runtime path only.
 
+Before the presence gate, the governed consumer compares the Apply and threshold
+record digests carried by the seam with the digests bound by the productive
+activation policy. The transported value and the effective threshold both
+have to equal 600 seconds. Seam integrity is a separate check. Recomputing
+the seam digest after changing an Owner reference or the effective threshold
+leads to a structured denial before the presence gate.
+
 ## Chain
 
 ```text

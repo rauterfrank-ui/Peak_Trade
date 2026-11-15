@@ -433,6 +433,30 @@ def test_conflicting_admission_stops_before_permit_consume_or_transport(tmp_path
     assert not (tmp_path / "full_core_external_effect_permit_consume_v1.json").exists()
 
 
+def test_incomplete_owner_go_record_stops_before_permit_consume_or_transport(tmp_path):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        durable_post_owner_go_path_v1,
+    )
+
+    durable_post_owner_go_path_v1(tmp_path).write_text(
+        json.dumps({"consumed": "false", "owner_go_token": POST_OWNER_GO}), encoding="utf-8"
+    )
+    probe = OneShotJoinProbeV1()
+    opener = _TimeoutOpener()
+    backend = _FakeKeychainBackend()
+
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        match="^REAL_VENUE_POST_ADMISSION_DENIED:DURABLE_POST_GO_RECORD_INVALID$",
+    ):
+        _attempt(tmp_path, probe=probe, opener=opener, backend=backend, persist_post_go=False)
+
+    assert probe.events == ["PERMIT_MINTED"]
+    assert backend.calls == 0
+    assert opener.requests == []
+    assert not (tmp_path / "full_core_external_effect_permit_consume_v1.json").exists()
+
+
 def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     tmp_path: Path,
 ) -> None:

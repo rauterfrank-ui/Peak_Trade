@@ -461,16 +461,32 @@ class PortfolioBudgetHostV1:
             bindings, required_execution_attempts=required_execution_attempts
         )
 
+    def _open_budget_owner_v1(self, *, account, bindings):
+        owner = PortfolioCapitalReservationBudgetOwnerV1(
+            durable_root=self.root / "owner",
+            durable_account_identity=account,
+            durable_mode=self.durable_mode,
+            durable_lane_bindings=bindings,
+            entry_budget_policy=self.entry_budget_policy,
+            slot_capital_allocation=self._slot_capital_allocation,
+        )
+        restored_policy = owner.entry_budget_policy_v1()
+        if (
+            restored_policy is not None
+            and restored_policy.per_slot_reserved_notional_limit is not None
+            and self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        ):
+            owner.close()
+            raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
+        return owner
+
     def recover_owner_for_l10_close_booking_v1(self, bindings):
         """Open the original writer without reconciling or admitting new capital."""
         if self.closed or self.execution_environment != "LIVE" or self.durable_mode != "recover":
             raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_HOST_REQUIRED")
         if self.owner is None:
-            self.owner = PortfolioCapitalReservationBudgetOwnerV1(
-                durable_root=self.root / "owner",
-                durable_account_identity=self.expected_account_identity,
-                durable_mode="recover",
-                durable_lane_bindings=bindings,
+            self.owner = self._open_budget_owner_v1(
+                account=self.expected_account_identity, bindings=bindings
             )
             self.bindings = dict(bindings)
         elif self.bindings != bindings:
@@ -956,23 +972,7 @@ class PortfolioBudgetHostV1:
         if self.owner is None:
             # Normal start/restart restores only. Missing/deleted state is not
             # evidence of a fresh account. Creation is an explicit bootstrap.
-            store = self.root / "owner"
-            self.owner = PortfolioCapitalReservationBudgetOwnerV1(
-                durable_root=store,
-                durable_account_identity=account,
-                durable_mode=self.durable_mode,
-                durable_lane_bindings=bindings,
-                entry_budget_policy=self.entry_budget_policy,
-                slot_capital_allocation=self._slot_capital_allocation,
-            )
-            restored_policy = self.owner.entry_budget_policy_v1()
-            if (
-                restored_policy is not None
-                and restored_policy.per_slot_reserved_notional_limit is not None
-                and self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
-            ):
-                self.owner.close()
-                raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
+            self.owner = self._open_budget_owner_v1(account=account, bindings=bindings)
             self.account = account
             self.durable_mode = "recover"
             self.bindings = dict(bindings)
