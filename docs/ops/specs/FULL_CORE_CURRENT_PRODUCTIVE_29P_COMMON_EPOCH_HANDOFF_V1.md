@@ -17,10 +17,12 @@ gebunden. Aktuelle Korrektur, Grenzen und Nachweise:
 
 Für die simulierte L10-Gegenrichtung prüft 29P denselben Mark-Beleg zur
 Sizing-Entscheidungszeit und zur tatsächlichen Hostzeit. Die Mark-Antwort
-muss zum Entscheidungszeitpunkt bereits vorliegen. Die Quellenprüfung für
-den Wechsel bleibt an die Instrumentbindung und die Börsenzeit des
-ursprünglichen Switch gebunden. Die simulierte Planung prüft den
-Mark-Beleg am selben Consumer erneut.
+muss zum Entscheidungszeitpunkt bereits vorliegen. Der Budgetowner gleicht
+die übergebene Prüfzeit des Close mit der gespeicherten Buchung desselben
+Close-Envelope ab. 29P verlangt eine Entscheidung ab dieser Prüfzeit.
+Die Quellenprüfung für den Wechsel bleibt an die Instrumentbindung und die
+Börsenzeit des ursprünglichen Switch gebunden. Die simulierte Planung prüft
+den Mark-Beleg am selben Consumer erneut.
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EI.
 Consumes Owner-GO

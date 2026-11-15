@@ -1494,6 +1494,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         ):
             raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_ORIGINAL_OWNER_REQUIRED")
         slot = request.execution.source.quantity_handoff.lane_id
+        close_ref = request.execution.envelope.envelope_digest
         bound = lane_bindings_v1({slot: request.bound_instrument})[slot]
         output = request.capital_handoff.producer_output
         fingerprint = _sha256_text(
@@ -1517,7 +1518,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 not self._admitted
                 or found is None
                 or str(found[1].slot_id) != slot
-                or found[1].decision_id != "l10:" + request.execution.envelope.envelope_digest
+                or found[1].decision_id != "l10:" + close_ref
                 or (
                     found[1].state is not ReservationStateV1.RESERVED
                     and (
@@ -1529,7 +1530,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise PortfolioCapitalBudgetError("DOUBLE_PLAY_PLAN_REQUIRES_ORIGINAL_UNBOUND_HOLD")
             expected_active = found[1].amount
         if (
-            self._close_refreshes.get(request.execution.envelope.envelope_digest) != fingerprint
+            self._close_refreshes.get(close_ref) != fingerprint
             or self._active_sum_locked(slot) != expected_active
         ):
             raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_REFRESH_UNPROVEN_OR_SLOT_OCCUPIED")
@@ -1542,9 +1543,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 or self._reservation_bindings[rid] != bound
             ):
                 raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_RESERVATION_LINEAGE_UNPROVEN")
+        if any(
+            record["close_envelope"]["envelope_digest"] == close_ref
+            and record["valuation_epoch"] != request.observed_at_utc
+            for record in self._slot_test_economics[slot]["records"]
+        ):
+            raise PortfolioCapitalBudgetError("BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH")
         return {
             "slot_id": slot,
-            "close_ref": request.execution.envelope.envelope_digest,
+            "close_ref": close_ref,
             "fingerprint": fingerprint,
         }
 

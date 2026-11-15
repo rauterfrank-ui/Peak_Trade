@@ -984,6 +984,7 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
             mark=current_mark,
             test_stop=stop,
         )
+        backdated_close = replace(request, observed_at_utc=fixture.utc(now))
         sizing_args = dict(
             replay=None,
             bound_instrument=bounds[lane],
@@ -1055,6 +1056,28 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                     )
                 assert denied.first_blocker == "CURRENT_SCOPE_MARK_CLOCK_INVALID:CAPTURE_IN_FUTURE"
                 assert denied.get_count == 0 and denied.double_play_sizing is None
+                pre_flat_epoch = fixture.utc(now + 0.375)
+                pre_flat_args = dict(
+                    sizing_args,
+                    decision_epoch=pre_flat_epoch,
+                    injected=fixture.ports(
+                        bounds[lane],
+                        pre_flat_epoch,
+                        "l10:" + order.envelope_digest,
+                        account="acct-1",
+                    ),
+                )
+                denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                    double_play=double_play, **pre_flat_args
+                )
+                assert denied.first_blocker == "DOUBLE_PLAY_29P_DECISION_CLOCK_INVALID"
+                altered = replace(double_play, close_request=backdated_close)
+                for attempt in (sizing_args, pre_flat_args):
+                    denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                        double_play=altered, **attempt
+                    )
+                    assert denied.first_blocker == "BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH"
+                    assert denied.get_count == 0 and denied.double_play_sizing is None
                 forged = replace(
                     double_play,
                     continuation=replace(
@@ -1221,6 +1244,12 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                     unbound = original_try_reserve(**dict(kwargs, double_play_source=None))
                     assert unbound.reason_codes == ("DOUBLE_PLAY_RESERVATION_SOURCE_REQUIRED",)
                     source = kwargs["double_play_source"]
+                    backdated = replace(source, close=backdated_close)
+                    denied = original_try_reserve(**dict(kwargs, double_play_source=backdated))
+                    assert denied.reason_codes == (
+                        "BOUNDED_CLOSE_BOOKED_OBSERVATION_TIME_MISMATCH",
+                    )
+                    assert not denied.mutated and denied.reservation is None
                     wrong_basis = replace(
                         source,
                         continuation=replace(
