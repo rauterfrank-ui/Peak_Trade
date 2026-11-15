@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 from bisect import bisect_right
-from collections import Counter
+from collections import Counter, deque
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
@@ -25,9 +25,14 @@ from scripts.ops.run_research_candidate_shadow_v1 import (  # noqa: E402
     _head,
     _pair,
     _public_get,
+    _raw_rows,
 )
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (  # noqa: E402
     EvaluationReceiptArchiveV1,
+)
+from src.execution.paper.futures_accounting import (  # noqa: E402
+    funding_payment_quote,
+    notional_value,
 )
 from src.experiments.canonical_research_prepared_execution_v1 import (  # noqa: E402
     digest_v1,
@@ -536,8 +541,99 @@ def _apply_futures_cycle(account, record, observed_at, mark):
     account.apply_fill(fill)
 
 
+def _archived_funding_source(plan, archive):
+    market_rows = dict(_raw_rows(plan, archive))
+    start, end = (_utc(plan[key]) for key in ("start_utc", "end_utc"))
+    rates = {}
+    end_ms = int(end.timestamp() * 1000)
+    for row in market_rows["funding"]:
+        time = row["fundingTime"]
+        if not isinstance(time, str) or not time.isascii() or not time.isdecimal():
+            raise ValueError("I17_FUNDING_EVENT_TIME_INVALID")
+        event_ms = int(time)
+        if not 0 < event_ms < end_ms:
+            raise ValueError("I17_FUNDING_EVENT_TIME_INVALID")
+        event_time = datetime.fromtimestamp(event_ms / 1000, timezone.utc)
+        rate = Decimal(row["realizedRate"])
+        if (
+            row["instId"] != plan["instrument_id"]
+            or row["instType"] != "FUTURES"
+            or not rate.is_finite()
+            or event_time in rates
+        ):
+            raise ValueError("I17_FUNDING_HISTORY_EVENT_INVALID")
+        rates[event_time] = rate
+    if (
+        not 0 < len(rates) <= int(archive["records"]["funding"]["query"]["limit"])
+        or list(rates) != sorted(rates, reverse=True)
+        or min(rates) > start
+    ):
+        raise ValueError("I17_FUNDING_HISTORY_DOES_NOT_COVER_WINDOW")
+
+    event_by_candle_open_ms = {
+        int((event - HOUR).timestamp() * 1000): event for event in rates if start <= event < end
+    }
+    marks = {}
+    for row in market_rows["mark"]:
+        if not isinstance(row, list) or len(row) != 6:
+            raise ValueError("I17_FUNDING_MARK_CANDLE_SHAPE_INVALID")
+        event = event_by_candle_open_ms.get(int(row[0]))
+        if event is None:
+            continue
+        close = Decimal(row[4])
+        if (
+            event in marks
+            or event != event.replace(minute=0, second=0, microsecond=0)
+            or row[-1] != "1"
+            or not close.is_finite()
+            or close <= 0
+        ):
+            raise ValueError("I17_FUNDING_MARK_CANDLE_INVALID")
+        marks[event] = (event - HOUR, close)
+    return deque((event, rates[event]) for event in sorted(event_by_candle_open_ms.values())), marks
+
+
+def _book_archived_funding(account, *, event, rate, mark_open, mark):
+    position = account.position
+    quantity = Decimal("0") if position is None else position.qty
+    notional = Decimal("0")
+    amount = Decimal("0")
+    if position is not None:
+        notional = notional_value(
+            mark_price=mark, qty=quantity, contract_size=account.contract.contract_size
+        )
+        amount = funding_payment_quote(side=position.side, notional=notional, funding_rate=rate)
+    event_id = make_scoped_id("funding", account.contract.symbol, event.isoformat())
+    account.apply_funding_observation_v1(
+        event_id=event_id,
+        amount=str(amount),
+        currency=account.contract.quote_currency,
+        instrument_id=account.contract.symbol,
+        event_time_unix=event.timestamp(),
+    )
+    return {
+        **account.funding_events[event_id],
+        "event_id": event_id,
+        "funding_time_utc": event.isoformat(),
+        "realized_rate": str(rate),
+        "mark_candle_open_utc": mark_open.isoformat(),
+        "mark_close": str(mark),
+        "position_side": None if position is None else position.side.value,
+        "position_contracts": str(quantity),
+        "notional": str(notional),
+        "last_applied_fill_id": account.fill_order[-1] if account.fill_order else None,
+    }
+
+
 def measure_host_economics_v1(
-    workspace, *, plan, evidence_root, code_sha, verify=False, paper_terms_evidence=None
+    workspace,
+    *,
+    plan,
+    evidence_root,
+    code_sha,
+    verify=False,
+    paper_terms_evidence=None,
+    funding_evidence=None,
 ):
     """Reconcile archived I17 simulations under their original model."""
     _assert_capture_journal_separate(workspace, evidence_root, REPO)
@@ -572,6 +668,16 @@ def measure_host_economics_v1(
             )
             for role in profiles
         }
+    settlements = deque()
+    funding_bookings = None
+    if funding_evidence is not None:
+        if not futures_accounts:
+            raise ValueError("I17_FUNDING_REQUIRES_FUTURES_ACCOUNTING")
+        _assert_capture_journal_separate(workspace, _absolute(funding_evidence))
+        funding_archive = read_v1(funding_evidence)
+        settlements, settlement_marks = _archived_funding_source(plan, funding_archive)
+        funding_bookings = {role: [] for role in profiles}
+
     window_start = window_end = None
     cycle_count = 0
     for cycle_count, (decided, tick, parent) in enumerate(rows, start=1):
@@ -600,6 +706,23 @@ def measure_host_economics_v1(
         mark = float(tick["mid_price"])
         if not Decimal(str(mark)).is_finite() or mark <= 0:
             raise ValueError("I17_HOST_INVALID_MARK")
+        if window_start is None:
+            window_start = observed_at
+        while settlements and settlements[0][0] <= observed_at:
+            event, rate = settlements.popleft()
+            if event < window_start:
+                continue
+            if event not in settlement_marks:
+                raise ValueError("I17_FUNDING_FINAL_SETTLEMENT_MARK_MISSING")
+            mark_open, settlement_mark = settlement_marks[event]
+            # Only the position carried into the event receives the funding.
+            # At equal timestamps the simulated fill follows the settlement.
+            for role, account in futures_accounts.items():
+                funding_bookings[role].append(
+                    _book_archived_funding(
+                        account, event=event, rate=rate, mark_open=mark_open, mark=settlement_mark
+                    )
+                )
         for role, portfolio in portfolios.items():
             _replay_simulated_arm(
                 portfolio,
@@ -617,8 +740,6 @@ def measure_host_economics_v1(
                     observed_at,
                     Decimal(str(mark)),
                 )
-        if window_start is None:
-            window_start = observed_at
         window_end = observed_at
     if window_start is None or window_end is None:
         raise ValueError("I17_HOST_PAIRED_OBSERVATION_INCOMPLETE")
@@ -668,6 +789,20 @@ def measure_host_economics_v1(
             },
             futures_funding_semantics="EXCHANGE_EVENTS_NOT_APPLIED",
         )
+    if funding_bookings is not None:
+        output_name = "host-futures-funding.json"
+        result.update(
+            schema_version="i17_host_futures_funding_readback.v1",
+            futures_funding_semantics="OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION",
+            funding_source_digest=digest_v1(funding_archive),
+            funding_source_known_at_utc=max(
+                _utc(funding_archive["records"][role]["received_at_utc"])
+                for role in ("funding", "mark")
+            ).isoformat(),
+            funding_rate_response_sha256=funding_archive["records"]["funding"]["raw_sha256"],
+            funding_mark_response_sha256=funding_archive["records"]["mark"]["raw_sha256"],
+            funding_bookings=funding_bookings,
+        )
     output = workspace.safe_path_v1(output_name)
     with workspace.lease_v1():
         if verify:
@@ -689,6 +824,7 @@ def main(argv=None):
     inputs.add_argument("--decision-time-last-captures", type=Path)
     inputs.add_argument("--host-economics", action="store_true")
     parser.add_argument("--paper-terms-evidence", type=Path)
+    parser.add_argument("--funding-evidence", type=Path)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--capture-public-last", action="store_true")
     mode.add_argument("--verify", action="store_true")
@@ -706,6 +842,10 @@ def main(argv=None):
             if not args.host_economics:
                 raise ValueError("I17_PAPER_TERMS_REQUIRE_HOST_ECONOMICS_MODE")
             source_paths.append(_absolute(args.paper_terms_evidence))
+        if args.funding_evidence is not None:
+            if args.paper_terms_evidence is None:
+                raise ValueError("I17_FUNDING_REQUIRES_FUTURES_ACCOUNTING")
+            source_paths.append(_absolute(args.funding_evidence))
         if args.decision_time_last_captures is not None:
             if args.capture_public_last:
                 raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
@@ -733,6 +873,7 @@ def main(argv=None):
                 code_sha=_head(),
                 verify=args.verify,
                 paper_terms_evidence=args.paper_terms_evidence,
+                funding_evidence=args.funding_evidence,
             )
             print(json.dumps(result, sort_keys=True))
             return 0

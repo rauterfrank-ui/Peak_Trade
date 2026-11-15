@@ -386,9 +386,27 @@ The separate `host-futures-accounting.json` records the source manifest and
 contract digests and the resulting futures portfolios in settlement currency.
 The archived decision sequence itself stays fixed during this rebooking.
 
-The futures receipt leaves the economic qualification blocked and the Reality
-Gap incomplete. SL07 still requires a comparable expected measurement,
-funding tied to the held contracts and the original settlement-time Mark,
-and a versioned threshold policy. OKX publishes the
-[linear contract funding basis](https://www.okx.com/en-eu/help/funding-fee-mechanism-eea)
+Add `--funding-evidence` with the original `public-input.json` for the same
+frozen plan to also book funding in that replay. The reader checks the
+original endpoint, query, response hashes and post-window capture times. The
+history page must reach the window start and supplies the timestamps and
+realized rates. Settlement frequency follows the archived events. The
+simulated price basis is the finalized hourly OKX Mark candle whose close
+coincides with the funding timestamp.
+
+Each archived settlement from the first through the last observed decision
+uses the native contracts held immediately before it. A fill with the same
+timestamp follows the funding event in the simulation. The existing futures
+accounting owner posts the signed amount once per instrument and event. The
+separate `host-futures-funding.json` retains the realized rate, price basis,
+position side and size, applied fill references and source and knowledge
+times. An incomplete history or missing finalized settlement Mark stops
+before the funded receipt is published. Rates acquired after the window
+are used only for this later rebooking.
+
+The funded receipt leaves the economic qualification blocked and the Reality
+Gap incomplete. The booking uses the specified simulation basis. SL07 still
+requires a comparable expected measurement and a versioned threshold policy.
+See the [OKX funding history API](https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate-history),
+the [linear contract funding basis](https://www.okx.com/en-eu/help/funding-fee-mechanism-eea)
 and the [adjustable settlement schedule](https://www.okx.com/en-eu/help/perps-funding-fee-mechanism).

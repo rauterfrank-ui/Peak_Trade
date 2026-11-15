@@ -11,6 +11,7 @@ import pandas as pd
 import pytest
 
 from scripts.ops import run_i17_candidate_comparison_v1 as comparison
+from scripts.ops import run_research_candidate_shadow_v1 as forward
 from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 from scripts.ops.run_i17_candidate_comparison_v1 import _compare, _strategy_binding
 from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
@@ -408,6 +409,7 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         candidate_known_at_utc=utc(boundary - 4000).isoformat(),
         parent_data_known_at_utc=utc(boundary - 4100).isoformat(),
         learning_digest="a" * 64,
+        public_source={"index_id": "ETH-USD"},
         instrument_binding={
             "instrument_metadata": {
                 "instId": CANONICAL_INSTRUMENT_ID,
@@ -494,7 +496,7 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
     if case in {"compared", "simulated_fill"}:
         first = publish_last(bars.iloc[:-1], FakeClock(wall=boundary - 1))
     latest = []
-    clock = FakeClock(wall=boundary + 0.125)
+    clock = FakeClock(wall=boundary + (-0.125 if case == "simulated_fill" else 0.125))
     polls = 0
 
     def fetch_market(url, *args):
@@ -747,6 +749,91 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         assert (
             comparison.measure_host_economics_v1(economics_workspace, **native_args, verify=True)
             == native
+        )
+
+        def write_funding_archive(*, include_mark, cover_start=True):
+            payloads = {
+                "funding": [
+                    {
+                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instType": "FUTURES",
+                        "fundingTime": str(boundary * 1000),
+                        "fundingRate": "-0.02",
+                        "realizedRate": "0.01",
+                    },
+                ],
+                "mark": [],
+                "last": [],
+                "index": [],
+            }
+            if cover_start:
+                payloads["funding"].append(
+                    {
+                        **payloads["funding"][0],
+                        "fundingTime": str((boundary - 3600) * 1000),
+                    }
+                )
+            if include_mark:
+                payloads["mark"].append(
+                    [
+                        str((boundary - 3600) * 1000),
+                        "3500",
+                        "3500",
+                        "3500",
+                        "3500",
+                        "1",
+                    ]
+                )
+            archive = {"plan_digest": digest_v1(plan), "records": {}}
+            for role, endpoint, query in forward._requests(plan):
+                raw = json.dumps({"code": "0", "data": payloads[role]}).encode()
+                archive["records"][role] = {
+                    "endpoint": endpoint,
+                    "query": query,
+                    "host": forward.PUBLIC_HTTP_HOST,
+                    "requested_at_utc": plan["end_utc"],
+                    "received_at_utc": utc(boundary + 3601).isoformat(),
+                    "raw_hex": raw.hex(),
+                    "raw_sha256": sha256(raw).hexdigest(),
+                }
+            source = tmp_path / f"funding-{include_mark}-{cover_start}.json"
+            comparison.publish_v1(source, archive)
+            return source
+
+        funded_output = economics_workspace.root / "host-futures-funding.json"
+        with pytest.raises(ValueError, match="I17_FUNDING_HISTORY_DOES_NOT_COVER_WINDOW"):
+            comparison.measure_host_economics_v1(
+                economics_workspace,
+                **native_args,
+                funding_evidence=write_funding_archive(include_mark=True, cover_start=False),
+            )
+        with pytest.raises(ValueError, match="I17_FUNDING_FINAL_SETTLEMENT_MARK_MISSING"):
+            comparison.measure_host_economics_v1(
+                economics_workspace,
+                **native_args,
+                funding_evidence=write_funding_archive(include_mark=False),
+            )
+        assert not funded_output.exists()
+
+        funded_args = dict(native_args, funding_evidence=write_funding_archive(include_mark=True))
+        funded = comparison.measure_host_economics_v1(economics_workspace, **funded_args)
+        (reference,) = funded["funding_bookings"]["reference"]
+        (booking,) = funded["funding_bookings"]["candidate"]
+        assert booking["funding_time_utc"] == utc(boundary).isoformat()
+        assert booking["realized_rate"] == "0.01"
+        assert booking["mark_close"] == "3500"
+        assert booking["position_contracts"] == "1"
+        assert booking["applied_after_fill_count"] == 1
+        assert booking["last_applied_fill_id"] == candidate_record["fill"]["fill_id"]
+        assert booking["currency"] == "USD"
+        assert Decimal(booking["amount"]) == Decimal("-0.035")
+        assert reference["position_contracts"] == reference["amount"] == "0"
+        assert Decimal(funded["futures_portfolios"]["candidate"]["equity"]) == (
+            Decimal(native["futures_portfolios"]["candidate"]["equity"]) - Decimal("0.035")
+        )
+        assert (
+            comparison.measure_host_economics_v1(economics_workspace, **funded_args, verify=True)
+            == funded
         )
 
         fill = candidate_record["fill"]
