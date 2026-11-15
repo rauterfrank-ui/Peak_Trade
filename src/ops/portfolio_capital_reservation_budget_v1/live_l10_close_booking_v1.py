@@ -182,7 +182,7 @@ def close_history_endpoint_v1(*, entry, inst_type):
     )
 
 
-def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root):
+def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repository_sha):
     from pathlib import Path
     from src.ops.execution_reconciliation_proof_store_v1 import (
         _RecordedReconciliationGets,
@@ -202,6 +202,8 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root):
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
         POST_OWNER_GO,
+        CurrentProductiveActualVenuePostOwnerGoConsumeError,
+        load_durable_post_owner_go_consume_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
         validates_position_management_envelope_v1,
@@ -243,6 +245,16 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root):
     episode = switch.episode
     identity = parse_exchange_reconciliation_identity_v1(close["identity"])
     send_root = occupied_close_submit_root_v1(owner._store.root.parent, episode.episode_id)
+    try:
+        mandate = load_durable_post_owner_go_consume_v1(store_root=send_root)
+    except CurrentProductiveActualVenuePostOwnerGoConsumeError as exc:
+        raise ValueError("L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN") from exc
+    if (
+        not mandate["consumed"]
+        or mandate["owner_go_token"] != POST_OWNER_GO
+        or mandate["record"]["baseline_origin_main_sha"] != repository_sha
+    ):
+        raise ValueError("L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN")
     send = load_external_effect_durable_consume_v1(store_root=send_root)
     attempt = (send["record"] or {}).get("transport_attempt") or {}
     if (

@@ -855,7 +855,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 )
             return result
 
-    def record_authenticated_l10_close_v1(self, *, execution, proof_path, proof_root):
+    def record_authenticated_l10_close_v1(
+        self, *, execution, proof_path, proof_root, repository_sha
+    ):
         """Persist the original close settlement without changing the capital hold."""
         from .live_l10_close_booking_v1 import (
             build_live_l10_booking_v1,
@@ -866,7 +868,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             if self._store is None or self._storage_failed or self._closed_owner:
                 raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_WRITER_UNAVAILABLE")
             booking = build_live_l10_booking_v1(
-                self, execution=execution, proof_path=proof_path, proof_root=proof_root
+                self,
+                execution=execution,
+                proof_path=proof_path,
+                proof_root=proof_root,
+                repository_sha=repository_sha,
             )
             episode = booking.episode_id
             row = booking.to_dict_v1()

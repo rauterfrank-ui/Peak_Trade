@@ -1159,7 +1159,7 @@
     {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
-      "sha256": "f7249209fcbcd12d5eeedfa09e6c2a75f43126de24d01aa101eec34a70e4b406"
+      "sha256": "39e24f97139d33f0c5afdb8eced8eb4bc43f30117dc98d3258bc331cfd77c921"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -2394,7 +2394,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_l10_close_reconciliation_v1.py",
       "before_sha256": null,
-      "sha256": "a7d3944b808de036dc9e588b1d29fbe916f0662bb1bf3153ceacbb111e60e765"
+      "sha256": "25c47b03878452477f9543fa4e5d50dbbb4c1a188e6ca4c78038dd7bdb02440e"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -2894,7 +2894,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "3964b92fda6153242bb6ef42d1311da90ac23634f85c9a36c8b7a2e9d76d7e2f"
+      "sha256": "2ee50fd421e6f90685eba54b293825ada19d25a5abfdf4d4b9caa3f9b86365fd"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -2929,7 +2929,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
       "before_sha256": null,
-      "sha256": "a128d5af4eb64bcbfabe09a2ef2438bc9c3de3321454e6242b426933829271f3"
+      "sha256": "e20dd048ac68f4d3c7843a9319b0177a52a2a1129eb5a7e5e842c2cec91f8244"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -4019,7 +4019,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "c6eb84d3b2f7438d96eedab89ebb8ad53287cb8ed293f9c9d5ba4a7c9ec75981"
+      "sha256": "142a4bd9de9d704d897cd2422d144c8e741cb2d8d873de0ad882a5852beaa59e"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

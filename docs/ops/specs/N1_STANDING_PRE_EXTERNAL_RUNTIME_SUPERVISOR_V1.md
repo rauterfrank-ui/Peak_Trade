@@ -32,6 +32,14 @@ reservation owner verifies the episode, settlement currency, fill PnL and
 entry/close fees against the history row. Funding and futures settlement must
 reconcile with the venue's realized PnL.
 
+The reservation owner rechecks the original consumed POST Owner-GO in the
+close submit store at booking and on verification replay. The record must
+match the host repository revision. If it is lost during the GET sequence
+or is invalid at booking, the verified flat readback is retained with
+`L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN` as the reason for pending settlement.
+Once the original record is readable again, a fresh admitted GET readback
+can complete the booking against the same hold and original submit record.
+
 `CLOSE_NET_BOOKED` records the native-currency net result once in the original
 owner's durable store. Restart replays the stored proof and booking without
 another GET or economic write. `CLOSE_FLAT_CONFIRMED` with

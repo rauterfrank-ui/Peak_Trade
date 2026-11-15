@@ -1827,6 +1827,7 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-readback-history-missing", None),
         ("polled-mark-close-readback-history-conflict", None),
         ("polled-mark-close-readback-history-foreign", None),
+        ("polled-mark-close-readback-owner-go-lost", None),
         ("polled-mark-close-readback-partial", None),
         ("polled-mark-close-readback-unseen", None),
         ("polled-mark-close-readback-missing-fill", None),
@@ -1885,6 +1886,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "readback-history-missing",
         "readback-history-conflict",
         "readback-history-foreign",
+        "readback-owner-go-lost",
     }
     if with_history:
         position.update(posId="8923", cTime=str(filled_at), ccy="USDT")
@@ -1982,9 +1984,12 @@ def test_owned_entry_proof_reaches_original_position_episode(
             dispatch=dispatch,
             opener=opener,
         )
-        assert len(opener.requests) - request_count == (
-            18 + int(with_history) if dispatch and dispatch.startswith("readback-") else 12
-        )
+        expected_gets = 12
+        if dispatch and dispatch.startswith("readback-"):
+            expected_gets += 6 + int(with_history)
+        if dispatch == "readback-owner-go-lost":
+            expected_gets += 7
+        assert len(opener.requests) - request_count == expected_gets
         assert host.owner.active_sum_v1() == held
         return
     if fault is None:
@@ -2486,6 +2491,9 @@ def _assert_original_close_dispatch(context, case, tmp_path):
 def _assert_restarted_close_readback(
     tmp_path, monkeypatch, context, proof_root, opener, floor, case, *, expected_switch_mark
 ):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        durable_post_owner_go_path_v1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
     )
@@ -2532,15 +2540,21 @@ def _assert_restarted_close_readback(
         "feeCcy": currency,
     }
     original_body = opener.body
-    with_history = case == "booked" or case.startswith("history-")
+    with_history = case in {"booked", "owner-go-lost"} or case.startswith("history-")
+    owner_go_loss_injected = False
 
     def close_body(path, params):
+        nonlocal owner_go_loss_injected
         if path.endswith("/config"):
             return original_body(path, params)
         assert params["instId"] == envelope.instrument_id
         code, rows = "0", []
         if path.endswith("/positions-history"):
             assert with_history
+            if case == "owner-go-lost" and not owner_go_loss_injected:
+                mandate = durable_post_owner_go_path_v1(context.store_root_v1())
+                mandate.rename(mandate.with_suffix(".retained"))
+                owner_go_loss_injected = True
             assert params == {
                 "instId": envelope.instrument_id,
                 "instType": product,
@@ -2658,6 +2672,7 @@ def _assert_restarted_close_readback(
             "history-missing": "CLOSE_FLAT_CONFIRMED",
             "history-conflict": "CLOSE_FLAT_CONFIRMED",
             "history-foreign": "CLOSE_FLAT_CONFIRMED",
+            "owner-go-lost": "CLOSE_FLAT_CONFIRMED",
             "partial": "CLOSE_PARTIAL",
             "unseen": "CLOSE_AWAITING_VENUE",
             "missing-fill": "CLOSE_READBACK_BLOCKED",
@@ -2668,7 +2683,7 @@ def _assert_restarted_close_readback(
         }[case]
     ), readback.reason_codes
     assert readback.envelope_digest == envelope.envelope_digest
-    assert resumed.ok is (case == "flat" or case.startswith("history-"))
+    assert resumed.ok is (case in {"flat", "owner-go-lost"} or case.startswith("history-"))
     assert resumed.trace.post_count == 0 and not resumed.owner_go_consumed
     assert resumed.policy_result is None
     assert restarted_hosts[-1].closed
@@ -2809,6 +2824,30 @@ def _assert_restarted_close_readback(
             assert readback.historical_sizing_reference is None
             assert resumed.counter_order_sizing is None
             assert readback.reason_codes[0] == "L10_CLOSE_NET_BOOKING_PENDING"
+            if case == "owner-go-lost":
+                assert readback.reason_codes[1] == "L10_CLOSE_BOOKING_POST_OWNER_GO_UNPROVEN"
+                mandate = durable_post_owner_go_path_v1(store_root)
+                assert not mandate.exists()
+                assert not restarted_hosts[-1].owner._live_l10_close_bookings
+                mandate.with_suffix(".retained").rename(mandate)
+                with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+                    max_request_count=7, k1_lookup_backend=_FakeKeychainBackend()
+                ) as (recovery_transport, _):
+                    recovered = supervisor.run_n1_standing_pre_external_supervisor_v1(
+                        **{
+                            **run_args,
+                            "config": replace(config, evidence_root=tmp_path / "restart-restored"),
+                            "pretrade_transport": recovery_transport,
+                        }
+                    )
+                    assert recovery_transport.methods_used == ["GET"] * 7
+                assert recovered.close_readback.status == "CLOSE_NET_BOOKED"
+                assert recovered.counter_order_sizing.venue_plan_authorized is False
+                assert recovered.trace.post_count == 0
+                assert restarted_hosts[-1].owner.active_sum_v1() == held
+                assert (
+                    load_external_effect_durable_consume_v1(store_root=store_root) == original_send
+                )
     else:
         assert readback.historical_sizing_reference is None
         assert readback.proof_path is None
