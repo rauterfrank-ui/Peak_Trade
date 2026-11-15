@@ -1038,6 +1038,23 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                     double_play=replace(double_play, mark=wrong_mark), **sizing_args
                 )
                 assert denied.first_blocker == "DOUBLE_PLAY_29P_CURRENT_SWITCH_MARK_UNPROVEN"
+                late_capture = provenance(
+                    native=bounds[lane].venue_native_id,
+                    mark=mark,
+                    index=mark * 0.995,
+                    event=now - 0.125,
+                    captured=counter_now + 0.125,
+                )
+                with monkeypatch.context() as clocks:
+                    clocks.setattr(host, "clock", lambda: counter_now + 0.25)
+                    assert late_capture.require_current_mark_clock_v1(
+                        observed_unix=host.clock()
+                    ) == pytest.approx(now - 0.125)
+                    denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                        double_play=replace(double_play, mark=late_capture), **sizing_args
+                    )
+                assert denied.first_blocker == "CURRENT_SCOPE_MARK_CLOCK_INVALID:CAPTURE_IN_FUTURE"
+                assert denied.get_count == 0 and denied.double_play_sizing is None
                 forged = replace(
                     double_play,
                     continuation=replace(

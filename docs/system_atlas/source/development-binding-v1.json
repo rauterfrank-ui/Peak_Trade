@@ -1099,7 +1099,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md",
       "before_sha256": "4e19a043a910c26cb4bbd7ea6d43e030fd5ed2c2bfd580aad50bea949d8aeb6b",
-      "sha256": "90ff4b6af431c1e62251ca3bbdd52e34f4ce7f9acd47419cf5137c88d4f9fafe"
+      "sha256": "19ec7641f3dc10d8c1a4e3c8cab0ac97febb9c23cc5a306866b85273c2cc4344"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
@@ -2369,7 +2369,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "a3a60e8e0ccb8f9beff78a8cd90209dca278c2cdbe8da3c451df0bd42c83b07d"
+      "sha256": "08572e1b30dc41620e70c699f9731d702fcc4a34c16d92a839ca2eb51a02c0ed"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -3709,7 +3709,7 @@
     {
       "path": "tests/ops/test_bounded_slot_scope_close_v1.py",
       "before_sha256": null,
-      "sha256": "5290fd922694f9fded619263fdffccb441cd6987463d6724e755c255ce1a72c8"
+      "sha256": "67986e9163da0e286c216a34c56cee641ef8874cd914a8c6e2f6a67f56ecce29"
     },
     {
       "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",

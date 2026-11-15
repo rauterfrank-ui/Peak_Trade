@@ -574,6 +574,8 @@ def read_current_double_play_sizing_source_v1(
         and json.loads(mark.mark_clock_json)["payload_sha256"] != switch_mark["mark_payload_sha256"]
     ):
         raise ValueError("DOUBLE_PLAY_29P_CURRENT_SWITCH_MARK_UNPROVEN")
+    # The original response must already have been available at the sizing decision.
+    mark.require_current_mark_clock_v1(observed_unix=decision_time.timestamp())
 
     stop = request.test_stop
     reference = Decimal(str(mark.mark_px))
