@@ -345,3 +345,30 @@ Missing initial Last evidence marks the candidate comparison failed for that
 session. The ordinary Shadow observation continues through its owners when
 the Last data is missing. The comparison carries authority `NONE`.
 Economic qualification also requires a comparable measurement.
+
+### Offline readback of simulated I17 accounting
+
+Use the same original GVEF plan, campaign and resolved config with a completed
+I17 candidate observation archived with per-profile `simulated_economics`.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py --host-economics \
+  --state /absolute/i17-accounting --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/qualified-i17/evidence
+```
+
+The readback checks the sealed host archive, the preregistered profile plan
+and the original Mark and decision clocks. It applies the archived intents
+to the existing isolated analytical portfolio model for each profile. The
+calculated fills, fees, slippage and per-cycle portfolio states must match the
+sealed records. The resulting `host-economics.json` binds the archive, plan,
+model, code revisions and decision window to the reconstructed states. Add
+`--verify` to rebuild the result and compare it with the saved receipt.
+Archives without the per-profile records fail before a receipt is written.
+
+The receipt carries the model's accounting units and modelled funding.
+It leaves the economic qualification blocked and the Reality Gap incomplete.
+SL07 still requires an expected and observed measurement with matching
+definitions, plus evidence of the applied funding at the original event
+times and the versioned threshold policy.

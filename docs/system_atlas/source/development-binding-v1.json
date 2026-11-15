@@ -1164,7 +1164,7 @@
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
-      "sha256": "9b31f5da65e695b73398ab4bc487f7ddc4a35ef4bd85767d202ccd5eabf558af"
+      "sha256": "58c9071c8d8a4cbc420b77a7e44d01b0ae1806eb84a967b83a01729eff0347bd"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
@@ -1604,7 +1604,7 @@
     {
       "path": "scripts/ops/run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "b5b1f80f77045d3501e5d71de1b2aad7df240d5aea58abd98df5935a0fc755c9"
+      "sha256": "d6185f182449e064f5f4db3feea3a2ee508714e082db366def82d56e85c890b8"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -4484,7 +4484,7 @@
     {
       "path": "tests/ops/test_run_i17_candidate_comparison_v1.py",
       "before_sha256": null,
-      "sha256": "65c7a488a06b1df27e6096834d5b7e260d0b6cfabf207123c87b19c963db2e7a"
+      "sha256": "f296d90ecc0e8d463038ffadd2975c30e04078f4bf6104cc0529e9d0d510c502"
     },
     {
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",

@@ -58,6 +58,7 @@ from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execut
     _load_wallclock_go,
     _load_wallclock_prereg,
     _material,
+    _replace_cycle_rows_and_reseal,
     _write_v2_auth,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
@@ -388,7 +389,7 @@ def test_i17_last_capture_rejects_receipt_after_the_planned_window(tmp_path):
 
 @pytest.mark.parametrize("case", ("compared", "simulated_fill", "wrong_plan", "no_initial_last"))
 def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
-    tmp_path, monkeypatch, case
+    tmp_path, monkeypatch, capsys, case
 ):
     monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
     plan, bars = _pair_and_candles()
@@ -403,6 +404,7 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
         candidate_known_at_utc=utc(boundary - 4000).isoformat(),
         parent_data_known_at_utc=utc(boundary - 4100).isoformat(),
+        learning_digest="a" * 64,
         registered_at_utc=utc(boundary - 3900).isoformat(),
         start_utc=utc(boundary - 3600).isoformat(),
         end_utc=utc(boundary + 3600).isoformat(),
@@ -526,7 +528,12 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
     assert [pair["parent_decision_id"] for pair in pairs] == [row["decision_id"] for row in cycles]
     assert {pair["plan_digest"] for pair in pairs} == {digest_v1(plan)}
     assert {pair["original_i17_scope_digest"] for pair in pairs} == {prereg.scope_digest()}
+    economics_workspace = EvaluationReceiptArchiveV1(tmp_path / "economics")
+    economics_args = dict(plan=plan, evidence_root=root, code_sha="3" * 40)
     if case == "no_initial_last":
+        with pytest.raises(ValueError, match="I17_HOST_PAIRED_OBSERVATION_INCOMPLETE"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args)
+        assert not (economics_workspace.root / "host-economics.json").exists()
         assert {pair["status"] for pair in pairs} == {"FAILED"}
         assert {pair["reason"] for pair in pairs} == {"I17_DECISION_TIME_LAST_NOT_YET_AVAILABLE"}
         return
@@ -606,6 +613,71 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         values = [pair["arms"][role]["material"] for pair in pairs]
         assert [value["cycle_signal_value"] for value in values] == expected
         assert [value["trading_epoch"] for value in values] == [1, 2, 3]
+
+    result = comparison.measure_host_economics_v1(economics_workspace, **economics_args)
+    assert result["cycle_count"] == 3
+    assert result["reality_gap_status"] == "INCOMPLETE"
+    assert result["economic_qualification_status"] == "BLOCKED"
+    assert result["funding_semantics"] == "MODELLED_FUNDING_ONLY"
+    for role, profile in result["profiles"].items():
+        assert profile["initial_equity"] == "100000"
+        assert profile["packet"] == plan["profiles"][role]["packet"]
+        assert (
+            profile["portfolio_snapshot"]["state"]
+            == (pairs[-1]["arms"][role]["simulated_economics"]["portfolio_after"])
+        )
+    output = economics_workspace.root / "host-economics.json"
+    before = output.read_bytes()
+    assert (
+        comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+        == result
+    )
+
+    if case == "simulated_fill":
+        plan_path = tmp_path / "registered-plan" / "plan.json"
+        plan_path.parent.mkdir()
+        comparison.publish_v1(plan_path, plan)
+        config_path = tmp_path / "resolved.json"
+        config_path.write_text("{}")
+        # The campaign binding has its own tests. Keep the sealed original,
+        # CLI dispatch, portfolio replay and receipt verification in this test.
+        monkeypatch.setattr(comparison, "_pair", lambda *_: {"profiles": plan["profiles"]})
+        monkeypatch.setattr(comparison, "_head", lambda: economics_args["code_sha"])
+        assert (
+            comparison.main(
+                [
+                    "--host-economics",
+                    "--verify",
+                    "--state",
+                    str(economics_workspace.root),
+                    "--pair-plan",
+                    str(plan_path),
+                    "--campaign-state",
+                    str(tmp_path / "campaign"),
+                    "--base-config",
+                    str(config_path),
+                    "--i17-evidence",
+                    str(root),
+                ]
+            )
+            == 0
+        )
+        assert json.loads(capsys.readouterr().out) == result
+        pair = cycles[0]["i17_candidate_comparison"]
+        fill = pair["arms"]["candidate"]["simulated_economics"]["fill"]
+        fill["fee"] = "0"
+        _replace_cycle_rows_and_reseal(root, cycles)
+        assert verify_wallclock_evidence_bundle_v1(evidence_root=root).verified
+        with pytest.raises(ValueError, match="I17_HOST_SIMULATED_FILL_MISMATCH"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+    else:
+        for cycle in cycles:
+            for arm in cycle["i17_candidate_comparison"]["arms"].values():
+                arm.pop("simulated_economics")
+        _replace_cycle_rows_and_reseal(root, cycles)
+        with pytest.raises(ValueError, match="I17_HOST_SIMULATED_ECONOMICS_NOT_RECORDED"):
+            comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
+    assert output.read_bytes() == before
 
 
 def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):
