@@ -410,3 +410,34 @@ requires a comparable expected measurement and a versioned threshold policy.
 See the [OKX funding history API](https://www.okx.com/docs-v5/en/#public-data-rest-api-get-funding-rate-history),
 the [linear contract funding basis](https://www.okx.com/en-eu/help/funding-fee-mechanism-eea)
 and the [adjustable settlement schedule](https://www.okx.com/en-eu/help/perps-funding-fee-mechanism).
+
+### Backtest valuation on the I17 accounting basis
+
+Use `--backtest-economics` with the sealed decision-time Last archive,
+Paper terms and the frozen plan's public funding evidence.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py --backtest-economics \
+  --state /absolute/i17-backtest --pair-plan /absolute/forward-state/plan.json \
+  --campaign-state /absolute/campaign-state --base-config /absolute/resolved.json \
+  --i17-evidence /absolute/verified-market-tape/evidence \
+  --decision-time-last-captures /absolute/scoped-last/captures.json \
+  --paper-terms-evidence /absolute/sealed-paper-archive \
+  --funding-evidence /absolute/forward-state/public-input.json
+```
+
+The sealed I17 archive verifies market events and their original decision
+clocks. The backtest recomputes the two decisions on those market inputs
+with separate replay states. Each decision uses the latest finalized Last
+prefix available at its cutoff. Observed actions and fills do not feed
+the replay. The same futures-accounting owner used for host readback
+handles the replayed fills and settled funding.
+
+Both receipts include net change in equity divided by beginning equity,
+a flat opening state, terminal Mark valuation of any open positions,
+and model, decision-configuration and governed-seam digests. The backtest
+receipt also binds its tape and scoped Last archive. It writes
+`backtest-futures-funding.json` and supports deterministic `--verify`.
+This is a window-specific expected value. SL07 still needs the independent
+observation, admission of matching measurement conditions and the
+versioned threshold policy before producing a Reality Gap record.

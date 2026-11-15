@@ -836,6 +836,65 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
             == funded
         )
 
+        # This short test fixture verifies the sealed market and clock rows. The
+        # complete-archive typed DDO gate is exercised separately.
+        def short_fixture_market_readback(evidence_root, instrument):
+            manifest, market_rows = comparison._read_i17_archive(
+                evidence_root, instrument, require_typed_ddo=False
+            )
+            return sha256(manifest).hexdigest(), [
+                (decided, tick, cycle["decision_id"]) for decided, tick, cycle in market_rows
+            ]
+
+        monkeypatch.setattr(comparison, "_read_i17", short_fixture_market_readback)
+        monkeypatch.setattr(
+            wallclock_hardening_binding_v2,
+            "run_hardened_bridge_cycle_v2",
+            run_hardened_bridge_cycle_v2,
+        )
+        last_archive = {
+            "schema_version": comparison.DECISION_TIME_LAST_SCHEMA,
+            "plan_digest": digest_v1(plan),
+            "original_i17_manifest_sha256": sha256(
+                (root / "evidence_manifest.sha256").read_bytes()
+            ).hexdigest(),
+            "original_i17_scope_digest": prereg.scope_digest(),
+            "captures": [first, latest[0]],
+        }
+        backtest = comparison.measure_backtest_economics_v1(
+            economics_workspace, **funded_args, decision_time_archive=last_archive
+        )
+        assert backtest["measurement_surface"] == "BACKTEST_REPLAY_FROM_MARKET_TAPE"
+        assert backtest["cycle_count"] == funded["cycle_count"]
+        assert backtest["funding_source_digest"] == funded["funding_source_digest"]
+        assert backtest["futures_contract_digest"] == funded["futures_contract_digest"]
+        assert (
+            backtest["futures_measurement"]["definition"]
+            == funded["futures_measurement"]["definition"]
+        )
+        assert backtest["futures_portfolios"]["candidate"]["fill_count"] == 0
+        assert backtest["funding_bookings"]["candidate"][0]["amount"] == "0"
+        assert (
+            backtest["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"] == "0"
+        )
+        assert (
+            Decimal(funded["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"])
+            < 0
+        )
+        assert backtest["reality_gap_status"] == "INCOMPLETE"
+        assert (
+            comparison.measure_backtest_economics_v1(
+                economics_workspace, **funded_args, decision_time_archive=last_archive, verify=True
+            )
+            == backtest
+        )
+        with pytest.raises(ValueError, match="I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH"):
+            comparison.measure_backtest_economics_v1(
+                economics_workspace,
+                **funded_args,
+                decision_time_archive={**last_archive, "original_i17_scope_digest": "b" * 64},
+            )
+
         fill = candidate_record["fill"]
         fill["fee"] = "0"
         _replace_cycle_rows_and_reseal(root, cycles)

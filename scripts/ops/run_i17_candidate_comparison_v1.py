@@ -106,8 +106,12 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 DECISION_TIME_LAST_SCHEMA = "i17_decision_time_last_captures.v1"
 
 
+def _i17_manifest_pins(manifest):
+    return dict(line.split("  ", 1)[::-1] for line in manifest.decode().splitlines() if line)
+
+
 def _pinned_i17_file(root, manifest, name):
-    pins = dict(line.split("  ", 1)[::-1] for line in manifest.decode().splitlines() if line)
+    pins = _i17_manifest_pins(manifest)
     path = root / name
     if path.is_symlink():
         raise ValueError("I17_COMPARISON_UNSAFE_ORIGINAL_FILE")
@@ -226,10 +230,15 @@ def _decision_time_last_snapshots(plan, rows, archive, *, manifest_sha):
     return _validated_last_snapshots(plan, archive["captures"], registered=registered, end=end)
 
 
-def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
-    pair = I17CandidatePairV1(plan, session_prefix=f"i17-offline-{identifier[:20]}")
+def _compared_cycles(
+    plan, rows, candles, *, identifier, decision_time_last=None, record_simulated_economics=False
+):
+    pair = I17CandidatePairV1(
+        plan,
+        session_prefix=f"i17-offline-{identifier[:20]}",
+        record_simulated_economics=record_simulated_economics,
+    )
     first_received = rows[0][1]["receive_ts_unix"]
-    compared = []
     receipt_times = [] if decision_time_last is None else [row[0] for row in decision_time_last]
     for decided, original, decision_id in rows:
         decision_time = datetime.fromtimestamp(decided, timezone.utc)
@@ -254,17 +263,22 @@ def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
             source="caller_supplied_offline",
         )
         arms = pair.evaluate(tick, decided=decided, close_time=close_time, candles=candles)
-        compared.append(
-            {
-                "observed_mark_sequence": tick.sequence,
-                "historical_decision_id": decision_id,
-                "decision_time_utc": decision_time.isoformat(),
-                "last_candle_close_utc": close_time.isoformat(),
-                **candle_input,
-                "arms": arms,
-            }
+        yield {
+            "observed_mark_sequence": tick.sequence,
+            "historical_decision_id": decision_id,
+            "decision_time_utc": decision_time.isoformat(),
+            "last_candle_close_utc": close_time.isoformat(),
+            **candle_input,
+            "arms": arms,
+        }
+
+
+def _compare(plan, rows, candles, *, identifier, decision_time_last=None):
+    return list(
+        _compared_cycles(
+            plan, rows, candles, identifier=identifier, decision_time_last=decision_time_last
         )
-    return compared
+    )
 
 
 def compare_v1(
@@ -625,6 +639,101 @@ def _book_archived_funding(account, *, event, rate, mark_open, mark):
     }
 
 
+class _FuturesReadback:
+    """Use the same native valuation and funding for observed and replayed actions."""
+
+    def __init__(self, workspace, *, plan, initial_equity, paper_terms_evidence, funding_evidence):
+        _assert_capture_journal_separate(workspace, _absolute(paper_terms_evidence))
+        self.contract, self.paper_manifest = _paper_contract(paper_terms_evidence, plan)
+        self.accounts = {
+            role: ProductiveFuturesAccountingSessionV1(
+                contract=self.contract, initial_equity=Decimal(equity)
+            )
+            for role, equity in initial_equity.items()
+        }
+        self.first_at = None
+        self.settlements = deque()
+        self.funding_archive = None
+        self.bookings = {role: [] for role in self.accounts}
+        self.models = {role: set() for role in self.accounts}
+        self.decision_configs = {role: set() for role in self.accounts}
+        self.governed_seams = {role: set() for role in self.accounts}
+        if funding_evidence is not None:
+            _assert_capture_journal_separate(workspace, _absolute(funding_evidence))
+            self.funding_archive = read_v1(funding_evidence)
+            self.settlements, self.settlement_marks = _archived_funding_source(
+                plan, self.funding_archive
+            )
+
+    def book_cycle(self, *, observed_at, mark, arms):
+        if self.first_at is None:
+            self.first_at = observed_at
+        while self.settlements and self.settlements[0][0] <= observed_at:
+            event, rate = self.settlements.popleft()
+            if event < self.first_at:
+                continue
+            if event not in self.settlement_marks:
+                raise ValueError("I17_FUNDING_FINAL_SETTLEMENT_MARK_MISSING")
+            mark_open, settlement_mark = self.settlement_marks[event]
+            # Funding uses the position carried into the event, before a same-time fill.
+            for role, account in self.accounts.items():
+                self.bookings[role].append(
+                    _book_archived_funding(
+                        account, event=event, rate=rate, mark_open=mark_open, mark=settlement_mark
+                    )
+                )
+        for role, arm in arms.items():
+            record = arm["simulated_economics"]
+            _apply_futures_cycle(self.accounts[role], record, observed_at, mark)
+            self.models[role].add(record["portfolio_model"]["model_digest"])
+            self.decision_configs[role].add(record["intended_action"]["config_digest"])
+            self.governed_seams[role].add(arm["governed_seam_digest"])
+
+    def result_fields(self):
+        portfolios = {
+            role: account.portfolio_state().to_dict() for role, account in self.accounts.items()
+        }
+        result = {
+            "paper_contract_manifest_sha256": self.paper_manifest,
+            "futures_contract": self.contract.to_dict(),
+            "futures_contract_digest": self.contract.digest(),
+            "futures_accounting_owner": next(iter(self.accounts.values())).kernel_owner,
+            "futures_portfolios": portfolios,
+            "futures_funding_semantics": "EXCHANGE_EVENTS_NOT_APPLIED",
+            "futures_measurement": {
+                "definition": "NET_RETURN_ON_BEGINNING_EQUITY_V1",
+                "currency": self.contract.quote_currency,
+                "initial_position": "FLAT",
+                "terminal_valuation": "MARK_TO_MARKET_WITHOUT_FORCED_CLOSE",
+                "profiles": {
+                    role: {
+                        "net_return_fraction": str(
+                            (Decimal(portfolio["equity"]) - Decimal(portfolio["initial_equity"]))
+                            / Decimal(portfolio["initial_equity"])
+                        ),
+                        "execution_model_digests": sorted(self.models[role]),
+                        "decision_config_digests": sorted(self.decision_configs[role]),
+                        "governed_parameter_seam_digests": sorted(self.governed_seams[role]),
+                    }
+                    for role, portfolio in portfolios.items()
+                },
+            },
+        }
+        if self.funding_archive is not None:
+            sources = self.funding_archive["records"]
+            result.update(
+                futures_funding_semantics="OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION",
+                funding_source_digest=digest_v1(self.funding_archive),
+                funding_source_known_at_utc=max(
+                    _utc(sources[role]["received_at_utc"]) for role in ("funding", "mark")
+                ).isoformat(),
+                funding_rate_response_sha256=sources["funding"]["raw_sha256"],
+                funding_mark_response_sha256=sources["mark"]["raw_sha256"],
+                funding_bookings=self.bookings,
+            )
+        return result
+
+
 def measure_host_economics_v1(
     workspace,
     *,
@@ -658,25 +767,17 @@ def measure_host_economics_v1(
         role: portfolio.model.snapshot()["state"]["equity"]
         for role, portfolio in portfolios.items()
     }
-    futures_accounts = {}
+    futures = None
     if paper_terms_evidence is not None:
-        _assert_capture_journal_separate(workspace, paper_terms_evidence)
-        contract, paper_manifest = _paper_contract(paper_terms_evidence, plan)
-        futures_accounts = {
-            role: ProductiveFuturesAccountingSessionV1(
-                contract=contract, initial_equity=Decimal(initial_equity[role])
-            )
-            for role in profiles
-        }
-    settlements = deque()
-    funding_bookings = None
-    if funding_evidence is not None:
-        if not futures_accounts:
-            raise ValueError("I17_FUNDING_REQUIRES_FUTURES_ACCOUNTING")
-        _assert_capture_journal_separate(workspace, _absolute(funding_evidence))
-        funding_archive = read_v1(funding_evidence)
-        settlements, settlement_marks = _archived_funding_source(plan, funding_archive)
-        funding_bookings = {role: [] for role in profiles}
+        futures = _FuturesReadback(
+            workspace,
+            plan=plan,
+            initial_equity=initial_equity,
+            paper_terms_evidence=paper_terms_evidence,
+            funding_evidence=funding_evidence,
+        )
+    elif funding_evidence is not None:
+        raise ValueError("I17_FUNDING_REQUIRES_FUTURES_ACCOUNTING")
 
     window_start = window_end = None
     cycle_count = 0
@@ -708,21 +809,6 @@ def measure_host_economics_v1(
             raise ValueError("I17_HOST_INVALID_MARK")
         if window_start is None:
             window_start = observed_at
-        while settlements and settlements[0][0] <= observed_at:
-            event, rate = settlements.popleft()
-            if event < window_start:
-                continue
-            if event not in settlement_marks:
-                raise ValueError("I17_FUNDING_FINAL_SETTLEMENT_MARK_MISSING")
-            mark_open, settlement_mark = settlement_marks[event]
-            # Only the position carried into the event receives the funding.
-            # At equal timestamps the simulated fill follows the settlement.
-            for role, account in futures_accounts.items():
-                funding_bookings[role].append(
-                    _book_archived_funding(
-                        account, event=event, rate=rate, mark_open=mark_open, mark=settlement_mark
-                    )
-                )
         for role, portfolio in portfolios.items():
             _replay_simulated_arm(
                 portfolio,
@@ -733,13 +819,8 @@ def measure_host_economics_v1(
                 instrument=instrument,
                 mark=mark,
             )
-            if role in futures_accounts:
-                _apply_futures_cycle(
-                    futures_accounts[role],
-                    pair["arms"][role]["simulated_economics"],
-                    observed_at,
-                    Decimal(str(mark)),
-                )
+        if futures is not None:
+            futures.book_cycle(observed_at=observed_at, mark=Decimal(str(mark)), arms=pair["arms"])
         window_end = observed_at
     if window_start is None or window_end is None:
         raise ValueError("I17_HOST_PAIRED_OBSERVATION_INCOMPLETE")
@@ -775,39 +856,134 @@ def measure_host_economics_v1(
     if (evidence_root / "evidence_manifest.sha256").read_bytes() != manifest:
         raise ValueError("I17_HOST_ORIGINAL_MANIFEST_CHANGED")
     output_name = "host-economics.json"
-    if futures_accounts:
-        output_name = "host-futures-accounting.json"
-        result.update(
-            schema_version="i17_host_futures_accounting_readback.v1",
-            paper_contract_manifest_sha256=paper_manifest,
-            futures_contract=contract.to_dict(),
-            futures_contract_digest=contract.digest(),
-            futures_accounting_owner=next(iter(futures_accounts.values())).kernel_owner,
-            futures_portfolios={
-                role: account.portfolio_state().to_dict()
-                for role, account in futures_accounts.items()
-            },
-            futures_funding_semantics="EXCHANGE_EVENTS_NOT_APPLIED",
+    if futures is not None:
+        output_name = (
+            "host-futures-funding.json" if funding_evidence else "host-futures-accounting.json"
         )
-    if funding_bookings is not None:
-        output_name = "host-futures-funding.json"
         result.update(
-            schema_version="i17_host_futures_funding_readback.v1",
-            futures_funding_semantics="OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION",
-            funding_source_digest=digest_v1(funding_archive),
-            funding_source_known_at_utc=max(
-                _utc(funding_archive["records"][role]["received_at_utc"])
-                for role in ("funding", "mark")
-            ).isoformat(),
-            funding_rate_response_sha256=funding_archive["records"]["funding"]["raw_sha256"],
-            funding_mark_response_sha256=funding_archive["records"]["mark"]["raw_sha256"],
-            funding_bookings=funding_bookings,
+            measurement_surface="SHADOW_ARCHIVE_SIMULATION_READBACK",
+            original_market_sequence_sha256=_i17_manifest_pins(manifest)[
+                "market_data_sequence.jsonl"
+            ],
+            schema_version=(
+                "i17_host_futures_funding_readback.v1"
+                if funding_evidence
+                else "i17_host_futures_accounting_readback.v1"
+            ),
+            **futures.result_fields(),
         )
     output = workspace.safe_path_v1(output_name)
     with workspace.lease_v1():
         if verify:
             if read_v1(output) != result:
                 raise ValueError("I17_HOST_SIMULATED_READBACK_MISMATCH")
+        else:
+            publish_v1(output, result)
+        return read_v1(output)
+
+
+def measure_backtest_economics_v1(
+    workspace,
+    *,
+    plan,
+    evidence_root,
+    code_sha,
+    decision_time_archive,
+    paper_terms_evidence,
+    funding_evidence,
+    verify=False,
+):
+    """Recompute I17 decisions on a sealed market tape, then value their simulated fills."""
+    if (
+        funding_evidence is None
+        or paper_terms_evidence is None
+        or set(plan["profiles"]) != {"reference", "candidate"}
+    ):
+        raise ValueError("I17_BACKTEST_REQUIRES_PAIRED_FUTURES_AND_FUNDING_EVIDENCE")
+    _assert_capture_journal_separate(workspace, evidence_root)
+    manifest_sha, rows = _read_i17(evidence_root, plan["instrument_id"])
+    scope = _read_i17_scope(evidence_root, manifest_sha)
+    if decision_time_archive.get("original_i17_scope_digest") != scope:
+        raise ValueError("I17_DECISION_TIME_ORIGINAL_SCOPE_MISMATCH")
+    snapshots = _decision_time_last_snapshots(
+        plan, rows, decision_time_archive, manifest_sha=manifest_sha
+    )
+    plan_digest = digest_v1(plan)
+    binding = {
+        "plan_digest": plan_digest,
+        "original_i17_manifest_sha256": manifest_sha,
+        "original_i17_scope_digest": scope,
+        "last_candle_archive_digest": digest_v1(decision_time_archive),
+        "code_sha": code_sha,
+    }
+    initial = IdempotentPortfolioV2().model.params.initial_equity
+    futures = _FuturesReadback(
+        workspace,
+        plan=plan,
+        initial_equity={role: initial for role in plan["profiles"]},
+        paper_terms_evidence=paper_terms_evidence,
+        funding_evidence=funding_evidence,
+    )
+    replayed = _compared_cycles(
+        plan,
+        rows,
+        None,
+        identifier=digest_v1(binding),
+        decision_time_last=snapshots,
+        record_simulated_economics=True,
+    )
+    decisions = []
+    for (_, tick, _), cycle in zip(rows, replayed, strict=True):
+        decide_at = _utc(cycle["decision_time_utc"])
+        futures.book_cycle(
+            observed_at=decide_at, mark=Decimal(str(float(tick["mid_price"]))), arms=cycle["arms"]
+        )
+        decisions.append(
+            {
+                "mark_sequence": tick["sequence"],
+                "decision_time_utc": cycle["decision_time_utc"],
+                "last_candle_input": cycle["last_candle_input"],
+                "arms": {
+                    role: {
+                        "decision_id": arm["simulated_economics"]["intended_action"]["decision_id"],
+                        "action": arm["intended_action"],
+                        "fill_id": None
+                        if arm["simulated_economics"]["fill"] is None
+                        else arm["simulated_economics"]["fill"]["fill_id"],
+                    }
+                    for role, arm in cycle["arms"].items()
+                },
+            }
+        )
+    result = {
+        "schema_version": "i17_backtest_futures_funding_readback.v1",
+        "authority": "NONE",
+        "measurement_surface": "BACKTEST_REPLAY_FROM_MARKET_TAPE",
+        "instrument_id": plan["instrument_id"],
+        "profiles": {
+            role: {"packet": profile["packet"], "parameters": profile["parameters"]}
+            for role, profile in plan["profiles"].items()
+        },
+        "first_decision_utc": decisions[0]["decision_time_utc"],
+        "last_decision_utc": decisions[-1]["decision_time_utc"],
+        "cycle_count": len(decisions),
+        "replayed_decisions": decisions,
+        "economic_qualification_status": "BLOCKED",
+        "reality_gap_status": "INCOMPLETE",
+        **binding,
+        **futures.result_fields(),
+    }
+    manifest = (evidence_root / "evidence_manifest.sha256").read_bytes()
+    if sha256(manifest).hexdigest() != manifest_sha:
+        raise ValueError("I17_HOST_ORIGINAL_MANIFEST_CHANGED")
+    result["original_market_sequence_sha256"] = _i17_manifest_pins(manifest)[
+        "market_data_sequence.jsonl"
+    ]
+    output = workspace.safe_path_v1("backtest-futures-funding.json")
+    with workspace.lease_v1():
+        if verify:
+            if read_v1(output) != result:
+                raise ValueError("I17_BACKTEST_ECONOMICS_READBACK_MISMATCH")
         else:
             publish_v1(output, result)
         return read_v1(output)
@@ -820,9 +996,10 @@ def main(argv=None):
     parser.add_argument("--campaign-state", type=Path, required=True)
     parser.add_argument("--base-config", type=Path, required=True)
     parser.add_argument("--i17-evidence", type=Path, required=True)
-    inputs = parser.add_mutually_exclusive_group()
-    inputs.add_argument("--decision-time-last-captures", type=Path)
-    inputs.add_argument("--host-economics", action="store_true")
+    parser.add_argument("--decision-time-last-captures", type=Path)
+    economics = parser.add_mutually_exclusive_group()
+    economics.add_argument("--host-economics", action="store_true")
+    economics.add_argument("--backtest-economics", action="store_true")
     parser.add_argument("--paper-terms-evidence", type=Path)
     parser.add_argument("--funding-evidence", type=Path)
     mode = parser.add_mutually_exclusive_group()
@@ -839,14 +1016,16 @@ def main(argv=None):
             _absolute(args.i17_evidence),
         ]
         if args.paper_terms_evidence is not None:
-            if not args.host_economics:
-                raise ValueError("I17_PAPER_TERMS_REQUIRE_HOST_ECONOMICS_MODE")
+            if not (args.host_economics or args.backtest_economics):
+                raise ValueError("I17_PAPER_TERMS_REQUIRE_ECONOMICS_MODE")
             source_paths.append(_absolute(args.paper_terms_evidence))
         if args.funding_evidence is not None:
             if args.paper_terms_evidence is None:
                 raise ValueError("I17_FUNDING_REQUIRES_FUTURES_ACCOUNTING")
             source_paths.append(_absolute(args.funding_evidence))
         if args.decision_time_last_captures is not None:
+            if args.host_economics:
+                raise ValueError("I17_HOST_ECONOMICS_USES_ORIGINAL_HOST_RECORDS")
             if args.capture_public_last:
                 raise ValueError("I17_DECISION_TIME_PREFLIGHT_REQUIRES_OFFLINE_INPUT")
             source_paths.append(_absolute(args.decision_time_last_captures))
@@ -863,6 +1042,28 @@ def main(argv=None):
             or plan["strategy_id"] != "ma_crossover"
         ):
             raise ValueError("I17_COMPARISON_GVEF_PLAN_MISMATCH")
+        if args.backtest_economics:
+            if not all(
+                (args.decision_time_last_captures, args.paper_terms_evidence, args.funding_evidence)
+            ):
+                raise ValueError("I17_BACKTEST_REQUIRES_LAST_PAPER_TERMS_AND_FUNDING_EVIDENCE")
+            result = measure_backtest_economics_v1(
+                EvaluationReceiptArchiveV1(state),
+                plan=plan,
+                evidence_root=args.i17_evidence,
+                code_sha=_head(),
+                verify=args.verify,
+                decision_time_archive=read_v1(args.decision_time_last_captures),
+                paper_terms_evidence=args.paper_terms_evidence,
+                funding_evidence=args.funding_evidence,
+            )
+            print(
+                json.dumps(
+                    {key: value for key, value in result.items() if key != "replayed_decisions"},
+                    sort_keys=True,
+                )
+            )
+            return 0
         if args.host_economics:
             if args.capture_public_last:
                 raise ValueError("I17_HOST_ECONOMICS_REQUIRES_OFFLINE_INPUT")
