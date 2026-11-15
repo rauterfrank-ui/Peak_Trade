@@ -1,6 +1,6 @@
 """The hourly MA input and the I17 decision epoch have separate clocks."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from hashlib import sha256
 import json
@@ -20,7 +20,7 @@ from src.backtest.strategy_signal_suitability_agreement_adapter_v1 import (
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
     EvaluationReceiptArchiveV1,
 )
-from src.experiments.canonical_research_prepared_execution_v1 import digest_v1
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
 )
@@ -909,6 +909,189 @@ def test_i17_host_binds_both_profiles_to_one_observation_in_the_real_cycle(
         with pytest.raises(ValueError, match="I17_HOST_SIMULATED_ECONOMICS_NOT_RECORDED"):
             comparison.measure_host_economics_v1(economics_workspace, **economics_args, verify=True)
     assert output.read_bytes() == before
+
+
+@pytest.mark.parametrize(
+    "failure",
+    ("", "unbound_policy", "reused_tape", "window", "model", "fill_count", "net_return"),
+)
+def test_i17_reality_gap_admits_only_prebound_comparable_receipts(tmp_path, failure):
+    expected_plan, _ = _pair_and_candles()
+    start = datetime(2026, 11, 14, 17, tzinfo=timezone.utc)
+    end = start + timedelta(hours=2)
+    expected_plan.update(
+        schema_version=comparison.PLAN_SCHEMA,
+        authority="NONE",
+        mode="PROSPECTIVE_PUBLIC_DATA_OFFLINE_REPLAY",
+        start_utc=start.isoformat(),
+        end_utc=end.isoformat(),
+        registered_at_utc=(start - timedelta(minutes=5)).isoformat(),
+        candidate_known_at_utc=(start - timedelta(hours=1)).isoformat(),
+        parent_data_known_at_utc=(start - timedelta(hours=2)).isoformat(),
+    )
+    observed_start = start + timedelta(days=1)
+    observed_end = end + timedelta(days=1)
+
+    def measurement(plan, start, end, *, backtest):
+        raw_pins = ("a", "b", "c", "d") if backtest else ("e", "f", "1", "2")
+        scope, manifest, tape, funding = (char * 64 for char in raw_pins)
+        terminal_equity, net = ("100500", "0.005") if backtest else ("100400", "0.004")
+        return {
+            "schema_version": f"i17_{'backtest' if backtest else 'host'}_futures_funding_readback.v1",
+            "measurement_surface": (
+                "BACKTEST_REPLAY_FROM_MARKET_TAPE"
+                if backtest
+                else "SHADOW_ARCHIVE_SIMULATION_READBACK"
+            ),
+            "plan_digest": digest_v1(plan),
+            "authority": "NONE",
+            "instrument_id": plan["instrument_id"],
+            "futures_funding_semantics": "OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION",
+            "original_i17_scope_digest": scope,
+            "original_i17_manifest_sha256": manifest,
+            "original_market_sequence_sha256": tape,
+            "funding_source_digest": funding,
+            "code_sha": "8" * 40,
+            "futures_contract_digest": "9" * 64,
+            "futures_contract": {"quote_currency": "USD"},
+            "futures_accounting_owner": "test-owner",
+            "first_decision_utc": (start + timedelta(seconds=5)).isoformat(),
+            "last_decision_utc": (end - timedelta(seconds=5)).isoformat(),
+            "funding_source_known_at_utc": end.isoformat(),
+            "cycle_count": 100,
+            "profiles": plan["profiles"],
+            "futures_portfolios": {
+                role: {"initial_equity": "100000", "equity": terminal_equity, "fill_count": 2}
+                for role in plan["profiles"]
+            },
+            "futures_measurement": {
+                "definition": "NET_RETURN_ON_BEGINNING_EQUITY_V1",
+                "currency": "USD",
+                "initial_position": "FLAT",
+                "terminal_valuation": "MARK_TO_MARKET_WITHOUT_FORCED_CLOSE",
+                "profiles": {
+                    role: {
+                        "net_return_fraction": net,
+                        "execution_model_digests": ["3" * 64],
+                        "decision_config_digests": ["4" * 64],
+                        "governed_parameter_seam_digests": ["5" * 64],
+                    }
+                    for role in plan["profiles"]
+                },
+            },
+        }
+
+    expected = measurement(expected_plan, start, end, backtest=True)
+    registered = observed_start - timedelta(hours=1)
+    policy = {
+        "schema_version": "i17_reality_gap_policy.v1",
+        "registered_at_utc": registered.isoformat(),
+        "expected_plan_digest": digest_v1(expected_plan),
+        "expected_receipt_digest": digest_v1(expected),
+        "expected_window_start_utc": start.isoformat(),
+        "expected_window_end_utc": end.isoformat(),
+        "observed_window_start_utc": observed_start.isoformat(),
+        "observed_window_end_utc": observed_end.isoformat(),
+        "minimum_cycles": 100,
+        "minimum_fills_per_profile": 2,
+        "max_boundary_skew_seconds": "5",
+        "max_abs_net_return_gap": "0.002",
+    }
+    observed_plan = {
+        **expected_plan,
+        "registered_at_utc": registered.isoformat(),
+        "start_utc": observed_start.isoformat(),
+        "end_utc": observed_end.isoformat(),
+        "reality_gap_policy_digest": digest_v1(policy),
+    }
+    observed = measurement(observed_plan, observed_start, observed_end, backtest=False)
+    if failure == "unbound_policy":
+        policy["max_abs_net_return_gap"] = "0.003"
+    elif failure == "reused_tape":
+        observed["original_market_sequence_sha256"] = expected["original_market_sequence_sha256"]
+    elif failure == "window":
+        observed["last_decision_utc"] = (observed_end - timedelta(minutes=1)).isoformat()
+    elif failure == "model":
+        observed["futures_measurement"]["profiles"]["candidate"]["execution_model_digests"] = [
+            "6" * 64
+        ]
+    elif failure == "fill_count":
+        observed["futures_portfolios"]["candidate"]["fill_count"] = 0
+    elif failure == "net_return":
+        observed["futures_measurement"]["profiles"]["candidate"]["net_return_fraction"] = "0.006"
+
+    root = tmp_path.resolve()
+    expected_path, observed_path, policy_path = (
+        root / name for name in ("expected.json", "observed.json", "policy.json")
+    )
+    for path, body in (
+        (expected_path, expected),
+        (observed_path, observed),
+        (root / "expected-plan.json", expected_plan),
+        (root / "observed-plan.json", observed_plan),
+    ):
+        publish_v1(path, body)
+    policy_path.write_text(json.dumps(policy), encoding="utf-8")
+    state = root / "result"
+    workspace = EvaluationReceiptArchiveV1(state)
+    args = dict(
+        expected_plan=expected_plan,
+        observed_plan=observed_plan,
+        expected_path=expected_path,
+        observed_path=observed_path,
+        policy_path=policy_path,
+    )
+    if failure:
+        errors = {
+            "unbound_policy": "PREDECLARED_POLICY_REQUIRED",
+            "reused_tape": "INDEPENDENT_OBSERVATION_REQUIRED",
+            "window": "WINDOW_OR_SAMPLE_MISMATCH",
+            "model": "RISK_OR_EXECUTION_MODEL_MISMATCH",
+            "fill_count": "EQUITY_OR_SAMPLE_INVALID",
+            "net_return": "RETURN_READBACK_MISMATCH",
+        }
+        with pytest.raises(ValueError, match=errors[failure]):
+            comparison.prepare_i17_reality_gap_input_v1(workspace, **args)
+        assert not (state / "i17-reality-gap-inputs.json").exists()
+        return
+
+    result = comparison.prepare_i17_reality_gap_input_v1(workspace, **args)
+    assert result["authority"] == "NONE"
+    assert result["threshold_policy_digest"] == digest_v1(policy)
+    assert result["expected_receipt_digest"] == digest_v1(expected)
+    assert result["observed_receipt_digest"] == digest_v1(observed)
+    for role, profile in result["profiles"].items():
+        assert profile["packet"] == observed_plan["profiles"][role]["packet"]
+        assert profile["gap_dimensions"] == [
+            {
+                "name": "pnl",
+                "expected": 0.005,
+                "observed": 0.004,
+                "threshold": 0.002,
+                "unit": "ratio",
+            }
+        ]
+    assert (
+        comparison.main(
+            [
+                "reality-gap",
+                "--state",
+                str(state),
+                "--pair-plan",
+                str(root / "observed-plan.json"),
+                "--expected-plan",
+                str(root / "expected-plan.json"),
+                "--expected",
+                str(expected_path),
+                "--observed",
+                str(observed_path),
+                "--policy",
+                str(policy_path),
+                "--verify",
+            ]
+        )
+        == 0
+    )
 
 
 def test_candidate_bridge_rejects_state_persistence_before_cycle(tmp_path):

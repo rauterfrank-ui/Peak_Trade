@@ -10,8 +10,10 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from io import BytesIO
+from math import isfinite
 import json
 from pathlib import Path
+import re
 import sys
 
 REPO = Path(__file__).resolve().parents[2]
@@ -26,6 +28,7 @@ from scripts.ops.run_research_candidate_shadow_v1 import (  # noqa: E402
     _pair,
     _public_get,
     _raw_rows,
+    _reality_gap_policy_window,
 )
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (  # noqa: E402
     EvaluationReceiptArchiveV1,
@@ -39,6 +42,7 @@ from src.experiments.canonical_research_prepared_execution_v1 import (  # noqa: 
     publish_v1,
     read_v1,
 )
+from src.experiments.offline_ddo_research_cycle_v1 import ResearchGapDimensionV1  # noqa: E402
 from src.governance.canonical_order_intent_v1 import (  # noqa: E402
     canonical_order_intent_from_dict,
     validate_canonical_order_intent_v1,
@@ -989,7 +993,246 @@ def measure_backtest_economics_v1(
         return read_v1(output)
 
 
+def _verify_gap_measurement(receipt, *, plan, window, minimum_cycles, tolerance):
+    first, last = (_utc(receipt[key]) for key in ("first_decision_utc", "last_decision_utc"))
+    _, start, end = _decision_time_window(plan)
+    if (
+        not start <= window[0] < window[1] <= end
+        or not start <= first < last < end
+        or any(
+            abs(Decimal(str((actual - scheduled).total_seconds()))) > tolerance
+            for actual, scheduled in zip((first, last), window, strict=True)
+        )
+        or type(receipt["cycle_count"]) is not int
+        or receipt["cycle_count"] < minimum_cycles
+        or _utc(receipt["funding_source_known_at_utc"]) < end
+    ):
+        raise ValueError("I17_REALITY_GAP_WINDOW_OR_SAMPLE_MISMATCH")
+    return last - first
+
+
+def _measured_net_return(receipt, role, *, minimum_fills):
+    portfolio = receipt["futures_portfolios"][role]
+    initial = Decimal(portfolio["initial_equity"])
+    final = Decimal(portfolio["equity"])
+    if (
+        not initial.is_finite()
+        or initial <= 0
+        or not final.is_finite()
+        or type(portfolio["fill_count"]) is not int
+        or portfolio["fill_count"] < minimum_fills
+    ):
+        raise ValueError("I17_REALITY_GAP_EQUITY_OR_SAMPLE_INVALID")
+    value = (final - initial) / initial
+    if Decimal(receipt["futures_measurement"]["profiles"][role]["net_return_fraction"]) != value:
+        raise ValueError("I17_REALITY_GAP_RETURN_READBACK_MISMATCH")
+    return initial, value
+
+
+def prepare_i17_reality_gap_input_v1(
+    workspace,
+    *,
+    expected_plan,
+    observed_plan,
+    expected_path,
+    observed_path,
+    policy_path,
+    verify=False,
+):
+    """Admit a paired measurement and prepare existing Phase 7 dimension inputs."""
+    expected_path, observed_path, policy_path = (
+        _absolute(path) for path in (expected_path, observed_path, policy_path)
+    )
+    _assert_capture_journal_separate(workspace, REPO, expected_path, observed_path, policy_path)
+    expected, observed = read_v1(expected_path), read_v1(observed_path)
+    policy = json.loads(policy_path.read_bytes())
+    registered, start, end = _decision_time_window(observed_plan)
+    expected_window, observed_window, tolerance, threshold = _reality_gap_policy_window(
+        policy, registered=registered, start=start, end=end
+    )
+    expected_plan_digest = digest_v1(expected_plan)
+    observed_plan_digest = digest_v1(observed_plan)
+    policy_digest = digest_v1(policy)
+    if (
+        observed_plan.get("reality_gap_policy_digest") != policy_digest
+        or expected_plan_digest != policy["expected_plan_digest"]
+        or digest_v1(expected) != policy["expected_receipt_digest"]
+        or _utc(expected["funding_source_known_at_utc"]) > _utc(policy["registered_at_utc"])
+        or _utc(expected_plan["end_utc"]) > _utc(policy["registered_at_utc"])
+    ):
+        raise ValueError("I17_REALITY_GAP_PREDECLARED_POLICY_REQUIRED")
+    funded = "OKX_HISTORY_RATE_AND_FINAL_MARK_CLOSE_APPLIED_IN_SIMULATION"
+    if (
+        expected["schema_version"] != "i17_backtest_futures_funding_readback.v1"
+        or expected["measurement_surface"] != "BACKTEST_REPLAY_FROM_MARKET_TAPE"
+        or observed["schema_version"] != "i17_host_futures_funding_readback.v1"
+        or observed["measurement_surface"] != "SHADOW_ARCHIVE_SIMULATION_READBACK"
+        or not expected["authority"] == observed["authority"] == "NONE"
+        or expected["plan_digest"] != expected_plan_digest
+        or observed["plan_digest"] != observed_plan_digest
+        or not expected["instrument_id"]
+        == observed["instrument_id"]
+        == observed_plan["instrument_id"]
+        or not expected["futures_funding_semantics"]
+        == observed["futures_funding_semantics"]
+        == funded
+    ):
+        raise ValueError("I17_REALITY_GAP_SURFACE_OR_SCOPE_MISMATCH")
+    if any(
+        expected[key] == observed[key]
+        or any(not re.fullmatch(r"[0-9a-f]{64}", receipt[key]) for receipt in (expected, observed))
+        for key in (
+            "original_i17_scope_digest",
+            "original_i17_manifest_sha256",
+            "original_market_sequence_sha256",
+            "funding_source_digest",
+        )
+    ):
+        raise ValueError("I17_REALITY_GAP_INDEPENDENT_OBSERVATION_REQUIRED")
+
+    if any(
+        expected[key] != observed[key]
+        for key in (
+            "code_sha",
+            "futures_contract_digest",
+            "futures_contract",
+            "futures_accounting_owner",
+        )
+    ):
+        raise ValueError("I17_REALITY_GAP_MEASUREMENT_BASIS_MISMATCH")
+    expected_duration, observed_duration = (
+        _verify_gap_measurement(
+            receipt,
+            plan=plan,
+            window=window,
+            minimum_cycles=policy["minimum_cycles"],
+            tolerance=tolerance,
+        )
+        for receipt, plan, window in (
+            (expected, expected_plan, expected_window),
+            (observed, observed_plan, observed_window),
+        )
+    )
+    if abs(Decimal(str((expected_duration - observed_duration).total_seconds()))) > tolerance:
+        raise ValueError("I17_REALITY_GAP_WINDOW_OR_SAMPLE_MISMATCH")
+
+    before, after = (item["futures_measurement"] for item in (expected, observed))
+    definition = "NET_RETURN_ON_BEGINNING_EQUITY_V1"
+    if (
+        not before["definition"] == after["definition"] == definition
+        or not before["currency"]
+        == after["currency"]
+        == expected["futures_contract"]["quote_currency"]
+        or not before["initial_position"] == after["initial_position"] == "FLAT"
+        or not before["terminal_valuation"]
+        == after["terminal_valuation"]
+        == "MARK_TO_MARKET_WITHOUT_FORCED_CLOSE"
+        or any(
+            set(item["profiles"]) != {"reference", "candidate"}
+            for item in (expected, observed, before, after)
+        )
+    ):
+        raise ValueError("I17_REALITY_GAP_METRIC_DEFINITION_MISMATCH")
+    profiles = {}
+    for role, profile in observed_plan["profiles"].items():
+        if any(
+            receipt["profiles"][role][key] != profile[key]
+            for receipt in (expected, observed, expected_plan)
+            for key in ("packet", "parameters")
+        ):
+            raise ValueError("I17_REALITY_GAP_PROFILE_MISMATCH")
+        if any(
+            before["profiles"][role][key] != after["profiles"][role][key]
+            or len(before["profiles"][role][key]) != 1
+            or not re.fullmatch(r"[0-9a-f]{64}", before["profiles"][role][key][0])
+            for key in (
+                "execution_model_digests",
+                "decision_config_digests",
+                "governed_parameter_seam_digests",
+            )
+        ):
+            raise ValueError("I17_REALITY_GAP_RISK_OR_EXECUTION_MODEL_MISMATCH")
+        initial_expected, net_expected = _measured_net_return(
+            expected, role, minimum_fills=policy["minimum_fills_per_profile"]
+        )
+        initial_observed, net_observed = _measured_net_return(
+            observed, role, minimum_fills=policy["minimum_fills_per_profile"]
+        )
+        if initial_expected != initial_observed:
+            raise ValueError("I17_REALITY_GAP_START_EQUITY_MISMATCH")
+        values = (net_expected, net_observed, threshold)
+        numeric = tuple(float(value) for value in values)
+        if any(
+            not isfinite(scalar) or (value and not scalar)
+            for value, scalar in zip(values, numeric, strict=True)
+        ):
+            raise ValueError("I17_REALITY_GAP_FLOAT_REPRESENTATION_INVALID")
+        dimension = ResearchGapDimensionV1(
+            name="pnl", expected=numeric[0], observed=numeric[1], threshold=numeric[2], unit="ratio"
+        )
+        profiles[role] = {"packet": profile["packet"], "gap_dimensions": [dimension.model_dump()]}
+
+    result = {
+        "schema_version": "i17_reality_gap_inputs.v1",
+        "authority": "NONE",
+        "expected_plan_digest": expected_plan_digest,
+        "observed_plan_digest": observed_plan_digest,
+        "metric_definitions": definition,
+        "observed_surface": "SHADOW",
+        "threshold_policy_digest": policy_digest,
+        "expected_receipt_digest": digest_v1(expected),
+        "observed_receipt_digest": digest_v1(observed),
+        "expected_market_sequence_sha256": expected["original_market_sequence_sha256"],
+        "observed_market_sequence_sha256": observed["original_market_sequence_sha256"],
+        "source_data_known_at_utc": max(
+            _utc(receipt["funding_source_known_at_utc"]) for receipt in (expected, observed)
+        ).isoformat(),
+        "profiles": profiles,
+    }
+    output = workspace.safe_path_v1("i17-reality-gap-inputs.json")
+    with workspace.lease_v1():
+        if verify:
+            if read_v1(output) != result:
+                raise ValueError("I17_REALITY_GAP_INPUT_READBACK_MISMATCH")
+        else:
+            publish_v1(output, result)
+        return read_v1(output)
+
+
+def _gap_main(argv):
+    parser = argparse.ArgumentParser(description="Prepare paired I17 Phase 7 measurement inputs.")
+    parser.add_argument("--state", type=Path, required=True)
+    parser.add_argument("--pair-plan", type=Path, required=True)
+    parser.add_argument("--expected-plan", type=Path, required=True)
+    parser.add_argument("--expected", type=Path, required=True)
+    parser.add_argument("--observed", type=Path, required=True)
+    parser.add_argument("--policy", type=Path, required=True)
+    parser.add_argument("--verify", action="store_true")
+    args = parser.parse_args(argv)
+    try:
+        workspace = EvaluationReceiptArchiveV1(_absolute(args.state))
+        plan_paths = tuple(_absolute(path) for path in (args.expected_plan, args.pair_plan))
+        _assert_capture_journal_separate(workspace, *plan_paths)
+        expected_plan, observed_plan = (read_v1(path) for path in plan_paths)
+        result = prepare_i17_reality_gap_input_v1(
+            workspace,
+            expected_plan=expected_plan,
+            observed_plan=observed_plan,
+            expected_path=args.expected,
+            observed_path=args.observed,
+            policy_path=args.policy,
+            verify=args.verify,
+        )
+        print(json.dumps(result, sort_keys=True))
+        return 0
+    except (OSError, ValueError, KeyError, TypeError, InvalidOperation) as exc:
+        parser.exit(2, f"I17 Reality Gap input stopped: {exc}\n")
+
+
 def main(argv=None):
+    args_list = sys.argv[1:] if argv is None else argv
+    if args_list[:1] == ["reality-gap"]:
+        return _gap_main(args_list[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--state", type=Path, required=True)
     parser.add_argument("--pair-plan", type=Path, required=True)
@@ -1005,7 +1248,7 @@ def main(argv=None):
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--capture-public-last", action="store_true")
     mode.add_argument("--verify", action="store_true")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(args_list)
     try:
         state = _absolute(args.state)
         source_paths = [

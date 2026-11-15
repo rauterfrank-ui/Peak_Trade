@@ -441,3 +441,46 @@ receipt also binds its tape and scoped Last archive. It writes
 This is a window-specific expected value. SL07 still needs the independent
 observation, admission of matching measurement conditions and the
 versioned threshold policy before producing a Reality Gap record.
+
+### Prepare comparable I17 measurements for SL07
+
+Freeze the funded backtest receipt before registering the later Shadow plan.
+Pass the versioned policy JSON as `--reality-gap-policy` to the existing
+`prepare` command. The plan stores its digest, and the I17 preregistration
+scope already binds the plan digest. Use a new forward-state directory for
+the later window.
+
+The `i17_reality_gap_policy.v1` JSON includes `schema_version`,
+`registered_at_utc`, `expected_plan_digest`, and `expected_receipt_digest`.
+Use the `sha256` fields of the original plan and backtest receipt envelopes.
+Declare the UTC bounds with `expected_window_start_utc`,
+`expected_window_end_utc`, `observed_window_start_utc`, and
+`observed_window_end_utc`. Declare `minimum_cycles`,
+`minimum_fills_per_profile`, `max_boundary_skew_seconds`, and
+`max_abs_net_return_gap`. The windows must have equal planned duration.
+The threshold is an absolute difference in net-return fractions, so a
+fraction of 0.01 represents one percentage point.
+
+After the later Shadow has its own funded host readback, prepare the dimensions.
+
+```bash
+./scripts/pt scripts/ops/run_i17_candidate_comparison_v1.py reality-gap \
+  --state /absolute/i17-gap-inputs \
+  --expected-plan /absolute/backtest-plan/plan.json \
+  --pair-plan /absolute/later-shadow-plan/plan.json \
+  --expected /absolute/i17-backtest/backtest-futures-funding.json \
+  --observed /absolute/i17-shadow/host-futures-funding.json \
+  --policy /absolute/reality-gap-policy.json
+```
+
+The reader verifies the precommitment, distinct observation sources,
+actual coverage, sample bounds, and matching profile, model, contract,
+currency and valuation semantics. It checks the equity arithmetic and
+emits one typed `pnl` ratio dimension per profile in
+`i17-reality-gap-inputs.json`, with policy and source digests. Run the same
+command with `--verify` for deterministic readback.
+
+A durable record still belongs to the
+[canonical SL07 store](CANONICAL_REALITY_GAP_STORE_V1.md) and requires an
+exactly bound complete experiment record. The next research iteration may
+consume a gap after that owner records it under a compatible identity.

@@ -46,6 +46,41 @@ def test_paired_window_registration_finality_and_immutable_readback(
     assert not (workspace.root / "plan.json").exists()
     plan = replay.prepare_v1(workspace, **args, now=parent_time)
     assert replay.prepare_v1(workspace, **args, now=start) == plan
+    assert "reality_gap_policy_digest" not in plan
+
+    expected_start = start - timedelta(days=1)
+    policy = {
+        "schema_version": "i17_reality_gap_policy.v1",
+        "registered_at_utc": parent_time.isoformat(),
+        "expected_plan_digest": "c" * 64,
+        "expected_receipt_digest": "d" * 64,
+        "expected_window_start_utc": expected_start.isoformat(),
+        "expected_window_end_utc": (expected_start + 2 * replay.HOUR).isoformat(),
+        "observed_window_start_utc": start.isoformat(),
+        "observed_window_end_utc": (start + 2 * replay.HOUR).isoformat(),
+        "minimum_cycles": 2,
+        "minimum_fills_per_profile": 0,
+        "max_boundary_skew_seconds": "5",
+        "max_abs_net_return_gap": "0.005",
+    }
+    gap_workspace = EvaluationReceiptArchiveV1(tmp_path.resolve() / "gap-plan")
+    with pytest.raises(ValueError, match="PREDECLARED_POLICY_REQUIRED"):
+        replay.prepare_v1(
+            gap_workspace,
+            **args,
+            now=parent_time,
+            reality_gap_policy={**policy, "registered_at_utc": start.isoformat()},
+        )
+    assert not (gap_workspace.root / "plan.json").exists()
+    gap_plan = replay.prepare_v1(gap_workspace, **args, now=parent_time, reality_gap_policy=policy)
+    assert gap_plan["reality_gap_policy_digest"] == replay.digest_v1(policy)
+    with pytest.raises(ValueError, match="RESEARCH_IMMUTABLE_CONFLICT"):
+        replay.prepare_v1(
+            gap_workspace,
+            **args,
+            now=parent_time,
+            reality_gap_policy={**policy, "max_abs_net_return_gap": "0.006"},
+        )
 
     end = start + 2 * replay.HOUR
     grid_start = replay._utc(plan["warmup_start_utc"])
