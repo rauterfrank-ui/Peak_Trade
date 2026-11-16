@@ -26,6 +26,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256,
 )
+from scripts.ops.shadow_ddo_learning_handoff_v1 import shadow_ddo_learning_handoff_v1
 from src.experiments.canonical_automated_offline_research_loop_v1 import (
     OfflineExperimentObservationsV1,
 )
@@ -40,6 +41,7 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
 from src.meta.learning_loop.contract_safety_v1 import (
     compute_content_sha256,
     deterministic_json_dumps,
+    is_valid_sha256_hex,
 )
 from src.meta.learning_loop.runtime_observation_feedback_v1 import (
     EvidenceFieldBinding,
@@ -178,6 +180,25 @@ class GovernedPaperEpisodeProjectionResultV1:
     decision_code: str
     blocking_reasons: tuple[str, ...]
     source: GovernedPaperEpisodeProjectionRequestV1
+    projection_record_digest: str | None = None
+
+
+@dataclass(frozen=True)
+class GovernedI17ShadowProjectionRequestV1:
+    primary_evidence_root: Path
+    o4_mark_archive: Path
+    outcome_receipt: Path
+    learning_handoff_root: Path
+    cycle_key: str
+    handoff_digest: str
+
+
+@dataclass(frozen=True)
+class GovernedI17ShadowProjectionResultV1:
+    status: str
+    decision_code: str
+    blocking_reasons: tuple[str, ...]
+    source: GovernedI17ShadowProjectionRequestV1
     projection_record_digest: str | None = None
 
 
@@ -494,9 +515,70 @@ def read_verified_paper_episode_for_g2_v1(
     )
 
 
+def read_verified_i17_shadow_for_g2_v1(
+    source: GovernedI17ShadowProjectionRequestV1,
+) -> tuple[dict[str, Any], dict[str, Any], str]:
+    if any(
+        is_under_tmp(path)
+        for path in (source.primary_evidence_root, source.o4_mark_archive, source.outcome_receipt)
+    ):
+        raise GovernedRuntimePrimaryProjectionError("TMP_ONLY_SOURCE_REJECTED")
+    if not is_valid_sha256_hex(source.handoff_digest):
+        raise GovernedRuntimePrimaryProjectionError("I17_SHADOW_HANDOFF_DIGEST_REQUIRED")
+    try:
+        receipts = []
+        handoff = shadow_ddo_learning_handoff_v1(
+            root=source.learning_handoff_root,
+            cycle_key=source.cycle_key,
+            evidence_root=source.primary_evidence_root,
+            o4_mark_archive=source.o4_mark_archive,
+            outcome_receipt=source.outcome_receipt,
+            expected_digest=source.handoff_digest,
+            verified_receipt_sink=receipts,
+        )
+        (receipt,) = receipts
+        if handoff["source_class"] != "DECLARED_OFFLINE_DATA":
+            raise ValueError("I17_SHADOW_DURABLE_PUBLIC_SOURCE_REQUIRED")
+        return (
+            handoff,
+            receipt,
+            compute_content_sha256(
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "source": "SEALED_I17_SHADOW_COUNTERFACTUAL",
+                    "primary_evidence_manifest_digest": receipt["shadow_decision"][
+                        "shadow_manifest_sha256"
+                    ],
+                    "shadow_outcome_receipt_digest": receipt["exact_content_digest"],
+                    "shadow_handoff_digest": handoff["handoff_digest"],
+                    "learning_evidence_digest": handoff["learning_evidence"]["content_hash"],
+                }
+            ),
+        )
+    except (DdoError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
+        raise GovernedRuntimePrimaryProjectionError(f"I17_SHADOW_HANDOFF_REJECTED:{exc}") from exc
+
+
 def run_governed_runtime_primary_to_offline_observation_projection_v1(
-    request: GovernedRuntimePrimaryProjectionRequestV1 | GovernedPaperEpisodeProjectionRequestV1,
-) -> GovernedRuntimePrimaryProjectionResultV1 | GovernedPaperEpisodeProjectionResultV1:
+    request: (
+        GovernedRuntimePrimaryProjectionRequestV1
+        | GovernedPaperEpisodeProjectionRequestV1
+        | GovernedI17ShadowProjectionRequestV1
+    ),
+) -> (
+    GovernedRuntimePrimaryProjectionResultV1
+    | GovernedPaperEpisodeProjectionResultV1
+    | GovernedI17ShadowProjectionResultV1
+):
+    if isinstance(request, GovernedI17ShadowProjectionRequestV1):
+        try:
+            _, _, digest = read_verified_i17_shadow_for_g2_v1(request)
+        except GovernedRuntimePrimaryProjectionError as exc:
+            code, _, detail = str(exc).partition(":")
+            return GovernedI17ShadowProjectionResultV1("REJECTED", code, (detail or code,), request)
+        return GovernedI17ShadowProjectionResultV1(
+            "PROJECTED", "GOVERNED_I17_SHADOW_PROJECTED", (), request, digest
+        )
     if isinstance(request, GovernedPaperEpisodeProjectionRequestV1):
         try:
             _, digest = read_verified_paper_episode_for_g2_v1(request)

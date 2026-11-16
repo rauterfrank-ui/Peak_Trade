@@ -80,6 +80,42 @@ def _shadow_handoff(args, *, expected_digest=None):
     )
 
 
+def _verify_shadow_g2(args):
+    from src.governance.governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 import (
+        bind_from_g2_projection_result_v1,
+    )
+    from src.governance.governed_runtime_primary_to_offline_observation_projection_v1 import (
+        GovernedI17ShadowProjectionRequestV1,
+        run_governed_runtime_primary_to_offline_observation_projection_v1,
+    )
+
+    projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
+        GovernedI17ShadowProjectionRequestV1(
+            primary_evidence_root=args.shadow_evidence,
+            o4_mark_archive=args.o4_mark_archive,
+            outcome_receipt=args.shadow_outcome_receipt,
+            learning_handoff_root=args.root,
+            cycle_key=args.cycle,
+            handoff_digest=args.shadow_handoff_digest,
+        )
+    )
+    binding = bind_from_g2_projection_result_v1(projection)
+    if binding.status != "BOUND" or binding.canonical_optimization_ack is None:
+        raise ValueError(", ".join((binding.decision_code, *binding.blocking_reasons)))
+    return {
+        "learning_evidence": binding.learning_evidence,
+        "shadow_outcome_receipt": binding.i17_shadow_outcome_receipt,
+        "optimization_admission": dict(binding.canonical_optimization_ack),
+        "g2": {
+            "projection_status": projection.status,
+            "projection_record_digest": projection.projection_record_digest,
+            "binding_status": binding.status,
+            "binding_record_digest": binding.binding_record_digest,
+            "lineage_chain": binding.lineage_chain,
+        },
+    }
+
+
 def _add_shadow_sources(parser, *, required=False):
     parser.add_argument("--shadow-evidence", type=Path, required=required)
     parser.add_argument("--o4-mark-archive", type=Path, required=required)
@@ -116,6 +152,9 @@ def main(argv: list[str] | None = None) -> int:
     export.add_argument("--plan-digest", required=True)
     shadow = sub.add_parser("complete-shadow", help="Ingest a verified I17 market outcome")
     _add_shadow_sources(shadow, required=True)
+    shadow_g2 = sub.add_parser("verify-shadow-g2", help="Verify a completed I17 handoff through G2")
+    shadow_g2.add_argument("--shadow-handoff-digest", required=True)
+    _add_shadow_sources(shadow_g2, required=True)
     research = sub.add_parser("research", help="Run bounded native trials and scoped GVEF replay")
     learning_source = research.add_mutually_exclusive_group(required=True)
     learning_source.add_argument("--plan-digest")
@@ -157,6 +196,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         elif args.action == "complete-shadow":
             result = _shadow_handoff(args)
+        elif args.action == "verify-shadow-g2":
+            result = _verify_shadow_g2(args)
         elif args.action == "research":
             result = _research(args)
         else:

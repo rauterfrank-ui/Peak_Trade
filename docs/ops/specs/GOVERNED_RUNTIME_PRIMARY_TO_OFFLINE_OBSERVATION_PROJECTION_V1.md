@@ -63,8 +63,28 @@ the recorded digests. This works with the original durable archive outside the
 checkout, without staging a copy in Git. Archive integrity and a PASS review
 do not establish the provenance of an individual outcome or fill.
 
-The I17 wallclock Shadow writer has its own session bundle and DDO verifier.
-That bundle does not implement the bounded archive layout consumed here.
+## I17 Shadow outcomes
+
+`GovernedI17ShadowProjectionRequestV1` admits a completed Shadow handoff
+through its original I17 session, O4 Mark archive, outcome receipt and DDO
+ledger. The projection and optimization binding both use the original I17
+verifier in readback mode. The expected handoff digest is required.
+This offline intake expects the source class `DECLARED_OFFLINE_DATA`.
+
+The canonical optimization-input validator receives the original Learning
+Evidence. The binding also returns the original measurement receipt. Its
+decision identity, knowledge time, `SHADOW_COUNTERFACTUAL`, `N_BARS` and
+`LOG_RETURN` keep the semantics of a dimensionless public Mark-price
+measurement. The source verifier retains the decision-time and evaluation-time
+inputs and rechecks the selected O4 window.
+
+```bash
+./scripts/pt scripts/ops/run_offline_ddo_learning_follow_up_v1.py \
+  --root /absolute/i17-learning --cycle i17 verify-shadow-g2 \
+  --shadow-evidence /absolute/i17-session/evidence \
+  --o4-mark-archive /absolute/o4 --shadow-outcome-receipt /absolute/shadow-outcome.json \
+  --shadow-handoff-digest '<digest>'
+```
 
 ## Closed Paper episodes
 
