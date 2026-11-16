@@ -1174,7 +1174,7 @@
     {
       "path": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
       "before_sha256": "159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18",
-      "sha256": "45a8201b7371aa1566d72fccb9d13aaa0a790193b06fec2aaad047e2a288ba8b"
+      "sha256": "073664b39d07a27c64d4e7d498f5e4949c8f0d5f405ccba34b50686450bdfdcb"
     },
     {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
@@ -1284,7 +1284,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "d39647ff12f088055cddad9fefccdda770172d8dde375bab61d0723a65d3d31b"
+      "sha256": "09cc406dd91d9964f52c8f694bb473342844df4a7362cd99c09f62a0a972f7b6"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1679,7 +1679,7 @@
     {
       "path": "scripts/ops/run_offline_ddo_learning_follow_up_v1.py",
       "before_sha256": null,
-      "sha256": "a3c07f0f94bcfd058c296da19b9636663288f76f1f5c2ea04360260d11d5e0fa"
+      "sha256": "79888c14e59ff95625ef27bf014a1cce56e41d09c586da41c0b221dfec2317c7"
     },
     {
       "path": "scripts/ops/run_offline_learning_mark_measurement_v1.py",
@@ -1924,12 +1924,12 @@
     {
       "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
       "before_sha256": "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
-      "sha256": "2654f090e86714636b995946ab49d54008e7724360e2fcf4c8f9cfe51766871f"
+      "sha256": "a36967720fdcaa0a80330d50be4036fb0a8e7d2c460873001cfac6ac5d9f13a1"
     },
     {
       "path": "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
       "before_sha256": "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
-      "sha256": "a44969de48bc7cf53ea2533988b753fffba72f2eb79b14b2f478da23bcc592ce"
+      "sha256": "bc55e38152968f23d71889b039726328b55d9d3e8727f4579895c7cad9100c15"
     },
     {
       "path": "src/governance/k1_opaque_signing_handle_governed_construction_v1.py",
@@ -4294,7 +4294,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "e4f0bc991031a81e87b7e2cac81e14964411bb0131b32dfe0bd67f1d6dd58a52"
+      "sha256": "23b64320d7293bd6f72957f301287ee9c8e954fea340bd23c6e0fefb8406d0cc"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

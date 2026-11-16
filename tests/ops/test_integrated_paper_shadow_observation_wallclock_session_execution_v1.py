@@ -1119,6 +1119,40 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert json.loads(capsys.readouterr().out) == handoff
     assert learning_ledger.read_bytes() == learning_bytes
 
+    from src.governance import governed_runtime_primary_to_offline_observation_projection_v1 as g2
+
+    shadow_g2_args = [
+        *learning_args[:-1],
+        "verify-shadow-g2",
+        *sources,
+        "--shadow-handoff-digest",
+        handoff["handoff_digest"],
+    ]
+    # The fixture is temporary. Exercise the separate source-class check.
+    monkeypatch.setattr(g2, "is_under_tmp", lambda _: False)
+    with pytest.raises(SystemExit, match="2"):
+        learning_main(shadow_g2_args)
+    assert "I17_SHADOW_DURABLE_PUBLIC_SOURCE_REQUIRED" in capsys.readouterr().err
+
+    verify = g2.shadow_ddo_learning_handoff_v1
+
+    def reverify_declared_public_handoff(**kwargs):
+        return {**verify(**kwargs), "source_class": "DECLARED_OFFLINE_DATA"}
+
+    monkeypatch.setattr(g2, "shadow_ddo_learning_handoff_v1", reverify_declared_public_handoff)
+    assert learning_main(shadow_g2_args) == 0
+    bound_g2 = json.loads(capsys.readouterr().out)
+    assert bound_g2["g2"]["binding_status"] == "BOUND"
+    assert bound_g2["learning_evidence"] == evidence
+    assert bound_g2["shadow_outcome_receipt"] == receipt
+    assert (
+        bound_g2["optimization_admission"]["learning_evidence_digest"] == evidence["content_hash"]
+    )
+    with pytest.raises(SystemExit, match="2"):
+        learning_main([*shadow_g2_args[:-1], ""])
+    assert "I17_SHADOW_HANDOFF_DIGEST_REQUIRED" in capsys.readouterr().err
+    assert learning_ledger.read_bytes() == learning_bytes
+
     import pandas as pd
 
     from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
