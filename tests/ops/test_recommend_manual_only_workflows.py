@@ -95,12 +95,13 @@ RESIDUAL_MANUAL_ONLY_COUNT = 7
 RESIDUAL_ALL_INTENT_MISLEADING_PHRASE = "13 workflows with active schedule"
 
 RESIDUAL_CI_OPS_FILES = frozenset({"ci.yml", "audit.yml", "pru-required-checks-drift-detector.yml"})
+PRJ_SMOKE_WORKFLOW = "prj-scheduled-shadow-paper-features-smoke.yml"
 
 PAPER_SHADOW_FILES = frozenset(
     {
         "ci-scheduled-paper-and-export-smoke.yml",
         "class-a-shadow-paper-scheduled-probe-v1.yml",
-        "prj-scheduled-shadow-paper-features-smoke.yml",
+        PRJ_SMOKE_WORKFLOW,
     }
 )
 
@@ -444,7 +445,7 @@ def test_residual_schedule_files_match_script_inventory_v0() -> None:
 
 
 def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
-    """Require the five residual cron workflows and the independently tested offline suite."""
+    """Require the residual scorecards, the offline suite and the approved PR-J smoke."""
     pytest.importorskip("yaml")
     on_disk = _all_workflow_filenames()
     missing_inventory = RESIDUAL_SCHEDULE_WORKFLOW_FILES - on_disk
@@ -456,7 +457,7 @@ def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
         if rec.has_active_schedule:
             active.add(fname)
 
-    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST) | {FULL_HEALTH_WORKFLOW}
+    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST) | {FULL_HEALTH_WORKFLOW, PRJ_SMOKE_WORKFLOW}
     extra = active - allowlist
     missing_active = allowlist - active
     assert not extra, f"unexpected active schedule workflows: {sorted(extra)}"
