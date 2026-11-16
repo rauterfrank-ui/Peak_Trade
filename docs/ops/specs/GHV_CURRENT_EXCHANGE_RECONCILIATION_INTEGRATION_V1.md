@@ -4,7 +4,7 @@ status: active
 scope: Full-Core exchange reconciliation (offline fixtures and injected read-only transport)
 capability: GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-11-02
+last_updated: 2026-11-16
 ---
 
 # GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1
@@ -40,6 +40,27 @@ commit `b48094917d2575e806610cb2d9569bf75929ebc9` (PR #7094), including fail-clo
 identity-conflict handling. The post-submit observation stage comes from preserved
 stash commit `d70f527fc7351a4941930a256748a2ea8162ab8f`. Existing lifecycle joins now
 import successfully; automatic host wiring and productive execution remain unproven.
+
+## Offline replay through post-close feedback
+
+The [post-close regression](../../../tests/ops/test_current_productive_post_close_feedback_v1.py)
+replays synthetic OKX responses through the existing GET receipt decoder and
+request-order checks. Each receipt carries the exact request with instrument and
+`after` cursor, the decision ID, acquisition time, and original fixture body with
+its SHA-256. Order-list cursors use `ordId` and fill cursors use `billId`.
+
+The complete case reaches `RECONCILED_FLAT_REVIEWED` with a filled closing order,
+matching fill, a fresh scoped zero position and empty pending orders. With the
+same fill and zero position, a missing continuation on any of the three surfaces
+or an exhausted page budget keeps the result `HALTED_UNRESOLVED` and blocks
+post-close feedback. A missing response is a transport failure. A full final
+page at the budget limit yields `INCOMPLETE_PAGINATION`. Both retain the original
+reservation and produce no ranking review or Double Play continuation.
+
+The authenticated reader and private close readback still expect the fixed
+single-page request set. Before extending that path, its capture and replay need
+to validate the same ordered per-page receipts and terminal page for each list.
+The offline run exercises no authenticated venue capture or production booking.
 
 ## Owners
 
