@@ -2,17 +2,20 @@ from __future__ import annotations
 
 import argparse
 import json
+from hashlib import sha256
 from pathlib import Path
-from typing import Any, Optional
+
+if __package__:
+    from .stability_gate import PRK_REPORT_FILES, read_stability_gate_ages
+else:
+    from stability_gate import PRK_REPORT_FILES, read_stability_gate_ages
 
 
-def _load(p: Optional[str]) -> Optional[dict[str, Any]]:
-    if not p:
-        return None
+def _read(p: str) -> bytes | None:
     path = Path(p)
     if not path.exists():
         return None
-    return json.loads(path.read_text(encoding="utf-8"))
+    return path.read_bytes()
 
 
 def main() -> int:
@@ -29,9 +32,12 @@ def main() -> int:
     hard_blocks: list[str] = []
     warnings: list[str] = []
 
-    stability = _load(args.stability)
-    status = _load(args.status)
-    health = _load(args.health)
+    stability_data = _read(args.stability)
+    status_data = _read(args.status)
+    health_data = _read(args.health)
+    stability = json.loads(stability_data) if stability_data is not None else None
+    status = json.loads(status_data) if status_data is not None else None
+    health = json.loads(health_data) if health_data is not None else None
 
     if stability is None:
         hard_blocks.append("MISSING_STABILITY_GATE")
@@ -46,9 +52,15 @@ def main() -> int:
         score = 0
         decision = "NO_GO"
     else:
-        overall_ok = bool(stability.get("overall_ok"))
-        if not overall_ok:
-            hard_blocks.append("STABILITY_GATE_FAIL")
+        stability_error, ages = read_stability_gate_ages(stability)
+        if not stability_error and "evidence_scope" in stability:
+            if any(
+                data is None or sha256(data).hexdigest() != stability["prk_report_sha256"][name]
+                for name, data in zip(PRK_REPORT_FILES, (status_data, health_data), strict=True)
+            ):
+                stability_error = "PRK_REPORT_BINDING_MISMATCH"
+        if stability_error:
+            hard_blocks.append(stability_error)
             score = 0
             decision = "NO_GO"
         else:
@@ -57,37 +69,17 @@ def main() -> int:
                 hard_blocks.append("PRK_NO_SUCCESS")
                 score = 0
                 decision = "NO_GO"
+            elif health.get("policy_action") == "NO_TRADE":
+                hard_blocks.append("PRK_NO_TRADE")
+                score = 0
+                decision = "NO_GO"
             else:
-                # soft scoring
-                prk_age = None
-                prj_age = None
-                for r in stability.get("results", []):
-                    if r.get("name") == "PR-K":
-                        prk_age = r.get("age_hours")
-                    if r.get("name") == "PR-J":
-                        prj_age = r.get("age_hours")
-
-                if prk_age is None:
-                    warnings.append("MISSING_PRK_AGE")
+                if ages["PR-K"] > 24:
+                    warnings.append("PRK_AGE_GT_24H")
                     score -= 10
-                else:
-                    if prk_age > 24:
-                        warnings.append("PRK_AGE_GT_24H")
-                        score -= 10
-                    if prk_age > 36:
-                        warnings.append("PRK_AGE_GT_36H")
-                        score -= 20
-
-                if prj_age is None:
-                    warnings.append("MISSING_PRJ_AGE")
+                if ages["PR-J"] > 12:
+                    warnings.append("PRJ_AGE_GT_12H")
                     score -= 10
-                else:
-                    if prj_age > 12:
-                        warnings.append("PRJ_AGE_GT_12H")
-                        score -= 10
-                    if prj_age > 36:
-                        warnings.append("PRJ_AGE_GT_36H")
-                        score -= 20
 
                 if hs == "STALE":
                     warnings.append("HEALTH_STALE")
@@ -108,6 +100,9 @@ def main() -> int:
         "decision": decision,
         "hard_blocks": hard_blocks,
         "warnings": warnings,
+        "stability_evidence_scope": stability.get("evidence_scope")
+        if isinstance(stability, dict)
+        else None,
     }
 
     outdir = Path(args.out_dir)

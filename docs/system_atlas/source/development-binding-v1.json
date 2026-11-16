@@ -57,6 +57,11 @@
       "sha256": "02ab098e5e637684b4b872013389c619ae7353b2fd18d6299842d33813f89f95"
     },
     {
+      "path": ".github/workflows/prbd-live-readiness-scorecard.yml",
+      "before_sha256": "41b24c08d912de543ed118e7c7654ee6be07e6035cb08c8357461fac9a65429b",
+      "sha256": "6c75f5458f52b070f01361e1991baacfce0690e88c27d56ac182ddd9d3eb3b39"
+    },
+    {
       "path": ".github/workflows/prcc-aws-export-smoke.yml",
       "before_sha256": "f26796493f83ae0dff0d014ec501cb5e0a0e863fa068a29f6ab6d01976eb89ca",
       "sha256": null
@@ -782,6 +787,11 @@
       "sha256": "23fbb163ec46ff2a7bfda21b900e3b75ff89cb80b6f7cca4795aab4ea3ed6628"
     },
     {
+      "path": "docs/ops/runbooks/stability_gate.md",
+      "before_sha256": "6a513d8647430f23a25b8e3d35dcb878b3ca96869fe13e390731688fd8476473",
+      "sha256": "8c652214a0bc704ba640ac1c53dea1043c894eb3612a31c3a0619cac950d827e"
+    },
+    {
       "path": "docs/ops/specs/ACCOUNT_AND_TREASURY_SOURCE_BINDING_PLAN_2026_11_03.md",
       "before_sha256": "5bf8cd956b4c5ca998860de9f1faee1eec22e4b82a1e0804ebe8dc50439465fb",
       "sha256": "24ae56e6f4a300adbd900c48c44370aa647c6a28a7c92ed9d3e0872d6b86391c"
@@ -1332,6 +1342,16 @@
       "sha256": "f5a3311b8d4b144060429de90b63e17f0d68398a1b32a959b21aa903a84e4272"
     },
     {
+      "path": "scripts/ci/live_pilot_scorecard.py",
+      "before_sha256": "5d1d07b2da1ae66657fcda2091f9f14aa3f92c1e425b170b79f1a0df1a9ce262",
+      "sha256": "0e8c522cd8487cd3f139ab14b2a4524d6e1281c95902cf7954eef9d165e14584"
+    },
+    {
+      "path": "scripts/ci/live_readiness_scorecard.py",
+      "before_sha256": "40ca71ba12e5d388b9eefaa4cb7161e5de643e8de4caddb6d26b10f4d3f36f7d",
+      "sha256": "65ebcd86d0d620669955a12bbf0f39ed16b2deca972a0319b6b7560e7728668a"
+    },
+    {
       "path": "scripts/ci/ruff_frozen_format_exceptions_v1.json",
       "before_sha256": null,
       "sha256": "bc2535fc6ca3e4deff6d6a6141903573bec07ffd6db0ac572dad6ff9c7774956"
@@ -1340,6 +1360,16 @@
       "path": "scripts/ci/scheduled_guardrails.sh",
       "before_sha256": "2bbcca88a4a65cbbe08618186f431881a8c464a11e44124334414f2523295916",
       "sha256": "c5b5c9bded0ea7ef53bd372196ecc92f32a8e74fd8de842e07ef377bce453990"
+    },
+    {
+      "path": "scripts/ci/shadow_testnet_readiness_scorecard.py",
+      "before_sha256": "d08ad3cba23b6d6e401ded4735652efbad4828058dee67af6da28d49b550e9e9",
+      "sha256": "e4c885eff73c27cdbd451d54888a32bb3d4bdde7a7a6707ad37aca06c7096058"
+    },
+    {
+      "path": "scripts/ci/stability_gate.py",
+      "before_sha256": "300567133686f1cb0ea11e6f9ab0bfb2372b4e56ebf9e92d9a3b9544d92e4bfe",
+      "sha256": "bc7bc52f55628be3da1fe895afd2720f466ed9ba98cf71165a9aa7da3f832ee5"
     },
     {
       "path": "scripts/evaluate_forward_signals.py",
@@ -3285,6 +3315,26 @@
       "path": "tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py",
       "before_sha256": "9a90ab796b61975e29506286a388b92fa97cba5438be405960c2bfc19e003536",
       "sha256": "680a05b214c1e14f0aa21988f8502bfbe4cdbc9c1bbaebb34d23c33e26678238"
+    },
+    {
+      "path": "tests/ci/test_prbc_stability_gate_contract.py",
+      "before_sha256": "105648e96183a76244e376cec12856a61f8556b5eb807e77208299b58ed19e5f",
+      "sha256": "a4529b84f62e0df976c554d4e06cbda2c3a36e1651256423b0c731ffc8a6547c"
+    },
+    {
+      "path": "tests/ci/test_prbd_live_readiness_scorecard_contract.py",
+      "before_sha256": "5bcd52175e3de1e6927b52fba983059434c94e72222174cb0595a9855cd04618",
+      "sha256": "8f59bb318e0ba2df2c30774f0ebc7c1aa80ae24bac9817227a0b00a25fa3154a"
+    },
+    {
+      "path": "tests/ci/test_prbe_shadow_testnet_scorecard_contract.py",
+      "before_sha256": "96d9f1d22ff3d37ddda4ad71dafd7079cfdae8e7dc5762a84e21058f3f8d8371",
+      "sha256": "d795691d95a28d88c99472987325c4caa4e6ff94f9a0cbe9fb97c28fa7b6210c"
+    },
+    {
+      "path": "tests/ci/test_prbi_live_pilot_scorecard_contract.py",
+      "before_sha256": "07bc12c2e490b07c13533353617a815aa29e84d8eef73429f83017d3aba1102a",
+      "sha256": "f6209668a6fe628d1e8ba8578ad9b2ae3d5854f6bfc7644651ff121b6eeafbb2"
     },
     {
       "path": "tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py",

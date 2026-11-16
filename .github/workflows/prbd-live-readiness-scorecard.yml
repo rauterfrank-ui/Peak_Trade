@@ -32,10 +32,12 @@ jobs:
 
       - name: Fetch latest PR-K artifact (schedule or workflow_dispatch success)
         run: |
-          RUN_ID="$(gh run list --workflow prk-prj-status-report.yml --branch main --limit 60 --json databaseId,status,conclusion,event --jq '.[] | select(.status=="completed" and .conclusion=="success" and (.event=="schedule" or .event=="workflow_dispatch")) | .databaseId' | head -n 1)"
-          test -n "${RUN_ID}" || { echo "No successful PR-K schedule or workflow_dispatch run found"; exit 1; }
-          gh run download "${RUN_ID}" --dir out/tmp
-          find out/tmp -type f \( -name prj_status_latest.json -o -name prj_health_summary.json \) -exec cp -f {} reports/status/ \;
+          set -euo pipefail
+          RUN_ID="$(jq -er '.results[] | select(.name=="PR-K" and .ok==true) | .run_id | select(type=="number" and . == floor and . > 0)' reports/status/stability_gate.json)"
+          gh run list --workflow prk-prj-status-report.yml --branch main --limit 60 --json databaseId,status,conclusion,event |
+            jq -e --argjson run_id "${RUN_ID}" 'any(.[]; .databaseId==$run_id and .status=="completed" and .conclusion=="success" and (.event=="schedule" or .event=="workflow_dispatch"))'
+          gh run download "${RUN_ID}" --name prj-status-report --dir out/prk
+          cp out/prk/prj_status_latest.json out/prk/prj_health_summary.json reports/status/
 
       - name: Build scorecard
         run: |

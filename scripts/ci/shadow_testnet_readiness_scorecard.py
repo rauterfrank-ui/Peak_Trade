@@ -5,6 +5,11 @@ import json
 from pathlib import Path
 from typing import Any, Optional
 
+if __package__:
+    from .stability_gate import read_stability_gate_ages
+else:
+    from stability_gate import read_stability_gate_ages
+
 
 def _load(p: Optional[str]) -> Optional[dict[str, Any]]:
     if not p:
@@ -45,8 +50,9 @@ def main() -> int:
         score = 0
         decision = "NO_GO"
     else:
-        if not bool(stab.get("overall_ok")):
-            hard_blocks.append("STABILITY_GATE_FAIL")
+        stability_error, _ = read_stability_gate_ages(stab)
+        if stability_error:
+            hard_blocks.append(stability_error)
         if live.get("decision") != "GO":
             hard_blocks.append("LIVE_READINESS_NOT_GO")
 
