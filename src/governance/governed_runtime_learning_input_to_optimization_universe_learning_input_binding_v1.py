@@ -24,8 +24,11 @@ from src.governance.governed_productive_configuration_apply_authority_v1 import 
     RUNTIME_APPLY_STARTED as M10_RUNTIME_APPLY_STARTED,
 )
 from src.governance.governed_runtime_primary_to_offline_observation_projection_v1 import (
+    GovernedPaperEpisodeProjectionResultV1,
+    GovernedRuntimePrimaryProjectionError,
     GovernedRuntimePrimaryProjectionResultV1,
     RuntimePrimaryProvenanceBindingV1,
+    read_verified_paper_episode_for_g2_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_LEARNING_EVIDENCE_RECORD,
@@ -108,6 +111,7 @@ class RuntimeLearningInputOptimizationBindingResultV1:
     binding_record_digest: str | None
     lineage_chain: tuple[str, ...] = field(default_factory=tuple)
     path_classification: str = ""
+    paper_episode_handoff: dict[str, Any] | None = None
 
 
 def load_field_mapping_ledger_v1(*, repo_root: Path | None = None) -> dict[str, Any]:
@@ -417,8 +421,70 @@ def bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_i
     )
 
 
+def _bind_paper_episode_from_g2_v1(
+    projection: GovernedPaperEpisodeProjectionResultV1, *, requested_productive_join: bool
+) -> RuntimeLearningInputOptimizationBindingResultV1:
+    try:
+        if requested_productive_join:
+            raise GovernedRuntimePrimaryProjectionError("FORBIDDEN_PRODUCTIVE_OR_SEARCH_REQUEST")
+        handoff, digest = read_verified_paper_episode_for_g2_v1(projection.source)
+        if digest != projection.projection_record_digest:
+            raise GovernedRuntimePrimaryProjectionError(
+                "G2_PAPER_EPISODE_PROJECTION_DIGEST_MISMATCH"
+            )
+        evidence = handoff["learning_evidence"]
+        ack = validate_canonical_optimization_universe_learning_input_v1(
+            CanonicalOptimizationUniverseLearningInputRequestV1(learning_evidence=evidence)
+        )
+        if (
+            ack.get("status") != STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT
+            or ack.get("learning_evidence_digest") != evidence["content_hash"]
+        ):
+            raise GovernedRuntimePrimaryProjectionError("G2_PAPER_EPISODE_OPTIMIZATION_REJECTED")
+    except GovernedRuntimePrimaryProjectionError as exc:
+        code, _, detail = str(exc).partition(":")
+        return RuntimeLearningInputOptimizationBindingResultV1(
+            status="REJECTED",
+            decision_code=code,
+            blocking_reasons=(detail or code,),
+            learning_evidence=None,
+            canonical_optimization_ack=None,
+            binding_record_digest=None,
+        )
+
+    measurement = handoff["measurement"]
+    binding_digest = compute_content_sha256(
+        {
+            "schema_version": SCHEMA_VERSION,
+            "projection_record_digest": digest,
+            "paper_outcome_digest": measurement["outcome_digest"],
+            "learning_evidence_digest": evidence["content_hash"],
+            "canonical_optimization_result_digest": ack["result_digest"],
+            "authority": "NONE",
+        }
+    )
+    return RuntimeLearningInputOptimizationBindingResultV1(
+        status="BOUND",
+        decision_code="PAPER_EPISODE_BOUND_TO_CANONICAL_OPTIMIZATION_INPUT",
+        blocking_reasons=(),
+        learning_evidence=evidence,
+        canonical_optimization_ack=ack,
+        binding_record_digest=binding_digest,
+        lineage_chain=(
+            f"primary_manifest://{measurement['archive_manifest_sha256']}",
+            f"paper.outcome.measurement:{measurement['outcome_digest']}",
+            f"projection://{digest}",
+            f"learning_evidence://{evidence['content_hash']}",
+            f"optimization_input://{ack['result_digest']}",
+            f"binding://{binding_digest}",
+        ),
+        path_classification=REAL_MECHANICAL_PATH_STATUS,
+        paper_episode_handoff=handoff,
+    )
+
+
 def bind_from_g2_projection_result_v1(
-    projection: GovernedRuntimePrimaryProjectionResultV1,
+    projection: GovernedRuntimePrimaryProjectionResultV1 | GovernedPaperEpisodeProjectionResultV1,
     *,
     requested_productive_join: bool = False,
 ) -> RuntimeLearningInputOptimizationBindingResultV1:
@@ -431,6 +497,10 @@ def bind_from_g2_projection_result_v1(
             learning_evidence=None,
             canonical_optimization_ack=None,
             binding_record_digest=None,
+        )
+    if isinstance(projection, GovernedPaperEpisodeProjectionResultV1):
+        return _bind_paper_episode_from_g2_v1(
+            projection, requested_productive_join=requested_productive_join
         )
     if projection.runtime_learning_input is None or projection.provenance is None:
         code = "G2_PROJECTION_MISSING_RUNTIME_LEARNING_INPUT"

@@ -224,14 +224,17 @@ MANAGED_FILEGATE_OWNER_DELTAS = {
     ),
 }
 
-# Exact offline G2 archive projection delta. Frozen inventory and authority stay bound.
-G2_ARCHIVE_PROJECTION_PATH = (
-    "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py"
-)
-G2_ARCHIVE_PROJECTION_DELTA = (
-    "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
-    "f98f3e3b0119b0981b74e12e1e1f8fb10999b92a67b701fbbfc2dcfa6183d85a",
-)
+# Exact offline G2 archive projection and Paper learning-input changes.
+G2_ARCHIVE_PROJECTION_DELTAS = {
+    "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py": (
+        "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
+        "2654f090e86714636b995946ab49d54008e7724360e2fcf4c8f9cfe51766871f",
+    ),
+    "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py": (
+        "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
+        "a44969de48bc7cf53ea2533988b753fffba72f2eb79b14b2f478da23bcc592ce",
+    ),
+}
 # Reviewed policy-source changes for the execution authority audit.
 EXECUTION_AUTHORITY_AUDIT_DELTAS = {
     "src/governance/current_productive_actual_venue_post_admission_policy_v1.py": (
@@ -645,10 +648,6 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         actual = hashlib.sha256(raw).hexdigest()
         original = raw
         if actual != policy["frozen_sha256"]:
-            g2_archive_delta = (
-                path == G2_ARCHIVE_PROJECTION_PATH
-                and (policy["frozen_sha256"], actual) == G2_ARCHIVE_PROJECTION_DELTA
-            )
             if (
                 path
                 not in {
@@ -660,7 +659,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in RESERVED_SLOT_ROTATION_DELTAS
                 and path not in MANAGED_FILEGATE_OWNER_DELTAS
                 and path not in opt_handoff
-                and not g2_archive_delta
+                and G2_ARCHIVE_PROJECTION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and EXECUTION_AUTHORITY_AUDIT_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and OWNER_ADJUDICATION_CONFIG_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):

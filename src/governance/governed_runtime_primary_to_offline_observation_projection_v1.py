@@ -15,6 +15,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Final, Mapping
 
+from scripts.ops.paper_episode_learning_handoff_v1 import paper_episode_learning_handoff_v1
 from scripts.ops.primary_evidence_retention_v0 import (
     BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
     BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
@@ -35,6 +36,7 @@ from src.experiments.canonical_identity_bound_offline_observation_binding_v1 imp
     STATUS_BOUND,
     bind_canonical_identity_bound_offline_observation_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
 from src.meta.learning_loop.contract_safety_v1 import (
     compute_content_sha256,
     deterministic_json_dumps,
@@ -161,6 +163,22 @@ class GovernedRuntimePrimaryProjectionRequestV1:
     request_promotion: bool = False
     request_runtime_apply: bool = False
     request_external_effect: bool = False
+
+
+@dataclass(frozen=True)
+class GovernedPaperEpisodeProjectionRequestV1:
+    primary_evidence_root: Path
+    episode_id: str
+    learning_handoff_root: Path
+
+
+@dataclass(frozen=True)
+class GovernedPaperEpisodeProjectionResultV1:
+    status: str
+    decision_code: str
+    blocking_reasons: tuple[str, ...]
+    source: GovernedPaperEpisodeProjectionRequestV1
+    projection_record_digest: str | None = None
 
 
 @dataclass(frozen=True)
@@ -447,9 +465,50 @@ def _authority_boundary_block(request: GovernedRuntimePrimaryProjectionRequestV1
     return None
 
 
+def read_verified_paper_episode_for_g2_v1(
+    source: GovernedPaperEpisodeProjectionRequestV1,
+) -> tuple[dict[str, Any], str]:
+    root = source.primary_evidence_root
+    if is_under_tmp(root):
+        raise GovernedRuntimePrimaryProjectionError("TMP_ONLY_SOURCE_REJECTED")
+    try:
+        handoff = paper_episode_learning_handoff_v1(
+            archive_root=root,
+            episode_id=source.episode_id,
+            output_root=source.learning_handoff_root,
+            verify=True,
+        )
+    except (DdoError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
+        raise GovernedRuntimePrimaryProjectionError(
+            f"PAPER_EPISODE_HANDOFF_REJECTED:{exc}"
+        ) from exc
+    measurement = handoff["measurement"]
+    return handoff, compute_content_sha256(
+        {
+            "schema_version": SCHEMA_VERSION,
+            "source": "SEALED_BOUNDED_PAPER_EPISODE",
+            "primary_evidence_manifest_digest": measurement["archive_manifest_sha256"],
+            "paper_outcome_digest": measurement["outcome_digest"],
+            "learning_evidence_digest": handoff["learning_evidence"]["content_hash"],
+        }
+    )
+
+
 def run_governed_runtime_primary_to_offline_observation_projection_v1(
-    request: GovernedRuntimePrimaryProjectionRequestV1,
-) -> GovernedRuntimePrimaryProjectionResultV1:
+    request: GovernedRuntimePrimaryProjectionRequestV1 | GovernedPaperEpisodeProjectionRequestV1,
+) -> GovernedRuntimePrimaryProjectionResultV1 | GovernedPaperEpisodeProjectionResultV1:
+    if isinstance(request, GovernedPaperEpisodeProjectionRequestV1):
+        try:
+            _, digest = read_verified_paper_episode_for_g2_v1(request)
+        except GovernedRuntimePrimaryProjectionError as exc:
+            code, _, detail = str(exc).partition(":")
+            return GovernedPaperEpisodeProjectionResultV1(
+                "REJECTED", code, (detail or code,), request
+            )
+        return GovernedPaperEpisodeProjectionResultV1(
+            "PROJECTED", "GOVERNED_PAPER_EPISODE_PROJECTED", (), request, digest
+        )
+
     boundary = _authority_boundary_block(request)
     if boundary:
         return GovernedRuntimePrimaryProjectionResultV1(
