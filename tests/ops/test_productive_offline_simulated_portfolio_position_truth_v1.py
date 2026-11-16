@@ -5,6 +5,8 @@ from __future__ import annotations
 from decimal import Decimal
 
 from src.backtest.mv2_research_wiring_v1 import (
+    ExistingPositionSide as ReplayPositionSide,
+    PositionState as ReplayPositionState,
     build_initial_mv2_integrated_replay_bar_sequence_state_v1,
 )
 from src.ops.integrated_offline_economic_evidence_v1.productive_offline_replay_portfolio_truth_wiring_v1 import (
@@ -73,8 +75,8 @@ def test_b_long_fill_next_epoch_observation() -> None:
         build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0),
         obs,
     )
-    assert seq.position_state is PositionState.OPEN_FULL
-    assert seq.existing_position_side is ExistingPositionSide.LONG
+    assert seq.position_state is ReplayPositionState.OPEN_FULL
+    assert seq.existing_position_side is ReplayPositionSide.LONG
     assert obs.reconciled_open_position_quantity == Decimal("2")
     assert obs.current_reconciled_exposure == Decimal("2") * Decimal("3010")
 
@@ -185,8 +187,8 @@ def test_g_open_portfolio_prevents_flat_mv2_on_next_apply() -> None:
         build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0),
         pending,
     )
-    assert seq.position_state is not PositionState.FLAT_RECONCILED
-    assert seq.existing_position_side is ExistingPositionSide.SHORT
+    assert seq.position_state is ReplayPositionState.OPEN_FULL
+    assert seq.existing_position_side is ReplayPositionSide.SHORT
 
 
 def test_h_double_play_composition_owner_unchanged() -> None:

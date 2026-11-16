@@ -136,7 +136,7 @@ def test_entry_on_prior_bar_visible_to_next_decision(monkeypatch: pytest.MonkeyP
         "map_decision_evidence_to_position_signal_v1",
         _forced_signal,
     )
-    captured: list[PositionState] = []
+    captured: list[wiring.PositionState] = []
     original_build = wiring._build_replay_input
 
     def _capture_build(**kwargs: object) -> object:
@@ -146,9 +146,9 @@ def test_entry_on_prior_bar_visible_to_next_decision(monkeypatch: pytest.MonkeyP
 
     monkeypatch.setattr(wiring, "_build_replay_input", _capture_build)
     result = _run_mv2_replay(bars=_bars(4))
-    assert captured[0] is PositionState.FLAT_RECONCILED
-    assert captured[1] is PositionState.FLAT_RECONCILED
-    assert captured[2] is PositionState.OPEN_FULL, (
+    assert captured[0] is wiring.PositionState.FLAT_RECONCILED
+    assert captured[1] is wiring.PositionState.FLAT_RECONCILED
+    assert captured[2] is wiring.PositionState.OPEN_FULL, (
         f"captured={captured}, trades={result.backtest_result.stats.get('total_trades')}"
     )
 
@@ -167,7 +167,7 @@ def test_held_position_carried_across_multiple_bars(monkeypatch: pytest.MonkeyPa
         "map_decision_evidence_to_position_signal_v1",
         _forced_signal,
     )
-    captured: list[PositionState] = []
+    captured: list[wiring.PositionState] = []
     original_build = wiring._build_replay_input
 
     def _capture_build(**kwargs: object) -> object:
@@ -178,9 +178,9 @@ def test_held_position_carried_across_multiple_bars(monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr(wiring, "_build_replay_input", _capture_build)
     _run_mv2_replay(bars=_bars(4))
     assert captured[1:] == [
-        PositionState.OPEN_FULL,
-        PositionState.OPEN_FULL,
-        PositionState.OPEN_FULL,
+        wiring.PositionState.OPEN_FULL,
+        wiring.PositionState.OPEN_FULL,
+        wiring.PositionState.OPEN_FULL,
     ]
 
 
@@ -198,7 +198,7 @@ def test_exit_feedback_visible_to_next_decision(monkeypatch: pytest.MonkeyPatch)
         "map_decision_evidence_to_position_signal_v1",
         _forced_signal,
     )
-    captured: list[PositionState] = []
+    captured: list[wiring.PositionState] = []
     original_build = wiring._build_replay_input
 
     def _capture_build(**kwargs: object) -> object:
@@ -207,7 +207,7 @@ def test_exit_feedback_visible_to_next_decision(monkeypatch: pytest.MonkeyPatch)
 
     monkeypatch.setattr(wiring, "_build_replay_input", _capture_build)
     _run_mv2_replay(bars=_bars(4))
-    assert captured[-1] is PositionState.FLAT_RECONCILED
+    assert captured[-1] is wiring.PositionState.FLAT_RECONCILED
 
 
 def test_stop_triggered_flat_feedback_visible_to_next_decision(
@@ -226,7 +226,7 @@ def test_stop_triggered_flat_feedback_visible_to_next_decision(
         "map_decision_evidence_to_position_signal_v1",
         _forced_signal,
     )
-    captured: list[PositionState] = []
+    captured: list[wiring.PositionState] = []
     original_build = wiring._build_replay_input
 
     def _capture_build(**kwargs: object) -> object:
@@ -235,8 +235,8 @@ def test_stop_triggered_flat_feedback_visible_to_next_decision(
 
     monkeypatch.setattr(wiring, "_build_replay_input", _capture_build)
     _run_mv2_replay(bars=_bars(4, stop_trigger_bar=2))
-    assert captured[2] is PositionState.OPEN_FULL
-    assert captured[3] is PositionState.FLAT_RECONCILED
+    assert captured[2] is wiring.PositionState.OPEN_FULL
+    assert captured[3] is wiring.PositionState.FLAT_RECONCILED
 
 
 def test_partial_reduction_not_supported_by_canonical_owner() -> None:
@@ -401,7 +401,10 @@ def test_apply_feedback_overrides_position_fields_only() -> None:
         marked,
         open_feedback,
     )
-    assert updated.position_state is PositionState.OPEN_FULL
+    assert updated.position_state is wiring.PositionState.OPEN_FULL
+    assert updated.existing_position_side is wiring.ExistingPositionSide.LONG
+    assert updated.reconciliation_state is wiring.ReconciliationState.RECONCILED
+    assert updated.position_management_context is wiring.PositionManagementContext.LONG_POSITION
     assert updated.scope_direction_state == marked.scope_direction_state
     assert updated.side_state is prior_side
 
