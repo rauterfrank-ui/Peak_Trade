@@ -178,19 +178,19 @@ def test_positive_projection_learning_ingress_and_artifact(tmp_path: Path, mode)
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_bounded_end_to_end_and_reconstruction(tmp_path: Path, mode) -> None:
+def test_bounded_observation_reconstruction_stops_before_optimization(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
     summary = run_g2_bounded_end_to_end_with_projection_v1(
         projection_request=projection_request(source_mode=mode, primary_root=root)
     )
     assert summary["projection_status"] == "PROJECTED"
     assert summary["learning_ingress_status"] == "PROVEN"
-    assert summary["canonical_optimization_input_status"] == "PROVEN"
-    assert summary["runtime_mechanical_path_status"] == "PROVEN_REAL_MECHANICAL_PATH"
+    assert summary["canonical_optimization_input_status"] == "REJECTED"
+    assert summary["runtime_mechanical_path_status"] == "NOT_PROVEN"
     assert summary["m4_m8_fixture_harness_status"] == "PROVEN_FIXTURE_BOUNDED"
-    assert summary["real_runtime_g2_to_m4_m8_status"] == "PROVEN"
-    assert summary["m4_m8_end_to_end_status"] == "PROVEN_REAL_MECHANICAL_PATH"
-    assert summary["g2_end_to_end_status"] == G2_END_TO_END_STATUS
+    assert summary["real_runtime_g2_to_m4_m8_status"] == "REJECTED"
+    assert summary["m4_m8_end_to_end_status"] == "NOT_PROVEN"
+    assert summary["g2_end_to_end_status"] == "PARTIAL_CURRENT"
     recon = trace_g2_reconstruction_v1(
         projection_result={
             "provenance": summary["reconstruction"],

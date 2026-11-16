@@ -1,13 +1,12 @@
-"""Governed mechanical binding: runtime_to_learning_input_v1 → optimization learning input.
+"""Bind verified G2 outcome evidence to the canonical offline optimization input.
 
-Projects validated G2 runtime learning ingress into learning_evidence_record_v1 and
-feeds the existing canonical optimization-universe learning-input validator only.
+Runtime observation inputs retain their archive lineage. Source-specific readback
+provides the original decision-linked Learning Evidence for optimization.
 Authority=NONE; no DDO fixture state; no runtime apply or productive activation.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -31,17 +30,6 @@ from src.governance.governed_runtime_primary_to_offline_observation_projection_v
     RuntimePrimaryProvenanceBindingV1,
     read_verified_i17_shadow_for_g2_v1,
     read_verified_paper_episode_for_g2_v1,
-)
-from src.learning.deterministic_decision_outcome_v0.common_v0 import (
-    SCHEMA_NAME_LEARNING_EVIDENCE_RECORD,
-    SCHEMA_VERSION_LEARNING_EVIDENCE_RECORD_V1,
-)
-from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
-from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
-from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 import (
-    EVIDENCE_CLASS_LEARNING,
-    UNIVERSE_CLASS_SELF_LEARNING,
-    build_learning_evidence_record_v1,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
 
@@ -174,132 +162,6 @@ def _validate_runtime_learning_input_contract(body: Mapping[str, Any]) -> tuple[
     return tuple(dict.fromkeys(blocking))
 
 
-def _derive_runtime_derived_state_record_ref_v1(*, runtime_learning_input_digest: str) -> str:
-    return f"g2.rtls.{runtime_learning_input_digest[:40]}"
-
-
-def _derive_decision_event_ref_v1(*, primary_evidence_manifest_digest: str) -> str:
-    return f"g2.primary.{primary_evidence_manifest_digest[:48]}"
-
-
-def _lineage_record_id_v1(*, prefix: str, digest: str) -> str:
-    return f"g2.{prefix}.{digest[:48]}"
-
-
-def _derive_evaluation_bundle_fingerprint_v1(
-    *,
-    runtime_learning_input_digest: str,
-    source_observation_digest: str,
-    primary_evidence_manifest_digest: str,
-    projection_record_digest: str,
-) -> str:
-    material = {
-        "primary_evidence_manifest_digest": primary_evidence_manifest_digest,
-        "projection_record_digest": projection_record_digest,
-        "runtime_learning_input_digest": runtime_learning_input_digest,
-        "source_observation_digest": source_observation_digest,
-    }
-    return compute_content_sha256(material)
-
-
-def _derive_learning_evidence_record_id_v1(
-    *,
-    source_learning_state_record_ref: str,
-    evaluation_bundle_fingerprint: str,
-) -> str:
-    digest = hashlib.sha256(
-        f"{source_learning_state_record_ref}|{evaluation_bundle_fingerprint}".encode("utf-8")
-    ).hexdigest()
-    return f"g2.lev.{digest[:40]}"
-
-
-def _project_learning_evidence_from_runtime_v1(
-    *,
-    runtime_learning_input: Mapping[str, Any],
-    provenance: RuntimePrimaryProvenanceBindingV1,
-    projection_record_digest: str,
-) -> dict[str, Any]:
-    runtime_digest = str(runtime_learning_input["output_digest"])
-    source_obs_digest = str(runtime_learning_input["source_observation_digest"])
-    primary_digest = provenance.primary_evidence_manifest_digest
-    if not is_valid_sha256_hex(projection_record_digest):
-        raise GovernedRuntimeLearningInputBindingError("PROJECTION_RECORD_DIGEST_INVALID")
-
-    state_ref = _derive_runtime_derived_state_record_ref_v1(
-        runtime_learning_input_digest=runtime_digest
-    )
-    bundle_fp = _derive_evaluation_bundle_fingerprint_v1(
-        runtime_learning_input_digest=runtime_digest,
-        source_observation_digest=source_obs_digest,
-        primary_evidence_manifest_digest=primary_digest,
-        projection_record_digest=projection_record_digest,
-    )
-    record_id = _derive_learning_evidence_record_id_v1(
-        source_learning_state_record_ref=state_ref,
-        evaluation_bundle_fingerprint=bundle_fp,
-    )
-    decision_ref = _derive_decision_event_ref_v1(primary_evidence_manifest_digest=primary_digest)
-    economic_label = f"g2.review.{provenance.review_verdict}"
-    horizon_token = f"g2.mode.{provenance.source_execution_mode}.bounded_observation"
-    outcome_ref = str(runtime_learning_input.get("source_observation_ref", ""))
-    causal = list(
-        dict.fromkeys(
-            [
-                state_ref,
-                decision_ref,
-                _lineage_record_id_v1(prefix="proj", digest=projection_record_digest),
-                _lineage_record_id_v1(prefix="rtli", digest=runtime_digest),
-            ]
-        )
-    )
-    evidence_source_refs = list(
-        dict.fromkeys(
-            [
-                str(runtime_learning_input.get("source_observation_ref", "")),
-                f"primary_manifest://{primary_digest}",
-                f"projection://{projection_record_digest}",
-                *list(runtime_learning_input.get("realized_performance_refs", ())),
-            ]
-        )
-    )
-    payload = {
-        "schema_name": SCHEMA_NAME_LEARNING_EVIDENCE_RECORD,
-        "schema_version": SCHEMA_VERSION_LEARNING_EVIDENCE_RECORD_V1,
-        "record_id": record_id,
-        "source_learning_state_record_ref": state_ref,
-        "state_scope_id": f"g2.scope.{provenance.source_run_session_identity}",
-        "state_version": 1,
-        "evaluation_bundle_fingerprint": bundle_fp,
-        "decision_event_ref": decision_ref,
-        "observed_at_utc": provenance.observation_time_utc,
-        "economic_score_label": economic_label,
-        "evaluation_horizon": horizon_token,
-        "actual_outcome_ref": outcome_ref,
-        "decision_score_label": None,
-        "safety_score_label": None,
-        "universe_class": UNIVERSE_CLASS_SELF_LEARNING,
-        "evidence_class": EVIDENCE_CLASS_LEARNING,
-        "event_time_utc": provenance.observation_time_utc,
-        "correlation_id": provenance.source_run_session_identity,
-        "cycle_id": None,
-        "causal_parent_ids": causal,
-        "producer_id": BINDING_PRODUCER_ID,
-        "authority_owner": UNKNOWN,
-        "code_sha": UNKNOWN,
-        "config_hash": UNKNOWN,
-        "evidence_hash": bundle_fp,
-        "evidence_source_refs": evidence_source_refs,
-        "productive_authority": "NONE",
-        "runtime_reachability": False,
-        "can_auto_promote": False,
-        "can_mutate_core": False,
-        "can_mutate_risk": False,
-        "can_mutate_safety": False,
-        "can_deploy": False,
-    }
-    return dict(build_learning_evidence_record_v1(payload))
-
-
 def bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1(
     request: RuntimeLearningInputOptimizationBindingRequestV1,
 ) -> RuntimeLearningInputOptimizationBindingResultV1:
@@ -353,74 +215,16 @@ def bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_i
             binding_record_digest=None,
         )
 
-    try:
-        learning_evidence = _project_learning_evidence_from_runtime_v1(
-            runtime_learning_input=body,
-            provenance=request.provenance,
-            projection_record_digest=request.projection_record_digest,
-        )
-    except (GovernedRuntimeLearningInputBindingError, DdoValidationError) as exc:
-        code = str(exc)
-        return RuntimeLearningInputOptimizationBindingResultV1(
-            status="REJECTED",
-            decision_code=code,
-            blocking_reasons=(code,),
-            learning_evidence=None,
-            canonical_optimization_ack=None,
-            binding_record_digest=None,
-        )
-
-    ack = validate_canonical_optimization_universe_learning_input_v1(
-        CanonicalOptimizationUniverseLearningInputRequestV1(
-            learning_evidence=learning_evidence,
-            requested_productive_join=request.requested_productive_join,
-            requested_auto_search=request.requested_auto_search,
-            requested_envelope_mutation=request.requested_envelope_mutation,
-        )
-    )
-    if ack.get("status") != STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT:
-        reason = str(ack.get("reason", "CANONICAL_OPTIMIZATION_INPUT_REJECTED"))
-        return RuntimeLearningInputOptimizationBindingResultV1(
-            status="REJECTED",
-            decision_code=reason,
-            blocking_reasons=(reason,),
-            learning_evidence=learning_evidence,
-            canonical_optimization_ack=ack,
-            binding_record_digest=None,
-        )
-
-    binding_body = {
-        "schema_version": SCHEMA_VERSION,
-        "workpackage_id": WORKPACKAGE_ID,
-        "runtime_learning_input_digest": str(body.get("output_digest", "")),
-        "projection_record_digest": request.projection_record_digest,
-        "primary_evidence_manifest_digest": request.provenance.primary_evidence_manifest_digest,
-        "learning_evidence_digest": str(learning_evidence.get("content_hash", "")),
-        "canonical_optimization_result_digest": str(ack.get("result_digest", "")),
-        "path_classification": REAL_MECHANICAL_PATH_STATUS,
-        "primary_evidence_implies_productive_authorization": PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION,
-        "canonical_learning_input_implies_productive_activation": (
-            CANONICAL_LEARNING_INPUT_IMPLIES_PRODUCTIVE_ACTIVATION
-        ),
-    }
-    binding_digest = compute_content_sha256(binding_body)
-    lineage = (
-        f"primary_manifest://{request.provenance.primary_evidence_manifest_digest}",
-        f"projection://{request.projection_record_digest}",
-        f"runtime_learning://{body.get('output_digest', '')}",
-        f"learning_evidence://{learning_evidence.get('content_hash', '')}",
-        f"optimization_input://{ack.get('result_digest', '')}",
-        f"binding://{binding_digest}",
-    )
+    # The runtime input validates archive observation lineage. Original outcomes
+    # enter through the source-specific readback owners and keep their DDO identity.
+    code = "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
     return RuntimeLearningInputOptimizationBindingResultV1(
-        status="BOUND",
-        decision_code="RUNTIME_LEARNING_INPUT_BOUND_TO_CANONICAL_OPTIMIZATION_INPUT",
-        blocking_reasons=(),
-        learning_evidence=learning_evidence,
-        canonical_optimization_ack=ack,
-        binding_record_digest=binding_digest,
-        lineage_chain=lineage,
-        path_classification=REAL_MECHANICAL_PATH_STATUS,
+        status="REJECTED",
+        decision_code=code,
+        blocking_reasons=(code,),
+        learning_evidence=None,
+        canonical_optimization_ack=None,
+        binding_record_digest=None,
     )
 
 

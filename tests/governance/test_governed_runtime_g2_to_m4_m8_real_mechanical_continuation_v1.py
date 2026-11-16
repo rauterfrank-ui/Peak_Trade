@@ -7,10 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
-    LOOP_STATUS_COMPLETE,
-    M4M8EvidenceReturnLoopError,
-)
 from src.governance.governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1 import (
     DECISION_CONFIG,
     REAL_RUNTIME_G2_TO_M4_M8_STATUS,
@@ -18,9 +14,6 @@ from src.governance.governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
     prove_continuation_authority_invariants_v1,
     prove_continuation_decision_files_v1,
     run_g2_runtime_to_m4_m8_evidence_return_continuation_v1,
-)
-from src.governance.governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 import (
-    BINDING_PRODUCER_ID,
 )
 from src.governance.governed_runtime_primary_to_offline_observation_projection_closure_v1 import (
     G2_END_TO_END_STATUS,
@@ -58,34 +51,30 @@ def _cleanup_archives():
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_real_runtime_g2_to_m4_m8_without_ddo_fixture(tmp_path: Path, mode) -> None:
+def test_runtime_observation_without_outcome_stops_before_m4_m8(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
     req = projection_request(source_mode=mode, primary_root=root)
     result = run_g2_runtime_to_m4_m8_evidence_return_continuation_v1(
         G2RuntimeM4M8ContinuationRequestV1(projection_request=req)
     )
-    assert result.status == "CONTINUATION_COMPLETE", result.blocking_reasons
+    assert result.status == "REJECTED"
+    assert result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
     assert result.g2_real_source_used is True
     assert result.ddo_fixture_learning_state_used is False
-    assert result.canonical_optimization_input_validated is True
-    assert result.m4_m8_real_ingress_reached is True
-    assert result.m4_m8_evidence_return_output_produced is True
-    assert result.learning_evidence is not None
-    assert result.learning_evidence.get("producer_id") == BINDING_PRODUCER_ID
-    loop = result.m4_m8_loop or {}
-    assert loop.get("status") == LOOP_STATUS_COMPLETE
-    assert loop.get("forward_return_loop_closed") is True
-    meta = (loop.get("cycle") or {}).get("meta_learning_evidence") or {}
-    assert meta.get("meta_evidence_authority") == "NONE"
+    assert result.canonical_optimization_input_validated is False
+    assert result.m4_m8_real_ingress_reached is False
+    assert result.m4_m8_evidence_return_output_produced is False
+    assert result.learning_evidence is None
+    assert result.m4_m8_loop is None
 
 
 @pytest.mark.parametrize(
     "mode",
     [RuntimePrimarySourceModeV1.PAPER, RuntimePrimarySourceModeV1.SHADOW],
 )
-def test_closure_proves_real_m4_m8(tmp_path: Path, mode) -> None:
+def test_closure_does_not_prove_m4_m8_from_observation_only(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
-    assert prove_g2_runtime_to_m4_m8_real_mechanical_v1(
+    assert not prove_g2_runtime_to_m4_m8_real_mechanical_v1(
         projection_request=projection_request(source_mode=mode, primary_root=root)
     )
 
@@ -127,16 +116,18 @@ def test_non_runtime_learning_evidence_rejected_at_plane_build(tmp_path: Path) -
         )
 
 
-def test_forbidden_m4_m8_authority_escalation(tmp_path: Path) -> None:
+def test_observation_archive_cannot_reach_p5_bridge(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
-    with pytest.raises(M4M8EvidenceReturnLoopError):
-        run_g2_runtime_to_m4_m8_evidence_return_continuation_v1(
-            G2RuntimeM4M8ContinuationRequestV1(
-                projection_request=req,
-                requested_p5_producer_bridge=True,
-            )
+    result = run_g2_runtime_to_m4_m8_evidence_return_continuation_v1(
+        G2RuntimeM4M8ContinuationRequestV1(
+            projection_request=req,
+            requested_p5_producer_bridge=True,
         )
+    )
+    assert result.status == "REJECTED"
+    assert result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    assert result.m4_m8_loop is None
 
 
 def test_authority_invariants_and_decision_config() -> None:
