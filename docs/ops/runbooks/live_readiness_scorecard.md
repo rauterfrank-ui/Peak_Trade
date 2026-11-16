@@ -14,13 +14,14 @@ It is **not** financial advice and does not assert profitability. The goal is to
 ## Hard Blocks (NO-GO)
 
 - Stability Gate overall&#95;ok != true
-- PR-K health status is NO&#95;SUCCESS (no successful PR-J schedule in sample)
+- PR-K reports `NO_SUCCESS` or an explicit `NO_TRADE` decision.
+- Live Readiness requires the exact planned PR-J run verified by the Stability Gate and named in the bound PR-K status report. It checks the original creation time at use and rejects evidence older than 36 hours.
 - Any missing required artifact inputs
 
 ## Soft Signals (Score)
 
-- Age of latest PR-K schedule success (hours)
-- Age of latest PR-J schedule success (hours)
+- Current age of the bound PR-K report's GitHub run in hours. PR-K may be triggered manually.
+- Current age of the verified scheduled PR-J run in hours.
 - PR-K health status OK vs STALE
 - Presence of badge lines (PRJ&#95;BADGE / PRJ&#95;HEALTH&#95;BADGE)
 

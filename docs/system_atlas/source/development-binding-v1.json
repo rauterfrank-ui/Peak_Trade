@@ -782,6 +782,11 @@
       "sha256": "85d65463e91da744fe0ae6a93f2289de89264d774cd0a414c4e00b29e994a66f"
     },
     {
+      "path": "docs/ops/runbooks/live_readiness_scorecard.md",
+      "before_sha256": "1b3714138c368a51f43a0cb938a9622bc7997f73651b310a8bb6912136058bcb",
+      "sha256": "3a4babb4f7505f61e4268e9a36e86b2ec63f5173e044ab94aa13be3d0c71d0bc"
+    },
+    {
       "path": "docs/ops/runbooks/morning_one_shot.md",
       "before_sha256": "96db7ab9aa81f0025dda5a5df89d9f7c752f4293f244995d91acd3a4811f926c",
       "sha256": "23fbb163ec46ff2a7bfda21b900e3b75ff89cb80b6f7cca4795aab4ea3ed6628"
@@ -789,7 +794,7 @@
     {
       "path": "docs/ops/runbooks/stability_gate.md",
       "before_sha256": "6a513d8647430f23a25b8e3d35dcb878b3ca96869fe13e390731688fd8476473",
-      "sha256": "8c652214a0bc704ba640ac1c53dea1043c894eb3612a31c3a0619cac950d827e"
+      "sha256": "9222144f6af6e3283911f832ad07f4e8c6e973cd26fff2b9b8e52119c8d2377d"
     },
     {
       "path": "docs/ops/specs/ACCOUNT_AND_TREASURY_SOURCE_BINDING_PLAN_2026_11_03.md",
@@ -1349,7 +1354,7 @@
     {
       "path": "scripts/ci/live_readiness_scorecard.py",
       "before_sha256": "40ca71ba12e5d388b9eefaa4cb7161e5de643e8de4caddb6d26b10f4d3f36f7d",
-      "sha256": "65ebcd86d0d620669955a12bbf0f39ed16b2deca972a0319b6b7560e7728668a"
+      "sha256": "56e452afa2724cc6c76049667788835063deaf5641eaab149831ee4d47792156"
     },
     {
       "path": "scripts/ci/ruff_frozen_format_exceptions_v1.json",
@@ -1369,7 +1374,7 @@
     {
       "path": "scripts/ci/stability_gate.py",
       "before_sha256": "300567133686f1cb0ea11e6f9ab0bfb2372b4e56ebf9e92d9a3b9544d92e4bfe",
-      "sha256": "bc7bc52f55628be3da1fe895afd2720f466ed9ba98cf71165a9aa7da3f832ee5"
+      "sha256": "60505507d2c08d9d7dff0b6df5307850f4f48ee8865898300258782716148a37"
     },
     {
       "path": "scripts/evaluate_forward_signals.py",
@@ -3319,12 +3324,12 @@
     {
       "path": "tests/ci/test_prbc_stability_gate_contract.py",
       "before_sha256": "105648e96183a76244e376cec12856a61f8556b5eb807e77208299b58ed19e5f",
-      "sha256": "a4529b84f62e0df976c554d4e06cbda2c3a36e1651256423b0c731ffc8a6547c"
+      "sha256": "cce04492b0012976f443098f6337830a331b66e5b32e83bbfd81037a5bcc120a"
     },
     {
       "path": "tests/ci/test_prbd_live_readiness_scorecard_contract.py",
       "before_sha256": "5bcd52175e3de1e6927b52fba983059434c94e72222174cb0595a9855cd04618",
-      "sha256": "8f59bb318e0ba2df2c30774f0ebc7c1aa80ae24bac9817227a0b00a25fa3154a"
+      "sha256": "0c05106c077f9eef82bb61208fbf733e3a1b380795280be393a0eb7bb85e75b4"
     },
     {
       "path": "tests/ci/test_prbe_shadow_testnet_scorecard_contract.py",

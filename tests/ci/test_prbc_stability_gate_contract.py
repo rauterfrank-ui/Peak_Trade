@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 
@@ -68,6 +69,9 @@ def test_gate_binds_verified_prj_and_prk(
             },
         }
     ]
+    report = prk[0]["evidence"]["report"]
+    if event == "schedule":
+        report["latest_schedule_success"] = report["runs"][0]
     prk_path = tmp_path / "prk.json"
     prj_path = tmp_path / "prj.json"
     outdir = tmp_path / "out"
@@ -103,6 +107,89 @@ def test_gate_binds_verified_prj_and_prk(
     assert obj["results"][0]["event"] == event
     assert obj["results"][0]["reason"] == reason
     assert obj["prk_report_prj_run_id"] == (2 if scope else None)
+    if scope == "SCHEDULED":
+        assert obj["scheduled_prj"]["run_id"] == 2
+    else:
+        assert obj["scheduled_prj"] is None
+
+
+@pytest.mark.parametrize(
+    ("changes", "accepted"),
+    [
+        ({}, True),
+        ({"evidence": {"steps": {}}}, False),
+        ({"event": "workflow_dispatch"}, False),
+        ({"createdAt": "2026-02-24T09:01:00Z"}, False),
+        ({"databaseId": 4}, False),
+    ],
+)
+def test_gate_verifies_the_separate_schedule_source_named_by_prk(changes, accepted):
+    now = datetime(2026, 2, 24, 12, tzinfo=timezone.utc)
+    planned = {
+        "id": 3,
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-02-24T09:00:00Z",
+    }
+    prj = stability_gate.GateResult(
+        "PR-J",
+        stability_gate.PRJ_WORKFLOW,
+        2,
+        "2026-02-24T10:00:00Z",
+        2.0,
+        True,
+        "OK",
+        "workflow_dispatch",
+    )
+    prk = stability_gate.GateResult(
+        "PR-K",
+        stability_gate.PRK_WORKFLOW,
+        1,
+        "2026-02-24T11:00:00Z",
+        1.0,
+        True,
+        "OK",
+        "workflow_dispatch",
+        scheduled_prj_source=stability_gate._reported_scheduled_prj(
+            {
+                "latest_schedule_success": planned,
+                "runs": [planned],
+            }
+        ),
+    )
+    source = {
+        "databaseId": planned["id"],
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "createdAt": planned["created_at"],
+        "evidence": {
+            "steps": {
+                "Run PR-J smoke + evidence": "success",
+                "Upload PR-J smoke artifacts": "success",
+            }
+        },
+    }
+    proof = stability_gate._bind_scheduled_prj(
+        prj,
+        prk,
+        branch="main",
+        now=now,
+        limit=60,
+        max_age_h=36,
+        runs_override=[source | changes, source | {"databaseId": 5}],
+    )
+    assert proof == (
+        {
+            "workflow": stability_gate.PRJ_WORKFLOW,
+            "run_id": 3,
+            "event": "schedule",
+            "created_at": planned["created_at"],
+        }
+        if accepted
+        else None
+    )
 
 
 def test_gate_stale(tmp_path: Path):

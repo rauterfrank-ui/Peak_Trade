@@ -75,6 +75,40 @@ def read_stability_gate_ages(
     return None, ages
 
 
+def read_scheduled_prj_age(
+    receipt: dict[str, Any], report: object, *, now: datetime | None = None
+) -> float | str:
+    """Read the exact scheduled source used by PR-K's policy."""
+    proof = receipt.get("scheduled_prj")
+    if not isinstance(proof, dict):
+        return "MISSING_VERIFIED_SCHEDULED_PRJ"
+    try:
+        if (
+            receipt["branch"] != "main"
+            or receipt["evidence_scope"] not in {"ON_DEMAND", "SCHEDULED"}
+            or proof["workflow"] != PRJ_WORKFLOW
+            or proof["event"] != "schedule"
+            or not isinstance(report, dict)
+        ):
+            return "SCHEDULED_PRJ_BINDING_MISMATCH"
+        source = _reported_scheduled_prj(report)
+        if source is None or (proof["run_id"], proof["created_at"]) != (
+            source["id"],
+            source["created_at"],
+        ):
+            return "SCHEDULED_PRJ_BINDING_MISMATCH"
+        created = _parse_iso8601(proof["created_at"])
+        prk_created = next(row["created_at"] for row in receipt["results"] if row["name"] == "PR-K")
+        if created > _parse_iso8601(prk_created):
+            return "SCHEDULED_PRJ_BINDING_MISMATCH"
+        age = ((now if now is not None else _now_utc(None)) - created).total_seconds() / 3600
+    except (AttributeError, KeyError, StopIteration, TypeError, ValueError):
+        return "SCHEDULED_PRJ_BINDING_MISMATCH"
+    if age < 0:
+        return "SCHEDULED_PRJ_BINDING_MISMATCH"
+    return "SCHEDULED_PRJ_STALE" if age > MAX_EVIDENCE_AGE_HOURS else age
+
+
 def _gh_run_list(workflow: str, branch: str, limit: int) -> list[dict[str, Any]]:
     cmd = [
         "gh",
@@ -179,6 +213,24 @@ def _valid_report_digests(digests: object) -> bool:
     )
 
 
+def _reported_scheduled_prj(report: dict[str, Any]) -> dict[str, Any] | None:
+    source = report.get("latest_schedule_success")
+    rows = report.get("runs")
+    if (
+        isinstance(source, dict)
+        and type(source.get("id")) is int
+        and source["id"] > 0
+        and source.get("event") == "schedule"
+        and source.get("status") == "completed"
+        and source.get("conclusion") == "success"
+        and isinstance(source.get("created_at"), str)
+        and isinstance(rows, list)
+        and source in rows
+    ):
+        return source
+    return None
+
+
 @dataclass
 class GateResult:
     name: str
@@ -190,6 +242,7 @@ class GateResult:
     reason: str
     event: str | None = None
     report_sha256: dict[str, str] | None = None
+    scheduled_prj_source: dict[str, Any] | None = None
 
 
 def _evaluate(
@@ -202,13 +255,18 @@ def _evaluate(
     runs_override: Optional[list[dict[str, Any]]],
     *,
     prj: GateResult | None = None,
+    exact_scheduled_run: int | None = None,
 ) -> GateResult:
     runs = runs_override if runs_override is not None else _gh_run_list(workflow, branch, limit)
     failure = GateResult(name, workflow, None, None, None, False, "NO_SUCCESSFUL_RUN")
     for run in runs:
         event = run.get("event")
         if (
-            event not in ALLOWED_EVENTS
+            (
+                exact_scheduled_run is not None
+                and (run.get("databaseId") != exact_scheduled_run or event != "schedule")
+            )
+            or event not in ALLOWED_EVENTS
             or run.get("status") != "completed"
             or run.get("conclusion") != "success"
         ):
@@ -239,14 +297,24 @@ def _evaluate(
             reason = "MISSING_VERIFIED_WORKFLOW_EVIDENCE"
         elif name == "PR-K":
             report_digests = witness.get("report_sha256", {})
+            report = witness.get("report", {})
             if (
                 prj is not None
                 and prj.ok
                 and _valid_report_digests(report_digests)
-                and _matching_prj_record(witness.get("report", {}), prj, created_at)
+                and _matching_prj_record(report, prj, created_at)
             ):
                 return GateResult(
-                    name, workflow, run_id, created, age_h, True, "OK", event, report_digests
+                    name,
+                    workflow,
+                    run_id,
+                    created,
+                    age_h,
+                    True,
+                    "OK",
+                    event,
+                    report_digests,
+                    _reported_scheduled_prj(report),
                 )
             reason = "PRJ_REPORT_SOURCE_MISMATCH"
         else:
@@ -254,6 +322,48 @@ def _evaluate(
         if failure.run_id is None:
             failure = GateResult(name, workflow, run_id, created, age_h, False, reason, event)
     return failure
+
+
+def _bind_scheduled_prj(
+    prj: GateResult,
+    prk: GateResult,
+    *,
+    branch: str,
+    now: datetime,
+    limit: int,
+    max_age_h: float,
+    runs_override: list[dict[str, Any]] | None,
+) -> dict[str, Any] | None:
+    source = prk.scheduled_prj_source
+    if source is None or prk.created_at is None:
+        return None
+    run_id = source["id"]
+    if prj.event == "schedule" and prj.run_id == run_id:
+        verified = prj
+    else:
+        verified = _evaluate(
+            "PR-J",
+            prj.workflow,
+            branch,
+            now,
+            limit,
+            max_age_h,
+            runs_override,
+            exact_scheduled_run=run_id,
+        )
+    if (
+        not verified.ok
+        or verified.created_at is None
+        or verified.created_at != source["created_at"]
+        or _parse_iso8601(verified.created_at) > _parse_iso8601(prk.created_at)
+    ):
+        return None
+    return {
+        "workflow": verified.workflow,
+        "run_id": run_id,
+        "event": verified.event,
+        "created_at": verified.created_at,
+    }
 
 
 def main() -> int:
@@ -310,6 +420,15 @@ def main() -> int:
         prk_runs,
         prj=prj,
     )
+    scheduled_prj = _bind_scheduled_prj(
+        prj,
+        prk,
+        branch=args.branch,
+        now=now,
+        limit=args.limit,
+        max_age_h=args.max_age_hours_prj,
+        runs_override=prj_runs,
+    )
 
     out = {
         "generated_at": now.isoformat().replace("+00:00", "Z"),
@@ -321,6 +440,7 @@ def main() -> int:
         ),
         "prk_report_prj_run_id": prj.run_id if prk.ok else None,
         "prk_report_sha256": prk.report_sha256,
+        "scheduled_prj": scheduled_prj,
         "results": [
             {
                 "name": prk.name,
@@ -362,6 +482,7 @@ def main() -> int:
         f"- branch: **{args.branch}**",
         f"- overall_ok: **{out['overall_ok']}**",
         f"- evidence_scope: **{out['evidence_scope']}**",
+        f"- verified scheduled PR-J run: **{scheduled_prj['run_id'] if scheduled_prj else 'none'}**",
         "",
         "## Results",
         fmt(prk),

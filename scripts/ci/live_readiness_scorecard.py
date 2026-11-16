@@ -6,9 +6,9 @@ from hashlib import sha256
 from pathlib import Path
 
 if __package__:
-    from .stability_gate import PRK_REPORT_FILES, read_stability_gate_ages
+    from .stability_gate import PRK_REPORT_FILES, read_scheduled_prj_age, read_stability_gate_ages
 else:
-    from stability_gate import PRK_REPORT_FILES, read_stability_gate_ages
+    from stability_gate import PRK_REPORT_FILES, read_scheduled_prj_age, read_stability_gate_ages
 
 
 def _read(p: str) -> bytes | None:
@@ -31,6 +31,7 @@ def main() -> int:
 
     hard_blocks: list[str] = []
     warnings: list[str] = []
+    scheduled_prj_age: float | None = None
 
     stability_data = _read(args.stability)
     status_data = _read(args.status)
@@ -48,10 +49,7 @@ def main() -> int:
 
     score = 100
 
-    if hard_blocks:
-        score = 0
-        decision = "NO_GO"
-    else:
+    if not hard_blocks:
         stability_error, ages = read_stability_gate_ages(stability)
         if not stability_error and "evidence_scope" in stability:
             if any(
@@ -61,39 +59,34 @@ def main() -> int:
                 stability_error = "PRK_REPORT_BINDING_MISMATCH"
         if stability_error:
             hard_blocks.append(stability_error)
-            score = 0
-            decision = "NO_GO"
         else:
             hs = health.get("status", "UNKNOWN")
             if hs == "NO_SUCCESS":
                 hard_blocks.append("PRK_NO_SUCCESS")
-                score = 0
-                decision = "NO_GO"
             elif health.get("policy_action") == "NO_TRADE":
                 hard_blocks.append("PRK_NO_TRADE")
-                score = 0
-                decision = "NO_GO"
             else:
-                if ages["PR-K"] > 24:
-                    warnings.append("PRK_AGE_GT_24H")
-                    score -= 10
-                if ages["PR-J"] > 12:
-                    warnings.append("PRJ_AGE_GT_12H")
-                    score -= 10
+                scheduled = read_scheduled_prj_age(stability, status)
+                if isinstance(scheduled, str):
+                    hard_blocks.append(scheduled)
+                else:
+                    scheduled_prj_age = scheduled
+                    if ages["PR-K"] > 24:
+                        warnings.append("PRK_AGE_GT_24H")
+                        score -= 10
+                    if scheduled > 12:
+                        warnings.append("PRJ_AGE_GT_12H")
+                        score -= 10
 
-                if hs == "STALE":
-                    warnings.append("HEALTH_STALE")
-                    score -= 15
-                elif hs != "OK":
-                    warnings.append(f"HEALTH_{hs}")
-                    score -= 5
+                    if hs == "STALE":
+                        warnings.append("HEALTH_STALE")
+                        score -= 15
+                    elif hs != "OK":
+                        warnings.append(f"HEALTH_{hs}")
+                        score -= 5
 
-                if score < 0:
-                    score = 0
-
-                decision = (
-                    "GO" if (score >= int(args.go_threshold) and not hard_blocks) else "NO_GO"
-                )
+    score = 0 if hard_blocks else max(score, 0)
+    decision = "GO" if score >= int(args.go_threshold) and not hard_blocks else "NO_GO"
 
     out = {
         "score": score,
@@ -103,6 +96,8 @@ def main() -> int:
         "stability_evidence_scope": stability.get("evidence_scope")
         if isinstance(stability, dict)
         else None,
+        "scheduled_prj": stability["scheduled_prj"] if scheduled_prj_age is not None else None,
+        "scheduled_prj_age_hours": scheduled_prj_age,
     }
 
     outdir = Path(args.out_dir)
