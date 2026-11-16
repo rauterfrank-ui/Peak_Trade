@@ -1164,7 +1164,7 @@
     {
       "path": "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
       "before_sha256": "fce5ec1aa8012a24b635eed9d44a5b0b5946352609a3d062680b901971e0d09e",
-      "sha256": "5ec18709162587045859cbf8391b10c20fc2df690aeeb8185194870105404d3a"
+      "sha256": "de1bec0f059037116827e539e94b6edd959b60a05119bbcdd610fecf690622b5"
     },
     {
       "path": "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
@@ -4144,7 +4144,7 @@
     {
       "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
       "before_sha256": "c6f6ef23d4ada0bb48952e836e82956f7f771f76878598f929ae260da767a391",
-      "sha256": "b9518267124447fccd3e3b147fc187ad4cc0d06ebc33c22da24d077509d23710"
+      "sha256": "a0d84a37d1497f47f61807fb16b688f392edff3d0173d8c3ba9edbd55f1f13f4"
     },
     {
       "path": "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
