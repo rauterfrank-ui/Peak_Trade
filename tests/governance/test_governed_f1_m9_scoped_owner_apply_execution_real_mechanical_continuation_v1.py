@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from src.governance.f1_m9_productive_apply_ledger_v1 import load_apply_ledger_entries_v1
 from src.governance.f1_m9_scoped_owner_apply_authority_v1 import RUNTIME_APPLY_AUTHORITY_VALUE
 from src.governance.governed_f1_m9_scoped_owner_apply_execution_closure_v1 import (
     prove_governed_f1_m9_scoped_owner_apply_execution_v1,
@@ -21,6 +22,7 @@ from src.governance.governed_f1_m9_scoped_owner_apply_execution_real_mechanical_
     REAL_P4_TO_F1_M9_JOIN_STATUS,
     RUNTIME_APPLY_STARTED,
     build_f1_m9_per_ingress_context_from_admitted_ingress_v1,
+    execute_f1_m9_scoped_owner_apply_execution_proof_v1,
     prove_continuation_authority_invariants_v1,
     prove_continuation_decision_files_v1,
     run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1,
@@ -89,7 +91,7 @@ def _f1_context(tmp_path: Path) -> F1M9PerIngressExecutionContextV1:
         RuntimePrimarySourceModeV1.SHADOW,
     ],
 )
-def test_real_p4_boundary_plus_f1_m9_apply_execution_proof(tmp_path: Path, mode) -> None:
+def test_observation_archive_cannot_reach_scoped_owner_apply(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
     req = projection_request(source_mode=mode, primary_root=root)
     result = run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1(
@@ -99,23 +101,17 @@ def test_real_p4_boundary_plus_f1_m9_apply_execution_proof(tmp_path: Path, mode)
             repo_root=REPO_ROOT,
         )
     )
-    assert result.status == "CONTINUATION_COMPLETE", result.blocking_reasons
-    assert result.real_upstream_source_used is True
-    assert result.p4_l6_real_seam_used is True
-    assert result.runtime_materialization_record_used is True
-    assert result.real_p4_to_f1_m9_join_status == REAL_P4_TO_F1_M9_JOIN_STATUS
-    assert result.f1_m9_canonical_apply_owner_used is True
-    assert result.apply_completed is True
-    assert result.configuration_runtime_applied is True
-    assert result.apply_started is True
+    assert result.status == "REJECTED"
+    assert result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    assert result.p4_l6_real_seam_used is False
+    assert result.runtime_materialization_record_used is False
+    assert result.real_p4_to_f1_m9_join_status is None
+    assert result.f1_m9_canonical_apply_owner_used is False
+    assert result.apply_completed is False
+    assert result.configuration_runtime_applied is False
+    assert result.apply_started is False
     assert result.ddo_fixture_state_used_on_real_path is False
-    assert result.f1_m9_per_ingress_real_upstream_source_used is False
-    assert result.apply_execution_evidence is not None
-    assert (
-        result.apply_execution_evidence.phase_state
-        == F1M9ApplyExecutionPhaseStateV1.APPLY_COMPLETED
-    )
-    assert result.value_ratification_status == "THRESHOLD_HOT_PATH_NOT_RATIFIED"
+    assert result.apply_execution_evidence is None
 
 
 def test_ddo_forbidden_on_real_p4_leg(tmp_path: Path) -> None:
@@ -193,20 +189,23 @@ def test_decision_config() -> None:
     assert decision["runtime_apply_started"] is False
 
 
-def test_runtime_applied_uses_scoped_authority(tmp_path: Path) -> None:
-    ctx = _f1_context(tmp_path)
-    root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
-    req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
-    result = run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1(
-        GovernedF1M9ApplyExecutionContinuationRequestV1(
-            projection_request=req,
-            f1_m9_context=ctx,
-            repo_root=REPO_ROOT,
-        )
+def test_owner_execution_proof_uses_its_configuration_and_scoped_authority(tmp_path: Path) -> None:
+    context = _f1_context(tmp_path)
+    evidence, _, configuration = execute_f1_m9_scoped_owner_apply_execution_proof_v1(
+        context=context, repo_root=REPO_ROOT
     )
-    assert result.status == "CONTINUATION_COMPLETE"
-    rec = result.apply_execution_evidence
-    assert rec is not None
-    assert rec.configuration_runtime_applied is True
-    assert rec.threshold_value_ratified is False
-    assert rec.candidate_value_applied is False
+    assert evidence.phase_state == F1M9ApplyExecutionPhaseStateV1.APPLY_COMPLETED
+    (entry,) = load_apply_ledger_entries_v1(context.ledger_paths.apply_ledger_path)
+    assert entry["configuration_digest"] == configuration.configuration_digest
+    assert (
+        entry["owner_apply_authorization_record_digest"]
+        == (configuration.configuration_record["owner_apply_authorization_record_digest"])
+    )
+    assert evidence.apply_authorized is True
+    assert evidence.configuration_runtime_applied is True
+    assert (
+        configuration.configuration_record["runtime_apply_authority"]
+        == RUNTIME_APPLY_AUTHORITY_VALUE
+    )
+    assert evidence.threshold_value_ratified is False
+    assert evidence.candidate_value_applied is False

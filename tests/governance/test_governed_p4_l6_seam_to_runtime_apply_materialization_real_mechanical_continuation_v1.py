@@ -63,7 +63,7 @@ def _cleanup_archives():
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_real_runtime_through_runtime_apply_materialization(tmp_path: Path, mode) -> None:
+def test_observation_archive_cannot_materialize_configuration(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
     req = projection_request(source_mode=mode, primary_root=root)
     result = run_real_runtime_p4_l6_to_runtime_apply_materialization_continuation_v1(
@@ -72,18 +72,17 @@ def test_real_runtime_through_runtime_apply_materialization(tmp_path: Path, mode
             repo_root=REPO_ROOT,
         )
     )
-    assert result.status == "CONTINUATION_COMPLETE", result.blocking_reasons
-    assert result.real_upstream_source_used is True
+    assert result.status == "REJECTED"
+    assert result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
     assert result.ddo_fixture_state_used is False
-    assert result.p4_l6_real_seam_used is True
-    assert result.p4_seam_disposition == SEAM_BIND_DISPOSITION
-    assert result.runtime_apply_ingress_reached is True
-    assert result.runtime_materialization_performed is True
-    assert result.apply_record_produced is True
-    assert result.configuration_materialized is True
+    assert result.p4_l6_real_seam_used is False
+    assert result.runtime_apply_ingress_reached is False
+    assert result.runtime_materialization_performed is False
+    assert result.apply_record_produced is False
+    assert result.materialization_record is None
+    assert result.configuration_materialized is False
     assert result.configuration_applied is False
-    assert result.lineage_join_valid is True
-    assert prove_real_p4_l6_runtime_apply_materialization_continuation_v1(
+    assert not prove_real_p4_l6_runtime_apply_materialization_continuation_v1(
         projection_request=req,
         repo_root=REPO_ROOT,
     )

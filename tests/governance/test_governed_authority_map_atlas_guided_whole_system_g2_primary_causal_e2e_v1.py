@@ -111,12 +111,17 @@ def test_paper_g2_runner_reports_incomplete_continuation(tmp_path: Path, monkeyp
     assert report["G2_CONTINUATION"]["g2_m8"]["m8_reached"] is False
 
 
-def test_fixture_control_g2_m8_reaches_m8(tmp_path: Path) -> None:
+def test_observation_fixture_control_stops_after_g2_projection(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
     evidence = run_reference_fixture_g2_m8_control_v1(req)
+    assert evidence.primary_archive_valid is True
     assert evidence.g2_ingress_admitted is True
-    assert evidence.m8_reached is True
+    assert evidence.g2_projection_reached is True
+    assert evidence.g2_binding_reached is False
+    assert evidence.m4_reached is False
+    assert evidence.m8_reached is False
+    assert "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED" in evidence.reason_codes
 
 
 def test_lifecycle_adjudication_reports_no_observed_archive_by_default() -> None:

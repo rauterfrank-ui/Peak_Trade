@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import LOOP_STATUS_COMPLETE
 from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT,
 )
@@ -89,15 +88,17 @@ def test_decision_config_and_static_invariants() -> None:
     assert prove_semantic_adjudication_case_b_invariants_v1()
 
 
-def test_legitimate_paper_primary_g2_to_m4_m8_reference(tmp_path: Path) -> None:
+def test_paper_archive_reference_requires_original_outcome_before_m4(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
     ref = run_legitimate_g2_primary_to_m4_m8_reference_continuation_v1(
         projection_request=req,
         classification="FIXTURE_CLASSIFIED_PAPER_PRIMARY_EVIDENCE",
     )
-    assert ref.g2_result.status == "CONTINUATION_COMPLETE", ref.g2_result.blocking_reasons
-    assert ref.m8_reached is True
+    assert ref.g2_result.status == "REJECTED"
+    assert ref.g2_result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    assert ref.g2_result.projection.status == "PROJECTED"
+    assert ref.g2_result.learning_evidence is None
+    assert ref.m8_reached is False
     assert ref.productive_apply_reached is False
-    loop = ref.g2_result.m4_m8_loop or {}
-    assert loop.get("status") == LOOP_STATUS_COMPLETE
+    assert ref.g2_result.m4_m8_loop is None

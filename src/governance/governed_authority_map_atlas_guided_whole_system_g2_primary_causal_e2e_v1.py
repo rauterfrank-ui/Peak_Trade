@@ -352,7 +352,11 @@ def run_g2_m8_continuation_evidence_v1(
         m7_reached=plane_ok and opt_ok,
         m8_reached=m8 and g2.m4_m8_evidence_return_output_produced is True,
         classification=classification,
-        reason_codes=(f"SOURCE_MODE={mode}", f"CLASSIFICATION={classification}"),
+        reason_codes=(
+            f"SOURCE_MODE={mode}",
+            f"CLASSIFICATION={classification}",
+            *g2.blocking_reasons,
+        ),
     )
 
 

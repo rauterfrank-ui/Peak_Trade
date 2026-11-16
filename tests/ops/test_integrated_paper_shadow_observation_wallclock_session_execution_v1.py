@@ -1148,6 +1148,11 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert (
         bound_g2["optimization_admission"]["learning_evidence_digest"] == evidence["content_hash"]
     )
+    from tests.experiments.test_canonical_m4_m8_evidence_return_loop_v1 import (
+        assert_original_g2_evidence_reaches_offline_feedback,
+    )
+
+    assert_original_g2_evidence_reaches_offline_feedback(bound_g2["learning_evidence"])
     with pytest.raises(SystemExit, match="2"):
         learning_main([*shadow_g2_args[:-1], ""])
     assert "I17_SHADOW_HANDOFF_DIGEST_REQUIRED" in capsys.readouterr().err

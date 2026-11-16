@@ -4,9 +4,13 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+from typing import Any, Mapping
 
 import pytest
 
+from src.experiments.canonical_deterministic_multi_cycle_offline_replay_v1 import (
+    OfflineMultiCycleReplayError,
+)
 from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
     LOOP_STATUS_COMPLETE,
     M4M8EvidenceReturnLoopError,
@@ -15,6 +19,7 @@ from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
     SEARCH_EXECUTED,
     run_m4_m8_evidence_return_loop_v1,
 )
+from src.experiments.canonical_optimization_experiment_evidence_v1 import CLASS_ECONOMIC_EVIDENCE
 from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
     export_learning_evidence_from_state_v1,
 )
@@ -25,6 +30,33 @@ from tests.learning.test_learning_evidence_export_v1 import _learning_state
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODULE_PATH = REPO_ROOT / "src" / "experiments" / "canonical_m4_m8_evidence_return_loop_v1.py"
+
+
+def assert_original_g2_evidence_reaches_offline_feedback(evidence: Mapping[str, Any]) -> None:
+    """Exercise the bounded experiment fixture with the verified G2 input unchanged."""
+    loop = run_m4_m8_evidence_return_loop_v1(
+        M4M8EvidenceReturnLoopRequestV1(
+            learning_evidence=evidence,
+            plane_request=_plane_request(evidence, created_at=evidence["observed_at_utc"]),
+            replay_seed=19,
+        )
+    )
+    assert loop["status"] == LOOP_STATUS_COMPLETE
+    assert loop["search_executed"] is False
+    assert loop["p5_producer_bridge_performed"] is False
+    cycle = loop["cycle"]
+    digest = evidence["content_hash"]
+    assert cycle["cycle_body"]["learning_evidence_digest"] == digest
+    plane = cycle["experiment_plane_result"]
+    assert plane["learning_input_validation"]["learning_evidence_digest"] == digest
+    optimization = cycle["optimization_experiment_evidence"]
+    economic = optimization["evidence_slices"][CLASS_ECONOMIC_EVIDENCE]
+    assert economic["source_learning_evidence_digest"] == digest
+    assert economic["numeric_calibration_authority"] == "NONE"
+    meta = cycle["meta_learning_evidence"]
+    assert meta["source_optimization_experiment_evidence_digest"] == optimization["content_hash"]
+    assert meta["meta_evidence_authority"] == "NONE"
+    assert cycle["bounded_research_feedback_decision"]["feedback_decision_identity"]
 
 
 def test_single_cycle_loop_deterministic_and_closed(tmp_path: Path) -> None:
@@ -61,6 +93,34 @@ def test_forbidden_p5_bridge_request(tmp_path: Path) -> None:
                 learning_evidence=evidence,
                 plane_request=plane,
                 requested_p5_producer_bridge=True,
+            )
+        )
+
+
+def test_experiment_cannot_use_a_different_learning_evidence_record(tmp_path: Path) -> None:
+    state = _learning_state(tmp_path)
+    evidence = export_learning_evidence_from_state_v1(state)
+    other = export_learning_evidence_from_state_v1(state, event_time_utc="2026-09-01T16:00:00Z")
+    assert evidence["content_hash"] != other["content_hash"]
+
+    with pytest.raises(
+        OfflineMultiCycleReplayError, match="M4_LEARNING_EVIDENCE_DIGEST_LINEAGE_MISMATCH"
+    ):
+        run_m4_m8_evidence_return_loop_v1(
+            M4M8EvidenceReturnLoopRequestV1(
+                learning_evidence=evidence, plane_request=_plane_request(other), replay_seed=7
+            )
+        )
+
+
+def test_invalid_cycle_learning_input_cannot_borrow_a_valid_experiment(tmp_path: Path) -> None:
+    evidence = export_learning_evidence_from_state_v1(_learning_state(tmp_path))
+    with pytest.raises(OfflineMultiCycleReplayError, match="CYCLE_LEARNING_INPUT_REJECTED"):
+        run_m4_m8_evidence_return_loop_v1(
+            M4M8EvidenceReturnLoopRequestV1(
+                learning_evidence={"content_hash": evidence["content_hash"]},
+                plane_request=_plane_request(evidence),
+                replay_seed=7,
             )
         )
 
