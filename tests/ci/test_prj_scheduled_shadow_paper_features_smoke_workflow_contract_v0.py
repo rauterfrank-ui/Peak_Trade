@@ -47,11 +47,11 @@ def test_workflow_exists_parseable_and_named() -> None:
     assert data.get("name") == "PR-J / Scheduled Shadow+Paper Features Smoke"
 
 
-def test_workflow_dispatch_only_without_active_schedule() -> None:
+def test_workflow_runs_daily_at_1623_utc_and_accepts_manual_dispatch() -> None:
     triggers = _trigger_section(_workflow())
 
     assert "workflow_dispatch" in triggers
-    assert "schedule" not in triggers
+    assert triggers["schedule"] == [{"cron": "23 16 * * *"}]
 
 
 def test_workflow_gate_var_scheduling_and_dispatch_in_source() -> None:

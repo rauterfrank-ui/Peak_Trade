@@ -72,6 +72,11 @@
       "sha256": null
     },
     {
+      "path": ".github/workflows/prj-scheduled-shadow-paper-features-smoke.yml",
+      "before_sha256": "3b7e561c39c8094995f34834c9aff28b151a7e21cf0a7f8ac68c55b021934931",
+      "sha256": "eb672665266a9eb4cd5ca80891a21f476d983f8342092f92f60e4c378c70e022"
+    },
+    {
       "path": ".github/workflows/test-health-automation.yml",
       "before_sha256": "6f8f1b4d501574228f91891b7ba9735552438ec2f247ae474119eecffde21aca",
       "sha256": "dfb2cef949cb7dc19f65ca0dc8ed39978744ce456616584efac11c30a99411bb"
@@ -790,6 +795,11 @@
       "path": "docs/ops/runbooks/morning_one_shot.md",
       "before_sha256": "96db7ab9aa81f0025dda5a5df89d9f7c752f4293f244995d91acd3a4811f926c",
       "sha256": "23fbb163ec46ff2a7bfda21b900e3b75ff89cb80b6f7cca4795aab4ea3ed6628"
+    },
+    {
+      "path": "docs/ops/runbooks/prj_scheduled_shadow_paper_features_smoke.md",
+      "before_sha256": "c9b07c87aaba6e1abe0d4e3e432ec9568d6b3b9bae657e2c4349454b9378cf24",
+      "sha256": "2d377d4022be6ce29c2ff4b69d4abfc03c80051c40974a1dd17bb8a31471ffb4"
     },
     {
       "path": "docs/ops/runbooks/stability_gate.md",
@@ -3347,6 +3357,11 @@
       "sha256": null
     },
     {
+      "path": "tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py",
+      "before_sha256": "2f988e3b3d4dca8a3aa0e0068997ce2c9095edf7fd0419447792c71d13a354db",
+      "sha256": "866e76b7f690396d88850c797accab407fc873539b1b85dfdf8a5dc7866c80ac"
+    },
+    {
       "path": "tests/ci/test_ruff_frozen_format_v1.py",
       "before_sha256": null,
       "sha256": "d1c8127403f7b6d029d9a6856ef971beb1a960d44944692388e6034c4ab5ea92"
@@ -4539,7 +4554,7 @@
     {
       "path": "tests/ops/test_recommend_manual_only_workflows.py",
       "before_sha256": "cb8638d10c5bd087e99e4be4847cc7da2f259a078760319e74ea4e7383364851",
-      "sha256": "9164fbf8d8dcbca7fe2ef9bed5f5f4f53fd9432b3038e69173feeb8bdd5603cd"
+      "sha256": "1ba870fed9f22f80906f04fed4cc0db2d03cff18e95de65ceb9afe147c48b177"
     },
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
