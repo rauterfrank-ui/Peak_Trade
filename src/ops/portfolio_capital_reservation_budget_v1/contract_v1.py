@@ -857,7 +857,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             return result
 
     def record_authenticated_l10_close_v1(
-        self, *, execution, proof_path, proof_root, repository_sha
+        self, *, execution, proof_path, proof_root, repository_sha, offline_l10_close=False
     ):
         """Persist the original close settlement without changing the capital hold."""
         from .live_l10_close_booking_v1 import (
@@ -874,6 +874,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 proof_path=proof_path,
                 proof_root=proof_root,
                 repository_sha=repository_sha,
+                offline_l10_close=offline_l10_close,
             )
             episode = booking.episode_id
             row = booking.to_dict_v1()
