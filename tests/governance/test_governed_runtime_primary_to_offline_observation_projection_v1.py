@@ -41,6 +41,9 @@ from src.governance.governed_runtime_primary_to_offline_observation_projection_v
     run_governed_runtime_primary_to_offline_observation_projection_v1,
     validate_primary_evidence_for_projection_v1,
 )
+from tests.experiments.test_canonical_m4_m8_evidence_return_loop_v1 import (
+    assert_original_g2_evidence_reaches_offline_feedback,
+)
 from tests.governance.governed_runtime_primary_to_offline_observation_projection_v1_fixtures import (
     build_mode_bundle,
     cleanup_durable_archive_roots,
@@ -114,6 +117,7 @@ def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence
     assert binding.learning_evidence["outcome_semantic_class"] == "PAPER_SIMULATED_POSITION_OUTCOME"
     assert binding.learning_evidence["evaluation_horizon"] == "SIMULATED_POSITION_LIFECYCLE"
     assert binding.learning_evidence["observed_at_utc"] == closed_at
+    assert_original_g2_evidence_reaches_offline_feedback(binding.learning_evidence)
     assert (
         bind_from_g2_projection_result_v1(projection, requested_productive_join=True).decision_code
         == "FORBIDDEN_PRODUCTIVE_OR_SEARCH_REQUEST"

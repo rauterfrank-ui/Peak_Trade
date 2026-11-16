@@ -19,22 +19,20 @@ Owner:
 
 Purpose:
 
-Continue the proven G2 real mechanical path (#6880) into the **existing**
-`run_m4_m8_evidence_return_loop_v1` orchestrator using runtime-derived
-`learning_evidence_record_v1` only. DDO fixture learning state is not used on
-this path.
+Describe the boundary between G2 observation projection, verified outcome intake
+and the canonical `run_m4_m8_evidence_return_loop_v1` offline orchestrator.
 
 ## Direction
 
 ```text
-GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1 (PROJECTED)
-  → runtime_to_learning_input_v1
-  → GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
-  → learning_evidence_record_v1 (runtime-derived)
-  → validate_canonical_optimization_universe_learning_input_v1
-  → bounded offline M4 plane request (synthetic offline research envelope)
-  → run_m4_m8_evidence_return_loop_v1
-  → M4–M8 cycle output (authority=NONE)
+Observation archive (PROJECTED)
+  → runtime_to_learning_input_v1 (observation lineage)
+  → G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED
+
+Verified Paper episode or I17 Shadow outcome
+  → original learning_evidence_record_v1 accepted by canonical offline intake
+  → bounded offline M4–M8 replay with an explicit experiment request
+  → M5 and Meta/feedback lineage bound to the same Learning Evidence digest
 ```
 
 Reuse:
@@ -43,15 +41,20 @@ Reuse:
 - `src/experiments/canonical_m4_m8_evidence_return_loop_v1.py`
 - `src/experiments/canonical_optimization_universe_experiment_plane_v1.py`
 
-DDO `export_learning_evidence_from_state_v1` + test `_learning_state` remain
-valid **fixture harness only** for isolated unit tests; they are forbidden inputs
-on the real continuation request surface.
+The archive continuation request carries observation inputs. The typed G2 routes
+verify original outcomes independently and preserve their producer and content
+digest. Bounded replay consumes that digest as lineage. The synthetic experiment
+scores in the replay fixtures do not measure the original outcome or establish
+economic quality. Isolated replay fixtures can use DDO exports without claiming
+verified G2 lineage.
 
 ## Fail closed
 
-Reject when G2 projection/binding fails, learning evidence is not from the G2
-binding producer, DDO fixture state is supplied, canonical optimization input
-rejects, plane build fails, or M4–M8 loop does not complete.
+The archive continuation stops before M4 without an original outcome. Offline
+replay rejects invalid cycle Learning Evidence or a different record at M4. The
+Meta join checks the digest in the M4 input and the M5 evidence against the cycle's
+Learning Evidence. Component A, P3/P4 and F1/M9 retain their own authorization and
+configuration inputs.
 
 ## Non-implications
 

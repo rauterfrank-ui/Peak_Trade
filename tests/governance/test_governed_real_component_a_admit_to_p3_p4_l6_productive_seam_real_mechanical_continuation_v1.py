@@ -33,22 +33,22 @@ from src.governance.master_v2_double_play_evidence_input_plane_p2_evidence_adjud
 from src.governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.constants_v1 import (
     B_RUNTIME_IMPLEMENTATION_AUTHORIZED,
 )
-from src.governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.models_v1 import (
-    LayerInputBindingContextV1,
-    LayerInputBindingRequestV1,
-)
 from src.governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.binder_v1 import (
     bind_layer_input_from_adjudication_v1,
 )
-from src.governance.master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1.constants_v1 import (
-    L6_TYPED_INPUT_SCHEMA_VERSION,
+from src.governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.reason_codes_v1 import (
+    LayerInputBindingIntakeFailureCodeV1,
 )
 from tests.governance.governed_runtime_primary_to_offline_observation_projection_v1_fixtures import (
     build_mode_bundle,
     cleanup_durable_archive_roots,
     projection_request,
 )
-from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.layer_catalog_v1 import LayerIdV1
+from tests.governance.test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1 import (
+    _admit,
+    _context,
+    _request,
+)
 
 pytest_plugins = [
     "tests.governance.governed_runtime_primary_to_offline_observation_projection_v1_fixtures"
@@ -71,7 +71,7 @@ def _cleanup_archives():
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_real_runtime_through_p3_p4_l6_seam(tmp_path: Path, mode) -> None:
+def test_observation_archive_cannot_reach_p3_or_p4(tmp_path: Path, mode) -> None:
     root = build_mode_bundle(tmp_path, mode)
     req = projection_request(source_mode=mode, primary_root=root)
     result = run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1(
@@ -80,15 +80,15 @@ def test_real_runtime_through_p3_p4_l6_seam(tmp_path: Path, mode) -> None:
             repo_root=REPO_ROOT,
         )
     )
-    assert result.status == "CONTINUATION_COMPLETE", result.blocking_reasons
-    assert result.real_upstream_source_used is True
+    assert result.status == "REJECTED"
+    assert result.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
     assert result.ddo_fixture_state_used is False
-    assert result.component_a_real_admit_used is True
-    assert result.p3_input_creator_binder_reached is True
-    assert result.p4_l6_seam_reached is True
-    assert result.lineage_join_valid is True
-    assert result.component_a_adjudication_disposition == ADMIT_DISPOSITION
-    assert prove_real_p3_p4_l6_productive_seam_continuation_v1(
+    assert result.component_a_real_admit_used is False
+    assert result.p3_input_creator_binder_reached is False
+    assert result.p4_l6_seam_reached is False
+    assert result.lineage_join_valid is False
+    assert result.component_a_adjudication_disposition is None
+    assert not prove_real_p3_p4_l6_productive_seam_continuation_v1(
         projection_request=req,
         repo_root=REPO_ROOT,
     )
@@ -121,66 +121,13 @@ def test_lineage_join_rejects_missing_adjudication_ref() -> None:
     assert "COMPONENT_A_ADJUDICATION_LINEAGE_MISSING" in reasons
 
 
-def test_non_admit_component_a_rejects_p3_bind(tmp_path: Path) -> None:
-    root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
-    req = projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
-    ok = run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1(
-        RealP3P4ProductiveSeamContinuationRequestV1(
-            projection_request=req,
-            repo_root=REPO_ROOT,
-        )
-    )
-    assert ok.status == "CONTINUATION_COMPLETE"
-    from src.governance.governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1 import (
-        build_market_context_v1_from_runtime_primary_provenance_v1,
-    )
-    from src.governance.governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1 import (
-        G2RuntimeM4M8ContinuationRequestV1,
-        run_g2_runtime_to_m4_m8_evidence_return_continuation_v1,
-    )
-    from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.adapters_v1 import (
-        adapt_optimization_envelope_evidence_v1,
-        default_termination_context_from_market_context_v1,
-    )
-    from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.ingress_v1 import (
-        terminate_optimization_envelope_at_a_v1,
-    )
-    from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.optimization_envelope_evidence_v1 import (
-        SCHEMA_VERSION,
-    )
-
-    g2 = run_g2_runtime_to_m4_m8_evidence_return_continuation_v1(
-        G2RuntimeM4M8ContinuationRequestV1(projection_request=req)
-    )
-    prov = g2.projection.provenance
-    mc = build_market_context_v1_from_runtime_primary_provenance_v1(prov)
-    epoch = int(prov.trading_epoch)
-    term = default_termination_context_from_market_context_v1(mc, market_observation_epoch=epoch)
-    opt = dict(ok.optimization_envelope_evidence or {})
-    term_res = terminate_optimization_envelope_at_a_v1(
-        opt,
-        source_artifact_schema=SCHEMA_VERSION,
-        source_content_digest=str(opt["content_hash"]),
-        termination=term,
-        repo_root=REPO_ROOT,
-    )
-    reject_adj = replace(term_res.adjudication, disposition=REJECT_DISPOSITION)
-    intake = adapt_optimization_envelope_evidence_v1(opt, termination=term)
-    binding = bind_layer_input_from_adjudication_v1(
-        LayerInputBindingRequestV1(
-            binding_id="neg-bind",
-            target_layer=LayerIdV1.L6_DYNAMIC_SCOPE_GENERATOR,
-            target_contract_version=L6_TYPED_INPUT_SCHEMA_VERSION,
-            nullline_provenance_epoch=epoch,
-            adjudication=reject_adj,
-        ),
-        context=LayerInputBindingContextV1(
-            evaluated_at_unix=float(intake.observed_at_unix) + 1.0,
-            expected_instrument=term.instrument,
-            expected_market_observation_epoch=epoch,
-        ),
-    )
+def test_non_admit_component_a_rejects_p3_bind() -> None:
+    admitted = _admit()
+    assert admitted.disposition == ADMIT_DISPOSITION
+    rejected = replace(admitted, disposition=REJECT_DISPOSITION)
+    binding = bind_layer_input_from_adjudication_v1(_request(rejected), context=_context())
     assert binding.disposition == "NO_BIND"
+    assert LayerInputBindingIntakeFailureCodeV1.ADJUDICATION_NOT_ADMIT.value in binding.reason_codes
 
 
 def test_authority_gates_unchanged_and_invariants() -> None:

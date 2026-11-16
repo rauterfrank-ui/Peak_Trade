@@ -1177,6 +1177,11 @@
       "sha256": "2bdd6adc93001797f4475f56c5dcba0d5e9017aafa64d0a8a0f7acb09908febf"
     },
     {
+      "path": "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
+      "before_sha256": "069b4997a0725535603c41ebf7f17abccb6abbb9a70cdd3afb9dce5c703ac252",
+      "sha256": "68c8a514c39e7e745687b9e6172ce40815ad239af9d9315d939157a202743f60"
+    },
+    {
       "path": "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
       "before_sha256": "c9d2a3b62feeb702a6fccada5640ee5933bbd9f9dd9482e4cb851b3c7ae8885f",
       "sha256": "1e163a9597a89c55bf7d13e59a4c6eb9adb57372cfacf4597912295f86a53d3b"
@@ -1294,7 +1299,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "0c83a3b666e6efd3fc8182ce3ab9c4903f67f9fd72f272698e499acc8e124ca2"
+      "sha256": "c69e135e92a486f81c3805261f051627fca2d5ec0ec62a877d31d854fa754f54"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1857,6 +1862,11 @@
       "sha256": "b3d359044ecb3ff32e5503cd343f89afcfde4e55f1d3b91609e0fbf587769f8c"
     },
     {
+      "path": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+      "before_sha256": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
+      "sha256": "e004a344c825015e2ea1e680e3f19ba2e3628b21a21888baa4288d3881396b4f"
+    },
+    {
       "path": "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
       "before_sha256": "2e371288f0fb90468ed744c802303316b431c757028cf3fbfd6dad3d74d90610",
       "sha256": "5348db02c87e680af6cc52adb3f656b39348a787fb5bf191fb134167cd3b75fe"
@@ -1930,6 +1940,16 @@
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
       "before_sha256": "ac896c8001617c2cc8cdcfca5225f1afa81bc03524244cfcc1ec44dda04062a5",
       "sha256": "0265a99e89dcf920eaf545de9d8f88078799fd14b6a9c8752858b0d11c30d3dd"
+    },
+    {
+      "path": "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+      "before_sha256": "a2221ea8bd07069c9b8166597f66f7c11d8da272aeb251d5a7effcf3160fcf91",
+      "sha256": "1b0fc364b5c78f2f486494c046c26615f1b57833f5e17ccb52c5c90d06d536b5"
+    },
+    {
+      "path": "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+      "before_sha256": "8b56a8d02b5cc2ef584e1264a91454b9ee5636091a3f18e56afff91fd4d93a0c",
+      "sha256": "0fa9bb43914ee82426817b7d6e180ab8675d9e95eb3530a3fa617bda35a18666"
     },
     {
       "path": "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
@@ -3422,6 +3442,11 @@
       "sha256": "121dfcb34fbf55c6c7565586ce4df6f0c49d56c0b23d0a8f9bc4e7510e5bc5fd"
     },
     {
+      "path": "tests/experiments/test_canonical_m4_m8_evidence_return_loop_v1.py",
+      "before_sha256": "11ba0ff25e238652dc4201d45de87e245a1174b6c64c049dfd9ad0a1fcd873de",
+      "sha256": "16215629f7aeb8c9fd8eb8290b5db9918390ddb0e378ed324c69083ca178e5d0"
+    },
+    {
       "path": "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
       "before_sha256": "92209011781f0aaf46cc386b880c0b1c58299b874097bc569db90ac98143c942",
       "sha256": "f1a774407aa18e10a69b763cd71b319eadaacacfedf04a59fa5ec3dd95f1f386"
@@ -3544,12 +3569,42 @@
     {
       "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
       "before_sha256": "35b578f97fc53e28d079df76f996b8e849105eba8ec474fa8a8a27ec7bd7124c",
-      "sha256": "b3e55f90b509bc00e8c9a35c794f7233c0dbf35ba67cdc8beb68fd79985a72ea"
+      "sha256": "d4f994bea96dab92fcea18ee9ad32c24648baba85ef16b74d73d44a03f0855ed"
     },
     {
       "path": "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
       "before_sha256": "2bee373160c04b30c482c1cec8162106eff61d8b17942fa9571139f5e5009860",
       "sha256": "99e5423330c00fe06e7cfe57a3c47192146a413a417c3cd4f60aefe14605f935"
+    },
+    {
+      "path": "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+      "before_sha256": "deb2dd302c2916e2655de44fad3955c8db30781244834c2084318809c2dbf381",
+      "sha256": "7a53bc59090d20a7bfa27d42f8217fbdf2f939d3c131418843689d2147460dda"
+    },
+    {
+      "path": "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+      "before_sha256": "6d4e71f2f49f1f7804ebd35fb828d40270b6f56f9f2ac6960077c7ddeb8996a2",
+      "sha256": "df469d3867e0fb36ae093c5123e8c79034de43917681cd4cd5bcf14b090946b8"
+    },
+    {
+      "path": "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
+      "before_sha256": "b7a345e31d03ff8c187d28ea21bce1382191e683c34eb79917be4c2007114bef",
+      "sha256": "58fe3d2b3764c66614c2c3869055eeaf7d4f2f7601454de567b9eed5c8191eac"
+    },
+    {
+      "path": "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+      "before_sha256": "2595c1bdbf21ead9fc4a92c1f36196ba63f5edd1e5fdb98cc4a1c85f386edd99",
+      "sha256": "0532c39b250579b009aae0eccbc395c4f10777dd12a02162e54273cdebbebe5a"
+    },
+    {
+      "path": "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+      "before_sha256": "f516346af3e2666ac6aa447e654eca2368f5ca8f42bc70908131791134164cc6",
+      "sha256": "ea482125e076d2cc5ea99df6f4e8d177550732d1e45efd26fd229c6458b95aff"
+    },
+    {
+      "path": "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py",
+      "before_sha256": "629e895158de34c6a37ff28dd6785aa246ad432241cac28bebe05588ddedd237",
+      "sha256": "78385ffd41d909d463ca3e75fe1340df812f75be88424f9ed567ea1616be5cec"
     },
     {
       "path": "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
@@ -3564,7 +3619,7 @@
     {
       "path": "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
       "before_sha256": "857b1379182d41ad4d09628995c0ac90ec34a1b89a77d3e48f74bc4c3b7f5d7a",
-      "sha256": "7f1ef923f1f74602d6d9b8e2705c13e2c4c44f2f79f06b08571e9d318f6ae496"
+      "sha256": "dbab6adef7d884bf0f94ead487dfd76589d12e1c5606a13773dcfe70202cf443"
     },
     {
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",
@@ -4314,7 +4369,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "23b64320d7293bd6f72957f301287ee9c8e954fea340bd23c6e0fefb8406d0cc"
+      "sha256": "f47fafea76d70b92c087e402582e6aeca6bdddc9ecd15fd4024561b50ee12a0d"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",

@@ -131,6 +131,12 @@ def validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1(
     if return_ack.get("status") != STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT:
         reasons.append("M5_RETURN_ACK_NOT_ACCEPTED")
     plane = cycle.get("experiment_plane_result") or {}
+    plane_learning_input = plane.get("learning_input_validation") or {}
+    if plane_learning_input.get("learning_evidence_digest") != learning_digest:
+        reasons.append("M4_LEARNING_EVIDENCE_DIGEST_LINEAGE_MISMATCH")
+    optimization_evidence = cycle.get("optimization_experiment_evidence") or {}
+    if optimization_evidence.get("learning_evidence_digest") != learning_digest:
+        reasons.append("M5_LEARNING_EVIDENCE_DIGEST_LINEAGE_MISMATCH")
     plane_identity = str(plane.get("plane_identity", ""))
     if plane_identity and return_ack.get("plane_identity") != plane_identity:
         reasons.append("PLANE_IDENTITY_RETURN_ACK_MISMATCH")
@@ -149,7 +155,7 @@ def validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1(
             reasons.append("M6_META_LEARNING_EVIDENCE_MALFORMED")
         if meta.get("meta_evidence_authority") != META_EVIDENCE_AUTHORITY:
             reasons.append("M6_META_EVIDENCE_AUTHORITY_ESCALATION")
-        opt_digest = (cycle.get("optimization_experiment_evidence") or {}).get("content_hash")
+        opt_digest = optimization_evidence.get("content_hash")
         if meta.get("source_optimization_experiment_evidence_digest") != opt_digest:
             reasons.append("M6_SOURCE_OPTIMIZATION_EVIDENCE_DIGEST_MISMATCH")
 

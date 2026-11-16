@@ -31,6 +31,7 @@ from src.experiments.canonical_optimization_universe_experiment_plane_v1 import 
 )
 from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     SCHEMA_VERSION as M1_INPUT_SCHEMA_VERSION,
+    STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT,
     CanonicalOptimizationUniverseLearningInputRequestV1,
     validate_canonical_optimization_universe_learning_input_v1,
 )
@@ -125,6 +126,16 @@ def run_offline_evidence_cycle_v1(
             learning_evidence=cycle_input.learning_evidence
         )
     )
+    if learning_input.get("status") != STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT:
+        raise OfflineMultiCycleReplayError("CYCLE_LEARNING_INPUT_REJECTED")
+    learning_digest = learning_input["learning_evidence_digest"]
+    plane_evidence = cycle_input.plane_request.learning_evidence
+    if (
+        not isinstance(plane_evidence, Mapping)
+        or plane_evidence.get("content_hash") != learning_digest
+    ):
+        raise OfflineMultiCycleReplayError("M4_LEARNING_EVIDENCE_DIGEST_LINEAGE_MISMATCH")
+
     plane = run_optimization_universe_experiment_plane_v1(cycle_input.plane_request)
     if plane.get("status") != PLANE_STATUS_COMPLETE:
         raise OfflineMultiCycleReplayError("M4_PLANE_NOT_COMPLETE")
@@ -172,7 +183,7 @@ def run_offline_evidence_cycle_v1(
             prior.get("feedback_decision_identity") if prior is not None else None
         ),
         "candidate_experiment_id": opt_evidence.get("candidate_experiment_id"),
-        "learning_evidence_digest": learning_input.get("learning_evidence_digest"),
+        "learning_evidence_digest": learning_digest,
     }
     cycle_digest = compute_content_sha256(_json_safe(cycle_body))
     return MappingProxyType(
