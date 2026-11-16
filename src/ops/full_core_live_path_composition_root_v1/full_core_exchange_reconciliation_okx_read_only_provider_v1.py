@@ -1,9 +1,9 @@
-"""OKX EEA read-only reconciliation snapshot adapter (injected GET transport only).
+"""OKX EEA read-only reconciliation snapshot adapter.
 
 Uses FullCoreFreshPretradeGetTransportV1 / FullCoreProductiveReadOnlyGetTransportV1.
 No standalone HTTP client. No credentials. No productive wiring without Owner-GO.
 
-PRODUCTION_PROVIDER_WIRING remains NOT_AUTHORIZED at integration boundary.
+The authenticated L10 close can explicitly select productive pagination.
 """
 
 from __future__ import annotations
@@ -13,10 +13,12 @@ from datetime import datetime, timezone
 from typing import Any, Callable, Mapping
 from urllib.parse import urlencode
 
+from src.data.safety import DataSourceKind
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_POSITIONS,
     GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
     TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FullCoreFreshPretradeGetTransportV1,
     FreshPretradeGetTransportResultV1,
 )
@@ -44,7 +46,7 @@ DEFAULT_FILLS_LIMIT = 100
 # OKX /trade/orders-pending uses 100 when no explicit limit is sent.
 _PENDING_DEFAULT_PAGE_SIZE = 100
 _OKX_MAX_PAGE_SIZE = 100
-_MAX_OFFLINE_PAGES_PER_SURFACE = 8
+_MAX_PAGES_PER_SURFACE = 8
 
 _OKX_RATE_LIMIT_CODES = frozenset({"50011", "50061"})
 # OKX GET /api/v5/trade/order negative hit (order not on book); not a transport/API fault.
@@ -62,6 +64,7 @@ class OkxReadOnlyReconciliationQueryOptionsV1:
     history_limit: int = DEFAULT_HISTORY_LIMIT
     fills_limit: int = DEFAULT_FILLS_LIMIT
     offline_max_pages_per_surface: int = 1
+    productive_l10_close: bool = False
 
 
 def _rows(payload: Any) -> list[dict[str, Any]]:
@@ -267,8 +270,10 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
 ) -> FullCoreExchangeReconciliationSnapshotV1:
     """Issue bounded OKX read-only GET set and map into Full-Core reconciliation snapshot."""
     opts = options or OkxReadOnlyReconciliationQueryOptionsV1()
-    max_pages = opts.offline_max_pages_per_surface
-    if type(max_pages) is not int or not 1 <= max_pages <= _MAX_OFFLINE_PAGES_PER_SURFACE:
+    max_pages = (
+        _MAX_PAGES_PER_SURFACE if opts.productive_l10_close else opts.offline_max_pages_per_surface
+    )
+    if type(max_pages) is not int or not 1 <= max_pages <= _MAX_PAGES_PER_SURFACE:
         raise OkxReadOnlyReconciliationProviderError("RECONCILIATION_PAGE_BUDGET_INVALID")
     if any(
         type(limit) is not int or not 1 <= limit <= _OKX_MAX_PAGE_SIZE
@@ -389,7 +394,7 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
             )
 
     def _read_pages(surface, path, query, limit, cursor_field):
-        """Replay bounded pages on an injected transport, using the oldest page ID."""
+        """Read bounded pages using the oldest ID from the preceding response."""
         pages = []
         after = None
         for _ in range(max_pages):
@@ -398,9 +403,19 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
             pages.append((result, rows))
             if max_pages == 1:
                 return pages, len(rows) >= limit
+            if opts.productive_l10_close:
+                source_proven = (
+                    result.transport_class == TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+                    and result.venue_live_contact is True
+                    and result.data_safety_source_kind == DataSourceKind.REAL.value
+                )
+            else:
+                source_proven = (
+                    result.transport_class == TRANSPORT_CLASS_INJECTED_TEST_DOUBLE
+                    and result.venue_live_contact is False
+                )
             if (
-                result.transport_class != TRANSPORT_CLASS_INJECTED_TEST_DOUBLE
-                or result.venue_live_contact is not False
+                not source_proven
                 or not _freshness_proven_from_get_v1(result, surface=surface)
                 or _api_code(result.payload) != "0"
                 or len(rows) > limit
@@ -409,7 +424,9 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
             ids = _cursor_ids(rows, cursor_field)
             if (
                 ids is None
-                or any(row.get("instId") != inst for row in rows)
+                or any(
+                    row.get("instId") != inst or row.get("instType", itype) != itype for row in rows
+                )
                 or len(ids) != len(set(ids))
                 or (after is not None and ids and max(ids) >= after)
             ):

@@ -27,7 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_ORDERS_PENDING,
     ENDPOINT_TRADE_FILLS,
-    _MAX_OFFLINE_PAGES_PER_SURFACE,
+    _MAX_PAGES_PER_SURFACE,
     OkxReadOnlyReconciliationQueryOptionsV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_future_identity_semantics_v1 import (
@@ -65,13 +65,16 @@ class ExecutionReconciliationSourceError(ValueError):
     """The GET result could not be bound to the original source."""
 
 
-def resolve_reconciliation_query_options_v1(*, instrument_id, native_id, offline_l10_close=False):
+def resolve_reconciliation_query_options_v1(
+    *, instrument_id, native_id, offline_l10_close=False, productive_l10_close=False
+):
     market_type = resolve_selected_future_market_type_v1(
         instrument_id=instrument_id, venue_native_id=native_id
     )
     return OkxReadOnlyReconciliationQueryOptionsV1(
         inst_type="FUTURES" if market_type is FuturesMarketType.FUTURES else "SWAP",
-        offline_max_pages_per_surface=_MAX_OFFLINE_PAGES_PER_SURFACE if offline_l10_close else 1,
+        offline_max_pages_per_surface=_MAX_PAGES_PER_SURFACE if offline_l10_close else 1,
+        productive_l10_close=productive_l10_close,
     )
 
 
@@ -289,13 +292,15 @@ class AuthenticatedReconciliationGetV1:
     def discard_response_bodies_v1(self):
         self._bodies.clear()
 
-    def completed_order_read_set_v1(self, *, account_decision_id, order_decision_id, observed_at):
+    def completed_order_read_set_v1(
+        self, *, account_decision_id, order_decision_id, observed_at, paged_l10_close=False
+    ):
         self.original_handle_v1()
         account_reads = self._gets.get(account_decision_id, ())
         order_reads = self._gets.get(order_decision_id, ())
         reads = (*account_reads, *order_reads)
         order_paths = tuple(urlsplit(read.endpoint).path for read in order_reads)
-        if self.offline_l10_close:
+        if paged_l10_close:
             order_paths = (*[path for path, _ in groupby(order_paths[:-2])], *order_paths[-2:])
         if (
             len(account_reads) != 1

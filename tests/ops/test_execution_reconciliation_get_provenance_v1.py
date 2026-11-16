@@ -211,7 +211,7 @@ def authenticated_host(tmp_path, monkeypatch):
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=25, k1_lookup_backend=_FakeKeychainBackend()
+        max_request_count=28, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
@@ -1141,6 +1141,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "double-play-close",
         "double-play-net",
         "double-play-paged-net",
+        "double-play-productive-paged-net",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1159,6 +1160,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         "double-play-close": ("readback-flat", 84),
         "double-play-net": ("readback-booked", 85),
         "double-play-paged-net": ("readback-paged-booked", 78),
+        "double-play-productive-paged-net": ("readback-productive-paged-booked", 87),
     }.get(path, (None, 26))
     close_case = close_readback is not None
     managed_case = path == "managed-r04"
@@ -1356,7 +1358,11 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
             "tradeId": "22",
             "uTime": str(timestamp - 500),
         }
-        if close_readback in {"readback-booked", "readback-paged-booked"}:
+        if close_readback in {
+            "readback-booked",
+            "readback-paged-booked",
+            "readback-productive-paged-booked",
+        }:
             position.update(posId="8923", cTime=str(timestamp - 1000), ccy="USDC")
 
         def filled_entry_body(endpoint, params):
@@ -1834,6 +1840,11 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-readback-paged-missing", None),
         ("polled-mark-close-readback-paged-foreign", None),
         ("polled-mark-close-readback-paged-open-orders", None),
+        ("polled-mark-close-readback-productive-paged-booked", None),
+        ("polled-mark-close-readback-productive-paged-missing", None),
+        ("polled-mark-close-readback-productive-paged-foreign", None),
+        ("polled-mark-close-readback-productive-paged-foreign-product", None),
+        ("polled-mark-close-readback-productive-paged-open-orders", None),
         ("polled-mark-close-readback-history-missing", None),
         ("polled-mark-close-readback-history-conflict", None),
         ("polled-mark-close-readback-history-foreign", None),
@@ -1897,6 +1908,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
     with_history = dispatch in {
         "readback-booked",
         "readback-paged-booked",
+        "readback-productive-paged-booked",
         "readback-history-missing",
         "readback-history-conflict",
         "readback-history-foreign",
@@ -2005,6 +2017,18 @@ def test_owned_entry_proof_reaches_original_position_episode(
             and not dispatch.startswith("readback-paged-")
         ):
             expected_gets += 6 + int(with_history)
+        if dispatch in {
+            "readback-productive-paged-booked",
+            "readback-productive-paged-foreign",
+            "readback-productive-paged-foreign-product",
+        }:
+            expected_gets += 2
+        if dispatch == "readback-productive-paged-open-orders":
+            expected_gets += 3
+        if dispatch and dispatch.startswith("readback-page-"):
+            expected_gets += 1
+        if dispatch == "readback-productive-paged-missing":
+            expected_gets -= 1  # The timeout arrives before the fixture records a response.
         if dispatch == "readback-owner-go-lost":
             expected_gets += 7
         assert len(opener.requests) - request_count == expected_gets
@@ -2507,7 +2531,7 @@ def _assert_original_close_dispatch(context, case, tmp_path):
 
 
 def _assert_invalid_close_page_receipts_are_rejected(
-    *, owner, execution, proof_root, close, history, repository_sha, paged=False
+    *, owner, execution, proof_root, close, history, repository_sha
 ):
     """Use digest-consistent copies so the booking reader must check the GET sequence."""
 
@@ -2518,6 +2542,7 @@ def _assert_invalid_close_page_receipts_are_rejected(
         return path, digest
 
     gets = close["gets"]
+    paged = close["schema"] != store.CLOSE_GET_PROOF_V1
     assert len(gets) == (8 if paged else 6)
     index = 3 if paged else 2
     order_history = gets[index]
@@ -2545,7 +2570,7 @@ def _assert_invalid_close_page_receipts_are_rejected(
                 proof_path=path,
                 proof_root=proof_root,
                 repository_sha=repository_sha,
-                offline_l10_close=paged,
+                offline_l10_close=close["schema"] == store.OFFLINE_CLOSE_GET_PROOF_V2,
             )
 
 
@@ -2602,6 +2627,9 @@ def _assert_restarted_close_readback(
         "feeCcy": currency,
     }
     original_body = opener.body
+    productive_paged = case.startswith("productive-paged-")
+    if productive_paged:
+        case = case.removeprefix("productive-")
     paged = case.startswith("paged-")
     with_history = case in {"booked", "paged-booked", "owner-go-lost"} or case.startswith(
         "history-"
@@ -2660,9 +2688,13 @@ def _assert_restarted_close_readback(
             start = 200000 if is_fill else 100000
             if "after" in params:
                 assert params["after"] == str(start - 99)
+                if productive_paged and case == "paged-missing" and is_fill:
+                    raise TimeoutError("simulated missing fills continuation")
                 rows = [row]
                 if case == "paged-foreign" and is_fill:
                     rows = [{**row, "instId": "foreign-instrument", "clOrdId": "foreign-order"}]
+                if case == "paged-foreign-product" and is_fill:
+                    rows = [{**row, "instType": "SPOT", "clOrdId": "foreign-order"}]
             else:
                 rows = [
                     {**row, cursor_key: str(i), "ordId": str(i), "clOrdId": f"unrelated-{i}"}
@@ -2727,7 +2759,7 @@ def _assert_restarted_close_readback(
 
     source_transport = original_host.reconciliation_transport
     offline_receipts = []
-    if paged:
+    if paged and not productive_paged:
         scope_query = {"instType": product, "instId": envelope.instrument_id}
         list_query = {**scope_query, "limit": "100"}
         requests = [("/api/v5/account/config", {}), ("/api/v5/trade/orders-pending", scope_query)]
@@ -2839,6 +2871,7 @@ def _assert_restarted_close_readback(
             "paged-booked": "CLOSE_NET_BOOKED",
             "paged-missing": "CLOSE_READBACK_BLOCKED",
             "paged-foreign": "CLOSE_READBACK_BLOCKED",
+            "paged-foreign-product": "CLOSE_READBACK_BLOCKED",
             "paged-open-orders": "CLOSE_READBACK_BLOCKED",
             "history-missing": "CLOSE_FLAT_CONFIRMED",
             "history-conflict": "CLOSE_FLAT_CONFIRMED",
@@ -2866,14 +2899,23 @@ def _assert_restarted_close_readback(
     assert original_host.owner.active_sum_v1() == held
     assert load_external_effect_durable_consume_v1(store_root=store_root) == original_send
     if paged:
-        assert len(opener.requests) == request_count
-        assert not source_transport.venue_live_contact
-        assert readback.counter_order_request is None and resumed.counter_order_sizing is None
+        if productive_paged:
+            assert source_transport.venue_live_contact
+        else:
+            assert len(opener.requests) == request_count
+            assert not source_transport.venue_live_contact
+            assert readback.counter_order_request is None and resumed.counter_order_sizing is None
         if not with_history:
+            assert readback.counter_order_request is None and resumed.counter_order_sizing is None
             assert readback.reason_codes == (
                 {
-                    "paged-missing": "OFFLINE_L10_CLOSE_RESPONSE_MISSING",
+                    "paged-missing": (
+                        "RECONCILIATION_GET_RESPONSE_UNPROVEN"
+                        if productive_paged
+                        else "OFFLINE_L10_CLOSE_RESPONSE_MISSING"
+                    ),
                     "paged-foreign": REASON_INCOMPLETE_PAGINATION,
+                    "paged-foreign-product": REASON_INCOMPLETE_PAGINATION,
                     "paged-open-orders": "POST_CLOSE_PENDING_CUSTODY_NOT_CLEAR",
                 }[case],
             )
@@ -2887,18 +2929,30 @@ def _assert_restarted_close_readback(
         assert booking["net_result"] == ("0.13" if product == "FUTURES" else "0.09")
         assert booking["currency"] == currency
         record = json.loads(readback.proof_path.read_bytes())["record"]
-        assert record["schema"] == store.OFFLINE_CLOSE_GET_PROOF_V2
-        assert [
-            (get["endpoint"], get["body_sha256"]) for get in record["gets"]
-        ] == offline_receipts[:-1]
-        assert signed_requests == [endpoint for endpoint, _ in offline_receipts]
+        actual_reads = [(get["endpoint"], get["body_sha256"]) for get in record["gets"]]
+        if productive_paged:
+            assert record["schema"] == store.CLOSE_GET_PROOF_V2
+            assert record["venue_host"] == wire.AUTHORIZED_HOST
+            assert actual_reads == opener.requests[request_count:-1]
+            assert readback.counter_order_request.net_booking.to_dict_v1() == booking
+            sizing = resumed.counter_order_sizing
+            assert sizing.first_blocker == "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED"
+            assert not sizing.venue_plan_authorized
+            assert (
+                sizing.authenticated_close_timing.close_proof_digest
+                == booking["close_proof_digest"]
+            )
+        else:
+            assert record["schema"] == store.OFFLINE_CLOSE_GET_PROOF_V2
+            assert actual_reads == offline_receipts[:-1]
+            assert signed_requests == [endpoint for endpoint, _ in offline_receipts]
         assert json.loads(record["gets"][3]["body"])["data"] == [order]
         assert json.loads(record["gets"][5]["body"])["data"] == [fill]
         database = original_host.root / "owner" / "reservations.sqlite3"
         original_database = database.read_bytes()
         original_receipt = readback.proof_path.read_bytes()
         replay_transport = wire.FullCoreProductiveReadOnlyGetTransportV1(
-            offline_l10_close_responses={}
+            offline_l10_close_responses=None if productive_paged else {}
         )
         replay = supervisor.run_n1_standing_pre_external_supervisor_v1(
             **{
@@ -2908,6 +2962,7 @@ def _assert_restarted_close_readback(
             }
         )
         assert replay.close_readback == readback
+        assert replay.counter_order_sizing == resumed.counter_order_sizing
         assert not replay_transport.methods_used and replay.trace.post_count == 0
         assert database.read_bytes() == original_database
         assert readback.proof_path.read_bytes() == original_receipt
@@ -2930,21 +2985,22 @@ def _assert_restarted_close_readback(
                 close=record,
                 history=json.loads(history_path.read_bytes())["record"],
                 repository_sha=original_host.repository_sha,
-                paged=True,
             )
             assert owner.read_authenticated_l10_close_v1(booking["episode_id"]) == booking
         with pytest.raises(ValueError, match="CLOSE_PROOF_CONTENT_UNPROVEN"):
             supervisor.run_n1_standing_pre_external_supervisor_v1(
                 **{
                     **run_args,
-                    "config": replace(config, evidence_root=tmp_path / "paged-real-denied"),
-                    "pretrade_transport": original_host.reconciliation_transport,
+                    "config": replace(config, evidence_root=tmp_path / "paged-source-denied"),
+                    "pretrade_transport": wire.FullCoreProductiveReadOnlyGetTransportV1(
+                        offline_l10_close_responses={} if productive_paged else None
+                    ),
                 }
             )
         assert database.read_bytes() == original_database
         return
     assert len(opener.requests) - request_count == (
-        0 if case == "not-sent" else 6 + int(with_history)
+        0 if case == "not-sent" else 6 + int(with_history) + int(case.startswith("page-"))
     )
     if case == "flat" or with_history:
         assert readback.remaining_quantity == 0 and readback.filled_quantity == quantity
@@ -3161,7 +3217,12 @@ def _assert_restarted_close_readback(
         if case.startswith("page-"):
             assert readback.reason_codes == (REASON_INCOMPLETE_PAGINATION,)
             assert not restarted_hosts[-1].owner._live_l10_close_bookings
-            assert all("after=" not in endpoint for endpoint, _ in opener.requests[request_count:])
+            followups = [
+                urlsplit(endpoint).path
+                for endpoint, _ in opener.requests[request_count:]
+                if "after=" in endpoint
+            ]
+            assert followups == [f"/api/v5/trade/{case.removeprefix('page-')}"]
         if case == "partial":
             assert readback.filled_quantity == filled
             assert readback.remaining_quantity == quantity - filled

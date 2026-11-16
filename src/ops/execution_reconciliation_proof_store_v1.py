@@ -44,6 +44,7 @@ from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
 
 _SCHEMA = "peaktrade.execution_reconciliation_get_proof.v1"
 CLOSE_GET_PROOF_V1 = "peaktrade.authenticated_close_get_proof.v1"
+CLOSE_GET_PROOF_V2 = "peaktrade.authenticated_close_get_proof.v2"
 OFFLINE_CLOSE_GET_PROOF_V2 = "peaktrade.offline_authenticated_close_get_proof.v2"
 
 
@@ -133,15 +134,19 @@ def publish_authenticated_close_readback_v1(
 ) -> Path:
     """Persist verified close inputs in the existing private GET evidence store."""
     root = require_private_proof_root_v1(root)
-    if len(reads) < 6 or (not offline_l10_close and len(reads) != 6) or len(bodies) != len(reads):
+    if len(reads) < 6 or len(bodies) != len(reads):
         raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_SET_UNPROVEN")
     gets = []
     for read, body in zip(reads, bodies):
         if sha256(body).hexdigest() != read.body_sha256:
             raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_BODY_UNPROVEN")
         gets.append({**read.to_reference_v1(), "body": body.decode("utf-8")})
-    schema = OFFLINE_CLOSE_GET_PROOF_V2 if offline_l10_close else CLOSE_GET_PROOF_V1
-    record = {**close_record, "schema": schema, "gets": gets}
+    record = {**close_record, "schema": CLOSE_GET_PROOF_V1, "gets": gets}
+    if offline_l10_close:
+        record["schema"] = OFFLINE_CLOSE_GET_PROOF_V2
+    elif len(reads) > 6:
+        record["schema"] = CLOSE_GET_PROOF_V2
+        record["venue_host"] = AUTHORIZED_HOST
     digest = sha256(_encode(record)).hexdigest()
     path = root / f"close-{digest}.json"
     _publish(path, _encode({"record": record, "sha256": digest}) + b"\n")
