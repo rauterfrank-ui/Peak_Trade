@@ -3562,9 +3562,14 @@
       "sha256": "a77529013afcf756040f4f99090d9181f802e5256a9fa47ab2b1f016e2096e91"
     },
     {
+      "path": "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py",
+      "before_sha256": "517ddc3fae956effbf28ae1c0cf3e94f910fea6a4cfca42f067bfd992c952ec5",
+      "sha256": "2f4c2f9364dced42dff27c3a43e3f86e18fde6aedea211f752975b8658c6f305"
+    },
+    {
       "path": "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
       "before_sha256": "815db78f7d9e1ba0071e4c45def5f1757bea782cf933ef4e31a764f1c1cd81ff",
-      "sha256": "13903d94c6e46a5617b0214476ef75ed23a968bb889f4b246fd5599c0c91d226"
+      "sha256": "79dbdb2219435eaedc2b45c8cda679d9bb015e6ccb8165e897f745ed83571b56"
     },
     {
       "path": "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",

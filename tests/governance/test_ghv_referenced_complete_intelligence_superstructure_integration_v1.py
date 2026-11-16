@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import ast
+import json
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -10,6 +12,9 @@ import pytest
 from src.experiments.canonical_m4_m8_evidence_return_loop_v1 import (
     P5_PRODUCER_BRIDGE_PERFORMED,
     SEARCH_EXECUTED,
+)
+from src.governance import (
+    ghv_referenced_intelligence_superstructure_ghv_reference_manifest_v1 as ghv_reference,
 )
 from src.governance.ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1 import (
     CYCLE_STATUS_COMPLETE,
@@ -20,6 +25,11 @@ from src.governance.ghv_referenced_complete_intelligence_superstructure_offline_
     GhvReferencedIntelligenceOfflineCycleRequestV1,
 )
 from src.governance.ghv_referenced_intelligence_superstructure_ghv_reference_manifest_v1 import (
+    DEFAULT_BOUNDED_RUN_SUBDIR,
+    MANIFEST_CONFIG_REL,
+    ghv_reference_root_path_v1,
+    ghv_semantic_checkpoints_v1,
+    load_ghv_reference_manifest_config_v1,
     prove_ghv_reference_artifacts_v1,
 )
 from src.governance.ghv_referenced_static_semantic_look_ahead_v1 import (
@@ -50,6 +60,8 @@ from tests.experiments.test_canonical_optimization_universe_experiment_plane_v1 
 from tests.learning.test_learning_evidence_export_v1 import _learning_state
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+REPORT_REL = Path(DEFAULT_BOUNDED_RUN_SUBDIR) / "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+HISTORICAL_REPORT = ghv_reference_root_path_v1(repo_root=REPO_ROOT) / REPORT_REL
 MV2_CYCLE_PATH = (
     REPO_ROOT / "src/ops/full_core_live_path_composition_root_v1/"
     "current_productive_master_v2_runtime_cycle_v1.py"
@@ -70,11 +82,67 @@ def _offline_request(tmp_path: Path) -> GhvReferencedIntelligenceOfflineCycleReq
     )
 
 
-def test_ghv_reference_artifacts_and_manifest_prove(tmp_path: Path) -> None:
+@pytest.fixture
+def ghv_test_checkout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    manifest = tmp_path / MANIFEST_CONFIG_REL
+    manifest.parent.mkdir(parents=True)
+    manifest.write_bytes((REPO_ROOT / MANIFEST_CONFIG_REL).read_bytes())
+    monkeypatch.setattr(ghv_reference, "repo_root_v1", lambda: tmp_path)
+    return tmp_path
+
+
+def _write_checkpoint_fixture(repo_root: Path, *, post_count: int = 0) -> Path:
+    report = ghv_reference_root_path_v1(repo_root=repo_root) / REPORT_REL
+    report.parent.mkdir(parents=True)
+    report.write_text(
+        json.dumps(
+            {
+                "NATIVE_ID": "FIXTURE-USDT-SWAP",
+                "NATURAL_ENTER_OBSERVED": True,
+                "PRE_EXTERNAL_REACHED": True,
+                "POST_COUNT": post_count,
+                "EXTERNAL_EFFECT_COUNT": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return report
+
+
+def test_ghv_reference_artifacts_and_manifest_prove(ghv_test_checkout: Path) -> None:
+    rel = REPORT_REL.as_posix()
+    manifest = load_ghv_reference_manifest_config_v1()
+    assert manifest["artifact_relative_paths"] == [rel]
+    missing = prove_ghv_reference_artifacts_v1()
+    assert missing["artifacts_ok"] is False
+    assert missing["missing_artifacts"] == (rel,)
+    assert missing["artifact_digests"] == {}
+
+    report = _write_checkpoint_fixture(ghv_test_checkout)
+    original_bytes = report.read_bytes()
     proof = prove_ghv_reference_artifacts_v1()
     assert proof["ghv_authority"] == "NONE"
     assert proof["artifacts_ok"] is True
     assert proof["missing_artifacts"] == ()
+    assert proof["artifact_digests"][rel] == {
+        "sha256": sha256(original_bytes).hexdigest(),
+        "size_bytes": len(original_bytes),
+    }
+    assert (
+        ghv_semantic_checkpoints_v1()["checkpoints"]["REFERENCE_INSTRUMENT"] == "FIXTURE-USDT-SWAP"
+    )
+
+
+@pytest.mark.skipif(
+    not HISTORICAL_REPORT.is_file(), reason="Historical MINA convergence report absent"
+)
+def test_historical_mina_convergence_report() -> None:
+    source = ghv_semantic_checkpoints_v1()
+    assert source["ok"] is True
+    checkpoints = source["checkpoints"]
+    manifest = load_ghv_reference_manifest_config_v1()
+    assert checkpoints["REFERENCE_INSTRUMENT"] == manifest["reference_instrument_forensic_only"]
+    assert all(checkpoints[key] for key in manifest["semantic_checkpoint_keys"])
 
 
 def test_offline_cycle_completes_m4_m8_with_governance_disconnected(tmp_path: Path) -> None:
@@ -110,11 +178,23 @@ def test_offline_cycle_forbids_search_and_p5_bridge_constants() -> None:
     assert P5_PRODUCER_BRIDGE_PERFORMED is False
 
 
-def test_static_semantic_look_ahead_no_productive_divergence() -> None:
+@pytest.mark.parametrize("post_count", [None, 0, 1], ids=["missing", "accepted", "post-observed"])
+def test_static_semantic_look_ahead_preserves_boundary_and_reports_evidence_state(
+    ghv_test_checkout: Path, post_count: int | None
+) -> None:
+    if post_count is not None:
+        _write_checkpoint_fixture(ghv_test_checkout, post_count=post_count)
     la = run_ghv_referenced_static_semantic_look_ahead_v1()
     assert la["ghv_authority"] == "NONE"
     assert la["productive_first_causal_divergence"] == "NONE"
-    assert la["intelligence_first_causal_divergence"] == "NONE"
+    expected = {
+        None: ("GHV_REFERENCE_ARTIFACTS_MISSING", "GHV_SEMANTIC_CHECKPOINTS_UNAVAILABLE"),
+        0: (),
+        1: ("GHV_CHECKPOINT_POST_COUNT",),
+    }[post_count]
+    assert la["divergence_codes"] == expected
+    assert la["intelligence_first_causal_divergence"] == (expected[0] if expected else "NONE")
+    assert (la["ghv_checkpoint_digest"] is None) == (post_count is None)
 
 
 def test_boundary_invariants_unchanged() -> None:
