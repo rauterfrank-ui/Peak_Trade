@@ -224,11 +224,15 @@ MANAGED_FILEGATE_OWNER_DELTAS = {
     ),
 }
 
-# Exact offline G2 source changes for Paper episodes and verified I17 Shadow evidence.
+# Exact offline G2 source and field-mapping changes.
 G2_ARCHIVE_PROJECTION_DELTAS = {
+    "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json": (
+        "209034aac331c7fe9ce443a113c49fd605b6841b685320d3661105bcc76dc34a",
+        "9c661ffd77d80f9780c0e265e13f4633370cf18467bef4d8f578d2b654b979b5",
+    ),
     "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py": (
         "28f9234a45a3abcbc6948e3fb965f02df884f249d764b1b235511936431d4cec",
-        "a36967720fdcaa0a80330d50be4036fb0a8e7d2c460873001cfac6ac5d9f13a1",
+        "8aa2d662e3f12d6bcc76f8a7e7364bfb5ae6588b71c2d301a6de66e0bf3183c4",
     ),
     "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py": (
         "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",

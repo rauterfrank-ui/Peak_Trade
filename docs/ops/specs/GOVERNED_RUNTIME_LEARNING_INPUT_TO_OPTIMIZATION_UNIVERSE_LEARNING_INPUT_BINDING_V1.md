@@ -17,10 +17,10 @@ Owner:
 
 Purpose:
 
-Mechanically bind **validated** `runtime_to_learning_input_v1` (G2 learning ingress) into
-`learning_evidence_record_v1` and feed the **existing** canonical optimization-universe
-learning-input validator. This closes the mechanical join without DDO fixture state on the
-real runtime-derived path.
+Bind original decision-linked `learning_evidence_record_v1` from the verified Paper
+episode or I17 Shadow handoff to the canonical optimization-universe learning-input
+validator. The source-specific readback establishes outcome provenance, decision
+identity and measurement semantics before optimization intake.
 
 This component is **not** a runtime executor, DDO ledger owner, optimization search owner,
 promotion/apply owner, or Testnet/Live runner.
@@ -28,10 +28,9 @@ promotion/apply owner, or Testnet/Live runner.
 ## Direction
 
 ```text
-GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1 (PROJECTED)
-  → runtime_to_learning_input_v1 (LEARNING_INPUT_VALID)
+VERIFIED PAPER EPISODE or I17 SHADOW OUTCOME (PROJECTED)
   → GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
-  → learning_evidence_record_v1 (runtime-derived projection)
+  → original learning_evidence_record_v1
   → validate_canonical_optimization_universe_learning_input_v1
   → (stop — offline research input ack only)
 ```
@@ -52,7 +51,11 @@ Reject binding when runtime learning input is invalid, digest/integrity mismatch
 alignment fails, projection digest missing, DDO fixture state is supplied to the binder,
 forbidden productive/search/envelope flags are set, or canonical optimization input rejects.
 
-Do not fabricate missing provenance. Do not fall back to DDO fixture state.
+A valid `runtime_to_learning_input_v1` from an observation-only archive retains its
+archive lineage. Its review verdict describes archive integrity and its observation
+reference identifies the observation bundle. The optimization binding returns
+`G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED` for that input. The typed Paper and I17
+projections retain their original outcome references, provenance and knowledge times.
 
 ## M10 / apply isolation
 

@@ -7,13 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from src.experiments.canonical_optimization_universe_learning_input_v1 import (
-    STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT,
+from src.governance import (
+    governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 as g2_binding,
 )
 from src.governance.governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 import (
     DECISION_CONFIG,
     FIELD_MAPPING_LEDGER,
-    REAL_MECHANICAL_PATH_STATUS,
     RuntimeLearningInputOptimizationBindingRequestV1,
     bind_from_g2_projection_result_v1,
     bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1,
@@ -60,23 +59,29 @@ def _cleanup_archives():
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_real_mechanical_path_reaches_canonical_optimization_input(tmp_path: Path, mode) -> None:
+def test_observation_archive_does_not_reach_optimization_without_an_outcome(
+    tmp_path: Path, mode, monkeypatch
+) -> None:
     root = build_mode_bundle(tmp_path, mode)
     projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
         projection_request(source_mode=mode, primary_root=root)
     )
     assert projection.status == "PROJECTED"
+
+    def unexpected_optimization_input(_request):
+        pytest.fail("Observation-only archive reached canonical optimization")
+
+    monkeypatch.setattr(
+        g2_binding,
+        "validate_canonical_optimization_universe_learning_input_v1",
+        unexpected_optimization_input,
+    )
     binding = bind_from_g2_projection_result_v1(projection)
-    assert binding.status == "BOUND", binding.blocking_reasons
-    assert binding.path_classification == REAL_MECHANICAL_PATH_STATUS
-    assert binding.canonical_optimization_ack is not None
-    assert (
-        binding.canonical_optimization_ack.get("status") == STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT
-    )
-    assert binding.learning_evidence is not None
-    assert binding.learning_evidence.get("producer_id", "").startswith(
-        "peak_trade.governance.runtime"
-    )
+    assert binding.status == "REJECTED"
+    assert binding.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    assert binding.learning_evidence is None
+    assert binding.canonical_optimization_ack is None
+    assert binding.binding_record_digest is None
 
 
 @pytest.mark.parametrize(
@@ -87,29 +92,28 @@ def test_real_mechanical_path_reaches_canonical_optimization_input(tmp_path: Pat
         RuntimePrimarySourceModeV1.TESTNET,
     ],
 )
-def test_closure_proves_runtime_to_canonical_without_ddo_fixture(tmp_path: Path, mode) -> None:
+def test_closure_does_not_prove_an_outcome_from_an_observation_archive(
+    tmp_path: Path, mode
+) -> None:
     root = build_mode_bundle(tmp_path, mode)
-    assert prove_g2_runtime_to_canonical_optimization_learning_input_v1(
+    assert not prove_g2_runtime_to_canonical_optimization_learning_input_v1(
         projection_request=projection_request(source_mode=mode, primary_root=root)
     )
 
 
-def test_provenance_and_lineage_preserved(tmp_path: Path) -> None:
+def test_observation_keeps_its_archive_lineage(tmp_path: Path) -> None:
     root = build_mode_bundle(tmp_path, RuntimePrimarySourceModeV1.PAPER)
     projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
         projection_request(source_mode=RuntimePrimarySourceModeV1.PAPER, primary_root=root)
     )
-    binding = bind_from_g2_projection_result_v1(projection)
-    assert binding.status == "BOUND"
+    assert projection.status == "PROJECTED"
     assert projection.provenance is not None
-    evidence = binding.learning_evidence or {}
-    assert evidence.get("observed_at_utc") == projection.provenance.observation_time_utc
-    assert str(evidence.get("state_scope_id", "")).endswith(
-        projection.provenance.source_run_session_identity
-    )
+    body = projection.runtime_learning_input
+    assert body is not None
+    assert body["source_session_identity"] == projection.provenance.source_run_session_identity
     primary_ref = f"primary_manifest://{projection.provenance.primary_evidence_manifest_digest}"
-    assert primary_ref in (evidence.get("evidence_source_refs") or [])
-    assert len(binding.lineage_chain) >= 5
+    assert primary_ref in body["parent_refs"]
+    assert body["source_observation_ref"]
 
 
 def test_malformed_runtime_input_rejects() -> None:
@@ -164,7 +168,7 @@ def test_ddo_fixture_cannot_rescue_binding_request(tmp_path: Path) -> None:
     assert result.decision_code == "DDO_FIXTURE_STATE_IN_BINDING_REQUEST_FORBIDDEN"
 
 
-def test_fixture_export_path_distinct_from_runtime_binding_producer(tmp_path: Path) -> None:
+def test_observation_input_cannot_supply_its_own_outcome_class_or_fixture(tmp_path: Path) -> None:
     from tests.learning.test_learning_evidence_export_v1 import _learning_state
 
     state = _learning_state(tmp_path)
@@ -173,10 +177,23 @@ def test_fixture_export_path_distinct_from_runtime_binding_producer(tmp_path: Pa
     projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
         projection_request(source_mode=RuntimePrimarySourceModeV1.TESTNET, primary_root=root)
     )
-    binding = bind_from_g2_projection_result_v1(projection)
-    assert binding.learning_evidence is not None
-    assert binding.learning_evidence.get("producer_id") != fixture_evidence.get("producer_id")
-    assert binding.learning_evidence.get("record_id") != fixture_evidence.get("record_id")
+    assert projection.runtime_learning_input is not None
+    assert projection.provenance is not None
+    assert projection.projection_record_digest is not None
+    binding = bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1(
+        RuntimeLearningInputOptimizationBindingRequestV1(
+            runtime_learning_input={
+                **projection.runtime_learning_input,
+                "outcome_semantic_class": "SHADOW_COUNTERFACTUAL",
+                "learning_evidence": fixture_evidence,
+            },
+            provenance=projection.provenance,
+            projection_record_digest=projection.projection_record_digest,
+        )
+    )
+    assert binding.decision_code == "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    assert binding.learning_evidence is None
+    assert binding.canonical_optimization_ack is None
 
 
 def test_authority_non_escalation_constants() -> None:
@@ -199,6 +216,11 @@ def test_decision_config_and_field_mapping_ledger() -> None:
     ledger = load_field_mapping_ledger_v1(repo_root=REPO_ROOT)
     assert ledger["workpackage_id"].endswith("LEARNING_INPUT_BINDING_V1")
     assert ledger["destination_contract"] == "learning_evidence_record_v1"
+    assert ledger["admission_predicates"]["observation_only_binding"] == (
+        "G2_ORIGINAL_OUTCOME_EVIDENCE_REQUIRED"
+    )
+    assert ledger["mappings"]["archive_review_verdict"]["adjudication"] == "ARCHIVE_INTEGRITY_ONLY"
+    assert ledger["mappings"]["learning_evidence"]["adjudication"] == "ORIGINAL_VERIFIED_RECORD"
 
 
 def _minimal_provenance():
