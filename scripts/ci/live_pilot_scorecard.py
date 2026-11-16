@@ -5,6 +5,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+if __package__:
+    from .stability_gate import read_stability_gate_ages
+else:
+    from stability_gate import read_stability_gate_ages
+
 
 def _load(p: str) -> dict[str, Any]:
     path = Path(p)
@@ -31,8 +36,9 @@ def main() -> int:
     st = _load(args.shadow_testnet)
     exe = _load(args.execution_evidence)
 
-    if not bool(stab.get("overall_ok")):
-        hard.append("STABILITY_GATE_FAIL")
+    stability_error, _ = read_stability_gate_ages(stab)
+    if stability_error:
+        hard.append(stability_error)
     if live.get("decision") != "GO":
         hard.append("LIVE_READINESS_NOT_GO")
     if st.get("decision") != "READY_FOR_TESTNET":
