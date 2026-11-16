@@ -1394,14 +1394,16 @@ def apply_backtest_engine_position_feedback_to_mv2_sequence_state_v1(
     ``scope_direction_state``, or ``runtime_scope_state``. Bull/Bear / Switch authority
     remains ``transition_state``; RuntimeScopeState remains trailing SSOT.
     """
-    position_state = coerce_backtest_position_state_v1(feedback.position_state)
+    # The adapter and replay load these enums through different package paths.
+    # Keep the sequence state in the replay's enum classes on every bar.
+    position_state = PositionState(coerce_backtest_position_state_v1(feedback.position_state))
     return replace(
         sequence_state,
         position_state=position_state,
-        reconciliation_state=feedback.reconciliation_state,
-        existing_position_side=feedback.existing_position_side,
+        reconciliation_state=ReconciliationState(feedback.reconciliation_state),
+        existing_position_side=ExistingPositionSide(feedback.existing_position_side),
         venue_flat=feedback.venue_flat,
-        position_management_context=feedback.position_management_context,
+        position_management_context=PositionManagementContext(feedback.position_management_context),
     )
 
 

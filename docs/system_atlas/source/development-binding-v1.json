@@ -1779,7 +1779,7 @@
     {
       "path": "src/backtest/mv2_research_wiring_v1.py",
       "before_sha256": "b2df222d48e08c10a88737b1dd3e9a2a5ff4bec5c00849bd80d575c927925f7d",
-      "sha256": "b83efb52bb7ca67d5c3b30c49ef1641b5f5686260a93e43dfa909c1abcd45ff3"
+      "sha256": "db87db67806a514e5a23ec7119a788243c1a430ab1bf276b26f16be4a6013160"
     },
     {
       "path": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
@@ -3247,6 +3247,16 @@
       "sha256": "99f85c2d16d0851c7d3932912982f3d0d4f4cd885848f5309722479c524ba9f0"
     },
     {
+      "path": "tests/backtest/test_backtest_engine_position_feedback_v1.py",
+      "before_sha256": "ed1da1a086ca28acbec44883b7c6284117edb6696c0fab47f512f4385ca7d1af",
+      "sha256": "2b558bf9e9be19760e989ed05da6288ad0318eb45405d9e81ec47c5fa5b626f7"
+    },
+    {
+      "path": "tests/backtest/test_canonical_chain_zero_trade_blocker_v1.py",
+      "before_sha256": "256b0d1b8df1413a55dd921f06839cbdb21f569631c2a90c004d440c6423dc3e",
+      "sha256": "1cd0890cab3661f8f1d9bdf08155e14802a663b24dd0862d092ed736ca562438"
+    },
+    {
       "path": "tests/ci/test_aiops_promptfoo_cost_gate_workflow_contract_v0.py",
       "before_sha256": "50dd1642351da25cda79d5175debec9e829af45c8c65985da64b668b4ae238dc",
       "sha256": "4801e39f5df00242f9c528a2ec04269f95237c8684b7b701a1d02c3a043bd5ee"
@@ -4465,6 +4475,11 @@
       "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
       "before_sha256": null,
       "sha256": "9948459fabead6d0997ebac261c6fdea78f74514f40ee087c2f5ae511d788847"
+    },
+    {
+      "path": "tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py",
+      "before_sha256": "380c564a92fccd78451ad0ac841a1a30237f09385339d3480152a9d7f9bede72",
+      "sha256": "3b94d12e895b2afc9906e9065eb6bb90210b41568125a625da6b40b61d0a644e"
     },
     {
       "path": "tests/ops/test_recommend_manual_only_workflows.py",

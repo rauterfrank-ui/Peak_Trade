@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import ast
 import inspect
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -18,7 +19,10 @@ from src.backtest.mv2_research_wiring_v1 import (
     project_mv2_agreement_bound_price_path_v1,
     resolve_agreement_bound_directional_cycle_v1,
 )
-from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
+from src.governance.capital_risk_sizing_v1 import CONTRACT_VERSION as CAPITAL_RISK_CONTRACT_VERSION
+from trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
+    CapitalRiskSizingBacktestStateFileRecordV0,
+)
 from trading.master_v2.double_play_composition_matrix_v1 import (
     CompositionSelectedSide,
     CompositionStatus,
@@ -36,6 +40,12 @@ from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
     RUNTIME_BRIDGE_STATUS,
 )
 from trading.master_v2.double_play_state import SideState, transition_state
+from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+    run_integrated_offline_trading_logic_replay_v1,
+)
+from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
+    MV2_OFFLINE_BOUNDARY_DYNAMIC_PRICE_CONTEXT_BINDING_REF_V1,
+)
 from trading.master_v2.suitability_binding_v1 import (
     derive_effective_strategy_side_agreement_v1,
 )
@@ -49,6 +59,12 @@ from trading.master_v2.strategy_suitability_agreement_material_v1 import (
     compute_strategy_suitability_agreement_material_digest_v1,
 )
 from tests.trading.master_v2 import test_integrated_offline_trading_logic_replay_v1 as replay_tests
+from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
+    _confirmed_replay_input,
+)
+from tests.trading.master_v2.test_post_confirmation_survival_suitability_composition_binding_v1 import (
+    _distinct_acceptor,
+)
 
 _DIGEST = "a" * 64
 _WIRING = Path("src/backtest/mv2_research_wiring_v1.py")
@@ -96,6 +112,46 @@ def _entry_none_material(
     )
 
 
+def _run_confirmed_entry(side: str):
+    replay_input = _confirmed_replay_input(side=side)
+    prior_mark, mark = replay_input.price_path
+    acceptor, _ = _distinct_acceptor(previous_mark=prior_mark, mark=mark)
+    material = _entry_none_material(
+        instrument_id=replay_input.instrument_id, trading_epoch=replay_input.trading_epoch
+    )
+    capital_boundary = CapitalRiskSizingBacktestStateFileRecordV0(
+        instrument_id=replay_input.instrument_id,
+        reference_price="",
+        protective_stop_price="",
+        account_equity="10000",
+        scope_capital_limit="5000",
+        per_trade_risk_limit="40",
+        total_capital_limit="5000",
+        daily_loss_remaining_budget="40",
+        current_reconciled_exposure="0",
+        lot_size="0.001",
+        minimum_quantity="0.001",
+        maximum_quantity="",
+        minimum_notional="5",
+        tick_size="0.01",
+        maximum_positions=1,
+        current_open_positions_count=0,
+        reconciliation_status="RECONCILED",
+        capital_risk_sizing_owner_digest_ref=CAPITAL_RISK_CONTRACT_VERSION,
+        state_file_digest_ref=_DIGEST,
+        dynamic_price_context_binding_ref=MV2_OFFLINE_BOUNDARY_DYNAMIC_PRICE_CONTEXT_BINDING_REF_V1,
+    )
+    result = run_integrated_offline_trading_logic_replay_v1(
+        replace(
+            replay_input,
+            observation_acceptance_result=acceptor,
+            strategy_suitability_agreement_material=material,
+            current_instrument_capital_risk_sizing_boundary_state_file=capital_boundary,
+        )
+    )
+    return material, result
+
+
 def test_1_initial_entry_side_remains_none() -> None:
     base = replay_tests._replay_input()
     material = _entry_none_material(
@@ -108,18 +164,7 @@ def test_1_initial_entry_side_remains_none() -> None:
 
 
 def test_2_bull_canonical_path_reaches_enter_long_intent() -> None:
-    base = replay_tests._replay_input()
-    material = _entry_none_material(
-        instrument_id=base.instrument_id,
-        trading_epoch=base.trading_epoch,
-    )
-    # Market-context bull path + armed LONG direction; strategy side stays NONE.
-    result = replay_tests._run(
-        price_path=(3500.0, 3600.0),
-        strategy_suitability_agreement_material=material,
-        side_state=SideState.LONG_ARMED,
-        direction_state=EntryExitDirectionState.LONG_ARMED,
-    )
+    material, result = _run_confirmed_entry("LONG")
     assert result.intermediate is not None
     composition = result.intermediate.composition_result
     assert composition.selected_side is CompositionSelectedSide.LONG
@@ -130,26 +175,14 @@ def test_2_bull_canonical_path_reaches_enter_long_intent() -> None:
 
 
 def test_3_bear_canonical_path_reaches_enter_short_intent() -> None:
-    base = replay_tests._replay_input()
-    material = _entry_none_material(
-        instrument_id=base.instrument_id,
-        trading_epoch=base.trading_epoch,
-    )
-    result = replay_tests._run(
-        price_path=(3500.0, 3400.0),
-        strategy_suitability_agreement_material=material,
-        side_state=SideState.SHORT_ARMED,
-        direction_state=EntryExitDirectionState.SHORT_ARMED,
-        scope_direction_state=ScopeDirectionState.SHORT,
-    )
+    material, result = _run_confirmed_entry("SHORT")
     assert result.intermediate is not None
     composition = result.intermediate.composition_result
     assert composition.selected_side is CompositionSelectedSide.SHORT
     assert composition.composition_status is CompositionStatus.SHORT_SELECTED
     assert result.evidence.decision_outcome == DecisionOutcome.ENTER_SHORT.value
-    # Intent may bind only when CRS quantity PASS; entry decision itself must form.
-    if result.evidence.quantity_status == "PASS":
-        assert result.intermediate.canonical_order_intent is not None
+    assert resolve_agreement_bound_directional_cycle_v1(material) is None
+    assert result.intermediate.canonical_order_intent is not None
 
 
 def test_4_neutral_chop_unbound_remains_fail_closed() -> None:
@@ -198,17 +231,7 @@ def test_6_no_second_direction_or_composition_authority() -> None:
 
 
 def test_7_integrated_replay_consumes_scope_direction_composition_intent() -> None:
-    base = replay_tests._replay_input()
-    material = _entry_none_material(
-        instrument_id=base.instrument_id,
-        trading_epoch=base.trading_epoch,
-    )
-    result = replay_tests._run(
-        price_path=(3500.0, 3600.0),
-        strategy_suitability_agreement_material=material,
-        side_state=SideState.LONG_ARMED,
-        direction_state=EntryExitDirectionState.LONG_ARMED,
-    )
+    _, result = _run_confirmed_entry("LONG")
     inter = result.intermediate
     assert inter is not None
     assert inter.composition_result.selected_side is CompositionSelectedSide.LONG
