@@ -62,6 +62,27 @@ single-page request set. Before extending that path, its capture and replay need
 to validate the same ordered per-page receipts and terminal page for each list.
 The offline run exercises no authenticated venue capture or production booking.
 
+## Authenticated close recovery with simulated HTTP
+
+The [authenticated recovery tests](../../../tests/ops/test_execution_reconciliation_get_provenance_v1.py)
+verify the GET signatures with fake K1 keys at the HTTP boundary. From the
+original synthetic close attempt, the restarted supervisor sees a full first
+page in pending orders, order history or fills. For each case, it also sees the
+matching closing order and fill and an empty scoped position response. The
+single-page reader returns `CLOSE_READBACK_BLOCKED` with
+`INCOMPLETE_PAGINATION`. The close proof and settlement booking remain absent
+and the original reservation remains held.
+
+The V1 single-page close and settlement receipts replay after reopening the
+budget owner. The booking and database bytes match the original and replay makes
+no additional GET requests. The booking reader rejects copies with a missing or
+extra GET, a wrong cursor or
+instrument in the query, or reordered GETs. The copies have consistent file and
+body digests. Replay validates acquisition order and the original requests as
+part of the booking contract. Capture and replay of a complete authenticated
+multi-page set remain open. This test uses a temporary private store and a
+simulated HTTP transport.
+
 ## Owners
 
 - Identity + FSM: `full_core_exchange_reconciliation_v1.py`

@@ -1831,6 +1831,9 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-readback-partial", None),
         ("polled-mark-close-readback-unseen", None),
         ("polled-mark-close-readback-missing-fill", None),
+        ("polled-mark-close-readback-page-orders-pending", None),
+        ("polled-mark-close-readback-page-orders-history", None),
+        ("polled-mark-close-readback-page-fills", None),
         ("polled-mark-close-readback-wrong-order", None),
         ("polled-mark-close-readback-stale-residual", None),
         ("polled-mark-close-readback-no-flat-anchor", None),
@@ -2488,6 +2491,45 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     assert len(requests) == 1
 
 
+def _assert_invalid_close_page_receipts_are_rejected(
+    *, owner, execution, proof_root, close, history, repository_sha
+):
+    """Use digest-consistent copies so the booking reader must check the GET sequence."""
+
+    def publish_copy(prefix, record):
+        digest = sha256(store._encode(record)).hexdigest()
+        path = proof_root / f"{prefix}-{digest}.json"
+        store._publish(path, store._encode({"record": record, "sha256": digest}) + b"\n")
+        return path, digest
+
+    gets = close["gets"]
+    assert len(gets) == 6
+    order_history = gets[2]
+    endpoint = order_history["endpoint"]
+    assert endpoint.startswith("/api/v5/trade/orders-history?")
+    wrong_cursor = {**order_history, "endpoint": f"{endpoint}&after=99999"}
+    wrong_instrument = {
+        **order_history,
+        "endpoint": endpoint.replace(execution.envelope.instrument_id, "foreign-instrument"),
+    }
+    for changed, reason in (
+        (gets[:2] + gets[3:], "L10_CLOSE_BOOKING_ORIGINAL_GETS_UNPROVEN"),
+        (gets[:3] + [wrong_cursor] + gets[3:], "L10_CLOSE_BOOKING_ORIGINAL_GETS_UNPROVEN"),
+        (gets[:2] + [wrong_cursor] + gets[3:], "GET_PROOF_REPLAY_REQUEST_MISMATCH"),
+        (gets[:2] + [wrong_instrument] + gets[3:], "GET_PROOF_REPLAY_REQUEST_MISMATCH"),
+        (gets[:2] + [gets[3], order_history] + gets[4:], "GET_PROOF_REPLAY_REQUEST_MISMATCH"),
+    ):
+        _, digest = publish_copy("close", {**close, "gets": changed})
+        path, _ = publish_copy("close-history", {**history, "close_proof_digest": digest})
+        with pytest.raises(ValueError, match=f"^{reason}$"):
+            owner.record_authenticated_l10_close_v1(
+                execution=execution,
+                proof_path=path,
+                proof_root=proof_root,
+                repository_sha=repository_sha,
+            )
+
+
 def _assert_restarted_close_readback(
     tmp_path, monkeypatch, context, proof_root, opener, floor, case, *, expected_switch_mark
 ):
@@ -2532,6 +2574,7 @@ def _assert_restarted_close_readback(
             key: order[key] for key in ("instId", "instType", "clOrdId", "ordId", "side", "posSide")
         },
         "tradeId": "123",
+        "billId": "92234",
         "fillSz": str(filled),
         "fillPx": "1996",
         "fillTime": str(stamp + 400),
@@ -2610,6 +2653,20 @@ def _assert_restarted_close_readback(
                     "uTime": str(stamp + (300 if case == "stale-residual" else 600)),
                 }
             ]
+        if case == f"page-{path.rsplit('/', 1)[-1]}":
+            # A full first page leaves coverage open even with the matching
+            # close order, full fill and empty scoped position response.
+            if path.endswith("/fills"):
+                template, row_ids = fill, ("ordId", "billId", "tradeId")
+            elif path.endswith("/orders-pending"):
+                template, row_ids = {**order, "state": "live", "accFillSz": "0"}, ("ordId",)
+            else:
+                template, row_ids = order, ("ordId",)
+            count = int(params.get("limit", "100")) - len(rows)
+            rows.extend(
+                {**template, **dict.fromkeys(row_ids, str(i)), "clOrdId": f"unrelated-{i}"}
+                for i in range(1000, 1000 - count, -1)
+            )
         return json.dumps({"code": code, "data": rows}).encode()
 
     restarted_at = NOW + timedelta(seconds=1)
@@ -2676,6 +2733,9 @@ def _assert_restarted_close_readback(
             "partial": "CLOSE_PARTIAL",
             "unseen": "CLOSE_AWAITING_VENUE",
             "missing-fill": "CLOSE_READBACK_BLOCKED",
+            "page-orders-pending": "CLOSE_READBACK_BLOCKED",
+            "page-orders-history": "CLOSE_READBACK_BLOCKED",
+            "page-fills": "CLOSE_READBACK_BLOCKED",
             "wrong-order": "CLOSE_READBACK_BLOCKED",
             "stale-residual": "CLOSE_READBACK_BLOCKED",
             "no-flat-anchor": "CLOSE_READBACK_BLOCKED",
@@ -2752,6 +2812,9 @@ def _assert_restarted_close_readback(
             assert not sizing.portfolio_reservation_id and not sizing.venue_plan_authorized
             history_path = proof_root / f"close-history-{booking['history_proof_digest']}.json"
             history = json.loads(history_path.read_bytes())["record"]
+            assert record["schema"] == "peaktrade.authenticated_close_get_proof.v1"
+            assert history["schema"] == "peaktrade.authenticated_close_history.v1"
+            original_receipts = (path.read_bytes(), history_path.read_bytes())
             close_timing = {
                 "close_proof_digest": booking["close_proof_digest"],
                 "history_proof_digest": booking["history_proof_digest"],
@@ -2796,6 +2859,15 @@ def _assert_restarted_close_readback(
             )
             try:
                 owner = verification_host.recover_owner_for_l10_close_booking_v1({"LANE_1": bound})
+                _assert_invalid_close_page_receipts_are_rejected(
+                    owner=owner,
+                    execution=context.execution,
+                    proof_root=proof_root,
+                    close=record,
+                    history=history,
+                    repository_sha=original_host.repository_sha,
+                )
+                assert owner.read_authenticated_l10_close_v1(booking["episode_id"]) == booking
                 original_commitment = next(
                     row
                     for row in owner.local_commitment_readback_v1().commitments
@@ -2848,6 +2920,8 @@ def _assert_restarted_close_readback(
             finally:
                 verification_host.close()
             assert database.read_bytes() == committed
+            assert (path.read_bytes(), history_path.read_bytes()) == original_receipts
+            assert len(opener.requests) == before
         else:
             assert readback.net_booking is None
             assert readback.counter_order_request is None
@@ -2888,9 +2962,14 @@ def _assert_restarted_close_readback(
     else:
         assert readback.historical_sizing_reference is None
         assert readback.proof_path is None
+        assert readback.net_booking is None
         assert readback.counter_order_request is None
         assert resumed.counter_order_sizing is None
         assert not list(proof_root.glob("close-*.json"))
+        if case.startswith("page-"):
+            assert readback.reason_codes == (REASON_INCOMPLETE_PAGINATION,)
+            assert not restarted_hosts[-1].owner._live_l10_close_bookings
+            assert all("after=" not in endpoint for endpoint, _ in opener.requests[request_count:])
         if case == "partial":
             assert readback.filled_quantity == filled
             assert readback.remaining_quantity == quantity - filled
