@@ -4,14 +4,20 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
 
+from scripts.ops import paper_episode_learning_handoff_v1 as paper_handoff
 from scripts.ops.primary_evidence_retention_v0 import MANIFEST_FILENAME
+from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, read_v1
 from src.governance.governed_productive_configuration_apply_authority_v1 import (
     primary_runtime_evidence_implies_apply_authorization_v1,
+)
+from src.governance.governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 import (
+    bind_from_g2_projection_result_v1,
 )
 from src.governance.governed_runtime_primary_to_offline_observation_projection_closure_v1 import (
     G2_END_TO_END_STATUS,
@@ -23,6 +29,7 @@ from src.governance.governed_runtime_primary_to_offline_observation_projection_v
     DECISION_CONFIG,
     FIELD_MAPPING_LEDGER,
     EXTERNAL_EFFECT,
+    GovernedPaperEpisodeProjectionRequestV1,
     GovernedRuntimePrimaryProjectionRequestV1,
     PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION,
     P5_EVIDENCE_INTAKE_IMPLIES_PRODUCTIVE_AUTHORIZATION,
@@ -37,6 +44,7 @@ from src.governance.governed_runtime_primary_to_offline_observation_projection_v
 from tests.governance.governed_runtime_primary_to_offline_observation_projection_v1_fixtures import (
     build_mode_bundle,
     cleanup_durable_archive_roots,
+    durable_archive_root,
     projection_request,
     write_paper_primary_bundle,
 )
@@ -44,6 +52,88 @@ from tests.governance.governed_runtime_primary_to_offline_observation_projection
 pytest_plugins = [
     "tests.governance.governed_runtime_primary_to_offline_observation_projection_v1_fixtures"
 ]
+
+
+def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence(
+    tmp_path, monkeypatch
+):
+    source = GovernedPaperEpisodeProjectionRequestV1(
+        primary_evidence_root=durable_archive_root(tmp_path),
+        episode_id="simulated-accounting:" + "a" * 64,
+        learning_handoff_root=tmp_path.resolve() / "paper-learning",
+    )
+    entry_time = "2026-11-14T13:02:03Z"
+    closed_at = "2026-11-14T13:07:05Z"
+    measurement = {
+        "authority": "NONE",
+        "archive_manifest_sha256": "b" * 64,
+        "episode_id": source.episode_id,
+        "session_id": "paper-test",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
+        "venue_native_id": "ETH-USD_UM_XPERP-310404",
+        "execution_environment": "INTERNAL_SIMULATED_EXECUTION",
+        "source_tree_sha256": "c" * 64,
+        "observed_at_utc": closed_at,
+        "currency": "USD",
+        "simulated_net_pnl": "0.021929180",
+        "fill_bindings": [
+            {
+                "decision_id": "paper-entry-decision",
+                "decision_sha256": "d" * 64,
+                "decision_config_sha256": "e" * 64,
+                "decision_observed_at_utc": entry_time,
+                "cycle_id": "paper-test:108",
+                "trading_epoch": "108",
+            }
+        ],
+    }
+    measurement["outcome_digest"] = digest_v1(measurement)
+
+    def read_episode(archive_root, episode_id):
+        assert archive_root == source.primary_evidence_root and episode_id == source.episode_id
+        return measurement
+
+    monkeypatch.setattr(paper_handoff, "read_paper_episode_outcome_v1", read_episode)
+    saved = paper_handoff.paper_episode_learning_handoff_v1(
+        archive_root=source.primary_evidence_root,
+        episode_id=source.episode_id,
+        output_root=source.learning_handoff_root,
+    )
+    projection = run_governed_runtime_primary_to_offline_observation_projection_v1(source)
+    assert projection.status == "PROJECTED"
+    binding = bind_from_g2_projection_result_v1(projection)
+    assert binding.status == "BOUND"
+    assert binding.paper_episode_handoff == saved
+    assert binding.learning_evidence == saved["learning_evidence"]
+    assert binding.canonical_optimization_ack == saved["optimization_admission"]
+    assert (
+        binding.canonical_optimization_ack["learning_evidence_digest"]
+        == (binding.learning_evidence["content_hash"])
+    )
+    assert binding.learning_evidence["decision_event_ref"] == "paper-entry-decision"
+    assert binding.learning_evidence["outcome_semantic_class"] == "PAPER_SIMULATED_POSITION_OUTCOME"
+    assert binding.learning_evidence["evaluation_horizon"] == "SIMULATED_POSITION_LIFECYCLE"
+    assert binding.learning_evidence["observed_at_utc"] == closed_at
+    assert (
+        bind_from_g2_projection_result_v1(projection, requested_productive_join=True).decision_code
+        == "FORBIDDEN_PRODUCTIVE_OR_SEARCH_REQUEST"
+    )
+    assert (
+        bind_from_g2_projection_result_v1(
+            replace(projection, projection_record_digest="f" * 64)
+        ).decision_code
+        == "G2_PAPER_EPISODE_PROJECTION_DIGEST_MISMATCH"
+    )
+
+    # A locally resealed copy still has to match the measured original.
+    path = source.learning_handoff_root / "paper-episodes" / source.episode_id / "result.json"
+    changed = read_v1(path)
+    changed["measurement"]["currency"] = "USDT"
+    path.write_text(json.dumps({"body": changed, "sha256": digest_v1(changed)}))
+    assert bind_from_g2_projection_result_v1(projection).decision_code == (
+        "PAPER_EPISODE_HANDOFF_REJECTED"
+    )
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 

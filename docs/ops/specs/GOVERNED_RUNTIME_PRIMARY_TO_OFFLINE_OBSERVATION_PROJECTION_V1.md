@@ -66,6 +66,25 @@ do not establish the provenance of an individual outcome or fill.
 The I17 wallclock Shadow writer has its own session bundle and DDO verifier.
 That bundle does not implement the bounded archive layout consumed here.
 
+## Closed Paper episodes
+
+`GovernedPaperEpisodeProjectionRequestV1` admits a selected closed episode
+from its original Paper archive and persisted DDO handoff. Pass the typed
+projection to `bind_from_g2_projection_result_v1`. It rechecks the archive,
+simulated fills, accounting and DDO readback before forwarding the original
+Learning Evidence to the canonical optimization-input validator. The
+binding retains the verified measurement with the net PnL and its quote
+currency, entry decision, episode close time and outcome digest. The
+optimization acknowledgement binds the digest of the original Learning
+Evidence. The complete measured outcome is available through that evidence's
+outcome reference and the verified handoff.
+
+```bash
+./scripts/pt scripts/ops/read_bounded_paper_episode_outcome_v1.py \
+  --run-root /absolute/paper-run --episode-id 'simulated-accounting:<digest>' \
+  --verify-g2-handoff-root /absolute/paper-learning
+```
+
 ## M10 / P5 isolation
 
 Primary runtime evidence and this projection output do **not** authorize M10 promotion,
