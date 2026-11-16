@@ -43,6 +43,8 @@ from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
 )
 
 _SCHEMA = "peaktrade.execution_reconciliation_get_proof.v1"
+CLOSE_GET_PROOF_V1 = "peaktrade.authenticated_close_get_proof.v1"
+OFFLINE_CLOSE_GET_PROOF_V2 = "peaktrade.offline_authenticated_close_get_proof.v2"
 
 
 class ExecutionReconciliationProofStoreError(ValueError):
@@ -126,24 +128,27 @@ def _publish(path, data):
             temporary.unlink(missing_ok=True)
 
 
-def publish_authenticated_close_readback_v1(*, root, close_record, reads, bodies) -> Path:
+def publish_authenticated_close_readback_v1(
+    *, root, close_record, reads, bodies, offline_l10_close=False
+) -> Path:
     """Persist verified close inputs in the existing private GET evidence store."""
     root = require_private_proof_root_v1(root)
-    if len(reads) != 6 or len(bodies) != len(reads):
+    if len(reads) < 6 or (not offline_l10_close and len(reads) != 6) or len(bodies) != len(reads):
         raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_SET_UNPROVEN")
     gets = []
     for read, body in zip(reads, bodies):
         if sha256(body).hexdigest() != read.body_sha256:
             raise ExecutionReconciliationProofStoreError("CLOSE_GET_PROOF_BODY_UNPROVEN")
         gets.append({**read.to_reference_v1(), "body": body.decode("utf-8")})
-    record = {**close_record, "schema": "peaktrade.authenticated_close_get_proof.v1", "gets": gets}
+    schema = OFFLINE_CLOSE_GET_PROOF_V2 if offline_l10_close else CLOSE_GET_PROOF_V1
+    record = {**close_record, "schema": schema, "gets": gets}
     digest = sha256(_encode(record)).hexdigest()
     path = root / f"close-{digest}.json"
     _publish(path, _encode({"record": record, "sha256": digest}) + b"\n")
     return path
 
 
-def read_private_close_document_v1(*, root, path, prefix, schema):
+def read_private_close_document_v1(*, root, path, prefix, schema: str | tuple[str, ...]):
     root = require_private_proof_root_v1(root)
     path = Path(path)
     if path.parent != root or re.fullmatch(prefix + r"[a-f0-9]{64}\.json", path.name) is None:
@@ -159,7 +164,7 @@ def read_private_close_document_v1(*, root, path, prefix, schema):
         set(document) != {"record", "sha256"}
         or document["sha256"] != checksum
         or path.name != f"{prefix}{checksum}.json"
-        or record["schema"] != schema
+        or record["schema"] not in ((schema,) if isinstance(schema, str) else schema)
     ):
         raise ExecutionReconciliationProofStoreError("CLOSE_PROOF_CONTENT_UNPROVEN")
     return record, checksum
@@ -287,7 +292,10 @@ class _RecordedReconciliationGets:
         self._records = iter(records)
 
     def get(self, *, endpoint, auth_required, pretrade_decision_id, get_cache_policy):
-        proof, payload = next(self._records)
+        record = next(self._records, None)
+        if record is None:
+            raise ExecutionReconciliationProofStoreError("GET_PROOF_REPLAY_REQUEST_MISSING")
+        proof, payload = record
         if (
             endpoint != proof.endpoint
             or pretrade_decision_id != proof.decision_id

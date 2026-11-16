@@ -57,10 +57,9 @@ post-close feedback. A missing response is a transport failure. A full final
 page at the budget limit yields `INCOMPLETE_PAGINATION`. Both retain the original
 reservation and produce no ranking review or Double Play continuation.
 
-The authenticated reader and private close readback still expect the fixed
-single-page request set. Before extending that path, its capture and replay need
-to validate the same ordered per-page receipts and terminal page for each list.
-The offline run exercises no authenticated venue capture or production booking.
+The authenticated V1 reader and private close readback expect the fixed
+single-page request set. The offline V2 close path below extends the ordered
+request set with cursor-bound receipts.
 
 ## Authenticated close recovery with simulated HTTP
 
@@ -76,12 +75,32 @@ and the original reservation remains held.
 The V1 single-page close and settlement receipts replay after reopening the
 budget owner. The booking and database bytes match the original and replay makes
 no additional GET requests. The booking reader rejects copies with a missing or
-extra GET, a wrong cursor or
-instrument in the query, or reordered GETs. The copies have consistent file and
-body digests. Replay validates acquisition order and the original requests as
-part of the booking contract. Capture and replay of a complete authenticated
-multi-page set remain open. This test uses a temporary private store and a
-simulated HTTP transport.
+extra GET, a wrong cursor or instrument in the query, or reordered GETs. The
+copies have consistent file and body digests. Replay validates acquisition
+order and the original requests as part of the booking contract.
+
+### Offline V2 close receipt
+
+The L10 close can use a GET transport supplied with an explicit map of test
+responses keyed by the exact signed endpoint. This transport signs each request
+and reads the response from memory. Its results carry injected provenance. The
+ordinary authenticated collectors and the default V1 close reader reject this
+offline path. The V2 proof schema is `peaktrade.offline_authenticated_close_get_proof.v2`.
+
+The same bounded cursor traversal runs at capture and during booking readback.
+The proof binds each full endpoint, response bytes and SHA-256, acquisition time,
+and the decision ID for the original close envelope. Account configuration,
+positions, and the exact order lookup retain their positions in the read set.
+Replay checks the account, decision IDs, acquisition order, cursor coverage, and
+exact consumption of the stored responses. V1 proof files retain their format.
+
+The positive SWAP and FUTURES fixtures put the matching order and fill on
+continuation pages and report empty pending orders. A fresh supervisor reopens
+the private store and returns the same booking with no additional GET or
+database mutation. Missing or foreign pages and a complete response with open
+orders all block booking.
+The offline booking carries no counter-order request. Live multi-page capture
+requires a separate production integration.
 
 ## Owners
 

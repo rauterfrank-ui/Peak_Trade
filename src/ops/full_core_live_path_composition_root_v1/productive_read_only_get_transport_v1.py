@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any
+from typing import Any, Mapping
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
@@ -22,6 +22,7 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
     GET_CACHE_POLICY_DECISION_BOUND_SNAPSHOT,
     METHOD_GET,
+    TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FreshPretradeGetTransportResultV1,
 )
@@ -68,6 +69,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         handle: Any | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_request_count: int = 16,
+        offline_l10_close_responses: Mapping[str, bytes] | None = None,
     ) -> None:
         self._handle = handle
         self.timeout_seconds = float(timeout_seconds)
@@ -75,13 +77,26 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         self.request_count = 0
         self.methods_used: list[str] = []
         self.venue_live_contact = False
-        self.transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+        self._offline_l10_close_responses = (
+            {endpoint: bytes(body) for endpoint, body in offline_l10_close_responses.items()}
+            if offline_l10_close_responses is not None
+            else None
+        )
+        self.transport_class = (
+            TRANSPORT_CLASS_INJECTED_TEST_DOUBLE
+            if self.offline_l10_close
+            else TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+        )
         self._cache: dict[str, FreshPretradeGetTransportResultV1] = {}
         self._decision_cache: dict[tuple[str, bool, str], FreshPretradeGetTransportResultV1] = {}
         self.payloads_by_path: dict[str, Any] = {}
         # Explicit private evidence consumer only. Never enabled by default;
         # request headers/signing material are not supplied to this callback.
         self.raw_response_sink_v1 = None
+
+    @property
+    def offline_l10_close(self) -> bool:
+        return self._offline_l10_close_responses is not None
 
     def get(
         self,
@@ -91,6 +106,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         pretrade_decision_id: str,
         get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> FreshPretradeGetTransportResultV1:
+        if self.offline_l10_close:
+            raise FullCoreProductiveReadOnlyGetError("OFFLINE_L10_CLOSE_AUTHENTICATED_GET_REQUIRED")
         result, _ = self._get_v1(
             endpoint=endpoint,
             auth_required=auth_required,
@@ -161,7 +178,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             headers["User-Agent"] = USER_AGENT
             auth_sent = True
         req = Request(url, method=METHOD_GET, headers=headers)
-        opener = build_opener(ProxyHandler({}), _RejectAuthenticatedRedirectsV1())
+        offline_responses = self._offline_l10_close_responses
         body = b""
         status = 0
         error_class = ""
@@ -170,16 +187,22 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         self.request_count += 1
         self.methods_used.append(METHOD_GET)
         try:
-            with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
-                status = int(getattr(resp, "status", 200))
-                body = bytes(resp.read() or b"")
-                response_url = getattr(resp, "url", None)
-                if require_exact_response_url and response_url != url:
-                    raise FullCoreProductiveReadOnlyGetError("GET_RESPONSE_URL_MISMATCH")
-                loc_host = str(urlparse(str(response_url or url)).hostname or "")
-                if loc_host and loc_host != AUTHORIZED_HOST:
-                    raise FullCoreProductiveReadOnlyGetError("REDIRECT_OFF_HOST_FORBIDDEN")
-            self.venue_live_contact = True
+            if offline_responses is not None:
+                if endpoint not in offline_responses:
+                    raise FullCoreProductiveReadOnlyGetError("OFFLINE_L10_CLOSE_RESPONSE_MISSING")
+                status, body = 200, offline_responses[endpoint]
+            else:
+                opener = build_opener(ProxyHandler({}), _RejectAuthenticatedRedirectsV1())
+                with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
+                    status = int(getattr(resp, "status", 200))
+                    body = bytes(resp.read() or b"")
+                    response_url = getattr(resp, "url", None)
+                    if require_exact_response_url and response_url != url:
+                        raise FullCoreProductiveReadOnlyGetError("GET_RESPONSE_URL_MISMATCH")
+                    loc_host = str(urlparse(str(response_url or url)).hostname or "")
+                    if loc_host and loc_host != AUTHORIZED_HOST:
+                        raise FullCoreProductiveReadOnlyGetError("REDIRECT_OFF_HOST_FORBIDDEN")
+                self.venue_live_contact = True
         except FullCoreProductiveReadOnlyGetError:
             raise
         except TimeoutError:
@@ -199,7 +222,9 @@ class FullCoreProductiveReadOnlyGetTransportV1:
                 error_class = error_class or "MALFORMED_JSON"
                 payload = None
         get_performed = status == 200 and payload is not None
-        venue_live_contact = bool(self.venue_live_contact and status == 200)
+        venue_live_contact = (
+            not self.offline_l10_close and self.venue_live_contact and status == 200
+        )
         # S1: REAL only from this producer's direct eea.okx.com acquisition evidence.
         # Do not derive from endpoint path, payload shape, or foreign vocabularies.
         data_safety_source_kind = (
@@ -212,7 +237,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             http_status=status,
             payload=payload,
             auth_header_sent=auth_sent,
-            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            transport_class=self.transport_class,
             venue_live_contact=venue_live_contact,
             historical_reuse=False,
             error_class=error_class,

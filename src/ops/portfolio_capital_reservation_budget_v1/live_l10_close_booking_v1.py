@@ -51,8 +51,12 @@ class AuthenticatedL10CloseTimingV1:
     settlement_acquired_at_utc: str
 
 
-def _read_live_l10_close_proofs_v1(*, proof_root, proof_path):
-    from src.ops.execution_reconciliation_proof_store_v1 import read_private_close_document_v1
+def _read_live_l10_close_proofs_v1(*, proof_root, proof_path, offline_l10_close=False):
+    from src.ops.execution_reconciliation_proof_store_v1 import (
+        CLOSE_GET_PROOF_V1,
+        OFFLINE_CLOSE_GET_PROOF_V2,
+        read_private_close_document_v1,
+    )
 
     history, history_digest = read_private_close_document_v1(
         root=proof_root,
@@ -64,7 +68,9 @@ def _read_live_l10_close_proofs_v1(*, proof_root, proof_path):
         root=proof_root,
         path=Path(proof_root) / f"close-{history['close_proof_digest']}.json",
         prefix="close-",
-        schema="peaktrade.authenticated_close_get_proof.v1",
+        schema=(CLOSE_GET_PROOF_V1, OFFLINE_CLOSE_GET_PROOF_V2)
+        if offline_l10_close
+        else CLOSE_GET_PROOF_V1,
     )
     return history, history_digest, close, close_digest
 
@@ -242,8 +248,11 @@ def close_history_endpoint_v1(*, entry, inst_type):
     )
 
 
-def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repository_sha):
+def build_live_l10_booking_v1(
+    owner, *, execution, proof_path, proof_root, repository_sha, offline_l10_close=False
+):
     from src.ops.execution_reconciliation_proof_store_v1 import (
+        OFFLINE_CLOSE_GET_PROOF_V2,
         _RecordedReconciliationGets,
         _aware,
         _decode_get,
@@ -287,8 +296,9 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repos
     if not validates_position_management_envelope_v1(execution) or execution.l10_close is None:
         raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_EXECUTION_REQUIRED")
     history, history_digest, close, close_digest = _read_live_l10_close_proofs_v1(
-        proof_root=proof_root, proof_path=proof_path
+        proof_root=proof_root, proof_path=proof_path, offline_l10_close=offline_l10_close
     )
+    paged = close["schema"] == OFFLINE_CLOSE_GET_PROOF_V2
     switch, envelope = execution.l10_close, execution.envelope
     episode = switch.episode
     identity = parse_exchange_reconciliation_identity_v1(close["identity"])
@@ -338,7 +348,7 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repos
     ):
         raise ValueError("L10_CLOSE_BOOKING_CLOSE_SCOPE_UNPROVEN")
     recorded = [_decode_get(item) for item in close["gets"]]
-    if len(recorded) != 6:
+    if len(recorded) < 6 or (not paged and len(recorded) != 6):
         raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_GETS_UNPROVEN")
     account_get, account = recorded[0]
     reads = [item[0] for item in recorded]
@@ -362,6 +372,7 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repos
     options = resolve_reconciliation_query_options_v1(
         instrument_id=episode.instrument_id,
         native_id=episode.venue_native_id,
+        offline_l10_close=paged,
     )
     inst_type = options.inst_type
     entry_ref = history["entry_proof"]
@@ -385,19 +396,38 @@ def build_live_l10_booking_v1(owner, *, execution, proof_path, proof_root, repos
     if entry.lane_binding.get("bound") != bound.to_dict():
         raise ValueError("L10_CLOSE_BOOKING_ENTRY_GENERATION_UNPROVEN")
     coverage = close["position_coverage"]
+    if paged:
+        session = history_get.decision_id.removesuffix(":close-history:" + envelope.envelope_digest)
+        if (
+            not session
+            or reads[0].decision_id != f"{session}:close-account:{envelope.envelope_digest}"
+            or reads[1].decision_id != f"{session}:close-order:{envelope.envelope_digest}"
+            or (
+                coverage is not None
+                and not reads[-3].acquired_at
+                <= _aware(coverage["started_at_utc"])
+                <= reads[-2].acquired_at
+                <= _aware(coverage["completed_at_utc"])
+                <= reads[-1].acquired_at
+            )
+        ):
+            raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_GETS_UNPROVEN")
     times = iter(
         (coverage["started_at_utc"], coverage["completed_at_utc"])
         if coverage is not None
         else (received_at.isoformat(),) * 2
     )
+    order_records = iter(recorded[1:])
     snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
         identity=identity,
         options=options,
-        read_only_get_transport=_RecordedReconciliationGets(recorded[1:]),
+        read_only_get_transport=_RecordedReconciliationGets(order_records),
         pretrade_decision_id=reads[1].decision_id,
         received_at=received_at.isoformat(),
         acquisition_clock=lambda: next(times),
     )
+    if next(order_records, None) is not None:
+        raise ValueError("L10_CLOSE_BOOKING_EXTRA_GETS")
     decision = adjudicate_full_core_exchange_reconciliation_v1(
         identity=identity,
         snapshot=snapshot,

@@ -1164,7 +1164,7 @@
     {
       "path": "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
       "before_sha256": "fce5ec1aa8012a24b635eed9d44a5b0b5946352609a3d062680b901971e0d09e",
-      "sha256": "3545390435c634dff23f8f24deb154b242bf10439b4829329063d02bed4b5fd7"
+      "sha256": "f3e8e00695fa659289a4fbe73ed8d05e5121984cf634313e9ca95e6174523a2c"
     },
     {
       "path": "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
@@ -2329,12 +2329,12 @@
     {
       "path": "src/ops/execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "6dc75061851c6fba4cae61a4012ee81663b81bfddda3979ced0ac05f09bdbb27"
+      "sha256": "59d6aef48d63fe1070020b62ad1e69da2bf0ed7e68a634aa74e898ab4503cc7c"
     },
     {
       "path": "src/ops/execution_reconciliation_proof_store_v1.py",
       "before_sha256": null,
-      "sha256": "0c6ca043f03400f4e79425337512136acf8718e6d00cb65c4d66c31e3c6ad184"
+      "sha256": "7639a58a865c64741d633b3e1a7e95348a8535f4fb29ab348f7f24229b3082b9"
     },
     {
       "path": "src/ops/exit_policy_producer_binding_v1/authenticated_execution_entry_source_v1.py",
@@ -2479,7 +2479,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_l10_close_reconciliation_v1.py",
       "before_sha256": null,
-      "sha256": "25c47b03878452477f9543fa4e5d50dbbb4c1a188e6ca4c78038dd7bdb02440e"
+      "sha256": "5b839f4b71d5c67b27e1e3d02be0ba90a48779d37cf82adbce16f97d25265712"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -2639,7 +2639,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
       "before_sha256": "cbe5312a819bdba381e3aef21049291ca4d924ec0f9df2474cc777f8b7bbd75f",
-      "sha256": "f68e373b9547a107a0c5a05c5e8ea8d74a686428580c82ec5c715b844dc7efa0"
+      "sha256": "4d4fcbd96c862727e52f34e02dad303dccf4943976d11962d92e9fb44f58e5f8"
     },
     {
       "path": "src/ops/gates/risk_gate.py",
@@ -3014,7 +3014,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "a02a41cc7af1298d1fd25d99823910ccef6671e989f7d3110fa3a10ec74e5449"
+      "sha256": "adb484022b0ae0eea6ecd1c7e6d00acaa8781c2dc2a1fafe85e1bf41634d3427"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -3049,7 +3049,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
       "before_sha256": null,
-      "sha256": "b1096528210b19870787c3815aac734ceb0c9aaf2a9357d14e7d6cbc842ededf"
+      "sha256": "900d54cd6ec58b51592678d2d7899a16f44bab87a20887ee55a5cfe31249d261"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/local_commitment_readback_v1.py",
@@ -4224,7 +4224,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "ea800d54d161c683068240c0bb32c15ccd4f61647dab24679c774a45567d8c9c"
+      "sha256": "19e5a7486a834d486d54cc82fbd7fe9b08f0fab2ff6a7c666537fe38b20eeea7"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

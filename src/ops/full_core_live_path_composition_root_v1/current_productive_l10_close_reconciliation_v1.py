@@ -19,6 +19,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
 )
 from src.ops.execution_reconciliation_get_provenance_v1 import (
     AuthenticatedReconciliationGetV1,
+    ExecutionReconciliationSourceError,
     require_futures_reconciliation_product_v1,
     resolve_reconciliation_query_options_v1,
 )
@@ -70,7 +71,10 @@ from .full_core_exchange_reconciliation_v1 import (
     REASON_TRANSPORT_UNKNOWN,
     adjudicate_full_core_exchange_reconciliation_v1,
 )
-from .productive_read_only_get_transport_v1 import FullCoreProductiveReadOnlyGetError
+from .productive_read_only_get_transport_v1 import (
+    FullCoreProductiveReadOnlyGetError,
+    FullCoreProductiveReadOnlyGetTransportV1,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     derive_protective_stop_price_from_adverse_exit_v0,
 )
@@ -184,7 +188,7 @@ def _historical_counter_side_reference_v1(*, execution, scope):
     )
 
 
-def _booked_close_readback_v1(*, execution, bound, proof_root, booked, scope):
+def _booked_close_readback_v1(*, execution, bound, proof_root, booked, scope, offline_l10_close):
     # The original budget writer has already replayed the settlement proof.
     booking = AuthenticatedSlotCloseBookingV1(
         **{key: value for key, value in booked.items() if key != "booking_digest"}
@@ -203,8 +207,12 @@ def _booked_close_readback_v1(*, execution, bound, proof_root, booked, scope):
         remaining_quantity=Decimal(0),
         proof_path=proof_root / f"close-{booking.close_proof_digest}.json",
         net_booking=booked,
-        counter_order_request=PostCloseDoublePlayCounterOrderRequestV1(
-            execution=execution, bound_instrument=bound, net_booking=booking
+        counter_order_request=(
+            None
+            if offline_l10_close
+            else PostCloseDoublePlayCounterOrderRequestV1(
+                execution=execution, bound_instrument=bound, net_booking=booking
+            )
         ),
         historical_sizing_reference=historical_reference,
     )
@@ -321,6 +329,10 @@ def reconcile_submitted_occupied_scope_close_v1(
     if attempt.get("phase") != "MAY_HAVE_SENT":
         return AuthenticatedL10CloseReadbackV1("CLOSE_SUBMIT_NOT_PROVEN", digest)
     owner = budget_host.recover_owner_for_l10_close_booking_v1({slot.lane_id: bound})
+    transport = budget_host.reconciliation_transport
+    offline_l10_close = (
+        type(transport) is FullCoreProductiveReadOnlyGetTransportV1 and transport.offline_l10_close
+    )
     booked = owner.read_authenticated_l10_close_v1(episode_id)
     if booked is not None:
         if booked["close_envelope_digest"] != digest:
@@ -331,18 +343,25 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof_path=root / f"close-history-{booked['history_proof_digest']}.json",
             proof_root=root,
             repository_sha=budget_host.repository_sha,
+            offline_l10_close=offline_l10_close,
         )
         return _booked_close_readback_v1(
-            execution=execution, bound=bound, proof_root=root, booked=booked, scope=scope
+            execution=execution,
+            bound=bound,
+            proof_root=root,
+            booked=booked,
+            scope=scope,
+            offline_l10_close=offline_l10_close,
         )
     socket_ms = _utc_ms(attempt["socket_boundary_at_utc"])
 
     root = require_private_proof_root_v1(proof_root)
     source = AuthenticatedReconciliationGetV1(
-        budget_host.reconciliation_transport,
+        transport,
         account=budget_host.expected_account_identity,
         clock=budget_host.clock,
         retain_response_bodies=True,
+        allow_offline_l10_close=True,
     )
     identity = FullCoreExchangeReconciliationIdentityV1(
         canonical_decision_id=execution.source.quantity_handoff.decision_id,
@@ -374,29 +393,36 @@ def reconcile_submitted_occupied_scope_close_v1(
 
     account_id = f"{budget_host.session_id}:close-account:{digest}"
     order_id = f"{budget_host.session_id}:close-order:{digest}"
-    source.get(
-        endpoint=ENDPOINT_ACCOUNT_CONFIG,
-        auth_required=True,
-        pretrade_decision_id=account_id,
-        get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
-    )
-    observed = utc_now()
     options = resolve_reconciliation_query_options_v1(
-        instrument_id=identity.instrument_id, native_id=identity.native_id
+        instrument_id=identity.instrument_id,
+        native_id=identity.native_id,
+        offline_l10_close=offline_l10_close,
     )
-    snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
-        identity=identity,
-        read_only_get_transport=source,
-        pretrade_decision_id=order_id,
-        options=options,
-        received_at=observed.isoformat(),
-        acquisition_clock=lambda: utc_now().isoformat(),
-    )
-    reads, bodies = source.completed_order_read_set_v1(
-        account_decision_id=account_id,
-        order_decision_id=order_id,
-        observed_at=observed,
-    )
+    try:
+        source.get(
+            endpoint=ENDPOINT_ACCOUNT_CONFIG,
+            auth_required=True,
+            pretrade_decision_id=account_id,
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+        observed = utc_now()
+        snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
+            identity=identity,
+            read_only_get_transport=source,
+            pretrade_decision_id=order_id,
+            options=options,
+            received_at=observed.isoformat(),
+            acquisition_clock=lambda: utc_now().isoformat(),
+        )
+        reads, bodies = source.completed_order_read_set_v1(
+            account_decision_id=account_id,
+            order_decision_id=order_id,
+            observed_at=observed,
+        )
+    except (ExecutionReconciliationSourceError, FullCoreProductiveReadOnlyGetError) as exc:
+        if not offline_l10_close:
+            raise
+        return AuthenticatedL10CloseReadbackV1("CLOSE_READBACK_BLOCKED", digest, (str(exc),))
     if (
         source.account_position_mode != "net_mode"
         or socket_ms > _utc_ms(reads[0].acquired_at.isoformat())
@@ -469,6 +495,7 @@ def reconcile_submitted_occupied_scope_close_v1(
         root=root,
         reads=reads,
         bodies=bodies,
+        offline_l10_close=offline_l10_close,
         close_record={
             "identity": identity.to_dict(),
             "position_episode_id": episode_id,
@@ -515,6 +542,7 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof_path=history,
             proof_root=root,
             repository_sha=budget_host.repository_sha,
+            offline_l10_close=offline_l10_close,
         )
     except PortfolioCapitalBudgetError:
         # A lost commit acknowledgement must be resolved by reopening the owner.
@@ -536,5 +564,10 @@ def reconcile_submitted_occupied_scope_close_v1(
             proof,
         )
     return _booked_close_readback_v1(
-        execution=execution, bound=bound, proof_root=root, booked=booked, scope=scope
+        execution=execution,
+        bound=bound,
+        proof_root=root,
+        booked=booked,
+        scope=scope,
+        offline_l10_close=offline_l10_close,
     )

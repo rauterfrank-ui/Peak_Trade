@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+from itertools import groupby
 from urllib.parse import urlsplit
 
 from src.data.safety import DataSourceKind
@@ -19,12 +20,14 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     ENDPOINT_ACCOUNT_POSITIONS,
     GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+    TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
     FreshPretradeGetTransportResultV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_ORDERS_PENDING,
     ENDPOINT_TRADE_FILLS,
+    _MAX_OFFLINE_PAGES_PER_SURFACE,
     OkxReadOnlyReconciliationQueryOptionsV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_future_identity_semantics_v1 import (
@@ -62,12 +65,13 @@ class ExecutionReconciliationSourceError(ValueError):
     """The GET result could not be bound to the original source."""
 
 
-def resolve_reconciliation_query_options_v1(*, instrument_id, native_id):
+def resolve_reconciliation_query_options_v1(*, instrument_id, native_id, offline_l10_close=False):
     market_type = resolve_selected_future_market_type_v1(
         instrument_id=instrument_id, venue_native_id=native_id
     )
     return OkxReadOnlyReconciliationQueryOptionsV1(
-        inst_type="FUTURES" if market_type is FuturesMarketType.FUTURES else "SWAP"
+        inst_type="FUTURES" if market_type is FuturesMarketType.FUTURES else "SWAP",
+        offline_max_pages_per_surface=_MAX_OFFLINE_PAGES_PER_SURFACE if offline_l10_close else 1,
     )
 
 
@@ -145,12 +149,24 @@ def adjudicate_reconciliation_quantity_incident_v1(
 class AuthenticatedReconciliationGetV1:
     """Observe the concrete K1 transport and bind every raw response before consumption."""
 
-    def __init__(self, transport, *, account, clock, proof_root=None, retain_response_bodies=False):
+    def __init__(
+        self,
+        transport,
+        *,
+        account,
+        clock,
+        proof_root=None,
+        retain_response_bodies=False,
+        allow_offline_l10_close=False,
+    ):
         if type(transport) is not FullCoreProductiveReadOnlyGetTransportV1:
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_ORIGINAL_PORT_REQUIRED")
         handle = transport._handle
         if type(handle) is not FullCoreK1BoundVenueAuthHandleV1:
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_K1_HANDLE_REQUIRED")
+        self.offline_l10_close = transport.offline_l10_close
+        if self.offline_l10_close and (not allow_offline_l10_close or proof_root is not None):
+            raise ExecutionReconciliationSourceError("RECONCILIATION_OFFLINE_CLOSE_ONLY")
         self.transport = transport
         self._handle = handle
         self.account = account
@@ -195,6 +211,7 @@ class AuthenticatedReconciliationGetV1:
             endpoint=endpoint, pretrade_decision_id=pretrade_decision_id
         )
         completed_at = self.clock()
+        offline = self.offline_l10_close
         if (
             self.transport._handle is not self._handle
             or type(result) is not FreshPretradeGetTransportResultV1
@@ -205,9 +222,14 @@ class AuthenticatedReconciliationGetV1:
             or result.http_status != 200
             or result.auth_header_sent is not True
             or result.historical_reuse is not False
-            or result.venue_live_contact is not True
-            or result.transport_class != TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
-            or result.data_safety_source_kind != DataSourceKind.REAL.value
+            or result.venue_live_contact is not (not offline)
+            or result.transport_class
+            != (
+                TRANSPORT_CLASS_INJECTED_TEST_DOUBLE
+                if offline
+                else TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+            )
+            or result.data_safety_source_kind != (None if offline else DataSourceKind.REAL.value)
             or result.error_class
             or not body
             or sha256(body).hexdigest() != result.body_sha256
@@ -272,10 +294,13 @@ class AuthenticatedReconciliationGetV1:
         account_reads = self._gets.get(account_decision_id, ())
         order_reads = self._gets.get(order_decision_id, ())
         reads = (*account_reads, *order_reads)
+        order_paths = tuple(urlsplit(read.endpoint).path for read in order_reads)
+        if self.offline_l10_close:
+            order_paths = (*[path for path, _ in groupby(order_paths[:-2])], *order_paths[-2:])
         if (
             len(account_reads) != 1
             or account_reads[0].endpoint != ENDPOINT_ACCOUNT_CONFIG
-            or tuple(urlsplit(read.endpoint).path for read in order_reads) != _ORDER_GETS
+            or order_paths != _ORDER_GETS
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")
         first = reads[0].acquired_at.timestamp()
@@ -306,6 +331,8 @@ class AuthenticatedReconciliationGetV1:
         return read, body
 
     def record_v1(self, host, rid, identity, snapshot, observed_at, result, *, publish_proof=True):
+        if self.offline_l10_close:
+            raise ExecutionReconciliationSourceError("RECONCILIATION_OFFLINE_CLOSE_ONLY")
         if (
             not (host.account == identity.account_identity == self.account)
             or identity.execution_environment != "LIVE"
