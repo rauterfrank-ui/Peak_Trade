@@ -54,6 +54,7 @@ class AuthenticatedL10CloseTimingV1:
 def _read_live_l10_close_proofs_v1(*, proof_root, proof_path, offline_l10_close=False):
     from src.ops.execution_reconciliation_proof_store_v1 import (
         CLOSE_GET_PROOF_V1,
+        CLOSE_GET_PROOF_V2,
         OFFLINE_CLOSE_GET_PROOF_V2,
         read_private_close_document_v1,
     )
@@ -68,9 +69,10 @@ def _read_live_l10_close_proofs_v1(*, proof_root, proof_path, offline_l10_close=
         root=proof_root,
         path=Path(proof_root) / f"close-{history['close_proof_digest']}.json",
         prefix="close-",
-        schema=(CLOSE_GET_PROOF_V1, OFFLINE_CLOSE_GET_PROOF_V2)
-        if offline_l10_close
-        else CLOSE_GET_PROOF_V1,
+        schema=(
+            CLOSE_GET_PROOF_V1,
+            OFFLINE_CLOSE_GET_PROOF_V2 if offline_l10_close else CLOSE_GET_PROOF_V2,
+        ),
     )
     return history, history_digest, close, close_digest
 
@@ -252,7 +254,8 @@ def build_live_l10_booking_v1(
     owner, *, execution, proof_path, proof_root, repository_sha, offline_l10_close=False
 ):
     from src.ops.execution_reconciliation_proof_store_v1 import (
-        OFFLINE_CLOSE_GET_PROOF_V2,
+        CLOSE_GET_PROOF_V1,
+        CLOSE_GET_PROOF_V2,
         _RecordedReconciliationGets,
         _aware,
         _decode_get,
@@ -292,13 +295,20 @@ def build_live_l10_booking_v1(
         _MAX_AGE_SECONDS,
         resolve_reconciliation_query_options_v1,
     )
+    from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+        AUTHORIZED_HOST,
+    )
 
     if not validates_position_management_envelope_v1(execution) or execution.l10_close is None:
         raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_EXECUTION_REQUIRED")
     history, history_digest, close, close_digest = _read_live_l10_close_proofs_v1(
         proof_root=proof_root, proof_path=proof_path, offline_l10_close=offline_l10_close
     )
-    paged = close["schema"] == OFFLINE_CLOSE_GET_PROOF_V2
+    paged = close["schema"] != CLOSE_GET_PROOF_V1
+    if close["schema"] == CLOSE_GET_PROOF_V2 and (
+        close.get("venue_host") != AUTHORIZED_HOST or len(close["gets"]) <= 6
+    ):
+        raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_GETS_UNPROVEN")
     switch, envelope = execution.l10_close, execution.envelope
     episode = switch.episode
     identity = parse_exchange_reconciliation_identity_v1(close["identity"])

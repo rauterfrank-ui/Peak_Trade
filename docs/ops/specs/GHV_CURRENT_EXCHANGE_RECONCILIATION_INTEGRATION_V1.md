@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1
 status: active
-scope: Full-Core exchange reconciliation (offline fixtures and injected read-only transport)
+scope: Full-Core exchange reconciliation and scoped authenticated L10 close readback
 capability: GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-11-16
@@ -9,7 +9,8 @@ last_updated: 2026-11-16
 
 # GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1
 
-Offline-only Full-Core exchange reconciliation after submit boundary. `GHV_AUTHORITY=NONE`.
+The GHV integration runs offline after the simulated submit boundary.
+The separately scoped L10 close readback is described below. `GHV_AUTHORITY=NONE`.
 
 ## Boundary
 
@@ -30,8 +31,8 @@ The adapter requires a fresh, successful response for the same instrument and
 a strictly older page with unique IDs. A short page finishes that surface.
 A full last page or an unproven cursor leaves reconciliation incomplete.
 The pending-orders observation still contains the original first response.
-The default and authenticated proof reader continue to use one page per
-surface. See [OKX order list](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-order-list),
+The default reconciliation provider continues to use one page per surface.
+See [OKX order list](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-order-list),
 [order history](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-order-history-last-7-days),
 and [fills](https://www.okx.com/docs-v5/en/#order-book-trading-trade-get-transaction-details-last-3-days).
 
@@ -57,20 +58,18 @@ post-close feedback. A missing response is a transport failure. A full final
 page at the budget limit yields `INCOMPLETE_PAGINATION`. Both retain the original
 reservation and produce no ranking review or Double Play continuation.
 
-The authenticated V1 reader and private close readback expect the fixed
-single-page request set. The offline V2 close path below extends the ordered
-request set with cursor-bound receipts.
+The authenticated V1 proof reader expects the fixed single-page request set.
+The V2 close proofs below extend the ordered request set with cursor-bound receipts.
 
 ## Authenticated close recovery with simulated HTTP
 
 The [authenticated recovery tests](../../../tests/ops/test_execution_reconciliation_get_provenance_v1.py)
-verify the GET signatures with fake K1 keys at the HTTP boundary. From the
-original synthetic close attempt, the restarted supervisor sees a full first
-page in pending orders, order history or fills. For each case, it also sees the
-matching closing order and fill and an empty scoped position response. The
-single-page reader returns `CLOSE_READBACK_BLOCKED` with
-`INCOMPLETE_PAGINATION`. The close proof and settlement booking remain absent
-and the original reservation remains held.
+verify the signed GETs at a simulated HTTP boundary with test keys. The
+restarted supervisor follows each full page in the productive L10 close path.
+A repeated page for pending orders, order history or fills produces
+`CLOSE_READBACK_BLOCKED` with `INCOMPLETE_PAGINATION` even with a matching
+closing order, fill and empty scoped position response. The close proof and
+settlement booking remain absent and the original reservation remains held.
 
 The V1 single-page close and settlement receipts replay after reopening the
 budget owner. The booking and database bytes match the original and replay makes
@@ -99,8 +98,27 @@ continuation pages and report empty pending orders. A fresh supervisor reopens
 the private store and returns the same booking with no additional GET or
 database mutation. Missing or foreign pages and a complete response with open
 orders all block booking.
-The offline booking carries no counter-order request. Live multi-page capture
-requires a separate production integration.
+The offline booking carries no counter-order request.
+
+### Productive L10 close pagination
+
+The scoped N1 L10 close readback follows up to eight pages per surface using the
+existing K1-authenticated EEA GET transport. The account configuration and every
+page are admitted through the same credential handle, request identity, freshness
+window and original transport provenance. The transport's existing request
+quota also applies. Open orders, missing or foreign pages, and incomplete
+coverage block close booking.
+
+A productive close with continuation pages writes
+`peaktrade.authenticated_close_get_proof.v2` with the EEA host and the ordered
+raw GET receipts. The budget owner replays those receipts in the same order and
+checks the exact queries, digests, original account and close episode before
+accepting the booking. The production reader admits V1 and authenticated V2.
+Stored replay supplies historical data and issues no exchange request.
+
+The simulated HTTP tests drive the productive reader for SWAP and FUTURES,
+including the existing 29P consumer of the booked close timestamps. Restart
+returns the same booking. The independent 29P gates remain in force.
 
 ## Owners
 

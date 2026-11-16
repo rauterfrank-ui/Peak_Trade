@@ -397,6 +397,7 @@ def reconcile_submitted_occupied_scope_close_v1(
         instrument_id=identity.instrument_id,
         native_id=identity.native_id,
         offline_l10_close=offline_l10_close,
+        productive_l10_close=not offline_l10_close,
     )
     try:
         source.get(
@@ -418,10 +419,9 @@ def reconcile_submitted_occupied_scope_close_v1(
             account_decision_id=account_id,
             order_decision_id=order_id,
             observed_at=observed,
+            paged_l10_close=True,
         )
     except (ExecutionReconciliationSourceError, FullCoreProductiveReadOnlyGetError) as exc:
-        if not offline_l10_close:
-            raise
         return AuthenticatedL10CloseReadbackV1("CLOSE_READBACK_BLOCKED", digest, (str(exc),))
     if (
         source.account_position_mode != "net_mode"
