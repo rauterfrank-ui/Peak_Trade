@@ -195,6 +195,7 @@ class CurrentProductiveGovernedCycleResultV1:
     pending_decision_context: PendingDecisionContextV1 | None = None
     canonical_order_intent: Any | None = None
     position_management_execution_handoff: Any | None = None
+    position_management_reversal: Any | None = None
     execution_plan_context: Any | None = None
     position_close_post_context: CurrentPostPositionCloseContextV1 | None = field(
         default=None, repr=False, compare=False
@@ -1023,6 +1024,7 @@ def run_current_productive_governed_cycle_v1(
         )
 
         close_execution_handoff = getattr(t2_result, "position_management_execution_handoff", None)
+        reversal = getattr(t2_result, "position_management_reversal", None)
         management_close_bound = (
             managing_position
             and master_v2_decision.lower() == "exit"
@@ -1052,6 +1054,19 @@ def run_current_productive_governed_cycle_v1(
             or (close_execution_handoff is not None and not management_close_bound)
             or master_v2_decision.lower() in {"enter", "enter_long", "enter_short"}
         )
+        if reversal is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+                DirectDoublePlayReversalV1,
+            )
+
+            management_entry_leak |= (
+                not managing_position
+                or not mark_driven
+                or type(reversal) is not DirectDoublePlayReversalV1
+                or reversal.episode.venue_native_id != authorization.native_id
+                or close_execution_handoff is not None
+                or final_order_envelope is not None
+            )
         if permit_created or post_count != 0 or management_entry_leak:
             first_blocker = (
                 "POSITION_MANAGEMENT_ENTRY_FORBIDDEN"
@@ -1094,6 +1109,21 @@ def run_current_productive_governed_cycle_v1(
             next_owner = (
                 "Use the existing envelope-bound send admission; no send authority from this cycle."
             )
+        elif reversal is not None:
+            disposition = DISPOSITION_FAIL_CLOSED
+            terminal_class = "POSITION_MANAGEMENT_REVERSAL_ASSESSED"
+            blocker_class = "IMPLEMENTATION_REQUIRED"
+            first_blocker = "DIRECT_REVERSAL_EXECUTION_ADMISSION_REQUIRED"
+            reason_code = first_blocker
+            next_owner = "The net reversal assessment carries no execution authority."
+        elif decision_result == "POSITION_MANAGEMENT_REVERSAL_PENDING":
+            disposition = DISPOSITION_FAIL_CLOSED
+            terminal_class = "POSITION_MANAGEMENT_REVERSAL_PENDING"
+            blocker_class = "IMPLEMENTATION_REQUIRED"
+            if first_blocker in {"", "HOLD"}:
+                first_blocker = "DIRECT_REVERSAL_EXECUTION_ADMISSION_REQUIRED"
+            reason_code = first_blocker
+            next_owner = "Resolve the original net-reversal inputs for this slot."
         elif managing_position:
             disposition = DISPOSITION_COMPLETED
             action_pending = decision_result == "POSITION_MANAGEMENT_ACTION_PENDING"
@@ -1182,6 +1212,14 @@ def run_current_productive_governed_cycle_v1(
                 **(
                     {"occupied_scope_close": occupied_close_record}
                     if occupied_close_record is not None
+                    else {}
+                ),
+                **(
+                    {
+                        "direct_reversal": reversal.to_dict_v1(),
+                        "direct_reversal_digest": reversal.digest_v1(),
+                    }
+                    if reversal is not None
                     else {}
                 ),
                 "portfolio_reservation_id": str(
@@ -1345,6 +1383,7 @@ def run_current_productive_governed_cycle_v1(
             canonical_order_intent=getattr(t2_result, "canonical_order_intent", None),
             execution_plan_context=getattr(t2_result, "execution_plan_context", None),
             position_management_execution_handoff=close_execution_handoff,
+            position_management_reversal=reversal,
             first_genuine_blocker=first_blocker,
             blocker_class=blocker_class,
             next_required_owner_decision=next_owner,
@@ -1401,6 +1440,7 @@ def _result(
     final_order_envelope: FinalOrderEnvelopeV1 | None = None,
     canonical_order_intent: Any | None = None,
     position_management_execution_handoff: Any | None = None,
+    position_management_reversal: Any | None = None,
     execution_plan_context: Any | None = None,
     first_genuine_blocker: str = "",
     blocker_class: str = "",
@@ -1448,6 +1488,7 @@ def _result(
         final_order_envelope=final_order_envelope,
         canonical_order_intent=canonical_order_intent,
         position_management_execution_handoff=position_management_execution_handoff,
+        position_management_reversal=position_management_reversal,
         execution_plan_context=execution_plan_context,
         permit_created=False,
         post_count=0,

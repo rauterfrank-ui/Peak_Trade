@@ -277,6 +277,36 @@ class ProductiveFuturesAccountingSessionV1:
         )
 
     def apply_fill(self, fill: SimulatedFillInputV1) -> AccountingApplyResultV1:
+        return self._apply_atomic_fill_v1(fill)
+
+    def apply_simulated_net_reversal_v1(
+        self, fill: SimulatedFillInputV1, *, current_contracts: Decimal, target_contracts: Decimal
+    ) -> AccountingApplyResultV1:
+        from src.execution.position_delta import signed_position_delta
+
+        delta = signed_position_delta(current_contracts, target_contracts)
+        if (
+            current_contracts * target_contracts >= 0
+            or fill.reduce_only is not False
+            or fill.quantity != abs(delta)
+            or fill.side != ("BUY" if delta > 0 else "SELL")
+        ):
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.POSITION_FLIP_BLOCKED, "NET_REVERSAL_FILL_MISMATCH"
+            )
+        if fill.fill_id in self.applied_fill_results:
+            return self.apply_fill(fill)
+        if self.position is None or current_contracts != (
+            self.position.qty if self.position.side == FuturesSide.LONG else -self.position.qty
+        ):
+            raise AccountingEngineError(
+                AccountingFailureCodeV1.POSITION_FLIP_BLOCKED, "NET_REVERSAL_POSITION_CHANGED"
+            )
+        return self._apply_atomic_fill_v1(fill, reversal_target=abs(target_contracts))
+
+    def _apply_atomic_fill_v1(
+        self, fill: SimulatedFillInputV1, *, reversal_target: Decimal | None = None
+    ) -> AccountingApplyResultV1:
         # Validate/calculate on a candidate: failed risk/metadata evaluation
         # must not leave a partially booked position or fee debit behind.
         from copy import copy
@@ -284,11 +314,13 @@ class ProductiveFuturesAccountingSessionV1:
         candidate = copy(self)
         candidate.fill_order = list(self.fill_order)
         candidate.applied_fill_results = dict(self.applied_fill_results)
-        result = candidate._apply_fill_v1(fill)
+        result = candidate._apply_fill_v1(fill, reversal_target=reversal_target)
         self.__dict__.update(candidate.__dict__)
         return result
 
-    def _apply_fill_v1(self, fill: SimulatedFillInputV1) -> AccountingApplyResultV1:
+    def _apply_fill_v1(
+        self, fill: SimulatedFillInputV1, *, reversal_target: Decimal | None = None
+    ) -> AccountingApplyResultV1:
         """Apply fill through canonical kernel semantics. Idempotent by fill_id."""
         if fill.fill_id in self.applied_fill_results:
             prior = self.applied_fill_results[fill.fill_id]
@@ -367,7 +399,7 @@ class ProductiveFuturesAccountingSessionV1:
             raise AccountingEngineError(AccountingFailureCodeV1.REDUCE_ONLY_VIOLATION)
 
         if is_reduce and open_side is not None:
-            if qty > open_qty:
+            if qty > open_qty and reversal_target is None:
                 raise AccountingEngineError(
                     AccountingFailureCodeV1.OVER_REDUCE, f"{qty}>{open_qty}"
                 )
@@ -378,7 +410,7 @@ class ProductiveFuturesAccountingSessionV1:
                 new_pos = reduce_position(
                     self.position,
                     contract_size=self.contract.contract_size,
-                    close_qty=qty,
+                    close_qty=min(qty, open_qty),
                     close_price=fill_price,
                     # Gross realized PnL; cumulative_fees is the sole fee debit.
                     fee_quote=Decimal("0"),
@@ -392,7 +424,29 @@ class ProductiveFuturesAccountingSessionV1:
             self.cumulative_fees += fee
             self.cumulative_slippage += slip
             self.last_mark = mark
-            if new_pos.qty == 0:
+            if reversal_target is not None:
+                position = FuturesPosition(
+                    symbol=self.contract.symbol,
+                    side=intended_side,
+                    qty=reversal_target,
+                    entry_price=fill_price,
+                    mark_price=mark,
+                    realized_pnl=Decimal(0),
+                    funding_pnl=Decimal(0),
+                    fees_paid=fee * reversal_target / qty,
+                )
+                validate_futures_accounting_inputs(
+                    instrument=_instrument(self.contract),
+                    margin=_margin(self.contract),
+                    position=position,
+                )
+                self.position = position
+                action = (
+                    AccountingSuccessCodeV1.REVERSE_TO_LONG
+                    if intended_side == FuturesSide.LONG
+                    else AccountingSuccessCodeV1.REVERSE_TO_SHORT
+                )
+            elif new_pos.qty == 0:
                 self.position = None
                 action = (
                     AccountingSuccessCodeV1.LONG_CLOSE

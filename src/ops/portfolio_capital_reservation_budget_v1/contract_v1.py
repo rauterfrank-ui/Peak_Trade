@@ -373,6 +373,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .slot_loss_budget_v1 import empty_state
 
         self._slot_test_economics = empty_state(self._entry_budget_policy)
+        self._simulated_direct_reversal_bookings: dict[str, list[dict]] = {}
         self._slot_capital_allocation = None
         self._open_slot_protection = (
             {slot: None for slot in self._entry_budget_policy.allowed_slot_ids}
@@ -596,6 +597,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             or net != close_booking.slot_booked_net_usdc
         ):
             raise PortfolioCapitalBudgetError("SLOT_CAPITAL_LATEST_BOOKING_MISMATCH")
+        if close_booking is None:
+            for reversal in self._simulated_direct_reversal_bookings.get(slot_id, ()):
+                net += Decimal(reversal["net_result_usdc"])
+                latest = reversal
         return SlotCapitalBasisV1(
             slot_id=slot_id,
             account_identity=self._account_identity,
@@ -605,6 +610,81 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             funding_observation_id=funding["observation_id"],
             latest_booking_digest=None if latest is None else latest["digest"],
         )
+
+    def book_simulated_direct_reversal_v1(self, plan, ledger, accounting, fill):
+        """Persist the confirmed offline net settlement on the original funded slot."""
+        from .slot_loss_budget_v1 import build_direct_reversal_booking_v1
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+            DirectDoublePlayReversalV1,
+        )
+
+        if type(plan) is not DirectDoublePlayReversalV1:
+            raise ValueError("DIRECT_REVERSAL_ORIGINAL_PLAN_REQUIRED")
+        slot = plan.episode.lane_id
+        with self._lock:
+            if self._closed_owner or self._storage_failed or self._store is None:
+                raise PortfolioCapitalBudgetError("DIRECT_REVERSAL_ORIGINAL_WRITER_REQUIRED")
+            series = self._simulated_direct_reversal_bookings.get(slot, [])
+            for index, record in enumerate(series):
+                if record["plan_digest"] == plan.digest_v1():
+                    if record["fill_digest"] != fill.digest():
+                        raise ValueError("DIRECT_REVERSAL_BOOKING_REPLAY_CONFLICT")
+                    original = accounting.applied_fill_results.get(fill.fill_id)
+                    if original is None:
+                        if (
+                            accounting.to_durable_dict()
+                            != type(accounting)
+                            .from_durable_dict(record["pre_fill_accounting"])
+                            .to_durable_dict()
+                        ):
+                            raise ValueError("DIRECT_REVERSAL_BOOKING_REPLAY_CONFLICT")
+                        rebuilt, updated, outcome = build_direct_reversal_booking_v1(
+                            self,
+                            plan,
+                            ledger,
+                            record["pre_fill_accounting"],
+                            fill,
+                            previous=series[index - 1] if index else None,
+                        )
+                        if rebuilt != record:
+                            raise ValueError("DIRECT_REVERSAL_BOOKING_REPLAY_CONFLICT")
+                        accounting.__dict__.update(updated.__dict__)
+                        return replace(outcome, idempotent_replay=True)
+                    if original.accounting_output_digest != record["accounting_output_digest"]:
+                        raise ValueError("DIRECT_REVERSAL_BOOKING_REPLAY_CONFLICT")
+                    return plan.apply_simulated_fill_v1(
+                        ledger=ledger, accounting=accounting, fill=fill
+                    )
+            basis = self._slot_capital_basis_locked_v1(slot, close_booking=None)
+            if (
+                basis is None
+                or not self._admitted
+                or (
+                    basis.net_basis_usdc != plan.slot_capital_basis_usdc
+                    or basis.allocation_digest != plan.funding_digest
+                )
+            ):
+                raise ValueError("DIRECT_REVERSAL_SLOT_BASIS_CHANGED")
+            original_hold = self._by_key.get(self._by_id.get(plan.old_reservation_id))
+            if original_hold is None or not original_hold.counts_against_budget:
+                raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_CHANGED")
+            record, updated, outcome = build_direct_reversal_booking_v1(
+                self,
+                plan,
+                ledger,
+                accounting.to_durable_dict(),
+                fill,
+                previous=series[-1] if series else None,
+            )
+            self._simulated_direct_reversal_bookings[slot] = [*series, record]
+            self._persist_locked()
+            accounting.__dict__.update(updated.__dict__)
+            return outcome
+
+    def latest_simulated_direct_reversal_v1(self, slot_id: str) -> dict | None:
+        with self._lock:
+            records = self._simulated_direct_reversal_bookings.get(slot_id)
+            return json.loads(json.dumps(records[-1])) if records else None
 
     def reservation_monetary_source_v1(self, reservation_id):
         """Read the original normalization sources; never upgrade a legacy hold."""
@@ -2896,6 +2976,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 else {}
             ),
             **(
+                {"simulated_direct_reversal_bookings": self._simulated_direct_reversal_bookings}
+                if self._simulated_direct_reversal_bookings
+                else {}
+            ),
+            **(
                 {"open_slot_cost_reserves": self._open_slot_cost_reserves}
                 if self._entry_budget_policy is not None
                 and self._entry_budget_policy.renew_open_slot_cost_reserves
@@ -3011,6 +3096,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "open_slot_protection",
                 "open_slot_cost_reserves",
                 "live_l10_close_bookings",
+                "simulated_direct_reversal_bookings",
             } != {
                 "schema",
                 "account_identity",
@@ -3252,9 +3338,12 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             )
             if "slot_capital_allocation" in payload:
                 self._restore_slot_capital_allocation_locked(payload["slot_capital_allocation"])
-            from .slot_loss_budget_v1 import restore_state
+            from .slot_loss_budget_v1 import restore_direct_reversal_bookings_v1, restore_state
 
             self._slot_test_economics = restore_state(self, payload.get("test_slot_economics"))
+            self._simulated_direct_reversal_bookings = restore_direct_reversal_bookings_v1(
+                self, payload.get("simulated_direct_reversal_bookings", {})
+            )
             from .open_slot_cost_renewal_v1 import restore_reserves_v1
 
             self._open_slot_cost_reserves = restore_reserves_v1(

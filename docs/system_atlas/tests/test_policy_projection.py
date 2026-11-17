@@ -109,7 +109,16 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
     assert set(result["development_policy_files"]) == reviewed & frozen
 
 
-@pytest.mark.parametrize("path", tuple(PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"]))
+@pytest.mark.parametrize(
+    "path",
+    sorted(
+        PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"].keys()
+        | (
+            PROJECTION["DIRECT_REVERSAL_POLICY_DELTAS"].keys()
+            - {PROJECTION["DIRECT_REVERSAL_SOURCE"]}
+        )
+    ),
+)
 @pytest.mark.parametrize("rebound", [False, True], ids=["prior-bytes", "different-rebound-bytes"])
 def test_double_play_requires_exact_complete_policy_bundle(monkeypatch, path, rebound):
     source = ROOT / path
@@ -117,6 +126,11 @@ def test_double_play_requires_exact_complete_policy_bundle(monkeypatch, path, re
     original = Path.read_bytes
     if rebound:
         raw = original(source) + b"\n# different implementation\n"
+    elif path in PROJECTION["DIRECT_REVERSAL_POLICY_DELTAS"]:
+        raw = subprocess.check_output(["git", "show", "71e4ce6912:" + path], cwd=ROOT)
+        assert (
+            hashlib.sha256(raw).hexdigest() == PROJECTION["DIRECT_REVERSAL_POLICY_DELTAS"][path][0]
+        )
     else:
         raw = subprocess.check_output(["git", "show", "fd5e14ed6:" + path], cwd=ROOT)
         assert hashlib.sha256(raw).hexdigest() == PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"][path][0]

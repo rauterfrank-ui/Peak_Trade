@@ -86,7 +86,12 @@ def test_actual_reader_binds_the_new_policies_and_preserves_startup_and_funding(
         *POLICY["ORDERED_FUNDING_EPISODE_DELTAS"],
     ):
         current = (ROOT / path).read_bytes()
-        if path in POLICY["DOUBLE_PLAY_POLICY_DELTAS"]:
+        if path in POLICY["DIRECT_REVERSAL_POLICY_DELTAS"]:
+            parent, successor = POLICY["DIRECT_REVERSAL_POLICY_DELTAS"][path]
+            original = subprocess.check_output(["git", "show", "71e4ce6912:" + path], cwd=ROOT)
+            assert hashlib.sha256(original).hexdigest() == parent
+            assert hashlib.sha256(current).hexdigest() == successor
+        elif path in POLICY["DOUBLE_PLAY_POLICY_DELTAS"]:
             parent, successor = POLICY["DOUBLE_PLAY_POLICY_DELTAS"][path]
             original = subprocess.check_output(
                 ["git", "show", DOUBLE_PLAY_PARENT + ":" + path], cwd=ROOT

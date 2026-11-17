@@ -40,6 +40,7 @@ from src.ops.recon.context import normalize_pipeline_context_for_recon
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 from src.observability.policy.policy_v1 import decide_policy_v1  # v1 cost/edge gate
 from src.execution.policy import PolicyEnforcerV0
+from src.execution.position_delta import signed_position_delta
 from src.core.performance import performance_monitor
 
 import pandas as pd
@@ -1048,7 +1049,7 @@ class ExecutionPipeline:
             target_position = signal * base_position_size
 
             # Differenz zur aktuellen Position berechnen
-            position_delta = target_position - current_position
+            position_delta = signed_position_delta(current_position, target_position)
 
             if abs(position_delta) < 1e-10:
                 # Keine nennenswerte Aenderung

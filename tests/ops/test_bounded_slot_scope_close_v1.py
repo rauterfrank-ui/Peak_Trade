@@ -490,6 +490,9 @@ def test_same_candle_scope_switch_reaches_full_close_and_original_budget(
     reserve_native: bool,
     release_unfilled: bool,
 ):
+    from tests.ops._legacy_l10_close_snapshot_fixture_v1 import seed_legacy_l10_close_snapshots
+
+    seed_legacy_l10_close_snapshots(monkeypatch)
     declared = {f"LANE_{i}": Decimal(30 + 5 * i) for i in range(1, 6)}
     low_basis = allocated and lane == "LANE_1" and opening_side == "long"
     if low_basis:

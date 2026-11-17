@@ -56,6 +56,8 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 - `src/core/environment.py` – Environment-Konfiguration
 - `src/orders/exchange.py` – `LiveOrderExecutor` (Stub/Dry-Run; echte Live-Broker-Pfade bewusst nicht umgesetzt)
 
+**Direkter Double-Play-Richtungswechsel im aktuellen Full-Core-Pfad.** Beim vollen Dynamic Scope berechnet der Offline-Pfad eine Netto-Order für dasselbe Instrument und denselben Slot. Der simulierte Fill bucht den Nettoerfolg auf diesem Slot. Die nächste Bemessung nutzt dessen fortgeschriebenes Kapital. Fünf Slots mit je 25 USDC ergeben die Startzuteilung der Testphase von 125 USDC. Für den direkten Richtungswechsel endet der authentifizierte Pfad derzeit vor dem Versand. Der Nachweis für die Übernahme des fortgeschriebenen Kapitals nach einer Instrumentrotation steht aus.
+
 ---
 
 ## 2.2 Testnet nur im Dry-Run-Modus

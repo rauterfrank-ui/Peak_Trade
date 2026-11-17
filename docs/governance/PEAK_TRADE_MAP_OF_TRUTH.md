@@ -48,3 +48,7 @@ Diese Map vermittelt ausschließlich die Navigation für den fixierten Repositor
 - [DDO](../../src/learning/deterministic_decision_outcome_v0/capture_v0.py) und [originaler DDO-Speichervertrag](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md), [numerisches Marktmodell](../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py), [Researchsession](../../src/experiments/canonical_native_research_session_v1.py).
 - [Governance-Apply](../../src/governance/governed_productive_configuration_apply_authority_v1.py), [Evaluation](../../src/evaluation/golden_vectors/runner/generic_runner_v1.py), [S6-Controller](../../src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py).
 - [Python-Laufzeitvertrag](../runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md) und [Agent-Einstieg](../../AGENTS.md).
+
+## Betriebsgrenzen des Entwicklungsstands
+
+- [Offline-Ausführung des direkten Double-Play-Richtungswechsels](../PEAK_TRADE_V1_KNOWN_LIMITATIONS.md#21-keine-echte-live-order-ausführung).

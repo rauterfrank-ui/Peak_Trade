@@ -1158,6 +1158,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         bind_final_order_envelope_from_venue_plan_v1,
     )
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
+    from tests.ops._legacy_l10_close_snapshot_fixture_v1 import seed_legacy_l10_close_snapshots
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
     close_readback, get_count = {
@@ -1168,6 +1169,8 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         "double-play-shared-productive-paged-net": ("readback-productive-paged-booked", 87),
     }.get(path, (None, 26))
     close_case = close_readback is not None
+    if close_case:
+        seed_legacy_l10_close_snapshots(monkeypatch)
     managed_case = path == "managed-r04"
     standing = path in {"standing", "managed-r04"}
     send_root = tmp_path / "send" if managed_case else None
@@ -1832,6 +1835,8 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
     "fault,reason",
     [
         (None, None),
+        ("occupied-mark-direct", None),
+        ("polled-mark-direct", None),
         ("occupied-mark", None),
         ("polled-mark", None),
         ("polled-mark-close-ack", None),
@@ -1884,6 +1889,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
     from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
         PositionEpisodeScopeV1,
     )
+    from tests.ops._legacy_l10_close_snapshot_fixture_v1 import seed_legacy_l10_close_snapshots
 
     host, attempt, opener, scope, held = authenticated_host
     dispatch = (
@@ -1891,8 +1897,9 @@ def test_owned_entry_proof_reaches_original_position_episode(
         if fault and fault.startswith("polled-mark-close-")
         else None
     )
-    polled = fault == "polled-mark" or dispatch is not None
-    occupied_mark = fault == "occupied-mark" or polled
+    polled = fault in {"polled-mark", "polled-mark-direct"} or dispatch is not None
+    direct = fault in {"occupied-mark-direct", "polled-mark-direct"}
+    occupied_mark = direct or fault == "occupied-mark" or polled
     if dispatch is not None:
         host.repository_sha = "b707632c51a3c192337ec181825697c15bac5ddf"
     body = opener.body
@@ -2007,6 +2014,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
     replayed = context.bind_current_authenticated_entry_episode_v1(**host_args)
     assert replayed.input_binding_v1() == episode.input_binding_v1()
     if occupied_mark:
+        if not direct:
+            seed_legacy_l10_close_snapshots(monkeypatch)
         host.execution_incident_state_path = scope.state_path
         _assert_authenticated_occupied_mark_close(
             tmp_path=tmp_path,
@@ -2019,8 +2028,9 @@ def test_owned_entry_proof_reaches_original_position_episode(
             polled=polled,
             dispatch=dispatch,
             opener=opener,
+            direct=direct,
         )
-        expected_gets = 12
+        expected_gets = 0 if direct and not polled else 12
         if (
             dispatch
             and dispatch.startswith("readback-")
@@ -2092,6 +2102,7 @@ def _assert_authenticated_occupied_mark_close(
     opener,
     shared_post=False,
     on_shared_send=None,
+    direct=False,
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2154,6 +2165,16 @@ def _assert_authenticated_occupied_mark_close(
         },
         authenticated_entry=AuthenticatedEntryEpisodeRequestV1(proof_root, proof),
     )
+    if direct and not polled:
+        result = occupied.invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **inputs)[
+            "LANE_1"
+        ].governed_cycle_result
+        assert result.first_genuine_blocker == "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
+        assert result.position_management_execution_handoff is None
+        assert result.position_management_reversal is None
+        assert result.final_order_envelope is None
+        assert not result.permit_created and result.post_count == 0
+        return
     if polled:
         from src.ops.full_core_live_path_composition_root_v1 import (
             current_productive_governed_continuous_cycle_orchestrator_v1 as s6,
@@ -2219,6 +2240,14 @@ def _assert_authenticated_occupied_mark_close(
             )
         )
         run = policy_result.orchestrator_result
+        if direct:
+            assert run.disposition == s6.DISPOSITION_FAIL_CLOSED
+            assert run.first_genuine_blocker == "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
+            assert run.s5_invoke_count == 2 and run.accepted_c1_count == 0
+            assert run.last_accepted_c1 == occupied._cursor_floor_or_zero(root) == floor
+            assert all(cycle.final_order_envelope is None for cycle in run.cycle_records)
+            assert not run.permit_created and run.post_count == 0
+            return
         assert run.disposition == s6.DISPOSITION_PRE_EXTERNAL_EFFECT, run.first_genuine_blocker
         assert run.s5_invoke_count == 2 and run.accepted_c1_count == 0
         assert [item.cycle_index for item in policy_result.iteration_evidence] == [0, 1, 2]
