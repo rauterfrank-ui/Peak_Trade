@@ -632,6 +632,11 @@
       "sha256": "29f951a775b6b2cfa732b95a7d4ace0882d8de06da2e985c497c99abefdf0675"
     },
     {
+      "path": "docs/ops/evidence/N1_V2_BREV_MAC_HOST_OFFLINE_RECOVERY.json",
+      "before_sha256": null,
+      "sha256": "e4141e490b804a7a80be9822de6ee2ea5255f4a2fed5ed383c77f094d6dfc436"
+    },
+    {
       "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RECOVERY.json",
       "before_sha256": null,
       "sha256": "ec5798b3e89b92fbc7c0f73bdf338d84957abf7a703e47dee866d6bbe91abdc3"
@@ -1547,6 +1552,11 @@
       "sha256": null
     },
     {
+      "path": "scripts/ops/brev_v2_mac_host_service.py",
+      "before_sha256": null,
+      "sha256": "b7fd19d8cf74a17318c3d45a90756066402d7b6b751f597c0ac13cbdfd4470e5"
+    },
+    {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
       "sha256": "de2d21de9fd6227247527a236bd8ebad420e74e2b19287a19dc23e6140939ec3"
@@ -1655,6 +1665,11 @@
       "path": "scripts/ops/paper_episode_learning_handoff_v1.py",
       "before_sha256": null,
       "sha256": "a0f2081edd44118d67ce6cec143ae30ca70767ba92624f4edbe1ac73654efb1b"
+    },
+    {
+      "path": "scripts/ops/peak_trade_runtime.py",
+      "before_sha256": "475170be4e0bd97522590401db31498025af5ad7e064e88362548c61fde20025",
+      "sha256": "f8e0ab920670be5b41bd868564841a4898c9dc15fd98442bd735f7f3273779a3"
     },
     {
       "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
@@ -4230,6 +4245,11 @@
       "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",
       "before_sha256": null,
       "sha256": "f7e64d4755ee6c3cd0de6e763c1dcb8e2b4c4f4fd79829b21fb7a998cce8dbcb"
+    },
+    {
+      "path": "tests/ops/test_brev_v2_mac_host_service.py",
+      "before_sha256": null,
+      "sha256": "83df87985a53bd15290f022ebd2cb59740855f2a7ae412e7ffeefca7b665fd7c"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",

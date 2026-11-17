@@ -1,0 +1,106 @@
+{
+  "candidate_kind": "local worktree changes",
+  "cap24_publication_sha256": "d33b49fb9c8a73bfe87b8d3688ec8d965d7f3ea046fa31c85cf6ba0621a85a35",
+  "cap24_receipt_revision": "70ef622ad1d87aeddfa995f6d004a117182badac",
+  "cap24_simulated_binding_epoch": "2026-11-17T18:22:00Z",
+  "cases": {
+    "cap24-changed-publication": {
+      "blocker": "BREV_CAP24_PUBLICATION_CHANGED",
+      "fixture_ports_opened": 0,
+      "manifest_sha256": "696ee437425e31c1d6c8a86f5454950affe8225be86ae73e362961ff031a09d3",
+      "plist_sha256": "0eb701f4798dd7f1a31ff7be5327a9edec49b4028633f5c2e97145555dfb881d",
+      "proof_sha256": "c498018e60547b44708703aee56e98f0835c86302dc71befdb571979c9b99b7e",
+      "start_authorized": false,
+      "status": "RECOVERY_CHECKPOINT_REQUIRED"
+    },
+    "cap24-expired": {
+      "blocker": "SELECTION_STALE_FOR_BINDING_EPOCH",
+      "fixture_ports_opened": 0,
+      "manifest_sha256": "ad8d979102460d0ec1196d52d522796f14c976380bbd5dec9299baa4a6f94285",
+      "plist_sha256": "f9d2d23bba8dbce9ddd9f1cddfae7d547c984163d61466ec07e60128f696fc61",
+      "proof_sha256": "f229e67ab27c9132979791f0e8620e7f0c8440ac43c6d0b17251afb109497213",
+      "start_authorized": false,
+      "status": "RECOVERY_CHECKPOINT_REQUIRED"
+    },
+    "cap24-wrong-revision": {
+      "blocker": "REPOSITORY_SHA_MISMATCH",
+      "fixture_ports_opened": 0,
+      "manifest_sha256": "c024f26920ed258fd10f4f9403663847d925754380d2f816800440f4d5ba534b",
+      "plist_sha256": "7c693d422cff6a449dfb57b17704d91f9abad70ef3038d340da04970175bc47a",
+      "proof_sha256": "4eb2e29806fa3c636a54e1fa239ed64bbe101fbdc82ef85111a047a3bb6eb641",
+      "start_authorized": false,
+      "status": "RECOVERY_CHECKPOINT_REQUIRED"
+    },
+    "changed-cursor": {
+      "blocker": "BREV_CAP24_ORIGINAL_WAIT_UNPROVEN",
+      "fixture_ports_opened": 0,
+      "manifest_sha256": "1c945326970584f4cc1dea196d2d4b790efe26588bb86747868730d6aba2a370",
+      "plist_sha256": "4b07e117e41dff1c35eef895e335954c6e8f182d348cce505c0d2c3a4a5fd3c0",
+      "proof_sha256": "dd388c9032ba7dfe2565fbc4dae9f01d25506e76df6dc3a983b004cbc8cef3de",
+      "start_authorized": false,
+      "status": "RECOVERY_CHECKPOINT_REQUIRED"
+    },
+    "managed-other-boot": {
+      "byte_identical_cursor": true,
+      "changed_boot_simulated": true,
+      "different_process": true,
+      "fixture_get_requests": 21,
+      "manifest_sha256": "e27bdd09ec0214a6f3fc00251facf8a5ee8d59d8a6212ae429aac6966e7d5f11",
+      "plist_sha256": "2aa1bb9b691abf245c45eec79492229be59891431acb783778659a1e9127300c",
+      "proof_sha256": "365321fddcd1cb955cb18d1e4b8f9c6501bb187804e993ee8c358a98338e95e0",
+      "same_budget_history": true,
+      "same_physical_sqlite_file": true,
+      "same_reservation": true,
+      "start_authorized": false,
+      "status": "WAITING_FOR_NEXT_C1"
+    },
+    "same-boot": {
+      "byte_identical_cursor": true,
+      "changed_boot_simulated": false,
+      "different_process": true,
+      "fixture_get_requests": 21,
+      "manifest_sha256": "a5a9a74aa31eed9b86b06724829a8ac24a4c5e9680b85d7327b413190857d579",
+      "plist_sha256": "a6f048e3f127c50b1849db53b08227399756521e68407cb7a60d96ef2858bcf2",
+      "proof_sha256": "9cc56ddce578ace6e57d022643e072c05a6c47f4da46ad192aa7691337517591",
+      "same_budget_history": true,
+      "same_physical_sqlite_file": true,
+      "same_reservation": true,
+      "start_authorized": false,
+      "status": "WAITING_FOR_NEXT_C1"
+    }
+  },
+  "check_sha256": {
+    "law-map.log": "2f4e7bd3adcfe9ad49513abd8c97add379ebc10867b4c1efbc7e967ae427f864",
+    "live-get-guard.log": "4bc561fe6a4c7c1de1454b98932b181974653ab2f273eac539447b447db37050",
+    "system-atlas-impact.log": "ee0c4af82ecd49ba4e87ffe1900e5025f0f38cbb675ab62cb6ee40f48976842e",
+    "system-atlas.log": "a5ad209327d663a63cb55635bbb54adce1520d54cb8a5e6e1aa75abd27e62744",
+    "v1-base-policy.log": "efe6a0d72f0aaef8ee9a0cb3306510122bf7a9f1cf73eecfcecb889a732125b8",
+    "v1-content.log": "efe6a0d72f0aaef8ee9a0cb3306510122bf7a9f1cf73eecfcecb889a732125b8",
+    "v2-admission.log": "c8388f7ef92598f55bd92b269bd1c175685335d318965d804a6e76e89b93f516"
+  },
+  "episode_reconstructed_in_isolated_paths": true,
+  "instrument": "BREV-USDT-SWAP",
+  "lane": "LANE_1",
+  "original_episode_revision": "8557138f16298f18a3c187b70570aa59c2db90a4",
+  "original_report_sha256": "a61726859e8312fe1cc16a67616b8da6e0dc0bca63eb569b9b3a4be3574af979",
+  "real_capital_used": false,
+  "real_gets": 0,
+  "real_posts": 0,
+  "runtime_authorization_effect": "NONE",
+  "schema": "peaktrade.n1_v2_brev_mac_host_offline_recovery.v1",
+  "scoped_get_start_blocker": "BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT",
+  "service_invocation": "Plist arguments exercised in separate offline worker processes using in-process GET fixtures",
+  "service_label": "de.peaktrade.n1-host.v2",
+  "service_loaded": false,
+  "source_base": "2ab72f36f6cd75a1a88fdd5d3081cd1e0758d254",
+  "source_sha256": {
+    "scripts/ops/brev_v2_mac_host_service.py": "b7fd19d8cf74a17318c3d45a90756066402d7b6b751f597c0ac13cbdfd4470e5",
+    "scripts/ops/peak_trade_runtime.py": "f8e0ab920670be5b41bd868564841a4898c9dc15fd98442bd735f7f3273779a3",
+    "scripts/ops/run_offline_occupied_brev_with_cap24_v1.py": "2f47f609c11b95770351ead345c582f427f988cdd3918db627bf64743fc9a377"
+  },
+  "start_authorized": false,
+  "status": "PASS",
+  "system_reboot_performed": false,
+  "termination": "SIGKILL",
+  "verified_at_utc": "2026-11-17T22:35:12+00:00"
+}
