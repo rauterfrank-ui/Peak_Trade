@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from copy import deepcopy
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
@@ -220,6 +220,7 @@ def evaluate_host_exit_policy_producers_v1(
     max_drawdown: float = 0.0,
     rotation_time_exit: dict[str, Any] | None = None,
     occupied_scope_mark: bool = False,
+    separate_scope_adverse_exit: bool = True,
 ) -> tuple[ExitPolicyProducerBundleV1, dict[str, PolicySignalV0], SafetyMode, TradingGate]:
     if binding.alpha_blocked:
         raise ExitPolicyPersistenceError(
@@ -261,6 +262,11 @@ def evaluate_host_exit_policy_producers_v1(
 
     binding.has_open_position = bool(has_open_position)
     binding.existing_position_side = str(existing_position_side)
+    scope_adverse_disabled_reason = ""
+    if occupied_scope_mark:
+        scope_adverse_disabled_reason = "l10_owns_scope_switch"
+    elif not separate_scope_adverse_exit:
+        scope_adverse_disabled_reason = "full_dynamic_scope_no_separate_adverse_exit"
     bundle = evaluate_exit_policy_producers_v1(
         has_open_position=bool(has_open_position),
         existing_position_side=str(existing_position_side),
@@ -273,6 +279,7 @@ def evaluate_host_exit_policy_producers_v1(
         scope_adverse_matched=bool(scope_adverse_matched),
         scope_adverse_candidate=bool(scope_adverse_candidate),
         adverse_exit_distance=float(adverse_exit_distance),
+        scope_adverse_disabled_reason=scope_adverse_disabled_reason,
         profit_protection_distance=float(profit_protection_distance),
         max_hold_seconds=float(binding.time_exit_max_hold_seconds),
         killstate_active=bool(killstate_active),
@@ -285,13 +292,6 @@ def evaluate_host_exit_policy_producers_v1(
         duplicate_observation=duplicate,
         rotation_time_exit=rotation_time_exit,
     )
-    if occupied_scope_mark:
-        bundle = replace(
-            bundle,
-            scope_adverse_exit=replace(
-                bundle.scope_adverse_exit, triggered=False, reason_code="l10_owns_scope_switch"
-            ),
-        )
     signals = bundle_to_policy_signals_v1(bundle)
     # Arm pending exit on first true mandatory/safety trigger.
     for evidence in (

@@ -191,8 +191,6 @@ class ScopeEventEvidenceV1:
             raise ValueError(msg)
 
 
-
-
 def _valid_sha256_hex(value: str) -> bool:
     return bool(re.fullmatch(r"[0-9a-f]{64}", value))
 
@@ -334,19 +332,24 @@ def _matched_directional_conditions(
 ) -> Tuple[ScopeCandidateKind, ...]:
     price = float(current_price)
     matched: list[ScopeCandidateKind] = []
+    # Current protection geometry shares the Downscope boundary. Only an
+    # explicitly distinct legacy boundary can emit a separate exit candidate.
+    separate_adverse_exit = thresholds.adverse_exit_threshold != (
+        thresholds.downscope_candidate_threshold
+    )
     if direction is ScopeDirectionState.LONG:
         if price >= thresholds.up_candidate_threshold:
             matched.append(ScopeCandidateKind.UPSCOPE)
         if price <= thresholds.downscope_candidate_threshold:
             matched.append(ScopeCandidateKind.DOWNSCOPE)
-        if price <= thresholds.adverse_exit_threshold:
+        if separate_adverse_exit and price <= thresholds.adverse_exit_threshold:
             matched.append(ScopeCandidateKind.ADVERSE_EXIT)
     else:
         if price <= thresholds.up_candidate_threshold:
             matched.append(ScopeCandidateKind.UPSCOPE)
         if price >= thresholds.downscope_candidate_threshold:
             matched.append(ScopeCandidateKind.DOWNSCOPE)
-        if price >= thresholds.adverse_exit_threshold:
+        if separate_adverse_exit and price >= thresholds.adverse_exit_threshold:
             matched.append(ScopeCandidateKind.ADVERSE_EXIT)
     return tuple(matched)
 

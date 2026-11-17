@@ -326,6 +326,7 @@ def evaluate_exit_policy_producers_v1(
     scope_adverse_matched: bool = False,
     scope_adverse_candidate: bool = False,
     adverse_exit_distance: float = FROZEN_ADVERSE_EXIT_DISTANCE,
+    scope_adverse_disabled_reason: str = "",
     profit_protection_distance: float = FROZEN_PROFIT_PROTECTION_DISTANCE,
     max_hold_seconds: float = CANONICAL_TIME_EXIT_MAX_HOLD_SECONDS,
     killstate_active: bool = False,
@@ -467,6 +468,15 @@ def evaluate_exit_policy_producers_v1(
             reason_code="pending_exit_retained",
             producer_owner=TIME_FOUNDATION_OWNER,
             inputs={"pending_exit_class": sticky_class},
+        )
+
+    if scope_adverse_disabled_reason:
+        adverse = _signal(
+            exit_class="adverse_scope_exit",
+            triggered=False,
+            reason_code=scope_adverse_disabled_reason,
+            producer_owner=ADVERSE_PRODUCER_OWNER,
+            inputs={"protection_distance": float(adverse_exit_distance)},
         )
 
     bundle = ExitPolicyProducerBundleV1(

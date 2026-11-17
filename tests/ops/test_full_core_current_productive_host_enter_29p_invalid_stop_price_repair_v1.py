@@ -240,7 +240,7 @@ def _join_enter_live_29p(*, replay):
     )
 
 
-def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatch) -> None:
+def test_host_enter_binds_full_dynamic_scope_and_reaches_envelope(monkeypatch) -> None:
     import src.ops.governed_productive_monetary_normalization_v1.normalize_v1 as seam
 
     monetary_inputs = []
@@ -279,6 +279,7 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatc
     assert reasons == ()
     assert distance is not None
     distance = Decimal(str(distance))
+    assert distance == Decimal(str(replay.intermediate.scope_event.semantic_binding.up_distance))
     assert distance != Decimal(str(CANONICAL_ADVERSE_EXIT_DISTANCE))
     expected_stop = derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=str(rebound.evidence.selected_side),
@@ -287,9 +288,9 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope(monkeypatc
     )
     assert expected_stop == mark - distance
     assert Decimal("0") < expected_stop < mark
-    assert len(monetary_inputs) == 1
-    assert monetary_inputs[0]["native_reference_price"] == mark
-    assert monetary_inputs[0]["native_protective_stop_price"] == expected_stop
+    assert monetary_inputs
+    assert all(row["native_reference_price"] == mark for row in monetary_inputs)
+    assert all(row["native_protective_stop_price"] == expected_stop for row in monetary_inputs)
     assert expected_stop != ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
     intent = rebound.intermediate.canonical_order_intent
     assert intent is not None

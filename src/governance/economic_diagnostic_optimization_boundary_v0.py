@@ -104,8 +104,21 @@ from .semantics_neutral_decommission_authorization_v1 import (
     DEFAULT_DECOMMISSION_AUTH_PATH,
     REASON_DECOMMISSION_AUTHORIZED,
     DecommissionAuthorizationDecision,
+    compute_decommission_evidence_digest,
     evaluate_decommission_authorization,
     validate_decommission_authorization,
+)
+
+REASON_LAYER_C_OWNER_ADMISSION = "OWNER_APPROVED_LAYER_C_FULL_DYNAMIC_SCOPE_EXACT_DIFF"
+_LAYER_C_BASE_SHA = "3d448335576c97db7cd2eb8fbe090fa14aeb8c95"
+_LAYER_C_DIFF_SHA256 = "c9d65957e615586fc6e47c639fcc37a863333d0663fcb6390f611052b452cac1"
+_LAYER_C_ADMISSION_RECORDS = frozenset(
+    {
+        "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+        "docs/system_atlas/policy_projection.py",
+        "docs/system_atlas/source/development-binding-v1.json",
+        "src/governance/economic_diagnostic_optimization_boundary_v0.py",
+    }
 )
 
 CONTRACT_VERSION = "economic_diagnostic_optimization_boundary_v0"
@@ -1171,6 +1184,39 @@ def evaluate_restoration_authorization(
     )
 
 
+def _matches_owner_approved_layer_c_diff(
+    changed_files: tuple[str, ...],
+    *,
+    file_diffs: Mapping[str, str] | None,
+    diff_base_sha: str | None,
+) -> bool:
+    """Bind the Layer-C semantic correction to its complete reviewed content diff."""
+    paths = set(changed_files)
+    if (
+        diff_base_sha != _LAYER_C_BASE_SHA
+        or file_diffs is None
+        or file_diffs.keys() != paths
+        or not _LAYER_C_ADMISSION_RECORDS <= paths
+        or any(
+            not diff
+            or any(
+                line.startswith(("old mode ", "new mode ", "rename from ", "copy from "))
+                for line in diff.splitlines()
+            )
+            for diff in file_diffs.values()
+        )
+    ):
+        return False
+    return (
+        compute_decommission_evidence_digest(
+            file_diffs=file_diffs,
+            diff_base_sha=diff_base_sha,
+            paths=sorted(paths - _LAYER_C_ADMISSION_RECORDS),
+        )
+        == _LAYER_C_DIFF_SHA256
+    )
+
+
 def build_boundary_report(
     changed_files: Sequence[str],
     *,
@@ -1663,9 +1709,19 @@ def build_boundary_report(
             ]
 
     unclassified = remaining_unclassified
+    layer_c_owner_admission = bool(
+        blocking_forbidden
+        and not unclassified
+        and _matches_owner_approved_layer_c_diff(
+            normalized_files, file_diffs=file_diffs, diff_base_sha=diff_base_sha
+        )
+    )
+    if layer_c_owner_admission:
+        blocking_forbidden = []
 
     if (
-        restoration_decision.applied
+        layer_c_owner_admission
+        or restoration_decision.applied
         or mapping_bind_decision.applied
         or generator_fallback_decision.applied
         or armed_identity_split_decision.applied
@@ -1787,6 +1843,9 @@ def build_boundary_report(
         generator_fallback_applied = False
         armed_identity_split_applied = False
         od1_single_lane_confirmation_applied = False
+    elif layer_c_owner_admission:
+        reason_codes.append(REASON_LAYER_C_OWNER_ADMISSION)
+        economic_or_diagnostic_only = False
     elif restoration_decision.applied:
         reason_codes.append(REASON_RESTORATION_AUTHORIZED)
         if allowed_hits:
@@ -2025,7 +2084,8 @@ def forbidden_surface_changed_count(report: BoundaryReport) -> int:
     # Authorized wiring/restoration applications keep forbidden matches for audit but do
     # not count them as blocking forbidden surface changes.
     if (
-        report.technical_wiring_authorization_applied
+        (report.admissible and REASON_LAYER_C_OWNER_ADMISSION in report.reason_codes)
+        or report.technical_wiring_authorization_applied
         or report.restoration_authorization_applied
         or report.semantics_neutral_decommission_authorization_applied
         or report.owner_adjudicated_nonproductive_contract_change_authorization_applied

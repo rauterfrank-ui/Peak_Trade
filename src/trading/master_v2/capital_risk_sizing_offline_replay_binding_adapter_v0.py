@@ -111,12 +111,10 @@ def derive_protective_stop_price_from_adverse_exit_v0(
     reference_price: Decimal,
     adverse_exit_distance: Decimal | float | str,
 ) -> Decimal | None:
-    """Bind 29P stop to the CURRENT adverse-exit distance at the 29P reference.
+    """Project a protection distance from the supplied mark in price units.
 
-    Reuses the LONG/SHORT branch of ``compute_evaluated_thresholds`` with
-    ``trailing_anchor = reference_price``. Does not invent a new stop policy,
-    does not use the offline fixture ``3400``, and fail-closes to ``None``
-    when side/distance/reference cannot form a strictly positive finite stop.
+    Current Layer-C consumers use the full effective Dynamic Scope as the
+    distance. The V0 argument name also serves historical comparison callers.
     """
     side = str(selected_side or "").strip().upper()
     try:
@@ -134,7 +132,7 @@ def derive_protective_stop_price_from_adverse_exit_v0(
         stop = reference + distance
     else:
         return None
-    if not stop.is_finite() or stop <= 0:
+    if not stop.is_finite() or stop <= 0 or stop == reference:
         return None
     return stop
 

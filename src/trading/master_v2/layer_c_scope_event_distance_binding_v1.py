@@ -2,7 +2,7 @@
 
 Fresh base geometry for CMC bridges uses Golden Geometry Engine V1. Stateful paths use
 ``current_hysteresis_band`` via resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1.
-Owner-authorized cutover: derive_scope_event_distances_v1 ratios 1.0 / 0.4 / 0.6 × D_t.
+The effective full D_t supplies the Scope, reversal and protection distances.
 """
 
 from __future__ import annotations
@@ -17,6 +17,9 @@ LAYER_C_SCOPE_EVENT_DISTANCE_BINDING_OWNER = (
     "trading.master_v2.layer_c_scope_event_distance_binding_v1"
 )
 LAYER_C_EVENT_DISTANCE_DERIVATION_ID = "derive_scope_event_distances_v1"
+# These V1 persistence namespace strings are part of the original episode
+# and restart identities. Actual decision distances are bound in the
+# Layer-C decision evidence, independently of this storage namespace.
 _LAYER_C_DERIVED_CAP62_DIGEST_MATERIAL = (
     "cap62-layer-c-event-distance-authority:derive_scope_event_distances_v1:1.0/0.4/0.6"
 )
@@ -26,11 +29,7 @@ _LAYER_C_DERIVED_CAP65_ADVERSE_DIGEST_MATERIAL = (
 
 
 def layer_c_derived_dynamic_scope_persistence_config_digest_v1() -> str:
-    """Cap 6.2 session digest: derivation-mode + ratio contract (CONFIGURATION SEMANTICS).
-
-    Identifies authorized Layer-C binding (derive_scope_event_distances_v1 at 1.0/0.4/0.6),
-    not instantaneous D_t numeric values (those change each market tick at runtime).
-    """
+    """Stable Cap 6.2 identity for restoring the stored Dynamic Scope."""
     return hashlib.sha256(_LAYER_C_DERIVED_CAP62_DIGEST_MATERIAL.encode("utf-8")).hexdigest()
 
 
@@ -38,7 +37,7 @@ def layer_c_derived_exit_policy_adverse_config_digest_v1(
     *,
     profit_protection_distance: float,
 ) -> str:
-    """Stable Cap 6.5 session digest for derived adverse exit; profit protection unchanged."""
+    """Stable Cap 6.5 episode-state identity including profit protection."""
     material = (
         f"{_LAYER_C_DERIVED_CAP65_ADVERSE_DIGEST_MATERIAL}:"
         f"profit={float(profit_protection_distance)}"

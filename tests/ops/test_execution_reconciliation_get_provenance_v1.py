@@ -3612,7 +3612,7 @@ def _assert_restarted_close_readback(
             assert historical.target_side == counter.target_side
             assert float(historical.switch_mark_price) == expected_switch_mark
             distance = Decimal(historical.adverse_exit_distance)
-            assert float(distance) == pytest.approx(float(historical.scope_magnitude) * 0.4)
+            assert distance == Decimal(historical.scope_magnitude)
             assert Decimal(historical.counter_side_reference_price) == (
                 Decimal(historical.switch_mark_price)
                 + (distance if counter.target_side == "short" else -distance)

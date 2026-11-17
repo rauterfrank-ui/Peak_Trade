@@ -1,4 +1,4 @@
-"""Pure derive_scope_event_distances_v1 (OQ-C2 ratio mapping only).
+"""Pure binding of the full Dynamic Scope to Layer-C distances.
 
 Productive runtime must not import this module directly. The authorized
 productive adapter is
@@ -11,11 +11,6 @@ from __future__ import annotations
 
 import math
 
-from src.ops.derive_scope_event_distances_v1.constants_v1 import (
-    OQ_C2_ADVERSE_NUMERATOR,
-    OQ_C2_RATIO_DENOMINATOR,
-    OQ_C2_REVERSAL_NUMERATOR,
-)
 from src.ops.derive_scope_event_distances_v1.result_v1 import (
     DerivedScopeEventDistancesResultV1,
     invalid_result_v1,
@@ -30,7 +25,7 @@ def _current_hysteresis_band_is_valid(value: object) -> bool:
 def derive_scope_event_distances_v1(
     current_hysteresis_band: object,
 ) -> DerivedScopeEventDistancesResultV1:
-    """Map a valid hysteresis band to OQ-C1/OQ-C2 distances, else fail closed.
+    """Bind the effective hysteresis band without rescaling, else fail closed.
 
     Valid: ok=true and the three derived distances only.
     Invalid: ok=false, no usable distances, failure_reason=INVALID_INPUT.
@@ -40,11 +35,10 @@ def derive_scope_event_distances_v1(
     if not _current_hysteresis_band_is_valid(current_hysteresis_band):
         return invalid_result_v1()
 
-    up_distance = current_hysteresis_band
-    adverse_exit_distance = up_distance * (OQ_C2_ADVERSE_NUMERATOR / OQ_C2_RATIO_DENOMINATOR)
-    reversal_distance = up_distance * (OQ_C2_REVERSAL_NUMERATOR / OQ_C2_RATIO_DENOMINATOR)
+    # The V1 adverse distance field supplies protection geometry. Its
+    # coincident boundary does not represent a separate Scope exit event.
     return ok_result_v1(
-        up_distance=up_distance,
-        adverse_exit_distance=adverse_exit_distance,
-        reversal_distance=reversal_distance,
+        up_distance=current_hysteresis_band,
+        adverse_exit_distance=current_hysteresis_band,
+        reversal_distance=current_hysteresis_band,
     )

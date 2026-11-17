@@ -5,9 +5,13 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
+from tempfile import mkdtemp
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
+from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
+    atomic_write_text,
+)
 from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
     CALL_GRAPH_AFTER,
     CALL_GRAPH_BEFORE,
@@ -42,11 +46,25 @@ from src.ops.dynamic_scope_persistence_binding_v1.single_writer_v1 import (
     ConflictingWriterError,
     DynamicScopeStateSingleWriterV1,
 )
+from src.ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1 import (
+    sync_portfolio_shell_from_accounting_v1,
+)
+from src.ops.productive_futures_accounting_runtime_binding_v1.persistence_v1 import (
+    load_accounting_session,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
+    PORTFOLIO_STATE_FILENAME,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.persistence_v1 import (
+    load_persisted_portfolio_state,
+)
 from src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1 import (
     ObservationCycleKindV1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
     BridgeSessionStateV1,
+    _observed_portfolio_truth_from_bridge_state,
+    _position_fields_from_portfolio,
     run_bridge_cycle_v1,
 )
 
@@ -113,6 +131,34 @@ def run_dynamic_scope_harness_v1(
     state.dynamic_scope_state_root = str(dynamic_scope_state_root)
     state.confirmation_binding.enabled = True
     state.dynamic_scope_binding.enabled = True
+    if persist_each_cycle:
+        root = Path(dynamic_scope_state_root)
+        root.mkdir(parents=True, exist_ok=True)
+        accounting_root = root / "accounting"
+        checkpoint_root = root / "simulated_portfolio_checkpoint"
+        checkpoint = checkpoint_root / PORTFOLIO_STATE_FILENAME
+        reconciliation_root = Path(mkdtemp(prefix="reconciliation-", dir=root))
+        state.accounting_state_root = str(accounting_root)
+        state.reconciliation_state_root = str(reconciliation_root)
+        previous_portfolio = load_persisted_portfolio_state(checkpoint_root)
+        state.accounting_session = load_accounting_session(
+            accounting_root, require_present=bool(previous_portfolio.positions)
+        )
+        if state.accounting_session is not None:
+            if state.accounting_session.contract.symbol != instrument_id:
+                raise ValueError("SCOPE_HARNESS_ACCOUNTING_INSTRUMENT_MISMATCH")
+            sync_portfolio_shell_from_accounting_v1(state.portfolio, state.accounting_session)
+            (
+                state.position_state,
+                state.existing_position_side,
+                state.position_management_context,
+                state.venue_flat,
+            ) = _position_fields_from_portfolio(state.portfolio, instrument_id)
+        if checkpoint.is_file():
+            atomic_write_text(
+                path=reconciliation_root / PORTFOLIO_STATE_FILENAME,
+                text=checkpoint.read_text(encoding="utf-8"),
+            )
 
     results: list[dict[str, Any]] = []
     digests: list[str] = []
@@ -180,6 +226,14 @@ def run_dynamic_scope_harness_v1(
     final_digest = digests[-1] if digests else ""
     session_stable = len(set(session_ids)) <= 1 and bool(session_ids) and all(session_ids)
     ok = not blockers and session_stable
+    if persist_each_cycle and ok:
+        # Save the original simulator observation for the next segment's
+        # reconciliation. Its observed side is rebuilt from durable accounting.
+        portfolio = _observed_portfolio_truth_from_bridge_state(state, event_ts_unix=ts)
+        atomic_write_text(
+            path=checkpoint,
+            text=json.dumps(portfolio.to_dict()),
+        )
     return ScopeHarnessResultV1(
         ok=ok,
         cycles=results,

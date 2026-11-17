@@ -168,6 +168,7 @@ CURRENT_SCOPE_MARK_ADMISSION_DELTAS = {
 
 # Double Play's bounded close, recovery, POST integrity and 29P assessment sources.
 # Each pair pins the reviewed parent and its exact successor.
+# The full-scope Layer-C change updates three existing exit-policy sources.
 DOUBLE_PLAY_POLICY_DELTAS = {
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
         "5d8847e963b1d158621f497ec33b351eb6c49b48e02f3442954bf8221e44e7af",
@@ -179,7 +180,11 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     ),
     "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": (
         "f49f6fd6befc2552f6fdd3e8b74f46558ac1b8675a2656d3c241a74207691ae4",
-        "d35b5c2eab4dbd51f42b52126861f0965cf652f8637156057ddf69d36719182a",
+        "112075c1a4160cad51525ff2f9bb4e964bb01da0bd18dc67be8a399fc5f23915",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py": (
+        "f4b9f591c3e99038c033a0899111d2bcb203eed76b4aec70b0b6396410d78b99",
+        "f2b88a9b451230617bf9b16222e8f4ed72316f93d6b6e3d476482ded5b7b8750",
     ),
     "src/ops/exit_policy_producer_binding_v1/simulated_accounting_close_v1.py": (
         "c69cc8a4510de49eee30f241d71759fe54138049ba89731f30ca65ef95c8948f",
@@ -191,7 +196,7 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py": (
         "c5f842663435ae1240c79b70bb087afc2e5d208949c6c49bfbb46d4bd3c1a425",
-        "ccb96ea50e65384ca12b740e98d70c4ebeb4c5eb4aa74a4ec1f4112c392be51f",
+        "082c697efc5953d68c11e4217554bc07a4ca8bc15e94a9365daa7edd4629337f",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py": (
         "12b03e787f3edf42d4171e83e477a98f6b13d0354ce4129e8db3f64c31ef94c4",
@@ -303,10 +308,14 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
     ),
 }
 
-OWNER_ADJUDICATION_CONFIG_DELTAS = {
+OWNER_ADJUDICATION_DELTAS = {
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": (
         "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
         "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
+    ),
+    "src/governance/economic_diagnostic_optimization_boundary_v0.py": (
+        "3d1f997b686ef62573e394da72d777661f0f6af6e2bfcaf84a207185d1ba5755",
+        "360d1bd8a0d84127c0624c33110ff5bef6f7d6a38c9ed7456c2e03481872ed1f",
     ),
 }
 
@@ -693,7 +702,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and path not in opt_handoff
                 and G2_ARCHIVE_PROJECTION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and EXECUTION_AUTHORITY_AUDIT_DELTAS.get(path) != (policy["frozen_sha256"], actual)
-                and OWNER_ADJUDICATION_CONFIG_DELTAS.get(path) != (policy["frozen_sha256"], actual)
+                and OWNER_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

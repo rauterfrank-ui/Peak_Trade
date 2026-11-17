@@ -1,7 +1,7 @@
 """Check formatting while retaining exact byte guards on frozen sources.
 
 Every exception must match both the frozen Git object and the current file.
-Exceptions cannot admit edits or extend the protected path set.
+The full-scope successor remains byte-bound and goes through Ruff formatting.
 """
 
 from __future__ import annotations
@@ -51,6 +51,8 @@ PROTECTED = frozenset(
         "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
     }
 )
+FULL_SCOPE_GENERATOR = "src/trading/master_v2/deterministic_scope_event_generator_v1.py"
+FULL_SCOPE_GENERATOR_SHA256 = "9ad4fc09e61e38375c635042c5f8e0fc238e257ee8eb945714553f359b20e81c"
 
 
 def _git(root: Path, *args: str) -> bytes:
@@ -73,6 +75,7 @@ def frozen_exceptions(root: Path) -> list[str]:
     rows = manifest["files"]
     if len(rows) != len(PROTECTED) or {row["path"] for row in rows} != PROTECTED:
         raise ValueError("FROZEN_FORMAT_SCOPE_INVALID")
+    exceptions = []
     for row in rows:
         rel = row["path"]
         path = root / rel
@@ -82,10 +85,16 @@ def frozen_exceptions(root: Path) -> list[str]:
             or not path.is_file()
             or not row.get("reason")
             or hashlib.sha256(original).hexdigest() != row["sha256"]
-            or path.read_bytes() != original
         ):
             raise ValueError("FROZEN_FORMAT_SOURCE_CHANGED:" + rel)
-    return sorted(PROTECTED)
+        current = path.read_bytes()
+        if current == original:
+            exceptions.append(rel)
+        elif rel != FULL_SCOPE_GENERATOR or hashlib.sha256(current).hexdigest() != (
+            FULL_SCOPE_GENERATOR_SHA256
+        ):
+            raise ValueError("FROZEN_FORMAT_SOURCE_CHANGED:" + rel)
+    return sorted(exceptions)
 
 
 def check_format(root: Path, ruff: str) -> int:

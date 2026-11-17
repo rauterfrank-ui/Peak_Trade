@@ -157,13 +157,13 @@ def _historical_counter_side_reference_v1(*, execution, scope):
     if type(magnitude) not in (int, float) or not Decimal(str(magnitude)).is_finite():
         return None
     distances = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(magnitude)
-    if not distances.ok or distances.adverse_exit_distance is None:
+    if not distances.ok or distances.up_distance is None:
         return None
     switch_price = Decimal(str(mark["prices"][-1]))
     reference = derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=switch.target_side,
         reference_price=switch_price,
-        adverse_exit_distance=distances.adverse_exit_distance,
+        adverse_exit_distance=distances.up_distance,
     )
     payload_sha = mark.get("mark_payload_sha256")
     if (
@@ -183,7 +183,7 @@ def _historical_counter_side_reference_v1(*, execution, scope):
         target_side=switch.target_side,
         switch_mark_price=str(switch_price),
         scope_magnitude=str(magnitude),
-        adverse_exit_distance=str(distances.adverse_exit_distance),
+        adverse_exit_distance=str(distances.up_distance),
         counter_side_reference_price=str(reference),
     )
 

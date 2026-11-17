@@ -1106,6 +1106,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             killstate_trigger=str(durable_kill.killstate_trigger or ""),
             rotation_time_exit=rotation_time_exit,
             occupied_scope_mark=occupied_scope_mark,
+            separate_scope_adverse_exit=False,
         )
     )
     root = repo_root or _REPO_ROOT

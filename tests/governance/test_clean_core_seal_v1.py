@@ -77,9 +77,22 @@ def _errors(proc: subprocess.CompletedProcess[str]) -> list[str]:
 
 
 class TestCleanCoreSealCurrentCheckpointV1:
-    def test_manifest_repin_is_bound_to_existing_frozen_source(self) -> None:
+    def test_manifest_repin_is_bound_to_existing_frozen_source(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
         module = _load_verifier()
-        emitted = module.emit_manifest(REPO_ROOT)
+        root = _seed_repo(tmp_path)
+        git = subprocess.check_output
+        for rel in module.FROZEN_PATHS:
+            original = git(["git", "show", module.SEALED_SOURCE_COMMIT + ":" + rel], cwd=REPO_ROOT)
+            (root / rel).write_bytes(original)
+
+        def git_from_source_repo(args, *, cwd, **kwargs):
+            assert cwd == root
+            return git(args, cwd=REPO_ROOT, **kwargs)
+
+        monkeypatch.setattr(module.subprocess, "check_output", git_from_source_repo)
+        emitted = module.emit_manifest(root)
         assert emitted == json.loads(MANIFEST.read_text())
         assert emitted["sealed_source_commit"] == module.SEALED_SOURCE_COMMIT
         replay = next(row for row in emitted["members"] if row["id"] == "SEAL_CORE_16")
