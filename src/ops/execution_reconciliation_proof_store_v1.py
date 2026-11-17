@@ -46,6 +46,7 @@ _SCHEMA = "peaktrade.execution_reconciliation_get_proof.v1"
 CLOSE_GET_PROOF_V1 = "peaktrade.authenticated_close_get_proof.v1"
 CLOSE_GET_PROOF_V2 = "peaktrade.authenticated_close_get_proof.v2"
 OFFLINE_CLOSE_GET_PROOF_V2 = "peaktrade.offline_authenticated_close_get_proof.v2"
+_NET_REVERSAL_GET_PROOF = "peaktrade.authenticated_net_reversal_get_proof.v1"
 
 
 class ExecutionReconciliationProofStoreError(ValueError):
@@ -193,6 +194,50 @@ def publish_authenticated_close_history_v1(*, root, close_proof_digest, entry_pr
     path = root / f"close-history-{checksum}.json"
     _publish(path, _encode({"record": record, "sha256": checksum}) + b"\n")
     return path
+
+
+def publish_authenticated_net_reversal_readback_v1(*, root, binding, reads, bodies):
+    """Commit the original signed GET responses before the corresponding budget revision."""
+    root = require_private_proof_root_v1(root)
+    gets = []
+    for read, body in zip(reads, bodies, strict=True):
+        if sha256(body).hexdigest() != read.body_sha256:
+            raise ExecutionReconciliationProofStoreError("NET_REVERSAL_GET_BODY_UNPROVEN")
+        gets.append({**read.to_reference_v1(), "body": body.decode("utf-8")})
+    record = {
+        "schema": _NET_REVERSAL_GET_PROOF,
+        "venue_host": AUTHORIZED_HOST,
+        "binding": binding,
+        "gets": gets,
+    }
+    checksum = sha256(_encode(record)).hexdigest()
+    path = root / f"net-reversal-{checksum}.json"
+    _publish(path, _encode({"record": record, "sha256": checksum}) + b"\n")
+    return checksum
+
+
+def require_booked_net_reversal_readback_v1(*, root, booking):
+    checksum = booking["settlement_digest"]
+    record, _ = read_private_close_document_v1(
+        root=root,
+        path=Path(root) / f"net-reversal-{checksum}.json",
+        prefix="net-reversal-",
+        schema=_NET_REVERSAL_GET_PROOF,
+    )
+    binding = record["binding"]
+    if record["venue_host"] != AUTHORIZED_HOST or any(
+        binding[key] != booking[key]
+        for key in (
+            "account",
+            "slot_id",
+            "instrument_id",
+            "reservation_id",
+            "envelope_digest",
+            "client_order_id",
+            "settlement_native",
+        )
+    ):
+        raise ExecutionReconciliationProofStoreError("NET_REVERSAL_BOOKED_GET_READBACK_UNPROVEN")
 
 
 def find_authenticated_entry_sources_v1(

@@ -301,6 +301,7 @@ def validate_full_close_execution_source_v1(
 
 
 _OCCUPIED_L10_CLOSE_ADMISSION_PREFIX = "occupied-l10-close:"
+_EXCEPTIONAL_CLOSE_ADMISSION_PREFIX = "occupied-position-exception-close:"
 
 
 @dataclass(frozen=True)
@@ -352,10 +353,51 @@ def occupied_l10_close_from_binding_v1(binding: dict[str, Any]) -> PositionManag
 
 
 @dataclass(frozen=True)
+class PositionManagementExceptionalCloseV1:
+    episode: PositionEpisodeIdentityV1
+    reservation_id: str
+    booking_digest: str
+    policy_digest: str
+    exit_state_digest: str
+    exit_class: str
+    exit_reason: str
+
+    def admission_ref_v1(self) -> str:
+        self.episode.validate_v1()
+        if (
+            self.episode.account_scope.execution_environment != "LIVE"
+            or not self.reservation_id
+            or not self.exit_reason
+            or not (
+                self.exit_class == "safety_exit"
+                or (self.exit_class, self.exit_reason)
+                == ("time_exit", "ROTATION_BETTER_CANDIDATE_AFTER_WAIT")
+            )
+            or any(
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(c not in "0123456789abcdef" for c in value)
+                for value in (self.booking_digest, self.policy_digest, self.exit_state_digest)
+            )
+        ):
+            raise ValueError("EXCEPTIONAL_CLOSE_ADMISSION_INVALID")
+        return _EXCEPTIONAL_CLOSE_ADMISSION_PREFIX + _retained_close_digest_v1(asdict(self))
+
+    @classmethod
+    def from_binding_v1(cls, binding: dict[str, Any]) -> "PositionManagementExceptionalCloseV1":
+        record = dict(binding["exceptional_close"])
+        episode = dict(record["episode"])
+        episode["account_scope"] = PositionEpisodeScopeV1(**episode["account_scope"])
+        record["episode"] = PositionEpisodeIdentityV1(**episode)
+        return cls(**record)
+
+
+@dataclass(frozen=True)
 class PositionManagementExecutionHandoffV1:
     source: PositionManagementCloseIntentHandoffV1
     envelope: FinalOrderEnvelopeV1
     l10_close: PositionManagementL10CloseV1 | None = None
+    exceptional_close: PositionManagementExceptionalCloseV1 | None = None
 
 
 def validates_position_management_envelope_v1(handoff: Any) -> bool:
@@ -373,23 +415,31 @@ def validates_position_management_envelope_v1(handoff: Any) -> bool:
         assert_envelope_unmodified_v1(envelope)
     except FullCoreFinalOrderEnvelopeError:
         return False
-    switch = handoff.l10_close
+    switch, exception = handoff.l10_close, handoff.exceptional_close
     if envelope.admission_ref.startswith(_OCCUPIED_L10_CLOSE_ADMISSION_PREFIX):
-        if not isinstance(switch, PositionManagementL10CloseV1):
+        if not isinstance(switch, PositionManagementL10CloseV1) or exception is not None:
             return False
+        binding = switch
+    elif envelope.admission_ref.startswith(_EXCEPTIONAL_CLOSE_ADMISSION_PREFIX):
+        if not isinstance(exception, PositionManagementExceptionalCloseV1) or switch is not None:
+            return False
+        binding = exception
+    elif switch is not None or exception is not None:
+        return False
+    else:
+        binding = None
+    if binding is not None:
         try:
             if (
-                switch.admission_ref_v1() != envelope.admission_ref
-                or switch.episode.lane_id != receipt.lane_id
-                or switch.episode.instrument_id != receipt.instrument_id
-                or switch.episode.venue_native_id != receipt.venue_native_id
-                or switch.episode.position_side != receipt.position_side
+                binding.admission_ref_v1() != envelope.admission_ref
+                or binding.episode.lane_id != receipt.lane_id
+                or binding.episode.instrument_id != receipt.instrument_id
+                or binding.episode.venue_native_id != receipt.venue_native_id
+                or binding.episode.position_side != receipt.position_side
             ):
                 return False
         except (AttributeError, ValueError):
             return False
-    elif switch is not None:
-        return False
     return (
         receipt.venue_native_id == envelope.instrument_id
         and envelope.reduce_only is True
@@ -432,6 +482,10 @@ def retain_position_management_close_v1(
         binding
     ):
         raise ValueError("RETAINED_CLOSE_SCOPE_PROOF_MISMATCH")
+    if handoff.exceptional_close is not None and (
+        handoff.exceptional_close != PositionManagementExceptionalCloseV1.from_binding_v1(binding)
+    ):
+        raise ValueError("RETAINED_EXCEPTIONAL_CLOSE_PROOF_MISMATCH")
     source = handoff.source
     intent = source.canonical_intent
     record = {
@@ -502,6 +556,11 @@ def restore_retained_position_management_close_v1(
             l10_close=(
                 occupied_l10_close_from_binding_v1(expected_binding)
                 if envelope.admission_ref.startswith(_OCCUPIED_L10_CLOSE_ADMISSION_PREFIX)
+                else None
+            ),
+            exceptional_close=(
+                PositionManagementExceptionalCloseV1.from_binding_v1(expected_binding)
+                if envelope.admission_ref.startswith(_EXCEPTIONAL_CLOSE_ADMISSION_PREFIX)
                 else None
             ),
         )

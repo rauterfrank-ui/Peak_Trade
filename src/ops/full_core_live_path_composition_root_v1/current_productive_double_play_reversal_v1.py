@@ -7,6 +7,7 @@ from hashlib import sha256
 import json
 import math
 from pathlib import Path
+import subprocess
 from typing import TYPE_CHECKING
 
 from src.execution.position_delta import signed_position_delta
@@ -27,6 +28,7 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1
     read_occupied_scope_mark_snapshot_v1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalBudgetError,
     apply_capital_context_facts_v1,
     capital_context_facts_v1,
 )
@@ -330,14 +332,24 @@ def assess_direct_double_play_reversal_v1(
         if live
         else owner.latest_simulated_direct_reversal_v1(lane, reservation_id=hold.reservation_id)
     )
+    live_booking = owner.read_authenticated_net_reversal_v1(hold.reservation_id) if live else None
     previous_plan = DirectDoublePlayReversalV1.from_dict_v1(previous["plan"]) if previous else None
     if (
         hold.instrument_id != bound.instrument_id
         or hold.venue_native_id != bound.venue_native_id
         or (
             previous_plan is None
+            and live_booking is None
             and (
                 not hold.canonical_quantity or Decimal(hold.canonical_quantity) != quantity.quantity
+            )
+        )
+        or (
+            live_booking is not None
+            and (
+                live_booking["envelope_digest"] != identity.episode_id
+                or live_booking["selection_digest"] != bound.selection_integrity_digest
+                or Decimal(live_booking["position_contracts"]) != direction * quantity.quantity
             )
         )
         or (
@@ -918,9 +930,11 @@ class AuthenticatedNetReversalReadbackV1:
     reservation_id: str
     transport_phase: str
     outcome: str
+    booking_digest: str | None = None
+    reconciliation_blocker: str | None = None
 
 
-def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host):
+def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host, proof_root=None):
     """Recover the original unresolved attempt before any startup reconciliation."""
     from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
         POST_OWNER_GO,
@@ -948,10 +962,21 @@ def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host):
         reversal.episode.account_scope
         != PositionEpisodeScopeV1(budget_host.expected_account_identity, "LIVE")
         or mandate["owner_go_token"] != POST_OWNER_GO
-        or mandate["record"]["baseline_origin_main_sha"] != budget_host.repository_sha
         or not mandate["record"].get(SHARED_POST_OWNER_CLAIM_FIELD)
     ):
         raise ValueError("NET_REVERSAL_ORIGINAL_MANDATE_UNPROVEN")
+    original_sha = mandate["record"]["baseline_origin_main_sha"]
+    if (
+        original_sha != budget_host.repository_sha
+        and subprocess.run(
+            ["git", "merge-base", "--is-ancestor", original_sha, budget_host.repository_sha],
+            cwd=Path(__file__).resolve().parents[3],
+            capture_output=True,
+            check=False,
+        ).returncode
+        != 0
+    ):
+        raise ValueError("NET_REVERSAL_ORIGINAL_MANDATE_REVISION_UNPROVEN")
     record = send["record"]
     phase, outcome = "UNCLAIMED", "SUBMIT_NOT_PROVEN"
     if record is not None:
@@ -972,19 +997,151 @@ def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host):
     owner = budget_host.recover_owner_for_occupied_execution_v1(
         {slot.lane_id: bound}, operation="NET_REVERSAL_RECOVERY"
     )
-    _inspect_original_reversal_hold_v1(owner, bound, reversal)
     link = owner.execution_links_v1(active_only=True).get(reversal.old_reservation_id)
-    if (
-        link is None
-        or link["reconciliation"]["identity_digest"] != episode_id
-        or link["reconciliation"]["reservation_released"] is not False
-    ):
+    if link is None or link["reconciliation"]["reservation_released"] is not False:
         raise ValueError("NET_REVERSAL_ORIGINAL_HOLD_UNPROVEN")
-    return AuthenticatedNetReversalReadbackV1(
+    result = AuthenticatedNetReversalReadbackV1(
         episode_id,
         envelope.envelope_digest,
         envelope.client_order_id,
         reversal.old_reservation_id,
         phase,
         outcome,
+    )
+    booking = owner.read_authenticated_net_reversal_v1(
+        reversal.old_reservation_id, envelope_digest=envelope.envelope_digest
+    )
+    if booking is not None:
+        if phase != "MAY_HAVE_SENT" or booking["previous_episode_id"] != episode_id:
+            raise ValueError("NET_REVERSAL_BOOKED_ATTEMPT_MISMATCH")
+        if proof_root is not None:
+            from src.ops.execution_reconciliation_proof_store_v1 import (
+                require_booked_net_reversal_readback_v1,
+            )
+
+            require_booked_net_reversal_readback_v1(root=proof_root, booking=booking)
+        return replace(result, booking_digest=booking["booking_digest"])
+    previous = owner.read_authenticated_net_reversal_v1(reversal.old_reservation_id)
+    expected_episode = (
+        previous["envelope_digest"]
+        if previous is not None
+        else link["reconciliation"]["identity_digest"]
+    )
+    if expected_episode != episode_id:
+        raise ValueError("NET_REVERSAL_ORIGINAL_HOLD_UNPROVEN")
+    _inspect_original_reversal_hold_v1(owner, bound, reversal)
+    if (
+        phase != "MAY_HAVE_SENT"
+        or proof_root is None
+        or budget_host.reconciliation_transport is None
+    ):
+        return result
+    try:
+        booking = _reconcile_original_net_reversal_v1(
+            host=budget_host,
+            proof_root=proof_root,
+            lane_pair=lane_pair,
+            scope=scope,
+            plan=reversal,
+            envelope=envelope,
+            record=record,
+            previous=previous,
+            submit_root=root,
+        )
+    except PortfolioCapitalBudgetError:
+        raise
+    except (ValueError, OSError, KeyError, TypeError, ArithmeticError) as exc:
+        return replace(result, reconciliation_blocker=str(exc))
+    return replace(result, booking_digest=booking["booking_digest"])
+
+
+def _reconcile_original_net_reversal_v1(
+    *, host, proof_root, lane_pair, scope, plan, envelope, record, previous, submit_root
+):
+    from src.ops.execution_reconciliation_proof_store_v1 import (
+        find_authenticated_entry_sources_v1,
+        publish_authenticated_net_reversal_readback_v1,
+    )
+
+    from .current_productive_net_reversal_reconciliation_v1 import (
+        collect_authenticated_net_reversal_fill_v1,
+        collect_reversal_settlement_v1,
+    )
+    from .current_productive_l10_close_reconciliation_v1 import _utc_ms
+    from .external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from .productive_read_only_get_transport_v1 import FullCoreProductiveReadOnlyGetError
+
+    if previous is None:
+        candidates = {}
+        raw_digest = plan.position_snapshot_digest
+        for candidate in find_authenticated_entry_sources_v1(
+            root=proof_root,
+            budget_owner_root=host.root / "owner",
+            account=host.account,
+            reservation_id=plan.old_reservation_id,
+            episode_id=plan.episode.episode_id,
+        ):
+            payload = candidate.snapshot.positions_observation["response"]
+            canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+            if sha256(canonical.encode()).hexdigest() == raw_digest:
+                (position,) = payload["data"]
+                candidates[canonical] = position
+        if len(candidates) != 1:
+            raise ValueError("NET_REVERSAL_ORIGINAL_POSITION_EVIDENCE_UNPROVEN")
+        old_position = next(iter(candidates.values()))
+        previously_booked_fee = Decimal(0)
+    else:
+        old_position = {
+            "posId": previous["position_id"],
+            "cTime": previous["position_created_ms"],
+            "uTime": previous["position_updated_ms"],
+            "fee": previous["position_fee"],
+            "ccy": previous["settlement_currency"],
+            "instType": "SWAP" if previous["native_id"].endswith("-SWAP") else "FUTURES",
+        }
+        previously_booked_fee = Decimal(previous["position_fee"])
+    try:
+        source, fill, reads, bodies = collect_authenticated_net_reversal_fill_v1(
+            transport=host.reconciliation_transport,
+            clock=host.clock,
+            plan=plan,
+            envelope=envelope,
+            record=record,
+        )
+        native_net, history_read, history_body = collect_reversal_settlement_v1(
+            source=source,
+            fill=fill,
+            plan=plan,
+            envelope=envelope,
+            old_position=old_position,
+            socket_ms=_utc_ms(record["transport_attempt"]["socket_boundary_at_utc"]),
+            previously_booked_fee=previously_booked_fee,
+        )
+    except FullCoreProductiveReadOnlyGetError as exc:
+        raise ValueError(str(exc)) from exc
+    if read_occupied_scope_mark_snapshot_v1(Path(lane_pair[0].lane_state_root)) != scope:
+        raise ValueError("NET_REVERSAL_ORIGINAL_SCOPE_CHANGED")
+    if load_external_effect_durable_consume_v1(store_root=submit_root)["record"] != record:
+        raise ValueError("NET_REVERSAL_ORIGINAL_SUBMIT_CHANGED")
+    digest = publish_authenticated_net_reversal_readback_v1(
+        root=proof_root,
+        binding={
+            "account": plan.episode.account_scope.account_identity,
+            "slot_id": plan.episode.lane_id,
+            "instrument_id": plan.episode.instrument_id,
+            "reservation_id": plan.old_reservation_id,
+            "envelope_digest": envelope.envelope_digest,
+            "client_order_id": envelope.client_order_id,
+            "claim_id": record["transport_attempt"]["claim_id"],
+            "plan_digest": plan.digest_v1(),
+            "fill_evidence_digest": fill.evidence_digest,
+            "settlement_native": str(native_net),
+        },
+        reads=(*reads, history_read),
+        bodies=(*bodies, history_body),
+    )
+    return host.owner.record_authenticated_net_reversal_v1(
+        plan=plan, envelope=envelope, fill=fill, native_net=native_net, settlement_digest=digest
     )

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import time
 from decimal import Decimal
 from pathlib import Path
@@ -46,6 +48,48 @@ from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
 _MV2_RECONCILED = "reconciled"
 _MV2_RECONCILIATION_REQUIRED = "reconciliation_required"
 _MV2_UNKNOWN = "unknown"
+
+
+def _apply_booked_net_reversal_v1(
+    persisted, observed, *, root, session_id, repository_sha, request
+):
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+
+    context, proof = request
+    if type(context) is not HostBudgetRecoveryContextV1:
+        raise ValueError("NET_REVERSAL_PORTFOLIO_ORIGINAL_HOST_REQUIRED")
+    host = context.host
+    if (
+        root.resolve() != host.root / "reconciliation"
+        or session_id != host.session_id
+        or repository_sha != host.repository_sha
+        or observed != context.observed
+    ):
+        raise ValueError("NET_REVERSAL_PORTFOLIO_SCOPE_MISMATCH")
+    booking, _ = host.owner.read_current_net_reversal_obligation_v1(
+        proof.reservation_id, revision_ref=proof.revision_ref
+    )
+    evidence = context.inspect_current_authenticated_entry_v1(
+        lane_id=booking["slot_id"], proof=proof
+    )
+    if evidence["reconciliation"].get("net_reversal_booking_digest") != booking["booking_digest"]:
+        raise ValueError("NET_REVERSAL_PORTFOLIO_BOOKING_UNPROVEN")
+    instrument = booking["instrument_id"]
+    previous = Decimal(booking["current_contracts"])
+    target = Decimal(booking["position_contracts"])
+    old_positions = tuple((p.instrument_id, p.signed_quantity) for p in persisted.positions)
+    new_positions = tuple((p.instrument_id, p.signed_quantity) for p in observed.positions)
+    if new_positions != ((instrument, target),):
+        raise ValueError("NET_REVERSAL_PORTFOLIO_TARGET_UNPROVEN")
+    if old_positions == new_positions:
+        return persisted, {}
+    if old_positions != ((instrument, previous),) or any(
+        (persisted.missing, persisted.duplicate, persisted.writer_conflict)
+    ):
+        raise ValueError("NET_REVERSAL_PORTFOLIO_PARENT_UNPROVEN")
+    return replace(persisted, positions=observed.positions), {
+        "authenticated_net_reversal_booking_digest": booking["booking_digest"],
+    }
 
 
 def _apply_mutation_plan(
@@ -100,6 +144,7 @@ def run_productive_reconciliation_startup_gate_v1(
     simulate_crash_after_persist_before_verify: bool = False,
     inject_conflicting_writer: bool = False,
     bounded_reconciliation_scope=None,
+    authenticated_net_reversal=None,
 ) -> ProductiveReconciliationGateResultV1:
     """Session-start reconciliation gate. Alpha only on MATCH or verified recovery."""
     wall = float(now_unix if now_unix is not None else time.time())
@@ -172,8 +217,19 @@ def run_productive_reconciliation_startup_gate_v1(
 
     try:
         persisted = load_persisted_portfolio_state(root, require_present=require_persisted_present)
+        comparison = persisted
+        applied: dict = {}
+        if authenticated_net_reversal is not None:
+            comparison, applied = _apply_booked_net_reversal_v1(
+                persisted,
+                observed,
+                root=root,
+                session_id=session_id,
+                repository_sha=repository_sha,
+                request=authenticated_net_reversal,
+            )
         classification, plan, reasons = classify_productive_reconciliation_v1(
-            persisted=persisted,
+            persisted=comparison,
             observed=observed,
             now_unix=wall,
             bounded_reconciliation_scope=bounded_reconciliation_scope,
@@ -182,7 +238,6 @@ def run_productive_reconciliation_startup_gate_v1(
         observed_digest = observed.digest()
         recovery_attempted = False
         recovery_verified = False
-        applied: dict = {}
         repaired_positions: tuple[PositionTruthV1, ...] = persisted.positions
         post_snapshot = persisted
         verification: dict = {"ok": False, "skipped": True}

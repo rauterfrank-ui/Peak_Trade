@@ -209,6 +209,8 @@ def authenticated_host(tmp_path, monkeypatch, request):
         "occupied-mark-direct-funded",
         "occupied-mark-direct-funded-timeout",
         "occupied-mark-direct-funded-revoked",
+        "occupied-mark-direct-funded-booked",
+        "occupied-mark-direct-funded-exception-close",
         "polled-mark-direct-funded",
         "occupied-mark-direct-stale-capital",
     }
@@ -219,7 +221,12 @@ def authenticated_host(tmp_path, monkeypatch, request):
                 return PortfolioBudgetHostV1(
                     root=(
                         root / "private" / "portfolio_budget_host_v1"
-                        if fault == "occupied-mark-direct-funded-timeout"
+                        if fault
+                        in {
+                            "occupied-mark-direct-funded-timeout",
+                            "occupied-mark-direct-funded-booked",
+                            "occupied-mark-direct-funded-exception-close",
+                        }
                         else root / "stable-host"
                     ),
                     private_rest_fetch=fetch,
@@ -1878,6 +1885,8 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("occupied-mark-direct-funded", None),
         ("occupied-mark-direct-funded-timeout", None),
         ("occupied-mark-direct-funded-revoked", None),
+        ("occupied-mark-direct-funded-booked", None),
+        ("occupied-mark-direct-funded-exception-close", None),
         ("polled-mark-direct-funded", None),
         ("occupied-mark-direct-stale-capital", None),
         ("occupied-mark", None),
@@ -1946,6 +1955,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "occupied-mark-direct-funded",
         "occupied-mark-direct-funded-timeout",
         "occupied-mark-direct-funded-revoked",
+        "occupied-mark-direct-funded-booked",
+        "occupied-mark-direct-funded-exception-close",
         "polled-mark-direct-funded",
         "occupied-mark-direct-stale-capital",
     }
@@ -1984,6 +1995,11 @@ def test_owned_entry_proof_reaches_original_position_episode(
     }
     if with_history:
         position.update(posId="8923", cTime=str(filled_at), ccy="USDT")
+    if fault in {
+        "occupied-mark-direct-funded-booked",
+        "occupied-mark-direct-funded-exception-close",
+    }:
+        position.update(posId="8923", cTime=str(filled_at), ccy="USDT", fee="-0.03")
     host.fetch = _fetch(uid=scope.account, positions=(position,))
 
     def entry_body(path, params):
@@ -2245,7 +2261,7 @@ def _assert_direct_reversal_order_stops_at_original_post_admission(
 
 
 def _assert_direct_reversal_dispatch(
-    tmp_path, envelope, context, proof_root, lane_pair, entry, *, revoked
+    tmp_path, envelope, context, proof_root, lane_pair, entry, *, revoked, after_timeout=None
 ):
     from src.ops.full_core_live_path_composition_root_v1 import (
         current_productive_double_play_reversal_v1 as reversal,
@@ -2362,6 +2378,9 @@ def _assert_direct_reversal_dispatch(
         one_shot.execute_authenticated_net_reversal_post_v1(**args, opener_factory=forbidden)
 
     host.close()
+    if after_timeout is not None:
+        after_timeout(consumed["record"], root)
+        return
     before_restart = {
         path: path.read_bytes()
         for path in (
@@ -2596,7 +2615,13 @@ def _assert_authenticated_occupied_mark_close(
         def check_pre_dispatch(result, ledger):
             assert result.position_management_execution_handoff is None
             assert result.final_order_envelope is None
-            if funding_case not in {"-funded", "-funded-timeout", "-funded-revoked"}:
+            if funding_case not in {
+                "-funded",
+                "-funded-timeout",
+                "-funded-revoked",
+                "-funded-booked",
+                "-funded-exception-close",
+            }:
                 assert ledger["reason_code"] == (
                     "DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED"
                     if funding_case == "-stale-capital"
@@ -2631,7 +2656,33 @@ def _assert_authenticated_occupied_mark_close(
             assert Decimal(body["sz"]) == abs(
                 reversal.target_contracts - reversal.current_contracts
             )
-            if funding_case in {"-funded-timeout", "-funded-revoked"}:
+            if funding_case in {
+                "-funded-timeout",
+                "-funded-revoked",
+                "-funded-booked",
+                "-funded-exception-close",
+            }:
+
+                def after_timeout(record, submit_root):
+                    from tests.ops.test_authenticated_net_reversal_booking_v1 import (
+                        assert_original_net_reversal_booking_v1,
+                    )
+
+                    assert_original_net_reversal_booking_v1(
+                        tmp_path=tmp_path,
+                        monkeypatch=monkeypatch,
+                        bound=bound,
+                        proof_root=proof_root,
+                        reversal=reversal,
+                        envelope=envelope,
+                        record=record,
+                        submit_root=submit_root,
+                        repository_sha=context.host.repository_sha,
+                        closes=closes,
+                        occupied=occupied,
+                        exceptional_close=funding_case == "-funded-exception-close",
+                    )
+
                 _assert_direct_reversal_dispatch(
                     tmp_path,
                     envelope,
@@ -2640,6 +2691,9 @@ def _assert_authenticated_occupied_mark_close(
                     pairs["LANE_1"],
                     inputs["authenticated_entry"],
                     revoked=funding_case == "-funded-revoked",
+                    after_timeout=after_timeout
+                    if funding_case in {"-funded-booked", "-funded-exception-close"}
+                    else None,
                 )
             elif not polled:
                 _assert_direct_reversal_order_stops_at_original_post_admission(

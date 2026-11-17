@@ -307,6 +307,52 @@ AUTHENTICATED_NET_REVERSAL_SEND_DELTAS = {
 }
 
 
+# Exact successor for the authenticated readback and the original-store booking.
+NET_REVERSAL_GET_RECONCILIATION_SOURCE = "src/ops/full_core_live_path_composition_root_v1/current_productive_net_reversal_reconciliation_v1.py"
+AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS = {
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": (
+        "7d22a0975b9ca9751ced61e29d13422e9c3100b170c1d3d32d694aa54b338334",
+        "565dd0427cf333336d7ccd18384320d496bfbba57c61b2d8fd39de8a0eabc8a0",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": (
+        "c3b4874fdd149d97bcf7f6c5479017615c82916a4328e38571216fe0e5b0a5ea",
+        "0625a210cd524e293c99f38bb9a4f5c1cf60da9406710249198ff71545bbbb1a",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_position_management_quantity_handoff_v1.py": (
+        "23f6064aec921600cb2772c9ad2ffcb8bbd93117c3473098434c78a03975e223",
+        "1e811356c1d81f21ccc0b28bdac376b293e8d98c95dd43adb2dd04d6f93c174e",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_position_close_v1.py": (
+        "619e7f9a5a964f3a0a9b1424ed735175f6df78fa11a1112468a42cf0de606665",
+        "960ddb132ccf69d61b75e4b4f0c45a9f58e11e369de201f4b604b9e4199fb64e",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "d8a09b2009cb6ddc42e9e51db0db57074b1f84170a90084332a5e7ce4968b655",
+        "d2bec19b8d496e26885dad5a40b0888572bbba91e8bda80f25880dd8543b34a7",
+    ),
+    DIRECT_REVERSAL_SOURCE: (
+        "411e4ed47500d9d0606ec2e693de90fb62a2c80b560503d602849a3ae25853e5",
+        "93edf5489c9ba630d28754901eb7b71b77c753153ffe55b2004565a04fe635f1",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
+        "8920456e43c87f2c0c8264aa56d4045aab7171c7da2cf47f1203cef7583fb46d",
+        "fd1cf078fc86bbb166d913ddae7341b9ec78a23dc8da4fe47233426a62a3b9e9",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": (
+        "bc771b98c527a599c3b11d6f1c5283cefa58dac7c92ba3dca8fe6d823dc9c5ba",
+        "6e7f41ab30d61b58e6a0916a2c032840319db9d5cebfe3b2f1d83dfd47dca8ab",
+    ),
+    NET_REVERSAL_GET_RECONCILIATION_SOURCE: (
+        None,
+        "9cb8cce89fe4784ed0ced1965c79ead8f10cd8991d09e80efbbce62ed39959ff",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/live_net_reversal_booking_v1.py": (
+        None,
+        "973a0d63554b974f5691a187daca700da66e9aeb35cd72309dc74de410c68d90",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
@@ -437,6 +483,7 @@ def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> 
 def _uses_double_play_policy_bundle(root: Path) -> bool:
     expected = {path: after for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items()}
     direct = (root / DIRECT_REVERSAL_SOURCE).is_file()
+    booked = (root / NET_REVERSAL_GET_RECONCILIATION_SOURCE).is_file()
     if direct:
         expected[DIRECT_REVERSAL_SOURCE] = None
         for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
@@ -450,7 +497,7 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in ROTATION_SLOT_CAPITAL_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, ROTATION_SLOT_CAPITAL_DELTAS)
-        if any(
+        if booked or any(
             hashlib.sha256((root / path).read_bytes()).hexdigest() == after
             for path, (_, after) in AUTHENTICATED_NET_REVERSAL_DELTAS.items()
             if (root / path).is_file()
@@ -458,12 +505,18 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in AUTHENTICATED_NET_REVERSAL_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
-        if any(
+        if booked or any(
             hashlib.sha256((root / path).read_bytes()).hexdigest() == after
             for path, (_, after) in AUTHENTICATED_NET_REVERSAL_SEND_DELTAS.items()
         ):
             expected = _exact_double_play_successor(
                 expected, AUTHENTICATED_NET_REVERSAL_SEND_DELTAS
+            )
+        if booked:
+            for path, (before, _) in AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(
+                expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
     actual = {}
     for path in expected:
@@ -488,22 +541,27 @@ def _exact_double_play_successor(parent, deltas):
 
 
 def _double_play_bundle_successor(root, parent):
+    booked = (root / NET_REVERSAL_GET_RECONCILIATION_SOURCE).is_file()
     expected = _exact_double_play_successor(parent, DOUBLE_PLAY_POLICY_DELTAS)
     if (root / DIRECT_REVERSAL_SOURCE).is_file():
         expected = _exact_double_play_successor(expected, DIRECT_REVERSAL_POLICY_DELTAS)
-        if any(
+        if booked or any(
             hashlib.sha256((root / path).read_bytes()).hexdigest() == after
             for path, (_, after) in AUTHENTICATED_NET_REVERSAL_DELTAS.items()
             if path in expected
         ):
             expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
-        if any(
+        if booked or any(
             hashlib.sha256((root / path).read_bytes()).hexdigest() == after
             for path, (_, after) in AUTHENTICATED_NET_REVERSAL_SEND_DELTAS.items()
             if path in expected
         ):
             expected = _exact_double_play_successor(
                 expected, AUTHENTICATED_NET_REVERSAL_SEND_DELTAS
+            )
+        if booked:
+            expected = _exact_double_play_successor(
+                expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
     return expected
 
