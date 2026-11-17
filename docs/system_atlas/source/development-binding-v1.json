@@ -174,7 +174,7 @@
     {
       "path": "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
       "before_sha256": "d650d77e6e198c87397a4bec054d802c3f0dd380d049d1634ccc2b9432946a5a",
-      "sha256": "abe2b706dc8c7a0a8a82bd83fe21688ebee2ebff1860d84094a45fa7dcb30a3d"
+      "sha256": "ce9ff85f4eedd75d0ea2e752ec49290eb934be1f06cb6fe6cea86f223e29262d"
     },
     {
       "path": "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
@@ -1359,7 +1359,7 @@
     {
       "path": "docs/system_atlas/source/documentation-cleanup.json",
       "before_sha256": "0c25c1b261d874d84bc1fb71895b5b30ed37bcd326fe7c43b098c324bfa9c64d",
-      "sha256": "a9f66b8926e9a418eebce5085f43876c1422d23e65b0f51fd8cce99307b8868b"
+      "sha256": "8ef4320a82ba402880c452a55708f0a0b229da42a41df13ebbe70170bc712b6c"
     },
     {
       "path": "docs/system_atlas/source/policy-inventory.json",
