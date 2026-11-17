@@ -597,9 +597,13 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             or net != close_booking.slot_booked_net_usdc
         ):
             raise PortfolioCapitalBudgetError("SLOT_CAPITAL_LATEST_BOOKING_MISMATCH")
-        if close_booking is None:
-            for reversal in self._simulated_direct_reversal_bookings.get(slot_id, ()):
-                net += Decimal(reversal["net_result_usdc"])
+        for reversal in self._simulated_direct_reversal_bookings.get(slot_id, ()):
+            net += Decimal(reversal["net_result_usdc"])
+            if latest is None or (
+                "valuation_epoch" not in latest
+                or datetime.fromisoformat(reversal["plan"]["decision_epoch"].replace("Z", "+00:00"))
+                > datetime.fromisoformat(latest["valuation_epoch"].replace("Z", "+00:00"))
+            ):
                 latest = reversal
         return SlotCapitalBasisV1(
             slot_id=slot_id,
@@ -660,8 +664,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 basis is None
                 or not self._admitted
                 or (
-                    basis.net_basis_usdc != plan.slot_capital_basis_usdc
-                    or basis.allocation_digest != plan.funding_digest
+                    basis.allocation_digest != plan.funding_digest
+                    or self._direct_reversal_basis_locked_v1(
+                        slot, plan.old_reservation_id, plan.decision_epoch
+                    )
+                    != plan.slot_capital_basis_usdc
                 )
             ):
                 raise ValueError("DIRECT_REVERSAL_SLOT_BASIS_CHANGED")
@@ -681,10 +688,68 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             accounting.__dict__.update(updated.__dict__)
             return outcome
 
-    def latest_simulated_direct_reversal_v1(self, slot_id: str) -> dict | None:
+    def _direct_reversal_basis_locked_v1(self, slot_id, reservation_id, decision_epoch):
+        from .slot_loss_budget_v1 import direct_reversal_instrument_basis_v1
+
+        return direct_reversal_instrument_basis_v1(
+            self,
+            slot_id,
+            reservation_id,
+            decision_epoch,
+            self._simulated_direct_reversal_bookings.get(slot_id, ()),
+        )
+
+    def direct_reversal_basis_v1(self, slot_id, reservation_id, decision_epoch):
+        with self._lock:
+            return self._direct_reversal_basis_locked_v1(slot_id, reservation_id, decision_epoch)
+
+    def latest_simulated_direct_reversal_v1(
+        self, slot_id: str, *, reservation_id=None
+    ) -> dict | None:
         with self._lock:
             records = self._simulated_direct_reversal_bookings.get(slot_id)
-            return json.loads(json.dumps(records[-1])) if records else None
+            if (
+                not records
+                or reservation_id is not None
+                and records[-1]["plan"]["old_reservation_id"] != reservation_id
+            ):
+                return None
+            return json.loads(json.dumps(records[-1]))
+
+    def _entry_capital_limits_locked_v1(self, slot_id):
+        policy = self._entry_budget_policy
+        entry = policy.per_entry_notional_limit
+        slot = policy.per_slot_reserved_notional_limit
+        aggregate = policy.aggregate_reserved_notional_limit
+        if (
+            self._slot_capital_allocation is None
+            or self._slot_capital_allocation["funding"] is None
+        ):
+            return entry, slot, aggregate
+        basis = self._slot_capital_basis_locked_v1(slot_id, close_booking=None)
+        opening = min(entry, basis.initial_usdc, max(Decimal(0), basis.net_basis_usdc))
+        slot = opening if slot is None else min(slot, opening)
+        aggregate = sum(
+            (
+                max(
+                    Decimal(0),
+                    self._slot_capital_basis_locked_v1(other, close_booking=None).net_basis_usdc,
+                )
+                for other in self._lane_bindings
+            ),
+            Decimal(0),
+        )
+        return opening, slot, aggregate
+
+    def funded_slot_entry_limits_v1(self, slot_id):
+        with self._lock:
+            if (
+                self._slot_capital_allocation is None
+                or self._slot_capital_allocation["funding"] is None
+            ):
+                return None
+            opening, _, aggregate = self._entry_capital_limits_locked_v1(str(slot_id))
+            return opening, aggregate
 
     def reservation_monetary_source_v1(self, reservation_id):
         """Read the original normalization sources; never upgrade a legacy hold."""
@@ -2932,14 +2997,15 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         loss_reason = self._test_slot_loss_entry_blocker_locked(slot_id)
         if loss_reason is not None:
             return loss_reason
-        if amount > policy.per_entry_notional_limit:
+        try:
+            entry_limit, slot_limit, aggregate_limit = self._entry_capital_limits_locked_v1(slot_id)
+        except PortfolioCapitalBudgetError as exc:
+            return str(exc)
+        if amount > entry_limit:
             return "ENTRY_BUDGET_PER_ENTRY_LIMIT_EXCEEDED"
-        if (
-            policy.per_slot_reserved_notional_limit is not None
-            and self._active_sum_locked(slot_id) + amount > policy.per_slot_reserved_notional_limit
-        ):
+        if slot_limit is not None and self._active_sum_locked(slot_id) + amount > slot_limit:
             return "ENTRY_BUDGET_SLOT_LIMIT_EXCEEDED"
-        if self._active_sum_locked() + amount > policy.aggregate_reserved_notional_limit:
+        if self._active_sum_locked() + amount > aggregate_limit:
             return "ENTRY_BUDGET_AGGREGATE_LIMIT_EXCEEDED"
         return None
 
@@ -3340,9 +3406,18 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 self._restore_slot_capital_allocation_locked(payload["slot_capital_allocation"])
             from .slot_loss_budget_v1 import restore_direct_reversal_bookings_v1, restore_state
 
+            direct_bookings = payload.get("simulated_direct_reversal_bookings", {})
+            if not isinstance(direct_bookings, dict) or any(
+                not isinstance(series, list)
+                or not series
+                or any(not isinstance(row, dict) for row in series)
+                for series in direct_bookings.values()
+            ):
+                raise ValueError("DIRECT_REVERSAL_BOOKINGS_SCOPE_INVALID")
+            self._simulated_direct_reversal_bookings = direct_bookings
             self._slot_test_economics = restore_state(self, payload.get("test_slot_economics"))
             self._simulated_direct_reversal_bookings = restore_direct_reversal_bookings_v1(
-                self, payload.get("simulated_direct_reversal_bookings", {})
+                self, direct_bookings
             )
             from .open_slot_cost_renewal_v1 import restore_reserves_v1
 
@@ -3502,15 +3577,16 @@ def capital_context_facts_v1(
                 if reason is not None:
                     raise PortfolioCapitalBudgetError(reason)
                 facts["slot_remaining_loss_allowance"] = remaining_loss(owner, slot)
+            entry_limit, slot_limit, aggregate_limit = owner._entry_capital_limits_locked_v1(slot)
             remaining = (
-                policy.per_slot_reserved_notional_limit - owner._active_sum_locked(slot)
-                if policy.per_slot_reserved_notional_limit is not None
-                else policy.aggregate_reserved_notional_limit - state.active_reservation_sum
+                slot_limit - owner._active_sum_locked(slot)
+                if slot_limit is not None
+                else aggregate_limit - state.active_reservation_sum
             )
             facts.update(
-                entry_notional_ceiling=policy.per_entry_notional_limit,
+                entry_notional_ceiling=entry_limit,
                 slot_remaining_notional=max(remaining, Decimal("0")),
-                aggregate_notional_ceiling=policy.aggregate_reserved_notional_limit,
+                aggregate_notional_ceiling=aggregate_limit,
             )
         return facts
 

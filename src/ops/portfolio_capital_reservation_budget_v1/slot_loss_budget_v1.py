@@ -221,6 +221,16 @@ def build_record(owner, *, reservation_id, source, close_envelope, l10_scope=Non
             account_identity=owner._account_identity,
             canonical_id=bound["instrument_id"],
             native_id=bound["venue_native_id"],
+            direct_reversal=next(
+                (
+                    item
+                    for item in reversed(
+                        owner._simulated_direct_reversal_bookings.get(str(record.slot_id), ())
+                    )
+                    if item["plan"]["old_reservation_id"] == reservation_id
+                ),
+                None,
+            ),
         )
     except (
         OSError,
@@ -348,6 +358,22 @@ def record_closed_locked(owner, request):
     return True, _net_booking(result, net)
 
 
+def direct_reversal_instrument_basis_v1(owner, slot, reservation_id, decision_epoch, series):
+    """Read the capital of the current instrument while keeping prior PnL on the slot."""
+    last = series[-1] if series else None
+    if last is not None and last["plan"]["old_reservation_id"] == reservation_id:
+        return Decimal(last["plan"]["slot_capital_basis_usdc"]) + Decimal(last["net_result_usdc"])
+    initial = Decimal(owner._slot_capital_allocation["declaration"]["initial_usdc_by_slot"][slot])
+    decision = datetime.fromisoformat(decision_epoch.replace("Z", "+00:00"))
+    earlier = [
+        close
+        for close in owner._slot_test_economics[slot]["records"]
+        if datetime.fromisoformat(close["valuation_epoch"].replace("Z", "+00:00")) <= decision
+    ]
+    settled = sum((Decimal(row["net_result_usdc"]) for row in (*earlier, *series)), Decimal(0))
+    return min(initial, max(Decimal(0), initial + settled))
+
+
 def build_direct_reversal_booking_v1(owner, plan, ledger, before, fill, *, previous):
     """Rebuild the settled result from the exact original fill and checkpoint."""
     from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
@@ -372,7 +398,7 @@ def build_direct_reversal_booking_v1(owner, plan, ledger, before, fill, *, previ
         or fill.fill_id in before["fill_order"]
     ):
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_BOOKING_SOURCE_MISMATCH")
-    if previous is not None:
+    if previous is not None and previous["plan"]["old_reservation_id"] == rid:
         ids = previous["after_fill_ids"]
         if (
             previous["plan"]["selection_digest"] != plan.selection_digest
@@ -384,8 +410,15 @@ def build_direct_reversal_booking_v1(owner, plan, ledger, before, fill, *, previ
             )
         ):
             raise ValueError("DIRECT_REVERSAL_SETTLEMENT_LINEAGE_MISMATCH")
-    elif owner._slot_test_economics[episode.lane_id]["records"]:
-        raise ValueError("DIRECT_REVERSAL_SETTLEMENT_BASELINE_REQUIRED")
+    else:
+        previous = None
+        envelope = owner._execution_links.get(rid, {}).get("envelope", {})
+        digest_id = envelope.get("envelope_digest")
+        if digest_id is None or before["fill_order"] not in (
+            ["original-plan:" + digest_id],
+            ["next-original-plan:" + digest_id],
+        ):
+            raise ValueError("DIRECT_REVERSAL_SETTLEMENT_BASELINE_REQUIRED")
     accounting = ProductiveFuturesAccountingSessionV1.from_durable_dict(before)
     outcome = plan.apply_simulated_fill_v1(ledger=ledger, accounting=accounting, fill=fill)
     if outcome.idempotent_replay:
@@ -423,9 +456,7 @@ def restore_direct_reversal_bookings_v1(owner, stored):
         raise ValueError("DIRECT_REVERSAL_BOOKINGS_SCOPE_INVALID")
     seen = set()
     for slot, series in stored.items():
-        initial = owner._slot_capital_allocation["declaration"]["initial_usdc_by_slot"][slot]
-        basis = Decimal(initial)
-        previous = None
+        verified = []
         if not isinstance(series, list) or not series:
             raise ValueError("DIRECT_REVERSAL_BOOKING_SERIES_INVALID")
         for record in series:
@@ -434,7 +465,10 @@ def restore_direct_reversal_bookings_v1(owner, stored):
             if (
                 plan.episode.lane_id != slot
                 or plan.digest_v1() in seen
-                or plan.slot_capital_basis_usdc != basis
+                or plan.slot_capital_basis_usdc
+                != direct_reversal_instrument_basis_v1(
+                    owner, slot, plan.old_reservation_id, plan.decision_epoch, verified
+                )
             ):
                 raise ValueError("DIRECT_REVERSAL_BOOKING_SEQUENCE_INVALID")
             ledger = {
@@ -448,11 +482,10 @@ def restore_direct_reversal_bookings_v1(owner, stored):
                 ledger,
                 record["pre_fill_accounting"],
                 fill,
-                previous=previous,
+                previous=verified[-1] if verified else None,
             )
             if rebuilt != record:
                 raise ValueError("DIRECT_REVERSAL_BOOKING_READBACK_MISMATCH")
             seen.add(plan.digest_v1())
-            basis += Decimal(record["net_result_usdc"])
-            previous = record
+            verified.append(record)
     return json.loads(json.dumps(stored, allow_nan=False))
