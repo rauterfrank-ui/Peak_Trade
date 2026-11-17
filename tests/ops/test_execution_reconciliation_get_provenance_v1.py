@@ -3172,9 +3172,9 @@ def _assert_authenticated_occupied_mark_close(
                     proof,
                     run_args,
                     mark_time=lambda: switch_received[0],
-                    in_flight=lambda: refresh_account.is_set()
-                    and refresh_29p.is_set()
-                    and not release.is_set(),
+                    in_flight=lambda: (
+                        refresh_account.is_set() and refresh_29p.is_set() and not release.is_set()
+                    ),
                     grant_case=grant_case,
                 )
             else:
