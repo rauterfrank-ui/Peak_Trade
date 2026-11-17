@@ -224,6 +224,39 @@ DIRECT_REVERSAL_POLICY_DELTAS = {
 }
 
 
+# Same-slot rotation of a funded simulated position after an occupied mark.
+ROTATION_SLOT_CAPITAL_DELTAS = {
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": (
+        "2bfaed9ec981285859990bbee35916e762b25f722fc404673b340f4e04379c28",
+        "c5a3c39f8ac4a8a02c73c03c19c79dcbf989c111c90f8975eab03c555245f09b",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": (
+        "24db3e42481dcd98a548afc8c3da1eb40ba575d5af24baaac174e3d1d7315656",
+        "12590786da448e581512dd2e33a2faad3e12ac10d75ca915277737cfb82a398e",
+    ),
+    "src/ops/p5_productive_layered_core_authority_seam_v1/occupied_mark_state_v1.py": (
+        "f4f7e4cf6412a01b3862e5654117d87b4ef849def576c022df443f8f57a662a3",
+        "2eb4d943a9e7d42c925e058469a673c6be4041782a972ccbaf9cf0da26872bbd",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
+        "d6edf567c95875d3748e3a6431f53e9ab275be91d67377d4d307cb820d224c09",
+        "42823f0223a7373e6842bbd5a77549a9f01d8e38ccbead8405c346ac83134794",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py": (
+        "1acd6f6c58bc6e90ca8e8d5e0ef554056caf51764aba54de3cf74819416341ca",
+        "90a9225bf4f18ffd215caaf42f5b056d16f83e7a99b10b72720cf8b256c5e5a4",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/slot_loss_budget_v1.py": (
+        "35c1db4f5f28db416d391fe35d6e6c62f0bc82198a79592e9dad813385768ebc",
+        "f0c1ea49021eee7288fcf2bc2927ddbeeede0a4bb94a606ca13126b6db16b52e",
+    ),
+    "src/ops/single_selected_future_policy_v1/persistence_v1.py": (
+        "64548daaf97b2423fc063a9a78afe1f29e070a9a878957b48e5fbc8e3bf61d42",
+        "f65bb8bfa69298c320b6e13b9627bd10c1b31c028662c5fa1b16f50b9152c10f",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
@@ -359,6 +392,14 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
         for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
             expected.setdefault(path, after)
         expected = _exact_double_play_successor(expected, DIRECT_REVERSAL_POLICY_DELTAS)
+        if any(
+            hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+            for path, (_, after) in ROTATION_SLOT_CAPITAL_DELTAS.items()
+            if (root / path).is_file()
+        ):
+            for path, (before, _) in ROTATION_SLOT_CAPITAL_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, ROTATION_SLOT_CAPITAL_DELTAS)
     actual = {}
     for path in expected:
         source = root / path
@@ -736,6 +777,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and G2_ARCHIVE_PROJECTION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and EXECUTION_AUTHORITY_AUDIT_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and OWNER_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
+                and ROTATION_SLOT_CAPITAL_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

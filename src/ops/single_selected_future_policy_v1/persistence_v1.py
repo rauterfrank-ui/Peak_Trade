@@ -67,14 +67,15 @@ def write_manifest(root: Path, relative_files: tuple[str, ...]) -> str:
     return sha256_hex(body)
 
 
-def verify_manifest(root: Path) -> dict[str, Any]:
+def verify_manifest(root: Path, *, selected_instrument_id: str | None = None) -> dict[str, Any]:
     manifest = Path(root) / MANIFEST_FILENAME
     if not manifest.is_file():
         raise SelectionPersistenceError(
             SelectionFailureCodeV1.CORRUPT_PERSISTED_SELECTION.value, "MANIFEST_MISSING"
         )
     errors: list[str] = []
-    for line in manifest.read_text(encoding="utf-8").splitlines():
+    rows = manifest.read_text(encoding="utf-8").splitlines()
+    for line in rows:
         line = line.strip()
         if not line:
             continue
@@ -87,6 +88,27 @@ def verify_manifest(root: Path) -> dict[str, Any]:
         if actual != digest:
             errors.append(f"DIGEST_MISMATCH:{rel}")
     if errors:
+        if (
+            selected_instrument_id is not None
+            and len(rows) == 1
+            and errors == ["DIGEST_MISMATCH:naked_layered_core_episode_v1.json"]
+        ):
+            # Older occupied-mark writers sealed their new snapshot inside the
+            # JSON while the shared Core manifest still described its predecessor.
+            from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+                NakedLayeredCoreDurableStateError,
+                read_occupied_scope_mark_snapshot_v1,
+                restore_layered_core_episode_v1,
+            )
+
+            try:
+                if read_occupied_scope_mark_snapshot_v1(root) is not None:
+                    restore_layered_core_episode_v1(
+                        root, expected_instrument_id=selected_instrument_id
+                    )
+                    return {"ok": True, "manifest_path": str(manifest)}
+            except (NakedLayeredCoreDurableStateError, ValueError):
+                pass
         raise SelectionPersistenceError(
             SelectionFailureCodeV1.CORRUPT_PERSISTED_SELECTION.value,
             ";".join(errors),
@@ -200,7 +222,7 @@ def load_and_validate_selection_v1(
         )
     if require_manifest:
         try:
-            verify_manifest(root)
+            verify_manifest(root, selected_instrument_id=selection.instrument_id)
         except SelectionPersistenceError as exc:
             return SelectionLoadResultV1(
                 False, selection, (exc.failure_code,), str(exc), alpha_blocked=True

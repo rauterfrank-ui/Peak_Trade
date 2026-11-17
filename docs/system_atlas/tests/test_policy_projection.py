@@ -101,6 +101,7 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["MANAGED_FILEGATE_OWNER_DELTAS"],
         *PROJECTION["OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS"],
         *PROJECTION["DOUBLE_PLAY_POLICY_DELTAS"],
+        *PROJECTION["ROTATION_SLOT_CAPITAL_DELTAS"],
         *PROJECTION["G2_ARCHIVE_PROJECTION_DELTAS"],
         *PROJECTION["EXECUTION_AUTHORITY_AUDIT_DELTAS"],
         *PROJECTION["OWNER_ADJUDICATION_DELTAS"],
@@ -117,6 +118,7 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
             PROJECTION["DIRECT_REVERSAL_POLICY_DELTAS"].keys()
             - {PROJECTION["DIRECT_REVERSAL_SOURCE"]}
         )
+        | PROJECTION["ROTATION_SLOT_CAPITAL_DELTAS"].keys()
     ),
 )
 @pytest.mark.parametrize("rebound", [False, True], ids=["prior-bytes", "different-rebound-bytes"])
@@ -126,6 +128,11 @@ def test_double_play_requires_exact_complete_policy_bundle(monkeypatch, path, re
     original = Path.read_bytes
     if rebound:
         raw = original(source) + b"\n# different implementation\n"
+    elif path in PROJECTION["ROTATION_SLOT_CAPITAL_DELTAS"]:
+        raw = subprocess.check_output(["git", "show", "522473864:" + path], cwd=ROOT)
+        assert (
+            hashlib.sha256(raw).hexdigest() == PROJECTION["ROTATION_SLOT_CAPITAL_DELTAS"][path][0]
+        )
     elif path in PROJECTION["DIRECT_REVERSAL_POLICY_DELTAS"]:
         raw = subprocess.check_output(["git", "show", "71e4ce6912:" + path], cwd=ROOT)
         assert (

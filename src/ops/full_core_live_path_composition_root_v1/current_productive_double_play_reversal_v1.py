@@ -250,29 +250,30 @@ def assess_direct_double_play_reversal_v1(
         for row in commitments.commitments
         if row.slot_id == lane and row.state in {"RESERVED", "COMMITTED"}
     ]
-    previous = owner.latest_simulated_direct_reversal_v1(lane)
+    if len(holds) != 1:
+        raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
+    hold = holds[0]
+    previous = owner.latest_simulated_direct_reversal_v1(lane, reservation_id=hold.reservation_id)
     previous_plan = DirectDoublePlayReversalV1.from_dict_v1(previous["plan"]) if previous else None
-    if len(holds) != 1 or (
-        holds[0].instrument_id != bound.instrument_id
-        or holds[0].venue_native_id != bound.venue_native_id
+    if (
+        hold.instrument_id != bound.instrument_id
+        or hold.venue_native_id != bound.venue_native_id
         or (
             previous_plan is None
             and (
-                not holds[0].canonical_quantity
-                or Decimal(holds[0].canonical_quantity) != quantity.quantity
+                not hold.canonical_quantity or Decimal(hold.canonical_quantity) != quantity.quantity
             )
         )
         or (
             previous_plan is not None
             and (
-                previous_plan.old_reservation_id != holds[0].reservation_id
+                previous_plan.old_reservation_id != hold.reservation_id
                 or previous_plan.selection_digest != bound.selection_integrity_digest
                 or previous_plan.target_contracts != direction * quantity.quantity
             )
         )
     ):
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
-    hold = holds[0]
     side = "short" if direction > 0 else "long"
     reference = Decimal(str(mark.mark_px))
     scope_state = scope["snapshot"]["scope"]
@@ -313,7 +314,7 @@ def assess_direct_double_play_reversal_v1(
     facts["current_reconciled_exposure"] -= hold.amount
     # Initial allocation limits govern funding. The next exposure uses the
     # settled balances of the funded slots, subject to fresh account capital.
-    slot_capital = basis.net_basis_usdc
+    slot_capital = owner.direct_reversal_basis_v1(lane, hold.reservation_id, epoch)
     portfolio_capital = sum(
         (
             max(Decimal(0), owner.slot_capital_basis_v1(slot).net_basis_usdc)

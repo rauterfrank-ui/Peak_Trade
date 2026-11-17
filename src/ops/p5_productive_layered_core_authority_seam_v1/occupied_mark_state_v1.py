@@ -12,6 +12,7 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_
     atomic_write_text,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+    MANIFEST_FILENAME,
     SNAPSHOT_FILENAME,
     SNAPSHOT_SCHEMA_NAME,
     NakedLayeredCoreDurableStateError,
@@ -103,7 +104,15 @@ def persist_layered_core_episode_v1(
     mark = dict(occupied_mark) if occupied_mark is not None else prior["mark"]
     record = {"snapshot": snapshot, "mark": mark}
     record["digest"] = _snapshot_digest(record)
-    atomic_write_text(path=store_root / SNAPSHOT_FILENAME, text=_canonical_json(record))
+    manifest = store_root / MANIFEST_FILENAME
+    manifest_fields = manifest.read_text(encoding="utf-8").split() if manifest.is_file() else []
+    body = _canonical_json(record)
+    atomic_write_text(path=store_root / SNAPSHOT_FILENAME, text=body)
+    # The legacy Core writer uses a single-row manifest. A Cap23 manifest in
+    # the same directory belongs to the selection writer and stays untouched.
+    if len(manifest_fields) == 2 and manifest_fields[1] == SNAPSHOT_FILENAME:
+        digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        atomic_write_text(path=manifest, text=f"{digest}  {SNAPSHOT_FILENAME}\n")
     return hashlib.sha256(_canonical_json(snapshot).encode("utf-8")).hexdigest()
 
 

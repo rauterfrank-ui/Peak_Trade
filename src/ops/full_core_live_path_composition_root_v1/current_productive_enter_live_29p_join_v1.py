@@ -1418,6 +1418,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=(blocker,),
         )
 
+    unconstrained_context = live_ctx
     try:
         # Q0 equity/metadata/price witness above stays unchanged. Only the
         # downstream sizing ceilings are constrained; DP is never rerun here.
@@ -1445,6 +1446,25 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 producer_output_value=str(output.value),
                 producer_output_status="PRODUCED",
                 step_29p_risk_admissible=TRUE_TOKEN,
+            )
+
+    if (
+        native_decision is None
+        and portfolio_budget_owner is not None
+        and portfolio_slot is not None
+    ):
+        try:
+            opening_limits = portfolio_budget_owner.funded_slot_entry_limits_v1(
+                portfolio_slot.slot_id
+            )
+        except ValueError as exc:
+            return _deny(status=STATUS_FAIL, blocker=str(exc), replay=replay, get_count=get_count)
+        if opening_limits is not None:
+            slot_start, total_funded = opening_limits
+            live_ctx = replace(
+                live_ctx,
+                scope_capital_limit=min(unconstrained_context.scope_capital_limit, slot_start),
+                total_capital_limit=min(unconstrained_context.total_capital_limit, total_funded),
             )
 
     double_play_source = None

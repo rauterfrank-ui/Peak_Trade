@@ -116,6 +116,7 @@ def read_closed_slot_economics_v1(
     account_identity,
     canonical_id,
     native_id,
+    direct_reversal=None,
 ):
     from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
         FinalOrderEnvelopeV1,
@@ -178,6 +179,87 @@ def read_closed_slot_economics_v1(
         or last["reduce_only"] is not True
     ):
         raise ValueError("SLOT_ECONOMIC_ORIGINAL_CLOSE_FILL_REQUIRED")
+    if direct_reversal is None:
+        native_result = _replay_closed_episode_v1(payload, frozen, identity, entry_envelope)
+    else:
+        opening = _fill(direct_reversal["fill"])
+        original = frozen.applied_fill_results.get(opening.fill_id)
+        history = payload["fills"]
+        reversal_index = next(
+            (index for index, fill in enumerate(history) if fill["fill_id"] == opening.fill_id),
+            None,
+        )
+        if (
+            reversal_index is None
+            or history[reversal_index] != direct_reversal["fill"]
+            or original is None
+            or original.accounting_output_digest != direct_reversal["accounting_output_digest"]
+            or any(
+                frozen.applied_fill_results[fill["fill_id"]].action_code
+                not in {"LONG_REDUCE", "SHORT_REDUCE"}
+                for fill in history[reversal_index + 1 : -1]
+            )
+            or bind_simulated_accounting_episode_identity_v1(
+                identity=identity, opening_fill=opening
+            )
+            != identity
+        ):
+            raise ValueError("SLOT_ECONOMIC_NET_REVERSAL_BOOKING_MISMATCH")
+        # The budget owner already recognized all economics through this fill.
+        # At flat, the remaining native PnL and costs belong to this close.
+        native_result = (
+            frozen.realized_pnl
+            + frozen.funding_pnl
+            - frozen.cumulative_fees
+            - Decimal(direct_reversal["settled_native_total"])
+        )
+    rate = Decimal(1)
+    fx_digest = None
+    if frozen.contract.quote_currency == "USDT":
+        acquisition_age_seconds_v1(
+            acquired_at_utc=source.fx_acquired_at_utc, now_utc=source.valuation_epoch
+        )
+        pair_base, pair_quote = conversion_pair_monetary_identity_from_okx_payload_v1(
+            json.loads(source.pair_instruments_json),
+            pair_native_id=USDT_USDC_PAIR_NATIVE_ID,
+        )
+        edge = build_usdt_usdc_conversion_edge_from_index_tickers_v1(
+            index_tickers_payload=json.loads(source.index_tickers_json),
+            decision_epoch=source.valuation_epoch,
+            observed_at=source.fx_acquired_at_utc,
+            fresh_pretrade_get_status="TRUSTED_PRESENT",
+            pair_base_currency=pair_base,
+            pair_quote_currency=pair_quote,
+        )
+        event = datetime.fromtimestamp(int(edge.source_timestamp) / 1000, timezone.utc).isoformat()
+        acquisition_age_seconds_v1(acquired_at_utc=event, now_utc=source.fx_acquired_at_utc)
+        acquisition_age_seconds_v1(acquired_at_utc=event, now_utc=source.valuation_epoch)
+        rate, fx_digest = edge.normalized_rate, edge.payload_digest
+    elif frozen.contract.quote_currency != "USDC":
+        raise ValueError("SLOT_ECONOMIC_CURRENCY_NOT_SUPPORTED")
+    receipt = dict(
+        schema="slot_closed_net_result_valuation.v1",
+        episode_id=identity.episode_id,
+        slot_id=slot_id,
+        account_identity=account_identity,
+        currency="USDC",
+        native_currency=frozen.contract.quote_currency,
+        native_net_result=str(native_result),
+        net_result_usdc=str(native_result * rate),
+        valuation_epoch=source.valuation_epoch,
+        valuation_basis="NET_SETTLED_EPISODE_VALUED_AT_CLOSE_REVIEW_NOT_CASH_CONVERSION",
+        fx_payload_digest=fx_digest,
+        closure_ref=sealed["closure_ref"],
+        source=source.to_dict_v1(),
+        entry_envelope_digest=entry_envelope["envelope_digest"],
+        close_envelope=close_envelope,
+    )
+    if direct_reversal is not None:
+        receipt["previous_direct_reversal_digest"] = direct_reversal["digest"]
+    return {**receipt, "digest": digest(receipt)}
+
+
+def _replay_closed_episode_v1(payload, frozen, identity, entry_envelope):
     replay = ProductiveFuturesAccountingSessionV1(
         contract=frozen.contract,
         initial_equity=frozen.initial_equity,
@@ -222,46 +304,4 @@ def read_closed_slot_economics_v1(
                 final = replay.portfolio_state().equity
     if initial is None or final is None or maximum_open > Decimal(entry_envelope["quantity"]):
         raise ValueError("SLOT_ECONOMIC_EPISODE_OR_ENTRY_QUANTITY_MISMATCH")
-    native_result = final - initial
-    rate = Decimal(1)
-    fx_digest = None
-    if frozen.contract.quote_currency == "USDT":
-        acquisition_age_seconds_v1(
-            acquired_at_utc=source.fx_acquired_at_utc, now_utc=source.valuation_epoch
-        )
-        pair_base, pair_quote = conversion_pair_monetary_identity_from_okx_payload_v1(
-            json.loads(source.pair_instruments_json),
-            pair_native_id=USDT_USDC_PAIR_NATIVE_ID,
-        )
-        edge = build_usdt_usdc_conversion_edge_from_index_tickers_v1(
-            index_tickers_payload=json.loads(source.index_tickers_json),
-            decision_epoch=source.valuation_epoch,
-            observed_at=source.fx_acquired_at_utc,
-            fresh_pretrade_get_status="TRUSTED_PRESENT",
-            pair_base_currency=pair_base,
-            pair_quote_currency=pair_quote,
-        )
-        event = datetime.fromtimestamp(int(edge.source_timestamp) / 1000, timezone.utc).isoformat()
-        acquisition_age_seconds_v1(acquired_at_utc=event, now_utc=source.fx_acquired_at_utc)
-        acquisition_age_seconds_v1(acquired_at_utc=event, now_utc=source.valuation_epoch)
-        rate, fx_digest = edge.normalized_rate, edge.payload_digest
-    elif frozen.contract.quote_currency != "USDC":
-        raise ValueError("SLOT_ECONOMIC_CURRENCY_NOT_SUPPORTED")
-    receipt = dict(
-        schema="slot_closed_net_result_valuation.v1",
-        episode_id=identity.episode_id,
-        slot_id=slot_id,
-        account_identity=account_identity,
-        currency="USDC",
-        native_currency=frozen.contract.quote_currency,
-        native_net_result=str(native_result),
-        net_result_usdc=str(native_result * rate),
-        valuation_epoch=source.valuation_epoch,
-        valuation_basis="NET_SETTLED_EPISODE_VALUED_AT_CLOSE_REVIEW_NOT_CASH_CONVERSION",
-        fx_payload_digest=fx_digest,
-        closure_ref=sealed["closure_ref"],
-        source=source.to_dict_v1(),
-        entry_envelope_digest=entry_envelope["envelope_digest"],
-        close_envelope=close_envelope,
-    )
-    return {**receipt, "digest": digest(receipt)}
+    return final - initial
