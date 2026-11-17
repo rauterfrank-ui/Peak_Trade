@@ -340,6 +340,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         durable_lane_bindings: Mapping | None = None,
         entry_budget_policy: object | None = None,
         slot_capital_allocation: SlotCapitalAllocationV1 | None = None,
+        live_slot_capital_allocation: SlotCapitalAllocationV1 | None = None,
     ) -> None:
         self._lock = threading.Lock()
         self._admitted = False
@@ -381,27 +382,37 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             and self._entry_budget_policy.enforce_open_slot_loss_protection
             else {}
         )
-        if slot_capital_allocation is not None:
+        if slot_capital_allocation is not None or live_slot_capital_allocation is not None:
             from .slot_loss_budget_v1 import SlotCapitalAllocationV1
 
+            live = live_slot_capital_allocation is not None
+            allocation = live_slot_capital_allocation if live else slot_capital_allocation
             if (
-                type(slot_capital_allocation) is not SlotCapitalAllocationV1
-                or self._entry_budget_policy is None
+                type(allocation) is not SlotCapitalAllocationV1
+                or (
+                    live
+                    and (
+                        slot_capital_allocation is not None or self._entry_budget_policy is not None
+                    )
+                )
+                or (not live and self._entry_budget_policy is None)
                 or durable_mode != "create"
                 or durable_root is None
                 or durable_lane_bindings is None
             ):
                 raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_BOOTSTRAP_REQUIRED")
-            declaration = slot_capital_allocation.to_dict_v1()
+            declaration = allocation.to_dict_v1()
             allocated = set(declaration["initial_usdc_by_slot"])
             if (
                 declaration["account_identity"] != durable_account_identity
                 or allocated != set(durable_lane_bindings)
-                or allocated - set(self._entry_budget_policy.allowed_slot_ids)
+                or (not live and allocated - set(self._entry_budget_policy.allowed_slot_ids))
             ):
                 raise PortfolioCapitalBudgetError("SLOT_CAPITAL_ALLOCATION_SCOPE_MISMATCH")
             self._slot_capital_allocation = {
-                "schema": "slot_capital_allocation.v1",
+                "schema": "live_slot_capital_allocation.v1"
+                if live
+                else "slot_capital_allocation.v1",
                 "declaration": declaration,
                 "funding": None,
             }
@@ -561,6 +572,81 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             return self._slot_capital_basis_locked_v1(slot_id, close_booking=close_booking)
 
+    def has_live_slot_capital_allocation_v1(self) -> bool:
+        with self._lock:
+            return (
+                self._slot_capital_allocation is not None
+                and self._slot_capital_allocation["schema"] == "live_slot_capital_allocation.v1"
+            )
+
+    def live_reversal_slot_basis_v1(self, *, slot_id, reservation_id, bound):
+        """Read the funded balance and original occupied hold from one writer."""
+        from .durable_store_v1 import digest
+        from .live_l10_close_booking_v1 import validate_live_l10_booking_v1
+        from .slot_loss_budget_v1 import SlotCapitalBasisV1
+
+        with self._lock:
+            allocation = self._slot_capital_allocation
+            if allocation is None or allocation["schema"] != "live_slot_capital_allocation.v1":
+                return None
+            row = self._by_key.get(self._by_id.get(reservation_id))
+            link = self._execution_links.get(reservation_id)
+            funding = allocation["funding"]
+            initial = allocation["declaration"]["initial_usdc_by_slot"].get(slot_id)
+            stored_bound = lane_bindings_v1({slot_id: bound})[slot_id]
+            if (
+                self._closed_owner
+                or self._storage_failed
+                or self._store is None
+                or funding is None
+                or initial is None
+                or row is None
+                or str(row.slot_id) != slot_id
+                or row.state is not ReservationStateV1.COMMITTED
+                or self._lane_bindings.get(slot_id) != stored_bound
+                or self._reservation_bindings.get(reservation_id) != stored_bound
+                or link is None
+                or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
+                or link["identity"]["execution_environment"] != "LIVE"
+            ):
+                raise PortfolioCapitalBudgetError(
+                    "LIVE_REVERSAL_SLOT_CAPITAL_ORIGINAL_HOLD_REQUIRED"
+                )
+            bookings = [
+                validate_live_l10_booking_v1(self, booking)
+                for booking in self._live_l10_close_bookings.values()
+                if booking["slot_id"] == slot_id
+            ]
+            if any(
+                booking.reservation_id == reservation_id or booking.currency != "USDC"
+                for booking in bookings
+            ):
+                raise PortfolioCapitalBudgetError("LIVE_REVERSAL_SLOT_SETTLEMENT_UNPROVEN")
+            booked = {booking.reservation_id for booking in bookings}
+            if len(booked) != len(bookings) or any(
+                str(prior.slot_id) == slot_id
+                and prior.terminal_reason == ReleaseReasonV1.RECONCILED_POSITION_FLAT.value
+                and str(prior.reservation_id) not in booked
+                for prior in self._by_key.values()
+            ):
+                raise PortfolioCapitalBudgetError("LIVE_REVERSAL_SLOT_SETTLEMENT_UNPROVEN")
+            return SlotCapitalBasisV1(
+                slot_id=slot_id,
+                account_identity=self._account_identity,
+                initial_usdc=Decimal(initial),
+                booked_net_usdc=sum(
+                    (Decimal(booking.net_result) for booking in bookings), Decimal(0)
+                ),
+                allocation_digest=digest(allocation),
+                funding_observation_id=funding["observation_id"],
+                latest_booking_digest=None,
+                settlement_bookings_digest=(
+                    digest(sorted(booking.to_dict_v1()["booking_digest"] for booking in bookings))
+                    if bookings
+                    else None
+                ),
+            )
+
     def _slot_capital_basis_locked_v1(
         self, slot_id: str, *, close_booking: SlotCloseNetBookingV1 | None
     ) -> SlotCapitalBasisV1 | None:
@@ -568,7 +654,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .durable_store_v1 import digest
 
         allocation = self._slot_capital_allocation
-        if allocation is None:
+        if allocation is None or allocation["schema"] != "slot_capital_allocation.v1":
             return None
         initial = allocation["declaration"]["initial_usdc_by_slot"].get(slot_id)
         funding = allocation["funding"]
@@ -723,6 +809,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         aggregate = policy.aggregate_reserved_notional_limit
         if (
             self._slot_capital_allocation is None
+            or self._slot_capital_allocation["schema"] != "slot_capital_allocation.v1"
             or self._slot_capital_allocation["funding"] is None
         ):
             return entry, slot, aggregate
@@ -745,6 +832,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         with self._lock:
             if (
                 self._slot_capital_allocation is None
+                or self._slot_capital_allocation["schema"] != "slot_capital_allocation.v1"
                 or self._slot_capital_allocation["funding"] is None
             ):
                 return None
@@ -3459,16 +3547,21 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         from .slot_loss_budget_v1 import SlotCapitalAllocationV1
 
         if (
-            self._entry_budget_policy is None
-            or not isinstance(record, dict)
+            not isinstance(record, dict)
             or set(record) != {"schema", "declaration", "funding"}
-            or record["schema"] != "slot_capital_allocation.v1"
+            or record["schema"]
+            not in {"slot_capital_allocation.v1", "live_slot_capital_allocation.v1"}
         ):
+            raise ValueError("SLOT_CAPITAL_ALLOCATION_STATE_INVALID")
+        live = record["schema"] == "live_slot_capital_allocation.v1"
+        if live != (self._entry_budget_policy is None):
             raise ValueError("SLOT_CAPITAL_ALLOCATION_STATE_INVALID")
         allocation = SlotCapitalAllocationV1.from_dict_v1(record["declaration"])
         amounts = dict(allocation.initial_usdc_by_slot)
-        if allocation.account_identity != self._account_identity or set(amounts) - set(
-            self._entry_budget_policy.allowed_slot_ids
+        if (
+            allocation.account_identity != self._account_identity
+            or (live and set(amounts) != set(self._lane_bindings))
+            or (not live and set(amounts) - set(self._entry_budget_policy.allowed_slot_ids))
         ):
             raise ValueError("SLOT_CAPITAL_ALLOCATION_SCOPE_MISMATCH")
         funding = record["funding"]

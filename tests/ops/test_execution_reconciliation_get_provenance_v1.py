@@ -195,8 +195,40 @@ class SignedReconciliationHttpFixture:
 
 
 @pytest.fixture
-def authenticated_host(tmp_path, monkeypatch):
-    seeded, rid, _, envelope, _, _ = seed_with_origin(tmp_path, monkeypatch)
+def authenticated_host(tmp_path, monkeypatch, request):
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+        SlotCapitalAllocationV1,
+    )
+    from tests.ops import test_portfolio_execution_recovery_v1 as original
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+    )
+
+    fault = getattr(request.node, "callspec", SimpleNamespace(params={})).params.get("fault")
+    funded = fault in {
+        "occupied-mark-direct-funded",
+        "polled-mark-direct-funded",
+        "occupied-mark-direct-stale-capital",
+    }
+    with monkeypatch.context() as patch:
+        if funded:
+
+            def funded_host(root, fetch, clock, expected_account):
+                return PortfolioBudgetHostV1(
+                    root=root / "stable-host",
+                    private_rest_fetch=fetch,
+                    repository_sha="test-host-revision",
+                    session_id="host-session",
+                    expected_account_identity=expected_account,
+                    durable_mode="create",
+                    clock=clock,
+                    live_slot_capital_allocation=SlotCapitalAllocationV1(
+                        expected_account, "offline-explicit-allocation", (("LANE_1", Decimal(25)),)
+                    ),
+                )
+
+            patch.setattr(original, "_host", funded_host)
+        seeded, rid, _, envelope, _, _ = seed_with_origin(tmp_path, patch)
     try:
         identity = seeded.owner.begin_execution_submit_v2(
             rid, envelope, seeded.owner.execution_plan_context_v1(rid, envelope), _permit(envelope)
@@ -219,7 +251,7 @@ def authenticated_host(tmp_path, monkeypatch):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
             private_rest_fetch=_fetch(uid=identity.account_identity),
-            repository_sha="test-host-revision",
+            repository_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA if funded else "test-host-revision",
             session_id=SESSION,
             expected_account_identity=scope.account,
             clock=NOW.timestamp,
@@ -1837,6 +1869,9 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         (None, None),
         ("occupied-mark-direct", None),
         ("polled-mark-direct", None),
+        ("occupied-mark-direct-funded", None),
+        ("polled-mark-direct-funded", None),
+        ("occupied-mark-direct-stale-capital", None),
         ("occupied-mark", None),
         ("polled-mark", None),
         ("polled-mark-close-ack", None),
@@ -1897,8 +1932,14 @@ def test_owned_entry_proof_reaches_original_position_episode(
         if fault and fault.startswith("polled-mark-close-")
         else None
     )
-    polled = fault in {"polled-mark", "polled-mark-direct"} or dispatch is not None
-    direct = fault in {"occupied-mark-direct", "polled-mark-direct"}
+    direct = fault in {
+        "occupied-mark-direct",
+        "polled-mark-direct",
+        "occupied-mark-direct-funded",
+        "polled-mark-direct-funded",
+        "occupied-mark-direct-stale-capital",
+    }
+    polled = (fault or "").startswith("polled-mark") or dispatch is not None
     occupied_mark = direct or fault == "occupied-mark" or polled
     if dispatch is not None:
         host.repository_sha = "b707632c51a3c192337ec181825697c15bac5ddf"
@@ -2029,6 +2070,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
             dispatch=dispatch,
             opener=opener,
             direct=direct,
+            funding_case=fault.split("-direct", 1)[1] if direct else "",
         )
         expected_gets = 0 if direct and not polled else 12
         if (
@@ -2088,6 +2130,110 @@ def test_owned_entry_proof_reaches_original_position_episode(
     assert len(opener.requests) == request_count
 
 
+def _assert_direct_reversal_order_stops_at_original_post_admission(
+    tmp_path, envelope, context, proof, lane_pair, entry
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+        prepare_authenticated_net_reversal_post_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        POST_OWNER_GO,
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        OneShotJoinProbeV1,
+        attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+        SharedPostOwnerAuthorityError,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+        parse_exchange_reconciliation_identity_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        _clean_post_integrity,
+    )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import (
+        _claim_rows,
+        signed_post_authorization,
+    )
+
+    grant_dir = tmp_path / "net-reversal-grant"
+    grant_dir.mkdir()
+    attempt_root = tmp_path / "net-reversal-send"
+    auth, _ = signed_post_authorization(
+        grant_dir, envelope, account=context.account, action="DIRECT_DOUBLE_PLAY_REVERSAL"
+    )
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_SCOPE_MISMATCH"):
+        auth.consume_v1(
+            account=context.account,
+            action="ENTER",
+            envelope_digest=envelope.envelope_digest,
+            attempt_root=attempt_root,
+        )
+    assert _claim_rows(auth) == []
+
+    def forbidden_opener():
+        pytest.fail("An unadmitted reversal reached the OKX opener")
+
+    def attempt(**owner_args):
+        probe = OneShotJoinProbeV1()
+        try:
+            return attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+                envelope=envelope,
+                post_owner_go=POST_OWNER_GO,
+                store_root=attempt_root,
+                k1_backend=None,
+                opener_factory=forbidden_opener,
+                probe=probe,
+                **owner_args,
+            )
+        finally:
+            assert not probe.permit_minted and probe.http_post_attempts == 0
+
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        match="HOST_PORTFOLIO_EXECUTION_CONTEXT_REQUIRED",
+    ):
+        attempt()
+    owner = context.host.owner
+    original_link = owner.execution_links_v1()[proof.reservation_id]
+    original_identity = parse_exchange_reconciliation_identity_v1(original_link["identity"])
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError, match="EXECUTION_SUBMIT_REPLAY_OR_UNBOUND"
+    ):
+        attempt(
+            portfolio_budget_owner=owner,
+            portfolio_reservation_id=proof.reservation_id,
+            execution_identity=original_identity,
+        )
+    assert owner.execution_links_v1()[proof.reservation_id] == original_link
+    assert not attempt_root.exists()
+    with pytest.raises(ValueError, match="ORIGINAL_HOLD_REQUIRED"):
+        owner.live_reversal_slot_basis_v1(
+            slot_id="LANE_2", bound=lane_pair[1], reservation_id=proof.reservation_id
+        )
+    args = dict(
+        lane_pair=lane_pair,
+        recovery=context,
+        authenticated_entry=entry,
+        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        execution_integrity_backend=_clean_post_integrity(),
+    )
+    prepared = prepare_authenticated_net_reversal_post_v1(authorization=auth, **args)
+    prepared.inspect_v1(envelope_id=envelope.envelope_id, envelope_digest=envelope.envelope_digest)
+    record = load_external_effect_durable_consume_v1(store_root=prepared.store_root)["record"]
+    assert record["transport_attempt"]["phase"] == "PRE_SOCKET" and record["post_count"] == 0
+    assert _claim_rows(auth) == [(auth.grant.grant_id, 0)]
+    with pytest.raises(ValueError, match="REVERSAL_ALREADY_CONSUMED"):
+        prepare_authenticated_net_reversal_post_v1(
+            authorization=replace(auth, authority=replace(auth.authority)), **args
+        )
+    assert owner.execution_links_v1()[proof.reservation_id] == original_link
+
+
 def _assert_authenticated_occupied_mark_close(
     *,
     tmp_path,
@@ -2103,6 +2249,7 @@ def _assert_authenticated_occupied_mark_close(
     shared_post=False,
     on_shared_send=None,
     direct=False,
+    funding_case="",
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2165,15 +2312,96 @@ def _assert_authenticated_occupied_mark_close(
         },
         authenticated_entry=AuthenticatedEntryEpisodeRequestV1(proof_root, proof),
     )
+    if direct:
+        from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+            _payload_from_envelope_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+            FinalOrderEnvelopeV1,
+            assert_envelope_unmodified_v1,
+        )
+        from tests.ops.test_bounded_multislot_connected_cycle_v1 import ports
+
+        def pretrade_inputs(decision_epoch, pretrade_cycle_id):
+            observed_at = NOW.isoformat()
+            carrier = ports(bound, decision_epoch, pretrade_cycle_id, account=context.account)
+            limits = carrier.venue_quantity_limits
+            limits = replace(
+                limits,
+                public_source=replace(limits.public_source, acquired_at_utc=observed_at),
+                private_source=replace(limits.private_source, acquired_at_utc=observed_at),
+            )
+            return replace(
+                carrier,
+                observed_at=(NOW - timedelta(seconds=300)).isoformat()
+                if funding_case == "-stale-capital"
+                else observed_at,
+                acquisition_decision_id=limits.acquisition_decision_id,
+                venue_quantity_limits=replace(limits, integrity_digest=limits.digest_v1()),
+            )
+
+        inputs["live_29p_injected_by_lane"]["LANE_1"] = pretrade_inputs(
+            NOW.isoformat(), "authenticated-mark:LANE_1"
+        )
+
+        def check_pre_dispatch(result, ledger):
+            assert result.position_management_execution_handoff is None
+            assert result.final_order_envelope is None
+            if funding_case != "-funded":
+                assert ledger["reason_code"] == (
+                    "DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED"
+                    if funding_case == "-stale-capital"
+                    else "DIRECT_REVERSAL_FUNDED_LIVE_SLOT_REQUIRED"
+                )
+                assert result.position_management_reversal is None
+                assert "direct_reversal_order" not in ledger
+                return
+
+            assert ledger["reason_code"] == "DIRECT_REVERSAL_EXECUTION_ADMISSION_REQUIRED"
+            reversal = result.position_management_reversal
+            assert reversal.episode.episode_id == proof.identity_digest
+            assert reversal.old_reservation_id == proof.reservation_id
+            assert reversal.episode.lane_id == "LANE_1"
+            assert reversal.episode.instrument_id == bound.instrument_id
+            assert reversal.selection_digest == bound.selection_integrity_digest
+            assert reversal.slot_capital_basis_usdc == 25
+            assert reversal.current_contracts == Decimal(quantity)
+            assert reversal.target_contracts < 0
+            assert reversal.protective_stop == reversal.reference_mark + reversal.scope_distance
+            assert ledger["direct_reversal_digest"] == reversal.digest_v1()
+            assert "occupied_scope_close" not in ledger
+            order = ledger["direct_reversal_order"]
+            assert order["venue_quantity_admission"]["allowed"]
+            envelope = FinalOrderEnvelopeV1(**order["envelope"])
+            assert_envelope_unmodified_v1(envelope)
+            assert envelope.provenance_ref == reversal.digest_v1()
+            body = _payload_from_envelope_v1(envelope)
+            assert body["instId"] == bound.venue_native_id
+            assert body["side"] == "sell" and body["posSide"] == "net"
+            assert "reduceOnly" not in body
+            assert Decimal(body["sz"]) == abs(
+                reversal.target_contracts - reversal.current_contracts
+            )
+            if not polled:
+                _assert_direct_reversal_order_stops_at_original_post_admission(
+                    tmp_path,
+                    envelope,
+                    context,
+                    proof,
+                    pairs["LANE_1"],
+                    inputs["authenticated_entry"],
+                )
+
     if direct and not polled:
-        result = occupied.invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **inputs)[
+        lane = occupied.invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **inputs)[
             "LANE_1"
-        ].governed_cycle_result
-        assert result.first_genuine_blocker == "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
-        assert result.position_management_execution_handoff is None
-        assert result.position_management_reversal is None
-        assert result.final_order_envelope is None
-        assert not result.permit_created and result.post_count == 0
+        ]
+        assert not lane.governed_cycle_result.permit_created
+        assert lane.governed_cycle_result.post_count == 0
+        check_pre_dispatch(
+            lane.governed_cycle_result,
+            json.loads((Path(lane.evidence_root) / LEDGER_FILENAME).read_bytes()),
+        )
         return
     if polled:
         from src.ops.full_core_live_path_composition_root_v1 import (
@@ -2192,7 +2420,11 @@ def _assert_authenticated_occupied_mark_close(
         monkeypatch.setattr(
             convergence,
             "resolve_live_29p_injected_for_productive_s5_cycle_v1",
-            lambda **_: inputs["live_29p_injected_by_lane"]["LANE_1"],
+            lambda **kwargs: (
+                pretrade_inputs(kwargs["decision_epoch"], kwargs["pretrade_cycle_id"])
+                if direct
+                else inputs["live_29p_injected_by_lane"]["LANE_1"]
+            ),
         )
         floor = occupied._cursor_floor_or_zero(root)
         candles = inputs["candles_payload_by_lane"]["LANE_1"]
@@ -2242,11 +2474,15 @@ def _assert_authenticated_occupied_mark_close(
         run = policy_result.orchestrator_result
         if direct:
             assert run.disposition == s6.DISPOSITION_FAIL_CLOSED
-            assert run.first_genuine_blocker == "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
             assert run.s5_invoke_count == 2 and run.accepted_c1_count == 0
             assert run.last_accepted_c1 == occupied._cursor_floor_or_zero(root) == floor
             assert all(cycle.final_order_envelope is None for cycle in run.cycle_records)
             assert not run.permit_created and run.post_count == 0
+            terminal = run.cycle_records[-1]
+            check_pre_dispatch(
+                terminal,
+                json.loads((Path(terminal.mark_evidence_root) / LEDGER_FILENAME).read_bytes()),
+            )
             return
         assert run.disposition == s6.DISPOSITION_PRE_EXTERNAL_EFFECT, run.first_genuine_blocker
         assert run.s5_invoke_count == 2 and run.accepted_c1_count == 0

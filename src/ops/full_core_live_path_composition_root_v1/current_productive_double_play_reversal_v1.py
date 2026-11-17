@@ -3,6 +3,7 @@
 from dataclasses import asdict, dataclass, fields, replace
 from datetime import datetime
 from decimal import Decimal
+from hashlib import sha256
 import json
 import math
 from pathlib import Path
@@ -29,6 +30,7 @@ from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
     capital_context_facts_v1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import SlotCapitalBasisV1
 from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
     BoundedSlotEntryBudgetV1,
 )
@@ -155,10 +157,12 @@ def assess_direct_double_play_reversal_v1(
     recovery,
     owner,
     injected,
+    authenticated_entry=None,
 ) -> DirectDoublePlayReversalV1:
     """Size the target exposure of a replacement, with the original hold still retained."""
     identity = episode.identity
     lane = identity.lane_id
+    live = identity.account_scope.execution_environment == "LIVE"
     scope = read_occupied_scope_mark_snapshot_v1(Path(cursor_root))
     if (
         scope is None
@@ -173,13 +177,46 @@ def assess_direct_double_play_reversal_v1(
         or owner is None
         or recovery.host.closed
         or recovery.host.owner is not owner
-        or recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        or recovery.host.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE"}
         or identity.account_scope.execution_environment != recovery.host.execution_environment
         or identity.account_scope.account_identity != recovery.account
         or recovery.host.bindings.get(lane) != bound
         or recovery.pending_orders
     ):
-        raise ValueError("DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED")
+        raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOST_REQUIRED")
+    if live:
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            AuthenticatedEntryEpisodeRequestV1,
+        )
+        from .current_productive_venue_plan_td_mode_and_order_environment_authority_v1 import (
+            resolve_current_productive_venue_plan_td_mode_v1,
+        )
+
+        if (
+            type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+            or authenticated_entry.proof.identity_digest != identity.episode_id
+        ):
+            raise ValueError("DIRECT_REVERSAL_AUTHENTICATED_ENTRY_REQUIRED")
+        proof = authenticated_entry.proof
+        link = recovery.inspect_current_authenticated_entry_v1(lane_id=lane, proof=proof)
+        source = recovery.authenticated_reconciliation
+        if (
+            type(source) is not AuthenticatedReconciliationGetV1
+            or source.transport is not recovery.host.reconciliation_transport
+            or source.evidence.get(proof.reservation_id) != proof
+            or source.account_position_mode != "net_mode"
+            or link["reconciliation"]["reservation_released"] is not False
+        ):
+            raise ValueError("DIRECT_REVERSAL_AUTHENTICATED_ENTRY_REQUIRED")
+        margin_modes = source.position_margin_modes.get(proof.reservation_id, ())
+        resolve_current_productive_venue_plan_td_mode_v1(
+            conformance_required=True,
+            observed_td_mode=link["envelope"]["td_mode"],
+            observed_mgn_mode=margin_modes[0] if len(margin_modes) == 1 else None,
+        )
     decision_time = datetime.fromisoformat(epoch.replace("Z", "+00:00"))
     if decision_time.utcoffset() is None:
         raise ValueError("DIRECT_REVERSAL_DECISION_CLOCK_INVALID")
@@ -236,13 +273,28 @@ def assess_direct_double_play_reversal_v1(
     if not 0 <= age <= NUMERIC_EQUITY_TTL_SECONDS:
         raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
     policy = owner.entry_budget_policy_v1()
-    basis = owner.slot_capital_basis_v1(lane)
+    basis = (
+        owner.live_reversal_slot_basis_v1(
+            slot_id=lane, reservation_id=authenticated_entry.proof.reservation_id, bound=bound
+        )
+        if live
+        else owner.slot_capital_basis_v1(lane)
+    )
     if (
-        not isinstance(policy, BoundedSlotEntryBudgetV1)
-        or basis is None
+        type(basis) is not SlotCapitalBasisV1
+        or basis.slot_id != lane
         or basis.account_identity != recovery.account
+        or not basis.funding_observation_id
+        or not basis.allocation_digest
+        or not basis.net_basis_usdc.is_finite()
         or basis.net_basis_usdc <= 0
     ):
+        raise ValueError(
+            "DIRECT_REVERSAL_FUNDED_LIVE_SLOT_REQUIRED"
+            if live
+            else "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
+        )
+    if not live and not isinstance(policy, BoundedSlotEntryBudgetV1):
         raise ValueError("DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED")
     commitments = owner.local_commitment_readback_v1()
     holds = [
@@ -253,7 +305,15 @@ def assess_direct_double_play_reversal_v1(
     if len(holds) != 1:
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
     hold = holds[0]
-    previous = owner.latest_simulated_direct_reversal_v1(lane, reservation_id=hold.reservation_id)
+    if live and (
+        hold.state != "COMMITTED" or hold.reservation_id != authenticated_entry.proof.reservation_id
+    ):
+        raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
+    previous = (
+        None
+        if live
+        else owner.latest_simulated_direct_reversal_v1(lane, reservation_id=hold.reservation_id)
+    )
     previous_plan = DirectDoublePlayReversalV1.from_dict_v1(previous["plan"]) if previous else None
     if (
         hold.instrument_id != bound.instrument_id
@@ -314,13 +374,21 @@ def assess_direct_double_play_reversal_v1(
     facts["current_reconciled_exposure"] -= hold.amount
     # Initial allocation limits govern funding. The next exposure uses the
     # settled balances of the funded slots, subject to fresh account capital.
-    slot_capital = owner.direct_reversal_basis_v1(lane, hold.reservation_id, epoch)
-    portfolio_capital = sum(
-        (
-            max(Decimal(0), owner.slot_capital_basis_v1(slot).net_basis_usdc)
-            for slot in recovery.host.bindings
-        ),
-        Decimal(0),
+    slot_capital = (
+        basis.net_basis_usdc
+        if live
+        else owner.direct_reversal_basis_v1(lane, hold.reservation_id, epoch)
+    )
+    portfolio_capital = (
+        slot_capital
+        if live
+        else sum(
+            (
+                max(Decimal(0), owner.slot_capital_basis_v1(slot).net_basis_usdc)
+                for slot in recovery.host.bindings
+            ),
+            Decimal(0),
+        )
     )
     facts.update(
         slot_remaining_notional=slot_capital,
@@ -349,6 +417,8 @@ def assess_direct_double_play_reversal_v1(
         instrument_constraints=metadata.constraints,
     )
     context = replace(context, scope_capital_limit=min(context.scope_capital_limit, slot_capital))
+    budget_digest = policy.digest_v1() if policy is not None else basis.allocation_digest
+    funding_digest = canonical_digest_v1(basis.to_dict()) if live else basis.allocation_digest
     decision = _DoublePlaySizingDecisionV1(
         "l10-reversal:" + scope["digest"],
         canonical_digest_v1(
@@ -356,8 +426,9 @@ def assess_direct_double_play_reversal_v1(
                 "scope": scope["digest"],
                 "mark": mark_digest,
                 "epoch": epoch,
-                "budget": policy.digest_v1(),
+                "budget": budget_digest,
                 "funding": basis.to_dict(),
+                **({"account_observation": observation.provenance_digest} if live else {}),
                 "position": quantity.snapshot_digest,
                 "hold": commitments.generation_digest,
             }
@@ -386,8 +457,8 @@ def assess_direct_double_play_reversal_v1(
         bound.selection_integrity_digest,
         scope["digest"],
         quantity.snapshot_digest,
-        basis.allocation_digest,
-        policy.digest_v1(),
+        funding_digest,
+        budget_digest,
         hold.reservation_id,
         epoch,
         reference,
@@ -400,3 +471,323 @@ def assess_direct_double_play_reversal_v1(
         -direction * sizing.final_quantity,
         sizing.canonical_position_sizing.resulting_notional,
     )
+
+
+def prepare_authenticated_net_reversal_order_v1(
+    reversal: DirectDoublePlayReversalV1, *, bound, injected, cycle_id: str
+) -> dict:
+    """Prepare the exact OKX order before any execution admission."""
+    from .current_productive_n1_venue_quantity_limit_admission_v1 import (
+        assess_n1_final_plan_venue_quantity_v1,
+    )
+    from .current_productive_venue_plan_td_mode_and_order_environment_authority_v1 import (
+        resolve_current_productive_venue_plan_td_mode_v1,
+    )
+    from .final_order_envelope_v1 import bind_final_order_envelope_from_venue_plan_v1
+    from .models_v1 import VenuePlanCandidateV1
+
+    episode = reversal.episode
+    if (
+        episode.account_scope.execution_environment != "LIVE"
+        or not reversal.current_contracts.is_finite()
+        or not reversal.target_contracts.is_finite()
+        or reversal.current_contracts * reversal.target_contracts >= 0
+        or (episode.instrument_id, episode.venue_native_id, reversal.selection_digest)
+        != (bound.instrument_id, bound.venue_native_id, bound.selection_integrity_digest)
+    ):
+        raise ValueError("DIRECT_REVERSAL_ORDER_SOURCE_MISMATCH")
+    delta = reversal.signed_order_contracts
+    digest = reversal.digest_v1()
+    side = "buy" if delta > 0 else "sell"
+    quantity = format(abs(delta), "f")
+    td_mode = resolve_current_productive_venue_plan_td_mode_v1(conformance_required=False)
+    client_order_id = "ptdpr" + digest[:27]
+    payload = {
+        "instId": episode.venue_native_id,
+        "side": side,
+        "sz": quantity,
+        "ordType": "market",
+        "tdMode": td_mode,
+        "posSide": "net",
+        "clOrdId": client_order_id,
+    }
+    plan = VenuePlanCandidateV1(
+        instrument_id=episode.venue_native_id,
+        side=side,
+        quantity=quantity,
+        order_type="market",
+        td_mode=td_mode,
+        reduce_only=False,
+        clordid=client_order_id,
+        venue_native_payload=payload,
+        quantity_source="L10_TARGET_MINUS_AUTHENTICATED_POSITION",
+        side_source="L10_SIGNED_NET_DELTA",
+        instrument_source="ORIGINAL_OCCUPIED_SLOT",
+        path_kind="DIRECT_DOUBLE_PLAY_REVERSAL",
+        environment="LIVE",
+    )
+    limits = injected.venue_quantity_limits
+    acquisition = json.loads(injected.acquisition_decision_id or "null")
+    if not isinstance(acquisition, dict) or acquisition.get("cycle_id") != cycle_id:
+        raise ValueError("DIRECT_REVERSAL_ORDER_ACQUISITION_MISMATCH")
+    decision_time = datetime.fromisoformat(reversal.decision_epoch)
+    acquisition_time = datetime.fromisoformat(acquisition["decision_epoch"].replace("Z", "+00:00"))
+    if not 0 <= (decision_time - acquisition_time).total_seconds() <= NUMERIC_EQUITY_TTL_SECONDS:
+        raise ValueError("DIRECT_REVERSAL_ORDER_ACQUISITION_STALE")
+    admission = assess_n1_final_plan_venue_quantity_v1(
+        observation=limits,
+        plan=plan,
+        bound_instrument=bound,
+        account_identity=episode.account_scope.account_identity,
+        decision_epoch=acquisition["decision_epoch"],
+        cycle_id=cycle_id,
+        evaluated_at_utc=reversal.decision_epoch,
+    )
+    if not admission.allowed:
+        raise ValueError(admission.reason_codes[0])
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref=(
+            f"direct-reversal:{episode.lane_id}:portfolio-reservation:{reversal.old_reservation_id}"
+        ),
+        provenance_ref=digest,
+        creation_epoch=reversal.decision_epoch,
+    )
+    return {
+        "envelope": envelope.to_runtime_json_v1(),
+        "venue_quantity_admission": admission.to_dict(),
+    }
+
+
+def prepare_authenticated_net_reversal_post_v1(
+    *,
+    lane_pair,
+    recovery,
+    authenticated_entry,
+    authorization,
+    baseline_origin_main_sha,
+    execution_integrity_backend=None,
+):
+    """Consume the scoped grant and reserve a single PRE_SOCKET attempt."""
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
+        AuthorizationLifecycleLockV1,
+    )
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+        _occupied_close_attempt_root_v1,
+        bind_occupied_lane_governed_cycle_store_roots_v1,
+    )
+    from src.ops.execution_reconciliation_get_provenance_v1 import AuthenticatedReconciliationGetV1
+    from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
+        assert_post_durable_store_root_isolation_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+    )
+    from .current_productive_actual_venue_post_baseline_v1 import (
+        resolve_and_assert_live_post_execution_baseline_v1,
+    )
+    from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        POST_OWNER_GO,
+        load_durable_post_owner_go_consume_v1,
+        persist_durable_post_owner_go_consume_v1,
+    )
+    from .current_productive_governed_cycle_orchestrator_v1 import _load_ledger
+    from .current_productive_post_safety_veto_v1 import resolve_current_post_safety_context_v1
+    from .current_productive_shared_post_owner_authority_v1 import SharedPostOwnerAuthorizationV1
+    from .external_effect_permit_durable_consume_v1 import (
+        DURABLE_STATE_SENT_INITIATED,
+        claim_original_permit_transport_attempt_v1,
+        load_external_effect_durable_consume_v1,
+        persist_external_effect_durable_consume_v1,
+    )
+    from .external_effect_permit_v1 import issue_external_effect_permit_v1
+    from .final_order_envelope_v1 import FinalOrderEnvelopeV1, assert_envelope_unmodified_v1
+
+    action = "DIRECT_DOUBLE_PLAY_REVERSAL"
+    if (
+        type(recovery) is not HostBudgetRecoveryContextV1
+        or type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+        or type(authorization) is not SharedPostOwnerAuthorizationV1
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
+    slot, bound = lane_pair
+    lane = slot.lane_id
+    host = recovery.host
+    proof = authenticated_entry.proof
+    live_sha = resolve_and_assert_live_post_execution_baseline_v1(
+        declared_baseline_origin_main_sha=baseline_origin_main_sha,
+        integrity_backend=execution_integrity_backend,
+    )
+    cursor, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1({lane: lane_pair})[lane]
+    scope = read_occupied_scope_mark_snapshot_v1(Path(cursor))
+    if (
+        host.repository_sha != live_sha
+        or host.bindings != {lane: bound}
+        or scope is None
+        or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
+    ledger_root = _occupied_close_attempt_root_v1(
+        evidence, cycle_id=scope["mark"]["cycle_id"], lane_id=lane, authenticated=True
+    )
+    ledger = _load_ledger(ledger_root)
+    if (
+        ledger.get("state") != "COMPLETED"
+        or ledger.get("terminal_class") != "POSITION_MANAGEMENT_REVERSAL_ASSESSED"
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_REQUIRED")
+    reversal = DirectDoublePlayReversalV1.from_dict_v1(ledger["direct_reversal"])
+    envelope = FinalOrderEnvelopeV1(**ledger["direct_reversal_order"]["envelope"])
+    assert_envelope_unmodified_v1(envelope)
+    delta = reversal.signed_order_contracts
+    target_side = "long" if delta > 0 else "short"
+    if (
+        envelope.path_kind != action
+        or envelope.reduce_only
+        or envelope.pos_side != "net"
+        or envelope.order_type != "market"
+        or envelope.price
+        or envelope.quantity_unit != "CONTRACTS"
+        or envelope.instrument_id != bound.venue_native_id
+        or envelope.side != ("buy" if delta > 0 else "sell")
+        or reversal.current_contracts * reversal.target_contracts >= 0
+        or Decimal(envelope.quantity) != abs(delta)
+        or envelope.provenance_ref != reversal.digest_v1()
+        or envelope.admission_ref
+        != f"direct-reversal:{lane}:portfolio-reservation:{proof.reservation_id}"
+        or envelope.creation_epoch != reversal.decision_epoch
+        or ledger["direct_reversal_digest"] != reversal.digest_v1()
+        or ledger["direct_reversal_order"]["venue_quantity_admission"]["allowed"] is not True
+        or reversal.scope_digest != scope["digest"]
+        or reversal.scope_distance != Decimal(str(scope["snapshot"]["scope"]["d_t"]))
+        or reversal.protective_stop
+        != derive_protective_stop_price_from_adverse_exit_v0(
+            selected_side=target_side,
+            reference_price=reversal.reference_mark,
+            adverse_exit_distance=reversal.scope_distance,
+        )
+        or reversal.episode.episode_id != proof.identity_digest
+        or reversal.episode.lane_id != lane
+        or reversal.episode.instrument_id != bound.instrument_id
+        or reversal.episode.venue_native_id != bound.venue_native_id
+        or reversal.selection_digest != bound.selection_integrity_digest
+        or reversal.old_reservation_id != proof.reservation_id
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_MISMATCH")
+    if len(proof.identity_digest) != 64 or any(
+        c not in "0123456789abcdef" for c in proof.identity_digest
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_EPISODE_REQUIRED")
+    root = host.root / "position-episodes" / proof.identity_digest / "net-reversal-submit"
+    if root.resolve() != root or not root.parent.is_dir():
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_STORE_REQUIRED")
+    assert_post_durable_store_root_isolation_v1(store_root=root)
+    safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_NET_REVERSAL_ADMISSION")
+    if (
+        host.execution_incident_state_path is None
+        or Path(safety.state_path) != Path(host.execution_incident_state_path).resolve()
+    ):
+        raise ValueError("POST_AUTHORITY_REVERSAL_SAFETY_SOURCE_MISMATCH")
+
+    def inspect_bound_position():
+        entry = recovery.inspect_current_authenticated_entry_v1(lane_id=lane, proof=proof)
+        source = recovery.authenticated_reconciliation
+        epoch = datetime.fromisoformat(reversal.decision_epoch)
+        now = host.clock()
+        raw_position = json.dumps(
+            recovery.occupancy_payloads.get("POSITIONS"),
+            sort_keys=True,
+            separators=(",", ":"),
+            default=str,
+        )
+        if (
+            type(source) is not AuthenticatedReconciliationGetV1
+            or source.transport is not host.reconciliation_transport
+            or source.evidence.get(proof.reservation_id) != proof
+            or source.account_position_mode != "net_mode"
+            or source.position_margin_modes.get(proof.reservation_id) != (envelope.td_mode,)
+            or entry["envelope"]["td_mode"] != envelope.td_mode
+            or entry["reconciliation"]["reservation_released"] is not False
+            or reversal.episode.account_scope.execution_environment != "LIVE"
+            or reversal.episode.account_scope.account_identity != recovery.account
+            or any(
+                not 0 <= now - stamp <= recovery.observed.max_age_seconds
+                for stamp in (
+                    epoch.timestamp(),
+                    recovery.observed.event_time_unix,
+                    recovery.observed.wall_time_unix,
+                )
+            )
+            or read_occupied_scope_mark_snapshot_v1(Path(cursor)) != scope
+            or tuple((p.instrument_id, p.signed_quantity) for p in recovery.observed.positions)
+            != ((bound.instrument_id, reversal.current_contracts),)
+            or sha256(raw_position.encode()).hexdigest() != reversal.position_snapshot_digest
+        ):
+            raise ValueError("POST_AUTHORITY_REVERSAL_CURRENT_POSITION_UNPROVEN")
+        basis = host.owner.live_reversal_slot_basis_v1(
+            slot_id=lane, reservation_id=proof.reservation_id, bound=bound
+        )
+        if (
+            basis is None
+            or canonical_digest_v1(basis.to_dict()) != reversal.funding_digest
+            or basis.net_basis_usdc != reversal.slot_capital_basis_usdc
+        ):
+            raise ValueError("POST_AUTHORITY_REVERSAL_SLOT_CAPITAL_CHANGED")
+
+    lock = AuthorizationLifecycleLockV1.for_evidence_root(
+        evidence_root=root, authorization_id=proof.identity_digest, owner=action
+    )
+    lock.acquire()
+    try:
+        if (
+            load_durable_post_owner_go_consume_v1(store_root=root).get("consumed")
+            or load_external_effect_durable_consume_v1(store_root=root)["durable_consumed"]
+        ):
+            raise ValueError("POST_AUTHORITY_REVERSAL_ALREADY_CONSUMED")
+        inspect_bound_position()
+        veto = safety.inspect_v1(stage="BEFORE_NET_REVERSAL_POST_GO")
+        permit = issue_external_effect_permit_v1(
+            envelope,
+            authority_ref=POST_OWNER_GO,
+            kill_switch_blocked=veto.blocked,
+            durable_kill_switch_evidence_status=veto.evidence_status,
+            filegate_denied=veto.blocked,
+        )
+        claim = authorization.consume_v1(
+            account=recovery.account,
+            action=action,
+            envelope_digest=envelope.envelope_digest,
+            attempt_root=root,
+        )
+        persist_durable_post_owner_go_consume_v1(
+            store_root=root,
+            owner_go_token=POST_OWNER_GO,
+            baseline_origin_main_sha=live_sha,
+            shared_post_owner_claim_digest=claim.receipt_digest_v1(),
+        )
+        persist_external_effect_durable_consume_v1(
+            store_root=root,
+            permit=permit,
+            envelope=envelope,
+            durable_state=DURABLE_STATE_SENT_INITIATED,
+            post_count=0,
+            outcome="DIRECT_REVERSAL_PRE_SOCKET",
+        )
+        attempt = claim_original_permit_transport_attempt_v1(
+            store_root=root,
+            permit_id=permit.permit_id,
+            envelope_id=envelope.envelope_id,
+            envelope_digest=envelope.envelope_digest,
+        )
+        try:
+            safety.inspect_v1(stage="NET_REVERSAL_PRE_SOCKET")
+            inspect_bound_position()
+            claim.recheck_v1()
+        except (ValueError, RuntimeError, OSError):
+            attempt.abort_before_transport_v1(
+                reason_code="POST_AUTHORITY_REVERSAL_PRE_SOCKET_CHANGED"
+            )
+            raise
+        return attempt
+    finally:
+        lock.release()

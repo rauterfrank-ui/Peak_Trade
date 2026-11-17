@@ -807,6 +807,15 @@ def make_n1_occupied_lane_s5_runner_v1(
                 host_budget_recovery=context,
                 occupied_scope_mark_lane_id=LANE_ID,
                 authenticated_entry=entry,
+                refresh_reversal_pretrade=lambda: (
+                    resolve_live_29p_injected_for_productive_s5_cycle_v1(
+                        bound=_bound,
+                        fresh_pretrade_get_transport=fresh_pretrade_get_transport,
+                        productivity_root=cap24_productivity_root,
+                        decision_epoch=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        pretrade_cycle_id=f"{prefix}:{LANE_ID}",
+                    )
+                ),
             )[LANE_ID]
             result = lane.governed_cycle_result
             close = result.position_management_execution_handoff
