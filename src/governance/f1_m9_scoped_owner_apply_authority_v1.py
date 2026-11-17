@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
@@ -12,6 +13,7 @@ from src.governance.explicit_productive_authorization_v1 import (
     ExplicitProductiveAuthorizationResultV1,
 )
 from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
+    F1_M9_OWNER_APPLY_AUTHORIZER_IDENTITY,
     OwnerApplyAuthorizationInputV1,
     OwnerApplyAuthorizationRecordError,
     format_aware_utc_datetime_v1,
@@ -29,6 +31,9 @@ from src.governance.f1_m9_productive_apply_ledger_v1 import (
     assert_not_revoked_v1,
     assert_revocation_state_available_v1,
     find_apply_ledger_entry_v1,
+)
+from src.governance.f1_m9_productive_runtime_apply_start_owner_binding_v1 import (
+    evaluate_real_productive_apply_with_runtime_apply_start_precedence_v1,
 )
 from src.governance.governed_productive_configuration_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -164,6 +169,11 @@ def _validate_lineage_bindings_v1(
     contract_digest = str(target_contract.get("contract_digest") or "")
 
     checks: tuple[tuple[str, str, str], ...] = (
+        (
+            "authorizer_identity",
+            str(record.get("authorizer_identity") or ""),
+            F1_M9_OWNER_APPLY_AUTHORIZER_IDENTITY,
+        ),
         ("scoped_join_pair_id", str(record.get("scoped_join_pair_id") or ""), F1_M9_SCOPE_PAIR_ID),
         ("registry_digest", str(record.get("registry_digest") or ""), registry_digest),
         (
@@ -315,8 +325,11 @@ def validate_f1_m9_owner_apply_temporal_v1(
 
 def evaluate_f1_m9_scoped_owner_productive_apply_v1(
     request: F1M9ScopedOwnerApplyAdjudicationRequestV1,
+    *,
+    repo_root: Path | None = None,
+    execution_proof: bool = False,
 ) -> F1M9ScopedOwnerApplyAdjudicationResultV1:
-    """Fail-closed F1/M9 apply adjudication; explicit Owner Apply record required."""
+    """Adjudicate a scoped Owner Apply against the independent Owner decision."""
     reason_codes: list[str] = []
     now = request.evaluation_time_utc or datetime.now(timezone.utc)
     if now.tzinfo is None:
@@ -361,6 +374,32 @@ def evaluate_f1_m9_scoped_owner_productive_apply_v1(
 
     if reason_codes:
         return _deny(reason_codes)
+
+    if execution_proof is True:
+        from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
+            resolve_canonical_f1_m9_productive_apply_ledger_paths_v1,
+        )
+
+        try:
+            durable_paths = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(
+                repo_root=repo_root
+            )
+            if request.ledger_paths.apply_ledger_path.resolve() == durable_paths.apply_ledger_path:
+                return _deny(["EXECUTION_PROOF_REQUIRES_ISOLATED_APPLY_LEDGER"])
+        except (OSError, ValueError):
+            return _deny(["OWNER_APPLY_LEDGER_SCOPE_UNPROVEN"])
+    else:
+        try:
+            owner_binding = evaluate_real_productive_apply_with_runtime_apply_start_precedence_v1(
+                owner_apply_authorization_record_digest=apply_digest,
+                repo_root=repo_root,
+            )
+        except (OSError, ValueError):
+            return _deny(["OWNER_APPLY_AUTHORITY_DECISION_UNREADABLE"])
+        if not owner_binding.apply_permitted:
+            return _deny(
+                ["OWNER_APPLY_RECORD_NOT_BOUND_BY_OWNER_DECISION", *owner_binding.reason_codes]
+            )
 
     existing = find_apply_ledger_entry_v1(
         apply_ledger_path=request.ledger_paths.apply_ledger_path,

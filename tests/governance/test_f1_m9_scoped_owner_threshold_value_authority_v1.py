@@ -198,7 +198,8 @@ def _applied_configuration(artifacts: dict[str, Any], tmp_path: Path) -> Any:
             configuration=artifacts["configuration"],
             registry_digest=artifacts["registry_digest"],
             ledger_paths=paths,
-        )
+        ),
+        execution_proof=True,
     )
     assert result.productive_apply_authorized
     assert result.configuration_after_apply is not None

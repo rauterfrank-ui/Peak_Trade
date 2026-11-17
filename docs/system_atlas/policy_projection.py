@@ -257,9 +257,29 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
         "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
         "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960",
     ),
+    "src/governance/f1_m9_owner_apply_authorization_record_v1.py": (
+        "afacbec4a05131b514278940a25ecd4276f63f11d30d0ff3798470fe41f4d65c",
+        "8d4931570459765549bcd54f4a468dedb518e529af5aa2b0a50a7ab6db950555",
+    ),
+    "src/governance/f1_m9_productive_apply_execution_boundary_v1.py": (
+        "2042a614932c9ea06b2f1c52e9554183464107d88cc02f7c1b4ef39f32dfb12a",
+        "a6e87080209373061f9926326f91b075d5ee0a5b21474168a3a736daae94fb1c",
+    ),
     "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py": (
         "109cbc001d92daf042409b052530338cfa3575d057e5c3932fa4f07e3bb49279",
         "b6a6f0f877a05ac0083fa50bbbde4e5b78209aef2c73e14b2403de0fe988547b",
+    ),
+    "src/governance/f1_m9_scoped_owner_apply_authority_v1.py": (
+        "bbd03f7f131201c68e5a0d4e065b2f92428d34ca4d4c2cda486c81570181289b",
+        "0512872ea352b2b8d375c826394656a51490b0c23fe2e56273aef91233ac13eb",
+    ),
+    "src/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py": (
+        "130d501e6973da96c866f4705b3b81a79155951799c99afdd718b70e535a5677",
+        "dd238805e5c5587a0c6afae8a8f5125aa8aa72a2db7f7f70329d895449fba4bb",
+    ),
+    "src/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py": (
+        "f63e45854c36670664e79048c45cf63cf2be08a45d8ca474be83d92303b222c6",
+        "def572409eafb63fb62a6bfb75c29500517abed23aa87f583b8f6a33d1ca5d49",
     ),
     "src/governance/k1_opaque_signing_handle_governed_construction_v1.py": (
         "036b586eeefcd14ca54acfb18059a5aea3f17e374fad3bc41977e4a034ec2929",

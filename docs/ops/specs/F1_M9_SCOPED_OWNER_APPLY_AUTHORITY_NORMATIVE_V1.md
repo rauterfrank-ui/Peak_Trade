@@ -39,6 +39,16 @@ MATERIALIZED_GOVERNED_PRODUCTIVE_CONFIGURATION
 
 Explicit Productive Authorization **does not** imply Productive Apply.
 
+The scoped record must identify the F1/M9 Apply Owner. Before writing or
+replaying an apply ledger entry,
+the productive adjudicator also checks the exact authorization digest against the
+existing Owner decision. The digest computed from the request proves its content
+integrity. The Owner decision supplies the expected digest independently.
+`EXECUTION_PROOF` uses the scoped issuer and lineage checks with an isolated
+proof ledger.
+The productive threshold consumer independently requires the Owner-bound apply
+digest and the separately ratified threshold digest.
+
 Threshold/Numeric Value Authorization remains **separate**; `runtime_applied=true`
 does not ratify hot-path threshold effectiveness.
 
