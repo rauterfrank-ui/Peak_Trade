@@ -9,6 +9,7 @@ from typing import Any
 import pytest
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_OKX_INDEX_TICKERS,
     ProductiveCanonicalPriceProvenanceError,
     build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
 )
@@ -227,3 +228,56 @@ def test_no_synthetic_mark_without_public_get(tmp_path: Path) -> None:
         transport=transport,
     )
     assert source.poll() is None
+
+
+@pytest.mark.parametrize(
+    ("index_ids", "accepted"),
+    [
+        (["", "ETH-USD"], True),
+        (["ETH-USDT"], False),
+        ([""], False),
+        (["ETH-USD", "ETH-USD"], False),
+    ],
+)
+def test_xperp_poll_requires_matching_underlying_index(
+    tmp_path: Path, index_ids: list[str], accepted: bool
+) -> None:
+    native = "ETH-USD_UM_XPERP-310404"
+    index_endpoint = "/api/v5/market/index-tickers?instId=ETH-USD"
+    mark = {"code": "0", "data": [{"instId": native, "markPx": "1904.34", "ts": "1700000000000"}]}
+    index = {
+        "code": "0",
+        "data": [
+            {"instId": index_id, "idxPx": "1905.27" if index_id == "ETH-USD" else "1"}
+            for index_id in index_ids
+        ],
+    }
+    transport = _RoutingMockTransport(
+        {GET_PATH: CANDLES, ENDPOINT_PUBLIC_MARK_PRICE: mark, index_endpoint: index}
+    )
+    source = LiveFreshC1ContinuousObservationSourceV1(
+        cursor_store_root=tmp_path / "cold_lane",
+        evidence_root=tmp_path / "evidence",
+        run_id="xperp",
+        native_id=native,
+        transport=transport,
+    )
+    observation = source.poll()
+    assert index_endpoint in transport.calls
+    if not accepted:
+        assert observation is None
+        return
+
+    assert observation is not None
+    assert observation.mark_price_payload == mark
+    assert observation.index_tickers_payload == index
+    provenance = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+        mark_price_payload=observation.mark_price_payload,
+        venue_native_id=native,
+        index_from_index_tickers=observation.index_tickers_payload,
+        mark_acquired_at_utc="2023-11-14T22:13:20Z",
+    )
+    assert provenance.index_source == INDEX_SOURCE_OKX_INDEX_TICKERS
+    provenance.validate_against_cycle_inputs_v1(
+        mark_px=1904.34, index_px=1905.27, venue_native_id=native, observed_unix=1_700_000_000.0
+    )

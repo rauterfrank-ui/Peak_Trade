@@ -41,13 +41,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     ENDPOINT_PUBLIC_OPEN_INTEREST,
     extract_finalized_candle_closes_v1,
     extract_funding_rate_v1,
-    extract_index_px_from_index_tickers_payload_v1,
     extract_mark_and_index_from_payload_v1,
     extract_open_interest_v1,
     extract_position_truth_v1,
     extract_ticker_fields_v1,
     resolve_index_px_primary_secondary_tertiary_v1,
-    resolve_index_ticker_inst_id_v1,
     run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
@@ -55,6 +53,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_canonica
     INDEX_SOURCE_OKX_MARK_IDX_PX,
     INDEX_SOURCE_OKX_TICKER_IDX_PX,
     build_provenance_from_resolved_cmc_mark_and_index_v1,
+    extract_index_px_from_okx_index_tickers_v1,
+    resolve_okx_index_ticker_inst_id_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
@@ -398,7 +398,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 index_from_index_tickers=None,
             )
             if index_px is None and not market_blocker:
-                index_inst = resolve_index_ticker_inst_id_v1(native_id)
+                index_inst = resolve_okx_index_ticker_inst_id_v1(native_id)
                 index_payload, index_ticker_err = _transport_payload(
                     fresh_get_transport,
                     path=ENDPOINT_MARKET_INDEX_TICKERS,
@@ -408,8 +408,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 )
                 market_payloads["index_tickers_error"] = index_ticker_err
                 market_payloads["index_tickers_inst_id"] = index_inst
-                index_from_index_tickers = extract_index_px_from_index_tickers_payload_v1(
-                    index_payload, wanted=index_inst
+                index_from_index_tickers = extract_index_px_from_okx_index_tickers_v1(
+                    index_payload, venue_native_id=native_id
                 )
                 if isinstance(index_payload, dict):
                     index_tickers_payload = index_payload

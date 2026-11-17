@@ -168,7 +168,7 @@ Quellanker: `od_u01_p01_29p_sizing_mint_canonical_adjudication_v1`. SHA256: `f8b
 
 [src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py](../../../../src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py)
 
-Quellanker: `ProductiveCanonicalPriceProvenanceError`. SHA256: `fd375822c19258f1610d27ed2dc5d03a1a1eb303835eca0763aea4e81a1ee5e5`. Index: `INDEXED`.
+Quellanker: `ProductiveCanonicalPriceProvenanceError`. SHA256: `a880bff184cb6f675328c741f568a1ea24eeeb6e0e36c29d9b8521e728b75a6e`. Index: `INDEXED`.
 
 ## PUBLIC-MD-RUNTIME-POLICY-V1
 

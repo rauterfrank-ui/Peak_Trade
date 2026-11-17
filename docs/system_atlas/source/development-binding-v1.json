@@ -159,7 +159,7 @@
     {
       "path": "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
       "before_sha256": "d650d77e6e198c87397a4bec054d802c3f0dd380d049d1634ccc2b9432946a5a",
-      "sha256": "d25cfa1e0d28a0d6ebbca1a7e503f671e10edc321972eebf402be51922e02572"
+      "sha256": "abe2b706dc8c7a0a8a82bd83fe21688ebee2ebff1860d84094a45fa7dcb30a3d"
     },
     {
       "path": "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
@@ -1329,7 +1329,7 @@
     {
       "path": "docs/system_atlas/source/documentation-cleanup.json",
       "before_sha256": "0c25c1b261d874d84bc1fb71895b5b30ed37bcd326fe7c43b098c324bfa9c64d",
-      "sha256": "f1da5fc712551095894d060bb78de90cbfadbe9753ecdd9cdb1f75160b2a515a"
+      "sha256": "a9f66b8926e9a418eebce5085f43876c1422d23e65b0f51fd8cce99307b8868b"
     },
     {
       "path": "docs/system_atlas/source/policy-inventory.json",
@@ -2479,7 +2479,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
       "before_sha256": "cb7cd9839850753c39decd59c405d38159d1f8fd0de5862ebd5b49eeaad6adf0",
-      "sha256": "fd375822c19258f1610d27ed2dc5d03a1a1eb303835eca0763aea4e81a1ee5e5"
+      "sha256": "a880bff184cb6f675328c741f568a1ea24eeeb6e0e36c29d9b8521e728b75a6e"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
@@ -2589,7 +2589,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
       "before_sha256": "8595d3acadaf01693804404e795b210b08c36c338389bd3080c784706431a50e",
-      "sha256": "cd143030ef314c02ed4a122c2a3ba2e52fc8349f4836a8ccced06b2b0ca29b73"
+      "sha256": "e236bc62fb447e61b29ad82b82d849a040adf9544ba91a8db62948d9099eb2e7"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
@@ -2739,7 +2739,7 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
       "before_sha256": "02aeaf04f12b59f508862c4ca22e7554cbb0373279dcf6b6a59fc9ccaa0accd8",
-      "sha256": "1a5eeab1e66f7b0b8b71fcc09a3ca60c4d8e1e55639812483b0ce352906593c3"
+      "sha256": "ced29f4650352b804c8ce817e16f82f0a3120c957c46419153a0156d1754430e"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
@@ -4985,6 +4985,21 @@
       "path": "tests/ops/test_current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
       "sha256": "350de8c890b9f54367a091f1ccaf6cc75d3ea04806702aa37b92be88f4d633f1"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py",
+      "before_sha256": "75ef338c855142e5e47614a889dbce94ffefe281a33cf34b0ae40bf8e76c32f9",
+      "sha256": "017fd34cd68c0cdecbcc4842eddc55a5977f1ba3147ecfeb654f13e7e77f92eb"
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+      "before_sha256": "4dc6d6f154e4fd40d42af397963b547b17486df367f6b40ff9b0c54df839b9a6",
+      "sha256": "1409d3a97de5b306099545e06129d71a76ed18aef6801f92247f7710eb30de0e"
+    },
+    {
+      "path": "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py",
+      "before_sha256": "2724649008c3764d1642a28cb4463186c32eb942748fb32617eb89f4e23c2c63",
+      "sha256": "3c791790702f21f531987ccbc301a4ea55099a071f3a55eea14408443a5ee1ee"
     }
   ]
 }

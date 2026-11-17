@@ -35,6 +35,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     ProductiveCanonicalPriceProvenanceError,
     build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+    resolve_okx_index_ticker_inst_id_v1,
 )
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
     ENDPOINT_PUBLIC_MARK_PRICE,
@@ -42,7 +43,6 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_INDEX_TICKERS,
     extract_mark_and_index_from_payload_v1,
-    resolve_index_ticker_inst_id_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
@@ -148,7 +148,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             return None
         index_payload: Mapping[str, Any] | None = None
         if index_from_mark is None:
-            index_inst = resolve_index_ticker_inst_id_v1(native)
+            index_inst = resolve_okx_index_ticker_inst_id_v1(native)
             index_endpoint = f"{ENDPOINT_MARKET_INDEX_TICKERS}?instId={index_inst}"
             index_result = self.transport.get(
                 endpoint=index_endpoint,

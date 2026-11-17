@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import re
 from typing import Any, Mapping
 
 
@@ -29,6 +30,8 @@ INDEX_SOURCE_EXPLICIT_TEST_FIXTURE = "EXPLICIT_TEST_FIXTURE_INDEX"
 
 FINALIZATION_CURRENT = "CURRENT"
 TEMPORAL_DERIVED_CURRENT = "DERIVED_CURRENT_VALUE"
+
+_OKX_USD_XPERP = re.compile(r"([A-Z0-9]+-USD)_UM_XPERP-[0-9]{6}")
 
 FORBIDDEN_MARK_SOURCES = frozenset(
     {
@@ -163,6 +166,44 @@ class ProductiveCycleCanonicalPriceProvenanceV1:
         return event_unix
 
 
+def resolve_okx_index_ticker_inst_id_v1(venue_native_id: str) -> str:
+    """Resolve the index identity from the bound OKX contract identity."""
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        resolve_index_ticker_inst_id_v1,
+    )
+
+    native = str(venue_native_id or "").strip()
+    xperp = _OKX_USD_XPERP.fullmatch(native)
+    if xperp is not None:
+        return xperp.group(1)
+    return resolve_index_ticker_inst_id_v1(native)
+
+
+def extract_index_px_from_okx_index_tickers_v1(
+    payload: Mapping[str, Any] | None, *, venue_native_id: str
+) -> float | None:
+    """Bind an XPERP index response to its explicit underlying identity."""
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        extract_index_px_from_index_tickers_payload_v1,
+    )
+
+    native = str(venue_native_id or "").strip()
+    index_inst = resolve_okx_index_ticker_inst_id_v1(native)
+    if _OKX_USD_XPERP.fullmatch(native) is not None:
+        if not isinstance(payload, Mapping) or payload.get("code") != "0":
+            return None
+        rows = payload.get("data")
+        if not isinstance(rows, list):
+            return None
+        matches = [
+            row for row in rows if isinstance(row, Mapping) and row.get("instId") == index_inst
+        ]
+        if len(matches) != 1:
+            return None
+        payload = {"data": matches}
+    return extract_index_px_from_index_tickers_payload_v1(payload, wanted=index_inst)
+
+
 def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
     *,
     mark_price_payload: Mapping[str, Any],
@@ -174,11 +215,9 @@ def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
     """Resolve mark/index from OKX-shaped payloads with independent provenance."""
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
-        extract_index_px_from_index_tickers_payload_v1,
         extract_mark_and_index_from_payload_v1,
         extract_ticker_fields_v1,
         resolve_index_px_primary_secondary_tertiary_v1,
-        resolve_index_ticker_inst_id_v1,
     )
 
     native = str(venue_native_id or "").strip()
@@ -189,11 +228,8 @@ def build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
     )
     if mark_px is None:
         raise ProductiveCanonicalPriceProvenanceError("CMC_MARK_MISSING_FAIL_CLOSED")
-    index_inst = resolve_index_ticker_inst_id_v1(native)
-    index_from_index = (
-        extract_index_px_from_index_tickers_payload_v1(index_from_index_tickers, wanted=index_inst)
-        if index_from_index_tickers is not None
-        else None
+    index_from_index = extract_index_px_from_okx_index_tickers_v1(
+        index_from_index_tickers, venue_native_id=native
     )
     index_from_ticker_px = None
     if index_from_ticker is not None:
@@ -340,4 +376,6 @@ __all__ = [
     "build_explicit_test_fixture_price_provenance_v1",
     "build_provenance_from_governed_synthetic_close_mark_and_index_v1",
     "build_provenance_from_resolved_cmc_mark_and_index_v1",
+    "extract_index_px_from_okx_index_tickers_v1",
+    "resolve_okx_index_ticker_inst_id_v1",
 ]
