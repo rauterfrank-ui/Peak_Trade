@@ -37,6 +37,8 @@ _RECORD_FIELDS = frozenset(
     }
 )
 _BASELINE_SHA = re.compile(r"[0-9a-f]{40}")
+_CLAIM_DIGEST = re.compile(r"[0-9a-f]{64}")
+SHARED_POST_OWNER_CLAIM_FIELD = "shared_post_owner_claim_digest"
 _CONSUMED_AT_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
@@ -92,7 +94,14 @@ def load_durable_post_owner_go_consume_v1(*, store_root: Path | str | None) -> d
         ) from exc
     if not (
         isinstance(payload, dict)
-        and payload.keys() == _RECORD_FIELDS
+        and (
+            payload.keys() == _RECORD_FIELDS
+            or (
+                payload.keys() == _RECORD_FIELDS | {SHARED_POST_OWNER_CLAIM_FIELD}
+                and isinstance(payload[SHARED_POST_OWNER_CLAIM_FIELD], str)
+                and _CLAIM_DIGEST.fullmatch(payload[SHARED_POST_OWNER_CLAIM_FIELD])
+            )
+        )
         and payload["consumed"] is True
         and payload["retry_authorized"] is False
         and payload["second_post_authorized"] is False
@@ -123,6 +132,7 @@ def persist_durable_post_owner_go_consume_v1(
     store_root: Path | str,
     owner_go_token: str,
     baseline_origin_main_sha: str,
+    shared_post_owner_claim_digest: str | None = None,
 ) -> dict[str, Any]:
     """Atomically consume the POST Owner-GO before any transport-capable join."""
     if store_root is None:
@@ -141,6 +151,12 @@ def persist_durable_post_owner_go_consume_v1(
         "retry_authorized": False,
         "second_post_authorized": False,
     }
+    if shared_post_owner_claim_digest is not None:
+        if not isinstance(shared_post_owner_claim_digest, str) or not _CLAIM_DIGEST.fullmatch(
+            shared_post_owner_claim_digest
+        ):
+            raise CurrentProductiveActualVenuePostOwnerGoConsumeError("DURABLE_POST_GO_MALFORMED")
+        bound[SHARED_POST_OWNER_CLAIM_FIELD] = shared_post_owner_claim_digest
     _assert_no_secrets(bound)
     root = Path(store_root).resolve()
     path = durable_post_owner_go_path_v1(root)

@@ -70,6 +70,31 @@ survives process restart. The [original budget attempt](PORTFOLIO_OWNED_EXECUTIO
 tracks decision and transport lineage in its own store. [FILEGATE](FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md)
 provides the safety veto. These owners retain their respective scope.
 
+## Shared POST grant for ENTER and L10-Close
+
+Both direct POST entry points accept an explicit signed grant and a trusted,
+owner-provisioned store binding. The binding pins the local database path,
+store ID, issuer and Ed25519 public key independently of the signed grant.
+The grant binds its ID and validity window to the original account, OKX EEA,
+execution environment, action and exact envelope digest.
+
+One SQLite transaction checks the current grant and revocation state and
+consumes the grant ID. The commit precedes the local Owner-GO witness, permit
+consumption and K1 access. The local witness carries the claim digest, so
+admission and transport require the same claim and attempt. An authenticated
+revocation can block consumption or block the already consumed claim before
+dispatch. The final transaction immediately before the socket marks the one
+permitted dispatch. A process restart cannot obtain a new claim or send the
+same grant again. A crash can leave a grant consumed with no socket attempt.
+The original permit, Budget state and Reconciliation still record their own
+facts. An ambiguous send stays subject to the original Reconciliation.
+
+The existing manually bounded V1 path and historical witness readers retain
+their original contract. The shared path requires an explicitly provisioned,
+authoritative database on the submitting host. The implementation adds no
+standing issuer, host configuration or activation. The offline tests use
+generated keys, temporary stores and injected transport.
+
 A denied PRE_EXTERNAL policy proof blocks its policy admission. The explicit
 submit join calls the POST admission evaluator with a single-use permit for
 the same Owner-GO. That evaluator checks the durable Owner-GO consume record

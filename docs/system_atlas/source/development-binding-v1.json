@@ -1139,7 +1139,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
       "before_sha256": "7b5c49cd02520f0e11fcdba74bce9d33e7a4311b190d4fd9a38d0e2c64cf690a",
-      "sha256": "106b4540f2c39df98c47c9cc90b3ce43038a36decac3f16a6b2c03e7fec50185"
+      "sha256": "53394a62036a09febbe669d3e290c73c9e48c553e8f7e995ef5bcfc78e144f1f"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
@@ -1304,7 +1304,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "8724578829224e252b02c6982a463af4928a897bc7782e0b09c22df561454138"
+      "sha256": "0607f5a6713463c678622d436c4d76fac3ace0250987251936aad733413382bd"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1934,7 +1934,7 @@
     {
       "path": "src/governance/current_productive_real_venue_post_admission_v1.py",
       "before_sha256": "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
-      "sha256": "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960"
+      "sha256": "c3da330b045f6d7fc47c703f1a00c351547f9e586462ee021ea8094becfedfff"
     },
     {
       "path": "src/governance/f1_m9_owner_apply_authorization_record_v1.py",
@@ -2469,7 +2469,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
       "before_sha256": "7264cae74b6152f64383d5a5feccccd2ab5ec64c1474b2e728a9522ab691fe66",
-      "sha256": "c725f5fe6f0aabf17a1da72c37aa6a0742f6ad213a234ea978f32bb665ec627b"
+      "sha256": "56af54d58df023d1f7c94f10edf3458455ae94fc503c319b1da8954d9992987a"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
@@ -2529,7 +2529,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
       "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
-      "sha256": "42d09014165ea2be60702cf2572b006d64302010d0b98f4fe6b792aa060757dc"
+      "sha256": "dec8afc27523cc30924e682b519c0c1a99f4093fbf3eeafec26caaf7d66b85a8"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
@@ -2649,7 +2649,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
       "before_sha256": "9335d0c9085db0cfabcc0fc9884c0d0cda34401e66661b93f04984e22459c711",
-      "sha256": "c1b891fdd4c24ed04f7ffa0d35383ab6d111d26e8512d90ea90492ed2782f649"
+      "sha256": "aa26b3e235b30295b7f8cc3e9f375f2b8b23d5badc4f9b0e738da8a36c36356d"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
@@ -2704,7 +2704,7 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
       "before_sha256": "4dddc5395b5db70ebdbf3241ed92544514545d327cd3be87735056b8f64c3f7b",
-      "sha256": "c1a399b841251b3e547c62c8427e95ea02fe63498f4945ff0cfb1cc0353a22df"
+      "sha256": "ca88daa151f081d5e6b9f0e19ae9d46ac4f3edd9e6a8fe312cc561dbee9dd752"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
@@ -4274,7 +4274,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "1285d674b0b9285db04a7c3cca401f7e2bd7fd8e98512c2dcdd80884aad45b86"
+      "sha256": "302dcc7c667aab12379174dceda4cab3f92e7b361896afa8582a8d66a221d7b5"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -4975,6 +4975,16 @@
       "path": "uv.lock",
       "before_sha256": "2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2",
       "sha256": "3f522959780c4a36ba3cd739cb7b6edd5e96ee0cab3c5c64e5ffba413acba280"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py",
+      "before_sha256": null,
+      "sha256": "08b33db45ce3e64109827ce1180f413d1e042f24edc94c5e358a82524f9d3eb4"
+    },
+    {
+      "path": "tests/ops/test_current_productive_shared_post_owner_authority_v1.py",
+      "before_sha256": null,
+      "sha256": "0ef74657f3da7fbbed9ece301084f9be4534f18e1d63cc5199c0017512566877"
     }
   ]
 }

@@ -255,7 +255,7 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
     ),
     "src/governance/current_productive_real_venue_post_admission_v1.py": (
         "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
-        "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960",
+        "c3da330b045f6d7fc47c703f1a00c351547f9e586462ee021ea8094becfedfff",
     ),
     "src/governance/f1_m9_owner_apply_authorization_record_v1.py": (
         "afacbec4a05131b514278940a25ecd4276f63f11d30d0ff3798470fe41f4d65c",
