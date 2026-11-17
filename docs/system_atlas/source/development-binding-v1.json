@@ -1639,7 +1639,7 @@
     {
       "path": "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
       "before_sha256": "c949f8230aa92e549e95a2202f993120118f63a8b5cf875d56ccda08007e7624",
-      "sha256": "e8a12b1b5000382aca5e7ed81f150a639389cb833f8eb308ab8180e52fe598bc"
+      "sha256": "91b566108f0eb48333cdc40c83d57c9852b9c3259f9d240b37668e82f9e080d2"
     },
     {
       "path": "scripts/ops/run_end_to_end_verification.sh",
@@ -2969,7 +2969,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_factory_v1.py",
       "before_sha256": null,
-      "sha256": "d9b766afae0d3b7647532ace65aa780cb0f4c13cfa532e1461ca35db6e75bc64"
+      "sha256": "2c8388483b4486c671be90a501d74c566fb334b1b632a30afa1de21abb66e9a1"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
@@ -4019,7 +4019,7 @@
     {
       "path": "tests/ops/test_authenticated_net_reversal_booking_v1.py",
       "before_sha256": null,
-      "sha256": "b4d06dfe21bb162e13d9f89ca177eb28237c9941864a697ecd7b16fdbcb37ff6"
+      "sha256": "949b87ec87410a40640a07ff19241d72e19910acafb08dacd60c3441230fa64f"
     },
     {
       "path": "tests/ops/test_aws_export_smoke_contract.py",

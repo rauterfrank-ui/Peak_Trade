@@ -9,12 +9,18 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 from urllib.parse import urlencode
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+
+if TYPE_CHECKING:
+    from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyLedgerPathsV1
+    from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
+        F1M9ThresholdValueAuthorizationLedgerPathsV1,
+    )
 
 
 def _utc_iso() -> str:
@@ -28,19 +34,47 @@ def _build_f1_m9_evaluator(
     bound: Any,
     initialize_revocations: bool = True,
 ) -> Any:
-    from src.governance.current_productive_activation_policy_v1 import (
-        RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
-    )
     from src.governance.f1_m9_productive_apply_ledger_v1 import (
         F1M9ProductiveApplyLedgerPathsV1,
         initialize_empty_revocation_ledger_v1,
     )
-    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
-        evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
-    )
     from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
         F1M9ThresholdValueAuthorizationLedgerPathsV1,
         initialize_empty_threshold_revocation_ledger_v1,
+    )
+
+    apply_rev = ledger_root / "apply_rev.jsonl"
+    threshold_rev = ledger_root / "threshold_rev.jsonl"
+    if initialize_revocations:
+        ledger_root.mkdir(parents=True, exist_ok=True)
+        initialize_empty_revocation_ledger_v1(apply_rev)
+        initialize_empty_threshold_revocation_ledger_v1(threshold_rev)
+    return _build_f1_m9_evaluator_for_ledger_paths(
+        apply_ledger_paths=F1M9ProductiveApplyLedgerPathsV1(
+            apply_ledger_path=ledger_root / "apply.jsonl",
+            revocation_ledger_path=apply_rev,
+        ),
+        threshold_ledger_paths=F1M9ThresholdValueAuthorizationLedgerPathsV1(
+            threshold_ledger_path=ledger_root / "threshold.jsonl",
+            threshold_revocation_ledger_path=threshold_rev,
+        ),
+        g17_producers=g17_producers,
+        bound=bound,
+    )
+
+
+def _build_f1_m9_evaluator_for_ledger_paths(
+    *,
+    apply_ledger_paths: F1M9ProductiveApplyLedgerPathsV1,
+    threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1,
+    g17_producers: Mapping[str, object],
+    bound: Any,
+) -> Any:
+    from src.governance.current_productive_activation_policy_v1 import (
+        RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
+    )
+    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+        evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
     )
     from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
         GovernedF1M9ThresholdConsumerWiringRequestV1,
@@ -66,22 +100,10 @@ def _build_f1_m9_evaluator(
     )
     from trading.master_v2.double_play_futures_input import FuturesMarketType
 
-    apply_rev = ledger_root / "apply_rev.jsonl"
-    threshold_rev = ledger_root / "threshold_rev.jsonl"
-    if initialize_revocations:
-        ledger_root.mkdir(parents=True, exist_ok=True)
-        initialize_empty_revocation_ledger_v1(apply_rev)
-        initialize_empty_threshold_revocation_ledger_v1(threshold_rev)
     continuation = run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1(
         GovernedF1M9ThresholdConsumerWiringRequestV1(
-            apply_ledger_paths=F1M9ProductiveApplyLedgerPathsV1(
-                apply_ledger_path=ledger_root / "apply.jsonl",
-                revocation_ledger_path=apply_rev,
-            ),
-            threshold_ledger_paths=F1M9ThresholdValueAuthorizationLedgerPathsV1(
-                threshold_ledger_path=ledger_root / "threshold.jsonl",
-                threshold_revocation_ledger_path=threshold_rev,
-            ),
+            apply_ledger_paths=apply_ledger_paths,
+            threshold_ledger_paths=threshold_ledger_paths,
             repo_root=REPO_ROOT,
         )
     )
