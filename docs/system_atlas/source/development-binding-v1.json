@@ -132,6 +132,11 @@
       "sha256": "741e2aae36eb682d53f4d138f397512d0bdcb6eddd7eabe5328c0013ea1cdde8"
     },
     {
+      "path": "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md",
+      "before_sha256": "c93c44419b75ab76af21c0a3d7c103ce0ca0374e58bdf40b4bd826ecc240b33c",
+      "sha256": "89fcbb126a3c403c409a486478fd20808a0679990b9c0bc810a54fa12279271a"
+    },
+    {
       "path": "docs/ai/model_cards/README.md",
       "before_sha256": "b1e69e62c711ee4e1374009b285dfe51555ab3a9b1a9c66ca6c4847c2f1b68d0",
       "sha256": "9fff7702db4af95dffc0a880edeb6526e27e9bcaf1aa1e9e18ef0f49015ae4d5"
@@ -149,7 +154,7 @@
     {
       "path": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
       "before_sha256": "21f97d4e8ed323c9db9132640f6ed5c2375c7a76ff401c771a9b4314583642fb",
-      "sha256": "99cefea14fa9ac875ceb402c5970cdbdb8db118d71ec46ac3cd438c52921aeff"
+      "sha256": "defb0eed724d7cc833f719140c377bdabc5341c4862a55e5c53a4ea6235faa83"
     },
     {
       "path": "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
