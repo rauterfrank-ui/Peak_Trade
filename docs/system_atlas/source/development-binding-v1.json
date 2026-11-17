@@ -2982,6 +2982,11 @@
       "sha256": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d"
     },
     {
+      "path": "src/ops/n1_post_authority_startup_v1.py",
+      "before_sha256": null,
+      "sha256": "f41bd57cc273ae06412afada8ff17b9d3e26ca3161baa8a6d9cfbee5bb430fc2"
+    },
+    {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/evidence_v1.py",
       "before_sha256": "0039449a5fb3b52408993b7704913924181d4ef977cad16f6a3ee1ab36fbbd9b",
       "sha256": "6a1ab80cd4011ff5585369b341e5d90176f64e7034e12172a295b57c4ef660d7"
@@ -4449,7 +4454,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "edf99f3a5fc81c344190e0640e79d7ca0b0e01c41ff47029db2ad55def051e2c"
+      "sha256": "0ffec41c3d0c2b8ef9cdc917ffda150204b27c719b61ac7f3ba76f431b50c096"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

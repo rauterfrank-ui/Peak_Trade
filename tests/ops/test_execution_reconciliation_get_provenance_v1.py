@@ -2018,6 +2018,10 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-direct-funded", None),
         ("polled-mark-direct-funded-no-grant", None),
         ("polled-mark-direct-funded-foreign-grant", None),
+        ("polled-mark-direct-funded-manifest", None),
+        ("polled-mark-direct-funded-manifest-no-grant", None),
+        ("polled-mark-direct-funded-manifest-foreign-grant", None),
+        ("polled-mark-direct-funded-manifest-foreign-source", None),
         ("polled-mark-direct-stale-capital", None),
         ("occupied-mark-direct-stale-capital", None),
         ("occupied-mark", None),
@@ -2527,6 +2531,14 @@ def _assert_direct_reversal_dispatch(
     if after_timeout is not None:
         after_timeout(consumed["record"], root)
         return
+    _assert_reversal_stays_pending_in_fresh_process(
+        tmp_path, host, bound, proof, proof_root, envelope, authorization, consumed, root
+    )
+
+
+def _assert_reversal_stays_pending_in_fresh_process(
+    tmp_path, host, bound, proof, proof_root, envelope, authorization, consumed, root
+):
     before_restart = {
         path: path.read_bytes()
         for path in (
@@ -2624,7 +2636,7 @@ assert sender.post_count == 0
         "bound": bound.to_dict(),
         "envelope": envelope.to_runtime_json_v1(),
         "revision": host.repository_sha,
-        "account": context.account,
+        "account": host.account,
         "proof_root": str(proof_root),
         "attempt_root": str(root),
         "expected": {
@@ -2648,11 +2660,119 @@ assert sender.post_count == 0
     assert {path: path.read_bytes() for path in before_restart} == before_restart
 
 
+def _net_reversal_test_manifest_runner(tmp_path, monkeypatch, supervisor_args, authority):
+    from src.ops import n1_post_authority_startup_v1 as adapter
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+        PostOwnerAuthorityStoreV1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import unattended_v1 as unattended
+
+    request = dict(supervisor_args)
+    ports = {
+        key: request.pop(key)
+        for key in (
+            "observation_source",
+            "g17_producers",
+            "f1_m9_cycle_evaluator",
+            "private_rest_fetch",
+            "public_rest_fetch",
+        )
+    }
+    post_port = request.pop("net_reversal_post_port")
+    controller = tmp_path / "manifest-controller"
+    authority_config = {
+        "path": str(authority.path),
+        "store_id": authority.store_id,
+        "issuer_id": authority.issuer_id,
+        "verify_key": authority.verify_key.hex(),
+        "checkpoint_path": str(authority.checkpoint_path),
+    }
+
+    @contextmanager
+    def open_fixture_ports(_):
+        yield ports
+
+    def prepare_test_request(*, attempt_index, evidence_root, runtime_config):
+        assert attempt_index == 1
+        configured_store = PostOwnerAuthorityStoreV1(
+            path=Path(runtime_config["path"]),
+            store_id=runtime_config["store_id"],
+            issuer_id=runtime_config["issuer_id"],
+            verify_key=bytes.fromhex(runtime_config["verify_key"]),
+            checkpoint_path=Path(runtime_config["checkpoint_path"]),
+        )
+        prepared = unattended.PreparedN1RequestV1(
+            {**request, "config": replace(request["config"], evidence_root=evidence_root)},
+            "offline-admitted-n1-fixture",
+            open_fixture_ports,
+        )
+        return adapter.bind_occupied_n1_post_authority_v1(
+            prepared, authority=configured_store, port=post_port
+        )
+
+    # The real loader resolves the manifest against an unsealed source module.
+    # Only the fixture factory symbol exists in this test process.
+    monkeypatch.setattr(adapter, "prepare_test_request", prepare_test_request, raising=False)
+    prepared = prepare_test_request(
+        attempt_index=1,
+        evidence_root=controller / "attempts" / "1",
+        runtime_config=authority_config,
+    )
+    bounds = unattended.UnattendedHostBoundsV1(
+        host_id="offline-post-manifest",
+        repository_sha=request["origin_main_sha"],
+        runtime_config_digest=unattended.unattended_request_digest_v1(prepared),
+        expires_at_unix=datetime.now(timezone.utc).timestamp() + 90,
+        max_total_cycles=2,
+        max_total_seconds=45,
+        wait_interval_seconds=1,
+    )
+    manifest = tmp_path / "n1-post-test-manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema": "n1_unattended_host_service.v1",
+                "bounds": asdict(bounds),
+                "state_root": str(controller),
+                "repository_root": str(request["repo_root"]),
+                "runtime_factory": f"{adapter.__name__}:prepare_test_request",
+                "runtime_request_config": authority_config,
+            }
+        )
+    )
+    original_supervisor = unattended.run_n1_standing_pre_external_supervisor_v1
+    runs = []
+
+    def capture_result(**kwargs):
+        result = original_supervisor(**kwargs)
+        runs.append(result)
+        return result
+
+    monkeypatch.setattr(unattended, "run_n1_standing_pre_external_supervisor_v1", capture_result)
+
+    def run():
+        status = unattended.host_service_v1(manifest_path=manifest, action="run")
+        assert status["ok"] and status["result"]["status"] == "GOVERNED_RUNTIME_STOPPED", status
+        assert not status["service_activated"] and not status["external_effect_authorized"]
+        assert len(runs) == 1
+        result = runs[0]
+        if result.net_reversal_post is not None:
+            assert status["result"]["net_reversal_post"] == result.trace.extra["net_reversal_post"]
+            restarted = unattended.host_service_v1(manifest_path=manifest, action="run")
+            assert restarted == status and len(runs) == 1
+        return result
+
+    return run
+
+
 def _run_standing_net_reversal_offline(
     tmp_path, monkeypatch, host, proof, run_args, mark_time, in_flight, grant_case
 ):
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+        SharedPostOwnerAuthorityError,
     )
     from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import (
         startup_binding_v1,
@@ -2700,6 +2820,34 @@ def _run_standing_net_reversal_offline(
     grant_root = tmp_path / "reversal-grant"
     grant_root.mkdir()
     attempt_root = host.root / "position-episodes" / proof.identity_digest / "net-reversal-submit"
+    use_manifest = grant_case.startswith("-manifest")
+    grant_case = grant_case.removeprefix("-manifest")
+    measurement_scope = "offline test manifest" if use_manifest else "offline direct injection"
+    template = None
+    if use_manifest:
+        # Provision once before reading the mark. Signing uses only the exact
+        # final envelope and the already prepared test owner's signing key.
+        template, signing_key = signed_post_authorization(
+            grant_root.resolve(),
+            SimpleNamespace(envelope_digest="0" * 64),
+            account=host.account,
+            action="DIRECT_DOUBLE_PLAY_REVERSAL",
+        )
+
+    def issue(envelope):
+        if template is None:
+            return signed_post_authorization(
+                grant_root, envelope, account=host.account, action="DIRECT_DOUBLE_PLAY_REVERSAL"
+            )[0]
+        if grant_case == "-foreign-source":
+            other = tmp_path.resolve() / "foreign-post-authority"
+            other.mkdir()
+            return signed_post_authorization(
+                other, envelope, account=host.account, action="DIRECT_DOUBLE_PLAY_REVERSAL"
+            )[0]
+        grant = replace(template.grant, envelope_digest=envelope.envelope_digest)
+        signature = signing_key.sign(grant.signing_bytes_v1()).signature
+        return replace(template, grant=replace(grant, signature=signature))
 
     def ready(envelope):
         assert in_flight()
@@ -2707,20 +2855,13 @@ def _run_standing_net_reversal_offline(
         if grant_case == "-no-grant":
             return None
         if grant_case == "-foreign-grant":
-            authorization, _ = signed_post_authorization(
-                grant_root,
-                replace(envelope, envelope_digest="a" * 64),
-                account=host.account,
-                action="DIRECT_DOUBLE_PLAY_REVERSAL",
+            authorization = issue(replace(envelope, envelope_digest="a" * 64))
+        else:
+            authorization = issue(envelope)
+        if not grant_case:
+            print(
+                f"N1 mark to signed POST grant ({measurement_scope}): {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
             )
-            grants.append((envelope, authorization, host.owner.risk_snapshot_v1()))
-            return authorization
-        print(
-            f"N1 mark to ready-grant lookup (offline): {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
-        )
-        authorization, _ = signed_post_authorization(
-            grant_root, envelope, account=host.account, action="DIRECT_DOUBLE_PLAY_REVERSAL"
-        )
         grants.append((envelope, authorization, host.owner.risk_snapshot_v1()))
         return authorization
 
@@ -2728,7 +2869,7 @@ def _run_standing_net_reversal_offline(
         def open(self, request, timeout):
             assert in_flight(), "the sender waited for the original background reads"
             print(
-                f"N1 mark to simulated OKX socket: {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
+                f"N1 mark to simulated OKX socket ({measurement_scope}): {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
             )
             envelope, authorization, original = grants[0]
             record = load_external_effect_durable_consume_v1(store_root=attempt_root)["record"]
@@ -2785,15 +2926,29 @@ def _run_standing_net_reversal_offline(
             execution_integrity_backend=integrity,
         ),
     )
+
+    def run():
+        return n1.run_n1_standing_pre_external_supervisor_v1(**supervisor_args)
+
+    if use_manifest:
+        run = _net_reversal_test_manifest_runner(
+            tmp_path, monkeypatch, supervisor_args, template.authority
+        )
     if grant_case == "-foreign-grant":
         with pytest.raises(
             n1.StandingSupervisorError, match="N1_NET_REVERSAL_POST_GRANT_ENVELOPE_MISMATCH"
         ):
-            n1.run_n1_standing_pre_external_supervisor_v1(**supervisor_args)
+            run()
         assert len(offered) == 1 and not sent and not attempt_root.exists()
         assert not _claim_rows(grants[0][1])
         return None
-    result = n1.run_n1_standing_pre_external_supervisor_v1(**supervisor_args)
+    if grant_case == "-foreign-source":
+        with pytest.raises(SharedPostOwnerAuthorityError, match="N1_POST_SOURCE_BINDING_MISMATCH"):
+            run()
+        assert len(offered) == 1 and not sent and not attempt_root.exists()
+        assert not _claim_rows(template) and not _claim_rows(grants[0][1])
+        return None
+    result = run()
     if grant_case == "-no-grant":
         assert len(offered) == 1 and not sent and not attempt_root.exists()
         assert not result.ok and result.trace.post_count == 0 and result.net_reversal_post is None
@@ -2832,7 +2987,20 @@ def _run_standing_net_reversal_offline(
     assert pending["reservation_id"] == proof.reservation_id
     assert pending["envelope_digest"] == sent[0]
     assert not restarted.ok and restarted.net_reversal_post is None
-    assert len(grants) == len(sent) == 1
+    assert len(offered) == len(grants) == len(sent) == 1
+    if use_manifest:
+        envelope, authorization, _ = grants[0]
+        _assert_reversal_stays_pending_in_fresh_process(
+            tmp_path,
+            host,
+            bound,
+            proof,
+            kwargs["occupied_mark_proof_root"],
+            envelope,
+            authorization,
+            consumed,
+            attempt_root,
+        )
     return result.policy_result
 
 
@@ -3184,7 +3352,7 @@ def _assert_authenticated_occupied_mark_close(
                 )
         finally:
             release.set()
-        if grant_case == "-foreign-grant":
+        if grant_case.endswith(("-foreign-grant", "-foreign-source")):
             assert policy_result is None
             return
         run = policy_result.orchestrator_result
