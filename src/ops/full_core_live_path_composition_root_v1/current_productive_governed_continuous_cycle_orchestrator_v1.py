@@ -257,6 +257,7 @@ class ContinuousCycleRecordV1:
     envelope_identity: str = ""
     canonical_order_intent: Any | None = None
     position_management_execution_handoff: Any | None = None
+    position_management_reversal: Any | None = None
     # Original producer reference only; not owner recovery or submit admission.
     portfolio_reservation_id: str = ""
     execution_plan_context: Any | None = None
@@ -1440,6 +1441,9 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     canonical_order_intent=getattr(s5_result, "canonical_order_intent", None),
                     position_management_execution_handoff=getattr(
                         s5_result, "position_management_execution_handoff", None
+                    ),
+                    position_management_reversal=getattr(
+                        s5_result, "position_management_reversal", None
                     ),
                     envelope_identity=s5_result.envelope_identity,
                     portfolio_reservation_id=s5_result.extra.get("PORTFOLIO_RESERVATION_ID", ""),

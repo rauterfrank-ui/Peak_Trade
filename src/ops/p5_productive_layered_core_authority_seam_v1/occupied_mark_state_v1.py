@@ -53,6 +53,8 @@ def _occupied_scope_mark_snapshot_v1(text: str) -> dict[str, Any] | None:
         or not mark["position_episode_id"]
         or "pending_close_episode_id" not in mark
         or mark["pending_close_episode_id"] not in (None, mark["position_episode_id"])
+        or mark.get("pending_reversal_episode_id") not in (None, mark["position_episode_id"])
+        or (mark["pending_close_episode_id"] and mark.get("pending_reversal_episode_id"))
     ):
         raise NakedLayeredCoreDurableStateError("OCCUPIED_MARK_SNAPSHOT_INVALID")
     return body
@@ -81,6 +83,8 @@ def require_new_occupied_scope_mark_v1(
         raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_MARK_DUPLICATE")
     if mark["pending_close_episode_id"] == episode_id:
         raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_CLOSE_ALREADY_PLANNED")
+    if mark.get("pending_reversal_episode_id") == episode_id:
+        raise NakedLayeredCoreDurableStateError("OCCUPIED_SCOPE_REVERSAL_ALREADY_PLANNED")
     return [*mark["prices"], price] if event_unix == mark["event_unix"] else [price]
 
 

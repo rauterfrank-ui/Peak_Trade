@@ -125,15 +125,28 @@ def _verify(*, identity, session, fills, closed=False):
             type(time) not in (int, float) or not math.isfinite(time) or time <= 0
         ):
             raise ValueError("SIMULATED_ENTRY_INVALID_FILL_TIME")
-        result = replay.apply_fill(fill)
         original = frozen.applied_fill_results[fill.fill_id]
+        if original.action_code in {"REVERSE_TO_LONG", "REVERSE_TO_SHORT"}:
+            if not fill.fill_id.startswith("direct-reversal:") or replay.position is None:
+                raise ValueError("SIMULATED_ENTRY_ORIGINAL_NET_REVERSAL_REQUIRED")
+            current = replay.position.qty
+            if replay.position.side.value.upper() == "SHORT":
+                current = -current
+            target = current + (fill.quantity if fill.side == "BUY" else -fill.quantity)
+            result = replay.apply_simulated_net_reversal_v1(
+                fill,
+                current_contracts=current,
+                target_contracts=target,
+            )
+        else:
+            result = replay.apply_fill(fill)
         if (
             fill.digest() != original.fill_input_digest
             or result.accounting_output_digest != original.accounting_output_digest
             or result.action_code != original.action_code
         ):
             raise ValueError("SIMULATED_ENTRY_APPLIED_FILL_LINEAGE_MISMATCH")
-        if result.action_code in {"LONG_OPEN", "SHORT_OPEN"}:
+        if result.action_code in {"LONG_OPEN", "SHORT_OPEN", "REVERSE_TO_LONG", "REVERSE_TO_SHORT"}:
             opening = fill
         elif result.action_code in {"LONG_CLOSE", "SHORT_CLOSE"}:
             closed_opening = opening

@@ -14,7 +14,8 @@ DELTAS = POLICY["ORDERED_FUNDING_EPISODE_DELTAS"]
 LAW = json.loads((ROOT / "config/governance/current_law_impact_map_v1/source_v1.json").read_text())
 FROZEN = LAW["baseline_sha"]
 BASE = "304719c94030ff9aacdf2571e2ae56533f9e6a25"
-DOUBLE_PLAY_PARENT = "835185fb1c22055ff16ea198e7a4643bf8ecec4e"
+ORDERED_FUNDING_SUCCESSOR = "e2abdf73876b6f093347b27c4145b86cb7fc16c6"
+SCOPE_MARK_SUCCESSOR = "9a29abe83813bccfff1b78b6a636260daf6e1b3a"
 BINDING = ROOT / "docs/system_atlas/source/development-binding-v1.json"
 PRESERVED = (
     "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
@@ -37,7 +38,7 @@ def seed(root, *, original=False):
     for path in DELTAS:
         destination = root / path
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(git_bytes(FROZEN if original else DOUBLE_PLAY_PARENT, path))
+        destination.write_bytes(git_bytes(FROZEN if original else ORDERED_FUNDING_SUCCESSOR, path))
 
 
 @pytest.mark.parametrize("original", [True, False], ids=["frozen-originals", "reviewed-successor"])
@@ -87,7 +88,7 @@ def test_scope_source_successor_requires_the_complete_exact_reviewed_bundle(tmp_
         if source.is_file():
             destination = tmp_path / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            destination.write_bytes(git_bytes(DOUBLE_PLAY_PARENT, relative))
+            destination.write_bytes(git_bytes(SCOPE_MARK_SUCCESSOR, relative))
     parent, _successor = POLICY["CURRENT_SCOPE_MARK_ADMISSION_DELTAS"][path]
     if damage == "partial":
         (tmp_path / path).write_bytes(git_bytes("9d2ff67b0ccfdc16d9641900a10f00b3c61eac67", path))

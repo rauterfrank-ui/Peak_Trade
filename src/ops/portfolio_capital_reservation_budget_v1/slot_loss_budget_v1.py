@@ -346,3 +346,113 @@ def record_closed_locked(owner, request):
     net, exhausted = _summary(rows, policy.per_slot_test_loss_limit)
     owner._slot_test_economics[slot] = dict(records=rows, net_result_usdc=net, exhausted=exhausted)
     return True, _net_booking(result, net)
+
+
+def build_direct_reversal_booking_v1(owner, plan, ledger, before, fill, *, previous):
+    """Rebuild the settled result from the exact original fill and checkpoint."""
+    from src.ops.productive_futures_accounting_runtime_binding_v1.accounting_engine_v1 import (
+        ProductiveFuturesAccountingSessionV1,
+    )
+    from .durable_store_v1 import digest
+
+    episode = plan.episode
+    rid = plan.old_reservation_id
+    reservation = owner._by_key.get(owner._by_id.get(rid))
+    bound = owner._reservation_bindings.get(rid, {}).get("bound", {})
+    if (
+        episode.account_scope.account_identity != owner._account_identity
+        or episode.account_scope.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+        or reservation is None
+        or str(reservation.slot_id) != episode.lane_id
+        or bound.get("instrument_id") != episode.instrument_id
+        or bound.get("venue_native_id") != episode.venue_native_id
+        or bound.get("selection_id") != plan.selection_id
+        or bound.get("selection_integrity_digest") != plan.selection_digest
+        or before["contract"]["symbol"] != episode.venue_native_id
+        or fill.fill_id in before["fill_order"]
+    ):
+        raise ValueError("DIRECT_REVERSAL_ORIGINAL_BOOKING_SOURCE_MISMATCH")
+    if previous is not None:
+        ids = previous["after_fill_ids"]
+        if (
+            previous["plan"]["selection_digest"] != plan.selection_digest
+            or previous["plan"]["episode"]["instrument_id"] != episode.instrument_id
+            or before["fill_order"][: len(ids)] != ids
+            or any(
+                before["applied_fill_results"][fid]["fill_input_digest"] != expected
+                for fid, expected in previous["after_fill_digests"].items()
+            )
+        ):
+            raise ValueError("DIRECT_REVERSAL_SETTLEMENT_LINEAGE_MISMATCH")
+    elif owner._slot_test_economics[episode.lane_id]["records"]:
+        raise ValueError("DIRECT_REVERSAL_SETTLEMENT_BASELINE_REQUIRED")
+    accounting = ProductiveFuturesAccountingSessionV1.from_durable_dict(before)
+    outcome = plan.apply_simulated_fill_v1(ledger=ledger, accounting=accounting, fill=fill)
+    if outcome.idempotent_replay:
+        raise ValueError("DIRECT_REVERSAL_BOOKING_EXPECTED_ORIGINAL_FILL")
+    # Opening fees, funding and realized PnL belong to the slot. Carry
+    # cumulative native economics so the same fee is never attributed twice.
+    native = accounting.realized_pnl + accounting.funding_pnl - accounting.cumulative_fees
+    prior_native = Decimal(previous["settled_native_total"]) if previous else Decimal(0)
+    record = {
+        "plan": plan.to_dict_v1(),
+        "plan_digest": plan.digest_v1(),
+        "pre_fill_accounting": before,
+        "fill": fill.to_dict(),
+        "fill_digest": fill.digest(),
+        "after_fill_ids": list(accounting.fill_order),
+        "after_fill_digests": {
+            fid: result.fill_input_digest for fid, result in accounting.applied_fill_results.items()
+        },
+        "settled_native_total": str(native),
+        "net_result_usdc": str((native - prior_native) * plan.quote_to_usdc),
+        "accounting_output_digest": outcome.accounting_output_digest,
+    }
+    return {**record, "digest": digest(record)}, accounting, outcome
+
+
+def restore_direct_reversal_bookings_v1(owner, stored):
+    if stored == {}:
+        return {}
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+        DirectDoublePlayReversalV1,
+    )
+    from .slot_economic_source_v1 import _fill
+
+    if not isinstance(stored, dict) or stored and owner._slot_capital_allocation is None:
+        raise ValueError("DIRECT_REVERSAL_BOOKINGS_SCOPE_INVALID")
+    seen = set()
+    for slot, series in stored.items():
+        initial = owner._slot_capital_allocation["declaration"]["initial_usdc_by_slot"][slot]
+        basis = Decimal(initial)
+        previous = None
+        if not isinstance(series, list) or not series:
+            raise ValueError("DIRECT_REVERSAL_BOOKING_SERIES_INVALID")
+        for record in series:
+            plan = DirectDoublePlayReversalV1.from_dict_v1(record["plan"])
+            fill = _fill(record["fill"])
+            if (
+                plan.episode.lane_id != slot
+                or plan.digest_v1() in seen
+                or plan.slot_capital_basis_usdc != basis
+            ):
+                raise ValueError("DIRECT_REVERSAL_BOOKING_SEQUENCE_INVALID")
+            ledger = {
+                "state": "COMPLETED",
+                "direct_reversal": record["plan"],
+                "direct_reversal_digest": record["plan_digest"],
+            }
+            rebuilt, _, _ = build_direct_reversal_booking_v1(
+                owner,
+                plan,
+                ledger,
+                record["pre_fill_accounting"],
+                fill,
+                previous=previous,
+            )
+            if rebuilt != record:
+                raise ValueError("DIRECT_REVERSAL_BOOKING_READBACK_MISMATCH")
+            seen.add(plan.digest_v1())
+            basis += Decimal(record["net_result_usdc"])
+            previous = record
+    return json.loads(json.dumps(stored, allow_nan=False))

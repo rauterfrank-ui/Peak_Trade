@@ -163,7 +163,8 @@ def test_valid_scope_mark_at_the_original_five_slot_host_boundary(
             assert result.s7_invocation is not None, (
                 result.governed_cycle_result.first_genuine_blocker
             )
-            assert result.governed_cycle_result.position_management_execution_handoff is not None
+            assert result.governed_cycle_result.position_management_execution_handoff is None
+            assert result.governed_cycle_result.master_v2_decision == "reverse_short"
             assert result.governed_cycle_result.post_count == 0
             assert seals[bounds[target].instrument_id].switch_condition_met
             return
@@ -181,6 +182,7 @@ def test_valid_scope_mark_at_the_original_five_slot_host_boundary(
             assert seal.cm_t > seal.d_t * 0.4
             snapshot = read_occupied_scope_mark_snapshot_v1(root)
             assert snapshot["mark"]["pending_close_episode_id"] is None
+            assert snapshot["mark"]["pending_reversal_episode_id"] is None
             assert snapshot["snapshot"]["mechanical_step_count"] == before.mechanical_step_count + 1
             # Damage the replacement record while the old manifest is still present.
             # The occupied position must retain its cursor and stop.
@@ -225,8 +227,10 @@ def test_valid_scope_mark_at_the_original_five_slot_host_boundary(
                 for lane, bound in bounds.items()
                 if lane != target
             )
-            assert cycle.master_v2_decision == "reduce"
-            assert cycle.first_genuine_blocker == "REDUCE_RISK_RULE_REQUIRED"
+            # The C1 control shows the mechanical switch. A fresh occupied
+            # mark with original position evidence owns the order assessment.
+            assert cycle.master_v2_decision == "hold"
+            assert cycle.position_management_reversal is None
         assert all(
             item.governed_cycle_result.position_management_execution_handoff is None
             for item in results.values()

@@ -458,6 +458,63 @@ def resolve_current_productive_live_29p_adverse_exit_distance_v1(
     return float(distance), ()
 
 
+def read_29p_free_margin_evidence_v1(
+    *,
+    payload,
+    decision_epoch,
+    observed_at,
+    http_status,
+    body_sha256,
+    expected_uid,
+    age_seconds,
+) -> CurrentProductiveUsdcFreeMarginObservationV1:
+    """Bind the same scoped available-margin evidence for entry and occupied reversal."""
+    raw_obs = acquire_fresh_available_margin_observation_from_payload_v1(
+        pretrade_decision_id=decision_epoch,
+        payload=payload,
+        instrument_id=DEFAULT_INSTRUMENT_ID,
+        planned_td_mode=AVAILABLE_MARGIN_REQUIRED_TD_MODE,
+        observed_at_utc=observed_at,
+        endpoint=ENDPOINT,
+        http_status=http_status,
+        get_performed=True,
+        rest_host=REUSED_BINDING_REST_HOST,
+        auth_header_sent=True,
+        historical_reuse=False,
+        body_sha256=body_sha256 or _sha256_text(_canonical_json(dict(payload))),
+    )
+    validated = validate_fresh_available_margin_observation_v1(
+        raw_obs,
+        pretrade_decision_id=decision_epoch,
+        instrument_id=DEFAULT_INSTRUMENT_ID,
+        available_margin_domain=AVAILABLE_MARGIN_OUTPUT_DOMAIN,
+        planned_td_mode=AVAILABLE_MARGIN_REQUIRED_TD_MODE,
+    )
+    digest = (
+        body_sha256
+        or str(raw_obs.body_sha256 or "")
+        or _sha256_text(_canonical_json(dict(payload)))
+    )
+    return CurrentProductiveUsdcFreeMarginObservationV1(
+        fact_id=OBSERVATION_FACT_ID,
+        surface=OBSERVATION_SURFACE,
+        value=str(validated.avail_eq_raw),
+        settlement_currency=AVAILABLE_MARGIN_REQUIRED_CCY,
+        selected_ccy=validated.selected_ccy,
+        bound_account_identity=expected_uid,
+        bound_venue_identity="okx",
+        bound_td_mode="cross",
+        decision_epoch=decision_epoch,
+        observed_at_as_of=observed_at,
+        age_seconds=age_seconds,
+        freshness_max_age=str(NUMERIC_EQUITY_TTL_SECONDS),
+        provenance_digest=digest,
+        already_net_of_in_use=TRUE_TOKEN,
+        account_level_avail_eq_used=FALSE_TOKEN,
+        fallback_chain_used=FALSE_TOKEN,
+    )
+
+
 def _classify_fail_status(reasons: tuple[str, ...], *, error_class: str) -> str:
     joined = " ".join(reasons) + " " + str(error_class or "")
     if "STALE" in joined:
@@ -1011,49 +1068,14 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
 
     observation = None
     try:
-        raw_obs = acquire_fresh_available_margin_observation_from_payload_v1(
-            pretrade_decision_id=decision_epoch,
+        observation = read_29p_free_margin_evidence_v1(
             payload=payload,
-            instrument_id=DEFAULT_INSTRUMENT_ID,
-            planned_td_mode=AVAILABLE_MARGIN_REQUIRED_TD_MODE,
-            observed_at_utc=observed_at,
-            endpoint=ENDPOINT,
-            http_status=http_status,
-            get_performed=True,
-            rest_host=REUSED_BINDING_REST_HOST,
-            auth_header_sent=True,
-            historical_reuse=False,
-            body_sha256=body_sha256 or _sha256_text(_canonical_json(dict(payload))),
-        )
-        validated = validate_fresh_available_margin_observation_v1(
-            raw_obs,
-            pretrade_decision_id=decision_epoch,
-            instrument_id=DEFAULT_INSTRUMENT_ID,
-            available_margin_domain=AVAILABLE_MARGIN_OUTPUT_DOMAIN,
-            planned_td_mode=AVAILABLE_MARGIN_REQUIRED_TD_MODE,
-        )
-        digest = (
-            body_sha256
-            or str(raw_obs.body_sha256 or "")
-            or _sha256_text(_canonical_json(dict(payload)))
-        )
-        observation = CurrentProductiveUsdcFreeMarginObservationV1(
-            fact_id=OBSERVATION_FACT_ID,
-            surface=OBSERVATION_SURFACE,
-            value=str(validated.avail_eq_raw),
-            settlement_currency=AVAILABLE_MARGIN_REQUIRED_CCY,
-            selected_ccy=validated.selected_ccy,
-            bound_account_identity=expected_uid,
-            bound_venue_identity="okx",
-            bound_td_mode="cross",
             decision_epoch=decision_epoch,
-            observed_at_as_of=observed_at,
+            observed_at=observed_at,
+            http_status=http_status,
+            body_sha256=body_sha256,
+            expected_uid=expected_uid,
             age_seconds=age_seconds,
-            freshness_max_age=str(NUMERIC_EQUITY_TTL_SECONDS),
-            provenance_digest=digest,
-            already_net_of_in_use=TRUE_TOKEN,
-            account_level_avail_eq_used=FALSE_TOKEN,
-            fallback_chain_used=FALSE_TOKEN,
         )
     except (LiveCanaryAvailableMarginObservationError, TypeError, ValueError, KeyError) as exc:
         return _deny(

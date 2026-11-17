@@ -204,6 +204,25 @@ DOUBLE_PLAY_POLICY_DELTAS = {
     ),
 }
 
+# Occupied-scope reversal and simulated booking readback, without send authority.
+DIRECT_REVERSAL_SOURCE = (
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py"
+)
+DIRECT_REVERSAL_POLICY_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "54b3e4304c56871e332cde526d052158ad4bd693f8c401d24a4a45a7350d9d14",
+        "10b4338fd08e8b2136868f3545160b9c6bfa2d78d2131c34e20c9ead73789363",
+    ),
+    "src/ops/exit_policy_producer_binding_v1/simulated_accounting_entry_source_v1.py": (
+        "946c35e6c540024679f1a8fb53c9e4b557e5f41ec13972557a1a8f89f52ea769",
+        "4b6c4da6fa80edf61b020f9ae770216c08c4e2d1582b2f2cbbe1a0b2bcc4c628",
+    ),
+    DIRECT_REVERSAL_SOURCE: (
+        None,
+        "2bfaed9ec981285859990bbee35916e762b25f722fc404673b340f4e04379c28",
+    ),
+}
+
 
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
@@ -333,26 +352,40 @@ def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> 
 
 
 def _uses_double_play_policy_bundle(root: Path) -> bool:
+    expected = {path: after for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items()}
+    direct = (root / DIRECT_REVERSAL_SOURCE).is_file()
+    if direct:
+        expected[DIRECT_REVERSAL_SOURCE] = None
+        for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items():
+            expected.setdefault(path, after)
+        expected = _exact_double_play_successor(expected, DIRECT_REVERSAL_POLICY_DELTAS)
     actual = {}
-    for path in DOUBLE_PLAY_POLICY_DELTAS:
+    for path in expected:
         source = root / path
         actual[path] = hashlib.sha256(source.read_bytes()).hexdigest() if source.is_file() else None
-    if not any(actual[path] == after for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items()):
+    if not direct and not any(actual[path] == after for path, after in expected.items()):
         return False
-    for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items():
+    for path, after in expected.items():
         if actual[path] != after:
             raise ValueError("DOUBLE_PLAY_POLICY_REVIEWED_BUNDLE_REQUIRED:" + path)
     return True
 
 
-def _double_play_bundle_successor(parent: dict[str, str | None]) -> dict[str, str | None]:
+def _exact_double_play_successor(parent, deltas):
     successor = dict(parent)
-    for path in parent.keys() & DOUBLE_PLAY_POLICY_DELTAS.keys():
-        before, after = DOUBLE_PLAY_POLICY_DELTAS[path]
+    for path in parent.keys() & deltas.keys():
+        before, after = deltas[path]
         if parent[path] != before:
             raise ValueError("DOUBLE_PLAY_POLICY_PARENT_INVALID:" + path)
         successor[path] = after
     return successor
+
+
+def _double_play_bundle_successor(root, parent):
+    expected = _exact_double_play_successor(parent, DOUBLE_PLAY_POLICY_DELTAS)
+    if (root / DIRECT_REVERSAL_SOURCE).is_file():
+        expected = _exact_double_play_successor(expected, DIRECT_REVERSAL_POLICY_DELTAS)
+    return expected
 
 
 def validate_reserved_slot_rotation_bundle(
@@ -380,7 +413,7 @@ def validate_reserved_slot_rotation_bundle(
             raise ValueError("CURRENT_SCOPE_MARK_ADMISSION_PARENT_INVALID:" + path)
         scope_bound_after[path] = successor
     accepted = (
-        (_double_play_bundle_successor(scope_bound_after),)
+        (_double_play_bundle_successor(root, scope_bound_after),)
         if double_play
         else (before, after, protected_after, scope_bound_after)
     )
@@ -404,7 +437,7 @@ def validate_ordered_funding_episode_bundle(
         return
     expected = {path: after for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items()}
     if double_play:
-        expected = _double_play_bundle_successor(expected)
+        expected = _double_play_bundle_successor(root, expected)
     for path, digest in expected.items():
         if actual[path] != digest:
             raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)

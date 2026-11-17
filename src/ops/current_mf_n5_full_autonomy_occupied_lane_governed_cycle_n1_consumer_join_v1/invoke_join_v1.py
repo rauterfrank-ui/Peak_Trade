@@ -453,7 +453,11 @@ def _scope_switch_close_binding_v1(
     expected_regimes = {"long": ("bull", "bear"), "short": ("bear", "bull")}
     if (
         scope is None
-        or scope["mark"]["pending_close_episode_id"] != identity.episode_id
+        or identity.episode_id
+        not in (
+            scope["mark"]["pending_close_episode_id"],
+            scope["mark"].get("pending_reversal_episode_id"),
+        )
         or scope["mark"].get("switch_condition_met") is not True
         or scope["snapshot"]["snapshot_id"] != snapshot.snapshot_id
         or (scope["mark"].get("regime_pre"), snapshot.regime.value)
@@ -878,6 +882,8 @@ def _t2_from_s7(
             close_intent = None
             close_quantity_decision = None
             close_execution_handoff = None
+            reversal = None
+            reversal_requested = False
             occupied_scope_close_binding = None
             close_plan_reasons = ()
             if action_pending:
@@ -903,6 +909,68 @@ def _t2_from_s7(
                     replay=replay,
                     metadata=metadata,
                 )
+                policy = replay.intermediate.entry_exit_decision
+                if (
+                    outcome == "exit"
+                    and s7_base.get("occupied_scope_mark")
+                    and policy.exit_class.value == "strategy_invalidation_exit"
+                    and any(
+                        reason.startswith("l10_scope_switch_exit:")
+                        for reason in policy.reason_codes
+                    )
+                ):
+                    from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+                        assess_direct_double_play_reversal_v1,
+                    )
+                    from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+                        read_occupied_scope_mark_snapshot_v1,
+                    )
+
+                    cursor_root = Path(lane_pairs[lane_id][0].lane_state_root)
+                    episode = s7_base["position_episode_bindings"][lane_id]
+                    mark_snapshot = read_occupied_scope_mark_snapshot_v1(cursor_root)
+                    # Old snapshots can still finish the original Close lifecycle.
+                    reversal_requested = (
+                        mark_snapshot is None
+                        or mark_snapshot["mark"]["pending_close_episode_id"] is None
+                    )
+                    if reversal_requested:
+                        outcome = (
+                            "reverse_short"
+                            if episode.identity.position_side == "long"
+                            else "reverse_long"
+                        )
+                        try:
+                            binding = _occupied_scope_close_binding_v1(
+                                lane_identity=position_management_ingress.identity,
+                                episode=episode,
+                                cursor_root=cursor_root,
+                            )
+                            if (
+                                "l10_scope_switch_exit:" + binding["scope_seal_id"]
+                                not in policy.reason_codes
+                            ):
+                                raise ValueError("DIRECT_REVERSAL_ORIGINAL_SCOPE_REQUIRED")
+                            config_rows = (position_management_config_payload or {}).get("data", [])
+                            if len(config_rows) != 1 or config_rows[0].get("posMode") != "net_mode":
+                                raise ValueError("DIRECT_REVERSAL_NET_MODE_REQUIRED")
+                            reversal = assess_direct_double_play_reversal_v1(
+                                episode=episode,
+                                bound=bound,
+                                cursor_root=cursor_root,
+                                scope_binding=binding,
+                                position=position_management_ingress.position,
+                                metadata=metadata,
+                                mark=s7_base["canonical_price_provenance"],
+                                epoch=datetime.fromtimestamp(
+                                    float(s7_base["observed_unix"]), tz=timezone.utc
+                                ).isoformat(),
+                                recovery=host_budget_recovery,
+                                owner=portfolio_budget_owner,
+                                injected=live_29p_injected,
+                            )
+                        except (ValueError, OSError, ArithmeticError, RuntimeError) as exc:
+                            close_plan_reasons = (str(exc),)
                 if outcome == "exit":
                     close_handoff = compose_position_management_full_close_intent_v1(
                         **quantity_args
@@ -966,7 +1034,7 @@ def _t2_from_s7(
                             close_execution_handoff = PositionManagementExecutionHandoffV1(
                                 source=close_handoff, envelope=envelope, l10_close=l10_close
                             )
-                else:
+                elif not reversal_requested:
                     quantity_handoff = bind_position_management_quantity_handoff_v1(**quantity_args)
                     # Missing metadata or a rejected quantity binding precedes
                     # the still-unbound reduction rule. Preserve that owner's
@@ -988,7 +1056,11 @@ def _t2_from_s7(
             return SimpleNamespace(
                 runtime_cycle_count="1",
                 decision_result=(
-                    "POSITION_MANAGEMENT_VENUE_PLAN_BOUND"
+                    "POSITION_MANAGEMENT_REVERSAL_ASSESSED"
+                    if reversal is not None
+                    else "POSITION_MANAGEMENT_REVERSAL_PENDING"
+                    if reversal_requested
+                    else "POSITION_MANAGEMENT_VENUE_PLAN_BOUND"
                     if close_execution_handoff is not None
                     else "POSITION_MANAGEMENT_ACTION_PENDING"
                     if action_pending
@@ -1001,6 +1073,7 @@ def _t2_from_s7(
                 final_envelope_digest=(envelope.envelope_digest if close_execution_handoff else ""),
                 final_order_envelope=(envelope if close_execution_handoff else None),
                 position_management_execution_handoff=close_execution_handoff,
+                position_management_reversal=reversal,
                 occupied_scope_close_binding=occupied_scope_close_binding,
                 canonical_order_intent=close_intent if close_execution_handoff else None,
                 permit_created=_FALSE,
