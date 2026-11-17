@@ -1289,7 +1289,7 @@
     {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
-      "sha256": "73ce17347f9ca2b32295be1800c87955a499096d9bcc094b4bcabf278b22b62f"
+      "sha256": "91d61f72a644c3139b73c2a0de9a03ecc8727552b037fe4f2acbbff0f8d61065"
     },
     {
       "path": "docs/system_atlas/current_atlas.py",
@@ -3979,7 +3979,7 @@
     {
       "path": "tests/ops/conftest.py",
       "before_sha256": "f07b06b59fdcc603c6d71e5cd9b93e5708fea6cd7cc3f1c9a85c09bec839ef80",
-      "sha256": "1b56430022c9da833c3212014008e9f4dce76ef516d7e15c8183338830d5cb4a"
+      "sha256": "6f5605bd0804d6d54662577ef4463d35d6cdefcfb38bef4dfa86c9d8189bf77c"
     },
     {
       "path": "tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py",
@@ -4867,9 +4867,14 @@
       "sha256": "80a8628b5c08b97ae6ec0e7afaf5aeff7cc6ae90c2f1e29a35d4a57fd5ea556a"
     },
     {
+      "path": "tests/ops/test_system_atlas_impact_v1.py",
+      "before_sha256": "bb291bfa0889e3cae3a12ff4f31303560cb18ac667a61447a9cd6e7365dc15e7",
+      "sha256": "7caed268ae23996fe595b85424b42d1f81a6e70b99026d00203ca83c754d80e8"
+    },
+    {
       "path": "tests/ops/test_system_atlas_v1.py",
       "before_sha256": "035096c4006ed1179f89e7cbedb86ba652cd1053e3b028179dd098a80aaae95d",
-      "sha256": "bfa65499d9ea5f4f16803cd5bd3d9d575d2aede9f2e316b9a3ba204f02756dda"
+      "sha256": "298f13d2538c5ed064d0c1a2a6c800841e5195e4319f6d9f859697abbc9b7c51"
     },
     {
       "path": "tests/ops/test_test_phase_slot_loss_budget_v1.py",

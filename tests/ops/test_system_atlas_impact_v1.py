@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from scripts.ops.system_atlas_v1.impact_v1 import (
     ATLAS_IMPACT_NONE_WITH_PROOF,
     ATLAS_IMPACT_REVIEW_REQUIRED,
@@ -16,16 +18,19 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 ELIGIBILITY = "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py"
 
 
-def test_empty_diff_is_none_with_proof() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+@pytest.fixture(scope="module")
+def atlas(legacy_repo_root: Path) -> dict:
+    return load_atlas_v1(repo_root=legacy_repo_root)
+
+
+def test_empty_diff_is_none_with_proof(atlas: dict) -> None:
     report = classify_atlas_impact_v1(atlas=atlas, changed_files=[])
     assert report.impact == ATLAS_IMPACT_NONE_WITH_PROOF
     assert report.drift_detected is False
     assert report.review_required_items == []
 
 
-def test_unrelated_docs_are_none_with_proof() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_unrelated_docs_are_none_with_proof(atlas: dict) -> None:
     report = classify_atlas_impact_v1(
         atlas=atlas,
         changed_files=["README.md", "docs/ops/registry/TRUTH_CORE.md"],
@@ -34,8 +39,7 @@ def test_unrelated_docs_are_none_with_proof() -> None:
     assert report.drift_detected is False
 
 
-def test_tracked_runtime_without_atlas_yaml_is_review_required() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_tracked_runtime_without_atlas_yaml_is_review_required(atlas: dict) -> None:
     report = classify_atlas_impact_v1(atlas=atlas, changed_files=[ELIGIBILITY])
     assert report.impact == ATLAS_IMPACT_REVIEW_REQUIRED
     assert report.drift_detected is True
@@ -47,8 +51,7 @@ def test_tracked_runtime_without_atlas_yaml_is_review_required() -> None:
     )
 
 
-def test_tracked_runtime_with_entity_id_in_yaml_diff_is_updated() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_tracked_runtime_with_entity_id_in_yaml_diff_is_updated(atlas: dict) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/entities/catalog.yaml "
         "b/docs/system_atlas/entities/catalog.yaml\n"
@@ -69,8 +72,9 @@ def test_tracked_runtime_with_entity_id_in_yaml_diff_is_updated() -> None:
     assert report.review_required_items == []
 
 
-def test_deleted_runtime_paths_removed_in_atlas_yaml_are_not_material_untracked() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_deleted_runtime_paths_removed_in_atlas_yaml_are_not_material_untracked(
+    atlas: dict,
+) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/entities/catalog.yaml "
         "b/docs/system_atlas/entities/catalog.yaml\n"
@@ -97,8 +101,7 @@ def test_deleted_runtime_paths_removed_in_atlas_yaml_are_not_material_untracked(
     assert report.drift_detected is False
 
 
-def test_material_untracked_src_ops_is_review_required() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_material_untracked_src_ops_is_review_required(atlas: dict) -> None:
     report = classify_atlas_impact_v1(
         atlas=atlas,
         changed_files=["src/ops/definitely_not_in_atlas_census_v1.py"],
@@ -107,8 +110,7 @@ def test_material_untracked_src_ops_is_review_required() -> None:
     assert any(item.startswith("MATERIAL_UNTRACKED:") for item in report.review_required_items)
 
 
-def test_stale_generated_views_fail_closed() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_stale_generated_views_fail_closed(atlas: dict) -> None:
     report = classify_atlas_impact_v1(
         atlas=atlas,
         changed_files=["docs/system_atlas/entities/catalog.yaml"],
@@ -120,8 +122,7 @@ def test_stale_generated_views_fail_closed() -> None:
     assert report.drift_detected is True
 
 
-def test_atlas_yaml_only_is_updated() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_atlas_yaml_only_is_updated(atlas: dict) -> None:
     report = classify_atlas_impact_v1(
         atlas=atlas,
         changed_files=["docs/system_atlas/entities/catalog.yaml"],
@@ -138,8 +139,7 @@ def test_truth_gates_run_atlas_impact_checker() -> None:
     assert "name: docs-drift-guard" in text
 
 
-def test_true_atlas_entity_id_in_entity_record_diff_is_detected() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_true_atlas_entity_id_in_entity_record_diff_is_detected(atlas: dict) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/entities/catalog.yaml "
         "b/docs/system_atlas/entities/catalog.yaml\n"
@@ -155,8 +155,7 @@ def test_true_atlas_entity_id_in_entity_record_diff_is_detected() -> None:
     assert report.impact == ATLAS_IMPACT_UPDATED
 
 
-def test_tracked_runtime_without_yaml_remains_review_required() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_tracked_runtime_without_yaml_remains_review_required(atlas: dict) -> None:
     report = classify_atlas_impact_v1(atlas=atlas, changed_files=[ELIGIBILITY])
     assert report.impact == ATLAS_IMPACT_REVIEW_REQUIRED
     assert any(
@@ -164,8 +163,7 @@ def test_tracked_runtime_without_yaml_remains_review_required() -> None:
     )
 
 
-def test_reconciliation_search_anchors_are_not_atlas_entities() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_reconciliation_search_anchors_are_not_atlas_entities(atlas: dict) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/reconciliation/search_anchors.yaml "
         "b/docs/system_atlas/reconciliation/search_anchors.yaml\n"
@@ -190,8 +188,7 @@ def test_reconciliation_search_anchors_are_not_atlas_entities() -> None:
     assert report.drift_detected is False
 
 
-def test_reconciliation_schema_id_is_not_atlas_schema_entity() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_reconciliation_schema_id_is_not_atlas_schema_entity(atlas: dict) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/reconciliation/schema.yaml "
         "b/docs/system_atlas/reconciliation/schema.yaml\n"
@@ -211,8 +208,7 @@ def test_reconciliation_schema_id_is_not_atlas_schema_entity() -> None:
     assert report.impact == ATLAS_IMPACT_UPDATED
 
 
-def test_reconciliation_governance_path_visible_without_entity_false_positive() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_reconciliation_governance_path_visible_without_entity_false_positive(atlas: dict) -> None:
     yaml_diff = (
         "diff --git a/docs/system_atlas/reconciliation/GOVERNANCE_V1.yaml "
         "b/docs/system_atlas/reconciliation/GOVERNANCE_V1.yaml\n"
@@ -232,8 +228,7 @@ def test_reconciliation_governance_path_visible_without_entity_false_positive() 
     assert not any(item.startswith("SCHEMA_UNREVIEWED:") for item in report.review_required_items)
 
 
-def test_parser_does_not_globally_ignore_id_lines_without_git_headers() -> None:
-    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+def test_parser_does_not_globally_ignore_id_lines_without_git_headers(atlas: dict) -> None:
     report = classify_atlas_impact_v1(
         atlas=atlas,
         changed_files=["docs/system_atlas/entities/catalog.yaml"],
