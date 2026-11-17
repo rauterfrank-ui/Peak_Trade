@@ -1807,6 +1807,11 @@
       "sha256": "91a57cc9f422106dbfd335fc49b8876f2a2d07f92cfb320925ab6cc2d235d631"
     },
     {
+      "path": "scripts/ops/run_offline_occupied_brev_with_cap24_v1.py",
+      "before_sha256": null,
+      "sha256": "2f47f609c11b95770351ead345c582f427f988cdd3918db627bf64743fc9a377"
+    },
+    {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
       "before_sha256": null,
       "sha256": "02111afe35bc0bddb3f10b47da970f6e73fdcdd266931b45640f3318542bd31b"
@@ -5020,6 +5025,11 @@
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
       "before_sha256": null,
       "sha256": "8e2734668bcae4fd87f7b97ab58f7b9ce6101fcede2e15c639a91a4aa50dd25c"
+    },
+    {
+      "path": "tests/ops/test_run_offline_occupied_brev_with_cap24_v1.py",
+      "before_sha256": null,
+      "sha256": "b4cb0be3d6161882834b626847d392dcef4862fb4231dc79eaca41100d73c9c8"
     },
     {
       "path": "tests/ops/test_run_research_candidate_shadow_v1.py",
