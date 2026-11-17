@@ -3047,6 +3047,21 @@
       "sha256": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d"
     },
     {
+      "path": "src/ops/n1_occupied_scope_recovery_v2/cap24.py",
+      "before_sha256": null,
+      "sha256": "f382ac2fe63dde6ae1fbf0f39f638cdc4cecb2dc38da49414999f64c6a5f7f9f"
+    },
+    {
+      "path": "src/ops/n1_occupied_scope_recovery_v2/checkpoint.py",
+      "before_sha256": null,
+      "sha256": "b77f5aa4115aeda4c4e6a06be3388b2f30014f340c8e502fb3094d3a19af8424"
+    },
+    {
+      "path": "src/ops/n1_occupied_scope_recovery_v2/runtime.py",
+      "before_sha256": null,
+      "sha256": "77e770a56da4d1781a7504ab49904d64503f3f16106102bee00f2869afa26f8a"
+    },
+    {
       "path": "src/ops/n1_post_authority_startup_v1.py",
       "before_sha256": null,
       "sha256": "f41bd57cc273ae06412afada8ff17b9d3e26ca3161baa8a6d9cfbee5bb430fc2"
