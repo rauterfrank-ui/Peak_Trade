@@ -19,6 +19,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
     POST_OWNER_GO,
+    SHARED_POST_OWNER_CLAIM_FIELD,
     CurrentProductiveActualVenuePostOwnerGoConsumeError,
     load_durable_post_owner_go_consume_v1,
 )
@@ -66,6 +67,7 @@ def evaluate_real_venue_post_admission_v1(
     one_shot_real_post: bool,
     permit: ExternalEffectPermitV1 | None = None,
     store_root: Path | str | None = None,
+    shared_post_owner_claim_digest: str | None = None,
 ) -> RealVenuePostAdmissionResultV1:
     """Evaluate one-shot admission against the permit and durable Owner-GO record."""
 
@@ -105,6 +107,11 @@ def evaluate_real_venue_post_admission_v1(
                     reasons.append("POST_OWNER_GO_NOT_DURABLE_CONSUMED")
                 elif durable_go["owner_go_token"] != POST_OWNER_GO:
                     reasons.append("POST_OWNER_GO_DURABLE_TOKEN_MISMATCH")
+                elif (
+                    durable_go["record"].get(SHARED_POST_OWNER_CLAIM_FIELD)
+                    != shared_post_owner_claim_digest
+                ):
+                    reasons.append("POST_OWNER_GO_SHARED_CLAIM_MISMATCH")
 
     granted = not reasons
     if granted:

@@ -50,6 +50,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_v
     load_durable_post_owner_go_consume_v1,
     persist_durable_post_owner_go_consume_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+    SharedPostOwnerAuthorizationV1,
+    SharedPostOwnerAuthorityError,
+    SharedPostOwnerClaimV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     POST_OWNER_GO,
     CurrentProductiveOneShotFreshEnvelopeJoinError,
@@ -320,6 +325,37 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     }
 
 
+def _consume_post_owner_go_v1(
+    *,
+    authorization: SharedPostOwnerAuthorizationV1 | None,
+    store_root: Path,
+    account: str,
+    action: str,
+    envelope: FinalOrderEnvelopeV1,
+    baseline_sha: str,
+) -> SharedPostOwnerClaimV1 | None:
+    claim = None
+    if authorization is not None:
+        if type(authorization) is not SharedPostOwnerAuthorizationV1:
+            raise CurrentProductiveActualVenuePostError("POST_GRANT_CONTEXT_INVALID")
+        try:
+            claim = authorization.consume_v1(
+                account=account,
+                action=action,
+                envelope_digest=envelope.envelope_digest,
+                attempt_root=store_root,
+            )
+        except SharedPostOwnerAuthorityError as exc:
+            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    persist_durable_post_owner_go_consume_v1(
+        store_root=store_root,
+        owner_go_token=OWNER_GO,
+        baseline_origin_main_sha=baseline_sha,
+        **({"shared_post_owner_claim_digest": claim.receipt_digest_v1()} if claim else {}),
+    )
+    return claim
+
+
 def execute_current_productive_actual_l10_close_v1(
     *,
     context: CurrentPostPositionCloseContextV1,
@@ -329,6 +365,7 @@ def execute_current_productive_actual_l10_close_v1(
     k1_backend: OsNativeStoreLookupBackendV1,
     opener_factory: Callable[[], OpenerDirector] | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    shared_post_owner_authorization: SharedPostOwnerAuthorizationV1 | None = None,
 ) -> OneShotJoinResultV1:
     """Dispatch the original occupied-position close under the existing POST owner."""
     if owner_go != OWNER_GO or perform_real_venue_post is not True:
@@ -358,10 +395,13 @@ def execute_current_productive_actual_l10_close_v1(
             require_post_go=False,
         )
         safety.inspect_v1(stage="BEFORE_CLOSE_POST_GO_CONSUME")
-        persist_durable_post_owner_go_consume_v1(
+        shared_claim = _consume_post_owner_go_v1(
+            authorization=shared_post_owner_authorization,
             store_root=root,
-            owner_go_token=owner_go,
-            baseline_origin_main_sha=live_sha,
+            account=context.recovery.account,
+            action="L10_CLOSE",
+            envelope=envelope,
+            baseline_sha=live_sha,
         )
         return attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
             envelope=envelope,
@@ -371,6 +411,7 @@ def execute_current_productive_actual_l10_close_v1(
             opener_factory=opener_factory,
             post_safety_context=safety,
             post_position_close_context=context,
+            **({"shared_post_owner_claim": shared_claim} if shared_claim else {}),
         )
     except (
         CurrentProductiveActualVenuePostBaselineError,
@@ -398,6 +439,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     execution_identity=None,
     execution_plan_context=None,
     post_pending_context=None,
+    shared_post_owner_authorization: SharedPostOwnerAuthorizationV1 | None = None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -486,10 +528,13 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         )
     except CurrentPostPendingObservationError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
-    persist_durable_post_owner_go_consume_v1(
+    shared_claim = _consume_post_owner_go_v1(
+        authorization=shared_post_owner_authorization,
         store_root=root,
-        owner_go_token=OWNER_GO,
-        baseline_origin_main_sha=baseline_origin_main_sha,
+        account=pending_proof["account"],
+        action="ENTER",
+        envelope=envelope,
+        baseline_sha=baseline_origin_main_sha,
     )
     durable_before = load_external_effect_durable_consume_v1(store_root=root)
     permit_unused = durable_before.get("durable_consumed") is not True
@@ -523,6 +568,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             post_safety_context=safety,
             post_quantity_context=freshness.venue_quantity_context,
             post_pending_context=post_pending_context,
+            **({"shared_post_owner_claim": shared_claim} if shared_claim else {}),
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (

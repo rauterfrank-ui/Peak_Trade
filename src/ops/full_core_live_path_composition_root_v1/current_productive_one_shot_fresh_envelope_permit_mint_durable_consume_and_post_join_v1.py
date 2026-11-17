@@ -43,6 +43,10 @@ from .current_productive_post_position_close_v1 import (
     CurrentPostPositionCloseError,
     inspect_current_post_position_close_v1,
 )
+from .current_productive_shared_post_owner_authority_v1 import (
+    SharedPostOwnerAuthorityError,
+    SharedPostOwnerClaimV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -83,6 +87,7 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     assert_envelope_unmodified_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+    FullCoreCurrentPostOwnerGrantVetoError,
     FullCoreCurrentPostSafetyVetoError,
     FullCoreCurrentPostQuantityVetoError,
     FullCoreCurrentPostPendingVetoError,
@@ -243,6 +248,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         execution_identity=None,
         permit=None,
         post_position_close_context=None,
+        shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -251,6 +257,7 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._probe = probe
         self._send_handle = send_handle
         self._post_safety_context = post_safety_context
+        self._shared_post_owner_claim = shared_post_owner_claim
         self._post_quantity_context = post_quantity_context
         self._post_pending_context = post_pending_context
         self._portfolio_budget_owner = portfolio_budget_owner
@@ -348,6 +355,11 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._probe.events.append("DURABLE_CONSUME_OBSERVED")
         self._probe.one_shot_real_post_forwarded = one_shot_real_post is True
         try:
+            if self._shared_post_owner_claim is not None:
+                try:
+                    self._shared_post_owner_claim.recheck_v1()
+                except SharedPostOwnerAuthorityError as exc:
+                    raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
             with open_current_productive_k1_opaque_signing_handle_session_v1(
                 owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
                 backend=self._k1_backend,
@@ -364,6 +376,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     post_pending_context=self._post_pending_context,
                     post_budget_context=budget_context,
                     post_position_close_context=self._post_position_close_context,
+                    shared_post_owner_claim=self._shared_post_owner_claim,
                 )
                 try:
                     result = http.post_trade_order(
@@ -381,6 +394,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                             self._probe.external_effect_count += 1
                 return result
         except (
+            FullCoreCurrentPostOwnerGrantVetoError,
             FullCoreCurrentPostSafetyVetoError,
             FullCoreCurrentPostQuantityVetoError,
             FullCoreCurrentPostPendingVetoError,
@@ -424,6 +438,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     post_quantity_context=None,
     post_pending_context=None,
     post_position_close_context=None,
+    shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -492,11 +507,13 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
                 stage="BEFORE_ACTUAL_PERMIT",
                 verify_retained=True,
             )
+            account = post_position_close_context.recovery.account
+            action = "L10_CLOSE"
         else:
             inspect_current_post_venue_quantity_v1(
                 post_quantity_context, envelope=envelope, stage="BEFORE_ACTUAL_PERMIT"
             )
-            inspect_current_post_pending_v1(
+            pending = inspect_current_post_pending_v1(
                 post_pending_context,
                 envelope=envelope,
                 stage="BEFORE_ACTUAL_PERMIT",
@@ -504,12 +521,26 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
                 if original_context is not None
                 else None,
             )
+            account = pending["account"]
+            action = "ENTER"
     except (
         CurrentPostPositionCloseError,
         CurrentPostVenueQuantityError,
         CurrentPostPendingObservationError,
     ) as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    if shared_post_owner_claim is not None:
+        if type(shared_post_owner_claim) is not SharedPostOwnerClaimV1:
+            raise CurrentProductiveOneShotFreshEnvelopeJoinError("POST_GRANT_CLAIM_INVALID")
+        try:
+            shared_post_owner_claim.inspect_v1(
+                envelope_digest=envelope.envelope_digest,
+                attempt_root=Path(store_root),
+                account=account,
+                action=action,
+            )
+        except SharedPostOwnerAuthorityError as exc:
+            raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=POST_OWNER_GO,
@@ -526,6 +557,11 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         one_shot_real_post=True,
         permit=permit,
         store_root=store_root,
+        **(
+            {"shared_post_owner_claim_digest": shared_post_owner_claim.receipt_digest_v1()}
+            if shared_post_owner_claim is not None
+            else {}
+        ),
     )
     if (
         admission.post_admission_granted is not True
@@ -557,6 +593,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         execution_identity=execution_identity,
         permit=permit,
         post_position_close_context=post_position_close_context,
+        shared_post_owner_claim=shared_post_owner_claim,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(

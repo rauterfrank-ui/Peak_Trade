@@ -1828,6 +1828,8 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("occupied-mark", None),
         ("polled-mark", None),
         ("polled-mark-close-ack", None),
+        ("polled-mark-close-shared", None),
+        ("polled-mark-close-shared-revoked", None),
         ("polled-mark-close-timeout", None),
         ("polled-mark-close-venue-timeout", None),
         ("polled-mark-close-redirect", None),
@@ -2374,11 +2376,23 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
         MockCurrentProductive29PIntegrityBackendV1,
     )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import (
+        _claim_rows,
+        revoke,
+        signed_post_authorization,
+    )
 
     host = context.recovery.host
     envelope = context.execution.envelope
     store_root = context.store_root_v1()
     requests = []
+    authorization, authority_key = (
+        signed_post_authorization(
+            tmp_path, envelope, account=context.recovery.account, action="L10_CLOSE"
+        )
+        if case.startswith("shared")
+        else (None, None)
+    )
 
     class Opener:
         @contextmanager
@@ -2452,6 +2466,8 @@ def _assert_original_close_dispatch(context, case, tmp_path):
             StatePersistence(str(host.execution_incident_state_path)).save(KillSwitchState.KILLED)
         if case == "stale-position":
             host.clock = lambda: NOW.timestamp() + 6
+        if case == "shared-revoked":
+            revoke(authorization, authority_key)
         return Opener()
 
     signing_backend = ForeignKeychain() if case == "wrong-key" else _FakeKeychainBackend()
@@ -2489,10 +2505,25 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     ):
         submit(**{**args, "owner_go": ""})
     assert not load_external_effect_durable_consume_v1(store_root=store_root)["durable_consumed"]
+    if authorization is not None:
+        foreign_grant = replace(authorization.grant, issuer_id="foreign")
+        foreign_grant = replace(
+            foreign_grant, signature=authority_key.sign(foreign_grant.signing_bytes_v1()).signature
+        )
+        with pytest.raises(
+            actual.CurrentProductiveActualVenuePostError,
+            match="POST_GRANT_ISSUER_OR_STORE_MISMATCH",
+        ):
+            submit(
+                **args, shared_post_owner_authorization=replace(authorization, grant=foreign_grant)
+            )
+        assert not store_root.exists()
+        args["shared_post_owner_authorization"] = authorization
     denials = {
         "wrong-key": "K1_VENUE_CREDENTIAL_MISMATCH",
         "kill": "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET",
         "stale-position": "BEFORE_SOCKET:HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN",
+        "shared-revoked": "POST_GRANT_REVOKED",
     }
     if case in denials:
         reason = denials[case]
@@ -2501,6 +2532,8 @@ def _assert_original_close_dispatch(context, case, tmp_path):
         assert requests == []
         record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
         assert record["durable_state"] == "ABORTED_BEFORE_TRANSPORT"
+        if authorization is not None:
+            assert _claim_rows(authorization) == [(authorization.grant.grant_id, 0)]
         return
 
     if case == "redirect":
@@ -2525,6 +2558,11 @@ def _assert_original_close_dispatch(context, case, tmp_path):
         assert result.post_submit_join.exchange_query_before_retry_required
     assert result.post_submit_join.resubmit_allowed is False
     assert result.post_submit_join.fill_observed is False
+    if authorization is not None:
+        assert _claim_rows(authorization) == [(authorization.grant.grant_id, 1)]
+        args["shared_post_owner_authorization"] = replace(
+            authorization, authority=replace(authorization.authority)
+        )
     with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):
         submit(**args)
     assert len(requests) == 1

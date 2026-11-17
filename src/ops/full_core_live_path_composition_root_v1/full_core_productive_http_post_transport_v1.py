@@ -13,10 +13,21 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import HTTPRedirectHandler, OpenerDirector, ProxyHandler, Request, build_opener
+
+from .current_productive_shared_post_owner_authority_v1 import (
+    SharedPostOwnerAuthorityError,
+    SharedPostOwnerClaimV1,
+)
+from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+    SHARED_POST_OWNER_CLAIM_FIELD,
+    CurrentProductiveActualVenuePostOwnerGoConsumeError,
+    load_durable_post_owner_go_consume_v1,
+)
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
     CurrentPostSafetyContextV1,
@@ -184,6 +195,13 @@ class FullCoreNonNetworkingTestPostTransportV1:
         )
 
 
+class FullCoreCurrentPostOwnerGrantVetoError(FullCoreProductiveHttpPostError):
+    """The original shared grant blocks transport before the socket boundary."""
+
+    def __init__(self, reason: str):
+        super().__init__(f"POST_AUTHORITY_GRANT_DENIED:{reason}")
+
+
 class FullCoreProductiveHttpTradeOrderTransportV1:
     """Send-capable urllib POST transport. Socket stays closed unless one-shot."""
 
@@ -200,6 +218,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         post_pending_context=None,
         post_budget_context=None,
         post_position_close_context=None,
+        shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
@@ -210,6 +229,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._post_pending_context = post_pending_context
         self._post_budget_context = post_budget_context
         self._post_position_close_context = post_position_close_context
+        self._shared_post_owner_claim = shared_post_owner_claim
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -266,12 +286,31 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             )
         except FullCoreExternalEffectDurableConsumeError as exc:
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
+        self._check_shared_post_owner_binding_v1()
         if self._post_position_close_context is not None:
             self._check_current_position_close_v1(
                 stage="HTTP_POSITION_CLOSE", verify_retained=verify_retained
             )
             return
         self._check_current_entry_v1()
+
+    def _check_shared_post_owner_binding_v1(self) -> None:
+        attempt_root = Path(self._transport_attempt.store_root)
+        try:
+            local = load_durable_post_owner_go_consume_v1(store_root=attempt_root)["record"]
+        except CurrentProductiveActualVenuePostOwnerGoConsumeError as exc:
+            raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
+        expected = (local or {}).get(SHARED_POST_OWNER_CLAIM_FIELD)
+        claim = self._shared_post_owner_claim
+        if claim is None and expected is None:
+            return
+        if (
+            type(claim) is not SharedPostOwnerClaimV1
+            or claim.receipt_digest_v1() != expected
+            or claim.attempt_root != attempt_root.resolve()
+            or claim.grant.envelope_digest != self._post_safety_context.envelope.envelope_digest
+        ):
+            raise FullCoreCurrentPostOwnerGrantVetoError("POST_OWNER_GO_SHARED_CLAIM_MISMATCH")
 
     def _check_current_entry_v1(self, *, stage=None):
         try:
@@ -362,6 +401,12 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 self._check_current_position_close_v1(stage="BEFORE_SOCKET")
             else:
                 self._check_current_entry_v1(stage="BEFORE_SOCKET")
+            self._check_shared_post_owner_binding_v1()
+            if self._shared_post_owner_claim is not None:
+                try:
+                    self._shared_post_owner_claim.start_dispatch_v1()
+                except SharedPostOwnerAuthorityError as exc:
+                    raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
             try:
                 self._transport_attempt.mark_socket_boundary_v1()
             except FullCoreExternalEffectDurableConsumeError as exc:
