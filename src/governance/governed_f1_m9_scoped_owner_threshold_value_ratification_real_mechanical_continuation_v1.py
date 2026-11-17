@@ -275,7 +275,8 @@ def run_governed_f1_m9_scoped_owner_threshold_value_ratification_continuation_v1
             configuration=configuration,
             registry_digest=str(registry["registry_digest"]),
             ledger_paths=request.apply_ledger_paths,
-        )
+        ),
+        repo_root=root,
     )
     if (
         not apply_result.productive_apply_authorized

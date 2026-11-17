@@ -13,6 +13,7 @@ from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is
 SCHEMA_VERSION: Final[str] = "f1_m9_owner_apply_authorization_record/v1"
 RECORD_DOMAIN: Final[str] = "peak_trade.governance.f1_m9_owner_apply_authorization.v1"
 DEFAULT_OWNER_APPLY_AUTHORIZATION_ID: Final[str] = "f1_m9_owner_apply_authorization/v1"
+F1_M9_OWNER_APPLY_AUTHORIZER_IDENTITY: Final[str] = "OWNER_F1_M9_PRODUCTIVE_APPLY"
 
 OWNER_APPLY_RECORD_FIELD_KEYS: Final[tuple[str, ...]] = (
     "schema_version",
@@ -105,7 +106,7 @@ def build_owner_apply_authorization_record_body_v1(
     not_before: str,
     expires_at: str,
     owner_apply_authorization_id: str = DEFAULT_OWNER_APPLY_AUTHORIZATION_ID,
-    authorizer_identity: str = "OWNER_F1_M9_PRODUCTIVE_APPLY",
+    authorizer_identity: str = F1_M9_OWNER_APPLY_AUTHORIZER_IDENTITY,
     scoped_join_pair_id: str = F1_M9_SCOPE_PAIR_ID,
 ) -> MappingProxyType[str, Any]:
     body = {
@@ -184,6 +185,7 @@ def build_owner_apply_authorization_input_v1(
 
 __all__ = [
     "DEFAULT_OWNER_APPLY_AUTHORIZATION_ID",
+    "F1_M9_OWNER_APPLY_AUTHORIZER_IDENTITY",
     "OWNER_APPLY_RECORD_FIELD_KEYS",
     "OwnerApplyAuthorizationInputV1",
     "OwnerApplyAuthorizationRecordError",

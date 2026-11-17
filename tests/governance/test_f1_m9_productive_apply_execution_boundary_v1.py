@@ -330,8 +330,8 @@ def test_apply_replay_idempotent_via_execution_boundary(tmp_path: Path) -> None:
     assert first.apply_ledger_entry_digest == second.apply_ledger_entry_digest
 
 
-def test_direct_apply_without_policy_edge_still_possible_at_adjudicator(tmp_path: Path) -> None:
-    """Adjudicator unit path exists; chain and execution boundary require policy edge first."""
+def test_direct_execution_proof_and_execution_boundary(tmp_path: Path) -> None:
+    """Scoped proof and the normal execution boundary accept the same fixture."""
     artifacts = _artifacts(tmp_path)
     apply_input = _apply_input(artifacts)
     direct = evaluate_f1_m9_scoped_owner_productive_apply_v1(
@@ -342,7 +342,8 @@ def test_direct_apply_without_policy_edge_still_possible_at_adjudicator(tmp_path
             configuration=artifacts["configuration"],
             registry_digest=artifacts["registry_digest"],
             ledger_paths=_ledger_paths(tmp_path),
-        )
+        ),
+        execution_proof=True,
     )
     assert direct.productive_apply_authorized is True
     boundary = evaluate_f1_m9_productive_apply_execution_boundary_v1(

@@ -10,9 +10,11 @@ import pytest
 
 from src.governance.f1_m9_productive_apply_ledger_v1 import (
     F1M9ProductiveApplyLedgerPathsV1,
+    find_apply_ledger_entry_v1,
     initialize_empty_revocation_ledger_v1,
 )
 from src.governance.current_productive_activation_policy_v1 import (
+    BOUND_APPLY_OWNER_RECORD_DIGEST,
     RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
     standing_productive_activation_authorized_v1,
 )
@@ -149,6 +151,16 @@ def test_resolve_runtime_applied_seam_idempotent_after_durable_apply(tmp_path: P
 
 def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
     seam = _canonical_seam(tmp_path)
+    apply_digest = seam["owner_apply_authorization_record_digest"]
+    assert apply_digest == seam["productive_apply_authorization_digest"]
+    assert apply_digest == BOUND_APPLY_OWNER_RECORD_DIGEST
+    assert (
+        find_apply_ledger_entry_v1(
+            apply_ledger_path=tmp_path / "apply.jsonl",
+            owner_apply_authorization_record_digest=apply_digest,
+        )
+        is not None
+    )
     assert float(seam["numeric_max_age_seconds"]) == float(
         RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS
     )
@@ -165,6 +177,8 @@ def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
         repo_root=REPO_ROOT,
     )
     assert path.wiring_status == STATUS_WIRED
+    assert path.seam_digest == seam["seam_digest"]
+    assert path.owner_threshold_record_digest == BOUND_THRESHOLD
     assert path.threshold_numeric_max_age_seconds == 600.0
     assert path.configuration_runtime_applied is True
     assert path.enforcement_applied is True

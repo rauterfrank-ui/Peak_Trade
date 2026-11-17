@@ -1127,6 +1127,11 @@
       "sha256": "94932705de6fdbb51ed5b22a7011f9e21f32494985349f43fe7051ff579c723f"
     },
     {
+      "path": "docs/ops/specs/F1_M9_SCOPED_OWNER_APPLY_AUTHORITY_NORMATIVE_V1.md",
+      "before_sha256": "29b87e0e189a36e6f6198ee6e9b4c0534aa37adc39e560c1ee4211b0409c9b82",
+      "sha256": "5df92eb5b6db1bd71525f40b69574933fe30ab873d0d28f029b201eaa64480ca"
+    },
+    {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md",
       "before_sha256": "4e19a043a910c26cb4bbd7ea6d43e030fd5ed2c2bfd580aad50bea949d8aeb6b",
       "sha256": "c85ab0d30cbd65f71ccde5e62e59546ab4926612ba9fb5d360ee5f993ceb8b20"
@@ -1299,7 +1304,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "c69e135e92a486f81c3805261f051627fca2d5ec0ec62a877d31d854fa754f54"
+      "sha256": "8724578829224e252b02c6982a463af4928a897bc7782e0b09c22df561454138"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1932,9 +1937,29 @@
       "sha256": "25b9a34c306e7c16b6d84f9f484e78e27b6b823b9eba376198f2852498004960"
     },
     {
+      "path": "src/governance/f1_m9_owner_apply_authorization_record_v1.py",
+      "before_sha256": "afacbec4a05131b514278940a25ecd4276f63f11d30d0ff3798470fe41f4d65c",
+      "sha256": "8d4931570459765549bcd54f4a468dedb518e529af5aa2b0a50a7ab6db950555"
+    },
+    {
+      "path": "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+      "before_sha256": "2042a614932c9ea06b2f1c52e9554183464107d88cc02f7c1b4ef39f32dfb12a",
+      "sha256": "a6e87080209373061f9926326f91b075d5ee0a5b21474168a3a736daae94fb1c"
+    },
+    {
       "path": "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
       "before_sha256": "109cbc001d92daf042409b052530338cfa3575d057e5c3932fa4f07e3bb49279",
       "sha256": "b6a6f0f877a05ac0083fa50bbbde4e5b78209aef2c73e14b2403de0fe988547b"
+    },
+    {
+      "path": "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+      "before_sha256": "bbd03f7f131201c68e5a0d4e065b2f92428d34ca4d4c2cda486c81570181289b",
+      "sha256": "0512872ea352b2b8d375c826394656a51490b0c23fe2e56273aef91233ac13eb"
+    },
+    {
+      "path": "src/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py",
+      "before_sha256": "130d501e6973da96c866f4705b3b81a79155951799c99afdd718b70e535a5677",
+      "sha256": "dd238805e5c5587a0c6afae8a8f5125aa8aa72a2db7f7f70329d895449fba4bb"
     },
     {
       "path": "src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py",
@@ -1945,6 +1970,11 @@
       "path": "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
       "before_sha256": "a2221ea8bd07069c9b8166597f66f7c11d8da272aeb251d5a7effcf3160fcf91",
       "sha256": "1b0fc364b5c78f2f486494c046c26615f1b57833f5e17ccb52c5c90d06d536b5"
+    },
+    {
+      "path": "src/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py",
+      "before_sha256": "f63e45854c36670664e79048c45cf63cf2be08a45d8ca474be83d92303b222c6",
+      "sha256": "def572409eafb63fb62a6bfb75c29500517abed23aa87f583b8f6a33d1ca5d49"
     },
     {
       "path": "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
@@ -3562,6 +3592,21 @@
       "sha256": "a77529013afcf756040f4f99090d9181f802e5256a9fa47ab2b1f016e2096e91"
     },
     {
+      "path": "tests/governance/test_f1_m9_productive_apply_execution_boundary_v1.py",
+      "before_sha256": "7714cc9b4e5364b1bca61c9005dc3f0514b178e6fbf9ebf5914002590e344fa8",
+      "sha256": "818035e204b92b7be467d0c5d4811025ddec30503637b10907c7bcdb2af291e7"
+    },
+    {
+      "path": "tests/governance/test_f1_m9_scoped_owner_apply_authority_v1.py",
+      "before_sha256": "0ee754175c435210baa49c8201e6e902ad5b3c4afb9eee96f691dccb410b0d18",
+      "sha256": "20aeb97a03a8c80a14f40ddb7d72103a2f1a84b056a5afc2ff90bf5e292f3bcd"
+    },
+    {
+      "path": "tests/governance/test_f1_m9_scoped_owner_threshold_value_authority_v1.py",
+      "before_sha256": "751eba473b06a281df3838e094212f45535a999cc8f3a32540595a3c2a5ca135",
+      "sha256": "16522c20ba7772633e8e3fce264813c0dc7a0a3530db515342317516f1124dd6"
+    },
+    {
       "path": "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py",
       "before_sha256": "517ddc3fae956effbf28ae1c0cf3e94f910fea6a4cfca42f067bfd992c952ec5",
       "sha256": "2f4c2f9364dced42dff27c3a43e3f86e18fde6aedea211f752975b8658c6f305"
@@ -3579,7 +3624,7 @@
     {
       "path": "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
       "before_sha256": "2bee373160c04b30c482c1cec8162106eff61d8b17942fa9571139f5e5009860",
-      "sha256": "99e5423330c00fe06e7cfe57a3c47192146a413a417c3cd4f60aefe14605f935"
+      "sha256": "6ae03bd5acec39d55d829c80997d8bb0342886d8b53a1c74d8df5af474027dfb"
     },
     {
       "path": "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",

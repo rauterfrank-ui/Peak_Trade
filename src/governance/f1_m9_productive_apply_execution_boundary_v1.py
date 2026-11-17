@@ -322,7 +322,10 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
             registry_digest=request.registry_digest,
             ledger_paths=request.ledger_paths,
             evaluation_time_utc=request.evaluation_time_utc,
-        )
+        ),
+        repo_root=repo_root,
+        execution_proof=request.execution_phase
+        is F1M9ProductiveApplyExecutionPhaseV1.EXECUTION_PROOF,
     )
     if (
         not apply_result.productive_apply_authorized

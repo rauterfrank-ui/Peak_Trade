@@ -6,11 +6,15 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from src.governance.explicit_productive_authorization_v1 import (
     build_owner_explicit_productive_authorization_input_v1,
 )
 from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
+    OwnerApplyAuthorizationInputV1,
     build_owner_apply_authorization_input_v1,
+    compute_owner_apply_authorization_record_digest_v1,
 )
 from src.governance.f1_m9_per_ingress_authorization_chain_resolver_v1 import (
     ChainStageV1,
@@ -24,6 +28,10 @@ from src.governance.f1_m9_productive_apply_ledger_v1 import (
     append_revocation_ledger_entry_v1,
     initialize_empty_revocation_ledger_v1,
 )
+from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
+    resolve_canonical_f1_m9_productive_apply_ledger_paths_v1,
+)
+from src.governance.f1_m9_productive_apply_execution_boundary_v1 import DECISION_CONFIG
 from src.governance.f1_m9_scoped_owner_apply_authority_v1 import (
     F1M9ScopedOwnerApplyAdjudicationRequestV1,
     RUNTIME_APPLY_AUTHORITY_VALUE,
@@ -184,17 +192,9 @@ def test_apply_record_cannot_authorize_other_configuration_digest(tmp_path: Path
     apply_input = _apply_input_from_artifacts(artifacts)
     record = dict(apply_input.owner_apply_authorization_record)
     record["configuration_digest"] = "0" * 64
-    from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
-        compute_owner_apply_authorization_record_digest_v1,
-    )
-
     record["owner_apply_authorization_record_digest"] = (
         compute_owner_apply_authorization_record_digest_v1(record)
     )
-    from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
-        OwnerApplyAuthorizationInputV1,
-    )
-
     bad_input = OwnerApplyAuthorizationInputV1(
         owner_apply_authorization_record=record,
         owner_apply_authorization_record_digest=str(
@@ -213,6 +213,82 @@ def test_apply_record_cannot_authorize_other_configuration_digest(tmp_path: Path
     )
     assert result.productive_apply_authorized is False
     assert "CONFIGURATION_DIGEST_MISMATCH" in result.reason_codes
+
+
+@pytest.mark.parametrize("execution_proof", [False, True])
+def test_resealed_foreign_issuer_is_denied_before_ledger(
+    tmp_path: Path, execution_proof: bool
+) -> None:
+    artifacts = _build_chain_artifacts(tmp_path)
+    apply_input = _apply_input_from_artifacts(artifacts)
+    record = dict(apply_input.owner_apply_authorization_record)
+    record["authorizer_identity"] = "FOREIGN_APPLY_ISSUER"
+    digest = compute_owner_apply_authorization_record_digest_v1(record)
+    record["owner_apply_authorization_record_digest"] = digest
+    paths = _ledger_paths(tmp_path)
+    result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
+        F1M9ScopedOwnerApplyAdjudicationRequestV1(
+            owner_apply_input=OwnerApplyAuthorizationInputV1(record, digest),
+            per_ingress_binding=artifacts["binding"],
+            authorization=artifacts["authorization"],
+            configuration=artifacts["configuration"],
+            registry_digest=artifacts["registry_digest"],
+            ledger_paths=paths,
+        ),
+        execution_proof=execution_proof,
+    )
+    assert result.reason_codes == ("AUTHORIZER_IDENTITY_MISMATCH",)
+    assert result.productive_apply_authorized is False
+    assert result.configuration_after_apply is None
+    assert not paths.apply_ledger_path.exists()
+
+
+def test_scoped_record_with_owner_name_requires_bound_decision_before_ledger(
+    tmp_path: Path,
+) -> None:
+    artifacts = _build_chain_artifacts(tmp_path)
+    paths = _ledger_paths(tmp_path)
+    result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
+        F1M9ScopedOwnerApplyAdjudicationRequestV1(
+            owner_apply_input=_apply_input_from_artifacts(artifacts),
+            per_ingress_binding=artifacts["binding"],
+            authorization=artifacts["authorization"],
+            configuration=artifacts["configuration"],
+            registry_digest=artifacts["registry_digest"],
+            ledger_paths=paths,
+        ),
+        repo_root=REPO_ROOT,
+    )
+    assert "OWNER_APPLY_RECORD_NOT_BOUND_BY_OWNER_DECISION" in result.reason_codes
+    assert result.productive_apply_authorized is False
+    assert result.configuration_after_apply is None
+    assert not paths.apply_ledger_path.exists()
+
+
+def test_execution_proof_cannot_write_the_configured_durable_apply_ledger(
+    tmp_path: Path,
+) -> None:
+    artifacts = _build_chain_artifacts(tmp_path)
+    decision = tmp_path / DECISION_CONFIG
+    decision.parent.mkdir(parents=True)
+    decision.write_bytes((REPO_ROOT / DECISION_CONFIG).read_bytes())
+    paths = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=tmp_path)
+    initialize_empty_revocation_ledger_v1(paths.revocation_ledger_path)
+    result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
+        F1M9ScopedOwnerApplyAdjudicationRequestV1(
+            owner_apply_input=_apply_input_from_artifacts(artifacts),
+            per_ingress_binding=artifacts["binding"],
+            authorization=artifacts["authorization"],
+            configuration=artifacts["configuration"],
+            registry_digest=artifacts["registry_digest"],
+            ledger_paths=paths,
+        ),
+        repo_root=tmp_path,
+        execution_proof=True,
+    )
+    assert result.reason_codes == ("EXECUTION_PROOF_REQUIRES_ISOLATED_APPLY_LEDGER",)
+    assert result.productive_apply_authorized is False
+    assert not paths.apply_ledger_path.exists()
 
 
 def test_expired_apply_denied(tmp_path: Path) -> None:
@@ -324,8 +400,8 @@ def test_apply_replay_idempotent(tmp_path: Path) -> None:
         registry_digest=artifacts["registry_digest"],
         ledger_paths=paths,
     )
-    first = evaluate_f1_m9_scoped_owner_productive_apply_v1(request)
-    second = evaluate_f1_m9_scoped_owner_productive_apply_v1(request)
+    first = evaluate_f1_m9_scoped_owner_productive_apply_v1(request, execution_proof=True)
+    second = evaluate_f1_m9_scoped_owner_productive_apply_v1(request, execution_proof=True)
     assert first.productive_apply_authorized is True
     assert second.productive_apply_authorized is True
     assert second.apply_status == "IDEMPOTENT_REPLAY"

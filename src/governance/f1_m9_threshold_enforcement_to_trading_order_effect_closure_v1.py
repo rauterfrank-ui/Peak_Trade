@@ -392,7 +392,8 @@ def evaluate_f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1(
             configuration=configuration,
             registry_digest=str(registry["registry_digest"]),
             ledger_paths=apply_ledger_paths,
-        )
+        ),
+        execution_proof=True,
     )
     if (
         not apply_result.productive_apply_authorized
