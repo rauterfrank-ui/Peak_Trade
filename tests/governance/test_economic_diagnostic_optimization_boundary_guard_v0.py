@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+import src.governance.economic_diagnostic_optimization_boundary_v0 as boundary
 from src.governance.economic_diagnostic_optimization_boundary_v0 import (
     CONTRACT_VERSION,
     PACKAGE_MARKER,
@@ -60,6 +61,44 @@ REQUIRED_IMMUTABLE_FLAGS = {
     "LOW_TRADE_COUNT_MAY_NOT_TRIGGER_CANONICAL_LOGIC_RELAXATION": True,
     "POSITIVE_RESULT_MAY_NOT_BYPASS_ROBUSTNESS_SAFETY_OR_PROMOTION_GATES": True,
 }
+
+
+def test_layer_c_admission_requires_the_exact_base_and_diff(monkeypatch) -> None:
+    protected = "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py"
+    diffs = {
+        **dict.fromkeys(boundary._LAYER_C_ADMISSION_RECORDS, "@@ -1 +1 @@\n-old\n+record"),
+        protected: "@@ -1 +1 @@\n-old\n+full_scope",
+    }
+    base = boundary._LAYER_C_BASE_SHA
+    monkeypatch.setattr(
+        boundary,
+        "_LAYER_C_DIFF_SHA256",
+        compute_decommission_evidence_digest(
+            file_diffs=diffs, diff_base_sha=base, paths=[protected]
+        ),
+    )
+    admitted = build_boundary_report(
+        list(diffs), repo_root=REPO_ROOT, file_diffs=diffs, diff_base_sha=base
+    )
+    assert admitted.admissible and admitted.canonical_trading_semantics_changed
+    assert boundary.REASON_LAYER_C_OWNER_ADMISSION in admitted.reason_codes
+    assert forbidden_surface_changed_count(admitted) == 0
+    assert not admitted.technical_wiring_authorization_applied
+
+    unrelated = (
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py"
+    )
+    for candidate, candidate_base in (
+        (diffs, "0" * 40),
+        ({**diffs, protected: diffs[protected] + "\n+extra"}, base),
+        ({**diffs, protected: "old mode 100644\nnew mode 100755\n" + diffs[protected]}, base),
+        ({**diffs, unrelated: diffs[protected]}, base),
+    ):
+        denied = build_boundary_report(
+            list(candidate), repo_root=REPO_ROOT, file_diffs=candidate, diff_base_sha=candidate_base
+        )
+        assert not denied.admissible and denied.fail_closed
+        assert boundary.REASON_LAYER_C_OWNER_ADMISSION not in denied.reason_codes
 
 
 class TestEconomicDiagnosticOptimizationBoundaryContractV0:

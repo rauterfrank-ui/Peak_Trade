@@ -13,6 +13,8 @@ Current Layer-C binding follows the full effective Dynamic Scope of the decision
 
 The compatible Scope-event path starts Downscope at the full adverse movement and confirms it under the existing epoch rule. Layer C and its current host bindings emit no separate early adverse-exit signal. Profit protection, time exit, strategy invalidation, hard risk and safety keep their own inputs. The bounded simulated reversal checks its supplied price against the current mark and the same episode's sealed full Scope. Authenticated close readback derives a historical reference at the switch mark. A current authenticated reversal still requires current price evidence and the funded capital basis of the same slot.
 
+The owner instruction of 2026-11-17 authorizes this Layer-C and protection-price semantic change. The economic boundary guard binds the development admission to the exact change against the accepted #7301 base. Its report keeps the trading-semantic change visible. Native L10, independent exit rules and the live execution gates keep their existing owners. The admission has runtime authorization effect `NONE`.
+
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.DS.
 Consumes Owner-GO
 `OWNER_GO_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR_V1`.

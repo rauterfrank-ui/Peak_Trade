@@ -1154,7 +1154,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1.md",
       "before_sha256": "060e153009a8f32e795326ffe5b049e00af7ea7a810fc340d6f2b96d60a147b2",
-      "sha256": "cb94c81e195670ed14e90ef5eb58ab7e5bb69a64ad068ef3c6faf845bdf07fa6"
+      "sha256": "3866964d477a715b29a21a3a4aebda83dc7337ff86df05d8b36069f28d9693b5"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
@@ -1309,7 +1309,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "0be24139cf44b6fa72474ec946f52af80d33df46d0d2f86b1f54dc1a3848af86"
+      "sha256": "5c90bdf9f041b6d8ad6732c391b6035421b7f124bbd303b859f8b171ef70d641"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1359,7 +1359,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "c762a4189409f1fef10c56a064b470f410e6cb450d9abb6dc265a3d8c2bdbb4f"
+      "sha256": "c5f9b7ecf3aacad7716ad26330e3fa9214298ce2d2236743839c1a75163f01ee"
     },
     {
       "path": "pyproject.toml",
@@ -1940,6 +1940,11 @@
       "path": "src/governance/current_productive_real_venue_post_admission_v1.py",
       "before_sha256": "583a273355fd0346b4907fb8c64a19ed23788b0f7d68e09bad2a3dfb2fde483d",
       "sha256": "c3da330b045f6d7fc47c703f1a00c351547f9e586462ee021ea8094becfedfff"
+    },
+    {
+      "path": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
+      "before_sha256": "3d1f997b686ef62573e394da72d777661f0f6af6e2bfcaf84a207185d1ba5755",
+      "sha256": "360d1bd8a0d84127c0624c33110ff5bef6f7d6a38c9ed7456c2e03481872ed1f"
     },
     {
       "path": "src/governance/f1_m9_owner_apply_authorization_record_v1.py",
@@ -3620,6 +3625,11 @@
       "path": "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
       "before_sha256": "4b4ff2ac5b35ab9e33236041b4de7c94ed8084ee3f40e2ae7bb27440ae9e30d2",
       "sha256": "09142e86bf3b16816af05448e51c4dcd5246011d2e168149a0a70fe7ea6430e9"
+    },
+    {
+      "path": "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
+      "before_sha256": "03907afd7738b6e981a9678321c9ae3b87b0c9b17c55678ea9a1f860f3b94948",
+      "sha256": "661c8ad8bde75912ef935cac2d0da76fb6397a1f6c79e1405f3dd0e544088866"
     },
     {
       "path": "tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py",
