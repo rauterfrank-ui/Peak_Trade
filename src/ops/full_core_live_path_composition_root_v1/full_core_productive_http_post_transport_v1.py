@@ -24,6 +24,7 @@ from .current_productive_shared_post_owner_authority_v1 import (
     SharedPostOwnerClaimV1,
 )
 from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+    POST_OWNER_GO,
     SHARED_POST_OWNER_CLAIM_FIELD,
     CurrentProductiveActualVenuePostOwnerGoConsumeError,
     load_durable_post_owner_go_consume_v1,
@@ -52,6 +53,7 @@ from .current_productive_post_position_close_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
     OriginalPermitTransportAttemptV1,
+    load_external_effect_durable_consume_v1,
 )
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
@@ -59,6 +61,7 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canoni
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     build_k1_okx_venue_auth_headers_v1,
+    require_same_k1_venue_credential_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
@@ -218,6 +221,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         post_pending_context=None,
         post_budget_context=None,
         post_position_close_context=None,
+        post_net_reversal_context=None,
         shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
     ) -> None:
         self._handle = handle
@@ -229,6 +233,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._post_pending_context = post_pending_context
         self._post_budget_context = post_budget_context
         self._post_position_close_context = post_position_close_context
+        self._post_net_reversal_context = post_net_reversal_context
         self._shared_post_owner_claim = shared_post_owner_claim
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
@@ -287,12 +292,23 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         except FullCoreExternalEffectDurableConsumeError as exc:
             raise FullCoreProductiveHttpPostError(str(exc)) from exc
         self._check_shared_post_owner_binding_v1()
+        self._check_current_order_v1(verify_retained=verify_retained)
+
+    def _check_current_order_v1(self, *, stage=None, verify_retained=False):
+        from .current_productive_double_play_reversal_v1 import DIRECT_DOUBLE_PLAY_REVERSAL
+
+        if (
+            self._post_safety_context.envelope.path_kind == DIRECT_DOUBLE_PLAY_REVERSAL
+            or self._post_net_reversal_context is not None
+        ):
+            self._check_current_net_reversal_v1(stage=stage or "HTTP_NET_REVERSAL")
+            return
         if self._post_position_close_context is not None:
             self._check_current_position_close_v1(
-                stage="HTTP_POSITION_CLOSE", verify_retained=verify_retained
+                stage=stage or "HTTP_POSITION_CLOSE", verify_retained=verify_retained
             )
             return
-        self._check_current_entry_v1()
+        self._check_current_entry_v1(stage=stage)
 
     def _check_shared_post_owner_binding_v1(self) -> None:
         attempt_root = Path(self._transport_attempt.store_root)
@@ -348,6 +364,52 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         except CurrentPostPositionCloseError as exc:
             raise FullCoreCurrentPostPositionCloseVetoError(str(exc)) from exc
 
+    def _check_current_net_reversal_v1(self, *, stage):
+        from .current_productive_double_play_reversal_v1 import (
+            DIRECT_DOUBLE_PLAY_REVERSAL,
+            CurrentPostNetReversalContextV1,
+        )
+
+        try:
+            context = self._post_net_reversal_context
+            envelope = self._post_safety_context.envelope
+            attempt = self._transport_attempt
+            root = Path(attempt.store_root)
+            claim = self._shared_post_owner_claim
+            if (
+                type(context) is not CurrentPostNetReversalContextV1
+                or context.envelope != envelope
+                or root != context.store_root_v1()
+                or type(claim) is not SharedPostOwnerClaimV1
+                or self._post_position_close_context is not None
+            ):
+                raise ValueError("ORIGINAL_NET_REVERSAL_CONTEXT_REQUIRED")
+            attempt.inspect_v1(
+                envelope_id=envelope.envelope_id, envelope_digest=envelope.envelope_digest
+            )
+            permit_record = load_external_effect_durable_consume_v1(store_root=root)["record"]
+            mandate = load_durable_post_owner_go_consume_v1(store_root=root)
+            if (
+                permit_record["authority_ref"] != POST_OWNER_GO
+                or mandate["owner_go_token"] != POST_OWNER_GO
+                or mandate["record"]["baseline_origin_main_sha"]
+                != context.recovery.host.repository_sha
+            ):
+                raise ValueError("ORIGINAL_NET_REVERSAL_POST_OWNER_GO_REQUIRED")
+            claim.inspect_v1(
+                envelope_digest=envelope.envelope_digest,
+                attempt_root=root,
+                account=context.recovery.account,
+                action=DIRECT_DOUBLE_PLAY_REVERSAL,
+            )
+            context.inspect_position_v1()
+            require_same_k1_venue_credential_v1(
+                context.recovery.authenticated_reconciliation.original_handle_v1(),
+                self._signing_handle,
+            )
+        except (KeyError, OSError, RuntimeError, ValueError) as exc:
+            raise FullCoreCurrentPostOwnerGrantVetoError(f"NET_REVERSAL:{stage}:{exc}") from exc
+
     def _check_current_budget_v1(self, *, stage):
         try:
             inspect_current_post_budget_admission_v1(
@@ -397,10 +459,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         outcome_phase = NOT_ATTEMPTED
         try:
             self._check_current_safety_v1(payload=payload, stage="BEFORE_SOCKET")
-            if self._post_position_close_context is not None:
-                self._check_current_position_close_v1(stage="BEFORE_SOCKET")
-            else:
-                self._check_current_entry_v1(stage="BEFORE_SOCKET")
+            self._check_current_order_v1(stage="BEFORE_SOCKET")
             self._check_shared_post_owner_binding_v1()
             if self._shared_post_owner_claim is not None:
                 try:

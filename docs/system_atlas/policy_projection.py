@@ -294,6 +294,19 @@ AUTHENTICATED_NET_REVERSAL_DELTAS = {
 }
 
 
+# Exact successor for the one-shot net order handoff and original hold readback.
+AUTHENTICATED_NET_REVERSAL_SEND_DELTAS = {
+    DIRECT_REVERSAL_SOURCE: (
+        "4210e9e91ff534cd5693eab399962fa97ab65411c24b5fda974d4fc0d1c040f9",
+        "411e4ed47500d9d0606ec2e693de90fb62a2c80b560503d602849a3ae25853e5",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": (
+        "e3eda2b4deb0a5530483b1da39229552b48df4e6cb88e8bd7df8ecdca32bb9f0",
+        "bc771b98c527a599c3b11d6f1c5283cefa58dac7c92ba3dca8fe6d823dc9c5ba",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
@@ -445,6 +458,13 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in AUTHENTICATED_NET_REVERSAL_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
+        if any(
+            hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+            for path, (_, after) in AUTHENTICATED_NET_REVERSAL_SEND_DELTAS.items()
+        ):
+            expected = _exact_double_play_successor(
+                expected, AUTHENTICATED_NET_REVERSAL_SEND_DELTAS
+            )
     actual = {}
     for path in expected:
         source = root / path
@@ -477,6 +497,14 @@ def _double_play_bundle_successor(root, parent):
             if path in expected
         ):
             expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
+        if any(
+            hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+            for path, (_, after) in AUTHENTICATED_NET_REVERSAL_SEND_DELTAS.items()
+            if path in expected
+        ):
+            expected = _exact_double_play_successor(
+                expected, AUTHENTICATED_NET_REVERSAL_SEND_DELTAS
+            )
     return expected
 
 

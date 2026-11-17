@@ -1,12 +1,13 @@
 """Assess a single net order for the occupied slot's sealed L10 switch."""
 
-from dataclasses import asdict, dataclass, fields, replace
+from dataclasses import asdict, dataclass, field, fields, replace
 from datetime import datetime
 from decimal import Decimal
 from hashlib import sha256
 import json
 import math
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.execution.position_delta import signed_position_delta
 from src.governance.capital_risk_sizing_v1 import (
@@ -52,6 +53,21 @@ from .current_productive_treasury_single_source_capital_handoff_v1 import (
 from .current_productive_mv2_capital_context_rebind_v1 import (
     build_current_productive_live_account_capital_context_v1,
 )
+
+
+if TYPE_CHECKING:
+    from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+        IsolatedLaneSlotV1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+    )
+    from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+
+    from .final_order_envelope_v1 import FinalOrderEnvelopeV1
+
+
+DIRECT_DOUBLE_PLAY_REVERSAL = "DIRECT_DOUBLE_PLAY_REVERSAL"
 
 
 @dataclass(frozen=True)
@@ -523,7 +539,7 @@ def prepare_authenticated_net_reversal_order_v1(
         quantity_source="L10_TARGET_MINUS_AUTHENTICATED_POSITION",
         side_source="L10_SIGNED_NET_DELTA",
         instrument_source="ORIGINAL_OCCUPIED_SLOT",
-        path_kind="DIRECT_DOUBLE_PLAY_REVERSAL",
+        path_kind=DIRECT_DOUBLE_PLAY_REVERSAL,
         environment="LIVE",
     )
     limits = injected.venue_quantity_limits
@@ -559,74 +575,27 @@ def prepare_authenticated_net_reversal_order_v1(
     }
 
 
-def prepare_authenticated_net_reversal_post_v1(
-    *,
-    lane_pair,
-    recovery,
-    authenticated_entry,
-    authorization,
-    baseline_origin_main_sha,
-    execution_integrity_backend=None,
-):
-    """Consume the scoped grant and reserve a single PRE_SOCKET attempt."""
-    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
-        AuthorizationLifecycleLockV1,
-    )
+def _net_reversal_submit_root_v1(host_root: Path, episode_id: str) -> Path:
+    if len(episode_id) != 64 or any(c not in "0123456789abcdef" for c in episode_id):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_EPISODE_REQUIRED")
+    root = host_root / "position-episodes" / episode_id / "net-reversal-submit"
+    if root.resolve() != root or not root.parent.is_dir():
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_STORE_REQUIRED")
+    return root
+
+
+def _read_retained_net_reversal_v1(lane_pair, scope):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         _occupied_close_attempt_root_v1,
         bind_occupied_lane_governed_cycle_store_roots_v1,
     )
-    from src.ops.execution_reconciliation_get_provenance_v1 import AuthenticatedReconciliationGetV1
-    from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
-        assert_post_durable_store_root_isolation_v1,
-    )
-    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
-        AuthenticatedEntryEpisodeRequestV1,
-    )
-    from .current_productive_actual_venue_post_baseline_v1 import (
-        resolve_and_assert_live_post_execution_baseline_v1,
-    )
-    from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
-        POST_OWNER_GO,
-        load_durable_post_owner_go_consume_v1,
-        persist_durable_post_owner_go_consume_v1,
-    )
+
     from .current_productive_governed_cycle_orchestrator_v1 import _load_ledger
-    from .current_productive_post_safety_veto_v1 import resolve_current_post_safety_context_v1
-    from .current_productive_shared_post_owner_authority_v1 import SharedPostOwnerAuthorizationV1
-    from .external_effect_permit_durable_consume_v1 import (
-        DURABLE_STATE_SENT_INITIATED,
-        claim_original_permit_transport_attempt_v1,
-        load_external_effect_durable_consume_v1,
-        persist_external_effect_durable_consume_v1,
-    )
-    from .external_effect_permit_v1 import issue_external_effect_permit_v1
     from .final_order_envelope_v1 import FinalOrderEnvelopeV1, assert_envelope_unmodified_v1
 
-    action = "DIRECT_DOUBLE_PLAY_REVERSAL"
-    if (
-        type(recovery) is not HostBudgetRecoveryContextV1
-        or type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
-        or type(authorization) is not SharedPostOwnerAuthorizationV1
-    ):
-        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
     slot, bound = lane_pair
     lane = slot.lane_id
-    host = recovery.host
-    proof = authenticated_entry.proof
-    live_sha = resolve_and_assert_live_post_execution_baseline_v1(
-        declared_baseline_origin_main_sha=baseline_origin_main_sha,
-        integrity_backend=execution_integrity_backend,
-    )
-    cursor, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1({lane: lane_pair})[lane]
-    scope = read_occupied_scope_mark_snapshot_v1(Path(cursor))
-    if (
-        host.repository_sha != live_sha
-        or host.bindings != {lane: bound}
-        or scope is None
-        or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
-    ):
-        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
+    _, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1({lane: lane_pair})[lane]
     ledger_root = _occupied_close_attempt_root_v1(
         evidence, cycle_id=scope["mark"]["cycle_id"], lane_id=lane, authenticated=True
     )
@@ -642,7 +611,7 @@ def prepare_authenticated_net_reversal_post_v1(
     delta = reversal.signed_order_contracts
     target_side = "long" if delta > 0 else "short"
     if (
-        envelope.path_kind != action
+        envelope.path_kind != DIRECT_DOUBLE_PLAY_REVERSAL
         or envelope.reduce_only
         or envelope.pos_side != "net"
         or envelope.order_type != "market"
@@ -654,7 +623,7 @@ def prepare_authenticated_net_reversal_post_v1(
         or Decimal(envelope.quantity) != abs(delta)
         or envelope.provenance_ref != reversal.digest_v1()
         or envelope.admission_ref
-        != f"direct-reversal:{lane}:portfolio-reservation:{proof.reservation_id}"
+        != f"direct-reversal:{lane}:portfolio-reservation:{reversal.old_reservation_id}"
         or envelope.creation_epoch != reversal.decision_epoch
         or ledger["direct_reversal_digest"] != reversal.digest_v1()
         or ledger["direct_reversal_order"]["venue_quantity_admission"]["allowed"] is not True
@@ -666,30 +635,73 @@ def prepare_authenticated_net_reversal_post_v1(
             reference_price=reversal.reference_mark,
             adverse_exit_distance=reversal.scope_distance,
         )
-        or reversal.episode.episode_id != proof.identity_digest
+        or reversal.episode.episode_id != scope["mark"]["pending_reversal_episode_id"]
         or reversal.episode.lane_id != lane
         or reversal.episode.instrument_id != bound.instrument_id
         or reversal.episode.venue_native_id != bound.venue_native_id
         or reversal.selection_digest != bound.selection_integrity_digest
-        or reversal.old_reservation_id != proof.reservation_id
     ):
         raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_MISMATCH")
-    if len(proof.identity_digest) != 64 or any(
-        c not in "0123456789abcdef" for c in proof.identity_digest
-    ):
-        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_EPISODE_REQUIRED")
-    root = host.root / "position-episodes" / proof.identity_digest / "net-reversal-submit"
-    if root.resolve() != root or not root.parent.is_dir():
-        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_STORE_REQUIRED")
-    assert_post_durable_store_root_isolation_v1(store_root=root)
-    safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_NET_REVERSAL_ADMISSION")
-    if (
-        host.execution_incident_state_path is None
-        or Path(safety.state_path) != Path(host.execution_incident_state_path).resolve()
-    ):
-        raise ValueError("POST_AUTHORITY_REVERSAL_SAFETY_SOURCE_MISMATCH")
+    return reversal, envelope
 
-    def inspect_bound_position():
+
+def _inspect_original_reversal_hold_v1(owner, bound, reversal):
+    basis = owner.live_reversal_slot_basis_v1(
+        slot_id=reversal.episode.lane_id, reservation_id=reversal.old_reservation_id, bound=bound
+    )
+    if (
+        basis is None
+        or canonical_digest_v1(basis.to_dict()) != reversal.funding_digest
+        or basis.net_basis_usdc != reversal.slot_capital_basis_usdc
+    ):
+        raise ValueError("POST_AUTHORITY_REVERSAL_SLOT_CAPITAL_CHANGED")
+
+
+@dataclass(frozen=True)
+class CurrentPostNetReversalContextV1:
+    lane_pair: tuple["IsolatedLaneSlotV1", "BoundInstrumentV1"]
+    recovery: HostBudgetRecoveryContextV1 = field(repr=False)
+    authenticated_entry: "AuthenticatedEntryEpisodeRequestV1" = field(repr=False)
+    reversal: DirectDoublePlayReversalV1
+    envelope: "FinalOrderEnvelopeV1"
+
+    def store_root_v1(self) -> Path:
+        return _net_reversal_submit_root_v1(
+            self.recovery.host.root, self.reversal.episode.episode_id
+        )
+
+    def inspect_position_v1(self) -> None:
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+        )
+        from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            AuthenticatedEntryEpisodeRequestV1,
+        )
+
+        slot, bound = self.lane_pair
+        lane = slot.lane_id
+        recovery = self.recovery
+        if (
+            type(recovery) is not HostBudgetRecoveryContextV1
+            or type(self.authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+        ):
+            raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
+        host = recovery.host
+        proof = self.authenticated_entry.proof
+        reversal, envelope = self.reversal, self.envelope
+        scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
+        if (
+            host.bindings != {lane: bound}
+            or scope is None
+            or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
+            or reversal.old_reservation_id != proof.reservation_id
+            or host.execution_incident_state_path is None
+            or Path(canonical_kill_switch_state_path()).resolve()
+            != Path(host.execution_incident_state_path).resolve()
+            or _read_retained_net_reversal_v1(self.lane_pair, scope) != (reversal, envelope)
+        ):
+            raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
         entry = recovery.inspect_current_authenticated_entry_v1(lane_id=lane, proof=proof)
         source = recovery.authenticated_reconciliation
         epoch = datetime.fromisoformat(reversal.decision_epoch)
@@ -710,6 +722,7 @@ def prepare_authenticated_net_reversal_post_v1(
             or entry["reconciliation"]["reservation_released"] is not False
             or reversal.episode.account_scope.execution_environment != "LIVE"
             or reversal.episode.account_scope.account_identity != recovery.account
+            or host.expected_account_identity != recovery.account
             or any(
                 not 0 <= now - stamp <= recovery.observed.max_age_seconds
                 for stamp in (
@@ -718,24 +731,122 @@ def prepare_authenticated_net_reversal_post_v1(
                     recovery.observed.wall_time_unix,
                 )
             )
-            or read_occupied_scope_mark_snapshot_v1(Path(cursor)) != scope
             or tuple((p.instrument_id, p.signed_quantity) for p in recovery.observed.positions)
             != ((bound.instrument_id, reversal.current_contracts),)
             or sha256(raw_position.encode()).hexdigest() != reversal.position_snapshot_digest
         ):
             raise ValueError("POST_AUTHORITY_REVERSAL_CURRENT_POSITION_UNPROVEN")
-        basis = host.owner.live_reversal_slot_basis_v1(
-            slot_id=lane, reservation_id=proof.reservation_id, bound=bound
-        )
-        if (
-            basis is None
-            or canonical_digest_v1(basis.to_dict()) != reversal.funding_digest
-            or basis.net_basis_usdc != reversal.slot_capital_basis_usdc
-        ):
-            raise ValueError("POST_AUTHORITY_REVERSAL_SLOT_CAPITAL_CHANGED")
+        _inspect_original_reversal_hold_v1(host.owner, bound, reversal)
+
+
+def prepare_authenticated_net_reversal_post_v1(
+    *,
+    lane_pair,
+    recovery,
+    authenticated_entry,
+    authorization,
+    baseline_origin_main_sha,
+    execution_integrity_backend=None,
+):
+    """Consume the scoped grant and reserve a single PRE_SOCKET attempt."""
+    _, _, attempt, _ = _prepare_authenticated_net_reversal_post_v1(
+        lane_pair=lane_pair,
+        recovery=recovery,
+        authenticated_entry=authenticated_entry,
+        authorization=authorization,
+        baseline_origin_main_sha=baseline_origin_main_sha,
+        execution_integrity_backend=execution_integrity_backend,
+    )
+    return attempt
+
+
+def _prepare_authenticated_net_reversal_post_v1(
+    *,
+    lane_pair,
+    recovery,
+    authenticated_entry,
+    authorization,
+    baseline_origin_main_sha,
+    execution_integrity_backend=None,
+):
+    """Bind the retained order, grant and original attempt for dispatch."""
+    from src.governance.current_productive_real_venue_post_admission_v1 import (
+        evaluate_real_venue_post_admission_v1,
+    )
+    from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecycle_lock_v1 import (
+        AuthorizationLifecycleLockV1,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
+        assert_post_durable_store_root_isolation_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        AuthenticatedEntryEpisodeRequestV1,
+    )
+    from .current_productive_actual_venue_post_baseline_v1 import (
+        resolve_and_assert_live_post_execution_baseline_v1,
+    )
+    from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        POST_OWNER_GO,
+        load_durable_post_owner_go_consume_v1,
+        persist_durable_post_owner_go_consume_v1,
+    )
+    from .current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        assert_one_shot_join_permit_constraints_v1,
+        mint_current_productive_one_shot_post_permit_v1,
+        prove_one_shot_join_standing_boundary_v1,
+    )
+    from .current_productive_post_safety_veto_v1 import resolve_current_post_safety_context_v1
+    from .current_productive_shared_post_owner_authority_v1 import SharedPostOwnerAuthorizationV1
+    from .external_effect_permit_durable_consume_v1 import (
+        DURABLE_STATE_SENT_INITIATED,
+        claim_original_permit_transport_attempt_v1,
+        load_external_effect_durable_consume_v1,
+        persist_external_effect_durable_consume_v1,
+    )
+
+    if (
+        type(recovery) is not HostBudgetRecoveryContextV1
+        or type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
+        or type(authorization) is not SharedPostOwnerAuthorizationV1
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
+    prove_one_shot_join_standing_boundary_v1()
+    slot, bound = lane_pair
+    lane = slot.lane_id
+    host = recovery.host
+    proof = authenticated_entry.proof
+    live_sha = resolve_and_assert_live_post_execution_baseline_v1(
+        declared_baseline_origin_main_sha=baseline_origin_main_sha,
+        integrity_backend=execution_integrity_backend,
+    )
+    scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
+    if (
+        host.repository_sha != live_sha
+        or host.bindings != {lane: bound}
+        or scope is None
+        or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
+    reversal, envelope = _read_retained_net_reversal_v1(lane_pair, scope)
+    if reversal.old_reservation_id != proof.reservation_id:
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_MISMATCH")
+    root = _net_reversal_submit_root_v1(host.root, proof.identity_digest)
+    assert_post_durable_store_root_isolation_v1(store_root=root)
+    safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_NET_REVERSAL_ADMISSION")
+    if (
+        host.execution_incident_state_path is None
+        or Path(safety.state_path) != Path(host.execution_incident_state_path).resolve()
+    ):
+        raise ValueError("POST_AUTHORITY_REVERSAL_SAFETY_SOURCE_MISMATCH")
+
+    context = CurrentPostNetReversalContextV1(
+        lane_pair, recovery, authenticated_entry, reversal, envelope
+    )
 
     lock = AuthorizationLifecycleLockV1.for_evidence_root(
-        evidence_root=root, authorization_id=proof.identity_digest, owner=action
+        evidence_root=root,
+        authorization_id=proof.identity_digest,
+        owner=DIRECT_DOUBLE_PLAY_REVERSAL,
     )
     lock.acquire()
     try:
@@ -744,18 +855,13 @@ def prepare_authenticated_net_reversal_post_v1(
             or load_external_effect_durable_consume_v1(store_root=root)["durable_consumed"]
         ):
             raise ValueError("POST_AUTHORITY_REVERSAL_ALREADY_CONSUMED")
-        inspect_bound_position()
+        context.inspect_position_v1()
         veto = safety.inspect_v1(stage="BEFORE_NET_REVERSAL_POST_GO")
-        permit = issue_external_effect_permit_v1(
-            envelope,
-            authority_ref=POST_OWNER_GO,
-            kill_switch_blocked=veto.blocked,
-            durable_kill_switch_evidence_status=veto.evidence_status,
-            filegate_denied=veto.blocked,
-        )
+        permit = mint_current_productive_one_shot_post_permit_v1(envelope, veto=veto)
+        assert_one_shot_join_permit_constraints_v1(permit, envelope)
         claim = authorization.consume_v1(
             account=recovery.account,
-            action=action,
+            action=DIRECT_DOUBLE_PLAY_REVERSAL,
             envelope_digest=envelope.envelope_digest,
             attempt_root=root,
         )
@@ -765,6 +871,17 @@ def prepare_authenticated_net_reversal_post_v1(
             baseline_origin_main_sha=live_sha,
             shared_post_owner_claim_digest=claim.receipt_digest_v1(),
         )
+        admission = evaluate_real_venue_post_admission_v1(
+            post_owner_go=POST_OWNER_GO,
+            one_shot_real_post=True,
+            permit=permit,
+            store_root=root,
+            shared_post_owner_claim_digest=claim.receipt_digest_v1(),
+        )
+        if not admission.post_admission_granted:
+            raise ValueError(
+                "POST_AUTHORITY_REVERSAL_ADMISSION_DENIED:" + ",".join(admission.reason_codes)
+            )
         persist_external_effect_durable_consume_v1(
             store_root=root,
             permit=permit,
@@ -781,13 +898,93 @@ def prepare_authenticated_net_reversal_post_v1(
         )
         try:
             safety.inspect_v1(stage="NET_REVERSAL_PRE_SOCKET")
-            inspect_bound_position()
+            context.inspect_position_v1()
             claim.recheck_v1()
         except (ValueError, RuntimeError, OSError):
             attempt.abort_before_transport_v1(
                 reason_code="POST_AUTHORITY_REVERSAL_PRE_SOCKET_CHANGED"
             )
             raise
-        return attempt
+        return context, safety, attempt, claim
     finally:
         lock.release()
+
+
+@dataclass(frozen=True)
+class AuthenticatedNetReversalReadbackV1:
+    episode_id: str
+    envelope_digest: str
+    client_order_id: str
+    reservation_id: str
+    transport_phase: str
+    outcome: str
+
+
+def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host):
+    """Recover the original unresolved attempt before any startup reconciliation."""
+    from .current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        POST_OWNER_GO,
+        SHARED_POST_OWNER_CLAIM_FIELD,
+        load_durable_post_owner_go_consume_v1,
+    )
+    from .external_effect_permit_durable_consume_v1 import (
+        DURABLE_STATE_COMPLETED,
+        load_external_effect_durable_consume_v1,
+    )
+
+    slot, bound = lane_pair
+    scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
+    episode_id = scope["mark"].get("pending_reversal_episode_id") if scope is not None else None
+    if episode_id is None:
+        return None
+    budget_host = get_budget_host()
+    root = _net_reversal_submit_root_v1(budget_host.root, episode_id)
+    send = load_external_effect_durable_consume_v1(store_root=root)
+    mandate = load_durable_post_owner_go_consume_v1(store_root=root)
+    if not send["present"] and not mandate["present"]:
+        return None
+    reversal, envelope = _read_retained_net_reversal_v1(lane_pair, scope)
+    if (
+        reversal.episode.account_scope
+        != PositionEpisodeScopeV1(budget_host.expected_account_identity, "LIVE")
+        or mandate["owner_go_token"] != POST_OWNER_GO
+        or mandate["record"]["baseline_origin_main_sha"] != budget_host.repository_sha
+        or not mandate["record"].get(SHARED_POST_OWNER_CLAIM_FIELD)
+    ):
+        raise ValueError("NET_REVERSAL_ORIGINAL_MANDATE_UNPROVEN")
+    record = send["record"]
+    phase, outcome = "UNCLAIMED", "SUBMIT_NOT_PROVEN"
+    if record is not None:
+        if (
+            send["durable_consumed"] is not True
+            or record["authority_ref"] != POST_OWNER_GO
+            or (record["envelope_id"], record["envelope_digest"])
+            != (envelope.envelope_id, envelope.envelope_digest)
+        ):
+            raise ValueError("NET_REVERSAL_ORIGINAL_SUBMIT_IDENTITY_UNPROVEN")
+        phase = record.get("transport_attempt", {}).get("phase", "UNCLAIMED")
+        if phase == "MAY_HAVE_SENT":
+            outcome = (
+                record["outcome"]
+                if record["durable_state"] == DURABLE_STATE_COMPLETED
+                else "UNKNOWN"
+            )
+    owner = budget_host.recover_owner_for_occupied_execution_v1(
+        {slot.lane_id: bound}, operation="NET_REVERSAL_RECOVERY"
+    )
+    _inspect_original_reversal_hold_v1(owner, bound, reversal)
+    link = owner.execution_links_v1(active_only=True).get(reversal.old_reservation_id)
+    if (
+        link is None
+        or link["reconciliation"]["identity_digest"] != episode_id
+        or link["reconciliation"]["reservation_released"] is not False
+    ):
+        raise ValueError("NET_REVERSAL_ORIGINAL_HOLD_UNPROVEN")
+    return AuthenticatedNetReversalReadbackV1(
+        episode_id,
+        envelope.envelope_digest,
+        envelope.client_order_id,
+        reversal.old_reservation_id,
+        phase,
+        outcome,
+    )

@@ -1314,7 +1314,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "823e7c7c15f587d3d705f5f8816c3f5bad245e36755d166fa600928fdb6dad84"
+      "sha256": "0b252580d926371e7e6e43dd9f68be4715bbb083759f336d2c88f164262d6dd9"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2529,7 +2529,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py",
       "before_sha256": null,
-      "sha256": "4210e9e91ff534cd5693eab399962fa97ab65411c24b5fda974d4fc0d1c040f9"
+      "sha256": "411e4ed47500d9d0606ec2e693de90fb62a2c80b560503d602849a3ae25853e5"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
@@ -2584,7 +2584,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
       "before_sha256": "d1de1b957b9ed33596b6ab37c63d474d8c4fc432b07d3739c05c0ab211c17a14",
-      "sha256": "dec8afc27523cc30924e682b519c0c1a99f4093fbf3eeafec26caaf7d66b85a8"
+      "sha256": "7b8fed236443db95ae551f0b9b91ad222883d7a42e1531c175a8789c8df72c1c"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_pending_decision_context_v1.py",
@@ -2674,7 +2674,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
       "before_sha256": "0b6ccaecbc7db6c144d25c90671dbf14c4efcbed9347281ffeba16be43c9e373",
-      "sha256": "9cdc488bee9595723c3941b0da66fe774bcd154a9f936593b78bbffc18073726"
+      "sha256": "635cbf6cd969fab88715a28d11deeb62b25ab942ee0f3938ef55b011d534bdad"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
@@ -2709,7 +2709,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
       "before_sha256": "9335d0c9085db0cfabcc0fc9884c0d0cda34401e66661b93f04984e22459c711",
-      "sha256": "aa26b3e235b30295b7f8cc3e9f375f2b8b23d5badc4f9b0e738da8a36c36356d"
+      "sha256": "649d3cda526027fc830e1cbaddcbb4c75988960cfb2ebb69fdc3a339d5885f2e"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
@@ -2964,7 +2964,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "4834027d22ae307571759d6fd48f86de04e322f4ec160ad67464e41760602a71"
+      "sha256": "4aca54f63e6313b5401009d822c3c86921c881c537343de29cdc9f427917bfe3"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -3139,7 +3139,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
       "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
-      "sha256": "e3eda2b4deb0a5530483b1da39229552b48df4e6cb88e8bd7df8ecdca32bb9f0"
+      "sha256": "bc771b98c527a599c3b11d6f1c5283cefa58dac7c92ba3dca8fe6d823dc9c5ba"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
@@ -3214,7 +3214,7 @@
     {
       "path": "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
       "before_sha256": "0c94f7ee8ca862fc579b9013766900543d24efd439f615850f96a4270254d17e",
-      "sha256": "6f7ff2d0be859f882645d9b891ef37789ef8da6686708d28e545c0019a05a783"
+      "sha256": "00621353a356449be0c9af9d74e1a68564b4a417a6cd4797b83f9404cf3e1a1f"
     },
     {
       "path": "src/ops/productive_futures_accounting_runtime_binding_v1/accounting_engine_v1.py",
@@ -4399,7 +4399,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "7693b370dc2c231f8c7979b6b7bef33ba2e4c003fd92d8c85152d4648b834913"
+      "sha256": "c0f67614915e33056b192b6722dc822793fbe1c12507d0002625620b8f6f26be"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

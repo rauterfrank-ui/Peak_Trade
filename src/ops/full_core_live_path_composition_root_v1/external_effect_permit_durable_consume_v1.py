@@ -396,6 +396,7 @@ def finalize_external_effect_durable_consume_v1(
     envelope_id: str,
     envelope_digest: str,
     outcome: str,
+    observed_post_count: int | None = None,
 ) -> dict[str, Any]:
     """Transition SENT_INITIATED → COMPLETED without permitting resubmit."""
     if store_root is None:
@@ -418,6 +419,14 @@ def finalize_external_effect_durable_consume_v1(
     if str(record.get("envelope_digest") or "") != digest:
         raise FullCoreExternalEffectDurableConsumeError("FINALIZE_ENVELOPE_DIGEST_MISMATCH")
     completed = dict(record)
+    if observed_post_count is not None:
+        if (
+            type(observed_post_count) is not int
+            or observed_post_count != 1
+            or record.get("transport_attempt", {}).get("phase") != "MAY_HAVE_SENT"
+        ):
+            raise FullCoreExternalEffectDurableConsumeError("FINALIZE_POST_COUNT_UNPROVEN")
+        completed["post_count"] = observed_post_count
     completed["durable_state"] = DURABLE_STATE_COMPLETED
     completed["outcome"] = str(outcome or "")
     completed["completed_at_utc"] = _utc_now_iso_v1()
