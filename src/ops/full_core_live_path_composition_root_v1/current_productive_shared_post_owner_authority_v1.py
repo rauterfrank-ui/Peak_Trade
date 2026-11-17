@@ -291,7 +291,7 @@ class SharedPostOwnerAuthorizationV1:
         if (
             grant.account != account
             or grant.action != action
-            or action not in {"ENTER", "L10_CLOSE"}
+            or action not in {"ENTER", "L10_CLOSE", "DIRECT_DOUBLE_PLAY_REVERSAL"}
             or grant.environment != "LIVE"
             or grant.venue != "OKX_EEA"
             or grant.envelope_digest != envelope_digest

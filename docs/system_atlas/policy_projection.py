@@ -257,6 +257,43 @@ ROTATION_SLOT_CAPITAL_DELTAS = {
 }
 
 
+# Authenticated net-order preparation, ending at the existing execution-admission boundary.
+AUTHENTICATED_NET_REVERSAL_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "10b4338fd08e8b2136868f3545160b9c6bfa2d78d2131c34e20c9ead73789363",
+        "d8a09b2009cb6ddc42e9e51db0db57074b1f84170a90084332a5e7ce4968b655",
+    ),
+    DIRECT_REVERSAL_SOURCE: (
+        "c5a3c39f8ac4a8a02c73c03c19c79dcbf989c111c90f8975eab03c555245f09b",
+        "4210e9e91ff534cd5693eab399962fa97ab65411c24b5fda974d4fc0d1c040f9",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": (
+        "f1859aba52e51e5e253d2d82cf00906fb07635397e73b30cf195a3e582c0f64b",
+        "7d22a0975b9ca9751ced61e29d13422e9c3100b170c1d3d32d694aa54b338334",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": (
+        "69f835e4f559a94b8562719829f7c0e5b555cac4c57b28a5201c597ebf00d5de",
+        "c3b4874fdd149d97bcf7f6c5479017615c82916a4328e38571216fe0e5b0a5ea",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": (
+        "8ca513ed1e5c4bad31e581f244f51e175469c6bb9b6dcfd3d6d87f1d99afe7c6",
+        "55c046ea257ef21a5fdeedd163aee24e8c28ccd6df8e28c037c688fba868492c",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
+        "42823f0223a7373e6842bbd5a77549a9f01d8e38ccbead8405c346ac83134794",
+        "8920456e43c87f2c0c8264aa56d4045aab7171c7da2cf47f1203cef7583fb46d",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": (
+        "45ed0199f0cd5c106fec54a21c2159a96e26e6dd75386acf69d1a148cf418bcc",
+        "e3eda2b4deb0a5530483b1da39229552b48df4e6cb88e8bd7df8ecdca32bb9f0",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/slot_loss_budget_v1.py": (
+        "f0c1ea49021eee7288fcf2bc2927ddbeeede0a4bb94a606ca13126b6db16b52e",
+        "0352383b74293c361fc2f4b99bc0aef80f7d0badc5c779c65058f25ab1d51643",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
@@ -400,6 +437,14 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in ROTATION_SLOT_CAPITAL_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, ROTATION_SLOT_CAPITAL_DELTAS)
+        if any(
+            hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+            for path, (_, after) in AUTHENTICATED_NET_REVERSAL_DELTAS.items()
+            if (root / path).is_file()
+        ):
+            for path, (before, _) in AUTHENTICATED_NET_REVERSAL_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
     actual = {}
     for path in expected:
         source = root / path
@@ -426,6 +471,12 @@ def _double_play_bundle_successor(root, parent):
     expected = _exact_double_play_successor(parent, DOUBLE_PLAY_POLICY_DELTAS)
     if (root / DIRECT_REVERSAL_SOURCE).is_file():
         expected = _exact_double_play_successor(expected, DIRECT_REVERSAL_POLICY_DELTAS)
+        if any(
+            hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+            for path, (_, after) in AUTHENTICATED_NET_REVERSAL_DELTAS.items()
+            if path in expected
+        ):
+            expected = _exact_double_play_successor(expected, AUTHENTICATED_NET_REVERSAL_DELTAS)
     return expected
 
 

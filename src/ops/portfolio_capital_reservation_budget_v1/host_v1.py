@@ -397,6 +397,7 @@ class PortfolioBudgetHostV1:
         entry_budget_policy=None,
         execution_incident_state_path: Path | None = None,
         slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
+        live_slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -453,8 +454,16 @@ class PortfolioBudgetHostV1:
             or entry_budget_policy is None
         ):
             raise ValueError("HOST_SLOT_CAPITAL_SIMULATED_BOOTSTRAP_REQUIRED")
+        if live_slot_capital_allocation is not None and (
+            durable_mode != "create"
+            or execution_environment != "LIVE"
+            or entry_budget_policy is not None
+            or slot_capital_allocation is not None
+        ):
+            raise ValueError("HOST_SLOT_CAPITAL_LIVE_BOOTSTRAP_REQUIRED")
         self.entry_budget_policy = entry_budget_policy
         self._slot_capital_allocation = slot_capital_allocation
+        self._live_slot_capital_allocation = live_slot_capital_allocation
 
     def observe_v1(self, bindings, *, required_execution_attempts=None):
         return self._observe_with_retry_v1(
@@ -468,7 +477,12 @@ class PortfolioBudgetHostV1:
             durable_mode=self.durable_mode,
             durable_lane_bindings=bindings,
             entry_budget_policy=self.entry_budget_policy,
-            slot_capital_allocation=self._slot_capital_allocation,
+            slot_capital_allocation=self._slot_capital_allocation
+            if self.durable_mode == "create"
+            else None,
+            live_slot_capital_allocation=(
+                self._live_slot_capital_allocation if self.durable_mode == "create" else None
+            ),
         )
         restored_policy = owner.entry_budget_policy_v1()
         if (
@@ -478,6 +492,9 @@ class PortfolioBudgetHostV1:
         ):
             owner.close()
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
+        if owner.has_live_slot_capital_allocation_v1() and self.execution_environment != "LIVE":
+            owner.close()
+            raise ValueError("LIVE_SLOT_CAPITAL_HOST_SCOPE_MISMATCH")
         return owner
 
     def recover_owner_for_l10_close_booking_v1(self, bindings):

@@ -71,7 +71,7 @@ def remaining_loss(owner, slot):
 
 @dataclass(frozen=True)
 class SlotCapitalAllocationV1:
-    """Explicit initial capital allocation for the bounded simulation."""
+    """Explicit initial allocation. The durable owner binds its environment."""
 
     account_identity: str
     source_ref: str
@@ -130,6 +130,7 @@ class SlotCapitalBasisV1:
     allocation_digest: str
     funding_observation_id: str
     latest_booking_digest: str | None
+    settlement_bookings_digest: str | None = None
 
     @property
     def net_basis_usdc(self) -> Decimal:
@@ -145,6 +146,11 @@ class SlotCapitalBasisV1:
             "allocation_digest": self.allocation_digest,
             "funding_observation_id": self.funding_observation_id,
             "latest_booking_digest": self.latest_booking_digest,
+            **(
+                {"settlement_bookings_digest": self.settlement_bookings_digest}
+                if self.settlement_bookings_digest is not None
+                else {}
+            ),
         }
 
 
@@ -179,7 +185,9 @@ def _net_booking(record, net):
 def requires_close_accounting(owner, slot_id):
     allocation = owner._slot_capital_allocation
     return enabled(owner._entry_budget_policy) or (
-        allocation is not None and slot_id in allocation["declaration"]["initial_usdc_by_slot"]
+        allocation is not None
+        and allocation["schema"] == "slot_capital_allocation.v1"
+        and slot_id in allocation["declaration"]["initial_usdc_by_slot"]
     )
 
 

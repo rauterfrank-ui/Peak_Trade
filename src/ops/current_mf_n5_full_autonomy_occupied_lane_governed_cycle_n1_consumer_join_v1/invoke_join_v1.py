@@ -13,7 +13,7 @@ import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Any, Mapping, NoReturn, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Mapping, NoReturn, Sequence
 
 if TYPE_CHECKING:
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
@@ -769,6 +769,9 @@ def _t2_from_s7(
     position_management_config_payload: Mapping[str, Any] | None = None,
     host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
     offline_observation_clock_unix: float | None = None,
+    authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
+    refresh_reversal_pretrade: Callable[[], CurrentProductiveEnterLive29PInjectedGetV1 | None]
+    | None = None,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         bound_epoch = str(common_epoch_decision_epoch or "").strip()
@@ -883,6 +886,7 @@ def _t2_from_s7(
             close_quantity_decision = None
             close_execution_handoff = None
             reversal = None
+            reversal_order = None
             reversal_requested = False
             occupied_scope_close_binding = None
             close_plan_reasons = ()
@@ -921,6 +925,7 @@ def _t2_from_s7(
                 ):
                     from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
                         assess_direct_double_play_reversal_v1,
+                        prepare_authenticated_net_reversal_order_v1,
                     )
                     from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
                         read_occupied_scope_mark_snapshot_v1,
@@ -954,6 +959,28 @@ def _t2_from_s7(
                             config_rows = (position_management_config_payload or {}).get("data", [])
                             if len(config_rows) != 1 or config_rows[0].get("posMode") != "net_mode":
                                 raise ValueError("DIRECT_REVERSAL_NET_MODE_REQUIRED")
+                            reversal_input = live_29p_injected
+                            if (
+                                authenticated_entry is not None
+                                and refresh_reversal_pretrade is not None
+                                and portfolio_budget_owner.has_live_slot_capital_allocation_v1()
+                            ):
+                                reversal_input = refresh_reversal_pretrade()
+                                if reversal_input is None:
+                                    raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
+                                metadata = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
+                                    venue_native_id=native_id,
+                                    bound_instrument_id=bound.instrument_id,
+                                    instruments_payload=reversal_input.instruments_payload,
+                                    observed_at_as_of=reversal_input.observed_at,
+                                )
+                            reversal_epoch = (
+                                datetime.now(timezone.utc)
+                                if authenticated_entry is not None
+                                else datetime.fromtimestamp(
+                                    float(s7_base["observed_unix"]), tz=timezone.utc
+                                )
+                            )
                             reversal = assess_direct_double_play_reversal_v1(
                                 episode=episode,
                                 bound=bound,
@@ -962,14 +989,28 @@ def _t2_from_s7(
                                 position=position_management_ingress.position,
                                 metadata=metadata,
                                 mark=s7_base["canonical_price_provenance"],
-                                epoch=datetime.fromtimestamp(
-                                    float(s7_base["observed_unix"]), tz=timezone.utc
-                                ).isoformat(),
+                                epoch=reversal_epoch.isoformat(),
                                 recovery=host_budget_recovery,
                                 owner=portfolio_budget_owner,
-                                injected=live_29p_injected,
+                                injected=reversal_input,
+                                authenticated_entry=authenticated_entry,
                             )
-                        except (ValueError, OSError, ArithmeticError, RuntimeError) as exc:
+                            if authenticated_entry is not None:
+                                reversal_order = prepare_authenticated_net_reversal_order_v1(
+                                    reversal,
+                                    bound=bound,
+                                    injected=reversal_input,
+                                    cycle_id=str(s7_base["cycle_id_prefix"]),
+                                )
+                        except (
+                            ValueError,
+                            OSError,
+                            ArithmeticError,
+                            RuntimeError,
+                            TypeError,
+                            KeyError,
+                        ) as exc:
+                            reversal = None
                             close_plan_reasons = (str(exc),)
                 if outcome == "exit":
                     close_handoff = compose_position_management_full_close_intent_v1(
@@ -1074,6 +1115,7 @@ def _t2_from_s7(
                 final_order_envelope=(envelope if close_execution_handoff else None),
                 position_management_execution_handoff=close_execution_handoff,
                 position_management_reversal=reversal,
+                position_management_reversal_order=reversal_order,
                 occupied_scope_close_binding=occupied_scope_close_binding,
                 canonical_order_intent=close_intent if close_execution_handoff else None,
                 permit_created=_FALSE,
@@ -1438,6 +1480,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     offline_governed_attempt: object | None = None,
     occupied_scope_mark_lane_id: str | None = None,
     authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
+    refresh_reversal_pretrade: Callable[[], CurrentProductiveEnterLive29PInjectedGetV1 | None]
+    | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -1964,6 +2008,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             portfolio_budget_owner=portfolio_budget_owner,
             common_epoch_decision_epoch=common_epoch_decision_epoch,
             host_budget_recovery=host_budget_recovery,
+            authenticated_entry=authenticated_entry,
+            refresh_reversal_pretrade=refresh_reversal_pretrade,
             position_management_only=not ingress.position.venue_flat,
             position_management_ingress=ingress,
             position_management_config_payload=(occupancy_payloads or {}).get("CONFIG"),

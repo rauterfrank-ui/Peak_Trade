@@ -1025,6 +1025,7 @@ def run_current_productive_governed_cycle_v1(
 
         close_execution_handoff = getattr(t2_result, "position_management_execution_handoff", None)
         reversal = getattr(t2_result, "position_management_reversal", None)
+        reversal_order = getattr(t2_result, "position_management_reversal_order", None)
         management_close_bound = (
             managing_position
             and master_v2_decision.lower() == "exit"
@@ -1066,7 +1067,11 @@ def run_current_productive_governed_cycle_v1(
                 or reversal.episode.venue_native_id != authorization.native_id
                 or close_execution_handoff is not None
                 or final_order_envelope is not None
+                or (reversal.episode.account_scope.execution_environment == "LIVE")
+                != (reversal_order is not None)
             )
+        elif reversal_order is not None:
+            management_entry_leak = True
         if permit_created or post_count != 0 or management_entry_leak:
             first_blocker = (
                 "POSITION_MANAGEMENT_ENTRY_FORBIDDEN"
@@ -1218,6 +1223,11 @@ def run_current_productive_governed_cycle_v1(
                     {
                         "direct_reversal": reversal.to_dict_v1(),
                         "direct_reversal_digest": reversal.digest_v1(),
+                        **(
+                            {"direct_reversal_order": reversal_order}
+                            if reversal_order is not None
+                            else {}
+                        ),
                     }
                     if reversal is not None
                     else {}
