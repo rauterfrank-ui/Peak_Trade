@@ -1314,7 +1314,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "96e5d1b33e7e7af517b198664702e5b06bae3693d0b6bb141a8256b3034b1858"
+      "sha256": "126378eb84522d34ef0aee5d6513d8092f9b46ea92e1e199fdf8a6bde0ce5be4"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -3119,7 +3119,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "fd1cf078fc86bbb166d913ddae7341b9ec78a23dc8da4fe47233426a62a3b9e9"
+      "sha256": "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -4419,7 +4419,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "45a3c37fec43a490716323a447b878e1d0eb61883ddccc00cad0b8f5a05dbaec"
+      "sha256": "1aa8242fec9948d00458ef4e43777c923db1715761da3d4ae51b84a693d7d278"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",

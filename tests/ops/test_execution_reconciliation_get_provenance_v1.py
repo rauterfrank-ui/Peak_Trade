@@ -194,6 +194,124 @@ class SignedReconciliationHttpFixture:
         return json.dumps({"code": code, "data": rows}, separators=(",", ":")).encode()
 
 
+@pytest.mark.parametrize("initial_usdc,slot_count", [(15, 1), (25, 1), (25, 5)])
+def test_live_enter_uses_the_funded_slot_allocation(tmp_path, initial_usdc, slot_count):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+        SlotCapitalAllocationV1,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        REUSED_BINDING_ACCOUNT_SCOPE,
+    )
+    from tests.ops.test_outer_entry_budget_policy_v1 import (
+        EPOCH,
+        Slot,
+        _balance_payload,
+        _bound as entry_bound,
+        _enter_replay,
+        _host_enter_cycle,
+        _injected,
+        join,
+    )
+
+    account = REUSED_BINDING_ACCOUNT_SCOPE
+    bound = entry_bound()
+    bindings = {"LANE_1": bound}
+    for index, symbol in enumerate(("ETH", "SOL", "XRP", "DOGE")[: slot_count - 1], start=2):
+        bindings[f"LANE_{index}"] = replace(
+            bound, instrument_id=f"{symbol}-X-PERP", venue_native_id=f"{symbol}-USD_UM-SWAP"
+        )
+    opening = Decimal(initial_usdc)
+    with closing(
+        PortfolioBudgetHostV1(
+            root=tmp_path / "budget-host",
+            private_rest_fetch=_fetch(uid=account),
+            repository_sha="test-host-revision",
+            session_id="funded-initial-entry",
+            expected_account_identity=account,
+            durable_mode="create",
+            clock=lambda: datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp(),
+            live_slot_capital_allocation=SlotCapitalAllocationV1(
+                account, "offline-explicit-allocation", tuple((slot, opening) for slot in bindings)
+            ),
+        )
+    ) as host:
+        recovery = host.observe_v1(bindings)
+        _, cycle, _ = _host_enter_cycle()
+        replay = _enter_replay(cycle)
+        result = join(
+            replay=replay,
+            bound_instrument=bound,
+            decision_epoch=EPOCH,
+            injected=_injected(payload=_balance_payload(avail_eq="1000.00")),
+            portfolio_budget_owner=host.owner,
+            portfolio_slot=Slot("LANE_1", str(replay.evidence.decision_id), "initial-entry"),
+            host_budget_recovery=recovery,
+        )
+        assert result.post_count == "0" and result.permit_created == "false"
+        if initial_usdc == 15:
+            # The same instrument needs a larger allocation for one native lot.
+            assert result.status == "FAIL" and result.first_blocker == "ROUNDED_DOWN"
+            assert not result.portfolio_reservation_id
+            assert host.owner.stored_reservation_count_v1() == 0
+            return
+        assert result.status == "PASS", result.first_blocker
+        assert result.replay.intermediate.canonical_order_intent is not None
+        sizing = result.replay.intermediate.capital_risk_sizing_decision
+        assert sizing.scope_capital_envelope.available_capital == Decimal("1000.00")
+        assert sizing.scope_capital_envelope.per_order_cap == opening
+        reserved = sizing.canonical_position_sizing.resulting_notional
+        assert 0 < reserved <= opening
+        assert host.owner.active_sum_v1() == reserved
+        status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+            replay=result.replay,
+            bound_instrument=bound,
+            session_id="funded-initial-entry",
+            run_id="funded-initial-entry",
+            composed_epoch=EPOCH,
+            execution_mode="LIVE",
+        )
+        assert status.value == "PASS", reasons
+        envelope = bind_final_order_envelope_from_venue_plan_v1(
+            plan,
+            admission_ref="offline",
+            provenance_ref="funded-initial-entry",
+            creation_epoch=EPOCH,
+        )
+        assert Decimal(envelope.quantity) == sizing.final_quantity
+
+        observation_id = host.owner.budget_state_v1().observation_id
+        over_budget = host.owner.try_reserve_v1(
+            slot_id="LANE_1",
+            decision_id="second-hold",
+            cycle_id="initial-entry",
+            observation_id=observation_id,
+            amount=opening,
+        )
+        assert over_budget.reason_codes == (
+            "ENTRY_BUDGET_SLOT_LIMIT_EXCEEDED",
+            "NO_PARTIAL_MUTATION",
+        )
+        assert host.owner.active_sum_v1() == reserved
+        if slot_count == 5:
+            for slot in bindings:
+                remaining = opening - reserved if slot == "LANE_1" else opening
+                additional = host.owner.try_reserve_v1(
+                    slot_id=slot,
+                    decision_id=f"test-capacity-{slot}",
+                    cycle_id="initial-entry",
+                    observation_id=observation_id,
+                    amount=remaining,
+                )
+                assert additional.disposition.value == "ADMITTED", additional.reason_codes
+            assert host.owner.active_sum_v1() == Decimal(125)
+
+
 @pytest.fixture
 def authenticated_host(tmp_path, monkeypatch, request):
     from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
