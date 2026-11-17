@@ -499,7 +499,7 @@ def test_wrong_ranking_snapshot_id_fails(tmp_path: Path) -> None:
     assert SelectionFailureCodeV1.GOVERNED_PIN_PROVENANCE_MISMATCH.value in result.failure_codes
 
 
-def test_pin_preserves_min_holding_and_hysteresis(tmp_path: Path) -> None:
+def test_pin_preserves_rank_hysteresis(tmp_path: Path) -> None:
     ranking = _ranking(
         [
             _perp("SOL-USDT-SWAP", base="SOL"),
@@ -511,7 +511,6 @@ def test_pin_preserves_min_holding_and_hysteresis(tmp_path: Path) -> None:
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
-        min_holding_period_seconds=3_600.0,
     )
     assert first.selection.venue_native_id == "ADA-USDT-SWAP"
     sol = _row(ranking, "SOL-USDT-SWAP")
@@ -520,24 +519,11 @@ def test_pin_preserves_min_holding_and_hysteresis(tmp_path: Path) -> None:
         ranking_snapshot=ranking,
         lane_state_root=tmp_path,
     )
-    held = produce_single_selected_future_v1(
+    hyst = produce_single_selected_future_v1(
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX + 60.0,
         previous_selection=first.selection,
-        min_holding_period_seconds=3_600.0,
-        governed_pin=pin,
-        lane_state_root=tmp_path,
-    )
-    assert held.selection.venue_native_id == "ADA-USDT-SWAP"
-    assert SelectionFailureCodeV1.WITHIN_MIN_HOLDING_PERIOD.value in held.selection.reason_codes
-
-    hyst = produce_single_selected_future_v1(
-        ranking_snapshot=ranking,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX + 10_000.0,
-        previous_selection=first.selection,
-        min_holding_period_seconds=0.0,
         hysteresis_rank_improvement=20,
         governed_pin=pin,
         lane_state_root=tmp_path,
@@ -558,7 +544,6 @@ def test_pin_preserves_open_position_replacement_pending(tmp_path: Path) -> None
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
-        min_holding_period_seconds=0.0,
     )
     sol = _row(ranking, "SOL-USDT-SWAP")
     pin = build_governed_cap23_pin_v1(
@@ -572,7 +557,6 @@ def test_pin_preserves_open_position_replacement_pending(tmp_path: Path) -> None
         producer_observed_at_unix=OBSERVED_UNIX + 10.0,
         previous_selection=first.selection,
         open_position_instrument_id=first.selection.instrument_id,
-        min_holding_period_seconds=0.0,
         governed_pin=pin,
         lane_state_root=tmp_path,
     )

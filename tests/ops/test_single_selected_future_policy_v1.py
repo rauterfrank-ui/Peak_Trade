@@ -438,74 +438,6 @@ def test_minimum_history_failure() -> None:
     assert SelectionFailureCodeV1.MINIMUM_HISTORY_FAILURE.value in result.failure_codes
 
 
-def test_refresh_within_minimum_holding_period() -> None:
-    ranking_a = _ranking(
-        [
-            _perp("ETH-USDT-SWAP"),
-            _perp("SOL-USDT-SWAP", base="SOL", ct_val_ccy="SOL"),
-        ]
-    )
-    first = produce_single_selected_future_v1(
-        ranking_snapshot=ranking_a,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-        min_holding_period_seconds=3_600.0,
-    )
-    assert first.selection.venue_native_id == "ETH-USDT-SWAP"
-
-    # Force SOL to be sole eligible via suspending ETH; still within holding → keep ETH.
-    second = produce_single_selected_future_v1(
-        ranking_snapshot=ranking_a,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX + 60.0,
-        previous_selection=first.selection,
-        min_holding_period_seconds=3_600.0,
-        instrument_status_by_id={
-            "ETH-USDT-SWAP": {
-                "suspended": True,
-                "history_sample_count": 10,
-                "mark_price_present": True,
-                "data_quality_status": "PASS",
-            },
-            "SOL-USDT-SWAP": {
-                "history_sample_count": 10,
-                "mark_price_present": True,
-                "data_quality_status": "PASS",
-            },
-        },
-    )
-    # Without open position, suspended previous with better alternate:
-    # eligibility of previous fails → if no open position, may switch after holding check.
-    # Holding blocks switch when previous still eligible; here previous is suspended so
-    # top eligible becomes SOL. Holding applies only when previous remains selectable.
-    # Re-run with both eligible and reordered preference via hysteresis path:
-    # Prefer SOL by suspending ETH; within holding period → keep ETH.
-    held = produce_single_selected_future_v1(
-        ranking_snapshot=ranking_a,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX + 60.0,
-        previous_selection=first.selection,
-        min_holding_period_seconds=3_600.0,
-        hysteresis_rank_improvement=1,
-        instrument_status_by_id={
-            "ETH-USDT-SWAP": {
-                "suspended": True,
-                "history_sample_count": 10,
-                "mark_price_present": True,
-                "data_quality_status": "PASS",
-            },
-            "SOL-USDT-SWAP": {
-                "history_sample_count": 10,
-                "mark_price_present": True,
-                "data_quality_status": "PASS",
-            },
-        },
-    )
-    assert held.selection.venue_native_id == "ETH-USDT-SWAP"
-    assert SelectionFailureCodeV1.WITHIN_MIN_HOLDING_PERIOD.value in held.selection.reason_codes
-    assert second.selection.selected_future_count == 1
-
-
 def test_hysteresis_prevents_churn() -> None:
     ranking = _ranking(
         [
@@ -518,7 +450,6 @@ def test_hysteresis_prevents_churn() -> None:
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
-        min_holding_period_seconds=0.0,
         hysteresis_rank_improvement=2,
     )
     # ADA is rank 1 initially. Build previous as ETH (rank 2) artificially.
@@ -540,7 +471,6 @@ def test_hysteresis_prevents_churn() -> None:
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX + 10_000.0,
         previous_selection=previous,
-        min_holding_period_seconds=0.0,
         hysteresis_rank_improvement=2,
     )
     assert held.selection.venue_native_id == "ETH-USDT-SWAP"
@@ -562,7 +492,6 @@ def test_open_position_during_refresh_and_replacement_pending() -> None:
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
-        min_holding_period_seconds=0.0,
     )
     eth_id = first.selection.instrument_id
     assert first.selection.venue_native_id == "ETH-USDT-SWAP"
@@ -574,7 +503,6 @@ def test_open_position_during_refresh_and_replacement_pending() -> None:
         producer_observed_at_unix=OBSERVED_UNIX + 10_000.0,
         previous_selection=first.selection,
         open_position_instrument_id=eth_id,
-        min_holding_period_seconds=0.0,
         instrument_status_by_id={
             "ETH-USDT-SWAP": {
                 "suspended": True,

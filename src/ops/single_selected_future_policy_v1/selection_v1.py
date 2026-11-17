@@ -24,8 +24,8 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (
     DEFAULT_MAX_RANKING_AGE_SECONDS,
     DEFAULT_MIN_DATA_QUALITY_STATUS,
     DEFAULT_MIN_HISTORY_SAMPLES,
-    DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
     DEFAULT_REFRESH_CADENCE_SECONDS,
+    DEFAULT_SELECTION_VALIDITY_SECONDS,
     MAX_POSITIONS_EFFECTIVE,
     PRODUCER_VERSION,
     RANKING_CAPABILITY_ID,
@@ -90,14 +90,14 @@ def _valid_until_rfc(
     *,
     validation_event_time: str,
     refresh_cadence_seconds: float,
-    min_holding_period_seconds: float,
+    selection_validity_seconds: float,
     fallback_unix: float,
 ) -> str:
-    """Bind validity to the supporting event, independently of holding duration."""
+    """Bound validity from the supporting event, with at least one refresh interval."""
     base = _parse_event_time_unix(validation_event_time)
     if base is None:
         base = float(fallback_unix)
-    horizon = max(float(refresh_cadence_seconds), float(min_holding_period_seconds))
+    horizon = max(float(refresh_cadence_seconds), float(selection_validity_seconds))
     return _rfc3339(base + horizon)
 
 
@@ -285,7 +285,7 @@ def produce_single_selected_future_v1(
     instrument_status_by_id: Mapping[str, Mapping[str, Any]] | None = None,
     max_ranking_age_seconds: float = DEFAULT_MAX_RANKING_AGE_SECONDS,
     refresh_cadence_seconds: float = DEFAULT_REFRESH_CADENCE_SECONDS,
-    min_holding_period_seconds: float = DEFAULT_MIN_HOLDING_PERIOD_SECONDS,
+    selection_validity_seconds: float = DEFAULT_SELECTION_VALIDITY_SECONDS,
     hysteresis_rank_improvement: int = DEFAULT_HYSTERESIS_RANK_IMPROVEMENT,
     min_history_samples: int = DEFAULT_MIN_HISTORY_SAMPLES,
     min_data_quality_status: str = DEFAULT_MIN_DATA_QUALITY_STATUS,
@@ -303,7 +303,7 @@ def produce_single_selected_future_v1(
         repository_sha=repository_sha,
         max_ranking_age_seconds=max_ranking_age_seconds,
         refresh_cadence_seconds=refresh_cadence_seconds,
-        min_holding_period_seconds=min_holding_period_seconds,
+        selection_validity_seconds=selection_validity_seconds,
         hysteresis_rank_improvement=hysteresis_rank_improvement,
         min_history_samples=min_history_samples,
         min_data_quality_status=min_data_quality_status,
@@ -603,7 +603,7 @@ def produce_single_selected_future_v1(
                 valid_until=_valid_until_rfc(
                     validation_event_time=previous.selected_at_event_time,
                     refresh_cadence_seconds=refresh_cadence_seconds,
-                    min_holding_period_seconds=min_holding_period_seconds,
+                    selection_validity_seconds=selection_validity_seconds,
                     fallback_unix=producer_observed_at_unix,
                 ),
                 policy_version=SELECTION_POLICY_VERSION,
@@ -683,13 +683,6 @@ def produce_single_selected_future_v1(
     if previous is not None and previous.instrument_id:
         prev_id = previous.instrument_id
         prev_rank = rank_of_instrument_v1(ranked, prev_id)
-        prev_selected_unix = _parse_event_time_unix(previous.selected_at_event_time)
-        holding_elapsed = (
-            producer_observed_at_unix - prev_selected_unix
-            if prev_selected_unix is not None
-            else float("inf")
-        )
-
         # Check current selection health for DEGRADED / EXIT_ONLY.
         prev_status = None
         if instrument_status_by_id:
@@ -754,16 +747,7 @@ def produce_single_selected_future_v1(
             reasons.extend(list(prev_excl))
             reasons.append(SelectionFailureCodeV1.ALPHA_BLOCKED.value)
         elif switch_desired:
-            # Min holding + hysteresis for churn control when no open position blocks.
-            if holding_elapsed < float(min_holding_period_seconds):
-                state = STATE_SELECTED_ACTIVE
-                instrument_id = prev_id
-                venue_native_id = previous.venue_native_id
-                selected_rank = int(prev_rank or previous.selected_rank or 0)
-                selected_at_event = previous.selected_at_event_time
-                valid_from = previous.valid_from
-                reasons.append(SelectionFailureCodeV1.WITHIN_MIN_HOLDING_PERIOD.value)
-            elif prev_rank is not None and (prev_rank - candidate_rank) < int(
+            if prev_rank is not None and (prev_rank - candidate_rank) < int(
                 hysteresis_rank_improvement
             ):
                 # New candidate not sufficiently better.
@@ -826,7 +810,6 @@ def produce_single_selected_future_v1(
                     SelectionFailureCodeV1.INSTRUMENT_SUSPENDED.value,
                     SelectionFailureCodeV1.INSTRUMENT_INVALID.value,
                     SelectionFailureCodeV1.DATA_LOSS.value,
-                    SelectionFailureCodeV1.WITHIN_MIN_HOLDING_PERIOD.value,
                     SelectionFailureCodeV1.HYSTERESIS_BLOCKS_CHURN.value,
                 }
             }
@@ -858,11 +841,10 @@ def produce_single_selected_future_v1(
         selected_at_wall_time=wall_rfc,
         valid_from=valid_from,
         valid_until=_valid_until_rfc(
-            # Retention preserves selected_at_event_time for minimum holding,
-            # while this validated ranking supports the current validity window.
+            # Retention preserves the selection origin. This ranking backs its current validity.
             validation_event_time=ranking.event_time,
             refresh_cadence_seconds=refresh_cadence_seconds,
-            min_holding_period_seconds=min_holding_period_seconds,
+            selection_validity_seconds=selection_validity_seconds,
             fallback_unix=producer_observed_at_unix,
         ),
         policy_version=SELECTION_POLICY_VERSION,

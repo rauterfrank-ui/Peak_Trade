@@ -36,6 +36,7 @@ from src.ops.hard_facts_system_closure_v1.position_aware_rotation_v1 import (
     RotationPhase,
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PortfolioTruthSnapshotV1
+from src.ops.single_selected_future_policy_v1.constants_v1 import DEFAULT_SELECTION_VALIDITY_SECONDS
 from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
 from src.ops.mf_membership_context_artifact_contract_v1 import (
     validate_membership_context_artifact_v1,
@@ -103,7 +104,7 @@ def publish_checked_lane_selections_v1(
     observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     replacement_admission_by_lane: Mapping[str, PositionAwareRotationDecisionV1] | None = None,
     retained_bound_by_lane: Mapping | None = None,
-    rotation_min_hold_seconds_v1: float | None = None,
+    selection_validity_seconds: float = DEFAULT_SELECTION_VALIDITY_SECONDS,
 ) -> CheckedLanePublicationV1:
     from .produce_join_v1 import _assert_non_authority, _fail
 
@@ -271,11 +272,7 @@ def publish_checked_lane_selections_v1(
                     governed_pin=pin,
                     expected_previous_instrument=old_by_lane.get(lane),
                     open_position_instrument_id=open_instrument,
-                    **(
-                        {"min_holding_period_seconds": rotation_min_hold_seconds_v1}
-                        if rotation_min_hold_seconds_v1 is not None
-                        else {}
-                    ),
+                    selection_validity_seconds=selection_validity_seconds,
                 )
             )
             selection = assessed.produced.selection

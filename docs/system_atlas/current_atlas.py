@@ -211,6 +211,8 @@ WALLCLOCK_DURATION_CONFIG_DELTA = {
 OWNER_ADJUDICATION_CONFIG_DELTA = {
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
 }
+CAP23_SELECTION_VALIDITY_CONFIG = "config/ops/single_selected_future_policy_v1.toml"
+CAP23_CONSTANTS = "src/ops/single_selected_future_policy_v1/constants_v1.py"
 
 
 def validate_development_binding(root, model, frozen, changed, extras, cleanup):
@@ -260,6 +262,7 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel in RETIRED_AUTOMATION_CONFIG_DELTAS
             or rel in WALLCLOCK_DURATION_CONFIG_DELTA
             or rel in OWNER_ADJUDICATION_CONFIG_DELTA
+            or rel == CAP23_SELECTION_VALIDITY_CONFIG
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
         assert row["before_sha256"] == expected_before, ["DEVELOPMENT_BASE_MISMATCH", rel]
@@ -295,6 +298,11 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
                 "OWNER_ADJUDICATION_CONFIG_DRIFT",
                 rel,
             ]
+        if rel == CAP23_SELECTION_VALIDITY_CONFIG:
+            original = git(root, "show", model["source_commit"] + ":" + rel)
+            assert file.read_bytes() == original.replace(
+                b"min_holding_period_seconds = 3600.0", b"selection_validity_seconds = 3600.0"
+            ), ["CAP23_SELECTION_VALIDITY_CONFIG_DRIFT", rel]
         indexed[rel] = row
     assert unexpected <= indexed.keys(), ["UNSCOPED_CHANGE", *sorted(unexpected - indexed.keys())]
     return indexed
@@ -429,6 +437,13 @@ def validate(root, check_outputs=True):
                 assert digest((root / path).read_bytes()) == expected, path
     for claim in m["constant_claims"]:
         tree = ast.parse((root / claim["path"]).read_bytes())
+        name = claim["name"]
+        if (
+            claim["path"] == CAP23_CONSTANTS
+            and name == "DEFAULT_MIN_HOLDING_PERIOD_SECONDS"
+            and CAP23_SELECTION_VALIDITY_CONFIG in development
+        ):
+            name = "DEFAULT_SELECTION_VALIDITY_SECONDS"
         matching = []
         for n in tree.body:
             targets = (
@@ -438,7 +453,7 @@ def validate(root, check_outputs=True):
                 if isinstance(n, ast.AnnAssign)
                 else []
             )
-            if any(isinstance(t, ast.Name) and t.id == claim["name"] for t in targets):
+            if any(isinstance(t, ast.Name) and t.id == name for t in targets):
                 value = n.value
                 matching.append(
                     []

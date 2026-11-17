@@ -17,7 +17,7 @@ from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
     RankedCandidateV1,
     authority_block,
 )
-from src.ops.single_selected_future_policy_v1.constants_v1 import DEFAULT_MIN_HOLDING_PERIOD_SECONDS
+from src.ops.single_selected_future_policy_v1.constants_v1 import DEFAULT_SELECTION_VALIDITY_SECONDS
 from src.ops.top20_opportunity_evaluation_residency_v1 import constants_v1 as residency_constants
 from src.ops.top20_opportunity_evaluation_residency_v1.admission_v1 import (
     eligible_top20_candidates_v1,
@@ -429,7 +429,7 @@ def test_34_36_admission_snapshot_immutable(tmp_path: Path, residency_enabled, c
 def test_37_42_mf_and_cap23_constants_unchanged() -> None:
     assert N_VALUE == 5
     assert POLICY_IDENTITY_V1["n_value"] == 5
-    assert DEFAULT_MIN_HOLDING_PERIOD_SECONDS == 3600.0
+    assert DEFAULT_SELECTION_VALIDITY_SECONDS == 3600.0
 
 
 def test_44_45_no_residency_in_trading_dto_fields() -> None:

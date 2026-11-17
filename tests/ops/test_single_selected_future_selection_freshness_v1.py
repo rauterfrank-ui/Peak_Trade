@@ -1,4 +1,4 @@
-"""Fresh ranking revalidates selection without restarting instrument holding time."""
+"""Fresh rankings renew selection validity and preserve original selection provenance."""
 
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -21,11 +21,19 @@ def _rfc(seconds):
     return datetime.fromtimestamp(seconds, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _ranking_at(monkeypatch, seconds, order=("ETH-USDT-SWAP", "SOL-USDT-SWAP")):
+def _ranking_at(
+    monkeypatch,
+    seconds,
+    order=("ETH-USDT-SWAP", "SOL-USDT-SWAP"),
+    instruments=("ETH-USDT-SWAP", "SOL-USDT-SWAP"),
+):
     monkeypatch.setattr(inputs, "OBSERVED_UNIX", seconds)
     monkeypatch.setattr(inputs, "SOURCE_EVENT", str(int(seconds * 1000)))
     ranking = inputs._ranking(
-        [inputs._perp(), inputs._perp("SOL-USDT-SWAP", base="SOL", ct_val_ccy="SOL")]
+        [
+            inputs._perp(native, base=native.split("-")[0], ct_val_ccy=native.split("-")[0])
+            for native in instruments
+        ]
     )
     return inputs._with_authoritative_rank_order(ranking, list(order))
 
@@ -40,7 +48,7 @@ def _produce(ranking, *, now, previous=None, **kwargs):
     )
 
 
-def test_fresh_keep_renews_validity_from_ranking_and_preserves_holding_clock(monkeypatch):
+def test_fresh_keep_renews_validity_from_ranking_and_preserves_selection_origin(monkeypatch):
     old = _produce(_ranking_at(monkeypatch, T0), now=T0).selection
     fresh = _ranking_at(monkeypatch, T0 + 7200)
     result = _produce(fresh, now=T0 + 7201, previous=old)
@@ -60,23 +68,30 @@ def test_fresh_keep_renews_validity_from_ranking_and_preserves_holding_clock(mon
     assert not selection.alpha_allowed and not selection.multi_future_runtime_authorized
 
 
-def test_renewal_does_not_postpone_original_minimum_holding_deadline(monkeypatch):
-    old = _produce(_ranking_at(monkeypatch, T0), now=T0).selection
-    other_first = ("SOL-USDT-SWAP", "ETH-USDT-SWAP")
-    early = _produce(
-        _ranking_at(monkeypatch, T0 + 600, other_first), now=T0 + 601, previous=old
-    ).selection
-    assert early.instrument_id == old.instrument_id
-    assert "WITHIN_MIN_HOLDING_PERIOD" in early.reason_codes
-    assert early.selected_at_event_time == old.selected_at_event_time
-    assert early.valid_until == _rfc(T0 + 600 + 3600)
+@pytest.mark.parametrize("validity", [3600, 1800])
+def test_brev_mmt_flat_selection_has_no_wait_and_keeps_receipt_horizon(monkeypatch, validity):
+    brev, mmt = "BREV-USDT-SWAP", "MMT-USDT-SWAP"
+    old_ranking = _ranking_at(monkeypatch, T0, order=(brev, mmt), instruments=(brev, mmt))
+    old = _produce(old_ranking, now=T0, selection_validity_seconds=validity).selection
+    assert old.venue_native_id == brev
+    fresh = _ranking_at(monkeypatch, T0 + 60, order=(mmt, brev), instruments=(brev, mmt))
+    flat = _produce(fresh, now=T0 + 61, previous=old, selection_validity_seconds=validity).selection
+    assert flat.venue_native_id == mmt
+    assert flat.reason_codes == ("SELECTION_REFRESHED",)
+    assert flat.selected_at_event_time == _rfc(T0 + 60)
+    assert flat.valid_until == _rfc(T0 + 60 + validity)
 
-    later = _produce(
-        _ranking_at(monkeypatch, T0 + 3601, other_first), now=T0 + 3602, previous=early
+    held = _produce(
+        fresh,
+        now=T0 + 61,
+        previous=old,
+        selection_validity_seconds=validity,
+        open_position_instrument_id=old.instrument_id,
     ).selection
-    assert later.venue_native_id == "SOL-USDT-SWAP"
-    assert later.selected_at_event_time == _rfc(T0 + 3601)
-    assert "WITHIN_MIN_HOLDING_PERIOD" not in later.reason_codes
+    assert held.venue_native_id == brev
+    assert held.state == "REPLACEMENT_PENDING"
+    assert held.replacement_venue_native_id == mmt
+    assert held.valid_until == flat.valid_until
 
 
 def test_hysteresis_retention_still_renews_from_fresh_evidence(monkeypatch):

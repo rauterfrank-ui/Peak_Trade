@@ -18,7 +18,7 @@ HARD_STOP: true
 ```text
 CAPABILITY_ID=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
 TITLE=Single Selected Future Policy (Capability 2.3)
-OWNER_REQUIREMENT=Consume Cap 2.2 ranking snapshot; produce deterministic single selected future with hysteresis, min holding, open-position replacement-pending semantics, atomic persistence and restart proof; no alpha/execution/runtime activation
+OWNER_REQUIREMENT=Consume Cap 2.2 ranking snapshot; produce deterministic single selected future with hysteresis, open-position replacement-pending semantics, atomic persistence and restart proof; no alpha/execution/runtime activation
 CURRENT_STATE=CODE_EXISTS+BOUND+RUNTIME_REACHABLE+PERSISTED+RESTART_PROVEN; ACTIVATED=false; MULTI_FUTURE/ALPHA/RUNTIME_BINDING not granted
 TARGET_STATE=SINGLE_SELECTED_FUTURE selection authority available for later Capability 2.4 runtime binding without live activation
 OUT_OF_SCOPE=Master V2/Double Play/Bull-Bear/Dynamic Scope/Composition/Confirmation/Risk/Safety mutation/Exit mutation/Volatility Enforcement/Authorization Consumption/Session Lifecycle/Live/Testnet/Paper Activation/Rulesets/Notion/Dashboard Authority/Top-N Active Set/Runtime Binding
@@ -31,13 +31,13 @@ CALL_GRAPH=
   → Stale + Integrity Checks
   → Selection Eligibility Classification
   → Deterministic Single Selection
-  → Hysteresis + Min Holding
+  → Rank Hysteresis
   → Open Position Replacement Semantics
   → Atomic Persistence
   → Selection Verification
   → Restart Reload Proof
   → Evidence
-CONFIG_KEYS=selection_policy_id; selection_policy_version; selected_future_count=1; max_positions_effective=1; max_ranking_age_seconds; refresh_cadence_seconds; min_holding_period_seconds; hysteresis_rank_improvement; min_history_samples; min_data_quality_status
+CONFIG_KEYS=selection_policy_id; selection_policy_version; selected_future_count=1; max_positions_effective=1; max_ranking_age_seconds; refresh_cadence_seconds; selection_validity_seconds; hysteresis_rank_improvement; min_history_samples; min_data_quality_status
 SELECTION_POLICY_ID=single_selected_future_policy_v1
 SELECTION_POLICY_VERSION=v1
 SELECTION_STATES=SELECTED_ACTIVE|SELECTED_DEGRADED|SELECTED_EXIT_ONLY|REPLACEMENT_PENDING|NO_SELECTION
@@ -92,19 +92,26 @@ While a position is open on the selected instrument:
 - risk / safety / exit / reconciliation remain bound to the open instrument
 - replacement is persisted only as `REPLACEMENT_PENDING`
 
-## Selection validity and instrument holding time
+## Selection validity and slot rotation
 
-The original instrument entry time in `selected_at_event_time` remains the
-minimum-holding anchor when the same instrument is retained. A new validated
-ranking supports a separate validity window: `valid_until` is its event time
-plus the existing maximum of refresh cadence and minimum holding period.
-The original `valid_from` and holding anchor are preserved on retention.
-Reobserving one ranking does not move its validity deadline with wall time.
+Retention preserves the original `selected_at_event_time` and `valid_from`.
+`valid_until` uses the validated ranking's event time plus the maximum of
+refresh cadence and selection validity. The selection validity setting
+remains 3,600 seconds by default and 1,800 seconds for new N5 receipts
+produced with an active rotation plan. Reobserving one ranking keeps its
+validity deadline.
+
+Cap23 applies eligibility, ranking hysteresis and position custody. The
+[slot rotation plan](CURRENT_RESERVED_SLOT_ROTATION_V1.md) owns the
+1,800-second waiting window from the nomination of the replacement.
+A held instrument keeps its slot binding until the original close is
+confirmed, the position reconciled flat, and its booking confirmed. Cap24
+then binds the selected replacement to that slot.
 
 Future ranking event times are invalid; stale or corrupted rankings cannot
 renew a selection. Without an eligible candidate, the existing exit-only path
 does not receive a new eligibility window. Open-position custody, pending
-replacement, minimum holding, hysteresis and alpha/activation boundaries still
+replacement, hysteresis and alpha/activation boundaries still
 apply. Previously persisted receipts are not rewritten by this correction.
 
 The [bounded N1 verification](../evidence/N1_SELECTION_FRESHNESS_2026_11_06.md)

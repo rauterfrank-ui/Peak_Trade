@@ -130,6 +130,53 @@ RESERVED_SLOT_ROTATION_DELTAS = {
 }
 
 
+# Cap23 receipt validity is independent of the existing slot rotation timer.
+CAP23_SELECTION_VALIDITY_POLICY_DELTAS = {
+    "config/ops/single_selected_future_policy_v1.toml": (
+        "53e57ca79dc4c49e96e61a29b26eb5fb69d4c151ca4072ec51e145ffd72c1548",
+        "7dacf55597c8e82919145577c535eae116109531ac16956b5c93b77e0811b6ca",
+    ),
+    "src/ops/canonical_r6_phase_8_1_policy_precondition_v1/checklist_v1.py": (
+        "39fa1662652f8b0c4dcb7adc1e0957cb1197e863efce9966b87d5ce9d2fcfa3a",
+        "451d3693efdaf9857643038fa742bbf2cc2ea84cc19726e68e0bdc2d0ef93d93",
+    ),
+    "src/ops/canonical_r6_phase_8_1_policy_precondition_v1/verifier_v1.py": (
+        "6b31bad30981f6a9364728c0261b52b0765a6b3ede9bf69d0f65c7bb4bec4c8a",
+        "0ac98265bc0dec03c9b7bfafb6cf3395a93bf999ea01e1cace5d40d8ac840e0a",
+    ),
+    "src/ops/single_selected_future_policy_v1/constants_v1.py": (
+        "92f9e96ea03392771f990c4f37a500bb5094af155e15ed04088863b88f7930ff",
+        "b7add7c90933e448fcc21e6690a979d564c402ee5aadc077df5192d300ae6e5e",
+    ),
+    "src/ops/single_selected_future_policy_v1/models_v1.py": (
+        "bba6eda80367d17eef4ccec35b40eea7d9662394ef6f89c3a818958e44621526",
+        "664593c80d8e1d4bfd3327225ba958338d9a518c8dee4fb7bf4c92424c9e0d8f",
+    ),
+    "src/ops/single_selected_future_policy_v1/policy_v1.py": (
+        "e5a30f8b5410401827c1d42c7aaf99f468b13f52cc67ca8e2796d60d46b6d750",
+        "a495d1704180844fe99cd6bc9f1cb23b137af61341bf71c6846ad7b4d6eba813",
+    ),
+}
+
+CAP23_SELECTION_VALIDITY_ROTATION_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py": (
+        "68f9648d45a566ca224575a5dec28c649c36ef93c238daf4883a27dd3d7e8d5a",
+        "4e72fc1eff15933bdd6c2a303b7d17dc31e884cac8d25ea6aa2aa066a407ae5c",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": (
+        "91011736f288bd20d5744a883223a34b283f9fa6ff9ed044fe108e76bc53d665",
+        "a22c42486628322348ef1e491cc3493fbdc294784116fa2f0d1595f262a23cb0",
+    ),
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": (
+        "46b4680a588851cd78812be41aa960d73fb4b39130f4c05d7d1cfc7036cb84de",
+        "195c20b9468bff56df4e15d4c4b55da05a13442f1514be70bcf0b793e27bfc9c",
+    ),
+    "src/ops/single_selected_future_policy_v1/producer_v1.py": (
+        "e1adca9f8633cb75cf2f3ff557261839577d852464ee2eed40f54eda00f56c78",
+        "30920e7e4ccae6c7064e4da328cd97f8211fe23f0c596447cce0572f2c2837f3",
+    ),
+}
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -645,11 +692,18 @@ def validate_reserved_slot_rotation_bundle(
         if path not in protected_after or protected_after[path] != parent:
             raise ValueError("CURRENT_SCOPE_MARK_ADMISSION_PARENT_INVALID:" + path)
         scope_bound_after[path] = successor
-    accepted = (
-        (_double_play_bundle_successor(root, scope_bound_after),)
-        if double_play
-        else (before, after, protected_after, scope_bound_after)
-    )
+    if double_play:
+        expected = _double_play_bundle_successor(root, scope_bound_after)
+        if any(
+            actual[path] == digest
+            for path, (_, digest) in CAP23_SELECTION_VALIDITY_ROTATION_DELTAS.items()
+        ):
+            expected = _exact_double_play_successor(
+                expected, CAP23_SELECTION_VALIDITY_ROTATION_DELTAS
+            )
+        accepted = (expected,)
+    else:
+        accepted = (before, after, protected_after, scope_bound_after)
     if actual not in accepted:
         raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
 
@@ -970,6 +1024,8 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and EXECUTION_AUTHORITY_AUDIT_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and OWNER_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and ROTATION_SLOT_CAPITAL_DELTAS.get(path) != (policy["frozen_sha256"], actual)
+                and CAP23_SELECTION_VALIDITY_POLICY_DELTAS.get(path)
+                != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

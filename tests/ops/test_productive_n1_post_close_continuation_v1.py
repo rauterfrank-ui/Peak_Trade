@@ -23,6 +23,10 @@ from src.ops.current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
     rotation_decision_for_lane_v1,
 )
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
+    lane_state_root_for,
+)
+from src.ops.single_selected_future_policy_v1.persistence_v1 import load_and_validate_selection_v1
 from src.ops.full_core_live_path_composition_root_v1.full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 import (
     run_full_core_post_submit_lifecycle_reconciliation_join_v1,
 )
@@ -343,10 +347,21 @@ def _count_consumption(monkeypatch):
 )
 def test_invalid_close_or_target_keeps_hold_and_does_not_consume(tmp_path, monkeypatch, failure):
     args, owner, writer, _ = _fixture(
-        tmp_path, monkeypatch, remaining="0.4" if failure == "partial" else "0"
+        tmp_path,
+        monkeypatch,
+        replace_instrument=True,
+        remaining="0.4" if failure == "partial" else "0",
     )
     calls = _count_consumption(monkeypatch)
     context = args["post_close_continuation"]
+    lane_root = lane_state_root_for(
+        topology_state_root_base=args["topology_state_root_base"], lane_id="LANE_1"
+    )
+    original_selection = load_and_validate_selection_v1(lane_root).selection
+    assert (
+        original_selection.integrity_digest
+        == context.request.bound_instrument.selection_integrity_digest
+    )
     if failure == "capital_missing":
         context = replace(context, request=replace(context.request, capital_handoff=None))
     elif failure == "wrong_account":
@@ -370,6 +385,7 @@ def test_invalid_close_or_target_keeps_hold_and_does_not_consume(tmp_path, monke
         assert owner.active_sum_v1() == 40
         assert calls == []
         assert not context.membership_store_root.exists()
+        assert load_and_validate_selection_v1(lane_root).selection == original_selection
     finally:
         owner.close()
         writer.release()
@@ -519,15 +535,16 @@ def test_receipt_conflict_or_corruption_cannot_restart_core(tmp_path, monkeypatc
         writer.release()
 
 
-def test_young_replacement_respects_original_minimum_holding(tmp_path, monkeypatch):
-    args, owner, writer, _ = _fixture(
+def test_reconciled_flat_replacement_has_no_cap23_wait(tmp_path, monkeypatch):
+    args, owner, writer, target = _fixture(
         tmp_path, monkeypatch, replace_instrument=True, selection_age=0
     )
     calls = _count_consumption(monkeypatch)
     try:
-        with pytest.raises(ValueError, match="WITHIN_MIN_HOLDING_PERIOD"):
-            run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
-        assert calls == []
+        result = run_productive_full_autonomy_n5_runtime_orchestrator_v1(**args)
+        assert result.post_close_continuation_receipt["phase"] == "ACKED"
+        assert result.post_close_continuation_receipt["consumed"]["LANE_1"]["native_id"] == target
+        assert calls == [1]
     finally:
         owner.close()
         writer.release()

@@ -85,8 +85,9 @@ S1_CHECKLIST: tuple[PolicyChecklistRowV1, ...] = (
     _row(
         "cooldown",
         status=_CP,
-        current_binding="Cap2.3 DEFAULT_MIN_HOLDING_PERIOD_SECONDS=3600 applies only to N=1 holding",
-        owner="ops.single_selected_future_policy_v1",
+        current_binding="Cap2.3 has no holding timer. Slot rotation waits 1,800 seconds "
+        "from the candidate's nomination.",
+        owner="ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1",
         mf_expansion="MF_cooldown_numerics_unratified_NOT_REQUIRED_AT_S1",
     ),
     _row(

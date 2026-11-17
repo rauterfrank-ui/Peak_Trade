@@ -37,6 +37,7 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap2
     build_n5_lane_candles_payload_from_cap24_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.constants_v1 import (
+    ACTIVE_ROTATION_SELECTION_VALIDITY_SECONDS,
     AUTONOMY_TRADING_DECISION_AUTHORITY,
     EXECUTION_SCHEDULE,
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -98,6 +99,7 @@ from src.ops.mf_membership_context_artifact_contract_v1 import (
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
     PortfolioCapitalReservationBudgetOwnerV1,
 )
+from src.ops.single_selected_future_policy_v1.constants_v1 import DEFAULT_SELECTION_VALIDITY_SECONDS
 from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
@@ -350,9 +352,6 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         _fail(FAILURE_AUTHORITY, "origin_main_sha")
     validate_membership_context_artifact_v1(membership)
     from .rotation_plan_v1 import load_slot_rotation_plan_owner_v1
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
-        ROTATION_OBSERVATION_SECONDS_V1,
-    )
 
     rotation_owner = load_slot_rotation_plan_owner_v1(
         topology_root=topology_state_root_base, writer=lane_assignment_writer
@@ -413,9 +412,9 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         producer_observed_at_unix=producer_observed_at_unix,
         observed_portfolio=cap24_bind.observed_portfolio,
         replacement_admission_by_lane=replacement_admission_by_lane,
-        rotation_min_hold_seconds_v1=ROTATION_OBSERVATION_SECONDS_V1
+        selection_validity_seconds=ACTIVE_ROTATION_SELECTION_VALIDITY_SECONDS
         if rotation_owner.active is not None
-        else None,
+        else DEFAULT_SELECTION_VALIDITY_SECONDS,
         **({"retained_bound_by_lane": retained} if bounded_host is not None else {}),
     )
     selections = publication.selections

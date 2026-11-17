@@ -54,7 +54,7 @@ Quellanker: `produce_productive_futures_ranking_v1`. SHA256: `df993feeaab9428eb3
 
 [src/ops/single_selected_future_policy_v1/constants_v1.py](../../../../src/ops/single_selected_future_policy_v1/constants_v1.py)
 
-Quellanker: `SINGLE_SELECTED_FUTURE_POLICY_V1`. SHA256: `92f9e96ea03392771f990c4f37a500bb5094af155e15ed04088863b88f7930ff`. Index: `INDEXED`.
+Quellanker: `SINGLE_SELECTED_FUTURE_POLICY_V1`. SHA256: `b7add7c90933e448fcc21e6690a979d564c402ee5aadc077df5192d300ae6e5e`. Index: `INDEXED`.
 
 ## CAP24-RUNTIME-BINDING-V1
 

@@ -15,7 +15,7 @@ SELECTION_POLICY_VERSION = "v1"
 SELECTION_POLICY_PROVENANCE = (
     "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1 Top-20 candidate context "
     "+ CAPABILITY_2_3 owner requirements (consume validated upstream rank order without "
-    "rescore/rerank, deterministic single selection, hysteresis, min holding, "
+    "rescore/rerank, deterministic single selection, hysteresis, "
     "open-position replacement pending, restart recovery, fail-closed). "
     "No dashboard/allowlist authority. No alpha/execution/runtime activation."
 )
@@ -48,7 +48,7 @@ VENUE = "okx_eea"
 
 DEFAULT_MAX_RANKING_AGE_SECONDS = 86_400.0
 DEFAULT_REFRESH_CADENCE_SECONDS = 300.0
-DEFAULT_MIN_HOLDING_PERIOD_SECONDS = 3_600.0
+DEFAULT_SELECTION_VALIDITY_SECONDS = 3_600.0
 DEFAULT_HYSTERESIS_RANK_IMPROVEMENT = 1
 DEFAULT_MIN_HISTORY_SAMPLES = 1
 DEFAULT_MIN_DATA_QUALITY_STATUS = "PASS"
@@ -89,7 +89,7 @@ CALL_GRAPH = (
     "stale_and_integrity_checks",
     "selection_eligibility_classification",
     "deterministic_single_selection",
-    "hysteresis_and_min_holding",
+    "rank_hysteresis",
     "open_position_replacement_semantics",
     "atomic_persistence",
     "selection_verification",
