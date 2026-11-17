@@ -207,6 +207,8 @@ def authenticated_host(tmp_path, monkeypatch, request):
     fault = getattr(request.node, "callspec", SimpleNamespace(params={})).params.get("fault")
     funded = fault in {
         "occupied-mark-direct-funded",
+        "occupied-mark-direct-funded-timeout",
+        "occupied-mark-direct-funded-revoked",
         "polled-mark-direct-funded",
         "occupied-mark-direct-stale-capital",
     }
@@ -215,7 +217,11 @@ def authenticated_host(tmp_path, monkeypatch, request):
 
             def funded_host(root, fetch, clock, expected_account):
                 return PortfolioBudgetHostV1(
-                    root=root / "stable-host",
+                    root=(
+                        root / "private" / "portfolio_budget_host_v1"
+                        if fault == "occupied-mark-direct-funded-timeout"
+                        else root / "stable-host"
+                    ),
                     private_rest_fetch=fetch,
                     repository_sha="test-host-revision",
                     session_id="host-session",
@@ -1870,6 +1876,8 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("occupied-mark-direct", None),
         ("polled-mark-direct", None),
         ("occupied-mark-direct-funded", None),
+        ("occupied-mark-direct-funded-timeout", None),
+        ("occupied-mark-direct-funded-revoked", None),
         ("polled-mark-direct-funded", None),
         ("occupied-mark-direct-stale-capital", None),
         ("occupied-mark", None),
@@ -1936,6 +1944,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "occupied-mark-direct",
         "polled-mark-direct",
         "occupied-mark-direct-funded",
+        "occupied-mark-direct-funded-timeout",
+        "occupied-mark-direct-funded-revoked",
         "polled-mark-direct-funded",
         "occupied-mark-direct-stale-capital",
     }
@@ -2234,6 +2244,245 @@ def _assert_direct_reversal_order_stops_at_original_post_admission(
     assert owner.execution_links_v1()[proof.reservation_id] == original_link
 
 
+def _assert_direct_reversal_dispatch(
+    tmp_path, envelope, context, proof_root, lane_pair, entry, *, revoked
+):
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_double_play_reversal_v1 as reversal,
+        current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as one_shot,
+        full_core_productive_http_post_transport_v1 as http_post,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        _clean_post_integrity,
+    )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import (
+        _claim_rows,
+        revoke,
+        signed_post_authorization,
+    )
+
+    host = context.host
+    slot, bound = lane_pair
+    proof = entry.proof
+    root = host.root / "position-episodes" / proof.identity_digest / "net-reversal-submit"
+    grant_root = tmp_path / "reversal-grant"
+    grant_root.mkdir()
+    authorization, signer = signed_post_authorization(
+        grant_root, envelope, account=context.account, action=reversal.DIRECT_DOUBLE_PLAY_REVERSAL
+    )
+    before = host.owner.risk_snapshot_v1()
+    (original_hold,) = (
+        row
+        for row in before["state"]["reservations"]
+        if row["reservation_id"] == proof.reservation_id
+    )
+    assert original_hold["state"] == "COMMITTED" and original_hold["slot_id"] == slot.lane_id
+    requests = []
+
+    class TimeoutOpener:
+        def open(self, request, timeout):
+            assert (
+                request.full_url
+                == f"https://{http_post.AUTHORIZED_HOST}{http_post.TRADE_ORDER_PATH}"
+            )
+            assert request.get_method() == "POST"
+            record = load_external_effect_durable_consume_v1(store_root=root)["record"]
+            assert record["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            assert record["envelope_digest"] == envelope.envelope_digest
+            assert _claim_rows(authorization) == [(authorization.grant.grant_id, 1)]
+            payload = json.loads(request.data)
+            assert payload == {
+                "instId": bound.venue_native_id,
+                "side": "sell",
+                "sz": envelope.quantity,
+                "ordType": "market",
+                "tdMode": envelope.td_mode,
+                "posSide": "net",
+                "clOrdId": envelope.client_order_id,
+            }
+            timestamp = request.get_header("Ok-access-timestamp")
+            key = json.loads(FAKE_OPAQUE)["secretKey"].encode()
+            signed = (
+                timestamp.encode() + b"POST" + http_post.TRADE_ORDER_PATH.encode() + request.data
+            )
+            assert request.get_header("Ok-access-sign").encode() == b64encode(
+                hmac.digest(key, signed, "sha256")
+            )
+            assert host.owner.risk_snapshot_v1() == before
+            requests.append(payload)
+            raise TimeoutError("simulated OKX timeout after the socket boundary")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("a second POST must not reach the opener")
+
+    args = dict(
+        lane_pair=lane_pair,
+        recovery=context,
+        authenticated_entry=entry,
+        authorization=authorization,
+        baseline_origin_main_sha=host.repository_sha,
+        perform_real_venue_post=True,
+        k1_backend=_FakeKeychainBackend(),
+        execution_integrity_backend=_clean_post_integrity(),
+    )
+    if revoked:
+
+        def revoke_before_socket():
+            revoke(authorization, signer)
+            return SimpleNamespace(open=forbidden)
+
+        with pytest.raises(
+            http_post.FullCoreCurrentPostOwnerGrantVetoError, match="POST_GRANT_REVOKED"
+        ):
+            one_shot.execute_authenticated_net_reversal_post_v1(
+                **args, opener_factory=revoke_before_socket
+            )
+        aborted = load_external_effect_durable_consume_v1(store_root=root)["record"]
+        assert aborted["transport_attempt"]["phase"] == "ABORTED"
+        assert aborted["post_count"] == 0
+        assert _claim_rows(authorization) == [(authorization.grant.grant_id, 0)]
+        assert host.owner.risk_snapshot_v1() == before
+        return
+
+    result = one_shot.execute_authenticated_net_reversal_post_v1(
+        **args, opener_factory=TimeoutOpener
+    )
+    assert result.post_attempted and result.unknown_outcome and not result.venue_live_contact
+    assert result.outcome_phase == http_post.TRANSPORT_FAILURE_BEFORE_RESPONSE
+    assert len(requests) == 1
+    consumed = load_external_effect_durable_consume_v1(store_root=root)
+    assert consumed["record"]["outcome"] == "UNKNOWN"
+    assert consumed["record"]["post_count"] == 1
+    assert consumed["retry_allowed"] is False
+    assert host.owner.risk_snapshot_v1() == before
+    with pytest.raises(ValueError, match="POST_AUTHORITY_REVERSAL_ALREADY_CONSUMED"):
+        one_shot.execute_authenticated_net_reversal_post_v1(**args, opener_factory=forbidden)
+
+    host.close()
+    before_restart = {
+        path: path.read_bytes()
+        for path in (
+            host.root / "owner" / "reservations.sqlite3",
+            Path(consumed["path"]),
+            authorization.authority.path,
+            authorization.authority.checkpoint_path,
+        )
+    }
+    worker = """
+import json
+from pathlib import Path
+import sys
+
+def deny_sockets(event, args):
+    if event.startswith("socket."):
+        raise AssertionError("real sockets are unavailable during restart")
+
+sys.addaudithook(deny_sockets)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_safety_veto_v1 import (
+    resolve_current_post_safety_context_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+    _payload_from_envelope_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    OriginalPermitTransportAttemptV1, load_external_effect_durable_consume_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import FinalOrderEnvelopeV1
+from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+    FullCoreProductiveHttpPostError, FullCoreProductiveHttpTradeOrderTransportV1,
+    FullCoreSendCredentialHandleV1,
+)
+from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import _continuous_auth
+
+tmp_path = Path(sys.argv[1])
+inputs = json.loads(sys.argv[2])
+bound = BoundInstrumentV1(**inputs["bound"])
+envelope = FinalOrderEnvelopeV1(**inputs["envelope"])
+
+def forbidden(*args, **kwargs):
+    raise AssertionError("restart must stop before market data, private GET and POST")
+
+config = supervisor.StandingSupervisorConfigV1(
+    public_store_root=tmp_path / "public",
+    private_store_root=tmp_path / "private",
+    lane_state_root=tmp_path / "scope",
+    evidence_root=tmp_path / "restart" / "net-reversal",
+    expected_account_identity=inputs["account"],
+    venue_native_id=bound.venue_native_id,
+    canonical_instrument_id=bound.instrument_id,
+    transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+)
+for proof_root in (Path(inputs["proof_root"]), None):
+    run = supervisor.run_n1_standing_pre_external_supervisor_v1(
+        config=config, origin_main_sha=inputs["revision"], bound=bound,
+        authorization=_continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
+        observation_source=None, g17_producers={}, f1_m9_cycle_evaluator=forbidden,
+        public_rest_fetch=forbidden, private_rest_fetch=forbidden, wp02_hook=forbidden,
+        skip_owner_go_validation=True, occupied_mark_proof_root=proof_root,
+    )
+    assert not run.ok and run.trace.terminal_disposition == supervisor.DISPOSITION_FAIL_CLOSED
+    assert run.trace.post_count == 0 and not run.owner_go_consumed and run.policy_result is None
+    assert run.trace.extra["net_reversal_readback"] == inputs["expected"]
+
+root = Path(inputs["attempt_root"])
+record = load_external_effect_durable_consume_v1(store_root=root)["record"]
+attempt = OriginalPermitTransportAttemptV1(
+    str(root), record["permit_id"], record["envelope_id"], record["envelope_digest"],
+    record["transport_attempt"]["claim_id"],
+)
+sender = FullCoreProductiveHttpTradeOrderTransportV1(
+    handle=FullCoreSendCredentialHandleV1(handle_id="test", bound=True, material_loaded=False),
+    transport_attempt=attempt, opener_factory=forbidden,
+    post_safety_context=resolve_current_post_safety_context_v1(envelope, stage="OFFLINE_RESTART"),
+)
+try:
+    sender.post_trade_order(
+        payload=_payload_from_envelope_v1(envelope), permit_id=attempt.permit_id,
+        envelope_id=envelope.envelope_id, envelope_digest=envelope.envelope_digest,
+        one_shot_real_post=True,
+    )
+except FullCoreProductiveHttpPostError as exc:
+    assert str(exc) == "ORIGINAL_TRANSPORT_CLAIM_CLOSED_OR_MISMATCH"
+else:
+    raise AssertionError("the old transport claim cannot submit again")
+assert sender.post_count == 0
+"""
+    env = os.environ.copy()
+    if env.get("GITHUB_ACTIONS") == "true":
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
+    payload = {
+        "bound": bound.to_dict(),
+        "envelope": envelope.to_runtime_json_v1(),
+        "revision": host.repository_sha,
+        "account": context.account,
+        "proof_root": str(proof_root),
+        "attempt_root": str(root),
+        "expected": {
+            "episode_id": proof.identity_digest,
+            "envelope_digest": envelope.envelope_digest,
+            "client_order_id": envelope.client_order_id,
+            "reservation_id": proof.reservation_id,
+            "transport_phase": "MAY_HAVE_SENT",
+            "outcome": "UNKNOWN",
+        },
+    }
+    process = subprocess.run(
+        ["./scripts/pt", "-B", "-c", worker, str(tmp_path), json.dumps(payload)],
+        cwd=Path(__file__).resolve().parents[2],
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=40,
+    )
+    assert process.returncode == 0, (process.stdout, process.stderr)
+    assert {path: path.read_bytes() for path in before_restart} == before_restart
+
+
 def _assert_authenticated_occupied_mark_close(
     *,
     tmp_path,
@@ -2347,7 +2596,7 @@ def _assert_authenticated_occupied_mark_close(
         def check_pre_dispatch(result, ledger):
             assert result.position_management_execution_handoff is None
             assert result.final_order_envelope is None
-            if funding_case != "-funded":
+            if funding_case not in {"-funded", "-funded-timeout", "-funded-revoked"}:
                 assert ledger["reason_code"] == (
                     "DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED"
                     if funding_case == "-stale-capital"
@@ -2382,7 +2631,17 @@ def _assert_authenticated_occupied_mark_close(
             assert Decimal(body["sz"]) == abs(
                 reversal.target_contracts - reversal.current_contracts
             )
-            if not polled:
+            if funding_case in {"-funded-timeout", "-funded-revoked"}:
+                _assert_direct_reversal_dispatch(
+                    tmp_path,
+                    envelope,
+                    context,
+                    proof_root,
+                    pairs["LANE_1"],
+                    inputs["authenticated_entry"],
+                    revoked=funding_case == "-funded-revoked",
+                )
+            elif not polled:
                 _assert_direct_reversal_order_stops_at_original_post_admission(
                     tmp_path,
                     envelope,

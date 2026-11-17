@@ -72,6 +72,7 @@ from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_eff
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
     claim_original_permit_transport_attempt_v1,
+    finalize_external_effect_durable_consume_v1,
     load_external_effect_durable_consume_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
@@ -95,8 +96,12 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_p
     FullCoreCurrentPostPositionCloseVetoError,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveHttpTradeOrderTransportV1,
+    FullCoreTradeOrderPostResultV1,
 )
-from .full_core_post_response_to_ack_mapper_v1 import FullCorePostSubmitJoinResultV1
+from .full_core_post_response_to_ack_mapper_v1 import (
+    FullCorePostSubmitJoinResultV1,
+    classify_full_core_post_result_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
     FullCoreSendCredentialHandleV1,
 )
@@ -206,6 +211,17 @@ def _reject_request_shape_v1(
         or mv2_double_play_reevaluate is True
     ):
         raise CurrentProductiveOneShotFreshEnvelopeJoinError("DECISION_BACKFLOW_FORBIDDEN")
+
+
+def mint_current_productive_one_shot_post_permit_v1(envelope, *, veto):
+    """Mint for the exact one-shot Owner-GO under the original safety readback."""
+    return issue_external_effect_permit_v1(
+        envelope,
+        authority_ref=POST_OWNER_GO,
+        kill_switch_blocked=veto.blocked,
+        durable_kill_switch_evidence_status=veto.evidence_status,
+        filegate_denied=veto.blocked,
+    )
 
 
 def assert_one_shot_join_permit_constraints_v1(
@@ -541,13 +557,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             )
         except SharedPostOwnerAuthorityError as exc:
             raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
-    permit = issue_external_effect_permit_v1(
-        envelope,
-        authority_ref=POST_OWNER_GO,
-        kill_switch_blocked=veto.blocked,
-        durable_kill_switch_evidence_status=veto.evidence_status,
-        filegate_denied=veto.blocked,
-    )
+    permit = mint_current_productive_one_shot_post_permit_v1(envelope, veto=veto)
     observed.permit_minted = True
     observed.minted_permit = permit
     observed.events.append("PERMIT_MINTED")
@@ -632,6 +642,76 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         post_outcome_phase=join_phase,
         post_submit_join=seam.post_submit_join,
     )
+
+
+def execute_authenticated_net_reversal_post_v1(
+    *,
+    lane_pair,
+    recovery,
+    authenticated_entry,
+    authorization,
+    baseline_origin_main_sha,
+    perform_real_venue_post: bool,
+    k1_backend: OsNativeStoreLookupBackendV1,
+    opener_factory: Callable[[], OpenerDirector] | None = None,
+    execution_integrity_backend=None,
+) -> FullCoreTradeOrderPostResultV1:
+    """Send the sealed occupied-slot net order under its original one-shot grant."""
+    from .current_productive_double_play_reversal_v1 import (
+        _prepare_authenticated_net_reversal_post_v1,
+    )
+
+    if perform_real_venue_post is not True or k1_backend is None:
+        raise ValueError("POST_AUTHORITY_REVERSAL_EXPLICIT_SEND_AND_K1_REQUIRED")
+    context, safety, attempt, claim = _prepare_authenticated_net_reversal_post_v1(
+        lane_pair=lane_pair,
+        recovery=recovery,
+        authenticated_entry=authenticated_entry,
+        authorization=authorization,
+        baseline_origin_main_sha=baseline_origin_main_sha,
+        execution_integrity_backend=execution_integrity_backend,
+    )
+    envelope = context.envelope
+    try:
+        with open_current_productive_k1_opaque_signing_handle_session_v1(
+            owner_go=K1_OPAQUE_SIGNING_OWNER_GO, backend=k1_backend
+        ) as session:
+            sender = FullCoreProductiveHttpTradeOrderTransportV1(
+                handle=FullCoreSendCredentialHandleV1(
+                    handle_id=session.signing_handle.handle_id, bound=True, material_loaded=False
+                ),
+                signing_handle=session.signing_handle,
+                opener_factory=opener_factory,
+                post_safety_context=safety,
+                transport_attempt=attempt,
+                post_net_reversal_context=context,
+                shared_post_owner_claim=claim,
+            )
+            result = sender.post_trade_order(
+                payload=_payload_from_envelope_v1(envelope),
+                permit_id=attempt.permit_id,
+                envelope_id=attempt.envelope_id,
+                envelope_digest=attempt.envelope_digest,
+                one_shot_real_post=perform_real_venue_post,
+            )
+    except (ValueError, RuntimeError, OSError):
+        record = load_external_effect_durable_consume_v1(store_root=attempt.store_root)["record"]
+        if record["transport_attempt"]["phase"] == "PRE_SOCKET":
+            attempt.abort_before_transport_v1(reason_code="POST_AUTHORITY_REVERSAL_SEND_DENIED")
+        raise
+
+    outcome = classify_full_core_post_result_v1(
+        result=result, sent_clordid=envelope.client_order_id
+    )
+    finalize_external_effect_durable_consume_v1(
+        store_root=attempt.store_root,
+        permit_id=attempt.permit_id,
+        envelope_id=attempt.envelope_id,
+        envelope_digest=attempt.envelope_digest,
+        outcome=outcome["classification"],
+        observed_post_count=sender.post_count,
+    )
+    return result
 
 
 def prove_one_shot_join_standing_boundary_v1() -> dict[str, str]:

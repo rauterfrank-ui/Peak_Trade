@@ -139,6 +139,10 @@ def _record_supervisor_outcome_v1(run):
         }
         if terminal is not None:
             reason, action = terminal.reason_code, terminal.next_required_owner_decision
+        elif "net_reversal_readback" in result.trace.extra:
+            extra["net_reversal_readback"] = result.trace.extra["net_reversal_readback"]
+            reason = "NET_REVERSAL_RECONCILIATION_REQUIRED"
+            action = "Reconcile the original net order and retain its slot reservation."
         elif result.counter_order_sizing is not None:
             sizing = result.counter_order_sizing
             reason = sizing.first_blocker
@@ -427,6 +431,9 @@ def run_n1_standing_pre_external_supervisor_v1(
         public_instrument_ref = None
         if config.transport_scope == TRANSPORT_SCOPE_SCOPED_READONLY_GET:
             from datetime import datetime, timezone
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+                recover_submitted_net_reversal_v1,
+            )
             from .startup_binding_v1 import acquire_account_bound_n1_startup_v1
 
             if (
@@ -434,6 +441,25 @@ def run_n1_standing_pre_external_supervisor_v1(
                 or config.canonical_instrument_id != bound.instrument_id
             ):
                 raise StandingSupervisorError("N1_START_CONFIG_INSTRUMENT_MISMATCH")
+
+            lane_pair = build_s8_occupied_lane_pairs_v1(
+                lane_state_root=config.lane_state_root, bound=bound
+            )["LANE_1"]
+            net_reversal = recover_submitted_net_reversal_v1(
+                lane_pair=lane_pair, get_budget_host=get_budget_host
+            )
+            if net_reversal is not None:
+                trace.terminal_disposition = DISPOSITION_FAIL_CLOSED
+                trace.extra["net_reversal_readback"] = asdict(net_reversal)
+                return StandingSupervisorRunResultV1(
+                    ok=False,
+                    run_id=run_id,
+                    trace=trace,
+                    recovery=None,
+                    policy_result=None,
+                    owner_go_consumed=False,
+                    authority_invariants_ok=auth_proof.ok,
+                )
 
             if occupied_mark_proof_root is not None:
                 from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
@@ -444,9 +470,6 @@ def run_n1_standing_pre_external_supervisor_v1(
                     raise StandingSupervisorError(
                         "OCCUPIED_SCOPE_CLOSE_AUTHORIZED_INSTRUMENT_MISMATCH"
                     )
-                lane_pair = build_s8_occupied_lane_pairs_v1(
-                    lane_state_root=config.lane_state_root, bound=bound
-                )["LANE_1"]
                 close_readback = reconcile_submitted_occupied_scope_close_v1(
                     lane_pair=lane_pair,
                     budget_host=get_budget_host(),

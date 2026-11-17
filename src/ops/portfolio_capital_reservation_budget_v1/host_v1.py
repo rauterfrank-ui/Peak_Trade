@@ -498,16 +498,19 @@ class PortfolioBudgetHostV1:
         return owner
 
     def recover_owner_for_l10_close_booking_v1(self, bindings):
+        return self.recover_owner_for_occupied_execution_v1(bindings, operation="L10_CLOSE_BOOKING")
+
+    def recover_owner_for_occupied_execution_v1(self, bindings, *, operation):
         """Open the original writer without reconciling or admitting new capital."""
         if self.closed or self.execution_environment != "LIVE" or self.durable_mode != "recover":
-            raise ValueError("L10_CLOSE_BOOKING_ORIGINAL_HOST_REQUIRED")
+            raise ValueError(f"{operation}_ORIGINAL_HOST_REQUIRED")
         if self.owner is None:
             self.owner = self._open_budget_owner_v1(
                 account=self.expected_account_identity, bindings=bindings
             )
             self.bindings = dict(bindings)
         elif self.bindings != bindings:
-            raise ValueError("L10_CLOSE_BOOKING_LANE_MISMATCH")
+            raise ValueError(f"{operation}_LANE_MISMATCH")
         return self.owner
 
     def capture_futures_financial_custody_v1(self, source):
