@@ -1143,6 +1143,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
         "double-play-net",
         "double-play-paged-net",
         "double-play-productive-paged-net",
+        "double-play-shared-productive-paged-net",
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
@@ -1162,6 +1163,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
         "double-play-net": ("readback-booked", 85),
         "double-play-paged-net": ("readback-paged-booked", 78),
         "double-play-productive-paged-net": ("readback-productive-paged-booked", 87),
+        "double-play-shared-productive-paged-net": ("readback-productive-paged-booked", 87),
     }.get(path, (None, 26))
     close_case = close_readback is not None
     managed_case = path == "managed-r04"
@@ -1434,6 +1436,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     polled=True,
                     dispatch=close_readback,
                     opener=opener,
+                    shared_post=path == "double-play-shared-productive-paged-net",
                 )
                 assert transport.methods_used == ["GET"] * get_count
                 assert host.owner.active_sum_v1() == held
@@ -2084,6 +2087,7 @@ def _assert_authenticated_occupied_mark_close(
     polled,
     dispatch,
     opener,
+    shared_post=False,
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2245,12 +2249,20 @@ def _assert_authenticated_occupied_mark_close(
                 dispatch.removeprefix("readback-") if dispatch.startswith("readback-") else None
             )
             with monkeypatch.context() as patch:
+                sent_at = NOW + timedelta(milliseconds=250)
                 if readback is not None:
-                    patch.setattr(
-                        consume, "_utc_now_iso_v1", (NOW + timedelta(milliseconds=250)).isoformat
+                    patch.setattr(consume, "_utc_now_iso_v1", sent_at.isoformat)
+                if shared_post:
+                    from src.ops.full_core_live_path_composition_root_v1 import (
+                        current_productive_shared_post_owner_authority_v1 as shared_authority,
                     )
-                _assert_original_close_dispatch(
-                    close_context, "timeout" if readback is not None else dispatch, tmp_path
+
+                    patch.setattr(shared_authority, "time", SimpleNamespace(time=sent_at.timestamp))
+                shared_authorization = _assert_original_close_dispatch(
+                    close_context,
+                    "shared-timeout" if shared_post else "timeout" if readback else dispatch,
+                    tmp_path,
+                    now_unix=sent_at.timestamp() if shared_post else None,
                 )
             if readback is not None or dispatch == "kill":
                 _assert_restarted_close_readback(
@@ -2262,6 +2274,7 @@ def _assert_authenticated_occupied_mark_close(
                     floor,
                     readback or "not-sent",
                     expected_switch_mark=mark,
+                    shared_authorization=shared_authorization if shared_post else None,
                 )
         return
     without_metadata = {**inputs, "live_29p_injected_by_lane": None}
@@ -2360,7 +2373,7 @@ def _assert_authenticated_occupied_mark_close(
     assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
 
 
-def _assert_original_close_dispatch(context, case, tmp_path):
+def _assert_original_close_dispatch(context, case, tmp_path, *, now_unix=None):
     from src.ops.full_core_live_path_composition_root_v1 import (
         full_core_productive_http_post_transport_v1 as http_post,
     )
@@ -2371,6 +2384,13 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     )
     from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
         load_external_effect_durable_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        SHARED_POST_OWNER_CLAIM_FIELD,
+        load_durable_post_owner_go_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+        SharedPostOwnerAuthorityError,
     )
     from src.ops.governed_productive_account_equity_authority_producer_v1 import (
         current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as actual,
@@ -2391,7 +2411,11 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     requests = []
     authorization, authority_key = (
         signed_post_authorization(
-            tmp_path, envelope, account=context.recovery.account, action="L10_CLOSE"
+            tmp_path,
+            envelope,
+            account=context.recovery.account,
+            action="L10_CLOSE",
+            now_unix=now_unix,
         )
         if case.startswith("shared")
         else (None, None)
@@ -2415,7 +2439,28 @@ def _assert_original_close_dispatch(context, case, tmp_path):
             record = load_external_effect_durable_consume_v1(store_root=store_root)["record"]
             assert record["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
             requests.append(payload)
-            if case == "timeout":
+            if case == "shared-timeout":
+                # The grant, local witness and permit must already name the original
+                # close attempt when the simulated socket is reached.
+                attempt = record["transport_attempt"]
+                assert record["envelope_digest"] == authorization.grant.envelope_digest
+                witness = load_durable_post_owner_go_consume_v1(store_root=store_root)["record"]
+                with closing(
+                    sqlite3.connect(authorization.authority.path.as_uri() + "?mode=ro", uri=True)
+                ) as db:
+                    assert db.execute(
+                        "SELECT grant_id, grant_digest, claim_digest, consumed_at, "
+                        "dispatch_started_at FROM claims"
+                    ).fetchall() == [
+                        (
+                            authorization.grant.grant_id,
+                            sha256(authorization.grant.signing_bytes_v1()).hexdigest(),
+                            witness[SHARED_POST_OWNER_CLAIM_FIELD],
+                            now_unix,
+                            datetime.fromisoformat(attempt["socket_boundary_at_utc"]).timestamp(),
+                        )
+                    ]
+            if case in {"timeout", "shared-timeout"}:
                 raise TimeoutError("intercepted close submit")
             if case == "venue-timeout":
                 raise HTTPError(
@@ -2561,20 +2606,30 @@ def _assert_original_close_dispatch(context, case, tmp_path):
     assert result.external_effect_count == int(case == "redirect")
     assert result.post_submit_join.client_order_id == envelope.client_order_id
     assert result.post_submit_join.typed_outcome == (
-        "UNKNOWN" if case in {"timeout", "venue-timeout", "redirect"} else "ACKNOWLEDGED"
+        "UNKNOWN"
+        if case in {"timeout", "shared-timeout", "venue-timeout", "redirect"}
+        else "ACKNOWLEDGED"
     )
-    if case in {"venue-timeout", "redirect"}:
+    if result.post_submit_join.typed_outcome == "UNKNOWN":
         assert result.post_submit_join.exchange_query_before_retry_required
     assert result.post_submit_join.resubmit_allowed is False
     assert result.post_submit_join.fill_observed is False
     if authorization is not None:
         assert _claim_rows(authorization) == [(authorization.grant.grant_id, 1)]
-        args["shared_post_owner_authorization"] = replace(
-            authorization, authority=replace(authorization.authority)
-        )
+        authorization = replace(authorization, authority=replace(authorization.authority))
+        args["shared_post_owner_authorization"] = authorization
+        if case == "shared-timeout":
+            with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_ALREADY_CONSUMED"):
+                authorization.consume_v1(
+                    account=context.recovery.account,
+                    action="L10_CLOSE",
+                    envelope_digest=envelope.envelope_digest,
+                    attempt_root=tmp_path / "second-close-attempt",
+                )
     with pytest.raises(actual.CurrentProductiveActualVenuePostError, match="CONSUMED_PERMIT"):
         submit(**args)
     assert len(requests) == 1
+    return authorization
 
 
 def _assert_invalid_close_page_receipts_are_rejected(
@@ -2621,8 +2676,113 @@ def _assert_invalid_close_page_receipts_are_rejected(
             )
 
 
+def _assert_close_booking_in_fresh_process(
+    *, original_host, lane_state_root, proof_root, bound, booking, sizing
+):
+    replay = """
+from contextlib import closing
+from dataclasses import asdict
+import json
+from pathlib import Path
+import sys
+
+def forbid_network(event, args):
+    if event.startswith("socket."):
+        raise AssertionError("booked close readback attempted a socket operation")
+
+sys.addaudithook(forbid_network)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    check_authenticated_double_play_29p_admission_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+    reconcile_submitted_occupied_scope_close_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+    build_s8_occupied_lane_pairs_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    FullCoreProductiveReadOnlyGetTransportV1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import PortfolioBudgetHostV1
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+
+def forbidden_fetch(*args, **kwargs):
+    raise AssertionError("booked close readback requested new account data")
+
+data = json.loads(sys.argv[1])
+bound = BoundInstrumentV1(**data["bound"])
+lane_pair = build_s8_occupied_lane_pairs_v1(
+    lane_state_root=Path(data["lane_state_root"]), bound=bound,
+)["LANE_1"]
+transport = FullCoreProductiveReadOnlyGetTransportV1()
+with closing(PortfolioBudgetHostV1(
+    root=Path(data["budget_root"]),
+    private_rest_fetch=forbidden_fetch,
+    repository_sha=data["repository_sha"],
+    session_id="fresh-process-close-readback",
+    expected_account_identity=data["account"],
+    reconciliation_transport=transport,
+)) as host:
+    proof_root = Path(data["proof_root"])
+    close = reconcile_submitted_occupied_scope_close_v1(
+        lane_pair=lane_pair, budget_host=host, proof_root=proof_root,
+    )
+    assert close.status == "CLOSE_NET_BOOKED"
+    sizing = check_authenticated_double_play_29p_admission_v1(
+        request=close.counter_order_request, bound_instrument=bound,
+        owner=host.owner, proof_root=proof_root,
+    )
+    hold, = (
+        row for row in host.owner.local_commitment_readback_v1().commitments
+        if row.reservation_id == close.net_booking["reservation_id"]
+    )
+    assert hold.state == "COMMITTED" and hold.slot_id == close.net_booking["slot_id"]
+    assert host.owner.read_authenticated_l10_close_v1(close.net_booking["episode_id"]) == close.net_booking
+    assert not transport.methods_used and sizing.get_count == 0
+    assert not sizing.venue_plan_authorized and not sizing.portfolio_reservation_id
+    print(json.dumps({
+        "booking": close.net_booking,
+        "blocker": sizing.first_blocker,
+        "reasons": list(sizing.reason_codes),
+        "timing": asdict(sizing.authenticated_close_timing),
+    }))
+"""
+    args = {
+        "bound": bound.to_dict(),
+        "lane_state_root": str(lane_state_root),
+        "budget_root": str(original_host.root),
+        "repository_sha": original_host.repository_sha,
+        "account": original_host.expected_account_identity,
+        "proof_root": str(proof_root),
+    }
+    repo = Path(__file__).resolve().parents[2]
+    process = subprocess.run(
+        ["./scripts/pt", "-c", replay, json.dumps(args)],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert process.returncode == 0, process.stderr
+    assert json.loads(process.stdout.splitlines()[-1]) == {
+        "booking": booking,
+        "blocker": sizing.first_blocker,
+        "reasons": list(sizing.reason_codes),
+        "timing": asdict(sizing.authenticated_close_timing),
+    }
+
+
 def _assert_restarted_close_readback(
-    tmp_path, monkeypatch, context, proof_root, opener, floor, case, *, expected_switch_mark
+    tmp_path,
+    monkeypatch,
+    context,
+    proof_root,
+    opener,
+    floor,
+    case,
+    *,
+    expected_switch_mark,
+    shared_authorization=None,
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
         durable_post_owner_go_path_v1,
@@ -2886,6 +3046,12 @@ def _assert_restarted_close_readback(
     )
     store_root = context.store_root_v1()
     original_send = load_external_effect_durable_consume_v1(store_root=store_root)
+    shared_state = {}
+    if shared_authorization is not None:
+        authority = shared_authorization.authority
+        shared_state = {
+            path: path.read_bytes() for path in (authority.path, authority.checkpoint_path)
+        }
     request_count = len(opener.requests)
     held = original_host.owner.active_sum_v1()
     original_host.close()
@@ -3014,6 +3180,39 @@ def _assert_restarted_close_readback(
         assert database.read_bytes() == original_database
         assert readback.proof_path.read_bytes() == original_receipt
         history_path = proof_root / f"close-history-{booking['history_proof_digest']}.json"
+        if shared_authorization is not None:
+            send = original_send["record"]
+            identity = record["identity"]
+            assert send["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            assert identity["submit_attempt_id"] == send["transport_attempt"]["claim_id"]
+            assert identity["atomic_consumption_key"] == send["permit_id"]
+            assert identity["clordid"] == envelope.client_order_id
+            assert identity["account_identity"] == shared_authorization.grant.account
+            assert (
+                shared_authorization.grant.envelope_digest
+                == send["envelope_digest"]
+                == identity["envelope_digest"]
+                == booking["close_envelope_digest"]
+            )
+            assert "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED" in sizing.reason_codes
+            assert (
+                sizing.authenticated_close_timing.history_proof_digest
+                == booking["history_proof_digest"]
+            )
+            history_bytes = history_path.read_bytes()
+            _assert_close_booking_in_fresh_process(
+                original_host=original_host,
+                lane_state_root=config.lane_state_root,
+                proof_root=proof_root,
+                bound=bound,
+                booking=booking,
+                sizing=sizing,
+            )
+            assert database.read_bytes() == original_database
+            assert readback.proof_path.read_bytes() == original_receipt
+            assert history_path.read_bytes() == history_bytes
+            assert load_external_effect_durable_consume_v1(store_root=store_root) == original_send
+            assert all(path.read_bytes() == before for path, before in shared_state.items())
         with closing(
             open_host(
                 root=original_host.root,

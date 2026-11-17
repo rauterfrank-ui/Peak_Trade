@@ -4274,7 +4274,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "211ad2b07ab9920387f23a53bdb16fb5f46d66f21bd8ec9dcc8035b891f93987"
+      "sha256": "3954bac8812bacf573c3d103fc47117d2a4850b9584cc826c89f7ea501b43c3d"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -4984,7 +4984,7 @@
     {
       "path": "tests/ops/test_current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
-      "sha256": "350de8c890b9f54367a091f1ccaf6cc75d3ea04806702aa37b92be88f4d633f1"
+      "sha256": "e3aa71b3ece13c559eae30af8f4567b25882c8d987f857f68450b10c409c59a0"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py",

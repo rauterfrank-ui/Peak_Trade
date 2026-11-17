@@ -46,7 +46,7 @@ from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durab
 _ACCOUNT = "injected-observer-account"
 
 
-def signed_post_authorization(tmp_path, envelope, *, account, action):
+def signed_post_authorization(tmp_path, envelope, *, account, action, now_unix=None):
     key = SigningKey.generate()
     store_dir = tmp_path / "post-store"
     checkpoint_dir = tmp_path / "post-checkpoint"
@@ -60,7 +60,7 @@ def signed_post_authorization(tmp_path, envelope, *, account, action):
         checkpoint_path=checkpoint_dir / "head.sqlite3",
     )
     authority.provision_v1()
-    now = int(time.time())
+    now = int(time.time() if now_unix is None else now_unix)
     replacement = PostOwnerGrantV1(
         store_id=authority.store_id,
         store_binding_digest=authority.binding_digest_v1(),
