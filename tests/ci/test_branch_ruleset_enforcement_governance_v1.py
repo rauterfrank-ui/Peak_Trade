@@ -42,6 +42,7 @@ def _required_contexts() -> list[str]:
 
 def _passing_evidence() -> dict:
     contexts = _required_contexts()
+    ruleset_id = gate.load_contract(CONTRACT)["ruleset"]["expected_id"]
     return {
         "schema_version": gate.EVIDENCE_SCHEMA,
         "phase": "synthetic_pass",
@@ -58,14 +59,14 @@ def _passing_evidence() -> dict:
         },
         "rulesets_summary": [
             {
-                "id": 11192468,
+                "id": ruleset_id,
                 "name": "peak_trade",
                 "enforcement": "active",
                 "target": "branch",
             }
         ],
         "ruleset": {
-            "id": 11192468,
+            "id": ruleset_id,
             "name": "peak_trade",
             "target": "branch",
             "enforcement": "active",

@@ -212,6 +212,7 @@ OWNER_ADJUDICATION_CONFIG_DELTA = {
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
 }
 N1_V2_REQUIRED_CHECKS_CONFIG_DELTA = {
+    "config/ci/branch_ruleset_enforcement_contract_v1.json": "fe1fcf0bf26703091f83049aaa0e56c65c6b513ff0f7061b0ef3d7742d7dfb04",
     "config/ci/required_status_checks.json": "529eab9aec1b30b1dca5abf740ba43ae4d6e9b601b4f8ef27ee8b88a319fa79d",
 }
 CAP23_SELECTION_VALIDITY_CONFIG = "config/ops/single_selected_future_policy_v1.toml"

@@ -27,19 +27,19 @@
 
 - GitHub default branch (API): `main`
 - Ruleset target include: `refs&#47;heads&#47;main`
-- Enforcement mechanism: Repository ruleset `peak_trade` (`id=11192468`) with `enforcement=active` (not evaluate-only, not disabled)
+- Repository ruleset `peak_trade` with `enforcement=active`. The [ruleset contract](../../../config/ci/branch_ruleset_enforcement_contract_v1.json) holds the current GitHub ID.
 - Classic branch protection on `main` remains as a complementary layer; required-check names stay owned by `config/ci/required_status_checks.json`
 
 ## Required reviews (canonical policy)
 
-Preserves the existing solo-operator **PR-flow without mandatory approvals** while strengthening review hygiene flags:
+GitHub enforces approval of the latest push, dismissal of stale approvals, and conversation resolution. On PR #7314 GitHub required a reviewer with write access other than the last pusher even with a configured approval count of zero.
 
 | Setting | Value |
 |---------|-------|
 | Pull request required | **true** (ruleset `pull_request` rule) |
 | Required approving review count | **0** (matches pre-existing classic protection policy) |
 | Dismiss stale approvals | **true** (`dismiss_stale_reviews_on_push`) |
-| Require approval of the latest reviewable push | **true** (applies when approvals &gt; 0) |
+| Require approval of the latest reviewable push | **true** (`require_last_push_approval`) |
 | Require conversation resolution | **true** |
 | Code owner reviews | **false** (unchanged) |
 
