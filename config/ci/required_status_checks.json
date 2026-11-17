@@ -12,11 +12,12 @@
     "repo-truth-claims",
     "strategy-smoke",
     "tests (3.11)",
-    "map-currency-gate"
+    "map-currency-gate",
+    "n1-v2-brev-admission"
   ],
   "ignored_contexts": [
     "CI Health Gate (weekly_core)",
     "Docs Diff Guard Policy Gate"
   ],
-  "notes": "JSON-only SSOT semantics: effective required contexts are required_contexts minus ignored_contexts. Synced to live main branch protection (12 contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-09-23."
+  "notes": "JSON-only SSOT semantics: effective required contexts are required_contexts minus ignored_contexts. Synced to classic branch protection for main (13 contexts). PR Gate is produced by CI but not in branch protection. Last updated: 2026-11-17."
 }

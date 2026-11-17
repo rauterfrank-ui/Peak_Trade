@@ -92,6 +92,11 @@
       "sha256": "dfb2cef949cb7dc19f65ca0dc8ed39978744ce456616584efac11c30a99411bb"
     },
     {
+      "path": "config/ci/required_status_checks.json",
+      "before_sha256": "f4dfbd153452b0a49b419e90cdd57631053673cc589609cf01516d5a6b82d8a3",
+      "sha256": "529eab9aec1b30b1dca5abf740ba43ae4d6e9b601b4f8ef27ee8b88a319fa79d"
+    },
+    {
       "path": "config/governance/clean_core_seal_manifest_v1.json",
       "before_sha256": "592d7fe3aec571f18f222b74a1373c80688963c072edcb8c20091c4ef584cfe5",
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
@@ -1334,7 +1339,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "40b0578c65e5a1f9c4f3ca84bc1e90b42c4ba5bafe388871197b6b303e867881"
+      "sha256": "8d6e32b40c64cb385b9198609dd1a66267ae9537d3fff258a0895c6856682e0d"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
