@@ -1,11 +1,13 @@
 """Prepare an occupied-slot N1 request and open its existing GET-only ports on admission."""
 
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import asdict
 from functools import lru_cache, partial
 from hashlib import sha256
 import json
+from math import ceil
 from pathlib import Path
 import re
 import time
@@ -20,6 +22,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
 from src.ops.execution_reconciliation_proof_store_v1 import require_private_proof_root_v1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_get_budget_contract_v1 import (
     compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1,
+    productive_pretrade_wire_gets_per_decision_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
@@ -31,6 +34,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+    OCCUPIED_MARK_READ_REFRESH_SECONDS,
     build_s8_occupied_lane_pairs_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_s6_live_fresh_c1_continuous_observation_source_v1 import (
@@ -136,9 +140,20 @@ def _open_ports(
     max_requests = compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(
         authorization
     )
-    with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-        max_request_count=max_requests
-    ) as (transport, _):
+    # Each occupied read can consume six inventory plus six original execution GETs.
+    # The background refresh schedule is bounded independently of the S5 cycle count.
+    occupied_refreshes = 1 + ceil(
+        authorization.max_run_duration_seconds / OCCUPIED_MARK_READ_REFRESH_SECONDS
+    )
+    max_requests += occupied_refreshes * (12 + productive_pretrade_wire_gets_per_decision_v1())
+    with (
+        open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+            max_request_count=max_requests
+        ) as (transport, _),
+        ThreadPoolExecutor(
+            max_workers=1, thread_name_prefix="n1-pending-outcomes"
+        ) as outcome_executor,
+    ):
 
         @lru_cache(maxsize=1)
         def g17():
@@ -175,6 +190,7 @@ def _open_ports(
                 canonical_instrument_id=bound.instrument_id,
                 native_id=bound.venue_native_id,
                 repository_sha=repository_sha,
+                outcome_executor=outcome_executor,
             ),
             "g17_producers": producers,
             "f1_m9_cycle_evaluator": lambda cycle: evaluator()(cycle),

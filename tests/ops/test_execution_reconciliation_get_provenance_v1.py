@@ -19,6 +19,7 @@ import stat
 import subprocess
 import sys
 import time
+from threading import Event
 from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.parse import parse_qsl, urlencode, urlsplit
@@ -323,13 +324,14 @@ def authenticated_host(tmp_path, monkeypatch, request):
     )
 
     fault = getattr(request.node, "callspec", SimpleNamespace(params={})).params.get("fault")
-    funded = fault in {
+    supervised_reversal = (fault or "").startswith("polled-mark-direct-funded")
+    funded = supervised_reversal or fault in {
         "occupied-mark-direct-funded",
         "occupied-mark-direct-funded-timeout",
         "occupied-mark-direct-funded-revoked",
         "occupied-mark-direct-funded-booked",
         "occupied-mark-direct-funded-exception-close",
-        "polled-mark-direct-funded",
+        "polled-mark-direct-stale-capital",
         "occupied-mark-direct-stale-capital",
     }
     with monkeypatch.context() as patch:
@@ -339,7 +341,8 @@ def authenticated_host(tmp_path, monkeypatch, request):
                 return PortfolioBudgetHostV1(
                     root=(
                         root / "private" / "portfolio_budget_host_v1"
-                        if fault
+                        if supervised_reversal
+                        or fault
                         in {
                             "occupied-mark-direct-funded-timeout",
                             "occupied-mark-direct-funded-booked",
@@ -376,13 +379,20 @@ def authenticated_host(tmp_path, monkeypatch, request):
     opener = SignedReconciliationHttpFixture(identity)
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
     monkeypatch.setattr(wire, "utc_now_iso_v1", NOW.isoformat)
+    revision = EXPECTED_BASELINE_ORIGIN_MAIN_SHA if funded else "test-host-revision"
+    if supervised_reversal:
+        from tests.ops.test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1 import (
+            BASELINE_SHA,
+        )
+
+        revision = BASELINE_SHA
     with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
         max_request_count=28, k1_lookup_backend=_FakeKeychainBackend()
     ) as (transport, _):
         host = PortfolioBudgetHostV1(
             root=seeded.root,
             private_rest_fetch=_fetch(uid=identity.account_identity),
-            repository_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA if funded else "test-host-revision",
+            repository_sha=revision,
             session_id=SESSION,
             expected_account_identity=scope.account,
             clock=NOW.timestamp,
@@ -1325,11 +1335,11 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
 
     seeded, args, _ = prepare(tmp_path, monkeypatch, scoped_reconciliation=True)
     close_readback, get_count = {
-        "double-play-close": ("readback-flat", 84),
-        "double-play-net": ("readback-booked", 85),
-        "double-play-paged-net": ("readback-paged-booked", 78),
-        "double-play-productive-paged-net": ("readback-productive-paged-booked", 87),
-        "double-play-shared-productive-paged-net": ("readback-productive-paged-booked", 87),
+        "double-play-close": ("readback-flat", 58),
+        "double-play-net": ("readback-booked", 59),
+        "double-play-paged-net": ("readback-paged-booked", 52),
+        "double-play-productive-paged-net": ("readback-productive-paged-booked", 61),
+        "double-play-shared-productive-paged-net": ("readback-productive-paged-booked", 61),
     }.get(path, (None, 26))
     close_case = close_readback is not None
     if close_case:
@@ -2006,6 +2016,9 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("occupied-mark-direct-funded-booked", None),
         ("occupied-mark-direct-funded-exception-close", None),
         ("polled-mark-direct-funded", None),
+        ("polled-mark-direct-funded-no-grant", None),
+        ("polled-mark-direct-funded-foreign-grant", None),
+        ("polled-mark-direct-stale-capital", None),
         ("occupied-mark-direct-stale-capital", None),
         ("occupied-mark", None),
         ("polled-mark", None),
@@ -2067,7 +2080,8 @@ def test_owned_entry_proof_reaches_original_position_episode(
         if fault and fault.startswith("polled-mark-close-")
         else None
     )
-    direct = fault in {
+    supervised_reversal = (fault or "").startswith("polled-mark-direct-funded")
+    direct = supervised_reversal or fault in {
         "occupied-mark-direct",
         "polled-mark-direct",
         "occupied-mark-direct-funded",
@@ -2075,7 +2089,7 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "occupied-mark-direct-funded-revoked",
         "occupied-mark-direct-funded-booked",
         "occupied-mark-direct-funded-exception-close",
-        "polled-mark-direct-funded",
+        "polled-mark-direct-stale-capital",
         "occupied-mark-direct-stale-capital",
     }
     polled = (fault or "").startswith("polled-mark") or dispatch is not None
@@ -2202,6 +2216,9 @@ def test_owned_entry_proof_reaches_original_position_episode(
         if not direct:
             seed_legacy_l10_close_snapshots(monkeypatch)
         host.execution_incident_state_path = scope.state_path
+        funding_case = (
+            "-funded" if supervised_reversal else fault.split("-direct", 1)[1] if direct else ""
+        )
         _assert_authenticated_occupied_mark_close(
             tmp_path=tmp_path,
             monkeypatch=monkeypatch,
@@ -2214,9 +2231,12 @@ def test_owned_entry_proof_reaches_original_position_episode(
             dispatch=dispatch,
             opener=opener,
             direct=direct,
-            funding_case=fault.split("-direct", 1)[1] if direct else "",
+            funding_case=funding_case,
+            grant_case=fault.removeprefix("polled-mark-direct-funded")
+            if supervised_reversal
+            else "",
         )
-        expected_gets = 0 if direct and not polled else 12
+        expected_gets = 6 if polled else (0 if direct else 12)
         if (
             dispatch
             and dispatch.startswith("readback-")
@@ -2379,7 +2399,15 @@ def _assert_direct_reversal_order_stops_at_original_post_admission(
 
 
 def _assert_direct_reversal_dispatch(
-    tmp_path, envelope, context, proof_root, lane_pair, entry, *, revoked, after_timeout=None
+    tmp_path,
+    envelope,
+    context,
+    proof_root,
+    lane_pair,
+    entry,
+    *,
+    revoked,
+    after_timeout=None,
 ):
     from src.ops.full_core_live_path_composition_root_v1 import (
         current_productive_double_play_reversal_v1 as reversal,
@@ -2620,6 +2648,194 @@ assert sender.post_count == 0
     assert {path: path.read_bytes() for path in before_restart} == before_restart
 
 
+def _run_standing_net_reversal_offline(
+    tmp_path, monkeypatch, host, proof, run_args, mark_time, in_flight, grant_case
+):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import (
+        startup_binding_v1,
+        supervisor_v1 as n1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        _clean_post_integrity,
+    )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import (
+        _claim_rows,
+        signed_post_authorization,
+    )
+
+    # Use the fixture's already admitted startup account. The supervisor,
+    # occupied market cycle, signed grant consumption and sender are real code.
+    bound = run_args["bound"]
+    host_type = host_v1.PortfolioBudgetHostV1
+    monkeypatch.setattr(host_v1, "PortfolioBudgetHostV1", lambda **_: host)
+    monkeypatch.setattr(
+        startup_binding_v1,
+        "acquire_account_bound_n1_startup_v1",
+        lambda **_: SimpleNamespace(
+            handoff=SimpleNamespace(bound_instrument=bound, selection_id=bound.selection_id)
+        ),
+    )
+    monkeypatch.setattr(
+        n1,
+        "_run_unified_recovery_v1",
+        lambda **_: SimpleNamespace(
+            ok=True,
+            runtime_owner_recovery_complete=True,
+            steps_completed=(),
+            evidence_scope="OFFLINE_FIXTURE",
+            pending_runtime_steps=(),
+        ),
+    )
+    monkeypatch.setattr(n1, "_refresh_public_supply_v1", lambda **_: 0)
+    monkeypatch.setattr(n1, "_refresh_pretrade_truth_v1", lambda **_: "OFFLINE_FIXTURE")
+    monkeypatch.setattr(n1, "public_instrument_ref_for_binding_v1", lambda _: None)
+
+    grants = []
+    offered = []
+    sent = []
+    grant_root = tmp_path / "reversal-grant"
+    grant_root.mkdir()
+    attempt_root = host.root / "position-episodes" / proof.identity_digest / "net-reversal-submit"
+
+    def ready(envelope):
+        assert in_flight()
+        offered.append(envelope.envelope_digest)
+        if grant_case == "-no-grant":
+            return None
+        if grant_case == "-foreign-grant":
+            authorization, _ = signed_post_authorization(
+                grant_root,
+                replace(envelope, envelope_digest="a" * 64),
+                account=host.account,
+                action="DIRECT_DOUBLE_PLAY_REVERSAL",
+            )
+            grants.append((envelope, authorization, host.owner.risk_snapshot_v1()))
+            return authorization
+        print(
+            f"N1 mark to ready-grant lookup (offline): {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
+        )
+        authorization, _ = signed_post_authorization(
+            grant_root, envelope, account=host.account, action="DIRECT_DOUBLE_PLAY_REVERSAL"
+        )
+        grants.append((envelope, authorization, host.owner.risk_snapshot_v1()))
+        return authorization
+
+    class OfflineOpener:
+        def open(self, request, timeout):
+            assert in_flight(), "the sender waited for the original background reads"
+            print(
+                f"N1 mark to simulated OKX socket: {(time.perf_counter_ns() - mark_time()) / 1e6:.1f} ms"
+            )
+            envelope, authorization, original = grants[0]
+            record = load_external_effect_durable_consume_v1(store_root=attempt_root)["record"]
+            assert record["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            assert record["envelope_digest"] == envelope.envelope_digest
+            assert _claim_rows(authorization) == [(authorization.grant.grant_id, 1)]
+            assert request.get_method() == "POST"
+            assert request.full_url == "https://eea.okx.com/api/v5/trade/order"
+            payload = json.loads(request.data)
+            assert payload == {
+                "instId": bound.venue_native_id,
+                "side": "sell",
+                "sz": envelope.quantity,
+                "ordType": "market",
+                "tdMode": envelope.td_mode,
+                "posSide": "net",
+                "clOrdId": envelope.client_order_id,
+            }
+            assert host.owner.risk_snapshot_v1() == original
+            assert any(
+                row["slot_id"] == "LANE_1"
+                and row["reservation_id"] == proof.reservation_id
+                and row["state"] == "COMMITTED"
+                for row in original["state"]["reservations"]
+            )
+            sent.append(envelope.envelope_digest)
+            raise TimeoutError("offline timeout after the socket boundary")
+
+    kwargs = dict(run_args)
+    config = n1.StandingSupervisorConfigV1(
+        public_store_root=tmp_path / "public",
+        private_store_root=tmp_path / "private",
+        lane_state_root=kwargs.pop("lane_state_root"),
+        evidence_root=kwargs.pop("evidence_root"),
+        lock_root=kwargs.pop("lock_root"),
+        cap24_productivity_root=tmp_path / "cap24",
+        expected_account_identity=host.account,
+        venue_native_id=bound.venue_native_id,
+        canonical_instrument_id=bound.instrument_id,
+        transport_scope=n1.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
+    )
+    integrity = replace(
+        _clean_post_integrity(), origin_main=host.repository_sha, head=host.repository_sha
+    )
+    supervisor_args = dict(
+        config=config,
+        **kwargs,
+        private_rest_fetch=host.fetch,
+        public_rest_fetch=host.fetch,
+        net_reversal_post_port=n1.OccupiedNetReversalPostPortV1(
+            ready_authorization=ready,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=OfflineOpener,
+            execution_integrity_backend=integrity,
+        ),
+    )
+    if grant_case == "-foreign-grant":
+        with pytest.raises(
+            n1.StandingSupervisorError, match="N1_NET_REVERSAL_POST_GRANT_ENVELOPE_MISMATCH"
+        ):
+            n1.run_n1_standing_pre_external_supervisor_v1(**supervisor_args)
+        assert len(offered) == 1 and not sent and not attempt_root.exists()
+        assert not _claim_rows(grants[0][1])
+        return None
+    result = n1.run_n1_standing_pre_external_supervisor_v1(**supervisor_args)
+    if grant_case == "-no-grant":
+        assert len(offered) == 1 and not sent and not attempt_root.exists()
+        assert not result.ok and result.trace.post_count == 0 and result.net_reversal_post is None
+        return result.policy_result
+    assert len(grants) == len(sent) == result.trace.post_count == 1
+    assert result.trace.terminal_disposition == "NET_REVERSAL_RECONCILIATION_REQUIRED"
+    assert not result.ok and result.net_reversal_post.unknown_outcome
+    assert result.net_reversal_post.venue_live_contact is False
+    assert result.trace.extra["net_reversal_post"]["reservation_id"] == proof.reservation_id
+    consumed = load_external_effect_durable_consume_v1(store_root=attempt_root)
+    assert consumed["record"]["post_count"] == 1 and consumed["retry_allowed"] is False
+    assert consumed["record"]["envelope_digest"] == sent[0]
+
+    def forbidden_fetch(*_args, **_kwargs):
+        pytest.fail("the unresolved reversal must be recovered before a market cycle")
+
+    reopened = host_type(
+        root=host.root,
+        private_rest_fetch=forbidden_fetch,
+        repository_sha=host.repository_sha,
+        session_id="offline-standing-restart",
+        expected_account_identity=host.account,
+        clock=host.clock,
+    )
+    monkeypatch.setattr(host_v1, "PortfolioBudgetHostV1", lambda **_: reopened)
+    restarted = n1.run_n1_standing_pre_external_supervisor_v1(
+        **{
+            **supervisor_args,
+            "config": replace(config, evidence_root=tmp_path / "standing-restart"),
+            "private_rest_fetch": forbidden_fetch,
+            "public_rest_fetch": forbidden_fetch,
+        }
+    )
+    pending = restarted.trace.extra["net_reversal_readback"]
+    assert pending["transport_phase"] == "MAY_HAVE_SENT" and pending["outcome"] == "UNKNOWN"
+    assert pending["reservation_id"] == proof.reservation_id
+    assert pending["envelope_digest"] == sent[0]
+    assert not restarted.ok and restarted.net_reversal_post is None
+    assert len(grants) == len(sent) == 1
+    return result.policy_result
+
+
 def _assert_authenticated_occupied_mark_close(
     *,
     tmp_path,
@@ -2636,6 +2852,7 @@ def _assert_authenticated_occupied_mark_close(
     on_shared_send=None,
     direct=False,
     funding_case="",
+    grant_case="",
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2848,6 +3065,7 @@ def _assert_authenticated_occupied_mark_close(
 
         monkeypatch.setattr(s6.time, "time", lambda: now)
         monkeypatch.setattr(convergence, "datetime", Clock)
+        monkeypatch.setattr(convergence, "OCCUPIED_MARK_READ_REFRESH_SECONDS", 60)
         monkeypatch.setattr(
             convergence,
             "resolve_live_29p_injected_for_productive_s5_cycle_v1",
@@ -2881,27 +3099,94 @@ def _assert_authenticated_occupied_mark_close(
         first = observation(
             prior.running_reference.reference_price_r_t - 0.25 * prior.scope.d_t, now - 0.25
         )
-        policy_result = (
-            convergence.run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
-                authorization=replace(
-                    _continuous_auth(native_id=bound.venue_native_id, max_cycles=2),
-                    expected_cursor_floor=floor,
+        marks = [first, first, observation(mark, now - 0.125)]
+        source = s6.ScriptedContinuousObservationSourceV1(marks)
+        refresh_account = Event()
+        refresh_29p = Event()
+        release = Event()
+        switch_received = []
+        dispatch_through_standing_n1 = direct and funding_case == "-funded"
+        if dispatch_through_standing_n1:
+            monkeypatch.setattr(convergence, "OCCUPIED_MARK_READ_REFRESH_SECONDS", 0)
+
+            def suspend_refresh(original, pending):
+                initial = True
+
+                def call(*args, **kwargs):
+                    nonlocal initial
+                    if initial:
+                        initial = False
+                        return original(*args, **kwargs)
+                    pending.set()
+                    assert release.wait(10), "the mark path waited for a background read"
+                    raise TimeoutError("injected background read timeout")
+
+                return call
+
+            original_prepare = context.host.prepare_occupied_mark_account_read_v1
+
+            def prepare(*args, **kwargs):
+                rid, read = original_prepare(*args, **kwargs)
+                return rid, suspend_refresh(read, refresh_account)
+
+            monkeypatch.setattr(context.host, "prepare_occupied_mark_account_read_v1", prepare)
+            monkeypatch.setattr(
+                convergence,
+                "resolve_live_29p_injected_for_productive_s5_cycle_v1",
+                suspend_refresh(
+                    convergence.resolve_live_29p_injected_for_productive_s5_cycle_v1, refresh_29p
                 ),
-                origin_main_sha=policy_fixture.BASELINE_SHA,
-                lane_state_root=tmp_path / "scope",
-                bound=bound,
-                g17_producers=inputs["g17_typed_vol_producers"],
-                evidence_root=tmp_path / "continuous-mark",
-                lock_root=tmp_path / "continuous-mark-lock",
-                observation_source=s6.ScriptedContinuousObservationSourceV1(
-                    [first, first, observation(mark, now - 0.125)]
-                ),
-                f1_m9_cycle_evaluator=policy_fixture._f1_m9_evaluator_factory(tmp_path),
-                repo_root=policy_fixture.REPO,
-                portfolio_budget_host=context.host,
-                occupied_mark_proof_root=proof_root,
             )
+            original_poll = source.poll
+
+            def poll():
+                observed = original_poll()
+                if observed is marks[-1]:
+                    assert refresh_account.wait(5) and refresh_29p.wait(5)
+                    switch_received.append(time.perf_counter_ns())
+                return observed
+
+            monkeypatch.setattr(source, "poll", poll)
+        run_args = dict(
+            authorization=replace(
+                _continuous_auth(native_id=bound.venue_native_id, max_cycles=2),
+                expected_cursor_floor=floor,
+            ),
+            origin_main_sha=policy_fixture.BASELINE_SHA,
+            lane_state_root=tmp_path / "scope",
+            bound=bound,
+            g17_producers=inputs["g17_typed_vol_producers"],
+            evidence_root=tmp_path / "continuous-mark",
+            lock_root=tmp_path / "continuous-mark-lock",
+            observation_source=source,
+            f1_m9_cycle_evaluator=policy_fixture._f1_m9_evaluator_factory(tmp_path),
+            repo_root=policy_fixture.REPO,
+            occupied_mark_proof_root=proof_root,
         )
+        try:
+            if dispatch_through_standing_n1:
+                policy_result = _run_standing_net_reversal_offline(
+                    tmp_path,
+                    monkeypatch,
+                    context.host,
+                    proof,
+                    run_args,
+                    mark_time=lambda: switch_received[0],
+                    in_flight=lambda: (
+                        refresh_account.is_set() and refresh_29p.is_set() and not release.is_set()
+                    ),
+                    grant_case=grant_case,
+                )
+            else:
+                policy_result = convergence.run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
+                    **run_args,
+                    portfolio_budget_host=context.host,
+                )
+        finally:
+            release.set()
+        if grant_case == "-foreign-grant":
+            assert policy_result is None
+            return
         run = policy_result.orchestrator_result
         if direct:
             assert run.disposition == s6.DISPOSITION_FAIL_CLOSED

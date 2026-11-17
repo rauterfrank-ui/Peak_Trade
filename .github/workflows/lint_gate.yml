@@ -239,6 +239,10 @@ jobs:
           echo "🛡️  Checking economic/diagnostic optimization boundary guard..."
           python scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py --base origin/main
 
+      - name: Verify sealed N1 Double Play source
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
+        run: python3 scripts/ops/check_n1_double_play_runtime_seal_v1.py
+
       - name: Tracked secret-like policy gate (secret scanning governance v1)
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |

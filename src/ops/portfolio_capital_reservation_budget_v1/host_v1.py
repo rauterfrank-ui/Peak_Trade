@@ -723,6 +723,83 @@ class PortfolioBudgetHostV1:
                 self.transport_retry_count += 1
                 self.retry_sleep(self.retry_interval_seconds)
 
+    def occupied_mark_pretrade_scope_v1(self, *, reservation_id, lane_id):
+        """Identify advance GETs by the original occupied reservation and host session."""
+        from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
+            canonical_digest_v1,
+        )
+
+        return "n1-occupied:" + canonical_digest_v1(
+            {"session_id": self.session_id, "reservation_id": reservation_id, "lane_id": lane_id}
+        )
+
+    def prepare_occupied_mark_account_read_v1(self, bindings, *, proof_root):
+        """Capture the original execution revision before the worker starts GETs."""
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+        )
+
+        if (
+            self.closed
+            or self.owner is None
+            or self.execution_environment != "LIVE"
+            or self.bindings != bindings
+            or len(bindings) != 1
+            or proof_root is None
+            or self.execution_incident_state_path is None
+        ):
+            raise ValueError("HOST_OCCUPIED_MARK_ACCOUNT_SCOPE_UNPROVEN")
+        owner = self.owner
+        submitted = self._submitted_executions_v1(include_reconciliation=False)
+        if len(submitted) != 1:
+            raise ValueError("HOST_OCCUPIED_MARK_ORIGINAL_EXECUTION_REQUIRED")
+        booked = {rid: owner.read_current_net_reversal_obligation_v1(rid) for rid in submitted}
+
+        def read():
+            capture = AuthenticatedReconciliationGetV1(
+                self.reconciliation_transport,
+                account=self.expected_account_identity,
+                clock=self.clock,
+                proof_root=proof_root,
+            )
+            observation = self._collect_account_observation_v1(bindings)
+            context = self._account_recovery_context_v1(observation)
+            requests = self._execution_reconciliation_requests_v1(context, submitted, capture)
+            reads = tuple(
+                self._read_execution_reconciliation_v1(context, requests, capture, booked)
+            )
+
+            def admit():
+                if (
+                    self.closed
+                    or self.owner is not owner
+                    or self.bindings != bindings
+                    or self._submitted_executions_v1(include_reconciliation=False) != submitted
+                    or any(
+                        owner.read_current_net_reversal_obligation_v1(rid) != revision
+                        for rid, revision in booked.items()
+                    )
+                ):
+                    raise ValueError("HOST_OCCUPIED_MARK_EXECUTION_REVISION_CHANGED")
+                if (
+                    not 0
+                    <= self.clock() - context.observed.event_time_unix
+                    <= context.observed.max_age_seconds
+                ):
+                    raise ValueError("HOST_BUDGET_PRIVATE_SNAPSHOT_STALE")
+                owner.restart_fail_closed_v1()
+                result = self._apply_execution_reconciliation_v1(
+                    context, reads, capture, released=set(), deliver_incidents=True
+                )
+                capture.discard_response_bodies_v1()
+                return replace(
+                    context, execution_reconciliation=result, authenticated_reconciliation=capture
+                ), capture.evidence
+
+            return admit
+
+        return next(iter(submitted)), read
+
     def prepare_simulated_double_play_reversal_v1(
         self, *, double_play, injected, decision_epoch, recovery
     ):
@@ -1016,15 +1093,7 @@ class PortfolioBudgetHostV1:
         # Fence before fetching: a failed refresh cannot retain old authority.
         if self.owner is not None:
             self.owner.restart_fail_closed_v1()
-        observation = collect_host_account_observation_v1(
-            private_rest_fetch=self.fetch,
-            instrument_ids_by_native_id={
-                b.venue_native_id: b.instrument_id for b in bindings.values()
-            },
-            session_id=self.session_id,
-            clock=self.clock,
-            expected_account=self.expected_account_identity,
-        )
+        observation = self._collect_account_observation_v1(bindings)
         return self._bind_observation_v1(
             bindings,
             observation,
@@ -1032,6 +1101,17 @@ class PortfolioBudgetHostV1:
             capture=capture,
             required_execution_attempts=required_execution_attempts,
             deliver_authenticated_incidents=deliver_authenticated_incidents,
+        )
+
+    def _collect_account_observation_v1(self, bindings):
+        return collect_host_account_observation_v1(
+            private_rest_fetch=self.fetch,
+            instrument_ids_by_native_id={
+                b.venue_native_id: b.instrument_id for b in bindings.values()
+            },
+            session_id=self.session_id,
+            clock=self.clock,
+            expected_account=self.expected_account_identity,
         )
 
     def _bind_observation_v1(
@@ -1054,19 +1134,7 @@ class PortfolioBudgetHostV1:
             self.account = account
             self.durable_mode = "recover"
             self.bindings = dict(bindings)
-        context = HostBudgetRecoveryContextV1(
-            host=self,
-            account=account,
-            pending_orders=observation.pending_orders,
-            occupancy_payloads=observation.occupancy_payloads,
-            pending_source=observation.pending_source,
-            account_inventory_source=(
-                observation.account_inventory_source
-                if observation.account_inventory_source is self.fetch
-                else None
-            ),
-            observed=observation.observed,
-        )
+        context = self._account_recovery_context_v1(observation)
         context = replace(
             context,
             execution_reconciliation=self._reconcile_executions_v1(
@@ -1092,6 +1160,32 @@ class PortfolioBudgetHostV1:
             self.bindings = dict(bindings)
         return context
 
+    def _account_recovery_context_v1(self, observation):
+        return HostBudgetRecoveryContextV1(
+            host=self,
+            account=observation.account,
+            pending_orders=observation.pending_orders,
+            occupancy_payloads=observation.occupancy_payloads,
+            pending_source=observation.pending_source,
+            account_inventory_source=(
+                observation.account_inventory_source
+                if observation.account_inventory_source is self.fetch
+                else None
+            ),
+            observed=observation.observed,
+        )
+
+    def _submitted_executions_v1(self, *, include_reconciliation=True):
+        return {
+            rid: (
+                link
+                if include_reconciliation
+                else {key: value for key, value in link.items() if key != "reconciliation"}
+            )
+            for rid, link in self.owner.execution_links_v1(active_only=True).items()
+            if link["phase"] == "SUBMIT_MAY_HAVE_OCCURRED"
+        }
+
     def _reconcile_executions_v1(
         self,
         context,
@@ -1102,28 +1196,12 @@ class PortfolioBudgetHostV1:
     ):
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
-            require_futures_reconciliation_product_v1,
-            resolve_reconciliation_query_options_v1,
         )
         from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
-            PortfolioExecutionReconciliationIdentityV2,
             parse_exchange_reconciliation_identity_v1,
         )
-        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
-            fetch_okx_read_only_reconciliation_snapshot_v1,
-        )
-        from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
-            GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
-        )
-        from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
-            K1AccountObservationSourceV1,
-        )
 
-        submitted = {
-            rid: link
-            for rid, link in self.owner.execution_links_v1(active_only=True).items()
-            if link["phase"] == "SUBMIT_MAY_HAVE_OCCURRED"
-        }
+        submitted = self._submitted_executions_v1()
         released = set()
         if required_execution_attempts:
             retained = self.owner.execution_links_v1()
@@ -1158,6 +1236,25 @@ class PortfolioBudgetHostV1:
                 clock=self.clock,
                 retain_response_bodies=True,
             )
+        requests = self._execution_reconciliation_requests_v1(context, submitted, capture)
+        reads = self._read_execution_reconciliation_v1(context, requests, capture)
+        return self._apply_execution_reconciliation_v1(
+            context, reads, capture, released=released, deliver_incidents=deliver_incidents
+        )
+
+    def _execution_reconciliation_requests_v1(self, context, submitted, capture):
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            AuthenticatedReconciliationGetV1,
+            resolve_reconciliation_query_options_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            PortfolioExecutionReconciliationIdentityV2,
+            parse_exchange_reconciliation_identity_v1,
+        )
+        from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+            K1AccountObservationSourceV1,
+        )
+
         inventory = context.account_inventory_source
         futures_custody = (
             type(inventory) is K1AccountObservationSourceV1
@@ -1197,6 +1294,19 @@ class PortfolioBudgetHostV1:
             ):
                 raise ValueError("HOST_EXECUTION_FUTURES_CUSTODY_UNPROVEN")
             requests.append((rid, identity, options))
+        return requests
+
+    def _read_execution_reconciliation_v1(self, context, requests, capture, booked_revisions=None):
+        from src.ops.execution_reconciliation_get_provenance_v1 import (
+            require_futures_reconciliation_product_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+            fetch_okx_read_only_reconciliation_snapshot_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+            GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+
         transport = self.reconciliation_transport if capture is None else capture
         config = transport.get(
             endpoint="/api/v5/account/config",
@@ -1220,16 +1330,19 @@ class PortfolioBudgetHostV1:
             and payload["data"][0].get("uid") == self.account
         ):
             raise ValueError("HOST_EXECUTION_READ_PORT_ACCOUNT_UNPROVEN")
-        result = {}
         for rid, identity, options in requests:
-            booked = self.owner.read_current_net_reversal_obligation_v1(rid)
+            booked = (
+                self.owner.read_current_net_reversal_obligation_v1(rid)
+                if booked_revisions is None
+                else booked_revisions[rid]
+            )
             if booked is not None:
                 from src.ops.full_core_live_path_composition_root_v1.current_productive_net_reversal_reconciliation_v1 import (
                     observe_booked_net_position_v1,
                 )
 
                 booking, revision_ref = booked
-                result[rid] = observe_booked_net_position_v1(
+                result = observe_booked_net_position_v1(
                     source=capture,
                     booking=booking,
                     observed=context.observed,
@@ -1238,6 +1351,7 @@ class PortfolioBudgetHostV1:
                     session_id=self.session_id,
                     revision_ref=revision_ref,
                 )
+                yield rid, identity, None, None, result
                 continue
             acquired = datetime.fromtimestamp(self.clock(), timezone.utc)
             snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
@@ -1249,6 +1363,20 @@ class PortfolioBudgetHostV1:
             )
             if options is not None and options.inst_type == "FUTURES":
                 require_futures_reconciliation_product_v1(snapshot)
+            yield rid, identity, snapshot, acquired, None
+
+    def _apply_execution_reconciliation_v1(
+        self, context, reads, capture, *, released, deliver_incidents
+    ):
+        from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+            PortfolioExecutionReconciliationIdentityV2,
+        )
+
+        result = {}
+        for rid, identity, snapshot, acquired, booked_result in reads:
+            if snapshot is None:
+                result[rid] = booked_result
+                continue
             result[rid] = self.owner.reconcile_execution_v1(
                 rid,
                 snapshot=snapshot,

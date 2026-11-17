@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from threading import Lock
 from typing import Any, Mapping
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -75,6 +76,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         self.timeout_seconds = float(timeout_seconds)
         self.max_request_count = int(max_request_count)
         self.request_count = 0
+        self._request_quota_lock = Lock()
         self.methods_used: list[str] = []
         self.venue_live_contact = False
         self._offline_l10_close_responses = (
@@ -184,8 +186,11 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         error_class = ""
         payload: Any = None
         # The quota bounds attempts, including redirects/errors that re-raise.
-        self.request_count += 1
-        self.methods_used.append(METHOD_GET)
+        with self._request_quota_lock:
+            if self.request_count >= self.max_request_count:
+                raise FullCoreProductiveReadOnlyGetError("MAX_REQUEST_COUNT_EXCEEDED")
+            self.request_count += 1
+            self.methods_used.append(METHOD_GET)
         try:
             if offline_responses is not None:
                 if endpoint not in offline_responses:

@@ -123,6 +123,8 @@ def unattended_request_digest_v1(request):
     prepared = request if isinstance(request, PreparedN1RequestV1) else None
     if prepared is not None:
         request = prepared.request
+    if request.get("net_reversal_post_port") is not None:
+        raise ValueError("HOST_NET_REVERSAL_POST_REQUIRES_PREPARED_PORT")
     config = asdict(request["config"])
     config.pop("evidence_root")
     if config.get("lock_root") is None:
@@ -625,6 +627,7 @@ def run_unattended_n1_host_v1(
                         "public_rest_fetch",
                         "private_rest_fetch",
                         "pretrade_transport",
+                        "net_reversal_post_port",
                     }:
                         raise ValueError("HOST_RESTART_PORT_OVERRIDES_REQUEST")
                     request.update(opened)
@@ -681,6 +684,8 @@ def run_unattended_n1_host_v1(
             state["cycles_used"] += result.trace.governed_cycle_count
             state["previous"] = None
             state["last_disposition"] = result.trace.terminal_disposition
+            if "net_reversal_post" in result.trace.extra:
+                state["net_reversal_post"] = result.trace.extra["net_reversal_post"]
             if (root / "STOP").exists():
                 return stop("STOPPED")
             if result.close_readback is not None:

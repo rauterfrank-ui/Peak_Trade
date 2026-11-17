@@ -32,6 +32,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Protocol, Sequence
 
 if TYPE_CHECKING:
+    from .current_productive_double_play_reversal_v1 import CurrentPostNetReversalContextV1
     from .current_productive_post_position_close_v1 import CurrentPostPositionCloseContextV1
 
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
@@ -264,6 +265,9 @@ class ContinuousCycleRecordV1:
     mark_venue_event_time: float | None = None
     mark_evidence_root: str = ""
     position_close_post_context: CurrentPostPositionCloseContextV1 | None = field(
+        default=None, repr=False, compare=False
+    )
+    net_reversal_post_context: CurrentPostNetReversalContextV1 | None = field(
         default=None, repr=False, compare=False
     )
 
@@ -1453,6 +1457,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     position_close_post_context=getattr(
                         s5_result, "position_close_post_context", None
                     ),
+                    net_reversal_post_context=getattr(s5_result, "net_reversal_post_context", None),
                 )
             )
             if s5_result.permit_created is True or int(s5_result.post_count) != 0:

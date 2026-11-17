@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import logging
 import math
 import time
+from concurrent.futures import Executor
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -28,6 +30,15 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.resolver_v1 import (
     advance_all_open_pending_from_mark_v1,
 )
+
+_LOGGER = logging.getLogger(__name__)
+
+
+def _advance_deferred_pending_outcome_v1(**mark_evidence) -> None:
+    try:
+        advance_all_open_pending_from_mark_v1(**mark_evidence)
+    except Exception:
+        _LOGGER.exception("Deferred pending outcome processing failed")
 
 
 @dataclass(frozen=True)
@@ -92,6 +103,7 @@ class PendingOutcomeAdvanceObservationSourceV1:
     canonical_instrument_id: str
     native_id: str
     repository_sha: str
+    outcome_executor: Executor | None = None
 
     @property
     def get_count(self) -> int:
@@ -122,7 +134,7 @@ class PendingOutcomeAdvanceObservationSourceV1:
             or event_ts > receive_ts
         ):
             return observation
-        advance_all_open_pending_from_mark_v1(
+        mark_evidence = dict(
             lane_state_root=self.lane_state_root,
             canonical_instrument_id=self.canonical_instrument_id,
             native_id=self.native_id,
@@ -134,6 +146,10 @@ class PendingOutcomeAdvanceObservationSourceV1:
             evidence_class=EVIDENCE_CLASS_REAL_PUBLIC,
             allow_test_fixture=False,
         )
+        if self.outcome_executor is None:
+            advance_all_open_pending_from_mark_v1(**mark_evidence)
+        else:
+            self.outcome_executor.submit(_advance_deferred_pending_outcome_v1, **mark_evidence)
         return observation
 
 
@@ -176,6 +192,7 @@ def wrap_observation_source_for_pending_outcome_advance_v1(
     canonical_instrument_id: str,
     native_id: str,
     repository_sha: str,
+    outcome_executor: Executor | None = None,
 ) -> ContinuousObservationSourceV1:
     return PendingOutcomeAdvanceObservationSourceV1(
         inner=source,
@@ -184,4 +201,5 @@ def wrap_observation_source_for_pending_outcome_advance_v1(
         canonical_instrument_id=canonical_instrument_id,
         native_id=native_id,
         repository_sha=repository_sha,
+        outcome_executor=outcome_executor,
     )

@@ -696,22 +696,34 @@ def _assert_exceptional_close_v1(pairs, inputs, host, rid, row, side_input):
             n1, "resolve_live_29p_injected_for_productive_s5_cycle_v1", return_value=side_input
         ),
     ):
-        runner = n1.make_n1_occupied_lane_s5_runner_v1(
-            composed_pairs=pairs,
-            g17_producers=mk["g17_typed_vol_producers"],
-            cycle_id_prefix_base="booked-net-exception",
-            portfolio_budget_host=host,
-            occupied_mark_proof_root=entry.proof_root,
+        reads = n1._OccupiedMarkReadsV1(
+            host=host,
+            bound=bound,
+            proof_root=entry.proof_root,
+            transport=None,
+            productivity_root=None,
         )
-        result = runner(
-            authorization=SimpleNamespace(native_id=bound.venue_native_id),
-            origin_main_sha=host.repository_sha,
-            cursor_store_root=root,
-            lock_root=root.parent / "exception-lock",
-            evidence_root=root.parent / "exception-evidence",
-            candles_payload=candles,
-            mark_price_payload={},
-        )
+        try:
+            reads.before_poll()
+            runner = n1.make_n1_occupied_lane_s5_runner_v1(
+                composed_pairs=pairs,
+                g17_producers=mk["g17_typed_vol_producers"],
+                cycle_id_prefix_base="booked-net-exception",
+                portfolio_budget_host=host,
+                occupied_mark_proof_root=entry.proof_root,
+                occupied_mark_reads=reads,
+            )
+            result = runner(
+                authorization=SimpleNamespace(native_id=bound.venue_native_id),
+                origin_main_sha=host.repository_sha,
+                cursor_store_root=root,
+                lock_root=root.parent / "exception-lock",
+                evidence_root=root.parent / "exception-evidence",
+                candles_payload=candles,
+                mark_price_payload={},
+            )
+        finally:
+            reads.close()
     context = result.position_close_post_context
     assert context is not None, result
     binding = context.execution.exceptional_close

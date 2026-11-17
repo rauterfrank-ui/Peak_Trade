@@ -1,8 +1,10 @@
 """Mark event time and measured receipt must survive the pending-outcome seam."""
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from pathlib import Path
+from threading import Event
 
 import pytest
 
@@ -64,6 +66,31 @@ def test_wrapper_forwards_mark_row_time_and_measured_poll_receipt(tmp_path, monk
     assert len(calls) == 1
     assert calls[0]["event_ts_unix"] == T_BAR1 + 0.125
     assert calls[0]["receive_ts_unix"] == T_BAR1 + 0.375
+
+
+def test_deferred_outcome_preserves_mark_identity_and_does_not_delay_poll(tmp_path, monkeypatch):
+    monkeypatch.setattr(session.time, "time", lambda: T_BAR1 + 0.375)
+    entered, release = Event(), Event()
+    calls = []
+
+    def advance(**kwargs):
+        entered.set()
+        assert release.wait(5), "poll must return before learning finishes"
+        calls.append(kwargs)
+
+    monkeypatch.setattr(session, "advance_all_open_pending_from_mark_v1", advance)
+    observation = _observation(_row(ts=str(int(T_BAR1 * 1000) + 125)))
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        wrapper = replace(_wrapper(tmp_path, observation), outcome_executor=executor)
+        try:
+            assert wrapper.poll() is observation
+            assert entered.wait(5) and not calls
+        finally:
+            release.set()
+    [evidence] = calls
+    assert evidence["event_ts_unix"] == T_BAR1 + 0.125
+    assert evidence["receive_ts_unix"] == T_BAR1 + 0.375
+    assert evidence["native_id"] == NATIVE
 
 
 @pytest.mark.parametrize(

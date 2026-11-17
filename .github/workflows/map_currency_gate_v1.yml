@@ -31,3 +31,20 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/ops/validate_system_atlas_v1.py
+
+      - name: Enforce N1 Double Play seal from the base commit
+        env:
+          EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          base="${EVENT_BASE:-$(git rev-parse origin/main)}"
+          if [[ "$base" == "0000000000000000000000000000000000000000" ]]; then
+            base="$(git rev-parse origin/main)"
+          fi
+          git cat-file -e "${base}^{commit}"
+          checker=scripts/ops/check_n1_double_play_runtime_seal_v1.py
+          if git cat-file -e "${base}:${checker}" 2>/dev/null; then
+            git show "${base}:${checker}" > "$RUNNER_TEMP/n1_double_play_seal.py"
+            checker="$RUNNER_TEMP/n1_double_play_seal.py"
+          fi
+          python3 "$checker" --base "$base"
