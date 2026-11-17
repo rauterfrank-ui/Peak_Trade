@@ -4384,7 +4384,7 @@
     {
       "path": "tests/ops/test_direct_reversal_slot_rotation_v1.py",
       "before_sha256": null,
-      "sha256": "7388a73deb19168836371de594005f5a98344182458fd179674dba748cdf10a5"
+      "sha256": "86918ca2894f1f3d4e71b702eb9786425ece8014f90150554874138c9301df13"
     },
     {
       "path": "tests/ops/test_docs_reference_targets_resolution_v1.py",

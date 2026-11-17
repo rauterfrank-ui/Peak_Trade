@@ -137,15 +137,15 @@ def test_direct_reversal_then_rotation_preserves_slot_and_sizes_new_instrument(
 
     def apply_fill(session, fill):
         bound = opened.get("bound")
-        token = "settled-funding-before-rotation"
+        funding_event_id = "settled-funding-before-rotation"
         if (
             bound is not None
             and session.contract.symbol == bound.venue_native_id
             and fill.fill_id.startswith("original-close:")
-            and token not in session.funding_events
+            and funding_event_id not in session.funding_events
         ):
             session.apply_funding_observation_v1(
-                event_id=token,
+                event_id=funding_event_id,
                 amount=str(funding),
                 currency=session.contract.quote_currency,
                 instrument_id=session.contract.symbol,
