@@ -405,9 +405,10 @@ def test_t3_five_occupied_isolated_n1_calls(tmp_path: Path) -> None:
         )
 
 
-def test_t4_t5_t7_rejected_replacement_preserves_topology(tmp_path: Path) -> None:
+def test_t4_t5_t7_open_position_preserves_topology(tmp_path: Path) -> None:
     from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
         PortfolioTruthSnapshotV1,
+        PositionTruthV1,
     )
     from src.ops.hard_facts_system_closure_v1.position_aware_rotation_v1 import (
         evaluate_position_aware_rotation_v1,
@@ -431,7 +432,7 @@ def test_t4_t5_t7_rejected_replacement_preserves_topology(tmp_path: Path) -> Non
             lane_health_allows_replacement=True,
         )
         with pytest.raises(
-            RankingDomainOccupiedLaneCap23ProduceJoinError, match="WITHIN_MIN_HOLDING_PERIOD"
+            RankingDomainOccupiedLaneCap23ProduceJoinError, match="LANE_REPLACEMENT_OPEN_POSITION"
         ):
             _join(
                 ranking,
@@ -441,7 +442,9 @@ def test_t4_t5_t7_rejected_replacement_preserves_topology(tmp_path: Path) -> Non
                 prior=topology.membership_instance_id,
                 observed_unix=OBSERVED_UNIX + 60,
                 observed_portfolio=PortfolioTruthSnapshotV1(
-                    event_time_unix=OBSERVED_UNIX + 60, max_age_seconds=60
+                    positions=(PositionTruthV1.from_signed(instrument_id=ada, signed_quantity=1),),
+                    event_time_unix=OBSERVED_UNIX + 60,
+                    max_age_seconds=60,
                 ),
                 replacement_admission_by_lane={"LANE_1": clear},
             )

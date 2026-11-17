@@ -16,7 +16,7 @@ multi_future_runtime_authorized = false
 
 max_ranking_age_seconds = 86400.0
 refresh_cadence_seconds = 300.0
-min_holding_period_seconds = 3600.0
+selection_validity_seconds = 3600.0
 hysteresis_rank_improvement = 1
 min_history_samples = 1
 min_data_quality_status = "PASS"

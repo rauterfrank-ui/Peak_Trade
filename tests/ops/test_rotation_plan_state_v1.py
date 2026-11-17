@@ -46,21 +46,26 @@ def rank(review, ordered_ids, event, label):
 
 
 @pytest.fixture
-def world(tmp_path, monkeypatch):
+def world(tmp_path, monkeypatch, request):
     sources = connected.sources
     monkeypatch.setattr(sources, "OBSERVED_UNIX", T0 - 3700)
     monkeypatch.setattr(sources, "SOURCE_EVENT", str(int((T0 - 3700) * 1000)))
+    incumbents = sources._five_rows()
+    challenger_native = "NEAR-USDT-SWAP"
+    if hasattr(request, "param"):
+        incumbent_native, challenger_native = request.param
+        incumbents[0] = sources._perp(incumbent_native)
     chain = sources._persist_universe_and_ranking(
         tmp_path,
-        sources._five_rows()
+        incumbents
         + [
-            sources._perp("NEAR-USDT-SWAP", base="NEAR"),
+            sources._perp(challenger_native),
             sources._perp("DOT-USDT-SWAP", base="DOT"),
         ],
     )
     membership = sources._membership(
         chain["ranking"],
-        [sources._cid(chain["ranking"], r["instId"]) for r in sources._five_rows()],
+        [sources._cid(chain["ranking"], r["instId"]) for r in incumbents],
     )
     topology = tmp_path / "topology"
     writer = sources._held_writer(topology)
@@ -100,7 +105,7 @@ def world(tmp_path, monkeypatch):
         bounds=bounds, membership=membership, chain=chain, event=T0 - 1740, weakest_lane="LANE_1"
     )
     near, dot = (
-        sources._cid(chain["ranking"], native) for native in ("NEAR-USDT-SWAP", "DOT-USDT-SWAP")
+        sources._cid(chain["ranking"], native) for native in (challenger_native, "DOT-USDT-SWAP")
     )
     incumbent = bounds["LANE_1"].instrument_id
     order = [b.instrument_id for l, b in bounds.items() if l != "LANE_1"] + [near, incumbent, dot]
@@ -133,6 +138,33 @@ def world(tmp_path, monkeypatch):
         )
     finally:
         writer.release()
+
+
+@pytest.mark.parametrize("world", [("BREV-USDT-SWAP", "MMT-USDT-SWAP")], indirect=True)
+def test_brev_mmt_rotation_waits_from_nomination_through_restart(world):
+    plan = world.owner.active["nomination"]
+    bound = world.args["bindings"]["LANE_1"]
+    episode = world.args["episodes"]["LANE_1"]
+    assert bound.venue_native_id == "BREV-USDT-SWAP"
+    assert plan["candidate"] == next(
+        row.canonical_instrument_id
+        for row in world.review.snapshot.ranked_candidates
+        if row.venue_native_id == "MMT-USDT-SWAP"
+    )
+    assert plan["deadline_unix"] - plan["started_at_unix"] == 1800
+    early = plan["started_at_unix"] + 1799
+    review = rank(world.review, world.order, early, "brev-mmt-before-deadline")
+    assert world.owner.prepare_v1(review=review, observed_unix=early, **world.args) == {}
+
+    restored = SlotRotationPlanOwnerV1(topology_root=world.topology, writer=world.writer)
+    due = plan["started_at_unix"] + 1800
+    review = rank(world.review, world.order, due, "brev-mmt-at-deadline")
+    request = restored.prepare_v1(review=review, observed_unix=due, **world.args)["LANE_1"]
+    result = assess_rotation_close_v1(
+        request, bound=bound, episode_identity=episode.identity, event_time=due
+    )
+    assert result["allowed"]
+    assert result["nomination"] == plan
 
 
 def test_restart_keeps_exact_pair_when_new_candidate_and_other_slot_are_stronger_or_weaker(world):

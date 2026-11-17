@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 import orchestrator_v1
 from src.ops.full_core_live_path_composition_root_v1 import (
     current_productive_enter_live_29p_join_v1 as join,
 )
@@ -37,6 +38,7 @@ def test_direct_reversal_then_rotation_preserves_slot_and_sizes_new_instrument(
     original_open = fixture.connected_open_positions
     original_size = join.admit_sized_slot_reservation_v1
     original_apply = fixture.ProductiveFuturesAccountingSessionV1.apply_fill
+    original_bind = orchestrator_v1.bind_occupied_lane_cap24_n1_instruments_v1
     host_type = fixture.PortfolioBudgetHostV1
     opened = {}
     sized = []
@@ -168,9 +170,23 @@ def test_direct_reversal_then_rotation_preserves_slot_and_sizes_new_instrument(
             return result
         return original_size(owner, **kwargs)
 
+    def bind_after_close(**kwargs):
+        replacement = kwargs["selections"].get(lane)
+        if replacement is not None and replacement.venue_native_id == "NEAR-USDT-SWAP":
+            host = closed_worlds[-1]["host"]
+            assert host.bindings[lane] == opened["bound"]
+            state = host.owner.risk_snapshot_v1()["state"]
+            (booking,) = state["test_slot_economics"][lane]["records"]
+            assert booking["episode_id"] == opened["episode"].episode_id
+            assert booking["reservation_id"] == opened["reservation_id"]
+        return original_bind(**kwargs)
+
     monkeypatch.setattr(fixture, "PortfolioBudgetHostV1", funded_host)
     monkeypatch.setattr(fixture, "connected_open_positions", open_and_reverse)
     monkeypatch.setattr(fixture.ProductiveFuturesAccountingSessionV1, "apply_fill", apply_fill)
+    monkeypatch.setattr(
+        orchestrator_v1, "bind_occupied_lane_cap24_n1_instruments_v1", bind_after_close
+    )
     monkeypatch.setattr(join, "admit_sized_slot_reservation_v1", trace_sizing)
     driver = RotationDriver(tmp_path, lane)
     fixture.roundtrip(tmp_path, monkeypatch, 5, lane, True, rotation_driver=driver)

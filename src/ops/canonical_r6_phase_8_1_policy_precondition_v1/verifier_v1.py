@@ -70,6 +70,9 @@ from src.ops.canonical_r6_phase_8_1_policy_precondition_v1.models_v1 import (
     PolicyItemStatus,
     R6Phase81PolicyError,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_rotation_close_v1 import (
+    ROTATION_OBSERVATION_SECONDS_V1,
+)
 from src.ops.productive_futures_accounting_runtime_binding_v1 import constants_v1 as cap31
 from src.ops.productive_futures_ranking_producer_v1 import constants_v1 as cap22
 from src.ops.productive_reconciliation_runtime_binding_v1 import constants_v1 as cap11
@@ -203,8 +206,8 @@ def assert_existing_runtime_bindings_remain_single_future_v1() -> None:
         _reject("live_or_orders_authorized")
     if cap23.DEFAULT_HYSTERESIS_RANK_IMPROVEMENT < 1:
         _reject("hysteresis_missing")
-    if cap23.DEFAULT_MIN_HOLDING_PERIOD_SECONDS < 1:
-        _reject("cooldown_missing")
+    if ROTATION_OBSERVATION_SECONDS_V1 != 1_800.0:
+        _reject("rotation_nomination_window_drift")
 
 
 def assert_s1_checklist_complete_v1() -> None:
