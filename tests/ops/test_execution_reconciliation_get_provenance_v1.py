@@ -13,9 +13,11 @@ import os
 from pathlib import Path
 import plistlib
 import shutil
+import signal
 import sqlite3
 import stat
 import subprocess
+import sys
 import time
 from types import SimpleNamespace
 from urllib.error import HTTPError
@@ -1147,7 +1149,7 @@ def test_original_k1_account_collector_and_reconciliation_share_signed_session(a
     ],
 )
 def test_futures_reconciliation_uses_bound_product_through_private_replay(
-    tmp_path, monkeypatch, proof_root, path
+    tmp_path, monkeypatch, proof_root, path, *, on_shared_send=None
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
         try_bind_current_productive_venue_plan_v1,
@@ -1437,6 +1439,7 @@ def test_futures_reconciliation_uses_bound_product_through_private_replay(
                     dispatch=close_readback,
                     opener=opener,
                     shared_post=path == "double-play-shared-productive-paged-net",
+                    on_shared_send=on_shared_send,
                 )
                 assert transport.methods_used == ["GET"] * get_count
                 assert host.owner.active_sum_v1() == held
@@ -2088,6 +2091,7 @@ def _assert_authenticated_occupied_mark_close(
     dispatch,
     opener,
     shared_post=False,
+    on_shared_send=None,
 ):
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
         invoke_join_v1 as occupied,
@@ -2263,6 +2267,7 @@ def _assert_authenticated_occupied_mark_close(
                     "shared-timeout" if shared_post else "timeout" if readback else dispatch,
                     tmp_path,
                     now_unix=sent_at.timestamp() if shared_post else None,
+                    on_shared_send=on_shared_send,
                 )
             if readback is not None or dispatch == "kill":
                 _assert_restarted_close_readback(
@@ -2373,7 +2378,7 @@ def _assert_authenticated_occupied_mark_close(
     assert restarted_hosts[-1].closed and restarted_hosts[-1].owner.active_sum_v1() == previous_hold
 
 
-def _assert_original_close_dispatch(context, case, tmp_path, *, now_unix=None):
+def _assert_original_close_dispatch(context, case, tmp_path, *, now_unix=None, on_shared_send=None):
     from src.ops.full_core_live_path_composition_root_v1 import (
         full_core_productive_http_post_transport_v1 as http_post,
     )
@@ -2460,6 +2465,8 @@ def _assert_original_close_dispatch(context, case, tmp_path, *, now_unix=None):
                             datetime.fromisoformat(attempt["socket_boundary_at_utc"]).timestamp(),
                         )
                     ]
+                if on_shared_send is not None:
+                    on_shared_send(context, authorization, record)
             if case in {"timeout", "shared-timeout"}:
                 raise TimeoutError("intercepted close submit")
             if case == "venue-timeout":
@@ -2772,33 +2779,7 @@ with closing(PortfolioBudgetHostV1(
     }
 
 
-def _assert_restarted_close_readback(
-    tmp_path,
-    monkeypatch,
-    context,
-    proof_root,
-    opener,
-    floor,
-    case,
-    *,
-    expected_switch_mark,
-    shared_authorization=None,
-):
-    from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
-        durable_post_owner_go_path_v1,
-    )
-    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
-        load_external_effect_durable_consume_v1,
-    )
-    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
-    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
-    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
-        _continuous_auth,
-    )
-
-    original_host = context.recovery.host
-    envelope = context.execution.envelope
-    _, bound = context.lane_pair
+def _close_http_fixture(envelope, case, *, original_body, productive_paged, on_history=None):
     product = "SWAP" if envelope.instrument_id.endswith("-SWAP") else "FUTURES"
     currency = "USDC" if product == "FUTURES" else "USDT"
     quantity = Decimal(envelope.quantity)
@@ -2833,28 +2814,20 @@ def _assert_restarted_close_readback(
         "fee": "-0.02",
         "feeCcy": currency,
     }
-    original_body = opener.body
-    productive_paged = case.startswith("productive-paged-")
-    if productive_paged:
-        case = case.removeprefix("productive-")
     paged = case.startswith("paged-")
     with_history = case in {"booked", "paged-booked", "owner-go-lost"} or case.startswith(
         "history-"
     )
-    owner_go_loss_injected = False
 
     def close_body(path, params):
-        nonlocal owner_go_loss_injected
         if path.endswith("/config"):
             return original_body(path, params)
         assert params["instId"] == envelope.instrument_id
         code, rows = "0", []
         if path.endswith("/positions-history"):
             assert with_history
-            if case == "owner-go-lost" and not owner_go_loss_injected:
-                mandate = durable_post_owner_go_path_v1(context.store_root_v1())
-                mandate.rename(mandate.with_suffix(".retained"))
-                owner_go_loss_injected = True
+            if on_history is not None:
+                on_history()
             assert params == {
                 "instId": envelope.instrument_id,
                 "instType": product,
@@ -2949,6 +2922,380 @@ def _assert_restarted_close_readback(
             )
         return json.dumps({"code": code, "data": rows}).encode()
 
+    return close_body, order, fill, currency, with_history
+
+
+def _paged_close_requests(envelope, product, case, with_history):
+    scope_query = {"instType": product, "instId": envelope.instrument_id}
+    list_query = {**scope_query, "limit": "100"}
+    requests = [("/api/v5/account/config", {}), ("/api/v5/trade/orders-pending", scope_query)]
+    if case == "paged-open-orders":
+        requests.append(("/api/v5/trade/orders-pending", {**scope_query, "after": "299901"}))
+    requests.extend(
+        [
+            ("/api/v5/trade/orders-history", list_query),
+            ("/api/v5/trade/orders-history", {**list_query, "after": "99901"}),
+            ("/api/v5/trade/fills", list_query),
+            ("/api/v5/trade/fills", {**list_query, "after": "199901"}),
+            ("/api/v5/account/positions", {"instId": envelope.instrument_id}),
+            (
+                "/api/v5/trade/order",
+                {"instId": envelope.instrument_id, "clOrdId": envelope.client_order_id},
+            ),
+        ]
+    )
+    if with_history:
+        requests.append(
+            (
+                "/api/v5/account/positions-history",
+                {
+                    **scope_query,
+                    "mgnMode": "cross",
+                    "posId": "8923",
+                    "limit": "100",
+                },
+            )
+        )
+    return requests
+
+
+def _run_shared_close_crash_stage(root, stage):
+    """Each stage runs in a new interpreter against the same disposable stores."""
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        checkout_independent_credential_os_native_store_acquisition_v1 as native,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        check_authenticated_double_play_29p_admission_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_l10_close_reconciliation_v1 import (
+        reconcile_submitted_occupied_scope_close_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+        build_s8_occupied_lane_pairs_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+    from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+        establish_current_productive_pre_external_test_process_isolation_v1,
+    )
+
+    inputs_path = root / "after-send-boundary.json"
+    proof_root = root / "private-get-evidence"
+
+    def kill_after_receipt(path, data):
+        # This receipt is harness evidence. The production writer has already
+        # committed its own state before the hook is called.
+        path.write_text(json.dumps({"pid": os.getpid(), **data}))
+        os.kill(os.getpid(), signal.SIGKILL)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("close crash probe requested an unplanned transport or account read")
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(native, "_sec_item_copy_matching_generic_password_payloads_v1", forbidden)
+        if stage == "send":
+            establish_current_productive_pre_external_test_process_isolation_v1(
+                monkeypatch=patch, f1_root=root / "isolated-f1", reseed_workspace_f1_m9=False
+            )
+            proof_root.mkdir(mode=0o700)
+
+            def at_socket(context, authorization, permit):
+                host = context.recovery.host
+                envelope = context.execution.envelope
+                account = authorization.grant.account
+                close_body, _, _, _, with_history = _close_http_fixture(
+                    envelope,
+                    "paged-booked",
+                    original_body=lambda path, params: json.dumps(
+                        _fetch(uid=account)(path, params)
+                    ).encode(),
+                    productive_paged=True,
+                )
+                responses = [
+                    (path, query, close_body(path, query).decode())
+                    for path, query in _paged_close_requests(
+                        envelope, "FUTURES", "paged-booked", with_history
+                    )
+                ]
+                kill_after_receipt(
+                    inputs_path,
+                    {
+                        "budget_root": str(host.root),
+                        "revision": host.repository_sha,
+                        "account": account,
+                        "bound": context.lane_pair[1].to_dict(),
+                        "episode_id": context.execution.l10_close.episode.episode_id,
+                        "reservation_id": context.authenticated_entry.proof.reservation_id,
+                        "clordid": envelope.client_order_id,
+                        "permit": permit,
+                        "post_store": str(authorization.authority.path),
+                        "checkpoint": str(authorization.authority.checkpoint_path),
+                        "submit_root": str(context.store_root_v1()),
+                        "responses": responses,
+                    },
+                )
+
+            test_futures_reconciliation_uses_bound_product_through_private_replay(
+                root,
+                patch,
+                proof_root,
+                "double-play-shared-productive-paged-net",
+                on_shared_send=at_socket,
+            )
+            pytest.fail("the simulated POST returned instead of being killed at MAY_HAVE_SENT")
+
+        data = json.loads(inputs_path.read_bytes())
+        bound = BoundInstrumentV1(**data["bound"])
+        lane_pair = build_s8_occupied_lane_pairs_v1(lane_state_root=root / "scope", bound=bound)[
+            "LANE_1"
+        ]
+        restart_time = NOW + timedelta(seconds=1)
+        patch.setattr(wire, "utc_now_iso_v1", restart_time.isoformat)
+
+        opener = SignedReconciliationHttpFixture(SimpleNamespace(account_identity=data["account"]))
+        responses = {
+            (path, tuple(sorted(query.items()))): body.encode()
+            for path, query, body in data["responses"]
+        }
+        opener.body = lambda path, query: responses[path, tuple(sorted(query.items()))]
+        patch.setattr(wire, "build_opener", forbidden)
+
+        if stage == "book":
+            patch.setattr(wire, "build_opener", lambda *handlers: opener)
+            record_close = (
+                PortfolioCapitalReservationBudgetOwnerV1.record_authenticated_l10_close_v1
+            )
+
+            def record_and_kill(owner, **kwargs):
+                booking = record_close(owner, **kwargs)
+                assert booking["episode_id"] == data["episode_id"]
+                assert booking["reservation_id"] == data["reservation_id"]
+                kill_after_receipt(
+                    root / "after-booking-commit.json",
+                    {"booking": booking, "gets": opener.requests},
+                )
+
+            patch.setattr(
+                PortfolioCapitalReservationBudgetOwnerV1,
+                "record_authenticated_l10_close_v1",
+                record_and_kill,
+            )
+
+        with (
+            open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+                max_request_count=len(responses), k1_lookup_backend=_FakeKeychainBackend()
+            ) as (transport, _),
+            closing(
+                PortfolioBudgetHostV1(
+                    root=Path(data["budget_root"]),
+                    private_rest_fetch=forbidden,
+                    repository_sha=data["revision"],
+                    session_id=f"shared-close-crash-{stage}",
+                    expected_account_identity=data["account"],
+                    clock=restart_time.timestamp,
+                    reconciliation_transport=transport,
+                )
+            ) as host,
+        ):
+            close = reconcile_submitted_occupied_scope_close_v1(
+                lane_pair=lane_pair, budget_host=host, proof_root=proof_root
+            )
+            assert stage == "replay" and close.status == "CLOSE_NET_BOOKED"
+            booking = close.net_booking
+            assert close.counter_order_request.net_booking.to_dict_v1() == booking
+            sizing = check_authenticated_double_play_29p_admission_v1(
+                request=close.counter_order_request,
+                bound_instrument=bound,
+                owner=host.owner,
+                proof_root=proof_root,
+            )
+            (hold,) = host.owner.local_commitment_readback_v1().commitments
+            assert (hold.reservation_id, hold.slot_id, hold.state) == (
+                data["reservation_id"],
+                booking["slot_id"],
+                "COMMITTED",
+            )
+            assert not transport.methods_used and sizing.get_count == 0
+            assert not sizing.venue_plan_authorized and not sizing.portfolio_reservation_id
+            (root / "after-restart-29p.json").write_text(
+                json.dumps(
+                    {
+                        "pid": os.getpid(),
+                        "booking": booking,
+                        "blocker": sizing.first_blocker,
+                        "reasons": sizing.reason_codes,
+                        "timing": asdict(sizing.authenticated_close_timing),
+                        "gets": transport.methods_used,
+                        "venue_plan_authorized": sizing.venue_plan_authorized,
+                        "new_reservation_id": sizing.portfolio_reservation_id,
+                    }
+                )
+            )
+
+
+def test_shared_l10_close_recovery_after_send_and_booking_sigkill(tmp_path):
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+
+    worker = """
+from pathlib import Path
+import sys
+
+def deny_sockets(event, args):
+    if event.startswith("socket."):
+        raise AssertionError("real sockets are unavailable in the close crash probe")
+
+sys.addaudithook(deny_sockets)
+from tests.ops.test_execution_reconciliation_get_provenance_v1 import _run_shared_close_crash_stage
+_run_shared_close_crash_stage(Path(sys.argv[1]), sys.argv[2])
+"""
+
+    env = os.environ.copy()
+    if env.get("GITHUB_ACTIONS") == "true":
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
+
+    def run_stage(stage, expected_status):
+        proc = subprocess.run(
+            ["./scripts/pt", "-B", "-c", worker, str(tmp_path), stage],
+            cwd=Path(__file__).resolve().parents[2],
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=40,
+        )
+        assert proc.returncode == expected_status, (proc.returncode, proc.stdout, proc.stderr)
+
+    def read_rows(path, query):
+        with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as db:
+            return db.execute(query).fetchall()
+
+    run_stage("send", -signal.SIGKILL)
+    send = json.loads((tmp_path / "after-send-boundary.json").read_bytes())
+    post_store, checkpoint, submit_root = map(
+        Path, (send["post_store"], send["checkpoint"], send["submit_root"])
+    )
+    budget = Path(send["budget_root"]) / "owner/reservations.sqlite3"
+
+    def booking_history():
+        return [
+            json.loads(payload).get("live_l10_close_bookings", {})
+            for (payload,) in read_rows(budget, "SELECT payload FROM states ORDER BY seq")
+        ]
+
+    assert not any(booking_history())
+    (claim,) = read_rows(post_store, "SELECT grant_id, dispatch_started_at FROM claims")
+    permit = send["permit"]
+    attempt = permit["transport_attempt"]
+    assert claim == (
+        "one-grant",
+        datetime.fromisoformat(attempt["socket_boundary_at_utc"]).timestamp(),
+    )
+    assert attempt["phase"] == "MAY_HAVE_SENT"
+    assert permit["outcome"] == "SENT_INITIATED_UNKNOWN_UNTIL_TRANSPORT"
+    assert permit["post_count"] == 1 and not permit["resubmit_allowed"]
+    assert load_external_effect_durable_consume_v1(store_root=submit_root)["record"] == permit
+    immutable = (post_store, checkpoint, *sorted(submit_root.glob("*.json")))
+    original = {path: sha256(path.read_bytes()).hexdigest() for path in immutable}
+
+    run_stage("book", -signal.SIGKILL)
+    committed = json.loads((tmp_path / "after-booking-commit.json").read_bytes())
+    booking = committed["booking"]
+    assert booking["episode_id"] == send["episode_id"]
+    assert booking["reservation_id"] == send["reservation_id"]
+    assert booking["close_envelope_digest"] == permit["envelope_digest"]
+    assert (booking["net_result"], booking["currency"]) == ("0.13", "USDC")
+    expected_gets = [
+        [f"{path}?{urlencode(query)}" if query else path, sha256(body.encode()).hexdigest()]
+        for path, query, body in send["responses"]
+    ]
+    assert committed["gets"] == expected_gets
+    history = booking_history()
+    assert history[-1] == {send["episode_id"]: booking} and not any(history[:-1])
+    proof_root = tmp_path / "private-get-evidence"
+    close_proof = proof_root / f"close-{booking['close_proof_digest']}.json"
+    history_proof = proof_root / f"close-history-{booking['history_proof_digest']}.json"
+    record = json.loads(close_proof.read_bytes())["record"]
+    assert record["schema"] == store.CLOSE_GET_PROOF_V2
+    assert record["position_episode_id"] == send["episode_id"]
+    identity = record["identity"]
+    assert identity["submit_attempt_id"] == attempt["claim_id"]
+    assert identity["atomic_consumption_key"] == permit["permit_id"]
+    assert (identity["account_identity"], identity["clordid"]) == (send["account"], send["clordid"])
+    order_page, fill_page = (record["gets"][index] for index in (3, 5))
+    assert "after=" in order_page["endpoint"] and "after=" in fill_page["endpoint"]
+    (order,) = json.loads(order_page["body"])["data"]
+    (fill,) = json.loads(fill_page["body"])["data"]
+    assert order["clOrdId"] == fill["clOrdId"] == send["clordid"]
+    assert order["ordId"] == fill["ordId"] == "91234" and fill["tradeId"] == "123"
+    booked_files = {
+        p: sha256(p.read_bytes()).hexdigest() for p in (budget, close_proof, history_proof)
+    }
+
+    run_stage("replay", 0)
+    replay = json.loads((tmp_path / "after-restart-29p.json").read_bytes())
+    assert len({send["pid"], committed["pid"], replay["pid"]}) == 3
+    assert replay["booking"] == booking
+    assert replay["blocker"] == "DOUBLE_PLAY_29P_LIVE_PROTECTIVE_STOP_REQUIRED"
+    assert "DOUBLE_PLAY_29P_LIVE_SLOT_CAPITAL_BASIS_REQUIRED" in replay["reasons"]
+    for field in ("close_proof_digest", "history_proof_digest"):
+        assert replay["timing"][field] == booking[field]
+    assert booking_history() == history
+    assert {
+        p: sha256(p.read_bytes()).hexdigest() for p in original | booked_files
+    } == original | booked_files
+
+
+def _assert_restarted_close_readback(
+    tmp_path,
+    monkeypatch,
+    context,
+    proof_root,
+    opener,
+    floor,
+    case,
+    *,
+    expected_switch_mark,
+    shared_authorization=None,
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+        durable_post_owner_go_path_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+    from src.ops.portfolio_capital_reservation_budget_v1 import host_v1 as budget_host
+    from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
+        _continuous_auth,
+    )
+
+    original_host = context.recovery.host
+    envelope = context.execution.envelope
+    _, bound = context.lane_pair
+    product = "SWAP" if envelope.instrument_id.endswith("-SWAP") else "FUTURES"
+    productive_paged = case.startswith("productive-paged-")
+    if productive_paged:
+        case = case.removeprefix("productive-")
+    paged = case.startswith("paged-")
+    owner_go_loss_injected = False
+
+    def remove_owner_go():
+        nonlocal owner_go_loss_injected
+        if not owner_go_loss_injected:
+            mandate = durable_post_owner_go_path_v1(context.store_root_v1())
+            mandate.rename(mandate.with_suffix(".retained"))
+            owner_go_loss_injected = True
+
+    close_body, order, fill, currency, with_history = _close_http_fixture(
+        envelope,
+        case,
+        original_body=opener.body,
+        productive_paged=productive_paged,
+        on_history=remove_owner_go if case == "owner-go-lost" else None,
+    )
     restarted_at = NOW + timedelta(seconds=1)
     monkeypatch.setattr(opener, "body", close_body)
     monkeypatch.setattr(wire, "utc_now_iso_v1", restarted_at.isoformat)
@@ -2967,36 +3314,7 @@ def _assert_restarted_close_readback(
     source_transport = original_host.reconciliation_transport
     offline_receipts = []
     if paged and not productive_paged:
-        scope_query = {"instType": product, "instId": envelope.instrument_id}
-        list_query = {**scope_query, "limit": "100"}
-        requests = [("/api/v5/account/config", {}), ("/api/v5/trade/orders-pending", scope_query)]
-        if case == "paged-open-orders":
-            requests.append(("/api/v5/trade/orders-pending", {**scope_query, "after": "299901"}))
-        requests.extend(
-            [
-                ("/api/v5/trade/orders-history", list_query),
-                ("/api/v5/trade/orders-history", {**list_query, "after": "99901"}),
-                ("/api/v5/trade/fills", list_query),
-                ("/api/v5/trade/fills", {**list_query, "after": "199901"}),
-                ("/api/v5/account/positions", {"instId": envelope.instrument_id}),
-                (
-                    "/api/v5/trade/order",
-                    {"instId": envelope.instrument_id, "clOrdId": envelope.client_order_id},
-                ),
-            ]
-        )
-        if with_history:
-            requests.append(
-                (
-                    "/api/v5/account/positions-history",
-                    {
-                        **scope_query,
-                        "mgnMode": "cross",
-                        "posId": "8923",
-                        "limit": "100",
-                    },
-                )
-            )
+        requests = _paged_close_requests(envelope, product, case, with_history)
         responses = {
             f"{path}?{urlencode(query)}" if query else path: close_body(path, query)
             for path, query in requests
@@ -3249,7 +3567,8 @@ def _assert_restarted_close_readback(
         0 if case == "not-sent" else 6 + int(with_history) + int(case.startswith("page-"))
     )
     if case == "flat" or with_history:
-        assert readback.remaining_quantity == 0 and readback.filled_quantity == quantity
+        assert readback.remaining_quantity == 0
+        assert readback.filled_quantity == Decimal(envelope.quantity)
         path = readback.proof_path
         assert stat.S_IMODE(path.stat().st_mode) == 0o600
         record = json.loads(path.read_bytes())["record"]
@@ -3470,8 +3789,9 @@ def _assert_restarted_close_readback(
             ]
             assert followups == [f"/api/v5/trade/{case.removeprefix('page-')}"]
         if case == "partial":
-            assert readback.filled_quantity == filled
-            assert readback.remaining_quantity == quantity - filled
+            half_quantity = Decimal(envelope.quantity) / 2
+            assert readback.filled_quantity == half_quantity
+            assert readback.remaining_quantity == half_quantity
 
 
 @pytest.mark.parametrize("filled_anchor", [False, True])
