@@ -25,8 +25,23 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.ops.canonical_local_launcher_and_process_supervision_v1.cli_v1 import (  # noqa: E402
-    main,
+    build_parser,
+    main as canonical_main,
 )
+
+
+def main(argv=None, *, brev_replay=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if "host-service" in argv:
+        args = build_parser().parse_args(argv)
+        if args.command == "host-service":
+            from scripts.ops.brev_v2_mac_host_service import dispatch_brev_host_service
+
+            status = dispatch_brev_host_service(args, replay=brev_replay)
+            if status is not None:
+                return status
+    return canonical_main(argv)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
