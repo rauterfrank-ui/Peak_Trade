@@ -1,0 +1,150 @@
+{
+  "cap24": {
+    "original_receipt_sha256": "24f53fe5c9d8d563ec5a840add12453c53776190c1008e9e5126f599fa72b292",
+    "publication_manifest_sha256": "e64bc9ae72203a0c8f9b12ed25d0ae0e0e8120505aca07ac4e964dbc9dde3ee3",
+    "real_gets": 0,
+    "real_posts": 0,
+    "scope": "OFFLINE_CANONICAL_CAP24_REPLAY",
+    "selected_native_id": "BREV-USDT-SWAP",
+    "simulated_binding_epoch": "2026-11-17T18:22:00Z",
+    "source_archive_sha256": {
+      "cap24-production-receipt.json": "7c50c91b670d77434874d3a9a50b3cbdf4e8224bf9e0e0f106d9e6941e2f7bec",
+      "economic-md-bundles.json": "81d56f93aaf521884064e56db456ba5f695bb4c8af02c3f3ea3950d1efc00fa3",
+      "public-universe-2.json": "ef376d99f91475686899fbc630fe64def8e2573657010d4de04352e07fd69b1c"
+    },
+    "start_authorized": false,
+    "valid_until": "2026-11-17T19:04:49Z",
+    "writer": {
+      "cap23_selected_instrument_id": "BREV-USDT-SWAP",
+      "cap23_selection_decision_id": "ssf_8a7b8685c09f9a4bb7e526ef",
+      "decision_epoch": "2026-11-17T18:04:51Z",
+      "ok": true,
+      "repository_sha": "2c51b8d4365a446c1a4a30a4071a42a31b8011dd",
+      "status": "PASS"
+    }
+  },
+  "cap24_receipt_sha256": "24f53fe5c9d8d563ec5a840add12453c53776190c1008e9e5126f599fa72b292",
+  "cap24_replay_binding_epoch": "2026-11-17T18:22:00Z",
+  "cases": {
+    "bad-signature": {
+      "blocked": "BREV_WINDOW_SIGNATURE_INVALID",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "fed6c32af2a16157fa9ef2a86c2c69381d6aa712ee068580a769158bddb2a597"
+    },
+    "cap24-expired": {
+      "blocked": "SELECTION_STALE_FOR_BINDING_EPOCH",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "4f9a7558e6d8bd647bd24911d589ac4927b674890b066cbf1f35f0585d16ab11"
+    },
+    "changed-cursor": {
+      "blocked": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "e8f971ad8d280b859c30b6d0337df4333786a2a3c4f9908c0aad46e745307338"
+    },
+    "claimed-crash": {
+      "byte_identical_cursor": true,
+      "receipt_sha256": "0c5434d14b77b15f912b7f93674a7e9fe8243ba7a0a4f91ce15e107c19eb4759",
+      "refused": [
+        {
+          "fixture_requests": 0,
+          "mode": "restart-exhausted",
+          "reason": "BREV_WINDOW_BUDGET_EXHAUSTED"
+        }
+      ],
+      "same_deadline_after_restart": true,
+      "same_reservation": true,
+      "same_store_and_history": true,
+      "simulated_new_boot_id": false,
+      "two_wait_checkpoints": true
+    },
+    "expired-grant": {
+      "blocked": "BREV_WINDOW_BOUNDS_EXHAUSTED",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "ac300d35833291ace9a3d69abe394b670cf3a9bfb35d04fc8dda670bd1e8d8d3"
+    },
+    "managed-other-boot": {
+      "byte_identical_cursor": true,
+      "receipt_sha256": "589ba7cf4d59c020d52e07b72fc4fe9e621eebda3db1dd7bb5082a94281bd69d",
+      "refused": [
+        {
+          "fixture_requests": 0,
+          "mode": "restart-exhausted",
+          "reason": "BREV_WINDOW_BUDGET_EXHAUSTED"
+        }
+      ],
+      "same_deadline_after_restart": true,
+      "same_reservation": true,
+      "same_store_and_history": true,
+      "simulated_new_boot_id": true,
+      "two_wait_checkpoints": true
+    },
+    "plain-other-boot": {
+      "blocked": "BREV_WINDOW_FILEGATE_CHECKPOINT_UNPROVEN",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "11829ab2f1ce5f0a2fbbb4c4e5ed0061f9463dc828334101d145007c143dd6b4"
+    },
+    "ports-crash": {
+      "blocked": "BREV_WINDOW_ORIGINAL_WAIT_UNPROVEN",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "8d2a287dbd43e1712a87abef5bc560efd4d6486eb17e22e5ba8ebd78ed5719cc"
+    },
+    "revoked": {
+      "blocked": "BREV_WINDOW_GRANT_REVOKED",
+      "fixture_ports_opened": 0,
+      "receipt_sha256": "30157c0878c900700ab64062ec8cabb8f9289ef237374b6bef64fa01e09c903c"
+    },
+    "same-boot": {
+      "byte_identical_cursor": true,
+      "receipt_sha256": "415abc9a6b50610efa7ab32bc436c4dd339ac44553ecc3b0121c7c9046a5e272",
+      "refused": [
+        {
+          "fixture_requests": 0,
+          "mode": "restart-concurrent",
+          "reason": "BREV_WINDOW_OWNER_MAY_BE_ALIVE"
+        },
+        {
+          "fixture_requests": 0,
+          "mode": "restart-exhausted",
+          "reason": "BREV_WINDOW_BUDGET_EXHAUSTED"
+        }
+      ],
+      "same_deadline_after_restart": true,
+      "same_reservation": true,
+      "same_store_and_history": true,
+      "simulated_new_boot_id": false,
+      "two_wait_checkpoints": true
+    }
+  },
+  "checked_at_utc": "2026-11-17T23:22:15+00:00",
+  "earlier_store_and_cursor_preserved": true,
+  "episode_reconstructed_in_isolated_paths": true,
+  "instrument": "BREV-USDT-SWAP",
+  "lane": "LANE_1",
+  "original_report_sha256": "e013dc5fa7c284873e0221f3eb2e016750dd554924c561ede194e60f3125806f",
+  "real_capital_used": false,
+  "real_gets": 0,
+  "real_posts": 0,
+  "runtime_authorization_effect": "NONE",
+  "schema": "peaktrade.n1_brev_offline_runtime_window_recovery.v1",
+  "scope": "OFFLINE_FIXTURE_GETS_AND_TEST_SIGNER_ONLY",
+  "service_loaded": false,
+  "source_base": "2c51b8d4365a446c1a4a30a4071a42a31b8011dd",
+  "source_sha256": {
+    "scripts/ops/brev_v2_mac_host_service.py": "1800c3380e70b5195daa9dd6eb3708a9f04da3521cf7f5ba688333900f7bbf57",
+    "scripts/ops/brev_v2_offline_window.py": "18ba61b0042279c726f8ee41674b0d73b7b467bf5dcd76759b141167a29d926e"
+  },
+  "source_state": "local working tree",
+  "start_authorized": false,
+  "status": "PASS_OFFLINE",
+  "termination": "SIGKILL",
+  "test_log_sha256": {
+    "launchd.log": "6be2b4fa5c939351b2355daa71f12cfa1279803a23af96975e45317eea0cc66c",
+    "law-map.log": "2f4e7bd3adcfe9ad49513abd8c97add379ebc10867b4c1efbc7e967ae427f864",
+    "plist-lint.log": "b12d10a655685e5c1b8098d075a044ee641071b0c011ca13fb2bc73c6e6d5f83",
+    "system-atlas.log": "56157b17d9fedc6ba3f2287121d8339692d9f4faa72b1750cf38eaeae5c8cbc6",
+    "targeted-tests.log": "14b8bb9a73391d849f214bf8eff066df256a670f3f819088bc27f15ea9362850",
+    "v1-base-policy.log": "efe6a0d72f0aaef8ee9a0cb3306510122bf7a9f1cf73eecfcecb889a732125b8",
+    "v1-content.log": "efe6a0d72f0aaef8ee9a0cb3306510122bf7a9f1cf73eecfcecb889a732125b8",
+    "v2-admission.log": "c8388f7ef92598f55bd92b269bd1c175685335d318965d804a6e76e89b93f516"
+  }
+}

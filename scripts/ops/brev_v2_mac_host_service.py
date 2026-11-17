@@ -10,6 +10,7 @@ import re
 import time
 from typing import Callable
 
+from scripts.ops.brev_v2_offline_window import OfflineWindowTrust, run_offline_window
 from scripts.ops.run_offline_occupied_brev_with_cap24_v1 import (
     run_offline_occupied_brev_with_cap24_v1,
 )
@@ -44,6 +45,7 @@ class BrevHostReplayV2:
 
     open_ports: Callable[..., AbstractContextManager]
     clock: Callable[[], float]
+    window_trust: OfflineWindowTrust | None = None
 
 
 class _HostRefusal(ValueError):
@@ -60,7 +62,7 @@ def _absolute_path(value):
 
 
 def _manifest_inputs(value):
-    if value.keys() != {
+    required = {
         "schema",
         "repository_root",
         "checkout_sha",
@@ -70,8 +72,16 @@ def _manifest_inputs(value):
         "cap24",
         "filegate",
         "mode",
-    } or value["mode"] not in ("offline_replay", "scoped_readonly_get"):
+    }
+    if value.keys() not in (required, required | {"runtime_window"}) or value["mode"] not in (
+        "offline_replay",
+        "scoped_readonly_get",
+    ):
         raise ValueError("HOST_BREV_V2_MANIFEST_INVALID")
+    if "runtime_window" in value and (
+        value["mode"] != "offline_replay" or not isinstance(value["runtime_window"], dict)
+    ):
+        raise ValueError("HOST_BREV_V2_WINDOW_REQUIRES_OFFLINE_REPLAY")
     if _absolute_path(value["repository_root"]) != REPO:
         raise ValueError("HOST_SERVICE_CHECKOUT_MISMATCH")
     sandbox = _absolute_path(value["sandbox_root"])
@@ -190,6 +200,9 @@ def _run(value, sandbox, bounds, env, replay):
             raise _HostRefusal("HOST_BREV_V2_STOP_REQUESTED")
         time.sleep(seconds)
 
+    if "runtime_window" in value:
+        return run_offline_window(value, sandbox, bounds, prepared, replay, open_ports, sleep)
+
     cap24 = value["cap24"]
     return run_offline_occupied_brev_with_cap24_v1(
         sandbox_root=sandbox,
@@ -259,7 +272,7 @@ def dispatch_brev_host_service(args, *, replay=None):
             state = _run(value, sandbox, bounds, env, replay)
             result["result"] = {
                 key: state[key]
-                for key in ("status", "reason", "cap24_confirmation")
+                for key in ("status", "reason", "cap24_confirmation", "runtime_window")
                 if key in state
             }
             result["ok"] = state["status"] in ("FINISHED", "STOPPED", "BOUNDS_EXHAUSTED")
