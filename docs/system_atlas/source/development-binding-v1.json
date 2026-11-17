@@ -92,6 +92,16 @@
       "sha256": "dfb2cef949cb7dc19f65ca0dc8ed39978744ce456616584efac11c30a99411bb"
     },
     {
+      "path": "config/ci/branch_ruleset_enforcement_contract_v1.json",
+      "before_sha256": "6c894a76616671a54de68c52b6d5ad43471d71e25b4adfacf064048fc4a35bd7",
+      "sha256": "fe1fcf0bf26703091f83049aaa0e56c65c6b513ff0f7061b0ef3d7742d7dfb04"
+    },
+    {
+      "path": "config/ci/required_status_checks.json",
+      "before_sha256": "f4dfbd153452b0a49b419e90cdd57631053673cc589609cf01516d5a6b82d8a3",
+      "sha256": "529eab9aec1b30b1dca5abf740ba43ae4d6e9b601b4f8ef27ee8b88a319fa79d"
+    },
+    {
       "path": "config/governance/clean_core_seal_manifest_v1.json",
       "before_sha256": "592d7fe3aec571f18f222b74a1373c80688963c072edcb8c20091c4ef584cfe5",
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
@@ -937,6 +947,11 @@
       "sha256": "7f7707f49696b9051b7de8db0eaa535eef4df6e3d4946c6a8a9b0c5eb1f05853"
     },
     {
+      "path": "docs/ops/specs/BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1.md",
+      "before_sha256": "0e116f37bc7748d1dea3c828b5027e85bb759c642efa2806c6503c370f057d6c",
+      "sha256": "b3739e0b8ca50dce6a9c3829cb8be77a0632f31b6e32ce7598b8397bcf15f3c1"
+    },
+    {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
       "before_sha256": null,
       "sha256": "f1997fb4ee58acfdc2378fc9fb7ffbdc2db24757bf900c6eacc1d6e54b6c773f"
@@ -1307,6 +1322,11 @@
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
     },
     {
+      "path": "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
+      "before_sha256": "f734139b47365a22bde268b8fe6feec6ed44a2797a3c8ebae7d7dab83144cd86",
+      "sha256": "a22471dc0b6d35717c38a3bdfabf994a74eac4209457a78e007b4561cc8fa9b5"
+    },
+    {
       "path": "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_EXECUTION_V0.md",
       "before_sha256": "e8f894f27cbb0b3e27b7eb776e8cf1c4c56a641b3712b57384a43c579b246595",
       "sha256": "34a81c24753f2fa408a7e4522bd28f30455b95725d6347ed9e8ff8f11bfeeb4e"
@@ -1334,7 +1354,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "40b0578c65e5a1f9c4f3ca84bc1e90b42c4ba5bafe388871197b6b303e867881"
+      "sha256": "bf517227ee4296d067784b841e5a87bc46df1e2c1b8f75a8bd5ea8faf52ceaf9"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1420,6 +1440,11 @@
       "path": "scripts/check_live_risk_limits.py",
       "before_sha256": "7f83e16f10b6dd8938c42346c3e2c14e364192081dd84d19fc8c7ea4b75223de",
       "sha256": "0d6dd79e5f15f5dda0899a9624811da860a0794b6d809e5b0f0d61e02eb49a70"
+    },
+    {
+      "path": "scripts/ci/check_branch_ruleset_enforcement_governance_v1.py",
+      "before_sha256": "241a18b988a418eb7b59ffa30b2c75bfa1f4b9ede541418ba2ffdf7974116732",
+      "sha256": "c2957eb8ebc98d57099175e3f29f28bd4e2a4054e7a305589089753ab992937c"
     },
     {
       "path": "scripts/ci/check_n1_v2_brev_admission.py",
@@ -3552,6 +3577,11 @@
       "sha256": "4801e39f5df00242f9c528a2ec04269f95237c8684b7b701a1d02c3a043bd5ee"
     },
     {
+      "path": "tests/ci/test_branch_ruleset_enforcement_governance_v1.py",
+      "before_sha256": "1e97be67d40200600a7c5616e39bd9c3d012b0729771280224c6987f3f65d8ef",
+      "sha256": "50b5e8c777db3d7c2a24ed3c39953923190ab85a75d1aed35631385bd8a4cba3"
+    },
+    {
       "path": "tests/ci/test_ci_diff_aware_test_selection_v1.py",
       "before_sha256": "ae275edab5a66f47b569477e25bdacbdd94ef1bcb0e39bf2c123b14272e88ef4",
       "sha256": "3d918291f420ec96715d207687cb27615483f1548c4d18375d7a857bec5d450b"
@@ -3565,6 +3595,11 @@
       "path": "tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py",
       "before_sha256": "677d371601b806a172230d7563d4042de7735f7af95d40d45d9ca8542fb9daf9",
       "sha256": "89964900c3fb425044e3d99ee1f3a83753d5ad273fa6001a4e392bb46df41ded"
+    },
+    {
+      "path": "tests/ci/test_exact_head_ready_reuse.py",
+      "before_sha256": "e17fa8f9b48c12f20623ab8cefe55e1a62a6d3f825681b1c8749fa519f12b375",
+      "sha256": "044beaf36bed194e7a14418dfb7b86ecafc9e4ced666a0513f08d3d90c59ae9d"
     },
     {
       "path": "tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py",
