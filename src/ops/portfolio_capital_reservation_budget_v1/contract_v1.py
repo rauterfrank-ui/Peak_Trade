@@ -854,6 +854,27 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             opening, _, aggregate = self._entry_capital_limits_locked_v1(str(slot_id))
             return opening, aggregate
 
+    def _live_initial_slot_limit_locked_v1(self, slot_id: str) -> Decimal | None:
+        allocation = self._slot_capital_allocation
+        if (
+            allocation is None
+            or allocation["schema"] != "live_slot_capital_allocation.v1"
+            or allocation["funding"] is None
+        ):
+            return None
+        initial = allocation["declaration"]["initial_usdc_by_slot"].get(slot_id)
+        if initial is None:
+            return None
+        # Once the slot has a booked outcome, its subsequent capital basis is
+        # governed by the settlement path for that slot.
+        if any(row["slot_id"] == slot_id for row in self._live_l10_close_bookings.values()) or any(
+            row["slot_id"] == slot_id
+            for history in self._live_net_reversal_bookings.values()
+            for row in history
+        ):
+            return None
+        return Decimal(initial)
+
     def reservation_monetary_source_v1(self, reservation_id):
         """Read the original normalization sources; never upgrade a legacy hold."""
         from src.ops.governed_productive_monetary_normalization_v1.sizing_source_v1 import (
@@ -3140,6 +3161,9 @@ class PortfolioCapitalReservationBudgetOwnerV1:
     def _entry_budget_denial_locked(self, slot_id, amount):
         policy = self._entry_budget_policy
         if policy is None:
+            initial = self._live_initial_slot_limit_locked_v1(slot_id)
+            if initial is not None and self._active_sum_locked(slot_id) + amount > initial:
+                return "ENTRY_BUDGET_SLOT_LIMIT_EXCEEDED"
             return None
         if policy.allowed_slot_ids is not None and slot_id not in policy.allowed_slot_ids:
             return "ENTRY_BUDGET_SLOT_NOT_ALLOWED"
@@ -3737,7 +3761,17 @@ def capital_context_facts_v1(
             "current_reconciled_exposure": state.active_reservation_sum,
         }
         policy = owner._entry_budget_policy
-        if policy is not None:
+        if policy is None:
+            slot = str(slot_id)
+            initial = owner._live_initial_slot_limit_locked_v1(slot)
+            if initial is not None:
+                facts.update(
+                    entry_notional_ceiling=initial,
+                    slot_remaining_notional=max(
+                        initial - owner._active_sum_locked(slot), Decimal(0)
+                    ),
+                )
+        else:
             slot = str(SlotId(str(slot_id)))
             if policy.allowed_slot_ids is not None and slot not in policy.allowed_slot_ids:
                 raise PortfolioCapitalBudgetError("ENTRY_BUDGET_SLOT_NOT_ALLOWED")
@@ -3781,7 +3815,8 @@ def apply_capital_context_facts_v1(
                 facts["slot_remaining_notional"],
             ),
             total_capital_limit=min(
-                patched.total_capital_limit, facts["aggregate_notional_ceiling"]
+                patched.total_capital_limit,
+                facts.get("aggregate_notional_ceiling", patched.total_capital_limit),
             ),
         )
     if "slot_remaining_loss_allowance" in facts:

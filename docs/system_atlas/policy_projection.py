@@ -352,6 +352,13 @@ AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS = {
     ),
 }
 
+LIVE_INITIAL_SLOT_BUDGET_DELTAS = {
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
+        "fd1cf078fc86bbb166d913ddae7341b9ec78a23dc8da4fe47233426a62a3b9e9",
+        "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd",
+    ),
+}
+
 
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
@@ -518,6 +525,7 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             expected = _exact_double_play_successor(
                 expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
+            expected = _live_initial_slot_budget_successor(root, expected)
     actual = {}
     for path in expected:
         source = root / path
@@ -538,6 +546,16 @@ def _exact_double_play_successor(parent, deltas):
             raise ValueError("DOUBLE_PLAY_POLICY_PARENT_INVALID:" + path)
         successor[path] = after
     return successor
+
+
+def _live_initial_slot_budget_successor(root, parent):
+    if any(
+        hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+        for path, (_, after) in LIVE_INITIAL_SLOT_BUDGET_DELTAS.items()
+        if path in parent
+    ):
+        return _exact_double_play_successor(parent, LIVE_INITIAL_SLOT_BUDGET_DELTAS)
+    return parent
 
 
 def _double_play_bundle_successor(root, parent):
@@ -563,6 +581,7 @@ def _double_play_bundle_successor(root, parent):
             expected = _exact_double_play_successor(
                 expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
+            expected = _live_initial_slot_budget_successor(root, expected)
     return expected
 
 
