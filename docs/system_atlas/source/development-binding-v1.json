@@ -47,6 +47,11 @@
       "sha256": "31deb8d1175cd39c139659d82c59f56788aa7f285ea8b0ee9e7fa94032c53547"
     },
     {
+      "path": ".github/workflows/n1-v2-brev-admission.yml",
+      "before_sha256": null,
+      "sha256": "1edb5ac3d04a6630a3917b23f10de76d6880204aad0b77acff9452421ea744a4"
+    },
+    {
       "path": ".github/workflows/paper_session_audit_evidence.yml",
       "before_sha256": "e14697468022d4a3fd9aaf43b1a5e8b3533377b1b0aacafc4352acd7459901aa",
       "sha256": "e1a1d8c3b6c316650e70e23991de7f5844ed58cec12257fd961e00985e1dea6c"
@@ -615,6 +620,11 @@
       "path": "docs/ops/evidence/N1_SUPERVISOR_STARTUP_RECOVERY_2026_11_07.md",
       "before_sha256": null,
       "sha256": "29f951a775b6b2cfa732b95a7d4ace0882d8de06da2e985c497c99abefdf0675"
+    },
+    {
+      "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RECOVERY.json",
+      "before_sha256": null,
+      "sha256": "c9034079daff8495c573ad0f28cb41aad8e321ee161d4e9eade99fc0fdefc909"
     },
     {
       "path": "docs/ops/evidence/ORIGINAL_BUDGET_PREPOST_ACCOUNT_AND_SEND_CONTEXT_2026_11_07.json",
@@ -1237,6 +1247,16 @@
       "sha256": "f0ce1a90638f3cee6e05d35353ed1918ef579925379e0792f1885e8fe30b2502"
     },
     {
+      "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.json",
+      "before_sha256": null,
+      "sha256": "ff926b3f94a2d1bf8c2f62b776985a67911412f05166c28ce5874301a9716e9a"
+    },
+    {
+      "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.md",
+      "before_sha256": null,
+      "sha256": "7da6f44bf47e9cdb13709ca694c7fe7b597bdb5b326de3eeb951871d7740fe07"
+    },
+    {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
       "sha256": "942950a795f2fadaeb3842a238231c5e12060fc7c26e2dae97b7b9f33299f8be"
@@ -1400,6 +1420,11 @@
       "path": "scripts/check_live_risk_limits.py",
       "before_sha256": "7f83e16f10b6dd8938c42346c3e2c14e364192081dd84d19fc8c7ea4b75223de",
       "sha256": "0d6dd79e5f15f5dda0899a9624811da860a0794b6d809e5b0f0d61e02eb49a70"
+    },
+    {
+      "path": "scripts/ci/check_n1_v2_brev_admission.py",
+      "before_sha256": null,
+      "sha256": "08dae28576428e99adfbd9bb647494e31f5ee8881dfd7ede42290a0001bf7082"
     },
     {
       "path": "scripts/ci/check_ruff_frozen_format_v1.py",
@@ -3845,6 +3870,11 @@
       "path": "tests/governance/test_n1_double_play_runtime_seal_v1.py",
       "before_sha256": null,
       "sha256": "987138dcf68c9e1e5c7f5e1ee519f3af50862ca3b0d5a481c1512a633afb5782"
+    },
+    {
+      "path": "tests/governance/test_n1_v2_brev_source_admission.py",
+      "before_sha256": null,
+      "sha256": "bbd9d0a18db4f986273dc63c0219d069b63c4f655d7193556b9f97456365f919"
     },
     {
       "path": "tests/governance/test_optimization_proposal_governance_ingress_v1.py",

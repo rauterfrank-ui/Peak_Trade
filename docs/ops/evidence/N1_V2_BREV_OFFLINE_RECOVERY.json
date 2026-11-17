@@ -1,0 +1,116 @@
+{
+  "cases": {
+    "attempt-present": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "48d1ce6419bfbe8a70b3678f2af48bbd3b47926635ab637b23bd97cf46027f33",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "changed-cursor": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "d1a797be92a78fcabf8ecdb0065a783c95f0ae55885fa9d8c9532ef3d41f3e0e",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "changed-hold-proof": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "ba6dd8f260aaa29deee8991a66d5207b2341f7755b79fec873355ffa48eac04e",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "changed-scope": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "e2a0213b510ee5fb07349eac2cc9b3ed57a788194211bbe979e408272062ccc0",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "managed-other-boot": {
+      "boot_identity_changed_in_simulation": true,
+      "budget_revision_after": 27,
+      "budget_revision_before": 24,
+      "byte_identical_cursor": true,
+      "cursor_epoch": 6,
+      "evidence_sha256": "51f9e5554f8070d94dfcb871aa32b90307a27fd2f016da6e5dccf28fbeac35ba",
+      "independent_managed_checkpoint": true,
+      "native_resume_state": "WAITING_FOR_NEXT_C1",
+      "new_process": true,
+      "result": "RESTARTED_AT_OCCUPIED_WAIT",
+      "same_budget_db_and_history": true,
+      "same_reservation": true
+    },
+    "missing-v2-checkpoint": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "12b5c6b0a63b3b120cddf746d3963491eccf66d63ef3c4b1177a5680f0cc275f",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "plain-other-boot": {
+      "boot_identity_changed_in_simulation": true,
+      "evidence_sha256": "5e086fedec2bee222c2fefe9c963b74a268b5334c0039d9c26ad7b5f20a187e9",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "replaced-store": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "cca18a2ee583edeb0a76e1d18de0a5b1aa51934e10cfe7379435ecf20c244777",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    },
+    "same-boot": {
+      "boot_identity_changed_in_simulation": false,
+      "budget_revision_after": 27,
+      "budget_revision_before": 24,
+      "byte_identical_cursor": true,
+      "cursor_epoch": 6,
+      "evidence_sha256": "b836f97fa5cc5ef24005b52f7d5bc3f266519013da7c0f643d091b09748289cd",
+      "independent_managed_checkpoint": false,
+      "native_resume_state": "WAITING_FOR_NEXT_C1",
+      "new_process": true,
+      "result": "RESTARTED_AT_OCCUPIED_WAIT",
+      "same_budget_db_and_history": true,
+      "same_reservation": true
+    },
+    "truncated-checkpoint": {
+      "boot_identity_changed_in_simulation": false,
+      "evidence_sha256": "a29165e8bcd8857a419fed99cf8b3eeac185b10032c5e1a34a93f64e440b2b95",
+      "independent_managed_checkpoint": false,
+      "new_process": true,
+      "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
+      "result": "BLOCKED_BEFORE_PORT_OPEN"
+    }
+  },
+  "instrument": "BREV-USDT-SWAP",
+  "lane": "LANE_1",
+  "original_report_sha256": "9df5e4f784dd220760be320af40f74b6f1376841d5087ea06c2b88caf3f68ab3",
+  "process_exit": "SIGKILL",
+  "real_gets": 0,
+  "real_posts": 0,
+  "repository_base": "8557138f16298f18a3c187b70570aa59c2db90a4",
+  "schema": "peaktrade.n1_v2_brev_offline_recovery.v1",
+  "source_sha256": {
+    "src/ops/n1_occupied_scope_recovery_v2/cap24.py": "f382ac2fe63dde6ae1fbf0f39f638cdc4cecb2dc38da49414999f64c6a5f7f9f",
+    "src/ops/n1_occupied_scope_recovery_v2/checkpoint.py": "b77f5aa4115aeda4c4e6a06be3388b2f30014f340c8e502fb3094d3a19af8424",
+    "src/ops/n1_occupied_scope_recovery_v2/runtime.py": "77e770a56da4d1781a7504ab49904d64503f3f16106102bee00f2869afa26f8a"
+  },
+  "start_authorized": false,
+  "system_reboot_performed": false,
+  "targeted_regression_tests_passed": 52,
+  "v1_seal": {
+    "base_policy": "PASS",
+    "content": "PASS"
+  }
+}
