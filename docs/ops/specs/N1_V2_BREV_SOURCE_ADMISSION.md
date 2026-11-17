@@ -19,17 +19,33 @@ der geprüften Quellen. Die Abnahme war offline. Die Startfreigabe bleibt offen.
 1. Der Governance-PR führt Workflow, Checker, Quellbindung und Prüfbeleg ein.
    Der Bootstrap verlangt den geprüften Zielstand und einen Governance-Diff ohne
    V2-Laufzeitdateien. Beide V1-Siegelprüfungen bleiben bestehen.
-2. Nach der Governance-Übernahme wird der Check serverseitig als Pflichtprüfung
-   für `main` registriert. Die Durchsetzung muss die Workflow-Quelle aus einer
-   vertrauenswürdigen Revision binden. Ein gleicher Jobname aus einem vom
-   Kandidaten kontrollierten Workflow genügt dafür nicht. Danach werden der
-   Required-Checks-Inventarstand und der verifizierte Ruleset-Nachweis zusammen
-   nachgeführt. Die Registrierung und ein echter Ruleset-Nachweis stehen aus.
+2. Auf `main` registriert Ruleset 27494723 den Pflichtstatus aus GitHub Actions.
+   PR #7315 hat das versionierte Inventar und den Ruleset-Nachweis nachgeführt.
+   Im Workflow stammen Checker und Sollwerte für einen Implementierungskandidaten
+   aus dem Ziel-Commit. Eine serverseitige Bindung an einen bestimmten Workflow
+   geht über die Registrierung des Pflichtstatus hinaus.
 3. Erst für den anschließenden Implementierungs-PR lädt der Check die Prüflogik
    und Sollwerte aus dem bereits übernommenen Ziel-Commit. Er akzeptiert genau
    die drei inhaltlich gebundenen V2-Dateien und die daraus folgenden Ergänzungen
    in Atlas und Law-Impact-Adjudikation. Sobald V2 im Zielbranch liegt, werden
    die gebundenen Dateiinhalte und die Prüfgrundlage weiter geprüft.
+
+## Prüfgrundlage für `c358cd3c3`
+
+Der Nachweis dieses Stands bindet die unveränderten V2-Quellbytes an
+`c358cd3c3`. Der Test rekonstruiert die belegte Offline-Episode aus ihren
+ursprünglichen Eingaben. Cap24 und der simulierte Laufzeitrequest verwenden
+weiter die historische Revision `8557138f1`. Ein auf `c358cd3c3` gesetzter
+Laufzeitrequest mit dem historischen Cap24-Beleg wurde wegen
+`REPOSITORY_SHA_MISMATCH` abgewiesen. Der Nachweis gilt für den Prozesswiederanlauf
+mit der ursprünglichen Bindung der Episode.
+
+Das aktive Gate weist auf `c358cd3c3` einen direkten Implementierungs-PR mit
+`REVIEWED_BASE_CHANGED` ab. Es weist auch Änderungen an seiner eigenen
+Prüfgrundlage mit `TRUSTED_GOVERNANCE_FILES_CHANGED` ab. Die aktualisierte
+Prüfgrundlage bildet deshalb einen eigenen Governance-Commit mit Prüfnachweis
+und Sollwerten. Der Implementierungs-Commit kann geprüft werden, sobald die
+aktualisierte Prüfgrundlage als eigenständig freigegebener Zielstand vorliegt.
 
 Prüfgrundlage, Nachweis, Dateimodus, Paketinhalt und Quellbasis werden aus
 Git-Objekten geprüft. Quelländerungen außerhalb der vorgesehenen Ergänzung

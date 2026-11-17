@@ -634,7 +634,7 @@
     {
       "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RECOVERY.json",
       "before_sha256": null,
-      "sha256": "c9034079daff8495c573ad0f28cb41aad8e321ee161d4e9eade99fc0fdefc909"
+      "sha256": "ec5798b3e89b92fbc7c0f73bdf338d84957abf7a703e47dee866d6bbe91abdc3"
     },
     {
       "path": "docs/ops/evidence/ORIGINAL_BUDGET_PREPOST_ACCOUNT_AND_SEND_CONTEXT_2026_11_07.json",
@@ -1264,12 +1264,12 @@
     {
       "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.json",
       "before_sha256": null,
-      "sha256": "ff926b3f94a2d1bf8c2f62b776985a67911412f05166c28ce5874301a9716e9a"
+      "sha256": "163e1a3760e9183fe69518c7f9d2c1640d7aaa08e6a516d1b80410622a1a17cd"
     },
     {
       "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.md",
       "before_sha256": null,
-      "sha256": "7da6f44bf47e9cdb13709ca694c7fe7b597bdb5b326de3eeb951871d7740fe07"
+      "sha256": "af01720c800ed1ef4ed07f7019a5ecf33d3fcc49f5437b6dba359583937629aa"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
