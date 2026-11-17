@@ -1,5 +1,6 @@
 """Offline POST authority and its wiring to the real ENTER producer."""
 
+from contextlib import closing
 from dataclasses import replace
 from pathlib import Path
 import shutil
@@ -47,11 +48,16 @@ _ACCOUNT = "injected-observer-account"
 
 def signed_post_authorization(tmp_path, envelope, *, account, action):
     key = SigningKey.generate()
+    store_dir = tmp_path / "post-store"
+    checkpoint_dir = tmp_path / "post-checkpoint"
+    store_dir.mkdir()
+    checkpoint_dir.mkdir()
     authority = PostOwnerAuthorityStoreV1(
-        tmp_path / "shared-post.sqlite3",
+        store_dir / "shared-post.sqlite3",
         "offline-post-store",
         "offline-post-owner",
         bytes(key.verify_key),
+        checkpoint_path=checkpoint_dir / "head.sqlite3",
     )
     authority.provision_v1()
     now = int(time.time())
@@ -82,12 +88,19 @@ def _reopened(authorization):
 
 
 def _claim_rows(authorization):
-    from contextlib import closing
-
     with closing(sqlite3.connect(authorization.authority.path)) as db:
         return db.execute(
             "SELECT grant_id, dispatch_started_at IS NOT NULL FROM claims ORDER BY grant_id"
         ).fetchall()
+
+
+def _backup_post_store(authorization, snapshot):
+    source = authorization.authority.path.as_uri() + "?mode=ro"
+    with (
+        closing(sqlite3.connect(source, uri=True)) as db,
+        closing(sqlite3.connect(snapshot)) as backup,
+    ):
+        db.backup(backup)
 
 
 def _run_enter(authorization, envelope, root, opener, loads):
@@ -149,6 +162,9 @@ def test_enter_consumes_grant_once_across_attempt_roots(tmp_path):
         ("missing-store", "POST_AUTHORITY_STORE_UNPROVEN"),
         ("copy-store", "POST_AUTHORITY_STORE_IDENTITY_MISMATCH"),
         ("fresh-store", "POST_GRANT_STORE_BINDING_MISMATCH"),
+        ("missing-checkpoint", "POST_AUTHORITY_CHECKPOINT_UNPROVEN"),
+        ("corrupt-checkpoint", "POST_AUTHORITY_CHECKPOINT_UNPROVEN"),
+        ("nested-checkpoint", "POST_AUTHORITY_CHECKPOINT_PATH_INVALID"),
     ],
 )
 def test_enter_invalid_authority_stops_before_local_consumption(tmp_path, case, reason):
@@ -167,12 +183,23 @@ def test_enter_invalid_authority_stops_before_local_consumption(tmp_path, case, 
     if case == "expired":
         auth = replace(auth, grant=replace(auth.grant, expires_at_unix=int(time.time())))
     if case in {"missing-store", "copy-store", "fresh-store"}:
-        path = tmp_path / "different.sqlite3"
+        path = auth.authority.path.with_name("different.sqlite3")
         if case == "copy-store":
             shutil.copyfile(auth.authority.path, path)
         auth = replace(auth, authority=replace(auth.authority, path=path))
         if case == "fresh-store":
+            checkpoint = auth.authority.checkpoint_path.with_name("fresh.sqlite3")
+            auth = replace(auth, authority=replace(auth.authority, checkpoint_path=checkpoint))
             auth.authority.provision_v1()
+    if case == "missing-checkpoint":
+        auth.authority.checkpoint_path.unlink()
+    if case == "corrupt-checkpoint":
+        auth.authority.checkpoint_path.write_bytes(b"invalid checkpoint")
+    if case == "nested-checkpoint":
+        auth = replace(
+            auth,
+            authority=replace(auth.authority, checkpoint_path=auth.authority.path.parent / "head"),
+        )
     auth = replace(
         auth, grant=replace(auth.grant, signature=key.sign(auth.grant.signing_bytes_v1()).signature)
     )
@@ -191,6 +218,42 @@ def test_enter_invalid_authority_stops_before_local_consumption(tmp_path, case, 
         assert not auth.authority.path.exists()
     else:
         assert _claim_rows(auth) == []
+    if case == "missing-checkpoint":
+        assert not auth.authority.checkpoint_path.exists()
+
+
+@pytest.mark.parametrize(
+    ("transition", "denial"),
+    [("consume", "POST_GRANT_ALREADY_CONSUMED"), ("revoke", "POST_GRANT_REVOKED")],
+)
+def test_enter_restore_must_match_latest_consumption_or_revocation(tmp_path, transition, denial):
+    envelope = _envelope()
+    auth, key = signed_post_authorization(tmp_path, envelope, account=_ACCOUNT, action="ENTER")
+    old, latest = tmp_path / "old.sqlite3", tmp_path / "latest.sqlite3"
+    _backup_post_store(auth, old)
+    if transition == "consume":
+        auth.consume_v1(
+            account=_ACCOUNT,
+            action="ENTER",
+            envelope_digest=envelope.envelope_digest,
+            attempt_root=tmp_path / "original",
+        )
+    else:
+        revoke(auth, key)
+    _backup_post_store(auth, latest)
+
+    def no_transport():
+        pytest.fail("restoration reached transport")
+
+    for snapshot, reason in ((old, "POST_AUTHORITY_CHECKPOINT_MISMATCH"), (latest, denial)):
+        shutil.copyfile(snapshot, auth.authority.path)
+        attempt = tmp_path / snapshot.stem
+        loads = []
+        with pytest.raises(actual.CurrentProductiveActualVenuePostError, match=reason):
+            _run_enter(_reopened(auth), envelope, attempt, no_transport, loads)
+        assert loads == []
+        assert not load_durable_post_owner_go_consume_v1(store_root=attempt)["present"]
+        assert not load_external_effect_durable_consume_v1(store_root=attempt)["present"]
 
 
 def test_enter_revocation_at_socket_keeps_consumed_grant_and_aborts_transport(tmp_path):
@@ -229,7 +292,10 @@ root, attempt = Path(sys.argv[1]), Path(sys.argv[2])
 grant_values = json.loads(sys.argv[3])
 grant_values['signature'] = bytes.fromhex(grant_values['signature'])
 grant = PostOwnerGrantV1(**grant_values)
-store = PostOwnerAuthorityStoreV1(root / 'shared-post.sqlite3', grant.store_id, grant.issuer_id, bytes.fromhex(sys.argv[4]))
+store = PostOwnerAuthorityStoreV1(
+    root / 'post-store' / 'shared-post.sqlite3', grant.store_id, grant.issuer_id,
+    bytes.fromhex(sys.argv[4]), checkpoint_path=root / 'post-checkpoint' / 'head.sqlite3',
+)
 attempt.mkdir()
 (attempt / 'ready').touch()
 deadline = time.monotonic() + 10
@@ -302,9 +368,46 @@ def test_same_claim_cannot_start_dispatch_twice(tmp_path):
     revocation = auth.authority.revocation_signing_bytes_v1(auth.grant.grant_id)
     with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_SIGNATURE_UNPROVEN"):
         auth.authority.revoke_v1(auth.grant.grant_id, foreign_key.sign(revocation).signature)
+    snapshot = tmp_path / "before-dispatch.sqlite3"
+    _backup_post_store(auth, snapshot)
     claim.start_dispatch_v1()
     with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_DISPATCH_ALREADY_STARTED"):
         claim.start_dispatch_v1()
+    shutil.copyfile(snapshot, auth.authority.path)
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_AUTHORITY_CHECKPOINT_MISMATCH"):
+        replace(claim, authority=_reopened(auth).authority).start_dispatch_v1()
+
+
+def test_interrupted_main_commit_cannot_reopen_the_previous_authority(tmp_path, monkeypatch):
+    envelope = _envelope()
+    auth, key = signed_post_authorization(tmp_path, envelope, account=_ACCOUNT, action="ENTER")
+    authority = auth.authority
+    grant_id = auth.grant.grant_id
+    signature = key.sign(authority.revocation_signing_bytes_v1(grant_id)).signature
+    real_connect = sqlite3.connect
+
+    class FailingCommit(sqlite3.Connection):
+        def commit(self):
+            raise sqlite3.OperationalError("simulated interruption before main commit")
+
+    def connect(database, *args, **kwargs):
+        if database == authority.path.as_uri() + "?mode=rw":
+            kwargs["factory"] = FailingCommit
+        return real_connect(database, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(sqlite3, "connect", connect)
+        with pytest.raises(SharedPostOwnerAuthorityError, match="POST_AUTHORITY_STORE_UNPROVEN"):
+            authority.revoke_v1(grant_id, signature)
+    with closing(real_connect(authority.path)) as db:
+        assert db.execute("SELECT grant_id FROM revocations").fetchall() == []
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_AUTHORITY_CHECKPOINT_MISMATCH"):
+        _reopened(auth).consume_v1(
+            account=_ACCOUNT,
+            action="ENTER",
+            envelope_digest=envelope.envelope_digest,
+            attempt_root=tmp_path / "after-interruption",
+        )
 
 
 def test_reprovisioning_same_path_does_not_restore_an_old_grant_or_revocation(tmp_path):
@@ -314,8 +417,19 @@ def test_reprovisioning_same_path_does_not_restore_an_old_grant_or_revocation(tm
     claim = auth.consume_v1(**args, attempt_root=tmp_path / "old-attempt")
     revocation = key.sign(auth.authority.revocation_signing_bytes_v1(auth.grant.grant_id)).signature
 
-    auth.authority.path.unlink()
-    auth.authority.provision_v1()
+    previous = auth.authority
+    checkpoint = previous.checkpoint_path.read_bytes()
+    previous.path.unlink()
+    with pytest.raises(
+        SharedPostOwnerAuthorityError, match="POST_AUTHORITY_STORE_PROVISION_FAILED"
+    ):
+        previous.provision_v1()
+    assert not previous.path.exists()
+    authority = replace(previous, checkpoint_path=previous.checkpoint_path.with_name("new.sqlite3"))
+    authority.provision_v1()
+    assert previous.checkpoint_path.read_bytes() == checkpoint
+    auth = replace(auth, authority=authority)
+    claim = replace(claim, authority=authority)
     assert auth.grant.store_binding_digest != auth.authority.binding_digest_v1()
     with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_STORE_BINDING_MISMATCH"):
         auth.consume_v1(**args, attempt_root=tmp_path / "new-attempt")
