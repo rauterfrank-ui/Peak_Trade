@@ -1139,7 +1139,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
       "before_sha256": "7b5c49cd02520f0e11fcdba74bce9d33e7a4311b190d4fd9a38d0e2c64cf690a",
-      "sha256": "fba300f93d36dcbda6fa22bb1bc8d75834c729375a67be6f7189cd0e940ded4d"
+      "sha256": "9226a74f3020402edd7a3180208bb15fd5152f025228a15453271ce131c2743c"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
@@ -4274,7 +4274,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "302dcc7c667aab12379174dceda4cab3f92e7b361896afa8582a8d66a221d7b5"
+      "sha256": "211ad2b07ab9920387f23a53bdb16fb5f46d66f21bd8ec9dcc8035b891f93987"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -4979,12 +4979,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
-      "sha256": "5c42196588fc4e2f7dbf65291b34f28103fd696cadac12c020efc1c822eac53d"
+      "sha256": "8ca513ed1e5c4bad31e581f244f51e175469c6bb9b6dcfd3d6d87f1d99afe7c6"
     },
     {
       "path": "tests/ops/test_current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
-      "sha256": "5e23d88655a4049d002d05f99e7af674d6d10fde2c633e4718d1535949b073b0"
+      "sha256": "350de8c890b9f54367a091f1ccaf6cc75d3ea04806702aa37b92be88f4d633f1"
     }
   ]
 }

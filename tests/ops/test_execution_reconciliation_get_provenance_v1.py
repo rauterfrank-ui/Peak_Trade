@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import shutil
 import sqlite3
 import stat
 import subprocess
@@ -1830,6 +1831,7 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("polled-mark-close-ack", None),
         ("polled-mark-close-shared", None),
         ("polled-mark-close-shared-revoked", None),
+        ("polled-mark-close-shared-stale-snapshot", None),
         ("polled-mark-close-timeout", None),
         ("polled-mark-close-venue-timeout", None),
         ("polled-mark-close-redirect", None),
@@ -2377,6 +2379,7 @@ def _assert_original_close_dispatch(context, case, tmp_path):
         MockCurrentProductive29PIntegrityBackendV1,
     )
     from tests.ops.test_current_productive_shared_post_owner_authority_v1 import (
+        _backup_post_store,
         _claim_rows,
         revoke,
         signed_post_authorization,
@@ -2466,7 +2469,12 @@ def _assert_original_close_dispatch(context, case, tmp_path):
             StatePersistence(str(host.execution_incident_state_path)).save(KillSwitchState.KILLED)
         if case == "stale-position":
             host.clock = lambda: NOW.timestamp() + 6
-        if case == "shared-revoked":
+        if case == "shared-stale-snapshot":
+            snapshot = tmp_path / "close-before-revocation.sqlite3"
+            _backup_post_store(authorization, snapshot)
+            revoke(authorization, authority_key)
+            shutil.copyfile(snapshot, authorization.authority.path)
+        elif case == "shared-revoked":
             revoke(authorization, authority_key)
         return Opener()
 
@@ -2524,6 +2532,7 @@ def _assert_original_close_dispatch(context, case, tmp_path):
         "kill": "POST_SAFETY_DURABLE_VETO:BEFORE_SOCKET",
         "stale-position": "BEFORE_SOCKET:HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN",
         "shared-revoked": "POST_GRANT_REVOKED",
+        "shared-stale-snapshot": "POST_AUTHORITY_CHECKPOINT_MISMATCH",
     }
     if case in denials:
         reason = denials[case]

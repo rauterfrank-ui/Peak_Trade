@@ -19,7 +19,7 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_
     canonical_json_dumps,
 )
 
-_SCHEMA = "peaktrade.post_owner_authority.v1"
+_SCHEMA = "peaktrade.post_owner_authority.checkpointed.v1"
 _HEX_DIGEST = re.compile(r"[0-9a-f]{64}")
 
 
@@ -33,6 +33,39 @@ def _identifier(value: object) -> bool:
 
 def _digest(payload: bytes) -> str:
     return sha256(payload).hexdigest()
+
+
+@contextmanager
+def _open_database(path: Path, error: str):
+    try:
+        db = sqlite3.connect(path.as_uri() + "?mode=rw", uri=True, isolation_level=None)
+        try:
+            if db.execute("PRAGMA journal_mode").fetchone() != ("delete",):
+                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_JOURNAL_MODE_INVALID")
+            # Include the rollback journal's directory in the commit sync.
+            db.execute("PRAGMA synchronous=EXTRA")
+            db.execute("BEGIN IMMEDIATE")
+            yield db
+        finally:
+            db.close()
+    except sqlite3.Error as exc:
+        raise SharedPostOwnerAuthorityError(error) from exc
+
+
+def _state_digest(db: sqlite3.Connection) -> str:
+    claims = db.execute(
+        "SELECT grant_id, grant_digest, claim_digest, consumed_at, dispatch_started_at "
+        "FROM claims ORDER BY grant_id"
+    ).fetchall()
+    revocations = db.execute(
+        "SELECT grant_id, record_digest, revoked_at FROM revocations ORDER BY grant_id"
+    ).fetchall()
+    try:
+        return _digest(
+            canonical_json_dumps({"claims": claims, "revocations": revocations}).encode()
+        )
+    except (TypeError, ValueError) as exc:
+        raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_UNPROVEN") from exc
 
 
 @dataclass(frozen=True)
@@ -71,14 +104,15 @@ class PostOwnerGrantV1:
 
 @dataclass(frozen=True)
 class PostOwnerAuthorityStoreV1:
-    """Owner-provisioned path and trust anchor, supplied independently of the grant."""
+    """Owner-provisioned store and separately retained checkpoint."""
 
     path: Path
     store_id: str
     issuer_id: str
     verify_key: bytes
+    checkpoint_path: Path
 
-    def _metadata(self) -> tuple[str, str, str, str, str]:
+    def _metadata(self) -> tuple[str, str, str, str, str, str]:
         if (
             not isinstance(self.path, Path)
             or not self.path.is_absolute()
@@ -89,67 +123,113 @@ class PostOwnerAuthorityStoreV1:
             or len(self.verify_key) != 32
         ):
             raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_BINDING_INVALID")
-        return _SCHEMA, str(self.path), self.store_id, self.issuer_id, self.verify_key.hex()
+        if (
+            not isinstance(self.checkpoint_path, Path)
+            or not self.checkpoint_path.is_absolute()
+            or self.checkpoint_path.resolve() != self.checkpoint_path
+            or self.path.parent.is_relative_to(self.checkpoint_path.parent)
+            or self.checkpoint_path.parent.is_relative_to(self.path.parent)
+        ):
+            raise SharedPostOwnerAuthorityError("POST_AUTHORITY_CHECKPOINT_PATH_INVALID")
+        return (
+            _SCHEMA,
+            str(self.path),
+            self.store_id,
+            self.issuer_id,
+            self.verify_key.hex(),
+            str(self.checkpoint_path),
+        )
 
     def provision_v1(self) -> None:
-        """Explicit bootstrap by the store owner. Consumers always open in read/write mode."""
+        """Create a new generation with a new checkpoint under explicit owner control."""
         metadata = self._metadata()
         try:
-            with os.fdopen(os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), "wb"):
-                pass
-            with self._transaction(provision=True) as (db, _):
-                db.execute(
-                    "CREATE TABLE authority (schema TEXT, path TEXT, store_id TEXT, "
-                    "issuer_id TEXT, verify_key TEXT, generation TEXT NOT NULL)"
-                )
-                db.execute(
-                    "INSERT INTO authority VALUES (?, ?, ?, ?, ?, ?)",
-                    (*metadata, secrets.token_hex(32)),
-                )
-                db.execute(
-                    "CREATE TABLE claims (grant_id TEXT PRIMARY KEY NOT NULL, grant_digest TEXT NOT NULL, "
-                    "claim_digest TEXT NOT NULL, consumed_at REAL NOT NULL, dispatch_started_at REAL)"
-                )
-                db.execute(
-                    "CREATE TABLE revocations (grant_id TEXT PRIMARY KEY NOT NULL, "
-                    "record_digest TEXT NOT NULL, revoked_at REAL NOT NULL)"
-                )
-            directory_fd = os.open(self.path.parent, os.O_RDONLY | os.O_DIRECTORY)
-            try:
-                os.fsync(directory_fd)
-            finally:
-                os.close(directory_fd)
+            for path in (self.path, self.checkpoint_path):
+                if path.exists():
+                    raise FileExistsError(path)
+            for path in (self.checkpoint_path, self.path):
+                os.close(os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600))
+                directory_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+                try:
+                    os.fsync(directory_fd)
+                finally:
+                    os.close(directory_fd)
         except OSError as exc:
             raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_PROVISION_FAILED") from exc
 
-    @contextmanager
-    def _transaction(self, *, provision: bool = False):
-        metadata = self._metadata()
-        db = None
-        try:
-            db = sqlite3.connect(self.path.as_uri() + "?mode=rw", uri=True, isolation_level=None)
-            if db.execute("PRAGMA journal_mode").fetchone() != ("delete",):
-                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_JOURNAL_MODE_INVALID")
-            db.execute("PRAGMA synchronous=FULL")
-            db.execute("BEGIN IMMEDIATE")
-            binding = ""
-            if not provision:
-                rows = db.execute("SELECT * FROM authority").fetchall()
-                if (
-                    len(rows) != 1
-                    or rows[0][:-1] != metadata
-                    or type(rows[0][-1]) is not str
-                    or not _HEX_DIGEST.fullmatch(rows[0][-1])
-                ):
-                    raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_IDENTITY_MISMATCH")
-                binding = _digest(canonical_json_dumps({"authority": rows[0]}).encode())
-            yield db, binding
+        identity = (*metadata, secrets.token_hex(32))
+        with (
+            _open_database(
+                self.checkpoint_path, "POST_AUTHORITY_CHECKPOINT_UNPROVEN"
+            ) as checkpoint,
+            _open_database(self.path, "POST_AUTHORITY_STORE_UNPROVEN") as db,
+        ):
+            db.execute(
+                "CREATE TABLE authority (schema TEXT, path TEXT, store_id TEXT, issuer_id TEXT, "
+                "verify_key TEXT, checkpoint_path TEXT, generation TEXT NOT NULL)"
+            )
+            db.execute("INSERT INTO authority VALUES (?, ?, ?, ?, ?, ?, ?)", identity)
+            db.execute(
+                "CREATE TABLE claims (grant_id TEXT PRIMARY KEY NOT NULL, grant_digest TEXT NOT NULL, "
+                "claim_digest TEXT NOT NULL, consumed_at REAL NOT NULL, dispatch_started_at REAL)"
+            )
+            db.execute(
+                "CREATE TABLE revocations (grant_id TEXT PRIMARY KEY NOT NULL, "
+                "record_digest TEXT NOT NULL, revoked_at REAL NOT NULL)"
+            )
+            checkpoint.execute(
+                "CREATE TABLE checkpoint (binding_digest TEXT NOT NULL, state_digest TEXT NOT NULL)"
+            )
+            checkpoint.execute(
+                "INSERT INTO checkpoint VALUES (?, ?)",
+                (
+                    _digest(canonical_json_dumps({"authority": identity}).encode()),
+                    _state_digest(db),
+                ),
+            )
+            checkpoint.commit()
             db.commit()
-        except sqlite3.Error as exc:
-            raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_UNPROVEN") from exc
-        finally:
-            if db is not None:
-                db.close()
+
+    @contextmanager
+    def _transaction(self):
+        metadata = self._metadata()
+        # Lock the checkpoint first in every worker. Commit it first so an interrupted
+        # update can cause a denial, but cannot authorize a rollback of the main store.
+        with (
+            _open_database(
+                self.checkpoint_path, "POST_AUTHORITY_CHECKPOINT_UNPROVEN"
+            ) as checkpoint,
+            _open_database(self.path, "POST_AUTHORITY_STORE_UNPROVEN") as db,
+        ):
+            rows = db.execute("SELECT * FROM authority").fetchall()
+            if (
+                len(rows) != 1
+                or rows[0][:-1] != metadata
+                or type(rows[0][-1]) is not str
+                or not _HEX_DIGEST.fullmatch(rows[0][-1])
+            ):
+                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_IDENTITY_MISMATCH")
+            binding = _digest(canonical_json_dumps({"authority": rows[0]}).encode())
+            state = _state_digest(db)
+            try:
+                expected = checkpoint.execute(
+                    "SELECT binding_digest, state_digest FROM checkpoint"
+                ).fetchall()
+            except sqlite3.Error as exc:
+                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_CHECKPOINT_UNPROVEN") from exc
+            if expected != [(binding, state)]:
+                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_CHECKPOINT_MISMATCH")
+            yield db, binding
+            if db.total_changes:
+                next_state = _state_digest(db)
+                try:
+                    checkpoint.execute("UPDATE checkpoint SET state_digest=?", (next_state,))
+                    checkpoint.commit()
+                except sqlite3.Error as exc:
+                    raise SharedPostOwnerAuthorityError(
+                        "POST_AUTHORITY_CHECKPOINT_UNPROVEN"
+                    ) from exc
+            db.commit()
 
     def _verify(self, body: bytes, signature: bytes) -> None:
         try:

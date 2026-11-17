@@ -73,8 +73,9 @@ provides the safety veto. These owners retain their respective scope.
 ## Shared POST grant for ENTER and L10-Close
 
 Both direct POST entry points accept an explicit signed grant and a trusted,
-owner-provisioned store binding. The binding pins the local database path,
-store ID, issuer and Ed25519 public key independently of the signed grant.
+owner-provisioned store binding. The binding pins the local database and
+independent checkpoint paths, store ID, issuer and Ed25519 public key
+independently of the signed grant.
 The grant binds its ID and validity window to the original account, OKX EEA,
 execution environment, action and exact envelope digest. Grants and
 revocations sign the store binding digest, including the canonical path and
@@ -92,6 +93,28 @@ permitted dispatch. A process restart cannot obtain a new claim or send the
 same grant again. A crash can leave a grant consumed with no socket attempt.
 The original permit, Budget state and Reconciliation still record their own
 facts. An ambiguous send stays subject to the original Reconciliation.
+
+### POST authority restore
+
+The owner provisions the checkpoint in a separate directory and retains it
+outside the POST database's backup and restore scope. Every shared authority
+operation compares the database generation binding and the digest of all
+consumptions, dispatch starts and revocations to that checkpoint. A missing,
+unreadable or mismatched checkpoint denies authority. A database restored from
+a backup can reopen only when its state matches the retained checkpoint.
+Previously consumed and revoked grants still deny on that state.
+
+A mutation commits the checkpoint before the database. If the database commit
+is interrupted after the checkpoint advances, the mismatch blocks both entry
+points until the owner can restore the exact anchored state or explicitly
+provision a new generation and checkpoint. Reprovisioning requires fresh
+signatures for the new generation. Historical shared databases without an
+independent checkpoint cannot acquire one through readback or restore.
+
+For restore, stop the shared POST workers and install a consistent SQLite
+snapshot at the bound database path. Preserve the current independent
+checkpoint and verify the store binding before restarting the workers.
+Rolling both files back together can recreate an indistinguishable pair.
 
 The existing manually bounded V1 path and historical witness readers retain
 their original contract. The shared path requires an explicitly provisioned,
