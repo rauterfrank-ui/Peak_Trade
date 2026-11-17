@@ -19,6 +19,9 @@ from unittest.mock import patch
 
 import pytest
 
+from src.governance import (
+    f1_m9_productive_apply_durable_ledger_paths_v1 as ledger_resolution,
+)
 from src.ops.full_core_live_path_composition_root_v1 import (
     productive_read_only_get_transport_v1 as wire,
 )
@@ -231,14 +234,13 @@ def _write_host_manifest(root, data, scenario):
         "private_store_root": root / "private",
         "lane_state_root": root / "scope",
         "cap24_productivity_root": root / "test-selection-root",
-        "f1_m9_ledger_root": root / "test-f1-m9-root",
         "lock_root": root / "test-host-locks",
         "occupied_mark_proof_root": Path(data["proof_root"]),
     }
     for path in roots.values():
         path.mkdir(exist_ok=True)
-    for name in ("apply.jsonl", "apply_rev.jsonl", "threshold.jsonl", "threshold_rev.jsonl"):
-        (roots["f1_m9_ledger_root"] / name).touch()
+    canonical_apply = ledger_resolution.resolve_canonical_f1_m9_productive_apply_ledger_paths_v1()
+    roots["f1_m9_ledger_root"] = canonical_apply.apply_ledger_path.parent
     auth = asdict(_continuous_auth(native_id=data["bound"]["venue_native_id"], max_cycles=1))
     for key in ("continuous_owner_go", "native_id", "bar", "expected_cursor_floor"):
         del auth[key]
@@ -370,6 +372,22 @@ def assert_original_net_reversal_booking_v1(
 
     original_manifest = _write_host_manifest(tmp_path, data, "manifest-digest-original")
     tampered = json.loads(original_manifest.read_bytes())
+    archive_root = tmp_path / "archived-f1-m9"
+    archive_root.mkdir()
+    for name in ("apply.jsonl", "apply_rev.jsonl", "threshold.jsonl", "threshold_rev.jsonl"):
+        (archive_root / name).touch()
+    config = tampered["runtime_request_config"]
+    archive_config = {
+        **config,
+        "roots": {**config["roots"], "f1_m9_ledger_root": str(archive_root)},
+    }
+    with pytest.raises(ValueError, match="N1_STANDING_F1_M9_LEDGER_ROOT_MISMATCH"):
+        startup_factory_v1.build_occupied_n1_manifest_v1(
+            host_id="offline-original-slot",
+            state_root=Path(tampered["state_root"]),
+            expires_at_unix=tampered["bounds"]["expires_at_unix"],
+            runtime_config=archive_config,
+        )
     foreign_checkout = {**tampered["runtime_request_config"], "repository_sha": "0" * 40}
     with pytest.raises(CurrentProductive29PChainBaselineError, match="ORIGIN_MAIN_SHA_MISMATCH"):
         startup_factory_v1.prepare_occupied_n1_request_v1(
@@ -420,18 +438,32 @@ def assert_original_net_reversal_booking_v1(
 
     command = """
 import sys
+from pathlib import Path
+from pytest import MonkeyPatch
+
 def offline(event, args):
     if event.startswith("socket."):
         raise AssertionError("socket in net reversal test")
 sys.addaudithook(offline)
+
 from tests.ops.test_authenticated_net_reversal_booking_v1 import crash_after_net_reversal_commit_v1
-crash_after_net_reversal_commit_v1(sys.argv[1])
+from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+    establish_current_productive_pre_external_test_process_isolation_v1,
+)
+
+root, ledger_root = map(Path, sys.argv[1:])
+with MonkeyPatch.context() as patch:
+    if ledger_root.is_relative_to(root):
+        establish_current_productive_pre_external_test_process_isolation_v1(
+            monkeypatch=patch, f1_root=ledger_root, reseed_workspace_f1_m9=False
+        )
+    crash_after_net_reversal_commit_v1(root)
 """
     env = os.environ.copy()
     if env.get("GITHUB_ACTIONS") == "true":
         env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
     child = subprocess.run(
-        ["./scripts/pt", "-B", "-c", command, str(tmp_path)],
+        ["./scripts/pt", "-B", "-c", command, str(tmp_path), config["roots"]["f1_m9_ledger_root"]],
         cwd=Path(__file__).resolve().parents[2],
         env=env,
         capture_output=True,

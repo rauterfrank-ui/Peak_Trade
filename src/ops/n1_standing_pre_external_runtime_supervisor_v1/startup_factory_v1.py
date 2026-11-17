@@ -11,6 +11,9 @@ import re
 import time
 from urllib.parse import urlencode
 
+from src.governance import (
+    f1_m9_productive_apply_durable_ledger_paths_v1 as ledger_resolution,
+)
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
     _cursor_floor_or_zero,
 )
@@ -115,9 +118,18 @@ def _fresh_rest(transport, auth_required, path, params):
 
 
 @contextmanager
-def _open_ports(authorization, *, config, bound, cursor, ledger_root, repository_sha):
+def _open_ports(
+    authorization,
+    *,
+    config,
+    bound,
+    cursor,
+    apply_ledger_paths,
+    threshold_ledger_paths,
+    repository_sha,
+):
     from scripts.ops.run_current_productive_policy_governed_live_c1_pre_external_convergence_v1 import (
-        _build_f1_m9_evaluator,
+        _build_f1_m9_evaluator_for_ledger_paths,
         _resolve_g17_producer,
     )
 
@@ -141,11 +153,11 @@ def _open_ports(authorization, *, config, bound, cursor, ledger_root, repository
 
         @lru_cache(maxsize=1)
         def evaluator():
-            return _build_f1_m9_evaluator(
-                ledger_root=ledger_root,
+            return _build_f1_m9_evaluator_for_ledger_paths(
+                apply_ledger_paths=apply_ledger_paths,
+                threshold_ledger_paths=threshold_ledger_paths,
                 g17_producers=producers,
                 bound=bound,
-                initialize_revocations=False,
             )
 
         source = LiveFreshC1ContinuousObservationSourceV1(
@@ -217,10 +229,23 @@ def _prepare_occupied_n1_request(*, attempt_index, evidence_root, runtime_config
         raise ValueError("N1_STANDING_DISTINCT_ROOTS_REQUIRED")
     proof_root = require_private_proof_root_v1(roots.pop("occupied_mark_proof_root"))
     ledger_root = roots.pop("f1_m9_ledger_root")
-    if not all(
-        (ledger_root / name).is_file()
-        for name in ("apply.jsonl", "apply_rev.jsonl", "threshold.jsonl", "threshold_rev.jsonl")
-    ):
+    apply_paths = ledger_resolution.resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(
+        repo_root=_REPO
+    )
+    threshold_paths = (
+        ledger_resolution.resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1(
+            repo_root=_REPO
+        )
+    )
+    ledger_paths = (
+        apply_paths.apply_ledger_path,
+        apply_paths.revocation_ledger_path,
+        threshold_paths.threshold_ledger_path,
+        threshold_paths.threshold_revocation_ledger_path,
+    )
+    if any(path.parent != ledger_root for path in ledger_paths):
+        raise ValueError("N1_STANDING_F1_M9_LEDGER_ROOT_MISMATCH")
+    if not all(path.is_file() for path in ledger_paths):
         raise ValueError("N1_STANDING_ORIGINAL_F1_M9_LEDGERS_REQUIRED")
     # Recovery reads the original persisted binding, including its selection
     # state. The supervisor separately admits current selection after recovery.
@@ -261,6 +286,7 @@ def _prepare_occupied_n1_request(*, attempt_index, evidence_root, runtime_config
         occupied_mark_proof_root=proof_root,
     )
     digest = sha256(json.dumps(runtime_config, sort_keys=True, allow_nan=False).encode())
+    digest.update(json.dumps([str(path) for path in ledger_paths]).encode())
     digest.update((_REPO / _STARTER).read_bytes())
     return PreparedN1RequestV1(
         request=request,
@@ -270,7 +296,8 @@ def _prepare_occupied_n1_request(*, attempt_index, evidence_root, runtime_config
             config=config,
             bound=bound,
             cursor=cursor,
-            ledger_root=ledger_root,
+            apply_ledger_paths=apply_paths,
+            threshold_ledger_paths=threshold_paths,
             repository_sha=revision,
         ),
     )
