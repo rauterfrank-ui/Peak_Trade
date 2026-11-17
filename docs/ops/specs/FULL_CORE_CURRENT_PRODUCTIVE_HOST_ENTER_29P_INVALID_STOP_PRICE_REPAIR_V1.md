@@ -9,7 +9,9 @@ last_updated: 2026-09-16
 
 # Full Core Current Productive Host Enter 29P Invalid Stop Price Repair V1
 
-Current GGE-only correction, 2026-11-03: the historical fixed-distance/pricing examples below describe their original revision. The assembled system's ENTER join consumes evaluated GGE-based adverse distance, not a fixed 80-unit fallback. Tests observe the actual native protective stop passed into monetary normalization, keep invalid-stop rejection and traverse shared-reservation/account-bound sizing. [Current evidence](../evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md). This alignment changes no production formula or runtime authority.
+Current Layer-C binding follows the full effective Dynamic Scope of the decision. The ENTER join passes the native protective price `mark - D_t` for LONG or `mark + D_t` for SHORT into monetary normalization. Invalid stops block sizing. The fixed-distance examples below and the [2026-11-03 alignment evidence](../evidence/ENTER_29P_CURRENT_CONFIGURATION_ALIGNMENT_2026_11_03.md) describe their original revisions.
+
+The compatible Scope-event path starts Downscope at the full adverse movement and confirms it under the existing epoch rule. Layer C and its current host bindings emit no separate early adverse-exit signal. Profit protection, time exit, strategy invalidation, hard risk and safety keep their own inputs. The bounded simulated reversal checks its supplied price against the current mark and the same episode's sealed full Scope. Authenticated close readback derives a historical reference at the switch mark. A current authenticated reversal still requires current price evidence and the funded capital basis of the same slot.
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.DS.
 Consumes Owner-GO

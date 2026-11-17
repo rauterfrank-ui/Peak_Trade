@@ -12,6 +12,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_li
     STATUS_FAIL,
     STATUS_PASS,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
+    resolve_current_productive_live_29p_adverse_exit_distance_v1,
     resolve_protective_stop_sizing_side_for_live_29p_join_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
@@ -151,14 +152,17 @@ def test_protective_stop_fail_closed_when_derived_stop_invalid(
             observe_replay,
             cycle_index=1,
         )
-        # Mark below CANONICAL_ADVERSE_EXIT_DISTANCE (80) → LONG stop non-positive → fail-closed.
+        distance, reasons = resolve_current_productive_live_29p_adverse_exit_distance_v1(
+            overlay.replay
+        )
+        assert not reasons and distance is not None
         broken: IntegratedOfflineReplayResultV1 = replace(
             overlay.replay,
             intermediate=replace(
                 overlay.replay.intermediate,
                 market_context=replace(
                     overlay.replay.intermediate.market_context,
-                    mark_price=Decimal("3.18"),
+                    mark_price=Decimal(str(distance)) / 2,
                 ),
             ),
         )

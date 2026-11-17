@@ -12,6 +12,10 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
+    HostExitPolicyBindingV1,
+    evaluate_host_exit_policy_producers_v1,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
     FEATURE_CONTRACT_VERSION,
@@ -37,10 +41,22 @@ from trading.master_v2.canonical_trading_decision_evidence_v1 import (
 from trading.master_v2.deterministic_scope_event_generator_v1 import (
     DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
     SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+    CanonicalScopeEventType,
     ScopeConfirmationStateV1,
     ScopeCooldownStateV1,
     ScopeDirectionState,
     ScopeEventGeneratorPolicyV1,
+    generate_deterministic_scope_event,
+)
+from tests.trading.master_v2.test_deterministic_scope_event_generator_v1 import (
+    _input as _generator_input,
+    _policy as _generator_policy,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1,
+)
+from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
+    derive_scope_adverse_exit_signal_v0,
 )
 from trading.master_v2.directional_assessment_v1 import (
     DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
@@ -531,6 +547,98 @@ def test_16_existing_position_safety_exit() -> None:
     )
     assert result.intermediate is not None
     assert result.intermediate.entry_exit_decision.exit_class is ExitClass.SAFETY_EXIT
+
+
+@pytest.mark.parametrize(
+    ("direction", "adverse_sign"),
+    [(ScopeDirectionState.LONG, -1), (ScopeDirectionState.SHORT, 1)],
+)
+def test_full_scope_reversal_has_no_separate_adverse_exit(direction, adverse_sign) -> None:
+    distance = 100.0
+    layer_c = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(distance)
+    inp = _generator_input(
+        current_direction_state=direction,
+        up_distance=layer_c.up_distance,
+        adverse_exit_distance=layer_c.adverse_exit_distance,
+        reversal_distance=layer_c.reversal_distance,
+    )
+    policy = _generator_policy()
+    boundary = inp.trailing_anchor + adverse_sign * distance
+    for fraction in (0.4, 0.5, 0.6, 0.75, 0.999):
+        price = inp.trailing_anchor + adverse_sign * fraction * distance
+        event = generate_deterministic_scope_event(replace(inp, current_price=price), policy)
+        assert event.event_type is CanonicalScopeEventType.NOOP
+        assert event.evaluated_thresholds.reversal_candidate_threshold == boundary
+        assert not derive_scope_adverse_exit_signal_v0(event).triggered
+
+    first = generate_deterministic_scope_event(replace(inp, current_price=boundary), policy)
+    assert first.event_type is CanonicalScopeEventType.DOWNSCOPE_CANDIDATE
+    assert not derive_scope_adverse_exit_signal_v0(first).triggered
+    confirmed = generate_deterministic_scope_event(
+        replace(
+            inp,
+            current_price=boundary,
+            trading_epoch=inp.trading_epoch + 1,
+            confirmation_state=first.next_confirmation_state,
+        ),
+        policy,
+    )
+    assert confirmed.event_type is CanonicalScopeEventType.DOWNSCOPE_CONFIRMED
+    assert confirmed.next_scope_effective_epoch == inp.trading_epoch + 2
+    assert not derive_scope_adverse_exit_signal_v0(confirmed).triggered
+
+
+@pytest.mark.parametrize(
+    ("host_changes", "exit_class", "outcome"),
+    [
+        ({}, ExitClass.NONE, DecisionOutcome.HOLD),
+        ({"entry_price": 3200.0}, ExitClass.PROFIT_PROTECTION_EXIT, DecisionOutcome.EXIT),
+        ({"entry_event_time": 1.0}, ExitClass.TIME_EXIT, DecisionOutcome.EXIT),
+        (
+            {"data_integrity_trusted": False},
+            ExitClass.STRATEGY_INVALIDATION_EXIT,
+            DecisionOutcome.EXIT,
+        ),
+        ({"killstate_active": True}, ExitClass.SAFETY_EXIT, DecisionOutcome.EXIT),
+    ],
+)
+def test_full_scope_keeps_independent_host_exit_rules(host_changes, exit_class, outcome) -> None:
+    host_input = {
+        "mark_price": 3500.0,
+        "event_ts_unix": 2_000_000.0,
+        "observation_digest": "full-scope-exit",
+        "has_open_position": True,
+        "existing_position_side": "long",
+        "entry_price": 3575.0,
+        "entry_event_time": 1_999_999.0,
+        "entry_trading_epoch": _EPOCH - 1,
+        "scope_adverse_matched": True,
+        "adverse_exit_distance": 100.0,
+        "separate_scope_adverse_exit": False,
+        **host_changes,
+    }
+    bundle, signals, safety, gate = evaluate_host_exit_policy_producers_v1(
+        HostExitPolicyBindingV1(instrument_id=_INSTRUMENT), **host_input
+    )
+    assert not bundle.scope_adverse_exit.triggered
+    assert bundle.scope_adverse_exit.reason_code == "full_dynamic_scope_no_separate_adverse_exit"
+    assert bundle.hard_risk_reduction.triggered is bool(host_changes.get("killstate_active"))
+    result = _run(
+        position_state=PositionState.OPEN_FULL,
+        existing_position_side=ExistingPositionSide.LONG,
+        side_state=SideState.LONG_ACTIVE,
+        direction_state=EntryExitDirectionState.LONG_ACTIVE,
+        position_management_context=PositionManagementContext.LONG_POSITION,
+        venue_flat=False,
+        price_path=(3500.0, 3500.0),
+        safety_mode=safety,
+        trading_gate=gate,
+        **signals,
+    )
+    assert result.intermediate is not None, result.fail_reasons
+    decision = result.intermediate.entry_exit_decision
+    assert decision.exit_class is exit_class
+    assert decision.decision_outcome is outcome
 
 
 def test_18_existing_position_reconciliation_required() -> None:

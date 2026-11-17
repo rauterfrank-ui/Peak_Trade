@@ -10,9 +10,6 @@ from pathlib import Path
 from src.ops.derive_scope_event_distances_v1.constants_v1 import (
     AUTHORITY_EFFECT,
     FAILURE_REASON_INVALID_INPUT,
-    OQ_C2_ADVERSE_NUMERATOR,
-    OQ_C2_RATIO_DENOMINATOR,
-    OQ_C2_REVERSAL_NUMERATOR,
 )
 from src.ops.derive_scope_event_distances_v1.derive_v1 import derive_scope_event_distances_v1
 from src.ops.derive_scope_event_distances_v1.golden_vectors_v1 import (
@@ -53,13 +50,6 @@ _ALLOWED_LAYER_C_BINDING_IMPORT_REL_PREFIXES: tuple[str, ...] = (
 )
 
 
-def _independent_formula(band: float) -> tuple[float, float, float]:
-    up_distance = band
-    adverse_exit_distance = band * (80.0 / 200.0)
-    reversal_distance = band * (120.0 / 200.0)
-    return up_distance, adverse_exit_distance, reversal_distance
-
-
 def _iter_python_files(root: Path) -> tuple[Path, ...]:
     return tuple(sorted(path for path in root.rglob("*.py") if "__pycache__" not in path.parts))
 
@@ -81,43 +71,15 @@ def _is_forbidden_import(module: str) -> bool:
     )
 
 
-def test_golden_valid_vectors_match_oq_c1_c2_and_independent_formula() -> None:
+def test_golden_valid_vectors_retain_the_full_input_band_in_every_field() -> None:
     assert len(GOLDEN_VALID_VECTORS_V1) >= 6
     for vector in GOLDEN_VALID_VECTORS_V1:
         result = derive_scope_event_distances_v1(vector.current_hysteresis_band)
-        expected = _independent_formula(vector.current_hysteresis_band)
         assert result.ok is True
         assert result.failure_reason is None
-        assert result.up_distance == vector.up_distance == expected[0]
-        assert result.adverse_exit_distance == vector.adverse_exit_distance == expected[1]
-        assert result.reversal_distance == vector.reversal_distance == expected[2]
-
-
-def test_oq_c2_ratios_are_exact_on_valid_vectors() -> None:
-    assert OQ_C2_ADVERSE_NUMERATOR / OQ_C2_RATIO_DENOMINATOR == 80.0 / 200.0
-    assert OQ_C2_REVERSAL_NUMERATOR / OQ_C2_RATIO_DENOMINATOR == 120.0 / 200.0
-    for vector in GOLDEN_VALID_VECTORS_V1:
-        result = derive_scope_event_distances_v1(vector.current_hysteresis_band)
-        assert result.ok is True
-        assert result.up_distance is not None
-        assert result.adverse_exit_distance == result.up_distance * (80.0 / 200.0)
-        assert result.reversal_distance == result.up_distance * (120.0 / 200.0)
-
-
-def test_formula_coincidence_200_is_not_clamp_or_fallback() -> None:
-    coincident = derive_scope_event_distances_v1(200.0)
-    other = derive_scope_event_distances_v1(25.0)
-    assert coincident.ok is True
-    assert other.ok is True
-    assert coincident.up_distance == 200.0
-    assert coincident.adverse_exit_distance == 80.0
-    assert coincident.reversal_distance == 120.0
-    assert other.up_distance == 25.0
-    assert other.adverse_exit_distance == 10.0
-    assert other.reversal_distance == 15.0
-    assert other.up_distance != 200.0
-    assert other.adverse_exit_distance != 80.0
-    assert other.reversal_distance != 120.0
+        assert result.up_distance == vector.up_distance == vector.current_hysteresis_band
+        assert result.adverse_exit_distance == vector.adverse_exit_distance == result.up_distance
+        assert result.reversal_distance == vector.reversal_distance == result.up_distance
 
 
 def test_deterministic_repeat_of_valid_and_invalid_inputs() -> None:
@@ -192,8 +154,6 @@ def test_source_has_no_cap63_fallback_or_clamp_literals_as_outputs() -> None:
     assert "fallback" not in derive_source
     assert "hard_max" not in derive_source
     assert "last_derived" not in derive_source
-    constants_source = (PACKAGE_ROOT / "constants_v1.py").read_text(encoding="utf-8")
-    assert "OQ_C2_RATIO_DENOMINATOR = 200.0" in constants_source
     assert "CAP63" not in derive_source
 
 

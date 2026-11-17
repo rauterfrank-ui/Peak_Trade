@@ -138,11 +138,11 @@ def test_scenario_adverse_exit_uses_canonical_generator_v0() -> None:
                 last_evaluated_trading_epoch=0,
             ),
             up_distance=2.0,
-            adverse_exit_distance=2.0,
+            adverse_exit_distance=1.0,
             reversal_distance=4.0,
         )
     )
-    # Nested adverse+downscope: SM event is DOWNSCOPE_*; PolicySignal still adverse.
+    # An explicitly distinct historical threshold can still produce adverse evidence.
     assert binding.scope_event_evidence.event_type is CanonicalScopeEventType.DOWNSCOPE_CANDIDATE
     assert ScopeCandidateKind.ADVERSE_EXIT.value in binding.scope_event_evidence.matched_conditions
     assert binding.scope_adverse_exit_signal.triggered is True
@@ -195,7 +195,7 @@ def test_untrusted_data_blocks_adverse_exit_authority_v0() -> None:
             safety_decision_allowed=False,
             data_integrity_status=DataIntegrityStatus.UNTRUSTED,
             up_distance=2.0,
-            adverse_exit_distance=2.0,
+            adverse_exit_distance=1.0,
             reversal_distance=4.0,
         )
     )
@@ -220,7 +220,7 @@ def test_derive_scope_adverse_exit_signal_from_matched_condition_v0() -> None:
                 last_evaluated_trading_epoch=3,
             ),
             up_distance=2.0,
-            adverse_exit_distance=2.0,
+            adverse_exit_distance=1.0,
             reversal_distance=4.0,
         )
     )

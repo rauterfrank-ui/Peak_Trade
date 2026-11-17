@@ -442,7 +442,7 @@ def _rebound_replay_with_sizing_decision_v1(
 def resolve_current_productive_live_29p_adverse_exit_distance_v1(
     replay: IntegratedOfflineReplayResultV1 | None,
 ) -> tuple[float | None, tuple[str, ...]]:
-    """Consume the same effective Layer-C distance as the evaluated decision.
+    """Use the evaluated decision's full effective Scope for protection.
 
     Includes explicit legacy comparisons and CHOP-frozen scope states. Never
     recompute a different fresh raw distance behind the decision owner's back.
@@ -450,7 +450,7 @@ def resolve_current_productive_live_29p_adverse_exit_distance_v1(
     if replay is None or replay.intermediate is None:
         return None, ("replay_intermediate_missing",)
     try:
-        distance = float(replay.intermediate.scope_event.semantic_binding.adverse_exit_distance)
+        distance = float(replay.intermediate.scope_event.semantic_binding.up_distance)
     except (AttributeError, TypeError, ValueError):
         return None, ("layer_c_adverse_exit_unresolved",)
     if not math.isfinite(distance) or distance <= 0.0:
@@ -584,6 +584,19 @@ def read_current_double_play_sizing_source_v1(
     stop = request.test_stop
     reference = Decimal(str(mark.mark_px))
     side = continuation.target_side
+    scope_state = scope["snapshot"].get("scope") or {}
+    scope_magnitude = scope_state.get("d_t")
+    if (
+        scope_state.get("valid") is not True
+        or scope_state.get("instrument_id") != bound_instrument.instrument_id
+        or type(scope_magnitude) not in (int, float)
+    ):
+        raise ValueError("DOUBLE_PLAY_29P_FULL_SCOPE_UNPROVEN")
+    expected_stop = derive_protective_stop_price_from_adverse_exit_v0(
+        selected_side=side,
+        reference_price=reference,
+        adverse_exit_distance=scope_magnitude,
+    )
     if (
         type(stop) is not DoublePlay29PTestStopV1
         or stop.venue_native_id != bound_instrument.venue_native_id
@@ -592,9 +605,8 @@ def read_current_double_play_sizing_source_v1(
         or stop.reference_mark != reference
         or type(stop.stop_price) is not Decimal
         or not stop.stop_price.is_finite()
-        or stop.stop_price <= 0
-        or (side == "long" and stop.stop_price >= reference)
-        or (side == "short" and stop.stop_price <= reference)
+        or expected_stop is None
+        or stop.stop_price != expected_stop
         or type(stop.source_ref) is not str
         or not stop.source_ref.strip()
     ):

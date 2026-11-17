@@ -1352,6 +1352,7 @@ def run_bridge_cycle_v1(
             confirmation_binding=state.confirmation_binding,
             data_integrity_trusted=True,
             adverse_exit_distance=cycle_adverse_exit_distance,
+            separate_scope_adverse_exit=False,
             profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),

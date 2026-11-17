@@ -1,4 +1,4 @@
-"""Cap 6.3 MODEL_C cross-instrument validation (pre-metadata scope).
+"""Reproduce the archived Cap 6.3 MODEL_C validation (pre-metadata scope).
 
 Consumes Cap 2.3 selection + Cap 2.2 ranking candidate context.
 Does not rewire selection, bind MODEL_C, or consume the metadata gate.
@@ -13,8 +13,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.ops.derive_scope_event_distances_v1.derive_v1 import derive_scope_event_distances_v1
-from src.ops.derive_scope_event_distances_v1.golden_vectors_v1 import GOLDEN_VALID_VECTORS_V1
+from src.ops.derive_scope_event_distances_v1.result_v1 import ok_result_v1
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = REPO_ROOT / "docs/ops/specs/CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1.md"
@@ -63,6 +62,15 @@ _FORBIDDEN_MODULE_PREFIXES: tuple[str, ...] = (
 
 EXPECTED_ORIGIN_MAIN = "26b62aae2965bf146818a40e951513f9be05c5df"
 BAND_SAMPLE_CLASS = "FORMULA_VALID_BAND_NOT_PER_INSTRUMENT_PRODUCTIVE_SNAPSHOT"
+# Original sample identifiers are part of the archived report.
+HISTORICAL_BAND_SAMPLES = (
+    (25.0, "representative_small_band"),
+    (50.0, "representative_mid_band"),
+    (1.0, "representative_unit_band"),
+    (5.0, "exact_ratio_geometry_5"),
+    (12.5, "exact_ratio_geometry_12_5"),
+    (200.0, "formula_coincidence_with_model_b_not_authority"),
+)
 
 
 def _independent_formula(band: float) -> tuple[float, float, float]:
@@ -70,6 +78,11 @@ def _independent_formula(band: float) -> tuple[float, float, float]:
     adverse_exit_distance = band * (80.0 / 200.0)
     reversal_distance = band * (120.0 / 200.0)
     return up_distance, adverse_exit_distance, reversal_distance
+
+
+def _historical_scope_event_distances(current_hysteresis_band: float):
+    up, adverse, reversal = _independent_formula(current_hysteresis_band)
+    return ok_result_v1(up_distance=up, adverse_exit_distance=adverse, reversal_distance=reversal)
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -223,7 +236,7 @@ def build_inputs_v1() -> dict[str, Any]:
 
 
 def build_results_v1(inputs: dict[str, Any]) -> dict[str, Any]:
-    signature = inspect.signature(derive_scope_event_distances_v1)
+    signature = inspect.signature(_historical_scope_event_distances)
     parameter_names = list(signature.parameters)
     derive_source = DERIVE_SOURCE.read_text(encoding="utf-8")
     samples: list[dict[str, Any]] = []
@@ -233,9 +246,8 @@ def build_results_v1(inputs: dict[str, Any]) -> dict[str, Any]:
     fallback_failures: list[str] = []
     for instrument in inputs["selectable_instruments"]:
         assert isinstance(instrument, dict)
-        for vector in GOLDEN_VALID_VECTORS_V1:
-            band = vector.current_hysteresis_band
-            result = derive_scope_event_distances_v1(band)
+        for band, note in HISTORICAL_BAND_SAMPLES:
+            result = _historical_scope_event_distances(band)
             expected = _independent_formula(band)
             oq_c1 = result.ok is True and result.up_distance == band == expected[0]
             oq_c2 = (
@@ -263,7 +275,7 @@ def build_results_v1(inputs: dict[str, Any]) -> dict[str, Any]:
                     or result.adverse_exit_distance == 80.0
                     or result.reversal_distance == 120.0
                 )
-            sample_id = f"{instrument['venue_native_id']}:{vector.note}:{band}"
+            sample_id = f"{instrument['venue_native_id']}:{note}:{band}"
             if not oq_c1:
                 oq_c1_failures.append(sample_id)
             if not oq_c2:
@@ -278,7 +290,7 @@ def build_results_v1(inputs: dict[str, Any]) -> dict[str, Any]:
                     "canonical_instrument_id": instrument["canonical_instrument_id"],
                     "venue_native_id": instrument["venue_native_id"],
                     "rank": instrument["rank"],
-                    "band_sample_note": vector.note,
+                    "band_sample_note": note,
                     "band_sample_class": BAND_SAMPLE_CLASS,
                     "current_hysteresis_band": band,
                     "ok": result.ok,
@@ -313,7 +325,7 @@ def build_results_v1(inputs: dict[str, Any]) -> dict[str, Any]:
         "productive_callgraph_hits": callgraph_hits,
         "sample_count": len(samples),
         "instrument_count": len(inputs["selectable_instruments"]),
-        "valid_band_sample_count": len(GOLDEN_VALID_VECTORS_V1),
+        "valid_band_sample_count": len(HISTORICAL_BAND_SAMPLES),
         "OQ_C1_PASS": oq_c1_pass,
         "OQ_C2_PASS": oq_c2_pass,
         "NESTED_GEOMETRY_PASS": geometry_pass,
@@ -428,7 +440,7 @@ def test_each_instrument_and_valid_band_sample_passes_pre_metadata_criteria() ->
     assert results["function_parameter_names"] == ["current_hysteresis_band"]
     assert results["derive_source_contains_instrument_id"] is False
     assert results["PRODUCTIVE_CALLGRAPH_REACHABLE"] is False
-    assert results["sample_count"] == 20 * len(GOLDEN_VALID_VECTORS_V1)
+    assert results["sample_count"] == 20 * len(HISTORICAL_BAND_SAMPLES)
     for sample in results["samples"]:
         assert isinstance(sample, dict)
         assert sample["ok"] is True
@@ -441,8 +453,8 @@ def test_each_instrument_and_valid_band_sample_passes_pre_metadata_criteria() ->
 
 
 def test_same_band_is_instrument_invariant_and_different_bands_scale() -> None:
-    first = derive_scope_event_distances_v1(25.0)
-    second = derive_scope_event_distances_v1(50.0)
+    first = _historical_scope_event_distances(25.0)
+    second = _historical_scope_event_distances(50.0)
     assert first.ok is True and second.ok is True
     assert first.up_distance == 25.0
     assert first.adverse_exit_distance == 10.0

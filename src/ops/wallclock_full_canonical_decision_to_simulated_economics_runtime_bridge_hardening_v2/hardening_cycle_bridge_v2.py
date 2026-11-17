@@ -1094,6 +1094,7 @@ def run_hardened_bridge_cycle_v2(
             ),
             data_integrity_trusted=True,
             adverse_exit_distance=cycle_adverse_exit_distance,
+            separate_scope_adverse_exit=False,
             profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             killstate_active=bool(state.killstate_active),
             killstate_trigger=str(state.killstate_trigger or ""),

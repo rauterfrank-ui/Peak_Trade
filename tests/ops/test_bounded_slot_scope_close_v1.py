@@ -974,8 +974,10 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
             venue_native_id=bounds[lane].venue_native_id,
             target_side=target_side,
             reference_mark=Decimal(str(mark)),
-            stop_price=Decimal(str(mark)) + Decimal(direction),
-            source_ref="fixture:independent-sizing-stop",
+            stop_price=(
+                Decimal(str(mark)) + direction * Decimal(str(snapshot["snapshot"]["scope"]["d_t"]))
+            ),
+            source_ref="fixture:sealed-scope-protective-stop",
         )
         double_play = CurrentProductiveDoublePlay29PInputV1(
             continuation=continuation,
@@ -1021,7 +1023,12 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                 assert 0 < quantity.resulting_notional <= min(Decimal(25), basis.net_basis_usdc)
             if lane == "LANE_1":
                 wrong_stop = replace(
-                    double_play, test_stop=replace(stop, stop_price=stop.reference_mark)
+                    double_play,
+                    test_stop=replace(
+                        stop,
+                        stop_price=stop.reference_mark
+                        + Decimal("0.4") * (stop.stop_price - stop.reference_mark),
+                    ),
                 )
                 denied = join_current_productive_enter_live_29p_before_venue_plan_v1(
                     double_play=wrong_stop, **sizing_args
@@ -1170,6 +1177,9 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
             return_epoch = fixture.utc(return_now + 1)
             return_id = "l10:" + returned.envelope.envelope_digest
             return_reference = Decimal(str(return_mark))
+            return_snapshot = read_occupied_scope_mark_snapshot_v1(root)
+            assert return_snapshot is not None
+            return_distance = Decimal(str(return_snapshot["snapshot"]["scope"]["d_t"]))
             return_args = dict(
                 double_play=CurrentProductiveDoublePlay29PInputV1(
                     continuation=next_continuation,
@@ -1180,8 +1190,8 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                         venue_native_id=bounds[lane].venue_native_id,
                         target_side=opening_side,
                         reference_mark=return_reference,
-                        stop_price=return_reference + 1,
-                        source_ref="fixture:independent-sizing-stop",
+                        stop_price=return_reference - direction * return_distance,
+                        source_ref="fixture:sealed-scope-protective-stop",
                     ),
                 ),
                 injected=fixture.ports(bounds[lane], return_epoch, return_id, account="acct-1"),
@@ -1374,7 +1384,7 @@ print(json.dumps({"order": result.envelope.to_runtime_json_v1(), "target": resul
                 altered = replace(reserve_request, test_stop=altered_stop)
                 assert prepare(**dict(plan_args, double_play=altered)) == (
                     occupied.CompositionStatusV1.DENY,
-                    ("DOUBLE_PLAY_PLAN_ORIGINAL_SIZING_SOURCE_CHANGED",),
+                    ("DOUBLE_PLAY_29P_BOUND_TEST_STOP_REQUIRED",),
                     None,
                 )
                 missing_limits = replace(sizing_args["injected"], venue_quantity_limits=None)
