@@ -770,8 +770,7 @@ def _t2_from_s7(
     host_budget_recovery: HostBudgetRecoveryContextV1 | None = None,
     offline_observation_clock_unix: float | None = None,
     authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
-    refresh_reversal_pretrade: Callable[[], CurrentProductiveEnterLive29PInjectedGetV1 | None]
-    | None = None,
+    occupied_mark_advance_reads: bool = False,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         bound_epoch = str(common_epoch_decision_epoch or "").strip()
@@ -959,21 +958,6 @@ def _t2_from_s7(
                             config_rows = (position_management_config_payload or {}).get("data", [])
                             if len(config_rows) != 1 or config_rows[0].get("posMode") != "net_mode":
                                 raise ValueError("DIRECT_REVERSAL_NET_MODE_REQUIRED")
-                            reversal_input = live_29p_injected
-                            if (
-                                authenticated_entry is not None
-                                and refresh_reversal_pretrade is not None
-                                and portfolio_budget_owner.has_live_slot_capital_allocation_v1()
-                            ):
-                                reversal_input = refresh_reversal_pretrade()
-                                if reversal_input is None:
-                                    raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
-                                metadata = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
-                                    venue_native_id=native_id,
-                                    bound_instrument_id=bound.instrument_id,
-                                    instruments_payload=reversal_input.instruments_payload,
-                                    observed_at_as_of=reversal_input.observed_at,
-                                )
                             reversal_epoch = (
                                 datetime.now(timezone.utc)
                                 if authenticated_entry is not None
@@ -992,15 +976,23 @@ def _t2_from_s7(
                                 epoch=reversal_epoch.isoformat(),
                                 recovery=host_budget_recovery,
                                 owner=portfolio_budget_owner,
-                                injected=reversal_input,
+                                injected=live_29p_injected,
                                 authenticated_entry=authenticated_entry,
                             )
                             if authenticated_entry is not None:
+                                acquisition_scope = (
+                                    host_budget_recovery.host.occupied_mark_pretrade_scope_v1(
+                                        reservation_id=authenticated_entry.proof.reservation_id,
+                                        lane_id=lane_id,
+                                    )
+                                    if occupied_mark_advance_reads
+                                    else str(s7_base["cycle_id_prefix"])
+                                )
                                 reversal_order = prepare_authenticated_net_reversal_order_v1(
                                     reversal,
                                     bound=bound,
-                                    injected=reversal_input,
-                                    cycle_id=str(s7_base["cycle_id_prefix"]),
+                                    injected=live_29p_injected,
+                                    cycle_id=acquisition_scope,
                                 )
                         except (
                             ValueError,
@@ -1501,8 +1493,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     offline_governed_attempt: object | None = None,
     occupied_scope_mark_lane_id: str | None = None,
     authenticated_entry: AuthenticatedEntryEpisodeRequestV1 | None = None,
-    refresh_reversal_pretrade: Callable[[], CurrentProductiveEnterLive29PInjectedGetV1 | None]
-    | None = None,
+    occupied_mark_advance_reads: bool = False,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -2047,7 +2038,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             common_epoch_decision_epoch=common_epoch_decision_epoch,
             host_budget_recovery=host_budget_recovery,
             authenticated_entry=authenticated_entry,
-            refresh_reversal_pretrade=refresh_reversal_pretrade,
+            occupied_mark_advance_reads=occupied_mark_advance_reads,
             position_management_only=not ingress.position.venue_flat,
             position_management_ingress=ingress,
             position_management_config_payload=(occupancy_payloads or {}).get("CONFIG"),

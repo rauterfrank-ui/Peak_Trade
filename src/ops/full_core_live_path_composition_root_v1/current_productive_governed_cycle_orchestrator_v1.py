@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping
 
 if TYPE_CHECKING:
+    from .current_productive_double_play_reversal_v1 import CurrentPostNetReversalContextV1
     from .current_productive_post_position_close_v1 import CurrentPostPositionCloseContextV1
 
 from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.atomic_io_v1 import (
@@ -198,6 +199,9 @@ class CurrentProductiveGovernedCycleResultV1:
     position_management_reversal: Any | None = None
     execution_plan_context: Any | None = None
     position_close_post_context: CurrentPostPositionCloseContextV1 | None = field(
+        default=None, repr=False, compare=False
+    )
+    net_reversal_post_context: CurrentPostNetReversalContextV1 | None = field(
         default=None, repr=False, compare=False
     )
 

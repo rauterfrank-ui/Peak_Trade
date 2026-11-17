@@ -751,6 +751,27 @@ class CurrentPostNetReversalContextV1:
         _inspect_original_reversal_hold_v1(host.owner, bound, reversal)
 
 
+def read_retained_net_reversal_post_context_v1(
+    *, lane_pair, recovery, authenticated_entry
+) -> CurrentPostNetReversalContextV1:
+    """Read the already sealed order and bind it to its original position proofs."""
+    slot, bound = lane_pair
+    proof = authenticated_entry.proof
+    scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
+    if (
+        recovery.host.bindings != {slot.lane_id: bound}
+        or scope is None
+        or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
+    ):
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
+    reversal, envelope = _read_retained_net_reversal_v1(lane_pair, scope)
+    if reversal.old_reservation_id != proof.reservation_id:
+        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_MISMATCH")
+    return CurrentPostNetReversalContextV1(
+        lane_pair, recovery, authenticated_entry, reversal, envelope
+    )
+
+
 def prepare_authenticated_net_reversal_post_v1(
     *,
     lane_pair,
@@ -823,26 +844,19 @@ def _prepare_authenticated_net_reversal_post_v1(
     ):
         raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
     prove_one_shot_join_standing_boundary_v1()
-    slot, bound = lane_pair
-    lane = slot.lane_id
     host = recovery.host
     proof = authenticated_entry.proof
     live_sha = resolve_and_assert_live_post_execution_baseline_v1(
         declared_baseline_origin_main_sha=baseline_origin_main_sha,
         integrity_backend=execution_integrity_backend,
     )
-    scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
-    if (
-        host.repository_sha != live_sha
-        or host.bindings != {lane: bound}
-        or scope is None
-        or scope["mark"].get("pending_reversal_episode_id") != proof.identity_digest
-    ):
+    if host.repository_sha != live_sha:
         raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_SCOPE_REQUIRED")
-    reversal, envelope = _read_retained_net_reversal_v1(lane_pair, scope)
-    if reversal.old_reservation_id != proof.reservation_id:
-        raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_ORDER_MISMATCH")
-    root = _net_reversal_submit_root_v1(host.root, proof.identity_digest)
+    context = read_retained_net_reversal_post_context_v1(
+        lane_pair=lane_pair, recovery=recovery, authenticated_entry=authenticated_entry
+    )
+    envelope = context.envelope
+    root = context.store_root_v1()
     assert_post_durable_store_root_isolation_v1(store_root=root)
     safety = resolve_current_post_safety_context_v1(envelope, stage="BEFORE_NET_REVERSAL_ADMISSION")
     if (
@@ -850,10 +864,6 @@ def _prepare_authenticated_net_reversal_post_v1(
         or Path(safety.state_path) != Path(host.execution_incident_state_path).resolve()
     ):
         raise ValueError("POST_AUTHORITY_REVERSAL_SAFETY_SOURCE_MISMATCH")
-
-    context = CurrentPostNetReversalContextV1(
-        lane_pair, recovery, authenticated_entry, reversal, envelope
-    )
 
     lock = AuthorizationLifecycleLockV1.for_evidence_root(
         evidence_root=root,

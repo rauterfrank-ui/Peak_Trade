@@ -16,13 +16,20 @@ import json
 import os
 import re
 import tempfile
+import time
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
+from queue import Empty, Queue
+from threading import Event
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence
 
 from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
     require_startup_portfolio_v1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
+    POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
 )
 
 if TYPE_CHECKING:
@@ -672,6 +679,110 @@ def resolve_live_29p_injected_for_productive_s5_cycle_v1(
         raise
 
 
+OCCUPIED_MARK_READ_REFRESH_SECONDS = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 2000
+
+
+class _OccupiedMarkReadsV1:
+    """Refresh the occupied account and 29P independently of market ticks."""
+
+    def __init__(self, *, host, bound, proof_root, transport, productivity_root):
+        self.host = host
+        self.bound = bound
+        self.proof_root = proof_root
+        self.transport = transport
+        self.productivity_root = productivity_root
+        self.executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="n1-occupied-read")
+        self.stopped = Event()
+        self.account_reads = Queue(maxsize=1)
+        self.pretrade_reads = Queue(maxsize=1)
+        self.started = False
+        self.account = None
+        self.pretrade = None
+
+    def _read_pretrade(self, scope):
+        return resolve_live_29p_injected_for_productive_s5_cycle_v1(
+            bound=self.bound,
+            fresh_pretrade_get_transport=self.transport,
+            productivity_root=self.productivity_root,
+            decision_epoch=datetime.now(timezone.utc).isoformat(),
+            pretrade_cycle_id=scope,
+        )
+
+    def _accept_account(self, admit):
+        from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+            AuthenticatedEntryEpisodeRequestV1,
+        )
+
+        context, proofs = admit()
+        if len(proofs) != 1:
+            raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_OWNED_ENTRY_UNPROVEN")
+        self.account = (
+            context,
+            AuthenticatedEntryEpisodeRequestV1(self.proof_root, next(iter(proofs.values()))),
+        )
+
+    def _start(self):
+        reservation_id, read = self.host.prepare_occupied_mark_account_read_v1(
+            {LANE_ID: self.bound}, proof_root=self.proof_root
+        )
+        scope = self.host.occupied_mark_pretrade_scope_v1(
+            reservation_id=reservation_id,
+            lane_id=LANE_ID,
+        )
+        self.executor.submit(self._refresh, self.account_reads, read)
+        self.executor.submit(self._refresh, self.pretrade_reads, lambda: self._read_pretrade(scope))
+        self.started = True
+
+    def _refresh(self, latest, read):
+        while not self.stopped.is_set():
+            started = time.monotonic()
+            completed = Future()
+            try:
+                completed.set_result(read())
+            except Exception as exc:
+                completed.set_exception(exc)
+            try:
+                latest.get_nowait()
+            except Empty:
+                pass
+            latest.put_nowait(completed)
+            remaining = OCCUPIED_MARK_READ_REFRESH_SECONDS - (time.monotonic() - started)
+            self.stopped.wait(max(remaining, 0))
+
+    def before_poll(self):
+        if not self.started:
+            self._start()
+        if self.account is None:
+            # Establish custody before acquiring the first mark of this session.
+            self._accept_account(self.account_reads.get().result())
+            self.pretrade = self.pretrade_reads.get().result()
+            return
+        try:
+            self._accept_account(self.account_reads.get_nowait().result())
+        except (Empty, TimeoutError, ConnectionError):
+            # The existing consumer still rejects the prior proof at its original expiry.
+            pass
+        try:
+            self.pretrade = self.pretrade_reads.get_nowait().result()
+        except (Empty, TimeoutError, ConnectionError):
+            pass
+
+    def close(self):
+        # In-flight work reads only. Joining it here would delay the prepared order.
+        self.stopped.set()
+        self.executor.shutdown(wait=False, cancel_futures=True)
+
+
+@dataclass(frozen=True)
+class _OccupiedMarkObservationSourceV1:
+    source: ContinuousObservationSourceV1
+    reads: _OccupiedMarkReadsV1
+
+    def poll(self) -> InjectedContinuousObservationV1 | None:
+        self.reads.before_poll()
+        return self.source.poll()
+
+
 def make_n1_occupied_lane_s5_runner_v1(
     *,
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
@@ -683,10 +794,9 @@ def make_n1_occupied_lane_s5_runner_v1(
     cap24_productivity_root: Path | None = None,
     portfolio_budget_host: PortfolioBudgetHostV1 | None = None,
     occupied_mark_proof_root: Path | None = None,
+    occupied_mark_reads: _OccupiedMarkReadsV1 | None = None,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
-
-    occupied_close_input = None
 
     def _runner(
         *,
@@ -708,7 +818,6 @@ def make_n1_occupied_lane_s5_runner_v1(
         rotation_exit_requests: Mapping[str, object] | None = None,
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
-        nonlocal occupied_close_input
         if execute_network or perform_get:
             raise PersistentNaturalEnterConvergenceError("NETWORK_FORBIDDEN_THIS_RUNNER")
         addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
@@ -771,35 +880,18 @@ def make_n1_occupied_lane_s5_runner_v1(
         _bound = composed_pairs[LANE_ID][1]
         decision_epoch = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         if occupied_mark_proof_root is not None:
-            from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
-                AuthenticatedEntryEpisodeRequestV1,
-            )
-
-            if portfolio_budget_host is None or len(composed_pairs) != 1:
+            if (
+                portfolio_budget_host is None
+                or len(composed_pairs) != 1
+                or occupied_mark_reads is None
+            ):
                 raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_N1_HOST_REQUIRED")
-            if occupied_close_input is None:
-                occupied_close_input = resolve_live_29p_injected_for_productive_s5_cycle_v1(
-                    bound=_bound,
-                    fresh_pretrade_get_transport=fresh_pretrade_get_transport,
-                    productivity_root=cap24_productivity_root,
-                    decision_epoch=decision_epoch,
-                    pretrade_cycle_id=f"{prefix}:{LANE_ID}",
-                )
+            occupied_close_input = occupied_mark_reads.pretrade
             if occupied_close_input is None:
                 raise PersistentNaturalEnterConvergenceError(
                     "OCCUPIED_MARK_CLOSE_METADATA_REQUIRED"
                 )
-            context, proofs = (
-                portfolio_budget_host.observe_authenticated_execution_reconciliation_v1(
-                    {LANE_ID: _bound},
-                    proof_root=occupied_mark_proof_root,
-                    deliver_authenticated_incidents=True,
-                )
-            )
-            if len(proofs) != 1:
-                raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_OWNED_ENTRY_UNPROVEN")
-            proof = next(iter(proofs.values()))
-            entry = AuthenticatedEntryEpisodeRequestV1(occupied_mark_proof_root, proof)
+            context, entry = occupied_mark_reads.account
             lane = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 lane_pairs,
                 **mk,
@@ -814,19 +906,27 @@ def make_n1_occupied_lane_s5_runner_v1(
                     if rotation_exit_requests is not None
                     else {}
                 ),
-                refresh_reversal_pretrade=lambda: (
-                    resolve_live_29p_injected_for_productive_s5_cycle_v1(
-                        bound=_bound,
-                        fresh_pretrade_get_transport=fresh_pretrade_get_transport,
-                        productivity_root=cap24_productivity_root,
-                        decision_epoch=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                        pretrade_cycle_id=f"{prefix}:{LANE_ID}",
-                    )
-                ),
+                occupied_mark_advance_reads=True,
             )[LANE_ID]
             result = lane.governed_cycle_result
             close = result.position_management_execution_handoff
             post_context = None
+            reversal_post_context = None
+            if (
+                result.position_management_reversal is not None
+                and result.reason_code == "DIRECT_REVERSAL_EXECUTION_ADMISSION_REQUIRED"
+            ):
+                from .current_productive_double_play_reversal_v1 import (
+                    read_retained_net_reversal_post_context_v1,
+                )
+
+                reversal_post_context = read_retained_net_reversal_post_context_v1(
+                    lane_pair=lane_pairs[LANE_ID], recovery=context, authenticated_entry=entry
+                )
+                if reversal_post_context.reversal != result.position_management_reversal:
+                    raise PersistentNaturalEnterConvergenceError(
+                        "OCCUPIED_MARK_REVERSAL_PLAN_CHANGED"
+                    )
             if close is not None and (
                 close.l10_close is not None or close.exceptional_close is not None
             ):
@@ -850,6 +950,7 @@ def make_n1_occupied_lane_s5_runner_v1(
                 result,
                 extra={**result.extra, "OCCUPIED_MARK_EVIDENCE_ROOT": lane.evidence_root},
                 position_close_post_context=post_context,
+                net_reversal_post_context=reversal_post_context,
             )
         host_recovery = None
         if portfolio_budget_host is not None:
@@ -1293,6 +1394,20 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             expected_cursor_floor=float(cursor_floor),
         )
 
+    occupied_mark_reads = None
+    if occupied_mark_proof_root is not None:
+        if portfolio_budget_host is None:
+            raise PersistentNaturalEnterConvergenceError("OCCUPIED_MARK_N1_HOST_REQUIRED")
+        occupied_mark_reads = _OccupiedMarkReadsV1(
+            host=portfolio_budget_host,
+            bound=bound,
+            proof_root=occupied_mark_proof_root,
+            transport=fresh_pretrade_get_transport,
+            productivity_root=cap24_productivity_root,
+        )
+        observation_source = _OccupiedMarkObservationSourceV1(
+            observation_source, occupied_mark_reads
+        )
     runner = make_n1_occupied_lane_s5_runner_v1(
         composed_pairs=pairs,
         g17_producers=g17_producers,
@@ -1303,6 +1418,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         cap24_productivity_root=cap24_productivity_root,
         portfolio_budget_host=portfolio_budget_host,
         occupied_mark_proof_root=occupied_mark_proof_root,
+        occupied_mark_reads=occupied_mark_reads,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -1326,6 +1442,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     except ContinuousRunRuntimeBindingError as exc:
         raise PersistentNaturalEnterConvergenceError(exc.reason_code, exc.detail) from exc
     finally:
+        if occupied_mark_reads is not None:
+            occupied_mark_reads.close()
         if synthetic_session_reset is not None:
             from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
                 reset_synthetic_enter_forensic_session_v1,

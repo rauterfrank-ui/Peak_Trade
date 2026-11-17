@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional
 
 if TYPE_CHECKING:
+    from urllib.request import OpenerDirector
+
+    from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
+        OsNativeStoreLookupBackendV1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
         CurrentProductiveEnterLive29PJoinResultV1,
     )
@@ -16,6 +21,15 @@ if TYPE_CHECKING:
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_position_management_quantity_handoff_v1 import (
         PositionManagementExecutionHandoffV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+        SharedPostOwnerAuthorizationV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        FinalOrderEnvelopeV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+        FullCoreTradeOrderPostResultV1,
     )
 
 from src.ops.execution_incident_safety_v1 import ExecutionIncidentHaltV1
@@ -137,7 +151,11 @@ def _record_supervisor_outcome_v1(run):
             "ok": result.ok,
             "automatic_restart_allowed": False,
         }
-        if terminal is not None:
+        if "net_reversal_post" in result.trace.extra:
+            extra["net_reversal_post"] = result.trace.extra["net_reversal_post"]
+            reason = result.trace.terminal_disposition
+            action = "Reconcile the original net order and retain its slot reservation."
+        elif terminal is not None:
             reason, action = terminal.reason_code, terminal.next_required_owner_decision
         elif "net_reversal_readback" in result.trace.extra:
             extra["net_reversal_readback"] = result.trace.extra["net_reversal_readback"]
@@ -230,6 +248,16 @@ def budget_owner_root_for_config_v1(config: StandingSupervisorConfigV1) -> Path:
 
 
 @dataclass(frozen=True)
+class OccupiedNetReversalPostPortV1:
+    """Caller-provisioned ready grant lookup and the existing OKX signing ports."""
+
+    ready_authorization: Callable[[FinalOrderEnvelopeV1], SharedPostOwnerAuthorizationV1 | None]
+    k1_backend: OsNativeStoreLookupBackendV1
+    opener_factory: Callable[[], OpenerDirector] | None = None
+    execution_integrity_backend: Any = None
+
+
+@dataclass(frozen=True)
 class StandingSupervisorRunResultV1:
     ok: bool
     run_id: str
@@ -241,6 +269,7 @@ class StandingSupervisorRunResultV1:
     resumed_position_management_close: PositionManagementExecutionHandoffV1 | None = None
     close_readback: AuthenticatedL10CloseReadbackV1 | None = None
     counter_order_sizing: CurrentProductiveEnterLive29PJoinResultV1 | None = None
+    net_reversal_post: FullCoreTradeOrderPostResultV1 | None = None
 
 
 def assert_supervisor_authority_boundary_v1() -> None:
@@ -356,11 +385,19 @@ def run_n1_standing_pre_external_supervisor_v1(
     cancel_requested: Callable[[], bool] | None = None,
     post_close_startup_recovery: Any | None = None,
     occupied_mark_proof_root: Path | None = None,
+    net_reversal_post_port: OccupiedNetReversalPostPortV1 | None = None,
 ) -> StandingSupervisorRunResultV1:
     """Single standing supervisor session: recovery → supply → pretrade → continuous PRE_EXTERNAL run."""
 
     root = repo_root or Path(__file__).resolve().parents[3]
     assert_supervisor_authority_boundary_v1()
+    if net_reversal_post_port is not None and (
+        type(net_reversal_post_port) is not OccupiedNetReversalPostPortV1
+        or occupied_mark_proof_root is None
+        or not callable(net_reversal_post_port.ready_authorization)
+        or net_reversal_post_port.k1_backend is None
+    ):
+        raise StandingSupervisorError("N1_NET_REVERSAL_EXPLICIT_OCCUPIED_POST_PORT_REQUIRED")
     if occupied_mark_proof_root is not None:
         if config.transport_scope != TRANSPORT_SCOPE_SCOPED_READONLY_GET:
             raise StandingSupervisorError("OCCUPIED_MARK_SCOPED_READONLY_HOST_REQUIRED")
@@ -396,6 +433,7 @@ def run_n1_standing_pre_external_supervisor_v1(
 
     owner_go_consumed = False
     policy_result: PolicyGovernedContinuousRunResultV1 | None = None
+    net_reversal_post = None
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
         PortfolioBudgetHostV1,
         StandingStartupAccountObservationPortV1,
@@ -745,6 +783,83 @@ def run_n1_standing_pre_external_supervisor_v1(
         owner_go_consumed = (
             config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json"
         ).is_file()
+        orch = policy_result.orchestrator_result
+        if orch.post_count or orch.permit_created or orch.external_effect_count:
+            raise StandingSupervisorError("POST_COUNT_NONZERO", str(orch.post_count))
+        if policy_result.post_allowed or policy_result.external_effect_authorized:
+            raise StandingSupervisorError("POLICY_RESULT_EXTERNAL_EFFECT_LEAK")
+        trace.governed_cycle_count = int(orch.cycles_completed)
+        trace.accepted_c1_count = int(orch.accepted_c1_count)
+        if occupied_mark_proof_root is not None:
+            mark_count = sum(
+                record.mark_venue_event_time is not None for record in orch.cycle_records
+            )
+            trace.extra["occupied_mark_cycle_count"] = mark_count
+            if trace.accepted_c1_count != 0 or mark_count != trace.governed_cycle_count:
+                raise StandingSupervisorError("OCCUPIED_MARK_CYCLE_COUNT_MISMATCH")
+        elif trace.accepted_c1_count != trace.governed_cycle_count:
+            raise StandingSupervisorError(
+                "C1_CYCLE_COUNT_MISMATCH",
+                f"{trace.accepted_c1_count}!={trace.governed_cycle_count}",
+            )
+        if (
+            net_reversal_post_port is not None
+            and owner_go_consumed
+            and orch.disposition == DISPOSITION_FAIL_CLOSED
+            and orch.reason_code == "DIRECT_REVERSAL_EXECUTION_ADMISSION_REQUIRED"
+            and orch.cycle_records
+            and (cancel_requested is None or not cancel_requested())
+        ):
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (
+                EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+                CurrentPostNetReversalContextV1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+                execute_authenticated_net_reversal_post_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_shared_post_owner_authority_v1 import (
+                PostOwnerGrantV1,
+                SharedPostOwnerAuthorizationV1,
+            )
+
+            terminal = orch.cycle_records[-1]
+            post = terminal.net_reversal_post_context
+            if (
+                type(post) is not CurrentPostNetReversalContextV1
+                or post.recovery.host is not budget_host
+                or budget_host.repository_sha != origin_main_sha
+                or post.lane_pair[1] != bound
+                or post.reversal != terminal.position_management_reversal
+            ):
+                raise StandingSupervisorError("N1_NET_REVERSAL_ORIGINAL_POST_CONTEXT_REQUIRED")
+            grant = net_reversal_post_port.ready_authorization(post.envelope)
+            if grant is not None and (cancel_requested is None or not cancel_requested()):
+                if (
+                    type(grant) is not SharedPostOwnerAuthorizationV1
+                    or type(grant.grant) is not PostOwnerGrantV1
+                    or grant.grant.envelope_digest != post.envelope.envelope_digest
+                ):
+                    raise StandingSupervisorError("N1_NET_REVERSAL_POST_GRANT_ENVELOPE_MISMATCH")
+                net_reversal_post = execute_authenticated_net_reversal_post_v1(
+                    lane_pair=post.lane_pair,
+                    recovery=post.recovery,
+                    authenticated_entry=post.authenticated_entry,
+                    authorization=grant,
+                    baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                    perform_real_venue_post=True,
+                    k1_backend=net_reversal_post_port.k1_backend,
+                    opener_factory=net_reversal_post_port.opener_factory,
+                    execution_integrity_backend=net_reversal_post_port.execution_integrity_backend,
+                )
+                trace.extra["net_reversal_post"] = {
+                    "envelope_digest": post.envelope.envelope_digest,
+                    "slot_id": post.reversal.episode.lane_id,
+                    "reservation_id": post.reversal.old_reservation_id,
+                    "outcome_phase": net_reversal_post.outcome_phase,
+                    "unknown_outcome": net_reversal_post.unknown_outcome,
+                }
     except (PersistentNaturalEnterConvergenceError, ExecutionIncidentHaltV1) as exc:
         raise StandingSupervisorError(exc.reason_code, exc.detail) from exc
     finally:
@@ -767,8 +882,6 @@ def run_n1_standing_pre_external_supervisor_v1(
             budget_host.close()
 
     orch = policy_result.orchestrator_result
-    trace.governed_cycle_count = int(orch.cycles_completed)
-    trace.accepted_c1_count = int(orch.accepted_c1_count)
     trace.terminal_disposition = str(orch.disposition)
     trace.post_count = int(orch.post_count)
     trace.continuous_admission_granted = all(
@@ -777,27 +890,16 @@ def run_n1_standing_pre_external_supervisor_v1(
     if policy_result.iteration_evidence:
         trace.continuous_admission_reasons = policy_result.iteration_evidence[0].reason_codes
 
-    if trace.post_count != 0:
-        raise StandingSupervisorError("POST_COUNT_NONZERO", str(trace.post_count))
-    if policy_result.post_allowed or policy_result.external_effect_authorized:
-        raise StandingSupervisorError("POLICY_RESULT_EXTERNAL_EFFECT_LEAK")
-
-    if occupied_mark_proof_root is not None:
-        mark_count = sum(record.mark_venue_event_time is not None for record in orch.cycle_records)
-        trace.extra["occupied_mark_cycle_count"] = mark_count
-        if trace.accepted_c1_count != 0 or mark_count != trace.governed_cycle_count:
-            raise StandingSupervisorError("OCCUPIED_MARK_CYCLE_COUNT_MISMATCH")
-    elif trace.accepted_c1_count != trace.governed_cycle_count:
-        raise StandingSupervisorError(
-            "C1_CYCLE_COUNT_MISMATCH",
-            f"{trace.accepted_c1_count}!={trace.governed_cycle_count}",
-        )
+    if net_reversal_post is not None:
+        trace.post_count = int(net_reversal_post.post_attempted)
+        trace.terminal_disposition = "NET_REVERSAL_RECONCILIATION_REQUIRED"
 
     ok = (
         trace.observation_recovery_completed
         and trace.public_supply_refreshed
         and trace.pretrade_truth_refreshed
         and owner_go_consumed
+        and net_reversal_post is None
         and trace.post_count == 0
         and trace.terminal_disposition
         not in {DISPOSITION_FAIL_CLOSED, DISPOSITION_STALL, DISPOSITION_CANCELLED}
@@ -810,10 +912,12 @@ def run_n1_standing_pre_external_supervisor_v1(
         policy_result=policy_result,
         owner_go_consumed=owner_go_consumed,
         authority_invariants_ok=auth_proof.ok,
+        net_reversal_post=net_reversal_post,
     )
 
 
 __all__ = [
+    "OccupiedNetReversalPostPortV1",
     "StandingSupervisorConfigV1",
     "StandingSupervisorRunResultV1",
     "assert_supervisor_authority_boundary_v1",

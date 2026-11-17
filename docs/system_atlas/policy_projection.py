@@ -360,6 +360,30 @@ LIVE_INITIAL_SLOT_BUDGET_DELTAS = {
 }
 
 
+OCCUPIED_N1_RUNTIME_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "d2bec19b8d496e26885dad5a40b0888572bbba91e8bda80f25880dd8543b34a7",
+        "2d49dacfe1c5f5f988a0a702a03b6754c65981fec9dfa93ac774ac5e42292cf6",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": (
+        "93edf5489c9ba630d28754901eb7b71b77c753153ffe55b2004565a04fe635f1",
+        "2b62cc9e782f113c731d559ab270b685114e94b57cb87a045afef5b2c0647906",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": (
+        "565dd0427cf333336d7ccd18384320d496bfbba57c61b2d8fd39de8a0eabc8a0",
+        "7acbca9c53e83fdcb44a574618e7010ee78cd4daebd2716ffeafd371ead864da",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py": (
+        "0625a210cd524e293c99f38bb9a4f5c1cf60da9406710249198ff71545bbbb1a",
+        "a01e1276e2c5da3856c0d4203253b14dace8186d7d1f0cd2a9b2228d00cc0735",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": (
+        "6e7f41ab30d61b58e6a0916a2c032840319db9d5cebfe3b2f1d83dfd47dca8ab",
+        "02d1773c0a39a9f71a83a71ea82623e1a790092931af49d091bc330243633267",
+    ),
+}
+
+
 # Paket 3, Slice 1. Only these exact Safety-owner changes are admitted.
 # The frozen policy sources, inventory and all other policy checks remain bound.
 OPT_GOVERNANCE_HANDOFF_RETIREMENT_DELTAS = {
@@ -526,6 +550,7 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
                 expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
             expected = _live_initial_slot_budget_successor(root, expected)
+            expected = _occupied_n1_runtime_successor(root, expected)
     actual = {}
     for path in expected:
         source = root / path
@@ -558,6 +583,16 @@ def _live_initial_slot_budget_successor(root, parent):
     return parent
 
 
+def _occupied_n1_runtime_successor(root, parent):
+    if any(
+        hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+        for path, (_, after) in OCCUPIED_N1_RUNTIME_DELTAS.items()
+        if path in parent
+    ):
+        return _exact_double_play_successor(parent, OCCUPIED_N1_RUNTIME_DELTAS)
+    return parent
+
+
 def _double_play_bundle_successor(root, parent):
     booked = (root / NET_REVERSAL_GET_RECONCILIATION_SOURCE).is_file()
     expected = _exact_double_play_successor(parent, DOUBLE_PLAY_POLICY_DELTAS)
@@ -582,6 +617,7 @@ def _double_play_bundle_successor(root, parent):
                 expected, AUTHENTICATED_NET_REVERSAL_BOOKING_DELTAS
             )
             expected = _live_initial_slot_budget_successor(root, expected)
+            expected = _occupied_n1_runtime_successor(root, expected)
     return expected
 
 

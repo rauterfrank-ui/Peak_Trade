@@ -34,7 +34,12 @@
     {
       "path": ".github/workflows/lint_gate.yml",
       "before_sha256": "5c6a9aba55c92e32b3257f89fd9b42dc5a414e459befcd08436050cd9d162323",
-      "sha256": "246d55c1c7a7c3cf7f24763c3c22ffff314d582cf320efd289c003a5936d0d29"
+      "sha256": "5c6da8254fd6c390631f2b6b89fb73e3b9916e2426a2d03f2968b79ed082fdb7"
+    },
+    {
+      "path": ".github/workflows/map_currency_gate_v1.yml",
+      "before_sha256": "2ef0d44625fc3b3e0d44b1c75b058648b80f9bdc94603d0bc5fcc586aed65185",
+      "sha256": "57bc93ef4040077923919901705314827ce3a6da39d5a6ca1413cdfc00400bbd"
     },
     {
       "path": ".github/workflows/market_outlook_automation.yml",
@@ -1212,6 +1217,16 @@
       "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
     },
     {
+      "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.json",
+      "before_sha256": null,
+      "sha256": "b398cf0848a5229e7fbc2838e7aa3b677c6a89aff5e5272949b8243204fcdca1"
+    },
+    {
+      "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.md",
+      "before_sha256": null,
+      "sha256": "50a17d3aa4b5eb89c03b367f6a5f615395f9237239b0d0176db72c1606927c56"
+    },
+    {
       "path": "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
       "before_sha256": "5d18933aab79e0cb72bfbff8a665a1c9471f9e300da4776554d722e7713b9b09",
       "sha256": "f0ce1a90638f3cee6e05d35353ed1918ef579925379e0792f1885e8fe30b2502"
@@ -1314,7 +1329,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "126378eb84522d34ef0aee5d6513d8092f9b46ea92e1e199fdf8a6bde0ce5be4"
+      "sha256": "820364e31d6cb01c91a30efc082529e304cd37b13dfb61941b7df9906c3b3aa8"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1490,6 +1505,11 @@
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
+    },
+    {
+      "path": "scripts/ops/check_n1_double_play_runtime_seal_v1.py",
+      "before_sha256": null,
+      "sha256": "32c81270b0a20bc6b38ccb0792bcec5e49b2ee1d6873da61e4a27c8ec092344d"
     },
     {
       "path": "scripts/ops/ci_test_selection_v1.py",
@@ -2229,7 +2249,7 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
       "before_sha256": "c9f741ae3db059fce4c60ce2da808b76e0212b0b4fef3d207b84cf2440fe3998",
-      "sha256": "d2bec19b8d496e26885dad5a40b0888572bbba91e8bda80f25880dd8543b34a7"
+      "sha256": "2d49dacfe1c5f5f988a0a702a03b6754c65981fec9dfa93ac774ac5e42292cf6"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
@@ -2529,7 +2549,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py",
       "before_sha256": null,
-      "sha256": "93edf5489c9ba630d28754901eb7b71b77c753153ffe55b2004565a04fe635f1"
+      "sha256": "2b62cc9e782f113c731d559ab270b685114e94b57cb87a045afef5b2c0647906"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
@@ -2549,12 +2569,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
       "before_sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
-      "sha256": "80e4ad754427d291cace77e7e176422568200d0080770bf3ba27f422dcf41970"
+      "sha256": "c267d76c2ecc86e0cb23e9d7e0e49c7668bc8206d255b62830e68c0012331f92"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
       "before_sha256": "a90cfcf61eb53c9634dd653d630f40d8ce67b1bad248f96b607b058c66fadd63",
-      "sha256": "565dd0427cf333336d7ccd18384320d496bfbba57c61b2d8fd39de8a0eabc8a0"
+      "sha256": "7acbca9c53e83fdcb44a574618e7010ee78cd4daebd2716ffeafd371ead864da"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
@@ -2604,7 +2624,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
       "before_sha256": "2972ba9c7e1b61af31a1075a08e755d4665126e46e8585cdf8157efa0d6151ed",
-      "sha256": "0625a210cd524e293c99f38bb9a4f5c1cf60da9406710249198ff71545bbbb1a"
+      "sha256": "a01e1276e2c5da3856c0d4203253b14dace8186d7d1f0cd2a9b2228d00cc0735"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_position_management_quantity_handoff_v1.py",
@@ -2722,6 +2742,11 @@
       "sha256": "dfc6c22e57e1b8f33302ab50c1e8967b961d5426ef566cd1f0882867a72ccfad"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py",
+      "before_sha256": "ae25ca68d8846ef97524e28b4397357076ebb71d689eaa88f173b507e7776b20",
+      "sha256": "3bff082a60d2fc2302b4c581572f1ef081b8d9c7030f201d8c9adc2e4d13ae61"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/pretrade_acquisition_v1.py",
       "before_sha256": null,
       "sha256": "8db00cfb9c9932f2495b28ee6fc2ce136b8c4319fa2f063794737e716728afe9"
@@ -2734,7 +2759,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
       "before_sha256": "cbe5312a819bdba381e3aef21049291ca4d924ec0f9df2474cc777f8b7bbd75f",
-      "sha256": "4d4fcbd96c862727e52f34e02dad303dccf4943976d11962d92e9fb44f58e5f8"
+      "sha256": "2783204b39c31b79588567dce11b947411c7398d02444623180f17c24760a910"
     },
     {
       "path": "src/ops/gates/risk_gate.py",
@@ -2969,12 +2994,12 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/startup_factory_v1.py",
       "before_sha256": null,
-      "sha256": "2c8388483b4486c671be90a501d74c566fb334b1b632a30afa1de21abb66e9a1"
+      "sha256": "be05494c22b6c271b522d8bb85c0383ee6417098bbbb1e82f33649684c3eecc9"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py",
       "before_sha256": "8d2d948c2aa772a952f446c8bb707223f9b1c4e9dd13037290516a89573f10bb",
-      "sha256": "2742cf2e2814f59a8933576d5888cfdf2c4029a8e68e8a4b16d92a1e96da8192"
+      "sha256": "43468165e58ad7e0ea2f56be1f08d52716b3afddb48462055345f910f460539f"
     },
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py",
@@ -2984,7 +3009,7 @@
     {
       "path": "src/ops/n1_standing_pre_external_runtime_supervisor_v1/unattended_v1.py",
       "before_sha256": "810da1d3ed28b604f141206fdc412ccdf2e15547e3976ae90f4bccc4cde17c18",
-      "sha256": "2cee3016ae2fa9d1c29642c4a541bc4b83572ef3c08ec4e920d9530409393b56"
+      "sha256": "9be79aac6ba47231248512d9a3c70893b212c6a6921e229af579575b08d85003"
     },
     {
       "path": "src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py",
@@ -3149,7 +3174,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
       "before_sha256": "62d593d554667a7d235af749726086c799340b0c4552d8f3c87248f10d0e5ea5",
-      "sha256": "6e7f41ab30d61b58e6a0916a2c032840319db9d5cebfe3b2f1d83dfd47dca8ab"
+      "sha256": "02d1773c0a39a9f71a83a71ea82623e1a790092931af49d091bc330243633267"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py",
@@ -3782,6 +3807,11 @@
       "sha256": "b60f52305ae110ee46f2558b08ff50d913ccc38ff9a4e2aa4277380522838973"
     },
     {
+      "path": "tests/governance/test_n1_double_play_runtime_seal_v1.py",
+      "before_sha256": null,
+      "sha256": "987138dcf68c9e1e5c7f5e1ee519f3af50862ca3b0d5a481c1512a633afb5782"
+    },
+    {
       "path": "tests/governance/test_optimization_proposal_governance_ingress_v1.py",
       "before_sha256": "b380223f461ea14e5284b9ca1d6a10bb06d1924ca49fe78e136e406a217bb3e9",
       "sha256": "556288204aed4df258c6eb82ed8c4942328cc75f5d61f5041f9f2f9af226869c"
@@ -4019,7 +4049,7 @@
     {
       "path": "tests/ops/test_authenticated_net_reversal_booking_v1.py",
       "before_sha256": null,
-      "sha256": "949b87ec87410a40640a07ff19241d72e19910acafb08dacd60c3441230fa64f"
+      "sha256": "78d8b25005cd0685f1f16b125b19a9c42f68791ca543c86c163ca0073ce2c4cf"
     },
     {
       "path": "tests/ops/test_aws_export_smoke_contract.py",
@@ -4419,7 +4449,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "1aa8242fec9948d00458ef4e43777c923db1715761da3d4ae51b84a693d7d278"
+      "sha256": "fc0d8ec29b2edbe1fdcb8b4888dbd002a7f5bc771625ee5d673e80ec8b58d875"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
@@ -4765,6 +4795,11 @@
       "path": "tests/ops/test_pending_exact_decision_context_v1.py",
       "before_sha256": "6848735f7e35a1521b8bc437d5234b7b6ef78872310fc0850a653f39114ccf6d",
       "sha256": "0845b77d695a74eee560181d54d91dbf48f73eb611e504df4b7cb297b7aed7bb"
+    },
+    {
+      "path": "tests/ops/test_pending_outcome_mark_clock_v1.py",
+      "before_sha256": "83e909bffbaad8e683bf764c2306f21d4d8c8b4abd8b97ab2671e7321b5a8275",
+      "sha256": "76f6a43541e7592c98e6b13c9222566fb72ef15f72e8c2aa35e3c577fa8dee14"
     },
     {
       "path": "tests/ops/test_pending_outcome_receive_time_replay_v1.py",
