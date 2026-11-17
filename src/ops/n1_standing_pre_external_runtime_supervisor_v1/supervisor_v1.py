@@ -446,11 +446,19 @@ def run_n1_standing_pre_external_supervisor_v1(
                 lane_state_root=config.lane_state_root, bound=bound
             )["LANE_1"]
             net_reversal = recover_submitted_net_reversal_v1(
-                lane_pair=lane_pair, get_budget_host=get_budget_host
+                lane_pair=lane_pair,
+                get_budget_host=get_budget_host,
+                proof_root=occupied_mark_proof_root,
             )
             if net_reversal is not None:
+                trace.extra["net_reversal_readback"] = {
+                    key: value for key, value in asdict(net_reversal).items() if value is not None
+                }
+            recovered_reversal = (
+                net_reversal is not None and net_reversal.booking_digest is not None
+            )
+            if net_reversal is not None and not (recovered_reversal and occupied_mark_proof_root):
                 trace.terminal_disposition = DISPOSITION_FAIL_CLOSED
-                trace.extra["net_reversal_readback"] = asdict(net_reversal)
                 return StandingSupervisorRunResultV1(
                     ok=False,
                     run_id=run_id,
@@ -548,7 +556,13 @@ def run_n1_standing_pre_external_supervisor_v1(
 
             def reconcile_startup_observation(observation):
                 get_budget_host().reconcile_standing_startup_observation_v1(
-                    {"LANE_1": bound}, observation
+                    {"LANE_1": bound},
+                    observation,
+                    **(
+                        {"net_reversal_proof_root": occupied_mark_proof_root}
+                        if recovered_reversal
+                        else {}
+                    ),
                 )
 
             startup = acquire_account_bound_n1_startup_v1(

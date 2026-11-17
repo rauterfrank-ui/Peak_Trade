@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 import pytest
 
 from tests.ops._current_productive_pre_external_shared_process_state_v1 import (
@@ -10,6 +13,14 @@ from tests.ops._current_productive_pre_external_shared_process_state_v1 import (
 from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
     establish_current_productive_pre_external_test_process_isolation_v1,
 )
+
+
+@pytest.fixture(scope="module")
+def legacy_repo_root() -> Path:
+    path = os.environ.get("PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
+    if not path:
+        pytest.skip("Historical YAML Atlas tests require PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
+    return Path(path).resolve()
 
 
 @pytest.fixture(autouse=True)

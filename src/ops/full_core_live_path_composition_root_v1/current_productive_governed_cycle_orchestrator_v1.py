@@ -1109,11 +1109,15 @@ def run_current_productive_governed_cycle_v1(
             disposition = DISPOSITION_PRE_EXTERNAL_EFFECT
             terminal_class = "POSITION_MANAGEMENT_PRE_EXTERNAL_EFFECT"
             blocker_class = "PRE_EXTERNAL_EFFECT"
-            first_blocker = POST_NEXT_OWNER_GO
+            if close_execution_handoff.exceptional_close is not None:
+                first_blocker = "ACTUAL_EXCEPTIONAL_CLOSE_NOT_ADMITTED"
+                next_owner = (
+                    "Retain the confirmed position, original hold and exceptional close plan."
+                )
+            else:
+                first_blocker = POST_NEXT_OWNER_GO
+                next_owner = "Use the existing envelope-bound send admission; no send authority from this cycle."
             reason_code = first_blocker
-            next_owner = (
-                "Use the existing envelope-bound send admission; no send authority from this cycle."
-            )
         elif reversal is not None:
             disposition = DISPOSITION_FAIL_CLOSED
             terminal_class = "POSITION_MANAGEMENT_REVERSAL_ASSESSED"

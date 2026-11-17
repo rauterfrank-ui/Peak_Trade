@@ -328,6 +328,27 @@ class HostBudgetRecoveryContextV1:
             <= POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
         ):
             raise ValueError("HOST_AUTHENTICATED_ENTRY_OBSERVATION_UNPROVEN")
+        result = self.execution_reconciliation.get(proof.reservation_id)
+        if result and "net_reversal_booking_digest" in result:
+            source = self.authenticated_reconciliation
+            booking, _ = host.owner.read_current_net_reversal_obligation_v1(
+                proof.reservation_id, revision_ref=proof.revision_ref
+            )
+            link = host.owner.execution_links_v1(active_only=True).get(proof.reservation_id)
+            if (
+                source is None
+                or source.evidence.get(proof.reservation_id) != proof
+                or source.transport is not host.reconciliation_transport
+                or link is None
+                or booking["slot_id"] != lane_id
+                or booking["booking_digest"] != result["net_reversal_booking_digest"]
+                or booking["envelope_digest"] != proof.identity_digest
+                or result["portfolio_digest"] != self.observed.digest()
+                or result["snapshot_digest"] != proof.snapshot_digest
+                or result["reservation_released"] is not False
+            ):
+                raise ValueError("NET_REVERSAL_CURRENT_POSITION_RECEIPT_UNPROVEN")
+            return {**link, "reconciliation": result}
         _, _, link = read_persisted_execution_reconciliation_v1(
             host.owner, proof.reservation_id, revision_ref=proof.revision_ref
         )
@@ -352,8 +373,23 @@ class HostBudgetRecoveryContextV1:
             PositionEpisodeScopeV1,
         )
 
-        self.inspect_current_authenticated_entry_v1(lane_id=lane_id, proof=proof)
+        link = self.inspect_current_authenticated_entry_v1(lane_id=lane_id, proof=proof)
         host = self.host
+        if "net_reversal_booking_digest" in link["reconciliation"]:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_net_reversal_reconciliation_v1 import (
+                open_booked_net_position_episode_v1,
+            )
+
+            booking, _ = host.owner.read_current_net_reversal_obligation_v1(
+                proof.reservation_id, revision_ref=proof.revision_ref
+            )
+            return open_booked_net_position_episode_v1(
+                host=host,
+                bound=host.bindings[lane_id],
+                booking=booking,
+                config_digest=config_digest,
+                recover_only=recover_only,
+            )
         state_root = host.root / "position-episodes" / proof.identity_digest
         args = dict(
             bound=host.bindings[lane_id],
@@ -581,18 +617,40 @@ class PortfolioBudgetHostV1:
         )
         return inputs
 
-    def reconcile_standing_startup_observation_v1(self, bindings, observation):
+    def reconcile_standing_startup_observation_v1(
+        self, bindings, observation, *, net_reversal_proof_root=None
+    ):
         """Use the completed startup sample in the same owner used later by S5."""
         if (
             self.closed
-            or self.owner is not None
+            or (
+                self.owner is not None
+                and not (net_reversal_proof_root is not None and self.bindings == bindings)
+            )
             or self.durable_mode != "recover"
             or self.execution_incident_state_path is None
             or type(observation) is not HostAccountObservationV1
             or observation.account != self.expected_account_identity
         ):
             raise ValueError("HOST_EXECUTION_STANDING_STARTUP_OBSERVATION_UNPROVEN")
-        self._bind_observation_v1(bindings, observation)
+        capture = None
+        if net_reversal_proof_root is not None:
+            from src.ops.execution_reconciliation_get_provenance_v1 import (
+                AuthenticatedReconciliationGetV1,
+            )
+
+            capture = AuthenticatedReconciliationGetV1(
+                self.reconciliation_transport,
+                account=self.expected_account_identity,
+                clock=self.clock,
+                proof_root=net_reversal_proof_root,
+            )
+        self._bind_observation_v1(
+            bindings,
+            observation,
+            capture=capture,
+            deliver_authenticated_incidents=capture is not None,
+        )
 
     def observe_execution_reconciliation_evidence_v1(self, bindings):
         """Expose original snapshots only for the explicit isolated SHADOW probe."""
@@ -1164,6 +1222,23 @@ class PortfolioBudgetHostV1:
             raise ValueError("HOST_EXECUTION_READ_PORT_ACCOUNT_UNPROVEN")
         result = {}
         for rid, identity, options in requests:
+            booked = self.owner.read_current_net_reversal_obligation_v1(rid)
+            if booked is not None:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_net_reversal_reconciliation_v1 import (
+                    observe_booked_net_position_v1,
+                )
+
+                booking, revision_ref = booked
+                result[rid] = observe_booked_net_position_v1(
+                    source=capture,
+                    booking=booking,
+                    observed=context.observed,
+                    occupancy_payloads=context.occupancy_payloads,
+                    pending_orders=context.pending_orders,
+                    session_id=self.session_id,
+                    revision_ref=revision_ref,
+                )
+                continue
             acquired = datetime.fromtimestamp(self.clock(), timezone.utc)
             snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
                 identity=identity,

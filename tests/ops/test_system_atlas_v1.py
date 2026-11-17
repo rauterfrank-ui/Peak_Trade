@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import copy
-import os
 import re
 from pathlib import Path
 from runpy import run_path
@@ -28,14 +27,6 @@ from scripts.ops.system_atlas_v1.validate_v1 import AtlasValidationError, valida
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ATLAS_ROOT = REPO_ROOT / "docs" / "system_atlas"
-
-
-@pytest.fixture(scope="module")
-def legacy_repo_root() -> Path:
-    path = os.environ.get("PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
-    if not path:
-        pytest.skip("Historical YAML Atlas tests require PEAKTRADE_LEGACY_ATLAS_REPO_ROOT")
-    return Path(path).resolve()
 
 
 @pytest.fixture(scope="module")
@@ -72,6 +63,20 @@ def test_atlas_loads_and_validates() -> None:
     assert result["result"] == "PASS"
     assert result["catalog_scope"] == "FROZEN_SOURCE_SNAPSHOT"
     assert result["runtime_authorization_effect"] == "NONE"
+
+
+def test_current_atlas_impact_rejects_stale_generated_view(monkeypatch) -> None:
+    impact = run_path(str(ATLAS_ROOT / "current_atlas.py"))["main"]
+    generated = ATLAS_ROOT / "generated" / "SYSTEM_ATLAS.md"
+    read_text = Path.read_text
+
+    def read_stale_view(path, *args, **kwargs):
+        text = read_text(path, *args, **kwargs)
+        return text + "\n" if path == generated else text
+
+    monkeypatch.setattr(Path, "read_text", read_stale_view)
+    with pytest.raises(AssertionError, match=r"GENERATED_DRIFT.*SYSTEM_ATLAS\.md"):
+        impact(["impact", "--repo-root", str(REPO_ROOT)])
 
 
 def test_legacy_yaml_atlas_loads_and_validates(atlas: dict) -> None:

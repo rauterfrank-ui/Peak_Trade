@@ -1041,6 +1041,7 @@ def _t2_from_s7(
                         )
                         if status is CompositionStatusV1.PASS and plan is not None:
                             l10_close = None
+                            exceptional_close = None
                             policy = replay.intermediate.entry_exit_decision
                             if (
                                 s7_base.get("occupied_scope_mark")
@@ -1062,18 +1063,38 @@ def _t2_from_s7(
                                     "l10_scope_switch_exit:" + l10_close.scope_seal_id
                                 ) not in policy.reason_codes:
                                     _fail(FAILURE_AUTHORITY, "occupied_scope_close_seal_mismatch")
+                            elif authenticated_entry is not None:
+                                from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
+                                    bind_exceptional_close_after_net_reversal_v1,
+                                )
+
+                                exceptional_close = bind_exceptional_close_after_net_reversal_v1(
+                                    episode=s7_base["position_episode_bindings"][lane_id],
+                                    policy=policy,
+                                    bound=bound,
+                                    recovery=host_budget_recovery,
+                                    entry=authenticated_entry,
+                                )
+                                if exceptional_close is not None:
+                                    occupied_scope_close_binding = {
+                                        "exceptional_close": asdict(exceptional_close)
+                                    }
+                            close_binding = l10_close or exceptional_close
                             envelope = bind_final_order_envelope_from_venue_plan_v1(
                                 plan,
                                 admission_ref=(
-                                    l10_close.admission_ref_v1()
-                                    if l10_close is not None
+                                    close_binding.admission_ref_v1()
+                                    if close_binding is not None
                                     else f"{s7_base['cycle_id_prefix']}:position-management"
                                 ),
                                 provenance_ref=close_intent.semantic_digest,
                                 creation_epoch=epoch,
                             )
                             close_execution_handoff = PositionManagementExecutionHandoffV1(
-                                source=close_handoff, envelope=envelope, l10_close=l10_close
+                                source=close_handoff,
+                                envelope=envelope,
+                                l10_close=l10_close,
+                                exceptional_close=exceptional_close,
                             )
                 elif not reversal_requested:
                     quantity_handoff = bind_position_management_quantity_handoff_v1(**quantity_args)
@@ -1505,7 +1526,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         or (
             authenticated_entry is None and (not bounded_slots or position_episode_bindings is None)
         )
-        or rotation_exit_requests is not None
+        or (rotation_exit_requests is not None and authenticated_entry is None)
     ):
         _fail(FAILURE_AUTHORITY, "occupied_scope_mark_requires_bound_offline_lane")
     authenticated_admission = None
@@ -1585,6 +1606,13 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 proof=authenticated_entry.proof,
                 config_digest=_occupied_scope_exit_config_digest_v1(),
             )
+            booked = host_budget_recovery.execution_reconciliation[
+                authenticated_entry.proof.reservation_id
+            ].get("net_reversal_booking_digest")
+            if rotation_exit_requests is not None and (
+                not booked or set(rotation_exit_requests) - {occupied_scope_mark_lane_id}
+            ):
+                _fail(FAILURE_AUTHORITY, "AUTHENTICATED_ROTATION_REQUIRES_BOOKED_NET_POSITION")
             gate = run_productive_reconciliation_startup_gate_v1(
                 state_root=host.root / "reconciliation",
                 observed=observed_portfolio,
@@ -1592,6 +1620,16 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 repository_sha=host.repository_sha,
                 now_unix=host.clock(),
                 require_persisted_present=True,
+                **(
+                    {
+                        "authenticated_net_reversal": (
+                            host_budget_recovery,
+                            authenticated_entry.proof,
+                        )
+                    }
+                    if booked
+                    else {}
+                ),
             )
             authenticated_admission = (
                 build_productive_master_v2_reconciliation_admission_from_gate_v1(

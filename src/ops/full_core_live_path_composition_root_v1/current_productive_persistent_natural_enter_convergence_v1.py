@@ -705,6 +705,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         index_tickers_payload: Mapping[str, Any] | None = None,
         mark_acquired_at_utc: str = "",
         seal_no_effect_hold_v1: Callable[[Path, Mapping[str, Any]], None] | None = None,
+        rotation_exit_requests: Mapping[str, object] | None = None,
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
         nonlocal occupied_close_input
@@ -724,6 +725,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         if occupied_mark_proof_root is not None:
             from src.ops.full_core_live_path_composition_root_v1.current_productive_post_position_close_v1 import (
                 CurrentPostPositionCloseContextV1,
+                inspect_current_post_position_close_v1,
             )
 
             prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).parent.name}"
@@ -807,6 +809,11 @@ def make_n1_occupied_lane_s5_runner_v1(
                 host_budget_recovery=context,
                 occupied_scope_mark_lane_id=LANE_ID,
                 authenticated_entry=entry,
+                **(
+                    {"rotation_exit_requests": rotation_exit_requests}
+                    if rotation_exit_requests is not None
+                    else {}
+                ),
                 refresh_reversal_pretrade=lambda: (
                     resolve_live_29p_injected_for_productive_s5_cycle_v1(
                         bound=_bound,
@@ -819,14 +826,30 @@ def make_n1_occupied_lane_s5_runner_v1(
             )[LANE_ID]
             result = lane.governed_cycle_result
             close = result.position_management_execution_handoff
+            post_context = None
+            if close is not None and (
+                close.l10_close is not None or close.exceptional_close is not None
+            ):
+                post_context = CurrentPostPositionCloseContextV1(
+                    close,
+                    lane_pairs[LANE_ID],
+                    entry,
+                    context,
+                    evidence_root=Path(lane.evidence_root)
+                    if close.exceptional_close is not None
+                    else None,
+                )
+                if close.exceptional_close is not None:
+                    inspect_current_post_position_close_v1(
+                        post_context,
+                        envelope=close.envelope,
+                        stage="EXCEPTIONAL_CLOSE_PRE_EXTERNAL",
+                        require_post_go=False,
+                    )
             return replace(
                 result,
                 extra={**result.extra, "OCCUPIED_MARK_EVIDENCE_ROOT": lane.evidence_root},
-                position_close_post_context=(
-                    CurrentPostPositionCloseContextV1(close, lane_pairs[LANE_ID], entry, context)
-                    if close is not None and close.l10_close is not None
-                    else None
-                ),
+                position_close_post_context=post_context,
             )
         host_recovery = None
         if portfolio_budget_host is not None:

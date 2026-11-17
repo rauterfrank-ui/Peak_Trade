@@ -69,7 +69,14 @@ Der aktuelle Obsidian-Vault liegt außerhalb des Repos unter `/Users/frnkhrz/PEA
 
 `plan` und `check` lesen ausschließlich. `apply` schreibt den bestehenden Vault und seinen Abgleichbeleg, erstellt jedoch keine Sicherung und verändert weder den Freeze-Tag noch Produktquellen. Quellen und Markdownansichten sind bytegebunden. Bei Canvas-Dateien wird zusätzlich der vollständige JSON-Inhalt gebunden: Obsidian darf die Serialisierung ändern; solche Formatänderungen werden gesondert ausgegeben. Der angezeigte Dokumentationscommit bezeichnet die letzte Änderung der gespiegelten Repo-Dokumente. Die Prüfung belegt die dokumentierten Quellenbindungen, keine vollständige fachliche oder betriebliche Abnahme des Vault-Inhalts.
 
-Der Test `test_atlas_loads_and_validates` in der [Atlas-Testdatei](../../tests/ops/test_system_atlas_v1.py) prüft das aktuelle Atlasmodell mit `current_atlas.py`. Die archivierten YAML-Verträge in derselben Testdatei können mit `PEAKTRADE_LEGACY_ATLAS_REPO_ROOT` gegen einen vollständigen historischen Checkout geprüft werden. Die Tests lesen dessen Census, Katalog und generierte Ansichten direkt aus dem angegebenen Bestand.
+Die [Atlas-Tests](../../tests/ops/test_system_atlas_v1.py) prüfen das aktuelle Modell und weisen abweichende generierte Ansichten zurück. Der Test des [CI-Workflows](../../tests/ops/test_system_atlas_impact_v1.py) liest den Workflow aus dem aktuellen Checkout.
+
+Die historischen YAML-Fälle beider Testdateien lesen Census, Katalog und Ansichten aus `PEAKTRADE_LEGACY_ATLAS_REPO_ROOT`. Als Referenz dient `5d1c838c15369507c5247834db4dd0df25592169` (PR #7178, vor der Atlas-Umstellung). Der Pfad verweist auf einen vollständigen Checkout oder Export dieses Commits. Ohne diese Variable überspringt pytest die historischen Fälle.
+
+```bash
+PEAKTRADE_LEGACY_ATLAS_REPO_ROOT=/pfad/zum/historischen-checkout \
+  ./scripts/pt -m pytest -q tests/ops/test_system_atlas_v1.py tests/ops/test_system_atlas_impact_v1.py
+```
 
 ## Gebundene Weiterentwicklung nach dem Freeze
 

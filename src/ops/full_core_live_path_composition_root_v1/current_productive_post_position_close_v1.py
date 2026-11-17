@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from decimal import Decimal
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -12,8 +12,11 @@ from .checkout_independent_credential_okx_venue_auth_headers_v1 import (
     require_same_k1_venue_credential_v1,
 )
 from .current_productive_position_management_quantity_handoff_v1 import (
+    PositionManagementExceptionalCloseV1,
     PositionManagementExecutionHandoffV1,
+    restore_retained_position_management_close_v1,
     validates_position_management_envelope_v1,
+    validates_position_management_execution_handoff_v1,
 )
 from .external_effect_permit_durable_consume_v1 import (
     FullCoreExternalEffectDurableConsumeError,
@@ -56,13 +59,135 @@ class CurrentPostPositionCloseContextV1:
     lane_pair: tuple[IsolatedLaneSlotV1, BoundInstrumentV1]
     authenticated_entry: AuthenticatedEntryEpisodeRequestV1 = field(repr=False)
     recovery: HostBudgetRecoveryContextV1 = field(repr=False)
+    evidence_root: Path | None = None
 
     def store_root_v1(self) -> Path:
+        if self.execution.exceptional_close is not None:
+            raise CurrentPostPositionCloseError("ACTUAL_EXCEPTIONAL_CLOSE_NOT_ADMITTED")
         if self.execution.l10_close is None:
             raise CurrentPostPositionCloseError("ORIGINAL_L10_CLOSE_CONTEXT_REQUIRED")
         return occupied_close_submit_root_v1(
             self.recovery.host.root, self.execution.l10_close.episode.episode_id
         )
+
+
+def bind_exceptional_close_after_net_reversal_v1(*, episode, policy, bound, recovery, entry):
+    """Bind an existing exceptional exit to the authenticated position that is open now."""
+    from src.ops.exit_policy_producer_binding_v1.persistence_v1 import load_exit_policy_state_v1
+
+    reason = episode.binding.pending_exit_reason
+    exit_class = policy.exit_class.value
+    if not (
+        (exit_class == "safety_exit" and reason in policy.reason_codes)
+        or (
+            exit_class == "time_exit"
+            and reason == "ROTATION_BETTER_CANDIDATE_AFTER_WAIT"
+            and reason in policy.reason_codes
+        )
+    ):
+        return None
+    proof = entry.proof
+    current = recovery.inspect_current_authenticated_entry_v1(
+        lane_id=episode.identity.lane_id, proof=proof
+    )
+    digest = current["reconciliation"].get("net_reversal_booking_digest")
+    if digest is None:
+        return None
+    state = load_exit_policy_state_v1(
+        Path(episode.binding.state_root),
+        expected_repository_sha=recovery.host.repository_sha,
+        expected_config_digest=episode.binding.config_digest,
+        expected_instrument_id=bound.instrument_id,
+    )
+    if (
+        state.to_dict() != episode.binding.to_canonical_state().to_dict()
+        or proof.identity_digest != episode.identity.episode_id
+        or not state.has_open_position
+        or state.pending_exit_class != exit_class
+    ):
+        raise ValueError("EXCEPTIONAL_CLOSE_EXIT_SOURCE_UNPROVEN")
+    if exit_class == "time_exit":
+        from .current_productive_rotation_close_v1 import verify_pending_rotation_close_v1
+
+        verify_pending_rotation_close_v1(
+            state.pending_rotation_close, bound=bound, episode_identity=episode.identity
+        )
+    return PositionManagementExceptionalCloseV1(
+        episode.identity,
+        proof.reservation_id,
+        digest,
+        policy.semantic_digest,
+        state.digest(),
+        exit_class,
+        reason,
+    )
+
+
+def _inspect_exceptional_close_v1(context, *, slot, bound, proof, envelope):
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+        _occupied_scope_exit_config_digest_v1,
+        bind_occupied_lane_governed_cycle_store_roots_v1,
+    )
+    from src.ops.execution_reconciliation_proof_store_v1 import (
+        require_booked_net_reversal_readback_v1,
+    )
+
+    from .current_productive_governed_cycle_orchestrator_v1 import (
+        read_retained_occupied_scope_close_v1,
+    )
+
+    recovery = context.recovery
+    binding = context.execution.exceptional_close
+    current = recovery.inspect_current_authenticated_entry_v1(lane_id=slot.lane_id, proof=proof)
+    booking, _ = recovery.host.owner.read_current_net_reversal_obligation_v1(
+        proof.reservation_id, revision_ref=proof.revision_ref
+    )
+    if (
+        proof.reservation_id != binding.reservation_id
+        or booking["booking_digest"] != binding.booking_digest
+        or current["reconciliation"].get("net_reversal_booking_digest") != binding.booking_digest
+        or booking["margin_mode"] != envelope.td_mode
+        or not validates_position_management_execution_handoff_v1(
+            context.execution,
+            native_id=bound.venue_native_id,
+            positions_payload=recovery.occupancy_payloads["POSITIONS"],
+        )
+    ):
+        raise ValueError("EXCEPTIONAL_CLOSE_ORIGINAL_POSITION_UNPROVEN")
+    root = context.authenticated_entry.proof_root
+    if recovery.authenticated_reconciliation.proof_root != root:
+        raise ValueError("EXCEPTIONAL_CLOSE_PROOF_ROOT_MISMATCH")
+    require_booked_net_reversal_readback_v1(root=root, booking=booking)
+    episode = recovery.bind_current_authenticated_entry_episode_v1(
+        lane_id=slot.lane_id,
+        proof_root=root,
+        proof=proof,
+        config_digest=_occupied_scope_exit_config_digest_v1(),
+        recover_only=True,
+    )
+    state = episode.binding.to_canonical_state()
+    if episode.identity != binding.episode or (
+        state.pending_exit_class,
+        state.pending_exit_reason,
+        state.digest(),
+    ) != (binding.exit_class, binding.exit_reason, binding.exit_state_digest):
+        raise ValueError("EXCEPTIONAL_CLOSE_EXIT_STATE_CHANGED")
+    _, _, evidence = bind_occupied_lane_governed_cycle_store_roots_v1(
+        {slot.lane_id: (slot, bound)}
+    )[slot.lane_id]
+    path = context.evidence_root
+    if (
+        path is None
+        or path.resolve() != path
+        or path.parent != Path(evidence) / "authenticated_mark_attempts_v1"
+    ):
+        raise ValueError("EXCEPTIONAL_CLOSE_ORIGINAL_PLAN_ROOT_UNPROVEN")
+    retained = restore_retained_position_management_close_v1(
+        read_retained_occupied_scope_close_v1(path),
+        expected_binding={"exceptional_close": asdict(binding)},
+    )
+    if retained != context.execution:
+        raise ValueError("EXCEPTIONAL_CLOSE_ORIGINAL_PLAN_CHANGED")
 
 
 def inspect_current_post_position_close_v1(
@@ -98,12 +223,14 @@ def inspect_current_post_position_close_v1(
             or type(context.authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
             or not validates_position_management_envelope_v1(context.execution)
             or context.execution.envelope != envelope
-            or context.execution.l10_close is None
             or envelope.pos_side not in {"", "net"}
         ):
             raise ValueError("ORIGINAL_L10_CLOSE_CONTEXT_REQUIRED")
 
-        switch = context.execution.l10_close
+        exception = context.execution.exceptional_close
+        switch = context.execution.l10_close or exception
+        if switch is None:
+            raise ValueError("ORIGINAL_L10_CLOSE_CONTEXT_REQUIRED")
         episode = switch.episode
         recovery = context.recovery
         host = recovery.host
@@ -127,13 +254,16 @@ def inspect_current_post_position_close_v1(
             != Path(canonical_kill_switch_state_path()).resolve()
         ):
             raise ValueError("AUTHENTICATED_CLOSE_ACCOUNT_SCOPE_UNPROVEN")
-        link = recovery.inspect_current_authenticated_entry_v1(lane_id=episode.lane_id, proof=proof)
-        if (
-            link != host.owner.execution_links_v1(active_only=True).get(proof.reservation_id)
-            or link["reconciliation"]["reservation_released"] is not False
-            or link["envelope"]["td_mode"] != envelope.td_mode
-        ):
-            raise ValueError("ORIGINAL_ENTRY_CUSTODY_UNPROVEN")
+        if exception is None:
+            link = recovery.inspect_current_authenticated_entry_v1(
+                lane_id=episode.lane_id, proof=proof
+            )
+            if (
+                link != host.owner.execution_links_v1(active_only=True).get(proof.reservation_id)
+                or link["reconciliation"]["reservation_released"] is not False
+                or link["envelope"]["td_mode"] != envelope.td_mode
+            ):
+                raise ValueError("ORIGINAL_ENTRY_CUSTODY_UNPROVEN")
         positions = [
             p for p in recovery.observed.positions if p.instrument_id == episode.instrument_id
         ]
@@ -143,6 +273,18 @@ def inspect_current_post_position_close_v1(
             or abs(positions[0].signed_quantity) != Decimal(envelope.quantity)
         ):
             raise ValueError("AUTHENTICATED_CLOSE_POSITION_UNPROVEN")
+        if exception is not None:
+            _inspect_exceptional_close_v1(
+                context, slot=slot, bound=bound, proof=proof, envelope=envelope
+            )
+            if (
+                require_post_go
+                or transport_attempt is not None
+                or signing_handle is not None
+                or store_root is not None
+            ):
+                raise ValueError("ACTUAL_EXCEPTIONAL_CLOSE_NOT_ADMITTED")
+            return
         scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))
         if (
             scope is None

@@ -360,6 +360,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         self._sizing_bindings: dict[str, ReservationSizingBindingV1] = {}
         self._execution_links: dict[str, dict] = {}
         self._live_l10_close_bookings: dict[str, dict] = {}
+        self._live_net_reversal_bookings: dict[str, list[dict]] = {}
         self._open_slot_cost_reserves: dict[str, list[dict]] = {}
         self._entry_budget_policy = None
         if entry_budget_policy is not None:
@@ -630,21 +631,35 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 for prior in self._by_key.values()
             ):
                 raise PortfolioCapitalBudgetError("LIVE_REVERSAL_SLOT_SETTLEMENT_UNPROVEN")
+            reversal_bookings = [
+                booking
+                for history in self._live_net_reversal_bookings.values()
+                for booking in history
+                if booking["slot_id"] == slot_id
+            ]
+            booking_digests = [booking.to_dict_v1()["booking_digest"] for booking in bookings] + [
+                booking["booking_digest"] for booking in reversal_bookings
+            ]
+            current_reversals = self._live_net_reversal_bookings.get(reservation_id, ())
             return SlotCapitalBasisV1(
                 slot_id=slot_id,
                 account_identity=self._account_identity,
                 initial_usdc=Decimal(initial),
                 booked_net_usdc=sum(
                     (Decimal(booking.net_result) for booking in bookings), Decimal(0)
+                )
+                + sum(
+                    (Decimal(booking["net_result_usdc"]) for booking in reversal_bookings),
+                    Decimal(0),
                 ),
                 allocation_digest=digest(allocation),
                 funding_observation_id=funding["observation_id"],
-                latest_booking_digest=None,
-                settlement_bookings_digest=(
-                    digest(sorted(booking.to_dict_v1()["booking_digest"] for booking in bookings))
-                    if bookings
-                    else None
-                ),
+                latest_booking_digest=current_reversals[-1]["booking_digest"]
+                if current_reversals
+                else None,
+                settlement_bookings_digest=digest(sorted(booking_digests))
+                if booking_digests
+                else None,
             )
 
     def _slot_capital_basis_locked_v1(
@@ -1145,6 +1160,58 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise PortfolioCapitalBudgetError("L10_CLOSE_BOOKING_READER_UNAVAILABLE")
             row = self._live_l10_close_bookings.get(episode_id)
             return None if row is None else dict(row)
+
+    def read_authenticated_net_reversal_v1(self, reservation_id, *, envelope_digest=None):
+        """Read the latest occupied position or the exact durable settlement."""
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("NET_REVERSAL_BOOKING_READER_UNAVAILABLE")
+            group = self._live_net_reversal_bookings.get(reservation_id, ())
+            for row in reversed(group):
+                if envelope_digest is None or row["envelope_digest"] == envelope_digest:
+                    return dict(row)
+        return None
+
+    def read_current_net_reversal_obligation_v1(self, reservation_id, *, revision_ref=None):
+        """Keep the current booked exposure bound to an actual original-store revision."""
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("NET_REVERSAL_BOOKING_READER_UNAVAILABLE")
+            group = self._live_net_reversal_bookings.get(reservation_id, ())
+            if not group:
+                return None
+            row = group[-1]
+            hold = self._by_key[self._by_id[reservation_id]]
+            if hold.state is not ReservationStateV1.COMMITTED:
+                raise PortfolioCapitalBudgetError("NET_REVERSAL_ORIGINAL_HOLD_UNPROVEN")
+            ref = revision_ref or (self._store.sequence, self._store.head)
+            if revision_ref is not None:
+                stored = self._store.read_revision_v1(*ref)["state"]
+                if stored.get("live_net_reversal_bookings", {}).get(reservation_id, []) != group:
+                    raise PortfolioCapitalBudgetError("NET_REVERSAL_BOOKING_REVISION_CHANGED")
+            return dict(row), ref
+
+    def record_authenticated_net_reversal_v1(
+        self, *, plan, envelope, fill, native_net, settlement_digest
+    ):
+        """Commit once in the original owner. The hold and original ENTER link stay intact."""
+        from .live_net_reversal_booking_v1 import (
+            build_live_net_reversal_booking_v1,
+            insert_live_net_reversal_booking_locked_v1,
+        )
+
+        with self._lock:
+            if self._store is None or self._storage_failed or self._closed_owner:
+                raise PortfolioCapitalBudgetError("NET_REVERSAL_BOOKING_WRITER_UNAVAILABLE")
+            booking = build_live_net_reversal_booking_v1(
+                self,
+                plan=plan,
+                envelope=envelope,
+                fill=fill,
+                native_net=native_net,
+                settlement_digest=settlement_digest,
+            )
+            return insert_live_net_reversal_booking_locked_v1(self, booking)
 
     def require_authenticated_l10_counter_order_source_v1(
         self, request: PostCloseDoublePlayCounterOrderRequestV1
@@ -3147,6 +3214,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             },
             "execution_links": self._execution_links,
             **(
+                {"live_net_reversal_bookings": self._live_net_reversal_bookings}
+                if self._live_net_reversal_bookings
+                else {}
+            ),
+            **(
                 {"live_l10_close_bookings": self._live_l10_close_bookings}
                 if self._live_l10_close_bookings
                 else {}
@@ -3250,6 +3322,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 "open_slot_protection",
                 "open_slot_cost_reserves",
                 "live_l10_close_bookings",
+                "live_net_reversal_bookings",
                 "simulated_direct_reversal_bookings",
             } != {
                 "schema",
@@ -3485,6 +3558,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             for reservation_id, link in links.items():
                 validate_link_v1(self, reservation_id, link)
             self._execution_links = detached(links)
+            from .live_net_reversal_booking_v1 import restore_live_net_reversal_bookings_v1
+
+            self._live_net_reversal_bookings = restore_live_net_reversal_bookings_v1(
+                self, payload.get("live_net_reversal_bookings", {})
+            )
             from .live_l10_close_booking_v1 import restore_live_l10_bookings_v1
 
             self._live_l10_close_bookings = detached(
