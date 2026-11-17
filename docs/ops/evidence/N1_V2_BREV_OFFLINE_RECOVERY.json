@@ -2,7 +2,7 @@
   "cases": {
     "attempt-present": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "48d1ce6419bfbe8a70b3678f2af48bbd3b47926635ab637b23bd97cf46027f33",
+      "evidence_sha256": "b6a143b8f323def82cece0264a74964da4e1082072ca07a141966fb2676a578e",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -10,7 +10,7 @@
     },
     "changed-cursor": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "d1a797be92a78fcabf8ecdb0065a783c95f0ae55885fa9d8c9532ef3d41f3e0e",
+      "evidence_sha256": "db29c292cea4ddd1f5a8553934f681cf9000e7ba9b1b8011d84b2e0b655eb6ee",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -18,7 +18,7 @@
     },
     "changed-hold-proof": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "ba6dd8f260aaa29deee8991a66d5207b2341f7755b79fec873355ffa48eac04e",
+      "evidence_sha256": "539a31b5b3e10de62be068ce6ec4daacf0bcbbdab9cda6cf2e6acbc19d228c7e",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -26,7 +26,7 @@
     },
     "changed-scope": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "e2a0213b510ee5fb07349eac2cc9b3ed57a788194211bbe979e408272062ccc0",
+      "evidence_sha256": "7e722ea2467de32a9a41938f4330a93c2f3fcb8aa73c11cf56cfddf2e12c1545",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -38,7 +38,7 @@
       "budget_revision_before": 24,
       "byte_identical_cursor": true,
       "cursor_epoch": 6,
-      "evidence_sha256": "51f9e5554f8070d94dfcb871aa32b90307a27fd2f016da6e5dccf28fbeac35ba",
+      "evidence_sha256": "2385ee26b79cc01b9bf231ee33296ee8b049da0e8cb3268cebeb8e02cf345c0f",
       "independent_managed_checkpoint": true,
       "native_resume_state": "WAITING_FOR_NEXT_C1",
       "new_process": true,
@@ -48,7 +48,7 @@
     },
     "missing-v2-checkpoint": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "12b5c6b0a63b3b120cddf746d3963491eccf66d63ef3c4b1177a5680f0cc275f",
+      "evidence_sha256": "0e1da7d2c9fa9a45175351f5b8df0ff6060550e2182800e6932126c5f93fe503",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -56,7 +56,7 @@
     },
     "plain-other-boot": {
       "boot_identity_changed_in_simulation": true,
-      "evidence_sha256": "5e086fedec2bee222c2fefe9c963b74a268b5334c0039d9c26ad7b5f20a187e9",
+      "evidence_sha256": "36e090202074a9d87da0eb2d6c867cd050f7a393b11e2b4862b5fb1665dd0f8e",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -64,7 +64,7 @@
     },
     "replaced-store": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "cca18a2ee583edeb0a76e1d18de0a5b1aa51934e10cfe7379435ecf20c244777",
+      "evidence_sha256": "f728dc8d1a548f52b5c294f56b94aa1e981234ca505593162e3237a5f3fdf30e",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -76,7 +76,7 @@
       "budget_revision_before": 24,
       "byte_identical_cursor": true,
       "cursor_epoch": 6,
-      "evidence_sha256": "b836f97fa5cc5ef24005b52f7d5bc3f266519013da7c0f643d091b09748289cd",
+      "evidence_sha256": "5423688460e93859809c8429bafdf9203f3e1f09504d18f15019c3381cf97b86",
       "independent_managed_checkpoint": false,
       "native_resume_state": "WAITING_FOR_NEXT_C1",
       "new_process": true,
@@ -86,7 +86,7 @@
     },
     "truncated-checkpoint": {
       "boot_identity_changed_in_simulation": false,
-      "evidence_sha256": "a29165e8bcd8857a419fed99cf8b3eeac185b10032c5e1a34a93f64e440b2b95",
+      "evidence_sha256": "180eae1032324308b2a0274e702c084b612ad0a52415ed74e0f7291512352477",
       "independent_managed_checkpoint": false,
       "new_process": true,
       "reason": "N1_V2_ORIGINAL_WAIT_UNPROVEN",
@@ -95,11 +95,12 @@
   },
   "instrument": "BREV-USDT-SWAP",
   "lane": "LANE_1",
-  "original_report_sha256": "9df5e4f784dd220760be320af40f74b6f1376841d5087ea06c2b88caf3f68ab3",
+  "original_report_sha256": "4ccb763f3f01aea06c04369e60a408774d1455fd2c568c9620ca36a270d687e3",
   "process_exit": "SIGKILL",
   "real_gets": 0,
   "real_posts": 0,
-  "repository_base": "8557138f16298f18a3c187b70570aa59c2db90a4",
+  "repository_base": "c358cd3c33f877710690ee87745133ad59a0c850",
+  "runtime_replay_revision": "8557138f16298f18a3c187b70570aa59c2db90a4",
   "schema": "peaktrade.n1_v2_brev_offline_recovery.v1",
   "source_sha256": {
     "src/ops/n1_occupied_scope_recovery_v2/cap24.py": "f382ac2fe63dde6ae1fbf0f39f638cdc4cecb2dc38da49414999f64c6a5f7f9f",
@@ -108,7 +109,7 @@
   },
   "start_authorized": false,
   "system_reboot_performed": false,
-  "targeted_regression_tests_passed": 52,
+  "targeted_regression_tests_passed": 48,
   "v1_seal": {
     "base_policy": "PASS",
     "content": "PASS"
