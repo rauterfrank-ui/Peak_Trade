@@ -76,7 +76,11 @@ Both direct POST entry points accept an explicit signed grant and a trusted,
 owner-provisioned store binding. The binding pins the local database path,
 store ID, issuer and Ed25519 public key independently of the signed grant.
 The grant binds its ID and validity window to the original account, OKX EEA,
-execution environment, action and exact envelope digest.
+execution environment, action and exact envelope digest. Grants and
+revocations sign the store binding digest, including the canonical path and
+the fresh generation created at provisioning. A fresh database cannot accept
+an earlier grant even if the operator reuses its path, store ID and key. A
+process restart keeps the original generation and consumption records.
 
 One SQLite transaction checks the current grant and revocation state and
 consumes the grant ID. The commit precedes the local Owner-GO witness, permit

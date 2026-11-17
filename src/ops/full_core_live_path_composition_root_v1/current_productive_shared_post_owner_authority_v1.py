@@ -38,6 +38,7 @@ def _digest(payload: bytes) -> str:
 @dataclass(frozen=True)
 class PostOwnerGrantV1:
     store_id: str
+    store_binding_digest: str
     issuer_id: str
     grant_id: str
     account: str
@@ -54,6 +55,7 @@ class PostOwnerGrantV1:
             {
                 "schema": "peaktrade.post_owner_grant.v1",
                 "store_id": self.store_id,
+                "store_binding_digest": self.store_binding_digest,
                 "issuer_id": self.issuer_id,
                 "grant_id": self.grant_id,
                 "account": self.account,
@@ -95,12 +97,15 @@ class PostOwnerAuthorityStoreV1:
         try:
             with os.fdopen(os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), "wb"):
                 pass
-            with self._transaction(provision=True) as db:
+            with self._transaction(provision=True) as (db, _):
                 db.execute(
                     "CREATE TABLE authority (schema TEXT, path TEXT, store_id TEXT, "
-                    "issuer_id TEXT, verify_key TEXT)"
+                    "issuer_id TEXT, verify_key TEXT, generation TEXT NOT NULL)"
                 )
-                db.execute("INSERT INTO authority VALUES (?, ?, ?, ?, ?)", metadata)
+                db.execute(
+                    "INSERT INTO authority VALUES (?, ?, ?, ?, ?, ?)",
+                    (*metadata, secrets.token_hex(32)),
+                )
                 db.execute(
                     "CREATE TABLE claims (grant_id TEXT PRIMARY KEY NOT NULL, grant_digest TEXT NOT NULL, "
                     "claim_digest TEXT NOT NULL, consumed_at REAL NOT NULL, dispatch_started_at REAL)"
@@ -127,9 +132,18 @@ class PostOwnerAuthorityStoreV1:
                 raise SharedPostOwnerAuthorityError("POST_AUTHORITY_JOURNAL_MODE_INVALID")
             db.execute("PRAGMA synchronous=FULL")
             db.execute("BEGIN IMMEDIATE")
-            if not provision and db.execute("SELECT * FROM authority").fetchall() != [metadata]:
-                raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_IDENTITY_MISMATCH")
-            yield db
+            binding = ""
+            if not provision:
+                rows = db.execute("SELECT * FROM authority").fetchall()
+                if (
+                    len(rows) != 1
+                    or rows[0][:-1] != metadata
+                    or type(rows[0][-1]) is not str
+                    or not _HEX_DIGEST.fullmatch(rows[0][-1])
+                ):
+                    raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_IDENTITY_MISMATCH")
+                binding = _digest(canonical_json_dumps({"authority": rows[0]}).encode())
+            yield db, binding
             db.commit()
         except sqlite3.Error as exc:
             raise SharedPostOwnerAuthorityError("POST_AUTHORITY_STORE_UNPROVEN") from exc
@@ -143,22 +157,31 @@ class PostOwnerAuthorityStoreV1:
         except (BadSignatureError, TypeError, ValueError) as exc:
             raise SharedPostOwnerAuthorityError("POST_GRANT_SIGNATURE_UNPROVEN") from exc
 
-    def revocation_signing_bytes_v1(self, grant_id: str) -> bytes:
+    def binding_digest_v1(self) -> str:
+        """Read the signing binding of the current provisioned store generation."""
+        with self._transaction() as (_, binding):
+            return binding
+
+    def _revocation_body(self, grant_id: str, binding: str) -> bytes:
         if not _identifier(grant_id):
             raise SharedPostOwnerAuthorityError("POST_GRANT_ID_INVALID")
         return canonical_json_dumps(
             {
                 "schema": "peaktrade.post_owner_revocation.v1",
                 "store_id": self.store_id,
+                "store_binding_digest": binding,
                 "issuer_id": self.issuer_id,
                 "grant_id": grant_id,
             }
         ).encode()
 
+    def revocation_signing_bytes_v1(self, grant_id: str) -> bytes:
+        return self._revocation_body(grant_id, self.binding_digest_v1())
+
     def revoke_v1(self, grant_id: str, signature: bytes) -> None:
-        body = self.revocation_signing_bytes_v1(grant_id)
-        self._verify(body, signature)
-        with self._transaction() as db:
+        with self._transaction() as (db, binding):
+            body = self._revocation_body(grant_id, binding)
+            self._verify(body, signature)
             db.execute(
                 "INSERT INTO revocations VALUES (?, ?, ?) ON CONFLICT(grant_id) DO NOTHING",
                 (grant_id, _digest(body), time.time()),
@@ -201,7 +224,9 @@ class SharedPostOwnerAuthorizationV1:
         claim = SharedPostOwnerClaimV1(
             self.authority, grant, _digest(body), attempt_root.resolve(), secrets.token_hex(32)
         )
-        with self.authority._transaction() as db:
+        with self.authority._transaction() as (db, binding):
+            if grant.store_binding_digest != binding:
+                raise SharedPostOwnerAuthorityError("POST_GRANT_STORE_BINDING_MISMATCH")
             now = _require_current(db, grant)
             if (
                 db.execute("SELECT 1 FROM claims WHERE grant_id=?", (grant.grant_id,)).fetchone()
@@ -255,8 +280,11 @@ class SharedPostOwnerClaimV1:
             raise SharedPostOwnerAuthorityError("POST_GRANT_CLAIM_SCOPE_MISMATCH")
         self.recheck_v1()
 
-    def _require_unstarted_claim(self, db: sqlite3.Connection) -> float:
-        if _digest(self.grant.signing_bytes_v1()) != self.grant_digest:
+    def _require_unstarted_claim(self, db: sqlite3.Connection, binding: str) -> float:
+        if (
+            self.grant.store_binding_digest != binding
+            or _digest(self.grant.signing_bytes_v1()) != self.grant_digest
+        ):
             raise SharedPostOwnerAuthorityError("POST_GRANT_CLAIM_UNPROVEN")
         now = _require_current(db, self.grant)
         row = db.execute(
@@ -270,12 +298,12 @@ class SharedPostOwnerClaimV1:
         return now
 
     def recheck_v1(self) -> None:
-        with self.authority._transaction() as db:
-            self._require_unstarted_claim(db)
+        with self.authority._transaction() as (db, binding):
+            self._require_unstarted_claim(db, binding)
 
     def start_dispatch_v1(self) -> None:
-        with self.authority._transaction() as db:
-            now = self._require_unstarted_claim(db)
+        with self.authority._transaction() as (db, binding):
+            now = self._require_unstarted_claim(db, binding)
             db.execute(
                 "UPDATE claims SET dispatch_started_at=? WHERE grant_id=?",
                 (now, self.grant.grant_id),

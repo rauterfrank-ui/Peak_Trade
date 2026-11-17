@@ -56,15 +56,16 @@ def signed_post_authorization(tmp_path, envelope, *, account, action):
     authority.provision_v1()
     now = int(time.time())
     replacement = PostOwnerGrantV1(
-        authority.store_id,
-        authority.issuer_id,
-        "one-grant",
-        account,
-        action,
-        envelope.envelope_digest,
-        now - 30,
-        now + 120,
-        b"",
+        store_id=authority.store_id,
+        store_binding_digest=authority.binding_digest_v1(),
+        issuer_id=authority.issuer_id,
+        grant_id="one-grant",
+        account=account,
+        action=action,
+        envelope_digest=envelope.envelope_digest,
+        issued_at_unix=now - 30,
+        expires_at_unix=now + 120,
+        signature=b"",
     )
     grant = replace(replacement, signature=key.sign(replacement.signing_bytes_v1()).signature)
     return SharedPostOwnerAuthorizationV1(authority, grant), key
@@ -147,6 +148,7 @@ def test_enter_consumes_grant_once_across_attempt_roots(tmp_path):
         ("expired", "POST_GRANT_OUTSIDE_VALIDITY"),
         ("missing-store", "POST_AUTHORITY_STORE_UNPROVEN"),
         ("copy-store", "POST_AUTHORITY_STORE_IDENTITY_MISMATCH"),
+        ("fresh-store", "POST_GRANT_STORE_BINDING_MISMATCH"),
     ],
 )
 def test_enter_invalid_authority_stops_before_local_consumption(tmp_path, case, reason):
@@ -164,11 +166,13 @@ def test_enter_invalid_authority_stops_before_local_consumption(tmp_path, case, 
         auth = replace(auth, grant=replace(auth.grant, action="L10_CLOSE"))
     if case == "expired":
         auth = replace(auth, grant=replace(auth.grant, expires_at_unix=int(time.time())))
-    if case in {"missing-store", "copy-store"}:
+    if case in {"missing-store", "copy-store", "fresh-store"}:
         path = tmp_path / "different.sqlite3"
         if case == "copy-store":
             shutil.copyfile(auth.authority.path, path)
         auth = replace(auth, authority=replace(auth.authority, path=path))
+        if case == "fresh-store":
+            auth.authority.provision_v1()
     auth = replace(
         auth, grant=replace(auth.grant, signature=key.sign(auth.grant.signing_bytes_v1()).signature)
     )
@@ -301,6 +305,25 @@ def test_same_claim_cannot_start_dispatch_twice(tmp_path):
     claim.start_dispatch_v1()
     with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_DISPATCH_ALREADY_STARTED"):
         claim.start_dispatch_v1()
+
+
+def test_reprovisioning_same_path_does_not_restore_an_old_grant_or_revocation(tmp_path):
+    envelope = _envelope()
+    auth, key = signed_post_authorization(tmp_path, envelope, account=_ACCOUNT, action="ENTER")
+    args = dict(account=_ACCOUNT, action="ENTER", envelope_digest=envelope.envelope_digest)
+    claim = auth.consume_v1(**args, attempt_root=tmp_path / "old-attempt")
+    revocation = key.sign(auth.authority.revocation_signing_bytes_v1(auth.grant.grant_id)).signature
+
+    auth.authority.path.unlink()
+    auth.authority.provision_v1()
+    assert auth.grant.store_binding_digest != auth.authority.binding_digest_v1()
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_STORE_BINDING_MISMATCH"):
+        auth.consume_v1(**args, attempt_root=tmp_path / "new-attempt")
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_CLAIM_UNPROVEN"):
+        claim.start_dispatch_v1()
+    with pytest.raises(SharedPostOwnerAuthorityError, match="POST_GRANT_SIGNATURE_UNPROVEN"):
+        auth.authority.revoke_v1(auth.grant.grant_id, revocation)
+    assert _claim_rows(auth) == []
 
 
 def test_local_shared_witness_cannot_enter_legacy_join(tmp_path):

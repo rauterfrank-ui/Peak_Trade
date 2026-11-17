@@ -1139,7 +1139,7 @@
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
       "before_sha256": "7b5c49cd02520f0e11fcdba74bce9d33e7a4311b190d4fd9a38d0e2c64cf690a",
-      "sha256": "53394a62036a09febbe669d3e290c73c9e48c553e8f7e995ef5bcfc78e144f1f"
+      "sha256": "fba300f93d36dcbda6fa22bb1bc8d75834c729375a67be6f7189cd0e940ded4d"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
@@ -4979,12 +4979,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
-      "sha256": "08b33db45ce3e64109827ce1180f413d1e042f24edc94c5e358a82524f9d3eb4"
+      "sha256": "5c42196588fc4e2f7dbf65291b34f28103fd696cadac12c020efc1c822eac53d"
     },
     {
       "path": "tests/ops/test_current_productive_shared_post_owner_authority_v1.py",
       "before_sha256": null,
-      "sha256": "0ef74657f3da7fbbed9ece301084f9be4534f18e1d63cc5199c0017512566877"
+      "sha256": "5e23d88655a4049d002d05f99e7af674d6d10fde2c633e4718d1535949b073b0"
     }
   ]
 }
