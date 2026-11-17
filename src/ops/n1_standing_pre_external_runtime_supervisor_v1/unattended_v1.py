@@ -5,6 +5,7 @@ never grants trading authority, renews a spent cycle budget, or resubmits orders
 An interrupted S5 needs its own proven recovery; absence of POST is insufficient.
 """
 
+from contextlib import AbstractContextManager, nullcontext
 from dataclasses import asdict, dataclass, replace
 import fcntl
 from hashlib import sha256
@@ -14,6 +15,7 @@ import os
 from pathlib import Path
 import sqlite3
 import time
+from typing import Callable
 import uuid
 
 from src.ops.canonical_local_launcher_and_process_supervision_v1.process_identity_v1 import (
@@ -32,6 +34,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     LOCK_NAME,
     ABSOLUTE_MAX_CYCLES_PER_RUN,
     ABSOLUTE_MAX_RUN_DURATION_SECONDS,
+    CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     cursor_last_accepted_c1_venue_event_time_v1,
@@ -106,8 +109,20 @@ def _write(path, value):
         temp.unlink(missing_ok=True)
 
 
+@dataclass(frozen=True)
+class PreparedN1RequestV1:
+    request: dict
+    runtime_config_digest: str
+    open_ports: Callable[
+        [CurrentProductiveGovernedContinuousCycleRunAuthorizationV1], AbstractContextManager[dict]
+    ]
+
+
 def unattended_request_digest_v1(request):
     """Bind stable host configuration and the actual checkout's Python source."""
+    prepared = request if isinstance(request, PreparedN1RequestV1) else None
+    if prepared is not None:
+        request = prepared.request
     config = asdict(request["config"])
     config.pop("evidence_root")
     if config.get("lock_root") is None:
@@ -127,6 +142,8 @@ def unattended_request_digest_v1(request):
         "source_digest": source.hexdigest(),
         "origin_main_sha": request["origin_main_sha"],
     }
+    if prepared is not None:
+        value["runtime_config_digest"] = prepared.runtime_config_digest
     proof_root = request.get("occupied_mark_proof_root")
     if proof_root is not None:
         from src.ops.execution_reconciliation_proof_store_v1 import require_private_proof_root_v1
@@ -519,13 +536,15 @@ def run_unattended_n1_host_v1(
             if not valid_go or not standing_continuous_run_authorized_v1(repo_root=repo):
                 return stop("GOVERNED_RUNTIME_STOPPED")
             evidence = root / "attempts" / str(state["attempts"] + 1)
-            request = request_factory(state["attempts"] + 1, evidence)
+            supplied = request_factory(state["attempts"] + 1, evidence)
+            prepared = supplied if isinstance(supplied, PreparedN1RequestV1) else None
+            request = dict(prepared.request) if prepared is not None else supplied
             config, authorization = request["config"], request["authorization"]
             if (
                 request["origin_main_sha"] != bounds.repository_sha
                 or Path(config.evidence_root).resolve() != evidence
                 or request.get("skip_owner_go_validation") is True
-                or unattended_request_digest_v1(request) != bounds.runtime_config_digest
+                or unattended_request_digest_v1(supplied) != bounds.runtime_config_digest
             ):
                 raise ValueError("HOST_RESTART_REQUEST_BINDING_MISMATCH")
             if cursor_floor is not None and (
@@ -555,14 +574,6 @@ def run_unattended_n1_host_v1(
                 or _filegate_revision(filegate) != filegate_revision
                 or (original_cancel is not None and original_cancel())
             )
-            if request.get("observation_source") is not None:
-                request["observation_source"] = _FilegateObservationSource(
-                    request["observation_source"], path=filegate, revision=filegate_revision
-                )
-            if request.get("f1_m9_cycle_evaluator") is not None:
-                request["f1_m9_cycle_evaluator"] = _filegate_cycle_evaluator(
-                    request["f1_m9_cycle_evaluator"], path=filegate, revision=filegate_revision
-                )
             from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
                 build_s8_occupied_lane_pairs_v1,
             )
@@ -601,7 +612,33 @@ def run_unattended_n1_host_v1(
             }
             _write(receipt, state)
             try:
-                result = run_n1_standing_pre_external_supervisor_v1(**request)
+                ports = (
+                    prepared.open_ports(request["authorization"])
+                    if prepared is not None
+                    else nullcontext({})
+                )
+                with ports as opened:
+                    if request.keys() & opened.keys() or not opened.keys() <= {
+                        "observation_source",
+                        "g17_producers",
+                        "f1_m9_cycle_evaluator",
+                        "public_rest_fetch",
+                        "private_rest_fetch",
+                        "pretrade_transport",
+                    }:
+                        raise ValueError("HOST_RESTART_PORT_OVERRIDES_REQUEST")
+                    request.update(opened)
+                    if request.get("observation_source") is not None:
+                        request["observation_source"] = _FilegateObservationSource(
+                            request["observation_source"], path=filegate, revision=filegate_revision
+                        )
+                    if request.get("f1_m9_cycle_evaluator") is not None:
+                        request["f1_m9_cycle_evaluator"] = _filegate_cycle_evaluator(
+                            request["f1_m9_cycle_evaluator"],
+                            path=filegate,
+                            revision=filegate_revision,
+                        )
+                    result = run_n1_standing_pre_external_supervisor_v1(**request)
             except _FilegateRevisionChanged:
                 state["checkpoint_blocker"] = "HOST_RESTART_FILEGATE_BLOCKED"
                 if fault_recovery is not None and _filegate_revision(filegate) is None:

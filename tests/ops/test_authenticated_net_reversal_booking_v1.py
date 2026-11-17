@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from contextlib import contextmanager
-from dataclasses import replace
+from dataclasses import asdict, replace
 from datetime import datetime, timedelta
 from decimal import Decimal
 import hmac
@@ -12,6 +12,7 @@ from pathlib import Path
 import signal
 import subprocess
 import sys
+import time
 from types import SimpleNamespace
 from urllib.parse import parse_qs, urlsplit
 from unittest.mock import patch
@@ -20,6 +21,9 @@ import pytest
 
 from src.ops.full_core_live_path_composition_root_v1 import (
     productive_read_only_get_transport_v1 as wire,
+)
+from src.ops.full_core_live_path_composition_root_v1 import (
+    current_productive_bounded_continuous_run_owner_go_wiring_v1 as owner_go,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     bind_already_held_k1_venue_auth_session_v1,
@@ -31,7 +35,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_double_p
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
     build_s8_occupied_lane_pairs_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PChainBaselineError,
+)
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import supervisor_v1 as supervisor
+from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import startup_factory_v1, unattended_v1
 from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
     restore_layered_core_episode_v1,
 )
@@ -217,26 +225,51 @@ class SignedNetReversalGetFixture:
             release_k1_venue_auth_session_v1(handle)
 
 
-def _config(root, data, scenario):
-    return supervisor.StandingSupervisorConfigV1(
-        public_store_root=root / "public",
-        private_store_root=root / "private",
-        lane_state_root=root / "scope",
-        evidence_root=root / "net-reversal-restart" / scenario,
-        expected_account_identity=data["account"],
-        venue_native_id=data["bound"]["venue_native_id"],
-        canonical_instrument_id=data["bound"]["instrument_id"],
-        transport_scope=supervisor.TRANSPORT_SCOPE_SCOPED_READONLY_GET,
-    )
+def _write_host_manifest(root, data, scenario):
+    roots = {
+        "public_store_root": root / "public",
+        "private_store_root": root / "private",
+        "lane_state_root": root / "scope",
+        "cap24_productivity_root": root / "test-selection-root",
+        "f1_m9_ledger_root": root / "test-f1-m9-root",
+        "lock_root": root / "test-host-locks",
+        "occupied_mark_proof_root": Path(data["proof_root"]),
+    }
+    for path in roots.values():
+        path.mkdir(exist_ok=True)
+    for name in ("apply.jsonl", "apply_rev.jsonl", "threshold.jsonl", "threshold_rev.jsonl"):
+        (roots["f1_m9_ledger_root"] / name).touch()
+    auth = asdict(_continuous_auth(native_id=data["bound"]["venue_native_id"], max_cycles=1))
+    for key in ("continuous_owner_go", "native_id", "bar", "expected_cursor_floor"):
+        del auth[key]
+    runtime_config = {
+        "repository_sha": data["revision"],
+        "roots": {key: str(value) for key, value in roots.items()},
+        "expected_account_identity": data["account"],
+        "bound": data["bound"],
+        "authorization": auth,
+    }
+    path = root / f"host-manifest-{scenario}.json"
+    if not path.exists():
+        manifest = startup_factory_v1.build_occupied_n1_manifest_v1(
+            host_id="offline-original-slot",
+            state_root=root / "net-reversal-restart" / scenario,
+            expires_at_unix=time.time() + 180,
+            runtime_config=runtime_config,
+        )
+        path.write_text(json.dumps(manifest))
+    return path
 
 
 def _run_booking_supervisor(root, data, scenario, *, crash=False):
-    def forbidden(*args, **kwargs):
-        raise AssertionError("market supply and ordinary startup must follow recovery")
-
     original_init = PortfolioBudgetHostV1.__init__
     original_save = PortfolioCapitalReservationBudgetOwnerV1._persist_locked
     fixture = SignedNetReversalGetFixture(data, scenario)
+    manifest = _write_host_manifest(root, data, scenario)
+    previous_go = owner_go.load_bounded_continuous_run_owner_go_decision_v1()
+    local_go = {**previous_go, "baseline_origin_main_sha": data["revision"]}
+    results = []
+    contexts = []
 
     def init_host(self, **kwargs):
         original_init(self, **{**kwargs, "clock": fixture.clock.timestamp})
@@ -246,27 +279,39 @@ def _run_booking_supervisor(root, data, scenario, *, crash=False):
         if crash and owner._live_net_reversal_bookings:
             os.kill(os.getpid(), signal.SIGKILL)
 
-    bound = BoundInstrumentV1(**data["bound"])
+    @contextmanager
+    def offline_get_only_transport(**_):
+        with fixture.port() as port:
+            contexts.append("open")
+            yield port, {}
+        contexts.append("close")
+
+    def observe_supervisor(**kwargs):
+        assert contexts == ["open"]
+        result = supervisor.run_n1_standing_pre_external_supervisor_v1(**kwargs)
+        results.append(result)
+        return result
+
     with (
-        fixture.port() as port,
+        patch.object(startup_factory_v1, "assert_current_productive_29p_execution_identity_v1"),
+        patch.object(
+            owner_go, "load_bounded_continuous_run_owner_go_decision_v1", return_value=local_go
+        ),
+        patch.object(
+            startup_factory_v1,
+            "open_governed_live_c1_get_only_fresh_pretrade_transport_v1",
+            offline_get_only_transport,
+        ),
+        patch.object(
+            unattended_v1, "run_n1_standing_pre_external_supervisor_v1", observe_supervisor
+        ),
         patch.object(PortfolioBudgetHostV1, "__init__", init_host),
         patch.object(PortfolioCapitalReservationBudgetOwnerV1, "_persist_locked", save),
     ):
-        result = supervisor.run_n1_standing_pre_external_supervisor_v1(
-            config=_config(root, data, scenario),
-            origin_main_sha=data["revision"],
-            bound=bound,
-            authorization=_continuous_auth(native_id=bound.venue_native_id, max_cycles=1),
-            observation_source=None,
-            g17_producers={},
-            f1_m9_cycle_evaluator=forbidden,
-            public_rest_fetch=forbidden,
-            private_rest_fetch=forbidden,
-            pretrade_transport=port,
-            skip_owner_go_validation=True,
-            occupied_mark_proof_root=Path(data["proof_root"]),
-        )
-    return result, fixture.calls
+        receipt = unattended_v1.host_service_v1(manifest_path=manifest, action="run")
+    assert receipt["result"]["attempts"] == 1, receipt
+    assert contexts == ["open", "close"]
+    return results[0], fixture.calls
 
 
 def crash_after_net_reversal_commit_v1(root):
@@ -322,6 +367,41 @@ def assert_original_net_reversal_booking_v1(
         *[p for p in (tmp_path / "reversal-grant").rglob("*") if p.is_file()],
     }
     raw = {path: path.read_bytes() for path in paths}
+
+    original_manifest = _write_host_manifest(tmp_path, data, "manifest-digest-original")
+    tampered = json.loads(original_manifest.read_bytes())
+    foreign_checkout = {**tampered["runtime_request_config"], "repository_sha": "0" * 40}
+    with pytest.raises(CurrentProductive29PChainBaselineError, match="ORIGIN_MAIN_SHA_MISMATCH"):
+        startup_factory_v1.prepare_occupied_n1_request_v1(
+            attempt_index=1,
+            evidence_root=Path(tampered["state_root"]) / "attempts" / "1",
+            runtime_config=foreign_checkout,
+        )
+    tampered["runtime_request_config"]["expected_account_identity"] += "-foreign"
+    tampered_path = tmp_path / "host-manifest-foreign.json"
+    tampered_path.write_text(json.dumps(tampered))
+
+    def forbidden_ports(**_):
+        pytest.fail("unproven request must not open ports or start a replacement order")
+
+    previous_go = owner_go.load_bounded_continuous_run_owner_go_decision_v1()
+    with (
+        patch.object(startup_factory_v1, "assert_current_productive_29p_execution_identity_v1"),
+        patch.object(
+            owner_go,
+            "load_bounded_continuous_run_owner_go_decision_v1",
+            return_value={**previous_go, "baseline_origin_main_sha": data["revision"]},
+        ),
+        patch.object(
+            startup_factory_v1,
+            "open_governed_live_c1_get_only_fresh_pretrade_transport_v1",
+            forbidden_ports,
+        ),
+        pytest.raises(ValueError, match="HOST_RESTART_REQUEST_BINDING_MISMATCH"),
+    ):
+        unattended_v1.host_service_v1(manifest_path=tampered_path, action="run")
+    assert {path: path.read_bytes() for path in paths} == raw
+
     for scenario, reason in (
         ("missing-page", "RECONCILIATION_GET_RESPONSE_UNPROVEN"),
         ("foreign-page", "INSTRUMENT_IDENTITY_MISMATCH"),
@@ -365,20 +445,48 @@ crash_after_net_reversal_commit_v1(sys.argv[1])
         if path.suffix != ".sqlite3" or path.parent.name != "owner"
     )
 
+    with patch.object(
+        startup_factory_v1,
+        "open_governed_live_c1_get_only_fresh_pretrade_transport_v1",
+        forbidden_ports,
+    ):
+        continued = unattended_v1.host_service_v1(
+            manifest_path=tmp_path / "host-manifest-complete.json", action="run"
+        )["result"]
+    assert continued["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+    assert continued["attempts"] == 1
+
+    manifest = json.loads((tmp_path / "host-manifest-complete.json").read_bytes())
+    with patch.object(startup_factory_v1, "assert_current_productive_29p_execution_identity_v1"):
+        recovered_request = startup_factory_v1.prepare_occupied_n1_request_v1(
+            attempt_index=2,
+            evidence_root=Path(manifest["state_root"]) / "attempts" / "2",
+            runtime_config=manifest["runtime_request_config"],
+        )
+    assert (
+        unattended_v1.unattended_request_digest_v1(recovered_request)
+        == manifest["bounds"]["runtime_config_digest"]
+    )
+    config = recovered_request.request["config"]
+    assert supervisor.budget_owner_root_for_config_v1(config) == root
+    assert recovered_request.request["bound"] == bound
+
     fixture = SignedNetReversalGetFixture(data, "complete")
     with fixture.port() as port:
         resumed = PortfolioBudgetHostV1(
-            root=root,
+            root=supervisor.budget_owner_root_for_config_v1(config),
             private_rest_fetch=_fetch(uid=data["account"], positions=(fixture.position(),)),
             repository_sha=repository_sha,
             session_id="booked-net-fresh-process",
-            expected_account_identity=data["account"],
+            expected_account_identity=config.expected_account_identity,
             clock=fixture.clock.timestamp,
             reconciliation_transport=port,
             execution_incident_state_path=Path(os.environ["PEAK_KILL_SWITCH_STATE_PATH"]),
         )
         try:
-            pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=tmp_path / "scope", bound=bound)
+            pairs = build_s8_occupied_lane_pairs_v1(
+                lane_state_root=config.lane_state_root, bound=bound
+            )
             rid = reversal.old_reservation_id
             replay = recover_submitted_net_reversal_v1(
                 lane_pair=pairs["LANE_1"], get_budget_host=lambda: resumed, proof_root=proof_root

@@ -26,6 +26,7 @@ def _build_f1_m9_evaluator(
     ledger_root: Path,
     g17_producers: Mapping[str, object],
     bound: Any,
+    initialize_revocations: bool = True,
 ) -> Any:
     from src.governance.current_productive_activation_policy_v1 import (
         RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
@@ -65,11 +66,12 @@ def _build_f1_m9_evaluator(
     )
     from trading.master_v2.double_play_futures_input import FuturesMarketType
 
-    ledger_root.mkdir(parents=True, exist_ok=True)
     apply_rev = ledger_root / "apply_rev.jsonl"
     threshold_rev = ledger_root / "threshold_rev.jsonl"
-    initialize_empty_revocation_ledger_v1(apply_rev)
-    initialize_empty_threshold_revocation_ledger_v1(threshold_rev)
+    if initialize_revocations:
+        ledger_root.mkdir(parents=True, exist_ok=True)
+        initialize_empty_revocation_ledger_v1(apply_rev)
+        initialize_empty_threshold_revocation_ledger_v1(threshold_rev)
     continuation = run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1(
         GovernedF1M9ThresholdConsumerWiringRequestV1(
             apply_ledger_paths=F1M9ProductiveApplyLedgerPathsV1(
