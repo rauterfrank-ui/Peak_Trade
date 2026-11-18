@@ -2529,7 +2529,7 @@ def _assert_direct_reversal_dispatch(
 
     host.close()
     if after_timeout is not None:
-        after_timeout(consumed["record"], root)
+        after_timeout(consumed["record"], root, authorization, signer)
         return
     _assert_reversal_stays_pending_in_fresh_process(
         tmp_path, host, bound, proof, proof_root, envelope, authorization, consumed, root
@@ -3166,7 +3166,7 @@ def _assert_authenticated_occupied_mark_close(
                 "-funded-exception-close",
             }:
 
-                def after_timeout(record, submit_root):
+                def after_timeout(record, submit_root, authorization, signer):
                     from tests.ops.test_authenticated_net_reversal_booking_v1 import (
                         assert_original_net_reversal_booking_v1,
                     )
@@ -3183,6 +3183,8 @@ def _assert_authenticated_occupied_mark_close(
                         repository_sha=context.host.repository_sha,
                         closes=closes,
                         occupied=occupied,
+                        first_authorization=authorization,
+                        signer=signer,
                         exceptional_close=funding_case == "-funded-exception-close",
                     )
 

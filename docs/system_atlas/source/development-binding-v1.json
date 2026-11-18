@@ -4084,7 +4084,7 @@
     {
       "path": "tests/ops/test_authenticated_net_reversal_booking_v1.py",
       "before_sha256": null,
-      "sha256": "78d8b25005cd0685f1f16b125b19a9c42f68791ca543c86c163ca0073ce2c4cf"
+      "sha256": "f85afe763f9b1ad5e21510b0b3cb9698eb83847e7118d50cec294f065885b777"
     },
     {
       "path": "tests/ops/test_aws_export_smoke_contract.py",
@@ -4494,7 +4494,7 @@
     {
       "path": "tests/ops/test_execution_reconciliation_get_provenance_v1.py",
       "before_sha256": null,
-      "sha256": "0ffec41c3d0c2b8ef9cdc917ffda150204b27c719b61ac7f3ba76f431b50c096"
+      "sha256": "2de27d5481b381ae402fadd532beb5b5b784dd2c8b5c23395693abccf187d4fa"
     },
     {
       "path": "tests/ops/test_f1_m9_applied_offline_replay_v1.py",
