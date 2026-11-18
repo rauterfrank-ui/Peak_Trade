@@ -30,6 +30,7 @@ class ProvenanceProducerBindingV1(str, Enum):
     BOUNDED_PAPER_POSITION = "BOUNDED_PAPER_POSITION"
     I17_SHADOW_COUNTERFACTUAL = "I17_SHADOW_COUNTERFACTUAL"
     TESTNET_BOUNDED_OBSERVATION = "TESTNET_BOUNDED_OBSERVATION"
+    TESTNET_CONFIRMED_ENTRY = "TESTNET_CONFIRMED_ENTRY"
     EXPLICIT_OFFLINE_SYNTHETIC_N_BARS = "EXPLICIT_OFFLINE_SYNTHETIC_N_BARS"
     REPLAY_HISTORICAL = "REPLAY_HISTORICAL"
     CANARY_EVIDENCE = "CANARY_EVIDENCE"
@@ -179,6 +180,20 @@ def resolve_provenance_for_binding_v1(
                 "execution_mode_label": ExecutionModeLabelV1.TESTNET.value,
                 "fill_source_type": FillSourceTypeV1.NO_FILL.value,
                 "outcome_source": "BOUNDED_TESTNET_OBSERVATION",
+                "outcome_semantic_class": OutcomeSemanticClassV1.TESTNET_VENUE_EVIDENCE.value,
+                "outcome_realization_kind": OutcomeRealizationKindV1.OBSERVATION_ONLY.value,
+                "ddo_ledger_environment": DdoLedgerEnvironmentV1.TESTNET.value,
+            }
+        )
+    elif binding is ProvenanceProducerBindingV1.TESTNET_CONFIRMED_ENTRY:
+        base.update(
+            {
+                "market_observation_source": MarketObservationSourceV1.TESTNET_BOUNDED.value,
+                "decision_source": DecisionSourceV1.TESTNET_COMPLETION.value,
+                "execution_mode_label": ExecutionModeLabelV1.TESTNET.value,
+                "fill_source_type": FillSourceTypeV1.VENUE_TESTNET.value,
+                "reconciliation_source": "OKX_EEA_DEMO_PRIVATE_GET",
+                "outcome_source": "V2_CONFIRMED_TESTNET_ENTRY",
                 "outcome_semantic_class": OutcomeSemanticClassV1.TESTNET_VENUE_EVIDENCE.value,
                 "outcome_realization_kind": OutcomeRealizationKindV1.OBSERVATION_ONLY.value,
                 "ddo_ledger_environment": DdoLedgerEnvironmentV1.TESTNET.value,

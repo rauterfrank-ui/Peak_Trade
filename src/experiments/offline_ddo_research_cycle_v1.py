@@ -11,6 +11,7 @@ import pandas as pd
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.backtest.mv2_research_wiring_v1 import (
+    STEP29L_INSTRUMENT_ADMISSION_BTC_DEMO_V1,
     STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1,
 )
 from src.evaluation.golden_vectors.contracts.models import ProtectedSemanticDigestsV1
@@ -85,6 +86,14 @@ _ADMISSION = STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1
 _PROVIDER = "OfflineDdoResearchCycleV1.NativeResearchExperimentProviderV1"
 
 
+def _instrument_admission(request):
+    return (
+        STEP29L_INSTRUMENT_ADMISSION_BTC_DEMO_V1
+        if request.observed_surface == "TESTNET"
+        else _ADMISSION
+    )
+
+
 class _RequestModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
 
@@ -144,7 +153,7 @@ class _ResearchInputsV1(_RequestModel):
     search_space_cardinality_limit: int = Field(ge=1, le=128)
     market_universe: list[str] = Field(min_length=1)
     gap_dimensions: list[ResearchGapDimensionV1]
-    observed_surface: Literal["SHADOW", "PAPER_EXCHANGE"]
+    observed_surface: Literal["SHADOW", "PAPER_EXCHANGE", "TESTNET"]
     threshold_policy_digest: str
     protected_digest_baseline: ProtectedSemanticDigestsV1
     times: ResearchCycleTimesV1
@@ -237,7 +246,7 @@ def _baseline(path, search, *, bars, cfg, request, horizon, policy):
             market_universe=request.market_universe,
             robustness_policy=policy,
             created_at=request.times.baseline_measurement,
-            instrument_admission_mode=_ADMISSION,
+            instrument_admission_mode=_instrument_admission(request),
         )
         publish_v1(
             path,
@@ -269,6 +278,8 @@ def run_offline_ddo_research_cycle_v1(
     code: CanonicalCodeProvenanceV1,
 ) -> dict[str, Any]:
     """Consume one completed DDO cycle and a bounded request or research profile."""
+    if request.observed_surface == "TESTNET":
+        raise ValueError("OFFLINE_RESEARCH_TESTNET_CONFIRMED_ENTRY_REQUIRED")
     evidence = export_completed_offline_learning_evidence_v1(
         root, cycle_key, plan_digest=plan_digest
     )
@@ -438,6 +449,51 @@ def run_offline_paper_ddo_research_cycle_v1(
     )
 
 
+def run_offline_testnet_ddo_research_cycle_v1(
+    root: Path,
+    cycle_key: str,
+    *,
+    handoff: dict[str, Any],
+    request: OfflineDdoResearchRequestV1 | OfflineDdoResearchProfileV1,
+    bars: pd.DataFrame,
+    cfg: dict[str, Any],
+    code: CanonicalCodeProvenanceV1,
+    campaign_history: tuple[ResearchResultMetaInputV1, ...] = (),
+    campaign_regions: tuple[dict[str, Any], ...] = (),
+) -> dict[str, Any]:
+    """Connect confirmed Demo-entry evidence to the bounded GVEF replay."""
+    evidence = handoff["learning_evidence"]
+    fill = handoff["measurement"]
+    provenance = evidence["outcome_evidence_provenance"]
+    if (
+        handoff["schema"] != "btc_demo_entry_learning_handoff.v1"
+        or fill["authority"] != "NONE"
+        or fill["execution_environment"] != "TESTNET"
+        or request.observed_surface != "TESTNET"
+        or request.gap_dimensions
+        or provenance["outcome_semantic_class"] != "TESTNET_VENUE_EVIDENCE"
+        or provenance["fill_source_type"] != "VENUE_TESTNET"
+        or provenance["outcome_source"] != "V2_CONFIRMED_TESTNET_ENTRY"
+        or provenance["decision_event_ref"] != handoff["decision_event_ref"]
+        or provenance["instrument_id"] != fill["instrument_id"]
+        or provenance["lineage_digest"] != fill["source_digest"]
+    ):
+        raise ValueError("OFFLINE_RESEARCH_TESTNET_HANDOFF_MISMATCH")
+    return _run_research(
+        root,
+        cycle_key,
+        binding={"confirmed_testnet_entry": fill},
+        evidence=evidence,
+        request=request,
+        bars=bars,
+        cfg=cfg,
+        code=code,
+        campaign_history=campaign_history,
+        campaign_regions=campaign_regions,
+        allow_unmeasured_reality_gap=True,
+    )
+
+
 def _run_research(
     root,
     cycle_key,
@@ -536,7 +592,7 @@ def _run_research(
             cfg,
             instrument_id=request.instrument_id,
             bars=bars,
-            instrument_admission_mode=_ADMISSION,
+            instrument_admission_mode=_instrument_admission(request),
         ),
     )
     policy = canonical_robustness_policy_v1()
@@ -649,7 +705,7 @@ def _execute(
         observed_surface=request.observed_surface,
         threshold_policy_digest=request.threshold_policy_digest,
         robustness_policy=policy,
-        instrument_admission_mode=_ADMISSION,
+        instrument_admission_mode=_instrument_admission(request),
         allow_unmeasured_reality_gap=allow_unmeasured_reality_gap,
         experiment_memory_store=CanonicalExperimentMemoryStoreV1(
             workspace.safe_path_v1("experiments")

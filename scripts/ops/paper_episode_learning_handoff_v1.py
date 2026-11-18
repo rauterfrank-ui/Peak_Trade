@@ -174,7 +174,13 @@ def _read_result(ledger, decision, bundle, scope, measurement):
 
 
 def paper_episode_learning_handoff_v1(
-    *, archive_root: Path, episode_id: str, output_root: Path, verify: bool = False
+    *,
+    archive_root: Path,
+    episode_id: str,
+    output_root: Path,
+    verify: bool = False,
+    expected_lane_id: str | None = None,
+    require_measurement=None,
 ) -> dict:
     """Persist or reverify a Paper episode using the original archive and DDO."""
     source = archive_root.resolve()
@@ -187,7 +193,11 @@ def paper_episode_learning_handoff_v1(
         or _REPO.is_relative_to(output_root)
     ):
         raise ValueError("PAPER_LEARNING_SEPARATE_OFFLINE_WORKSPACE_REQUIRED")
-    measurement = read_paper_episode_outcome_v1(archive_root, episode_id)
+    measurement = read_paper_episode_outcome_v1(
+        archive_root, episode_id, expected_lane_id=expected_lane_id
+    )
+    if require_measurement is not None:
+        require_measurement(measurement)
     decision, bundle, scope = _evaluation(measurement)
     workspace = EvaluationReceiptArchiveV1(output_root)
     folder = Path("paper-episodes") / episode_id

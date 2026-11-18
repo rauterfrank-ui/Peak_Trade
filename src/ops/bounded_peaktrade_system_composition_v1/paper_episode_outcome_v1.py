@@ -111,7 +111,7 @@ def _utc(timestamp):
     return datetime.fromtimestamp(timestamp, timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def _read_episode(root, state_root, profile, pins):
+def _read_episode(root, state_root, profile, pins, expected_lane_id):
     entry = json.loads((state_root / IDENTITY_FILENAME).read_bytes())
     state = json.loads((state_root / EXIT_STATE_FILENAME).read_bytes())
     fields = dict(entry["identity"])
@@ -120,6 +120,7 @@ def _read_episode(root, state_root, profile, pins):
     binding = profile["instrument_binding"]
     if (
         identity.episode_id != state_root.name
+        or (expected_lane_id is not None and identity.lane_id != expected_lane_id)
         or identity.account_scope.execution_environment != SIMULATION
         or identity.account_scope.account_identity != root.name
         or identity.instrument_id != binding["instrument_id"]
@@ -234,7 +235,9 @@ def _accounting_before_open(payload, account, opening_fill_id):
     raise ValueError("PAPER_OUTCOME_OPENING_FILL_MISSING")
 
 
-def read_paper_episode_outcome_v1(root: Path, episode_id: str) -> dict:
+def read_paper_episode_outcome_v1(
+    root: Path, episode_id: str, *, expected_lane_id: str | None = None
+) -> dict:
     """Recompute a simulated net outcome for an explicitly selected episode."""
     root = root.absolute()
     if root.resolve() != root or not EPISODE_ID.fullmatch(episode_id):
@@ -276,7 +279,9 @@ def read_paper_episode_outcome_v1(root: Path, episode_id: str) -> dict:
     ):
         raise ValueError("PAPER_OUTCOME_COMPLETED_SIMULATION_REQUIRED")
 
-    sealed, opening, initial_ref, observed_unix = _read_episode(root, state_root, profile, pins)
+    sealed, opening, initial_ref, observed_unix = _read_episode(
+        root, state_root, profile, pins, expected_lane_id
+    )
     payload = sealed["source_payload"]
     account = ProductiveFuturesAccountingSessionV1.from_durable_dict(
         payload["accounting_checkpoint"]
@@ -328,7 +333,7 @@ def read_paper_episode_outcome_v1(root: Path, episode_id: str) -> dict:
         "source_tree_sha256": profile["source_tree_sha256"],
         "episode_id": episode_id,
         "session_id": root.name,
-        "instrument_id": account.contract.symbol,
+        "instrument_id": profile["instrument_binding"]["instrument_id"],
         "venue_native_id": profile["instrument_binding"]["venue_native_id"],
         "currency": account.contract.quote_currency,
         "observed_at_utc": _utc(observed_unix),
