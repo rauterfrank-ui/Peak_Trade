@@ -541,7 +541,7 @@ OWNER_ADJUDICATION_DELTAS = {
     ),
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": (
         "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
-        "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
+        "9c2e2724687f8a18e1e94ce0199d8c360774c8fe44986492fb7f2e86f4827ca1",
     ),
     "src/governance/economic_diagnostic_optimization_boundary_v0.py": (
         "3d1f997b686ef62573e394da72d777661f0f6af6e2bfcaf84a207185d1ba5755",
