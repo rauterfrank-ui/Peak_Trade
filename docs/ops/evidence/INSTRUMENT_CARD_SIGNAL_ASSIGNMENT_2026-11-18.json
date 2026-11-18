@@ -1,0 +1,1362 @@
+{
+  "schema": "peaktrade.instrument_card_signal_assignment.v1",
+  "purpose": "Auftragsbezogene Zuordnung vor Anschluss und Härtung, keine neue SSOT oder Aktivierung.",
+  "reviewed_on": "2026-11-18",
+  "timezone": "Europe/Berlin",
+  "runtime_authorization_effect": "NONE",
+  "owner_universe": "Master V2 Double Play",
+  "baseline_commit": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+  "draft_head": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+  "evidence_levels": {
+    "MERGED_CODE_OR_CONFIG": "Quellinhalt gegen Git-Baseline geprüft; statischer Zusammenhang.",
+    "UNCOMMITTED_DRAFT": "Lokaler Entwurf mit Bytehash; kein Merge- oder Betriebsbeleg.",
+    "REQUIRED_VERIFICATION": "Prüfauftrag, kein durchgeführter Laufzeitnachweis."
+  },
+  "scope": {
+    "included_lanes": [
+      "LANE_1",
+      "LANE_2",
+      "LANE_4",
+      "LANE_5"
+    ],
+    "excluded_lane": "LANE_3",
+    "excluded_instrument": "BTC",
+    "new_sessions_started": 0,
+    "product_code_changed_by_this_assignment": false,
+    "total_system_semantics_proven": false
+  },
+  "historical_assignment": {
+    "path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/zeitplan.json",
+    "sha256": "ab7c88af39dfbfa6c5f1fff7072d370e47be47cc1b0e9f1b5c9f46acb18fdb0c",
+    "baseline_sha": "b040b4a2fdf1bbc57b6d99132a304ecf3d4fe062",
+    "status": "PREPARED_DISABLED_START_BLOCKED",
+    "role": "Historische lokale Zuordnung, nicht heutiger Laufstatus oder unverändert gültige Blockerliste."
+  },
+  "slots": [
+    {
+      "lane_id": "LANE_1",
+      "instrument_id": "okx_eea:linear_dated_future:ZKP:USD:USD:zkp-usd_um_xperp-310905",
+      "venue_native_id": "ZKP-USD_UM_XPERP-310905",
+      "source_mode": "PAPER_EXCHANGE",
+      "scope": "ASSIGNED_FOR_CARD_CONNECTION",
+      "assignment_semantics": "Datierte lokale Vorbereitung, gegen aktuelle Instrumentkonstanten geprüft. Keine neue Auswahl oder Rangfolge; spätere Rotation muss die Originalbindung übernehmen.",
+      "identity_evidence": {
+        "path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/zkp-lane1-paper.json",
+        "sha256": "542dc386e0199137897d559d5473b1c20c08ad7fd3b78e7a5bf8c08d69186125",
+        "campaign_path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_1/gvef-campaign.json",
+        "campaign_sha256": "8267d77719a87938e89fdf5f6308c64c1e31ed3766c0d9b8a40143f8f11acfda"
+      },
+      "original_mode_declaration": {
+        "field": "environment",
+        "value": "PAPER",
+        "reader_compatibility": "NOT_USED_AS_SLOT_CONFIG_BY_DEFAULT_ZKP_START_OR_OUT_OF_SCOPE"
+      },
+      "planned_runtime_root": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_1/sources/paper/v2-20261118-1230z-lane-1",
+      "planned_root_exists": false,
+      "running_state": "NOT_OBSERVED_NOT_STARTED_BY_THIS_REVIEW",
+      "planned_learning_state": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_1/gvef",
+      "campaign_inputs": {
+        "okx_eea:linear_dated_future:ZKP:USD:USD:zkp-usd_um_xperp-310905": []
+      },
+      "source_refs": [
+        "paper_slots",
+        "public_queries",
+        "market_binding",
+        "paper_entry",
+        "paper_continuation",
+        "paper_driver"
+      ],
+      "market_bundle": "13_QUANTITY_AND_IDENTITY_BOUND_PUBLIC_SOURCES_IMPLEMENTED",
+      "card_connection": "UNCOMMITTED_DRAFT_NOT_ACCEPTED",
+      "budget_source": "SIMULATED_ACCOUNTING_AND_SLOT_POLICY_MEASUREMENT_CONNECTED_IN_DRAFT",
+      "state_owner": "Original FirstEntry-Mark-Cursor, Layered-Core-/SideState und Episode-/Accountingjournal; Karte ist eine Projektion.",
+      "state_addresses": [
+        "<original-run-root>/flat-entry-mark-v2/LANE_1",
+        "<original-run-root>/episodes",
+        "<original-run-root>/reversals",
+        "<original-run-root>/funding"
+      ],
+      "outcome_route": [
+        "paper_outcomes",
+        "slot_research"
+      ],
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ]
+    },
+    {
+      "lane_id": "LANE_2",
+      "instrument_id": "okx_eea:linear_dated_future:UP:USD:USD:up-usd_um_xperp-310919",
+      "venue_native_id": "UP-USD_UM_XPERP-310919",
+      "source_mode": "PAPER_EXCHANGE",
+      "scope": "ASSIGNED_FOR_CARD_CONNECTION",
+      "assignment_semantics": "Datierte lokale Vorbereitung, gegen aktuelle Instrumentkonstanten geprüft. Keine neue Auswahl oder Rangfolge; spätere Rotation muss die Originalbindung übernehmen.",
+      "identity_evidence": {
+        "path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_2/slot-config.json",
+        "sha256": "0890d837771bca8bf48bc25dedaa7d4085b3cc9e74559314056ddb0bc0604a84",
+        "campaign_path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_2/gvef-campaign.json",
+        "campaign_sha256": "027e26c960f77e4583b1dbfa822e4ec5b501de4715a59061be2004bf59d68668"
+      },
+      "original_mode_declaration": {
+        "field": "surface",
+        "value": "PAPER_EXCHANGE",
+        "reader_compatibility": "EXPECTED_MODE_FIELD_PRESENT"
+      },
+      "planned_runtime_root": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_2/sources/paper/v2-20261118-1230z-lane-2-up",
+      "planned_root_exists": false,
+      "running_state": "NOT_OBSERVED_NOT_STARTED_BY_THIS_REVIEW",
+      "planned_learning_state": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_2/gvef",
+      "campaign_inputs": {
+        "okx_eea:linear_dated_future:UP:USD:USD:up-usd_um_xperp-310919": []
+      },
+      "source_refs": [
+        "paper_slots",
+        "public_queries",
+        "market_binding",
+        "paper_entry",
+        "paper_continuation",
+        "paper_driver"
+      ],
+      "market_bundle": "13_QUANTITY_AND_IDENTITY_BOUND_PUBLIC_SOURCES_IMPLEMENTED",
+      "card_connection": "UNCOMMITTED_DRAFT_NOT_ACCEPTED",
+      "budget_source": "SIMULATED_ACCOUNTING_AND_SLOT_POLICY_MEASUREMENT_CONNECTED_IN_DRAFT",
+      "state_owner": "Original FirstEntry-Mark-Cursor, Layered-Core-/SideState und Episode-/Accountingjournal; Karte ist eine Projektion.",
+      "state_addresses": [
+        "<original-run-root>/flat-entry-mark-v2/LANE_2",
+        "<original-run-root>/episodes",
+        "<original-run-root>/reversals",
+        "<original-run-root>/funding"
+      ],
+      "outcome_route": [
+        "paper_outcomes",
+        "slot_research"
+      ],
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ]
+    },
+    {
+      "lane_id": "LANE_3",
+      "instrument_id": "okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310328",
+      "venue_native_id": "BTC-USD_UM_XPERP-310328",
+      "source_mode": "TESTNET",
+      "scope": "REFERENCE_ONLY_BTC_EXCLUDED",
+      "assignment_semantics": "Datierte lokale Vorbereitung, gegen aktuelle Instrumentkonstanten geprüft. Keine neue Auswahl oder Rangfolge; spätere Rotation muss die Originalbindung übernehmen.",
+      "identity_evidence": {
+        "path": "/Users/frnkhrz/.local/state/peak_trade/btc-lane3-testnet-124556e3e/btc-lane3-testnet.json",
+        "sha256": "c676e6888a586846b8ad8ae3118976174780b70092c0576821472cff61077a0d",
+        "campaign_path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_3/gvef-campaign.json",
+        "campaign_sha256": "9adc1bc07755bcfddcf91f0a9a9d98b98d3c260416cc4ce49c41ca3a013089f9"
+      },
+      "original_mode_declaration": {
+        "field": "environment",
+        "value": "TESTNET",
+        "reader_compatibility": "NOT_USED_AS_SLOT_CONFIG_BY_DEFAULT_ZKP_START_OR_OUT_OF_SCOPE"
+      },
+      "planned_runtime_root": "/Users/frnkhrz/.local/state/peak_trade/btc-lane3-testnet-124556e3e/testnet-state/LANE_3",
+      "planned_root_exists": false,
+      "running_state": "NOT_OBSERVED_NOT_STARTED_BY_THIS_REVIEW",
+      "planned_learning_state": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_3/gvef",
+      "campaign_inputs": {
+        "okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310328": []
+      },
+      "source_refs": [],
+      "market_bundle": "OUT_OF_SCOPE",
+      "card_connection": "OUT_OF_SCOPE",
+      "budget_source": "OUT_OF_SCOPE",
+      "state_owner": "OUT_OF_SCOPE",
+      "state_addresses": [],
+      "outcome_route": "OUT_OF_SCOPE",
+      "gap_ids": []
+    },
+    {
+      "lane_id": "LANE_4",
+      "instrument_id": "okx_eea:linear_dated_future:IRYS:USD:USD:irys-usd_um_xperp-310530",
+      "venue_native_id": "IRYS-USD_UM_XPERP-310530",
+      "source_mode": "PAPER_EXCHANGE",
+      "scope": "ASSIGNED_FOR_CARD_CONNECTION",
+      "assignment_semantics": "Datierte lokale Vorbereitung, gegen aktuelle Instrumentkonstanten geprüft. Keine neue Auswahl oder Rangfolge; spätere Rotation muss die Originalbindung übernehmen.",
+      "identity_evidence": {
+        "path": "/Users/frnkhrz/.local/state/peak_trade/irys-lane4-paper-1c0388e99.1cnu4a5y/irys-lane4-paper.json",
+        "sha256": "4222e48c02af33bba54985ed4bdde5fa29bb801785a1bd91fbd9a37159d0e187",
+        "campaign_path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_4/gvef-campaign.json",
+        "campaign_sha256": "459c218c6cad440c9a289117ed4ac9c03d0f4a7f07731c39c1eba0205b0024af"
+      },
+      "original_mode_declaration": {
+        "field": "environment",
+        "value": "PAPER",
+        "reader_compatibility": "INCOMPATIBLE_WITH_CURRENT_SLOT_CONFIG_READER"
+      },
+      "planned_runtime_root": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_4/sources/paper/v2-20261118-1230z-lane-4",
+      "planned_root_exists": false,
+      "running_state": "NOT_OBSERVED_NOT_STARTED_BY_THIS_REVIEW",
+      "planned_learning_state": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/LANE_4/gvef",
+      "campaign_inputs": {
+        "okx_eea:linear_dated_future:IRYS:USD:USD:irys-usd_um_xperp-310530": []
+      },
+      "source_refs": [
+        "paper_slots",
+        "public_queries",
+        "market_binding",
+        "paper_entry",
+        "paper_continuation",
+        "paper_driver"
+      ],
+      "market_bundle": "13_QUANTITY_AND_IDENTITY_BOUND_PUBLIC_SOURCES_IMPLEMENTED",
+      "card_connection": "UNCOMMITTED_DRAFT_NOT_ACCEPTED",
+      "budget_source": "SIMULATED_ACCOUNTING_AND_SLOT_POLICY_MEASUREMENT_CONNECTED_IN_DRAFT",
+      "state_owner": "Original FirstEntry-Mark-Cursor, Layered-Core-/SideState und Episode-/Accountingjournal; Karte ist eine Projektion.",
+      "state_addresses": [
+        "<original-run-root>/flat-entry-mark-v2/LANE_4",
+        "<original-run-root>/episodes",
+        "<original-run-root>/reversals",
+        "<original-run-root>/funding"
+      ],
+      "outcome_route": [
+        "paper_outcomes",
+        "slot_research"
+      ],
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G11"
+      ]
+    },
+    {
+      "lane_id": "LANE_5",
+      "instrument_id": "okx_eea:linear_dated_future:SOPH:USD:USD:soph-usd_um_xperp-310912",
+      "venue_native_id": "SOPH-USD_UM_XPERP-310912",
+      "source_mode": "SHADOW",
+      "scope": "ASSIGNED_FOR_CARD_CONNECTION",
+      "assignment_semantics": "Datierte lokale Vorbereitung, gegen aktuelle Instrumentkonstanten geprüft. Keine neue Auswahl oder Rangfolge; spätere Rotation muss die Originalbindung übernehmen.",
+      "identity_evidence": {
+        "path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_5/slot-config.json",
+        "sha256": "5160f302232d3214112d65c2c6f930af662cbb5630f69538cab246aa1c5dfdf6",
+        "campaign_path": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_5/gvef-campaign.json",
+        "campaign_sha256": "bd620efa93a1f71a0a44fe9a57b64a04988ade3ba8aadc2f2ef8e4e910a70302"
+      },
+      "original_mode_declaration": {
+        "field": "surface",
+        "value": "SHADOW",
+        "reader_compatibility": "EXPECTED_MODE_FIELD_PRESENT"
+      },
+      "planned_runtime_root": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_5/sources/shadow/v2-20261118-1230z-lane-5-soph-xperp",
+      "planned_root_exists": false,
+      "running_state": "NOT_OBSERVED_NOT_STARTED_BY_THIS_REVIEW",
+      "planned_learning_state": "/Users/frnkhrz/.local/state/peak_trade/fuenf-slots-gvef-20261118.guUqJB9N/slotbindung-up-soph-v1/LANE_5/gvef",
+      "campaign_inputs": {
+        "okx_eea:linear_dated_future:SOPH:USD:USD:soph-usd_um_xperp-310912": []
+      },
+      "source_refs": [
+        "soph_binding",
+        "shadow_source",
+        "shadow_runtime"
+      ],
+      "market_bundle": "MARK_TICKER_IMPLEMENTED_COMPLETE_CARD_BUNDLE_DRAFT_ONLY",
+      "card_connection": "UNCOMMITTED_DRAFT_NOT_ACCEPTED",
+      "budget_source": "OWNER_CALLBACK_UNBOUND",
+      "state_owner": "Original I17 BridgeSessionState und DDO-/Evidencewriter; keine nachgewiesene übergreifende Sitzungsfortsetzung.",
+      "state_addresses": [
+        "<original-evidence-root>/ddo_ledger_v0.jsonl",
+        "<session bridge_state>; Sitzung/Startgate erhalten"
+      ],
+      "outcome_route": [
+        "shadow_handoff",
+        "slot_research"
+      ],
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G9",
+        "G10"
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "id": "instrument",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Kontraktidentität und Börsenraster",
+      "units": "ctVal × ctMult: Basisasset/Kontrakt; lotSz/minSz/maxMktSz: Kontrakte; tickSz: USD/Basisasset",
+      "admission": "Native ID, FUTURES, linear, Familie, Underlier, USD-Settlement und live-Status prüfen. Kein SWAP-Ersatz.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Metadaten → native_contract; Sizing-, Mengen- und Orderbuchraster.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "tiers",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Öffentliche Positionsgrenzen",
+      "units": "imr/mmr: Bruchteile; maxLever: Verhältnis; maxSz: Kontrakte",
+      "admission": "Passende Familie und Tier 1. Keine private Kapital- oder Leveragefreigabe.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Öffentliches Maximum mit Instrumentmaximum begrenzen; Kontraktmetadaten.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "mark",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Aktueller Markpreis",
+      "units": "USD/Basisasset; ts: Unix-ms",
+      "admission": "Mark-Ereignis, Erfassung und Verbrauch getrennt auf Freshness prüfen.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Master-V2-Mark-Takt, Scope, Bewertung und Slippage-Referenz.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "index",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Unabhängiger Underlier-Index",
+      "units": "USD/Basisasset; ts: Unix-ms",
+      "admission": "Exakter <BASE>-USD-Index; kein Alias des Marks.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "CanonicalMarketContext.index_price über originale Preisprovenienz.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "book",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Ausführbare Orderbuchtiefe",
+      "units": "Preis: USD/Basisasset; Menge je Level: native Kontrakte",
+      "admission": "Beide Seiten, sortierte eindeutige Preise, Tick/Lot, kein gekreuztes Buch; Event-/Capture-/Verbrauchszeit.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding",
+        "liquidity"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Mengenbezogener, nachteilig gerundeter VWAP für Ein- und Ausstieg.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "ticker",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "24-Stunden-Handelsvolumen und separater Last/Top-of-Book",
+      "units": "vol24h: Kontrakte; volCcy24h: Basisasset; last: USD/Basisasset",
+      "admission": "vol24h × Kontraktgröße = volCcy24h. Last ersetzt weder Mark noch Index; Karten-Bid/Ask im Paper kommen aus book.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "CanonicalMarketContext.volume = vol24h, kein USD-Umsatz.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "open-interest",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Offene Kontrakte",
+      "units": "oi: Kontrakte; oiCcy: Basisasset",
+      "admission": "Native ID und Zeit prüfen; oi × Kontraktgröße = oiCcy.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "CanonicalMarketContext.open_interest; kein verfügbares Kapital.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "trade-candles",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Finalisierte gehandelte C1-Minutenhistorie",
+      "units": "OHLC: USD/Basisasset; Beginn: Unix-ms; Intervall: 60 s",
+      "admission": "Finalisierung, Chronologie und Bezug des letzten C1-Schlusses zum aktuellen Mark.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Master-V2-Preis-/Featurepfad. Keine Ersetzung durch Markfenster oder Shadowtick-Historie.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "mark-candles",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Finalisierte PT1M-Markhistorie für G17",
+      "units": "Mark: USD/Basisasset; 61 finale Minutenpunkte",
+      "admission": "Originalfenster, IDs, Empfang und zum C1 passende letzte Minute.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Typisierte kanonische Volatilität → GGE; GGE-Distanz hat Preiseinheit.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "adv",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Durchschnittlicher täglicher Quoteumsatz",
+      "units": "USD/Tag über policy.adv_days abgeschlossene UTC-Tage",
+      "admission": "Vollständige finale UTC-Tage; Kontrakte/Basismengen plausibilisieren; laufenden Tag ausschließen.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding",
+        "adv"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Ordernotional/ADV als Bruchteil. Kein Kontoguthaben und kein Tagesgewinn.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "funding",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Öffentliche aktuelle Fundingkonditionen und nächste Abrechnung",
+      "units": "Rate: dimensionslos je Fundingintervall; Zeiten: Unix-ms",
+      "admission": "Aktuelle, minimale und maximale Rate sowie vorigen/nächsten Termin binden.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Fundingkontext und vorsichtige Kostenreserve; noch keine Geldbuchung.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "funding-history",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "Realisierte Fundingrate",
+      "units": "Rate: dimensionslos; fundingTime: Unix-ms",
+      "admission": "Erst nach Bekanntwerden verwenden; endgültige Markminute vor Settlement als simulierte Referenz.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "Paper-Fundingjournal für die tatsächlich am Termin gehaltene simulierte Position.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "usdc-index",
+      "kind": "PUBLIC_MARKET_SOURCE",
+      "meaning": "USDC/USD-Umrechnung",
+      "units": "USD je USDC; ts: Unix-ms",
+      "admission": "Originalen USDC-USD-Index mit eigenem Zeitbezug verwenden; 1:1 nicht fest annehmen.",
+      "producer_refs": [
+        "public_queries"
+      ],
+      "transformation_refs": [
+        "market_binding"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation",
+        "draft_stream"
+      ],
+      "effect": "USDC-Slotvorgabe in USD-Notional/Kosten, zurück in USDC für Kartenanzeige.",
+      "persistence": "Paper: Originalantwort und Receipt unter public/<capture>/; Sourcehashes im gebundenen Markt. Entwurf: versions/<version>/market.json und latest.json.",
+      "per_mode": {
+        "PAPER": "MERGED_SOURCE_AND_CONSUMER_STATICALLY_TRACED_CARD_PROJECTION_DRAFT",
+        "SHADOW": "COMPLETE_BUNDLE_DRAFT_ONLY_NO_END_TO_END_ACCEPTANCE"
+      },
+      "identity": "Exakte kanonische/native Instrumentidentität und Quelle; USDC-Index ist ein ausdrücklich anderer Index, nicht ein anderes Handelsinstrument.",
+      "time": "Ereigniszeit und Empfang je Quelle; am konkreten Verbrauchsasof zulassen; Finalisierung bzw. Funding-Wirksamkeit zusätzlich beachten."
+    },
+    {
+      "id": "ranking_binding",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Ranking-/Auswahl-/Cap24-Bindung",
+      "units": "IDs, Digests, instrument_epoch",
+      "producer_refs": [
+        "archive_ranking_check"
+      ],
+      "consumer_refs": [
+        "archive_cards",
+        "paper_fixed_identity"
+      ],
+      "effect": "Zuweisung kommt vom Originalowner; Paper-fixed ist keine vollständige Cap23-/Cap24-Provenienz.",
+      "checks": [
+        "Kein Reranking anhand von Kartenwerten",
+        "Originalauswahl bis Stream übernehmen; G1"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "spread",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Relative Top-of-Book-Spanne",
+      "units": "Basispunkte",
+      "producer_refs": [
+        "liquidity"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation"
+      ],
+      "effect": "10000 × (Ask − Bid) / ((Bid + Ask)/2); Vergleich mit vorhandenem Profil.",
+      "checks": [
+        "88 bps = 0,88 %",
+        "Kein absoluter USDC-Betrag"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "budget",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Aktuelle simulierte Slotkapitalbasis und freie Mittel",
+      "units": "USDC und getrennte USD-Bewertung",
+      "producer_refs": [
+        "budget_policy",
+        "draft_budget"
+      ],
+      "consumer_refs": [
+        "paper_budget_formula",
+        "paper_entry",
+        "draft_stream"
+      ],
+      "effect": "25 USDC sind Testallokation; aktuelle Equity, Limit, Kostenreserve, bestehende Position und freie neue Exposition unterscheiden.",
+      "checks": [
+        "available_amount ist im Entwurf min(cap,equity)/FX",
+        "available_for_new_entry = 0 bei offener Position",
+        "reserved_amount=null bedeutet unbekannt/kein Holdmodell, nicht null reservierte Mittel",
+        "SOPH-Owner offen"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "budget_capacity",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Nominale Budgetkapazität vor Kosten und Risiko",
+      "units": "native Kontrakte",
+      "producer_refs": [
+        "paper_budget_formula"
+      ],
+      "consumer_refs": [
+        "draft_stream"
+      ],
+      "effect": "Auf Lot gerundete Kapazität aus Budget/(Mark × Multiplikator), begrenzt am Venue-Maximum; Messung und endgültige Sizing-Menge bleiben getrennt.",
+      "checks": [
+        "Keine Leveragekaufkraft aus Sicherheiten ableiten",
+        "Nicht als vollständige kostenbereinigte Freigabe darstellen"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "sizing_and_net_fill",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Endgültige Zielposition und ausgeführte Nettomenge",
+      "units": "native Kontrakte",
+      "producer_refs": [
+        "paper_entry",
+        "paper_net_quantity"
+      ],
+      "consumer_refs": [
+        "liquidity",
+        "paper_continuation"
+      ],
+      "effect": "Risikoowner bestimmt Zielmenge. Beim Wechsel ist Ausführungsmenge abs(Ziel − bisherige Position), z.B. +69 → −73 ergibt SELL 142.",
+      "checks": [
+        "Tiefe/Slippage auf volle Nettomenge prüfen",
+        "Budget der Zielposition nicht mit Nettoumsatz gleichsetzen"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "participation",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Ordernotional relativ zum ADV",
+      "units": "Bruchteil; Anzeige Prozent",
+      "producer_refs": [
+        "liquidity",
+        "paper_budget_formula"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation"
+      ],
+      "effect": "Kontrakte × Multiplikator × konservativer relevanter Preis / ADV. Budget/ADV ist eine separate Budgetkennzahl.",
+      "checks": [
+        "25/2009,39 ≈ 1,24 % nur bei Orderwert 25 USD bzw. FX 1",
+        "Grenzwerte aus bestehendem Profil; historischer 0,50-%-Vorschlag nicht aktiviert"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "slippage",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Nachteiliger mengenspezifischer Ausführungspreisabstand zum Mark",
+      "units": "bps sowie USD/USDC-Geldbetrag",
+      "producer_refs": [
+        "liquidity",
+        "paper_budget_formula"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "paper_continuation"
+      ],
+      "effect": "Kauf: max(0,(VWAP−Mark)/Mark) ×10000; Verkauf mit umgekehrtem Vorzeichen. Keine feste Slippageannahme als Orderbuchmessung ausgeben.",
+      "checks": [
+        "Exakte Seite und Menge",
+        "Fehlende Tiefe sperrt",
+        "Gebühren/Funding sind separate Kosten"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "entry_confirmation",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Master-V2-Richtungsbestätigung und Einstieg",
+      "units": "Originalzustand/DecisionOutcome; keine Mengenfreigabe",
+      "producer_refs": [
+        "entry_cursor",
+        "core"
+      ],
+      "consumer_refs": [
+        "paper_entry",
+        "draft_observe"
+      ],
+      "effect": "Zulässige getrennte Markbeobachtungen führen den ursprünglichen Scope-/SideState-/Confirmationcursor weiter. Long/Long oder Short/Short allein ersetzt keine Finanz-/Liquiditätsprüfung.",
+      "checks": [
+        "Keine zweite Entscheidungsengine in der Karte",
+        "EVALUATED ist keine positive Einstiegsfreigabe",
+        "Datenversion/Digest an tatsächlichen Input binden"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "costs_and_accounting",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Kostenreserve, simulierter Fill und bestätigte simulierte Buchung",
+      "units": "USD; getrennt Gebühren, Slippage, Funding, Brutto/Netto",
+      "producer_refs": [
+        "paper_entry",
+        "paper_continuation"
+      ],
+      "consumer_refs": [
+        "paper_outcomes",
+        "slot_research"
+      ],
+      "effect": "Erst Originaljournal/Accounting belegt simulierten Fill und Nettowirkung; öffentliche Marktwerte sind keine private Kontowahrheit.",
+      "checks": [
+        "Kosten bei Nettowechsel vollständig und episodengenau zuordnen",
+        "Keine doppelte Gebühren-/Fundingverbuchung",
+        "Keine automatische Freigabe fremder Reservationen"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "paper_learning",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Abgeschlossene Paper-Episode → DDO/GVEF",
+      "units": "Episode-/Decision-/Fillidentität und wirtschaftlicher Outcome",
+      "producer_refs": [
+        "paper_outcomes"
+      ],
+      "consumer_refs": [
+        "slot_research"
+      ],
+      "effect": "Nur abgeschlossene Originalepisode; Lane, Sitzung, Instrument und Zeitfenster vor Ledgerwrite prüfen.",
+      "checks": [
+        "Offene Folgeposition ausschließen",
+        "Wiederholung idempotent",
+        "Researchinputs bleiben instrumentgebunden und separat"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "shadow_learning",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "I17-Entscheidung → finale O4-Messung → Lernbeleg",
+      "units": "USD/Basisasset, Preisreturn und Messhorizont",
+      "producer_refs": [
+        "shadow_handoff"
+      ],
+      "consumer_refs": [
+        "slot_research"
+      ],
+      "effect": "Zwei finale instrumentgebundene O4-Stundenbars; kontrafaktischer Marktverlauf ist kein realisierter Kontogewinn.",
+      "checks": [
+        "PT1H-Outcome nicht mit C1-Minuten verwechseln",
+        "Empfang nach Finalisierung beachten",
+        "Keine automatische Betriebs- oder Applyfreigabe"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    },
+    {
+      "id": "purpose_and_returns",
+      "kind": "DERIVED_OR_OWNER_SIGNAL",
+      "meaning": "Zweckgetrennte RANKING/TRADING/LIQUIDITY/OUTCOME/RESEARCH- und spätere Rückwege",
+      "units": "je Originalvertrag; keine einheitliche Universalreihe",
+      "producer_refs": [
+        "purpose_gateway"
+      ],
+      "consumer_refs": [
+        "core",
+        "slot_research"
+      ],
+      "effect": "Gleicher Kartenvertrag bedeutet keine Gleichsetzung aller Zweckquellen. Unabhängige Marktbeobachtung, Forecast, DDO, Optimierung, Meta und Apply bleiben getrennte Owner.",
+      "checks": [
+        "Keine Outcome-Leakage in frühere Entscheidungen",
+        "Keine marktweite Analyse mit Dummy-Lane versehen",
+        "Alle übrigen Systemverzweigungen benötigen eigene vollständige Inventur; hier keine Gesamthärtung behauptet"
+      ],
+      "identity": "Instrument + native ID + Slot/Sitzung + jeweilige Originalgeneration; marktweite unabhängige Analyse benötigt keine erfundene Slot-ID.",
+      "time": "Zum jeweiligen Originalinput/Entscheidungsasof; spätere Outcome-/Researchdaten bleiben nachgelagert."
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Vollständige Ranking-/Cap23-/Cap24-Identität fehlt im kontinuierlichen Entwurf",
+      "source_refs": [
+        "paper_fixed_identity",
+        "archive_ranking_check",
+        "draft_stream"
+      ],
+      "detail": "Die explizite Slot-/Instrumentvorbereitung ist belegt. Die Originalauswahl mit Ranking-/Universumsdigest und instrument_epoch ist noch nicht bis zum Stream nachgewiesen.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G2",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Fortlaufende Kartenversorgung noch nicht gemergt oder abgenommen",
+      "source_refs": [
+        "paper_driver",
+        "draft_paper_driver",
+        "draft_stream"
+      ],
+      "detail": "Direkte Hooks und Persistenz sind lokale Vorarbeit. Ein vollständiger gemeinsamer Datenvertrag am tatsächlichen Consumer ist offline zu prüfen.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G3",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "SOPH vollständige Marktdaten fehlen im gemergten Shadow-Marktkontext",
+      "source_refs": [
+        "shadow_placeholders",
+        "draft_shadow_port"
+      ],
+      "detail": "Gemergt: Index=Mark, Volumen=1000000, OI=50000000, Funding=0.0001. Entwurf ersetzt Teilfelder, aber noch kein vollständiger Abnahmenachweis.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G4",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "SOPH-Shadow-Budgetowner nicht angeschlossen",
+      "source_refs": [
+        "draft_shadow_port",
+        "draft_budget"
+      ],
+      "detail": "Optionaler Callback ist vorhanden; ein Originalowner für aktuellen SOPH-Slotbetrag ist nicht gebunden. Historische 25-USDC-Vorbereitung ersetzt ihn nicht.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G5",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Nominale Equity/Kapazität, freier Neueinstiegsbetrag und Reservierung semantisch auseinanderhalten",
+      "source_refs": [
+        "draft_budget",
+        "paper_budget_formula"
+      ],
+      "detail": "Der Entwurf führt available_amount und available_for_new_entry getrennt, berechnet Kartenkapazität aber aus available_amount. Dies ist bei offener Position keine freie Zusatzallokation.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G6",
+      "classification": "REQUIRED_VERIFICATION",
+      "title": "Verbrauchszeit, Ablauf und Ausfall bis zum Kartenleser nachweisen",
+      "source_refs": [
+        "draft_expiry",
+        "draft_paper_driver"
+      ],
+      "detail": "Ein current_v1-Check genügt nur, wenn der tatsächliche Leser ihn verwendet; ein alter latest.json-Inhalt darf nicht als frische Zulassung dienen. Kein Hintergrundablaufbeleg aus Dateiexistenz.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G7",
+      "classification": "REQUIRED_VERIFICATION",
+      "title": "Kartenversion mit tatsächlichem finalen Master-V2-Input und Entscheidungszustand verknüpfen",
+      "source_refs": [
+        "draft_observe",
+        "draft_completion",
+        "entry_cursor"
+      ],
+      "detail": "Instrumentisolation, ursprüngliche Cursorfortsetzung, Reconnect/Prozesswiederanlauf und keine Vermischung von Entscheidungen verschiedener Fassungen prüfen.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G8",
+      "classification": "REQUIRED_VERIFICATION",
+      "title": "Original-Lern-/Research-Verzweigungen pro Slot erhalten",
+      "source_refs": [
+        "paper_outcomes",
+        "shadow_handoff",
+        "slot_research"
+      ],
+      "detail": "Die zwei geplanten Kampagnentypen sind gebunden, aber die angegebenen geplanten Sitzungswurzeln existieren nicht. Frühere synthetische Tests und andere Sitzungen sind separate Belege.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G9",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Shadow-Zeitreihe und Markttyp passen nicht automatisch zum Kartenvertrag",
+      "source_refs": [
+        "shadow_market_type",
+        "shadow_tick_features",
+        "core"
+      ],
+      "detail": "Shadow verwendet PERPETUAL und tick-Finality/Marktick-Features; die zugewiesenen Instrumente sind linear_dated_future. Finale gehandelte C1- und G17-Markfenster müssen mit ihren eigenen Bedeutungen am Consumer belegt werden.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G10",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Shadow-Gate verwendet noch nicht die volle budgetbezogene seitenabhängige Kartenmessung",
+      "source_refs": [
+        "draft_shadow_gate",
+        "paper_budget_formula"
+      ],
+      "detail": "Entwurf prüft BOUND, Betrag > 0 und Mindestmengenliquidität auf irgendeiner Seite. Das belegt nicht die Zulassung der später gewählten Seite und tatsächlichen Sizing-/Nettoausführungsmenge.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    },
+    {
+      "id": "G11",
+      "classification": "CONFIRMED_STATIC_GAP",
+      "title": "Historische IRYS-Slotdatei passt nicht zum aktuellen Slotconfig-Leser",
+      "source_refs": [
+        "paper_slot_config_reader"
+      ],
+      "detail": "Die im Plan gebundene IRYS-Datei erklärt environment=PAPER, enthält aber kein surface. Der heutige --slot-config-Leser verlangt surface=PAPER_EXCHANGE. Die Instrumentzuordnung stimmt; die Datei ist in diesem Format noch kein konsumierbarer Starterinput. Keine historische Datei verändert.",
+      "status": "OPEN_NO_FIX_CLAIMED"
+    }
+  ],
+  "sources": {
+    "paper_slots": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py",
+      "sha256": "6b07d0deb2bcf1eefb242423fda2e3eec6f310a7e08ea9f05644e20fc942979a",
+      "line": 67,
+      "anchor": "ZKP_PAPER_SLOT ="
+    },
+    "public_queries": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py",
+      "sha256": "6b07d0deb2bcf1eefb242423fda2e3eec6f310a7e08ea9f05644e20fc942979a",
+      "line": 186,
+      "anchor": "def zkp_public_queries_v1"
+    },
+    "market_binding": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py",
+      "sha256": "6b07d0deb2bcf1eefb242423fda2e3eec6f310a7e08ea9f05644e20fc942979a",
+      "line": 232,
+      "anchor": "def bind_zkp_paper_market_v1"
+    },
+    "paper_entry": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
+      "sha256": "bc41ec84823bee591ea36988a37e4211606bb1605b1928080add4e9657eaad15",
+      "line": 153,
+      "anchor": "class ZkpPaperEntryV1"
+    },
+    "paper_fixed_identity": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
+      "sha256": "bc41ec84823bee591ea36988a37e4211606bb1605b1928080add4e9657eaad15",
+      "line": 210,
+      "anchor": "ranking_snapshot_id=\"\""
+    },
+    "paper_budget_measurement": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
+      "sha256": "bc41ec84823bee591ea36988a37e4211606bb1605b1928080add4e9657eaad15",
+      "line": 440,
+      "anchor": "budget_assessment = assess_instrument_budget_v1"
+    },
+    "paper_continuation": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
+      "sha256": "e034da5ed4eb2157868132a1fbcd02e57def52066b9133cf13f5bea63a55e310",
+      "line": 164,
+      "anchor": "class ZkpPaperContinuationV1"
+    },
+    "paper_net_quantity": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
+      "sha256": "e034da5ed4eb2157868132a1fbcd02e57def52066b9133cf13f5bea63a55e310",
+      "line": 778,
+      "anchor": "quantity=net"
+    },
+    "liquidity": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_market_liquidity_v1.py",
+      "sha256": "c30a340481da6dd172729897c09bf03a04ff45a87db13c5cc099f6fa91f990c8",
+      "line": 172,
+      "anchor": "def assess_quantity_v1"
+    },
+    "adv": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_market_liquidity_v1.py",
+      "sha256": "c30a340481da6dd172729897c09bf03a04ff45a87db13c5cc099f6fa91f990c8",
+      "line": 134,
+      "anchor": "def _adv"
+    },
+    "paper_budget_formula": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/instrument_card_budget_assessment_v1.py",
+      "sha256": "8f100ccacfe3f3a6e1c63d3ccc43dc515f9fdfe97aaadf9ff0404eda60d2fe71",
+      "line": 23,
+      "anchor": "def assess_instrument_budget_v1"
+    },
+    "budget_policy": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json",
+      "sha256": "7d0500d1ac9b3520e859097a9c025ea4094a1a5f73953519c830dbfe421671c5",
+      "line": 6,
+      "anchor": "\"per_entry_notional_limit\""
+    },
+    "paper_driver": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
+      "sha256": "62b872d206ae19a3d848b4dd606ace057c4c48335428b977c4b812d167930d80",
+      "line": 208,
+      "anchor": "def _drive"
+    },
+    "paper_slot_config_reader": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
+      "sha256": "62b872d206ae19a3d848b4dd606ace057c4c48335428b977c4b812d167930d80",
+      "line": 80,
+      "anchor": "def _read_paper_slot"
+    },
+    "entry_cursor": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/first_entry_mark_clock_v2.py",
+      "sha256": "34e55f32d61667948b065457c6c6588f638aee9b8e50bb36e0e5cadad6510ed2",
+      "line": 78,
+      "anchor": "def run_first_entry_mark_cycle_v2"
+    },
+    "core": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+      "sha256": "082c697efc5953d68c11e4217554bc07a4ca8bc15e94a9365daa7edd4629337f",
+      "line": 900,
+      "anchor": "bar_interval=\"1m\""
+    },
+    "soph_binding": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/i17_shadow_instrument_v1.py",
+      "sha256": "5be7572e14f54c64dc15042054d8b3d9835083462b3131dcde77ae7ba463dcfc",
+      "line": 20,
+      "anchor": "SOPH_I17 ="
+    },
+    "shadow_source": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/productive_md_fetch_v1.py",
+      "sha256": "ee371a8b92763f7fb314e36b5365e209c116d049f4d2ef8c25e4cd1552b405c7",
+      "line": 85,
+      "anchor": "def fetch_normalized_public_market_data_v1"
+    },
+    "shadow_runtime": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
+      "sha256": "1a8f62c197eb665ae6df013ea9b87d1863c8c4d20693abe9b612d7f3d1818086",
+      "line": 174,
+      "anchor": "class WallclockSessionRuntimeV1"
+    },
+    "shadow_placeholders": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+      "sha256": "3de129ea55153b01491d2d8f4c525b0e3b1ce69fa42df2b69cd85a7aa282c33f",
+      "line": 965,
+      "anchor": "volume=1_000_000.0"
+    },
+    "shadow_market_type": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+      "sha256": "3de129ea55153b01491d2d8f4c525b0e3b1ce69fa42df2b69cd85a7aa282c33f",
+      "line": 954,
+      "anchor": "market_type=FuturesMarketType.PERPETUAL"
+    },
+    "shadow_tick_features": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+      "sha256": "3de129ea55153b01491d2d8f4c525b0e3b1ce69fa42df2b69cd85a7aa282c33f",
+      "line": 885,
+      "anchor": "features = compute_feature_regime_from_mid_prices_v2"
+    },
+    "archive_cards": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/offline_candidate_cards_v1.py",
+      "sha256": "ecbdab42b39df6ff84c0b422401a65f285fb63eaa000cd344eab4c8a1ba3f26e",
+      "line": 285,
+      "anchor": "def review_offline_instrument_candidate_cards_v1"
+    },
+    "archive_ranking_check": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/offline_candidate_cards_v1.py",
+      "sha256": "ecbdab42b39df6ff84c0b422401a65f285fb63eaa000cd344eab4c8a1ba3f26e",
+      "line": 181,
+      "anchor": "slot.ranking_snapshot_id != binding.ranking_snapshot_id"
+    },
+    "paper_outcomes": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/xperp_paper_episode_outcome_v1.py",
+      "sha256": "cdbb4b3fb627549adde24a464758930afb0fa3e0e516f3e848ad3892ab8bf74e",
+      "line": 384,
+      "anchor": "def read_xperp_paper_episode_outcome_v1"
+    },
+    "slot_research": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "scripts/ops/run_recurrent_offline_research_v1.py",
+      "sha256": "a36b9c6d3628aac097a12465bfc241312f10f4cc13aac858bcfcffd6867674e9",
+      "line": 57,
+      "anchor": "class ResearchSlotScopeV1"
+    },
+    "shadow_handoff": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
+      "sha256": "efbe2c6127d99f772090e7e2a3fd60d4ada32f54354c7534a05bc3d6eb490efa",
+      "line": 182,
+      "anchor": "def shadow_ddo_learning_handoff_v1"
+    },
+    "purpose_gateway": {
+      "kind": "MERGED_CODE_OR_CONFIG",
+      "checkout": "/Users/frnkhrz/Peak_Trade",
+      "revision": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+      "path": "src/ops/economic_md_input_producer_v1/purpose_gateway_v1.py",
+      "sha256": "754824ef78021ce277f5b95cd25014c888530db4ab6e734869a9828d17f646e4",
+      "line": 12,
+      "anchor": "class PurposeBoundEconomicMdGatewayV1"
+    },
+    "draft_stream": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/instrument_card_stream_v1.py",
+      "sha256": "5394558678db41d4f0149d91f2140b5a1dbb7cb4edf673f81eb19b750d2a6758",
+      "line": 122,
+      "anchor": "class InstrumentCardStreamV1"
+    },
+    "draft_budget": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/instrument_card_stream_v1.py",
+      "sha256": "5394558678db41d4f0149d91f2140b5a1dbb7cb4edf673f81eb19b750d2a6758",
+      "line": 373,
+      "anchor": "def paper_budget_source_v1"
+    },
+    "draft_expiry": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/instrument_card_stream_v1.py",
+      "sha256": "5394558678db41d4f0149d91f2140b5a1dbb7cb4edf673f81eb19b750d2a6758",
+      "line": 242,
+      "anchor": "def current_v1"
+    },
+    "draft_observe": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/instrument_card_stream_v1.py",
+      "sha256": "5394558678db41d4f0149d91f2140b5a1dbb7cb4edf673f81eb19b750d2a6758",
+      "line": 306,
+      "anchor": "def _observe"
+    },
+    "draft_completion": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/instrument_card_stream_v1.py",
+      "sha256": "5394558678db41d4f0149d91f2140b5a1dbb7cb4edf673f81eb19b750d2a6758",
+      "line": 350,
+      "anchor": "def complete_v1"
+    },
+    "draft_shadow_gate": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+      "sha256": "15b53c23cf2d0f9810e431a7a362cc0279272ffb5dfe19836a6fe6cbe95a3067",
+      "line": 1153,
+      "anchor": "instrument_card_budget.get(\"status\")"
+    },
+    "draft_shadow_port": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
+      "sha256": "fef7c59a31755cde333b93a60c8453d23f4223ea3ea4eb426f0ee5830fadc983",
+      "line": 190,
+      "anchor": "instrument_card_budget_source: Callable"
+    },
+    "draft_paper_driver": {
+      "kind": "UNCOMMITTED_DRAFT",
+      "checkout": "/Users/frnkhrz/.codex/worktrees/peaktrade-zkp-entry-liquidity/Peak_Trade",
+      "revision": "3e4bbe45b08c3c5e56135a92aea9b2542604a6d4",
+      "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
+      "sha256": "11c8270b3395ed4d07f518d5c0e7186db92550db8db522abd8dd49d004932746",
+      "line": 212,
+      "anchor": "cards = InstrumentCardStreamV1"
+    }
+  },
+  "verification": {
+    "source_anchors_and_sha256": "CHECKED",
+    "merged_sources_match_git_tree": true,
+    "all_five_plan_config_hashes": true,
+    "all_five_campaign_identity_tuples": true,
+    "four_in_scope_slot_config_tuples_and_code_bindings": true,
+    "runtime_effect_validation": "NOT_RUN",
+    "previous_test_results": "Nicht als neue Prüfung wiederholt; frühere Ergebnisse bleiben an ihre damaligen Revisionen gebunden.",
+    "python_environment": {
+      "draft": "runtime-check PASS vor Zuordnung",
+      "main": "Launcher meldete REPO_ENV_FINGERPRINT_MISMATCH; keine Python-Ausführung/Tests dort fortgesetzt und kein Bootstrap vorgenommen."
+    },
+    "limitations": [
+      "Statischer Quellabgleich ist kein semantischer Gesamtbeweis.",
+      "Keine vollständige Inventur aller 183 Atlasadressen.",
+      "Keine laufende Versorgung oder Dauerbetriebsabnahme behauptet.",
+      "Keine automatische Übernahme alter Launchblocker.",
+      "Keine Änderung oder Wiederaufnahme historischer Sitzungen."
+    ]
+  }
+}
