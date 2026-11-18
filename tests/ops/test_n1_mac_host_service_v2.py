@@ -79,6 +79,102 @@ def test_prepare_plist_is_parked_and_routes_to_v2(manifest, tmp_path):
     assert not (tmp_path / "host").exists()
 
 
+def test_prepare_managed_filegate_binds_both_paths(manifest, tmp_path):
+    doc = json.loads(manifest.read_text())
+    projection = tmp_path / "projection/state.json"
+    authority = tmp_path / "authority"
+    doc["filegate"].update(path=str(projection), authority_root=str(authority))
+    manifest.write_text(json.dumps(doc))
+    plist = tmp_path / "managed.plist"
+    result = service.mac_host_service_v2(
+        action="prepare", manifest_path=manifest, output_path=plist
+    )
+    configuration = plistlib.loads(plist.read_bytes())
+    assert result["service_activated"] is False
+    assert configuration["RunAtLoad"] is configuration["KeepAlive"] is False
+    assert configuration["EnvironmentVariables"] == {
+        "PEAK_KILL_SWITCH_STATE_PATH": str(projection),
+        service.ROOT_ENV: str(authority),
+    }
+    doc["filegate"]["authority_root"] = str(projection.parent)
+    manifest.write_text(json.dumps(doc))
+    with pytest.raises(ValueError, match="N1_MAC_V2_FILEGATE_AUTHORITY_ROOT_OVERLAP"):
+        service.load_mac_host_manifest_v2(manifest)
+
+
+def test_managed_filegate_requires_its_manifest_bound_authority(manifest, monkeypatch, tmp_path):
+    doc = json.loads(manifest.read_text())
+    projection = tmp_path / "projection/state.json"
+    projection.parent.mkdir()
+    projection.with_name("state.json.managed").write_text("{}")
+    doc["filegate"]["path"] = str(projection)
+    manifest.write_text(json.dumps(doc))
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(projection))
+    monkeypatch.delenv(service.ROOT_ENV, raising=False)
+    monkeypatch.setattr(service, "_filegate_revision", lambda path: DIGEST)
+    assert service._manifest_filegate_revision(service.load_mac_host_manifest_v2(manifest)) is None
+
+    authority = tmp_path / "authority"
+    doc["filegate"]["authority_root"] = str(authority)
+    manifest.write_text(json.dumps(doc))
+    managed = service.load_mac_host_manifest_v2(manifest)
+    assert service._manifest_filegate_revision(managed) is None
+    monkeypatch.setenv(service.ROOT_ENV, str(tmp_path / "foreign-authority"))
+    assert service._manifest_filegate_revision(managed) is None
+    monkeypatch.setenv(service.ROOT_ENV, str(authority))
+    assert service._manifest_filegate_revision(managed) == DIGEST
+
+
+def test_manifest_builder_uses_filegate_path_from_manifest(monkeypatch, tmp_path):
+    builder_path = tmp_path / "operator-state.json"
+    projection = tmp_path / "projection/state.json"
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(builder_path))
+    factory = service.startup_factory_v1
+    roots = {name: str(tmp_path / name) for name in factory._ROOT_FIELDS}
+    for name in roots:
+        if name != "f1_m9_ledger_root":
+            (tmp_path / name).mkdir(mode=0o700)
+    apply = service.ledger_paths.resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(
+        repo_root=service.REPO
+    )
+    roots["f1_m9_ledger_root"] = str(apply.apply_ledger_path.parent)
+    owner = tmp_path / "private_store_root/portfolio_budget_host_v1/owner"
+    owner.mkdir(parents=True)
+    (owner / "reservations.sqlite3").touch()
+    runtime = {
+        "repository_sha": SHA,
+        "expected_account_identity": ACCOUNT,
+        "bound": _bound(lane_id=service.LANE).to_dict(),
+        "roots": roots,
+        "authorization": {
+            "max_cycles_per_run": 1,
+            "max_run_duration_seconds": 20,
+            "wait_interval_seconds": 1,
+            "max_wait_for_next_c1_seconds": 10,
+            "stall_seconds": 15,
+        },
+    }
+    state_root = tmp_path / "host"
+    built = service.build_mac_host_manifest_v2(
+        host_id="managed",
+        state_root=state_root,
+        expires_at_unix=200,
+        runtime_config=runtime,
+        checkpoint=service.OccupiedCheckpoint(RESERVATION, EPISODE, 1, DIGEST, DIGEST),
+        filegate_path=projection,
+        filegate_revision=DIGEST,
+        filegate_authority_root=tmp_path / "authority",
+    )
+    assert service.os.environ["PEAK_KILL_SWITCH_STATE_PATH"] == str(builder_path)
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(projection))
+    launched_request = factory._prepare_occupied_n1_request(
+        attempt_index=1, evidence_root=state_root / "attempts/1", runtime_config=runtime
+    )
+    assert built["bounds"]["runtime_config_digest"] == service.unattended_request_digest_v1(
+        launched_request
+    )
+
+
 def test_accepted_dispatch_reaches_actual_v2_filegate(manifest, monkeypatch, tmp_path):
     # Drive only the entry dispatch. The real V2 controller observes an
     # unavailable Filegate and never asks the original factory for ports.

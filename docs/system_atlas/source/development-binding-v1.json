@@ -3009,7 +3009,7 @@
     {
       "path": "src/ops/n1_mac_host_service_v2.py",
       "before_sha256": null,
-      "sha256": "ab12c301c87cd5658ba2129751b524f0966ce210ffb40c25379a10593dcdf777"
+      "sha256": "1b6ffc7290c13a961262a44660bc3c0b29e0942a79e16a6e365d63f045428cff"
     },
     {
       "path": "src/ops/n1_occupied_net_reversal_host_v2.py",
@@ -4739,7 +4739,7 @@
     {
       "path": "tests/ops/test_n1_mac_host_service_v2.py",
       "before_sha256": null,
-      "sha256": "b626f14207fac041500ba4c144dba18145aad05bbe1f304542f0d98951d644b5"
+      "sha256": "381fcb7966e3a99f15e425d44470415c4fcfbe2fa6422af3c71010db8cd2fccb"
     },
     {
       "path": "tests/ops/test_n1_original_plan_origin_v1.py",
