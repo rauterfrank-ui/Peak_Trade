@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import platform
 import time
+from contextlib import nullcontext
 from dataclasses import asdict, dataclass, field, replace
 from decimal import Decimal
 from pathlib import Path
@@ -184,6 +185,9 @@ class WallclockSessionRuntimeV1:
         repo_root: Path | None = None,
         stop_flag: Optional[Callable[[], bool]] = None,
         candidate_observation: I17CandidateHostObservationV1 | None = None,
+        instrument_card_source: Callable[..., Any] | None = None,
+        instrument_card_budget_source: Callable[..., Any] | None = None,
+        instrument_card_ranking_bound: Any = None,
     ) -> None:
         self.evidence_root = evidence_root
         self.transport = transport
@@ -194,6 +198,11 @@ class WallclockSessionRuntimeV1:
         self.repo_root = repo_root or Path(__file__).resolve().parents[3]
         self.stop_flag = stop_flag or (lambda: False)
         self.candidate_observation = candidate_observation
+        self.instrument_card_source = instrument_card_source
+        self.instrument_card_budget_source = instrument_card_budget_source
+        self.instrument_card_ranking_bound = instrument_card_ranking_bound
+        self.instrument_card_stream = None
+        self._card_g17_window = None
         self.state = WallclockSessionState.CREATED
         self.killstate = KillstateRuntimeV1()
         self.writer = WallclockEvidenceWriterV1(evidence_root=evidence_root)
@@ -712,6 +721,41 @@ class WallclockSessionRuntimeV1:
                     instrument_id=self.venue_mapping.canonical_instrument_id,
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
                 )
+                from src.ops.instrument_card_stream_v1 import (
+                    InstrumentCardStreamV1,
+                    shadow_budget_source_v1,
+                )
+                from src.ops.single_selected_future_runtime_binding_v1.models_v1 import (
+                    BoundInstrumentV1,
+                )
+                from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
+
+                bound = BoundInstrumentV1(
+                    instrument_id=instrument.canonical_id,
+                    venue_native_id=instrument.native_id,
+                    selection_id=f"shadow-session:{session_id}",
+                    selection_integrity_digest=canonical_digest_v1(
+                        dict(
+                            session_id=session_id,
+                            native=instrument.native_id,
+                            canonical=instrument.canonical_id,
+                        )
+                    ),
+                    ranking_snapshot_id="",
+                    ranking_integrity_digest="",
+                    universe_snapshot_id="",
+                    selection_state="EXPLICIT_SINGLE_INSTRUMENT_SHADOW",
+                )
+                self.instrument_card_stream = InstrumentCardStreamV1(
+                    root=self.evidence_root.parent / "instrument-card-stream" / session_id,
+                    bound=bound,
+                    lane_id=instrument.lane_id,
+                    source_mode="SHADOW",
+                    session_id=session_id,
+                    budget_source=self.instrument_card_budget_source
+                    or shadow_budget_source_v1(self.bridge_state, repo=self.repo_root),
+                    ranking_bound=self.instrument_card_ranking_bound,
+                )
             provenance = dual_identity_provenance_v1(mapping=self.venue_mapping)
             self.writer.write_immutable_json(
                 "venue_instrument_binding.json",
@@ -839,8 +883,81 @@ class WallclockSessionRuntimeV1:
                         self.candidate_observation.refresh_last(
                             transport=self.transport, clock=self.clock_wall
                         )
+                    card_market = None
+                    normalized_transport = self.transport
+                    if self.instrument_card_stream is not None:
+                        if self.instrument_card_source is not None:
+                            from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
+                                XperpPaperSlotV1,
+                            )
+                            from src.ops.instrument_card_stream_v1 import snapshot_transport_v1
+
+                            try:
+                                card_market = self.instrument_card_source(
+                                    slot=XperpPaperSlotV1(
+                                        instrument.lane_id,
+                                        instrument.base,
+                                        instrument.native_id.rsplit("-", 1)[1],
+                                    ),
+                                    capture_id=f"{session_id}:card:{self.sequence + 1}",
+                                    clock=self.clock_wall,
+                                )
+                                self.instrument_card_stream.update_v1(
+                                    card_market, now=self.clock_wall()
+                                )
+                                window = (
+                                    card_market.g17_c1_open_unix,
+                                    card_market.g17_window_digest,
+                                )
+                                if window != self._card_g17_window:
+                                    if (
+                                        self._card_g17_window is not None
+                                        and window[0] <= self._card_g17_window[0]
+                                    ):
+                                        raise ValueError("CARD_SHADOW_FINALIZED_WINDOW_CHANGED")
+                                    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+                                        prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+                                    )
+                                    from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
+                                        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
+                                    )
+
+                                    g17 = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                                        evidence_store_root=self.instrument_card_stream.root,
+                                        bound_instrument=self.instrument_card_stream.bound,
+                                        mark_candles_payload=card_market.g17_payload,
+                                        receive_or_capture_timestamp=card_market.g17_acquired_at,
+                                    )
+                                    if (
+                                        g17.fail_closed
+                                        or not g17.estimate_present
+                                        or g17.producer is None
+                                    ):
+                                        raise ValueError(
+                                            g17.reason_code or "CARD_SHADOW_G17_UNAVAILABLE"
+                                        )
+                                    self.bridge_state.typed_volatility_cmc_binding_host = (
+                                        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(
+                                            producer=g17.producer
+                                        )
+                                    )
+                                    self._card_g17_window = window
+                            except (OSError, ValueError, TypeError, KeyError) as exc:
+                                self.instrument_card_stream.unavailable_v1(
+                                    exc, now=self.clock_wall()
+                                )
+                                raise MarketDataBindingErrorV1(
+                                    "TRANSPORT_FAILURE", str(exc)
+                                ) from exc
+                            normalized_transport = snapshot_transport_v1(card_market)
+                        else:
+                            # Legacy injected observation fixtures retain their scope;
+                            # an incomplete source never becomes an admitted card.
+                            self.instrument_card_stream.unavailable_v1(
+                                "CARD_COMPLETE_SOURCE_PORT_REQUIRED", now=self.clock_wall()
+                            )
                     normalized = fetch_normalized_public_market_data_v1(
-                        transport=self.transport,
+                        transport=normalized_transport,
                         mapping=self.venue_mapping,
                         receive_ts_unix=self.clock_wall,
                         max_stale_seconds=float(self.config.max_stale_seconds),
@@ -973,15 +1090,32 @@ class WallclockSessionRuntimeV1:
                             self.post_reconnect_continuation_count += 1
                         ddo_capture_binding.clear_cycle_observations()
                         try:
-                            outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
-                                bridge_state=self.bridge_state,
-                                ticks=[tick],
-                                reference_price=Decimal(str(price)),
-                                wall_now_unix=now_wall,
-                                session_id=session_id,
-                                ddo_capture_binding=ddo_capture_binding,
-                                ddo_repository_sha=self._expected_repository_sha,
-                            )
+                            with (
+                                self.instrument_card_stream.observe_v1()
+                                if card_market is not None
+                                else nullcontext()
+                            ):
+                                outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
+                                    bridge_state=self.bridge_state,
+                                    ticks=[tick],
+                                    reference_price=Decimal(str(price)),
+                                    wall_now_unix=now_wall,
+                                    session_id=session_id,
+                                    ddo_capture_binding=ddo_capture_binding,
+                                    ddo_repository_sha=self._expected_repository_sha,
+                                    **(
+                                        {
+                                            "instrument_card_market": card_market,
+                                            "instrument_card_budget": self.instrument_card_stream.current[
+                                                "budget"
+                                            ],
+                                        }
+                                        if card_market is not None
+                                        else {}
+                                    ),
+                                )
+                            if card_market is not None:
+                                self.instrument_card_stream.complete_v1(outcome_bridge.bridge_cycle)
                         except ValueError as exc:
                             # The core has rejected this input. Preserve earlier cycles and
                             # seal the abort without turning the rejected cycle into a decision.
@@ -1156,6 +1290,10 @@ class WallclockSessionRuntimeV1:
         incomplete: bool,
         force_verdict: Optional[TerminalVerdict] = None,
     ) -> WallclockSessionResultV1:
+        if self.instrument_card_stream is not None:
+            self.instrument_card_stream.unavailable_v1(
+                "ORIGINAL_SHADOW_SESSION_ENDED", now=self.clock_wall()
+            )
         if self.transport.opened:
             try:
                 self.transport.close()

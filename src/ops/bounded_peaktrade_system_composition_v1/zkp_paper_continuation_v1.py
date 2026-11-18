@@ -715,20 +715,14 @@ class ZkpPaperContinuationV1:
         maximum = market.maximum_contracts - abs(current)
         if stop is None or maximum < self.accounting.contract.min_qty:
             return {"reason_codes": ["ZKP_PAPER_REVERSAL_STOP_OR_NET_LIMIT"]}
-        capital = ProductiveFuturesAccountingSessionV1.from_durable_dict(
-            self.accounting.to_durable_dict()
+        from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
+            current_paper_slot_capital_v1,
         )
-        capital.mark_to_market(market.mark)
-        portfolio = capital.portfolio_state()
+
+        capital, portfolio, cap = current_paper_slot_capital_v1(
+            self.accounting, self.budget, market
+        )
         equity = portfolio.equity
-        cap = (
-            min(
-                PAPER_ALLOCATION_USDC,
-                self.budget.per_entry_notional_limit,
-                self.budget.per_slot_reserved_notional_limit,
-            )
-            * market.usd_per_usdc
-        )
         marked_net = equity - capital.initial_equity
         loss_limit = min(
             self.budget.per_slot_test_loss_limit * market.usd_per_usdc + min(_ZERO, marked_net),

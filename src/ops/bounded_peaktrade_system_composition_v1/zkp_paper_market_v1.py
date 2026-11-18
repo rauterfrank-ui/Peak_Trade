@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from copy import deepcopy
 from decimal import Decimal
 from time import time
 
@@ -150,6 +151,8 @@ class ZkpPaperMarketV1:
     funding_history_times: tuple[float, ...]
     funding_settlements: tuple[ZkpPaperFundingSettlementV1, ...]
     slot: XperpPaperSlotV1 = ZKP_PAPER_SLOT
+    source_observations: dict | None = None
+    original_bodies: dict[str, bytes] | None = None
 
     def _liquidity_snapshot(self) -> PaperLiquiditySnapshotV1:
         return PaperLiquiditySnapshotV1(
@@ -220,16 +223,31 @@ def zkp_public_queries_v1(days, *, slot=ZKP_PAPER_SLOT):
 def collect_zkp_paper_market_v1(
     transport, *, policy, capture_id, retain=None, clock=time, slot=ZKP_PAPER_SLOT
 ):
+    original_bodies = {}
+
+    def retained(label, result, raw):
+        original_bodies[label] = raw
+        if retain is not None:
+            retain(label, result, raw)
+
     observations = collect_public_paper_sources_v1(
         transport,
         queries=zkp_public_queries_v1(policy.adv_days, slot=slot),
         capture_id=capture_id,
-        retain=retain,
+        retain=retained,
     )
-    return bind_zkp_paper_market_v1(observations, policy=policy, observed_unix=clock(), slot=slot)
+    return bind_zkp_paper_market_v1(
+        observations,
+        policy=policy,
+        observed_unix=clock(),
+        slot=slot,
+        original_bodies=original_bodies,
+    )
 
 
-def bind_zkp_paper_market_v1(observations, *, policy, observed_unix, slot=ZKP_PAPER_SLOT):
+def bind_zkp_paper_market_v1(
+    observations, *, policy, observed_unix, slot=ZKP_PAPER_SLOT, original_bodies=None
+):
     payloads, acquired, hashes = validate_public_paper_sources_v1(
         observations,
         queries=zkp_public_queries_v1(policy.adv_days, slot=slot),
@@ -386,4 +404,6 @@ def bind_zkp_paper_market_v1(observations, *, policy, observed_unix, slot=ZKP_PA
         funding_history_times,
         funding_settlements,
         slot,
+        deepcopy(dict(observations)),
+        None if original_bodies is None else dict(original_bodies),
     )

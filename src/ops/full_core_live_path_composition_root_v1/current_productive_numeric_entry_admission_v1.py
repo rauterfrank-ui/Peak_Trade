@@ -36,6 +36,16 @@ def _restricted_input(inp, policy, reasons):
 
 
 def prepare_current_productive_numeric_entry_v1(inp, *, replay_runner):
+    result = _prepare_current_productive_numeric_entry_v1(inp, replay_runner=replay_runner)
+    # An explicitly bound offline card observes the final, possibly restricted
+    # input. Its detached copy grants no decision or authorization authority.
+    from src.ops.instrument_card_input_observation_v1 import record_instrument_card_input_v1
+
+    record_instrument_card_input_v1(result[0])
+    return result
+
+
+def _prepare_current_productive_numeric_entry_v1(inp, *, replay_runner):
     """Validate actual pure replay inputs before its result can enter finance.
 
     Valid no-capture calls reuse the pure preview. Invalid inputs restrict the

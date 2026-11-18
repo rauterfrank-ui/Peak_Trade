@@ -245,6 +245,35 @@ Der Research-Schritt braucht weiterhin eigene instrumentgebundene Eingaben.
 
 ### Eigenständiger Shadow-Begleittest für das Selbstlernen
 
+Der lokale Entwicklungsstand vom 19. November 2026 ergänzt die kontinuierliche
+Kartenprojektion für ZKP/UP/IRYS-Paper und SOPH-Shadow. Der
+[Semantik- und Anschlussbefund](../specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md)
+beschreibt ihre Originalconsumer und Grenzen. Diese Ergänzung ist keine
+Startfreigabe; im Rahmen dieser Änderung wurden nur Offline-Prüfungen ausgeführt.
+
+Paper schreibt pro ursprünglichem Lauf unter `instrument-cards/<lane>`;
+Shadow schreibt separat neben seinem Evidenceverzeichnis unter
+`instrument-card-stream/<session>/instrument-cards/LANE_5`. `latest.json`
+ist eine Inhaltsdigest-gesicherte Ansicht. Die Unterordner `versions` und
+`sources` behalten die Fassungen, tatsächlichen Master-V2-Eingaben und
+Originalantworten. Datenabriss und Sitzungsende sperren die Ansicht.
+Ein Verbraucher muss `read_instrument_card_v1` mit der aktuellen
+Entscheidungs-/Slotbindung, gegebenenfalls der Original-Rankingbindung und
+seiner Verbrauchszeit verwenden. Ein direkter Dateiread erteilt keine
+Frische-, Budget- oder Einstiegszulassung.
+
+Die vorhandenen Starter akzeptieren optional
+`--card-cap24-evidence-root` für eine bereits erzeugte Cap24-Auswahl.
+Paper bewahrt diese Kartenbindung im Originalordner für `resume` auf;
+ein Austausch wird abgewiesen. Ohne Originalauswahl ist die Karte ausdrücklich
+eine isolierte Testbindung. Der Anschluss wählt und rotiert keine Instrumente.
+SOPH liest sein virtuelles Testkapital aus dem ursprünglichen analytischen
+Portfolio und der bestehenden Slotbudgetpolicy. Kapitalbasis und freier
+Neueinstiegsbetrag bleiben getrennt. Analytische Shadowmengen werden als
+Basisassetmengen behandelt und für die zusätzliche Prüfung ausdrücklich in
+native Kontrakte umgerechnet. Private Kapital-/Hold-/Fillowner bleiben davon
+unberührt; der Shadowpfad bleibt analytische Simulation.
+
 Für den späteren gemeinsamen Testblock läuft der bestehende I17-Shadow-Test
 auf dem ETH-Kontrakt `ETH-USD_UM_XPERP-310404` in einer eigenen Sitzung und
 mit eigenen Evidenz- und Lernwurzeln. Das Ziel ist ein dauerhaft zurückgelesener

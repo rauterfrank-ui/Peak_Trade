@@ -320,3 +320,97 @@ fortgesetzt und kein Bootstrap vorgenommen. Der zuvor geprüfte
 Arbeitsworktree hatte einen bestandenen `runtime-check`. Diese Zuordnung
 ändert ausschließlich Dokumentation und behauptet keine abgeschlossene
 Härtung oder Gesamtbetriebsabnahme.
+
+## Fortlaufender Kartenanschluss: lokale Umsetzung vom 19. November 2026
+
+Die folgende Umsetzung führt die vorstehende Zuordnung fort; der datierte
+Zuordnungsbeleg bleibt als Befund vor der Änderung erhalten.
+
+Der [Paper-Starter](../../../scripts/ops/run_zkp_lane1_paper_v1.py) projiziert
+jede neue Originalaufnahme für ZKP, UP oder IRYS durch
+[InstrumentCardStreamV1](../../../src/ops/instrument_card_stream_v1.py).
+Die Projektion umfasst die vollständigen 13 Quellen, ihre Originalbytes und
+GET-Receipts, aktuellen Slotkapitalbezug, Buchprüfung und die tatsächlich
+vorbereitete Master-V2-Eingabe samt Originalergebnis. Sie erhält weder einen
+zweiten Entscheidungswriter noch einen zweiten Handelscursor. Die vorhandene
+Öffnung, Nettobuchung, Fundingverarbeitung und Originalfortsetzung bleiben
+bei ihren bisherigen Ownern. Der Starter akzeptiert bei den historischen
+Slotkonfigurationen auch das eindeutige `environment=PAPER`, ohne die Dateien
+zu verändern; widersprechende Betriebsarten werden abgewiesen.
+
+Für SOPH verbindet der
+[I17-Entrypoint](../../../src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py)
+nach seinen unveränderten Startgates denselben vollständigen öffentlichen
+Quellvertrag mit der Shadow-Karte. Mark und Ticker werden für die bestehende
+Normalisierung aus genau dieser Aufnahme geliefert. Der Core erhält deren
+eigenen Index, Buch-Bid/Ask, Kontraktvolumen, OI und Fundingrate sowie den
+Markttyp `FUTURES`, finale gehandelte C1 für seinen Feature-/Preisreihenpfad
+und die originale finale Markhistorie für den zuständigen G17-Produzenten.
+Die bisherigen Tick-/Platzhalterinputs bleiben auf den bisherigen
+Beobachtungspfad ohne vollständige Kartenquelle begrenzt. Solche Eingaben
+werden ausdrücklich nicht zu einer vollständigen gültigen Karte erklärt.
+
+Der SOPH-Kapitalbezug kommt aus dem ursprünglichen analytischen Portfolio und
+der bestehenden Slot-Testbudgetpolicy. Vor dessen erstem analytischen Zyklus
+wird die Testallokation einmal mit dem aktuellen USDC/USD-Index in seine
+USD-Basis umgerechnet. Danach werden Originalzustand und markierte Equity
+gelesen. Ein bereits verwendetes Portfolio darf nicht neu initialisiert werden.
+Diese virtuelle Basis ist weder private Kontowahrheit noch ein Budgethold.
+Die analytischen Portfolio-Fillmengen sind Basisassetmengen; vor einer
+zusätzlichen Exposition wird die Menge ausdrücklich in native Kontrakte
+umgerechnet und geprüft. Unvereinbare Mengen werden beim analytischen
+Consumer gehalten. Die Originalentscheidung bleibt als solche erhalten;
+der zusätzliche Neueinstiegscheck sperrt keine ursprünglichen Reduktions-
+oder Exitaktionen. Die modellierten Shadow-Fills und Modellkosten bleiben
+analytische Simulation und werden nicht zu echten Buchausführungen erklärt.
+
+`available_amount` benennt die aktuelle begrenzte Kapitalbasis.
+`available_for_new_entry` benennt die gesondert verfügbare Neueinstiegsbasis
+und ist bei offener Position null. Die nominale Kartenkapazität wird aus
+letzterer berechnet. Das ersetzt weder die ursprüngliche finale
+Risiko-/Sizing-Menge noch deren vollständige Kostenprüfung. Reservierung
+bleibt bei diesen Modellen ausdrücklich unbekannt beziehungsweise außerhalb
+ihres Holdmodells; `null` wird nicht als null reserviertes Geld verwendet.
+
+Paper und der SOPH-I17-Begleiter können über
+`--card-cap24-evidence-root` eine bereits vorhandene Cap24-Evidenz übernehmen.
+Der vorhandene Cap24-Leser prüft Manifest, Recordstatus und Bindungsidentität;
+die Instrumentpaarung muss exakt zum Slot passen. Auswahl-, Ranking- und
+Universumsbezug werden in der Karte getrennt von der bestehenden isolierten
+Entscheidungsbindung aufbewahrt. Der ursprüngliche Lane-Identitätsowner
+berechnet daraus die Instrumentgeneration. Paper hält diese Kartenbindung
+für den Wiederanlauf fest und weist einen Austausch ab. Ohne solche
+Originaleingaben lautet der Status `EXPLICIT_ISOLATED_TEST_BINDING`.
+Es gibt keinen automatischen Rerank, keine neue Cap23-Auswahl und keine
+stillschweigende Übernahme späterer Rankinggenerationen. Die natürliche
+Versorgung aus dem Ranking-/Rotationsowner bleibt ein eigener Betriebsanschluss.
+
+Pro Sitzung und Lane liegen `latest.json`, unveränderliche Fassungen unter
+`versions` und contentadressierte Originalantworten unter `sources` im
+Kartenverzeichnis. Die Original-Shadow-Evidence bleibt separat versiegelt.
+Neue Quellen- oder Budgetfassungen dürfen kein altes Einstiegsurteil als
+neue Bewertung übernehmen. Fehler löschen die aktuelle Kartenbewertung;
+Sitzungsende markiert die Karte gesperrt. Der lesende Zugang
+`read_instrument_card_v1` prüft Digest, Entscheidungsbindung, Lane und
+Verbrauchszeit und entfernt abgelaufene Werte aus seiner Rückgabe. Die
+Frist kommt aus den bestehenden Mark-/Buch-Freshnessgrenzen und den
+Originalquellzeiten; eine aktuelle Datei ist keine eigenständige Freigabe.
+
+Die [Kartenprüfungen](../../../tests/ops/test_instrument_card_stream_v1.py),
+die erweiterten [Paper-Ownerprüfungen](../../../tests/ops/test_zkp_lane1_paper_opening_v1.py)
+und die [Shadow-Prüfungen](../../../tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py)
+verwenden synthetische Originalantworten und gesperrte externe Verbindungen.
+Sie prüfen die fortlaufende Übergabe im bestehenden Verbraucherpfad.
+Ein realer Datenlauf, ein automatisch zugelassener N5-Host und eine
+Gesamtabnahme aller Systemverzweigungen werden daraus nicht abgeleitet.
+
+Der [Prüfbeleg vom 19. November](../evidence/INSTRUMENT_CARD_CONTINUOUS_CONNECTION_2026-11-19.json)
+bindet die geprüften Quelldateien per SHA-256. Im abschließenden Paket bestanden
+131 von 132 Offline-Fällen. Offen bleibt
+`test_case_d_adverse_exit_uses_canonical_producer`: derselbe Kontrollfall
+scheitert auch einzeln auf `83cce4ca6`, dessen Git-Baum mit der Mergebasis
+`351728852` identisch ist, an derselben Trigger-Erwartung. Der Test und seine
+Schwellen wurden nicht geändert; seine fachliche Ursache ist noch nicht
+abschließend beurteilt. Ruff, Formatprüfung, Diff-Prüfung sowie Karten-,
+N1- und Clean-Core-Siegel bestanden. Die Kartenprüfung ersetzt diesen offenen
+Safety-Befund nicht.

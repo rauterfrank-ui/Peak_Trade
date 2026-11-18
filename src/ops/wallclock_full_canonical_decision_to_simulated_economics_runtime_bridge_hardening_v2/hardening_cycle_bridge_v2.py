@@ -187,6 +187,7 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     PositionState,
     ReconciliationState,
     SafetyMode,
+    TradingGate,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.double_play_state import SideState
@@ -822,7 +823,31 @@ def run_hardened_bridge_cycle_v2(
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
+    instrument_card_market: Any = None,
+    instrument_card_budget: Any = None,
 ) -> dict[str, Any]:
+    if instrument_card_market is not None:
+        from src.ops.instrument_card_stream_v1 import validate_card_market_v1
+        from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+
+        bound = BoundInstrumentV1(
+            instrument_id=state.instrument_id,
+            venue_native_id=state.venue_instrument_id,
+            ranking_snapshot_id="",
+            ranking_integrity_digest="",
+            universe_snapshot_id="",
+            selection_id=session_id,
+            selection_integrity_digest="",
+            selection_state="SHADOW",
+        )
+        validate_card_market_v1(
+            instrument_card_market,
+            bound=bound,
+            lane_id=instrument_card_market.slot.lane_id,
+            now=event_ts_unix,
+        )
+        if mid_price != float(instrument_card_market.mark):
+            raise ValueError("CARD_SHADOW_MARK_MISMATCH")
     if state.session_restart_policy != SESSION_RESTART_POLICY:
         raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
     if state.session_id and state.session_id != session_id:
@@ -882,7 +907,16 @@ def run_hardened_bridge_cycle_v2(
         event_ts_unix=float(event_ts_unix),
         receive_ts_unix=float(event_ts_unix),
     )
-    features = compute_feature_regime_from_mid_prices_v2(state.mid_prices)
+    card_closes = None
+    if instrument_card_market is not None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+            extract_finalized_candle_closes_v1,
+        )
+
+        card_closes, _ = extract_finalized_candle_closes_v1(instrument_card_market.candles_payload)
+    features = compute_feature_regime_from_mid_prices_v2(
+        state.mid_prices if card_closes is None else card_closes
+    )
     metrics0 = state.portfolio.economic_metrics()
     has_open_position, position_side, entry_price = _portfolio_position_fields_v2(state)
 
@@ -913,11 +947,17 @@ def run_hardened_bridge_cycle_v2(
         raise RuntimeError(f"CONFIG_DRIFT:{state.config_digest}:{config_digest}")
     state.config_digest = config_digest
 
-    price_path = tuple(state.mid_prices[-FEATURE_WINDOW_MIN:])
+    price_path = (
+        tuple(state.mid_prices[-FEATURE_WINDOW_MIN:]) if card_closes is None else tuple(card_closes)
+    )
     if len(price_path) < 2:
         price_path = (float(mid_price), float(mid_price))
 
-    mark = float(features.mark_price or basis.mid_price)
+    mark = (
+        float(features.mark_price or basis.mid_price)
+        if instrument_card_market is None
+        else float(instrument_card_market.mark)
+    )
     warmup_status = (
         WarmupStatus.WARMUP_COMPLETE if features.warmup_complete else WarmupStatus.WARMUP_REQUIRED
     )
@@ -951,20 +991,34 @@ def run_hardened_bridge_cycle_v2(
         CanonicalMarketContextV1(
             context_id=f"ctx-{state.instrument_id}-epoch{state.trading_epoch}-hardening-v2",
             instrument_id=state.instrument_id,
-            market_type=FuturesMarketType.PERPETUAL,
+            market_type=FuturesMarketType.PERPETUAL
+            if instrument_card_market is None
+            else FuturesMarketType.FUTURES,
             trading_epoch=state.trading_epoch,
-            market_event_time=_iso_now(event_ts_unix),
+            market_event_time=_iso_now(
+                event_ts_unix
+                if instrument_card_market is None
+                else instrument_card_market.market_event_unix
+            ),
             decision_time=_iso_now(event_ts_unix + 0.001),
-            bar_interval="tick",
+            bar_interval="tick" if instrument_card_market is None else "1m",
             bar_finality_status=BarFinalityStatus.FINALIZED,
             mark_price=mark,
-            index_price=mark,
+            index_price=mark
+            if instrument_card_market is None
+            else float(instrument_card_market.index_payload["data"][0]["idxPx"]),
             best_bid=basis.best_bid,
             best_ask=basis.best_ask,
             spread=basis.spread,
-            volume=1_000_000.0,
-            open_interest=50_000_000.0,
-            funding_rate=0.0001,
+            volume=1_000_000.0
+            if instrument_card_market is None
+            else float(instrument_card_market.volume_contracts),
+            open_interest=50_000_000.0
+            if instrument_card_market is None
+            else float(instrument_card_market.oi_contracts),
+            funding_rate=0.0001
+            if instrument_card_market is None
+            else float(instrument_card_market.funding_rate),
             # Hot-path closure: never seed CMC from competing feature_regime proxy
             # (sample var ddof=1 × sqrt(n)). Typed bind overwrites atomically.
             volatility_estimate=productive_cmc_volatility_seed_v1(),
@@ -1075,7 +1129,9 @@ def run_hardened_bridge_cycle_v2(
     _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
         evaluate_host_exit_policy_producers_v1(
             state.exit_policy_binding,
-            mark_price=float(features.mark_price or basis.mid_price),
+            mark_price=float(features.mark_price or basis.mid_price)
+            if instrument_card_market is None
+            else mark,
             event_ts_unix=float(event_ts_unix),
             observation_digest="",
             has_open_position=has_open_position,
@@ -1115,6 +1171,19 @@ def run_hardened_bridge_cycle_v2(
         effective_trading_gate = demote_trading_gate_for_typed_presence_failure_v1(
             safety.trading_gate_enum
         )
+    if instrument_card_market is not None and (
+        not instrument_card_budget
+        or instrument_card_budget.get("status") != "BOUND"
+        or Decimal(instrument_card_budget["available_for_new_entry"]) <= 0
+        or not any(
+            instrument_card_market.assess_opening_liquidity_v1(side=side)["risk_admitted"]
+            for side in ("BUY", "SELL")
+        )
+    ):
+        # New exposure needs current slot capital and executable native depth.
+        # Preserve a stronger existing Safety gate and all original state owners.
+        if effective_trading_gate not in (TradingGate.BLOCKED, TradingGate.EXIT_ONLY):
+            effective_trading_gate = TradingGate.EXIT_ONLY
 
     decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
     risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
@@ -1214,6 +1283,10 @@ def run_hardened_bridge_cycle_v2(
         **confirmation_inputs,
     )
 
+    if instrument_card_market is not None:
+        from src.ops.instrument_card_input_observation_v1 import record_instrument_card_input_v1
+
+        record_instrument_card_input_v1(replay_input)
     ddo_capture = None
     if ddo_capture_binding is not None and ddo_repository_sha is not None:
         # The full-core package also imports the wallclock entrypoint during startup.
@@ -1266,6 +1339,45 @@ def run_hardened_bridge_cycle_v2(
     fill_dict = None
     side = str(intended_dict["intended_side"])
     qty = Decimal(str(intended_dict["intended_quantity"]))
+    card_execution_check = None
+    new_exposure = False
+    if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0:
+        position = (
+            state.portfolio.snapshot()
+            .get("state", {})
+            .get("positions", {})
+            .get(state.instrument_id, {})
+        )
+        current_base = Decimal(str(position.get("quantity", "0")))
+        target_base = current_base + (qty if side == "BUY" else -qty)
+        new_exposure = abs(target_base) > abs(current_base) or current_base * target_base < 0
+    if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0 and new_exposure:
+        # This legacy analytical portfolio counts base units, not native
+        # contracts. Never reinterpret its amount as a native order quantity.
+        # The original replay decision remains intact; incompatible analytical
+        # execution is held at this consumer boundary.
+        from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
+
+        try:
+            card_execution_check = assess_instrument_budget_v1(
+                market=instrument_card_market,
+                available_usdc=instrument_card_budget["available_for_new_entry"],
+                side=side,
+                quantity_contracts=qty / instrument_card_market.native_contract.contract_size,
+            )
+        except (ValueError, ArithmeticError) as exc:
+            card_execution_check = {"measurement_admitted": False, "reason_codes": [str(exc)]}
+        if not card_execution_check["measurement_admitted"]:
+            intended_dict = {
+                **intended_dict,
+                "intended_side": "HOLD",
+                "intended_quantity": "0",
+                "reason_codes": [
+                    *intended_dict["reason_codes"],
+                    "CARD_EXACT_QUANTITY_NOT_ADMITTED",
+                ],
+            }
+            side, qty = "HOLD", Decimal(0)
     if side in {"BUY", "SELL"} and qty > 0:
         fill_id = make_scoped_id("fill", intent_id, mark, qty, side)
     fill_obj = state.portfolio.apply_intended_action(
@@ -1375,6 +1487,11 @@ def run_hardened_bridge_cycle_v2(
             "config_digest": config_digest,
             "decision_producer": DECISION_AUTHORITY_OWNER,
         },
+        **(
+            {"instrument_card_execution_check": card_execution_check}
+            if instrument_card_market is not None
+            else {}
+        ),
         "fill": fill_dict,
         "portfolio_state_before_hash": before_hash,
         "portfolio_state_after_hash": after_hash,
