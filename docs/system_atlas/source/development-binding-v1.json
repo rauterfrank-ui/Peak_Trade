@@ -3099,7 +3099,7 @@
     {
       "path": "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
       "before_sha256": "797098ac72a46e065ae71a6a1ec4d75a18e6ab323e03e7e66935bb29c0ca7f51",
-      "sha256": "a20a58ef5742e032644187e5e30358ada4a673d7dac669164b8ac76e86c6ab40"
+      "sha256": "9339ca49063bcb46f1179fa079a4d7188f56c15987358f7b0884da25f35d9d11"
     },
     {
       "path": "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py",

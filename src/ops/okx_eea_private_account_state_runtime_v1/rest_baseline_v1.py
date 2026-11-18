@@ -42,11 +42,11 @@ _PARALLEL_RECOVERY_GETS = ContextVar("parallel_account_recovery_gets", default=F
 
 @contextmanager
 def parallel_account_recovery_gets_v1():
-    token = _PARALLEL_RECOVERY_GETS.set(True)
+    previous_context = _PARALLEL_RECOVERY_GETS.set(True)
     try:
         yield
     finally:
-        _PARALLEL_RECOVERY_GETS.reset(token)
+        _PARALLEL_RECOVERY_GETS.reset(previous_context)
 
 
 @dataclass
