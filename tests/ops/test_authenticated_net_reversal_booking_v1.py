@@ -277,7 +277,7 @@ def _write_host_manifest(root, data, scenario):
     return path
 
 
-def _run_booking_supervisor(root, data, scenario, *, crash=False):
+def _run_booking_supervisor(root, data, scenario, *, crash=False, v2=None):
     original_init = PortfolioBudgetHostV1.__init__
     original_save = PortfolioCapitalReservationBudgetOwnerV1._persist_locked
     fixture = SignedNetReversalGetFixture(data, scenario)
@@ -324,17 +324,77 @@ def _run_booking_supervisor(root, data, scenario, *, crash=False):
         patch.object(PortfolioBudgetHostV1, "__init__", init_host),
         patch.object(PortfolioCapitalReservationBudgetOwnerV1, "_persist_locked", save),
     ):
+        if v2 is not None:
+            from src.ops.n1_occupied_net_reversal_host_v2 import (
+                run_occupied_n1_net_reversal_host_v2,
+            )
+
+            def factory(attempt, evidence):
+                prepared = startup_factory_v1.prepare_occupied_n1_request_v1(
+                    attempt_index=attempt,
+                    evidence_root=evidence,
+                    runtime_config=v2["runtime_config"],
+                )
+                # The process dies during booking, before the test POST port may open.
+                return replace(prepared, runtime_config_digest=v2["runtime_config_digest"])
+
+            run_occupied_n1_net_reversal_host_v2(
+                bounds=unattended_v1.UnattendedHostBoundsV1(**v2["bounds"]),
+                state_root=Path(v2["state_root"]),
+                request_factory=factory,
+                clock=fixture.clock.timestamp,
+            )
+            raise AssertionError("V2 reached the end without the intended process loss")
         receipt = unattended_v1.host_service_v1(manifest_path=manifest, action="run")
     assert receipt["result"]["attempts"] == 1, receipt
     assert contexts == ["open", "close"]
     return results[0], fixture.calls
 
 
-def crash_after_net_reversal_commit_v1(root):
+def crash_after_net_reversal_commit_v1(root, *, v2=False):
     root = Path(root)
     data = json.loads((root / "net-reversal-test-input.json").read_bytes())
-    result, _ = _run_booking_supervisor(root, data, "complete", crash=True)
+    registration = json.loads((root / "v2-test-registration.json").read_bytes()) if v2 else None
+    result, _ = _run_booking_supervisor(root, data, "complete", crash=True, v2=registration)
     raise AssertionError(result.trace.extra.get("net_reversal_readback"))
+
+
+def _kill_booking_process(root, ledger_root, *, v2=False):
+    command = """
+import sys
+from pathlib import Path
+from pytest import MonkeyPatch
+
+def offline(event, args):
+    if event.startswith("socket."):
+        raise AssertionError("socket in net reversal test")
+sys.addaudithook(offline)
+
+from tests.ops.test_authenticated_net_reversal_booking_v1 import crash_after_net_reversal_commit_v1
+from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+    establish_current_productive_pre_external_test_process_isolation_v1,
+)
+
+root, ledger_root = map(Path, sys.argv[1:3])
+with MonkeyPatch.context() as patch:
+    if ledger_root.is_relative_to(root):
+        establish_current_productive_pre_external_test_process_isolation_v1(
+            monkeypatch=patch, f1_root=ledger_root, reseed_workspace_f1_m9=False
+        )
+    crash_after_net_reversal_commit_v1(root, v2=sys.argv[3] == "v2")
+"""
+    env = os.environ.copy()
+    if env.get("GITHUB_ACTIONS") == "true":
+        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
+    child = subprocess.run(
+        ["./scripts/pt", "-B", "-c", command, str(root), str(ledger_root), "v2" if v2 else "v1"],
+        cwd=Path(__file__).resolve().parents[2],
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=40,
+    )
+    assert child.returncode == -signal.SIGKILL, (child.stdout, child.stderr)
 
 
 def assert_original_net_reversal_booking_v1(
@@ -353,6 +413,9 @@ def assert_original_net_reversal_booking_v1(
     first_authorization,
     signer,
     exceptional_close=False,
+    automatic_continuation=False,
+    crash_continuation=False,
+    end_budget_continuation=False,
 ):
     from tests.ops.test_bounded_multislot_connected_cycle_v1 import ports
     from tests.ops.test_bounded_slot_connected_roundtrip_v1 import market
@@ -378,6 +441,19 @@ def assert_original_net_reversal_booking_v1(
         "observed_at": (socket + timedelta(seconds=1)).isoformat(),
     }
     (tmp_path / "net-reversal-test-input.json").write_text(json.dumps(data))
+    if automatic_continuation:
+        _assert_n1_continuation_v2(
+            tmp_path,
+            monkeypatch,
+            data,
+            bound,
+            closes,
+            first_authorization,
+            signer,
+            crash=crash_continuation,
+            end_budget=end_budget_continuation,
+        )
+        return
     root = tmp_path / "private/portfolio_budget_host_v1"
     paths = {
         root / "owner" / "reservations.sqlite3",
@@ -452,41 +528,7 @@ def assert_original_net_reversal_booking_v1(
         assert "booking_digest" not in readback and len(calls) >= 5
         assert {path: path.read_bytes() for path in paths} == raw
 
-    command = """
-import sys
-from pathlib import Path
-from pytest import MonkeyPatch
-
-def offline(event, args):
-    if event.startswith("socket."):
-        raise AssertionError("socket in net reversal test")
-sys.addaudithook(offline)
-
-from tests.ops.test_authenticated_net_reversal_booking_v1 import crash_after_net_reversal_commit_v1
-from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
-    establish_current_productive_pre_external_test_process_isolation_v1,
-)
-
-root, ledger_root = map(Path, sys.argv[1:])
-with MonkeyPatch.context() as patch:
-    if ledger_root.is_relative_to(root):
-        establish_current_productive_pre_external_test_process_isolation_v1(
-            monkeypatch=patch, f1_root=ledger_root, reseed_workspace_f1_m9=False
-        )
-    crash_after_net_reversal_commit_v1(root)
-"""
-    env = os.environ.copy()
-    if env.get("GITHUB_ACTIONS") == "true":
-        env.update(PT_RUNTIME_MODE="provisioned", PT_PROVISIONED_PYTHON=sys.executable)
-    child = subprocess.run(
-        ["./scripts/pt", "-B", "-c", command, str(tmp_path), config["roots"]["f1_m9_ledger_root"]],
-        cwd=Path(__file__).resolve().parents[2],
-        env=env,
-        capture_output=True,
-        text=True,
-        timeout=40,
-    )
-    assert child.returncode == -signal.SIGKILL, (child.stdout, child.stderr)
+    _kill_booking_process(tmp_path, config["roots"]["f1_m9_ledger_root"])
     assert all(
         path.read_bytes() == original
         for path, original in raw.items()
@@ -746,6 +788,311 @@ with MonkeyPatch.context() as patch:
             assert len(second_gets.calls) == get_count
         finally:
             cold.close()
+
+
+def _assert_n1_continuation_v2(
+    root, monkeypatch, data, bound, closes, first_authorization, signer, *, crash, end_budget
+):
+    from src.ops import n1_occupied_net_reversal_host_v2 as continuation
+    from src.ops import n1_post_authority_startup_v1
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_governed_continuous_cycle_orchestrator_v1 as s6,
+        current_productive_persistent_natural_enter_convergence_v1 as convergence,
+        external_effect_permit_durable_consume_v1 as send_receipt,
+    )
+    from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import startup_binding_v1
+    from tests.ops.test_bounded_multislot_connected_cycle_v1 import ports
+    from tests.ops.test_bounded_slot_connected_roundtrip_v1 import market
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        _FakeKeychainBackend,
+        _clean_post_integrity,
+    )
+    from tests.ops.test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1 import (
+        _f1_m9_evaluator_factory,
+    )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import _claim_rows
+
+    first = SignedNetReversalGetFixture(data, "complete")
+    fixtures = [first]
+    orders = []
+    runs = []
+    root_v2 = root / "continuous-net-reversal"
+    manifest = json.loads(_write_host_manifest(root, data, "v2").read_bytes())
+    runtime_config = manifest["runtime_request_config"]
+
+    class ReplayDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixtures[-1].clock if tz is None else fixtures[-1].clock.astimezone(tz)
+
+    def signed_authorization(envelope):
+        assert not orders
+        grant = replace(
+            first_authorization.grant,
+            grant_id="automatic-return",
+            envelope_digest=envelope.envelope_digest,
+        )
+        orders.append(envelope)
+        return replace(
+            first_authorization,
+            grant=replace(grant, signature=signer.sign(grant.signing_bytes_v1()).signature),
+        )
+
+    class OfflineOpener:
+        def open(self, request, timeout):
+            assert len(fixtures) == 1
+            payload = json.loads(request.data)
+            envelope = orders[0]
+            assert request.get_method() == "POST" and payload["side"] == "buy"
+            assert payload["clOrdId"] == envelope.client_order_id
+            assert payload["posSide"] == "net" and "reduceOnly" not in payload
+            next_socket = fixtures[0].clock
+            fixtures.append(
+                SignedNetReversalGetFixture(
+                    {
+                        **data,
+                        "envelope": envelope.to_runtime_json_v1(),
+                        "socket_ms": int(next_socket.timestamp() * 1000),
+                        "observed_at": (next_socket + timedelta(seconds=1)).isoformat(),
+                        "closing_size": str(abs(Decimal(first.position()["pos"]))),
+                        "old_position_id": first.position()["posId"],
+                        "old_position_fee": first.position()["fee"],
+                        "old_created_ms": first.position()["cTime"],
+                        "position_id": "8924",
+                        "venue_order_id": "91236",
+                        "closing_trade_id": "125",
+                        "opening_trade_id": "126",
+                    },
+                    "complete",
+                )
+            )
+            raise TimeoutError("second simulated POST")
+
+    def factory(attempt, evidence):
+        prepared = startup_factory_v1.prepare_occupied_n1_request_v1(
+            attempt_index=attempt, evidence_root=evidence, runtime_config=runtime_config
+        )
+        active = fixtures[-1]
+        now = active.clock.timestamp()
+        cursor = Path(runtime_config["roots"]["lane_state_root"]) / "LANE_1"
+        core = restore_layered_core_episode_v1(cursor, expected_instrument_id=bound.instrument_id)
+        mark = core.running_reference.reference_price_r_t
+        if active is first:
+            mark += 1.5 * core.scope.d_t
+        inputs = market({"LANE_1": bound}, closes, now - 1, f"v2-{attempt}", root / "v2-g17")
+        source = s6.ScriptedContinuousObservationSourceV1(
+            [
+                s6.InjectedContinuousObservationV1(
+                    candles_payload=inputs["candles_payload_by_lane"]["LANE_1"],
+                    occupancy_payloads={},
+                    mark_price_payload={
+                        "code": "0",
+                        "data": [
+                            {
+                                "instId": bound.venue_native_id,
+                                "markPx": str(mark),
+                                "idxPx": str(mark * 0.995),
+                                "ts": str(int((now - 0.125) * 1000)),
+                            }
+                        ],
+                    },
+                    mark_acquired_at_utc=active.clock.isoformat(),
+                )
+            ]
+        )
+        if end_budget and active is not first:
+            source.poll = lambda: pytest.fail("mark polling exceeded the registered cycle budget")
+
+        @contextmanager
+        def open_ports(_):
+            with active.port() as transport:
+                yield {
+                    "pretrade_transport": transport,
+                    "private_rest_fetch": _fetch(
+                        uid=data["account"], positions=(active.position(),)
+                    ),
+                    "public_rest_fetch": lambda *_args, **_kwargs: pytest.fail(
+                        "unexpected public GET"
+                    ),
+                    "observation_source": source,
+                    "g17_producers": inputs["g17_typed_vol_producers"],
+                    "f1_m9_cycle_evaluator": _f1_m9_evaluator_factory(root),
+                }
+
+        return n1_post_authority_startup_v1.bind_occupied_n1_post_authority_v1(
+            replace(prepared, open_ports=open_ports),
+            authority=first_authorization.authority,
+            port=supervisor.OccupiedNetReversalPostPortV1(
+                ready_authorization=signed_authorization,
+                k1_backend=_FakeKeychainBackend(),
+                opener_factory=OfflineOpener,
+                execution_integrity_backend=_clean_post_integrity(),
+            ),
+        )
+
+    original_init = PortfolioBudgetHostV1.__init__
+
+    def init_host(self, **kwargs):
+        original_init(self, **{**kwargs, "clock": fixtures[-1].clock.timestamp})
+
+    def startup(**kwargs):
+        collect_host_account_observation_v1(
+            private_rest_fetch=kwargs["private_rest_fetch"],
+            instrument_ids_by_native_id={bound.venue_native_id: bound.instrument_id},
+            session_id=kwargs["session_id"],
+            clock=fixtures[-1].clock.timestamp,
+            expected_account=data["account"],
+        )
+        return SimpleNamespace(
+            handoff=SimpleNamespace(bound_instrument=bound, selection_id=bound.selection_id)
+        )
+
+    def pretrade(**kwargs):
+        epoch = kwargs["decision_epoch"]
+        inputs = ports(bound, epoch, kwargs["pretrade_cycle_id"], account=data["account"])
+        limits = inputs.venue_quantity_limits
+        limits = replace(
+            limits,
+            public_source=replace(limits.public_source, acquired_at_utc=epoch),
+            private_source=replace(limits.private_source, acquired_at_utc=epoch),
+        )
+        return replace(
+            inputs,
+            acquisition_decision_id=limits.acquisition_decision_id,
+            venue_quantity_limits=replace(limits, integrity_digest=limits.digest_v1()),
+        )
+
+    class InterruptedAfterSend(BaseException):
+        pass
+
+    def observe(**kwargs):
+        result = supervisor.run_n1_standing_pre_external_supervisor_v1(**kwargs)
+        runs.append(result)
+        if crash and result.trace.post_count:
+            raise InterruptedAfterSend
+        return result
+
+    local_go = {
+        **owner_go.load_bounded_continuous_run_owner_go_decision_v1(),
+        "baseline_origin_main_sha": data["revision"],
+    }
+    monkeypatch.setattr(
+        startup_factory_v1, "assert_current_productive_29p_execution_identity_v1", lambda **_: None
+    )
+    monkeypatch.setattr(
+        owner_go, "load_bounded_continuous_run_owner_go_decision_v1", lambda: local_go
+    )
+    monkeypatch.setattr(
+        supervisor,
+        "_run_unified_recovery_v1",
+        lambda **_: SimpleNamespace(
+            ok=True,
+            runtime_owner_recovery_complete=True,
+            steps_completed=(),
+            evidence_scope="OFFLINE_FIXTURE",
+            pending_runtime_steps=(),
+        ),
+    )
+    monkeypatch.setattr(supervisor, "_refresh_public_supply_v1", lambda **_: 0)
+    monkeypatch.setattr(supervisor, "_refresh_pretrade_truth_v1", lambda **_: "OFFLINE_FIXTURE")
+    monkeypatch.setattr(supervisor, "public_instrument_ref_for_binding_v1", lambda _: None)
+    monkeypatch.setattr(startup_binding_v1, "acquire_account_bound_n1_startup_v1", startup)
+    monkeypatch.setattr(convergence, "datetime", ReplayDateTime)
+    monkeypatch.setattr(
+        convergence, "resolve_live_29p_injected_for_productive_s5_cycle_v1", pretrade
+    )
+    monkeypatch.setattr(s6.time, "time", lambda: fixtures[-1].clock.timestamp())
+    monkeypatch.setattr(PortfolioBudgetHostV1, "__init__", init_host)
+    monkeypatch.setattr(continuation, "run_n1_standing_pre_external_supervisor_v1", observe)
+    monkeypatch.setattr(
+        send_receipt,
+        "_utc_now_iso_v1",
+        lambda: fixtures[-1].clock.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+    )
+    bounds = unattended_v1.UnattendedHostBoundsV1(
+        host_id="offline-net-reversal-continuation",
+        repository_sha=data["revision"],
+        runtime_config_digest=unattended_v1.unattended_request_digest_v1(
+            factory(1, root_v2 / "attempts" / "1")
+        ),
+        expires_at_unix=first.clock.timestamp() + 100,
+        max_total_cycles=1 if end_budget else 2,
+        max_total_seconds=90,
+        wait_interval_seconds=1,
+    )
+    args = dict(
+        bounds=bounds,
+        state_root=root_v2,
+        request_factory=factory,
+        clock=lambda: fixtures[-1].clock.timestamp(),
+    )
+    scope_root = Path(runtime_config["roots"]["lane_state_root"]) / "LANE_1"
+    cursor = scope_root / s6.CURSOR_FILENAME
+    original_cursor = cursor.read_bytes()
+    budget_db = Path(runtime_config["roots"]["private_store_root"]) / (
+        "portfolio_budget_host_v1/owner/reservations.sqlite3"
+    )
+    original_inode = budget_db.stat().st_ino
+    if crash:
+        (root / "v2-test-registration.json").write_text(
+            json.dumps(
+                {
+                    "runtime_config_digest": factory(
+                        1, root_v2 / "attempts" / "1"
+                    ).runtime_config_digest,
+                    "runtime_config": runtime_config,
+                    "state_root": str(root_v2),
+                    "bounds": asdict(bounds),
+                }
+            )
+        )
+        _kill_booking_process(root, runtime_config["roots"]["f1_m9_ledger_root"], v2=True)
+        interrupted = json.loads((root_v2 / "occupied_host_state_v2.json").read_bytes())
+        assert interrupted["status"] == "RUNNING" and interrupted["attempt"] == 1
+        assert interrupted["awaiting"]["envelope_digest"] == data["envelope"]["envelope_digest"]
+        assert not (root_v2 / "attempts" / "1" / s6.LEDGER_FILENAME).exists()
+        with pytest.raises(InterruptedAfterSend):
+            continuation.run_occupied_n1_net_reversal_host_v2(**args)
+        after_send = json.loads((root_v2 / "occupied_host_state_v2.json").read_bytes())
+        assert after_send["status"] == "RUNNING" and after_send["attempt"] == 2
+        assert after_send["cycles_used"] == 0 and len(orders) == 1
+    elif not end_budget:
+        first.scenario = "partial"
+        waiting = continuation.run_occupied_n1_net_reversal_host_v2(**args)
+        assert waiting["status"] == "AWAITING_BOOKING" and waiting["cycles_used"] == 0
+        assert waiting["awaiting"]["envelope_digest"] == data["envelope"]["envelope_digest"]
+        assert not orders and runs.pop().policy_result is None
+        first.scenario = "complete"
+    state = continuation.run_occupied_n1_net_reversal_host_v2(**args)
+    assert state["status"] == ("BOUNDS_EXHAUSTED" if end_budget else "COMPLETED"), (
+        state,
+        [run.trace.extra for run in runs],
+    )
+    assert (
+        state["cycles_used"] == bounds.max_total_cycles
+        and state["attempt"] == (2 if end_budget else 3)
+        and state["awaiting"] is None
+    )
+    assert state["interrupted_retries"] == int(crash)
+    if crash:
+        assert not first.calls
+        assert state["started_at"] == interrupted["started_at"]
+    assert len(orders) == 1
+    first_book = runs[0].trace.extra["net_reversal_readback"]
+    second_book = state["last_booking"]
+    assert first_book["booking_digest"] != second_book["booking_digest"]
+    assert second_book["envelope_digest"] == orders[0].envelope_digest
+    assert first_book["reservation_id"] == second_book["reservation_id"]
+    assert second_book["episode_id"] == first_book["envelope_digest"]
+    assert [run.trace.post_count for run in runs] == [1, 0]
+    assert cursor.read_bytes() == original_cursor
+    assert budget_db.stat().st_ino == original_inode
+    assert _claim_rows(first_authorization) == [
+        (first_authorization.grant.grant_id, 1),
+        ("automatic-return", 1),
+    ]
+    assert continuation.run_occupied_n1_net_reversal_host_v2(**args) == state
+    assert len(runs) == 2
 
 
 def _assert_follow_on_net_reversal_dispatch_v1(

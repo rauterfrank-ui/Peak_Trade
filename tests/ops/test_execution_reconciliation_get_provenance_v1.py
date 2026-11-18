@@ -330,6 +330,9 @@ def authenticated_host(tmp_path, monkeypatch, request):
         "occupied-mark-direct-funded-timeout",
         "occupied-mark-direct-funded-revoked",
         "occupied-mark-direct-funded-booked",
+        "occupied-mark-direct-funded-booked-continuation",
+        "occupied-mark-direct-funded-booked-continuation-crash",
+        "occupied-mark-direct-funded-booked-continuation-budget",
         "occupied-mark-direct-funded-exception-close",
         "polled-mark-direct-stale-capital",
         "occupied-mark-direct-stale-capital",
@@ -346,6 +349,9 @@ def authenticated_host(tmp_path, monkeypatch, request):
                         in {
                             "occupied-mark-direct-funded-timeout",
                             "occupied-mark-direct-funded-booked",
+                            "occupied-mark-direct-funded-booked-continuation",
+                            "occupied-mark-direct-funded-booked-continuation-crash",
+                            "occupied-mark-direct-funded-booked-continuation-budget",
                             "occupied-mark-direct-funded-exception-close",
                         }
                         else root / "stable-host"
@@ -2014,6 +2020,9 @@ def _receipt_args(host, scope, identity, proof_root, revision_ref):
         ("occupied-mark-direct-funded-timeout", None),
         ("occupied-mark-direct-funded-revoked", None),
         ("occupied-mark-direct-funded-booked", None),
+        ("occupied-mark-direct-funded-booked-continuation", None),
+        ("occupied-mark-direct-funded-booked-continuation-crash", None),
+        ("occupied-mark-direct-funded-booked-continuation-budget", None),
         ("occupied-mark-direct-funded-exception-close", None),
         ("polled-mark-direct-funded", None),
         ("polled-mark-direct-funded-no-grant", None),
@@ -2092,6 +2101,9 @@ def test_owned_entry_proof_reaches_original_position_episode(
         "occupied-mark-direct-funded-timeout",
         "occupied-mark-direct-funded-revoked",
         "occupied-mark-direct-funded-booked",
+        "occupied-mark-direct-funded-booked-continuation",
+        "occupied-mark-direct-funded-booked-continuation-crash",
+        "occupied-mark-direct-funded-booked-continuation-budget",
         "occupied-mark-direct-funded-exception-close",
         "polled-mark-direct-stale-capital",
         "occupied-mark-direct-stale-capital",
@@ -3123,6 +3135,9 @@ def _assert_authenticated_occupied_mark_close(
                 "-funded-timeout",
                 "-funded-revoked",
                 "-funded-booked",
+                "-funded-booked-continuation",
+                "-funded-booked-continuation-crash",
+                "-funded-booked-continuation-budget",
                 "-funded-exception-close",
             }:
                 assert ledger["reason_code"] == (
@@ -3186,6 +3201,9 @@ def _assert_authenticated_occupied_mark_close(
                         first_authorization=authorization,
                         signer=signer,
                         exceptional_close=funding_case == "-funded-exception-close",
+                        automatic_continuation="-continuation" in funding_case,
+                        crash_continuation=funding_case.endswith("-continuation-crash"),
+                        end_budget_continuation=funding_case.endswith("-continuation-budget"),
                     )
 
                 _assert_direct_reversal_dispatch(
@@ -3197,7 +3215,8 @@ def _assert_authenticated_occupied_mark_close(
                     inputs["authenticated_entry"],
                     revoked=funding_case == "-funded-revoked",
                     after_timeout=after_timeout
-                    if funding_case in {"-funded-booked", "-funded-exception-close"}
+                    if funding_case.startswith("-funded-booked")
+                    or funding_case == "-funded-exception-close"
                     else None,
                 )
             elif not polled:
