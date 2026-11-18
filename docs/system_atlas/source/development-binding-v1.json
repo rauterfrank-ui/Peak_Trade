@@ -92,11 +92,6 @@
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
     },
     {
-      "path": "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-      "before_sha256": "04bfc72f7ded45fb94b82a441107c314823362b91c0a98af3ad67263092fc5d4",
-      "sha256": "5d4a13c5cb3160b0afe6abb9fae55a5ed07da44b59a54d8c34801a6f4a90c758"
-    },
-    {
       "path": "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
       "before_sha256": "a68d5a7d3b3eb1f096c41c6ac6e9033f6d8cc5197f0a227f6cffc4f978317e41",
       "sha256": "efc3a5f485d93573a1aa55332ff6fb782103138acc1601bc6138258b0db2808d"
