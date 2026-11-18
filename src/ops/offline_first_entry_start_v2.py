@@ -3,19 +3,24 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from concurrent.futures import Future, ThreadPoolExecutor
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
+import re
 import time
 
 from src.ops.first_entry_mark_clock_v2 import (
     ENTRY_MARK_STATE_DIRECTORY,
     LANE_ID,
+    FirstEntryBudgetBindingV2,
+    FirstEntryMarkCycleV2,
     run_first_entry_mark_cycle_v2,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     STATUS_PASS,
     CurrentProductiveEnterLive29PInjectedGetV1,
+    CurrentProductiveEnterLive29PJoinResultV1,
     CurrentProductiveEnterLive29PPortfolioSlotContextV1,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
 )
@@ -36,8 +41,23 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
     bind_final_order_envelope_from_venue_plan_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
+)
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReservationStateV1
-from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import PortfolioBudgetHostV1
+from src.ops.portfolio_capital_reservation_budget_v1.entry_execution_cost_v1 import (
+    FundingCostObservationV1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+    HostBudgetRecoveryContextV1,
+    PortfolioBudgetHostV1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
+    K1AccountObservationSourceV1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
+    parallel_account_recovery_gets_v1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
@@ -66,6 +86,158 @@ class OfflineFirstEntryStartResultV2:
     reason: str = ""
 
 
+@dataclass(frozen=True)
+class OfflineFirstEntryCapitalV2:
+    result: CurrentProductiveEnterLive29PJoinResultV1 | None = None
+    injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None
+    reason: str = ""
+    expired: bool = False
+
+
+OfflineFirstEntryPretradeV2 = tuple[
+    CurrentProductiveEnterLive29PInjectedGetV1, HostBudgetRecoveryContextV1
+]
+
+
+def observe_offline_first_entry_account_v2(
+    budget_host: PortfolioBudgetHostV1, bound: BoundInstrumentV1
+) -> HostBudgetRecoveryContextV1:
+    if budget_host.closed or budget_host.execution_environment != _SIMULATED_ENVIRONMENT:
+        raise ValueError("FIRST_ENTRY_START_SIMULATED_BUDGET_HOST_REQUIRED")
+    source = budget_host.fetch
+    if (
+        type(source) is K1AccountObservationSourceV1
+        and source.account_inventory_guard
+        and source.inventory_inst_type == "FUTURES"
+        and source.parallel_pending_reads
+    ):
+        with parallel_account_recovery_gets_v1():
+            return budget_host.observe_v1({LANE_ID: bound})
+    return budget_host.observe_v1({LANE_ID: bound})
+
+
+def bind_offline_first_entry_budget_v2(
+    budget_host: PortfolioBudgetHostV1,
+) -> FirstEntryBudgetBindingV2:
+    owner = budget_host.owner
+    if budget_host.closed or budget_host.execution_environment != _SIMULATED_ENVIRONMENT:
+        raise ValueError("FIRST_ENTRY_START_SIMULATED_BUDGET_HOST_REQUIRED")
+    if owner is None or not owner.budget_state_v1().durable_state_enabled:
+        raise ValueError("FIRST_ENTRY_START_DURABLE_BUDGET_REQUIRED")
+    scope = owner.durable_scope_identity_v1()
+    return FirstEntryBudgetBindingV2(
+        scope["root"],
+        scope["account"],
+        budget_host.session_id,
+        owner.stored_reservation_count_v1() > 0 or bool(owner.execution_links_v1()),
+    )
+
+
+def bind_first_entry_funding_clock_v2(
+    entry: FirstEntryMarkCycleV2,
+    bound: BoundInstrumentV1,
+    injected: CurrentProductiveEnterLive29PInjectedGetV1,
+) -> CurrentProductiveEnterLive29PInjectedGetV1:
+    """Select the X-Perp funding event clock for this flat V2 entry only."""
+    funding = injected.funding_cost_observation
+    if (
+        type(funding) is not FundingCostObservationV1
+        or not bound.instrument_id.startswith("okx_eea:")
+        or not re.fullmatch(r"[A-Z0-9]+-USD_UM_XPERP-\d{6}", bound.venue_native_id)
+    ):
+        return injected
+    if (
+        entry.status != "ENTRY_DECIDED"
+        or entry.cycle is None
+        or funding.cycle_id != entry.cycle.cycle_id
+        or funding.decision_epoch != injected.acquisition_decision_id
+    ):
+        raise ValueError("FIRST_ENTRY_FUNDING_V2_DECISION_BINDING_REQUIRED")
+    return replace(
+        injected, funding_cost_observation=replace(funding, okx_xperp_event_clock_v2=True)
+    )
+
+
+def collect_offline_first_entry_pretrade_v2(
+    *,
+    budget_host: PortfolioBudgetHostV1,
+    bound: BoundInstrumentV1,
+    pretrade: Callable[[str, str], CurrentProductiveEnterLive29PInjectedGetV1],
+    epoch: str,
+    cycle_id: str,
+) -> OfflineFirstEntryPretradeV2:
+    """Run the original independent authenticated GET branches in parallel."""
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        recovery = pool.submit(observe_offline_first_entry_account_v2, budget_host, bound)
+        return pretrade(epoch, cycle_id), recovery.result()
+
+
+def size_offline_first_entry_v2(
+    *,
+    entry: FirstEntryMarkCycleV2,
+    bound: BoundInstrumentV1,
+    budget_host: PortfolioBudgetHostV1,
+    pretrade: Callable[[str, str], CurrentProductiveEnterLive29PInjectedGetV1],
+    prepared: Future[OfflineFirstEntryPretradeV2] | None = None,
+    clock: Callable[[], float] = time.time,
+) -> OfflineFirstEntryCapitalV2:
+    """Collect both original GET branches against the exact Core decision time."""
+    bind_offline_first_entry_budget_v2(budget_host)
+    if entry.status != "ENTRY_DECIDED" or entry.cycle is None:
+        raise ValueError("FIRST_ENTRY_CAPITAL_REQUIRES_NEW_ENTER")
+    cycle = entry.cycle
+    replay = cycle.replay
+    epoch = replay.intermediate.market_context.decision_time
+    try:
+        acquisition_age_seconds_v1(
+            acquired_at_utc=epoch, now_utc=datetime.fromtimestamp(clock(), timezone.utc).isoformat()
+        )
+        injected, recovery = (
+            prepared.result()
+            if prepared is not None
+            else collect_offline_first_entry_pretrade_v2(
+                budget_host=budget_host,
+                bound=bound,
+                pretrade=pretrade,
+                epoch=epoch,
+                cycle_id=cycle.cycle_id,
+            )
+        )
+        acquisition_age_seconds_v1(
+            acquired_at_utc=epoch, now_utc=datetime.fromtimestamp(clock(), timezone.utc).isoformat()
+        )
+    except ValueError as exc:
+        reason = str(exc)
+        if reason not in {"ACQUISITION_STALE", "HOST_BUDGET_PRIVATE_SNAPSHOT_STALE"}:
+            raise
+        return OfflineFirstEntryCapitalV2(reason=reason, expired=True)
+    if recovery.pending_orders or any(p.signed_quantity for p in recovery.observed.positions):
+        return OfflineFirstEntryCapitalV2(reason="ENTRY_ACCOUNT_NOT_FLAT")
+    if (
+        injected.acquisition_decision_id != epoch
+        or injected.acquisition_cycle_id != cycle.cycle_id
+        or injected.expected_account_identity != recovery.account
+    ):
+        return OfflineFirstEntryCapitalV2(reason="ENTRY_PRETRADE_BINDING_MISMATCH")
+    result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        replay=replay,
+        bound_instrument=bound,
+        injected=bind_first_entry_funding_clock_v2(entry, bound, injected),
+        decision_epoch=epoch,
+        portfolio_budget_owner=budget_host.owner,
+        portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+            LANE_ID, replay.evidence.decision_id, cycle.cycle_id
+        ),
+        host_budget_recovery=recovery,
+    )
+    expired = (
+        result.first_blocker == "HOST_BUDGET_RECOVERY_BLOCKED:DURABLE_FRESH_CAPITAL_REQUIRED"
+        or result.first_blocker == "LIVE_29P_ACQUISITION_FAIL_CLOSED"
+        and "ACQUISITION_STALE" in result.reason_codes
+    )
+    return OfflineFirstEntryCapitalV2(result, injected, result.first_blocker, expired)
+
+
 def run_offline_first_entry_start_v2(
     *,
     state_root: Path,
@@ -77,25 +249,25 @@ def run_offline_first_entry_start_v2(
     reconciliation: ProductiveMasterV2ReconciliationAdmissionV1,
     max_polls: int,
     clock: Callable[[], float] = time.time,
+    prepare_read_only_pretrade: bool = False,
 ) -> OfflineFirstEntryStartResultV2:
     """Consume current Mark observations and stop at the original pre-external plan.
 
     The caller supplies offline observations and a simulated budget host. The
-    29P input port is invoked only for a natural ENTER and receives its exact
-    decision epoch and cycle id. A durable ENTER is terminal for this start.
+    29P input port receives the exact decision epoch and cycle id. Callers may
+    permit read-only preparation on a candidate Mark. Sizing still requires
+    a committed ENTER. Expired entries without a reservation require a new Mark.
     """
     if budget_host.closed or budget_host.execution_environment != _SIMULATED_ENVIRONMENT:
         raise ValueError("FIRST_ENTRY_START_SIMULATED_BUDGET_HOST_REQUIRED")
     if type(max_polls) is not int or max_polls <= 0:
         raise ValueError("FIRST_ENTRY_START_POSITIVE_POLL_LIMIT_REQUIRED")
 
-    bindings = {LANE_ID: bound}
-    initial = budget_host.observe_v1(bindings)
+    initial = observe_offline_first_entry_account_v2(budget_host, bound)
     if initial.pending_orders or any(p.signed_quantity for p in initial.observed.positions):
         return OfflineFirstEntryStartResultV2("BLOCKED", 0, reason="START_ACCOUNT_NOT_FLAT")
     owner = budget_host.owner
-    if owner is None or not owner.budget_state_v1().durable_state_enabled:
-        raise ValueError("FIRST_ENTRY_START_DURABLE_BUDGET_REQUIRED")
+    budget_binding = bind_offline_first_entry_budget_v2(budget_host)
 
     for poll in range(1, max_polls + 1):
         observation = source.poll()
@@ -103,60 +275,65 @@ def run_offline_first_entry_start_v2(
             continue
         observed_unix = clock()
         market = market_inputs(observed_unix)
-        entry = run_first_entry_mark_cycle_v2(
-            offline_state_root=state_root,
-            bound=bound,
-            cycle_id=f"{budget_host.session_id}:first-entry:{observed_unix}",
-            observed_unix=observed_unix,
-            candles_payload=observation.candles_payload,
-            mark_price_payload=observation.mark_price_payload,
-            index_tickers_payload=observation.index_tickers_payload,
-            mark_acquired_at_utc=observation.mark_acquired_at_utc,
-            bid_px=market.bid_px,
-            ask_px=market.ask_px,
-            volume=market.volume,
-            open_interest=market.open_interest,
-            funding_rate=market.funding_rate,
-            venue_flat=True,
-            g17_producer=market.g17_producer,
-            reconciliation=reconciliation,
-        )
-        if entry.status in {"EVALUATED", "WAITING_FOR_NEW_MARK"}:
-            continue
-        if entry.status != "ENTRY_DECIDED":
-            return OfflineFirstEntryStartResultV2(
-                entry.status, poll, reason=entry.cycle.input_blocker if entry.cycle else ""
-            )
+        with ThreadPoolExecutor(max_workers=1) as staging:
+            prepared = None
 
-        cycle = entry.cycle
-        replay = cycle.replay
-        decision_id = replay.evidence.decision_id
-        epoch = replay.intermediate.market_context.decision_time
-        recovery = budget_host.observe_v1(bindings)
-        if recovery.pending_orders or any(p.signed_quantity for p in recovery.observed.positions):
-            return OfflineFirstEntryStartResultV2(
-                "BLOCKED", poll, decision_id, reason="ENTRY_ACCOUNT_NOT_FLAT"
+            def prepare(epoch: str, cycle_id: str) -> None:
+                nonlocal prepared
+                prepared = staging.submit(
+                    collect_offline_first_entry_pretrade_v2,
+                    budget_host=budget_host,
+                    bound=bound,
+                    pretrade=pretrade,
+                    epoch=epoch,
+                    cycle_id=cycle_id,
+                )
+
+            entry = run_first_entry_mark_cycle_v2(
+                offline_state_root=state_root,
+                bound=bound,
+                cycle_id=f"{budget_host.session_id}:first-entry:{observed_unix}",
+                observed_unix=observed_unix,
+                candles_payload=observation.candles_payload,
+                mark_price_payload=observation.mark_price_payload,
+                index_tickers_payload=observation.index_tickers_payload,
+                mark_acquired_at_utc=observation.mark_acquired_at_utc,
+                bid_px=market.bid_px,
+                ask_px=market.ask_px,
+                volume=market.volume,
+                open_interest=market.open_interest,
+                funding_rate=market.funding_rate,
+                venue_flat=True,
+                g17_producer=market.g17_producer,
+                reconciliation=reconciliation,
+                budget_binding=budget_binding,
+                prepare_pretrade=prepare if prepare_read_only_pretrade else None,
             )
-        injected = pretrade(epoch, cycle.cycle_id)
-        if (
-            injected.acquisition_decision_id != epoch
-            or injected.acquisition_cycle_id != cycle.cycle_id
-            or injected.expected_account_identity != recovery.account
-        ):
-            return OfflineFirstEntryStartResultV2(
-                "BLOCKED", poll, decision_id, reason="ENTRY_PRETRADE_BINDING_MISMATCH"
+            if entry.status in {"EVALUATED", "WAITING_FOR_NEW_MARK", "WAITING_FOR_ENTRY_EXPIRY"}:
+                continue
+            if entry.status != "ENTRY_DECIDED":
+                return OfflineFirstEntryStartResultV2(
+                    entry.status, poll, reason=entry.cycle.input_blocker if entry.cycle else ""
+                )
+
+            cycle = entry.cycle
+            replay = cycle.replay
+            decision_id = replay.evidence.decision_id
+            epoch = replay.intermediate.market_context.decision_time
+            sized = size_offline_first_entry_v2(
+                entry=entry,
+                bound=bound,
+                budget_host=budget_host,
+                pretrade=pretrade,
+                clock=clock,
+                prepared=prepared,
             )
-        capital = join_current_productive_enter_live_29p_before_venue_plan_v1(
-            replay=replay,
-            bound_instrument=bound,
-            injected=injected,
-            decision_epoch=epoch,
-            portfolio_budget_owner=owner,
-            portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
-                LANE_ID, decision_id, cycle.cycle_id
-            ),
-            host_budget_recovery=recovery,
-        )
+        if sized.expired and not bind_offline_first_entry_budget_v2(budget_host).has_reservation:
+            continue
+        capital = sized.result
+        injected = sized.injected
+        if capital is None or injected is None:
+            return OfflineFirstEntryStartResultV2("BLOCKED", poll, decision_id, reason=sized.reason)
         rid = capital.portfolio_reservation_id
         if capital.status != STATUS_PASS or not rid:
             return OfflineFirstEntryStartResultV2(
@@ -180,7 +357,7 @@ def run_offline_first_entry_start_v2(
             observation=injected.venue_quantity_limits,
             plan=plan,
             bound_instrument=bound,
-            account_identity=recovery.account,
+            account_identity=budget_binding.account,
             decision_epoch=epoch,
             cycle_id=cycle.cycle_id,
             evaluated_at_utc=datetime.fromtimestamp(clock(), timezone.utc).isoformat(),

@@ -35,11 +35,14 @@ from tests.ops.test_first_entry_mark_clock_v2 import (
 from tests.ops.test_portfolio_budget_host_v1 import _fetch
 
 
-@pytest.mark.parametrize("fault", [None, "foreign-cycle", "max-quantity", "occupied"])
+@pytest.mark.parametrize(
+    "fault",
+    [None, "prepared", "foreign-cycle", "max-quantity", "occupied", "restarted-after-enter"],
+)
 def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, fault):
     market = market_kwargs(tmp_path, 1)
     bound = market["bound"]
-    offset = iter((2, 2, 4, 6, 8))
+    offset = iter((2, 2, 4, 6, 8, 12, 14, 16, 18))
     candle_root = tmp_path / "entry" / "flat-entry-mark-v2" / "LANE_1"
     clock = CANDLE_OPEN + 61.0
     candle_calls = []
@@ -80,6 +83,8 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
 
     def pretrade(epoch, cycle_id):
         pretrade_calls.append((epoch, cycle_id))
+        if fault == "restarted-after-enter" and len(pretrade_calls) == 1:
+            raise InterruptedError("proof process stopped after the committed ENTER")
         data = ports(bound, epoch, cycle_id, denied=fault == "max-quantity", account=account)
         limits = data.venue_quantity_limits
         metadata = data.instruments_payload
@@ -144,7 +149,50 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             reconciliation=market["reconciliation"],
             max_polls=5,
             clock=lambda: clock,
+            prepare_read_only_pretrade=fault == "prepared",
         )
+        if fault == "restarted-after-enter":
+            with pytest.raises(InterruptedError, match="committed ENTER"):
+                run_offline_first_entry_start_v2(**args)
+            assert host.owner.stored_reservation_count_v1() == 0
+            assert not host.owner.execution_links_v1()
+            prior = load_current_productive_sidestate_confirmation_cursor_v1(candle_root)
+            parent = json.loads(
+                prior["entry_assessment_frame"]["components"]["parent"]["canonical"]
+            )
+            original_decision = parent["decision_id"]
+            original_mark_count = prior["cap61_confirmation_state"]["observation_acceptance_state"][
+                "market_observation_epoch"
+            ]["value"]
+            original_scope = host.owner.durable_scope_identity_v1()
+            host.close()
+            with closing(
+                PortfolioBudgetHostV1(**host_settings, durable_mode="recover")
+            ) as reopened:
+                assert reopened.owner is None
+                result = run_offline_first_entry_start_v2(**(args | {"budget_host": reopened}))
+                assert result.disposition == "PRE_EXTERNAL_EFFECT", result
+                assert result.decision_id != original_decision
+                assert pretrade_calls[0][1] != pretrade_calls[1][1]
+                assert (
+                    datetime.fromisoformat(pretrade_calls[1][0])
+                    - datetime.fromisoformat(pretrade_calls[0][0])
+                ).total_seconds() > 5
+                assert reopened.owner.durable_scope_identity_v1() == original_scope
+                assert reopened.owner.stored_reservation_count_v1() == 1
+                assert reopened.owner.slot_capital_basis_v1("LANE_1").net_basis_usdc == Decimal(
+                    "25"
+                )
+                revived = load_current_productive_sidestate_confirmation_cursor_v1(candle_root)
+                assert (
+                    revived["cap61_confirmation_state"]["observation_acceptance_state"][
+                        "market_observation_epoch"
+                    ]["value"]
+                    > original_mark_count
+                )
+                assert len(pretrade_calls) == 2
+            return
+
         result = run_offline_first_entry_start_v2(**args)
         if fault == "occupied":
             assert result.reason == "START_ACCOUNT_NOT_FLAT"
@@ -166,7 +214,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             ]["value"]
             == 3
         )
-        if fault:
+        if fault and fault != "prepared":
             assert result.disposition == "BLOCKED", result.reason
             assert result.envelope is None and not host.owner.execution_links_v1()
             assert host.owner.active_sum_v1() == 0

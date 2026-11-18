@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack, contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from typing import Any, Callable, Mapping
@@ -33,6 +36,17 @@ class PrivateRestBaselineError(RuntimeError):
 
 
 RestGetJson = Callable[[str, Mapping[str, str]], Mapping[str, Any]]
+
+_PARALLEL_RECOVERY_GETS = ContextVar("parallel_account_recovery_gets", default=False)
+
+
+@contextmanager
+def parallel_account_recovery_gets_v1():
+    token = _PARALLEL_RECOVERY_GETS.set(True)
+    try:
+        yield
+    finally:
+        _PARALLEL_RECOVERY_GETS.reset(token)
 
 
 @dataclass
@@ -241,41 +255,50 @@ def collect_rest_baseline_v1(
     called: list[str] = []
     snap = RestBaselineSnapshotV1(host=EEA_REST_HOST)
 
-    def _get(path: str, params: Mapping[str, str] | None = None) -> Mapping[str, Any]:
+    def _read(path: str, params: Mapping[str, str] | None = None) -> Mapping[str, Any]:
         assert_get_path_allowlisted_v1(path, recovery=recovery)
         assert_no_rest_post_v1("GET")
-        called.append(path)
         payload = fetch_json(path, dict(params or {}))
         if not isinstance(payload, Mapping) or str(payload.get("code")) not in ("0", "0.0"):
             raise PrivateRestBaselineError("REST_AUTH_OR_VENUE_FAILURE")
         _rows(payload, "REST_DATA")
         return payload
 
+    def _get(path: str, params: Mapping[str, str] | None = None) -> Mapping[str, Any]:
+        called.append(path)
+        return _read(path, params)
+
     cfg = _get("/api/v5/account/config")
     snap.account_config = normalize_account_config_v1(
         "/api/v5/account/config", cfg, captured_at=captured_at
     )
 
-    bal = _get("/api/v5/account/balance")
-    snap.balance = normalize_balance_v1("/api/v5/account/balance", bal, captured_at=captured_at)
-
-    pos = _get("/api/v5/account/positions", {"instType": "SWAP"})
-    snap.positions = normalize_positions_v1(
-        "/api/v5/account/positions", pos, captured_at=captured_at
+    scoped = {"instType": "SWAP", "instId": inst_id}
+    queries = (
+        ("/api/v5/account/balance", {}, normalize_balance_v1),
+        ("/api/v5/account/positions", {"instType": "SWAP"}, normalize_positions_v1),
+        ("/api/v5/trade/orders-pending", scoped, normalize_orders_v1),
+        ("/api/v5/trade/orders-history", scoped, normalize_orders_v1),
+        ("/api/v5/trade/fills", scoped, normalize_fills_v1),
     )
-
-    pending = _get("/api/v5/trade/orders-pending", {"instType": "SWAP", "instId": inst_id})
-    snap.orders = normalize_orders_v1(
-        "/api/v5/trade/orders-pending", pending, captured_at=captured_at
-    )
-
-    hist = _get("/api/v5/trade/orders-history", {"instType": "SWAP", "instId": inst_id})
-    snap.orders = snap.orders + normalize_orders_v1(
-        "/api/v5/trade/orders-history", hist, captured_at=captured_at
-    )
-
-    fills = _get("/api/v5/trade/fills", {"instType": "SWAP", "instId": inst_id})
-    snap.fills = normalize_fills_v1("/api/v5/trade/fills", fills, captured_at=captured_at)
+    with ExitStack() as resources:
+        if recovery and _PARALLEL_RECOVERY_GETS.get():
+            # Config and account identity have already been verified by the
+            # caller. All five GETs still belong to this one fresh snapshot.
+            pool = resources.enter_context(ThreadPoolExecutor(max_workers=len(queries)))
+            futures = {path: pool.submit(_read, path, params) for path, params, _ in queries}
+            called.extend(futures)
+            values = (
+                normalize(path, futures[path].result(), captured_at=captured_at)
+                for path, _, normalize in queries
+            )
+        else:
+            values = (
+                normalize(path, _get(path, params), captured_at=captured_at)
+                for path, params, normalize in queries
+            )
+        snap.balance, snap.positions, pending, history, snap.fills = values
+    snap.orders = pending + history
 
     if not recovery:
         for path in FRESH_PRETRADE_ONLY_GET_PATHS:

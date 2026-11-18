@@ -175,13 +175,14 @@ class AccountObservationSourceV1:
                 raise AccountObservationSourceError("STARTUP_PENDING_ORDERS_UNRESOLVED")
             # Ordinary pending orders exclude untriggered algo orders. Their
             # absence must also be observed before claiming a clear SWAP book.
-            for kind in self._pending_algo_types_v1():
-                algo = self._verified_get_v1(
-                    ALGO_PENDING_PATH, {"instType": "SWAP", "ordType": kind}
-                )
-                if algo["data"]:
-                    raise AccountObservationSourceError("STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED")
+            self._assert_no_pending_algos_v1()
         return payload
+
+    def _assert_no_pending_algos_v1(self):
+        for kind in self._pending_algo_types_v1():
+            algo = self._verified_get_v1(ALGO_PENDING_PATH, {"instType": "SWAP", "ordType": kind})
+            if algo["data"]:
+                raise AccountObservationSourceError("STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED")
 
     def _pending_algo_types_v1(self):
         return SUPPORTED_ALGO_TYPES

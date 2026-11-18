@@ -4,16 +4,17 @@ from __future__ import annotations
 
 import fcntl
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
-from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
-    compose_occupied_lane_mv2_dp_durable_cycle_v1,
-)
 from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
     read_current_core_entry_assessment_frame_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_core_entry_attempt_v1 import (
+    begin_current_core_entry_attempt_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
     finalized_candidate_candle_history_rejection_codes_v1,
@@ -28,13 +29,21 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CurrentProductiveMasterV2CycleResultV1,
     extract_finalized_candle_closes_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
-    build_s8_occupied_lane_pairs_v1,
+    run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     load_current_productive_sidestate_confirmation_cursor_v1,
     parse_current_productive_sidestate_confirmation_cursor_v1,
+    persist_current_productive_sidestate_confirmation_cursor_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+    acquisition_age_seconds_v1,
+)
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_seam_v1 import (
+    ensure_productive_layered_core_episode_store_v1,
+)
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
+    productive_layered_core_bind_cycle_kwargs_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
@@ -57,6 +66,14 @@ class FirstEntryMarkCycleV2:
     status: str
 
 
+@dataclass(frozen=True)
+class FirstEntryBudgetBindingV2:
+    root: str
+    account: str
+    session_id: str
+    has_reservation: bool
+
+
 def run_first_entry_mark_cycle_v2(
     *,
     offline_state_root: Path,
@@ -75,6 +92,8 @@ def run_first_entry_mark_cycle_v2(
     venue_flat: bool,
     g17_producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
     reconciliation: ProductiveMasterV2ReconciliationAdmissionV1,
+    budget_binding: FirstEntryBudgetBindingV2 | None = None,
+    prepare_pretrade: Callable[[str, str], None] | None = None,
 ) -> FirstEntryMarkCycleV2:
     """Take one fresh Mark through the existing Core and durable entry cursor.
 
@@ -107,15 +126,21 @@ def run_first_entry_mark_cycle_v2(
     if mark_event < candle_open + BAR_SECONDS:
         raise ValueError("FIRST_ENTRY_MARK_PRECEDES_CANDLE_CLOSE")
 
-    pairs = build_s8_occupied_lane_pairs_v1(
-        lane_state_root=Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY,
-        bound=bound,
-    )
-    lane_root = Path(pairs[LANE_ID][0].lane_state_root)
+    lane_root = Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY / LANE_ID
     lane_root.mkdir(parents=True, exist_ok=True, mode=0o700)
     with (lane_root / "first_entry_mark_v2.lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         prior = load_current_productive_sidestate_confirmation_cursor_v1(lane_root)
+        budget_path = lane_root / "first_entry_budget_v2.json"
+        stored_budget = budget_path.read_text() if budget_path.exists() else None
+        budget_identity = None
+        prepare_candidate = False
+        if budget_binding is not None:
+            budget_identity = json.dumps(
+                [budget_binding.root, budget_binding.account, budget_binding.session_id]
+            )
+            if stored_budget is not None and stored_budget != budget_identity:
+                raise ValueError("FIRST_ENTRY_ORIGINAL_BUDGET_BINDING_MISMATCH")
         if prior is not None:
             cursor = parse_current_productive_sidestate_confirmation_cursor_v1(prior)
             if (cursor.instrument_id, cursor.venue_native_id) != (
@@ -139,16 +164,60 @@ def run_first_entry_mark_cycle_v2(
             ):
                 raise ValueError("FIRST_ENTRY_MARK_CURSOR_CLOCK_MISMATCH")
             if frame["entry"]["decision_outcome"] in ENTRY_OUTCOMES:
-                return FirstEntryMarkCycleV2(mark_event, candle_open, None, "ENTRY_ALREADY_DECIDED")
+                if (
+                    budget_binding is None
+                    or stored_budget != budget_identity
+                    or budget_binding.has_reservation
+                ):
+                    return FirstEntryMarkCycleV2(
+                        mark_event, candle_open, None, "ENTRY_ALREADY_DECIDED"
+                    )
+                try:
+                    acquisition_age_seconds_v1(
+                        acquired_at_utc=market["decision_time"],
+                        now_utc=datetime.fromtimestamp(observed_unix, timezone.utc).isoformat(),
+                    )
+                except ValueError as exc:
+                    if str(exc) != "ACQUISITION_STALE":
+                        raise
+                else:
+                    return FirstEntryMarkCycleV2(
+                        mark_event, candle_open, None, "WAITING_FOR_ENTRY_EXPIRY"
+                    )
             if mark_event <= last.venue_event_time:
                 return FirstEntryMarkCycleV2(mark_event, candle_open, None, "WAITING_FOR_NEW_MARK")
+            prepare_candidate = (
+                frame["entry"]["decision_outcome"] == DecisionOutcome.OBSERVE.value
+                or frame["entry"]["decision_outcome"] in ENTRY_OUTCOMES
+            )
+
+        if budget_identity is not None and stored_budget is None:
+            pending = budget_path.with_suffix(".tmp")
+            pending.write_text(budget_identity)
+            pending.replace(budget_path)
+
+        if prepare_candidate and prepare_pretrade is not None:
+            # The candidate may still be rejected. The read-only preparation
+            # uses the exact Mark-cycle identity that Core will decide on.
+            prepare_pretrade(
+                datetime.fromtimestamp(observed_unix, timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ"
+                ),
+                f"{cycle_id}:{LANE_ID}",
+            )
 
         # In the original Core call this argument feeds capability C1 (the
         # distinct-observation acceptor). Its identity is the venue Mark here.
         # The finalized bar/price series retains its separate input and clock.
-        invocation = compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            pairs,
-            cycle_id_prefix=cycle_id,
+        lane_cycle_id = f"{cycle_id}:{LANE_ID}"
+        predecessor = begin_current_core_entry_attempt_v1(
+            bound_instrument=bound, store_root=lane_root, cycle_id=lane_cycle_id
+        )
+        # This bounded start runs the original decision and cursor owners.
+        # Offline learning capture/export is outside its reservation deadline.
+        cycle = run_current_productive_master_v2_runtime_cycle_v1(
+            bound_instrument=bound,
+            cycle_id=lane_cycle_id,
             observed_unix=observed_unix,
             mark_px=provenance.mark_px,
             index_px=provenance.index_px,
@@ -162,11 +231,29 @@ def run_first_entry_mark_cycle_v2(
             accepted_c1_venue_event_time_unix=mark_event,
             venue_flat=True,
             existing_position_side=ExistingPositionSide.NONE,
-            g17_typed_vol_producers={LANE_ID: g17_producer},
+            incoming_cursor=prior,
+            g17_typed_vol_producer=g17_producer,
             canonical_price_provenance=provenance,
             master_v2_reconciliation_admission=reconciliation,
-        )[LANE_ID]
-        cycle = invocation.cycle_result
+            **productive_layered_core_bind_cycle_kwargs_v1(
+                layered_core_store_root=lane_root, incoming_cursor=prior
+            ),
+        )
+        if cycle.outgoing_cursor is None:
+            return FirstEntryMarkCycleV2(mark_event, candle_open, cycle, "BLOCKED")
+        bootstrap_failures = ensure_productive_layered_core_episode_store_v1(
+            store_root=lane_root,
+            bound_instrument=bound,
+            mark_price_m_t=provenance.mark_px,
+            finalized_closes=tuple(closes),
+            last_finalized_event_ts_unix=candle_open,
+            outgoing_cursor=cycle.outgoing_cursor,
+        )
+        if bootstrap_failures:
+            raise ValueError("FIRST_ENTRY_SCOPE_STORE:" + ",".join(bootstrap_failures))
+        persist_current_productive_sidestate_confirmation_cursor_v1(
+            cycle.outgoing_cursor, store_root=lane_root, expected_prior_digest=predecessor
+        )
         status = "BLOCKED"
         if cycle.replay_pass == "true":
             status = "ENTRY_DECIDED" if cycle.decision_outcome in ENTRY_OUTCOMES else "EVALUATED"

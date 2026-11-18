@@ -4,6 +4,7 @@ Uses the existing K1 OS-store/signing session and productive GET transport.
 No fallback from the dedicated observer credential contract and no POST port.
 """
 
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -13,6 +14,7 @@ from fractions import Fraction
 import json
 import math
 import re
+from threading import Lock
 from urllib.parse import parse_qsl, urlencode, urlsplit
 import time
 
@@ -23,6 +25,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    FullCoreProductiveReadOnlyGetError,
     FullCoreProductiveReadOnlyGetTransportV1,
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.constants_v1 import (
@@ -151,6 +154,7 @@ class _AccountReadTransportV1:
         )
         self.last_read = None
         self.read_count = 0
+        self._read_lock = Lock()
 
     def get(self, *, endpoint, auth_required, **kwargs):
         parsed = urlsplit(endpoint)
@@ -227,7 +231,10 @@ class _AccountReadTransportV1:
         )
         if params != expected and not full_scope:
             raise AccountObservationSourceError("K1_ACCOUNT_READ_SCOPE_INVALID")
-        self.read_count += 1
+        with self._read_lock:
+            if self.read_count >= self._transport.max_request_count:
+                raise FullCoreProductiveReadOnlyGetError("MAX_REQUEST_COUNT_EXCEEDED")
+            self.read_count += 1
         self.last_read = {"endpoint_path": path, "method": "GET", "completion_evidence": False}
         result = self._transport.get(endpoint=endpoint, auth_required=True, **kwargs)
         self.last_read = {
@@ -261,9 +268,15 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         transport,
         account_inventory_guard=False,
         inventory_inst_type="SWAP",
+        parallel_pending_reads=False,
         **kwargs,
     ):
         _validate_inventory_scope_v1(account_inventory_guard, inventory_inst_type)
+        if type(parallel_pending_reads) is not bool or (
+            parallel_pending_reads
+            and not (account_inventory_guard and inventory_inst_type == "FUTURES")
+        ):
+            raise AccountObservationSourceError("K1_PARALLEL_PENDING_REQUIRES_FUTURES_INVENTORY")
         if (
             not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1)
             or transport._handle is not credential
@@ -276,6 +289,7 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
         )
         self.account_inventory_guard = account_inventory_guard
         self.inventory_inst_type = inventory_inst_type
+        self.parallel_pending_reads = parallel_pending_reads
 
     def _pending_algo_types_v1(self):
         return (
@@ -307,6 +321,7 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             path == "/api/v5/trade/orders-pending"
             and self.inventory_inst_type == "FUTURES"
             and not payload["data"]
+            and not self.parallel_pending_reads
         ):
             for bot_path, bot_query in FUTURES_INVENTORY_BOT_QUERIES:
                 bot = super()._verified_get_v1(bot_path, bot_query)
@@ -314,6 +329,24 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
                 if bot["data"]:
                     raise AccountObservationSourceError("K1_FUTURES_ACCOUNT_BOT_CUSTODY_PRESENT")
         return payload
+
+    def _assert_no_pending_algos_v1(self):
+        if not self.parallel_pending_reads:
+            return super()._assert_no_pending_algos_v1()
+        algos = tuple(
+            (ALGO_PENDING_PATH, {"instType": "SWAP", "ordType": kind})
+            for kind in self._pending_algo_types_v1()
+        )
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            futures = [
+                pool.submit(self._verified_get_v1, path, query)
+                for path, query in (*FUTURES_INVENTORY_BOT_QUERIES, *algos)
+            ]
+        for index, future in enumerate(futures):
+            if future.result()["data"]:
+                if index < len(FUTURES_INVENTORY_BOT_QUERIES):
+                    raise AccountObservationSourceError("K1_FUTURES_ACCOUNT_BOT_CUSTODY_PRESENT")
+                raise AccountObservationSourceError("STARTUP_PENDING_ALGO_ORDERS_UNRESOLVED")
 
     def export_startup_document_v1(self, path, *, instrument_ids_by_native_id):
         if self.inventory_inst_type == "FUTURES":
@@ -761,6 +794,7 @@ def open_k1_account_observation_source_v1(
     clock=time.time,
     account_inventory_guard=False,
     inventory_inst_type="SWAP",
+    parallel_pending_reads=False,
 ):
     """Explicit K1 source selection, bounded by its existing acquisition gates.
 
@@ -799,6 +833,7 @@ def open_k1_account_observation_source_v1(
             clock=clock,
             account_inventory_guard=account_inventory_guard,
             inventory_inst_type=inventory_inst_type,
+            parallel_pending_reads=parallel_pending_reads,
         )
         try:
             yield source
