@@ -44,6 +44,7 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import DecisionOutcome, 
 
 
 LANE_ID = "LANE_1"
+ENTRY_MARK_STATE_DIRECTORY = "flat-entry-mark-v2"
 ENTRY_OUTCOMES = {DecisionOutcome.ENTER_LONG.value, DecisionOutcome.ENTER_SHORT.value}
 BAR_SECONDS = 60
 
@@ -107,7 +108,7 @@ def run_first_entry_mark_cycle_v2(
         raise ValueError("FIRST_ENTRY_MARK_PRECEDES_CANDLE_CLOSE")
 
     pairs = build_s8_occupied_lane_pairs_v1(
-        lane_state_root=Path(offline_state_root).resolve() / "flat-entry-mark-v2",
+        lane_state_root=Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY,
         bound=bound,
     )
     lane_root = Path(pairs[LANE_ID][0].lane_state_root)
