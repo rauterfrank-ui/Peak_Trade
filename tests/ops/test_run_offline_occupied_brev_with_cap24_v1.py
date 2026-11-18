@@ -138,6 +138,27 @@ def test_different_instrument_cannot_resume_the_occupied_lane(occupied_replay, m
     assert not ports
 
 
+def test_original_wait_readback_is_independent_of_cap24_and_rejects_a_replaced_store(
+    occupied_replay, monkeypatch
+):
+    args, ports, lock, _, publication, _ = occupied_replay
+    publication.unlink()
+    monkeypatch.setattr(
+        replay, "inspect_selection_v1", lambda **_: pytest.fail("WAIT read opened Cap24")
+    )
+    inputs = {key: args[key] for key in ("sandbox_root", "runtime_config")}
+    wait = replay.inspect_occupied_brev_wait_v1(**inputs)
+    assert wait.confirmation["occupied_reservation_id"] == "original-hold"
+    assert wait.confirmation["occupied_cursor_sha256"] == "original-cursor"
+    assert not ports
+
+    store = lock.parent / "budget/owner/reservations.sqlite3"
+    store.rename(store.with_suffix(".original"))
+    store.touch()
+    with pytest.raises(replay._ConfirmationError, match="BREV_CAP24_OCCUPIED_CHECKPOINT_CHANGED"):
+        replay.inspect_occupied_brev_wait_v1(**inputs)
+
+
 @pytest.mark.parametrize("changed", ["publication", "claim"])
 def test_rechecks_publication_and_occupied_claim_before_ports(
     occupied_replay, monkeypatch, changed
