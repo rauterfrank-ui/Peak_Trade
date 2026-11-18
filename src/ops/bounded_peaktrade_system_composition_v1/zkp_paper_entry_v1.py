@@ -1,4 +1,4 @@
-"""Isolated LANE_1 opening from original Master V2 to one simulated Paper fill."""
+"""Isolated XPERP Paper opening from original Master V2 to one simulated Paper fill."""
 
 from __future__ import annotations
 
@@ -18,10 +18,9 @@ from src.governance.capital_risk_sizing_v1 import (
 )
 from src.ops.bounded_peaktrade_system_composition_v1.manifest_v1 import repository_source_digest_v1
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
-    INSTRUMENT_ID,
-    NATIVE_ID,
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
+    ZKP_PAPER_SLOT,
 )
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import FROZEN_PROFIT_PROTECTION_DISTANCE
 from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
@@ -35,7 +34,6 @@ from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v
 )
 from src.ops.first_entry_mark_clock_v2 import (
     ENTRY_MARK_STATE_DIRECTORY,
-    LANE_ID,
     FirstEntryBudgetBindingV2,
     run_first_entry_mark_cycle_v2,
 )
@@ -81,7 +79,7 @@ _BUDGET_POLICY = "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
 def paper_constraints_v1(market):
     contract = market.native_contract
     return InstrumentQuantityConstraintsV1(
-        instrument_id=INSTRUMENT_ID,
+        instrument_id=market.slot.instrument_id,
         market_type="futures",
         contract_kind="LINEAR",
         contract_multiplier=contract.contract_size,
@@ -108,12 +106,13 @@ def paper_sizing_v1(
     budget,
     config_digest,
     instrument,
+    quantity_cap=None,
 ):
     # The sizer evaluates the resulting exposure. The net fill separately
     # validates and closes the entire old leg in the same accounting operation.
     return CapitalRiskSizingInputV1(
         decision_id=decision_id,
-        instrument_id=INSTRUMENT_ID,
+        instrument_id=instrument.instrument_id,
         selected_side=side.upper(),
         reference_price=market.mark,
         protective_stop_price=stop,
@@ -127,7 +126,7 @@ def paper_sizing_v1(
         maximum_positions=1,
         current_open_positions_count=0,
         current_open_side=None,
-        configured_quantity_cap=None,
+        configured_quantity_cap=quantity_cap,
         leverage_ceiling=Decimal(1),
         reconciliation_status="RECONCILED",
         policy_version=budget.policy_id,
@@ -153,20 +152,31 @@ def paper_fill_fresh_v1(market, now):
 class ZkpPaperEntryV1:
     """One writer for the flat slot and its opening evidence."""
 
-    def __init__(self, *, root: Path, repo: Path, revision: str, initial_market, duration: int):
+    def __init__(
+        self,
+        *,
+        root: Path,
+        repo: Path,
+        revision: str,
+        initial_market,
+        duration: int,
+        slot=ZKP_PAPER_SLOT,
+    ):
         if not root.is_absolute() or root.resolve() != root or root.is_relative_to(repo):
             raise ValueError("ZKP_PAPER_NEW_ISOLATED_ROOT_REQUIRED")
         if type(duration) is not int or not 1 <= duration <= _MAX_SECONDS:
             raise ValueError("ZKP_PAPER_WINDOW_INVALID")
+        self.slot = slot
         self.root = root
         self.revision = revision
         self.budget = load_slot_entry_budget_v1(repo / _BUDGET_POLICY)
         self.contract = initial_market.native_contract
         if (
-            self.contract.symbol != NATIVE_ID
+            initial_market.slot != slot
+            or self.contract.symbol != self.slot.native_id
             or self.contract.quote_currency != "USD"
             or self.budget.currency != "USDC"
-            or LANE_ID not in self.budget.allowed_slot_ids
+            or self.slot.lane_id not in self.budget.allowed_slot_ids
         ):
             raise ValueError("ZKP_PAPER_CONTRACT_OR_BUDGET_SCOPE_INVALID")
         self.initial_equity = PAPER_ALLOCATION_USDC * initial_market.usd_per_usdc
@@ -179,9 +189,9 @@ class ZkpPaperEntryV1:
         self._g17_window = None
         self._g17_producer = None
         identity = {
-            "instrument_id": INSTRUMENT_ID,
-            "venue_native_id": NATIVE_ID,
-            "lane_id": LANE_ID,
+            "instrument_id": self.slot.instrument_id,
+            "venue_native_id": self.slot.native_id,
+            "lane_id": self.slot.lane_id,
             "session_id": root.name,
             "environment": _MODE,
             "budget_digest": self.budget.digest_v1(),
@@ -194,23 +204,23 @@ class ZkpPaperEntryV1:
         }
         self.binding_digest = canonical_digest_v1(identity)
         self.bound = BoundInstrumentV1(
-            instrument_id=INSTRUMENT_ID,
-            venue_native_id=NATIVE_ID,
+            instrument_id=self.slot.instrument_id,
+            venue_native_id=self.slot.native_id,
             ranking_snapshot_id="",
             ranking_integrity_digest="",
             universe_snapshot_id="",
-            selection_id=f"paper-fixed:{NATIVE_ID}",
+            selection_id=f"paper-fixed:{self.slot.native_id}",
             selection_integrity_digest=self.binding_digest,
             selection_state="EXPLICIT_SINGLE_INSTRUMENT_PAPER",
         )
         self.reconciliation = (
             build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-                bound_instrument_id=INSTRUMENT_ID,
+                bound_instrument_id=self.slot.instrument_id,
                 session_id=root.name,
                 repository_sha=revision,
             )
         )
-        self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / LANE_ID
+        self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / self.slot.lane_id
         self.episode_config_digest = layer_c_derived_exit_policy_adverse_config_digest_v1(
             profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE
         )
@@ -245,12 +255,34 @@ class ZkpPaperEntryV1:
         with exclusive_v1(self.root / ".paper-opening.lock"):
             if (self.root / "opening-plan.json").exists():
                 raise ValueError("ZKP_PAPER_OPENING_ALREADY_RETAINED")
-            if market.native_contract != self.contract or market.policy != self.liquidity_policy:
+            if (
+                market.slot != self.slot
+                or market.native_contract != self.contract
+                or market.policy != self.liquidity_policy
+            ):
                 raise ValueError("ZKP_PAPER_CONTRACT_OR_POLICY_DRIFT")
+            market_checks = {
+                side: market.assess_opening_liquidity_v1(side=side) for side in ("BUY", "SELL")
+            }
+            evidence = {
+                "market_precheck": market_checks,
+                "observed_unix": market.observed_unix,
+                "mark_event_unix": market.market_event_unix,
+                "source_hashes": market.source_hashes,
+            }
+            if not paper_fill_fresh_v1(market, clock()):
+                return {
+                    **evidence,
+                    "status": "BLOCKED",
+                    "reason": "ZKP_PAPER_MARKET_EXPIRED_AT_CHECK",
+                }
+            if not any(check["risk_admitted"] for check in market_checks.values()):
+                return {**evidence, "status": "WAITING_FOR_LIQUID_MARKET"}
             window = (market.g17_c1_open_unix, market.g17_window_digest)
             if window != self._g17_window:
                 if self._g17_window is not None and window[0] <= self._g17_window[0]:
                     return {
+                        **evidence,
                         "status": "BLOCKED",
                         "reason": "ZKP_PAPER_FINALIZED_MARK_WINDOW_CHANGED",
                     }
@@ -262,6 +294,7 @@ class ZkpPaperEntryV1:
                 )
                 if g17.fail_closed or not g17.estimate_present or g17.producer is None:
                     return {
+                        **evidence,
                         "status": "BLOCKED",
                         "reason": g17.reason_code or "ZKP_PAPER_G17_ABSENT",
                     }
@@ -271,6 +304,7 @@ class ZkpPaperEntryV1:
             cycle_id = f"{self.root.name}:paper:{int(market.market_event_unix * 1000)}"
             entry = run_first_entry_mark_cycle_v2(
                 offline_state_root=self.root,
+                lane_id=self.slot.lane_id,
                 bound=self.bound,
                 cycle_id=cycle_id,
                 observed_unix=market.observed_unix,
@@ -291,23 +325,23 @@ class ZkpPaperEntryV1:
                 ),
             )
             if entry.cycle is None:
-                return {"status": entry.status}
+                return {**evidence, "status": entry.status}
             cycle = entry.cycle
-            evidence = {
-                "status": entry.status,
-                "cycle_id": cycle.cycle_id,
-                "decision_outcome": cycle.decision_outcome,
-                "reason": cycle.input_blocker,
-                "observed_unix": market.observed_unix,
-                "mark_event_unix": entry.mark_event_unix,
-                "c1_open_unix": entry.candle_open_unix,
-                "source_hashes": market.source_hashes,
-            }
+            evidence.update(
+                {
+                    "status": entry.status,
+                    "cycle_id": cycle.cycle_id,
+                    "decision_outcome": cycle.decision_outcome,
+                    "reason": cycle.input_blocker,
+                    "mark_event_unix": entry.mark_event_unix,
+                    "c1_open_unix": entry.candle_open_unix,
+                }
+            )
             decision_path = self.root / "decisions" / f"{int(market.market_event_unix * 1000)}.json"
             if entry.status != "ENTRY_DECIDED":
                 immutable_json_v1(decision_path, evidence)
                 return evidence
-            result = self._prepare_fill(cycle, market, clock)
+            result = self._prepare_fill(cycle, market, market_checks, clock)
             fill = result.pop("fill", None)
             evidence.update(result)
             if fill is not None:
@@ -320,11 +354,14 @@ class ZkpPaperEntryV1:
             immutable_json_v1(self.root / "opening-plan.json", opening)
             return self._book_opening(cycle, self._g17_producer, opening, fill)
 
-    def _prepare_fill(self, cycle, market, clock):
+    def _prepare_fill(self, cycle, market, market_checks, clock):
         replay = cycle.replay
         parent = replay.evidence
         side = {"enter_long": "LONG", "enter_short": "SHORT"}[cycle.decision_outcome]
         fill_side = "BUY" if side == "LONG" else "SELL"
+        check = market_checks[fill_side]
+        if not check["risk_admitted"]:
+            return {"status": "BLOCKED", "reason_codes": check["reason_codes"]}
         distance, reasons = resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
         if distance is None:
             return {"status": "BLOCKED", "reason_codes": list(reasons)}
@@ -357,6 +394,7 @@ class ZkpPaperEntryV1:
             budget=self.budget,
             config_digest=self.binding_digest,
             instrument=paper_constraints_v1(market),
+            quantity_cap=Decimal(check["quantity_cap_contracts"]),
         )
         size = evaluate_capital_risk_sizing_v1(sizing)
         plan = build_canonical_order_intent_v1(
@@ -390,7 +428,7 @@ class ZkpPaperEntryV1:
             or intent.network_effect != "NONE"
             or intent.authority_effect != "NONE"
             or (intent.instrument_id, intent.side, intent.decision_id)
-            != (INSTRUMENT_ID, side, parent.decision_id)
+            != (self.slot.instrument_id, side, parent.decision_id)
         ):
             raise ValueError("ZKP_PAPER_INTENT_SCOPE_OR_AUTHORITY_VIOLATION")
 
@@ -447,7 +485,7 @@ class ZkpPaperEntryV1:
             "status": "SIMULATED_FILL_ADMITTED",
             "fill": SimulatedFillInputV1(
                 fill_id=f"paper:{intent.semantic_digest}",
-                instrument_id=NATIVE_ID,
+                instrument_id=self.slot.native_id,
                 side=fill_side,
                 quantity=intent.quantity,
                 mark_price=market.mark,
@@ -467,7 +505,12 @@ class ZkpPaperEntryV1:
             raise ValueError("ZKP_PAPER_ACCOUNTING_OPEN_POSITION_UNPROVEN")
         identity = bind_simulated_accounting_episode_identity_v1(
             identity=PositionEpisodeIdentityV1(
-                LANE_ID, INSTRUMENT_ID, NATIVE_ID, "pending", side, self.scope
+                self.slot.lane_id,
+                self.slot.instrument_id,
+                self.slot.native_id,
+                "pending",
+                side,
+                self.scope,
             ),
             opening_fill=fill,
         )
@@ -492,7 +535,7 @@ class ZkpPaperEntryV1:
             "status": "FIRST_FILL_BOOKED",
             "authority": "NONE",
             "execution_environment": _MODE,
-            "lane_id": LANE_ID,
+            "lane_id": self.slot.lane_id,
             "cycle_id": cycle.cycle_id,
             "decision_id": opening["decision_id"],
             "episode_id": identity.episode_id,

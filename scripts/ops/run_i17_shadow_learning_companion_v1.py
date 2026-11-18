@@ -33,9 +33,11 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     verify_wallclock_evidence_bundle_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
-    CANONICAL_INSTRUMENT_ID,
     CANONICAL_PRODUCTIVE_DURATION_SECONDS,
     REAL_NETWORK_ENV,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    require_i17_shadow_instrument_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1 import (
     run_productive_wallclock_session_v1,
@@ -82,14 +84,14 @@ def _load_prereg(path):
     return parse_preregistration_contract_v1(load_preregistration_contract_dict_v1(path))
 
 
-def _instrument_binding(data):
+def _instrument_binding(data, *, instrument):
     binding = strict_json_v1(data)
     if not isinstance(binding, dict):
         raise ValueError("I17_COMPANION_O4_INSTRUMENT_BINDING_REQUIRED")
     recorded_mark_price_unit_v1(
         instrument_binding=binding,
-        canonical_instrument_id=CANONICAL_INSTRUMENT_ID,
-        native_instrument_id=CANONICAL_INSTRUMENT_ID,
+        canonical_instrument_id=instrument.canonical_id,
+        native_instrument_id=instrument.native_id,
     )
     return binding
 
@@ -97,14 +99,13 @@ def _instrument_binding(data):
 def prepare_companion_v1(*, root, evidence, prereg, binding_path):
     """Pin the future observation and keep its follow-up outside the source archive."""
     _source_roots(root, evidence)
-    if (
-        prereg.planned_duration_seconds != CANONICAL_PRODUCTIVE_DURATION_SECONDS
-        or tuple(prereg.instrument_allowlist) != (CANONICAL_INSTRUMENT_ID,)
-        or not re.fullmatch(r"[0-9a-f]{40}", prereg.expected_repository_sha)
+    instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+    if prereg.planned_duration_seconds != CANONICAL_PRODUCTIVE_DURATION_SECONDS or not re.fullmatch(
+        r"[0-9a-f]{40}", prereg.expected_repository_sha
     ):
-        raise ValueError("I17_COMPANION_CANONICAL_ETH_PREREGISTRATION_REQUIRED")
+        raise ValueError("I17_COMPANION_CANONICAL_PREREGISTRATION_REQUIRED")
     data = binding_path.read_bytes()
-    _instrument_binding(data)
+    _instrument_binding(data, instrument=instrument)
     root.mkdir(mode=0o700)
     durable_bytes_v1(root / "instrument-binding.json", data)
     publish_v1(
@@ -134,8 +135,6 @@ def _verified_plan(root, profile):
     if (
         selected["session_id"] != profile["session_id"]
         or selected["repository_sha"] != profile["repository_sha"]
-        or selected["canonical_instrument_id"] != CANONICAL_INSTRUMENT_ID
-        or selected["venue_instrument_id"] != CANONICAL_INSTRUMENT_ID
     ):
         raise ValueError("I17_COMPANION_ORIGINAL_SESSION_MISMATCH")
 
@@ -155,11 +154,18 @@ def _verified_plan(root, profile):
         return strict_json_v1(raw)
 
     prereg = parse_preregistration_contract_v1(pinned("prereg.json"))
+    instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
     if (
         digest_v1(prereg.to_dict()) != profile["preregistration_digest"]
         or prereg.fixture_non_authoritative is not profile["fixture_non_authoritative"]
     ):
         raise ValueError("I17_COMPANION_PREREGISTRATION_MISMATCH")
+    if (
+        selected["canonical_instrument_id"] != instrument.canonical_id
+        or selected["venue_instrument_id"] != instrument.native_id
+        or selected.get("lane_id") != instrument.lane_id
+    ):
+        raise ValueError("I17_COMPANION_ORIGINAL_SESSION_MISMATCH")
     if not profile["fixture_non_authoritative"]:
         config = pinned("config_snapshot.json")
         if (
@@ -174,7 +180,10 @@ def _verified_plan(root, profile):
         or sha256(data).hexdigest() != profile["instrument_binding_sha256"]
     ):
         raise ValueError("I17_COMPANION_INSTRUMENT_BINDING_CHANGED")
-    if _instrument_binding(data)["mapping_digest"] != selected["mapping_digest"]:
+    if (
+        _instrument_binding(data, instrument=instrument)["mapping_digest"]
+        != selected["mapping_digest"]
+    ):
         raise ValueError("I17_COMPANION_SHADOW_O4_MAPPING_MISMATCH")
 
     start = shadow_o4_window_start_v1(selected["decision_event_time_utc"])

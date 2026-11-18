@@ -12,6 +12,11 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.error_classes_v1 import (
     MarketDataBindingErrorV1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+    SOPH_I17,
+    I17ShadowInstrumentV1,
+)
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.mark_price_contract_v1 import (
     parse_public_mark_price_response_v1,
 )
@@ -44,7 +49,14 @@ def resolve_mapping_with_transport_inventory_v1(
     transport: PublicMdTransportProtocolV1,
     canonical_instrument_id: str = CANONICAL_INSTRUMENT_ID,
     instruments_payload: Optional[Mapping[str, Any]] = None,
+    i17_scope: I17ShadowInstrumentV1 | None = None,
 ) -> VenueInstrumentMappingV1:
+    if i17_scope is not None and (
+        i17_scope not in (ETH_I17, SOPH_I17) or canonical_instrument_id != i17_scope.canonical_id
+    ):
+        raise MarketDataBindingErrorV1(
+            "CANONICAL_INSTRUMENT_MAPPING_MISSING", canonical_instrument_id
+        )
     if instruments_payload is None:
         # Need venue id from authority first for targeted instruments query.
         # Seed inventory query uses authority instrument id without treating it as
@@ -53,7 +65,11 @@ def resolve_mapping_with_transport_inventory_v1(
             default_okx_europe_xperp_production_binding,
         )
 
-        seed_id = str(default_okx_europe_xperp_production_binding().instrument_id)
+        seed_id = (
+            SOPH_I17.native_id
+            if i17_scope == SOPH_I17
+            else str(default_okx_europe_xperp_production_binding().instrument_id)
+        )
         fetch = transport.fetch_instruments(
             venue_instrument_id=seed_id, inst_type=MARK_PRICE_INST_TYPE
         )
@@ -62,6 +78,7 @@ def resolve_mapping_with_transport_inventory_v1(
     return resolve_okx_venue_instrument_mapping_v1(
         canonical_instrument_id=canonical_instrument_id,
         instruments_inventory=inventory,
+        i17_scope=i17_scope,
     )
 
 

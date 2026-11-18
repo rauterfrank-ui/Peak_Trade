@@ -1,4 +1,4 @@
-"""Run the flat LANE_1 entry decision on venue Marks in isolated offline state."""
+"""Run a flat lane's entry decision on venue Marks in isolated offline state."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import LANE_IDS
 from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
     read_current_core_entry_assessment_frame_v1,
 )
@@ -94,6 +95,7 @@ def run_first_entry_mark_cycle_v2(
     reconciliation: ProductiveMasterV2ReconciliationAdmissionV1,
     budget_binding: FirstEntryBudgetBindingV2 | None = None,
     prepare_pretrade: Callable[[str, str], None] | None = None,
+    lane_id: str = LANE_ID,
 ) -> FirstEntryMarkCycleV2:
     """Take one fresh Mark through the existing Core and durable entry cursor.
 
@@ -102,6 +104,8 @@ def run_first_entry_mark_cycle_v2(
     entry decision. The state directory belongs to this offline run. After an
     ENTER, downstream fill/position ownership is outside this entry clock.
     """
+    if lane_id not in LANE_IDS:
+        raise ValueError("FIRST_ENTRY_MARK_INVALID_LANE")
     if venue_flat is not True:
         raise ValueError("FIRST_ENTRY_MARK_REQUIRES_FLAT_POSITION")
     if (
@@ -126,7 +130,7 @@ def run_first_entry_mark_cycle_v2(
     if mark_event < candle_open + BAR_SECONDS:
         raise ValueError("FIRST_ENTRY_MARK_PRECEDES_CANDLE_CLOSE")
 
-    lane_root = Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY / LANE_ID
+    lane_root = Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY / lane_id
     lane_root.mkdir(parents=True, exist_ok=True, mode=0o700)
     with (lane_root / "first_entry_mark_v2.lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -203,13 +207,13 @@ def run_first_entry_mark_cycle_v2(
                 datetime.fromtimestamp(observed_unix, timezone.utc).strftime(
                     "%Y-%m-%dT%H:%M:%S.%fZ"
                 ),
-                f"{cycle_id}:{LANE_ID}",
+                f"{cycle_id}:{lane_id}",
             )
 
         # In the original Core call this argument feeds capability C1 (the
         # distinct-observation acceptor). Its identity is the venue Mark here.
         # The finalized bar/price series retains its separate input and clock.
-        lane_cycle_id = f"{cycle_id}:{LANE_ID}"
+        lane_cycle_id = f"{cycle_id}:{lane_id}"
         predecessor = begin_current_core_entry_attempt_v1(
             bound_instrument=bound, store_root=lane_root, cycle_id=lane_cycle_id
         )

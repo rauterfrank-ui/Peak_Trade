@@ -6,10 +6,15 @@ from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
+from decimal import Decimal
+from hashlib import sha256
 from pathlib import Path
 import re
 import time
 
+from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
+    PaperEntryLiquiditySourceV1,
+)
 from src.ops.first_entry_mark_clock_v2 import (
     ENTRY_MARK_STATE_DIRECTORY,
     LANE_ID,
@@ -41,8 +46,14 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
     bind_final_order_envelope_from_venue_plan_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (
+    immutable_json_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
     acquisition_age_seconds_v1,
+)
+from src.ops.governed_productive_monetary_normalization_v1.instrument_monetary_identity_v1 import (
+    instrument_monetary_identity_from_okx_row_v1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import ReservationStateV1
 from src.ops.portfolio_capital_reservation_budget_v1.entry_execution_cost_v1 import (
@@ -250,6 +261,7 @@ def run_offline_first_entry_start_v2(
     max_polls: int,
     clock: Callable[[], float] = time.time,
     prepare_read_only_pretrade: bool = False,
+    paper_liquidity: PaperEntryLiquiditySourceV1 | None = None,
 ) -> OfflineFirstEntryStartResultV2:
     """Consume current Mark observations and stop at the original pre-external plan.
 
@@ -257,6 +269,8 @@ def run_offline_first_entry_start_v2(
     29P input port receives the exact decision epoch and cycle id. Callers may
     permit read-only preparation on a candidate Mark. Sizing still requires
     a committed ENTER. Expired entries without a reservation require a new Mark.
+    A configured Paper source checks the selected instrument on each new ENTER
+    and checks the final quantity before committing the pre-external plan.
 
     For an offline run continuing past a confirmed simulated fill, use
     OfflineFirstEntryBudgetHostV2 and bind_offline_first_entry_position_v2.
@@ -274,6 +288,7 @@ def run_offline_first_entry_start_v2(
     owner = budget_host.owner
     budget_binding = bind_offline_first_entry_budget_v2(budget_host)
 
+    liquidity_blocker = ""
     for poll in range(1, max_polls + 1):
         observation = source.poll()
         if observation is None or observation.mark_price_payload is None:
@@ -325,6 +340,46 @@ def run_offline_first_entry_start_v2(
             replay = cycle.replay
             decision_id = replay.evidence.decision_id
             epoch = replay.intermediate.market_context.decision_time
+            liquidity = None
+            if paper_liquidity is not None:
+                fill_side = {"enter_long": "BUY", "enter_short": "SELL"}[cycle.decision_outcome]
+                evidence_name = sha256(cycle.cycle_id.encode()).hexdigest()
+                evidence_root = Path(state_root) / "paper-entry-liquidity"
+                try:
+                    liquidity = paper_liquidity.observe_v1(
+                        bound=bound, capture_id=cycle.cycle_id, clock=clock
+                    )
+                    if liquidity.bound != bound or budget_host.bindings.get(LANE_ID) != bound:
+                        raise ValueError("PAPER_LIQUIDITY_ENTRY_BINDING_CHANGED")
+                    preflight = liquidity.to_preflight_v1()
+                    check = preflight["liquidity_at_minimum_quantity"][fill_side]
+                    liquidity_blocker = "" if check["risk_admitted"] else check["reason_codes"][0]
+                    if not liquidity.is_fresh_v1(clock()):
+                        liquidity_blocker = "PAPER_LIQUIDITY_ENTRY_EXPIRED"
+                except (
+                    OSError,
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    RuntimeError,
+                    ArithmeticError,
+                ) as exc:
+                    preflight = {}
+                    liquidity_blocker = f"PAPER_LIQUIDITY_ENTRY_UNAVAILABLE:{exc}"
+                immutable_json_v1(
+                    evidence_root / f"{evidence_name}.json",
+                    {
+                        **preflight,
+                        "lane_id": LANE_ID,
+                        "cycle_id": cycle.cycle_id,
+                        "decision_id": decision_id,
+                        "bound": bound.to_dict(),
+                        "side": fill_side,
+                        "blocker": liquidity_blocker,
+                    },
+                )
+                if liquidity_blocker:
+                    continue
             sized = size_offline_first_entry_v2(
                 entry=entry,
                 bound=bound,
@@ -373,6 +428,50 @@ def run_offline_first_entry_start_v2(
                 "BLOCKED", poll, decision_id, rid, reason=quantity.reason_codes[0]
             )
 
+        if liquidity is not None:
+            try:
+                (contract,) = (
+                    row
+                    for row in injected.instruments_payload["data"]
+                    if row["instId"] == bound.venue_native_id
+                )
+                snapshot = liquidity.snapshot
+                monetary = instrument_monetary_identity_from_okx_row_v1(contract)
+                if (
+                    monetary.ct_val,
+                    monetary.quote_currency,
+                    Decimal(contract["lotSz"]),
+                    Decimal(contract["minSz"]),
+                    Decimal(contract["tickSz"]),
+                ) != (
+                    snapshot.contract_size,
+                    liquidity.quote_asset,
+                    snapshot.lot_size,
+                    snapshot.minimum_contracts,
+                    snapshot.tick_size,
+                ):
+                    raise ValueError("PAPER_LIQUIDITY_CONTRACT_METADATA_CHANGED")
+                if plan.instrument_id != bound.venue_native_id or plan.side != fill_side.lower():
+                    raise ValueError("PAPER_LIQUIDITY_PLAN_SCOPE_CHANGED")
+                exact = snapshot.assess_quantity_v1(side=fill_side, quantity=Decimal(plan.quantity))
+                if budget_host.bindings.get(LANE_ID) != bound:
+                    reason = "PAPER_LIQUIDITY_ENTRY_BINDING_CHANGED"
+                elif not liquidity.is_fresh_v1(clock()):
+                    reason = "PAPER_LIQUIDITY_ENTRY_EXPIRED"
+                else:
+                    reason = "" if exact["risk_admitted"] else exact["reason_codes"][0]
+                immutable_json_v1(
+                    evidence_root / f"{evidence_name}.exact.json",
+                    {**exact, "decision_id": decision_id, "blocker": reason},
+                )
+            except (OSError, ValueError, TypeError, KeyError, RuntimeError, ArithmeticError) as exc:
+                reason = f"PAPER_LIQUIDITY_EXACT_CHECK_UNAVAILABLE:{exc}"
+            if reason:
+                owner.release_sizing_or_admission_deny_v1(rid)
+                return OfflineFirstEntryStartResultV2(
+                    "BLOCKED", poll, decision_id, rid, reason=reason
+                )
+
         envelope = bind_final_order_envelope_from_venue_plan_v1(
             plan,
             admission_ref=f"{cycle.cycle_id}:admission:portfolio-reservation:{rid}",
@@ -398,4 +497,4 @@ def run_offline_first_entry_start_v2(
             "PRE_EXTERNAL_EFFECT", poll, decision_id, rid, envelope
         )
 
-    return OfflineFirstEntryStartResultV2("WAITING_FOR_ENTRY", max_polls)
+    return OfflineFirstEntryStartResultV2("WAITING_FOR_ENTRY", max_polls, reason=liquidity_blocker)

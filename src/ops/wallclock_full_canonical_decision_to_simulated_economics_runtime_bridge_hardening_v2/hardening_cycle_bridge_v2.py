@@ -386,7 +386,7 @@ def _ensure_typed_volatility_binding_host_v1(
             CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1.create(
                 venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
                 canonical_instrument_id=str(state.instrument_id),
-                venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+                venue_instrument_id=state.venue_instrument_id,
                 persistence_path=state.typed_volatility_persistence_path,
             )
         )
@@ -399,7 +399,7 @@ def ensure_pt1m_mark_observation_finalizer_v1(
     """Session-local PT1M finalizer for productive wallclock → typed-vol wiring."""
     expected_venue = _DEFAULT_VOL_TYPED_BINDING_VENUE
     expected_canon = str(state.instrument_id)
-    expected_venue_inst = _DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID
+    expected_venue_inst = state.venue_instrument_id
     if state.pt1m_mark_observation_finalizer is None:
         state.pt1m_mark_observation_finalizer = (
             CanonicalVolatilityPt1mMarkObservationFinalizerV1.create(
@@ -529,6 +529,9 @@ def _fill_to_dict(fill: SimulatedFillV1) -> dict[str, Any]:
 @dataclass
 class HardenedBridgeSessionStateV2:
     instrument_id: str = PRODUCTION_INSTRUMENT_ID
+    venue_instrument_id: str = field(
+        default=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID, kw_only=True
+    )
     session_id: str = ""
     trading_epoch: int = 1
     mid_prices: list[float] = field(default_factory=list)
@@ -987,7 +990,7 @@ def run_hardened_bridge_cycle_v2(
         transport=finalized_pt1m_transport,
         venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
         canonical_instrument_id=str(state.instrument_id),
-        venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+        venue_instrument_id=state.venue_instrument_id,
         event_time_unix_seconds=finalized_pt1m_event_time_unix_seconds,
         mark_price=finalized_pt1m_mark_price,
         is_final=True,
@@ -1478,7 +1481,7 @@ def run_hardened_bridge_cycle_v2(
                 cycle,
                 authority=authority,
                 venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
-                venue_instrument_id=_DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID,
+                venue_instrument_id=state.venue_instrument_id,
                 receive_time=receive_time,
                 market_sample=sample_for_id.to_dict(),
             )

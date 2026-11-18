@@ -8,6 +8,10 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Mapping, Optional
 from urllib.parse import parse_qs, urlparse
 
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    require_i17_shadow_instrument_v1,
+)
+
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     ALLOWED_HEADERS,
     ALLOWED_METHODS,
@@ -107,8 +111,14 @@ def allowed_paths_v1(*, candidate_last: bool = False) -> frozenset[str]:
     return ALLOWED_PATHS | {CANDIDATE_LAST_CANDLE_PATH} if candidate_last else ALLOWED_PATHS
 
 
-def assert_url_allowed_v1(url: str, *, candidate_last: bool = False) -> list[str]:
+def assert_url_allowed_v1(
+    url: str, *, candidate_last: bool = False, venue_instrument_id: str = CANONICAL_INSTRUMENT_ID
+) -> list[str]:
     blockers: list[str] = []
+    try:
+        require_i17_shadow_instrument_v1((venue_instrument_id,))
+    except ValueError as exc:
+        blockers.append(str(exc))
     parsed = urlparse(str(url or ""))
     scheme = (parsed.scheme or "").lower()
     if scheme != "https":
@@ -141,7 +151,8 @@ def assert_url_allowed_v1(url: str, *, candidate_last: bool = False) -> list[str
     if candidate_last and path == CANDIDATE_LAST_CANDLE_PATH:
         close = qs.get("after", [""])[0]
         if (
-            qs
+            venue_instrument_id != CANONICAL_INSTRUMENT_ID
+            or qs
             != {
                 "instId": [CANONICAL_INSTRUMENT_ID],
                 "bar": ["1H"],
@@ -161,7 +172,7 @@ def assert_url_allowed_v1(url: str, *, candidate_last: bool = False) -> list[str
             blockers.append(f"SENSITIVE_QUERY_FORBIDDEN:{key}")
         if kl == "instid":
             for v in values:
-                if v != CANONICAL_INSTRUMENT_ID:
+                if v != venue_instrument_id:
                     blockers.append(f"INSTRUMENT_QUERY_FORBIDDEN:{v}")
         if kl == "insttype":
             for v in values:
@@ -179,10 +190,15 @@ def validate_request_boundary_v1(
     environ: Optional[Mapping[str, str]] = None,
     allow_proxy: bool = False,
     candidate_last: bool = False,
+    venue_instrument_id: str = CANONICAL_INSTRUMENT_ID,
 ) -> NetworkBoundaryAttestationV1:
     blockers: list[str] = []
     blockers.extend(assert_method_allowed_v1(method))
-    blockers.extend(assert_url_allowed_v1(url, candidate_last=candidate_last))
+    blockers.extend(
+        assert_url_allowed_v1(
+            url, candidate_last=candidate_last, venue_instrument_id=venue_instrument_id
+        )
+    )
     blockers.extend(assert_headers_allowed_v1(headers or {}))
     blockers.extend(assert_no_okx_credentials_in_env_v1(environ=environ))
     if not allow_proxy:

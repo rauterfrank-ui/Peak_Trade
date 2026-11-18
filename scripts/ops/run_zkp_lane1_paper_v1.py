@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Probe public inputs or explicitly run the isolated ZKP LANE_1 Paper slot."""
+"""Probe or explicitly run one configured, isolated XPERP Paper slot."""
 
 from __future__ import annotations
 
 import argparse
 from dataclasses import asdict
 from decimal import Decimal, DecimalException
+from functools import partial
+from hashlib import sha256
 import json
 from math import isfinite
 from pathlib import Path
@@ -18,15 +20,18 @@ REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (  # noqa: E402
+    collect_bound_paper_liquidity_v1,
+)
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 import (  # noqa: E402
     ZkpPaperContinuationV1,
 )
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import ZkpPaperEntryV1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (  # noqa: E402
-    INSTRUMENT_ID,
-    NATIVE_ID,
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
+    UP_PAPER_SLOT,
+    ZKP_PAPER_SLOT,
     collect_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
     zkp_public_queries_v1,
@@ -39,6 +44,13 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (  # noqa: E402
     FullCoreProductiveReadOnlyGetTransportV1,
 )
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (  # noqa: E402
+    CAPABILITY_ID,
+    EVIDENCE_FILENAME,
+    MANIFEST_FILENAME,
+    SCHEMA_VERSION,
+)
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1  # noqa: E402
 
 _POLL_SECONDS = 5
 
@@ -61,9 +73,26 @@ def _new_root(path):
     return path
 
 
-def _capture(policy, *, label, output=None):
+def _read_paper_slot(path):
+    config = json.loads(path.read_bytes())
+    slot = UP_PAPER_SLOT
+    if (
+        config["lane"],
+        config["canonical_instrument_id"],
+        config["native_instrument_id"],
+        config["surface"],
+        config["authority"],
+    ) != (slot.lane_id, slot.instrument_id, slot.native_id, "PAPER_EXCHANGE", "NONE"):
+        raise ValueError("UP_PAPER_SLOT_CONFIG_MISMATCH")
+    return slot
+
+
+def _capture(policy, *, label, output=None, bound=None, slot=ZKP_PAPER_SLOT):
     transport = FullCoreProductiveReadOnlyGetTransportV1(
-        timeout_seconds=6, max_request_count=len(zkp_public_queries_v1(policy.adv_days))
+        timeout_seconds=6,
+        max_request_count=(
+            4 if bound is not None else len(zkp_public_queries_v1(policy.adv_days, slot=slot))
+        ),
     )
     records = {}
 
@@ -76,30 +105,71 @@ def _capture(policy, *, label, output=None):
         del record["payload"]
         records[name] = {"file": str(path), **record}
 
-    market = collect_zkp_paper_market_v1(
-        transport,
-        policy=policy,
-        capture_id=label,
-        retain=retain,
-    )
+    if bound is None:
+        market = collect_zkp_paper_market_v1(
+            transport, policy=policy, capture_id=label, retain=retain, slot=slot
+        )
+    else:
+        market = collect_bound_paper_liquidity_v1(
+            transport, bound=bound, policy=policy, capture_id=label, retain=retain
+        ).to_preflight_v1()
     if output is not None:
         immutable_json_v1(output / "receipts.json", records)
     return market
 
 
-def preflight_zkp_paper_v1(*, market):
-    minimum = market.native_contract.min_qty
-    # The real quantity is derived by the canonical sizer after a fresh ENTER.
-    checks = {
-        side: market.assess_quantity_v1(side=side, quantity=minimum) for side in ("BUY", "SELL")
-    }
+def _read_cap24_binding(root: Path) -> BoundInstrumentV1:
+    manifest = (root / MANIFEST_FILENAME).read_text()
+    raw = (root / EVIDENCE_FILENAME).read_bytes()
+    if (
+        f"{sha256(raw).hexdigest()}  {EVIDENCE_FILENAME}" not in manifest.splitlines()
+        or (root / MANIFEST_FILENAME).read_text() != manifest
+    ):
+        raise ValueError("PAPER_LIQUIDITY_CAP24_EVIDENCE_DIGEST_MISMATCH")
+    record = json.loads(raw)
+    if (
+        record["capability_id"] != CAPABILITY_ID
+        or record["schema_version"] != SCHEMA_VERSION
+        or record["ok"] is not True
+        or record["hard_stop"] is not False
+    ):
+        raise ValueError("PAPER_LIQUIDITY_CAP24_BOUND_EVIDENCE_REQUIRED")
+    bound = BoundInstrumentV1(**record["bound"])
+    for field in ("instrument_id", "venue_native_id", "selection_id", "selection_integrity_digest"):
+        if not getattr(bound, field) or getattr(bound, field) != record[field]:
+            raise ValueError("PAPER_LIQUIDITY_CAP24_IDENTITY_MISMATCH")
+    return bound
+
+
+def _preflight_cap24(policy, *, cap24_root, output):
+    bound = _read_cap24_binding(cap24_root)
+    market = _capture(
+        policy, label=f"lane-1-paper-liquidity:{uuid4().hex}", output=output, bound=bound
+    )
+    if _read_cap24_binding(cap24_root) != bound:
+        raise ValueError("PAPER_LIQUIDITY_CAP24_SELECTION_CHANGED")
     return {
         "status": "PREPARED",
         "session_started": False,
         "authority": "NONE",
         "lane_id": "LANE_1",
-        "native_instrument_id": NATIVE_ID,
-        "instrument_id": INSTRUMENT_ID,
+        **market,
+        "current_book_admitted_on_both_sides": all(
+            check["risk_admitted"] for check in market["liquidity_at_minimum_quantity"].values()
+        ),
+        "pending": "FRESH_MASTER_V2_DECISION_AND_EXACT_QUANTITY_CHECK",
+    }
+
+
+def preflight_zkp_paper_v1(*, market):
+    checks = {side: market.assess_opening_liquidity_v1(side=side) for side in ("BUY", "SELL")}
+    return {
+        "status": "PREPARED",
+        "session_started": False,
+        "authority": "NONE",
+        "lane_id": market.slot.lane_id,
+        "native_instrument_id": market.slot.native_id,
+        "instrument_id": market.slot.instrument_id,
         "observed_unix": market.observed_unix,
         "source_hashes": market.source_hashes,
         "allocation_usdc": str(PAPER_ALLOCATION_USDC),
@@ -118,6 +188,7 @@ def _run(root, market, *, policy, duration, started_at, deadline, revision, capt
         revision=revision,
         initial_market=market,
         duration=duration,
+        slot=market.slot,
     )
     with exclusive_v1(root / ".paper-driver.lock"):
         immutable_json_v1(
@@ -147,10 +218,12 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
                 result = (occupied or opening).step_v1(market, clock=fill_clock)
             except _WindowEnded:
                 break
-            if folder is not None:
-                immutable_json_v1(folder / "result.json", result)
+            result_path = root / "initial-result.json" if folder is None else folder / "result.json"
+            immutable_json_v1(result_path, result)
             if result["status"] == "FIRST_FILL_BOOKED":
-                occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision)
+                occupied = ZkpPaperContinuationV1(
+                    root=root, repo=REPO, revision=revision, slot=opening.slot
+                )
             elif result.get("reason") == "ZKP_PAPER_NON_REVERSAL_EXIT_REQUIRED":
                 result = {
                     **result,
@@ -186,7 +259,7 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
     return result
 
 
-def _resume(root, *, policy, revision, capture):
+def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT):
     if not _isolated_root(root).is_dir():
         raise ValueError("ZKP_PAPER_ORIGINAL_RUN_ROOT_REQUIRED")
     with exclusive_v1(root / ".paper-driver.lock"):
@@ -203,8 +276,16 @@ def _resume(root, *, policy, revision, capture):
             raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
         closeout = root / "closeout.json"
         if closeout.is_file():
+            profile = json.loads((root / "paper-profile.json").read_bytes())
+            binding = profile["binding"]
+            if (binding["lane_id"], binding["venue_native_id"], binding["instrument_id"]) != (
+                slot.lane_id,
+                slot.native_id,
+                slot.instrument_id,
+            ):
+                raise ValueError("PAPER_CLOSEOUT_SLOT_MISMATCH")
             return json.loads(closeout.read_bytes())
-        occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision)
+        occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision, slot=slot)
         if duration != occupied.profile["duration_seconds"]:
             raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
         deadline = monotonic() + max(0, started + duration - now)
@@ -218,20 +299,40 @@ def main(argv=None):
         "preflight", help="Read public inputs and check executable liquidity"
     )
     preflight.add_argument("--evidence-root", type=Path)
+    preflight.add_argument(
+        "--cap24-evidence-root",
+        type=Path,
+        help="Measure the instrument from the selected future's Cap24 evidence",
+    )
     run = modes.add_parser("run", help="Explicitly start the bounded Paper slot")
     run.add_argument("--run-root", required=True, type=Path)
     run.add_argument("--duration-seconds", type=int, default=7200)
     resume = modes.add_parser("resume", help="Resume the original occupied Paper slot")
     resume.add_argument("--run-root", required=True, type=Path)
+    for mode in (preflight, run, resume):
+        mode.add_argument(
+            "--slot-config", type=Path, help="Use the prepared UP configuration for LANE_2"
+        )
     args = parser.parse_args(argv)
     try:
         policy = load_paper_liquidity_policy_v1(REPO)
+        slot = ZKP_PAPER_SLOT if args.slot_config is None else _read_paper_slot(args.slot_config)
+        capture = _capture if args.slot_config is None else partial(_capture, slot=slot)
         if args.mode == "preflight":
+            if args.cap24_evidence_root is not None and args.slot_config is not None:
+                raise ValueError("PAPER_PREFLIGHT_REQUIRES_ONE_BINDING_SOURCE")
             output = None if args.evidence_root is None else _new_root(args.evidence_root)
             if output is not None:
                 output.mkdir(mode=0o700)
-            market = _capture(policy, label="zkp-paper-input-preflight", output=output)
-            result = preflight_zkp_paper_v1(market=market)
+            if args.cap24_evidence_root is None:
+                market = capture(
+                    policy, label=f"{slot.lane_id}-paper-input-preflight", output=output
+                )
+                result = preflight_zkp_paper_v1(market=market)
+            else:
+                result = _preflight_cap24(
+                    policy, cap24_root=args.cap24_evidence_root, output=output
+                )
             if output is not None:
                 immutable_json_v1(output / "preflight.json", result)
         else:
@@ -241,7 +342,9 @@ def main(argv=None):
                 text=True,
             ).strip()
             if args.mode == "resume":
-                result = _resume(args.run_root, policy=policy, revision=revision, capture=_capture)
+                result = _resume(
+                    args.run_root, policy=policy, revision=revision, capture=capture, slot=slot
+                )
             else:
                 root = _new_root(args.run_root)
                 if not 1 <= args.duration_seconds <= 7200:
@@ -251,7 +354,7 @@ def main(argv=None):
                 # Retain the original public FX and market data before creating the slot.
                 initial_root = root.with_name(root.name + "-inputs")
                 _new_root(initial_root).mkdir(mode=0o700)
-                market = _capture(policy, label=f"{root.name}:0", output=initial_root)
+                market = capture(policy, label=f"{root.name}:0", output=initial_root)
                 if monotonic() >= deadline:
                     raise ValueError("ZKP_PAPER_WINDOW_ENDED_DURING_PREFLIGHT")
                 result = _run(
@@ -262,10 +365,10 @@ def main(argv=None):
                     started_at=started_at,
                     deadline=deadline,
                     revision=revision,
-                    capture=_capture,
+                    capture=capture,
                 )
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, DecimalException) as exc:
-        parser.exit(2, f"ZKP Paper stopped: {exc}\n")
+        parser.exit(2, f"Paper stopped: {exc}\n")
     print(json.dumps(result, sort_keys=True, indent=2))
     return 0
 

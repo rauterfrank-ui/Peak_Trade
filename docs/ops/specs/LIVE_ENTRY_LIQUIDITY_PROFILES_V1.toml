@@ -1,0 +1,15 @@
+schema = "live_entry_liquidity_profiles.v1"
+
+# Preparation for the pre-permit handoff. Bind each slot to its approved
+# Live profile ID before use. An empty binding
+# has no threshold or fallback. Paper profile values belong to Paper.
+[slot_profiles]
+LANE_1 = ""
+LANE_2 = ""
+LANE_3 = ""
+LANE_4 = ""
+LANE_5 = ""
+
+# Each named profile supplies spread_limit_bps, slippage_limit_bps,
+# adv_participation_limit (fraction), and adv_days (final UTC days).
+[profiles]

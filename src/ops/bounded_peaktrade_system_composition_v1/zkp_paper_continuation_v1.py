@@ -19,15 +19,16 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
     paper_sizing_v1,
 )
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
-    INSTRUMENT_ID,
-    NATIVE_ID,
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
+    ZKP_PAPER_SLOT,
     load_paper_liquidity_policy_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
 )
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import OCCUPANCY_OCCUPIED
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import IsolatedLaneSlotV1
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import FROZEN_PROFIT_PROTECTION_DISTANCE
 from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
     recover_current_cursor_publication_v1,
@@ -45,7 +46,7 @@ from src.ops.exit_policy_producer_binding_v1.simulated_accounting_entry_source_v
     recover_position_episode_from_simulated_accounting_v1,
 )
 from src.ops.exit_policy_producer_binding_v1.simulated_accounting_progress_v1 import _source
-from src.ops.first_entry_mark_clock_v2 import ENTRY_MARK_STATE_DIRECTORY, LANE_ID
+from src.ops.first_entry_mark_clock_v2 import ENTRY_MARK_STATE_DIRECTORY
 from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
     read_current_core_entry_assessment_frame_v1,
 )
@@ -60,9 +61,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     extract_finalized_candle_closes_v1,
-)
-from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
-    build_s8_occupied_lane_pairs_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     current_productive_cursor_digest_v1,
@@ -121,7 +119,7 @@ def _scope_frame(cursor, mark):
 class ZkpPaperContinuationV1:
     """One writer for the original Paper cursor and its confirmed net fills."""
 
-    def __init__(self, *, root: Path, repo: Path, revision: str):
+    def __init__(self, *, root: Path, repo: Path, revision: str, slot=ZKP_PAPER_SLOT):
         if (
             not root.is_absolute()
             or root != root.resolve()
@@ -130,6 +128,7 @@ class ZkpPaperContinuationV1:
             or not root.is_dir()
         ):
             raise ValueError("ZKP_PAPER_ISOLATED_ROOT_REQUIRED")
+        self.slot = slot
         self.root = root
         self.revision = revision
         self.profile = _read(root / "paper-profile.json")
@@ -146,12 +145,14 @@ class ZkpPaperContinuationV1:
             or self.profile["authority"] != "NONE"
             or self.profile["entry_budget"] != self.budget.to_dict_v1()
             or self.profile["fee_rate"] != str(PAPER_FEE_RATE)
-            or self.bound.instrument_id != INSTRUMENT_ID
-            or self.bound.venue_native_id != NATIVE_ID
+            or self.bound.instrument_id != self.slot.instrument_id
+            or self.bound.venue_native_id != self.slot.native_id
             or self.bound.selection_state != "EXPLICIT_SINGLE_INSTRUMENT_PAPER"
-            or self.bound.selection_id != f"paper-fixed:{NATIVE_ID}"
+            or self.bound.selection_id != f"paper-fixed:{self.slot.native_id}"
             or self.bound.selection_integrity_digest != canonical_digest_v1(binding)
-            or (binding["session_id"], binding["lane_id"]) != (root.name, LANE_ID)
+            or (binding["session_id"], binding["lane_id"]) != (root.name, self.slot.lane_id)
+            or (binding["instrument_id"], binding["venue_native_id"])
+            != (slot.instrument_id, slot.native_id)
             or binding["budget_digest"] != self.budget.digest_v1()
             or (
                 binding["spread_limit_bps"],
@@ -168,13 +169,22 @@ class ZkpPaperContinuationV1:
         ):
             raise ValueError("ZKP_PAPER_ORIGINAL_PROFILE_REQUIRED")
         self.scope = PositionEpisodeScopeV1(root.name, _MODE)
-        self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / LANE_ID
-        self.pairs = build_s8_occupied_lane_pairs_v1(
-            lane_state_root=self.cursor_root.parent, bound=self.bound
+        self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / self.slot.lane_id
+        occupied_slot = IsolatedLaneSlotV1(
+            lane_id=slot.lane_id,
+            occupancy=OCCUPANCY_OCCUPIED,
+            canonical_instrument_id=self.bound.instrument_id,
+            lane_state_root=str(self.cursor_root),
+            universe_snapshot_id=self.bound.universe_snapshot_id,
+            ranking_snapshot_id=self.bound.ranking_snapshot_id,
+            ranking_integrity_digest=self.bound.ranking_integrity_digest,
         )
+        self.pairs = {slot.lane_id: (occupied_slot, self.bound)}
         self.reconciliation = (
             build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-                bound_instrument_id=INSTRUMENT_ID, session_id=root.name, repository_sha=revision
+                bound_instrument_id=self.slot.instrument_id,
+                session_id=root.name,
+                repository_sha=revision,
             )
         )
         self.config_digest = layer_c_derived_exit_policy_adverse_config_digest_v1(
@@ -190,7 +200,12 @@ class ZkpPaperContinuationV1:
         side = "long" if fill.side == "BUY" else "short"
         identity = bind_simulated_accounting_episode_identity_v1(
             identity=PositionEpisodeIdentityV1(
-                LANE_ID, INSTRUMENT_ID, NATIVE_ID, "pending", side, self.scope
+                self.slot.lane_id,
+                self.slot.instrument_id,
+                self.slot.native_id,
+                "pending",
+                side,
+                self.scope,
             ),
             opening_fill=fill,
         )
@@ -282,7 +297,7 @@ class ZkpPaperContinuationV1:
             plan["episode_id"] != self.episode.identity.episode_id
             or plan["binding_digest"] != self.bound.selection_integrity_digest
             or fill.fill_id != "direct-reversal:" + canonical_digest_v1(plan)
-            or fill.instrument_id != NATIVE_ID
+            or fill.instrument_id != self.slot.native_id
             or fill.mark_price != Decimal(plan["reference_mark"])
             or fill.fee != fill.notional * PAPER_FEE_RATE
             or fill.event_time_unix >= self.funding_time
@@ -325,8 +340,8 @@ class ZkpPaperContinuationV1:
         self.funding_time = plan["costs"]["next_funding_unix"]
         self.last_receipt = {
             "status": "NET_REVERSAL_BOOKED",
-            "lane_id": LANE_ID,
-            "native_instrument_id": NATIVE_ID,
+            "lane_id": self.slot.lane_id,
+            "native_instrument_id": self.slot.native_id,
             "episode_id": successor.identity.episode_id,
             "previous_episode_id": plan["episode_id"],
             "cursor_digest": plan["cursor_digest"],
@@ -351,7 +366,7 @@ class ZkpPaperContinuationV1:
         if (
             terms["episode_id"] != self.episode.identity.episode_id
             or terms["binding_digest"] != self.bound.selection_integrity_digest
-            or terms["instrument_id"] != NATIVE_ID
+            or terms["instrument_id"] != self.slot.native_id
             or terms["currency"] != accounting.contract.quote_currency
             or event != self.funding_time
             or not all(isfinite(value) for value in (event, following, observed))
@@ -369,12 +384,12 @@ class ZkpPaperContinuationV1:
             raise ValueError("ZKP_PAPER_FUNDING_BOOKING_TERMS_INVALID")
         direction = 1 if self.episode.identity.position_side == "long" else -1
         amount = -direction * position.qty * accounting.contract.contract_size * mark * rate
-        event_id = f"paper-funding:{NATIVE_ID}:{int(event * 1000)}"
+        event_id = f"paper-funding:{self.slot.native_id}:{int(event * 1000)}"
         applied = accounting.apply_funding_observation_v1(
             event_id=event_id,
             amount=str(amount),
             currency=terms["currency"],
-            instrument_id=NATIVE_ID,
+            instrument_id=self.slot.native_id,
             event_time_unix=event,
         )
         if applied["idempotent_replay"]:
@@ -396,7 +411,7 @@ class ZkpPaperContinuationV1:
         self.funding_time = record["terms"]["next_funding_unix"]
         self.last_funding = {
             "status": "FUNDING_BOOKED",
-            "lane_id": LANE_ID,
+            "lane_id": self.slot.lane_id,
             **record,
             "accounting": candidate.portfolio_state().to_dict(),
         }
@@ -426,7 +441,7 @@ class ZkpPaperContinuationV1:
                 "episode_id": self.episode.identity.episode_id,
                 "binding_digest": self.bound.selection_integrity_digest,
                 "cursor_digest": current_productive_cursor_digest_v1(raw),
-                "instrument_id": NATIVE_ID,
+                "instrument_id": self.slot.native_id,
                 "currency": self.accounting.contract.quote_currency,
                 "event_time_unix": event,
                 "observed_unix": market.observed_unix,
@@ -462,7 +477,11 @@ class ZkpPaperContinuationV1:
             return result
 
     def _step(self, market, clock):
-        if market.native_contract != self.accounting.contract or market.policy != self.policy:
+        if (
+            market.slot != self.slot
+            or market.native_contract != self.accounting.contract
+            or market.policy != self.policy
+        ):
             raise ValueError("ZKP_PAPER_CONTRACT_OR_POLICY_DRIFT")
         raw = load_current_productive_sidestate_confirmation_cursor_v1(self.cursor_root)
         if raw is None:
@@ -502,7 +521,7 @@ class ZkpPaperContinuationV1:
             return {"status": "WAITING_FOR_NEW_MARK"}
         provenance = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
             mark_price_payload=market.mark_payload,
-            venue_native_id=NATIVE_ID,
+            venue_native_id=self.slot.native_id,
             index_from_index_tickers=market.index_payload,
             mark_acquired_at_utc=market.mark_acquired_at,
         )
@@ -572,8 +591,8 @@ class ZkpPaperContinuationV1:
             # Replay the verified original window through the same G17 producer.
             producer = CanonicalVolatilityTypedRuntimeProducerScaffoldV1.create(
                 venue=producer.history.venue,
-                canonical_instrument_id=INSTRUMENT_ID,
-                venue_instrument_id=NATIVE_ID,
+                canonical_instrument_id=self.slot.instrument_id,
+                venue_instrument_id=self.slot.native_id,
             )
             for record in records:
                 producer.ingest_finalized_pt1m_mark_sample_v1(sample=record.market_sample_identity)
@@ -601,14 +620,14 @@ class ZkpPaperContinuationV1:
             last_finalized_event_ts_unix=c1,
             venue_flat=False,
             existing_position_side=ExistingPositionSide(self.episode.identity.position_side),
-            g17_typed_vol_producers={LANE_ID: producer},
+            g17_typed_vol_producers={self.slot.lane_id: producer},
             canonical_price_provenance=provenance,
             master_v2_reconciliation_admission=self.reconciliation,
-            position_episode_bindings={LANE_ID: self.episode},
+            position_episode_bindings={self.slot.lane_id: self.episode},
             position_episode_scope=self.scope,
             occupied_scope_mark=True,
             incoming_cursor_override=raw,
-        )[LANE_ID].cycle_result
+        )[self.slot.lane_id].cycle_result
 
     def _reverse(self, scope, raw, market, clock):
         require_current_cursor_continuity_v1(
@@ -626,7 +645,7 @@ class ZkpPaperContinuationV1:
             or mark["switch_condition_met"] is not True
             or mark["pending_reversal_episode_id"] != self.episode.identity.episode_id
             or mark["pending_close_episode_id"] is not None
-            or snapshot["instrument_id"] != INSTRUMENT_ID
+            or snapshot["instrument_id"] != self.slot.instrument_id
             or (mark["regime_pre"], snapshot["regime"]) != regime_pair
             or snapshot["scope"]["valid"] is not True
             or mark["counter_move"] < snapshot["scope"]["d_t"]
@@ -787,7 +806,7 @@ class ZkpPaperContinuationV1:
             "protective_stop": str(stop),
             "scope_distance": str(distance),
             "fill_terms": dict(
-                instrument_id=NATIVE_ID,
+                instrument_id=self.slot.native_id,
                 side=fill_side,
                 quantity=net,
                 mark_price=market.mark,

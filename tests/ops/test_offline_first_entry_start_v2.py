@@ -4,16 +4,25 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from hashlib import sha256
 import json
+from pathlib import Path
 from types import SimpleNamespace
+from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
+from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
+    PaperEntryLiquiditySourceV1,
+    load_paper_liquidity_policy_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1 import pretrade_acquisition_v1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_s6_live_fresh_c1_continuous_observation_source_v1 import (
     LiveFreshC1ContinuousObservationSourceV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     load_current_productive_sidestate_confirmation_cursor_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    FreshPretradeGetTransportResultV1,
 )
 from src.ops.offline_first_entry_start_v2 import (
     OfflineFirstEntryMarketInputsV2,
@@ -37,29 +46,49 @@ from tests.ops.test_portfolio_budget_host_v1 import _fetch
 
 @pytest.mark.parametrize(
     "fault",
-    [None, "prepared", "foreign-cycle", "max-quantity", "occupied", "restarted-after-enter"],
+    [
+        None,
+        "prepared",
+        "foreign-cycle",
+        "max-quantity",
+        "occupied",
+        "restarted-after-enter",
+        "paper-wide",
+        "paper-thin",
+        "paper-stale",
+        "paper-contract-change",
+        "paper-brev",
+        "paper-mmt",
+    ],
 )
 def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, fault):
-    market = market_kwargs(tmp_path, 1)
+    selection = (
+        {"instrument": "okx_eea:linear_perpetual:MMT:USDT:USDT:perp", "native": "MMT-USDT-SWAP"}
+        if fault == "paper-mmt"
+        else {}
+    )
+    market = market_kwargs(tmp_path, 1, **selection)
     bound = market["bound"]
+    native_id = bound.venue_native_id
     offset = iter((2, 2, 4, 6, 8, 12, 14, 16, 18))
     candle_root = tmp_path / "entry" / "flat-entry-mark-v2" / "LANE_1"
     clock = CANDLE_OPEN + 61.0
     candle_calls = []
     mark_calls = []
     pretrade_calls = []
+    liquidity_calls = []
 
     class PublicFixture:
         def get(self, *, endpoint, auth_required, **kwargs):
             nonlocal clock
             assert not auth_required
-            assert f"instId={NATIVE}" in endpoint
+            assert f"instId={native_id}" in endpoint
             if "/candles?" in endpoint:
                 candle_calls.append(endpoint)
                 return SimpleNamespace(get_performed=True, payload=market["candles_payload"])
             assert "/mark-price?" in endpoint
             seconds = next(offset)
-            tick = mark_kwargs(seconds, 0.109 + seconds * 0.0005)
+            tick = mark_kwargs(seconds, 0.109 + seconds * 0.0005, native=native_id)
             clock = round(tick["observed_unix"], 3)
             mark_calls.append(seconds)
             return SimpleNamespace(
@@ -67,6 +96,89 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
                 payload=tick["mark_price_payload"],
                 acquired_at_utc=tick["mark_acquired_at_utc"],
             )
+
+    def current_mark():
+        return Decimal("0.109") + Decimal(mark_calls[-1]) * Decimal("0.0005")
+
+    paper_policy = load_paper_liquidity_policy_v1(Path(__file__).resolve().parents[2])
+
+    class LiquidityFixture:
+        def get(self, *, endpoint, auth_required, pretrade_decision_id, **kwargs):
+            url = urlsplit(endpoint)
+            assert auth_required is False
+            assert parse_qs(url.query)["instId"] == [native_id]
+            assert mark_calls == [2, 2, 4, 6]
+            assert not pretrade_calls
+            liquidity_calls.append((native_id, url.path, pretrade_decision_id))
+            event_ms = int(clock) * 1000
+            mark = current_mark()
+            tick = Decimal("0.00001")
+            offset = Decimal("0.00050") if fault == "paper-wide" else tick
+            depth = "1" if fault == "paper-thin" else "10000"
+            multiplier = 2 if fault == "paper-contract-change" else 1
+            midnight = int(clock) // 86400 * 86400000
+            per_path = {
+                "/api/v5/public/instruments": [
+                    {
+                        "instId": native_id,
+                        "instType": "SWAP",
+                        "ctType": "linear",
+                        "ctValCcy": native_id.split("-")[0],
+                        "settleCcy": "USDT",
+                        "state": "live",
+                        "lotSz": "1",
+                        "minSz": "1",
+                        "maxMktSz": "10000",
+                        "tickSz": str(tick),
+                        "ctVal": str(multiplier),
+                        "ctMult": "1",
+                    }
+                ],
+                "/api/v5/public/mark-price": [
+                    {
+                        "instId": native_id,
+                        "ts": str(event_ms),
+                        "markPx": str(mark),
+                    }
+                ],
+                "/api/v5/market/books": [
+                    {
+                        "ts": str(event_ms - 60000 if fault == "paper-stale" else event_ms),
+                        "bids": [[str(mark - offset), depth]],
+                        "asks": [[str(mark + offset), depth]],
+                    }
+                ],
+                "/api/v5/market/candles": [
+                    [
+                        str(midnight - day * 86400000),
+                        *([str(mark)] * 4),
+                        "10000",
+                        str(10000 * multiplier),
+                        "1100",
+                        "1",
+                    ]
+                    for day in range(1, paper_policy.adv_days + 1)
+                ],
+            }
+            payload = {"code": "0", "data": per_path[url.path]}
+            body = json.dumps(payload).encode()
+            result = FreshPretradeGetTransportResultV1(
+                get_performed=True,
+                method="GET",
+                endpoint=endpoint,
+                http_status=200,
+                payload=payload,
+                auth_header_sent=False,
+                transport_class="FIXTURE",
+                venue_live_contact=True,
+                historical_reuse=False,
+                error_class="",
+                body_sha256=sha256(body).hexdigest(),
+                pretrade_decision_id=pretrade_decision_id,
+                acquired_at_utc=now(),
+            )
+            self.raw_response_sink_v1(result=result, body=body)
+            return result
 
     def now():
         return datetime.fromtimestamp(clock, timezone.utc).isoformat()
@@ -76,7 +188,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
         cursor_store_root=candle_root,
         evidence_root=tmp_path / "public-evidence",
         run_id="offline-brev-first-entry",
-        native_id=NATIVE,
+        native_id=native_id,
         transport=PublicFixture(),
     )
     account = "offline-brev-account"
@@ -88,7 +200,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
         data = ports(bound, epoch, cycle_id, denied=fault == "max-quantity", account=account)
         limits = data.venue_quantity_limits
         metadata = data.instruments_payload
-        native = next(row for row in metadata["data"] if row["instId"] == NATIVE)
+        native = next(row for row in metadata["data"] if row["instId"] == native_id)
         native.update(ctVal="1", tickSz="0.00001")
         body = json.dumps(metadata, sort_keys=True, separators=(",", ":"))
         private = json.loads(limits.private_source.payload_json)
@@ -118,7 +230,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             venue_quantity_limits=replace(limits, integrity_digest=limits.digest_v1()),
         )
 
-    positions = [{"instId": NATIVE, "pos": "1", "posSide": "net"}] if fault == "occupied" else ()
+    positions = [{"instId": native_id, "pos": "1", "posSide": "net"}] if fault == "occupied" else ()
     host_settings = dict(
         root=tmp_path / "budget",
         private_rest_fetch=_fetch(uid=account, positions=positions),
@@ -151,6 +263,8 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             clock=lambda: clock,
             prepare_read_only_pretrade=fault == "prepared",
         )
+        if fault and fault.startswith("paper-"):
+            args["paper_liquidity"] = PaperEntryLiquiditySourceV1(paper_policy, LiquidityFixture)
         if fault == "restarted-after-enter":
             with pytest.raises(InterruptedError, match="committed ENTER"):
                 run_offline_first_entry_start_v2(**args)
@@ -200,6 +314,45 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             assert host.owner.stored_reservation_count_v1() == 0
             return
 
+        if fault and fault.startswith("paper-"):
+            evidence = list((tmp_path / "entry" / "paper-entry-liquidity").glob("*.json"))
+            (initial,) = (
+                json.loads(path.read_bytes()) for path in evidence if ".exact" not in path.name
+            )
+            assert initial["bound"] == bound.to_dict()
+            assert initial["side"] == "BUY" and initial["lane_id"] == "LANE_1"
+            assert len(liquidity_calls) == 4
+            if fault in {"paper-wide", "paper-stale"}:
+                assert result.disposition == "WAITING_FOR_ENTRY"
+                assert result.reason == initial["blocker"]
+                assert (
+                    "SPREAD_LIMIT" in result.reason
+                    if fault == "paper-wide"
+                    else "STALE" in result.reason
+                )
+                assert len(evidence) == 1 and not pretrade_calls
+                assert host.owner.stored_reservation_count_v1() == 0
+                assert not host.owner.execution_links_v1()
+                return
+            if fault == "paper-contract-change":
+                assert result.disposition == "BLOCKED"
+                assert "PAPER_LIQUIDITY_CONTRACT_METADATA_CHANGED" in result.reason
+                assert host.owner.active_sum_v1() == 0
+                assert not host.owner.execution_links_v1()
+                return
+            (exact,) = (json.loads(path.read_bytes()) for path in evidence if ".exact" in path.name)
+            assert exact["decision_id"] == initial["decision_id"] == result.decision_id
+            if fault == "paper-thin":
+                assert result.disposition == "BLOCKED"
+                assert (
+                    result.reason == exact["blocker"] == "ZKP_PAPER_EXECUTABLE_DEPTH_INSUFFICIENT"
+                )
+                assert host.owner.active_sum_v1() == 0
+                assert not host.owner.execution_links_v1()
+                return
+            assert exact["blocker"] == "" and exact["risk_admitted"]
+            assert Decimal(exact["quantity_contracts"]) == Decimal(result.envelope.quantity)
+
         assert mark_calls == [2, 2, 4, 6] and len(candle_calls) == 4
         assert result.polls == 4 and len(pretrade_calls) == 1
         cursor = load_current_productive_sidestate_confirmation_cursor_v1(candle_root)
@@ -214,7 +367,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
             ]["value"]
             == 3
         )
-        if fault and fault != "prepared":
+        if fault and fault not in {"prepared", "paper-brev", "paper-mmt"}:
             assert result.disposition == "BLOCKED", result.reason
             assert result.envelope is None and not host.owner.execution_links_v1()
             assert host.owner.active_sum_v1() == 0
@@ -230,7 +383,7 @@ def test_brev_existing_poller_to_original_25_usdc_owner(tmp_path, monkeypatch, f
         assert host.owner.slot_capital_basis_v1("LANE_1").net_basis_usdc == Decimal("25")
         assert 0 < host.owner.active_slot_sum_v1("LANE_1") <= 25
         envelope = result.envelope
-        assert envelope.instrument_id == NATIVE and envelope.side == "buy"
+        assert envelope.instrument_id == native_id and envelope.side == "buy"
         link = host.owner.execution_links_v1()[result.reservation_id]
         assert link["phase"] == "PLAN_BOUND" and link["identity"] is None
         assert "external_effect_permit" not in link

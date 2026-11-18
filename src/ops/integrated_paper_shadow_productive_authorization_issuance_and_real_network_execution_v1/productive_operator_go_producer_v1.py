@@ -33,7 +33,6 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     ALLOWED_PRODUCTIVE_DURATIONS,
     CANONICAL_HOST,
-    CANONICAL_INSTRUMENT_ID,
     ISSUANCE_MANIFEST_SCHEMA,
     NETWORK_SCOPE,
     PRODUCER_FAMILY,
@@ -45,6 +44,9 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
     fingerprint_confirm_token,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    require_i17_shadow_instrument_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
     CAPABILITY_ID as GO_CAPABILITY_ID,
@@ -168,7 +170,7 @@ def build_productive_operator_go_dict_v1(
             "NOT_A_FIXTURE",
             "AUTHORIZATION_IS_NOT_EXECUTION",
             f"HOST={CANONICAL_HOST}",
-            f"INSTRUMENT={CANONICAL_INSTRUMENT_ID}",
+            f"INSTRUMENT={prereg.instrument_allowlist[0]}",
             "SCOPED_WALLCLOCK_MD_OBSERVE_ONLY",
             "AUTHORIZATION_ARTIFACT_V2_ONLY",
         ],
@@ -197,6 +199,10 @@ def issue_productive_authorization_v1(
     ]
     now = float(time.time() if now_unix is None else now_unix)
     blockers: list[str] = []
+    try:
+        require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+    except ValueError as exc:
+        return ProductiveAuthorizationIssueResultV1(ok=False, blockers=[str(exc)], notes=notes)
 
     if prereg.fixture_non_authoritative:
         blockers.append("FIXTURE_PREREG_FORBIDDEN_FOR_PRODUCTIVE_ISSUANCE")
@@ -306,7 +312,7 @@ def issue_productive_authorization_v1(
         "runbook_sha256": runbook_sha256,
         "venue": artifact.venue,
         "network_scope": artifact.network_scope,
-        "instrument": CANONICAL_INSTRUMENT_ID,
+        "instrument": prereg.instrument_allowlist[0],
         "host": CANONICAL_HOST,
         "session_execution_scope": SESSION_EXECUTION_SCOPE,
         "earliest_start": prereg.earliest_start,

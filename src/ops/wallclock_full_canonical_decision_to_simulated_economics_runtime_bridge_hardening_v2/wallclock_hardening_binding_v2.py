@@ -21,7 +21,6 @@ from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v
     evaluate_market_data_sequence_v1,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
-    CANONICAL_INSTRUMENT_ID,
     EXECUTION_CLASS_ANALYTICAL,
     MARKET_TYPE_FUTURES,
     VENUE_OKX,
@@ -78,7 +77,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
         market_type=MARKET_TYPE_FUTURES,
-        allowed_instruments=(CANONICAL_INSTRUMENT_ID,),
+        allowed_instruments=(bridge_state.instrument_id,),
         network_allowed=False,
         wallclock_authorized_observe=True,
     )

@@ -31,6 +31,9 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     allowed_paths_v1,
     validate_request_boundary_v1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     DEFAULT_CONNECT_TIMEOUT_SECONDS,
     DEFAULT_MAX_RESPONSE_BYTES,
@@ -115,6 +118,7 @@ def make_real_eea_public_md_fetcher_v1(
     sleep: Callable[[float], None] = time.sleep,
     resolve_private_check: bool = True,
     candidate_last: bool = False,
+    venue_instrument_id: str = ETH_I17.native_id,
 ) -> tuple[HttpFetcher, RealHttpFetcherTelemetryV1]:
     """Return a boundary-enforcing HTTPS GET fetcher for eea.okx.com only."""
     from src.ops.canonical_runtime_environment_contract_v1.preflight_v1 import (
@@ -136,6 +140,7 @@ def make_real_eea_public_md_fetcher_v1(
             environ=environ,
             allow_proxy=False,
             candidate_last=candidate_last,
+            venue_instrument_id=venue_instrument_id,
         )
         if not boundary.ok:
             raise NetworkBoundaryError(",".join(boundary.blockers))
@@ -227,6 +232,7 @@ def build_real_eea_public_md_transport_v1(
     resolve_private_check: bool = True,
     governed_fault_schedule: Any = None,
     candidate_last: bool = False,
+    venue_instrument_id: str = ETH_I17.native_id,
 ) -> tuple[EeaPublicMdTransportV1, RealHttpFetcherTelemetryV1]:
     """Build productive EEA Public-MD transport.
 
@@ -244,6 +250,7 @@ def build_real_eea_public_md_transport_v1(
         sleep=sleep,
         resolve_private_check=resolve_private_check,
         candidate_last=candidate_last,
+        venue_instrument_id=venue_instrument_id,
     )
     fetcher = wrap_fetcher_with_governed_fault_control_v1(
         real_fetcher=fetcher,
@@ -268,5 +275,6 @@ def build_real_eea_public_md_transport_v1(
         environ=environ,
         rate_limit_policy=rate_limit_policy,
         candidate_last=candidate_last,
+        venue_instrument_id=venue_instrument_id,
     )
     return transport, telemetry

@@ -20,6 +20,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 )
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1 as prepare,
+    prepare_layered_short_armed_seed_for_pre_external_invoke_v1 as prepare_short,
 )
 from tests.ops._current_productive_canonical_price_test_helpers_v1 import provenance_for_bound_v1
 from tests.ops.test_bounded_multislot_entry_budget_v1 import policy
@@ -122,18 +123,26 @@ def ports(bound, epoch, cycle, *, denied=False, account=None):
     )
 
 
-def connected(tmp_path, count, *, denied_lane=None):
+def connected(
+    tmp_path, count, *, denied_lane=None, canonical_ids=False, short=False, lane_ids=None
+):
     pairs, seeds, provenance, payloads = {}, {}, {}, {}
-    for i, symbol in enumerate(["ETH", "SOL", "ADA", "LINK", "APT"][:count], 1):
-        lane = f"LANE_{i}"
+    lanes = lane_ids if lane_ids is not None else [f"LANE_{i}" for i in range(1, count + 1)]
+    for lane in lanes:
+        symbol = ["ETH", "SOL", "ADA", "LINK", "APT"][int(lane[-1]) - 1]
         bound = replace(
             _bound(),
-            instrument_id="synthetic-" + symbol,
+            instrument_id=(
+                f"okx_eea:linear_perpetual:{symbol}:USDT:USDT:perp"
+                if canonical_ids
+                else "synthetic-" + symbol
+            ),
             venue_native_id=f"{symbol}-USDT-SWAP",
             selection_id="selected-" + lane,
         )
         parent = tmp_path / lane
-        arm, closes, mark, event, g17 = prepare(
+        seed = prepare_short if short else prepare
+        arm, closes, mark, event, g17 = seed(
             bound=bound, g17_typed_vol_producer=None, lane_state_root=parent, lane_id=lane
         )
         pairs[lane] = _lane_pair_v1(lane_state_root=parent, bound=bound, lane_id=lane)

@@ -87,6 +87,10 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
     WallclockEvidenceWriterV1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+    SOPH_I17,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
     build_authorization_artifact_v1,
 )
@@ -169,25 +173,36 @@ def _load_wallclock_go():
     )
 
 
-def _fake_ticker_fetcher(price: str = "3500.5", *, clock: FakeClock | None = None):
+def _instrument_metadata(instrument):
+    basic = {"instId": instrument.native_id, "instType": "FUTURES", "state": "live"}
+    if instrument == SOPH_I17:
+        return {
+            **basic,
+            "instFamily": "SOPH-USD_UM_XPERP",
+            "uly": "SOPH-USD",
+            "ruleType": "xperp",
+            "ctType": "linear",
+            "ctValCcy": "SOPH",
+            "settleCcy": "USD",
+        }
+    return basic
+
+
+def _fake_ticker_fetcher(
+    price: str = "3500.5", *, clock: FakeClock | None = None, instrument=ETH_I17
+):
     """Fixture public MD fetcher: instruments + mark-price + ticker (no ticker markPx)."""
 
     def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):
         assert method == "GET"
         assert CANONICAL_HOST in url
-        assert f"instId={CANONICAL_INSTRUMENT_ID}" in url
+        assert f"instId={instrument.native_id}" in url
         ts_ms = int((clock.time() if clock is not None else NOW) * 1000)
         if "/api/v5/public/instruments" in url:
             payload = {
                 "code": "0",
                 "msg": "",
-                "data": [
-                    {
-                        "instId": CANONICAL_INSTRUMENT_ID,
-                        "instType": "FUTURES",
-                        "state": "live",
-                    }
-                ],
+                "data": [_instrument_metadata(instrument)],
             }
         elif "/api/v5/public/mark-price" in url:
             payload = {
@@ -195,7 +210,7 @@ def _fake_ticker_fetcher(price: str = "3500.5", *, clock: FakeClock | None = Non
                 "msg": "",
                 "data": [
                     {
-                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instId": instrument.native_id,
                         "markPx": price,
                         "ts": str(ts_ms),
                     }
@@ -207,7 +222,7 @@ def _fake_ticker_fetcher(price: str = "3500.5", *, clock: FakeClock | None = Non
                 "msg": "",
                 "data": [
                     {
-                        "instId": CANONICAL_INSTRUMENT_ID,
+                        "instId": instrument.native_id,
                         "last": price,
                         "bidPx": price,
                         "askPx": price,
@@ -805,10 +820,17 @@ def test_double_play_readback_preserves_decision_clock_after_hour_boundary(
 def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
 
-    def run(*, flat: bool):
-        prereg = replace(_load_wallclock_prereg(), planned_duration_seconds=7200)
+    def run(*, flat: bool, instrument=ETH_I17):
+        prereg = replace(
+            _load_wallclock_prereg(),
+            planned_duration_seconds=7200,
+            instrument_allowlist=(instrument.native_id,),
+        )
         go = replace(
-            _load_wallclock_go(), planned_duration_seconds=7200, scope_digest=prereg.scope_digest()
+            _load_wallclock_go(),
+            planned_duration_seconds=7200,
+            scope_digest=prereg.scope_digest(),
+            instrument_allowlist=prereg.instrument_allowlist,
         )
         material = _material()
         artifact = _write_v2_auth(tmp_path, prereg=prereg, token=material, duration_seconds=7200)
@@ -817,15 +839,24 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         def fetch(url, *args):
             minute = int((clock.time() - NOW) // 60)
             price = "3500" if flat else str(3500 + (minute % 17) * 0.73 + (minute % 5) * 0.19)
-            return _fake_ticker_fetcher(price, clock=clock)(url, *args)
+            if instrument == SOPH_I17:
+                price = str(float(price) / 3_500_000)
+            return _fake_ticker_fetcher(price, clock=clock, instrument=instrument)(url, *args)
 
-        root = tmp_path / "shadow-evidence"
-        transport = EeaPublicMdTransportV1(fetcher=fetch, sleep=clock.sleep, environ={})
+        root = (
+            tmp_path / "shadow-runs" / prereg.session_id / "evidence"
+            if instrument == SOPH_I17
+            else tmp_path / "shadow-evidence"
+        )
+        transport = EeaPublicMdTransportV1(
+            fetcher=fetch, sleep=clock.sleep, environ={}, venue_instrument_id=instrument.native_id
+        )
         runtime = WallclockSessionRuntimeV1(
             evidence_root=root,
             transport=transport,
             config=WallclockRuntimeConfigV1(
-                poll_interval_seconds=10.0,
+                poll_interval_seconds=60.0 if instrument == SOPH_I17 else 10.0,
+                max_gap_seconds=65.0 if instrument == SOPH_I17 else 10.0,
                 min_quality_window_seconds=0,
                 heartbeat_loss_seconds=120.0,
             ),
@@ -1318,6 +1349,144 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     with pytest.raises(SystemExit, match="2"):
         learning_main(research_args)
     assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
+
+
+def test_soph_lane5_shadow_reaches_self_learning_after_two_final_o4_bars(
+    run_two_hour_shadow, tmp_path, monkeypatch
+):
+    from datetime import timedelta, timezone
+    from math import log
+    import socket
+
+    from scripts.ops import capture_offline_learning_mark_window_v1 as capture
+    from scripts.ops import run_i17_shadow_learning_companion_v1 as companion
+    from scripts.ops import run_recurrent_offline_research_v1 as campaign_worker
+    from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 import (
+        UNIVERSE_CLASS_SELF_LEARNING,
+    )
+
+    def no_network(*args, **kwargs):
+        pytest.fail("SOPH Shadow must use replay data")
+
+    monkeypatch.setattr(socket.socket, "connect", no_network)
+    monkeypatch.setattr(socket.socket, "connect_ex", no_network)
+    shadow, run, _ = run_two_hour_shadow(flat=False, instrument=SOPH_I17)
+    assert run.terminal_verdict == "PASS", run.to_dict()
+    assert not run.orders_submitted and not run.credentials_used
+    verified = verify_wallclock_evidence_bundle_v1(
+        evidence_root=shadow, select_first_typed_shadow_decision=True
+    )
+    assert verified.typed_ddo_requirement_met, verified.to_dict()
+    decision = verified.selected_shadow_decision
+    assert decision["lane_id"] == SOPH_I17.lane_id
+    assert decision["canonical_instrument_id"] == SOPH_I17.canonical_id
+    assert decision["venue_instrument_id"] == SOPH_I17.native_id
+
+    binding = {
+        "lane_id": SOPH_I17.lane_id,
+        "canonical_instrument_id": SOPH_I17.canonical_id,
+        "native_instrument_id": SOPH_I17.native_id,
+        "venue": "OKX",
+        "instrument_metadata": _instrument_metadata(SOPH_I17),
+        "mapping_digest": decision["mapping_digest"],
+    }
+    binding_path = tmp_path / "soph-binding.json"
+    binding_path.write_text(json.dumps({**binding, "lane_id": "LANE_2"}))
+    follow_up_parent = tmp_path / "shadow-follow-ups"
+    follow_up_parent.mkdir()
+    root = follow_up_parent / decision["session_id"]
+    prereg = companion._load_prereg(shadow / "prereg.json")
+    with pytest.raises(ValueError, match="PILOT_INSTRUMENT_BINDING_MISMATCH"):
+        companion.prepare_companion_v1(
+            root=root, evidence=shadow, prereg=prereg, binding_path=binding_path
+        )
+    assert not root.exists()
+    binding_path.write_text(json.dumps(binding))
+    companion.prepare_companion_v1(
+        root=root, evidence=shadow, prereg=prereg, binding_path=binding_path
+    )
+
+    start = companion.shadow_o4_window_start_v1(decision["decision_event_time_utc"]).replace(
+        tzinfo=timezone.utc
+    )
+    end = start + timedelta(hours=2)
+    clock = FakeClock(wall=end.timestamp() - 20)
+    receipts = []
+    monkeypatch.setattr(
+        capture, "_utc_now", lambda: datetime.fromtimestamp(clock.time(), timezone.utc).isoformat()
+    )
+
+    def pause(seconds):
+        assert not (root / "learning").exists()
+        assert not (root / "completion.json").exists()
+        clock.sleep(seconds)
+
+    def fetch(query):
+        assert query["instId"] == SOPH_I17.native_id
+        assert clock.time() >= end.timestamp() + 15
+        receipts.append(query)
+        rows = []
+        for index in range(int(query["limit"])):
+            minute = int(query["after"]) - (index + 1) * 60_000
+            price = (
+                "0.00101" if minute < (start + timedelta(hours=1)).timestamp() * 1000 else "0.00104"
+            )
+            final = "0" if len(receipts) == 1 and index == 0 else "1"
+            rows.append([str(minute), price, price, price, price, final])
+        return 200, json.dumps({"code": "0", "data": rows}).encode()
+
+    def capture_archive(**kwargs):
+        return capture.capture_public_mark_window_v1(**kwargs, fetch_page=fetch)
+
+    follow_up = dict(root=root, clock=clock.time, pause=pause, capture=capture_archive)
+    result = companion.finish_companion_v1(**follow_up)
+    assert len(receipts) == 4
+    assert result["source_class"] == "TEST_ONLY_SYNTHETIC"
+    learning = result["learning_evidence"]
+    assert learning["universe_class"] == UNIVERSE_CLASS_SELF_LEARNING
+    assert learning["state_version"] == 1
+    assert learning["decision_event_ref"] == decision["decision_event_ref"]
+    ledger_path = root / "learning/shadow-ddo-learning/i17" / LEDGER_FILENAME_DEFAULT
+    rows = AppendOnlyDdoLedgerV0(ledger_path).read_all()
+    (state,) = [
+        row for row in rows if row["record_id"] == learning["source_learning_state_record_ref"]
+    ]
+    assert state["decision_event_ref"] == decision["decision_event_ref"]
+    saved = ledger_path.read_bytes()
+
+    # The configured Slot 5 intake reads the companion's sealed completion.
+    slot = campaign_worker.ResearchSlotScopeV1(
+        lane_id=SOPH_I17.lane_id,
+        surface="SHADOW",
+        session_id=decision["session_id"],
+        instrument_id=SOPH_I17.canonical_id,
+        venue_native_id=SOPH_I17.native_id,
+        starts_at=datetime.fromtimestamp(NOW, timezone.utc),
+        ends_at=datetime.fromtimestamp(NOW + 7200, timezone.utc),
+    )
+    campaign = campaign_worker.ResearchCampaignV1(
+        state=tmp_path / "gvef",
+        paper_runs=tmp_path / "paper",
+        shadow_follow_ups=follow_up_parent,
+        shadow_runs=tmp_path / "shadow-runs",
+        research_inputs={SOPH_I17.canonical_id: []},
+        jobs_per_tick=1,
+        history_jobs=1,
+        retry_seconds=300,
+        slot=slot,
+    )
+    (source,) = campaign_worker._discover_shadow(campaign)
+    received, context = campaign_worker._read_source(
+        None, {**source, "slot": slot.model_dump(mode="json")}, campaign
+    )
+    assert received == result
+    measured = context["shadow_measurement"]["market_observation"]
+    assert measured["request"]["n_bars"] == 2
+    assert measured["request"]["price_unit"] == "USD per SOPH"
+    assert measured["measurement"]["log_return"] == pytest.approx(log(104 / 101))
+    assert companion.finish_companion_v1(**follow_up) == result
+    assert ledger_path.read_bytes() == saved
+    assert len(receipts) == 4
 
 
 @pytest.mark.parametrize("admitted", [False, True])

@@ -38,6 +38,10 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     fingerprint_confirm_token,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+    require_i17_shadow_instrument_v1,
+)
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.issuance_evidence_v1 import (
     write_issuance_runtime_evidence_v1,
 )
@@ -226,6 +230,17 @@ def run_productive_wallclock_session_v1(
     if blockers:
         return ProductiveRunGateResultV1(ok=False, blockers=blockers, notes=notes)
 
+    try:
+        instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+        if tuple(go.instrument_allowlist) != (instrument.native_id,) or (
+            transport is not None and transport.venue_instrument_id != instrument.native_id
+        ):
+            raise ValueError("I17_SHADOW_INSTRUMENT_SCOPE_MISMATCH")
+        if candidate_observation is not None and instrument != ETH_I17:
+            raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
+    except ValueError as exc:
+        return ProductiveRunGateResultV1(ok=False, blockers=[str(exc)], notes=notes)
+
     if candidate_observation is not None:
         try:
             candidate_observation.validate_preregistration(
@@ -261,6 +276,7 @@ def run_productive_wallclock_session_v1(
             sleep=sleep or time.sleep,
             governed_fault_schedule=governed_fault_schedule,
             candidate_last=candidate_observation is not None,
+            venue_instrument_id=instrument.native_id,
         )
         if governed_fault_schedule is not None and bool(
             getattr(governed_fault_schedule, "enabled", False)

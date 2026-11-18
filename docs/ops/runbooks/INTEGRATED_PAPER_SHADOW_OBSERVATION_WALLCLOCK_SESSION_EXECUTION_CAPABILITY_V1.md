@@ -225,6 +225,12 @@ und Quellenprüfsummen. Nach dem Readback kann Double Play am selben Cursor
 weiterlaufen. Der Paper-Pfad verwendet ausschließlich öffentliche GETs und
 simuliertes Accounting.
 
+Der Paper-Starter unterstützt außerdem `UP-USD_UM_XPERP-310919` auf `LANE_2`.
+`--slot-config` verlangt dort die exakte UP-Instrumentbindung und das Profil
+`PAPER_EXCHANGE`. Öffnung, Nettobuchung und Wiederanlauf verwenden den eigenen
+Zustand von Slot 2. Der Liquiditätscheck bleibt an die vorgesehenen Kontrakte
+und den aktuellen Markt gebunden.
+
 ### Eigenständiger Shadow-Begleittest für das Selbstlernen
 
 Für den späteren gemeinsamen Testblock läuft der bestehende I17-Shadow-Test
@@ -241,8 +247,14 @@ verwendet beim späteren ausdrücklichen Start die reguläre I17-Preregistration
 den Operator-GO und die vorhandene Startprüfung. Shadow-Evidenzverzeichnis,
 Begleiterverzeichnis und ZKP-Paper-State gehören zu getrennten Sitzungen.
 Die O4-Instrumentbindung stammt aus einem archivierten öffentlichen
-Instrumentenbeleg für denselben ETH-Kontrakt. Sie wird vor dem Start geprüft
+Instrumentenbeleg für denselben Kontrakt. Sie wird vor dem Start geprüft
 und nach Abschluss mit der Instrumentbindung aus dem Shadow-Archiv abgeglichen.
+Für `LANE_5` gilt die explizite Bindung an `SOPH-USD_UM_XPERP-310912`.
+Preregistrierung und spätere Freigabe binden genau diesen Kontrakt. Die
+öffentlichen Abrufe und der DDO-Lernbeleg verwenden dieselbe Instrumentbindung.
+Der Slot-Empfänger liest die versiegelte Abschlussdatei und prüft den Lernbeleg
+erneut. Die zweistündige O4-Messung beginnt an der zur Entscheidung gehörenden
+Stundengrenze.
 
 ```bash
 ./scripts/pt -m scripts.ops.run_i17_shadow_learning_companion_v1 run \
@@ -250,7 +262,7 @@ und nach Abschluss mit der Instrumentbindung aus dem Shadow-Archiv abgeglichen.
   --authorization-artifact "$i17_auth" --confirm-token-file "$i17_token_file" \
   --evidence-root "$i17_shadow_root" --fingerprint-ledger "$i17_fingerprint_ledger" \
   --expected-repository-sha "$repository_sha" \
-  --companion-root "$i17_companion_root" --o4-instrument-binding "$eth_o4_binding"
+  --companion-root "$i17_companion_root" --o4-instrument-binding "$i17_o4_binding"
 ```
 
 Beim späteren Start gilt das bestehende Opt-in

@@ -195,11 +195,20 @@ def _read_source(workspace, source, campaign):
             )
         }
     run = _absolute(Path(source["run"]))
-    plan = _read_json(run / "window-plan.json")
-    archive = _absolute(Path(plan["shadow_archive"]))
+    profile_path = run / "companion.json"
+    if profile_path.exists() or profile_path.is_symlink():
+        profile = read_v1(profile_path)
+        plan = read_v1(run / "window-plan.json")
+        if plan["profile_digest"] != digest_v1(profile):
+            raise ValueError("RESEARCH_SHADOW_COMPANION_BINDING_MISMATCH")
+        archive = _absolute(Path(profile["evidence_root"]))
+        complete = read_v1(run / "completion.json")
+    else:
+        plan = _read_json(run / "window-plan.json")
+        archive = _absolute(Path(plan["shadow_archive"]))
+        complete = _read_json(run / "completion.json")
     if not archive.is_relative_to(campaign.shadow_runs) or archive.name != "evidence":
         raise ValueError("SHADOW_RESEARCH_ARCHIVE_OUTSIDE_INTAKE")
-    complete = _read_json(run / "completion.json")
     verified_receipts = []
     handoff = shadow_ddo_learning_handoff_v1(
         root=_absolute(run / "learning"),
@@ -215,6 +224,8 @@ def _read_source(workspace, source, campaign):
     (receipt,) = verified_receipts
     if slot is not None:
         decision = receipt["shadow_decision"]
+        if "lane_id" in decision and decision["lane_id"] != slot.lane_id:
+            raise ValueError("RESEARCH_SHADOW_LANE_MISMATCH")
         slot.require_source(
             session_id=decision["session_id"],
             instrument_id=decision["canonical_instrument_id"],

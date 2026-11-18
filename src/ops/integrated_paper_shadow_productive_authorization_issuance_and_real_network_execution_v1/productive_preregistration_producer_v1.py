@@ -48,6 +48,10 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     fingerprint_confirm_token,
     sha256_text,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+    require_i17_shadow_instrument_v1,
+)
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.constants_v1 import (
     CAPABILITY_ID as GO_CAPABILITY_ID,
     PREREGISTRATION_SCHEMA_VERSION,
@@ -125,9 +129,13 @@ def build_productive_preregistration_dict_v1(
     config_identity: str = WALLCLOCK_CONFIG_IDENTITY,
     code_identity: str = WALLCLOCK_CODE_IDENTITY,
     candidate_plan_digest: str | None = None,
+    venue_instrument_id: str = CANONICAL_INSTRUMENT_ID,
 ) -> dict[str, Any]:
+    instrument = require_i17_shadow_instrument_v1((venue_instrument_id,))
     components = list(STRATEGY_COMPONENT_IDENTITIES)
     if candidate_plan_digest is not None:
+        if instrument != ETH_I17:
+            raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
         if re.fullmatch(r"[0-9a-f]{64}", candidate_plan_digest) is None:
             raise ValueError("I17_CANDIDATE_PLAN_DIGEST_INVALID")
         components.append(CANDIDATE_COMPONENT_PREFIX + candidate_plan_digest)
@@ -139,7 +147,7 @@ def build_productive_preregistration_dict_v1(
         "purpose": purpose,
         "venue": VENUE_OKX,
         "market_type": MARKET_TYPE_FUTURES,
-        "instrument_allowlist": [CANONICAL_INSTRUMENT_ID],
+        "instrument_allowlist": [instrument.native_id],
         "instrument_denylist": ["BTC-USD_UM_XPERP-1"],
         "strategy_portfolio_id": STRATEGY_PORTFOLIO_ID,
         "strategy_component_identities": components,
@@ -230,6 +238,7 @@ def issue_productive_preregistration_v1(
     allow_noncanonical_duration: bool = False,
     purpose: str = "PRODUCTIVE_PAPER_SHADOW_WALLCLOCK_MD_OBSERVE",
     candidate_plan_digest: str | None = None,
+    venue_instrument_id: str = CANONICAL_INSTRUMENT_ID,
 ) -> ProductivePreregistrationIssueResultV1:
     notes = [
         "PRODUCTIVE_PREREGISTRATION_ISSUANCE",
@@ -238,6 +247,14 @@ def issue_productive_preregistration_v1(
         "REUSES_PREREG_CONTRACT_SCHEMA",
     ]
     blockers: list[str] = []
+    try:
+        instrument = require_i17_shadow_instrument_v1((venue_instrument_id,))
+    except ValueError as exc:
+        return ProductivePreregistrationIssueResultV1(ok=False, blockers=[str(exc)], notes=notes)
+    if candidate_plan_digest is not None and instrument != ETH_I17:
+        return ProductivePreregistrationIssueResultV1(
+            ok=False, blockers=["I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH"], notes=notes
+        )
     now = float(time.time() if now_unix is None else now_unix)
     sid = session_id or new_session_id_v1()
     start = float(earliest_start) if earliest_start is not None else now
@@ -281,6 +298,7 @@ def issue_productive_preregistration_v1(
         confirm_token=confirm_token,
         purpose=purpose,
         candidate_plan_digest=candidate_plan_digest,
+        venue_instrument_id=instrument.native_id,
     )
     contract = parse_preregistration_contract_v1(raw)
     validated = validate_preregistration_contract_v1(
@@ -311,7 +329,7 @@ def issue_productive_preregistration_v1(
         "confirm_token_fingerprint": fingerprint_confirm_token(confirm_token),
         "confirm_token_binding_sha256": contract.confirm_token_binding_sha256,
         "host_allowlist": list(HOST_ALLOWLIST),
-        "instrument": CANONICAL_INSTRUMENT_ID,
+        "instrument": instrument.native_id,
         "venue": VENUE_OKX,
         "network_scope": NETWORK_SCOPE,
         "session_execution_scope": SESSION_EXECUTION_SCOPE,
