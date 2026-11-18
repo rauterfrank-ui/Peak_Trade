@@ -252,6 +252,23 @@ jobs:
           #   python3 scripts/ci/check_tracked_credential_hygiene_policy_v1.py
           python3 scripts/ci/check_tracked_credential_hygiene_policy_v1.py
 
+      - name: Verify sealed Master V2 instrument cards
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
+        env:
+          EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          base="$EVENT_BASE"
+          if [[ -z "$base" || "$base" == "0000000000000000000000000000000000000000" ]]; then
+            base="$(git rev-parse origin/main)"
+          fi
+          checker=scripts/ops/check_master_v2_instrument_cards_seal_v1.py
+          if git cat-file -e "$base:$checker" 2>/dev/null; then
+            git show "$base:$checker" > "$RUNNER_TEMP/instrument_cards_seal.py"
+            python3 "$RUNNER_TEMP/instrument_cards_seal.py" --base "$base"
+          fi
+          python3 "$checker"
+
       - name: Branch ruleset enforcement governance v1
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |

@@ -117,6 +117,12 @@ GET-Receipts mit ihren Originalbytes, prüft deren Hash und bindet ihren Inhalt
 an die Karte. Die automatische Versorgung aus laufenden Paper-/Shadow-Sitzungen
 und die produktive Übergabe der Karten sind noch offen.
 
+Der Kartenadapter und sein Datenmodell sind im eigenen Beleg
+`MASTER_V2_INSTRUMENT_CARDS_SEAL_V1.json` per SHA-256 eingefroren.
+Das Lint Gate prüft beide Dateien und vergleicht spätere Änderungen mit dem
+Siegel aus dem Zielbranch. Dieser Dateisatz hat den Autorisierungseffekt
+`NONE`.
+
 Implementation:
 `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`
 

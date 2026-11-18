@@ -34,7 +34,7 @@
     {
       "path": ".github/workflows/lint_gate.yml",
       "before_sha256": "5c6a9aba55c92e32b3257f89fd9b42dc5a414e459befcd08436050cd9d162323",
-      "sha256": "5c6da8254fd6c390631f2b6b89fb73e3b9916e2426a2d03f2968b79ed082fdb7"
+      "sha256": "009a301c0dc5fdae56ff6783dd5d0a1e9985e0acdb35e6253c3d3f9cd30df88a"
     },
     {
       "path": ".github/workflows/map_currency_gate_v1.yml",
@@ -90,6 +90,11 @@
       "path": "config/governance/clean_core_seal_manifest_v1.json",
       "before_sha256": "592d7fe3aec571f18f222b74a1373c80688963c072edcb8c20091c4ef584cfe5",
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
+    },
+    {
+      "path": "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+      "before_sha256": "04bfc72f7ded45fb94b82a441107c314823362b91c0a98af3ad67263092fc5d4",
+      "sha256": "5d4a13c5cb3160b0afe6abb9fae55a5ed07da44b59a54d8c34801a6f4a90c758"
     },
     {
       "path": "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
@@ -964,7 +969,7 @@
     {
       "path": "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md",
       "before_sha256": "17ea55cb74fbca66e06b3194de9d6ba35dc7dce4dfe39af565bd57bd9799a997",
-      "sha256": "e5b3c21c66773efc42812a380c0f68e88e6811e488d2589cf10cc60f3eefa97f"
+      "sha256": "709056a72169fb8cb725322291c278906bf23c4f8df7f57acc7d411e17b0c7ee"
     },
     {
       "path": "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md",
@@ -1230,6 +1235,11 @@
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "db551bc4b35d69810bdce91a77898e5ed9699006d721b94ebe5a2ea508e313c0"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_INSTRUMENT_CARDS_SEAL_V1.json",
+      "before_sha256": null,
+      "sha256": "3b74ffd13984d34ce3cc89e083ae46494308eca1633b4e5cb346f209d09adf28"
     },
     {
       "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.json",
@@ -1525,6 +1535,11 @@
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
+    },
+    {
+      "path": "scripts/ops/check_master_v2_instrument_cards_seal_v1.py",
+      "before_sha256": null,
+      "sha256": "5df3c6a3d60116c726513a3f5a7793759dfddbeccf4ba082a5f90040af000647"
     },
     {
       "path": "scripts/ops/check_n1_double_play_runtime_seal_v1.py",
@@ -4000,6 +4015,11 @@
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",
       "before_sha256": "927e244a26f14977a00630cebd5b357933df11c14da8672b6ef707754d096051",
       "sha256": "b60f52305ae110ee46f2558b08ff50d913ccc38ff9a4e2aa4277380522838973"
+    },
+    {
+      "path": "tests/governance/test_master_v2_instrument_cards_seal_v1.py",
+      "before_sha256": null,
+      "sha256": "eca1941c0289c443d881d488b2edd7a876c34e6b305a2fa3c194db4419040ea1"
     },
     {
       "path": "tests/governance/test_n1_double_play_runtime_seal_v1.py",
