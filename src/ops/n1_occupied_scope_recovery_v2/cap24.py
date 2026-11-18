@@ -1,8 +1,16 @@
 """Project authenticated occupied inventory into the existing Cap24 store."""
 
 from dataclasses import replace
+from decimal import Decimal
 from pathlib import Path
 
+from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+    OUTCOME_CONFIRMED_FILLED,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
+    read_budget_revision_read_only_v1,
+    require_budget_head_read_only_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
     AUTHORITY_OWNER,
     CAPABILITY_ID,
@@ -33,16 +41,135 @@ from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
 )
 
 
-def reconcile_cap24_owned_position_v1(*, context, productivity_root: Path, proof_root: Path):
+def _record_offline_first_fill(context, proof, proof_root, link, config_digest):
+    """Record a fully reconciled entry in the original portfolio before Cap24 reads it."""
+    host = context.host
+    owner = host.root / "owner"
+    root = host.root / "reconciliation"
+    episode_root = host.root / "position-episodes" / proof.identity_digest
+    if root.resolve() != root or episode_root.resolve() != episode_root or not root.is_dir():
+        raise ValueError("BREV_FIRST_FILL_ORIGINAL_PORTFOLIO_REQUIRED")
+    (bound,) = host.bindings.values()
+    observed = context.observed
+    writer = ProductivePortfolioSingleWriterV1(state_root=root, session_id=host.session_id)
+    wall = host.clock()
+    try:
+        writer.acquire(now_unix=wall)
+        components = (
+            root / name for name in (MANIFEST_FILENAME, PORTFOLIO_STATE_FILENAME, EVIDENCE_FILENAME)
+        )
+        if any(path.is_symlink() or not path.is_file() for path in components):
+            raise ValueError("BREV_FIRST_FILL_ORIGINAL_PORTFOLIO_REQUIRED")
+        verify_manifest(root)
+        persisted = load_persisted_portfolio_state(root, require_present=True)
+        if detect_duplicate_portfolio_state(root) or any(
+            item.missing or item.stale or item.duplicate or item.writer_conflict
+            for item in (persisted, observed)
+        ):
+            raise ValueError("BREV_FIRST_FILL_PORTFOLIO_UNPROVEN")
+        # An already reconciled first fill needs no second portfolio publication.
+        if persisted.positions:
+            quantities = tuple((p.instrument_id, p.signed_quantity) for p in persisted.positions)
+            if quantities != tuple(
+                (p.instrument_id, p.signed_quantity) for p in observed.positions
+            ):
+                raise ValueError("BREV_FIRST_FILL_PORTFOLIO_UNPROVEN")
+            return
+        if set(host.bindings) != {"LANE_1"} or bound.venue_native_id != "BREV-USDT-SWAP":
+            raise ValueError("BREV_FIRST_FILL_SCOPE_MISMATCH")
+        identity = link["identity"]
+        decision = link["reconciliation"]["decision"]
+        side = identity["selected_side"].upper()
+        quantity = Decimal(decision["cumulative_filled_qty"])
+        if (
+            side not in {"LONG", "SHORT"}
+            or decision["outcome"] != OUTCOME_CONFIRMED_FILLED
+            or not quantity.is_finite()
+            or quantity <= 0
+            or quantity != Decimal(identity["final_quantity"])
+            or len(observed.positions) != 1
+        ):
+            raise ValueError("BREV_FIRST_FILL_COMPLETE_EXECUTION_REQUIRED")
+        position = observed.positions[0]
+        if (position.instrument_id, position.signed_quantity) != (
+            bound.instrument_id,
+            quantity if side == "LONG" else -quantity,
+        ):
+            raise ValueError("BREV_FIRST_FILL_POSITION_MISMATCH")
+        sequence, digest = proof.revision_ref
+        state = read_budget_revision_read_only_v1(
+            owner, account_identity=proof.account, sequence=sequence, expected_digest=digest
+        )["state"]
+        active = [
+            (row["reservation_id"], row["slot_id"], row["state"])
+            for row in state["reservations"]
+            if row["state"] in {"RESERVED", "COMMITTED"}
+        ]
+        if active != [(proof.reservation_id, "LANE_1", "COMMITTED")]:
+            raise ValueError("BREV_FIRST_FILL_ORIGINAL_RESERVATION_REQUIRED")
+        # The original episode writer replays the durable GET proof and validates
+        # the exact order, fills, observed position and bound instrument.
+        episode = context.bind_current_authenticated_entry_episode_v1(
+            lane_id="LANE_1", proof_root=proof_root, proof=proof, config_digest=config_digest
+        )
+        entry_time = episode.binding.entry_event_time
+        if (
+            persisted.event_time_unix is None
+            or not 0 < persisted.event_time_unix < entry_time
+            or persisted.wall_time_unix is None
+            or not 0 < persisted.wall_time_unix < entry_time <= wall
+        ):
+            raise ValueError("BREV_FIRST_FILL_FLAT_PARENT_UNPROVEN")
+        portfolio = replace(
+            persisted,
+            positions=(position,),
+            source_id="authenticated_execution_entry.v1",
+            event_time_unix=entry_time,
+            wall_time_unix=wall,
+        )
+        evidence = ProductiveReconciliationEvidenceV1(
+            capability_id=CAPABILITY_ID,
+            schema_version=SCHEMA_VERSION,
+            owner=AUTHORITY_OWNER,
+            classification=ProductiveReconciliationClass.MATCH.value,
+            alpha_enabled=False,
+            pre_state_digest=persisted.digest(),
+            observed_state_digest=observed.digest(),
+            post_state_digest=portfolio.digest(),
+            reconciliation_decision="CONFIRMED_ENTRY_RECORDED",
+            applied_mutation={
+                "entry_source_ref": episode.entry_source_ref,
+                "identity_digest": proof.identity_digest,
+                "reservation_id": proof.reservation_id,
+                "budget_revision_ref": [sequence, digest],
+            },
+            repository_sha=host.repository_sha,
+            config_digest=config_digest_for_binding(repository_sha=host.repository_sha),
+            event_time_unix=entry_time,
+            wall_time_unix=wall,
+            single_writer_identity=SINGLE_WRITER_IDENTITY,
+        )
+        require_budget_head_read_only_v1(
+            owner, account_identity=proof.account, expected_digest=digest
+        )
+        result = persist_reconciliation_bundle_atomic(
+            state_root=root, writer=writer, portfolio=portfolio, evidence=evidence
+        )
+        if not result["ok"]:
+            raise ValueError("BREV_FIRST_FILL_WRITE_UNVERIFIED")
+    finally:
+        writer.release()
+
+
+def reconcile_cap24_owned_position_v1(
+    *, context, productivity_root: Path, proof_root: Path, allow_offline_first_fill=False
+):
     """Bring Cap24's portfolio projection up to the original authenticated account."""
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         _occupied_scope_exit_config_digest_v1,
     )
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
         _resolve_runtime_state_root_v1,
-    )
-    from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
-        require_budget_head_read_only_v1,
     )
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
 
@@ -58,6 +185,10 @@ def reconcile_cap24_owned_position_v1(*, context, productivity_root: Path, proof
     if not link["reconciliation"]["matched"]:
         raise ValueError("CAP24_ORIGINAL_OCCUPIED_EXECUTION_UNPROVEN")
     booking = host.owner.read_current_net_reversal_obligation_v1(proof.reservation_id)
+    if allow_offline_first_fill and booking is None:
+        _record_offline_first_fill(
+            context, proof, proof_root, link, _occupied_scope_exit_config_digest_v1()
+        )
     root = _resolve_runtime_state_root_v1(productivity_root=productivity_root) / "recon"
     if root.resolve() != root:
         raise ValueError("CAP24_OCCUPIED_PROJECTION_PARENT_UNPROVEN")

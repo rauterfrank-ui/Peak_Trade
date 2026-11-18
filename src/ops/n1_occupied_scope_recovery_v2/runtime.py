@@ -119,11 +119,13 @@ def run_offline_occupied_n1_v2(
     open_fixture_ports,
     replay_clock=time.time,
     sleep=time.sleep,
+    allow_offline_first_fill: bool = False,
 ):
-    """Resume BREV from an original WAIT using explicitly supplied replay ports.
+    """Run BREV with explicitly supplied replay ports and recover its original WAIT.
 
     The caller supplies simulated GET data. This entry point has no transport
     factory, service action, order port, or runtime authorization of its own.
+    A first attempt may explicitly hand an observed full fill to the portfolio owner.
     """
     root = Path(sandbox_root)
     if (
@@ -327,6 +329,7 @@ def run_offline_occupied_n1_v2(
             open_fixture_ports=open_fixture_ports,
             replay_clock=replay_clock,
             sleep=sleep,
+            allow_offline_first_fill=allow_offline_first_fill is True and previous is None,
         )
     finally:
         lock.release()
@@ -354,6 +357,7 @@ def _run_attempt(
     open_fixture_ports,
     replay_clock,
     sleep,
+    allow_offline_first_fill=False,
 ):
     def wait(seconds):
         # The original S6 calls its sleeper after publishing a native WAIT.
@@ -432,6 +436,7 @@ def _run_attempt(
                     context=replace(context, authenticated_reconciliation=capture),
                     productivity_root=config.cap24_productivity_root,
                     proof_root=proof_root,
+                    allow_offline_first_fill=allow_offline_first_fill,
                 )
 
             acquire_account_bound_n1_startup_v1(
