@@ -45,7 +45,6 @@ from tests.ops.test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 i
     _held_writer,
 )
 from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import (
-    OWNER_GO_BASELINE_SHA,
     REPO,
     _f1_m9_evaluator_factory,
     _public_rest_empty,
@@ -54,6 +53,9 @@ from tests.ops.test_n1_standing_pre_external_runtime_supervisor_v1 import (
 from tests.ops._host_private_rest_fixture_v1 import host_private_rest_fixture_v1 as _fixture_rest
 
 BASE_TS = 1_757_631_540_000
+# PR #7331 binds the current Owner-GO decision to this reviewed baseline.
+# The imported supervisor fixtures retain their separate historical baseline.
+OWNER_GO_BASELINE_SHA = "98976dc93ba5bf7aff3723472be3bb111e020303"
 
 
 def _run_with_fixed_offline_acquisition_clock_v1(**kwargs):

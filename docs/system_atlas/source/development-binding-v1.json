@@ -4234,7 +4234,7 @@
     {
       "path": "tests/ops/_wp03_supervisor_golden_harness_v1.py",
       "before_sha256": "5996f96ef77dbbb4a38f673bc144129a988ab3b032f255033128b2377162d484",
-      "sha256": "4e49fe1d5f3c4773e735a1a1e06644327df33d8d1cc9c589efef0557885440be"
+      "sha256": "46bae72acb83fa1fcf50605024e9774e3e916d02e026e8340f8cf296637bf1a3"
     },
     {
       "path": "tests/ops/conftest.py",
