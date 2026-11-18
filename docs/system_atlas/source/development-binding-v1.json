@@ -47,11 +47,6 @@
       "sha256": "31deb8d1175cd39c139659d82c59f56788aa7f285ea8b0ee9e7fa94032c53547"
     },
     {
-      "path": ".github/workflows/n1-v2-brev-admission.yml",
-      "before_sha256": null,
-      "sha256": "1edb5ac3d04a6630a3917b23f10de76d6880204aad0b77acff9452421ea744a4"
-    },
-    {
       "path": ".github/workflows/paper_session_audit_evidence.yml",
       "before_sha256": "e14697468022d4a3fd9aaf43b1a5e8b3533377b1b0aacafc4352acd7459901aa",
       "sha256": "e1a1d8c3b6c316650e70e23991de7f5844ed58cec12257fd961e00985e1dea6c"
@@ -90,16 +85,6 @@
       "path": ".github/workflows/test-health-automation.yml",
       "before_sha256": "6f8f1b4d501574228f91891b7ba9735552438ec2f247ae474119eecffde21aca",
       "sha256": "dfb2cef949cb7dc19f65ca0dc8ed39978744ce456616584efac11c30a99411bb"
-    },
-    {
-      "path": "config/ci/branch_ruleset_enforcement_contract_v1.json",
-      "before_sha256": "6c894a76616671a54de68c52b6d5ad43471d71e25b4adfacf064048fc4a35bd7",
-      "sha256": "fe1fcf0bf26703091f83049aaa0e56c65c6b513ff0f7061b0ef3d7742d7dfb04"
-    },
-    {
-      "path": "config/ci/required_status_checks.json",
-      "before_sha256": "f4dfbd153452b0a49b419e90cdd57631053673cc589609cf01516d5a6b82d8a3",
-      "sha256": "529eab9aec1b30b1dca5abf740ba43ae4d6e9b601b4f8ef27ee8b88a319fa79d"
     },
     {
       "path": "config/governance/clean_core_seal_manifest_v1.json",
@@ -290,11 +275,6 @@
       "path": "docs/ops/evidence/BOUNDED_SLOT_POST_CLOSE_REBINDING_2026_11_09.md",
       "before_sha256": null,
       "sha256": "76e715f8db230df95e22014b8764e3cb98d0c8c49a0571f50cb47b1ba72d094c"
-    },
-    {
-      "path": "docs/ops/evidence/BREV_V2_POWER_NETWORK_PACKAGE.json",
-      "before_sha256": null,
-      "sha256": "c0df46c0d7a7b83d08f8966821cde7bd50b3e22389a616331a50408464d2e3ed"
     },
     {
       "path": "docs/ops/evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.json",
@@ -637,26 +617,6 @@
       "sha256": "29f951a775b6b2cfa732b95a7d4ace0882d8de06da2e985c497c99abefdf0675"
     },
     {
-      "path": "docs/ops/evidence/N1_V2_BREV_MAC_HOST_OFFLINE_RECOVERY.json",
-      "before_sha256": null,
-      "sha256": "e4141e490b804a7a80be9822de6ee2ea5255f4a2fed5ed383c77f094d6dfc436"
-    },
-    {
-      "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_FIRST_FILL.json",
-      "before_sha256": null,
-      "sha256": "58c9e342fd98e263acb329e83e2850340e4477b5bb8c57087505e37253246725"
-    },
-    {
-      "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RECOVERY.json",
-      "before_sha256": null,
-      "sha256": "ec5798b3e89b92fbc7c0f73bdf338d84957abf7a703e47dee866d6bbe91abdc3"
-    },
-    {
-      "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RUNTIME_WINDOW_RECOVERY.json",
-      "before_sha256": null,
-      "sha256": "5c7b579db0b7077d08c6d70881c57d6b7e314530e3ddc53bc9b4e1689bad947b"
-    },
-    {
       "path": "docs/ops/evidence/ORIGINAL_BUDGET_PREPOST_ACCOUNT_AND_SEND_CONTEXT_2026_11_07.json",
       "before_sha256": null,
       "sha256": "9d95b9db94e9ac5775ab2493dc4f63c5c9ec81d3962a7a01ae747c74fc9431df"
@@ -965,16 +925,6 @@
       "path": "docs/ops/specs/BOUNDED_SLOT_POST_CLOSE_REBINDING_V1.md",
       "before_sha256": null,
       "sha256": "7f7707f49696b9051b7de8db0eaa535eef4df6e3d4946c6a8a9b0c5eb1f05853"
-    },
-    {
-      "path": "docs/ops/specs/BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1.md",
-      "before_sha256": "0e116f37bc7748d1dea3c828b5027e85bb759c642efa2806c6503c370f057d6c",
-      "sha256": "b3739e0b8ca50dce6a9c3829cb8be77a0632f31b6e32ce7598b8397bcf15f3c1"
-    },
-    {
-      "path": "docs/ops/specs/BREV_V2_POWER_NETWORK_PACKAGE.md",
-      "before_sha256": null,
-      "sha256": "97a4cb1112120824ddccf548ad1bdbffe72b01f55bcab909824f354c40134bf5"
     },
     {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
@@ -1287,16 +1237,6 @@
       "sha256": "f0ce1a90638f3cee6e05d35353ed1918ef579925379e0792f1885e8fe30b2502"
     },
     {
-      "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.json",
-      "before_sha256": null,
-      "sha256": "79ab8ac89883f8bc1f1ca99c12e7ac096c2b7e771f6b7afcf3c7a3b14abf7716"
-    },
-    {
-      "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.md",
-      "before_sha256": null,
-      "sha256": "3898e081f95970b16dc10a27224c2b32b218d7031b3e0dc9b75f50da22e62e4a"
-    },
-    {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
       "sha256": "942950a795f2fadaeb3842a238231c5e12060fc7c26e2dae97b7b9f33299f8be"
@@ -1347,11 +1287,6 @@
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
     },
     {
-      "path": "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
-      "before_sha256": "f734139b47365a22bde268b8fe6feec6ed44a2797a3c8ebae7d7dab83144cd86",
-      "sha256": "a22471dc0b6d35717c38a3bdfabf994a74eac4209457a78e007b4561cc8fa9b5"
-    },
-    {
       "path": "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_EXECUTION_V0.md",
       "before_sha256": "e8f894f27cbb0b3e27b7eb776e8cf1c4c56a641b3712b57384a43c579b246595",
       "sha256": "34a81c24753f2fa408a7e4522bd28f30455b95725d6347ed9e8ff8f11bfeeb4e"
@@ -1379,7 +1314,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "bf517227ee4296d067784b841e5a87bc46df1e2c1b8f75a8bd5ea8faf52ceaf9"
+      "sha256": "40b0578c65e5a1f9c4f3ca84bc1e90b42c4ba5bafe388871197b6b303e867881"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1465,16 +1400,6 @@
       "path": "scripts/check_live_risk_limits.py",
       "before_sha256": "7f83e16f10b6dd8938c42346c3e2c14e364192081dd84d19fc8c7ea4b75223de",
       "sha256": "0d6dd79e5f15f5dda0899a9624811da860a0794b6d809e5b0f0d61e02eb49a70"
-    },
-    {
-      "path": "scripts/ci/check_branch_ruleset_enforcement_governance_v1.py",
-      "before_sha256": "241a18b988a418eb7b59ffa30b2c75bfa1f4b9ede541418ba2ffdf7974116732",
-      "sha256": "c2957eb8ebc98d57099175e3f29f28bd4e2a4054e7a305589089753ab992937c"
-    },
-    {
-      "path": "scripts/ci/check_n1_v2_brev_admission.py",
-      "before_sha256": null,
-      "sha256": "654e135c6aa218f8ec1671bce5e6737d2e574469ba134d21a6ed69a8db110054"
     },
     {
       "path": "scripts/ci/check_ruff_frozen_format_v1.py",
@@ -1572,16 +1497,6 @@
       "sha256": null
     },
     {
-      "path": "scripts/ops/brev_v2_mac_host_service.py",
-      "before_sha256": null,
-      "sha256": "1800c3380e70b5195daa9dd6eb3708a9f04da3521cf7f5ba688333900f7bbf57"
-    },
-    {
-      "path": "scripts/ops/brev_v2_offline_window.py",
-      "before_sha256": null,
-      "sha256": "18ba61b0042279c726f8ee41674b0d73b7b467bf5dcd76759b141167a29d926e"
-    },
-    {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
       "sha256": "de2d21de9fd6227247527a236bd8ebad420e74e2b19287a19dc23e6140939ec3"
@@ -1590,11 +1505,6 @@
       "path": "scripts/ops/capture_offline_learning_representation_context_v1.py",
       "before_sha256": null,
       "sha256": "635d7368feaca9116c8c2eb96d8362461079960b524074ef4ca2a7f6c49bdbe5"
-    },
-    {
-      "path": "scripts/ops/check_brev_v2_operating_point.py",
-      "before_sha256": null,
-      "sha256": "b68537004f5a95320732a0f61d18f7c410b3c494e891eeacaad81634f41f21a7"
     },
     {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
@@ -1695,11 +1605,6 @@
       "path": "scripts/ops/paper_episode_learning_handoff_v1.py",
       "before_sha256": null,
       "sha256": "a0f2081edd44118d67ce6cec143ae30ca70767ba92624f4edbe1ac73654efb1b"
-    },
-    {
-      "path": "scripts/ops/peak_trade_runtime.py",
-      "before_sha256": "475170be4e0bd97522590401db31498025af5ad7e064e88362548c61fde20025",
-      "sha256": "f8e0ab920670be5b41bd868564841a4898c9dc15fd98442bd735f7f3273779a3"
     },
     {
       "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
@@ -1850,11 +1755,6 @@
       "path": "scripts/ops/run_offline_learning_representation_sequence_v1.py",
       "before_sha256": null,
       "sha256": "91a57cc9f422106dbfd335fc49b8876f2a2d07f92cfb320925ab6cc2d235d631"
-    },
-    {
-      "path": "scripts/ops/run_offline_occupied_brev_with_cap24_v1.py",
-      "before_sha256": null,
-      "sha256": "a336a7e1d262b50a8c87b6488bfcfa1dd8c7f77017685b4fcdd346343bc998ac"
     },
     {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
@@ -3097,21 +2997,6 @@
       "sha256": "370d4a90b668218569faeff5997c1bd759e20af47cbd91ca1116245f9fba4a3d"
     },
     {
-      "path": "src/ops/n1_occupied_scope_recovery_v2/cap24.py",
-      "before_sha256": null,
-      "sha256": "ddc7be04de77d590d8e2c0d552f9b6fa63d39465d1620a21d45ff1aef2a1fa9a"
-    },
-    {
-      "path": "src/ops/n1_occupied_scope_recovery_v2/checkpoint.py",
-      "before_sha256": null,
-      "sha256": "b77f5aa4115aeda4c4e6a06be3388b2f30014f340c8e502fb3094d3a19af8424"
-    },
-    {
-      "path": "src/ops/n1_occupied_scope_recovery_v2/runtime.py",
-      "before_sha256": null,
-      "sha256": "cf94715309f99b5474c760e8e9f422c1d489c8ac678b3849cb2b503ace713e28"
-    },
-    {
       "path": "src/ops/n1_post_authority_startup_v1.py",
       "before_sha256": null,
       "sha256": "f41bd57cc273ae06412afada8ff17b9d3e26ca3161baa8a6d9cfbee5bb430fc2"
@@ -3642,11 +3527,6 @@
       "sha256": "4801e39f5df00242f9c528a2ec04269f95237c8684b7b701a1d02c3a043bd5ee"
     },
     {
-      "path": "tests/ci/test_branch_ruleset_enforcement_governance_v1.py",
-      "before_sha256": "1e97be67d40200600a7c5616e39bd9c3d012b0729771280224c6987f3f65d8ef",
-      "sha256": "50b5e8c777db3d7c2a24ed3c39953923190ab85a75d1aed35631385bd8a4cba3"
-    },
-    {
       "path": "tests/ci/test_ci_diff_aware_test_selection_v1.py",
       "before_sha256": "ae275edab5a66f47b569477e25bdacbdd94ef1bcb0e39bf2c123b14272e88ef4",
       "sha256": "3d918291f420ec96715d207687cb27615483f1548c4d18375d7a857bec5d450b"
@@ -3660,11 +3540,6 @@
       "path": "tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py",
       "before_sha256": "677d371601b806a172230d7563d4042de7735f7af95d40d45d9ca8542fb9daf9",
       "sha256": "89964900c3fb425044e3d99ee1f3a83753d5ad273fa6001a4e392bb46df41ded"
-    },
-    {
-      "path": "tests/ci/test_exact_head_ready_reuse.py",
-      "before_sha256": "e17fa8f9b48c12f20623ab8cefe55e1a62a6d3f825681b1c8749fa519f12b375",
-      "sha256": "044beaf36bed194e7a14418dfb7b86ecafc9e4ced666a0513f08d3d90c59ae9d"
     },
     {
       "path": "tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py",
@@ -3972,11 +3847,6 @@
       "sha256": "987138dcf68c9e1e5c7f5e1ee519f3af50862ca3b0d5a481c1512a633afb5782"
     },
     {
-      "path": "tests/governance/test_n1_v2_brev_source_admission.py",
-      "before_sha256": null,
-      "sha256": "01321ca8a585cc7f5f6b5de25c13db9283330981aa93d02058036cc70499fdf6"
-    },
-    {
       "path": "tests/governance/test_optimization_proposal_governance_ingress_v1.py",
       "before_sha256": "b380223f461ea14e5284b9ca1d6a10bb06d1924ca49fe78e136e406a217bb3e9",
       "sha256": "556288204aed4df258c6eb82ed8c4942328cc75f5d61f5041f9f2f9af226869c"
@@ -4275,16 +4145,6 @@
       "path": "tests/ops/test_bounded_slot_scope_intrabar_v1.py",
       "before_sha256": null,
       "sha256": "f7e64d4755ee6c3cd0de6e763c1dcb8e2b4c4f4fd79829b21fb7a998cce8dbcb"
-    },
-    {
-      "path": "tests/ops/test_brev_v2_mac_host_service.py",
-      "before_sha256": null,
-      "sha256": "b8644b4a4ee98efa815fd40352a227cee9c5aa6eca2c6f65277803d29fb1b1f2"
-    },
-    {
-      "path": "tests/ops/test_brev_v2_offline_window.py",
-      "before_sha256": null,
-      "sha256": "b74da6930718f7a0d2b246ad991e908499545cb4930d0e09ee375c720fa90a6b"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",
@@ -5080,11 +4940,6 @@
       "path": "tests/ops/test_run_offline_learning_mark_measurement_v1.py",
       "before_sha256": null,
       "sha256": "8e2734668bcae4fd87f7b97ab58f7b9ce6101fcede2e15c639a91a4aa50dd25c"
-    },
-    {
-      "path": "tests/ops/test_run_offline_occupied_brev_with_cap24_v1.py",
-      "before_sha256": null,
-      "sha256": "a9ef182d968b4fb276a794e9fd5e8d943222c6e3645110558ba2dcc42f4615ce"
     },
     {
       "path": "tests/ops/test_run_research_candidate_shadow_v1.py",

@@ -1,130 +1,17 @@
 {
-  "schema_version": "branch_ruleset_enforcement_api_evidence_v1",
-  "phase": "live_fetch",
-  "repository": {
-    "default_branch": "main",
-    "allow_squash_merge": true,
-    "allow_merge_commit": true,
-    "allow_rebase_merge": true,
-    "allow_auto_merge": true,
-    "delete_branch_on_merge": true,
-    "visibility": "public",
-    "secret_scanning": "enabled",
-    "secret_scanning_push_protection": "enabled"
-  },
-  "rulesets_summary": [
-    {
-      "id": 27494723,
-      "name": "peak_trade",
-      "enforcement": "active",
-      "target": "branch"
-    }
-  ],
-  "ruleset": {
-    "id": 27494723,
-    "name": "peak_trade",
-    "target": "branch",
-    "enforcement": "active",
-    "conditions": {
-      "ref_name": {
-        "exclude": [],
-        "include": [
-          "refs/heads/main"
-        ]
-      }
-    },
-    "rules": [
-      {
-        "type": "deletion"
-      },
-      {
-        "type": "non_fast_forward"
-      },
-      {
-        "type": "pull_request",
-        "parameters": {
-          "required_approving_review_count": 0,
-          "dismiss_stale_reviews_on_push": true,
-          "required_reviewers": [],
-          "require_code_owner_review": false,
-          "require_last_push_approval": true,
-          "required_review_thread_resolution": true,
-          "require_extra_approval_for_unattributed_changes": true,
-          "allowed_merge_methods": [
-            "merge",
-            "rebase",
-            "squash"
-          ]
-        }
-      },
-      {
-        "type": "required_status_checks",
-        "parameters": {
-          "strict_required_status_checks_policy": true,
-          "do_not_enforce_on_create": false,
-          "required_status_checks": [
-            {
-              "context": "Guard tracked files in reports directories",
-              "integration_id": 15368
-            },
-            {
-              "context": "audit",
-              "integration_id": 15368
-            },
-            {
-              "context": "strategy-smoke",
-              "integration_id": 15368
-            },
-            {
-              "context": "Policy Critic Gate",
-              "integration_id": 15368
-            },
-            {
-              "context": "Lint Gate",
-              "integration_id": 15368
-            },
-            {
-              "context": "dispatch-guard",
-              "integration_id": 15368
-            },
-            {
-              "context": "docs-token-policy-gate",
-              "integration_id": 15368
-            },
-            {
-              "context": "docs-reference-targets-gate",
-              "integration_id": 15368
-            },
-            {
-              "context": "docs-drift-guard",
-              "integration_id": 15368
-            },
-            {
-              "context": "repo-truth-claims",
-              "integration_id": 15368
-            },
-            {
-              "context": "tests (3.11)",
-              "integration_id": 15368
-            },
-            {
-              "context": "map-currency-gate",
-              "integration_id": 15368
-            },
-            {
-              "context": "n1-v2-brev-admission",
-              "integration_id": 15368
-            }
-          ]
-        }
-      }
-    ],
-    "bypass_actors": [],
-    "current_user_can_bypass": "never"
-  },
   "classic_branch_protection_main": {
+    "allow_deletions": false,
+    "allow_force_pushes": false,
+    "enforce_admins": true,
+    "required_conversation_resolution": false,
+    "required_linear_history": false,
+    "required_pull_request_reviews": {
+      "dismiss_stale_reviews": false,
+      "require_code_owner_reviews": false,
+      "require_last_push_approval": false,
+      "required_approving_review_count": 0
+    },
     "required_status_checks": {
-      "strict": false,
       "contexts": [
         "Guard tracked files in reports directories",
         "Lint Gate",
@@ -134,24 +21,130 @@
         "docs-drift-guard",
         "docs-reference-targets-gate",
         "docs-token-policy-gate",
-        "map-currency-gate",
-        "n1-v2-brev-admission",
         "repo-truth-claims",
         "strategy-smoke",
-        "tests (3.11)"
-      ]
-    },
-    "required_pull_request_reviews": {
-      "dismiss_stale_reviews": false,
-      "require_code_owner_reviews": false,
-      "require_last_push_approval": false,
-      "required_approving_review_count": 0
-    },
-    "enforce_admins": true,
-    "required_linear_history": false,
-    "allow_force_pushes": false,
-    "allow_deletions": false,
-    "required_conversation_resolution": false
+        "tests (3.11)",
+        "map-currency-gate"
+      ],
+      "strict": false
+    }
   },
-  "captured_at_utc": "2026-11-17T20:42:37Z"
+  "phase": "after",
+  "repository": {
+    "allow_auto_merge": true,
+    "allow_merge_commit": true,
+    "allow_rebase_merge": true,
+    "allow_squash_merge": true,
+    "default_branch": "main",
+    "delete_branch_on_merge": true,
+    "secret_scanning": "enabled",
+    "secret_scanning_push_protection": "enabled",
+    "visibility": "public"
+  },
+  "ruleset": {
+    "bypass_actors": [],
+    "conditions": {
+      "ref_name": {
+        "exclude": [],
+        "include": [
+          "refs/heads/main"
+        ]
+      }
+    },
+    "current_user_can_bypass": "never",
+    "enforcement": "active",
+    "id": 11192468,
+    "name": "peak_trade",
+    "rules": [
+      {
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "parameters": {
+          "allowed_merge_methods": [
+            "merge",
+            "rebase",
+            "squash"
+          ],
+          "dismiss_stale_reviews_on_push": true,
+          "require_code_owner_review": false,
+          "require_last_push_approval": true,
+          "required_approving_review_count": 0,
+          "required_review_thread_resolution": true,
+          "required_reviewers": []
+        },
+        "type": "pull_request"
+      },
+      {
+        "parameters": {
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "Guard tracked files in reports directories",
+              "integration_id": 15368
+            },
+            {
+              "context": "Lint Gate",
+              "integration_id": 15368
+            },
+            {
+              "context": "Policy Critic Gate",
+              "integration_id": 15368
+            },
+            {
+              "context": "audit",
+              "integration_id": 15368
+            },
+            {
+              "context": "dispatch-guard",
+              "integration_id": 15368
+            },
+            {
+              "context": "docs-drift-guard",
+              "integration_id": 15368
+            },
+            {
+              "context": "docs-reference-targets-gate",
+              "integration_id": 15368
+            },
+            {
+              "context": "docs-token-policy-gate",
+              "integration_id": 15368
+            },
+            {
+              "context": "repo-truth-claims",
+              "integration_id": 15368
+            },
+            {
+              "context": "strategy-smoke",
+              "integration_id": 15368
+            },
+            {
+              "context": "tests (3.11)",
+              "integration_id": 15368
+            },
+            {
+              "context": "map-currency-gate",
+              "integration_id": 15368
+            }
+          ],
+          "strict_required_status_checks_policy": true
+        },
+        "type": "required_status_checks"
+      }
+    ],
+    "target": "branch"
+  },
+  "rulesets_summary": [
+    {
+      "enforcement": "active",
+      "id": 11192468,
+      "name": "peak_trade",
+      "target": "branch"
+    }
+  ],
+  "schema_version": "branch_ruleset_enforcement_api_evidence_v1"
 }
