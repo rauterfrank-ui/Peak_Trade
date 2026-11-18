@@ -535,6 +535,10 @@ EXECUTION_AUTHORITY_AUDIT_DELTAS = {
 }
 
 OWNER_ADJUDICATION_DELTAS = {
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json": (
+        "a68d5a7d3b3eb1f096c41c6ac6e9033f6d8cc5197f0a227f6cffc4f978317e41",
+        "efc3a5f485d93573a1aa55332ff6fb782103138acc1601bc6138258b0db2808d",
+    ),
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": (
         "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
         "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
