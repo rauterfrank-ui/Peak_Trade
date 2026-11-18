@@ -637,6 +637,11 @@
       "sha256": "e4141e490b804a7a80be9822de6ee2ea5255f4a2fed5ed383c77f094d6dfc436"
     },
     {
+      "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_FIRST_FILL.json",
+      "before_sha256": null,
+      "sha256": "58c9e342fd98e263acb329e83e2850340e4477b5bb8c57087505e37253246725"
+    },
+    {
       "path": "docs/ops/evidence/N1_V2_BREV_OFFLINE_RECOVERY.json",
       "before_sha256": null,
       "sha256": "ec5798b3e89b92fbc7c0f73bdf338d84957abf7a703e47dee866d6bbe91abdc3"
@@ -1274,12 +1279,12 @@
     {
       "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.json",
       "before_sha256": null,
-      "sha256": "163e1a3760e9183fe69518c7f9d2c1640d7aaa08e6a516d1b80410622a1a17cd"
+      "sha256": "79ab8ac89883f8bc1f1ca99c12e7ac096c2b7e771f6b7afcf3c7a3b14abf7716"
     },
     {
       "path": "docs/ops/specs/N1_V2_BREV_SOURCE_ADMISSION.md",
       "before_sha256": null,
-      "sha256": "af01720c800ed1ef4ed07f7019a5ecf33d3fcc49f5437b6dba359583937629aa"
+      "sha256": "3898e081f95970b16dc10a27224c2b32b218d7031b3e0dc9b75f50da22e62e4a"
     },
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
@@ -1459,7 +1464,7 @@
     {
       "path": "scripts/ci/check_n1_v2_brev_admission.py",
       "before_sha256": null,
-      "sha256": "08dae28576428e99adfbd9bb647494e31f5ee8881dfd7ede42290a0001bf7082"
+      "sha256": "654e135c6aa218f8ec1671bce5e6737d2e574469ba134d21a6ed69a8db110054"
     },
     {
       "path": "scripts/ci/check_ruff_frozen_format_v1.py",
@@ -3954,7 +3959,7 @@
     {
       "path": "tests/governance/test_n1_v2_brev_source_admission.py",
       "before_sha256": null,
-      "sha256": "bbd9d0a18db4f986273dc63c0219d069b63c4f655d7193556b9f97456365f919"
+      "sha256": "01321ca8a585cc7f5f6b5de25c13db9283330981aa93d02058036cc70499fdf6"
     },
     {
       "path": "tests/governance/test_optimization_proposal_governance_ingress_v1.py",

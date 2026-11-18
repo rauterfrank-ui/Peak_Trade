@@ -61,3 +61,23 @@ eine eigene Freigabe. [Workflow](../../../.github/workflows/n1-v2-brev-admission
 Für einen lokalen Implementierungskandidaten zeigt `--base` auf den geprüften
 Governance-Commit, `--candidate` auf den Implementierungs-Commit. Die Prüflogik
 für diese Prüfung stammt aus dem Governance-Commit.
+
+## Quellzulassung für den Offline-Erstfill
+
+Der [Erstfill-Nachweis](../evidence/N1_V2_BREV_OFFLINE_FIRST_FILL.json) bindet die
+beiden geänderten V2-Dateien an `fba02a8e4` auf der Basis `d065ce73e`.
+Zwei isolierte Läufe speichern die vollständig bestätigte Testposition im
+ursprünglichen Portfolio und erreichen nach `SIGKILL` erneut den C1-Wartezustand.
+Ein Teilfill und ein Lauf ohne ausdrückliche Erstfill-Option erreichen keinen WAIT.
+
+Die Governance-Übernahme hinterlegt die Prüflogik, den Beleg und die Sollwerte im
+Zielbranch. Der bisherige Checker sperrt Änderungen an seiner eigenen
+Prüfgrundlage. Für diesen einmaligen Wechsel gilt der ausdrücklich freizugebende
+Operatorpfad aus dem [Ruleset-Vertrag](./BRANCH_RULESET_ENFORCEMENT_GOVERNANCE_V1.md).
+Nach dem Readback der wieder vollständig wirksamen Pflichtchecks prüft der Checker
+aus dem Zielbranch den separaten Implementierungs-PR. Er verlangt den geprüften
+Runtime-Commit in der Kandidatenhistorie, bytegleiche V2-Dateien und genau den
+zugehörigen Atlas-Hashwechsel. Sobald der neue Stand in `main` liegt, sperrt
+der Check weitere Änderungen am V2-Paket einschließlich einer Rückkehr zu den
+alten Bytes. Die beiden V1-Siegel behalten ihre Geltung. Laufzeitfreigabe bleibt
+separat.
