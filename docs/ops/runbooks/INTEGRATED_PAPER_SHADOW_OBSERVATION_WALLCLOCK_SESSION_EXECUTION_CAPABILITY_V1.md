@@ -174,6 +174,35 @@ Simulationsprofil. Ein erfolgreicher Input-Vorcheck ist ein Teilbefund.
 Die Ausgabe `launch_blockers` führt die noch fehlende Hostbindung und
 die Prüfung von Core-Marktinputs und Kosten auf.
 
+### ZKP-Paper-Einstieg auf LANE_1
+
+Der [ZKP-Startpfad](../../../scripts/ops/run_zkp_lane1_paper_v1.py) liest
+die öffentlichen OKX-EEA-Quellen für `ZKP-USD_UM_XPERP-310905`.
+`preflight` prüft mit optionalem `--evidence-root` die Eingaben.
+
+```bash
+./scripts/pt scripts/ops/run_zkp_lane1_paper_v1.py preflight
+```
+
+Ein ausdrücklicher Aufruf mit `run` und einem neuen absoluten `--run-root`
+legt den Paper-Zustand separat an. Das Zeitfenster für den Einstieg
+beträgt standardmäßig 7.200 Sekunden. Der V2-Mark-Takt verbindet den
+originalen Master-V2-Einstieg mit den finalisierten G17- und C1-Fenstern.
+Die kanonische Mengenrechnung verwendet 25 virtuelle USDC und den
+beobachteten USDC/USD-Index. Die Paper-Prüfung verlangt die volle vorgesehene
+Menge auf beiden Orderbuchseiten und bewertet Spread, ADV-Anteil und
+Slippage. [Paper-Liquiditätsprofil](../../../config/risk_liquidity_gate_paper.toml)
+und [Slippage-Cap](../../../config/risk/slippage.toml) liefern die Limits.
+Das ADV stammt aus 30 fertigen
+UTC-Tageskerzen in USD. Der Fillpreis ergibt sich aus dem Orderbuch mit
+nachteiliger Tick-Rundung. Die modellierte Taker-Gebühr beträgt 0,05 Prozent.
+Die erwarteten Ausstiegskosten und die nächste Funding-Reserve gehen vor
+der Buchung in die Budgetprüfung ein.
+
+Der Starter endet nach dem simulierten Erstfill. Er speichert die Buchung,
+den offenen Positionsbeleg und den veröffentlichten C1-Cursor für den
+besetzten Slot. Die Erstfill-Ausführung hat keine Venue-Order-Schnittstelle.
+
 Für die spätere [DDO-/GVEF-Auswertung](../specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md)
 müssen die vollständigen Entscheidungsbelege erhalten bleiben. Die
 Outcome-Messung benötigt mindestens zwei lückenlose finalisierte
