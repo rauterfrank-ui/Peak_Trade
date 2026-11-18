@@ -4084,7 +4084,7 @@
     {
       "path": "tests/ops/test_authenticated_net_reversal_booking_v1.py",
       "before_sha256": null,
-      "sha256": "f85afe763f9b1ad5e21510b0b3cb9698eb83847e7118d50cec294f065885b777"
+      "sha256": "40747f8a2e100cce7633467fd8d8823cca8532e772daa8b2739dc22029db58ab"
     },
     {
       "path": "tests/ops/test_aws_export_smoke_contract.py",
