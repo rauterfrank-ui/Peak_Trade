@@ -177,6 +177,15 @@ CAP23_SELECTION_VALIDITY_ROTATION_DELTAS = {
     ),
 }
 
+# Exact source successor for instrument-bound C1 history and per-lane
+# Mark/Index provenance at the unsealed orchestration boundary.
+N5_ORIGINAL_MARKET_INPUT_DELTAS = {
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py": (
+        "a22c42486628322348ef1e491cc3493fbdc294784116fa2f0d1595f262a23cb0",
+        "873ea6f58e5c71b3a46d5716fda5ac573998b931d6e77c6c74d41931ed94e067",
+    ),
+}
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -475,7 +484,7 @@ G2_ARCHIVE_PROJECTION_DELTAS = {
     ),
     "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py": (
         "8dd773e29c994f13c63046ed1036d9cb21035c70d19aad196de0a8098398c1f3",
-        "bc55e38152968f23d71889b039726328b55d9d3e8727f4579895c7cad9100c15",
+        "1a40ecb31adbbff6201eee838b9021ca9088b59b398b689f613016939ff31c97",
     ),
 }
 # Reviewed policy-source changes for the execution authority audit.
@@ -705,6 +714,10 @@ def validate_reserved_slot_rotation_bundle(
             expected = _exact_double_play_successor(
                 expected, CAP23_SELECTION_VALIDITY_ROTATION_DELTAS
             )
+        if any(
+            actual[path] == digest for path, (_, digest) in N5_ORIGINAL_MARKET_INPUT_DELTAS.items()
+        ):
+            expected = _exact_double_play_successor(expected, N5_ORIGINAL_MARKET_INPUT_DELTAS)
         accepted = (expected,)
     else:
         accepted = (before, after, protected_after, scope_bound_after)

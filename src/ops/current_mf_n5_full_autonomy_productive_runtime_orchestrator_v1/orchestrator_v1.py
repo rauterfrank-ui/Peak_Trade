@@ -32,10 +32,6 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap2
     Cap24LaneCanonicalPriceProvenanceComposeError,
     build_n5_lane_canonical_price_provenance_from_cap24_v1,
 )
-from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap24_lane_mv2_candles_payload_compose_v1 import (
-    Cap24LaneMv2CandlesPayloadComposeError,
-    build_n5_lane_candles_payload_from_cap24_v1,
-)
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.constants_v1 import (
     ACTIVE_ROTATION_SELECTION_VALIDITY_SECONDS,
     AUTONOMY_TRADING_DECISION_AUTHORITY,
@@ -104,6 +100,9 @@ from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFut
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
     pin_open_positions_in_membership_v1,
+)
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.c1_fanout_v1 import (
+    extract_lane_closes_v1,
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
@@ -258,39 +257,21 @@ def _inject_cap24_lane_canonical_price_provenance_v1(
         readiness_kwargs["index_px"] = float(only.index_px)
 
 
-def _inject_cap24_lane_candles_payload_by_lane_v1(
+def _require_instrument_c1_history_v1(
     selected_pairs: Mapping[str, tuple[Any, BoundInstrumentV1]],
-    cap24_bind: ProductiveFullAutonomyCap24BindContextV1,
-    readiness_kwargs: dict[str, Any],
+    payloads: Mapping[str, Any],
 ) -> None:
-    """Fan out C1 candles per lane when multi-lane identity closure requires it."""
-
-    if readiness_kwargs.get("candles_payload_by_lane") is not None:
-        return
-    if len(selected_pairs) <= 1:
-        return
-    last_ts = readiness_kwargs.get("last_finalized_event_ts_unix")
-    if last_ts is None:
-        _fail(FAILURE_CAP24_PROVENANCE, "last_finalized_event_ts_unix_required")
-    last_candle_ts_unix = float(last_ts) + 60.0
-    template = readiness_kwargs.get("candles_payload")
-    if isinstance(template, Mapping):
-        data = template.get("data")
-        if isinstance(data, list) and data:
-            try:
-                last_candle_ts_unix = float(int(str(data[-1][0])) / 1000.0)
-            except (IndexError, TypeError, ValueError):
-                pass
-    try:
-        by_lane = build_n5_lane_candles_payload_from_cap24_v1(
-            selected_pairs,
-            cap24_bind.mark_price_by_native_id,
-            last_finalized_event_ts_unix=last_candle_ts_unix,
-        )
-    except Cap24LaneMv2CandlesPayloadComposeError as exc:
-        _fail(FAILURE_CAP24_PROVENANCE, str(exc))
-    readiness_kwargs["candles_payload"] = None
-    readiness_kwargs["candles_payload_by_lane"] = by_lane
+    for lane_id, (_, bound) in selected_pairs.items():
+        payload = payloads.get(lane_id)
+        if (
+            not isinstance(payload, Mapping)
+            or payload.get("code") != "0"
+            or payload.get("instId") != bound.venue_native_id
+        ):
+            _fail(FAILURE_CAP24_PROVENANCE, f"N5_C1_SOURCE_MISMATCH:{lane_id}")
+        closes, event_unix = extract_lane_closes_v1(payload)
+        if not closes or event_unix is None:
+            _fail(FAILURE_CAP24_PROVENANCE, f"N5_C1_FINALIZED_HISTORY_REQUIRED:{lane_id}")
 
 
 def _rollup_from_readiness(
@@ -388,6 +369,15 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         if isinstance(prepared, PostCloseContinuationReplayV1):
             return prepared
         membership, continuation_handle = prepared
+    if target > 1:
+        # A scalar Cap24 mark is insufficient evidence for C1 history or an
+        # instrument-specific index. Bind both sources before lane publication.
+        for input_name in ("candles_payload_by_lane", "canonical_price_provenance_by_lane"):
+            if (
+                not isinstance(cycle_kwargs.get(input_name), Mapping)
+                or not cycle_kwargs[input_name]
+            ):
+                _fail(FAILURE_CAP24_PROVENANCE, f"N5_ORIGINAL_INPUT_REQUIRED:{input_name}")
     bounded_host = original_bounded_host_v1(
         portfolio_budget_owner, cycle_kwargs.get("host_budget_recovery")
     )
@@ -451,6 +441,8 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     admitted = admit_occupied_lane_bound_instruments_v1(bound_by_lane)
     composed = compose_occupied_lane_mv2_dp_handoff_v1(admitted, topology)
     selected_pairs = _select_target_lanes(composed, target_cardinality=target)
+    if target > 1:
+        _require_instrument_c1_history_v1(selected_pairs, cycle_kwargs["candles_payload_by_lane"])
 
     owner = (
         portfolio_budget_owner
@@ -477,11 +469,6 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     readiness_kwargs["origin_main_sha"] = origin_main_sha
     readiness_kwargs.setdefault("observed_portfolio", cap24_bind.observed_portfolio)
     _inject_cap24_lane_canonical_price_provenance_v1(
-        selected_pairs,
-        cap24_bind,
-        readiness_kwargs,
-    )
-    _inject_cap24_lane_candles_payload_by_lane_v1(
         selected_pairs,
         cap24_bind,
         readiness_kwargs,

@@ -172,6 +172,7 @@ class GovernedPaperEpisodeProjectionRequestV1:
     primary_evidence_root: Path
     episode_id: str
     learning_handoff_root: Path
+    expected_lane_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -498,21 +499,23 @@ def read_verified_paper_episode_for_g2_v1(
             episode_id=source.episode_id,
             output_root=source.learning_handoff_root,
             verify=True,
+            expected_lane_id=source.expected_lane_id,
         )
     except (DdoError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
         raise GovernedRuntimePrimaryProjectionError(
             f"PAPER_EPISODE_HANDOFF_REJECTED:{exc}"
         ) from exc
     measurement = handoff["measurement"]
-    return handoff, compute_content_sha256(
-        {
-            "schema_version": SCHEMA_VERSION,
-            "source": "SEALED_BOUNDED_PAPER_EPISODE",
-            "primary_evidence_manifest_digest": measurement["archive_manifest_sha256"],
-            "paper_outcome_digest": measurement["outcome_digest"],
-            "learning_evidence_digest": handoff["learning_evidence"]["content_hash"],
-        }
-    )
+    projection = {
+        "schema_version": SCHEMA_VERSION,
+        "source": "SEALED_BOUNDED_PAPER_EPISODE",
+        "primary_evidence_manifest_digest": measurement["archive_manifest_sha256"],
+        "paper_outcome_digest": measurement["outcome_digest"],
+        "learning_evidence_digest": handoff["learning_evidence"]["content_hash"],
+    }
+    if source.expected_lane_id is not None:
+        projection["expected_lane_id"] = source.expected_lane_id
+    return handoff, compute_content_sha256(projection)
 
 
 def read_verified_i17_shadow_for_g2_v1(

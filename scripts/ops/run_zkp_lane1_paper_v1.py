@@ -23,11 +23,15 @@ if str(REPO) not in sys.path:
 from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (  # noqa: E402
     collect_bound_paper_liquidity_v1,
 )
+from src.ops.bounded_peaktrade_system_composition_v1.xperp_paper_episode_outcome_v1 import (  # noqa: E402
+    seal_xperp_paper_archive_v1,
+)
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 import (  # noqa: E402
     ZkpPaperContinuationV1,
 )
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import ZkpPaperEntryV1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (  # noqa: E402
+    IRYS_PAPER_SLOT,
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
     UP_PAPER_SLOT,
@@ -75,7 +79,7 @@ def _new_root(path):
 
 def _read_paper_slot(path):
     config = json.loads(path.read_bytes())
-    slot = UP_PAPER_SLOT
+    slot = IRYS_PAPER_SLOT if config["lane"] == IRYS_PAPER_SLOT.lane_id else UP_PAPER_SLOT
     if (
         config["lane"],
         config["canonical_instrument_id"],
@@ -83,7 +87,7 @@ def _read_paper_slot(path):
         config["surface"],
         config["authority"],
     ) != (slot.lane_id, slot.instrument_id, slot.native_id, "PAPER_EXCHANGE", "NONE"):
-        raise ValueError("UP_PAPER_SLOT_CONFIG_MISMATCH")
+        raise ValueError(f"{slot.base_currency}_PAPER_SLOT_CONFIG_MISMATCH")
     return slot
 
 
@@ -234,6 +238,7 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
                     "authority": "NONE",
                 }
                 immutable_json_v1(root / "closeout.json", result)
+                seal_xperp_paper_archive_v1(root, result)
                 return result
         sleep(min(_POLL_SECONDS, max(0, deadline - monotonic())))
         if not active():
@@ -256,6 +261,7 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
         "authority": "NONE",
     }
     immutable_json_v1(root / "closeout.json", result)
+    seal_xperp_paper_archive_v1(root, result)
     return result
 
 
@@ -284,7 +290,9 @@ def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT):
                 slot.instrument_id,
             ):
                 raise ValueError("PAPER_CLOSEOUT_SLOT_MISMATCH")
-            return json.loads(closeout.read_bytes())
+            result = json.loads(closeout.read_bytes())
+            seal_xperp_paper_archive_v1(root, result)
+            return result
         occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision, slot=slot)
         if duration != occupied.profile["duration_seconds"]:
             raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
@@ -311,7 +319,7 @@ def main(argv=None):
     resume.add_argument("--run-root", required=True, type=Path)
     for mode in (preflight, run, resume):
         mode.add_argument(
-            "--slot-config", type=Path, help="Use the prepared UP configuration for LANE_2"
+            "--slot-config", type=Path, help="Use the prepared UP (LANE_2) or IRYS (LANE_4) binding"
         )
     args = parser.parse_args(argv)
     try:

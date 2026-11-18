@@ -122,6 +122,15 @@ def test_rejects_malformed_evidence() -> None:
     assert ack["status"] == STATUS_REJECTED_MALFORMED
 
 
+def test_modified_numeric_slice_cannot_reach_the_return_ack(tmp_path):
+    evidence = dict(build_optimization_experiment_evidence_from_plane_v1(_complete_plane(tmp_path)))
+    evidence["evidence_slices"][CLASS_FAILURE_EVIDENCE]["failure_evidence_count"] += 1
+    ack = validate_self_learning_optimization_return_input_v1(
+        SelfLearningOptimizationReturnInputRequestV1(optimization_experiment_evidence=evidence)
+    )
+    assert ack["status"] == STATUS_REJECTED_MALFORMED
+
+
 def test_forbidden_learning_state_mutation_request() -> None:
     with pytest.raises(SelfLearningOptimizationReturnInputError):
         validate_self_learning_optimization_return_input_v1(

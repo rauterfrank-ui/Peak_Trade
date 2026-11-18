@@ -26,6 +26,7 @@ def _profiles(
     now_ms=1793836802000,
     last_ms=1793836800000,
     direction=1,
+    volume_unit="CONTRACTS",
 ):
     from tests.ops.test_public_fact_consumer_semantics_v1 import _fact
 
@@ -54,7 +55,7 @@ def _profiles(
         row.update(
             interval_id="PT1M",
             source_price_kind="mark_price_candle",
-            volume_unit_semantics="CONTRACTS",
+            volume_unit_semantics=volume_unit,
             interval_start_ms=event,
             open_px=px,
             high_px=px,
@@ -120,7 +121,7 @@ def _profiles(
             str(root.resolve()),
             policy,
             "mark_price_candle",
-            "CONTRACTS",
+            volume_unit,
             now_ms,
             None if purpose == "LIQUIDITY" else 3600000 if purpose == "OUTCOME" else 60000,
         )
@@ -462,6 +463,34 @@ def test_fresh_ohlcv_is_not_promoted_to_authoritative_outcome(tmp_path):
         source.outcome_snapshot_v1(
             native_id="ETH-USDT-SWAP", decision_event_ref="ddo.dec:e1-negative", n_bars=2
         )
+
+
+@pytest.mark.parametrize("purpose", ["TRADING", "RESEARCH"])
+def test_consumer_rejects_final_candle_captured_before_close(tmp_path, purpose):
+    root = tmp_path / "facts"
+    source = _profiles(root)[purpose]
+    from src.ops.peak_trade_public_market_data_runtime_v1.durable_store_v1 import load_all_facts_v1
+
+    paths = default_store_paths_v1(root)
+    facts = load_all_facts_v1(paths)
+    row = next(dict(f) for f in reversed(facts) if f["fact_kind"] == "OhlcvIntervalFactV1")
+    just_before_close = datetime.fromtimestamp(
+        (row["interval_start_ms"] + 59_999) / 1000, timezone.utc
+    ).isoformat()
+    row["timestamps"] = {**row["timestamps"], "captured_at": just_before_close}
+    append_fact_v1(paths, row)
+    with pytest.raises(ValueError, match="FINALIZED_BAR_NOT_CLOSED_AT_CAPTURE"):
+        source.ohlcv_v1(purpose=purpose, native_id="ETH-USDT-SWAP", interval_ms=60_000)
+
+
+def test_c1_projection_preserves_native_contract_volume_slot(tmp_path):
+    sources = _profiles(tmp_path / "facts", volume_unit="BASE_ASSET")
+    with pytest.raises(ValueError, match="DATA_TRADING_C1_CONTRACT_VOLUME_REQUIRED"):
+        sources["TRADING"].trading_c1_v1(native_id="ETH-USDT-SWAP")
+    assert (
+        len(sources["RESEARCH"].research_returns_v1(native_id="ETH-USDT-SWAP", interval_ms=60000))
+        == 99
+    )
 
 
 def test_research_window_is_part_of_the_pinned_data_profile(tmp_path):

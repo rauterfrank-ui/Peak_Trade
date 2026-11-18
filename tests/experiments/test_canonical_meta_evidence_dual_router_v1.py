@@ -50,9 +50,11 @@ from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 
 )
 from src.learning.deterministic_decision_outcome_v0.meta_evidence_v1 import (
     PROVENANCE_LINEAGE_REF_KEY,
+    MetaEvidenceValidationError,
     SemanticRoutingClass,
     build_meta_evidence_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.serialization_v0 import compute_content_hash_v0
 from tests.experiments.test_canonical_optimization_universe_experiment_plane_v1 import (
     _plane_request,
 )
@@ -112,6 +114,27 @@ def test_research_choice_routes_to_optimization_only(tmp_path: Path) -> None:
                 requested_learning_state_mutation=True,
             )
         )
+
+
+def test_detached_route_rechecks_content_and_semantic_source(tmp_path):
+    original = build_meta_evidence_v1(
+        meta_learning_evidence=_learning_representation_meta(tmp_path),
+        semantic_routing_class=SemanticRoutingClass.LEARNING_REPRESENTATION.value,
+    )
+    changed = deepcopy(dict(original))
+    changed["meta_learning_evidence"]["repeated_success_or_failure_pattern"] = "altered"
+    with pytest.raises(MetaEvidenceValidationError, match="CONTENT_DIGEST_MISMATCH"):
+        route_meta_evidence_v1(changed)
+
+    # A correctly recomputed hash cannot replace the required learning lineage.
+    del changed["meta_learning_evidence"]["provenance"][PROVENANCE_LINEAGE_REF_KEY]
+    changed["content_digest"] = compute_content_hash_v0(
+        changed, extra_excluded_fields=frozenset({"content_digest"})
+    )
+    with pytest.raises(
+        MetaEvidenceValidationError, match="LEARNING_REPRESENTATION_LINEAGE_REF_REQUIRED"
+    ):
+        route_meta_evidence_v1(changed)
 
 
 def test_learning_representation_routes_to_learning_only(tmp_path: Path) -> None:

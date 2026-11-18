@@ -38,6 +38,8 @@ from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 im
 from src.experiments.canonical_federated_m5_m6_return_join_v1 import (
     JOIN_STATUS_COMPLETE as FEDERATED_RETURN_JOIN_STATUS_COMPLETE,
     SCHEMA_VERSION as FEDERATED_RETURN_JOIN_SCHEMA_VERSION,
+    FederatedM5M6ReturnJoinRequestV1,
+    perform_federated_m5_m6_return_join_v1,
 )
 from src.experiments.canonical_federated_surface_optimization_experiment_evidence_projection_v1 import (
     validate_federated_projected_optimization_experiment_evidence_v1,
@@ -45,6 +47,8 @@ from src.experiments.canonical_federated_surface_optimization_experiment_evidenc
 from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT,
     SCHEMA_VERSION as RETURN_INPUT_SCHEMA_VERSION,
+    SelfLearningOptimizationReturnInputRequestV1,
+    validate_self_learning_optimization_return_input_v1,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
 
@@ -166,18 +170,29 @@ def ingest_meta_learning_evidence_from_return_input_v1(
             meta_evidence=None,
         )
 
-    meta_evidence = build_meta_learning_evidence_from_optimization_experiment_v1(opt_evidence)
+    expected_ack = validate_self_learning_optimization_return_input_v1(
+        SelfLearningOptimizationReturnInputRequestV1(
+            optimization_experiment_evidence=opt_evidence,
+            expected_plane_identity=opt_evidence.get("plane_identity"),
+        )
+    )
+    if ack != expected_ack:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_ACK,
+            reason="RETURN_INPUT_ACK_BINDING_MISMATCH",
+            meta_evidence=None,
+        )
     if request.expected_meta_evidence_schema_version != META_LEARNING_EVIDENCE_SCHEMA_VERSION:
         return _ingest_result(
             status=INGEST_STATUS_REJECTED_STALE,
             reason="META_LEARNING_EVIDENCE_SCHEMA_VERSION_MISMATCH",
-            meta_evidence=meta_evidence,
+            meta_evidence=None,
         )
 
     return _ingest_result(
         status=INGEST_STATUS_COMPLETE,
         reason="META_LEARNING_EVIDENCE_PROJECTED_ONLY",
-        meta_evidence=meta_evidence,
+        meta_evidence=build_meta_learning_evidence_from_optimization_experiment_v1(opt_evidence),
     )
 
 
@@ -359,10 +374,19 @@ def ingest_meta_learning_evidence_from_federated_return_join_v1(
             reason="MISSING_OPTIMIZATION_EXPERIMENT_EVIDENCE",
             meta_evidence=None,
         )
-    try:
-        opt_evidence = validate_federated_projected_optimization_experiment_evidence_v1(
-            request.optimization_experiment_evidence
+    raw = request.optimization_experiment_evidence
+    if (
+        isinstance(raw, Mapping)
+        and "content_hash" in raw
+        and (join.get("optimization_experiment_evidence_digest") != raw["content_hash"])
+    ):
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_OUT_OF_ORDER,
+            reason="JOIN_EVIDENCE_DIGEST_MISMATCH",
+            meta_evidence=None,
         )
+    try:
+        opt_evidence = validate_federated_projected_optimization_experiment_evidence_v1(raw)
     except Exception as exc:
         _LOGGER.debug("federated optimization experiment evidence invalid: %s", exc)
         return _ingest_result(
@@ -371,14 +395,6 @@ def ingest_meta_learning_evidence_from_federated_return_join_v1(
             meta_evidence=None,
         )
 
-    join_digest = join.get("optimization_experiment_evidence_digest")
-    evidence_digest = opt_evidence.get("content_hash")
-    if str(join_digest) != str(evidence_digest):
-        return _ingest_result(
-            status=INGEST_STATUS_REJECTED_OUT_OF_ORDER,
-            reason="JOIN_EVIDENCE_DIGEST_MISMATCH",
-            meta_evidence=None,
-        )
     join_surface = str(join.get("surface_execution_identity") or "")
     evidence_surface = str(opt_evidence.get("surface_execution_identity") or "")
     if join_surface != evidence_surface or not is_valid_sha256_hex(join_surface):
@@ -388,20 +404,31 @@ def ingest_meta_learning_evidence_from_federated_return_join_v1(
             meta_evidence=None,
         )
 
-    meta_evidence = build_meta_learning_evidence_from_federated_optimization_experiment_v1(
-        opt_evidence
+    expected_join = perform_federated_m5_m6_return_join_v1(
+        FederatedM5M6ReturnJoinRequestV1(
+            optimization_experiment_evidence=opt_evidence,
+            expected_surface_execution_identity=evidence_surface,
+        )
     )
+    if join != expected_join:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_ACK,
+            reason="FEDERATED_RETURN_JOIN_BINDING_MISMATCH",
+            meta_evidence=None,
+        )
     if request.expected_meta_evidence_schema_version != META_LEARNING_EVIDENCE_SCHEMA_VERSION:
         return _ingest_result(
             status=INGEST_STATUS_REJECTED_STALE,
             reason="META_LEARNING_EVIDENCE_SCHEMA_VERSION_MISMATCH",
-            meta_evidence=meta_evidence,
+            meta_evidence=None,
         )
 
     return _ingest_result(
         status=INGEST_STATUS_COMPLETE,
         reason="FEDERATED_META_LEARNING_EVIDENCE_PROJECTED_ONLY",
-        meta_evidence=meta_evidence,
+        meta_evidence=build_meta_learning_evidence_from_federated_optimization_experiment_v1(
+            opt_evidence
+        ),
     )
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 import json
 from decimal import Decimal
 from pathlib import Path
@@ -246,8 +247,17 @@ def test_i11_reservation_slot_lane_identity() -> None:
     owner.release_v1(str(r2.reservation.reservation_id), reason=ReleaseReasonV1.PLAN_FAILURE)
 
 
+def _canonical_pair(tmp_path, lane, native, instrument):
+    slot, bound = _pair(tmp_path, lane, native=native)
+    return replace(slot, canonical_instrument_id=instrument), replace(
+        bound, instrument_id=instrument
+    )
+
+
 def test_i12_pre_external_evidence_lineage_per_lane(tmp_path: Path) -> None:
-    pairs = {"LANE_1": _pair(tmp_path, "LANE_1", native="VENUE-A")}
+    native = "ETH-USDT-SWAP"
+    instrument = _cid(_five_ranking(), native)
+    pairs = {"LANE_1": _canonical_pair(tmp_path, "LANE_1", native, instrument)}
     mark = 100.0
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         pairs,
@@ -265,17 +275,17 @@ def test_i12_pre_external_evidence_lineage_per_lane(tmp_path: Path) -> None:
         last_finalized_event_ts_unix=float(PREVIOUS_C1_VENUE_EVENT_TIME),
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
-        candles_payload=_candles(inst_id="VENUE-A", last_ts_ms=int(C1_TS * 1000), close=mark),
+        candles_payload=_candles(inst_id=native, last_ts_ms=int(C1_TS * 1000), close=mark),
         canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id="VENUE-A", mark_px=mark, index_px=99.5
+            venue_native_id=native, mark_px=mark, index_px=99.5
         ),
-        g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "VENUE-A")},
+        g17_typed_vol_producers={"LANE_1": _g17(instrument, native)},
     )
     record = results["LANE_1"]
     ledger = Path(record.evidence_root) / LEDGER_FILENAME
     assert ledger.is_file()
     payload = json.loads(ledger.read_text(encoding="utf-8"))
-    assert payload.get("native_id") == "VENUE-A"
+    assert payload.get("native_id") == native
 
 
 def test_i13_kill_reachable_open_position_not_in_membership(tmp_path: Path) -> None:
@@ -301,11 +311,21 @@ def test_i13_kill_reachable_open_position_not_in_membership(tmp_path: Path) -> N
 
 
 def test_five_lane_e2e_isolation(tmp_path: Path) -> None:
-    pairs = {lane_id: _pair(tmp_path, lane_id, native=f"VENUE-{lane_id}") for lane_id in LANE_IDS}
+    ranking = _five_ranking()
+    natives_by_lane = dict(
+        zip(
+            LANE_IDS,
+            ("ETH-USDT-SWAP", "SOL-USDT-SWAP", "ADA-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"),
+        )
+    )
+    pairs = {
+        lane: _canonical_pair(tmp_path, lane, native, _cid(ranking, native))
+        for lane, native in natives_by_lane.items()
+    }
     mark = 100.0
     by_lane_candles = {
         lane_id: _candles(
-            inst_id=f"VENUE-{lane_id}",
+            inst_id=natives_by_lane[lane_id],
             last_ts_ms=int(C1_TS * 1000),
             close=mark + float(index),
         )
@@ -313,7 +333,7 @@ def test_five_lane_e2e_isolation(tmp_path: Path) -> None:
     }
     by_lane_prov = {
         lane_id: build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id=f"VENUE-{lane_id}",
+            venue_native_id=natives_by_lane[lane_id],
             mark_px=mark + float(index),
             index_px=99.5 + float(index),
         )
@@ -340,7 +360,8 @@ def test_five_lane_e2e_isolation(tmp_path: Path) -> None:
         canonical_price_provenance_by_lane=by_lane_prov,
         occupancy_payloads=_occupancy_absent(),
         g17_typed_vol_producers={
-            lane_id: _g17(f"INST-{lane_id}", f"VENUE-{lane_id}") for lane_id in LANE_IDS
+            lane_id: _g17(pairs[lane_id][1].instrument_id, natives_by_lane[lane_id])
+            for lane_id in LANE_IDS
         },
     )
     assert set(results) == set(LANE_IDS)
@@ -349,5 +370,5 @@ def test_five_lane_e2e_isolation(tmp_path: Path) -> None:
     natives = {record.native_id for record in results.values()}
     assert len(natives) == 5
     for lane_id, record in results.items():
-        assert record.native_id == f"VENUE-{lane_id}"
-        assert record.bound_instrument.instrument_id == f"INST-{lane_id}"
+        assert record.native_id == natives_by_lane[lane_id]
+        assert record.bound_instrument.instrument_id == pairs[lane_id][1].instrument_id

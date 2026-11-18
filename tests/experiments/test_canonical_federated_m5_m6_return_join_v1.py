@@ -277,3 +277,31 @@ def test_m6_federated_optional_expected_version_preserves_full_valid_result() ->
         )
     )
     assert default == optional
+
+
+def test_federated_record_and_join_stay_on_their_semantic_route():
+    from src.experiments.canonical_meta_learning_ingest_v1 import INGEST_STATUS_REJECTED_ACK
+    from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
+        SelfLearningOptimizationReturnInputRequestV1,
+        validate_self_learning_optimization_return_input_v1,
+    )
+    from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
+
+    evidence = _federated_m5()
+    native = validate_self_learning_optimization_return_input_v1(
+        SelfLearningOptimizationReturnInputRequestV1(optimization_experiment_evidence=evidence)
+    )
+    assert native["reason"] == "FEDERATED_EVIDENCE_REQUIRES_FEDERATED_RETURN_JOIN"
+    join = perform_federated_m5_m6_return_join_v1(
+        FederatedM5M6ReturnJoinRequestV1(optimization_experiment_evidence=evidence)
+    )
+    changed = {**join, "return_join_identity": "a" * 64}
+    changed.pop("result_digest")
+    changed["result_digest"] = compute_content_sha256(changed)
+    result = ingest_meta_learning_evidence_from_federated_return_join_v1(
+        FederatedMetaLearningIngestRequestV1(
+            federated_return_join=changed, optimization_experiment_evidence=evidence
+        )
+    )
+    assert result["status"] == INGEST_STATUS_REJECTED_ACK
+    assert result["meta_learning_evidence"] is None

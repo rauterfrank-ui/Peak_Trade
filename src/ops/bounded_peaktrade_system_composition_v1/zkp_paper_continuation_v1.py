@@ -116,6 +116,51 @@ def _scope_frame(cursor, mark):
     return frame
 
 
+def apply_paper_funding_v1(terms, accounting, *, identity, binding_digest, settlement_time):
+    """Validate and apply the original Paper Funding booking to the supplied owner."""
+    position = accounting.position
+    event = terms["event_time_unix"]
+    following = terms["next_funding_unix"]
+    observed = terms["observed_unix"]
+    if (
+        terms["episode_id"] != identity.episode_id
+        or terms["binding_digest"] != binding_digest
+        or terms["instrument_id"] != identity.venue_native_id
+        or terms["currency"] != accounting.contract.quote_currency
+        or event != settlement_time
+        or not all(isfinite(value) for value in (event, following, observed))
+        or not accounting.last_fill_time < event <= observed
+        or following <= event
+        or position is None
+        or terms["position_side"] != position.side.value
+        or Decimal(terms["position_contracts"]) != position.qty
+        or Decimal(terms["contract_size"]) != accounting.contract.contract_size
+    ):
+        raise ValueError("ZKP_PAPER_FUNDING_BOOKING_BINDING_MISMATCH")
+    mark = Decimal(terms["preceding_mark_close_usd"])
+    rate = Decimal(terms["realized_rate"])
+    if not mark.is_finite() or mark <= 0 or not rate.is_finite():
+        raise ValueError("ZKP_PAPER_FUNDING_BOOKING_TERMS_INVALID")
+    direction = 1 if identity.position_side == "long" else -1
+    amount = -direction * position.qty * accounting.contract.contract_size * mark * rate
+    event_id = f"paper-funding:{identity.venue_native_id}:{int(event * 1000)}"
+    applied = accounting.apply_funding_observation_v1(
+        event_id=event_id,
+        amount=str(amount),
+        currency=terms["currency"],
+        instrument_id=identity.venue_native_id,
+        event_time_unix=event,
+    )
+    if applied["idempotent_replay"]:
+        raise ValueError("ZKP_PAPER_FUNDING_DUPLICATE_IN_JOURNAL")
+    return {
+        "terms": terms,
+        "event_id": event_id,
+        "amount_usd": str(amount),
+        "accounting_digest": canonical_digest_v1(applied["portfolio"]),
+    }
+
+
 class ZkpPaperContinuationV1:
     """One writer for the original Paper cursor and its confirmed net fills."""
 
@@ -358,54 +403,18 @@ class ZkpPaperContinuationV1:
         }
         return self.last_receipt
 
-    def _apply_funding(self, terms, accounting):
-        position = accounting.position
-        event = terms["event_time_unix"]
-        following = terms["next_funding_unix"]
-        observed = terms["observed_unix"]
-        if (
-            terms["episode_id"] != self.episode.identity.episode_id
-            or terms["binding_digest"] != self.bound.selection_integrity_digest
-            or terms["instrument_id"] != self.slot.native_id
-            or terms["currency"] != accounting.contract.quote_currency
-            or event != self.funding_time
-            or not all(isfinite(value) for value in (event, following, observed))
-            or not accounting.last_fill_time < event <= observed
-            or following <= event
-            or position is None
-            or terms["position_side"] != position.side.value
-            or Decimal(terms["position_contracts"]) != position.qty
-            or Decimal(terms["contract_size"]) != accounting.contract.contract_size
-        ):
-            raise ValueError("ZKP_PAPER_FUNDING_BOOKING_BINDING_MISMATCH")
-        mark = Decimal(terms["preceding_mark_close_usd"])
-        rate = Decimal(terms["realized_rate"])
-        if not mark.is_finite() or mark <= 0 or not rate.is_finite():
-            raise ValueError("ZKP_PAPER_FUNDING_BOOKING_TERMS_INVALID")
-        direction = 1 if self.episode.identity.position_side == "long" else -1
-        amount = -direction * position.qty * accounting.contract.contract_size * mark * rate
-        event_id = f"paper-funding:{self.slot.native_id}:{int(event * 1000)}"
-        applied = accounting.apply_funding_observation_v1(
-            event_id=event_id,
-            amount=str(amount),
-            currency=terms["currency"],
-            instrument_id=self.slot.native_id,
-            event_time_unix=event,
-        )
-        if applied["idempotent_replay"]:
-            raise ValueError("ZKP_PAPER_FUNDING_DUPLICATE_IN_JOURNAL")
-        return {
-            "terms": terms,
-            "event_id": event_id,
-            "amount_usd": str(amount),
-            "accounting_digest": canonical_digest_v1(applied["portfolio"]),
-        }
-
     def _publish_funding(self, record):
         candidate = ProductiveFuturesAccountingSessionV1.from_durable_dict(
             self.accounting.to_durable_dict()
         )
-        if self._apply_funding(record["terms"], candidate) != record:
+        applied = apply_paper_funding_v1(
+            record["terms"],
+            candidate,
+            identity=self.episode.identity,
+            binding_digest=self.bound.selection_integrity_digest,
+            settlement_time=self.funding_time,
+        )
+        if applied != record:
             raise ValueError("ZKP_PAPER_FUNDING_BOOKING_READBACK_MISMATCH")
         self.accounting = candidate
         self.funding_time = record["terms"]["next_funding_unix"]
@@ -459,7 +468,13 @@ class ZkpPaperContinuationV1:
             candidate = ProductiveFuturesAccountingSessionV1.from_durable_dict(
                 self.accounting.to_durable_dict()
             )
-            record = self._apply_funding(terms, candidate)
+            record = apply_paper_funding_v1(
+                terms,
+                candidate,
+                identity=self.episode.identity,
+                binding_digest=self.bound.selection_integrity_digest,
+                settlement_time=self.funding_time,
+            )
             path = self._funding_path
             immutable_json_v1(path, record)
             self._publish_funding(_read(path))

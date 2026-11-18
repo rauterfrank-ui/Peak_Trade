@@ -225,11 +225,23 @@ und Quellenprüfsummen. Nach dem Readback kann Double Play am selben Cursor
 weiterlaufen. Der Paper-Pfad verwendet ausschließlich öffentliche GETs und
 simuliertes Accounting.
 
-Der Paper-Starter unterstützt außerdem `UP-USD_UM_XPERP-310919` auf `LANE_2`.
-`--slot-config` verlangt dort die exakte UP-Instrumentbindung und das Profil
-`PAPER_EXCHANGE`. Öffnung, Nettobuchung und Wiederanlauf verwenden den eigenen
-Zustand von Slot 2. Der Liquiditätscheck bleibt an die vorgesehenen Kontrakte
-und den aktuellen Markt gebunden.
+Der Paper-Starter unterstützt außerdem `UP-USD_UM_XPERP-310919` auf `LANE_2`
+und `IRYS-USD_UM_XPERP-310530` auf `LANE_4`. `--slot-config` verlangt die
+exakte Kombination aus Lane, kanonischer und nativer Instrument-ID sowie
+`surface = PAPER_EXCHANGE` und `authority = NONE`. Öffnung, Nettobuchung und
+Wiederanlauf verwenden den Zustand der jeweiligen Lane. Der Liquiditätscheck
+bleibt an die vorgesehenen Kontrakte und den aktuellen Markt gebunden.
+
+Am Ende des Paper-Fensters oder beim kontrollierten Stopp versiegelt der
+Starter den Buchungsverlauf mit `MANIFEST.sha256`, sofern ein bestätigter
+Nettofill eine Folgeepisode eröffnet hat. Die Offline-GVEF-Kampagne liest den Originalordner unter
+`paper_runs&#47;<session_id>`. Sie prüft Lane, Sitzung, beide Instrument-IDs,
+Entscheidungs- und Fillzeiten sowie Entscheidung, Funding und Accounting vor
+dem Schreiben des DDO-Lernbelegs. Der Richtungswechsel liefert genau einen
+gemeinsamen Fill mit anteiligen Gebühren, Notional und Slippage für beide
+Positionsepisoden. Nur die durch einen bestätigten Nettofill abgeschlossene
+Episode wird ausgewertet. Der noch offene Nachfolger bleibt im Originalstore.
+Der Research-Schritt braucht weiterhin eigene instrumentgebundene Eingaben.
 
 ### Eigenständiger Shadow-Begleittest für das Selbstlernen
 

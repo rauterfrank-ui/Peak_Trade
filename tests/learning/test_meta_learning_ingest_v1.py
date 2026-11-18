@@ -144,6 +144,22 @@ def test_rejects_missing_accepted_ack(tmp_path: Path) -> None:
     assert result["status"] == INGEST_STATUS_REJECTED_ACK
 
 
+def test_rehashed_native_ack_must_match_original_projection(tmp_path):
+    from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
+
+    evidence, ack = _m5_outputs(tmp_path)
+    changed = {**ack, "optimization_experiment_evidence_record_id": "other-record"}
+    changed.pop("result_digest")
+    changed["result_digest"] = compute_content_sha256(changed)
+    result = ingest_meta_learning_evidence_from_return_input_v1(
+        MetaLearningIngestRequestV1(
+            return_input_ack=changed, optimization_experiment_evidence=evidence
+        )
+    )
+    assert result["status"] == INGEST_STATUS_REJECTED_ACK
+    assert result["meta_learning_evidence"] is None
+
+
 def test_forbidden_learning_state_mutation_request() -> None:
     with pytest.raises(MetaLearningIngestError):
         ingest_meta_learning_evidence_from_return_input_v1(

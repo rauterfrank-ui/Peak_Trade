@@ -263,7 +263,10 @@ def validate_optimization_experiment_evidence_v1(
 ) -> MappingProxyType[str, Any]:
     if not isinstance(payload, Mapping):
         raise CanonicalOptimizationExperimentEvidenceError("EVIDENCE_MUST_BE_MAPPING")
-    if payload.get("schema_version") != SCHEMA_VERSION:
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("domain") != OPTIMIZATION_EXPERIMENT_EVIDENCE_DOMAIN
+    ):
         raise CanonicalOptimizationExperimentEvidenceError("EVIDENCE_SCHEMA_VERSION_MISMATCH")
     if payload.get("universe_class") != UNIVERSE_CLASS_OPTIMIZATION:
         raise CanonicalOptimizationExperimentEvidenceError("UNIVERSE_CLASS_INVALID")
@@ -282,4 +285,18 @@ def validate_optimization_experiment_evidence_v1(
         raise CanonicalOptimizationExperimentEvidenceError("EVIDENCE_SLICES_MISSING")
     if frozenset(slices.keys()) != REQUIRED_EVIDENCE_CLASSES:
         raise CanonicalOptimizationExperimentEvidenceError("EVIDENCE_SLICES_INCOMPLETE")
+    if payload.get("content_hash") != compute_content_sha256(
+        _json_safe({key: value for key, value in payload.items() if key != "content_hash"})
+    ):
+        raise CanonicalOptimizationExperimentEvidenceError("EVIDENCE_CONTENT_HASH_MISMATCH")
+    plane_identity = payload.get("plane_identity")
+    if payload.get("federated_projection") is not True and (
+        not is_valid_sha256_hex(str(plane_identity or ""))
+        or payload.get("source_plane_schema_version") != EXPERIMENT_PLANE_SCHEMA_VERSION
+        or payload.get("record_id")
+        != derive_optimization_experiment_evidence_id_v1(plane_identity=plane_identity)
+    ):
+        raise CanonicalOptimizationExperimentEvidenceError(
+            "NATIVE_PLANE_EVIDENCE_IDENTITY_MISMATCH"
+        )
     return MappingProxyType(dict(payload))

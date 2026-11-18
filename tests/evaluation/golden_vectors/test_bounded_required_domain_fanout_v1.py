@@ -654,3 +654,12 @@ def test_valid_but_unrelated_numeric_packet_cannot_certify_a_replay(tmp_path, do
     validate_numeric_packet_v1(archive, entry.numeric_evidence[0])
     with pytest.raises(EvaluationBindingError, match="JOIN_MISMATCH"):
         require_numeric_context_binding_v1(domain, foreign, entry.numeric_evidence, archive)
+    with pytest.raises(EvaluationBindingError, match="DUPLICATE_NUMERIC_PACKET_REFERENCE"):
+        require_numeric_context_binding_v1(
+            domain, entry.context, entry.numeric_evidence * 2, archive
+        )
+    for other in ("ranking_universe", "productive_trading_path", "optimization_universe"):
+        with pytest.raises(EvaluationBindingError, match="DOMAIN_HAS_NO_NUMERIC_PACKET_CONSUMER"):
+            require_numeric_context_binding_v1(
+                other, inputs[other].context, entry.numeric_evidence, archive
+            )

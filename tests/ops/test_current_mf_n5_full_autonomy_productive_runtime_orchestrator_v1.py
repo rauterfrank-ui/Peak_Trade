@@ -97,6 +97,8 @@ def _run_orchestrator(
     portfolio_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     include_host_completion_rollup: bool = False,
     host_budget_recovery=None,
+    omit_market_input=None,
+    lane2_candles_override=None,
 ) -> object:
     chain = _persist_universe_and_ranking(tmp_path, _five_rows())
     topology_root = tmp_path / "topology"
@@ -145,6 +147,11 @@ def _run_orchestrator(
     }
     if host_budget_recovery is not None:
         cycle["host_budget_recovery"] = host_budget_recovery
+    if omit_market_input is not None:
+        cycle.pop(omit_market_input)
+    if lane2_candles_override is not None:
+        lane2 = cycle["candles_payload_by_lane"]["LANE_2"]
+        cycle["candles_payload_by_lane"]["LANE_2"] = lane2_candles_override(lane2)
     try:
         return run_productive_full_autonomy_n5_runtime_orchestrator_v1(
             membership=membership,
@@ -237,6 +244,41 @@ def test_cardinality_mismatch_fail_closed(tmp_path: Path) -> None:
             target_cardinality=2,
         )
     assert "CARDINALITY" in exc.value.failure_code
+
+
+@pytest.mark.parametrize(
+    "input_name", ["candles_payload_by_lane", "canonical_price_provenance_by_lane"]
+)
+def test_multi_lane_requires_independent_c1_and_mark_index_sources(tmp_path, input_name):
+    with pytest.raises(
+        ProductiveFullAutonomyN5RuntimeOrchestratorError,
+        match=f"N5_ORIGINAL_INPUT_REQUIRED:{input_name}",
+    ):
+        _run_orchestrator(
+            tmp_path,
+            instrument_rows=["SOL-USDT-SWAP", "ETH-USDT-SWAP"],
+            target_cardinality=2,
+            omit_market_input=input_name,
+        )
+
+
+@pytest.mark.parametrize(
+    ("changes", "reason"),
+    [
+        ({"instId": None}, "N5_C1_SOURCE_MISMATCH"),
+        ({"instId": "ADA-USDT-SWAP"}, "N5_C1_SOURCE_MISMATCH"),
+        ({"code": "51001"}, "N5_C1_SOURCE_MISMATCH"),
+        ({"data": []}, "N5_C1_FINALIZED_HISTORY_REQUIRED"),
+    ],
+)
+def test_multi_lane_contract_rejects_invalid_c1_before_readiness(tmp_path, changes, reason):
+    with pytest.raises(ProductiveFullAutonomyN5RuntimeOrchestratorError, match=f"{reason}:LANE_2"):
+        _run_orchestrator(
+            tmp_path,
+            instrument_rows=["SOL-USDT-SWAP", "ETH-USDT-SWAP"],
+            target_cardinality=2,
+            lane2_candles_override=lambda payload: {**payload, **changes},
+        )
 
 
 @pytest.mark.parametrize("target", (3, 5))

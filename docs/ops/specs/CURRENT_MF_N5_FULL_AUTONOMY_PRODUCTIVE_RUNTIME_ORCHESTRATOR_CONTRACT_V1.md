@@ -69,6 +69,54 @@ calls and rejects a readiness result that carries a permit or external effect.
 The declared topology has five lane addresses. The current authority pins
 allow one productive position and keep the five-lane host join disabled.
 
+A multi-lane composition requires identified C1 payloads and bound
+Mark/Index provenance for each selected instrument. Cap24 supplies the
+selected instrument and its Mark sidecar. C1 history and the original Index
+observation come from their own sources. An untagged, empty or failed C1
+response blocks that composition before delivery to Master V2.
+
+The sealed N1 consumer still takes a common bid, ask, volume, open interest
+and funding rate. Multi-lane fixtures can exercise C1 and price identity
+with that interface. Productive multi-lane admission requires instrument-
+and time-bound inputs for those remaining fields to reach each lane's
+market context independently.
+
+Die Instrumentkarten und ihre Prüfergebnisse gehören zum Universum
+**Master V2 Double Play**. Ihr Datenvertrag liegt in
+`src/trading/master_v2/instrument_candidate_cards_v1.py`. Jede Karte und
+jeder Prüfbeleg trägt diese feste Zugehörigkeit im Feld `owner_universe`.
+Die Zugehörigkeit der Karte geht in ihren Inhaltsdigest ein.
+
+Eine zugewiesene Karte übernimmt die vorhandene
+`OccupiedLaneRuntimeInstrumentIdentityV1` mit Slot-ID, beiden
+Instrumenten-IDs, Auswahlbezug und `instrument_epoch`. Das Ranking und
+der bestehende Cap23-/Cap24-Auswahlpfad liefern die Zuordnung.
+Der Offline-Consumer vergleicht die Karte mit den übergebenen
+Slot-/Instrumentpaaren aus dieser Kette, einschließlich Ranking-Snapshot,
+Rankingdigest und Universumsbezug.
+Eine veraltete Bindung oder doppelte Belegung wird beim betroffenen
+Kandidaten abgewiesen. Das Ergebnis führt Slot-ID und Generation weiter.
+Vor einer Slotzuweisung bleibt die Karte nach Instrumenten-ID adressierbar.
+
+Der Offline-Adapter `offline_candidate_cards_v1.py` verarbeitet die Karten
+über den vorhandenen reinen Master-V2-Replay. Er bindet die native und
+kanonische Instrumenten-ID an C1, Geld-/Briefkurs, 24-Stunden-Kontraktvolumen,
+Open Interest in Kontrakten, Fundingrate und Mark-/Index-Provenienz.
+Mess- und Erfassungszeit müssen zum geprüften Informationsstand passen.
+Eine neue Quellenfassung erhält einen neuen Digest und ein neues Prüfergebnis.
+Jeder Kandidat erhält sein eigenes Prüfergebnis. Nach einer Ablehnung werden
+die übrigen Kandidaten weiter geprüft. Master V2 kann auch für vollständig
+gebundene Werte auf keinen Einstieg entscheiden.
+
+Der Offline-Beleg führt Karten-, Marktkontext-, GGE-Eingabe- und
+Entscheidungsdigest. Der GGE-Digest wird ausgewiesen, wenn die im Replay
+erzeugte Scope-Initialisierung zu diesem Kontext gehört und denselben
+Geometriewert konsumiert. Die vorhandenen Tests nutzen synthetische Quellen.
+Der Archivadapter `bind_archived_candidate_captures_v1` liest die vorhandenen
+GET-Receipts mit ihren Originalbytes, prüft deren Hash und bindet ihren Inhalt
+an die Karte. Die automatische Versorgung aus laufenden Paper-/Shadow-Sitzungen
+und die produktive Übergabe der Karten sind noch offen.
+
 Implementation:
 `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`
 
