@@ -1,6 +1,6 @@
 """Actual K1 parse/sign/GET → collector/export, with injected OS and HTTP only."""
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 import io
 import json
 from pathlib import Path
@@ -18,6 +18,9 @@ from src.ops.full_core_live_path_composition_root_v1 import (
 from src.ops.okx_eea_private_account_state_runtime_v1.k1_source_v1 import (
     K1_ACCOUNT_READ_PROFILE,
     open_k1_account_observation_source_v1,
+)
+from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
+    parallel_account_recovery_gets_v1,
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
     read_startup_portfolio_document_v1,
@@ -357,8 +360,9 @@ def test_account_inventory_guard_at_original_budget_host(tmp_path, fault, expect
         "negative-in-use",
     ],
 )
+@pytest.mark.parametrize("parallel_pending_reads", [False, True])
 def test_futures_financial_custody_binds_original_host_inventory_and_local_revision(
-    tmp_path, monkeypatch, fault
+    tmp_path, monkeypatch, fault, parallel_pending_reads
 ):
     from dataclasses import replace
     from datetime import datetime, timezone
@@ -424,15 +428,19 @@ def test_futures_financial_custody_binds_original_host_inventory_and_local_revis
 
     opener.fetch = fetch
     monkeypatch.setattr(wire, "build_opener", lambda *handlers: opener)
-    with open_k1_account_observation_source_v1(
-        expected_account_identity=OWNER_ACCOUNT,
-        session_id="futures-financial-k1",
-        max_request_count=41,
-        k1_lookup_backend=_FakeKeychainBackend(),
-        account_inventory_guard=True,
-        inventory_inst_type="FUTURES",
-        clock=clock,
-    ) as source:
+    with (
+        open_k1_account_observation_source_v1(
+            expected_account_identity=OWNER_ACCOUNT,
+            session_id="futures-financial-k1",
+            max_request_count=41,
+            k1_lookup_backend=_FakeKeychainBackend(),
+            account_inventory_guard=True,
+            inventory_inst_type="FUTURES",
+            parallel_pending_reads=parallel_pending_reads,
+            clock=clock,
+        ) as source,
+        parallel_account_recovery_gets_v1() if parallel_pending_reads else nullcontext(),
+    ):
         host = _host(tmp_path, source, clock=clock, expected_account=OWNER_ACCOUNT)
         try:
             observed = host.observe_v1({"LANE_1": bound})

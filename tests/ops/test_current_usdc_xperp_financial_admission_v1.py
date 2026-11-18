@@ -10,13 +10,17 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from fractions import Fraction
 import json
+from types import SimpleNamespace
 
 import pytest
 
+from src.ops.first_entry_mark_clock_v2 import FirstEntryMarkCycleV2
+from src.ops.full_core_live_path_composition_root_v1 import pretrade_acquisition_v1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     CurrentProductiveEnterLive29PPortfolioSlotContextV1 as Slot,
     join_current_productive_enter_live_29p_before_venue_plan_v1 as join,
 )
+from src.ops.offline_first_entry_start_v2 import bind_first_entry_funding_clock_v2
 from src.ops.portfolio_capital_reservation_budget_v1 import entry_execution_cost_v1 as cost
 from src.ops.portfolio_capital_reservation_budget_v1 import native_initial_margin_v1 as margin
 from src.ops.portfolio_capital_reservation_budget_v1 import absolute_movement_cost_v1 as movement
@@ -390,6 +394,61 @@ def prepare(
         ),
     )
     return host, kwargs, clock
+
+
+@pytest.mark.parametrize(
+    "v2, slot, event_age, get_age, denial",
+    [
+        (True, "LANE_1", 120, 0, ""),
+        (True, "LANE_1", 121, 0, "ACQUISITION_STALE"),
+        (True, "LANE_1", -1, 0, "ACQUISITION_TIME_IN_FUTURE"),
+        (True, "LANE_1", 75, 6, "ACQUISITION_STALE"),
+        (True, "LANE_2", 75, 0, "FUNDING_COST_V2_OKX_USDC_XPERP_LANE_1_REQUIRED"),
+        (False, "LANE_1", 75, 0, "ACQUISITION_STALE"),
+    ],
+)
+def test_v2_funding_event_age_at_original_reservation_owner(
+    tmp_path, monkeypatch, v2, slot, event_age, get_age, denial
+):
+    host, kwargs, clock = prepare(tmp_path, monkeypatch, slot=slot)
+    try:
+        injected = kwargs["injected"]
+        funding = injected.funding_cost_observation
+        source = json.loads(funding.source_json)
+        row = source["payload"]["data"][0]
+        row["ts"] = str(int(row["ts"]) - event_age * 1000)
+        source["body_sha256"] = cost.digest(source["payload"])
+        now = datetime.fromisoformat(clock[0])
+        source["acquired_at_utc"] = (now - timedelta(seconds=get_age)).isoformat()
+        injected = replace(
+            injected,
+            acquisition_decision_id=funding.decision_epoch,
+            acquisition_cycle_id=funding.cycle_id,
+            pretrade_acquired_at_utc=(clock[0],),
+            funding_cost_observation=replace(funding, source_json=cost.canonical(source)),
+        )
+        monkeypatch.setattr(pretrade_acquisition_v1, "utc_now_iso_v1", lambda: clock[0])
+        if v2:
+            entry = FirstEntryMarkCycleV2(
+                now.timestamp(), 0, SimpleNamespace(cycle_id=funding.cycle_id), "ENTRY_DECIDED"
+            )
+            injected = bind_first_entry_funding_clock_v2(
+                entry, kwargs["bound_instrument"], injected
+            )
+        admitted = join(**(kwargs | {"injected": injected}))
+        if denial:
+            assert denial in admitted.reason_codes
+            assert host.owner.stored_reservation_count_v1() == 0
+        else:
+            assert admitted.status == "PASS", admitted.reason_codes
+            assert host.owner.stored_reservation_count_v1() == 1
+            (binding,) = host.owner._sizing_bindings.values()
+            original = binding.funding_cost_binding.to_dict_v1()
+            assert original["observation"]["schema"] == "funding_cost_observation.v2"
+            assert json.loads(original["observation"]["source_json"]) == source
+            assert original["receipt"]["adverse_rate_allowance"] == "0.00375"
+    finally:
+        host.close()
 
 
 @pytest.mark.parametrize("short", [False, True])

@@ -20,6 +20,12 @@ from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 imp
     utc_now_iso_v1,
 )
 
+_FUNDING_OBSERVATION_SCHEMA_V1 = "funding_cost_observation.v1"
+_FUNDING_OBSERVATION_SCHEMA_V2 = "funding_cost_observation.v2"
+# OKX's funding stream publishes on a 30–90 s cadence. Allow 30 s of
+# delivery margin for an X-Perp event, with a separate fresh REST acquisition.
+_OKX_XPERP_FUNDING_EVENT_MAX_AGE_SECONDS = 120
+
 
 def _money(value, *, positive=False):
     if type(value) is not str or not value or value.strip() != value:
@@ -592,6 +598,7 @@ class FundingCostObservationV1:
     cycle_id: str
     source_json: str
     evaluated_at_utc: str
+    okx_xperp_event_clock_v2: bool = False
 
     @classmethod
     def capture_v1(cls, *, bound_instrument, decision_epoch, cycle_id, source, evaluated_at_utc):
@@ -606,17 +613,40 @@ class FundingCostObservationV1:
         )
 
     def to_dict_v1(self):
-        return dict(schema="funding_cost_observation.v1", **asdict(self))
+        raw = asdict(self)
+        v2 = raw.pop("okx_xperp_event_clock_v2")
+        schema = _FUNDING_OBSERVATION_SCHEMA_V2 if v2 else _FUNDING_OBSERVATION_SCHEMA_V1
+        return dict(schema=schema, **raw)
 
     @classmethod
     def from_dict_v1(cls, raw):
+        field_names = {f.name for f in fields(cls)} - {"okx_xperp_event_clock_v2"}
         if (
             type(raw) is not dict
-            or raw.get("schema") != "funding_cost_observation.v1"
-            or set(raw) != {"schema", *(f.name for f in fields(cls))}
+            or raw.get("schema")
+            not in (_FUNDING_OBSERVATION_SCHEMA_V1, _FUNDING_OBSERVATION_SCHEMA_V2)
+            or set(raw) != {"schema", *field_names}
         ):
             raise ValueError("FUNDING_COST_OBSERVATION_SCHEMA_INVALID")
-        return cls(**{k: v for k, v in raw.items() if k != "schema"})
+        return cls(
+            **{k: raw[k] for k in field_names},
+            okx_xperp_event_clock_v2=raw["schema"] == _FUNDING_OBSERVATION_SCHEMA_V2,
+        )
+
+
+def _funding_event_clock_v2(value, acquired, evaluated):
+    if type(value) is not str or not value.isdigit() or int(value) <= 0:
+        raise ValueError("ENTRY_COST_EVENT_TIME_REQUIRED")
+    try:
+        event = datetime.fromtimestamp(int(value) / 1000, timezone.utc)
+    except (OverflowError, ValueError, OSError) as exc:
+        raise ValueError("ENTRY_COST_EVENT_TIME_REQUIRED") from exc
+    for clock in (acquired, evaluated):
+        age = (datetime.fromisoformat(clock.replace("Z", "+00:00")) - event).total_seconds()
+        if age < 0:
+            raise ValueError("ACQUISITION_TIME_IN_FUTURE")
+        if age > _OKX_XPERP_FUNDING_EVENT_MAX_AGE_SECONDS:
+            raise ValueError("ACQUISITION_STALE")
 
 
 def assess_next_funding_cost_v1(
@@ -629,9 +659,14 @@ def assess_next_funding_cost_v1(
     decision,
     evaluated_at_utc=None,
 ):
-    if type(observation) is not FundingCostObservationV1 or any(
-        type(getattr(observation, f.name)) is not str or not getattr(observation, f.name)
-        for f in fields(observation)
+    if (
+        type(observation) is not FundingCostObservationV1
+        or type(observation.okx_xperp_event_clock_v2) is not bool
+        or any(
+            type(value) is not str or not value
+            for key, value in observation.to_dict_v1().items()
+            if key != "schema"
+        )
     ):
         raise ValueError("FUNDING_COST_COMPLETE_TYPED_OBSERVATION_REQUIRED")
     if type(close_binding) is not CloseExecutionCostBindingV1:
@@ -692,7 +727,20 @@ def assess_next_funding_cost_v1(
         or row.get("settState") != "settled"
     ):
         raise ValueError("FUNDING_COST_PRODUCT_OR_SETTLEMENT_STATE_UNPROVEN")
-    _event_clock(row.get("ts"), source.acquired_at_utc, now)
+    if observation.okx_xperp_event_clock_v2:
+        if (
+            closing["slot_id"] != "LANE_1"
+            or not json.loads(observation.bound_instrument_json)["instrument_id"].startswith(
+                "okx_eea:"
+            )
+            or instrument.get("instType") != "FUTURES"
+            or instrument.get("settleCcy") != "USDC"
+            or not re.fullmatch(r"[A-Z0-9]+-USD_UM_XPERP-\d{6}", native)
+        ):
+            raise ValueError("FUNDING_COST_V2_OKX_USDC_XPERP_LANE_1_REQUIRED")
+        _funding_event_clock_v2(row.get("ts"), source.acquired_at_utc, now)
+    else:
+        _event_clock(row.get("ts"), source.acquired_at_utc, now)
     predicted, floor, ceiling = (
         _money(row.get(k)) for k in ("fundingRate", "minFundingRate", "maxFundingRate")
     )
