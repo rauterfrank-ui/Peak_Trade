@@ -1,9 +1,10 @@
 """Prepare or dispatch the occupied N1 V2 Mac service through its scoped GET port."""
 
 import argparse
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import plistlib
 import re
@@ -37,6 +38,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
     inspect_selection_v1,
 )
+from src.ops.managed_filegate_v1 import ROOT_ENV, managed_filegate_configured_v1
 from src.ops.n1_occupied_net_reversal_host_v2 import run_occupied_n1_net_reversal_host_v2
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1 import startup_factory_v1
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1 import (
@@ -73,6 +75,14 @@ def _require_digest(value):
         raise ValueError("N1_MAC_V2_DIGEST_REQUIRED")
 
 
+def _filegate_authority_path(state_path, authority_root):
+    root = _canonical_path(authority_root)
+    projection_root = state_path.parent
+    if root.is_relative_to(projection_root) or projection_root.is_relative_to(root):
+        raise ValueError("N1_MAC_V2_FILEGATE_AUTHORITY_ROOT_OVERLAP")
+    return root
+
+
 @dataclass(frozen=True)
 class OccupiedCheckpoint:
     reservation_id: str
@@ -99,6 +109,7 @@ class MacHostManifestV2:
     checkpoint: OccupiedCheckpoint
     filegate_path: Path
     filegate_revision: str
+    filegate_authority_root: Path | None = None
 
     def prepare_request(self, attempt, evidence):
         return startup_factory_v1.prepare_occupied_n1_request_v1(
@@ -117,22 +128,50 @@ def build_mac_host_manifest_v2(
     checkpoint,
     filegate_path,
     filegate_revision,
+    filegate_authority_root=None,
 ):
     """Build explicitly bound deployment inputs without opening the prepared ports."""
-    data = startup_factory_v1.build_occupied_n1_manifest_v1(
-        host_id=host_id,
-        state_root=state_root,
-        expires_at_unix=expires_at_unix,
-        runtime_config=runtime_config,
-    )
+    state = _canonical_path(state_root)
     checkpoint.validate()
     _require_digest(filegate_revision)
-    data.pop("runtime_factory")
+    projection = _canonical_path(filegate_path)
+    filegate = {"path": str(projection), "revision": filegate_revision}
+    if filegate_authority_root is not None:
+        filegate["authority_root"] = str(
+            _filegate_authority_path(projection, filegate_authority_root)
+        )
+    prepared = startup_factory_v1._prepare_occupied_n1_request(
+        attempt_index=1, evidence_root=state / "attempts/1", runtime_config=runtime_config
+    )
+    # The service will read the projection path from its launchd environment.
+    # Bind the digest to that path while leaving the builder's environment alone.
+    request = prepared.request
+    digest_request = replace(
+        prepared,
+        request={
+            **request,
+            "config": replace(request["config"], kill_switch_state_path=str(projection)),
+        },
+    )
+    authorization = request["authorization"]
+    bounds = UnattendedHostBoundsV1(
+        host_id=host_id,
+        repository_sha=request["origin_main_sha"],
+        runtime_config_digest=unattended_request_digest_v1(digest_request),
+        expires_at_unix=expires_at_unix,
+        max_total_cycles=authorization.max_cycles_per_run,
+        max_total_seconds=authorization.max_run_duration_seconds,
+        wait_interval_seconds=authorization.wait_interval_seconds,
+    )
+    bounds.validate_v1()
     return {
-        **data,
         "schema": SCHEMA,
+        "repository_root": str(REPO),
+        "bounds": asdict(bounds),
+        "state_root": str(state),
+        "runtime_request_config": runtime_config,
         "checkpoint": asdict(checkpoint),
-        "filegate": {"path": str(_canonical_path(filegate_path)), "revision": filegate_revision},
+        "filegate": filegate,
     }
 
 
@@ -180,9 +219,18 @@ def load_mac_host_manifest_v2(path: Path) -> MacHostManifestV2:
         if state_root.is_relative_to(other) or other.is_relative_to(state_root):
             raise ValueError("N1_MAC_V2_STATE_ROOT_OVERLAP:" + name)
     filegate = value["filegate"]
-    if not isinstance(filegate, dict) or set(filegate) != {"path", "revision"}:
+    if not isinstance(filegate, dict) or set(filegate) not in (
+        {"path", "revision"},
+        {"path", "revision", "authority_root"},
+    ):
         raise ValueError("N1_MAC_V2_FILEGATE_BINDING_REQUIRED")
     _require_digest(filegate["revision"])
+    projection = _canonical_path(filegate["path"])
+    authority = (
+        _filegate_authority_path(projection, filegate["authority_root"])
+        if "authority_root" in filegate
+        else None
+    )
     checkpoint = OccupiedCheckpoint(**value["checkpoint"])
     checkpoint.validate()
     return MacHostManifestV2(
@@ -190,9 +238,20 @@ def load_mac_host_manifest_v2(path: Path) -> MacHostManifestV2:
         state_root,
         config,
         checkpoint,
-        _canonical_path(filegate["path"]),
+        projection,
         filegate["revision"],
+        authority,
     )
+
+
+def _manifest_filegate_revision(manifest):
+    authority = manifest.filegate_authority_root
+    if authority is not None:
+        if os.environ.get(ROOT_ENV) != str(authority):
+            return None
+    elif managed_filegate_configured_v1(manifest.filegate_path):
+        return None
+    return _filegate_revision(manifest.filegate_path)
 
 
 def _require_cap24(config, bound, revision, *, now):
@@ -328,7 +387,7 @@ def preflight_mac_host_v2(manifest, *, clock=time.time):
     )
     if not approved or not standing_continuous_run_authorized_v1(repo_root=REPO):
         blocks["owner_go"] = list(reasons or ("N1_MAC_V2_STANDING_POLICY_REQUIRED",))
-    if _filegate_revision(manifest.filegate_path) != manifest.filegate_revision:
+    if _manifest_filegate_revision(manifest) != manifest.filegate_revision:
         blocks["filegate"] = ["N1_MAC_V2_FILEGATE_REVISION_UNPROVEN"]
     ledgers = run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1(
         GovernedF1M9ThresholdConsumerWiringRequestV1(
@@ -381,6 +440,9 @@ def mac_host_service_v2(*, action, manifest_path, output_path=None, clock=time.t
     if action == "prepare":
         if output_path is None:
             raise ValueError("N1_MAC_V2_PLIST_OUTPUT_REQUIRED")
+        environment = {"PEAK_KILL_SWITCH_STATE_PATH": str(manifest.filegate_path)}
+        if manifest.filegate_authority_root is not None:
+            environment[ROOT_ENV] = str(manifest.filegate_authority_root)
         payload = {
             "Label": LABEL,
             "ProgramArguments": [
@@ -395,7 +457,7 @@ def mac_host_service_v2(*, action, manifest_path, output_path=None, clock=time.t
             "RunAtLoad": False,
             "KeepAlive": False,
             "Umask": 0o077,
-            "EnvironmentVariables": {"PEAK_KILL_SWITCH_STATE_PATH": str(manifest.filegate_path)},
+            "EnvironmentVariables": environment,
         }
         with _canonical_path(output_path).open("xb") as target:
             plistlib.dump(payload, target)
@@ -409,7 +471,7 @@ def mac_host_service_v2(*, action, manifest_path, output_path=None, clock=time.t
 
     def prepare_request(attempt, evidence):
         nonlocal first_request
-        if _filegate_revision(manifest.filegate_path) != manifest.filegate_revision:
+        if _manifest_filegate_revision(manifest) != manifest.filegate_revision:
             raise ValueError("N1_MAC_V2_FILEGATE_REVISION_UNPROVEN")
         prepared = manifest.prepare_request(attempt, evidence)
         if first_request:
