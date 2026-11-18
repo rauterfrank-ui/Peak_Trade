@@ -92,6 +92,11 @@
       "sha256": "8eb672a313aa3601ed4843778d5d950c057c92d55ea33627b3cb5574a925e01e"
     },
     {
+      "path": "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+      "before_sha256": "a68d5a7d3b3eb1f096c41c6ac6e9033f6d8cc5197f0a227f6cffc4f978317e41",
+      "sha256": "efc3a5f485d93573a1aa55332ff6fb782103138acc1601bc6138258b0db2808d"
+    },
+    {
       "path": "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
       "before_sha256": "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
       "sha256": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f"
@@ -1314,7 +1319,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "40b0578c65e5a1f9c4f3ca84bc1e90b42c4ba5bafe388871197b6b303e867881"
+      "sha256": "c82aeabe33b4fff72fc68504f2f2a18ae157b8800276e0aca1f447141cfe8b6b"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1334,7 +1339,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "f6f9fc59832e52c49883f664a47f8b9827bda6da670823f5a3eb8c5f5f519ead"
+      "sha256": "9f456442a3b052e56b2fecc86d1c1ed3c3a3aa36a4bf006740c26d95fd5346ff"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",

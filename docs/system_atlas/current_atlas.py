@@ -209,6 +209,7 @@ WALLCLOCK_DURATION_CONFIG_DELTA = {
     "config/ops/canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1.toml": "be7be51d93c921a315c7bc981b90c9686b6a245a47d6408cb659b5d31a0c7796",
 }
 OWNER_ADJUDICATION_CONFIG_DELTA = {
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json": "efc3a5f485d93573a1aa55332ff6fb782103138acc1601bc6138258b0db2808d",
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
 }
 CAP23_SELECTION_VALIDITY_CONFIG = "config/ops/single_selected_future_policy_v1.toml"
