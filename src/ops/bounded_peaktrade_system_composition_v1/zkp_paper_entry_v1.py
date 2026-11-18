@@ -51,6 +51,7 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     immutable_json_v1,
 )
 from src.ops.offline_first_entry_position_v2 import publish_confirmed_first_entry_c1_v2
+from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
 from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
     classify_live_best_bid_ask_freshness_v1,
     classify_live_mark_price_freshness_v1,
@@ -436,12 +437,19 @@ class ZkpPaperEntryV1:
         ):
             raise ValueError("ZKP_PAPER_INTENT_SCOPE_OR_AUTHORITY_VIOLATION")
 
-        liquidity = market.assess_quantity_v1(side=fill_side, quantity=intent.quantity)
+        budget_assessment = assess_instrument_budget_v1(
+            market=market,
+            available_usdc=max(_ZERO, min(cap, equity)) / market.usd_per_usdc,
+            side=fill_side,
+            quantity_contracts=intent.quantity,
+        )
+        liquidity = budget_assessment["liquidity"]
         result = {
             "status": "BLOCKED",
             "decision_id": parent.decision_id,
             "intent": canonical_order_intent_to_semantic_dict(intent),
             "liquidity": liquidity,
+            "budget_assessment": budget_assessment,
             "reason_codes": liquidity["reason_codes"],
         }
         if not liquidity["risk_admitted"]:
@@ -548,6 +556,8 @@ class ZkpPaperEntryV1:
             "fill": fill.to_dict(),
             "c1_publication": publication,
             "opening_plan_digest": canonical_digest_v1(opening),
+            "budget_assessment": opening["budget_assessment"],
+            "costs": opening["costs"],
             "orders_sent": 0,
             "permits_created": 0,
         }
