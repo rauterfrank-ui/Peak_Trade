@@ -77,3 +77,48 @@ Envelope-Digest gebunden sein. Nach unklarem Sendestatus müssen
 `clOrdId` und Envelope-Digest über die vollständige Reconciliation bis zur
 einmaligen Buchung und zum Restore derselben Position verfolgt werden. Bis zur
 Klärung bleibt die ursprüngliche Reservierung gebunden.
+
+## Begrenztes Arbeitspaket für die Startvoraussetzungen
+
+Der separate Startbericht prüft die drei offenen Punkte des Mac-Abgleichs.
+Er verwendet die bestehende V2-Recovery und ihre Originaldateien. Alle Prüfungen
+laufen lesend. Ein Ergebnis ohne Blocker belegt die geprüften Eingaben.
+Betriebsfreigabe und Dienststart sind eigene Schritte.
+
+```sh
+./scripts/pt -B -m scripts.ops.check_brev_v2_operating_point --start-readiness
+./scripts/pt -B -m scripts.ops.check_brev_v2_operating_point --start-readiness \
+  --manifest /absoluter/pfad/zum/privaten-v2-manifest.json
+```
+
+### Slice 1 – Originalepisode
+
+Der [WAIT-Prüfer](../../../scripts/ops/run_offline_occupied_brev_with_cap24_v1.py)
+gleicht Konto, ursprüngliche SQLite-Datei, Budgetrevision, aktive Reservierung
+und Cursor für BREV auf `LANE_1` unabhängig von Cap24 ab. Am 17. November 2026
+zeigten die gespeicherten OKX-Antworten ein flaches Konto. Der isolierte lokale
+Store enthielt 25 USDC Startzuteilung, keine Reservierung und keinen BREV-Fill.
+Der zugehörige Cursor stand auf `long_armed_neutral_start`. Für den
+Wiederanlauf sind der Original-WAIT und seine unveränderten Eingaben nötig.
+Bei einem weiterhin flachen Konto braucht der vorgelagerte produktive
+Ersteinstieg eine eigene Freigabe und einen bestätigten Fill.
+
+### Slice 2 – Owner-GO und Filegate
+
+Der Bericht prüft Owner-GO für das lokale `origin/main`, die Standing Policy,
+den kanonischen Filegate-Zustand im aktuellen Kontext und den F1/M9-Consumer.
+Das funktioniert auch bei fehlendem Manifest. Beim Mac-Abgleich für
+`d93b16197` scheiterte Owner-GO an
+`BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT`. Filegate war unbelegt. F1/M9 meldete
+`CONTINUATION_COMPLETE`. Der zuständige Owner muss den tatsächlichen
+Betriebsstand freigeben. Der Betreiber muss den kanonischen Filegate-Zustand
+für denselben Host bereitstellen und im Manifest binden.
+
+### Slice 3 – Cap24 und Mac-Manifest
+
+Der Bericht prüft Manifestmodus, Revisionen, Laufzeitfenster und die separat
+gebundene Cap24-Publikation. Die gespeicherte BREV-Auswahl vom 17. November 2026
+war bis 15:57:49 MEZ gültig. Der Betreiber braucht eine frische Publikation
+für BREV und ein gültiges privates Manifest für denselben Betriebspunkt.
+Ein Offline-Manifest bleibt im Bericht als Testpfad gekennzeichnet.
+Exitcode 75 bedeutet, dass mindestens eine Startvoraussetzung offen ist.

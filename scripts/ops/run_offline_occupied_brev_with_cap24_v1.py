@@ -63,6 +63,24 @@ def _read(path):
 
 
 @dataclass(frozen=True)
+class BrevOccupiedWaitV1:
+    lock_path: Path
+    attempt: int
+    checkpoint: Path
+    checkpoint_sha256: str
+    binding: str
+    deadline: float | None
+    confirmation: dict
+
+
+@dataclass(frozen=True)
+class BrevCap24PublicationV1:
+    path: Path
+    valid_until: str
+    confirmation: dict
+
+
+@dataclass(frozen=True)
 class BrevCap24WaitV1:
     publication: Path
     lock_path: Path
@@ -75,34 +93,41 @@ class BrevCap24WaitV1:
     confirmation: dict
 
 
-def inspect_occupied_brev_cap24_v1(
+def _prepare_brev_request(root, runtime_config):
+    _require(root.resolve() == root and root.is_dir(), "BREV_CAP24_REPLAY_ROOT_REQUIRED")
+    prepared = _prepare_occupied_n1_request(
+        attempt_index=1, evidence_root=root / "occupied-n1-v2", runtime_config=runtime_config
+    )
+    _require(
+        prepared.request["bound"].venue_native_id == _NATIVE,
+        "BREV_CAP24_OCCUPIED_INSTRUMENT_REQUIRED",
+    )
+    return prepared
+
+
+def _check_cap24_reference(cap24_root, repository_sha, publication_sha256):
+    _require(
+        cap24_root.resolve() == cap24_root
+        and re.fullmatch(r"[0-9a-f]{40}", repository_sha)
+        and re.fullmatch(r"[0-9a-f]{64}", publication_sha256),
+        "BREV_CAP24_EXPLICIT_PUBLICATION_REQUIRED",
+    )
+
+
+def inspect_brev_cap24_publication_v1(
     *,
-    sandbox_root: Path,
-    runtime_config: dict,
+    original_productivity_root: Path,
+    instrument_id: str,
     cap24_productivity_root: Path,
     cap24_repository_sha: str,
     cap24_publication_sha256: str,
     replay_clock=time.time,
-) -> BrevCap24WaitV1:
-    """Verify the original WAIT and current Cap24 publication without opening ports."""
-    root = Path(sandbox_root)
+) -> BrevCap24PublicationV1:
+    """Read the separate, current Cap24 publication without requiring a WAIT."""
     cap24_root = Path(cap24_productivity_root)
-    _require(root.resolve() == root and root.is_dir(), "BREV_CAP24_REPLAY_ROOT_REQUIRED")
+    _check_cap24_reference(cap24_root, cap24_repository_sha, cap24_publication_sha256)
     _require(
-        cap24_root.resolve() == cap24_root
-        and re.fullmatch(r"[0-9a-f]{40}", cap24_repository_sha)
-        and re.fullmatch(r"[0-9a-f]{64}", cap24_publication_sha256),
-        "BREV_CAP24_EXPLICIT_PUBLICATION_REQUIRED",
-    )
-    state_root = root / "occupied-n1-v2"
-    prepared = _prepare_occupied_n1_request(
-        attempt_index=1, evidence_root=state_root, runtime_config=runtime_config
-    )
-    request = prepared.request
-    config, bound = request["config"], request["bound"]
-    _require(bound.venue_native_id == _NATIVE, "BREV_CAP24_OCCUPIED_INSTRUMENT_REQUIRED")
-    _require(
-        cap24_root != config.cap24_productivity_root,
+        cap24_root != original_productivity_root,
         "BREV_CAP24_SEPARATE_PUBLICATION_REQUIRED",
     )
     publication = cap24_root / CAP24_PUBLISH_MANIFEST_FILENAME
@@ -121,10 +146,25 @@ def inspect_occupied_brev_cap24_v1(
         binding_epoch=binding_epoch,
     ).selection
     _require(
-        (fresh.instrument_id, fresh.venue_native_id) == (bound.instrument_id, _NATIVE),
+        (fresh.instrument_id, fresh.venue_native_id) == (instrument_id, _NATIVE),
         "BREV_CAP24_FOREIGN_INSTRUMENT",
     )
+    return BrevCap24PublicationV1(
+        path=publication,
+        valid_until=fresh.valid_until,
+        confirmation={
+            "repository_sha": cap24_repository_sha,
+            "publication_sha256": publication_digest,
+            "binding_epoch": binding_epoch,
+            "selection_id": fresh.selection_id,
+        },
+    )
 
+
+def _inspect_original_wait(root, prepared):
+    state_root = root / "occupied-n1-v2"
+    request = prepared.request
+    config, bound = request["config"], request["bound"]
     lock_path = config.lock_root / LOCK_NAME
     cursor_root = config.lane_state_root / _LANE
     budget_root = budget_owner_root_for_config_v1(config) / "owner"
@@ -176,20 +216,14 @@ def inspect_occupied_brev_cap24_v1(
         "BREV_CAP24_ORIGINAL_WAIT_UNPROVEN",
     )
 
-    return BrevCap24WaitV1(
-        publication=publication,
+    return BrevOccupiedWaitV1(
         lock_path=lock_path,
         attempt=attempt,
         checkpoint=checkpoint_path,
         checkpoint_sha256=checkpoint_digest,
         binding=binding,
         deadline=context.get("deadline"),
-        valid_until=fresh.valid_until,
         confirmation={
-            "repository_sha": cap24_repository_sha,
-            "publication_sha256": publication_digest,
-            "binding_epoch": binding_epoch,
-            "selection_id": fresh.selection_id,
             "occupied_selection_id": bound.selection_id,
             "occupied_checkpoint_sha256": checkpoint_digest,
             "occupied_store_identity": store_identity,
@@ -197,6 +231,48 @@ def inspect_occupied_brev_cap24_v1(
             "occupied_reservation_id": position["reservation_id"],
             "occupied_cursor_sha256": wait["cursor_sha256"],
         },
+    )
+
+
+def inspect_occupied_brev_wait_v1(
+    *, sandbox_root: Path, runtime_config: dict
+) -> BrevOccupiedWaitV1:
+    """Read the original WAIT even when a current Cap24 publication is unavailable."""
+    root = Path(sandbox_root)
+    return _inspect_original_wait(root, _prepare_brev_request(root, runtime_config))
+
+
+def inspect_occupied_brev_cap24_v1(
+    *,
+    sandbox_root: Path,
+    runtime_config: dict,
+    cap24_productivity_root: Path,
+    cap24_repository_sha: str,
+    cap24_publication_sha256: str,
+    replay_clock=time.time,
+) -> BrevCap24WaitV1:
+    """Verify the original WAIT and current Cap24 publication without opening ports."""
+    root = Path(sandbox_root)
+    prepared = _prepare_brev_request(root, runtime_config)
+    cap24 = inspect_brev_cap24_publication_v1(
+        original_productivity_root=prepared.request["config"].cap24_productivity_root,
+        instrument_id=prepared.request["bound"].instrument_id,
+        cap24_productivity_root=cap24_productivity_root,
+        cap24_repository_sha=cap24_repository_sha,
+        cap24_publication_sha256=cap24_publication_sha256,
+        replay_clock=replay_clock,
+    )
+    wait = _inspect_original_wait(root, prepared)
+    return BrevCap24WaitV1(
+        publication=cap24.path,
+        lock_path=wait.lock_path,
+        attempt=wait.attempt,
+        checkpoint=wait.checkpoint,
+        checkpoint_sha256=wait.checkpoint_sha256,
+        binding=wait.binding,
+        deadline=wait.deadline,
+        valid_until=cap24.valid_until,
+        confirmation={**cap24.confirmation, **wait.confirmation},
     )
 
 

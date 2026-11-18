@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import plistlib
 import time
+from types import SimpleNamespace
 
 import pytest
 
@@ -129,6 +130,76 @@ def test_package_exposes_independent_operating_restart_and_post_blockers(
     assert "MAC_SERVICE_START_AND_RESTART_UNPROVEN" in slices["restart"]["blockers"]
     assert "POST_ISSUER_AND_STORE_UNBOUND" in slices["post"]["blockers"]
     assert "V2_POST_PORT_NOT_CONNECTED" in slices["post"]["blockers"]
+    assert not (path.parent / "occupied-n1-v2").exists()
+
+
+def test_start_readiness_checks_governance_without_a_manifest(capsys, monkeypatch):
+    monkeypatch.setattr(inspection.subprocess, "check_output", lambda *_, **__: "1" * 40)
+    monkeypatch.setattr(service, "_require_checkout", lambda revision: None)
+    monkeypatch.setattr(
+        service,
+        "validate_bounded_continuous_run_owner_go_decision_v1",
+        lambda **_: (False, ("BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT",)),
+    )
+    monkeypatch.setattr(service, "standing_continuous_run_authorized_v1", lambda **_: True)
+    monkeypatch.setattr(service, "_filegate_revision", lambda _: "UNCONFIGURED")
+    monkeypatch.setattr(inspection, "_inspect_f1_m9", lambda _: None)
+
+    assert inspection.main(["--start-readiness"]) == 75
+    report = json.loads(capsys.readouterr().out)
+    assert report["runtime_authorization_effect"] == "NONE"
+    assert report["slices"] == {
+        "original_episode": {"blockers": ["ORIGINAL_BREV_WAIT_INPUT_REQUIRED"]},
+        "owner_go_and_filegate": {
+            "target_revision": "1" * 40,
+            "blockers": [
+                "BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT",
+                "CANONICAL_FILEGATE_UNPROVEN",
+            ],
+        },
+        "cap24_and_manifest": {
+            "blockers": ["V2_MANIFEST_REQUIRED", "CAP24_PUBLICATION_INPUT_REQUIRED"],
+        },
+    }
+
+
+def test_start_readiness_reports_original_wait_even_when_cap24_is_stale(manifest, monkeypatch):
+    path, value = manifest
+    config = value["runtime_request_config"]
+    config["bound"]["instrument_id"] = "BREV-canonical"
+    config["roots"] = {"cap24_productivity_root": str(path.parent / "original-cap24")}
+    path.write_text(json.dumps(value))
+    monkeypatch.setattr(inspection, "_inspect_start_governance", lambda *_: value["checkout_sha"])
+    monkeypatch.setattr(
+        inspection,
+        "inspect_occupied_brev_wait_v1",
+        lambda **_: SimpleNamespace(
+            binding=value["bounds"]["runtime_config_digest"],
+            deadline=time.time() + 120,
+            checkpoint_sha256="verified-checkpoint",
+            confirmation={"occupied_cursor_sha256": "verified-cursor"},
+        ),
+    )
+
+    def stale_publication(**kwargs):
+        assert kwargs["original_productivity_root"] == path.parent / "original-cap24"
+        assert kwargs["instrument_id"] == "BREV-canonical"
+        raise inspection.CurrentProductive29PCap24ProvenanceHandoffError(
+            "SELECTION_STALE_FOR_BINDING_EPOCH"
+        )
+
+    monkeypatch.setattr(inspection, "inspect_brev_cap24_publication_v1", stale_publication)
+    monkeypatch.setattr(service, "_run", lambda *_: pytest.fail("inspection entered the runtime"))
+    slices = inspection.inspect_start_inputs(path)["slices"]
+    assert slices["original_episode"] == {
+        "blockers": [],
+        "checkpoint_sha256": "verified-checkpoint",
+        "cursor_sha256": "verified-cursor",
+    }
+    assert slices["cap24_and_manifest"]["blockers"] == [
+        "OFFLINE_REPLAY_TEST_ONLY",
+        "SELECTION_STALE_FOR_BINDING_EPOCH",
+    ]
     assert not (path.parent / "occupied-n1-v2").exists()
 
 
