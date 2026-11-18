@@ -44,7 +44,7 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
 )
 from trading.master_v2.integrated_offline_replay_evidence_writer_v1 import _jsonable
-from trading.master_v2.instrument_candidate_cards_v1 import (
+from src.ops.master_v2_double_play_instrument_cards_v1 import (
     OfflineInstrumentCandidateCardV1,
     OfflineInstrumentCandidateReviewV1,
 )

@@ -964,7 +964,7 @@
     {
       "path": "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md",
       "before_sha256": "17ea55cb74fbca66e06b3194de9d6ba35dc7dce4dfe39af565bd57bd9799a997",
-      "sha256": "4db15b5c8a52ead9eae7cc526e76c84efe8dab82a3e656b6fea85c732c06ad6b"
+      "sha256": "e5b3c21c66773efc42812a380c0f68e88e6811e488d2589cf10cc60f3eefa97f"
     },
     {
       "path": "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md",
@@ -2394,7 +2394,7 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/offline_candidate_cards_v1.py",
       "before_sha256": null,
-      "sha256": "2877b18407ff4707cf381ba479cdb746791c3d116e4a7d59b19a94e7db5e5a33"
+      "sha256": "ecbdab42b39df6ff84c0b422401a65f285fb63eaa000cd344eab4c8a1ba3f26e"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
@@ -3087,6 +3087,11 @@
       "sha256": "29d030666d21d3ceb44ec36595ecc21b596932f3db477a6ccf0e3ec12c3f9fb9"
     },
     {
+      "path": "src/ops/master_v2_double_play_instrument_cards_v1.py",
+      "before_sha256": null,
+      "sha256": "3161d6390f13d03ef04e126717aa1572f73cbea0583ef8bd3888d4ee9b5344cf"
+    },
+    {
       "path": "src/ops/mf_membership_context_artifact_contract_v1.py",
       "before_sha256": "8dda221cd46158140531e0a1cebce689ffe135ee821975fb5d712bf5380ef2be",
       "sha256": "c813cae3d80dae5338c3bf4a96fe025265dcf0c3b696eb08bce5f8ad6bd6aca8"
@@ -3595,11 +3600,6 @@
       "path": "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
       "before_sha256": "ac4ef2dacee28101b5c5f324836390c34b8e7d4a6682e44f61933f131fb09c2f",
       "sha256": "9ad4fc09e61e38375c635042c5f8e0fc238e257ee8eb945714553f359b20e81c"
-    },
-    {
-      "path": "src/trading/master_v2/instrument_candidate_cards_v1.py",
-      "before_sha256": null,
-      "sha256": "3161d6390f13d03ef04e126717aa1572f73cbea0583ef8bd3888d4ee9b5344cf"
     },
     {
       "path": "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
@@ -4949,7 +4949,7 @@
     {
       "path": "tests/ops/test_offline_instrument_candidate_cards_v1.py",
       "before_sha256": null,
-      "sha256": "3a6b7e3a93c726878921c2911ffbea506b26c68827a6b893d03674464f39e621"
+      "sha256": "2f2e8161669607b07f68ba15d5afd8b411e4df9699010afc435a837c8021149c"
     },
     {
       "path": "tests/ops/test_offline_public_feed_account_reconciliation_v1.py",

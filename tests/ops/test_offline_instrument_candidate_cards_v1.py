@@ -16,7 +16,7 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.offl
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     FreshPretradeGetTransportResultV1,
 )
-from trading.master_v2.instrument_candidate_cards_v1 import OfflineInstrumentCandidateCardV1
+from src.ops.master_v2_double_play_instrument_cards_v1 import OfflineInstrumentCandidateCardV1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     build_explicit_test_fixture_price_provenance_v1,
 )

@@ -83,7 +83,7 @@ market context independently.
 
 Die Instrumentkarten und ihre Prüfergebnisse gehören zum Universum
 **Master V2 Double Play**. Ihr Datenvertrag liegt in
-`src/trading/master_v2/instrument_candidate_cards_v1.py`. Jede Karte und
+`src/ops/master_v2_double_play_instrument_cards_v1.py`. Jede Karte und
 jeder Prüfbeleg trägt diese feste Zugehörigkeit im Feld `owner_universe`.
 Die Zugehörigkeit der Karte geht in ihren Inhaltsdigest ein.
 
