@@ -89,6 +89,36 @@ Ereignis-/Kenntniszeit und tatsächlicher Consumer werden je Pfad gebunden;
 ein gemeinsamer Feed wird nicht vorausgesetzt. Öffentliche Fundingraten sind
 keine privaten Bills und keine bereits gebuchte Zahlung.
 
+## ZKP-Prüfstand vom 18. November 2026
+
+Der Stand bezieht sich auf `a92500f15` und
+`ZKP-USD_UM_XPERP-310905` auf `LANE_1`.
+
+- **Lokale Startzuteilung.** Ein signierter Kontoabgleich bestätigte einen
+  flachen Ausgangszustand. Der neue Originalstore speichert die bestätigten
+  25 USDC als Startzuteilung. Ein zweiter Prozess bestätigte Revision 1 und
+  die Cap24-Bindung. Der entscheidungsgebundene 29P-Kapitalnachweis steht aus.
+  Der Store enthält null Reservierungen und null Ausführungslinks.
+- **Ersteinstieg im Teststore.** Ein separater Lauf mit frischen Markt- und
+  Konto-GETs erreichte `PRE_EXTERNAL_EFFECT`. Der unabhängige Readback bestätigte
+  Entscheidung, Cursor und Orderhülle im Zustand `PLAN_BOUND`. Der Lauf erzeugte
+  null Orders und null Permits.
+- **Sperrzustand.** N1 ist aus. Der vorbereitete Filegate-Zustand steht auf
+  `KILLED`. Die verwaltete Provisionierung wartet auf die bestätigten
+  öffentlichen Schlüssel für `ISSUER`, `ACCOUNT`, `CAUSE` und `HOST`.
+  Beide V1-Siegel bestanden.
+- **Offene Abnahme.** Für diese ZKP-V2-Kette ist ein dreitägiger
+  Shadow- oder Paper-Lauf offen. Dieser Prüfstand enthält auch keinen
+  Testnet-Nachweis. Er dokumentiert die Befunde zum 18. November und erteilt
+  keine Betriebsfreigabe.
+
+Paper kann die Slotbelegung mit simulierten Fills im eigenen Teststore
+prüfen. Die Prüfung umfasst die gespeicherte Bindung, Reservierung und den
+Readback nach Wiederanlauf. Shadow belegt Entscheidungen anhand zugelassener
+Marktdaten. Für einen Beleg der persistenten Slotbelegung braucht auch der
+Shadow-Pfad simulierte Fills und den Anschluss an diese State-Consumer.
+Der vorbereitete Originalstore bleibt während solcher Tests gesperrt.
+
 ## Vorsorge bis zur nächsten Fundingabrechnung
 
 Die ausdrückliche [nachfolgende Testpolicy](BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json)
