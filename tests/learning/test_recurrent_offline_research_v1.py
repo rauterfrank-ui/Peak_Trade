@@ -8,9 +8,16 @@ from pathlib import Path
 import pytest
 
 from scripts.ops import run_recurrent_offline_research_v1 as campaign_ops
+from scripts.ops.btc_demo_entry_learning_handoff_v1 import btc_demo_entry_learning_handoff_v1
 from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
 from src.experiments.canonical_research_prepared_execution_v1 import read_v1
+from src.experiments.offline_ddo_research_cycle_v1 import run_offline_testnet_ddo_research_cycle_v1
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from tests.learning.test_learning_current_decision_contract_realignment_v1 import (
+    _resolve_enter_long_binding,
+)
 from tests.learning.test_offline_ddo_research_cycle_v1 import native_research_fixture
+from tests.trading.master_v2 import test_double_play_entry_exit_policy_v0 as policy_inputs
 
 
 def test_tick_latches_dataset_excludes_open_paper_and_skips_completed_source(tmp_path, monkeypatch):
@@ -151,3 +158,107 @@ def test_campaign_history_only_uses_completed_jobs_known_at_search(tmp_path):
         )
     history = campaign_ops._history(workspace, "instrument", "strategy", "1", now)
     assert [row["learning_digest"] for row in history] == ["a"]
+
+
+def test_slot_scope_rejects_crosswired_sources_and_end_boundary():
+    slot = campaign_ops.ResearchSlotScopeV1(
+        lane_id="LANE_3",
+        surface="TESTNET",
+        session_id="btc-demo-unit",
+        instrument_id="canonical-btc",
+        venue_native_id="BTC-USD_UM_XPERP-310328",
+        starts_at="2026-11-18T14:30:00+01:00",
+        ends_at="2026-11-18T16:30:00+01:00",
+    )
+    valid = dict(
+        session_id="btc-demo-unit",
+        instrument_id="canonical-btc",
+        venue_native_id="BTC-USD_UM_XPERP-310328",
+        decision_time="2026-11-18T13:30:00Z",
+    )
+    slot.require_source(**valid)
+    for key, value in (
+        ("session_id", "other-session"),
+        ("instrument_id", "canonical-irys"),
+        ("venue_native_id", "BTC-USDT-SWAP"),
+        ("decision_time", "2026-11-18T15:30:00Z"),
+    ):
+        with pytest.raises(ValueError, match="RESEARCH_SLOT_SOURCE_SCOPE_MISMATCH"):
+            slot.require_source(**{**valid, key: value})
+
+
+def test_demo_decision_join_reaches_isolated_gvef_and_replays_once(tmp_path, monkeypatch):
+    instrument = "okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310328"
+    monkeypatch.setattr(policy_inputs, "_INSTRUMENT", instrument)
+    capture, decision_ref, dp = _resolve_enter_long_binding()
+    root = tmp_path.resolve()
+    source = root / "decision-source.jsonl"
+    ledger = AppendOnlyDdoLedgerV0(source)
+    for row in capture.captured_records:
+        ledger.append(row)
+    decision = ledger.get(decision_ref)
+    measurement = {
+        "authority": "NONE",
+        "execution_environment": "TESTNET",
+        "lane_id": "LANE_3",
+        "session_id": "demo-fixture",
+        "episode_id": "b" * 64,
+        "instrument_id": instrument,
+        "venue_native_id": "BTC-USD_UM_XPERP-310328",
+        "decision_id": dp.policy_decision_id,
+        "decision_outcome": "ENTER_LONG",
+        "config_digest": decision["config_hash"],
+        "source_digest": "d" * 64,
+        "envelope_created_utc": "2026-09-05T12:00:01Z",
+        "confirmed_at_utc": "2026-09-05T12:00:03Z",
+        "opening_fill": {"filled_quantity": "0.0001", "fees": []},
+    }
+    output = root / "lane3"
+    before = source.read_bytes()
+    with pytest.raises(ValueError, match="ORIGINAL_DOUBLE_PLAY_DECISION_MISMATCH"):
+        btc_demo_entry_learning_handoff_v1(
+            decision_ledger=source,
+            output_root=output,
+            measurement={**measurement, "instrument_id": "foreign-instrument"},
+        )
+    assert not output.exists()
+    handoff = btc_demo_entry_learning_handoff_v1(
+        decision_ledger=source,
+        output_root=output,
+        measurement=measurement,
+    )
+    assert handoff == btc_demo_entry_learning_handoff_v1(
+        decision_ledger=source,
+        output_root=output,
+        measurement=measurement,
+    )
+    assert source.read_bytes() == before
+    evidence = handoff["learning_evidence"]
+    assert evidence["outcome_semantic_class"] == "TESTNET_VENUE_EVIDENCE"
+    assert evidence["outcome_evidence_provenance"]["fill_source_type"] == "VENUE_TESTNET"
+    bars, cfg, request = native_research_fixture(instrument, evidence["content_hash"])
+    times = {
+        key: (datetime(2026, 9, 5, 13, tzinfo=timezone.utc) + timedelta(minutes=index))
+        .isoformat()
+        .replace("+00:00", "Z")
+        for index, key in enumerate(type(request.times).model_fields)
+    }
+    request = type(request).model_validate(
+        {
+            **request.model_dump(mode="json"),
+            "observed_surface": "TESTNET",
+            "gap_dimensions": [],
+            "times": times,
+        }
+    )
+    result = run_offline_testnet_ddo_research_cycle_v1(
+        output,
+        "demo-offline",
+        handoff=handoff,
+        request=request,
+        bars=bars,
+        cfg=cfg,
+        code=CanonicalCodeProvenanceV1("b" * 40, "CLEAN"),
+    )
+    assert result["status"] == "MECHANISM_PASS", result
+    assert result["evaluation"]["economic_status"] == "BLOCKED"

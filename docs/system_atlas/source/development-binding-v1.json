@@ -1502,6 +1502,11 @@
       "sha256": null
     },
     {
+      "path": "scripts/ops/btc_demo_entry_learning_handoff_v1.py",
+      "before_sha256": null,
+      "sha256": "7965156e9bef51558c3da291d89557d643ebe80e4580b70bd181a753d64e5229"
+    },
+    {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
       "sha256": "de2d21de9fd6227247527a236bd8ebad420e74e2b19287a19dc23e6140939ec3"
@@ -1609,7 +1614,7 @@
     {
       "path": "scripts/ops/paper_episode_learning_handoff_v1.py",
       "before_sha256": null,
-      "sha256": "a0f2081edd44118d67ce6cec143ae30ca70767ba92624f4edbe1ac73654efb1b"
+      "sha256": "fb43d03a1267b82335771ff8deed2f10780b8d86ab4495b79e7e95a4f50c6a35"
     },
     {
       "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
@@ -1834,7 +1839,7 @@
     {
       "path": "scripts/ops/run_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "ef08beeecef79acee4a549cd71ce864b70628b4954183fcefc407cb0e697e62e"
+      "sha256": "51aa885cdd96e6f01687ba0f143bde03710e91bb09ec9b339e2360005847bdae"
     },
     {
       "path": "scripts/ops/run_research_candidate_shadow_v1.py",
@@ -1884,7 +1889,7 @@
     {
       "path": "src/backtest/mv2_research_wiring_v1.py",
       "before_sha256": "b2df222d48e08c10a88737b1dd3e9a2a5ff4bec5c00849bd80d575c927925f7d",
-      "sha256": "db87db67806a514e5a23ec7119a788243c1a430ab1bf276b26f16be4a6013160"
+      "sha256": "da9abb9b2a6a5966143b498b1fe7a7d9b4e50e45dc0d8eb47c53a12e4ef61ca5"
     },
     {
       "path": "src/backtest/strategy_signal_suitability_agreement_adapter_v1.py",
@@ -1969,7 +1974,7 @@
     {
       "path": "src/experiments/offline_ddo_research_cycle_v1.py",
       "before_sha256": null,
-      "sha256": "0f1b3a346a8cf3be2a852547b2246d89f0fa0a01cd7f82272b428fa67ac0cb06"
+      "sha256": "83c8240c8862422b0f53d9be26e298791d2769ac9b30c259aa045e98d34ca63c"
     },
     {
       "path": "src/features/canonical_alt_data_consumer_boundary_v1/verifier_v1.py",
@@ -2124,7 +2129,7 @@
     {
       "path": "src/learning/deterministic_decision_outcome_v0/outcome_evidence_provenance_bindings_v1.py",
       "before_sha256": "cc967adddc5a6c1a463a7a2b26875e15c452582339913e90548bf3e907566d92",
-      "sha256": "622fdf0b18171fdd5addccfb3b4c49d0353927da2d2db8c6e577d211e4890bfe"
+      "sha256": "94d71afd982c390cb1cd2d159e4601eb6b9f4cb9870fe02388c8280e263924a9"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/outcome_evidence_provenance_v1.py",
@@ -2189,12 +2194,12 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_episode_outcome_v1.py",
       "before_sha256": null,
-      "sha256": "cdb25d3aeeba13795179d1bc95af3ad3b6028c32a881cf093e21c4de0cb816b5"
+      "sha256": "5bc3e577cf1fc7a5a4b44ebd7d53de4a193a94d94427331001037be1534ba5ea"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "56a8bb961fa33decddd5f8e5f00920b10edce44d9817ce00aaf274d6e7a823d2"
+      "sha256": "a5f3354b10262e29cadd33491aeec52ef672dac3d26933981620d8bc524bec47"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -4034,7 +4039,7 @@
     {
       "path": "tests/learning/test_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "21381bae69bf34ddf20bc3d6ddc5c6d9b266ca965ef3b16255c576e3142991f9"
+      "sha256": "eeed45621100f08c084a0539560ea969a28ccfa4f9633430932eb5da5c69b062"
     },
     {
       "path": "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",

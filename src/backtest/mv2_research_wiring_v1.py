@@ -277,6 +277,8 @@ ECONOMIC_RESEARCH_NO_WARMUP_COMPLETE_BAR_REASON = "no_warmup_complete_bar"
 MV2_REQUIRED_INSTRUMENT_ID = "inst-eth-usdt-perp"
 STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0 = "legacy_research_singleton_v0"
 STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1 = "current_selected_instrument_v1"
+STEP29L_INSTRUMENT_ADMISSION_BTC_DEMO_V1 = "btc_demo_entry_research_v1"
+BTC_DEMO_RESEARCH_INSTRUMENT_V1 = "okx_eea:linear_dated_future:BTC:USD:USD:btc-usd_um_xperp-310328"
 
 _REPLAY_IMPLEMENTATION_DIGEST = hashlib.sha256(
     b"trading.master_v2.integrated_offline_trading_logic_replay_v1"
@@ -621,6 +623,11 @@ def _ensure_supported_instrument(
     *,
     admission_mode: str = STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0,
 ) -> None:
+    if admission_mode == STEP29L_INSTRUMENT_ADMISSION_BTC_DEMO_V1:
+        _fail_closed(
+            instrument_id != BTC_DEMO_RESEARCH_INSTRUMENT_V1, "btc_demo_instrument_mismatch"
+        )
+        return
     lowered = instrument_id.lower()
     if admission_mode == STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0:
         _fail_closed(

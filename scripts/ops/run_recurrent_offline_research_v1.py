@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Process newly completed Paper and I17 evidence in bounded offline ticks."""
+"""Process completed Paper, Shadow and scoped Demo evidence in bounded offline ticks."""
 
 from __future__ import annotations
 
@@ -10,14 +10,16 @@ from itertools import zip_longest
 import json
 from pathlib import Path
 import sys
+from typing import Literal
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
-from pydantic import BaseModel, ConfigDict, Field  # noqa: E402
+from pydantic import BaseModel, ConfigDict, Field, model_validator  # noqa: E402
 
 from src.backtest.cost_config_v0 import resolve_effective_backtest_cost_config  # noqa: E402
+from scripts.ops.btc_demo_entry_learning_handoff_v1 import btc_demo_entry_learning_handoff_v1  # noqa: E402
 from scripts.ops.paper_episode_learning_handoff_v1 import paper_episode_learning_handoff_v1  # noqa: E402
 from scripts.ops.run_offline_ddo_learning_follow_up_v1 import load_offline_research_bars_v1  # noqa: E402
 from scripts.ops.shadow_ddo_learning_handoff_v1 import shadow_ddo_learning_handoff_v1  # noqa: E402
@@ -33,8 +35,11 @@ from src.experiments.offline_ddo_research_cycle_v1 import (  # noqa: E402
     ResearchFollowUpTimesV1,
     run_offline_paper_ddo_research_cycle_v1,
     run_offline_shadow_ddo_research_cycle_v1,
+    run_offline_testnet_ddo_research_cycle_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError  # noqa: E402
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT  # noqa: E402
+from src.ops.btc_demo_lane3_v2 import read_btc_demo_first_fill_for_research_v1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.paper_episode_outcome_v1 import (  # noqa: E402
     closed_paper_episode_ids_v1,
     paper_episode_fee_observation_v1,
@@ -49,6 +54,37 @@ class ResearchInputV1(BaseModel):
     paper_fee_tolerance_bps: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
 
+class ResearchSlotScopeV1(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    lane_id: Literal["LANE_1", "LANE_2", "LANE_3", "LANE_4", "LANE_5"]
+    surface: Literal["PAPER_EXCHANGE", "SHADOW", "TESTNET"]
+    session_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9_-]+$")
+    instrument_id: str = Field(min_length=1)
+    venue_native_id: str = Field(min_length=1)
+    starts_at: datetime
+    ends_at: datetime
+
+    @model_validator(mode="after")
+    def validate_window(self):
+        if (
+            self.starts_at.utcoffset() is None
+            or self.ends_at.utcoffset() is None
+            or self.ends_at - self.starts_at != timedelta(hours=2)
+        ):
+            raise ValueError("RESEARCH_SLOT_TWO_HOUR_WINDOW_REQUIRED")
+        return self
+
+    def require_source(self, *, session_id, instrument_id, venue_native_id, decision_time):
+        moment = datetime.fromisoformat(decision_time.replace("Z", "+00:00"))
+        if (
+            (session_id, instrument_id, venue_native_id)
+            != (self.session_id, self.instrument_id, self.venue_native_id)
+            or moment.utcoffset() is None
+            or not self.starts_at <= moment < self.ends_at
+        ):
+            raise ValueError("RESEARCH_SLOT_SOURCE_SCOPE_MISMATCH")
+
+
 class ResearchCampaignV1(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     state: Path
@@ -59,6 +95,21 @@ class ResearchCampaignV1(BaseModel):
     jobs_per_tick: int = Field(gt=0, strict=True)
     history_jobs: int = Field(gt=0, strict=True)
     retry_seconds: int = Field(gt=0, strict=True)
+    slot: ResearchSlotScopeV1 | None = None
+    testnet_root: Path | None = None
+
+    @model_validator(mode="after")
+    def validate_slot(self):
+        if (self.testnet_root is not None) != (
+            self.slot is not None and self.slot.surface == "TESTNET"
+        ):
+            raise ValueError("RESEARCH_TESTNET_REQUIRES_EXACT_SLOT_SCOPE")
+        if self.slot is not None and (
+            set(self.research_inputs) != {self.slot.instrument_id}
+            or (self.testnet_root is not None and self.slot.lane_id != "LANE_3")
+        ):
+            raise ValueError("RESEARCH_INPUT_OUTSIDE_SLOT_SCOPE")
+        return self
 
 
 def _absolute(path: Path) -> Path:
@@ -86,15 +137,57 @@ def _discover_shadow(campaign: ResearchCampaignV1):
 
 
 def _read_source(workspace, source, campaign):
+    slot = campaign.slot
+    if slot is not None and (
+        slot.surface != source["surface"] or source["slot"] != slot.model_dump(mode="json")
+    ):
+        raise ValueError("RESEARCH_SLOT_SURFACE_MISMATCH")
+    if source["surface"] == "TESTNET":
+        lane = campaign.testnet_root / "testnet-state" / slot.lane_id
+        measurement = read_btc_demo_first_fill_for_research_v1(
+            campaign.testnet_root, source["episode"]
+        )
+        filled_at = datetime.fromtimestamp(
+            measurement["opening_fill"]["first_fill_time_ms"] / 1000, timezone.utc
+        ).isoformat()
+        slot.require_source(
+            session_id=measurement["session_id"],
+            instrument_id=measurement["instrument_id"],
+            venue_native_id=measurement["venue_native_id"],
+            decision_time=filled_at,
+        )
+        slot.require_source(
+            session_id=measurement["session_id"],
+            instrument_id=measurement["instrument_id"],
+            venue_native_id=measurement["venue_native_id"],
+            decision_time=measurement["envelope_created_utc"],
+        )
+        return btc_demo_entry_learning_handoff_v1(
+            measurement=measurement,
+            decision_ledger=lane / "ddo" / LEDGER_FILENAME_DEFAULT,
+            output_root=workspace.root,
+        ), {}
     if source["surface"] == "PAPER_EXCHANGE":
         archive = _absolute(Path(source["archive"]))
         output = workspace.safe_path_v1("paper-learning")
         relative = Path("paper-episodes") / source["episode"] / "result.json"
+
+        def require_paper_measurement(measurement):
+            if slot is not None:
+                slot.require_source(
+                    session_id=measurement["session_id"],
+                    instrument_id=measurement["instrument_id"],
+                    venue_native_id=measurement["venue_native_id"],
+                    decision_time=measurement["fill_bindings"][0]["decision_observed_at_utc"],
+                )
+
         handoff = paper_episode_learning_handoff_v1(
             archive_root=archive,
             episode_id=source["episode"],
             output_root=output,
             verify=EvaluationReceiptArchiveV1(output).safe_path_v1(relative).is_file(),
+            expected_lane_id=None if slot is None else slot.lane_id,
+            require_measurement=require_paper_measurement,
         )
         return handoff, {
             "paper_fee_observation": paper_episode_fee_observation_v1(
@@ -120,6 +213,14 @@ def _read_source(workspace, source, campaign):
     if handoff != complete:
         raise ValueError("RESEARCH_SHADOW_COMPLETION_READBACK_MISMATCH")
     (receipt,) = verified_receipts
+    if slot is not None:
+        decision = receipt["shadow_decision"]
+        slot.require_source(
+            session_id=decision["session_id"],
+            instrument_id=decision["canonical_instrument_id"],
+            venue_native_id=decision["venue_instrument_id"],
+            decision_time=decision["decision_event_time_utc"],
+        )
     return handoff, {"shadow_measurement": receipt}
 
 
@@ -311,11 +412,11 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
             "meta_digests": meta_digests,
         }
         publish_v1(path, packet)
-    runner = (
-        run_offline_paper_ddo_research_cycle_v1
-        if source["surface"] == "PAPER_EXCHANGE"
-        else run_offline_shadow_ddo_research_cycle_v1
-    )
+    runner = {
+        "PAPER_EXCHANGE": run_offline_paper_ddo_research_cycle_v1,
+        "SHADOW": run_offline_shadow_ddo_research_cycle_v1,
+        "TESTNET": run_offline_testnet_ddo_research_cycle_v1,
+    }[source["surface"]]
     prior_units, coverage = _history_units(
         workspace, packet["history"], packet["meta_digests"], input_digest, source["surface"]
     )
@@ -399,6 +500,8 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
         _absolute(path)
         for path in (campaign.paper_runs, campaign.shadow_follow_ups, campaign.shadow_runs)
     ]
+    if campaign.testnet_root is not None:
+        sources.append(_absolute(campaign.testnet_root))
     if any(
         workspace.root.is_relative_to(path) or path.is_relative_to(workspace.root)
         for path in [REPO, *sources]
@@ -412,8 +515,24 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
     attempted = 0
     clock = (lambda: now) if now is not None else (lambda: datetime.now(timezone.utc))
     with workspace.lease_v1():
-        discovered = list(_discover_shadow(campaign))
-        for archive in sorted(campaign.paper_runs.glob("*")):
+        scope = campaign.slot
+        discovered = (
+            list(_discover_shadow(campaign)) if scope is None or scope.surface == "SHADOW" else []
+        )
+        if campaign.testnet_root is not None:
+            fills = campaign.testnet_root / "testnet-state" / scope.lane_id / "research-first-fills"
+            discovered.extend(
+                {"surface": "TESTNET", "episode": path.stem}
+                for path in sorted(fills.glob("*.json"))
+            )
+        paper_archives = (
+            sorted(campaign.paper_runs.glob("*"))
+            if scope is None
+            else (campaign.paper_runs / scope.session_id,)
+            if scope.surface == "PAPER_EXCHANGE"
+            else ()
+        )
+        for archive in paper_archives:
             if archive.is_symlink() or not (archive / "MANIFEST.sha256").is_file():
                 continue
             try:
@@ -427,11 +546,15 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
         paper = iter(item for item in discovered if item["surface"] == "PAPER_EXCHANGE")
         shadow = iter(item for item in reversed(discovered) if item["surface"] == "SHADOW")
         scheduled = (
-            item for pair in zip_longest(paper, shadow) for item in pair if item is not None
+            iter(discovered)
+            if scope is not None
+            else (item for pair in zip_longest(paper, shadow) for item in pair if item is not None)
         )
         for source in scheduled:
             if attempted >= campaign.jobs_per_tick:
                 break
+            if scope is not None:
+                source = {**source, "slot": scope.model_dump(mode="json")}
             job_time = clock()
             source_id = digest_v1(source)
             receipt = workspace.safe_path_v1(Path("sources") / (source_id + ".json"))
