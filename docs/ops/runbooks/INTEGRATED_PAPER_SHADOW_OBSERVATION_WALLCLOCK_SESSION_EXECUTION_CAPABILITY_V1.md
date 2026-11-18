@@ -185,7 +185,7 @@ die öffentlichen OKX-EEA-Quellen für `ZKP-USD_UM_XPERP-310905`.
 ```
 
 Ein ausdrücklicher Aufruf mit `run` und einem neuen absoluten `--run-root`
-legt den Paper-Zustand separat an. Das Zeitfenster für den Einstieg
+legt den Paper-Zustand separat an. Das Zeitfenster für den Slot
 beträgt standardmäßig 7.200 Sekunden. Der V2-Mark-Takt verbindet den
 originalen Master-V2-Einstieg mit den finalisierten G17- und C1-Fenstern.
 Die kanonische Mengenrechnung verwendet 25 virtuelle USDC und den
@@ -199,9 +199,71 @@ nachteiliger Tick-Rundung. Die modellierte Taker-Gebühr beträgt 0,05 Prozent.
 Die erwarteten Ausstiegskosten und die nächste Funding-Reserve gehen vor
 der Buchung in die Budgetprüfung ein.
 
-Der Starter endet nach dem simulierten Erstfill. Er speichert die Buchung,
-den offenen Positionsbeleg und den veröffentlichten C1-Cursor für den
-besetzten Slot. Die Erstfill-Ausführung hat keine Venue-Order-Schnittstelle.
+Der Erstfill speichert Buchung, offene Position und C1-Cursor. Die
+[Fortsetzung](../../../src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py)
+führt den besetzten Slot mit aktuellen Marks und dem ursprünglichen Master V2
+weiter. Ein bestätigter L10-Gegenwechsel am gebundenen Instrument prüft die
+ausführbare Nettomenge im Orderbuch und bucht genau einen simulierten Fill
+einschließlich Gebühr und Slippage. Dieselbe Cursoradresse führt die nächste
+Positionsepisode. Das Verzeichnis `reversals` enthält die Buchungen mit Entscheidungs- und
+Cursorbezug.
+
+`resume` mit dem ursprünglichen `--run-root` nimmt einen unterbrochenen,
+bereits besetzten Slot innerhalb seines ursprünglichen Zeitfensters wieder auf.
+Ein gebuchter Fill wird aus dem Journal gelesen. Bei Fensterende oder `STOP`
+bleibt die letzte Position zur Auswertung erhalten. Ein anderer Exit als der
+L10-Gegenwechsel hält die Fortsetzung an.
+
+Ab dem Funding-Zeitpunkt wartet der besetzte Slot auf die bestätigte Rate
+`realizedRate` aus der öffentlichen OKX-Funding-Historie und die finale
+Mark-Minutenkerze unmittelbar vor dem Settlement. Deren Schlusskurs dient
+als Paper-Referenzpreis. Die offene Anzahl Kontrakte, die Kontraktgröße,
+der Referenzpreis und die bestätigte Rate bestimmen den virtuellen USD-Betrag.
+Bei positiver Rate wird Long belastet und Short gutgeschrieben. Das
+Journal `funding` bindet die Buchung an Settlement-Zeit, Positionsepisode
+und Quellenprüfsummen. Nach dem Readback kann Double Play am selben Cursor
+weiterlaufen. Der Paper-Pfad verwendet ausschließlich öffentliche GETs und
+simuliertes Accounting.
+
+### Eigenständiger Shadow-Begleittest für das Selbstlernen
+
+Für den späteren gemeinsamen Testblock läuft der bestehende I17-Shadow-Test
+auf dem ETH-Kontrakt `ETH-USD_UM_XPERP-310404` in einer eigenen Sitzung und
+mit eigenen Evidenz- und Lernwurzeln. Das Ziel ist ein dauerhaft zurückgelesener
+Lernbeleg aus einer im Begleittest tatsächlich erfassten Shadow-Entscheidung.
+Die Beobachtungsphase kann parallel zu ZKP-Paper laufen. Die Messung und der
+Lernbeleg folgen erst, wenn beide zum Entscheidungsfenster passenden O4-Bars
+final und verfügbar sind. ZKP-Funding fließt in die Paper-Buchhaltung;
+I17 liefert dem Selbstlernen einen kontrafaktischen Preisverlauf.
+
+Der [I17-Begleiter](../../../scripts/ops/run_i17_shadow_learning_companion_v1.py)
+verwendet beim späteren ausdrücklichen Start die reguläre I17-Preregistration,
+den Operator-GO und die vorhandene Startprüfung. Shadow-Evidenzverzeichnis,
+Begleiterverzeichnis und ZKP-Paper-State gehören zu getrennten Sitzungen.
+Die O4-Instrumentbindung stammt aus einem archivierten öffentlichen
+Instrumentenbeleg für denselben ETH-Kontrakt. Sie wird vor dem Start geprüft
+und nach Abschluss mit der Instrumentbindung aus dem Shadow-Archiv abgeglichen.
+
+```bash
+./scripts/pt -m scripts.ops.run_i17_shadow_learning_companion_v1 run \
+  --preregistration "$i17_prereg" --operator-go "$i17_go" \
+  --authorization-artifact "$i17_auth" --confirm-token-file "$i17_token_file" \
+  --evidence-root "$i17_shadow_root" --fingerprint-ledger "$i17_fingerprint_ledger" \
+  --expected-repository-sha "$repository_sha" \
+  --companion-root "$i17_companion_root" --o4-instrument-binding "$eth_o4_binding"
+```
+
+Beim späteren Start gilt das bestehende Opt-in
+`PEAK_TRADE_PSO_WALLCLOCK_ALLOW_REAL_NETWORK=1`. Der Begleiter liest nach
+Abschluss das versiegelte Shadow-Archiv und nimmt die erste vollständig
+belegte Entscheidung mit typisierter Volatilität. Der O4-Abruf wartet bis
+zum Ende der zweiten zugehörigen Stundenkerze und wiederholt vorläufige
+oder lückenhafte Antworten im Fenster von zehn Minuten nach Kerzenschluss.
+Wenn die finalen Daten vorliegen, schreibt der bestehende DDO-Eingang den
+Lernzustand. `completion.json` wird erst nach dessen Readback veröffentlicht.
+`resume` mit demselben `--companion-root` setzt bei einem bereits versiegelten
+Shadow-Archiv die Übergabe fort. Es liest einen bereits erfassten O4-Beleg
+erneut und kann eine fehlende Abschlussbestätigung nachholen.
 
 Für die spätere [DDO-/GVEF-Auswertung](../specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md)
 müssen die vollständigen Entscheidungsbelege erhalten bleiben. Die
@@ -247,11 +309,14 @@ Messung mit der gespeicherten.
   --verify-outcome-receipt /absolute/auswertung/shadow-o4.json
 ```
 
-Der vorhandene Offline-Follow-up-Worker
-verwendet den Herkunftstyp `SYNTHETIC_OFFLINE`. Die Abnahme mit
-beobachteten Originaldaten braucht einen eigenen Herkunftsnachweis über
-die zuständigen Consumer. Forschungsprofil, finalisierte Backtestdaten
-und aufgelöste Konfiguration bleiben explizite Eingaben.
+Der [I17-Follow-up](../../../scripts/ops/run_offline_ddo_learning_follow_up_v1.py)
+prüft mit `complete-shadow` beide Originalarchive und den Messbeleg erneut.
+Er schreibt für die Shadow-Entscheidung einen eigenen DDO-Lernbeleg als
+`SHADOW_COUNTERFACTUAL`. Zur Abnahme gehören der Readback aus dem eigenen
+Lernstore und der Abgleich von ursprünglicher Decision-ID, Instrument,
+Messzeitfenster und Belegdigest. Die Test-Fixture trägt
+`TEST_ONLY_SYNTHETIC`. Für die spätere Abnahme zählen die gemessenen
+Originaldaten aus der Begleitsitzung.
 
 ## Explicit non-goals (this capability PR #5592)
 

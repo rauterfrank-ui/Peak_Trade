@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Probe public inputs or explicitly run the isolated ZKP LANE_1 Paper opening."""
+"""Probe public inputs or explicitly run the isolated ZKP LANE_1 Paper slot."""
 
 from __future__ import annotations
 
@@ -7,15 +7,20 @@ import argparse
 from dataclasses import asdict
 from decimal import Decimal, DecimalException
 import json
+from math import isfinite
 from pathlib import Path
 import subprocess
 import sys
 from time import monotonic, sleep, time
+from uuid import uuid4
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 import (  # noqa: E402
+    ZkpPaperContinuationV1,
+)
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import ZkpPaperEntryV1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (  # noqa: E402
     INSTRUMENT_ID,
@@ -24,9 +29,11 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     PAPER_FEE_RATE,
     collect_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
+    zkp_public_queries_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (  # noqa: E402
     durable_bytes_v1,
+    exclusive_v1,
     immutable_json_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (  # noqa: E402
@@ -36,21 +43,28 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
 _POLL_SECONDS = 5
 
 
-def _new_root(path):
+def _isolated_root(path):
     if (
         not path.is_absolute()
         or path != path.resolve()
-        or path.exists()
         or not path.parent.is_dir()
         or path.is_relative_to(REPO)
         or path.is_relative_to(Path.home() / ".local/state/peak_trade/deployments")
     ):
+        raise ValueError("ZKP_PAPER_ISOLATED_PATH_REQUIRED")
+    return path
+
+
+def _new_root(path):
+    if _isolated_root(path).exists():
         raise ValueError("ZKP_PAPER_NEW_ISOLATED_PATH_REQUIRED")
     return path
 
 
 def _capture(policy, *, label, output=None):
-    transport = FullCoreProductiveReadOnlyGetTransportV1(timeout_seconds=6, max_request_count=12)
+    transport = FullCoreProductiveReadOnlyGetTransportV1(
+        timeout_seconds=6, max_request_count=len(zkp_public_queries_v1(policy.adv_days))
+    )
     records = {}
 
     def retain(name, result, body):
@@ -97,7 +111,7 @@ def preflight_zkp_paper_v1(*, market):
     }
 
 
-def _run(root, market, *, policy, duration, deadline, revision, capture):
+def _run(root, market, *, policy, duration, started_at, deadline, revision, capture):
     session = ZkpPaperEntryV1(
         root=root,
         repo=REPO,
@@ -105,23 +119,54 @@ def _run(root, market, *, policy, duration, deadline, revision, capture):
         initial_market=market,
         duration=duration,
     )
-    poll = 0
+    with exclusive_v1(root / ".paper-driver.lock"):
+        immutable_json_v1(
+            root / "window.json", {"started_at": started_at, "duration_seconds": duration}
+        )
+        return _drive(root, market, session, None, policy, deadline, revision, capture)
+
+
+class _WindowEnded(ValueError):
+    pass
+
+
+def _drive(root, market, opening, occupied, policy, deadline, revision, capture):
+    folder = None
+
+    def active():
+        return monotonic() < deadline and not (root / "STOP").exists()
 
     def fill_clock():
-        if monotonic() >= deadline or (root / "STOP").exists():
-            raise ValueError("ZKP_PAPER_WINDOW_ENDED_DURING_DECISION")
+        if not active():
+            raise _WindowEnded
         return time()
 
-    while monotonic() < deadline and not (root / "STOP").exists():
+    while active():
         if market is not None:
-            result = session.step_v1(market, clock=fill_clock)
+            try:
+                result = (occupied or opening).step_v1(market, clock=fill_clock)
+            except _WindowEnded:
+                break
+            if folder is not None:
+                immutable_json_v1(folder / "result.json", result)
             if result["status"] == "FIRST_FILL_BOOKED":
+                occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision)
+            elif result.get("reason") == "ZKP_PAPER_NON_REVERSAL_EXIT_REQUIRED":
+                result = {
+                    **result,
+                    "last_booking": occupied.last_receipt,
+                    "last_funding": occupied.last_funding,
+                    "orders_sent": 0,
+                    "permits_created": 0,
+                    "authority": "NONE",
+                }
+                immutable_json_v1(root / "closeout.json", result)
                 return result
         sleep(min(_POLL_SECONDS, max(0, deadline - monotonic())))
-        if monotonic() >= deadline or (root / "STOP").exists():
+        if not active():
             break
-        poll += 1
-        folder = root / "public" / f"{poll:05d}"
+        poll = uuid4().hex
+        folder = root / "public" / poll
         try:
             market = capture(policy, label=f"{root.name}:{poll}", output=folder)
         except (OSError, ValueError, TypeError, KeyError, DecimalException) as exc:
@@ -130,13 +175,40 @@ def _run(root, market, *, policy, duration, deadline, revision, capture):
             )
             market = None
     result = {
-        "status": "WINDOW_ENDED_BEFORE_FIRST_FILL",
+        "status": "WINDOW_ENDED_OCCUPIED" if occupied else "WINDOW_ENDED_BEFORE_FIRST_FILL",
+        "last_booking": occupied.last_receipt if occupied else None,
+        "last_funding": occupied.last_funding if occupied else None,
         "orders_sent": 0,
         "permits_created": 0,
         "authority": "NONE",
     }
-    immutable_json_v1(root / "opening-closeout.json", result)
+    immutable_json_v1(root / "closeout.json", result)
     return result
+
+
+def _resume(root, *, policy, revision, capture):
+    if not _isolated_root(root).is_dir():
+        raise ValueError("ZKP_PAPER_ORIGINAL_RUN_ROOT_REQUIRED")
+    with exclusive_v1(root / ".paper-driver.lock"):
+        window = json.loads((root / "window.json").read_bytes())
+        duration, started = window["duration_seconds"], window["started_at"]
+        now = time()
+        if (
+            type(duration) is not int
+            or not 1 <= duration <= 7200
+            or not isinstance(started, (int, float))
+            or not isfinite(started)
+            or not 0 < started <= now
+        ):
+            raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
+        closeout = root / "closeout.json"
+        if closeout.is_file():
+            return json.loads(closeout.read_bytes())
+        occupied = ZkpPaperContinuationV1(root=root, repo=REPO, revision=revision)
+        if duration != occupied.profile["duration_seconds"]:
+            raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
+        deadline = monotonic() + max(0, started + duration - now)
+        return _drive(root, None, None, occupied, policy, deadline, revision, capture)
 
 
 def main(argv=None):
@@ -146,9 +218,11 @@ def main(argv=None):
         "preflight", help="Read public inputs and check executable liquidity"
     )
     preflight.add_argument("--evidence-root", type=Path)
-    run = modes.add_parser("run", help="Explicitly start the Paper opening")
+    run = modes.add_parser("run", help="Explicitly start the bounded Paper slot")
     run.add_argument("--run-root", required=True, type=Path)
     run.add_argument("--duration-seconds", type=int, default=7200)
+    resume = modes.add_parser("resume", help="Resume the original occupied Paper slot")
+    resume.add_argument("--run-root", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         policy = load_paper_liquidity_policy_v1(REPO)
@@ -161,32 +235,37 @@ def main(argv=None):
             if output is not None:
                 immutable_json_v1(output / "preflight.json", result)
         else:
-            root = _new_root(args.run_root)
-            if not 1 <= args.duration_seconds <= 7200:
-                raise ValueError("ZKP_PAPER_WINDOW_INVALID")
             revision = subprocess.check_output(
                 ["git", f"--work-tree={REPO}", "rev-parse", "HEAD"],
                 cwd=REPO,
                 text=True,
             ).strip()
-            deadline = monotonic() + args.duration_seconds
-            # Capture the initial FX and market as original public evidence before starting.
-            initial_root = root.with_name(root.name + "-inputs")
-            _new_root(initial_root).mkdir(mode=0o700)
-            market = _capture(policy, label=f"{root.name}:0", output=initial_root)
-            if monotonic() >= deadline:
-                raise ValueError("ZKP_PAPER_WINDOW_ENDED_DURING_PREFLIGHT")
-            result = _run(
-                root,
-                market,
-                policy=policy,
-                duration=args.duration_seconds,
-                deadline=deadline,
-                revision=revision,
-                capture=_capture,
-            )
+            if args.mode == "resume":
+                result = _resume(args.run_root, policy=policy, revision=revision, capture=_capture)
+            else:
+                root = _new_root(args.run_root)
+                if not 1 <= args.duration_seconds <= 7200:
+                    raise ValueError("ZKP_PAPER_WINDOW_INVALID")
+                started_at = time()
+                deadline = monotonic() + args.duration_seconds
+                # Retain the original public FX and market data before creating the slot.
+                initial_root = root.with_name(root.name + "-inputs")
+                _new_root(initial_root).mkdir(mode=0o700)
+                market = _capture(policy, label=f"{root.name}:0", output=initial_root)
+                if monotonic() >= deadline:
+                    raise ValueError("ZKP_PAPER_WINDOW_ENDED_DURING_PREFLIGHT")
+                result = _run(
+                    root,
+                    market,
+                    policy=policy,
+                    duration=args.duration_seconds,
+                    started_at=started_at,
+                    deadline=deadline,
+                    revision=revision,
+                    capture=_capture,
+                )
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, DecimalException) as exc:
-        parser.exit(2, f"ZKP Paper opening stopped: {exc}\n")
+        parser.exit(2, f"ZKP Paper stopped: {exc}\n")
     print(json.dumps(result, sort_keys=True, indent=2))
     return 0
 

@@ -173,6 +173,47 @@ def _adv(payload, *, now, days, contract_size):
 
 
 @dataclass(frozen=True)
+class ZkpPaperFundingSettlementV1:
+    event_unix: float
+    realized_rate: Decimal
+    preceding_mark_close_usd: Decimal
+
+
+def _settled_funding(payload, mark_candles, *, previous, acquired_unix):
+    rows = payload["data"]
+    if not isinstance(rows, list):
+        raise ValueError("ZKP_PAPER_FUNDING_HISTORY_INVALID")
+    candles = {}
+    for row in mark_candles["data"]:
+        if row[5] == "1":
+            candles.setdefault(row[0], []).append(row[4])
+    seen, times, settlements = set(), [], []
+    for row in rows:
+        stamp = _timestamp(row, "fundingTime")
+        event = stamp / 1000
+        if row["instId"] != NATIVE_ID or row["instType"] != "FUTURES" or stamp in seen:
+            raise ValueError("ZKP_PAPER_FUNDING_HISTORY_IDENTITY_INVALID")
+        seen.add(stamp)
+        if event > previous:
+            continue
+        times.append(event)
+        raw_rate = row["realizedRate"]
+        if raw_rate == "":
+            continue
+        if not isinstance(raw_rate, str) or event > acquired_unix:
+            raise ValueError("ZKP_PAPER_FUNDING_HISTORY_UNAVAILABLE_AT_CAPTURE")
+        rate = _decimal(raw_rate)
+        # The public rate history does not include OKX's account assessment mark.
+        # Model the boundary mark with the exact preceding finalized minute close.
+        prices = candles.get(str(stamp - 60_000), [])
+        if stamp % 60_000 == 0 and len(prices) == 1:
+            settlements.append(
+                ZkpPaperFundingSettlementV1(event, rate, _decimal(prices[0], positive=True))
+            )
+    return tuple(sorted(times)), tuple(sorted(settlements, key=lambda row: row.event_unix))
+
+
+@dataclass(frozen=True)
 class ZkpPaperMarketV1:
     observed_unix: float
     market_event_unix: float
@@ -200,6 +241,9 @@ class ZkpPaperMarketV1:
     adv_usd: Decimal
     policy: PaperLiquidityPolicyV1
     source_hashes: dict[str, str]
+    previous_funding_unix: float
+    funding_history_times: tuple[float, ...]
+    funding_settlements: tuple[ZkpPaperFundingSettlementV1, ...]
 
     def assess_quantity_v1(self, *, side: str, quantity: Decimal) -> dict:
         tick = self.native_contract.tick_size
@@ -265,6 +309,10 @@ def zkp_public_queries_v1(days):
             {"instId": NATIVE_ID, "bar": "1Dutc", "limit": str(days + 1)},
         ),
         "funding": ("/api/v5/public/funding-rate", {"instId": NATIVE_ID}),
+        "funding-history": (
+            "/api/v5/public/funding-rate-history",
+            {"instId": NATIVE_ID, "limit": "20"},
+        ),
         "trade-candles": (
             "/api/v5/market/candles",
             {"instId": NATIVE_ID, "bar": "1m", "limit": "105"},
@@ -382,11 +430,13 @@ def bind_zkp_paper_market_v1(observations, *, policy, observed_unix):
         _decimal(funding[key]) for key in ("minFundingRate", "fundingRate", "maxFundingRate")
     )
     funding_time = _timestamp(funding, "fundingTime") / 1000
+    previous_funding = _timestamp(funding, "prevFundingTime") / 1000
     if (
         funding["instType"] != "FUTURES"
         or funding["method"] != "current_period"
         or not floor <= min(rate, Decimal(0)) <= max(rate, Decimal(0)) <= cap
-        or not _timestamp(funding, "prevFundingTime") / 1000 <= observed_unix < funding_time
+        or not previous_funding < funding_time
+        or not previous_funding <= observed_unix < funding_time
         or _timestamp(funding, "nextFundingTime") / 1000 <= funding_time
         or not 0 <= acquired["funding"] - _timestamp(funding) / 1000 <= 180
     ):
@@ -445,6 +495,12 @@ def bind_zkp_paper_market_v1(observations, *, policy, observed_unix):
         or g17.samples[-1].event_time_unix_seconds != c1
     ):
         raise ValueError("ZKP_PAPER_G17_AND_C1_CLOCK_MISMATCH")
+    funding_history_times, funding_settlements = _settled_funding(
+        payloads["funding-history"],
+        mark_candles,
+        previous=previous_funding,
+        acquired_unix=acquired["funding-history"],
+    )
     return ZkpPaperMarketV1(
         observed_unix,
         mark_event,
@@ -472,4 +528,7 @@ def bind_zkp_paper_market_v1(observations, *, policy, observed_unix):
         _adv(payloads["adv"], now=observed_unix, days=policy.adv_days, contract_size=size),
         policy,
         hashes,
+        previous_funding,
+        funding_history_times,
+        funding_settlements,
     )

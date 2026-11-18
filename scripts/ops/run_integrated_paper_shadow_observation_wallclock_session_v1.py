@@ -109,13 +109,23 @@ def _load_confirm_token(args: argparse.Namespace) -> str:
 SHADOW_OUTCOME_RECEIPT_SCHEMA = "i17_shadow_o4_market_measurement_readback_v1"
 
 
+def shadow_o4_window_start_v1(decision_event_time_utc: str):
+    from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+        learning_event_time_key_v0,
+    )
+
+    # Preserve subsecond ordering at an hour boundary, including nanoseconds.
+    seconds, fraction = learning_event_time_key_v0(decision_event_time_utc)
+    start = seconds.replace(minute=0, second=0)
+    if start != seconds or int(fraction) != 0:
+        start += timedelta(hours=1)
+    return start
+
+
 def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     from scripts.ops.capture_offline_learning_mark_window_v1 import read_captured_mark_archive_v1
     from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v1 import (
         REQUEST_SCHEMA,
-    )
-    from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
-        learning_event_time_key_v0,
     )
     from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
         seal_v1,
@@ -146,12 +156,7 @@ def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     price_unit = recorded_mark_price_unit_v1(
         instrument_binding=binding, canonical_instrument_id=canonical, native_instrument_id=native
     )
-    # The record has up to nine fractional digits. Avoid rounding a just-after-hour
-    # decision back onto the hour, which would include a bar already underway.
-    seconds, fraction = learning_event_time_key_v0(decision["decision_event_time_utc"])
-    start = seconds.replace(minute=0, second=0)
-    if start != seconds or int(fraction) != 0:
-        start += timedelta(hours=1)
+    start = shadow_o4_window_start_v1(decision["decision_event_time_utc"])
     measurement = measure_recorded_market_horizon_v1(
         archive=archive,
         request={

@@ -1158,6 +1158,74 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert "I17_SHADOW_HANDOFF_DIGEST_REQUIRED" in capsys.readouterr().err
     assert learning_ledger.read_bytes() == learning_bytes
 
+    from scripts.ops import run_i17_shadow_learning_companion_v1 as companion
+
+    companion_root = tmp_path / "companion"
+    companion.prepare_companion_v1(
+        root=companion_root,
+        evidence=root,
+        prereg=companion._load_prereg(root / "prereg.json"),
+        binding_path=binding_path,
+    )
+    current = end.timestamp() - 20
+    requests = []
+
+    def pause(seconds):
+        nonlocal current
+        assert not (companion_root / "learning").exists()
+        current += seconds
+
+    def fetch_for_companion(query):
+        assert current >= end.timestamp() + 15
+        requests.append((current, query))
+        status, raw = fetch(query)
+        if len(requests) == 1:
+            # Venue briefly returns a provisional last minute after the cut.
+            payload = json.loads(raw)
+            payload["data"][0][-1] = "0"
+            raw = json.dumps(payload).encode()
+        return status, raw
+
+    def capture_for_companion(**kwargs):
+        return capture.capture_public_mark_window_v1(**kwargs, fetch_page=fetch_for_companion)
+
+    run_follow_up = dict(
+        root=companion_root, clock=lambda: current, pause=pause, capture=capture_for_companion
+    )
+    publish = companion.publish_v1
+
+    def interrupt_at_completion(path, body):
+        if path.name == "completion.json":
+            raise InterruptedError("after durable DDO readback")
+        publish(path, body)
+
+    with monkeypatch.context() as fault:
+        fault.setattr(
+            capture, "_utc_now", lambda: datetime.fromtimestamp(current, timezone.utc).isoformat()
+        )
+        fault.setattr(companion, "publish_v1", interrupt_at_completion)
+        with pytest.raises(InterruptedError, match="after durable DDO readback"):
+            companion.finish_companion_v1(**run_follow_up)
+    assert len(requests) == 4
+    assert requests[2][0] > requests[0][0]
+    assert not (companion_root / "completion.json").exists()
+    auto_ledger = companion_root / "learning/shadow-ddo-learning/i17/ddo_ledger_v0.jsonl"
+    book = auto_ledger.read_bytes()
+    automatic = companion.finish_companion_v1(**run_follow_up)
+    assert automatic["source_class"] == "TEST_ONLY_SYNTHETIC"
+    auto_evidence = automatic["learning_evidence"]
+    assert (
+        auto_evidence["outcome_evidence_provenance"]["decision_event_ref"] == decision["record_id"]
+    )
+    assert auto_evidence["evidence_pool_class"] == "SHADOW_COUNTERFACTUAL"
+    assert companion.read_v1(companion_root / "completion.json") == automatic
+    plan = companion.read_v1(companion_root / "window-plan.json")
+    assert plan["shadow_decision"] == selected and plan["n_bars"] == 2
+    assert plan["window_end_utc"] == end.strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert companion.finish_companion_v1(**run_follow_up) == automatic
+    assert len(requests) == 4 and auto_ledger.read_bytes() == book
+    assert archive_digests() == original_digests
+
     import pandas as pd
 
     from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
@@ -1250,6 +1318,73 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     with pytest.raises(SystemExit, match="2"):
         learning_main(research_args)
     assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("admitted", [False, True])
+def test_i17_companion_follows_the_existing_observation_gate(
+    tmp_path, monkeypatch, capsys, admitted
+):
+    from types import SimpleNamespace
+
+    from scripts.ops import run_i17_shadow_learning_companion_v1 as companion
+
+    root = tmp_path / "companion"
+    evidence = tmp_path / "shadow"
+    prereg = replace(
+        _load_wallclock_prereg(), fixture_non_authoritative=False, evidence_root=str(evidence)
+    )
+    monkeypatch.setattr(companion, "_load_prereg", lambda _: prereg)
+    monkeypatch.setattr(companion, "_load_token", lambda _: "test-only")
+    monkeypatch.setattr(companion, "load_operator_go_contract_dict_v1", lambda _: None)
+    monkeypatch.setattr(companion, "parse_operator_go_contract_v1", lambda _: _load_wallclock_go())
+    calls = []
+    monkeypatch.setattr(companion, "prepare_companion_v1", lambda **_: calls.append("prepare"))
+
+    def canonical_gate(**kwargs):
+        assert kwargs["prereg"] is prereg and kwargs["evidence_root"] == evidence
+        assert kwargs["use_real_network"] is True
+        calls.append("canonical I17")
+        return SimpleNamespace(ok=admitted, blockers=["INJECTED_GATE_DENIAL"])
+
+    monkeypatch.setattr(companion, "run_productive_wallclock_session_v1", canonical_gate)
+
+    def finish(**kwargs):
+        assert kwargs == {"root": root}
+        calls.append("follow-up")
+        return {"authority": "NONE"}
+
+    monkeypatch.setattr(companion, "finish_companion_v1", finish)
+    args = [
+        "run",
+        "--companion-root",
+        str(root),
+        "--evidence-root",
+        str(evidence),
+        "--expected-repository-sha",
+        prereg.expected_repository_sha,
+    ]
+    for flag in (
+        "preregistration",
+        "operator-go",
+        "authorization-artifact",
+        "fingerprint-ledger",
+        "o4-instrument-binding",
+    ):
+        args.extend(("--" + flag, str(tmp_path / flag)))
+    monkeypatch.delenv(companion.REAL_NETWORK_ENV, raising=False)
+    with pytest.raises(SystemExit, match="2"):
+        companion.main(args)
+    assert "REAL_PUBLIC_MD_OPT_IN_REQUIRED" in capsys.readouterr().err
+    assert calls == []
+    monkeypatch.setenv(companion.REAL_NETWORK_ENV, "1")
+    if admitted:
+        assert companion.main(args) == 0
+        assert calls == ["prepare", "canonical I17", "follow-up"]
+    else:
+        with pytest.raises(SystemExit, match="2"):
+            companion.main(args)
+        assert "INJECTED_GATE_DENIAL" in capsys.readouterr().err
+        assert calls == ["prepare", "canonical I17"]
 
 
 def test_flat_shadow_mark_window_seals_abort_without_completed_decision(run_two_hour_shadow):

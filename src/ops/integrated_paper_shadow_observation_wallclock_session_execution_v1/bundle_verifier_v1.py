@@ -102,7 +102,7 @@ class WallclockEvidenceVerificationResultV1:
 
 @dataclass
 class _ShadowDecisionSelection:
-    ref: str
+    ref: str | None
     decision: dict[str, Any] | None = None
 
 
@@ -250,7 +250,10 @@ def _verify_typed_cycle_bindings(
                 )
             else:
                 validated += 1
-                if selection is not None and bundle.decision_event_ref == selection.ref:
+                if selection is not None and (
+                    bundle.decision_event_ref == selection.ref
+                    or (selection.ref is None and selection.decision is None)
+                ):
                     if (
                         session.get("capability_id") != CAPABILITY_ID
                         or session.get("execution_class") != EXECUTION_CLASS_ANALYTICAL
@@ -380,7 +383,10 @@ def verify_wallclock_evidence_bundle_v1(
     *,
     evidence_root: Path,
     select_shadow_decision_ref: str | None = None,
+    select_first_typed_shadow_decision: bool = False,
 ) -> WallclockEvidenceVerificationResultV1:
+    if select_first_typed_shadow_decision and select_shadow_decision_ref is not None:
+        raise ValueError("SHADOW_DECISION_SELECTION_MODE_CONFLICT")
     notes = [
         f"VERIFIER_ID={VERIFIER_ID}",
         f"CAPABILITY_ID={CAPABILITY_ID}",
@@ -513,7 +519,7 @@ def verify_wallclock_evidence_bundle_v1(
 
     selection = (
         None
-        if select_shadow_decision_ref is None
+        if select_shadow_decision_ref is None and not select_first_typed_shadow_decision
         else _ShadowDecisionSelection(select_shadow_decision_ref)
     )
     ddo_readback = _read_ddo_capture(root, set(manifest_digests), selection)

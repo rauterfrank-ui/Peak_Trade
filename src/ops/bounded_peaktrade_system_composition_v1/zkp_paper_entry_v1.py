@@ -78,6 +78,78 @@ _MAX_SECONDS = 7200
 _BUDGET_POLICY = "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
 
 
+def paper_constraints_v1(market):
+    contract = market.native_contract
+    return InstrumentQuantityConstraintsV1(
+        instrument_id=INSTRUMENT_ID,
+        market_type="futures",
+        contract_kind="LINEAR",
+        contract_multiplier=contract.contract_size,
+        lot_size=market.lot_size,
+        minimum_quantity=contract.min_qty,
+        maximum_quantity=market.maximum_contracts,
+        minimum_notional=None,
+        tick_size=contract.tick_size,
+        instrument_metadata_version=market.source_hashes["instrument"],
+    )
+
+
+def paper_sizing_v1(
+    *,
+    decision_id,
+    input_digest,
+    side,
+    market,
+    stop,
+    distance,
+    equity,
+    cap,
+    loss_limit,
+    budget,
+    config_digest,
+    instrument,
+):
+    # The sizer evaluates the resulting exposure. The net fill separately
+    # validates and closes the entire old leg in the same accounting operation.
+    return CapitalRiskSizingInputV1(
+        decision_id=decision_id,
+        instrument_id=INSTRUMENT_ID,
+        selected_side=side.upper(),
+        reference_price=market.mark,
+        protective_stop_price=stop,
+        stop_distance=distance,
+        account_equity=equity,
+        scope_capital_limit=cap,
+        per_trade_risk_limit=loss_limit,
+        total_capital_limit=cap,
+        daily_loss_remaining_budget=loss_limit,
+        current_reconciled_exposure=_ZERO,
+        maximum_positions=1,
+        current_open_positions_count=0,
+        current_open_side=None,
+        configured_quantity_cap=None,
+        leverage_ceiling=Decimal(1),
+        reconciliation_status="RECONCILED",
+        policy_version=budget.policy_id,
+        config_digest=config_digest,
+        input_digest=input_digest,
+        instrument=instrument,
+        decision_outcome="enter_" + side.lower(),
+    )
+
+
+def paper_fill_fresh_v1(market, now):
+    return (
+        market.observed_unix <= now < market.funding_time_unix
+        and classify_live_mark_price_freshness_v1(
+            age_seconds=now - market.market_event_unix
+        ).publishable
+        and classify_live_best_bid_ask_freshness_v1(
+            age_seconds=now - market.book_event_unix
+        ).publishable
+    )
+
+
 class ZkpPaperEntryV1:
     """One writer for the flat slot and its opening evidence."""
 
@@ -162,7 +234,7 @@ class ZkpPaperEntryV1:
                 "fee_rate": str(PAPER_FEE_RATE),
                 "fee_model_source": "https://www.okx.com/en-eu/help/okx-x-perps-eea-fees-overview",
                 "fee_model": "PUBLIC_EEA_BASE_TAKER",
-                "funding_model": "NEXT_SETTLEMENT_ADVERSE_RESERVE",
+                "funding_model": "OKX_REALIZED_RATE_PRECEDING_FINAL_MARK_CLOSE",
                 "venue_order_transport": False,
                 "authority": "NONE",
                 "binding": identity,
@@ -272,41 +344,19 @@ class ZkpPaperEntryV1:
             * market.usd_per_usdc
         )
         loss_limit = min(self.budget.per_slot_test_loss_limit * market.usd_per_usdc, equity)
-        sizing = CapitalRiskSizingInputV1(
+        sizing = paper_sizing_v1(
             decision_id=parent.decision_id,
-            instrument_id=INSTRUMENT_ID,
-            selected_side=side,
-            reference_price=market.mark,
-            protective_stop_price=stop,
-            stop_distance=distance,
-            account_equity=equity,
-            scope_capital_limit=cap,
-            per_trade_risk_limit=loss_limit,
-            total_capital_limit=cap,
-            daily_loss_remaining_budget=loss_limit,
-            current_reconciled_exposure=_ZERO,
-            maximum_positions=1,
-            current_open_positions_count=0,
-            current_open_side=None,
-            configured_quantity_cap=None,
-            leverage_ceiling=Decimal(1),
-            reconciliation_status="RECONCILED",
-            policy_version=self.budget.policy_id,
-            config_digest=self.binding_digest,
             input_digest=parent.input_digest,
-            instrument=InstrumentQuantityConstraintsV1(
-                instrument_id=INSTRUMENT_ID,
-                market_type="futures",
-                contract_kind="LINEAR",
-                contract_multiplier=self.contract.contract_size,
-                lot_size=market.lot_size,
-                minimum_quantity=self.contract.min_qty,
-                maximum_quantity=market.maximum_contracts,
-                minimum_notional=None,
-                tick_size=self.contract.tick_size,
-                instrument_metadata_version=market.source_hashes["instrument"],
-            ),
-            decision_outcome=cycle.decision_outcome,
+            side=side,
+            market=market,
+            stop=stop,
+            distance=distance,
+            equity=equity,
+            cap=cap,
+            loss_limit=loss_limit,
+            budget=self.budget,
+            config_digest=self.binding_digest,
+            instrument=paper_constraints_v1(market),
         )
         size = evaluate_capital_risk_sizing_v1(sizing)
         plan = build_canonical_order_intent_v1(
@@ -355,16 +405,7 @@ class ZkpPaperEntryV1:
         if not liquidity["risk_admitted"]:
             return result
         now = clock()
-        if (
-            now < market.observed_unix
-            or now >= market.funding_time_unix
-            or not classify_live_mark_price_freshness_v1(
-                age_seconds=now - market.market_event_unix
-            ).publishable
-            or not classify_live_best_bid_ask_freshness_v1(
-                age_seconds=now - market.book_event_unix
-            ).publishable
-        ):
+        if not paper_fill_fresh_v1(market, now):
             return {**result, "reason_codes": ["ZKP_PAPER_MARKET_EXPIRED_AT_FILL"]}
         price, close_price = (
             Decimal(liquidity["open_price_usd"]),
