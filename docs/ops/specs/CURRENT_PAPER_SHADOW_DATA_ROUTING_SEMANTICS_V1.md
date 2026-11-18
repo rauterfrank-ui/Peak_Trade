@@ -414,3 +414,10 @@ Schwellen wurden nicht geändert; seine fachliche Ursache ist noch nicht
 abschließend beurteilt. Ruff, Formatprüfung, Diff-Prüfung sowie Karten-,
 N1- und Clean-Core-Siegel bestanden. Die Kartenprüfung ersetzt diesen offenen
 Safety-Befund nicht.
+
+Die abschließende Dokument-/Atlas-/Law-Map-Currency-Prüfkette bestand auf
+`ff101dc3e`. Der zusätzliche Law-Impact-Advisory meldet weiterhin allgemeinen
+Reviewbedarf gegenüber dem Freeze: vier unklassifizierte Oberflächen und
+zwei unbekannte Grenztreffer. Dieselben Treffer und Zählwerte wurden auf der
+unveränderten Mergebasis reproduziert. Dies ist keine neue Regelratifikation
+oder fachliche Freigabe; der Bedarf bleibt im Prüfbeleg offen ausgewiesen.

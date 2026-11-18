@@ -554,7 +554,7 @@
     {
       "path": "docs/ops/evidence/INSTRUMENT_CARD_CONTINUOUS_CONNECTION_2026-11-19.json",
       "before_sha256": null,
-      "sha256": "acccd3d949a0b64769dc135f1e7f025e94e101770dc1013e7ee13fcca4dd6d72"
+      "sha256": "3528e8be3d2eb2782021accc1e72381f007165066e1e157d47b4dd6d07a18208"
     },
     {
       "path": "docs/ops/evidence/INSTRUMENT_CARD_SIGNAL_ASSIGNMENT_2026-11-18.json",
@@ -1039,7 +1039,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "af6a4394b65033782c7266d7272ff5647a140122901615e6d4c934a07aa585dc"
+      "sha256": "45a79b1b0eca3e065796c4a5184dfd3c8176c9ccbaafe40bdb316c1435179052"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",

@@ -67,7 +67,24 @@
       "MASTER_V2_INSTRUMENT_CARDS_SEAL_V1=PASS",
       "N1_DOUBLE_PLAY_RUNTIME_SEAL_V1=PASS",
       "CLEAN_CORE_SEAL_V1=PASS"
-    ]
+    ],
+    "repository_gates": {
+      "checked_commit": "ff101dc3e",
+      "docs_drift_guard": "PASS_21_CHANGED_PATHS",
+      "system_atlas_validation": "PASS",
+      "system_atlas_impact": "PASS",
+      "law_generated_views_currency": "PASS",
+      "law_impact_path_binding": "PASS",
+      "law_advisory": {
+        "status": "LAW_REVIEW_REQUIRED_ADVISORY_ONLY",
+        "same_on_baseline": true,
+        "direct_semantic_objects": 13,
+        "direct_law_references": 21,
+        "unclassified_surfaces": 4,
+        "unknown_boundary_hits": 2,
+        "runtime_effect_inferred": false
+      }
+    }
   },
   "proof_reach": [
     "13 successive source inputs projected during original Paper/Shadow loops, not an archive-only adapter.",
@@ -96,6 +113,7 @@
   },
   "open_limits": [
     "The baseline adverse-exit control failure remains open; no overall Safety acceptance.",
+    "The Law Impact advisory retains the same general frozen-baseline review requirement as main (4 unclassified surfaces, 2 unknown boundary hits); it is not a semantic-law approval.",
     "Natural current Cap23/Cap24/rotation inputs and actual continuous operation require their existing owners and original gates.",
     "Analytical Shadow economics is not native exchange fill/accounting truth or a portfolio capital hold.",
     "Original Shadow restart policy remains in force; no implicit process resume or power-loss proof.",
