@@ -9,6 +9,7 @@ from src.ops.first_entry_mark_clock_v2 import run_first_entry_mark_cycle_v2
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
     load_current_productive_sidestate_confirmation_cursor_v1,
+    parse_current_productive_sidestate_confirmation_cursor_v1,
 )
 from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
     non_productive_harness_master_v2_reconciliation_admission_v1,
@@ -137,7 +138,10 @@ def test_rejections_leave_the_original_lane_untouched(tmp_path, overrides, tick,
     assert cursor_path.read_bytes() == before
 
 
-def test_brev_simulated_fill_hands_fresh_mark_and_full_scope_to_occupied_logic(tmp_path):
+@pytest.mark.parametrize("publish_c1", ["original", "v2", "v2-interrupted"])
+def test_brev_simulated_fill_hands_fresh_mark_and_full_scope_to_occupied_logic(
+    tmp_path, monkeypatch, publish_c1
+):
     from decimal import Decimal
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
@@ -160,6 +164,8 @@ def test_brev_simulated_fill_hands_fresh_mark_and_full_scope_to_occupied_logic(t
     from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
         build_s8_occupied_lane_pairs_v1,
     )
+    from src.ops.offline_first_entry_budget_v2 import OfflineFirstEntryBudgetOwnerV2
+    from src.ops import offline_first_entry_position_v2 as occupied_entry
     from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
         read_occupied_scope_mark_snapshot_v1,
         restore_layered_core_episode_v1,
@@ -215,6 +221,48 @@ def test_brev_simulated_fill_hands_fresh_mark_and_full_scope_to_occupied_logic(t
     )
     closes, candle_open = extract_finalized_candle_closes_v1(market["candles_payload"])
     assert candle_open == entry.candle_open_unix
+    if publish_c1 != "original":
+        # This fixture isolates the clock transition. Its synthetic fill does
+        # not include the cost-bound reservation exercised by the ZKP replay.
+        owner = OfflineFirstEntryBudgetOwnerV2.__new__(OfflineFirstEntryBudgetOwnerV2)
+        monkeypatch.setattr(owner, "retain_opening_fill_v2", lambda **_: "retained")
+        handoff = dict(
+            owner=owner,
+            reservation_id="fixture-hold",
+            episode=episode,
+            cursor_root=lane,
+            g17_producer=market["g17_producer"],
+            writer_session_id="brev-occupied-c1",
+        )
+        if publish_c1 == "v2-interrupted":
+
+            def interrupt(**_):
+                raise InterruptedError("after the Exit publication commit")
+
+            with monkeypatch.context() as fault:
+                fault.setattr(occupied_entry, "recover_current_cursor_publication_v1", interrupt)
+                with pytest.raises(InterruptedError, match="Exit publication"):
+                    occupied_entry.bind_offline_first_entry_position_v2(**handoff)
+            unchanged = load_current_productive_sidestate_confirmation_cursor_v1(lane)
+            assert unchanged == entry.cycle.outgoing_cursor.to_dict()
+
+        published = occupied_entry.bind_offline_first_entry_position_v2(**handoff)
+        assert published["status"] == "PUBLISHED_RETAINED_CURSOR"
+        assert (
+            occupied_entry.bind_offline_first_entry_position_v2(**handoff)["status"]
+            == "ALREADY_PUBLISHED"
+        )
+        raw = load_current_productive_sidestate_confirmation_cursor_v1(lane)
+        clock = raw["cap61_confirmation_state"]["observation_acceptance_state"][
+            "last_accepted_observation_identity"
+        ]
+        assert clock["venue_event_time"] == candle_open
+        (last_c1,) = market["g17_producer"].history.trailing_window_records_v1(count=1)
+        assert clock["mark_price"] == last_c1.mark_price
+        assert raw["trading_epoch"] == entry.cycle.outgoing_cursor.trading_epoch
+        entry_confirmation = parse_current_productive_sidestate_confirmation_cursor_v1(
+            raw
+        ).cap61_confirmation_state.observation_acceptance_state
 
     for offset in (2, 4, 6):
         native = restore_layered_core_episode_v1(lane, expected_instrument_id=INSTRUMENT)

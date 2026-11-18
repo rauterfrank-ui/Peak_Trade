@@ -257,6 +257,11 @@ def run_offline_first_entry_start_v2(
     29P input port receives the exact decision epoch and cycle id. Callers may
     permit read-only preparation on a candidate Mark. Sizing still requires
     a committed ENTER. Expired entries without a reservation require a new Mark.
+
+    For an offline run continuing past a confirmed simulated fill, use
+    OfflineFirstEntryBudgetHostV2 and bind_offline_first_entry_position_v2.
+    That handoff retains the opening-fill evidence and publishes the occupied
+    lane's finalized C1 clock through the original cursor owner.
     """
     if budget_host.closed or budget_host.execution_environment != _SIMULATED_ENVIRONMENT:
         raise ValueError("FIRST_ENTRY_START_SIMULATED_BUDGET_HOST_REQUIRED")
