@@ -14,6 +14,11 @@ from src.governance.canonical_order_intent_v1 import (
     canonical_order_intent_from_dict,
     canonical_order_intent_to_semantic_dict,
 )
+from src.ops.bounded_peaktrade_system_composition_v1.xperp_paper_episode_outcome_v1 import (
+    CLOSEOUT as XPERP_CLOSEOUT,
+    closed_xperp_paper_episode_ids_v1,
+    read_xperp_paper_episode_outcome_v1,
+)
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     COMMIT_MARKER_FILENAME,
     EXIT_STATE_FILENAME,
@@ -48,6 +53,8 @@ def closed_paper_episode_ids_v1(root: Path) -> tuple[str, ...]:
     """Select sealed simulated closes from a finalized Paper archive."""
     if root != root.resolve():
         raise ValueError("PAPER_OUTCOME_ARCHIVE_OR_EPISODE_INVALID")
+    if (root / XPERP_CLOSEOUT).exists():
+        return closed_xperp_paper_episode_ids_v1(root)
     closeout = json.loads((root / "paper-closeout.json").read_bytes())
     if closeout["status"] not in {"WINDOW_ENDED", "STOPPED"} or closeout["error"] is not None:
         return ()
@@ -69,8 +76,14 @@ def closed_paper_episode_ids_v1(root: Path) -> tuple[str, ...]:
 
 def paper_episode_fee_observation_v1(root: Path, measurement: dict) -> dict:
     """Read modeled quote fees and fill notional for the already verified episode."""
-    ledger = _index(root / "paper-fills.jsonl", lambda row: row["fill"]["fill_id"])
-    fills = [ledger[binding["fill_id"]]["fill"] for binding in measurement["fill_bindings"]]
+    fills = measurement["fill_bindings"]
+    if not (root / XPERP_CLOSEOUT).exists():
+        ledger = _index(root / "paper-fills.jsonl", lambda row: row["fill"]["fill_id"])
+        fills = [ledger[binding["fill_id"]]["fill"] for binding in fills]
+    elif measurement["outcome_digest"] != digest_v1(
+        {key: value for key, value in measurement.items() if key != "outcome_digest"}
+    ):
+        raise ValueError("PAPER_FEE_OBSERVATION_OUTCOME_CHANGED")
     fees = sum(Decimal(fill["fee"]) for fill in fills)
     notional = sum(abs(Decimal(fill["notional"])) for fill in fills)
     if (
@@ -242,6 +255,10 @@ def read_paper_episode_outcome_v1(
     root = root.absolute()
     if root.resolve() != root or not EPISODE_ID.fullmatch(episode_id):
         raise ValueError("PAPER_OUTCOME_ARCHIVE_OR_EPISODE_INVALID")
+    if (root / XPERP_CLOSEOUT).exists():
+        return read_xperp_paper_episode_outcome_v1(
+            root, episode_id, expected_lane_id=expected_lane_id
+        )
     state_root = root / "episodes" / episode_id
     state_files = (
         IDENTITY_FILENAME,

@@ -146,20 +146,21 @@ def build_meta_evidence_v1(
         "automatic_consumer_feedback_authorized": routing_class not in _FAIL_CLOSED_CLASSES,
         "meta_broadcast_forbidden": True,
     }
-    digest = compute_content_hash_v0(
-        {key: body[key] for key in sorted(body) if key != "content_digest"},
-        extra_excluded_fields=frozenset({"content_digest"}),
+    body["content_digest"] = compute_content_hash_v0(
+        body, extra_excluded_fields=frozenset({"content_digest"})
     )
-    if not is_valid_sha256_hex_v0(digest):
-        raise MetaEvidenceValidationError("CONTENT_DIGEST_INVALID")
-    body["content_digest"] = digest
     return validate_meta_evidence_v1(body)
 
 
 def validate_meta_evidence_v1(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
     if not isinstance(payload, Mapping):
         raise MetaEvidenceValidationError("META_EVIDENCE_MUST_BE_MAPPING")
-    if payload.get("schema_version") != SCHEMA_VERSION:
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("domain") != META_EVIDENCE_DOMAIN
+        or payload.get("meta_learning_evidence_schema_version")
+        != META_LEARNING_EVIDENCE_SCHEMA_VERSION
+    ):
         raise MetaEvidenceValidationError("META_EVIDENCE_SCHEMA_MISMATCH")
     if payload.get("meta_evidence_authority") != META_EVIDENCE_AUTHORITY:
         raise MetaEvidenceValidationError("META_EVIDENCE_AUTHORITY_MUST_BE_NONE")
@@ -177,6 +178,14 @@ def validate_meta_evidence_v1(payload: Mapping[str, Any]) -> MappingProxyType[st
     nested = validate_meta_learning_evidence_v1(nested_raw)
     if str(payload.get("source_meta_evidence_id")) != str(nested["meta_evidence_id"]):
         raise MetaEvidenceValidationError("SOURCE_META_EVIDENCE_ID_MISMATCH")
+    if payload.get("source_meta_reproducibility_digest") != nested["reproducibility_digest"]:
+        raise MetaEvidenceValidationError("SOURCE_META_REPRODUCIBILITY_DIGEST_MISMATCH")
+    assert_routing_class_lineage_binding_v1(
+        meta_learning_evidence=nested, semantic_routing_class=routing_class
+    )
+    provenance = payload.get("classification_provenance")
+    if not isinstance(provenance, Mapping):
+        raise MetaEvidenceValidationError("CLASSIFICATION_PROVENANCE_INVALID")
     record_id = str(payload.get("meta_evidence_record_id") or "")
     identity_body = {
         "schema_version": SCHEMA_VERSION,
@@ -188,7 +197,7 @@ def validate_meta_evidence_v1(payload: Mapping[str, Any]) -> MappingProxyType[st
         "semantic_routing_class": routing_class,
         "intended_semantic_consumer": expected_consumer,
         "permitted_use_classification": PERMITTED_USE_RESEARCH_ONLY,
-        "classification_provenance": dict(payload.get("classification_provenance") or {}),
+        "classification_provenance": dict(provenance),
     }
     if record_id != derive_meta_evidence_record_id_v1(identity_body=identity_body):
         raise MetaEvidenceValidationError("META_EVIDENCE_RECORD_ID_MISMATCH")
@@ -201,6 +210,10 @@ def validate_meta_evidence_v1(payload: Mapping[str, Any]) -> MappingProxyType[st
     digest = payload.get("content_digest")
     if not is_valid_sha256_hex_v0(str(digest or "")):
         raise MetaEvidenceValidationError("CONTENT_DIGEST_INVALID")
+    if digest != compute_content_hash_v0(
+        payload, extra_excluded_fields=frozenset({"content_digest"})
+    ):
+        raise MetaEvidenceValidationError("CONTENT_DIGEST_MISMATCH")
     auto = payload.get("automatic_consumer_feedback_authorized")
     if routing_class in _FAIL_CLOSED_CLASSES:
         if auto is not False:

@@ -28,6 +28,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--episode-id", required=True)
+    parser.add_argument("--lane-id", help="Require the archived episode to belong to this lane")
     handoff = parser.add_mutually_exclusive_group()
     handoff.add_argument(
         "--handoff-root", type=Path, help="Publish to a separate offline workspace"
@@ -45,6 +46,7 @@ def main():
                     primary_evidence_root=args.run_root,
                     episode_id=args.episode_id,
                     learning_handoff_root=args.verify_g2_handoff_root,
+                    expected_lane_id=args.lane_id,
                 )
             )
             binding = bind_from_g2_projection_result_v1(projection)
@@ -66,13 +68,16 @@ def main():
                 },
             }
         elif output_root is None:
-            outcome = read_paper_episode_outcome_v1(args.run_root, args.episode_id)
+            outcome = read_paper_episode_outcome_v1(
+                args.run_root, args.episode_id, expected_lane_id=args.lane_id
+            )
         else:
             outcome = paper_episode_learning_handoff_v1(
                 archive_root=args.run_root,
                 episode_id=args.episode_id,
                 output_root=output_root,
                 verify=args.verify_handoff_root is not None,
+                expected_lane_id=args.lane_id,
             )
     except (DdoError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
         parser.exit(1, f"Paper episode outcome rejected: {exc}\n")

@@ -1,7 +1,7 @@
 """Offline contracts for the exact public-data-to-Paper opening route."""
 
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from hashlib import sha256
 import json
@@ -14,16 +14,24 @@ from urllib.parse import parse_qs, urlencode, urlsplit
 import pytest
 
 from scripts.ops import run_zkp_lane1_paper_v1 as paper_cli
+from scripts.ops import run_recurrent_offline_research_v1 as research
 from scripts.ops.run_zkp_lane1_paper_v1 import preflight_zkp_paper_v1
 from src.ops.bounded_peaktrade_system_composition_v1 import (
     zkp_paper_continuation_v1 as continuation,
 )
+from src.ops.bounded_peaktrade_system_composition_v1.paper_episode_outcome_v1 import (
+    closed_paper_episode_ids_v1,
+    read_paper_episode_outcome_v1,
+)
+from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
+from tests.learning.test_offline_ddo_research_cycle_v1 import native_research_fixture
 from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
     collect_bound_paper_liquidity_v1,
 )
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import ZkpPaperEntryV1
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
     INSTRUMENT_ID,
+    IRYS_PAPER_SLOT,
     NATIVE_ID,
     PAPER_FEE_RATE,
     UP_PAPER_SLOT,
@@ -93,6 +101,11 @@ def _observations(
     acquired = datetime.fromtimestamp(now - 0.1, timezone.utc).isoformat()
     start_mark = Decimal("0.2032") if slot == UP_PAPER_SLOT else Decimal("0.0335")
     movement = Decimal("0.0018") if slot == UP_PAPER_SLOT else Decimal("0.00030")
+    contract_size = 10
+    if slot == IRYS_PAPER_SLOT:
+        start_mark = Decimal("0.01765")
+        movement = Decimal("0.00016")
+        contract_size = 100
     mark = price if price is not None else start_mark + step * direction * movement
     tick = Decimal("0.00001")
     bid = mark + book_offset - spread_ticks * tick
@@ -104,7 +117,7 @@ def _observations(
         "uly": slot.index_id,
         "ctType": "linear",
         "ctValCcy": slot.base_currency,
-        "ctVal": "10",
+        "ctVal": str(contract_size),
         "ctMult": "1",
         "settleCcy": "USD",
         "state": "live",
@@ -118,7 +131,14 @@ def _observations(
         str(start_mark * (1 + direction * Decimal("0.002") * (i - 99 + minute))) for i in range(100)
     ]
     trade = [
-        [str((C1 + (i - 99 + minute) * 60) * 1000), *([price] * 4), "5", "50", "1.6", "1"]
+        [
+            str((C1 + (i - 99 + minute) * 60) * 1000),
+            *([price] * 4),
+            "5",
+            str(5 * contract_size),
+            str(5 * contract_size * Decimal(price)),
+            "1",
+        ]
         for i, price in enumerate(closes)
     ]
     mark_history = [row[:5] + ["1"] for row in trade[-61:]]
@@ -133,7 +153,7 @@ def _observations(
             "0.032",
             "0.033",
             "10000",
-            "100000",
+            str(10000 * contract_size),
             "3300",
             "1",
         ]
@@ -179,9 +199,21 @@ def _observations(
         else [],
         "trade-candles": trade,
         "mark-candles": mark_history,
-        "open-interest": [{"instId": slot.native_id, "ts": event, "oi": "2000", "oiCcy": "20000"}],
+        "open-interest": [
+            {
+                "instId": slot.native_id,
+                "ts": event,
+                "oi": "2000",
+                "oiCcy": str(2000 * contract_size),
+            }
+        ],
         "ticker": [
-            {"instId": slot.native_id, "ts": event, "vol24h": "10000", "volCcy24h": "100000"}
+            {
+                "instId": slot.native_id,
+                "ts": event,
+                "vol24h": "10000",
+                "volCcy24h": str(10000 * contract_size),
+            }
         ],
         "usdc-index": [{"instId": "USDC-USD", "ts": event, "idxPx": "1"}],
         "index": [{"instId": slot.index_id, "ts": event, "idxPx": str(mark)}],
@@ -223,6 +255,19 @@ def _against_position(cursor_root, direction):
     scope = restore_layered_core_episode_v1(cursor_root)
     move = max(3 * scope.scope.d_t, 0.00003)
     return Decimal(str(round(scope.running_reference.reference_price_r_t - direction * move, 5)))
+
+
+def _seal_fixture(root, booking):
+    paper_cli.immutable_json_v1(root / "window.json", {"started_at": C1, "duration_seconds": 7200})
+    closeout = {
+        "status": "WINDOW_ENDED_OCCUPIED",
+        "authority": "NONE",
+        "last_booking": booking,
+        "orders_sent": 0,
+        "permits_created": 0,
+    }
+    paper_cli.immutable_json_v1(root / "closeout.json", closeout)
+    paper_cli.seal_xperp_paper_archive_v1(root, closeout)
 
 
 @pytest.mark.parametrize("fault", ["gap", "units", "book-age", "wrong-query"])
@@ -385,7 +430,7 @@ def test_liquidity_rejects_adverse_book_impact_and_volume_participation():
     ]
 
 
-@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
 def test_operator_preflight_stays_outside_paper_state(tmp_path, monkeypatch, capsys, slot):
     root = tmp_path.resolve() / "input-evidence"
 
@@ -399,7 +444,7 @@ def test_operator_preflight_stays_outside_paper_state(tmp_path, monkeypatch, cap
 
     monkeypatch.setattr(paper_cli, "_run", reject_run)
     args = ["preflight", "--evidence-root", str(root)]
-    if slot == UP_PAPER_SLOT:
+    if slot != ZKP_PAPER_SLOT:
         config = tmp_path / "slot-config.json"
         selection = {
             "lane": slot.lane_id,
@@ -408,11 +453,13 @@ def test_operator_preflight_stays_outside_paper_state(tmp_path, monkeypatch, cap
             "surface": "PAPER_EXCHANGE",
             "authority": "NONE",
         }
-        config.write_text(json.dumps({**selection, "lane": "LANE_1"}))
+        config.write_text(
+            json.dumps({**selection, "native_instrument_id": ZKP_PAPER_SLOT.native_id})
+        )
         with pytest.raises(SystemExit) as error:
             paper_cli.main([*args, "--slot-config", str(config)])
         assert error.value.code == 2
-        assert "UP_PAPER_SLOT_CONFIG_MISMATCH" in capsys.readouterr().err
+        assert f"{slot.base_currency}_PAPER_SLOT_CONFIG_MISMATCH" in capsys.readouterr().err
         assert not root.exists()
         config.write_text(json.dumps(selection))
         args += ["--slot-config", str(config)]
@@ -548,7 +595,7 @@ def test_cap24_preflight_discards_measurement_if_binding_changes_during_capture(
 
 
 @pytest.mark.parametrize("direction", [1, -1])
-@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
 def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction, slot):
     root = tmp_path.resolve() / "paper-net"
     args = dict(root=root, repo=REPO, revision="f" * 40, slot=slot)
@@ -565,7 +612,7 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
     assert session.last_receipt == initial
     assert session.cursor_root.name == slot.lane_id
     assert set(path.name for path in session.cursor_root.parent.iterdir()) == {slot.lane_id}
-    if slot == UP_PAPER_SLOT:
+    if slot != ZKP_PAPER_SLOT:
         with pytest.raises(ValueError, match="ZKP_PAPER_ORIGINAL_PROFILE_REQUIRED"):
             continuation.ZkpPaperContinuationV1(**{**args, "slot": ZKP_PAPER_SLOT})
     held = _market(i + 1, direction=direction, slot=slot)
@@ -647,13 +694,34 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
     assert second["previous_episode_id"] == receipt["episode_id"]
     assert second["accounting"]["fill_count"] == 3
     assert continuation.ZkpPaperContinuationV1(**args).last_receipt == second
+    _seal_fixture(root, second)
+    assert closed_paper_episode_ids_v1(root) == (initial["episode_id"], receipt["episode_id"])
+    first, following = (
+        read_paper_episode_outcome_v1(root, episode, expected_lane_id=slot.lane_id)
+        for episode in (initial["episode_id"], receipt["episode_id"])
+    )
+    close_leg, open_leg = first["fill_bindings"][-1], following["fill_bindings"][0]
+    assert close_leg["fill_id"] == open_leg["fill_id"] == receipt["fill"]["fill_id"]
+    assert close_leg["decision_id"] == open_leg["decision_id"] == receipt["decision_id"]
+    assert (close_leg["episode_fill_role"], open_leg["episode_fill_role"]) == ("CLOSE", "OPEN")
+    for field, original_field in (
+        ("fee", "fee"),
+        ("episode_contracts", "quantity"),
+        ("notional", "notional"),
+        ("slippage", "slippage_cost"),
+    ):
+        assert Decimal(close_leg[field]) + Decimal(open_leg[field]) == Decimal(
+            receipt["fill"][original_field]
+        )
 
 
-@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
 def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     tmp_path, monkeypatch, slot
 ):
-    root = tmp_path.resolve() / "paper-driver"
+    tmp_path = tmp_path.resolve()
+    root = tmp_path / "paper" / (slot.lane_id.lower() + "-fixture")
+    root.parent.mkdir()
     elapsed = 0
     index = 0
     initial = _market(slot=slot)
@@ -696,11 +764,109 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     assert booking["fill"]["instrument_id"] == slot.native_id
     assert len(list((root / "reversals").glob("*.json"))) == 1
     before = load_current_productive_sidestate_confirmation_cursor_v1(lane)
+    manifest = root / "MANIFEST.sha256"
+    original = manifest.read_bytes()
+    manifest.unlink()
     recovered = paper_cli._resume(
         root, policy=initial.policy, revision="f" * 40, capture=capture, slot=slot
     )
     assert recovered == result
+    assert manifest.read_bytes() == original
     assert load_current_productive_sidestate_confirmation_cursor_v1(lane) == before
+
+    (episode_id,) = closed_paper_episode_ids_v1(root)
+    assert episode_id == booking["previous_episode_id"]
+    with pytest.raises(ValueError, match="EPISODE_NOT_CLOSED"):
+        read_paper_episode_outcome_v1(root, booking["episode_id"])
+    measurement = read_paper_episode_outcome_v1(root, episode_id, expected_lane_id=slot.lane_id)
+    assert (measurement["lane_id"], measurement["instrument_id"]) == (
+        slot.lane_id,
+        slot.instrument_id,
+    )
+    assert measurement["fill_bindings"][-1]["decision_id"] == booking["decision_id"]
+    assert Decimal(measurement["fees"]) < Decimal(booking["accounting"]["cumulative_fees"])
+
+    bars, config, request = native_research_fixture(slot.instrument_id, "b" * 64)
+    csv_path, cfg_path, template_path = (
+        tmp_path / name for name in ("bars.csv", "config.json", "input.json")
+    )
+    bars.to_csv(csv_path)
+    cfg_path.write_text(json.dumps(config))
+    profile = request.model_dump(mode="json", exclude={"learning_evidence_digest", "times"})
+    profile.update(schema_version="offline_ddo_research_profile.v1", gap_dimensions=[])
+    template_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "offline_research_input.v1",
+                "instrument_id": slot.instrument_id,
+                "bars_csv_sha256": sha256(csv_path.read_bytes()).hexdigest(),
+                "backtest_json_sha256": sha256(cfg_path.read_bytes()).hexdigest(),
+                "profile": profile,
+            }
+        )
+    )
+    scope = research.ResearchSlotScopeV1(
+        lane_id=slot.lane_id,
+        surface="PAPER_EXCHANGE",
+        session_id=root.name,
+        instrument_id=slot.instrument_id,
+        venue_native_id=slot.native_id,
+        starts_at=datetime.fromtimestamp(C1, timezone.utc),
+        ends_at=datetime.fromtimestamp(C1, timezone.utc) + timedelta(hours=2),
+    )
+    campaign = research.ResearchCampaignV1(
+        state=tmp_path / "gvef",
+        paper_runs=root.parent,
+        shadow_runs=tmp_path / "shadow",
+        shadow_follow_ups=tmp_path / "followups",
+        slot=scope,
+        jobs_per_tick=2,
+        history_jobs=1,
+        retry_seconds=1,
+        research_inputs={
+            slot.instrument_id: [
+                research.ResearchInputV1(template=template_path, bars=csv_path, config=cfg_path)
+            ]
+        },
+    )
+    campaign.shadow_runs.mkdir()
+    campaign.shadow_follow_ups.mkdir()
+    tick_args = dict(
+        code=CanonicalCodeProvenanceV1("f" * 40, "CLEAN"),
+        now=datetime(2026, 11, 18, tzinfo=timezone.utc),
+    )
+    other = IRYS_PAPER_SLOT if slot == ZKP_PAPER_SLOT else ZKP_PAPER_SLOT
+    for name, update in (
+        ("lane", {"lane_id": other.lane_id}),
+        ("instrument", {"venue_native_id": other.native_id}),
+        ("window", {"starts_at": scope.starts_at - timedelta(hours=2), "ends_at": scope.starts_at}),
+    ):
+        wrong = campaign.model_copy(
+            update={"slot": scope.model_copy(update=update), "state": tmp_path / name}
+        )
+        (rejected,) = research.tick_research_campaign_v1(wrong, **tick_args)["jobs"]
+        assert rejected["status"] == "BLOCKED" and "SCOPE_MISMATCH" in rejected["reason"]
+        assert not (wrong.state / "paper-learning").exists()
+
+    (job,) = research.tick_research_campaign_v1(campaign, **tick_args)["jobs"]
+    assert job["status"] == "MECHANISM_PASS", job
+    assert job["source"]["slot"] == scope.model_dump(mode="json")
+    (receipt_path,) = (campaign.state / "completed").glob("*.json")
+    receipt = research.read_v1(receipt_path)
+    assert receipt["source"]["episode"] == episode_id
+    assert receipt["instrument_id"] == slot.instrument_id
+    evaluation = research.read_v1(
+        campaign.state / "offline-ddo-research" / receipt["learning_digest"] / "result.json"
+    )
+    assert evaluation["evaluation"]["economic_status"] == "BLOCKED"
+    assert research.tick_research_campaign_v1(campaign, **tick_args)["jobs"] == []
+    assert manifest.read_bytes() == original
+    (reversal_path,) = (root / "reversals").glob("*.json")
+    reversal_path.write_bytes(reversal_path.read_bytes() + b"\n")
+    tainted = campaign.model_copy(update={"state": tmp_path / "tampered"})
+    (rejected,) = research.tick_research_campaign_v1(tainted, **tick_args)["jobs"]
+    assert rejected["status"] == "BLOCKED" and "MANIFEST_INVALID" in rejected["reason"]
+    assert not (tainted.state / "paper-learning").exists()
 
 
 @pytest.mark.parametrize("direction", [1, -1])
@@ -792,3 +958,11 @@ def test_funding_at_settlement_survives_process_loss_and_double_play_continues(t
     assert len(restarted.accounting.funding_events) == 1
     assert list((root / "funding").glob("*.json")) == [funding_path]
     assert funding_path.read_bytes() == booked
+    _seal_fixture(root, reversal)
+    measurement = read_paper_episode_outcome_v1(
+        root, initial["episode_id"], expected_lane_id="LANE_1"
+    )
+    assert Decimal(measurement["funding_pnl"]) == expected
+    assert Decimal(measurement["simulated_net_pnl"]) == (
+        Decimal(measurement["realized_pnl"]) + expected - Decimal(measurement["fees"])
+    )

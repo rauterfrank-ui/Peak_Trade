@@ -8,6 +8,10 @@ from src.ops.economic_md_input_producer_v1.purpose_admission_v1 import (
     PublicFactPurposePolicyV1,
     admit_public_facts_for_purpose_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+    fact_capture_timestamp_v1,
+)
 from src.ops.peak_trade_public_market_data_runtime_v1.durable_store_v1 import (
     default_store_paths_v1,
     load_all_facts_v1,
@@ -100,6 +104,9 @@ class PurposeBoundPublicFactSourceV1:
                 raise ValueError("DATA_FEATURE_BAR_TIME_INVALID")
             if ts + interval_ms > self.as_of_ms:
                 raise ValueError("DATA_FEATURE_FINALIZED_BAR_NOT_CLOSED_ASOF")
+            seconds, nanos = capture_order_key_v1(fact_capture_timestamp_v1(fact))
+            if (ts + interval_ms) * 1_000_000 > int(seconds.timestamp()) * 1_000_000_000 + nanos:
+                raise ValueError("DATA_FEATURE_FINALIZED_BAR_NOT_CLOSED_AT_CAPTURE")
             prices = tuple(
                 Decimal(str(fact.get(k))) for k in ("open_px", "high_px", "low_px", "close_px")
             )
@@ -114,11 +121,6 @@ class PurposeBoundPublicFactSourceV1:
             ):
                 raise ValueError("DATA_FEATURE_OHLCV_INVALID")
             rows.append((ts, fact))
-        from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
-            capture_order_key_v1,
-            fact_capture_timestamp_v1,
-        )
-
         rows.sort(key=lambda row: (row[0], capture_order_key_v1(fact_capture_timestamp_v1(row[1]))))
         by_start = {}
         fields = ("open_px", "high_px", "low_px", "close_px", "volume")
@@ -141,6 +143,8 @@ class PurposeBoundPublicFactSourceV1:
 
     def trading_c1_v1(self, *, native_id):
         rows = self.ohlcv_v1(purpose="TRADING", native_id=native_id, interval_ms=60000)
+        if self.expected_volume_unit != "CONTRACTS":
+            raise ValueError("DATA_TRADING_C1_CONTRACT_VOLUME_REQUIRED")
         if len(rows) < 100:
             raise ValueError("DATA_TRADING_C1_100_FINALIZED_BARS_REQUIRED")
         # Unavailable volume currency fields stay empty, never synthetic values.
@@ -195,8 +199,6 @@ class PurposeBoundPublicFactSourceV1:
             raise ValueError("DATA_LIQUIDITY_SOURCE_KIND_UNSUPPORTED")
         from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
             fact_event_time_ms_v1,
-            fact_capture_timestamp_v1,
-            capture_order_key_v1,
         )
 
         newest = max(
@@ -248,11 +250,6 @@ class PurposeBoundPublicFactSourceV1:
             if fact["fact_kind"] != "FinalizedPt1hO4BarFactV1":
                 raise ValueError("DATA_OUTCOME_AUTHORITATIVE_O4_KIND_REQUIRED")
             bar = canonical_bar_envelope_to_o4_bar_element_v1(fact["bar"])
-            from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
-                fact_capture_timestamp_v1,
-                capture_order_key_v1,
-            )
-
             seconds, nanos = capture_order_key_v1(fact_capture_timestamp_v1(fact))
             if (
                 bar["bar_close_time"] * 1000 > self.as_of_ms

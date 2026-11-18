@@ -41,6 +41,9 @@ from src.ops.current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 import (
     ProductiveFullAutonomyCap24BindContextV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_explicit_test_fixture_price_provenance_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_FAIL_CLOSED,
     DISPOSITION_HOLD,
@@ -107,11 +110,19 @@ def _run_control(
     )
     cycle = _market_kwargs(cycle_id_prefix="pr3-cp")
     cycle.pop("origin_main_sha", None)
+    cycle.pop("canonical_price_provenance", None)
+    cycle["canonical_price_provenance_by_lane"] = {
+        LANE_IDS[index]: build_explicit_test_fixture_price_provenance_v1(
+            venue_native_id=native,
+            mark_px=float(chain["mark_price_by_native_id"][native]),
+            index_px=float(chain["mark_price_by_native_id"][native]) - 0.5,
+        )
+        for index, native in enumerate(instrument_rows[:requested])
+    }
     cycle["g17_typed_vol_producers"] = _g17(
         chain, instrument_rows, requested if harness else min(requested, len(instrument_rows))
     )
-    # Match the current finalized-history gate, as in the orchestrator fixture;
-    # the convenience multi-lane materializer supplies only eight bars.
+    # Supply independently identified history for each synthetic test lane.
     cycle["candles_payload_by_lane"] = {
         LANE_IDS[index]: {
             **_mv2_aligned_candles(

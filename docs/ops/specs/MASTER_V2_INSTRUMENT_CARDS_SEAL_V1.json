@@ -1,0 +1,10 @@
+{
+  "schema": "peaktrade.master_v2_instrument_cards_seal.v1",
+  "state": "SEALED",
+  "owner_universe": "Master V2 Double Play",
+  "runtime_authorization_effect": "NONE",
+  "files": {
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/offline_candidate_cards_v1.py": "ecbdab42b39df6ff84c0b422401a65f285fb63eaa000cd344eab4c8a1ba3f26e",
+    "src/ops/master_v2_double_play_instrument_cards_v1.py": "3161d6390f13d03ef04e126717aa1572f73cbea0583ef8bd3888d4ee9b5344cf"
+  }
+}

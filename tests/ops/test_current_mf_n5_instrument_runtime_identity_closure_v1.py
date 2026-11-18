@@ -228,6 +228,30 @@ def test_d1_wrong_inst_id_tag_fail_closed() -> None:
     assert exc.value.failure_code == FAILURE_C1_INSTRUMENT_MISMATCH
 
 
+def test_d1_routes_distinct_supplied_c1_histories_to_their_lanes(tmp_path):
+    first = _candles(inst_id="VENUE-A", last_ts_ms=int(C1_TS * 1000), close=100.0)
+    second = _candles(inst_id="VENUE-B", last_ts_ms=int((C1_TS + 60) * 1000), close=110.0)
+    ingress, _ = compose_per_lane_n5_identity_closure_v1(
+        {
+            "LANE_1": _pair(tmp_path, "LANE_1", native="VENUE-A"),
+            "LANE_2": _pair(tmp_path, "LANE_2", native="VENUE-B"),
+        },
+        candles_payload=None,
+        candles_payload_by_lane={"LANE_1": first, "LANE_2": second},
+        occupancy_payloads=_occupancy_absent(),
+        observed_portfolio=None,
+        venue_flat=True,
+        existing_position_side=ExistingPositionSide.NONE,
+        last_finalized_event_ts_unix=1,
+        finalized_closes=(1.0,),
+        require_reconciliation_admission=False,
+    )
+    assert ingress["LANE_1"].finalized_closes[-1] == 100.0
+    assert ingress["LANE_2"].finalized_closes[-1] == 110.0
+    assert ingress["LANE_1"].last_finalized_event_ts_unix == C1_TS
+    assert ingress["LANE_2"].last_finalized_event_ts_unix == C1_TS + 60
+
+
 def test_d2_per_lane_position_long_flat() -> None:
     ids = {
         "LANE_1": OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(

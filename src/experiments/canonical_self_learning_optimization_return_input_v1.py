@@ -106,6 +106,15 @@ def validate_self_learning_optimization_return_input_v1(
             )
         )
 
+    if evidence.get("federated_projection") is True:
+        return MappingProxyType(
+            _ack_payload(
+                status=STATUS_REJECTED_AUTHORITY_BOUNDARY,
+                reason="FEDERATED_EVIDENCE_REQUIRES_FEDERATED_RETURN_JOIN",
+                evidence_digest=str(evidence["content_hash"]),
+            )
+        )
+
     if request.expected_plane_identity is not None:
         if str(evidence.get("plane_identity")) != request.expected_plane_identity:
             return MappingProxyType(

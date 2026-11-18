@@ -350,7 +350,11 @@ class ZkpPaperEntryV1:
             if fill is None:
                 return evidence
             # Journal the canonical intent and every price/cost binding before accounting.
-            opening = {**evidence, "authority": "NONE"}
+            opening = {
+                **evidence,
+                "authority": "NONE",
+                "decision_cursor": cycle.outgoing_cursor.to_dict(),
+            }
             immutable_json_v1(self.root / "opening-plan.json", opening)
             return self._book_opening(cycle, self._g17_producer, opening, fill)
 

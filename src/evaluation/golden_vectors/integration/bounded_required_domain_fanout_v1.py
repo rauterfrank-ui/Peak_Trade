@@ -266,6 +266,10 @@ def _validate_input(requirement, entry):
 
 def require_numeric_context_binding_v1(domain, context, refs, archive):
     """Validity of two independent records is not proof of their actual join."""
+    if refs and domain not in {"self_learning", "market_intelligence"}:
+        raise EvaluationBindingError("DOMAIN_HAS_NO_NUMERIC_PACKET_CONSUMER")
+    if len({ref["original_bytes_sha256"] for ref in refs}) != len(refs):
+        raise EvaluationBindingError("DUPLICATE_NUMERIC_PACKET_REFERENCE")
     entries = context.replay_trace.entries
     if domain == "self_learning":
         if not refs or any(r["owner"] != "NativeResearchExecutionArchiveV1" for r in refs):

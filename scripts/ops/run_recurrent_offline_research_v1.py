@@ -169,17 +169,36 @@ def _read_source(workspace, source, campaign):
         ), {}
     if source["surface"] == "PAPER_EXCHANGE":
         archive = _absolute(Path(source["archive"]))
+        expected_archive = campaign.paper_runs / slot.session_id if slot is not None else None
+        if archive.parent != campaign.paper_runs or (
+            expected_archive is not None and archive != expected_archive
+        ):
+            raise ValueError("RESEARCH_PAPER_ARCHIVE_OUTSIDE_INTAKE")
         output = workspace.safe_path_v1("paper-learning")
         relative = Path("paper-episodes") / source["episode"] / "result.json"
+        measurements = {}
 
         def require_paper_measurement(measurement):
             if slot is not None:
-                slot.require_source(
-                    session_id=measurement["session_id"],
-                    instrument_id=measurement["instrument_id"],
-                    venue_native_id=measurement["venue_native_id"],
-                    decision_time=measurement["fill_bindings"][0]["decision_observed_at_utc"],
-                )
+                bindings = measurement["fill_bindings"]
+                if "lane_id" in measurement:
+                    times = [
+                        binding[field]
+                        for binding in bindings
+                        for field in ("decision_observed_at_utc", "fill_event_at_utc")
+                    ]
+                else:
+                    times = [bindings[0]["decision_observed_at_utc"]]
+                for moment in times:
+                    slot.require_source(
+                        session_id=measurement["session_id"],
+                        instrument_id=measurement["instrument_id"],
+                        venue_native_id=measurement["venue_native_id"],
+                        decision_time=moment,
+                    )
+            measurements["paper_fee_observation"] = paper_episode_fee_observation_v1(
+                archive, measurement
+            )
 
         handoff = paper_episode_learning_handoff_v1(
             archive_root=archive,
@@ -189,11 +208,7 @@ def _read_source(workspace, source, campaign):
             expected_lane_id=None if slot is None else slot.lane_id,
             require_measurement=require_paper_measurement,
         )
-        return handoff, {
-            "paper_fee_observation": paper_episode_fee_observation_v1(
-                archive, handoff["measurement"]
-            )
-        }
+        return handoff, measurements
     run = _absolute(Path(source["run"]))
     profile_path = run / "companion.json"
     if profile_path.exists() or profile_path.is_symlink():

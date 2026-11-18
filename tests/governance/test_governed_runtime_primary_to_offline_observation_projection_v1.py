@@ -57,13 +57,15 @@ pytest_plugins = [
 ]
 
 
+@pytest.mark.parametrize("expected_lane_id", [None, "LANE_1"])
 def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, expected_lane_id
 ):
     source = GovernedPaperEpisodeProjectionRequestV1(
         primary_evidence_root=durable_archive_root(tmp_path),
         episode_id="simulated-accounting:" + "a" * 64,
         learning_handoff_root=tmp_path.resolve() / "paper-learning",
+        expected_lane_id=expected_lane_id,
     )
     entry_time = "2026-11-14T13:02:03Z"
     closed_at = "2026-11-14T13:07:05Z"
@@ -92,8 +94,10 @@ def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence
     }
     measurement["outcome_digest"] = digest_v1(measurement)
 
-    def read_episode(archive_root, episode_id):
+    def read_episode(archive_root, episode_id, *, expected_lane_id=None):
         assert archive_root == source.primary_evidence_root and episode_id == source.episode_id
+        if expected_lane_id not in (None, "LANE_1"):
+            raise ValueError("paper episode lane mismatch")
         return measurement
 
     monkeypatch.setattr(paper_handoff, "read_paper_episode_outcome_v1", read_episode)
@@ -101,6 +105,7 @@ def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence
         archive_root=source.primary_evidence_root,
         episode_id=source.episode_id,
         output_root=source.learning_handoff_root,
+        expected_lane_id=expected_lane_id,
     )
     projection = run_governed_runtime_primary_to_offline_observation_projection_v1(source)
     assert projection.status == "PROJECTED"
@@ -125,6 +130,24 @@ def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence
     assert (
         bind_from_g2_projection_result_v1(
             replace(projection, projection_record_digest="f" * 64)
+        ).decision_code
+        == "G2_PAPER_EPISODE_PROJECTION_DIGEST_MISMATCH"
+    )
+    foreign_source = replace(source, expected_lane_id="LANE_2")
+    foreign_projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
+        foreign_source
+    )
+    assert foreign_projection.status == "REJECTED"
+    assert (
+        bind_from_g2_projection_result_v1(replace(projection, source=foreign_source)).decision_code
+        == "PAPER_EPISODE_HANDOFF_REJECTED"
+    )
+    other_expectation = replace(
+        source, expected_lane_id=None if expected_lane_id is not None else "LANE_1"
+    )
+    assert (
+        bind_from_g2_projection_result_v1(
+            replace(projection, source=other_expectation)
         ).decision_code
         == "G2_PAPER_EPISODE_PROJECTION_DIGEST_MISMATCH"
     )

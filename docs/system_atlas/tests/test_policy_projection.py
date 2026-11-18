@@ -24,6 +24,41 @@ def test_frozen_policy_sources_and_reference_targets_are_valid():
     assert result["runtime_effect_inferred"] is False
 
 
+@pytest.mark.parametrize(
+    ("source", "error"),
+    [
+        (
+            "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+            "RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED",
+        ),
+        (
+            "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+            "POLICY_SOURCE_DRIFT",
+        ),
+    ],
+)
+def test_instrument_input_successor_rejects_different_rebound_bytes(monkeypatch, source, error):
+    source_path = ROOT / source
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    original = Path.read_bytes
+    changed = original(source_path) + b"\n# unreviewed source change\n"
+    binding = json.loads(original(binding_path))
+    next(row for row in binding["files"] if row["path"] == source)["sha256"] = hashlib.sha256(
+        changed
+    ).hexdigest()
+
+    def read(path):
+        if path == source_path:
+            return changed
+        if path == binding_path:
+            return json.dumps(binding).encode()
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match=error):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
 @pytest.mark.parametrize("field", ["before_sha256", "sha256"])
 def test_rebound_ci_seal_requires_its_exact_development_hash(monkeypatch, field):
     binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
