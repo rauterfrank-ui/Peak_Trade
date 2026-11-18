@@ -29,14 +29,29 @@ def bind_offline_first_entry_position_v2(
     g17_producer,
     writer_session_id,
 ):
-    """Retain the first fill and publish the finalized C1 clock for the occupied lane.
+    """Retain the original simulated opening fill and transition to the C1 clock."""
+    if not isinstance(owner, OfflineFirstEntryBudgetOwnerV2):
+        raise ValueError("FIRST_ENTRY_V2_SIMULATED_OWNER_REQUIRED")
+    return publish_confirmed_first_entry_c1_v2(
+        episode=episode,
+        cursor_root=cursor_root,
+        g17_producer=g17_producer,
+        writer_session_id=writer_session_id,
+        retain_opening=lambda: owner.retain_opening_fill_v2(
+            reservation_id=reservation_id, episode=episode
+        ),
+    )
+
+
+def publish_confirmed_first_entry_c1_v2(
+    *, episode, cursor_root: Path, g17_producer, writer_session_id, retain_opening
+):
+    """Retain the opening source and publish the finalized C1 clock for the occupied lane.
 
     Flat confirmation counts distinct Marks. Once the original episode is
     occupied, the V1 governor compares finalized C1 candle opens. The bound
     G17 window supplies that candle; the Mark clock remains in its own evidence.
     """
-    if not isinstance(owner, OfflineFirstEntryBudgetOwnerV2):
-        raise ValueError("FIRST_ENTRY_V2_SIMULATED_OWNER_REQUIRED")
     raw = load_current_productive_sidestate_confirmation_cursor_v1(cursor_root)
     cursor = parse_current_productive_sidestate_confirmation_cursor_v1(raw)
     identity = episode.identity
@@ -73,9 +88,7 @@ def bind_offline_first_entry_position_v2(
                 or expected_identity["mark_price"] != latest.mark_price
             ):
                 raise ValueError("FIRST_ENTRY_V2_RETAINED_C1_SOURCE_MISMATCH")
-            opening_digest = owner.retain_opening_fill_v2(
-                reservation_id=reservation_id, episode=episode
-            )
+            opening_digest = retain_opening()
             result = recover_current_cursor_publication_v1(
                 episode=episode,
                 store_root=cursor_root,
@@ -99,9 +112,7 @@ def bind_offline_first_entry_position_v2(
     if last.venue_event_time == c1_open and last.mark_price == latest.mark_price:
         return {
             "status": "ALREADY_BOUND",
-            "opening_digest": owner.retain_opening_fill_v2(
-                reservation_id=reservation_id, episode=episode
-            ),
+            "opening_digest": retain_opening(),
             "c1_open_unix": c1_open,
         }
     if c1_open + port.estimate.bar_interval_seconds > min(
@@ -127,7 +138,7 @@ def bind_offline_first_entry_position_v2(
         # evidence. It belongs to the old confirmation-state digest.
         entry_assessment_frame=None,
     )
-    opening_digest = owner.retain_opening_fill_v2(reservation_id=reservation_id, episode=episode)
+    opening_digest = retain_opening()
     publication = build_current_cursor_publication_v1(
         episode=episode,
         incoming=raw,

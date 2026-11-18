@@ -58,7 +58,25 @@ def _entry_anchors_v1(
     ):
         raise ValueError("VENUE_ENTRY_TERMINAL_FILL_UNPROVEN")
 
-    snapshot = source.snapshot
+    position_get = next(
+        read
+        for read in source.proof.gets
+        if urlsplit(read.endpoint).path == "/api/v5/account/positions"
+    )
+    return confirmed_venue_entry_anchors_v1(
+        source.identity,
+        source.snapshot,
+        side=side,
+        order_id=decision["venue_ord_id"],
+        filled_quantity=decision["cumulative_filled_qty"],
+        positions_acquired_at=position_get.acquired_at,
+    )
+
+
+def confirmed_venue_entry_anchors_v1(
+    identity, snapshot, *, side, order_id, filled_quantity, positions_acquired_at
+) -> tuple[Decimal, int, str]:
+    """Cross-check final fills against fresh net position readback."""
     pending = snapshot.pending_orders_observation or {}
     positions = snapshot.positions_observation or {}
     position_response = positions.get("response") or {}
@@ -74,8 +92,7 @@ def _entry_anchors_v1(
     ):
         raise ValueError("VENUE_ENTRY_POSITION_READBACK_UNPROVEN")
 
-    identity = source.identity
-    quantity = _venue_number(decision["cumulative_filled_qty"])
+    quantity = _venue_number(filled_quantity)
     position = rows[0]
     order_side = "buy" if side == "long" else "sell"
     if (
@@ -94,7 +111,7 @@ def _entry_anchors_v1(
         if (
             row.get("instId") != identity.native_id
             or row.get("clOrdId") != identity.clordid
-            or row.get("ordId") != decision["venue_ord_id"]
+            or row.get("ordId") != order_id
             or row.get("side") != order_side
             or row.get("posSide") != "net"
         ):
@@ -109,17 +126,12 @@ def _entry_anchors_v1(
             raise ValueError("VENUE_ENTRY_FILL_UNPROVEN")
 
     position_time = _venue_positive_int(position.get("uTime"))
-    position_get = next(
-        read
-        for read in source.proof.gets
-        if urlsplit(read.endpoint).path == "/api/v5/account/positions"
-    )
     if (
         not fills
         or sum(fill[1] for fill in fills.values()) != quantity
         or _venue_positive_int(position.get("tradeId")) != max(fills)
         or max(fill[0] for fill in fills.values()) > position_time
-        or position_time > int(position_get.acquired_at.timestamp() * 1000)
+        or position_time > int(positions_acquired_at.timestamp() * 1000)
     ):
         raise ValueError("VENUE_ENTRY_FILL_POSITION_LINK_UNPROVEN")
     price = _venue_number(position.get("avgPx"))
@@ -127,7 +139,7 @@ def _entry_anchors_v1(
         raise ValueError("VENUE_ENTRY_PRICE_UNPROVEN")
     anchors_digest = canonical_digest_v1(
         {
-            "order": decision["venue_ord_id"],
+            "order": order_id,
             "entry_price": str(price.normalize()),
             "fills": [
                 [trade_id, time_ms, str(qty.normalize()), str(fill_price.normalize())]
