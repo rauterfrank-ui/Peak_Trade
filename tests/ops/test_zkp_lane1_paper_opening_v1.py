@@ -5,20 +5,29 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from hashlib import sha256
 import json
+import multiprocessing
+import os
 from pathlib import Path
 import socket
-from urllib.parse import urlencode
+from urllib.parse import parse_qs, urlencode, urlsplit
 
 import pytest
 
 from scripts.ops import run_zkp_lane1_paper_v1 as paper_cli
 from scripts.ops.run_zkp_lane1_paper_v1 import preflight_zkp_paper_v1
+from src.ops.bounded_peaktrade_system_composition_v1 import (
+    zkp_paper_continuation_v1 as continuation,
+)
+from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
+    collect_bound_paper_liquidity_v1,
+)
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import ZkpPaperEntryV1
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
-    FAMILY,
-    INDEX_ID,
+    INSTRUMENT_ID,
     NATIVE_ID,
     PAPER_FEE_RATE,
+    UP_PAPER_SLOT,
+    ZKP_PAPER_SLOT,
     bind_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
     zkp_public_queries_v1,
@@ -40,6 +49,17 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     FreshPretradeGetTransportResultV1,
 )
+from src.ops.p5_productive_layered_core_authority_seam_v1.occupied_mark_state_v1 import (
+    restore_layered_core_episode_v1,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    CAPABILITY_ID,
+    SCHEMA_VERSION,
+)
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from src.ops.single_selected_future_runtime_binding_v1.persistence_v1 import (
+    persist_binding_evidence_atomic_v1,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 C1 = 1_700_000_040
@@ -55,20 +75,35 @@ def forbid_network(monkeypatch):
     monkeypatch.setattr(socket.socket, "connect_ex", deny)
 
 
-def _observations(step=0, *, direction=1):
+def _observations(
+    step=0,
+    *,
+    direction=1,
+    price=None,
+    depth=100,
+    spread_ticks=1,
+    book_offset=Decimal(0),
+    funding_cut=C1 + 1200,
+    settled_rate=None,
+    slot=ZKP_PAPER_SLOT,
+):
     policy = load_paper_liquidity_policy_v1(REPO)
     now = C1 + 62 + step * 2 + 0.2
     event = str(int((now - 0.2) * 1000))
     acquired = datetime.fromtimestamp(now - 0.1, timezone.utc).isoformat()
-    mark = Decimal("0.0335") + step * direction * Decimal("0.00030")
+    start_mark = Decimal("0.2032") if slot == UP_PAPER_SLOT else Decimal("0.0335")
+    movement = Decimal("0.0018") if slot == UP_PAPER_SLOT else Decimal("0.00030")
+    mark = price if price is not None else start_mark + step * direction * movement
     tick = Decimal("0.00001")
+    bid = mark + book_offset - spread_ticks * tick
+    ask = mark + book_offset + spread_ticks * tick
     inst = {
-        "instId": NATIVE_ID,
+        "instId": slot.native_id,
         "instType": "FUTURES",
-        "instFamily": FAMILY,
-        "uly": INDEX_ID,
+        "instFamily": slot.family,
+        "uly": slot.index_id,
         "ctType": "linear",
-        "ctValCcy": "ZKP",
+        "ctValCcy": slot.base_currency,
         "ctVal": "10",
         "ctMult": "1",
         "settleCcy": "USD",
@@ -78,14 +113,17 @@ def _observations(step=0, *, direction=1):
         "tickSz": str(tick),
         "maxMktSz": "400000",
     }
+    minute = (int(now) - C1 - 60) // 60
     closes = [
-        str(Decimal("0.0335") * (1 + direction * Decimal("0.002") * (i - 99))) for i in range(100)
+        str(start_mark * (1 + direction * Decimal("0.002") * (i - 99 + minute))) for i in range(100)
     ]
     trade = [
-        [str((C1 + (i - 99) * 60) * 1000), *([price] * 4), "5", "50", "1.6", "1"]
+        [str((C1 + (i - 99 + minute) * 60) * 1000), *([price] * 4), "5", "50", "1.6", "1"]
         for i, price in enumerate(closes)
     ]
     mark_history = [row[:5] + ["1"] for row in trade[-61:]]
+    previous_funding = funding_cut if now >= funding_cut else funding_cut - 3600
+    upcoming_funding = previous_funding + 3600
     midnight = int(now) // DAY * DAY
     daily = [
         [
@@ -106,7 +144,7 @@ def _observations(step=0, *, direction=1):
         "tiers": [
             {
                 "tier": "1",
-                "instFamily": FAMILY,
+                "instFamily": slot.family,
                 "imr": "0.05",
                 "mmr": "0.02",
                 "maxLever": "20",
@@ -116,35 +154,48 @@ def _observations(step=0, *, direction=1):
         "adv": daily,
         "funding": [
             {
-                "instId": NATIVE_ID,
+                "instId": slot.native_id,
                 "instType": "FUTURES",
                 "method": "current_period",
                 "minFundingRate": "-0.003",
                 "maxFundingRate": "0.003",
                 "fundingRate": "0.0001",
-                "prevFundingTime": str((C1 - 1000) * 1000),
-                "fundingTime": str((C1 + 1200) * 1000),
-                "nextFundingTime": str((C1 + 2400) * 1000),
+                "prevFundingTime": str(previous_funding * 1000),
+                "fundingTime": str(upcoming_funding * 1000),
+                "nextFundingTime": str((upcoming_funding + 3600) * 1000),
                 "ts": event,
             }
         ],
+        "funding-history": [
+            {
+                "instId": slot.native_id,
+                "instType": "FUTURES",
+                "fundingTime": str(funding_cut * 1000),
+                "fundingRate": "0.0001",
+                "realizedRate": settled_rate,
+            }
+        ]
+        if settled_rate is not None
+        else [],
         "trade-candles": trade,
         "mark-candles": mark_history,
-        "open-interest": [{"instId": NATIVE_ID, "ts": event, "oi": "2000", "oiCcy": "20000"}],
-        "ticker": [{"instId": NATIVE_ID, "ts": event, "vol24h": "10000", "volCcy24h": "100000"}],
+        "open-interest": [{"instId": slot.native_id, "ts": event, "oi": "2000", "oiCcy": "20000"}],
+        "ticker": [
+            {"instId": slot.native_id, "ts": event, "vol24h": "10000", "volCcy24h": "100000"}
+        ],
         "usdc-index": [{"instId": "USDC-USD", "ts": event, "idxPx": "1"}],
-        "index": [{"instId": INDEX_ID, "ts": event, "idxPx": str(mark)}],
+        "index": [{"instId": slot.index_id, "ts": event, "idxPx": str(mark)}],
         "book": [
             {
                 "ts": event,
-                "bids": [[str(mark - tick), "5"], [str(mark - 2 * tick), "100"]],
-                "asks": [[str(mark + tick), "5"], [str(mark + 2 * tick), "100"]],
+                "bids": [[str(bid), "5"]] + ([[str(bid - tick), str(depth)]] if depth else []),
+                "asks": [[str(ask), "5"]] + ([[str(ask + tick), str(depth)]] if depth else []),
             }
         ],
-        "mark": [{"instId": NATIVE_ID, "ts": event, "markPx": str(mark)}],
+        "mark": [{"instId": slot.native_id, "ts": event, "markPx": str(mark)}],
     }
     receipts = {}
-    for name, (path, query) in zkp_public_queries_v1(policy.adv_days).items():
+    for name, (path, query) in zkp_public_queries_v1(policy.adv_days, slot=slot).items():
         payload = {"code": "0", "data": rows[name]}
         receipts[name] = FreshPretradeGetTransportResultV1(
             get_performed=True,
@@ -163,9 +214,15 @@ def _observations(step=0, *, direction=1):
     return receipts, policy, now
 
 
-def _market(step=0, *, direction=1):
-    receipts, policy, observed = _observations(step, direction=direction)
-    return bind_zkp_paper_market_v1(receipts, policy=policy, observed_unix=observed)
+def _market(step=0, *, slot=ZKP_PAPER_SLOT, **kwargs):
+    receipts, policy, observed = _observations(step, slot=slot, **kwargs)
+    return bind_zkp_paper_market_v1(receipts, policy=policy, observed_unix=observed, slot=slot)
+
+
+def _against_position(cursor_root, direction):
+    scope = restore_layered_core_episode_v1(cursor_root)
+    move = max(3 * scope.scope.d_t, 0.00003)
+    return Decimal(str(round(scope.running_reference.reference_price_r_t - direction * move, 5)))
 
 
 @pytest.mark.parametrize("fault", ["gap", "units", "book-age", "wrong-query"])
@@ -237,32 +294,89 @@ def test_original_double_play_entry_books_one_liquid_paper_fill(tmp_path, direct
     assert (root / "opening-fill.json").read_bytes() == saved
 
 
-def test_double_play_enter_cannot_book_when_exact_quantity_exceeds_depth(tmp_path):
+def test_opening_quantity_is_limited_to_executable_depth(tmp_path):
     market = _market()
     root = tmp_path.resolve() / "paper-thin"
     session = ZkpPaperEntryV1(
         root=root, repo=REPO, revision="f" * 40, initial_market=market, duration=7200
     )
-    reached = False
     for step in range(7):
-        market = _market(step)
-        thin = replace(market.book, bids=market.book.bids[:1], asks=market.book.asks[:1])
-        market = replace(market, book=thin)
+        market = _market(step, depth=0)
         result = session.step_v1(market, clock=lambda: market.observed_unix + 0.01)
-        if "liquidity" in result:
-            reached = True
-            assert "ZKP_PAPER_EXECUTABLE_DEPTH_INSUFFICIENT" in result["reason_codes"]
+        if result["status"] == "FIRST_FILL_BOOKED":
             break
-    assert reached, result
+    assert result["status"] == "FIRST_FILL_BOOKED", result
+    opening = json.loads((root / "opening-plan.json").read_bytes())
+    assert Decimal(result["fill"]["quantity"]) == 5
+    assert Decimal(opening["market_precheck"]["BUY"]["quantity_cap_contracts"]) == 5
+    assert opening["liquidity"]["risk_admitted"]
+    assert session.accounting.portfolio_state().fill_count == 1
+
+
+def test_wide_spread_and_stale_market_wait_before_core(tmp_path):
+    root = tmp_path.resolve() / "paper-market-wait"
+    wide = _market(spread_ticks=15)
+    session = ZkpPaperEntryV1(
+        root=root, repo=REPO, revision="f" * 40, initial_market=wide, duration=7200
+    )
+    stale = _market()
+    expired = session.step_v1(stale, clock=lambda: stale.observed_unix + 60)
+    assert expired["reason"] == "ZKP_PAPER_MARKET_EXPIRED_AT_CHECK"
+    for step in range(3):
+        wide = _market(step, spread_ticks=15)
+        result = session.step_v1(wide, clock=lambda: wide.observed_unix + 0.01)
+        assert result["status"] == "WAITING_FOR_LIQUID_MARKET"
+        for check in result["market_precheck"].values():
+            assert Decimal(check["spread_bps"]) > Decimal(check["spread_limit_bps"]) == 25
+            assert check["reason_codes"] == ["ZKP_PAPER_SPREAD_LIMIT"]
+            assert check["quantity_cap_contracts"] is None
     assert session.accounting.portfolio_state().fill_count == 0
     assert not (root / "opening-plan.json").exists()
-    assert not (root / "episodes").exists()
+    assert not (root / "decisions").exists()
+    assert not session.cursor_root.exists()
+
+    for step in range(3, 10):
+        market = _market(step)
+        result = session.step_v1(market, clock=lambda: market.observed_unix + 0.01)
+        if result["status"] == "FIRST_FILL_BOOKED":
+            break
+        assert session.accounting.portfolio_state().fill_count == 0
+    assert result["status"] == "FIRST_FILL_BOOKED", result
+    assert result["fill"]["side"] == "BUY"
+
+
+def test_liquid_opposite_side_does_not_override_core(tmp_path):
+    root = tmp_path.resolve() / "paper-asymmetric-book"
+    market = _market()
+    session = ZkpPaperEntryV1(
+        root=root, repo=REPO, revision="f" * 40, initial_market=market, duration=7200
+    )
+    for step in range(7):
+        market = _market(step, book_offset=Decimal("0.00025"))
+        result = session.step_v1(market, clock=lambda: market.observed_unix + 0.01)
+        if result.get("decision_outcome") == "enter_long":
+            break
+    assert result["decision_outcome"] == "enter_long", result
+    assert result["status"] == "BLOCKED"
+    assert result["market_precheck"]["SELL"]["risk_admitted"]
+    assert result["reason_codes"] == ["ZKP_PAPER_SLIPPAGE_LIMIT"]
+    assert session.accounting.portfolio_state().fill_count == 0
+    assert not (root / "opening-plan.json").exists()
 
 
 def test_liquidity_rejects_adverse_book_impact_and_volume_participation():
     market = _market()
     asks = (market.book.asks[0], (market.mark + Decimal("0.00050"), Decimal(100)))
-    market = replace(market, book=replace(market.book, asks=asks), adv_usd=Decimal("10"))
+    market = replace(market, book=replace(market.book, asks=asks))
+    check = market.assess_opening_liquidity_v1(side="BUY")
+    quantity = Decimal(check["quantity_cap_contracts"])
+    assert quantity > 5
+    assert market.assess_quantity_v1(side="BUY", quantity=quantity)["risk_admitted"]
+    assert market.assess_quantity_v1(side="BUY", quantity=quantity + 1)["reason_codes"] == [
+        "ZKP_PAPER_SLIPPAGE_LIMIT"
+    ]
+    market = replace(market, adv_usd=Decimal("10"))
+    assert market.assess_opening_liquidity_v1(side="BUY")["quantity_cap_contracts"] == "2"
     result = market.assess_quantity_v1(side="BUY", quantity=Decimal(50))
     assert result["risk_admitted"] is False
     assert result["reason_codes"] == [
@@ -271,15 +385,410 @@ def test_liquidity_rejects_adverse_book_impact_and_volume_participation():
     ]
 
 
-def test_operator_preflight_stays_outside_paper_state(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+def test_operator_preflight_stays_outside_paper_state(tmp_path, monkeypatch, capsys, slot):
     root = tmp_path.resolve() / "input-evidence"
-    monkeypatch.setattr(paper_cli, "_capture", lambda *args, **kwargs: _market())
+
+    def capture(*args, slot=ZKP_PAPER_SLOT, **kwargs):
+        return _market(slot=slot)
+
+    monkeypatch.setattr(paper_cli, "_capture", capture)
 
     def reject_run(*args, **kwargs):
         pytest.fail("the preflight entrypoint attempted to open a session")
 
     monkeypatch.setattr(paper_cli, "_run", reject_run)
-    assert paper_cli.main(["preflight", "--evidence-root", str(root)]) == 0
+    args = ["preflight", "--evidence-root", str(root)]
+    if slot == UP_PAPER_SLOT:
+        config = tmp_path / "slot-config.json"
+        selection = {
+            "lane": slot.lane_id,
+            "canonical_instrument_id": slot.instrument_id,
+            "native_instrument_id": slot.native_id,
+            "surface": "PAPER_EXCHANGE",
+            "authority": "NONE",
+        }
+        config.write_text(json.dumps({**selection, "lane": "LANE_1"}))
+        with pytest.raises(SystemExit) as error:
+            paper_cli.main([*args, "--slot-config", str(config)])
+        assert error.value.code == 2
+        assert "UP_PAPER_SLOT_CONFIG_MISMATCH" in capsys.readouterr().err
+        assert not root.exists()
+        config.write_text(json.dumps(selection))
+        args += ["--slot-config", str(config)]
+    assert paper_cli.main(args) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["session_started"] is False
+    assert result["lane_id"] == slot.lane_id
+    assert result["native_instrument_id"] == slot.native_id
     assert set(path.name for path in root.iterdir()) == {"preflight.json"}
+
+
+def _persist_cap24_selection(root, *, alternate=False):
+    bound = BoundInstrumentV1(
+        instrument_id=(
+            "okx_eea:linear_perpetual:MMT:USDT:USDT:perp" if alternate else INSTRUMENT_ID
+        ),
+        venue_native_id="MMT-USDT-SWAP" if alternate else NATIVE_ID,
+        ranking_snapshot_id="ranking",
+        ranking_integrity_digest="d" * 64,
+        universe_snapshot_id="universe",
+        selection_id="second-selection" if alternate else "first-selection",
+        selection_integrity_digest=("b" if alternate else "a") * 64,
+        selection_state="SELECTED_ACTIVE",
+    )
+    persist_binding_evidence_atomic_v1(
+        evidence_root=root,
+        evidence={
+            **bound.to_dict(),
+            "capability_id": CAPABILITY_ID,
+            "schema_version": SCHEMA_VERSION,
+            "ok": True,
+            "hard_stop": False,
+            "bound": bound.to_dict(),
+        },
+        result={"ok": True},
+    )
+    return bound
+
+
+def test_cap24_preflight_measures_the_new_contract_after_selection(tmp_path, monkeypatch, capsys):
+    cap24 = tmp_path / "cap24"
+    requests = []
+    current = _persist_cap24_selection(cap24)
+    observations, _, now = _observations()
+
+    class FixtureTransport:
+        def __init__(self, *, timeout_seconds, max_request_count):
+            assert max_request_count == 4
+
+        def get(self, *, endpoint, auth_required, pretrade_decision_id, get_cache_policy):
+            assert auth_required is False
+            url = urlsplit(endpoint)
+            native = current.venue_native_id
+            assert parse_qs(url.query)["instId"] == [native]
+            requests.append((native, url.path, pretrade_decision_id))
+            key = {
+                "/api/v5/public/instruments": "instrument",
+                "/api/v5/public/mark-price": "mark",
+                "/api/v5/market/candles": "adv",
+                "/api/v5/market/books": "book",
+            }[url.path]
+            payload = json.loads(json.dumps(observations[key].payload))
+            row = payload["data"][0]
+            if key in {"instrument", "mark", "book"}:
+                row["instId"] = native
+            if native != NATIVE_ID and key == "instrument":
+                assert parse_qs(url.query)["instType"] == ["SWAP"]
+                row.update(
+                    instType="SWAP", ctValCcy="MMT", settleCcy="USDT", lotSz=".5", minSz=".5"
+                )
+            body = json.dumps(payload).encode()
+            result = replace(
+                observations[key],
+                endpoint=endpoint,
+                pretrade_decision_id=pretrade_decision_id,
+                payload=payload,
+                body_sha256=sha256(body).hexdigest(),
+            )
+            self.raw_response_sink_v1(result=result, body=body)
+            return result
+
+    def collect(*args, **kwargs):
+        return collect_bound_paper_liquidity_v1(*args, **kwargs, clock=lambda: now)
+
+    monkeypatch.setattr(paper_cli, "FullCoreProductiveReadOnlyGetTransportV1", FixtureTransport)
+    monkeypatch.setattr(paper_cli, "collect_bound_paper_liquidity_v1", collect)
+    for alternate in (False, True):
+        if alternate:
+            current = _persist_cap24_selection(cap24, alternate=True)
+            observations, _, now = _observations(spread_ticks=15)
+        output = tmp_path / current.selection_id
+        assert (
+            paper_cli.main(
+                ["preflight", "--cap24-evidence-root", str(cap24), "--evidence-root", str(output)]
+            )
+            == 0
+        )
+        actual = json.loads(capsys.readouterr().out)
+        assert actual == json.loads((output / "preflight.json").read_bytes())
+        assert actual["lane_id"] == "LANE_1"
+        assert actual["instrument_id"] == current.instrument_id
+        assert actual["selection_integrity_digest"] == current.selection_integrity_digest
+        assert actual["session_started"] is False
+        assert actual["authority"] == "NONE"
+        assert actual["quote_asset"] == ("USDT" if alternate else "USD")
+        check = actual["liquidity_at_minimum_quantity"]["BUY"]
+        assert Decimal(check["quantity_contracts"]) == (Decimal(".5") if alternate else Decimal(1))
+        assert check["risk_admitted"] is not alternate
+        assert check["reason_codes"] == (["ZKP_PAPER_SPREAD_LIMIT"] if alternate else [])
+        assert {native for native, _, _ in requests[-4:]} == {current.venue_native_id}
+    assert len(requests) == 8 and requests[0][2] != requests[4][2]
+
+
+def test_cap24_preflight_discards_measurement_if_binding_changes_during_capture(
+    tmp_path, monkeypatch, capsys
+):
+    cap24 = tmp_path / "cap24"
+    first = _persist_cap24_selection(cap24)
+
+    def capture(policy, *, label, output, bound):
+        assert bound == first
+        _persist_cap24_selection(cap24, alternate=True)
+        return {}
+
+    monkeypatch.setattr(paper_cli, "_capture", capture)
+    output = tmp_path / "output"
+    with pytest.raises(SystemExit, match="2"):
+        paper_cli.main(
+            ["preflight", "--cap24-evidence-root", str(cap24), "--evidence-root", str(output)]
+        )
+    assert "PAPER_LIQUIDITY_CAP24_SELECTION_CHANGED" in capsys.readouterr().err
+    assert not (output / "preflight.json").exists()
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction, slot):
+    root = tmp_path.resolve() / "paper-net"
+    args = dict(root=root, repo=REPO, revision="f" * 40, slot=slot)
+    opened = ZkpPaperEntryV1(
+        **args, initial_market=_market(direction=direction, slot=slot), duration=7200
+    )
+    for i in range(7):
+        market = _market(i, direction=direction, slot=slot)
+        initial = opened.step_v1(market, clock=lambda: market.observed_unix + 0.01)
+        if initial["status"] == "FIRST_FILL_BOOKED":
+            break
+    assert initial["status"] == "FIRST_FILL_BOOKED"
+    session = continuation.ZkpPaperContinuationV1(**args)
+    assert session.last_receipt == initial
+    assert session.cursor_root.name == slot.lane_id
+    assert set(path.name for path in session.cursor_root.parent.iterdir()) == {slot.lane_id}
+    if slot == UP_PAPER_SLOT:
+        with pytest.raises(ValueError, match="ZKP_PAPER_ORIGINAL_PROFILE_REQUIRED"):
+            continuation.ZkpPaperContinuationV1(**{**args, "slot": ZKP_PAPER_SLOT})
+    held = _market(i + 1, direction=direction, slot=slot)
+    hold = session.step_v1(held, clock=lambda: held.observed_unix + 0.01)
+    assert hold["status"] == "WAIT", hold
+    switch_price = _against_position(session.cursor_root, direction)
+    thin = _market(i + 2, direction=direction, slot=slot, price=switch_price, depth=0)
+    blocked = session.step_v1(thin, clock=lambda: thin.observed_unix + 0.01)
+    assert blocked["status"] == "REVERSAL_BLOCKED", blocked
+    assert blocked["reason_codes"] == ["ZKP_PAPER_EXECUTABLE_DEPTH_INSUFFICIENT"]
+    assert session.accounting.fill_order == [initial["fill"]["fill_id"]]
+    retry = _market(i + 3, direction=direction, slot=slot, price=switch_price, depth=1000)
+
+    def interrupted_writer():
+        session = continuation.ZkpPaperContinuationV1(**args)
+        retain = continuation.immutable_json_v1
+
+        def exit_after_commit(path, value):
+            retain(path, value)
+            if path.parent.name == "reversals":
+                os._exit(73)
+
+        continuation.immutable_json_v1 = exit_after_commit
+        session.step_v1(retry, clock=lambda: retry.observed_unix + 0.01)
+
+    process = multiprocessing.get_context("fork").Process(target=interrupted_writer)
+    process.start()
+    process.join(10)
+    if process.is_alive():
+        process.kill()
+        process.join()
+    assert process.exitcode == 73
+    (booking_path,) = (root / "reversals").glob("*.json")
+    assert sorted(p.name for p in (root / "episodes").iterdir()) == [initial["episode_id"]]
+    before_recovery = load_current_productive_sidestate_confirmation_cursor_v1(session.cursor_root)
+    booked_bytes = booking_path.read_bytes()
+    cold = continuation.ZkpPaperContinuationV1(**args)
+    receipt = cold.last_receipt
+    assert receipt["status"] == "NET_REVERSAL_BOOKED"
+    assert receipt["lane_id"] == slot.lane_id and receipt["fill"]["instrument_id"] == slot.native_id
+    assert receipt["previous_episode_id"] == initial["episode_id"]
+    assert receipt["episode_id"] != initial["episode_id"]
+    assert Decimal(receipt["current_contracts"]) * direction > 0
+    assert Decimal(receipt["target_contracts"]) * direction < 0
+    assert Decimal(receipt["fill"]["quantity"]) == abs(
+        Decimal(receipt["target_contracts"]) - Decimal(receipt["current_contracts"])
+    )
+    assert receipt["accounting"]["fill_count"] == 2
+    assert Decimal(receipt["accounting"]["cumulative_fees"]) == (
+        Decimal(initial["fill"]["fee"]) + Decimal(receipt["fill"]["fee"])
+    )
+    assert Decimal(receipt["fill"]["fee"]) == Decimal(receipt["fill"]["notional"]) * PAPER_FEE_RATE
+    assert receipt["orders_sent"] == receipt["permits_created"] == 0
+    assert (
+        load_current_productive_sidestate_confirmation_cursor_v1(cold.cursor_root)
+        == before_recovery
+    )
+    repeated = continuation.ZkpPaperContinuationV1(**args)
+    assert repeated.last_receipt == receipt
+    assert repeated.step_v1(retry)["status"] == "WAITING_FOR_NEW_MARK"
+    assert booking_path.read_bytes() == booked_bytes
+    following = _market(i + 4, direction=direction, slot=slot, price=switch_price)
+    resumed = repeated.step_v1(following, clock=lambda: following.observed_unix + 0.01)
+    assert resumed["status"] == "WAIT", resumed
+    assert resumed["episode_id"] == receipt["episode_id"]
+    assert resumed["trading_epoch"] == receipt["trading_epoch"] + 1
+    assert repeated.accounting.portfolio_state().fill_count == 2
+    back = _market(
+        i + 5,
+        direction=direction,
+        slot=slot,
+        price=_against_position(cold.cursor_root, -direction),
+        depth=1000,
+    )
+    second = repeated.step_v1(back, clock=lambda: back.observed_unix + 0.01)
+    assert second["status"] == "NET_REVERSAL_BOOKED", second
+    assert Decimal(second["target_contracts"]) * direction > 0
+    assert second["current_contracts"] == receipt["target_contracts"]
+    assert second["previous_episode_id"] == receipt["episode_id"]
+    assert second["accounting"]["fill_count"] == 3
+    assert continuation.ZkpPaperContinuationV1(**args).last_receipt == second
+
+
+@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT])
+def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
+    tmp_path, monkeypatch, slot
+):
+    root = tmp_path.resolve() / "paper-driver"
+    elapsed = 0
+    index = 0
+    initial = _market(slot=slot)
+    latest = initial
+    lane = root / "flat-entry-mark-v2" / slot.lane_id
+
+    def capture(policy, *, label, output):
+        nonlocal index, latest
+        index += 1
+        price = None
+        if (root / "opening-fill.json").is_file():
+            price = latest.mark if (root / "reversals").exists() else _against_position(lane, 1)
+        latest = _market(index, price=price, depth=1000, slot=slot)
+        return latest
+
+    def sleep(seconds):
+        nonlocal elapsed
+        elapsed += seconds
+
+    monkeypatch.setattr(paper_cli, "monotonic", lambda: elapsed)
+    monkeypatch.setattr(paper_cli, "time", lambda: latest.observed_unix + 0.01)
+    monkeypatch.setattr(paper_cli, "sleep", sleep)
+    result = paper_cli._run(
+        root,
+        initial,
+        policy=initial.policy,
+        duration=40,
+        started_at=initial.observed_unix,
+        deadline=40,
+        revision="f" * 40,
+        capture=capture,
+    )
+    assert result["status"] == "WINDOW_ENDED_OCCUPIED", result
+    initial_result = json.loads((root / "initial-result.json").read_bytes())
+    assert initial_result["market_precheck"]["BUY"]["risk_admitted"]
+    booking = result["last_booking"]
+    assert booking["status"] == "NET_REVERSAL_BOOKED", booking
+    assert booking["accounting"]["fill_count"] == 2
+    assert booking["accounting"]["positions"][0]["side"].lower() == "short"
+    assert booking["fill"]["instrument_id"] == slot.native_id
+    assert len(list((root / "reversals").glob("*.json"))) == 1
+    before = load_current_productive_sidestate_confirmation_cursor_v1(lane)
+    recovered = paper_cli._resume(
+        root, policy=initial.policy, revision="f" * 40, capture=capture, slot=slot
+    )
+    assert recovered == result
+    assert load_current_productive_sidestate_confirmation_cursor_v1(lane) == before
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+def test_funding_at_settlement_survives_process_loss_and_double_play_continues(tmp_path, direction):
+    root = tmp_path.resolve() / "paper-funded"
+    args = dict(root=root, repo=REPO, revision="f" * 40)
+    cut = C1 + 120
+
+    def market(step, **kwargs):
+        return _market(step, direction=direction, funding_cut=cut, **kwargs)
+
+    opened = ZkpPaperEntryV1(**args, initial_market=market(0), duration=7200)
+    for i in range(7):
+        opening_tick = market(i)
+        initial = opened.step_v1(opening_tick, clock=lambda: opening_tick.observed_unix + 0.01)
+        if initial["status"] == "FIRST_FILL_BOOKED":
+            break
+    assert initial["status"] == "FIRST_FILL_BOOKED"
+    occupied = continuation.ZkpPaperContinuationV1(**args)
+    held = market(28, price=market(i + 1).mark, settled_rate="0.0012")
+    waiting = occupied.step_v1(held, clock=lambda: held.observed_unix + 0.01)
+    assert waiting["status"] == "WAIT", waiting
+    before = load_current_productive_sidestate_confirmation_cursor_v1(occupied.cursor_root)
+    before_equity = occupied.accounting.portfolio_state().equity
+    # Even a published history row before the cut never creates a debit/credit.
+    assert not occupied.accounting.funding_events
+    after_cut = market(29, price=held.mark, settled_rate="")
+    assert occupied.step_v1(after_cut)["status"] == "FUNDING_WAIT"
+    assert not (root / "funding").exists()
+    assert load_current_productive_sidestate_confirmation_cursor_v1(occupied.cursor_root) == before
+
+    settlement_tick = market(30, price=held.mark, settled_rate="0.0012")
+
+    def interrupted_writer():
+        session = continuation.ZkpPaperContinuationV1(**args)
+        retain = continuation.immutable_json_v1
+
+        def exit_after_commit(path, value):
+            retain(path, value)
+            if path.parent.name == "funding":
+                os._exit(74)
+
+        continuation.immutable_json_v1 = exit_after_commit
+        session.step_v1(settlement_tick, clock=lambda: settlement_tick.observed_unix + 0.01)
+
+    process = multiprocessing.get_context("fork").Process(target=interrupted_writer)
+    process.start()
+    process.join(10)
+    if process.is_alive():
+        process.kill()
+        process.join()
+    assert process.exitcode == 74
+    (funding_path,) = (root / "funding").glob("*.json")
+    booked = funding_path.read_bytes()
+    cold = continuation.ZkpPaperContinuationV1(**args)
+    assert load_current_productive_sidestate_confirmation_cursor_v1(cold.cursor_root) == before
+    receipt = cold.last_funding
+    original_position = Decimal(initial["fill"]["quantity"])
+    boundary_mark = Decimal("0.033567" if direction == 1 else "0.033433")
+    expected = -direction * original_position * 10 * boundary_mark * Decimal("0.0012")
+    assert receipt["terms"]["event_time_unix"] == cut
+    assert receipt["terms"]["observed_unix"] > cut
+    assert Decimal(receipt["terms"]["preceding_mark_close_usd"]) == boundary_mark
+    assert Decimal(receipt["amount_usd"]) == expected
+    assert cold.accounting.portfolio_state().equity == before_equity + expected
+    assert list(cold.accounting.funding_events) == [receipt["event_id"]]
+    assert cold.accounting.funding_events[receipt["event_id"]]["applied_after_fill_count"] == 1
+    assert cold.accounting.portfolio_state().fill_count == 1
+
+    # A second readback plus the same official history advances Core, not funding.
+    replay = continuation.ZkpPaperContinuationV1(**args)
+    assert replay.last_funding == receipt
+    resumed = replay.step_v1(settlement_tick, clock=lambda: settlement_tick.observed_unix + 0.01)
+    assert resumed["status"] == "WAIT", resumed
+    assert resumed["trading_epoch"] == before["trading_epoch"] + 1
+    assert resumed["episode_id"] == initial["episode_id"]
+    switch = market(
+        31,
+        price=_against_position(replay.cursor_root, direction),
+        depth=1000,
+        settled_rate="0.0012",
+    )
+    reversal = replay.step_v1(switch, clock=lambda: switch.observed_unix + 0.01)
+    assert reversal["status"] == "NET_REVERSAL_BOOKED", reversal
+    assert Decimal(reversal["target_contracts"]) * direction < 0
+    assert Decimal(reversal["accounting"]["funding_pnl"]) == expected
+    restarted = continuation.ZkpPaperContinuationV1(**args)
+    assert restarted.last_funding == receipt and restarted.last_receipt == reversal
+    assert len(restarted.accounting.funding_events) == 1
+    assert list((root / "funding").glob("*.json")) == [funding_path]
+    assert funding_path.read_bytes() == booked

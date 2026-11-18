@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping
@@ -78,6 +79,9 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.ope
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (
     load_preregistration_contract_dict_v1,
     parse_preregistration_contract_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    SOPH_I17,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -169,7 +173,13 @@ def _fake_ticker_fetcher(
     return fetcher
 
 
-def _issue_bundle(tmp_path: Path, *, duration: int = 120, candidate_plan_digest=None):
+def _issue_bundle(
+    tmp_path: Path,
+    *,
+    duration: int = 120,
+    candidate_plan_digest=None,
+    venue_instrument_id=CANONICAL_INSTRUMENT_ID,
+):
     from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
         ALLOWED_PRODUCTIVE_DURATIONS,
     )
@@ -200,6 +210,7 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120, candidate_plan_digest=
         approval_identity="approver_test",
         confirm_token=placeholder,
         candidate_plan_digest=candidate_plan_digest,
+        venue_instrument_id=venue_instrument_id,
     )
     scope = parse_preregistration_contract_v1(provisional).scope_digest()
     minted = issue_productive_confirm_token_v1(
@@ -228,6 +239,7 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120, candidate_plan_digest=
         now_unix=NOW,
         allow_noncanonical_duration=duration not in ALLOWED_PRODUCTIVE_DURATIONS,
         candidate_plan_digest=candidate_plan_digest,
+        venue_instrument_id=venue_instrument_id,
     )
     assert prereg_res.ok, prereg_res.blockers
     prereg = parse_preregistration_contract_v1(
@@ -248,8 +260,10 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120, candidate_plan_digest=
     return prereg, go, artifact, token, Path(auth_res.authorization_artifact_path)
 
 
-def test_productive_preregistration_and_token_hashing(tmp_path: Path) -> None:
-    prereg, go, artifact, token, _ = _issue_bundle(tmp_path)
+@pytest.mark.parametrize("native", [CANONICAL_INSTRUMENT_ID, SOPH_I17.native_id])
+def test_productive_preregistration_and_token_hashing(tmp_path: Path, native: str) -> None:
+    prereg, go, artifact, token, _ = _issue_bundle(tmp_path, venue_instrument_id=native)
+    assert prereg.instrument_allowlist == go.instrument_allowlist == (native,)
     assert prereg.fixture_non_authoritative is False
     assert go.fixture_non_authoritative is False
     assert artifact.schema == "authorization_artifact_v2"
@@ -269,6 +283,24 @@ def test_productive_preregistration_and_token_hashing(tmp_path: Path) -> None:
         expected_repository_sha=REPO_SHA,
     )
     assert verified.verified is True
+    if native == SOPH_I17.native_id:
+        swapped = verify_productive_authorization_bundle_v1(
+            prereg=prereg,
+            go=replace(go, instrument_allowlist=(CANONICAL_INSTRUMENT_ID,)),
+            artifact=artifact,
+            confirm_token=token,
+            now_unix=NOW,
+            expected_repository_sha=REPO_SHA,
+        )
+        assert not swapped.verified and "INSTRUMENT_MISMATCH" in swapped.blockers
+        for instrument in (SOPH_I17.native_id, CANONICAL_INSTRUMENT_ID, "SOPH-USDT-SWAP"):
+            attestation = validate_request_boundary_v1(
+                url=f"https://{CANONICAL_HOST}/api/v5/public/mark-price?"
+                + urlencode({"instType": "FUTURES", "instId": instrument}),
+                environ={},
+                venue_instrument_id=native,
+            )
+            assert attestation.ok is (instrument == native)
 
 
 def test_manipulated_prereg_and_wrong_token_rejected(tmp_path: Path) -> None:

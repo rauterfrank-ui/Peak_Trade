@@ -67,6 +67,10 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
     load_preregistration_contract_dict_v1,
     parse_preregistration_contract_v1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (  # noqa: E402
+    ETH_I17,
+    SOPH_I17,
+)
 
 
 def _load_token(args: argparse.Namespace) -> str:
@@ -145,6 +149,12 @@ def build_parser() -> argparse.ArgumentParser:
     tok.add_argument("--approval-identity", required=True)
     tok.add_argument("--json", action="store_true")
     tok.add_argument("--candidate-plan", type=Path)
+    for mode in (pr, tok):
+        mode.add_argument(
+            "--instrument",
+            choices=(ETH_I17.native_id, SOPH_I17.native_id),
+            default=ETH_I17.native_id,
+        )
 
     auth = sub.add_parser(
         "authorize", help="Issue productive Operator-GO + authorization artifact."
@@ -194,6 +204,8 @@ def main(argv: list[str] | None = None) -> int:
     candidate_path = getattr(args, "candidate_plan", None)
     if candidate_path is not None and args.command in {"issue-confirm-token", "preregister"}:
         try:
+            if args.instrument != ETH_I17.native_id:
+                raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
             plan = read_v1(candidate_path)
             _, start, end = _decision_time_window(plan)
             earliest = args.earliest_start_unix
@@ -241,6 +253,7 @@ def main(argv: list[str] | None = None) -> int:
             approval_identity=args.approval_identity,
             confirm_token=placeholder,
             candidate_plan_digest=candidate_digest,
+            venue_instrument_id=args.instrument,
         )
         scope_digest = parse_preregistration_contract_v1(provisional).scope_digest()
         issued = issue_productive_confirm_token_v1(
@@ -286,6 +299,7 @@ def main(argv: list[str] | None = None) -> int:
                 approval_identity=args.approval_identity,
                 confirm_token=placeholder,
                 candidate_plan_digest=candidate_digest,
+                venue_instrument_id=args.instrument,
             )
             scope_digest = parse_preregistration_contract_v1(provisional).scope_digest()
             minted = issue_productive_confirm_token_v1(
@@ -320,6 +334,7 @@ def main(argv: list[str] | None = None) -> int:
             now_unix=now,
             allow_noncanonical_duration=bool(args.allow_noncanonical_duration),
             candidate_plan_digest=candidate_digest,
+            venue_instrument_id=args.instrument,
         )
         print(json.dumps(redact_mapping_for_logs(result.to_dict()), sort_keys=True, indent=2))
         return 0 if result.ok else 1

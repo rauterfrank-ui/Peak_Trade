@@ -210,7 +210,7 @@ WALLCLOCK_DURATION_CONFIG_DELTA = {
 }
 OWNER_ADJUDICATION_CONFIG_DELTA = {
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json": "efc3a5f485d93573a1aa55332ff6fb782103138acc1601bc6138258b0db2808d",
-    "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
+    "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "9c2e2724687f8a18e1e94ce0199d8c360774c8fe44986492fb7f2e86f4827ca1",
 }
 CAP23_SELECTION_VALIDITY_CONFIG = "config/ops/single_selected_future_policy_v1.toml"
 CAP23_CONSTANTS = "src/ops/single_selected_future_policy_v1/constants_v1.py"

@@ -15,6 +15,9 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     DEFAULT_SESSION_HTTP_429_BUDGET,
     USER_AGENT,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+)
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
     NetworkBoundaryError,
     allowed_paths_v1,
@@ -159,6 +162,7 @@ class EeaPublicMdTransportV1:
     wall_clock: Callable[[], float] = time.time
     jitter_unit_fn: Optional[Callable[[int], float]] = None
     candidate_last: bool = False
+    venue_instrument_id: str = ETH_I17.native_id
 
     def open(self) -> None:
         if self.opened:
@@ -228,6 +232,7 @@ class EeaPublicMdTransportV1:
             headers=headers,
             environ=self.environ,
             candidate_last=self.candidate_last,
+            venue_instrument_id=self.venue_instrument_id,
         )
         if not boundary.ok:
             raise NetworkBoundaryError(",".join(boundary.blockers))

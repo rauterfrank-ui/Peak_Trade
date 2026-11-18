@@ -60,6 +60,10 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
     MarketDataBindingErrorV1,
     classify_transport_message_v1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    ETH_I17,
+    require_i17_shadow_instrument_v1,
+)
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (
     dual_identity_provenance_v1,
 )
@@ -580,7 +584,15 @@ class WallclockSessionRuntimeV1:
             )
 
         try:
+            instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+            if (
+                tuple(go.instrument_allowlist) != (instrument.native_id,)
+                or self.transport.venue_instrument_id != instrument.native_id
+            ):
+                raise ValueError("I17_SHADOW_INSTRUMENT_SCOPE_MISMATCH")
             if self.candidate_observation is not None:
+                if instrument != ETH_I17:
+                    raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
                 self.candidate_observation.bind(
                     prereg, evidence_root=self.evidence_root, repo_root=self.repo_root
                 )
@@ -692,8 +704,14 @@ class WallclockSessionRuntimeV1:
             )
             self.venue_mapping = resolve_mapping_with_transport_inventory_v1(
                 transport=self.transport,
-                canonical_instrument_id=CANONICAL_INSTRUMENT_ID,
+                canonical_instrument_id=instrument.canonical_id,
+                i17_scope=instrument,
             )
+            if instrument != ETH_I17:
+                self.bridge_state = HardenedBridgeSessionStateV2(
+                    instrument_id=self.venue_mapping.canonical_instrument_id,
+                    venue_instrument_id=self.venue_mapping.venue_instrument_id,
+                )
             provenance = dual_identity_provenance_v1(mapping=self.venue_mapping)
             self.writer.write_immutable_json(
                 "venue_instrument_binding.json",
@@ -712,6 +730,7 @@ class WallclockSessionRuntimeV1:
                     "host": CANONICAL_HOST,
                     "network_scope": NETWORK_SCOPE,
                     "session_execution_scope": SESSION_EXECUTION_SCOPE,
+                    **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
                     **provenance,
                 },
             )
@@ -721,6 +740,7 @@ class WallclockSessionRuntimeV1:
                     "capability_id": CAPABILITY_ID,
                     "package_marker": PACKAGE_MARKER,
                     "session_id": session_id,
+                    **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
                     "wallclock_session_started": True,
                     "authority_effect": AUTHORITY_EFFECT_NONE,
                     "execution_class": EXECUTION_CLASS_ANALYTICAL,
@@ -1212,6 +1232,7 @@ class WallclockSessionRuntimeV1:
                     environ={},
                     allow_proxy=True,
                     candidate_last=self.transport.candidate_last,
+                    venue_instrument_id=self.transport.venue_instrument_id,
                 )
                 # re-validate with UA from constants via transport headers in real path
                 self.writer.write_immutable_json(

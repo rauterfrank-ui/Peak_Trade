@@ -29,11 +29,13 @@ from src.ops.canonical_wallclock_authorization_consumption_authority_and_mandato
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E501
     CANONICAL_HOST,
-    CANONICAL_INSTRUMENT_ID,
     NETWORK_SCOPE,
     PRODUCER_FAMILY,
     SCHEMA_VERSION,
     SESSION_EXECUTION_SCOPE,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    require_i17_shadow_instrument_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     fingerprint_confirm_token,
@@ -107,7 +109,9 @@ def verify_productive_preregistration_v1(
     )
     if prereg.fixture_non_authoritative:
         blockers.append("FIXTURE_PREREGISTRATION_REJECTED")
-    if list(prereg.instrument_allowlist) != [CANONICAL_INSTRUMENT_ID]:
+    try:
+        require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+    except ValueError:
         blockers.append("INSTRUMENT_BINDING_MISMATCH")
     if prereg.network_scope != NETWORK_SCOPE:
         blockers.append("NETWORK_SCOPE_MISMATCH")
@@ -168,6 +172,8 @@ def verify_productive_operator_go_v1(
         ).blockers
     )
     blockers.extend(_reject_fixture(prereg=prereg, go=go))
+    if tuple(go.instrument_allowlist) != tuple(prereg.instrument_allowlist):
+        blockers.append("INSTRUMENT_MISMATCH")
     if not go.network_authorized or go.network_scope != NETWORK_SCOPE:
         blockers.append("PRODUCTIVE_NETWORK_SCOPE_REQUIRED")
     if not go.session_execution_authorized or go.session_execution_scope != SESSION_EXECUTION_SCOPE:
@@ -248,8 +254,6 @@ def verify_productive_authorization_bundle_v1(
         blockers.append("CONFIRM_TOKEN_MISMATCH")
     if go.consumed or prereg.consumed:
         blockers.append("ALREADY_CONSUMED")
-    if list(go.instrument_allowlist) != [CANONICAL_INSTRUMENT_ID]:
-        blockers.append("INSTRUMENT_MISMATCH")
     ok = not blockers
     return ProductiveVerificationResultV1(
         ok=ok,

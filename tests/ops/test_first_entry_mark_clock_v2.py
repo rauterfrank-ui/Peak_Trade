@@ -37,8 +37,8 @@ def no_network(monkeypatch):
     monkeypatch.setattr(socket.socket, "connect_ex", deny)
 
 
-def market_kwargs(tmp_path, direction):
-    bound = replace(_bound(lane_id="LANE_1", instrument_id=INSTRUMENT), venue_native_id=NATIVE)
+def market_kwargs(tmp_path, direction, *, instrument=INSTRUMENT, native=NATIVE):
+    bound = replace(_bound(lane_id="LANE_1", instrument_id=instrument), venue_native_id=native)
     closes = [0.11 * (1 + direction * (i - 99) * 0.002) for i in range(100)]
     candles = [
         [str(1000 * (CANDLE_OPEN + (i - 99) * 60)), *(str(close),) * 4, "5", "5", "5", "1"]

@@ -38,6 +38,9 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     APPEND_ONLY,
     REQUIRED_IMMUTABLE,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    SOPH_I17,
+)
 from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.constants_v1 import (
     BRIDGE_CYCLE_LEDGER_FILENAME,
 )
@@ -102,7 +105,7 @@ class WallclockEvidenceVerificationResultV1:
 
 @dataclass
 class _ShadowDecisionSelection:
-    ref: str
+    ref: str | None
     decision: dict[str, Any] | None = None
 
 
@@ -173,6 +176,15 @@ def _verify_typed_cycle_bindings(
         session_revision = (root / "repo_sha.txt").read_text(encoding="utf-8").strip()
         if not isinstance(session, dict):
             raise ValueError("DDO_SESSION_MANIFEST_INVALID")
+        if (
+            session.get("venue_instrument_id") == SOPH_I17.native_id
+            or session.get("lane_id") is not None
+        ) and (
+            session.get("venue_instrument_id"),
+            session.get("canonical_instrument_id"),
+            session.get("lane_id"),
+        ) != (SOPH_I17.native_id, SOPH_I17.canonical_id, SOPH_I17.lane_id):
+            raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
         marks = {}
         for mark in load_bridge_cycle_ledger_v1(root / "market_data_sequence.jsonl"):
             seq = mark["sequence"]
@@ -250,7 +262,10 @@ def _verify_typed_cycle_bindings(
                 )
             else:
                 validated += 1
-                if selection is not None and bundle.decision_event_ref == selection.ref:
+                if selection is not None and (
+                    bundle.decision_event_ref == selection.ref
+                    or (selection.ref is None and selection.decision is None)
+                ):
                     if (
                         session.get("capability_id") != CAPABILITY_ID
                         or session.get("execution_class") != EXECUTION_CLASS_ANALYTICAL
@@ -282,6 +297,7 @@ def _verify_typed_cycle_bindings(
                         "canonical_instrument_id": session["canonical_instrument_id"],
                         "venue_instrument_id": session["venue_instrument_id"],
                         "mapping_digest": session["mapping_digest"],
+                        **({"lane_id": session["lane_id"]} if session.get("lane_id") else {}),
                     }
     return validated
 
@@ -380,7 +396,10 @@ def verify_wallclock_evidence_bundle_v1(
     *,
     evidence_root: Path,
     select_shadow_decision_ref: str | None = None,
+    select_first_typed_shadow_decision: bool = False,
 ) -> WallclockEvidenceVerificationResultV1:
+    if select_first_typed_shadow_decision and select_shadow_decision_ref is not None:
+        raise ValueError("SHADOW_DECISION_SELECTION_MODE_CONFLICT")
     notes = [
         f"VERIFIER_ID={VERIFIER_ID}",
         f"CAPABILITY_ID={CAPABILITY_ID}",
@@ -513,7 +532,7 @@ def verify_wallclock_evidence_bundle_v1(
 
     selection = (
         None
-        if select_shadow_decision_ref is None
+        if select_shadow_decision_ref is None and not select_first_typed_shadow_decision
         else _ShadowDecisionSelection(select_shadow_decision_ref)
     )
     ddo_readback = _read_ddo_capture(root, set(manifest_digests), selection)

@@ -1,4 +1,4 @@
-"""Capture one closed ETH mark window for the offline learning archive."""
+"""Capture a closed, instrument-bound mark window for the offline learning archive."""
 
 import argparse
 from contextlib import closing
