@@ -974,7 +974,7 @@
     {
       "path": "docs/ops/specs/BREV_V2_POWER_NETWORK_PACKAGE.md",
       "before_sha256": null,
-      "sha256": "93111ab8f172aad916ba3a067dbdd787afdd5679ca723ce9293244177a6e7ab5"
+      "sha256": "97a4cb1112120824ddccf548ad1bdbffe72b01f55bcab909824f354c40134bf5"
     },
     {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
@@ -1594,7 +1594,7 @@
     {
       "path": "scripts/ops/check_brev_v2_operating_point.py",
       "before_sha256": null,
-      "sha256": "946ab8c7672dad54fcefde9acc339929808f200b69fe531e7917de759b5bcfb5"
+      "sha256": "b68537004f5a95320732a0f61d18f7c410b3c494e891eeacaad81634f41f21a7"
     },
     {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
@@ -1854,7 +1854,7 @@
     {
       "path": "scripts/ops/run_offline_occupied_brev_with_cap24_v1.py",
       "before_sha256": null,
-      "sha256": "25e14b1202431c47adfdfc121eac4de51c42bca65db8522e38a1a279acd8de8a"
+      "sha256": "a336a7e1d262b50a8c87b6488bfcfa1dd8c7f77017685b4fcdd346343bc998ac"
     },
     {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
@@ -4279,7 +4279,7 @@
     {
       "path": "tests/ops/test_brev_v2_mac_host_service.py",
       "before_sha256": null,
-      "sha256": "bc74ad9d4a2a4f55109031ac2d45790f6639f9c9272d0795605d245c8fff7095"
+      "sha256": "b8644b4a4ee98efa815fd40352a227cee9c5aa6eca2c6f65277803d29fb1b1f2"
     },
     {
       "path": "tests/ops/test_brev_v2_offline_window.py",
@@ -5084,7 +5084,7 @@
     {
       "path": "tests/ops/test_run_offline_occupied_brev_with_cap24_v1.py",
       "before_sha256": null,
-      "sha256": "b4cb0be3d6161882834b626847d392dcef4862fb4231dc79eaca41100d73c9c8"
+      "sha256": "a9ef182d968b4fb276a794e9fd5e8d943222c6e3645110558ba2dcc42f4615ce"
     },
     {
       "path": "tests/ops/test_run_research_candidate_shadow_v1.py",
