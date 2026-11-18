@@ -186,6 +186,9 @@ def run_productive_wallclock_session_v1(
     stop_flag: Optional[Callable[[], bool]] = None,
     runtime_overrides: Mapping[str, Any] | None = None,
     candidate_observation: I17CandidateHostObservationV1 | None = None,
+    instrument_card_source: Callable[..., Any] | None = None,
+    instrument_card_budget_source: Callable[..., Any] | None = None,
+    instrument_card_ranking_bound: Any = None,
 ) -> ProductiveRunGateResultV1:
     """Fail-closed productive run. Network only after canonical v2 consumption inside runtime."""
     notes = [
@@ -350,6 +353,12 @@ def run_productive_wallclock_session_v1(
         encoding="utf-8",
     )
 
+    if instrument_card_source is None and use_real_network and instrument.lane_id == "LANE_5":
+        from src.ops.instrument_card_stream_v1 import default_shadow_card_source_v1
+
+        instrument_card_source = default_shadow_card_source_v1(
+            repo=repo_root or Path(__file__).resolve().parents[3]
+        )
     runtime = WallclockSessionRuntimeV1(
         evidence_root=evidence_root,
         transport=transport,
@@ -360,6 +369,9 @@ def run_productive_wallclock_session_v1(
         repo_root=repo_root,
         stop_flag=stop_flag,
         candidate_observation=candidate_observation,
+        instrument_card_source=instrument_card_source,
+        instrument_card_budget_source=instrument_card_budget_source,
+        instrument_card_ranking_bound=instrument_card_ranking_bound,
     )
 
     # Monkey-patch consume timing: wrap run by observing consumption file mtime after return

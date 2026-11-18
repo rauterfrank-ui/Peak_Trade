@@ -744,6 +744,16 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     monkeypatch.setattr(paper_cli, "monotonic", lambda: elapsed)
     monkeypatch.setattr(paper_cli, "time", lambda: latest.observed_unix + 0.01)
     monkeypatch.setattr(paper_cli, "sleep", sleep)
+    assignment = BoundInstrumentV1(
+        instrument_id=slot.instrument_id,
+        venue_native_id=slot.native_id,
+        selection_id="original-cap24-fixture",
+        selection_integrity_digest="1" * 64,
+        ranking_snapshot_id="original-ranking",
+        ranking_integrity_digest="2" * 64,
+        universe_snapshot_id="original-universe",
+        selection_state="SELECTED",
+    )
     result = paper_cli._run(
         root,
         initial,
@@ -753,8 +763,29 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         deadline=40,
         revision="f" * 40,
         capture=capture,
+        card_assignment=assignment,
     )
     assert result["status"] == "WINDOW_ENDED_OCCUPIED", result
+    cards = root / "instrument-cards" / slot.lane_id
+    retained = [
+        json.loads(p.read_bytes())["body"] for p in (cards / "versions").glob("*/decision.json")
+    ]
+    evaluated = [row for row in retained if row["master_v2"] is not None]
+    assert len(evaluated) > 1
+    assert len({row["version"] for row in retained}) > 1
+    for row in evaluated:
+        assert row["ranking_binding"] == assignment.to_dict()
+        assert row["slot_identity"]["lane_id"] == slot.lane_id
+        assert row["assignment_status"] == "ORIGINAL_CAP24_ASSIGNMENT_CARRIED"
+        context = row["master_v2"]["prepared_input"]["canonical_market_context"]
+        assert context["instrument_id"] == slot.instrument_id
+        assert context["mark_price"] == row["market"]["mark_price"]
+        assert context["index_price"] == row["market"]["index_price"]
+        assert context["volume"] == row["market"]["volume_contracts_24h"]
+        assert context["open_interest"] == row["market"]["open_interest_contracts"]
+        assert context["funding_rate"] == row["market"]["funding_rate"]
+        assert row["master_v2"]["decision"] is not None
+    assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
     initial_result = json.loads((root / "initial-result.json").read_bytes())
     assert initial_result["market_precheck"]["BUY"]["risk_admitted"]
     booking = result["last_booking"]

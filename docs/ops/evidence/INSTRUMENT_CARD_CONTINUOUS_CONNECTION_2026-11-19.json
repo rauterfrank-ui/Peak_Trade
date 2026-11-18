@@ -1,0 +1,124 @@
+{
+  "schema": "peaktrade.instrument_card_continuous_connection_evidence.v1",
+  "date": "2026-11-19",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "baseline_commit": "351728852b6e48be09ad5c3fc3e7d2d670aba40c",
+  "documentation_checkpoint": "f05e0054d0b0d4382c5cf1197711e1e7efa5078b",
+  "original_documentation_checkpoint": "b0ea3a388a2f6e5cf824664c463ca423fdd2578c",
+  "source_sha256": {
+    "scripts/ops/run_i17_shadow_learning_companion_v1.py": "91b50fcc32f5d2e28e59a605b998806e74725e35bcbe879026a602e7f2ce4a51",
+    "scripts/ops/run_zkp_lane1_paper_v1.py": "f6932f39a1cfd1f6aa0b26f9c4b5c53b1bcc9b3e968235439ff4db676103b78e",
+    "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py": "0461c097224cd290ed94785be4847dc7f3789c0b38dc335bf7b6450cb95eb1f0",
+    "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py": "e118f6ed99dff95b374c40638ef12fab2e95ab526788ea28f4d993bedada3d24",
+    "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py": "06071a8b82c09b1f388ce4d0b37b6830362a9843f41a8c06d20ee1e96baeab8f",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_numeric_entry_admission_v1.py": "b643de101aa462b245bd99162812a29d1b8e1a4772ca7063f6106346c1f8510e",
+    "src/ops/instrument_card_input_observation_v1.py": "ff10b51496ab7c5b8489d51d386170bfee01a7d76e354ba271befc962c3ab4d8",
+    "src/ops/instrument_card_stream_v1.py": "3bfbdd3588668110e96e07ed5e4653882cbcc5ac56ce79b52ceccbb83c1e74f0",
+    "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py": "6bb88872b30fb1d632cc0c34c93d47b7dbee23f15977a000f908ee274491e96c",
+    "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py": "641110b342f20d93390d712660741bc2c54bc99cf492dd6d099144aeaaa0455e",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py": "2ea6a06779b683606c78b64935c87feca0ef43ea50aa2b939726bc129d502269",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py": "71a33323d0279d9f34f8a510e021f9abc1f2b576b112bdc2cc0dc3f37efafa3d",
+    "tests/ops/test_instrument_card_stream_v1.py": "183d65b77b85c511f2fd45e6bf59fda74007e359d85e9408919dbeec269b6fa4",
+    "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py": "d2dfa1946d7a2d7679c38e73b0bd76ae3629a09a4d92627f8d281415a66596f7",
+    "tests/ops/test_zkp_lane1_paper_opening_v1.py": "f2d7a84a0a2901d4bfbeeaecc80a9164de773abe963be30299a310caf6afdfe5"
+  },
+  "lanes": {
+    "LANE_1": "ZKP_PAPER",
+    "LANE_2": "UP_PAPER",
+    "LANE_3": "BTC_EXCLUDED_UNCHANGED",
+    "LANE_4": "IRYS_PAPER",
+    "LANE_5": "SOPH_SHADOW"
+  },
+  "validation": {
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_instrument_card_stream_v1.py",
+      "tests/ops/test_instrument_card_budget_assessment_v1.py",
+      "tests/ops/test_zkp_lane1_paper_opening_v1.py",
+      "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
+      "tests/ops/test_wallclock_bridge_hardening_v2.py",
+      "tests/ops/test_hardening_v2_historical_safety_seam_contracts_v1.py",
+      "--disable-warnings",
+      "--maxfail=3"
+    ],
+    "collected": 132,
+    "passed": 131,
+    "failed": 1,
+    "duration_seconds": 178.11,
+    "failed_test": "tests/ops/test_hardening_v2_historical_safety_seam_contracts_v1.py::test_case_d_adverse_exit_uses_canonical_producer",
+    "status": "PASS_CARD_CONNECTION_CASES_WITH_EXISTING_SAFETY_CONTROL_FAILURE",
+    "baseline_comparison": {
+      "checkout": "/Users/frnkhrz/.codex/worktrees/instrument-budget-measurements/Peak_Trade",
+      "commit": "83cce4ca6",
+      "tree": "6fae7f785d137eaa8f1588a1044973e770a15a59",
+      "merge_tree": "6fae7f785d137eaa8f1588a1044973e770a15a59",
+      "isolated_result": "SAME_ASSERTION_FAILURE_ON_BASELINE_AND_CANDIDATE",
+      "root_cause": "NOT_ADJUDICATED",
+      "test_or_threshold_modified": false
+    },
+    "lint": "PASS",
+    "format": "PASS",
+    "diff_check": "PASS",
+    "seals": [
+      "MASTER_V2_INSTRUMENT_CARDS_SEAL_V1=PASS",
+      "N1_DOUBLE_PLAY_RUNTIME_SEAL_V1=PASS",
+      "CLEAN_CORE_SEAL_V1=PASS"
+    ],
+    "repository_gates": {
+      "checked_commit": "ff101dc3e",
+      "docs_drift_guard": "PASS_21_CHANGED_PATHS",
+      "system_atlas_validation": "PASS",
+      "system_atlas_impact": "PASS",
+      "law_generated_views_currency": "PASS",
+      "law_impact_path_binding": "PASS",
+      "law_advisory": {
+        "status": "LAW_REVIEW_REQUIRED_ADVISORY_ONLY",
+        "same_on_baseline": true,
+        "direct_semantic_objects": 13,
+        "direct_law_references": 21,
+        "unclassified_surfaces": 4,
+        "unknown_boundary_hits": 2,
+        "runtime_effect_inferred": false
+      }
+    }
+  },
+  "proof_reach": [
+    "13 successive source inputs projected during original Paper/Shadow loops, not an archive-only adapter.",
+    "Actual final Master-V2 input and original result observed without mutation of the input.",
+    "Paper net reversal and original economic/DDO/GVEF regressions tested with synthetic data.",
+    "Paper driver interruption and original opening/cursor reuse tested for ZKP, UP, IRYS.",
+    "SOPH full synthetic two-hour observation uses actual Index, book, volume, OI, funding, final C1 and G17 context.",
+    "Original analytical slot portfolio initialized once with 25 USDC at captured FX; subsequent equity read from original owner.",
+    "New-entry budget is distinct from capital already in an open position.",
+    "Original Cap24 lineage carried on explicit input; assignment replacement and consumer-side mismatch rejected.",
+    "Source originals, per-version receipts and decisions persisted; data failure, expiry and end of session block the view.",
+    "Analytical base quantity explicitly converted to native contracts for additional entry admission; off-grid and over-budget actions held, closing actions preserved."
+  ],
+  "gap_follow_up": {
+    "G1": "CAP24_CARRY_AND_STABLE_GENERATION_TESTED_NATURAL_RANKING_ROTATION_DELIVERY_NOT_ACTIVATED",
+    "G2": "PASS_SYNTHETIC_EXISTING_DRIVER_FLOW_FOUR_CARDS",
+    "G3": "PASS_SOPH_FULL_CONTEXT_VALUES",
+    "G4": "PASS_ORIGINAL_ANALYTICAL_PORTFOLIO_SOURCE_ONLY",
+    "G5": "PASS_SEPARATE_CAPITAL_AND_NEW_ENTRY_BUDGET",
+    "G6": "PASS_READER_EXPIRY_FAILURE_CLEAR_AND_END_OF_SESSION",
+    "G7": "PASS_PAPER_DRIVER_RECOVERY_SHADOW_STATE_CONTINUITY_WITHIN_EXISTING_SESSION",
+    "G8": "EXISTING_SLOT_LEARNING_REGRESSIONS_PRESERVED_NO_NEW_NATURAL_DATASET",
+    "G9": "PASS_SOPH_FUTURES_FINAL_C1_AND_SEPARATE_G17_MARK_HISTORY",
+    "G10": "PASS_ANALYTICAL_NATIVE_QUANTITY_CONSUMER_GUARD_NOT_A_PRODUCTIVE_EXECUTION_PROOF",
+    "G11": "PASS_STRICT_LEGACY_PAPER_CONFIG_COMPATIBILITY"
+  },
+  "open_limits": [
+    "The baseline adverse-exit control failure remains open; no overall Safety acceptance.",
+    "The Law Impact advisory retains the same general frozen-baseline review requirement as main (4 unclassified surfaces, 2 unknown boundary hits); it is not a semantic-law approval.",
+    "Natural current Cap23/Cap24/rotation inputs and actual continuous operation require their existing owners and original gates.",
+    "Analytical Shadow economics is not native exchange fill/accounting truth or a portfolio capital hold.",
+    "Original Shadow restart policy remains in force; no implicit process resume or power-loss proof.",
+    "All other system/Atlas signal branches were not exhaustively audited in this connection slice.",
+    "No new Paper, Shadow, Testnet or Live sessions started; no orders, permits or credentials used.",
+    "No full autonomy or economic quality acceptance."
+  ]
+}

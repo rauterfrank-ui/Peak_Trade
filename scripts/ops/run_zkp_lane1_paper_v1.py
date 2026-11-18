@@ -55,6 +55,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (  # 
     SCHEMA_VERSION,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1  # noqa: E402
+from src.ops.instrument_card_stream_v1 import InstrumentCardStreamV1, paper_budget_source_v1  # noqa: E402
 
 _POLL_SECONDS = 5
 
@@ -79,12 +80,19 @@ def _new_root(path):
 
 def _read_paper_slot(path):
     config = json.loads(path.read_bytes())
+    # Historical local preparations used environment=PAPER. Preserve their
+    # original files; accept only this explicit equivalent declaration.
+    surface = config.get("surface")
+    if surface is None and config.get("environment") == "PAPER":
+        surface = "PAPER_EXCHANGE"
+    if "environment" in config and config["environment"] != "PAPER":
+        raise ValueError("PAPER_SLOT_ENVIRONMENT_MISMATCH")
     slot = IRYS_PAPER_SLOT if config["lane"] == IRYS_PAPER_SLOT.lane_id else UP_PAPER_SLOT
     if (
         config["lane"],
         config["canonical_instrument_id"],
         config["native_instrument_id"],
-        config["surface"],
+        surface,
         config["authority"],
     ) != (slot.lane_id, slot.instrument_id, slot.native_id, "PAPER_EXCHANGE", "NONE"):
         raise ValueError(f"{slot.base_currency}_PAPER_SLOT_CONFIG_MISMATCH")
@@ -185,7 +193,9 @@ def preflight_zkp_paper_v1(*, market):
     }
 
 
-def _run(root, market, *, policy, duration, started_at, deadline, revision, capture):
+def _run(
+    root, market, *, policy, duration, started_at, deadline, revision, capture, card_assignment=None
+):
     session = ZkpPaperEntryV1(
         root=root,
         repo=REPO,
@@ -195,18 +205,34 @@ def _run(root, market, *, policy, duration, started_at, deadline, revision, capt
         slot=market.slot,
     )
     with exclusive_v1(root / ".paper-driver.lock"):
+        if card_assignment is not None:
+            immutable_json_v1(root / "card-assignment.json", card_assignment.to_dict())
         immutable_json_v1(
             root / "window.json", {"started_at": started_at, "duration_seconds": duration}
         )
-        return _drive(root, market, session, None, policy, deadline, revision, capture)
+        return _drive(
+            root, market, session, None, policy, deadline, revision, capture, card_assignment
+        )
 
 
 class _WindowEnded(ValueError):
     pass
 
 
-def _drive(root, market, opening, occupied, policy, deadline, revision, capture):
+def _drive(
+    root, market, opening, occupied, policy, deadline, revision, capture, card_assignment=None
+):
     folder = None
+    session = occupied or opening
+    cards = InstrumentCardStreamV1(
+        root=root,
+        bound=session.bound,
+        lane_id=session.slot.lane_id,
+        source_mode="PAPER",
+        session_id=root.name,
+        budget_source=paper_budget_source_v1(lambda: occupied or opening),
+        ranking_bound=card_assignment,
+    )
 
     def active():
         return monotonic() < deadline and not (root / "STOP").exists()
@@ -219,9 +245,15 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
     while active():
         if market is not None:
             try:
-                result = (occupied or opening).step_v1(market, clock=fill_clock)
+                cards.update_v1(market, now=fill_clock())
+                with cards.observe_v1():
+                    result = (occupied or opening).step_v1(market, clock=fill_clock)
+                cards.complete_v1(result)
             except _WindowEnded:
                 break
+            except (ValueError, TypeError, KeyError, DecimalException) as exc:
+                cards.unavailable_v1(exc, now=time())
+                result = {"status": "BLOCKED", "reason": str(exc)}
             result_path = root / "initial-result.json" if folder is None else folder / "result.json"
             immutable_json_v1(result_path, result)
             if result["status"] == "FIRST_FILL_BOOKED":
@@ -248,6 +280,7 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
         try:
             market = capture(policy, label=f"{root.name}:{poll}", output=folder)
         except (OSError, ValueError, TypeError, KeyError, DecimalException) as exc:
+            cards.unavailable_v1(exc, now=time())
             immutable_json_v1(
                 folder / "blocked.json", {"reason": str(exc), "observed_unix": time()}
             )
@@ -260,15 +293,24 @@ def _drive(root, market, opening, occupied, policy, deadline, revision, capture)
         "permits_created": 0,
         "authority": "NONE",
     }
+    cards.unavailable_v1("ORIGINAL_PAPER_WINDOW_ENDED", now=time())
     immutable_json_v1(root / "closeout.json", result)
     seal_xperp_paper_archive_v1(root, result)
     return result
 
 
-def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT):
+def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT, card_assignment=None):
     if not _isolated_root(root).is_dir():
         raise ValueError("ZKP_PAPER_ORIGINAL_RUN_ROOT_REQUIRED")
     with exclusive_v1(root / ".paper-driver.lock"):
+        assignment_path = root / "card-assignment.json"
+        original_assignment = (
+            BoundInstrumentV1(**json.loads(assignment_path.read_bytes()))
+            if assignment_path.exists()
+            else None
+        )
+        if card_assignment is not None and card_assignment != original_assignment:
+            raise ValueError("PAPER_ORIGINAL_CARD_ASSIGNMENT_CHANGED")
         window = json.loads((root / "window.json").read_bytes())
         duration, started = window["duration_seconds"], window["started_at"]
         now = time()
@@ -297,7 +339,9 @@ def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT):
         if duration != occupied.profile["duration_seconds"]:
             raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
         deadline = monotonic() + max(0, started + duration - now)
-        return _drive(root, None, None, occupied, policy, deadline, revision, capture)
+        return _drive(
+            root, None, None, occupied, policy, deadline, revision, capture, original_assignment
+        )
 
 
 def main(argv=None):
@@ -317,6 +361,12 @@ def main(argv=None):
     run.add_argument("--duration-seconds", type=int, default=7200)
     resume = modes.add_parser("resume", help="Resume the original occupied Paper slot")
     resume.add_argument("--run-root", required=True, type=Path)
+    for mode in (run, resume):
+        mode.add_argument(
+            "--card-cap24-evidence-root",
+            type=Path,
+            help="Carry an existing verified Cap24 selection into the card; no new selection",
+        )
     for mode in (preflight, run, resume):
         mode.add_argument(
             "--slot-config", type=Path, help="Use the prepared UP (LANE_2) or IRYS (LANE_4) binding"
@@ -344,6 +394,16 @@ def main(argv=None):
             if output is not None:
                 immutable_json_v1(output / "preflight.json", result)
         else:
+            card_assignment = (
+                None
+                if args.card_cap24_evidence_root is None
+                else _read_cap24_binding(args.card_cap24_evidence_root)
+            )
+            if card_assignment is not None and (
+                card_assignment.instrument_id,
+                card_assignment.venue_native_id,
+            ) != (slot.instrument_id, slot.native_id):
+                raise ValueError("PAPER_CARD_CAP24_SLOT_MISMATCH")
             revision = subprocess.check_output(
                 ["git", f"--work-tree={REPO}", "rev-parse", "HEAD"],
                 cwd=REPO,
@@ -351,7 +411,12 @@ def main(argv=None):
             ).strip()
             if args.mode == "resume":
                 result = _resume(
-                    args.run_root, policy=policy, revision=revision, capture=capture, slot=slot
+                    args.run_root,
+                    policy=policy,
+                    revision=revision,
+                    capture=capture,
+                    slot=slot,
+                    card_assignment=card_assignment,
                 )
             else:
                 root = _new_root(args.run_root)
@@ -374,6 +439,7 @@ def main(argv=None):
                     deadline=deadline,
                     revision=revision,
                     capture=capture,
+                    card_assignment=card_assignment,
                 )
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, DecimalException) as exc:
         parser.exit(2, f"Paper stopped: {exc}\n")

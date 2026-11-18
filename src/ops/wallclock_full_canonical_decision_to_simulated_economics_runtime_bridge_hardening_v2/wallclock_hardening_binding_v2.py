@@ -73,6 +73,8 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
+    instrument_card_market: Any = None,
+    instrument_card_budget: Any = None,
 ) -> HardenedWallclockBridgeOutcomeV2:
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
@@ -97,15 +99,25 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         event_ts_unix=event_ts,
         receive_ts_unix=receive_ts,
         price_field=price_field,
+        bid_px=None
+        if instrument_card_market is None
+        else float(instrument_card_market.book.bids[0][0]),
+        ask_px=None
+        if instrument_card_market is None
+        else float(instrument_card_market.book.asks[0][0]),
     )
 
     # Productive typed-vol edge: finalize PT1M mark samples from distinct observations.
     # Decision cycles without a completed PT1M bucket do not invent vol observations.
     finalizer = ensure_pt1m_mark_observation_finalizer_v1(bridge_state)
-    finalized = finalizer.observe_mark_v1(
-        event_time_unix_seconds=event_ts,
-        mark_price=mid,
-        receive_time_unix_seconds=receive_ts,
+    finalized = (
+        None
+        if instrument_card_market is not None
+        else finalizer.observe_mark_v1(
+            event_time_unix_seconds=event_ts,
+            mark_price=mid,
+            receive_time_unix_seconds=receive_ts,
+        )
     )
     finalized_kwargs: dict[str, Any] = {}
     finalized_emitted = False
@@ -132,6 +144,8 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         ddo_capture_binding=ddo_capture_binding,
         ddo_repository_sha=ddo_repository_sha,
         offline_candidate=offline_candidate,
+        instrument_card_market=instrument_card_market,
+        instrument_card_budget=instrument_card_budget,
         **finalized_kwargs,
     )
     labels = {

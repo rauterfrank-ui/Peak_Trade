@@ -297,6 +297,11 @@ def main(argv=None):
     run.add_argument("--fingerprint-ledger", type=Path, required=True)
     run.add_argument("--expected-repository-sha", required=True)
     run.add_argument("--o4-instrument-binding", type=Path, required=True)
+    run.add_argument(
+        "--card-cap24-evidence-root",
+        type=Path,
+        help="Carry an existing verified Cap24 selection into the SOPH card",
+    )
     args = parser.parse_args(argv)
     try:
         if os.environ.get(REAL_NETWORK_ENV) != "1":
@@ -304,6 +309,17 @@ def main(argv=None):
         root = _isolated(args.companion_root)
         if args.mode == "run":
             prereg = _load_prereg(args.preregistration)
+            card_bound = None
+            if args.card_cap24_evidence_root is not None:
+                from scripts.ops.run_zkp_lane1_paper_v1 import _read_cap24_binding
+
+                card_bound = _read_cap24_binding(args.card_cap24_evidence_root)
+                instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+                if instrument.lane_id != "LANE_5" or (
+                    card_bound.instrument_id,
+                    card_bound.venue_native_id,
+                ) != (instrument.canonical_id, instrument.native_id):
+                    raise ValueError("I17_CARD_CAP24_INSTRUMENT_MISMATCH")
             if (
                 prereg.fixture_non_authoritative
                 or prereg.expected_repository_sha != args.expected_repository_sha
@@ -330,6 +346,7 @@ def main(argv=None):
                 use_real_network=True,
                 repo_root=REPO,
                 environ=os.environ,
+                instrument_card_ranking_bound=card_bound,
             )
             if not result.ok:
                 raise ValueError("I17_COMPANION_OBSERVATION_FAILED:" + ",".join(result.blockers))

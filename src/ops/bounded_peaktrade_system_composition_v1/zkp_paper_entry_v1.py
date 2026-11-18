@@ -77,6 +77,21 @@ _MAX_SECONDS = 7200
 _BUDGET_POLICY = "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
 
 
+def current_paper_slot_capital_v1(accounting, budget, market):
+    """Read current original accounting and the same limits used by Paper sizing."""
+    capital = ProductiveFuturesAccountingSessionV1.from_durable_dict(accounting.to_durable_dict())
+    capital.mark_to_market(market.mark)
+    cap = (
+        min(
+            PAPER_ALLOCATION_USDC,
+            budget.per_entry_notional_limit,
+            budget.per_slot_reserved_notional_limit,
+        )
+        * market.usd_per_usdc
+    )
+    return capital, capital.portfolio_state(), cap
+
+
 def paper_constraints_v1(market):
     contract = market.native_contract
     return InstrumentQuantityConstraintsV1(
@@ -376,15 +391,8 @@ class ZkpPaperEntryV1:
         )
         if stop is None:
             return {"status": "BLOCKED", "reason_codes": ["ZKP_PAPER_PROTECTIVE_STOP_INVALID"]}
-        equity = self.accounting.portfolio_state().equity
-        cap = (
-            min(
-                PAPER_ALLOCATION_USDC,
-                self.budget.per_entry_notional_limit,
-                self.budget.per_slot_reserved_notional_limit,
-            )
-            * market.usd_per_usdc
-        )
+        _, portfolio, cap = current_paper_slot_capital_v1(self.accounting, self.budget, market)
+        equity = portfolio.equity
         loss_limit = min(self.budget.per_slot_test_loss_limit * market.usd_per_usdc, equity)
         sizing = paper_sizing_v1(
             decision_id=parent.decision_id,
