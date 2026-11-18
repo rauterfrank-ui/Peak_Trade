@@ -292,6 +292,11 @@
       "sha256": "76e715f8db230df95e22014b8764e3cb98d0c8c49a0571f50cb47b1ba72d094c"
     },
     {
+      "path": "docs/ops/evidence/BREV_V2_POWER_NETWORK_PACKAGE.json",
+      "before_sha256": null,
+      "sha256": "c0df46c0d7a7b83d08f8966821cde7bd50b3e22389a616331a50408464d2e3ed"
+    },
+    {
       "path": "docs/ops/evidence/CAPITAL_DECISION_ACQUISITION_FRESHNESS_2026_11_07.json",
       "before_sha256": null,
       "sha256": "7dcbee33c46bac12f2d95d8eef8a26c78aab7454dc05412fd160380f429a1a90"
@@ -967,6 +972,11 @@
       "sha256": "b3739e0b8ca50dce6a9c3829cb8be77a0632f31b6e32ce7598b8397bcf15f3c1"
     },
     {
+      "path": "docs/ops/specs/BREV_V2_POWER_NETWORK_PACKAGE.md",
+      "before_sha256": null,
+      "sha256": "93111ab8f172aad916ba3a067dbdd787afdd5679ca723ce9293244177a6e7ab5"
+    },
+    {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
       "before_sha256": null,
       "sha256": "f1997fb4ee58acfdc2378fc9fb7ffbdc2db24757bf900c6eacc1d6e54b6c773f"
@@ -1582,6 +1592,11 @@
       "sha256": "635d7368feaca9116c8c2eb96d8362461079960b524074ef4ca2a7f6c49bdbe5"
     },
     {
+      "path": "scripts/ops/check_brev_v2_operating_point.py",
+      "before_sha256": null,
+      "sha256": "946ab8c7672dad54fcefde9acc339929808f200b69fe531e7917de759b5bcfb5"
+    },
+    {
       "path": "scripts/ops/check_clean_core_seal_v1.py",
       "before_sha256": "021e57903f5fceb0508aeeceb4bbe562fb5065a47f031835360212d7e763f8ab",
       "sha256": "6fb3114ab77d8292abb2350e9c3e2e7b916970528fb7d069515fa0cbc816301d"
@@ -1839,7 +1854,7 @@
     {
       "path": "scripts/ops/run_offline_occupied_brev_with_cap24_v1.py",
       "before_sha256": null,
-      "sha256": "2f47f609c11b95770351ead345c582f427f988cdd3918db627bf64743fc9a377"
+      "sha256": "25e14b1202431c47adfdfc121eac4de51c42bca65db8522e38a1a279acd8de8a"
     },
     {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
@@ -4264,7 +4279,7 @@
     {
       "path": "tests/ops/test_brev_v2_mac_host_service.py",
       "before_sha256": null,
-      "sha256": "83df87985a53bd15290f022ebd2cb59740855f2a7ae412e7ffeefca7b665fd7c"
+      "sha256": "bc74ad9d4a2a4f55109031ac2d45790f6639f9c9272d0795605d245c8fff7095"
     },
     {
       "path": "tests/ops/test_brev_v2_offline_window.py",
