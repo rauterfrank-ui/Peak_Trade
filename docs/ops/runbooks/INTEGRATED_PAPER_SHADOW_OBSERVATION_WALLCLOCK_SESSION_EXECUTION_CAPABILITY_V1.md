@@ -251,9 +251,9 @@ Kartenprojektion für ZKP/UP/IRYS-Paper und SOPH-Shadow. Der
 beschreibt ihre Originalconsumer und Grenzen. Diese Ergänzung ist keine
 Startfreigabe; im Rahmen dieser Änderung wurden nur Offline-Prüfungen ausgeführt.
 
-Paper schreibt pro ursprünglichem Lauf unter `instrument-cards/<lane>`;
+Paper schreibt pro ursprünglichem Lauf unter `instrument-cards&#47;<lane>`;
 Shadow schreibt separat neben seinem Evidenceverzeichnis unter
-`instrument-card-stream/<session>/instrument-cards/LANE_5`. `latest.json`
+`instrument-card-stream&#47;<session>&#47;instrument-cards&#47;LANE_5`. `latest.json`
 ist eine Inhaltsdigest-gesicherte Ansicht. Die Unterordner `versions` und
 `sources` behalten die Fassungen, tatsächlichen Master-V2-Eingaben und
 Originalantworten. Datenabriss und Sitzungsende sperren die Ansicht.

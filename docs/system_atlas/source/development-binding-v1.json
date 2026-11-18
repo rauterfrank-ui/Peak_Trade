@@ -759,7 +759,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "8b626f1e6279d8ebc50f980ce5f5b4956e821b02c92e31ef4e20fb76426426f5"
+      "sha256": "e153bf987b04a20a263479a25b00d55c979d320b1d714fbf96ad2ac3bc41ef28"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
