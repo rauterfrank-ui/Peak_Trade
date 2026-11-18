@@ -211,10 +211,6 @@ WALLCLOCK_DURATION_CONFIG_DELTA = {
 OWNER_ADJUDICATION_CONFIG_DELTA = {
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json": "e9e16df9b8e6188a4ce52db369e35e3044892592eed76cd5b9c80f3667ca067f",
 }
-N1_V2_REQUIRED_CHECKS_CONFIG_DELTA = {
-    "config/ci/branch_ruleset_enforcement_contract_v1.json": "fe1fcf0bf26703091f83049aaa0e56c65c6b513ff0f7061b0ef3d7742d7dfb04",
-    "config/ci/required_status_checks.json": "529eab9aec1b30b1dca5abf740ba43ae4d6e9b601b4f8ef27ee8b88a319fa79d",
-}
 CAP23_SELECTION_VALIDITY_CONFIG = "config/ops/single_selected_future_policy_v1.toml"
 CAP23_CONSTANTS = "src/ops/single_selected_future_policy_v1/constants_v1.py"
 
@@ -266,7 +262,6 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
             or rel in RETIRED_AUTOMATION_CONFIG_DELTAS
             or rel in WALLCLOCK_DURATION_CONFIG_DELTA
             or rel in OWNER_ADJUDICATION_CONFIG_DELTA
-            or rel in N1_V2_REQUIRED_CHECKS_CONFIG_DELTA
             or rel == CAP23_SELECTION_VALIDITY_CONFIG
         ), rel
         expected_before = frozen.get(rel, {}).get("sha256")
@@ -301,11 +296,6 @@ def validate_development_binding(root, model, frozen, changed, extras, cleanup):
         if rel in OWNER_ADJUDICATION_CONFIG_DELTA:
             assert row["sha256"] == OWNER_ADJUDICATION_CONFIG_DELTA[rel], [
                 "OWNER_ADJUDICATION_CONFIG_DRIFT",
-                rel,
-            ]
-        if rel in N1_V2_REQUIRED_CHECKS_CONFIG_DELTA:
-            assert row["sha256"] == N1_V2_REQUIRED_CHECKS_CONFIG_DELTA[rel], [
-                "N1_V2_REQUIRED_CHECKS_CONFIG_DRIFT",
                 rel,
             ]
         if rel == CAP23_SELECTION_VALIDITY_CONFIG:

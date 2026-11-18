@@ -5,7 +5,7 @@
   "canonical_ref_include": ["refs/heads/main"],
   "ruleset": {
     "expected_name": "peak_trade",
-    "expected_id": 27494723,
+    "expected_id": 11192468,
     "expected_target": "branch",
     "expected_enforcement": "active",
     "required_rule_types": [
@@ -31,5 +31,5 @@
     "force_push_allowed": false,
     "branch_deletion_allowed": false
   },
-  "notes": "Canonical required-check names are owned by config/ci/required_status_checks.json. The latest-push rule requires approval by someone other than the last pusher even with a configured approving review count of 0."
+  "notes": "Canonical required-check names are owned by config/ci/required_status_checks.json (no parallel check SSOT). Approval count 0 preserves the existing solo-operator PR-flow policy while enabling stale-dismissal, latest-push approval flag, and conversation resolution."
 }

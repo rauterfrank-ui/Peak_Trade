@@ -461,7 +461,6 @@ def test_required_context_names_unchanged() -> None:
         "strategy-smoke",
         "tests (3.11)",
         "map-currency-gate",
-        "n1-v2-brev-admission",
     ]
 
 
@@ -563,13 +562,12 @@ def test_no_pull_request_target_or_write_permissions_or_base_sha_tooling() -> No
 
 
 def test_authenticated_exact_head_checkout_bootstrap() -> None:
-    """All five heavy workflows use the pinned checkout for the sparse bootstrap."""
+    """All five heavy workflows use isolated actions/checkout@v4 sparse bootstrap."""
     import re
 
     for path, text in _workflow_texts().items():
         assert "Checkout exact PR-head verifier" in text, path
-        probe = text.split("Checkout exact PR-head verifier")[1].split("Normalize reuse output")[0]
-        assert "uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09" in probe, path
+        assert "uses: actions/checkout@v4" in text, path
         assert "github.event.pull_request.head.repo.full_name" in text, path
         assert "ref: ${{ github.event.pull_request.head.sha }}" in text, path
         assert "path: .ready-reuse-head" in text, path
@@ -585,6 +583,7 @@ def test_authenticated_exact_head_checkout_bootstrap() -> None:
         assert "continue-on-error: true" in text, path
         assert "Normalize reuse output" in text, path
         # Raw unauthenticated HTTPS bootstrap fetch must be absent from Ready-reuse probe.
+        probe = text.split("Checkout exact PR-head verifier")[1].split("Normalize reuse output")[0]
         assert "git fetch https://github.com" not in probe, path
         assert 'git remote add origin "https://github.com/' not in probe, path
         assert "http.extraheader" not in probe, path

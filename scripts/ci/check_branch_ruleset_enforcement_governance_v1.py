@@ -158,9 +158,9 @@ def _gh_api_json(path: str) -> dict[str, Any] | list[Any]:
 
 def fetch_evidence(
     *,
-    ruleset_id: int,
     owner: str = "rauterfrank-ui",
     repo: str = "Peak_Trade",
+    ruleset_id: int = 11192468,
     branch: str = "main",
 ) -> dict[str, Any]:
     base = f"repos/{owner}/{repo}"
