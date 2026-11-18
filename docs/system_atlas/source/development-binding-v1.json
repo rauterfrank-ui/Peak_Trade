@@ -3084,7 +3084,7 @@
     {
       "path": "src/ops/n1_occupied_scope_recovery_v2/cap24.py",
       "before_sha256": null,
-      "sha256": "f382ac2fe63dde6ae1fbf0f39f638cdc4cecb2dc38da49414999f64c6a5f7f9f"
+      "sha256": "ddc7be04de77d590d8e2c0d552f9b6fa63d39465d1620a21d45ff1aef2a1fa9a"
     },
     {
       "path": "src/ops/n1_occupied_scope_recovery_v2/checkpoint.py",
@@ -3094,7 +3094,7 @@
     {
       "path": "src/ops/n1_occupied_scope_recovery_v2/runtime.py",
       "before_sha256": null,
-      "sha256": "77e770a56da4d1781a7504ab49904d64503f3f16106102bee00f2869afa26f8a"
+      "sha256": "cf94715309f99b5474c760e8e9f422c1d489c8ac678b3849cb2b503ace713e28"
     },
     {
       "path": "src/ops/n1_post_authority_startup_v1.py",
