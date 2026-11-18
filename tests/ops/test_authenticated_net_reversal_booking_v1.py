@@ -3,7 +3,7 @@
 from base64 import b64encode
 from contextlib import contextmanager
 from dataclasses import asdict, replace
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import hmac
 import json
@@ -37,6 +37,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_double_p
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
     build_s8_occupied_lane_pairs_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    load_external_effect_durable_consume_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
     CurrentProductive29PChainBaselineError,
@@ -75,20 +78,25 @@ class SignedNetReversalGetFixture:
 
     def position(self):
         stamp = self.data["socket_ms"]
+        side = self.data["envelope"]["side"]
+        opened = Decimal(self.data["envelope"]["quantity"]) - self.closing_size()
         return {
             "instId": self.data["envelope"]["instrument_id"],
             "instType": "SWAP",
-            "pos": "-1",
+            "pos": str(opened if side == "buy" else -opened),
             "posSide": "net",
             "mgnMode": "cross",
             "ccy": "USDT",
             "avgPx": "1994",
-            "tradeId": "124",
-            "posId": "8923",
+            "tradeId": self.data.get("opening_trade_id", "124"),
+            "posId": self.data.get("position_id", "8923"),
             "fee": "-0.02",
             "cTime": str(stamp + 200),
             "uTime": str(stamp + 400),
         }
+
+    def closing_size(self):
+        return Decimal(self.data.get("closing_size", "1"))
 
     def body(self, path, query):
         envelope = self.data["envelope"]
@@ -96,7 +104,7 @@ class SignedNetReversalGetFixture:
         order = {
             "instId": envelope["instrument_id"],
             "instType": "SWAP",
-            "ordId": "91234",
+            "ordId": self.data.get("venue_order_id", "91234"),
             "clOrdId": envelope["client_order_id"],
             "side": envelope["side"],
             "posSide": "net",
@@ -104,7 +112,7 @@ class SignedNetReversalGetFixture:
             "ordType": envelope["order_type"],
             "reduceOnly": "false",
             "sz": envelope["quantity"],
-            "accFillSz": "2",
+            "accFillSz": envelope["quantity"],
             "state": "filled",
             "uTime": str(stamp + 300),
         }
@@ -113,9 +121,9 @@ class SignedNetReversalGetFixture:
                 key: order[key]
                 for key in ("instId", "instType", "ordId", "clOrdId", "side", "posSide")
             },
-            "tradeId": "123",
+            "tradeId": self.data.get("closing_trade_id", "123"),
             "billId": "1001",
-            "fillSz": "1",
+            "fillSz": str(self.closing_size()),
             "fillPx": "1995",
             "feeCcy": "USDT",
             "fee": "-0.02",
@@ -152,7 +160,8 @@ class SignedNetReversalGetFixture:
                 {
                     **fill,
                     "billId": "1000",
-                    "tradeId": "124",
+                    "tradeId": self.data.get("opening_trade_id", "124"),
+                    "fillSz": str(Decimal(envelope["quantity"]) - self.closing_size()),
                     "fillPnl": "0",
                     "fillPx": "1994",
                     "fillTime": str(stamp + 200),
@@ -168,27 +177,32 @@ class SignedNetReversalGetFixture:
                 }
             ]
         if path.endswith("/positions-history"):
-            assert query["posId"] == ["8923"] and query["limit"] == ["100"]
+            old_position_id = self.data.get("old_position_id", "8923")
+            fee = Decimal(self.data.get("old_position_fee", "-0.03")) - Decimal("0.02")
+            realized = Decimal("0.20") + fee - Decimal("0.01")
+            if self.scenario == "bad-cash":
+                realized += Decimal("0.01")
+            assert query["posId"] == [old_position_id] and query["limit"] == ["100"]
             assert query["before"] == [str(stamp - 1)]
             return [
                 {
                     "instId": envelope["instrument_id"],
                     "instType": "SWAP",
-                    "direction": "long",
+                    "direction": "short" if envelope["side"] == "buy" else "long",
                     "posSide": "net",
                     "mgnMode": "cross",
                     "ccy": "USDT",
                     "type": "2",
-                    "posId": "8923",
+                    "posId": old_position_id,
                     "cTime": self.data["old_created_ms"],
-                    "openMaxPos": "1",
-                    "closeTotalPos": "1",
+                    "openMaxPos": str(self.closing_size()),
+                    "closeTotalPos": str(self.closing_size()),
                     "pnl": "0.20",
-                    "fee": "-0.05",
+                    "fee": str(fee),
                     "fundingFee": "-0.01",
                     "liqPenalty": "0",
                     "settledPnl": "",
-                    "realizedPnl": "0.14" if self.scenario != "bad-cash" else "0.15",
+                    "realizedPnl": str(realized),
                     "uTime": str(stamp + 350),
                 }
             ]
@@ -336,6 +350,8 @@ def assert_original_net_reversal_booking_v1(
     repository_sha,
     closes,
     occupied,
+    first_authorization,
+    signer,
     exceptional_close=False,
 ):
     from tests.ops.test_bounded_multislot_connected_cycle_v1 import ports
@@ -486,6 +502,7 @@ with MonkeyPatch.context() as patch:
             manifest_path=tmp_path / "host-manifest-complete.json", action="run"
         )["result"]
     assert continued["status"] == "RECOVERY_CHECKPOINT_REQUIRED"
+    assert continued["checkpoint_blocker"] == "HOST_RESTART_ORIGINAL_WAIT_UNPROVEN"
     assert continued["attempts"] == 1
 
     manifest = json.loads((tmp_path / "host-manifest-complete.json").read_bytes())
@@ -654,8 +671,166 @@ with MonkeyPatch.context() as patch:
                 ).net_basis_usdc
                 == expected_capital
             )
+            next_order, next_send = _assert_follow_on_net_reversal_dispatch_v1(
+                lane_pair=pairs["LANE_1"],
+                recovery=recovered,
+                entry=new["authenticated_entry"],
+                first_authorization=first_authorization,
+                signer=signer,
+            )
+            assert (
+                load_external_effect_durable_consume_v1(store_root=submit_root)["record"] == record
+            )
         finally:
             resumed.close()
+
+    second_socket = datetime.fromisoformat(next_send["transport_attempt"]["socket_boundary_at_utc"])
+    second_gets = SignedNetReversalGetFixture(
+        {
+            **data,
+            "envelope": next_order.to_runtime_json_v1(),
+            "socket_ms": int(second_socket.timestamp() * 1000),
+            "observed_at": (second_socket + timedelta(seconds=1)).isoformat(),
+            "closing_size": str(abs(next_reversal.current_contracts)),
+            "old_position_id": row["position_id"],
+            "old_created_ms": row["position_created_ms"],
+            "old_position_fee": row["position_fee"],
+            "position_id": "8924",
+            "venue_order_id": "91236",
+            "closing_trade_id": "125",
+            "opening_trade_id": "126",
+        },
+        "complete",
+    )
+    with second_gets.port() as port:
+        cold = PortfolioBudgetHostV1(
+            root=root,
+            private_rest_fetch=_fetch(uid=data["account"], positions=(second_gets.position(),)),
+            repository_sha=repository_sha,
+            session_id="booked-return-fresh-process",
+            expected_account_identity=data["account"],
+            clock=second_gets.clock.timestamp,
+            reconciliation_transport=port,
+        )
+        try:
+            returned = recover_submitted_net_reversal_v1(
+                lane_pair=pairs["LANE_1"], get_budget_host=lambda: cold, proof_root=proof_root
+            )
+            assert returned.reconciliation_blocker is None, returned
+            prior, latest = cold.owner.risk_snapshot_v1()["state"]["live_net_reversal_bookings"][
+                rid
+            ]
+            assert prior == row
+            assert latest["booking_digest"] == returned.booking_digest
+            assert latest["previous_episode_id"] == envelope.envelope_digest
+            assert latest["envelope_digest"] == next_order.envelope_digest
+            assert latest["reservation_id"] == rid and latest["slot_id"] == "LANE_1"
+            assert Decimal(latest["position_contracts"]) == next_reversal.target_contracts > 0
+            assert Decimal(latest["settlement_native"]) == Decimal("0.15")
+            basis = cold.owner.live_reversal_slot_basis_v1(
+                slot_id="LANE_1", reservation_id=rid, bound=bound
+            )
+            assert basis.booked_net_usdc == sum(
+                (Decimal(booking["net_result_usdc"]) for booking in (prior, latest)),
+                Decimal(0),
+            )
+            assert basis.latest_booking_digest == latest["booking_digest"]
+            get_count = len(second_gets.calls)
+            assert get_count > 0
+            assert (
+                recover_submitted_net_reversal_v1(
+                    lane_pair=pairs["LANE_1"], get_budget_host=lambda: cold, proof_root=proof_root
+                )
+                == returned
+            )
+            assert len(second_gets.calls) == get_count
+        finally:
+            cold.close()
+
+
+def _assert_follow_on_net_reversal_dispatch_v1(
+    *, lane_pair, recovery, entry, first_authorization, signer
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_double_play_reversal_v1 import (
+        read_retained_net_reversal_post_context_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        execute_authenticated_net_reversal_post_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        external_effect_permit_durable_consume_v1 as send_receipt,
+    )
+    from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        _FakeKeychainBackend,
+        _clean_post_integrity,
+    )
+    from tests.ops.test_current_productive_shared_post_owner_authority_v1 import _claim_rows
+
+    context = read_retained_net_reversal_post_context_v1(
+        lane_pair=lane_pair, recovery=recovery, authenticated_entry=entry
+    )
+    reversal, envelope = context.reversal, context.envelope
+    assert reversal.episode.episode_id == first_authorization.grant.envelope_digest
+    original_owner = recovery.host.owner
+    before = original_owner.risk_snapshot_v1()
+    first_grant = first_authorization.grant
+    second_grant = replace(
+        first_grant, grant_id="second-reversal", envelope_digest=envelope.envelope_digest
+    )
+    authorization = replace(
+        first_authorization,
+        grant=replace(
+            second_grant, signature=signer.sign(second_grant.signing_bytes_v1()).signature
+        ),
+    )
+    requests = []
+
+    class OfflineOpener:
+        def open(self, request, timeout):
+            assert not requests and request.get_method() == "POST"
+            payload = json.loads(request.data)
+            assert request.full_url == "https://eea.okx.com/api/v5/trade/order"
+            assert payload["instId"] == lane_pair[1].venue_native_id
+            assert payload["side"] == "buy" and payload["posSide"] == "net"
+            assert "reduceOnly" not in payload
+            assert Decimal(payload["sz"]) == reversal.target_contracts - reversal.current_contracts
+            persisted = load_external_effect_durable_consume_v1(store_root=context.store_root_v1())
+            assert persisted["record"]["transport_attempt"]["phase"] == "MAY_HAVE_SENT"
+            assert persisted["record"]["envelope_digest"] == envelope.envelope_digest
+            assert original_owner.risk_snapshot_v1() == before
+            requests.append(payload)
+            raise TimeoutError("simulated timeout of the second net order")
+
+    post_inputs = {
+        "lane_pair": lane_pair,
+        "recovery": recovery,
+        "authenticated_entry": entry,
+        "authorization": authorization,
+        "baseline_origin_main_sha": EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        "perform_real_venue_post": True,
+        "k1_backend": _FakeKeychainBackend(),
+        "execution_integrity_backend": _clean_post_integrity(),
+        "opener_factory": OfflineOpener,
+    }
+    # Replay timestamps advance past the previously confirmed position update.
+    with patch.object(
+        send_receipt,
+        "_utc_now_iso_v1",
+        lambda: datetime.fromtimestamp(recovery.host.clock(), timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        ),
+    ):
+        result = execute_authenticated_net_reversal_post_v1(**post_inputs)
+    assert result.post_attempted and result.unknown_outcome and not result.venue_live_contact
+    assert len(requests) == 1
+    assert _claim_rows(authorization) == [(first_grant.grant_id, 1), ("second-reversal", 1)]
+    with pytest.raises(ValueError, match="POST_AUTHORITY_REVERSAL_ALREADY_CONSUMED"):
+        execute_authenticated_net_reversal_post_v1(**post_inputs)
+    assert original_owner.risk_snapshot_v1() == before
+    return envelope, load_external_effect_durable_consume_v1(store_root=context.store_root_v1())[
+        "record"
+    ]
 
 
 def _assert_exceptional_close_v1(pairs, inputs, host, rid, row, side_input):
