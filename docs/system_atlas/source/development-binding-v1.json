@@ -749,7 +749,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "0fbb485dc8f8010fdea5b2aabe68216d573262b3d69a8eb95b36c6568490bd42"
+      "sha256": "8d29566bc7a8a37000a221caae271a4b2b41b2c714a304bcdb4de73715f56985"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -1847,6 +1847,11 @@
       "sha256": "4e118578a11ac118f045f3b7adcb1fefb5f0ae28f2f7d32809aef0192aa8b22d"
     },
     {
+      "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
+      "before_sha256": null,
+      "sha256": "ad9c450bad8d8540a51ffcb56f7e633b951646ee5e49a8fa70cc143b901c75e9"
+    },
+    {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
       "before_sha256": null,
       "sha256": "efbe2c6127d99f772090e7e2a3fd60d4ada32f54354c7534a05bc3d6eb490efa"
@@ -2195,6 +2200,16 @@
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_episode_outcome_v1.py",
       "before_sha256": null,
       "sha256": "5bc3e577cf1fc7a5a4b44ebd7d53de4a193a94d94427331001037be1534ba5ea"
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
+      "before_sha256": null,
+      "sha256": "57550cdfe880aa249bf8e128209239af532f69b4be56d223090e428b41a49269"
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py",
+      "before_sha256": null,
+      "sha256": "7d25c437beb58c90b790a1e9e9976c364ca0a9f47fef44290a03a3fa7d91bdd6"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -5095,6 +5110,11 @@
       "path": "tests/ops/test_whole_core_completion_egress_q0_authority_v1.py",
       "before_sha256": "09483652dbc8cbca3ca605ba75cebdf421a1672465dd5d12e5004f959f6fd4e0",
       "sha256": "60e8d107550aa475f79d0ad81d2b040239a7ebae880e7cfa202fd912c6cf56ca"
+    },
+    {
+      "path": "tests/ops/test_zkp_lane1_paper_opening_v1.py",
+      "before_sha256": null,
+      "sha256": "1e73bd8cbfb82ab037ae10d5f132bf51850629ba7dd4090757c477c6591dd434"
     },
     {
       "path": "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2.py",
