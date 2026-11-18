@@ -117,6 +117,9 @@ prüfen. Die Prüfung umfasst die gespeicherte Bindung, Reservierung und den
 Readback nach Wiederanlauf. Shadow belegt Entscheidungen anhand zugelassener
 Marktdaten. Für einen Beleg der persistenten Slotbelegung braucht auch der
 Shadow-Pfad simulierte Fills und den Anschluss an diese State-Consumer.
+Testnet kann die Slotbelegung und den Wiederanlauf anhand bestätigter
+Testnet-Fills im eigenen Teststore prüfen, sofern der gewählte Kontrakt und
+der Ausführungspfad in der Testumgebung verfügbar sind.
 Der vorbereitete Originalstore bleibt während solcher Tests gesperrt.
 
 ## Vorsorge bis zur nächsten Fundingabrechnung
