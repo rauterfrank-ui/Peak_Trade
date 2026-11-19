@@ -421,3 +421,22 @@ Reviewbedarf gegenüber dem Freeze: vier unklassifizierte Oberflächen und
 zwei unbekannte Grenztreffer. Dieselben Treffer und Zählwerte wurden auf der
 unveränderten Mergebasis reproduziert. Dies ist keine neue Regelratifikation
 oder fachliche Freigabe; der Bedarf bleibt im Prüfbeleg offen ausgewiesen.
+
+### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
+
+Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
+ordnet den oben dokumentierten Fehler als veraltete Testerwartung ein:
+PR #7302 hatte den separaten frühen Adverse-Exit bewusst entfernt, der alte
+Test verlangte ihn weiterhin bei 80 Preiseinheiten Abstand vom Einstieg.
+Diese historische Zahl ist weder die aktuelle Scope-Distanz noch ein
+Basispunktwert. Der aktuelle Consumer verwendet den vollen effektiven `D_t`;
+der Schutzgeometriewert begründet keinen zusätzlichen frühen Scope-Exit.
+
+Die korrigierten LONG-/SHORT-Fälle prüfen am echten Replay mit gültiger
+typisierter Markvolatilität, dass diese alte Auslösung ausbleibt und ein
+unabhängiger Sicherheits-Exit bis zur simulierten Schließung wirksam bleibt.
+Die eigenständigen Scope-Grenzfälle prüfen weiterhin Downscope und dessen
+Epochbestätigung. Der [Nachprüfbeleg](../evidence/HARDENING_V2_FULL_SCOPE_SAFETY_CONTRACT_RECONCILIATION_2026-11-19.json)
+bindet die Ergebnisse an ihre Quellen. Produktcode und Handelsparameter wurden
+dafür nicht geändert. Der ursprüngliche Prüfstand 131/132 bleibt im damaligen
+Bericht erhalten; eine Gesamtabnahme des Systems folgt daraus weiterhin nicht.
