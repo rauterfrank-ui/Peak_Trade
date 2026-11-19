@@ -2,18 +2,24 @@
 
 from __future__ import annotations
 
+import math
 from decimal import Decimal
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
-    CANONICAL_ADVERSE_EXIT_DISTANCE,
-    CANONICAL_UP_DISTANCE,
+    CANONICAL_ADVERSE_EXIT_DISTANCE as LEGACY_ENTRY_RELATIVE_ADVERSE_DISTANCE,
 )
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     CALL_GRAPH_EXIT_PRODUCER_STEP,
+    FROZEN_PROFIT_PROTECTION_DISTANCE,
     SAFETY_PRODUCER_OWNER,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2 import (
+    hardening_cycle_bridge_v2 as bridge,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.constants_v2 import (
     BRIDGE_SAFETY_ROLE,
@@ -36,6 +42,16 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     PositionState,
 )
 from trading.master_v2.double_play_state import SideState
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationTransportMetadataV1,
+)
+from trading.market_state.time_sample_epoch_semantics_v1 import (
+    EventTimeInstantV1,
+    MarketSampleIdentityV1,
+)
+from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
+    CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HARDENING_CYCLE = (
@@ -92,21 +108,55 @@ def _mapper_result(
     )
 
 
-def _seed_open_long(state: HardenedBridgeSessionStateV2, *, mark: float) -> None:
+def _seed_open_position(
+    state: HardenedBridgeSessionStateV2, *, mark: float, side: str = "long"
+) -> None:
     state.portfolio.apply_intended_action(
         instrument_id=state.instrument_id,
-        side="BUY",
+        side="BUY" if side == "long" else "SELL",
         quantity=Decimal("0.1"),
         mark_price=Decimal(str(mark)),
-        intent_id="seed-open-long",
-        fill_id="seed-open-long-fill",
+        intent_id=f"seed-open-{side}",
+        fill_id=f"seed-open-{side}-fill",
     )
     state.venue_flat = False
-    state.existing_position_side = ExistingPositionSide.LONG
+    state.existing_position_side = ExistingPositionSide(side)
     state.position_state = PositionState.OPEN_FULL
-    state.position_management_context = PositionManagementContext.LONG_POSITION
-    state.side_state = SideState.LONG_ACTIVE
-    state.direction_state = EntryExitDirectionState.LONG_ACTIVE
+    state.position_management_context = (
+        PositionManagementContext.LONG_POSITION
+        if side == "long"
+        else PositionManagementContext.SHORT_POSITION
+    )
+    state.side_state = SideState.LONG_ACTIVE if side == "long" else SideState.SHORT_ACTIVE
+    state.direction_state = (
+        EntryExitDirectionState.LONG_ACTIVE
+        if side == "long"
+        else EntryExitDirectionState.SHORT_ACTIVE
+    )
+
+
+def _seed_finalized_mark_history(state: HardenedBridgeSessionStateV2) -> None:
+    """Real typed producer, synthetic final PT1M marks; no volatility bypass."""
+    host = CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1.create(
+        venue="okx_europe",
+        canonical_instrument_id=state.instrument_id,
+        venue_instrument_id=state.venue_instrument_id,
+    )
+    # 61 prices / 60 logreturns, ending before the decision. The alternating
+    # returns give a full Scope larger than the former 80-price-unit exit.
+    for i in range(61):
+        event_time = 1_699_996_380.0 + i * 60.0
+        host.producer.ingest_finalized_pt1m_mark_sample_v1(
+            sample=MarketSampleIdentityV1(
+                venue="okx_europe",
+                canonical_instrument_id=state.instrument_id,
+                venue_instrument_id=state.venue_instrument_id,
+                event_time=EventTimeInstantV1(unix_seconds=event_time),
+                mark_price=3540.0 * math.exp(0.04 * (i % 2)),
+            ),
+            transport=ObservationTransportMetadataV1(receive_time=event_time + 0.5),
+        )
+    state.typed_volatility_cmc_binding_host = host
 
 
 def _warmup_trending(state: HardenedBridgeSessionStateV2, *, session_id: str) -> list[dict]:
@@ -320,7 +370,7 @@ def test_case_b_enter_safety_block_no_buy_fallback() -> None:
 def test_case_c_safety_exit_while_blocked_is_not_rewritten_to_hold() -> None:
     state = HardenedBridgeSessionStateV2()
     _warmup_trending(state, session_id="case-c")
-    _seed_open_long(state, mark=_TRENDING_MIDS[-2])
+    _seed_open_position(state, mark=_TRENDING_MIDS[-2])
     state.killstate_active = True
     state.killstate_trigger = "TEST_KILL"
     cycle = run_hardened_bridge_cycle_v2(
@@ -339,29 +389,83 @@ def test_case_c_safety_exit_while_blocked_is_not_rewritten_to_hold() -> None:
     assert cycle["intended_action"]["quantity_source"] != "downstream_new_exposure_execution_guard"
 
 
-def test_case_d_adverse_exit_uses_canonical_producer() -> None:
+@pytest.mark.parametrize("side", ["long", "short"])
+@pytest.mark.parametrize("safety_exit", [False, True])
+def test_case_d_full_scope_rejects_legacy_early_exit_but_preserves_safety(
+    monkeypatch, side: str, safety_exit: bool
+) -> None:
     state = HardenedBridgeSessionStateV2()
     _warmup_trending(state, session_id="case-d")
     entry = _TRENDING_MIDS[-2]
-    _seed_open_long(state, mark=entry)
-    adverse_mark = float(entry) - float(CANONICAL_ADVERSE_EXIT_DISTANCE) - 1.0
+    _seed_open_position(state, mark=entry, side=side)
+    _seed_finalized_mark_history(state)
+    state.killstate_active = safety_exit
+    state.killstate_trigger = "TEST_KILL" if safety_exit else ""
+    # Reproduce the obsolete entry-relative threshold in both directions.
+    # It is a regression stimulus, never today's Scope or exit authority.
+    adverse_offset = float(LEGACY_ENTRY_RELATIVE_ADVERSE_DISTANCE) + 1.0
+    adverse_mark = entry + (-adverse_offset if side == "long" else adverse_offset)
+    consumed = []
+    original_replay = bridge.run_integrated_offline_trading_logic_replay_v1
+
+    def observe_original_replay(inp):
+        result = original_replay(inp)
+        consumed.append((inp, result))
+        return result
+
+    monkeypatch.setattr(
+        bridge, "run_integrated_offline_trading_logic_replay_v1", observe_original_replay
+    )
     cycle = run_hardened_bridge_cycle_v2(
         state,
         mid_price=adverse_mark,
         event_ts_unix=1_700_000_020.0,
         session_id="case-d",
     )
-    assert cycle["cap65_exit_producers"]["scope_adverse_exit"]["triggered"] is True
-    assert cycle["cap65_exit_producers"]["scope_adverse_exit"]["reason_code"] != ""
-    assert str(cycle["decision_outcome"]).lower() in {"exit", "reduce"}
+    assert len(consumed) == 1
+    inp, replay = consumed[0]
+    assert replay.intermediate is not None, replay.fail_reasons
+    # A missing typed estimate must not be mistaken for successful removal of
+    # the historical exit: inspect the real consumer and its effective Scope.
+    assert cycle["canonical_market_context_typed_estimate_present"] is True
+    assert "TYPED_VOLATILITY_ESTIMATE_MISSING" not in cycle["reason_codes"]
+    magnitude = replay.intermediate.effective_scope_magnitude
+    assert magnitude > adverse_offset
+    assert inp.up_distance == inp.adverse_exit_distance == inp.reversal_distance == magnitude
+    assert inp.current_price == adverse_mark
+    assert inp.canonical_market_context.instrument_id == state.instrument_id
+    assert inp.scope_adverse_exit_signal.triggered is False
+    assert (
+        inp.scope_adverse_exit_signal.reason_code == "full_dynamic_scope_no_separate_adverse_exit"
+    )
+    producers = cycle["cap65_exit_producers"]
+    assert producers["scope_adverse_exit"]["evaluation_bound"] is True
+    assert producers["scope_adverse_exit"]["triggered"] is False
+    assert producers["safety_exit"]["triggered"] is safety_exit
+    assert cycle["decision_outcome"] == ("exit" if safety_exit else "hold")
+    assert cycle["intended_action"]["intended_side"] == (
+        ("SELL" if side == "long" else "BUY") if safety_exit else "HOLD"
+    )
+    if safety_exit:
+        assert cycle["intended_action"]["quantity_source"] == "exit_or_reduce"
+        assert Decimal(cycle["intended_action"]["intended_quantity"]) == Decimal("0.1")
+        assert cycle["fill"] is not None
+        assert (
+            Decimal(
+                cycle["portfolio_snapshot"]["state"]["positions"][state.instrument_id]["quantity"]
+            )
+            == 0
+        )
+    else:
+        assert cycle["fill"] is None
 
 
 def test_case_e_profit_exit_uses_canonical_producer() -> None:
     state = HardenedBridgeSessionStateV2()
     _warmup_trending(state, session_id="case-e")
     entry = _TRENDING_MIDS[-2]
-    _seed_open_long(state, mark=entry)
-    profit_mark = float(entry) + float(CANONICAL_UP_DISTANCE) + 1.0
+    _seed_open_position(state, mark=entry)
+    profit_mark = float(entry) + float(FROZEN_PROFIT_PROTECTION_DISTANCE) + 1.0
     cycle = run_hardened_bridge_cycle_v2(
         state,
         mid_price=profit_mark,
@@ -376,7 +480,7 @@ def test_case_f_time_exit_uses_canonical_producer() -> None:
     state = HardenedBridgeSessionStateV2()
     _warmup_trending(state, session_id="case-f")
     entry_mark = _TRENDING_MIDS[-2]
-    _seed_open_long(state, mark=entry_mark)
+    _seed_open_position(state, mark=entry_mark)
     state.exit_policy_binding.has_open_position = True
     state.exit_policy_binding.entry_price = float(entry_mark)
     state.exit_policy_binding.entry_event_time = 1_700_000_000.0
@@ -414,7 +518,7 @@ def test_case_h_regime_not_ready_with_required_exit_not_held() -> None:
             event_ts_unix=1_700_000_000.0 + float(i),
             session_id="case-h",
         )
-    _seed_open_long(state, mark=3500.08)
+    _seed_open_position(state, mark=3500.08)
     state.killstate_active = True
     state.killstate_trigger = "TEST_KILL"
     cycle = run_hardened_bridge_cycle_v2(

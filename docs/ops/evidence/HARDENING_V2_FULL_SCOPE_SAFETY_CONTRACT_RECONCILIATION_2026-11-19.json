@@ -1,0 +1,110 @@
+{
+  "schema": "peaktrade.full_scope_safety_contract_reconciliation.v1",
+  "date": "2026-11-19",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "baseline_commit": "3248945df6e5503cfd18fc023f4fbfe3e3dec10a",
+  "semantic_change_origin": {
+    "commit": "71e4ce6912476be757ada2b4d334892320c424c6",
+    "pull_request": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7302",
+    "date": "2026-11-17",
+    "meaning": "Owner-approved full effective Dynamic Scope; no separate early Scope-adverse exit."
+  },
+  "root_cause": {
+    "classification": "STALE_TEST_EXPECTATION_AFTER_APPROVED_SEMANTIC_CHANGE",
+    "former_test": "test_case_d_adverse_exit_uses_canonical_producer",
+    "former_distance": 80.0,
+    "unit": "absolute instrument quote-price units, not basis points or percentage",
+    "reference": "position entry price; not the Scope trailing reference",
+    "current_meaning": "Layer-C adverse_exit_distance supplies the full effective D_t protection geometry. It does not independently trigger an early Scope exit.",
+    "runtime_or_threshold_changed": false
+  },
+  "source_sha256": {
+    "config/ops/canonical_decision_runtime_config_v1.toml": "1258f3bcf9d70502d35ccd4d404f497f9e9caf58796b4d0f6d835f64a842b9ef",
+    "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md": "e6da702664c25a8a798d68250c6c728c3ba1b02a15d6b783d086b6525b01a226",
+    "docs/ops/specs/MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md": "2ccce2cdaa4d76319b6bfb8ca72bc2f9a4d520f87fe442b9cfa5de4fdbe47d4a",
+    "src/ops/derive_scope_event_distances_v1/derive_v1.py": "6c9010f369351c59519dfc7c9caef8aec14002b87bef6828c22b99dc41ec868a",
+    "src/ops/exit_policy_producer_binding_v1/host_binding_v1.py": "112075c1a4160cad51525ff2f9bb4e964bb01da0bd18dc67be8a399fc5f23915",
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py": "f2b88a9b451230617bf9b16222e8f4ed72316f93d6b6e3d476482ded5b7b8750",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py": "2ea6a06779b683606c78b64935c87feca0ef43ea50aa2b939726bc129d502269",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py": "9ad4fc09e61e38375c635042c5f8e0fc238e257ee8eb945714553f359b20e81c",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+    "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py": "95bad0b489964b66cf029ee802adf78009f9f79be61961f0f57122a4484dbe66",
+    "tests/ops/test_hardening_v2_historical_safety_seam_contracts_v1.py": "be2ecd628638161524d29768ad5db35effae715e635622aeb95d00a90b8f692d",
+    "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py": "ca4b2a8b9a198dc570557f369887bae8c67316f4f1c33af91a53238bedce6213"
+  },
+  "validation": {
+    "command": [
+      "./scripts/pt",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/ops/test_hardening_v2_historical_safety_seam_contracts_v1.py",
+      "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py",
+      "-k",
+      "historical_safety_seam or full_scope_reversal_has_no_separate_adverse_exit or full_scope_keeps_independent_host_exit_rules",
+      "--disable-warnings",
+      "--junitxml=/tmp/peaktrade-adverse-exit-contract-20261119.xml"
+    ],
+    "selected": 27,
+    "passed": 27,
+    "failed": 0,
+    "duration_seconds": 0.517,
+    "junit_sha256": "6ab9e8c2fd50891079858de49b6fa059f466590fc5de3a181ee361f32b536872",
+    "cases": [
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_historical_core_owners_not_mutated_by_this_slice",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_01_cap65_producers_feed_hardening_v2_without_stubbed_exits",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_06_bridge_safety_is_input_producer_not_second_replay_owner",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_03_and_12_downstream_guard_does_not_hold_historical_exit",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_11_downstream_guard_holds_new_exposure_when_producer_blocked",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_05_enter_without_coi_cannot_become_buy_via_sizing_fallback",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_contract_05_enter_with_coi_still_maps_buy",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_mapper_safety_exit_does_not_hold_close_action",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_a_normal_pass_cap65_then_replay_then_simulated_boundary",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_b_enter_safety_block_no_buy_fallback",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_c_safety_exit_while_blocked_is_not_rewritten_to_hold",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_d_full_scope_rejects_legacy_early_exit_but_preserves_safety[False-long]",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_d_full_scope_rejects_legacy_early_exit_but_preserves_safety[False-short]",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_d_full_scope_rejects_legacy_early_exit_but_preserves_safety[True-long]",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_d_full_scope_rejects_legacy_early_exit_but_preserves_safety[True-short]",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_e_profit_exit_uses_canonical_producer",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_f_time_exit_uses_canonical_producer",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_g_warmup_incomplete_flat_no_new_exposure",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_case_h_regime_not_ready_with_required_exit_not_held",
+      "tests.ops.test_hardening_v2_historical_safety_seam_contracts_v1::test_no_live_or_real_submission_in_hardening_cycle_source",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_reversal_has_no_separate_adverse_exit[long--1]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_reversal_has_no_separate_adverse_exit[short-1]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_keeps_independent_host_exit_rules[host_changes0-none-hold]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_keeps_independent_host_exit_rules[host_changes1-profit_protection_exit-exit]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_keeps_independent_host_exit_rules[host_changes2-time_exit-exit]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_keeps_independent_host_exit_rules[host_changes3-strategy_invalidation_exit-exit]",
+      "tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1::test_full_scope_keeps_independent_host_exit_rules[host_changes4-safety_exit-exit]"
+    ]
+  },
+  "observed_contracts": [
+    "Original finalized PT1M Mark-history producer supplies a typed estimate; missing-estimate fail-closed cannot satisfy case D.",
+    "Both LONG and SHORT cross the former entry-relative threshold while the actual replay effective Scope remains larger. Full distances and explicit no-separate-exit reason are observed at the original consumer.",
+    "Without an independent safety trigger there is no early adverse exit or simulated fill. With the safety trigger the original replay maps EXIT to SELL for LONG or BUY for SHORT for 0.1 base units and the analytical position becomes flat.",
+    "Existing full-Scope generator cases separately verify no early event, Downscope at the full boundary and epoch confirmation for both directions.",
+    "Independent host safety, profit protection, time and invalidation regressions remain covered. Profit stimulus reads its own producer distance instead of legacy Up-distance telemetry."
+  ],
+  "historical_evidence_preserved": "docs/ops/evidence/INSTRUMENT_CARD_CONTINUOUS_CONNECTION_2026-11-19.json",
+  "limits": [
+    "Focused offline regression; not a full-system or overall Safety acceptance.",
+    "The former 131/132 card-connection run is retained at its original revision and is not rewritten as a new full-package PASS.",
+    "No native L10 continuous-host, real fill, process-restart or power-loss proof is derived from these fixtures.",
+    "Natural ranking/rotation delivery and actual continuous operation remain a separate open connection task.",
+    "No runtime source, policy threshold, source configuration, protected seal or trading authorization changed."
+  ],
+  "static_verification": {
+    "ruff": "PASS",
+    "format": "PASS",
+    "diff_check": "PASS",
+    "clean_core_seal": "PASS",
+    "instrument_cards_seal": "PASS",
+    "n1_double_play_seal": "PASS",
+    "law_generation": "PASS",
+    "law_currency": "PASS",
+    "canonical_ci_selection": "PR_BOUNDED_FULL (required GitHub breadth; no local duplicate full-suite run)"
+  }
+}
