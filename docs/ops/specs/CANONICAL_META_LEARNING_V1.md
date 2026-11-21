@@ -226,3 +226,24 @@ not rewritten. No wall-clock cutoff or new age threshold is introduced.
 This admission checks declared chronology, not external authenticity, actual
 historical delivery or a complete historical information set. Existing
 research-only authority and missing-value/association limits remain in force.
+
+## Cost investigation proposal admission — 2026-11-21
+
+The existing cost question emits descriptive research investigations only from
+COMPUTED findings, with claim strength NONE and no causal claim. The F2
+follow-up now rebuilds the supported proposals through
+`rebuild_meta_cost_research_proposals_v1`, which reuses the original
+cost-proposal constructor and ID formula. The selected packet must match the
+whole original construction before its scenario consumer is invoked.
+
+An unchanged proposal ID, a freshly rehashed Meta record or a new generic
+proposal ID does not justify a different reason, causal assertion, champion
+apply flag, or proposal under an unsupported question status/claim. Canonical
+content comparison preserves boolean versus numeric types. This is internal
+proposal/finding consistency, not a recomputation or authentication of source
+measurements, sample coverage or economic quality.
+
+Valid cost-model, archive and finding joins remain in force. Measured fill-fee
+observations and modeled OOS scenario deltas remain separate evidence types.
+No fee/slippage formula, grid, threshold, sampling rule, stored record,
+Search/M4 priority contract or productive authority changes.

@@ -44,6 +44,7 @@ from src.experiments.canonical_meta_learning_v1 import (
     build_canonical_meta_learning_v1,
     canonical_meta_learning_policy_v1,
     canonical_record_payload_v1,
+    rebuild_meta_cost_research_proposals_v1,
     validate_canonical_meta_learning_v1,
 )
 from src.experiments.canonical_reality_gap_store_v1 import (
@@ -239,6 +240,12 @@ def _consume_meta_proposal(
         or proposal["question_id"] != QUESTION_COST_MODEL_REALITY_UNDERESTIMATION
     ):
         raise ValueError("F2_META_COST_INVESTIGATION_REQUIRED")
+
+    if not any(
+        compute_content_sha256(proposal) == compute_content_sha256(expected)
+        for expected in rebuild_meta_cost_research_proposals_v1(question)
+    ):
+        raise ValueError("F2_META_COST_PROPOSAL_CONTENT_MISMATCH")
 
     archive = result["research_dataset_evidence"]
     source_dataset_digest = archive["dataset_admissibility"]["dataset_digest"]

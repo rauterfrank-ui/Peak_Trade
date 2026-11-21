@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 import subprocess
 from datetime import timedelta
 from decimal import Decimal
@@ -144,6 +145,90 @@ def test_meta_follow_up_rejects_an_unbound_model_and_archive(f2_result):
         )
     with pytest.raises(ValueError, match="F2_META_EXECUTION_DIGEST_MISMATCH"):
         build_f2_meta_cost_model_follow_up_v1(**args, expected_f2_execution_digest="0" * 64)
+
+
+@pytest.mark.parametrize(
+    "fault",
+    (
+        "changed_reason",
+        "resealed_reason",
+        "causal_proposal",
+        "champion_apply",
+        "numeric_apply_flag",
+        "insufficient_question",
+        "weak_question",
+    ),
+)
+def test_resealed_meta_proposal_cannot_bypass_its_original_cost_semantics(
+    f2_result, monkeypatch, fault
+):
+    from src.experiments import canonical_meta_learning_v1 as meta_owner
+    from src.experiments import f2_meta_cost_model_follow_up_v1 as consumer
+
+    result, f2_path = f2_result
+    original, proposal_id = _meta_investigation(result)
+    meta = deepcopy(original)
+    question = next(
+        q
+        for q in meta["questions"]
+        if q["question_id"] == QUESTION_COST_MODEL_REALITY_UNDERESTIMATION
+    )
+    if fault == "insufficient_question":
+        question.update(evidence_status="INSUFFICIENT_SAMPLE", claim_type="NONE")
+    elif fault == "weak_question":
+        question["claim_strength"] = "WEAK"
+    else:
+        packets = [
+            p
+            for p in [*question["research_proposals"], *meta["research_proposals"]]
+            if p["proposal_id"] == proposal_id
+        ]
+        for packet in packets:
+            if fault in {"changed_reason", "resealed_reason"}:
+                packet["reason"] = "CHANGED_COST_INTERPRETATION"
+            elif fault == "causal_proposal":
+                packet["claim_type"] = "CAUSAL"
+            elif fault == "champion_apply":
+                packet["applies_to_champion"] = True
+            else:
+                packet["applies_to_champion"] = 0
+            if fault in {"resealed_reason", "causal_proposal"}:
+                # Use the original generic proposal builder; the cost-finding
+                # parent still does not support this different interpretation.
+                packet["proposal_id"] = meta_owner._proposal(
+                    **{
+                        key: packet[key]
+                        for key in (
+                            "kind",
+                            "target_kind",
+                            "target",
+                            "reason",
+                            "question_id",
+                            "claim_type",
+                        )
+                    }
+                )["proposal_id"]
+        proposal_id = packets[0]["proposal_id"]
+    meta["meta_learning_identity"] = meta_owner.derive_meta_learning_identity_v1(meta)
+    meta["integrity"]["content_sha256"] = compute_content_sha256(
+        {key: value for key, value in meta.items() if key != "integrity"}
+    )
+    assert meta["meta_learning_identity"] != original["meta_learning_identity"]
+    archive_bytes = f2_path.read_bytes()
+
+    def forbidden_cost_assessment(*args, **kwargs):
+        pytest.fail("Inconsistent Meta cost proposal reached the scenario consumer")
+
+    monkeypatch.setattr(consumer, "_axis_assessment", forbidden_cost_assessment)
+    with pytest.raises(ValueError, match="F2_META_COST_PROPOSAL_CONTENT_MISMATCH"):
+        consumer.build_f2_meta_cost_model_follow_up_v1(
+            meta_record=meta,
+            expected_meta_identity=meta["meta_learning_identity"],
+            proposal_id=proposal_id,
+            f2_result_path=f2_path,
+            expected_f2_execution_digest=result["execution_digest"],
+        )
+    assert f2_path.read_bytes() == archive_bytes
 
 
 def test_measured_scenario_deltas_hold_the_other_axis_fixed(f2_result, tmp_path):
