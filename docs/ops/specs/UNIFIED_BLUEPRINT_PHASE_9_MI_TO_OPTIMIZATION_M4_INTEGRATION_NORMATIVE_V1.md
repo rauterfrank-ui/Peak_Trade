@@ -40,3 +40,22 @@ or Cap 2.3 mutation.
 - `tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py`
 - `tests/governance/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py`
 - `tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py`
+
+## Research and optional Learning export admission — 2026-11-21
+
+The MI research intake now consumes the existing durable research-record
+validator before issuing an acceptance. Canonical content/ID, domain and
+the producer's no-runtime/no-promotion contract must agree. A supplied DDO
+record must match any explicitly declared legacy reference.
+
+Before invoking the existing M4 plane, the optional Phase-8 export is rebuilt
+through its original exporter and compared in full. Its forecast, calibration,
+N-bars horizon and bar specification must match the research record. Its
+declared or embedded DDO attachment must match M4's original DDO input. A
+crosswired export or changed consumer-route witness stops before experiment
+execution. An omitted export remains valid; supported optional attachment
+forms do not acquire a new mandatory input.
+
+These checks preserve the original research-only admission and proposal-only
+ingress. They do not certify predictive/economic quality, convert MI evidence
+into DDO outcome semantics, modify a numerical model or authorize apply.

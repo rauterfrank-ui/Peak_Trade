@@ -11,12 +11,16 @@ from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     validate_canonical_optimization_universe_learning_input_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import compute_content_hash_v0
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.constants_v1 import (
     OPTIMIZATION_PRODUCTIVE_AUTHORITY,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_research_evidence_v1 import (
     EVIDENCE_CLASS_MI_RESEARCH,
     SCHEMA_VERSION as MI_RESEARCH_SCHEMA_VERSION,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_offline_durable_evidence_record_v1 import (
+    validate_research_evidence_record_v1,
 )
 
 SCHEMA_VERSION: Final[str] = "market_intelligence_optimization_research_input_v1"
@@ -70,6 +74,22 @@ def validate_market_intelligence_optimization_research_input_v1(
     if mi.get("productive_authority") != "NONE":
         return MappingProxyType(
             _result(STATUS_REJECTED, "MI_PRODUCTIVE_AUTHORITY_FORBIDDEN", legacy_ack)
+        )
+
+    try:
+        mi = validate_research_evidence_record_v1(mi)
+    except (DdoError, TypeError, ValueError) as exc:
+        return MappingProxyType(
+            _result(STATUS_REJECTED, f"MI_RESEARCH_EVIDENCE_INVALID:{exc}", legacy_ack)
+        )
+    legacy_ref = mi.get("legacy_learning_evidence_ref")
+    if (
+        legacy_ref is not None
+        and request.legacy_learning_evidence is not None
+        and legacy_ref != request.legacy_learning_evidence.get("record_id")
+    ):
+        return MappingProxyType(
+            _result(STATUS_REJECTED, "MI_RESEARCH_LEGACY_REF_MISMATCH", legacy_ack)
         )
 
     digest = str(mi.get("content_digest") or "")

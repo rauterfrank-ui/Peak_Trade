@@ -526,6 +526,69 @@ Qualitätslabels, Modellparameter, Rotationslogik oder Betriebsfreigaben. Ein
 vollständiger Dauerbetrieb und die Semantik aller übrigen Systempfade sind
 damit weiterhin nicht pauschal abgenommen.
 
+### MI-Lernexport und M4: weiterer kausaler Prüfblock
+
+Ausgangsbasis dieses Blocks ist PR #7345,
+`2b4f8689004d56cd4a6a7a036ba4f8798e9e0641`. Die vorhandene Kette aus
+MI-Bridge, eigenem Lernbelegstore, Export und optionaler M4-Anreicherung war
+bereits verbunden. Loop A besitzt ebenfalls seinen vorhandenen
+Writer-/Store-/Readback-/Exportpfad. Eine zusätzliche Verbindung zum
+produktiven DDO-Reducer oder zum numerischen Marktmodell wird daraus nicht
+abgeleitet oder hinzugefügt.
+
+Die Prüfung reproduzierte folgende konkrete Aufnahme- und Bindungslücken:
+
+- Der [MI-Lernbelegvalidator](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py)
+  prüfte die ID gegen den angegebenen Digest, berechnete diesen aber nicht
+  erneut aus seinen ursprünglichen kanonischen Feldern. Veränderte Outcome-,
+  Horizont-, Preisfamilien-/Instrument- oder konditionierte Verhaltensbezüge
+  konnten deshalb unter der alten ID exportiert oder kalt gelesen werden.
+  Die bestehende Digestformel wird jetzt an diesem Owner erneut ausgewertet.
+- Der [MI-Lernexport](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py)
+  konnte eine deklarierte DDO-Referenz mit einem anderen für sich gültigen
+  DDO-Lernbeleg kombinieren. Bei mitgeliefertem Beleg muss die erklärte
+  Referenz jetzt dessen tatsächlicher Record-ID entsprechen. Ein bloßer
+  Verweis bleibt ohne behauptete DDO-Payload-Kompatibilität zulässig.
+- Die [MI-Researchaufnahme](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py)
+  übernahm den deklarierten Inhaltsdigest ohne den vorhandenen
+  Researchrecordvalidator aufzurufen. Sie verwendet jetzt denselben Owner
+  wie der dauerhafte Researchstore. Inhaltsbindung, Domain und die
+  ursprünglichen No-Runtime-/No-Promotion-Felder werden geprüft; ein neu
+  berechneter Transporthash rechtfertigt keine andere Wirkung.
+- Der [M4-Consumer](../../../src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py)
+  trug einen optionalen MI-Lernexport als Herkunft weiter, ohne ihn an die
+  tatsächlich aufgenommenen Research- und DDO-Belege zu binden. Er liest ihn
+  jetzt über den Originalexporter zurück und vergleicht den gesamten Export,
+  Forecast-/Calibration-ID, N-Bars-/Barspezifikation und die ausdrücklich
+  zugeordneten DDO-Belege vor dem Experimentaufruf.
+
+Die Gegenproben verwenden durch Originalbuilder erzeugte Ausgangsbelege.
+Sie prüfen Inhaltsvertauschung unter derselben ID, Cold-Read-Abweisung und
+den unveränderten Originalstore sowie fremde, für sich gültige Forecast-/DDO-
+Pakete und manipulierte Exportreferenzen am tatsächlichen M4-Consumer. Die
+bisherigen MI-only-, Reference-only- und Payload-only-Fassungen bleiben
+zulässig. Eine optionale Zuordnung behauptet weder gleichen numerischen
+Outcome noch gleiche Messgröße zwischen MI und DDO.
+
+Originale ID-/Digestformeln, Forecast- und Messhorizonte, Qualitätslabels,
+DDO-Reducer, Modellparameter, BTC und Betriebsfreigaben bleiben unverändert.
+Ein Inhalts-/Zuordnungscheck ist kein Nachweis externer Quellenwahrheit,
+wirtschaftlicher Güte oder einer pauschalen Härtung aller Systemketten.
+
+Prüfstand dieses Blocks: 150 unterschiedliche synthetische Offline-Testfälle
+bestanden (67 für die betroffene Kette, 3 weitere optionale Eingangsformen,
+80 benachbarte Governance-/Markt-/Replay-/Modellfälle). Ein vorhandener
+Gesamtvertrag bleibt ausdrücklich fehlgeschlagen:
+`test_adjudication_proof_passes_on_current_repo` aus
+[der D01/D02-Prüfung](../../../tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py).
+Sein unveränderter Baseline-Abgleich verlangt den autorisierten Wert
+`dfcf4d04b8400763bee6ab0b465fa182927dea75` oder den aktuellen HEAD;
+die unveränderte Interaktionskarte nennt
+`1bac0d93302c6e589effafe46fccb055d82bd44e`. Beide Konfigurationen sowie
+Prüfcode und Test sind bytegleich zum Ausgangscommit `2b4f8689`.
+Census-, D02-Kanten- und Authority-Einzelvalidatoren bestanden. Diese
+Änderung ersetzt oder lockert den fehlgeschlagenen Gesamtvertrag nicht.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

@@ -149,6 +149,8 @@ def build_mi_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingP
     temporal_digest = str(raw.get("temporal_integrity_digest") or "")
     if not is_valid_sha256_hex_v0(temporal_digest):
         raise MiLearningEvidenceValidationError("TEMPORAL_INTEGRITY_DIGEST_INVALID")
+    if compute_mi_learning_reproducibility_digest_v1(raw) != digest:
+        raise MiLearningEvidenceValidationError("MI_LEARNING_CONTENT_DIGEST_MISMATCH")
 
     return MappingProxyType(dict(raw))
 
