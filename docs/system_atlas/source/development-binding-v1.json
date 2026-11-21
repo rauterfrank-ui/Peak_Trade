@@ -1044,7 +1044,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "e6da702664c25a8a798d68250c6c728c3ba1b02a15d6b783d086b6525b01a226"
+      "sha256": "799f537cf5ea290084fad310b930c3129dfa7f46386e5ceef5d32c4b9d9bd167"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -4889,7 +4889,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "183d65b77b85c511f2fd45e6bf59fda74007e359d85e9408919dbeec269b6fa4"
+      "sha256": "9c45bb3089c0934f33a7fbc004dd532feef4ee17711d8385d267a885ffa5eafc"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
