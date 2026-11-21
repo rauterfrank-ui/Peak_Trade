@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "fd053d1952fa7161a105625967860db6186c3e970f7ace3edfd90b0436ced750"
+      "sha256": "20e75afd4456d1b747e80acb19763f0c636b6bd0e289477d78db2329577477d4"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1255,6 +1255,11 @@
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md",
       "before_sha256": "42e3b7fa19c71e1c3a7133ee642b188c23e1a9609906e2e1531c19416a37e5ff",
       "sha256": "fef82b3091403170d2dbd905305d2a9b4cb3c1543f622e489eb4ff141bcfc5c0"
+    },
+    {
+      "path": "docs/ops/specs/INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md",
+      "before_sha256": "36830b2a9726efbdeb61ca8e46d8e2512857ac17ad67a0009ea3bdced9a7696f",
+      "sha256": "c34019b62847afe2e4c9b73133f845dd8a698008bcd1e1260405cd2b6c01a654"
     },
     {
       "path": "docs/ops/specs/LIVE_ENTRY_LIQUIDITY_PROFILES_V1.toml",
@@ -2289,7 +2294,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
       "before_sha256": "dcb00c640bf97c0a47d14c1cc621aba38301ba30d8f39e29136aa7555a4c528e",
-      "sha256": "9079f11189de6df20716b76532125f39596febc187ff00b137ba27f1f0926e17"
+      "sha256": "f2690f235d2411f08b5b62efe7b52e2246202079455a56b6ec2dc5eaceb24727"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
@@ -4265,6 +4270,11 @@
       "path": "tests/learning/test_ddo_real_outcome_horizon_learning_stretch_v1.py",
       "before_sha256": "bd0c842e447937b4e3e310d8054bf51d2b349c9d5863c6ec960f8c45263ade17",
       "sha256": "432f3d86077972576cf06a5ce806d67785ecefbd165372f2f680e29c8180621e"
+    },
+    {
+      "path": "tests/learning/test_forecast_freeze_exact_clock_v1.py",
+      "before_sha256": null,
+      "sha256": "fa848cdebda6bb349241c0e49489ecadd1c8e53fdfffa3a723aa3437df12a10d"
     },
     {
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",

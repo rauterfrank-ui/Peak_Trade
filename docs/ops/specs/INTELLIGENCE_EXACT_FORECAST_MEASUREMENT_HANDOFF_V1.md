@@ -31,6 +31,16 @@ are caller-supplied evidence, not an independently authenticated model admission
 proof of actual inference. Missing provider remains explicit abstention in the
 context entry. No default model, training dataset or scientific metric is chosen.
 
+The shared attributed/market freeze uses the original public-fact clock decoder
+for exact UTC ordering through nine fractional digits. Training end ≤ model
+availability ≤ context as-of ≤ forecast creation ≤ target horizon start, and
+the original return-close/forecast-end equality, are enforced before the existing
+lease or immutable forecast publication. The explicit integer-second context-age
+limit is compared as integer nanoseconds without rounding or a new limit.
+Original timestamp strings, payload/model bytes, job identity and digest formulas
+are preserved; a different textual representation of the same UTC instant remains
+equal for chronology without rewriting its stored representation.
+
 Freeze the native forecast with its complete optional decision/instrument/drift
 references and the original probabilistic JSON bytes. The additive byte digest
 retains complete float representations and original formatting; no .12g digest
@@ -58,12 +68,25 @@ Publication uses complete fsynced temporary bytes and exclusive atomic creation;
 per-full-job process leases serialize participating wrapper calls. No guarantee
 is inferred about unrelated legacy writers, host crash or power loss.
 
+The attributed measurement availability gate uses the same exact order before
+lease, attachment or calibration: forecast outcome end ≤ declared measurement
+availability ≤ the supplied observation's evaluation time. This retains the
+original meanings of those fields. The independent market observation has its
+separate actual evaluated-at field and source receipts; no logical horizon time
+is relabelled as actual availability. These checks enforce declared chronology,
+not independent clock authenticity. Calibration math and measurement owners are
+unchanged.
+
 Cold readback compares the complete original MI triad, exact input parents and
 numeric values without executing a provider, backtest, evaluator or calibration.
 An interruption after native persistence but before ACK resumes the original
 idempotent calibration/store path. A divergent same-key retry rejects. A simulated
 exception boundary and a separate fresh-process cold read are tested; these are
 not claimed as a complete physical crash matrix.
+
+Cold readback remains an integrity/parent/numeric read, without re-running
+context materialization or model admission. Existing archives are not rewritten,
+migrated or retroactively certified by the new publication gates.
 
 ## Separate typed consumers
 
