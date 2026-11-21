@@ -125,3 +125,26 @@ identity formula or authority is introduced. Valid unknown patterns still yield
 typed unsupported-fixture evidence. This checks internal plan consistency; it does
 not authenticate the original adaptation decision from its digest alone, prove
 external lineage truth, measure feature usefulness or create a downstream writer.
+
+## Evaluation return joined before next evidence — 2026-11-21
+
+Loop C now consumes the evaluation owner's complete return validator before
+deriving its cycle identity or next Learning research evidence. The validator
+reuses the original deterministic fixture-result construction for the actual
+validated plan and compares the whole canonical packet, including its plan-result
+digest, evaluation identity, outcome, status and no-effect fields. Mapping wrappers
+and JSON roundtrips preserve their original meaning; boolean and numeric values
+remain distinct. Existing identity and digest formulas are unchanged.
+
+Equal plan/evaluation IDs alone do not bind the entire plan: the original plan
+identity excludes its representation-lineage field, while its complete result
+digest binds it. A valid evaluation from such a different plan must not become
+next evidence for the actual plan. Fresh hashes also do not justify contradictory
+outcomes, fixture meanings or effect claims.
+
+This is deterministic fixture-packet reconstruction, with no measured experiment
+or new outcome rule. Supported/rejected fixture outputs and typed no-evaluation
+remain intact. The returned next research evidence is not a durable learning-state
+writer, numeric training update or productive authorization. Even before this
+check, the next-evidence builder supplied its own no-apply/no-mutation constants;
+the repaired gap concerns causal content consistency, not a newly closed order port.

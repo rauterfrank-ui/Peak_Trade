@@ -786,6 +786,52 @@ Lernwriter, kein Modell-Apply und keine Betriebsfreigabe. BTC, Originalstores un
 numerische Modelle bleiben unverändert. Der historische D01/D02-Basiskonflikt bleibt
 offen und wurde nicht erneut ausgeführt; eine Gesamtsystemhärtung ist nicht belegt.
 
+### Offline-Auswertungsrückgabe bis zum nächsten Loop-C-Beleg
+
+Ausgangsbasis ist PR #7350,
+`ce1342eab782528448e136e453362ee5c9c6f0f2`. Planaufnahme und die vorhandenen
+Fixture-Zweige sind verbunden und besitzen die zuvor dokumentierten Prüfungen.
+Die bisherige Auswertungskonstruktion ist seit dem eingefrorenen Bestand
+`9397d04a3` bytegleich erhalten. Der Loop-C-Owner übernahm ihre Rückgabe jedoch
+ohne einen erneuten vollständigen Abgleich mit dem tatsächlich verwendeten Plan
+in Zyklusidentität und nächsten Forschungsbeleg.
+
+Zwölf Gegenproben bestätigten die fehlende Abweisung vor dem tatsächlichen
+Folgebeleg. Zwei verwenden vom Originalproducer erzeugte gültige Auswertungen
+fremder Pläne. In einem Fall bleiben Plan- und Auswertungs-ID gleich, während der
+vollständige Planinhalt und dessen Ergebnisdigest eine andere Repräsentationsherkunft
+tragen. Die übrigen Fälle verändern Outcome, Status, Fixture, Forschungszweck,
+Domain oder Wirkungsangaben und berechnen die ursprünglichen Hashes erneut;
+ein Kontrollfall behält dabei ausdrücklich die alte innere Auswertungs-ID.
+
+Der [Auswertungsowner](../../../src/experiments/canonical_learning_representation_offline_evaluation_v1.py)
+stellt jetzt einen vollständigen Rückgabevalidator bereit. Er verwendet dieselbe
+ursprüngliche deterministische Fixture-Konstruktion für den tatsächlich validierten
+Plan. Der [Loop-C-Consumer](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py)
+gleicht damit das ganze kanonische Paket ab, bevor Zyklusidentität oder nächster
+Beleg entstehen. Plan-Ergebnisdigest, Outcome, Auswertungsstatus, IDs und
+No-Effect-Felder bleiben gemeinsam gebunden. Ein numerischer Nullwert ersetzt
+keinen Wahrheitswert False. Schreibgeschützte Originalrückgaben und JSON-Pakete
+bleiben zulässig; ursprüngliche ID- und Digestformeln werden nicht erweitert.
+
+109 unterschiedliche Offline-Fälle bestanden: die vorhandenen 93 Fälle und
+16 neue Fälle. Die zwölf Negativfälle reproduzierten vor der Korrektur die fehlende
+Abweisung. Vier Positivfälle erhalten die vollständige Loop-C-Ausgabe nach
+JSON-Rücklesen. Die [Rückgabe-Gegenproben](../../../tests/learning/test_representation_evaluation_return_binding_v1.py)
+verwenden Originalbuilder, isolierte synthetische Eingaben und den tatsächlichen
+Folgebelegconsumer. Zehn vollständige gültige Loop-C-Ausgaben einschließlich aller
+Identitäten und Digests stimmen außerdem mit ihren Ausgaben vor der Korrektur
+überein. Wiederholungen sind nicht doppelt gezählt.
+
+Die Rekonstruktion des Fixture-Pakets ist kein neuer Mess- oder Trainingslauf.
+Bestehende Fixture-Ergebnisse und die typisierte Nichtauswertung unbekannter Muster
+bleiben erhalten; numerische Lernqualität und externe Herkunft werden damit nicht
+belegt. Der nächste Forschungsbeleg ist weiterhin eine Rückgabe ohne produktiven
+Lernwriter oder Modell-Apply. Seine eigenen No-Apply-/No-Mutation-Konstanten waren
+bereits zuvor geschlossen. BTC, Originalstores und Betriebsfreigaben bleiben
+unverändert. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
+erneut ausgeführt; eine Gesamtsystemhärtung ist damit nicht abgenommen.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

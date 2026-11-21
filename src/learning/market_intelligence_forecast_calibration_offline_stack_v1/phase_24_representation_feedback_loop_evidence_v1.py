@@ -14,6 +14,7 @@ from src.experiments.canonical_learning_representation_offline_evaluation_v1 imp
     LearningRepresentationOfflineEvaluationRequestV1,
     OfflineEvaluationOutcome,
     run_learning_representation_offline_evaluation_v1,
+    validate_learning_representation_offline_evaluation_v1,
 )
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
     LearningRepresentationResearchAdaptationPlanRequestV1,
@@ -156,6 +157,9 @@ def run_loop_c_representation_feedback_closure_v1(
     )
     evaluation = run_learning_representation_offline_evaluation_v1(
         LearningRepresentationOfflineEvaluationRequestV1(research_plan=dict(plan))
+    )
+    evaluation = validate_learning_representation_offline_evaluation_v1(
+        evaluation, research_plan=plan
     )
 
     source_meta_id = str(meta_evidence.get("source_meta_evidence_id") or "")

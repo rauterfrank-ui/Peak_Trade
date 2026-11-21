@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "c7f2f45ad970fb05ccb8313e8cc716c6c679ac6d2d10674aaee4f51a10b2f5fd"
+      "sha256": "bd5ebb44fb1ff96622c9ac262ec919429345ef3931d27a1db87ea8097153f7ea"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1349,7 +1349,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
       "before_sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
-      "sha256": "2de73dab41a0a2e1be000ca82fc7f633e7f537103ec5bd55485c449aa25fd1f7"
+      "sha256": "5807d83d02364b07e92196624f47dba8c5989ab5cd63828dabc1a05cd9259741"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
@@ -2027,6 +2027,11 @@
       "sha256": "2b05aa4845da7efd5a11e6c1b25f937e09efc8c94466bee2fc43948cfa13c15b"
     },
     {
+      "path": "src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
+      "before_sha256": "acf19867887ae6d88be828802b3cb9213be0ad5b0ec164d98694551bbdd4e8ea",
+      "sha256": "62ac091bbe3405adf31eb09c8fb6c5ec1771bd71f0c490472e1bbdff3fc5d3a6"
+    },
+    {
       "path": "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
       "before_sha256": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
       "sha256": "f9257ce7a065ff04686e3db0d5afae38e51010afe61667381753562ef765643c"
@@ -2324,7 +2329,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
       "before_sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
-      "sha256": "7568830ae666a1aa2ad444c01ca218861d43c260941e78739f6d0a3fb40930a7"
+      "sha256": "aa1765ff2c481fa741d2e1727d0158ba24edd30283bc419fa79fdd6678625898"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
@@ -4315,6 +4320,11 @@
       "path": "tests/learning/test_recurrent_offline_research_v1.py",
       "before_sha256": null,
       "sha256": "eeed45621100f08c084a0539560ea969a28ccfa4f9633430932eb5da5c69b062"
+    },
+    {
+      "path": "tests/learning/test_representation_evaluation_return_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "d73187ed1352a04530e21708f42e1ec477c14f41f9f0d30532236e3cac874895"
     },
     {
       "path": "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
