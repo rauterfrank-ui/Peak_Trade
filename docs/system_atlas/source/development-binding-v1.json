@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "bd5ebb44fb1ff96622c9ac262ec919429345ef3931d27a1db87ea8097153f7ea"
+      "sha256": "ec8e99e4d96bad51a2bcef8178cc29387866a7a1871eab0a77f96e6355717732"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1245,6 +1245,11 @@
       "path": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
       "before_sha256": "159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18",
       "sha256": "073664b39d07a27c64d4e7d498f5e4949c8f0d5f405ccba34b50686450bdfdcb"
+    },
+    {
+      "path": "docs/ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md",
+      "before_sha256": "42e3b7fa19c71e1c3a7133ee642b188c23e1a9609906e2e1531c19416a37e5ff",
+      "sha256": "fef82b3091403170d2dbd905305d2a9b4cb3c1543f622e489eb4ff141bcfc5c0"
     },
     {
       "path": "docs/ops/specs/LIVE_ENTRY_LIQUIDITY_PROFILES_V1.toml",
@@ -2285,6 +2290,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
       "before_sha256": "19dcf5c7d58c5bad0ad76a46371c62fc6546e93682dacff4c89b328dbd4bac85",
       "sha256": "16e19c329cb8c9ab223a0ac77ae79caef64879dabf86ece58d66530711de65a4"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py",
+      "before_sha256": "285467dbb06cbfce852cc3102083f27f7d73f54682a622810a3bd67ccb6df23e",
+      "sha256": "c9691ecf26334a8c12a0ed94b0d66034dc830fea7957d3b22ec034c1e5b29cfc"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_store_training_v1.py",
@@ -4265,6 +4275,11 @@
       "path": "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
       "before_sha256": "99d4fa9cc7e455eec061d6ead25e1c38b4cfe0ca69de9905c188abc12f1f20cb",
       "sha256": "810a375fca1b3303ecc9529137d711db4dd7cd782ea4b322ea01ebe50fc2fed4"
+    },
+    {
+      "path": "tests/learning/test_market_ols_exact_clock_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "735b74069b87a1372e337c86829c7da317bd2f1fff4d993f0957d60c172182a6"
     },
     {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",

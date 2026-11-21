@@ -832,6 +832,57 @@ bereits zuvor geschlossen. BTC, Originalstores und Betriebsfreigaben bleiben
 unverändert. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
 erneut ausgeführt; eine Gesamtsystemhärtung ist damit nicht abgenommen.
 
+### Originalmessung bis OLS-Modell und Folgeforecast: Zeitbezug
+
+Ausgangsbasis ist PR #7351,
+`d0225e916d80b938be3b45d79dcd758d5a9cf2e4`. Der native numerische Lernpfad
+ist seit dem eingefrorenen Bestand `9397d04a3` vorhanden. Der spätere
+[Store-Selektor](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_store_training_v1.py)
+aus `45f627944` verwendet bereits die exakte Quellzeitordnung. Die vorhandene
+Kette erhält Originalmessung und Calibration, Markt-/Targetidentität, Einheiten,
+Samplemanifest, Modellstore, tatsächliche numerische Inferenz und Originalfreeze.
+Einheiten von Trades und OHLCV werden bereits beim Kontextowner zugelassen;
+ein weiterer Mengenadapter oder eine neue numerische Lernverbindung wird nicht
+ergänzt. Kaltlesen bleibt ausdrücklich ohne Fit, Inferenz oder Trainingsquellen.
+
+Eine echte Präzisionslücke lag an den vorhandenen Zeitgates des
+[OLS-Adapters](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py):
+`datetime` reduzierte gültige Quellzeitbruchteile auf Mikrosekunden. Elf
+Gegenproben bestätigten, dass um eine Nanosekunde widersprüchliche
+Veröffentlichungs-, Label-/Trainingscutoff-, Parent-/Folgemodell- und
+Modell-/Kontext-/Forecastbezüge beziehungsweise Altersgrenzen den tatsächlichen
+Fitter oder Featureconsumer erreichen konnten.
+
+Der Adapter verwendet jetzt denselben ursprünglichen Quellzeitowner wie die
+Store-Auswahl. UTC-Zulassung bleibt erhalten; kanonische Bruchteile mit einer bis
+neun Stellen und UTC-Offset null werden exakt geordnet. Samplechronologie und
+Nichtüberlappung verwenden ebenfalls diese Ordnung. Die vorhandenen Alterslimits
+in ganzen Sekunden werden ohne Rundung als ganzzahlige Nanosekunden verglichen.
+Dadurch entsteht keine neue Altersgrenze oder Kalenderobergrenze. Originale
+Zeitstrings, Policywerte, Fitter, Split, Koeffizienten-/Residualrechnung, Targets,
+Einheiten und ID-/Digestformeln bleiben erhalten. Die normale Quellenbindung neuer
+Trainingsrequests umfasst weiterhin die Implementierungsversion; eine dadurch
+andere Modellreferenz ist kein Nachweis numerischen Lernfortschritts.
+
+87 unterschiedliche Offline-Fälle bestanden: 68 vorhandene Markt-/Modell-/Mess-/
+Replayfälle und 19 neue Fälle. Elf Negativfälle reproduzierten vor der Korrektur
+die fehlende Abweisung. Acht Positivfälle prüfen gültige Gleichzeitigkeit,
+erhaltene Zeitstrings, zulässige große Alterslimits, Wiederholung und Kaltlesen
+sowie die beiden archivierten Originalmodelle ohne Fit oder Quellenmessung.
+Die [Gegenproben](../../../tests/learning/test_market_ols_exact_clock_admission_v1.py)
+verwenden synthetische Originaljobs in temporären Verzeichnissen und sperren den
+tatsächlichen Fitter beziehungsweise Featureconsumer an der Aufnahmegrenze.
+Originalmodelle bleiben bytegleich; Wiederholungen sind nicht doppelt gezählt.
+
+Die [ursprüngliche OLS-Semantik](INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md)
+bleibt begrenzt: Target ist LOG_RETURN, die gehaltene Residualstreuung ist keine
+bewiesene Verteilungskalibrierung, und eine Prognose ist kein Kontogewinn. Diese
+Änderung prüft deklarierte Chronologie an den benannten OLS-Übergaben; sie
+authentifiziert weder externe Zeitquellen noch sämtliche Zeitprüfungen anderer
+Owner. BTC, Originalstores, produktiver DDO-LearningState, Betriebsfreigaben und
+Modell-Apply bleiben unverändert. Der historische D01/D02-Basiskonflikt bleibt
+offen und wurde nicht erneut ausgeführt. Eine Gesamtsystemhärtung ist nicht belegt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
