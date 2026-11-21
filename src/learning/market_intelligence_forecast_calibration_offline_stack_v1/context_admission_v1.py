@@ -12,6 +12,10 @@ import hashlib
 import math
 from typing import Any, Mapping, Sequence
 
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
+
 from .integration_contracts_v1 import (
     IntelligenceIdentityV1,
     MarketIdentityV1,
@@ -55,6 +59,25 @@ class ContextAdmissionPolicyV1:
     required_families: Sequence[str]
 
 
+def _utc_order_key(value):
+    # Preserve UTC admission while retaining the original source-clock precision.
+    instant_v1(value)
+    return capture_order_key_v1(value)
+
+
+def _elapsed_nanoseconds(later, earlier):
+    whole = later[0] - earlier[0]
+    return (whole.days * 86400 + whole.seconds) * 1_000_000_000 + later[1] - earlier[1]
+
+
+def _clock_text(key):
+    whole, nanos = key
+    # Keep historical canonical bytes when datetime already retained full precision.
+    if nanos % 1000 == 0:
+        return whole.replace(microsecond=nanos // 1000).isoformat()
+    return whole.isoformat(timespec="seconds").removesuffix("+00:00") + f".{nanos:09d}+00:00"
+
+
 def _fact_groups(request):
     groups = {
         "price_mark": (request.price_mark_fact,) if request.price_mark_fact else (),
@@ -86,22 +109,26 @@ def _identity_and_time(fact, identity, expected_instrument):
         bar = p["bar"]
         actual = (bar.get("canonical_instrument_id"), bar.get("venue"))
         native = bar.get("venue_instrument_id")
-        event = datetime.fromtimestamp(bar["bar_close_time"], timezone.utc)
+        event = _utc_order_key(
+            datetime.fromtimestamp(bar["bar_close_time"], timezone.utc).isoformat()
+        )
         interval_end = event
     else:
         instrument = p.get("instrument", {})
         actual = (instrument.get("canonical_instrument_id"), instrument.get("venue"))
         native = instrument.get("venue_native_id")
         ts = p.get("timestamps", {})
-        event = instant_v1(ts.get("effective_at") or ts.get("captured_at"))
+        event = _utc_order_key(ts.get("effective_at") or ts.get("captured_at"))
         interval_end = event
         if fact.fact_kind in {"FinalizedPt1mMarkFactV1", "OhlcvIntervalFactV1"}:
             ms = p.get("interval_start_ms")
             require_v1(type(ms) is int and ms % 60000 == 0, "PT1M_GRID_REQUIRED")
             if fact.fact_kind == "OhlcvIntervalFactV1":
                 require_v1(p.get("interval_id") == "PT1M", "UNSUPPORTED_OHLCV_GRID")
-            event = datetime.fromtimestamp(ms / 1000, timezone.utc)
-            interval_end = datetime.fromtimestamp(ms / 1000 + 60, timezone.utc)
+            event = _utc_order_key(datetime.fromtimestamp(ms / 1000, timezone.utc).isoformat())
+            interval_end = _utc_order_key(
+                datetime.fromtimestamp(ms / 1000 + 60, timezone.utc).isoformat()
+            )
     require_v1(actual == (expected_instrument, identity.venue), "FACT_ENTITY_MISMATCH")
     text_v1(native, "NATIVE_INSTRUMENT")
     if expected_instrument == identity.instrument_ref:
@@ -196,7 +223,7 @@ def _compose_admitted_context_v1(*, identity, request, receipts_by_digest, polic
     require_v1(request.instrument_ref == identity.instrument_ref, "REQUEST_ENTITY_MISMATCH")
     text_v1(policy.policy_ref, "ADMISSION_POLICY")
     require_v1(bool(policy.required_families), "REQUIRED_FAMILIES_POLICY_REQUIRED")
-    as_of = instant_v1(request.observed_at)
+    as_of = _utc_order_key(request.observed_at)
     bindings = []
     used = set()
     instrument_units = {}
@@ -228,9 +255,9 @@ def _compose_admitted_context_v1(*, identity, request, receipts_by_digest, polic
             native, event, interval_end = _identity_and_time(fact, identity, expected)
             previous_native = native_refs.setdefault(expected, native)
             require_v1(previous_native == native, "ANCHOR_NATIVE_MAPPING_CONFLICT")
-            captured = instant_v1(fact.payload.get("timestamps", {}).get("captured_at"))
-            known = instant_v1(receipt.known_at)
-            available = instant_v1(receipt.available_at)
+            captured = _utc_order_key(fact.payload.get("timestamps", {}).get("captured_at"))
+            known = _utc_order_key(receipt.known_at)
+            available = _utc_order_key(receipt.available_at)
             require_v1(event <= known <= available <= as_of, "KNOWLEDGE_LOOKAHEAD")
             require_v1(
                 captured <= available and interval_end <= available, "FINAL_VALUE_NOT_AVAILABLE"
@@ -263,23 +290,32 @@ def _compose_admitted_context_v1(*, identity, request, receipts_by_digest, polic
                     "original_bytes_sha256": hashlib.sha256(receipt.payload_bytes).hexdigest(),
                     "original_payload_json": receipt.payload_bytes.decode("utf-8"),
                     "payload": strict_json_v1(receipt.payload_bytes),
-                    "event_time": event.isoformat(),
-                    "captured_at": captured.isoformat(),
-                    "known_at": known.isoformat(),
-                    "available_at": available.isoformat(),
+                    "event_time": _clock_text(event),
+                    "captured_at": _clock_text(captured),
+                    "known_at": _clock_text(known),
+                    "available_at": _clock_text(available),
                     "units": units,
                 }
             )
         if events:
-            require_v1((as_of - max(events)).total_seconds() <= limit, "CONTEXT_ROLE_STALE")
+            require_v1(
+                _elapsed_nanoseconds(as_of, max(events)) <= limit * 1_000_000_000,
+                "CONTEXT_ROLE_STALE",
+            )
             if role == "open_interest":
-                require_v1(len(events) == len(set(events)), "DUPLICATE_OI_TIME_REJECTED")
+                # The original OI value selector still orders at datetime precision.
+                # Do not admit distinct source clocks that it would collapse to a tie.
+                native_events = {(whole, nanos // 1000) for whole, nanos in events}
+                require_v1(len(events) == len(native_events), "DUPLICATE_OI_TIME_REJECTED")
             if role in {"volatility", "microstructure", "cross_selected"} or role.startswith(
                 "anchor:"
             ):
                 ordered = sorted(events)
                 require_v1(
-                    all((b - a).total_seconds() == 60 for a, b in zip(ordered, ordered[1:])),
+                    all(
+                        _elapsed_nanoseconds(b, a) == 60_000_000_000
+                        for a, b in zip(ordered, ordered[1:])
+                    ),
                     "CONTIGUOUS_PT1M_GRID_REQUIRED",
                 )
     require_v1(set(receipts_by_digest) == used, "UNUSED_OR_MISSING_FACT_RECEIPTS")

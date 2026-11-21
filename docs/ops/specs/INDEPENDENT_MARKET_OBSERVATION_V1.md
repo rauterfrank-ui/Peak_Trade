@@ -20,6 +20,10 @@ The opaque instrument reference in the canonical N_BARS measurement is a differe
 
 The new context entry points are compose_admitted_market_context_v1 and replay_admitted_market_context_v1. The existing compose_admitted_intelligence_context_v1 and replay_admitted_intelligence_context_v1 retain the decision-attributed schema and identity.
 
+Both context admissions and their archived replay use the original public-fact clock decoder for exact UTC ordering through nine fractional digits. Event ≤ knowledge ≤ availability ≤ context as-of, capture/final interval end ≤ availability, and the caller's existing integer-second role age limit are checked before the original feature materializer. Minute-grid event time remains interval start and final availability still requires interval end; an O4 event remains the original bar close. No freshness limit, instrument mapping, unit conversion or feature formula is added.
+
+Source bindings retain fractional event/capture/knowledge/availability precision in canonical UTC text, while the original payload JSON and bytes remain unchanged. Canonical serialization remains byte-identical when the former datetime representation retained the complete precision. New precise bindings can change package content digests through the existing formula. Older packets with truncated receipts that contradict their original source bytes reject; missing precision is neither inferred nor rewritten. The original microsecond duplicate-time fence for open-interest observations remains because the native value selector still orders at that precision. This is bounded context admission and replay hardening, not certification of every downstream clock, external source authenticity or operating recovery.
+
 ## Explicit future target
 
 build_independent_market_return_target_v1 accepts an explicit independent_market_n_bars_request_v1 before future prices are known. Required fields are market_identity, horizon_start_time_utc, n_bars, o4_interval_id, price_unit, price_family, source_kind, max_end_age_seconds and expected_price_basis_kind. Unknown request/identity fields reject, including fabricated Decision/Lane/Epoch additions.

@@ -35,6 +35,15 @@ def _observed_at(nanos, suffix):
         args["request"] = replace(
             args["request"], observed_at=_stamp(args["request"].observed_at, nanos, suffix)
         )
+        # Exercise the later OLS gate with an independently admissible source context.
+        if nanos:
+            args["policy"] = replace(
+                args["policy"],
+                max_age_seconds_by_role={
+                    role: seconds + 1
+                    for role, seconds in args["policy"].max_age_seconds_by_role.items()
+                },
+            )
 
     return change
 
