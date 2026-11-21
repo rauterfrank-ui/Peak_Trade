@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "fc4eea1e38a4f94d5d6a83ae903b9ed5dc4f3dde342324675eb6ed722e82174d"
+      "sha256": "48dce23bc2ccaecc78137aec8b636acf3b8dbc3f438ba9aa63c06e36d1b4f443"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1379,7 +1379,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
       "before_sha256": "89c8af944f992ed0a46c260e31e09aeb8b306c2ba339179f5024f3bd8ee1ebf1",
-      "sha256": "16b6bfc1fb61a242038c0cb511fba2ab3de67b3a986ece433bb359784b36d87a"
+      "sha256": "4959aefd7baf9bc7efb0c074999f98f5ccd646f7057ed1f60f5fb776851c2b89"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
@@ -1759,7 +1759,7 @@
     {
       "path": "scripts/ops/route_offline_paired_market_representation_meta_v1.py",
       "before_sha256": null,
-      "sha256": "466fe876281fb0e98fc311d5f8b9378a29730f9df7d8e2db0a296bfd083d7992"
+      "sha256": "abae9c9c9e8c2e8a7816ce6a4d9431f3dd4972c7e572cdf041e2a2bb6a686cca"
     },
     {
       "path": "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
@@ -1879,7 +1879,7 @@
     {
       "path": "scripts/ops/run_offline_learning_representation_sequence_v1.py",
       "before_sha256": null,
-      "sha256": "91a57cc9f422106dbfd335fc49b8876f2a2d07f92cfb320925ab6cc2d235d631"
+      "sha256": "d96619250fdd35693f80627ae69bb4ba638010430c77d689a5566303b375fcc0"
     },
     {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
@@ -5415,6 +5415,11 @@
       "path": "tests/ops/test_recommend_manual_only_workflows.py",
       "before_sha256": "cb8638d10c5bd087e99e4be4847cc7da2f259a078760319e74ea4e7383364851",
       "sha256": "1ba870fed9f22f80906f04fed4cc0db2d03cff18e95de65ceb9afe147c48b177"
+    },
+    {
+      "path": "tests/ops/test_representation_cohort_clock_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "2ed4ecaae309b1754594db598f2aa320e4ec8b6479cc6099e9a7fea94a293c96"
     },
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",

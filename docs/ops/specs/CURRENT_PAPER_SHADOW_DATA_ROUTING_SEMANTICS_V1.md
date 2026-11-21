@@ -1283,6 +1283,46 @@ Gesamtbetriebsbereitschaft bleiben offen. BTC, Originalstores und produktive
 Reducer bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder
 Forschungsläufe wurden gestartet.
 
+### Originalzeitbindung des deklarierten Repräsentationskohortenplans — 22. November
+
+Geprüft wurde der Anschluss vom gespeicherten Kohortenplan über Originalforecast,
+gemessenes Vorgängerergebnis und Nachfolgeplan an Vergleich und Meta-Übergabe.
+Vergleichsrekonstruktion, Forschungsfrage, typisierter Router und Forschungsplan
+sind bereits verbunden und prüfen ihre Inhalts- und Bedeutungsbindungen.
+An diesen Ownern wurde keine zusätzliche Logik ergänzt.
+
+Vier vorhandene Zeitprüfungen verloren jedoch Nachkommastellen jenseits von
+Mikrosekunden: die Stundenraster-Zulassung des Nachfolgers und der Kohorte sowie
+die beiden Meta-Zuordnungen des deklarierten Starts zu Originalforecast und
+Nachfolgeanfrage. Acht synthetische Gegenproben erreichten dadurch den nächsten
+Consumer trotz einer Abweichung um 1 beziehungsweise 999 Nanosekunden. Neun
+gültige Kontrollfälle bestanden bereits vor der Korrektur.
+
+Diese vier Prüfungen verwenden jetzt die vollständige vorhandene Quellzeit.
+Ein Start knapp nach einer vollen Stunde wird vor der üblichen Kanonisierung
+abgewiesen. Eine neu versiegelte widersprüchliche Plandeklaration ersetzt nicht
+die Originalzeit des eingefrorenen Targets oder des Nachfolgeplans. Nullwertige
+Bruchteile und UTC-Offset null bleiben zulässig und zeitlich gleichwertig.
+Aufteilung, Mindestabstand, Rechenverfahren und Zuständigkeiten bleiben erhalten.
+
+51 Offline-Fälle bestehen: 34 vorhandene Kontrollen und 17
+[neue Gegen- und Positivproben](../../../tests/ops/test_representation_cohort_clock_binding_v1.py).
+Drei vor der Korrektur gesicherte vollständige Originalketten mit jeweils acht
+Jobs bleiben bytegleich, einschließlich Forecasts, Calibration, Nachfolgeplänen,
+Links, Jobidentitäten und Receipt-Zeiten; alle 306 Originaldateien sind unverändert.
+Der fokussierte Meta-Test ersetzt allein das Capture-Advance durch nativen
+Calibration-Readback. Der bestehende synthetische Integrationstest prüft daneben
+den echten Capture-/Readback-Anschluss, Vergleich, Meta, Folgeforschung und
+erneutes Lesen nach Prozessende mit Fixtureantworten beziehungsweise Netzsperre.
+
+Der [Phase-22-Vertrag](UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md)
+beschreibt diese begrenzte Zeitbindung. Ein Researchplan erteilt keine Apply- oder
+Betriebsfreigabe; Vergleichs-RMSE ist weiterhin LOG_RETURN und kein Kontogewinn.
+Andere Zeitrelationen dieser Skripte, weitere Signal-/Rückwege, der historische
+D01/D02-Basiskonflikt und Gesamtbetriebsbereitschaft bleiben offen. BTC und
+betriebliche Stores bleiben unverändert. Keine Betriebs-, Paper-, Shadow- oder
+Forschungsläufe wurden gestartet.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

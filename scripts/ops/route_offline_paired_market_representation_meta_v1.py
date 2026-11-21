@@ -29,8 +29,16 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.phas
 from src.meta.learning_loop.paired_market_representation_meta_v1 import (
     route_paired_market_representation_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 SCHEMA = "recorded_representation_cohort_meta_receipt_v1"
+
+
+def _utc_order_key(value):
+    instant_v1(value)
+    return capture_order_key_v1(value)
 
 
 def _declared_cohort_jobs(store_root, plan):
@@ -45,7 +53,7 @@ def _declared_cohort_jobs(store_root, plan):
         frozen = read_frozen_market_forecast_v1(**locator)
         target = recorded_market_target_from_frozen_v1(frozen)
         require_v1(
-            instant_v1(target["horizon_start_time_utc"]) == instant_v1(start)
+            _utc_order_key(target["horizon_start_time_utc"]) == _utc_order_key(start)
             and frozen["context_package"]["exact_content_digest"] == context_digest
             and (forecast_digest is None or frozen["exact_content_digest"] == forecast_digest),
             "META_COHORT_ORIGINAL_FORECAST_MISMATCH",
@@ -67,8 +75,8 @@ def _declared_cohort_jobs(store_root, plan):
                 inputs["previous_job_key"] == job_key
                 and inputs["previous_measurement_digest"]
                 == result["calibration_ack"]["market_observation_digest"]
-                and instant_v1(inputs["request"]["horizon_start_time_utc"])
-                == instant_v1(starts[index + 1])
+                and _utc_order_key(inputs["request"]["horizon_start_time_utc"])
+                == _utc_order_key(starts[index + 1])
                 and link["plan_digest"] == successor["exact_content_digest"]
                 and link["job_key"]["attempt_generation"] == successor["exact_content_digest"],
                 "META_COHORT_ORIGINAL_SUCCESSOR_MISMATCH",

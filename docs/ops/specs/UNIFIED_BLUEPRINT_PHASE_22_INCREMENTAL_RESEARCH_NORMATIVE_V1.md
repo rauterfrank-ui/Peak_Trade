@@ -119,3 +119,38 @@ Original owners:
 
 [Offline boundary and full-packet verification](../../../tests/learning/test_paired_market_exact_clock_admission_v1.py)
 uses synthetic original jobs and retains the existing source admission APIs.
+
+## Recorded cohort declaration and original-clock binding — 2026-11-22
+
+The recorded representation adapter already binds its declared cohort to original
+freezes, contexts, measured predecessor outcomes and successor plans/links. The
+Meta owner reproduces the stored comparison before forming its typed question,
+router decision and Learning-Research plan. These content joins remain in place.
+
+The successor and cohort producer now check the existing hourly grid against the
+original input's full fractional second. An instant 1 or 999 nanoseconds after an
+exact hour is not an hourly start. Canonical plan serialization still follows the
+existing producer; the admission check runs before that serialization can discard
+the fraction. The Meta adapter compares each declared start with its original
+frozen target and each successor request using the same exact source clock.
+Resealing a conflicting declaration cannot make its start equal to the original.
+UTC admission is retained; zero fractions and UTC-offset-zero spellings remain
+equivalent. Existing spacing, split, feature and measurement rules are unchanged.
+
+Original owners:
+
+- `scripts/ops/run_offline_learning_representation_sequence_v1.py`
+- `scripts/ops/route_offline_paired_market_representation_meta_v1.py`
+
+[Focused offline checks](../../../tests/ops/test_representation_cohort_clock_binding_v1.py)
+reject contradictions before the next original consumer without changing stored
+files. The focused Meta fixture substitutes capture advancement with native
+calibration readback; it is not independent evidence of the capture adapter.
+The existing [synthetic integration checks](../../../tests/ops/test_capture_offline_learning_representation_context_v1.py)
+cover actual capture/readback, comparison, Meta, follow-up and cold replay with
+fixture HTTP responses and a network-rejecting cold replay.
+
+This scope certifies neither all other timing relations in the cohort/follow-up
+scripts nor source authenticity, independent research quality or productive
+apply. Original stores, schemas, digest/ID formulas and operational authority are
+unchanged. No operational collection or research campaign is started.

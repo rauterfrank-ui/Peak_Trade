@@ -40,10 +40,18 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offl
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.phase_22_paired_market_research_v1 import (
     compare_paired_market_b1_to_b0_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 PLAN_SCHEMA = "recorded_representation_successor_plan_v1"
 LINK_SCHEMA = "recorded_representation_successor_link_v1"
 COHORT_SCHEMA = "recorded_representation_cohort_plan_v1"
+
+
+def _on_hourly_grid(value):
+    instant = instant_v1(value)
+    return not (instant.minute or instant.second or capture_order_key_v1(value)[1])
 
 
 def _without_network(**kwargs):
@@ -114,7 +122,7 @@ def prepare_recorded_representation_successor_v1(
 ):
     """Acquire the next context only after reading back the preceding original outcome."""
     start = instant_v1(next_start_utc)
-    require_v1(not (start.minute or start.second or start.microsecond), "HOURLY_GRID_REQUIRED")
+    require_v1(_on_hourly_grid(next_start_utc), "HOURLY_GRID_REQUIRED")
     require_v1(re.fullmatch(r"[0-9a-f]{40}", repository_sha) is not None, "REPOSITORY_SHA_REQUIRED")
     require_v1(
         type(forecast_context_max_age_seconds) is int and forecast_context_max_age_seconds > 0,
@@ -260,8 +268,8 @@ def run_representation_cohort_v1(
     locator = {"store_root": store_root, "job_key": seed_job_key}
     seed = read_frozen_market_forecast_v1(**locator)
     seed_target = recorded_market_target_from_frozen_v1(seed)
-    first_start = instant_v1(seed_target["horizon_start_time_utc"])
-    starts = [first_start, *(instant_v1(value) for value in next_starts_utc)]
+    start_values = [seed_target["horizon_start_time_utc"], *next_starts_utc]
+    starts = [instant_v1(value) for value in start_values]
     validation_fraction = finite_v1(validation_fraction, "VALIDATION_FRACTION")
     require_v1(0 < validation_fraction < 1, "VALIDATION_FRACTION_DOMAIN")
     fit_training_count = round(fit_window_count * (1.0 - validation_fraction))
@@ -269,7 +277,7 @@ def run_representation_cohort_v1(
         seed_target["n_bars"] == 2
         and 5 <= fit_window_count <= len(starts) - 2
         and 4 <= fit_training_count < fit_window_count
-        and all(not (start.minute or start.second or start.microsecond) for start in starts)
+        and all(_on_hourly_grid(value) for value in start_values)
         and all(later - earlier > timedelta(hours=2) for earlier, later in zip(starts, starts[1:])),
         "EXPLICIT_REPRESENTATION_SPLIT_AND_WINDOWS_REQUIRED",
     )
