@@ -138,6 +138,16 @@ def run_loop_c_representation_feedback_closure_v1(
     learning_decision_raw = dict(learning_decision)
     if learning_decision_raw.get("schema_version") != ADAPTATION_INPUT_SCHEMA:
         raise Phase24RepresentationFeedbackError("ADAPTATION_INPUT_BOUNDARY_BROKEN")
+    # Bind the router's actual admission to the decision consumed by the plan.
+    # Independently valid records may describe different representations.
+    if (
+        routing_result.get("learning_consumer_invoked") is not True
+        or routing_result.get("optimization_consumer_invoked") is not False
+        or learning_consumer != learning_decision_raw.get("result_digest")
+        or meta_evidence.get("source_meta_evidence_id")
+        != learning_decision_raw.get("source_meta_evidence_id")
+    ):
+        raise Phase24RepresentationFeedbackError("PHASE_23_LEARNING_ADMISSION_MISMATCH")
 
     plan = build_learning_representation_research_adaptation_plan_v1(
         LearningRepresentationResearchAdaptationPlanRequestV1(
