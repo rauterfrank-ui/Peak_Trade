@@ -263,9 +263,28 @@ def test_ranking_assignment_carries_original_generation_and_rejects_rebinding(tm
 
 def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget(
     run_two_hour_shadow,
+    monkeypatch,
 ):
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        session_runtime_v1 as shadow_runtime,
+    )
+
     first = _market(slot=SOPH)
     captures = []
+    consumed_assignments = []
+    original_cycle = shadow_runtime.run_hardened_wallclock_bridge_observation_cycle_v2
+
+    def observe_consumer(**kwargs):
+        state = kwargs["bridge_state"]
+        market = kwargs["instrument_card_market"]
+        consumed_assignments.append(
+            (market.slot.lane_id, state.instrument_id, state.venue_instrument_id)
+        )
+        return original_cycle(**kwargs)
+
+    monkeypatch.setattr(
+        shadow_runtime, "run_hardened_wallclock_bridge_observation_cycle_v2", observe_consumer
+    )
 
     def source(*, slot, capture_id, clock):
         assert slot == SOPH
@@ -290,8 +309,22 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     evaluated = [row for row in versions if row["master_v2"] is not None]
     assert len(evaluated) > 1
     assert len(captures) > 1
+    assert len(consumed_assignments) > 1
+    assert set(consumed_assignments) == {(SOPH.lane_id, SOPH.instrument_id, SOPH.native_id)}
     for row in evaluated:
+        assert (
+            row["lane_id"],
+            row["instrument_id"],
+            row["venue_native_id"],
+        ) in consumed_assignments
+        assert row["binding"]["instrument_id"] == SOPH.instrument_id
+        assert row["binding"]["venue_native_id"] == SOPH.native_id
+        assert row["budget"]["lane_id"] == SOPH.lane_id
+        assert row["budget"]["instrument_id"] == SOPH.instrument_id
+        assert row["ranking_binding"] is None
+        assert row["assignment_status"] == "EXPLICIT_ISOLATED_TEST_BINDING"
         inp = row["master_v2"]["prepared_input"]
+        assert inp["instrument_id"] == SOPH.instrument_id
         ctx = inp["canonical_market_context"]
         assert ctx["market_type"] == "futures" and ctx["bar_interval"] == "1m"
         assert ctx["mark_price"] == row["market"]["mark_price"]
@@ -306,14 +339,52 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
 
 
 @pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
+@pytest.mark.parametrize(
+    "carry_ranking", [False, True], ids=["consumer-binding", "existing-ranking"]
+)
 def test_interrupted_paper_driver_resumes_cards_with_original_opening_and_cursor(
-    tmp_path, monkeypatch, slot
+    tmp_path, monkeypatch, slot, carry_ranking
 ):
     root = tmp_path.resolve() / "original-session"
     initial = _market(slot=slot, depth=1000)
     latest = initial
     elapsed, index = 0, 0
     interrupted = False
+    assignment = (
+        replace(
+            bound(initial),
+            selection_id="original-cap23-fixture",
+            ranking_snapshot_id="original-ranking-fixture",
+            ranking_integrity_digest="2" * 64,
+            universe_snapshot_id="original-universe-fixture",
+        )
+        if carry_ranking
+        else None
+    )
+    consumer_calls = []
+
+    def observe_consumer(original, stage):
+        def step(consumer, market, **kwargs):
+            row = json.loads(
+                (root / "instrument-cards" / slot.lane_id / "latest.json").read_bytes()
+            )["body"]
+            assert row["binding"] == consumer.bound.to_dict()
+            assert (row["lane_id"], row["instrument_id"], row["venue_native_id"]) == (
+                consumer.slot.lane_id,
+                consumer.bound.instrument_id,
+                consumer.bound.venue_native_id,
+            )
+            assert row["ranking_binding"] == (None if assignment is None else assignment.to_dict())
+            consumer_calls.append((stage, consumer.bound.to_dict()))
+            return original(consumer, market, **kwargs)
+
+        return step
+
+    for owner, stage in (
+        (paper_cli.ZkpPaperEntryV1, "opening"),
+        (paper_cli.ZkpPaperContinuationV1, "occupied"),
+    ):
+        monkeypatch.setattr(owner, "step_v1", observe_consumer(owner.step_v1, stage))
 
     def capture(policy, *, label, output):
         nonlocal latest, index
@@ -341,6 +412,7 @@ def test_interrupted_paper_driver_resumes_cards_with_original_opening_and_cursor
             deadline=60,
             revision="f" * 40,
             capture=capture,
+            card_assignment=assignment,
         )
     original = (root / "opening-fill.json").read_bytes()
     cursor = (
@@ -352,10 +424,36 @@ def test_interrupted_paper_driver_resumes_cards_with_original_opening_and_cursor
     assert cursor.exists() and not (root / "closeout.json").exists()
     cards = root / "instrument-cards" / slot.lane_id
     versions = set((cards / "versions").iterdir())
+    if assignment is not None:
+        preserved = {p: p.read_bytes() for p in (cursor, cards / "latest.json")}
+        calls_before = list(consumer_calls)
+        with pytest.raises(ValueError, match="PAPER_ORIGINAL_CARD_ASSIGNMENT_CHANGED"):
+            paper_cli._resume(
+                root,
+                policy=initial.policy,
+                revision="f" * 40,
+                capture=capture,
+                slot=slot,
+                card_assignment=replace(assignment, ranking_snapshot_id="foreign-generation"),
+            )
+        assert {p: p.read_bytes() for p in preserved} == preserved
+        assert consumer_calls == calls_before
     paper_cli._resume(root, policy=initial.policy, revision="f" * 40, capture=capture, slot=slot)
     assert (root / "opening-fill.json").read_bytes() == original
     assert len(set((cards / "versions").iterdir()) - versions) > 0
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
+    assert {stage for stage, _ in consumer_calls} == {"opening", "occupied"}
+    original_binding = json.loads((root / "paper-profile.json").read_bytes())["instrument_binding"]
+    assert all(binding == original_binding for _, binding in consumer_calls)
+    assert not (root / "instrument-cards" / "LANE_3").exists()
+    if assignment is not None:
+        assert json.loads((root / "card-assignment.json").read_bytes()) == assignment.to_dict()
+    for decision in (cards / "versions").glob("*/decision.json"):
+        row = json.loads(decision.read_bytes())["body"]
+        assert row["binding"] == original_binding
+        assert row["ranking_binding"] == (None if assignment is None else assignment.to_dict())
+        if row["master_v2"] is not None:
+            assert row["master_v2"]["prepared_input"]["instrument_id"] == slot.instrument_id
 
 
 @pytest.mark.parametrize("legacy", [False, True])

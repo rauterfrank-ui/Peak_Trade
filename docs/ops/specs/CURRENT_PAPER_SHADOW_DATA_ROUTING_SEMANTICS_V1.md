@@ -372,7 +372,16 @@ Risiko-/Sizing-Menge noch deren vollständige Kostenprüfung. Reservierung
 bleibt bei diesen Modellen ausdrücklich unbekannt beziehungsweise außerhalb
 ihres Holdmodells; `null` wird nicht als null reserviertes Geld verwendet.
 
-Paper und der SOPH-I17-Begleiter können über
+Die aktuelle Slot-/Instrumentzuordnung erreicht die Karte bereits automatisch
+aus ihrem tatsächlichen Verbraucher. Der Paper-Driver übergibt `session.bound`
+und die Lane des ursprünglichen Opening- beziehungsweise Fortsetzungsowners.
+SOPH leitet Karte und Bridgezustand aus derselben geprüften Sitzungszuordnung ab.
+Dieser Anschluss benötigt keine erneute Rangberechnung oder manuell hinzugefügte
+Rankingbindung. Die Kartenprüfungen gleichen die gespeicherte Bindung am
+tatsächlichen Verbraucheraufruf ab, auch nach einer Paper-Unterbrechung.
+
+Der zusätzliche ursprüngliche Rankingnachweis ist davon getrennt. Paper und der
+SOPH-I17-Begleiter können über
 `--card-cap24-evidence-root` eine bereits vorhandene Cap24-Evidenz übernehmen.
 Der vorhandene Cap24-Leser prüft Manifest, Recordstatus und Bindungsidentität;
 die Instrumentpaarung muss exakt zum Slot passen. Auswahl-, Ranking- und
