@@ -208,3 +208,21 @@ findings or building proposals. Counts across different tests/metrics cannot
 satisfy one another's minimum. Supported findings remain usable when another
 finding is sparse. Thresholds, association formulas and causal restrictions remain.
 [Verification](../evidence/meta_association_bucket_sample_v1_2026_11_04/README.md).
+
+## Failure/Reality-Gap record knowledge time — 2026-11-21
+
+Optional Phase-3 failure and Phase-7 reality-gap records already have canonical
+content, identity and experiment-set admission. Their declared record
+`created_at` must now also be no later than the supplied analysis `created_at`,
+before findings are evaluated. A record may follow its experiment evidence;
+it must be available in the declared chronology of the consuming analysis.
+
+The existing UTC calendar/integer-nanosecond owner is reused through
+`validate_research_evidence_known_at_v1`, including by Advanced Search. Equal
+instants with different supported fractional text remain admissible; original
+timestamp text, record IDs, stored history, metrics and evaluation policy are
+not rewritten. No wall-clock cutoff or new age threshold is introduced.
+
+This admission checks declared chronology, not external authenticity, actual
+historical delivery or a complete historical information set. Existing
+research-only authority and missing-value/association limits remain in force.

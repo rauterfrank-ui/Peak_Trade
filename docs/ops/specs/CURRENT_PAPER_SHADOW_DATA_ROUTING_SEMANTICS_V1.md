@@ -637,6 +637,59 @@ BTC und Betriebsfreigaben bleiben unverändert. Die synthetischen Tests sind
 kein Beleg für wirtschaftliche Güte oder eine vollständige Härtung sämtlicher
 Systemketten.
 
+### Fehler- und Reality-Gap-Belege bis Meta und Forschungswahl
+
+Ausgangsbasis ist PR #7347,
+`a01ac96dbcb4b79c140ac524ce0e99e846d8e8e8`. Die vorhandenen
+[Fehlerbeleg-](CANONICAL_FAILURE_MEMORY_V1.md) und
+[Reality-Gap-Owner](CANONICAL_REALITY_GAP_STORE_V1.md) besitzen bereits
+Inhalts-/Identitätsprüfung, unveränderliche Records und dauerhafte Writer mit
+Readback. Auch die Übergaben an [Meta](CANONICAL_META_LEARNING_V1.md) und
+[Advanced Search](CANONICAL_ADVANCED_SEARCH_V1.md) sind verbunden. Der
+[bestehende Ergebnis-/Meta-/Suchadapter](CANONICAL_RESEARCH_RESULT_META_SEARCH_FEEDBACK_V1.md)
+bindet weiterhin Originalmessung, Experiment, Parameterregion, Kontext und
+die ausdrücklich nachfolgende Forschungswahl. Dafür wird kein neuer Store
+oder weiterer Rückweg erzeugt.
+
+Die acht Gegenproben mit vollständigen Originalbuilder-Records bestätigten
+eine fehlende zeitliche Aufnahmebedingung: Später erstellte Fehler- oder
+Gap-Belege erreichten unter gültigen IDs die Meta-Findings beziehungsweise
+die Suchkandidatenwahl einer früher datierten Anfrage. Schon eine Nanosekunde
+nach dem Verbrauchszeitpunkt wurde nicht abgewehrt. Die vorhandene
+Lookahead-Prüfung von Experiment- und Later-Outcome-Inputs ersetzte diesen
+Abgleich für die zusätzlichen Records nicht.
+
+Der [Meta-Owner](../../../src/experiments/canonical_meta_learning_v1.py)
+bindet jetzt beide Record-Arten an die bereits gelieferte Analysezeit, bevor
+Findings berechnet werden. [Search](../../../src/experiments/canonical_advanced_search_v1.py)
+übergibt seine vorhandene Anfragezeit an denselben Zeitprüfer, bevor
+Kandidaten bewertet werden. Der Prüfer verwendet die bestehende validierte
+UTC-Kalender-/Integer-Nanosekundenordnung. Es gibt keine Rundung,
+Altersgrenze, neue Uhrquelle oder Änderung einer gespeicherten ID-/Digestformel.
+Frühere und zeitgleiche Records bleiben zulässig, auch bei unterschiedlicher
+zulässiger Nachkommastellendarstellung derselben Zeit.
+
+132 unterschiedliche Offline-Testfälle bestanden: 83 für die betroffenen
+Memory-/Meta-/Such-/Researchpfade, 38 für benachbarte Mess-, Stichproben-,
+Parameterregion- und M4-Pfade sowie elf bestehende Zeitsemantikfälle. Die
+16 neuen Fälle enthalten acht Abweisungen vor dem tatsächlichen Folgeconsumer
+und acht gültige Grenzfälle mit unveränderten Zeitstrings. Gültige Records
+behalten ihre ursprüngliche Wirkung auf die Forschungspriorität; andere
+Forschungskandidaten bleiben verfügbar. Wiederholungen sind nicht doppelt
+gezählt. Der historische D01/D02-Baseline-Konflikt bleibt offen und wurde
+für diesen Block nicht erneut ausgeführt.
+
+Record-Erstellung, Experiment-/Barzeit und Zeitpunkt der konsumierenden
+Anfrage sind unterschiedliche Bezüge. Der Abgleich prüft ihre deklarierte
+Chronologie; eine tatsächliche damalige Ankunft, externe Quellenwahrheit oder
+ein vollständiger damaliger Informationssatz wird dadurch nicht bestätigt.
+Failure-Labels, Gap-Messgrößen und Schwellen behalten ihre Originalbedeutung.
+Forschungspriorisierung ist weder eine Instrumentrangfolge noch ein neuer
+automatischer Forschungsbann oder eine Handels-/Applyfreigabe. Originalstores,
+DDO-LearningState, numerische Modelle, BTC und Betriebsfreigaben werden nicht
+verändert; vollständige Systemhärtung und wirtschaftliche Güte bleiben
+gesonderte Nachweisfragen.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

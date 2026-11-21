@@ -947,6 +947,16 @@
       "sha256": "7f7707f49696b9051b7de8db0eaa535eef4df6e3d4946c6a8a9b0c5eb1f05853"
     },
     {
+      "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
+      "before_sha256": "3d624a9f72e5e0038c0017a3ebd17ce94851e233a8138c5f1f98a043fe989451",
+      "sha256": "9ff279fe38d2078bb8b8feb471d994f49137f54a17262ff89d4e63e7d70f774f"
+    },
+    {
+      "path": "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
+      "before_sha256": "fb398cfd2db6101625fac595962b0b96dc25754ce0777c81c6d45fb669bb4a23",
+      "sha256": "3c80cd6de3627799953c89ced4de00e952f07c082518b2d487f31c17cdbdbf4a"
+    },
+    {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
       "before_sha256": null,
       "sha256": "6a85f38ff488a8562ac95197bdd7fc130c728dcd43e9b0003c32329cd2c7fc24"
@@ -1044,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "362e0e1c348d137c1555577d335027810e70a68a66553482e112864fa60c8ddf"
+      "sha256": "cf1d23d88d654f44de00252a3724192a16c54cbc84a9966f2269a96a799ee892"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1994,7 +2004,7 @@
     {
       "path": "src/experiments/canonical_advanced_search_v1.py",
       "before_sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
-      "sha256": "1cb4b24d0f768e22d19e5d9d956e8790aa78a6ef8a26807eb8a74409d1565749"
+      "sha256": "87af5d75e55062041991430aa736e056813d348f9785738f885db7ea89a2a68a"
     },
     {
       "path": "src/experiments/canonical_automated_offline_research_loop_v1.py",
@@ -2029,7 +2039,7 @@
     {
       "path": "src/experiments/canonical_meta_learning_v1.py",
       "before_sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
-      "sha256": "706550946b1cbe6065ccf6110e80ac7111aa4e499c3574d236a295b1293d28b1"
+      "sha256": "fe55a29c67cab6c59da8a22c1d24d2d31f9d1855849d09ce728f2655c66c43b7"
     },
     {
       "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
@@ -3882,6 +3892,11 @@
       "sha256": "2277c9cf93bf57bd48325c5fb7bb64852963c7318b4cecd9af7b52035cab5ce2"
     },
     {
+      "path": "tests/experiments/test_canonical_advanced_search_v1.py",
+      "before_sha256": "4f1761da529d0f98ed3fb8f18e4301f8886de2fe3187c025f56fe268bd73d9b2",
+      "sha256": "757a614ab567f895cb1f256a143f7f8855570a72a25d0819ef0bebc71d1a4875"
+    },
+    {
       "path": "tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py",
       "before_sha256": "a42e4c6bb4d22b8f97a681839e1ffbef3798a43420bc6976c317596c7ccdf601",
       "sha256": "b7883920f85bbbc089b37ee67e7af5661cf35dc4bce4c14679d5dc65c351211c"
@@ -3915,6 +3930,11 @@
       "path": "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
       "before_sha256": "92209011781f0aaf46cc386b880c0b1c58299b874097bc569db90ac98143c942",
       "sha256": "d90524ca666a6c694240aca481a7165cfbc63e56f30aa2c9bf4563d83fc685ae"
+    },
+    {
+      "path": "tests/experiments/test_canonical_meta_learning_v1.py",
+      "before_sha256": "d9653b48eb8dfc2a57ffe26bd70ac77bd7429b33f3f79ef82594c5de19d5fda2",
+      "sha256": "c7a4103eb3c2ad2b5b86eb27cdf41a91dd8bd59c7132e6b87fa8cb4dcf887fd0"
     },
     {
       "path": "tests/experiments/test_canonical_native_research_measurements_v1.py",
