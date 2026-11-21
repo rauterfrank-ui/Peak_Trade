@@ -192,6 +192,8 @@ def validate_learning_representation_research_adaptation_plan_v1(
 ) -> MappingProxyType[str, Any]:
     if payload.get("schema_version") != SCHEMA_VERSION:
         raise LearningRepresentationResearchAdaptationPlanError("PLAN_SCHEMA_MISMATCH")
+    if payload.get("domain") != PLAN_DOMAIN:
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_DOMAIN_MISMATCH")
     for field in (
         "productive_apply_authorized",
         "learning_state_mutation_authorized",
@@ -221,6 +223,35 @@ def validate_learning_representation_research_adaptation_plan_v1(
     )
     if payload.get("result_digest") != expected_digest:
         raise LearningRepresentationResearchAdaptationPlanError("PLAN_RESULT_DIGEST_MISMATCH")
+
+    # Recheck the original builder's context before the evaluator uses its switch.
+    # Fresh identity/result hashes do not resolve contradictory plan meanings.
+    status = payload.get("plan_status")
+    pattern = payload.get("evaluation_fixture_label")
+    lineage = payload.get("learning_representation_lineage_ref")
+    if status == "PLAN_READY_OFFLINE_EVALUATION":
+        if (
+            not isinstance(pattern, str)
+            or not pattern.strip()
+            or not isinstance(lineage, str)
+            or not lineage.strip()
+        ):
+            raise LearningRepresentationResearchAdaptationPlanError(
+                "PLAN_SEMANTIC_CONTEXT_MISMATCH"
+            )
+        expected_purpose = classify_representation_research_purpose_v1(pattern_ref=pattern)
+    elif status == "PLAN_FAIL_CLOSED":
+        if pattern != "FIXTURE_FAIL_CLOSED" or lineage is not None:
+            raise LearningRepresentationResearchAdaptationPlanError(
+                "PLAN_SEMANTIC_CONTEXT_MISMATCH"
+            )
+        expected_purpose = RepresentationResearchPurpose.NO_ACTION_FAIL_CLOSED.value
+    else:
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_SEMANTIC_CONTEXT_MISMATCH")
+    if payload.get("research_purpose") != expected_purpose or payload.get(
+        "offline_evaluation_required"
+    ) is not (status == "PLAN_READY_OFFLINE_EVALUATION"):
+        raise LearningRepresentationResearchAdaptationPlanError("PLAN_SEMANTIC_CONTEXT_MISMATCH")
     return MappingProxyType(dict(payload))
 
 
