@@ -50,3 +50,25 @@ MI-only exports retain their existing meanings. A reference alone does not
 set legacy DDO compatibility. MI evidence and DDO evidence remain different
 record types; this does not turn forecast calibration into a PnL/quality label
 or a productive DDO state update.
+
+## Exact native join and typed learning time admission — 2026-11-21
+
+The existing native forecast/outcome join compares the forecast end with the
+original last bar close through the public-fact source clock decoder, retaining
+all admitted fractional digits. Equivalent zero-fraction UTC representations
+remain equal; a different nanosecond cannot alias the original outcome window.
+A later observation evaluation time does not replace that last-close target.
+
+The existing typed learning bridge uses the same exact ordering for its original
+temporal relations, including forecast creation no later than horizon start.
+Its UTC-Z input requirement is unchanged. Contradictions reject before the
+native calibration helper or learning-store append; the ingest entry consumes
+the same bridge. This adds no new learning consumer, timestamp default, model
+inference, scoring rule or productive write.
+
+Original timestamp strings, calibration methods, original-calibration comparison,
+digest/ID formulas and exported record types remain unchanged. Missing outcomes
+and insufficient support retain their typed non-evaluation/abstention meanings.
+Existing records are not migrated or retroactively time-certified by cold read.
+The separate forecast constructor, conditioned-context clocks and other owners
+retain their own admission boundaries; this is not whole-system time closure.

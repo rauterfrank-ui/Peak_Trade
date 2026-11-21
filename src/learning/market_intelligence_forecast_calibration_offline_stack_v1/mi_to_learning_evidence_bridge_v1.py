@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from types import MappingProxyType
 from typing import Any, Final, Mapping
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import require_event_time_utc
 from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import (
@@ -43,9 +46,9 @@ class MiToLearningBridgeError(ValueError):
     """Fail-closed MI→Learning bridge error."""
 
 
-def _parse_utc(value: str) -> datetime:
+def _utc_order_key(value):
     text = require_event_time_utc(value, "utc")
-    return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
+    return capture_order_key_v1(text)
 
 
 def _assert_temporal_integrity_v1(
@@ -53,8 +56,8 @@ def _assert_temporal_integrity_v1(
     forecast: Mapping[str, Any],
     observation: Mapping[str, Any] | None,
 ) -> str:
-    created = _parse_utc(str(forecast["forecast_created_at_utc"]))
-    horizon_end = _parse_utc(str(forecast["outcome_horizon_end_utc"]))
+    created = _utc_order_key(str(forecast["forecast_created_at_utc"]))
+    horizon_end = _utc_order_key(str(forecast["outcome_horizon_end_utc"]))
     if created >= horizon_end:
         raise MiToLearningBridgeError("FORECAST_LOOKAHEAD_HORIZON_BOUNDARY")
     body: dict[str, Any] = {
@@ -65,13 +68,13 @@ def _assert_temporal_integrity_v1(
     if observation is not None:
         eval_time = observation.get("evaluation_time_utc")
         if eval_time is not None:
-            eval_dt = _parse_utc(str(eval_time))
+            eval_dt = _utc_order_key(str(eval_time))
             if eval_dt < horizon_end:
                 raise MiToLearningBridgeError("EVALUATION_TIME_BEFORE_HORIZON_END")
             body["evaluation_time_utc"] = eval_time
         horizon_start = observation.get("horizon_start_time_utc")
         if horizon_start is not None:
-            if _parse_utc(str(horizon_start)) < created:
+            if _utc_order_key(str(horizon_start)) < created:
                 raise MiToLearningBridgeError("HORIZON_START_BEFORE_FORECAST")
             body["horizon_start_time_utc"] = horizon_start
     return compute_content_hash_v0(body)
