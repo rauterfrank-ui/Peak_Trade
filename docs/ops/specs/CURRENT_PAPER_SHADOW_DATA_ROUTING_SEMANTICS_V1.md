@@ -690,6 +690,56 @@ DDO-LearningState, numerische Modelle, BTC und Betriebsfreigaben werden nicht
 verändert; vollständige Systemhärtung und wirtschaftliche Güte bleiben
 gesonderte Nachweisfragen.
 
+### Meta-Kostenbefund bis zum F2-Forschungsconsumer
+
+Ausgangsbasis ist PR #7348,
+`8b14d027e9918a3579cb0644c809cc3bf7cde038`. Die explizite Übergabe nativer
+Meta-Prioritätsvorschläge an Search/M4 sowie deren Zielartenprüfung ist bereits
+verbunden. Ein `cost_model`-Vorschlag ist dabei kein Instrument- oder
+Strategiefamilienziel. Der eigene
+[F2-Folgeconsumer](../../../src/experiments/f2_meta_cost_model_follow_up_v1.py)
+erhält den vollständigen Meta-Beleg und bindet bereits ausgewählten Vorschlag,
+Kostenbefund, ursprüngliches Baseline-Kostenmodell und archiviertes F2-Grid.
+Der historische Anschluss archivierter Fill-Gebühren aus `778116f38` bleibt
+erhalten. Keine weitere Verbindung oder neue Suche wird hinzugefügt.
+
+Sieben Gegenproben bestätigten eine fehlende Aufnahmebedingung am tatsächlichen
+Szenarienconsumer: Ein neu gehashter Meta-Gesamtbeleg konnte veränderte
+Vorschlagsgründe, eine Kausalaussage, ein Champion-Apply-Flag oder einen
+Vorschlag trotz nicht tragfähigem Frage-Status/Aussagegewicht weiterreichen.
+Auch ein durch den ursprünglichen generischen Builder neu berechneter
+Vorschlagsdigest stellte den Bezug zum konkreten Kostenbefund nicht her.
+
+Der [Meta-Owner](../../../src/experiments/canonical_meta_learning_v1.py)
+stellt jetzt die vorhandene Kosten-Vorschlagskonstruktion für diesen Rücklese-
+Abgleich bereit. Nur COMPUTED Kostenbefunde mit ihrer ursprünglichen
+deskriptiven Aussageart, Stärke NONE und ohne Kausalbehauptung liefern dort
+zulässige Vorschläge. Der F2-Consumer vergleicht den vollständigen gewählten
+Vorschlag gegen diese Originalkonstruktion, bevor er Szenarien auswertet.
+Bestehende Vorschlags-/Record-IDformeln, Gebühren-/Slippagerechnung, Grid,
+Schwellen und Stichprobenregeln bleiben unverändert. Die kanonische
+Inhaltsprüfung setzt einen Wahrheitswert nicht mit einer Zahl gleich.
+
+69 gezielte Offline-Fälle bestanden: 22 Meta-Vertragsfälle, 27 Zielarten-/
+Parameterregionfälle, vier M4-Prioritätsfälle und 16 F2-Anschlussfälle. Darin
+enthalten sind die sieben neuen Abweisungen vor der Szenarienauswertung.
+Die Tests verwenden temporäre Kontrollarchive und isolierte Fill-Fixtures.
+Die [F2-Gegenproben und Positivfälle](../../../tests/experiments/test_f2_meta_cost_model_follow_up_v1.py)
+erhalten auch Kaltlesen, idempotente Ausgabe, unveränderte Originalarchive,
+gemessene Fill-Gebühren und die ausdrückliche Nichtauswertung ohne OOS-Trades.
+Wiederholungen sind nicht doppelt gezählt. Der historische D01/D02-Baseline-
+Konflikt bleibt offen und wurde für diesen Block nicht erneut ausgeführt.
+
+Geprüft wird die innere Zuordnung eines deklarierten Kostenbefunds zu seinem
+Forschungsvorschlag. Originalmessungen und numerische Stichprobengüte werden
+dadurch nicht erneut berechnet oder authentifiziert. Eine einzelne bestätigte
+Order bleibt eine deskriptive Diagnose; modellierte OOS-Kostendeltas sind
+keine bestätigten Kontogewinne. Gültige bisherige Befunde und begrenzte
+Nichtauswertungszustände bleiben erhalten. BTC, historische Records,
+DDO-LearningState, numerische Modelle und Betriebsfreigaben bleiben unverändert.
+Vollständige Systemhärtung und wirtschaftliche Güte sind damit weiterhin
+nicht pauschal abgenommen.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

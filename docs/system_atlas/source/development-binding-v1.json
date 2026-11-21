@@ -954,7 +954,7 @@
     {
       "path": "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
       "before_sha256": "fb398cfd2db6101625fac595962b0b96dc25754ce0777c81c6d45fb669bb4a23",
-      "sha256": "3c80cd6de3627799953c89ced4de00e952f07c082518b2d487f31c17cdbdbf4a"
+      "sha256": "a3c3ee080f0e5c7620ef35eb9902901cecaf3f450810c39241fd9368980e6624"
     },
     {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "cf1d23d88d654f44de00252a3724192a16c54cbc84a9966f2269a96a799ee892"
+      "sha256": "b0a00d2c4281eac099d5a5f311bbfd72818875b5b55a76c05b8ed18ba57d9530"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -2039,7 +2039,7 @@
     {
       "path": "src/experiments/canonical_meta_learning_v1.py",
       "before_sha256": "31282fcd81e1fc844a43c4482390a9a1f00944509ee50402fa5bc1b7eed8292e",
-      "sha256": "fe55a29c67cab6c59da8a22c1d24d2d31f9d1855849d09ce728f2655c66c43b7"
+      "sha256": "656370c38afc754d8db520ac613bf1b170d54d69400d886f1a95c58e908f5b05"
     },
     {
       "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
@@ -2089,7 +2089,7 @@
     {
       "path": "src/experiments/f2_meta_cost_model_follow_up_v1.py",
       "before_sha256": null,
-      "sha256": "4c4336d72d5ce88acbcea89757b4a1c5014cadf5fd662393ecc4a3f5ff6a94e6"
+      "sha256": "950c1c28c4f3f6b08fe5eeb07820a2b4aff795d2d5054db972484cc79baa2d26"
     },
     {
       "path": "src/experiments/offline_ddo_research_cycle_v1.py",
@@ -3954,7 +3954,7 @@
     {
       "path": "tests/experiments/test_f2_meta_cost_model_follow_up_v1.py",
       "before_sha256": null,
-      "sha256": "d9af828d1f403840d0742a7774d569b51b39be0ee0a9ac3bd89d4f32a9eebf09"
+      "sha256": "01b8dc9b6d364a1e9e67130a642a4945722a45dae4aa012bb7eca7574f4229d4"
     },
     {
       "path": "tests/experiments/test_meta_association_bucket_sample_v1.py",

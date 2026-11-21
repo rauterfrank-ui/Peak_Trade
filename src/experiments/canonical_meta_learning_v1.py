@@ -1393,6 +1393,23 @@ def _cost_proposals(findings: Sequence[Mapping[str, Any]], **kwargs: Any) -> lis
     ]
 
 
+def rebuild_meta_cost_research_proposals_v1(question: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Reuse the original descriptive cost-finding proposal construction."""
+    if (
+        question.get("question_id") != QUESTION_COST_MODEL_REALITY_UNDERESTIMATION
+        or question.get("evidence_status") != EVIDENCE_COMPUTED
+        or question.get("claim_type") != CLAIM_TYPE_DESCRIPTIVE
+        or question.get("claim_strength") != CLAIM_STRENGTH_NONE
+        or question.get("causal_claim") is not False
+    ):
+        return []
+    return _cost_proposals(
+        question["findings"],
+        question_id=QUESTION_COST_MODEL_REALITY_UNDERESTIMATION,
+        claim_type=CLAIM_TYPE_DESCRIPTIVE,
+    )
+
+
 def _regime_proposals(findings: Sequence[Mapping[str, Any]], **kwargs: Any) -> list[dict[str, Any]]:
     return [
         _proposal(
@@ -1709,6 +1726,7 @@ __all__ = [
     "canonical_meta_learning_policy_v1",
     "canonical_record_payload_v1",
     "derive_meta_parameter_region_digest_v1",
+    "rebuild_meta_cost_research_proposals_v1",
     "validate_canonical_meta_learning_v1",
     "validate_research_evidence_known_at_v1",
 ]
