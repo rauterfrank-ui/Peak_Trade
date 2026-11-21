@@ -14,6 +14,10 @@ from pathlib import Path
 import tempfile
 from typing import Any, Mapping
 
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
+
 from .context_admission_v1 import (
     replay_admitted_intelligence_context_v1,
     replay_admitted_market_context_v1,
@@ -42,6 +46,17 @@ from .mi_offline_durable_evidence_store_v1 import MiOfflineDurableEvidenceStoreV
 FROZEN_SCHEMA = "exact_intelligence_forecast_binding_v1"
 ACK_SCHEMA = "exact_intelligence_calibration_readback_v1"
 MARKET_FROZEN_SCHEMA = "exact_independent_market_forecast_binding_v1"
+
+
+def _utc_order_key(value):
+    # Keep UTC admission and preserve the source owner's full fractional order.
+    instant_v1(value)
+    return capture_order_key_v1(value)
+
+
+def _elapsed_nanoseconds(later, earlier):
+    whole = later[0] - earlier[0]
+    return (whole.days * 86400 + whole.seconds) * 1_000_000_000 + later[1] - earlier[1]
 
 
 def validate_forecast_numbers_v1(forecast: Mapping[str, Any]) -> None:
@@ -227,9 +242,9 @@ def _freeze_existing_forecast_v1(
         "MODEL_ARTIFACT_MISMATCH",
     )
     require_v1(
-        instant_v1(admission["training_end"])
-        <= instant_v1(admission["available_at"])
-        <= instant_v1(context["as_of"]),
+        _utc_order_key(admission["training_end"])
+        <= _utc_order_key(admission["available_at"])
+        <= _utc_order_key(context["as_of"]),
         "MODEL_KNOWLEDGE_LOOKAHEAD",
     )
     require_v1(
@@ -242,10 +257,11 @@ def _freeze_existing_forecast_v1(
         "PROVIDER_CONTEXT_FRESHNESS_POLICY_REQUIRED",
     )
     require_v1(
-        (
-            instant_v1(forecast["forecast_created_at_utc"]) - instant_v1(context["as_of"])
-        ).total_seconds()
-        <= context_age_limit,
+        _elapsed_nanoseconds(
+            _utc_order_key(forecast["forecast_created_at_utc"]),
+            _utc_order_key(context["as_of"]),
+        )
+        <= context_age_limit * 1_000_000_000,
         "PROVIDER_CONTEXT_STALE_AT_FORECAST",
     )
     target = forecast["provenance"].get("measured_return_target_v1")
@@ -255,9 +271,9 @@ def _freeze_existing_forecast_v1(
     )
     require_v1(admission.get("target_spec_digest") == digest_v1(target), "PROVIDER_TARGET_MISMATCH")
     require_v1(
-        instant_v1(context["as_of"])
-        <= instant_v1(forecast["forecast_created_at_utc"])
-        <= instant_v1(target["horizon_start_time_utc"]),
+        _utc_order_key(context["as_of"])
+        <= _utc_order_key(forecast["forecast_created_at_utc"])
+        <= _utc_order_key(target["horizon_start_time_utc"]),
         "FORECAST_KNOWLEDGE_LOOKAHEAD",
     )
     require_v1(
@@ -267,10 +283,10 @@ def _freeze_existing_forecast_v1(
         "FORECAST_TARGET_IDENTITY_MISMATCH",
     )
     require_v1(
-        instant_v1(target["return_start_close_time_utc"])
-        >= instant_v1(target["horizon_start_time_utc"])
-        and instant_v1(target["return_end_close_time_utc"])
-        == instant_v1(forecast["outcome_horizon_end_utc"]),
+        _utc_order_key(target["return_start_close_time_utc"])
+        >= _utc_order_key(target["horizon_start_time_utc"])
+        and _utc_order_key(target["return_end_close_time_utc"])
+        == _utc_order_key(forecast["outcome_horizon_end_utc"]),
         "FORECAST_TARGET_TIME_MISMATCH",
     )
     require_v1(forecast["outcome_binding_mode"] == "ACTUAL", "ACTUAL_TARGET_REQUIRED")
@@ -351,11 +367,11 @@ def calibrate_frozen_intelligence_forecast_v1(
         binding["job_key"]["dataset_generation"] == measurement_generation,
         "MEASUREMENT_GENERATION_MISMATCH",
     )
-    available = instant_v1(measurement_available_at)
+    available = _utc_order_key(measurement_available_at)
     require_v1(
-        instant_v1(binding["forecast_evidence"]["outcome_horizon_end_utc"])
+        _utc_order_key(binding["forecast_evidence"]["outcome_horizon_end_utc"])
         <= available
-        <= instant_v1(evaluation_observation["evaluation_time_utc"]),
+        <= _utc_order_key(evaluation_observation["evaluation_time_utc"]),
         "MEASUREMENT_NOT_AVAILABLE_AT_EVALUATION",
     )
     key = digest_v1(binding["job_key"])

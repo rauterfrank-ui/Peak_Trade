@@ -941,6 +941,61 @@ bleiben unverändert; es wurde kein Betriebs-, Paper-, Shadow- oder Forschungsla
 gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
 erneut ausgeführt.
 
+### Gelieferter Forecast bis Freeze und entscheidungsbezogener Messaufnahme
+
+Ausgangsbasis ist PR #7353,
+`2a15f3fa16d94b1d2de47bc3409dde31eeba7aa4`. Der gemeinsame
+[Freeze- und Messadapter](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py)
+stammt aus `9397d04a3`; `2d8fe77e8` ergänzte den unveränderlichen Markt-Forecastreader.
+Kontext-Replay, Modellartefaktbytes, Provider-/Kontextbindung, Instrument und Target,
+vollständiger Jobschlüssel, Original-Forecastpayload, atomare Publikation,
+Originalkalibrierung, typisierte SL-/OPT-Übergaben und numerisches Kaltlesen sind
+bereits verbunden. Es wird kein neuer Forecastprovider oder Forschungsauftrag
+angeschlossen.
+
+Eine echte Präzisionslücke lag in den bestehenden Zeitgates vor der Publikation.
+`datetime` reduzierte gültige Zeitbruchteile auf Mikrosekunden. Zwölf Gegenproben
+für Markt- und Entscheidungsidentität erreichten mit widersprüchlichem
+Trainingsende, Modellverfügbarkeit, Kontext-/Forecastzeit, Kontextalter,
+Forecast-/Horizontstart oder abweichendem Forecastende die Grenze zum originalen
+Schreibpfad. Zwei weitere Gegenproben erreichten diese Grenze mit einer deklarierten
+Messverfügbarkeit eine Nanosekunde nach der Auswertungszeit.
+
+Die Gates verwenden jetzt die ursprüngliche Quellzeitordnung bis neun Stellen
+bei unveränderter UTC-Zulassung. Die vorhandene Kontextaltersgrenze in ganzen
+Sekunden wird ohne Rundung ganzzahlig verglichen. Alle Abweisungen erfolgen vor
+Lease, Forecast-/Messattachment und Originalkalibrierung. Die bestehenden
+Zeitrelationen bleiben erhalten: Trainingsende ≤ Modellverfügbarkeit ≤ Kontext
+≤ Forecast ≤ Targetstart; Rückgabeschluss und Forecastende müssen denselben
+Zeitpunkt bezeichnen. Bei der entscheidungsbezogenen Messaufnahme gilt weiterhin
+Forecastende ≤ deklarierte Messverfügbarkeit ≤ Auswertungszeit der gelieferten
+Observation. Die separate tatsächliche Auswertungszeit der unabhängigen
+Marktbeobachtung wird nicht in diese andere Observation umgedeutet.
+
+202 unterschiedliche Offline-Fälle bestehen: 174 vorhandene Kontext-, Forecast-,
+Mess-, Kalibrierungs-, Modell- und Replayfälle sowie 28
+[neue Gegen- und Positivproben](../../../tests/learning/test_forecast_freeze_exact_clock_v1.py).
+14 Negativfälle belegen frühe Abweisung vor dem tatsächlichen Lease-/Schreibpfad.
+14 Positivfälle erhalten präzise Modellzeitgleichheit, UTC-Offset null, große
+gültige Alterslimits, Gleichheit am Horizontstart, äquivalente Endzeitdarstellungen,
+Originalstrings, Messzeitgleichheit, unveränderliche Wiederholung und Kaltlesen.
+Zwölf vor der Änderung gesicherte vollständige Freeze-Pakete bleiben danach
+einschließlich Job, Forecast, Kontext und Digests bytegleich. Alte Prüfläufe werden
+nicht zusätzlich als neue Fälle gezählt.
+
+Der [ursprüngliche Übergabevertrag](INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md)
+behält seine Grenzen: Provider-/Trainings-/Admissionangaben sind gelieferte
+Belege, keine unabhängige Beglaubigung oder Inferenzbestätigung. LOG_RETURN über
+N−1 Schlussintervalle, Prognosefehler, wirtschaftliches Ergebnis und Applyfreigabe
+bleiben getrennt. Originalstrings, Zahlenrechnung, Policies, Stores und
+ID-/Digestformeln ändern sich nicht. Kaltlesen bleibt reine Inhalts-/Parent- und
+Zahlenprüfung ohne erneute Kontextberechnung oder Modellzulassung; ältere Archive
+werden nicht umgeschrieben oder rückwirkend als zeitlich korrekt bestätigt.
+Andere Messzeitowner bleiben gesondert zu prüfen. BTC und Betriebsfreigaben
+bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder Forschungsläufe wurden
+gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
+erneut ausgeführt. Dieser Block ist kein Nachweis vollständiger Systemhärtung.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
