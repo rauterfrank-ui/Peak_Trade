@@ -107,3 +107,21 @@ This adds a missing join check to the existing research-only path. Accepted
 decision/plan formats, typed rejection and unsupported-fixture evidence retain
 their existing semantics. It does not create measured OOS results, a numerical
 model update, a downstream adaptation writer or productive authority.
+
+## Plan context admitted before fixture evaluation — 2026-11-21
+
+The existing plan validator now also checks the original plan domain. After
+identity and result-digest verification it checks the builder's internal
+status/context relationships. READY requires a nonempty string pattern and representation lineage,
+the purpose returned by the existing classifier, and the exact boolean evaluation
+switch True. FAIL_CLOSED retains its original no-action purpose, fail-closed label,
+absent representation lineage and exact boolean switch False. A new plan identity
+and result digest do not justify contradictory context or a numeric/string switch.
+
+The actual offline evaluator already calls this owner before its fixture branch.
+Malformed context is rejected there before evaluation or Loop C next-evidence
+creation. No new routing, pattern classifier, fixture outcome, numerical evaluator,
+identity formula or authority is introduced. Valid unknown patterns still yield
+typed unsupported-fixture evidence. This checks internal plan consistency; it does
+not authenticate the original adaptation decision from its digest alone, prove
+external lineage truth, measure feature usefulness or create a downstream writer.

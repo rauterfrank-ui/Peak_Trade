@@ -740,6 +740,52 @@ DDO-LearningState, numerische Modelle und Betriebsfreigaben bleiben unverändert
 Vollständige Systemhärtung und wirtschaftliche Güte sind damit weiterhin
 nicht pauschal abgenommen.
 
+### Repräsentations-Forschungsplan bis zur Offline-Auswertung
+
+Ausgangsbasis ist PR #7349,
+`182899ded2925baa60eae6b82e376f1b6e7c03e9`. Native und föderierte Meta-Aufnahme
+binden ihre Empfangsquittungen bereits an den Originalproducer. Die typisierte
+Routerhülle prüft Inhalt, Herkunft und einzelnen Empfänger; der Loop-C-Join bindet
+die tatsächliche Learning-Entscheidung vor dem Plan. Der innere Meta-
+Reproduzierbarkeitsdigest bezeichnet seine ursprünglichen Herkunfts-/Messbezüge,
+nicht sämtliche später interpretierenden Felder. Diese Bedeutung bleibt erhalten.
+
+Die ursprüngliche [Plan-Konstruktion](UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md)
+und ihre zwei Statuszweige sind bereits im eingefrorenen Quellbestand `9397d04a3`
+vorhanden. Die spätere Änderung `50fb4cb9c` formatiert diesen Owner; sie begründet
+keine neue fachliche Konstruktion. Der
+[Offline-Consumer](../../../src/experiments/canonical_learning_representation_offline_evaluation_v1.py)
+verwendet bereits den Planvalidator, dessen Aufnahme jedoch nur Identität,
+Gesamtprüfsumme und No-Authority-Felder vollständig prüfte. Neu berechnete
+Planidentitäten und Prüfsummen konnten widersprüchlichen Status, Auswertungsschalter,
+Forschungszweck oder fehlenden Kontext bis zur Fixture-Auswertung weiterreichen.
+
+Der [Plan-Owner](../../../src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py)
+prüft jetzt zusätzlich seine ursprüngliche Domain und die vorhandenen Beziehungen:
+READY braucht ein nichtleeres Stringmuster samt Repräsentationsherkunft, den Zweck
+des bestehenden Klassifizierers und den echten Wahrheitswert True. FAIL_CLOSED
+behält No-Action-Zweck, Fail-Closed-Label, fehlende Repräsentationsherkunft und den
+echten Wahrheitswert False. Zahlen und Strings werden nicht als Schalter akzeptiert.
+Musterstrings werden dabei nicht umgeschrieben oder als reale Messwerte interpretiert.
+
+93 gezielte Offline-Fälle bestanden: die 71 vorhandenen Plan-/Entscheidungs-/Router-/
+Loop-C-/Governancefälle sowie 22 neue Fälle. Davon prüfen 17 widersprüchliche, frisch
+versiegelte Pläne die Abweisung vor dem Fixture-Zweig und einer die Abweisung vor
+neuer Loop-C-Evidence. Alle 18 Negativfälle reproduzierten zuvor die fehlende
+Abweisung. Vier weitere Fälle erhalten vollständige Ausgaben nach JSON-Rücklesen.
+Die [Gegenproben](../../../tests/experiments/test_representation_plan_semantic_admission_v1.py)
+verwenden Originalbuilder und synthetische Offline-Eingaben. Zwölf vollständige
+gültige Plan-/Auswertungsvarianten wurden zusätzlich mit ihren Ausgaben vor der
+Korrektur abgeglichen; Identitäten und Digests bleiben gleich.
+
+Bekannte Fixture-Ergebnisse sind weiterhin Kontrollnachweise, keine neu gemessene
+Feature- oder OOS-Güte. Gültige unbekannte Muster liefern weiterhin die typisierte
+Nichtauswertung. Die innere Konsistenzprüfung authentifiziert weder eine nur als
+Digest referenzierte Originalentscheidung noch externe Herkunft. Sie erzeugt keinen
+Lernwriter, kein Modell-Apply und keine Betriebsfreigabe. BTC, Originalstores und
+numerische Modelle bleiben unverändert. Der historische D01/D02-Basiskonflikt bleibt
+offen und wurde nicht erneut ausgeführt; eine Gesamtsystemhärtung ist nicht belegt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "b0a00d2c4281eac099d5a5f311bbfd72818875b5b55a76c05b8ed18ba57d9530"
+      "sha256": "c7f2f45ad970fb05ccb8313e8cc716c6c679ac6d2d10674aaee4f51a10b2f5fd"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1349,7 +1349,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
       "before_sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
-      "sha256": "fa0a0acdc523247990135943c7bca95120f1bd8d37212d3995ba8481122b0a1f"
+      "sha256": "2de73dab41a0a2e1be000ca82fc7f633e7f537103ec5bd55485c449aa25fd1f7"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
@@ -2029,7 +2029,7 @@
     {
       "path": "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
       "before_sha256": "4f77e457cba472f5ddef71cae176253e1af76cce27f40e560b8974815d6c7b6e",
-      "sha256": "612f8019e614a1e99198b954d11242cf2d466cfbf92737c85a7dbfcacf08cd2c"
+      "sha256": "f9257ce7a065ff04686e3db0d5afae38e51010afe61667381753562ef765643c"
     },
     {
       "path": "src/experiments/canonical_meta_learning_ingest_v1.py",
@@ -3995,6 +3995,11 @@
       "path": "tests/experiments/test_representation_plan_required_context_v1.py",
       "before_sha256": "ebeae82e7fe92455fe8f821c640c4c748a71256c9089c5c3e4436a44f0ab813c",
       "sha256": "acdecde8847c63cc9d7854b0d1aa2b51d25a742834f60b6fb5f9fda9c161619e"
+    },
+    {
+      "path": "tests/experiments/test_representation_plan_semantic_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "b3a7aa65f47935c3eee900c6ac088b6e3ba04570d95948af616e5a706e19c95c"
     },
     {
       "path": "tests/features/test_canonical_alt_data_consumer_boundary_v1.py",
