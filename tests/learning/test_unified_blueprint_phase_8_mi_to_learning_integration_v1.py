@@ -34,7 +34,11 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_l
     route_learning_evidence_for_consumer_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_store_v1 import (
+    RECORD_FILENAME,
     MiLearningEvidenceStoreV1,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_record_v1 import (
+    MiLearningEvidenceValidationError,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import (
     MiToLearningBridgeError,
@@ -195,6 +199,74 @@ def test_learning_path_routes_legacy_and_mi_typed(tmp_path: Path) -> None:
     assert route["consumer_route"] == ROUTE_MI_TYPED_WITH_LEGACY
     assert route["legacy_ddo_export_compatible"] is True
     assert route["productive_ddo_reducer_mutated"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("actual_outcome_ref", "outcome.foreign.original"),
+        ("n_bars", 3),
+        ("bar_spec_ref", "PT1M"),
+        ("selected_instrument_ref", "instrument.foreign.original"),
+    ],
+)
+def test_changed_mi_content_cannot_reuse_original_id_at_export_or_store(
+    tmp_path: Path, field: str, value
+) -> None:
+    import json
+
+    obs = _observation_for_n(n_bars=2)
+    record = compose_mi_to_learning_evidence_v1(
+        forecast_evidence=_mint_forecast(n_bars=2, bar_spec_ref=str(obs["bar_spec_ref"])),
+        evaluation_observation=obs,
+        realized_direction="UP",
+    )
+    store = MiLearningEvidenceStoreV1(tmp_path / "original")
+    store.append(record)
+    path = store.store_root / record["mi_learning_evidence_id"] / RECORD_FILENAME
+    original_bytes = path.read_bytes()
+    changed = {**record, field: value}
+    with pytest.raises(
+        MiLearningEvidenceValidationError, match="MI_LEARNING_CONTENT_DIGEST_MISMATCH"
+    ):
+        export_mi_learning_evidence_onto_learning_path_v1(changed)
+    with pytest.raises(
+        MiLearningEvidenceValidationError, match="MI_LEARNING_CONTENT_DIGEST_MISMATCH"
+    ):
+        store.append(changed)
+    assert path.read_bytes() == original_bytes
+    path.write_text(json.dumps(changed))
+    try:
+        with pytest.raises(
+            MiLearningEvidenceValidationError, match="MI_LEARNING_CONTENT_DIGEST_MISMATCH"
+        ):
+            store.get(record["mi_learning_evidence_id"])
+    finally:
+        path.write_bytes(original_bytes)
+    assert dict(store.get(record["mi_learning_evidence_id"])) == dict(record)
+
+
+def test_export_rejects_valid_ddo_payload_with_a_different_declared_reference(tmp_path: Path):
+    state = _learning_state(tmp_path)
+    legacy = export_learning_evidence_from_state_v1(state)
+    other = export_learning_evidence_from_state_v1(state, record_id="lev.other.original.export")
+    obs = _observation_for_n(n_bars=2)
+    record = compose_mi_to_learning_evidence_v1(
+        forecast_evidence=_mint_forecast(n_bars=2, bar_spec_ref=str(obs["bar_spec_ref"])),
+        evaluation_observation=obs,
+        realized_direction="UP",
+        legacy_learning_evidence_ref=legacy["record_id"],
+    )
+    with pytest.raises(ValueError, match="MI_LEGACY_LEARNING_EVIDENCE_REF_MISMATCH"):
+        export_mi_learning_evidence_onto_learning_path_v1(record, legacy_learning_evidence=other)
+    # A reference-only attachment remains distinct from a supplied DDO record.
+    reference_only = export_mi_learning_evidence_onto_learning_path_v1(record)
+    assert reference_only["consumer_route"]["legacy_ddo_export_compatible"] is False
+    assert reference_only["legacy_learning_evidence"] is None
+    assert (
+        reference_only["consumer_route"]["legacy_learning_evidence_record_id"]
+        == legacy["record_id"]
+    )
 
 
 def test_persistence_restart_replay_and_idempotent_ingest(tmp_path: Path) -> None:

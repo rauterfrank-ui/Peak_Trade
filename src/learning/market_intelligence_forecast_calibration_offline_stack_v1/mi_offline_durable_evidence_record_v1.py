@@ -57,6 +57,12 @@ def validate_research_evidence_record_v1(
         raise MiOfflineDurableEvidenceValidationError("RESEARCH_AUTHORITY_MUST_BE_NONE")
     if raw.get("evidence_class") != EVIDENCE_CLASS_MI_RESEARCH:
         raise MiOfflineDurableEvidenceValidationError("RESEARCH_EVIDENCE_CLASS_MISMATCH")
+    if raw.get("domain") != STACK_DOMAIN:
+        raise MiOfflineDurableEvidenceValidationError("RESEARCH_DOMAIN_MISMATCH")
+    if raw.get("productive_authority") != "NONE":
+        raise MiOfflineDurableEvidenceValidationError("RESEARCH_PRODUCTIVE_AUTHORITY_FORBIDDEN")
+    if raw.get("runtime_reachability") is not False or raw.get("can_auto_promote") is not False:
+        raise MiOfflineDurableEvidenceValidationError("RESEARCH_EXTERNAL_EFFECT_FORBIDDEN")
     required = (
         "forecast_evidence_id",
         "calibration_evidence_id",

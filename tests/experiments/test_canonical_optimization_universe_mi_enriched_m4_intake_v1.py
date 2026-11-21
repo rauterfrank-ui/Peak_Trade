@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -110,6 +111,138 @@ def test_malformed_mi_input_fails_closed(tmp_path: Path) -> None:
         )
     )
     assert intake["status"] == INTAKE_STATUS_REJECTED_MI_INPUT
+
+
+@pytest.mark.parametrize(
+    "fault", ["horizon", "forecast", "resealed_runtime_claim", "foreign_ddo_ref"]
+)
+def test_invalid_mi_research_is_rejected_by_intake_before_experiment(tmp_path, monkeypatch, fault):
+    from src.experiments import canonical_optimization_universe_mi_enriched_m4_intake_v1 as intake
+    from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
+        compute_content_hash_v0,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_optimization_research_input_v1 import (
+        STATUS_REJECTED,
+        MarketIntelligenceOptimizationResearchInputRequestV1,
+        validate_market_intelligence_optimization_research_input_v1,
+    )
+
+    request = _intake_request(tmp_path)
+    research = dict(request.market_intelligence_research_evidence)
+    if fault == "horizon":
+        research["n_bars"] = 3
+    elif fault == "forecast":
+        research["forecast_evidence_id"] = "mi.forecast.foreign.original"
+    else:
+        if fault == "resealed_runtime_claim":
+            research["runtime_reachability"] = True
+        else:
+            research["legacy_learning_evidence_ref"] = "lev.foreign.original"
+        digest = compute_content_hash_v0(
+            {
+                k: v
+                for k, v in research.items()
+                if k not in {"research_evidence_id", "content_digest"}
+            }
+        )
+        research.update(content_digest=digest, research_evidence_id=f"mi.research.{digest[:48]}")
+
+    def forbidden_experiment(_):
+        pytest.fail("Rejected MI evidence reached the experiment plane")
+
+    monkeypatch.setattr(
+        intake, "run_optimization_universe_experiment_plane_v1", forbidden_experiment
+    )
+    ack = validate_market_intelligence_optimization_research_input_v1(
+        MarketIntelligenceOptimizationResearchInputRequestV1(
+            market_intelligence_research_evidence=research,
+            legacy_learning_evidence=request.legacy_learning_evidence,
+        )
+    )
+    assert ack["status"] == STATUS_REJECTED
+    result = intake.run_mi_enriched_optimization_universe_experiment_plane_v1(
+        replace(request, market_intelligence_research_evidence=research)
+    )
+    assert result["status"] == INTAKE_STATUS_REJECTED_MI_INPUT
+    assert result["chain"] is None
+
+
+@pytest.mark.parametrize("fault", ["other_forecast_horizon", "foreign_ddo", "changed_export_route"])
+def test_optional_mi_export_is_joined_before_the_experiment(tmp_path, monkeypatch, fault):
+    from src.experiments import canonical_optimization_universe_mi_enriched_m4_intake_v1 as intake
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import (
+        export_mi_learning_evidence_onto_learning_path_v1,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import (
+        compose_mi_to_learning_evidence_v1,
+    )
+
+    request = _intake_request(tmp_path)
+    n_bars = 3 if fault == "other_forecast_horizon" else 2
+    obs = _observation_for_n(n_bars=n_bars)
+    legacy = request.legacy_learning_evidence
+    if fault == "foreign_ddo":
+        legacy = export_learning_evidence_from_state_v1(
+            _learning_state(tmp_path), record_id="lev.other.original.export"
+        )
+    record = compose_mi_to_learning_evidence_v1(
+        forecast_evidence=_mint_forecast(n_bars=n_bars, bar_spec_ref=obs["bar_spec_ref"]),
+        evaluation_observation=obs,
+        realized_direction="UP",
+        legacy_learning_evidence_ref=legacy["record_id"],
+    )
+    exported = dict(
+        export_mi_learning_evidence_onto_learning_path_v1(record, legacy_learning_evidence=legacy)
+    )
+    if fault == "changed_export_route":
+        exported["consumer_route"] = {
+            **exported["consumer_route"],
+            "forecast_evidence_id": "foreign",
+        }
+
+    def forbidden_experiment(_):
+        pytest.fail("Crosswired MI export reached the experiment plane")
+
+    monkeypatch.setattr(
+        intake, "run_optimization_universe_experiment_plane_v1", forbidden_experiment
+    )
+    result = intake.run_mi_enriched_optimization_universe_experiment_plane_v1(
+        replace(request, mi_learning_evidence_export=exported)
+    )
+    assert result["status"] == INTAKE_STATUS_REJECTED_MI_INPUT
+    assert result["chain"] is None
+
+
+@pytest.mark.parametrize("attachment", ["mi_only", "reference_only", "payload_only"])
+def test_valid_optional_mi_export_forms_keep_their_existing_meaning(tmp_path, attachment):
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import (
+        export_mi_learning_evidence_onto_learning_path_v1,
+    )
+    from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import (
+        compose_mi_to_learning_evidence_v1,
+    )
+
+    request = _intake_request(tmp_path)
+    obs = _observation_for_n(n_bars=2)
+    legacy = request.legacy_learning_evidence
+    record = compose_mi_to_learning_evidence_v1(
+        forecast_evidence=_mint_forecast(n_bars=2, bar_spec_ref=obs["bar_spec_ref"]),
+        evaluation_observation=obs,
+        realized_direction="UP",
+        legacy_learning_evidence_ref=legacy["record_id"]
+        if attachment == "reference_only"
+        else None,
+    )
+    exported = export_mi_learning_evidence_onto_learning_path_v1(
+        record, legacy_learning_evidence=legacy if attachment == "payload_only" else None
+    )
+    admitted = validate_mi_enriched_m4_intake_v1(
+        replace(request, mi_learning_evidence_export=exported)
+    )
+    assert admitted["status"] == INTAKE_STATUS_ACCEPTED
+    assert exported["consumer_route"]["legacy_ddo_export_compatible"] == (
+        attachment == "payload_only"
+    )
 
 
 def test_mi_lineage_in_optimization_experiment_evidence(tmp_path: Path) -> None:

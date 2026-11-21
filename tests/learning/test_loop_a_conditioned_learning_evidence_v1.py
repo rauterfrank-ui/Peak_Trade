@@ -22,6 +22,10 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.loop
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_record_v1 import (
     CONDITIONED_BINDING_SCHEMA,
+    MiLearningEvidenceValidationError,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import (
+    export_mi_learning_evidence_onto_learning_path_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_optimization_research_input_v1 import (
     MarketIntelligenceOptimizationResearchInputError,
@@ -100,6 +104,25 @@ def test_deterministic_conditioned_evidence_identity() -> None:
     first = compose_conditioned_mi_learning_evidence_v1(inputs)
     second = compose_conditioned_mi_learning_evidence_v1(inputs)
     assert first["mi_learning_evidence_id"] == second["mi_learning_evidence_id"]
+
+
+def test_changed_behavior_digest_cannot_export_under_the_original_conditioned_id():
+    obs = _observation_for_n(n_bars=2)
+    context = _context_for_observation(obs)
+    record = compose_conditioned_mi_learning_evidence_v1(
+        ConditionedLearningComposeInputsV1(
+            forecast_evidence=_mint_forecast(n_bars=2, bar_spec_ref=str(obs["bar_spec_ref"])),
+            evaluation_observation=obs,
+            market_context=context,
+            realized_behavior=_realized_behavior(obs=obs, ctx=context),
+            realized_direction="UP",
+        )
+    )
+    changed = {**record, "realized_behavior_content_digest": "f" * 64}
+    with pytest.raises(
+        MiLearningEvidenceValidationError, match="MI_LEARNING_CONTENT_DIGEST_MISMATCH"
+    ):
+        export_mi_learning_evidence_onto_learning_path_v1(changed)
 
 
 def test_loop_a_writer_reader_persistence(tmp_path: Path) -> None:

@@ -35,6 +35,8 @@ def route_learning_evidence_for_consumer_v1(
     legacy_validated = None
     if legacy_learning_evidence is not None:
         legacy_validated = validate_learning_evidence_record_v1(legacy_learning_evidence)
+        if legacy_ref is not None and legacy_ref != legacy_validated["record_id"]:
+            raise ValueError("MI_LEGACY_LEARNING_EVIDENCE_REF_MISMATCH")
     route = ROUTE_MI_TYPED_ONLY
     if legacy_validated is not None or legacy_ref:
         route = ROUTE_MI_TYPED_WITH_LEGACY

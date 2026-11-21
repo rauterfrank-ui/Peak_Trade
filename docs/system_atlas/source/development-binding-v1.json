@@ -1044,7 +1044,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "0930e33eced17b81e6719bc9eadc837f0270ce6e181bb62fea03cfbf7fd839a9"
+      "sha256": "44272546aa007c1c9683764256ca789be1b503f8e566ef62544b89a4e05b366e"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1325,6 +1325,16 @@
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
       "before_sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
       "sha256": "fa0a0acdc523247990135943c7bca95120f1bd8d37212d3995ba8481122b0a1f"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+      "before_sha256": "2a26e70165c6aa1530a620fa2cac959f4c3260d7aa647295637b2c486fadd41c",
+      "sha256": "c67419e77eebb59795a041eaae4df32cbced3cb80ac9262ea59e4d0da95f0f6c"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+      "before_sha256": "72971a51da0c72dc36ba0c7aa0d12b518d731972474f1f8cfedc6a6e0819ebb8",
+      "sha256": "9885e7554c76535ee18f85eeb6de9872a74b6950e36cf72fd3068681bacfecdd"
     },
     {
       "path": "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_EXECUTION_V0.md",
@@ -2022,6 +2032,11 @@
       "sha256": "e9b2c283571f65e672e901cf972edea4b5c3099b647c7633cb0e54412cab3fc7"
     },
     {
+      "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+      "before_sha256": "e0172679a4490ab8097d2c1257b598f8eb598e56004aafb63613b32f764b5a53",
+      "sha256": "a4ec3af3856f6c362c58d131f51f3f508e60f89a8af6877017dea68f1b059983"
+    },
+    {
       "path": "src/experiments/canonical_research_prepared_execution_v1.py",
       "before_sha256": "c0b37369e0dceff8c40f02916fac70deed229846ed9b51b4f85d711516f95045",
       "sha256": "28329f1ab4be041c1f7901c283cf2a887c581853fb20c1c0cb3acd43ebfb4fae"
@@ -2235,6 +2250,26 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_store_training_v1.py",
       "before_sha256": null,
       "sha256": "b71d672fba972b42f1478e97fd0d6ead2c1e80063861e2bb1db2c354d2f69e95"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
+      "before_sha256": "d3608e9784d93b4507d209289518221baf49bae154d17415e0864ed3fd3aac71",
+      "sha256": "f081cea5d810e7c6a9526fed7b388f83d1e1c96639ccadf362438b6449187550"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
+      "before_sha256": "f7501295667c02a872195ef9fdcc75f2f86046417e6c595a27086649f43bc9fc",
+      "sha256": "9a07737002b8a56169f2f6d3d419c48898ffd8b120bdcb9e01df2618a8f55351"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
+      "before_sha256": "e90e144610c8cad19f4388194370ab1b6ecefeff2b2a1f3a49212ccf309de7d8",
+      "sha256": "4b798ddd7b7fe38ee81b1391cc1c997393cda321c40f41d7f22990878ca34bb5"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
+      "before_sha256": "ec6236e755490ebd107249b2b6f84083f65fbbbe04ffaf990d21dc96fed032d1",
+      "sha256": "41a2e5356af02a50884c0a0210eaba533d5ce034566498f913d3e05e6f7420fb"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py",
@@ -3864,7 +3899,7 @@
     {
       "path": "tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
       "before_sha256": "cba1685caa96dfe65ffc20de0f56d423b58f07c469b95b92b47914b475c392c8",
-      "sha256": "94e408bc69cc068626a4a928108a846817c56a61140b3ac23c76fa7611fcd84a"
+      "sha256": "efaab20be7dcf4eb4fbc2b0dcbe0bbe892c7dc4fa99b8b3a2ec9f8c93e656ba8"
     },
     {
       "path": "tests/experiments/test_f2_meta_cost_model_follow_up_v1.py",
@@ -4167,6 +4202,11 @@
       "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb"
     },
     {
+      "path": "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
+      "before_sha256": "99d4fa9cc7e455eec061d6ead25e1c38b4cfe0ca69de9905c188abc12f1f20cb",
+      "sha256": "810a375fca1b3303ecc9529137d711db4dd7cd782ea4b322ea01ebe50fc2fed4"
+    },
+    {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
       "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
       "sha256": "ad5e09b08ab8e6e060ccebf1745bda447f97cfa6ec088d2d492e8e34a6dfeb19"
@@ -4220,6 +4260,11 @@
       "path": "tests/learning/test_recurrent_offline_research_v1.py",
       "before_sha256": null,
       "sha256": "eeed45621100f08c084a0539560ea969a28ccfa4f9633430932eb5da5c69b062"
+    },
+    {
+      "path": "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+      "before_sha256": "158b2c68fb29be3f9a6c279fed53850daac0aaa076a04e612986f784e9294a10",
+      "sha256": "dfc145a6f6d46d6025a551445dc9ce6881f270422860b1aa80d8e43fe9ad0653"
     },
     {
       "path": "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",

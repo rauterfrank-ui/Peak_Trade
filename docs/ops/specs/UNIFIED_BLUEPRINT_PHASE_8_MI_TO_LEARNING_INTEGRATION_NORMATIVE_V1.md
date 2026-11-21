@@ -35,3 +35,18 @@ reducers, MV2/Double-Play, Cap 2.3, or promotion authority.
 - `tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py`
 - `tests/governance/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py`
 - `tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py`
+
+## Original MI content and optional DDO reference — 2026-11-21
+
+The existing MI record validator now recomputes the original canonical
+reproducibility digest before Store append, cold read or export. An unchanged
+MI ID cannot retain changed outcome, horizon, price specification, instrument
+or conditioned behavior bindings. The existing digest formula and record IDs
+are unchanged; historical records are not rewritten.
+
+If an MI export declares a legacy DDO record reference and supplies that
+record, the two identities must agree. Reference-only, payload-only and
+MI-only exports retain their existing meanings. A reference alone does not
+set legacy DDO compatibility. MI evidence and DDO evidence remain different
+record types; this does not turn forecast calibration into a PnL/quality label
+or a productive DDO state update.

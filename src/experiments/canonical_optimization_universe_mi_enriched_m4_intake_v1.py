@@ -42,6 +42,10 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_r
     EVIDENCE_CLASS_MI_RESEARCH,
     SCHEMA_VERSION as MI_RESEARCH_SCHEMA_VERSION,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import (
+    export_mi_learning_evidence_onto_learning_path_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
 
 SCHEMA_VERSION: Final[str] = "canonical_optimization_universe_mi_enriched_m4_intake_v1"
@@ -247,6 +251,46 @@ def validate_mi_enriched_m4_intake_v1(
             return _intake_payload(
                 status=INTAKE_STATUS_REJECTED_MISMATCH,
                 reason="PLANE_LEARNING_EVIDENCE_DIGEST_MISMATCH",
+                mi_ack=dict(mi_ack),
+                learning_ack=dict(learning_ack),
+            )
+
+    exported = request.mi_learning_evidence_export
+    if exported is not None:
+        try:
+            canonical_export = export_mi_learning_evidence_onto_learning_path_v1(
+                exported["mi_learning_evidence"],
+                legacy_learning_evidence=exported.get("legacy_learning_evidence"),
+            )
+        except (DdoError, KeyError, TypeError, ValueError) as exc:
+            return _intake_payload(
+                status=INTAKE_STATUS_REJECTED_MI_INPUT,
+                reason=f"MI_LEARNING_EXPORT_INVALID:{exc}",
+                mi_ack=dict(mi_ack),
+                learning_ack=dict(learning_ack),
+            )
+        mi_record = canonical_export["mi_learning_evidence"]
+        embedded_legacy = canonical_export["legacy_learning_evidence"]
+        if (
+            _json_safe(canonical_export) != _json_safe(exported)
+            or any(
+                mi_record[field] != mi_research[field]
+                for field in (
+                    "forecast_evidence_id",
+                    "calibration_evidence_id",
+                    "n_bars",
+                    "bar_spec_ref",
+                )
+            )
+            or (
+                mi_record.get("legacy_learning_evidence_ref") is not None
+                and mi_record["legacy_learning_evidence_ref"] != legacy["record_id"]
+            )
+            or (embedded_legacy is not None and embedded_legacy["content_hash"] != plane_digest)
+        ):
+            return _intake_payload(
+                status=INTAKE_STATUS_REJECTED_MI_INPUT,
+                reason="MI_LEARNING_EXPORT_BINDING_MISMATCH",
                 mi_ack=dict(mi_ack),
                 learning_ack=dict(learning_ack),
             )
