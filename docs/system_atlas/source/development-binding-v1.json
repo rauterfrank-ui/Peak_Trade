@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "24a756710359d1bdcef275910818aeec01140bc354b48fdbc5cb2d61672257ba"
+      "sha256": "84fb76fbe27b9b1f8c2964fba2f7a1e64ced92e7581f3fecceecb8d79a21cc12"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1375,6 +1375,11 @@
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
       "before_sha256": "a96d8fb924c029825e0aa18baf81fb78174e40e7893c96da3579b99749294b95",
       "sha256": "28ffd553f9cf4dd98e703ad3d038f5e32d83868ffe6a9db8ed42b524c987182d"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
+      "before_sha256": "89c8af944f992ed0a46c260e31e09aeb8b306c2ba339179f5024f3bd8ee1ebf1",
+      "sha256": "8e01f979dbc84f1873c31050cdcf9ddd51729b98a6d0ea610f99463edae2dc4e"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
@@ -2379,7 +2384,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
       "before_sha256": "c341395e10769b90a49a4191bda4027cf7b9b3333638dea32881f6cf92876b63",
-      "sha256": "f27767168b3fd347087455f7aa9abe3cc6ed19f57c7f5cdfd2e89b1fd6a584f6"
+      "sha256": "a4cdb3f367d6bdf162dc611354cb44dba8aaef2e34e224644efd402caed4d05c"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_paired_market_research_v1.py",
@@ -4320,6 +4325,11 @@
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
       "before_sha256": "658bfb6c7dc38d5c5d90d1d7a9e9b0774bc74142a2adb944d62f3c510c96df33",
       "sha256": "5ed3f16bc82b2c8413ba8123e362c62ed59bcd063f6893579ab9626601e432d9"
+    },
+    {
+      "path": "tests/learning/test_incremental_predecessor_content_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "1e1d594050b19f3a0bd5489c86953a67fc7101b43f8564ddf161e6a6798ddcc5"
     },
     {
       "path": "tests/learning/test_intelligence_context_admission_v1.py",

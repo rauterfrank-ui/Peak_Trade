@@ -318,6 +318,81 @@ def build_phase_22_failure_memory_record_v1(
     )
 
 
+def _assert_predecessor_content_v1(result: Mapping[str, Any]) -> None:
+    """Admit the original stage body and its native identity bindings, without replay."""
+    if (
+        result.get("schema_version") != PHASE_22_SCHEMA
+        or result.get("research_disposition_authority") != RESEARCH_DISPOSITION_AUTHORITY
+        or not isinstance(result.get("research_disposition"), str)
+        or result.get("research_disposition") not in {item.value for item in ResearchDisposition}
+    ):
+        raise Phase22IncrementalResearchError("PREDECESSOR_CONTRACT_INVALID")
+    try:
+        digest = compute_content_sha256(
+            {key: value for key, value in result.items() if key != "content_digest"}
+        )
+    except (TypeError, ValueError) as exc:
+        raise Phase22IncrementalResearchError("PREDECESSOR_CONTENT_DIGEST_MISMATCH") from exc
+    if result.get("content_digest") != digest:
+        raise Phase22IncrementalResearchError("PREDECESSOR_CONTENT_DIGEST_MISMATCH")
+
+    info = result.get("information_set")
+    dataset = result.get("dataset_identity")
+    if not isinstance(info, Mapping) or not isinstance(dataset, Mapping):
+        raise Phase22IncrementalResearchError("PREDECESSOR_NESTED_CONTENT_INVALID")
+    try:
+        expected_info = build_incremental_information_set_v1(
+            IncrementalInformationSetRequestV1(
+                **{
+                    name: info[name]
+                    for name in (
+                        "stage_id",
+                        "horizon_identity",
+                        "feature_versions",
+                        "provenance_refs",
+                        "behavior_contract_version",
+                        "context_contract_version",
+                        "microstructure_kind",
+                    )
+                }
+            )
+        )
+        expected_dataset = build_research_dataset_identity_v1(
+            ResearchDatasetIdentityRequestV1(
+                **{
+                    name: dataset[name]
+                    for name in (
+                        "information_set_id",
+                        "stage_id",
+                        "predecessor_stage_id",
+                        "behavior_contract_version",
+                        "horizon_identity",
+                        "sample_range",
+                        "split_definition",
+                        "missingness_policy",
+                        "provenance_refs",
+                        "stochastic_seed_identity",
+                    )
+                }
+            )
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise Phase22IncrementalResearchError("PREDECESSOR_NESTED_CONTENT_INVALID") from exc
+    if dict(info) != dict(expected_info) or dict(dataset) != dict(expected_dataset):
+        raise Phase22IncrementalResearchError("PREDECESSOR_NESTED_CONTENT_INVALID")
+    if (
+        info["stage_id"] != result["stage_id"]
+        or dataset["stage_id"] != result["stage_id"]
+        or info["predecessor_stage_id"] != result.get("predecessor_stage_id")
+        or dataset["predecessor_stage_id"] != result.get("predecessor_stage_id")
+        or result.get("predecessor_stage_id") != predecessor_stage_id_v1(result["stage_id"])
+        or dataset["information_set_id"] != info["information_set_id"]
+        or dataset["horizon_identity"] != info["horizon_identity"]
+        or dataset["behavior_contract_version"] != info["behavior_contract_version"]
+    ):
+        raise Phase22IncrementalResearchError("PREDECESSOR_BINDING_MISMATCH")
+
+
 def run_incremental_stage_research_v1(
     request: IncrementalStageResearchRequestV1,
 ) -> MappingProxyType[str, Any]:
@@ -365,6 +440,7 @@ def run_incremental_stage_research_v1(
             or supplied_predecessor.get("stage_id") != predecessor
         ):
             raise Phase22IncrementalResearchError("PREDECESSOR_STAGE_MISMATCH")
+        _assert_predecessor_content_v1(supplied_predecessor)
 
     missing_family: str | None = None
     projected = None

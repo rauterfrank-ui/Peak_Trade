@@ -1165,6 +1165,63 @@ prüfen. BTC bleibt unverändert; keine Betriebs-, Paper-, Shadow- oder
 Forschungsläufe werden gestartet. Der historische D01/D02-Basiskonflikt bleibt
 offen. Eine vollständige Systemhärtung ist weiterhin nicht belegt.
 
+### Forschungs-Vorgängerbeleg vor M4: Inhalts- und Bedeutungsbindung am 21. November
+
+Ausgangspunkt ist Merge `e4575dd5bfe267c2c1f7a87403c5fb189f2aa19c`
+(PR #7357). Die vorhandene Phase-22-Kette projiziert Kontextfamilien, erzeugt
+Information-Set-/Datasetidentitäten und führt Forschungs-, Vergleichs-, Failure-
+und Meta-Belege über die bestehenden Owner weiter. Bereits gehärtet ist die
+unmittelbare Stufenfolge: Ein B0-Beleg darf nicht als B1-Vorgänger einer B2-Stufe
+ausgegeben werden; B0 selbst darf keinen Vorgänger konsumieren. Die direkte
+Aufnahme prüfte danach aber nicht den vollständigen Vorgängerinhalt.
+
+15 synthetische Gegenproben erreichten vor der Korrektur den tatsächlichen
+M4-Consumer: veränderte Bewertung, Merkmalsdigest oder Plane-Referenz unter
+beibehaltenem Originaldigest, ungültige Vertragsangaben sowie beschädigte oder
+aus anderen nativen Belegen zusammengesetzte Information-Set-/Datasetbindungen.
+Auch ein neu berechneter äußerer Hash machte innere ID- und Bedeutungswidersprüche
+nicht richtig. Die isolierte Horizontgegenprobe hält alle übrigen Referenzen
+unverändert und weist denselben Übergabefehler nach.
+
+Die bestehende aktive Aufnahme prüft jetzt vor Kontextprojektion und M4-Plane den
+gesamten gespeicherten Stufendigest, das native Schema, das vorhandene
+Bewertungsvokabular und Authority NONE. Sie reproduziert Information-Set und
+Dataset mit ihren ursprünglichen Metadatenbuildern und prüft die inneren Bezüge
+auf Stufe, Vorgängerstufe, Information-Set-ID, Horizont und Verhaltensversion.
+Das ist Metadatenprüfung; sie startet keinen Forschungsversuch und führt den
+Vorgänger nicht erneut aus. Originalkonstruktion, ID-/Digestformeln, Writer und
+numerische Regeln bleiben erhalten.
+
+Fünf vor der Korrektur gesicherte vollständige Originalpakete bleiben bytegleich:
+zusammenhängende B0–B4-Kette, B0–DEFERRED B5, fehlender Vorgänger, explizit fehlende
+Familie und ein intern konsistenter Vorgänger mit anderem Horizont. Unveränderte
+JSON-Belege bleiben konsumierbar. Die
+[neuen Offline-Gegen- und Positivproben](../../../tests/learning/test_incremental_predecessor_content_admission_v1.py)
+prüfen den tatsächlichen M4-Eingang und die unveränderten temporären Eingaben.
+Der frühe B5-Zweig konsumiert weiterhin weder Vorgänger noch Plane. Der
+[ursprüngliche Phase-22-Vertrag](UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md)
+benennt diese Grenze ausdrücklich.
+
+80 unterschiedliche Offline-Fälle bestehen: 59 vorhandene Informationsset-,
+Stufenfolge-, Phase-22-, M4-, Rückgabe-/Experimentbeleg-, Meta-Ingest- und
+Governancefälle sowie 21 neue Gegen- und Positivproben. Die vollständigen
+ursprünglichen Fehlbelege bleiben getrennt vom bestandenen Nachweis erhalten.
+
+Ein unveränderter Beleg beweist seine innere Integrität, nicht die fachliche
+Richtigkeit seiner gelieferten Scores oder seine Herkunftsauthentizität. Der
+ältere Phase-22-Wrapper berechnet den Challenger-Delta weiterhin aus gelieferten
+M4-Champion-/Challengerscores; die Gleichheit zum gemessenen unmittelbaren
+Vorgänger ist hier nicht belegt. Dataset-Zeitflags sind deklarierte Metadaten,
+kein Nachweis tatsächlich getrennter Trainings-/OOS-Daten. Vergleichbarkeit von
+Samples, Fenstern, Targets und Horizonten zwischen zwei Stufen bleibt separat
+offen; dafür wird keine neue globale Gleichheit erfunden. Der getrennte
+Paired-Market-Research-Pfad und numerische Lernqualität werden durch diese
+Übergabehärtung nicht zertifiziert. Vorhandene Failure-Labels werden nicht als
+neu bewiesene Fehlerursache interpretiert. BTC, Originalstores, Betriebsfreigaben
+und produktive Reducer bleiben unverändert. Keine Betriebs-, Paper-, Shadow- oder
+Forschungsläufe wurden gestartet. Der historische D01/D02-Basiskonflikt bleibt
+offen und wird nicht durch diese gezielten Prüfungen ersetzt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
