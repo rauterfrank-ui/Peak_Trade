@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import copy
+from dataclasses import replace
 import hashlib
 import inspect
 from pathlib import Path
@@ -253,6 +254,43 @@ def _request(
 
 def _question(record: Mapping[str, Any], question_id: str) -> Mapping[str, Any]:
     return next(item for item in record["questions"] if item["question_id"] == question_id)
+
+
+@pytest.mark.parametrize("record_kind", ("failure_records", "reality_gap_records"))
+@pytest.mark.parametrize(
+    "evidence_at,future",
+    [
+        ("2026-08-18T13:59:59.999999999Z", False),
+        ("2026-08-18T14:00:00.000000000Z", False),
+        ("2026-08-18T14:00:00.000000001Z", True),
+        ("2026-08-18T14:00:01Z", True),
+    ],
+)
+def test_meta_memory_evidence_must_be_known_before_analysis(
+    monkeypatch, record_kind, evidence_at, future
+):
+    from src.experiments import canonical_meta_learning_v1 as owner
+
+    base = _request(failure_records=(), reality_gap_records=())
+    units = tuple(replace(unit, market_universe=("SYNTHETIC-TIME-CONTROL",)) for unit in base.units)
+    builder = _failure if record_kind == "failure_records" else _gap
+    evidence = builder(units[0].experiment_identity, created_at=evidence_at)
+    request = replace(base, units=units, **{record_kind: (evidence,)})
+    if future:
+
+        def forbidden_analysis(**kwargs):
+            pytest.fail("Future memory evidence reached the Meta findings consumer")
+
+        monkeypatch.setattr(owner, "_evaluate_questions", forbidden_analysis)
+        with pytest.raises(MetaLearningValidationError, match="lookahead"):
+            owner.build_canonical_meta_learning_v1(request)
+    else:
+        result = owner.build_canonical_meta_learning_v1(request)
+        id_field = (
+            "failure_record_id" if record_kind == "failure_records" else "reality_gap_record_id"
+        )
+        assert evidence[id_field] in result["input_lineage"][id_field + "s"]
+    assert evidence["created_at"] == evidence_at
 
 
 def test_same_inputs_yield_identical_lineage_bound_result() -> None:

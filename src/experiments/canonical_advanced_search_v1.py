@@ -33,6 +33,7 @@ from src.experiments.canonical_failure_memory_v1 import (
 from src.experiments.canonical_meta_learning_v1 import (
     CANONICAL_PROPOSAL_KINDS,
     META_LEARNING_AUTHORITY,
+    MetaLearningValidationError,
     PROPOSAL_DEPRIORITIZE_RESEARCH,
     PROPOSAL_INVESTIGATE,
     PROPOSAL_PRIORITIZE_RESEARCH,
@@ -40,6 +41,7 @@ from src.experiments.canonical_meta_learning_v1 import (
     PROMOTION_AUTHORITY as META_PROMOTION_AUTHORITY,
     SCHEMA_VERSION as META_LEARNING_SCHEMA_VERSION,
     derive_meta_parameter_region_digest_v1,
+    validate_research_evidence_known_at_v1,
 )
 from src.experiments.canonical_reality_gap_store_v1 import (
     DISPOSITION_REJECTED_REALITY_GAP,
@@ -371,10 +373,10 @@ def build_canonical_advanced_search_v1(
         request.parent_experiment_identity, lineage_kind=lineage_kind
     )
     failure_records = _canonicalize_failure_records(
-        request.failure_records, template_identity=template_identity
+        request.failure_records, template_identity=template_identity, created_at=created_at
     )
     gap_records = _canonicalize_gap_records(
-        request.reality_gap_records, template_identity=template_identity
+        request.reality_gap_records, template_identity=template_identity, created_at=created_at
     )
     meta_signals = _canonicalize_meta_signals(
         request.meta_learning_signals,
@@ -1093,7 +1095,7 @@ def _canonicalize_parent_identity(
 
 
 def _canonicalize_failure_records(
-    records: Sequence[Mapping[str, Any]], *, template_identity: Mapping[str, Any]
+    records: Sequence[Mapping[str, Any]], *, template_identity: Mapping[str, Any], created_at: str
 ) -> list[dict[str, Any]]:
     if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
         raise AdvancedSearchValidationError("failure_records must be a sequence")
@@ -1107,6 +1109,12 @@ def _canonicalize_failure_records(
                 f"failure_records[{index}] is not a COMPLETE Phase 3 record"
             ) from exc
         payload = _plain_mapping(item)
+        try:
+            validate_research_evidence_known_at_v1(
+                evidence_created_at=payload["created_at"], consumer_created_at=created_at
+            )
+        except MetaLearningValidationError as exc:
+            raise AdvancedSearchValidationError(f"failure_records[{index}]: {exc}") from exc
         _assert_signal_identity_compatible(
             template_identity,
             payload["experiment_identity"],
@@ -1122,7 +1130,7 @@ def _canonicalize_failure_records(
 
 
 def _canonicalize_gap_records(
-    records: Sequence[Mapping[str, Any]], *, template_identity: Mapping[str, Any]
+    records: Sequence[Mapping[str, Any]], *, template_identity: Mapping[str, Any], created_at: str
 ) -> list[dict[str, Any]]:
     if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
         raise AdvancedSearchValidationError("reality_gap_records must be a sequence")
@@ -1136,6 +1144,12 @@ def _canonicalize_gap_records(
                 f"reality_gap_records[{index}] is not a COMPLETE Phase 7 record"
             ) from exc
         payload = _plain_mapping(item)
+        try:
+            validate_research_evidence_known_at_v1(
+                evidence_created_at=payload["created_at"], consumer_created_at=created_at
+            )
+        except MetaLearningValidationError as exc:
+            raise AdvancedSearchValidationError(f"reality_gap_records[{index}]: {exc}") from exc
         _assert_signal_identity_compatible(
             template_identity,
             payload["experiment_identity"],

@@ -146,6 +146,7 @@ def _failure(
     hypothesis_id: str = _PARENT_HYPOTHESIS_ID,
     failure_class: str = "REJECTED_OVERFIT",
     parameter_region: Mapping[str, Any] | None = None,
+    created_at: str = _EVIDENCE_AT,
 ) -> Mapping[str, Any]:
     experiment_id = derive_experiment_id_v1(str(identity["identity_digest"]))
     gate = {
@@ -171,13 +172,13 @@ def _failure(
                     "digest": _digest(f"experiment-record-{experiment_id}"),
                 }
             ],
-            created_at=_EVIDENCE_AT,
+            created_at=created_at,
             robustness_policy_digest=_digest("robustness-policy"),
         )
     )
 
 
-def _gap(identity: Mapping[str, Any]) -> Mapping[str, Any]:
+def _gap(identity: Mapping[str, Any], *, created_at: str = _EVIDENCE_AT) -> Mapping[str, Any]:
     experiment_id = derive_experiment_id_v1(str(identity["identity_digest"]))
     return build_canonical_reality_gap_record_v1(
         CanonicalRealityGapRecordRequestV1(
@@ -201,7 +202,7 @@ def _gap(identity: Mapping[str, Any]) -> Mapping[str, Any]:
                     "digest": _digest(f"gap-record-{experiment_id}"),
                 }
             ],
-            created_at=_EVIDENCE_AT,
+            created_at=created_at,
         )
     )
 
@@ -227,6 +228,46 @@ def _request(**overrides: Any) -> CanonicalAdvancedSearchRequestV1:
     }
     payload.update(overrides)
     return CanonicalAdvancedSearchRequestV1(**payload)
+
+
+@pytest.mark.parametrize("record_kind", ("failure_records", "reality_gap_records"))
+@pytest.mark.parametrize(
+    "evidence_at,future",
+    [
+        ("2026-08-18T13:59:59.999999999Z", False),
+        ("2026-08-18T14:00:00.000000000Z", False),
+        ("2026-08-18T14:00:00.000000001Z", True),
+        ("2026-08-18T14:00:01Z", True),
+    ],
+)
+def test_search_memory_evidence_must_be_known_before_candidate_choice(
+    monkeypatch, record_kind, evidence_at, future
+):
+    from src.experiments import canonical_advanced_search_v1 as owner
+
+    identity = _identity(strategy_params={"fast": 15, "slow": 50})
+    builder = _failure if record_kind == "failure_records" else _gap
+    evidence = builder(identity, created_at=evidence_at)
+    request = _request(created_at="2026-08-18T14:00:00Z", **{record_kind: (evidence,)})
+    if future:
+
+        def forbidden_choice(*args, **kwargs):
+            pytest.fail("Future memory evidence reached the Search candidate consumer")
+
+        monkeypatch.setattr(owner, "_evaluate_combination", forbidden_choice)
+        with pytest.raises(AdvancedSearchValidationError, match="lookahead"):
+            owner.build_canonical_advanced_search_v1(request)
+    else:
+        result = owner.build_canonical_advanced_search_v1(request)
+        known = next(
+            row
+            for row in result["candidates"]
+            if row["parameter_region"] == {"fast": 15, "slow": 50}
+        )
+        assert known["status"] == STATUS_DEPRIORITIZED_KNOWN_FAILURE
+        assert any(row["status"] == STATUS_PROPOSED for row in result["candidates"])
+        assert result["search_can_promote"] is False
+    assert evidence["created_at"] == evidence_at
 
 
 def test_deterministic_search_proposal_generation() -> None:

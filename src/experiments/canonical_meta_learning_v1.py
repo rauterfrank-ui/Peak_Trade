@@ -267,8 +267,12 @@ def build_canonical_meta_learning_v1(
         metric_definitions=metric_definitions,
         robustness_suite_version=robustness_suite_version,
     )
-    failure_records = _canonicalize_failure_records(request.failure_records, bound_units)
-    gap_records = _canonicalize_gap_records(request.reality_gap_records, bound_units)
+    failure_records = _canonicalize_failure_records(
+        request.failure_records, bound_units, created_at=created_at
+    )
+    gap_records = _canonicalize_gap_records(
+        request.reality_gap_records, bound_units, created_at=created_at
+    )
     pair_results, cohorts = _partition_comparable_cohorts(
         bound_units, request.compatibility_contract, created_at
     )
@@ -563,6 +567,8 @@ def _canonicalize_later_outcome(
 def _canonicalize_failure_records(
     records: Sequence[Mapping[str, Any]],
     bound_units: Sequence[Mapping[str, Any]],
+    *,
+    created_at: str,
 ) -> list[dict[str, Any]]:
     known_ids = {item["experiment_id"] for item in bound_units}
     bound: list[dict[str, Any]] = []
@@ -570,6 +576,9 @@ def _canonicalize_failure_records(
     for record in records:
         payload = _plain_mapping(record)
         validate_canonical_failure_memory_record_v1(payload)
+        validate_research_evidence_known_at_v1(
+            evidence_created_at=payload["created_at"], consumer_created_at=created_at
+        )
         experiment_id = str(payload["experiment_id"])
         if experiment_id not in known_ids:
             raise MetaLearningValidationError(
@@ -587,6 +596,8 @@ def _canonicalize_failure_records(
 def _canonicalize_gap_records(
     records: Sequence[Mapping[str, Any]],
     bound_units: Sequence[Mapping[str, Any]],
+    *,
+    created_at: str,
 ) -> list[dict[str, Any]]:
     known_ids = {item["experiment_id"] for item in bound_units}
     bound: list[dict[str, Any]] = []
@@ -594,6 +605,9 @@ def _canonicalize_gap_records(
     for record in records:
         payload = _plain_mapping(record)
         validate_canonical_reality_gap_record_v1(payload)
+        validate_research_evidence_known_at_v1(
+            evidence_created_at=payload["created_at"], consumer_created_at=created_at
+        )
         experiment_id = str(payload["experiment_id"])
         if experiment_id not in known_ids:
             raise MetaLearningValidationError(
@@ -1571,6 +1585,16 @@ def _require_phase4_token(field_name: str, value: Any, expected: str) -> str:
     return token
 
 
+def validate_research_evidence_known_at_v1(
+    *, evidence_created_at: str, consumer_created_at: str
+) -> None:
+    """Bind declared record availability using the existing exact UTC owner."""
+    evidence = _require_created_at(evidence_created_at)
+    consumer = _require_created_at(consumer_created_at)
+    if _utc_order_key(evidence) > _utc_order_key(consumer):
+        raise MetaLearningValidationError("memory evidence created_at lookahead is forbidden")
+
+
 def _utc_order_key(value: str) -> tuple[datetime, int]:
     """Compare validated UTC instants without losing the supported nanoseconds."""
     try:
@@ -1686,4 +1710,5 @@ __all__ = [
     "canonical_record_payload_v1",
     "derive_meta_parameter_region_digest_v1",
     "validate_canonical_meta_learning_v1",
+    "validate_research_evidence_known_at_v1",
 ]

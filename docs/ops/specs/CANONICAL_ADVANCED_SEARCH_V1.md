@@ -324,3 +324,20 @@ cannot match a family, space or hypothesis by coincidentally equal text. This
 closes the untyped fallback; it creates no dedicated consumer for those other
 proposals or new research authority.
 [Bound target/lineage checks](../evidence/semantic_target_and_provenance_consistency_v1_2026_11_04/README.md).
+
+## Failure/Reality-Gap input chronology — 2026-11-21
+
+Before candidate generation, supplied Phase-3 failure and Phase-7 reality-gap
+records must pass their original validators and have declared record
+`created_at` no later than the Search request's supplied `created_at`. The
+existing Phase-11 UTC calendar/integer-nanosecond comparison is reused;
+future inputs fail closed rather than being silently discarded. This is a
+record/consumer-time comparison, not a comparison with backtest period end
+or the current wall clock.
+
+Earlier and simultaneous records retain their original duplicate-assessment
+and research-priority effects. Original time strings, identities, gap units,
+thresholds, candidate budgets and retest rules are unchanged. A research
+priority or observation-source label creates no trading/rotation, promotion
+or productive apply authority. Declared chronology does not authenticate
+actual historical delivery or measurement truth.
