@@ -1044,7 +1044,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "799f537cf5ea290084fad310b930c3129dfa7f46386e5ceef5d32c4b9d9bd167"
+      "sha256": "25372ac51cc68b3e39f1ccfdf771034e6b1788a8ad2fcae8977bd892ecad224d"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1649,7 +1649,7 @@
     {
       "path": "scripts/ops/paper_episode_learning_handoff_v1.py",
       "before_sha256": null,
-      "sha256": "fb43d03a1267b82335771ff8deed2f10780b8d86ab4495b79e7e95a4f50c6a35"
+      "sha256": "a12aa05f5e8409db6bede47c05e8b5e08e06e8f5775e76e61cbec13dbe8fdbae"
     },
     {
       "path": "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
@@ -2264,7 +2264,7 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_episode_outcome_v1.py",
       "before_sha256": null,
-      "sha256": "80c861dd7b3f486514fc93b30203a6e3a81b3a63882a140573d8cf40e53fb8eb"
+      "sha256": "62827d37c2c9d452c03cc89e925fb52c8877b5d7fd6ce8e2f4003d42d2986447"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_market_liquidity_v1.py",
@@ -2274,7 +2274,7 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/xperp_paper_episode_outcome_v1.py",
       "before_sha256": null,
-      "sha256": "cdbb4b3fb627549adde24a464758930afb0fa3e0e516f3e848ad3892ab8bf74e"
+      "sha256": "14c047ef78576caffa4579af7dcb438b5d8b4de16f32468517e2fdfd26d43c6a"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
@@ -4039,7 +4039,7 @@
     {
       "path": "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
       "before_sha256": "857b1379182d41ad4d09628995c0ac90ec34a1b89a77d3e48f74bc4c3b7f5d7a",
-      "sha256": "7fa437c3e20dde9617c4b18b2c0cb34c73ff82b3c44ec4e7ff8d580e2bc307c4"
+      "sha256": "f2564cb7df6a54e7c855403f7e728e704806f5ebbb135f53c4ac5969546ad45c"
     },
     {
       "path": "tests/governance/test_m10_promotion_boundary_v1.py",
@@ -5299,7 +5299,7 @@
     {
       "path": "tests/ops/test_zkp_lane1_paper_opening_v1.py",
       "before_sha256": null,
-      "sha256": "f2d7a84a0a2901d4bfbeeaecc80a9164de773abe963be30299a310caf6afdfe5"
+      "sha256": "615d05c0dc63b5f747e802c5763f5b4e7911f1af2706ca6b95b64828af0c3079"
     },
     {
       "path": "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2.py",

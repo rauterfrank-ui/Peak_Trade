@@ -817,6 +817,33 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     assert measurement["fill_bindings"][-1]["decision_id"] == booking["decision_id"]
     assert Decimal(measurement["fees"]) < Decimal(booking["accounting"]["cumulative_fees"])
 
+    from scripts.ops import paper_episode_learning_handoff_v1 as learning
+    from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
+        LEDGER_FILENAME_DEFAULT,
+        AppendOnlyDdoLedgerV0,
+    )
+
+    handoff_args = dict(archive_root=root, episode_id=episode_id, expected_lane_id=slot.lane_id)
+    # A prior import must retain its original ledger/measurement identities.
+    legacy_root = tmp_path / "legacy-learning"
+    original_reader = learning.read_paper_episode_outcome_v1
+    with monkeypatch.context() as patch:
+
+        def legacy_reader(*args, **kwargs):
+            return original_reader(*args, **{**kwargs, "include_decision_evidence": False})
+
+        patch.setattr(learning, "read_paper_episode_outcome_v1", legacy_reader)
+        legacy = learning.paper_episode_learning_handoff_v1(output_root=legacy_root, **handoff_args)
+    legacy_bytes = {p: p.read_bytes() for p in legacy_root.rglob("*") if p.is_file()}
+    for verify in (True, False):
+        assert (
+            learning.paper_episode_learning_handoff_v1(
+                output_root=legacy_root, verify=verify, **handoff_args
+            )
+            == legacy
+        )
+    assert {p: p.read_bytes() for p in legacy_bytes} == legacy_bytes
+
     bars, config, request = native_research_fixture(slot.instrument_id, "b" * 64)
     csv_path, cfg_path, template_path = (
         tmp_path / name for name in ("bars.csv", "config.json", "input.json")
@@ -886,6 +913,61 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     receipt = research.read_v1(receipt_path)
     assert receipt["source"]["episode"] == episode_id
     assert receipt["instrument_id"] == slot.instrument_id
+    learning_root = campaign.state / "paper-learning" / "paper-episodes" / episode_id
+    handoff = research.read_v1(learning_root / "result.json")
+    enriched = handoff["measurement"]
+    for field in ("simulated_net_pnl", "realized_pnl", "fees", "funding_pnl"):
+        assert enriched[field] == measurement[field]
+    original_cursor = json.loads((root / "opening-plan.json").read_bytes())["decision_cursor"]
+    original_frame = original_cursor["entry_assessment_frame"]
+    assert enriched["fill_bindings"][0]["decision_evidence"]["cursor"] == original_cursor
+    assert "decision_evidence" in enriched["fill_bindings"][-1]
+    ledger = AppendOnlyDdoLedgerV0(learning_root / LEDGER_FILENAME_DEFAULT)
+    # Follow the actual LearningState -> decision link, not just the result JSON.
+    state = next(row for row in ledger.read_all() if row["schema_name"] == "learning_state_record")
+    decision = ledger.get(state["decision_event_ref"])
+    market_ref = f"paper.archive.market:{original_frame['market_context']['input_digest']}"
+    assert decision["market_snapshot_ref"] == market_ref
+    assert market_ref in decision["evidence_source_refs"]
+    assert (
+        f"paper.archive.assessment:{original_frame['digest']}" in decision["evidence_source_refs"]
+    )
+    assert decision["decision_type"] == decision["decision_result"] == "UNKNOWN"
+    assert decision["decision_time_information_set_ref"] is None
+    assert state["last_decision_score"] == state["last_economic_score"] == "UNKNOWN"
+    assert (
+        learning.paper_episode_learning_handoff_v1(
+            output_root=campaign.state / "paper-learning", verify=True, **handoff_args
+        )
+        == handoff
+    )
+    measurement_path = learning_root / "measurement.json"
+    saved_measurement = measurement_path.read_bytes()
+    ledger_path = learning_root / LEDGER_FILENAME_DEFAULT
+    saved_ledger = ledger_path.read_bytes()
+    for fault in ("changed_original", "downgrade"):
+        bad = json.loads(saved_measurement)["body"]
+        if fault == "changed_original":
+            bad["fill_bindings"][0]["decision_evidence"]["cursor"]["entry_assessment_frame"][
+                "market_context"
+            ]["input_digest"] = "0" * 64
+        else:
+            for binding in bad["fill_bindings"]:
+                del binding["decision_evidence"]
+        bad["outcome_digest"] = research.digest_v1(
+            {key: value for key, value in bad.items() if key != "outcome_digest"}
+        )
+        # A new transport hash cannot replace the original source or remove
+        # references already bound into the LearningState's decision.
+        measurement_path.write_text(json.dumps({"body": bad, "sha256": research.digest_v1(bad)}))
+        try:
+            with pytest.raises(ValueError, match="PAPER_LEARNING_.*MISMATCH"):
+                learning.paper_episode_learning_handoff_v1(
+                    output_root=campaign.state / "paper-learning", verify=True, **handoff_args
+                )
+            assert ledger_path.read_bytes() == saved_ledger
+        finally:
+            measurement_path.write_bytes(saved_measurement)
     evaluation = research.read_v1(
         campaign.state / "offline-ddo-research" / receipt["learning_digest"] / "result.json"
     )

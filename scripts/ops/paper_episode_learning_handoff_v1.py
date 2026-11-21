@@ -44,6 +44,12 @@ from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_
 from src.ops.bounded_peaktrade_system_composition_v1.paper_episode_outcome_v1 import (
     read_paper_episode_outcome_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+    read_current_core_entry_assessment_frame_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    parse_current_productive_sidestate_confirmation_cursor_v1,
+)
 
 _REPO = Path(__file__).resolve().parents[2]
 
@@ -57,6 +63,31 @@ def _evaluation(measurement):
     correlation_id = f"paper.episode:{digest}"
     code_sha = measurement["source_tree_sha256"]
     config_hash = opening["decision_config_sha256"]
+    evidence_refs = [f"paper.archive.decision:{decision_digest}"]
+    market_ref = None
+    if "decision_evidence" in opening:
+        original = opening["decision_evidence"]
+        if (
+            original["schema"] != "paper_original_decision_cursor.v1"
+            or original["scope"] != "ORIGINAL_ASSESSMENT_AND_POST_DECISION_CURSOR"
+        ):
+            raise ValueError("PAPER_LEARNING_DECISION_EVIDENCE_SCOPE_MISMATCH")
+        cursor = parse_current_productive_sidestate_confirmation_cursor_v1(original["cursor"])
+        bodies = read_current_core_entry_assessment_frame_v1(cursor)
+        frame = cursor.entry_assessment_frame
+        if (
+            (cursor.instrument_id, cursor.venue_native_id)
+            != (measurement["instrument_id"], measurement["venue_native_id"])
+            or bodies["parent"]["decision_id"] != decision_id
+            or bodies["parent"]["config_digest"] != config_hash
+            or str(bodies["parent"]["trading_epoch"]) != opening["trading_epoch"]
+            or bodies["parent"]["decision_outcome"] != opening["decision_outcome"]
+            or frame["components"]["parent"]["semantic_digest"] != decision_digest
+        ):
+            raise ValueError("PAPER_LEARNING_ORIGINAL_DECISION_MISMATCH")
+        evidence_refs.append(f"paper.archive.assessment:{frame['digest']}")
+        market_ref = f"paper.archive.market:{frame['market_context']['input_digest']}"
+        evidence_refs.append(market_ref)
     # Project the archived Core decision. Fields requiring a decision-time DDO
     # snapshot remain unknown on historical Paper runs.
     decision = build_decision_event_v0(
@@ -77,7 +108,8 @@ def _evaluation(measurement):
             "code_sha": code_sha,
             "config_hash": config_hash,
             "evidence_hash": decision_digest,
-            "evidence_source_refs": [f"paper.archive.decision:{decision_digest}"],
+            "evidence_source_refs": evidence_refs,
+            **({"market_snapshot_ref": market_ref} if market_ref is not None else {}),
         }
     )
     outcome_ref = f"paper.outcome.measurement:{digest}"
@@ -193,16 +225,28 @@ def paper_episode_learning_handoff_v1(
         or _REPO.is_relative_to(output_root)
     ):
         raise ValueError("PAPER_LEARNING_SEPARATE_OFFLINE_WORKSPACE_REQUIRED")
-    measurement = read_paper_episode_outcome_v1(
-        archive_root, episode_id, expected_lane_id=expected_lane_id
-    )
-    if require_measurement is not None:
-        require_measurement(measurement)
-    decision, bundle, scope = _evaluation(measurement)
     workspace = EvaluationReceiptArchiveV1(output_root)
     folder = Path("paper-episodes") / episode_id
     measurement_path = workspace.safe_path_v1(folder / "measurement.json")
     result_path = workspace.safe_path_v1(folder / "result.json")
+    # Existing imported episodes retain their original measurement and ledger
+    # identities. Fresh XPERP imports carry the already archived decision data.
+    # Never retrofit an append-only record or silently downgrade an enriched one.
+    include_decision_evidence = True
+    if measurement_path.exists() or measurement_path.is_symlink():
+        stored = read_v1(measurement_path)
+        include_decision_evidence = any(
+            "decision_evidence" in binding for binding in stored["fill_bindings"]
+        )
+    measurement = read_paper_episode_outcome_v1(
+        archive_root,
+        episode_id,
+        expected_lane_id=expected_lane_id,
+        include_decision_evidence=include_decision_evidence,
+    )
+    if require_measurement is not None:
+        require_measurement(measurement)
+    decision, bundle, scope = _evaluation(measurement)
     ledger = AppendOnlyDdoLedgerV0(workspace.safe_path_v1(folder / LEDGER_FILENAME_DEFAULT))
     if verify:
         result = _read_result(ledger, decision, bundle, scope, measurement)

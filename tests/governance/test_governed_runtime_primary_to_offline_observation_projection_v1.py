@@ -94,7 +94,9 @@ def test_g2_passes_the_verified_paper_episode_and_its_original_learning_evidence
     }
     measurement["outcome_digest"] = digest_v1(measurement)
 
-    def read_episode(archive_root, episode_id, *, expected_lane_id=None):
+    def read_episode(
+        archive_root, episode_id, *, expected_lane_id=None, include_decision_evidence=False
+    ):
         assert archive_root == source.primary_evidence_root and episode_id == source.episode_id
         if expected_lane_id not in (None, "LANE_1"):
             raise ValueError("paper episode lane mismatch")
