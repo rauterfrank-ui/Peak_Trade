@@ -3,7 +3,7 @@ docs_token: DOCS_TOKEN_UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE
 status: active
 scope: Unified Blueprint Phase 22 incremental information research (B0–B5)
 capability: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
-last_updated: 2026-09-26
+last_updated: 2026-11-21
 ---
 
 # Unified Blueprint Phase 22 — Incremental Research Normative V1
@@ -16,7 +16,7 @@ BLUEPRINT_AUTHORITY=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 ```
 
-Prerequisite: Phase 21 Loop A `PROVEN` on `origin/main`.
+Prerequisite: Phase 21 Loop A `PROVEN` on `origin&#47;main`.
 
 Owners (offline research; AUTHORITY=NONE):
 
@@ -50,3 +50,33 @@ route has no comparison/plane execution and stays reachable. Ordering alone does
 not prove this edge. Numeric score/dataset/window equivalence and full predecessor
 content remain distinct proof questions.
 [Verification](../evidence/incremental_immediate_predecessor_binding_v1_2026_11_04/README.md).
+
+## Original predecessor content admission — 2026-11-21
+
+An active stage admits a supplied original predecessor before projection or the
+existing M4 plane: native schema, authority NONE, disposition vocabulary and the
+complete stored stage-body digest must hold. Its information set and dataset
+identity are reconstructed by their existing native metadata builders. Original
+IDs/digests and bodies must agree, and stage/predecessor, dataset information-set
+reference, horizon and behavior-contract version must be internally consistent.
+Rehashing an inconsistent outer record does not repair a nested identity or join.
+
+No predecessor replay, research execution, new record owner, ID formula or numeric
+classification rule is introduced. B0 still forbids a predecessor, absence remains
+INSUFFICIENT_EVIDENCE, and the early B5 DEFERRED route still consumes no predecessor
+or plane. Existing consistent original/JSON packets and their output digests stay
+unchanged; stored records are not rewritten.
+
+These checks establish intrinsic record integrity and declared reference
+consistency, not source authenticity or measured incremental value. Dataset
+temporal flags remain the metadata builder's declarations, not evidence of actual
+training/OOS execution. This legacy wrapper still uses caller-supplied M4
+champion/challenger scores; it does not establish their equality to a measured
+immediate-predecessor score. A different internally consistent predecessor horizon
+is not newly prohibited: cross-stage sample/window/target comparability remains
+unproven here. The separate paired-market research owner is not replaced or
+certified by these checks. Failure-memory labels and formulas are unchanged.
+
+[Offline verification](../../../tests/learning/test_incremental_predecessor_content_admission_v1.py)
+rejects altered or crosswired original predecessors before the actual M4 consumer
+and preserves valid ordered, JSON, missing-family and deferred cases.
