@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from types import MappingProxyType
 from typing import Any, Final, Mapping
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import require_mapping
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
@@ -64,10 +67,8 @@ def join_forecast_to_n_bars_outcome_v1(
         horizon_start_time_utc=observation["horizon_start_time_utc"],
         bar_close_times_utc=observation["bar_close_times_utc"],
     )
-    forecast_end_instant = datetime.fromisoformat(
-        forecast["outcome_horizon_end_utc"].replace("Z", "+00:00")
-    )
-    outcome_end_instant = datetime.fromisoformat(outcome_end.replace("Z", "+00:00"))
+    forecast_end_instant = capture_order_key_v1(forecast["outcome_horizon_end_utc"])
+    outcome_end_instant = capture_order_key_v1(outcome_end)
     if forecast_end_instant != outcome_end_instant:
         raise ForecastOutcomeJoinError("FORECAST_OUTCOME_HORIZON_END_MISMATCH")
 

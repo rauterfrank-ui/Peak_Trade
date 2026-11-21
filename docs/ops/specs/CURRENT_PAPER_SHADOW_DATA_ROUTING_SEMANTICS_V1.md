@@ -1055,6 +1055,61 @@ prüfen. BTC und Betriebsfreigaben bleiben unverändert; keine Betriebs-, Paper-
 Shadow- oder Forschungsläufe wurden gestartet. Der historische D01/D02-Konflikt
 bleibt offen und wurde nicht erneut ausgeführt.
 
+### Nativer Forecast-/Outcome-Join bis zum typisierten MI-Lernbeleg
+
+Ausgangsbasis ist PR #7355,
+`4a6247c1f81bdff8d4a7ad252765a99c8ed17337`. Der
+[native Join](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py)
+und die [typisierte Lernbrücke](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py)
+enthalten ihre Zeitbedingungen bereits im Bestand `9397d04a3`; die spätere
+Join-Änderung in `50fb4cb9c` war an dieser Stelle reine Formatierung. Native
+Forecast-/Observationvalidierung, N-/Barspezifikation, Outcomeverweis,
+Originalkalibrierung, kanonischer MI-Inhaltsdigest, Lernstore und Export sind
+bereits verbunden. Die stärkeren vorgelagerten Freeze- und Markt-Messgates
+ersetzen diese eigenständig aufrufbaren nativen und typisierten Aufnahmen nicht.
+
+Eine echte Präzisionslücke betraf bestehende Zeitvergleiche mit `datetime`.
+Zwei direkte Gegenproben ließen einen um eine beziehungsweise 999 Nanosekunden
+abweichenden Forecastschluss an denselben Originalschluss anschließen. Sechs
+weitere Fälle erreichten damit über native Kalibrierung, Lernbrücke oder
+Lern-Ingest die tatsächliche Kalibrierungsgrenze. Vier Fälle erreichten den
+Join aus der Lernbrücke beziehungsweise dem Ingest, obwohl der Forecast bereits
+knapp nach dem Horizontstart entstand. Neue IDs oder ein gültiger Record-Digest
+machen diese Zeitwidersprüche nicht richtig.
+
+Der native Join verwendet jetzt die ursprüngliche Quellzeitordnung für die
+Gleichheit von Forecastende und letztem Originalclose. Die Lernbrücke prüft ihre
+bestehenden Zeitrelationen in derselben Präzision, bevor Join, Kalibrierung und
+Store-Append erreicht werden. Die bisherige UTC-Z-Zulassung bleibt erhalten;
+Originalzeitstrings werden nicht umformatiert. Eine spätere Auswertungszeit ist
+weiterhin zulässig und wird nicht als neuer Outcome-Schluss verwendet. Eine
+äquivalente nullwertige Bruchteilsschreibweise bleibt zeitlich gleich; ein
+tatsächlich anderer Zeitpunkt nicht.
+
+303 unterschiedliche Offline-Fälle bestehen: 279 vorhandene Kontext-, Forecast-,
+Mess-, Kalibrierungs-, DDO-O4-, Lern-/Export-, Orchestrator- und bedingte Lernfälle
+sowie 24 [neue Gegen- und Positivproben](../../../tests/learning/test_mi_learning_exact_clock_admission_v1.py).
+Zwölf Negativfälle belegen die beschriebenen Aufnahmegrenzen. Zwölf Positivfälle
+für N=2 und N=3 erhalten Originalzeitstrings, äquivalente Enddarstellung,
+spätere Auswertung, fehlenden Outcome, unzureichende Evidenz und vollständig
+mitgelieferte Originalkalibrierung einschließlich ihrer Provenienz. Originalstore,
+unveränderliche Wiederholung, Kaltlesen und Export werden ebenfalls geprüft.
+Zwölf vor der Korrektur gesicherte vollständige Pakete aus Join, Kalibrierung,
+Lernrecord und Export bleiben danach einschließlich IDs und Digests bytegleich.
+
+Der [ursprüngliche Phase-8-Vertrag](UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md)
+behält seine Grenzen. MI-Lernbeleg, DDO-Entscheidung und produktiver LearningState
+sind verschiedene Objekte. Kalibrierungsmethoden und numerische Formeln werden
+hier weder geändert noch als inhaltlich richtig oder wirtschaftlich erfolgreich
+zertifiziert. Digest- und ID-Formeln bleiben erhalten. Fehlender Outcome bleibt
+NOT_EVALUABLE; unzureichende Evidenz bleibt typisierte Enthaltung. Kaltlesen bleibt
+ohne neue Kalibrierung; historische Records werden nicht umgeschrieben oder
+rückwirkend zeitlich zertifiziert. Die separaten Forecast-, Kontext- und übrigen
+Zeitowner bleiben gesondert zu prüfen. BTC, Betriebsfreigaben und produktive
+Reducer bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder Forschungsläufe
+wurden gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde
+nicht erneut ausgeführt. Eine vollständige Systemhärtung ist damit nicht belegt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
