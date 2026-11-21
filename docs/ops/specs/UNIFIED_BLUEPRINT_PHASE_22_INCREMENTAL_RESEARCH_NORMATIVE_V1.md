@@ -3,7 +3,7 @@ docs_token: DOCS_TOKEN_UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE
 status: active
 scope: Unified Blueprint Phase 22 incremental information research (B0–B5)
 capability: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
-last_updated: 2026-11-21
+last_updated: 2026-11-22
 ---
 
 # Unified Blueprint Phase 22 — Incremental Research Normative V1
@@ -80,3 +80,42 @@ certified by these checks. Failure-memory labels and formulas are unchanged.
 [Offline verification](../../../tests/learning/test_incremental_predecessor_content_admission_v1.py)
 rejects altered or crosswired original predecessors before the actual M4 consumer
 and preserves valid ordered, JSON, missing-family and deferred cases.
+
+## Separate paired-market clock admission — 2026-11-22
+
+The separate paired-market owner compares B0 price/flow and B1's additional OHLCV
+proxy on the same original market cases. It already reads original freezes,
+contexts and measurements, enforces target/unit/source-generation consistency,
+fits the existing chronological prefixes and computes LOG_RETURN holdout RMSE.
+It does not use the legacy wrapper's supplied champion/challenger scores.
+
+Its existing forecast/evaluation, FIT/HOLDOUT boundary, label-availability and
+sequential nonoverlap checks now use the source decoder's exact clock ordering.
+Existing UTC admission remains in force, including UTC-offset-zero inputs. Case
+sorting and strict time uniqueness use each original bound context's `as_of`,
+not a rounded display string. A late FIT or holdout label remains explicitly
+LABEL_NOT_AVAILABLE_AT_CUTOFF without a numeric target and prevents fitting;
+contradictory forecast/split/overlap inputs reject before the next consumer.
+
+The existing `context_as_of` case/matrix field retains its canonical microsecond
+display for artifact compatibility. It is not the chronology authority; full
+original time is available through the bound context/job and its digest. Distinct
+pending instants may share that display while retaining distinct original
+identities. They remain incomplete evidence, not newly admitted training samples.
+
+No new time tolerance, source-age limit, feature, fitter, validation fraction,
+coefficient/RMSE calculation, record schema or digest/ID formula is introduced.
+The Meta handoff already reproduces the original comparison before routing;
+measured results remain a Learning-Research question and plan, while missing,
+pending or blocked comparisons retain their unresolved route. A single
+chronological holdout is not independent quality, economic PnL, promotion or
+productive apply. Original artifacts are not rewritten or retrospectively
+time-certified by this change.
+
+Original owners:
+
+- `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_paired_market_research_v1.py`
+- `src/meta/learning_loop/paired_market_representation_meta_v1.py`
+
+[Offline boundary and full-packet verification](../../../tests/learning/test_paired_market_exact_clock_admission_v1.py)
+uses synthetic original jobs and retains the existing source admission APIs.

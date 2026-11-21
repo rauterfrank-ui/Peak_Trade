@@ -8,6 +8,9 @@ from src.learning.deterministic_decision_outcome_v0.independent_market_horizon_v
 )
 from src.research.linear_evidence.feature_matrix import build_feature_matrix_binding
 from src.research.linear_evidence.fitters import fit_ols_lstsq
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from .context_admission_v1 import replay_admitted_market_context_v1
 from .forecast_measurement_integration_v1 import read_frozen_market_forecast_v1
@@ -36,6 +39,11 @@ PROXY_FEATURE = "signed_return_volume_pressure"
 TARGET = "realized_log_return"
 
 
+def _utc_order_key(value):
+    instant_v1(value)
+    return capture_order_key_v1(value)
+
+
 def _read_case(locator, *, split, fit_cutoff, evaluated_at):
     require_v1(set(locator) == {"store_root", "job_key"}, "ORIGINAL_MARKET_JOB_LOCATOR_REQUIRED")
     frozen = read_frozen_market_forecast_v1(**locator)
@@ -48,10 +56,12 @@ def _read_case(locator, *, split, fit_cutoff, evaluated_at):
         and digest_v1(target) == locator["job_key"]["target_spec_digest"],
         "PAIRED_TARGET_MISMATCH",
     )
-    as_of = instant_v1(context["as_of"])
-    forecast_at = instant_v1(forecast["forecast_created_at_utc"])
+    as_of = _utc_order_key(context["as_of"])
+    forecast_at = _utc_order_key(forecast["forecast_created_at_utc"])
     require_v1(
-        as_of <= forecast_at <= min(instant_v1(request["horizon_start_time_utc"]), evaluated_at),
+        as_of
+        <= forecast_at
+        <= min(_utc_order_key(request["horizon_start_time_utc"]), evaluated_at),
         "PAIRED_FORECAST_CLOCK_INVALID",
     )
     require_v1(
@@ -62,7 +72,8 @@ def _read_case(locator, *, split, fit_cutoff, evaluated_at):
         "job_key": locator["job_key"],
         "frozen_digest": frozen["exact_content_digest"],
         "context_digest": context["exact_content_digest"],
-        "context_as_of": as_of.isoformat(timespec="microseconds"),
+        # Retain the original receipt/matrix display; admission uses the bound source clock.
+        "context_as_of": instant_v1(context["as_of"]).isoformat(timespec="microseconds"),
         "split": split,
         "label_available_at": None,
     }
@@ -88,7 +99,7 @@ def _read_case(locator, *, split, fit_cutoff, evaluated_at):
     packet = read_independent_market_calibration_v1(**locator)
     observation = packet["measurement_inputs"]["market_observation"]
     require_v1(observation["request"] == request, "PAIRED_MEASUREMENT_REQUEST_MISMATCH")
-    available = instant_v1(observation["evaluated_at_utc"])
+    available = _utc_order_key(observation["evaluated_at_utc"])
     cutoff = fit_cutoff if split == "FIT" else evaluated_at
     row["label_available_at"] = observation["evaluated_at_utc"]
     row["observation_digest"] = observation["exact_content_digest"]
@@ -171,7 +182,7 @@ def compare_paired_market_b1_to_b0_v1(
 ):
     """Fit both arms on the same pre-cutoff population and compare a later holdout."""
     assert_offline_v1()
-    cutoff, evaluated = instant_v1(fit_cutoff_utc), instant_v1(evaluated_at_utc)
+    cutoff, evaluated = _utc_order_key(fit_cutoff_utc), _utc_order_key(evaluated_at_utc)
     fraction = finite_v1(validation_fraction, "VALIDATION_FRACTION")
     require_v1(
         bool(fit_jobs) and bool(holdout_jobs) and cutoff < evaluated and 0 < fraction < 1,
@@ -182,7 +193,7 @@ def compare_paired_market_b1_to_b0_v1(
         for split, locators in (("FIT", fit_jobs), ("HOLDOUT", holdout_jobs))
         for locator in locators
     ]
-    case_inputs.sort(key=lambda case: case[0]["context_as_of"])
+    case_inputs.sort(key=lambda case: _utc_order_key(case[2]["as_of"]))
     rows = [row for row, _, _ in case_inputs]
     require_v1(
         len({digest_v1(row["job_key"]) for row in rows}) == len(rows), "PAIRED_DUPLICATE_JOB"
@@ -195,13 +206,14 @@ def compare_paired_market_b1_to_b0_v1(
     ]
     target = targets[0]
     require_v1(all(other == target for other in targets), "PAIRED_TARGET_CONTRACT_MISMATCH")
-    for previous, current in zip(rows, rows[1:]):
-        require_v1(
-            previous["context_as_of"] < current["context_as_of"], "PAIRED_DUPLICATE_CASE_TIME"
-        )
+    for previous_case, current_case in zip(case_inputs, case_inputs[1:]):
+        previous, current = previous_case[0], current_case[0]
+        previous_time = _utc_order_key(previous_case[2]["as_of"])
+        current_time = _utc_order_key(current_case[2]["as_of"])
+        require_v1(previous_time < current_time, "PAIRED_DUPLICATE_CASE_TIME")
         if previous["status"] == current["status"] == "PAIRED":
             require_v1(
-                instant_v1(previous["label_available_at"]) <= instant_v1(current["context_as_of"]),
+                _utc_order_key(previous["label_available_at"]) <= current_time,
                 "PAIRED_CASE_OVERLAP",
             )
 

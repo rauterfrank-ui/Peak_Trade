@@ -1222,6 +1222,67 @@ und produktive Reducer bleiben unverändert. Keine Betriebs-, Paper-, Shadow- od
 Forschungsläufe wurden gestartet. Der historische D01/D02-Basiskonflikt bleibt
 offen und wird nicht durch diese gezielten Prüfungen ersetzt.
 
+### Gepaarter B0-/B1-Vergleich: Originalzeit bis zum Meta-Rückweg am 22. November
+
+Geprüfter Ausgangspunkt ist Merge `d3d15bb7b02869d573904f00b274e605b67d527a`
+(PR #7358). Der getrennte Paired-Market-Owner stammt aus `d2f16d9ae` und ist
+bereits mit ursprünglichem Forecastfreeze, Kontextreplay, Originalmessung,
+gemeinsamer B0-/B1-Fallmenge, Zeit-Holdout, RMSE-Vergleich und dem
+Learning-Research-Meta-Rückweg verbunden. Target, Instrument/Quellengeneration,
+Einheiten, doppelte Originaljobs/Outcomes, Versionsbezüge und vollständige
+Meta-Reproduktion besitzen bestehende Gates. Eine neue Übergabearchitektur
+ist dafür nicht erforderlich.
+
+Eine belegte Präzisionslücke lag in den eigenen Zeitvergleichen und in der
+Fallordnung anhand der gekürzten Darstellung. Acht Gegenproben mit um eine
+beziehungsweise 999 Nanosekunden verspäteten Labels, überlappenden Fällen oder
+falscher Holdout-Zuordnung erreichten die Merkmalsberechnung. Zwei weitere
+Forecast-/Auswertungswidersprüche erreichten den nächsten Messungsreader.
+Drei zulässige Fälle wurden umgekehrt falsch eingeordnet: zwei FIT-Kontexte
+knapp vor ihrem Cutoff sowie ein Fall mit zwei verschiedenen noch ungemessenen
+Originalzeitpunkten, deren Mikrosekundendarstellung identisch ist. Der mit nativen
+Original-APIs aufgebaute Ausgangsabgleich hielt 13 Fehler und acht gültige
+Positivfälle fest. Synthetische Frischevorgaben werden dabei ausdrücklich im
+vorhandenen Vertrag angegeben; Produktionslimits werden nicht verändert.
+
+Die bestehenden Zeitrelationen verwenden jetzt die vorhandene Quellzeitordnung.
+Die Fallliste und die strenge Zeit-Eindeutigkeit werden an den gebundenen
+Originalkontexten geprüft. Später verfügbare Ergebnisse bleiben ausdrücklich
+LABEL_NOT_AVAILABLE_AT_CUTOFF, enthalten kein numerisches Target und führen
+zur Nichtauswertung. Ein FIT-Kontext vor dem Cutoff ist zeitlich zulässig;
+dadurch wird sein späteres Ergebnis nicht automatisch verfügbar. Forecast-,
+Split- und Überlappungswidersprüche stoppen vor dem nächsten Consumer.
+
+Die bestehende `context_as_of`-Darstellung in Fallrecord und Matrix bleibt zur
+Artefaktkompatibilität auf Mikrosekunden kanonisiert. Sie ersetzt keine
+Quellzeit. Die vollständige Originalzeit bleibt an Kontext-/Jobidentität und
+Digest gebunden und wird für Aufnahme und Sortierung verwendet. Verschiedene
+Pending-Originale mit derselben Anzeige bleiben als verschiedene, unvollständige
+Belege erkennbar; sie werden nicht zu Trainingsfällen. Die genaue Fallordnung
+bleibt auch bei umgekehrter Eingabereihenfolge erhalten.
+
+147 unterschiedliche Offline-Fälle bestehen: 126 vorhandene Markt-/OLS-,
+Zeitaufnahme-, Mess-/Freeze-, Phase-22- und Governancefälle sowie
+21 [neue Gegen- und Positivproben](../../../tests/learning/test_paired_market_exact_clock_admission_v1.py).
+Acht vor der Korrektur gesicherte vollständige Vergleichs- und Meta-Pakete
+bleiben bytegleich, einschließlich IDs, Digests, Fits, Holdoutfehlern,
+Forschungsfrage, Router und Plan. Sie erhalten nullwertige Bruchteilsschreibweise,
+UTC-Offset null, zulässige Gleichheit am Holdout-Cutoff, fehlenden Proxy,
+Pending-Messung, blockierten Fit und den vorhandenen Fall eines späten Labels.
+Die synthetischen Originaldateien bleiben ebenfalls bytegleich.
+
+Der [Phase-22-Vertrag](UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md)
+trennt diesen numerischen Paired-Pfad weiterhin vom älteren Wrapper mit
+gelieferten Scores. B0 bleibt Preis/Flow, B1 ergänzt den OHLCV-Proxy und kein
+TRUE_L2. Der Delta ist RMSE(B0) minus RMSE(B1) in LOG_RETURN, kein Kontogewinn.
+Ein einzelner chronologischer Holdout ist keine unabhängige Qualitätsabnahme.
+Die Meta-Frage und der daraus gebildete Plan bleiben Research, ohne Apply- oder
+Betriebsfreigabe. Historische Records werden nicht umgeschrieben oder rückwirkend
+zeitlich zertifiziert. Andere Signal-/Rückwege, der D01/D02-Basiskonflikt und
+Gesamtbetriebsbereitschaft bleiben offen. BTC, Originalstores und produktive
+Reducer bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder
+Forschungsläufe wurden gestartet.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
