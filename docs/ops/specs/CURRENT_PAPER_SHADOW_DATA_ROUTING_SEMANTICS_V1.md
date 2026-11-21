@@ -1110,6 +1110,61 @@ Reducer bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder Forschungsl�
 wurden gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde
 nicht erneut ausgeführt. Eine vollständige Systemhärtung ist damit nicht belegt.
 
+### Kontext → Verhalten → bedingter Lernbeleg: Originalzeitordnung am 21. November
+
+Geprüfter Ausgangspunkt ist Merge `bbd8b5c5b2caf2699b01f6f5320641961e5b8d1f`
+(PR #7356). Kontextfamilien, N_BARS-Verhaltensjoin, bedingter MI-Lernbeleg und
+Writer/Store/Export sind bereits verbunden. Die vorhandenen Zeitbedingungen
+verloren jedoch an drei Übergängen Originalpräzision; im Zweig ohne Ergebnis
+wurde die Kontextzeitbedingung vollständig übersprungen.
+
+Vor der Korrektur ließen 14 Gegenproben über alle sieben Kontextfamilien um
+eine beziehungsweise 999 Nanosekunden zukünftige PIT-Beiträge zu. Sechs
+Verhaltensfälle erreichten trotz zeitlichem Widerspruch den ursprünglichen
+Forward-Behavior-Materialisierer; zehn Composer-/Ingest-Fälle erreichten die
+ursprüngliche MI-Brücke. Darunter sind fehlende Outcomes mit einem Kontext
+nach Forecastentstehung, auch mit einer ganzen Sekunde Abstand. Ein gültiger
+numerischer O4-Zeitpunkt unterhalb einer fraktionalen Auswertungsgrenze wurde
+umgekehrt wegen Rundung fälschlich zurückgewiesen.
+
+Die drei bestehenden Owner verwenden jetzt die vorhandene Quellzeitordnung.
+Kontextbeiträge dürfen nicht nach Kontextbeobachtung liegen; der Kontext darf
+nicht nach Horizontstart beziehungsweise Forecastentstehung liegen; letzter
+Close und O4-Beobachtung dürfen die Auswertung nicht überschreiten. Die bedingte
+Aufnahme prüft den Kontext bereits vor MI-Brücke/Kalibrierung, auch ohne Outcome.
+O4-Zahlen bleiben Unix-Sekunden mit dem tatsächlich dargestellten Zahlenwert;
+UTC-Z-Zeitstrings behalten bis zu neun Bruchteilziffern. Nichtendliche O4-Zahlen
+werden als ungültige Zeitangaben abgewiesen. Keine neue Toleranz oder
+Zeitnormalisierung wird eingeführt.
+
+Acht vor der Korrektur gesicherte vollständige Originalpakete aus Kontext,
+Forecast, Verhaltensbeleg, Lernrecord und Export bleiben danach bytegleich,
+einschließlich Identitäten und Digests. Die
+[neuen Offline-Gegen- und Positivproben](../../../tests/learning/test_conditioned_learning_exact_clock_v1.py)
+prüfen außerdem den bestehenden Ingest, idempotente Persistenz, Kaltlesen und
+Export. Insgesamt bestehen 153 unterschiedliche Offline-Fälle: 111 vorhandene
+Kontext-, Verhaltens-, Lern-, Export-, inkrementelle Evidenz- und Governancefälle
+sowie 42 neue Fälle. Der ursprüngliche Abgleich reproduzierte 31 Fehler bei
+acht bereits gültigen Positivfällen; drei weitere neue Fälle sichern ungültige
+nichtendliche O4-Zeiten ab. Die ursprünglichen Verträge für
+[Kontext](UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md),
+[Verhalten](UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md) und
+[bedingtes Lernen](UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md)
+halten die fachlichen Grenzen fest.
+
+Der Kontext ist eine beigefügte bedingte Evidenz, kein Beweis seines tatsächlichen
+Verbrauchs durch den ursprünglichen Forecast. Deshalb wird keine neue Gleichheit
+verschiedener Information-Set-IDs erfunden. Später gemessenes Verhalten bleibt
+von ursprünglicher Entscheidung und produktivem LearningState getrennt.
+Fehlender Outcome bleibt NOT_EVALUABLE, unzureichende Evidenz bleibt Enthaltung;
+klassische MFE/MAE und Regimeübergang bleiben semantisch offen. Preis-/Return- und
+Kalibrierungsformeln sowie IDs/Digests werden nicht verändert oder fachlich
+gesamtzertifiziert. Kaltlesen von MI-Lernrecords erzeugt keine neue Kalibrierung
+und keine rückwirkende Zeitfreigabe. Andere kausale Wege bleiben gesondert zu
+prüfen. BTC bleibt unverändert; keine Betriebs-, Paper-, Shadow- oder
+Forschungsläufe werden gestartet. Der historische D01/D02-Basiskonflikt bleibt
+offen. Eine vollständige Systemhärtung ist weiterhin nicht belegt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

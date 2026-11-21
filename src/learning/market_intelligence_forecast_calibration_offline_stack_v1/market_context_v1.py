@@ -7,10 +7,14 @@ Does not grant trading, selection, promotion, risk, sizing, or external effect.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import Enum
 from types import MappingProxyType
 from typing import Any, Final, Mapping, Sequence
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     require_event_time_utc,
@@ -78,9 +82,9 @@ class MarketContextValidationError(ValueError):
     """Fail-closed MARKET_CONTEXT_V1 validation."""
 
 
-def _parse_utc(value: str) -> datetime:
+def _utc_order_key(value: str) -> tuple[datetime, int]:
     text = require_event_time_utc(value, "utc")
-    return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
+    return capture_order_key_v1(text)
 
 
 def derive_context_id_v1(*, identity_body: Mapping[str, Any]) -> str:
@@ -121,7 +125,7 @@ def _validate_context_family_slot(
     raw: Any,
     *,
     field_name: str,
-    observed_at: datetime,
+    observed_at: tuple[datetime, int],
 ) -> MappingProxyType[str, Any]:
     slot = require_mapping(raw, field_name)
     if slot.get("schema_version") != CONTEXT_FAMILY_SLOT_SCHEMA:
@@ -157,7 +161,7 @@ def _validate_context_family_slot(
     pit = require_event_time_utc(
         slot.get("pit_observed_at_utc"), f"{field_name}.pit_observed_at_utc"
     )
-    pit_dt = _parse_utc(pit)
+    pit_dt = _utc_order_key(pit)
     if pit_dt > observed_at:
         raise MarketContextValidationError(f"{field_name}_PIT_LOOKAHEAD_FORBIDDEN")
 
@@ -208,7 +212,7 @@ def build_market_context_v1(payload: Mapping[str, Any]) -> MappingProxyType[str,
         raise MarketContextValidationError("N_BARS_BACKBONE_SEMANTICS_REQUIRED")
 
     observed_at = require_event_time_utc(raw.get("observed_at"), "observed_at")
-    observed_dt = _parse_utc(observed_at)
+    observed_dt = _utc_order_key(observed_at)
     instrument_ref = require_record_id(raw.get("instrument_ref"), "instrument_ref")
     information_set_ref = require_record_id(raw.get("information_set_ref"), "information_set_ref")
 

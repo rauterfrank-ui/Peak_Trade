@@ -8,8 +8,14 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from datetime import datetime, timezone
+from fractions import Fraction
 from types import MappingProxyType
 from typing import Any, Final, Mapping, Sequence
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     require_event_time_utc,
@@ -80,12 +86,12 @@ class RealizedBehaviorJoinInputsV1:
     forecast_evidence_id: str | None = None
 
 
-def _parse_utc_ms(value: str) -> float:
+def _utc_epoch_seconds(value: str) -> Fraction:
+    """Exact source-clock instant in the existing O4 numeric unit: Unix seconds."""
     text = require_event_time_utc(value, "utc")
-    from datetime import datetime, timezone
-
-    dt = datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
-    return dt.timestamp()
+    whole, nanos = capture_order_key_v1(text)
+    delta = whole - datetime(1970, 1, 1, tzinfo=timezone.utc)
+    return Fraction(delta.days * 86400 + delta.seconds) + Fraction(nanos, 1_000_000_000)
 
 
 def _assert_temporal_integrity_v1(
@@ -95,21 +101,21 @@ def _assert_temporal_integrity_v1(
     measurement: Mapping[str, Any] | None,
     o4_bars: Sequence[Mapping[str, Any]] | None,
 ) -> None:
-    context_t = _parse_utc_ms(str(context["observed_at"]))
+    context_t = _utc_epoch_seconds(str(context["observed_at"]))
     horizon_start = observation.get("horizon_start_time_utc")
     if horizon_start is not None:
-        if _parse_utc_ms(str(horizon_start)) < context_t:
+        if _utc_epoch_seconds(str(horizon_start)) < context_t:
             raise RealizedBehaviorError("CONTEXT_OBSERVED_AFTER_HORIZON_START")
     eval_time = require_event_time_utc(
         observation.get("evaluation_time_utc"), "evaluation_time_utc"
     )
-    if _parse_utc_ms(eval_time) < context_t:
+    if _utc_epoch_seconds(eval_time) < context_t:
         raise RealizedBehaviorError("CONTEXT_OBSERVED_AFTER_OUTCOME_END")
 
     closes = observation.get("bar_close_times_utc")
     if isinstance(closes, list) and closes:
         last_close = require_event_time_utc(closes[-1], "bar_close_times_utc[-1]")
-        if _parse_utc_ms(last_close) > _parse_utc_ms(eval_time):
+        if _utc_epoch_seconds(last_close) > _utc_epoch_seconds(eval_time):
             raise RealizedBehaviorError("EVAL_TIME_BEFORE_LAST_BAR_CLOSE")
 
     if measurement is not None:
@@ -118,7 +124,7 @@ def _assert_temporal_integrity_v1(
             raise RealizedBehaviorError("MEASUREMENT_EVAL_TIME_MISMATCH")
 
     if o4_bars is not None and closes:
-        boundary = _parse_utc_ms(eval_time)
+        boundary = _utc_epoch_seconds(eval_time)
         for index, bar in enumerate(o4_bars):
             identity = require_mapping(
                 bar.get("last_observation_identity"), f"o4_bars[{index}].last_observation_identity"
@@ -127,12 +133,14 @@ def _assert_temporal_integrity_v1(
             if vet is None:
                 raise RealizedBehaviorError(f"O4_BAR_PIT_TIME_MISSING:{index}")
             if isinstance(vet, (int, float)) and not isinstance(vet, bool):
-                obs_ms = float(vet)
+                if isinstance(vet, float) and not math.isfinite(vet):
+                    raise RealizedBehaviorError(f"O4_BAR_PIT_TIME_INVALID:{index}")
+                observed = Fraction(vet)
             elif isinstance(vet, str):
-                obs_ms = _parse_utc_ms(require_event_time_utc(vet, "venue_event_time"))
+                observed = _utc_epoch_seconds(require_event_time_utc(vet, "venue_event_time"))
             else:
                 raise RealizedBehaviorError(f"O4_BAR_PIT_TIME_INVALID:{index}")
-            if obs_ms > boundary:
+            if observed > boundary:
                 raise RealizedBehaviorError("O4_BAR_POST_OUTCOME_BOUNDARY_LEAKAGE")
 
 

@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Final, Mapping
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import require_event_time_utc
 from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import (
@@ -21,6 +24,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.cons
     OPTIMIZATION_PRODUCTIVE_AUTHORITY,
     STACK_DOMAIN,
     WORKPACKAGE_ID,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_evidence_v1 import (
+    validate_forecast_evidence_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_v1 import (
     MARKET_CONTEXT_AUTHORITY,
@@ -78,9 +84,9 @@ class ConditionedLearningComposeInputsV1:
     legacy_learning_evidence_ref: str | None = None
 
 
-def _parse_utc(value: str) -> datetime:
+def _utc_order_key(value: str):
     text = require_event_time_utc(value, "utc")
-    return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
+    return capture_order_key_v1(text)
 
 
 def _behavior_semantics_snapshot_v1(realized_behavior: Mapping[str, Any]) -> dict[str, str]:
@@ -103,19 +109,20 @@ def _assert_conditioned_temporal_chain_v1(
     market_context: Mapping[str, Any],
     forecast: Mapping[str, Any],
     observation: Mapping[str, Any] | None,
-    realized_behavior: Mapping[str, Any],
+    realized_behavior: Mapping[str, Any] | None,
 ) -> None:
-    ctx_t = _parse_utc(str(market_context["observed_at"]))
-    forecast_t = _parse_utc(str(forecast["forecast_created_at_utc"]))
+    ctx_t = _utc_order_key(str(market_context["observed_at"]))
+    forecast_t = _utc_order_key(str(forecast["forecast_created_at_utc"]))
     if ctx_t > forecast_t:
         raise LoopAConditionedLearningError("MARKET_CONTEXT_AFTER_FORECAST")
     if observation is not None:
         eval_time = observation.get("evaluation_time_utc")
-        if eval_time is not None and _parse_utc(str(eval_time)) < ctx_t:
+        if eval_time is not None and _utc_order_key(str(eval_time)) < ctx_t:
             raise LoopAConditionedLearningError("OUTCOME_BEFORE_CONTEXT_OBSERVED")
-    rb_ctx = str(realized_behavior.get("market_context_ref"))
-    if rb_ctx != str(market_context["context_id"]):
-        raise LoopAConditionedLearningError("REALIZED_BEHAVIOR_CONTEXT_REF_MISMATCH")
+    if realized_behavior is not None:
+        rb_ctx = str(realized_behavior.get("market_context_ref"))
+        if rb_ctx != str(market_context["context_id"]):
+            raise LoopAConditionedLearningError("REALIZED_BEHAVIOR_CONTEXT_REF_MISMATCH")
 
 
 def compose_conditioned_mi_learning_evidence_v1(
@@ -125,6 +132,7 @@ def compose_conditioned_mi_learning_evidence_v1(
 ) -> MappingProxyType[str, Any]:
     """Extend established MI learning evidence with Phase 17–20 conditioned references."""
     context = validate_market_context_v1(inputs.market_context)
+    forecast = validate_forecast_evidence_v1(inputs.forecast_evidence)
     observation = (
         validate_evaluation_observation_v0(inputs.evaluation_observation)
         if inputs.evaluation_observation is not None
@@ -136,9 +144,16 @@ def compose_conditioned_mi_learning_evidence_v1(
         else None
     )
 
+    _assert_conditioned_temporal_chain_v1(
+        market_context=context,
+        forecast=forecast,
+        observation=observation,
+        realized_behavior=realized,
+    )
+
     try:
         base = compose_mi_to_learning_evidence_v1(
-            forecast_evidence=inputs.forecast_evidence,
+            forecast_evidence=forecast,
             evaluation_observation=observation,
             realized_direction=inputs.realized_direction,
             legacy_learning_evidence_ref=inputs.legacy_learning_evidence_ref,
@@ -174,12 +189,6 @@ def compose_conditioned_mi_learning_evidence_v1(
             "transition_status": "SEMANTICALLY_UNRESOLVED",
         }
     else:
-        _assert_conditioned_temporal_chain_v1(
-            market_context=context,
-            forecast=inputs.forecast_evidence,
-            observation=observation,
-            realized_behavior=realized,
-        )
         base_outcome = base.get("actual_outcome_ref")
         rb_outcome = realized.get("actual_outcome_ref")
         if (
