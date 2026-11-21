@@ -1044,7 +1044,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "25372ac51cc68b3e39f1ccfdf771034e6b1788a8ad2fcae8977bd892ecad224d"
+      "sha256": "0930e33eced17b81e6719bc9eadc837f0270ce6e181bb62fea03cfbf7fd839a9"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1320,6 +1320,11 @@
       "path": "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md",
       "before_sha256": "a37fa823e22ed17544b3c19e1bbfb9624aa024d47cfb2ff62182d1fffe0806ae",
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+      "before_sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
+      "sha256": "fa0a0acdc523247990135943c7bca95120f1bd8d37212d3995ba8481122b0a1f"
     },
     {
       "path": "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_EXECUTION_V0.md",
@@ -2245,6 +2250,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_paired_market_research_v1.py",
       "before_sha256": null,
       "sha256": "c9caa2dea74cc35ac51e3f6064c3622e3c149b032e619d56224a8d7fe83dfaeb"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+      "before_sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
+      "sha256": "7568830ae666a1aa2ad444c01ca218861d43c260941e78739f6d0a3fb40930a7"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
@@ -4200,6 +4210,11 @@
       "path": "tests/learning/test_offline_recorded_market_replay_v1.py",
       "before_sha256": null,
       "sha256": "85da32a207da75bb538d379b71f2997e1caec4996ff7e31cf4d0b232817e3fad"
+    },
+    {
+      "path": "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py",
+      "before_sha256": "7117217607b25edf0c36e8005f34b0ea26f8c64a7e5126a89d5f16c857e197c0",
+      "sha256": "9d67754091d6246b224c980393e7a82432ca4720f54aa860a33439a277a27355"
     },
     {
       "path": "tests/learning/test_recurrent_offline_research_v1.py",

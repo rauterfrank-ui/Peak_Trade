@@ -93,3 +93,17 @@ pattern as successful or invent measured outcomes. Malformed plans and forbidden
 apply still reject through existing validators. Known fixture full outputs/digests
 remain unchanged. Original Phase24 negative-evidence retention is preserved.
 [Bound correction and tests](../evidence/representation_unknown_typed_feedback_v1_2026_11_04/README.md).
+
+## Router admission joined to the consumed decision — 2026-11-21
+
+The Loop C orchestrator now compares the existing Phase-23 learning admission
+digest and source Meta identity with the actual adaptation decision passed to
+the plan owner. The route must invoke Learning Research alone. A receipt from
+another representation lineage or pattern is rejected before plan, evaluation
+or next-evidence creation, even when each packet is independently valid.
+Matching parent labels do not waive the complete consumer-result digest check.
+
+This adds a missing join check to the existing research-only path. Accepted
+decision/plan formats, typed rejection and unsupported-fixture evidence retain
+their existing semantics. It does not create measured OOS results, a numerical
+model update, a downstream adaptation writer or productive authority.

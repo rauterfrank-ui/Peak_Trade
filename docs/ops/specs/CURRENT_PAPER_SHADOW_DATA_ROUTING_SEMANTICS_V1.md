@@ -461,6 +461,71 @@ gemessen. Weder ein positives Ergebnis noch die erfolgreiche Quellenprüfung
 erzeugen ein Gut-/Schlecht-Urteil, ein Update von Modellparametern oder eine
 Applyfreigabe. Originalarchive und Handelszustände werden nicht verändert.
 
+### Weitere Signalverzweigungen: Nachprüfung vom 21. November 2026
+
+Lesende Ausgangsbasis ist der Merge von PR #7344,
+`9914f21ba8ada16fd0a8df0525d0e8dcc2666ecd`. Die historischen Offen-Labels oben
+bleiben an ihren damaligen Stand gebunden. An folgenden vorhandenen Pfaden
+wurde keine zusätzliche Producer-/Consumerübergabe benötigt:
+
+- Die zweckgebundenen Datenadapter erhalten Quellenwahl, Preisfamilie,
+  Finalisierung und Kenntniszeit getrennt für RANKING, TRADING, LIQUIDITY,
+  OUTCOME und RESEARCH. Eine gemeinsame Kartenquelle ist kein Anlass,
+  diese Zwecke oder ihre Zulassung gleichzusetzen.
+- Der [Shadow-Lernadapter](../../../scripts/ops/shadow_ddo_learning_handoff_v1.py)
+  übernimmt bereits die ursprüngliche Entscheidung samt kausalen Eltern aus
+  dem versiegelten Ledger. Er bindet die unabhängig geprüften finalen O4-Bars,
+  Messung, LearningState und Readback. Der spätere LOG_RETURN bleibt ein
+  kontrafaktischer Preisverlauf ohne Fill und ohne realisierten Kontogewinn.
+- Der [archivierte Marktpfad](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_recorded_market_replay_v1.py)
+  führt zugelassene Originalkontexte an den gespeicherten OLS-Forecast und
+  die spätere Originalmessung an Calibration. Der vorhandene
+  [Kohortenanschluss](../../../scripts/ops/run_offline_learning_mark_ols_follow_up_v1.py)
+  bindet abgeschlossene Messjobs an numerisches Training und einen ausdrücklich
+  künftigen Forecast. Marktidentität und Quellengeneration bleiben erhalten;
+  es werden keine Decision-/Slotidentitäten erfunden. Der Codepfad ist kein
+  selbständig gestarteter oder unbegrenzt fortlaufender Trainingsdienst.
+- Native Researchresultate erreichen Meta und die folgende Suche bereits
+  über den [bestehenden Feedbackowner](../../../src/experiments/canonical_research_result_to_meta_input_v1.py).
+  Der typisierte Meta-Router trennt Researchwahl und Repräsentationsresearch;
+  UNKNOWN/MIXED oder ein falscher Empfänger öffnen keinen Rückweg. Ein
+  Researchplan ist kein Modell-Apply und keine Handelsfreigabe.
+- Der [Meta-Intake](../../../src/experiments/canonical_meta_learning_ingest_v1.py)
+  prüft native M5-Quittung und föderierten Returnjoin jeweils erneut gegen
+  ihren Originalproducer. Native Plane-Identität und föderierte
+  Surface-Ausführungsidentität bleiben unterschiedliche Verträge. Ein neuer
+  Transporthash macht einen fremden Join nicht gültig; die
+  [föderierten Gegenproben](../../../tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py)
+  prüfen auch die Abweisung am tatsächlich aufgerufenen Meta-Consumer.
+
+Die Härtung der hier geprüften Ketten verfolgt Originalproducer, Transformation,
+Persistenz/Übergabe, tatsächlichen Consumer und dessen Wirkung. Die Gegenproben
+prüfen Quellen-/Instrumentverwechslung, unvereinbare Einheiten oder Preisfamilie,
+fehlende Finalisierung, Kenntnis nach dem Verbrauchszeitpunkt, geänderte
+Beleginhalte und Wiederholung am jeweils zuständigen Originalowner. Eine gültige
+Identität oder ein gültiger einzelner Record ersetzt nicht den Abgleich der
+zusammengehörigen Inhalte. Bestehende passende Nachweise werden weiterverwendet;
+fehlende Gegenproben werden gezielt ergänzt.
+
+Eine konkrete Bindung fehlte im
+[Loop-C-Orchestrator](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py):
+Die Routerquittung wurde mitgeführt, aber nicht gegen die tatsächlich an den
+Plan übergebene Learning-Entscheidung geprüft. Eine für sich gültige Quittung
+einer anderen Repräsentationsherkunft oder eines anderen Musters konnte so
+einem fremden Folgeplan zugeordnet werden. Der vorhandene Belegdigest,
+Meta-Parent und alleinige Learning-Empfänger werden jetzt vor Plan und
+Auswertung abgeglichen. Die Gegenproben im
+[Loop-C-Test](../../../tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py)
+vertauschen zwei durch den Originalrouter erzeugte gültige Pakete und verlangen
+die Abweisung vor beiden Folgeconsumern. Auch die Übernahme eines anderen
+Musters unter derselben Parentbezeichnung wird über den Inhaltsdigest abgewiesen.
+
+Die bisherigen Fixtureauswertungen und typisierten Nichtauswertungen bleiben
+erhalten. Dieser Abgleich erzeugt weder zusätzliche Features noch neue
+Qualitätslabels, Modellparameter, Rotationslogik oder Betriebsfreigaben. Ein
+vollständiger Dauerbetrieb und die Semantik aller übrigen Systempfade sind
+damit weiterhin nicht pauschal abgenommen.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)
