@@ -589,6 +589,54 @@ Prüfcode und Test sind bytegleich zum Ausgangscommit `2b4f8689`.
 Census-, D02-Kanten- und Authority-Einzelvalidatoren bestanden. Diese
 Änderung ersetzt oder lockert den fehlgeschlagenen Gesamtvertrag nicht.
 
+### M7-Rückgabe an den nächsten Offline-Zyklus
+
+Ausgangsbasis ist PR #7346,
+`82c97d4e41dc663074a7838b9b8a908ad19d6281`. Die ursprünglichen
+Konstruktionen für [nativen M8-Replay](OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md),
+[MI-Crossing](UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md)
+und [föderierten M5–M8-Replay](M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md)
+enthalten bereits Producer, Rückgabe und Folgezyklus. Der frühere G2-Abgleich
+in `a734876d0` bindet den nativen Eingang zusätzlich an denselben originalen
+Lernbeleg; diese Verbindung wird nicht erneut aufgebaut oder verändert.
+
+Eine gemeinsame Lücke lag an den drei Mehrzyklusübergängen: Eine ausdrücklich
+mitgelieferte vorherige Rückgabe wurde nur anhand ihrer Feedback-ID mit dem
+gerade erzeugten Original verglichen. Veränderte Meta-Herkunft,
+Forschungspriorität oder Suchmethodenbewertung erreichten dadurch unter
+derselben ID den nächsten Zyklus, auch mit neu berechnetem Transporthash.
+
+Die [nativen](../../../src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py),
+[MI-angereicherten](../../../src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py)
+und [föderierten](../../../src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py)
+Orchestratoren vergleichen jetzt den vollständigen kanonischen Paketinhalt
+mit der tatsächlich vorliegenden Rückgabe des vorherigen Zyklus, bevor sie
+den Folgeconsumer aufrufen. Dazu werden die vorhandene JSON-Normalisierung
+und Inhaltshashfunktion verwendet. Wahrheitswerte und Zahlen bleiben
+unterschiedliche Typen. Es wird keine neue gespeicherte ID- oder
+Digestformel eingeführt.
+
+Die [gemeinsamen Gegenproben](../../../tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py)
+verwenden tatsächliche Originalproducer und prüfen die Abweisung vor dem
+nächsten Zyklus in allen drei Varianten. 24 negative Fälle prüfen fremde
+Herkunft, geänderte Dispositionen und Typverwechslung mit altem oder neu
+berechnetem Transporthash. Drei positive Fälle belegen, dass ein unverändertes
+JSON-Paket dieselbe Replay-Identität und denselben Ergebnisdigest liefert wie
+die bestehende automatische Übernahme. 55 gezielte Kettenfälle und 27
+benachbarte Governance-/G2-/Rückwegfälle bestanden; Wiederholungen sind nicht
+doppelt gezählt. Die oben beschriebene historische D01/D02-Baselineprüfung
+bleibt ein offener Befund und wurde hierfür nicht erneut ausgeführt.
+
+Die mitgeführten Dispositionen stehen im vorhandenen
+`cycle_n_plus_1_input_semantics`-Beleg. Dieser Bezug schreibt die vom Aufrufer
+gelieferte nächste Experimentanfrage nicht um und ist kein automatischer
+Such-, Trainings- oder Applyauftrag. Native Plane-Identität und föderierte
+Surface-Ausführungsidentität bleiben getrennt; der föderierte Pfad startet
+weiterhin keine M4-Plane. DDO-LearningState, Marktmodell, Bewertungsdefinitionen,
+BTC und Betriebsfreigaben bleiben unverändert. Die synthetischen Tests sind
+kein Beleg für wirtschaftliche Güte oder eine vollständige Härtung sämtlicher
+Systemketten.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

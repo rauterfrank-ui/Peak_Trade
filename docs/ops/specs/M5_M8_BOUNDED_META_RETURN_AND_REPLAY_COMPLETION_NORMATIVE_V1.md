@@ -56,3 +56,16 @@ Decision: `config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_
 
 M4 plane re-execution, M9/M10/M11, promotion, trading/selection authority,
 productive parameter mutation, external API/order effects.
+
+## Federated prior-cycle admission — 2026-11-21
+
+Before invoking the next federated cycle, an explicit prior M7 feedback packet
+must match the actual preceding output in full canonical JSON content. A
+matching feedback ID, altered dispositions or a rehashed transport packet
+cannot substitute that original. Unchanged JSON transport and omitted-packet
+automatic carry-forward remain supported. Boolean flags remain booleans,
+distinct from numeric values.
+
+This check preserves the original surface-execution join and its duplicate
+protection. It introduces no native plane identity, M4 execution, next-search
+parameter apply, numerical learning or promotion authority.

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import ast
+from dataclasses import replace
+import json
 from pathlib import Path
 
 import pytest
@@ -52,6 +54,131 @@ def _two_cycle_request(tmp_path: Path) -> DeterministicMultiCycleOfflineReplayRe
         replay_seed=42,
     )
     return DeterministicMultiCycleOfflineReplayRequestV1(cycles=(base, n1))
+
+
+@pytest.fixture(params=("native", "mi_crossing", "federated"))
+def bounded_replay(request, tmp_path):
+    if request.param == "native":
+        from src.experiments import canonical_deterministic_multi_cycle_offline_replay_v1 as owner
+
+        return (
+            owner,
+            owner.run_deterministic_multi_cycle_offline_replay_v1,
+            "run_offline_evidence_cycle_v1",
+            _two_cycle_request(tmp_path),
+        )
+    if request.param == "mi_crossing":
+        from src.experiments import (
+            canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1 as owner,
+        )
+        from tests.experiments.test_canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1 import (
+            _two_cycle_request as mi_request,
+        )
+
+        return (
+            owner,
+            owner.run_mi_crossing_deterministic_multi_cycle_offline_replay_v1,
+            "run_mi_crossing_offline_evidence_cycle_v1",
+            mi_request(tmp_path),
+        )
+    from src.experiments import canonical_federated_bounded_multi_cycle_offline_replay_v1 as owner
+    from tests.experiments.test_canonical_federated_bounded_multi_cycle_offline_replay_v1 import (
+        _two_cycle_request as federated_request,
+    )
+
+    return (
+        owner,
+        owner.run_federated_deterministic_multi_cycle_offline_replay_v1,
+        "run_federated_offline_evidence_cycle_v1",
+        federated_request(),
+    )
+
+
+@pytest.mark.parametrize(
+    "fault", ("source_meta", "research_priority", "search_outcome", "typed_proposal_flag")
+)
+@pytest.mark.parametrize("reseal_transport", (False, True))
+def test_changed_feedback_cannot_reuse_prior_identity_before_next_cycle(
+    bounded_replay, monkeypatch, fault, reseal_transport
+):
+    from src.experiments.canonical_meta_to_optimization_feedback_v1 import (
+        DISPOSITION_PRIORITIZE_RESEARCH_EXPERIMENT,
+        DISPOSITION_SELECT_AUTHORIZED_RESEARCH_SEARCH_METHOD,
+        OUTCOME_APPLICABLE,
+    )
+    from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
+
+    owner, replay, cycle_name, request = bounded_replay
+    original_cycle = getattr(owner, cycle_name)
+    original = original_cycle(request.cycles[0])["bounded_research_feedback_decision"]
+    changed = json.loads(json.dumps(original, default=dict))
+    if fault == "source_meta":
+        source = changed["source_meta_evidence_id"]
+        changed["source_meta_evidence_id"] = ("0" if source[0] != "0" else "1") + source[1:]
+    elif fault == "typed_proposal_flag":
+        assert changed["feedback_items"][0]["proposal_not_authority"] is True
+        changed["feedback_items"][0]["proposal_not_authority"] = 1
+    else:
+        disposition = (
+            DISPOSITION_PRIORITIZE_RESEARCH_EXPERIMENT
+            if fault == "research_priority"
+            else DISPOSITION_SELECT_AUTHORIZED_RESEARCH_SEARCH_METHOD
+        )
+        item = next(
+            item for item in changed["feedback_items"] if item["disposition"] == disposition
+        )
+        item["outcome"] = OUTCOME_APPLICABLE
+        if fault == "research_priority":
+            item["payload"]["experiment_ids"] = ["experiment.foreign.original"]
+    if reseal_transport:
+        changed["result_digest"] = compute_content_sha256(
+            {key: value for key, value in changed.items() if key != "result_digest"}
+        )
+    assert changed["feedback_decision_identity"] == original["feedback_decision_identity"]
+
+    called_indices = []
+
+    def guarded_cycle(spec, **kwargs):
+        called_indices.append(spec.cycle_index)
+        if spec.cycle_index > 0:
+            pytest.fail("Changed prior feedback reached the next cycle consumer")
+        return original_cycle(spec, **kwargs)
+
+    monkeypatch.setattr(owner, cycle_name, guarded_cycle)
+    result = replay(
+        replace(
+            request,
+            cycles=(request.cycles[0], replace(request.cycles[1], prior_feedback_decision=changed)),
+        )
+    )
+    assert result["status"] == owner.REPLAY_STATUS_REJECTED_LINEAGE
+    assert result["reason"] == "PRIOR_FEEDBACK_DECISION_MISMATCH"
+    assert result["cycle_count"] == 1
+    assert result["multi_cycle_loop_closed"] is False
+    assert result["replay_identity"] is None
+    assert called_indices == [0]
+
+
+def test_original_feedback_json_roundtrip_preserves_automatic_carry_forward(bounded_replay):
+    owner, replay, cycle_name, request = bounded_replay
+    original = getattr(owner, cycle_name)(request.cycles[0])["bounded_research_feedback_decision"]
+    transported = json.loads(json.dumps(original, default=dict))
+    explicit = replay(
+        replace(
+            request,
+            cycles=(
+                request.cycles[0],
+                replace(request.cycles[1], prior_feedback_decision=transported),
+            ),
+        )
+    )
+    automatic = replay(request)
+    assert explicit["status"] == owner.REPLAY_STATUS_COMPLETE
+    assert explicit["replay_identity"] == automatic["replay_identity"]
+    assert explicit["result_digest"] == automatic["result_digest"]
+    assert explicit["search_executed"] is False
+    assert explicit["learning_state_mutation_performed"] is False
+    assert explicit["external_effect_authorized"] is False
 
 
 def test_two_cycle_replay_closed_and_deterministic(tmp_path: Path) -> None:
