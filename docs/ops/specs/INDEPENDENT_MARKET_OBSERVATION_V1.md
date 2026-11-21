@@ -46,6 +46,8 @@ The original canonical bar JSON is retained and hash-checked; duplicate keys, no
 
 The actual close must equal the bar's final mark observation. Its event time lies within the original bar. Bar close ≤ final-value knowledge ≤ availability ≤ actual evaluation. The explicit end-age policy is enforced. These receipt checks establish internal integrity and declared timing; they do not independently authenticate the venue or a producer's assignment of source generations.
 
+Request-grid and receipt admission use the original public-fact clock decoder with the existing UTC requirement and up to nine fractional digits. A nonzero fractional horizon start cannot be rounded onto the hourly grid. After the original complete bar grid is validated, exact close/knowledge/availability/evaluation ordering and integer-nanosecond end age are checked before the original return calculation. The caller's integer-second age limit, original numeric bars and receipt/request strings are unchanged. Observation validation at the calibration consumer repeats these same admission checks before recomputation or publication; a fresh content seal does not establish temporal consistency.
+
 The market and DDO entries share the same bridge translation and the same measurement-body implementation, including content refs and original return calculation. The independent_market_n_bars_observation_v1 wraps that original measurement with the request and exact receipts. It is not evaluation_observation_v0 and carries no invented DDO decision or new OutcomeRecord.
 
 The native measurement's evaluation_time_utc remains its logical horizon boundary, preserving the existing measurement identity. The new observation's evaluated_at_utc is the actual later admission time. Receipt knowledge/availability remain separate. A late archive receipt is not relabelled as information available at the logical boundary.
@@ -57,6 +59,8 @@ calibrate_frozen_market_forecast_v1 validates the original freeze, independently
 The original MiOfflineDurableEvidenceStoreV1 persists the original forecast/calibration/research triad. Existing immutable attachment publication and cooperative per-job leases retain freeze, measurement inputs and exact ACK. Identical retries reuse the ACK; changed inputs for the same job reject. A missing freeze blocks before creating a new store. New source generations and horizons produce distinct jobs. Corrected receipts cannot silently replace an already frozen target or acknowledged generation.
 
 read_independent_market_calibration_v1 reads original persisted bytes and validates the complete digest chain. It calls no supplier, provider, engine, trainer or calibration computation. The existing typed MI triad and full numeric readback remain the evidence, rather than only exported IDs. The lease is cooperative local storage coordination, not a distributed transaction or physical power-loss certification.
+
+Cold read is not a retroactive temporal recertification of existing archives. No stored observation, native measurement identity, log-return formula, calibrated error or declared source generation is migrated by the admission hardening.
 
 ## Scope and proof
 

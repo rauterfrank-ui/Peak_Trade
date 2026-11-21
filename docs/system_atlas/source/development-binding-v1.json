@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "20e75afd4456d1b747e80acb19763f0c636b6bd0e289477d78db2329577477d4"
+      "sha256": "0f86b2c11b255008573ff35de6e9f09eac965f6368e32abda3b3c062224159bb"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1249,7 +1249,7 @@
     {
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OBSERVATION_V1.md",
       "before_sha256": "e456cd964b14eaba50c8c9d3ecb35e930eaf877a4cf369aa4036b3698d510092",
-      "sha256": "83d9821770c192acaaae00b9c8c75b1ea0e448b1677fc1f8fdacf73d6824f6dc"
+      "sha256": "e17230c9ecb8a23748d028f15dfe017051d892dd9d93b016a60b16e20b5905df"
     },
     {
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md",
@@ -2235,6 +2235,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
       "before_sha256": "83c9e61d025cda6b9a5151b5f8d274c7b40165605f8ba59e4995e74e6a315e4c",
       "sha256": "eb483bc436e255506c61321d075113deadfd3da2409191f5d7a425a35f7d2ef3"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/independent_market_horizon_v1.py",
+      "before_sha256": "ba08937ca367fc851796b5eb5a98b94e55f3be0abb5b911359cb70ef16a401fe",
+      "sha256": "23fcf9a8b8073f444b8538f632b9afe3b8f45b5dbc012b3ad1a173e92e2c4e8e"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
@@ -4300,6 +4305,11 @@
       "path": "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
       "before_sha256": "99d4fa9cc7e455eec061d6ead25e1c38b4cfe0ca69de9905c188abc12f1f20cb",
       "sha256": "810a375fca1b3303ecc9529137d711db4dd7cd782ea4b322ea01ebe50fc2fed4"
+    },
+    {
+      "path": "tests/learning/test_market_horizon_exact_clock_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "1d5752ef6ff7db4afcad719d92f914c0591f0bf90088864e177d3d96b6e7572a"
     },
     {
       "path": "tests/learning/test_market_ols_exact_clock_admission_v1.py",
