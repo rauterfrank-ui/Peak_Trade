@@ -431,6 +431,36 @@ zwei unbekannte Grenztreffer. Dieselben Treffer und Zählwerte wurden auf der
 unveränderten Mergebasis reproduziert. Dies ist keine neue Regelratifikation
 oder fachliche Freigabe; der Bedarf bleibt im Prüfbeleg offen ausgewiesen.
 
+### Originaler Paper-Entscheidungsbeleg bis zum Lernconsumer
+
+Der XPERP-Originalstore enthält im Openingplan und in der ursprünglichen
+Reversal-Publikation bereits den jeweiligen Entscheidungscursor. Darin liegen
+die kanonischen Core-, Policy-, Composition-, Assessment-, Survival- und
+Suitability-Ausgaben samt Marktkontext und gebundenen Digests. Der Episodenleser
+hatte diese geprüften Inhalte bislang auf Identitäten und Digests reduziert.
+
+Neue Importe durch den [Paper-Lernadapter](../../../scripts/ops/paper_episode_learning_handoff_v1.py)
+übernehmen nun diese originalen Cursor zusätzlich in die unveränderliche
+Messung. Der [Episodenleser](../../../src/ops/bounded_peaktrade_system_composition_v1/xperp_paper_episode_outcome_v1.py)
+prüft dafür weiterhin Originalmanifest, Instrument, Slot, Entscheidung, Epoche,
+Fill und die ursprünglichen Komponentenbindungen. DDO führt den Originalbezug
+über seine Evidence- und Marktkontextreferenzen weiter; der LearningState
+verweist auf genau dieses DecisionEvent. Der Default des reinen Episodenlesers
+bleibt unverändert. Bereits importierte Messungen und Ledger behalten ihre
+ursprüngliche Fassung und werden weiterhin gegen das Originalarchiv geprüft.
+
+Der Cursor ist der Zustand **nach der ursprünglichen Entscheidung**, kein
+vollständiger damaliger DDO-Informationssatz. Fehlende Before-State-, Risk-,
+DataQuality- oder Incident-Snapshots werden nicht nachgebildet. Native
+Tradeausgänge und Reason-Codes bleiben im Originalbeleg; sie werden nicht in
+die hierfür ungebundenen DDO-v0-Tokens übersetzt. Entscheidungstyp, Ergebnis
+und Qualitätslabels bleiben insoweit ausdrücklich `UNKNOWN`.
+
+Das simulierte Nettoergebnis bleibt unabhängig davon in Quote-Währung
+gemessen. Weder ein positives Ergebnis noch die erfolgreiche Quellenprüfung
+erzeugen ein Gut-/Schlecht-Urteil, ein Update von Modellparametern oder eine
+Applyfreigabe. Originalarchive und Handelszustände werden nicht verändert.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

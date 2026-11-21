@@ -249,7 +249,11 @@ def _accounting_before_open(payload, account, opening_fill_id):
 
 
 def read_paper_episode_outcome_v1(
-    root: Path, episode_id: str, *, expected_lane_id: str | None = None
+    root: Path,
+    episode_id: str,
+    *,
+    expected_lane_id: str | None = None,
+    include_decision_evidence: bool = False,
 ) -> dict:
     """Recompute a simulated net outcome for an explicitly selected episode."""
     root = root.absolute()
@@ -257,7 +261,10 @@ def read_paper_episode_outcome_v1(
         raise ValueError("PAPER_OUTCOME_ARCHIVE_OR_EPISODE_INVALID")
     if (root / XPERP_CLOSEOUT).exists():
         return read_xperp_paper_episode_outcome_v1(
-            root, episode_id, expected_lane_id=expected_lane_id
+            root,
+            episode_id,
+            expected_lane_id=expected_lane_id,
+            include_decision_evidence=include_decision_evidence,
         )
     state_root = root / "episodes" / episode_id
     state_files = (

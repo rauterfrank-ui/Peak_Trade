@@ -105,10 +105,11 @@ def seal_xperp_paper_archive_v1(root: Path, closeout: dict) -> None:
 
 
 class _Archive:
-    def __init__(self, root, expected_lane_id=None):
+    def __init__(self, root, expected_lane_id=None, *, include_decision_evidence=False):
         if root.resolve() != root:
             raise ValueError("XPERP_PAPER_ARCHIVE_PATH_INVALID")
         self.root = root
+        self.include_decision_evidence = include_decision_evidence
         self.manifest = root / MANIFEST_FILENAME
         self.manifest_raw = self.manifest.read_bytes()
         ok, reason = verify_manifest_sha256(root, required_rel_paths=_ROOT_FILES)
@@ -286,7 +287,7 @@ class _Archive:
             or not cycle_id.endswith(":" + self.slot.lane_id)
         ):
             raise ValueError("XPERP_PAPER_ORIGINAL_DECISION_MISMATCH")
-        return {
+        result = {
             "decision_id": decision_id,
             "decision_sha256": cursor.entry_assessment_frame["components"]["parent"][
                 "semantic_digest"
@@ -299,6 +300,16 @@ class _Archive:
             "fill_id": fill.fill_id,
             "fill_event_at_utc": _utc(fill.event_time_unix),
         }
+        if self.include_decision_evidence:
+            # Copy the archived cursor, not a replay or today's state. This is
+            # the original assessment output and post-decision cursor, not a
+            # complete pre-decision DDO information set or a quality verdict.
+            result["decision_evidence"] = {
+                "schema": "paper_original_decision_cursor.v1",
+                "scope": "ORIGINAL_ASSESSMENT_AND_POST_DECISION_CURSOR",
+                "cursor": raw,
+            }
+        return result
 
     def reversal(self, episode, booking, fill):
         plan = booking["plan"]
@@ -381,8 +392,10 @@ def closed_xperp_paper_episode_ids_v1(root: Path) -> tuple[str, ...]:
     return tuple(_Archive(root).closed())
 
 
-def read_xperp_paper_episode_outcome_v1(root, episode_id, *, expected_lane_id=None):
-    archive = _Archive(root, expected_lane_id)
+def read_xperp_paper_episode_outcome_v1(
+    root, episode_id, *, expected_lane_id=None, include_decision_evidence=False
+):
+    archive = _Archive(root, expected_lane_id, include_decision_evidence=include_decision_evidence)
     closed = archive.closed()
     if episode_id not in closed:
         raise ValueError("XPERP_PAPER_EPISODE_NOT_CLOSED")
