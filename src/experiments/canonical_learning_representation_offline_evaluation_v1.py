@@ -84,6 +84,10 @@ def run_learning_representation_offline_evaluation_v1(
     if plan.get("schema_version") != PLAN_SCHEMA:
         raise LearningRepresentationOfflineEvaluationError("PLAN_SCHEMA_MISMATCH")
 
+    return _build_evaluation_result_v1(plan)
+
+
+def _build_evaluation_result_v1(plan: Mapping[str, Any]) -> MappingProxyType[str, Any]:
     fixture_label = str(plan.get("evaluation_fixture_label") or "")
     purpose = str(plan.get("research_purpose") or "")
     plan_identity = str(plan.get("plan_identity") or "")
@@ -125,10 +129,26 @@ def run_learning_representation_offline_evaluation_v1(
     return MappingProxyType(body)
 
 
+def validate_learning_representation_offline_evaluation_v1(
+    payload: Mapping[str, Any],
+    *,
+    research_plan: Mapping[str, Any],
+) -> MappingProxyType[str, Any]:
+    """Bind the complete fixture return to its actual validated plan; no measured evaluation."""
+    plan = validate_learning_representation_research_adaptation_plan_v1(research_plan)
+    expected = _build_evaluation_result_v1(plan)
+    if not isinstance(payload, Mapping) or compute_content_sha256(
+        dict(payload)
+    ) != compute_content_sha256(dict(expected)):
+        raise LearningRepresentationOfflineEvaluationError("EVALUATION_PLAN_BINDING_MISMATCH")
+    return MappingProxyType(dict(payload))
+
+
 __all__ = [
     "LearningRepresentationOfflineEvaluationError",
     "LearningRepresentationOfflineEvaluationRequestV1",
     "OfflineEvaluationOutcome",
     "SCHEMA_VERSION",
     "run_learning_representation_offline_evaluation_v1",
+    "validate_learning_representation_offline_evaluation_v1",
 ]
