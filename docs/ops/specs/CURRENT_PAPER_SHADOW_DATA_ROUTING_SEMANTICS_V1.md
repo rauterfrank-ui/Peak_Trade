@@ -883,6 +883,64 @@ Owner. BTC, Originalstores, produktiver DDO-LearningState, Betriebsfreigaben und
 Modell-Apply bleiben unverändert. Der historische D01/D02-Basiskonflikt bleibt
 offen und wurde nicht erneut ausgeführt. Eine Gesamtsystemhärtung ist nicht belegt.
 
+### Originalquellen bis Kontextaufnahme und archiviertes Rücklesen
+
+Ausgangsbasis ist PR #7352,
+`efe7e0a067bd477c88cf7480c3d1d2a80296dac0`. Der gemeinsame
+[Kontextowner](../../../src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py)
+ist seit `9397d04a3` vorhanden. Originalbytes, kanonische/native Instrumentidentität,
+Generation, Einheiten, Finalisierung, vollständige Minutenraster, native
+Merkmalsberechnung und Rekonstruktion aus gespeicherten Belegen sind bereits
+verbunden. Marktidentität und entscheidungsbezogene Identität bleiben getrennt;
+eine neue Lern-, Karten- oder Rotationsverbindung ist hier nicht erforderlich.
+
+Eine echte Lücke betraf die Präzision dieser Aufnahmegrenze: `datetime` schnitt
+gültige Quellzeitbruchteile nach Mikrosekunden ab. Zwölf direkte Gegenproben für
+beide Identitäten erreichten dadurch mit widersprüchlichen Ereignis-, Kenntnis-,
+Verfügbarkeits-, Capture- oder Altersbezügen die ursprüngliche Merkmalsberechnung.
+Zwei neu versiegelte Archivpakete erreichten sie beim Rücklesen ebenfalls; die
+spätere vollständige Replay-Gleichheit ersetzt diese frühe Abweisung nicht.
+Vier gültige Präzisionsfälle belegten außerdem verlorene Nachkommastellen in
+den gespeicherten Zeitbindungen.
+
+Beide Aufnahmen verwenden jetzt den ursprünglichen Quellzeitdecoder mit genauer
+Ordnung bis neun Nachkommastellen und unveränderter UTC-Zulassung. Bestehende
+Alterslimits in ganzen Sekunden werden ganzzahlig ohne Rundung verglichen.
+Minutenquellen behalten Intervallstart als Ereignis und Intervallende als
+Voraussetzung finaler Verfügbarkeit; O4 behält den Originalschluss. Punktquellen
+behalten ihre tatsächliche Ereigniszeit. Zeitbindungen speichern die volle
+Präzision in kanonischem UTC-Text; Originalpayload und Quellbytes werden nicht
+umgeschrieben. Bei bereits präzisionsgetreuen Paketen bleibt die bisherige
+kanonische Darstellung erhalten. Neue präzise Inhalte erhalten gegebenenfalls
+über die unveränderte Digestformel eine andere Paketidentität.
+
+Die native Open-Interest-Wertauswahl sortiert weiterhin mit Mikrosekunden. Ihre
+bisherige Duplikatgrenze bleibt deshalb erhalten; genauer geordnete Quellzeiten
+geben dort keine vorher abgewiesenen, intern zeitlich zusammenfallenden Werte
+frei. Frühere Pakete, deren abgeschnittene Receipts den erhaltenen Originalbytes
+widersprechen, werden abgewiesen. Fehlende Kenntniszeiten werden weder erfunden
+noch aus Capture-Zeit oder späterer Verfügbarkeit rückdatiert.
+
+156 unterschiedliche Offline-Fälle bestehen: 122 vorhandene Kontext-, Forecast-,
+Mess-, Modell- und Replayfälle sowie 34
+[neue Gegen- und Positivproben](../../../tests/learning/test_context_exact_clock_admission_v1.py).
+Die neuen Fälle umfassen frühe Abweisung, präzise Gleichzeitigkeit,
+Originalbytes, Archiv-Rücklesen, Wiederholung, erhaltene Open-Interest-Grenzen,
+große gültige Alterslimits und unveränderte typisierte Enthaltung. Zwölf vor der
+Korrektur gesicherte vollständige Pakete sind danach einschließlich Referenzen
+und Digests bytegleich. Der OLS-Zeittestaufbau gibt dem Quellkontext bei
+absichtlich späterem Beobachtungszeitpunkt eine Sekunde Altersreserve, damit
+seine eigenständigen späteren OLS-Grenzprüfungen erreichbar bleiben. Produktive
+Policies und Altersgrenzen ändern sich dadurch nicht.
+
+Die [ursprüngliche Marktbeobachtungssemantik](INDEPENDENT_MARKET_OBSERVATION_V1.md)
+bleibt maßgeblich. Diese Änderung belegt die benannte Aufnahme- und Rücklesekette,
+keine durchgängige Präzision sämtlicher anderer Owner oder Betriebsbereitschaft.
+BTC, Originalstores, numerische Merkmalsformeln, Betriebsfreigaben und Apply
+bleiben unverändert; es wurde kein Betriebs-, Paper-, Shadow- oder Forschungslauf
+gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
+erneut ausgeführt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

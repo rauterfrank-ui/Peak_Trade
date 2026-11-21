@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "ec8e99e4d96bad51a2bcef8178cc29387866a7a1871eab0a77f96e6355717732"
+      "sha256": "fd053d1952fa7161a105625967860db6186c3e970f7ace3edfd90b0436ced750"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1245,6 +1245,11 @@
       "path": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
       "before_sha256": "159292d8dae9903fadaa815e131214501e8791c6c222d1e40080b4823777fc18",
       "sha256": "073664b39d07a27c64d4e7d498f5e4949c8f0d5f405ccba34b50686450bdfdcb"
+    },
+    {
+      "path": "docs/ops/specs/INDEPENDENT_MARKET_OBSERVATION_V1.md",
+      "before_sha256": "e456cd964b14eaba50c8c9d3ecb35e930eaf877a4cf369aa4036b3698d510092",
+      "sha256": "83d9821770c192acaaae00b9c8c75b1ea0e448b1677fc1f8fdacf73d6824f6dc"
     },
     {
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md",
@@ -2275,6 +2280,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/self_learning_provenance_eligibility_v1.py",
       "before_sha256": "3629b30727a914d4382b6a48ec1b0786a963ef9c930c8aee7eb9a9264673d986",
       "sha256": "5a39f25d84416391a841219ef54e1facc7a6cf7f35c1ec8216a313666b744425"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
+      "before_sha256": "91dd7c0b3339e0178e7f8531c0d0bfb24091a4fa898b0e3389b3b4910becf9ba",
+      "sha256": "85f56f4c01121d6300a83e4b18d41b1feaa0978ebd780535d3bc8627c09833a1"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
@@ -4232,6 +4242,11 @@
       "sha256": "d6a9dbf7f05e3c221ebd49494c257e83a0f94f8fe4b2adbb015b8a80cab1c8f6"
     },
     {
+      "path": "tests/learning/test_context_exact_clock_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "c8d088db9ce1439f3c0589c9f7362aec483200ee418bd4666a6b5d1ca165967a"
+    },
+    {
       "path": "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py",
       "before_sha256": "afba0c5617cdcb79a28a3debf1a9d943ab5dc01979e6bffec68396ec47f5ec89",
       "sha256": "4002f7351bb78c201e9264e83ff99523719b76af02d1991c778a806f356f2730"
@@ -4279,7 +4294,7 @@
     {
       "path": "tests/learning/test_market_ols_exact_clock_admission_v1.py",
       "before_sha256": null,
-      "sha256": "735b74069b87a1372e337c86829c7da317bd2f1fff4d993f0957d60c172182a6"
+      "sha256": "3d68138c7037da9c5c979f703882003b404a308bb4c1909b1fdf4ca97fab6116"
     },
     {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
