@@ -49,3 +49,29 @@ The generic freeze's own `model_inference_performed=false` remains accurate for 
 The provider derives its freeze attempt identity from the requested attempt and the exact computation body (model, context, features, target, forecast time and computed numbers). The returned original job key therefore binds the actual computation. Re-sealing changed receipt/freeze numbers cannot retain that job identity. The original generic freeze API and other callers' attempt identities are unchanged.
 
 The resulting original freeze can reach the existing later measurement/calibration/triad path and subsequently become an input to another explicit training invocation. This supplies a numerical next-cycle mechanism, not a continuous training scheduler, automatic promotion, natural-source validation or demonstrated Double-Play benefit. Phase20/21 and other research/representation paths retain their separate contracts.
+
+## Exact clock admission — 2026-11-21
+
+The original completed-store selector already uses the source decoder's exact
+capture ordering. The direct OLS adapter now uses that same owner for its
+training-label cutoff, sample chronology/nonoverlap, publication/parent knowledge
+and model-to-forecast admissions. Existing UTC validation remains in force; the
+canonical clock preserves one to nine fractional digits and UTC-offset-zero
+representations. Original timestamp strings are retained in stored requests and
+samples. The shared datetime parser and other source/measurement owners are not
+changed globally.
+
+Context and training-evidence ages are compared as integer nanoseconds against
+the same explicit integer-second policy limits. No rounding, floating-point age
+comparison, new age threshold or calendar upper bound is introduced. A label,
+publication or context one nanosecond too late must stop before fitting or feature
+consumption; exact equality remains permitted.
+
+The fitter, coefficients, residual calculation, split policy, target, units and
+identity/digest formulas are unchanged. New training requests retain their existing
+implementation-source binding, so a new source revision can produce a different
+request/model reference without implying a numerical improvement. Existing model
+bytes and references are not rewritten; the two archived original models remain
+cold-readable without fitting or source measurement. This is clock consistency at
+the named OLS admissions, not external timestamp authentication, measured forecast
+quality or a whole-system temporal-hardening claim.

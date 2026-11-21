@@ -14,6 +14,9 @@ import numpy as np
 
 from src.research.linear_evidence.feature_matrix import build_feature_matrix_binding
 from src.research.linear_evidence.fitters import fit_ols_lstsq
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 from .context_admission_v1 import replay_admitted_market_context_v1
 from .forecast_evidence_v1 import mint_forecast_evidence_v1
 from .forecast_measurement_integration_v1 import (
@@ -85,6 +88,17 @@ class MarketOlsPolicyV1:
     min_validation_rows: int
     max_context_age_seconds: int
     max_training_evidence_age_seconds: int
+
+
+def _utc_order_key(value):
+    # Retain UTC admission and use the source owner's full fractional ordering.
+    instant_v1(value)
+    return capture_order_key_v1(value)
+
+
+def _elapsed_nanoseconds(later, earlier):
+    whole = later[0] - earlier[0]
+    return (whole.days * 86400 + whole.seconds) * 1_000_000_000 + later[1] - earlier[1]
 
 
 def _features(specs):
@@ -164,7 +178,7 @@ def _target_contract(request):
 
 
 def _samples(jobs, specs, trained_as_of):
-    cutoff = instant_v1(trained_as_of)
+    cutoff = _utc_order_key(trained_as_of)
     rows = []
     contract = None
     for job in jobs:
@@ -182,16 +196,16 @@ def _samples(jobs, specs, trained_as_of):
         )
         context = replay_admitted_market_context_v1(frozen["context_package"])
         require_v1(
-            instant_v1(context["as_of"])
-            <= instant_v1(forecast["forecast_created_at_utc"])
-            <= instant_v1(observation["request"]["horizon_start_time_utc"]),
+            _utc_order_key(context["as_of"])
+            <= _utc_order_key(forecast["forecast_created_at_utc"])
+            <= _utc_order_key(observation["request"]["horizon_start_time_utc"]),
             "MODEL_TRAINING_FORECAST_TIME_INVALID",
         )
         current = _target_contract(observation["request"])
         contract = current if contract is None else contract
         require_v1(current == contract, "MODEL_TRAINING_TARGET_OR_MARKET_MISMATCH")
         available = observation["evaluated_at_utc"]
-        require_v1(instant_v1(available) <= cutoff, "MODEL_LABEL_NOT_AVAILABLE_AT_CUTOFF")
+        require_v1(_utc_order_key(available) <= cutoff, "MODEL_LABEL_NOT_AVAILABLE_AT_CUTOFF")
         body = {
             "job_key": plain_v1(job["job_key"]),
             "context_digest": context["exact_content_digest"],
@@ -213,12 +227,13 @@ def _samples(jobs, specs, trained_as_of):
         }
         rows.append({**body, "sample_id": digest_v1(body)})
     require_v1(bool(rows), "MODEL_TRAINING_EVIDENCE_REQUIRED")
-    rows.sort(key=lambda r: (instant_v1(r["forecast_time"]), r["sample_id"]))
+    rows.sort(key=lambda r: (_utc_order_key(r["forecast_time"]), r["sample_id"]))
     for key in ["sample_id", "actual_outcome_ref"]:
         require_v1(len(rows) == len({r[key] for r in rows}), "MODEL_DUPLICATE_EVIDENCE")
     for previous, current in zip(rows, rows[1:]):
         require_v1(
-            instant_v1(previous["label_available_at"]) <= instant_v1(current["context_as_of"]),
+            _utc_order_key(previous["label_available_at"])
+            <= _utc_order_key(current["context_as_of"]),
             "MODEL_OVERLAPPING_OR_NONCAUSAL_SAMPLES",
         )
     return rows, contract
@@ -295,7 +310,7 @@ def _assert_extension(request, prior):
         "MODEL_PARENT_REQUIRES_NEW_CUMULATIVE_EVIDENCE",
     )
     require_v1(
-        instant_v1(request["trained_as_of"]) >= instant_v1(prior["available_at"]),
+        _utc_order_key(request["trained_as_of"]) >= _utc_order_key(prior["available_at"]),
         "MODEL_PARENT_KNOWLEDGE_LOOKAHEAD",
     )
 
@@ -398,7 +413,8 @@ def train_market_ols_model_v1(
     assert_offline_v1()
     specs, p = _features(features), _policy(policy)
     require_v1(
-        instant_v1(trained_as_of) <= instant_v1(available_at), "MODEL_AVAILABILITY_BEFORE_TRAINING"
+        _utc_order_key(trained_as_of) <= _utc_order_key(available_at),
+        "MODEL_AVAILABILITY_BEFORE_TRAINING",
     )
     samples, contract = _samples(evidence_jobs, specs, trained_as_of)
     request = {
@@ -502,18 +518,19 @@ def forecast_from_market_ols_model_v1(
         context["identity"] == market_request["market_identity"],
         "MODEL_FORECAST_CONTEXT_IDENTITY_MISMATCH",
     )
-    as_of, created = instant_v1(context["as_of"]), instant_v1(forecast_created_at)
+    as_of, created = _utc_order_key(context["as_of"]), _utc_order_key(forecast_created_at)
     require_v1(
-        instant_v1(request["available_at"]) <= as_of <= created,
+        _utc_order_key(request["available_at"]) <= as_of <= created,
         "MODEL_FORECAST_KNOWLEDGE_LOOKAHEAD",
     )
     require_v1(
-        (created - as_of).total_seconds() <= policy["max_context_age_seconds"],
+        _elapsed_nanoseconds(created, as_of) <= policy["max_context_age_seconds"] * 1_000_000_000,
         "MODEL_FORECAST_CONTEXT_STALE",
     )
-    last_label = max(instant_v1(s["label_available_at"]) for s in request["samples"])
+    last_label = max(_utc_order_key(s["label_available_at"]) for s in request["samples"])
     require_v1(
-        (as_of - last_label).total_seconds() <= policy["max_training_evidence_age_seconds"],
+        _elapsed_nanoseconds(as_of, last_label)
+        <= policy["max_training_evidence_age_seconds"] * 1_000_000_000,
         "MODEL_TRAINING_EVIDENCE_STALE",
     )
     values = _extract(context, request["features"])
