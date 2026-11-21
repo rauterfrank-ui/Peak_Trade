@@ -996,6 +996,65 @@ bleiben unverändert; keine Betriebs-, Paper-, Shadow- oder Forschungsläufe wur
 gestartet. Der historische D01/D02-Basiskonflikt bleibt offen und wurde nicht
 erneut ausgeführt. Dieser Block ist kein Nachweis vollständiger Systemhärtung.
 
+### Unabhängige Markt-Receipts bis Return und Kalibrierung
+
+Ausgangsbasis ist PR #7354,
+`191303305d1c0e5719aae350016cd16a6e993580`. Der
+[Markt-Messowner](../../../src/learning/deterministic_decision_outcome_v0/independent_market_horizon_v1.py)
+ist im Bestand `9397d04a3` bereits vorhanden und blieb bis zu dieser Ausgangsbasis
+unverändert. Die [datierte Ursprungsanalyse](../evidence/mi_independent_market_observation_history_2026_11_06/README.md)
+trennt Markt-/Baridentität und Messrecord bereits von der eigenständigen
+DDO-Attribution. Request und Originalreceipts, Sourcebytes, Instrument-/Venue- und
+Generationsbindung, Preisfamilie und Einheiten, vollständiges finales Stundenraster,
+native Returnrechnung und erneute Beobachtungsprüfung am Kalibrierungsconsumer
+sind bereits verbunden. Ein zweiter Messowner oder ein künstliches DecisionEvent
+wird nicht ergänzt.
+
+Eine echte Präzisionslücke lag an den vorhandenen Raster-, Receipt- und
+Altersprüfungen: `datetime` und nachfolgende Unix-Fließkommawerte verloren gültige
+Zeitbruchteile. Dreizehn Gegenproben erreichten damit den tatsächlichen nativen
+Returnkern: widersprüchliche Kenntnis-/Verfügbarkeits-/Auswertungszeiten,
+überschrittenes Endalter, ihre Wiederaufnahme aus neu versiegelten Observationen
+am Kalibrierungsconsumer sowie ein um eine Nanosekunde verschobener
+Messrequest-Start. Eine zusätzliche Gegenprobe zeigte, dass der Targetbuilder
+diesen rasterfremden Start ebenfalls zuließ.
+
+Der Owner verwendet jetzt die ursprüngliche Quellzeitordnung bis neun Stellen
+bei erhaltener UTC-Zulassung. Der Start muss vollständig auf dem bestehenden
+Stundenraster liegen; ein nicht nullwertiger Bruchteil wird nicht weggerundet.
+Erst das unverändert geprüfte vollständige Bar-Raster belegt die ganzen
+Schlusszeiten. Danach gilt ohne Fließkommarundung weiterhin Schluss ≤ Kenntnis
+≤ Verfügbarkeit ≤ tatsächliche Auswertung. Das Endalter wird ganzzahlig gegen
+die unveränderte explizite Sekundengrenze geprüft. Alle Abweisungen erfolgen vor
+nativer Returnberechnung; die vorhandene erneute Beobachtungsprüfung vor
+Kalibrierung und Attachments verwendet dieselben Gates. Ein frischer Digest
+ersetzt keine Zeitkonsistenz.
+
+246 unterschiedliche Offline-Fälle bestehen: 216 vorhandene Kontext-, Forecast-,
+Mess-, Kalibrierungs-, Modell-, Replay- und ursprüngliche DDO-O4-Fälle sowie 30
+[neue Gegen- und Positivproben](../../../tests/learning/test_market_horizon_exact_clock_admission_v1.py).
+Die 14 Negativfälle belegen die beschriebenen Abweisungen. 16 Positivfälle
+erhalten präzise Receipt-Zeitgleichheit, UTC-Offset null, zulässige Altersgrenzen
+einschließlich null und großer Werte, nullwertige Rasterbruchteile, ursprüngliche
+Receipt-Reihenfolge, korrigierte und unkorrigierte Quellen, Originalbytes, Kalibrierung,
+Wiederholung und Kaltlesen ohne Neuberechnung. Sechzehn vor der Korrektur
+gesicherte vollständige Observationen samt Targets bleiben danach einschließlich
+Messidentitäten und Digests bytegleich.
+
+Die [ursprüngliche Marktbeobachtungssemantik](INDEPENDENT_MARKET_OBSERVATION_V1.md)
+bleibt erhalten: LOG_RETURN verwendet ersten und letzten Close der N Bars, also
+N−1 Intervalle. Die native Messung behält den logischen Horizontschluss als
+Evaluationzeit; das separate tatsächliche evaluated-at-Feld und die
+Receipt-Zeiten werden nicht darauf rückdatiert. Eine deklarierte Uhrzeit ist
+keine externe Quellenbeglaubigung. Preisbasis, Originalstrings und -bytes,
+Einheiten, Formeln, Sourcegeneration, IDs und Policies ändern sich nicht.
+Kaltlesen bleibt Inhalts-/Parent- und Zahlenprüfung ohne erneute Messung;
+historische Archive werden nicht umgeschrieben oder rückwirkend zeitlich
+zertifiziert. Andere Owner und vollständige Systemhärtung bleiben gesondert zu
+prüfen. BTC und Betriebsfreigaben bleiben unverändert; keine Betriebs-, Paper-,
+Shadow- oder Forschungsläufe wurden gestartet. Der historische D01/D02-Konflikt
+bleibt offen und wurde nicht erneut ausgeführt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

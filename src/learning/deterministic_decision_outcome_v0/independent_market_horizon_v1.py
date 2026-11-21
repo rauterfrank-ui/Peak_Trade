@@ -12,6 +12,10 @@ import json
 import math
 from types import SimpleNamespace
 
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
+
 from .o4_n_bars_bar_evidence_bridge_contracts_v1 import (
     _normalize_o4_interval_id,
     translate_o4_market_bar_chain_v1,
@@ -74,6 +78,22 @@ def _instant(value):
     return result.astimezone(timezone.utc)
 
 
+def _utc_order_key(value):
+    # Keep the original UTC requirement and retain full source-clock precision.
+    _instant(value)
+    return capture_order_key_v1(value)
+
+
+def _elapsed_nanoseconds(later, earlier):
+    whole = later[0] - earlier[0]
+    return (whole.days * 86400 + whole.seconds) * 1_000_000_000 + later[1] - earlier[1]
+
+
+def _bar_close_key(bar):
+    # Called only after the original full-grid check proves whole-second closes.
+    return datetime.fromtimestamp(bar["bar_close_time"], timezone.utc), 0
+
+
 def _bytes(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
 
@@ -103,8 +123,12 @@ def validate_market_horizon_request_v1(request):
     count = request["n_bars"]
     _require(type(count) is int and count >= 2, "MARKET_RETURN_NEEDS_AT_LEAST_TWO_CLOSES")
     interval, seconds = _normalize_o4_interval_id(request["o4_interval_id"])
-    start = _instant(request["horizon_start_time_utc"])
-    _require(start.timestamp() % seconds == 0, "MARKET_EXACT_BAR_GRID_REQUIRED")
+    start_clock = _utc_order_key(request["horizon_start_time_utc"])
+    start = start_clock[0]
+    _require(
+        start_clock[1] == 0 and start.timestamp() % seconds == 0,
+        "MARKET_EXACT_BAR_GRID_REQUIRED",
+    )
     _text(request["price_unit"], "MARKET_PRICE_UNIT_REQUIRED")
     _require(
         request["price_unit"].upper() not in {"UNKNOWN", "MIXED"},
@@ -129,12 +153,13 @@ def _materialize_market_horizon_v1(*, request, source_receipts, evaluated_at_utc
         RUNTIME_REACHABLE is False and EXTERNAL_EFFECT_AUTHORIZED is False, "MARKET_OFFLINE_ONLY"
     )
     identity, start, interval, seconds = validate_market_horizon_request_v1(request)
-    evaluated = _instant(evaluated_at_utc)
+    evaluated = _utc_order_key(evaluated_at_utc)
     _require(
         isinstance(source_receipts, (list, tuple)) and len(source_receipts) == request["n_bars"],
         "MARKET_COMPLETE_SOURCE_RECEIPTS_REQUIRED",
     )
     bars = []
+    receipt_clocks = []
     source_refs = set()
     for receipt in source_receipts:
         _require(set(receipt) == RECEIPT_FIELDS, "MARKET_SOURCE_RECEIPT_FIELDS")
@@ -185,14 +210,9 @@ def _materialize_market_horizon_v1(*, request, source_receipts, evaluated_at_utc
             bar["bar_open_time"] <= observed <= bar["bar_close_time"],
             "MARKET_OBSERVATION_OUTSIDE_BAR",
         )
-        known, available = _instant(receipt["known_at_utc"]), _instant(receipt["available_at_utc"])
-        _require(
-            bar["bar_close_time"]
-            <= known.timestamp()
-            <= available.timestamp()
-            <= evaluated.timestamp(),
-            "MARKET_FINAL_VALUE_NOT_AVAILABLE",
-        )
+        known = _utc_order_key(receipt["known_at_utc"])
+        available = _utc_order_key(receipt["available_at_utc"])
+        receipt_clocks.append((bar, known, available))
         _require(type(bar["revision"]) is int and bar["revision"] >= 0, "MARKET_REVISION_REQUIRED")
         _require(
             bar["interval"].upper() in {interval, "1H", "60M"}, "MARKET_SOURCE_INTERVAL_MISMATCH"
@@ -212,8 +232,15 @@ def _materialize_market_horizon_v1(*, request, source_receipts, evaluated_at_utc
         )
         if bar["finalization_state"] == "CORRECTED_BAR":
             _require(bar["revision"] > 0, "MARKET_CORRECTION_REVISION_REQUIRED")
+    for bar, known, available in receipt_clocks:
+        _require(
+            _bar_close_key(bar) <= known <= available <= evaluated,
+            "MARKET_FINAL_VALUE_NOT_AVAILABLE",
+        )
     _require(
-        0 <= evaluated.timestamp() - bars[-1]["bar_close_time"] <= request["max_end_age_seconds"],
+        0
+        <= _elapsed_nanoseconds(evaluated, _bar_close_key(bars[-1]))
+        <= request["max_end_age_seconds"] * 1_000_000_000,
         "MARKET_MEASUREMENT_STALE",
     )
     bindings = translate_o4_market_bar_chain_v1(
