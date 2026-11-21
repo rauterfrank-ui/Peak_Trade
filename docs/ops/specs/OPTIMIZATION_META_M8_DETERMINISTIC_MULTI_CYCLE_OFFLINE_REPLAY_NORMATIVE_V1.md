@@ -24,3 +24,18 @@ Does not register capabilities, authorize surfaces, or mutate learning state.
 ## Non-goals
 
 M9 surfaces, productive search, promotion, execution
+
+## Prior-cycle content binding — 2026-11-21
+
+An explicitly supplied prior feedback packet must equal the actual preceding
+cycle's M7 output under the existing canonical JSON content hashing. An ID
+match or a newly calculated transport digest alone does not establish that
+relationship. Canonical comparison distinguishes booleans from numbers while
+accepting an unchanged JSON round trip. Omitted prior feedback continues to
+use the preceding output automatically. Existing IDs and digest formulas are
+unchanged.
+
+The carried dispositions remain lineage in the next cycle's evidence. They
+do not rewrite its supplied experiment request, run a search on behalf of M7,
+update a numerical model or create promotion/apply authority. The same check
+applies at the MI-crossing and federated replay joins.

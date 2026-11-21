@@ -248,9 +248,10 @@ def run_deterministic_multi_cycle_offline_replay_v1(
                     replay_identity=None,
                 )
             if spec.prior_feedback_decision is not None:
-                if spec.prior_feedback_decision.get(
-                    "feedback_decision_identity"
-                ) != prior_feedback.get("feedback_decision_identity"):
+                # Canonical content also distinguishes JSON booleans from numbers.
+                if compute_content_sha256(
+                    _json_safe(spec.prior_feedback_decision)
+                ) != compute_content_sha256(_json_safe(prior_feedback)):
                     return _replay_payload(
                         status=REPLAY_STATUS_REJECTED_LINEAGE,
                         reason="PRIOR_FEEDBACK_DECISION_MISMATCH",

@@ -39,3 +39,14 @@ authority invariants (no promotion, no productive join, no search execution).
 - `tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py`
 - `tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py`
 - `tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py`
+
+## Prior-cycle admission — 2026-11-21
+
+The existing MI replay now compares the full supplied M7 feedback packet to
+the actual preceding cycle's output before invoking the next MI cycle.
+Canonical JSON content comparison preserves types and accepts unchanged
+transport round trips; neither an unchanged feedback ID nor a rehashed
+transport packet can substitute different provenance or dispositions.
+Automatic carry-forward, record identities, MI/DDO distinctions and the
+research-only effect remain unchanged. This is no scheduler, model update or
+productive apply connection.

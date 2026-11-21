@@ -1044,7 +1044,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "44272546aa007c1c9683764256ca789be1b503f8e566ef62544b89a4e05b366e"
+      "sha256": "362e0e1c348d137c1555577d335027810e70a68a66553482e112864fa60c8ddf"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1242,6 +1242,11 @@
       "sha256": "1ae4bb157b112af6770eea9c2ca705cfdb4f43ab7777056ca43f7638ff4a19d6"
     },
     {
+      "path": "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+      "before_sha256": "7364c61ac40288baa37b7e1ea3a9666b4982c6004939fb5016e70964f2facebe",
+      "sha256": "2e3947dfffc9ae868350414a62f6f9b1bcc0c3321d65ce702b3ba4322e118e91"
+    },
+    {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "db551bc4b35d69810bdce91a77898e5ed9699006d721b94ebe5a2ea508e313c0"
@@ -1275,6 +1280,11 @@
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
       "sha256": "942950a795f2fadaeb3842a238231c5e12060fc7c26e2dae97b7b9f33299f8be"
+    },
+    {
+      "path": "docs/ops/specs/OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
+      "before_sha256": "2a5b99f8082a00529a8afd4da55b5d0277334039bcfed5d32039ba205b3e5748",
+      "sha256": "3cdeffff6c96de6c345913c9685691983ec37a5933327de84d3638a459bf405f"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
@@ -1320,6 +1330,11 @@
       "path": "docs/ops/specs/TREASURY_BUDGET_OWNER_START_CONTRACT_V1.md",
       "before_sha256": "a37fa823e22ed17544b3c19e1bbfb9624aa024d47cfb2ff62182d1fffe0806ae",
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
+      "before_sha256": "1a148edc35c05e206bd90b2b1042cc75438787c7e65007f4d312353c247425fc",
+      "sha256": "e572c90bf867647c83e0b5d3eb37cb2a7a4e30afcc89db9f53edb37876b89bc9"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
@@ -1989,12 +2004,17 @@
     {
       "path": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
       "before_sha256": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
-      "sha256": "e004a344c825015e2ea1e680e3f19ba2e3628b21a21888baa4288d3881396b4f"
+      "sha256": "cdfb09369bdac04b14df3d4decc298e119dfbf707b6d981d03c41d06cc893e52"
     },
     {
       "path": "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
       "before_sha256": "2e371288f0fb90468ed744c802303316b431c757028cf3fbfd6dad3d74d90610",
       "sha256": "5348db02c87e680af6cc52adb3f656b39348a787fb5bf191fb134167cd3b75fe"
+    },
+    {
+      "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "before_sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
+      "sha256": "2b05aa4845da7efd5a11e6c1b25f937e09efc8c94466bee2fc43948cfa13c15b"
     },
     {
       "path": "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
@@ -2050,6 +2070,11 @@
       "path": "src/experiments/canonical_self_learning_optimization_return_input_v1.py",
       "before_sha256": "641f1fafa9e3dd74d8adee5cf9b7dba7e786d27f51ff469273aa13ffefc75657",
       "sha256": "52b7d5bc0008142a47ebf66d6fff4d6443f7cb190f45cf8bc572bfa5810fddc5"
+    },
+    {
+      "path": "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
+      "before_sha256": "2b52a395e159c6812fec59eb2eb309cb95560b335047fa19991d7e85c16554e0",
+      "sha256": "eeceaa949f63527e00e070ba3b3f6700d8f2177c91183fc6ba114f791a02cd1f"
     },
     {
       "path": "src/experiments/f2_meta_cost_model_follow_up_v1.py",
@@ -3855,6 +3880,11 @@
       "path": "tests/evaluation/golden_vectors/test_bounded_required_domain_fanout_v1.py",
       "before_sha256": "f2d498b8c39480777d365575ec0302966e17c5576aed7544d7774fadfb0296a6",
       "sha256": "2277c9cf93bf57bd48325c5fb7bb64852963c7318b4cecd9af7b52035cab5ce2"
+    },
+    {
+      "path": "tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py",
+      "before_sha256": "a42e4c6bb4d22b8f97a681839e1ffbef3798a43420bc6976c317596c7ccdf601",
+      "sha256": "b7883920f85bbbc089b37ee67e7af5661cf35dc4bce4c14679d5dc65c351211c"
     },
     {
       "path": "tests/experiments/test_canonical_f2_research_backtest_cost_grid_v1.py",
