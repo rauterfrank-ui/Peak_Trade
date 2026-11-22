@@ -205,3 +205,76 @@ financial/Core boundaries and authority remain unchanged. No operational or
 research session is started. A future true quadratic metric requires its own
 explicit method definition, normalization and compatibility decision; it must
 not reuse BRIER_SCORE_V1 to give existing evidence a different meaning.
+
+## Research projection and full-triad context binding — 2026-11-22
+
+At baseline `0c9e17ef296c781c0dc4c69080783e1f5c05a92b`, existing producers
+already connect calibration to research projection, optional MI learning/M4
+intake and the separate full-triad store. The reference query has its own
+earlier checks. These connections and owners are reused. The retained D03
+request requires the exact forecast, explicit horizon and forecast kind;
+the [retained original request and source](../evidence/mi_independent_market_observation_history_2026_11_06/README.md)
+are historical evidence, not a current runtime certification. The later
+development at `fb8c8ee442cc1511a43074cdeeb27aabc08b3355` already checks research
+authority/domain at intake; it does not establish the missing cross-object
+context checks examined here.
+
+The projection previously copied calibration references/status after checking
+only forecast ID. It did not natively revalidate CalibrationEvidence. The
+triad owner validated individual objects and their reference IDs but did not
+compare all shared context fields. Recomputed valid IDs/digests could therefore
+hide contradictory horizons, bar specifications, forecast kinds or evidence
+dispositions. An altered score under its unchanged original calibration digest
+could also pass projection and reach the existing fixed M4 request.
+
+Projection now calls the original CalibrationEvidence validator, retains the
+existing forecast-ID check and compares MI domain, n_bars, bar_spec_ref and
+forecast_kind. Context comparisons use the existing exact JSON value codec;
+a float count numerically equal to an integer does not replace that integer.
+Neither numeric conversion nor a new fingerprint algorithm is introduced.
+The successful projection body and its existing identity/digest scope remain.
+
+The full-triad owner reuses this same projection owner with the original drift
+annotations and optional legacy-learning reference. It compares research
+n_bars, bar specification, forecast kind and evaluability with the resulting
+original projection. Existing forecast/calibration reference-ID and authority
+checks remain. The computed projection is only a validation value: it is not
+written into or substituted for the supplied record. Stored originals retain
+their bytes. Builder, persistence, revalidation, get and list inherit the
+same rejection through the existing native store validator. Validation errors
+stop publication or new writes; cold read leaves inconsistent input files
+unchanged rather than repairing or deleting them.
+
+Verification: `tests/learning/test_mi_research_triad_reference_binding_v1.py`.
+The original-source baseline has 47 cases: 40 previously unblocked
+contradictions and seven already-passing controls. Separate fully native
+probes confirm three bad-source projections complete the original M4 call and
+four conflicting triads persist and cold-read on the original source. Native
+record identities match the controlled re-signed declarations; no mocked
+validator establishes these paths. An initial diagnostic compared persisted
+provenance against a builder packet without the existing persist_id. It is
+retained separately and is not the corrected native-effect proof. The final
+comparison includes the original writer's provenance without changing it.
+
+Five complete original packets and five serialized store files remain
+byte-identical after correction: ordinary, annotated, missing-outcome,
+insufficient-support and explicit-abstention cases. In particular, an explicit
+calibration abstention may coexist with sufficient forecast support; research
+must preserve the actual calibration disposition, not derive a replacement
+from forecast support. Drift annotations keep their original order and optional
+legacy references remain optional. JSON roundtrip, cold read and idempotent
+append use the existing writers. Tests use synthetic inputs, temporary stores
+and denied networking.
+
+The comparisons establish declared consistency and native record integrity,
+not independent source authenticity. Neither projection nor triad intake has
+an original measurement port against which to authenticate actual_outcome_ref
+or the supplied direction. Calibration formulas are not recomputed or certified
+by this handoff. The legacy BRIER_SCORE_V1 meaning above remains linear 1-p;
+Return/threshold methods, units and ID/digest algorithms stay with their owners.
+Reference transport does not become numerical optimization, probability-quality
+validation, economic PnL or productive authority. Direct externally constructed
+reference projections still require their own source admission; this change
+does not give M4 a new full-calibration input. Existing missing-outcome,
+insufficiency and authority boundaries remain. No BTC, financial/Core,
+rotation or runtime-authorization change; no operational or research session.
