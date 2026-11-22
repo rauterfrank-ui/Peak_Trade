@@ -128,3 +128,80 @@ silent numerical or historical-schema change here. Existing downstream float
 precision, identity scope, missing-reference limits and evidence-only authority
 remain. No account PnL, model update, productive apply or operational readiness
 is inferred. Local construction history remains limited to the frozen import.
+
+## Resolved legacy directional score semantics — 2026-11-22
+
+The open method-interpretation question above is resolved for the existing V1
+contract: **BRIER_SCORE_V1 is a historical wire identifier for the linear
+per-event loss 1 - p(realized_class), not a quadratic Brier score.** Retain the
+token, calculation and sealed identities; do not silently redefine old or new
+V1 records as a different numerical method. The source constant and scoring
+function now state this explicitly. No missing numerical handoff was found at
+the examined consumers and no new route or metric is introduced.
+
+The retained D03 owner request of 26 September, sections D and G, requires
+forecast-kind-appropriate evaluation, backward compatibility and separation
+from the opaque productive economic label. It specifies no Brier formula or
+normalization. The original implementation at PR #6847, merge
+`32171b35e631cab767dca4f5fcd99b8a837caf23`, already uses the same token and 1-p
+formula. Its retained full source has Git blob
+`b13929af6f2fd78154d58cab8b61e27459ed2c62` and SHA256
+`1fa265f3b5fe1eaea00f2f8ea4dd1c460017e822c26380959c1c480a22812ca3`.
+The retained original request, source and revision metadata are linked in the
+[D03 origin investigation](../evidence/mi_independent_market_observation_history_2026_11_06/README.md).
+The attached blueprint PDF is absent at its recorded local path; its complete
+contents are not independently reconstructed here. The later November
+[consumer assessment](../evidence/self_learning_loop_a_causal_consumer_assessment_v1_2026_11_04/README.md)
+reported the same mismatch without changing it. Its historical results are not
+substituted for the current native tests at baseline
+`83287d84c94ddbf413eeed1d81334e3954d88ab9`.
+
+The V1 value is dimensionless in [0, 1] for admitted probabilities: zero when
+the supplied realized class had probability one, one when it had probability
+zero. Lower means more probability assigned to that supplied class. The caller
+supplies UP/DOWN/FLAT; a joined outcome reference alone does not derive or
+authenticate that label. The scalar ignores how probability is split between
+the other two classes, although the full forecast identity still binds them.
+
+For contrast only, the unscaled multiclass quadratic expression is the sum of
+(p_class - one_hot_outcome_class) squared over all three classes. Forecasts
+(0.5, 0.3, 0.2) and (0.5, 0.4, 0.1) with supplied UP both return V1 loss 0.5;
+that quadratic expression gives 0.38 and 0.42. More importantly, on an exact
+ten-case synthetic population with six UP, three DOWN and one FLAT, truthful
+(0.6, 0.3, 0.1) has mean V1 loss 0.54, whereas always reporting (1, 0, 0) lowers
+it to 0.40. Thus minimizing this linear loss does not elicit truthful
+probabilities: it is not a proper probability-scoring objective. Calling its
+average calibration quality would be incorrect. This comparison does not
+install a particular quadratic normalization or a new scoring method.
+
+Current consumer meaning is bounded and verified:
+
+- CalibrationEvidence and the existing full triad store retain the numeric
+  result, method token, forecast/outcome references, IDs and digests. Cold read
+  and repeated append preserve the original bytes.
+- The MI learning record and research projection carry references, method
+  metadata where present and evidence disposition. Their reference transport
+  does not erase the full triad's numeric result or train a model.
+- With a fixed original M4 request, controlled supplied UP/DOWN/FLAT labels
+  produce 0.5/0.7/0.8 and distinct lineage. The complete M4 chain after removal
+  of its two explicit MI attachments is identical. This is a local consumer
+  intervention, not a claim about every possible external or dynamic reader.
+- The actual measured-return numeric reader rejects these directional triads
+  with DURABLE_RETURN_ERROR_REQUIRED. The OLS label/error path uses
+  RETURN_ERROR_V1, not the misleading directional token. Existing GVEF MI
+  evaluation checks bundle digests/invariants; it does not calculate a Brier
+  score, probabilistic calibration quality or model improvement.
+
+Verification: `tests/learning/test_legacy_directional_score_semantics_v1.py`.
+All 28 new semantic probes already pass on the unchanged original numerical
+owner: this is a clarified historical contract and stronger regression proof,
+not a repaired numerical runtime defect. Three complete native
+calibration/triad/learning/export/M4 packets and six serialized store files are
+captured before the source comments and compared afterward. Three separately
+retained historical calibration records remain natively valid and unchanged.
+Tests use synthetic inputs, temporary stores and denied networking. Existing
+probability admission, missing-outcome/insufficient-support behavior,
+financial/Core boundaries and authority remain unchanged. No operational or
+research session is started. A future true quadratic metric requires its own
+explicit method definition, normalization and compatibility decision; it must
+not reuse BRIER_SCORE_V1 to give existing evidence a different meaning.
