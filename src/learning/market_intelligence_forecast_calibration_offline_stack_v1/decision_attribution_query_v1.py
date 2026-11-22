@@ -9,6 +9,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import require_map
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     validate_attribution_record_v0,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import (
+    validate_calibration_evidence_v1,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.constants_v1 import (
     IS_EVIDENCE_ONLY,
     STACK_DOMAIN,
@@ -21,6 +24,10 @@ QUERY_SCHEMA_VERSION: Final[str] = "market_intelligence_decision_attribution_que
 TRADING_AUTHORITY: Final[str] = "NONE"
 
 
+class DecisionAttributionQueryError(ValueError):
+    """Contradictory declared references cannot form one MI attribution query."""
+
+
 def query_market_intelligence_decision_attribution_v1(
     *,
     attribution_record: Mapping[str, Any] | None,
@@ -29,16 +36,51 @@ def query_market_intelligence_decision_attribution_v1(
     selected_instrument_ref: str | None = None,
     side_state_ref: str | None = None,
     regime_ref: str | None = None,
+    expected_actual_outcome_ref: str | None = None,
 ) -> MappingProxyType[str, Any]:
     forecast = (
         validate_forecast_evidence_v1(forecast_evidence) if forecast_evidence is not None else None
     )
-    calib = dict(calibration_evidence) if calibration_evidence is not None else None
+    calib = (
+        validate_calibration_evidence_v1(calibration_evidence)
+        if calibration_evidence is not None
+        else None
+    )
     attr = (
         validate_attribution_record_v0(attribution_record)
         if attribution_record is not None
         else None
     )
+
+    if (
+        forecast is not None
+        and attr is not None
+        and forecast.get("decision_event_ref") is not None
+        and attr.get("decision_event_ref") is not None
+        and forecast["decision_event_ref"] != attr["decision_event_ref"]
+    ):
+        raise DecisionAttributionQueryError("QUERY_DECISION_EVENT_REF_MISMATCH")
+    if (
+        forecast is not None
+        and selected_instrument_ref is not None
+        and forecast.get("selected_instrument_ref") is not None
+        and selected_instrument_ref != forecast["selected_instrument_ref"]
+    ):
+        raise DecisionAttributionQueryError("QUERY_SELECTED_INSTRUMENT_REF_MISMATCH")
+    if calib is not None:
+        if calib["domain"] != STACK_DOMAIN:
+            raise DecisionAttributionQueryError("QUERY_CALIBRATION_DOMAIN_MISMATCH")
+        if forecast is not None and any(
+            calib[key] != forecast[key]
+            for key in ("forecast_evidence_id", "n_bars", "bar_spec_ref", "forecast_kind")
+        ):
+            raise DecisionAttributionQueryError("QUERY_CALIBRATION_FORECAST_MISMATCH")
+        if (
+            expected_actual_outcome_ref is not None
+            and calib.get("actual_outcome_ref") is not None
+            and calib["actual_outcome_ref"] != expected_actual_outcome_ref
+        ):
+            raise DecisionAttributionQueryError("QUERY_CALIBRATION_OUTCOME_MISMATCH")
 
     decision_event_ref = None
     if forecast is not None and forecast.get("decision_event_ref"):

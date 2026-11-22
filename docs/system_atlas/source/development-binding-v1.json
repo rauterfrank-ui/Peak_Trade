@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "b7c866cafc1599a660e5118878107cfd482e38e5b610539fa2ed7344e6839ba6"
+      "sha256": "c374251f3ccbbc7bc8992c6f8667dba6249eae068231ee4f3a66efb1e4eb7630"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1277,6 +1277,11 @@
       "sha256": "2e3947dfffc9ae868350414a62f6f9b1bcc0c3321d65ce702b3ba4322e118e91"
     },
     {
+      "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+      "before_sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314",
+      "sha256": "cce4dbaabe6f04dc4bf95171d923cbbd03165548eb916778b76fa46fb1e7af7e"
+    },
+    {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
       "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
       "sha256": "db551bc4b35d69810bdce91a77898e5ed9699006d721b94ebe5a2ea508e313c0"
@@ -1374,7 +1379,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
       "before_sha256": "47780812f864094763a1e1a526c6f54ffca9d54fd1000cd1c935b751fafa5a16",
-      "sha256": "37a1c01cab8515c09d4f2e4bec0e830c8b9038c67c96de67c97ca99caba76dd4"
+      "sha256": "d25738cf67c87214d0f868a6ac11661aa6761d77cb787db554bf2e211db612e8"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
@@ -1464,7 +1469,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "6cee5f9d9547a50d88fb08157ad20ce37d66ee94e26280ee4f6f686c786abcd3"
+      "sha256": "f549101cc42e676a242bb48b78696bc31b18e9f4915e9bb6bbee9e5bcbf07e4b"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2269,7 +2274,7 @@
     {
       "path": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
       "before_sha256": "ba46e7f84113d18b82a1d363b78a6efc816e14fbf4d7728c8921b2a71071a4a2",
-      "sha256": "2eba271538d251fabbbaaea7ad2e77b81623858ca608b663ac833996052fe2af"
+      "sha256": "fcbaeaf33ea162244bcb0045729ee9c093c1b2c45d9a47492ad6008527025ea4"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
@@ -2345,6 +2350,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
       "before_sha256": "91dd7c0b3339e0178e7f8531c0d0bfb24091a4fa898b0e3389b3b4910becf9ba",
       "sha256": "85f56f4c01121d6300a83e4b18d41b1feaa0978ebd780535d3bc8627c09833a1"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py",
+      "before_sha256": "d94b7d05c9dd33cfab212c1ad10dc28ec67f5e3f54af2f5d215b82fbc1d1ccf3",
+      "sha256": "63ba38af4967e89ccc6811dc2aadba667c0aa5d8aa6187757813ed6d346b9a88"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_measurement_integration_v1.py",
@@ -4430,6 +4440,11 @@
       "path": "tests/learning/test_meta_learning_ingest_v1.py",
       "before_sha256": "9ef5bbd4d79a42057e9714274ba98338aecd8e89abb02020a47c0c2a5a651ec2",
       "sha256": "fcd54877c9b182ef960dea8903dfe58983ec083d64f48bfb277dcb0207abadff"
+    },
+    {
+      "path": "tests/learning/test_mi_attribution_query_reference_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "fa5a89754dd493737ed884e1f6dcbd648c459a6ffd337c4cb289f7ccd20c386f"
     },
     {
       "path": "tests/learning/test_mi_forecast_exact_outcome_end_v1.py",

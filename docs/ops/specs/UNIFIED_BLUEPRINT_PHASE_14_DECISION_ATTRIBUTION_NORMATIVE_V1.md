@@ -129,3 +129,20 @@ stored original, productive reducer, BTC source, freeze tag or authorization
 changes. Optional MI query construction and independently observed source/time
 authenticity are separate questions; no overall chain or operating acceptance
 is inferred from this bounded handoff proof.
+
+## Optional MI query joins — 22 November 2026
+
+The [MI query contract](MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md#optional-decision-attribution-query-binding--2026-11-22)
+now checks explicitly supplied decision, selected-instrument, forecast and
+calibration references. Phase 14 forwards the actual outcome reference already
+produced by the original evaluation owner; it does not create a second outcome
+or numerical truth. A calibration naming another original measurement rejects
+before this composer publishes its result. A native receipt without an outcome
+keeps that absence and is not filled from a later evaluation. The query remains
+optional and evidence-only. Native validation failures or contradictory joins
+raise their existing ValueError-style errors; they are not converted into a
+successful or invented disposition. Prior learning-adapter and replay hardening
+remain in place. The exact source admission is advanced only to this reviewed
+composition delta; frozen policy objects and authority constants remain intact.
+The link consistency is distinct from observed historical forecast use,
+independent source/time authenticity, numerical learning and productive apply.
