@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "5b95af05f353982c1b238cf0f5f14413e3868db9144438dd43d03d16b4b774cc"
+      "sha256": "0de4ec94725d282c40a59220899303845ce5988106b3edda149da47e5fa9d6a3"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1394,7 +1394,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
       "before_sha256": "a96d8fb924c029825e0aa18baf81fb78174e40e7893c96da3579b99749294b95",
-      "sha256": "28ffd553f9cf4dd98e703ad3d038f5e32d83868ffe6a9db8ed42b524c987182d"
+      "sha256": "e43094b1d4e9840af112cd6c724ef6737322602a2c5437a7ab384a44c7655bdb"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
@@ -2374,7 +2374,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
       "before_sha256": "9c5e66d4fc9d6a1a48797c4d6fe890dbebbddc169702f39d6521496923ce63b3",
-      "sha256": "7a8cde0521c5d317e7503d674d77cf1000ad25af79829de14eaa7223e52175b7"
+      "sha256": "b4de3695165c95cecce754dfac9cd4aeecca75c62caa4fe13f2ea71a37c13530"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
@@ -4360,6 +4360,11 @@
       "path": "tests/governance/test_standing_external_effect_lift_policy_v1.py",
       "before_sha256": "e643cd6e7e159afb03d34f31ea02a25ee62bccc7b7d0e7ed70c8de91816637e4",
       "sha256": "d6a9dbf7f05e3c221ebd49494c257e83a0f94f8fe4b2adbb015b8a80cab1c8f6"
+    },
+    {
+      "path": "tests/learning/test_conditioned_behavior_source_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "c3c4f2b1fe42eeaf307c7d2089ab1a41a774cddceabe4720dd91782e59dcfa88"
     },
     {
       "path": "tests/learning/test_conditioned_learning_exact_clock_v1.py",

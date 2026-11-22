@@ -197,6 +197,9 @@ def compose_conditioned_mi_learning_evidence_v1(
             and str(rb_outcome) != str(base_outcome)
         ):
             raise LoopAConditionedLearningError("ACTUAL_OUTCOME_REF_MISMATCH")
+        _assert_realized_behavior_source_binding_v1(
+            context=context, observation=observation, realized=realized
+        )
         body["realized_behavior_ref"] = str(realized["behavior_id"])
         body["realized_behavior_content_digest"] = str(realized["content_digest"])
         body["behavior_semantics_snapshot"] = _behavior_semantics_snapshot_v1(realized)
@@ -215,6 +218,77 @@ def compose_conditioned_mi_learning_evidence_v1(
         reproducibility_digest=digest
     )
     return validate_mi_learning_evidence_record_v1(body)
+
+
+def _assert_realized_behavior_source_binding_v1(*, context, observation, realized) -> None:
+    """Bind the existing behavior declaration to the supplied original sources."""
+    from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+    from .integration_contracts_v1 import bytes_v1
+
+    def compare(actual, expected, field, *, clock=False):
+        reason = f"REALIZED_BEHAVIOR_SOURCE_MISMATCH:{field}"
+        try:
+            equal = (
+                _utc_order_key(actual) == _utc_order_key(expected)
+                if clock
+                else bytes_v1(actual) == bytes_v1(expected)
+            )
+        except (DdoValidationError, TypeError, ValueError) as exc:
+            raise LoopAConditionedLearningError(reason) from exc
+        if not equal:
+            raise LoopAConditionedLearningError(reason)
+
+    for field in ("instrument_ref", "information_set_ref", "observed_at"):
+        compare(realized.get(field), context[field], field, clock=field == "observed_at")
+    if observation is None:
+        return
+    compare(
+        realized.get("actual_outcome_ref"),
+        observation.get("actual_outcome_ref"),
+        "actual_outcome_ref",
+    )
+    for block, fields in (
+        (
+            "horizon_identity",
+            (
+                "evaluation_horizon",
+                "n_bars",
+                "bar_spec_ref",
+                "horizon_start_time_utc",
+                "evaluation_time_utc",
+            ),
+        ),
+        (
+            "outcome_window",
+            (
+                "horizon_start_time_utc",
+                "evaluation_time_utc",
+                "bar_identity_refs",
+                "horizon_observation_status",
+                "horizon_observation_reason",
+            ),
+        ),
+    ):
+        declared = realized.get(block)
+        if not isinstance(declared, Mapping):
+            raise LoopAConditionedLearningError(f"REALIZED_BEHAVIOR_SOURCE_MISMATCH:{block}")
+        for field in fields:
+            compare(
+                declared.get(field),
+                observation.get(field),
+                f"{block}.{field}",
+                clock=field in {"horizon_start_time_utc", "evaluation_time_utc"},
+            )
+    closes = realized["outcome_window"].get("bar_close_times_utc")
+    original_closes = observation.get("bar_close_times_utc")
+    if (
+        not isinstance(closes, (list, tuple))
+        or not isinstance(original_closes, (list, tuple))
+        or len(closes) != len(original_closes)
+    ):
+        raise LoopAConditionedLearningError("REALIZED_BEHAVIOR_SOURCE_MISMATCH:bar_close_times_utc")
+    for index, (actual, expected) in enumerate(zip(closes, original_closes)):
+        compare(actual, expected, f"bar_close_times_utc[{index}]", clock=True)
 
 
 def run_loop_a_conditioned_learning_cycle_v1(

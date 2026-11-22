@@ -1854,3 +1854,40 @@ keine unabhängige Authentizität der referenzierten Originale, vollständige
 Zeitprovenienz, numerische Qualität oder Lernwirkung. Die Semantik konditionierter
 Verhaltens-Snapshots benötigt weiterhin ihre eigene Quellenprüfung. Kein
 Gesamtbetriebsnachweis; BTC unverändert, keine Betriebs- oder Forschungsläufe.
+
+### Verhaltensbeleg am bedingten Lernanschluss — 22. November
+
+Am Ausgangsstand `53d4ddd137a4a0358185c2245774c46bc6333e26` sind die bedingte
+MI-Lernkette, Speicherung, Export und P5 bereits verbunden. Quellzeitordnung,
+Record-Zustände und Digests sind gehärtet. Offen war der gemeinsame Quellenbezug:
+Der Verhaltensbeleg enthält Instrument, Kontext und Messfenster, doch sein
+Consumer verglich nur Kontext-ID und vorhandene Outcome-Referenzen. Ein nativ
+erzeugter späterer Auswertungsbeleg konnte dadurch mit derselben Outcome-ID zur
+früheren Originalbeobachtung gelangen.
+
+Der vorhandene Composer bindet diese Angaben jetzt an den tatsächlich
+übergebenen Kontext und, soweit vorhanden, an die Originalbeobachtung. Horizont,
+Bar-Spezifikation, geordnete Bar-Identitäten, Schlusszeiten, Auswertungszeit und
+Beobachtungszustand bleiben getrennt erhalten und müssen zusammenpassen.
+Gleichwertige UTC-Darstellungen bleiben gleich; Nanosekunden werden nicht
+abgeschnitten. Forecast- und Kontext-Information-Set werden nicht gleichgesetzt.
+Die Prüfung erfolgt nach der vorhandenen MI-Brücke vor erfolgreichem Lernrecord
+und Store-Append. Bestehende Fehlergrenzen bleiben erhalten.
+
+Der [Quellenbindungsvertrag](UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md#behavior-binding-to-supplied-original-sources--2026-11-22)
+belegt 28 zuvor ungebremste Durchgaben und neun bereits bestandene Kontrollen.
+Drei native Originalproben erreichen Ingest, Kaltlesen, Export und P5 ADMIT;
+eine verwendet ausschließlich nativ erzeugte Belege unterschiedlicher
+Auswertungszeit. Acht vollständige gültige Originalpakete und acht Storedateien
+bleiben bytegleich. Alle Prüfungen verwenden synthetische Daten, temporäre Stores
+und gesperrtes Netzwerk.
+
+Späteres Verhalten bleibt Outcome-Evidenz und wird kein rückwirkendes
+Entscheidungssignal. Ein nicht übergebener Outcome wird nicht aus dem
+Verhaltensbeleg ergänzt; sein Lernrecord bleibt INCOMPLETE/NOT_EVALUABLE.
+Classical MFE/MAE und Transition bleiben ausdrücklich ungeklärt; Close-Path-
+Excursion bleibt richtungsneutral. Numerische Rechenowner, Methoden, Einheiten,
+IDs/Digests und Freigaben ändern sich nicht. Deklarierte Quellenkonsistenz ist
+kein Beleg natürlicher Authentizität, Prognosegüte, numerischer Lernwirkung oder
+Gesamtbetrieb. Andere Consumer und Verhaltens-Snapshot-Bedeutungen behalten ihre
+eigenen Aufnahmegrenzen. BTC unverändert, keine Betriebs- oder Forschungsläufe.
