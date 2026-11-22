@@ -1816,3 +1816,41 @@ gebaute Referenzprojektionen brauchen weiterhin ihre eigene Quellenadmission.
 M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
 Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
 keine Betriebs- oder Forschungsläufe.
+
+### Aufnahmezustände des MI-Lernrecords — 22. November
+
+Am Ausgangsstand `c4394351f3551c0636a7165899d2addfa7e2d413` sind MI-Composer,
+Store, Export, konditionierter P5-Adapter und optionaler M4-Export verbunden.
+Die vorhandene Digestprüfung bindet deklarierte Inhalte, beweist aber nicht,
+dass diese semantisch zusammenpassen. Neu versiegelte widersprüchliche Belege
+konnten gespeichert, kalt gelesen, exportiert und von Consumern angenommen
+werden. Die gemeinsame Record-Aufnahme übernimmt deshalb die bereits im
+ursprünglichen Composer vorhandenen Zustandsregeln.
+
+Fehlendes Outcome bleibt INCOMPLETE, OUTCOME_MISSING, ohne Beobachtungs- und
+Outcome-Referenz, NOT_EVALUABLE und ohne Kalibrierungsmethode. FINALIZED verlangt
+eine OK-Beobachtung und ausdrückliche Referenzen. Eine abgeschlossene Messung
+bedeutet weiterhin nicht ausreichende Kalibrierungsevidenz: Enthaltung und
+unzureichende Evidenz bleiben zulässig und verwenden NONE. Die Aufnahme prüft
+außerdem die ursprüngliche Information-Set-ID, einen positiven ganzzahligen
+Bar-Zählwert und die exakte Reihenfolge Erzeugung vor Horizontende. Ungültige
+Kalendertage und ein Unterschied von einer Nanosekunde werden nicht verschluckt.
+
+Der [native Zustandsvertrag](UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md#native-learning-record-state-admission--2026-11-22)
+nennt 89 zuvor ungebremste Durchgaben und acht bereits bestandene Kontrollen.
+Drei native Gegenbeispiele belegen Speicherung, Kaltlesen und Export; je zwei
+erreichen am Original P5 ADMIT beziehungsweise den angenommenen M4-Eingang.
+Acht vollständige gültige Pakete und acht gespeicherte Dateien bleiben
+bytegleich. Die Prüfung verwendet ausschließlich synthetische Daten,
+temporäre Stores und gesperrtes Netzwerk. Eine bereits vom ursprünglichen
+JSON-Digest abgewiesene Float-Variante zählt nicht als neue Lücke.
+
+Der Record-Validator ist der einzige geänderte Produktowner. Bestehende
+Writer, Reader und Consumer verwenden ihn weiter; historische Dateien werden
+weder repariert noch umgeschrieben. Formeln, Werte, IDs, Digestumfang und
+Freigaben bleiben erhalten. Insbesondere bleibt BRIER_SCORE_V1 der erklärte
+lineare 1-p-Einzelfehler. Die Prüfung bestätigt deklarierte Widerspruchsfreiheit,
+keine unabhängige Authentizität der referenzierten Originale, vollständige
+Zeitprovenienz, numerische Qualität oder Lernwirkung. Die Semantik konditionierter
+Verhaltens-Snapshots benötigt weiterhin ihre eigene Quellenprüfung. Kein
+Gesamtbetriebsnachweis; BTC unverändert, keine Betriebs- oder Forschungsläufe.

@@ -72,3 +72,54 @@ and insufficient support retain their typed non-evaluation/abstention meanings.
 Existing records are not migrated or retroactively time-certified by cold read.
 The separate forecast constructor, conditioned-context clocks and other owners
 retain their own admission boundaries; this is not whole-system time closure.
+
+## Native learning-record state admission — 2026-11-22
+
+At baseline `c4394351f3551c0636a7165899d2addfa7e2d413`, the original bridge,
+store, export, conditioned P5 adapter and optional M4 export are connected.
+The bridge already distinguishes missing outcomes from finalized observations
+and calibration support. These branches are also present in the frozen import
+`9397d04a3`; the September Phase-8 contract above documents their intended
+evidence-only boundary. Earlier construction history is not independently
+recovered by this check.
+
+The common record validator now enforces those declared state relationships
+at native admission and cold read. INCOMPLETE requires OUTCOME_MISSING, absent
+observation/outcome references, NOT_EVALUABLE and method NONE. FINALIZED requires
+OK and explicit opaque observation/outcome references. Finalization does not
+imply sufficient calibration support: insufficient or non-evaluable receipts
+retain method NONE; sufficient receipts declare one of the existing calibration
+methods. Evaluability is checked on the receipt, not inferred from forecast
+support. The original information-set identity and positive integer n_bars
+grammar are reused. Creation must precede the horizon end, with real calendar
+validation and the existing exact nanosecond clock. UTC-Z syntax is retained.
+
+The corrected original-source regression baseline has 89 unblocked admissions
+and eight passing controls. Seventeen contradictory declarations are exercised
+through validation, export, append and fresh get/list; four further cases reach
+the existing conditioned P5 adjudicator or optional M4 intake. Original-source
+native probes confirm three persisted/read-back/exported contradictions, two
+P5 ADMIT results and two accepted M4 intakes. No experiment plane is started by
+these probes. The initial diagnostic additionally tried a float n_bars that
+the existing canonical JSON digest already rejects; that variant is excluded
+from the missing-admission count and retained as a separate failed diagnostic.
+
+Verification: `tests/learning/test_mi_learning_record_semantic_admission_v1.py`.
+Eight complete original valid receipt/export/adapter packets and eight stored
+files remain byte-identical, including missing outcomes, insufficient support,
+original calibration provenance, equivalent zero fractions, later evaluation,
+and conditioned records with present or missing realized behavior. Native JSON
+readback and idempotent replay remain supported. All evidence uses synthetic
+data, temporary stores and denied networking.
+
+Only the common admission owner changes; existing readers/writers and consumers
+inherit it. No historical file is rewritten or deleted. Rejected cold records
+require source investigation, not automatic repair. Digest/ID formulas, method
+numbers, units and evidence-only authority remain unchanged. BRIER_SCORE_V1
+retains its documented linear 1-p meaning. The receipt contains references,
+not the complete original forecast, observation or calibration. This gate
+therefore establishes declared coherence and creation/end ordering, not the
+authenticity or numerical correctness of referenced evidence, full temporal
+digest reconstruction, source label truth, forecast quality, account PnL,
+numeric learning, productive apply or whole-system operation. Conditioned
+behavior snapshots retain their separate source-validation boundary.

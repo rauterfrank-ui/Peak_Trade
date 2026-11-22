@@ -11,12 +11,30 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     require_non_empty_string_or_unknown,
     require_record_id,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+    require_opaque_ref,
+    require_positive_int,
+)
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
     compute_content_hash_v0,
     is_valid_sha256_hex_v0,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.constants_v1 import (
     STACK_DOMAIN,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import (
+    METHOD_BRIER_SCORE,
+    METHOD_RETURN_ERROR,
+    METHOD_THRESHOLD_HIT,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.support_disposition_v1 import (
+    EVALUABILITY_NOT_EVALUABLE,
+    EVALUABILITY_SUFFICIENT,
+    require_support_disposition,
+)
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
 )
 
 SCHEMA_VERSION: Final[str] = "mi_learning_evidence_record_v1"
@@ -65,6 +83,46 @@ class MiLearningEvidenceValidationError(ValueError):
 
 def derive_mi_learning_evidence_id_v1(*, reproducibility_digest: str) -> str:
     return f"mi.learn.{reproducibility_digest[:48]}"
+
+
+def _assert_learning_state_semantics_v1(raw: Mapping[str, Any]) -> None:
+    """Reapply the existing producer's state contract, without rebuilding its evidence."""
+    try:
+        require_record_id(raw["information_set_ref"], "information_set_ref")
+        require_positive_int(raw["n_bars"], "n_bars")
+        evaluability = require_support_disposition(raw["evaluability"], "evaluability")
+        if raw["evaluability"] != evaluability:
+            raise MiLearningEvidenceValidationError("MI_LEARNING_EVALUABILITY_INVALID")
+        finalized = raw["outcome_finalization_status"] == OUTCOME_FINALIZATION_FINALIZED
+        if finalized:
+            if raw["horizon_observation_status"] != "OK":
+                raise MiLearningEvidenceValidationError("MI_LEARNING_FINALIZED_STATUS_INVALID")
+            for field in ("evaluation_observation_ref", "actual_outcome_ref"):
+                require_opaque_ref(raw[field], field)
+        else:
+            if (
+                raw["outcome_finalization_status"] != OUTCOME_FINALIZATION_INCOMPLETE
+                or raw["horizon_observation_status"] != "OUTCOME_MISSING"
+                or raw["evaluation_observation_ref"] is not None
+                or raw["actual_outcome_ref"] is not None
+                or evaluability != EVALUABILITY_NOT_EVALUABLE
+            ):
+                raise MiLearningEvidenceValidationError("MI_LEARNING_INCOMPLETE_STATE_INVALID")
+        # A finalized measurement is distinct from sufficient calibration support.
+        methods = (
+            (METHOD_BRIER_SCORE, METHOD_RETURN_ERROR, METHOD_THRESHOLD_HIT)
+            if evaluability == EVALUABILITY_SUFFICIENT
+            else ("NONE",)
+        )
+        if raw["calibration_method"] not in methods:
+            raise MiLearningEvidenceValidationError("MI_LEARNING_CALIBRATION_STATE_INVALID")
+    except DdoValidationError as exc:
+        raise MiLearningEvidenceValidationError(str(exc)) from exc
+
+    created = capture_order_key_v1(raw["forecast_created_at_utc"])
+    horizon_end = capture_order_key_v1(raw["outcome_horizon_end_utc"])
+    if created >= horizon_end:
+        raise MiLearningEvidenceValidationError("MI_LEARNING_FORECAST_HORIZON_ORDER_INVALID")
 
 
 def build_mi_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
@@ -139,6 +197,7 @@ def build_mi_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingP
         raw.get("outcome_finalization_status"), "outcome_finalization_status"
     )
     require_mapping(raw.get("provenance"), "provenance")
+    _assert_learning_state_semantics_v1(raw)
 
     join_digest = str(raw.get("forecast_outcome_join_digest") or "")
     if not is_valid_sha256_hex_v0(join_digest):
