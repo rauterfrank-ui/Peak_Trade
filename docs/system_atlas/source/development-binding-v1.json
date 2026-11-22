@@ -957,9 +957,14 @@
       "sha256": "4339e1f4f1ecfcdbe76b343f0e94de0e6fc8bc3d6388ce8c1e45639270acf3cd"
     },
     {
+      "path": "docs/ops/specs/BTC_OCCUPIED_RECONCILIATION_AND_MONETARY_SCOPE_V1.md",
+      "before_sha256": null,
+      "sha256": "7def49b01956268c5444fe28d2ed5ae218813057e8b6e29d9056e9069d3a5bd6"
+    },
+    {
       "path": "docs/ops/specs/BTC_OFFLINE_CORE_CURSOR_G17_CLOSURE_V1.md",
       "before_sha256": null,
-      "sha256": "c6566f230be219436925b2b8a86a17437512f0226c62ead521dba55e70007d6a"
+      "sha256": "90a757e498c21b757942f93f1e06d99b263024338dd05bb65337aa0b77137b99"
     },
     {
       "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
@@ -2574,7 +2579,7 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "9551a33dce470ebf7381a8ac69d63af67837f95ded1cdad1a2ad5238e3a16602"
+      "sha256": "244eb9ede6e20ae6b59e0f71b68b41afd02c64df15f7895492f47997b2b80968"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -2584,7 +2589,7 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "937c0542f51d2988898a09b1751b6a4a42ba9e4234023e1d02befebccb99f84e"
+      "sha256": "863f358ca781228fb1f318bf3c3bc419ff548ea4ca2ff9c32df3412e325f73c0"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -4837,9 +4842,14 @@
       "sha256": "2b00a14b587f44f119722c45e237ee9dd7f399d2354181fcda6cb4b30bf51504"
     },
     {
+      "path": "tests/ops/test_btc_demo_occupied_reconciliation_boundary_v1.py",
+      "before_sha256": null,
+      "sha256": "06b5214ffafa0a72254f9957decb215d8f13e788d856621d4066a673286cca92"
+    },
+    {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "0564235f57ba68d55a448f0f8cf546104015e7869cdf5f21715265e37cf6530e"
+      "sha256": "35b513348eaf4cad977b09b5180f0d77d6c4c2cbb66622b1c54650ad916ccba4"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -6022,5 +6032,6 @@
       "sha256": "3f522959780c4a36ba3cd739cb7b6edd5e96ee0cab3c5c64e5ffba413acba280"
     }
   ],
-  "scope_addendum": "BTC offline continuation on PR7381: real original Core/G17/first-fill/C1/Exit and occupied consumers in both directions with explicit isolated state addressing. Original decision lineage is checked before opening; research readback and recovery retain first-publication provenance. USD/native prices remain distinct from USDC capital, with no sizing operands or settlement grant. Synthetic original journal/GET fixtures do not prove monetary entry or autonomous Demo operation. No session, credentials, network, send, training, protected owner or seal change."
+  "scope_addendum": "BTC offline continuation on PR7381: real original Core/G17/first-fill/C1/Exit and occupied consumers in both directions with explicit isolated state addressing. Original decision lineage is checked before opening; research readback and recovery retain first-publication provenance. USD/native prices remain distinct from USDC capital, with no sizing operands or settlement grant. Synthetic original journal/GET fixtures do not prove monetary entry or autonomous Demo operation. No session, credentials, network, send, training, protected owner or seal change.",
+  "btc_occupied_reconciliation_scope": "BTC occupied continuation requires a current original identity/episode/reconciliation and all original receipt clocks. Full parsed batches have immutable local readback; observation records create no capital ledger or authenticity/permit. Original owner lock fences in-process budget transitions during Core consumption. USD price, private settlement label, public index valuation and canonical risk numeraire retain separate roles. Native USD normalization and original TESTNET reversal/booking/continuous authorization remain open. No protected owner, financial formula, seal, credential, real session or send changes."
 }

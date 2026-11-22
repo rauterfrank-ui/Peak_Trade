@@ -6,6 +6,7 @@ A public USD/USDC index valuation never certifies account settlement or sizing.
 """
 
 from copy import deepcopy
+from contextlib import contextmanager
 from datetime import datetime
 from decimal import Decimal
 import json
@@ -243,25 +244,50 @@ class BtcDemoBudgetReconciliationHostV1:
                 account=self.account,
                 now_unix=now,
             )
-        return {
+        report = {
             "authority": "NONE",
             "identity": identity.to_dict(),
             "budget_revision": list(self.budget_revision_ref_v1()),
             "reconciliation": evidence,
             "source_observations": deepcopy(originals.rows),
         }
+        # The original exchange snapshot does not retain the account/config
+        # receipt. Keep the entire parsed batch for later freshness readback.
+        checksum = canonical_digest_v1(report)
+        path = demo._demo_lane_root(self.root) / "execution-observations" / f"{checksum}.json"
+        _need(path.resolve() == path, "BTC_DEMO_OBSERVATION_RECEIPT_SCOPE_INVALID")
+        immutable_json_v1(path, report)
+        _need(
+            json.loads(path.read_bytes()) == report,
+            "BTC_DEMO_OBSERVATION_RECEIPT_READBACK_MISMATCH",
+        )
+        return {**report, "observation_receipt_digest": checksum}
 
-    def bind_confirmed_entry_v1(
-        self,
-        *,
-        reconciliation,
-        repository_sha,
-        config_digest,
-        writer_session_id,
-        g17_producer,
-        cursor_store_root=None,
-    ):
-        """Use precisely the reconciled response batch, never a fresh mixed snapshot."""
+    def _require_matched_reconciliation_v1(self, reconciliation, *, require_receipt=False):
+        """Rebuild the exact original batch against the current original journal."""
+        _need(
+            type(reconciliation) is dict and reconciliation.get("authority") == "NONE",
+            "BTC_DEMO_ORIGINAL_RECONCILIATION_REPORT_REQUIRED",
+        )
+        reconciliation = deepcopy(reconciliation)
+        receipt = reconciliation.pop("observation_receipt_digest", None)
+        _need(
+            not require_receipt or receipt is not None,
+            "BTC_DEMO_OCCUPIED_OBSERVATION_RECEIPT_REQUIRED",
+        )
+        if receipt is not None:
+            _need(
+                type(receipt) is str
+                and len(receipt) == 64
+                and all(c in "0123456789abcdef" for c in receipt)
+                and receipt == canonical_digest_v1(reconciliation),
+                "BTC_DEMO_ORIGINAL_OBSERVATION_RECEIPT_MISMATCH",
+            )
+            original = demo._read_owner_json(
+                demo._demo_lane_root(self.root),
+                Path("execution-observations") / f"{receipt}.json",
+            )
+            _need(original == reconciliation, "BTC_DEMO_ORIGINAL_OBSERVATION_RECEIPT_MISMATCH")
         identity = parse_exchange_reconciliation_identity_v1(reconciliation["identity"])
         rid = identity.portfolio_reservation_id
         original = self.owner.execution_links_v1().get(rid)
@@ -278,6 +304,11 @@ class BtcDemoBudgetReconciliationHostV1:
         revision = tuple(reconciliation["budget_revision"])
         _need(revision == self.budget_revision_ref_v1(), "BTC_DEMO_BUDGET_HEAD_CHANGED")
         captured = demo.BtcDemoObservationsV1(None)
+        _need(
+            type(reconciliation["source_observations"]) is list
+            and len(reconciliation["source_observations"]) == 5,
+            "BTC_DEMO_ORIGINAL_RECONCILIATION_REPORT_REQUIRED",
+        )
         captured.rows = deepcopy(reconciliation["source_observations"])
         # The native first-fill reader rechecks quantity, position, fees and
         # terminal status. The stored snapshot digest binds the supplied batch.
@@ -293,11 +324,71 @@ class BtcDemoBudgetReconciliationHostV1:
             account_identity=self.account,
             expected_digest=revision[1],
         )
+        return identity, revision, captured, snapshot
+
+    @contextmanager
+    def occupied_decision_guard_v1(self, *, reconciliation, episode, now):
+        """Require current original execution truth while Core uses this episode.
+
+        No GET, admission, release or booking is performed. The original owner
+        lock fences another in-process budget transition during the Core write.
+        It does not provide a distributed transaction across the Core stores.
+        """
+        _number(now)
+        identity, revision, captured, snapshot = self._require_matched_reconciliation_v1(
+            reconciliation, require_receipt=True
+        )
+        _need(
+            identity.identity_digest() == episode.identity.episode_id,
+            "BTC_DEMO_OCCUPIED_RECONCILIATION_EPISODE_MISMATCH",
+        )
+        _need(
+            all(
+                0
+                <= now - datetime.fromisoformat(row["acquired_at"]).timestamp()
+                <= NUMERIC_EQUITY_TTL_SECONDS
+                for row in captured.rows
+            ),
+            "BTC_DEMO_OCCUPIED_RECONCILIATION_STALE_OR_FUTURE",
+        )
+        _need(
+            not snapshot.pending_orders_observation["response"]["data"],
+            "BTC_DEMO_OCCUPIED_PENDING_ORDER_UNRESOLVED",
+        )
+        fill = demo._confirmed_first_fill(captured.replay_v1(), identity)
+        _need(
+            (float(fill.price), fill.time_ms / 1000)
+            == (episode.binding.entry_price, episode.binding.entry_event_time),
+            "BTC_DEMO_OCCUPIED_ORIGINAL_ENTRY_CHANGED",
+        )
+        scope = self.owner.durable_scope_identity_v1()
+        with self.owner._lock:
+            current = self.owner._risk_snapshot_locked()
+            _need(current["durable_head"] == revision[1], "BTC_DEMO_BUDGET_HEAD_CHANGED")
+            require_budget_head_read_only_v1(
+                Path(scope["root"]),
+                account_identity=self.account,
+                expected_digest=revision[1],
+            )
+            yield
+
+    def bind_confirmed_entry_v1(
+        self,
+        *,
+        reconciliation,
+        repository_sha,
+        config_digest,
+        writer_session_id,
+        g17_producer,
+        cursor_store_root=None,
+    ):
+        """Use precisely the reconciled response batch, never a fresh mixed snapshot."""
+        identity, revision, captured, _ = self._require_matched_reconciliation_v1(reconciliation)
         return demo.bind_btc_demo_first_fill_to_v2(
             reads=captured.replay_v1(),
             testnet_root=self.root,
             expected_uid=self.account,
-            reservation_id=rid,
+            reservation_id=identity.portfolio_reservation_id,
             revision_ref=revision,
             repository_sha=repository_sha,
             config_digest=config_digest,

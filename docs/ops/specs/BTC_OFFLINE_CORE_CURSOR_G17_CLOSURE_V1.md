@@ -114,3 +114,11 @@ keinen Feed, Signer, Order-/Cancelport oder Scheduler; der bisherige Stundenhost
 bleibt GET/Recovery. Kein Startkommando und kein T0 werden erzeugt.
 Versiegelter Core, Budgetowner, Budgetstore, Policyprojektion und Siegel bleiben
 unverändert. Die Nachweise sind keine Gesamtbetriebs- oder Qualitätsabnahme.
+
+## Nachfolgende lokale Positions- und Finanzprüfung
+
+Die [Fortschreibung zur aktuellen Positionswahrheit](BTC_OCCUPIED_RECONCILIATION_AND_MONETARY_SCOPE_V1.md)
+prüft den Originalabgleich vor weiteren Occupied-Marks, dessen vollständigen
+lokalen Quellenbeleg und die getrennten monetären Rollen. Der vorstehende
+PR-#7382-Bericht behält seinen damaligen Prüfumfang. USD-/USDC-Zulassung und
+vollständiger autonomer Demohandel bleiben gesondert offen; nichts wird gestartet.
