@@ -4849,7 +4849,12 @@
     {
       "path": "tests/ops/test_current_law_impact_map_v1.py",
       "before_sha256": "0283ae8ddd9d17e5c23cecb522680f3258fec1214ad69e66293596a079a7a23f",
-      "sha256": "d996841d4bb837b1c9714ddd51bc6d260b87894875f812beaa6dddc07dd5fd22"
+      "sha256": "ab21436cc17dd2b2c02b24d3c839a062bcd82686da84a7f01e4b4306a99b2957"
+    },
+    {
+      "path": "tests/ops/test_current_law_master_v2_source_guard_v1.py",
+      "before_sha256": null,
+      "sha256": "3dc4ac0da04833a2e92cc19350b46cfce76bb68c079b6b04806152b84aa9a0ec"
     },
     {
       "path": "tests/ops/test_current_mf_member_to_pinned_cap23_n1_adapter_v1.py",
