@@ -75,6 +75,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
     instrument_card_market: Any = None,
     instrument_card_budget: Any = None,
+    instrument_card_execution_clock: Any = None,
 ) -> HardenedWallclockBridgeOutcomeV2:
     params = MarketDataPolicyParamsV1(
         venue=VENUE_OKX,
@@ -147,6 +148,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         offline_candidate=offline_candidate,
         instrument_card_market=instrument_card_market,
         instrument_card_budget=instrument_card_budget,
+        instrument_card_execution_clock=instrument_card_execution_clock,
         **finalized_kwargs,
     )
     labels = {

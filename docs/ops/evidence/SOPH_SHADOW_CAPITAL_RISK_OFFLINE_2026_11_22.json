@@ -1,0 +1,131 @@
+{
+  "schema": "soph_shadow_capital_risk_offline_evidence.v1",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "state": "LOCAL_OFFLINE_CHECKED_NOT_COMMITTED",
+  "base_sha": "9e6fd12a2872a61540701ef1439808502de8acfe",
+  "branch": "codex/soph-capital-risk-offline-20261122",
+  "source_files_sha256": {
+    "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md": "9a7256301f67c74a4a81ddeadfd9c8e8b4497fcc9c260c8e6ff9b3f9e79862b9",
+    "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md": "ab2ea6885b16a67002e865d05d2457641ea9ebeb8690d43a3ea56b5279ae7e96",
+    "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py": "6e16883e446bf6fdb079d1638b4d311d63eaf679f72b45f4b86ad55294191482",
+    "src/ops/soph_shadow_capital_risk_binding_v1.py": "9424730ab3f14ab8239b90734359ef6f587e5f9e05444fd2303541cae3a7c70e",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py": "0794c18d4d57ec6716a5245d460ded23cb4bb38520f833917841f6a6dda44d1a",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py": "d4da5187f56db34468efa049338f4abf27cad09523f9a955975fbc9646f0bd83",
+    "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py": "4c0fca96d3311609aa0d27506638fe96592756e68a56e5dbee1b2160e93aafc0",
+    "src/trading/master_v2/mv2_offline_boundary_dynamic_price_context_v1.py": "86af9fdb955bb59c2595fd600eba6eb9ca2bd23254950c5c4309f3db337b43a5",
+    "tests/ops/test_instrument_card_stream_v1.py": "b12da846c0b1cbf61e31ab0c65ca3d8548144d190c1d4638d2dd6d3b88b8096a",
+    "tests/ops/test_soph_shadow_capital_risk_binding_v1.py": "605bab5bcdf4ba6108bd7b8fcb3d3a8bf0e16dd56907dcc0f17fe2b14eedec6a"
+  },
+  "tests": {
+    "tests": 330,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 211.489,
+    "passed": 329,
+    "failed_cases": [
+      {
+        "classname": "tests.ops.test_hardening_v2_scope_direction_overlay_generator_inert_v1",
+        "name": "test_core_logic_change_is_adjudicated_honestly"
+      }
+    ],
+    "result": "329_PASSED_1_PREEXISTING_RUNBOOK_REFERENCE_FAILURE_OPEN",
+    "log_sha256": "2d8ab9fc8c3d4d9132123cafb4467e00a6519416ee35d744b23f56a6ff57ae8c",
+    "junit_sha256": "5256fbc18cc9a1ec502e5ac99bc33ab7b81f59eb52b94e4f041f81a60ac6ad7e",
+    "exit_code": 1
+  },
+  "clean_core_files_unchanged_from_base": {
+    "src/trading/master_v2/double_play_state.py": "a4946a56874db5ed86c66cc0bac16f7a6b4b5d7e71eab04ed016f5933209569e",
+    "src/trading/master_v2/canonical_scope_initialization_v1.py": "c7e9816207d8d90f0e09d05fa658c1cab85590c9b56d218387cc36992fad5a58",
+    "src/trading/master_v2/suitability_binding_v1.py": "cba6a5ddd05c14da93279cd0727d36cad54cd4c9818253b9d6394965f084a950",
+    "src/trading/master_v2/canonical_volatility_binding_and_provenance_transport_v1.py": "339db51bc6d8a9fd783449dcfd65230c2d874fc7e70cd3fb63b61b1ff2bdc227",
+    "src/trading/master_v2/survival_assessment_v1.py": "16d45d5842fe66af526d611a3bb2e9d3cad8458465e3d981d7e5fe93311c5381",
+    "src/trading/market_state/observation_identity_v1.py": "5d686edbb5818dcf6df46e6a69f12de6a6f55922315ed19c0ba1f31c998e5dde",
+    "src/trading/master_v2/canonical_market_context_v1.py": "12385f61184ed6997e99c713bfcc5b3c4f4fa2a0fbaa936b1a9252f487f4b347",
+    "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py": "e557f73eb289ff594ea33474376c66be8cc671b70d666473a1fb57ba81296a30",
+    "src/trading/master_v2/chop_scope_event_policy_binding_v1.py": "b7dc7e96afef06bf2b48657818da0c8933c61b6427932390add48718f73b92df",
+    "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py": "bd4caa347a0efddb630190739e00afd2592cda238a48bff45d13e25518cb7c69",
+    "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py": "929dc8072ca58e20fbe12b517072b987a672351ec05b9534f1d6b01c63d73dc3",
+    "src/trading/master_v2/double_play_composition_matrix_v1.py": "e524ef55e29a8f38502a516b206c5ed2d17cb180b459061a1ccab937d02986c9",
+    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py": "6f5e4413da1eeb5417343f2af1a16c4be3d094e37a529a1d0670204f069e7d40",
+    "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py": "aefe4a2eb77fe5e122ab347bac09dcaf1748001fb7128b73f57b17f8564eef89",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+    "src/trading/market_state/directional_confirmation_progress_v1.py": "e1784e467d47867e2ae66e1a31904625b9c6cfe4ef794a41f3048044ca83443f",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py": "9ad4fc09e61e38375c635042c5f8e0fc238e257ee8eb945714553f359b20e81c",
+    "src/trading/market_state/distinct_market_observation_acceptor_v1.py": "8943b621f0d6fbf8d47e87856f2c75f489d875f89ea89188100e4bac9ab5e7f2",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "cccf8b939970f63a46db19e88e2a91c087ba76f22cde2fa3e85684f143147254",
+    "src/trading/master_v2/directional_assessment_v1.py": "d8e9c0567a861208fb426521914579b3674dd7e2628987517a8d9b799ae71e01"
+  },
+  "freeze_refs": {
+    "freeze/clean-system-2026-11-06-v1": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "freeze/clean-system-complete-2026-11-06-v1": "160db0e90f1392c5caf3d115808f425d395b7c5e"
+  },
+  "historical_audit_sha256": "728873079e520bb096a1d468ef28711201291b8a7736b37dc2f071d75508cb3a",
+  "audit_script_sha256": "410bf43fb61b65e313f27f6c2ee0e3516eb54b9036b8500c361ec111858fffcd",
+  "historical_counts": {
+    "current_boundary_accepts_original_readback": 137,
+    "cycles": 137,
+    "original_boundary_missing": 137,
+    "original_budget_bound": 137,
+    "original_context_unresolved": 137,
+    "original_no_action": 137,
+    "original_portfolio_flat": 137
+  },
+  "source_integrity": {
+    "confirm_tokens_not_read": true,
+    "files": 33014,
+    "manifest": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/Runvorbereitung/2026-11-22-paper-shadow-offline-mark-clock/source-file-sha256.json",
+    "manifest_sha256": "3f8da2b023e23c4cee84e7b308531cc3bae6fd5679ee2c8df57bfa8cbfae51eb",
+    "unchanged_from_previous_audit": true
+  },
+  "open_baseline_failure": {
+    "base_sha": "9e6fd12a2872a61540701ef1439808502de8acfe",
+    "files": {
+      "tests/ops/test_hardening_v2_scope_direction_overlay_generator_inert_v1.py": {
+        "sha256": "faec3d6de490869aa8da19d712dfa6f664c8a0d7b518c54959cf779581cc58b1",
+        "current_equals_base": true
+      },
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md": {
+        "sha256": "d9600206cdc53decd510f43aa2f50610865b7bc2f257b9a2d13835ac8a21b10d",
+        "current_equals_base": true
+      }
+    },
+    "missing_section": "11.2.1.E HARDENING_V2_SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT",
+    "absent_at_base_and_current": true,
+    "failure": "ValueError: substring not found",
+    "test_unchanged": true,
+    "runbook_unchanged": true,
+    "runtime_check_replacement": false
+  },
+  "evidence_root": "/Users/frnkhrz/Documents/ChatGPT/Peak Trade/Runvorbereitung/2026-11-22-soph-capital-risk-offline",
+  "operating_sessions_started": false,
+  "network_used": false,
+  "btc_testnet_owners_configs_and_runtime_unchanged": true,
+  "verified_scope": [
+    "137 unchanged archived model/market/budget readbacks build the explicit offline financial boundary.",
+    "Native contract multiplier, limits and quantity remain with original CRS and original canonical intent.",
+    "Original mapper consumes native position quantities; only the analytical portfolio consumer projects base quantity.",
+    "Model cost/next-funding allowances, current source clock, state/digest and FX counterexamples fail closed.",
+    "Original full offline host, strict typed DDO reader, legacy dynamic boundaries, risk owner and Clean Core seal checked."
+  ],
+  "limitations": [
+    "Missing financial input proven in every archived cycle; no_action is not proof of a suppressed entry.",
+    "New boundary construction validated against each unchanged original portfolio/market/budget; historical decisions never rewritten.",
+    "No counterfactual full-Core replay or new analytical fill is claimed by this audit.",
+    "Daily-loss field represents the explicit bounded Shadow test-loss algebra, never a private account daily-loss balance.",
+    "Natural entry, profitable trade, autonomous operating continuation and restart permission are not established.",
+    "Positive sizing/intent/projection examples are explicit mechanism fixtures, not naturally observed full-Core trades.",
+    "Funding allowance is not a booked payment; original Shadow fees/slippage/funding model remains unchanged.",
+    "No actual-account daily-loss balance, capital reservation, autonomous continuation or insolvent-position exit guarantee.",
+    "Extended owner suite has one unchanged preexisting Runbook-section reference failure; no blanket test-suite PASS is claimed."
+  ],
+  "delivery_format_correction": {
+    "first_pr_commit": "3e9854696751af503bd947455cadfb3644c09a0e",
+    "path": "tests/ops/test_instrument_card_stream_v1.py",
+    "prior_tested_sha256": "b12da846c0b1cbf61e31ab0c65ca3d8548144d190c1d4638d2dd6d3b88b8096a",
+    "formatted_sha256": "78d7f39e31cef2664f19bd91d8b3941c15c8ade00ef9a483e45627bbad5239e2",
+    "formatter": "ruff 0.15.22",
+    "test_ast_identical": true
+  }
+}

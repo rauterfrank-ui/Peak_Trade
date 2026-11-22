@@ -372,6 +372,14 @@ Risiko-/Sizing-Menge noch deren vollständige Kostenprüfung. Reservierung
 bleibt bei diesen Modellen ausdrücklich unbekannt beziehungsweise außerhalb
 ihres Holdmodells; `null` wird nicht als null reserviertes Geld verwendet.
 
+Der [ergänzte SOPH-Kapital-/Risikoanschluss](./SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md)
+führt diese ursprüngliche Modellbasis jetzt vor dem Replay in dessen vorhandene
+finanzielle Schnittstelle. Native Kontrakte bleiben bis zum Original-Intent
+erhalten; die Umrechnung in Basismengen geschieht ausdrücklich am analytischen
+Portfolio-Consumer. Ein zusätzlicher Kosten-/Frischecheck kann neue analytische
+Exposition halten. Dieser Offlineanschluss ist keine private Accountwahrheit
+oder nachträgliche Änderung der archivierten Entscheidungen.
+
 Die aktuelle Slot-/Instrumentzuordnung erreicht die Karte bereits automatisch
 aus ihrem tatsächlichen Verbraucher. Der Paper-Driver übergibt `session.bound`
 und die Lane des ursprünglichen Opening- beziehungsweise Fortsetzungsowners.

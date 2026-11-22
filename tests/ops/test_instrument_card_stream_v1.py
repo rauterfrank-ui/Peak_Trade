@@ -268,11 +268,22 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
         session_runtime_v1 as shadow_runtime,
     )
+    from trading.master_v2 import capital_risk_sizing_offline_replay_binding_adapter_v0 as sizing
 
     first = _market(slot=SOPH)
     captures = []
     consumed_assignments = []
+    consumed_capital = []
     original_cycle = shadow_runtime.run_hardened_wallclock_bridge_observation_cycle_v2
+    original_sizing = sizing.bind_capital_risk_sizing_offline_replay_evidence_v0
+
+    def observe_capital(evidence, *, capital_context=None):
+        consumed_capital.append(capital_context)
+        return original_sizing(evidence, capital_context=capital_context)
+
+    monkeypatch.setattr(
+        sizing, "bind_capital_risk_sizing_offline_replay_evidence_v0", observe_capital
+    )
 
     def observe_consumer(**kwargs):
         state = kwargs["bridge_state"]
@@ -331,6 +342,16 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert len(evaluated) > 1
     assert len(captures) > 1
     assert len(consumed_assignments) > 1
+    assert len(consumed_capital) == len(cycles)
+    assert all(context is not None for context in consumed_capital)
+    for context, cycle in zip(consumed_capital, cycles, strict=True):
+        assert context.reference_price == D(str(cycle["price_basis"]["mid_price"]))
+        assert context.instrument.lot_size == context.instrument.minimum_quantity == 1
+        assert context.instrument.contract_multiplier == 10
+        assert context.total_capital_limit == 25
+        assert context.capital_risk_mode == "OFFLINE_ALGEBRA"
+        assert "CAPITAL_RISK_CONTEXT_UNRESOLVED" not in cycle["reason_codes"]
+        assert cycle["soph_shadow_capital_binding"]["authority"] == "NONE"
     assert set(consumed_assignments) == {(SOPH.lane_id, SOPH.instrument_id, SOPH.native_id)}
     for row in evaluated:
         assert (
@@ -346,6 +367,16 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         assert row["assignment_status"] == "EXPLICIT_ISOLATED_TEST_BINDING"
         inp = row["master_v2"]["prepared_input"]
         assert inp["instrument_id"] == SOPH.instrument_id
+        boundary = inp["current_instrument_capital_risk_sizing_boundary_state_file"]
+        assert D(boundary["account_equity"]) <= 25
+        assert D(boundary["scope_capital_limit"]) <= 25
+        assert D(boundary["lot_size"]) == 1
+        assert D(boundary["instrument_quantity_constraints"]["contract_multiplier"]) == 10
+        assert boundary["raw_payload"]["budget_source_digest"] == row["budget"]["source_digest"]
+        assert (
+            inp["productive_offline_simulated_portfolio_position_observation_v1"]["instrument_id"]
+            == SOPH.instrument_id
+        )
         ctx = inp["canonical_market_context"]
         assert ctx["market_type"] == "futures" and ctx["bar_interval"] == "1m"
         assert ctx["mark_price"] == row["market"]["mark_price"]
@@ -519,7 +550,9 @@ def test_card_observer_cannot_mutate_original_governed_input():
     assert original.seam["parameters"]["value"] == 7
 
 
-@pytest.mark.parametrize("action", ["native", "off_grid", "over_budget", "close"])
+@pytest.mark.parametrize(
+    "action", ["native", "off_grid", "over_budget", "expired_before_fill", "cost_envelope", "close"]
+)
 def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner(tmp_path, action):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
         prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
@@ -531,7 +564,9 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         run_hardened_bridge_cycle_v2,
     )
 
-    market = _market(slot=SOPH, depth=1000)
+    market = _market(
+        slot=SOPH, depth=1000, **({"price": D("0.02498")} if action == "cost_envelope" else {})
+    )
     state = HardenedBridgeSessionStateV2(
         instrument_id=market.slot.instrument_id, venue_instrument_id=market.slot.native_id
     )
@@ -548,7 +583,11 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
     )
     base = market.native_contract.contract_size
-    quantity = base if action == "native" else base / 2 if action == "off_grid" else base * 1000
+    quantity = (
+        base / 2 if action == "off_grid" else base * 1000 if action == "over_budget" else base
+    )
+    if action == "cost_envelope":
+        quantity = D(1000)
     side = "BUY"
     if action == "close":
         state.portfolio.apply_intended_action(
@@ -569,11 +608,18 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         session_id="explicit-forced-wiring-fixture",
         instrument_card_market=market,
         instrument_card_budget=budget,
+        instrument_card_execution_clock=lambda: (
+            market.observed_unix + (6 if action == "expired_before_fill" else 0)
+        ),
         forced_actionable={"intended_side": side, "intended_quantity": str(quantity)},
     )
-    if action in {"off_grid", "over_budget"}:
+    if action in {"off_grid", "over_budget", "expired_before_fill", "cost_envelope"}:
         assert cycle["fill"] is None
         assert not cycle["instrument_card_execution_check"]["measurement_admitted"]
+        if action == "cost_envelope":
+            assert cycle["instrument_card_execution_check"]["reason_codes"] == [
+                "SOPH_SHADOW_MODEL_COST_ENVELOPE_EXCEEDED"
+            ]
     else:
         assert cycle["fill"]["side"] == side
         if action == "native":

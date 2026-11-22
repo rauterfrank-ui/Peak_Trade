@@ -69,6 +69,9 @@ class CapitalRiskSizingBacktestStateFileRecordV0:
     state_file_digest_ref: str
     dynamic_price_context_binding_ref: str | None = None
     raw_payload: Mapping[str, Any] | None = None
+    # Explicit in-memory native metadata. Legacy serialized fixtures retain
+    # their existing multiplier-one path; this does not change their parser.
+    instrument_quantity_constraints: InstrumentQuantityConstraintsV1 | None = None
 
 
 @dataclass(frozen=True)
