@@ -252,7 +252,14 @@ class BtcDemoBudgetReconciliationHostV1:
         }
 
     def bind_confirmed_entry_v1(
-        self, *, reconciliation, repository_sha, config_digest, writer_session_id, g17_producer
+        self,
+        *,
+        reconciliation,
+        repository_sha,
+        config_digest,
+        writer_session_id,
+        g17_producer,
+        cursor_store_root=None,
     ):
         """Use precisely the reconciled response batch, never a fresh mixed snapshot."""
         identity = parse_exchange_reconciliation_identity_v1(reconciliation["identity"])
@@ -296,6 +303,7 @@ class BtcDemoBudgetReconciliationHostV1:
             config_digest=config_digest,
             writer_session_id=writer_session_id,
             g17_producer=g17_producer,
+            cursor_store_root=cursor_store_root,
         )
 
     def supervise_reconciliation_v1(

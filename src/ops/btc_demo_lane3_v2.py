@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from copy import deepcopy
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
@@ -532,6 +532,55 @@ def read_btc_demo_first_fill_for_research_v1(testnet_root: Path, episode_id: str
     }
 
 
+def _require_original_entry_cursor_v1(cursor_root, identity, created, g17_producer):
+    """Check original decision and finalized G17 before creating an entry episode."""
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+        load_current_productive_sidestate_confirmation_cursor_v1,
+        parse_current_productive_sidestate_confirmation_cursor_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+        read_current_core_entry_assessment_frame_v1,
+    )
+    from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+        CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
+    )
+
+    raw = load_current_productive_sidestate_confirmation_cursor_v1(cursor_root)
+    if raw is None:
+        raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_CURSOR_REQUIRED")
+    cursor = parse_current_productive_sidestate_confirmation_cursor_v1(raw)
+    frame = read_current_core_entry_assessment_frame_v1(cursor)
+    if (
+        (cursor.instrument_id, cursor.venue_native_id)
+        != (identity.instrument_id, identity.native_id)
+        or frame["parent"]["decision_id"] != identity.canonical_decision_id
+        or frame["entry"]["decision_outcome"] != identity.decision_outcome.lower()
+    ):
+        raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_DECISION_MISMATCH")
+    if type(g17_producer) is not CanonicalVolatilityTypedRuntimeProducerScaffoldV1:
+        raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_G17_LINEAGE_REQUIRED")
+    port = g17_producer.output_port_v1()
+    if port.estimate is None:
+        raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_G17_LINEAGE_REQUIRED")
+    (latest,) = g17_producer.history.trailing_window_records_v1(count=1)
+    market = json.loads(cursor.entry_assessment_frame["market_context"]["canonical"])
+    c1 = latest.event_time.unix_seconds
+    mark_time = datetime.fromisoformat(market["market_event_time"]).timestamp()
+    if (
+        port.estimate is None
+        or (latest.canonical_instrument_id, latest.venue_instrument_id)
+        != (identity.instrument_id, identity.native_id)
+        or port.as_of_event_time.timestamp() != c1
+        or market["canonical_volatility_estimate"]["source_digest"] != port.estimate.source_digest
+        or datetime.fromisoformat(
+            market["canonical_volatility_estimate"]["as_of_event_time"]
+        ).timestamp()
+        != c1
+        or not c1 + port.estimate.bar_interval_seconds <= mark_time <= created.timestamp()
+    ):
+        raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_G17_LINEAGE_REQUIRED")
+
+
 def bind_btc_demo_first_fill_to_v2(
     *,
     reads: OkxEeaDemoReadsV1,
@@ -543,10 +592,15 @@ def bind_btc_demo_first_fill_to_v2(
     config_digest: str,
     writer_session_id: str,
     g17_producer,
+    cursor_store_root: Path | None = None,
 ):
     """Open/recover V2 from an original TESTNET submit attempt and exact venue readback."""
     lane_root = _demo_lane_root(testnet_root)
     cursor_root = lane_root / "cursor"
+    if cursor_store_root is not None:
+        if Path(cursor_store_root) != cursor_root / _LANE:
+            raise ValueError("BTC_DEMO_ISOLATED_CURSOR_ROOT_REQUIRED")
+        cursor_root = Path(cursor_store_root)
     if cursor_root.resolve() != cursor_root:
         raise ValueError("BTC_DEMO_ISOLATED_ROOT_REQUIRED")
     identity, created, budget_root = _read_original_attempt(
@@ -577,20 +631,27 @@ def bind_btc_demo_first_fill_to_v2(
         require_budget_head_read_only_v1(
             budget_root, account_identity=expected_uid, expected_digest=revision_ref[1]
         )
-        immutable_json_v1(lane_root / "confirmed-first-fills" / f"{episode_id}.json", evidence)
         existing = episode_root.exists()
-        episode = open_position_episode_binding_v1(
+        common = dict(
             identity=_episode_identity(identity),
             state_root=episode_root,
-            mode="recover" if existing else "create",
             repository_sha=repository_sha,
             config_digest=config_digest,
             writer_session_id=writer_session_id,
             entry_source_ref=source_ref,
             entry_price_basis="CONFIRMED_POSITION_ENTRY_PRICE",
-            entry_price=None if existing else float(fill.price),
-            entry_event_time=None if existing else fill.time_ms / 1000,
         )
+        episode = open_position_episode_binding_v1(mode="recover", **common) if existing else None
+        if episode is None or episode.binding.current_cursor_publication is None:
+            _require_original_entry_cursor_v1(cursor_root, identity, created, g17_producer)
+        immutable_json_v1(lane_root / "confirmed-first-fills" / f"{episode_id}.json", evidence)
+        if episode is None:
+            episode = open_position_episode_binding_v1(
+                mode="create",
+                entry_price=float(fill.price),
+                entry_event_time=fill.time_ms / 1000,
+                **common,
+            )
         if (episode.binding.entry_price, episode.binding.entry_event_time) != (
             float(fill.price),
             fill.time_ms / 1000,
@@ -618,7 +679,16 @@ def bind_btc_demo_first_fill_to_v2(
         research_path = Path("research-first-fills") / f"{episode_id}.json"
         if (lane_root / research_path).exists():
             original = _read_owner_json(lane_root, research_path)
-            confirmed_at = original["body"]["confirmed_at_utc"]
+            retained = read_btc_demo_first_fill_for_research_v1(testnet_root, episode_id)
+            if (
+                retained["source_digest"] != original["digest"]
+                or retained["opening_fill"] != evidence
+            ):
+                raise ValueError("BTC_DEMO_RESEARCH_ORIGINAL_ENTRY_MISMATCH")
+            # Opening provenance belongs to the first publication. A later
+            # recovery writer or budget observation does not rewrite it.
+            research = original["body"]
+            confirmed_at = research["confirmed_at_utc"]
         else:
             confirmed_at = fill.confirmed_at_utc
         research["confirmed_at_utc"] = confirmed_at
