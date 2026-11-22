@@ -119,5 +119,13 @@
     "Funding allowance is not a booked payment; original Shadow fees/slippage/funding model remains unchanged.",
     "No actual-account daily-loss balance, capital reservation, autonomous continuation or insolvent-position exit guarantee.",
     "Extended owner suite has one unchanged preexisting Runbook-section reference failure; no blanket test-suite PASS is claimed."
-  ]
+  ],
+  "delivery_format_correction": {
+    "first_pr_commit": "3e9854696751af503bd947455cadfb3644c09a0e",
+    "path": "tests/ops/test_instrument_card_stream_v1.py",
+    "prior_tested_sha256": "b12da846c0b1cbf61e31ab0c65ca3d8548144d190c1d4638d2dd6d3b88b8096a",
+    "formatted_sha256": "78d7f39e31cef2664f19bd91d8b3941c15c8ade00ef9a483e45627bbad5239e2",
+    "formatter": "ruff 0.15.22",
+    "test_ast_identical": true
+  }
 }

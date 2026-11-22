@@ -608,8 +608,9 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         session_id="explicit-forced-wiring-fixture",
         instrument_card_market=market,
         instrument_card_budget=budget,
-        instrument_card_execution_clock=lambda: market.observed_unix
-        + (6 if action == "expired_before_fill" else 0),
+        instrument_card_execution_clock=lambda: (
+            market.observed_unix + (6 if action == "expired_before_fill" else 0)
+        ),
         forced_actionable={"intended_side": side, "intended_quantity": str(quantity)},
     )
     if action in {"off_grid", "over_budget", "expired_before_fill", "cost_envelope"}:

@@ -744,7 +744,7 @@
     {
       "path": "docs/ops/evidence/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_2026_11_22.json",
       "before_sha256": null,
-      "sha256": "7ba5d6bee99b618a9bf702fa8ec1da43953dd5b14752df3424737683587e7a02"
+      "sha256": "44ebe2e0c50df9794e041e8511881deb03c255b624412ce04583f8a7d5fa1b28"
     },
     {
       "path": "docs/ops/evidence/TREASURY_CAPITAL_SOURCE_SEMANTICS_2026_11_07.json",
@@ -5429,7 +5429,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "b12da846c0b1cbf61e31ab0c65ca3d8548144d190c1d4638d2dd6d3b88b8096a"
+      "sha256": "78d7f39e31cef2664f19bd91d8b3941c15c8ade00ef9a483e45627bbad5239e2"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
