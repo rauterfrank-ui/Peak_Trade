@@ -82,3 +82,49 @@ unchanged; this does not certify numerical calibration quality, account PnL,
 decision quality, model learning, causal effects, automatic apply or productive
 operation. Available local Git history starts with the frozen November import;
 earlier construction history is not independently recovered here.
+
+## Probability admission at the existing owner — 2026-11-22
+
+At baseline `01008238316f0742dca0363070f373e8dae74aa5`, forecast minting and
+consumer revalidation already use the same probabilistic payload grammar.
+Directional admission only checked the total; threshold-event admission used
+two comparisons. Negative components could cancel values above one; NaN could
+pass both gates. Boolean values were converted to numbers. Original decimal
+text just outside a bound could round onto zero or one during float conversion.
+These are admission gaps in existing connections, not missing new producers.
+
+The shared grammar now requires each p_up/p_down/p_flat and p_event value to be
+a finite numeric int, float or decimal string in the inclusive interval [0, 1].
+Booleans are not probabilities. Decimal comparison checks the original numeric
+text before conversion; the existing left-to-right float sum and absolute
+directional sum tolerance of 1e-9 remain. Original payload values, types, digest
+canonicalization and forecast IDs are retained for admitted inputs. Validation
+does not clamp, renormalize, rewrite historical records or invent missing data.
+Existing field-presence and unsupported-kind checks remain in their owners.
+
+Native minting, cold forecast validation, calibration, the attribution query,
+MI learning composition and ingest inherit this gate. Invalid inputs raise
+DdoValidationError before a successful consumer result or new learning write.
+The corrected original-source test baseline has 44 unblocked contradictions
+and 21 already-passing controls. Four fully native original-source probes
+reached synthetic learning-store readback; directional calibration included
+scores 1.1 and NaN. No mocked validator was needed to establish those paths.
+The earlier diagnostic test attempt had fixture/call-signature faults and is
+retained separately; it is not the corrected baseline or a passing proof.
+
+Verification: `tests/learning/test_forecast_probability_semantic_admission_v1.py`.
+Twelve complete native valid packets and nine serialized synthetic learning
+records captured before the source change remain byte-identical afterward,
+including JSON cold validation, absent outcomes, insufficient support, zero
+and one, decimal strings, signed zero and the original sum tolerance.
+All verification uses synthetic data, temporary stores and denied networking.
+
+This checks dimensionless probability admission, not forecast accuracy or
+calibration quality. Threshold units, mean/std-return and behavior-label
+semantics are not established by this gate. The existing directional owner
+computes 1 minus the realized-class probability under its BRIER_SCORE_V1 label;
+its mathematical interpretation remains a separate open issue, without a
+silent numerical or historical-schema change here. Existing downstream float
+precision, identity scope, missing-reference limits and evidence-only authority
+remain. No account PnL, model update, productive apply or operational readiness
+is inferred. Local construction history remains limited to the frozen import.

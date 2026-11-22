@@ -1696,3 +1696,37 @@ Crash-/Stromausfallfestigkeit. Weitere bisher offene Systemverzweigungen bleiben
 offen. Neue Verbindungen wurden nur für die konkret belegte MI-Query-Lücke im
 vorhergehenden Abschnitt ergänzt; bestehende Owner und Schutzgrenzen bleiben
 erhalten. BTC und Betriebsfreigaben wurden nicht verändert.
+
+### Wahrscheinlichkeitswerte an der bestehenden MI-Grenze — 22. November
+
+Am Ausgangsstand `01008238316f0742dca0363070f373e8dae74aa5` sind Forecast-Mint,
+Kalibrierung, Referenzquery und MI-Lernaufnahme bereits über den gemeinsamen
+Payloadvalidator verbunden. Die numerische Eintrittsprüfung war jedoch
+unvollständig: negative und über eins liegende Komponenten konnten sich in der
+Summe aufheben; NaN und Bool-Werte konnten passieren. Dezimaltexte knapp
+außerhalb [0, 1] konnten bei Float-Konvertierung auf eine Grenze runden.
+
+Jetzt prüft derselbe Owner jede Richtungs- und Ereigniswahrscheinlichkeit als
+endlichen numerischen Wert innerhalb [0, 1]. Bool ist kein numerischer Forecast.
+Der Vergleich von Dezimaltexten erfolgt vor der Float-Konvertierung. Die
+bisherige Richtungssumme mit Toleranz 1e-9 bleibt erhalten. Es entstehen keine
+zusätzlichen Datenpfade und keine neue Rotations- oder Freigabelogik.
+Fehler stoppen vor erfolgreicher Ausgabe beziehungsweise neuem Lernschreiben;
+unzulässige Werte werden weder geklemmt noch automatisch umverteilt.
+
+Der [Wahrscheinlichkeitsvertrag](MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md#probability-admission-at-the-existing-owner--2026-11-22)
+bindet die Gegenbelege und Grenzen: 44 am Originalcode belegte Durchgaben und
+21 bereits bestehende Kontrollen; vier native Gegenbeispiele erreichten den
+synthetischen Lernstore. Zwölf vollständige gültige Originalpakete und neun
+gespeicherte Lernrecords bleiben bytegleich. Fehlende Outcomes, unzureichende
+Evidenz, Originalwerte und -typen, IDs, Digests sowie zuständige Writer bleiben
+erhalten. Auswahlreceipts werden auch in den Proben nicht als Marktinstrument-ID
+ausgegeben. Alle Prüfungen verwenden synthetische Daten bei gesperrtem Netzwerk.
+
+Die dimensionslose Wahrscheinlichkeitszulassung belegt keine Prognosequalität.
+Die bestehende Richtungsformel 1 minus Realisierungsklassen-Wahrscheinlichkeit
+und ihr Methodenlabel BRIER_SCORE_V1 bleiben als eigenständige fachliche Frage
+offen. Schwellen-/Returneinheiten und andere Forecasttypen werden durch diese
+Änderung nicht gesamtzertifiziert. Es folgt keine Aussage über Kontogewinn,
+numerischen Lernfortschritt oder Gesamtbetrieb. BTC, Handelsowner und produktive
+Originalstores bleiben unverändert; keine Betriebs- oder Forschungsläufe.

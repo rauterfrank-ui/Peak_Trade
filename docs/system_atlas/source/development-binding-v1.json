@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "c374251f3ccbbc7bc8992c6f8667dba6249eae068231ee4f3a66efb1e4eb7630"
+      "sha256": "f093868497b4137656b12ad1211fb10861af08c841b63cd79631bfa6c245958d"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1279,7 +1279,7 @@
     {
       "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
       "before_sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314",
-      "sha256": "cce4dbaabe6f04dc4bf95171d923cbbd03165548eb916778b76fa46fb1e7af7e"
+      "sha256": "73ef9838d9a3e0234694920211f02c4b0f2a1367ef3b529664644f471370abbf"
     },
     {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
@@ -2445,6 +2445,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
       "before_sha256": "8b4f28d569e59f594fe638596b48eb176d2aa641c40c4e8721f21a0961e00046",
       "sha256": "f8ac69bf03776b18120cc975d14d7e69d5ea542b59ef45ee776d727fddeadcbc"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/probabilistic_forecast_payload_v1.py",
+      "before_sha256": "d9f7bf1ce3aca33c02d5e8e539fb131af9e23ea4392f2f49e9c203df2dc001ad",
+      "sha256": "f6c348d15b4fc91178620d3d3938bf42d8fc4f29e7b6df13463df0afca7b9236"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
@@ -4385,6 +4390,11 @@
       "path": "tests/learning/test_forecast_freeze_exact_clock_v1.py",
       "before_sha256": null,
       "sha256": "fa848cdebda6bb349241c0e49489ecadd1c8e53fdfffa3a723aa3437df12a10d"
+    },
+    {
+      "path": "tests/learning/test_forecast_probability_semantic_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "475025722b23446a49fad3e1ed2cec2ffd5389b59c46e909785d0c99d03db873"
     },
     {
       "path": "tests/learning/test_incremental_immediate_predecessor_binding_v1.py",
