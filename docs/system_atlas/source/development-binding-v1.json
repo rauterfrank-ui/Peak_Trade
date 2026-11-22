@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "890a2e894986a52e8737ace91b96bfc6db00945d983f5e6e99f41bd38d9a369e"
+      "sha256": "b7c866cafc1599a660e5118878107cfd482e38e5b610539fa2ed7344e6839ba6"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1372,6 +1372,11 @@
       "sha256": "e572c90bf867647c83e0b5d3eb37cb2a7a4e30afcc89db9f53edb37876b89bc9"
     },
     {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
+      "before_sha256": "47780812f864094763a1e1a526c6f54ffca9d54fd1000cd1c935b751fafa5a16",
+      "sha256": "37a1c01cab8515c09d4f2e4bec0e830c8b9038c67c96de67c97ca99caba76dd4"
+    },
+    {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
       "before_sha256": "d64f0b7efc0b03ef9c0c9bb27c15dbc763f465ff5768773afdac63a0e5f057cc",
       "sha256": "af622f1309407ad0669bfc3b403ddb91f9a641014ee03b35cf722f63a1863e71"
@@ -1459,7 +1464,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "3682c966cd5f4a6d3e0d25ccaccf30bb4fdf97e9086478ea4ef8b906652d75fd"
+      "sha256": "6cee5f9d9547a50d88fb08157ad20ce37d66ee94e26280ee4f6f686c786abcd3"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1509,7 +1514,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "9c55335c8f608811bdb67388948557e57fe2e323ba2740717e4b0e322da99249"
+      "sha256": "6cda5c63bc42d15b339843ba1fb23b4e50d3362ecc6dd7812e1d471ea39145d0"
     },
     {
       "path": "pyproject.toml",
@@ -2260,6 +2265,11 @@
       "path": "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
       "before_sha256": "cf4c91d2a6c9cd99890c6c14b3a58784c36f60f065c3cf1a4eb8cdb11dd38d9b",
       "sha256": "7c7a280dfd8b20c16fa138c0c47f495b5d2a1d6672ed804af6c97e0df5ffecef"
+    },
+    {
+      "path": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+      "before_sha256": "ba46e7f84113d18b82a1d363b78a6efc816e14fbf4d7728c8921b2a71071a4a2",
+      "sha256": "2eba271538d251fabbbaaea7ad2e77b81623858ca608b663ac833996052fe2af"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
@@ -4140,6 +4150,11 @@
       "path": "tests/governance/test_d01_d02_frozen_map_binding_v1.py",
       "before_sha256": null,
       "sha256": "289ea9e6f57289121bc1452f39ab6c3036cafeccb5f6e30f2b38878e5b479932"
+    },
+    {
+      "path": "tests/governance/test_decision_attribution_learning_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "efd152eb8b465644cf156a502b5273483552a44f77fe157b36574433bab9971a"
     },
     {
       "path": "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
