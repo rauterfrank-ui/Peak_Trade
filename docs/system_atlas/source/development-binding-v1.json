@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "f95386d933af28718e1cc86cf6f5ea728d7ecd92d165626070f1b5927a2bbe61"
+      "sha256": "8753ed7e42d131f169dc9fe0fa3cda44138ba05fb53c9068a2b09b9ab4bec0bd"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1169,7 +1169,7 @@
     {
       "path": "docs/ops/specs/EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md",
       "before_sha256": "a6fb5cc70b48bec72f6b29925b373048dc06b3e08447d3763ffc7ebdb954454e",
-      "sha256": "19f82c2b79b3d44e6ecb8bdae9fcccaf7c81beb7d55e17ec351557c84033c865"
+      "sha256": "8877429a4e314ac7d0e39493f08d506b764baede9f198002d52ec90e37fb7231"
     },
     {
       "path": "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
@@ -1494,7 +1494,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "8bb22be5ae3a8d9f2c180b38c611e934a189a64a3baa5f94ecb08676bd7e8916"
+      "sha256": "aea916c642fe058196ace3220c5d6e200cc1fa145b0237d68d71f309325cbada"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2285,6 +2285,11 @@
       "path": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py",
       "before_sha256": "46b1ade28814de75e449d04d486f59a868c49c3cf7798a8449b3f549df2aebee",
       "sha256": "7b91d4ec326671df7e02713a3216e07915250102c0a2bee6e59e0c2524d40801"
+    },
+    {
+      "path": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_governed_binding_context_v1.py",
+      "before_sha256": "d3257487bffea26ae46340ea8736c2f8780d46a6b14e80479140c7e3b5a555a9",
+      "sha256": "39ad79ae2c45ac393dabc1edb209c731c233740c8fce6c38f1a7ee37935505dd"
     },
     {
       "path": "src/governance/optimization_proposal_governance_ingress_v1.py",
@@ -4372,6 +4377,11 @@
       "sha256": "556288204aed4df258c6eb82ed8c4942328cc75f5d61f5041f9f2f9af226869c"
     },
     {
+      "path": "tests/governance/test_p5_binding_context_integrity_v1.py",
+      "before_sha256": null,
+      "sha256": "7b684dd0062b27c890e7716f5c6709806cc5b15171331a2aaddf89b17a6ed539"
+    },
+    {
       "path": "tests/governance/test_p5_producer_artifact_integrity_v1.py",
       "before_sha256": null,
       "sha256": "8484446b53512dc8ba57d73fb8f51d5a82364d6dbfbbe27c76258a0c85694ab2"
@@ -5540,6 +5550,11 @@
       "path": "tests/ops/test_p5_artifact_admission_development_delta_v1.py",
       "before_sha256": null,
       "sha256": "63e5cd1110378d4c0f638f7872bb8ce482648c7eca7c094805145b466859f868"
+    },
+    {
+      "path": "tests/ops/test_p5_binding_context_development_delta_v1.py",
+      "before_sha256": null,
+      "sha256": "829f3d6db782eb2f22e6f450a62d71e4d312a9b2cd81486dc2dc0ba7d5e70c09"
     },
     {
       "path": "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",

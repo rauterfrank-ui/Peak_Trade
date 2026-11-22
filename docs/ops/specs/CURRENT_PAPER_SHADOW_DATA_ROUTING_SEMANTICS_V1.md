@@ -1857,6 +1857,46 @@ M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
 Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
 keine Betriebs- oder Forschungsläufe.
 
+### Ursprünglicher Bindungskontext vor neuen P5-Belegen — 22. November
+
+Am Stand `98af19878ef259714194e0329f169dd327c273cd` sind M5/M6, ihre nativen
+Producer, P5-Aufnahme und Component A bereits verbunden. Quellen- und
+Lineagevergleiche sowie die spätere Artefaktprüfung bestehen. Die gemeinsame
+[Bindungsaufnahme](../../../src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_governed_binding_context_v1.py)
+prüfte aber ihren deklarierten Digest und ihre Record-ID nicht gegen den
+übergebenen ursprünglichen Kontextkörper. 36 Gegenproben passieren den alten
+Validator oder Producer; sechs gesicherte Beispiele erreichen ein tatsächliches
+ADMIT im In-memory-Ledger von Component A, stets mit trading_authority=NONE.
+
+Der bestehende Validator prüft jetzt die native Domäne und genau die zehn
+ursprünglichen Builderfelder gegen binding_digest und die ursprüngliche
+Record-ID-Konstruktion. Fehlende Rekonstruktionsangaben oder Widersprüche stoppen
+am bestehenden typisierten Bindungsfehler vor der Erzeugung neuer P5-Belege.
+Builder, ID-/Digestformeln und bisherige Fehlerpriorität bleiben erhalten.
+Unveränderte Mapping-/JSON-Originale und opake Annotationen bleiben zulässig;
+die Annotationen gehören weiterhin nicht zum ursprünglichen Bindungskörper.
+Die vorhandenen M5-/M6-Lineageprüfungen bleiben eigene Produceraufgaben.
+
+Sechs vollständige gültige Quellen-/Kontext-/Bindungs-/P5-/A-/Replaypakete sowie
+sechs synthetische Quellen-LearningState-Ledgerdateien bleiben bytegleich.
+Das A-Replay behält seinen Originalrecord; die Quellen-Ledgerdateien sind kein
+Nachweis eines dauerhaften P5-Writers oder Crashrecoverys. Die vorhandene
+Law-Prüfung bindet nur die exakt geprüfte neue Validatorquelle an ihren
+eingefrorenen Parent; andere Hashstände und fremde Policyänderungen bleiben
+gesperrt. Die vorige Drei-Dateien-P5-Bindung, Freezeobjekte und Tags bleiben.
+
+Die [Bedeutungsgrenze](EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md#original-binding-context-body-before-new-p5-artifacts--2026-11-22)
+bleibt interne Konsistenz des übergebenen Körpers. Der ursprüngliche vollständige
+Marktkontext liegt diesem Validator nicht vor; frische selbstkonsistente
+Ersatzrecords werden nicht quellenzertifiziert. Alte P5-Artefakte ohne ihren
+Bindungskörper werden durch diese vorgelagerte Prüfung nicht nachträglich
+zertifiziert oder zurückgewiesen. Die gespeicherte freshness_horizon_seconds
+bindet den Kontextdigest; der tatsächliche A-Aufnahmeanruf verwendet weiterhin
+seinen separaten Termination-Horizont. Neue Zeitpräzision, Quellenwahrheit,
+numerische Qualität, Handelswirkung oder Gesamtbetrieb werden nicht behauptet.
+BTC, Core-/Finanzregeln, Originalstores und Betriebsfreigaben bleiben unverändert;
+keine Betriebs-, Capture-, Such-, Trainings- oder Forschungsläufe wurden gestartet.
+
 ### Optimization-/Meta-Belegaufnahme vor Component A — 22. November
 
 Am Stand `9adc88677a8cd8f1653dff697ecbc59b2f59a4c5` sind M5/M6-Producer,
