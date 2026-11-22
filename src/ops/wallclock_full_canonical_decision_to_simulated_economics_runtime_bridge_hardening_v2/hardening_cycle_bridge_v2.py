@@ -820,6 +820,17 @@ def ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         )
 
 
+def _defer_flat_card_entry(state, review, acceptance, reason):
+    from src.ops.master_v2_card_precheck_v1 import CardEntryDeferredV1
+
+    state.card_confirmation = None
+    if acceptance.strategy_advance_allowed:
+        state.card_observations = commit_observation_acceptance_v1(
+            current_state=acceptance.state_before, result=acceptance
+        )
+    raise CardEntryDeferredV1(dict(review, reasons=review["reasons"] or [reason]))
+
+
 def _prepare_card_observation(state, *, market, bound, budget, observation, price_basis, now):
     from src.ops.master_v2_card_precheck_v1 import (
         EntryCardV1,
@@ -895,16 +906,10 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
         side = {ElementaryDirectionV1.BULL: "BUY", ElementaryDirectionV1.BEAR: "SELL"}.get(
             direction
         )
+        card_review["observed_side"] = side
         if not eligible or (side is not None and side not in eligible):
-            state.card_confirmation = None
-            if card_acceptance.strategy_advance_allowed:
-                state.card_observations = commit_observation_acceptance_v1(
-                    current_state=prior_observations, result=card_acceptance
-                )
-            raise CardEntryDeferredV1(
-                dict(
-                    card_review, reasons=card_review["reasons"] or ["CARD_MARKET_SIDE_NOT_RELEASED"]
-                )
+            _defer_flat_card_entry(
+                state, card_review, card_acceptance, "CARD_MARKET_SIDE_NOT_RELEASED"
             )
         # Arming only supplies the side for the normal C3/Composition/Entry
         # owners. A single price change cannot turn into an entry or fill.
@@ -1031,9 +1036,11 @@ def run_hardened_bridge_cycle_v2(
         session_id=session_id,
         allow_bootstrap=offline_candidate is None,
     )
-    state.cycle_index += 1
-    state.append_mid(mid_price)
-    cycle_id = make_scoped_id("cycle", session_id, state.cycle_index)
+    cycle_index = state.cycle_index + 1
+    if card_review is None:
+        state.cycle_index = cycle_index
+        state.append_mid(mid_price)
+    cycle_id = make_scoped_id("cycle", session_id, cycle_index)
 
     # Capability 6.3 / G07 residual closeout: bind Cap-6.3 typed decision config before alpha.
     ensure_host_decision_config_binding_v1(
@@ -1248,6 +1255,33 @@ def run_hardened_bridge_cycle_v2(
     layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
         market_context
     )
+    minimum_lot_cost = None
+    if card_review is not None and not state.killstate_active:
+        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_minimum_lot_cost_v1
+
+        if market_context.canonical_volatility_estimate is None or not layer_c_event_distances.ok:
+            _defer_flat_card_entry(
+                state, card_review, card_acceptance, "CARD_BOUND_STOP_DISTANCE_UNAVAILABLE"
+            )
+        minimum_lot_cost = soph_shadow_minimum_lot_cost_v1(
+            state=state,
+            market=instrument_card_market,
+            budget=instrument_card_budget,
+            context=market_context,
+            adverse_exit_distance=layer_c_event_distances.adverse_exit_distance,
+        )
+        card_review["minimum_lot_cost"] = minimum_lot_cost
+        observed_side = card_review["observed_side"]
+        eligible = {
+            side for side, cost in minimum_lot_cost["sides"].items() if cost["measurement_admitted"]
+        }
+        if not eligible or (observed_side is not None and observed_side not in eligible):
+            _defer_flat_card_entry(
+                state, card_review, card_acceptance, "CARD_MINIMUM_LOT_COST_NOT_ADMITTED"
+            )
+    if card_review is not None:
+        state.cycle_index = cycle_index
+        state.append_mid(mid_price)
     if not layer_c_event_distances.ok:
         codes = tuple(layer_c_event_distances.failure_codes or ())
         if codes == ("volatility_non_positive",):
@@ -1604,6 +1638,12 @@ def run_hardened_bridge_cycle_v2(
                 if forced_actionable is not None
                 else None
             )
+            if minimum_lot_cost is not None:
+                entry_measurement = minimum_lot_cost["sides"][side]
+                if not entry_measurement["measurement_admitted"] or stop_distance != Decimal(
+                    entry_measurement["stop_distance"]
+                ):
+                    raise ValueError("CARD_MINIMUM_LOT_SIZING_BINDING_MISMATCH")
             card_execution_check = soph_shadow_cost_check_v1(
                 state=state,
                 market=instrument_card_market,

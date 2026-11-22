@@ -381,3 +381,135 @@ def test_native_maximum_is_consumed_by_original_sizing():
         scenario_evidence("long", "enter_long"), capital_context=context
     )
     assert sizing.sizing_decision.final_quantity == 3
+
+
+def _regular_card_tick(state, market, budget, *, sequence):
+    from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
+        ObservationMarketTickV1,
+    )
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.wallclock_hardening_binding_v2 import (
+        run_hardened_wallclock_bridge_observation_cycle_v2,
+    )
+    from tests.ops.test_instrument_card_stream_v1 import bound
+
+    tick = ObservationMarketTickV1(
+        SOPH.instrument_id,
+        "OKX",
+        "FUTURES",
+        sequence,
+        market.market_event_unix,
+        market.observed_unix,
+        0.0,
+        float(market.mark),
+    )
+    return run_hardened_wallclock_bridge_observation_cycle_v2(
+        bridge_state=state,
+        ticks=[tick],
+        reference_price=market.mark,
+        wall_now_unix=market.observed_unix,
+        session_id="minimum-lot",
+        instrument_card_market=market,
+        instrument_card_bound=bound(market),
+        instrument_card_budget=budget,
+    )
+
+
+def test_flat_card_requires_a_bound_distance_before_confirmation():
+    market, state, source = setup_market()
+    outcome = _regular_card_tick(
+        state, market, source(market=market, now=market.observed_unix), sequence=1
+    )
+    assert outcome.ok and outcome.bridge_cycle is None
+    assert outcome.labels["deferred_card"]["reasons"] == ["CARD_BOUND_STOP_DISTANCE_UNAVAILABLE"]
+    assert state.card_confirmation is None and state.cycle_index == 0
+
+
+@pytest.mark.parametrize(
+    "free,cap,floor,admitted",
+    [
+        ("0.33570", "0.003", "-0.0001", {"SELL"}),
+        ("0.33570", "0.0001", "-0.003", {"BUY"}),
+        ("0.33570", "0.003", "-0.003", set()),
+        ("0.34000", "0.003", "-0.003", {"BUY", "SELL"}),
+        ("0.33505", "0.003", "-0.0001", set()),
+    ],
+)
+@pytest.mark.parametrize("side", ["BUY", "SELL"])
+def test_regular_flat_card_minimum_cost_precedes_confirmation(
+    tmp_path, free, cap, floor, admitted, side
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+        prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+    )
+    from src.ops.instrument_card_input_observation_v1 import observe_instrument_card_input_v1
+    from tests.ops.test_instrument_card_stream_v1 import bound
+    from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
+        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
+    )
+
+    price = D("0.03350")
+    earlier = price + (D("-0.00001") if side == "BUY" else D("0.00001"))
+    state = HardenedBridgeSessionStateV2(
+        instrument_id=SOPH.instrument_id, venue_instrument_id=SOPH.native_id
+    )
+    source = shadow_budget_source_v1(state, repo=REPO)
+    inputs = []
+    for step, mark in enumerate((earlier, price)):
+        observations, policy, now = _observations(step, slot=SOPH, price=mark, depth=10000)
+        receipt = observations["funding"]
+        payload = deepcopy(receipt.payload)
+        payload["data"][0].update(maxFundingRate=cap, minFundingRate=floor)
+        observations["funding"] = replace(
+            receipt, payload=payload, body_sha256=sha256(json.dumps(payload).encode()).hexdigest()
+        )
+        market = bind_zkp_paper_market_v1(observations, policy=policy, observed_unix=now, slot=SOPH)
+        if step == 0:
+            g17 = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                evidence_store_root=tmp_path,
+                bound_instrument=bound(market),
+                mark_candles_payload=market.g17_payload,
+                receive_or_capture_timestamp=market.g17_acquired_at,
+            )
+            assert g17.estimate_present
+            state.typed_volatility_cmc_binding_host = (
+                CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
+            )
+        else:
+            state.portfolio.model.state.cash = D(free)
+        budget = source(market=market, now=now)
+        with observe_instrument_card_input_v1(inputs.append):
+            outcome = _regular_card_tick(state, market, budget, sequence=step + 1)
+        assert outcome.ok
+        if step == 0:
+            assert outcome.bridge_cycle and len(inputs) == 1
+            first_epoch = state.card_observations.market_observation_epoch
+    assert state.card_observations.market_observation_epoch != first_epoch
+    if side in admitted:
+        assert len(inputs) == state.cycle_index == len(state.mid_prices) == 2
+        assert (
+            inputs[-1].side_state.name
+            == {"BUY": "LONG_ARMED_NEUTRAL_START", "SELL": "SHORT_ARMED_NEUTRAL_START"}[side]
+        )
+        review = outcome.bridge_cycle["instrument_card_entry_review"]
+        assert outcome.bridge_cycle["fill"] is None
+    else:
+        assert len(inputs) == state.cycle_index == len(state.mid_prices) == 1
+        review = outcome.labels["deferred_card"]
+        assert state.card_confirmation is None
+    assert state.card_position_scope is None and review["observed_side"] == side
+    assert D(review["available_usdc"]) == D(free)
+    if not review["sides"][side]["eligible"]:
+        assert review["reasons"] == ["CARD_MARKET_SIDE_NOT_RELEASED"]
+        return
+    measurement = review["minimum_lot_cost"]
+    assert (
+        measurement["instrument_id"] == SOPH.instrument_id
+        and measurement["venue_native_id"] == SOPH.native_id
+    )
+    assert D(measurement["minimum_contracts"]) == 1 and D(measurement["quantity_base"]) == 10
+    assert {s for s, row in measurement["sides"].items() if row["measurement_admitted"]} == admitted
+    if side not in admitted:
+        assert review["reasons"] == ["CARD_MINIMUM_LOT_COST_NOT_ADMITTED"]
+    assert D(measurement["sides"][side]["stop_distance"]) == abs(
+        price - D(measurement["sides"][side]["protective_stop_price"])
+    )
