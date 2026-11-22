@@ -144,10 +144,18 @@ def _assert_realized_behavior_horizon_join_v1(
     rb_horizon = realized_behavior.get("horizon_identity")
     if not isinstance(rb_horizon, Mapping):
         raise Phase25DpAttributionError("REALIZED_BEHAVIOR_HORIZON_IDENTITY_MISSING")
-    for key in ("n_bars", "bar_spec_ref", "horizon_start_time_utc", "evaluation_time_utc"):
+    from .integration_contracts_v1 import bytes_v1
+
+    for key in (
+        "evaluation_horizon",
+        "n_bars",
+        "bar_spec_ref",
+        "horizon_start_time_utc",
+        "evaluation_time_utc",
+    ):
         obs_val = observation.get(key)
         rb_val = rb_horizon.get(key)
-        if obs_val is not None and rb_val is not None and str(obs_val) != str(rb_val):
+        if obs_val is not None and bytes_v1(obs_val) != bytes_v1(rb_val):
             raise Phase25DpAttributionError(f"HORIZON_IDENTITY_MISMATCH:{key}")
     context_t = _parse_utc(str(market_context["observed_at"]))
     horizon_start = observation.get("horizon_start_time_utc")

@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "f38c7dfcbbdf23c710fa88ab385aad82b35268015d512b36239ea8cea93b1476"
+      "sha256": "87b59ae060b2fc43f556c92f402fd3e590465473b1d26f37ab0fc3872ffa6b52"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1409,7 +1409,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md",
       "before_sha256": "41b8a60ca2c8f26e11def71f065cf9fd3a6176e4ed098a0c901e7da139e563af",
-      "sha256": "0558a8ed54eda6f803f251864e89dceb10f9e38cc3fd547c37041746345e330e"
+      "sha256": "dfed0ced1073abf20e5b873946b84547ce9b140801297c4e851d26b322a8267b"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
@@ -2454,7 +2454,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
       "before_sha256": "8b4f28d569e59f594fe638596b48eb176d2aa641c40c4e8721f21a0961e00046",
-      "sha256": "f8ac69bf03776b18120cc975d14d7e69d5ea542b59ef45ee776d727fddeadcbc"
+      "sha256": "c1292744b6243872338b1fdda0a090a1de6fc8bda6da019a0b2fad2d686e9f3d"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/probabilistic_forecast_payload_v1.py",
@@ -4395,6 +4395,11 @@
       "path": "tests/learning/test_ddo_real_outcome_horizon_learning_stretch_v1.py",
       "before_sha256": "bd0c842e447937b4e3e310d8054bf51d2b349c9d5863c6ec960f8c45263ade17",
       "sha256": "432f3d86077972576cf06a5ce806d67785ecefbd165372f2f680e29c8180621e"
+    },
+    {
+      "path": "tests/learning/test_dp_attribution_horizon_completeness_v1.py",
+      "before_sha256": null,
+      "sha256": "131b53695e99f369df59890c57f570978d1732d394befd4ff83f191319b1fbaa"
     },
     {
       "path": "tests/learning/test_dp_attribution_original_evidence_binding_v1.py",

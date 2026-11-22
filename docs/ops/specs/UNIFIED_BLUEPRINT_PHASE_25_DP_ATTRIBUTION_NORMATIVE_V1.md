@@ -122,3 +122,46 @@ instead of REJECTED. Eighteen controls already passed. Fourteen complete origina
 request/result/inspection/replay packets remain byte-identical, including a valid
 missing-behavior result. Network access is forbidden in the test process and the
 compatibility comparison. No operating or research run was started.
+
+## Complete declared horizon binding before Phase 14 — 2026-11-22
+
+At baseline `48c0482b6695c7ebbc318102563c2955038ccc56`, native behavior
+validation, original-measurement/context checks, Phase 14, attribution inspection
+and replay are already connected. Quality declarations are separately admitted.
+The horizon loop still skipped a comparison when the behavior field was absent
+or null, and coerced both sides through str. The behavior horizon then replaced
+the original Phase-14 horizon in the published record. Correct native identities
+did not establish that replacement's completeness or type.
+
+The existing join now compares all five supplied observation horizon fields:
+evaluation_horizon, n_bars, bar_spec_ref, horizon_start_time_utc and
+evaluation_time_utc. An original non-null field cannot be bypassed by an absent
+or null behavior field. The existing exact JSON value owner distinguishes the
+integer count from its textual representation. A foreign declared horizon kind
+also rejects. HORIZON_IDENTITY_MISMATCH retains the original field-specific
+failure before Phase 14 is invoked. Missing original values are not fabricated.
+
+The original-source baseline has 12 unblocked attribution paths and seven passing
+controls. Three native probes complete Phase 14 and publish an incomplete or
+contradictory horizon under pit_join_proven=True; JSON inspection and replay
+accept the resulting original records. The probe source behaviors pass their
+native identity/quality validation. Recomputed checksums alone do not establish
+the independent observation join. Verification:
+`tests/learning/test_dp_attribution_horizon_completeness_v1.py`.
+
+Five complete valid input/result/inspection/replay packets remain byte-identical,
+including explicitly absent quality, annotations, earlier context and absent
+behavior. Missing behavior for a complete observation remains INSUFFICIENT.
+The original outcome/context error precedence, record construction, identity and
+digest algorithms, quality reporting, numeric owners and evidence-only authority
+remain unchanged. Existing native mismatched-count/bar-spec rejections remain.
+
+This is a declared source-field join. Exact original timestamp-string equality
+at this seam is retained; chronology inequalities keep their existing precise
+UTC clock and zero-fraction equivalence. No time normalization or new clock
+policy is introduced. Other context/instrument/window joins retain their own
+boundaries; independent authenticity, correct measurements, prediction quality
+and numerical learning are not certified. The reference-only inspector has no
+original observation with which to revalidate historical joins. Old records are
+not rewritten or retroactively certified. Compose/JSON inspection/replay do not
+establish a durable attribution writer, productive apply or whole-system operation.
