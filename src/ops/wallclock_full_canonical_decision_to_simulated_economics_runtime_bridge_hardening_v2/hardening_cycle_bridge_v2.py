@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -825,9 +825,13 @@ def run_hardened_bridge_cycle_v2(
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
     instrument_card_market: Any = None,
     instrument_card_budget: Any = None,
+    instrument_card_execution_clock: Any = None,
 ) -> dict[str, Any]:
+    capital_inputs = {}
+    capital_binding = None
     if instrument_card_market is not None:
         from src.ops.instrument_card_stream_v1 import validate_card_market_v1
+        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_capital_binding_v1
         from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
         bound = BoundInstrumentV1(
@@ -848,6 +852,16 @@ def run_hardened_bridge_cycle_v2(
         )
         if mid_price != float(instrument_card_market.mark):
             raise ValueError("CARD_SHADOW_MARK_MISMATCH")
+        boundary, observation, capital_binding = soph_shadow_capital_binding_v1(
+            state=state,
+            market=instrument_card_market,
+            budget=instrument_card_budget,
+            now=event_ts_unix,
+        )
+        capital_inputs = {
+            "current_instrument_capital_risk_sizing_boundary_state_file": boundary,
+            "productive_offline_simulated_portfolio_position_observation_v1": observation,
+        }
     if state.session_restart_policy != SESSION_RESTART_POLICY:
         raise RuntimeError("IMPLICIT_RESUME_FORBIDDEN")
     if state.session_id and state.session_id != session_id:
@@ -1286,6 +1300,7 @@ def run_hardened_bridge_cycle_v2(
     if instrument_card_market is not None:
         from src.ops.instrument_card_input_observation_v1 import record_instrument_card_input_v1
 
+        replay_input = replace(replay_input, **capital_inputs)
         record_instrument_card_input_v1(replay_input)
     ddo_capture = None
     if ddo_capture_binding is not None and ddo_repository_sha is not None:
@@ -1307,11 +1322,19 @@ def run_hardened_bridge_cycle_v2(
         )
     else:
         replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
-    intended = map_replay_result_to_intended_analytical_action_v1(
-        replay,
-        instrument_id=state.instrument_id,
-        portfolio_snapshot=state.portfolio.snapshot(),
-    )
+    quantity_projection = None
+    if instrument_card_market is not None:
+        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_portfolio_action_v1
+
+        intended, quantity_projection = soph_shadow_portfolio_action_v1(
+            replay=replay, state=state, market=instrument_card_market
+        )
+    else:
+        intended = map_replay_result_to_intended_analytical_action_v1(
+            replay,
+            instrument_id=state.instrument_id,
+            portfolio_snapshot=state.portfolio.snapshot(),
+        )
 
     # Forced wiring overrides only when explicitly supplied (fixture path).
     if forced_actionable is not None:
@@ -1333,6 +1356,8 @@ def run_hardened_bridge_cycle_v2(
             producer_safety_result=str(safety.safety_result),
             warmup_complete=bool(features.warmup_complete),
         )
+    if instrument_card_market is not None:
+        intended_dict["intended_quantity_unit"] = instrument_card_market.slot.base_currency
 
     before_hash = portfolio_state_hash(state.portfolio.snapshot())
     fill_id = None
@@ -1356,14 +1381,55 @@ def run_hardened_bridge_cycle_v2(
         # contracts. Never reinterpret its amount as a native order quantity.
         # The original replay decision remains intact; incompatible analytical
         # execution is held at this consumer boundary.
-        from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
+        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_cost_check_v1
 
         try:
-            card_execution_check = assess_instrument_budget_v1(
+            execution_time = (
+                event_ts_unix
+                if instrument_card_execution_clock is None
+                else instrument_card_execution_clock()
+            )
+            validate_card_market_v1(
+                instrument_card_market,
+                bound=bound,
+                lane_id=instrument_card_market.slot.lane_id,
+                now=execution_time,
+            )
+            # Core evaluation cannot turn a previously captured budget into a
+            # fresh readback. Recheck the original model before any new fill.
+            soph_shadow_capital_binding_v1(
+                state=state,
                 market=instrument_card_market,
-                available_usdc=instrument_card_budget["available_for_new_entry"],
+                budget=instrument_card_budget,
+                now=execution_time,
+            )
+            core_sizing = (
+                None
+                if replay.intermediate is None
+                else replay.intermediate.capital_risk_sizing_decision
+            )
+            stop_distance = (
+                core_sizing.pre_sizing_risk.stop_or_risk_distance
+                if core_sizing is not None
+                else cycle_adverse_exit_distance
+                if forced_actionable is not None
+                else None
+            )
+            card_execution_check = soph_shadow_cost_check_v1(
+                state=state,
+                market=instrument_card_market,
+                budget=instrument_card_budget,
                 side=side,
-                quantity_contracts=qty / instrument_card_market.native_contract.contract_size,
+                quantity=qty,
+                stop_distance=stop_distance,
+            )
+            card_execution_check["checked_at_unix"] = execution_time
+            card_execution_check["stop_distance_source"] = (
+                "ORIGINAL_CRS_PRE_SIZING_RISK"
+                if core_sizing is not None
+                else "FORCED_WIRING_FIXTURE"
+                if forced_actionable is not None
+                else "UNRESOLVED"
             )
         except (ValueError, ArithmeticError) as exc:
             card_execution_check = {"measurement_admitted": False, "reason_codes": [str(exc)]}
@@ -1411,6 +1477,11 @@ def run_hardened_bridge_cycle_v2(
                 "trading_epoch": state.trading_epoch,
             }
         )
+        if instrument_card_market is not None:
+            fill_dict["quantity_unit"] = instrument_card_market.slot.base_currency
+            fill_dict["quantity_contracts"] = str(
+                qty / instrument_card_market.native_contract.contract_size
+            )
         state.fill_ledger.append(dict(fill_dict))
 
     _update_session_state_from_replay(state, result=replay)
@@ -1488,7 +1559,11 @@ def run_hardened_bridge_cycle_v2(
             "decision_producer": DECISION_AUTHORITY_OWNER,
         },
         **(
-            {"instrument_card_execution_check": card_execution_check}
+            {
+                "instrument_card_execution_check": card_execution_check,
+                "soph_shadow_capital_binding": capital_binding,
+                "instrument_card_quantity_projection": quantity_projection,
+            }
             if instrument_card_market is not None
             else {}
         ),

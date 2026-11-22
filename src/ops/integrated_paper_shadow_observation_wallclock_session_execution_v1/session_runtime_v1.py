@@ -1124,6 +1124,7 @@ class WallclockSessionRuntimeV1:
                                             "instrument_card_budget": self.instrument_card_stream.current[
                                                 "budget"
                                             ],
+                                            "instrument_card_execution_clock": self.clock_wall,
                                         }
                                         if card_market is not None
                                         else {}

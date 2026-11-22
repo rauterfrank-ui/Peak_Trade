@@ -117,18 +117,27 @@ def build_mv2_dynamic_boundary_capital_context_v1(
     if daily_text == "":
         raise ValueError(REASON_DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED)
     daily_remaining = Decimal(daily_text)
-    instrument = InstrumentQuantityConstraintsV1(
-        instrument_id=str(state_file.instrument_id),
-        market_type="futures",
-        contract_kind="LINEAR",
-        contract_multiplier=Decimal("1"),
-        lot_size=Decimal(str(state_file.lot_size)),
-        minimum_quantity=Decimal(str(state_file.minimum_quantity)),
-        maximum_quantity=None,
-        minimum_notional=Decimal(str(state_file.minimum_notional)),
-        tick_size=Decimal(str(state_file.tick_size)),
-        instrument_metadata_version="backtest_state_file_futures_metadata_v0",
-    )
+    instrument = getattr(state_file, "instrument_quantity_constraints", None)
+    if instrument is None:
+        instrument = InstrumentQuantityConstraintsV1(
+            instrument_id=str(state_file.instrument_id),
+            market_type="futures",
+            contract_kind="LINEAR",
+            contract_multiplier=Decimal("1"),
+            lot_size=Decimal(str(state_file.lot_size)),
+            minimum_quantity=Decimal(str(state_file.minimum_quantity)),
+            maximum_quantity=None,
+            minimum_notional=Decimal(str(state_file.minimum_notional)),
+            tick_size=Decimal(str(state_file.tick_size)),
+            instrument_metadata_version="backtest_state_file_futures_metadata_v0",
+        )
+    elif (
+        type(instrument) is not InstrumentQuantityConstraintsV1
+        or instrument.instrument_id != str(state_file.instrument_id)
+        or instrument.market_type != "futures"
+        or instrument.contract_kind != "LINEAR"
+    ):
+        raise ValueError("dynamic_boundary_explicit_instrument_constraints_invalid")
     return CanonicalCoreRuntimeCapitalContextV0(
         reference_price=dynamic_price_context.reference_price,
         protective_stop_price=dynamic_price_context.protective_stop_price,
