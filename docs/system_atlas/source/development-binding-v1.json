@@ -722,6 +722,11 @@
       "sha256": "8fbd57214b2f1d24e35c279acd662cf56e93d1d5d9d947e7930546ab0702c6d6"
     },
     {
+      "path": "docs/ops/evidence/PR_6283_RUNBOOK_11_2_1_E.txt",
+      "before_sha256": null,
+      "sha256": "efe87747caf01cec7a9ee06ade65fe6efed20b7e22357c96b6e6e024d9c5a7b1"
+    },
+    {
       "path": "docs/ops/evidence/PR_7180_CI_GATE_REPAIR_2026_11_06.json",
       "before_sha256": null,
       "sha256": "17ce95f436b434abc45fbab484d9d0a8dea44740c051d374ac5b9cad57dcfb56"
@@ -1409,7 +1414,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "525ebfe455fe571923180ed7741912be9f1c0a98f68621a8444a27d447db8a42"
+      "sha256": "4f1306129833381ff6bfc4999fe8d159648df5df212ecd3e4291962f29590fe1"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -5440,6 +5445,11 @@
       "path": "tests/ops/test_hardening_v2_historical_safety_seam_contracts_v1.py",
       "before_sha256": "c61a75225dc94e3c47e5e05cd71c73bc5d803351bb3d6422c244ccdfa3bd8fe4",
       "sha256": "be2ecd628638161524d29768ad5db35effae715e635622aeb95d00a90b8f692d"
+    },
+    {
+      "path": "tests/ops/test_hardening_v2_scope_direction_overlay_generator_inert_v1.py",
+      "before_sha256": "faec3d6de490869aa8da19d712dfa6f664c8a0d7b518c54959cf779581cc58b1",
+      "sha256": "aeba8967c6a6358a875140ef051882a678c5b8b3653cc2629a6ac367293dc8b5"
     },
     {
       "path": "tests/ops/test_instrument_card_budget_assessment_v1.py",
