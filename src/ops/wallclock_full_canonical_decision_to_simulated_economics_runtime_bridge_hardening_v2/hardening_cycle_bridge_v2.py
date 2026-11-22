@@ -8,6 +8,7 @@ import re
 from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timezone
 from decimal import Decimal
+from math import isfinite
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
@@ -1567,12 +1568,16 @@ def run_hardened_bridge_cycle_v2(
         # execution is held at this consumer boundary.
         from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_cost_check_v1
 
+        checked_at = None
         try:
             execution_time = (
                 event_ts_unix
                 if instrument_card_execution_clock is None
                 else instrument_card_execution_clock()
             )
+            if type(execution_time) not in (int, float) or not isfinite(execution_time):
+                raise ValueError("CARD_BOUND_INSTRUMENT_SOURCE_OR_CLOCK_MISMATCH")
+            checked_at = execution_time
             validate_card_market_v1(
                 instrument_card_market,
                 bound=bound,
@@ -1607,7 +1612,6 @@ def run_hardened_bridge_cycle_v2(
                 quantity=qty,
                 stop_distance=stop_distance,
             )
-            card_execution_check["checked_at_unix"] = execution_time
             card_execution_check["stop_distance_source"] = (
                 "ORIGINAL_CRS_PRE_SIZING_RISK"
                 if core_sizing is not None
@@ -1617,6 +1621,11 @@ def run_hardened_bridge_cycle_v2(
             )
         except (ValueError, ArithmeticError) as exc:
             card_execution_check = {"measurement_admitted": False, "reason_codes": [str(exc)]}
+        if checked_at is not None:
+            card_execution_check["checked_at_unix"] = checked_at
+            card_execution_check["check_time_source"] = (
+                "EXECUTION_CLOCK" if instrument_card_execution_clock is not None else "EVENT_TIME"
+            )
         if not card_execution_check["measurement_admitted"]:
             intended_dict = {
                 **intended_dict,

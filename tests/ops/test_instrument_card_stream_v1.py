@@ -577,7 +577,18 @@ def test_card_observer_cannot_mutate_original_governed_input():
 
 
 @pytest.mark.parametrize(
-    "action", ["native", "off_grid", "over_budget", "expired_before_fill", "cost_envelope", "close"]
+    "action",
+    [
+        "native",
+        "off_grid",
+        "over_budget",
+        "expired_before_fill",
+        "unavailable_clock",
+        "invalid_clock",
+        "event_time",
+        "cost_envelope",
+        "close",
+    ],
 )
 def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner(tmp_path, action):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
@@ -627,6 +638,14 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         budget = source(market=market, now=market.observed_unix)
         assert budget["available_for_new_entry"] == "0"
         quantity, side = base, "SELL"
+
+    def clock():
+        if action == "unavailable_clock":
+            raise ValueError("ARCHIVE_POST_CORE_EXECUTION_CLOCK_UNAVAILABLE")
+        if action == "invalid_clock":
+            return float("nan")
+        return market.observed_unix + (6 if action == "expired_before_fill" else 0)
+
     cycle = run_hardened_bridge_cycle_v2(
         state,
         mid_price=float(market.mark),
@@ -634,24 +653,37 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
         session_id="explicit-forced-wiring-fixture",
         instrument_card_market=market,
         instrument_card_budget=budget,
-        instrument_card_execution_clock=lambda: (
-            market.observed_unix + (6 if action == "expired_before_fill" else 0)
-        ),
+        instrument_card_execution_clock=None if action == "event_time" else clock,
         forced_actionable={"intended_side": side, "intended_quantity": str(quantity)},
     )
-    if action in {"off_grid", "over_budget", "expired_before_fill", "cost_envelope"}:
+    check = cycle["instrument_card_execution_check"]
+    if action in {"unavailable_clock", "invalid_clock"}:
+        assert cycle["fill"] is None and not check["measurement_admitted"]
+        assert check["reason_codes"] == [
+            "ARCHIVE_POST_CORE_EXECUTION_CLOCK_UNAVAILABLE"
+            if action == "unavailable_clock"
+            else "CARD_BOUND_INSTRUMENT_SOURCE_OR_CLOCK_MISMATCH"
+        ]
+        assert "checked_at_unix" not in check and "check_time_source" not in check
+    elif action in {"off_grid", "over_budget", "expired_before_fill", "cost_envelope"}:
         assert cycle["fill"] is None
-        assert not cycle["instrument_card_execution_check"]["measurement_admitted"]
+        assert not check["measurement_admitted"]
+        assert check["check_time_source"] == "EXECUTION_CLOCK"
+        assert check["checked_at_unix"] == clock()
+        if action == "expired_before_fill":
+            assert check["reason_codes"] == ["ZKP_PAPER_SOURCE_STALE_OR_FUTURE"]
         if action == "cost_envelope":
-            assert cycle["instrument_card_execution_check"]["reason_codes"] == [
-                "SOPH_SHADOW_MODEL_COST_ENVELOPE_EXCEEDED"
-            ]
+            assert check["reason_codes"] == ["SOPH_SHADOW_MODEL_COST_ENVELOPE_EXCEEDED"]
     else:
         assert cycle["fill"]["side"] == side
-        if action == "native":
-            assert D(cycle["instrument_card_execution_check"]["quantity_contracts"]) == 1
+        if action == "close":
+            assert check is None
         else:
-            assert cycle["instrument_card_execution_check"] is None
+            assert D(check["quantity_contracts"]) == 1
+            assert check["checked_at_unix"] == market.observed_unix
+            assert check["check_time_source"] == (
+                "EVENT_TIME" if action == "event_time" else "EXECUTION_CLOCK"
+            )
 
 
 def test_five_slot_card_review_isolates_missing_wrong_and_unaffordable(tmp_path):

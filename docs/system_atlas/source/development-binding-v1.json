@@ -1409,7 +1409,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "0284f8bfe8f8b3fb9b5c41c4bbb4186c93cd2b9b963a6d5b798e6a15f0227424"
+      "sha256": "525ebfe455fe571923180ed7741912be9f1c0a98f68621a8444a27d447db8a42"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -3934,7 +3934,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "88886c5467641747287678a257af87753a49732a637360e60fcb1f28afa08ce4"
+      "sha256": "8114366f1ee62ec141bbf4972a5c015ce6245fd25bc0d44b941ece8cef3f9297"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5449,7 +5449,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "5c810d17f2dca5042f95ba24761d0ae96d10cfd3c51401b8928e8a886ce92a99"
+      "sha256": "a8789543022e6ef999eb02ee3f7ce0d12ffc2b29a180c19913b5a2b17ec03a22"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
