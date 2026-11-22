@@ -154,3 +154,37 @@ This scope certifies neither all other timing relations in the cohort/follow-up
 scripts nor source authenticity, independent research quality or productive
 apply. Original stores, schemas, digest/ID formulas and operational authority are
 unchanged. No operational collection or research campaign is started.
+
+## Follow-up declaration and original-answer chronology — 2026-11-22
+
+The follow-up adapter already reconstructs the original Meta handoff, checks its
+research purpose/lineage and retains the target contract, split and feature
+versions. A later repetition reads the stored plan and rebuilds its complete
+answer from the original parent and follow-up cohorts. The construction originates
+in commits `03871e22dd00be319a9926a50bc6d8b2f3814826` and
+`02248b61d0b94e99d80a9958a37994ed2d86c99e`; these content joins remain unchanged.
+
+Its five existing temporal gates now preserve source-clock precision: admission
+to the hourly grid, a context strictly later than the parent's evaluation,
+declaration at or after schedule verification, replay of that declaration, and original
+answer readback. The existing order is parent evaluation < new context <= forecast
+verification <= declaration < first window. Equality at the parent/context or
+declaration/window boundary remains forbidden; equality at verification/declaration
+remains allowed. A truly later context within the same microsecond is no longer
+rejected as simultaneous. A declaration before verification by 1 or 999 ns cannot
+reach the plan writer or answer consumer. The hourly check uses the raw inputs
+before the existing plan serialization can discard a fraction.
+
+UTC admission, equivalent zero fractions/UTC-offset-zero spellings, spacing,
+canonical plan bytes, IDs/digests and numeric methods retain their existing rules.
+The adapter still records a research answer with independent_quality_proven and
+productive_apply_authorized false. Temporal consistency grants no operational
+authority, independent predictive quality or account PnL.
+
+[Focused boundary checks](../../../tests/ops/test_representation_follow_up_clock_binding_v1.py)
+use native recorded contexts, freezes and measurement schedules with an explicitly
+supplied verified-parent contract. They do not independently certify upstream
+Meta admission. The existing synthetic capture/Meta/follow-up/cold-replay test
+separately exercises those actual joins. The separate measurement/capture owner's
+timing gates and other causal paths remain outside this change. Historical stored
+records are not rewritten or retrospectively certified.

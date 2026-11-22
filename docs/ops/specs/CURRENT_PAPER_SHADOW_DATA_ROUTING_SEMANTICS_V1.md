@@ -1323,6 +1323,50 @@ D01/D02-Basiskonflikt und Gesamtbetriebsbereitschaft bleiben offen. BTC und
 betriebliche Stores bleiben unverändert. Keine Betriebs-, Paper-, Shadow- oder
 Forschungsläufe wurden gestartet.
 
+### Folgeforschung und ursprüngliche Antwortzeiten — 22. November
+
+Der in `03871e22d` eingeführte Folgeversuch liest den ursprünglichen Meta-Plan
+zurück und bindet dessen Forschungszweck, Repräsentationslinie, Target und Split.
+Seit `02248b61d` wird auch die vollständige gespeicherte Antwort vor einer
+weiteren Wiederholung aus ihren ursprünglichen Kohorten rekonstruiert.
+Diese Inhaltsbindungen waren vorhanden und wurden nicht neu aufgebaut.
+
+Fünf vorhandene Zeitgates des Folgeforschungsadapters verloren jedoch
+Nanosekunden. Der Ausgangsabgleich reproduzierte acht unzulässige Übergänge:
+zwei Starts neben dem Stundenraster sowie je zwei Widersprüche bei neuer
+Deklaration, Planreplay und Antwort-Readback. Vier zulässige Kontexte knapp nach
+der ursprünglichen Auswertung wurden umgekehrt als zeitgleich abgewiesen.
+Zehn Kontrollfälle bestanden bereits vor der Korrektur.
+
+Jetzt gilt die vorhandene Reihenfolge mit voller Quellpräzision:
+Elternauswertung < neuer Kontext <= Forecastverifikation <= Deklaration < erstes
+Fenster. Die beiden strikten Grenzen bleiben strikt. Gleichheit zwischen
+Verifikation und Deklaration bleibt zulässig. Der Stundenrastercheck prüft die
+Originaleingabe vor der bisherigen Kanonisierung. Eine Neusiegelung widersprüchlicher
+Zeiten repariert ihren Bedeutungsbezug nicht.
+
+73 Offline-Fälle bestehen: 51 vorhandene Kontrollen und 22
+[neue Gegen-/Positivproben](../../../tests/ops/test_representation_follow_up_clock_binding_v1.py).
+Die fokussierten Tests
+verwenden native aufgezeichnete Kontexte, Freeze- und Messplan-APIs. Der bereits
+verifizierte Parentvertrag wird in diesen isolierten Helfertests ausdrücklich
+vorgegeben; dies ersetzt keinen Meta-Herkunftsnachweis. Der bestehende synthetische
+Integrationstest prüft daneben Originalaufnahme, Vergleich, tatsächlichen
+Meta-Plan, Folgeversuch, wiederholte Antwort und Cold-Replay.
+
+Zwei vor der Korrektur gesicherte vollständige Antworten bleiben beim nativen
+Readback bytegleich, ebenso zehn vollständige Vergleichs-/Meta-/Folgeplan- und
+Antwortpakete und sämtliche 472 synthetischen Originaldateien. Netzwerkzugriff
+ist bei diesem Readback ausdrücklich gesperrt. Zahlenrechnung, Featureversionen,
+Split, Mindestabstand und Schema-/ID-/Digestformeln bleiben erhalten.
+
+Der [Phase-22-Vertrag](UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md)
+grenzt die Härtung ab: Die Antwort bleibt Forschung, independent_quality_proven
+und productive_apply_authorized bleiben false. LOG_RETURN-RMSE ist kein
+Kontogewinn. Der separate Mess-/Captureadapter, weitere kausale Wege und der
+historische D01/D02-Basiskonflikt sind damit nicht abgenommen. BTC und betriebliche
+Stores bleiben unverändert; keine Betriebs- oder Forschungsläufe wurden gestartet.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

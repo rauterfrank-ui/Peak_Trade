@@ -36,11 +36,19 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offl
     recorded_market_target_from_frozen_v1,
 )
 from src.meta.learning_loop.paired_market_representation_meta_v1 import MEASURED_PATTERN
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 PLAN_SCHEMA = "recorded_paired_market_representation_follow_up_plan_v1"
 RECEIPT_SCHEMA = "recorded_paired_market_representation_follow_up_receipt_v1"
 PLAN_FILE = "paired_representation_follow_up_plan.json"
 RECEIPT_FILE = "paired_representation_follow_up_receipt.json"
+
+
+def _utc_order_key(value):
+    instant_v1(value)
+    return capture_order_key_v1(value)
 
 
 def _campaign_key(seed_job_key):
@@ -110,12 +118,12 @@ def _declare_follow_up(
 ):
     frozen = read_frozen_market_forecast_v1(store_root=store_root, job_key=seed_job_key)
     target = recorded_market_target_from_frozen_v1(frozen)
-    first_start = instant_v1(target["horizon_start_time_utc"])
-    starts = [first_start, *(instant_v1(value) for value in next_starts_utc)]
+    start_values = [target["horizon_start_time_utc"], *next_starts_utc]
+    starts = [instant_v1(value) for value in start_values]
     parent_plan = parent["cohort_plan"]
     require_v1(
         len(starts) == len(parent_plan["starts_utc"])
-        and all(not (start.minute or start.second or start.microsecond) for start in starts)
+        and all(cohort._on_hourly_grid(value) for value in start_values)
         and all(later - earlier > timedelta(hours=2) for earlier, later in zip(starts, starts[1:])),
         "RESEARCH_FOLLOW_UP_WINDOW_CONTRACT_MISMATCH",
     )
@@ -127,9 +135,10 @@ def _declare_follow_up(
         == evidence["target_contract"],
         "RESEARCH_FOLLOW_UP_TARGET_CONTRACT_MISMATCH",
     )
-    parent_cutoff = instant_v1(evidence["evaluated_at_utc"])
+    parent_cutoff = _utc_order_key(evidence["evaluated_at_utc"])
+    first_start_key = _utc_order_key(target["horizon_start_time_utc"])
     require_v1(
-        parent_cutoff < instant_v1(frozen["context_package"]["as_of"]) < first_start,
+        parent_cutoff < _utc_order_key(frozen["context_package"]["as_of"]) < first_start_key,
         "RESEARCH_FOLLOW_UP_REQUIRES_LATER_ORIGINAL_CONTEXT",
     )
     seed_context = representation.read_recorded_representation_context_v1(
@@ -175,7 +184,9 @@ def _declare_follow_up(
         else:
             now = measurement._utc_now()
             require_v1(
-                instant_v1(schedule["forecast_verified_at_utc"]) <= instant_v1(now) < first_start,
+                _utc_order_key(schedule["forecast_verified_at_utc"])
+                <= _utc_order_key(now)
+                < first_start_key,
                 "RESEARCH_FOLLOW_UP_MUST_BE_DECLARED_BEFORE_WINDOW",
             )
             require_v1(
@@ -192,9 +203,9 @@ def _declare_follow_up(
             )
             _append(path, plan)
     require_v1(
-        instant_v1(schedule["forecast_verified_at_utc"])
-        <= instant_v1(plan["declared_at_utc"])
-        < first_start,
+        _utc_order_key(schedule["forecast_verified_at_utc"])
+        <= _utc_order_key(plan["declared_at_utc"])
+        < first_start_key,
         "RESEARCH_FOLLOW_UP_PLAN_CLOCK_MISMATCH",
     )
     return plan
@@ -269,11 +280,11 @@ def _read_follow_up_answer(*, folder, store_root, parent, original_parent):
         "RESEARCH_FOLLOW_UP_ORIGINAL_PLAN_MISMATCH",
     )
     require_v1(
-        instant_v1(original_evidence["evaluated_at_utc"])
-        < instant_v1(context["as_of"])
-        <= instant_v1(schedule["forecast_verified_at_utc"])
-        <= instant_v1(plan["declared_at_utc"])
-        < instant_v1(campaign["starts_utc"][0]),
+        _utc_order_key(original_evidence["evaluated_at_utc"])
+        < _utc_order_key(context["as_of"])
+        <= _utc_order_key(schedule["forecast_verified_at_utc"])
+        <= _utc_order_key(plan["declared_at_utc"])
+        < _utc_order_key(campaign["starts_utc"][0]),
         "RESEARCH_FOLLOW_UP_ORIGINAL_CLOCK_MISMATCH",
     )
     require_v1(

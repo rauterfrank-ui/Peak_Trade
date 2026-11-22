@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "48dce23bc2ccaecc78137aec8b636acf3b8dbc3f438ba9aa63c06e36d1b4f443"
+      "sha256": "d4c2d53005f6123b48653bd319ad1feb8e7e3decce654c03a767f0551c401342"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1379,7 +1379,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
       "before_sha256": "89c8af944f992ed0a46c260e31e09aeb8b306c2ba339179f5024f3bd8ee1ebf1",
-      "sha256": "4959aefd7baf9bc7efb0c074999f98f5ccd646f7057ed1f60f5fb776851c2b89"
+      "sha256": "9573cc155857585a92539cb3dca900900e49adad33f52094e76787f69dd6784a"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
@@ -1884,7 +1884,7 @@
     {
       "path": "scripts/ops/run_offline_paired_market_representation_follow_up_v1.py",
       "before_sha256": null,
-      "sha256": "02111afe35bc0bddb3f10b47da970f6e73fdcdd266931b45640f3318542bd31b"
+      "sha256": "1a41de40e1bd2049a1ab920e214d56b49271d146c1cc3e508d1bbc1108cd34c3"
     },
     {
       "path": "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
@@ -5420,6 +5420,11 @@
       "path": "tests/ops/test_representation_cohort_clock_binding_v1.py",
       "before_sha256": null,
       "sha256": "2ed4ecaae309b1754594db598f2aa320e4ec8b6479cc6099e9a7fea94a293c96"
+    },
+    {
+      "path": "tests/ops/test_representation_follow_up_clock_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "8951d3b4cf0b26cfe143be44509856ee2386079d056c2f575887095ec835322f"
     },
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
