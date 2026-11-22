@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -71,10 +73,13 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 
 REPO = Path(__file__).resolve().parents[2]
 POST_MERGE_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
-CURRENT_MAIN_SHA = "8da476238040545d2c1e5c1bf2e950d4388dba68"
+PREVIOUS_FIXTURE_BASELINE_SHA = "8da476238040545d2c1e5c1bf2e950d4388dba68"
+# Exact existing decision-record context for synthetic tests, not the current
+# code revision or a new grant. Production validators/configuration stay intact.
+OWNER_GO_DECISION_BASELINE_SHA = "98976dc93ba5bf7aff3723472be3bb111e020303"
 SUPERSEDED_OWNER_GO_BASELINE_SHA = "dd4c23da1f3f519413fe8c9f04ddd0050ff3f026"
 PRE_REVALIDATION_OWNER_GO_BASELINE_SHA = "c752284ac86af46d04244421bb0e30c425d619b8"
-BASELINE_SHA = CURRENT_MAIN_SHA
+BASELINE_SHA = OWNER_GO_DECISION_BASELINE_SHA
 
 
 def test_immutable_surface_lineage_ignores_evidence_double_play_paths() -> None:
@@ -89,6 +94,9 @@ def test_immutable_surface_lineage_ignores_evidence_double_play_paths() -> None:
 
 def test_owner_go_decision_present_and_pins_unchanged() -> None:
     assert (REPO / DECISION_CONFIG).is_file()
+    assert (
+        json.loads((REPO / DECISION_CONFIG).read_text())["baseline_origin_main_sha"] == BASELINE_SHA
+    )
     ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
         repo_root=REPO,
         baseline_origin_main_sha=BASELINE_SHA,
@@ -108,12 +116,20 @@ def test_owner_go_decision_rejects_ancestor_main_when_pinned_at_current() -> Non
     assert "BASELINE_SHA_MISMATCH" in reasons
 
 
-def test_owner_go_decision_accepts_current_main_at_pinned_baseline() -> None:
+def test_owner_go_decision_accepts_original_decision_baseline() -> None:
     ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
         repo_root=REPO,
-        baseline_origin_main_sha=CURRENT_MAIN_SHA,
+        baseline_origin_main_sha=OWNER_GO_DECISION_BASELINE_SHA,
     )
     assert ok, reasons
+
+
+def test_previous_fixture_baseline_remains_denied() -> None:
+    ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
+        repo_root=REPO, baseline_origin_main_sha=PREVIOUS_FIXTURE_BASELINE_SHA
+    )
+    assert ok is False
+    assert "BASELINE_SHA_MISMATCH" in reasons
 
 
 def test_owner_go_decision_rejects_pre_revalidation_baseline_at_current_pin() -> None:

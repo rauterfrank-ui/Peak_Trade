@@ -63,6 +63,8 @@ def test_only_confirmed_demo_fill_enters_the_v2_opening_handoff(fault):
         ],
     }
     identity = SimpleNamespace(
+        slot_id="LANE_3",
+        venue="okx",
         account_identity="142",
         clordid="btcDemo3",
         native_id=demo._NATIVE,

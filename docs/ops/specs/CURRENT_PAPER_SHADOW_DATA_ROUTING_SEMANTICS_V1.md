@@ -2162,3 +2162,26 @@ Richtigkeit und tatsächlicher Lernwirkung getrennt. Historische Referenzrecords
 werden nicht rückwirkend quellengeprüft. Kein dauerhafter Attributionswriter oder
 Gesamtbetrieb wird durch JSON-Inspektion und Replay belegt. BTC unverändert;
 keine Betriebs- oder Forschungsläufe.
+
+### BTC-Vorbereitung: Demo-Budget und Reconciliation — 22. November
+
+Frank hat BTC anschließend ausdrücklich zur Vorbereitung und zur Korrektur
+nachgewiesener Lücken freigegeben; weiterhin ohne Start. Die früheren Aussagen
+„BTC unverändert“ beschreiben den jeweiligen historischen Prüfauftrag.
+Die ursprüngliche Budgetidentität enthält `okx` und separat `TESTNET`; der
+BTC-Consumer verwechselte die Börsenidentität mit dem Deploymentnamen
+`OKX_EEA_DEMO`. Der korrigierte Abgleich konsumiert die Originalidentität.
+API-Status, einzelne Empfangszeiten, Settlement- und Gebührengruppenbezug
+werden geprüft, statt spätere Positions- oder Indexantworten als Zeitstempel
+früherer Quellen zu verwenden.
+
+Der [abgegrenzte Demo-Anschluss](BTC_DEMO_HOST_BUDGET_RECONCILIATION_OFFLINE_V1.md)
+führt typisiertes USDC-Kapital an den ursprünglichen Recoveryconsumer und
+exakte Ausführungsantworten an den ursprünglichen Reconciliationwriter.
+Unklare und bestätigte Fills behalten Bindungen; nur der belegte terminale
+Null-Fill-Fall darf freigeben. Der GET-/Recovery-Supervisor erhält ein festes
+Stundenfenster und STOP. Er stellt keinen vollständigen autonomen Demo-
+Handelskreis dar. Native USD-Preise, USDC-Kapital und ein öffentlicher
+Wechselkurs bleiben verschiedene Größen; Settlement-/Sizingnachweis und
+positiver BTC-Cursor-/G17-Gesamtjoin sind weiterhin offen. Ausschließlich
+synthetische Offlineprüfungen, keine Betriebs- oder Forschungsläufe.

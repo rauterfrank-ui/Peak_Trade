@@ -92,8 +92,9 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 )
 
 REPO = Path(__file__).resolve().parents[2]
-# Owner-GO decision pins this baseline; descendant SHAs fail immutable-surface drift check.
-OWNER_GO_BASELINE_SHA = "8da476238040545d2c1e5c1bf2e950d4388dba68"
+# Existing original decision-record context for synthetic supervisor tests.
+# This is not current-code authorization; production decision/guards stay intact.
+OWNER_GO_BASELINE_SHA = "98976dc93ba5bf7aff3723472be3bb111e020303"
 BASE_TS = 1_757_631_540_000
 
 
@@ -301,6 +302,8 @@ def test_scoped_supervisor_counts_occupied_marks_without_wp02(tmp_path, monkeypa
         (config.evidence_root / "bounded_continuous_run_owner_go_consume_v1.json").touch()
         return SimpleNamespace(
             orchestrator_result=SimpleNamespace(
+                permit_created=False,
+                external_effect_count=0,
                 cycles_completed=1,
                 accepted_c1_count=0,
                 cycle_records=(SimpleNamespace(mark_venue_event_time=1.0),),
