@@ -1453,3 +1453,46 @@ Epochbestätigung. Der [Nachprüfbeleg](../evidence/HARDENING_V2_FULL_SCOPE_SAFE
 bindet die Ergebnisse an ihre Quellen. Produktcode und Handelsparameter wurden
 dafür nicht geändert. Der ursprüngliche Prüfstand 131/132 bleibt im damaligen
 Bericht erhalten; eine Gesamtabnahme des Systems folgt daraus weiterhin nicht.
+
+### Härtung des bereits verbundenen Messwert-Calibrationspfads — 22. November
+
+Der direkte Messwertadapter ist bereits mit Forecast-Anheftung, expliziter
+Offline-Pending-Fortsetzung, ursprünglicher Calibration, MI-Speicherung und
+numerischem Readback verbunden. Target, Instrument-/Decisionbezug, Horizont,
+originale Messartefakte und numerische Zulassung werden dort schon geprüft.
+Diese Verbindungen und Owner wurden nicht neu aufgebaut.
+
+Zwei vorhandene Zeitprädikate verloren jedoch Nachkommastellen jenseits von
+Mikrosekunden. Acht Gegenproben reproduzierten unzulässige Übergänge an
+Vorbereitung und Speicherung: Forecastentstehung 1 beziehungsweise 999
+Nanosekunden nach Horizontbeginn sowie neu gebundene Messdeklarationen mit
+einem finalen Close 1 beziehungsweise 999 Nanosekunden nach der Auswertung.
+Solche nachgerechneten Inhaltsreferenzen beglaubigen weder ihre Zeitordnung
+noch eine neue O4-Quellbeobachtung. 14 Kontrollfälle bestanden bereits vorher.
+
+Die vorhandenen Grenzen Forecastentstehung <= Horizontbeginn und
+Auswertung >= finaler Return-Close verwenden jetzt die volle ursprüngliche
+Zeitpräzision. Widersprüche stoppen vor Calibrationrechnung, Researchprojektion
+und MI-Store. Gleichheit und nullwertige Bruchteile bleiben zulässig. Native
+Forecast-/DDO-Zulassung bleibt bei UTC mit `Z` und höchstens neun Bruchteilziffern;
+der gemeinsame Zeitdecoder erweitert diesen Eingangsvertrag nicht.
+Auswertungsgrenze und tatsächliche Quellenverfügbarkeit bleiben getrennt.
+
+147 gezielte Offline-Fälle bestanden, darunter 22 neue Gegen-/Positivproben.
+Zehn vor der Korrektur gesicherte vollständige Vorbereitungs-/Calibration- und
+Readbackpakete bleiben bytegleich, ebenso alle zehn Dateien ihrer synthetischen
+Originalstores. Die bestehenden Integrationsfälle prüfen außerdem den Weg von
+der originalen Entscheidung über Pending und N_BARS bis zu Calibration und
+Cold-Read. Netzwerkzugriffe waren gesperrt; keine Betriebs- oder Forschungsläufe
+wurden gestartet.
+
+Der [genaue Übergabevertrag](INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md#direct-measured-return-admission-hardening--22-november-2026)
+grenzt den Befund ab. N finale Closes bleiben N−1 Returnintervalle; LOG_RETURN
+und Returnfehler werden weder zu Kontogewinn noch zu Entscheidungsqualität.
+Target, IDs/Digests, Zahlenrechnung, Persistenzowner, produktiver DDO-Reducer,
+BTC und Freigaben bleiben erhalten. Weitere Signal-/Rückwege und vollständige
+Systemhärtung sind damit nicht insgesamt abgenommen.
+
+Der weiter oben dokumentierte separate Funding-Snapshotfehler wurde inzwischen
+mit PR #7363 im [eigenen historischen Vertragsumfang](CURRENT_ORDERED_FUNDING_EPISODE_DEVELOPMENT_ADMISSION_V1.md#spätere-startupgate-fortschreibung-und-snapshotprüfung)
+behoben; seine früheren FAILED-Belege bleiben historische Befunde.

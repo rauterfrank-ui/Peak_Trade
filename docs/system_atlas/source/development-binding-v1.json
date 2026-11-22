@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "db375a216d51b13a212681ca1eb8693bdae335b848cf9a2cac189c668fcb7c26"
+      "sha256": "b7060f964fc1f5893131a4e2176c87934e2570966be23c8b81e45429e8c248c9"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1264,7 +1264,7 @@
     {
       "path": "docs/ops/specs/INTELLIGENCE_EXACT_FORECAST_MEASUREMENT_HANDOFF_V1.md",
       "before_sha256": "36830b2a9726efbdeb61ca8e46d8e2512857ac17ad67a0009ea3bdced9a7696f",
-      "sha256": "c34019b62847afe2e4c9b73133f845dd8a698008bcd1e1260405cd2b6c01a654"
+      "sha256": "5d56c9b69fcde1ac1e1f00723b195a37c960feb6f17b0b551a87cc2deb882633"
     },
     {
       "path": "docs/ops/specs/LIVE_ENTRY_LIQUIDITY_PROFILES_V1.toml",
@@ -2365,6 +2365,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_store_training_v1.py",
       "before_sha256": null,
       "sha256": "b71d672fba972b42f1478e97fd0d6ead2c1e80063861e2bb1db2c354d2f69e95"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/measured_return_calibration_v1.py",
+      "before_sha256": "f737a856de745400d7c4392ca68f596b9fbf91f7bf31fa2250f8a090ad858fee",
+      "sha256": "70e146083c7782d09886f1fc7f90446fb088710226e92f9989a21da264697bc1"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py",
@@ -4385,6 +4390,11 @@
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
       "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
       "sha256": "ad5e09b08ab8e6e060ccebf1745bda447f97cfa6ec088d2d492e8e34a6dfeb19"
+    },
+    {
+      "path": "tests/learning/test_measured_return_exact_clock_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "8e8246358146b185c9b1d52a0b846703b379340dc3e0fe0687645a26bedeaa68"
     },
     {
       "path": "tests/learning/test_meta_learning_ingest_v1.py",
