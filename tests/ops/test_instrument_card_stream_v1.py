@@ -682,7 +682,9 @@ def test_five_slot_card_review_isolates_missing_wrong_and_unaffordable(tmp_path)
 )
 def test_scope_anchor_follows_position_side(side, marks, expected):
     from trading.market_state.time_sample_epoch_semantics_v1 import InstrumentObservationKeyV1
-    from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.analytical_card_scope_v1 import (
+        AnalyticalCardGeometryV1,
+    )
     from trading.master_v2.double_play_state import ActiveSide, RuntimeScopeState
 
     scope = RuntimeScopeState(anchor_price=100)
@@ -784,7 +786,9 @@ def test_soph_model_marks_linear_collateral_on_both_sides(side, close, delta):
 def test_card_geometry_rejects_foreign_native_and_divergent_measured_distance():
     from types import SimpleNamespace as NS
     from trading.market_state.time_sample_epoch_semantics_v1 import InstrumentObservationKeyV1
-    from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.analytical_card_scope_v1 import (
+        AnalyticalCardGeometryV1,
+    )
     from trading.master_v2.double_play_state import ActiveSide
 
     key = InstrumentObservationKeyV1("OKX", SOPH.instrument_id, SOPH.native_id)

@@ -1448,7 +1448,7 @@ def run_hardened_bridge_cycle_v2(
 
         replay_input = replace(replay_input, **capital_inputs)
         if card_acceptance is not None:
-            from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+            from .analytical_card_scope_v1 import AnalyticalCardGeometryV1
 
             if market_context.canonical_volatility_estimate is not None:
                 card_geometry = AnalyticalCardGeometryV1.from_context(

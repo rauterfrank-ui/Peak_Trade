@@ -3922,6 +3922,11 @@
       "sha256": "8b169f3e340ef5ec47e28eb17a8d274fad1063326542c0f829097eec9b4402ef"
     },
     {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/analytical_card_scope_v1.py",
+      "before_sha256": null,
+      "sha256": "c9b58a83c2ae123ccc5b63407bd893152981b9243581bae3351ee314d0bb6cb0"
+    },
+    {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py",
       "before_sha256": "33344a4173ff57954a38374d09645b1cbd20bfe84d084c6ef54184a5485a406d",
       "sha256": "b2c7b3bc26d41728bba3d7899f88781801cea8736f4820ae2adf29158ffe4a5a"
@@ -3929,7 +3934,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "14ad2eb150fa7843a7adcba7bdb277539fcd3a8fa48ee70ece47411f6497c55f"
+      "sha256": "88886c5467641747287678a257af87753a49732a637360e60fcb1f28afa08ce4"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -3965,11 +3970,6 @@
       "path": "src/risk_layer/kill_switch/persistence.py",
       "before_sha256": "95700e7929ce355245a4c9f2ca4ddee07337c65bf4884ca65a95e473ca3ae57e",
       "sha256": "00b467776cdcec3c7fe32b075a03a89989d819d4684d6b6beaed6f83707dadc2"
-    },
-    {
-      "path": "src/trading/master_v2/analytical_card_scope_v1.py",
-      "before_sha256": null,
-      "sha256": "c9b58a83c2ae123ccc5b63407bd893152981b9243581bae3351ee314d0bb6cb0"
     },
     {
       "path": "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
@@ -5449,7 +5449,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "262cc903fb5408f90a74cbc704b19d10883d7af5ac61eb13e7eb37104db2c64a"
+      "sha256": "5c810d17f2dca5042f95ba24761d0ae96d10cfd3c51401b8928e8a886ce92a99"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
