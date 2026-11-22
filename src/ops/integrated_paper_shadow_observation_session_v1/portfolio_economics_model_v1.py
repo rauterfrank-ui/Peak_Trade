@@ -35,6 +35,8 @@ class PortfolioEconomicsModelParamsV1:
     initial_equity: Decimal = Decimal("100000")
     max_leverage: Decimal = Decimal("1")
 
+    linear_futures_collateral: bool = False
+
     def digest(self) -> str:
         payload = (
             f"{self.model_id}|{self.model_version}|fee={self.fee_rate_bps}|"
@@ -44,6 +46,8 @@ class PortfolioEconomicsModelParamsV1:
         # Deterministic lightweight digest without importing hashlib at module import cost.
         import hashlib
 
+        if self.linear_futures_collateral:
+            payload += "|linear_futures_collateral_v1"
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -297,6 +301,11 @@ class SimulatedPortfolioEconomicsModelV1:
                 "slippage_bps": str(self.params.slippage_bps),
                 "funding_rate_per_interval": str(self.params.funding_rate_per_interval),
                 "initial_equity": str(self.params.initial_equity),
+                **(
+                    {"linear_futures_collateral": True}
+                    if self.params.linear_futures_collateral
+                    else {}
+                ),
                 "max_leverage": str(self.params.max_leverage),
             },
             "state": self.state.to_dict(),
@@ -472,6 +481,8 @@ class SimulatedPortfolioEconomicsModelV1:
             )
             pos.realized_pnl += pnl
             self.state.realized_pnl += pnl
+            if self.params.linear_futures_collateral:
+                self.state.cash += pnl
             if pnl >= 0:
                 self._wins += 1
                 self._gross_profit += pnl
@@ -492,11 +503,11 @@ class SimulatedPortfolioEconomicsModelV1:
             pos.quantity = new_qty
             if pos.quantity == 0:
                 pos.avg_entry_price = _ZERO
+                if self.params.linear_futures_collateral:
+                    pos.unrealized_pnl = _ZERO
         self.state.cash -= fill.fee
-        if fill.side == "BUY":
-            self.state.cash -= fill.notional
-        else:
-            self.state.cash += fill.notional
+        if not self.params.linear_futures_collateral:
+            self.state.cash += fill.notional if fill.side == "SELL" else -fill.notional
         self.state.positions[fill.instrument_id] = pos
         self._reconcile_lifecycle_after_fill(was_flat=was_flat, fill=fill)
 

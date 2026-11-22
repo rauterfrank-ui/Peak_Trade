@@ -74,6 +74,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
     instrument_card_market: Any = None,
+    instrument_card_bound: Any = None,
     instrument_card_budget: Any = None,
     instrument_card_execution_clock: Any = None,
 ) -> HardenedWallclockBridgeOutcomeV2:
@@ -137,20 +138,26 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
             "finalized_pt1m_transport": transport,
         }
 
-    cycle = run_hardened_bridge_cycle_v2(
-        bridge_state,
-        mid_price=mid,
-        event_ts_unix=wall_now_unix,
-        session_id=session_id,
-        price_basis=basis,
-        ddo_capture_binding=ddo_capture_binding,
-        ddo_repository_sha=ddo_repository_sha,
-        offline_candidate=offline_candidate,
-        instrument_card_market=instrument_card_market,
-        instrument_card_budget=instrument_card_budget,
-        instrument_card_execution_clock=instrument_card_execution_clock,
-        **finalized_kwargs,
-    )
+    from src.ops.master_v2_card_precheck_v1 import CardEntryDeferredV1
+
+    try:
+        cycle = run_hardened_bridge_cycle_v2(
+            bridge_state,
+            mid_price=mid,
+            event_ts_unix=wall_now_unix,
+            session_id=session_id,
+            price_basis=basis,
+            ddo_capture_binding=ddo_capture_binding,
+            ddo_repository_sha=ddo_repository_sha,
+            offline_candidate=offline_candidate,
+            instrument_card_market=instrument_card_market,
+            instrument_card_bound=instrument_card_bound,
+            instrument_card_budget=instrument_card_budget,
+            instrument_card_execution_clock=instrument_card_execution_clock,
+            **finalized_kwargs,
+        )
+    except CardEntryDeferredV1 as exc:
+        return HardenedWallclockBridgeOutcomeV2(ok=True, labels={"deferred_card": exc.args[0]})
     labels = {
         "execution_class": EXECUTION_CLASS_ANALYTICAL,
         "paper_execution": False,

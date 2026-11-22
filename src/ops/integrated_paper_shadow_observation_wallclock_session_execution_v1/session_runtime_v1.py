@@ -1121,6 +1121,10 @@ class WallclockSessionRuntimeV1:
                                     **(
                                         {
                                             "instrument_card_market": card_market,
+                                            "instrument_card_bound": (
+                                                self.instrument_card_stream.ranking_bound
+                                                or self.instrument_card_stream.bound
+                                            ),
                                             "instrument_card_budget": self.instrument_card_stream.current[
                                                 "budget"
                                             ],
@@ -1130,7 +1134,11 @@ class WallclockSessionRuntimeV1:
                                         else {}
                                     ),
                                 )
-                            if card_market is not None:
+                            if card_market is not None and "deferred_card" in outcome_bridge.labels:
+                                self.instrument_card_stream.defer_entry_v1(
+                                    outcome_bridge.labels["deferred_card"]
+                                )
+                            elif card_market is not None:
                                 self.instrument_card_stream.complete_v1(outcome_bridge.bridge_cycle)
                         except ValueError as exc:
                             # The core has rejected this input. Preserve earlier cycles and
@@ -1141,8 +1149,8 @@ class WallclockSessionRuntimeV1:
                             self.blockers.append(detail)
                             self._abort("INVARIANT_VIOLATION", detail)
                             break
-                        self.cycle_count += 1
                         if outcome_bridge.bridge_cycle is not None:
+                            self.cycle_count += 1
                             cycle = outcome_bridge.bridge_cycle
                             cycle["shadow_decision_timing"] = {
                                 "market_sequence": tick.sequence,

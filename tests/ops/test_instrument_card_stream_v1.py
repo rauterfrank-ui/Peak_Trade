@@ -368,7 +368,9 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         inp = row["master_v2"]["prepared_input"]
         assert inp["instrument_id"] == SOPH.instrument_id
         boundary = inp["current_instrument_capital_risk_sizing_boundary_state_file"]
-        assert D(boundary["account_equity"]) <= 25
+        marked = row["budget"]["original_snapshot"]["marked_portfolio"]["economic_metrics"]
+        assert D(boundary["account_equity"]) == D(marked["equity"])
+        assert D(boundary["total_capital_limit"]) == 25
         assert D(boundary["scope_capital_limit"]) <= 25
         assert D(boundary["lot_size"]) == 1
         assert D(boundary["instrument_quantity_constraints"]["contract_multiplier"]) == 10
@@ -387,6 +389,30 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         assert D(row["budget"]["available_amount"]) <= 25
         assert ctx["canonical_volatility_estimate"] is not None
         assert row["master_v2"]["decision"] is not None
+    prepared = {
+        row["master_v2"]["decision"]["cycle_id"]: row["master_v2"]["prepared_input"]
+        for row in evaluated
+    }
+    # The first observed long is a natural C3 decision in this ascending fixture.
+    entry_idx = next(i for i, c in enumerate(cycles) if c["fill"])
+    entry = cycles[entry_idx]
+    assert entry["decision_outcome"] == "enter_long" and not entry["forced_wiring"]
+    assert all(
+        prepared[c["cycle_id"]]["runtime_scope_state"] is None for c in cycles[: entry_idx + 1]
+    )
+    anchor = float(entry["fill"]["fill_price"])
+    for c in cycles[entry_idx + 1 :]:
+        inp = prepared[c["cycle_id"]]
+        assert c["instrument_card_geometry"]["position_anchor_before"] == anchor
+        assert inp["runtime_scope_state"]["anchor_price"] == max(
+            anchor, c["price_basis"]["mid_price"]
+        )
+        assert inp["runtime_scope_bound_instrument_id"] == SOPH.instrument_id
+        assert c["instrument_card_entry_review"] is None
+        anchor = max(anchor, c["price_basis"]["mid_price"])
+        if c["fill"]:
+            break
+    assert json.loads((root / "full_economic_reconstruction_verifier.json").read_bytes())["ok"]
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
 
 
@@ -626,3 +652,154 @@ def test_shadow_exact_quantity_guard_uses_native_units_and_preserves_close_owner
             assert D(cycle["instrument_card_execution_check"]["quantity_contracts"]) == 1
         else:
             assert cycle["instrument_card_execution_check"] is None
+
+
+def test_five_slot_card_review_isolates_missing_wrong_and_unaffordable(tmp_path):
+    from src.ops.master_v2_card_precheck_v1 import review_entry_cards_v1
+
+    cards = {"LANE_3": None}
+    for slot in (ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT, SOPH):
+        market = _market(slot=slot)
+        source = stream(tmp_path, market, ["0"] if slot == ZKP_PAPER_SLOT else ["25"])
+        source.update_v1(market, now=market.observed_unix)
+        cards[slot.lane_id] = source.entry_card_v1()
+    cards["LANE_2"] = replace(cards["LANE_2"], bound=cards["LANE_5"].bound)
+    results = review_entry_cards_v1(cards, now=market.observed_unix)
+    assert not any(side["eligible"] for side in results["LANE_1"]["sides"].values())
+    assert not results["LANE_2"]["sides"] and not results["LANE_3"]["sides"]
+    for lane in ("LANE_4", "LANE_5"):
+        assert all(side["eligible"] for side in results[lane]["sides"].values())
+        assert results[lane]["binding"] == cards[lane].bound.to_dict()
+
+
+@pytest.mark.parametrize(
+    ("side", "marks", "expected"),
+    [
+        ("long", [103, 102, 104], [103, 103, 104]),
+        ("short", [97, 98, 96], [97, 97, 96]),
+        ("neutral", [103, 97, 104], [100, 100, 100]),
+    ],
+)
+def test_scope_anchor_follows_position_side(side, marks, expected):
+    from trading.market_state.time_sample_epoch_semantics_v1 import InstrumentObservationKeyV1
+    from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+    from trading.master_v2.double_play_state import ActiveSide, RuntimeScopeState
+
+    scope = RuntimeScopeState(anchor_price=100)
+    geometry = AnalyticalCardGeometryV1(
+        InstrumentObservationKeyV1("OKX", SOPH.instrument_id, SOPH.native_id),
+        ActiveSide[side.upper()],
+        0.5,
+        "test",
+    )
+    for mark, anchor in zip(marks, expected, strict=True):
+        scope = geometry.advance(scope, mark)
+        assert (
+            scope.anchor_price,
+            scope.current_downscope_boundary,
+            scope.current_upscope_boundary,
+        ) == (anchor, anchor - 0.5, anchor + 0.5)
+
+
+def test_duplicate_mark_preserves_cursor_and_blocked_side_cannot_confirm(tmp_path):
+    from types import SimpleNamespace
+    from src.ops.master_v2_card_precheck_v1 import CardEntryDeferredV1
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        _prepare_card_observation,
+    )
+    from trading.market_state.distinct_market_observation_acceptor_v1 import (
+        commit_observation_acceptance_v1,
+    )
+
+    state = HardenedBridgeSessionStateV2(
+        instrument_id=SOPH.instrument_id, venue_instrument_id=SOPH.native_id
+    )
+    first = _market(slot=SOPH)
+    card = stream(tmp_path, first)
+
+    def prepare(market, *, amount="25"):
+        budget = budget_source([amount])(market=market, now=market.observed_unix)
+        basis = SimpleNamespace(
+            event_ts_unix=market.market_event_unix,
+            receive_ts_unix=market.observed_unix,
+            mid_price=float(market.mark),
+        )
+        return _prepare_card_observation(
+            state,
+            market=market,
+            budget=budget,
+            bound=card.bound,
+            observation=SimpleNamespace(venue_flat=True),
+            price_basis=basis,
+            now=market.observed_unix,
+        )
+
+    _, accepted, _ = prepare(first)
+    before = commit_observation_acceptance_v1(current_state=accepted.state_before, result=accepted)
+    state.card_observations = before
+    with pytest.raises(CardEntryDeferredV1) as duplicate:
+        prepare(first)
+    assert "duplicate" in duplicate.value.args[0]["reasons"][0]
+    assert state.card_observations is before
+    assert state.cycle_index == 0 and state.card_position_scope is None
+    with pytest.raises(CardEntryDeferredV1) as blocked:
+        prepare(_market(1, slot=SOPH), amount="0")
+    assert not any(r["eligible"] for r in blocked.value.args[0]["sides"].values())
+    assert state.card_confirmation is None and state.card_position_scope is None
+    assert state.card_observations.market_observation_epoch != before.market_observation_epoch
+
+
+@pytest.mark.parametrize("side,close,delta", [("BUY", "SELL", "0.001"), ("SELL", "BUY", "-0.001")])
+def test_soph_model_marks_linear_collateral_on_both_sides(side, close, delta):
+    from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
+        PortfolioEconomicsModelParamsV1,
+        SimulatedPortfolioEconomicsModelV1,
+    )
+
+    model = SimulatedPortfolioEconomicsModelV1(
+        PortfolioEconomicsModelParamsV1(initial_equity=D("25"), linear_futures_collateral=True)
+    )
+    mark, qty = D("0.024"), D("1000")
+    first = model.apply_intended_action(
+        instrument_id=SOPH.instrument_id, side=side, quantity=qty, mark_price=mark
+    )
+    assert model.state.cash == D(25) - first.fee
+    assert model.state.equity == D(25) - first.fee - first.slippage_cost
+    last = model.apply_intended_action(
+        instrument_id=SOPH.instrument_id, side=close, quantity=qty, mark_price=mark + D(delta)
+    )
+    assert model.state.unrealized_pnl == 0
+    assert (
+        model.state.equity
+        == model.state.cash
+        == D(25)
+        + abs(D(delta)) * qty
+        - first.slippage_cost
+        - last.slippage_cost
+        - first.fee
+        - last.fee
+    )
+
+
+def test_card_geometry_rejects_foreign_native_and_divergent_measured_distance():
+    from types import SimpleNamespace as NS
+    from trading.market_state.time_sample_epoch_semantics_v1 import InstrumentObservationKeyV1
+    from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+    from trading.master_v2.double_play_state import ActiveSide
+
+    key = InstrumentObservationKeyV1("OKX", SOPH.instrument_id, SOPH.native_id)
+    foreign = replace(key, venue_instrument_id="other-native-id")
+    identity = NS(instrument_key=lambda: foreign, mark_price=1.0)
+    context = NS(instrument_id=SOPH.instrument_id, mark_price=1.0)
+    with pytest.raises(ValueError, match="CARD_GEOMETRY_INSTRUMENT_MISMATCH"):
+        AnalyticalCardGeometryV1.from_context(
+            key=key, context=context, position=None, acceptance=NS(observation_identity=identity)
+        )
+    geometry = AnalyticalCardGeometryV1(key, ActiveSide.NEUTRAL, 0.2, "fixture")
+    inter = NS(
+        market_context=context,
+        scope_event=NS(instrument_id=SOPH.instrument_id, semantic_binding=NS(current_price=1.0)),
+        effective_scope_magnitude=0.1,
+    )
+    with pytest.raises(ValueError, match="CARD_GEOMETRY_CONSUMPTION_MISMATCH"):
+        geometry.verify_consumption(inter, mark=1.0, carried=None)

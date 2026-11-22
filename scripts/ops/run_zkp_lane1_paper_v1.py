@@ -54,6 +54,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (  # 
     SCHEMA_VERSION,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1  # noqa: E402
+from src.ops.master_v2_card_precheck_v1 import review_entry_cards_v1  # noqa: E402
 from src.ops.instrument_card_stream_v1 import InstrumentCardStreamV1, paper_budget_source_v1  # noqa: E402
 
 _POLL_SECONDS = 5
@@ -233,9 +234,22 @@ def _drive(
         if market is not None:
             try:
                 cards.update_v1(market, now=fill_clock())
-                with cards.observe_v1():
-                    result = (occupied or opening).step_v1(market, clock=fill_clock)
-                cards.complete_v1(result)
+                review = None
+                if occupied is None:
+                    review = review_entry_cards_v1(
+                        {session.slot.lane_id: cards.entry_card_v1()}, now=fill_clock()
+                    )[session.slot.lane_id]
+                if review is not None and not any(
+                    side["eligible"] for side in review["sides"].values()
+                ):
+                    cards.defer_entry_v1(review)
+                    result = {"status": "WAITING_FOR_LIQUID_MARKET", "entry_review": review}
+                else:
+                    with cards.observe_v1():
+                        result = (occupied or opening).step_v1(market, clock=fill_clock)
+                    if review is not None:
+                        result = dict(result, entry_review=review)
+                    cards.complete_v1(result)
             except _WindowEnded:
                 break
             except (ValueError, TypeError, KeyError, DecimalException) as exc:

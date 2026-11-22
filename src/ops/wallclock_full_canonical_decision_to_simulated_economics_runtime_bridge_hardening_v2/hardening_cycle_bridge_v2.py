@@ -87,7 +87,13 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     map_replay_result_to_intended_analytical_action_v1,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    InstrumentObservationKeyV1,
     ObservationAcceptanceResultV1,
+    ObservationAcceptanceStateV1,
+    ObservationCandidateV1,
+    commit_observation_acceptance_v1,
+    evaluate_distinct_market_observation_v1,
+    initial_observation_acceptance_state_v1,
     ObservationTransportMetadataV1,
 )
 from trading.market_state.time_sample_epoch_semantics_v1 import MarketSampleIdentityV1
@@ -190,7 +196,7 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     TradingGate,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
-from trading.master_v2.double_play_state import SideState
+from trading.master_v2.double_play_state import RuntimeScopeState, SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayPoliciesV1,
@@ -578,6 +584,11 @@ class HardenedBridgeSessionStateV2:
     last_f1_m9_threshold_consumer_wiring: dict[str, Any] | None = None
     offline_confirmation_progress: DirectionalConfirmationSideStateCarrierV1 | None = None
 
+    card_observations: ObservationAcceptanceStateV1 | None = None
+    card_confirmation: DirectionalConfirmationSideStateCarrierV1 | None = None
+    card_position_scope: RuntimeScopeState | None = None
+    card_scope_confirmation: ScopeConfirmationStateV1 | None = None
+
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
         if len(self.mid_prices) > PRICE_PATH_MAX_LEN:
@@ -808,6 +819,108 @@ def ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         )
 
 
+def _prepare_card_observation(state, *, market, bound, budget, observation, price_basis, now):
+    from src.ops.master_v2_card_precheck_v1 import (
+        EntryCardV1,
+        CardEntryDeferredV1,
+        review_entry_cards_v1,
+    )
+    from trading.market_state.elementary_direction_v1 import (
+        evaluate_elementary_direction_from_observation_acceptance_v1,
+        ElementaryDirectionV1,
+    )
+
+    if bound is None:
+        raise ValueError("CARD_ORIGINAL_BOUND_INSTRUMENT_REQUIRED")
+    entry_side_state = state.side_state
+    lane_id = market.slot.lane_id
+    if observation.venue_flat:
+        card_review = review_entry_cards_v1({lane_id: EntryCardV1(bound, market, budget)}, now=now)[
+            lane_id
+        ]
+        if not card_review["sides"]:
+            raise CardEntryDeferredV1(card_review)
+        key = InstrumentObservationKeyV1(
+            _DEFAULT_VOL_TYPED_BINDING_VENUE,
+            card_review["instrument_id"],
+            card_review["venue_native_id"],
+        )
+    else:
+        # The existing position stays bound even when there is no free entry capital.
+        card_review = None
+        key = InstrumentObservationKeyV1(
+            _DEFAULT_VOL_TYPED_BINDING_VENUE, bound.instrument_id, bound.venue_native_id
+        )
+    prior_observations = state.card_observations or initial_observation_acceptance_state_v1(
+        bound_instrument_key=key
+    )
+    if (
+        price_basis is None
+        or price_basis.event_ts_unix != market.market_event_unix
+        or price_basis.mid_price != float(market.mark)
+    ):
+        raise ValueError("CARD_MARK_OBSERVATION_BASIS_MISMATCH")
+    if not observation.venue_flat and state.card_position_scope is None:
+        raise ValueError("CARD_OPEN_POSITION_SCOPE_MISSING")
+    if state.card_position_scope is not None and observation.venue_flat:
+        raise ValueError("CARD_POSITION_SCOPE_WITHOUT_POSITION")
+    card_acceptance = evaluate_distinct_market_observation_v1(
+        prior_observations,
+        ObservationCandidateV1(
+            venue=key.venue,
+            canonical_instrument_id=key.canonical_instrument_id,
+            venue_instrument_id=key.venue_instrument_id,
+            venue_event_time=market.market_event_unix,
+            mark_price=float(market.mark),
+            transport=ObservationTransportMetadataV1(
+                receive_time=price_basis.receive_ts_unix, wallclock_now=now
+            ),
+        ),
+    )
+    if card_acceptance.fail_closed:
+        raise ValueError("CARD_OBSERVATION_REJECTED:" + card_acceptance.reason_code)
+    if not card_acceptance.strategy_advance_allowed and not state.killstate_active:
+        raise CardEntryDeferredV1(
+            dict(
+                card_review or {"lane_id": lane_id, "phase": "MANAGE_POSITION"},
+                reasons=[card_acceptance.reason_code],
+            )
+        )
+    if observation.venue_flat:
+        eligible = {side for side, result in card_review["sides"].items() if result["eligible"]}
+        direction = evaluate_elementary_direction_from_observation_acceptance_v1(
+            card_acceptance, bound_instrument_key=key, current_mark=float(market.mark)
+        ).direction
+        side = {ElementaryDirectionV1.BULL: "BUY", ElementaryDirectionV1.BEAR: "SELL"}.get(
+            direction
+        )
+        if not eligible or (side is not None and side not in eligible):
+            state.card_confirmation = None
+            if card_acceptance.strategy_advance_allowed:
+                state.card_observations = commit_observation_acceptance_v1(
+                    current_state=prior_observations, result=card_acceptance
+                )
+            raise CardEntryDeferredV1(
+                dict(
+                    card_review, reasons=card_review["reasons"] or ["CARD_MARKET_SIDE_NOT_RELEASED"]
+                )
+            )
+        # Arming only supplies the side for the normal C3/Composition/Entry
+        # owners. A single price change cannot turn into an entry or fill.
+        if state.side_state in {
+            SideState.LONG_ARMED,
+            SideState.NEUTRAL_OBSERVE,
+            SideState.LONG_ARMED_NEUTRAL_START,
+            SideState.SHORT_ARMED_NEUTRAL_START,
+        }:
+            entry_side_state = {
+                "BUY": SideState.LONG_ARMED_NEUTRAL_START,
+                "SELL": SideState.SHORT_ARMED_NEUTRAL_START,
+            }.get(side, SideState.NEUTRAL_OBSERVE)
+
+    return card_review, card_acceptance, entry_side_state
+
+
 def run_hardened_bridge_cycle_v2(
     state: HardenedBridgeSessionStateV2,
     *,
@@ -824,6 +937,7 @@ def run_hardened_bridge_cycle_v2(
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
     instrument_card_market: Any = None,
+    instrument_card_bound: Any = None,
     instrument_card_budget: Any = None,
     instrument_card_execution_clock: Any = None,
 ) -> dict[str, Any]:
@@ -834,7 +948,7 @@ def run_hardened_bridge_cycle_v2(
         from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_capital_binding_v1
         from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
-        bound = BoundInstrumentV1(
+        bound = instrument_card_bound or BoundInstrumentV1(
             instrument_id=state.instrument_id,
             venue_native_id=state.venue_instrument_id,
             ranking_snapshot_id="",
@@ -844,6 +958,11 @@ def run_hardened_bridge_cycle_v2(
             selection_integrity_digest="",
             selection_state="SHADOW",
         )
+        if (bound.instrument_id, bound.venue_native_id) != (
+            state.instrument_id,
+            state.venue_instrument_id,
+        ):
+            raise ValueError("CARD_BOUND_INSTRUMENT_STATE_MISMATCH")
         validate_card_market_v1(
             instrument_card_market,
             bound=bound,
@@ -869,7 +988,8 @@ def run_hardened_bridge_cycle_v2(
     if ddo_capture_binding is not None and ddo_repository_sha is None:
         raise ValueError("DDO_CAPTURE_REPOSITORY_SHA_REQUIRED")
     if offline_candidate is not None and (
-        offline_candidate.material.instrument_id != state.instrument_id
+        instrument_card_market is not None
+        or offline_candidate.material.instrument_id != state.instrument_id
         or offline_candidate.material.trading_epoch != state.trading_epoch
         or forced_actionable is not None
         or ddo_capture_binding is not None
@@ -889,6 +1009,21 @@ def run_hardened_bridge_cycle_v2(
             or identity.mark_price != price_basis.mid_price
         ):
             raise ValueError("I17_CANDIDATE_MARK_OBSERVATION_MISMATCH")
+    card_review = None
+    card_acceptance = None
+    entry_side_state = state.side_state
+    if instrument_card_market is not None and forced_actionable is None:
+        card_review, card_acceptance, entry_side_state = _prepare_card_observation(
+            state,
+            market=instrument_card_market,
+            bound=instrument_card_bound,
+            budget=instrument_card_budget,
+            observation=observation,
+            price_basis=price_basis,
+            now=event_ts_unix,
+        )
+        key = card_acceptance.observation_identity.instrument_key()
+
     state.session_id = session_id
     ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
         state,
@@ -1215,6 +1350,14 @@ def run_hardened_bridge_cycle_v2(
             "confirmation_progress_venue": bound.venue,
             "confirmation_progress_instrument": bound,
         }
+    if card_acceptance is not None:
+        confirmation_inputs = dict(
+            observation_acceptance_result=card_acceptance,
+            directional_confirmation_progress=state.card_confirmation,
+            confirmation_progress_session_id=session_id,
+            confirmation_progress_venue=key.venue,
+            confirmation_progress_instrument=key,
+        )
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
@@ -1297,10 +1440,49 @@ def run_hardened_bridge_cycle_v2(
         **confirmation_inputs,
     )
 
+    card_geometry = None
+    carried_scope = None
+    prior_scope = state.card_position_scope
     if instrument_card_market is not None:
         from src.ops.instrument_card_input_observation_v1 import record_instrument_card_input_v1
 
         replay_input = replace(replay_input, **capital_inputs)
+        if card_acceptance is not None:
+            from trading.master_v2.analytical_card_scope_v1 import AnalyticalCardGeometryV1
+
+            if market_context.canonical_volatility_estimate is not None:
+                card_geometry = AnalyticalCardGeometryV1.from_context(
+                    key=key,
+                    context=market_context,
+                    position=observation,
+                    acceptance=card_acceptance,
+                )
+                if prior_scope is not None:
+                    carried_scope = card_geometry.advance(prior_scope, mark)
+            replay_input = replace(
+                replay_input,
+                side_state=entry_side_state,
+                direction_state=_side_state_to_entry_exit_direction(entry_side_state),
+                scope_direction_state=scope_direction_from_side_state_v1(entry_side_state),
+                runtime_scope_state=carried_scope,
+                runtime_scope_bound_instrument_id=key.canonical_instrument_id
+                if carried_scope is not None
+                else None,
+                existing_position_side=ExistingPositionSide(
+                    observation.existing_position_side.value
+                ),
+                position_state=PositionState(observation.position_state.value),
+                position_management_context=PositionManagementContext(
+                    observation.position_management_context.value
+                ),
+                venue_flat=observation.venue_flat,
+                scope_confirmation_state=state.card_scope_confirmation
+                or ScopeConfirmationStateV1(
+                    candidate_kind=None,
+                    candidate_count=0,
+                    last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
+                ),
+            )
         record_instrument_card_input_v1(replay_input)
     ddo_capture = None
     if ddo_capture_binding is not None and ddo_repository_sha is not None:
@@ -1316,12 +1498,14 @@ def run_hardened_bridge_cycle_v2(
             session_id=session_id,
             cycle_index=state.cycle_index,
             event_ts_unix=event_ts_unix,
-            observation_acceptance_result=None,
+            observation_acceptance_result=card_acceptance,
             features=features,
             confirmation_binding=None,
         )
     else:
         replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    if card_geometry is not None:
+        card_geometry.verify_consumption(replay.intermediate, mark=mark, carried=carried_scope)
     quantity_projection = None
     if instrument_card_market is not None:
         from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_portfolio_action_v1
@@ -1484,7 +1668,56 @@ def run_hardened_bridge_cycle_v2(
             )
         state.fill_ledger.append(dict(fill_dict))
 
+    if card_acceptance is not None:
+        if card_acceptance.strategy_advance_allowed:
+            state.card_observations = commit_observation_acceptance_v1(
+                current_state=card_acceptance.state_before, result=card_acceptance
+            )
+        inter = replay.intermediate
+        state.card_confirmation = (
+            inter.directional_confirmation_progress_after
+            if inter is not None and observation.venue_flat
+            else None
+        )
+        _, after_side, _ = _portfolio_position_fields_v2(state)
+        if after_side == ExistingPositionSide.NONE.value:
+            state.card_position_scope = None
+            state.card_scope_confirmation = None
+        elif after_side != position_side:
+            if fill_obj is None:
+                raise RuntimeError("CARD_OPENING_FILL_REQUIRED")
+            state.card_position_scope = RuntimeScopeState(
+                anchor_price=float(fill_obj.fill_price), scope_distance_mode="gge_raw_v2"
+            )
+            state.card_scope_confirmation = None
+            state.card_confirmation = None
+        elif inter is not None and carried_scope is not None:
+            # A core transition may propose a side switch before a fill. Carry the
+            # reference of the position that is still booked.
+            state.card_position_scope = replace(
+                inter.runtime_scope_state_after,
+                anchor_price=carried_scope.anchor_price,
+                current_upscope_boundary=carried_scope.current_upscope_boundary,
+                current_downscope_boundary=carried_scope.current_downscope_boundary,
+                current_hysteresis_band=carried_scope.current_hysteresis_band,
+            )
+            state.card_scope_confirmation = inter.scope_event.next_confirmation_state
     _update_session_state_from_replay(state, result=replay)
+    if (
+        card_acceptance is not None
+        and fill_obj is not None
+        and state.side_state != SideState.KILL_ALL
+    ):
+        _, new_side, _ = _portfolio_position_fields_v2(state)
+        if new_side != position_side:
+            state.side_state = {
+                "long": SideState.LONG_ACTIVE,
+                "short": SideState.SHORT_ACTIVE,
+                "none": SideState.NEUTRAL_OBSERVE,
+            }[new_side]
+            state.direction_state = _side_state_to_entry_exit_direction(state.side_state)
+            state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
+            state.card_confirmation = None
 
     sizing_result = str(replay.evidence.risk_sizing_effect or "NONE")
     if replay.intermediate and replay.intermediate.capital_risk_sizing_decision is not None:
@@ -1563,6 +1796,22 @@ def run_hardened_bridge_cycle_v2(
                 "instrument_card_execution_check": card_execution_check,
                 "soph_shadow_capital_binding": capital_binding,
                 "instrument_card_quantity_projection": quantity_projection,
+                "instrument_card_entry_review": card_review,
+                "instrument_card_geometry": None
+                if card_geometry is None
+                else {
+                    "instrument_key": key.to_dict(),
+                    "gge_input_digest": card_geometry.input_digest,
+                    "distance": card_geometry.distance,
+                    "mark": mark,
+                    "position_anchor_before": None
+                    if prior_scope is None
+                    else prior_scope.anchor_price,
+                    "position_anchor_after": None
+                    if state.card_position_scope is None
+                    else state.card_position_scope.anchor_price,
+                    "core_distance_verified": replay.intermediate is not None,
+                },
             }
             if instrument_card_market is not None
             else {}
