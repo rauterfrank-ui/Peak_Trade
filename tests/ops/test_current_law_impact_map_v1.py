@@ -12,6 +12,7 @@ import pytest
 REPO = Path(__file__).resolve().parents[2]
 MODULE_PATH = REPO / "scripts/ops/current_law_impact_map_v1.py"
 MASTER_V2 = REPO / "src/trading/master_v2"
+ACCEPTED_MASTER_V2_SOURCE = "71e4ce6912476be757ada2b4d334892320c424c6"
 
 
 def _load():
@@ -119,20 +120,22 @@ def _frozen_source() -> str:
 
 
 def test_master_v2_unchanged_against_accepted_current_source() -> None:
-    # The frozen tag stays immutable, but the accepted current merge already
-    # contains separately approved adapter/numeric-admission deltas. This BWP
-    # may change none of them or the native Core; do not mistake prior approved
-    # development for a new unapproved mutation of the frozen source.
+    # PR #7302 binds full effective D_t to Layer C and 29P. Compare with that
+    # fixed accepted merge, not HEAD, so later Core drift still fails. The older
+    # #7206 reference predates these three deliberate Master V2 changes.
+    # This source-integrity check grants no runtime authority; frozen tags stay.
     _frozen_source()
-    accepted = "304719c94030ff9aacdf2571e2ae56533f9e6a25"
-    result = subprocess.run(
-        ["git", "diff", "--name-only", accepted, "--", "src/trading/master_v2"],
-        cwd=REPO,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    assert result.stdout.strip() == ""
+    accepted = ACCEPTED_MASTER_V2_SOURCE
+    # A restored working file must not conceal a different staged Core body.
+    for mode in ([], ["--cached"]):
+        result = subprocess.run(
+            ["git", "diff", *mode, "--name-only", accepted, "--", "src/trading/master_v2"],
+            cwd=REPO,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        assert result.stdout.strip() == ""
     untracked = subprocess.check_output(
         ["git", "ls-files", "--others", "--exclude-standard", "--", "src/trading/master_v2"],
         cwd=REPO,
