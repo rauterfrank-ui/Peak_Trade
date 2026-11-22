@@ -952,6 +952,11 @@
       "sha256": "7f7707f49696b9051b7de8db0eaa535eef4df6e3d4946c6a8a9b0c5eb1f05853"
     },
     {
+      "path": "docs/ops/specs/BTC_DEMO_HOST_BUDGET_RECONCILIATION_OFFLINE_V1.md",
+      "before_sha256": null,
+      "sha256": "8aa4a0fddf20dc1b4c162acb651fc62aa9be7b73bbd30c6b1fbe6a0e1506831e"
+    },
+    {
       "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
       "before_sha256": "3d624a9f72e5e0038c0017a3ebd17ce94851e233a8138c5f1f98a043fe989451",
       "sha256": "9ff279fe38d2078bb8b8feb471d994f49137f54a17262ff89d4e63e7d70f774f"
@@ -1059,7 +1064,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "8753ed7e42d131f169dc9fe0fa3cda44138ba05fb53c9068a2b09b9ab4bec0bd"
+      "sha256": "3ac5228d5eb84e8e595447664149c19253ed04cfb5a37831d2b21de1a822c744"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1494,7 +1499,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "aea916c642fe058196ace3220c5d6e200cc1fa145b0237d68d71f309325cbada"
+      "sha256": "ace773469b5fd85f586a51b07505e03c87e655bb7cb61f310836f2ee64adba28"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2562,9 +2567,14 @@
       "sha256": "06071a8b82c09b1f388ce4d0b37b6830362a9843f41a8c06d20ee1e96baeab8f"
     },
     {
+      "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
+      "before_sha256": null,
+      "sha256": "2f64bd55ea89f6477aa63fadb887b3dc3ce398ccba22624749e0be4c2d98b9cf"
+    },
+    {
       "path": "src/ops/btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "a5f3354b10262e29cadd33491aeec52ef672dac3d26933981620d8bc524bec47"
+      "sha256": "d36e04b6595d7205e0bbbebe9c622323cd2b387bb546c4bcf84aa57dad3502d9"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -3624,7 +3634,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd"
+      "sha256": "a56aa9d115717e2430577be3cefa2099191c198fe00648ea31056441bfec3fff"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -4802,9 +4812,24 @@
       "sha256": "f7e64d4755ee6c3cd0de6e763c1dcb8e2b4c4f4fd79829b21fb7a998cce8dbcb"
     },
     {
+      "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
+      "before_sha256": null,
+      "sha256": "c8646bff17e6a064f31b819ddb9902546ca945a2e3e7e6041f911898d77978df"
+    },
+    {
+      "path": "tests/ops/test_btc_demo_budget_revision_development_delta_v1.py",
+      "before_sha256": null,
+      "sha256": "bb8cd0e5879561c084ab1678e3b9ccfe6920e163f74cd7e0c996ef3f2638fa79"
+    },
+    {
       "path": "tests/ops/test_btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "bb4c38f226b7d10492434d3ce99fab4b22725dc95b754f536f8586c3b2da8306"
+      "sha256": "2b00a14b587f44f119722c45e237ee9dd7f399d2354181fcda6cb4b30bf51504"
+    },
+    {
+      "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
+      "before_sha256": null,
+      "sha256": "f98f6137104d0b259cdcdaa7942ebfb0d5b90fa2a3a754ed418cfac5e1b7729a"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",
@@ -5054,7 +5079,7 @@
     {
       "path": "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
       "before_sha256": "c29f78ddb241941173f28f081b6681b4adaee996518751bed0c07c64e020c9b2",
-      "sha256": "ab677e5a352a9428ddfef6cf5550a6b83687e00cac4d7c20eb7ff81eecc278df"
+      "sha256": "f9fe85ee14434fea78414476a2e91ee53d6ac34ab6e1fb2d23d4ba423891b3e4"
     },
     {
       "path": "tests/ops/test_current_productive_position_management_quantity_handoff_v1.py",
@@ -5419,7 +5444,7 @@
     {
       "path": "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
       "before_sha256": "e5413bec76a85eab72f5f2963bef254343003cf100a5d7ba9d46328521a4ae78",
-      "sha256": "4bae3f6fdf01c980cf8a4f572be72eff4b813e083063e71dbae5b174de332c51"
+      "sha256": "e0c8b4f2fb57fec6a9ec463585a7a0b5193dd4569c103583ecfddef94c5197c1"
     },
     {
       "path": "tests/ops/test_n1_startup_recovery_scope_v1.py",

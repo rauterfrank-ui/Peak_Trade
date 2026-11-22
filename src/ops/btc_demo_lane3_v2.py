@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from copy import deepcopy
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 import json
@@ -67,6 +68,58 @@ _FILLS = "/api/v5/trade/fills"
 _FX = "/api/v5/market/index-tickers"
 _PRIVATE_READS = {_CONFIG, _BALANCE, _INSTRUMENTS, _FEE, _POSITIONS, _ORDER, _PENDING, _FILLS}
 _AUTH_FIELDS = {"OK-ACCESS-KEY", "OK-ACCESS-SIGN", "OK-ACCESS-TIMESTAMP", "OK-ACCESS-PASSPHRASE"}
+
+
+class BtcDemoObservationsV1:
+    """Retain parsed responses and their actual receipt times, without a transport.
+
+    These local records do not independently authenticate a venue response.
+    The existing fifteen-second account/fill read window also bounds coverage.
+    """
+
+    def __init__(self, reads):
+        self.reads = reads
+        self.rows = []
+
+    def read(self, path, **query):
+        payload, acquired = self.reads.read(path, **query)
+        if (
+            not isinstance(acquired, datetime)
+            or acquired.utcoffset() is None
+            or not isinstance(payload, dict)
+            or payload.get("code") != "0"
+            or not isinstance(payload.get("data"), list)
+            or any(not isinstance(row, dict) for row in payload["data"])
+        ):
+            raise ValueError("BTC_DEMO_RESPONSE_OR_RECEIPT_UNPROVEN")
+        if self.rows:
+            previous = datetime.fromisoformat(self.rows[-1]["acquired_at"])
+            first = datetime.fromisoformat(self.rows[0]["acquired_at"])
+            if not previous <= acquired or not 0 <= (acquired - first).total_seconds() <= 15:
+                raise ValueError("BTC_DEMO_READ_WINDOW_UNPROVEN")
+        self.rows.append(
+            {
+                "path": path,
+                "query": deepcopy(query),
+                "payload": deepcopy(payload),
+                "acquired_at": acquired.isoformat(),
+            }
+        )
+        return deepcopy(payload), acquired
+
+    def replay_v1(self):
+        """Replay this exact observation batch, not a newly acquired snapshot."""
+        rows = deepcopy(self.rows)
+
+        class Replay:
+            def read(self, path, **query):
+                matches = [r for r in rows if (r["path"], r["query"]) == (path, query)]
+                if len(matches) != 1:
+                    raise ValueError("BTC_DEMO_ORIGINAL_OBSERVATION_REQUIRED")
+                row = matches[0]
+                return deepcopy(row["payload"]), datetime.fromisoformat(row["acquired_at"])
+
+        return Replay()
 
 
 class _RejectRedirect(HTTPRedirectHandler):
@@ -145,11 +198,18 @@ def _account(reads, expected_uid):
 
 def read_btc_demo_coverage_v2(*, reads: OkxEeaDemoReadsV1, expected_uid: str) -> dict:
     """Measure Demo availability and FX without taking a hold or funding a slot."""
+    reads = BtcDemoObservationsV1(reads)
     account, _ = _account(reads, expected_uid)
     balance, _ = reads.read(_BALANCE, ccy="USD,USDC")
     instruments, _ = reads.read(_INSTRUMENTS, instType="FUTURES", instId=_NATIVE)
     instrument = _only(instruments)
-    if instrument.get("instId") != _NATIVE or instrument.get("state") != "live":
+    if (
+        instrument.get("instId") != _NATIVE
+        or instrument.get("state") != "live"
+        or instrument.get("settleCcy") not in {"USD", "USDC"}
+        or not isinstance(instrument.get("groupId"), str)
+        or not instrument["groupId"]
+    ):
         raise ValueError("BTC_DEMO_ACCOUNT_INSTRUMENT_UNAVAILABLE")
     fees, _ = reads.read(_FEE, instType="FUTURES", instFamily=_FAMILY)
     fee_rows = [
@@ -177,7 +237,10 @@ def read_btc_demo_coverage_v2(*, reads: OkxEeaDemoReadsV1, expected_uid: str) ->
             raise ValueError("BTC_DEMO_AVAILABLE_EQUITY_AMBIGUOUS")
         amounts[ccy] = _money(row["availEq"]) if row.get("availEq") not in ("", None) else None
     available_usdc = amounts.get("USDC")
-    return {
+    report = {
+        "schema": "btc_demo_coverage.v1",
+        "venue": _DEMO.venue,
+        "execution_environment": _DEMO.runtime_mode,
         "budget_usdc": str(_BUDGET_USDC),
         "budget_value_usd": str(_BUDGET_USDC * rate),
         "venue_settlement_currency": instrument["settleCcy"],
@@ -190,7 +253,13 @@ def read_btc_demo_coverage_v2(*, reads: OkxEeaDemoReadsV1, expected_uid: str) ->
         "position_mode": account["posMode"],
         "taker_fee_rate_signed": str(_money(fee_rows[0].get("taker"))),
         "fx_captured_at": acquired_at.isoformat(),
+        "account_identity": expected_uid,
+        "coverage_observed_at": acquired_at.isoformat(),
+        "source_observations": deepcopy(reads.rows),
+        "trading_authority": "NONE",
+        "usd_usdc_account_settlement_proven": False,
     }
+    return {**report, "coverage_digest": canonical_digest_v1(report)}
 
 
 @dataclass(frozen=True)
@@ -204,12 +273,21 @@ class _FirstFill:
     confirmed_at_utc: str
 
 
-def _confirmed_first_fill(reads, identity) -> _FirstFill:
+def collect_btc_demo_execution_observation_v1(reads, identity):
+    """Observe one exact Demo attempt for the original budget reconciler."""
+    if (identity.execution_environment, identity.venue, identity.slot_id, identity.native_id) != (
+        _DEMO.runtime_mode,
+        "okx",
+        _LANE,
+        _NATIVE,
+    ):
+        raise ValueError("BTC_DEMO_EXECUTION_SCOPE_MISMATCH")
+    reads = BtcDemoObservationsV1(reads)
     account, account_at = _account(reads, identity.account_identity)
     if account.get("posMode") != "net_mode":
         raise ValueError("BTC_DEMO_NET_POSITION_MODE_REQUIRED")
-    pending, _ = reads.read(_PENDING, instType="FUTURES", instId=_NATIVE)
-    order, _ = reads.read(_ORDER, instId=_NATIVE, clOrdId=identity.clordid)
+    pending, pending_at = reads.read(_PENDING, instType="FUTURES", instId=_NATIVE)
+    order, order_at = reads.read(_ORDER, instId=_NATIVE, clOrdId=identity.clordid)
     order_row = _only(order)
     if (
         order_row.get("instId") != _NATIVE
@@ -222,7 +300,9 @@ def _confirmed_first_fill(reads, identity) -> _FirstFill:
     order_id = order_row["ordId"]
     if not isinstance(order_id, str) or not order_id.isascii() or not order_id.isdecimal():
         raise ValueError("BTC_DEMO_VENUE_ORDER_ID_REQUIRED")
-    fills, _ = reads.read(_FILLS, instType="FUTURES", instId=_NATIVE, ordId=order_id, limit="100")
+    fills, fills_at = reads.read(
+        _FILLS, instType="FUTURES", instId=_NATIVE, ordId=order_id, limit="100"
+    )
     positions, position_at = reads.read(_POSITIONS, instId=_NATIVE)
     if not 0 <= (position_at - account_at).total_seconds() <= 15:
         raise ValueError("BTC_DEMO_FILL_READ_WINDOW_EXPIRED")
@@ -233,18 +313,18 @@ def _confirmed_first_fill(reads, identity) -> _FirstFill:
             account=identity.account_identity,
             environment=identity.execution_environment,
             instrument=identity.instrument_id,
-            observed_at=account_at.isoformat(),
-            received_at=position_at.isoformat(),
-            freshness_proven=True,
+            observed_at=acquired.isoformat(),
+            received_at=acquired.isoformat(),
+            freshness_proven=0 <= (position_at - acquired).total_seconds() <= 5,
             query_scope="exact_demo_order",
             response_status="200",
             raw_reference="OKX_EEA_DEMO_PRIVATE_GET:" + canonical_digest_v1(row),
             canonical_identity_digest=identity.identity_digest(),
             payload=row,
         )
-        for layer, rows in (
-            (EvidenceLayer.EXCHANGE_ORDER_STATE, [order_row]),
-            (EvidenceLayer.EXCHANGE_FILL_STATE, fills["data"]),
+        for layer, rows, acquired in (
+            (EvidenceLayer.EXCHANGE_ORDER_STATE, [order_row], order_at),
+            (EvidenceLayer.EXCHANGE_FILL_STATE, fills["data"], fills_at),
         )
         for row in rows
     )
@@ -255,12 +335,33 @@ def _confirmed_first_fill(reads, identity) -> _FirstFill:
         evidence_items=items,
         incomplete_pagination=len(fills["data"]) >= 100,
         history_unavailable=False,
-        snapshot_freshness_proven=True,
+        snapshot_freshness_proven=all(
+            0 <= (position_at - stamp).total_seconds() <= 5
+            for stamp in (pending_at, order_at, fills_at)
+        ),
         transport_failures=(),
         api_errors=(),
-        pending_orders_observation={"freshness_proven": True, "response": pending},
-        positions_observation={"freshness_proven": True, "response": positions},
+        pending_orders_observation={
+            "identity_digest": identity.identity_digest(),
+            "freshness_proven": 0 <= (position_at - pending_at).total_seconds() <= 5,
+            "received_at": pending_at.isoformat(),
+            "response": pending,
+        },
+        positions_observation={
+            "identity_digest": identity.identity_digest(),
+            "freshness_proven": True,
+            "received_at": position_at.isoformat(),
+            "response": positions,
+        },
     )
+    return snapshot, order_row, fills, position_at, reads
+
+
+def _confirmed_first_fill(reads, identity) -> _FirstFill:
+    snapshot, order_row, fills, position_at, _ = collect_btc_demo_execution_observation_v1(
+        reads, identity
+    )
+    order_id = order_row["ordId"]
     decision = adjudicate_full_core_exchange_reconciliation_v1(
         identity=identity,
         snapshot=snapshot,
@@ -341,7 +442,7 @@ def _read_original_attempt(lane_root, expected_uid, reservation_id, revision_ref
         or identity.budget_owner_root != str(budget_root)
         or identity.account_identity != expected_uid
         or (identity.execution_environment, identity.venue, identity.slot_id, identity.native_id)
-        != (_DEMO.runtime_mode, _DEMO.venue, _LANE, _NATIVE)
+        != (_DEMO.runtime_mode, "okx", _LANE, _NATIVE)
         or (identity.instrument_id, identity.native_id)
         != (bound["instrument_id"], bound["venue_native_id"])
         or identity.selected_side not in {"LONG", "SHORT"}
