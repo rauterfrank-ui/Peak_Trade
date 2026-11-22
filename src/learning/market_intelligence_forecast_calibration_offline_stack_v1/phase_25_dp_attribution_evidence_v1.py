@@ -9,10 +9,14 @@ from __future__ import annotations
 import hashlib
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import Enum
 from types import MappingProxyType
 from typing import Any, Final, Mapping
+
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 from src.governance.unified_blueprint_decision_attribution_evidence_v1 import (
     ATTRIBUTION_AUTHORITY,
@@ -107,9 +111,9 @@ class DpAttributionEvidenceResultV1:
     phase_14_disposition: DecisionAttributionDisposition | None
 
 
-def _parse_utc(value: str) -> datetime:
+def _parse_utc(value: str) -> tuple[datetime, int]:
     text = require_event_time_utc(value, "utc")
-    return datetime.fromisoformat(text.replace("Z", "+00:00")).astimezone(timezone.utc)
+    return capture_order_key_v1(text)
 
 
 def _assert_market_context_pit_at_decision_v1(
@@ -135,6 +139,8 @@ def _assert_realized_behavior_horizon_join_v1(
 ) -> None:
     if str(realized_behavior.get("market_context_ref")) != str(market_context["context_id"]):
         raise Phase25DpAttributionError("REALIZED_BEHAVIOR_CONTEXT_REF_MISMATCH")
+    if realized_behavior.get("actual_outcome_ref") != observation.get("actual_outcome_ref"):
+        raise Phase25DpAttributionError("REALIZED_BEHAVIOR_OUTCOME_REF_MISMATCH")
     rb_horizon = realized_behavior.get("horizon_identity")
     if not isinstance(rb_horizon, Mapping):
         raise Phase25DpAttributionError("REALIZED_BEHAVIOR_HORIZON_IDENTITY_MISSING")
