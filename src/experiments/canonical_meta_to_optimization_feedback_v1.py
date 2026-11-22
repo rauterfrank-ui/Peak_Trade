@@ -154,6 +154,83 @@ def validate_meta_to_optimization_feedback_input_v1(
     )
 
 
+def validate_bounded_research_feedback_decision_v1(
+    payload: Mapping[str, Any],
+) -> MappingProxyType[str, Any]:
+    """Admit a transported M7 packet without inventing its absent source M6."""
+    if not isinstance(payload, Mapping) or payload.get("schema_version") != SCHEMA_VERSION:
+        raise MetaToOptimizationFeedbackError("FEEDBACK_SCHEMA_MISMATCH")
+    dispositions = (
+        DISPOSITION_PRIORITIZE_RESEARCH_EXPERIMENT,
+        DISPOSITION_SELECT_AUTHORIZED_RESEARCH_SEARCH_METHOD,
+        DISPOSITION_ALLOCATE_BOUNDED_RESEARCH_BUDGET,
+        DISPOSITION_PROPOSE_RESEARCH_HYPOTHESIS,
+    )
+    if payload.get("overall_disposition") not in (*dispositions, DISPOSITION_NO_ACTION_FAIL_CLOSED):
+        raise MetaToOptimizationFeedbackError("FEEDBACK_DISPOSITION_INVALID")
+    source_id = payload.get("source_meta_evidence_id")
+    if source_id is not None and not is_valid_sha256_hex(source_id):
+        raise MetaToOptimizationFeedbackError("FEEDBACK_SOURCE_ID_INVALID")
+    if source_id is None and payload["overall_disposition"] != DISPOSITION_NO_ACTION_FAIL_CLOSED:
+        raise MetaToOptimizationFeedbackError("FEEDBACK_SOURCE_ID_REQUIRED")
+    items = payload.get("feedback_items")
+    if not isinstance(items, (list, tuple)):
+        raise MetaToOptimizationFeedbackError("FEEDBACK_ITEMS_INVALID")
+    canonical_items = []
+    for item in items:
+        if not isinstance(item, Mapping) or not isinstance(item.get("payload"), Mapping):
+            raise MetaToOptimizationFeedbackError("FEEDBACK_ITEM_INVALID")
+        if item.get("disposition") not in dispositions or item.get("outcome") not in (
+            OUTCOME_APPLICABLE,
+            OUTCOME_FAIL_CLOSED,
+        ):
+            raise MetaToOptimizationFeedbackError("FEEDBACK_ITEM_CLASSIFICATION_INVALID")
+        if not isinstance(item.get("reason"), str) or not item["reason"]:
+            raise MetaToOptimizationFeedbackError("FEEDBACK_ITEM_REASON_REQUIRED")
+        canonical_items.append(
+            {
+                **dict(item),
+                **_feedback_item(
+                    disposition=item["disposition"],
+                    outcome=item["outcome"],
+                    reason=item["reason"],
+                    payload=item["payload"],
+                ),
+            }
+        )
+    reason = payload.get("overall_reason")
+    if not isinstance(reason, str) or not reason:
+        raise MetaToOptimizationFeedbackError("FEEDBACK_REASON_REQUIRED")
+    expected = _decision_payload(
+        meta_evidence=(
+            {
+                "meta_evidence_id": source_id,
+                "reproducibility_digest": payload.get("source_meta_reproducibility_digest"),
+            }
+            if source_id is not None
+            else None
+        ),
+        feedback_items=canonical_items,
+        overall_disposition=payload["overall_disposition"],
+        overall_reason=reason,
+    )
+    raw_digest = compute_content_sha256(
+        _json_safe({key: value for key, value in payload.items() if key != "result_digest"})
+    )
+    expected_digest = compute_content_sha256(
+        _json_safe(
+            {key: value for key, value in {**payload, **expected}.items() if key != "result_digest"}
+        )
+    )
+    if (
+        not set(expected).issubset(payload)
+        or payload.get("result_digest") != raw_digest
+        or raw_digest != expected_digest
+    ):
+        raise MetaToOptimizationFeedbackError("FEEDBACK_CONTENT_OR_IDENTITY_MISMATCH")
+    return MappingProxyType(dict(payload))
+
+
 def build_bounded_research_feedback_decision_v1(
     *,
     meta_evidence: Mapping[str, Any] | None,

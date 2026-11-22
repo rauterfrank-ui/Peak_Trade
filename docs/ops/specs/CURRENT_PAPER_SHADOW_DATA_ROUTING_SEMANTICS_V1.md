@@ -637,6 +637,46 @@ BTC und Betriebsfreigaben bleiben unverändert. Die synthetischen Tests sind
 kein Beleg für wirtschaftliche Güte oder eine vollständige Härtung sämtlicher
 Systemketten.
 
+### Einzelzyklus-Aufnahme der vorhandenen M7-Rückgabe — 22. November 2026
+
+Am Stand `56ce133616863371ab14cbfa0bab0638e8c9f9ff` besitzen alle drei
+Mehrzyklus-Orchestratoren bereits den vollständigen Originalvergleich aus dem
+vorherigen Abschnitt. Die separat aufrufbaren nativen, MI-angereicherten und
+föderierten Einzelzyklen prüften die vorherige M7-Rückgabe dagegen nur auf ihre
+Schemafassung. 39 gezielte Gegenproben gelangten trotz widersprüchlicher Domäne,
+Identität, Ergebnisdigest, Klassifikation oder No-Effect-Angaben zum nächsten
+Consumer. Neun gesicherte Originalresultate zeigen diese Weitergabe am tatsächlichen
+synthetischen M4-/MI-/Returnjoin-Pfad. Es entstanden keine produktiven Rechte.
+Native und MI-Beispiele tragen veränderte anwendbare Itemflags weiter. Beim
+föderierten Original fehlen Quellen-Experiment-IDs; das erste Priorisierungs-Item
+bleibt deshalb FAIL_CLOSED und wird nicht in die anwendbaren Dispositionen
+übernommen. Der widersprüchliche Gesamtbeleg wurde trotzdem angenommen. Dieser
+ursprüngliche Filter bleibt erhalten.
+
+Der [M7-Owner](../../../src/experiments/canonical_meta_to_optimization_feedback_v1.py)
+prüft transportierte Rückgaben jetzt über seine ursprünglichen Item-/Recordbuilder
+und ID-/Digestformeln. Die drei vorhandenen Einzelzyklus-Eingänge rufen ihn vor
+ihrem Folgeconsumer auf. Alte Schemafehler bleiben vorrangig; neue Inhaltsfehler
+werden als PRIOR_FEEDBACK_INVALID über den bestehenden Fehlertyp abgewiesen.
+Der vollständige Quellenvergleich in den Mehrzyklus-Orchestratoren bleibt erhalten.
+
+Diese Aufnahme bindet deklarierte Paketstruktur, bekannte Klassifikationstoken,
+Parent-/Itemidentität, Transportinhalt und feste Top-Level-/Item-No-Effect-Angaben.
+Ohne ursprünglichen M6-Record werden Forschungsinhalt, Budget, Suchwahl und
+Quellenauthentizität nicht neu beurteilt. Der Einzelaufruf kann damit auch nicht
+beweisen, dass ein selbstkonsistenter fremder Beleg der tatsächliche Vorgänger ist.
+Die bestehende carried-forward-Semantik bleibt Herkunft für den vom Aufrufer
+gelieferten Folgeversuch; sie wird kein automatischer Such- oder Trainingsauftrag.
+
+Mapping- und JSON-Originale bleiben zulässig, ebenso ursprüngliche No-action-Belege
+mit fehlender Quelle und zusätzliche opake Annotationen. UNKNOWN_UNAVAILABLE,
+verweigerte Suchausführung und die getrennten nativen/föderierten Identitäten
+behalten ihre Bedeutung. Drei vollständige gültige Zweizyklus-/Replaypakete und
+zwei synthetische Quellen-Ledgerdateien bleiben bytegleich. Das belegt keinen
+neuen M7-Store, numerisches Lernen oder Gesamtbetrieb. BTC, Core-/Finanzregeln,
+Originalstores und Freigaben bleiben unverändert; keine Betriebsläufe wurden
+gestartet. [Vertrag und Grenzen](META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_NORMATIVE_V1.md#transported-m7-admitted-at-standalone-cycle-entries--2026-11-22).
+
 ### Fehler- und Reality-Gap-Belege bis Meta und Forschungswahl
 
 Ausgangsbasis ist PR #7347,
