@@ -13,6 +13,9 @@ POLICY = run_path(str(ROOT / "docs/system_atlas/policy_projection.py"))
 DELTAS = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
 BASE = "e2abdf73876b6f093347b27c4145b86cb7fc16c6"
 DOUBLE_PLAY_PARENT = "fd5e14ed6f709a0eb22464b47fcd1e666d559be6"
+ROTATION_SUCCESSOR = "6b132fa1bd4788a937243c179cf294658c5389f7"
+NET_REVERSAL_BOOKING_SUCCESSOR = "78170916f5fd32267b54eb55b241fa65feb1486f"
+RECONCILIATION_STARTUP = "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
 LAW = json.loads((ROOT / POLICY["LAW"]).read_text())
 ROWS = POLICY["load_policies"](ROOT, LAW)
 BEFORE = {
@@ -85,8 +88,17 @@ def test_actual_reader_binds_the_new_policies_and_preserves_startup_and_funding(
         "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py",
         *POLICY["ORDERED_FUNDING_EPISODE_DELTAS"],
     ):
+        # Original rotation preserved startup/Funding at its own reviewed revision.
+        # The current checkout also includes separately reviewed successors.
+        assert subprocess.check_output(
+            ["git", "show", ROTATION_SUCCESSOR + ":" + path], cwd=ROOT
+        ) == subprocess.check_output(["git", "show", BASE + ":" + path], cwd=ROOT)
         current = (ROOT / path).read_bytes()
-        if path in POLICY["DIRECT_REVERSAL_POLICY_DELTAS"]:
+        if path == RECONCILIATION_STARTUP:
+            assert current == subprocess.check_output(
+                ["git", "show", NET_REVERSAL_BOOKING_SUCCESSOR + ":" + path], cwd=ROOT
+            )
+        elif path in POLICY["DIRECT_REVERSAL_POLICY_DELTAS"]:
             parent, successor = POLICY["DIRECT_REVERSAL_POLICY_DELTAS"][path]
             original = subprocess.check_output(["git", "show", "71e4ce6912:" + path], cwd=ROOT)
             assert hashlib.sha256(original).hexdigest() == parent
