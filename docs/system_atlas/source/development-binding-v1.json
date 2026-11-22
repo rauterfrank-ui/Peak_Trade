@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "5030b85ae8a78d6a2251960e9f83bb3831626c4fd8a41aec08e96a1216e4da8e"
+      "sha256": "5b95af05f353982c1b238cf0f5f14413e3868db9144438dd43d03d16b4b774cc"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1414,7 +1414,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
       "before_sha256": "2a26e70165c6aa1530a620fa2cac959f4c3260d7aa647295637b2c486fadd41c",
-      "sha256": "61f5f90efa3cb1956ce3c99a7ec8ade9b1843c654f09b87720edc094a58bdc7e"
+      "sha256": "4138c6fa1ab3fb995ccbd397c951b4700e1fd0bffb824cf23035e3e20d5a49c7"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
@@ -2409,7 +2409,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
       "before_sha256": "f7501295667c02a872195ef9fdcc75f2f86046417e6c595a27086649f43bc9fc",
-      "sha256": "9a07737002b8a56169f2f6d3d419c48898ffd8b120bdcb9e01df2618a8f55351"
+      "sha256": "dd0a42c60f71c464988ae495296a419b1f3d98183848e306c8c84bc3b467ec76"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
@@ -4480,6 +4480,11 @@
       "path": "tests/learning/test_mi_learning_exact_clock_admission_v1.py",
       "before_sha256": null,
       "sha256": "94b3e02d67f1599097b65c27c03f29306a5d6b0760068f803f8aae9f6bdcd934"
+    },
+    {
+      "path": "tests/learning/test_mi_learning_record_semantic_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "91d199e4eb7f0bf1a0916f40636a6fb837e717f55f93eaca6a178890d5acfcbb"
     },
     {
       "path": "tests/learning/test_mi_realized_close_path_binding_v1.py",
