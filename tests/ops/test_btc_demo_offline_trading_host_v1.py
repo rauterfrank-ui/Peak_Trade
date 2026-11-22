@@ -233,7 +233,10 @@ def test_original_btc_occupied_mark_consumes_same_episode_and_separate_c1_clock(
         )
         obs = observation(candles, 62, price, flat=False)
         cycle = host.continue_occupied_v1(
-            episode=episode, observation=obs, reconciliation=reconciliation
+            episode=episode,
+            observation=obs,
+            reconciliation=reconciliation,
+            execution_reconciliation=result,
         )
         assert cycle.replay.replay_pass, cycle.fail_reasons
         assert cycle.decision_outcome not in {"enter_long", "enter_short"}
@@ -408,7 +411,10 @@ def test_cold_g17_requires_distinct_finalized_sample_before_occupied_consumer(
             next_candles, 62, core.running_reference.reference_price_r_t + 0.1, flat=False
         )
         cycle = host.continue_occupied_v1(
-            episode=episode, observation=obs, reconciliation=reconciliation
+            episode=episode,
+            observation=obs,
+            reconciliation=reconciliation,
+            execution_reconciliation=result,
         )
         assert cycle.replay.replay_pass, cycle.fail_reasons
         raw = load_current_productive_sidestate_confirmation_cursor_v1(host.cursor_root)
@@ -483,7 +489,10 @@ def test_occupied_input_rejections_preserve_cursor_and_hold(tmp_path, monkeypatc
             )
         with pytest.raises(ValueError):
             host.continue_occupied_v1(
-                episode=episode, observation=obs, reconciliation=reconciliation
+                episode=episode,
+                observation=obs,
+                reconciliation=reconciliation,
+                execution_reconciliation=result,
             )
         assert load_current_productive_sidestate_confirmation_cursor_v1(host.cursor_root) == before
         assert host.budget.owner.active_sum_v1() == held

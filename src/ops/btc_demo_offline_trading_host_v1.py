@@ -5,7 +5,6 @@ Public USD valuation is never a USDC sizing operand or account-settlement proof.
 """
 
 from dataclasses import dataclass
-from decimal import Decimal
 from pathlib import Path
 
 from src.ops import btc_demo_lane3_v2 as demo
@@ -26,6 +25,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 )
 from src.ops.governed_productive_monetary_normalization_v1.instrument_monetary_identity_v1 import (
     instrument_monetary_identity_from_okx_payload_v1,
+)
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    CANONICAL_INTERNAL_RISK_NUMERAIRE,
+    PHYSICAL_USDC_REQUIRED_FOR_NUMERAIRE,
 )
 
 
@@ -137,6 +140,7 @@ class BtcDemoOfflineTradingHostV1:
             if row["path"] == demo._INSTRUMENTS
         )
         reasons = []
+        identity = None
         try:
             identity = instrument_monetary_identity_from_okx_payload_v1(
                 instrument, venue_native_id=demo._NATIVE
@@ -154,6 +158,23 @@ class BtcDemoOfflineTradingHostV1:
             decision_id=frame["parent"]["decision_id"],
             native_price_currency="USD",
             capital_currency="USDC",
+            canonical_risk_numeraire=CANONICAL_INTERNAL_RISK_NUMERAIRE,
+            physical_usdc_required_for_numeraire=PHYSICAL_USDC_REQUIRED_FOR_NUMERAIRE,
+            instrument_monetary_identity=None
+            if identity is None
+            else {
+                "quote_currency": identity.quote_currency,
+                "settle_currency": identity.settle_currency,
+                "instrument_money_unit": identity.instrument_money_unit,
+                "metadata_digest": identity.metadata_digest,
+            },
+            public_index_valuation={
+                "role": "PUBLIC_INDEX_VALUATION_ONLY",
+                "declared_budget_usdc": report["budget_usdc"],
+                "declared_budget_value_usd": report["budget_value_usd"],
+            },
+            account_settlement_proven=report["usd_usdc_account_settlement_proven"],
+            usd_usdc_conversion_operator_proven=False,
             canonical_sizing_operands=None,
             coverage_digest=report["coverage_digest"],
             reason_codes=tuple(reasons),
@@ -173,7 +194,9 @@ class BtcDemoOfflineTradingHostV1:
         )
         return episode, publication, observed
 
-    def continue_occupied_v1(self, *, episode, observation, reconciliation):
+    def continue_occupied_v1(
+        self, *, episode, observation, reconciliation, execution_reconciliation=None
+    ):
         """Consume the confirmed original episode; return Core output without send."""
         from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
             IsolatedLaneSlotV1,
@@ -216,26 +239,6 @@ class BtcDemoOfflineTradingHostV1:
             and obs.venue_flat is False,
             "BTC_OFFLINE_ORIGINAL_OCCUPIED_SCOPE_REQUIRED",
         )
-        links = self.budget.owner.execution_links_v1(active_only=True).values()
-        _need(
-            any(
-                link["identity"] is not None
-                and demo.parse_exchange_reconciliation_identity_v1(
-                    link["identity"]
-                ).identity_digest()
-                == identity.episode_id
-                and (link.get("reconciliation") or {}).get("matched") is True
-                and (link.get("reconciliation") or {}).get("reservation_released") is False
-                and Decimal(
-                    (link.get("reconciliation") or {})
-                    .get("decision", {})
-                    .get("cumulative_filled_qty", "0")
-                )
-                > 0
-                for link in links
-            ),
-            "BTC_OFFLINE_ORIGINAL_OCCUPIED_HOLD_REQUIRED",
-        )
         retained = demo.read_btc_demo_first_fill_for_research_v1(
             self.budget.root, identity.episode_id
         )
@@ -268,28 +271,33 @@ class BtcDemoOfflineTradingHostV1:
             candle_open is not None and candle_open + 60 <= mark_event,
             "BTC_OFFLINE_FINALIZED_C1_AFTER_MARK",
         )
-        return compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            {demo._LANE: (slot, bound)},
-            cycle_id_prefix=obs.cycle_id,
-            observed_unix=obs.observed_unix,
-            mark_px=provenance.mark_px,
-            index_px=provenance.index_px,
-            bid_px=obs.bid_px,
-            ask_px=obs.ask_px,
-            volume=obs.volume,
-            open_interest=obs.open_interest,
-            funding_rate=obs.funding_rate,
-            finalized_closes=closes,
-            last_finalized_event_ts_unix=candle_open,
-            venue_flat=False,
-            existing_position_side=ExistingPositionSide(identity.position_side),
-            g17_typed_vol_producers={demo._LANE: self.g17},
-            canonical_price_provenance=provenance,
-            master_v2_reconciliation_admission=reconciliation,
-            position_episode_bindings={demo._LANE: episode},
-            position_episode_scope=identity.account_scope,
-            occupied_scope_mark=True,
-            incoming_cursor_override=load_current_productive_sidestate_confirmation_cursor_v1(
-                self.cursor_root
-            ),
-        )[demo._LANE].cycle_result
+        with self.budget.occupied_decision_guard_v1(
+            reconciliation=execution_reconciliation,
+            episode=episode,
+            now=obs.observed_unix,
+        ):
+            return compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                {demo._LANE: (slot, bound)},
+                cycle_id_prefix=obs.cycle_id,
+                observed_unix=obs.observed_unix,
+                mark_px=provenance.mark_px,
+                index_px=provenance.index_px,
+                bid_px=obs.bid_px,
+                ask_px=obs.ask_px,
+                volume=obs.volume,
+                open_interest=obs.open_interest,
+                funding_rate=obs.funding_rate,
+                finalized_closes=closes,
+                last_finalized_event_ts_unix=candle_open,
+                venue_flat=False,
+                existing_position_side=ExistingPositionSide(identity.position_side),
+                g17_typed_vol_producers={demo._LANE: self.g17},
+                canonical_price_provenance=provenance,
+                master_v2_reconciliation_admission=reconciliation,
+                position_episode_bindings={demo._LANE: episode},
+                position_episode_scope=identity.account_scope,
+                occupied_scope_mark=True,
+                incoming_cursor_override=load_current_productive_sidestate_confirmation_cursor_v1(
+                    self.cursor_root
+                ),
+            )[demo._LANE].cycle_result
