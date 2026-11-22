@@ -12,6 +12,10 @@ import math
 from pathlib import Path
 from typing import Any, Mapping
 
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
+
 from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import (
     validate_evaluation_observation_v0,
 )
@@ -42,8 +46,8 @@ class MeasuredReturnCalibrationError(ValueError):
     """Unspecified target semantics or mismatched measurement cannot yield a label."""
 
 
-def _instant(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+def _instant(value: str) -> tuple[datetime, int]:
+    return capture_order_key_v1(value)
 
 
 def prepare_explicit_measured_return_v1(

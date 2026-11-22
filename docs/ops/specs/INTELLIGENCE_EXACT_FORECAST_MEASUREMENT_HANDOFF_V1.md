@@ -105,3 +105,42 @@ integration requirements; no productive apply or automatic promotion follows.
 
 Tests: [exact integration](../../../tests/learning/test_intelligence_forecast_measurement_integration_v1.py),
 [original measured return](../../../tests/learning/test_measured_return_calibration_v1.py).
+
+## Direct measured-return admission hardening — 22 November 2026
+
+The original measured-return adapter is already connected to exact forecast
+attachment, the explicit offline cross-session outcome consumer, native
+calibration, MI persistence and numeric cold readback. Target provenance,
+instrument/Decision identity, horizon joining, numeric admission and the original
+measurement-artifact bindings remain in place. No additional owner or route is
+introduced.
+
+Its two existing temporal predicates now compare full source precision through
+the original public-fact clock decoder: forecast creation ≤ horizon start and
+evaluation time ≥ final return close. The native ForecastEvidence/DDO contracts
+still require their original UTC `Z` syntax with at most nine fractional digits.
+Equal instants with zero fractional text remain equal; source strings are not
+rewritten. The attributed observation's evaluation time remains its declared
+horizon/evaluation boundary, separate from actual source availability.
+
+The original adapter admitted forecasts created 1 or 999 nanoseconds after the
+horizon start. It also admitted coherently rebound serialized measurement
+declarations whose final close lay 1 or 999 nanoseconds after evaluation.
+Recomputing those content references does not certify the declared chronology
+or authenticate a new fractional O4 source bar. Both preparation and persistence
+now reject those contradictions before calibration arithmetic, research
+projection or any MI-store write. Normal O4 fixture generation continues to
+produce its original hourly closes.
+
+N closes still define N−1 close-return intervals. The realized LOG_RETURN and
+error `realized_return - mean_return`, original target/IDs/digests, persistence
+owner and idempotent replay remain unchanged. A price return is not money PnL,
+distribution quality or decision-rule correctness. The generic caller-supplied
+directional method, productive DDO reducer, trading owners, BTC, thresholds and
+operating authorizations are outside this correction.
+
+[Direct admission counterexamples and controls](../../../tests/learning/test_measured_return_exact_clock_admission_v1.py)
+exercise the original builders, preparation, persistence and numeric reader
+with synthetic inputs and blocked network connections. This bounded admission
+proof neither certifies every remaining causal path nor independently establishes
+source clock authenticity, model quality, automatic apply or operating recovery.
