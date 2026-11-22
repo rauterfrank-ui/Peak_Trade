@@ -96,6 +96,7 @@ def run_first_entry_mark_cycle_v2(
     budget_binding: FirstEntryBudgetBindingV2 | None = None,
     prepare_pretrade: Callable[[str, str], None] | None = None,
     lane_id: str = LANE_ID,
+    cursor_store_root: Path | None = None,
 ) -> FirstEntryMarkCycleV2:
     """Take one fresh Mark through the existing Core and durable entry cursor.
 
@@ -103,6 +104,9 @@ def run_first_entry_mark_cycle_v2(
     Mark and the same typed G17 and reconciliation inputs as the original
     entry decision. The state directory belongs to this offline run. After an
     ENTER, downstream fill/position ownership is outside this entry clock.
+    An explicit isolated cursor address may join the same original writer to
+    a lane's occupied consumer. Omitting it preserves the historical path;
+    existing state is never moved or adopted automatically.
     """
     if lane_id not in LANE_IDS:
         raise ValueError("FIRST_ENTRY_MARK_INVALID_LANE")
@@ -130,7 +134,19 @@ def run_first_entry_mark_cycle_v2(
     if mark_event < candle_open + BAR_SECONDS:
         raise ValueError("FIRST_ENTRY_MARK_PRECEDES_CANDLE_CLOSE")
 
-    lane_root = Path(offline_state_root).resolve() / ENTRY_MARK_STATE_DIRECTORY / lane_id
+    base = Path(offline_state_root).resolve()
+    lane_root = base / ENTRY_MARK_STATE_DIRECTORY / lane_id
+    if cursor_store_root is not None:
+        selected = Path(cursor_store_root)
+        if (
+            not selected.is_absolute()
+            or selected != selected.resolve()
+            or not selected.is_relative_to(base)
+            or selected.name != lane_id
+            or selected.parent.name != "cursor"
+        ):
+            raise ValueError("FIRST_ENTRY_MARK_ISOLATED_CURSOR_ROOT_REQUIRED")
+        lane_root = selected
     lane_root.mkdir(parents=True, exist_ok=True, mode=0o700)
     with (lane_root / "first_entry_mark_v2.lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)

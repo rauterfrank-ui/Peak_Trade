@@ -105,17 +105,31 @@ def owner_host(tmp_path, policy=None):
     ), observed
 
 
-def seed_attempt(tmp_path):
+def seed_attempt(
+    tmp_path,
+    *,
+    existing_host=None,
+    decision_id="btc-entry",
+    cycle_id="fixture-cycle",
+    quantity_cap="0.0001",
+    contract_multiplier="1",
+    lot_size="0.0001",
+    side="LONG",
+):
     # Explicit synthetic USDC sizing operands isolate the execution consumer.
     # They are not a conversion of the later fixture's USD fill price and do
     # not certify native USD sizing or current Demo collateral.
-    host, _ = owner_host(tmp_path)
+    host = existing_host
+    if host is None:
+        host, _ = owner_host(tmp_path)
     request = _sizing_input(
-        decision_id="btc-entry",
+        decision_id=decision_id,
+        selected_side=side,
+        decision_outcome="enter_" + side.lower(),
         instrument_id=BOUND.instrument_id,
         reference_price=Decimal("64000"),
-        protective_stop_price=Decimal("63000"),
-        configured_quantity_cap=Decimal("0.0001"),
+        protective_stop_price=Decimal("63000" if side == "LONG" else "65000"),
+        configured_quantity_cap=Decimal(quantity_cap),
         account_equity=Decimal("30"),
         scope_capital_limit=Decimal("25"),
         total_capital_limit=Decimal("25"),
@@ -123,9 +137,9 @@ def seed_attempt(tmp_path):
             instrument_id=BOUND.instrument_id,
             market_type="futures",
             contract_kind="LINEAR",
-            contract_multiplier=Decimal("1"),
-            lot_size=Decimal("0.0001"),
-            minimum_quantity=Decimal("0.0001"),
+            contract_multiplier=Decimal(contract_multiplier),
+            lot_size=Decimal(lot_size),
+            minimum_quantity=Decimal(lot_size),
             maximum_quantity=Decimal("1"),
             minimum_notional=Decimal("1"),
             tick_size=Decimal("0.1"),
@@ -136,8 +150,8 @@ def seed_attempt(tmp_path):
         host.owner,
         sizing_input=request,
         slot_id="LANE_3",
-        decision_id="btc-entry",
-        cycle_id="fixture-cycle",
+        decision_id=decision_id,
+        cycle_id=cycle_id,
         observation=replace(_obs(value="30", epoch=EPOCH), bound_account_identity=ACCOUNT),
         p01=replace(_p01(EPOCH), bound_account_identity=ACCOUNT),
         eligibility=replace(_eligibility(EPOCH), bound_account_identity=ACCOUNT),
@@ -158,13 +172,13 @@ def seed_attempt(tmp_path):
             intent_id="btc-intent",
             trading_epoch="fixture-epoch",
             canonical_trading_logic_version="synthetic-source",
-            intent_action="ENTER_LONG",
+            intent_action="ENTER_" + side,
             policy_digest="fixture-policy",
             order_type_policy="MARKET_ONLY",
             price_policy="EXPLICIT_NONE",
             time_in_force_policy="GTC",
             max_slippage_policy="ZERO",
-            expected_position_side="LONG",
+            expected_position_side=side,
             current_reconciled_exposure=Decimal("0"),
         )
     ).intent
@@ -174,7 +188,7 @@ def seed_attempt(tmp_path):
         client_order_id="ptDemo3",
         instrument=demo._NATIVE,
         order_type="market",
-        side="buy",
+        side="buy" if side == "LONG" else "sell",
         quantity=quantity,
         td_mode="cross",
         px=None,
@@ -182,7 +196,7 @@ def seed_attempt(tmp_path):
     )
     plan = VenuePlanCandidateV1(
         instrument_id=demo._NATIVE,
-        side="buy",
+        side="buy" if side == "LONG" else "sell",
         quantity=quantity,
         order_type="market",
         td_mode="cross",

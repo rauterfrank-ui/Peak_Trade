@@ -138,6 +138,27 @@ def test_rejections_leave_the_original_lane_untouched(tmp_path, overrides, tick,
     assert cursor_path.read_bytes() == before
 
 
+@pytest.mark.parametrize("address", ["foreign-lane", "outside", "relative", "symlink"])
+def test_explicit_cursor_address_rejects_cross_scope_before_writing(tmp_path, address):
+    market = market_kwargs(tmp_path, 1)
+    selected = tmp_path / "cursor" / "LANE_1"
+    if address == "foreign-lane":
+        selected = selected.with_name("LANE_2")
+    elif address == "outside":
+        selected = tmp_path.parent / "outside" / "cursor" / "LANE_1"
+    elif address == "relative":
+        from pathlib import Path
+
+        selected = Path("cursor/LANE_1")
+    else:
+        (tmp_path / "target").mkdir()
+        (tmp_path / "cursor").symlink_to(tmp_path / "target", target_is_directory=True)
+    with pytest.raises(ValueError, match="ISOLATED_CURSOR_ROOT_REQUIRED"):
+        run_first_entry_mark_cycle_v2(**market, **mark_kwargs(2, 0.11), cursor_store_root=selected)
+    assert not (selected / CURSOR_FILENAME).exists()
+    assert not (tmp_path / "flat-entry-mark-v2").exists()
+
+
 @pytest.mark.parametrize("publish_c1", ["original", "v2", "v2-interrupted"])
 def test_brev_simulated_fill_hands_fresh_mark_and_full_scope_to_occupied_logic(
     tmp_path, monkeypatch, publish_c1

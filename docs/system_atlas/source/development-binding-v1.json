@@ -954,7 +954,12 @@
     {
       "path": "docs/ops/specs/BTC_DEMO_HOST_BUDGET_RECONCILIATION_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "0cee2cd7300b88363f7a9cfad5319a3d5914b96e1f08022ebe5b45f351cacab6"
+      "sha256": "4339e1f4f1ecfcdbe76b343f0e94de0e6fc8bc3d6388ce8c1e45639270acf3cd"
+    },
+    {
+      "path": "docs/ops/specs/BTC_OFFLINE_CORE_CURSOR_G17_CLOSURE_V1.md",
+      "before_sha256": null,
+      "sha256": "c6566f230be219436925b2b8a86a17437512f0226c62ead521dba55e70007d6a"
     },
     {
       "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
@@ -2569,12 +2574,17 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "5a085d17e5551a28858b5a4e767b0264961d8b9d1fb0d9208eae51590cee4842"
+      "sha256": "9551a33dce470ebf7381a8ac69d63af67837f95ded1cdad1a2ad5238e3a16602"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "d36e04b6595d7205e0bbbebe9c622323cd2b387bb546c4bcf84aa57dad3502d9"
+      "sha256": "5ad2656170b28d2d105621dc1b627f1f2ea4955847c78e89baaa32ae2b8343b1"
+    },
+    {
+      "path": "src/ops/btc_demo_offline_trading_host_v1.py",
+      "before_sha256": null,
+      "sha256": "937c0542f51d2988898a09b1751b6a4a42ba9e4234023e1d02befebccb99f84e"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -2914,7 +2924,7 @@
     {
       "path": "src/ops/first_entry_mark_clock_v2.py",
       "before_sha256": null,
-      "sha256": "34e55f32d61667948b065457c6c6588f638aee9b8e50bb36e0e5cadad6510ed2"
+      "sha256": "6e74b0d1b48ffccd61a37e7220cfe85a3cd3c48e41880d3537c8c9235b547fec"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py",
@@ -4819,12 +4829,17 @@
     {
       "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "f3f09cdabccc69177502a7d8f864678a391cb04fc4cd55321903988dfca7d7c8"
+      "sha256": "c117f282ae1b6227b6a24e45b210936cdf89395ca7984a78bdebdab2eb5cd84a"
     },
     {
       "path": "tests/ops/test_btc_demo_lane3_v2.py",
       "before_sha256": null,
       "sha256": "2b00a14b587f44f119722c45e237ee9dd7f399d2354181fcda6cb4b30bf51504"
+    },
+    {
+      "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
+      "before_sha256": null,
+      "sha256": "0564235f57ba68d55a448f0f8cf546104015e7869cdf5f21715265e37cf6530e"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -5224,7 +5239,7 @@
     {
       "path": "tests/ops/test_first_entry_mark_clock_v2.py",
       "before_sha256": null,
-      "sha256": "277abea07e525ea41c40947216a29921c95b5fea7c4bbf59ce62a49d2f29a34e"
+      "sha256": "6c2d0b4197b71ecd678563c2ac6747410eae48c8d19f52f213144e439d10d564"
     },
     {
       "path": "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
@@ -6006,5 +6021,6 @@
       "before_sha256": "2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2",
       "sha256": "3f522959780c4a36ba3cd739cb7b6edd5e96ee0cab3c5c64e5ffba413acba280"
     }
-  ]
+  ],
+  "scope_addendum": "BTC offline continuation on PR7381: real original Core/G17/first-fill/C1/Exit and occupied consumers in both directions with explicit isolated state addressing. Original decision lineage is checked before opening; research readback and recovery retain first-publication provenance. USD/native prices remain distinct from USDC capital, with no sizing operands or settlement grant. Synthetic original journal/GET fixtures do not prove monetary entry or autonomous Demo operation. No session, credentials, network, send, training, protected owner or seal change."
 }

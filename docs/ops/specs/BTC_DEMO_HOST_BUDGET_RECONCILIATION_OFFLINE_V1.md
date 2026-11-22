@@ -140,3 +140,11 @@ Dieser SHA bezeichnet den Entscheidungskontext der Fixture, keine aktuelle
 Codefreigabe. Produktionskonfiguration, Validator und geschützte Grenzen
 werden dafür nicht verändert. Eine frühere Angabe als „current main“ wird
 entsprechend nicht fortgeführt.
+
+## Nachfolgende lokale Offlineprüfung auf PR #7381
+
+Die damalige offene positive BTC-Core-/Cursor-/G17-Kette wird in der
+[Offlinefortschreibung](BTC_OFFLINE_CORE_CURSOR_G17_CLOSURE_V1.md) mit ihren
+tatsächlichen Originalconsumern geprüft. Der vorstehende Bericht behält seinen
+historischen Prüfumfang. USD-/USDC-Zulassung und vollständiger autonomer
+Demobetrieb sind weiterhin gesondert offen; nichts wurde gestartet.
