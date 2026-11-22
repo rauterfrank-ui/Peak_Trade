@@ -141,9 +141,85 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["G2_ARCHIVE_PROJECTION_DELTAS"],
         *PROJECTION["EXECUTION_AUTHORITY_AUDIT_DELTAS"],
         *PROJECTION["OWNER_ADJUDICATION_DELTAS"],
+        *PROJECTION["D01_D02_ADJUDICATION_DELTAS"],
+        *PROJECTION["DECISION_ATTRIBUTION_LEARNING_DELTAS"],
     }
     frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}
     assert set(result["development_policy_files"]) == reviewed & frozen
+
+
+def test_attribution_handoff_has_exact_development_admission_without_runtime_grant():
+    result = PROJECTION["validate_policy_inventory"](ROOT, LAW)
+    assert (
+        "src/governance/unified_blueprint_decision_attribution_evidence_v1.py"
+        in result["development_policy_files"]
+    )
+    assert result["runtime_effect_inferred"] is False
+
+
+@pytest.mark.parametrize(
+    "fault", ["different_source_rehashed", "missing_row", "wrong_parent", "wrong_authority"]
+)
+def test_attribution_handoff_rejects_other_or_unbound_source(monkeypatch, fault):
+    source = ROOT / "src/governance/unified_blueprint_decision_attribution_evidence_v1.py"
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    native = Path.read_bytes
+    changed = native(source) + b"\n# different attribution implementation\n"
+    binding = json.loads(native(binding_path))
+    row = next(
+        row for row in binding["files"] if row["path"] == source.relative_to(ROOT).as_posix()
+    )
+    if fault == "different_source_rehashed":
+        row["sha256"] = hashlib.sha256(changed).hexdigest()
+    elif fault == "missing_row":
+        binding["files"].remove(row)
+    elif fault == "wrong_parent":
+        row["before_sha256"] = "0" * 64
+    else:
+        binding["authority"] = "TRADING"
+
+    def read(path):
+        if path == source and fault == "different_source_rehashed":
+            return changed
+        if path == binding_path:
+            return json.dumps(binding).encode()
+        return native(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    reason = (
+        "POLICY_SOURCE_DRIFT"
+        if fault == "different_source_rehashed"
+        else "POLICY_DEVELOPMENT_BINDING_INVALID"
+    )
+    with pytest.raises(ValueError, match=reason):
+        PROJECTION["validate_policy_inventory"](ROOT, LAW)
+
+
+def test_attribution_hardening_preserves_frozen_inventories_and_authority_constants():
+    import ast
+
+    source = "src/governance/unified_blueprint_decision_attribution_evidence_v1.py"
+    original = subprocess.check_output(
+        ["git", "show", LAW["baseline_sha"] + ":" + source], cwd=ROOT
+    )
+
+    def constants(raw):
+        return [
+            ast.dump(node)
+            for node in ast.parse(raw).body
+            if isinstance(node, (ast.Assign, ast.AnnAssign))
+        ]
+
+    assert constants(original) == constants((ROOT / source).read_bytes())
+    for path in (
+        "docs/system_atlas/source/current-model.json",
+        "docs/system_atlas/source/current-policies.jsonl.gz",
+        "docs/system_atlas/source/policy-inventory.json",
+        "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
+    ):
+        assert (ROOT / path).read_bytes() == subprocess.check_output(
+            ["git", "show", "HEAD:" + path], cwd=ROOT
+        )
 
 
 @pytest.mark.parametrize(

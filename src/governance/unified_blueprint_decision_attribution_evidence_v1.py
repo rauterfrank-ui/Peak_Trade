@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from enum import Enum
 from pathlib import Path
 from types import MappingProxyType
@@ -37,11 +37,13 @@ from src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_in
     EXTERNAL_EFFECT_AUTHORIZED as LEARNING_INGEST_EXTERNAL_EFFECT,
     derive_learning_state_scope_id_v1,
     ingest_evaluation_bundle_into_learning_state_v1,
+    validate_evaluation_bundle_for_ingest_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
     REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN,
     validate_n_bars_observation_for_decision_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.serialization_v0 import canonical_json_dumps_v0
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.decision_attribution_query_v1 import (
     query_market_intelligence_decision_attribution_v1,
 )
@@ -331,6 +333,90 @@ def build_decision_attribution_evidence_v1(
     )
 
 
+def _require_attribution_learning_binding_v1(
+    ledger: Any,
+    result: DecisionAttributionEvidenceResultV1,
+) -> Mapping[str, Any]:
+    body = result.decision_attribution_evidence
+    bundle = result.offline_evaluation_bundle
+    if body is None:
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_EVIDENCE_MISSING")
+    if bundle is None:
+        raise UnifiedBlueprintDecisionAttributionError("OFFLINE_BUNDLE_MISSING")
+    digest_body = dict(body)
+    horizon_identity = body.get("n_bars_horizon_identity")
+    if isinstance(horizon_identity, Mapping):
+        # The existing repr-based digest includes this inner dict's insertion
+        # order. Restore the original builder order after a sorted JSON roundtrip;
+        # retain the exact values and the original digest algorithm/bytes.
+        native_identity = _n_bars_horizon_identity_v1(
+            {**horizon_identity, "evaluation_horizon": body.get("evaluation_horizon")}
+        )
+        if native_identity != horizon_identity:
+            raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_HORIZON_IDENTITY_INVALID")
+        digest_body["n_bars_horizon_identity"] = native_identity
+    digest = compute_decision_attribution_evidence_digest_v1(digest_body)
+    if result.evidence_digest != digest or body.get("evidence_digest") != digest:
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_EVIDENCE_DIGEST_MISMATCH")
+    if (
+        bundle.get("hindsight_leakage") is not False
+        or bundle.get("trading_core_reachable") is not False
+    ):
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_BUNDLE_BOUNDARY_MISMATCH")
+    try:
+        validated = validate_evaluation_bundle_for_ingest_v1(
+            bundle["outcome_record"], bundle["attribution_record"], bundle["counterfactual_record"]
+        )
+    except (DdoValidationError, KeyError) as exc:
+        raise UnifiedBlueprintDecisionAttributionError(f"ATTRIBUTION_BUNDLE_INVALID:{exc}") from exc
+    outcome = validated["outcome"]
+    decision_ref = outcome["decision_event_ref"]
+    for role in ("attribution", "counterfactual"):
+        if validated[role].get("decision_event_ref") != decision_ref:
+            raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_BUNDLE_DECISION_MISMATCH")
+    # Phase 14 and LearningState retain their distinct, existing fingerprint domains.
+    fingerprint = _evaluation_bundle_fingerprint_v1(
+        {f"{role}_record": validated[role] for role in ("outcome", "attribution", "counterfactual")}
+    )
+    expected = {
+        "schema_version": SCHEMA_VERSION,
+        "disposition": DISPOSITION_EVIDENCE_ONLY,
+        "compose_references_dont_duplicate_ownership": True,
+        "attribution_authority": ATTRIBUTION_AUTHORITY,
+        "trading_decision_authority_owner_ref": TRADING_DECISION_AUTHORITY_OWNER_REF,
+        "cap23_selection_owner_ref": CAP23_SELECTION_OWNER_REF,
+        "decision_event_ref": decision_ref,
+        "evaluation_bundle_fingerprint": fingerprint,
+        "decision_attribution_evidence_id": str(
+            uuid.uuid5(
+                uuid.NAMESPACE_URL, f"phase14-decision-attribution:{decision_ref}:{fingerprint}"
+            )
+        ),
+        "evaluation_horizon": outcome["evaluation_horizon"],
+        "realized_outcome_ref": str(outcome.get("actual_outcome_ref") or UNKNOWN),
+        **{
+            f"{role}_record_ref": validated[role]["record_id"]
+            for role in ("outcome", "attribution", "counterfactual")
+        },
+    }
+    if any(body.get(key) != value for key, value in expected.items()):
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_ORIGINAL_BUNDLE_MISMATCH")
+    original = next((row for row in ledger.read_all() if row["record_id"] == decision_ref), None)
+    if original is None:
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_ORIGINAL_DECISION_MISSING")
+    decision = validate_decision_event_v0(original)
+    if any(
+        body.get(key) != value
+        for key, value in {
+            "decision_event_content_hash": decision["content_hash"],
+            "selected_instrument_ref": decision.get("selected_instrument_ref"),
+            "config_hash_ref": str(decision.get("config_hash") or UNKNOWN),
+        }.items()
+    ):
+        raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_ORIGINAL_DECISION_MISMATCH")
+    return bundle
+
+
 def ingest_decision_attribution_to_learning_state_v1(
     *,
     ledger: Any,
@@ -342,9 +428,9 @@ def ingest_decision_attribution_to_learning_state_v1(
     """Wire through proven LEARNING_OUTCOME_EVIDENCE_INGEST_V1 (evidence-only)."""
     if attribution_result.disposition != DecisionAttributionDisposition.ATTRIBUTED:
         raise UnifiedBlueprintDecisionAttributionError("ATTRIBUTION_NOT_ATTRIBUTED")
-    if attribution_result.offline_evaluation_bundle is None:
-        raise UnifiedBlueprintDecisionAttributionError("OFFLINE_BUNDLE_MISSING")
-    bundle = attribution_result.offline_evaluation_bundle
+    if LEARNING_INGEST_EXTERNAL_EFFECT is not False:
+        raise UnifiedBlueprintDecisionAttributionError("LEARNING_INGEST_EXTERNAL_EFFECT_FORBIDDEN")
+    bundle = _require_attribution_learning_binding_v1(ledger, attribution_result)
     scope = derive_learning_state_scope_id_v1(session_id=session_id)
     ingest = ingest_evaluation_bundle_into_learning_state_v1(
         ledger,
@@ -355,8 +441,6 @@ def ingest_decision_attribution_to_learning_state_v1(
         event_time_utc=event_time_utc,
         correlation_id=correlation_id,
     )
-    if LEARNING_INGEST_EXTERNAL_EFFECT is not False:
-        raise UnifiedBlueprintDecisionAttributionError("LEARNING_INGEST_EXTERNAL_EFFECT_FORBIDDEN")
     return ingest
 
 
@@ -365,15 +449,14 @@ def replay_decision_attribution_evidence_v1(
     prior: DecisionAttributionEvidenceResultV1,
 ) -> bool:
     replay = build_decision_attribution_evidence_v1(request)
-    if replay.disposition != prior.disposition:
+    try:
+        return canonical_json_dumps_v0(
+            {field.name: getattr(prior, field.name) for field in fields(replay)}
+        ) == canonical_json_dumps_v0(
+            {field.name: getattr(replay, field.name) for field in fields(replay)}
+        )
+    except DdoValidationError:
         return False
-    if prior.decision_attribution_evidence is None or replay.decision_attribution_evidence is None:
-        return prior.decision_attribution_evidence is replay.decision_attribution_evidence
-    return (
-        prior.decision_attribution_evidence.get("decision_attribution_evidence_id")
-        == replay.decision_attribution_evidence.get("decision_attribution_evidence_id")
-        and prior.evidence_digest == replay.evidence_digest
-    )
 
 
 def build_decision_attribution_topology_census_v1() -> MappingProxyType[str, Any]:

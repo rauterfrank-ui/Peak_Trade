@@ -1543,3 +1543,56 @@ INSUFFICIENT-Resultate für widersprüchliche Zukunftskontexte, die als REJECTED
 auszugeben sind; 18 Kontrollen bestanden bereits. Vierzehn vollständige originale
 Request-/Result-/Inspector-/Replaypakete bleiben bytegleich. Diese Eingriffskontrolle
 belegt die begrenzte Übergabe und keine allgemeine Quellen- oder Systemabnahme.
+
+### Phase-14-Attribution vor LearningState und Replay — 22. November
+
+Der optionale Lernadapter ist bereits mit dem ursprünglichen DDO-Ingest und
+dessen dauerhaftem Ledger verbunden. Der Originalconsumer prüft unter anderem
+typisierte Records, Provenienz, tatsächlich gespeicherte Inhalte,
+Konfigurationspools und idempotente Fortsetzung. Dieser Anschluss wurde nicht
+neu aufgebaut. Seine auffindbaren Aufrufer sind Offline-Tests; ein produktiver
+Host oder automatischer Lernauftrag ist dadurch nicht nachgewiesen.
+
+Die Bindung des konkreten Attributionsbelegs an das übergebene Auswertungspaket
+fehlte jedoch. Ein anderer gültiger nativer ETH-Messbeleg konnte bei gleichen
+Decision- und Auswertungs-IDs einen anderen Outcome, entgegengesetzten Return
+oder andere Messprovenienz tragen. War dieses andere Paket im Ledger gespeichert,
+nahm der Originalconsumer es unter dem fremden Attributionsmantel auf.
+Auch fehlender beziehungsweise widersprüchlicher Beleginhalt und ein anderer
+gespeicherter Entscheidungsinhalt mit derselben ID stoppten den Adapter nicht.
+
+Jetzt müssen Beleg-/Resultdigest, vorhandene Evidence-only-Grenzen, drei
+Originalrecords, Entscheidungsbezug, ursprünglicher Outcome und Horizont sowie
+der unveränderte Phase-14-Fingerprint und seine abgeleitete ID zusammenpassen.
+Der volle Entscheidungsinhalt, Instrument- und Konfigurationsbezug werden am
+Originalrecord des Ledgers gebunden. Widersprüche stoppen vor dem Lernconsumer
+und vor jedem Append. Der bestehende Ingest behält Prüfung und Speicherung
+seiner Originalrecords; der produktive Reducer bleibt unverändert.
+
+Der Replayvergleich prüft jetzt den vollständig neu zusammengesetzten Inhalt
+einschließlich Auswertung, MI-Referenzquery und Gründen. Gleiche gespeicherte
+IDs und Digests genügen nicht. JSON-Roundtrips bleiben zulässig. Replay ohne
+Ledger bestätigt keine eigenständige historische Quellenauthentizität.
+Für die bestehende Digestprüfung wird die ursprüngliche Reihenfolge des inneren
+Horizontobjekts nach sortierter JSON-Serialisierung wiederhergestellt; Werte
+und Digestverfahren bleiben unverändert. Die erste Härtungsfassung wies drei
+gültige JSON-Fälle ab; diese Zwischenregression ist reproduziert und behoben.
+
+Der [Phase-14-Vertrag](UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md#original-attribution-at-the-learning-handoff--22-november-2026)
+begrenzt die Aussage. 103 gezielte Offline-Fälle bestehen, darunter 27 neue
+Gegen-/Positivproben. Der korrigierte Ausgangsabgleich reproduzierte 13 falsche
+Lernzulassungen und sechs falsche Replays; acht Kontrollen bestanden bereits.
+Sechs vollständige Originalpakete und sechs synthetische Ledgerdateien bleiben
+bytegleich. Netzwerkzugriffe waren gesperrt. Opaque Scorelabels, LOG_RETURN,
+getrennte Fingerprintverfahren und alle ursprünglichen Rechen-/Speicherowner
+bleiben erhalten. Daraus folgen weder Kontogewinn noch Modelltraining,
+Entscheidungsqualität, Applyfreigabe oder Gesamtbetriebsbereitschaft.
+BTC bleibt unverändert; keine Betriebs- oder Forschungsläufe wurden gestartet.
+
+Die Quellenadmission bindet ausschließlich die konkrete ursprüngliche und neue
+Governance-Datei über das bestehende Paar exakter Quellhashes. Sechs zusätzliche
+Gegen-/Erhaltungsproben prüfen diese Aufnahme ohne neue Betriebsautorität.
+Die veraltete Reviewed-Policy-Mengenerwartung ließ schon am Ausgangsstand den
+bereits zugelassenen D01/D02-Prüfer aus; sie wird auf die tatsächlich bestehenden
+exakten Zulassungen nachgeführt. Eingefrorene Policy-Inventare und Authority-
+Konstanten bleiben erhalten; ein bloß nachgeführter Hash ersetzt keine Zulassung.

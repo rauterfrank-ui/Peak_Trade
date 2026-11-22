@@ -32,6 +32,15 @@ D01_D02_ADJUDICATION_DELTAS = {
     ),
 }
 
+# Frank's 2026-11-22 offline causal-hardening instruction: exactly this original
+# attribution/learning handoff repair. Frozen policy objects and runtime grants stay.
+DECISION_ATTRIBUTION_LEARNING_DELTAS = {
+    "src/governance/unified_blueprint_decision_attribution_evidence_v1.py": (
+        "ba46e7f84113d18b82a1d363b78a6efc816e14fbf4d7728c8921b2a71071a4a2",
+        "2eba271538d251fabbbaaea7ad2e77b81623858ca608b663ac833996052fe2af",
+    ),
+}
+
 # Frank's separate 2026-11-09 approval covers this exact reviewed four-file
 # development bundle. Frozen records/tags and all other policy admission stay
 # intact. A new binding hash alone cannot authorize another implementation.
@@ -1053,6 +1062,8 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and CAP23_SELECTION_VALIDITY_POLICY_DELTAS.get(path)
                 != (policy["frozen_sha256"], actual)
                 and D01_D02_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
+                and DECISION_ATTRIBUTION_LEARNING_DELTAS.get(path)
+                != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
