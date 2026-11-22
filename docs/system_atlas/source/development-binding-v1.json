@@ -1372,6 +1372,11 @@
       "sha256": "c384d6dbcf7d7be49ec17dd103af7dbd4cd8a9663a0e438518d007f2d68d69e1"
     },
     {
+      "path": "docs/ops/specs/PAPER_SHADOW_MARK_PRICE_CLOCK_OFFLINE_V1.md",
+      "before_sha256": null,
+      "sha256": "a1c4bd7c0e2ed1e6e4d7b89547a88bfcffbddee9d1bbc4055a6574c705743677"
+    },
+    {
       "path": "docs/ops/specs/PORTFOLIO_OWNED_EXECUTION_IDENTITY_V2.md",
       "before_sha256": null,
       "sha256": "011aff43a5ca64297f5a103f1b8eae2a669e4248722f25aed00f363d8e4aec2e"
@@ -2029,7 +2034,7 @@
     {
       "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
       "before_sha256": null,
-      "sha256": "f6932f39a1cfd1f6aa0b26f9c4b5c53b1bcc9b3e968235439ff4db676103b78e"
+      "sha256": "4c03b05345e9b1707f67dd769425a745097733280126ced52aa62729f054b6bb"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -2554,7 +2559,7 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_market_liquidity_v1.py",
       "before_sha256": null,
-      "sha256": "c30a340481da6dd172729897c09bf03a04ff45a87db13c5cc099f6fa91f990c8"
+      "sha256": "b65caa7600213d06534fbd057b33697def2cbe18dd4ed1feafacdb45bedbbc44"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/xperp_paper_episode_outcome_v1.py",
@@ -3314,7 +3319,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "3bfbdd3588668110e96e07ed5e4653882cbcc5ac56ce79b52ceccbb83c1e74f0"
+      "sha256": "f3c54514443353e388dc3923909a75e4c761e1aeb438e24e4bada96e5231ca5c"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3324,7 +3329,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "9b59b85260175fcfbeb1f99221fe567c8511839b5e4bd8190ef16139f4ffbd62"
+      "sha256": "6455a38e8a39f805e5d9b95f0a4154ffe07aec4aca798fb545ccf7e16165831f"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
@@ -3354,7 +3359,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "6bb88872b30fb1d632cc0c34c93d47b7dbee23f15977a000f908ee274491e96c"
+      "sha256": "0854868c06a9a446027c075b70648d5d7df46eec3e6deded664fb360ff864999"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3384,7 +3389,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
       "before_sha256": "6573921fe3e81d08ec04caff74c1cd6446916f03074f79e7c8d0cd69aecce66a",
-      "sha256": "641110b342f20d93390d712660741bc2c54bc99cf492dd6d099144aeaaa0455e"
+      "sha256": "c0c6753de02a32683c5e9f652ee91d4658ea4e37f0f0c20498ba496953f1e4d8"
     },
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
@@ -3897,9 +3902,14 @@
       "sha256": "2ea6a06779b683606c78b64935c87feca0ef43ea50aa2b939726bc129d502269"
     },
     {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
+      "before_sha256": "e01b551b2dc58b22343e084287487feb92acac4afba35b2bc2b82fa38cc2e9dc",
+      "sha256": "fd58c1d4a7d1f53444c51dfb63ddcc867975e41aa3f5d4df10f4063031952e00"
+    },
+    {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py",
       "before_sha256": "3f80fd045d5a2ae1220892a95bb721ec1feba5e9b629343dcf63f1178d211398",
-      "sha256": "71a33323d0279d9f34f8a510e021f9abc1f2b576b112bdc2cc0dc3f37efafa3d"
+      "sha256": "fd9bba1797ecdb14bb2d14a999cc133d7bc9175196f2222c91820b76e3d4ff54"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
@@ -5394,7 +5404,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "9c45bb3089c0934f33a7fbc004dd532feef4ee17711d8385d267a885ffa5eafc"
+      "sha256": "c986241ea04b7894e0fae133786797880fe55c6e743a5fd435ceb5e22c3f663e"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
@@ -5605,6 +5615,11 @@
       "path": "tests/ops/test_p5_binding_context_development_delta_v1.py",
       "before_sha256": null,
       "sha256": "829f3d6db782eb2f22e6f450a62d71e4d312a9b2cd81486dc2dc0ba7d5e70c09"
+    },
+    {
+      "path": "tests/ops/test_paper_shadow_mark_clock_offline_v1.py",
+      "before_sha256": null,
+      "sha256": "54dd1ddcc00818c2b80b077372b9856e65ec8a822b0962709af1f3b815c07cd6"
     },
     {
       "path": "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
@@ -6033,5 +6048,6 @@
     }
   ],
   "scope_addendum": "BTC offline continuation on PR7381: real original Core/G17/first-fill/C1/Exit and occupied consumers in both directions with explicit isolated state addressing. Original decision lineage is checked before opening; research readback and recovery retain first-publication provenance. USD/native prices remain distinct from USDC capital, with no sizing operands or settlement grant. Synthetic original journal/GET fixtures do not prove monetary entry or autonomous Demo operation. No session, credentials, network, send, training, protected owner or seal change.",
-  "btc_occupied_reconciliation_scope": "BTC occupied continuation requires a current original identity/episode/reconciliation and all original receipt clocks. Full parsed batches have immutable local readback; observation records create no capital ledger or authenticity/permit. Original owner lock fences in-process budget transitions during Core consumption. USD price, private settlement label, public index valuation and canonical risk numeraire retain separate roles. Native USD normalization and original TESTNET reversal/booking/continuous authorization remain open. No protected owner, financial formula, seal, credential, real session or send changes."
+  "btc_occupied_reconciliation_scope": "BTC occupied continuation requires a current original identity/episode/reconciliation and all original receipt clocks. Full parsed batches have immutable local readback; observation records create no capital ledger or authenticity/permit. Original owner lock fences in-process budget transitions during Core consumption. USD price, private settlement label, public index valuation and canonical risk numeraire retain separate roles. Native USD normalization and original TESTNET reversal/booking/continuous authorization remain open. No protected owner, financial formula, seal, credential, real session or send changes.",
+  "paper_shadow_mark_clock_scope": "Bind the reviewed Mark field, original public-book quote/time witness and rejected-capture receipts to their existing Paper/Shadow writers and verifier. Offline IRYS episode assessment remains simulated USD economics. Original archives, freshness/funding/risk gates, BTC/Testnet and runtime authority are unchanged. No operating session is started."
 }
