@@ -54,3 +54,53 @@ retrospectively certified.
 [Offline verification](../../../tests/learning/test_conditioned_learning_exact_clock_v1.py)
 checks composer and real ingest boundaries, then persistence, idempotency, cold
 read and export for valid original packets. No operational/research run is needed.
+
+## Behavior binding to supplied original sources — 2026-11-22
+
+At baseline `53d4ddd137a4a0358185c2245774c46bc6333e26`, the conditioned
+composer, ingest, store, export and P5 consumer are connected. Context chronology,
+native behavior identity and MI record-state admission are already checked.
+The original behavior producer stores context identity and the complete declared
+N_BARS horizon/window; these fields also exist in the frozen November import.
+The conditioned consumer previously compared context ID and two non-null outcome
+references, without binding the stored behavior horizon/window to its supplied
+observation. A native later evaluation could therefore alias an earlier one
+under the same context ID and actual outcome reference.
+
+The existing composer now compares behavior instrument, information set and
+observation time with its supplied context. When the original observation is
+present, it also compares actual outcome reference (including missingness),
+horizon kind, n_bars, bar specification, start/evaluation times, ordered bar
+identities, close times and observation status/reason. Existing exact JSON value
+and nanosecond clock owners are reused. Equivalent zero-fraction UTC instants
+remain equal without changing either original string. Forecast and context
+information-set IDs remain distinct; no new equality is inferred between them.
+
+The gate runs after the existing MI bridge and its original errors, before a
+successful conditioned receipt or store append. It does not recalculate behavior,
+calibration or the original measurement. The existing non-null conflicting-outcome
+error remains. Original-source counterexamples have 28 previously unblocked
+composer/ingest admissions and nine passing controls, including equivalent time
+representations. Three native probes reach ingest, cold get/list, export and P5
+ADMIT: one fully native later-evaluation substitution and two resealed inconsistent
+declarations. Self-consistent digests do not establish this cross-object join.
+
+Verification: `tests/learning/test_conditioned_behavior_source_binding_v1.py`.
+Eight full original input/receipt/ingest/replay/export packets and eight stored
+files remain byte-identical. Missing outcomes, insufficient support, optional
+measurements, zero fractions and later evaluations paired with their own original
+observations remain supported. Classical MFE/MAE and transition remain explicitly
+SEMANTICALLY_UNRESOLVED; direction-neutral close-path excursion is not relabelled.
+
+Observation remains optional. A supplied behavior reference cannot manufacture
+an absent original observation: that receipt stays INCOMPLETE/NOT_EVALUABLE with
+no actual_outcome_ref, and no observation join is certified. Full original-source
+comparison is limited to the objects supplied at this consumer. It establishes
+declared consistency, not independent authenticity, correct interior O4 prices,
+numeric behavior truth, historical forecast feature consumption or predictive
+quality. The native behavior validator, Phase-25 attribution seam and behavior
+snapshot meaning keep their separate boundaries. No new numerical learner,
+authority, route, model update or productive apply is introduced. IDs/digests,
+scoring methods (including the documented V1 linear 1-p meaning), units and
+existing writer/reader ownership remain unchanged. No historical record is
+rewritten, repaired or retroactively source-certified.
