@@ -1932,3 +1932,37 @@ Referenzrecords ersetzen nicht die für eine erneute Prüfung benötigten
 Originale. Rechenowner, Einheiten, IDs/Digests und Writer bleiben erhalten.
 Die Härtung gilt für den geprüften bestehenden Rückweg, nicht als Gesamtabnahme.
 BTC unverändert; keine Betriebs- oder Forschungsläufe.
+
+### Vollständiger Horizontbezug vor DP-Attribution — 22. November
+
+Am Ausgangsstand `48c0482b6695c7ebbc318102563c2955038ccc56` sind nativer
+Verhaltensvalidator, Mess-/Kontextbindung, Phase 14 und Attributionsrücklesen
+bereits verbunden und in Teilen gehärtet. Der Horizontabgleich übersprang aber
+fehlende beziehungsweise null gesetzte Felder im Verhaltensbeleg. Er verglich
+vorhandene Werte über str; der Horizonttyp blieb ungeprüft. Anschließend konnte
+dieser Horizont den vollständigen ursprünglichen Phase-14-Horizont im
+Attributionsrecord ersetzen.
+
+Der [Horizontbindungsvertrag](UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md#complete-declared-horizon-binding-before-phase-14--2026-11-22)
+verlangt jetzt den exakten Abgleich der fünf vorhandenen Originalfelder:
+Horizonttyp, ganzzahliger n_bars-Zählwert, Bar-Spezifikation, Horizontstart und
+Auswertungszeit. Fehlende oder anders typisierte Deklarationen passieren die
+Aufnahme nicht; Originalwerte werden weder aufgefüllt noch ersetzt. Bestehende
+Fehlerpriorität und Abweisung vor Phase 14 bleiben erhalten.
+
+Zwölf bisher ungebremste Durchgaben und sieben bereits bestandene Kontrollen
+belegen die Lücke. Drei native Gegenbeispiele schließen Phase 14 ab und geben
+inkonsistente Horizonte mit pit_join_proven=True aus; Inspektion und Replay
+akzeptieren diese ursprünglichen Ergebnisse. Fünf vollständige gültige
+Originalpakete bleiben bytegleich, einschließlich fehlender Qualität, Annotation,
+früherem Kontext und ausdrücklich fehlendem Verhaltensbeleg.
+
+Der Abgleich erhält die bestehenden Original-Zeitstrings und ihre bisherige
+exakte Vergleichsbedeutung. Die getrennte Zeitordnung bleibt nanosekundengenau.
+Verhaltensabwesenheit bleibt INSUFFICIENT; ungeklärte Verhaltenssemantik wird
+nicht aufgewertet. Rechenverfahren, Einheiten, IDs/Digests und Autorität ändern
+sich nicht. Deklarierte Konsistenz bleibt von Quellenbeglaubigung, numerischer
+Richtigkeit und tatsächlicher Lernwirkung getrennt. Historische Referenzrecords
+werden nicht rückwirkend quellengeprüft. Kein dauerhafter Attributionswriter oder
+Gesamtbetrieb wird durch JSON-Inspektion und Replay belegt. BTC unverändert;
+keine Betriebs- oder Forschungsläufe.
