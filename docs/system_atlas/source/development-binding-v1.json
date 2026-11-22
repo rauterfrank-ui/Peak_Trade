@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "0de4ec94725d282c40a59220899303845ce5988106b3edda149da47e5fa9d6a3"
+      "sha256": "f38c7dfcbbdf23c710fa88ab385aad82b35268015d512b36239ea8cea93b1476"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1389,7 +1389,7 @@
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
       "before_sha256": "2965ca75496f1d71254d53d0a4019e47a66de73fcafefe6e24abdfaa917b50fe",
-      "sha256": "5c1b1a3bec81552d3d6e3a978d856610559122dcb61dcb95a409dceb5a2260f7"
+      "sha256": "627909231da7008087794a93c7c577b8676ccd07693c5230a8c9b9defb2f552f"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
@@ -2464,7 +2464,7 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
       "before_sha256": "90c0c3c58b613b67fd696182a930c0ab2e1d4c1ff266894044b7a4e07861d2f0",
-      "sha256": "be6e871c8771e3cedbf2f0d2780d3a951709d62c1f26aa56a1157d987b5bf3a9"
+      "sha256": "cd09bfb8ff69fb99337b6306ea85b237afcc1c6c8c84163988cb7d759b4802c4"
     },
     {
       "path": "src/meta/learning_loop/paired_market_representation_meta_v1.py",
@@ -4364,7 +4364,7 @@
     {
       "path": "tests/learning/test_conditioned_behavior_source_binding_v1.py",
       "before_sha256": null,
-      "sha256": "c3c4f2b1fe42eeaf307c7d2089ab1a41a774cddceabe4720dd91782e59dcfa88"
+      "sha256": "1f6f54a7b2692644a4bb21c76f4b41bcc5b1604f03ab7c2fe73481b66c85b1ca"
     },
     {
       "path": "tests/learning/test_conditioned_learning_exact_clock_v1.py",
@@ -4535,6 +4535,11 @@
       "path": "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py",
       "before_sha256": "7117217607b25edf0c36e8005f34b0ea26f8c64a7e5126a89d5f16c857e197c0",
       "sha256": "9d67754091d6246b224c980393e7a82432ca4720f54aa860a33439a277a27355"
+    },
+    {
+      "path": "tests/learning/test_realized_behavior_quality_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "638d77e2af018f72a302682c695e25fbab95029b45b8ef49af3cf6b7692a80b2"
     },
     {
       "path": "tests/learning/test_recurrent_offline_research_v1.py",

@@ -1891,3 +1891,44 @@ IDs/Digests und Freigaben ändern sich nicht. Deklarierte Quellenkonsistenz ist
 kein Beleg natürlicher Authentizität, Prognosegüte, numerischer Lernwirkung oder
 Gesamtbetrieb. Andere Consumer und Verhaltens-Snapshot-Bedeutungen behalten ihre
 eigenen Aufnahmegrenzen. BTC unverändert, keine Betriebs- oder Forschungsläufe.
+
+### Qualitätsdeklarationen im Verhaltens-/Attributionsrückweg — 22. November
+
+Am Ausgangsstand `e742fcf0f944bdc769a458b93c775bc625201117` sind nativer
+Verhaltensvalidator, bedingte Lernaufnahme und DP-Attribution verbunden. Die
+Attribution übernimmt quality_state in ihre Qualitätsreferenzen. Dieser
+Metadatenblock liegt bewusst außerhalb der Verhaltens-ID und ihres Digests;
+bisher wurden seine Producerzusagen nicht zusätzlich geprüft. Dadurch konnten
+widersprüchliche Aussagen über Authority, N_BARS, Join und unveränderte Outcomes
+mit derselben Verhaltensidentität weitergereicht werden.
+
+Der [Qualitätsdeklarationsvertrag](UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md#declared-quality-metadata-admission--2026-11-22)
+bindet diese Angaben jetzt an den bestehenden evidenzbasierten Producervertrag.
+Joinstatus und deklariertes Outcome-Fenster müssen zusammenpassen. Boolesche
+Zusagen verlangen echte Boolesche Werte; Integer 1/0 ersetzen sie nicht.
+Vorhandene vollständige Metadaten werden geprüft, zusätzliche Annotationen
+bleiben erhalten. Fehlender oder ausdrücklich null gesetzter Qualitätszustand
+bleibt fehlend und erhält keine erfundene Qualitäts- oder Freigabeaussage.
+
+30 bisher ungebremste Aufnahmen und vier bereits bestandene Erhaltungsproben
+belegen die Grenze. Drei native Gegenbeispiele gelangen am Originalcode in
+Attributionsbelege und bestehen JSON-Inspektion sowie Replay. Sie belegen
+widersprüchlichen Referenztransport, keine tatsächliche Vergabe produktiver
+Autorität. Vier vollständige gültige Originalpakete und vier gespeicherte
+Lernrecords bleiben bytegleich. Ein nativer unvollständiger Horizont behält
+OUTCOME_INCOMPLETE und nicht verfügbare Verhaltenswerte.
+
+Zwei vorhandene Gegenproben des bedingten Quellenjoins benötigen jetzt einen
+zum geänderten Testfenster passenden Qualitätsstatus. Ihre ursprüngliche
+Consumer-Abweisung bleibt unverändert geprüft. Der zunächst fehlgeschlagene
+gemeinsame Prüflauf bleibt separat erhalten; die Qualitätsprüfung wird dafür
+nicht gelockert.
+
+JOINED und Qualitätsreferenzen bleiben deklarierte Zustände; sie bestätigen
+weder Messwahrheit, Prognosegüte noch Kontogewinn. Ungeklärte Classical-MFE/MAE-
+und Transitionsemantik bleibt ungeklärt, Close-Path-Excursion richtungsneutral.
+Die Lernkette erhält keinen neuen Metadatenkanal und keine Autorität. Historische
+Referenzrecords ersetzen nicht die für eine erneute Prüfung benötigten
+Originale. Rechenowner, Einheiten, IDs/Digests und Writer bleiben erhalten.
+Die Härtung gilt für den geprüften bestehenden Rückweg, nicht als Gesamtabnahme.
+BTC unverändert; keine Betriebs- oder Forschungsläufe.

@@ -89,6 +89,9 @@ def incompatible_inputs(fault):
         record["outcome_window"]["bar_identity_refs"][0] = "bar.other.synthetic"
     elif fault == "window_status":
         record["outcome_window"]["horizon_observation_status"] = "INSUFFICIENT_BARS"
+        # Keep this source-native declaration coherent so the test reaches the
+        # independent join against the supplied original observation.
+        record["quality_state"]["join_status"] = "OUTCOME_INCOMPLETE"
     else:
         record["outcome_window"]["horizon_observation_reason"] = "OTHER_SOURCE_REASON"
     return replace(inputs, realized_behavior=reseal_behavior(record))
