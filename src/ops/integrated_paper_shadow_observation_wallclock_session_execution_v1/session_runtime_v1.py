@@ -1026,6 +1026,20 @@ class WallclockSessionRuntimeV1:
                             "venue_instrument_id": normalized.venue_instrument_id,
                             "mark_price_endpoint": normalized.mark_price_endpoint,
                             "mark_price_field": normalized.mark_price_field,
+                            "price_basis_quote": (
+                                None
+                                if card_market is None
+                                else {
+                                    "bid_px": float(card_market.book.bids[0][0]),
+                                    "ask_px": float(card_market.book.asks[0][0]),
+                                    "endpoint": "/api/v5/market/books",
+                                    "body_sha256": card_market.source_hashes["book"],
+                                    "event_ts_unix": card_market.book_event_unix,
+                                    "acquired_at_utc": card_market.source_observations[
+                                        "book"
+                                    ].acquired_at_utc,
+                                }
+                            ),
                             "mapping_digest": normalized.mapping_digest,
                         },
                     )
@@ -1099,6 +1113,7 @@ class WallclockSessionRuntimeV1:
                                     bridge_state=self.bridge_state,
                                     ticks=[tick],
                                     reference_price=Decimal(str(price)),
+                                    price_field=normalized.mark_price_field,
                                     wall_now_unix=now_wall,
                                     session_id=session_id,
                                     ddo_capture_binding=ddo_capture_binding,

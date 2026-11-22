@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from math import isfinite
 from pathlib import Path
 from typing import Any
@@ -144,10 +145,49 @@ def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
         or not isfinite(local_receive)
     ):
         raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+    quote = mark.get("price_basis_quote")
+    bid = ask = None
+    if quote is not None:
+        if (
+            not isinstance(quote, dict)
+            or quote.get("endpoint") != "/api/v5/market/books"
+            or not isinstance(quote.get("body_sha256"), str)
+            or len(quote["body_sha256"]) != 64
+            or any(char not in "0123456789abcdef" for char in quote["body_sha256"])
+        ):
+            raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+        bid, ask = quote["bid_px"], quote["ask_px"]
+        if (
+            not all(
+                type(value) in (int, float) and isfinite(value) and value > 0
+                for value in (bid, ask)
+            )
+            or ask < bid
+        ):
+            raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+        acquired = datetime.fromisoformat(quote["acquired_at_utc"].replace("Z", "+00:00"))
+        book_event = quote["event_ts_unix"]
+        if (
+            acquired.utcoffset() is None
+            or type(book_event) not in (int, float)
+            or not isfinite(book_event)
+            or book_event <= 0
+            or not book_event <= acquired.timestamp() <= available
+        ):
+            raise ValueError("DDO_MARKET_DECISION_CLOCK_INVALID")
+    if (
+        mark.get("mark_price_field") != "markPx"
+        or mark.get("mark_price_endpoint") != "/api/v5/public/mark-price"
+    ):
+        raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
     basis = build_explicit_mid_price_basis_v2(
         mid_price=float(price),
         event_ts_unix=float(mark["event_ts_unix"]),
         receive_ts_unix=float(local_receive),
+        price_field=mark["mark_price_field"],
+        bid_px=bid,
+        ask_px=ask,
+        quote_source="ticker" if quote is None else "public_book",
     )
     if (
         cycle["market_data_reference"] != basis.market_data_reference

@@ -99,6 +99,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         event_ts_unix=event_ts,
         receive_ts_unix=receive_ts,
         price_field=price_field,
+        quote_source="ticker" if instrument_card_market is None else "public_book",
         bid_px=None
         if instrument_card_market is None
         else float(instrument_card_market.book.bids[0][0]),

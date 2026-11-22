@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from contextlib import contextmanager
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR
 from hashlib import sha256
@@ -261,6 +262,32 @@ class PaperLiquiditySnapshotV1:
             "adv_participation_limit": str(self.policy.adv_participation_limit),
             "quantity_cap_contracts": quantity_cap,
         }
+
+
+@contextmanager
+def retain_public_paper_sources_v1(output):
+    """Retain original receipts even when collection or admission fails closed."""
+    from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (
+        durable_bytes_v1,
+        immutable_json_v1,
+    )
+
+    records = {}
+
+    def retain(name, result, body):
+        if output is None:
+            return
+        path = Path(output) / f"{name}.json"
+        durable_bytes_v1(path, body)
+        record = asdict(result)
+        del record["payload"]
+        records[name] = {"file": str(path), **record}
+
+    try:
+        yield retain
+    finally:
+        if output is not None:
+            immutable_json_v1(Path(output) / "receipts.json", records)
 
 
 def collect_public_paper_sources_v1(transport, *, queries, capture_id, retain=None):

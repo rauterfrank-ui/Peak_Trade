@@ -75,7 +75,10 @@ def build_explicit_mid_price_basis_v2(
     price_field: str = REQUIRED_TICKER_PRICE_FIELD,
     bid_px: Optional[float] = None,
     ask_px: Optional[float] = None,
+    quote_source: str = "ticker",
 ) -> ExplicitPriceBasisV2:
+    if quote_source not in {"ticker", "public_book"}:
+        raise PriceBasisErrorV2("BID_ASK_SOURCE_INVALID")
     if mid_price <= 0 or mid_price != mid_price:  # noqa: PLR0124
         raise PriceBasisErrorV2("MID_PRICE_INVALID")
     if bid_px is not None and ask_px is not None and bid_px > 0 and ask_px > 0:
@@ -84,7 +87,11 @@ def build_explicit_mid_price_basis_v2(
         best_bid = float(bid_px)
         best_ask = float(ask_px)
         spread = best_ask - best_bid
-        policy = "EXPLICIT_BID_ASK_FROM_TICKER"
+        policy = (
+            "EXPLICIT_BID_ASK_FROM_PUBLIC_BOOK"
+            if quote_source == "public_book"
+            else "EXPLICIT_BID_ASK_FROM_TICKER"
+        )
         synthetic = False
     else:
         # Documented collapsed-mid contract (not silent 0.9999/1.0001 invention).

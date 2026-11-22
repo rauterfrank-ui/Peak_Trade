@@ -297,6 +297,27 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         flat=False, instrument=SOPH_I17, card_source=source, start_wall=first.observed_unix + 0.01
     )
     assert result.terminal_verdict == "PASS", result.to_dict()
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
+        verify_wallclock_evidence_bundle_v1,
+    )
+
+    verified = verify_wallclock_evidence_bundle_v1(
+        evidence_root=root, select_first_typed_shadow_decision=True
+    )
+    assert verified.typed_ddo_requirement_met, verified.to_dict()
+    assert verified.selected_shadow_decision["lane_id"] == "LANE_5"
+    cycles = [
+        json.loads(line) for line in (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    marks = [
+        json.loads(line) for line in (root / "market_data_sequence.jsonl").read_text().splitlines()
+    ]
+    for cycle, mark in zip(cycles, marks, strict=True):
+        assert cycle["price_basis"]["price_field"] == mark["mark_price_field"] == "markPx"
+        assert cycle["price_basis"]["mid_price"] == mark["mark_px"]
+        assert cycle["price_basis"]["best_bid"] == mark["price_basis_quote"]["bid_px"]
+        assert cycle["price_basis"]["best_ask"] == mark["price_basis_quote"]["ask_px"]
+        assert cycle["price_basis"]["bid_ask_policy"] == "EXPLICIT_BID_ASK_FROM_PUBLIC_BOOK"
     cards = (
         root.parent / "instrument-card-stream" / root.parent.name / "instrument-cards" / "LANE_5"
     )
