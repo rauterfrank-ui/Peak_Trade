@@ -294,6 +294,10 @@ def test_federated_validator_rejects_plane_identity() -> None:
         )
     )
     evidence["plane_identity"] = "b" * 64
+    # Reach the federated semantic gate after the independent transport check.
+    evidence["content_hash"] = compute_content_sha256(
+        {key: value for key, value in evidence.items() if key != "content_hash"}
+    )
     with pytest.raises(
         FederatedSurfaceEvidenceProjectionError,
         match="PLANE_IDENTITY_FORBIDDEN",

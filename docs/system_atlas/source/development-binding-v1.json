@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "a87b1d74dd4b0e4737124ae9eb14f2136137cba3a0456b9e7b8f08945000c866"
+      "sha256": "10c3745b5d111276b2944e13da9977f4b1efd1036e109cc8794dab4d15b77749"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1180,6 +1180,11 @@
       "path": "docs/ops/specs/F1_M9_SCOPED_OWNER_APPLY_AUTHORITY_NORMATIVE_V1.md",
       "before_sha256": "29b87e0e189a36e6f6198ee6e9b4c0534aa37adc39e560c1ee4211b0409c9b82",
       "sha256": "5df92eb5b6db1bd71525f40b69574933fe30ab873d0d28f029b201eaa64480ca"
+    },
+    {
+      "path": "docs/ops/specs/FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_NORMATIVE_V1.md",
+      "before_sha256": "e5b0e51b51e9fdf5a7008bce9b1dcb24ee3c103097940b768f56a88046c2fca6",
+      "sha256": "1940cda24ff06d9f845421db188ea604d722e31a9da43aa8b082351baa2a1e6a"
     },
     {
       "path": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md",
@@ -1330,6 +1335,11 @@
       "path": "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
       "before_sha256": "79689e6f577b5054d89a19ee682cce349a9c2627fc9fdf7f229ae8e44b6bb5de",
       "sha256": "1d65ad7e59c2afaeab9a0306cc9d8ac4c48bd2fb8a98bd075469bd876b806b44"
+    },
+    {
+      "path": "docs/ops/specs/OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md",
+      "before_sha256": "24bb0e7f562b336eb904f7023ce343008435621c893e1478a45e105723242623",
+      "sha256": "2726a38c02b788324af7346d07ae5bc9aa96fab85d955022df2d4cb975268f1a"
     },
     {
       "path": "docs/ops/specs/ORIGINAL_PERMIT_TRANSPORT_ABORT_AND_BUDGET_V1.md",
@@ -2139,7 +2149,7 @@
     {
       "path": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
       "before_sha256": "f0cd43a0e3c83f81096de0c75ff1dde20061a2a7e5845545bd1a58a60fc7b301",
-      "sha256": "e9b2c283571f65e672e901cf972edea4b5c3099b647c7633cb0e54412cab3fc7"
+      "sha256": "58dd2905059be8687b62a98fbcdd1ccc41a365a4b07cc09f4470beb62bc5d6aa"
     },
     {
       "path": "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
@@ -4067,6 +4077,11 @@
       "sha256": "f2b7a838d00ebac46a70524f5e51c154cacb7717b3bd85a49416720d31f5ae19"
     },
     {
+      "path": "tests/experiments/test_canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
+      "before_sha256": "7f19311e626fdb2146786ee8dcd666f6b21c84f333fee438f312bdfa827abcf7",
+      "sha256": "93042c2f47bb2606c74fc0b7db657252b69485407990756ddeda92d0ecc014d6"
+    },
+    {
       "path": "tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py",
       "before_sha256": "371972b0e96edaf62383d160d4a6dff80aabb5d6fc766259f58ff23b9d2c4b3e",
       "sha256": "2faeb8a4eb5e42adf7411d58b29cdc5dd744e37ecf2c244dd20c4289211b5194"
@@ -4110,6 +4125,11 @@
       "path": "tests/experiments/test_f2_meta_cost_model_follow_up_v1.py",
       "before_sha256": null,
       "sha256": "01b8dc9b6d364a1e9e67130a642a4945722a45dae4aa012bb7eca7574f4229d4"
+    },
+    {
+      "path": "tests/experiments/test_m5_reproducibility_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "fbf4a99cf30757c50bade60e98f18cfa17acac63b3a09f44f9b132ed39c65582"
     },
     {
       "path": "tests/experiments/test_m7_single_cycle_feedback_admission_v1.py",

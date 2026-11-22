@@ -1857,6 +1857,44 @@ M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
 Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
 keine Betriebs- oder Forschungsläufe.
 
+### M5-Reproduzierbarkeitsbezug vor ACK, Meta und Forschungsrückweg — 22. November
+
+Am Stand `3442fe87753f922a588b03497e2bead204d89809` sind native M5-Quittung,
+föderierter Returnjoin, M6-Aufnahme, Router und Researchconsumer bereits verbunden.
+Der M5-Owner prüfte den gesamten Transporthash sowie die native Plane-/Record-ID,
+aber nur das Format des Reproduzierbarkeitsdigests. 72 Gegenproben passierten diese
+Aufnahme nach Neuberechnung des Transporthashs. Zwölf gesicherte Originalresultate
+erhalten eine passende ursprüngliche ACK-/Join-Projektion, schließen M6 ab und
+erreichen den Optimization-Forschungsconsumer. Produktive Rechte entstehen nicht.
+
+Die [bestehende M5-Aufnahme](../../../src/experiments/canonical_optimization_experiment_evidence_v1.py)
+vergleicht nun den deklarierten Digest mit dem jeweiligen ursprünglichen, aus dem
+Record rekonstruierbaren Körper. Native Plane-/Lern-/Suchbezüge einschließlich
+eines tatsächlich vorhandenen gültigen MI-Lineagedigests bleiben vom föderierten
+Surface-/Ausführungs-/Native-Ref-/Envelopebezug getrennt. Beide Körper binden ihre
+gespeicherten Slices und Versionen. Frühere Fehler bleiben vorrangig; fehlende,
+ungültige oder widersprüchliche Reproduktionsbezüge stoppen vor ACK, M6 und den
+angeschlossenen Consumerprojektionen. Producer und gespeicherte ID-/Digestformeln
+werden nicht verändert.
+
+Zwölf vollständige gültige native/MI-/F1-/F2-Pakete einschließlich Return, M6 und
+Routing sowie sechs synthetische Quellen-LearningState-Ledgerdateien bleiben
+bytegleich. Mapping-/JSON-Originale und außerhalb des ursprünglichen Digestumfangs
+liegende Top-Level-Annotationen bleiben erhalten. Ein vorhandener föderierter
+Negativtest aktualisiert jetzt nur seinen Test-Transporthash: So erreicht seine
+unveränderte Plane-ID-Abweisung den vorgesehenen semantischen Owner. Sein vorheriger
+Hashfehler und der korrigierte Kontrollfall wurden auch mit dem alten Produktowner
+geprüft; keine Produktprüfung oder Testerwartung wird gelockert.
+
+Dieser [Scope-Abgleich](OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md#retained-m5-reproducibility-scopes-at-admission--2026-11-22)
+prüft interne Konsistenz, keine unabhängige Herkunfts-, Ausführungs-, Mess- oder
+numerische Lernwahrheit. Ein selbstkonsistent neu berechneter Beleg ist dadurch
+nicht als Original zertifiziert. Opake wirtschaftliche Herkunft und föderiertes
+NOT_MAPPED bleiben solche; weder Plane noch Experiment-IDs werden ergänzt. M5s
+Reproduktionsscope, voller Transporthash und M6s eigener Quellenbezug bleiben
+verschiedene Verträge. BTC, Core-/Finanzregeln, Originalstores und Autorität bleiben
+unverändert; keine Betriebsläufe wurden gestartet.
+
 ### Typisierte M6-Aufnahme und getrennte Forschungsrückwege — 22. November
 
 Am Ausgangsstand `a3338b44d8ded26029a6888545c1717b20cc3fde` sind normale und

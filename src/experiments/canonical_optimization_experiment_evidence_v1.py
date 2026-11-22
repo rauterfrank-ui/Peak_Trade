@@ -299,4 +299,44 @@ def validate_optimization_experiment_evidence_v1(
         raise CanonicalOptimizationExperimentEvidenceError(
             "NATIVE_PLANE_EVIDENCE_IDENTITY_MISMATCH"
         )
+    versions = payload.get("version_bindings")
+    if not isinstance(versions, Mapping):
+        raise CanonicalOptimizationExperimentEvidenceError("REPRODUCIBILITY_INPUT_INVALID")
+    # Recheck each producer's original scope; content_hash has a different scope.
+    try:
+        if payload.get("federated_projection") is True:
+            provenance = payload.get("provenance")
+            if not isinstance(provenance, Mapping):
+                raise CanonicalOptimizationExperimentEvidenceError("REPRODUCIBILITY_INPUT_INVALID")
+            reproducibility_body = {
+                "surface_execution_identity": payload["surface_execution_identity"],
+                "surface_id": provenance["surface_id"],
+                "surface_execution_digest": provenance["surface_execution_digest"],
+                "surface_native_evidence_digest": provenance["surface_native_evidence_digest"],
+                "envelope_identity": provenance["envelope_identity"],
+                "evidence_slices": slices,
+                "version_bindings": versions,
+            }
+        else:
+            search = slices[CLASS_SEARCH_EVIDENCE]
+            economic = slices[CLASS_ECONOMIC_EVIDENCE]
+            if not isinstance(search, Mapping) or not isinstance(economic, Mapping):
+                raise CanonicalOptimizationExperimentEvidenceError("REPRODUCIBILITY_INPUT_INVALID")
+            reproducibility_body = {
+                "plane_identity": plane_identity,
+                "learning_evidence_digest": payload["learning_evidence_digest"],
+                "search_identity": search["search_identity"],
+                "candidate_ref": payload["candidate_ref"],
+                "evidence_slices": slices,
+                "version_bindings": versions,
+            }
+            mi_lineage_digest = economic.get("mi_enriched_lineage_digest")
+            if is_valid_sha256_hex(str(mi_lineage_digest or "")):
+                reproducibility_body["mi_enriched_lineage_digest"] = str(mi_lineage_digest)
+    except KeyError as exc:
+        raise CanonicalOptimizationExperimentEvidenceError(
+            f"REPRODUCIBILITY_INPUT_MISSING:{exc.args[0]}"
+        ) from exc
+    if digest != compute_content_sha256(_json_safe(reproducibility_body)):
+        raise CanonicalOptimizationExperimentEvidenceError("REPRODUCIBILITY_DIGEST_MISMATCH")
     return MappingProxyType(dict(payload))
