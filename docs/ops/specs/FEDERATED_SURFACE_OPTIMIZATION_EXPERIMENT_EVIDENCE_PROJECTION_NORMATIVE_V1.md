@@ -4,7 +4,7 @@ status: active
 scope: Evidence-only projection from authorized surface-native execution to shared M5 record shape
 capability: FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-24
+last_updated: 2026-11-22
 ---
 
 # Federated Surface → Optimization Experiment Evidence Projection V1
@@ -57,3 +57,22 @@ unless the caller supplies `explicit_slice_bindings` for that slice (refs/digest
 
 M10 ingress projection, M8 replay, F1 execution_id↔experiment_id mapping, F2 challenger,
 M9-S1, productive apply/promotion, MV2/DP mutation.
+
+## Retained reproduction binding before return — 2026-11-22
+
+The shared M5 validator now compares the declared reproducibility_digest with
+the original federated producer's retained body: surface execution identity,
+surface ID/execution/native-evidence digests and envelope identity from provenance,
+plus the original evidence slices and version bindings. A newly computed full
+transport hash alone cannot repair a changed binding or a stale reproduction
+digest. Original F1/F2 producers, identity/digest formulas and records are unchanged.
+
+This uses the federated scope rather than native M4 plane semantics. No M4/F1/F2
+executor is invoked. The specific no-plane/source/cardinality/duplicate checks and
+their existing return-join consumer remain. NOT_MAPPED ref-only slices do not
+become Search, Challenger, OOS or Robustness measurements. Optional explicit
+candidate refs remain caller declarations, not inferred executor identities.
+
+The check proves internal scope/digest agreement, not source authenticity, actual
+execution, valid measurements or numerical learning. Historical records are not
+rewritten or retroactively certified. [Shared admission, tests and limits](OPTIMIZATION_TO_SELF_LEARNING_RETURN_LOOP_NORMATIVE_V1.md#retained-m5-reproducibility-scopes-at-admission--2026-11-22).
