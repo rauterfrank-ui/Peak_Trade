@@ -28,6 +28,8 @@ from src.experiments.canonical_meta_to_optimization_feedback_v1 import (
     OUTCOME_FAIL_CLOSED,
     SCHEMA_VERSION as M7_FEEDBACK_SCHEMA_VERSION,
     MetaToOptimizationFeedbackInputRequestV1,
+    MetaToOptimizationFeedbackError,
+    validate_bounded_research_feedback_decision_v1,
     validate_meta_to_optimization_feedback_input_v1,
 )
 from src.experiments.canonical_optimization_experiment_evidence_v1 import (
@@ -107,8 +109,15 @@ def run_federated_offline_evidence_cycle_v1(
     prior = cycle_input.prior_feedback_decision
     cycle_n_plus_1_semantics: dict[str, Any] | None = None
     if prior is not None:
-        if prior.get("schema_version") != M7_FEEDBACK_SCHEMA_VERSION:
+        if (
+            not isinstance(prior, Mapping)
+            or prior.get("schema_version") != M7_FEEDBACK_SCHEMA_VERSION
+        ):
             raise FederatedOfflineMultiCycleReplayError("PRIOR_FEEDBACK_SCHEMA_STALE")
+        try:
+            validate_bounded_research_feedback_decision_v1(prior)
+        except (MetaToOptimizationFeedbackError, TypeError, ValueError) as exc:
+            raise FederatedOfflineMultiCycleReplayError(f"PRIOR_FEEDBACK_INVALID:{exc}") from exc
         cycle_n_plus_1_semantics = _extract_cycle_n_plus_1_semantics(prior)
 
     opt_evidence = cycle_input.federated_optimization_experiment_evidence

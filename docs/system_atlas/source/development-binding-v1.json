@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "74440ad657573e3447a48bcf5e811c5bb1d81af87fe3868d724482d67d6b7aea"
+      "sha256": "a87b1d74dd4b0e4737124ae9eb14f2136137cba3a0456b9e7b8f08945000c866"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1295,6 +1295,11 @@
       "path": "docs/ops/specs/MASTER_V2_INSTRUMENT_CARDS_SEAL_V1.json",
       "before_sha256": null,
       "sha256": "3b74ffd13984d34ce3cc89e083ae46494308eca1633b4e5cb346f209d09adf28"
+    },
+    {
+      "path": "docs/ops/specs/META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_NORMATIVE_V1.md",
+      "before_sha256": "29001de6fa0fd2c38465b7b79dfbac307a3f7dd2698abba1e0ef3ff1ee6bce86",
+      "sha256": "c8137b6ab89b59780e405bc7e1a81d37b48e20107568a99d77f71465013935e9"
     },
     {
       "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.json",
@@ -2079,7 +2084,7 @@
     {
       "path": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
       "before_sha256": "3fea28d9fb3ba72514121edcd7a65409066bcfce591c950fdb30704d3d3812f2",
-      "sha256": "cdfb09369bdac04b14df3d4decc298e119dfbf707b6d981d03c41d06cc893e52"
+      "sha256": "4fabc48979925e60ebed09aed7245c3ef50f3bc0de4cbe6865e9ec8c7b56ae84"
     },
     {
       "path": "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
@@ -2089,7 +2094,7 @@
     {
       "path": "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
       "before_sha256": "b26f83ad53ab53d663c5131012ee1734391bf574966c6915d339f618ba7acfc1",
-      "sha256": "2b05aa4845da7efd5a11e6c1b25f937e09efc8c94466bee2fc43948cfa13c15b"
+      "sha256": "0276c888585458b1f92d6efff4980e3c3b1c02eec5128e382275653a941eeb6c"
     },
     {
       "path": "src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
@@ -2115,6 +2120,11 @@
       "path": "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
       "before_sha256": "a37b433e9b73c1dc192dc8059844227fad5757aae8fa87f6a57c8d3ebeba4188",
       "sha256": "15d56285589843b6e455617bb825f531364e839585a8e95796da6fb6009c3f22"
+    },
+    {
+      "path": "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "before_sha256": "c964b2c077017d249736d4563f84bc094685284111b23fc9897b974fc6801155",
+      "sha256": "02c49c9e3d1ffa65c4c1be5268de0cdd5055f1dfe064919e2846af32d88eed00"
     },
     {
       "path": "src/experiments/canonical_native_research_measurements_v1.py",
@@ -2154,7 +2164,7 @@
     {
       "path": "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
       "before_sha256": "2b52a395e159c6812fec59eb2eb309cb95560b335047fa19991d7e85c16554e0",
-      "sha256": "eeceaa949f63527e00e070ba3b3f6700d8f2177c91183fc6ba114f791a02cd1f"
+      "sha256": "d5bf8346e0bfddb747afd8fd2ab884d866a85eac96a9bfedc31bc6abb37e8eed"
     },
     {
       "path": "src/experiments/f2_meta_cost_model_follow_up_v1.py",
@@ -4100,6 +4110,11 @@
       "path": "tests/experiments/test_f2_meta_cost_model_follow_up_v1.py",
       "before_sha256": null,
       "sha256": "01b8dc9b6d364a1e9e67130a642a4945722a45dae4aa012bb7eca7574f4229d4"
+    },
+    {
+      "path": "tests/experiments/test_m7_single_cycle_feedback_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "bf007817850e79bd3333f0d70b48d2c7c6d25c731d15e1063eed1eca8fc7cce8"
     },
     {
       "path": "tests/experiments/test_meta_association_bucket_sample_v1.py",
