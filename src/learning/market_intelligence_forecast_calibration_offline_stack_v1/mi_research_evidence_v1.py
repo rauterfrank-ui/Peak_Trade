@@ -8,12 +8,16 @@ from typing import Any, Final, Mapping, Sequence
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import compute_content_hash_v0
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.calibration_evidence_v1 import (
     build_calibration_evidence_v1,
+    validate_calibration_evidence_v1,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.constants_v1 import (
     STACK_DOMAIN,
 )
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_evidence_v1 import (
     validate_forecast_evidence_v1,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+    bytes_v1,
 )
 
 SCHEMA_VERSION: Final[str] = "market_intelligence_research_evidence_v1"
@@ -29,9 +33,16 @@ def project_market_intelligence_research_evidence_v1(
     legacy_learning_evidence_ref: str | None = None,
 ) -> MappingProxyType[str, Any]:
     forecast = validate_forecast_evidence_v1(forecast_evidence)
-    calib = dict(calibration_evidence)
+    calib = validate_calibration_evidence_v1(calibration_evidence)
     if calib.get("forecast_evidence_id") != forecast["forecast_evidence_id"]:
         raise ValueError("CALIBRATION_FORECAST_ID_MISMATCH")
+    if calib["domain"] != STACK_DOMAIN:
+        raise ValueError("CALIBRATION_DOMAIN_MISMATCH")
+    if any(
+        bytes_v1(calib[key]) != bytes_v1(forecast[key])
+        for key in ("n_bars", "bar_spec_ref", "forecast_kind")
+    ):
+        raise ValueError("CALIBRATION_FORECAST_CONTEXT_MISMATCH")
 
     body = {
         "schema_version": SCHEMA_VERSION,

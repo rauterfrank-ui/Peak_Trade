@@ -25,10 +25,14 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.fore
     ForecastEvidenceValidationError,
     validate_forecast_evidence_v1,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.integration_contracts_v1 import (
+    bytes_v1,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_research_evidence_v1 import (
     EVIDENCE_CLASS_MI_RESEARCH,
     MI_RESEARCH_AUTHORITY,
     SCHEMA_VERSION as RESEARCH_SCHEMA_VERSION,
+    project_market_intelligence_research_evidence_v1,
 )
 
 SCHEMA_VERSION: Final[str] = "mi_offline_durable_evidence_record_v1"
@@ -128,6 +132,18 @@ def build_mi_offline_durable_evidence_record_v1(
         raise MiOfflineDurableEvidenceValidationError("RESEARCH_FORECAST_ID_MISMATCH")
     if research.get("calibration_evidence_id") != calibration["calibration_evidence_id"]:
         raise MiOfflineDurableEvidenceValidationError("RESEARCH_CALIBRATION_ID_MISMATCH")
+    try:
+        projected = project_market_intelligence_research_evidence_v1(
+            forecast_evidence=forecast,
+            calibration_evidence=calibration,
+            drift_assessment_refs=research.get("drift_assessment_refs"),
+            legacy_learning_evidence_ref=research.get("legacy_learning_evidence_ref"),
+        )
+    except (DdoValidationError, ValueError) as exc:
+        raise MiOfflineDurableEvidenceValidationError(str(exc)) from exc
+    for key in ("n_bars", "bar_spec_ref", "forecast_kind", "evaluability"):
+        if bytes_v1(research.get(key)) != bytes_v1(projected[key]):
+            raise MiOfflineDurableEvidenceValidationError(f"RESEARCH_{key.upper()}_MISMATCH")
     if forecast.get("forecast_evidence_authority") != "NONE":
         raise MiOfflineDurableEvidenceValidationError("FORECAST_AUTHORITY_MUST_BE_NONE")
 

@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "205f0d9d9fc12899446f795395702f9df8648b925a0565f6002311d675507558"
+      "sha256": "5030b85ae8a78d6a2251960e9f83bb3831626c4fd8a41aec08e96a1216e4da8e"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1279,7 +1279,7 @@
     {
       "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
       "before_sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314",
-      "sha256": "a385410aedf3aeda47a95b30b8556eb89822b132f2072ee0e2004fab0f742d26"
+      "sha256": "e516db6b34aee5c88b3cd35dfaffa4f85c0cf5fd2230556808283ad74fbd7fb4"
     },
     {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
@@ -2414,12 +2414,17 @@
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
       "before_sha256": "e90e144610c8cad19f4388194370ab1b6ecefeff2b2a1f3a49212ccf309de7d8",
-      "sha256": "4b798ddd7b7fe38ee81b1391cc1c997393cda321c40f41d7f22990878ca34bb5"
+      "sha256": "213511284a5477905f61e14ce4809e30080579c8fa998af1f4c2d321291dac9c"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
       "before_sha256": "ec6236e755490ebd107249b2b6f84083f65fbbbe04ffaf990d21dc96fed032d1",
       "sha256": "41a2e5356af02a50884c0a0210eaba533d5ce034566498f913d3e05e6f7420fb"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py",
+      "before_sha256": "3150df03e7cf8b3c62ae205c4240818ae725963b9195fcc835660f152134bbec",
+      "sha256": "70f4f612b316479bbfc8da0cc46e3cfa3229b575ab8f5c02c90962fbcb30b2d7"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
@@ -4485,6 +4490,11 @@
       "path": "tests/learning/test_mi_realized_measurement_binding_v1.py",
       "before_sha256": "ff458a971b62101523d409a23068d7abdbb28f19cc2c99647ac54c101b7fea2d",
       "sha256": "651ef4ee54542b2174f805b8d69fcf0e3cc3c95dc2a7c607b11273bab41fcc49"
+    },
+    {
+      "path": "tests/learning/test_mi_research_triad_reference_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "73b5a0720a48c0f322514b29bf01a174f0df920b90a75200867525c4ae95185f"
     },
     {
       "path": "tests/learning/test_n_bars_measurement_artifact_handoff_v1.py",

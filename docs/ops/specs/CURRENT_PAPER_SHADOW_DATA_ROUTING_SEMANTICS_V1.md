@@ -1771,3 +1771,48 @@ Records werden nicht umklassifiziert. Eine neue quadratische Bewertungsmethode
 ist damit weder eingeführt noch still freigegeben. Die Authentizität gelieferter
 Richtungslabels, numerischer Lernnutzen und natürliche Betriebswirkung bleiben
 gesondert zu prüfen. BTC unverändert; keine Betriebs- oder Forschungsläufe.
+
+### Research-Projektion und gemeinsame Triadenbedeutung — 22. November
+
+Am Ausgangsstand `0c9e17ef296c781c0dc4c69080783e1f5c05a92b` sind die Producer,
+Research-Projektion, MI-Lern-/M4-Referenzaufnahme und der separate vollständige
+Triadenstore bereits verbunden. Die Projektion prüfte bisher nur die Forecast-ID
+ihres Kalibrierungsbelegs. Die Triade prüfte einzelne Records und Referenz-IDs,
+aber nicht alle gemeinsamen Kontextangaben. Gültig neu berechnete IDs und Digests
+konnten dadurch widersprüchliche Horizonte, Bar-Spezifikationen, Forecasttypen
+oder Evidenzzustände verdecken. Ein inhaltlich veränderter Kalibrierungsbeleg mit
+unverändertem Digest konnte über die Projektion bis zum tatsächlichen M4-Aufruf
+gelangen.
+
+Jetzt nutzt die Projektion den vorhandenen nativen Kalibrierungsvalidator und
+bindet MI-Domäne, Forecast-ID, n_bars, Bar-Spezifikation und Forecasttyp aneinander.
+Die vorhandene exakte JSON-Wertprüfung hält auch numerisch gleiche Integer- und
+Float-Zählwerte auseinander. Die Triade nutzt denselben Projektionsowner zur
+Prüfung ihrer Originalmitglieder und vergleicht zusätzlich die deklarierten
+Research-Kontextfelder samt Evaluability. Sie ersetzt keinen gespeicherten
+Inhalt. Neuaufnahme und Kaltlesen stoppen bei Widersprüchen; vorhandene Dateien
+werden dabei weder umgeschrieben noch gelöscht.
+
+Der [Projektions-/Triadenvertrag](MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md#research-projection-and-full-triad-context-binding--2026-11-22)
+bindet den Originalabgleich: 40 unzulässige Durchgaben und sieben bereits
+bestandene Kontrollen. Drei native Gegenbeispiele schließen am Original den
+M4-Aufruf ab; vier widersprüchliche native Triaden erreichen Persistenz und
+Rücklesen. Fünf vollständige gültige Originalpakete und fünf gespeicherte Dateien
+bleiben bytegleich, einschließlich Annotationsreihenfolge, optionaler
+Legacy-Referenz, fehlendem Outcome, unzureichender Evidenz und ausdrücklich
+gelieferter Enthaltung. Die ursprüngliche persist_id-Herkunft des Writers wird
+im Vergleich erhalten. Alle Prüfungen verwenden synthetische Daten und gesperrtes
+Netzwerk.
+
+Evaluability wird am tatsächlichen Kalibrierungsbeleg erhalten, nicht aus dem
+Forecast-Support neu abgeleitet. Ein expliziter Kalibrierungsverzicht bleibt
+auch bei ausreichendem Forecast-Support zulässig. Die Query-Härtung, native
+Speicherowner, alte Rechenmethoden, Einheiten und Fingerprints bleiben erhalten.
+BRIER_SCORE_V1 bezeichnet weiterhin den dokumentierten linearen 1-p-Einzelfehler.
+Die neue Prüfung belegt deklarierte Widerspruchsfreiheit, keine authentische
+Messquelle, korrekte numerische Kalibrierung oder Prognosequalität. Projektion
+und Triadenaufnahme erhalten keinen neuen Originalmessungsport; direkt extern
+gebaute Referenzprojektionen brauchen weiterhin ihre eigene Quellenadmission.
+M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
+Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
+keine Betriebs- oder Forschungsläufe.
