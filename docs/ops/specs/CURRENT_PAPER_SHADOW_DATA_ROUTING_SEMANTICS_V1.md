@@ -1496,3 +1496,50 @@ Systemhärtung sind damit nicht insgesamt abgenommen.
 Der weiter oben dokumentierte separate Funding-Snapshotfehler wurde inzwischen
 mit PR #7363 im [eigenen historischen Vertragsumfang](CURRENT_ORDERED_FUNDING_EPISODE_DEVELOPMENT_ADMISSION_V1.md#spätere-startupgate-fortschreibung-und-snapshotprüfung)
 behoben; seine früheren FAILED-Belege bleiben historische Befunde.
+
+### Originalmessung und Zeitbezug der bestehenden DP-Attribution — 22. November
+
+Der vorhandene Phase-25-Composer verbindet typisierten Marktkontext,
+Decision-/Selection-/SideState-/Konfigurationsreferenzen, N_BARS-Beobachtung
+und späteres RealizedBehavior mit dem bestehenden Phase-14-Evaluationsowner.
+Inspection und Replay existieren bereits. Der nachvollzogene Aufrufumfang sind
+Offline-Tests und Governance-/Referenzprüfungen; ein produktiver Consumer oder
+automatischer Lernrückweg wurde dadurch nicht nachgewiesen.
+
+Am Übergang fehlte der Abgleich der Originalmessung: Zwei vollständig gültige
+native Verhaltensbelege konnten denselben Kontext und Horizont tragen, aber
+unterschiedliche `actual_outcome_ref` und sogar entgegengesetzte Returns.
+Der Composer nahm den fremden Beleg bisher als ATTRIBUTED auf. Ebenso wenig
+rechtfertigen gleiche Returnzahlen aus anderen Endpunkten oder gleiche Preise
+aus anderer Provenienz die Vermischung zweier Messungen. Jetzt muss die
+Messreferenz mit der ursprünglichen Evaluationsbeobachtung übereinstimmen.
+Eine passend zusammengeführte neue Originalmessung bleibt zulässig.
+
+Die beiden vorhandenen Grenzen Kontextzeit <= Entscheidungszeit und, bei
+geliefertem Verhalten, Kontextzeit <= Horizontbeginn erhalten jetzt außerdem
+die vollständige Quellpräzision. So wird ein erst 1 oder 999 Nanosekunden nach
+der Entscheidung deklarierter Kontext nicht mehr als damals bekannt ausgegeben.
+Die Gegenprobe neu versiegelter widersprüchlicher Horizontdeklarationen
+beglaubigt keine neue Quellbeobachtung. Widersprüche stoppen vor Phase 14.
+Gleichheit, nullwertige Bruchteile und die native UTC-Z-Syntax bleiben erhalten.
+Ein zeitlich gültiger vollständiger Horizont ohne Verhaltensbeleg bleibt
+INSUFFICIENT; fehlende Daten werden nicht ergänzt.
+
+Der [Phase-25-Vertrag](UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md#original-measurement-and-exact-declared-pit-binding--22-november-2026)
+grenzt den Befund ab. Einheiten, LOG_RETURN, Preisweg-Excursion,
+Volatilitätsverfahren und explizit ungeklärte klassische MFE/MAE-/Regimefelder
+bleiben erhalten. Die Attribution vergibt keine Trading-, Apply- oder
+Betriebsfreigabe und ersetzt kein Urteil über Regeltreue oder Kontogewinn.
+Der Inspector belegt ohne Originalrequest nur seine bestehenden Inhalts- und
+Referenzprüfungen; historische Belege werden nicht nachträglich zeitlich zertifiziert.
+BTC, produktive Reducer und Handelsowner bleiben unverändert. Keine Betriebs-
+oder Forschungsläufe wurden gestartet; weitere Ketten und Gesamtsemantik bleiben
+gesondert zu prüfen.
+
+Für diesen Phase-25-Abschnitt bestehen 101 gezielte Offline-Fälle: 31 neue
+Gegen-/Positivproben und 70 vorhandene Attribution-/Verhaltens-/Zeit-/Governancefälle.
+Der Ausgangsabgleich reproduzierte neun fälschliche ATTRIBUTED-Resultate und vier
+INSUFFICIENT-Resultate für widersprüchliche Zukunftskontexte, die als REJECTED
+auszugeben sind; 18 Kontrollen bestanden bereits. Vierzehn vollständige originale
+Request-/Result-/Inspector-/Replaypakete bleiben bytegleich. Diese Eingriffskontrolle
+belegt die begrenzte Übergabe und keine allgemeine Quellen- oder Systemabnahme.

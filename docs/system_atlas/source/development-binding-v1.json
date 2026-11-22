@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "b7060f964fc1f5893131a4e2176c87934e2570966be23c8b81e45429e8c248c9"
+      "sha256": "890a2e894986a52e8737ace91b96bfc6db00945d983f5e6e99f41bd38d9a369e"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1395,6 +1395,11 @@
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
       "before_sha256": "f58db673497f9208990b69f37ccb00803c45fead71d5c78ad2ed75a2be20d68f",
       "sha256": "5807d83d02364b07e92196624f47dba8c5989ab5cd63828dabc1a05cd9259741"
+    },
+    {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md",
+      "before_sha256": "41b8a60ca2c8f26e11def71f065cf9fd3a6176e4ed098a0c901e7da139e563af",
+      "sha256": "0558a8ed54eda6f803f251864e89dceb10f9e38cc3fd547c37041746345e330e"
     },
     {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md",
@@ -2415,6 +2420,11 @@
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
       "before_sha256": "7610c49157d6927921400957f6f428a4a88d22df29ff7aa5f79b23f136a373f1",
       "sha256": "aa1765ff2c481fa741d2e1727d0158ba24edd30283bc419fa79fdd6678625898"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
+      "before_sha256": "8b4f28d569e59f594fe638596b48eb176d2aa641c40c4e8721f21a0961e00046",
+      "sha256": "f8ac69bf03776b18120cc975d14d7e69d5ea542b59ef45ee776d727fddeadcbc"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
@@ -4340,6 +4350,11 @@
       "path": "tests/learning/test_ddo_real_outcome_horizon_learning_stretch_v1.py",
       "before_sha256": "bd0c842e447937b4e3e310d8054bf51d2b349c9d5863c6ec960f8c45263ade17",
       "sha256": "432f3d86077972576cf06a5ce806d67785ecefbd165372f2f680e29c8180621e"
+    },
+    {
+      "path": "tests/learning/test_dp_attribution_original_evidence_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "121eae04c29f1fc15694181c9b1e90f8f32da38287f12f5bb40fc313ee278bbd"
     },
     {
       "path": "tests/learning/test_forecast_freeze_exact_clock_v1.py",
