@@ -33,11 +33,12 @@ D01_D02_ADJUDICATION_DELTAS = {
 }
 
 # Frank's 2026-11-22 offline causal-hardening instruction: exactly this original
-# attribution/learning handoff repair. Frozen policy objects and runtime grants stay.
+# attribution/learning handoff and original MI measurement reference repair.
+# Frozen policy objects and runtime grants stay.
 DECISION_ATTRIBUTION_LEARNING_DELTAS = {
     "src/governance/unified_blueprint_decision_attribution_evidence_v1.py": (
         "ba46e7f84113d18b82a1d363b78a6efc816e14fbf4d7728c8921b2a71071a4a2",
-        "2eba271538d251fabbbaaea7ad2e77b81623858ca608b663ac833996052fe2af",
+        "fcbaeaf33ea162244bcb0045729ee9c093c1b2c45d9a47492ad6008527025ea4",
     ),
 }
 

@@ -1596,3 +1596,103 @@ Die veraltete Reviewed-Policy-Mengenerwartung ließ schon am Ausgangsstand den
 bereits zugelassenen D01/D02-Prüfer aus; sie wird auf die tatsächlich bestehenden
 exakten Zulassungen nachgeführt. Eingefrorene Policy-Inventare und Authority-
 Konstanten bleiben erhalten; ein bloß nachgeführter Hash ersetzt keine Zulassung.
+
+### Optionale MI-Zuordnung und originale Messreferenz — 22. November
+
+Die vorhandene Abfrage erhält Forecast, Attribution und Kalibrierung bereits
+aus Offline-Orchestrator und Phase 14. Forecast und Attribution wurden einzeln
+validiert; Kalibrierung und ihre Querbezüge blieben ungeprüft. Widersprüchliche
+Decision-/Auswahlsreferenzen konnten einander überschreiben. Ein gültiger
+Kalibrierungsbeleg eines anderen Forecasts, Horizonttyps oder einer anderen
+Messung konnte unter der gemeinsamen Query erscheinen.
+
+Jetzt nutzt die Query den bestehenden Kalibrierungsvalidator und vergleicht
+vorhandene Entscheidungs- und Auswahlreferenzen sowie MI-Domäne, Forecast-ID,
+n_bars, Bar-Spezifikation und Forecasttyp. Phase 14 übergibt seine bereits
+vorhandene Original-Outcome-Referenz; eine Kalibrierung mit anderer Messreferenz
+stoppt vor Veröffentlichung des Attributionsresultats. Auch gleiche Forecasts,
+Horizonte und neu berechnete Digests ersetzen diese Bindung nicht. Die bisherige
+exakte Quellenadmission wird nur auf diesen konkreten Nachfolger fortgeschrieben.
+
+Fehlende optionale Angaben bleiben fehlend. Ein früherer nativer
+NOT_EVALUABLE-Beleg ohne Outcome wird auch neben einer späteren tatsächlichen
+Messung nicht ergänzt. Queryfehler sind Validierungsausnahmen; es wird kein
+erfolgreicher oder künstlicher REJECTED-Beleg daraus gebaut. Der ursprüngliche
+Lernadapter, vollständige Replayvergleich und produktive Reducer bleiben erhalten.
+
+Der [MI-Query-Vertrag](MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md#optional-decision-attribution-query-binding--2026-11-22)
+begrenzt die Aussage: 21 falsche Ausgaben wurden am Original reproduziert,
+darunter fünf über den tatsächlichen Phase-14-Aufrufer; 14 Kontrollen bestanden
+bereits. 35 neue Gegen-/Positivproben prüfen die Grenze. Dreizehn vollständige
+Originalpakete und zwei synthetische Ledgerdateien bleiben bytegleich.
+Auswahlreceipts bleiben von Marktinstrument-IDs getrennt; Kenntniszeit und
+tatsächlicher damaliger Forecastverbrauch werden nicht aus Referenzen abgeleitet.
+Ohne gelieferte Original-Outcome-Referenz kann die Query keine eigenständige
+Messquellenbindung bestätigen. Die bestehenden Forecast-Digests schließen die
+optionalen Decision-/Auswahlfelder weiterhin nicht ein. Rechenmethoden und
+Methodenlabels werden nicht neu bewertet oder zu Lernqualität, Kontogewinn oder
+Kausaleffekt umgedeutet. Produktiver Automatikbetrieb bleibt gesondert zu prüfen.
+BTC, betriebliche Originalstores, Finanzregeln, Handelsowner und Freigaben bleiben
+unverändert; keine Betriebs- oder Forschungsläufe wurden gestartet.
+
+### Gemeinsamer Nachweis der abgeschlossenen Ketten — 22. November
+
+Auf Franks erneute Vorgabe wurden alle bisher in diesem Arbeitsstrang
+abgeschlossenen Abschnitte gemeinsam in die Offline-Vertragsprüfung einbezogen.
+Der konkrete Herkunftsumfang sind PR #7337 bis #7366: 30 Lieferpakete mit 53
+verschiedenen geänderten Testdateien. Ein Paket betrifft nur einen bestehenden
+Harness-Bezug und begründet keine zusätzliche Signal- oder Betriebsautorität.
+Die Auswahl wurde aus den tatsächlichen Git-Änderungen dieser Revisionen
+hergeleitet; historische Fertigmeldungen wurden nicht als heutiger PASS übernommen.
+
+233 aktuelle Owner-/Nachbarfälle einschließlich 35 neuer Query-Gegen-/Positivfälle
+und 966 ergänzende Fälle aus den übrigen 49 Testdateien bestanden vollständig,
+ohne Fehler oder Skip. Die beiden Mengen sind disjunkt; bereits abgeschlossene
+PASS-Fälle wurden nicht erneut nur zur Nachweiserzeugung gestartet. Der ergänzende
+Block verwendete ausschließlich Fixtureantworten und temporäre Teststores,
+eine Python-Netzwerksperre und eine zusätzliche Betriebssystem-Netzwerksperre,
+die auch für Unterprozesse gilt. Die anfängliche Aufrufprotokollierung wurde
+wegen ihres Aufwands unterbrochen und separat erhalten; sie zählt nicht als PASS.
+Der endgültige vollständige Block ohne Zusatzprotokollierung bestand mit Exit 0.
+
+Der gemeinsame Prüfrahmen erhält insbesondere folgende bestehende Verträge:
+
+- [Karten und Zuordnung](../../../tests/ops/test_instrument_card_stream_v1.py):
+  Slot, Instrument, Quellen-/Budgetfassung und ursprünglicher Rankingbezug
+  erreichen den tatsächlichen Consumer. Kartenbewertung ersetzt keine Freigabe.
+- [Paper-Entscheidung und Rücklesen](../../../tests/ops/test_zkp_lane1_paper_opening_v1.py):
+  ursprüngliche Entscheidung, simulierter Fill, Buchung und spätere DDO-Evidence
+  bleiben unterschiedliche, miteinander gebundene Originale.
+- [Shadow und O4](../../../tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py):
+  Modellkosten und kontrafaktischer Preisverlauf werden nicht zu Kontogewinn;
+  der spätere Messbeleg bleibt am ursprünglichen Entscheidungsbezug.
+- [Lernaufnahme und M4](../../../tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py):
+  MI und DDO bleiben eigene Evidenztypen; Inhalt, Zuordnung und ursprüngliche
+  Entscheidung werden vor dem Verbrauch geprüft.
+- [Meta und Folgezyklus](../../../tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py):
+  vollständige Rückgaben, Knowledge-/Record-Zeit und Forschungszweck bleiben
+  gebunden; Research, Proposal, Authorization und Apply sind getrennte Grenzen.
+- [OLS und Originalzeiten](../../../tests/learning/test_market_ols_exact_clock_admission_v1.py):
+  Kenntnis-/Verfügbarkeitszeit, Forecastentstehung und Messschluss behalten ihre
+  jeweilige Bedeutung und vollständige ursprüngliche Präzision.
+- [Capture](../../../tests/ops/test_recorded_measurement_capture_exact_clock_v1.py)
+  und [Folgeforschung](../../../tests/ops/test_representation_follow_up_clock_binding_v1.py):
+  Aufnahme, Originalquellen, Antwortzeiten, Replay und Wiederaufnahme behalten
+  ihre zuständigen Owner und expliziten Nichtauswertungs-/Sperrzustände.
+
+Einheiten und Bedeutung bleiben ebenfalls begrenzt: Mark, Index und Last sind
+eigene Quellen; USD, USDC, Basisassetmengen und native Kontrakte sind keine
+austauschbaren Zahlen. N finale Closes liefern N−1 Returnintervalle. LOG_RETURN,
+opaque Economic-/Decision-/Safety-Labels und Kalibrierungsmethoden sind keine
+automatischen Aussagen über Kontogewinn, Entscheidungsregeltreue oder Kausaleffekt.
+Fehlende Werte bleiben fehlend; eine lokale Flat-Markierung oder ein Research-PASS
+erteilt keine fremde Kapital-, Permit- oder Applyfreigabe.
+
+Dieser Nachweis prüft die vorhandenen synthetischen Consumer- und Gegenverträge
+aller genannten abgeschlossenen Abschnitte. Er zertifiziert weder unabhängig
+die historischen Quellen-/Clockangaben noch sämtliche numerischen Methoden,
+wirtschaftliche Lernqualität, natürlichen automatischen Betrieb oder physische
+Crash-/Stromausfallfestigkeit. Weitere bisher offene Systemverzweigungen bleiben
+offen. Neue Verbindungen wurden nur für die konkret belegte MI-Query-Lücke im
+vorhergehenden Abschnitt ergänzt; bestehende Owner und Schutzgrenzen bleiben
+erhalten. BTC und Betriebsfreigaben wurden nicht verändert.

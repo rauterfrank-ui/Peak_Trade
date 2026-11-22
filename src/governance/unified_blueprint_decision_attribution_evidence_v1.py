@@ -291,6 +291,11 @@ def build_decision_attribution_evidence_v1(
         selected_instrument_ref=decision.get("selected_instrument_ref"),
         side_state_ref=request.side_state_ref,
         regime_ref=request.bull_bear_state_ref,
+        expected_actual_outcome_ref=(
+            outcome["actual_outcome_ref"]
+            if outcome.get("actual_outcome_ref") not in (None, UNKNOWN)
+            else None
+        ),
     )
 
     body: dict[str, Any] = {
