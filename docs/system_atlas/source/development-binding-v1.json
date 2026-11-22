@@ -954,7 +954,7 @@
     {
       "path": "docs/ops/specs/BTC_DEMO_HOST_BUDGET_RECONCILIATION_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "8aa4a0fddf20dc1b4c162acb651fc62aa9be7b73bbd30c6b1fbe6a0e1506831e"
+      "sha256": "0cee2cd7300b88363f7a9cfad5319a3d5914b96e1f08022ebe5b45f351cacab6"
     },
     {
       "path": "docs/ops/specs/CANONICAL_ADVANCED_SEARCH_V1.md",
@@ -1499,7 +1499,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "ace773469b5fd85f586a51b07505e03c87e655bb7cb61f310836f2ee64adba28"
+      "sha256": "aea916c642fe058196ace3220c5d6e200cc1fa145b0237d68d71f309325cbada"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2569,7 +2569,7 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "2f64bd55ea89f6477aa63fadb887b3dc3ce398ccba22624749e0be4c2d98b9cf"
+      "sha256": "5a085d17e5551a28858b5a4e767b0264961d8b9d1fb0d9208eae51590cee4842"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -3634,7 +3634,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "a56aa9d115717e2430577be3cefa2099191c198fe00648ea31056441bfec3fff"
+      "sha256": "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -4812,14 +4812,14 @@
       "sha256": "f7e64d4755ee6c3cd0de6e763c1dcb8e2b4c4f4fd79829b21fb7a998cce8dbcb"
     },
     {
-      "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
+      "path": "tests/ops/test_btc_demo_budget_readback_v1.py",
       "before_sha256": null,
-      "sha256": "c8646bff17e6a064f31b819ddb9902546ca945a2e3e7e6041f911898d77978df"
+      "sha256": "650388fbbe557e62a3c9d0a0fa87f686582774c92aca0187c6dd7bf194bfd516"
     },
     {
-      "path": "tests/ops/test_btc_demo_budget_revision_development_delta_v1.py",
+      "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "bb8cd0e5879561c084ab1678e3b9ccfe6920e163f74cd7e0c996ef3f2638fa79"
+      "sha256": "f3f09cdabccc69177502a7d8f864678a391cb04fc4cd55321903988dfca7d7c8"
     },
     {
       "path": "tests/ops/test_btc_demo_lane3_v2.py",

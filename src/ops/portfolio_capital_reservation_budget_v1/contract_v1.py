@@ -445,13 +445,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 raise PortfolioCapitalBudgetError("DURABLE_BUDGET_SCOPE_REQUIRED")
             return {"root": str(self._store.root), "account": self._account_identity}
 
-    def durable_revision_ref_v1(self) -> tuple[int, str]:
-        """Read the original writer's committed revision, never an admission token."""
-        with self._lock:
-            if self._store is None or self._closed_owner or self._storage_failed:
-                raise PortfolioCapitalBudgetError("DURABLE_BUDGET_REVISION_UNAVAILABLE")
-            return self._store.sequence, self._store.head
-
     def close(self) -> None:
         with self._lock:
             self._admitted = False

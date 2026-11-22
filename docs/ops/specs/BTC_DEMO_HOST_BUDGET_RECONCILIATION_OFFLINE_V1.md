@@ -40,12 +40,16 @@ sie ist weiterhin keine unabhängig beglaubigte Venue-Ereigniszeit.
 Der [Demo-Host](../../../src/ops/btc_demo_budget_reconciliation_host_v1.py)
 nimmt ausschließlich den ursprünglichen dauerhaften Budgetowner, dessen
 exakte Kontowurzel und dessen ursprüngliche LANE_3-Instrumentbindung an.
-Der neue lesende Revisionszugang gibt Sequenz und Head des vorhandenen Writers
-zurück. Er erzeugt keinen zweiten Kapitalledger und kein Zulassungstoken.
-Die [Policyprojektion](../../system_atlas/policy_projection.py) bindet dafür
-genau den vorherigen Budgetquellkörper an den neuen Körper mit diesem rein
-lesenden Zugang. Bestehende Budgetregeln und eingefrorene Inventare bleiben
-erhalten; fremde Körper oder bloß neu gehashte Metadaten bleiben abgewiesen.
+Der Consumer liest Sequenz und Head aus dem ursprünglichen Journal unter der
+vorhandenen Writersperre. Der unveränderte Originalsnapshot stoppt geschlossene
+oder fehlgeschlagene Quellen; der Original-Revisionsreader prüft den Datensatz,
+das vorhandene lesende Headgate zusätzlich Kontobindung und tatsächlichen
+Disk-Head. Es entsteht kein zweiter Kapitalledger und kein Zulassungstoken.
+Versiegelter Budgetowner, Store, Siegel, Durchsetzung und
+[Policyprojektion](../../system_atlas/policy_projection.py) bleiben bytegleich
+zur Ausgangsrevision. Der zusätzliche Getter im ersten PR-Head wurde nach
+Abweisung durch beide ursprünglichen Siegelprüfungen entfernt; keine neue
+Prüfsumme und keine neue Siegel-Ausnahme wurden zugelassen.
 
 Coverageaufnahme: ursprüngliche fünf GET-Antworten mit Queries und Empfangszeit
 → Rekonstruktion des Readerberichts und Digestvergleich

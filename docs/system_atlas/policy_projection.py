@@ -23,16 +23,6 @@ NUMERIC_ADMISSION_PATHS = (
 )
 NUMERIC_ADMISSION_ID = "CURRENT_NUMERIC_INPUT_ADMISSION_AND_EXPLICIT_OFFLINE_FINANCIAL_CONTEXT_V1"
 
-# Frank's 2026-11-22 BTC preparation/repair instruction: exactly the original
-# budget writer's read-only committed-revision accessor. No admission or release
-# rule changes; an ordinary development hash cannot admit another implementation.
-BTC_DEMO_BUDGET_REVISION_READ_DELTAS = {
-    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
-        "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd",
-        "a56aa9d115717e2430577be3cefa2099191c198fe00648ea31056441bfec3fff",
-    ),
-}
-
 # Frank's 2026-11-22 instruction covers the D01/D02 reference-checker repair.
 # Exact source delta only: original frozen map/config and all runtime owners stay.
 D01_D02_ADJUDICATION_DELTAS = {
@@ -667,7 +657,6 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             )
             expected = _live_initial_slot_budget_successor(root, expected)
             expected = _occupied_n1_runtime_successor(root, expected)
-            expected = _btc_demo_budget_revision_read_successor(root, expected)
     actual = {}
     for path in expected:
         source = root / path
@@ -710,21 +699,6 @@ def _occupied_n1_runtime_successor(root, parent):
     return parent
 
 
-def _btc_demo_budget_revision_read_successor(root, parent):
-    if any(
-        hashlib.sha256((root / path).read_bytes()).hexdigest() == after
-        for path, (_, after) in BTC_DEMO_BUDGET_REVISION_READ_DELTAS.items()
-        if path in parent
-    ):
-        # The prior one-file successor is detected by its exact old body.
-        # Traverse that same reviewed edge when this exact later body is used.
-        for path in BTC_DEMO_BUDGET_REVISION_READ_DELTAS:
-            if parent.get(path) == LIVE_INITIAL_SLOT_BUDGET_DELTAS[path][0]:
-                parent = _exact_double_play_successor(parent, LIVE_INITIAL_SLOT_BUDGET_DELTAS)
-        return _exact_double_play_successor(parent, BTC_DEMO_BUDGET_REVISION_READ_DELTAS)
-    return parent
-
-
 def _double_play_bundle_successor(root, parent):
     booked = (root / NET_REVERSAL_GET_RECONCILIATION_SOURCE).is_file()
     expected = _exact_double_play_successor(parent, DOUBLE_PLAY_POLICY_DELTAS)
@@ -750,7 +724,6 @@ def _double_play_bundle_successor(root, parent):
             )
             expected = _live_initial_slot_budget_successor(root, expected)
             expected = _occupied_n1_runtime_successor(root, expected)
-            expected = _btc_demo_budget_revision_read_successor(root, expected)
     return expected
 
 

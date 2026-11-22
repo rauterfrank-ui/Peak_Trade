@@ -277,11 +277,11 @@ def test_original_demo_attempt_reaches_budget_reconciler_once_and_retains_hold(t
         assert result["reconciliation"]["matched"] is True
         assert result["reconciliation"]["reservation_released"] is False
         assert host.owner.active_sum_v1() == before > 0
-        revision = host.owner.durable_revision_ref_v1()
+        revision = host.budget_revision_ref_v1()
         again = host.reconcile_attempt_v1(
             reads=ExecutionReads(identity), reservation_id=rid, clock=lambda: NOW.timestamp()
         )
-        assert again == result and host.owner.durable_revision_ref_v1() == revision
+        assert again == result and host.budget_revision_ref_v1() == revision
     finally:
         host.owner.close()
 
@@ -340,8 +340,8 @@ def test_closed_owner_cannot_supply_committed_revision(tmp_path):
 
     host, _ = owner_host(tmp_path)
     host.owner.close()
-    with pytest.raises(PortfolioCapitalBudgetError, match="REVISION_UNAVAILABLE"):
-        host.owner.durable_revision_ref_v1()
+    with pytest.raises(PortfolioCapitalBudgetError, match="RISK_DURABLE_OWNER_REQUIRED"):
+        host.budget_revision_ref_v1()
 
 
 @pytest.mark.parametrize(
@@ -399,7 +399,7 @@ def test_original_writer_identity_passes_new_guard_but_not_original_demo_guard(t
             ),
             namespace,
         )
-        revision = host.owner.durable_revision_ref_v1()
+        revision = host.budget_revision_ref_v1()
         with pytest.raises(ValueError, match="ORIGINAL_V2_ENTRY_ATTEMPT_REQUIRED"):
             namespace["_read_original_attempt"](
                 demo._demo_lane_root(host.root), ACCOUNT, rid, revision

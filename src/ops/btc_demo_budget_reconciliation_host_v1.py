@@ -108,6 +108,25 @@ class BtcDemoBudgetReconciliationHostV1:
         )
         self.owner, self.bound, self.account, self.root = owner, bound, account, Path(testnet_root)
 
+    def budget_revision_ref_v1(self):
+        """Read the actual original journal under its existing owner's lock.
+
+        The sealed owner/store stay unchanged. Its original snapshot rejects
+        closed/failed sources; its original revision reader validates the row;
+        its read-only head gate binds the same account and actual disk head.
+        """
+        scope = self.owner.durable_scope_identity_v1()
+        with self.owner._lock:
+            snapshot = self.owner._risk_snapshot_locked()
+            store = self.owner._store
+            revision = store.read_revision_v1(store.sequence, snapshot["durable_head"])
+            require_budget_head_read_only_v1(
+                Path(scope["root"]),
+                account_identity=self.account,
+                expected_digest=revision["digest"],
+            )
+            return revision["sequence"], revision["digest"]
+
     def _fence_budget_v1(self):
         state = self.owner.budget_state_v1()
         if state.admitted or not state.recovery_required:
@@ -160,7 +179,7 @@ class BtcDemoBudgetReconciliationHostV1:
     def reconcile_attempt_v1(self, *, reads, reservation_id, clock):
         """Persist exact exchange reconciliation before any V2 first-fill handoff."""
         self._fence_budget_v1()
-        revision = self.owner.durable_revision_ref_v1()
+        revision = self.budget_revision_ref_v1()
         identity, _, _ = demo._read_original_attempt(
             demo._demo_lane_root(self.root), self.account, reservation_id, revision
         )
@@ -205,7 +224,7 @@ class BtcDemoBudgetReconciliationHostV1:
             max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
         )
         # Source/submit revisions belong to the original writer, not this host.
-        _need(self.owner.durable_revision_ref_v1() == revision, "BTC_DEMO_BUDGET_HEAD_CHANGED")
+        _need(self.budget_revision_ref_v1() == revision, "BTC_DEMO_BUDGET_HEAD_CHANGED")
         from hashlib import sha256
 
         old = self.owner.execution_links_v1()[reservation_id].get("reconciliation")
@@ -227,7 +246,7 @@ class BtcDemoBudgetReconciliationHostV1:
         return {
             "authority": "NONE",
             "identity": identity.to_dict(),
-            "budget_revision": list(self.owner.durable_revision_ref_v1()),
+            "budget_revision": list(self.budget_revision_ref_v1()),
             "reconciliation": evidence,
             "source_observations": deepcopy(originals.rows),
         }
@@ -250,7 +269,7 @@ class BtcDemoBudgetReconciliationHostV1:
             "BTC_DEMO_ORIGINAL_MATCHED_FILL_RECONCILIATION_REQUIRED",
         )
         revision = tuple(reconciliation["budget_revision"])
-        _need(revision == self.owner.durable_revision_ref_v1(), "BTC_DEMO_BUDGET_HEAD_CHANGED")
+        _need(revision == self.budget_revision_ref_v1(), "BTC_DEMO_BUDGET_HEAD_CHANGED")
         captured = demo.BtcDemoObservationsV1(None)
         captured.rows = deepcopy(reconciliation["source_observations"])
         # The native first-fill reader rechecks quantity, position, fees and
