@@ -165,19 +165,38 @@ def verify_full_economic_reconstruction_v2(
             if fill.get("portfolio_state_after_hash") != cycle.get("portfolio_state_after_hash"):
                 blockers.append(f"FILL_AFTER_HASH_MISMATCH_{i}")
 
-    eq0 = Decimal("100000")
-    if final_portfolio_snapshot:
-        params = (final_portfolio_snapshot.get("params") or {}).get("initial_equity")
-        if params is not None:
-            eq0 = _dec(params)
-    model = IdempotentPortfolioV2.from_params(PortfolioEconomicsModelParamsV1(initial_equity=eq0))
+    recorded_params = (final_portfolio_snapshot or {}).get("params") or {}
+    linear_futures = recorded_params.get("linear_futures_collateral", False)
+    if type(linear_futures) is not bool:
+        blockers.append("INVALID_PORTFOLIO_COLLATERAL_MODE")
+    costs = {}
+    if linear_futures is True:
+        costs = {
+            k: _dec(recorded_params[k])
+            for k in ("fee_rate_bps", "slippage_bps", "funding_rate_per_interval", "max_leverage")
+            if k in recorded_params
+        }
+    params = PortfolioEconomicsModelParamsV1(
+        initial_equity=_dec(recorded_params.get("initial_equity", "100000")),
+        linear_futures_collateral=linear_futures is True,
+        **costs,
+    )
+    if linear_futures is True and params.digest() != final_portfolio_snapshot.get("model_digest"):
+        blockers.append("CARD_PORTFOLIO_MODEL_DIGEST_MISMATCH")
+    model = IdempotentPortfolioV2.from_params(params)
     reconstructed_fills = 0
     for cycle in cycle_ledger:
         action = cycle.get("intended_action") or {}
         side = str(action.get("intended_side") or "HOLD")
         qty = _dec(action.get("intended_quantity") or "0")
         fr = cycle.get("feature_regime") or {}
-        mark = _dec(fr.get("mark_price") or "0")
+        if cycle.get("soph_shadow_capital_binding") is not None:
+            basis = cycle.get("price_basis") or {}
+            mark = _dec(basis.get("mid_price") or "0")
+            if basis.get("price_field") != "markPx":
+                blockers.append(f"CARD_MARK_SOURCE_MISMATCH:{cycle.get('cycle_id')}")
+        else:
+            mark = _dec(fr.get("mark_price") or "0")
         intent_id = str(cycle.get("intent_id") or "")
         fill_id = cycle.get("fill_id")
         if mark <= 0:

@@ -254,8 +254,18 @@ def soph_shadow_portfolio_action_v1(*, replay, state, market):
     native = map_replay_result_to_intended_analytical_action_v1(
         replay, instrument_id=state.instrument_id, portfolio_snapshot=portfolio
     )
-    projected = replace(native, intended_quantity=native.intended_quantity * multiplier)
+    # Preserve the original mapper label in the receipt. A portfolio close
+    # without a canonical order intent is still an analytical exit or reduction.
+    action = native.intent_action
+    if native.quantity_source == "exit_or_reduce" and native.decision_outcome in {"exit", "reduce"}:
+        action = native.decision_outcome.upper()
+    elif native.quantity_source == "exit_flat":
+        action = "NONE"
+    projected = replace(
+        native, intent_action=action, intended_quantity=native.intended_quantity * multiplier
+    )
     receipt = dict(
+        mapper_intent_action=native.intent_action,
         mapper_quantity_contracts=str(native.intended_quantity),
         contract_size=str(multiplier),
         portfolio_quantity_base=str(projected.intended_quantity),

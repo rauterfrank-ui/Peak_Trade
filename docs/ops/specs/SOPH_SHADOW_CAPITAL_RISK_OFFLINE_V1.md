@@ -121,3 +121,15 @@ Handelsentscheidung, wirtschaftliche Qualität oder Account-/Orderzulassung.
 Kein Betriebsversuch wurde gestartet; BTC/Testnet und Freeze-Referenzen bleiben
 unverändert. Scope-/SideState-, Reserve-, Permit- und Learningowner behalten ihre
 eigenen Übergänge.
+
+## Kartenfreigabe und Positionsführung auf Basis von PR 7385
+
+Die analytische Vorprüfung verwendet das freie Budget der einzelnen Karte. Sie prüft für BUY und SELL das Mindestlos gegen Budget, Markpreis, Kontraktwert, natives Buch und Marktteilnahme. Die Karte weist zusätzlich aus, ob die gesamte nominale Budgetkapazität vor Kosten ins Buch passt. Erst das ursprüngliche Risiko-Sizing bestimmt die konkrete Intentmenge. Eine wartende Karte liefert keine Handelsentscheidung. Die vorhandenen Paper- und Shadow-Hosts lesen ihre jeweils zugewiesene Karte. Die gemeinsame Offlineprüfung akzeptiert mehrere Karten zu einem Prüfzeitpunkt und gibt das Ergebnis je Slot zurück.
+
+Im SOPH-Shadow-Pfad müssen kanonische und native ID der freigegebenen Karte zum Originalmark und zum gebundenen Modellportfolio passen. Die GGE liefert den Abstand für diesen Marktkontext. Vor der Modellbuchung vergleicht der Consumer den verwendeten Scope-Abstand und die Instrumentidentität mit der gebundenen Geometrie. Der eingefrorene Replaykern berechnet seinen numerischen Abstand intern zweimal ohne ID erneut. Die beiden numerischen Aufrufe treffen keine Instrumentauswahl.
+
+Bei flachem Portfolio verarbeitet die Richtungsbestätigung zeitlich verschiedene Originalmarks desselben Instruments. Ein gebuchter Eröffnungsfill setzt den ersten Positionsanker auf den modellierten Fillpreis. Der Anker folgt bei Long höheren und bei Short tieferen Marks. Ein geschlossener Bestand gibt den Anker frei. Freies Budget für einen weiteren Einstieg und die Verwaltung des gebuchten Bestands haben unterschiedliche Eingänge.
+
+Der SOPH-Modus bewertet lineare Futures in USD. Kontowert ist hinterlegtes Modellkapital zuzüglich realisierter und unrealisierter Ergebnisänderungen, abzüglich der gebuchten Gebühren und Fundingbeträge. Die wirtschaftliche Rekonstruktion liest denselben Modus und den Mark der jeweiligen Entscheidung. Die Obergrenze für neue Einstiege bleibt bei 25 USDC.
+
+Im Offlinevergleich der 137 archivierten Entscheidungen vom 22.11.2026 entstanden neun reguläre Short-Intents. Ein gesonderter damaliger Ausführungszeitpunkt fehlt. Eine zweite Rechnung mit sofortiger Ausführungsprüfung am Entscheidungszeitpunkt hielt alle neun Mengen wegen Notional plus Kostenreserve oberhalb des Slotbudgets. Das Originalarchiv enthält null Fills. Die Fortschreibung eines belegten Positionsankers wurde mit Offline-Testdaten gesondert geprüft.

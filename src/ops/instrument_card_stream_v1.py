@@ -366,6 +366,7 @@ class InstrumentCardStreamV1:
             # A new capital observation cannot carry the preceding evaluation
             # as a decision on the new budget. Original core state is untouched.
             body["master_v2"] = None
+            body.pop("entry_review", None)
             body["observed_unix"] = now
             body["status"] = (
                 "OBSERVING" if budget["status"] == "BOUND" else "BLOCKED_BUDGET_UNBOUND"
@@ -452,6 +453,23 @@ class InstrumentCardStreamV1:
     def observe_v1(self):
         with observe_instrument_card_input_v1(self._observe):
             yield
+
+    def entry_card_v1(self):
+        from src.ops.master_v2_card_precheck_v1 import EntryCardV1
+
+        if self.market is None or self.current is None:
+            return None
+        return EntryCardV1(self.ranking_bound or self.bound, self.market, self.current["budget"])
+
+    def defer_entry_v1(self, review):
+        body = deepcopy(self.current)
+        status = (
+            "WAITING_DISTINCT_MARK"
+            if review.get("phase") == "MANAGE_POSITION"
+            else "WAITING_ENTRY_CONDITIONS"
+        )
+        body.update(status=status, master_v2=None, entry_review=review)
+        return self._write(body, stage="entry-review-" + canonical_digest_v1(review))
 
     def complete_v1(self, result):
         if self.current is None or self.market is None:
@@ -552,7 +570,11 @@ def shadow_budget_source_v1(state, *, repo):
             ):
                 raise ValueError("CARD_SHADOW_INITIAL_CAPITAL_REBIND_FORBIDDEN")
             state.portfolio = IdempotentPortfolioV2.from_params(
-                replace(state.portfolio.model.params, initial_equity=cap_usdc * market.usd_per_usdc)
+                replace(
+                    state.portfolio.model.params,
+                    initial_equity=cap_usdc * market.usd_per_usdc,
+                    linear_futures_collateral=True,
+                )
             )
             initialized = True
         original = plain(state.portfolio.snapshot())
