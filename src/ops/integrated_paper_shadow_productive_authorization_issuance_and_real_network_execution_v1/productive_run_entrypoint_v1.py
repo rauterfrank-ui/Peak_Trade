@@ -357,7 +357,8 @@ def run_productive_wallclock_session_v1(
         from src.ops.instrument_card_stream_v1 import default_shadow_card_source_v1
 
         instrument_card_source = default_shadow_card_source_v1(
-            repo=repo_root or Path(__file__).resolve().parents[3]
+            repo=repo_root or Path(__file__).resolve().parents[3],
+            capture_root=evidence_root.parent / "instrument-card-captures" / prereg.session_id,
         )
     runtime = WallclockSessionRuntimeV1(
         evidence_root=evidence_root,

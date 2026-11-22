@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict
 from decimal import Decimal, DecimalException
 from functools import partial
 from hashlib import sha256
@@ -22,6 +21,7 @@ if str(REPO) not in sys.path:
 
 from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (  # noqa: E402
     collect_bound_paper_liquidity_v1,
+    retain_public_paper_sources_v1,
 )
 from src.ops.bounded_peaktrade_system_composition_v1.xperp_paper_episode_outcome_v1 import (  # noqa: E402
     seal_xperp_paper_archive_v1,
@@ -41,7 +41,6 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     zkp_public_queries_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (  # noqa: E402
-    durable_bytes_v1,
     exclusive_v1,
     immutable_json_v1,
 )
@@ -106,27 +105,15 @@ def _capture(policy, *, label, output=None, bound=None, slot=ZKP_PAPER_SLOT):
             4 if bound is not None else len(zkp_public_queries_v1(policy.adv_days, slot=slot))
         ),
     )
-    records = {}
-
-    def retain(name, result, body):
-        if output is None:
-            return
-        path = output / f"{name}.json"
-        durable_bytes_v1(path, body)
-        record = asdict(result)
-        del record["payload"]
-        records[name] = {"file": str(path), **record}
-
-    if bound is None:
-        market = collect_zkp_paper_market_v1(
-            transport, policy=policy, capture_id=label, retain=retain, slot=slot
-        )
-    else:
-        market = collect_bound_paper_liquidity_v1(
-            transport, bound=bound, policy=policy, capture_id=label, retain=retain
-        ).to_preflight_v1()
-    if output is not None:
-        immutable_json_v1(output / "receipts.json", records)
+    with retain_public_paper_sources_v1(output) as retain:
+        if bound is None:
+            market = collect_zkp_paper_market_v1(
+                transport, policy=policy, capture_id=label, retain=retain, slot=slot
+            )
+        else:
+            market = collect_bound_paper_liquidity_v1(
+                transport, bound=bound, policy=policy, capture_id=label, retain=retain
+            ).to_preflight_v1()
     return market
 
 

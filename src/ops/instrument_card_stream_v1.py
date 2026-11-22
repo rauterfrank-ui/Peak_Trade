@@ -632,7 +632,7 @@ def paper_budget_source_v1(session):
     return capture
 
 
-def default_shadow_card_source_v1(*, repo):
+def default_shadow_card_source_v1(*, repo, capture_root=None):
     """Lazy public-only source; the existing Shadow start gate remains in front.
 
     Reuses the existing public Paper source port and source validators. It does
@@ -640,6 +640,7 @@ def default_shadow_card_source_v1(*, repo):
     """
     from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
         load_paper_liquidity_policy_v1,
+        retain_public_paper_sources_v1,
     )
     from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
         collect_zkp_paper_market_v1,
@@ -656,9 +657,20 @@ def default_shadow_card_source_v1(*, repo):
             timeout_seconds=6,
             max_request_count=len(zkp_public_queries_v1(policy.adv_days, slot=slot)),
         )
-        return collect_zkp_paper_market_v1(
-            transport, policy=policy, capture_id=capture_id, clock=clock, slot=slot
+        output = (
+            None
+            if capture_root is None
+            else Path(capture_root) / sha256(capture_id.encode()).hexdigest()
         )
+        with retain_public_paper_sources_v1(output) as retain:
+            return collect_zkp_paper_market_v1(
+                transport,
+                policy=policy,
+                capture_id=capture_id,
+                clock=clock,
+                slot=slot,
+                retain=retain,
+            )
 
     return capture
 
