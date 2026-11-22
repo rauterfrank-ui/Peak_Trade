@@ -92,3 +92,46 @@ self-consistent replacement record is not source-certified. Numerical quality,
 chronology, decision correctness, economics, trading effect downstream of A and
 overall operation need their own evidence. No new measurement, training, search,
 promotion or operating session is started. BTC and financial rules are unchanged.
+
+## Original binding-context body before new P5 artifacts — 2026-11-22
+
+At `98af19878ef259714194e0329f169dd327c273cd`, both native M5/M6 producers
+already validate their source and compare its lineage schema/digest with the
+supplied governed binding. The shared binding validator, however, did not
+recompute binding_digest or binding_record_id from the retained original body.
+Thirty-six counterexamples pass that old validator or producer. Six captured
+examples produce P5 artifacts which reach actual Component A ADMIT and its
+in-memory ledger, always with trading_authority=NONE.
+
+The existing binding validator now checks the original domain, reconstructs
+exactly the builder's ten retained body fields, recomputes binding_digest and
+reuses its original record-ID formula. Missing reconstruction inputs and
+contradictory declarations stop with the existing typed binding error before
+either native producer can issue a new P5 artifact. Earlier schema, presence,
+source-digest and epoch errors retain their priority. The builder, formulas,
+M5/M6 joins, original time strings and distinct artifact reproduction scopes
+are unchanged. Extra opaque annotations remain outside this original body.
+
+`tests/governance/test_p5_binding_context_integrity_v1.py` covers both validator
+and producer entrypoints, valid Mapping/JSON/annotation packets and the original
+producer-owned lineage denials. Six complete valid source/context/binding/P5/A/
+replay packets and six synthetic source LearningState ledger files remain
+byte-identical. Replay retains the stored original A result. Those files are
+not P5 persistence or crash-recovery evidence.
+
+This checks the supplied body's self-consistency, not independent authenticity
+of the original market context or its opaque references. Fresh self-consistent
+replacement records are not source-certified; historical P5 artifacts lacking
+the original binding body are not retroactively certified or rejected by this
+new upstream check. The stored freshness_horizon_seconds is part of the binding
+digest; actual A intake still uses its separate termination-context horizon.
+No new freshness policy, exact-clock claim, numerical quality, trading rule or
+operating grant is introduced. ADMIT remains evidence admission only.
+
+The existing policy reader admits only the exact reviewed binding-validator
+source with its original frozen-parent development row. Unknown/rehashed
+sources, missing rows, wrong parents and unrelated policy drift remain denied;
+the earlier three-file P5 bundle and frozen policy objects/tags are unchanged.
+`tests/ops/test_p5_binding_context_development_delta_v1.py` tests that real reader.
+BTC, Core/financial rules, real stores and runtime authority stay unchanged;
+no operating, capture, training, search or research session is started.

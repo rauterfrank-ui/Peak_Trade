@@ -99,4 +99,38 @@ def validate_p5_m4_m8_governed_evidence_binding_context_v1(
     epoch = payload.get("market_observation_epoch")
     if not isinstance(epoch, int) or epoch < 0:
         raise P5M4M8BindingContextError("MARKET_OBSERVATION_EPOCH_INVALID")
+    if payload.get("domain") != BINDING_DOMAIN:
+        raise P5M4M8BindingContextError("BINDING_DOMAIN_MISMATCH")
+    try:
+        body = {
+            field: payload[field]
+            for field in (
+                "schema_version",
+                "domain",
+                "instrument_ref",
+                "observed_at",
+                "market_observation_epoch",
+                "freshness_horizon_seconds",
+                "market_context_id",
+                "market_context_content_digest",
+                "source_lineage_schema",
+                "source_lineage_content_digest",
+            )
+        }
+    except KeyError as exc:
+        raise P5M4M8BindingContextError(
+            f"BINDING_REPRODUCTION_INPUT_MISSING:{exc.args[0]}"
+        ) from exc
+    digest = compute_content_sha256(body)
+    if payload["binding_digest"] != digest:
+        raise P5M4M8BindingContextError("BINDING_DIGEST_MISMATCH")
+    record_id = compute_content_sha256(
+        {
+            "binding_domain": BINDING_DOMAIN,
+            "binding_digest": digest,
+            "source_lineage_content_digest": payload["source_lineage_content_digest"],
+        }
+    )
+    if payload["binding_record_id"] != record_id:
+        raise P5M4M8BindingContextError("BINDING_RECORD_ID_MISMATCH")
     return MappingProxyType(dict(payload))

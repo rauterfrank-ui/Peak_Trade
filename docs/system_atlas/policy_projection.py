@@ -60,6 +60,15 @@ P5_ARTIFACT_ADMISSION_DELTAS = {
     ),
 }
 
+# Frank's 2026-11-22 offline causal-hardening instruction: exact original P5
+# binding-body/record-ID admission only. Frozen objects and runtime grants stay.
+P5_BINDING_CONTEXT_ADMISSION_DELTAS = {
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_governed_binding_context_v1.py": (
+        "d3257487bffea26ae46340ea8736c2f8780d46a6b14e80479140c7e3b5a555a9",
+        "39ad79ae2c45ac393dabc1edb209c731c233740c8fce6c38f1a7ee37935505dd",
+    ),
+}
+
 # Frank's separate 2026-11-09 approval covers this exact reviewed four-file
 # development bundle. Frozen records/tags and all other policy admission stay
 # intact. A new binding hash alone cannot authorize another implementation.
@@ -1101,6 +1110,8 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and DECISION_ATTRIBUTION_LEARNING_DELTAS.get(path)
                 != (policy["frozen_sha256"], actual)
                 and P5_ARTIFACT_ADMISSION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
+                and P5_BINDING_CONTEXT_ADMISSION_DELTAS.get(path)
+                != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(
