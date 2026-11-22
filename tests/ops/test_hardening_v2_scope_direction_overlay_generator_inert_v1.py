@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import inspect
 from pathlib import Path
 from types import SimpleNamespace
@@ -173,12 +174,14 @@ def test_next_cycle_cursor_is_sidestate_projection() -> None:
 
 
 def test_core_logic_change_is_adjudicated_honestly() -> None:
-    runbook = (REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(
-        encoding="utf-8"
+    # The one-shot adjudication belongs to PR #6283 (82659f5a0), section 11.2.1.E.
+    section = (REPO_ROOT / "docs/ops/evidence/PR_6283_RUNBOOK_11_2_1_E.txt").read_bytes()
+    assert (
+        hashlib.sha256(section).hexdigest()
+        == "efe87747caf01cec7a9ee06ade65fe6efed20b7e22357c96b6e6e024d9c5a7b1"
     )
-    section_at = runbook.index("11.2.1.E HARDENING_V2_SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT")
-    section = runbook[section_at : runbook.index("## 11.3 Autonomy state model", section_at)]
-    assert "CORE_LOGIC_CHANGE=true" in section
-    assert "HARDENING_V2_OVERLAY_SYNCHRONIZED=true" in section
-    assert "COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE=false" in section
-    assert "HARD_STOP_AFTER_THIS_TASK=true" in section
+    lines = section.decode("utf-8").splitlines()
+    assert "CORE_LOGIC_CHANGE=true" in lines
+    assert "HARDENING_V2_OVERLAY_SYNCHRONIZED=true" in lines
+    assert "COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE=false" in lines
+    assert "HARD_STOP_AFTER_THIS_TASK=true" in lines

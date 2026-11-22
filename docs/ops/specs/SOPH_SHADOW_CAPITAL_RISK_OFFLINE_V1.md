@@ -104,14 +104,17 @@ Full-Core-Entry. Die [bestehende Host-Integration](../../../tests/ops/test_instr
 prüft am vollständigen Offline-Host mit Testuhr den tatsächlich verbrauchten
 Finanzkontext, gespeicherte Eingänge und die strenge ursprüngliche DDO-Rücklese.
 
-Der erweiterte Ownerlauf ergibt 329 bestandene Prüfungen und einen offenen
-historischen Dokumentverweisfehler:
-[test_core_logic_change_is_adjudicated_honestly](../../../tests/ops/test_hardening_v2_scope_direction_overlay_generator_inert_v1.py)
-erwartet einen nicht mehr enthaltenen Abschnitt des Master-Runbooks. Test und
-Runbook sind bytegleich mit der Ausgangsrevision; der Abschnitt fehlt bereits
-dort. Die tatsächlichen SideState-/Scope-Projektionsfälle bestehen. Dieser
-Altfehler bleibt ausdrücklich offen; weder der fixierte Runbookbestand noch
-die bestehende Prüferwartung werden für einen grünen Gesamtstatus geändert.
+Beim erweiterten Ownerlauf zu PR #7385 bestanden 329 Prüfungen. Der
+Runbook-Verweistest scheiterte auch in der Auswahl zu PR #7387 (107 von 108).
+Er suchte die damalige Freigabe in Abschnitt 11.2.1.E des aktuellen
+Master-Runbooks. Der Abschnitt fehlte bereits auf der jeweiligen Ausgangsrevision.
+Die Verhaltenstests zur Ableitung der Scope-Richtung aus dem SideState bestanden.
+
+Der [Verweistest](../../../tests/ops/test_hardening_v2_scope_direction_overlay_generator_inert_v1.py)
+prüft die vier ursprünglichen Aussagen jetzt im archivierten Originalabschnitt.
+Die einmalige Freigabe und der Arbeitsstopp beziehen sich auf die damalige
+Änderung am Hardening-v2-Host. Der Auszug umfasst die Überschrift bis zum Ende
+des letzten Codeblocks. [Original in PR #6283](https://github.com/rauterfrank-ui/Peak_Trade/blob/82659f5a0112024f42e49ff3d4eea18d6500fd0d/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#L7248-L7329) · [Lokaler Auszug](../evidence/PR_6283_RUNBOOK_11_2_1_E.txt)
 
 Der [Prüfbeleg](../evidence/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_2026_11_22.json)
 bindet Quellen, Prüfungen und die lesende Prüfung aller 137 Originalzustände.
