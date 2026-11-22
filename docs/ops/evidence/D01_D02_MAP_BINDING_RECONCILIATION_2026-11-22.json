@@ -1,0 +1,85 @@
+{
+  "schema": "peaktrade.d01_d02_map_binding_reconciliation.v1",
+  "authority_effect": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "assessment_base": "76eaff7ca5b11dc418af14b4f60063c69f79f928",
+  "historical_sources": {
+    "dfcf4d04b8400763bee6ab0b465fa182927dea75": {
+      "commit_subject": "Productive reconciliation single-check + Master-V2 entry enforcement V1 (#6974)",
+      "map_file_sha256": "e6bfe1b49b42d8433ba5ea5099b46bdf7c4f527a475ecdeff45474fda2934def",
+      "declared_map_baseline": "d26caea78d1a178fde0a9e91aee169d454eebcae"
+    },
+    "1bac0d93302c6e589effafe46fccb055d82bd44e": {
+      "commit_subject": "docs: refresh whole-system model and universe cartography (#7071)",
+      "map_file_sha256": "55d31e6ef28159ad89a74a14c524a15dbccec6e94826b25795bcf6102554fa4d",
+      "declared_map_baseline": "dfcf4d04b8400763bee6ab0b465fa182927dea75"
+    },
+    "c742a23c964901c1353fcf3468e618db9cb6ef42": {
+      "commit_subject": "Freeze clean current source snapshot without predecessor history",
+      "map_file_sha256": "20438d7bfa7955673bcf94da032af242fb460e9bf14d41ee7e76ab7d0bc7e9fe",
+      "declared_map_baseline": "1bac0d93302c6e589effafe46fccb055d82bd44e"
+    }
+  },
+  "original_adjudication_sha256": "f09ff0266c0e1c90b7d72a0e37f65d6268027411ba95abdd0fa721a215d1947e",
+  "original_authorized_baseline": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
+  "accepted_binding": {
+    "scope": "FROZEN_MAP_CONTENT_AND_CURRENT_REFERENCE_CHECKS",
+    "authority_effect": "NONE",
+    "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "source_sha256": "20438d7bfa7955673bcf94da032af242fb460e9bf14d41ee7e76ab7d0bc7e9fe",
+    "map_baseline_sha": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+    "historical_authorized_baseline_sha": "dfcf4d04b8400763bee6ab0b465fa182927dea75"
+  },
+  "map_source_changed": false,
+  "frozen_tags_changed": false,
+  "historical_baseline_is_not_file_content_identity": true,
+  "proof_scope": "Exact frozen map content and current declared reference/authority checks; no current runtime wiring, numeric quality or operational completeness inferred. Existing D01/D02 status vocabulary retained in this restricted scope.",
+  "regression_tests": [
+    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
+    "tests/governance/test_d01_d02_frozen_map_binding_v1.py"
+  ],
+  "original_conflict_evidence": "Historical failure retained in CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md; superseded only for this binding by the new exact-content check.",
+  "historical_missing_reference_errors": [
+    "domain reconciliation_runtime_binding missing runbook_ref docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+    "domain current_productive_native_full_cycle_host_v1 missing evidence ref docs/system_atlas/entities/catalog.yaml",
+    "open record pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1 missing evidence ref docs/system_atlas/provenance/changes.yaml",
+    "open record pr_7070_simple_run_evidence_owner_retention_v1 missing evidence ref docs/system_atlas/provenance/changes.yaml",
+    "open record pr_7073_natural_enter_cross_session_outcome_closure_v1 missing evidence ref docs/system_atlas/provenance/changes.yaml",
+    "open record pr_7073_natural_enter_cross_session_outcome_closure_v1 missing evidence ref docs/system_atlas/entities/catalog.yaml",
+    "open record pr_7077_monetary_normalization_implementation_v1 missing evidence ref docs/system_atlas/provenance/changes.yaml",
+    "open record pr_7077_monetary_normalization_implementation_v1 missing evidence ref docs/system_atlas/entities/catalog.yaml"
+  ],
+  "historical_missing_reference_provenance": [
+    {
+      "path": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+      "reference_commit": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+      "sha256": "3ae017922aa3e0cd2af5073cffc5b1adbe481f707538a7f25a0d94c4d081c4de",
+      "current_presence": false,
+      "role": "HISTORICAL_DRILLDOWN_REFERENCE_NOT_CURRENT_INPUT"
+    },
+    {
+      "path": "docs/system_atlas/entities/catalog.yaml",
+      "reference_commit": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+      "sha256": "d0a6c18f39a1b251dba18daeaa5d948e1c511c75525937ba2ec5d0be925d3672",
+      "current_presence": false,
+      "role": "HISTORICAL_DRILLDOWN_REFERENCE_NOT_CURRENT_INPUT"
+    },
+    {
+      "path": "docs/system_atlas/provenance/changes.yaml",
+      "reference_commit": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+      "sha256": "15dda63b79f4a89dd84375cfc84422c3c6827573714b974dc53bf2aaa93a2089",
+      "current_presence": false,
+      "role": "HISTORICAL_DRILLDOWN_REFERENCE_NOT_CURRENT_INPUT"
+    }
+  ],
+  "retired_view_content_sha256": {
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md": "7e220affcf0de099a4e75dba827dba45e80c4af2aa500db85d023e9093578e3a",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md": "cecbde721a9b6b692974051866c0b7f69ab48db1c63ae06fd790184f007bbb30",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md": "cbe92275df9ff796dbd68f5a4bf679bef6e9e3472ea3264081db327e7ec289f6",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md": "e814a4d5d287b61dfd01dd5dd8b53afe4cfb8f5bca90c86bc3a628eec5b4f57e",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md": "c0eb87944ff92ea296d78e8d643ed6044efe5afe0c918a3b3a06fba61c5598f2"
+  },
+  "legacy_map_validation_scope": "Frozen renderer bytes match all five reviewed retired-view hashes. Eight missing-reference diagnostics at three historical paths remain explicit; current-reference validator is unchanged. No view or reference target restored and no current topology inferred.",
+  "historical_adjudication_config_changed": false,
+  "accepted_binding_location": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json"
+}

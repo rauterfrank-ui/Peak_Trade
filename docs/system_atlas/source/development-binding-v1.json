@@ -552,6 +552,11 @@
       "sha256": "a8c695693592012ccf57b173dfef69e4d9580d55db4e76779853106b9c48ab00"
     },
     {
+      "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
+      "before_sha256": null,
+      "sha256": "73a872aa105ad8745c5fefebe2c215ed31b824867b959a6d4a82256da1b41a26"
+    },
+    {
       "path": "docs/ops/evidence/HARDENING_V2_FULL_SCOPE_SAFETY_CONTRACT_RECONCILIATION_2026-11-19.json",
       "before_sha256": null,
       "sha256": "1c870f8e474415460436e5308df65ae2347ddddff72ea41dc5e77a1bcfaa6fb9"
@@ -1054,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "d4c2d53005f6123b48653bd319ad1feb8e7e3decce654c03a767f0551c401342"
+      "sha256": "db375a216d51b13a212681ca1eb8693bdae335b848cf9a2cac189c668fcb7c26"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1249,7 +1254,7 @@
     {
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OBSERVATION_V1.md",
       "before_sha256": "e456cd964b14eaba50c8c9d3ecb35e930eaf877a4cf369aa4036b3698d510092",
-      "sha256": "e17230c9ecb8a23748d028f15dfe017051d892dd9d93b016a60b16e20b5905df"
+      "sha256": "7bbe44fcc56ae66766d84804b2f6edd184e5ec0a8808d90e3d3f0ee04f664b7f"
     },
     {
       "path": "docs/ops/specs/INDEPENDENT_MARKET_OLS_NEXT_FORECAST_V1.md",
@@ -1357,6 +1362,11 @@
       "sha256": "e15ee1c94e8689c0b7f79e78090c37d861cab5213f707b3f1c89f3eb73f71172"
     },
     {
+      "path": "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md",
+      "before_sha256": "026180fa31064a1f273df6afdf8e8c479a49532958667725339a77c137b44518",
+      "sha256": "524123e490a24cf560f3a0efb23a0c2ca882d290bdc77fea69b50784bb0564a3"
+    },
+    {
       "path": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
       "before_sha256": "1a148edc35c05e206bd90b2b1042cc75438787c7e65007f4d312353c247425fc",
       "sha256": "e572c90bf867647c83e0b5d3eb37cb2a7a4e30afcc89db9f53edb37876b89bc9"
@@ -1444,7 +1454,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "897cc48e51bc1ecde3873d5c46aa63b88da205245060b624df0e6cfea5eea5d2"
+      "sha256": "3682c966cd5f4a6d3e0d25ccaccf30bb4fdf97e9086478ea4ef8b906652d75fd"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1614,7 +1624,7 @@
     {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
       "before_sha256": null,
-      "sha256": "4f91e26dcecf38625b55c19b2b8a2d5cb11d379ac50742781d09311ab0ea15ae"
+      "sha256": "43643dceb9655c8ae0d421d1b58c9c3fd4bee6c47adb5df0763a65cd4a368fab"
     },
     {
       "path": "scripts/ops/capture_offline_learning_representation_context_v1.py",
@@ -1864,7 +1874,7 @@
     {
       "path": "scripts/ops/run_offline_learning_mark_measurement_v1.py",
       "before_sha256": null,
-      "sha256": "8937a17b9d6ba8cfef061058dfd18db40e42cbcdd1d2551fbbc9d2f09640db25"
+      "sha256": "1cd1e4c644491eb508238698fe7956e53e5e74d5a80e51d30aab47aca1d1d3f7"
     },
     {
       "path": "scripts/ops/run_offline_learning_mark_ols_follow_up_v1.py",
@@ -2240,6 +2250,11 @@
       "path": "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py",
       "before_sha256": "f0c07693ccce9cb0649bc26d116b1a5a71125762767408daab23c92dcf31fa11",
       "sha256": "0ff9dcf45a087da77eba1a45d0374fcba954cc996478207b01d0975c0af7e08a"
+    },
+    {
+      "path": "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
+      "before_sha256": "cf4c91d2a6c9cd99890c6c14b3a58784c36f60f065c3cf1a4eb8cdb11dd38d9b",
+      "sha256": "7c7a280dfd8b20c16fa138c0c47f495b5d2a1d6672ed804af6c97e0df5ffecef"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
@@ -4107,6 +4122,11 @@
       "sha256": "09142e86bf3b16816af05448e51c4dcd5246011d2e168149a0a70fe7ea6430e9"
     },
     {
+      "path": "tests/governance/test_d01_d02_frozen_map_binding_v1.py",
+      "before_sha256": null,
+      "sha256": "289ea9e6f57289121bc1452f39ab6c3036cafeccb5f6e30f2b38878e5b479932"
+    },
+    {
       "path": "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
       "before_sha256": "03907afd7738b6e981a9678321c9ae3b87b0c9b17c55678ea9a1f860f3b94948",
       "sha256": "661c8ad8bde75912ef935cac2d0da76fb6397a1f6c79e1405f3dd0e544088866"
@@ -4907,6 +4927,11 @@
       "sha256": "71eb58edd3f022bdb32dfe32175f5b7473f4a16ed69ffd6f8da45beb90cc2285"
     },
     {
+      "path": "tests/ops/test_current_system_interaction_authority_map_v1.py",
+      "before_sha256": "0247879be4147af506cc572049060427c6b11c40e4d1fa00bb6bafab31febf8c",
+      "sha256": "d5af0d1a06b339fdff3f41278f34262505914651587ee235d3cdef9f013ce431"
+    },
+    {
       "path": "tests/ops/test_current_usdc_xperp_financial_admission_v1.py",
       "before_sha256": null,
       "sha256": "df07e8a8f9b5e2dbcfcff18a732a751732fd844b3ae3070ea6219d02396a7f9b"
@@ -4925,6 +4950,11 @@
       "path": "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
       "before_sha256": "7286ac90af295e1a2520664fc0fbff63f9cd6adf62dab7e38551d8a6b62e696e",
       "sha256": "bf072fc0fc25123dc768b642f79933c75521599c096a289540e81d961e7378dd"
+    },
+    {
+      "path": "tests/ops/test_d01_d02_adjudication_development_delta_v1.py",
+      "before_sha256": null,
+      "sha256": "66308c02a901aff72ac4457a69d00496e48d489ef8317ef2554b6dd496939b5e"
     },
     {
       "path": "tests/ops/test_derive_scope_event_distances_v1.py",
@@ -5415,6 +5445,11 @@
       "path": "tests/ops/test_recommend_manual_only_workflows.py",
       "before_sha256": "cb8638d10c5bd087e99e4be4847cc7da2f259a078760319e74ea4e7383364851",
       "sha256": "1ba870fed9f22f80906f04fed4cc0db2d03cff18e95de65ceb9afe147c48b177"
+    },
+    {
+      "path": "tests/ops/test_recorded_measurement_capture_exact_clock_v1.py",
+      "before_sha256": null,
+      "sha256": "42f17ce18f4addabb57fa99dff5bfd085d899c627470f0c654d66799abe53301"
     },
     {
       "path": "tests/ops/test_representation_cohort_clock_binding_v1.py",

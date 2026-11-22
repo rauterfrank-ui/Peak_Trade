@@ -62,6 +62,33 @@ read_independent_market_calibration_v1 reads original persisted bytes and valida
 
 Cold read is not a retroactive temporal recertification of existing archives. No stored observation, native measurement identity, log-return formula, calibrated error or declared source generation is migrated by the admission hardening.
 
+## Recorded measurement and capture clock admission — 2026-11-22
+
+The existing scheduled-recorded adapter now preserves original source precision
+at forecast verification, capture eligibility/expiry and archived-receipt admission.
+Forecast creation <= verification < horizon start remains the existing relation.
+The declared capture delay and target end-age still determine the same inclusive
+capture interval. An instant after expiry cannot start capture; a receipt after
+expiry or after the current admission time cannot reach the original measurement.
+A timely stored receipt remains readable after restart even when the current time
+is later than the original capture deadline. No deadline or policy limit changes.
+
+The capture producer checks the raw hourly start before its existing seconds-based
+query construction, compares request <= response at full precision before page
+publication, and selects the latest original response by chronological ordering.
+The manifest retains that response's original timestamp text. Lexical string order
+is not a chronology authority. Existing explicit UTC admission, zero fractions and
+UTC-offset-zero inputs remain supported. Complete valid legacy packets retain
+their bytes, IDs/digests and original numeric calibration results.
+
+[Focused synthetic boundary checks](../../../tests/ops/test_recorded_measurement_capture_exact_clock_v1.py)
+use original context/freeze/schedule/capture/measurement APIs with fixture HTTP
+responses or forbidden network consumers. Fourteen counterexamples were reproduced
+before correction; six valid inclusive-boundary/UTC-form controls already passed.
+Historical archives are not rewritten or retrospectively recertified. This is
+timing/internal consistency, not venue attestation, physical-crash acceptance,
+independent model quality, account PnL or operational authorization.
+
 ## Scope and proof
 
 The executable proof includes a complete synthetic no-Decision path, equality with the preserved original canonical measurement, exact error/readback, fresh-process reading with recomputation forbidden, multiple horizons, separate correction generations, immutable retry conflicts and malformed source/target/time/unit/identity cases. Existing DDO/Learning, research-source and E6 episodes are included in the bound regression selection. [Evidence and original store bytes](../evidence/independent_market_observation_v1_2026_11_06/README.md).

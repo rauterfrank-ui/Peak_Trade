@@ -2,7 +2,7 @@
 
 import argparse
 from contextlib import closing
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import fcntl
 import hashlib
 from http.client import HTTPSConnection
@@ -38,8 +38,16 @@ from src.research.offline_recorded_mark_horizon_source_v1 import (
     recorded_mark_price_unit_v1,
     utc_seconds,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 SCHEMA = "recorded_public_mark_window_v1"
+
+
+def _utc_order_key(value):
+    utc_seconds(value)
+    return capture_order_key_v1(value)
 
 
 def _utc_now():
@@ -119,10 +127,17 @@ def capture_public_mark_window_v1(
     """Publish one complete archive or replay an identical existing capture."""
     require_v1(type(hours) is int and 1 <= hours <= 24, "EXPLICIT_BOUNDED_BAR_COUNT_REQUIRED")
     require_v1(re.fullmatch(r"[0-9a-f]{40}", repository_sha) is not None, "REPOSITORY_SHA_REQUIRED")
+    start_key = _utc_order_key(start_utc)
+    require_v1(
+        not (start_key[0].minute or start_key[0].second or start_key[1]),
+        "EXPLICIT_HOURLY_GRID_REQUIRED",
+    )
     start = utc_seconds(start_utc)
-    require_v1(start % 3600 == 0, "EXPLICIT_HOURLY_GRID_REQUIRED")
     end = start + hours * 3600
-    require_v1(end <= utc_seconds(_utc_now()), "CAPTURE_WINDOW_NOT_CLOSED")
+    require_v1(
+        (start_key[0] + timedelta(hours=hours), 0) <= _utc_order_key(_utc_now()),
+        "CAPTURE_WINDOW_NOT_CLOSED",
+    )
     binding_bytes = binding_path.read_bytes()
     require_v1(_sha(binding_bytes) == binding_sha256, "SOURCE_SHA256_MISMATCH")
     binding = strict_json_v1(binding_bytes)
@@ -168,8 +183,12 @@ def capture_public_mark_window_v1(
                     "limit": str(min(page_size, minute_count - offset)),
                 }
                 requested = _utc_now()
+                requested_key = _utc_order_key(requested)
                 status, raw = fetch_page(query)
                 received = _utc_now()
+                require_v1(
+                    requested_key <= _utc_order_key(received), "CAPTURE_RESPONSE_BEFORE_REQUEST"
+                )
                 require_v1(status == 200, f"PUBLIC_MARK_HTTP_{status}")
                 require_v1(len(raw) <= HTTP_MAX_RESPONSE_BYTES, "PUBLIC_MARK_RESPONSE_TOO_LARGE")
                 payload = strict_json_v1(raw)
@@ -207,7 +226,9 @@ def capture_public_mark_window_v1(
                     "schema_version": SCHEMA,
                     "authority": "NONE",
                     "plan": plan,
-                    "available_at_utc": max(row["response_time_utc"] for row in logs),
+                    "available_at_utc": max(
+                        (row["response_time_utc"] for row in logs), key=_utc_order_key
+                    ),
                     "request_log_sha256": _sha(log_bytes),
                     "page_digests": [page["raw_sha256"] for page in pages],
                 }
