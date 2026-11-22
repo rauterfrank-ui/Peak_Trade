@@ -380,7 +380,32 @@ def validate_realized_behavior_v1(payload: Mapping[str, Any]) -> MappingProxyTyp
         raise RealizedBehaviorError("REALIZED_BEHAVIOR_CONTENT_DIGEST_MISMATCH")
     if derive_behavior_id_v1(identity_body=identity_body) != behavior_id:
         raise RealizedBehaviorError("REALIZED_BEHAVIOR_ID_MISMATCH")
+    _assert_declared_quality_state_v1(raw)
     return MappingProxyType(dict(raw))
+
+
+def _assert_declared_quality_state_v1(raw: Mapping[str, Any]) -> None:
+    """Admit supplied producer declarations; absent quality remains explicitly absent."""
+    quality = raw.get("quality_state")
+    if quality is None:
+        return
+    window = raw.get("outcome_window")
+    if not isinstance(quality, Mapping) or not isinstance(window, Mapping):
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_QUALITY_STATE_INVALID")
+    expected = {
+        "join_status": "JOINED"
+        if str(window.get("horizon_observation_status")) == "OK"
+        else "OUTCOME_INCOMPLETE",
+        "market_context_authority": MARKET_CONTEXT_AUTHORITY,
+        "realized_behavior_authority": REALIZED_BEHAVIOR_AUTHORITY,
+        "n_bars_backbone_semantics": N_BARS_BACKBONE_TOKEN,
+        "no_duplicate_outcome_truth": NO_DUPLICATE_OUTCOME_TRUTH,
+        "outcome_fields_mutated": False,
+    }
+    for field, value in expected.items():
+        supplied = quality.get(field)
+        if type(supplied) is not type(value) or supplied != value:
+            raise RealizedBehaviorError(f"REALIZED_BEHAVIOR_QUALITY_DECLARATION_MISMATCH:{field}")
 
 
 def derive_behavior_id_v1(*, identity_body: Mapping[str, Any]) -> str:
