@@ -5,6 +5,7 @@ AUTHORITY_EFFECT=NONE. Navigation/adjudication only; does not authorize trading,
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 from enum import Enum
@@ -33,6 +34,20 @@ LOOP_B_DURABLE_STORE_CONFIG: Final[str] = (
 MAP_SOURCE: Final[str] = (
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
 )
+MAP_BINDING_EVIDENCE: Final[str] = (
+    "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json"
+)
+
+# Reviewed migration of the unchanged frozen map. These are content/provenance
+# pins, not a new current topology or runtime-authority declaration.
+FROZEN_MAP_BINDING: Final[Mapping[str, str]] = {
+    "scope": "FROZEN_MAP_CONTENT_AND_CURRENT_REFERENCE_CHECKS",
+    "authority_effect": "NONE",
+    "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+    "source_sha256": "20438d7bfa7955673bcf94da032af242fb460e9bf14d41ee7e76ab7d0bc7e9fe",
+    "map_baseline_sha": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+    "historical_authorized_baseline_sha": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
+}
 
 IMPLEMENTATION_STATUSES: Final[frozenset[str]] = frozenset(
     {"IMPLEMENTED", "PARTIAL", "NOT_IMPLEMENTED", "DEFERRED_BY_AUTHORITY"}
@@ -254,18 +269,29 @@ def validate_d02_edges(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
 
 def validate_map_currency_binding(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
     errors: list[str] = []
-    map_doc = _load_json(repo_root, MAP_SOURCE)
+    raw = (repo_root / MAP_SOURCE).read_bytes()
+    map_doc = json.loads(raw)
     baseline = str(map_doc.get("baseline_sha") or "")
     auth_sha = str(doc.get("authorized_baseline_sha") or "")
-    if not auth_sha:
-        errors.append("authorized_baseline_sha missing")
+    try:
+        binding = _load_json(repo_root, MAP_BINDING_EVIDENCE).get("accepted_binding")
+    except (OSError, ValueError, AttributeError):
+        binding = None
+    if binding != FROZEN_MAP_BINDING:
+        errors.append(
+            "map_revision_binding must identify the reviewed frozen map and limited scope"
+        )
+    if auth_sha != FROZEN_MAP_BINDING["historical_authorized_baseline_sha"]:
+        errors.append("historical authorized_baseline_sha changed")
+    if hashlib.sha256(raw).hexdigest() != FROZEN_MAP_BINDING["source_sha256"]:
+        errors.append("map source content differs from the reviewed frozen snapshot")
     if len(baseline) != 40:
         errors.append("map baseline_sha must be a 40-char git SHA")
     stale = "9ab34786b13c26f1be5cb9b523975f265014e1cb"
     if baseline == stale:
         errors.append("map baseline_sha still pinned to stale navigation census SHA")
-    if baseline != auth_sha and baseline != git_head_sha(repo_root):
-        errors.append("map baseline_sha must equal authorized_baseline_sha or current git HEAD")
+    if baseline != FROZEN_MAP_BINDING["map_baseline_sha"]:
+        errors.append("map baseline_sha differs from its historical content binding")
     for record in map_doc.get("open_epistemic_records", []):
         if not isinstance(record, dict):
             continue
@@ -343,6 +369,8 @@ def build_adjudication_summary_v1(*, repo_root: Path) -> Mapping[str, Any]:
         "authorized_baseline_sha": doc.get("authorized_baseline_sha"),
         "map_baseline_sha": _load_json(repo_root, MAP_SOURCE).get("baseline_sha"),
         "git_head_sha": git_head_sha(repo_root),
+        "map_revision_binding": _load_json(repo_root, MAP_BINDING_EVIDENCE).get("accepted_binding"),
+        "runtime_execution_proven": False,
         "d01_closure_status": doc.get("d01_closure_status"),
         "d02_closure_status": doc.get("d02_closure_status"),
         "first_unproven_dependency_after_closure": doc.get(

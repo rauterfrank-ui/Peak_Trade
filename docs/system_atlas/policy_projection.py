@@ -23,6 +23,15 @@ NUMERIC_ADMISSION_PATHS = (
 )
 NUMERIC_ADMISSION_ID = "CURRENT_NUMERIC_INPUT_ADMISSION_AND_EXPLICIT_OFFLINE_FINANCIAL_CONTEXT_V1"
 
+# Frank's 2026-11-22 instruction covers the D01/D02 reference-checker repair.
+# Exact source delta only: original frozen map/config and all runtime owners stay.
+D01_D02_ADJUDICATION_DELTAS = {
+    "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py": (
+        "cf4c91d2a6c9cd99890c6c14b3a58784c36f60f065c3cf1a4eb8cdb11dd38d9b",
+        "7c7a280dfd8b20c16fa138c0c47f495b5d2a1d6672ed804af6c97e0df5ffecef",
+    ),
+}
+
 # Frank's separate 2026-11-09 approval covers this exact reviewed four-file
 # development bundle. Frozen records/tags and all other policy admission stay
 # intact. A new binding hash alone cannot authorize another implementation.
@@ -1043,6 +1052,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and ROTATION_SLOT_CAPITAL_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and CAP23_SELECTION_VALIDITY_POLICY_DELTAS.get(path)
                 != (policy["frozen_sha256"], actual)
+                and D01_D02_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

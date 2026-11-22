@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
+import json
 import subprocess
 from pathlib import Path
 
@@ -30,6 +32,27 @@ def _doc():
     return MAP._load_json(MAP.SOURCE_PATH)
 
 
+def _historical_reference_errors():
+    """Known absent drilldowns of the exact frozen map, not admitted current files."""
+    from src.governance.unified_blueprint_d01_d02_topology_adjudication_v1 import (
+        FROZEN_MAP_BINDING,
+    )
+
+    assert (
+        hashlib.sha256(MAP.SOURCE_PATH.read_bytes()).hexdigest()
+        == FROZEN_MAP_BINDING["source_sha256"]
+    )
+    report = json.loads(
+        (REPO / "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json").read_text()
+    )
+    assert report["accepted_binding"] == FROZEN_MAP_BINDING
+    refs = report["historical_missing_reference_provenance"]
+    assert len(refs) == 3 and all(not (REPO / ref["path"]).exists() for ref in refs)
+    errors = report["historical_missing_reference_errors"]
+    assert len(errors) == 8 and all(any(ref["path"] in error for ref in refs) for error in errors)
+    return errors
+
+
 def test_schema_valid() -> None:
     doc = _doc()
     assert MAP.validate_schema(doc, MAP._load_json(MAP.SCHEMA_PATH)) == []
@@ -40,8 +63,20 @@ def test_deterministic_regeneration() -> None:
     assert MAP.render_views(doc) == MAP.render_views(doc)
 
 
-def test_generated_files_clean() -> None:
-    assert MAP.derived_drift(_doc(), REPO) == []
+def test_retired_generated_views_match_the_reviewed_cleanup_hashes() -> None:
+    cleanup = json.loads((REPO / "docs/system_atlas/source/documentation-cleanup.json").read_text())
+    assert MAP.MAP_ID in cleanup["retired_map_ids"]
+    removed = {row["path"]: row for row in cleanup["removed"]}
+    for key, text in MAP.render_views(_doc()).items():
+        path = MAP.DERIVED_VIEWS[key]
+        assert not path.exists()
+        assert (
+            hashlib.sha256(text.encode()).hexdigest()
+            == removed[path.relative_to(REPO).as_posix()]["sha256"]
+        )
+    assert MAP.derived_drift(_doc(), REPO) == [
+        f"missing derived view {p.name}" for p in MAP.DERIVED_VIEWS.values()
+    ]
 
 
 def test_proven_current_without_evidence_fails() -> None:
@@ -202,9 +237,9 @@ def test_stale_or_missing_evidence_ref_fails() -> None:
     assert any("missing evidence ref missing/map/evidence.py" in error for error in errors)
 
 
-def test_committed_drilldown_refs_pass_path_existence() -> None:
+def test_frozen_drilldown_refs_retain_their_explicit_missing_diagnostics() -> None:
     errors = MAP.validate_evidence(_doc(), REPO)
-    assert errors == []
+    assert errors == _historical_reference_errors()
 
 
 def test_missing_runbook_ref_fails() -> None:
@@ -240,7 +275,7 @@ def test_parameter_family_source_ref_enforced_via_evidence_refs() -> None:
     assert source not in family["evidence_refs"]
     assert family["evidence_refs"]
     errors = MAP.validate_evidence(doc, REPO)
-    assert errors == []
+    assert errors == _historical_reference_errors()
     family["evidence_refs"] = ["missing/map/parameter_family_source_ref.py"]
     errors = MAP.validate_evidence(doc, REPO)
     assert any(

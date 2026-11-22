@@ -1367,6 +1367,74 @@ Kontogewinn. Der separate Mess-/Captureadapter, weitere kausale Wege und der
 historische D01/D02-Basiskonflikt sind damit nicht abgenommen. BTC und betriebliche
 Stores bleiben unverändert; keine Betriebs- oder Forschungsläufe wurden gestartet.
 
+### Mess-/Captureadapter und D01/D02-Versionsabgleich — 22. November
+
+Die beiden zuvor ausgenommenen Themen wurden gezielt bearbeitet. Der
+Mess-/Captureadapter vergleicht Forecastverifikation, Erfassungsfenster und
+Archivbeleg jetzt mit vollständiger Originalzeit. Die bestehenden inklusiven
+Fristen, stündlichen Fenster, UTC-Zulassung und Zahlenrechnung bleiben erhalten.
+Ein verspäteter neuer Capture stoppt vor dem Captureconsumer, ein verspäteter
+oder noch nicht verfügbarer Archivbeleg vor der Originalmessung. Ein rechtzeitig
+gespeicherter Beleg bleibt auch beim späteren Wiederanlauf lesbar.
+
+Der Captureproducer prüft den unveränderten Stundenrastervertrag am rohen Input
+und die Reihenfolge Anfrage <= Antwort vor der Seitenspeicherung. Die letzte
+Antwort wird zeitlich bestimmt, ihr Originaltext bleibt im Manifest erhalten.
+Der Ausgangsabgleich reproduzierte 14 Fehlfälle; sechs gültige Rand-/UTC-Fälle
+bestanden bereits. Sechs zuvor gesicherte vollständige Originalpakete bleiben
+bytegleich, ebenso alle 90 synthetischen Originaldateien. Der
+[Marktvertrag](INDEPENDENT_MARKET_OBSERVATION_V1.md) grenzt Zeitkonsistenz von
+Quellenbeglaubigung und wirtschaftlicher Qualität ab.
+
+Der ursprüngliche D01/D02-Gesamtprüffall besteht jetzt. Die Ursache war ein
+September-Abgleich gegen eine später fortgeschriebene Karte mit Oktober-Bezug.
+Beide Werte bleiben erhalten: Sie sind historische Bezugspunkte, nicht die
+Dateiidentität der Karte. Die vorhandene Karte wird an die exakten Bytes des
+unveränderten Freeze-Quellstands gebunden. Weder passender HEAD noch geänderter
+Baseline-Text oder nachgerechneter Hash einer fremden Karte ersetzt diese Bindung.
+Zehn neue Gegen-/Positivfälle deckten vor der Korrektur falsche Zulassungen bzw.
+Ablehnungen auf; zwei weitere Kontrollen bestanden bereits.
+
+Die ergänzende Prüfung des alten Kartentools reproduzierte drei veraltete
+Testerwartungen. Die fünf Ansichten wurden im dokumentierten Cleanup bewusst
+entfernt; ihre neu gerenderten Inhalte stimmen mit sämtlichen Lösch-Hashes
+überein. Acht fehlende Verweisdiagnosen an drei historischen Pfaden bleiben
+ausdrücklich erhalten. Die historischen Tests prüfen jetzt diesen belegten
+Status. Aktuelle Referenzvalidatoren werden nicht gelockert; fehlende Dateien
+werden nicht als vorhanden gewertet oder wiederhergestellt.
+
+169 gezielte Offline-Fälle einschließlich 25 historischer Kartenprüfungen
+bestanden am abschließenden Stand. Darin enthalten sind 32 neue Gegen-/Positivfälle. Der ursprüngliche
+D01/D02-Fehler und die drei alten Kartentesterwartungen bleiben als frühere
+Befunde dokumentiert; diese Fortschreibung ersetzt ihre Offen-Kennzeichnung
+nur für den konkret geklärten Versions-/Prüfumfang. Der
+[D01/D02-Vertrag](UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md)
+und der [Herkunftsbeleg](../evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json)
+begrenzen den PASS auf eingefrorenen Karteninhalt und aktuelle deklarierte
+D01/D02-Referenz-/Authorityprüfungen. Dies ist keine heutige Gesamtsemantik-
+oder Betriebsabnahme. Der Summary weist runtime_execution_proven false aus.
+
+Sechs weitere Prüfungen bestehen für die exakt gebundene Aufnahme des korrigierten
+D01/D02-Prüfers in das vorhandene Policy-Inventargate. Die ursprüngliche
+Konfiguration bleibt bytegleich; nur genau der geprüfte Vorher-/Nachher-Quellhash
+ist zugelassen. Eine freie Nachbindung fremder Prüfer oder anderer Policies bleibt
+gesperrt. Insgesamt sind damit 175 gezielte Fälle grün.
+
+Die zusätzliche breitere Funding-Prüfung hat einen separaten bestehenden Fehler:
+test_startup_topology_reconciliation_budget_and_reviewed_rotation_owner verlangt
+für den Reconciliation-Startupgate weiterhin die Bytes aus
+304719c94030ff9aacdf2571e2ae56533f9e6a25. Der heutige, in dieser Änderung
+unangetastete Source enthält bereits die spätere gebuchte Net-Reversal-Übergabe.
+Der gleiche Fehler wurde mit dem originalen Policy-Projektor des Ausgangsstands
+reproduziert. Dieser Funding-Snapshotvertrag bleibt FAILED und wird hier weder
+gelockert noch durch die neuen grünen Fälle ersetzt. Er ist nicht der behobene
+D01/D02-Baseline-Konflikt; eine Gesamtfreigabe wird daraus nicht abgeleitet.
+
+BTC, betriebliche Stores, produktive Reducer und Betriebsfreigaben bleiben
+unverändert. Keine Betriebs-, Erfassungs-, Paper-, Shadow-, Testnet-, Live- oder
+Forschungsläufe wurden gestartet. Nur synthetische Offline-Prüfungen mit
+Fixtureantworten beziehungsweise gesperrten Netzwerkconsumern wurden ausgeführt.
+
 ### Nachprüfung des historischen Safety-Kontrollfalls am 19. November
 
 Die [fachliche Nachprüfung](MASTER_V2_HARDENING_V2_HISTORICAL_SAFETY_SEAM_REMEDIATION_V1.md#4-full-scope-test-reconciliation-2026-11-19)

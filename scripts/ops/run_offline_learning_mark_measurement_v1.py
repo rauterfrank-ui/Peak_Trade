@@ -34,9 +34,17 @@ from src.research.offline_recorded_mark_horizon_source_v1 import (
     LEGACY_NATIVE_INSTRUMENT as NATIVE_INSTRUMENT,
 )
 from src.research.offline_recorded_mark_horizon_source_v1 import read_bound_json
+from src.ops.peak_trade_public_market_data_runtime_v1.canonical_fact_decoder_v1 import (
+    capture_order_key_v1,
+)
 
 SCHEMA = "scheduled_recorded_market_measurement_v1"
 PLAN_FILE = "recorded_measurement_schedule.json"
+
+
+def _utc_order_key(value):
+    instant_v1(value)
+    return capture_order_key_v1(value)
 
 
 def _bounds(target, delay):
@@ -49,9 +57,9 @@ def _bounds(target, delay):
 
 def _validate_forecast_clock(frozen, target, verified_at):
     require_v1(
-        instant_v1(frozen["forecast_evidence"]["forecast_created_at_utc"])
-        <= instant_v1(verified_at)
-        < instant_v1(target["horizon_start_time_utc"]),
+        _utc_order_key(frozen["forecast_evidence"]["forecast_created_at_utc"])
+        <= _utc_order_key(verified_at)
+        < _utc_order_key(target["horizon_start_time_utc"]),
         "FORECAST_NOT_OBSERVED_BEFORE_WINDOW",
     )
 
@@ -123,6 +131,8 @@ def advance_recorded_market_measurement_v1(
     )
     _validate_forecast_clock(frozen, target, schedule["forecast_verified_at_utc"])
     due, expires = _bounds(target, plan["capture_delay_seconds"])
+    due_key = _utc_order_key(due.isoformat())
+    expires_key = _utc_order_key(expires.isoformat())
     outcome_root = folder / "recorded_outcome_archive"
     capture_plan = {
         "start_utc": target["horizon_start_time_utc"],
@@ -131,10 +141,10 @@ def advance_recorded_market_measurement_v1(
         "repository_sha": plan["repository_sha"],
     }
     if not outcome_root.exists():
-        now = instant_v1(_utc_now())
-        if now < due:
+        now = _utc_order_key(_utc_now())
+        if now < due_key:
             return {"status": "WAITING", "capture_at_utc": due.isoformat()}
-        if now > expires:
+        if now > expires_key:
             return {"status": "EXPIRED", "capture_deadline_utc": expires.isoformat()}
         capture_window(output=outcome_root, binding_path=Path(plan["binding_path"]), **capture_plan)
 
@@ -142,7 +152,7 @@ def advance_recorded_market_measurement_v1(
     require_v1(manifest["plan"] == capture_plan, "MEASUREMENT_CAPTURE_PLAN_MISMATCH")
     captured_at = manifest["available_at_utc"]
     require_v1(
-        due <= instant_v1(captured_at) <= min(expires, instant_v1(_utc_now())),
+        due_key <= _utc_order_key(captured_at) <= min(expires_key, _utc_order_key(_utc_now())),
         "MEASUREMENT_CAPTURE_OUTSIDE_SCHEDULE",
     )
     ack = complete_recorded_market_forecast_v1(
