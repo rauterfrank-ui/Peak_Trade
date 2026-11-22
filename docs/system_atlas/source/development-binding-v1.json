@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "f093868497b4137656b12ad1211fb10861af08c841b63cd79631bfa6c245958d"
+      "sha256": "205f0d9d9fc12899446f795395702f9df8648b925a0565f6002311d675507558"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1279,7 +1279,7 @@
     {
       "path": "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
       "before_sha256": "ebfb93845ef3582c227cc11a899f7adf9db7ad6deb8f2ad731c26f785c85f314",
-      "sha256": "73ef9838d9a3e0234694920211f02c4b0f2a1367ef3b529664644f471370abbf"
+      "sha256": "a385410aedf3aeda47a95b30b8556eb89822b132f2072ee0e2004fab0f742d26"
     },
     {
       "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
@@ -2345,6 +2345,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/self_learning_provenance_eligibility_v1.py",
       "before_sha256": "3629b30727a914d4382b6a48ec1b0786a963ef9c930c8aee7eb9a9264673d986",
       "sha256": "5a39f25d84416391a841219ef54e1facc7a6cf7f35c1ec8216a313666b744425"
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+      "before_sha256": "adc948d5e24ff7f18beb04b0469c29ec97f4675c12809f4de4a93598456dd00c",
+      "sha256": "903c6c5ea39f1ebf2b6e922ad29121c4dad287d57463ebab0663a7c11cbe424b"
     },
     {
       "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/context_admission_v1.py",
@@ -4420,6 +4425,11 @@
       "path": "tests/learning/test_learning_provenance_envelope_consistency_v1.py",
       "before_sha256": "b4e29d6853d012c9155e20c76f3fcadb71ebee9c73ed09823835247a272f3df7",
       "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb"
+    },
+    {
+      "path": "tests/learning/test_legacy_directional_score_semantics_v1.py",
+      "before_sha256": null,
+      "sha256": "641afb47cf1d9fdc7be00da542c49e277cda7a8a9cebcf2210ff13b5aa0e4f04"
     },
     {
       "path": "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",

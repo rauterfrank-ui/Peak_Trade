@@ -34,6 +34,8 @@ SCHEMA_VERSION: Final[str] = "calibration_evidence_v1"
 CALIBRATION_EVIDENCE_AUTHORITY: Final[str] = "NONE"
 EVIDENCE_CLASS_CALIBRATION: Final[str] = "CALIBRATION_EVIDENCE"
 
+# Historical wire identifier for the linear loss 1 - p(realized_class).
+# This is not a quadratic Brier score. Retain the token for sealed-record compatibility.
 METHOD_BRIER_SCORE: Final[str] = "BRIER_SCORE_V1"
 METHOD_RETURN_ERROR: Final[str] = "RETURN_ERROR_V1"
 METHOD_THRESHOLD_HIT: Final[str] = "THRESHOLD_HIT_V1"
@@ -63,6 +65,11 @@ def derive_calibration_evidence_id_v1(*, body: Mapping[str, Any]) -> str:
 
 
 def _score_directional(*, payload: Mapping[str, Any], realized_direction: str) -> dict[str, Any]:
+    """Legacy V1 per-event probability complement, dimensionless and lower for higher p.
+
+    The BRIER_SCORE_V1 wire token does not denote a squared or proper scoring rule.
+    Direction is supplied by the caller; this function does not derive outcome truth.
+    """
     probs = payload
     realized = realized_direction.upper()
     if realized not in {"UP", "DOWN", "FLAT"}:

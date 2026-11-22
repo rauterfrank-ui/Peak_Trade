@@ -1730,3 +1730,44 @@ offen. Schwellen-/Returneinheiten und andere Forecasttypen werden durch diese
 Änderung nicht gesamtzertifiziert. Es folgt keine Aussage über Kontogewinn,
 numerischen Lernfortschritt oder Gesamtbetrieb. BTC, Handelsowner und produktive
 Originalstores bleiben unverändert; keine Betriebs- oder Forschungsläufe.
+
+### Geklärte V1-Bedeutung von BRIER_SCORE_V1 — 22. November
+
+Die zuvor offene Methodenfrage ist für den bestehenden V1-Vertrag geklärt:
+BRIER_SCORE_V1 ist die historische Transportkennung des linearen Einzelfehlers
+1 minus Wahrscheinlichkeit der vom Aufrufer gelieferten realisierten Klasse.
+Die Kennung bezeichnet im tatsächlichen Code keinen quadratischen Brier-Score.
+Der erhaltene D03-Originalauftrag verlangt geeignete Bewertungsmethoden und
+Kompatibilität, aber keine Brier-Formel oder Normalisierung. Die erhaltene
+Originalimplementierung aus PR #6847 vom 26. September berechnet bereits 1-p.
+Der damals angehängte Blueprint fehlt am aufgezeichneten lokalen Pfad; dessen
+vollständiger Inhalt wird hier nicht als unabhängig geprüft ausgegeben.
+
+Der [geklärte Methodenvertrag](MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md#resolved-legacy-directional-score-semantics--2026-11-22)
+definiert den Wert als dimensionslosen Einzelfehler in [0, 1]. Er ist keine
+statistisch richtige Zielfunktion für wahrheitsgetreue Wahrscheinlichkeiten:
+Auf einer synthetischen 6/3/1-Population senkt die übergewisse Meldung (1,0,0)
+den mittleren V1-Fehler von 0.54 auf 0.40 gegenüber der wahren Verteilung
+(0.6,0.3,0.1). Auch ein Mittelwert dieses Fehlers belegt deshalb keine
+Kalibrierungsqualität. Die zugehörige quadratische Vergleichsrechnung bleibt
+eine mathematische Gegenprobe, keine neue produktive Metrik.
+
+Am tatsächlichen Consumer bleiben Zahl und Herkunft getrennt: Die vorhandene
+Triade speichert den vollständigen Kalibrierungsinhalt; MI-Lernrecord und
+Research-Projektion transportieren Referenzen. Beim festen nativen M4-Request
+ändern gelieferte Richtungslabels und Fehlerwerte die MI-Anhänge, aber keinen
+anderen Inhalt der vollständigen Forschungskette. Das ist ein begrenzter
+Consumervergleich, kein Beweis über beliebige externe Leser. Der numerische
+Return-Leser weist Richtungsbelege ausdrücklich zurück und verlangt
+RETURN_ERROR_V1. Die bestehende MI-GVEF-Auswertung prüft Integrität und Invarianten,
+ohne daraus numerische Prognosequalität zu berechnen.
+
+28 neue Semantikproben bestanden schon am ursprünglichen Rechenowner.
+Die geschlossene Lücke ist die bisher missverständliche Methodenbedeutung und
+ihre fehlende explizite Gegenprüfung. Formel, Transportkennung, Originalwerte,
+Schemas, IDs, Digests und Writer bleiben erhalten; im Produktcode werden nur
+erklärende Kommentare und eine Funktionsbeschreibung ergänzt. Bestehende
+Records werden nicht umklassifiziert. Eine neue quadratische Bewertungsmethode
+ist damit weder eingeführt noch still freigegeben. Die Authentizität gelieferter
+Richtungslabels, numerischer Lernnutzen und natürliche Betriebswirkung bleiben
+gesondert zu prüfen. BTC unverändert; keine Betriebs- oder Forschungsläufe.
