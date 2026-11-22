@@ -44,9 +44,13 @@ weder Geld noch Episodegeneration erneut.
 
 ## Erhalt des Wiederanlaufs
 
-Startupadapter, gespeicherte Slot-/Instrumenttopologie, Private-Reconciliation,
-Kapitalrecovery und ursprünglicher Membershipselector bleiben bytegleich zum
-Bezugsstand. Der Restart liest die gespeicherten Identitäten. Er führt weder
+Am geprüften Funding-Nachfolger
+`e2abdf73876b6f093347b27c4145b86cb7fc16c6` sind Startupadapter, gespeicherte
+Slot-/Instrumenttopologie, Private-Reconciliation, Kapitalrecovery und
+ursprünglicher Membershipselector bytegleich zum Bezugsstand. Diese
+Unverändertheitszusage betrifft die Funding-Erweiterung vom 9. November und
+erteilt späteren Änderungen keine Zulassung. Der Restart liest die gespeicherten
+Identitäten. Er führt weder
 Neuauswahl noch Holdfreigabe oder zusätzlichen Versand aus. Die vier Adapter
 erhalten ihre bisherigen Recovery-, Source-, Anchor- und CASprüfungen; sie
 verarbeiten zusätzlich die ausdrücklich neue geordnete Fundinghistorie.
@@ -62,6 +66,42 @@ zukünftige Ereignisse und alte unfundierte Records ab. Die
 prüft die tatsächliche Policyadmission einschließlich ihrer Negativfälle und
 die unveränderten Wiederanlaufowner. Der bestehende verbundene Slot- und
 Wiederanlaufnachweis bleibt erforderlich.
+
+## Spätere Startupgate-Fortschreibung und Snapshotprüfung
+
+Nachweisstand 22. November 2026: Das
+[Reconciliation-Startupgate](../../../src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py)
+wurde später mit [PR #7307](https://github.com/rauterfrank-ui/Peak_Trade/pull/7307)
+in Commit `78170916f5fd32267b54eb55b241fa65feb1486f` geändert. Die aktuelle
+Datei entspricht exakt diesem Nachfolger. Der Fundingtest und der
+[benachbarte Rotationstest](../../../tests/ops/test_reserved_slot_rotation_development_delta_v1.py)
+prüfen die damalige Bytegleichheit an ihren ursprünglichen Nachfolgercommits
+und die heutige Startupgate-Datei an diesem separat geprüften Commit.
+Sie überspringen die Prüfung nicht und akzeptieren keine beliebigen neuen
+Dateibytes oder allein umgebundenen Entwicklungshashes. Funding-Bundle,
+Policyprojektion, Freeze-Inventare und Freeze-Tags bleiben unverändert.
+
+Der spätere Pfad gleicht ausschließlich eine bereits authentifiziert gebuchte
+Net-Reversal-Position über den ursprünglichen Host-/Budgetowner ab. Er prüft
+Hosttyp, Reconciliation-Statewurzel, Session, Repositorybezug und dieselbe
+Beobachtung. Der Originalowner muss die gebuchte Obligation und den zugehörigen
+authentifizierten Entrybeleg lesen; Buchungsdigest und Instrument müssen passen.
+Die beobachtete Zielmenge sowie die gespeicherte Ausgangsmenge sind vorzeichenbehaftete
+native Kontraktmengen. Eine bereits identische Position wird idempotent behandelt;
+abweichende Ausgangspositionen, fehlender Parent oder widersprüchlicher Writer
+werden abgewiesen. Der ursprüngliche Classifier und die atomare Persistenz mit
+Verifikation bleiben zuständig. Der Pfad berechnet keine Fundingrate, erzeugt
+keinen Fill und vergibt kein zusätzliches Budget-, Permit- oder Versandrecht.
+
+Die [bestehenden Reconciliationfälle](../../../tests/ops/test_productive_reconciliation_runtime_binding_v1.py)
+prüfen unter anderem den Hardstop bei unbelegtem Seitenwechsel, Reduce-only-Recovery,
+fehlende/veraltete Wahrheit, Writerkonflikte und Wiederanlauf. Die
+[synthetischen signierten Buchungsfälle](../../../tests/ops/test_execution_reconciliation_get_provenance_v1.py)
+verwenden Fixtureantworten und isolierte Originalstores. Sie binden den ursprünglichen
+Auftrag, vollständige Fills, Settlement, unveränderte Reservation und Cold-Read
+zusammen und weisen unvollständige, fremde oder widersprüchliche Belege zurück.
+Diese Offline-Prüfungen belegen den jeweiligen Consumerpfad, keinen heutigen
+Venuebetrieb, physischen Stromausfall oder eine Gesamtbetriebsfreigabe.
 
 Das gesamte [BWP 1](CURRENT_SYSTEM_FIVE_BOUNDED_WORK_PACKAGES_V1.md) bleibt offen,
 bis auch die fachliche Kosten-/Margin-/Verlustbudgetzulassung am ursprünglichen

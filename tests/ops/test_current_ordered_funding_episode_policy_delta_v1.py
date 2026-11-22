@@ -16,6 +16,8 @@ FROZEN = LAW["baseline_sha"]
 BASE = "304719c94030ff9aacdf2571e2ae56533f9e6a25"
 ORDERED_FUNDING_SUCCESSOR = "e2abdf73876b6f093347b27c4145b86cb7fc16c6"
 SCOPE_MARK_SUCCESSOR = "9a29abe83813bccfff1b78b6a636260daf6e1b3a"
+NET_REVERSAL_BOOKING_SUCCESSOR = "78170916f5fd32267b54eb55b241fa65feb1486f"
+RECONCILIATION_STARTUP = "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
 BINDING = ROOT / "docs/system_atlas/source/development-binding-v1.json"
 PRESERVED = (
     "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
@@ -131,6 +133,9 @@ def test_actual_reader_refuses_different_double_play_exit_policy(monkeypatch):
 
 @pytest.mark.parametrize("path", PRESERVED)
 def test_startup_topology_reconciliation_budget_and_reviewed_rotation_owner(path):
+    # The Funding grant preserved these owners at its own reviewed revision.
+    # Later separately reviewed changes do not rewrite that historical promise.
+    assert git_bytes(ORDERED_FUNDING_SUCCESSOR, path) == git_bytes(BASE, path)
     # The later explicit rotation instruction extends the membership owner.
     # The original Funding grant alone still cannot admit that extension.
     rotation = POLICY["RESERVED_SLOT_ROTATION_DELTAS"]
@@ -139,6 +144,10 @@ def test_startup_topology_reconciliation_budget_and_reviewed_rotation_owner(path
             ROOT, policies(), double_play=POLICY["_uses_double_play_policy_bundle"](ROOT)
         )
         assert hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == rotation[path][1]
+    elif path == RECONCILIATION_STARTUP:
+        # PR #7307 added original-host authenticated net-reversal booking recovery.
+        # Pin that exact successor; an ordinary rebound hash is not approval.
+        assert (ROOT / path).read_bytes() == git_bytes(NET_REVERSAL_BOOKING_SUCCESSOR, path)
     else:
         assert (ROOT / path).read_bytes() == git_bytes(BASE, path)
 

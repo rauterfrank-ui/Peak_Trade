@@ -1054,7 +1054,7 @@
     {
       "path": "docs/ops/specs/CURRENT_ORDERED_FUNDING_EPISODE_DEVELOPMENT_ADMISSION_V1.md",
       "before_sha256": null,
-      "sha256": "bcd10a3ab30dda86cb923ac0103828a3c3c3078c84ad770cc6dc990daeea37d5"
+      "sha256": "0e5a0bd92c3f60966b0e8c2eb4f46fdba4a1f19342a85d5e57e012580bff9bfc"
     },
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
@@ -4744,7 +4744,7 @@
     {
       "path": "tests/ops/test_current_ordered_funding_episode_policy_delta_v1.py",
       "before_sha256": null,
-      "sha256": "77f7bd375678dbd875444337cc9f33b31cd29f559e00281b08b520c3a0462b19"
+      "sha256": "9d057dcfc870b24cb251aea60d97e577cb7aab72b0f1379bb0a5feca48f2becf"
     },
     {
       "path": "tests/ops/test_current_post_assessment_frame_v1.py",
@@ -5464,7 +5464,7 @@
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "92eda7d590c9f441082c6d0fce9e80bed22cc8a19832aac7856e9c3cddb5b49f"
+      "sha256": "56e4a8512a98d802f3fe34887908708bbbc518f46ead9c8dd17c495d0f0cf2b8"
     },
     {
       "path": "tests/ops/test_rotation_plan_state_v1.py",
