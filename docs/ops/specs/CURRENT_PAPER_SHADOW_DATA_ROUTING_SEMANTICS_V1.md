@@ -1817,6 +1817,40 @@ M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
 Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
 keine Betriebs- oder Forschungsläufe.
 
+### Typisierte M6-Aufnahme und getrennte Forschungsrückwege — 22. November
+
+Am Ausgangsstand `a3338b44d8ded26029a6888545c1717b20cc3fde` sind normale und
+föderierte M6-Producer, Router und die getrennten Forschungsconsumer verbunden.
+Die gemeinsame Aufnahme verlangte ein Domänenfeld, prüfte dessen Wert jedoch
+nicht. Boolesche Werte konnten als Support-Zählwert gelten; verschiedene
+widersprüchliche Wirkungsdeklarationen wurden ebenfalls weitergereicht.
+
+Der [typisierte M6-Vertrag](SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md#native-typed-m6-admission--2026-11-22)
+prüft jetzt die vorhandene M6-Domäne, einen nicht-booleschen ganzzahligen
+Support-Zählwert und gelieferte Klassen-/Wirkungsangaben gegen den bestehenden
+Producervertrag. Optionale fehlende oder null gesetzte Metadaten bleiben so
+erhalten. Es werden keine Klassen, Quellen oder Zusicherungen ergänzt. Die
+ursprünglichen Verbote für ausdrücklich True gesetzte Wirkungsflags bleiben.
+
+36 bisher ungebremste Aufnahmen und neun bereits bestandene Kontrollen belegen
+die Lücke. Drei native Ausgangsrecords mit kontrolliert geänderten Deklarationen
+erreichen am Originalcode beide Routen und beide begrenzten Forschungsentscheide.
+Das erteilt weiterhin keine produktiven Rechte. Sechs vollständige gültige
+Originalpakete und sechs synthetische Quellen-Ledgerdateien bleiben bytegleich.
+UNKNOWN/MIXED bleibt ohne automatische Consumerübergabe; genau ein klassifizierter
+Rückweg bleibt die Grenze des Routers.
+
+M6 beschreibt seine eigene mechanische Evidenzverarbeitung. Ein ursprüngliches
+M4-Experiment kann davor gesucht haben; M6 ruft dadurch keinen numerischen
+Analyzer auf und ändert keinen LearningState. Support ist ein deklarierter
+Quellen-ID-Zähler, keine unabhängige Stichprobengröße oder Konfidenz.
+UNKNOWN_UNAVAILABLE bleibt unverfügbar. Der ursprüngliche Reproduzierbarkeitsdigest
+bezieht sich auf Quelldaten, die der reduzierte M6-Record nicht vollständig hält;
+er wird weder ersetzt noch als Ganzinhaltszertifikat ausgegeben. Namespace- und
+Typkonsistenz belegen keine inhaltliche Forschungsrichtigkeit, Lernwirkung oder
+Gesamtbetrieb. Numerik, IDs, Producer, Router, Writer und Freigaben bleiben
+erhalten. BTC unverändert; keine Betriebs- oder Forschungsläufe.
+
 ### Aufnahmezustände des MI-Lernrecords — 22. November
 
 Am Ausgangsstand `c4394351f3551c0636a7165899d2addfa7e2d413` sind MI-Composer,

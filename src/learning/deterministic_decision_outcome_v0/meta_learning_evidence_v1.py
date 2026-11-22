@@ -85,7 +85,7 @@ def validate_meta_learning_evidence_v1(payload: Mapping[str, Any]) -> MappingPro
     if meta_id != derive_meta_evidence_id_v1(reproducibility_digest=str(digest)):
         raise MetaLearningEvidenceValidationError("META_EVIDENCE_ID_MISMATCH")
     support_count = payload.get("support_count")
-    if not isinstance(support_count, int) or support_count < 0:
+    if isinstance(support_count, bool) or not isinstance(support_count, int) or support_count < 0:
         raise MetaLearningEvidenceValidationError("SUPPORT_COUNT_INVALID")
     source_ids = payload.get("source_experiment_ids")
     if not isinstance(source_ids, (list, tuple)):
@@ -99,4 +99,19 @@ def validate_meta_learning_evidence_v1(payload: Mapping[str, Any]) -> MappingPro
     ):
         if payload.get(flag_name) is True:
             raise MetaLearningEvidenceValidationError(f"{flag_name.upper()}_FORBIDDEN_TRUE")
+    if payload.get("domain") != META_LEARNING_EVIDENCE_DOMAIN:
+        raise MetaLearningEvidenceValidationError("META_LEARNING_EVIDENCE_DOMAIN_MISMATCH")
+    declarations = {
+        "universe_class": UNIVERSE_CLASS_SELF_LEARNING,
+        "evidence_class": EVIDENCE_CLASS_META_LEARNING,
+        "learning_state_mutation": False,
+        "search_execution_performed": False,
+        "promotion_performed": False,
+        "external_effect_authorized": False,
+        "proposal_not_authority": True,
+    }
+    for field, expected in declarations.items():
+        supplied = payload.get(field)
+        if supplied is not None and (type(supplied) is not type(expected) or supplied != expected):
+            raise MetaLearningEvidenceValidationError(f"META_LEARNING_DECLARATION_INVALID:{field}")
     return MappingProxyType(dict(payload))

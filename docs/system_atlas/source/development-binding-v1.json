@@ -1059,7 +1059,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "87b59ae060b2fc43f556c92f402fd3e590465473b1d26f37ab0fc3872ffa6b52"
+      "sha256": "74440ad657573e3447a48bcf5e811c5bb1d81af87fe3868d724482d67d6b7aea"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1355,6 +1355,11 @@
       "path": "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
       "before_sha256": "875a569d7b3667fed1f7a71f41c13c9380674ddb7567643aa7f83e6636cea131",
       "sha256": "fc76cd1f8c288168631efdb7fa5b07993eec3ab1be46bc12d67b64480d7c8404"
+    },
+    {
+      "path": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "before_sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452",
+      "sha256": "d83b25e4b3749507018df6d962f2390fec59d8b0785bc7d6406ed0bc58db8a4e"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -2315,6 +2320,11 @@
       "path": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
       "before_sha256": "4c76e2f77658634de84a97ff10da526028225940391acaf408186f4c2a8101fc",
       "sha256": "cf6db010cf8e82d3616e87d1bf437923e6081091456bf73cdd1847853bc998ed"
+    },
+    {
+      "path": "src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py",
+      "before_sha256": "9e1accc1b7b3d80352c5a4c63e7f8d50942914f2461cd09fb91309953d638ced",
+      "sha256": "4c55127a09108c0e3ccb4e66b5d7a395702d6fa48ad668a0d636305a8aee20d8"
     },
     {
       "path": "src/learning/deterministic_decision_outcome_v0/n_bars_bar_evidence_supplier_v1.py",
@@ -4475,6 +4485,11 @@
       "path": "tests/learning/test_meta_learning_ingest_v1.py",
       "before_sha256": "9ef5bbd4d79a42057e9714274ba98338aecd8e89abb02020a47c0c2a5a651ec2",
       "sha256": "fcd54877c9b182ef960dea8903dfe58983ec083d64f48bfb277dcb0207abadff"
+    },
+    {
+      "path": "tests/learning/test_meta_learning_typed_admission_v1.py",
+      "before_sha256": null,
+      "sha256": "6d741c5100bc0b78558ebd01b429d0520c50f7597c16514abcd4f387bc56c095"
     },
     {
       "path": "tests/learning/test_mi_attribution_query_reference_binding_v1.py",
