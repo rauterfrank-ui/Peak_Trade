@@ -25,9 +25,11 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     OPTIMIZATION_PRODUCER_VERSION,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.meta_learning_routed_evidence_v1 import (
+    MetaLearningRoutedEvidenceError,
     validate_meta_learning_routed_evidence_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.optimization_envelope_evidence_v1 import (
+    OptimizationEnvelopeEvidenceError,
     validate_optimization_envelope_evidence_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.models_v1 import (
@@ -193,7 +195,10 @@ def adapt_optimization_envelope_evidence_v1(
     *,
     termination: ProducerEvidenceTerminationContextV1,
 ) -> EvidenceIntakeRecordV1:
-    validated = validate_optimization_envelope_evidence_v1(artifact)
+    try:
+        validated = validate_optimization_envelope_evidence_v1(artifact)
+    except OptimizationEnvelopeEvidenceError as exc:
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value) from exc
     digest = str(validated["reproducibility_digest"])
     if not is_valid_sha256_hex(digest):
         raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value)
@@ -246,7 +251,10 @@ def adapt_meta_learning_routed_evidence_v1(
     *,
     termination: ProducerEvidenceTerminationContextV1,
 ) -> EvidenceIntakeRecordV1:
-    validated = validate_meta_learning_routed_evidence_v1(artifact)
+    try:
+        validated = validate_meta_learning_routed_evidence_v1(artifact)
+    except MetaLearningRoutedEvidenceError as exc:
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value) from exc
     digest = str(validated["reproducibility_digest"])
     if not is_valid_sha256_hex(digest):
         raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value)

@@ -122,4 +122,37 @@ def validate_meta_learning_routed_evidence_v1(
         raise MetaLearningRoutedEvidenceError("CONTENT_HASH_INVALID")
     if payload.get("producer_id") != META_LEARNING_PRODUCER_ID:
         raise MetaLearningRoutedEvidenceError("PRODUCER_ID_MISMATCH")
+    for field, expected in {
+        "domain": ROUTED_DOMAIN,
+        "producer_version": META_LEARNING_PRODUCER_VERSION,
+        "source_meta_learning_evidence_schema_version": M6_EVIDENCE_SCHEMA_VERSION,
+        "binding_context_schema_version": BINDING_SCHEMA_VERSION,
+        "trading_selection_effect": "NONE",
+    }.items():
+        if payload.get(field) != expected:
+            raise MetaLearningRoutedEvidenceError(f"ROUTED_DECLARATION_MISMATCH:{field}")
+    if content != compute_content_sha256(
+        {key: value for key, value in payload.items() if key != "content_hash"}
+    ):
+        raise MetaLearningRoutedEvidenceError("CONTENT_HASH_MISMATCH")
+    try:
+        reproducibility_body = {
+            "evidence_kind": EVIDENCE_KIND,
+            "source_meta_learning_evidence_id": payload["source_meta_learning_evidence_id"],
+            "source_meta_learning_reproducibility_digest": payload[
+                "source_meta_learning_reproducibility_digest"
+            ],
+            "binding_context_digest": payload["binding_context_digest"],
+            "producer_id": META_LEARNING_PRODUCER_ID,
+        }
+    except KeyError as exc:
+        raise MetaLearningRoutedEvidenceError(
+            f"REPRODUCIBILITY_INPUT_MISSING:{exc.args[0]}"
+        ) from exc
+    if digest != compute_content_sha256(reproducibility_body):
+        raise MetaLearningRoutedEvidenceError("REPRODUCIBILITY_DIGEST_MISMATCH")
+    if payload.get("routed_evidence_id") != derive_meta_learning_routed_evidence_id_v1(
+        reproducibility_digest=digest
+    ):
+        raise MetaLearningRoutedEvidenceError("ROUTED_EVIDENCE_ID_MISMATCH")
     return MappingProxyType(dict(payload))

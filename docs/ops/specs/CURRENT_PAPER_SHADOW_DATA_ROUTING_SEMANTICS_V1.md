@@ -1857,6 +1857,50 @@ M4 erhält dadurch keinen neuen Zahlen- oder Tradingkanal. Keine Aussage über
 Gesamtbetrieb, Kontogewinn oder produktives Apply; BTC und Freigaben unverändert,
 keine Betriebs- oder Forschungsläufe.
 
+### Optimization-/Meta-Belegaufnahme vor Component A — 22. November
+
+Am Stand `9adc88677a8cd8f1653dff697ecbc59b2f59a4c5` sind M5/M6-Producer,
+P5-Brücken, typisierte Adapter, Promotion-/Schemavorgaben und Component A bereits
+verbunden. Die beiden P5-Belegvalidatoren prüften ihre Hashwerte aber nur auf
+Format. 114 Gegenproben passierten Validierung, Adapter oder Ingress; 38 davon
+erreichten tatsächliche A-Adjudikation. Sechs gesicherte Originalbeispiele wurden
+mit ADMIT in den In-memory-Ledger geschrieben. Ihre trading_authority blieb NONE;
+ADMIT ist hier Belegaufnahme, keine Trading-/Applyfreigabe.
+
+Die bestehenden [Optimization-](../../../src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py)
+und [Meta-Owner](../../../src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/meta_learning_routed_evidence_v1.py)
+prüfen jetzt den vollständigen Inhaltshash, ihren jeweiligen ursprünglichen
+Reproduktionskörper und die daraus abgeleitete Beleg-ID. Native Producerkonstanten
+für Domäne, Producerfassung, Quellen-/Bindingschema und fehlenden Tradingeffekt
+bleiben gebunden. Die verschiedenen M5- und M6-Referenzumfänge werden nicht
+gleichgesetzt. Frühere Fehler behalten ihre Priorität; es entstehen keine neuen
+ID-/Digestformeln oder normalisierten Originale.
+
+Die beiden [P5-Adapter](../../../src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py)
+übersetzen den jeweiligen typisierten Ownerfehler in artifact_malformed. Der
+vorhandene Ingress liefert dann REJECT ohne Envelope vor Component A und dessen
+Ledger. Das Promotion-/Quellschema-Gate bleibt davor. Sechs vollständige gültige
+Mapping-/JSON-/Annotationspakete einschließlich A-Ergebnis und Wiederholung sowie
+sechs synthetische Quellen-LearningState-Ledgerdateien bleiben bytegleich. Der
+vorhandene A-Replay gibt seinen gespeicherten Originalrecord zurück; sein
+dedup_replay-Feld wird nicht umdefiniert. Die drei eingefrorenen P5-Schnittstellen
+werden im vorhandenen Law-Mechanismus nur als vollständiges, exakt gehashtes
+Änderungsbündel zugelassen. Gemischte/unbekannte Quellenstände, fehlende oder
+falsche Originalbindungen und fremde Policyänderungen bleiben gesperrt. Die
+eingefrorenen Policyobjekte, Inventare und Tags bleiben unverändert; daraus
+entsteht keine Betriebsfreigabe. Der A-Ledger ist weiterhin in memory,
+die Quellen-Ledgerdateien belegen keinen dauerhaften P5-Writer oder Crashrecovery.
+
+Die [Aufnahmegrenze](EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md#original-producer-artifact-admission-before-a--2026-11-22)
+prüft interne Konsistenz, keine unabhängige Herkunft des ursprünglichen M5/M6,
+Bindings oder Marktkontexts. Diese Originalkörper liegen hier nicht vollständig
+vor; frische selbstkonsistente Ersatzrecords werden nicht quellenzertifiziert.
+Außerhalb der Reproduktionsumfänge liegende Angaben werden durch den Transporthash
+gebunden, nicht aus fehlenden Originalen neu berechnet. Numerische Qualität,
+exakte Zeitsemantik, Wirtschaftlichkeit und Gesamtbetrieb bleiben eigenständig
+zu belegen. BTC, Core-/Finanzregeln, Originalstores, Tradingauthority und B-/L6-/DP-
+Grenzen bleiben unverändert; keine Betriebsläufe wurden gestartet.
+
 ### M5-Reproduzierbarkeitsbezug vor ACK, Meta und Forschungsrückweg — 22. November
 
 Am Stand `3442fe87753f922a588b03497e2bead204d89809` sind native M5-Quittung,
