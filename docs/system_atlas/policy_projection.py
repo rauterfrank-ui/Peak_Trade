@@ -42,6 +42,24 @@ DECISION_ATTRIBUTION_LEARNING_DELTAS = {
     ),
 }
 
+# Frank's 2026-11-22 offline causal-hardening instruction covers this exact
+# P5 artifact-admission/error-translation bundle. Frozen policy objects, source
+# tags and runtime grants stay; ordinary development hashes admit no other body.
+P5_ARTIFACT_ADMISSION_DELTAS = {
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py": (
+        "30581db340c8588fc4c5e93b7915c393b04eb67629e35ac32e4b89b89bebc4cc",
+        "010247d126ecd36ee0ef6516ca6dd4020729ed6dc310d04cc64b158238e66f14",
+    ),
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py": (
+        "46b1ade28814de75e449d04d486f59a868c49c3cf7798a8449b3f549df2aebee",
+        "7b91d4ec326671df7e02713a3216e07915250102c0a2bee6e59e0c2524d40801",
+    ),
+    "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/meta_learning_routed_evidence_v1.py": (
+        "f0c3fde4de45d42b921d696063501afc1a6ed77da165f85cf85ac677a9a42e3b",
+        "9066891eb81c326c493ae804599f35b453a2eca7015b1d4f2a2e758bd3b9c089",
+    ),
+}
+
 # Frank's separate 2026-11-09 approval covers this exact reviewed four-file
 # development bundle. Frozen records/tags and all other policy admission stay
 # intact. A new binding hash alone cannot authorize another implementation.
@@ -999,6 +1017,22 @@ def policy_impact_for_paths(doc: dict, paths: list[str], root: Path = ROOT) -> d
     }
 
 
+def validate_p5_artifact_admission_bundle(root: Path, policies: list[dict]) -> None:
+    frozen = {row["path"]: row["frozen_sha256"] for row in policies}
+    expected = {path: before for path, (before, _) in P5_ARTIFACT_ADMISSION_DELTAS.items()}
+    if any(frozen.get(path) != before for path, before in expected.items()):
+        raise ValueError("P5_ARTIFACT_ADMISSION_BASELINE_INVALID")
+    actual = {
+        path: hashlib.sha256((root / path).read_bytes()).hexdigest()
+        if (root / path).is_file()
+        else None
+        for path in expected
+    }
+    reviewed = {path: after for path, (_, after) in P5_ARTIFACT_ADMISSION_DELTAS.items()}
+    if actual not in (expected, reviewed):
+        raise ValueError("P5_ARTIFACT_ADMISSION_REVIEWED_BUNDLE_REQUIRED")
+
+
 def validate_policy_inventory(root: Path, doc: dict) -> dict:
     model = json.loads((root / "docs/system_atlas/source/current-model.json").read_bytes())
     if doc["baseline_sha"] != model["source_commit"] or doc["source_tag"] != model["source_tag"]:
@@ -1016,6 +1050,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
     ]
     frozen = {p["path"]: p for p in inventory}
     policies = load_policies(root, doc)
+    validate_p5_artifact_admission_bundle(root, policies)
     double_play = _uses_double_play_policy_bundle(root)
     validate_ordered_funding_episode_bundle(root, policies, double_play=double_play)
     validate_reserved_slot_rotation_bundle(root, policies, double_play=double_play)
@@ -1065,6 +1100,7 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
                 and D01_D02_ADJUDICATION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
                 and DECISION_ATTRIBUTION_LEARNING_DELTAS.get(path)
                 != (policy["frozen_sha256"], actual)
+                and P5_ARTIFACT_ADMISSION_DELTAS.get(path) != (policy["frozen_sha256"], actual)
             ):
                 raise ValueError("POLICY_SOURCE_DRIFT:" + path)
             binding = json.loads(

@@ -121,4 +121,38 @@ def validate_optimization_envelope_evidence_v1(
         raise OptimizationEnvelopeEvidenceError("CONTENT_HASH_INVALID")
     if payload.get("producer_id") != OPTIMIZATION_PRODUCER_ID:
         raise OptimizationEnvelopeEvidenceError("PRODUCER_ID_MISMATCH")
+    for field, expected in {
+        "domain": ENVELOPE_DOMAIN,
+        "producer_version": OPTIMIZATION_PRODUCER_VERSION,
+        "source_optimization_experiment_evidence_schema_version": M5_SCHEMA_VERSION,
+        "binding_context_schema_version": BINDING_SCHEMA_VERSION,
+        "trading_selection_effect": "NONE",
+    }.items():
+        if payload.get(field) != expected:
+            raise OptimizationEnvelopeEvidenceError(f"ENVELOPE_DECLARATION_MISMATCH:{field}")
+    if content != compute_content_sha256(
+        {key: value for key, value in payload.items() if key != "content_hash"}
+    ):
+        raise OptimizationEnvelopeEvidenceError("CONTENT_HASH_MISMATCH")
+    try:
+        reproducibility_body = {
+            "evidence_kind": EVIDENCE_KIND,
+            "source_optimization_experiment_evidence_digest": payload[
+                "source_optimization_experiment_evidence_digest"
+            ],
+            "source_plane_identity": payload["source_plane_identity"],
+            "binding_context_digest": payload["binding_context_digest"],
+            "binding_record_id": payload["binding_record_id"],
+            "producer_id": OPTIMIZATION_PRODUCER_ID,
+        }
+    except KeyError as exc:
+        raise OptimizationEnvelopeEvidenceError(
+            f"REPRODUCIBILITY_INPUT_MISSING:{exc.args[0]}"
+        ) from exc
+    if digest != compute_content_sha256(reproducibility_body):
+        raise OptimizationEnvelopeEvidenceError("REPRODUCIBILITY_DIGEST_MISMATCH")
+    if payload.get("envelope_evidence_id") != derive_optimization_envelope_evidence_id_v1(
+        reproducibility_digest=digest
+    ):
+        raise OptimizationEnvelopeEvidenceError("ENVELOPE_EVIDENCE_ID_MISMATCH")
     return MappingProxyType(dict(payload))
