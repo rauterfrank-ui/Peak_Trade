@@ -7,6 +7,7 @@ No historical fixture limits or implicit account authority.
 
 from copy import deepcopy
 from dataclasses import replace
+from datetime import datetime, timezone
 from decimal import Decimal
 from math import isfinite
 from pathlib import Path
@@ -29,6 +30,7 @@ from trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_
 )
 from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
     MV2_OFFLINE_BOUNDARY_DYNAMIC_PRICE_CONTEXT_BINDING_REF_V1,
+    build_mv2_offline_boundary_dynamic_price_context_v1,
 )
 
 REPO = Path(__file__).resolve().parents[2]
@@ -178,7 +180,7 @@ def _current_binding(*, state, market, budget, now):
 
 
 def soph_shadow_cost_check_v1(*, state, market, budget, side, quantity, stop_distance):
-    """Extra model-cost admission after original sizing; no quantity adjustment."""
+    """Measure the supplied base quantity against the shadow cost and loss limits."""
     from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
 
     measurement = assess_instrument_budget_v1(
@@ -238,6 +240,57 @@ def soph_shadow_cost_check_v1(*, state, market, budget, side, quantity, stop_dis
             loss_with_costs=str(quantity * distance + reserve),
             funding_booking="ORIGINAL_ANALYTICAL_MODEL_UNCHANGED",
         ),
+    )
+
+
+def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_exit_distance):
+    """Measure one native minimum for each entry side at the bound decision mark."""
+    event_time = datetime.fromtimestamp(market.market_event_unix, tz=timezone.utc).isoformat()
+    if (
+        context.instrument_id != market.slot.instrument_id
+        or context.mark_price != float(market.mark)
+        or context.market_event_time != event_time
+    ):
+        raise ValueError("SOPH_SHADOW_MINIMUM_LOT_MARK_BINDING_MISMATCH")
+
+    contract = market.native_contract
+    quantity = contract.min_qty * contract.contract_size
+    sides = {}
+    for side, selected in (("BUY", "LONG"), ("SELL", "SHORT")):
+        price = build_mv2_offline_boundary_dynamic_price_context_v1(
+            mark_price=Decimal(str(context.mark_price)),
+            selected_side=selected,
+            adverse_exit_distance=adverse_exit_distance,
+        )
+        if price.protective_stop_price is None:
+            sides[side] = {
+                "measurement_admitted": False,
+                "reason_codes": ["SOPH_SHADOW_PROTECTIVE_STOP_UNAVAILABLE"],
+            }
+            continue
+        distance = abs(price.reference_price - price.protective_stop_price)
+        sides[side] = dict(
+            soph_shadow_cost_check_v1(
+                state=state,
+                market=market,
+                budget=budget,
+                side=side,
+                quantity=quantity,
+                stop_distance=distance,
+            ),
+            protective_stop_price=str(price.protective_stop_price),
+            stop_distance=str(distance),
+        )
+    return dict(
+        instrument_id=context.instrument_id,
+        venue_native_id=market.slot.native_id,
+        market_event_time=context.market_event_time,
+        context_digest=context.input_digest,
+        mark_price=str(context.mark_price),
+        price_unit=f"USD/{market.slot.base_currency}",
+        minimum_contracts=str(contract.min_qty),
+        quantity_base=str(quantity),
+        sides=sides,
     )
 
 

@@ -1414,7 +1414,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "4f1306129833381ff6bfc4999fe8d159648df5df212ecd3e4291962f29590fe1"
+      "sha256": "8e76901350c4a05623c7c0e5bd46fb63f350052b31a8879a96cd1e17a7d125e8"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -3889,7 +3889,7 @@
     {
       "path": "src/ops/soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "29c78c2352e323adec45a0b6dbce69da3848dc7cd8b1aa8e32110fc0cc5ef40d"
+      "sha256": "6c71bbe20ea43b6821ff60db1884ce2227e031202b42486abded8de477716af3"
     },
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
@@ -3939,7 +3939,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "8114366f1ee62ec141bbf4972a5c015ce6245fd25bc0d44b941ece8cef3f9297"
+      "sha256": "6b1bbaafb1710dcf5ded526956879f55ecb89fb75fa134c356c8b99c6385acfa"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5839,7 +5839,7 @@
     {
       "path": "tests/ops/test_soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "605bab5bcdf4ba6108bd7b8fcb3d3a8bf0e16dd56907dcc0f17fe2b14eedec6a"
+      "sha256": "e5d235aec7113218affb1128be6860899a1b4df90ef72d631300167da12efabd"
     },
     {
       "path": "tests/ops/test_system_atlas_impact_v1.py",
