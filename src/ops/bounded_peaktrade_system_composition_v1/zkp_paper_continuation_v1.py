@@ -3,9 +3,12 @@
 from dataclasses import replace
 from decimal import Decimal
 import json
+import logging
+import os
+import platform
 from math import isfinite
 from pathlib import Path
-from time import time
+from time import monotonic_ns, time, time_ns
 
 from src.execution.position_delta import signed_position_delta
 from src.governance.capital_risk_sizing_v1 import evaluate_capital_risk_sizing_v1
@@ -748,7 +751,36 @@ class ZkpPaperContinuationV1:
         # The immutable booking is the commit point. Cold recovery replays the
         # confirmed fill and completes the successor using the same cursor.
         immutable_json_v1(self._booking_path, record)
-        return self._publish_booking(_read(self._booking_path))
+        result = self._publish_booking(_read(self._booking_path))
+        if self.slot.native_id == UP_PAPER_SLOT.native_id and (
+            directory := os.environ.get("PEAK_TRADE_UP_PAPER_CONFIRMATION_DIR")
+        ):
+            confirmed_ns, confirmed_mono_ns = time_ns(), monotonic_ns()
+            # New bookings only. Recovery can republish an old fill at a later time.
+            try:
+                immutable_json_v1(
+                    Path(directory) / (canonical_digest_v1({"fill_id": fill.fill_id}) + ".json"),
+                    dict(
+                        schema="up_paper_confirmed.v1",
+                        session=self.root.name,
+                        lane=self.slot.lane_id,
+                        native_id=self.slot.native_id,
+                        binding_digest=self.bound.selection_integrity_digest,
+                        decision_id=plan["decision_id"],
+                        cycle_id=plan["cycle_id"],
+                        fill_id=fill.fill_id,
+                        result_digest=canonical_digest_v1(result),
+                        execution_mark_sha256=market.source_hashes["mark"],
+                        confirmed_ns=confirmed_ns,
+                        confirmed_mono_ns=confirmed_mono_ns,
+                        clock_host=platform.node(),
+                    ),
+                )
+            except (OSError, ValueError, RuntimeError) as exc:
+                logging.getLogger(__name__).warning(
+                    "UP Paper confirmation timing unavailable: %s", exc
+                )
+        return result
 
     def _prepare_fill(self, market, clock, old_side, distance, *, decision_id, assessment_digest):
         position = self.accounting.position

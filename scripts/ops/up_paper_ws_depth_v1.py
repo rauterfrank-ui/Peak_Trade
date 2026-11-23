@@ -50,7 +50,7 @@ from src.ops.peak_trade_public_market_data_runtime_v1.ws_binding_v1 import (
 )
 
 
-def preparation(args):
+def preparation(args, *, current_at=None):
     config = json.loads(args.slot_config.read_bytes())
     if (config["surface"], config["canonical_instrument_id"], config["native_instrument_id"]) != (
         "PAPER_EXCHANGE",
@@ -60,6 +60,8 @@ def preparation(args):
         raise ValueError("ranked UP dated future on PAPER required")
     assignment, slot = read_ranked_paper_slot_v1(config)
     admission = read_paper_entry_admission_v1(config, assignment)
+    if current_at is not None:
+        admission.require_current_v1(current_at)
     if "paper_cap24" in config:
         from scripts.ops.run_zkp_lane1_paper_v1 import (
             _read_cap24_binding,

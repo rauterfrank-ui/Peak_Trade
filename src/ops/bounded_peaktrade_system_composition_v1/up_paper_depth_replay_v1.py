@@ -123,13 +123,13 @@ class Depth:
 
 
 class Pair:
-    def __init__(self, plan, window):
+    def __init__(self, plan, tick, lot):
         self.subscriptions = {item["channel"]: item for item in plan["subscriptions"]}
         self.native = plan["identity"]["native_id"]
         self.acked = set()
         self.data = {}
         self.watermark = {}
-        self.depth = Depth(window.liquidity.tick_size, window.liquidity.lot_size)
+        self.depth = Depth(tick, lot)
         self.errors = {}
         self.terminal = None
 
@@ -215,7 +215,7 @@ class Pair:
 class Comparison:
     def __init__(self, window, plan, discontinuities):
         self.window = window
-        self.pair = Pair(plan, window)
+        self.pair = Pair(plan, window.liquidity.tick_size, window.liquidity.lot_size)
         self.gaps = []
         self.counts = Counter()
         self.first = None
@@ -380,7 +380,7 @@ def _read_recording(recording, plan, *, on_start, on_frame, on_end):
             if row["kind"] != "frame" or row["frame"] != count:
                 raise ValueError("missing or unordered raw frame")
             digest.update(line)
-            on_frame(previous, now, count, row["raw"])
+            on_frame(previous, now, current_mono, count, row["raw"])
             previous, mono = now, current_mono
         else:
             raise ValueError("incomplete recording: no sealed end or verified frame count")
@@ -399,10 +399,10 @@ def _read_recording(recording, plan, *, on_start, on_frame, on_end):
 def compare_recording(recording, plan, window):
     # A missing delta is only detectable on a later frame. Mark updates in the
     # intervening interval cannot prove a pass using the last retained book.
-    inspector = Pair(plan, window)
+    inspector = Pair(plan, window.liquidity.tick_size, window.liquidity.lot_size)
     breaks = []
 
-    def inspect(previous, now, count, raw):
+    def inspect(previous, now, mono, count, raw):
         old_book = inspector.data.get("books")
         inspector.accept(raw, now, count)
         if old_book and old_book.received_ns < now:
@@ -417,7 +417,7 @@ def compare_recording(recording, plan, window):
     )
     comparison = Comparison(window, plan, breaks)
 
-    def frame(previous, now, count, raw):
+    def frame(previous, now, mono, count, raw):
         comparison.interval(previous, now)
         comparison.frame(raw, now, count)
 

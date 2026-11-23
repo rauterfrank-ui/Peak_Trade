@@ -117,18 +117,18 @@ def paper_identity(slot, session, occupancy_digest, entry_digest):
     )
 
 
-def load_reversal_window(booked_result, repo):
-    path = Path(booked_result).resolve(strict=True)
-    root = path.parents[2]
-    if path.name != "result.json" or path.parents[1].name != "public":
-        raise ValueError("original booked public poll result required")
-    archive = _Archive(root)
-    identity = paper_identity(
+def archive_identity(archive):
+    return paper_identity(
         archive.slot,
-        root.name,
+        archive.root.name,
         archive.profile["n5_assignment"]["selection_digest"],
         archive.profile["instrument_binding"]["selection_integrity_digest"],
     )
+
+
+def read_confirmed_reversal(archive, path, identity):
+    if path.name != "result.json" or path.parents[1] != archive.root / "public":
+        raise ValueError("original booked public poll result required")
     result = _read(path)
     if result["status"] != "NET_REVERSAL_BOOKED":
         raise ValueError("confirmed reversal required")
@@ -140,14 +140,29 @@ def load_reversal_window(booked_result, repo):
         plan["binding_digest"] != identity["binding_digest"]
         or result["decision_id"] != plan["decision_id"]
         or result["fill"] != fill
+        or result["accounting_output_digest"] != booking["accounting_output_digest"]
         or fill["fill_id"] != "direct-reversal:" + canonical_digest_v1(plan)
         or fill["instrument_id"] != archive.slot.native_id
         or sha256(mark_body).hexdigest() != plan["source_hashes"]["mark"]
     ):
         raise ValueError("UP Paper original fill or execution mark mismatch")
     session, kind, signal, *_, lane = plan["cycle_id"].split(":")
-    if (session, kind, lane) != (root.name, "occupied", identity["lane"]):
+    if (session, kind, lane) != (archive.root.name, "occupied", identity["lane"]):
         raise ValueError("UP Paper signal identity mismatch")
+    (mark,) = json.loads(mark_body)["data"]
+    if mark["instId"] != archive.slot.native_id or Decimal(mark["markPx"]) != Decimal(
+        fill["mark_price"]
+    ):
+        raise ValueError("UP Paper execution mark mismatch")
+    return result, plan, mark, int(signal), archive.pins[relative]
+
+
+def load_reversal_window(booked_result, repo):
+    path = Path(booked_result).resolve(strict=True)
+    archive = _Archive(path.parents[2])
+    identity = archive_identity(archive)
+    result, plan, mark, signal, booking_hash = read_confirmed_reversal(archive, path, identity)
+    fill = result["fill"]
     policy = load_paper_liquidity_policy_v1(repo)
     binding = archive.profile["binding"]
     if (
@@ -171,7 +186,6 @@ def load_reversal_window(booked_result, repo):
         Decimal(fill["quantity"]),
     ):
         raise ValueError("original UP reversal quantity or assessment mismatch")
-    (mark,) = json.loads(mark_body)["data"]
     start = int(
         (Decimal(str(market.observed_unix)) * 10**9).to_integral_value(rounding=ROUND_CEILING)
     )
@@ -187,7 +201,7 @@ def load_reversal_window(booked_result, repo):
         end,
         market._liquidity_snapshot(),
         dict(
-            booking_sha256=archive.pins[relative],
+            booking_sha256=booking_hash,
             trigger_card_sha256=card_hash,
             trigger_poll=trigger.name,
             execution_mark_sha256=plan["source_hashes"]["mark"],

@@ -1,0 +1,419 @@
+{
+  "original_files_sha256": {
+    "Offline-Nachweis.json": "9af32ab02a2794542648d0552f0d80ee7096ac15fe1eab80ca78370267a2b4b6",
+    "Slot-4-OL-Wechselentwurf.json": "c42075a4c7d9e3692b89a1ef13f763e15492a8c382ea43b525a3a2795b9babf5",
+    "Uebergabe.json": "6889372893009936659ae0861a61c1c56ebf69a9c069534d8fe3127df7818a3d",
+    "vergleich.json": "ca6d8421427da7aa8c1d0d97b64900a0627ad7907f4152ea02ae4ab11019f8e4",
+    "pruefbefund.json": "b61eed52df889fc0c3f1667964e8bb8da74ca8239be4c2bd4203215b69322821"
+  },
+  "authority": "NONE",
+  "vorgeschlagene_profilfelder": {
+    "lane": "LANE_4",
+    "surface": "SHADOW",
+    "authority": "NONE",
+    "native_instrument_id": "OL-USDT-SWAP",
+    "canonical_instrument_id": "okx_eea:linear_perpetual:OL:USDT:USDT:ol-usdt-swap",
+    "shadow_entry_cost_limit_usdc": "10"
+  },
+  "vorherige_bindung": {
+    "lane_id": "LANE_4",
+    "canonical_instrument_id": "okx_eea:linear_perpetual:PIEVERSE:USDT:USDT:pieverse-usdt-swap",
+    "venue_native_id": "PIEVERSE-USDT-SWAP",
+    "selected_rank": 4,
+    "selection_id": "ssf_a1f6f2e23926289886d1d297",
+    "selection_digest": "470985e64f9edf4892a3902ac82b956c2ac333152148ce0a10975f83de5ed21e",
+    "universe_snapshot_id": "gfu_7d53981ee407235b",
+    "ranking_snapshot_id": "pfr_97cf8c5b7cd4ca4e525f9c28",
+    "ranking_digest": "5b3fdd7213fc8ad50f0df911d775723e4c138b22451f6cd595e9bdb82e22c50f",
+    "transition_id": "a5a8f94dfa934115b56821ac09a816e0",
+    "valid_from": "2026-11-23T07:17:07Z",
+    "valid_until": "2026-11-23T08:17:07Z",
+    "archivierter_status": "ABORT",
+    "archivierte_fills": 0
+  },
+  "shadow_historical": {
+    "LANE_1": {
+      "funding_age_seconds": 247.124,
+      "original_mark_usdt_per_base": "0.2437",
+      "contract_size": "10",
+      "minimum_contracts": "1",
+      "minimum_mark_notional_usdt": "2.4370"
+    },
+    "LANE_4": {
+      "funding_age_seconds": 195.094,
+      "original_mark_usdt_per_base": "3.48",
+      "contract_size": "10",
+      "minimum_contracts": "1",
+      "minimum_mark_notional_usdt": "34.80"
+    }
+  },
+  "ol_lot": {
+    "mindestgegenwert_usdt": "0.320300",
+    "mindestkontrakte": "1",
+    "ol_pro_kontrakt": "100"
+  },
+  "fehlende_marktdaten": {
+    "index": {
+      "pfad": "/api/v5/market/index-tickers",
+      "parameter": {
+        "instId": "OL-USDT"
+      },
+      "bedarf": "Eigener Basiswertindex OL-USDT mit idxPx und Zeitstempel."
+    },
+    "funding": {
+      "pfad": "/api/v5/public/funding-rate",
+      "parameter": {
+        "instId": "OL-USDT-SWAP"
+      },
+      "bedarf": "OL-Swap-Fundingrate, minFundingRate, maxFundingRate, ts und fundingTime. Das Original muss bei der Prüfung höchstens 180 Sekunden alt sein, der nächste Fundingzeitpunkt in der Zukunft liegen."
+    },
+    "oi": {
+      "pfad": "/api/v5/public/open-interest",
+      "parameter": {
+        "instId": "OL-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "bedarf": "Positives Open Interest in nativen OL-Swap-Kontrakten mit Zeitstempel."
+    },
+    "ticker": {
+      "pfad": "/api/v5/market/ticker",
+      "parameter": {
+        "instId": "OL-USDT-SWAP"
+      },
+      "bedarf": "Frischer OL-Swap-Ticker mit Volumen. Der historische Ticker enthält auch die damalige beste Geld- und Briefstufe."
+    },
+    "book": {
+      "pfad": "/api/v5/market/books",
+      "parameter": {
+        "instId": "OL-USDT-SWAP",
+        "sz": "5"
+      },
+      "bedarf": "Eigene zweiseitige Orderbuchtiefe in nativen Kontrakten und auf dem gültigen Preisraster, mit Originalbody, Anfrage, Eventzeit, Empfangszeit und Hash. Die einzelne Tickerstufe ersetzt den Buchbeleg nicht."
+    },
+    "mark": {
+      "pfad": "/api/v5/public/mark-price",
+      "parameter": {
+        "instId": "OL-USDT-SWAP",
+        "instType": "SWAP"
+      },
+      "bedarf": "Frischer, einzeln für OL-USDT-SWAP quittierter Markpreis zum Entscheid, erneut bei der Budgetbindung geprüft. Der vorhandene Sammel-Markpreis dient der historischen Bewertung."
+    },
+    "instrument": {
+      "pfad": "/api/v5/public/instruments",
+      "parameter": {
+        "instType": "SWAP",
+        "instId": "OL-USDT-SWAP"
+      },
+      "bedarf": "Native OL-Spezifikation für die spätere Session bestätigen. Historisch belegt sind linearer USDT-Swap, 100 OL pro Kontrakt, Mindestmenge 1, Schritt 1, Preisschritt 0,000001, maximales Marktordervolumen 8300 Kontrakte."
+    }
+  },
+  "cap22": {
+    "id": "pfr_97cf8c5b7cd4ca4e525f9c28",
+    "digest": "5b3fdd7213fc8ad50f0df911d775723e4c138b22451f6cd595e9bdb82e22c50f",
+    "market_time": "2026-11-23T07:17:07Z",
+    "rank_ol": 6,
+    "rank_pieverse": 4,
+    "membership_ranks": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "published_topology": "LANE_FIXED_BINDINGS_ALREADY_PUBLISHED"
+  },
+  "cap23_mit_originalem_vorgaenger": {
+    "flat_kontrolle": {
+      "instrument": "PIEVERSE-USDT-SWAP",
+      "rank": 4,
+      "state": "SELECTED_ACTIVE",
+      "previous_selection_id": "ssf_a1f6f2e23926289886d1d297",
+      "proposed_replacement": "",
+      "reasons": [
+        "HYSTERESIS_BLOCKS_CHURN"
+      ],
+      "selection_id": "ssf_a1f6f2e23926289886d1d297",
+      "digest": "e9f7fe29c16355a4429791299a195a32fe82624afd7cb585947dbc754dc3add6"
+    },
+    "offene_position_kontrolle": {
+      "instrument": "PIEVERSE-USDT-SWAP",
+      "rank": 4,
+      "state": "REPLACEMENT_PENDING",
+      "previous_selection_id": "ssf_a1f6f2e23926289886d1d297",
+      "proposed_replacement": "OL-USDT-SWAP",
+      "reasons": [
+        "ALPHA_BLOCKED",
+        "OPEN_POSITION_BLOCKS_SWITCH",
+        "REPLACEMENT_PENDING"
+      ],
+      "selection_id": "ssf_169133bb59eeff07b0518d49",
+      "digest": "4755bddc9a640c672d12fae6d4422f948d2dbc4c5e0f7bde677f54cb81b5aabc"
+    }
+  },
+  "handoff": {
+    "profilfelder": {
+      "lane": "LANE_4",
+      "surface": "SHADOW",
+      "authority": "NONE",
+      "native_instrument_id": "OL-USDT-SWAP",
+      "canonical_instrument_id": "okx_eea:linear_perpetual:OL:USDT:USDT:ol-usdt-swap",
+      "shadow_entry_cost_limit_usdc": "10"
+    },
+    "originalrang": 6,
+    "grenze_einschliesslich_kosten_usdc": "10",
+    "gebuchte_menge": null,
+    "owner_zuordnung": {
+      "N5": "Geprüfte Mitgliedschaft und gezielte Nachfolge genau für Slot 4",
+      "Cap23": "Wirksame Folgeauswahl mit echtem Vorgänger, Rang und Gültigkeitszeit",
+      "Cap24": "Binden der geprüften Auswahl samt Reconciliation; keine Berechnung oder Reservierung des Budgets",
+      "Risk Sizing und Slot-Budget-Owner": "Erst nach bestätigter Entscheidung native Kontrakte berechnen und Gesamtgegenwert mit Kosten gegen das Profil-Limit prüfen"
+    },
+    "n5_nachfolger_transition": null,
+    "cap23_nachfolger_selection_id": null,
+    "cap23_nachfolger_digest": null,
+    "cap24_nachfolger_binding": null,
+    "erforderliche_pruefungen": [
+      "Für einen finanziell begründeten Ersatz braucht die Mitgliedschaft eine slotbezogene Zulassungsregel: belegte Undurchführbarkeit des PIEVERSE-Mindestloses und belegte Durchführbarkeit des OL-Mindestloses mit beiden Handelsseiten, Finanzierung und Umrechnung zum selben Entscheidungsstand. Aus dem original geordneten Kandidatenfeld den ersten passenden, für diesen Slot freien Swap bestimmen. Den Cap22-Originalrang beider Instrumente erhalten. Dies ist ein fachlicher Vorschlag, keine vorhandene Ersatzfreigabe.",
+      "Slotbelegung 1, 2 und 5 und die Reservierung des externen Slots 3 bewahren. Den Ersatz an Slot 4 adressieren. Freie-Slot-Verteilung allein würde Slot 3 vor Slot 4 wählen.",
+      "Die bisherige Top-5-Mitgliedschaft und unveränderliche Erstpublikation, der Profilleser und die Archivverifikation müssen einen eigenständig belegten Nachfolger mit Rang 6 auf Slot 4 unterscheiden können. Die Erstpublikation selbst bleibt historisch unverändert.",
+      "Den echten PIEVERSE-Vorgänger, aktuelle Portfolio-/Custody-Wahrheit und die zuständige Rotationsentscheidung erhalten. Eine neue Cap23-Regel müsste eine nachgewiesene Unzulässigkeit des bisherigen Instruments am Slot abbilden. Der bestehende reine Rangvergleich bremst den Wechsel 4 auf 6. Cap23 muss OL als aktive Folgeauswahl ausweisen.",
+      "Cap24 erhält den OL-Auswahl-Digest, das passende Cap21/22-Paar, eine gültige Auswahlzeit, Session und beobachtetes Portfolio für Reconciliation. Die geprüfte Rückgabe muss exakt OL binden.",
+      "Im Shadow-Profil maximal 10 USDC einschließlich modellierter Eröffnungs-, Schließungs- und nächster Fundingkosten. Mengen werden erst downstream durch Risk Sizing und Budget-Owner auf Basis zeitlich zulässiger Originaldaten gebunden."
+    ]
+  },
+  "slot4_status": "BLOCKIERT_KEINE_N5_NACHFOLGEBINDUNG",
+  "archived_paper_sha256": "b91ff34934c16cf83cf9ab7375a2d704b133d402e8f5c6c1241b17e05caf058e",
+  "offline_ms": [
+    {
+      "n": 1,
+      "observation": 65,
+      "mark_ms": 1795426379536,
+      "direction": "SELL",
+      "delay_ms": 0,
+      "initial_rejections": [],
+      "original_decision_id": "decision-7aae3d7f6fcc9e08fc69ca7bf2172b2b",
+      "source_age_ms": 22.528,
+      "before_execution_ms": 1063.2036,
+      "after_execution_ms": [
+        103.8549,
+        102.088
+      ],
+      "before_signal_ms": 1063.2036,
+      "after_signal_ms": [
+        103.8549,
+        102.088
+      ]
+    },
+    {
+      "n": 2,
+      "observation": 96,
+      "mark_ms": 1795426653867,
+      "direction": "BUY",
+      "delay_ms": 16656,
+      "initial_rejections": [
+        "ZKP_PAPER_SLIPPAGE_LIMIT"
+      ],
+      "original_decision_id": "decision-87bdc610e86abf7e5cade4902f91ddb7",
+      "source_age_ms": 122.004,
+      "before_execution_ms": 149.9043,
+      "after_execution_ms": [
+        151.4798,
+        151.1091
+      ],
+      "before_signal_ms": 16805.9043,
+      "after_signal_ms": [
+        16807.4798,
+        16807.1091
+      ]
+    },
+    {
+      "n": 3,
+      "observation": 128,
+      "mark_ms": 1795426951181,
+      "direction": "SELL",
+      "delay_ms": 0,
+      "initial_rejections": [],
+      "original_decision_id": "decision-62668f568476bae111e6e5922188db91",
+      "source_age_ms": 63.242,
+      "before_execution_ms": 2859.224,
+      "after_execution_ms": [
+        167.7725,
+        144.4022
+      ],
+      "before_signal_ms": 2859.224,
+      "after_signal_ms": [
+        167.7725,
+        144.4022
+      ]
+    },
+    {
+      "n": 4,
+      "observation": 179,
+      "mark_ms": 1795427444636,
+      "direction": "BUY",
+      "delay_ms": 79479,
+      "initial_rejections": [
+        "ZKP_PAPER_SPREAD_LIMIT"
+      ],
+      "original_decision_id": "decision-9e81f49a3c5a168a069498263cb38309",
+      "source_age_ms": 26.754,
+      "before_execution_ms": 57.3622,
+      "after_execution_ms": [
+        57.7837,
+        58.2238
+      ],
+      "before_signal_ms": 79536.3622,
+      "after_signal_ms": [
+        79536.7837,
+        79537.2238
+      ]
+    },
+    {
+      "n": 5,
+      "observation": 202,
+      "mark_ms": 1795427683038,
+      "direction": "SELL",
+      "delay_ms": 49552,
+      "initial_rejections": [
+        "ZKP_PAPER_SPREAD_LIMIT"
+      ],
+      "original_decision_id": "decision-ec5f3d29ea1902a2771292b547b35624",
+      "source_age_ms": 22.982,
+      "before_execution_ms": 70.2061,
+      "after_execution_ms": [
+        53.9318,
+        54.9039
+      ],
+      "before_signal_ms": 49622.2061,
+      "after_signal_ms": [
+        49605.9318,
+        49606.9039
+      ]
+    },
+    {
+      "n": 6,
+      "observation": 218,
+      "mark_ms": 1795427854099,
+      "direction": "BUY",
+      "delay_ms": 0,
+      "initial_rejections": [],
+      "original_decision_id": "decision-991aee5cf337247bcb9cb3d169494621",
+      "source_age_ms": 22.373,
+      "before_execution_ms": 4851.8657,
+      "after_execution_ms": [
+        111.8118,
+        105.3751
+      ],
+      "before_signal_ms": 4851.8657,
+      "after_signal_ms": [
+        111.8118,
+        105.3751
+      ]
+    },
+    {
+      "n": 7,
+      "observation": 270,
+      "mark_ms": 1795428275849,
+      "direction": "SELL",
+      "delay_ms": 362612,
+      "initial_rejections": [
+        "ZKP_PAPER_SPREAD_LIMIT"
+      ],
+      "original_decision_id": "decision-11d0600cb3f1bdb73bc8367ed38e7c1b",
+      "source_age_ms": 22.177,
+      "before_execution_ms": 54.5856,
+      "after_execution_ms": [
+        57.8377,
+        55.9906
+      ],
+      "before_signal_ms": 362666.5856,
+      "after_signal_ms": [
+        362669.8377,
+        362667.9906
+      ]
+    },
+    {
+      "n": 8,
+      "observation": 300,
+      "mark_ms": 1795428510335,
+      "direction": "BUY",
+      "delay_ms": 227027,
+      "initial_rejections": [
+        "ZKP_PAPER_SPREAD_LIMIT",
+        "ZKP_PAPER_SLIPPAGE_LIMIT"
+      ],
+      "original_decision_id": "decision-a3b48ac3c5c4a092ad9772547ae25cb6",
+      "source_age_ms": 30.819,
+      "before_execution_ms": 62.9475,
+      "after_execution_ms": [
+        83.3626,
+        64.2538
+      ],
+      "before_signal_ms": 227089.9475,
+      "after_signal_ms": [
+        227110.3626,
+        227091.2538
+      ]
+    },
+    {
+      "n": 9,
+      "observation": 353,
+      "mark_ms": 1795429065357,
+      "direction": "SELL",
+      "delay_ms": 151656,
+      "initial_rejections": [
+        "ZKP_PAPER_SPREAD_LIMIT"
+      ],
+      "original_decision_id": "decision-829ecc9c8322d62cd20bf6f59fc84cff",
+      "source_age_ms": 21.929,
+      "before_execution_ms": 54.6651,
+      "after_execution_ms": [
+        58.639,
+        58.01
+      ],
+      "before_signal_ms": 151710.6651,
+      "after_signal_ms": [
+        151714.639,
+        151714.01
+      ]
+    }
+  ],
+  "historical_depth": {
+    "polls": 119,
+    "actual": {
+      "CAPTURE_BLOCKED": 11,
+      "NET_REVERSAL_BOOKED": 6,
+      "REVERSAL_BLOCKED": 102
+    },
+    "denied_reasons": {
+      "Slippage": 9,
+      "Spread": 76,
+      "beide": 17
+    },
+    "technical_at_comparison_size": {
+      "Slippage": 1,
+      "Spread": 7,
+      "beide": 3
+    },
+    "mark_gaps_ms": {
+      "min": 7346,
+      "median": 7652,
+      "max": 12913
+    },
+    "book_gaps_ms": {
+      "min": 7350,
+      "median": 7650,
+      "max": 13000
+    },
+    "mark_minus_book_ms": {
+      "min": 201,
+      "median": 237,
+      "max": 331
+    },
+    "observed_intervals": 113,
+    "snapshot_depth": {
+      "[50, 50]": 119
+    },
+    "seq_chain_missing": true
+  }
+}
