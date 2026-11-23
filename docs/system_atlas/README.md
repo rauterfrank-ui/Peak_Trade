@@ -50,6 +50,14 @@ Die [Fachbereiche und Außenkanten](generated/BOUNDARIES.md) erschließen die se
 
 Der [Zuordnungskatalog](source/artifact-assignments.jsonl.gz) enthält eine primäre Adresse und eine Artefaktrolle pro Pfad. Gemeinsame Zuständigkeiten bleiben als Querbezüge erhalten. Evidence- und Testartefakte beschreiben ihre dokumentarische oder prüfende Funktion. Der [Manifestbeleg](source/artifact-assignments.json) bindet die Zuordnungen an einen Git-Baum. Archiv, Entwicklungsdaten und neue Atlasdateien sind im selben Katalog adressierbar.
 
+Für den Vergleichsstand `46847180` ergänzt der [Entwicklungsbeleg](source/development-binding-v1.json) unter `artifact_assignments` die 22.798 ursprünglichen Einträge um 146 Zuordnungen aus Obsidian. Für 76 vorhandene Einträge führt er die Prüfherkunft nach. Die Abfragen verwenden alle 22.944 Datensätze. `repo_blob` entspricht dem Feld `blob` im Obsidian-Register und bezeichnet das Git-Objekt am Vergleichsstand. `zuordnungsbasis_blob` erhält den Objektbezug der ursprünglichen Zuordnung.
+
+Der folgende Offline-Abgleich prüft für jeden Pfad sämtliche Registerfelder einschließlich Rolle, weiterer Bereiche, Ebenen und Prüfherkunft. Der Aufruf erfolgt aus dem Repo mit dem Pfad zum vorhandenen Vault.
+
+```bash
+./scripts/pt docs/system_atlas/coverage.py check --obsidian-register "/Pfad/zum/Vault/08 Register/Repo-Dateien.jsonl"
+```
+
 ```bash
 ./scripts/pt docs/system_atlas/coverage.py check
 ./scripts/pt docs/system_atlas/coverage.py area SL
@@ -80,7 +88,7 @@ PEAKTRADE_LEGACY_ATLAS_REPO_ROOT=/pfad/zum/historischen-checkout \
 
 ## Gebundene Weiterentwicklung nach dem Freeze
 
-Der Katalog bleibt eine Ansicht des unveränderten Freeze-Commits. Spätere Produktänderungen werden im separaten [Entwicklungsbeleg](source/development-binding-v1.json) mit ursprünglichem und aktuellem SHA256 pro Datei gebunden. Die normale Prüfung akzeptiert nur dieses konkrete Delta und meldet seine Größe sowie veränderte Produktquellen ausdrücklich. Nicht gebundene oder nachträglich veränderte Produktdateien bleiben Fehler. Der Beleg erzeugt keine fachliche oder betriebliche Freigabe und macht den alten Katalog nicht zu einem neuen Gesamtkatalog.
+Der Quellenindex und der Symbolkatalog bleiben Ansichten des ursprünglichen Freeze-Commits. Die fortgeschriebene Dateizuordnung hat den im Entwicklungsbeleg angegebenen Vergleichsstand. Spätere Produktänderungen werden im separaten [Entwicklungsbeleg](source/development-binding-v1.json) mit ursprünglichem und aktuellem SHA256 pro Datei gebunden. Die normale Prüfung akzeptiert nur dieses konkrete Delta und meldet seine Größe sowie veränderte Produktquellen ausdrücklich. Nicht gebundene oder nachträglich veränderte Produktdateien bleiben Fehler. Der Beleg erzeugt keine fachliche oder betriebliche Freigabe und macht den alten Katalog nicht zu einem neuen Gesamtkatalog.
 
 Die erste gebundene Änderung ist der [N1-Post-Close-Fortsetzungsanschluss](../ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md). Seine Abnahme und offenen Grenzen stehen im [Umsetzungsbeleg](../ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md). Die Freeze-Tags, ihr ursprünglicher Dateikatalog und die strikte Prüfung mit dem Modus frozen bleiben unverändert.
 

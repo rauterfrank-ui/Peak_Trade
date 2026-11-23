@@ -28,13 +28,13 @@ def _git(root, *args):
 
 def _tree(root, revision):
     tree = {}
-    for entry in _git(root, "ls-tree", "-r", "-z", revision).split(b"\0"):
+    for entry in _git(root, "ls-tree", "-rlz", revision).split(b"\0"):
         if entry:
             meta, name = entry.split(b"\t", 1)
-            mode, kind, oid = meta.decode().split()
+            mode, kind, oid, size = meta.decode().split()
             if kind != "blob":
                 raise ValueError(f"Unsupported Git artifact: {name!r} ({kind})")
-            tree[name.decode()] = (mode, oid)
+            tree[name.decode()] = (mode, oid, int(size))
     return tree
 
 
@@ -75,7 +75,7 @@ def _validate_paths(rows, tree, domains, layers):
             _require(row["area"] == "CORE", f"Master V2 artifact outside CORE: {path}")
         if path in tree:
             _require(
-                (row.get("mode"), row.get("repo_blob")) == tree[path],
+                (row.get("mode"), row.get("repo_blob")) == tree[path][:2],
                 f"Git object mismatch: {path}",
             )
         else:
@@ -164,6 +164,78 @@ def _validate_boundaries(doc, model, tree):
     return routes, signals
 
 
+def _obsidian_record(row):
+    record = row.copy()
+    record["blob"] = record.pop("repo_blob")
+    return record
+
+
+def _record_bytes(record):
+    return (
+        json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode()
+
+
+def _current_assignments(root, base, update, domains, layers):
+    revision = update["repo_commit"]
+    _require(
+        len(revision) == 40 and all(c in "0123456789abcdef" for c in revision),
+        "Invalid assignment commit",
+    )
+    snapshot = _tree(root, revision + "^{commit}")
+    additions = _unique(update["additions"], "path")
+    _require(not base.keys() & additions.keys(), "Assignment addition replaces a baseline path")
+    _require(
+        base.keys() | additions.keys() == snapshot.keys(),
+        "Assignments differ from the bound Git tree",
+    )
+    _validate_paths(additions, snapshot, domains, layers)
+    reviewed = update["reviewed_basis"]
+    _require(
+        reviewed.keys() <= base.keys() and all(reviewed.values()),
+        "Invalid reviewed assignment basis",
+    )
+
+    rows = {}
+    digest = sha256()
+    for path in sorted(snapshot):
+        source = base[path] if path in base else additions[path]
+        mode, blob, size = snapshot[path]
+        original = source.get("zuordnungsbasis_blob", source["repo_blob"])
+        row = {
+            **source,
+            "basis": reviewed.get(path, source["basis"]),
+            "mode": mode,
+            "repo_blob": blob,
+            "bytes": size,
+            "revision": revision,
+            "zuordnungsbasis_blob": original,
+            "zuordnung_bytes": "identisch" if original == blob else "geaendert",
+        }
+        rows[path] = row
+        digest.update(_record_bytes(_obsidian_record(row)))
+    _require(
+        digest.hexdigest() == update["records_sha256"],
+        "Current assignment digest differs from Obsidian",
+    )
+    return rows
+
+
+def compare_obsidian(rows, register):
+    raw = register.read_bytes()
+    obsidian = _unique((json.loads(line) for line in raw.splitlines()), "path")
+    _require(rows.keys() == obsidian.keys(), "Repo and Obsidian assignment paths differ")
+    for path, row in rows.items():
+        _require(
+            _record_bytes(_obsidian_record(row)) == _record_bytes(obsidian[path]),
+            f"Obsidian assignment differs: {path}",
+        )
+    return {
+        "obsidian_matching_records": len(rows),
+        "obsidian_register_sha256": sha256(raw).hexdigest(),
+    }
+
+
 def load_coverage(root, model, *, strict=False):
     manifest = _load(root, "artifact-assignments.json")
     doc = _load(root, "boundaries.json")
@@ -197,6 +269,13 @@ def load_coverage(root, model, *, strict=False):
     } | {f"CORE-L{i}" for i in range(1, 11)}
     _validate_paths(rows, tree, domains, layers)
     routes, signals = _validate_boundaries(doc, model, tree)
+    binding_path = root / SOURCE / "development-binding-v1.json"
+    revision = manifest["repo_commit"]
+    if binding_path.is_file():
+        update = json.loads(binding_path.read_bytes()).get("artifact_assignments")
+        if update is not None:
+            rows = _current_assignments(root, rows, update, domains, layers)
+            revision = update["repo_commit"]
     current = set(
         _git(root, "ls-files", "-z", "--cached", "--others", "--exclude-standard")
         .decode()
@@ -210,6 +289,8 @@ def load_coverage(root, model, *, strict=False):
             not missing and not extra, f"Checkout coverage drift: missing={missing}, stale={extra}"
         )
     counts = {
+        "atlas_assignment_revision": revision,
+        "atlas_baseline_assigned_paths": manifest["artifact_count"],
         "atlas_assigned_paths": len(rows),
         "atlas_checkout_missing_paths": len(missing),
         "atlas_checkout_stale_paths": len(extra),
@@ -244,7 +325,10 @@ def render_boundaries(doc, rows, model):
     lines = [
         "# Fachbereiche, Außenkanten und Dateizuordnung",
         "",
-        f"Geprüfter Repo-Stand {doc['reviewed_repo_commit']} · Obsidian-Basis {doc['obsidian_baseline']}.",
+        f"Stand der Außenkanten `{doc['reviewed_repo_commit']}` · Obsidian-Basis `{doc['obsidian_baseline']}`.",
+        f"Dateizuordnung für {len(rows):,} Pfade am Repo-Stand `{next(iter(rows.values())).get('revision', doc['reviewed_repo_commit'])}`.".replace(
+            ",", "."
+        ),
         "Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.",
         "Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.",
         "",
@@ -340,7 +424,7 @@ def render_boundaries(doc, rows, model):
         "- [Übergaben und Signalverträge](../source/boundaries.json) mit ursprünglichen Adressen, "
         "Richtung, Nutzdaten, Zustand, Verbrauch, Beleggrenze und Repo-Quellen. "
         "Die direkte M4/M5-Aufnahme zu Governance ist seit #7240 als historischer Pfad markiert.",
-        "- [Dateizuordnungen](../source/artifact-assignments.jsonl.gz) und [Prüfsummen und Anzahl](../source/artifact-assignments.json).",
+        "- [Ursprüngliche Dateizuordnungen](../source/artifact-assignments.jsonl.gz), [Manifest](../source/artifact-assignments.json) und [nachgeführte Zuordnungen im Entwicklungsbeleg](../source/development-binding-v1.json).",
         "- Abfragen und strikte Prüfung stehen in der [Atlas-Anleitung](../README.md).",
         "",
     ]
@@ -351,13 +435,22 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("check", "path", "area", "edge"))
     parser.add_argument("key", nargs="?")
+    parser.add_argument(
+        "--obsidian-register",
+        type=Path,
+        help="Compare every field with the supplied Obsidian JSONL catalog.",
+    )
     args = parser.parse_args()
     if (args.mode == "check") != (args.key is None):
         parser.error("path, area and edge each require a key")
+    if args.obsidian_register is not None and args.mode != "check":
+        parser.error("--obsidian-register requires check")
     model = _load(ROOT, "current-model.json")
     doc, rows, routes, signals, counts = load_coverage(ROOT, model, strict=args.mode == "check")
     if args.mode == "check":
         result = counts
+        if args.obsidian_register is not None:
+            result.update(compare_obsidian(rows, args.obsidian_register))
     elif args.mode == "path":
         result = rows[args.key]
     elif args.mode == "edge":

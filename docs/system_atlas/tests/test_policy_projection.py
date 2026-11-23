@@ -143,6 +143,8 @@ def test_reviewed_development_policies_are_explicit_in_validation_result():
         *PROJECTION["OWNER_ADJUDICATION_DELTAS"],
         *PROJECTION["D01_D02_ADJUDICATION_DELTAS"],
         *PROJECTION["DECISION_ATTRIBUTION_LEARNING_DELTAS"],
+        *PROJECTION["P5_ARTIFACT_ADMISSION_DELTAS"],
+        *PROJECTION["P5_BINDING_CONTEXT_ADMISSION_DELTAS"],
     }
     frozen = {row["path"] for row in PROJECTION["load_policies"](ROOT, LAW)}
     assert set(result["development_policy_files"]) == reviewed & frozen
