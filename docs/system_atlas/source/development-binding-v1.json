@@ -1594,7 +1594,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "6cda5c63bc42d15b339843ba1fb23b4e50d3362ecc6dd7812e1d471ea39145d0"
+      "sha256": "9edf10f5e46ffdbd780b55184b6457b5c45d7ce3ab412045818fad05047339b1"
     },
     {
       "path": "pyproject.toml",
