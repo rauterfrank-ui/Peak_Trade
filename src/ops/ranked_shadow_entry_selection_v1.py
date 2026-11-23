@@ -1,6 +1,7 @@
 """Read the N5 assignment and Cap24 selection for an isolated Shadow entry."""
 
 import json
+from datetime import datetime
 from decimal import Decimal, DecimalException
 from hashlib import sha256
 from pathlib import Path
@@ -46,7 +47,7 @@ def _selection_context(config, session_id, assignment):
     return current, read_shadow_entry_admission_v1(config, current)
 
 
-def _inspect(config, now, current, admission):
+def _inspect(config, now, current, admission, *, include_bound=False):
     ref = current.reference()
     blockers = []
     try:
@@ -104,6 +105,8 @@ def _inspect(config, now, current, admission):
             raise ValueError("SHADOW_ENTRY_SINGLE_POSITION_REQUIRED")
         admission.require_binding_v1(bound)
         result["cap24_evidence_sha256"] = hashes[EVIDENCE_FILENAME]
+        if include_bound:
+            result["bound"] = bound
     except (OSError, KeyError, TypeError, ValueError) as exc:
         blockers.append(f"SHADOW_ENTRY_CAP24_INVALID:{exc}")
     return result
@@ -189,13 +192,19 @@ def resolve_ranked_shadow_entry_selection_v1(
     now = clock()
     current, admission = _selection_context(config, session_id, assignment)
     result = _inspect(config, now, current, admission)
+    selected_at = [
+        datetime.fromisoformat(slot.selection.selected_at_wall_time.replace("Z", "+00:00"))
+        for slot in (current, admission)
+    ]
+    if any(timestamp.timestamp() > now for timestamp in selected_at):
+        return dict(result, blockers=["SHADOW_ENTRY_SELECTION_NOT_YET_OBSERVED"]), None
     if result["blockers"] and result["blockers"] != ["SHADOW_ENTRY_CAP24_MISSING"]:
         return result, None
     observed = observe_ranked_shadow_positions_v1(state, current, session_id=session_id, now=now)
     if any(p.signed_quantity != 0 for p in observed.positions):
         return dict(result, blockers=["SHADOW_FIRST_PURCHASE_REQUIRES_FLAT_SLOT"]), None
     if not result["blockers"]:
-        return result, admission
+        return dict(result, shadow_cap24=config["shadow_cap24"], configured_cap24=True), admission
     source = config.get("shadow_entry_admission") or config["n5_source"]
     native = admission.instrument.venue_native_inst_id
     response = market.source_observations["mark"]
@@ -271,3 +280,26 @@ def resolve_ranked_shadow_entry_selection_v1(
     current, admission = _selection_context(config, session_id, assignment)
     checked = _inspect(dict(config, shadow_cap24=pointer), clock(), current, admission)
     return dict(checked, shadow_cap24=pointer), (None if checked["blockers"] else admission)
+
+
+def read_ranked_entry_bound_v1(path, assignment, admission, selection, now):
+    """Read the validated bound object from the same Cap24 bytes used by the gate."""
+    config = json.loads(Path(path).read_bytes())
+    current, selected = _selection_context(config, selection["session_id"], assignment)
+    pointer = selection["shadow_cap24"]
+    if (
+        selected != admission
+        or selection["n5_assignment"] != current.reference()
+        or selection["entry_admission"] != selected.reference()
+        or config.get("shadow_cap24") != (pointer if selection.get("configured_cap24") else None)
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_SELECTION_CHANGED")
+    checked = _inspect(
+        dict(config, shadow_cap24=pointer), now, current, selected, include_bound=True
+    )
+    if (
+        checked["blockers"]
+        or checked["cap24_evidence_sha256"] != selection["cap24_evidence_sha256"]
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_CAP24_CHANGED")
+    return checked["bound"]

@@ -763,16 +763,45 @@ class WallclockSessionRuntimeV1:
                 "connectivity_events.jsonl",
                 {"event": "transport_opened", "host": CANONICAL_HOST},
             )
+            ranked_entry = None
+            if ranked_slot is not None:
+                from src.ops.ranked_shadow_first_purchase_v1 import RankedShadowFirstPurchaseV1
+                from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+                    load_slot_entry_budget_v1,
+                )
+
+                inventory = self.transport.fetch_instruments(
+                    venue_instrument_id=instrument.native_id, inst_type="SWAP"
+                )
+                ranked_entry = RankedShadowFirstPurchaseV1(
+                    config=self.instrument_card_selection_root,
+                    assignment=ranked_slot,
+                    inventory=inventory.payload,
+                    policy=load_slot_entry_budget_v1(
+                        self.repo_root
+                        / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
+                    ),
+                    reconciliation_root=self.evidence_root.parent
+                    / "entry-reconciliation"
+                    / session_id,
+                    transport=self.transport,
+                    clock=self.clock_wall,
+                )
             self.venue_mapping = resolve_mapping_with_transport_inventory_v1(
                 transport=self.transport,
                 canonical_instrument_id=instrument.canonical_id,
                 i17_scope=instrument,
+                **({"instruments_payload": ranked_entry.inventory} if ranked_entry else {}),
             )
             if ranked_slot is not None:
                 self.bridge_state = HardenedBridgeSessionStateV2(
                     instrument_id=instrument.canonical_id,
                     venue_instrument_id=instrument.native_id,
                     session_id=session_id,
+                )
+                portfolio = self.bridge_state.portfolio
+                self.bridge_state.portfolio = portfolio.from_params(
+                    replace(portfolio.model.params, linear_futures_collateral=True)
                 )
             elif instrument != ETH_I17:
                 self.bridge_state = HardenedBridgeSessionStateV2(
@@ -1294,7 +1323,10 @@ class WallclockSessionRuntimeV1:
                                     ddo_capture_binding=ddo_capture_binding,
                                     ddo_repository_sha=self._expected_repository_sha,
                                     **(
-                                        {"ranked_swap_observation": swap_market}
+                                        {
+                                            "ranked_swap_observation": swap_market,
+                                            "ranked_entry": ranked_entry,
+                                        }
                                         if swap_market
                                         else {}
                                     ),
@@ -1320,6 +1352,8 @@ class WallclockSessionRuntimeV1:
                                 )
                             elif card_market is not None:
                                 self.instrument_card_stream.complete_v1(outcome_bridge.bridge_cycle)
+                        except NetworkBoundaryError:
+                            raise
                         except ValueError as exc:
                             # The core has rejected this input. Preserve earlier cycles and
                             # seal the abort without turning the rejected cycle into a decision.
@@ -1333,70 +1367,9 @@ class WallclockSessionRuntimeV1:
                             self.cycle_count += 1
                             cycle = outcome_bridge.bridge_cycle
                             decision_return_ts = self.clock_wall()
-                            if swap_market is not None and cycle["decision_outcome"] in {
-                                "enter_long",
-                                "enter_short",
-                            }:
-                                from src.ops.ranked_shadow_entry_selection_v1 import (
-                                    resolve_ranked_shadow_entry_selection_v1,
-                                )
-                                from src.ops.ranked_swap_shadow_observation_v1 import (
-                                    observe_ranked_entry_fx_v1,
-                                )
-
-                                try:
-                                    selection, admitted_slot = (
-                                        resolve_ranked_shadow_entry_selection_v1(
-                                            self.instrument_card_selection_root,
-                                            clock=self.clock_wall,
-                                            assignment=ranked_slot,
-                                            session_id=session_id,
-                                            state=self.bridge_state,
-                                            market=swap_market,
-                                            decision_id=cycle["decision_id"],
-                                            reconciliation_root=self.evidence_root.parent
-                                            / "entry-reconciliation"
-                                            / session_id,
-                                        )
-                                    )
-                                except (
-                                    OSError,
-                                    ValueError,
-                                    RuntimeError,
-                                    KeyError,
-                                    TypeError,
-                                ) as exc:
-                                    admitted_slot = None
-                                    selection = dict(
-                                        session_id=session_id,
-                                        n5_assignment=ranked_slot.reference(),
-                                        entry_admission=None,
-                                        cap24_evidence_sha256=None,
-                                        blockers=[f"SHADOW_ENTRY_SOURCE_UNAVAILABLE:{exc}"],
-                                    )
-                                cycle["shadow_entry_selection"] = selection
-                                if admitted_slot is not None:
-                                    try:
-                                        cycle["shadow_entry_valuation"] = (
-                                            observe_ranked_entry_fx_v1(
-                                                ranked_slot,
-                                                swap_market,
-                                                cycle,
-                                                admission=admitted_slot,
-                                                transport=self.transport,
-                                                clock=self.clock_wall,
-                                            )
-                                        )
-                                    except EeaPublicMdTransportError as exc:
-                                        cycle["shadow_entry_valuation"] = dict(
-                                            status="UNAVAILABLE",
-                                            reason=str(exc),
-                                        )
-                                        entry_transport_error = exc
-                                    except OSError as exc:
-                                        raise WallclockEvidenceError(
-                                            "I17_SWAP_ENTRY_FX_WRITE_FAILED"
-                                        ) from exc
+                            if ranked_entry is not None:
+                                entry_transport_error = ranked_entry.transport_error
+                                ranked_entry.transport_error = None
                             cycle["shadow_decision_timing"] = {
                                 "market_sequence": tick.sequence,
                                 "mark_event_ts_unix": tick.event_ts_unix,

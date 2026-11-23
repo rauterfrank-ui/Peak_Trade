@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.full_core_live_path_composition_root_v1.current_productive_candidate_input_gate_v1 import (
     CANDIDATE_REJECTED,
     candidate_market_context_rejection_codes_v1,
@@ -647,6 +648,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     f1_m9_threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
     repo_root: Path | None = None,
     ddo_durable_evidence_ledger_path: Path | None = None,
+    reusable_ddo_capture: DdoCaptureBindingV0 | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
     kill_switch_state_path: str | None = None,
@@ -1336,7 +1338,9 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     )
     input_digest = bind_input.input_digest
     ddo_binding = (
-        build_productive_ddo_capture_binding_v1(ledger_path=ddo_durable_evidence_ledger_path)
+        build_productive_ddo_capture_binding_v1(
+            ledger_path=ddo_durable_evidence_ledger_path, reusable=reusable_ddo_capture
+        )
         if ddo_durable_evidence_ledger_path is not None
         else None
     )

@@ -27,6 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     immutable_json_v1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    RANKED_SWAP_SCOPES,
     SOPH_I17,
 )
 from src.ops.instrument_card_input_observation_v1 import observe_instrument_card_input_v1
@@ -572,6 +573,9 @@ def _validate_first_purchase_v1(entry):
 def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
     """Validate the session, slot, selection and budget represented by a receipt."""
     _validate_first_purchase_v1(entry)
+    scope = next(
+        (i for i in (*RANKED_SWAP_SCOPES, SOPH_I17) if i.canonical_id == state.instrument_id), None
+    )
     if (
         budget["owner"] != "I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY"
         or budget["status"] != "BOUND"
@@ -581,7 +585,9 @@ def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
         or entry["session_id"] != state.session_id
         or entry["binding_scope"] != "ANALYTICAL_SLOT_ENTRY"
         or entry["lane_id"] != budget["lane_id"]
-        or budget["lane_id"] != SOPH_I17.lane_id
+        or scope is None
+        or budget["lane_id"] != scope.lane_id
+        or scope.native_id != state.venue_instrument_id
         or entry["instrument_id"] != budget["instrument_id"]
         or (state.instrument_id, state.venue_instrument_id)
         != (bound.instrument_id, bound.venue_native_id)
@@ -595,13 +601,128 @@ def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_BINDING_MISMATCH")
 
 
-def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
+def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry, sizing=None):
     """Keep the analytical sizing amount on the selected slot for its session."""
     validate_shadow_slot_entry_budget_v1(state=state, bound=bound, budget=budget, entry=entry)
-    prior = state.soph_confirmed_entry_budget
+    ranked = any(s.canonical_id == state.instrument_id for s in RANKED_SWAP_SCOPES)
+    prior = state.ranked_confirmed_entry_budget if ranked else state.soph_confirmed_entry_budget
     if prior is not None and prior != entry:
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_ALREADY_BOUND")
-    state.soph_confirmed_entry_budget = dict(entry)
+    if ranked:
+        validate_ranked_sized_amount_v1(budget, entry, sizing)
+        state.ranked_confirmed_entry_budget = dict(entry)
+        return state.ranked_confirmed_entry_budget
+    else:
+        state.soph_confirmed_entry_budget = dict(entry)
+
+
+def validate_ranked_sized_amount_v1(budget, entry, sizing):
+    from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import (
+        ReservationSizingBindingV1,
+        request_digest_v1,
+    )
+
+    if not isinstance(sizing, ReservationSizingBindingV1):
+        raise ValueError("SHADOW_FIRST_PURCHASE_ORIGINAL_SIZING_REQUIRED")
+    amount = Decimal(entry["nominal_usdt"])
+    sizing.validate_v1(amount=amount, decision_id=entry["decision_id"])
+    request = sizing.applied_input
+    snapshot = budget["original_snapshot"]
+    valuation = snapshot["valuation"]
+    if (
+        budget["source_digest"] != canonical_digest_v1(snapshot)
+        or request.config_digest != budget["source_digest"]
+        or sizing.request_digest != entry["sizing_request_digest"]
+        or request_digest_v1(request) != sizing.request_digest
+        or request.reference_price != Decimal(valuation["mark_usdt_per_base"])
+        or request.instrument.contract_multiplier != Decimal(entry["base_per_contract"])
+        or request.instrument_id != entry["instrument_id"]
+        or request.selected_side.lower() != entry["direction"]
+        or sizing.decision.quantity_provenance.sizing_ref != entry["sizing_ref"]
+        or sizing.decision.final_quantity != Decimal(entry["quantity_contracts"])
+        or amount * Decimal(valuation["usdc_per_usdt"]) != Decimal(entry["nominal_usdc"])
+        or (amount + Decimal(entry["cost_allowance_usdt"])) * Decimal(valuation["usdc_per_usdt"])
+        > Decimal(entry["entry_limit_usdc"])
+        or Decimal(entry["entry_limit_usdc"]) > Decimal(budget["available_amount"])
+        or entry["fx_sha256"] != valuation["original_fx_sha256"]
+        or (
+            valuation["decision_id"],
+            valuation["lane_id"],
+            valuation["instrument_id"],
+            valuation["venue_native_id"],
+            valuation["entry_selection_digest"],
+            valuation["mark_sha256"],
+        )
+        != (
+            entry["decision_id"],
+            entry["lane_id"],
+            entry["instrument_id"],
+            entry["venue_native_id"],
+            entry["selection_integrity_digest"],
+            entry["mark_sha256"],
+        )
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_SIZED_AMOUNT_MISMATCH")
+
+
+def ranked_shadow_slot_budget_v1(state, lane, policy, valuation):
+    """Cap the analytical allocation in USDC using the original flat USDT model."""
+    from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
+        PAPER_ALLOCATION_USDC,
+    )
+
+    snap = plain(state.portfolio.snapshot())
+    fx = Decimal(valuation["usdc_per_usdt"])
+    if (
+        (lane, state.instrument_id, state.venue_instrument_id)
+        not in {(s.lane_id, s.canonical_id, s.native_id) for s in RANKED_SWAP_SCOPES}
+        or (
+            valuation["lane_id"],
+            valuation["instrument_id"],
+            valuation["venue_native_id"],
+            valuation["status"],
+        )
+        != (lane, state.instrument_id, state.venue_instrument_id, "OBSERVED")
+        or not fx.is_finite()
+        or fx <= 0
+        or policy.currency != "USDC"
+        or lane not in policy.allowed_slot_ids
+        or not snap["params"].get("linear_futures_collateral")
+        or snap["orders_submitted"] is not False
+        or snap["broker_writes"] is not False
+        or state.ranked_confirmed_entry_budget is not None
+        or snap["applied_fill_ids"]
+        or any(Decimal(p["quantity"]) != 0 for p in snap["state"]["positions"].values())
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_FLAT_BUDGET_REQUIRED")
+    available = min(
+        PAPER_ALLOCATION_USDC,
+        policy.per_slot_reserved_notional_limit,
+        Decimal(snap["state"]["equity"]) * fx,
+        Decimal(snap["state"]["cash"]) * fx,
+    )
+    if available <= 0:
+        raise ValueError("SHADOW_FIRST_PURCHASE_BUDGET_EXHAUSTED")
+    snapshot = dict(
+        session_id=state.session_id,
+        lane_id=lane,
+        original_portfolio=snap,
+        policy=policy.to_dict_v1(),
+        valuation=valuation,
+        portfolio_currency="USDT",
+        test_allocation_usdc=str(PAPER_ALLOCATION_USDC),
+    )
+    return dict(
+        status="BOUND",
+        owner="I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY",
+        lane_id=lane,
+        instrument_id=state.instrument_id,
+        currency="USDC",
+        available_amount=str(available),
+        original_snapshot=snapshot,
+        source_digest=canonical_digest_v1(snapshot),
+        reserved_amount=None,
+    )
 
 
 def shadow_budget_source_v1(state, *, repo):

@@ -9,6 +9,7 @@ from time import time
 
 from src.execution.position_delta import signed_position_delta
 from src.governance.capital_risk_sizing_v1 import evaluate_capital_risk_sizing_v1
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.bounded_peaktrade_system_composition_v1.manifest_v1 import repository_source_digest_v1
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
     _BUDGET_POLICY,
@@ -21,11 +22,15 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
+    UP_PAPER_SLOT,
     ZKP_PAPER_SLOT,
     load_paper_liquidity_policy_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
+    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import OCCUPANCY_OCCUPIED
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import IsolatedLaneSlotV1
@@ -230,6 +235,14 @@ class ZkpPaperContinuationV1:
             raise ValueError("ZKP_PAPER_ORIGINAL_PROFILE_REQUIRED")
         self.scope = PositionEpisodeScopeV1(root.name, _MODE)
         self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / self.slot.lane_id
+        self._ddo_capture = (
+            DdoCaptureBindingV0(
+                ledger_path=self.cursor_root / DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+                reuse_validated_append_index=True,
+            )
+            if slot.native_id == UP_PAPER_SLOT.native_id
+            else None
+        )
         occupied_slot = IsolatedLaneSlotV1(
             lane_id=slot.lane_id,
             occupancy=OCCUPANCY_OCCUPIED,
@@ -673,6 +686,7 @@ class ZkpPaperContinuationV1:
             position_episode_bindings={self.slot.lane_id: self.episode},
             position_episode_scope=self.scope,
             occupied_scope_mark=True,
+            reusable_ddo_capture=self._ddo_capture,
             incoming_cursor_override=raw,
         )[self.slot.lane_id].cycle_result
 

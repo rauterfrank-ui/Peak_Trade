@@ -40,7 +40,7 @@ RANKED_SWAP_SCOPES = tuple(
         "USDT",
         "linear_perpetual",
     )
-    for base, lane in (("UP", "LANE_1"), ("PIEVERSE", "LANE_4"))
+    for base, lane in (("UP", "LANE_1"), ("PIEVERSE", "LANE_4"), ("OL", "LANE_4"))
 )
 
 
