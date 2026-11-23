@@ -251,6 +251,11 @@ FIXED_RANK_PUBLICATION_DELTAS = {
     ),
 }
 
+FIXED_RANK_PERSISTENCE = (
+    "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py"
+)
+FIXED_RANK_PERSISTENCE_SHA256 = "3888a545bd92f39036eecdd66293fd012d6b0d5286e5e66eeb0480df091fc707"
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -787,7 +792,14 @@ def validate_reserved_slot_rotation_bundle(
         parent_bytes = json.dumps(expected, sort_keys=True, separators=(",", ":")).encode()
         if hashlib.sha256(parent_bytes).hexdigest() == SOPH_SHADOW_SLOT2_ROTATION_PARENT_SHA256:
             soph = _exact_double_play_successor(expected, SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS)
-            accepted += (soph, _exact_double_play_successor(soph, FIXED_RANK_PUBLICATION_DELTAS))
+            accepted += (soph,)
+            persistence = root / FIXED_RANK_PERSISTENCE
+            if (
+                persistence.is_file()
+                and hashlib.sha256(persistence.read_bytes()).hexdigest()
+                == FIXED_RANK_PERSISTENCE_SHA256
+            ):
+                accepted += (_exact_double_play_successor(soph, FIXED_RANK_PUBLICATION_DELTAS),)
     else:
         accepted = (before, after, protected_after, scope_bound_after)
     if actual not in accepted:
