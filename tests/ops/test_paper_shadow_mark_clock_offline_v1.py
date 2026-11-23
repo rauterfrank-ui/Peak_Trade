@@ -39,7 +39,7 @@ def offline(monkeypatch):
 @pytest.mark.parametrize("port", ["paper", "shadow"])
 @pytest.mark.parametrize("fault", ["g17", "funding", "partial_transport"])
 def test_rejected_capture_keeps_original_bytes_and_receipts(tmp_path, monkeypatch, port, fault):
-    slot = paper.ZKP_PAPER_SLOT if port == "paper" else XperpPaperSlotV1("LANE_5", "SOPH", "310912")
+    slot = paper.ZKP_PAPER_SLOT if port == "paper" else XperpPaperSlotV1("LANE_2", "SOPH", "310912")
     receipts, policy, observed = _observations(slot=slot)
     if fault == "g17":
         for row in receipts["mark-candles"].payload["data"]:

@@ -23,6 +23,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     SOPH_I17,
+    SOPH_I17_ARCHIVED_SLOT5,
     I17ShadowInstrumentV1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.public_instruments_validation_v1 import (
@@ -74,7 +75,7 @@ def resolve_okx_venue_instrument_mapping_v1(
             "CANONICAL_INSTRUMENT_MAPPING_MISSING", "binding_instrument_empty"
         )
 
-    if i17_scope == SOPH_I17:
+    if i17_scope in (SOPH_I17, SOPH_I17_ARCHIVED_SLOT5):
         if canonical_instrument_id != SOPH_I17.canonical_id:
             raise MarketDataBindingErrorV1(
                 "CANONICAL_INSTRUMENT_MAPPING_MISSING", canonical_instrument_id
@@ -100,7 +101,7 @@ def resolve_okx_venue_instrument_mapping_v1(
         return _build_mapping(
             canonical_instrument_id=SOPH_I17.canonical_id,
             venue_instrument_id=SOPH_I17.native_id,
-            mapping_source="I17_SHADOW_LANE_5_INSTRUMENT_SCOPE",
+            mapping_source=f"I17_SHADOW_{i17_scope.lane_id}_INSTRUMENT_SCOPE",
         )
 
     # The general mapping still comes from the venue-binding authority.

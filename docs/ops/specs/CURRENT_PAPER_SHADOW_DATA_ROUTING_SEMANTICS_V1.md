@@ -188,7 +188,7 @@ keine neuen Startaufträge und werden nicht ungeprüft als heutiger Status
 vorhanden; daraus folgt keine Aussage über andere oder inzwischen beendete
 Sitzungen.
 
-### Zuordnung und vorhandene Bündel je Slot
+### Zuordnung und vorhandene Bündel je Slot am 18. November 2026
 
 - **LANE_1 / ZKP / Paper:** `ZKP-USD_UM_XPERP-310905`. Der gemeinsame
   XPERP-Collector bindet 13 öffentliche Quellen an den Markt. Der bestehende
@@ -388,9 +388,14 @@ Dieser Anschluss benötigt keine erneute Rangberechnung oder manuell hinzugefüg
 Rankingbindung. Die Kartenprüfungen gleichen die gespeicherte Bindung am
 tatsächlichen Verbraucheraufruf ab, auch nach einer Paper-Unterbrechung.
 
-Der zusätzliche ursprüngliche Rankingnachweis ist davon getrennt. Paper und der
-SOPH-I17-Begleiter können über
-`--card-cap24-evidence-root` eine bereits vorhandene Cap24-Evidenz übernehmen.
+Für neue Vorbereitungen ab dem 23. November 2026 gilt UP-Paper in Slot 5 und
+SOPH-Shadow in Slot 2. Die N5-Mitgliedschaft und deren Ranking behalten ihre
+eigenen Referenzen. Die Archive des früheren Tests tragen weiterhin ihre
+ursprünglichen Slotadressen.
+
+Der Paper-Pfad kann über `--card-cap24-evidence-root` eine vorhandene
+Cap24-Evidenz übernehmen. Im SOPH-Begleiter dient dieser optionale Eingang
+zum Abgleich mit dem Beleg aus der veröffentlichten N5-Zuweisung.
 Der vorhandene Cap24-Leser prüft Manifest, Recordstatus und Bindungsidentität;
 die Instrumentpaarung muss exakt zum Slot passen. Auswahl-, Ranking- und
 Universumsbezug werden in der Karte getrennt von der bestehenden isolierten
@@ -403,13 +408,13 @@ stillschweigende Übernahme späterer Rankinggenerationen.
 
 Für SOPH kann der I17-Begleiter die drei Originalquellen der N5-Zuweisung über
 `--card-lane-sources TOPOLOGY RANKING UNIVERSE` lesen. Die abgeschlossene
-N5-Veröffentlichung bindet die Cap23-Auswahl über ihren Digest an Slot 5.
+N5-Veröffentlichung bindet die Cap23-Auswahl über ihren Digest an Slot 2.
 Der Leser folgt dieser Lane zur Auswahl, prüft deren Rang in Cap22 und gleicht
 beide Instrument-IDs mit Cap21 ab. Die Karte hält Rang, Auswahlgültigkeit,
 Snapshot-IDs und Digests unter `original_slot_assignment` fest. Ein späteres
 Ranking kann die bereits ausgewiesene Auswahlgeneration nicht ersetzen.
 
-Bei einer frischen SOPH-Zuweisung für Slot 5 veröffentlicht der Cap24-Evidenzpfad das
+Bei einer frischen SOPH-Zuweisung für Slot 2 veröffentlicht der Cap24-Evidenzpfad das
 Ergebnis seines ursprünglichen Gate-Aufrufs im Verzeichnis dieser Lane. Vor der
 Prüfung markiert er den Bindungsnachweis als ausstehend. Nach Abschluss verweist der
 aktuelle Nachweis auf die geprüfte Auswahl, den Prüfzeitpunkt und das originale

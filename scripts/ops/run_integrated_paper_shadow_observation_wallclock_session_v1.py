@@ -159,7 +159,11 @@ def _measure_shadow_outcome(args: argparse.Namespace) -> dict:
     binding = read_bound_json(archive.binding_path, archive.binding_sha256)
     canonical = decision["canonical_instrument_id"]
     native = decision["venue_instrument_id"]
-    if not isinstance(binding, dict) or binding.get("mapping_digest") != decision["mapping_digest"]:
+    if (
+        not isinstance(binding, dict)
+        or binding.get("mapping_digest") != decision["mapping_digest"]
+        or binding.get("lane_id") != decision.get("lane_id")
+    ):
         raise ValueError("SHADOW_O4_MAPPING_MISMATCH")
     price_unit = recorded_mark_price_unit_v1(
         instrument_binding=binding, canonical_instrument_id=canonical, native_instrument_id=native

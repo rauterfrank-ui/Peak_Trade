@@ -26,6 +26,9 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     durable_bytes_v1,
     immutable_json_v1,
 )
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    SOPH_I17,
+)
 from src.ops.instrument_card_input_observation_v1 import observe_instrument_card_input_v1
 from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import opening_order_side_v1
 from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
@@ -578,7 +581,7 @@ def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
         or entry["session_id"] != state.session_id
         or entry["binding_scope"] != "ANALYTICAL_SLOT_ENTRY"
         or entry["lane_id"] != budget["lane_id"]
-        or budget["lane_id"] != "LANE_5"
+        or budget["lane_id"] != SOPH_I17.lane_id
         or entry["instrument_id"] != budget["instrument_id"]
         or (state.instrument_id, state.venue_instrument_id)
         != (bound.instrument_id, bound.venue_native_id)
@@ -627,7 +630,7 @@ def shadow_budget_source_v1(state, *, repo):
     def capture(*, market, now):
         nonlocal initialized
         if (
-            market.slot.lane_id != "LANE_5"
+            market.slot.lane_id != SOPH_I17.lane_id
             or state.instrument_id != market.slot.instrument_id
             or state.venue_instrument_id != market.slot.native_id
         ):

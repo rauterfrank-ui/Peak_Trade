@@ -43,6 +43,7 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     ETH_I17,
+    SOPH_I17,
     require_i17_shadow_instrument_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.issuance_evidence_v1 import (
@@ -243,6 +244,13 @@ def run_productive_wallclock_session_v1(
             transport is not None and transport.venue_instrument_id != instrument.native_id
         ):
             raise ValueError("I17_SHADOW_INSTRUMENT_SCOPE_MISMATCH")
+        if instrument == SOPH_I17 and (
+            instrument_card_ranking_bound is not None or instrument_card_selection_root is not None
+        ):
+            from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
+
+            if not isinstance(instrument_card_selection_root, SophSlotSourcesV1):
+                raise ValueError("I17_CARD_SOPH_ORIGINAL_LANE_SOURCES_REQUIRED")
         if candidate_observation is not None and instrument != ETH_I17:
             raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
     except ValueError as exc:
@@ -357,7 +365,7 @@ def run_productive_wallclock_session_v1(
         encoding="utf-8",
     )
 
-    if instrument_card_source is None and use_real_network and instrument.lane_id == "LANE_5":
+    if instrument_card_source is None and use_real_network and instrument == SOPH_I17:
         from src.ops.instrument_card_stream_v1 import default_shadow_card_source_v1
 
         instrument_card_source = default_shadow_card_source_v1(

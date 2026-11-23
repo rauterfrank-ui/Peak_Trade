@@ -225,7 +225,7 @@ und Quellenprüfsummen. Nach dem Readback kann Double Play am selben Cursor
 weiterlaufen. Der Paper-Pfad verwendet ausschließlich öffentliche GETs und
 simuliertes Accounting.
 
-Der Paper-Starter unterstützt außerdem `UP-USD_UM_XPERP-310919` auf `LANE_2`
+Der Paper-Starter verwendet für neue UP-Sitzungen `UP-USD_UM_XPERP-310919` auf `LANE_5`
 und `IRYS-USD_UM_XPERP-310530` auf `LANE_4`. `--slot-config` verlangt die
 exakte Kombination aus Lane, kanonischer und nativer Instrument-ID sowie
 `surface = PAPER_EXCHANGE` und `authority = NONE`. Öffnung, Nettobuchung und
@@ -252,8 +252,8 @@ beschreibt ihre Originalconsumer und Grenzen. Diese Ergänzung ist keine
 Startfreigabe; im Rahmen dieser Änderung wurden nur Offline-Prüfungen ausgeführt.
 
 Paper schreibt pro ursprünglichem Lauf unter `instrument-cards&#47;<lane>`;
-Shadow schreibt separat neben seinem Evidenceverzeichnis unter
-`instrument-card-stream&#47;<session>&#47;instrument-cards&#47;LANE_5`. `latest.json`
+Neue SOPH-Shadow-Sitzungen schreiben separat neben ihrem Evidenceverzeichnis unter
+`instrument-card-stream&#47;<session>&#47;instrument-cards&#47;LANE_2`. `latest.json`
 ist eine Inhaltsdigest-gesicherte Ansicht. Die Unterordner `versions` und
 `sources` behalten die Fassungen, tatsächlichen Master-V2-Eingaben und
 Originalantworten. Datenabriss und Sitzungsende sperren die Ansicht.
@@ -290,7 +290,11 @@ Begleiterverzeichnis und ZKP-Paper-State gehören zu getrennten Sitzungen.
 Die O4-Instrumentbindung stammt aus einem archivierten öffentlichen
 Instrumentenbeleg für denselben Kontrakt. Sie wird vor dem Start geprüft
 und nach Abschluss mit der Instrumentbindung aus dem Shadow-Archiv abgeglichen.
-Für `LANE_5` gilt die explizite Bindung an `SOPH-USD_UM_XPERP-310912`.
+Neue SOPH-Shadow-Sitzungen binden `SOPH-USD_UM_XPERP-310912` an `LANE_2`.
+Für den zugewiesenen Erstkauf liest der Begleiter mit
+`--card-lane-sources TOPOLOGY RANKING UNIVERSE` die N5-Veröffentlichung
+und den Cap24-Beleg dieser Lane. Beim Rücklesen älterer Sitzungen gelten
+die damals aufgezeichneten Bindungen für SOPH in Slot 5 und UP in Slot 2.
 Preregistrierung und spätere Freigabe binden genau diesen Kontrakt. Die
 öffentlichen Abrufe und der DDO-Lernbeleg verwenden dieselbe Instrumentbindung.
 Der Slot-Empfänger liest die versiegelte Abschlussdatei und prüft den Lernbeleg

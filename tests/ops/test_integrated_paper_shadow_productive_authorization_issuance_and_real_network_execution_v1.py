@@ -1067,3 +1067,28 @@ def test_historical_abort_session_not_reclassified_by_duration_contract() -> Non
     assert payload["PRODUCTIVE_SHADOW_EVIDENCE_PROVEN"] is False
     assert payload["RUN_COMPLETED"] is False
     assert not (abort_root / "evidence" / "terminal_verdict.json").is_file()
+
+
+def test_soph_cannot_reuse_a_lane_free_selection_after_slot_change(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1 import (
+        productive_run_entrypoint_v1 as entry,
+    )
+
+    # Isolate the instrument gate; no permit or original run directory exists.
+    monkeypatch.setattr(entry, "assert_productive_run_preconditions_v1", lambda **kwargs: [])
+    scope = SimpleNamespace(instrument_allowlist=(SOPH_I17.native_id,))
+    evidence = tmp_path / "evidence"
+    result = entry.run_productive_wallclock_session_v1(
+        prereg=scope,
+        go=scope,
+        confirm_token="",
+        expected_repository_sha=REPO_SHA,
+        evidence_root=evidence,
+        artifact_path=tmp_path / "absent-artifact",
+        fingerprint_ledger_path=tmp_path / "absent-ledger",
+        instrument_card_selection_root=tmp_path / "generic-selection",
+        use_real_network=False,
+    )
+    assert result.blockers == ["I17_CARD_SOPH_ORIGINAL_LANE_SOURCES_REQUIRED"]
+    assert not evidence.exists()

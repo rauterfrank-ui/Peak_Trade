@@ -18,7 +18,7 @@ from tests.ops.test_zkp_lane1_paper_opening_v1 import REPO, _market
 
 
 D = Decimal
-SOPH = XperpPaperSlotV1("LANE_5", "SOPH", "310912")
+SOPH = XperpPaperSlotV1("LANE_2", "SOPH", "310912")
 
 
 @pytest.fixture(autouse=True)

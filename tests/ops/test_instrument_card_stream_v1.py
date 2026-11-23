@@ -33,7 +33,7 @@ from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execut
 )
 
 D = Decimal
-SOPH = XperpPaperSlotV1("LANE_5", "SOPH", "310912")
+SOPH = XperpPaperSlotV1("LANE_2", "SOPH", "310912")
 
 
 @pytest.fixture(autouse=True)
@@ -225,7 +225,7 @@ def test_shadow_budget_owner_binds_once_to_the_selected_slot_without_a_booking(
         nominal_usdc="9.8",
     )
     for change in (
-        {"lane_id": "LANE_2"},
+        {"lane_id": "LANE_5"},
         {"venue_native_id": "other"},
         {"selection_id": "older-selection"},
         {"first_purchase_side": "SELL" if order_side == "BUY" else "BUY"},
@@ -396,7 +396,7 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         evidence_root=root, select_first_typed_shadow_decision=True
     )
     assert verified.typed_ddo_requirement_met, verified.to_dict()
-    assert verified.selected_shadow_decision["lane_id"] == "LANE_5"
+    assert verified.selected_shadow_decision["lane_id"] == "LANE_2"
     cycles = [
         json.loads(line) for line in (root / "bridge_cycle_ledger.jsonl").read_text().splitlines()
     ]
@@ -410,11 +410,15 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         assert cycle["price_basis"]["best_ask"] == mark["price_basis_quote"]["ask_px"]
         assert cycle["price_basis"]["bid_ask_policy"] == "EXPLICIT_BID_ASK_FROM_PUBLIC_BOOK"
     cards = (
-        root.parent / "instrument-card-stream" / root.parent.name / "instrument-cards" / "LANE_5"
+        root.parent
+        / "instrument-card-stream"
+        / root.parent.name
+        / "instrument-cards"
+        / SOPH.lane_id
     )
     # The runtime places projections beside, not into, the sealed source archive.
     if not cards.exists():
-        (cards,) = root.parent.glob("instrument-card-stream/*/instrument-cards/LANE_5")
+        (cards,) = root.parent.glob("instrument-card-stream/*/instrument-cards/LANE_2")
     versions = [
         json.loads(p.read_bytes())["body"] for p in (cards / "versions").glob("*/decision.json")
     ]
@@ -538,7 +542,7 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
 
 
-def _published_soph_lane(root, instrument, now, repository_sha, monkeypatch, *, lane_five=True):
+def _published_soph_lane(root, instrument, now, repository_sha, monkeypatch, *, assigned_slot=True):
     from tests.ops import test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 as n5
     from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
 
@@ -559,7 +563,7 @@ def _published_soph_lane(root, instrument, now, repository_sha, monkeypatch, *, 
         patch.setattr(n5, "synthesize_ready_feature_production_snapshot_v1", features)
         chain = n5._persist_universe_and_ranking(root, [*n5._five_rows()[:4], instrument])
         ids = [n5._cid(chain["ranking"], row["instId"]) for row in n5._five_rows()[:4]]
-        ids.insert(4 if lane_five else 0, SOPH.instrument_id)
+        ids.insert(1 if assigned_slot else 4, SOPH.instrument_id)
         selections = n5._produce_selections(chain, ids, root)
         from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.orchestrator_v1 import (
             ProductiveFullAutonomyCap24BindContextV1,
@@ -766,15 +770,17 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     )
     row = card.update_v1(market, now=now)
     reference = row["original_slot_assignment"]
-    assert reference["selected_rank"] == assignment.selection.selected_rank != 5
-    assert reference["universe_snapshot_id"] == bindings["LANE_5"].universe_snapshot_id
-    assert reference["ranking_integrity_digest"] == bindings["LANE_5"].ranking_integrity_digest
-    assert reference["selection_integrity_digest"] == bindings["LANE_5"].selection_integrity_digest
-    assert row["ranking_binding"] == bindings["LANE_5"].to_dict()
+    assert reference["selected_rank"] == assignment.selection.selected_rank != 2
+    assert reference["universe_snapshot_id"] == bindings[SOPH.lane_id].universe_snapshot_id
+    assert reference["ranking_integrity_digest"] == bindings[SOPH.lane_id].ranking_integrity_digest
+    assert (
+        reference["selection_integrity_digest"] == bindings[SOPH.lane_id].selection_integrity_digest
+    )
+    assert row["ranking_binding"] == bindings[SOPH.lane_id].to_dict()
     read_args = dict(bound=bound(market), lane_id=SOPH.lane_id, now=now, slot_assignment=assignment)
     assert read_instrument_card_v1(tmp_path, **read_args)["original_slot_assignment"] == reference
     latest = card.root / "latest.json"
-    altered = dict(row, original_slot_assignment=dict(reference, selected_rank=5))
+    altered = dict(row, original_slot_assignment=dict(reference, selected_rank=2))
     latest.write_text(json.dumps(dict(body=altered, sha256=canonical_digest_v1(altered))))
     with pytest.raises(ValueError, match="IDENTITY"):
         read_instrument_card_v1(tmp_path, **read_args)
@@ -784,11 +790,11 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="CAP24_ENTRY_RECEIPT_CHANGED"):
         _selection_window(source, SHA, card.entry_card_v1().bound, market, now)
     with pytest.raises(ValueError, match="NOT_YET_AVAILABLE"):
-        _selection_window(source, SHA, bindings["LANE_5"], market, now - 1, digest)
+        _selection_window(source, SHA, bindings[SOPH.lane_id], market, now - 1, digest)
     with pytest.raises(ValueError, match="STALE"):
-        _selection_window(source, SHA, bindings["LANE_5"], market, now + 86400, digest)
+        _selection_window(source, SHA, bindings[SOPH.lane_id], market, now + 86400, digest)
     wrong, _, _ = _published_soph_lane(
-        tmp_path / "other", native, now - 10, SHA, monkeypatch, lane_five=False
+        tmp_path / "other", native, now - 10, SHA, monkeypatch, assigned_slot=False
     )
     with pytest.raises(ValueError, match="ORIGINAL_LANE_MISMATCH"):
         wrong.inspect(SHA)
@@ -801,7 +807,7 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     checkpoint = checkpoint_root_for(source.topology_root)
     (checkpoint / PENDING_SELECTION_PUBLICATION).write_text("{}")
     with pytest.raises(ValueError, match="LANE_SELECTION_PUBLICATION_INCOMPLETE"):
-        _selection_window(source, SHA, bindings["LANE_5"], market, now)
+        _selection_window(source, SHA, bindings[SOPH.lane_id], market, now)
 
 
 @pytest.mark.parametrize(
@@ -833,7 +839,7 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
         root, bindings, cap24 = _published_soph_lane(
             tmp_path / "n5", instrument, market.observed_unix, SHA, monkeypatch
         )
-        ranked = bindings["LANE_5"]
+        ranked = bindings[SOPH.lane_id]
         if mismatch == "revoked":
             from src.ops.full_core_live_path_composition_root_v1 import (
                 current_productive_venue_plan_v1 as venue,
@@ -911,7 +917,7 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
     purchase = cycle["soph_simulated_first_purchase"]
     if lane_sources:
         (latest,) = evidence.parent.glob(
-            "instrument-card-stream/*/instrument-cards/LANE_5/latest.json"
+            "instrument-card-stream/*/instrument-cards/LANE_2/latest.json"
         )
         card = json.loads(latest.read_bytes())["body"]
         if mismatch == "revoked":
@@ -1512,3 +1518,58 @@ def test_card_geometry_rejects_foreign_native_and_divergent_measured_distance():
     )
     with pytest.raises(ValueError, match="CARD_GEOMETRY_CONSUMPTION_MISMATCH"):
         geometry.verify_consumption(inter, mark=1.0, carried=None)
+
+
+def test_swapped_slots_separate_new_bindings_from_archive_readback(tmp_path):
+    from scripts.ops.run_zkp_lane1_paper_v1 import _read_paper_slot
+    from scripts.ops.run_i17_shadow_learning_companion_v1 import _instrument_binding
+    from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+        SOPH_I17_ARCHIVED_SLOT5,
+    )
+    from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.venue_instrument_mapping_v1 import (
+        resolve_okx_venue_instrument_mapping_v1,
+    )
+    from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        _instrument_metadata,
+    )
+
+    paper_config = tmp_path / "paper.json"
+    up = dict(
+        lane="LANE_5",
+        canonical_instrument_id=UP_PAPER_SLOT.instrument_id,
+        native_instrument_id=UP_PAPER_SLOT.native_id,
+        surface="PAPER_EXCHANGE",
+        authority="NONE",
+    )
+    paper_config.write_text(json.dumps(up))
+    assert _read_paper_slot(paper_config) == UP_PAPER_SLOT
+    paper_config.write_text(json.dumps(dict(up, lane="LANE_2")))
+    with pytest.raises(ValueError, match="PAPER_SLOT_CONFIG_MISMATCH"):
+        _read_paper_slot(paper_config)
+    assert _read_paper_slot(paper_config, resume=True).lane_id == "LANE_2"
+
+    metadata = _instrument_metadata(SOPH_I17)
+    mappings = {}
+    for scope in (SOPH_I17, SOPH_I17_ARCHIVED_SLOT5):
+        mapping = resolve_okx_venue_instrument_mapping_v1(
+            canonical_instrument_id=scope.canonical_id,
+            instruments_inventory=[metadata],
+            i17_scope=scope,
+        )
+        payload = dict(
+            venue="OKX",
+            lane_id=scope.lane_id,
+            canonical_instrument_id=scope.canonical_id,
+            native_instrument_id=scope.native_id,
+            instrument_metadata=metadata,
+            mapping_digest=mapping.mapping_digest,
+        )
+        encoded = json.dumps(payload).encode()
+        assert _instrument_binding(encoded, instrument=scope) == payload
+        mappings[scope.lane_id] = encoded
+    assert set(mappings) == {"LANE_2", "LANE_5"}
+    with pytest.raises(ValueError, match="PILOT_INSTRUMENT_BINDING_MISMATCH"):
+        _instrument_binding(mappings["LANE_5"], instrument=SOPH_I17)
+    relabelled = dict(json.loads(mappings["LANE_5"]), lane_id="LANE_2")
+    with pytest.raises(ValueError, match="PILOT_INSTRUMENT_BINDING_MISMATCH"):
+        _instrument_binding(json.dumps(relabelled).encode(), instrument=SOPH_I17)

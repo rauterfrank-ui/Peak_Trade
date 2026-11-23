@@ -18,6 +18,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 i
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
     IRYS_PAPER_SLOT,
     UP_PAPER_SLOT,
+    UP_PAPER_ARCHIVED_SLOT2,
     ZKP_PAPER_SLOT,
 )
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
@@ -68,7 +69,10 @@ _ROOT_FILES = (
     "opening-plan.json",
     "opening-fill.json",
 )
-_SLOTS = {slot.lane_id: slot for slot in (ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT)}
+_SLOTS = {
+    slot.lane_id: slot
+    for slot in (ZKP_PAPER_SLOT, UP_PAPER_SLOT, UP_PAPER_ARCHIVED_SLOT2, IRYS_PAPER_SLOT)
+}
 
 
 def _utc(stamp):

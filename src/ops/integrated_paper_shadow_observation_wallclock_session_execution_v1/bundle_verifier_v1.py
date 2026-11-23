@@ -41,6 +41,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     SOPH_I17,
+    recorded_i17_shadow_instrument_v1,
 )
 from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.constants_v1 import (
     BRIDGE_CYCLE_LEDGER_FILENAME,
@@ -219,12 +220,28 @@ def _verify_typed_cycle_bindings(
         if (
             session.get("venue_instrument_id") == SOPH_I17.native_id
             or session.get("lane_id") is not None
-        ) and (
-            session.get("venue_instrument_id"),
-            session.get("canonical_instrument_id"),
-            session.get("lane_id"),
-        ) != (SOPH_I17.native_id, SOPH_I17.canonical_id, SOPH_I17.lane_id):
-            raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
+        ):
+            scope = recorded_i17_shadow_instrument_v1(
+                (session.get("venue_instrument_id"),), session.get("lane_id")
+            )
+            if "venue_instrument_binding.json" not in manifest_names:
+                raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
+            venue = json.loads((root / "venue_instrument_binding.json").read_bytes())
+            if (
+                scope.native_id != SOPH_I17.native_id
+                or session.get("canonical_instrument_id") != scope.canonical_id
+                or venue.get("mapping_source") != f"I17_SHADOW_{scope.lane_id}_INSTRUMENT_SCOPE"
+                or any(
+                    venue.get(key) != session.get(key)
+                    for key in (
+                        "lane_id",
+                        "canonical_instrument_id",
+                        "venue_instrument_id",
+                        "mapping_digest",
+                    )
+                )
+            ):
+                raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
         marks = {}
         for mark in load_bridge_cycle_ledger_v1(root / "market_data_sequence.jsonl"):
             seq = mark["sequence"]
