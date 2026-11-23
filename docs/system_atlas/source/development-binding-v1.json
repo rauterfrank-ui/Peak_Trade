@@ -829,7 +829,7 @@
     {
       "path": "docs/ops/runbooks/UP_PAPER_MEASUREMENT_V1.md",
       "before_sha256": null,
-      "sha256": "0e0bea8d7f9ddabbce2a0289ceca4ff17989e01a5fce68f81f64926902803eac"
+      "sha256": "28bca424a5d0846ac6093b78ded2ab64c3bb4be280b3f8b48ab42b267e7cbe36"
     },
     {
       "path": "docs/ops/runbooks/aws_export_smoke.md",
