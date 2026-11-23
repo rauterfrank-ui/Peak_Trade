@@ -1027,6 +1027,11 @@
       "sha256": "d056f7f72502675d9985869867c382f722965bd06281a3972b68abce22f768e1"
     },
     {
+      "path": "docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md",
+      "before_sha256": "4c76662c368ad476dfd7842684d24b4056ad006f53cdb4ca46c9b8188b302482",
+      "sha256": "7d7d10c74384ccdb317365f635db790dcdf2ebc06d803ed89270014c052d10c6"
+    },
+    {
       "path": "docs/ops/specs/CURRENT_MULTISLOT_TEST_PHASE_REQUIREMENTS_V1.md",
       "before_sha256": null,
       "sha256": "594bb9edf1b985a758c60cecb64e244ddc741bb32db2f7c5e31088948e58be9e"
@@ -1529,7 +1534,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "0d64674ff17284d72835b15c9a6cddeaa704a808eb6c99b0b53428e6c5d8f343"
+      "sha256": "bb8b4cd1e381ccdf76da7e14b6a51bcb50cd2cd5519ebd3e991258167c539f5d"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -2772,19 +2777,29 @@
       "sha256": "5a1fb2f492d59c1f7cfb115be16a72a3a0f8c1d6b3abfd3ba9de6d859f64a57a"
     },
     {
+      "path": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/soph_shadow_bootstrap_v1.py",
+      "before_sha256": null,
+      "sha256": "1a3062af68cb084c3eb500e671f30cb60fe0b2d1bdd518cbb96f271919bf0357"
+    },
+    {
       "path": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py",
       "before_sha256": "b99352662826880f02bcd6c6418aeba069289e8f38e17b7550a8b160ba66d41d",
-      "sha256": "961ae938f307ebfe076ac7d977bc36d979e26ad221156dd7a5900bdfb655ca10"
+      "sha256": "5cf4073efd49e5d5381cae16c7e48dacaf11f0c3168260cb558015d1c80d1451"
     },
     {
       "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
       "before_sha256": "9171863c923ed85ea7a394ffef580ba1d16bf314d5b9b45adc026c61457490f1",
-      "sha256": "195c20b9468bff56df4e15d4c4b55da05a13442f1514be70bcf0b793e27bfc9c"
+      "sha256": "e472ee7adf42c00173f22f5cce28ef27767e90545582682c680c77116b98c5cb"
     },
     {
       "path": "src/ops/current_wp02_default_productive_universe_handoff_v1/composition_v1.py",
       "before_sha256": "bf40f989d93130b6c0c77e77c3f0852a67a30deaa4b7046a3c5232da61346126",
-      "sha256": "b75856e3fabdc96140197cec42cb193cf7ed8259d8d5610fca14c3364b21dc44"
+      "sha256": "55e90bf01bc2e026e959862f6ae910dcac933a1057ceb79b3581a1746e0b9d62"
+    },
+    {
+      "path": "src/ops/current_wp02_default_productive_universe_handoff_v1/soph_shadow_bootstrap_v1.py",
+      "before_sha256": null,
+      "sha256": "09434938e663d9f313eb0c4168ddb470781a8d9656d2a8e256d95a0cced9feaf"
     },
     {
       "path": "src/ops/current_wp02_default_productive_universe_handoff_v1/wp02_hook_v1.py",
@@ -5809,7 +5824,7 @@
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "56e4a8512a98d802f3fe34887908708bbbc518f46ead9c8dd17c495d0f0cf2b8"
+      "sha256": "2e66110d38964a15d321d7f01fca5ed8917949385b5aed283c97efd623a44cdf"
     },
     {
       "path": "tests/ops/test_rotation_plan_state_v1.py",
@@ -5860,6 +5875,11 @@
       "path": "tests/ops/test_soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
       "sha256": "bc1ef8a444cfe7927366cf4f0edb007ceb25391e2548eb250ae568e555651d4f"
+    },
+    {
+      "path": "tests/ops/test_soph_shadow_slot2_bootstrap_v1.py",
+      "before_sha256": null,
+      "sha256": "7fb483710a9d68b5eb4a5dfa4bf341f8cfda431d6a707aa4ba6f2d670079d1f4"
     },
     {
       "path": "tests/ops/test_system_atlas_impact_v1.py",
@@ -6142,5 +6162,6 @@
     "base_sha": "2e96eac76cde7f1a099f53058daf8682e15d9883",
     "authority": "NONE",
     "statement": "New SOPH I17 Shadow sessions use slot 2. New UP Paper sessions use slot 5. Archive readback validates the lane recorded for the instrument. A simulated first SOPH purchase requires the original slot-2 N5 assignment and its matching positive Cap24 receipt."
-  }
+  },
+  "soph_shadow_slot2_bootstrap_scope": "Explicit WP-02 SOPH shadow genesis assigns the eligible USD future to LANE_2. Cap23 retains the original Cap22 rank and source references. The common N5 publisher persists and replays the same initial assignment. Cap24 is a separate decision."
 }

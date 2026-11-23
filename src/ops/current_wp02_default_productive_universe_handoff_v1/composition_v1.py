@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -120,9 +120,10 @@ def _load_prior_membership_v1(store: Path) -> MembershipContextArtifactV1 | None
         raise Wp02ProductiveDefaultChainError("PRIOR_MEMBERSHIP_UNPROVEN") from exc
 
 
-def run_wp02_productive_default_chain_v1(
+def produce_wp02_ranking_inputs_v1(
     request: Wp02ProductiveDefaultChainRequestV1,
 ) -> Wp02ProductiveDefaultChainResultV1:
+    """Persist the original Cap21 and Cap22 inputs, stopping before N5 assignment."""
     assert_current_productive_cap22_ranking_policy_binding_v1()
     observed = (
         request.producer_observed_at_unix
@@ -262,12 +263,33 @@ def run_wp02_productive_default_chain_v1(
 
     assert_cap22_productive_real_ranking_v1(ranking_snap)
 
+    return Wp02ProductiveDefaultChainResultV1(
+        ok=True,
+        cap21_refresh_invoked=True,
+        economic_md_source_canonical=True,
+        real_b05_built=True,
+        cap22_productive_real_assertion=True,
+        hard_facts_handoff_invoked=False,
+        membership_persisted=False,
+        topology_persisted=False,
+        ranking_snapshot=dict(ranking_snap),
+        handoff=None,
+    )
+
+
+def run_wp02_productive_default_chain_v1(
+    request: Wp02ProductiveDefaultChainRequestV1,
+) -> Wp02ProductiveDefaultChainResultV1:
+    ranked = produce_wp02_ranking_inputs_v1(request)
+    if not ranked.ok or ranked.ranking_snapshot is None:
+        return ranked
+    membership_root = Path(request.topology_state_root_base) / DEFAULT_MEMBERSHIP_SUBDIR
     prior = request.prior_membership
     if prior is None and request.persist_handoff:
         prior = _load_prior_membership_v1(membership_root)
 
     handoff_req = HardFactsCap22MembershipHandoffRequestV1(
-        ranking_snapshot=dict(ranking_snap),
+        ranking_snapshot=ranked.ranking_snapshot,
         membership_store_root=membership_root,
         topology_state_root_base=Path(request.topology_state_root_base),
     )
@@ -276,15 +298,10 @@ def run_wp02_productive_default_chain_v1(
         prior=prior,
         lane_assignment_writer=request.lane_assignment_writer,
     )
-    return Wp02ProductiveDefaultChainResultV1(
-        ok=True,
-        cap21_refresh_invoked=True,
-        economic_md_source_canonical=True,
-        real_b05_built=True,
-        cap22_productive_real_assertion=True,
+    return replace(
+        ranked,
         hard_facts_handoff_invoked=True,
         membership_persisted=handoff.membership is not None,
         topology_persisted=handoff.topology is not None,
-        ranking_snapshot=dict(ranking_snap),
         handoff=handoff,
     )

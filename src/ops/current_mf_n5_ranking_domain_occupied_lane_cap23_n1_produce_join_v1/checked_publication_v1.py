@@ -24,6 +24,10 @@ from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1
     load_completed_selection_publication_v1,
     checkpoint_root_for,
 )
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.soph_shadow_bootstrap_v1 import (
+    SOPH_SHADOW_INITIAL_ASSIGNMENT_POLICY,
+    SophShadowSlot2BootstrapV1,
+)
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
     IsolatedLaneTopologyV1,
     apply_isolated_lane_topology_v1,
@@ -105,18 +109,38 @@ def publish_checked_lane_selections_v1(
     replacement_admission_by_lane: Mapping[str, PositionAwareRotationDecisionV1] | None = None,
     retained_bound_by_lane: Mapping | None = None,
     selection_validity_seconds: float = DEFAULT_SELECTION_VALIDITY_SECONDS,
+    soph_shadow_bootstrap: SophShadowSlot2BootstrapV1 | None = None,
 ) -> CheckedLanePublicationV1:
     from .produce_join_v1 import _assert_non_authority, _fail
 
     _assert_non_authority()
     writer.assert_held()
     retained_bound_by_lane = dict(retained_bound_by_lane or {})
+    shadow_genesis = None
+    completed_genesis = False
+    if soph_shadow_bootstrap is not None:
+        if (
+            Path(writer.state_root).resolve()
+            != checkpoint_root_for(topology_state_root_base).resolve()
+        ):
+            _fail("SOPH_SHADOW_BOOTSTRAP_WRITER_ROOT_MISMATCH")
+        shadow_genesis = apply_isolated_lane_topology_v1(
+            membership=membership,
+            ranking_snapshot=ranking_snapshot,
+            topology_state_root_base=topology_state_root_base,
+            soph_shadow_bootstrap=soph_shadow_bootstrap,
+        )
+        completed_genesis = (
+            load_completed_selection_publication_v1(topology_state_root_base) is not None
+        )
     resumed = resume_pending_lane_publication_v1(
         topology_state_root_base=topology_state_root_base,
         writer=writer,
         observed_portfolio=observed_portfolio,
         replacement_admission_by_lane=replacement_admission_by_lane,
         producer_observed_at_unix=producer_observed_at_unix,
+        expected_shadow_genesis=shadow_genesis,
+        expected_repository_sha=repository_sha,
     )
     if resumed is not None:
         if (
@@ -127,9 +151,13 @@ def publish_checked_lane_selections_v1(
             return resumed
     prior = recover_durable_lane_assignment_v1(
         topology_state_root_base=topology_state_root_base,
-        recovery_mode=RECOVERY_MODE_BOOTSTRAP if membership.bootstrap else RECOVERY_MODE_RESTART,
+        recovery_mode=RECOVERY_MODE_BOOTSTRAP
+        if membership.bootstrap and not completed_genesis
+        else RECOVERY_MODE_RESTART,
         expected_universe_snapshot_id=ranking_snapshot["universe_snapshot_id"],
     )
+    if completed_genesis and prior != shadow_genesis:
+        _fail("SOPH_SHADOW_BOOTSTRAP_PUBLICATION_CONFLICT")
     if prior is not None and prior.membership_instance_id == membership.instance_id:
         from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
             ProductiveFuturesRankingSnapshotV1,
@@ -154,7 +182,10 @@ def publish_checked_lane_selections_v1(
             _fail("LANE_COMPLETED_PUBLICATION_REPLAY_MISMATCH")
         selections = {}
         for slot in prior.occupied_slots():
-            loaded = load_and_validate_selection_v1(Path(slot.lane_state_root))
+            loaded = load_and_validate_selection_v1(
+                Path(slot.lane_state_root),
+                expected_repository_sha=repository_sha if completed_genesis else None,
+            )
             selection = loaded.selection
             if (
                 not loaded.ok
@@ -169,7 +200,7 @@ def publish_checked_lane_selections_v1(
         return CheckedLanePublicationV1(prior, selections, resumed=True)
     if prior is not None and membership.prior_membership_reference != prior.membership_instance_id:
         _fail("LANE_MEMBERSHIP_CONTINUITY_UNPROVEN")
-    proposed = apply_isolated_lane_topology_v1(
+    proposed = shadow_genesis or apply_isolated_lane_topology_v1(
         membership=membership,
         ranking_snapshot=ranking_snapshot,
         topology_state_root_base=topology_state_root_base,
@@ -382,6 +413,8 @@ def resume_pending_lane_publication_v1(
     observed_portfolio,
     replacement_admission_by_lane,
     producer_observed_at_unix,
+    expected_shadow_genesis=None,
+    expected_repository_sha=None,
 ) -> CheckedLanePublicationV1 | None:
     from .produce_join_v1 import _fail
     from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
@@ -393,6 +426,22 @@ def resume_pending_lane_publication_v1(
     if receipt is None:
         return None
     writer.assert_held()
+    if expected_shadow_genesis is not None:
+        if (
+            receipt["topology"] != expected_shadow_genesis.to_dict()
+            or receipt["previous_topology_digest"] is not None
+            or any(
+                plan["selection"]["repository_sha"] != expected_repository_sha
+                for plan in receipt["recovery_plan"].values()
+            )
+        ):
+            _fail("SOPH_SHADOW_BOOTSTRAP_PUBLICATION_CONFLICT")
+    elif (
+        receipt["previous_topology_digest"] is None
+        and receipt["topology"].get("initial_assignment_policy")
+        == SOPH_SHADOW_INITIAL_ASSIGNMENT_POLICY
+    ):
+        _fail("SOPH_SHADOW_BOOTSTRAP_SCOPE_REQUIRED")
     if lane_state_root_key(writer.state_root) != lane_state_root_key(
         checkpoint_root_for(topology_state_root_base)
     ):

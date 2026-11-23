@@ -15,6 +15,9 @@ BASE = "e2abdf73876b6f093347b27c4145b86cb7fc16c6"
 DOUBLE_PLAY_PARENT = "fd5e14ed6f709a0eb22464b47fcd1e666d559be6"
 ROTATION_SUCCESSOR = "6b132fa1bd4788a937243c179cf294658c5389f7"
 NET_REVERSAL_BOOKING_SUCCESSOR = "78170916f5fd32267b54eb55b241fa65feb1486f"
+SOPH_PARENT = "2f6091dd0b9b7de2c110ba9681be1bb8386f214f"
+CAP23_PARENT = "8557138f16298f18a3c187b70570aa59c2db90a4"
+PUBLISHER = "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py"
 RECONCILIATION_STARTUP = "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
 LAW = json.loads((ROOT / POLICY["LAW"]).read_text())
 ROWS = POLICY["load_policies"](ROOT, LAW)
@@ -43,6 +46,33 @@ def seed(root, *, before=False):
 def test_previous_current_tree_or_exact_reviewed_successor_is_accepted(tmp_path, before):
     seed(tmp_path, before=before)
     POLICY["validate_reserved_slot_rotation_bundle"](tmp_path, ROWS)
+
+
+@pytest.mark.parametrize("parent", [SOPH_PARENT, CAP23_PARENT])
+def test_shadow_slot2_publisher_requires_its_exact_rotation_parent(tmp_path, parent):
+    validate = POLICY["validate_reserved_slot_rotation_bundle"]
+    for path in (
+        *DELTAS,
+        POLICY["DIRECT_REVERSAL_SOURCE"],
+        POLICY["NET_REVERSAL_GET_RECONCILIATION_SOURCE"],
+    ):
+        dest = tmp_path / path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(subprocess.check_output(["git", "show", f"{parent}:{path}"], cwd=ROOT))
+    validate(tmp_path, ROWS, double_play=True)
+
+    publisher = tmp_path / PUBLISHER
+    successor = (ROOT / PUBLISHER).read_bytes()
+    publisher.write_bytes(successor)
+    if parent == CAP23_PARENT:
+        with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
+            validate(tmp_path, ROWS, double_play=True)
+        return
+
+    validate(tmp_path, ROWS, double_play=True)
+    publisher.write_bytes(successor + b"\n")
+    with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
+        validate(tmp_path, ROWS, double_play=True)
 
 
 @pytest.mark.parametrize("path", tuple(DELTAS))

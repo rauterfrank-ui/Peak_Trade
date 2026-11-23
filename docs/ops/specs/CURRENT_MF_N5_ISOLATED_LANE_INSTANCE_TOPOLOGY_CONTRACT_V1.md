@@ -132,6 +132,14 @@ ENTRY_POLICY=ASSIGN_DETERMINISTIC_AVAILABLE_LANE
 FREE_LANE_ASSIGNMENT_POLICY=LOWEST_EMPTY_LANE_ID_IN_LANE_1_TO_LANE_5_ORDER_THEN_ENTERED_ORDER_FROM_CURRENT_MEMBERSHIP_DELTA
 ```
 
+The explicit WP-02 SOPH shadow bootstrap checks the SHADOW deployment scope,
+the canonical and venue-native SOPH future IDs, and the original eligible
+bootstrap membership. It assigns that member to `LANE_2`, then fills the
+remaining lanes in membership order. Cap23 consumes the original Cap22 rank.
+The checked N5 publisher records `SHADOW_SOPH_SLOT_2_THEN_LOWEST_FREE_LANES`
+in the topology. A retry checks the same deployment inputs and recovers the
+original publication. Cap24 remains a subsequent decision.
+
 A pure Cap22 ranking reorder of an unchanged membership set must not move
 incumbent instruments between lanes.
 
