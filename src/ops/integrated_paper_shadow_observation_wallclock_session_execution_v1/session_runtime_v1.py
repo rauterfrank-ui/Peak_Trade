@@ -614,8 +614,7 @@ class WallclockSessionRuntimeV1:
                 slot_assignment = self.instrument_card_selection_root.inspect(
                     expected_repository_sha
                 )
-                if self.instrument_card_ranking_bound is not None:
-                    slot_assignment.require_matching_binding(self.instrument_card_ranking_bound)
+                slot_assignment.entry_binding(self.instrument_card_ranking_bound)
             if entry_limit is not None and instrument != SOPH_I17:
                 raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_FOREIGN_INSTRUMENT")
             if (
@@ -746,6 +745,9 @@ class WallclockSessionRuntimeV1:
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
                     soph_entry_cost_limit_usdc=entry_limit,
                     soph_selection_root=self.instrument_card_selection_root,
+                    soph_cap24_receipt_digest=slot_assignment.cap24.digest
+                    if slot_assignment
+                    else None,
                     soph_selection_repository_sha=self._expected_repository_sha,
                 )
                 from src.ops.instrument_card_stream_v1 import (

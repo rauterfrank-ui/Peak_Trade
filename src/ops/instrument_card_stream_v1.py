@@ -189,7 +189,6 @@ class InstrumentCardStreamV1:
         self.bound, self.lane_id = bound, lane_id
         self.source_mode, self.session_id = source_mode, session_id
         self.budget_source = budget_source
-        self.ranking_bound = ranking_bound
         if slot_assignment is not None:
             ref = slot_assignment.card_reference()
             if (source_mode, lane_id, bound.instrument_id, bound.venue_native_id) != (
@@ -199,8 +198,8 @@ class InstrumentCardStreamV1:
                 ref["venue_native_id"],
             ):
                 raise ValueError("CARD_ORIGINAL_SLOT_ASSIGNMENT_MISMATCH")
-            if ranking_bound is not None:
-                slot_assignment.require_matching_binding(ranking_bound)
+            ranking_bound = slot_assignment.entry_binding(ranking_bound)
+        self.ranking_bound = ranking_bound
         if ranking_bound is not None:
             if (
                 (ranking_bound.instrument_id, ranking_bound.venue_native_id)
@@ -530,6 +529,8 @@ def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None, sl
     """
     raw = json.loads((Path(root) / "instrument-cards" / lane_id / "latest.json").read_bytes())
     body = raw["body"]
+    if slot_assignment is not None:
+        ranking_bound = slot_assignment.entry_binding(ranking_bound)
     _, expected = _card_assignment(lane_id, ranking_bound, slot_assignment)
     if (
         raw["sha256"] != canonical_digest_v1(body)

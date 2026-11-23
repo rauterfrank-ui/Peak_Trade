@@ -1084,7 +1084,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "b3272200bad7fe9ed94cf71e816e21a31f27f970478b0ae20ef76a4828ca88fa"
+      "sha256": "bdd72b6b091c51a605cb0b7b802325cab39bc8546e9cf4951b600962a0abbb8e"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1914,7 +1914,7 @@
     {
       "path": "scripts/ops/run_i17_shadow_learning_companion_v1.py",
       "before_sha256": null,
-      "sha256": "7658ab9828232f363fa7a468e74b0757d3e3880b13a1948b27da7dc4a1b5e195"
+      "sha256": "83f4215c8cfcb038864c75a895903cc57dce3210460d600d5ffcc354c57d7015"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -2674,7 +2674,7 @@
     {
       "path": "src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py",
       "before_sha256": "08b17c56069d4f5ab1ad7ac6494409ccefe8723aea369c24c52929ef1a4f7ac6",
-      "sha256": "53211f089a6d202371c9bd5ca4131c4c2ed27c85a0ac3f8eccb284989910cfcb"
+      "sha256": "5e159e81ca992a6ab91279b0942a450645f98577ddb57f040466aad992164c55"
     },
     {
       "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
@@ -3334,7 +3334,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "b1a13ed241e67f2a0ff61685302ce34dd660b041aff26fd41b2e655ff3fbf22b"
+      "sha256": "c6eceb807564e82a7ba67731c82d7361194dc6ea76aafc196ca5f75659415ef0"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3379,7 +3379,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "c7f5487cce2b649b48cbe093644329a9348f83b8583d89e3510244943fa69c44"
+      "sha256": "93a2adb489798cb72037a68a5c258186c729128b2a1dda0493fa026d8f1f4991"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3894,17 +3894,22 @@
     {
       "path": "src/ops/soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "fe2e5ed4ac89e7e6a50cbe83271f883dc25be1c8b30f96cacf08c4e1ed555afd"
+      "sha256": "387b0d06bfe232f256f42a9d7f4f250c8fd9c7b81130c8d0845279bfb8a2e7f0"
     },
     {
       "path": "src/ops/soph_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "bbae4f8baf4903d4f373084b5e97286534b582085885260b14f5085cbe93c494"
+      "sha256": "b87c5e4190631b3e6ffce364e53b5c2cba68b48e238ed06d82d357d4db95756e"
     },
     {
       "path": "src/ops/soph_slot_assignment_v1.py",
       "before_sha256": null,
-      "sha256": "1c324707dc31d68ee75eadd31a52dbed20a95131dcda1b2aa0d1d8485c1e7a2a"
+      "sha256": "2d3dfcd8adaff1c65565e103cf2ca03f4a16f1d600eda690dbae2d9376294046"
+    },
+    {
+      "path": "src/ops/soph_slot_cap24_v1.py",
+      "before_sha256": null,
+      "sha256": "4dadf7c98a064e8212ea2f2ad5e7ba56356b5e835fd83f150afc865877919e9e"
     },
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
@@ -3954,7 +3959,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "9ba6d6035a82b061eb8be0325b129c6b94a488e8284d1bb33491bae926158a71"
+      "sha256": "7a9febe33b410af7388dcc572d0497597ddf6baa5916fe10d63c46c1aa08cf45"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5474,7 +5479,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "fd9238bafec94e7062f38300314a64ff01f22814f65ed532cb259320d6cff3bb"
+      "sha256": "4f9bbb9f90753a6dc438fc7909569900930749dbc769d1305b3f06ca433a2c93"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",

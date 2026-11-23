@@ -409,13 +409,27 @@ beide Instrument-IDs mit Cap21 ab. Die Karte hält Rang, Auswahlgültigkeit,
 Snapshot-IDs und Digests unter `original_slot_assignment` fest. Ein späteres
 Ranking kann die bereits ausgewiesene Auswahlgeneration nicht ersetzen.
 
-Die Karte kann diese Herkunft auch ohne Cap24 anzeigen. Für einen simulierten
-Erstkauf braucht der Begleiter zusätzlich die zur selben Lane-Auswahl passende
-Cap24-Evidenz. Bei der Entscheidung und vor der Modellbuchung prüft er die
-veröffentlichte Zuweisung erneut. Eine laufende Veröffentlichung sperrt die
-Übergabe. Der bisherige Einzelauswahlpfad und die N5-Quellen sind getrennte
-Eingaben. Die N5-Quellen stammen aus den ausdrücklich übergebenen
-Owner-Verzeichnissen. Der Archivlauf vom 22.11.2026 hatte diese Eingaben nicht.
+Bei einer frischen SOPH-Zuweisung für Slot 5 veröffentlicht der Cap24-Evidenzpfad das
+Ergebnis seines ursprünglichen Gate-Aufrufs im Verzeichnis dieser Lane. Vor der
+Prüfung markiert er den Bindungsnachweis als ausstehend. Nach Abschluss verweist der
+aktuelle Nachweis auf die geprüfte Auswahl, den Prüfzeitpunkt und das originale
+Ergebnis einschließlich Reconciliation. Abgeschlossene Ergebnisse bleiben unter
+ihrem Digest nachlesbar. Auch eine Ablehnung ersetzt den bisherigen Stand.
+
+Der I17-Begleiter liest den aktuellen Nachweis über dieselben drei N5-Quellen.
+Eine zusätzlich angegebene Cap24-Bindung muss mit dem Original übereinstimmen.
+Rang und Universumsherkunft bleiben bei fehlendem Nachweis auf der Karte sichtbar.
+Für einen simulierten Erstkauf müssen die Auswahl aktiv und zeitlich gültig,
+Reconciliation erfolgreich und neue Einstiege durch Cap24 erlaubt sein. Die
+Karte, der gebundene Sizing-Betrag und der simulierte Erstkauf führen denselben
+Nachweis-Digest. Bei der Entscheidung und vor der Modellbuchung liest der
+Begleiter die Slotzuweisung und Cap24 erneut. Ein inzwischen ersetzter oder
+ausstehender Nachweis sperrt diese Buchung, auch bei gleicher Instrument-ID.
+
+Richtungsbestätigung, Budgetbindung und simulierte Buchung behalten ihre
+eigenen Voraussetzungen. Cap24 erteilt keine Orderberechtigung. Beim separaten
+Einzelauswahlpfad gilt weiterhin die explizit angegebene Cap24-Quelle. Im Archiv
+vom 22.11.2026 fehlt der zeitgenössische Slotnachweis.
 
 Pro Sitzung und Lane liegen `latest.json`, unveränderliche Fassungen unter
 `versions` und contentadressierte Originalantworten unter `sources` im

@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 from decimal import Decimal
+from pathlib import Path
 import json
 import socket
 
@@ -560,8 +561,174 @@ def _published_soph_lane(root, instrument, now, repository_sha, monkeypatch, *, 
         ids = [n5._cid(chain["ranking"], row["instId"]) for row in n5._five_rows()[:4]]
         ids.insert(4 if lane_five else 0, SOPH.instrument_id)
         selections = n5._produce_selections(chain, ids, root)
+        from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.orchestrator_v1 import (
+            ProductiveFullAutonomyCap24BindContextV1,
+        )
+
+        cap24 = ProductiveFullAutonomyCap24BindContextV1(
+            ranking_state_root=chain["ranking_root"],
+            universe_state_root=chain["universe_root"],
+            reconciliation_state_root=chain["recon_root"],
+            observed_portfolio=portfolio,
+            mark_price_by_native_id=chain["mark_price_by_native_id"],
+            session_id="cap24-bind",
+            now_unix=now,
+        )
         bindings = n5._bind(selections, root, chain)
-    return SophSlotSourcesV1(root, chain["ranking_root"], chain["universe_root"]), bindings
+    return SophSlotSourcesV1(root, chain["ranking_root"], chain["universe_root"]), bindings, cap24
+
+
+def _repeat_soph_gate(source, selection, cap24):
+    from src.ops.current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 import (
+        bind_occupied_lane_cap24_n1_instruments_v1,
+    )
+
+    return bind_occupied_lane_cap24_n1_instruments_v1(
+        selections={SOPH.lane_id: selection},
+        topology_state_root_base=source.topology_root,
+        ranking_state_root=cap24.ranking_state_root,
+        universe_state_root=cap24.universe_state_root,
+        reconciliation_state_root=cap24.reconciliation_state_root,
+        observed_portfolio=cap24.observed_portfolio,
+        mark_price_by_native_id=cap24.mark_price_by_native_id,
+        repository_sha=selection.repository_sha,
+        session_id=cap24.session_id,
+        now_unix=cap24.now_unix,
+    )
+
+
+def test_soph_slot_cap24_requires_the_original_completed_gate(tmp_path, monkeypatch):
+    from tests.ops import test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 as n5
+    from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        SHA,
+    )
+
+    market = _market(slot=SOPH)
+    now = market.observed_unix
+    source, bindings, cap24 = _published_soph_lane(
+        tmp_path / "n5", _soph_instrument(market), now, SHA, monkeypatch
+    )
+    original = source.inspect(SHA)
+    ranked = bindings[SOPH.lane_id]
+    selection = original.selection
+    (path,) = source.topology_root.glob("*/soph_slot_cap24_v1/*.json")
+    record = json.loads(path.read_bytes())
+    assert path.parent.parent.name == SOPH.lane_id
+    assert record["body"]["gate"]["reconciliation_result"]["alpha_enabled"] is True
+    assert record["body"]["gate"]["evidence"]["bound"] == original.entry_binding().to_dict()
+    from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1 import (
+        retention_v1,
+    )
+
+    with retention_v1.exclusive_v1(path.with_suffix(".lock")):
+        assert _repeat_soph_gate(source, selection, cap24) == {}
+    with monkeypatch.context() as patch:
+
+        def fail_completed(file, value):
+            raise OSError("fixture receipt store unavailable")
+
+        patch.setattr(retention_v1, "immutable_json_v1", fail_completed)
+        assert _repeat_soph_gate(source, selection, cap24) == {SOPH.lane_id: ranked}
+        assert source.inspect(SHA).cap24.status == "PENDING"
+    assert _repeat_soph_gate(source, selection, cap24) == {SOPH.lane_id: ranked}
+    # A repeat may carry new reconciliation evidence; use its actual retained result.
+    original = source.inspect(SHA)
+    record = json.loads(path.read_bytes())
+    retained = path.parent / "receipts" / (original.cap24.digest + ".json")
+    active_bytes = path.read_bytes()
+    read_bytes = Path.read_bytes
+
+    def replace_during_read(file):
+        data = read_bytes(file)
+        if file == retained:
+            pending = dict(record["body"], status="PENDING", gate=None)
+            path.write_text(json.dumps(dict(body=pending, sha256=canonical_digest_v1(pending))))
+        return data
+
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, "read_bytes", replace_during_read)
+        with pytest.raises(ValueError, match="CHANGED_DURING_READ"):
+            source.inspect(SHA)
+    path.write_bytes(active_bytes)
+    retained_bytes = retained.read_bytes()
+    retained.unlink()
+    with pytest.raises(ValueError, match="ORIGINAL_RECEIPT_REQUIRED"):
+        source.inspect(SHA)
+    retained.write_bytes(retained_bytes)
+    path.unlink()
+    missing = source.inspect(SHA)
+    assert missing.cap24.status == "MISSING" and missing.entry_binding() is None
+    assert "cap24_receipt_digest" not in missing.card_reference()
+    isolated = bound(market)
+    card = InstrumentCardStreamV1(
+        root=tmp_path,
+        bound=isolated,
+        lane_id=SOPH.lane_id,
+        session_id="passive",
+        source_mode="SHADOW",
+        slot_assignment=missing,
+    )
+    card.update_v1(market, now=now)
+    passive = read_instrument_card_v1(
+        tmp_path, bound=isolated, lane_id=SOPH.lane_id, now=now, slot_assignment=missing
+    )
+    assert (
+        passive["ranking_binding"] is None
+        and passive["original_slot_assignment"] == missing.card_reference()
+    )
+    with pytest.raises(ValueError, match="ORIGINAL_BINDING_REQUIRED"):
+        missing.entry_binding(ranked)
+    with pytest.raises(ValueError, match="CAP24_MISSING"):
+        missing.require_entry_receipt(ranked, original.cap24.digest, now)
+
+    for key, value in (
+        ("selection_integrity_digest", "f" * 64),
+        ("lane_id", "LANE_1"),
+        ("repository_sha", "other"),
+    ):
+        foreign = dict(record["body"], **{key: value})
+        path.write_text(json.dumps(dict(body=foreign, sha256=canonical_digest_v1(foreign))))
+        with pytest.raises(ValueError, match="REFERENCE_MISMATCH"):
+            source.inspect(SHA)
+    earlier = dict(record["body"], publication_digest="f" * 64)
+    path.write_text(json.dumps(dict(body=earlier, sha256=canonical_digest_v1(earlier))))
+    with pytest.raises(ValueError, match="CAP24_SUPERSEDED"):
+        source.inspect(SHA).require_entry_receipt(ranked, original.cap24.digest, now)
+    record["body"]["gate"]["reconciliation_result"]["alpha_enabled"] = False
+    path.write_text(json.dumps(record))
+    with pytest.raises(ValueError, match="REFERENCE_MISMATCH"):
+        source.inspect(SHA)
+    record["sha256"] = canonical_digest_v1(record["body"])
+    path.write_text(json.dumps(record))
+    with pytest.raises(ValueError, match="ENTRY_EVIDENCE_MISMATCH"):
+        source.inspect(SHA)
+
+    assert _repeat_soph_gate(source, selection, replace(cap24, session_id="reissued")) == {
+        SOPH.lane_id: ranked
+    }
+    historical = path.parent / "receipts" / (original.cap24.digest + ".json")
+    assert canonical_digest_v1(json.loads(historical.read_bytes())) == original.cap24.digest
+    renewed = source.inspect(SHA)
+    assert renewed.entry_binding() == ranked
+    with pytest.raises(ValueError, match="ENTRY_RECEIPT_CHANGED"):
+        renewed.require_entry_receipt(ranked, original.cap24.digest, now)
+
+    def interrupt_gate(**kwargs):
+        assert source.inspect(SHA).cap24.status == "PENDING"
+        raise RuntimeError("fixture interrupted")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(n5.JOIN_GATE_PATH, interrupt_gate)
+        with pytest.raises(RuntimeError, match="fixture interrupted"):
+            _repeat_soph_gate(source, selection, cap24)
+    with pytest.raises(ValueError, match="CAP24_PENDING"):
+        source.inspect(SHA).require_entry_receipt(ranked, renewed.cap24.digest, now)
+    assert not _repeat_soph_gate(source, selection, replace(cap24, mark_price_by_native_id={}))
+    blocked = source.inspect(SHA)
+    assert blocked.cap24.status == "ENTRY_BLOCKED" and blocked.entry_binding() is None
+    assert "MARK_PRICE_MISSING" in json.loads(path.read_bytes())["body"]["gate"]["blockers"]
+    with pytest.raises(ValueError, match="ORIGINAL_BINDING_REQUIRED"):
+        blocked.entry_binding(ranked)
 
 
 def _soph_instrument(market):
@@ -587,7 +754,7 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     market = _market(slot=SOPH)
     native = _soph_instrument(market)
     now = market.observed_unix
-    source, bindings = _published_soph_lane(tmp_path / "assigned", native, now, SHA, monkeypatch)
+    source, bindings, _ = _published_soph_lane(tmp_path / "assigned", native, now, SHA, monkeypatch)
     assignment = source.inspect(SHA)
     card = InstrumentCardStreamV1(
         root=tmp_path,
@@ -603,7 +770,7 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     assert reference["universe_snapshot_id"] == bindings["LANE_5"].universe_snapshot_id
     assert reference["ranking_integrity_digest"] == bindings["LANE_5"].ranking_integrity_digest
     assert reference["selection_integrity_digest"] == bindings["LANE_5"].selection_integrity_digest
-    assert row["ranking_binding"] is None
+    assert row["ranking_binding"] == bindings["LANE_5"].to_dict()
     read_args = dict(bound=bound(market), lane_id=SOPH.lane_id, now=now, slot_assignment=assignment)
     assert read_instrument_card_v1(tmp_path, **read_args)["original_slot_assignment"] == reference
     latest = card.root / "latest.json"
@@ -612,13 +779,15 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="IDENTITY"):
         read_instrument_card_v1(tmp_path, **read_args)
     assert row["productive_entry_admitted"] is False
-    with pytest.raises(ValueError, match="RANKING_UNIVERSE_BINDING_REQUIRED"):
+    digest = assignment.cap24.digest
+    assert digest == reference["cap24_receipt_digest"]
+    with pytest.raises(ValueError, match="CAP24_ENTRY_RECEIPT_CHANGED"):
         _selection_window(source, SHA, card.entry_card_v1().bound, market, now)
     with pytest.raises(ValueError, match="NOT_YET_AVAILABLE"):
-        _selection_window(source, SHA, bindings["LANE_5"], market, now - 1)
+        _selection_window(source, SHA, bindings["LANE_5"], market, now - 1, digest)
     with pytest.raises(ValueError, match="STALE"):
-        _selection_window(source, SHA, bindings["LANE_5"], market, now + 86400)
-    wrong, _ = _published_soph_lane(
+        _selection_window(source, SHA, bindings["LANE_5"], market, now + 86400, digest)
+    wrong, _, _ = _published_soph_lane(
         tmp_path / "other", native, now - 10, SHA, monkeypatch, lane_five=False
     )
     with pytest.raises(ValueError, match="ORIGINAL_LANE_MISMATCH"):
@@ -645,6 +814,7 @@ def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
         (1, "expired", False),
         pytest.param(1, None, True, id="n5-long"),
         pytest.param(-1, None, True, id="n5-short"),
+        pytest.param(1, "revoked", True, id="n5-revoked-before-booking"),
     ],
 )
 def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
@@ -660,10 +830,35 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
     market = _market(slot=SOPH)
     instrument = _soph_instrument(market)
     if lane_sources:
-        root, bindings = _published_soph_lane(
+        root, bindings, cap24 = _published_soph_lane(
             tmp_path / "n5", instrument, market.observed_unix, SHA, monkeypatch
         )
         ranked = bindings["LANE_5"]
+        if mismatch == "revoked":
+            from src.ops.full_core_live_path_composition_root_v1 import (
+                current_productive_venue_plan_v1 as venue,
+            )
+
+            original_plan = venue.try_bind_current_productive_venue_plan_v1
+            original_selection = root.inspect(SHA).selection
+
+            def revoke_after_planning(*args, **kwargs):
+                result = original_plan(*args, **kwargs)
+                if (
+                    kwargs.get("execution_mode") == "INTERNAL_SIMULATED_EXECUTION"
+                    and kwargs.get("bound_instrument") == ranked
+                ):
+                    assert (
+                        _repeat_soph_gate(
+                            root, original_selection, replace(cap24, mark_price_by_native_id={})
+                        )
+                        == {}
+                    )
+                return result
+
+            monkeypatch.setattr(
+                venue, "try_bind_current_productive_venue_plan_v1", revoke_after_planning
+            )
     else:
         with monkeypatch.context() as patch:
             published = market.observed_unix - (86400 if mismatch == "expired" else 0)
@@ -694,7 +889,7 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
             funding_cut=(int(clock()) // 3600 + 1) * 3600,
         )
 
-    if mismatch and mismatch != "expired":
+    if mismatch in ("ranking_integrity_digest", "universe_snapshot_id"):
         ranked = replace(ranked, **{mismatch: "f" * 64})
     evidence, result, _ = run_two_hour_shadow(
         flat=False,
@@ -702,7 +897,7 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
         card_source=capture,
         start_wall=market.observed_unix + 0.01,
         entry_limit=D("10"),
-        ranking_bound=ranked,
+        ranking_bound=None if lane_sources else ranked,
         selection_root=root,
     )
     assert result.terminal_verdict == "PASS", result.to_dict()
@@ -719,8 +914,27 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
             "instrument-card-stream/*/instrument-cards/LANE_5/latest.json"
         )
         card = json.loads(latest.read_bytes())["body"]
+        if mismatch == "revoked":
+            assert root.inspect(SHA).cap24.status == "ENTRY_BLOCKED"
+            assert purchase["status"] == "BLOCKED" and purchase["reason_codes"] == [
+                "SOPH_SLOT_CAP24_ENTRY_BLOCKED"
+            ]
+            assert (
+                purchase["cap24_receipt_digest"]
+                == card["original_slot_assignment"]["cap24_receipt_digest"]
+            )
+            assert not any(c["fill"] for c in cycles)
+            return
         assert card["original_slot_assignment"] == root.inspect(SHA).card_reference()
         assert card["ranking_binding"] == purchase["binding"] == ranked.to_dict()
+        assert (
+            purchase["cap24_receipt_digest"]
+            == card["original_slot_assignment"]["cap24_receipt_digest"]
+        )
+        assert (
+            purchase["cap24_receipt_digest"]
+            == cycle["soph_confirmed_entry_budget"]["cap24_receipt_digest"]
+        )
     elif mismatch:
         assert purchase["status"] == "BLOCKED" and purchase["reason_codes"]
         if mismatch == "expired":

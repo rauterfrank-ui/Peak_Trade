@@ -62,6 +62,7 @@ from src.ops.single_selected_future_runtime_binding_v1.binding_gate_v1 import (
     run_single_selected_future_runtime_binding_gate_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from src.ops.soph_slot_cap24_v1 import evaluate_assigned_lane_gate_v1
 
 
 class BoundaryOccupiedLaneCap24BindJoinError(ValueError):
@@ -146,7 +147,11 @@ def bind_occupied_lane_cap24_n1_instruments_v1(
                 lane_id=lane_id,
             )
         )
-        gate = run_single_selected_future_runtime_binding_gate_v1(
+        gate = evaluate_assigned_lane_gate_v1(
+            run_single_selected_future_runtime_binding_gate_v1,
+            lane_id=lane_id,
+            selection=selection,
+            topology_root=topology_state_root_base,
             selection_state_root=selection_state_root,
             ranking_state_root=Path(ranking_state_root),
             universe_state_root=Path(universe_state_root),
@@ -165,7 +170,7 @@ def bind_occupied_lane_cap24_n1_instruments_v1(
                 else {}
             ),
         )
-        if gate.ok is True and isinstance(gate.bound, BoundInstrumentV1):
+        if gate is not None and gate.ok is True and isinstance(gate.bound, BoundInstrumentV1):
             assert_handoff_invariants_v1(
                 selection,
                 gate.bound,

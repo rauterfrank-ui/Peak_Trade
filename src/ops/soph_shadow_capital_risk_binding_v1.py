@@ -473,6 +473,11 @@ def soph_shadow_confirm_entry_budget_v1(*, replay, state, market, budget, review
         cost_allowance_usd=cost["model_costs"]["total_reserve"],
         budget_owner=budget["owner"],
         binding_scope="ANALYTICAL_SLOT_ENTRY",
+        **(
+            {"cap24_receipt_digest": state.soph_cap24_receipt_digest}
+            if state.soph_cap24_receipt_digest
+            else {}
+        ),
     )
 
 
