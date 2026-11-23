@@ -1784,7 +1784,7 @@
     {
       "path": "scripts/ops/measure_nonlive_mark_path_v1.py",
       "before_sha256": null,
-      "sha256": "0dc79b6275db5631930bfe6a832e4c1f047cbb3acab23ccd79c969cc0e4f5608"
+      "sha256": "03bb05f44d263d467c62831797076551ec1d1b1d94af26c498ffc07670aa7500"
     },
     {
       "path": "scripts/ops/merge_status_dashboard.sh",
@@ -1924,7 +1924,7 @@
     {
       "path": "scripts/ops/run_i17_shadow_learning_companion_v1.py",
       "before_sha256": null,
-      "sha256": "e53b339271d0d6e5fccf3c1742c737003442a5dc15dbcbada031e9e79fad2cfc"
+      "sha256": "2095a2fc3028a2742246fc77e19ba48bd259cab64afd63def155e4742e69d85a"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -1934,7 +1934,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py",
       "before_sha256": "8277c1cbda1c5c2d23873cb631b69cee4849159894cdc428b50cfdb2cf87d568",
-      "sha256": "dff6ff38d97c17a3368b760acb4d63d73ce795eba52841fb4fe864d8f6db4cde"
+      "sha256": "3e4a89e13c19c59eeac10e1c7f4ec94f2d24e8eb52b6998322c793d9100ac657"
     },
     {
       "path": "scripts/ops/run_k1_account_observation_readiness_v1.py",
@@ -2049,7 +2049,7 @@
     {
       "path": "scripts/ops/run_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "a36b9c6d3628aac097a12465bfc241312f10f4cc13aac858bcfcffd6867674e9"
+      "sha256": "e56ab70c31655f538c1d494928046296cb332f840a2a34c65140ddc7de6ef516"
     },
     {
       "path": "scripts/ops/run_research_candidate_shadow_v1.py",
@@ -2059,7 +2059,7 @@
     {
       "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
       "before_sha256": null,
-      "sha256": "c9fb586f3090601cedce6a37666eed5a9ee19ec8e5405a2b3bbfe89720c08967"
+      "sha256": "8e4edc01781666586a7349a0852b0794eaa1720173b2295884606002c4864088"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -2599,7 +2599,7 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "76f09c6dcc56a7aded21745e0f6971f409db44c287c2c3fbd8d7692531e7cb85"
+      "sha256": "ace8ee7e0d42b5c25e4d6bdc2f5fa19bf7a8a4e471e4253d47f04ed633da629a"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
@@ -2624,7 +2624,7 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "863f358ca781228fb1f318bf3c3bc419ff548ea4ca2ff9c32df3412e325f73c0"
+      "sha256": "e9d02225509d17a248fb8950beba1f7d89d893fad05e2bfc9304627c13f490ec"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -3384,7 +3384,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "673aa67aaf41b3b086dd3f61ffc27efc81715161e7b7245b6bdd16a12a45af08"
+      "sha256": "ce76d6c5952d468037c64ea3c9a6b7507b6e547de56464369a59245ac61ce03f"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
@@ -3399,7 +3399,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/eea_public_md_transport_v1.py",
       "before_sha256": "be9e55cdf9c72d4e6db4b6ae68b99bd6915b470d34ed2cbe4bc62369866d6e2f",
-      "sha256": "fb108cf6c6d3998c53f5966d67ab87a250b897e61e688e964d0bb82bafee471d"
+      "sha256": "4701f48e2c342c8898e9eeaa587f8b90ab99d97bcc3bfab1c720e3b1db33bf81"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/import_surface_guard_v1.py",
@@ -3409,12 +3409,12 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/network_boundary_guard_v1.py",
       "before_sha256": "95f06565060312e8a2c178b7ca729291acd342ce1e53cb58557dcb34d4705ee4",
-      "sha256": "1b652ab9e2eb224345c64fc6b7cd5b62611669806aea209a2fb1cd323c8e6da7"
+      "sha256": "97558d4250b9e8f89d30390455450e6d8d22b836cd83eb18a9ab9d86c92b89e9"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "93a2adb489798cb72037a68a5c258186c729128b2a1dda0493fa026d8f1f4991"
+      "sha256": "cbf60bd97e5e4c9bde721f8221cc5b5c7c3f7280fb7a3a89a6c5824c35f992e2"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3444,12 +3444,12 @@
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
       "before_sha256": "6573921fe3e81d08ec04caff74c1cd6446916f03074f79e7c8d0cd69aecce66a",
-      "sha256": "7b64c2629d3a3d58a7f7e2f0a04d7b60d9906dac0b1f4bc3bb95025c62f61a2b"
+      "sha256": "0e91b1bdcbf7f03bc714399e74988f13816dfeb758359e760f96407313321f5c"
     },
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
       "before_sha256": "3223fb5cf7f667773d3882bfaad96d453f4b5937f634a05817fd533feb146f86",
-      "sha256": "9037a00638eff8d9a72d3d71eb3c436316b26b243436422ee38d03155489aadf"
+      "sha256": "89780d911f411e25a1b4c19607160dd6119063cd1ade7c2504205f48811332e7"
     },
     {
       "path": "src/ops/live_entry_liquidity_precheck_v1.py",
@@ -3574,7 +3574,7 @@
     {
       "path": "src/ops/nonlive_mark_timing_v1.py",
       "before_sha256": null,
-      "sha256": "42aee00c44bd102462a304b8297df69dc8c11f083113b8aec5bfc68d8a935f82"
+      "sha256": "f980eb4b29c07a2ded230950d47c9329251f8fbf59c39aa0f4de0274d209e3ff"
     },
     {
       "path": "src/ops/offline_fault_monitor_v1.py",
@@ -3639,17 +3639,17 @@
     {
       "path": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/i17_shadow_instrument_v1.py",
       "before_sha256": null,
-      "sha256": "aba3c64dc4101374ae7e060d51f76e9ca8e0b50d5420eb0222dee8ff1298bad6"
+      "sha256": "e55c186bc8dc0294e0d394aeea831a824f86ba9bc69b6dde556d3b3a33ecb501"
     },
     {
       "path": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/productive_md_fetch_v1.py",
       "before_sha256": "b84c86e2429b61d371aec101da6caed27ea4781ef11f7d9ee39956f5cef19690",
-      "sha256": "ee371a8b92763f7fb314e36b5365e209c116d049f4d2ef8c25e4cd1552b405c7"
+      "sha256": "0f00d15447a9d1509d1fe48b5b05a34634fbdd90fb450dc84db9506671434bdb"
     },
     {
       "path": "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/venue_instrument_mapping_v1.py",
       "before_sha256": "ea97c8b304b1726be81e7dc225f41916b1fc20bb57c409f08729d1d4f0b4b7d2",
-      "sha256": "49f27ecc5ad048462259be022a042ef2b8d3142358847e79d3dd368afc3989e9"
+      "sha256": "6f685373e13ef964e128040618dfabdd556e6b266154f8f889379ee830c4f7ab"
     },
     {
       "path": "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
@@ -3877,9 +3877,19 @@
       "sha256": "4198f78b1f0b4d8e9a12ff9cb6d14a93f2a27b0015d6f3023415a19152b446cf"
     },
     {
+      "path": "src/ops/ranked_shadow_entry_selection_v1.py",
+      "before_sha256": null,
+      "sha256": "95e3542c3dfccd235aad2805e3d28a64ad6ab99516d69173330fe56be6fae545"
+    },
+    {
       "path": "src/ops/ranked_slot_run_source_v1.py",
       "before_sha256": null,
-      "sha256": "9127d1f961d30323e14a9e7a4c3498b180825e8bf18e2707a4ad9d9e7c255c9b"
+      "sha256": "291018d971a6377abd77577a95c8b197201abb9c549d99a1f72fc36dcf51995d"
+    },
+    {
+      "path": "src/ops/ranked_swap_shadow_observation_v1.py",
+      "before_sha256": null,
+      "sha256": "2f1bb0cc8eb76e4e919618dfa1ec1c9c36c099d0d85ca29304c965cb430dbcf5"
     },
     {
       "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py",
@@ -4004,7 +4014,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "7a9febe33b410af7388dcc572d0497597ddf6baa5916fe10d63c46c1aa08cf45"
+      "sha256": "736ac934f413c53df198186cecf8cef8a7193675d735a1266abbffe3c8249f70"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -4014,7 +4024,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/wallclock_hardening_binding_v2.py",
       "before_sha256": "3f80fd045d5a2ae1220892a95bb721ec1feba5e9b629343dcf63f1178d211398",
-      "sha256": "37522d462a9e6189366629fbc60f8e605732355ea0443e31e9d53ff9031377e5"
+      "sha256": "027307cd5d2a6b820429b29b37209f1ab5c8cd1ade1d54013d8dba02d7c8b7f6"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
@@ -4029,7 +4039,7 @@
     {
       "path": "src/research/offline_recorded_mark_horizon_source_v1.py",
       "before_sha256": "a15b17f3f53f75d51c567e5cc6bf35560a2a8cdf473904c534abf9e7ed2773b9",
-      "sha256": "1fad8c06788b7421be3306e81bd8e018219aea6f4a632b216a12d50b469b107b"
+      "sha256": "084fe90ef82c3b25fabccdc6cc4d646ddeba02b1acf93144e960b467eed921ab"
     },
     {
       "path": "src/risk_layer/kill_switch/core.py",
@@ -4969,7 +4979,7 @@
     {
       "path": "tests/ops/test_btc_demo_occupied_reconciliation_boundary_v1.py",
       "before_sha256": null,
-      "sha256": "06b5214ffafa0a72254f9957decb215d8f13e788d856621d4066a673286cca92"
+      "sha256": "980a93365163fecab64df7fe662d65e6cc2219f24c100cb5ec82142116d0ead6"
     },
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
@@ -5539,7 +5549,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "d7bc77e32e8fa8c02d2d97bfe24a7383a9b8f377963d886e2969ee3b265c19ae"
+      "sha256": "9a8ca66be31375f9d1c95d29cf76e49ca3919f1781663b4ff0eaed17632a6aaa"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
@@ -5649,7 +5659,7 @@
     {
       "path": "tests/ops/test_nonlive_mark_timing_v1.py",
       "before_sha256": null,
-      "sha256": "0ac71a50bed2c04eef58e0262cb350da42d666db0e088807ba33ec76e4f6b628"
+      "sha256": "b46b65c1469ab651eaf5419a337752580216226f6ee81b6bfff40705c4f361b8"
     },
     {
       "path": "tests/ops/test_offline_first_entry_start_v2.py",
@@ -5842,6 +5852,11 @@
       "sha256": "3b94d12e895b2afc9906e9065eb6bb90210b41568125a625da6b40b61d0a644e"
     },
     {
+      "path": "tests/ops/test_ranked_shadow_entry_selection_v1.py",
+      "before_sha256": null,
+      "sha256": "7fb375ff0b3600a6db3145397b3e9048f5200ec648e5024bf4000a879d6cf985"
+    },
+    {
       "path": "tests/ops/test_recommend_manual_only_workflows.py",
       "before_sha256": "cb8638d10c5bd087e99e4be4847cc7da2f259a078760319e74ea4e7383364851",
       "sha256": "1ba870fed9f22f80906f04fed4cc0db2d03cff18e95de65ceb9afe147c48b177"
@@ -5984,7 +5999,7 @@
     {
       "path": "tests/ops/test_zkp_lane1_paper_opening_v1.py",
       "before_sha256": null,
-      "sha256": "e1f43e18473c50c999b09771708c2a91d2613b33dcf7b3b40285511f51742b4b"
+      "sha256": "2660918ea1d59d6ea8cfacbcae111a4309cbc277105db410465f25b2a2868d3b"
     },
     {
       "path": "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2.py",
@@ -6204,5 +6219,6 @@
     "statement": "New SOPH I17 Shadow sessions use slot 2. New UP Paper sessions use slot 5. Archive readback validates the lane recorded for the instrument. A simulated first SOPH purchase requires the original slot-2 N5 assignment and its matching positive Cap24 receipt."
   },
   "soph_shadow_slot2_bootstrap_scope": "Explicit WP-02 SOPH shadow genesis assigns the eligible USD future to LANE_2. Cap23 retains the original Cap22 rank and source references. The common N5 publisher persists and replays the same initial assignment. Cap24 is a separate decision.",
-  "up_slot2_paper_timing_scope": "The ranked Paper driver verifies the original N5 assignment and its entry admission. Slot 2 UP acquires the next snapshot on a 200 ms start-to-start target after successful acquisition. An independent public mark feed provides timing evidence. L10 hold or switch is measured for an occupied Paper episode. Runtime authorization effect is NONE."
+  "up_slot2_paper_timing_scope": "The ranked Paper driver verifies the original N5 assignment and its entry admission. Slot 2 UP acquires the next snapshot on a 200 ms start-to-start target after successful acquisition. An independent public mark feed provides timing evidence. L10 hold or switch is measured for an occupied Paper episode. Runtime authorization effect is NONE.",
+  "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE."
 }
