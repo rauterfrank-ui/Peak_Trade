@@ -48,8 +48,9 @@ def test_previous_current_tree_or_exact_reviewed_successor_is_accepted(tmp_path,
     POLICY["validate_reserved_slot_rotation_bundle"](tmp_path, ROWS)
 
 
+@pytest.mark.parametrize("successor_revision", ["d97ac41842f97e0d7740ba27fb897800c5aed9d6", None])
 @pytest.mark.parametrize("parent", [SOPH_PARENT, CAP23_PARENT])
-def test_shadow_slot2_publisher_requires_its_exact_rotation_parent(tmp_path, parent):
+def test_slot_publishers_require_their_exact_rotation_parent(tmp_path, parent, successor_revision):
     validate = POLICY["validate_reserved_slot_rotation_bundle"]
     for path in (
         *DELTAS,
@@ -62,8 +63,18 @@ def test_shadow_slot2_publisher_requires_its_exact_rotation_parent(tmp_path, par
     validate(tmp_path, ROWS, double_play=True)
 
     publisher = tmp_path / PUBLISHER
-    successor = (ROOT / PUBLISHER).read_bytes()
+    successor = (
+        subprocess.check_output(["git", "show", f"{successor_revision}:{PUBLISHER}"], cwd=ROOT)
+        if successor_revision
+        else (ROOT / PUBLISHER).read_bytes()
+    )
     publisher.write_bytes(successor)
+    if successor_revision is None:
+        with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
+            validate(tmp_path, ROWS, double_play=True)
+        persistence = tmp_path / POLICY["FIXED_RANK_PERSISTENCE"]
+        persistence.parent.mkdir(parents=True, exist_ok=True)
+        persistence.write_bytes((ROOT / POLICY["FIXED_RANK_PERSISTENCE"]).read_bytes())
     if parent == CAP23_PARENT:
         with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
             validate(tmp_path, ROWS, double_play=True)
@@ -124,7 +135,11 @@ def test_actual_reader_binds_the_new_policies_and_preserves_startup_and_funding(
             ["git", "show", ROTATION_SUCCESSOR + ":" + path], cwd=ROOT
         ) == subprocess.check_output(["git", "show", BASE + ":" + path], cwd=ROOT)
         current = (ROOT / path).read_bytes()
-        if path == RECONCILIATION_STARTUP:
+        if path == POLICY["FIXED_RANK_PERSISTENCE"]:
+            prior = subprocess.check_output(["git", "show", "d97ac4184:" + path], cwd=ROOT)
+            assert prior == subprocess.check_output(["git", "show", BASE + ":" + path], cwd=ROOT)
+            assert hashlib.sha256(current).hexdigest() == POLICY["FIXED_RANK_PERSISTENCE_SHA256"]
+        elif path == RECONCILIATION_STARTUP:
             assert current == subprocess.check_output(
                 ["git", "show", NET_REVERSAL_BOOKING_SUCCESSOR + ":" + path], cwd=ROOT
             )

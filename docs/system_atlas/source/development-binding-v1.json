@@ -1029,7 +1029,7 @@
     {
       "path": "docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md",
       "before_sha256": "4c76662c368ad476dfd7842684d24b4056ad006f53cdb4ca46c9b8188b302482",
-      "sha256": "7d7d10c74384ccdb317365f635db790dcdf2ebc06d803ed89270014c052d10c6"
+      "sha256": "f794662eaa45a63ed5ee3b0024ace5edec90fa9e23010f044e5aeea582d64111"
     },
     {
       "path": "docs/ops/specs/CURRENT_MULTISLOT_TEST_PHASE_REQUIREMENTS_V1.md",
@@ -1534,7 +1534,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "bb8b4cd1e381ccdf76da7e14b6a51bcb50cd2cd5519ebd3e991258167c539f5d"
+      "sha256": "7ce8371e0e3c8f0064578a15376914ee84ce45793873bcce44ba3d531fce5cd1"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -1780,6 +1780,11 @@
       "path": "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/source_validation_v1.py",
       "before_sha256": "d2bdc7c3afcb6393893aa7f9e4f4636f8deb65ead5336a2a7c3e4ce4ca080c36",
       "sha256": "94772d04b697f6a7f90856fc0c6bdf78bd8d719d9ba2a0faaf05405ae18393be"
+    },
+    {
+      "path": "scripts/ops/measure_nonlive_mark_path_v1.py",
+      "before_sha256": null,
+      "sha256": "0dc79b6275db5631930bfe6a832e4c1f047cbb3acab23ccd79c969cc0e4f5608"
     },
     {
       "path": "scripts/ops/merge_status_dashboard.sh",
@@ -2054,7 +2059,7 @@
     {
       "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
       "before_sha256": null,
-      "sha256": "020a1bddcd3c58f276b6efd779acdda6d269acf942fa5908d3c197860c7397f7"
+      "sha256": "c9fb586f3090601cedce6a37666eed5a9ee19ec8e5405a2b3bbfe89720c08967"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -2572,6 +2577,11 @@
       "sha256": "11cc21dd3da8ed298d8b328f29ca09c220c03004fa55c012d70b3f8bbde77a29"
     },
     {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_account_opening_v1.py",
+      "before_sha256": null,
+      "sha256": "4fd78d2ffbea442b2eeccf8e8f3318aea1e3211f084bffe837bcd7626202b007"
+    },
+    {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/paper_episode_outcome_v1.py",
       "before_sha256": null,
       "sha256": "62827d37c2c9d452c03cc89e925fb52c8877b5d7fd6ce8e2f4003d42d2986447"
@@ -2584,17 +2594,17 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/xperp_paper_episode_outcome_v1.py",
       "before_sha256": null,
-      "sha256": "aa141654bd6ce172a584ca179a5f15278638101b3a113c2e93daf72f4eb95c39"
+      "sha256": "434856f89c84ea27dfa261b923c0dbe9225336d216864eb83b98e88ec0c01c4d"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "0461c097224cd290ed94785be4847dc7f3789c0b38dc335bf7b6450cb95eb1f0"
+      "sha256": "76f09c6dcc56a7aded21745e0f6971f409db44c287c2c3fbd8d7692531e7cb85"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
       "before_sha256": null,
-      "sha256": "e118f6ed99dff95b374c40638ef12fab2e95ab526788ea28f4d993bedada3d24"
+      "sha256": "5f4de04c2e2e0aed2a41b7946bd009cfa2f40c51c13159afb77d9ec6097c420d"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_market_v1.py",
@@ -2684,7 +2694,7 @@
     {
       "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
       "before_sha256": "93eb1f48641bdf52758bef1f77a66e004f97e618538d09f4f95af1ca7ae97e60",
-      "sha256": "00fbb5f1ecc70a8e560a1bd738006d0723221e27ae8d11e4dc1bed822c3d4cfe"
+      "sha256": "3888a545bd92f39036eecdd66293fd012d6b0d5286e5e66eeb0480df091fc707"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py",
@@ -2777,6 +2787,11 @@
       "sha256": "5a1fb2f492d59c1f7cfb115be16a72a3a0f8c1d6b3abfd3ba9de6d859f64a57a"
     },
     {
+      "path": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/constants_v1.py",
+      "before_sha256": "56459312936203d9316ffda06762f806a1e263267f608cf9058847ee01da79e2",
+      "sha256": "1a78c64721d5c8b7f198d51f3055ab8451152fd3222d381b6de189ea9e3e4ece"
+    },
+    {
       "path": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/soph_shadow_bootstrap_v1.py",
       "before_sha256": null,
       "sha256": "1a3062af68cb084c3eb500e671f30cb60fe0b2d1bdd518cbb96f271919bf0357"
@@ -2784,12 +2799,17 @@
     {
       "path": "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py",
       "before_sha256": "b99352662826880f02bcd6c6418aeba069289e8f38e17b7550a8b160ba66d41d",
-      "sha256": "5cf4073efd49e5d5381cae16c7e48dacaf11f0c3168260cb558015d1c80d1451"
+      "sha256": "36b7db3d8ef8856892e7dcc7192d0d14eaf64fef55ae2e433acb0f9682780b25"
     },
     {
       "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
       "before_sha256": "9171863c923ed85ea7a394ffef580ba1d16bf314d5b9b45adc026c61457490f1",
-      "sha256": "e472ee7adf42c00173f22f5cce28ef27767e90545582682c680c77116b98c5cb"
+      "sha256": "3f9259c701a031761be90d9a951660be531134076037d20221c9d00629b63c04"
+    },
+    {
+      "path": "src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py",
+      "before_sha256": "3ab70732fb0ff579f1f4cdaf0e689591db8c616af244014bd215abbf0fddd9dd",
+      "sha256": "716a8e06fc9daaaa8c25b5c8d7dc6109ae02caf32e71f9423db0dd1a92fa15e9"
     },
     {
       "path": "src/ops/current_wp02_default_productive_universe_handoff_v1/composition_v1.py",
@@ -3552,6 +3572,11 @@
       "sha256": "623c2052f9628db50109ce7d1414fb8fb2862c553371f8f4d5d9077443caa71f"
     },
     {
+      "path": "src/ops/nonlive_mark_timing_v1.py",
+      "before_sha256": null,
+      "sha256": "42aee00c44bd102462a304b8297df69dc8c11f083113b8aec5bfc68d8a935f82"
+    },
+    {
       "path": "src/ops/offline_fault_monitor_v1.py",
       "before_sha256": null,
       "sha256": "44348714be6bcd37af1f31796f16159faae85aeb92173932ffd2b7275dc19a73"
@@ -3850,6 +3875,11 @@
       "path": "src/ops/productive_reconciliation_runtime_binding_v1/startup_portfolio_document_v1.py",
       "before_sha256": "6eacdcda90706808e17b47b14f5feb63ef523f394024ac2aa8bad868376b31c1",
       "sha256": "4198f78b1f0b4d8e9a12ff9cb6d14a93f2a27b0015d6f3023415a19152b446cf"
+    },
+    {
+      "path": "src/ops/ranked_slot_run_source_v1.py",
+      "before_sha256": null,
+      "sha256": "9127d1f961d30323e14a9e7a4c3498b180825e8bf18e2707a4ad9d9e7c255c9b"
     },
     {
       "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py",
@@ -4987,6 +5017,11 @@
       "sha256": "de25437538540689d480009a098f79487d2ce1be4fcb0d8694a034c87e5d0cb8"
     },
     {
+      "path": "tests/ops/test_checked_lane_selection_publication_v1.py",
+      "before_sha256": "5ee40387657aefcd1895c13c8395e47225f92c546c3a0bc3bef46f3fba4c4897",
+      "sha256": "4eb4ee805fef472b728fc69a09d37115d9a0fe8971320f9b85564c6ce19540ad"
+    },
+    {
       "path": "tests/ops/test_closing_execution_cost_provision_v1.py",
       "before_sha256": null,
       "sha256": "330d9e81802b3477a065bac19ecb8ab3d416f60d4ab4e5715811d33e15e54ae4"
@@ -5612,6 +5647,11 @@
       "sha256": "5726f1966580c12413c3e153c5eb99385fdff300744e44fcfd49541e35e0374f"
     },
     {
+      "path": "tests/ops/test_nonlive_mark_timing_v1.py",
+      "before_sha256": null,
+      "sha256": "0ac71a50bed2c04eef58e0262cb350da42d666db0e088807ba33ec76e4f6b628"
+    },
+    {
       "path": "tests/ops/test_offline_first_entry_start_v2.py",
       "before_sha256": null,
       "sha256": "a9412927c283573c70565375a300b45c7bd821014be0b123d182d9a8e5d4832d"
@@ -5824,7 +5864,7 @@
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "2e66110d38964a15d321d7f01fca5ed8917949385b5aed283c97efd623a44cdf"
+      "sha256": "d2c14cc7fc20a669cd5c3701b6069746b578cc398362b1270faec77c35b799e5"
     },
     {
       "path": "tests/ops/test_rotation_plan_state_v1.py",
@@ -5944,7 +5984,7 @@
     {
       "path": "tests/ops/test_zkp_lane1_paper_opening_v1.py",
       "before_sha256": null,
-      "sha256": "615d05c0dc63b5f747e802c5763f5b4e7911f1af2706ca6b95b64828af0c3079"
+      "sha256": "e1f43e18473c50c999b09771708c2a91d2613b33dcf7b3b40285511f51742b4b"
     },
     {
       "path": "tests/research/test_canonical_volatility_numeric_max_age_additional_evidence_session_authorization_v2.py",
@@ -6163,5 +6203,6 @@
     "authority": "NONE",
     "statement": "New SOPH I17 Shadow sessions use slot 2. New UP Paper sessions use slot 5. Archive readback validates the lane recorded for the instrument. A simulated first SOPH purchase requires the original slot-2 N5 assignment and its matching positive Cap24 receipt."
   },
-  "soph_shadow_slot2_bootstrap_scope": "Explicit WP-02 SOPH shadow genesis assigns the eligible USD future to LANE_2. Cap23 retains the original Cap22 rank and source references. The common N5 publisher persists and replays the same initial assignment. Cap24 is a separate decision."
+  "soph_shadow_slot2_bootstrap_scope": "Explicit WP-02 SOPH shadow genesis assigns the eligible USD future to LANE_2. Cap23 retains the original Cap22 rank and source references. The common N5 publisher persists and replays the same initial assignment. Cap24 is a separate decision.",
+  "up_slot2_paper_timing_scope": "The ranked Paper driver verifies the original N5 assignment and its entry admission. Slot 2 UP acquires the next snapshot on a 200 ms start-to-start target after successful acquisition. An independent public mark feed provides timing evidence. L10 hold or switch is measured for an occupied Paper episode. Runtime authorization effect is NONE."
 }

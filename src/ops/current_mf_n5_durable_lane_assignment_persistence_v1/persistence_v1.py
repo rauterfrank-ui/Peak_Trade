@@ -59,6 +59,9 @@ from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.single_writer_
     DuplicateLaneAssignmentWriterError,
     DurableLaneAssignmentSingleWriterV1,
 )
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
+    FIXED_RANK_ASSIGNMENT_POLICY,
+)
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
     IsolatedLaneTopologyError,
     IsolatedLaneTopologyV1,
@@ -178,6 +181,13 @@ def load_completed_selection_publication_v1(base: Path | str) -> dict[str, Any] 
     if receipt.get("receipt_digest") != sha256_hex(canonical_json_dumps(material)):
         _fail(FAILURE_PUBLICATION_PENDING, "completed_receipt_integrity")
     return receipt
+
+
+def load_completed_fixed_rank_publication_v1(base: Path | str) -> dict[str, Any] | None:
+    receipt = load_completed_selection_publication_v1(base)
+    if receipt and receipt["topology"]["initial_assignment_policy"] == FIXED_RANK_ASSIGNMENT_POLICY:
+        return receipt
+    return None
 
 
 def validate_pending_publication_source_v1(base: Path | str, receipt: Mapping[str, Any]) -> None:
@@ -455,6 +465,16 @@ def persist_durable_lane_assignment_v1(
         _fail(FAILURE_PARTIAL_WRITE, "SIMULATED_WRITE_FAILURE")
     validated = _validate_produced_topology(topology)
     root = checkpoint_root_for(validated.topology_state_root_base)
+    completed = load_completed_fixed_rank_publication_v1(validated.topology_state_root_base)
+    if completed and completed["topology_digest"] != topology_integrity_digest_v1(
+        validated.to_dict()
+    ):
+        _fail("LANE_FIXED_BINDINGS_ALREADY_PUBLISHED")
+    if (
+        validated.initial_assignment_policy == FIXED_RANK_ASSIGNMENT_POLICY
+        and not selection_publication_id
+    ):
+        _fail(FAILURE_PUBLICATION_PENDING, "fixed_bindings_require_checked_publication")
     pending = root / PENDING_SELECTION_PUBLICATION
     if pending.exists():
         receipt = load_pending_selection_publication_v1(validated.topology_state_root_base)

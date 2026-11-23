@@ -140,6 +140,13 @@ The checked N5 publisher records `SHADOW_SOPH_SLOT_2_THEN_LOWEST_FREE_LANES`
 in the topology. A retry checks the same deployment inputs and recovers the
 original publication. Cap24 remains a subsequent decision.
 
+For a prepared Paper deployment the caller can select original rank numbers
+at bootstrap. With ranks 1, 2, 4 and 5, N5 publishes each selected member
+at the lane with that number and leaves lane 3 outside that assignment.
+The completed publication binds each lane to its original Cap21 universe and
+Cap22 ranking. Recovery reads the original binding across later ranking
+changes. A new Paper entry requires its own current Cap23 and matching Cap24.
+
 A pure Cap22 ranking reorder of an unchanged membership set must not move
 incumbent instruments between lanes.
 

@@ -24,6 +24,7 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
     ENTRY_POLICY,
     EXIT_POLICY,
     FIVE_LANE_RUNTIME_CREATED,
+    FIXED_RANK_ASSIGNMENT_POLICY,
     FREE_LANE_ASSIGNMENT_POLICY,
     INITIAL_ASSIGNMENT_POLICY,
     INSTRUMENT_ID_ALONE_SUFFICIENT,
@@ -355,6 +356,7 @@ def _finish_topology(
         for slot in validated
         if slot.occupancy == OCCUPANCY_OCCUPIED
     )
+    fixed = initial_assignment_policy == FIXED_RANK_ASSIGNMENT_POLICY
     return IsolatedLaneTopologyV1(
         schema_version=SCHEMA_VERSION,
         owner=OWNER,
@@ -377,9 +379,11 @@ def _finish_topology(
         max_positions_effective=MAX_POSITIONS_EFFECTIVE,
         initial_assignment_policy=initial_assignment_policy,
         retained_member_policy=RETAINED_MEMBER_POLICY,
-        exit_policy=EXIT_POLICY,
-        entry_policy=ENTRY_POLICY,
-        free_lane_assignment_policy=FREE_LANE_ASSIGNMENT_POLICY,
+        exit_policy="EXPLICIT_RELEASE_REQUIRED" if fixed else EXIT_POLICY,
+        entry_policy="GENESIS_ONLY" if fixed else ENTRY_POLICY,
+        free_lane_assignment_policy="ONLY_REQUESTED_ORIGINAL_RANK_SLOTS"
+        if fixed
+        else FREE_LANE_ASSIGNMENT_POLICY,
         restart_reconstruction_policy=RESTART_RECONSTRUCTION_POLICY,
     )
 
@@ -496,6 +500,7 @@ def apply_isolated_lane_topology_v1(
     underfill_ranking_snapshot: Mapping[str, Any] | None = None,
     open_position_custody_portfolio: object | None = None,
     soph_shadow_bootstrap: SophShadowSlot2BootstrapV1 | None = None,
+    fixed_rank_slots: tuple[int, ...] = (),
 ) -> IsolatedLaneTopologyV1:
     """Assign governed members to opaque LANE_1..LANE_5 slots.
 
@@ -568,7 +573,31 @@ def apply_isolated_lane_topology_v1(
     base = Path(topology_state_root_base)
     assignment: dict[str, str] = {}
 
+    if prior_topology and prior_topology.initial_assignment_policy == FIXED_RANK_ASSIGNMENT_POLICY:
+        _fail("LANE_FIXED_BINDINGS_ALREADY_PUBLISHED")
+
     initial_policy = INITIAL_ASSIGNMENT_POLICY
+    if fixed_rank_slots:
+        if (
+            soph_shadow_bootstrap is not None
+            or prior_topology is not None
+            or not decided.bootstrap
+            or tuple(current_ids) != eligible_prefix_from_cap22_snapshot(ranking_snapshot)
+            or any(
+                type(rank) is not int or not 1 <= rank <= MAX_LANE_COUNT
+                for rank in fixed_rank_slots
+            )
+            or tuple(sorted(set(fixed_rank_slots))) != fixed_rank_slots
+        ):
+            _fail("LANE_FIXED_RANK_BOOTSTRAP_INVALID")
+        for instrument_id in current_ids:
+            (row,) = _instrument_rows(ranking_snapshot, instrument_id)
+            rank = row["rank"]
+            if rank in fixed_rank_slots:
+                assignment[instrument_id] = LANE_IDS[rank - 1]
+        if len(assignment) != len(fixed_rank_slots):
+            _fail("LANE_FIXED_RANK_MEMBER_MISSING")
+        initial_policy = FIXED_RANK_ASSIGNMENT_POLICY
     if soph_shadow_bootstrap is not None:
         soph_shadow_bootstrap.require_topology_root(base)
         if prior_topology is not None or not decided.bootstrap:
@@ -588,10 +617,11 @@ def apply_isolated_lane_topology_v1(
     if prior_topology is None:
         if not decided.bootstrap:
             _fail(FAILURE_RESTART_WITHOUT_PRIOR, decided.instance_id)
-        free = [lane for lane in LANE_IDS if lane not in assignment.values()]
-        unassigned = [inst for inst in current_ids if inst not in assignment]
-        for lane_id, instrument_id in zip(free, unassigned, strict=False):
-            assignment[instrument_id] = lane_id
+        if not fixed_rank_slots:
+            free = [lane for lane in LANE_IDS if lane not in assignment.values()]
+            unassigned = [inst for inst in current_ids if inst not in assignment]
+            for lane_id, instrument_id in zip(free, unassigned, strict=False):
+                assignment[instrument_id] = lane_id
     else:
         initial_policy = prior_topology.initial_assignment_policy
         if prior_topology.universe_snapshot_id != universe_snapshot_id:

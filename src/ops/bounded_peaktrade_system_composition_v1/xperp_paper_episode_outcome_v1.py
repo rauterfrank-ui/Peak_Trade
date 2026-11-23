@@ -137,6 +137,14 @@ class _Archive:
         binding = profile["binding"]
         self.slot = _SLOTS.get(binding["lane_id"])
         instrument = profile["instrument_binding"]
+        ranked_config = profile.get("ranked_config")
+        if ranked_config is not None:
+            from src.ops.ranked_slot_run_source_v1 import read_recorded_paper_slot_v1
+
+            self.slot = read_recorded_paper_slot_v1(profile)
+            if ranked_config["session_id"] != root.name:
+                raise ValueError("RANKED_PAPER_ORIGINAL_SESSION_REQUIRED")
+
         closeout = self.read(CLOSEOUT)
         if (
             self.slot is None
@@ -146,8 +154,13 @@ class _Archive:
             != (self.slot.instrument_id, self.slot.native_id)
             or (instrument["instrument_id"], instrument["venue_native_id"])
             != (self.slot.instrument_id, self.slot.native_id)
-            or instrument["selection_state"] != "EXPLICIT_SINGLE_INSTRUMENT_PAPER"
-            or instrument["selection_integrity_digest"] != canonical_digest_v1(binding)
+            or (
+                ranked_config is None
+                and (
+                    instrument["selection_state"] != "EXPLICIT_SINGLE_INSTRUMENT_PAPER"
+                    or instrument["selection_integrity_digest"] != canonical_digest_v1(binding)
+                )
+            )
             or profile["schema"] != "bounded_single_instrument_paper_profile.v1"
             or profile["execution_environment"] != _MODE
             or profile["authority"] != "NONE"

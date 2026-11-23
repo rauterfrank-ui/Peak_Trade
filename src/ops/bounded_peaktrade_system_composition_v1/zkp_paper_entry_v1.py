@@ -177,6 +177,8 @@ class ZkpPaperEntryV1:
         initial_market,
         duration: int,
         slot=ZKP_PAPER_SLOT,
+        ranked_config=None,
+        entry_bound=None,
     ):
         if not root.is_absolute() or root.resolve() != root or root.is_relative_to(repo):
             raise ValueError("ZKP_PAPER_NEW_ISOLATED_ROOT_REQUIRED")
@@ -195,7 +197,15 @@ class ZkpPaperEntryV1:
             or self.slot.lane_id not in self.budget.allowed_slot_ids
         ):
             raise ValueError("ZKP_PAPER_CONTRACT_OR_BUDGET_SCOPE_INVALID")
-        self.initial_equity = PAPER_ALLOCATION_USDC * initial_market.usd_per_usdc
+        allocation_fx = initial_market.usd_per_usdc
+        fx_source = initial_market.source_hashes["usdc-index"]
+        if ranked_config is not None and "paper_entry_admission" in ranked_config:
+            from .paper_account_opening_v1 import read_paper_account_opening_v1
+
+            opening_account = read_paper_account_opening_v1(ranked_config, initial_market)
+            allocation_fx = Decimal(opening_account["usd_per_usdc"])
+            fx_source = opening_account["fx_source_sha256"]
+        self.initial_equity = PAPER_ALLOCATION_USDC * allocation_fx
         self.accounting = ProductiveFuturesAccountingSessionV1(
             contract=self.contract,
             initial_equity=self.initial_equity,
@@ -219,7 +229,28 @@ class ZkpPaperEntryV1:
             "adv_days": self.liquidity_policy.adv_days,
         }
         self.binding_digest = canonical_digest_v1(identity)
-        self.bound = BoundInstrumentV1(
+        self.ranked_assignment = None
+        self.entry_admission = None
+        if ranked_config is not None:
+            from src.ops.ranked_slot_run_source_v1 import (
+                read_paper_entry_admission_v1,
+                read_ranked_paper_slot_v1,
+            )
+
+            self.ranked_assignment, original_slot = read_ranked_paper_slot_v1(ranked_config)
+            if (
+                original_slot != slot
+                or root.name != ranked_config["session_id"]
+                or entry_bound is None
+            ):
+                raise ValueError("RANKED_PAPER_SESSION_AND_CAP24_REQUIRED")
+            self.entry_admission = read_paper_entry_admission_v1(
+                ranked_config, self.ranked_assignment
+            )
+            self.entry_admission.require_binding_v1(entry_bound)
+        elif entry_bound is not None:
+            raise ValueError("RANKED_PAPER_N5_SOURCE_REQUIRED")
+        self.bound = entry_bound or BoundInstrumentV1(
             instrument_id=self.slot.instrument_id,
             venue_native_id=self.slot.native_id,
             ranking_snapshot_id="",
@@ -248,13 +279,26 @@ class ZkpPaperEntryV1:
                 "schema": "bounded_single_instrument_paper_profile.v1",
                 "execution_environment": _MODE,
                 "instrument_binding": self.bound.to_dict(),
+                **(
+                    {
+                        "ranked_config": ranked_config,
+                        "n5_assignment": self.ranked_assignment.reference(),
+                        **(
+                            {"paper_entry_admission": self.entry_admission.reference()}
+                            if "paper_entry_admission" in ranked_config
+                            else {}
+                        ),
+                    }
+                    if ranked_config is not None
+                    else {}
+                ),
                 "duration_seconds": duration,
                 "repository_sha": revision,
                 "source_tree_sha256": repository_source_digest_v1(),
                 "initial_equity_usd": str(self.initial_equity),
                 "opening_allocation_usdc": str(PAPER_ALLOCATION_USDC),
-                "allocation_fx": str(initial_market.usd_per_usdc),
-                "allocation_fx_source": initial_market.source_hashes["usdc-index"],
+                "allocation_fx": str(allocation_fx),
+                "allocation_fx_source": fx_source,
                 "entry_budget": self.budget.to_dict_v1(),
                 "contract": self.contract.to_dict(),
                 "fee_rate": str(PAPER_FEE_RATE),
@@ -357,6 +401,8 @@ class ZkpPaperEntryV1:
             if entry.status != "ENTRY_DECIDED":
                 immutable_json_v1(decision_path, evidence)
                 return evidence
+            if self.entry_admission is not None:
+                self.entry_admission.require_current_v1(clock())
             result = self._prepare_fill(cycle, market, market_checks, clock)
             fill = result.pop("fill", None)
             evidence.update(result)
@@ -366,6 +412,8 @@ class ZkpPaperEntryV1:
             if fill is None:
                 return evidence
             # Journal the canonical intent and every price/cost binding before accounting.
+            if self.entry_admission is not None:
+                self.entry_admission.require_current_v1(clock())
             opening = {
                 **evidence,
                 "authority": "NONE",
