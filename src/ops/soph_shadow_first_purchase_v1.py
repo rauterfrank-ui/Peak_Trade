@@ -5,6 +5,7 @@ from decimal import Decimal
 from math import isfinite
 
 from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
+from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
 from src.ops.instrument_card_stream_v1 import (
     plain,
     validate_card_market_v1,
@@ -25,12 +26,17 @@ def _selection_window(root, repository_sha, bound, market, decision_time):
     if root is None or not repository_sha:
         raise ValueError("SOPH_FIRST_PURCHASE_SELECTION_SOURCE_REQUIRED")
     epoch = datetime.fromtimestamp(decision_time, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    sources = inspect_selection_v1(
-        productivity_root=root,
-        repository_sha=repository_sha,
-        binding_epoch=epoch,
-        mark_price_by_native_id={bound.venue_native_id: str(market.mark)},
-    )
+    if isinstance(root, SophSlotSourcesV1):
+        sources = root.inspect(repository_sha)
+        if sources.selection.state != "SELECTED_ACTIVE":
+            raise ValueError("SOPH_FIRST_PURCHASE_SELECTION_NOT_ACTIVE")
+    else:
+        sources = inspect_selection_v1(
+            productivity_root=root,
+            repository_sha=repository_sha,
+            binding_epoch=epoch,
+            mark_price_by_native_id={bound.venue_native_id: str(market.mark)},
+        )
     selection, ranking, universe = sources.selection, sources.ranking, sources.universe
     assert_handoff_invariants_v1(
         selection,
@@ -71,7 +77,10 @@ def _selection_window(root, repository_sha, bound, market, decision_time):
     )
     if decision_time < known_at:
         raise ValueError("SOPH_FIRST_PURCHASE_SELECTION_NOT_YET_AVAILABLE")
-    return datetime.fromisoformat(selection.valid_until.replace("Z", "+00:00")).timestamp()
+    expires = datetime.fromisoformat(selection.valid_until.replace("Z", "+00:00")).timestamp()
+    if decision_time > expires:
+        raise ValueError("SELECTION_STALE_FOR_BINDING_EPOCH")
+    return expires
 
 
 def prepare_soph_shadow_first_purchase_v1(
@@ -168,6 +177,8 @@ def prepare_soph_shadow_first_purchase_v1(
             raise ValueError("SOPH_FIRST_PURCHASE_COST_BINDING_MISMATCH")
         if not callable(clock):
             raise ValueError("SOPH_FIRST_PURCHASE_EXECUTION_CLOCK_REQUIRED")
+        if isinstance(state.soph_selection_root, SophSlotSourcesV1):
+            state.soph_selection_root.inspect(repository_sha).require_matching_binding(bound)
         now = clock()
         if (
             type(now) not in (int, float)
