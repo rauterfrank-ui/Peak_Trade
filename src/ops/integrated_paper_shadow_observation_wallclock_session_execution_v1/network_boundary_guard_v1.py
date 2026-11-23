@@ -186,7 +186,13 @@ def assert_url_allowed_v1(
             "instType": ["SWAP"],
             "instId": [instrument.native_id],
         }
-        if expected.get(path) != qs:
+        from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+            USDT_USDC_ENDPOINT,
+            USDT_USDC_SOURCE_IDENTITY,
+        )
+
+        entry_fx = path == USDT_USDC_ENDPOINT and qs == {"instId": [USDT_USDC_SOURCE_IDENTITY]}
+        if not entry_fx and expected.get(path) != qs:
             blockers.append("I17_SWAP_EXACT_PUBLIC_QUERY_REQUIRED")
         return sorted(set(blockers))
     for key, values in qs.items():

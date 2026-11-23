@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 from decimal import Decimal, DecimalException
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack
 from functools import partial
 from hashlib import sha256
 import json
@@ -21,8 +23,10 @@ if str(REPO) not in sys.path:
 
 from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (  # noqa: E402
     collect_bound_paper_liquidity_v1,
+    collect_public_paper_sources_v1,
     retain_public_paper_sources_v1,
 )
+from src.ops.nonlive_mark_timing_v1 import observe_nonlive_mark_v1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.xperp_paper_episode_outcome_v1 import (  # noqa: E402
     seal_xperp_paper_archive_v1,
 )
@@ -37,6 +41,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     UP_PAPER_SLOT,
     UP_PAPER_ARCHIVED_SLOT2,
     ZKP_PAPER_SLOT,
+    bind_zkp_paper_market_v1,
     collect_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
     zkp_public_queries_v1,
@@ -59,6 +64,17 @@ from src.ops.master_v2_card_precheck_v1 import review_entry_cards_v1  # noqa: E4
 from src.ops.instrument_card_stream_v1 import InstrumentCardStreamV1, paper_budget_source_v1  # noqa: E402
 
 _POLL_SECONDS = 5
+_ACTIVE_POLL_PERIOD_SECONDS = 0.2
+
+
+def _next_poll_delay(slot, *, captured, elapsed, occupied=False):
+    if occupied or (slot.lane_id == "LANE_2" and slot.native_id == UP_PAPER_SLOT.native_id):
+        if elapsed is None:  # No acquisition has been attempted since this process resumed.
+            return 0.0
+        # Start-to-start pacing. Acquisition and the decision already consume part of the period.
+        if captured:
+            return max(0.0, _ACTIVE_POLL_PERIOD_SECONDS - elapsed)
+    return _POLL_SECONDS
 
 
 def _isolated_root(path):
@@ -123,6 +139,51 @@ def _capture(policy, *, label, output=None, bound=None, slot=ZKP_PAPER_SLOT):
                 transport, bound=bound, policy=policy, capture_id=label, retain=retain
             ).to_preflight_v1()
     return market
+
+
+def _occupied_market_reader(
+    stack, policy, slot, *, transport_factory=FullCoreProductiveReadOnlyGetTransportV1, clock=time
+):
+    queries = zkp_public_queries_v1(policy.adv_days, slot=slot)
+    history = ("instrument", "tiers", "adv", "trade-candles", "mark-candles", "funding-history")
+    latest = ("book", "mark")
+    context = tuple(name for name in queries if name not in (*history, *latest))
+    worker = stack.enter_context(
+        ThreadPoolExecutor(max_workers=1, thread_name_prefix="paper-market")
+    )
+
+    def capture(*, label, output):
+        observations, bodies = {}, {}
+        with retain_public_paper_sources_v1(output) as retain:
+
+            def read(names):
+                def archive(name, receipt, body):
+                    # Each branch owns distinct response names. Join both before
+                    # closing the archive or reading the final book and mark.
+                    retain(name, receipt, body)
+                    bodies[name] = body
+
+                transport = transport_factory(timeout_seconds=6, max_request_count=len(names))
+                return collect_public_paper_sources_v1(
+                    transport,
+                    queries={k: queries[k] for k in names},
+                    capture_id=label,
+                    retain=archive,
+                )
+
+            pending = worker.submit(read, history)
+            try:
+                observations.update(read(context))
+            finally:
+                observations.update(pending.result())
+            observations.update(read(latest))
+        if bodies.keys() != queries.keys():
+            raise ValueError("PAPER_ORIGINAL_PUBLIC_BODIES_REQUIRED")
+        return bind_zkp_paper_market_v1(
+            observations, policy=policy, observed_unix=clock(), slot=slot, original_bodies=bodies
+        )
+
+    return capture
 
 
 def _read_cap24_binding(
@@ -256,6 +317,7 @@ def _run(
     capture,
     card_assignment=None,
     ranked_config=None,
+    occupied_capture=None,
 ):
     session = ZkpPaperEntryV1(
         root=root,
@@ -277,7 +339,16 @@ def _run(
             root / "window.json", {"started_at": started_at, "duration_seconds": duration}
         )
         return _drive(
-            root, market, session, None, policy, deadline, revision, capture, card_assignment
+            root,
+            market,
+            session,
+            None,
+            policy,
+            deadline,
+            revision,
+            capture,
+            card_assignment,
+            occupied_capture,
         )
 
 
@@ -286,7 +357,16 @@ class _WindowEnded(ValueError):
 
 
 def _drive(
-    root, market, opening, occupied, policy, deadline, revision, capture, card_assignment=None
+    root,
+    market,
+    opening,
+    occupied,
+    policy,
+    deadline,
+    revision,
+    capture,
+    card_assignment=None,
+    occupied_capture=None,
 ):
     folder = None
     session = occupied or opening
@@ -308,6 +388,7 @@ def _drive(
             raise _WindowEnded
         return time()
 
+    poll_started = monotonic() if market is not None else None
     while active():
         if market is not None:
             try:
@@ -323,7 +404,22 @@ def _drive(
                     cards.defer_entry_v1(review)
                     result = {"status": "WAITING_FOR_LIQUID_MARKET", "entry_review": review}
                 else:
-                    with cards.observe_v1():
+                    with (
+                        cards.observe_v1(),
+                        observe_nonlive_mark_v1(
+                            mode="PAPER",
+                            session=root.name,
+                            lane=session.slot.lane_id,
+                            native=session.slot.native_id,
+                            canonical=session.slot.instrument_id,
+                            event_ms=round(market.market_event_unix * 1000),
+                            price=market.mark,
+                            receipt=market.mark_acquired_at,
+                            paper_episode_id=occupied.episode.identity.episode_id
+                            if occupied
+                            else None,
+                        ),
+                    ):
                         result = (occupied or opening).step_v1(market, clock=fill_clock)
                     if review is not None:
                         result = dict(result, entry_review=review)
@@ -351,13 +447,25 @@ def _drive(
                 immutable_json_v1(root / "closeout.json", result)
                 seal_xperp_paper_archive_v1(root, result)
                 return result
-        sleep(min(_POLL_SECONDS, max(0, deadline - monotonic())))
+        now = monotonic()
+        delay = _next_poll_delay(
+            session.slot,
+            captured=market is not None,
+            occupied=occupied is not None,
+            elapsed=now - poll_started if poll_started is not None else None,
+        )
+        if delay > 0:
+            sleep(min(delay, max(0, deadline - now)))
         if not active():
             break
+        poll_started = monotonic()
         poll = uuid4().hex
         folder = root / "public" / poll
         try:
-            market = capture(policy, label=f"{root.name}:{poll}", output=folder)
+            if occupied is not None and occupied_capture is not None:
+                market = occupied_capture(label=f"{root.name}:{poll}", output=folder)
+            else:
+                market = capture(policy, label=f"{root.name}:{poll}", output=folder)
         except (OSError, ValueError, TypeError, KeyError, DecimalException) as exc:
             cards.unavailable_v1(exc, now=time())
             immutable_json_v1(
@@ -378,7 +486,16 @@ def _drive(
     return result
 
 
-def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT, card_assignment=None):
+def _resume(
+    root,
+    *,
+    policy,
+    revision,
+    capture,
+    slot=ZKP_PAPER_SLOT,
+    card_assignment=None,
+    occupied_capture=None,
+):
     if not _isolated_root(root).is_dir():
         raise ValueError("ZKP_PAPER_ORIGINAL_RUN_ROOT_REQUIRED")
     with exclusive_v1(root / ".paper-driver.lock"):
@@ -419,7 +536,16 @@ def _resume(root, *, policy, revision, capture, slot=ZKP_PAPER_SLOT, card_assign
             raise ValueError("ZKP_PAPER_ORIGINAL_WINDOW_INVALID")
         deadline = monotonic() + max(0, started + duration - now)
         return _drive(
-            root, None, None, occupied, policy, deadline, revision, capture, original_assignment
+            root,
+            None,
+            None,
+            occupied,
+            policy,
+            deadline,
+            revision,
+            capture,
+            original_assignment,
+            occupied_capture,
         )
 
 
@@ -453,6 +579,7 @@ def main(argv=None):
             help="Use a prepared N5-ranked Paper slot or its supported legacy binding",
         )
     args = parser.parse_args(argv)
+    resources = ExitStack()
     try:
         policy = load_paper_liquidity_policy_v1(REPO)
         slot = (
@@ -524,12 +651,14 @@ def main(argv=None):
                 cwd=REPO,
                 text=True,
             ).strip()
+            occupied_capture = _occupied_market_reader(resources, policy, slot)
             if args.mode == "resume":
                 result = _resume(
                     args.run_root,
                     policy=policy,
                     revision=revision,
                     capture=capture,
+                    occupied_capture=occupied_capture,
                     slot=slot,
                     card_assignment=card_assignment,
                 )
@@ -554,11 +683,14 @@ def main(argv=None):
                     deadline=deadline,
                     revision=revision,
                     capture=capture,
+                    occupied_capture=occupied_capture,
                     card_assignment=card_assignment,
                     **({"ranked_config": ranked_config} if ranked_config else {}),
                 )
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, DecimalException) as exc:
         parser.exit(2, f"Paper stopped: {exc}\n")
+    finally:
+        resources.close()
     print(json.dumps(result, sort_keys=True, indent=2))
     return 0
 

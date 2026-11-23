@@ -188,7 +188,19 @@ def read_ranked_paper_slot_v1(config):
 
 def read_paper_entry_admission_v1(config, original):
     """Verify a later Cap23 selection against the immutable slot and its own Cap21/22."""
-    source = config.get("paper_entry_admission")
+    return _read_ranked_entry_admission_v1(
+        config, original, field="paper_entry_admission", surface="PAPER_EXCHANGE"
+    )
+
+
+def read_shadow_entry_admission_v1(config, original):
+    return _read_ranked_entry_admission_v1(
+        config, original, field="shadow_entry_admission", surface="SHADOW"
+    )
+
+
+def _read_ranked_entry_admission_v1(config, original, *, field, surface):
+    source = config.get(field)
     if source is None:
         return original
 
@@ -202,13 +214,13 @@ def read_paper_entry_admission_v1(config, original):
     prior = original.selection
     lane_root = Path(source["selection_root"])
     if (
-        config["surface"] != "PAPER_EXCHANGE"
+        config["surface"] != surface
         or source["occupancy"] != original.reference()
         or lane_root.name != original.lane_id
         or lane_root.parent.name != config["session_id"]
         or lane_root != lane_root.resolve()
     ):
-        raise ValueError("PAPER_ENTRY_ADMISSION_SCOPE_MISMATCH")
+        raise ValueError(f"{field.upper()}_SCOPE_MISMATCH")
     revision = prior.repository_sha
     loaded = load_and_validate_selection_v1(lane_root, expected_repository_sha=revision)
     ranked = load_and_validate_ranking_snapshot_v1(
@@ -218,7 +230,7 @@ def read_paper_entry_admission_v1(config, original):
         Path(source["universe_root"]), expected_repository_sha=revision
     )
     if not (loaded.ok and ranked.ok and governed.ok):
-        raise ValueError("PAPER_ENTRY_ADMISSION_ORIGINALS_REQUIRED")
+        raise ValueError(f"{field.upper()}_ORIGINALS_REQUIRED")
     s, rank, universe = loaded.selection, ranked.snapshot, governed.snapshot
     rows = [
         row
@@ -240,7 +252,7 @@ def read_paper_entry_admission_v1(config, original):
         or datetime.fromisoformat(rank.event_time.replace("Z", "+00:00"))
         <= datetime.fromisoformat(prior.ranking_event_time.replace("Z", "+00:00"))
     ):
-        raise ValueError("PAPER_ENTRY_ADMISSION_LINEAGE_MISMATCH")
+        raise ValueError(f"{field.upper()}_LINEAGE_MISMATCH")
     pin = build_governed_cap23_pin_v1(
         canonical_instrument_id=prior.instrument_id,
         ranking_snapshot=rank.to_dict(),
@@ -263,7 +275,7 @@ def read_paper_entry_admission_v1(config, original):
         or replay.selection != s
         or pin.resolved_venue_native_id != prior.venue_native_id
     ):
-        raise ValueError("PAPER_ENTRY_ADMISSION_POLICY_MISMATCH")
+        raise ValueError(f"{field.upper()}_POLICY_MISMATCH")
     return RankedRunSlotV1(
         original.lane_id, s, rows[0], universe.snapshot_id, original.transition_id
     )

@@ -43,12 +43,16 @@ class RankedSwapObservationV1:
     index: float
     volume_contracts: float
     oi_contracts: float
-    funding_rate: float
+    funding_rate: float | None
     book: PaperBookV1
     book_event_unix: float
     book_acquired_at_utc: str
     source_hashes: dict
     source_observations: dict
+
+    @property
+    def decision_blocker(self):
+        return "I17_SWAP_FUNDING_OUTSIDE_WINDOW" if self.funding_rate is None else None
 
     def fetch_mark_price(self, *, venue_instrument_id, inst_type):
         if venue_instrument_id != self.native_id or inst_type != "SWAP":
@@ -136,11 +140,10 @@ def collect_ranked_swap_observation_v1(assignment, output: Path, clock, *, trans
             if k == "book"
             else classify_live_mark_price_freshness_v1,
         )
-    if not (
+    funding_current = (
         0 <= now - _timestamp(rows["funding"]) / 1000 <= 180
         and now < _timestamp(rows["funding"], "fundingTime") / 1000
-    ):
-        raise ValueError("I17_SWAP_FUNDING_OUTSIDE_WINDOW")
+    )
     values = [
         float(_decimal(rows[k][field], positive=k != "funding"))
         for k, field in (
@@ -169,10 +172,116 @@ def collect_ranked_swap_observation_v1(assignment, output: Path, clock, *, trans
         index,
         volume,
         oi,
-        funding,
+        funding if funding_current else None,
         book,
         _timestamp(rows["book"]) / 1000,
         datetime.fromtimestamp(acquired["book"], timezone.utc).isoformat(),
         hashes,
         observations,
     )
+
+
+def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
+    """Value the original native mark for this entry decision only. Never mutate a portfolio."""
+    from urllib.parse import parse_qs, urlsplit
+
+    from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+        USDT_USDC_ENDPOINT,
+        USDT_USDC_SOURCE_IDENTITY,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
+        MonetaryNormalizationError,
+        conversion_edge_digest_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.usdt_usdc_index_observation_v1 import (
+        build_usdt_usdc_conversion_edge_from_index_tickers_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+        FreshPretradeGetStatusV1,
+    )
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
+        CANONICAL_HOST,
+    )
+
+    if cycle["decision_outcome"] not in {"enter_long", "enter_short"}:
+        return None
+    instrument = assignment.instrument
+    if (
+        (
+            instrument.venue_native_inst_id,
+            instrument.canonical_instrument_id,
+            instrument.quote_currency,
+            instrument.settlement_currency,
+        )
+        != (market.native_id, market.canonical_id, "USDT", "USDT")
+        or transport.venue_instrument_id != market.native_id
+        or not cycle["decision_id"]
+    ):
+        raise ValueError("I17_SWAP_ENTRY_FX_SCOPE_MISMATCH")
+    ref = dict(
+        decision_id=cycle["decision_id"],
+        decision_outcome=cycle["decision_outcome"],
+        lane_id=assignment.lane_id,
+        n5_selection_digest=assignment.selection.integrity_digest,
+        instrument_id=market.canonical_id,
+        venue_native_id=market.native_id,
+        mark_sha256=market.source_hashes["mark"],
+        market_event_unix=market.market_event_unix,
+    )
+    query = {"instId": USDT_USDC_SOURCE_IDENTITY}
+    started = clock()
+    response = transport.get_json(USDT_USDC_ENDPOINT, query)
+    received = clock()
+    raw = response.body
+    digest = sha256(raw).hexdigest()
+    durable_bytes_v1(market.receipt_path.parent / "entry-fx.json", raw)
+    receipt = dict(
+        ref,
+        method="GET",
+        url=response.url,
+        http_status=response.status,
+        received_at_unix=received,
+        requested_at_unix=started,
+        body_sha256=digest,
+    )
+    immutable_json_v1(market.receipt_path.parent / "entry-fx-receipt.json", receipt)
+    try:
+        url = urlsplit(response.url)
+        if (
+            response.status != 200
+            or response.path != USDT_USDC_ENDPOINT
+            or (url.scheme, url.netloc, url.path) != ("https", CANONICAL_HOST, USDT_USDC_ENDPOINT)
+            or parse_qs(url.query, keep_blank_values=True)
+            != {"instId": [USDT_USDC_SOURCE_IDENTITY]}
+            or json.loads(raw) != response.payload
+            or response.payload.get("code") != "0"
+            or not market.mark_acquired_unix <= started <= received
+        ):
+            raise ValueError("I17_SWAP_ENTRY_FX_GET_MISMATCH")
+        row = _one(response.payload, USDT_USDC_SOURCE_IDENTITY)
+        _fresh(row, received, received, classify_live_mark_price_freshness_v1)
+        mark_row = _one(market.source_observations["mark"].payload, market.native_id)
+        _fresh(mark_row, market.mark_acquired_unix, received, classify_live_mark_price_freshness_v1)
+        mark = _decimal(mark_row["markPx"], positive=True)
+        epoch = datetime.fromtimestamp(received, timezone.utc).isoformat()
+        edge = build_usdt_usdc_conversion_edge_from_index_tickers_v1(
+            index_tickers_payload=response.payload,
+            decision_epoch=epoch,
+            observed_at=epoch,
+            fresh_pretrade_get_status=FreshPretradeGetStatusV1.TRUSTED_PRESENT.value,
+            pair_base_currency="USDC",
+            pair_quote_currency="USDT",
+            provenance_ref=digest,
+        )
+        return dict(
+            ref,
+            status="OBSERVED",
+            valuation_epoch=epoch,
+            original_fx_sha256=digest,
+            edge_digest=conversion_edge_digest_v1(edge),
+            usdc_per_usdt=str(edge.normalized_rate),
+            mark_usdt_per_base=str(mark),
+            mark_usdc_per_base=str(mark * edge.normalized_rate),
+        )
+    except (MonetaryNormalizationError, KeyError, ValueError, TypeError, DecimalException) as exc:
+        return dict(ref, status="UNAVAILABLE", original_fx_sha256=digest, reason=str(exc))

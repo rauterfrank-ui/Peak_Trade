@@ -979,6 +979,8 @@ def run_hardened_bridge_cycle_v2(
     instrument_card_budget: Any = None,
     instrument_card_execution_clock: Any = None,
 ) -> dict[str, Any]:
+    if ranked_swap_observation is not None and ranked_swap_observation.funding_rate is None:
+        raise ValueError("I17_SWAP_FUNDING_OUTSIDE_WINDOW")
     if ranked_swap_observation is not None and (
         instrument_card_market is not None
         or forced_actionable is not None

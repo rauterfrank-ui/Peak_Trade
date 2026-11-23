@@ -889,6 +889,7 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         entry_limit=None,
         ranking_bound=None,
         selection_root=None,
+        funding_stale_on_first_poll=False,
     ):
         prereg = replace(
             _load_wallclock_prereg(),
@@ -910,7 +911,13 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             price = "3500" if flat else str(3500 + (minute % 17) * 0.73 + (minute % 5) * 0.19)
             if instrument == SOPH_I17:
                 price = str(float(price) / 3_500_000)
-            return _fake_ticker_fetcher(price, clock=clock, instrument=instrument)(url, *args)
+            response = _fake_ticker_fetcher(price, clock=clock, instrument=instrument)(url, *args)
+            if funding_stale_on_first_poll and minute == 0 and "/public/funding-rate?" in url:
+                status, raw, headers = response
+                payload = json.loads(raw)
+                payload["data"][0]["ts"] = str(int(clock.time() * 1000) - 250_000)
+                return status, json.dumps(payload).encode(), headers
+            return response
 
         root = (
             tmp_path / "shadow-runs" / prereg.session_id / "evidence"
@@ -1493,8 +1500,26 @@ def test_instrument_shadow_reaches_self_learning_after_two_final_o4_bars(
             )
         )
     shadow, run, _ = run_two_hour_shadow(
-        flat=False, instrument=instrument, selection_root=selection_root
+        flat=False,
+        instrument=instrument,
+        selection_root=selection_root,
+        funding_stale_on_first_poll=instrument.instrument_type == "SWAP",
     )
+    if instrument.instrument_type == "SWAP":
+        marks = [
+            json.loads(s) for s in (shadow / "market_data_sequence.jsonl").read_text().splitlines()
+        ]
+        cycles = [
+            json.loads(s) for s in (shadow / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+        ]
+        assert (
+            marks[0]["swap_public_facts"]["decision_blocker"] == "I17_SWAP_FUNDING_OUTSIDE_WINDOW"
+        )
+        assert marks[0]["venue_instrument_id"] == instrument.native_id
+        assert marks[1]["swap_public_facts"]["decision_blocker"] is None
+        assert all(
+            c["shadow_decision_timing"]["market_sequence"] > marks[0]["sequence"] for c in cycles
+        )
     assert run.terminal_verdict == "PASS", run.to_dict()
     assert not run.orders_submitted and not run.credentials_used
     verified = verify_wallclock_evidence_bundle_v1(
@@ -1862,3 +1887,83 @@ def test_capability_id_constant() -> None:
     assert CAPABILITY_ID.endswith("WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1")
     assert NETWORK_SCOPE == "okx_eea_futures_public_md_observe_v1"
     assert SESSION_EXECUTION_SCOPE == "paper_shadow_observation_wallclock_v1"
+
+
+@pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES)
+@pytest.mark.parametrize("decision", ["enter_long", "enter_short"])
+def test_ranked_shadow_converts_the_native_mark_only_for_this_entry(tmp_path, scope, decision):
+    from decimal import Decimal
+    from types import SimpleNamespace
+    from urllib.parse import urlencode
+    from src.ops.ranked_swap_shadow_observation_v1 import observe_ranked_entry_fx_v1
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
+        assert_url_allowed_v1,
+    )
+
+    event = 1700000000.0
+    assignment = SimpleNamespace(
+        lane_id=scope.lane_id,
+        selection=SimpleNamespace(integrity_digest="d" * 64),
+        instrument=SimpleNamespace(
+            venue_native_inst_id=scope.native_id,
+            canonical_instrument_id=scope.canonical_id,
+            quote_currency="USDT",
+            settlement_currency="USDT",
+        ),
+    )
+    mark = {
+        "code": "0",
+        "data": [{"instId": scope.native_id, "ts": str(int(event * 1000)), "markPx": "2.6"}],
+    }
+    market = SimpleNamespace(
+        native_id=scope.native_id,
+        canonical_id=scope.canonical_id,
+        market_event_unix=event,
+        mark_acquired_unix=event + 0.02,
+        source_hashes={"mark": "a" * 64},
+        receipt_path=tmp_path / "receipts.json",
+        source_observations={"mark": SimpleNamespace(payload=mark)},
+    )
+    calls = []
+
+    class Transport:
+        venue_instrument_id = scope.native_id
+
+        def get_json(self, path, query):
+            calls.append(query)
+            url = f"https://{CANONICAL_HOST}{path}?" + urlencode(query)
+            assert assert_url_allowed_v1(url, venue_instrument_id=scope.native_id) == []
+            assert assert_url_allowed_v1(
+                url.replace("USDC-USDT", "BTC-USDT"), venue_instrument_id=scope.native_id
+            )
+            payload = {
+                "code": "0",
+                "data": [{"instId": "USDC-USDT", "ts": str(int(event * 1000)), "idxPx": "1.04"}],
+            }
+            return SimpleNamespace(
+                body=json.dumps(payload).encode(), payload=payload, status=200, path=path, url=url
+            )
+
+    args = dict(transport=Transport(), clock=lambda: event + 0.10)
+    assert (
+        observe_ranked_entry_fx_v1(assignment, market, {"decision_outcome": "hold"}, **args) is None
+    )
+    assert not calls
+    cycle = dict(decision_id="signal", decision_outcome=decision)
+    valuation = observe_ranked_entry_fx_v1(assignment, market, cycle, **args)
+    assert calls == [{"instId": "USDC-USDT"}]
+    assert valuation["status"] == "OBSERVED"
+    assert (
+        valuation["decision_id"] == cycle["decision_id"] and valuation["lane_id"] == scope.lane_id
+    )
+    assert Decimal(valuation["mark_usdc_per_base"]) == Decimal("2.5")
+    assert Decimal(valuation["mark_usdt_per_base"]) == Decimal("2.6")
+    assert (
+        json.loads((tmp_path / "entry-fx-receipt.json").read_bytes())["body_sha256"]
+        == valuation["original_fx_sha256"]
+    )
+    market.receipt_path = tmp_path / "late" / "receipts.json"
+    late = observe_ranked_entry_fx_v1(
+        assignment, market, cycle, transport=Transport(), clock=lambda: event + 60
+    )
+    assert late["status"] == "UNAVAILABLE" and "mark_usdc_per_base" not in late

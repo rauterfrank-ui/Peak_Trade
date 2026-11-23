@@ -299,6 +299,10 @@ def main(argv=None):
     modes = parser.add_subparsers(dest="mode", required=True)
     run = modes.add_parser("run", help="Run an explicitly authorized I17 Shadow and its follow-up")
     resume = modes.add_parser("resume", help="Continue the DDO follow-up of a sealed Shadow only")
+    inspect = modes.add_parser(
+        "check-entry-selection", help="Read the ranked Shadow slot and its Cap24 receipt offline"
+    )
+    inspect.add_argument("--ranked-slot-config", required=True, type=Path)
     for mode in (run, resume):
         mode.add_argument("--companion-root", type=Path, required=True)
     run.add_argument("--preregistration", type=Path, required=True)
@@ -331,6 +335,14 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     try:
+        if args.mode == "check-entry-selection":
+            from src.ops.ranked_shadow_entry_selection_v1 import (
+                inspect_ranked_shadow_entry_selection_v1,
+            )
+
+            check = inspect_ranked_shadow_entry_selection_v1(args.ranked_slot_config, now=time())
+            print(json.dumps(check, sort_keys=True, indent=2))
+            return 2 if check["blockers"] else 0
         if os.environ.get(REAL_NETWORK_ENV) != "1":
             raise ValueError("I17_COMPANION_REAL_PUBLIC_MD_OPT_IN_REQUIRED")
         root = _isolated(args.companion_root)

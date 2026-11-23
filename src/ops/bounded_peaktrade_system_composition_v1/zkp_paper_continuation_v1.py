@@ -544,10 +544,18 @@ class ZkpPaperContinuationV1:
                 return {"status": "BLOCKED", "reason": "ZKP_PAPER_NON_REVERSAL_EXIT_REQUIRED"}
         mark_floor = max(
             self.fills[-1].event_time_unix,
-            mark["event_unix"] if mark else 0,
             self.last_funding["terms"]["event_time_unix"] if self.last_funding else 0,
         )
-        if market.market_event_unix <= mark_floor:
+        if market.market_event_unix <= mark_floor or (
+            mark
+            and (
+                market.market_event_unix < mark["event_unix"]
+                or (
+                    market.market_event_unix == mark["event_unix"]
+                    and float(market.mark) in mark["prices"]
+                )
+            )
+        ):
             return {"status": "WAITING_FOR_NEW_MARK"}
         provenance = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
             mark_price_payload=market.mark_payload,
@@ -567,7 +575,13 @@ class ZkpPaperContinuationV1:
         producer = self._producer(market)
         if producer is None:
             return {"status": "BLOCKED", "reason": "ZKP_PAPER_G17_ABSENT"}
-        cycle = self._cycle(market, producer, raw, provenance)
+        cycle = self._cycle(
+            market,
+            producer,
+            raw,
+            provenance,
+            same_timestamp=bool(mark and market.market_event_unix == mark["event_unix"]),
+        )
         if cycle.replay_pass != "true" or cycle.decision_outcome.startswith("enter_"):
             raise ValueError("ZKP_PAPER_OCCUPIED_CORE_DECISION_UNPROVEN")
         raw = load_current_productive_sidestate_confirmation_cursor_v1(self.cursor_root)
@@ -631,13 +645,16 @@ class ZkpPaperContinuationV1:
         self._g17_window, self._g17_producer = window, producer
         return self._g17_producer
 
-    def _cycle(self, market, producer, raw, provenance):
+    def _cycle(self, market, producer, raw, provenance, *, same_timestamp=False):
         closes, c1 = extract_finalized_candle_closes_v1(market.candles_payload)
         if c1 != market.g17_c1_open_unix:
             raise ValueError("ZKP_PAPER_OCCUPIED_MARK_BINDING_MISMATCH")
+        prefix = f"{self.root.name}:occupied:{int(market.market_event_unix * 1000)}"
+        if same_timestamp:
+            prefix += ":" + market.source_hashes["mark"]
         return compose_occupied_lane_mv2_dp_durable_cycle_v1(
             self.pairs,
-            cycle_id_prefix=f"{self.root.name}:occupied:{int(market.market_event_unix * 1000)}",
+            cycle_id_prefix=prefix,
             observed_unix=market.observed_unix,
             mark_px=provenance.mark_px,
             index_px=provenance.index_px,
