@@ -8,7 +8,7 @@ No historical fixture limits or implicit account authority.
 from copy import deepcopy
 from dataclasses import replace
 from datetime import datetime, timezone
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from math import isfinite
 from pathlib import Path
 
@@ -35,6 +35,21 @@ from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
 
 REPO = Path(__file__).resolve().parents[2]
 _ZERO = Decimal(0)
+
+
+def parse_soph_entry_cost_limit_usdc_v1(value):
+    """Optional all-in Shadow entry ceiling. Zero explicitly disables flat entries."""
+    if value is None:
+        return None
+    if not isinstance(value, (str, Decimal)):
+        raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_INVALID")
+    try:
+        limit = Decimal(value)
+    except InvalidOperation as exc:
+        raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_INVALID") from exc
+    if not limit.is_finite() or limit < 0:
+        raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_INVALID")
+    return limit
 
 
 def soph_shadow_capital_binding_v1(*, state, market, budget, now):
@@ -96,7 +111,6 @@ def _current_binding(*, state, market, budget, now):
 
     cap_usdc = min(
         PAPER_ALLOCATION_USDC,
-        policy.per_entry_notional_limit,
         policy.per_slot_reserved_notional_limit,
     )
     available = max(_ZERO, min(cap_usdc, equity / market.usd_per_usdc))
@@ -157,7 +171,9 @@ def _current_binding(*, state, market, budget, now):
         reference_price="",
         protective_stop_price="",
         account_equity=str(equity),
-        scope_capital_limit=str(available * market.usd_per_usdc),
+        scope_capital_limit=str(
+            min(available, policy.per_entry_notional_limit) * market.usd_per_usdc
+        ),
         per_trade_risk_limit=str(loss_limit),
         total_capital_limit=str(cap_usdc * market.usd_per_usdc),
         daily_loss_remaining_budget=str(loss_limit),
@@ -179,7 +195,9 @@ def _current_binding(*, state, market, budget, now):
     return boundary, native_position, material
 
 
-def soph_shadow_cost_check_v1(*, state, market, budget, side, quantity, stop_distance):
+def soph_shadow_cost_check_v1(
+    *, state, market, budget, side, quantity, stop_distance, entry_cost_limit_usdc=None
+):
     """Measure the supplied base quantity against the shadow cost and loss limits."""
     from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
 
@@ -219,8 +237,17 @@ def soph_shadow_cost_check_v1(*, state, market, budget, side, quantity, stop_dis
         Decimal(budget["original_snapshot"]["policy"]["per_slot_test_loss_limit"])
         * market.usd_per_usdc
     )
-    admitted = quantity * market.mark + reserve <= limit and quantity * distance + reserve <= min(
-        limit, policy_loss
+    entry_limit = parse_soph_entry_cost_limit_usdc_v1(entry_cost_limit_usdc)
+    spend_limit = limit if entry_limit is None else min(limit, entry_limit * market.usd_per_usdc)
+    policy_notional = (
+        Decimal(budget["original_snapshot"]["policy"]["per_entry_notional_limit"])
+        * market.usd_per_usdc
+    )
+    admitted = (
+        quantity * market.mark <= policy_notional
+        and Decimal(measurement["book_notional_usd"]) <= spend_limit
+        and quantity * market.mark + reserve <= spend_limit
+        and quantity * distance + reserve <= min(limit, policy_loss)
     )
     return dict(
         measurement,
@@ -236,7 +263,7 @@ def soph_shadow_cost_check_v1(*, state, market, budget, side, quantity, stop_dis
             next_funding_allowance=str(funding),
             total_reserve=str(reserve),
             next_funding_unix=market.funding_time_unix,
-            notional_limit=str(limit),
+            notional_limit=str(spend_limit),
             loss_with_costs=str(quantity * distance + reserve),
             funding_booking="ORIGINAL_ANALYTICAL_MODEL_UNCHANGED",
         ),
@@ -277,7 +304,9 @@ def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_e
                 side=side,
                 quantity=quantity,
                 stop_distance=distance,
+                entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc,
             ),
+            quantity_source="NATIVE_MINIMUM_ENTRY_LOT",
             protective_stop_price=str(price.protective_stop_price),
             stop_distance=str(distance),
         )
@@ -290,7 +319,73 @@ def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_e
         price_unit=f"USD/{market.slot.base_currency}",
         minimum_contracts=str(contract.min_qty),
         quantity_base=str(quantity),
+        configured_entry_cost_limit_usdc=None
+        if state.soph_entry_cost_limit_usdc is None
+        else str(state.soph_entry_cost_limit_usdc),
         sides=sides,
+    )
+
+
+def soph_shadow_entry_sizing_boundary_v1(*, state, market, budget, boundary, review):
+    """Bind a positive, side-specific mark notional to CRS before its own lot/risk sizing."""
+    side = review["observed_side"]
+    minimum = review["minimum_lot_cost"]
+    cost = minimum["sides"][side]
+    if not cost["measurement_admitted"]:
+        raise ValueError("SOPH_SHADOW_MINIMUM_LOT_REQUIRED")
+    lot = market.lot_size
+    base_per_lot = lot * market.native_contract.contract_size
+    mark_per_lot = base_per_lot * market.mark
+    lower = int(market.native_contract.min_qty // lot)
+    upper = int(
+        min(
+            Decimal(boundary.scope_capital_limit) / mark_per_lot,
+            Decimal(cost["model_costs"]["notional_limit"]) / mark_per_lot,
+            market.maximum_contracts / lot,
+        )
+    )
+    if lower < 1 or lower > upper:
+        raise ValueError("SOPH_SHADOW_ENTRY_LOT_BOUNDS_INVALID")
+    # Start at the admitted native minimum. Probe complete lots on the same book,
+    # FX, stop, loss and funding snapshot. The probe only limits CRS.
+    while lower < upper:
+        candidate = (lower + upper + 1) // 2
+        probe = soph_shadow_cost_check_v1(
+            state=state,
+            market=market,
+            budget=budget,
+            side=side,
+            quantity=candidate * base_per_lot,
+            stop_distance=cost["stop_distance"],
+            entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc,
+        )
+        if probe["measurement_admitted"]:
+            lower = candidate
+        else:
+            upper = candidate - 1
+    nominal = lower * mark_per_lot
+    receipt = dict(
+        instrument_id=minimum["instrument_id"],
+        venue_native_id=minimum["venue_native_id"],
+        lane_id=review["lane_id"],
+        side=side,
+        market_event_time=minimum["market_event_time"],
+        decision_time_unix=review["observed_unix"],
+        market_context_digest=minimum["context_digest"],
+        budget_source_digest=budget["source_digest"],
+        available_usdc=budget["available_for_new_entry"],
+        configured_entry_cost_limit_usdc=minimum["configured_entry_cost_limit_usdc"],
+        effective_entry_cost_limit_usd=cost["model_costs"]["notional_limit"],
+        stop_distance=cost["stop_distance"],
+        maximum_contracts=str(lower * lot),
+        maximum_mark_notional_usd=str(nominal),
+    )
+    material = dict(boundary.raw_payload, flat_entry_cost_bound=receipt)
+    return replace(
+        boundary,
+        scope_capital_limit=str(nominal),
+        raw_payload=material,
+        state_file_digest_ref=canonical_digest_v1(material),
     )
 
 

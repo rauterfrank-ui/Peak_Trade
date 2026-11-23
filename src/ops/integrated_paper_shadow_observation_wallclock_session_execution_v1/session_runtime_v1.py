@@ -63,6 +63,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     ETH_I17,
+    SOPH_I17,
     require_i17_shadow_instrument_v1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (
@@ -148,6 +149,7 @@ class WallclockRuntimeConfigV1:
     # BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE: bridge-disabled cannot emit full-system PASS evidence.
     decision_economics_bridge_enabled: bool = True
     require_decision_economics_bridge: bool = True
+    soph_entry_cost_limit_usdc: Decimal | None = None
 
 
 @dataclass
@@ -594,6 +596,15 @@ class WallclockSessionRuntimeV1:
 
         try:
             instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+            from src.ops.soph_shadow_capital_risk_binding_v1 import (
+                parse_soph_entry_cost_limit_usdc_v1,
+            )
+
+            entry_limit = parse_soph_entry_cost_limit_usdc_v1(
+                self.config.soph_entry_cost_limit_usdc
+            )
+            if entry_limit is not None and instrument != SOPH_I17:
+                raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_FOREIGN_INSTRUMENT")
             if (
                 tuple(go.instrument_allowlist) != (instrument.native_id,)
                 or self.transport.venue_instrument_id != instrument.native_id
@@ -720,6 +731,7 @@ class WallclockSessionRuntimeV1:
                 self.bridge_state = HardenedBridgeSessionStateV2(
                     instrument_id=self.venue_mapping.canonical_instrument_id,
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
+                    soph_entry_cost_limit_usdc=entry_limit,
                 )
                 from src.ops.instrument_card_stream_v1 import (
                     InstrumentCardStreamV1,

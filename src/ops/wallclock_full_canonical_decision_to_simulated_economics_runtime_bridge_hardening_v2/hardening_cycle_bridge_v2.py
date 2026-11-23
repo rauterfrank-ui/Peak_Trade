@@ -590,6 +590,8 @@ class HardenedBridgeSessionStateV2:
     card_position_scope: RuntimeScopeState | None = None
     card_scope_confirmation: ScopeConfirmationStateV1 | None = None
 
+    soph_entry_cost_limit_usdc: Decimal | None = None
+
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
         if len(self.mid_prices) > PRICE_PATH_MAX_LEN:
@@ -1257,7 +1259,10 @@ def run_hardened_bridge_cycle_v2(
     )
     minimum_lot_cost = None
     if card_review is not None and not state.killstate_active:
-        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_minimum_lot_cost_v1
+        from src.ops.soph_shadow_capital_risk_binding_v1 import (
+            soph_shadow_minimum_lot_cost_v1,
+            soph_shadow_entry_sizing_boundary_v1,
+        )
 
         if market_context.canonical_volatility_estimate is None or not layer_c_event_distances.ok:
             _defer_flat_card_entry(
@@ -1279,6 +1284,16 @@ def run_hardened_bridge_cycle_v2(
             _defer_flat_card_entry(
                 state, card_review, card_acceptance, "CARD_MINIMUM_LOT_COST_NOT_ADMITTED"
             )
+        if observed_side is not None:
+            boundary = soph_shadow_entry_sizing_boundary_v1(
+                state=state,
+                market=instrument_card_market,
+                budget=instrument_card_budget,
+                boundary=boundary,
+                review=card_review,
+            )
+            capital_binding = boundary.raw_payload
+            capital_inputs["current_instrument_capital_risk_sizing_boundary_state_file"] = boundary
     if card_review is not None:
         state.cycle_index = cycle_index
         state.append_mid(mid_price)
@@ -1639,6 +1654,21 @@ def run_hardened_bridge_cycle_v2(
                 else None
             )
             if minimum_lot_cost is not None:
+                limit = capital_binding.get("flat_entry_cost_bound")
+                if (
+                    limit is None
+                    or limit["side"] != side
+                    or qty
+                    > Decimal(limit["maximum_contracts"])
+                    * instrument_card_market.native_contract.contract_size
+                    or limit["configured_entry_cost_limit_usdc"]
+                    != (
+                        None
+                        if state.soph_entry_cost_limit_usdc is None
+                        else str(state.soph_entry_cost_limit_usdc)
+                    )
+                ):
+                    raise ValueError("CARD_ENTRY_SIZING_BOUND_MISMATCH")
                 entry_measurement = minimum_lot_cost["sides"][side]
                 if not entry_measurement["measurement_admitted"] or stop_distance != Decimal(
                     entry_measurement["stop_distance"]
@@ -1651,6 +1681,9 @@ def run_hardened_bridge_cycle_v2(
                 side=side,
                 quantity=qty,
                 stop_distance=stop_distance,
+                entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc
+                if observation.venue_flat
+                else None,
             )
             card_execution_check["stop_distance_source"] = (
                 "ORIGINAL_CRS_PRE_SIZING_RISK"
