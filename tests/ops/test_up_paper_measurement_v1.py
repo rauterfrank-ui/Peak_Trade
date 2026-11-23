@@ -10,7 +10,11 @@ from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v
 
 def args(tmp_path, slot=None):
     return SimpleNamespace(
-        parent=tmp_path.resolve(), session="up_next", seconds=3600, slot_config=slot
+        parent=tmp_path.resolve(),
+        session="up_next",
+        seconds=3600,
+        slot_config=slot,
+        research_input=None,
     )
 
 
@@ -33,6 +37,11 @@ def test_bound_plan_selects_same_session_and_preserves_driver_gates(tmp_path, mo
 
     monkeypatch.setattr(study, "preparation", preparation)
     a = args(tmp_path, slot)
+    assert study.prepare(a, now=123)["status"] == "AWAITING_GVEF_RESEARCH_INPUT"
+    a.research_input = slot
+    monkeypatch.setattr(
+        study, "verified_input", lambda *_: (SimpleNamespace(model_dump=lambda **_: {}), "digest")
+    )
     plan = study.prepare(a, now=123)
     assert plan["session_started"] is False and plan["recorder_seconds"] == 3660
     cmds = plan["parallel_commands"]
@@ -50,7 +59,7 @@ def test_bound_plan_selects_same_session_and_preserves_driver_gates(tmp_path, mo
     with pytest.raises(ValueError, match="foreign session"):
         study.prepare(a, now=123)
     a.session = "up_next"
-    (tmp_path / "up_next-inputs").mkdir()
+    (tmp_path / "up_next-paper").mkdir()
     with pytest.raises(ValueError, match="NEW_ISOLATED"):
         study.prepare(a, now=123)
 
@@ -170,3 +179,110 @@ def test_ready_requires_the_bound_connection_and_both_streams(tmp_path, good):
             study.await_public_pair(
                 proc, path, PLAN, Decimal(".01"), Decimal("1"), study.time.monotonic() + 2
             )
+
+
+def test_research_worker_covers_producer_and_uses_actual_final_window(tmp_path, monkeypatch):
+    from scripts.ops import nonlive_gvef_companion_v1 as companion
+
+    log = []
+    monkeypatch.setattr(
+        companion, "_tick", lambda c, o, phase: log.append((phase, c.slot.starts_at.timestamp()))
+    )
+    identity = dict(
+        session="test",
+        lane="LANE_2",
+        canonical_id="UP",
+        native_id="UP-FUT",
+        occupancy_digest="c" * 64,
+    )
+    packet = dict(
+        identity=identity,
+        paper_root=str(tmp_path / "paper" / "test"),
+        evidence_root=str(tmp_path / "measure"),
+        paper_seconds=3600,
+        gvef={"research": {"input": dict(template="/t", bars="/b", config="/c")}},
+    )
+    root = tmp_path / "paper" / "test"
+    root.mkdir(parents=True)
+    (root / "window.json").write_text(json.dumps(dict(started_at=42, duration_seconds=3600)))
+    packet["gvef"]["research"]["digest"] = "original"
+    monkeypatch.setattr(study, "research_digest", lambda *_: "original")
+    campaign = study.paper_campaign(packet, 38)
+    assert campaign.slot.n5_selection_digest == identity["occupancy_digest"]
+    assert not campaign.state.is_relative_to(campaign.paper_runs)
+    with companion.paired_gvef(
+        campaign, tmp_path / "worker", final_campaign=lambda: study.closed_paper_campaign(packet)
+    ):
+        log.append(("paper", 40))
+    assert log == [("start", 38), ("paper", 40), ("closeout", 42)]
+    with pytest.raises(ValueError, match="abort"):
+        with companion.paired_gvef(campaign, tmp_path / "failed"):
+            raise ValueError("abort")
+    assert log[-1] == ("start", 38)
+
+
+def test_shadow_gvef_requires_original_decision_session_and_lane(tmp_path, monkeypatch):
+    from datetime import datetime, timedelta, timezone
+    from scripts.ops import run_i17_shadow_learning_companion_v1 as shadow
+    from scripts.ops import nonlive_gvef_companion_v1 as companion
+    from scripts.ops import run_recurrent_offline_research_v1 as research
+
+    inst = shadow.require_i17_shadow_instrument_v1(["UP-USDT-SWAP"])
+    now = datetime.now(timezone.utc) - timedelta(minutes=1)
+    run = tmp_path / "follow" / "run"
+    evidence = tmp_path / "shadow" / "s" / "evidence"
+    path = tmp_path / "campaign.json"
+    slot = dict(
+        surface="SHADOW",
+        session_id="s",
+        lane_id="LANE_1",
+        instrument_id=inst.canonical_id,
+        venue_native_id=inst.native_id,
+        n5_selection_digest="d" * 64,
+        starts_at=now.isoformat(),
+        ends_at=(now + timedelta(hours=2)).isoformat(),
+    )
+    campaign = dict(
+        state=str(tmp_path / "state"),
+        paper_runs=str(tmp_path / "paper"),
+        shadow_follow_ups=str(run.parent),
+        shadow_runs=str(tmp_path / "shadow"),
+        research_inputs={inst.canonical_id: [dict(template="/t", bars="/b", config="/c")]},
+        jobs_per_tick=1,
+        history_jobs=4,
+        retry_seconds=300,
+        slot=slot,
+    )
+
+    def call():
+        path.write_text(json.dumps(campaign))
+        return shadow.shadow_gvef(
+            path,
+            run,
+            evidence,
+            SimpleNamespace(instrument_allowlist=[inst.native_id], session_id="s"),
+            SimpleNamespace(selection=SimpleNamespace(integrity_digest="d" * 64)),
+        )
+
+    monkeypatch.setattr(
+        research,
+        "_input_bundle",
+        lambda _: (
+            dict(instrument_id=inst.canonical_id, observed_surface="SHADOW"),
+            None,
+            None,
+            None,
+        ),
+    )
+    monkeypatch.setattr(companion, "research_digest", lambda *_: "original")
+    monkeypatch.setattr(
+        companion, "paired_gvef", lambda c, p, **kw: (kw["final_campaign"]().slot.session_id, p)
+    )
+    assert call() == ("s", run / "gvef")
+    slot["lane_id"] = "LANE_4"
+    with pytest.raises(ValueError, match="SESSION_SCOPE"):
+        call()
+    slot["lane_id"] = "LANE_1"
+    slot["session_id"] = "foreign"
+    with pytest.raises(ValueError, match="SESSION_SCOPE"):
+        call()

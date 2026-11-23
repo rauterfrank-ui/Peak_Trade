@@ -102,6 +102,10 @@ def test_session_writer_reuses_only_its_lane_and_keeps_cycle_evidence_separate(
     from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
     from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+        paper_ddo_writer_scope_v1,
+    )
+
     kwargs = _cycle_kwargs(cycle_id="capture-one", tmp_path=tmp_path)
     path = kwargs["ddo_durable_evidence_ledger_path"]
     reference_path = tmp_path / "separate-ledger.jsonl"
@@ -117,19 +121,18 @@ def test_session_writer_reuses_only_its_lane_and_keeps_cycle_evidence_separate(
     previous = set()
     for cycle in ("capture-one", "capture-two"):
         kwargs["cycle_id"] = cycle
-        result = run_current_productive_master_v2_runtime_cycle_v1(
-            **kwargs, reusable_ddo_capture=binding
-        )
+        with paper_ddo_writer_scope_v1(binding):
+            result = run_current_productive_master_v2_runtime_cycle_v1(**kwargs)
         current = set(binding.persisted_ids)
         assert current and current.isdisjoint(previous)
         assert result.ddo_capture_summary["durable_ok"] is True
         assert set(result.ddo_capture_summary["record_ids"]) <= current
 
         # A different lane path must retain its own evidence and writer.
-        reference = run_current_productive_master_v2_runtime_cycle_v1(
-            **{**kwargs, "ddo_durable_evidence_ledger_path": reference_path},
-            reusable_ddo_capture=binding,
-        )
+        with paper_ddo_writer_scope_v1(binding):
+            reference = run_current_productive_master_v2_runtime_cycle_v1(
+                **{**kwargs, "ddo_durable_evidence_ledger_path": reference_path}
+            )
         assert set(binding.persisted_ids) == current
         assert (
             result.ddo_capture_summary["record_ids"] == reference.ddo_capture_summary["record_ids"]

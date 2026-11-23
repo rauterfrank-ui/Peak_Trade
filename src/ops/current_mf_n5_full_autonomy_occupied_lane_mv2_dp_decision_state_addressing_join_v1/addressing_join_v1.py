@@ -10,7 +10,6 @@ addressing, not a host or productive MF join.
 
 from __future__ import annotations
 
-from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.exit_policy_producer_binding_v1.position_episode_binding_v1 import (
     PositionEpisodeBindingV1,
     PositionEpisodeScopeV1,
@@ -731,7 +730,6 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     rotation_exit_requests: Mapping[str, object] | None = None,
     slot_loss_exit_requests: Mapping[str, object] | None = None,
     occupied_scope_mark: bool = False,
-    reusable_ddo_capture: DdoCaptureBindingV0 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -825,7 +823,6 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             incoming_cursor=incoming,
             g17_typed_vol_producer=producers[lane_id],
             ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
-            reusable_ddo_capture=reusable_ddo_capture,
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=incoming,
@@ -918,7 +915,6 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     rotation_exit_requests: Mapping[str, object] | None = None,
     slot_loss_exit_requests: Mapping[str, object] | None = None,
     occupied_scope_mark: bool = False,
-    reusable_ddo_capture: DdoCaptureBindingV0 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Fence Entries, run Core, then CAS-publish an actual outgoing cursor.
 
@@ -1003,7 +999,6 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         rotation_exit_requests=rotation_exit_requests,
         slot_loss_exit_requests=slot_loss_exit_requests,
         occupied_scope_mark=occupied_scope_mark,
-        reusable_ddo_capture=reusable_ddo_capture,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

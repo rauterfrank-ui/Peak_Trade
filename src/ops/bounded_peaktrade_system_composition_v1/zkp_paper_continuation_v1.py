@@ -10,6 +10,9 @@ from math import isfinite
 from pathlib import Path
 from time import monotonic_ns, time, time_ns
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+    paper_ddo_writer_scope_v1,
+)
 from src.execution.position_delta import signed_position_delta
 from src.governance.capital_risk_sizing_v1 import evaluate_capital_risk_sizing_v1
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
@@ -668,30 +671,30 @@ class ZkpPaperContinuationV1:
         prefix = f"{self.root.name}:occupied:{int(market.market_event_unix * 1000)}"
         if same_timestamp:
             prefix += ":" + market.source_hashes["mark"]
-        return compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            self.pairs,
-            cycle_id_prefix=prefix,
-            observed_unix=market.observed_unix,
-            mark_px=provenance.mark_px,
-            index_px=provenance.index_px,
-            bid_px=float(market.book.bids[0][0]),
-            ask_px=float(market.book.asks[0][0]),
-            volume=float(market.volume_contracts),
-            open_interest=float(market.oi_contracts),
-            funding_rate=float(market.funding_rate),
-            finalized_closes=closes,
-            last_finalized_event_ts_unix=c1,
-            venue_flat=False,
-            existing_position_side=ExistingPositionSide(self.episode.identity.position_side),
-            g17_typed_vol_producers={self.slot.lane_id: producer},
-            canonical_price_provenance=provenance,
-            master_v2_reconciliation_admission=self.reconciliation,
-            position_episode_bindings={self.slot.lane_id: self.episode},
-            position_episode_scope=self.scope,
-            occupied_scope_mark=True,
-            reusable_ddo_capture=self._ddo_capture,
-            incoming_cursor_override=raw,
-        )[self.slot.lane_id].cycle_result
+        with paper_ddo_writer_scope_v1(self._ddo_capture):
+            return compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                self.pairs,
+                cycle_id_prefix=prefix,
+                observed_unix=market.observed_unix,
+                mark_px=provenance.mark_px,
+                index_px=provenance.index_px,
+                bid_px=float(market.book.bids[0][0]),
+                ask_px=float(market.book.asks[0][0]),
+                volume=float(market.volume_contracts),
+                open_interest=float(market.oi_contracts),
+                funding_rate=float(market.funding_rate),
+                finalized_closes=closes,
+                last_finalized_event_ts_unix=c1,
+                venue_flat=False,
+                existing_position_side=ExistingPositionSide(self.episode.identity.position_side),
+                g17_typed_vol_producers={self.slot.lane_id: producer},
+                canonical_price_provenance=provenance,
+                master_v2_reconciliation_admission=self.reconciliation,
+                position_episode_bindings={self.slot.lane_id: self.episode},
+                position_episode_scope=self.scope,
+                occupied_scope_mark=True,
+                incoming_cursor_override=raw,
+            )[self.slot.lane_id].cycle_result
 
     def _reverse(self, scope, raw, market, clock):
         require_current_cursor_continuity_v1(

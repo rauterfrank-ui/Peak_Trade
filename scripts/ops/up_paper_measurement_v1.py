@@ -14,12 +14,15 @@ import sys
 import time
 from collections import defaultdict
 from decimal import Decimal
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
+from scripts.ops.nonlive_gvef_companion_v1 import paired_gvef, research_digest, verified_input
+from scripts.ops.run_recurrent_offline_research_v1 import ResearchCampaignV1
 from scripts.ops.run_zkp_lane1_paper_v1 import _new_root
 from scripts.ops.up_paper_ws_depth_v1 import preparation, subscription_plan
 from src.ops.bounded_peaktrade_system_composition_v1.up_paper_depth_case_v1 import (
@@ -43,13 +46,20 @@ MS = 1_000_000
 
 def prepare(args, *, now):
     session, seconds = args.session, args.seconds
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}", session) or not 1 <= seconds <= 7140:
-        raise ValueError("new session id and a bounded Paper window of 1..7140 seconds required")
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}", session) or seconds != 3600:
+        raise ValueError("new session id and a bounded Paper window of one hour required")
     parent = args.parent.resolve(strict=True)
-    root = _new_root(parent / session)
-    _new_root(parent / (session + "-inputs"))
+    paper_runs = _new_root(parent / (session + "-paper"))
+    root = paper_runs / session
     evidence = _new_root(parent / (session + "-measurement"))
     capture = evidence / "public.jsonl"
+    descriptor = args.research_input
+    research = None
+    if descriptor and descriptor.is_file():
+        selected, digest = verified_input(
+            descriptor, UP_PAPER_SLOT.instrument_id, "PAPER_EXCHANGE", now
+        )
+        research = dict(input=selected.model_dump(mode="json"), digest=digest)
     result = dict(
         schema="up_paper_measurement_plan.v1",
         authority="NONE",
@@ -61,6 +71,12 @@ def prepare(args, *, now):
         paper_root=str(root),
         evidence_root=str(evidence),
         target_ms=300,
+        gvef=dict(
+            status="INPUT_VERIFIED" if research else "AWAITING_RESEARCH_INPUT",
+            research=research,
+            source="sealed Paper episodes",
+            paired=True,
+        ),
         slot_config=str(args.slot_config) if args.slot_config else None,
         status="AWAITING_SESSION_BOUND_PAPER_SLOT_AND_CAP24",
         parallel_commands=None,
@@ -73,6 +89,9 @@ def prepare(args, *, now):
     if not config.get("paper_cap24"):
         return result
     bound = preparation(args, current_at=now)
+    if research is None:
+        result.update(status="AWAITING_GVEF_RESEARCH_INPUT", identity=bound["identity"])
+        return result
     launcher = str(REPO / "scripts/pt")
     tools_dir = REPO / "scripts/ops"
     result.update(
@@ -145,6 +164,56 @@ def await_public_pair(process, path, plan, tick, lot, deadline):
     raise ValueError("no fresh jointly observed UP mark and book within recorder lead time")
 
 
+def paper_campaign(packet, started_at):
+    evidence = Path(packet["evidence_root"])
+    ident = packet["identity"]
+    start = datetime.fromtimestamp(started_at, timezone.utc)
+    return ResearchCampaignV1.model_validate(
+        dict(
+            state=evidence / "research-state",
+            paper_runs=Path(packet["paper_root"]).parent,
+            shadow_runs=evidence / "shadow-sources",
+            shadow_follow_ups=evidence / "shadow-follow-ups",
+            jobs_per_tick=1,
+            history_jobs=4,
+            retry_seconds=300,
+            research_inputs={ident["canonical_id"]: [packet["gvef"]["research"]["input"]]},
+            slot=dict(
+                lane_id=ident["lane"],
+                surface="PAPER_EXCHANGE",
+                session_id=ident["session"],
+                instrument_id=ident["canonical_id"],
+                venue_native_id=ident["native_id"],
+                n5_selection_digest=ident["occupancy_digest"],
+                starts_at=start,
+                ends_at=start + timedelta(seconds=packet["paper_seconds"]),
+            ),
+        )
+    )
+
+
+def closed_paper_campaign(packet):
+    from src.ops.bounded_peaktrade_system_composition_v1.paper_episode_outcome_v1 import (
+        closed_paper_episode_ids_v1,
+    )
+
+    root = Path(packet["paper_root"])
+    window = json.loads((root / "window.json").read_bytes())
+    if window["duration_seconds"] != packet["paper_seconds"]:
+        raise ValueError("GVEF_PAPER_WINDOW_MISMATCH")
+    campaign = paper_campaign(packet, window["started_at"])
+    instrument = campaign.slot.instrument_id
+    (selected,) = campaign.research_inputs[instrument]
+    if (
+        research_digest(selected, instrument, "PAPER_EXCHANGE", window["started_at"])
+        != packet["gvef"]["research"]["digest"]
+    ):
+        raise ValueError("GVEF_PAPER_RESEARCH_ORIGINAL_CHANGED")
+    # One attempt per closed original, even when a previous episode remains blocked.
+    count = len(closed_paper_episode_ids_v1(root)) if (root / "MANIFEST.sha256").is_file() else 0
+    return campaign.model_copy(update={"jobs_per_tick": max(1, count)})
+
+
 def start_prepared(args):
     # This entry point is deliberately separate from plan. No process exists until
     # current entry originals have passed the same Paper binding used by the driver.
@@ -160,7 +229,13 @@ def start_prepared(args):
     path = evidence / "public.jsonl"
     env = dict(os.environ, GIT_WORK_TREE=str(REPO))
     env.pop("PEAK_TRADE_NONLIVE_TIMING_DIR", None)
+    campaign = paper_campaign(packet, time.time())
+    for source in (campaign.paper_runs, campaign.shadow_runs, campaign.shadow_follow_ups):
+        source.mkdir(mode=0o700)
     with (
+        paired_gvef(
+            campaign, evidence / "gvef", final_campaign=lambda: closed_paper_campaign(packet)
+        ),
         (evidence / "recorder.log").open("xb") as wslog,
         (evidence / "paper.log").open("xb") as paperlog,
     ):
@@ -391,6 +466,7 @@ def main():
         plan.add_argument("--session", required=True)
         plan.add_argument("--parent", type=Path, required=True)
         plan.add_argument("--slot-config", type=Path, required=name == "start")
+        plan.add_argument("--research-input", type=Path, required=name == "start")
         plan.add_argument("--seconds", type=int, default=3600)
     analyze = subs.add_parser("report")
     analyze.add_argument("--run-root", type=Path, required=True)

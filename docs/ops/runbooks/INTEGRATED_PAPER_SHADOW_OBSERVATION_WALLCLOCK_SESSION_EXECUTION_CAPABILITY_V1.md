@@ -93,6 +93,8 @@ Library tests continue to inject fake transport and fake clocks.
 
 ## Datenprüfung für den Paper-/Shadow-Pilot
 
+Bei jedem beauftragten Paper- und Shadow-Lauf den sitzungsgebundenen GVEF-Begleiter beim Start mitführen. Bei Shadow zusätzlich den I17-DDO-Begleiter für die ursprüngliche Entscheidung und das spätere Outcome verwenden. Die Startprüfung und die Lernbelege nach Abschluss sind im [Ablauf für Paper und Shadow](UP_PAPER_MEASUREMENT_V1.md) beschrieben.
+
 Der Shadow-Preflight prüft den lokalen Startpfad. Die Sitzung liest den
 öffentlichen OKX-EEA-Markpreis für `ETH-USD_UM_XPERP-310404`. Der
 Volatilitätsproducer benötigt 61 aufeinanderfolgende finalisierte

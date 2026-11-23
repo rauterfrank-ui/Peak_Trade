@@ -784,7 +784,7 @@
     {
       "path": "docs/ops/runbooks/INTEGRATED_PAPER_SHADOW_OBSERVATION_WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1.md",
       "before_sha256": "db485656928e6653ef2d6db4e95b1317d9af7d3d8dea1397560048cebdb8f66b",
-      "sha256": "ba05fcf6c6de08701adad53541d73de645c468b13c060ca9f1d43f5ee1ef051f"
+      "sha256": "eb786f6b61b5445564ca593263f22d8c2b1ebd7c5ae5b6193c2e330927626f6f"
     },
     {
       "path": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
@@ -829,7 +829,7 @@
     {
       "path": "docs/ops/runbooks/UP_PAPER_MEASUREMENT_V1.md",
       "before_sha256": null,
-      "sha256": "9b5a1cf90b15036ea5e56990668682f1f4b97900a764a0cb3545c4349164c4dd"
+      "sha256": "0e0bea8d7f9ddabbce2a0289ceca4ff17989e01a5fce68f81f64926902803eac"
     },
     {
       "path": "docs/ops/runbooks/aws_export_smoke.md",
@@ -1802,6 +1802,11 @@
       "sha256": "d7db3bdb2b91ee54ba948508945c53c8589f2736536b20ac42416c17bf8f9bf0"
     },
     {
+      "path": "scripts/ops/nonlive_gvef_companion_v1.py",
+      "before_sha256": null,
+      "sha256": "81be6fa8596973ab00891398a60a042d57660d9039436522c2c61c050e258c9c"
+    },
+    {
       "path": "scripts/ops/online_readiness_daemon_v1.sh",
       "before_sha256": "6b98a01f3c095fdec7a593f1d6371f2bf8651e7429bad1e25c6898751690d267",
       "sha256": "01987a6c3addcdee57c53ca0bdd5b362faf764e7a671807faf0454580fbd4f8e"
@@ -1939,7 +1944,7 @@
     {
       "path": "scripts/ops/run_i17_shadow_learning_companion_v1.py",
       "before_sha256": null,
-      "sha256": "2095a2fc3028a2742246fc77e19ba48bd259cab64afd63def155e4742e69d85a"
+      "sha256": "bc67e73d914ddcf8bd4ecafbf46d8b79be5a8c47a98d3a164cc2429dd3ec7400"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -2084,7 +2089,7 @@
     {
       "path": "scripts/ops/up_paper_measurement_v1.py",
       "before_sha256": null,
-      "sha256": "807c4ee713d36060a454a011729ebc4dcf4fcf6b768e52e2d7ffce72211ed567"
+      "sha256": "c078d11bed77194e22b0a4b44309b286f2316eaa58d1a7b3d31df0f2071c53c7"
     },
     {
       "path": "scripts/ops/up_paper_ws_depth_v1.py",
@@ -2634,7 +2639,7 @@
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "9beeb08f9df2642e6f044995dede0a482fb34b3cd906aa540f5eb36c53f904cc"
+      "sha256": "ff3f323abac6aabe9c179d2af6f54e1d1bfc4a304238669dd199fdbc595136f9"
     },
     {
       "path": "src/ops/bounded_peaktrade_system_composition_v1/zkp_paper_entry_v1.py",
@@ -2744,7 +2749,7 @@
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
       "before_sha256": "d54582b65b96f61375180c0abaa5df3279495b17307162820e50e8923025a57b",
-      "sha256": "782dbbf44fbc4327ad794453e7b984cfd29d7534b76a89a5cb9295c798199ed9"
+      "sha256": "1349b51057f4d5e590f304c3bd7677c5d0883e3421d0b5036d896e6a659d5af0"
     },
     {
       "path": "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
@@ -3114,12 +3119,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
       "before_sha256": "10dfb5217be629495ff97c0c57b179c27583b6458da44c75c095d1560d4a056c",
-      "sha256": "9759ea5a4d69549ef342d92c295f10cdbc23ee1b370fcfc001de9006e10dcf08"
+      "sha256": "204e226ce2c4c9b110e5c31134cde271b2149fb89a33b2784fa404fcc24a9a33"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
       "before_sha256": "e27fab1fb95999d8033e2c586fbc3c3a9deadf969fa53a5d582583728bf61e75",
-      "sha256": "b17270a4b3062afe34c53062b6a0812ff430627c5927cf934b25e9bf2c8539ae"
+      "sha256": "082c697efc5953d68c11e4217554bc07a4ca8bc15e94a9365daa7edd4629337f"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py",
@@ -5269,7 +5274,7 @@
     {
       "path": "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
       "before_sha256": "2588fce0b7115a8a9de3bbe5b881e69c29d5e42327156ea07f591aa0056bacf3",
-      "sha256": "c3d8028ca37cddfed877229244eef2b7095977645770a52f2388979a9f6b3c7b"
+      "sha256": "c4266acb5f1e1932550c2d321eddd1fdd8cfb705cc4c28a1567ee132d0e55205"
     },
     {
       "path": "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
@@ -6039,7 +6044,7 @@
     {
       "path": "tests/ops/test_up_paper_measurement_v1.py",
       "before_sha256": null,
-      "sha256": "37d6e41c98eb13cf7da1d0733e7bf9ac96f08592481361203a72f2abfaaa04b9"
+      "sha256": "e2fb251059a65520d5a0d5c6c2540edc4882260be34ae94ad449eca82562b26c"
     },
     {
       "path": "tests/ops/test_up_paper_ws_depth_v1.py",
@@ -6286,5 +6291,5 @@
   "soph_shadow_slot2_bootstrap_scope": "Explicit WP-02 SOPH shadow genesis assigns the eligible USD future to LANE_2. Cap23 retains the original Cap22 rank and source references. The common N5 publisher persists and replays the same initial assignment. Cap24 is a separate decision.",
   "up_slot2_paper_timing_scope": "The ranked Paper driver verifies the original N5 assignment and its entry admission. Slot 2 UP acquires the next snapshot on a 200 ms start-to-start target after successful acquisition. An independent public mark feed provides timing evidence. L10 hold or switch is measured for an occupied Paper episode. Runtime authorization effect is NONE.",
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
-  "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound."
+  "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome."
 }
