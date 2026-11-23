@@ -1534,7 +1534,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "0d64674ff17284d72835b15c9a6cddeaa704a808eb6c99b0b53428e6c5d8f343"
+      "sha256": "bb8b4cd1e381ccdf76da7e14b6a51bcb50cd2cd5519ebd3e991258167c539f5d"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -5824,7 +5824,7 @@
     {
       "path": "tests/ops/test_reserved_slot_rotation_development_delta_v1.py",
       "before_sha256": null,
-      "sha256": "56e4a8512a98d802f3fe34887908708bbbc518f46ead9c8dd17c495d0f0cf2b8"
+      "sha256": "2e66110d38964a15d321d7f01fca5ed8917949385b5aed283c97efd623a44cdf"
     },
     {
       "path": "tests/ops/test_rotation_plan_state_v1.py",

@@ -232,6 +232,17 @@ N5_ORIGINAL_MARKET_INPUT_DELTAS = {
     ),
 }
 
+# The 19 reviewed rotation files at 2f6091dd0, keyed by path in canonical JSON.
+SOPH_SHADOW_SLOT2_ROTATION_PARENT_SHA256 = (
+    "898ccf9e4580ed425a2e76b7b7258fa30523402834baf111b5dc69168d4b7238"
+)
+SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS = {
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": (
+        "195c20b9468bff56df4e15d4c4b55da05a13442f1514be70bcf0b793e27bfc9c",
+        "e472ee7adf42c00173f22f5cce28ef27767e90545582682c680c77116b98c5cb",
+    ),
+}
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -765,6 +776,11 @@ def validate_reserved_slot_rotation_bundle(
         ):
             expected = _exact_double_play_successor(expected, N5_ORIGINAL_MARKET_INPUT_DELTAS)
         accepted = (expected,)
+        parent_bytes = json.dumps(expected, sort_keys=True, separators=(",", ":")).encode()
+        if hashlib.sha256(parent_bytes).hexdigest() == SOPH_SHADOW_SLOT2_ROTATION_PARENT_SHA256:
+            accepted += (
+                _exact_double_play_successor(expected, SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS),
+            )
     else:
         accepted = (before, after, protected_after, scope_bound_after)
     if actual not in accepted:
