@@ -1,6 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
-Geprüfter Repo-Stand 898bc69b25981edb67569689789ee8667f7ea639 · Obsidian-Basis e6994ec60d357576c0c42aef3e4733fe60c25e91.
+Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
+Dateizuordnung für 22.944 Pfade am Repo-Stand `46847180a80fba7c3a324922a09340116f30af41`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -104,7 +105,7 @@ Die Funktionsgruppen verwenden die vorhandenen Atlas-Quellen. Die native Core-Re
 
 ### RANK · Ranking-Universum
 
-73 zugeordnete Dateien.
+81 zugeordnete Dateien.
 
 - RANK-FG01 · Universe / Cap21 · [producer_v1.py](../../../src/ops/governed_futures_universe_producer_v1/producer_v1.py).
 - RANK-FG02 · Economic-MD / B05-Merkmale · [producer_v1.py](../../../src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py).
@@ -120,7 +121,7 @@ Ausgehende Übergaben: GRENZE-P03, GRENZE-P33, GRENZE-P44, GRENZE-P55, GRENZE-RA
 
 ### CORE · Master V2 und Double Play
 
-254 zugeordnete Dateien.
+260 zugeordnete Dateien.
 
 - CORE-FG01 · Instrument-/Daten-/Restoreadmission · [current_productive_master_v2_runtime_cycle_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py).
 - CORE-FG02 · GGE und Scopeanschluss · [golden_geometry_engine_v1.py](../../../src/trading/master_v2/golden_geometry_engine_v1.py).
@@ -135,7 +136,7 @@ Ausgehende Übergaben: GRENZE-P05, GRENZE-P15, GRENZE-P34, REK-P15.
 
 ### SL · Selbstlern-Universum
 
-100 zugeordnete Dateien.
+107 zugeordnete Dateien.
 
 - SL-FG01 · Capture und exakter Decisionparent · [capture_v0.py](../../../src/learning/deterministic_decision_outcome_v0/capture_v0.py).
 - SL-FG02 · Retention und Pending · [retention_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/retention_v1.py).
@@ -152,7 +153,7 @@ Ausgehende Übergaben: GRENZE-P17, GRENZE-P18, GRENZE-P19, GRENZE-P35, GRENZE-P4
 
 ### OPT · Optimierungs-Universum
 
-1619 zugeordnete Dateien.
+1626 zugeordnete Dateien.
 
 - OPT-FG01 · Identität Registry und Intake · [canonical_optimization_universe_v1.py](../../../src/experiments/canonical_optimization_universe_v1.py).
 - OPT-FG02 · Envelope und Preflight · [canonical_research_preflight_v1.py](../../../src/experiments/canonical_research_preflight_v1.py).
@@ -186,7 +187,7 @@ Ausgehende Übergaben: GRENZE-P20, GRENZE-P21, GRENZE-P37, REK-P20.
 
 ### FA · Vollautonomie-Universum
 
-119 zugeordnete Dateien.
+120 zugeordnete Dateien.
 
 - FA-FG01 · Membership und Topologie · [topology_v1.py](../../../src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py).
 - FA-FG02 · Delegierte Auswahl und Bindung · [orchestrator_v1.py](../../../src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py).
@@ -214,7 +215,7 @@ Ausgehende Übergaben: GRENZE-P06, REPO-TREASURY-RISK.
 
 ### RISK · Risk Sizing und Equityadmission
 
-307 zugeordnete Dateien.
+309 zugeordnete Dateien.
 
 - RISK-FG01 · Q0 und Kapitaladmission · Modulfamilie governed_productive_account_equity_authority_producer_v1.
 - RISK-FG02 · Decision-bound Risikomodelle · [decision_bound_model_adapters_v1.py](../../../src/risk/decision_bound_model_adapters_v1.py).
@@ -227,7 +228,7 @@ Ausgehende Übergaben: GRENZE-P08, GRENZE-P10, GRENZE-P56, REPO-RISK-BUDGET.
 
 ### BUDGET · Portfolio und Reservierung
 
-80 zugeordnete Dateien.
+84 zugeordnete Dateien.
 
 - BUDGET-FG01 · Stabiler Start/Restore · [host_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/host_v1.py).
 - BUDGET-FG02 · Admission / Rest / Hold · [contract_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py).
@@ -240,7 +241,7 @@ Ausgehende Übergaben: GRENZE-P09, GRENZE-P41, REPO-BUDGET-EXEC.
 
 ### ACCOUNTING · Accounting Position und Reconciliation
 
-66 zugeordnete Dateien.
+73 zugeordnete Dateien.
 
 - ACCOUNTING-FG01 · Originale Truth-/Reconciliationadmission · [models_v1.py](../../../src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py).
 - ACCOUNTING-FG02 · Lifecycle-/Fillbezug · [full_core_exchange_reconciliation_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py).
@@ -253,7 +254,7 @@ Ausgehende Übergaben: GRENZE-P12, GRENZE-P13, GRENZE-P14, GRENZE-P62.
 
 ### GOV · Governance Promotion und Applygrenze
 
-821 zugeordnete Dateien.
+827 zugeordnete Dateien.
 
 - GOV-FG01 · Proposalintake / M10 · [optimization_proposal_governance_ingress_v1.py](../../../src/governance/optimization_proposal_governance_ingress_v1.py).
 - GOV-FG02 · Explizite Autorisierung · [explicit_productive_authorization_v1.py](../../../src/governance/explicit_productive_authorization_v1.py).
@@ -277,7 +278,7 @@ Ausgehende Übergaben: GRENZE-P29, GRENZE-P30.
 
 ### EVAL · Evaluation GVEF und Qualitätsnachweise
 
-10052 zugeordnete Dateien.
+10067 zugeordnete Dateien.
 
 - EVAL-FG01 · Plan Korpus Constraints · [domain_result_binding_v1.py](../../../src/evaluation/golden_vectors/integration/domain_result_binding_v1.py).
 - EVAL-FG02 · Domainrunner · [bounded_required_domain_fanout_v1.py](../../../src/evaluation/golden_vectors/integration/bounded_required_domain_fanout_v1.py).
@@ -289,7 +290,7 @@ Ausgehende Übergaben: GRENZE-P38, GRENZE-P45, REPO-7241-EVAL-OPT.
 
 ### DATA · Datenebene und Quellenadmission
 
-133 zugeordnete Dateien.
+138 zugeordnete Dateien.
 
 - DATA-FG01 · Rohsource und Decoder · [canonical_fact_decoder_v1.py](../../../src/ops/peak_trade_public_market_data_runtime_v1/canonical_fact_decoder_v1.py).
 - DATA-FG02 · Store Replay und Recovery · [durable_store_v1.py](../../../src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py).
@@ -302,7 +303,7 @@ Ausgehende Übergaben: GRENZE-P01, GRENZE-P02, GRENZE-P07, GRENZE-P16, GRENZE-P5
 
 ### EXEC · Intent Ausführungsgrenze und Lifecycle
 
-315 zugeordnete Dateien.
+324 zugeordnete Dateien.
 
 - EXEC-FG01 · CanonicalIntent · [canonical_order_intent_v1.py](../../../src/governance/canonical_order_intent_v1.py).
 - EXEC-FG02 · Venueplan und Envelope · [final_order_envelope_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py).
@@ -324,7 +325,7 @@ Ausgehende Übergaben: GRENZE-P39, GRENZE-P40.
 
 ### HOST · Host Session und Prozessbetrieb
 
-903 zugeordnete Dateien.
+913 zugeordnete Dateien.
 
 - HOST-FG01 · Manifest effektive Config und Ressourcen · [session_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/session_v1.py).
 - HOST-FG02 · Attempt und Originalaufruf · [governed_attempt_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py).
@@ -346,7 +347,7 @@ Eingehende Übergaben: GRENZE-OPT-STORE, GRENZE-P41, GRENZE-P42, GRENZE-P43, REK
 
 ### VIEW · Operator Anzeige Monitoring und Wissen
 
-251 zugeordnete Dateien.
+253 zugeordnete Dateien.
 
 - VIEW-FG01 · Readmodel und Projektion · [producer_v1.py](../../../src/ops/future_profile_snapshot_v1/producer_v1.py).
 - VIEW-FG02 · Anzeige und erklärender Kontext · Modulfamilie webui.
@@ -355,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6713 zugeordnete Dateien.
+6770 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 
@@ -569,5 +570,5 @@ Die vorhandenen isolierten Nachweise belegen den Veto- und Diagnosepfad. Die nat
 ## Vollständige Register
 
 - [Übergaben und Signalverträge](../source/boundaries.json) mit ursprünglichen Adressen, Richtung, Nutzdaten, Zustand, Verbrauch, Beleggrenze und Repo-Quellen. Die direkte M4/M5-Aufnahme zu Governance ist seit #7240 als historischer Pfad markiert.
-- [Dateizuordnungen](../source/artifact-assignments.jsonl.gz) und [Prüfsummen und Anzahl](../source/artifact-assignments.json).
+- [Ursprüngliche Dateizuordnungen](../source/artifact-assignments.jsonl.gz), [Manifest](../source/artifact-assignments.json) und [nachgeführte Zuordnungen im Entwicklungsbeleg](../source/development-binding-v1.json).
 - Abfragen und strikte Prüfung stehen in der [Atlas-Anleitung](../README.md).
