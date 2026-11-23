@@ -1519,7 +1519,7 @@
     {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
-      "sha256": "8354f3affcf1acb8140785e9e34fb63f2bdc33681df72951c87fb6c4c5f722ac"
+      "sha256": "a8b229b7f2b02e406ed84bd509bbd3de39ed942a9db83d0f536c931469a7fcb6"
     },
     {
       "path": "docs/system_atlas/current_atlas.py",
@@ -7550,6 +7550,132 @@
       "tests/test_shared_forward_args_cli.py": "repo_delta_review",
       "tests/test_stage1_args.py": "repo_delta_review",
       "tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py": "repo_delta_review"
+    }
+  },
+  "reviewed_file_connections": {
+    "obsidian_source": ".belege/Belegarten-06df9e2e1/Verbindungen.json",
+    "obsidian_sha256": "343195ecb2262e22080cfcbf52d8e7c963c4959fb132a0e4a351357f02ee833b",
+    "evidence": {
+      "revision": "06df9e2e19215b7960577c41bf938208ffc977e0",
+      "base_revision": "46847180a80fba7c3a324922a09340116f30af41",
+      "source_index_sha256": "db4571b7a0e6bd407cd9282d982c30f0fed43a306b5268e8cd03a71a6bdf4006",
+      "runtime_authorization_effect": "NONE",
+      "connections": [
+        {
+          "source": "docs/system_atlas/coverage.py",
+          "target": "docs/system_atlas/source/development-binding-v1.json",
+          "category": "Dateizugriff",
+          "sites": [
+            {
+              "line": 275,
+              "end_line": 277,
+              "label": "Lesen und Verarbeiten",
+              "detail": "load_coverage() liest die vorhandene JSON-Datei. Der Abschnitt artifact_assignments fließt in die Prüfung und Fortschreibung der Dateizuordnungen ein.",
+              "index_kinds": [
+                "Lesestelle des Entwicklungsbelegs"
+              ],
+              "source_excerpt": "        update = json.loads(binding_path.read_bytes()).get(\"artifact_assignments\")\n        if update is not None:\n            rows = _current_assignments(root, rows, update, domains, layers)"
+            }
+          ]
+        },
+        {
+          "source": "docs/system_atlas/current_atlas.py",
+          "target": "docs/system_atlas/generated/BOUNDARIES.md",
+          "category": "Dateizugriff",
+          "sites": [
+            {
+              "line": 518,
+              "end_line": 520,
+              "label": "Lesen und Vergleichen",
+              "detail": "Bei aktivierter Ausgabeprüfung vergleicht validate() den gespeicherten Markdown-Text mit der aus dem Atlas erzeugten Fassung.",
+              "index_kinds": [
+                "Prüfstelle der generierten Ansicht"
+              ],
+              "source_excerpt": "            assert (root / projection[\"VIEW\"]).read_text() == projection[\"render_boundaries\"](\n                boundary, assignments, m\n            ), \"ATLAS_BOUNDARIES_VIEW_DRIFT\""
+            },
+            {
+              "line": 557,
+              "end_line": 559,
+              "label": "Schreiben im Modus generate",
+              "detail": "Im Modus generate schreibt main() die erzeugte Fassung bei vorhandenem Grenzregister an denselben Pfad.",
+              "index_kinds": [
+                "Schreibstelle der generierten Ansicht"
+              ],
+              "source_excerpt": "            (root / projection[\"VIEW\"]).write_text(\n                projection[\"render_boundaries\"](boundary, assignments, model)\n            )"
+            }
+          ]
+        },
+        {
+          "source": "docs/system_atlas/generated/BOUNDARIES.md",
+          "target": "docs/system_atlas/source/development-binding-v1.json",
+          "category": "Dokumentlink",
+          "sites": [
+            {
+              "line": 573,
+              "end_line": 573,
+              "label": "Relativer Markdown-Link",
+              "detail": "Im Abschnitt „Vollständige Register“ führt der Link „nachgeführte Zuordnungen im Entwicklungsbeleg“ zur JSON-Datei. Die drei Erkennungsarten im Index gehören zu derselben Linkstelle.",
+              "index_kinds": [
+                "Pfadnennung",
+                "Relativer Dokumentlink",
+                "Relativer Pfadtext"
+              ],
+              "source_excerpt": "- [Ursprüngliche Dateizuordnungen](../source/artifact-assignments.jsonl.gz), [Manifest](../source/artifact-assignments.json) und [nachgeführte Zuordnungen im Entwicklungsbeleg](../source/development-binding-v1.json)."
+            }
+          ]
+        },
+        {
+          "source": "docs/system_atlas/tests/test_coverage.py",
+          "target": "scripts/ops/up_paper_ws_depth_v1.py",
+          "category": "Katalogprüfung",
+          "sites": [
+            {
+              "line": 19,
+              "end_line": 19,
+              "label": "Hauptbereich DATA",
+              "detail": "Der Test verwendet den Skriptpfad als Schlüssel in rows und prüft den Hauptbereich DATA.",
+              "index_kinds": [
+                "Pfadnennung"
+              ],
+              "source_excerpt": "    assert rows[\"scripts/ops/up_paper_ws_depth_v1.py\"][\"area\"] == \"DATA\""
+            }
+          ]
+        },
+        {
+          "source": "docs/system_atlas/tests/test_coverage.py",
+          "target": "scripts/ops/up_paper_measurement_v1.py",
+          "category": "Katalogprüfung",
+          "sites": [
+            {
+              "line": 20,
+              "end_line": 20,
+              "label": "Hauptbereich EVAL",
+              "detail": "Der Test verwendet den Skriptpfad als Schlüssel in rows und prüft den Hauptbereich EVAL.",
+              "index_kinds": [
+                "Pfadnennung"
+              ],
+              "source_excerpt": "    assert rows[\"scripts/ops/up_paper_measurement_v1.py\"][\"area\"] == \"EVAL\""
+            }
+          ]
+        },
+        {
+          "source": "docs/system_atlas/tests/test_coverage.py",
+          "target": "scripts/ops/paper_episode_learning_handoff_v1.py",
+          "category": "Katalogprüfung",
+          "sites": [
+            {
+              "line": 21,
+              "end_line": 23,
+              "label": "Änderungsstand der Zuordnung",
+              "detail": "Der Test liest den Katalogeintrag, vergleicht zuordnungsbasis_blob mit repo_blob auf Ungleichheit und erwartet für zuordnung_bytes den Wert „geaendert“.",
+              "index_kinds": [
+                "Pfadnennung"
+              ],
+              "source_excerpt": "    learning = rows[\"scripts/ops/paper_episode_learning_handoff_v1.py\"]\n    assert learning[\"zuordnungsbasis_blob\"] != learning[\"repo_blob\"]\n    assert learning[\"zuordnung_bytes\"] == \"geaendert\""
+            }
+          ]
+        }
+      ]
     }
   }
 }

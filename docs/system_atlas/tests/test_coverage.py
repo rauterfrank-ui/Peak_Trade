@@ -71,3 +71,44 @@ def test_obsidian_comparison_preserves_secondary_areas_and_rejects_duplicate_pat
     register.write_text(json.dumps({**source, "related_areas": []}))
     with pytest.raises(ValueError, match="Obsidian assignment differs: example"):
         COVERAGE["compare_obsidian"](rows, register)
+
+
+def test_file_connections_keep_the_six_obsidian_directions_and_seven_source_sites():
+    bundle = COVERAGE["_load"](ROOT, "development-binding-v1.json")["reviewed_file_connections"]
+    assert (
+        bundle["obsidian_sha256"]
+        == "343195ecb2262e22080cfcbf52d8e7c963c4959fb132a0e4a351357f02ee833b"
+    )
+    edges = bundle["evidence"]["connections"]
+    atlas = "docs/system_atlas/"
+    binding = atlas + "source/development-binding-v1.json"
+    view = atlas + "generated/BOUNDARIES.md"
+    test = atlas + "tests/test_coverage.py"
+    assert {
+        (edge["source"], edge["target"]): (
+            edge["category"],
+            [(s["line"], s["end_line"]) for s in edge["sites"]],
+        )
+        for edge in edges
+    } == {
+        (atlas + "coverage.py", binding): ("Dateizugriff", [(275, 277)]),
+        (atlas + "current_atlas.py", view): ("Dateizugriff", [(518, 520), (557, 559)]),
+        (view, binding): ("Dokumentlink", [(573, 573)]),
+        (test, "scripts/ops/up_paper_ws_depth_v1.py"): ("Katalogprüfung", [(19, 19)]),
+        (test, "scripts/ops/up_paper_measurement_v1.py"): ("Katalogprüfung", [(20, 20)]),
+        (test, "scripts/ops/paper_episode_learning_handoff_v1.py"): ("Katalogprüfung", [(21, 23)]),
+    }
+
+
+def test_file_connection_validation_checks_the_original_git_lines():
+    from hashlib import sha256
+
+    bundle = COVERAGE["_load"](ROOT, "development-binding-v1.json")["reviewed_file_connections"]
+    bundle["evidence"]["connections"][0]["sites"][0]["line"] += 1
+    validate = COVERAGE["_validate_file_connections"]
+    with pytest.raises(ValueError, match="File connection digest mismatch"):
+        validate(ROOT, bundle)
+    raw = (json.dumps(bundle["evidence"], indent=2, ensure_ascii=False) + "\n").encode()
+    bundle["obsidian_sha256"] = sha256(raw).hexdigest()
+    with pytest.raises(ValueError, match="File connection source differs"):
+        validate(ROOT, bundle)

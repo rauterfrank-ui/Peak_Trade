@@ -272,10 +272,15 @@ def load_coverage(root, model, *, strict=False):
     binding_path = root / SOURCE / "development-binding-v1.json"
     revision = manifest["repo_commit"]
     if binding_path.is_file():
-        update = json.loads(binding_path.read_bytes()).get("artifact_assignments")
+        binding = json.loads(binding_path.read_bytes())
+        update = binding.get("artifact_assignments")
         if update is not None:
             rows = _current_assignments(root, rows, update, domains, layers)
             revision = update["repo_commit"]
+        if "reviewed_file_connections" in binding:
+            bundle = binding["reviewed_file_connections"]
+            _validate_file_connections(root, bundle)
+            doc["reviewed_file_connections"] = bundle
     current = set(
         _git(root, "ls-files", "-z", "--cached", "--others", "--exclude-standard")
         .decode()
@@ -300,7 +305,55 @@ def load_coverage(root, model, *, strict=False):
             row["status"] == "endpoint_open" for row in routes.values()
         ),
     }
+    if "reviewed_file_connections" in doc:
+        evidence = doc["reviewed_file_connections"]["evidence"]
+        counts["atlas_file_connection_revision"] = evidence["revision"]
+        counts["atlas_file_connections_by_category"] = Counter(
+            edge["category"] for edge in evidence["connections"]
+        )
     return doc, rows, routes, signals, counts
+
+
+def _validate_file_connections(root, bundle):
+    evidence = bundle["evidence"]
+    raw = (json.dumps(evidence, indent=2, ensure_ascii=False) + "\n").encode()
+    _require(
+        sha256(raw).hexdigest() == bundle["obsidian_sha256"], "File connection digest mismatch"
+    )
+    revision = evidence["revision"]
+    _require(
+        len(revision) == 40 and all(c in "0123456789abcdef" for c in revision),
+        "Invalid file connection revision",
+    )
+    _require(
+        evidence["runtime_authorization_effect"] == "NONE"
+        and _git(root, "rev-parse", revision + "^1").decode().strip() == evidence["base_revision"],
+        "File connection provenance mismatch",
+    )
+    connections = evidence["connections"]
+    pairs = {(edge["source"], edge["target"]) for edge in connections}
+    _require(pairs and len(pairs) == len(connections), "Missing or duplicate file connection")
+    targets = {target for _, target in pairs}
+    found = _git(root, "ls-tree", "-r", "--name-only", "-z", revision, "--", *sorted(targets))
+    _require(set(found.decode().split("\0")[:-1]) == targets, "Unknown file connection target")
+    sources = {}
+    for edge in connections:
+        source = edge["source"]
+        _require(
+            edge["category"] in {"Dateizugriff", "Dokumentlink", "Katalogprüfung"}
+            and edge["sites"],
+            f"Missing file connection classification or evidence: {source}",
+        )
+        if source not in sources:
+            sources[source] = _git(root, "show", f"{revision}:{source}").decode().splitlines()
+        lines = sources[source]
+        for site in edge["sites"]:
+            first, last = site["line"], site["end_line"]
+            _require(
+                1 <= first <= last <= len(lines)
+                and "\n".join(lines[first - 1 : last]) == site["source_excerpt"],
+                f"File connection source differs: {revision}:{source}:{first}-{last}",
+            )
 
 
 def _link(path, label=None):
@@ -428,6 +481,28 @@ def render_boundaries(doc, rows, model):
         "- Abfragen und strikte Prüfung stehen in der [Atlas-Anleitung](../README.md).",
         "",
     ]
+    if "reviewed_file_connections" in doc:
+        evidence = doc["reviewed_file_connections"]["evidence"]
+        lines.extend(
+            [
+                "## Gerichtete Dateiverbindungen nach Belegart",
+                "",
+                f"Die Zeilen beziehen sich auf den Quellstand `{evidence['revision']}`. "
+                "Der Pfeil führt von der verweisenden Datei zum Ziel.",
+                "",
+            ]
+        )
+        for category in ("Dateizugriff", "Dokumentlink", "Katalogprüfung"):
+            lines.extend([f"### {category}", ""])
+            for edge in evidence["connections"]:
+                if edge["category"] != category:
+                    continue
+                lines.append(f"- `{edge['source']}` → `{edge['target']}`")
+                for site in edge["sites"]:
+                    first, last = site["line"], site["end_line"]
+                    span = str(first) if first == last else f"{first}–{last}"
+                    lines.append(f"  - Z. {span} · **{site['label']}**. {site['detail']}")
+            lines.append("")
     return "\n".join(lines)
 
 
@@ -440,17 +515,27 @@ def main():
         type=Path,
         help="Compare every field with the supplied Obsidian JSONL catalog.",
     )
+    parser.add_argument(
+        "--obsidian-connections", type=Path, help="Compare the reviewed Obsidian connections JSON."
+    )
     args = parser.parse_args()
     if (args.mode == "check") != (args.key is None):
         parser.error("path, area and edge each require a key")
-    if args.obsidian_register is not None and args.mode != "check":
-        parser.error("--obsidian-register requires check")
+    if (args.obsidian_register or args.obsidian_connections) and args.mode != "check":
+        parser.error("Obsidian comparisons require check")
     model = _load(ROOT, "current-model.json")
     doc, rows, routes, signals, counts = load_coverage(ROOT, model, strict=args.mode == "check")
     if args.mode == "check":
         result = counts
         if args.obsidian_register is not None:
             result.update(compare_obsidian(rows, args.obsidian_register))
+        if args.obsidian_connections is not None:
+            digest = sha256(args.obsidian_connections.read_bytes()).hexdigest()
+            bundle = doc.get("reviewed_file_connections")
+            _require(
+                bundle and digest == bundle["obsidian_sha256"], "Obsidian file connections differ"
+            )
+            result["obsidian_file_connections_sha256"] = digest
     elif args.mode == "path":
         result = rows[args.key]
     elif args.mode == "edge":

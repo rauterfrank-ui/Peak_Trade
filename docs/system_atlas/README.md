@@ -58,6 +58,12 @@ Der folgende Offline-Abgleich prüft für jeden Pfad sämtliche Registerfelder e
 ./scripts/pt docs/system_atlas/coverage.py check --obsidian-register "/Pfad/zum/Vault/08 Register/Repo-Dateien.jsonl"
 ```
 
+Die [gerichteten Dateiverbindungen nach Belegart](generated/BOUNDARIES.md#gerichtete-dateiverbindungen-nach-belegart) zeigen für den Merge `06df9e2e1` zwei Dateizugriffe, einen Dokumentlink und drei Katalogprüfungen. Der Entwicklungsbeleg enthält unter `reviewed_file_connections` die ursprünglichen Zeilen, ihre Bedeutung und die Prüfsumme der Obsidian-Datei. Der Atlas prüft die Auszüge am angegebenen Git-Commit. Der folgende Aufruf vergleicht sie zusätzlich mit dem lokalen Obsidian-Original.
+
+```bash
+./scripts/pt docs/system_atlas/coverage.py check --obsidian-connections "/Pfad/zum/Vault/.belege/Belegarten-06df9e2e1/Verbindungen.json"
+```
+
 ```bash
 ./scripts/pt docs/system_atlas/coverage.py check
 ./scripts/pt docs/system_atlas/coverage.py area SL

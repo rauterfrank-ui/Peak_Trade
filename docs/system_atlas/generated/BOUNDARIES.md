@@ -572,3 +572,29 @@ Die vorhandenen isolierten Nachweise belegen den Veto- und Diagnosepfad. Die nat
 - [Übergaben und Signalverträge](../source/boundaries.json) mit ursprünglichen Adressen, Richtung, Nutzdaten, Zustand, Verbrauch, Beleggrenze und Repo-Quellen. Die direkte M4/M5-Aufnahme zu Governance ist seit #7240 als historischer Pfad markiert.
 - [Ursprüngliche Dateizuordnungen](../source/artifact-assignments.jsonl.gz), [Manifest](../source/artifact-assignments.json) und [nachgeführte Zuordnungen im Entwicklungsbeleg](../source/development-binding-v1.json).
 - Abfragen und strikte Prüfung stehen in der [Atlas-Anleitung](../README.md).
+
+## Gerichtete Dateiverbindungen nach Belegart
+
+Die Zeilen beziehen sich auf den Quellstand `06df9e2e19215b7960577c41bf938208ffc977e0`. Der Pfeil führt von der verweisenden Datei zum Ziel.
+
+### Dateizugriff
+
+- `docs/system_atlas/coverage.py` → `docs/system_atlas/source/development-binding-v1.json`
+  - Z. 275–277 · **Lesen und Verarbeiten**. load_coverage() liest die vorhandene JSON-Datei. Der Abschnitt artifact_assignments fließt in die Prüfung und Fortschreibung der Dateizuordnungen ein.
+- `docs/system_atlas/current_atlas.py` → `docs/system_atlas/generated/BOUNDARIES.md`
+  - Z. 518–520 · **Lesen und Vergleichen**. Bei aktivierter Ausgabeprüfung vergleicht validate() den gespeicherten Markdown-Text mit der aus dem Atlas erzeugten Fassung.
+  - Z. 557–559 · **Schreiben im Modus generate**. Im Modus generate schreibt main() die erzeugte Fassung bei vorhandenem Grenzregister an denselben Pfad.
+
+### Dokumentlink
+
+- `docs/system_atlas/generated/BOUNDARIES.md` → `docs/system_atlas/source/development-binding-v1.json`
+  - Z. 573 · **Relativer Markdown-Link**. Im Abschnitt „Vollständige Register“ führt der Link „nachgeführte Zuordnungen im Entwicklungsbeleg“ zur JSON-Datei. Die drei Erkennungsarten im Index gehören zu derselben Linkstelle.
+
+### Katalogprüfung
+
+- `docs/system_atlas/tests/test_coverage.py` → `scripts/ops/up_paper_ws_depth_v1.py`
+  - Z. 19 · **Hauptbereich DATA**. Der Test verwendet den Skriptpfad als Schlüssel in rows und prüft den Hauptbereich DATA.
+- `docs/system_atlas/tests/test_coverage.py` → `scripts/ops/up_paper_measurement_v1.py`
+  - Z. 20 · **Hauptbereich EVAL**. Der Test verwendet den Skriptpfad als Schlüssel in rows und prüft den Hauptbereich EVAL.
+- `docs/system_atlas/tests/test_coverage.py` → `scripts/ops/paper_episode_learning_handoff_v1.py`
+  - Z. 21–23 · **Änderungsstand der Zuordnung**. Der Test liest den Katalogeintrag, vergleicht zuordnungsbasis_blob mit repo_blob auf Ungleichheit und erwartet für zuordnung_bytes den Wert „geaendert“.
