@@ -25,6 +25,7 @@ from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
     load_and_validate_ranking_snapshot_v1,
 )
+from src.ops.soph_slot_cap24_v1 import SophSlotCap24V1, read_soph_slot_cap24_v1
 from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
 from src.ops.single_selected_future_policy_v1.persistence_v1 import load_and_validate_selection_v1
 
@@ -35,6 +36,20 @@ class SophSlotAssignmentV1:
     ranking: ProductiveFuturesRankingSnapshotV1
     universe: GovernedFuturesUniverseSnapshotV1
     lane_id: str
+    cap24: SophSlotCap24V1
+
+    def entry_binding(self, supplied=None):
+        if supplied is not None and supplied != self.cap24.bound:
+            raise ValueError("SOPH_SLOT_CAP24_ORIGINAL_BINDING_REQUIRED")
+        return self.cap24.bound
+
+    def require_entry_receipt(self, bound, digest, decision_time):
+        if self.cap24.status != "ACTIVE":
+            raise ValueError(f"SOPH_SLOT_CAP24_{self.cap24.status}")
+        if self.cap24.digest != digest or bound is None or bound != self.cap24.bound:
+            raise ValueError("SOPH_SLOT_CAP24_ENTRY_RECEIPT_CHANGED")
+        if self.cap24.checked_at_unix > decision_time:
+            raise ValueError("SOPH_SLOT_CAP24_NOT_YET_AVAILABLE")
 
     def require_matching_binding(self, bound):
         from src.ops.ranking_universe_to_full_core_ssf_handoff_contract_v1 import (
@@ -55,7 +70,7 @@ class SophSlotAssignmentV1:
             raise ValueError("SOPH_SLOT_CAP24_REFERENCE_MISMATCH")
 
     def card_reference(self):
-        return dict(
+        reference = dict(
             lane_id=self.lane_id,
             instrument_id=self.selection.instrument_id,
             venue_native_id=self.selection.venue_native_id,
@@ -72,6 +87,13 @@ class SophSlotAssignmentV1:
             valid_until=self.selection.valid_until,
             repository_sha=self.selection.repository_sha,
         )
+        if self.cap24.digest is not None:
+            reference.update(
+                cap24_status=self.cap24.status,
+                cap24_checked_at_unix=self.cap24.checked_at_unix,
+                cap24_receipt_digest=self.cap24.digest,
+            )
+        return reference
 
 
 @dataclass(frozen=True)
@@ -134,9 +156,18 @@ class SophSlotSourcesV1:
             or len(universe_rows) != 1
         ):
             raise ValueError("SOPH_SLOT_ORIGINAL_REFERENCE_MISMATCH")
+        cap24 = read_soph_slot_cap24_v1(
+            self.topology_root,
+            selection,
+            publication_digest=receipt["receipt_digest"],
+            retained=slot.lane_id in topology.retained_binding_lanes_v1,
+        )
+        assignment = SophSlotAssignmentV1(selection, ranking, universe, slot.lane_id, cap24)
+        if cap24.bound is not None:
+            assignment.require_matching_binding(cap24.bound)
         if (
             load_completed_selection_publication_v1(self.topology_root) != receipt
             or load_pending_selection_publication_v1(self.topology_root) is not None
         ):
             raise ValueError("SOPH_SLOT_PUBLICATION_CHANGED")
-        return SophSlotAssignmentV1(selection, ranking, universe, slot.lane_id)
+        return assignment

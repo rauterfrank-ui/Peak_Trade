@@ -352,8 +352,7 @@ def main(argv=None):
                     raise ValueError("I17_CARD_CAP24_INSTRUMENT_MISMATCH")
             if args.card_lane_sources is not None:
                 assignment = selection_source.inspect(args.expected_repository_sha)
-                if card_bound is not None:
-                    assignment.require_matching_binding(card_bound)
+                assignment.entry_binding(card_bound)
             if (
                 prereg.fixture_non_authoritative
                 or prereg.expected_repository_sha != args.expected_repository_sha

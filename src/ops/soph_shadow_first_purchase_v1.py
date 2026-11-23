@@ -13,7 +13,7 @@ from src.ops.instrument_card_stream_v1 import (
 )
 
 
-def _selection_window(root, repository_sha, bound, market, decision_time):
+def _selection_window(root, repository_sha, bound, market, decision_time, cap24_digest=None):
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
         inspect_selection_v1,
     )
@@ -21,13 +21,16 @@ def _selection_window(root, repository_sha, bound, market, decision_time):
         assert_handoff_invariants_v1,
     )
 
-    if not bound.ranking_snapshot_id or not bound.universe_snapshot_id:
+    if not isinstance(root, SophSlotSourcesV1) and (
+        not bound.ranking_snapshot_id or not bound.universe_snapshot_id
+    ):
         raise ValueError("SOPH_FIRST_PURCHASE_RANKING_UNIVERSE_BINDING_REQUIRED")
     if root is None or not repository_sha:
         raise ValueError("SOPH_FIRST_PURCHASE_SELECTION_SOURCE_REQUIRED")
     epoch = datetime.fromtimestamp(decision_time, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if isinstance(root, SophSlotSourcesV1):
         sources = root.inspect(repository_sha)
+        sources.require_entry_receipt(bound, cap24_digest, decision_time)
         if sources.selection.state != "SELECTED_ACTIVE":
             raise ValueError("SOPH_FIRST_PURCHASE_SELECTION_NOT_ACTIVE")
     else:
@@ -105,11 +108,21 @@ def prepare_soph_shadow_first_purchase_v1(
         binding=bound.to_dict(),
         budget_source_digest=entry["budget_source_digest"],
         entry_digest=canonical_digest_v1(entry),
+        **(
+            {"cap24_receipt_digest": entry["cap24_receipt_digest"]}
+            if "cap24_receipt_digest" in entry
+            else {}
+        ),
     )
     try:
         validate_shadow_slot_entry_budget_v1(state=state, bound=bound, budget=budget, entry=entry)
         expires = _selection_window(
-            state.soph_selection_root, repository_sha, bound, market, entry["decision_unix"]
+            state.soph_selection_root,
+            repository_sha,
+            bound,
+            market,
+            entry["decision_unix"],
+            entry.get("cap24_receipt_digest"),
         )
         intent = replay.intermediate.canonical_order_intent
         sizing = replay.intermediate.capital_risk_sizing_decision
@@ -178,7 +191,9 @@ def prepare_soph_shadow_first_purchase_v1(
         if not callable(clock):
             raise ValueError("SOPH_FIRST_PURCHASE_EXECUTION_CLOCK_REQUIRED")
         if isinstance(state.soph_selection_root, SophSlotSourcesV1):
-            state.soph_selection_root.inspect(repository_sha).require_matching_binding(bound)
+            state.soph_selection_root.inspect(repository_sha).require_entry_receipt(
+                bound, entry.get("cap24_receipt_digest"), entry["decision_unix"]
+            )
         now = clock()
         if (
             type(now) not in (int, float)
@@ -223,6 +238,7 @@ def verify_soph_shadow_purchase_receipt_v1(cycle):
         entry = cycle["soph_confirmed_entry_budget"]
         if not (
             purchase["entry_digest"] == canonical_digest_v1(entry)
+            and purchase.get("cap24_receipt_digest") == entry.get("cap24_receipt_digest")
             and purchase["decision_id"] == entry["decision_id"]
             and purchase["cycle_id"] == entry["cycle_id"] == cycle["cycle_id"]
             and purchase["lane_id"] == entry["lane_id"]

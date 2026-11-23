@@ -597,6 +597,7 @@ class HardenedBridgeSessionStateV2:
     soph_confirmed_entry_budget: dict[str, Any] | None = None
     soph_selection_root: Path | SophSlotSourcesV1 | None = None
     soph_selection_repository_sha: str | None = None
+    soph_cap24_receipt_digest: str | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
