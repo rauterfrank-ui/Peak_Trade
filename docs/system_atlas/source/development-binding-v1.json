@@ -99,7 +99,7 @@
     {
       "path": "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
       "before_sha256": "f22a3d378704e9ead4472014afe372b711f0f61fe0767b2916a5d9e7c08ce4fd",
-      "sha256": "def7791844a54b8d529942d17d9c49a5fe0fb41364c45019ea5f4f9bb74d6b71"
+      "sha256": "a3528a9f935658292498db899187c936c177fe91cf51048f466e71bbc18a185a"
     },
     {
       "path": "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json",
@@ -1514,7 +1514,7 @@
     {
       "path": "docs/system_atlas/current_atlas.py",
       "before_sha256": "833614d3139b5470ee79f5e45d482d42eaf9de75a5c6193d394d7952c950f13d",
-      "sha256": "12a9f18e8f9dfa208c816795208198656d15e3470efd25975c6a7ff53d899416"
+      "sha256": "a44e58b33b0a7dff58a36444b51b92d9e2fd07327ac60f63d8b94b19b35db01d"
     },
     {
       "path": "docs/system_atlas/generated/SOURCE_INDEX.md",
@@ -1534,7 +1534,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "7ce8371e0e3c8f0064578a15376914ee84ce45793873bcce44ba3d531fce5cd1"
+      "sha256": "736e03a89c375851ee0c5b40eaf8871986cee3dd2e18d3a0257de7bff6b06593"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
