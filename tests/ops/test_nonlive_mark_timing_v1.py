@@ -127,6 +127,29 @@ def test_compare_only_uses_available_reference_for_the_matching_consumer(tmp_pat
     assert result["paired_l10_decisions"] == result["paired_l10_decisions_within_300ms"] == 1
     assert result["durations"]["paired_event_to_l10_decision"]["median_ms"] == 146
     assert result["paired_l10_decisions_with_newer_reference"] == 1
+    assert result["paired_confirmed_paper_bookings"] == 0
+    booking = {
+        **row,
+        "calls": [call("paper_reversal_publication", 270, 295, booking_confirmed=True)],
+    }
+    (consumer / "4.json").write_text(json.dumps(booking))
+    result = measurement.compare(ref, tmp_path)
+    assert result["durations"]["paired_event_to_confirmed_paper_booking"]["median_ms"] == 195
+    assert result["paired_confirmed_paper_bookings_within_300ms"] == 1
+    timed = {
+        **row,
+        "host_start_mono_ns": 200_000_000,
+        "host_start_unix_ns": base + 200_000_000,
+        "paper_card_start_mono_ns": 170_000_000,
+        "paper_card_end_mono_ns": 195_000_000,
+        "calls": [],
+    }
+    (consumer / "card.json").write_text(json.dumps(timed))
+    card_result = measurement.compare(ref, tmp_path)
+    assert card_result["durations"]["paper_card_update"]["median_ms"] == 25
+    assert card_result["durations"]["paper_card_return_to_host_start"]["median_ms"] == 5
+    (consumer / "4.json").write_text(json.dumps({**booking, "paper_episode_id": "other-fill"}))
+    assert measurement.compare(ref, tmp_path)["paired_confirmed_paper_bookings"] == 0
     # A returned L10 hold counts. A decision outside the reference window does not.
     extra = {
         **row,
@@ -182,3 +205,46 @@ def test_baseline_clock_records_host_without_installing_profiler(tmp_path, monke
     trace = json.loads(path.read_bytes())
     assert trace["profile_status"] == "HOST_ONLY" and trace["calls"] == []
     assert trace["host_end_mono_ns"] >= trace["host_start_mono_ns"]
+
+
+@pytest.mark.parametrize("timestamp_offset_ms", [0, 1])
+def test_shadow_observes_original_decorated_replay_only_for_same_mark(
+    tmp_path, monkeypatch, timestamp_offset_ms
+):
+    from datetime import datetime
+    from src.ops.nonlive_mark_timing_v1 import observe_nonlive_mark_v1
+    from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import (
+        _replay_input,
+    )
+    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+        run_integrated_offline_trading_logic_replay_v1,
+    )
+
+    monkeypatch.setenv("PEAK_TRADE_NONLIVE_TIMING_DIR", str(tmp_path))
+    monkeypatch.setenv("PEAK_TRADE_NONLIVE_TIMING_STAGES", "1")
+    inp = _replay_input(price_path=(3499.0, 3500.0))
+    ctx = inp.canonical_market_context
+    ts = datetime.fromisoformat(ctx.market_event_time).timestamp()
+    with observe_nonlive_mark_v1(
+        mode="SHADOW",
+        session="replay-test",
+        lane="LANE_1",
+        native="bound-fixture",
+        canonical=ctx.instrument_id,
+        event_ms=round(ts * 1000) + timestamp_offset_ms,
+        price=ctx.mark_price,
+        receipt=ts,
+    ):
+        run_integrated_offline_trading_logic_replay_v1(inp)
+    (path,) = (tmp_path / "consumer").glob("*.json")
+    trace = json.loads(path.read_bytes())
+    assert trace["profile_status"] == "ACTIVE"
+    assert trace["shadow_context_mark_identity_matched"] is (timestamp_offset_ms == 0)
+    assert [(c["stage"], c["cycle_id"], c["returned"]) for c in trace["calls"]] == (
+        [
+            ("shadow_master_v2_replay", inp.replay_id, True),
+            ("shadow_scope_event", inp.replay_id, True),
+        ]
+        if timestamp_offset_ms == 0
+        else []
+    )

@@ -480,3 +480,38 @@ def test_index_valuation_private_unit_and_canonical_numeraire_remain_distinct(
         )
     finally:
         host.budget.owner.close()
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+def test_demo_mark_stream_returns_on_switch_before_polling_another_mark(
+    tmp_path, monkeypatch, direction
+):
+    host, candles, admission, episode, _, report, _ = seed_and_bind(
+        tmp_path, monkeypatch, direction
+    )
+    try:
+        core = restore_layered_core_episode_v1(
+            host.cursor_root, expected_instrument_id=host.budget.bound.instrument_id
+        )
+        sign = 1 if core.regime.value == "bull" else -1
+        price = core.running_reference.reference_price_r_t - sign * 1.5 * core.scope.d_t
+
+        def marks():
+            yield observation(candles, 62, price, flat=False)
+            pytest.fail("a mark was pulled before the pending reversal was settled")
+
+        (cycle,) = host.iter_occupied_marks_v1(
+            episode=episode,
+            observations=marks(),
+            reconciliation=admission,
+            execution_reconciliation=lambda: report,
+        )
+        assert cycle.replay.replay_pass
+        assert (
+            read_occupied_scope_mark_snapshot_v1(host.cursor_root)["mark"][
+                "pending_reversal_episode_id"
+            ]
+            == episode.identity.episode_id
+        )
+    finally:
+        host.budget.owner.close()

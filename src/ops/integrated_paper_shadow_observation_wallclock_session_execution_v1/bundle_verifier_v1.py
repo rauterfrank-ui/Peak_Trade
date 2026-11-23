@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from math import isfinite
@@ -41,6 +42,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     SOPH_I17,
+    RANKED_SWAP_SCOPES,
     recorded_i17_shadow_instrument_v1,
 )
 from src.ops.phase_9_2_wallclock_outcome_telemetry_and_verifier_completeness_binding_v1.constants_v1 import (
@@ -218,7 +220,8 @@ def _verify_typed_cycle_bindings(
         if not isinstance(session, dict):
             raise ValueError("DDO_SESSION_MANIFEST_INVALID")
         if (
-            session.get("venue_instrument_id") == SOPH_I17.native_id
+            session.get("venue_instrument_id")
+            in {s.native_id for s in (SOPH_I17, *RANKED_SWAP_SCOPES)}
             or session.get("lane_id") is not None
         ):
             scope = recorded_i17_shadow_instrument_v1(
@@ -227,8 +230,32 @@ def _verify_typed_cycle_bindings(
             if "venue_instrument_binding.json" not in manifest_names:
                 raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
             venue = json.loads((root / "venue_instrument_binding.json").read_bytes())
+            if scope.instrument_type == "SWAP":
+                original = session.get("n5_assignment")
+                if (
+                    not isinstance(original, dict)
+                    or original != venue.get("n5_assignment")
+                    or original.get("lane_id") != scope.lane_id
+                    or original.get("selected_rank") != int(scope.lane_id.split("_")[1])
+                    or original.get("venue_native_id") != scope.native_id
+                    or original.get("canonical_instrument_id") != scope.canonical_id
+                    or not all(
+                        original.get(key)
+                        for key in (
+                            "transition_id",
+                            "selection_id",
+                            "universe_snapshot_id",
+                            "ranking_snapshot_id",
+                        )
+                    )
+                    or not all(
+                        re.fullmatch("[0-9a-f]{64}", str(original.get(key)))
+                        for key in ("selection_digest", "ranking_digest")
+                    )
+                ):
+                    raise ValueError("DDO_SHADOW_N5_ORIGINAL_MISMATCH")
             if (
-                scope.native_id != SOPH_I17.native_id
+                scope.native_id not in {s.native_id for s in (SOPH_I17, *RANKED_SWAP_SCOPES)}
                 or session.get("canonical_instrument_id") != scope.canonical_id
                 or venue.get("mapping_source") != f"I17_SHADOW_{scope.lane_id}_INSTRUMENT_SCOPE"
                 or any(
@@ -355,6 +382,11 @@ def _verify_typed_cycle_bindings(
                         "venue_instrument_id": session["venue_instrument_id"],
                         "mapping_digest": session["mapping_digest"],
                         **({"lane_id": session["lane_id"]} if session.get("lane_id") else {}),
+                        **(
+                            {"n5_assignment": session["n5_assignment"]}
+                            if session.get("n5_assignment")
+                            else {}
+                        ),
                     }
     return validated
 

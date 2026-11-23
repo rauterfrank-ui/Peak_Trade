@@ -180,6 +180,12 @@ def _verified_plan(root, profile):
         ):
             raise ValueError("I17_COMPANION_RECORDED_PUBLIC_SHADOW_REQUIRED")
     binding_path = root / "instrument-binding.json"
+    if instrument.instrument_type == "SWAP" and (
+        strict_json_v1(binding_path.read_bytes()).get("n5_assignment")
+        != selected.get("n5_assignment")
+        or not selected.get("n5_assignment")
+    ):
+        raise ValueError("I17_COMPANION_N5_ORIGINAL_MISMATCH")
     data = binding_path.read_bytes()
     if (
         binding_path.is_symlink()
@@ -293,6 +299,10 @@ def main(argv=None):
     modes = parser.add_subparsers(dest="mode", required=True)
     run = modes.add_parser("run", help="Run an explicitly authorized I17 Shadow and its follow-up")
     resume = modes.add_parser("resume", help="Continue the DDO follow-up of a sealed Shadow only")
+    inspect = modes.add_parser(
+        "check-entry-selection", help="Read the ranked Shadow slot and its Cap24 receipt offline"
+    )
+    inspect.add_argument("--ranked-slot-config", required=True, type=Path)
     for mode in (run, resume):
         mode.add_argument("--companion-root", type=Path, required=True)
     run.add_argument("--preregistration", type=Path, required=True)
@@ -320,8 +330,19 @@ def main(argv=None):
         metavar=("TOPOLOGY", "RANKING", "UNIVERSE"),
         help="Read the committed N5 slot assignment and its original ranking and universe",
     )
+    run.add_argument(
+        "--ranked-slot-config", type=Path, help="Published N5 scope for a swap observation"
+    )
     args = parser.parse_args(argv)
     try:
+        if args.mode == "check-entry-selection":
+            from src.ops.ranked_shadow_entry_selection_v1 import (
+                inspect_ranked_shadow_entry_selection_v1,
+            )
+
+            check = inspect_ranked_shadow_entry_selection_v1(args.ranked_slot_config, now=time())
+            print(json.dumps(check, sort_keys=True, indent=2))
+            return 2 if check["blockers"] else 0
         if os.environ.get(REAL_NETWORK_ENV) != "1":
             raise ValueError("I17_COMPANION_REAL_PUBLIC_MD_OPT_IN_REQUIRED")
         root = _isolated(args.companion_root)
@@ -329,6 +350,23 @@ def main(argv=None):
             prereg = _load_prereg(args.preregistration)
             card_bound = None
             selection_source = None
+            if args.ranked_slot_config is not None:
+                from src.ops.ranked_slot_run_source_v1 import read_ranked_shadow_profile_v1
+
+                scope = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+                if (
+                    scope.instrument_type != "SWAP"
+                    or args.card_lane_sources
+                    or args.card_cap24_evidence_root
+                ):
+                    raise ValueError("I17_SWAP_OBSERVATION_SCOPE_MISMATCH")
+                read_ranked_shadow_profile_v1(args.ranked_slot_config, scope, prereg.session_id)
+                selection_source = args.ranked_slot_config
+            elif (
+                require_i17_shadow_instrument_v1(prereg.instrument_allowlist).instrument_type
+                == "SWAP"
+            ):
+                raise ValueError("I17_RANKED_SWAP_N5_SOURCE_REQUIRED")
             if args.card_selection_root is not None or (
                 args.card_cap24_evidence_root is not None and args.card_lane_sources is None
             ):

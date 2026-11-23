@@ -128,6 +128,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.operator_go_contract_v1 import (
     OperatorGoContractV1,
 )
+from src.ops.nonlive_mark_timing_v1 import observe_nonlive_mark_v1
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (
     SessionPreregistrationContractV1,
 )
@@ -136,7 +137,7 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
 @dataclass
 class WallclockRuntimeConfigV1:
     max_session_duration_seconds: int = DEFAULT_MAX_SESSION_DURATION_SECONDS
-    poll_interval_seconds: float = DEFAULT_POLL_INTERVAL_SECONDS
+    poll_interval_seconds: float | None = None
     heartbeat_interval_seconds: float = DEFAULT_HEARTBEAT_INTERVAL_SECONDS
     heartbeat_loss_seconds: float = DEFAULT_HEARTBEAT_LOSS_SECONDS
     max_stale_seconds: float = DEFAULT_MAX_STALE_SECONDS
@@ -372,47 +373,25 @@ class WallclockSessionRuntimeV1:
         *,
         session_id: str,
         now_wall: float,
+        ranked_slot=None,
     ) -> bool:
         """Reuse Cap-1.1 productive reconciliation owner after reconnect; fail-closed."""
-        from decimal import Decimal
-
         from src.ops.productive_reconciliation_runtime_binding_v1 import (
-            PortfolioTruthSnapshotV1,
-            PositionTruthV1,
             run_productive_reconciliation_startup_gate_v1,
         )
 
-        # Snapshot observed portfolio from hardened bridge state (flat-safe).
-        positions: list[PositionTruthV1] = []
-        try:
-            snap = self.bridge_state.portfolio.snapshot()
-            pos = snap.get("position") if isinstance(snap, dict) else None
-            if isinstance(pos, dict) and pos.get("instrument_id"):
-                positions.append(
-                    PositionTruthV1.from_signed(
-                        instrument_id=str(pos.get("instrument_id")),
-                        signed_quantity=Decimal(str(pos.get("signed_quantity") or "0")),
-                        source_id="post_reconnect_observed",
-                        mark_price=(
-                            None
-                            if pos.get("mark_price") is None
-                            else Decimal(str(pos.get("mark_price")))
-                        ),
-                        event_time_unix=now_wall,
-                        wall_time_unix=now_wall,
-                    )
-                )
-        except Exception:  # noqa: BLE001
-            positions = []
+        if ranked_slot is not None:
+            from src.ops.ranked_shadow_entry_selection_v1 import observe_ranked_shadow_positions_v1
 
-        observed = PortfolioTruthSnapshotV1(
-            positions=tuple(positions),
-            cash=None,
-            source_id="post_reconnect_observed",
-            event_time_unix=now_wall,
-            wall_time_unix=now_wall,
-            missing=False,
-        )
+            try:
+                observed = observe_ranked_shadow_positions_v1(
+                    self.bridge_state, ranked_slot, session_id=session_id, now=now_wall
+                )
+            except (ValueError, KeyError, TypeError, ArithmeticError, AttributeError) as exc:
+                self.blockers.append(f"SHADOW_POSITION_OBSERVATION_INVALID:{exc}")
+                return False
+        else:
+            observed = self._legacy_reconnect_portfolio_v1(now_wall)
         recon_root = self.evidence_root / "post_reconnect_reconciliation"
         gate = run_productive_reconciliation_startup_gate_v1(
             state_root=recon_root,
@@ -437,6 +416,43 @@ class WallclockSessionRuntimeV1:
             self.blockers.append("POST_RECONNECT_RECONCILIATION_FAILED")
             return False
         return True
+
+    def _legacy_reconnect_portfolio_v1(self, now_wall):
+        from src.ops.productive_reconciliation_runtime_binding_v1 import (
+            PortfolioTruthSnapshotV1,
+            PositionTruthV1,
+        )
+
+        positions: list[PositionTruthV1] = []
+        try:
+            snap = self.bridge_state.portfolio.snapshot()
+            pos = snap.get("position") if isinstance(snap, dict) else None
+            if isinstance(pos, dict) and pos.get("instrument_id"):
+                positions.append(
+                    PositionTruthV1.from_signed(
+                        instrument_id=str(pos.get("instrument_id")),
+                        signed_quantity=Decimal(str(pos.get("signed_quantity") or "0")),
+                        source_id="post_reconnect_observed",
+                        mark_price=(
+                            None
+                            if pos.get("mark_price") is None
+                            else Decimal(str(pos.get("mark_price")))
+                        ),
+                        event_time_unix=now_wall,
+                        wall_time_unix=now_wall,
+                    )
+                )
+        except Exception:  # noqa: BLE001
+            positions = []
+
+        return PortfolioTruthSnapshotV1(
+            positions=tuple(positions),
+            cash=None,
+            source_id="post_reconnect_observed",
+            event_time_unix=now_wall,
+            wall_time_unix=now_wall,
+            missing=False,
+        )
 
     def _seal_transport_telemetry_v1(self, *, session_id: str) -> None:
         from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1 import (  # noqa: E501
@@ -607,6 +623,19 @@ class WallclockSessionRuntimeV1:
             entry_limit = parse_soph_entry_cost_limit_usdc_v1(
                 self.config.soph_entry_cost_limit_usdc
             )
+            ranked_slot = None
+            if instrument.instrument_type == "SWAP":
+                from src.ops.ranked_slot_run_source_v1 import read_ranked_shadow_profile_v1
+
+                ranked_slot = read_ranked_shadow_profile_v1(
+                    self.instrument_card_selection_root, instrument, session_id
+                )
+                if (
+                    entry_limit is not None
+                    or self.instrument_card_source is not None
+                    or self.instrument_card_ranking_bound is not None
+                ):
+                    raise ValueError("I17_SWAP_OBSERVATION_SCOPE_MISMATCH")
             slot_assignment = None
             if isinstance(self.instrument_card_selection_root, SophSlotSourcesV1):
                 if instrument != SOPH_I17:
@@ -739,7 +768,13 @@ class WallclockSessionRuntimeV1:
                 canonical_instrument_id=instrument.canonical_id,
                 i17_scope=instrument,
             )
-            if instrument != ETH_I17:
+            if ranked_slot is not None:
+                self.bridge_state = HardenedBridgeSessionStateV2(
+                    instrument_id=instrument.canonical_id,
+                    venue_instrument_id=instrument.native_id,
+                    session_id=session_id,
+                )
+            elif instrument != ETH_I17:
                 self.bridge_state = HardenedBridgeSessionStateV2(
                     instrument_id=self.venue_mapping.canonical_instrument_id,
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
@@ -805,6 +840,7 @@ class WallclockSessionRuntimeV1:
                     "network_scope": NETWORK_SCOPE,
                     "session_execution_scope": SESSION_EXECUTION_SCOPE,
                     **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
+                    **({"n5_assignment": ranked_slot.reference()} if ranked_slot else {}),
                     **provenance,
                 },
             )
@@ -815,6 +851,7 @@ class WallclockSessionRuntimeV1:
                     "package_marker": PACKAGE_MARKER,
                     "session_id": session_id,
                     **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
+                    **({"n5_assignment": ranked_slot.reference()} if ranked_slot else {}),
                     "wallclock_session_started": True,
                     "authority_effect": AUTHORITY_EFFECT_NONE,
                     "execution_class": EXECUTION_CLASS_ANALYTICAL,
@@ -866,6 +903,19 @@ class WallclockSessionRuntimeV1:
             int(self.config.max_session_duration_seconds),
         )
         last_tick: ObservationMarketTickV1 | None = None
+        last_market_event = None
+        ranked_event_prices = set()
+        poll_interval = self.config.poll_interval_seconds
+        if poll_interval is None:
+            poll_interval = 0.2 if ranked_slot is not None else DEFAULT_POLL_INTERVAL_SECONDS
+
+        def pace(start):
+            delay = poll_interval
+            if ranked_slot is not None:
+                delay = max(0.0, delay - (self.clock_mono() - start))
+            if delay > 0:
+                self.sleep(delay)
+
         ddo_capture_binding = DdoCaptureBindingV0(
             ledger_path=self.evidence_root.absolute() / LEDGER_FILENAME_DEFAULT,
             reuse_validated_append_index=True,
@@ -874,11 +924,13 @@ class WallclockSessionRuntimeV1:
 
         try:
             while True:
+                entry_transport_error = None
                 if self.stop_flag():
                     self._transition(WallclockSessionState.STOPPING)
                     break
                 now_wall = self.clock_wall()
                 now_mono = self.clock_mono()
+                poll_started = now_mono
                 if now_wall - self.started_wall >= duration:
                     self._transition(WallclockSessionState.TIMED_OUT)
                     break
@@ -914,7 +966,42 @@ class WallclockSessionRuntimeV1:
                             transport=self.transport, clock=self.clock_wall
                         )
                     card_market = None
+                    swap_market = None
                     normalized_transport = self.transport
+                    if ranked_slot is not None:
+                        from uuid import uuid4
+                        from src.ops.ranked_swap_shadow_observation_v1 import (
+                            collect_ranked_swap_observation_v1,
+                            invalid_swap_observation_v1,
+                        )
+
+                        from decimal import DecimalException
+
+                        try:
+                            swap_market = collect_ranked_swap_observation_v1(
+                                ranked_slot,
+                                self.evidence_root.parent
+                                / "swap-public-facts"
+                                / session_id
+                                / uuid4().hex,
+                                self.clock_wall,
+                                transport=self.transport,
+                            )
+                        except NetworkBoundaryError:
+                            raise
+                        except OSError as exc:
+                            raise WallclockEvidenceError(
+                                "I17_SWAP_PUBLIC_FACTS_WRITE_FAILED"
+                            ) from exc
+                        except (
+                            ValueError,
+                            KeyError,
+                            TypeError,
+                            IndexError,
+                            DecimalException,
+                        ) as exc:
+                            raise invalid_swap_observation_v1(exc) from exc
+                        normalized_transport = swap_market
                     if self.instrument_card_stream is not None:
                         if self.instrument_card_source is not None:
                             from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
@@ -989,7 +1076,9 @@ class WallclockSessionRuntimeV1:
                     normalized = fetch_normalized_public_market_data_v1(
                         transport=normalized_transport,
                         mapping=self.venue_mapping,
-                        receive_ts_unix=self.clock_wall,
+                        receive_ts_unix=swap_market.mark_acquired_unix
+                        if swap_market
+                        else self.clock_wall,
                         max_stale_seconds=float(self.config.max_stale_seconds),
                         include_ticker=True,
                     )
@@ -1032,6 +1121,7 @@ class WallclockSessionRuntimeV1:
                                         now_mono = self.clock_mono()
                         if hasattr(stale_ctrl, "assert_no_decision_injection_v1"):
                             stale_ctrl.assert_no_decision_injection_v1()
+                    quote_market = swap_market or card_market
                     tick = ObservationMarketTickV1(
                         instrument_id=normalized.canonical_instrument_id,
                         venue=VENUE_OKX,
@@ -1056,18 +1146,33 @@ class WallclockSessionRuntimeV1:
                             "venue_instrument_id": normalized.venue_instrument_id,
                             "mark_price_endpoint": normalized.mark_price_endpoint,
                             "mark_price_field": normalized.mark_price_field,
+                            **(
+                                {
+                                    "swap_public_facts": {
+                                        "relative_receipt": str(
+                                            swap_market.receipt_path.relative_to(
+                                                self.evidence_root.parent
+                                            )
+                                        ),
+                                        "source_sha256": swap_market.source_hashes,
+                                        "decision_blocker": swap_market.decision_blocker,
+                                    }
+                                }
+                                if swap_market
+                                else {}
+                            ),
                             "price_basis_quote": (
                                 None
-                                if card_market is None
+                                if quote_market is None
                                 else {
-                                    "bid_px": float(card_market.book.bids[0][0]),
-                                    "ask_px": float(card_market.book.asks[0][0]),
+                                    "bid_px": float(quote_market.book.bids[0][0]),
+                                    "ask_px": float(quote_market.book.asks[0][0]),
                                     "endpoint": "/api/v5/market/books",
-                                    "body_sha256": card_market.source_hashes["book"],
-                                    "event_ts_unix": card_market.book_event_unix,
-                                    "acquired_at_utc": card_market.source_observations[
-                                        "book"
-                                    ].acquired_at_utc,
+                                    "body_sha256": quote_market.source_hashes["book"],
+                                    "event_ts_unix": quote_market.book_event_unix,
+                                    "acquired_at_utc": swap_market.book_acquired_at_utc
+                                    if swap_market
+                                    else quote_market.source_observations["book"].acquired_at_utc,
                                 }
                             ),
                             "mapping_digest": normalized.mapping_digest,
@@ -1103,11 +1208,36 @@ class WallclockSessionRuntimeV1:
                         self.stale_gate_activation_count += 1
                         self._abort(kill)
                         break
-                    if last_tick is not None:
-                        gap = tick.event_ts_unix - last_tick.event_ts_unix
+                    previous_event = (
+                        last_market_event
+                        if ranked_slot is not None
+                        else (last_tick.event_ts_unix if last_tick else None)
+                    )
+                    if previous_event is not None:
+                        gap = tick.event_ts_unix - previous_event
                         if gap > self.config.max_gap_seconds:
                             self._abort("DATA_GAP", f"gap={gap}")
                             break
+                    if ranked_slot is not None:
+                        if last_market_event is not None and tick.event_ts_unix < last_market_event:
+                            pace(poll_started)
+                            continue
+                        last_market_event = tick.event_ts_unix
+                    if swap_market is not None and swap_market.decision_blocker:
+                        # The mark is already visible and archived. This poll supplies no
+                        # admitted funding input to the strategy or the virtual portfolio.
+                        pace(poll_started)
+                        continue
+                    if ranked_slot is not None:
+                        # Every receipt passed the ordinary transport and clock checks.
+                        # A repeated or older exchange event cannot advance Master V2.
+                        if last_tick is not None and (
+                            tick.event_ts_unix < last_tick.event_ts_unix
+                            or tick.event_ts_unix == last_tick.event_ts_unix
+                            and price in ranked_event_prices
+                        ):
+                            pace(poll_started)
+                            continue
                     ticks = [tick]  # latest tick only for MD policy / bridge cycle
                     if (
                         self.config.require_decision_economics_bridge
@@ -1123,6 +1253,7 @@ class WallclockSessionRuntimeV1:
                             recon_ok = self._run_post_reconnect_reconciliation_before_alpha_v1(
                                 session_id=session_id,
                                 now_wall=now_wall,
+                                **({"ranked_slot": ranked_slot} if ranked_slot is not None else {}),
                             )
                             if not recon_ok:
                                 self._abort(
@@ -1135,9 +1266,23 @@ class WallclockSessionRuntimeV1:
                         ddo_capture_binding.clear_cycle_observations()
                         try:
                             with (
-                                self.instrument_card_stream.observe_v1()
-                                if card_market is not None
-                                else nullcontext()
+                                (
+                                    self.instrument_card_stream.observe_v1()
+                                    if card_market is not None
+                                    else nullcontext()
+                                ),
+                                observe_nonlive_mark_v1(
+                                    mode="SHADOW",
+                                    session=session_id,
+                                    lane=instrument.lane_id,
+                                    native=normalized.venue_instrument_id,
+                                    canonical=normalized.canonical_instrument_id,
+                                    event_ms=round(normalized.event_ts_unix * 1000),
+                                    price=price,
+                                    receipt=card_market.mark_acquired_at
+                                    if card_market
+                                    else normalized.receive_ts_unix,
+                                ),
                             ):
                                 outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
                                     bridge_state=self.bridge_state,
@@ -1148,6 +1293,11 @@ class WallclockSessionRuntimeV1:
                                     session_id=session_id,
                                     ddo_capture_binding=ddo_capture_binding,
                                     ddo_repository_sha=self._expected_repository_sha,
+                                    **(
+                                        {"ranked_swap_observation": swap_market}
+                                        if swap_market
+                                        else {}
+                                    ),
                                     **(
                                         {
                                             "instrument_card_market": card_market,
@@ -1182,12 +1332,78 @@ class WallclockSessionRuntimeV1:
                         if outcome_bridge.bridge_cycle is not None:
                             self.cycle_count += 1
                             cycle = outcome_bridge.bridge_cycle
+                            decision_return_ts = self.clock_wall()
+                            if swap_market is not None and cycle["decision_outcome"] in {
+                                "enter_long",
+                                "enter_short",
+                            }:
+                                from src.ops.ranked_shadow_entry_selection_v1 import (
+                                    resolve_ranked_shadow_entry_selection_v1,
+                                )
+                                from src.ops.ranked_swap_shadow_observation_v1 import (
+                                    observe_ranked_entry_fx_v1,
+                                )
+
+                                try:
+                                    selection, admitted_slot = (
+                                        resolve_ranked_shadow_entry_selection_v1(
+                                            self.instrument_card_selection_root,
+                                            clock=self.clock_wall,
+                                            assignment=ranked_slot,
+                                            session_id=session_id,
+                                            state=self.bridge_state,
+                                            market=swap_market,
+                                            decision_id=cycle["decision_id"],
+                                            reconciliation_root=self.evidence_root.parent
+                                            / "entry-reconciliation"
+                                            / session_id,
+                                        )
+                                    )
+                                except (
+                                    OSError,
+                                    ValueError,
+                                    RuntimeError,
+                                    KeyError,
+                                    TypeError,
+                                ) as exc:
+                                    admitted_slot = None
+                                    selection = dict(
+                                        session_id=session_id,
+                                        n5_assignment=ranked_slot.reference(),
+                                        entry_admission=None,
+                                        cap24_evidence_sha256=None,
+                                        blockers=[f"SHADOW_ENTRY_SOURCE_UNAVAILABLE:{exc}"],
+                                    )
+                                cycle["shadow_entry_selection"] = selection
+                                if admitted_slot is not None:
+                                    try:
+                                        cycle["shadow_entry_valuation"] = (
+                                            observe_ranked_entry_fx_v1(
+                                                ranked_slot,
+                                                swap_market,
+                                                cycle,
+                                                admission=admitted_slot,
+                                                transport=self.transport,
+                                                clock=self.clock_wall,
+                                            )
+                                        )
+                                    except EeaPublicMdTransportError as exc:
+                                        cycle["shadow_entry_valuation"] = dict(
+                                            status="UNAVAILABLE",
+                                            reason=str(exc),
+                                        )
+                                        entry_transport_error = exc
+                                    except OSError as exc:
+                                        raise WallclockEvidenceError(
+                                            "I17_SWAP_ENTRY_FX_WRITE_FAILED"
+                                        ) from exc
                             cycle["shadow_decision_timing"] = {
                                 "market_sequence": tick.sequence,
                                 "mark_event_ts_unix": tick.event_ts_unix,
                                 "mark_receive_ts_unix": normalized.receive_ts_unix,
                                 "decision_input_available_ts_unix": decision_input_available_ts,
                                 "decision_cycle_ts_unix": now_wall,
+                                "bridge_return_ts_unix": decision_return_ts,
                             }
                             if self.candidate_observation is not None:
                                 cycle["i17_candidate_comparison"] = (
@@ -1268,7 +1484,14 @@ class WallclockSessionRuntimeV1:
                         self.quality_fail = True
                     else:
                         self.accepted_ticks += 1
+                    if ranked_slot is not None:
+                        if last_tick is None or tick.event_ts_unix != last_tick.event_ts_unix:
+                            ranked_event_prices.clear()
+                        ranked_event_prices.add(price)
                     last_tick = tick
+                    if entry_transport_error is not None:
+                        # Preserve the completed decision before applying the transport policy.
+                        raise entry_transport_error
                     self.reconnect_attempts = 0
                     self.reconnect_window_start = None
                 except (NetworkBoundaryError,) as exc:
@@ -1304,7 +1527,7 @@ class WallclockSessionRuntimeV1:
                         break
                     continue
 
-                self.sleep(self.config.poll_interval_seconds)
+                pace(poll_started)
         except WallclockEvidenceError as exc:
             self._abort("EVIDENCE_SINK_FAILURE", str(exc))
         except WallclockStateMachineError as exc:

@@ -61,6 +61,9 @@ class ResearchSlotScopeV1(BaseModel):
     session_id: str = Field(min_length=1, pattern=r"^[A-Za-z0-9_-]+$")
     instrument_id: str = Field(min_length=1)
     venue_native_id: str = Field(min_length=1)
+    n5_selection_digest: str | None = Field(
+        default=None, pattern=r"^[0-9a-f]{64}$", exclude_if=lambda value: value is None
+    )
     starts_at: datetime
     ends_at: datetime
 
@@ -69,7 +72,12 @@ class ResearchSlotScopeV1(BaseModel):
         if (
             self.starts_at.utcoffset() is None
             or self.ends_at.utcoffset() is None
-            or self.ends_at - self.starts_at != timedelta(hours=2)
+            or self.ends_at - self.starts_at
+            not in (
+                (timedelta(hours=1), timedelta(hours=2))
+                if self.surface == "PAPER_EXCHANGE" and self.n5_selection_digest
+                else (timedelta(hours=2),)
+            )
         ):
             raise ValueError("RESEARCH_SLOT_TWO_HOUR_WINDOW_REQUIRED")
         return self
@@ -139,7 +147,8 @@ def _discover_shadow(campaign: ResearchCampaignV1):
 def _read_source(workspace, source, campaign):
     slot = campaign.slot
     if slot is not None and (
-        slot.surface != source["surface"] or source["slot"] != slot.model_dump(mode="json")
+        slot.surface != source["surface"]
+        or source["slot"] != slot.model_dump(mode="json", exclude_none=True)
     ):
         raise ValueError("RESEARCH_SLOT_SURFACE_MISMATCH")
     if source["surface"] == "TESTNET":
@@ -179,6 +188,13 @@ def _read_source(workspace, source, campaign):
         measurements = {}
 
         def require_paper_measurement(measurement):
+            if slot is not None and slot.n5_selection_digest:
+                profile = _read_json(archive / "paper-profile.json")
+                if (
+                    profile.get("ranked_config", {}).get("n5_source", {}).get("selection_digest")
+                    != slot.n5_selection_digest
+                ):
+                    raise ValueError("RESEARCH_PAPER_N5_SCOPE_MISMATCH")
             if slot is not None:
                 bindings = measurement["fill_bindings"]
                 if "lane_id" in measurement:
@@ -239,6 +255,12 @@ def _read_source(workspace, source, campaign):
     (receipt,) = verified_receipts
     if slot is not None:
         decision = receipt["shadow_decision"]
+        if (
+            slot.n5_selection_digest
+            and decision.get("n5_assignment", {}).get("selection_digest")
+            != slot.n5_selection_digest
+        ):
+            raise ValueError("RESEARCH_SHADOW_N5_SCOPE_MISMATCH")
         if "lane_id" in decision and decision["lane_id"] != slot.lane_id:
             raise ValueError("RESEARCH_SHADOW_LANE_MISMATCH")
         slot.require_source(
@@ -580,7 +602,7 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
             if attempted >= campaign.jobs_per_tick:
                 break
             if scope is not None:
-                source = {**source, "slot": scope.model_dump(mode="json")}
+                source = {**source, "slot": scope.model_dump(mode="json", exclude_none=True)}
             job_time = clock()
             source_id = digest_v1(source)
             receipt = workspace.safe_path_v1(Path("sources") / (source_id + ".json"))

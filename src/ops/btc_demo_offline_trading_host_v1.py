@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from src.ops import btc_demo_lane3_v2 as demo
+from src.ops.nonlive_mark_timing_v1 import observe_demo_call_v1
 from src.ops.btc_demo_budget_reconciliation_host_v1 import (
     BtcDemoBudgetReconciliationHostV1,
     validate_btc_demo_coverage_v1,
@@ -96,6 +97,7 @@ class BtcDemoOfflineTradingHostV1:
         )
         return value
 
+    @observe_demo_call_v1
     def prepare_entry_v1(self, *, observation, reconciliation):
         obs = self._observation(observation)
         _need(
@@ -194,6 +196,7 @@ class BtcDemoOfflineTradingHostV1:
         )
         return episode, publication, observed
 
+    @observe_demo_call_v1
     def continue_occupied_v1(
         self, *, episode, observation, reconciliation, execution_reconciliation=None
     ):
@@ -301,3 +304,43 @@ class BtcDemoOfflineTradingHostV1:
                     self.cursor_root
                 ),
             )[demo._LANE].cycle_result
+
+    def iter_occupied_marks_v1(
+        self, *, episode, observations, reconciliation, execution_reconciliation
+    ):
+        """Feed admitted market observations to the confirmed Demo episode until its first action.
+
+        The caller supplies original Demo reconciliation receipts. The existing
+        financial owner validates custody, freshness and the durable head on
+        every decision. No transport or booking is constructed here.
+        """
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
+            InjectedContinuousObservationV1,
+            _new_occupied_mark_time_v1,
+        )
+
+        for obs in observations:
+            self._observation(obs)
+            event = _new_occupied_mark_time_v1(
+                observation=InjectedContinuousObservationV1(
+                    candles_payload=obs.candles_payload,
+                    occupancy_payloads={},
+                    mark_price_payload=obs.mark_price_payload,
+                    index_tickers_payload=obs.index_tickers_payload,
+                    mark_acquired_at_utc=obs.mark_acquired_at_utc,
+                ),
+                native_id=self.budget.bound.venue_native_id,
+                cursor_store_root=self.cursor_root,
+                observed_unix=obs.observed_unix,
+            )
+            if event is None:
+                continue
+            result = self.continue_occupied_v1(
+                episode=episode,
+                observation=obs,
+                reconciliation=reconciliation,
+                execution_reconciliation=execution_reconciliation(),
+            )
+            yield result
+            if result.replay_pass != "true" or result.decision_outcome != "hold":
+                return

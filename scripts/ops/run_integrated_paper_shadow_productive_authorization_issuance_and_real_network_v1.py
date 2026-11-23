@@ -70,6 +70,7 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.pre
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (  # noqa: E402
     ETH_I17,
     SOPH_I17,
+    RANKED_SWAP_SCOPES,
 )
 
 
@@ -152,7 +153,7 @@ def build_parser() -> argparse.ArgumentParser:
     for mode in (pr, tok):
         mode.add_argument(
             "--instrument",
-            choices=(ETH_I17.native_id, SOPH_I17.native_id),
+            choices=tuple(s.native_id for s in (ETH_I17, SOPH_I17, *RANKED_SWAP_SCOPES)),
             default=ETH_I17.native_id,
         )
 

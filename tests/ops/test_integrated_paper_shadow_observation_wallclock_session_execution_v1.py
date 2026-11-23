@@ -89,6 +89,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     ETH_I17,
+    RANKED_SWAP_SCOPES,
     SOPH_I17,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.authorization_artifact_v1 import (
@@ -175,6 +176,16 @@ def _load_wallclock_go():
 
 def _instrument_metadata(instrument):
     basic = {"instId": instrument.native_id, "instType": "FUTURES", "state": "live"}
+    if instrument.instrument_type == "SWAP":
+        return {
+            **basic,
+            "instType": "SWAP",
+            "instFamily": f"{instrument.base}-USDT",
+            "uly": f"{instrument.base}-USDT",
+            "ctType": "linear",
+            "ctValCcy": instrument.base,
+            "settleCcy": "USDT",
+        }
     if instrument == SOPH_I17:
         return {
             **basic,
@@ -196,6 +207,29 @@ def _fake_ticker_fetcher(
     def fetcher(url: str, method: str, headers: Mapping[str, str], timeout: float):
         assert method == "GET"
         assert CANONICAL_HOST in url
+        if instrument.instrument_type == "SWAP":
+            from urllib.parse import urlparse, parse_qs
+
+            parsed = urlparse(url)
+            native = instrument.native_id
+            ts = int(clock.time() * 1000)
+            rows = {
+                "instruments": _instrument_metadata(instrument),
+                "mark-price": {"markPx": price},
+                "index-tickers": {"instId": f"{instrument.base}-USDT", "idxPx": price},
+                "ticker": {"last": price, "vol24h": "12345"},
+                "open-interest": {"oi": "6789"},
+                "books": {"bids": [["3400", "10"]], "asks": [["3600", "10"]]},
+                "funding-rate": {"fundingRate": "0.000013", "fundingTime": str(ts + 3600000)},
+            }
+            row = {
+                "instId": native,
+                "instType": "SWAP",
+                "ts": str(ts),
+                **rows[parsed.path.rsplit("/", 1)[-1]],
+            }
+            assert parse_qs(parsed.query)["instId"] == [row["instId"]]
+            return 200, json.dumps({"code": "0", "data": [row]}).encode(), {}
         assert f"instId={instrument.native_id}" in url
         ts_ms = int((clock.time() if clock is not None else NOW) * 1000)
         if "/api/v5/public/instruments" in url:
@@ -317,6 +351,32 @@ def test_legacy_offline_fixture_still_valid_without_wallclock_scopes() -> None:
     assert validate_operator_go_contract_v1(go, prereg=prereg, now_unix=legacy_now).ok
     assert go.network_authorized is False
     assert go.session_execution_authorized is False
+
+
+@pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES)
+def test_ranked_swap_accepts_only_its_own_public_routes_and_native_units(scope):
+    from urllib.parse import urlencode
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
+        assert_url_allowed_v1,
+    )
+    from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+        swap_queries_v1,
+    )
+
+    queries = swap_queries_v1(scope.native_id, f"{scope.base}-USDT")
+    for path, params in queries.values():
+        url = f"https://{CANONICAL_HOST}{path}?"
+        assert not assert_url_allowed_v1(
+            url + urlencode(params), venue_instrument_id=scope.native_id
+        )
+        for foreign in (
+            {"instId": scope.base + "-USD"},
+            {"instId": "BTC-USDT-SWAP"},
+            {"token": "private"},
+        ):
+            assert assert_url_allowed_v1(
+                url + urlencode({**params, **foreign}), venue_instrument_id=scope.native_id
+            )
 
 
 def test_network_boundary_allow_and_denies() -> None:
@@ -829,6 +889,7 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         entry_limit=None,
         ranking_bound=None,
         selection_root=None,
+        funding_stale_on_first_poll=False,
     ):
         prereg = replace(
             _load_wallclock_prereg(),
@@ -850,11 +911,17 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             price = "3500" if flat else str(3500 + (minute % 17) * 0.73 + (minute % 5) * 0.19)
             if instrument == SOPH_I17:
                 price = str(float(price) / 3_500_000)
-            return _fake_ticker_fetcher(price, clock=clock, instrument=instrument)(url, *args)
+            response = _fake_ticker_fetcher(price, clock=clock, instrument=instrument)(url, *args)
+            if funding_stale_on_first_poll and minute == 0 and "/public/funding-rate?" in url:
+                status, raw, headers = response
+                payload = json.loads(raw)
+                payload["data"][0]["ts"] = str(int(clock.time() * 1000) - 250_000)
+                return status, json.dumps(payload).encode(), headers
+            return response
 
         root = (
             tmp_path / "shadow-runs" / prereg.session_id / "evidence"
-            if instrument == SOPH_I17
+            if instrument.lane_id is not None
             else tmp_path / "shadow-evidence"
         )
         transport = EeaPublicMdTransportV1(
@@ -864,8 +931,8 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
             evidence_root=root,
             transport=transport,
             config=WallclockRuntimeConfigV1(
-                poll_interval_seconds=60.0 if instrument == SOPH_I17 else 10.0,
-                max_gap_seconds=65.0 if instrument == SOPH_I17 else 10.0,
+                poll_interval_seconds=60.0 if instrument.lane_id is not None else 10.0,
+                max_gap_seconds=65.0 if instrument.lane_id is not None else 10.0,
                 min_quality_window_seconds=0,
                 soph_entry_cost_limit_usdc=entry_limit,
                 heartbeat_loss_seconds=120.0,
@@ -1364,8 +1431,11 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
 
 
-def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
-    run_two_hour_shadow, tmp_path, monkeypatch
+@pytest.mark.parametrize(
+    "instrument", (SOPH_I17, *RANKED_SWAP_SCOPES), ids=lambda scope: scope.native_id
+)
+def test_instrument_shadow_reaches_self_learning_after_two_final_o4_bars(
+    run_two_hour_shadow, tmp_path, monkeypatch, instrument
 ):
     from datetime import timedelta, timezone
     from math import log
@@ -1383,7 +1453,73 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
 
     monkeypatch.setattr(socket.socket, "connect", no_network)
     monkeypatch.setattr(socket.socket, "connect_ex", no_network)
-    shadow, run, _ = run_two_hour_shadow(flat=False, instrument=SOPH_I17)
+    selection_root = None
+    ref = {}
+    if instrument.instrument_type == "SWAP":
+        from types import SimpleNamespace
+        from src.ops import ranked_slot_run_source_v1 as owner
+
+        ref = dict(
+            lane_id=instrument.lane_id,
+            selected_rank=int(instrument.lane_id[-1]),
+            canonical_instrument_id=instrument.canonical_id,
+            venue_native_id=instrument.native_id,
+            selection_digest="a" * 64,
+            ranking_digest="b" * 64,
+            transition_id="test-publication",
+            selection_id="test-selection",
+            universe_snapshot_id="test-universe",
+            ranking_snapshot_id="test-ranking",
+        )
+        row = SimpleNamespace(
+            venue_native_inst_id=instrument.native_id,
+            canonical_instrument_id=instrument.canonical_id,
+            instrument_type="SWAP",
+            contract_type="linear_perpetual",
+            base_currency=instrument.base,
+            quote_currency="USDT",
+            settlement_currency="USDT",
+            tick_size="0.01",
+            lot_size="1",
+        )
+        monkeypatch.setattr(
+            owner,
+            "read_ranked_run_slot_v1",
+            lambda config: SimpleNamespace(instrument=row, reference=lambda: ref),
+        )
+        selection_root = tmp_path / "ranked-slot.json"
+        selection_root.write_text(
+            json.dumps(
+                dict(
+                    surface="SHADOW",
+                    session_id=_load_wallclock_prereg().session_id,
+                    lane=instrument.lane_id,
+                    native_instrument_id=instrument.native_id,
+                    canonical_instrument_id=instrument.canonical_id,
+                )
+            )
+        )
+    shadow, run, _ = run_two_hour_shadow(
+        flat=False,
+        instrument=instrument,
+        selection_root=selection_root,
+        funding_stale_on_first_poll=instrument.instrument_type == "SWAP",
+    )
+    if instrument.instrument_type == "SWAP":
+        marks = [
+            json.loads(s) for s in (shadow / "market_data_sequence.jsonl").read_text().splitlines()
+        ]
+        cycles = [
+            json.loads(s) for s in (shadow / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+        ]
+        assert (
+            marks[0]["swap_public_facts"]["decision_blocker"] == "I17_SWAP_FUNDING_OUTSIDE_WINDOW"
+        )
+        assert marks[0]["venue_instrument_id"] == instrument.native_id
+        assert marks[1]["swap_public_facts"]["decision_blocker"] is None
+        assert all(
+            c["shadow_decision_timing"]["market_sequence"] > marks[0]["sequence"] for c in cycles
+        )
     assert run.terminal_verdict == "PASS", run.to_dict()
     assert not run.orders_submitted and not run.credentials_used
     verified = verify_wallclock_evidence_bundle_v1(
@@ -1391,16 +1527,19 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
     )
     assert verified.typed_ddo_requirement_met, verified.to_dict()
     decision = verified.selected_shadow_decision
-    assert decision["lane_id"] == SOPH_I17.lane_id
-    assert decision["canonical_instrument_id"] == SOPH_I17.canonical_id
-    assert decision["venue_instrument_id"] == SOPH_I17.native_id
+    assert decision["lane_id"] == instrument.lane_id
+    assert decision["canonical_instrument_id"] == instrument.canonical_id
+    assert decision["venue_instrument_id"] == instrument.native_id
 
+    if ref:
+        assert decision["n5_assignment"] == ref
     binding = {
-        "lane_id": SOPH_I17.lane_id,
-        "canonical_instrument_id": SOPH_I17.canonical_id,
-        "native_instrument_id": SOPH_I17.native_id,
+        **({"n5_assignment": ref} if ref else {}),
+        "lane_id": instrument.lane_id,
+        "canonical_instrument_id": instrument.canonical_id,
+        "native_instrument_id": instrument.native_id,
         "venue": "OKX",
-        "instrument_metadata": _instrument_metadata(SOPH_I17),
+        "instrument_metadata": _instrument_metadata(instrument),
         "mapping_digest": decision["mapping_digest"],
     }
     binding_path = tmp_path / "soph-binding.json"
@@ -1435,7 +1574,7 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
         clock.sleep(seconds)
 
     def fetch(query):
-        assert query["instId"] == SOPH_I17.native_id
+        assert query["instId"] == instrument.native_id
         assert clock.time() >= end.timestamp() + 15
         receipts.append(query)
         rows = []
@@ -1467,13 +1606,14 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
     assert state["decision_event_ref"] == decision["decision_event_ref"]
     saved = ledger_path.read_bytes()
 
-    # The configured Slot 5 intake reads the companion's sealed completion.
+    # GVEF reads the companion completion for this exact slot and market.
     slot = campaign_worker.ResearchSlotScopeV1(
-        lane_id=SOPH_I17.lane_id,
+        lane_id=instrument.lane_id,
         surface="SHADOW",
+        n5_selection_digest=ref.get("selection_digest"),
         session_id=decision["session_id"],
-        instrument_id=SOPH_I17.canonical_id,
-        venue_native_id=SOPH_I17.native_id,
+        instrument_id=instrument.canonical_id,
+        venue_native_id=instrument.native_id,
         starts_at=datetime.fromtimestamp(NOW, timezone.utc),
         ends_at=datetime.fromtimestamp(NOW + 7200, timezone.utc),
     )
@@ -1482,7 +1622,7 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
         paper_runs=tmp_path / "paper",
         shadow_follow_ups=follow_up_parent,
         shadow_runs=tmp_path / "shadow-runs",
-        research_inputs={SOPH_I17.canonical_id: []},
+        research_inputs={instrument.canonical_id: []},
         jobs_per_tick=1,
         history_jobs=1,
         retry_seconds=300,
@@ -1495,8 +1635,56 @@ def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
     assert received == result
     measured = context["shadow_measurement"]["market_observation"]
     assert measured["request"]["n_bars"] == 2
-    assert measured["request"]["price_unit"] == "USD per SOPH"
+    assert (
+        measured["request"]["price_unit"]
+        == f"{instrument.settlement_currency} per {instrument.base}"
+    )
     assert measured["measurement"]["log_return"] == pytest.approx(log(104 / 101))
+    if ref:
+        from tests.learning.test_offline_ddo_research_cycle_v1 import native_research_fixture
+        from src.experiments.canonical_experiment_identity_v1 import CanonicalCodeProvenanceV1
+
+        wrong_slot = slot.model_copy(update={"n5_selection_digest": "e" * 64})
+        wrong_campaign = campaign.model_copy(update={"slot": wrong_slot})
+        with pytest.raises(ValueError, match="RESEARCH_SHADOW_N5_SCOPE_MISMATCH"):
+            campaign_worker._read_source(
+                None, {**source, "slot": wrong_slot.model_dump(mode="json")}, wrong_campaign
+            )
+        bars, cfg, request = native_research_fixture(
+            instrument.canonical_id, learning["content_hash"]
+        )
+        csv, config, descriptor = (
+            tmp_path / name for name in ("bars.csv", "backtest.json", "research-input.json")
+        )
+        bars.to_csv(csv)
+        config.write_text(json.dumps(cfg))
+        profile = request.model_dump(mode="json", exclude={"learning_evidence_digest", "times"})
+        profile.update(schema_version="offline_ddo_research_profile.v1", gap_dimensions=[])
+        descriptor.write_text(
+            json.dumps(
+                dict(
+                    schema_version="offline_research_input.v1",
+                    instrument_id=instrument.canonical_id,
+                    bars_csv_sha256=sha256(csv.read_bytes()).hexdigest(),
+                    backtest_json_sha256=sha256(config.read_bytes()).hexdigest(),
+                    profile=profile,
+                )
+            )
+        )
+        research_input = campaign_worker.ResearchInputV1(
+            template=descriptor, bars=csv, config=config
+        )
+        with_inputs = campaign.model_copy(
+            update={"research_inputs": {instrument.canonical_id: [research_input]}}
+        )
+        campaign.paper_runs.mkdir()
+        (job,) = campaign_worker.tick_research_campaign_v1(
+            with_inputs,
+            code=CanonicalCodeProvenanceV1("f" * 40, "CLEAN"),
+            now=datetime(2026, 11, 18, tzinfo=timezone.utc),
+        )["jobs"]
+        assert job["status"] == "MECHANISM_PASS", job
+
     assert companion.finish_companion_v1(**follow_up) == result
     assert ledger_path.read_bytes() == saved
     assert len(receipts) == 4
@@ -1699,3 +1887,107 @@ def test_capability_id_constant() -> None:
     assert CAPABILITY_ID.endswith("WALLCLOCK_SESSION_EXECUTION_CAPABILITY_V1")
     assert NETWORK_SCOPE == "okx_eea_futures_public_md_observe_v1"
     assert SESSION_EXECUTION_SCOPE == "paper_shadow_observation_wallclock_v1"
+
+
+@pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES)
+@pytest.mark.parametrize("decision", ["enter_long", "enter_short"])
+def test_ranked_shadow_converts_the_native_mark_only_for_this_entry(tmp_path, scope, decision):
+    from decimal import Decimal
+    from types import SimpleNamespace
+    from urllib.parse import urlencode
+    from src.ops.ranked_swap_shadow_observation_v1 import observe_ranked_entry_fx_v1
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.network_boundary_guard_v1 import (
+        assert_url_allowed_v1,
+    )
+
+    event = 1700000000.0
+    assignment = SimpleNamespace(
+        lane_id=scope.lane_id,
+        selection=SimpleNamespace(integrity_digest="d" * 64),
+        instrument=SimpleNamespace(
+            venue_native_inst_id=scope.native_id,
+            canonical_instrument_id=scope.canonical_id,
+            quote_currency="USDT",
+            settlement_currency="USDT",
+            base_currency=scope.base,
+            contract_value_currency=scope.base,
+            contract_value="10",
+            minimum_order_size="0.2",
+            lot_size="0.1",
+        ),
+    )
+    mark = {
+        "code": "0",
+        "data": [{"instId": scope.native_id, "ts": str(int(event * 1000)), "markPx": "2.6"}],
+    }
+    market = SimpleNamespace(
+        native_id=scope.native_id,
+        canonical_id=scope.canonical_id,
+        market_event_unix=event,
+        mark_acquired_unix=event + 0.02,
+        source_hashes={"mark": "a" * 64},
+        receipt_path=tmp_path / "receipts.json",
+        source_observations={"mark": SimpleNamespace(payload=mark)},
+    )
+    calls = []
+
+    class Transport:
+        venue_instrument_id = scope.native_id
+
+        def get_json(self, path, query):
+            calls.append(query)
+            url = f"https://{CANONICAL_HOST}{path}?" + urlencode(query)
+            assert assert_url_allowed_v1(url, venue_instrument_id=scope.native_id) == []
+            assert assert_url_allowed_v1(
+                url.replace("USDC-USDT", "BTC-USDT"), venue_instrument_id=scope.native_id
+            )
+            payload = {
+                "code": "0",
+                "data": [{"instId": "USDC-USDT", "ts": str(int(event * 1000)), "idxPx": "1.04"}],
+            }
+            return SimpleNamespace(
+                body=json.dumps(payload).encode(), payload=payload, status=200, path=path, url=url
+            )
+
+    args = dict(transport=Transport(), clock=lambda: event + 0.10)
+    assert (
+        observe_ranked_entry_fx_v1(assignment, market, {"decision_outcome": "hold"}, **args) is None
+    )
+    assert not calls
+    cycle = dict(decision_id="signal", decision_outcome=decision)
+    valuation = observe_ranked_entry_fx_v1(assignment, market, cycle, **args)
+    assert calls == [{"instId": "USDC-USDT"}]
+    assert valuation["status"] == "OBSERVED"
+    assert (
+        valuation["decision_id"] == cycle["decision_id"] and valuation["lane_id"] == scope.lane_id
+    )
+    assert Decimal(valuation["mark_usdc_per_base"]) == Decimal("2.5")
+    assert Decimal(valuation["mark_usdt_per_base"]) == Decimal("2.6")
+    assert Decimal(valuation["minimum_mark_notional_usdc"]) == Decimal("5")
+    assert (
+        json.loads((tmp_path / "entry-fx-receipt.json").read_bytes())["body_sha256"]
+        == valuation["original_fx_sha256"]
+    )
+    market.receipt_path = tmp_path / "late" / "receipts.json"
+    late = observe_ranked_entry_fx_v1(
+        assignment, market, cycle, transport=Transport(), clock=lambda: event + 60
+    )
+    assert late["status"] == "UNAVAILABLE" and "mark_usdc_per_base" not in late
+    market.receipt_path = tmp_path / "renewed" / "receipts.json"
+    from copy import copy
+
+    admitted = copy(assignment)
+    admitted.instrument = copy(assignment.instrument)
+    admitted.instrument.contract_value = "20"
+    admitted.selection = SimpleNamespace(integrity_digest="e" * 64)
+    admitted.require_current_v1 = lambda now: None
+    renewed = observe_ranked_entry_fx_v1(assignment, market, cycle, admission=admitted, **args)
+    assert renewed["entry_selection_digest"] == admitted.selection.integrity_digest
+    assert renewed["n5_selection_digest"] == assignment.selection.integrity_digest
+    assert Decimal(renewed["minimum_mark_notional_usdc"]) == Decimal("10")
+    market.receipt_path = tmp_path / "unknown-unit" / "receipts.json"
+    del admitted.instrument.contract_value_currency
+    unavailable = observe_ranked_entry_fx_v1(assignment, market, cycle, admission=admitted, **args)
+    assert (
+        unavailable["status"] == "UNAVAILABLE" and "minimum_mark_notional_usdc" not in unavailable
+    )

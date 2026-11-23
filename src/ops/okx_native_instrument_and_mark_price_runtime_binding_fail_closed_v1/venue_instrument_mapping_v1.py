@@ -23,6 +23,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     SOPH_I17,
+    RANKED_SWAP_SCOPES,
     SOPH_I17_ARCHIVED_SLOT5,
     I17ShadowInstrumentV1,
 )
@@ -67,6 +68,27 @@ def resolve_okx_venue_instrument_mapping_v1(
     """
     if venue != AUTHORIZED_VENUE:
         raise MarketDataBindingErrorV1("CANONICAL_INSTRUMENT_MAPPING_MISSING", f"venue={venue}")
+
+    if i17_scope in RANKED_SWAP_SCOPES:
+        scope = i17_scope
+        row = validate_venue_instrument_in_public_inventory_v1(
+            venue_instrument_id=scope.native_id,
+            instruments_inventory=instruments_inventory,
+            expected_inst_type="SWAP",
+        )
+        family = f"{scope.base}-USDT"
+        if canonical_instrument_id != scope.canonical_id or tuple(
+            row.get(k) for k in ("instType", "ctType", "ctValCcy", "settleCcy", "uly", "instFamily")
+        ) != ("SWAP", "linear", scope.base, "USDT", family, family):
+            raise MarketDataBindingErrorV1("VENUE_INSTRUMENT_RESPONSE_MISMATCH", scope.native_id)
+        return _build_mapping(
+            canonical_instrument_id=scope.canonical_id,
+            venue_instrument_id=scope.native_id,
+            mapping_source=f"I17_SHADOW_{scope.lane_id}_INSTRUMENT_SCOPE",
+            instrument_type=scope.instrument_type,
+            contract_family=scope.contract_family,
+            settlement_currency=scope.settlement_currency,
+        )
 
     binding = default_okx_europe_xperp_production_binding()
     authority_instrument_id = str(binding.instrument_id or "").strip()
@@ -125,14 +147,22 @@ def resolve_okx_venue_instrument_mapping_v1(
     )
 
 
-def _build_mapping(*, canonical_instrument_id, venue_instrument_id, mapping_source):
+def _build_mapping(
+    *,
+    canonical_instrument_id,
+    venue_instrument_id,
+    mapping_source,
+    instrument_type=PRODUCTION_INSTRUMENT_TYPE,
+    contract_family=PRODUCTION_RULE_TYPE,
+    settlement_currency=PRODUCTION_SETTLEMENT_ASSET,
+):
     payload = {
         "canonical_instrument_id": canonical_instrument_id,
         "venue": AUTHORIZED_VENUE,
         "venue_instrument_id": venue_instrument_id,
-        "instrument_type": PRODUCTION_INSTRUMENT_TYPE,
-        "contract_family": PRODUCTION_RULE_TYPE,
-        "settlement_currency": PRODUCTION_SETTLEMENT_ASSET,
+        "instrument_type": instrument_type,
+        "contract_family": contract_family,
+        "settlement_currency": settlement_currency,
         "mapping_source": mapping_source,
         "mapping_version": VENUE_MAPPING_VERSION,
     }

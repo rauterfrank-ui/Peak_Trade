@@ -630,6 +630,16 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
     held = _market(i + 1, direction=direction, slot=slot)
     hold = session.step_v1(held, clock=lambda: held.observed_unix + 0.01)
     assert hold["status"] == "WAIT", hold
+    assert session.step_v1(held)["status"] == "WAITING_FOR_NEW_MARK"
+    same_ms = _market(
+        i + 1, direction=direction, slot=slot, price=held.mark + direction * Decimal("0.00001")
+    )
+    assert same_ms.market_event_unix == held.market_event_unix
+    changed = session.step_v1(same_ms, clock=lambda: same_ms.observed_unix + 0.01)
+    assert changed["status"] == "WAIT", changed
+    assert changed["trading_epoch"] == hold["trading_epoch"] + 1
+    assert session.step_v1(held)["status"] == "WAITING_FOR_NEW_MARK"
+    assert session.step_v1(same_ms)["status"] == "WAITING_FOR_NEW_MARK"
     switch_price = _against_position(session.cursor_root, direction)
     thin = _market(i + 2, direction=direction, slot=slot, price=switch_price, depth=0)
     blocked = session.step_v1(thin, clock=lambda: thin.observed_unix + 0.01)
@@ -919,14 +929,12 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     assert {p: p.read_bytes() for p in legacy_bytes} == legacy_bytes
 
     if ranked:
-        # The ranked Paper contract ends at the sealed episode and its learning handoff.
         assert (
             json.loads((root / "paper-profile.json").read_bytes())["n5_assignment"][
                 "selection_digest"
             ]
             == assignment.selection_integrity_digest
         )
-        return
 
     bars, config, request = native_research_fixture(slot.instrument_id, "b" * 64)
     csv_path, cfg_path, template_path = (
@@ -949,6 +957,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     )
     scope = research.ResearchSlotScopeV1(
         lane_id=slot.lane_id,
+        n5_selection_digest=assignment.selection_integrity_digest if ranked else None,
         surface="PAPER_EXCHANGE",
         session_id=root.name,
         instrument_id=slot.instrument_id,
@@ -979,6 +988,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     )
     other = IRYS_PAPER_SLOT if slot == ZKP_PAPER_SLOT else ZKP_PAPER_SLOT
     for name, update in (
+        *([("selection", {"n5_selection_digest": "0" * 64})] if ranked else []),
         ("lane", {"lane_id": other.lane_id}),
         ("instrument", {"venue_native_id": other.native_id}),
         ("window", {"starts_at": scope.starts_at - timedelta(hours=2), "ends_at": scope.starts_at}),
@@ -1163,3 +1173,46 @@ def test_funding_at_settlement_survives_process_loss_and_double_play_continues(t
     assert Decimal(measurement["simulated_net_pnl"]) == (
         Decimal(measurement["realized_pnl"]) + expected - Decimal(measurement["fees"])
     )
+
+
+def test_occupied_reads_overlap_with_original_inputs_for_each_mark(tmp_path):
+    from contextlib import ExitStack
+    from threading import Event
+
+    observations, policy, now = _observations()
+    by_endpoint = {r.endpoint: (name, r) for name, r in observations.items()}
+    history_started, context_started = Event(), Event()
+    labels = []
+
+    class Transport:
+        def __init__(self, **kwargs):
+            self.raw_response_sink_v1 = None
+
+        def get(self, *, endpoint, auth_required, pretrade_decision_id, get_cache_policy):
+            name, receipt = by_endpoint[endpoint]
+            assert not auth_required
+            if name == "instrument":
+                history_started.set()
+                assert context_started.wait(5)
+            if name == "funding":
+                context_started.set()
+                assert history_started.wait(5)
+            labels.append(name)
+            raw = json.dumps(receipt.payload).encode()
+            self.raw_response_sink_v1(result=receipt, body=raw)
+            return receipt
+
+    with ExitStack() as stack:
+        capture = paper_cli._occupied_market_reader(
+            stack, policy, ZKP_PAPER_SLOT, transport_factory=Transport, clock=lambda: now
+        )
+        first = capture(label="first", output=tmp_path / "first")
+        second = capture(label="second", output=tmp_path / "second")
+        assert first == second
+        assert all(labels.count(name) == 2 for name in observations)
+        assert labels[-2:] == ["book", "mark"]
+        assert {
+            k: v["body_sha256"]
+            for k, v in json.loads((tmp_path / "second/receipts.json").read_bytes()).items()
+        } == second.source_hashes
+    assert paper_cli._next_poll_delay(IRYS_PAPER_SLOT, captured=True, elapsed=1, occupied=True) == 0

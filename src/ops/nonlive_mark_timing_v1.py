@@ -1,4 +1,4 @@
-"""Opt-in, thread-local observation at the original Paper consumer calls."""
+"""Opt-in, thread-local observation at the original non-live consumer calls."""
 
 from __future__ import annotations
 
@@ -9,9 +9,39 @@ import platform
 import sys
 import time
 from contextlib import contextmanager
+from functools import wraps
+from inspect import unwrap
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
+
+
+def observe_demo_call_v1(method):
+    @wraps(method)
+    def wrapped(host, *, observation, **kwargs):
+        if not os.environ.get("PEAK_TRADE_NONLIVE_TIMING_DIR"):
+            return method(host, observation=observation, **kwargs)
+        native = host.budget.bound.venue_native_id
+        try:
+            rows = [r for r in observation.mark_price_payload["data"] if r["instId"] == native]
+            (row,) = rows
+            scope = observe_nonlive_mark_v1(
+                mode="TESTNET",
+                session=host.writer_session_id,
+                lane="LANE_3",
+                native=native,
+                canonical=host.budget.bound.instrument_id,
+                event_ms=int(row["ts"]),
+                price=row["markPx"],
+                receipt=observation.mark_acquired_at_utc,
+            )
+        except (ValueError, TypeError, KeyError, AttributeError):
+            # Let the original Demo owner handle missing or invalid observations.
+            return method(host, observation=observation, **kwargs)
+        with scope:
+            return method(host, observation=observation, **kwargs)
+
+    return wrapped
 
 
 def _receive_ns(stamp):
@@ -25,14 +55,24 @@ def _receive_ns(stamp):
 
 @contextmanager
 def observe_nonlive_mark_v1(
-    *, mode, session, lane, native, event_ms, price, receipt, canonical, paper_episode_id=None
+    *,
+    mode,
+    session,
+    lane,
+    native,
+    event_ms,
+    price,
+    receipt,
+    canonical,
+    paper_episode_id=None,
+    paper_card_times=None,
 ):
     directory = os.environ.get("PEAK_TRADE_NONLIVE_TIMING_DIR")
     if not directory:
         yield
         return
-    if mode != "PAPER":
-        raise ValueError("Paper timing scope required")
+    if mode not in {"PAPER", "SHADOW", "TESTNET"}:
+        raise ValueError("non-live timing scope required")
 
     from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (
         immutable_json_v1,
@@ -53,8 +93,10 @@ def observe_nonlive_mark_v1(
         calls=[],
         profile_status="HOST_ONLY",
     )
-    if paper_episode_id:
+    if mode == "PAPER" and paper_episode_id:
         trace["paper_episode_id"] = paper_episode_id
+    if mode == "PAPER" and paper_card_times is not None:
+        trace["paper_card_start_mono_ns"], trace["paper_card_end_mono_ns"] = paper_card_times
     try:
         trace["host_start_unix_ns"] = time.time_ns()
         trace["host_start_mono_ns"] = time.perf_counter_ns()
@@ -76,7 +118,7 @@ def observe_nonlive_mark_v1(
 @contextmanager
 def _observe_stages(trace, canonical):
     # Observe the original calls on this thread. Detailed profiling affects latency.
-    native, session = trace["native_id"], trace["session"]
+    mode, native, session = trace["mode"], trace["native_id"], trace["session"]
     event_ms, price = trace["event_ms"], trace["mark_px"]
     from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
         run_current_productive_master_v2_runtime_cycle_v1,
@@ -93,11 +135,26 @@ def _observe_stages(trace, canonical):
         execute_naked_layered_core_mechanical_step_v1.__code__: "double_play_scope_l6_l10",
         apply_l10_bull_bear_switch_v1.__code__: "double_play_l10",
     }
-    from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 import (
-        ZkpPaperContinuationV1,
-    )
+    if mode == "PAPER":
+        from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_continuation_v1 import (
+            ZkpPaperContinuationV1,
+        )
 
-    stages[ZkpPaperContinuationV1._publish_booking.__code__] = "paper_reversal_publication"
+        stages[ZkpPaperContinuationV1._publish_booking.__code__] = "paper_reversal_publication"
+    if mode == "SHADOW":
+        from trading.master_v2.deterministic_scope_event_generator_v1 import (
+            generate_deterministic_scope_event,
+        )
+        from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+            run_integrated_offline_trading_logic_replay_v1,
+        )
+
+        stages = {
+            unwrap(
+                run_integrated_offline_trading_logic_replay_v1
+            ).__code__: "shadow_master_v2_replay",
+            unwrap(generate_deterministic_scope_event).__code__: "shadow_scope_event",
+        }
     calls = trace["calls"]
     active = {}
     previous = sys.getprofile()
@@ -146,8 +203,24 @@ def _observe_stages(trace, canonical):
                 except (AttributeError, KeyError, ValueError, TypeError):
                     return
                 cycle_id = args["cycle_id"]
+            if stage == "shadow_master_v2_replay":
+                inp = frame.f_locals["inp"]
+                ctx = inp.canonical_market_context
+                if (
+                    ctx.instrument_id != canonical
+                    or ctx.mark_price != float(price)
+                    or round(_receive_ns(ctx.market_event_time) / 1_000_000) != event_ms
+                ):
+                    trace["shadow_context_mark_identity_matched"] = False
+                    return
+                trace["shadow_context_mark_identity_matched"] = True
+                cycle_id = inp.replay_id
             if cycle_id is None:
                 return
+            if stage == "shadow_scope_event":
+                inp = frame.f_locals["inp"]
+                if inp.instrument_id != canonical or inp.current_price != float(price):
+                    return
             if stage == "double_play_scope_l6_l10":
                 args = frame.f_locals
                 if args["episode"].instrument_key.venue_instrument_id != native or args[
@@ -166,12 +239,23 @@ def _observe_stages(trace, canonical):
             row.update(
                 end_mono_ns=now, duration_ns=now - row["start_mono_ns"], returned=result is not None
             )
-            if stage == "master_v2":
+            if stage in {"master_v2", "shadow_master_v2_replay"}:
                 cycle_id = None
                 row["decision"] = getattr(
                     getattr(result, "evidence", result), "decision_outcome", None
                 )
-            elif stage != "paper_reversal_publication":
+            elif stage == "shadow_scope_event":
+                row["scope_event"] = getattr(getattr(result, "event_type", None), "value", None)
+            elif stage == "paper_reversal_publication":
+                row["booking_confirmed"] = isinstance(result, dict) and (
+                    result.get("status") == "NET_REVERSAL_BOOKED"
+                    and result.get("previous_episode_id") == trace.get("paper_episode_id")
+                    and result.get("decision_id") == row["decision_id"]
+                    and result.get("fill", {}).get("fill_id") == row["fill_id"]
+                    and result.get("native_instrument_id") == native
+                    and result.get("lane_id") == trace["lane"]
+                )
+            else:
                 row["switch_condition_met"] = getattr(result, "switch_condition_met", None)
 
     def safe_profile(frame, event, result):

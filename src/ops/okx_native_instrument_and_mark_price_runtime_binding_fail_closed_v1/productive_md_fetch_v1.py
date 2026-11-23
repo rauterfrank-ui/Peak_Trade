@@ -15,6 +15,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
     ETH_I17,
     SOPH_I17,
+    RANKED_SWAP_SCOPES,
     I17ShadowInstrumentV1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.mark_price_contract_v1 import (
@@ -52,7 +53,8 @@ def resolve_mapping_with_transport_inventory_v1(
     i17_scope: I17ShadowInstrumentV1 | None = None,
 ) -> VenueInstrumentMappingV1:
     if i17_scope is not None and (
-        i17_scope not in (ETH_I17, SOPH_I17) or canonical_instrument_id != i17_scope.canonical_id
+        i17_scope not in (ETH_I17, SOPH_I17, *RANKED_SWAP_SCOPES)
+        or canonical_instrument_id != i17_scope.canonical_id
     ):
         raise MarketDataBindingErrorV1(
             "CANONICAL_INSTRUMENT_MAPPING_MISSING", canonical_instrument_id
@@ -66,12 +68,13 @@ def resolve_mapping_with_transport_inventory_v1(
         )
 
         seed_id = (
-            SOPH_I17.native_id
-            if i17_scope == SOPH_I17
+            i17_scope.native_id
+            if i17_scope is not None
             else str(default_okx_europe_xperp_production_binding().instrument_id)
         )
         fetch = transport.fetch_instruments(
-            venue_instrument_id=seed_id, inst_type=MARK_PRICE_INST_TYPE
+            venue_instrument_id=seed_id,
+            inst_type=i17_scope.instrument_type if i17_scope else MARK_PRICE_INST_TYPE,
         )
         instruments_payload = fetch.payload
     inventory = extract_instruments_data_array_v1(instruments_payload)
@@ -97,11 +100,22 @@ def fetch_normalized_public_market_data_v1(
     try:
         mark_fetch = transport.fetch_mark_price(
             venue_instrument_id=mapping.venue_instrument_id,
-            inst_type=MARK_PRICE_INST_TYPE,
+            inst_type=mapping.instrument_type,
         )
     except Exception as exc:  # noqa: BLE001
         raise MarketDataBindingErrorV1("TRANSPORT_FAILURE", str(exc)) from exc
 
+    if mapping.instrument_type == "SWAP":
+        rows = mark_fetch.payload.get("data")
+        if (
+            not isinstance(rows, list)
+            or len(rows) != 1
+            or not isinstance(rows[0], Mapping)
+            or rows[0].get("instType") != "SWAP"
+        ):
+            raise MarketDataBindingErrorV1(
+                "VENUE_INSTRUMENT_RESPONSE_MISMATCH", mapping.venue_instrument_id
+            )
     mark = parse_public_mark_price_response_v1(
         mark_fetch.payload,
         expected_venue_instrument_id=mapping.venue_instrument_id,
