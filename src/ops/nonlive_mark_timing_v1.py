@@ -55,7 +55,17 @@ def _receive_ns(stamp):
 
 @contextmanager
 def observe_nonlive_mark_v1(
-    *, mode, session, lane, native, event_ms, price, receipt, canonical, paper_episode_id=None
+    *,
+    mode,
+    session,
+    lane,
+    native,
+    event_ms,
+    price,
+    receipt,
+    canonical,
+    paper_episode_id=None,
+    paper_card_times=None,
 ):
     directory = os.environ.get("PEAK_TRADE_NONLIVE_TIMING_DIR")
     if not directory:
@@ -85,6 +95,8 @@ def observe_nonlive_mark_v1(
     )
     if mode == "PAPER" and paper_episode_id:
         trace["paper_episode_id"] = paper_episode_id
+    if mode == "PAPER" and paper_card_times is not None:
+        trace["paper_card_start_mono_ns"], trace["paper_card_end_mono_ns"] = paper_card_times
     try:
         trace["host_start_unix_ns"] = time.time_ns()
         trace["host_start_mono_ns"] = time.perf_counter_ns()
@@ -234,7 +246,16 @@ def _observe_stages(trace, canonical):
                 )
             elif stage == "shadow_scope_event":
                 row["scope_event"] = getattr(getattr(result, "event_type", None), "value", None)
-            elif stage != "paper_reversal_publication":
+            elif stage == "paper_reversal_publication":
+                row["booking_confirmed"] = isinstance(result, dict) and (
+                    result.get("status") == "NET_REVERSAL_BOOKED"
+                    and result.get("previous_episode_id") == trace.get("paper_episode_id")
+                    and result.get("decision_id") == row["decision_id"]
+                    and result.get("fill", {}).get("fill_id") == row["fill_id"]
+                    and result.get("native_instrument_id") == native
+                    and result.get("lane_id") == trace["lane"]
+                )
+            else:
                 row["switch_condition_met"] = getattr(result, "switch_condition_met", None)
 
     def safe_profile(frame, event, result):

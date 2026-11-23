@@ -181,7 +181,7 @@ def collect_ranked_swap_observation_v1(assignment, output: Path, clock, *, trans
     )
 
 
-def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
+def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock, admission=None):
     """Value the original native mark for this entry decision only. Never mutate a portfolio."""
     from urllib.parse import parse_qs, urlsplit
 
@@ -205,7 +205,8 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
 
     if cycle["decision_outcome"] not in {"enter_long", "enter_short"}:
         return None
-    instrument = assignment.instrument
+    selected = assignment if admission is None else admission
+    instrument = selected.instrument
     if (
         (
             instrument.venue_native_inst_id,
@@ -215,6 +216,12 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
         )
         != (market.native_id, market.canonical_id, "USDT", "USDT")
         or transport.venue_instrument_id != market.native_id
+        or selected.lane_id != assignment.lane_id
+        or (
+            assignment.instrument.canonical_instrument_id,
+            assignment.instrument.venue_native_inst_id,
+        )
+        != (market.canonical_id, market.native_id)
         or not cycle["decision_id"]
     ):
         raise ValueError("I17_SWAP_ENTRY_FX_SCOPE_MISMATCH")
@@ -223,6 +230,7 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
         decision_outcome=cycle["decision_outcome"],
         lane_id=assignment.lane_id,
         n5_selection_digest=assignment.selection.integrity_digest,
+        entry_selection_digest=selected.selection.integrity_digest,
         instrument_id=market.canonical_id,
         venue_native_id=market.native_id,
         mark_sha256=market.source_hashes["mark"],
@@ -247,6 +255,8 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
     immutable_json_v1(market.receipt_path.parent / "entry-fx-receipt.json", receipt)
     try:
         url = urlsplit(response.url)
+        if admission is not None:
+            admission.require_current_v1(received)
         if (
             response.status != 200
             or response.path != USDT_USDC_ENDPOINT
@@ -273,6 +283,15 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
             pair_quote_currency="USDT",
             provenance_ref=digest,
         )
+        if not getattr(instrument, "base_currency", None) or (
+            getattr(instrument, "contract_value_currency", None) != instrument.base_currency
+        ):
+            raise ValueError("I17_SWAP_NATIVE_CONTRACT_UNIT_UNPROVEN")
+        contract_value = _decimal(getattr(instrument, "contract_value", None), positive=True)
+        minimum = _decimal(getattr(instrument, "minimum_order_size", None), positive=True)
+        lot = _decimal(getattr(instrument, "lot_size", None), positive=True)
+        if minimum % lot:
+            raise ValueError("I17_SWAP_MINIMUM_OFF_NATIVE_GRID")
         return dict(
             ref,
             status="OBSERVED",
@@ -282,6 +301,11 @@ def observe_ranked_entry_fx_v1(assignment, market, cycle, *, transport, clock):
             usdc_per_usdt=str(edge.normalized_rate),
             mark_usdt_per_base=str(mark),
             mark_usdc_per_base=str(mark * edge.normalized_rate),
+            base_currency=instrument.base_currency,
+            base_per_contract=str(contract_value),
+            minimum_contracts=str(minimum),
+            lot_size_contracts=str(lot),
+            minimum_mark_notional_usdc=str(mark * contract_value * minimum * edge.normalized_rate),
         )
     except (MonetaryNormalizationError, KeyError, ValueError, TypeError, DecimalException) as exc:
         return dict(ref, status="UNAVAILABLE", original_fx_sha256=digest, reason=str(exc))

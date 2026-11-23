@@ -1909,6 +1909,11 @@ def test_ranked_shadow_converts_the_native_mark_only_for_this_entry(tmp_path, sc
             canonical_instrument_id=scope.canonical_id,
             quote_currency="USDT",
             settlement_currency="USDT",
+            base_currency=scope.base,
+            contract_value_currency=scope.base,
+            contract_value="10",
+            minimum_order_size="0.2",
+            lot_size="0.1",
         ),
     )
     mark = {
@@ -1958,6 +1963,7 @@ def test_ranked_shadow_converts_the_native_mark_only_for_this_entry(tmp_path, sc
     )
     assert Decimal(valuation["mark_usdc_per_base"]) == Decimal("2.5")
     assert Decimal(valuation["mark_usdt_per_base"]) == Decimal("2.6")
+    assert Decimal(valuation["minimum_mark_notional_usdc"]) == Decimal("5")
     assert (
         json.loads((tmp_path / "entry-fx-receipt.json").read_bytes())["body_sha256"]
         == valuation["original_fx_sha256"]
@@ -1967,3 +1973,21 @@ def test_ranked_shadow_converts_the_native_mark_only_for_this_entry(tmp_path, sc
         assignment, market, cycle, transport=Transport(), clock=lambda: event + 60
     )
     assert late["status"] == "UNAVAILABLE" and "mark_usdc_per_base" not in late
+    market.receipt_path = tmp_path / "renewed" / "receipts.json"
+    from copy import copy
+
+    admitted = copy(assignment)
+    admitted.instrument = copy(assignment.instrument)
+    admitted.instrument.contract_value = "20"
+    admitted.selection = SimpleNamespace(integrity_digest="e" * 64)
+    admitted.require_current_v1 = lambda now: None
+    renewed = observe_ranked_entry_fx_v1(assignment, market, cycle, admission=admitted, **args)
+    assert renewed["entry_selection_digest"] == admitted.selection.integrity_digest
+    assert renewed["n5_selection_digest"] == assignment.selection.integrity_digest
+    assert Decimal(renewed["minimum_mark_notional_usdc"]) == Decimal("10")
+    market.receipt_path = tmp_path / "unknown-unit" / "receipts.json"
+    del admitted.instrument.contract_value_currency
+    unavailable = observe_ranked_entry_fx_v1(assignment, market, cycle, admission=admitted, **args)
+    assert (
+        unavailable["status"] == "UNAVAILABLE" and "minimum_mark_notional_usdc" not in unavailable
+    )

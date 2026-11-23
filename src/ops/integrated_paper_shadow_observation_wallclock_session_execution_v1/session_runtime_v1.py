@@ -373,47 +373,25 @@ class WallclockSessionRuntimeV1:
         *,
         session_id: str,
         now_wall: float,
+        ranked_slot=None,
     ) -> bool:
         """Reuse Cap-1.1 productive reconciliation owner after reconnect; fail-closed."""
-        from decimal import Decimal
-
         from src.ops.productive_reconciliation_runtime_binding_v1 import (
-            PortfolioTruthSnapshotV1,
-            PositionTruthV1,
             run_productive_reconciliation_startup_gate_v1,
         )
 
-        # Snapshot observed portfolio from hardened bridge state (flat-safe).
-        positions: list[PositionTruthV1] = []
-        try:
-            snap = self.bridge_state.portfolio.snapshot()
-            pos = snap.get("position") if isinstance(snap, dict) else None
-            if isinstance(pos, dict) and pos.get("instrument_id"):
-                positions.append(
-                    PositionTruthV1.from_signed(
-                        instrument_id=str(pos.get("instrument_id")),
-                        signed_quantity=Decimal(str(pos.get("signed_quantity") or "0")),
-                        source_id="post_reconnect_observed",
-                        mark_price=(
-                            None
-                            if pos.get("mark_price") is None
-                            else Decimal(str(pos.get("mark_price")))
-                        ),
-                        event_time_unix=now_wall,
-                        wall_time_unix=now_wall,
-                    )
-                )
-        except Exception:  # noqa: BLE001
-            positions = []
+        if ranked_slot is not None:
+            from src.ops.ranked_shadow_entry_selection_v1 import observe_ranked_shadow_positions_v1
 
-        observed = PortfolioTruthSnapshotV1(
-            positions=tuple(positions),
-            cash=None,
-            source_id="post_reconnect_observed",
-            event_time_unix=now_wall,
-            wall_time_unix=now_wall,
-            missing=False,
-        )
+            try:
+                observed = observe_ranked_shadow_positions_v1(
+                    self.bridge_state, ranked_slot, session_id=session_id, now=now_wall
+                )
+            except (ValueError, KeyError, TypeError, ArithmeticError, AttributeError) as exc:
+                self.blockers.append(f"SHADOW_POSITION_OBSERVATION_INVALID:{exc}")
+                return False
+        else:
+            observed = self._legacy_reconnect_portfolio_v1(now_wall)
         recon_root = self.evidence_root / "post_reconnect_reconciliation"
         gate = run_productive_reconciliation_startup_gate_v1(
             state_root=recon_root,
@@ -438,6 +416,43 @@ class WallclockSessionRuntimeV1:
             self.blockers.append("POST_RECONNECT_RECONCILIATION_FAILED")
             return False
         return True
+
+    def _legacy_reconnect_portfolio_v1(self, now_wall):
+        from src.ops.productive_reconciliation_runtime_binding_v1 import (
+            PortfolioTruthSnapshotV1,
+            PositionTruthV1,
+        )
+
+        positions: list[PositionTruthV1] = []
+        try:
+            snap = self.bridge_state.portfolio.snapshot()
+            pos = snap.get("position") if isinstance(snap, dict) else None
+            if isinstance(pos, dict) and pos.get("instrument_id"):
+                positions.append(
+                    PositionTruthV1.from_signed(
+                        instrument_id=str(pos.get("instrument_id")),
+                        signed_quantity=Decimal(str(pos.get("signed_quantity") or "0")),
+                        source_id="post_reconnect_observed",
+                        mark_price=(
+                            None
+                            if pos.get("mark_price") is None
+                            else Decimal(str(pos.get("mark_price")))
+                        ),
+                        event_time_unix=now_wall,
+                        wall_time_unix=now_wall,
+                    )
+                )
+        except Exception:  # noqa: BLE001
+            positions = []
+
+        return PortfolioTruthSnapshotV1(
+            positions=tuple(positions),
+            cash=None,
+            source_id="post_reconnect_observed",
+            event_time_unix=now_wall,
+            wall_time_unix=now_wall,
+            missing=False,
+        )
 
     def _seal_transport_telemetry_v1(self, *, session_id: str) -> None:
         from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1 import (  # noqa: E501
@@ -755,7 +770,9 @@ class WallclockSessionRuntimeV1:
             )
             if ranked_slot is not None:
                 self.bridge_state = HardenedBridgeSessionStateV2(
-                    instrument_id=instrument.canonical_id, venue_instrument_id=instrument.native_id
+                    instrument_id=instrument.canonical_id,
+                    venue_instrument_id=instrument.native_id,
+                    session_id=session_id,
                 )
             elif instrument != ETH_I17:
                 self.bridge_state = HardenedBridgeSessionStateV2(
@@ -1236,6 +1253,7 @@ class WallclockSessionRuntimeV1:
                             recon_ok = self._run_post_reconnect_reconciliation_before_alpha_v1(
                                 session_id=session_id,
                                 now_wall=now_wall,
+                                **({"ranked_slot": ranked_slot} if ranked_slot is not None else {}),
                             )
                             if not recon_ok:
                                 self._abort(
@@ -1320,18 +1338,26 @@ class WallclockSessionRuntimeV1:
                                 "enter_short",
                             }:
                                 from src.ops.ranked_shadow_entry_selection_v1 import (
-                                    inspect_ranked_shadow_entry_selection_v1,
+                                    resolve_ranked_shadow_entry_selection_v1,
                                 )
                                 from src.ops.ranked_swap_shadow_observation_v1 import (
                                     observe_ranked_entry_fx_v1,
                                 )
 
                                 try:
-                                    selection = inspect_ranked_shadow_entry_selection_v1(
-                                        self.instrument_card_selection_root,
-                                        now=self.clock_wall(),
-                                        assignment=ranked_slot,
-                                        session_id=session_id,
+                                    selection, admitted_slot = (
+                                        resolve_ranked_shadow_entry_selection_v1(
+                                            self.instrument_card_selection_root,
+                                            clock=self.clock_wall,
+                                            assignment=ranked_slot,
+                                            session_id=session_id,
+                                            state=self.bridge_state,
+                                            market=swap_market,
+                                            decision_id=cycle["decision_id"],
+                                            reconciliation_root=self.evidence_root.parent
+                                            / "entry-reconciliation"
+                                            / session_id,
+                                        )
                                     )
                                 except (
                                     OSError,
@@ -1340,6 +1366,7 @@ class WallclockSessionRuntimeV1:
                                     KeyError,
                                     TypeError,
                                 ) as exc:
+                                    admitted_slot = None
                                     selection = dict(
                                         session_id=session_id,
                                         n5_assignment=ranked_slot.reference(),
@@ -1348,13 +1375,14 @@ class WallclockSessionRuntimeV1:
                                         blockers=[f"SHADOW_ENTRY_SOURCE_UNAVAILABLE:{exc}"],
                                     )
                                 cycle["shadow_entry_selection"] = selection
-                                if not selection["blockers"]:
+                                if admitted_slot is not None:
                                     try:
                                         cycle["shadow_entry_valuation"] = (
                                             observe_ranked_entry_fx_v1(
                                                 ranked_slot,
                                                 swap_market,
                                                 cycle,
+                                                admission=admitted_slot,
                                                 transport=self.transport,
                                                 clock=self.clock_wall,
                                             )

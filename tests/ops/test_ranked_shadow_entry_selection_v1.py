@@ -1,6 +1,7 @@
 import json
 from hashlib import sha256
 from types import SimpleNamespace
+from decimal import Decimal
 
 import pytest
 
@@ -13,6 +14,142 @@ from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundIns
 from src.ops.single_selected_future_runtime_binding_v1.persistence_v1 import (
     persist_binding_evidence_atomic_v1,
 )
+
+
+@pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES)
+def test_ranked_shadow_uses_native_positions_and_real_cap24(tmp_path, monkeypatch, scope):
+    from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
+        load_and_validate_universe_snapshot_v1,
+    )
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        HardenedBridgeSessionStateV2,
+    )
+    from tests.ops.test_single_selected_future_runtime_binding_v1 import (
+        _build_chain,
+        _perp,
+        OBSERVED_UNIX,
+        REPO_SHA,
+    )
+
+    chain = _build_chain(tmp_path, [_perp(scope.native_id, base=scope.base, ct_val="10")])
+    universe = load_and_validate_universe_snapshot_v1(
+        chain["universe_root"], expected_repository_sha=REPO_SHA
+    ).snapshot
+    assignment = RankedRunSlotV1(
+        scope.lane_id,
+        chain["selection"],
+        universe.instruments[0],
+        universe.snapshot_id,
+        "test-transition",
+        chain["selection_root"],
+    )
+    monkeypatch.setattr(selection, "read_ranked_run_slot_v1", lambda config: assignment)
+    state = HardenedBridgeSessionStateV2(
+        instrument_id=scope.canonical_id,
+        venue_instrument_id=scope.native_id,
+        session_id="shadow-test",
+    )
+    cfg = dict(
+        session_id=state.session_id,
+        lane=scope.lane_id,
+        surface="SHADOW",
+        native_instrument_id=scope.native_id,
+        canonical_instrument_id=scope.canonical_id,
+        n5_source={k: str(chain[k]) for k in ("ranking_root", "universe_root")},
+    )
+    path = tmp_path / "slot.json"
+    path.write_text(json.dumps(cfg))
+    payload = {
+        "code": "0",
+        "data": [
+            {
+                "instId": scope.native_id,
+                "instType": "SWAP",
+                "markPx": "2",
+                "ts": str(int(OBSERVED_UNIX * 1000)),
+            }
+        ],
+    }
+    body = json.dumps(payload).encode()
+    (tmp_path / "mark.json").write_bytes(body)
+    mark_path = "/api/v5/public/mark-price"
+    receipt_path = tmp_path / "receipts.json"
+    mark_receipt = dict(
+        path=mark_path,
+        query={"instType": "SWAP", "instId": scope.native_id},
+        sha256=sha256(body).hexdigest(),
+        received_at_unix=OBSERVED_UNIX,
+    )
+    market = SimpleNamespace(
+        receipt_path=receipt_path,
+        mark=2.0,
+        market_event_unix=OBSERVED_UNIX,
+        mark_acquired_unix=OBSERVED_UNIX,
+        canonical_id=scope.canonical_id,
+        native_id=scope.native_id,
+        source_observations={
+            "mark": SimpleNamespace(body=body, payload=payload, path=mark_path, status=200)
+        },
+        source_hashes={"mark": sha256(body).hexdigest()},
+    )
+
+    def check():
+        return selection.resolve_ranked_shadow_entry_selection_v1(
+            path,
+            session_id=state.session_id,
+            assignment=assignment,
+            state=state,
+            market=market,
+            decision_id="original-decision",
+            clock=lambda: OBSERVED_UNIX,
+            reconciliation_root=chain["recon_root"],
+        )[0]
+
+    receipt_path.write_text(json.dumps({"mark": {**mark_receipt, "path": "/api/v5/market/ticker"}}))
+    with pytest.raises(ValueError, match="ORIGINAL_MARK"):
+        check()
+    assert not (tmp_path / "cap24").exists()
+    receipt_path.write_text(json.dumps({"mark": mark_receipt}))
+    result = check()
+    assert result["blockers"] == []
+    receipt = json.loads((tmp_path / "cap24" / selection.BINDING_RESULT_FILENAME).read_bytes())
+    assert receipt["observed_portfolio"]["cash"] is None
+    assert receipt["observed_portfolio"]["positions"] == []
+    assert receipt["gate"]["bound"]["venue_native_id"] == scope.native_id
+    assert cfg == json.loads(path.read_bytes())
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (
+        WallclockSessionRuntimeV1,
+    )
+
+    reconnect = WallclockSessionRuntimeV1(evidence_root=tmp_path / "reconnect", transport=None)
+    reconnect.bridge_state = state
+    reconnect._expected_repository_sha = REPO_SHA
+
+    def reconnect_slot():
+        return reconnect._run_post_reconnect_reconciliation_before_alpha_v1(
+            session_id=state.session_id, now_wall=OBSERVED_UNIX, ranked_slot=assignment
+        )
+
+    assert reconnect_slot()
+    for step, (side, qty, expected) in enumerate((("BUY", "20", "2"), ("SELL", "30", "-1"))):
+        state.portfolio.apply_intended_action(
+            instrument_id=scope.canonical_id,
+            side=side,
+            quantity=Decimal(qty),
+            mark_price=Decimal("2"),
+            intent_id=str(step),
+            fill_id=str(step),
+        )
+        observed = selection.observe_ranked_shadow_positions_v1(
+            state, assignment, session_id=state.session_id, now=OBSERVED_UNIX
+        )
+        assert observed.positions[0].signed_quantity == Decimal(expected)
+        assert check()["blockers"] == ["SHADOW_FIRST_PURCHASE_REQUIRES_FLAT_SLOT"]
+        assert not reconnect_slot()
+    monkeypatch.setattr(state.portfolio, "snapshot", lambda: {"stub": True})
+    with pytest.raises((ValueError, KeyError)):
+        check()
+    assert not reconnect_slot()
 
 
 @pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES)

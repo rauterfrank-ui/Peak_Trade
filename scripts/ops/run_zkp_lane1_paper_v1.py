@@ -10,11 +10,12 @@ from contextlib import ExitStack
 from functools import partial
 from hashlib import sha256
 import json
+import os
 from math import isfinite
 from pathlib import Path
 import subprocess
 import sys
-from time import monotonic, sleep, time
+from time import monotonic, perf_counter_ns, sleep, time
 from uuid import uuid4
 
 REPO = Path(__file__).resolve().parents[2]
@@ -392,7 +393,11 @@ def _drive(
     while active():
         if market is not None:
             try:
+                card_start = (
+                    perf_counter_ns() if os.environ.get("PEAK_TRADE_NONLIVE_TIMING_DIR") else None
+                )
                 cards.update_v1(market, now=fill_clock())
+                card_times = (card_start, perf_counter_ns()) if card_start is not None else None
                 review = None
                 if occupied is None:
                     review = review_entry_cards_v1(
@@ -415,6 +420,7 @@ def _drive(
                             event_ms=round(market.market_event_unix * 1000),
                             price=market.mark,
                             receipt=market.mark_acquired_at,
+                            paper_card_times=card_times,
                             paper_episode_id=occupied.episode.identity.episode_id
                             if occupied
                             else None,

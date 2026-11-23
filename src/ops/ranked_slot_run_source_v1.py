@@ -31,6 +31,7 @@ class RankedRunSlotV1:
     instrument: GovernedUniverseInstrumentV1
     universe_id: str
     transition_id: str
+    selection_root: Path | None = None
 
     def reference(self):
         s = self.selection
@@ -144,7 +145,9 @@ def read_ranked_run_slot_v1(config):
         or load_pending_selection_publication_v1(topology)
     ):
         raise ValueError("RANKED_SLOT_ORIGINAL_REFERENCE_MISMATCH")
-    return RankedRunSlotV1(lane, s, rows[0], u.snapshot_id, receipt["transition_id"])
+    return RankedRunSlotV1(
+        lane, s, rows[0], u.snapshot_id, receipt["transition_id"], Path(slot.lane_state_root)
+    )
 
 
 def read_ranked_shadow_profile_v1(path, instrument, session_id):
@@ -277,7 +280,7 @@ def _read_ranked_entry_admission_v1(config, original, *, field, surface):
     ):
         raise ValueError(f"{field.upper()}_POLICY_MISMATCH")
     return RankedRunSlotV1(
-        original.lane_id, s, rows[0], universe.snapshot_id, original.transition_id
+        original.lane_id, s, rows[0], universe.snapshot_id, original.transition_id, lane_root
     )
 
 

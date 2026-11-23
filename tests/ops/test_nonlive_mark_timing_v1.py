@@ -127,6 +127,29 @@ def test_compare_only_uses_available_reference_for_the_matching_consumer(tmp_pat
     assert result["paired_l10_decisions"] == result["paired_l10_decisions_within_300ms"] == 1
     assert result["durations"]["paired_event_to_l10_decision"]["median_ms"] == 146
     assert result["paired_l10_decisions_with_newer_reference"] == 1
+    assert result["paired_confirmed_paper_bookings"] == 0
+    booking = {
+        **row,
+        "calls": [call("paper_reversal_publication", 270, 295, booking_confirmed=True)],
+    }
+    (consumer / "4.json").write_text(json.dumps(booking))
+    result = measurement.compare(ref, tmp_path)
+    assert result["durations"]["paired_event_to_confirmed_paper_booking"]["median_ms"] == 195
+    assert result["paired_confirmed_paper_bookings_within_300ms"] == 1
+    timed = {
+        **row,
+        "host_start_mono_ns": 200_000_000,
+        "host_start_unix_ns": base + 200_000_000,
+        "paper_card_start_mono_ns": 170_000_000,
+        "paper_card_end_mono_ns": 195_000_000,
+        "calls": [],
+    }
+    (consumer / "card.json").write_text(json.dumps(timed))
+    card_result = measurement.compare(ref, tmp_path)
+    assert card_result["durations"]["paper_card_update"]["median_ms"] == 25
+    assert card_result["durations"]["paper_card_return_to_host_start"]["median_ms"] == 5
+    (consumer / "4.json").write_text(json.dumps({**booking, "paper_episode_id": "other-fill"}))
+    assert measurement.compare(ref, tmp_path)["paired_confirmed_paper_bookings"] == 0
     # A returned L10 hold counts. A decision outside the reference window does not.
     extra = {
         **row,

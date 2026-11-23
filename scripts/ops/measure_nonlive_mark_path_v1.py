@@ -270,6 +270,18 @@ def compare(reference, timing_dir):
             )
         )
         start, mono = row["host_start_unix_ns"], row["host_start_mono_ns"]
+        card_start, card_end = (
+            row.get("paper_card_start_mono_ns"),
+            row.get("paper_card_end_mono_ns"),
+        )
+        if (
+            row["mode"] == "PAPER"
+            and card_start is not None
+            and card_end is not None
+            and card_start <= card_end <= mono
+        ):
+            samples["paper_card_update"].append((card_end - card_start) / 1e6)
+            samples["paper_card_return_to_host_start"].append((mono - card_end) / 1e6)
         if status in {"ACTIVE", "HOST_ONLY"} and row.get("host_end_mono_ns") is not None:
             metric = "host_processing" if status == "HOST_ONLY" else "profiled_host_processing"
             samples[metric].append((row["host_end_mono_ns"] - mono) / 1e6)
@@ -322,13 +334,9 @@ def compare(reference, timing_dir):
                 samples["rest_receipt_to_l10_switch"].append(
                     (at_signal - row["receipt_unix_ns"]) / 1e6
                 )
-                switches.setdefault(call["cycle_id"], []).append(
-                    (row.get("clock_host"), call["end_mono_ns"])
-                )
+                switches.setdefault(call["cycle_id"], []).append((row, call))
             if call["stage"] == "paper_reversal_publication":
-                publications.setdefault(call["cycle_id"], []).append(
-                    (row.get("clock_host"), call["end_mono_ns"])
-                )
+                publications.setdefault(call["cycle_id"], []).append((row, call))
             if call["stage"] in {"master_v2", "shadow_master_v2_replay"}:
                 since_host = call["start_mono_ns"] - mono
                 samples["host_start_to_master_v2"].append(since_host / 1e6)
@@ -363,10 +371,31 @@ def compare(reference, timing_dir):
                 )
     for key in switches.keys() & publications.keys():
         if len(switches[key]) == len(publications[key]) == 1:
-            host, signal = switches[key][0]
-            booked_host, booked = publications[key][0]
-            if host and host == booked_host and booked >= signal:
+            original, switch = switches[key][0]
+            publication, booking = publications[key][0]
+            host = original.get("clock_host")
+            signal, booked = switch["end_mono_ns"], booking["end_mono_ns"]
+            if host and host == publication.get("clock_host") and booked >= signal:
                 samples["l10_switch_to_paper_publication"].append((booked - signal) / 1e6)
+                signal_wall = (
+                    original["host_start_unix_ns"] + signal - original["host_start_mono_ns"]
+                )
+                booked_wall = (
+                    publication["host_start_unix_ns"] + booked - publication["host_start_mono_ns"]
+                )
+                if (
+                    booking.get("booking_confirmed") is True
+                    and original.get("paper_episode_id")
+                    and original["paper_episode_id"] == publication.get("paper_episode_id")
+                    and original["event_ms"] * 1_000_000
+                    <= original["receipt_unix_ns"]
+                    <= signal_wall
+                    <= booked_wall
+                    and latest_arrived_mark(host, signal_wall, signal) is not None
+                    and latest_arrived_mark(host, booked_wall, booked) is not None
+                ):
+                    age = (signal_wall - original["event_ms"] * 1_000_000 + booked - signal) / 1e6
+                    samples["paired_event_to_confirmed_paper_booking"].append(age)
     decision_times.sort()
     samples["paired_l10_decision_interval"] = [
         (end - start) / 1e6 for start, end in zip(decision_times, decision_times[1:])
@@ -388,6 +417,10 @@ def compare(reference, timing_dir):
         paired_l10_decisions=len(decision_times),
         paired_l10_decisions_with_nonnegative_age=decisions_nonnegative,
         paired_l10_decisions_within_300ms=decisions_within_target,
+        paired_confirmed_paper_bookings=len(samples["paired_event_to_confirmed_paper_booking"]),
+        paired_confirmed_paper_bookings_within_300ms=sum(
+            age <= 300 for age in samples["paired_event_to_confirmed_paper_booking"]
+        ),
         paired_l10_decisions_with_newer_reference=decisions_with_newer_reference,
         paired_l10_decisions_with_different_reference_price=decisions_with_different_value,
         durations={k: distribution(v) for k, v in samples.items()},
