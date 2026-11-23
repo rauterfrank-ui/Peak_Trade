@@ -11,6 +11,7 @@ from src.risk.decision_bound_model_adapters_v1 import (
     number,
 )
 from .durable_store_v1 import canonical, digest
+from .sizing_binding_v1 import opening_order_side_v1
 
 
 @dataclass(frozen=True)
@@ -101,7 +102,7 @@ class RiskAdmissionBindingV1:
         request = self.request
         if (
             envelope.instrument_id != request.native_id
-            or envelope.side != ("buy" if request.side == "LONG" else "sell")
+            or envelope.side != opening_order_side_v1(request.side).lower()
             or Decimal(envelope.quantity) != Decimal(self.final_quantity)
             or envelope.quantity_unit.upper() not in {"CONTRACT", "CONTRACTS"}
             or envelope.order_type != request.order_type

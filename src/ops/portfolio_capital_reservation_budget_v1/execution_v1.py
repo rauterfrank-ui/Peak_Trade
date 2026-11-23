@@ -11,6 +11,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
+from .sizing_binding_v1 import opening_order_side_v1
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
     assert_envelope_unmodified_v1,
@@ -83,8 +84,8 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False, comm
         envelope.instrument_id == bound["venue_native_id"]
         and Decimal(envelope.quantity) == sizing.decision.final_quantity
         and envelope.quantity_unit.upper() in {"CONTRACT", "CONTRACTS"}
-        and envelope.side == ("buy" if side in {"LONG", "ENTER_LONG"} else "sell")
         and side in {"LONG", "SHORT", "ENTER_LONG", "ENTER_SHORT"}
+        and envelope.side == opening_order_side_v1(side.removeprefix("ENTER_")).lower()
         and envelope.reduce_only is False
     ):
         raise ValueError("EXECUTION_LINK_SIZING_MISMATCH")

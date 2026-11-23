@@ -1414,7 +1414,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "71b2a697e975edd92058effd8360dac94bafc125e3b08624629c95041b21964c"
+      "sha256": "c4e1767c8f2c7b12184192df7aa80ff4e8d8f8a32e939b4966e4081352f3ff2c"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -3334,7 +3334,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "f5fda57113e04feb1cd159bfcb2f883378b8d08bf44410cbd746cf7ee36fe2fc"
+      "sha256": "9658fd66ff972559c9ffced185ef8932dd3417739202cdce79f5fe9ac5fe2913"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3704,7 +3704,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "541244f697b8362cda13cf980ade71ccd450ff3c19dc26c3ab29dd14216de2a1"
+      "sha256": "0b1e29bde37de3c667daa913a5d7d20a75bc451c66f38880bef339ae23fba665"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
@@ -3752,9 +3752,14 @@
       "sha256": "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9"
     },
     {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/restrictive_risk_binding_v1.py",
+      "before_sha256": "6dc6ac382e389bd4a29de72ab25071a165d2a52f971116d248947492e7f12572",
+      "sha256": "b610319eba5d9c6ce580ecd7358db386dcc1b636f62c6e86e66348105faa294d"
+    },
+    {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
       "before_sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28",
-      "sha256": "ee16418b0b9a45d7c66bd446581671b78cd78b6258fbb0bfe2a7e16a0236ef36"
+      "sha256": "e1ea5ecf468af71e1d2f0d76ecde3118f95bc3a5e8a75eb7f8d058f624132150"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py",
@@ -3889,7 +3894,7 @@
     {
       "path": "src/ops/soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "ad1d8fbacb0666a4c052cffe23a65827f2e64c95fc8341385dcda538cc60d14c"
+      "sha256": "fe2e5ed4ac89e7e6a50cbe83271f883dc25be1c8b30f96cacf08c4e1ed555afd"
     },
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
@@ -3939,7 +3944,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "60e306a67456615e11cc4e3e6352954a9fed1a7e9495f76dcc4dd630267006b8"
+      "sha256": "abf395c00824b492d4850d75beb9115a4246549833ccd86ff452984fb99038af"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5459,7 +5464,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "5321c0154dbd501781f4b7dce2edb12178f47e25d5c0b8dea02cd4c2614fb549"
+      "sha256": "1cd89b49e31c4a70ea39171217a7aa93788b20c3b115173134a26fa311845165"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
@@ -5839,7 +5844,7 @@
     {
       "path": "tests/ops/test_soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "f1d2609052f23b8aa1b335b4e98b8f5804d23b845d88e9b82ec4e329a080bfde"
+      "sha256": "dc2177c7f3059ab80f871883b727d9ae1cb7f78bc2880ccd025d8e5847c47a1e"
     },
     {
       "path": "tests/ops/test_system_atlas_impact_v1.py",

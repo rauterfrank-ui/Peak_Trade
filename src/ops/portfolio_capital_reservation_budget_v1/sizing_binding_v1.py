@@ -20,6 +20,15 @@ from src.governance.capital_risk_sizing_v1 import (
 from .durable_store_v1 import digest
 
 
+def opening_order_side_v1(direction: str) -> str:
+    """Native order side for opening the sized direction from a flat futures position."""
+    if direction in ("LONG", "long"):
+        return "BUY"
+    if direction in ("SHORT", "short"):
+        return "SELL"
+    raise ValueError("OPENING_POSITION_DIRECTION_INVALID")
+
+
 def _encode(value):
     return json.loads(json.dumps(asdict(value), default=str, allow_nan=False))
 

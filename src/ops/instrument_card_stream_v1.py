@@ -27,6 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     immutable_json_v1,
 )
 from src.ops.instrument_card_input_observation_v1 import observe_instrument_card_input_v1
+from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import opening_order_side_v1
 from src.ops.instrument_card_budget_assessment_v1 import assess_instrument_budget_v1
 from src.ops.master_v2_double_play_instrument_cards_v1 import MASTER_V2_DOUBLE_PLAY_UNIVERSE
 from src.ops.peak_trade_public_market_data_runtime_v1.constants_v1 import (
@@ -526,6 +527,46 @@ def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None):
     return body
 
 
+def _validate_first_purchase_v1(entry):
+    direction = entry.get("direction")
+    if (
+        entry.get("entry_action", "FIRST_PURCHASE") != "FIRST_PURCHASE"
+        or direction not in {"long", "short"}
+        or entry.get("first_purchase_side") != opening_order_side_v1(direction)
+    ):
+        raise ValueError("CARD_SLOT_ENTRY_BUDGET_BINDING_MISMATCH")
+
+
+def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
+    """Keep the analytical sizing amount on the selected slot for its session."""
+    _validate_first_purchase_v1(entry)
+    if (
+        budget["owner"] != "I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY"
+        or budget["status"] != "BOUND"
+        or budget["currency"] != "USDC"
+        or entry["budget_owner"] != budget["owner"]
+        or not state.session_id
+        or entry["session_id"] != state.session_id
+        or entry["binding_scope"] != "ANALYTICAL_SLOT_ENTRY"
+        or entry["lane_id"] != budget["lane_id"]
+        or budget["lane_id"] != "LANE_5"
+        or entry["instrument_id"] != budget["instrument_id"]
+        or (state.instrument_id, state.venue_instrument_id)
+        != (bound.instrument_id, bound.venue_native_id)
+        or (entry["instrument_id"], entry["venue_native_id"])
+        != (bound.instrument_id, bound.venue_native_id)
+        or (entry["selection_id"], entry["selection_integrity_digest"])
+        != (bound.selection_id, bound.selection_integrity_digest)
+        or entry["budget_source_digest"] != budget["source_digest"]
+        or not Decimal(0) < Decimal(entry["nominal_usdc"]) <= Decimal(budget["available_amount"])
+    ):
+        raise ValueError("CARD_SLOT_ENTRY_BUDGET_BINDING_MISMATCH")
+    prior = state.soph_confirmed_entry_budget
+    if prior is not None and prior != entry:
+        raise ValueError("CARD_SLOT_ENTRY_BUDGET_ALREADY_BOUND")
+    state.soph_confirmed_entry_budget = dict(entry)
+
+
 def shadow_budget_source_v1(state, *, repo):
     """Read the original analytical portfolio and explicit slot test policy.
 
@@ -593,6 +634,9 @@ def shadow_budget_source_v1(state, *, repo):
             policy=policy.to_dict_v1(),
             usd_per_usdc=str(market.usd_per_usdc),
         )
+        if state.soph_confirmed_entry_budget is not None:
+            _validate_first_purchase_v1(state.soph_confirmed_entry_budget)
+            snapshot["confirmed_entry_budget"] = dict(state.soph_confirmed_entry_budget)
         return dict(
             status="BOUND",
             owner="I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY",
@@ -601,7 +645,9 @@ def shadow_budget_source_v1(state, *, repo):
             instrument_id=state.instrument_id,
             observed_unix=now,
             available_amount=str(available),
-            available_for_new_entry="0" if occupied else str(available),
+            available_for_new_entry="0"
+            if occupied or state.soph_confirmed_entry_budget is not None
+            else str(available),
             reserved_amount=None,
             reservation_scope="ANALYTICAL_MODEL_WITHOUT_PORTFOLIO_HOLD",
             original_snapshot=snapshot,

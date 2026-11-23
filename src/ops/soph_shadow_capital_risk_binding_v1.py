@@ -21,6 +21,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
 from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
     load_slot_entry_budget_v1,
 )
+from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import opening_order_side_v1
 from src.ops.single_selected_future_policy_v1.constants_v1 import MAX_POSITIONS_EFFECTIVE
 from src.ops.integrated_offline_economic_evidence_v1.productive_offline_simulated_portfolio_position_truth_v1 import (
     capture_productive_offline_simulated_portfolio_position_observation_v1,
@@ -120,7 +121,9 @@ def _current_binding(*, state, market, budget, now):
         mark_price=market.mark,
         feedback_source_bar_epoch=state.trading_epoch,
     )
-    free = available if position.venue_flat else _ZERO
+    if snapshot.get("confirmed_entry_budget") != state.soph_confirmed_entry_budget:
+        raise ValueError("SOPH_SHADOW_ENTRY_BUDGET_READBACK_MISMATCH")
+    free = available if position.venue_flat and state.soph_confirmed_entry_budget is None else _ZERO
     if (Decimal(budget["available_amount"]), Decimal(budget["available_for_new_entry"])) != (
         available,
         free,
@@ -271,7 +274,7 @@ def soph_shadow_cost_check_v1(
 
 
 def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_exit_distance):
-    """Measure one native minimum for each entry side at the bound decision mark."""
+    """Price the first opening order on the executable book for each direction."""
     event_time = datetime.fromtimestamp(market.market_event_unix, tz=timezone.utc).isoformat()
     if (
         context.instrument_id != market.slot.instrument_id
@@ -282,26 +285,26 @@ def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_e
 
     contract = market.native_contract
     quantity = contract.min_qty * contract.contract_size
-    sides = {}
-    for side, selected in (("BUY", "LONG"), ("SELL", "SHORT")):
+    by_direction = {}
+    for direction in ("long", "short"):
         price = build_mv2_offline_boundary_dynamic_price_context_v1(
             mark_price=Decimal(str(context.mark_price)),
-            selected_side=selected,
+            selected_side=direction.upper(),
             adverse_exit_distance=adverse_exit_distance,
         )
         if price.protective_stop_price is None:
-            sides[side] = {
+            by_direction[direction] = {
                 "measurement_admitted": False,
                 "reason_codes": ["SOPH_SHADOW_PROTECTIVE_STOP_UNAVAILABLE"],
             }
             continue
         distance = abs(price.reference_price - price.protective_stop_price)
-        sides[side] = dict(
+        by_direction[direction] = dict(
             soph_shadow_cost_check_v1(
                 state=state,
                 market=market,
                 budget=budget,
-                side=side,
+                side=opening_order_side_v1(direction),
                 quantity=quantity,
                 stop_distance=distance,
                 entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc,
@@ -322,17 +325,20 @@ def soph_shadow_minimum_lot_cost_v1(*, state, market, budget, context, adverse_e
         configured_entry_cost_limit_usdc=None
         if state.soph_entry_cost_limit_usdc is None
         else str(state.soph_entry_cost_limit_usdc),
-        sides=sides,
+        by_direction=by_direction,
     )
 
 
 def soph_shadow_entry_sizing_boundary_v1(*, state, market, budget, boundary, review):
     """Bind a positive, side-specific mark notional to CRS before its own lot/risk sizing."""
-    side = review["observed_side"]
+    direction = review["market_direction"]
     minimum = review["minimum_lot_cost"]
-    cost = minimum["sides"][side]
+    cost = minimum["by_direction"][direction]
     if not cost["measurement_admitted"]:
         raise ValueError("SOPH_SHADOW_MINIMUM_LOT_REQUIRED")
+    order_side = opening_order_side_v1(direction)
+    if cost["side"] != order_side:
+        raise ValueError("SOPH_SHADOW_ENTRY_BUDGET_BINDING_MISMATCH")
     lot = market.lot_size
     base_per_lot = lot * market.native_contract.contract_size
     mark_per_lot = base_per_lot * market.mark
@@ -354,7 +360,7 @@ def soph_shadow_entry_sizing_boundary_v1(*, state, market, budget, boundary, rev
             state=state,
             market=market,
             budget=budget,
-            side=side,
+            side=order_side,
             quantity=candidate * base_per_lot,
             stop_distance=cost["stop_distance"],
             entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc,
@@ -368,7 +374,8 @@ def soph_shadow_entry_sizing_boundary_v1(*, state, market, budget, boundary, rev
         instrument_id=minimum["instrument_id"],
         venue_native_id=minimum["venue_native_id"],
         lane_id=review["lane_id"],
-        side=side,
+        market_direction=direction,
+        side=order_side,
         market_event_time=minimum["market_event_time"],
         decision_time_unix=review["observed_unix"],
         market_context_digest=minimum["context_digest"],
@@ -386,6 +393,86 @@ def soph_shadow_entry_sizing_boundary_v1(*, state, market, budget, boundary, rev
         scope_capital_limit=str(nominal),
         raw_payload=material,
         state_file_digest_ref=canonical_digest_v1(material),
+    )
+
+
+def soph_shadow_confirm_entry_budget_v1(*, replay, state, market, budget, review, limit, cycle_id):
+    """Bind the original directional assessment and final sizing at decision time."""
+    inter = replay.intermediate
+    sizing = inter.capital_risk_sizing_decision
+    direction = review["market_direction"]
+    order_side = opening_order_side_v1(direction)
+    assessment = inter.bull_assessment if direction == "long" else inter.bear_assessment
+    intent = inter.canonical_order_intent
+    if assessment is None or sizing is None or intent is None or limit is None:
+        raise ValueError("SOPH_SHADOW_ENTRY_BUDGET_ORIGINAL_REQUIRED")
+    qty = sizing.final_quantity
+    nominal = sizing.post_sizing_risk.resulting_notional
+    minimum = review["minimum_lot_cost"]["by_direction"][direction]
+    if (
+        not replay.replay_pass
+        or assessment.status.value != "confirmed"
+        or assessment.side.value != direction
+        or assessment.instrument_id != market.slot.instrument_id
+        or sizing.outcome.value != "PASS"
+        or sizing.selected_side.lower() != direction
+        or intent.side.lower() != direction
+        or intent.intent_action != f"ENTER_{direction.upper()}"
+        or intent.instrument_id != market.slot.instrument_id
+        or intent.decision_id != sizing.canonical_position_sizing.decision_id
+        or intent.quantity != qty
+        or not _ZERO < qty <= Decimal(limit["maximum_contracts"])
+        or limit["market_direction"] != direction
+        or minimum["side"] != order_side
+        or limit["side"] != order_side
+        or limit["budget_source_digest"] != budget["source_digest"]
+        or limit["configured_entry_cost_limit_usdc"]
+        != (
+            None
+            if state.soph_entry_cost_limit_usdc is None
+            else str(state.soph_entry_cost_limit_usdc)
+        )
+        or not minimum["measurement_admitted"]
+        or sizing.pre_sizing_risk.stop_or_risk_distance != Decimal(minimum["stop_distance"])
+        or nominal != qty * market.native_contract.contract_size * market.mark
+    ):
+        raise ValueError("SOPH_SHADOW_ENTRY_BUDGET_BINDING_MISMATCH")
+    cost = soph_shadow_cost_check_v1(
+        state=state,
+        market=market,
+        budget=budget,
+        side=order_side,
+        quantity=qty * market.native_contract.contract_size,
+        stop_distance=sizing.pre_sizing_risk.stop_or_risk_distance,
+        entry_cost_limit_usdc=state.soph_entry_cost_limit_usdc,
+    )
+    if not cost["measurement_admitted"]:
+        return None
+    return dict(
+        status="CONFIRMED",
+        session_id=state.session_id,
+        cycle_id=cycle_id,
+        lane_id=market.slot.lane_id,
+        instrument_id=market.slot.instrument_id,
+        venue_native_id=market.slot.native_id,
+        selection_id=review["binding"]["selection_id"],
+        selection_integrity_digest=review["binding"]["selection_integrity_digest"],
+        direction=direction,
+        entry_action="FIRST_PURCHASE",
+        first_purchase_side=cost["side"],
+        market_event_unix=market.market_event_unix,
+        decision_unix=review["observed_unix"],
+        assessment_id=assessment.assessment_id,
+        decision_id=intent.decision_id,
+        sizing_ref=sizing.quantity_provenance.sizing_ref,
+        budget_source_digest=budget["source_digest"],
+        quantity_contracts=str(qty),
+        nominal_usd=str(nominal),
+        nominal_usdc=str(nominal / market.usd_per_usdc),
+        usd_per_usdc=str(market.usd_per_usdc),
+        cost_allowance_usd=cost["model_costs"]["total_reserve"],
+        budget_owner=budget["owner"],
+        binding_scope="ANALYTICAL_SLOT_ENTRY",
     )
 
 
@@ -410,7 +497,9 @@ def soph_shadow_portfolio_action_v1(*, replay, state, market):
     elif native.quantity_source == "exit_flat":
         action = "NONE"
     projected = replace(
-        native, intent_action=action, intended_quantity=native.intended_quantity * multiplier
+        native,
+        intent_action=action,
+        intended_quantity=native.intended_quantity * multiplier,
     )
     receipt = dict(
         mapper_intent_action=native.intent_action,
