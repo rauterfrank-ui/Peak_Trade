@@ -414,3 +414,96 @@ def test_temporary_denial_has_recovery_action_and_does_not_latch(lane_case, prob
     result = publication.publish_checked_lane_selections_v1(**args)
     assert result.selections[lane].instrument_id == new
     assert not result.resumed
+
+
+def test_fixed_original_ranks_exclude_external_slot_and_fence_reranking(lane_case):
+    root, writer, ranking = lane_case
+    managed = (1, 2, 4, 5)
+
+    def args(snapshot):
+        instruments = [c["canonical_instrument_id"] for c in snapshot["ranked_candidates"][:5]]
+        return dict(
+            membership=_membership(snapshot, instruments),
+            ranking_snapshot=snapshot,
+            topology_state_root_base=root,
+            writer=writer,
+            repository_sha=REPO_SHA,
+            producer_observed_at_unix=OBSERVED_UNIX,
+            fixed_rank_slots=managed,
+        )
+
+    initial = publication.publish_checked_lane_selections_v1(**args(ranking))
+    assert {
+        lane: (s.selected_rank, s.venue_native_id) for lane, s in initial.selections.items()
+    } == {f"LANE_{n}": (n, ranking["ranked_candidates"][n - 1]["venue_native_id"]) for n in managed}
+    assert not (root / "LANE_3").exists()
+    original_files = _files(root)
+    from src.ops.current_mf_n5_occupied_lane_pin_consumer_join_v1.consumer_v1 import (
+        consume_occupied_lane_pins_v1,
+    )
+
+    normal = args(ranking)
+    del normal["fixed_rank_slots"]
+    assert publication.publish_checked_lane_selections_v1(**normal).resumed
+    pins = consume_occupied_lane_pins_v1(
+        membership=normal["membership"],
+        ranking_snapshot=ranking,
+        topology_state_root_base=root,
+        writer=writer,
+    )
+    assert {lane: pin.canonical_instrument_id for lane, pin in pins.items()} == {
+        lane: selection.instrument_id for lane, selection in initial.selections.items()
+    }
+    assert publication.publish_checked_lane_selections_v1(**args(ranking)).resumed
+    new_rank = _rank(
+        ranking, ranking["ranked_candidates"][3]["canonical_instrument_id"], OBSERVED_UNIX + 1
+    )
+    with pytest.raises(
+        RankingDomainOccupiedLaneCap23ProduceJoinError, match="FIXED_BINDINGS_ALREADY"
+    ):
+        publication.publish_checked_lane_selections_v1(**args(new_rank))
+    followup = args(new_rank)
+    followup.pop("fixed_rank_slots")
+    followup["membership"] = _membership(
+        new_rank,
+        list(followup["membership"].ordered_instrument_ids),
+        bootstrap=False,
+        prior=initial.topology.membership_instance_id,
+    )
+    with pytest.raises(ValueError, match="FIXED_BINDINGS_ALREADY"):
+        publication.publish_checked_lane_selections_v1(**followup)
+    assert _files(root) == original_files
+
+
+def test_interrupted_fixed_rank_publication_requires_original_decision(lane_case, monkeypatch):
+    root, writer, ranking = lane_case
+    members = [row["canonical_instrument_id"] for row in ranking["ranked_candidates"][:5]]
+    args = dict(
+        membership=_membership(ranking, members),
+        ranking_snapshot=ranking,
+        topology_state_root_base=root,
+        writer=writer,
+        repository_sha=REPO_SHA,
+        producer_observed_at_unix=OBSERVED_UNIX,
+    )
+    ranks = (1, 2, 4, 5)
+
+    def interrupt(**kwargs):
+        raise RuntimeError("simulated interruption")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(publication, "persist_durable_lane_assignment_v1", interrupt)
+        with pytest.raises(RuntimeError, match="simulated interruption"):
+            publication.publish_checked_lane_selections_v1(**args, fixed_rank_slots=ranks)
+    pending = _files(root)
+    with pytest.raises(RankingDomainOccupiedLaneCap23ProduceJoinError, match="SCOPE_REQUIRED"):
+        publication.publish_checked_lane_selections_v1(**args)
+    with pytest.raises(
+        RankingDomainOccupiedLaneCap23ProduceJoinError, match="PENDING_PUBLICATION_CONFLICT"
+    ):
+        publication.publish_checked_lane_selections_v1(**args, fixed_rank_slots=(1, 2, 3, 4))
+    assert _files(root) == pending
+    restored = publication.publish_checked_lane_selections_v1(**args, fixed_rank_slots=ranks)
+    assert restored.resumed
+    assert {s.selected_rank for s in restored.selections.values()} == set(ranks)
+    assert not (root / "LANE_3").exists()

@@ -79,10 +79,10 @@ def recorded_mark_price_unit_v1(
         scope = recorded_i17_shadow_instrument_v1((native_instrument_id,), binding.get("lane_id"))
         if (
             canonical_instrument_id != scope.canonical_id
-            or metadata.get("instType") != "FUTURES"
+            or metadata.get("instType") != scope.instrument_type
             or metadata.get("ctType") != "linear"
-            or metadata.get("settleCcy") != "USD"
-            or metadata.get("uly") != f"{scope.base}-USD"
+            or metadata.get("settleCcy") != scope.settlement_currency
+            or metadata.get("uly") != f"{scope.base}-{scope.settlement_currency}"
             or binding.get("lane_id") != scope.lane_id
         ):
             raise ValueError(mismatch)
@@ -96,12 +96,12 @@ def recorded_mark_price_unit_v1(
     if (
         mapping.venue_instrument_id != native_instrument_id
         or mapping.instrument_type != metadata["instType"]
-        or mapping.contract_family != "xperp"
+        or mapping.contract_family != scope.contract_family
         or mapping.settlement_currency != metadata["settleCcy"]
         or mapping.mapping_digest != binding.get("mapping_digest")
     ):
         raise ValueError(mismatch)
-    return f"USD per {scope.base}"
+    return f"{scope.settlement_currency} per {scope.base}"
 
 
 def aggregate_recorded_mark_minutes(

@@ -244,6 +244,12 @@ def run_productive_wallclock_session_v1(
             transport is not None and transport.venue_instrument_id != instrument.native_id
         ):
             raise ValueError("I17_SHADOW_INSTRUMENT_SCOPE_MISMATCH")
+        if instrument.instrument_type == "SWAP":
+            from src.ops.ranked_slot_run_source_v1 import read_ranked_shadow_profile_v1
+
+            read_ranked_shadow_profile_v1(
+                instrument_card_selection_root, instrument, prereg.session_id
+            )
         if instrument == SOPH_I17 and (
             instrument_card_ranking_bound is not None or instrument_card_selection_root is not None
         ):
@@ -253,7 +259,7 @@ def run_productive_wallclock_session_v1(
                 raise ValueError("I17_CARD_SOPH_ORIGINAL_LANE_SOURCES_REQUIRED")
         if candidate_observation is not None and instrument != ETH_I17:
             raise ValueError("I17_CANDIDATE_INSTRUMENT_SCOPE_MISMATCH")
-    except ValueError as exc:
+    except (ValueError, OSError, KeyError, TypeError) as exc:
         return ProductiveRunGateResultV1(ok=False, blockers=[str(exc)], notes=notes)
 
     if candidate_observation is not None:

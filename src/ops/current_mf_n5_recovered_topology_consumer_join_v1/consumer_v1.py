@@ -15,6 +15,9 @@ from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.constants_v1 i
     RECOVERY_MODE_RESTART,
 )
 from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1 import (
+    load_completed_fixed_rank_publication_v1,
+    topology_integrity_digest_v1,
+    checkpoint_root_for,
     persist_durable_lane_assignment_v1,
     recover_durable_lane_assignment_v1,
 )
@@ -57,7 +60,16 @@ from src.ops.current_mf_n5_recovered_topology_consumer_join_v1.constants_v1 impo
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
     pin_open_positions_in_membership_v1,
 )
-from src.ops.mf_membership_context_artifact_contract_v1 import MembershipContextArtifactV1
+from src.ops.mf_membership_context_artifact_contract_v1 import (
+    MembershipContextArtifactV1,
+    validate_membership_context_artifact_v1,
+)
+from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
+    ProductiveFuturesRankingSnapshotV1,
+)
+from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
+    validate_ranking_snapshot_bindings_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -127,6 +139,32 @@ def consume_recovered_isolated_lane_topology_v1(
         membership,
         portfolio=observed_portfolio,
     )
+    fixed = load_completed_fixed_rank_publication_v1(topology_state_root_base)
+    if fixed is not None:
+        writer.assert_held()
+        if (
+            Path(writer.state_root).resolve()
+            != checkpoint_root_for(topology_state_root_base).resolve()
+        ):
+            _fail("LANE_FIXED_READER_WRITER_ROOT_MISMATCH", str(writer.state_root))
+        validated = validate_membership_context_artifact_v1(membership)
+        rank = ProductiveFuturesRankingSnapshotV1.from_dict(ranking_snapshot)
+        if not validate_ranking_snapshot_bindings_v1(rank).ok:
+            _fail("LANE_FIXED_RANKING_INVALID", rank.ranking_snapshot_id)
+        recovered = recover_durable_lane_assignment_v1(
+            topology_state_root_base=topology_state_root_base,
+            recovery_mode=RECOVERY_MODE_RESTART,
+            expected_universe_snapshot_id=rank.universe_snapshot_id,
+            expected_ranking_snapshot_id=rank.ranking_snapshot_id,
+            expected_ranking_integrity_digest=rank.integrity_digest,
+        )
+        if (
+            recovered is None
+            or recovered.membership_instance_id != validated.instance_id
+            or topology_integrity_digest_v1(recovered.to_dict()) != fixed["topology_digest"]
+        ):
+            _fail("LANE_FIXED_PUBLICATION_MISMATCH", validated.instance_id)
+        return recovered
     if membership.bootstrap:
         recovered = recover_durable_lane_assignment_v1(
             topology_state_root_base=topology_state_root_base,

@@ -973,11 +973,24 @@ def run_hardened_bridge_cycle_v2(
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
+    ranked_swap_observation=None,
     instrument_card_market: Any = None,
     instrument_card_bound: Any = None,
     instrument_card_budget: Any = None,
     instrument_card_execution_clock: Any = None,
 ) -> dict[str, Any]:
+    if ranked_swap_observation is not None and (
+        instrument_card_market is not None
+        or forced_actionable is not None
+        or offline_candidate is not None
+        or (state.instrument_id, state.venue_instrument_id, mid_price)
+        != (
+            ranked_swap_observation.canonical_id,
+            ranked_swap_observation.native_id,
+            ranked_swap_observation.mark,
+        )
+    ):
+        raise ValueError("I17_SWAP_OBSERVATION_IDENTITY_MISMATCH")
     capital_inputs = {}
     capital_binding = None
     if instrument_card_market is not None:
@@ -1175,6 +1188,8 @@ def run_hardened_bridge_cycle_v2(
             ).encode()
         ).hexdigest()
 
+    if ranked_swap_observation is not None:
+        mark = ranked_swap_observation.mark
     market_context = with_computed_input_digest(
         CanonicalMarketContextV1(
             context_id=f"ctx-{state.instrument_id}-epoch{state.trading_epoch}-hardening-v2",
@@ -1184,7 +1199,9 @@ def run_hardened_bridge_cycle_v2(
             else FuturesMarketType.FUTURES,
             trading_epoch=state.trading_epoch,
             market_event_time=_iso_now(
-                event_ts_unix
+                ranked_swap_observation.market_event_unix
+                if ranked_swap_observation is not None
+                else event_ts_unix
                 if instrument_card_market is None
                 else instrument_card_market.market_event_unix
             ),
@@ -1192,19 +1209,27 @@ def run_hardened_bridge_cycle_v2(
             bar_interval="tick" if instrument_card_market is None else "1m",
             bar_finality_status=BarFinalityStatus.FINALIZED,
             mark_price=mark,
-            index_price=mark
+            index_price=ranked_swap_observation.index
+            if ranked_swap_observation is not None
+            else mark
             if instrument_card_market is None
             else float(instrument_card_market.index_payload["data"][0]["idxPx"]),
             best_bid=basis.best_bid,
             best_ask=basis.best_ask,
             spread=basis.spread,
-            volume=1_000_000.0
+            volume=ranked_swap_observation.volume_contracts
+            if ranked_swap_observation is not None
+            else 1_000_000.0
             if instrument_card_market is None
             else float(instrument_card_market.volume_contracts),
-            open_interest=50_000_000.0
+            open_interest=ranked_swap_observation.oi_contracts
+            if ranked_swap_observation is not None
+            else 50_000_000.0
             if instrument_card_market is None
             else float(instrument_card_market.oi_contracts),
-            funding_rate=0.0001
+            funding_rate=ranked_swap_observation.funding_rate
+            if ranked_swap_observation is not None
+            else 0.0001
             if instrument_card_market is None
             else float(instrument_card_market.funding_rate),
             # Hot-path closure: never seed CMC from competing feature_regime proxy
@@ -1358,7 +1383,9 @@ def run_hardened_bridge_cycle_v2(
     _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
         evaluate_host_exit_policy_producers_v1(
             state.exit_policy_binding,
-            mark_price=float(features.mark_price or basis.mid_price)
+            mark_price=ranked_swap_observation.mark
+            if ranked_swap_observation is not None
+            else float(features.mark_price or basis.mid_price)
             if instrument_card_market is None
             else mark,
             event_ts_unix=float(event_ts_unix),
@@ -1690,6 +1717,17 @@ def run_hardened_bridge_cycle_v2(
         )
         quantity_projection["portfolio_quantity_base"] = "0"
 
+    if ranked_swap_observation is not None:
+        # Retain the original decision for DDO. This observation lane has no funded position.
+        intended_dict.update(
+            intended_side="HOLD",
+            intended_quantity="0",
+            intent_action="NONE",
+            quantity_source="ranked_swap_shadow_no_fill",
+            reason_codes=[*intended_dict["reason_codes"], "SHADOW_OBSERVATION_NO_FILL"],
+        )
+        if quantity_projection is not None:
+            quantity_projection["portfolio_quantity_base"] = "0"
     before_hash = portfolio_state_hash(state.portfolio.snapshot())
     fill_id = None
     fill_dict = None

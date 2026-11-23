@@ -35,6 +35,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     NATIVE_ID,
     PAPER_FEE_RATE,
     UP_PAPER_SLOT,
+    XperpPaperSlotV1,
     ZKP_PAPER_SLOT,
     bind_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
@@ -715,7 +716,16 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
         )
 
 
-@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
+@pytest.mark.parametrize(
+    "slot",
+    [
+        ZKP_PAPER_SLOT,
+        UP_PAPER_SLOT,
+        IRYS_PAPER_SLOT,
+        XperpPaperSlotV1("LANE_2", "UP", "310919"),
+        XperpPaperSlotV1("LANE_5", "OL", "310912"),
+    ],
+)
 def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     tmp_path, monkeypatch, slot
 ):
@@ -744,6 +754,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     monkeypatch.setattr(paper_cli, "monotonic", lambda: elapsed)
     monkeypatch.setattr(paper_cli, "time", lambda: latest.observed_unix + 0.01)
     monkeypatch.setattr(paper_cli, "sleep", sleep)
+    ranked = slot not in (ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT)
     assignment = BoundInstrumentV1(
         instrument_id=slot.instrument_id,
         venue_native_id=slot.native_id,
@@ -752,8 +763,57 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         ranking_snapshot_id="original-ranking",
         ranking_integrity_digest="2" * 64,
         universe_snapshot_id="original-universe",
-        selection_state="SELECTED",
+        selection_state="SELECTED_ACTIVE" if ranked else "SELECTED",
     )
+    config = None
+    if ranked:
+        from types import SimpleNamespace
+        from src.ops import ranked_slot_run_source_v1 as owner
+
+        start = datetime.fromtimestamp(initial.observed_unix, timezone.utc)
+        selected = SimpleNamespace(
+            instrument_id=slot.instrument_id,
+            venue_native_id=slot.native_id,
+            selected_rank=int(slot.lane_id[-1]),
+            selection_id=assignment.selection_id,
+            integrity_digest=assignment.selection_integrity_digest,
+            ranking_snapshot_id=assignment.ranking_snapshot_id,
+            ranking_integrity_digest=assignment.ranking_integrity_digest,
+            state=assignment.selection_state,
+            valid_from=start.isoformat(),
+            valid_until=(start + timedelta(hours=1)).isoformat(),
+        )
+        original = owner.RankedRunSlotV1(
+            slot.lane_id,
+            selected,
+            SimpleNamespace(
+                instrument_type="FUTURES",
+                contract_type="linear_dated_future",
+                quote_currency="USD",
+                settlement_currency="USD",
+                base_currency=slot.base_currency,
+                venue_native_inst_id=slot.native_id,
+                canonical_instrument_id=slot.instrument_id,
+            ),
+            assignment.universe_snapshot_id,
+            "fixture-publication",
+        )
+        config = dict(
+            lane=slot.lane_id,
+            surface="PAPER_EXCHANGE",
+            authority="NONE",
+            session_id=root.name,
+            canonical_instrument_id=slot.instrument_id,
+            native_instrument_id=slot.native_id,
+            n5_source=dict(
+                transition_id=original.transition_id,
+                selection_id=assignment.selection_id,
+                selection_digest=assignment.selection_integrity_digest,
+            ),
+        )
+        monkeypatch.setattr(owner, "read_ranked_run_slot_v1", lambda config: original)
+        with pytest.raises(ValueError, match="OUTSIDE_SELECTION_WINDOW"):
+            original.require_current_v1((start + timedelta(hours=2)).timestamp())
     result = paper_cli._run(
         root,
         initial,
@@ -764,6 +824,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         revision="f" * 40,
         capture=capture,
         card_assignment=assignment,
+        ranked_config=config,
     )
     assert result["status"] == "WINDOW_ENDED_OCCUPIED", result
     cards = root / "instrument-cards" / slot.lane_id
@@ -865,6 +926,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     )
     scope = research.ResearchSlotScopeV1(
         lane_id=slot.lane_id,
+        n5_selection_digest=assignment.selection_integrity_digest if ranked else None,
         surface="PAPER_EXCHANGE",
         session_id=root.name,
         instrument_id=slot.instrument_id,
@@ -895,6 +957,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     )
     other = IRYS_PAPER_SLOT if slot == ZKP_PAPER_SLOT else ZKP_PAPER_SLOT
     for name, update in (
+        *([("selection", {"n5_selection_digest": "0" * 64})] if ranked else []),
         ("lane", {"lane_id": other.lane_id}),
         ("instrument", {"venue_native_id": other.native_id}),
         ("window", {"starts_at": scope.starts_at - timedelta(hours=2), "ends_at": scope.starts_at}),

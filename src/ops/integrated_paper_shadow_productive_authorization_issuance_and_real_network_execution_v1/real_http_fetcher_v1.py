@@ -150,7 +150,9 @@ def make_real_eea_public_md_fetcher_v1(
         path = parsed.path or ""
         if host != CANONICAL_HOST:
             raise NetworkBoundaryError(f"HOST_FORBIDDEN:{host}")
-        if path not in allowed_paths_v1(candidate_last=candidate_last):
+        if path not in allowed_paths_v1(
+            candidate_last=candidate_last, venue_instrument_id=venue_instrument_id
+        ):
             raise NetworkBoundaryError(f"PATH_NOT_ALLOWED:{path}")
         if resolve_private_check and _is_private_or_loopback(host):
             raise NetworkBoundaryError("PRIVATE_OR_LOOPBACK_TARGET_FORBIDDEN")

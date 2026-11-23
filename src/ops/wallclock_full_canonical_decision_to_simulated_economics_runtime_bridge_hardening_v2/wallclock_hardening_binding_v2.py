@@ -73,6 +73,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     ddo_capture_binding: DdoCaptureBindingV0 | None = None,
     ddo_repository_sha: str | None = None,
     offline_candidate: I17OfflineCandidateInputV2 | None = None,
+    ranked_swap_observation=None,
     instrument_card_market: Any = None,
     instrument_card_bound: Any = None,
     instrument_card_budget: Any = None,
@@ -96,18 +97,15 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
         mid = float(ticks[-1].mid_price)
         event_ts = float(ticks[-1].event_ts_unix)
         receive_ts = float(ticks[-1].receive_ts_unix)
+    quote_market = ranked_swap_observation or instrument_card_market
     basis = build_explicit_mid_price_basis_v2(
         mid_price=mid,
         event_ts_unix=event_ts,
         receive_ts_unix=receive_ts,
         price_field=price_field,
-        quote_source="ticker" if instrument_card_market is None else "public_book",
-        bid_px=None
-        if instrument_card_market is None
-        else float(instrument_card_market.book.bids[0][0]),
-        ask_px=None
-        if instrument_card_market is None
-        else float(instrument_card_market.book.asks[0][0]),
+        quote_source="ticker" if quote_market is None else "public_book",
+        bid_px=None if quote_market is None else float(quote_market.book.bids[0][0]),
+        ask_px=None if quote_market is None else float(quote_market.book.asks[0][0]),
     )
 
     # Productive typed-vol edge: finalize PT1M mark samples from distinct observations.
@@ -150,6 +148,7 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
             ddo_capture_binding=ddo_capture_binding,
             ddo_repository_sha=ddo_repository_sha,
             offline_candidate=offline_candidate,
+            ranked_swap_observation=ranked_swap_observation,
             instrument_card_market=instrument_card_market,
             instrument_card_bound=instrument_card_bound,
             instrument_card_budget=instrument_card_budget,

@@ -176,7 +176,9 @@ class EeaPublicMdTransportV1:
         self.events.append({"event": "transport_closed"})
 
     def _build_url(self, path: str, params: Mapping[str, str]) -> str:
-        if path not in allowed_paths_v1(candidate_last=self.candidate_last):
+        if path not in allowed_paths_v1(
+            candidate_last=self.candidate_last, venue_instrument_id=self.venue_instrument_id
+        ):
             raise NetworkBoundaryError(f"PATH_NOT_ALLOWED:{path}")
         query = {str(k): str(v) for k, v in params.items()}
         url = f"https://{CANONICAL_HOST}{path}"

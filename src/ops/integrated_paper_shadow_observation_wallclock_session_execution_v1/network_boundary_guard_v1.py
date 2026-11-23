@@ -9,6 +9,8 @@ from typing import Any, Mapping, Optional
 from urllib.parse import parse_qs, urlparse
 
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    RANKED_SWAP_SCOPES,
+    swap_queries_v1,
     require_i17_shadow_instrument_v1,
 )
 
@@ -107,7 +109,14 @@ def assert_method_allowed_v1(method: str) -> list[str]:
     return []
 
 
-def allowed_paths_v1(*, candidate_last: bool = False) -> frozenset[str]:
+def allowed_paths_v1(
+    *, candidate_last: bool = False, venue_instrument_id: str = CANONICAL_INSTRUMENT_ID
+) -> frozenset[str]:
+    for scope in RANKED_SWAP_SCOPES:
+        if scope.native_id == venue_instrument_id:
+            return ALLOWED_PATHS | {
+                path for path, _ in swap_queries_v1(scope.native_id, f"{scope.base}-USDT").values()
+            }
     return ALLOWED_PATHS | {CANDIDATE_LAST_CANDLE_PATH} if candidate_last else ALLOWED_PATHS
 
 
@@ -116,8 +125,10 @@ def assert_url_allowed_v1(
 ) -> list[str]:
     blockers: list[str] = []
     try:
-        require_i17_shadow_instrument_v1((venue_instrument_id,))
+        instrument = require_i17_shadow_instrument_v1((venue_instrument_id,))
+        instrument_type = instrument.instrument_type
     except ValueError as exc:
+        instrument_type = None
         blockers.append(str(exc))
     parsed = urlparse(str(url or ""))
     scheme = (parsed.scheme or "").lower()
@@ -133,7 +144,7 @@ def assert_url_allowed_v1(
     if parsed.port not in (None, 443):
         blockers.append(f"PORT_FORBIDDEN:{parsed.port}")
     path = parsed.path or ""
-    paths = allowed_paths_v1(candidate_last=candidate_last)
+    paths = allowed_paths_v1(candidate_last=candidate_last, venue_instrument_id=venue_instrument_id)
     if path not in paths:
         blockers.append(f"PATH_NOT_ALLOWED:{path}")
     path_l = path.lower()
@@ -164,6 +175,20 @@ def assert_url_allowed_v1(
         ):
             blockers.append("I17_CANDIDATE_LAST_QUERY_FORBIDDEN")
         return sorted(set(blockers))
+    if instrument_type == "SWAP":
+        expected = {
+            path: {k: [v] for k, v in query.items()}
+            for path, query in swap_queries_v1(
+                instrument.native_id, f"{instrument.base}-USDT"
+            ).values()
+        }
+        expected["/api/v5/public/instruments"] = {
+            "instType": ["SWAP"],
+            "instId": [instrument.native_id],
+        }
+        if expected.get(path) != qs:
+            blockers.append("I17_SWAP_EXACT_PUBLIC_QUERY_REQUIRED")
+        return sorted(set(blockers))
     for key, values in qs.items():
         kl = key.lower()
         if kl not in _ALLOWED_QUERY_KEYS:
@@ -176,7 +201,7 @@ def assert_url_allowed_v1(
                     blockers.append(f"INSTRUMENT_QUERY_FORBIDDEN:{v}")
         if kl == "insttype":
             for v in values:
-                if str(v).upper() != "FUTURES":
+                if str(v).upper() != instrument_type:
                     blockers.append(f"INSTTYPE_QUERY_FORBIDDEN:{v}")
     return sorted(set(blockers))
 
@@ -212,7 +237,9 @@ def validate_request_boundary_v1(
     return NetworkBoundaryAttestationV1(
         ok=ok,
         blockers=sorted(set(blockers)),
-        allowed_paths=sorted(allowed_paths_v1(candidate_last=candidate_last)),
+        allowed_paths=sorted(
+            allowed_paths_v1(candidate_last=candidate_last, venue_instrument_id=venue_instrument_id)
+        ),
         notes=[
             f"GUARD_ID={NETWORK_BOUNDARY_GUARD_ID}",
             "TLS_VERIFY_REQUIRED",

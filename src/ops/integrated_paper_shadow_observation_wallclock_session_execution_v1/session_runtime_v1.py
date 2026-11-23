@@ -607,6 +607,19 @@ class WallclockSessionRuntimeV1:
             entry_limit = parse_soph_entry_cost_limit_usdc_v1(
                 self.config.soph_entry_cost_limit_usdc
             )
+            ranked_slot = None
+            if instrument.instrument_type == "SWAP":
+                from src.ops.ranked_slot_run_source_v1 import read_ranked_shadow_profile_v1
+
+                ranked_slot = read_ranked_shadow_profile_v1(
+                    self.instrument_card_selection_root, instrument, session_id
+                )
+                if (
+                    entry_limit is not None
+                    or self.instrument_card_source is not None
+                    or self.instrument_card_ranking_bound is not None
+                ):
+                    raise ValueError("I17_SWAP_OBSERVATION_SCOPE_MISMATCH")
             slot_assignment = None
             if isinstance(self.instrument_card_selection_root, SophSlotSourcesV1):
                 if instrument != SOPH_I17:
@@ -739,7 +752,11 @@ class WallclockSessionRuntimeV1:
                 canonical_instrument_id=instrument.canonical_id,
                 i17_scope=instrument,
             )
-            if instrument != ETH_I17:
+            if ranked_slot is not None:
+                self.bridge_state = HardenedBridgeSessionStateV2(
+                    instrument_id=instrument.canonical_id, venue_instrument_id=instrument.native_id
+                )
+            elif instrument != ETH_I17:
                 self.bridge_state = HardenedBridgeSessionStateV2(
                     instrument_id=self.venue_mapping.canonical_instrument_id,
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
@@ -805,6 +822,7 @@ class WallclockSessionRuntimeV1:
                     "network_scope": NETWORK_SCOPE,
                     "session_execution_scope": SESSION_EXECUTION_SCOPE,
                     **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
+                    **({"n5_assignment": ranked_slot.reference()} if ranked_slot else {}),
                     **provenance,
                 },
             )
@@ -815,6 +833,7 @@ class WallclockSessionRuntimeV1:
                     "package_marker": PACKAGE_MARKER,
                     "session_id": session_id,
                     **({"lane_id": instrument.lane_id} if instrument.lane_id else {}),
+                    **({"n5_assignment": ranked_slot.reference()} if ranked_slot else {}),
                     "wallclock_session_started": True,
                     "authority_effect": AUTHORITY_EFFECT_NONE,
                     "execution_class": EXECUTION_CLASS_ANALYTICAL,
@@ -914,7 +933,42 @@ class WallclockSessionRuntimeV1:
                             transport=self.transport, clock=self.clock_wall
                         )
                     card_market = None
+                    swap_market = None
                     normalized_transport = self.transport
+                    if ranked_slot is not None:
+                        from uuid import uuid4
+                        from src.ops.ranked_swap_shadow_observation_v1 import (
+                            collect_ranked_swap_observation_v1,
+                            invalid_swap_observation_v1,
+                        )
+
+                        from decimal import DecimalException
+
+                        try:
+                            swap_market = collect_ranked_swap_observation_v1(
+                                ranked_slot,
+                                self.evidence_root.parent
+                                / "swap-public-facts"
+                                / session_id
+                                / uuid4().hex,
+                                self.clock_wall,
+                                transport=self.transport,
+                            )
+                        except NetworkBoundaryError:
+                            raise
+                        except OSError as exc:
+                            raise WallclockEvidenceError(
+                                "I17_SWAP_PUBLIC_FACTS_WRITE_FAILED"
+                            ) from exc
+                        except (
+                            ValueError,
+                            KeyError,
+                            TypeError,
+                            IndexError,
+                            DecimalException,
+                        ) as exc:
+                            raise invalid_swap_observation_v1(exc) from exc
+                        normalized_transport = swap_market
                     if self.instrument_card_stream is not None:
                         if self.instrument_card_source is not None:
                             from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
@@ -989,7 +1043,9 @@ class WallclockSessionRuntimeV1:
                     normalized = fetch_normalized_public_market_data_v1(
                         transport=normalized_transport,
                         mapping=self.venue_mapping,
-                        receive_ts_unix=self.clock_wall,
+                        receive_ts_unix=swap_market.mark_acquired_unix
+                        if swap_market
+                        else self.clock_wall,
                         max_stale_seconds=float(self.config.max_stale_seconds),
                         include_ticker=True,
                     )
@@ -1032,6 +1088,7 @@ class WallclockSessionRuntimeV1:
                                         now_mono = self.clock_mono()
                         if hasattr(stale_ctrl, "assert_no_decision_injection_v1"):
                             stale_ctrl.assert_no_decision_injection_v1()
+                    quote_market = swap_market or card_market
                     tick = ObservationMarketTickV1(
                         instrument_id=normalized.canonical_instrument_id,
                         venue=VENUE_OKX,
@@ -1056,18 +1113,32 @@ class WallclockSessionRuntimeV1:
                             "venue_instrument_id": normalized.venue_instrument_id,
                             "mark_price_endpoint": normalized.mark_price_endpoint,
                             "mark_price_field": normalized.mark_price_field,
+                            **(
+                                {
+                                    "swap_public_facts": {
+                                        "relative_receipt": str(
+                                            swap_market.receipt_path.relative_to(
+                                                self.evidence_root.parent
+                                            )
+                                        ),
+                                        "source_sha256": swap_market.source_hashes,
+                                    }
+                                }
+                                if swap_market
+                                else {}
+                            ),
                             "price_basis_quote": (
                                 None
-                                if card_market is None
+                                if quote_market is None
                                 else {
-                                    "bid_px": float(card_market.book.bids[0][0]),
-                                    "ask_px": float(card_market.book.asks[0][0]),
+                                    "bid_px": float(quote_market.book.bids[0][0]),
+                                    "ask_px": float(quote_market.book.asks[0][0]),
                                     "endpoint": "/api/v5/market/books",
-                                    "body_sha256": card_market.source_hashes["book"],
-                                    "event_ts_unix": card_market.book_event_unix,
-                                    "acquired_at_utc": card_market.source_observations[
-                                        "book"
-                                    ].acquired_at_utc,
+                                    "body_sha256": quote_market.source_hashes["book"],
+                                    "event_ts_unix": quote_market.book_event_unix,
+                                    "acquired_at_utc": swap_market.book_acquired_at_utc
+                                    if swap_market
+                                    else quote_market.source_observations["book"].acquired_at_utc,
                                 }
                             ),
                             "mapping_digest": normalized.mapping_digest,
@@ -1148,6 +1219,11 @@ class WallclockSessionRuntimeV1:
                                     session_id=session_id,
                                     ddo_capture_binding=ddo_capture_binding,
                                     ddo_repository_sha=self._expected_repository_sha,
+                                    **(
+                                        {"ranked_swap_observation": swap_market}
+                                        if swap_market
+                                        else {}
+                                    ),
                                     **(
                                         {
                                             "instrument_card_market": card_market,
