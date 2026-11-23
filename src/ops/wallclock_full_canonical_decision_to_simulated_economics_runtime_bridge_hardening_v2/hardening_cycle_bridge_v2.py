@@ -592,6 +592,8 @@ class HardenedBridgeSessionStateV2:
 
     soph_entry_cost_limit_usdc: Decimal | None = None
     soph_confirmed_entry_budget: dict[str, Any] | None = None
+    soph_selection_root: Path | None = None
+    soph_selection_repository_sha: str | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -1377,6 +1379,11 @@ def run_hardened_bridge_cycle_v2(
             data_integrity_trusted=True,
             adverse_exit_distance=cycle_adverse_exit_distance,
             separate_scope_adverse_exit=False,
+            # An occupied SOPH card uses the rotation-only time exit. This shadow
+            # host has no slot-bound rotation nomination or replacement evidence.
+            rotation_time_exit={"allowed": False, "reason": "ROTATION_CLOSE_SOURCES_MISSING"}
+            if instrument_card_market is not None and has_open_position
+            else None,
             profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             killstate_active=bool(state.killstate_active),
             killstate_trigger=str(state.killstate_trigger or ""),
@@ -1618,6 +1625,7 @@ def run_hardened_bridge_cycle_v2(
         intended_dict["intended_quantity_unit"] = instrument_card_market.slot.base_currency
 
     confirmed_budget = state.soph_confirmed_entry_budget
+    first_purchase = None
     if (
         card_acceptance is not None
         and observation.venue_flat
@@ -1643,6 +1651,25 @@ def run_hardened_bridge_cycle_v2(
                 limit=capital_binding["flat_entry_cost_bound"],
                 cycle_id=cycle_id,
             )
+            if confirmed_budget is not None:
+                from src.ops.instrument_card_stream_v1 import bind_shadow_slot_entry_budget_v1
+                from src.ops.soph_shadow_first_purchase_v1 import (
+                    prepare_soph_shadow_first_purchase_v1,
+                )
+
+                bind_shadow_slot_entry_budget_v1(
+                    state=state, bound=bound, budget=instrument_card_budget, entry=confirmed_budget
+                )
+                first_purchase = prepare_soph_shadow_first_purchase_v1(
+                    state=state,
+                    replay=replay,
+                    bound=bound,
+                    market=instrument_card_market,
+                    budget=instrument_card_budget,
+                    cycle_id=cycle_id,
+                    repository_sha=state.soph_selection_repository_sha,
+                    clock=instrument_card_execution_clock,
+                )
         # A flat card confirms a market direction and its budget. Its native
         # entry intent is evidence for sizing, never a portfolio transaction.
         intended_dict.update(
@@ -1665,6 +1692,17 @@ def run_hardened_bridge_cycle_v2(
     side = str(intended_dict["intended_side"])
     qty = Decimal(str(intended_dict["intended_quantity"]))
     card_execution_check = None
+    if first_purchase is not None and first_purchase["status"] == "PLAN_BOUND":
+        side = first_purchase["envelope"]["side"].upper()
+        qty = Decimal(first_purchase["quantity_base"])
+        card_execution_check = first_purchase["execution_check"]
+        intended_dict.update(
+            intended_side=side,
+            intended_quantity=str(qty),
+            intent_action="FIRST_PURCHASE",
+            quantity_source="bound_simulated_first_purchase_plan",
+        )
+        quantity_projection["portfolio_quantity_base"] = str(qty)
     new_exposure = False
     if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0:
         position = (
@@ -1676,7 +1714,7 @@ def run_hardened_bridge_cycle_v2(
         current_base = Decimal(str(position.get("quantity", "0")))
         target_base = current_base + (qty if side == "BUY" else -qty)
         new_exposure = abs(target_base) > abs(current_base) or current_base * target_base < 0
-    if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0 and new_exposure:
+    if new_exposure and card_execution_check is None:
         # This legacy analytical portfolio counts base units, not native
         # contracts. Never reinterpret its amount as a native order quantity.
         # The original replay decision remains intact; incompatible analytical
@@ -1793,18 +1831,12 @@ def run_hardened_bridge_cycle_v2(
             fill_dict["quantity_contracts"] = str(
                 qty / instrument_card_market.native_contract.contract_size
             )
+        if first_purchase is not None and first_purchase["status"] == "PLAN_BOUND":
+            fill_dict["opening_envelope_digest"] = first_purchase["envelope"]["envelope_digest"]
+            first_purchase.update(status="FILLED", fill_id=fill_id)
         state.fill_ledger.append(dict(fill_dict))
 
     if card_acceptance is not None:
-        if state.soph_confirmed_entry_budget is None and confirmed_budget is not None:
-            from src.ops.instrument_card_stream_v1 import bind_shadow_slot_entry_budget_v1
-
-            bind_shadow_slot_entry_budget_v1(
-                state=state,
-                bound=instrument_card_bound,
-                budget=instrument_card_budget,
-                entry=confirmed_budget,
-            )
         if card_acceptance.strategy_advance_allowed:
             state.card_observations = commit_observation_acceptance_v1(
                 current_state=card_acceptance.state_before, result=card_acceptance
@@ -1933,6 +1965,7 @@ def run_hardened_bridge_cycle_v2(
                 "soph_shadow_capital_binding": capital_binding,
                 "instrument_card_quantity_projection": quantity_projection,
                 "instrument_card_entry_review": card_review,
+                "soph_simulated_first_purchase": first_purchase,
                 "soph_confirmed_entry_budget": None
                 if confirmed_budget is None
                 else dict(confirmed_budget),

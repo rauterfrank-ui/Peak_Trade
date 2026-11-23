@@ -537,8 +537,8 @@ def _validate_first_purchase_v1(entry):
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_BINDING_MISMATCH")
 
 
-def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
-    """Keep the analytical sizing amount on the selected slot for its session."""
+def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
+    """Validate the session, slot, selection and budget represented by a receipt."""
     _validate_first_purchase_v1(entry)
     if (
         budget["owner"] != "I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY"
@@ -561,6 +561,11 @@ def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
         or not Decimal(0) < Decimal(entry["nominal_usdc"]) <= Decimal(budget["available_amount"])
     ):
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_BINDING_MISMATCH")
+
+
+def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
+    """Keep the analytical sizing amount on the selected slot for its session."""
+    validate_shadow_slot_entry_budget_v1(state=state, bound=bound, budget=budget, entry=entry)
     prior = state.soph_confirmed_entry_budget
     if prior is not None and prior != entry:
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_ALREADY_BOUND")

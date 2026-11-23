@@ -140,6 +140,15 @@ def verify_full_economic_reconstruction_v2(
             blockers.append(f"MISSING_PORTFOLIO_AFTER_HASH_{i}")
 
         action = cycle.get("intended_action") or {}
+        if (
+            cycle.get("soph_simulated_first_purchase") is not None
+            or action.get("intent_action") == "FIRST_PURCHASE"
+            or (cycle.get("fill") or {}).get("opening_envelope_digest")
+        ):
+            from src.ops.soph_shadow_first_purchase_v1 import verify_soph_shadow_purchase_receipt_v1
+
+            if not verify_soph_shadow_purchase_receipt_v1(cycle):
+                blockers.append(f"SOPH_FIRST_PURCHASE_LINKAGE_BREAK_{i}")
         if action.get("decision_id") != decision_id:
             blockers.append(f"DECISION_ID_LINKAGE_BREAK_{i}")
         if action.get("risk_decision_id") != risk_id:

@@ -118,7 +118,9 @@ def _capture(policy, *, label, output=None, bound=None, slot=ZKP_PAPER_SLOT):
     return market
 
 
-def _read_cap24_binding(root: Path) -> BoundInstrumentV1:
+def _read_cap24_binding(
+    root: Path, *, entry_repository_sha: str | None = None
+) -> BoundInstrumentV1:
     manifest = (root / MANIFEST_FILENAME).read_text()
     raw = (root / EVIDENCE_FILENAME).read_bytes()
     if (
@@ -135,6 +137,29 @@ def _read_cap24_binding(root: Path) -> BoundInstrumentV1:
     ):
         raise ValueError("PAPER_LIQUIDITY_CAP24_BOUND_EVIDENCE_REQUIRED")
     bound = BoundInstrumentV1(**record["bound"])
+    if entry_repository_sha is not None and (
+        record.get("repository_sha") != entry_repository_sha
+        or not all(
+            record.get(k) is True
+            for k in (
+                "alpha_enabled",
+                "new_alpha_allowed",
+                "reconciliation_before_alpha",
+                "reconciliation_alpha_enabled",
+            )
+        )
+        or bound.selection_state != "SELECTED_ACTIVE"
+        or any(
+            record.get(k) != getattr(bound, k)
+            for k in (
+                "ranking_snapshot_id",
+                "ranking_integrity_digest",
+                "universe_snapshot_id",
+                "selection_state",
+            )
+        )
+    ):
+        raise ValueError("I17_CARD_CAP24_ENTRY_EVIDENCE_MISMATCH")
     for field in ("instrument_id", "venue_native_id", "selection_id", "selection_integrity_digest"):
         if not getattr(bound, field) or getattr(bound, field) != record[field]:
             raise ValueError("PAPER_LIQUIDITY_CAP24_IDENTITY_MISMATCH")

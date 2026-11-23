@@ -517,6 +517,9 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert all(c["portfolio_snapshot"]["state"]["positions"] == {} for c in cycles)
     assert entry["intended_action"]["intended_side"] == "HOLD"
     assert entry["intended_action"]["intended_quantity"] == "0"
+    assert entry["soph_simulated_first_purchase"]["reason_codes"] == [
+        "SOPH_FIRST_PURCHASE_RANKING_UNIVERSE_BINDING_REQUIRED"
+    ]
     assert entry_idx < len(cycles) - 1
     for c in cycles[entry_idx + 1 :]:
         inp = prepared[c["cycle_id"]]
@@ -532,6 +535,129 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
             assert row["budget"]["reserved_amount"] is None
     assert json.loads((root / "full_economic_reconstruction_verifier.json").read_bytes())["ok"]
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
+
+
+@pytest.mark.parametrize(
+    ("direction", "mismatch"),
+    [
+        (1, None),
+        (-1, None),
+        (1, "ranking_integrity_digest"),
+        (-1, "universe_snapshot_id"),
+        (1, "expired"),
+    ],
+)
+def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
+    tmp_path, monkeypatch, run_two_hour_shadow, direction, mismatch
+):
+    from tests.ops import (
+        test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 as sources,
+    )
+    from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        SHA,
+    )
+
+    market = _market(slot=SOPH)
+    instrument = dict(
+        market.source_observations["instrument"].payload["data"][0],
+        baseCcy="SOPH",
+        quoteCcy="USD",
+        expTime="1946966400000",
+        uly="SOPH-USD",
+    )
+    with monkeypatch.context() as patch:
+        published = market.observed_unix - (86400 if mismatch == "expired" else 0)
+        patch.setattr(sources.time, "time", lambda: published)
+        chain = sources._build_fresh_chain(
+            tmp_path / "build", repository_sha=SHA, instrument_rows=[instrument]
+        )
+    root = sources._materialize_productivity_root(tmp_path, chain)
+    handoff = sources.acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+        productivity_root=root,
+        repository_sha=SHA,
+        binding_epoch=chain["binding_epoch"],
+        observed_portfolio=sources._empty_portfolio(),
+        observation_now_unix=published - 30,
+    )
+
+    def capture(*, slot, capture_id, clock):
+        step = round((clock() - market.observed_unix) / 2)
+        mark = (D("0.0335") * (1 + direction * D(step) / (1000 + step))).quantize(D("0.00001"))
+        return _market(
+            step,
+            slot=slot,
+            price=mark,
+            direction=direction,
+            funding_cut=(int(clock()) // 3600 + 1) * 3600,
+        )
+
+    ranked = handoff.bound_instrument
+    if mismatch and mismatch != "expired":
+        ranked = replace(ranked, **{mismatch: "f" * 64})
+    evidence, result, _ = run_two_hour_shadow(
+        flat=False,
+        instrument=SOPH_I17,
+        card_source=capture,
+        start_wall=market.observed_unix + 0.01,
+        entry_limit=D("10"),
+        ranking_bound=ranked,
+        selection_root=root,
+    )
+    assert result.terminal_verdict == "PASS", result.to_dict()
+    cycles = [
+        json.loads(line)
+        for line in (evidence / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    attempts = [c for c in cycles if c["soph_simulated_first_purchase"]]
+    assert len(attempts) == 1
+    cycle = attempts[0]
+    purchase = cycle["soph_simulated_first_purchase"]
+    if mismatch:
+        assert purchase["status"] == "BLOCKED" and purchase["reason_codes"]
+        if mismatch == "expired":
+            assert purchase["reason_codes"] == ["SELECTION_STALE_FOR_BINDING_EPOCH"]
+        assert not any(c["fill"] for c in cycles)
+        return
+    assert purchase["status"] == "FILLED", (purchase, cycle["cycle_index"])
+    entry, fill = cycle["soph_confirmed_entry_budget"], cycle["fill"]
+    assert purchase["decision_id"] == entry["decision_id"]
+    assert fill["side"] == entry["first_purchase_side"] == ("BUY" if direction == 1 else "SELL")
+    assert purchase["envelope"]["envelope_digest"] == fill["opening_envelope_digest"]
+    assert purchase["fill_id"] == fill["fill_id"]
+    assert D(fill["quantity_contracts"]) == D(entry["quantity_contracts"])
+    assert D(
+        cycle["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]
+    ) == direction * D(fill["quantity"])
+    assert cycle["instrument_card_geometry"]["position_anchor_before"] is None
+    assert cycle["instrument_card_geometry"]["position_anchor_after"] == float(fill["fill_price"])
+    assert cycle["cycle_index"] == 3 and cycles[-1]["cycle_index"] == 120
+    occupied = [c for c in cycles if c["cycle_index"] > cycle["cycle_index"]]
+    assert [c["cycle_index"] for c in occupied] == list(range(4, 121))
+    assert (
+        cycles[63]["price_basis"]["receive_ts_unix"] - occupied[0]["price_basis"]["receive_ts_unix"]
+        == 3600
+    )
+    anchor = float(fill["fill_price"])
+    for c in occupied:
+        timer = c["cap65_exit_producers"]["time_exit"]
+        assert not timer["triggered"] and timer["reason_code"] == "ROTATION_CLOSE_SOURCES_MISSING"
+        assert c["decision_outcome"] == "hold" and c["fill"] is None
+        assert c["soph_confirmed_entry_budget"] == entry
+        position = c["soph_shadow_capital_binding"]["crs_position_contracts"]
+        assert D(position["signed_quantity"]) == direction * D(entry["quantity_contracts"])
+        assert D(c["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]) == (
+            direction * D(fill["quantity"])
+        )
+        geometry = c["instrument_card_geometry"]
+        assert geometry["core_distance_verified"] and geometry["position_anchor_before"] == anchor
+        anchor = geometry["position_anchor_after"]
+        assert anchor == geometry["mark"] == c["price_basis"]["mid_price"]
+    from src.ops.soph_shadow_first_purchase_v1 import verify_soph_shadow_purchase_receipt_v1
+
+    assert not verify_soph_shadow_purchase_receipt_v1(
+        dict(cycle, fill=dict(fill, quantity_contracts="0"))
+    )
+    assert json.loads((evidence / "full_economic_reconstruction_verifier.json").read_bytes())["ok"]
 
 
 @pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
@@ -904,6 +1030,24 @@ def test_booked_position_advances_its_own_anchor_through_regular_card_tick(tmp_p
         opening.fill_price
     )
     assert state.soph_confirmed_entry_budget is None
+
+    # At the old holding deadline a separate operator kill must still reach the portfolio.
+    state.killstate_active = True
+    state.killstate_trigger = "OFFLINE_OPERATOR_KILL"
+    later = _market(
+        1800, slot=SOPH, price=market.mark, funding_cut=int(market.observed_unix) + 7200
+    )
+    assert later.observed_unix - state.exit_policy_binding.entry_event_time == 3600
+    killed = _regular_card_tick(
+        state, later, source(market=later, now=later.observed_unix), sequence=2
+    ).bridge_cycle
+    assert killed["cap65_exit_producers"]["time_exit"]["triggered"] is False
+    safety = killed["cap65_exit_producers"]["safety_exit"]
+    assert safety["triggered"] and safety["reason_code"] == state.killstate_trigger
+    assert killed["fill"]["side"] == ("SELL" if side == "long" else "BUY")
+    assert (
+        D(killed["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]) == 0
+    )
 
 
 @pytest.mark.parametrize("field", ["selection_id", "selection_integrity_digest"])

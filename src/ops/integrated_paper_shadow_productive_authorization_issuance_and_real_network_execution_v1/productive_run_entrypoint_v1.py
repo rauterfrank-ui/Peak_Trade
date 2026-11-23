@@ -189,6 +189,7 @@ def run_productive_wallclock_session_v1(
     instrument_card_source: Callable[..., Any] | None = None,
     instrument_card_budget_source: Callable[..., Any] | None = None,
     instrument_card_ranking_bound: Any = None,
+    instrument_card_selection_root: Path | None = None,
 ) -> ProductiveRunGateResultV1:
     """Fail-closed productive run. Network only after canonical v2 consumption inside runtime."""
     notes = [
@@ -373,6 +374,7 @@ def run_productive_wallclock_session_v1(
         instrument_card_source=instrument_card_source,
         instrument_card_budget_source=instrument_card_budget_source,
         instrument_card_ranking_bound=instrument_card_ranking_bound,
+        instrument_card_selection_root=instrument_card_selection_root,
     )
 
     # Monkey-patch consume timing: wrap run by observing consumption file mtime after return

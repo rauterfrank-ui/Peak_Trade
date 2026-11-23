@@ -1414,7 +1414,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "c4e1767c8f2c7b12184192df7aa80ff4e8d8f8a32e939b4966e4081352f3ff2c"
+      "sha256": "b3b911aa4e63f38164a5e7a13a489825a1031f481f103ad6b1bdffa62e0b62e9"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -1914,7 +1914,7 @@
     {
       "path": "scripts/ops/run_i17_shadow_learning_companion_v1.py",
       "before_sha256": null,
-      "sha256": "91b50fcc32f5d2e28e59a605b998806e74725e35bcbe879026a602e7f2ce4a51"
+      "sha256": "87f2e5b92a3953ad6a703f97b0133cad0991eeda689883dbf424beaf96f151fe"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -2049,7 +2049,7 @@
     {
       "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
       "before_sha256": null,
-      "sha256": "448d0a75a73e7a30e354bf908d1cc7c407b599a8eeab5c398c364eab61d0cd19"
+      "sha256": "37b7998cca7e385269d878fb849534d5b7e959af867cfce93e9cf5baa886f43b"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -3334,7 +3334,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "9658fd66ff972559c9ffced185ef8932dd3417739202cdce79f5fe9ac5fe2913"
+      "sha256": "99557542e3a96761388bb63b8c77efcc94ba239e8a47150da2e4021fd7aa0015"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3379,7 +3379,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "6532f7e48fcf8b103c3256b3a982a97ecb602c55c5bff173e6da202248a5e791"
+      "sha256": "7315c149bfd431edefa8ee8755261a7b60fd49945c2e0bf3a2b7ef9a949c888a"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3409,7 +3409,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
       "before_sha256": "6573921fe3e81d08ec04caff74c1cd6446916f03074f79e7c8d0cd69aecce66a",
-      "sha256": "c0c6753de02a32683c5e9f652ee91d4658ea4e37f0f0c20498ba496953f1e4d8"
+      "sha256": "c64db1aaa39c5341ef31b6c28e2667f065713f5d9debe90adfc97b88527ec7bd"
     },
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
@@ -3897,6 +3897,11 @@
       "sha256": "fe2e5ed4ac89e7e6a50cbe83271f883dc25be1c8b30f96cacf08c4e1ed555afd"
     },
     {
+      "path": "src/ops/soph_shadow_first_purchase_v1.py",
+      "before_sha256": null,
+      "sha256": "2974b625f6c22959b8de9ce1cfb5a710aff1b231245eeedab3a96d32f57a5043"
+    },
+    {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
       "before_sha256": "ef493dfcab6d9266a2b89ca92e77c6a226def55c2597b26807dc422eff28ece5",
       "sha256": "372c7d9f0a6a58d9f2eca11269e3dd5422d366f3e8c96e8033feb26d5141e13c"
@@ -3939,12 +3944,12 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py",
       "before_sha256": "33344a4173ff57954a38374d09645b1cbd20bfe84d084c6ef54184a5485a406d",
-      "sha256": "b2c7b3bc26d41728bba3d7899f88781801cea8736f4820ae2adf29158ffe4a5a"
+      "sha256": "82c3484e6f48c549dc1eebb90affc36406d5d5c59e668b31f36cba4c42fc0f58"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "abf395c00824b492d4850d75beb9115a4246549833ccd86ff452984fb99038af"
+      "sha256": "578e24deaceb250c2d0f7955e9d54be7f45ec20e09ec81e6f6f5c6c8aa91dd22"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5464,7 +5469,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "1cd89b49e31c4a70ea39171217a7aa93788b20c3b115173134a26fa311845165"
+      "sha256": "f8850873ba66a748d99346585fa82d091e74f0dbd415063ea8e53de17cad24e9"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
@@ -5474,7 +5479,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "c34a7eed542c5842b5819397b282171fdcd36e9b9322346cb72acf7db7828f23"
+      "sha256": "a1cbf77c0d62e90ce32ea7122bde6aaa6f08a23d6f5d6eb5f24278ef8cef87bd"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
@@ -6121,6 +6126,6 @@
     "runtime_authorization_effect": "NONE",
     "spec": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
     "evidence": "docs/ops/evidence/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_2026_11_22.json",
-    "statement": "Explicit SOPH model capital and native CRS/intent contract units; base projection only at original analytical consumer. No restart or BTC/Testnet change."
+    "statement": "Explicit SOPH model capital and native CRS/intent contract units; base projection only at original analytical consumer. No restart or BTC/Testnet change. A fresh original Cap24 selection and the bound slot amount reach the internal simulated first purchase. Occupied SOPH uses the rotation-only time exit. The Long and Short controls each retain one opening fill through cycle 120."
   }
 }
