@@ -23,6 +23,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 i
     collect_bound_paper_liquidity_v1,
     retain_public_paper_sources_v1,
 )
+from src.ops.nonlive_mark_timing_v1 import observe_nonlive_mark_v1  # noqa: E402
 from src.ops.bounded_peaktrade_system_composition_v1.xperp_paper_episode_outcome_v1 import (  # noqa: E402
     seal_xperp_paper_archive_v1,
 )
@@ -59,6 +60,17 @@ from src.ops.master_v2_card_precheck_v1 import review_entry_cards_v1  # noqa: E4
 from src.ops.instrument_card_stream_v1 import InstrumentCardStreamV1, paper_budget_source_v1  # noqa: E402
 
 _POLL_SECONDS = 5
+_UP_SLOT2_POLL_PERIOD_SECONDS = 0.2
+
+
+def _next_poll_delay(slot, *, captured, elapsed):
+    if slot.lane_id == "LANE_2" and slot.native_id == UP_PAPER_SLOT.native_id:
+        if elapsed is None:  # No acquisition has been attempted since this process resumed.
+            return 0.0
+        # Start-to-start pacing. Acquisition and the decision already consume part of the period.
+        if captured:
+            return max(0.0, _UP_SLOT2_POLL_PERIOD_SECONDS - elapsed)
+    return _POLL_SECONDS
 
 
 def _isolated_root(path):
@@ -88,6 +100,10 @@ def _read_paper_slot(path, *, resume=False):
         surface = "PAPER_EXCHANGE"
     if "environment" in config and config["environment"] != "PAPER":
         raise ValueError("PAPER_SLOT_ENVIRONMENT_MISMATCH")
+    if "n5_source" in config:
+        from src.ops.ranked_slot_run_source_v1 import read_ranked_paper_slot_v1
+
+        return read_ranked_paper_slot_v1(config)[1]
     slot = IRYS_PAPER_SLOT if config["lane"] == IRYS_PAPER_SLOT.lane_id else UP_PAPER_SLOT
     if resume and config["lane"] == UP_PAPER_ARCHIVED_SLOT2.lane_id:
         slot = UP_PAPER_ARCHIVED_SLOT2
@@ -169,6 +185,37 @@ def _read_cap24_binding(
     return bound
 
 
+def _verify_renewed_paper_cap24(config, root, original, admission, bound):
+    from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
+    from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+        BINDING_RESULT_FILENAME,
+    )
+    from src.ops.single_selected_future_runtime_binding_v1.persistence_v1 import verify_manifest
+
+    source = config["paper_cap24"]
+    if Path(source["root"]) != root or root != root.resolve():
+        raise ValueError("PAPER_ENTRY_CAP24_ROOT")
+    verify_manifest(root)
+    evidence = (root / EVIDENCE_FILENAME).read_bytes()
+    result = json.loads((root / BINDING_RESULT_FILENAME).read_bytes())
+    account = config["paper_account_opening"]
+    if (
+        sha256(evidence).hexdigest() != source["evidence_sha256"]
+        or canonical_digest_v1(result) != source["result_digest"]
+        or result["gate"]["evidence"] != json.loads(evidence)
+        or result["gate"]["bound"] != bound.to_dict()
+        or result["gate"]["ok"] is not True
+        or result["session_id"] != config["session_id"]
+        or result["lane"] != original.lane_id
+        or result["n5_assignment"] != original.reference()
+        or result["entry_admission"] != admission.reference()
+        or result["paper_opening_digest"] != account["digest"]
+        or result["observed_portfolio"]["source_id"]
+        != "PAPER_EXCHANGE:" + config["session_id"] + ":" + account["digest"]
+    ):
+        raise ValueError("PAPER_ENTRY_CAP24_SCOPE")
+
+
 def _preflight_cap24(policy, *, cap24_root, output):
     bound = _read_cap24_binding(cap24_root)
     market = _capture(
@@ -210,7 +257,17 @@ def preflight_zkp_paper_v1(*, market):
 
 
 def _run(
-    root, market, *, policy, duration, started_at, deadline, revision, capture, card_assignment=None
+    root,
+    market,
+    *,
+    policy,
+    duration,
+    started_at,
+    deadline,
+    revision,
+    capture,
+    card_assignment=None,
+    ranked_config=None,
 ):
     session = ZkpPaperEntryV1(
         root=root,
@@ -219,6 +276,11 @@ def _run(
         initial_market=market,
         duration=duration,
         slot=market.slot,
+        **(
+            {"ranked_config": ranked_config, "entry_bound": card_assignment}
+            if ranked_config
+            else {}
+        ),
     )
     with exclusive_v1(root / ".paper-driver.lock"):
         if card_assignment is not None:
@@ -258,6 +320,7 @@ def _drive(
             raise _WindowEnded
         return time()
 
+    poll_started = monotonic() if market is not None else None
     while active():
         if market is not None:
             try:
@@ -273,7 +336,22 @@ def _drive(
                     cards.defer_entry_v1(review)
                     result = {"status": "WAITING_FOR_LIQUID_MARKET", "entry_review": review}
                 else:
-                    with cards.observe_v1():
+                    with (
+                        cards.observe_v1(),
+                        observe_nonlive_mark_v1(
+                            mode="PAPER",
+                            session=root.name,
+                            lane=session.slot.lane_id,
+                            native=session.slot.native_id,
+                            canonical=session.slot.instrument_id,
+                            event_ms=round(market.market_event_unix * 1000),
+                            price=market.mark,
+                            receipt=market.mark_acquired_at,
+                            paper_episode_id=occupied.episode.identity.episode_id
+                            if occupied
+                            else None,
+                        ),
+                    ):
                         result = (occupied or opening).step_v1(market, clock=fill_clock)
                     if review is not None:
                         result = dict(result, entry_review=review)
@@ -301,9 +379,17 @@ def _drive(
                 immutable_json_v1(root / "closeout.json", result)
                 seal_xperp_paper_archive_v1(root, result)
                 return result
-        sleep(min(_POLL_SECONDS, max(0, deadline - monotonic())))
+        now = monotonic()
+        delay = _next_poll_delay(
+            session.slot,
+            captured=market is not None,
+            elapsed=now - poll_started if poll_started is not None else None,
+        )
+        if delay > 0:
+            sleep(min(delay, max(0, deadline - now)))
         if not active():
             break
+        poll_started = monotonic()
         poll = uuid4().hex
         folder = root / "public" / poll
         try:
@@ -398,7 +484,9 @@ def main(argv=None):
         )
     for mode in (preflight, run, resume):
         mode.add_argument(
-            "--slot-config", type=Path, help="Use the prepared UP (LANE_5) or IRYS (LANE_4) binding"
+            "--slot-config",
+            type=Path,
+            help="Use a prepared N5-ranked Paper slot or its supported legacy binding",
         )
     args = parser.parse_args(argv)
     try:
@@ -408,6 +496,9 @@ def main(argv=None):
             if args.slot_config is None
             else _read_paper_slot(args.slot_config, resume=args.mode == "resume")
         )
+        ranked_config = json.loads(args.slot_config.read_bytes()) if args.slot_config else None
+        if ranked_config is not None and "n5_source" not in ranked_config:
+            ranked_config = None
         capture = _capture if args.slot_config is None else partial(_capture, slot=slot)
         if args.mode == "preflight":
             if args.cap24_evidence_root is not None and args.slot_config is not None:
@@ -432,6 +523,33 @@ def main(argv=None):
                 if args.card_cap24_evidence_root is None
                 else _read_cap24_binding(args.card_cap24_evidence_root)
             )
+            if ranked_config is not None and args.mode == "run":
+                from src.ops.ranked_slot_run_source_v1 import (
+                    read_paper_entry_admission_v1,
+                    read_ranked_paper_slot_v1,
+                )
+
+                assignment, _ = read_ranked_paper_slot_v1(ranked_config)
+                if (
+                    args.run_root.name != ranked_config["session_id"]
+                    or args.card_cap24_evidence_root is None
+                ):
+                    raise ValueError("RANKED_PAPER_SESSION_AND_CAP24_REQUIRED")
+                card_assignment = _read_cap24_binding(
+                    args.card_cap24_evidence_root,
+                    entry_repository_sha=assignment.selection.repository_sha,
+                )
+                admission = read_paper_entry_admission_v1(ranked_config, assignment)
+                admission.require_binding_v1(card_assignment)
+                admission.require_current_v1(time())
+                if "paper_entry_admission" in ranked_config:
+                    _verify_renewed_paper_cap24(
+                        ranked_config,
+                        args.card_cap24_evidence_root,
+                        assignment,
+                        admission,
+                        card_assignment,
+                    )
             if card_assignment is not None and (
                 card_assignment.instrument_id,
                 card_assignment.venue_native_id,
@@ -473,6 +591,7 @@ def main(argv=None):
                     revision=revision,
                     capture=capture,
                     card_assignment=card_assignment,
+                    **({"ranked_config": ranked_config} if ranked_config else {}),
                 )
     except (OSError, ValueError, TypeError, KeyError, RuntimeError, DecimalException) as exc:
         parser.exit(2, f"Paper stopped: {exc}\n")

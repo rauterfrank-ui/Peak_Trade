@@ -181,6 +181,16 @@ class ZkpPaperContinuationV1:
         self.budget = load_slot_entry_budget_v1(repo / _BUDGET_POLICY)
         self.policy = load_paper_liquidity_policy_v1(repo)
         binding = self.profile["binding"]
+        ranked_config = self.profile.get("ranked_config")
+        if ranked_config is not None:
+            from src.ops.ranked_slot_run_source_v1 import read_recorded_paper_slot_v1
+
+            if (
+                read_recorded_paper_slot_v1(self.profile) != slot
+                or ranked_config["session_id"] != root.name
+            ):
+                raise ValueError("RANKED_PAPER_ORIGINAL_SESSION_REQUIRED")
+
         if (
             self.profile["schema"] != "bounded_single_instrument_paper_profile.v1"
             or self.profile["repository_sha"] != revision
@@ -192,9 +202,14 @@ class ZkpPaperContinuationV1:
             or self.profile["fee_rate"] != str(PAPER_FEE_RATE)
             or self.bound.instrument_id != self.slot.instrument_id
             or self.bound.venue_native_id != self.slot.native_id
-            or self.bound.selection_state != "EXPLICIT_SINGLE_INSTRUMENT_PAPER"
-            or self.bound.selection_id != f"paper-fixed:{self.slot.native_id}"
-            or self.bound.selection_integrity_digest != canonical_digest_v1(binding)
+            or (
+                ranked_config is None
+                and (
+                    self.bound.selection_state != "EXPLICIT_SINGLE_INSTRUMENT_PAPER"
+                    or self.bound.selection_id != f"paper-fixed:{self.slot.native_id}"
+                    or self.bound.selection_integrity_digest != canonical_digest_v1(binding)
+                )
+            )
             or (binding["session_id"], binding["lane_id"]) != (root.name, self.slot.lane_id)
             or (binding["instrument_id"], binding["venue_native_id"])
             != (slot.instrument_id, slot.native_id)

@@ -243,6 +243,14 @@ SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS = {
     ),
 }
 
+# Fixed original ranks extend the exact SOPH publisher revision on the same rotation parent.
+FIXED_RANK_PUBLICATION_DELTAS = {
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": (
+        "e472ee7adf42c00173f22f5cce28ef27767e90545582682c680c77116b98c5cb",
+        "3f9259c701a031761be90d9a951660be531134076037d20221c9d00629b63c04",
+    ),
+}
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -778,9 +786,8 @@ def validate_reserved_slot_rotation_bundle(
         accepted = (expected,)
         parent_bytes = json.dumps(expected, sort_keys=True, separators=(",", ":")).encode()
         if hashlib.sha256(parent_bytes).hexdigest() == SOPH_SHADOW_SLOT2_ROTATION_PARENT_SHA256:
-            accepted += (
-                _exact_double_play_successor(expected, SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS),
-            )
+            soph = _exact_double_play_successor(expected, SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS)
+            accepted += (soph, _exact_double_play_successor(soph, FIXED_RANK_PUBLICATION_DELTAS))
     else:
         accepted = (before, after, protected_after, scope_bound_after)
     if actual not in accepted:

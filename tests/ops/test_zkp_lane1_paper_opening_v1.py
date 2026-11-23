@@ -35,6 +35,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     NATIVE_ID,
     PAPER_FEE_RATE,
     UP_PAPER_SLOT,
+    XperpPaperSlotV1,
     ZKP_PAPER_SLOT,
     bind_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
@@ -72,6 +73,17 @@ from src.ops.single_selected_future_runtime_binding_v1.persistence_v1 import (
 REPO = Path(__file__).resolve().parents[2]
 C1 = 1_700_000_040
 DAY = 86400
+
+
+def test_only_slot2_up_counts_acquisition_time_towards_the_next_poll():
+    up = XperpPaperSlotV1("LANE_2", "UP", "310919")
+    delay = paper_cli._next_poll_delay
+    assert delay(up, captured=True, elapsed=0.08) == pytest.approx(0.12)
+    assert delay(up, captured=True, elapsed=1.5) == 0
+    assert delay(up, captured=False, elapsed=1.5) == 5
+    assert delay(up, captured=False, elapsed=None) == 0
+    assert delay(UP_PAPER_SLOT, captured=True, elapsed=1.5) == 5
+    assert delay(XperpPaperSlotV1("LANE_2", "UP", "310912"), captured=True, elapsed=1.5) == 5
 
 
 @pytest.fixture(autouse=True)
@@ -715,7 +727,16 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
         )
 
 
-@pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
+@pytest.mark.parametrize(
+    "slot",
+    [
+        ZKP_PAPER_SLOT,
+        UP_PAPER_SLOT,
+        IRYS_PAPER_SLOT,
+        XperpPaperSlotV1("LANE_2", "UP", "310919"),
+        XperpPaperSlotV1("LANE_5", "OL", "310912"),
+    ],
+)
 def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     tmp_path, monkeypatch, slot
 ):
@@ -729,7 +750,9 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     lane = root / "flat-entry-mark-v2" / slot.lane_id
 
     def capture(policy, *, label, output):
-        nonlocal index, latest
+        nonlocal index, latest, elapsed
+        # Advance the clock for acquisition as well as for any remaining sleep.
+        elapsed += 1.0
         index += 1
         price = None
         if (root / "opening-fill.json").is_file():
@@ -744,6 +767,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
     monkeypatch.setattr(paper_cli, "monotonic", lambda: elapsed)
     monkeypatch.setattr(paper_cli, "time", lambda: latest.observed_unix + 0.01)
     monkeypatch.setattr(paper_cli, "sleep", sleep)
+    ranked = slot not in (ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT)
     assignment = BoundInstrumentV1(
         instrument_id=slot.instrument_id,
         venue_native_id=slot.native_id,
@@ -752,8 +776,57 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         ranking_snapshot_id="original-ranking",
         ranking_integrity_digest="2" * 64,
         universe_snapshot_id="original-universe",
-        selection_state="SELECTED",
+        selection_state="SELECTED_ACTIVE" if ranked else "SELECTED",
     )
+    config = None
+    if ranked:
+        from types import SimpleNamespace
+        from src.ops import ranked_slot_run_source_v1 as owner
+
+        start = datetime.fromtimestamp(initial.observed_unix, timezone.utc)
+        selected = SimpleNamespace(
+            instrument_id=slot.instrument_id,
+            venue_native_id=slot.native_id,
+            selected_rank=int(slot.lane_id[-1]),
+            selection_id=assignment.selection_id,
+            integrity_digest=assignment.selection_integrity_digest,
+            ranking_snapshot_id=assignment.ranking_snapshot_id,
+            ranking_integrity_digest=assignment.ranking_integrity_digest,
+            state=assignment.selection_state,
+            valid_from=start.isoformat(),
+            valid_until=(start + timedelta(hours=1)).isoformat(),
+        )
+        original = owner.RankedRunSlotV1(
+            slot.lane_id,
+            selected,
+            SimpleNamespace(
+                instrument_type="FUTURES",
+                contract_type="linear_dated_future",
+                quote_currency="USD",
+                settlement_currency="USD",
+                base_currency=slot.base_currency,
+                venue_native_inst_id=slot.native_id,
+                canonical_instrument_id=slot.instrument_id,
+            ),
+            assignment.universe_snapshot_id,
+            "fixture-publication",
+        )
+        config = dict(
+            lane=slot.lane_id,
+            surface="PAPER_EXCHANGE",
+            authority="NONE",
+            session_id=root.name,
+            canonical_instrument_id=slot.instrument_id,
+            native_instrument_id=slot.native_id,
+            n5_source=dict(
+                transition_id=original.transition_id,
+                selection_id=assignment.selection_id,
+                selection_digest=assignment.selection_integrity_digest,
+            ),
+        )
+        monkeypatch.setattr(owner, "read_ranked_run_slot_v1", lambda config: original)
+        with pytest.raises(ValueError, match="OUTSIDE_SELECTION_WINDOW"):
+            original.require_current_v1((start + timedelta(hours=2)).timestamp())
     result = paper_cli._run(
         root,
         initial,
@@ -764,6 +837,7 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         revision="f" * 40,
         capture=capture,
         card_assignment=assignment,
+        ranked_config=config,
     )
     assert result["status"] == "WINDOW_ENDED_OCCUPIED", result
     cards = root / "instrument-cards" / slot.lane_id
@@ -843,6 +917,16 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
             == legacy
         )
     assert {p: p.read_bytes() for p in legacy_bytes} == legacy_bytes
+
+    if ranked:
+        # The ranked Paper contract ends at the sealed episode and its learning handoff.
+        assert (
+            json.loads((root / "paper-profile.json").read_bytes())["n5_assignment"][
+                "selection_digest"
+            ]
+            == assignment.selection_integrity_digest
+        )
+        return
 
     bars, config, request = native_research_fixture(slot.instrument_id, "b" * 64)
     csv_path, cfg_path, template_path = (

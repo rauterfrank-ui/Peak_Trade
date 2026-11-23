@@ -48,8 +48,9 @@ def test_previous_current_tree_or_exact_reviewed_successor_is_accepted(tmp_path,
     POLICY["validate_reserved_slot_rotation_bundle"](tmp_path, ROWS)
 
 
+@pytest.mark.parametrize("successor_revision", ["d97ac41842f97e0d7740ba27fb897800c5aed9d6", None])
 @pytest.mark.parametrize("parent", [SOPH_PARENT, CAP23_PARENT])
-def test_shadow_slot2_publisher_requires_its_exact_rotation_parent(tmp_path, parent):
+def test_slot_publishers_require_their_exact_rotation_parent(tmp_path, parent, successor_revision):
     validate = POLICY["validate_reserved_slot_rotation_bundle"]
     for path in (
         *DELTAS,
@@ -62,7 +63,11 @@ def test_shadow_slot2_publisher_requires_its_exact_rotation_parent(tmp_path, par
     validate(tmp_path, ROWS, double_play=True)
 
     publisher = tmp_path / PUBLISHER
-    successor = (ROOT / PUBLISHER).read_bytes()
+    successor = (
+        subprocess.check_output(["git", "show", f"{successor_revision}:{PUBLISHER}"], cwd=ROOT)
+        if successor_revision
+        else (ROOT / PUBLISHER).read_bytes()
+    )
     publisher.write_bytes(successor)
     if parent == CAP23_PARENT:
         with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
