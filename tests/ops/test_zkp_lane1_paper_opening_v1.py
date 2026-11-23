@@ -928,6 +928,14 @@ def test_bounded_driver_continues_after_opening_and_leaves_position_at_end(
         )
     assert {p: p.read_bytes() for p in legacy_bytes} == legacy_bytes
 
+    if ranked:
+        assert (
+            json.loads((root / "paper-profile.json").read_bytes())["n5_assignment"][
+                "selection_digest"
+            ]
+            == assignment.selection_integrity_digest
+        )
+
     bars, config, request = native_research_fixture(slot.instrument_id, "b" * 64)
     csv_path, cfg_path, template_path = (
         tmp_path / name for name in ("bars.csv", "config.json", "input.json")
