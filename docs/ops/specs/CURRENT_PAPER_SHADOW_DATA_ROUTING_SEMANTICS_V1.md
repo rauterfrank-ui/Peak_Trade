@@ -399,8 +399,23 @@ berechnet daraus die Instrumentgeneration. Paper hält diese Kartenbindung
 für den Wiederanlauf fest und weist einen Austausch ab. Ohne solche
 Originaleingaben lautet der Status `EXPLICIT_ISOLATED_TEST_BINDING`.
 Es gibt keinen automatischen Rerank, keine neue Cap23-Auswahl und keine
-stillschweigende Übernahme späterer Rankinggenerationen. Die natürliche
-Versorgung aus dem Ranking-/Rotationsowner bleibt ein eigener Betriebsanschluss.
+stillschweigende Übernahme späterer Rankinggenerationen.
+
+Für SOPH kann der I17-Begleiter die drei Originalquellen der N5-Zuweisung über
+`--card-lane-sources TOPOLOGY RANKING UNIVERSE` lesen. Die abgeschlossene
+N5-Veröffentlichung bindet die Cap23-Auswahl über ihren Digest an Slot 5.
+Der Leser folgt dieser Lane zur Auswahl, prüft deren Rang in Cap22 und gleicht
+beide Instrument-IDs mit Cap21 ab. Die Karte hält Rang, Auswahlgültigkeit,
+Snapshot-IDs und Digests unter `original_slot_assignment` fest. Ein späteres
+Ranking kann die bereits ausgewiesene Auswahlgeneration nicht ersetzen.
+
+Die Karte kann diese Herkunft auch ohne Cap24 anzeigen. Für einen simulierten
+Erstkauf braucht der Begleiter zusätzlich die zur selben Lane-Auswahl passende
+Cap24-Evidenz. Bei der Entscheidung und vor der Modellbuchung prüft er die
+veröffentlichte Zuweisung erneut. Eine laufende Veröffentlichung sperrt die
+Übergabe. Der bisherige Einzelauswahlpfad und die N5-Quellen sind getrennte
+Eingaben. Die N5-Quellen stammen aus den ausdrücklich übergebenen
+Owner-Verzeichnissen. Der Archivlauf vom 22.11.2026 hatte diese Eingaben nicht.
 
 Pro Sitzung und Lane liegen `latest.json`, unveränderliche Fassungen unter
 `versions` und contentadressierte Originalantworten unter `sources` im

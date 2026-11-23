@@ -1084,7 +1084,7 @@
     {
       "path": "docs/ops/specs/CURRENT_PAPER_SHADOW_DATA_ROUTING_SEMANTICS_V1.md",
       "before_sha256": null,
-      "sha256": "9a7256301f67c74a4a81ddeadfd9c8e8b4497fcc9c260c8e6ff9b3f9e79862b9"
+      "sha256": "b3272200bad7fe9ed94cf71e816e21a31f27f970478b0ae20ef76a4828ca88fa"
     },
     {
       "path": "docs/ops/specs/CURRENT_POST_ASSESSMENT_OUTPUT_FRAME_V1.md",
@@ -1914,7 +1914,7 @@
     {
       "path": "scripts/ops/run_i17_shadow_learning_companion_v1.py",
       "before_sha256": null,
-      "sha256": "87f2e5b92a3953ad6a703f97b0133cad0991eeda689883dbf424beaf96f151fe"
+      "sha256": "7658ab9828232f363fa7a468e74b0757d3e3880b13a1948b27da7dc4a1b5e195"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
@@ -3334,7 +3334,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "99557542e3a96761388bb63b8c77efcc94ba239e8a47150da2e4021fd7aa0015"
+      "sha256": "b1a13ed241e67f2a0ff61685302ce34dd660b041aff26fd41b2e655ff3fbf22b"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3379,7 +3379,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "7315c149bfd431edefa8ee8755261a7b60fd49945c2e0bf3a2b7ef9a949c888a"
+      "sha256": "c7f5487cce2b649b48cbe093644329a9348f83b8583d89e3510244943fa69c44"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3409,7 +3409,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/productive_run_entrypoint_v1.py",
       "before_sha256": "6573921fe3e81d08ec04caff74c1cd6446916f03074f79e7c8d0cd69aecce66a",
-      "sha256": "c64db1aaa39c5341ef31b6c28e2667f065713f5d9debe90adfc97b88527ec7bd"
+      "sha256": "5afaf857a3c55c9d422ae8bcbf5525e382c6dad4cbfd4e94b225690392ef9d64"
     },
     {
       "path": "src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1/real_http_fetcher_v1.py",
@@ -3899,7 +3899,12 @@
     {
       "path": "src/ops/soph_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "2974b625f6c22959b8de9ce1cfb5a710aff1b231245eeedab3a96d32f57a5043"
+      "sha256": "bbae4f8baf4903d4f373084b5e97286534b582085885260b14f5085cbe93c494"
+    },
+    {
+      "path": "src/ops/soph_slot_assignment_v1.py",
+      "before_sha256": null,
+      "sha256": "1c324707dc31d68ee75eadd31a52dbed20a95131dcda1b2aa0d1d8485c1e7a2a"
     },
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
@@ -3949,7 +3954,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "578e24deaceb250c2d0f7955e9d54be7f45ec20e09ec81e6f6f5c6c8aa91dd22"
+      "sha256": "9ba6d6035a82b061eb8be0325b129c6b94a488e8284d1bb33491bae926158a71"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5469,7 +5474,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "f8850873ba66a748d99346585fa82d091e74f0dbd415063ea8e53de17cad24e9"
+      "sha256": "fd9238bafec94e7062f38300314a64ff01f22814f65ed532cb259320d6cff3bb"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
@@ -6126,6 +6131,6 @@
     "runtime_authorization_effect": "NONE",
     "spec": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
     "evidence": "docs/ops/evidence/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_2026_11_22.json",
-    "statement": "Explicit SOPH model capital and native CRS/intent contract units; base projection only at original analytical consumer. No restart or BTC/Testnet change. A fresh original Cap24 selection and the bound slot amount reach the internal simulated first purchase. Occupied SOPH uses the rotation-only time exit. The Long and Short controls each retain one opening fill through cycle 120."
+    "statement": "Explicit SOPH model capital and native CRS/intent contract units; base projection only at original analytical consumer. No restart or BTC/Testnet change. A fresh original Cap24 selection and the bound slot amount reach the internal simulated first purchase. Occupied SOPH uses the rotation-only time exit. The Long and Short controls each retain one opening fill through cycle 120. The SOPH card reads its committed N5 lane selection and original Cap22 and Cap21 references. The simulated opening requires the matching Cap24 binding."
   }
 }

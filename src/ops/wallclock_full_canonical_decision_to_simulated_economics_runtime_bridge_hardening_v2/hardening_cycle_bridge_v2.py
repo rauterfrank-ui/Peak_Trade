@@ -10,7 +10,10 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from math import isfinite
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Sequence
+
+if TYPE_CHECKING:
+    from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.governance.canonical_order_intent_v1 import canonical_order_intent_to_semantic_dict
@@ -592,7 +595,7 @@ class HardenedBridgeSessionStateV2:
 
     soph_entry_cost_limit_usdc: Decimal | None = None
     soph_confirmed_entry_budget: dict[str, Any] | None = None
-    soph_selection_root: Path | None = None
+    soph_selection_root: Path | SophSlotSourcesV1 | None = None
     soph_selection_repository_sha: str | None = None
 
     def append_mid(self, mid: float) -> None:

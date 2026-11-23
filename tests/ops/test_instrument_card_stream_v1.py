@@ -537,18 +537,118 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
 
 
+def _published_soph_lane(root, instrument, now, repository_sha, monkeypatch, *, lane_five=True):
+    from tests.ops import test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 as n5
+    from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
+
+    root.mkdir()
+    with monkeypatch.context() as patch:
+        patch.setattr(n5, "OBSERVED_UNIX", now)
+        patch.setattr(n5, "SOURCE_EVENT", str(int((now - 1) * 1000)))
+        patch.setattr(n5, "REPO_SHA", repository_sha)
+        portfolio = n5._empty_portfolio(now)
+        patch.setattr(n5, "_empty_portfolio", lambda: portfolio)
+        from functools import partial
+
+        features = partial(
+            n5.synthesize_ready_feature_production_snapshot_v1,
+            volatility_by_id={SOPH.instrument_id: 0.15},
+            amplitude_by_id={SOPH.instrument_id: 0.30},
+        )
+        patch.setattr(n5, "synthesize_ready_feature_production_snapshot_v1", features)
+        chain = n5._persist_universe_and_ranking(root, [*n5._five_rows()[:4], instrument])
+        ids = [n5._cid(chain["ranking"], row["instId"]) for row in n5._five_rows()[:4]]
+        ids.insert(4 if lane_five else 0, SOPH.instrument_id)
+        selections = n5._produce_selections(chain, ids, root)
+        bindings = n5._bind(selections, root, chain)
+    return SophSlotSourcesV1(root, chain["ranking_root"], chain["universe_root"]), bindings
+
+
+def _soph_instrument(market):
+    return dict(
+        market.source_observations["instrument"].payload["data"][0],
+        baseCcy="SOPH",
+        quoteCcy="USD",
+        expTime="1946966400000",
+        uly="SOPH-USD",
+    )
+
+
+def test_soph_card_reads_only_its_committed_slot_sources(tmp_path, monkeypatch):
+    from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1 import (
+        PENDING_SELECTION_PUBLICATION,
+        checkpoint_root_for,
+    )
+    from src.ops.soph_shadow_first_purchase_v1 import _selection_window
+    from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        SHA,
+    )
+
+    market = _market(slot=SOPH)
+    native = _soph_instrument(market)
+    now = market.observed_unix
+    source, bindings = _published_soph_lane(tmp_path / "assigned", native, now, SHA, monkeypatch)
+    assignment = source.inspect(SHA)
+    card = InstrumentCardStreamV1(
+        root=tmp_path,
+        bound=bound(market),
+        lane_id=SOPH.lane_id,
+        source_mode="SHADOW",
+        session_id="offline",
+        slot_assignment=assignment,
+    )
+    row = card.update_v1(market, now=now)
+    reference = row["original_slot_assignment"]
+    assert reference["selected_rank"] == assignment.selection.selected_rank != 5
+    assert reference["universe_snapshot_id"] == bindings["LANE_5"].universe_snapshot_id
+    assert reference["ranking_integrity_digest"] == bindings["LANE_5"].ranking_integrity_digest
+    assert reference["selection_integrity_digest"] == bindings["LANE_5"].selection_integrity_digest
+    assert row["ranking_binding"] is None
+    read_args = dict(bound=bound(market), lane_id=SOPH.lane_id, now=now, slot_assignment=assignment)
+    assert read_instrument_card_v1(tmp_path, **read_args)["original_slot_assignment"] == reference
+    latest = card.root / "latest.json"
+    altered = dict(row, original_slot_assignment=dict(reference, selected_rank=5))
+    latest.write_text(json.dumps(dict(body=altered, sha256=canonical_digest_v1(altered))))
+    with pytest.raises(ValueError, match="IDENTITY"):
+        read_instrument_card_v1(tmp_path, **read_args)
+    assert row["productive_entry_admitted"] is False
+    with pytest.raises(ValueError, match="RANKING_UNIVERSE_BINDING_REQUIRED"):
+        _selection_window(source, SHA, card.entry_card_v1().bound, market, now)
+    with pytest.raises(ValueError, match="NOT_YET_AVAILABLE"):
+        _selection_window(source, SHA, bindings["LANE_5"], market, now - 1)
+    with pytest.raises(ValueError, match="STALE"):
+        _selection_window(source, SHA, bindings["LANE_5"], market, now + 86400)
+    wrong, _ = _published_soph_lane(
+        tmp_path / "other", native, now - 10, SHA, monkeypatch, lane_five=False
+    )
+    with pytest.raises(ValueError, match="ORIGINAL_LANE_MISMATCH"):
+        wrong.inspect(SHA)
+    with pytest.raises(ValueError, match="ORIGINAL_REFERENCE_MISMATCH"):
+        replace(source, ranking_root=wrong.ranking_root).inspect(SHA)
+    with pytest.raises(ValueError, match="ORIGINAL_REFERENCE_MISMATCH"):
+        replace(source, universe_root=wrong.universe_root).inspect(SHA)
+    with pytest.raises(ValueError):
+        assignment.require_matching_binding(bindings["LANE_1"])
+    checkpoint = checkpoint_root_for(source.topology_root)
+    (checkpoint / PENDING_SELECTION_PUBLICATION).write_text("{}")
+    with pytest.raises(ValueError, match="LANE_SELECTION_PUBLICATION_INCOMPLETE"):
+        _selection_window(source, SHA, bindings["LANE_5"], market, now)
+
+
 @pytest.mark.parametrize(
-    ("direction", "mismatch"),
+    ("direction", "mismatch", "lane_sources"),
     [
-        (1, None),
-        (-1, None),
-        (1, "ranking_integrity_digest"),
-        (-1, "universe_snapshot_id"),
-        (1, "expired"),
+        (1, None, False),
+        (-1, None, False),
+        (1, "ranking_integrity_digest", False),
+        (-1, "universe_snapshot_id", False),
+        (1, "expired", False),
+        pytest.param(1, None, True, id="n5-long"),
+        pytest.param(-1, None, True, id="n5-short"),
     ],
 )
 def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
-    tmp_path, monkeypatch, run_two_hour_shadow, direction, mismatch
+    tmp_path, monkeypatch, run_two_hour_shadow, direction, mismatch, lane_sources
 ):
     from tests.ops import (
         test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 as sources,
@@ -558,27 +658,30 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
     )
 
     market = _market(slot=SOPH)
-    instrument = dict(
-        market.source_observations["instrument"].payload["data"][0],
-        baseCcy="SOPH",
-        quoteCcy="USD",
-        expTime="1946966400000",
-        uly="SOPH-USD",
-    )
-    with monkeypatch.context() as patch:
-        published = market.observed_unix - (86400 if mismatch == "expired" else 0)
-        patch.setattr(sources.time, "time", lambda: published)
-        chain = sources._build_fresh_chain(
-            tmp_path / "build", repository_sha=SHA, instrument_rows=[instrument]
+    instrument = _soph_instrument(market)
+    if lane_sources:
+        root, bindings = _published_soph_lane(
+            tmp_path / "n5", instrument, market.observed_unix, SHA, monkeypatch
         )
-    root = sources._materialize_productivity_root(tmp_path, chain)
-    handoff = sources.acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
-        productivity_root=root,
-        repository_sha=SHA,
-        binding_epoch=chain["binding_epoch"],
-        observed_portfolio=sources._empty_portfolio(),
-        observation_now_unix=published - 30,
-    )
+        ranked = bindings["LANE_5"]
+    else:
+        with monkeypatch.context() as patch:
+            published = market.observed_unix - (86400 if mismatch == "expired" else 0)
+            patch.setattr(sources.time, "time", lambda: published)
+            chain = sources._build_fresh_chain(
+                tmp_path / "build", repository_sha=SHA, instrument_rows=[instrument]
+            )
+        root = sources._materialize_productivity_root(tmp_path, chain)
+        handoff = (
+            sources.acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+                productivity_root=root,
+                repository_sha=SHA,
+                binding_epoch=chain["binding_epoch"],
+                observed_portfolio=sources._empty_portfolio(),
+                observation_now_unix=published - 30,
+            )
+        )
+        ranked = handoff.bound_instrument
 
     def capture(*, slot, capture_id, clock):
         step = round((clock() - market.observed_unix) / 2)
@@ -591,7 +694,6 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
             funding_cut=(int(clock()) // 3600 + 1) * 3600,
         )
 
-    ranked = handoff.bound_instrument
     if mismatch and mismatch != "expired":
         ranked = replace(ranked, **{mismatch: "f" * 64})
     evidence, result, _ = run_two_hour_shadow(
@@ -612,7 +714,14 @@ def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
     assert len(attempts) == 1
     cycle = attempts[0]
     purchase = cycle["soph_simulated_first_purchase"]
-    if mismatch:
+    if lane_sources:
+        (latest,) = evidence.parent.glob(
+            "instrument-card-stream/*/instrument-cards/LANE_5/latest.json"
+        )
+        card = json.loads(latest.read_bytes())["body"]
+        assert card["original_slot_assignment"] == root.inspect(SHA).card_reference()
+        assert card["ranking_binding"] == purchase["binding"] == ranked.to_dict()
+    elif mismatch:
         assert purchase["status"] == "BLOCKED" and purchase["reason_codes"]
         if mismatch == "expired":
             assert purchase["reason_codes"] == ["SELECTION_STALE_FOR_BINDING_EPOCH"]

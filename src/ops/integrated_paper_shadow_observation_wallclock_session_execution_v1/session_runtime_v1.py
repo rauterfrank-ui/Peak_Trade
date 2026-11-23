@@ -11,6 +11,8 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable, Literal, Mapping, Optional, Set
 
+from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
+
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
@@ -190,7 +192,7 @@ class WallclockSessionRuntimeV1:
         instrument_card_source: Callable[..., Any] | None = None,
         instrument_card_budget_source: Callable[..., Any] | None = None,
         instrument_card_ranking_bound: Any = None,
-        instrument_card_selection_root: Path | None = None,
+        instrument_card_selection_root: Path | SophSlotSourcesV1 | None = None,
     ) -> None:
         self.evidence_root = evidence_root
         self.transport = transport
@@ -605,6 +607,15 @@ class WallclockSessionRuntimeV1:
             entry_limit = parse_soph_entry_cost_limit_usdc_v1(
                 self.config.soph_entry_cost_limit_usdc
             )
+            slot_assignment = None
+            if isinstance(self.instrument_card_selection_root, SophSlotSourcesV1):
+                if instrument != SOPH_I17:
+                    raise ValueError("I17_CARD_SOPH_LANE_SOURCE_CONFLICT")
+                slot_assignment = self.instrument_card_selection_root.inspect(
+                    expected_repository_sha
+                )
+                if self.instrument_card_ranking_bound is not None:
+                    slot_assignment.require_matching_binding(self.instrument_card_ranking_bound)
             if entry_limit is not None and instrument != SOPH_I17:
                 raise ValueError("SOPH_SHADOW_ENTRY_COST_LIMIT_FOREIGN_INSTRUMENT")
             if (
@@ -623,7 +634,7 @@ class WallclockSessionRuntimeV1:
                 for identity in prereg.strategy_component_identities
             ):
                 raise ValueError("I17_CANDIDATE_HOST_OBSERVATION_REQUIRED")
-        except ValueError as exc:
+        except (OSError, RuntimeError, ValueError) as exc:
             self.state = WallclockSessionState.INVALID
             self.blockers.append(str(exc))
             return self._finalize_result(
@@ -771,6 +782,7 @@ class WallclockSessionRuntimeV1:
                     budget_source=self.instrument_card_budget_source
                     or shadow_budget_source_v1(self.bridge_state, repo=self.repo_root),
                     ranking_bound=self.instrument_card_ranking_bound,
+                    slot_assignment=slot_assignment,
                 )
             provenance = dual_identity_provenance_v1(mapping=self.venue_mapping)
             self.writer.write_immutable_json(

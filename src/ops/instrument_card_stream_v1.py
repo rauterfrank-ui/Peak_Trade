@@ -144,6 +144,32 @@ def _source_deadline(market):
     return min(limits)
 
 
+def _card_assignment(lane_id, ranking_bound, slot_assignment):
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
+        OccupiedLaneRuntimeInstrumentIdentityV1,
+    )
+
+    identity = None
+    fields = dict(
+        assignment_status="EXPLICIT_ISOLATED_TEST_BINDING", ranking_binding=None, slot_identity=None
+    )
+    if ranking_bound is not None:
+        identity = OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(
+            lane_id=lane_id, bound=ranking_bound
+        )
+        fields.update(
+            assignment_status="ORIGINAL_CAP24_ASSIGNMENT_CARRIED",
+            ranking_binding=ranking_bound.to_dict(),
+            slot_identity=identity.to_manifest_dict(),
+        )
+    if slot_assignment is not None:
+        fields.update(
+            assignment_status="ORIGINAL_N5_SLOT_ASSIGNMENT_CARRIED",
+            original_slot_assignment=slot_assignment.card_reference(),
+        )
+    return identity, fields
+
+
 class InstrumentCardStreamV1:
     def __init__(
         self,
@@ -155,6 +181,7 @@ class InstrumentCardStreamV1:
         session_id,
         budget_source=None,
         ranking_bound=None,
+        slot_assignment=None,
     ):
         if lane_id not in _LANES or source_mode not in {"PAPER", "SHADOW"}:
             raise ValueError("CARD_STREAM_SCOPE_INVALID")
@@ -163,12 +190,18 @@ class InstrumentCardStreamV1:
         self.source_mode, self.session_id = source_mode, session_id
         self.budget_source = budget_source
         self.ranking_bound = ranking_bound
-        self.slot_identity = None
+        if slot_assignment is not None:
+            ref = slot_assignment.card_reference()
+            if (source_mode, lane_id, bound.instrument_id, bound.venue_native_id) != (
+                "SHADOW",
+                ref["lane_id"],
+                ref["instrument_id"],
+                ref["venue_native_id"],
+            ):
+                raise ValueError("CARD_ORIGINAL_SLOT_ASSIGNMENT_MISMATCH")
+            if ranking_bound is not None:
+                slot_assignment.require_matching_binding(ranking_bound)
         if ranking_bound is not None:
-            from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.models_v1 import (
-                OccupiedLaneRuntimeInstrumentIdentityV1,
-            )
-
             if (
                 (ranking_bound.instrument_id, ranking_bound.venue_native_id)
                 != (bound.instrument_id, bound.venue_native_id)
@@ -182,9 +215,9 @@ class InstrumentCardStreamV1:
                 )
             ):
                 raise ValueError("CARD_ORIGINAL_RANKING_ASSIGNMENT_MISMATCH")
-            self.slot_identity = OccupiedLaneRuntimeInstrumentIdentityV1.from_bound(
-                lane_id=lane_id, bound=ranking_bound
-            )
+        self.slot_identity, self.assignment_fields = _card_assignment(
+            lane_id, ranking_bound, slot_assignment
+        )
         self.market = None
         self.current = None
         self.last_market_event = None
@@ -209,9 +242,9 @@ class InstrumentCardStreamV1:
             ):
                 raise ValueError("CARD_STREAM_ORIGINAL_BINDING_CHANGED")
             self.last_market_event = previous.get("mark_event_unix")
-            if previous.get("ranking_binding") != (
-                None if ranking_bound is None else ranking_bound.to_dict()
-            ):
+            if (
+                slot_assignment is None and previous.get("original_slot_assignment") is not None
+            ) or any(previous.get(key) != value for key, value in self.assignment_fields.items()):
                 raise ValueError("CARD_STREAM_RANKING_ASSIGNMENT_CHANGED")
 
     def _write(self, body, *, stage):
@@ -276,13 +309,7 @@ class InstrumentCardStreamV1:
             runtime_authorization_effect="NONE",
             productive_entry_admitted=False,
             valid_until_unix=None,
-            assignment_status="ORIGINAL_CAP24_ASSIGNMENT_CARRIED"
-            if self.slot_identity is not None
-            else "EXPLICIT_ISOLATED_TEST_BINDING",
-            ranking_binding=None if self.ranking_bound is None else self.ranking_bound.to_dict(),
-            slot_identity=None
-            if self.slot_identity is None
-            else self.slot_identity.to_manifest_dict(),
+            **self.assignment_fields,
         )
 
     def update_v1(self, market, *, now):
@@ -495,7 +522,7 @@ class InstrumentCardStreamV1:
         return self._write(body, stage="decision")
 
 
-def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None):
+def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None, slot_assignment=None):
     """Read a persisted projection with expiry; never revive a stored decision.
 
     This is a view, not a financial admission. A new entry still needs its
@@ -503,12 +530,13 @@ def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None):
     """
     raw = json.loads((Path(root) / "instrument-cards" / lane_id / "latest.json").read_bytes())
     body = raw["body"]
+    _, expected = _card_assignment(lane_id, ranking_bound, slot_assignment)
     if (
         raw["sha256"] != canonical_digest_v1(body)
         or body["binding"] != bound.to_dict()
         or body["lane_id"] != lane_id
-        or body.get("ranking_binding")
-        != (None if ranking_bound is None else ranking_bound.to_dict())
+        or (slot_assignment is None and body.get("original_slot_assignment") is not None)
+        or any(body.get(key) != value for key, value in expected.items())
     ):
         raise ValueError("CARD_READER_DIGEST_OR_IDENTITY_MISMATCH")
     if isinstance(now, bool) or not math.isfinite(now) or now < body["observed_unix"]:

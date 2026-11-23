@@ -37,6 +37,7 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     REAL_NETWORK_ENV,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    SOPH_I17,
     require_i17_shadow_instrument_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1 import (
@@ -307,6 +308,13 @@ def main(argv=None):
         type=Path,
         help="Canonical published Cap21/22/23 state for the SOPH simulated first purchase",
     )
+    run.add_argument(
+        "--card-lane-sources",
+        nargs=3,
+        type=Path,
+        metavar=("TOPOLOGY", "RANKING", "UNIVERSE"),
+        help="Read the committed N5 slot assignment and its original ranking and universe",
+    )
     args = parser.parse_args(argv)
     try:
         if os.environ.get(REAL_NETWORK_ENV) != "1":
@@ -315,6 +323,16 @@ def main(argv=None):
         if args.mode == "run":
             prereg = _load_prereg(args.preregistration)
             card_bound = None
+            selection_source = args.card_selection_root
+            if args.card_lane_sources is not None:
+                from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
+
+                if (
+                    selection_source is not None
+                    or require_i17_shadow_instrument_v1(prereg.instrument_allowlist) != SOPH_I17
+                ):
+                    raise ValueError("I17_CARD_SOPH_LANE_SOURCE_CONFLICT")
+                selection_source = SophSlotSourcesV1(*args.card_lane_sources)
             if args.card_selection_root is not None and args.card_cap24_evidence_root is None:
                 raise ValueError("I17_CARD_CAP24_EVIDENCE_REQUIRED")
             if args.card_cap24_evidence_root is not None:
@@ -323,7 +341,7 @@ def main(argv=None):
                 card_bound = _read_cap24_binding(
                     args.card_cap24_evidence_root,
                     entry_repository_sha=args.expected_repository_sha
-                    if args.card_selection_root is not None
+                    if selection_source is not None
                     else None,
                 )
                 instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
@@ -332,6 +350,10 @@ def main(argv=None):
                     card_bound.venue_native_id,
                 ) != (instrument.canonical_id, instrument.native_id):
                     raise ValueError("I17_CARD_CAP24_INSTRUMENT_MISMATCH")
+            if args.card_lane_sources is not None:
+                assignment = selection_source.inspect(args.expected_repository_sha)
+                if card_bound is not None:
+                    assignment.require_matching_binding(card_bound)
             if (
                 prereg.fixture_non_authoritative
                 or prereg.expected_repository_sha != args.expected_repository_sha
@@ -359,7 +381,7 @@ def main(argv=None):
                 repo_root=REPO,
                 environ=os.environ,
                 instrument_card_ranking_bound=card_bound,
-                instrument_card_selection_root=args.card_selection_root,
+                instrument_card_selection_root=selection_source,
             )
             if not result.ok:
                 raise ValueError("I17_COMPANION_OBSERVATION_FAILED:" + ",".join(result.blockers))

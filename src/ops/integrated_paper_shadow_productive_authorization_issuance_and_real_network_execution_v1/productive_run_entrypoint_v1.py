@@ -8,7 +8,10 @@ import os
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Set
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional, Set
+
+if TYPE_CHECKING:
+    from src.ops.soph_slot_assignment_v1 import SophSlotSourcesV1
 
 from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
     EvaluationReceiptArchiveV1,
@@ -189,7 +192,7 @@ def run_productive_wallclock_session_v1(
     instrument_card_source: Callable[..., Any] | None = None,
     instrument_card_budget_source: Callable[..., Any] | None = None,
     instrument_card_ranking_bound: Any = None,
-    instrument_card_selection_root: Path | None = None,
+    instrument_card_selection_root: Path | SophSlotSourcesV1 | None = None,
 ) -> ProductiveRunGateResultV1:
     """Fail-closed productive run. Network only after canonical v2 consumption inside runtime."""
     notes = [
