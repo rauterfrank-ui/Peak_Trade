@@ -16,6 +16,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
 from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
 from src.ops.instrument_card_stream_v1 import (
     InstrumentCardStreamV1,
+    bind_shadow_slot_entry_budget_v1,
     read_instrument_card_v1,
     shadow_budget_source_v1,
 )
@@ -191,6 +192,78 @@ def test_shadow_budget_reads_original_portfolio_and_does_not_offer_occupied_capi
     assert D(current["available_amount"]) <= 25 and current["available_for_new_entry"] == "0"
     assert current["reserved_amount"] is None
     assert state.portfolio.snapshot() == original
+
+
+@pytest.mark.parametrize("direction,order_side", [("long", "BUY"), ("short", "SELL")])
+def test_shadow_budget_owner_binds_once_to_the_selected_slot_without_a_booking(
+    direction, order_side
+):
+    market = _market(slot=SOPH)
+    selection = bound(market)
+    state = HardenedBridgeSessionStateV2(
+        session_id="soph-budget-test",
+        instrument_id=market.slot.instrument_id,
+        venue_instrument_id=market.slot.native_id,
+    )
+    source = shadow_budget_source_v1(state, repo=REPO)
+    budget = source(market=market, now=market.observed_unix)
+    original = state.portfolio.snapshot()
+    entry = dict(
+        budget_owner=budget["owner"],
+        binding_scope="ANALYTICAL_SLOT_ENTRY",
+        session_id=state.session_id,
+        lane_id=SOPH.lane_id,
+        instrument_id=selection.instrument_id,
+        venue_native_id=selection.venue_native_id,
+        selection_id=selection.selection_id,
+        selection_integrity_digest=selection.selection_integrity_digest,
+        entry_action="FIRST_PURCHASE",
+        direction=direction,
+        first_purchase_side=order_side,
+        budget_source_digest=budget["source_digest"],
+        nominal_usdc="9.8",
+    )
+    for change in (
+        {"lane_id": "LANE_2"},
+        {"venue_native_id": "other"},
+        {"selection_id": "older-selection"},
+        {"first_purchase_side": "SELL" if order_side == "BUY" else "BUY"},
+        {"entry_action": "CLOSE"},
+        {"direction": "neutral"},
+        {"nominal_usdc": "25.01"},
+    ):
+        with pytest.raises(ValueError, match="MISMATCH"):
+            bind_shadow_slot_entry_budget_v1(
+                state=state, bound=selection, budget=budget, entry=entry | change
+            )
+        assert state.soph_confirmed_entry_budget is None
+
+    for _ in range(2):
+        bind_shadow_slot_entry_budget_v1(state=state, bound=selection, budget=budget, entry=entry)
+    with pytest.raises(ValueError, match="ALREADY_BOUND"):
+        bind_shadow_slot_entry_budget_v1(
+            state=state, bound=selection, budget=budget, entry=entry | {"nominal_usdc": "9.9"}
+        )
+    current = source(market=market, now=market.observed_unix)
+    assert current["original_snapshot"]["confirmed_entry_budget"] == entry
+    assert current["available_for_new_entry"] == "0"
+    assert current["reserved_amount"] is None
+    assert state.portfolio.snapshot() == original
+    # Read old receipts as written. An opposite-side first purchase is never reused.
+    legacy = dict(entry)
+    del legacy["entry_action"]
+    state.soph_confirmed_entry_budget = legacy
+    assert (
+        source(market=market, now=market.observed_unix)["original_snapshot"][
+            "confirmed_entry_budget"
+        ]
+        == legacy
+    )
+    state.soph_confirmed_entry_budget = legacy | {
+        "first_purchase_side": "SELL" if order_side == "BUY" else "BUY"
+    }
+    with pytest.raises(ValueError, match="MISMATCH"):
+        source(market=market, now=market.observed_unix)
 
 
 def test_reader_rejects_changed_bytes_and_foreign_binding(tmp_path):
@@ -399,8 +472,8 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         row["master_v2"]["decision"]["cycle_id"]: row["master_v2"]["prepared_input"]
         for row in evaluated
     }
-    # The first observed long is a natural C3 decision in this ascending fixture.
-    entry_idx = next(i for i, c in enumerate(cycles) if c["fill"])
+    # The first confirmed budget comes from a natural C3 decision in this ascending fixture.
+    entry_idx = next(i for i, c in enumerate(cycles) if c["soph_confirmed_entry_budget"])
     entry = cycles[entry_idx]
     assert entry["decision_outcome"] == "enter_long" and not entry["forced_wiring"]
     assert all(
@@ -422,25 +495,169 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert receipt["side"] == "BUY" and receipt["configured_entry_cost_limit_usdc"] == (
         None if entry_limit is None else str(entry_limit)
     )
-    exact = entry["instrument_card_execution_check"]
-    assert exact["measurement_admitted"]
+    allocation = entry["soph_confirmed_entry_budget"]
+    assert allocation["cycle_id"] == entry["cycle_id"] and allocation["direction"] == "long"
+    assert allocation["first_purchase_side"] == "BUY"
+    assert allocation["entry_action"] == "FIRST_PURCHASE"
+    assert allocation["binding_scope"] == "ANALYTICAL_SLOT_ENTRY"
+    assert allocation["budget_owner"] == "I17_ORIGINAL_ANALYTICAL_PORTFOLIO_AND_SLOT_TEST_POLICY"
+    assert allocation["instrument_id"] == SOPH.instrument_id
+    assert D(allocation["quantity_contracts"]) > 0
+    nominal = (
+        D(allocation["quantity_contracts"])
+        * D(bound["instrument_quantity_constraints"]["contract_multiplier"])
+        * D(str(entry["price_basis"]["mid_price"]))
+    )
+    assert D(allocation["nominal_usd"]) == nominal
+    assert D(allocation["nominal_usdc"]) == nominal / D(allocation["usd_per_usdc"])
     limit = D(receipt["effective_entry_cost_limit_usd"])
-    assert limit == (D(25) if entry_limit is None else entry_limit) * D(exact["usd_per_usdc"])
-    assert D(exact["mark_notional_usd"]) + D(exact["model_costs"]["total_reserve"]) <= limit
-    anchor = float(entry["fill"]["fill_price"])
+    assert limit == (D(25) if entry_limit is None else entry_limit) * D(allocation["usd_per_usdc"])
+    assert nominal + D(allocation["cost_allowance_usd"]) <= limit
+    assert all(c["fill"] is None and c["instrument_card_execution_check"] is None for c in cycles)
+    assert all(c["portfolio_snapshot"]["state"]["positions"] == {} for c in cycles)
+    assert entry["intended_action"]["intended_side"] == "HOLD"
+    assert entry["intended_action"]["intended_quantity"] == "0"
+    assert entry["soph_simulated_first_purchase"]["reason_codes"] == [
+        "SOPH_FIRST_PURCHASE_RANKING_UNIVERSE_BINDING_REQUIRED"
+    ]
+    assert entry_idx < len(cycles) - 1
     for c in cycles[entry_idx + 1 :]:
         inp = prepared[c["cycle_id"]]
-        assert c["instrument_card_geometry"]["position_anchor_before"] == anchor
-        assert inp["runtime_scope_state"]["anchor_price"] == max(
-            anchor, c["price_basis"]["mid_price"]
-        )
-        assert inp["runtime_scope_bound_instrument_id"] == SOPH.instrument_id
+        assert c["soph_confirmed_entry_budget"] == allocation
+        assert inp["runtime_scope_state"] is None
         assert c["instrument_card_entry_review"] is None
-        anchor = max(anchor, c["price_basis"]["mid_price"])
-        if c["fill"]:
-            break
+    for row in evaluated:
+        decision = row["master_v2"]["decision"]
+        if decision["cycle_index"] > entry["cycle_index"]:
+            assert row["budget"]["original_snapshot"]["confirmed_entry_budget"] == allocation
+            assert D(row["budget"]["available_for_new_entry"]) == 0
+            assert D(row["budget"]["available_amount"]) == 25
+            assert row["budget"]["reserved_amount"] is None
     assert json.loads((root / "full_economic_reconstruction_verifier.json").read_bytes())["ok"]
     assert json.loads((cards / "latest.json").read_bytes())["body"]["status"] == "BLOCKED"
+
+
+@pytest.mark.parametrize(
+    ("direction", "mismatch"),
+    [
+        (1, None),
+        (-1, None),
+        (1, "ranking_integrity_digest"),
+        (-1, "universe_snapshot_id"),
+        (1, "expired"),
+    ],
+)
+def test_soph_ranked_shadow_books_only_the_bound_first_purchase(
+    tmp_path, monkeypatch, run_two_hour_shadow, direction, mismatch
+):
+    from tests.ops import (
+        test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 as sources,
+    )
+    from tests.ops.test_integrated_paper_shadow_observation_wallclock_session_execution_v1 import (
+        SHA,
+    )
+
+    market = _market(slot=SOPH)
+    instrument = dict(
+        market.source_observations["instrument"].payload["data"][0],
+        baseCcy="SOPH",
+        quoteCcy="USD",
+        expTime="1946966400000",
+        uly="SOPH-USD",
+    )
+    with monkeypatch.context() as patch:
+        published = market.observed_unix - (86400 if mismatch == "expired" else 0)
+        patch.setattr(sources.time, "time", lambda: published)
+        chain = sources._build_fresh_chain(
+            tmp_path / "build", repository_sha=SHA, instrument_rows=[instrument]
+        )
+    root = sources._materialize_productivity_root(tmp_path, chain)
+    handoff = sources.acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+        productivity_root=root,
+        repository_sha=SHA,
+        binding_epoch=chain["binding_epoch"],
+        observed_portfolio=sources._empty_portfolio(),
+        observation_now_unix=published - 30,
+    )
+
+    def capture(*, slot, capture_id, clock):
+        step = round((clock() - market.observed_unix) / 2)
+        mark = (D("0.0335") * (1 + direction * D(step) / (1000 + step))).quantize(D("0.00001"))
+        return _market(
+            step,
+            slot=slot,
+            price=mark,
+            direction=direction,
+            funding_cut=(int(clock()) // 3600 + 1) * 3600,
+        )
+
+    ranked = handoff.bound_instrument
+    if mismatch and mismatch != "expired":
+        ranked = replace(ranked, **{mismatch: "f" * 64})
+    evidence, result, _ = run_two_hour_shadow(
+        flat=False,
+        instrument=SOPH_I17,
+        card_source=capture,
+        start_wall=market.observed_unix + 0.01,
+        entry_limit=D("10"),
+        ranking_bound=ranked,
+        selection_root=root,
+    )
+    assert result.terminal_verdict == "PASS", result.to_dict()
+    cycles = [
+        json.loads(line)
+        for line in (evidence / "bridge_cycle_ledger.jsonl").read_text().splitlines()
+    ]
+    attempts = [c for c in cycles if c["soph_simulated_first_purchase"]]
+    assert len(attempts) == 1
+    cycle = attempts[0]
+    purchase = cycle["soph_simulated_first_purchase"]
+    if mismatch:
+        assert purchase["status"] == "BLOCKED" and purchase["reason_codes"]
+        if mismatch == "expired":
+            assert purchase["reason_codes"] == ["SELECTION_STALE_FOR_BINDING_EPOCH"]
+        assert not any(c["fill"] for c in cycles)
+        return
+    assert purchase["status"] == "FILLED", (purchase, cycle["cycle_index"])
+    entry, fill = cycle["soph_confirmed_entry_budget"], cycle["fill"]
+    assert purchase["decision_id"] == entry["decision_id"]
+    assert fill["side"] == entry["first_purchase_side"] == ("BUY" if direction == 1 else "SELL")
+    assert purchase["envelope"]["envelope_digest"] == fill["opening_envelope_digest"]
+    assert purchase["fill_id"] == fill["fill_id"]
+    assert D(fill["quantity_contracts"]) == D(entry["quantity_contracts"])
+    assert D(
+        cycle["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]
+    ) == direction * D(fill["quantity"])
+    assert cycle["instrument_card_geometry"]["position_anchor_before"] is None
+    assert cycle["instrument_card_geometry"]["position_anchor_after"] == float(fill["fill_price"])
+    assert cycle["cycle_index"] == 3 and cycles[-1]["cycle_index"] == 120
+    occupied = [c for c in cycles if c["cycle_index"] > cycle["cycle_index"]]
+    assert [c["cycle_index"] for c in occupied] == list(range(4, 121))
+    assert (
+        cycles[63]["price_basis"]["receive_ts_unix"] - occupied[0]["price_basis"]["receive_ts_unix"]
+        == 3600
+    )
+    anchor = float(fill["fill_price"])
+    for c in occupied:
+        timer = c["cap65_exit_producers"]["time_exit"]
+        assert not timer["triggered"] and timer["reason_code"] == "ROTATION_CLOSE_SOURCES_MISSING"
+        assert c["decision_outcome"] == "hold" and c["fill"] is None
+        assert c["soph_confirmed_entry_budget"] == entry
+        position = c["soph_shadow_capital_binding"]["crs_position_contracts"]
+        assert D(position["signed_quantity"]) == direction * D(entry["quantity_contracts"])
+        assert D(c["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]) == (
+            direction * D(fill["quantity"])
+        )
+        geometry = c["instrument_card_geometry"]
+        assert geometry["core_distance_verified"] and geometry["position_anchor_before"] == anchor
+        anchor = geometry["position_anchor_after"]
+        assert anchor == geometry["mark"] == c["price_basis"]["mid_price"]
+    from src.ops.soph_shadow_first_purchase_v1 import verify_soph_shadow_purchase_receipt_v1
+
+    assert not verify_soph_shadow_purchase_receipt_v1(
+        dict(cycle, fill=dict(fill, quantity_contracts="0"))
+    )
+    assert json.loads((evidence / "full_economic_reconstruction_verifier.json").read_bytes())["ok"]
 
 
 @pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
@@ -760,6 +977,112 @@ def test_scope_anchor_follows_position_side(side, marks, expected):
             scope.current_downscope_boundary,
             scope.current_upscope_boundary,
         ) == (anchor, anchor - 0.5, anchor + 0.5)
+
+
+@pytest.mark.parametrize("side", ["long", "short"])
+def test_booked_position_advances_its_own_anchor_through_regular_card_tick(tmp_path, side):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+        prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+    )
+    from src.ops.instrument_card_input_observation_v1 import observe_instrument_card_input_v1
+    from tests.ops.test_soph_shadow_capital_risk_binding_v1 import _regular_card_tick
+    from trading.master_v2.canonical_volatility_productive_runtime_cmc_typed_binding_v1 import (
+        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1,
+    )
+    from trading.master_v2.double_play_state import RuntimeScopeState, SideState
+
+    market = _market(slot=SOPH)
+    state = HardenedBridgeSessionStateV2(
+        instrument_id=SOPH.instrument_id,
+        venue_instrument_id=SOPH.native_id,
+        side_state=SideState.LONG_ACTIVE if side == "long" else SideState.SHORT_ACTIVE,
+    )
+    source = shadow_budget_source_v1(state, repo=REPO)
+    source(market=market, now=market.observed_unix)
+    opening = state.portfolio.apply_intended_action(
+        instrument_id=SOPH.instrument_id,
+        side="BUY" if side == "long" else "SELL",
+        quantity=market.native_contract.contract_size,
+        mark_price=market.mark * (D("0.99") if side == "long" else D("1.01")),
+        intent_id="fixture-opening",
+        fill_id="fixture-fill",
+    )
+    state.card_position_scope = RuntimeScopeState(anchor_price=float(opening.fill_price))
+    g17 = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+        evidence_store_root=tmp_path,
+        bound_instrument=bound(market),
+        mark_candles_payload=market.g17_payload,
+        receive_or_capture_timestamp=market.g17_acquired_at,
+    )
+    state.typed_volatility_cmc_binding_host = (
+        CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
+    )
+    inputs = []
+    with observe_instrument_card_input_v1(inputs.append):
+        result = _regular_card_tick(
+            state, market, source(market=market, now=market.observed_unix), sequence=1
+        )
+    assert result.ok and result.bridge_cycle is not None
+    assert result.bridge_cycle["instrument_card_entry_review"] is None
+    assert inputs[0].runtime_scope_state.anchor_price == float(market.mark)
+    assert inputs[0].runtime_scope_bound_instrument_id == SOPH.instrument_id
+    assert result.bridge_cycle["instrument_card_geometry"]["position_anchor_before"] == float(
+        opening.fill_price
+    )
+    assert state.soph_confirmed_entry_budget is None
+
+    # At the old holding deadline a separate operator kill must still reach the portfolio.
+    state.killstate_active = True
+    state.killstate_trigger = "OFFLINE_OPERATOR_KILL"
+    later = _market(
+        1800, slot=SOPH, price=market.mark, funding_cut=int(market.observed_unix) + 7200
+    )
+    assert later.observed_unix - state.exit_policy_binding.entry_event_time == 3600
+    killed = _regular_card_tick(
+        state, later, source(market=later, now=later.observed_unix), sequence=2
+    ).bridge_cycle
+    assert killed["cap65_exit_producers"]["time_exit"]["triggered"] is False
+    safety = killed["cap65_exit_producers"]["safety_exit"]
+    assert safety["triggered"] and safety["reason_code"] == state.killstate_trigger
+    assert killed["fill"]["side"] == ("SELL" if side == "long" else "BUY")
+    assert (
+        D(killed["portfolio_snapshot"]["state"]["positions"][SOPH.instrument_id]["quantity"]) == 0
+    )
+
+
+@pytest.mark.parametrize("field", ["selection_id", "selection_integrity_digest"])
+def test_confirmed_market_entry_is_bound_to_original_card(field):
+    from types import SimpleNamespace
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        _prepare_card_observation,
+    )
+
+    market = _market(slot=SOPH)
+    original = bound(market)
+    state = HardenedBridgeSessionStateV2(
+        session_id="offline",
+        instrument_id=SOPH.instrument_id,
+        venue_instrument_id=SOPH.native_id,
+        soph_confirmed_entry_budget=dict(
+            session_id="offline",
+            lane_id=SOPH.lane_id,
+            instrument_id=original.instrument_id,
+            venue_native_id=original.venue_native_id,
+            selection_id=original.selection_id,
+            selection_integrity_digest=original.selection_integrity_digest,
+        ),
+    )
+    with pytest.raises(ValueError, match="CARD_CONFIRMED_ENTRY_BINDING_MISMATCH"):
+        _prepare_card_observation(
+            state,
+            market=market,
+            bound=replace(original, **{field: "b" * 64}),
+            budget=None,
+            observation=SimpleNamespace(venue_flat=True),
+            price_basis=None,
+            now=market.observed_unix,
+        )
+    assert state.card_observations is None and state.cycle_index == 0
 
 
 def test_duplicate_mark_preserves_cursor_and_blocked_side_cannot_confirm(tmp_path):

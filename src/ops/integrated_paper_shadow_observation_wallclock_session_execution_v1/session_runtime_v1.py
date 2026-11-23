@@ -190,6 +190,7 @@ class WallclockSessionRuntimeV1:
         instrument_card_source: Callable[..., Any] | None = None,
         instrument_card_budget_source: Callable[..., Any] | None = None,
         instrument_card_ranking_bound: Any = None,
+        instrument_card_selection_root: Path | None = None,
     ) -> None:
         self.evidence_root = evidence_root
         self.transport = transport
@@ -203,6 +204,7 @@ class WallclockSessionRuntimeV1:
         self.instrument_card_source = instrument_card_source
         self.instrument_card_budget_source = instrument_card_budget_source
         self.instrument_card_ranking_bound = instrument_card_ranking_bound
+        self.instrument_card_selection_root = instrument_card_selection_root
         self.instrument_card_stream = None
         self._card_g17_window = None
         self.state = WallclockSessionState.CREATED
@@ -732,6 +734,8 @@ class WallclockSessionRuntimeV1:
                     instrument_id=self.venue_mapping.canonical_instrument_id,
                     venue_instrument_id=self.venue_mapping.venue_instrument_id,
                     soph_entry_cost_limit_usdc=entry_limit,
+                    soph_selection_root=self.instrument_card_selection_root,
+                    soph_selection_repository_sha=self._expected_repository_sha,
                 )
                 from src.ops.instrument_card_stream_v1 import (
                     InstrumentCardStreamV1,

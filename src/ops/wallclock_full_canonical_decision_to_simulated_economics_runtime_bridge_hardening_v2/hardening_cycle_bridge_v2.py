@@ -591,6 +591,9 @@ class HardenedBridgeSessionStateV2:
     card_scope_confirmation: ScopeConfirmationStateV1 | None = None
 
     soph_entry_cost_limit_usdc: Decimal | None = None
+    soph_confirmed_entry_budget: dict[str, Any] | None = None
+    soph_selection_root: Path | None = None
+    soph_selection_repository_sha: str | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -839,6 +842,9 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
         CardEntryDeferredV1,
         review_entry_cards_v1,
     )
+    from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import (
+        opening_order_side_v1,
+    )
     from trading.market_state.elementary_direction_v1 import (
         evaluate_elementary_direction_from_observation_acceptance_v1,
         ElementaryDirectionV1,
@@ -848,7 +854,7 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
         raise ValueError("CARD_ORIGINAL_BOUND_INSTRUMENT_REQUIRED")
     entry_side_state = state.side_state
     lane_id = market.slot.lane_id
-    if observation.venue_flat:
+    if observation.venue_flat and state.soph_confirmed_entry_budget is None:
         card_review = review_entry_cards_v1({lane_id: EntryCardV1(bound, market, budget)}, now=now)[
             lane_id
         ]
@@ -860,8 +866,18 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
             card_review["venue_native_id"],
         )
     else:
-        # The existing position stays bound even when there is no free entry capital.
+        # Both a pending first purchase and a booked position keep their original binding.
         card_review = None
+        pending = state.soph_confirmed_entry_budget
+        if pending is not None and (
+            pending["session_id"] != state.session_id
+            or pending["lane_id"] != lane_id
+            or pending["instrument_id"] != bound.instrument_id
+            or pending["venue_native_id"] != bound.venue_native_id
+            or pending["selection_id"] != bound.selection_id
+            or pending["selection_integrity_digest"] != bound.selection_integrity_digest
+        ):
+            raise ValueError("CARD_CONFIRMED_ENTRY_BINDING_MISMATCH")
         key = InstrumentObservationKeyV1(
             _DEFAULT_VOL_TYPED_BINDING_VENUE, bound.instrument_id, bound.venue_native_id
         )
@@ -896,20 +912,29 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
     if not card_acceptance.strategy_advance_allowed and not state.killstate_active:
         raise CardEntryDeferredV1(
             dict(
-                card_review or {"lane_id": lane_id, "phase": "MANAGE_POSITION"},
+                card_review
+                or {
+                    "lane_id": lane_id,
+                    "phase": "AWAIT_FIRST_PURCHASE"
+                    if observation.venue_flat
+                    else "MANAGE_POSITION",
+                },
                 reasons=[card_acceptance.reason_code],
             )
         )
-    if observation.venue_flat:
-        eligible = {side for side, result in card_review["sides"].items() if result["eligible"]}
+    if card_review is not None:
         direction = evaluate_elementary_direction_from_observation_acceptance_v1(
             card_acceptance, bound_instrument_key=key, current_mark=float(market.mark)
         ).direction
-        side = {ElementaryDirectionV1.BULL: "BUY", ElementaryDirectionV1.BEAR: "SELL"}.get(
-            direction
-        )
-        card_review["observed_side"] = side
-        if not eligible or (side is not None and side not in eligible):
+        market_direction = {
+            ElementaryDirectionV1.BULL: "long",
+            ElementaryDirectionV1.BEAR: "short",
+        }.get(direction)
+        card_review["market_direction"] = market_direction
+        order_side = opening_order_side_v1(market_direction) if market_direction else None
+        card_review["opening_order_side"] = order_side
+        eligible = {side for side, result in card_review["sides"].items() if result["eligible"]}
+        if not eligible or (order_side is not None and order_side not in eligible):
             _defer_flat_card_entry(
                 state, card_review, card_acceptance, "CARD_MARKET_SIDE_NOT_RELEASED"
             )
@@ -922,9 +947,9 @@ def _prepare_card_observation(state, *, market, bound, budget, observation, pric
             SideState.SHORT_ARMED_NEUTRAL_START,
         }:
             entry_side_state = {
-                "BUY": SideState.LONG_ARMED_NEUTRAL_START,
-                "SELL": SideState.SHORT_ARMED_NEUTRAL_START,
-            }.get(side, SideState.NEUTRAL_OBSERVE)
+                "long": SideState.LONG_ARMED_NEUTRAL_START,
+                "short": SideState.SHORT_ARMED_NEUTRAL_START,
+            }.get(market_direction, SideState.NEUTRAL_OBSERVE)
 
     return card_review, card_acceptance, entry_side_state
 
@@ -1257,7 +1282,6 @@ def run_hardened_bridge_cycle_v2(
     layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
         market_context
     )
-    minimum_lot_cost = None
     if card_review is not None and not state.killstate_active:
         from src.ops.soph_shadow_capital_risk_binding_v1 import (
             soph_shadow_minimum_lot_cost_v1,
@@ -1276,15 +1300,17 @@ def run_hardened_bridge_cycle_v2(
             adverse_exit_distance=layer_c_event_distances.adverse_exit_distance,
         )
         card_review["minimum_lot_cost"] = minimum_lot_cost
-        observed_side = card_review["observed_side"]
+        market_direction = card_review["market_direction"]
         eligible = {
-            side for side, cost in minimum_lot_cost["sides"].items() if cost["measurement_admitted"]
+            direction
+            for direction, cost in minimum_lot_cost["by_direction"].items()
+            if cost["measurement_admitted"]
         }
-        if not eligible or (observed_side is not None and observed_side not in eligible):
+        if not eligible or (market_direction is not None and market_direction not in eligible):
             _defer_flat_card_entry(
                 state, card_review, card_acceptance, "CARD_MINIMUM_LOT_COST_NOT_ADMITTED"
             )
-        if observed_side is not None:
+        if market_direction is not None:
             boundary = soph_shadow_entry_sizing_boundary_v1(
                 state=state,
                 market=instrument_card_market,
@@ -1353,6 +1379,11 @@ def run_hardened_bridge_cycle_v2(
             data_integrity_trusted=True,
             adverse_exit_distance=cycle_adverse_exit_distance,
             separate_scope_adverse_exit=False,
+            # An occupied SOPH card uses the rotation-only time exit. This shadow
+            # host has no slot-bound rotation nomination or replacement evidence.
+            rotation_time_exit={"allowed": False, "reason": "ROTATION_CLOSE_SOURCES_MISSING"}
+            if instrument_card_market is not None and has_open_position
+            else None,
             profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             killstate_active=bool(state.killstate_active),
             killstate_trigger=str(state.killstate_trigger or ""),
@@ -1593,12 +1624,85 @@ def run_hardened_bridge_cycle_v2(
     if instrument_card_market is not None:
         intended_dict["intended_quantity_unit"] = instrument_card_market.slot.base_currency
 
+    confirmed_budget = state.soph_confirmed_entry_budget
+    first_purchase = None
+    if (
+        card_acceptance is not None
+        and observation.venue_flat
+        and intended_dict["intended_side"] in {"BUY", "SELL"}
+    ):
+        from src.ops.soph_shadow_capital_risk_binding_v1 import soph_shadow_confirm_entry_budget_v1
+
+        if (
+            confirmed_budget is None
+            and card_review is not None
+            and intended_dict["intended_side"] == card_review["opening_order_side"]
+            and intended_dict["decision_outcome"] == f"enter_{card_review['market_direction']}"
+            and intended.quantity_source == "canonical_order_intent"
+            and effective_trading_gate == TradingGate.ENTRY_ALLOWED
+            and not state.killstate_active
+        ):
+            confirmed_budget = soph_shadow_confirm_entry_budget_v1(
+                replay=replay,
+                state=state,
+                market=instrument_card_market,
+                budget=instrument_card_budget,
+                review=card_review,
+                limit=capital_binding["flat_entry_cost_bound"],
+                cycle_id=cycle_id,
+            )
+            if confirmed_budget is not None:
+                from src.ops.instrument_card_stream_v1 import bind_shadow_slot_entry_budget_v1
+                from src.ops.soph_shadow_first_purchase_v1 import (
+                    prepare_soph_shadow_first_purchase_v1,
+                )
+
+                bind_shadow_slot_entry_budget_v1(
+                    state=state, bound=bound, budget=instrument_card_budget, entry=confirmed_budget
+                )
+                first_purchase = prepare_soph_shadow_first_purchase_v1(
+                    state=state,
+                    replay=replay,
+                    bound=bound,
+                    market=instrument_card_market,
+                    budget=instrument_card_budget,
+                    cycle_id=cycle_id,
+                    repository_sha=state.soph_selection_repository_sha,
+                    clock=instrument_card_execution_clock,
+                )
+        # A flat card confirms a market direction and its budget. Its native
+        # entry intent is evidence for sizing, never a portfolio transaction.
+        intended_dict.update(
+            intended_side="HOLD",
+            intended_quantity="0",
+            intent_action="NONE",
+            quantity_source="market_entry_without_portfolio_transaction",
+            reason_codes=[
+                *intended_dict["reason_codes"],
+                "MARKET_ENTRY_BUDGET_CONFIRMED"
+                if confirmed_budget
+                else "MARKET_ENTRY_BUDGET_UNCONFIRMED",
+            ],
+        )
+        quantity_projection["portfolio_quantity_base"] = "0"
+
     before_hash = portfolio_state_hash(state.portfolio.snapshot())
     fill_id = None
     fill_dict = None
     side = str(intended_dict["intended_side"])
     qty = Decimal(str(intended_dict["intended_quantity"]))
     card_execution_check = None
+    if first_purchase is not None and first_purchase["status"] == "PLAN_BOUND":
+        side = first_purchase["envelope"]["side"].upper()
+        qty = Decimal(first_purchase["quantity_base"])
+        card_execution_check = first_purchase["execution_check"]
+        intended_dict.update(
+            intended_side=side,
+            intended_quantity=str(qty),
+            intent_action="FIRST_PURCHASE",
+            quantity_source="bound_simulated_first_purchase_plan",
+        )
+        quantity_projection["portfolio_quantity_base"] = str(qty)
     new_exposure = False
     if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0:
         position = (
@@ -1610,7 +1714,7 @@ def run_hardened_bridge_cycle_v2(
         current_base = Decimal(str(position.get("quantity", "0")))
         target_base = current_base + (qty if side == "BUY" else -qty)
         new_exposure = abs(target_base) > abs(current_base) or current_base * target_base < 0
-    if instrument_card_market is not None and side in {"BUY", "SELL"} and qty > 0 and new_exposure:
+    if new_exposure and card_execution_check is None:
         # This legacy analytical portfolio counts base units, not native
         # contracts. Never reinterpret its amount as a native order quantity.
         # The original replay decision remains intact; incompatible analytical
@@ -1653,27 +1757,6 @@ def run_hardened_bridge_cycle_v2(
                 if forced_actionable is not None
                 else None
             )
-            if minimum_lot_cost is not None:
-                limit = capital_binding.get("flat_entry_cost_bound")
-                if (
-                    limit is None
-                    or limit["side"] != side
-                    or qty
-                    > Decimal(limit["maximum_contracts"])
-                    * instrument_card_market.native_contract.contract_size
-                    or limit["configured_entry_cost_limit_usdc"]
-                    != (
-                        None
-                        if state.soph_entry_cost_limit_usdc is None
-                        else str(state.soph_entry_cost_limit_usdc)
-                    )
-                ):
-                    raise ValueError("CARD_ENTRY_SIZING_BOUND_MISMATCH")
-                entry_measurement = minimum_lot_cost["sides"][side]
-                if not entry_measurement["measurement_admitted"] or stop_distance != Decimal(
-                    entry_measurement["stop_distance"]
-                ):
-                    raise ValueError("CARD_MINIMUM_LOT_SIZING_BINDING_MISMATCH")
             card_execution_check = soph_shadow_cost_check_v1(
                 state=state,
                 market=instrument_card_market,
@@ -1748,6 +1831,9 @@ def run_hardened_bridge_cycle_v2(
             fill_dict["quantity_contracts"] = str(
                 qty / instrument_card_market.native_contract.contract_size
             )
+        if first_purchase is not None and first_purchase["status"] == "PLAN_BOUND":
+            fill_dict["opening_envelope_digest"] = first_purchase["envelope"]["envelope_digest"]
+            first_purchase.update(status="FILLED", fill_id=fill_id)
         state.fill_ledger.append(dict(fill_dict))
 
     if card_acceptance is not None:
@@ -1879,6 +1965,10 @@ def run_hardened_bridge_cycle_v2(
                 "soph_shadow_capital_binding": capital_binding,
                 "instrument_card_quantity_projection": quantity_projection,
                 "instrument_card_entry_review": card_review,
+                "soph_simulated_first_purchase": first_purchase,
+                "soph_confirmed_entry_budget": None
+                if confirmed_budget is None
+                else dict(confirmed_budget),
                 "instrument_card_geometry": None
                 if card_geometry is None
                 else {

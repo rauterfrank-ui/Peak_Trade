@@ -132,6 +132,8 @@ def test_actual_sizing_and_intent_consume_converted_budget_and_native_grid(fx, s
         market=market,
     )
     assert action.intended_quantity == expected * 10
+    assert action.intended_side == ("BUY" if side == "long" else "SELL")
+    assert action.selected_side == side
     assert D(projection["mapper_quantity_contracts"]) == expected
     assert projection["portfolio_quantity_unit"] == "SOPH"
     assert not intent.evidence.execution_eligible
@@ -143,6 +145,78 @@ def test_actual_sizing_and_intent_consume_converted_budget_and_native_grid(fx, s
     assert receipt["capital_risk_mode"] == "OFFLINE_ALGEBRA" and receipt["authority"] == "NONE"
     assert receipt["daily_loss_field_lineage"].endswith("NOT_ACCOUNT_DAILY_BALANCE")
     assert state.portfolio.snapshot() == before
+
+    model = deepcopy(state.portfolio.model)
+    model.apply_intended_action(
+        instrument_id=SOPH.instrument_id,
+        side=action.intended_side,
+        quantity=market.native_contract.contract_size,
+        mark_price=market.mark,
+    )
+    position = model.state.positions[SOPH.instrument_id]
+    sign = 1 if side == "long" else -1
+    assert position.quantity == sign * market.native_contract.contract_size
+    for move in (D("0.01"), D("-0.01")):
+        model.apply_intended_action(
+            instrument_id=SOPH.instrument_id,
+            side="HOLD",
+            quantity=D(0),
+            mark_price=position.avg_entry_price * (1 + sign * move),
+        )
+        assert position.unrealized_pnl * move > 0
+
+
+@pytest.mark.parametrize(("short", "side"), [(False, "buy"), (True, "sell")])
+def test_soph_budget_validator_requires_the_sized_opening_side(tmp_path, monkeypatch, short, side):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
+        try_bind_current_productive_venue_plan_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+        bind_final_order_envelope_from_venue_plan_v1,
+    )
+    from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
+
+    host, kwargs, _ = prepare(tmp_path, monkeypatch, short=short, asset="SOPH", slot="LANE_5")
+    try:
+        entry = join(**kwargs)
+        assert entry.status == "PASS", entry.reason_codes
+        session = "usdc-financial-test"
+        status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+            replay=entry.replay,
+            bound_instrument=kwargs["bound_instrument"],
+            session_id=session,
+            run_id=session,
+            composed_epoch=EPOCH,
+            execution_mode="INTERNAL_SIMULATED_EXECUTION",
+        )
+        assert status.value == "PASS", reasons
+        assert plan.side == side and not plan.reduce_only
+        refs = dict(admission_ref=session, provenance_ref=session, creation_epoch=EPOCH)
+        envelope = bind_final_order_envelope_from_venue_plan_v1(plan, **refs)
+        opposite = "buy" if short else "sell"
+        reversed_plan = replace(
+            plan,
+            side=opposite,
+            venue_native_payload={**plan.venue_native_payload, "side": opposite},
+        )
+        reversed_envelope = bind_final_order_envelope_from_venue_plan_v1(reversed_plan, **refs)
+        owner = host.owner
+        rid = entry.portfolio_reservation_id
+        owner.commit_internal_pre_external_effect_v1(rid)
+        before = owner._store.sequence
+        with pytest.raises(ValueError, match="EXECUTION_LINK_SIZING_MISMATCH"):
+            owner.bind_execution_plan_v1(rid, reversed_envelope)
+        assert owner._store.sequence == before
+        link = owner.bind_execution_plan_v1(
+            rid,
+            envelope,
+            canonical_intent=entry.replay.intermediate.canonical_order_intent,
+            venue_plan=plan,
+        )
+        assert link["envelope"]["side"] == side and link["phase"] == "PLAN_BOUND"
+        owner.inspect_current_entry_budget_policy_v1(rid, envelope)
+    finally:
+        host.close()
 
 
 @pytest.mark.parametrize("side", ["BUY", "SELL"])
@@ -427,20 +501,20 @@ def test_flat_card_requires_a_bound_distance_before_confirmation():
 @pytest.mark.parametrize(
     "free,cap,floor,admitted,entry_limit",
     [
-        ("0.33570", "0.003", "-0.0001", {"SELL"}, None),
-        ("0.33570", "0.0001", "-0.003", {"BUY"}, None),
+        ("0.33570", "0.003", "-0.0001", {"short"}, None),
+        ("0.33570", "0.0001", "-0.003", {"long"}, None),
         ("0.33570", "0.003", "-0.003", set(), None),
-        ("0.34000", "0.003", "-0.003", {"BUY", "SELL"}, None),
+        ("0.34000", "0.003", "-0.003", {"long", "short"}, None),
         ("0.33505", "0.003", "-0.0001", set(), None),
-        ("25", "0.003", "-0.0001", {"SELL"}, "0.33570"),
-        ("25", "0.0001", "-0.003", {"BUY"}, "0.33570"),
+        ("25", "0.003", "-0.0001", {"short"}, "0.33570"),
+        ("25", "0.0001", "-0.003", {"long"}, "0.33570"),
         ("25", "0.003", "-0.003", set(), "0"),
         ("25", "0.003", "-0.003", set(), "0.30"),
     ],
 )
-@pytest.mark.parametrize("side", ["BUY", "SELL"])
+@pytest.mark.parametrize("direction", ["long", "short"])
 def test_regular_flat_card_minimum_cost_precedes_confirmation(
-    tmp_path, free, cap, floor, admitted, side, entry_limit
+    tmp_path, free, cap, floor, admitted, direction, entry_limit
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
         prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
@@ -452,7 +526,7 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
     )
 
     price = D("0.03350")
-    earlier = price + (D("-0.00001") if side == "BUY" else D("0.00001"))
+    earlier = price + (D("-0.00001") if direction == "long" else D("0.00001"))
     state = HardenedBridgeSessionStateV2(
         instrument_id=SOPH.instrument_id, venue_instrument_id=SOPH.native_id
     )
@@ -489,11 +563,11 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
             assert outcome.bridge_cycle and len(inputs) == 1
             first_epoch = state.card_observations.market_observation_epoch
     assert state.card_observations.market_observation_epoch != first_epoch
-    if side in admitted:
+    if direction in admitted:
         assert len(inputs) == state.cycle_index == len(state.mid_prices) == 2
         assert (
             inputs[-1].side_state.name
-            == {"BUY": "LONG_ARMED_NEUTRAL_START", "SELL": "SHORT_ARMED_NEUTRAL_START"}[side]
+            == {"long": "LONG_ARMED_NEUTRAL_START", "short": "SHORT_ARMED_NEUTRAL_START"}[direction]
         )
         review = outcome.bridge_cycle["instrument_card_entry_review"]
         assert outcome.bridge_cycle["fill"] is None
@@ -501,9 +575,11 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
         assert len(inputs) == state.cycle_index == len(state.mid_prices) == 1
         review = outcome.labels["deferred_card"]
         assert state.card_confirmation is None
-    assert state.card_position_scope is None and review["observed_side"] == side
+    assert state.card_position_scope is None and review["market_direction"] == direction
     assert D(review["available_usdc"]) == D(free)
-    if not review["sides"][side]["eligible"]:
+    order_side = "BUY" if direction == "long" else "SELL"
+    assert review["opening_order_side"] == order_side
+    if not review["sides"][order_side]["eligible"]:
         assert review["reasons"] == ["CARD_MARKET_SIDE_NOT_RELEASED"]
         return
     measurement = review["minimum_lot_cost"]
@@ -512,11 +588,20 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
         and measurement["venue_native_id"] == SOPH.native_id
     )
     assert D(measurement["minimum_contracts"]) == 1 and D(measurement["quantity_base"]) == 10
-    assert {s for s, row in measurement["sides"].items() if row["measurement_admitted"]} == admitted
-    if side not in admitted:
+    assert {
+        s for s, row in measurement["by_direction"].items() if row["measurement_admitted"]
+    } == admitted
+    measured = measurement["by_direction"][direction]
+    assert measured["side"] == order_side
+    executable_price = D(measured["liquidity"]["open_price_usd"])
+    if direction == "long":
+        assert executable_price >= market.book.asks[0][0]
+    else:
+        assert executable_price <= market.book.bids[0][0]
+    if direction not in admitted:
         assert review["reasons"] == ["CARD_MINIMUM_LOT_COST_NOT_ADMITTED"]
-    assert D(measurement["sides"][side]["stop_distance"]) == abs(
-        price - D(measurement["sides"][side]["protective_stop_price"])
+    assert D(measurement["by_direction"][direction]["stop_distance"]) == abs(
+        price - D(measurement["by_direction"][direction]["protective_stop_price"])
     )
 
 

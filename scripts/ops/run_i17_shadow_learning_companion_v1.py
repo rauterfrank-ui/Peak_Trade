@@ -302,6 +302,11 @@ def main(argv=None):
         type=Path,
         help="Carry an existing verified Cap24 selection into the SOPH card",
     )
+    run.add_argument(
+        "--card-selection-root",
+        type=Path,
+        help="Canonical published Cap21/22/23 state for the SOPH simulated first purchase",
+    )
     args = parser.parse_args(argv)
     try:
         if os.environ.get(REAL_NETWORK_ENV) != "1":
@@ -310,10 +315,17 @@ def main(argv=None):
         if args.mode == "run":
             prereg = _load_prereg(args.preregistration)
             card_bound = None
+            if args.card_selection_root is not None and args.card_cap24_evidence_root is None:
+                raise ValueError("I17_CARD_CAP24_EVIDENCE_REQUIRED")
             if args.card_cap24_evidence_root is not None:
                 from scripts.ops.run_zkp_lane1_paper_v1 import _read_cap24_binding
 
-                card_bound = _read_cap24_binding(args.card_cap24_evidence_root)
+                card_bound = _read_cap24_binding(
+                    args.card_cap24_evidence_root,
+                    entry_repository_sha=args.expected_repository_sha
+                    if args.card_selection_root is not None
+                    else None,
+                )
                 instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
                 if instrument.lane_id != "LANE_5" or (
                     card_bound.instrument_id,
@@ -347,6 +359,7 @@ def main(argv=None):
                 repo_root=REPO,
                 environ=os.environ,
                 instrument_card_ranking_bound=card_bound,
+                instrument_card_selection_root=args.card_selection_root,
             )
             if not result.ok:
                 raise ValueError("I17_COMPANION_OBSERVATION_FAILED:" + ",".join(result.blockers))
