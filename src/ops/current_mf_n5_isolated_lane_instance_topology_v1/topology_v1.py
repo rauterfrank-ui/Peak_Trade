@@ -53,9 +53,17 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
     SCHEMA_VERSION,
     UNIVERSE_ISOLATION_ENFORCED,
 )
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.soph_shadow_bootstrap_v1 import (
+    SOPH_SHADOW_INITIAL_ASSIGNMENT_POLICY,
+    SophShadowSlot2BootstrapV1,
+)
 from src.ops.mf_membership_context_artifact_contract_v1 import (
     MembershipContextArtifactV1,
+    eligible_prefix_from_cap22_snapshot,
     validate_membership_context_artifact_v1,
+)
+from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
+    SOPH_I17,
 )
 from src.ops.single_selected_future_policy_v1.governed_pin_v1 import (
     GovernedCap23InstrumentPinV1,
@@ -333,6 +341,7 @@ def _finish_topology(
     ranking_snapshot_id: str,
     ranking_integrity_digest: str,
     slots: Sequence[IsolatedLaneSlotV1],
+    initial_assignment_policy: str,
 ) -> IsolatedLaneTopologyV1:
     validated = _validate_slots(
         slots,
@@ -366,7 +375,7 @@ def _finish_topology(
         mf_productive_join=MF_PRODUCTIVE_JOIN,
         five_lane_runtime_created=FIVE_LANE_RUNTIME_CREATED,
         max_positions_effective=MAX_POSITIONS_EFFECTIVE,
-        initial_assignment_policy=INITIAL_ASSIGNMENT_POLICY,
+        initial_assignment_policy=initial_assignment_policy,
         retained_member_policy=RETAINED_MEMBER_POLICY,
         exit_policy=EXIT_POLICY,
         entry_policy=ENTRY_POLICY,
@@ -486,6 +495,7 @@ def apply_isolated_lane_topology_v1(
     fallback_ranking_snapshot: Mapping[str, Any] | None = None,
     underfill_ranking_snapshot: Mapping[str, Any] | None = None,
     open_position_custody_portfolio: object | None = None,
+    soph_shadow_bootstrap: SophShadowSlot2BootstrapV1 | None = None,
 ) -> IsolatedLaneTopologyV1:
     """Assign governed members to opaque LANE_1..LANE_5 slots.
 
@@ -558,12 +568,32 @@ def apply_isolated_lane_topology_v1(
     base = Path(topology_state_root_base)
     assignment: dict[str, str] = {}
 
+    initial_policy = INITIAL_ASSIGNMENT_POLICY
+    if soph_shadow_bootstrap is not None:
+        soph_shadow_bootstrap.require_topology_root(base)
+        if prior_topology is not None or not decided.bootstrap:
+            _fail("SOPH_SHADOW_INITIAL_ASSIGNMENT_REQUIRES_GENESIS")
+        rows = _instrument_rows(ranking_snapshot, SOPH_I17.canonical_id)
+        if (
+            tuple(current_ids) != eligible_prefix_from_cap22_snapshot(ranking_snapshot)
+            or SOPH_I17.canonical_id not in current_ids
+            or len(rows) != 1
+            or rows[0].get("venue_native_id") != SOPH_I17.native_id
+            or rows[0].get("eligibility_status") != "ELIGIBLE"
+        ):
+            _fail("SOPH_SHADOW_ELIGIBLE_MEMBER_REQUIRED")
+        assignment[SOPH_I17.canonical_id] = soph_shadow_bootstrap.lane_id
+        initial_policy = SOPH_SHADOW_INITIAL_ASSIGNMENT_POLICY
+
     if prior_topology is None:
         if not decided.bootstrap:
             _fail(FAILURE_RESTART_WITHOUT_PRIOR, decided.instance_id)
-        for lane_id, instrument_id in zip(LANE_IDS, current_ids):
+        free = [lane for lane in LANE_IDS if lane not in assignment.values()]
+        unassigned = [inst for inst in current_ids if inst not in assignment]
+        for lane_id, instrument_id in zip(free, unassigned, strict=False):
             assignment[instrument_id] = lane_id
     else:
+        initial_policy = prior_topology.initial_assignment_policy
         if prior_topology.universe_snapshot_id != universe_snapshot_id:
             _fail(FAILURE_CROSS_UNIVERSE, "prior_universe")
         if lane_state_root_key(prior_topology.topology_state_root_base) != lane_state_root_key(
@@ -618,6 +648,7 @@ def apply_isolated_lane_topology_v1(
         ranking_snapshot_id=ranking_snapshot_id,
         ranking_integrity_digest=ranking_integrity_digest,
         slots=slots,
+        initial_assignment_policy=initial_policy,
     )
 
 
