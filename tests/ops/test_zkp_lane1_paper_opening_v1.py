@@ -608,7 +608,9 @@ def test_cap24_preflight_discards_measurement_if_binding_changes_during_capture(
 
 @pytest.mark.parametrize("direction", [1, -1])
 @pytest.mark.parametrize("slot", [ZKP_PAPER_SLOT, UP_PAPER_SLOT, IRYS_PAPER_SLOT])
-def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction, slot):
+def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction, slot, monkeypatch):
+    timestamps = tmp_path / "confirmations"
+    monkeypatch.setenv("PEAK_TRADE_UP_PAPER_CONFIRMATION_DIR", str(timestamps))
     root = tmp_path.resolve() / "paper-net"
     args = dict(root=root, repo=REPO, revision="f" * 40, slot=slot)
     opened = ZkpPaperEntryV1(
@@ -673,6 +675,7 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
     booked_bytes = booking_path.read_bytes()
     cold = continuation.ZkpPaperContinuationV1(**args)
     receipt = cold.last_receipt
+    assert not timestamps.exists()  # recovery readback cannot timestamp the original confirmation
     assert receipt["status"] == "NET_REVERSAL_BOOKED"
     assert receipt["lane_id"] == slot.lane_id and receipt["fill"]["instrument_id"] == slot.native_id
     assert receipt["previous_episode_id"] == initial["episode_id"]
@@ -716,6 +719,13 @@ def test_occupied_paper_books_one_net_fill_and_cold_resumes(tmp_path, direction,
     assert second["previous_episode_id"] == receipt["episode_id"]
     assert second["accounting"]["fill_count"] == 3
     assert continuation.ZkpPaperContinuationV1(**args).last_receipt == second
+    if slot == UP_PAPER_SLOT:
+        (stamp,) = timestamps.glob("*.json")
+        measured = json.loads(stamp.read_bytes())
+        assert measured["fill_id"] == second["fill"]["fill_id"]
+        assert measured["result_digest"] == continuation.canonical_digest_v1(second)
+    else:
+        assert not timestamps.exists()
     _seal_fixture(root, second)
     assert closed_paper_episode_ids_v1(root) == (initial["episode_id"], receipt["episode_id"])
     first, following = (

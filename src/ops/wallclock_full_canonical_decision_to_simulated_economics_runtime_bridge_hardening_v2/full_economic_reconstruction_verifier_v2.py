@@ -140,7 +140,12 @@ def verify_full_economic_reconstruction_v2(
             blockers.append(f"MISSING_PORTFOLIO_AFTER_HASH_{i}")
 
         action = cycle.get("intended_action") or {}
-        if (
+        if cycle.get("ranked_shadow_first_purchase") is not None:
+            from src.ops.ranked_shadow_first_purchase_v1 import verify_ranked_first_purchase_v1
+
+            if not verify_ranked_first_purchase_v1(cycle):
+                blockers.append(f"RANKED_SHADOW_FIRST_PURCHASE_LINKAGE_BREAK_{i}")
+        elif (
             cycle.get("soph_simulated_first_purchase") is not None
             or action.get("intent_action") == "FIRST_PURCHASE"
             or (cycle.get("fill") or {}).get("opening_envelope_digest")

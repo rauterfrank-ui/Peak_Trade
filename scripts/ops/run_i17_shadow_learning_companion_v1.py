@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 from datetime import timedelta
 from hashlib import sha256
 from http.client import HTTPException
@@ -294,6 +295,49 @@ def finish_companion_v1(*, root, clock=time, pause=sleep, capture=capture_public
         return handoff
 
 
+def shadow_gvef(path, root, evidence, prereg, selection):
+    from scripts.ops.nonlive_gvef_companion_v1 import paired_gvef, research_digest
+    from scripts.ops.run_recurrent_offline_research_v1 import ResearchCampaignV1
+
+    campaign = ResearchCampaignV1.model_validate_json(path.read_bytes())
+    slot = campaign.slot
+    instrument = require_i17_shadow_instrument_v1(prereg.instrument_allowlist)
+    if (
+        slot is None
+        or slot.surface != "SHADOW"
+        or slot.session_id != prereg.session_id
+        or slot.instrument_id != instrument.canonical_id
+        or slot.venue_native_id != instrument.native_id
+        or (instrument.lane_id is not None and slot.lane_id != instrument.lane_id)
+        or root.parent != campaign.shadow_follow_ups
+        or not evidence.is_relative_to(campaign.shadow_runs)
+        or not slot.starts_at.timestamp() <= time() < slot.ends_at.timestamp()
+        or (selection and selection.selection.integrity_digest != slot.n5_selection_digest)
+        or any(p.parent != root for p in campaign.shadow_follow_ups.glob("*/completion.json"))
+    ):
+        raise ValueError("I17_GVEF_SESSION_SCOPE_MISMATCH")
+    inputs = campaign.research_inputs[slot.instrument_id]
+    if not inputs:
+        raise ValueError("I17_GVEF_ORIGINAL_RESEARCH_INPUT_REQUIRED")
+    started_at = time()
+
+    def digests():
+        return [
+            research_digest(entry, slot.instrument_id, "SHADOW", started_at) for entry in inputs
+        ]
+
+    originals = digests()
+
+    def final():
+        if digests() != originals or any(
+            p.parent != root for p in campaign.shadow_follow_ups.glob("*/completion.json")
+        ):
+            raise ValueError("I17_GVEF_INPUT_OR_SOURCE_CHANGED")
+        return campaign
+
+    return paired_gvef(campaign, root / "gvef", final_campaign=final)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     modes = parser.add_subparsers(dest="mode", required=True)
@@ -305,6 +349,9 @@ def main(argv=None):
     inspect.add_argument("--ranked-slot-config", required=True, type=Path)
     for mode in (run, resume):
         mode.add_argument("--companion-root", type=Path, required=True)
+    run.add_argument(
+        "--gvef-campaign", type=Path, help="Run the scoped GVEF companion alongside Shadow DDO"
+    )
     run.add_argument("--preregistration", type=Path, required=True)
     run.add_argument("--operator-go", type=Path, required=True)
     run.add_argument("--authorization-artifact", type=Path, required=True)
@@ -348,6 +395,7 @@ def main(argv=None):
         root = _isolated(args.companion_root)
         if args.mode == "run":
             prereg = _load_prereg(args.preregistration)
+            assignment = None
             card_bound = None
             selection_source = None
             if args.ranked_slot_config is not None:
@@ -360,7 +408,9 @@ def main(argv=None):
                     or args.card_cap24_evidence_root
                 ):
                     raise ValueError("I17_SWAP_OBSERVATION_SCOPE_MISMATCH")
-                read_ranked_shadow_profile_v1(args.ranked_slot_config, scope, prereg.session_id)
+                assignment = read_ranked_shadow_profile_v1(
+                    args.ranked_slot_config, scope, prereg.session_id
+                )
                 selection_source = args.ranked_slot_config
             elif (
                 require_i17_shadow_instrument_v1(prereg.instrument_allowlist).instrument_type
@@ -401,25 +451,41 @@ def main(argv=None):
                 prereg=prereg,
                 binding_path=args.o4_instrument_binding,
             )
-            result = run_productive_wallclock_session_v1(
-                prereg=prereg,
-                go=go,
-                confirm_token=token,
-                artifact_path=args.authorization_artifact,
-                evidence_root=args.evidence_root,
-                expected_repository_sha=args.expected_repository_sha,
-                fingerprint_ledger_path=args.fingerprint_ledger,
-                use_real_network=True,
-                repo_root=REPO,
-                environ=os.environ,
-                instrument_card_ranking_bound=card_bound,
-                instrument_card_selection_root=selection_source,
+            research = (
+                shadow_gvef(
+                    args.gvef_campaign,
+                    root,
+                    args.evidence_root,
+                    prereg,
+                    assignment if args.ranked_slot_config else None,
+                )
+                if args.gvef_campaign
+                else nullcontext()
             )
-            if not result.ok:
-                raise ValueError("I17_COMPANION_OBSERVATION_FAILED:" + ",".join(result.blockers))
+            with research:
+                result = run_productive_wallclock_session_v1(
+                    prereg=prereg,
+                    go=go,
+                    confirm_token=token,
+                    artifact_path=args.authorization_artifact,
+                    evidence_root=args.evidence_root,
+                    expected_repository_sha=args.expected_repository_sha,
+                    fingerprint_ledger_path=args.fingerprint_ledger,
+                    use_real_network=True,
+                    repo_root=REPO,
+                    environ=os.environ,
+                    instrument_card_ranking_bound=card_bound,
+                    instrument_card_selection_root=selection_source,
+                )
+                if not result.ok:
+                    raise ValueError(
+                        "I17_COMPANION_OBSERVATION_FAILED:" + ",".join(result.blockers)
+                    )
+                handoff = finish_companion_v1(root=root)
         elif read_v1(root / "companion.json")["fixture_non_authoritative"] is not False:
             raise ValueError("I17_COMPANION_RECORDED_PUBLIC_SHADOW_REQUIRED")
-        handoff = finish_companion_v1(root=root)
+        else:
+            handoff = finish_companion_v1(root=root)
     except (OSError, HTTPException, ValueError, TypeError, KeyError, RuntimeError) as exc:
         parser.exit(2, f"I17 Shadow companion stopped: {exc}\n")
     print(json.dumps(handoff, sort_keys=True, indent=2))

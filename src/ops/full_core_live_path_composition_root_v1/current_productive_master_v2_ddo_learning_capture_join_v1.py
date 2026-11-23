@@ -7,6 +7,8 @@ Does not change replay decisions. AUTHORITY_EFFECT=NONE.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from contextvars import ContextVar
 from pathlib import Path
 from dataclasses import asdict
 import hashlib
@@ -95,7 +97,27 @@ def productive_scope_learning_config_hash_v1(bind_input: IntegratedOfflineReplay
     ).hexdigest()
 
 
+_PAPER_WRITER: ContextVar[DdoCaptureBindingV0 | None] = ContextVar(
+    "up_paper_ddo_writer", default=None
+)
+
+
+@contextmanager
+def paper_ddo_writer_scope_v1(writer: DdoCaptureBindingV0 | None):
+    token = _PAPER_WRITER.set(writer)
+    try:
+        yield
+    finally:
+        _PAPER_WRITER.reset(token)
+
+
 def build_productive_ddo_capture_binding_v1(*, ledger_path: Path) -> DdoCaptureBindingV0:
+    reusable = _PAPER_WRITER.get()
+    # Only the session's own lane can reuse its writer. Previous observations
+    # must not enter this cycle's capture summary or outcome handoff.
+    if reusable is not None and reusable.enabled and reusable.ledger_path == ledger_path:
+        reusable.clear_cycle_observations()
+        return reusable
     # The ledger owner creates its parent during append. Creating it here
     # would let an observation-only I/O failure abort the authoritative replay
     # before capture's existing fail-open durability handling can classify it.

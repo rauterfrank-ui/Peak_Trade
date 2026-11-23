@@ -3,12 +3,19 @@
 from dataclasses import replace
 from decimal import Decimal
 import json
+import logging
+import os
+import platform
 from math import isfinite
 from pathlib import Path
-from time import time
+from time import monotonic_ns, time, time_ns
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+    paper_ddo_writer_scope_v1,
+)
 from src.execution.position_delta import signed_position_delta
 from src.governance.capital_risk_sizing_v1 import evaluate_capital_risk_sizing_v1
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
 from src.ops.bounded_peaktrade_system_composition_v1.manifest_v1 import repository_source_digest_v1
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
     _BUDGET_POLICY,
@@ -21,11 +28,15 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_entry_v1 import (
 from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import (
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
+    UP_PAPER_SLOT,
     ZKP_PAPER_SLOT,
     load_paper_liquidity_policy_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
+    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import OCCUPANCY_OCCUPIED
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import IsolatedLaneSlotV1
@@ -230,6 +241,14 @@ class ZkpPaperContinuationV1:
             raise ValueError("ZKP_PAPER_ORIGINAL_PROFILE_REQUIRED")
         self.scope = PositionEpisodeScopeV1(root.name, _MODE)
         self.cursor_root = root / ENTRY_MARK_STATE_DIRECTORY / self.slot.lane_id
+        self._ddo_capture = (
+            DdoCaptureBindingV0(
+                ledger_path=self.cursor_root / DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+                reuse_validated_append_index=True,
+            )
+            if slot.native_id == UP_PAPER_SLOT.native_id
+            else None
+        )
         occupied_slot = IsolatedLaneSlotV1(
             lane_id=slot.lane_id,
             occupancy=OCCUPANCY_OCCUPIED,
@@ -652,29 +671,30 @@ class ZkpPaperContinuationV1:
         prefix = f"{self.root.name}:occupied:{int(market.market_event_unix * 1000)}"
         if same_timestamp:
             prefix += ":" + market.source_hashes["mark"]
-        return compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            self.pairs,
-            cycle_id_prefix=prefix,
-            observed_unix=market.observed_unix,
-            mark_px=provenance.mark_px,
-            index_px=provenance.index_px,
-            bid_px=float(market.book.bids[0][0]),
-            ask_px=float(market.book.asks[0][0]),
-            volume=float(market.volume_contracts),
-            open_interest=float(market.oi_contracts),
-            funding_rate=float(market.funding_rate),
-            finalized_closes=closes,
-            last_finalized_event_ts_unix=c1,
-            venue_flat=False,
-            existing_position_side=ExistingPositionSide(self.episode.identity.position_side),
-            g17_typed_vol_producers={self.slot.lane_id: producer},
-            canonical_price_provenance=provenance,
-            master_v2_reconciliation_admission=self.reconciliation,
-            position_episode_bindings={self.slot.lane_id: self.episode},
-            position_episode_scope=self.scope,
-            occupied_scope_mark=True,
-            incoming_cursor_override=raw,
-        )[self.slot.lane_id].cycle_result
+        with paper_ddo_writer_scope_v1(self._ddo_capture):
+            return compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                self.pairs,
+                cycle_id_prefix=prefix,
+                observed_unix=market.observed_unix,
+                mark_px=provenance.mark_px,
+                index_px=provenance.index_px,
+                bid_px=float(market.book.bids[0][0]),
+                ask_px=float(market.book.asks[0][0]),
+                volume=float(market.volume_contracts),
+                open_interest=float(market.oi_contracts),
+                funding_rate=float(market.funding_rate),
+                finalized_closes=closes,
+                last_finalized_event_ts_unix=c1,
+                venue_flat=False,
+                existing_position_side=ExistingPositionSide(self.episode.identity.position_side),
+                g17_typed_vol_producers={self.slot.lane_id: producer},
+                canonical_price_provenance=provenance,
+                master_v2_reconciliation_admission=self.reconciliation,
+                position_episode_bindings={self.slot.lane_id: self.episode},
+                position_episode_scope=self.scope,
+                occupied_scope_mark=True,
+                incoming_cursor_override=raw,
+            )[self.slot.lane_id].cycle_result
 
     def _reverse(self, scope, raw, market, clock):
         require_current_cursor_continuity_v1(
@@ -734,7 +754,36 @@ class ZkpPaperContinuationV1:
         # The immutable booking is the commit point. Cold recovery replays the
         # confirmed fill and completes the successor using the same cursor.
         immutable_json_v1(self._booking_path, record)
-        return self._publish_booking(_read(self._booking_path))
+        result = self._publish_booking(_read(self._booking_path))
+        if self.slot.native_id == UP_PAPER_SLOT.native_id and (
+            directory := os.environ.get("PEAK_TRADE_UP_PAPER_CONFIRMATION_DIR")
+        ):
+            confirmed_ns, confirmed_mono_ns = time_ns(), monotonic_ns()
+            # New bookings only. Recovery can republish an old fill at a later time.
+            try:
+                immutable_json_v1(
+                    Path(directory) / (canonical_digest_v1({"fill_id": fill.fill_id}) + ".json"),
+                    dict(
+                        schema="up_paper_confirmed.v1",
+                        session=self.root.name,
+                        lane=self.slot.lane_id,
+                        native_id=self.slot.native_id,
+                        binding_digest=self.bound.selection_integrity_digest,
+                        decision_id=plan["decision_id"],
+                        cycle_id=plan["cycle_id"],
+                        fill_id=fill.fill_id,
+                        result_digest=canonical_digest_v1(result),
+                        execution_mark_sha256=market.source_hashes["mark"],
+                        confirmed_ns=confirmed_ns,
+                        confirmed_mono_ns=confirmed_mono_ns,
+                        clock_host=platform.node(),
+                    ),
+                )
+            except (OSError, ValueError, RuntimeError) as exc:
+                logging.getLogger(__name__).warning(
+                    "UP Paper confirmation timing unavailable: %s", exc
+                )
+        return result
 
     def _prepare_fill(self, market, clock, old_side, distance, *, decision_id, assessment_digest):
         position = self.accounting.position
