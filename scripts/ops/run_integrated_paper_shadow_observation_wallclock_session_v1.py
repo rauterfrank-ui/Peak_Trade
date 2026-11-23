@@ -30,6 +30,7 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
     CONFIRM_TOKEN_ENV,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1 import (  # noqa: E402
+    WallclockRuntimeConfigV1,
     preflight_wallclock_session_v1,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E402,E501
@@ -44,6 +45,8 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (  # noqa: E402
     redact_mapping_for_logs,
 )
+
+from src.ops.soph_shadow_capital_risk_binding_v1 import parse_soph_entry_cost_limit_usdc_v1  # noqa: E402
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -83,6 +86,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--verify-outcome-receipt",
         type=Path,
         help="Recompute a saved Shadow receipt against both source archives.",
+    )
+    p.add_argument(
+        "--soph-entry-cost-limit-usdc",
+        type=parse_soph_entry_cost_limit_usdc_v1,
+        help="Optional SOPH Shadow entry ceiling in USDC including model costs. Zero defers new entries.",
     )
     p.add_argument("--expected-repository-sha", default=None)
     p.add_argument("--fingerprint-ledger", type=Path, default=None)
@@ -274,6 +282,8 @@ def _shadow_outcome_receipt(args: argparse.Namespace) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.soph_entry_cost_limit_usdc is not None and args.command != "run":
+        parser.error("--soph-entry-cost-limit-usdc requires run")
     if args.require_typed_ddo and args.command != "verify-evidence":
         parser.error("--require-typed-ddo requires verify-evidence")
     if (
@@ -381,6 +391,9 @@ def main(argv: list[str] | None = None) -> int:
         expected_repository_sha=str(args.expected_repository_sha),
         fingerprint_ledger_path=args.fingerprint_ledger,
         use_real_network=bool(args.real_network),
+        runtime_config=WallclockRuntimeConfigV1(
+            soph_entry_cost_limit_usdc=args.soph_entry_cost_limit_usdc
+        ),
         repo_root=_REPO_ROOT,
         environ=os.environ,
     )

@@ -1414,7 +1414,7 @@
     {
       "path": "docs/ops/specs/SOPH_SHADOW_CAPITAL_RISK_OFFLINE_V1.md",
       "before_sha256": null,
-      "sha256": "8e76901350c4a05623c7c0e5bd46fb63f350052b31a8879a96cd1e17a7d125e8"
+      "sha256": "71b2a697e975edd92058effd8360dac94bafc125e3b08624629c95041b21964c"
     },
     {
       "path": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
@@ -1919,7 +1919,7 @@
     {
       "path": "scripts/ops/run_integrated_paper_shadow_observation_wallclock_session_v1.py",
       "before_sha256": "1fbf724e19342f7011cb2cda1e2dde19f8f5347e5b5c60fe986e6a1184ea3a4a",
-      "sha256": "3ac19ca02d1c8d4baa90c1712c567683164182447125ba6555426decabb153a7"
+      "sha256": "5ced63c8e133ce51e6e19febfd6c6830c11ddde5b66a737021314c6935c8b4d4"
     },
     {
       "path": "scripts/ops/run_integrated_paper_shadow_productive_authorization_issuance_and_real_network_v1.py",
@@ -3334,7 +3334,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "dc591f4d916f13c31fef24667dd0126b832b6cf9639aa7f50c58c87acb417705"
+      "sha256": "f5fda57113e04feb1cd159bfcb2f883378b8d08bf44410cbd746cf7ee36fe2fc"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3379,7 +3379,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "01954314686cbbb556bd4cc1dbf1e2d9da220c067fde9b0f6a9c4b27d8e2cbf4"
+      "sha256": "6532f7e48fcf8b103c3256b3a982a97ecb602c55c5bff173e6da202248a5e791"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -3889,7 +3889,7 @@
     {
       "path": "src/ops/soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "6c71bbe20ea43b6821ff60db1884ce2227e031202b42486abded8de477716af3"
+      "sha256": "ad1d8fbacb0666a4c052cffe23a65827f2e64c95fc8341385dcda538cc60d14c"
     },
     {
       "path": "src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py",
@@ -3939,7 +3939,7 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "6b1bbaafb1710dcf5ded526956879f55ecb89fb75fa134c356c8b99c6385acfa"
+      "sha256": "60e306a67456615e11cc4e3e6352954a9fed1a7e9495f76dcc4dd630267006b8"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5459,7 +5459,7 @@
     {
       "path": "tests/ops/test_instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "a8789543022e6ef999eb02ee3f7ce0d12ffc2b29a180c19913b5a2b17ec03a22"
+      "sha256": "5321c0154dbd501781f4b7dce2edb12178f47e25d5c0b8dea02cd4c2614fb549"
     },
     {
       "path": "tests/ops/test_integrated_offline_economic_e2e_completion_v1.py",
@@ -5469,7 +5469,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "d2dfa1946d7a2d7679c38e73b0bd76ae3629a09a4d92627f8d281415a66596f7"
+      "sha256": "c34a7eed542c5842b5819397b282171fdcd36e9b9322346cb72acf7db7828f23"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
@@ -5839,7 +5839,7 @@
     {
       "path": "tests/ops/test_soph_shadow_capital_risk_binding_v1.py",
       "before_sha256": null,
-      "sha256": "e5d235aec7113218affb1128be6860899a1b4df90ef72d631300167da12efabd"
+      "sha256": "f1d2609052f23b8aa1b335b4e98b8f5804d23b845d88e9b82ec4e329a080bfde"
     },
     {
       "path": "tests/ops/test_system_atlas_impact_v1.py",

@@ -820,7 +820,7 @@ def test_double_play_readback_preserves_decision_clock_after_hour_boundary(
 def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.delenv("PEAK_TRADE_O7_LIVE_OHLCV_BRIDGE_ENABLED", raising=False)
 
-    def run(*, flat: bool, instrument=ETH_I17, card_source=None, start_wall=NOW):
+    def run(*, flat: bool, instrument=ETH_I17, card_source=None, start_wall=NOW, entry_limit=None):
         prereg = replace(
             _load_wallclock_prereg(),
             planned_duration_seconds=7200,
@@ -858,6 +858,7 @@ def run_two_hour_shadow(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 poll_interval_seconds=60.0 if instrument == SOPH_I17 else 10.0,
                 max_gap_seconds=65.0 if instrument == SOPH_I17 else 10.0,
                 min_quality_window_seconds=0,
+                soph_entry_cost_limit_usdc=entry_limit,
                 heartbeat_loss_seconds=120.0,
             ),
             clock_wall=clock.time,

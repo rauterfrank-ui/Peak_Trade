@@ -261,7 +261,9 @@ def test_ranking_assignment_carries_original_generation_and_rejects_rebinding(tm
         InstrumentCardStreamV1(**args, ranking_bound=replace(ranked, instrument_id="wrong"))
 
 
+@pytest.mark.parametrize("entry_limit", [None, D("10")])
 def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget(
+    entry_limit,
     run_two_hour_shadow,
     monkeypatch,
 ):
@@ -305,7 +307,11 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
         return market
 
     root, result, _ = run_two_hour_shadow(
-        flat=False, instrument=SOPH_I17, card_source=source, start_wall=first.observed_unix + 0.01
+        flat=False,
+        instrument=SOPH_I17,
+        card_source=source,
+        start_wall=first.observed_unix + 0.01,
+        entry_limit=entry_limit,
     )
     assert result.terminal_verdict == "PASS", result.to_dict()
     from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1 import (
@@ -400,6 +406,27 @@ def test_shadow_runtime_projects_real_full_inputs_to_actual_core_with_own_budget
     assert all(
         prepared[c["cycle_id"]]["runtime_scope_state"] is None for c in cycles[: entry_idx + 1]
     )
+    receipt = entry["soph_shadow_capital_binding"]["flat_entry_cost_bound"]
+    bound = prepared[entry["cycle_id"]][
+        "current_instrument_capital_risk_sizing_boundary_state_file"
+    ]
+    assert bound["raw_payload"]["flat_entry_cost_bound"] == receipt
+    assert (
+        D(bound["account_equity"])
+        == D(bound["total_capital_limit"])
+        == D(receipt["available_usdc"])
+        == 25
+    )
+    assert D(bound["scope_capital_limit"]) == D(receipt["maximum_mark_notional_usd"])
+    assert bound["state_file_digest_ref"] == canonical_digest_v1(bound["raw_payload"])
+    assert receipt["side"] == "BUY" and receipt["configured_entry_cost_limit_usdc"] == (
+        None if entry_limit is None else str(entry_limit)
+    )
+    exact = entry["instrument_card_execution_check"]
+    assert exact["measurement_admitted"]
+    limit = D(receipt["effective_entry_cost_limit_usd"])
+    assert limit == (D(25) if entry_limit is None else entry_limit) * D(exact["usd_per_usdc"])
+    assert D(exact["mark_notional_usd"]) + D(exact["model_costs"]["total_reserve"]) <= limit
     anchor = float(entry["fill"]["fill_price"])
     for c in cycles[entry_idx + 1 :]:
         inp = prepared[c["cycle_id"]]

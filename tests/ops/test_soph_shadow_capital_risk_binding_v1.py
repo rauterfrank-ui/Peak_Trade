@@ -425,18 +425,22 @@ def test_flat_card_requires_a_bound_distance_before_confirmation():
 
 
 @pytest.mark.parametrize(
-    "free,cap,floor,admitted",
+    "free,cap,floor,admitted,entry_limit",
     [
-        ("0.33570", "0.003", "-0.0001", {"SELL"}),
-        ("0.33570", "0.0001", "-0.003", {"BUY"}),
-        ("0.33570", "0.003", "-0.003", set()),
-        ("0.34000", "0.003", "-0.003", {"BUY", "SELL"}),
-        ("0.33505", "0.003", "-0.0001", set()),
+        ("0.33570", "0.003", "-0.0001", {"SELL"}, None),
+        ("0.33570", "0.0001", "-0.003", {"BUY"}, None),
+        ("0.33570", "0.003", "-0.003", set(), None),
+        ("0.34000", "0.003", "-0.003", {"BUY", "SELL"}, None),
+        ("0.33505", "0.003", "-0.0001", set(), None),
+        ("25", "0.003", "-0.0001", {"SELL"}, "0.33570"),
+        ("25", "0.0001", "-0.003", {"BUY"}, "0.33570"),
+        ("25", "0.003", "-0.003", set(), "0"),
+        ("25", "0.003", "-0.003", set(), "0.30"),
     ],
 )
 @pytest.mark.parametrize("side", ["BUY", "SELL"])
 def test_regular_flat_card_minimum_cost_precedes_confirmation(
-    tmp_path, free, cap, floor, admitted, side
+    tmp_path, free, cap, floor, admitted, side, entry_limit
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
         prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
@@ -475,6 +479,7 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
                 CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
             )
         else:
+            state.soph_entry_cost_limit_usdc = None if entry_limit is None else D(entry_limit)
             state.portfolio.model.state.cash = D(free)
         budget = source(market=market, now=now)
         with observe_instrument_card_input_v1(inputs.append):
@@ -513,3 +518,68 @@ def test_regular_flat_card_minimum_cost_precedes_confirmation(
     assert D(measurement["sides"][side]["stop_distance"]) == abs(
         price - D(measurement["sides"][side]["protective_stop_price"])
     )
+
+
+@pytest.mark.parametrize(
+    "fx,free,requested,expected",
+    [("0.8", "25", "10", "8"), ("2", "7", "10", "14"), ("1", "25", "100", "25")],
+)
+def test_independent_entry_limit_uses_current_fx_and_free_amount(fx, free, requested, expected):
+    market, state, source = setup_market(fx=fx)
+    source(market=market, now=market.observed_unix)
+    state.portfolio.model.state.cash = D(free) * market.usd_per_usdc
+    budget = source(market=market, now=market.observed_unix)
+    check = soph_shadow_cost_check_v1(
+        state=state,
+        market=market,
+        budget=budget,
+        side="SELL",
+        quantity=market.native_contract.min_qty * market.native_contract.contract_size,
+        stop_distance=market.mark / 10,
+        entry_cost_limit_usdc=D(requested),
+    )
+    assert D(budget["available_for_new_entry"]) == D(free)
+    assert check["measurement_admitted"] and D(check["model_costs"]["notional_limit"]) == D(
+        expected
+    )
+
+
+def test_cli_entry_limit_is_optional_and_accepts_only_nonnegative_finite_amounts():
+    from scripts.ops.run_integrated_paper_shadow_observation_wallclock_session_v1 import (
+        build_parser,
+    )
+
+    parser = build_parser()
+    assert parser.parse_args(["run"]).soph_entry_cost_limit_usdc is None
+    assert parser.parse_args(
+        ["run", "--soph-entry-cost-limit-usdc", "10.01"]
+    ).soph_entry_cost_limit_usdc == D("10.01")
+    for invalid in ("NaN", "Infinity", "-0.01", "invalid"):
+        with pytest.raises(SystemExit):
+            parser.parse_args(["run", "--soph-entry-cost-limit-usdc", invalid])
+
+
+def test_lower_nominal_policy_does_not_reallocate_slot_or_lower_loss_budget(monkeypatch):
+    from src.ops.portfolio_capital_reservation_budget_v1 import test_phase_limits_v1 as limits
+    from src.ops import soph_shadow_capital_risk_binding_v1 as capital
+
+    original = limits.load_slot_entry_budget_v1(
+        REPO / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
+    )
+    policy = replace(original, per_entry_notional_limit=D("7"))
+    policy.validate_v1()
+    monkeypatch.setattr(limits, "load_slot_entry_budget_v1", lambda path: policy)
+    monkeypatch.setattr(capital, "load_slot_entry_budget_v1", lambda path: policy)
+    market, state, source = setup_market(fx="0.8")
+    budget = source(market=market, now=market.observed_unix)
+    boundary, _, _ = soph_shadow_capital_binding_v1(
+        state=state, market=market, budget=budget, now=market.observed_unix
+    )
+    assert D(budget["available_for_new_entry"]) == 25
+    assert (
+        D(boundary.account_equity)
+        == D(boundary.total_capital_limit)
+        == D(boundary.per_trade_risk_limit)
+        == 20
+    )
+    assert D(boundary.scope_capital_limit) == D("5.6")

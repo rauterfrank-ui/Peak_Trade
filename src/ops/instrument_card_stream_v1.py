@@ -559,7 +559,6 @@ def shadow_budget_source_v1(state, *, repo):
             raise ValueError("CARD_SHADOW_BUDGET_FOREIGN_INSTRUMENT")
         cap_usdc = min(
             PAPER_ALLOCATION_USDC,
-            policy.per_entry_notional_limit,
             policy.per_slot_reserved_notional_limit,
         )
         if not initialized:
