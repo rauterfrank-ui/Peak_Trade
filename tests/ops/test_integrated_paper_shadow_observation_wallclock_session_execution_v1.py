@@ -1364,7 +1364,7 @@ def test_offline_o4_receipt_binds_the_original_shadow_decision(
     assert "SOURCE_SHA256_MISMATCH" in capsys.readouterr().err
 
 
-def test_soph_lane5_shadow_reaches_self_learning_after_two_final_o4_bars(
+def test_soph_lane2_shadow_reaches_self_learning_after_two_final_o4_bars(
     run_two_hour_shadow, tmp_path, monkeypatch
 ):
     from datetime import timedelta, timezone
@@ -1404,7 +1404,7 @@ def test_soph_lane5_shadow_reaches_self_learning_after_two_final_o4_bars(
         "mapping_digest": decision["mapping_digest"],
     }
     binding_path = tmp_path / "soph-binding.json"
-    binding_path.write_text(json.dumps({**binding, "lane_id": "LANE_2"}))
+    binding_path.write_text(json.dumps({**binding, "lane_id": "LANE_5"}))
     follow_up_parent = tmp_path / "shadow-follow-ups"
     follow_up_parent.mkdir()
     root = follow_up_parent / decision["session_id"]

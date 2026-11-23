@@ -66,7 +66,8 @@ class XperpPaperSlotV1:
 
 
 ZKP_PAPER_SLOT = XperpPaperSlotV1("LANE_1", "ZKP", "310905")
-UP_PAPER_SLOT = XperpPaperSlotV1("LANE_2", "UP", "310919")
+UP_PAPER_SLOT = XperpPaperSlotV1("LANE_5", "UP", "310919")
+UP_PAPER_ARCHIVED_SLOT2 = XperpPaperSlotV1("LANE_2", "UP", "310919")
 IRYS_PAPER_SLOT = XperpPaperSlotV1("LANE_4", "IRYS", "310530")
 NATIVE_ID = ZKP_PAPER_SLOT.native_id
 INSTRUMENT_ID = ZKP_PAPER_SLOT.instrument_id

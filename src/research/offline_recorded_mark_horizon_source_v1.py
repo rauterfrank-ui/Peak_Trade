@@ -21,7 +21,7 @@ from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1
     resolve_okx_venue_instrument_mapping_v1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.i17_shadow_instrument_v1 import (
-    require_i17_shadow_instrument_v1,
+    recorded_i17_shadow_instrument_v1,
 )
 from src.research.offline_n_bars_semantic_repair_v1 import RECORDED, canonical, digest_bytes
 
@@ -76,7 +76,7 @@ def recorded_mark_price_unit_v1(
             raise ValueError(mismatch)
         return "USDT per ETH"
     try:
-        scope = require_i17_shadow_instrument_v1((native_instrument_id,))
+        scope = recorded_i17_shadow_instrument_v1((native_instrument_id,), binding.get("lane_id"))
         if (
             canonical_instrument_id != scope.canonical_id
             or metadata.get("instType") != "FUTURES"

@@ -35,6 +35,7 @@ from src.ops.bounded_peaktrade_system_composition_v1.zkp_paper_market_v1 import 
     PAPER_ALLOCATION_USDC,
     PAPER_FEE_RATE,
     UP_PAPER_SLOT,
+    UP_PAPER_ARCHIVED_SLOT2,
     ZKP_PAPER_SLOT,
     collect_zkp_paper_market_v1,
     load_paper_liquidity_policy_v1,
@@ -78,7 +79,7 @@ def _new_root(path):
     return path
 
 
-def _read_paper_slot(path):
+def _read_paper_slot(path, *, resume=False):
     config = json.loads(path.read_bytes())
     # Historical local preparations used environment=PAPER. Preserve their
     # original files; accept only this explicit equivalent declaration.
@@ -88,6 +89,8 @@ def _read_paper_slot(path):
     if "environment" in config and config["environment"] != "PAPER":
         raise ValueError("PAPER_SLOT_ENVIRONMENT_MISMATCH")
     slot = IRYS_PAPER_SLOT if config["lane"] == IRYS_PAPER_SLOT.lane_id else UP_PAPER_SLOT
+    if resume and config["lane"] == UP_PAPER_ARCHIVED_SLOT2.lane_id:
+        slot = UP_PAPER_ARCHIVED_SLOT2
     if (
         config["lane"],
         config["canonical_instrument_id"],
@@ -395,12 +398,16 @@ def main(argv=None):
         )
     for mode in (preflight, run, resume):
         mode.add_argument(
-            "--slot-config", type=Path, help="Use the prepared UP (LANE_2) or IRYS (LANE_4) binding"
+            "--slot-config", type=Path, help="Use the prepared UP (LANE_5) or IRYS (LANE_4) binding"
         )
     args = parser.parse_args(argv)
     try:
         policy = load_paper_liquidity_policy_v1(REPO)
-        slot = ZKP_PAPER_SLOT if args.slot_config is None else _read_paper_slot(args.slot_config)
+        slot = (
+            ZKP_PAPER_SLOT
+            if args.slot_config is None
+            else _read_paper_slot(args.slot_config, resume=args.mode == "resume")
+        )
         capture = _capture if args.slot_config is None else partial(_capture, slot=slot)
         if args.mode == "preflight":
             if args.cap24_evidence_root is not None and args.slot_config is not None:

@@ -176,7 +176,7 @@ def test_soph_budget_validator_requires_the_sized_opening_side(tmp_path, monkeyp
     )
     from tests.ops.test_current_usdc_xperp_financial_admission_v1 import EPOCH, join, prepare
 
-    host, kwargs, _ = prepare(tmp_path, monkeypatch, short=short, asset="SOPH", slot="LANE_5")
+    host, kwargs, _ = prepare(tmp_path, monkeypatch, short=short, asset="SOPH", slot="LANE_2")
     try:
         entry = join(**kwargs)
         assert entry.status == "PASS", entry.reason_codes
