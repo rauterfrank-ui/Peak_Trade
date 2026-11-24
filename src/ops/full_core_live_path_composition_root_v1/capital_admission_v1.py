@@ -64,6 +64,8 @@ STEP_29P_CONSUMER = "capital_risk_sizing_v1/STEP_29P"
 EXECUTION_ADMISSION_CONSUMER = "evaluate_execution_admission_v1"
 
 EVIDENCE_CLASS_LIVE_TYPED = "LIVE_TYPED"
+EVIDENCE_CLASS_TESTNET_TYPED = "TESTNET_TYPED"
+ADMISSION_CONTEXT_TESTNET = "TESTNET_CAPITAL_ADMISSION"
 EVIDENCE_CLASS_FIXTURE = "FIXTURE"
 EVIDENCE_CLASS_REPLAY = "REPLAY"
 EVIDENCE_CLASS_HISTORICAL = "HISTORICAL"
@@ -110,6 +112,7 @@ class CapitalAdmissionClaimV1:
     previously_admitted_risk_capital: str = ""
     evidence_class: str = EVIDENCE_CLASS_LIVE_TYPED
     evidence_id: str = ""
+    execution_environment: str = "LIVE"
 
 
 @dataclass(frozen=True)
@@ -133,6 +136,7 @@ class CapitalAdmissionEvidenceV1:
     join_seam_id: str = JOIN_SEAM_ID
     authority: str = CAPITAL_ADMISSION_AUTHORITY
     semantic_class: str = BINDING_SEMANTIC_CLASS
+    execution_environment: str = "LIVE"
 
 
 def _denied(
@@ -167,6 +171,7 @@ def _denied(
         live_armed=LIVE_ARMED is True,
         wire_send_permitted=WIRE_SEND_PERMITTED is True,
         step_29p_live_venue_capital_bound=False,
+        execution_environment="LIVE" if claim is None else claim.execution_environment,
     )
 
 
@@ -205,6 +210,8 @@ def live_venue_capital_may_bind_step_29p_v1(
         live_venue_capital_may_bind_step_29p_v1 as _bind,
     )
 
+    if evidence.execution_environment != "LIVE":
+        return False
     return _bind(evidence, admissibility=admissibility)
 
 
@@ -219,7 +226,7 @@ def evaluate_capital_admission_v1(
         expected_account_identity if isinstance(expected_account_identity, str) else ""
     )
     expected_instrument = expected_instrument_id if isinstance(expected_instrument_id, str) else ""
-    live_context = admission_context == ADMISSION_CONTEXT_LIVE
+    live_context = admission_context in {ADMISSION_CONTEXT_LIVE, ADMISSION_CONTEXT_TESTNET}
 
     if not isinstance(expected_account_identity, str) or not isinstance(
         expected_instrument_id, str
@@ -389,7 +396,25 @@ def evaluate_capital_admission_v1(
             authority=CAPITAL_AUTHORITY_NONE,
             reasons=("CAPITAL_ADMISSION_MALFORMED", "CAPITAL_ADMISSION_SOURCE_CLASS_UNKNOWN"),
         )
-    if evidence_class not in {EVIDENCE_CLASS_LIVE_TYPED, ""}:
+    expected_environment = "TESTNET" if admission_context == ADMISSION_CONTEXT_TESTNET else "LIVE"
+    expected_class = (
+        EVIDENCE_CLASS_TESTNET_TYPED
+        if expected_environment == "TESTNET"
+        else EVIDENCE_CLASS_LIVE_TYPED
+    )
+    if claim.execution_environment != expected_environment or (
+        expected_environment == "TESTNET" and evidence_class != expected_class
+    ):
+        return _denied(
+            status=CapitalAdmissionStatusV1.WRONG_CONTEXT.value,
+            claim=claim,
+            expected_account_identity=expected_account,
+            expected_instrument_id=expected_instrument,
+            source_class=source,
+            authority=CAPITAL_AUTHORITY_NONE,
+            reasons=("CAPITAL_ADMISSION_EXECUTION_ENVIRONMENT_MISMATCH",),
+        )
+    if evidence_class not in {expected_class, ""}:
         if evidence_class in _NON_PRODUCTIVE_EVIDENCE_CLASSES:
             pass
         else:
@@ -582,6 +607,7 @@ def evaluate_capital_admission_v1(
         live_armed=LIVE_ARMED is True,
         wire_send_permitted=WIRE_SEND_PERMITTED is True,
         step_29p_live_venue_capital_bound=False,
+        execution_environment=expected_environment,
     )
     return trusted
 

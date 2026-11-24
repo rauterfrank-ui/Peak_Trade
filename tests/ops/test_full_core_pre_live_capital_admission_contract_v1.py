@@ -375,3 +375,37 @@ def test_runbook_and_spec_bind_without_live_arming() -> None:
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1" in spec
     assert CAPITAL_AUTHORITY_NONE == "NONE"
+
+
+def test_testnet_observation_has_its_own_capital_context_and_cannot_bind_live(monkeypatch):
+    from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
+        ADMISSION_CONTEXT_TESTNET,
+    )
+
+    claim = _claim(evidence_class="TESTNET_TYPED", execution_environment="TESTNET")
+    demo = _evaluate(claim=claim, admission_context=ADMISSION_CONTEXT_TESTNET)
+    assert demo.evidence_status == "TRUSTED_PRESENT"
+    assert demo.execution_environment == "TESTNET"
+    assert demo.risk_admissible is False
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        step_29p_capital_risk_admissibility_v1,
+    )
+
+    monkeypatch.setattr(
+        step_29p_capital_risk_admissibility_v1,
+        "live_venue_capital_may_bind_step_29p_v1",
+        lambda *a, **k: pytest.fail("TESTNET evidence reached the Live binding"),
+    )
+    assert live_venue_capital_may_bind_step_29p_v1(demo) is False
+    live = _evaluate(claim=claim)
+    assert live.evidence_status == "WRONG_CONTEXT"
+    assert live.capital_authority_class == CAPITAL_AUTHORITY_NONE
+    mislabeled = _evaluate(
+        claim=_claim(evidence_class="LIVE_TYPED"),
+        admission_context=ADMISSION_CONTEXT_TESTNET,
+    )
+    assert mislabeled.evidence_status == "WRONG_CONTEXT"
+    assert (
+        _evaluate(claim=None, admission_context=ADMISSION_CONTEXT_TESTNET).evidence_status
+        == "MISSING"
+    )
