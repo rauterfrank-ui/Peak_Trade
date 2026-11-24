@@ -132,24 +132,33 @@ def prepare(
     slot="LANE_1",
     host_context=None,
     extra_bindings=None,
+    slot_entry=None,
 ):
-    clock = [EPOCH]
+    if slot_entry is None:
+        bound = xperp_bound(asset)
+        producer = _produced_g17_producer(
+            instrument_id=bound.instrument_id, venue_native_id=bound.venue_native_id
+        )
+        run = (
+            run_natural_enter_short_sequence_for_bound_v1
+            if short
+            else run_natural_enter_long_sequence_for_bound_v1
+        )(bound=bound, g17_typed_vol_producer=producer)
+        cycle = run[3] if short else run[2]
+        row = instrument(asset=asset)
+        epoch = EPOCH
+        cycle_id = f"usdc-financial-entry-{slot}"
+    else:
+        bound, cycle, row = slot_entry
+        epoch = cycle.replay.intermediate.market_context.decision_time
+        cycle_id = cycle.cycle_id
+    clock = [epoch]
     monkeypatch.setattr(cost, "utc_now_iso_v1", lambda: clock[0])
-    # Canonical identity follows the public instrument, not its account's cash
-    # preference. Derive it through the original universe producer below.
-    bound = xperp_bound(asset)
     native = bound.venue_native_id
     family = native.rsplit("-", 1)[0]
     tier_endpoint = (
         f"/api/v5/public/position-tiers?instType=FUTURES&tdMode=cross&instFamily={family}"
     )
-    producer = _produced_g17_producer(instrument_id=bound.instrument_id, venue_native_id=native)
-    run = (
-        run_natural_enter_short_sequence_for_bound_v1
-        if short
-        else run_natural_enter_long_sequence_for_bound_v1
-    )(bound=bound, g17_typed_vol_producer=producer)
-    cycle = run[3] if short else run[2]
     if host_context is None:
         policy_revision = 13 if public_movement_policy else 12 if liquidation_policy else 11
         entry_policy = load_slot_entry_budget_v1(
@@ -162,7 +171,7 @@ def prepare(
             session_id="usdc-financial-test",
             expected_account_identity=ACCOUNT,
             durable_mode="create",
-            clock=lambda: datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp(),
+            clock=lambda: datetime.fromisoformat(epoch.replace("Z", "+00:00")).timestamp(),
             execution_environment="LIVE"
             if scoped_reconciliation
             else "INTERNAL_SIMULATED_EXECUTION",
@@ -172,7 +181,6 @@ def prepare(
     else:
         host, context = host_context
     payload = _balance_payload(avail_eq="1000")
-    row = instrument(asset=asset)
     if fault == "wrong-underlying":
         row["uly"] = "ETH-USD"
     elif fault == "wrong-contract-unit":
@@ -183,23 +191,22 @@ def prepare(
         row["quoteCcy"] = "USDC"
     injected = replace(
         _injected(payload=payload, instruments_payload=dict(code="0", data=[row])),
+        observed_at=epoch,
         index_tickers_payload=None,
         conversion_pair_instruments_payload=None,
     )
     kwargs = dict(
         replay=cycle.replay,
         bound_instrument=bound,
-        decision_epoch=EPOCH,
+        decision_epoch=epoch,
         injected=injected,
         portfolio_budget_owner=host.owner,
-        portfolio_slot=Slot(
-            slot, cycle.replay.evidence.decision_id, f"usdc-financial-entry-{slot}"
-        ),
+        portfolio_slot=Slot(slot, cycle.replay.evidence.decision_id, cycle_id),
         host_budget_recovery=context,
     )
-    now_ms = int(datetime.fromisoformat(EPOCH.replace("Z", "+00:00")).timestamp() * 1000)
+    now_ms = int(datetime.fromisoformat(epoch.replace("Z", "+00:00")).timestamp() * 1000)
     acquisition = cost.canonical(
-        dict(decision_epoch=EPOCH, cycle_id=kwargs["portfolio_slot"].cycle_id)
+        dict(decision_epoch=epoch, cycle_id=kwargs["portfolio_slot"].cycle_id)
     )
 
     def source(endpoint, payload, private=False):
@@ -216,7 +223,7 @@ def prepare(
             "",
             cost.digest(payload),
             pretrade_decision_id=acquisition,
-            acquired_at_utc=EPOCH,
+            acquired_at_utc=epoch,
         )
 
     account = dict(
@@ -236,6 +243,13 @@ def prepare(
     elif fault == "other-mode":
         account["acctLv"] = "3"
     mark = Decimal(str(cycle.replay.intermediate.market_context.mark_price))
+    bids = [[str(mark - Decimal("0.1")), "1000000", "0", "1"]]
+    asks = [[str(mark + Decimal("0.1")), "1000000", "0", "1"]]
+    if slot_entry is not None:
+        # One native lot at the touch. Any larger side must consume level two.
+        bids[0][1] = asks[0][1] = row["lotSz"]
+        bids.append([str(mark - Decimal("0.2")), "0.001", "0", "1"])
+        asks.append([str(mark + Decimal("0.2")), "0.001", "0", "1"])
     rows = {
         "/api/v5/account/config": source(
             "/api/v5/account/config", dict(code="0", data=[account]), True
@@ -266,8 +280,8 @@ def prepare(
                 data=[
                     dict(
                         ts=str(now_ms),
-                        bids=[[str(mark - Decimal("0.1")), "1000000", "0", "1"]],
-                        asks=[[str(mark + Decimal("0.1")), "1000000", "0", "1"]],
+                        bids=bids,
+                        asks=asks,
                     )
                 ],
             ),
@@ -304,7 +318,7 @@ def prepare(
         account_identity=ACCOUNT,
         bound_instrument=bound,
         inst_type="FUTURES",
-        decision_epoch=EPOCH,
+        decision_epoch=epoch,
         cycle_id=kwargs["portfolio_slot"].cycle_id,
         use_account_instruments=True,
     )
@@ -332,7 +346,7 @@ def prepare(
         if tier_fault == "continuation":
             payload_tiers["cursor"] = "opaque-next-page"
         observed_tiers = source(tier_endpoint, payload_tiers)
-        acquired = datetime.fromisoformat(EPOCH.replace("Z", "+00:00"))
+        acquired = datetime.fromisoformat(epoch.replace("Z", "+00:00"))
         changes = {
             "decision": dict(pretrade_decision_id="foreign-decision"),
             "wrong-query": dict(endpoint=tier_endpoint + "&tier=1"),
@@ -382,15 +396,15 @@ def prepare(
         native_initial_margin_observation=margin_observation,
         funding_cost_observation=cost.FundingCostObservationV1.capture_v1(
             bound_instrument=bound,
-            decision_epoch=EPOCH,
+            decision_epoch=epoch,
             cycle_id=kwargs["portfolio_slot"].cycle_id,
             source=funding,
-            evaluated_at_utc=EPOCH,
+            evaluated_at_utc=epoch,
         ),
         absolute_movement_cost_observation=movement.AbsoluteMovementCostObservationV1.capture_v1(
             instrument_raw_input=raw_input(kwargs),
             opening_observation=opening,
-            evaluated_at_utc=EPOCH,
+            evaluated_at_utc=epoch,
         ),
     )
     return host, kwargs, clock

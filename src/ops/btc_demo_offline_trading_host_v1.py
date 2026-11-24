@@ -5,6 +5,7 @@ Public USD valuation is never a USDC sizing operand or account-settlement proof.
 """
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 from src.ops import btc_demo_lane3_v2 as demo
@@ -30,6 +31,32 @@ from src.ops.governed_productive_monetary_normalization_v1.instrument_monetary_i
 from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
     CANONICAL_INTERNAL_RISK_NUMERAIRE,
     PHYSICAL_USDC_REQUIRED_FOR_NUMERAIRE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    CurrentProductiveEnterLive29PInjectedGetV1,
+    CurrentProductiveEnterLive29PPortfolioSlotContextV1,
+    join_current_productive_enter_live_29p_before_venue_plan_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1 import pretrade_acquisition_v1
+from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+    HostBudgetRecoveryContextV1,
+    PortfolioBudgetHostV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.retention_v1 import (
+    exclusive_v1,
+)
+
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1,
+)
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+    restore_episode_from_store_v1,
+)
+from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+    serialize_canonical_trading_decision_evidence_canonical,
+)
+from trading.master_v2.canonical_market_context_v1 import (
+    serialize_canonical_market_context_canonical,
 )
 
 
@@ -181,6 +208,159 @@ class BtcDemoOfflineTradingHostV1:
             coverage_digest=report["coverage_digest"],
             reason_codes=tuple(reasons),
         )
+
+    def _original_rehearsal_cycle(self, entry):
+        _need(
+            type(entry) is FirstEntryMarkCycleV2
+            and entry.status == "ENTRY_DECIDED"
+            and entry.cycle is not None
+            and entry.cycle.replay_pass == "true",
+            "BTC_OFFLINE_ORIGINAL_ENTRY_REQUIRED",
+        )
+        cycle = entry.cycle
+        cursor = cycle.outgoing_cursor
+        _need(
+            cursor is not None
+            and cursor.to_dict()
+            == load_current_productive_sidestate_confirmation_cursor_v1(self.cursor_root),
+            "BTC_OFFLINE_ENTRY_CURSOR_CHANGED",
+        )
+        frame = read_current_core_entry_assessment_frame_v1(cursor)
+        replay = cycle.replay
+        market = replay.intermediate.market_context
+        stored = cursor.entry_assessment_frame
+        episode = restore_episode_from_store_v1(
+            self.cursor_root, expected_instrument_id=self.budget.bound.instrument_id
+        )
+        _need(
+            episode.scope is not None
+            and episode.scope.valid
+            and resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(
+                episode.scope.d_t
+            ).up_distance
+            == replay.intermediate.scope_event.semantic_binding.up_distance,
+            "BTC_REHEARSAL_DECISION_SCOPE_MISMATCH",
+        )
+        _need(
+            frame["parent"]["decision_id"] == replay.evidence.decision_id
+            and stored["components"]["parent"]["canonical"]
+            == serialize_canonical_trading_decision_evidence_canonical(replay.evidence)
+            and frame["parent"]["replay_id"] == cycle.replay_id == cycle.cycle_id + "-master-v2"
+            and stored["market_context"]["canonical"]
+            == serialize_canonical_market_context_canonical(market)
+            and cursor.instrument_id
+            == replay.evidence.instrument_id
+            == self.budget.bound.instrument_id
+            and cursor.venue_native_id == demo._NATIVE
+            and frame["entry"]["decision_outcome"] == cycle.decision_outcome
+            and cycle.decision_outcome in {"enter_long", "enter_short"},
+            "BTC_REHEARSAL_DECISION_MISMATCH",
+        )
+        return cycle
+
+    def rehearse_entry_reservation_v1(self, *, entry, injected, recovery):
+        """Apply the private linear settlement contract in a separate simulation journal.
+
+        Inputs are already captured. This seam returns only the original budget
+        readback and has no venue plan, execution adapter or Demo ledger writer.
+        """
+        _need(
+            type(injected) is CurrentProductiveEnterLive29PInjectedGetV1
+            and type(recovery) is HostBudgetRecoveryContextV1,
+            "BTC_REHEARSAL_ORIGINAL_RECOVERY_REQUIRED",
+        )
+        host = recovery.host
+        bound = self.budget.bound
+        demo_root = self.budget.root.resolve()
+        _need(
+            type(host) is PortfolioBudgetHostV1
+            and host.execution_environment == "INTERNAL_SIMULATED_EXECUTION"
+            and not host.closed
+            and host.owner is not None
+            and recovery.observed.source_id == "host-private-rest-futures"
+            and recovery.account_inventory_source is not None
+            and recovery.account_inventory_source is host.fetch
+            and host.owner.durable_scope_identity_v1()
+            == {"root": str(host.root / "owner"), "account": host.account}
+            and (host.root / "owner").resolve() == host.root / "owner"
+            and not host.root.is_relative_to(demo_root)
+            and not demo_root.is_relative_to(host.root)
+            and host.bindings == {demo._LANE: bound}
+            and host.account
+            == recovery.account
+            == injected.expected_account_identity
+            == self.budget.account,
+            "BTC_REHEARSAL_ISOLATED_SLOT_ACCOUNT_REQUIRED",
+        )
+        policy = host.owner.entry_budget_policy_v1()
+        _need(
+            policy is not None
+            and policy.require_usdc_settlement
+            and policy.aggregate_reserved_notional_limit <= demo._BUDGET_USDC
+            and policy.per_entry_notional_limit <= demo._BUDGET_USDC
+            and policy.per_slot_reserved_notional_limit <= demo._BUDGET_USDC,
+            "BTC_REHEARSAL_USDC_COST_POLICY_REQUIRED",
+        )
+        with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
+            cycle = self._original_rehearsal_cycle(entry)
+            replay = cycle.replay
+            epoch = replay.intermediate.market_context.decision_time
+            _need(
+                injected.acquisition_decision_id == epoch
+                and injected.acquisition_cycle_id == cycle.cycle_id
+                and injected.pretrade_acquired_at_utc
+                and injected.entry_public_mark_source is None
+                and injected.futures_financial_custody is None
+                and injected.index_tickers_payload is None
+                and injected.conversion_pair_instruments_payload is None,
+                "BTC_REHEARSAL_PRIVATE_LINEAR_DECISION_INPUTS_REQUIRED",
+            )
+            now = pretrade_acquisition_v1.utc_now_iso_v1()
+            pretrade_acquisition_v1.acquisition_age_seconds_v1(acquired_at_utc=epoch, now_utc=now)
+            snapshot = recovery.observed
+            _need(
+                snapshot.event_time_unix is not None
+                and snapshot.wall_time_unix is not None
+                and snapshot.event_time_unix <= snapshot.wall_time_unix,
+                "BTC_REHEARSAL_INVENTORY_CLOCK_REQUIRED",
+            )
+            for stamp in (snapshot.event_time_unix, snapshot.wall_time_unix):
+                pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                    acquired_at_utc=datetime.fromtimestamp(stamp, timezone.utc).isoformat(),
+                    now_utc=now,
+                )
+            _need(
+                not recovery.pending_orders
+                and not any(p.signed_quantity for p in recovery.observed.positions)
+                and not host.owner.stored_reservation_count_v1()
+                and self.budget.owner.active_sum_v1() == 0,
+                "BTC_REHEARSAL_FRESH_FLAT_ENTRY_REQUIRED",
+            )
+            result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+                replay=replay,
+                bound_instrument=bound,
+                decision_epoch=epoch,
+                injected=injected,
+                portfolio_budget_owner=host.owner,
+                portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+                    demo._LANE, replay.evidence.decision_id, cycle.cycle_id
+                ),
+                host_budget_recovery=recovery,
+            )
+            _need(
+                result.status == "PASS", result.first_blocker or "BTC_REHEARSAL_RESERVATION_DENIED"
+            )
+            journal = host.owner.local_commitment_readback_v1()
+            (hold,) = journal.commitments
+            _need(
+                hold.reservation_id == result.portfolio_reservation_id
+                and (hold.slot_id, hold.decision_id, hold.cycle_id)
+                == (demo._LANE, replay.evidence.decision_id, cycle.cycle_id)
+                and hold.state == "RESERVED"
+                and hold.execution_phase == "NO_EXECUTION_LINK",
+                "BTC_REHEARSAL_JOURNAL_IDENTITY_MISMATCH",
+            )
+            return hold
 
     def reconcile_confirmed_entry_v1(self, *, reads, reservation_id, clock):
         observed = self.budget.reconcile_attempt_v1(
