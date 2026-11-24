@@ -5124,7 +5124,7 @@
     {
       "path": "tests/ops/test_current_law_impact_map_v1.py",
       "before_sha256": "0283ae8ddd9d17e5c23cecb522680f3258fec1214ad69e66293596a079a7a23f",
-      "sha256": "ab21436cc17dd2b2c02b24d3c839a062bcd82686da84a7f01e4b4306a99b2957"
+      "sha256": "082ec902a4447d003f6b0b3e87d62dd48c8c732bf022649d77c533eea2f0b347"
     },
     {
       "path": "tests/ops/test_current_law_master_v2_source_guard_v1.py",
