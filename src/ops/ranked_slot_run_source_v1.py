@@ -261,7 +261,17 @@ def _read_ranked_entry_admission_v1(config, original, *, field, surface):
         or lane_root != lane_root.resolve()
     ):
         raise ValueError(f"{field.upper()}_SCOPE_MISMATCH")
-    revision = prior.repository_sha
+    # Occupancy retains its historical revision. A later admission may be
+    # produced by reviewed successor code; all three new originals must share
+    # that explicitly declared revision and replay the original policy.
+    revision = source.get("repository_sha", prior.repository_sha)
+    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError(f"{field.upper()}_REVISION_INVALID")
+    if (
+        revision != prior.repository_sha
+        and source.get("original_repository_sha") != prior.repository_sha
+    ):
+        raise ValueError(f"{field.upper()}_ORIGINAL_REVISION_REQUIRED")
     loaded = load_and_validate_selection_v1(lane_root, expected_repository_sha=revision)
     ranked = load_and_validate_ranking_snapshot_v1(
         Path(source["ranking_root"]), expected_repository_sha=revision
@@ -285,7 +295,9 @@ def _read_ranked_entry_admission_v1(config, original, *, field, surface):
         or s.state != "SELECTED_ACTIVE"
         or s.previous_selection_id != prior.selection_id
         or s.selected_at_event_time != prior.selected_at_event_time
-        or s.config_digest != prior.config_digest
+        # The canonical config digest includes repository_sha. Successor
+        # admission is checked against its own exact policy replay below.
+        or (revision == prior.repository_sha and s.config_digest != prior.config_digest)
         or s.ranking_snapshot_id == prior.ranking_snapshot_id
         or (rank.universe_snapshot_id, rank.universe_source_digest, rank.universe_payload_digest)
         != (universe.snapshot_id, universe.source_digest, universe.payload_digest)

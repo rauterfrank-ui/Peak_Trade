@@ -95,7 +95,7 @@ def _inspect(config, now, current, admission, *, include_bound=False):
                 evidence["schema_version"],
                 evidence["repository_sha"],
             )
-            != (OWNER, CAPABILITY_ID, SCHEMA_VERSION, current.selection.repository_sha)
+            != (OWNER, CAPABILITY_ID, SCHEMA_VERSION, admission.selection.repository_sha)
             or not all(gate[k] is True for k in ("ok", "alpha_enabled", "new_alpha_allowed"))
             or gate["hard_stop"] is not False
         ):

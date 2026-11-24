@@ -1447,6 +1447,11 @@
       "sha256": "011aff43a5ca64297f5a103f1b8eae2a669e4248722f25aed00f363d8e4aec2e"
     },
     {
+      "path": "docs/ops/specs/PREPARED_FIVE_SLOT_DDO_GVEF_V1.md",
+      "before_sha256": null,
+      "sha256": "997cf90383ac7817f0f08f009a90ae9889de3a12ab69a751fc2849360309b7cd"
+    },
+    {
       "path": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md",
       "before_sha256": "784c935b0982252b6b0a5e9a93da55b1c673792fe3a29c04d7275a2de1cb5fc3",
       "sha256": "aaabc4fb71297993de3880bd21507eb7a7362c862bdcc12255c114412bdd9e51"
@@ -1747,9 +1752,19 @@
       "sha256": null
     },
     {
+      "path": "scripts/ops/btc_demo_bounded_learning_source_v1.py",
+      "before_sha256": null,
+      "sha256": "51791c9ef73da18d2201343180b5bcb18442cdbc1695275b32a4223dc964e958"
+    },
+    {
       "path": "scripts/ops/btc_demo_entry_learning_handoff_v1.py",
       "before_sha256": null,
       "sha256": "0ee8b36947d139e1db1733695b767989fba1c03dc1478dc55884782769bcaee8"
+    },
+    {
+      "path": "scripts/ops/capture_five_slot_entry_market_v1.py",
+      "before_sha256": null,
+      "sha256": "304216aeac77d4f590316ac6377e217b072209c5cb17b94c73c569ae0924abe6"
     },
     {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
@@ -1897,9 +1912,24 @@
       "sha256": "fb9c93b4e003b5517a60c94dcc2d87f6381aa699ddd5fd0c58d95b1629d7bf79"
     },
     {
+      "path": "scripts/ops/prepare_five_slot_entry_selections_v1.py",
+      "before_sha256": null,
+      "sha256": "1f11d6f76e114238313bcf6701dff0a745033269512d9658a46d03cfe624f186"
+    },
+    {
+      "path": "scripts/ops/prepare_ranked_paper_entry_v1.py",
+      "before_sha256": null,
+      "sha256": "8ee17a6dc4d60f6fe2b04cce2bdb684713684905c3d96aa4969b068e88b2eee9"
+    },
+    {
       "path": "scripts/ops/prepare_ranked_shadow_entry_v1.py",
       "before_sha256": null,
-      "sha256": "82d22f553f0efae05148fd39596336b56b808d7fd4290ba0c8bd863c4cf0ad7f"
+      "sha256": "13a8fa6c73b0791772a71524a8b6d826f0e177c2fc722c4eeeafc17a3dbee81c"
+    },
+    {
+      "path": "scripts/ops/prepared_five_slot_run_v1.py",
+      "before_sha256": null,
+      "sha256": "e81235056d61deb178bf3c04535c72123714856ecf05bbe6f2ea2c3434b4e9cb"
     },
     {
       "path": "scripts/ops/primary_evidence_retention_v0.py",
@@ -1910,6 +1940,11 @@
       "path": "scripts/ops/prove_productive_offline_portfolio_state_desync_v1.py",
       "before_sha256": "1679aac9a1d94c88066e507759c8e82b37ced434169881315973a05392bffa17",
       "sha256": "5264e6206f3e72df0b9c8ed252746be116d9cca5d95e20a49d5bd886e7b65125"
+    },
+    {
+      "path": "scripts/ops/publish_five_slot_entry_v1.py",
+      "before_sha256": null,
+      "sha256": "d560b94032f94ef356f1dcb4dc2beef1b393e39b4aeba1d7b04405200a246eef"
     },
     {
       "path": "scripts/ops/read_bounded_paper_episode_outcome_v1.py",
@@ -1935,6 +1970,11 @@
       "path": "scripts/ops/run_btc_demo_bounded_host_v1.py",
       "before_sha256": null,
       "sha256": "a55e3c30a701e184929484567105226c0afe1687f01d92f4dd4a1b66b1a8c362"
+    },
+    {
+      "path": "scripts/ops/run_btc_demo_learning_session_v1.py",
+      "before_sha256": null,
+      "sha256": "7502270b47ad5ee9393ab0d0a448a6b6097230516c8cb8b0395319be12485210"
     },
     {
       "path": "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
@@ -2129,7 +2169,7 @@
     {
       "path": "scripts/ops/run_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "e56ab70c31655f538c1d494928046296cb332f840a2a34c65140ddc7de6ef516"
+      "sha256": "720c563b7d8bc6782b9bb8a7d4e006c1b487653029496dab8364f6b4233b9fda"
     },
     {
       "path": "scripts/ops/run_research_candidate_shadow_v1.py",
@@ -2139,7 +2179,7 @@
     {
       "path": "scripts/ops/run_zkp_lane1_paper_v1.py",
       "before_sha256": null,
-      "sha256": "8e4edc01781666586a7349a0852b0794eaa1720173b2295884606002c4864088"
+      "sha256": "c548e0b882e7878891e4ea35dee61d358ff1ea7e63d59ee4bde86e8fc3a72b93"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -4099,7 +4139,7 @@
     {
       "path": "src/ops/ranked_shadow_entry_selection_v1.py",
       "before_sha256": null,
-      "sha256": "2237a800357121a1b76e8d87ffbc23c560c17c5943fdb3852cb7c5590bcad76a"
+      "sha256": "f0fe9b844d2b03a7c5539bb86e44299fa38ddcbef0163c36ee7dcf73524d34b7"
     },
     {
       "path": "src/ops/ranked_shadow_first_purchase_v1.py",
@@ -4129,7 +4169,7 @@
     {
       "path": "src/ops/ranked_slot_run_source_v1.py",
       "before_sha256": null,
-      "sha256": "39dbeb1c35bbbb4b80b7f965f488cc646eda9e38afa6619066d02ccc3bdc2163"
+      "sha256": "2a404573f0dbfa35a8808f28eaec498cfecd4f6ad057bb5297c36fe4f04aeab5"
     },
     {
       "path": "src/ops/ranked_swap_shadow_observation_v1.py",
@@ -6185,6 +6225,11 @@
       "path": "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py",
       "before_sha256": "26fa88e00ce566c94bbd3b03ad3f6bdf5d8b38a77188a65fe4d27bee9af64c05",
       "sha256": "c2ec7cf7cc249e934e9487f7aaa2d9dbec86d8a9af6c89282a244833883e0067"
+    },
+    {
+      "path": "tests/ops/test_prepared_five_slot_run_v1.py",
+      "before_sha256": null,
+      "sha256": "442383e88159dd3f6780315a44fba53cd22a481898650aa32037613c80564632"
     },
     {
       "path": "tests/ops/test_prepost_original_budget_context_v1.py",
@@ -8477,5 +8522,6 @@
   "testnet_capital_environment_draft_scope": "The earlier shared-owner environment draft is superseded. The generic budget contract and host are byte-identical to target main. The isolated V3 Demo specialization retains its TESTNET envelope over the original durable writer; generic reopen and Live attempt identity are rejected. No runtime authority is granted.",
   "btc_demo_usd_usdc_reservation_scope": "Original decision-bound Demo GET bodies feed a V3 TESTNET first-entry hold. Explicit EEA linear X-Perp selected-margin interpretation retains USD quote and USDC cash units without a spot FX parity assumption or source-row projection. Monetary source v2 retains the same private account and instrument observations for cold reconstruction. Both Core directions, once-funded 25 USDC despite larger observed balance, depth, fees and wrong-source refusals pass offline. Confirmed venue payments, full dispatch/reversal and five-lane scheduling remain open. Runtime authority is NONE.",
   "btc_demo_testnet_plan_scope": "The original canonical intent, composition, venue-plan and envelope producers consume the actual retained sizing binding for TESTNET, with original decision and current entry-frame custody. Offline bilateral tests prove exact reserved quantity, no Core cursor rewrite, same plan after cold read, and refusal before mutation for stale observations including expiry during composition. No permit, submit attempt or transport is created. Full Demo send/reversal and bounded five-lane dispatch remain open.",
-  "btc_demo_bounded_host_scope": "Concrete original Slot 3 TESTNET host, once-funded 25 USDC and immutable 3600-second deadline, original G17/C1 lineage across minute boundaries, confirmed original net reversals, cold recovery, separately confirmed bounded close or authenticated no-entry. Offline preparation only; no venue execution, activation or five-slot DDO/GVEF runtime proof."
+  "btc_demo_bounded_host_scope": "Concrete original Slot 3 TESTNET host, once-funded 25 USDC and immutable 3600-second deadline, original G17/C1 lineage across minute boundaries, confirmed original net reversals, cold recovery, separately confirmed bounded close or authenticated no-entry. Offline preparation only; no venue execution, activation or five-slot DDO/GVEF runtime proof.",
+  "five_slot_ddo_gvef_preparation_scope": "Fixed five-slot offset procedure with explicitly later fresh admission. Original N5 occupancy keeps its historical revision; explicit successor Cap21/22/23 originals replay the original policy. BTC bounded original registration, retained Core/G17 source, authenticated budget reconciliation and original DDO now feed the existing GVEF consumer after the original host close attempt. One-hour original source window; idempotent first-entry IMMEDIATE_POST_EVENT only, no full-account profit claim. Existing sealed host and policies unchanged. No T0, credentials, actual venue run, orders, promotion or activation."
 }

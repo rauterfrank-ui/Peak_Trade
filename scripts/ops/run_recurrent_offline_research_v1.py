@@ -75,7 +75,8 @@ class ResearchSlotScopeV1(BaseModel):
             or self.ends_at - self.starts_at
             not in (
                 (timedelta(hours=1), timedelta(hours=2))
-                if self.surface == "PAPER_EXCHANGE" and self.n5_selection_digest
+                if self.surface == "TESTNET"
+                or (self.surface == "PAPER_EXCHANGE" and self.n5_selection_digest)
                 else (timedelta(hours=2),)
             )
         ):
@@ -105,9 +106,14 @@ class ResearchCampaignV1(BaseModel):
     retry_seconds: int = Field(gt=0, strict=True)
     slot: ResearchSlotScopeV1 | None = None
     testnet_root: Path | None = None
+    testnet_source: Literal["BOUNDED_HOST_ENTRY"] | None = Field(
+        default=None, exclude_if=lambda value: value is None
+    )
 
     @model_validator(mode="after")
     def validate_slot(self):
+        if self.testnet_source is not None and self.testnet_root is None:
+            raise ValueError("RESEARCH_BOUNDED_HOST_REQUIRES_TESTNET_ROOT")
         if (self.testnet_root is not None) != (
             self.slot is not None and self.slot.surface == "TESTNET"
         ):
@@ -153,9 +159,16 @@ def _read_source(workspace, source, campaign):
         raise ValueError("RESEARCH_SLOT_SURFACE_MISMATCH")
     if source["surface"] == "TESTNET":
         lane = campaign.testnet_root / "testnet-state" / slot.lane_id
-        measurement = read_btc_demo_first_fill_for_research_v1(
-            campaign.testnet_root, source["episode"]
-        )
+        if campaign.testnet_source == "BOUNDED_HOST_ENTRY":
+            from scripts.ops.btc_demo_bounded_learning_source_v1 import (
+                read_bounded_btc_entry_measurement_v1,
+            )
+
+            measurement = read_bounded_btc_entry_measurement_v1(campaign.testnet_root)
+        else:
+            measurement = read_btc_demo_first_fill_for_research_v1(
+                campaign.testnet_root, source["episode"]
+            )
         filled_at = datetime.fromtimestamp(
             measurement["opening_fill"]["first_fill_time_ms"] / 1000, timezone.utc
         ).isoformat()
@@ -568,11 +581,17 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
             list(_discover_shadow(campaign)) if scope is None or scope.surface == "SHADOW" else []
         )
         if campaign.testnet_root is not None:
-            fills = campaign.testnet_root / "testnet-state" / scope.lane_id / "research-first-fills"
-            discovered.extend(
-                {"surface": "TESTNET", "episode": path.stem}
-                for path in sorted(fills.glob("*.json"))
-            )
+            if campaign.testnet_source == "BOUNDED_HOST_ENTRY":
+                if (campaign.testnet_root / "original-entry-g17-c1.json").is_file():
+                    discovered.append({"surface": "TESTNET", "episode": "bounded-host-entry"})
+            else:
+                fills = (
+                    campaign.testnet_root / "testnet-state" / scope.lane_id / "research-first-fills"
+                )
+                discovered.extend(
+                    {"surface": "TESTNET", "episode": path.stem}
+                    for path in sorted(fills.glob("*.json"))
+                )
         paper_archives = (
             sorted(campaign.paper_runs.glob("*"))
             if scope is None

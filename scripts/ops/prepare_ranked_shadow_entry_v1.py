@@ -38,6 +38,11 @@ def prepare(folder, source_root):
         selection_digest=row["selection_digest"],
     )
     assignment = read_ranked_run_slot_v1(config)
+    if "repository_sha" in inputs:
+        config["shadow_entry_admission"].update(
+            repository_sha=inputs["repository_sha"],
+            original_repository_sha=assignment.selection.repository_sha,
+        )
     admission = read_shadow_entry_admission_v1(config, assignment)
     admission.require_current_v1(time())
     path = source_root / "Shadowbindung" / session / "slot-gebunden.json"
