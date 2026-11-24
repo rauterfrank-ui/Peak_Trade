@@ -1,7 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
 Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
-Dateizuordnung für 22.951 Pfade am Repo-Stand `5a1acfc6e32034c9a60e5d683c8714b816a4740f`.
+Dateizuordnung für 22.953 Pfade am Repo-Stand `81f93f33ed1272dbd52c5f28182dbb24330a55f4`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -347,7 +347,7 @@ Eingehende Übergaben: GRENZE-OPT-STORE, GRENZE-P41, GRENZE-P42, GRENZE-P43, REK
 
 ### VIEW · Operator Anzeige Monitoring und Wissen
 
-254 zugeordnete Dateien.
+255 zugeordnete Dateien.
 
 - VIEW-FG01 · Readmodel und Projektion · [producer_v1.py](../../../src/ops/future_profile_snapshot_v1/producer_v1.py).
 - VIEW-FG02 · Anzeige und erklärender Kontext · Modulfamilie webui.
@@ -356,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6772 zugeordnete Dateien.
+6773 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 
