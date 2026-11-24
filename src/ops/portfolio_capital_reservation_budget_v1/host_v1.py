@@ -272,6 +272,21 @@ class HostBudgetRecoveryContextV1:
             raise ValueError("HOST_BUDGET_PENDING_ORDERS_UNRESOLVED")
         if output.bound_account_identity != self.account:
             raise ValueError("HOST_BUDGET_ACCOUNT_MISMATCH")
+        authenticated_update = None
+        if (
+            self.host.execution_environment == "TESTNET"
+            and self.authenticated_reconciliation is not None
+        ):
+            proofs = tuple(self.authenticated_reconciliation.evidence.values())
+            if len(proofs) != 1:
+                raise ValueError("TESTNET_RECOVERY_SINGLE_AUTHENTICATED_POSITION_REQUIRED")
+            proof = proofs[0]
+            row = self.execution_reconciliation[proof.reservation_id]
+            authenticated_update = {
+                "authenticated_net_reversal"
+                if "net_reversal_booking_digest" in row
+                else "authenticated_testnet_entry": (self, proof)
+            }
         result = reconcile_durable_budget_startup_v1(
             owner,
             output=output,
@@ -282,6 +297,7 @@ class HostBudgetRecoveryContextV1:
             repository_sha=self.host.repository_sha,
             now_unix=self.host.clock(),
             capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+            authenticated_position_update=authenticated_update,
             **(
                 {
                     "bounded_reconciliation_scope": BoundedSlotReconciliationScopeV1(
@@ -412,6 +428,80 @@ class HostBudgetRecoveryContextV1:
             return open_position_episode_from_authenticated_execution_v1(**args, mode="create")
         except FileExistsError:
             return open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
+
+    def publish_authenticated_testnet_entry_c1_v1(
+        self, *, lane_id, proof, episode, cursor_root, g17_producer
+    ):
+        """Join the confirmed original fill to the original Mark-to-C1 publisher."""
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+            load_current_productive_sidestate_confirmation_cursor_v1,
+            parse_current_productive_sidestate_confirmation_cursor_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+            read_current_core_entry_assessment_frame_v1,
+        )
+        from src.ops.offline_first_entry_position_v2 import publish_confirmed_first_entry_c1_v2
+        from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+            require_current_cursor_continuity_v1,
+        )
+        from src.ops.execution_reconciliation_proof_store_v1 import (
+            read_authenticated_execution_reconciliation_source_v1,
+        )
+
+        host = self.host
+        link = self.inspect_current_authenticated_entry_v1(lane_id=lane_id, proof=proof)
+        source = link.get("plan_origin", {}).get("core_cursor_source", {})
+        if (
+            host.execution_environment != "TESTNET"
+            or episode.identity.account_scope.execution_environment != "TESTNET"
+            or source.get("cursor_root") != str(Path(cursor_root).resolve())
+            or source.get("decision_id") != link["identity"]["canonical_decision_id"]
+            or proof.identity_digest != episode.identity.episode_id
+            or "net_reversal_booking_digest" in link["reconciliation"]
+        ):
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_SCOPE_REQUIRED")
+        raw = load_current_productive_sidestate_confirmation_cursor_v1(Path(cursor_root))
+        if raw is None:
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_CURSOR_REQUIRED")
+        if raw["entry_assessment_frame"] is None:
+            require_current_cursor_continuity_v1(
+                episode=episode, incoming=raw, store_root=Path(cursor_root)
+            )
+            return
+        frame = read_current_core_entry_assessment_frame_v1(
+            parse_current_productive_sidestate_confirmation_cursor_v1(raw)
+        )
+        if frame["parent"]["decision_id"] != source["decision_id"]:
+            # A later occupied Core cycle has its own assessment frame. Its
+            # original Exit-owned publication must match the current cursor;
+            # never replay the opening handoff over that continued state.
+            if episode.binding.current_cursor_publication is not None:
+                require_current_cursor_continuity_v1(
+                    episode=episode, incoming=raw, store_root=Path(cursor_root)
+                )
+                return
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_DECISION_REQUIRED")
+
+        def retain():
+            original = read_authenticated_execution_reconciliation_source_v1(
+                root=self.authenticated_reconciliation.proof_root,
+                budget_owner_root=host.root / "owner",
+                account=self.account,
+                session_id=proof.session_id,
+                reservation_id=proof.reservation_id,
+                revision_ref=proof.revision_ref,
+            )
+            if original.proof != proof:
+                raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_FILL_CHANGED")
+            return proof.snapshot_digest
+
+        return publish_confirmed_first_entry_c1_v2(
+            episode=episode,
+            cursor_root=Path(cursor_root),
+            g17_producer=g17_producer,
+            writer_session_id=host.session_id,
+            retain_opening=retain,
+        )
 
 
 class PortfolioBudgetHostV1:

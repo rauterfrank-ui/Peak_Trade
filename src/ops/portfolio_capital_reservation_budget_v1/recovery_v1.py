@@ -161,6 +161,7 @@ def reconcile_durable_budget_startup_v1(
     now_unix: float,
     capital_max_age_seconds: float,
     bounded_reconciliation_scope=None,
+    authenticated_position_update=None,
 ):
     """Compose the existing reconciliation gate and budget recovery automatically.
 
@@ -185,6 +186,7 @@ def reconcile_durable_budget_startup_v1(
             session_id=session_id,
             repository_sha=repository_sha,
             now_unix=now_unix,
+            **(authenticated_position_update or {}),
             **(
                 {"bounded_reconciliation_scope": bounded_reconciliation_scope}
                 if bounded_reconciliation_scope is not None

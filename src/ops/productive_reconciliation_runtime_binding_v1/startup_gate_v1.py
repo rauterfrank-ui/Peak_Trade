@@ -92,6 +92,76 @@ def _apply_booked_net_reversal_v1(
     }
 
 
+def _apply_confirmed_testnet_entry_v1(
+    persisted, observed, *, root, session_id, repository_sha, request
+):
+    """Acknowledge an original full entry fill; never infer it from a position alone."""
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import HostBudgetRecoveryContextV1
+    from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+        require_btc_testnet_slot_scope_v1,
+    )
+    from src.ops.execution_reconciliation_proof_store_v1 import (
+        read_authenticated_execution_reconciliation_source_v1,
+    )
+    from src.ops.exit_policy_producer_binding_v1.authenticated_execution_entry_source_v1 import (
+        _entry_anchors_v1,
+    )
+
+    context, proof = request
+    if type(context) is not HostBudgetRecoveryContextV1:
+        raise ValueError("TESTNET_ENTRY_PORTFOLIO_ORIGINAL_HOST_REQUIRED")
+    host = context.host
+    if (
+        host.execution_environment != "TESTNET"
+        or host.owner.execution_environment_v1() != "TESTNET"
+        or root.resolve() != host.root / "reconciliation"
+        or session_id != host.session_id
+        or repository_sha != host.repository_sha
+        or observed != context.observed
+        or context.authenticated_reconciliation is None
+        or context.authenticated_reconciliation.proof_root is None
+        or context.authenticated_reconciliation.evidence.get(proof.reservation_id) != proof
+    ):
+        raise ValueError("TESTNET_ENTRY_PORTFOLIO_SCOPE_MISMATCH")
+    require_btc_testnet_slot_scope_v1(host.owner.entry_budget_policy_v1(), host.bindings)
+    link = context.inspect_current_authenticated_entry_v1(lane_id="LANE_3", proof=proof)
+    source = read_authenticated_execution_reconciliation_source_v1(
+        root=context.authenticated_reconciliation.proof_root,
+        budget_owner_root=host.root / "owner",
+        account=context.account,
+        session_id=proof.session_id,
+        reservation_id=proof.reservation_id,
+        revision_ref=proof.revision_ref,
+    )
+    identity = source.identity
+    if (
+        identity.execution_environment != "TESTNET"
+        or identity.slot_id != "LANE_3"
+        or source.proof != proof
+        or source.reconciliation != link["reconciliation"]
+        or link["reconciliation"].get("net_reversal_booking_digest")
+        or link["reconciliation"]["decision"]["outcome"] != "CONFIRMED_FILLED"
+        or link["reconciliation"]["reservation_released"] is not False
+    ):
+        raise ValueError("TESTNET_ENTRY_PORTFOLIO_FILL_UNPROVEN")
+    side = identity.selected_side.lower()
+    _entry_anchors_v1(source, side=side)
+    quantity = Decimal(identity.final_quantity) * (1 if side == "long" else -1)
+    positions = tuple((p.instrument_id, p.signed_quantity) for p in observed.positions)
+    if positions != ((identity.instrument_id, quantity),):
+        raise ValueError("TESTNET_ENTRY_PORTFOLIO_TARGET_UNPROVEN")
+    old = tuple((p.instrument_id, p.signed_quantity) for p in persisted.positions)
+    if old == positions:
+        return persisted, {}
+    if old or any((persisted.missing, persisted.duplicate, persisted.writer_conflict)):
+        raise ValueError("TESTNET_ENTRY_PORTFOLIO_FLAT_PARENT_REQUIRED")
+    return replace(persisted, positions=observed.positions), {
+        "authenticated_testnet_entry_identity_digest": identity.identity_digest(),
+        "authenticated_testnet_entry_snapshot_digest": proof.snapshot_digest,
+        "authenticated_testnet_entry_reservation_id": proof.reservation_id,
+    }
+
+
 def _apply_mutation_plan(
     *,
     persisted: PortfolioTruthSnapshotV1,
@@ -145,6 +215,7 @@ def run_productive_reconciliation_startup_gate_v1(
     inject_conflicting_writer: bool = False,
     bounded_reconciliation_scope=None,
     authenticated_net_reversal=None,
+    authenticated_testnet_entry=None,
 ) -> ProductiveReconciliationGateResultV1:
     """Session-start reconciliation gate. Alpha only on MATCH or verified recovery."""
     wall = float(now_unix if now_unix is not None else time.time())
@@ -219,6 +290,17 @@ def run_productive_reconciliation_startup_gate_v1(
         persisted = load_persisted_portfolio_state(root, require_present=require_persisted_present)
         comparison = persisted
         applied: dict = {}
+        if authenticated_testnet_entry is not None:
+            if authenticated_net_reversal is not None:
+                raise ValueError("RECONCILIATION_DUAL_AUTHENTICATED_TRANSITION")
+            comparison, applied = _apply_confirmed_testnet_entry_v1(
+                persisted,
+                observed,
+                root=root,
+                session_id=session_id,
+                repository_sha=repository_sha,
+                request=authenticated_testnet_entry,
+            )
         if authenticated_net_reversal is not None:
             comparison, applied = _apply_booked_net_reversal_v1(
                 persisted,

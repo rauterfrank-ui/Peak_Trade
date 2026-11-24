@@ -37,9 +37,8 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
 from tests.ops.test_portfolio_budget_host_v1 import _fetch
 
 
-def test_original_host_recovers_v3_then_binds_a_testnet_entry_episode(
-    demo_entry, tmp_path, monkeypatch
-):
+@pytest.fixture
+def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
     demo, entry, reads, movement, instant, payloads = demo_entry
     owner, bound = demo.budget.owner, demo.budget.bound
     result, _ = demo.reserve_testnet_entry_v1(
@@ -57,6 +56,7 @@ def test_original_host_recovers_v3_then_binds_a_testnet_entry_episode(
     identity = owner.begin_execution_submit_v2(rid, envelope, plan_context, _permit(envelope))
     assert identity.execution_environment == "TESTNET"
     policy = owner.entry_budget_policy_v1()
+    saved = owner.risk_snapshot_v1()["state"]["sizing_bindings"][rid]
     root = owner._store.root.parent
     held = owner.local_commitment_readback_v1().commitments
     owner.close()
@@ -204,7 +204,27 @@ def test_original_host_recovers_v3_then_binds_a_testnet_entry_episode(
         assert episode.identity.episode_id == identity.identity_digest()
         assert len(calls) == FUTURES_INVENTORY_REQUEST_COUNT + 6
         assert host.owner.budget_state_v1().recovery_required
+        yield dict(
+            demo=demo,
+            host=host,
+            context=context,
+            entry=entry,
+            bound=bound,
+            episode=episode,
+            proof_root=proof_root,
+            proof=proofs[rid],
+            now=now,
+            saved=saved,
+            rid=rid,
+            payloads=payloads,
+        )
     finally:
         host.close()
         account_source.close()
         release_k1_venue_auth_session_v1(handle)
+
+
+def test_original_host_recovers_v3_then_binds_a_testnet_entry_episode(original_testnet_entry):
+    world = original_testnet_entry
+    assert world["episode"].identity.lane_id == "LANE_3"
+    assert world["context"].host is world["host"]

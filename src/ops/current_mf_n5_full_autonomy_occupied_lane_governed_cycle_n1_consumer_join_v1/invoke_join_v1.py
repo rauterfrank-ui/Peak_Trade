@@ -418,7 +418,7 @@ def _occupied_scope_close_binding_v1(
         cursor_digest=current_productive_cursor_digest_v1(cursor),
         entry_source_ref=(
             episode.entry_source_ref
-            if identity.account_scope.execution_environment == "LIVE"
+            if identity.account_scope.execution_environment in {"LIVE", "TESTNET"}
             else None
         ),
     )
@@ -440,7 +440,8 @@ def _scope_switch_close_binding_v1(
 
     identity.validate_v1()
     if (
-        identity.account_scope.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE"}
+        identity.account_scope.execution_environment
+        not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE", "TESTNET"}
         or identity.lane_id != lane_identity.lane_id
         or identity.instrument_id != lane_identity.canonical_instrument_id
         or identity.venue_native_id != lane_identity.venue_native_id
@@ -533,7 +534,7 @@ def read_submitted_occupied_scope_close_v1(
     retained = read_retained_occupied_scope_close_v1(attempt_root)
     switch = occupied_l10_close_from_binding_v1(retained["binding"])
     if (
-        expected_scope.execution_environment != "LIVE"
+        expected_scope.execution_environment not in {"LIVE", "TESTNET"}
         or switch.episode.account_scope != expected_scope
         or switch.episode.episode_id != episode_id
     ):
@@ -604,7 +605,11 @@ def recover_occupied_scope_close_for_reconciliation_v1(
         if (
             type(authenticated_entry) is not AuthenticatedEntryEpisodeRequestV1
             or type(host_budget_recovery) is not HostBudgetRecoveryContextV1
-            or expected_scope.execution_environment != "LIVE"
+            or expected_scope.execution_environment not in {"LIVE", "TESTNET"}
+            or expected_scope.execution_environment
+            != host_budget_recovery.host.execution_environment
+            or expected_scope.execution_environment
+            != host_budget_recovery.host.owner.execution_environment_v1()
             or expected_scope.account_identity != host_budget_recovery.account
             or host_budget_recovery.host.bindings != {lane_id: lane_pair[1]}
         ):
@@ -1512,6 +1517,24 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         else None,
         BoundedSlotEntryBudgetV1,
     )
+    testnet_slots = (
+        portfolio_budget_owner is not None
+        and portfolio_budget_owner.execution_environment_v1() == "TESTNET"
+    )
+    if testnet_slots:
+        from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+            require_btc_testnet_slot_scope_v1,
+        )
+
+        try:
+            require_btc_testnet_slot_scope_v1(
+                portfolio_budget_owner.entry_budget_policy_v1(),
+                {lane: pair[1] for lane, pair in composed_pairs.items()},
+            )
+            if authenticated_entry is None:
+                raise ValueError("TESTNET_OCCUPIED_AUTHENTICATED_ENTRY_REQUIRED")
+        except (ValueError, TypeError, IndexError) as exc:
+            _fail(FAILURE_AUTHORITY, str(exc))
     if occupied_scope_mark_lane_id is not None and (
         occupied_scope_mark_lane_id not in composed_pairs
         or (
@@ -1542,6 +1565,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             or occupied_scope_mark_lane_id is None
             or len(composed_pairs) != 1
             or bounded_slots
+            and not testnet_slots
             or offline_governed_attempt is not None
             or position_episode_bindings is not None
             or position_episode_scope is not None
@@ -1562,7 +1586,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             host.closed
             or host.owner is None
             or host.owner is not portfolio_budget_owner
-            or host.execution_environment != "LIVE"
+            or host.execution_environment not in {"LIVE", "TESTNET"}
+            or host.execution_environment != portfolio_budget_owner.execution_environment_v1()
             or host.bindings != {occupied_scope_mark_lane_id: bound}
             or not 0
             <= host.clock() - observed_unix
@@ -1600,6 +1625,14 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             booked = host_budget_recovery.execution_reconciliation[
                 authenticated_entry.proof.reservation_id
             ].get("net_reversal_booking_digest")
+            if testnet_slots and not booked:
+                host_budget_recovery.publish_authenticated_testnet_entry_c1_v1(
+                    lane_id=occupied_scope_mark_lane_id,
+                    proof=authenticated_entry.proof,
+                    episode=episode,
+                    cursor_root=pair[0].lane_state_root,
+                    g17_producer=(g17_typed_vol_producers or {}).get(occupied_scope_mark_lane_id),
+                )
             if rotation_exit_requests is not None and (
                 not booked or set(rotation_exit_requests) - {occupied_scope_mark_lane_id}
             ):
@@ -1646,7 +1679,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             not isinstance(host_budget_recovery, HostBudgetRecoveryContextV1)
             or host_budget_recovery.host.closed
             or host_budget_recovery.host.owner is not portfolio_budget_owner
-            or host_budget_recovery.host.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or host_budget_recovery.host.execution_environment
+            != ("TESTNET" if testnet_slots else "INTERNAL_SIMULATED_EXECUTION")
             or offline_governed_attempt is not None
             or live_29p_injected_by_lane is None
         ):
@@ -1717,7 +1751,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 lock,
                 str(
                     _occupied_attempt_root_v1(
-                        evidence, prefix=prefix, authenticated=not bounded_slots
+                        evidence, prefix=prefix, authenticated=authenticated_entry is not None
                     )
                 ),
             )
