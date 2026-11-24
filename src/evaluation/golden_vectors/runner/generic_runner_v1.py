@@ -9,6 +9,7 @@ from src.evaluation.golden_vectors.contracts.enums import (
     DomainVerdict,
     FailureClassification,
     FanOutEvaluationClass,
+    ProtectedDomain,
 )
 from src.evaluation.golden_vectors.contracts.models import (
     DecisionDeltaManifestV1,
@@ -25,6 +26,7 @@ from src.evaluation.golden_vectors.promotion.errors import GvefPromotionAuthorit
 from src.evaluation.golden_vectors.promotion.promotion_evidence_adapter_v1 import (
     PassThroughPromotionEvidenceAdapterV1,
     PromotionAdaptRequestV1,
+    evidence_bundle_semantic_digest,
 )
 from src.evaluation.golden_vectors.contracts.validation import parse_run_manifest_v1
 from src.evaluation.golden_vectors.runner.digest_projection import (
@@ -38,6 +40,9 @@ from src.evaluation.golden_vectors.runner.errors import (
 )
 from src.evaluation.golden_vectors.corpus.errors import GvefCorpusDriftError
 from src.evaluation.golden_vectors.digest.errors import GvefProtectedDigestDriftError
+from src.evaluation.golden_vectors.digest.protected_semantic_digest_layer_v1 import (
+    reproof_class_for_verdict,
+)
 from src.evaluation.golden_vectors.corpus.gate_v1 import PassThroughCorpusIntegrityGateV1
 from src.evaluation.golden_vectors.runner.protocols import (
     ComparatorV1,
@@ -104,6 +109,32 @@ def evidence_complete(record: GvefRunRecordV1) -> bool:
         and record.evidence_bundle is not None
         and record.evidence_bundle.post_constraint_gate_pass is True
     )
+
+
+def _bind_comparison_reproof(
+    bundle: EvidenceBundleV1,
+    planned_class: FanOutEvaluationClass,
+    compared_digests: ProtectedSemanticDigestsV1,
+) -> EvidenceBundleV1:
+    classes = {planned_class, bundle.fan_out_evaluation_class}
+    for domain in ProtectedDomain:
+        entry = getattr(compared_digests, domain.value)
+        if entry is not None and entry.verdict is not None:
+            classes.add(reproof_class_for_verdict(entry.verdict))
+    severity = (
+        FanOutEvaluationClass.LOCAL_EVALUATION,
+        FanOutEvaluationClass.DOWNSTREAM_IMPACT_EVALUATION,
+        FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+    )
+    effective_class = max(classes, key=severity.index)
+    if effective_class is bundle.fan_out_evaluation_class:
+        return bundle
+
+    # Validate the builder's evidence before rebinding the observed comparison class.
+    if bundle.evidence_digest != evidence_bundle_semantic_digest(bundle):
+        raise GvefRunnerError("evidence_digest mismatch before binding comparison reproof")
+    updated = bundle.model_copy(update={"fan_out_evaluation_class": effective_class})
+    return updated.model_copy(update={"evidence_digest": evidence_bundle_semantic_digest(updated)})
 
 
 @dataclass
@@ -243,6 +274,7 @@ class GenericRunnerV1:
                 domain_evaluation_result=self._result_copy(record.candidate_result),
             )
             check_retained_results()
+            bundle = _bind_comparison_reproof(bundle, run.fan_out_evaluation_class, merged_d)
             record.evidence_bundle = bundle
             self._advance(record, RunnerState.EVIDENCE_BUILT)
 
@@ -266,7 +298,7 @@ class GenericRunnerV1:
                     FailureClassification.AUTHORITY_FAILURE,
                     FanOutEvaluationClass.LOCAL_EVALUATION,
                 )
-            record.fan_out_evaluation_class = run.fan_out_evaluation_class
+            record.fan_out_evaluation_class = bundle.fan_out_evaluation_class
             record.protected_output_digest = self._protected_output_digest(record)
             return record
         except GvefResultMutationError:
