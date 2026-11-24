@@ -532,7 +532,7 @@ def read_btc_demo_first_fill_for_research_v1(testnet_root: Path, episode_id: str
     }
 
 
-def _require_original_entry_cursor_v1(cursor_root, identity, created, g17_producer):
+def _require_original_entry_cursor_v1(cursor_root, identity, created, g17_producer, config_digest):
     """Check original decision and finalized G17 before creating an entry episode."""
     from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
         load_current_productive_sidestate_confirmation_cursor_v1,
@@ -579,6 +579,16 @@ def _require_original_entry_cursor_v1(cursor_root, identity, created, g17_produc
         or not c1 + port.estimate.bar_interval_seconds <= mark_time <= created.timestamp()
     ):
         raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_G17_LINEAGE_REQUIRED")
+    return dict(
+        canonical_decision_id=identity.canonical_decision_id,
+        policy_decision_id=frame["entry"]["policy_decision_id"],
+        policy_input_digest=frame["entry"]["input_digest"],
+        composition_result_ref=frame["entry"]["composition_result_ref"],
+        trading_epoch=frame["entry"]["trading_epoch"],
+        decision_time=market["decision_time"],
+        frame_digest=cursor.entry_assessment_frame["digest"],
+        exit_config_digest=config_digest,
+    )
 
 
 def bind_btc_demo_first_fill_to_v2(
@@ -624,14 +634,23 @@ def bind_btc_demo_first_fill_to_v2(
             for trade_id, currency, amount in fill.fee_rows
         ],
     }
-    opening_digest = canonical_digest_v1(evidence)
-    source_ref = "okx_eea_demo_first_fill.v2:" + opening_digest
     episode_root = lane_root / "position-episodes" / episode_id
     with exclusive_v1(lane_root / ".first-fill.lock"):
         require_budget_head_read_only_v1(
             budget_root, account_identity=expected_uid, expected_digest=revision_ref[1]
         )
         existing = episode_root.exists()
+        relative_fill = Path("confirmed-first-fills") / f"{episode_id}.json"
+        if (lane_root / relative_fill).exists():
+            retained_opening = _read_owner_json(lane_root, relative_fill)
+            if "decision_source" in retained_opening:
+                evidence["decision_source"] = retained_opening["decision_source"]
+        else:
+            evidence["decision_source"] = _require_original_entry_cursor_v1(
+                cursor_root, identity, created, g17_producer, config_digest
+            )
+        opening_digest = canonical_digest_v1(evidence)
+        source_ref = "okx_eea_demo_first_fill.v2:" + opening_digest
         common = dict(
             identity=_episode_identity(identity),
             state_root=episode_root,
@@ -642,8 +661,14 @@ def bind_btc_demo_first_fill_to_v2(
             entry_price_basis="CONFIRMED_POSITION_ENTRY_PRICE",
         )
         episode = open_position_episode_binding_v1(mode="recover", **common) if existing else None
-        if episode is None or episode.binding.current_cursor_publication is None:
-            _require_original_entry_cursor_v1(cursor_root, identity, created, g17_producer)
+        if (lane_root / relative_fill).exists() and (
+            episode is None or episode.binding.current_cursor_publication is None
+        ):
+            original_source = _require_original_entry_cursor_v1(
+                cursor_root, identity, created, g17_producer, config_digest
+            )
+            if "decision_source" in evidence and original_source != evidence["decision_source"]:
+                raise ValueError("BTC_DEMO_ORIGINAL_ENTRY_DECISION_MISMATCH")
         immutable_json_v1(lane_root / "confirmed-first-fills" / f"{episode_id}.json", evidence)
         if episode is None:
             episode = open_position_episode_binding_v1(

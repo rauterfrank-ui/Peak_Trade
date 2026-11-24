@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
 from dataclasses import asdict
+from datetime import datetime
 import hashlib
 import json
 from typing import Any
@@ -97,22 +98,25 @@ def productive_scope_learning_config_hash_v1(bind_input: IntegratedOfflineReplay
     ).hexdigest()
 
 
-_PAPER_WRITER: ContextVar[DdoCaptureBindingV0 | None] = ContextVar(
-    "up_paper_ddo_writer", default=None
+_SESSION_WRITER: ContextVar[DdoCaptureBindingV0 | None] = ContextVar(
+    "master_v2_ddo_session_writer", default=None
 )
 
 
 @contextmanager
-def paper_ddo_writer_scope_v1(writer: DdoCaptureBindingV0 | None):
-    token = _PAPER_WRITER.set(writer)
+def session_ddo_writer_scope_v1(writer: DdoCaptureBindingV0 | None):
+    token = _SESSION_WRITER.set(writer)
     try:
         yield
     finally:
-        _PAPER_WRITER.reset(token)
+        _SESSION_WRITER.reset(token)
+
+
+paper_ddo_writer_scope_v1 = session_ddo_writer_scope_v1
 
 
 def build_productive_ddo_capture_binding_v1(*, ledger_path: Path) -> DdoCaptureBindingV0:
-    reusable = _PAPER_WRITER.get()
+    reusable = _SESSION_WRITER.get()
     # Only the session's own lane can reuse its writer. Previous observations
     # must not enter this cycle's capture summary or outcome handoff.
     if reusable is not None and reusable.enabled and reusable.ledger_path == ledger_path:
@@ -149,6 +153,10 @@ def run_integrated_offline_replay_with_productive_ddo_capture_v1(
         ddo_capture_binding.capture_repository_sha = repository_sha
         ddo_capture_binding.capture_scope_config_hash = None
         try:
+            if ddo_capture_binding.precise_host_decision_time:
+                event_ts_unix = datetime.fromisoformat(
+                    bind_input.canonical_market_context.decision_time.replace("Z", "+00:00")
+                ).timestamp()
             bind_host_cycle_capture_context_v0(
                 ddo_capture_binding,
                 event_ts_unix=event_ts_unix,

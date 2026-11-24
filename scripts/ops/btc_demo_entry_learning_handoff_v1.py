@@ -7,6 +7,7 @@ from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
     EvaluationReceiptArchiveV1,
 )
 from src.experiments.canonical_research_prepared_execution_v1 import publish_v1, read_v1
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import _repository_code_hash_v1
 from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
     is_double_play_decision_event_v0,
     require_current_double_play_bundle_v1,
@@ -39,12 +40,15 @@ def btc_demo_entry_learning_handoff_v1(*, measurement, decision_ledger: Path, ou
         raise FileNotFoundError(decision_ledger)
     rows = AppendOnlyDdoLedgerV0(decision_ledger).read_all()
     records = {row["record_id"]: row for row in rows}
+    original = measurement["opening_fill"].get("decision_source")
+    policy_id = (
+        original["policy_decision_id"] if original is not None else measurement["decision_id"]
+    )
     matches = [
         row["decision_event_ref"]
         for row in rows
         if row["schema_name"] == "double_play_entry_exit_observation"
-        and (row.get("producer_canonical_payload") or {}).get("policy_decision_id")
-        == measurement["decision_id"]
+        and (row.get("producer_canonical_payload") or {}).get("policy_decision_id") == policy_id
     ]
     if len(matches) != 1:
         raise ValueError("BTC_DEMO_ORIGINAL_DOUBLE_PLAY_DECISION_NOT_UNIQUE")
@@ -55,10 +59,25 @@ def btc_demo_entry_learning_handoff_v1(*, measurement, decision_ledger: Path, ou
     )
     if (
         not is_double_play_decision_event_v0(decision)
-        or dp.policy_decision_id != measurement["decision_id"]
+        or dp.policy_decision_id != policy_id
         or dp.instrument_id != measurement["instrument_id"]
         or dp.authoritative_decision_outcome.upper() != measurement["decision_outcome"]
-        or decision["config_hash"] != measurement["config_digest"]
+        or (original is None and decision["config_hash"] != measurement["config_digest"])
+        or (
+            original is not None
+            and (
+                original["canonical_decision_id"] != measurement["decision_id"]
+                or decision["code_sha"] == "UNKNOWN"
+                or decision["code_sha"] != _repository_code_hash_v1(measurement["repository_sha"])
+                or original["exit_config_digest"] != measurement["config_digest"]
+                or decision["correlation_id"] != "ddo.corr." + measurement["cycle_id"]
+                or original["policy_input_digest"] != dp.input_digest
+                or original["composition_result_ref"] != dp.composition_result_ref
+                or original["trading_epoch"] != dp.trading_epoch
+                or datetime.fromisoformat(original["decision_time"].replace("Z", "+00:00"))
+                != datetime.fromisoformat(decision["event_time_utc"].replace("Z", "+00:00"))
+            )
+        )
         or datetime.fromisoformat(decision["event_time_utc"].replace("Z", "+00:00"))
         > datetime.fromisoformat(measurement["envelope_created_utc"].replace("Z", "+00:00"))
     ):
