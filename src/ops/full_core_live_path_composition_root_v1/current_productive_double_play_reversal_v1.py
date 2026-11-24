@@ -92,6 +92,7 @@ class DirectDoublePlayReversalV1:
     current_contracts: Decimal
     target_contracts: Decimal
     target_notional_usdc: Decimal
+    financial_receipt_json: str = ""
 
     @property
     def signed_order_contracts(self) -> Decimal:
@@ -102,6 +103,7 @@ class DirectDoublePlayReversalV1:
             **{
                 key: str(value) if isinstance(value, Decimal) else value
                 for key, value in asdict(self).items()
+                if key != "financial_receipt_json" or value
             },
             "side": "buy" if self.target_contracts > 0 else "sell",
             "quantity_contracts": str(abs(self.signed_order_contracts)),
@@ -114,7 +116,7 @@ class DirectDoublePlayReversalV1:
 
     @classmethod
     def from_dict_v1(cls, record):
-        raw = {field.name: record[field.name] for field in fields(cls)}
+        raw = {field.name: record[field.name] for field in fields(cls) if field.name in record}
         identity = dict(raw["episode"])
         identity["account_scope"] = PositionEpisodeScopeV1(**identity["account_scope"])
         raw["episode"] = PositionEpisodeIdentityV1(**identity)
@@ -127,6 +129,10 @@ class DirectDoublePlayReversalV1:
         result = cls(**raw)
         if result.to_dict_v1() != record or result.quote_to_usdc <= 0:
             raise ValueError("DIRECT_REVERSAL_PLAN_READBACK_MISMATCH")
+        if result.episode.account_scope.execution_environment == "TESTNET":
+            from src.ops.btc_demo_net_reversal_financials_v1 import verify_reversal_financials_v1
+
+            verify_reversal_financials_v1(result)
         return result
 
     def apply_simulated_fill_v1(self, *, ledger, accounting, fill, budget_owner=None):
@@ -180,7 +186,8 @@ def assess_direct_double_play_reversal_v1(
     """Size the target exposure of a replacement, with the original hold still retained."""
     identity = episode.identity
     lane = identity.lane_id
-    live = identity.account_scope.execution_environment == "LIVE"
+    testnet = identity.account_scope.execution_environment == "TESTNET"
+    authenticated = identity.account_scope.execution_environment in {"LIVE", "TESTNET"}
     scope = read_occupied_scope_mark_snapshot_v1(Path(cursor_root))
     if (
         scope is None
@@ -195,14 +202,21 @@ def assess_direct_double_play_reversal_v1(
         or owner is None
         or recovery.host.closed
         or recovery.host.owner is not owner
-        or recovery.host.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE"}
+        or recovery.host.execution_environment
+        not in {"INTERNAL_SIMULATED_EXECUTION", "LIVE", "TESTNET"}
         or identity.account_scope.execution_environment != recovery.host.execution_environment
         or identity.account_scope.account_identity != recovery.account
         or recovery.host.bindings.get(lane) != bound
         or recovery.pending_orders
     ):
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOST_REQUIRED")
-    if live:
+    if testnet:
+        from src.ops.portfolio_capital_reservation_budget_v1.test_phase_limits_v1 import (
+            require_btc_testnet_slot_scope_v1,
+        )
+
+        require_btc_testnet_slot_scope_v1(owner.entry_budget_policy_v1(), recovery.host.bindings)
+    if authenticated:
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
         )
@@ -287,15 +301,23 @@ def assess_direct_double_play_reversal_v1(
     acquisition = datetime.fromisoformat(injected.observed_at.replace("Z", "+00:00"))
     if acquisition.utcoffset() is None:
         raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
-    age = (decision_time - acquisition).total_seconds()
-    if not 0 <= age <= NUMERIC_EQUITY_TTL_SECONDS:
+    evaluated = (
+        datetime.fromtimestamp(recovery.host.clock(), decision_time.tzinfo)
+        if testnet
+        else decision_time
+    )
+    age = (evaluated - acquisition).total_seconds()
+    if not (
+        0 <= age <= NUMERIC_EQUITY_TTL_SECONDS
+        and 0 <= (evaluated - decision_time).total_seconds() <= NUMERIC_EQUITY_TTL_SECONDS
+    ):
         raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
     policy = owner.entry_budget_policy_v1()
     basis = (
-        owner.live_reversal_slot_basis_v1(
+        owner.authenticated_reversal_slot_basis_v1(
             slot_id=lane, reservation_id=authenticated_entry.proof.reservation_id, bound=bound
         )
-        if live
+        if authenticated
         else owner.slot_capital_basis_v1(lane)
     )
     if (
@@ -309,10 +331,10 @@ def assess_direct_double_play_reversal_v1(
     ):
         raise ValueError(
             "DIRECT_REVERSAL_FUNDED_LIVE_SLOT_REQUIRED"
-            if live
+            if authenticated
             else "DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED"
         )
-    if not live and not isinstance(policy, BoundedSlotEntryBudgetV1):
+    if not authenticated and not isinstance(policy, BoundedSlotEntryBudgetV1):
         raise ValueError("DIRECT_REVERSAL_FUNDED_SIMULATED_SLOT_REQUIRED")
     commitments = owner.local_commitment_readback_v1()
     holds = [
@@ -323,16 +345,18 @@ def assess_direct_double_play_reversal_v1(
     if len(holds) != 1:
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
     hold = holds[0]
-    if live and (
+    if authenticated and (
         hold.state != "COMMITTED" or hold.reservation_id != authenticated_entry.proof.reservation_id
     ):
         raise ValueError("DIRECT_REVERSAL_ORIGINAL_HOLD_REQUIRED")
     previous = (
         None
-        if live
+        if authenticated
         else owner.latest_simulated_direct_reversal_v1(lane, reservation_id=hold.reservation_id)
     )
-    live_booking = owner.read_authenticated_net_reversal_v1(hold.reservation_id) if live else None
+    live_booking = (
+        owner.read_authenticated_net_reversal_v1(hold.reservation_id) if authenticated else None
+    )
     previous_plan = DirectDoublePlayReversalV1.from_dict_v1(previous["plan"]) if previous else None
     if (
         hold.instrument_id != bound.instrument_id
@@ -372,44 +396,63 @@ def assess_direct_double_play_reversal_v1(
     if scope_state["valid"] is not True or stop is None:
         raise ValueError("DIRECT_REVERSAL_FULL_SCOPE_REQUIRED")
 
-    observation = read_29p_free_margin_evidence_v1(
-        payload=injected.payload,
-        decision_epoch=epoch,
-        observed_at=injected.observed_at,
-        http_status=injected.http_status,
-        body_sha256=injected.body_sha256,
-        expected_uid=recovery.account,
-        age_seconds=str(age),
-    )
-    handoff = execute_current_productive_treasury_single_source_capital_handoff_v1(
-        margin_observation=observation,
-        instrument_id=bound.instrument_id,
-        body_sha256=observation.provenance_digest,
-        fresh_pretrade_get_status=injected.fresh_pretrade_get_status,
-        live_account_bound_status=injected.live_account_bound_status,
-        u04_p01_host_inputs=build_full_core_margin_inputs_from_budget_owner_v1(
-            raw_acct_lv=injected.raw_acct_lv,
-            budget_owner=owner,
-        ),
-        clear_treasury_idempotency=True,
-    )
-    if handoff.fail_closed or handoff.step_29p_admissibility.risk_admissible is not True:
-        raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
-    recovery.recover_v1(owner, handoff.producer_output)
+    rule_sources = ""
+    if testnet:
+        from src.ops.btc_demo_net_reversal_financials_v1 import original_reversal_sources_v1
+        from src.ops.portfolio_capital_reservation_budget_v1.entry_execution_cost_v1 import (
+            canonical,
+        )
+
+        rows, observation, output = original_reversal_sources_v1(
+            injected, account=recovery.account, epoch=epoch, now=evaluated.isoformat()
+        )
+        rule_sources = canonical({key: asdict(rows[key]) for key in ("account", "instruments")})
+        recovery.recover_v1(owner, output)
+    else:
+        observation = read_29p_free_margin_evidence_v1(
+            payload=injected.payload,
+            decision_epoch=epoch,
+            observed_at=injected.observed_at,
+            http_status=injected.http_status,
+            body_sha256=injected.body_sha256,
+            expected_uid=recovery.account,
+            age_seconds=str(age),
+        )
+        handoff = execute_current_productive_treasury_single_source_capital_handoff_v1(
+            margin_observation=observation,
+            instrument_id=bound.instrument_id,
+            body_sha256=observation.provenance_digest,
+            fresh_pretrade_get_status=injected.fresh_pretrade_get_status,
+            live_account_bound_status=injected.live_account_bound_status,
+            u04_p01_host_inputs=build_full_core_margin_inputs_from_budget_owner_v1(
+                raw_acct_lv=injected.raw_acct_lv,
+                budget_owner=owner,
+            ),
+            clear_treasury_idempotency=True,
+        )
+        if handoff.fail_closed or handoff.step_29p_admissibility.risk_admissible is not True:
+            raise ValueError("DIRECT_REVERSAL_FRESH_CAPITAL_REQUIRED")
+        recovery.recover_v1(owner, handoff.producer_output)
     facts = dict(capital_context_facts_v1(owner, slot_id=lane))
     # This is the resulting exposure of one net order. Keep the current
     # outstanding cash obligations and credit neither a fill nor released funds.
     facts["current_reconciled_exposure"] -= hold.amount
+    if testnet:
+        # Size the resulting single net position. The replaced notional is
+        # not an additional concurrent target; its durable hold and existing
+        # cash-cost obligations remain retained. Native margin is checked
+        # separately against observed venue free margin, with no release credit.
+        facts["already_committed_capital"] -= hold.amount
     # Initial allocation limits govern funding. The next exposure uses the
     # settled balances of the funded slots, subject to fresh account capital.
     slot_capital = (
         basis.net_basis_usdc
-        if live
+        if authenticated
         else owner.direct_reversal_basis_v1(lane, hold.reservation_id, epoch)
     )
     portfolio_capital = (
         slot_capital
-        if live
+        if authenticated
         else sum(
             (
                 max(Decimal(0), owner.slot_capital_basis_v1(slot).net_basis_usdc)
@@ -425,7 +468,7 @@ def assess_direct_double_play_reversal_v1(
     )
     money = build_capital_risk_sizing_monetary_context_v1(
         decision_epoch=epoch,
-        observed_at=injected.observed_at,
+        observed_at=evaluated.isoformat() if testnet else injected.observed_at,
         fresh_pretrade_get_status=injected.fresh_pretrade_get_status,
         account_equity_amount=facts["account_equity"],
         account_equity_currency="USDC",
@@ -435,9 +478,15 @@ def assess_direct_double_play_reversal_v1(
         venue_native_id=bound.venue_native_id,
         index_tickers_payload=injected.index_tickers_payload,
         conversion_pair_instruments_payload=injected.conversion_pair_instruments_payload,
+        contract_settlement_sources_json=rule_sources,
     )
     equity, canonical_reference, canonical_stop = crs_operands_from_monetary_context_v1(money)
-    context = build_current_productive_live_account_capital_context_v1(
+    from .current_productive_mv2_capital_context_rebind_v1 import (
+        build_current_productive_account_capital_context_v1,
+    )
+
+    context = build_current_productive_account_capital_context_v1(
+        execution_environment="TESTNET" if testnet else "LIVE",
         instrument_id=bound.instrument_id,
         typed_account_equity=equity,
         reference_price=canonical_reference,
@@ -446,7 +495,9 @@ def assess_direct_double_play_reversal_v1(
     )
     context = replace(context, scope_capital_limit=min(context.scope_capital_limit, slot_capital))
     budget_digest = policy.digest_v1() if policy is not None else basis.allocation_digest
-    funding_digest = canonical_digest_v1(basis.to_dict()) if live else basis.allocation_digest
+    funding_digest = (
+        canonical_digest_v1(basis.to_dict()) if authenticated else basis.allocation_digest
+    )
     decision = _DoublePlaySizingDecisionV1(
         "l10-reversal:" + scope["digest"],
         canonical_digest_v1(
@@ -456,7 +507,7 @@ def assess_direct_double_play_reversal_v1(
                 "epoch": epoch,
                 "budget": budget_digest,
                 "funding": basis.to_dict(),
-                **({"account_observation": observation.provenance_digest} if live else {}),
+                **({"account_observation": observation.provenance_digest} if authenticated else {}),
                 "position": quantity.snapshot_digest,
                 "hold": commitments.generation_digest,
             }
@@ -465,11 +516,10 @@ def assess_direct_double_play_reversal_v1(
         side,
         "enter_" + side,
     )
-    sizing = evaluate_capital_risk_sizing_v1(
-        apply_capital_context_facts_v1(
-            bind_double_play_sizing_input_v1(decision=decision, capital_context=context), facts
-        )
+    applied = apply_capital_context_facts_v1(
+        bind_double_play_sizing_input_v1(decision=decision, capital_context=context), facts
     )
+    sizing = evaluate_capital_risk_sizing_v1(applied)
     if (
         sizing.outcome is not CapitalRiskSizingOutcome.PASS
         or sizing.canonical_position_sizing is None
@@ -479,6 +529,40 @@ def assess_direct_double_play_reversal_v1(
         quantity.quantity + sizing.final_quantity > metadata.constraints.maximum_quantity
     ):
         raise ValueError("DIRECT_REVERSAL_DELTA_ABOVE_INSTRUMENT_LIMIT")
+    financial = ""
+    if testnet:
+        from src.ops.governed_productive_monetary_normalization_v1.sizing_source_v1 import (
+            build_sizing_monetary_source_v1,
+        )
+        from src.ops.btc_demo_net_reversal_financials_v1 import bind_reversal_financials_v1
+
+        monetary = build_sizing_monetary_source_v1(
+            decision_epoch=epoch,
+            observed_at=evaluated.isoformat(),
+            fresh_pretrade_get_status=injected.fresh_pretrade_get_status,
+            canonical_instrument_id=bound.instrument_id,
+            account_equity_usdc=equity,
+            native_reference_price=reference,
+            native_protective_stop_price=stop,
+            instruments_payload=injected.instruments_payload,
+            venue_native_id=bound.venue_native_id,
+            index_tickers_payload=None,
+            conversion_pair_instruments_payload=None,
+            contract_settlement_sources_json=rule_sources,
+            normalization_digest=money.normalization_digest,
+        )
+        financial = bind_reversal_financials_v1(
+            owner=owner,
+            injected=injected,
+            applied=applied,
+            decision=sizing,
+            monetary=monetary,
+            margin=observation,
+            basis=basis,
+            current_contracts=direction * quantity.quantity,
+            epoch=epoch,
+            now=evaluated.isoformat(),
+        )
     return DirectDoublePlayReversalV1(
         identity,
         bound.selection_id,
@@ -498,6 +582,7 @@ def assess_direct_double_play_reversal_v1(
         direction * quantity.quantity,
         -direction * sizing.final_quantity,
         sizing.canonical_position_sizing.resulting_notional,
+        financial,
     )
 
 
@@ -516,7 +601,7 @@ def prepare_authenticated_net_reversal_order_v1(
 
     episode = reversal.episode
     if (
-        episode.account_scope.execution_environment != "LIVE"
+        episode.account_scope.execution_environment not in {"LIVE", "TESTNET"}
         or not reversal.current_contracts.is_finite()
         or not reversal.target_contracts.is_finite()
         or reversal.current_contracts * reversal.target_contracts >= 0
@@ -524,6 +609,14 @@ def prepare_authenticated_net_reversal_order_v1(
         != (bound.instrument_id, bound.venue_native_id, bound.selection_integrity_digest)
     ):
         raise ValueError("DIRECT_REVERSAL_ORDER_SOURCE_MISMATCH")
+    testnet = episode.account_scope.execution_environment == "TESTNET"
+    if testnet:
+        from src.ops.btc_demo_lane3_v2 import _NATIVE
+        from src.ops.btc_demo_net_reversal_financials_v1 import verify_reversal_financials_v1
+
+        if episode.lane_id != "LANE_3" or episode.venue_native_id != _NATIVE:
+            raise ValueError("TESTNET_REVERSAL_ORDER_SCOPE_MISMATCH")
+        verify_reversal_financials_v1(reversal)
     delta = reversal.signed_order_contracts
     digest = reversal.digest_v1()
     side = "buy" if delta > 0 else "sell"
@@ -552,7 +645,7 @@ def prepare_authenticated_net_reversal_order_v1(
         side_source="L10_SIGNED_NET_DELTA",
         instrument_source="ORIGINAL_OCCUPIED_SLOT",
         path_kind=DIRECT_DOUBLE_PLAY_REVERSAL,
-        environment="LIVE",
+        environment=episode.account_scope.execution_environment,
     )
     limits = injected.venue_quantity_limits
     acquisition = json.loads(injected.acquisition_decision_id or "null")
@@ -569,7 +662,7 @@ def prepare_authenticated_net_reversal_order_v1(
         account_identity=episode.account_scope.account_identity,
         decision_epoch=acquisition["decision_epoch"],
         cycle_id=cycle_id,
-        evaluated_at_utc=reversal.decision_epoch,
+        evaluated_at_utc=injected.observed_at if testnet else reversal.decision_epoch,
     )
     if not admission.allowed:
         raise ValueError(admission.reason_codes[0])

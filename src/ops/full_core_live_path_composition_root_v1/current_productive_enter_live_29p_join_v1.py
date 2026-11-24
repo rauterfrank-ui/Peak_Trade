@@ -218,6 +218,9 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     absolute_movement_cost_observation: object | None = None
     futures_financial_custody: object | None = None
     entry_public_mark_source: object | None = None
+    testnet_reversal_pretrade_provider: object | None = None
+    testnet_original_sources_json: str = ""
+    testnet_original_bodies_json: str = ""
 
 
 @dataclass(frozen=True)

@@ -1071,7 +1071,7 @@ def run_current_productive_governed_cycle_v1(
                 or reversal.episode.venue_native_id != authorization.native_id
                 or close_execution_handoff is not None
                 or final_order_envelope is not None
-                or (reversal.episode.account_scope.execution_environment == "LIVE")
+                or (reversal.episode.account_scope.execution_environment in {"LIVE", "TESTNET"})
                 != (reversal_order is not None)
             )
         elif reversal_order is not None:

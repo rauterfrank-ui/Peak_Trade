@@ -970,6 +970,31 @@ def _t2_from_s7(
                                     float(s7_base["observed_unix"]), tz=timezone.utc
                                 )
                             )
+                            reversal_injected = live_29p_injected
+                            if episode.identity.account_scope.execution_environment == "TESTNET":
+                                from src.ops.btc_demo_net_reversal_pretrade_v1 import (
+                                    BtcDemoNetReversalPretradeV1,
+                                )
+
+                                provider = getattr(
+                                    live_29p_injected, "testnet_reversal_pretrade_provider", None
+                                )
+                                if type(provider) is not BtcDemoNetReversalPretradeV1:
+                                    raise ValueError(
+                                        "TESTNET_REVERSAL_ORIGINAL_PRETRADE_PROVIDER_REQUIRED"
+                                    )
+                                reversal_injected = provider.acquire_for_reversal_v1(
+                                    decision_epoch=reversal_epoch.isoformat(),
+                                    cycle_id=str(s7_base["cycle_id_prefix"]),
+                                    account=host_budget_recovery.account,
+                                    bound=bound,
+                                )
+                                metadata = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
+                                    venue_native_id=native_id,
+                                    bound_instrument_id=bound.instrument_id,
+                                    instruments_payload=reversal_injected.instruments_payload,
+                                    observed_at_as_of=reversal_injected.observed_at,
+                                )
                             reversal = assess_direct_double_play_reversal_v1(
                                 episode=episode,
                                 bound=bound,
@@ -981,7 +1006,7 @@ def _t2_from_s7(
                                 epoch=reversal_epoch.isoformat(),
                                 recovery=host_budget_recovery,
                                 owner=portfolio_budget_owner,
-                                injected=live_29p_injected,
+                                injected=reversal_injected,
                                 authenticated_entry=authenticated_entry,
                             )
                             if authenticated_entry is not None:
@@ -996,7 +1021,7 @@ def _t2_from_s7(
                                 reversal_order = prepare_authenticated_net_reversal_order_v1(
                                     reversal,
                                     bound=bound,
-                                    injected=live_29p_injected,
+                                    injected=reversal_injected,
                                     cycle_id=acquisition_scope,
                                 )
                         except (

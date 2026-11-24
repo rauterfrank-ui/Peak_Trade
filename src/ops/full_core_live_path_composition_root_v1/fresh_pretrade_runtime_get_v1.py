@@ -315,6 +315,7 @@ def _item_status_and_reasons(
     result: FreshPretradeGetTransportResultV1 | None,
     pretrade_decision_id: str,
     requested_endpoint: str,
+    execution_environment: str = "LIVE",
 ) -> Tuple[str, Tuple[str, ...]]:
     prefix = spec.item_id
     if result is None:
@@ -339,7 +340,16 @@ def _item_status_and_reasons(
     transport_class = str(result.transport_class or "")
     if transport_class == TRANSPORT_CLASS_MISSING or result.get_performed is not True:
         return FreshPretradeGetStatusV1.MISSING.value, (f"{prefix}_GET_NOT_PERFORMED",)
-    if transport_class == TRANSPORT_CLASS_INJECTED_TEST_DOUBLE:
+    if execution_environment == "TESTNET":
+        if transport_class != "OKX_EEA_DEMO_READ_ONLY_GET" or result.venue_live_contact is not True:
+            return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
+                f"{prefix}_TESTNET_TRANSPORT_NOT_BOUND",
+            )
+    elif execution_environment != "LIVE":
+        return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
+            f"{prefix}_EXECUTION_ENVIRONMENT_INVALID",
+        )
+    elif transport_class == TRANSPORT_CLASS_INJECTED_TEST_DOUBLE:
         if result.venue_live_contact is True:
             return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
                 f"{prefix}_INJECTED_DOUBLE_CANNOT_CLAIM_VENUE_CONTACT",

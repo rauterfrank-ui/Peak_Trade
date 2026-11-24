@@ -39,6 +39,19 @@ def pretrade_reader(api_key, secret, passphrase):
     return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
 
 
+def reversal_pretrade_reader(api_key, secret, passphrase):
+    """The entry GET scope plus the exact BTC Demo net-order quantity read."""
+    endpoints = {
+        path + ("?" + urlencode(query) if query else "")
+        for key, (path, query) in demo.BTC_DEMO_PRETRADE_QUERIES_V1.items()
+        if key not in {"book", "funding"}
+    }
+    endpoints.add(
+        "/api/v5/account/max-size?" + urlencode(dict(instId=demo._NATIVE, tdMode="cross"))
+    )
+    return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
+
+
 def _scoped_demo_reader(api_key, secret, passphrase, endpoints):
     def sign_get(endpoint):
         if endpoint not in endpoints:

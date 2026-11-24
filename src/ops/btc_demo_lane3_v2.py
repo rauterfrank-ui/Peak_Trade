@@ -146,12 +146,16 @@ class OkxEeaDemoReadsV1:
             (_FX, {"instId": "USDC-USD"}),
             ("/api/v5/market/books", {"instId": _NATIVE, "sz": "20"}),
             ("/api/v5/public/funding-rate", {"instId": _NATIVE}),
+            ("/api/v5/public/instruments", {"instType": "FUTURES", "instId": _NATIVE}),
         )
         leverage_query = (
             "/api/v5/account/leverage-info",
             {"instId": _NATIVE, "mgnMode": "cross"},
         )
-        private = path in _PRIVATE_READS or (path, query) == leverage_query
+        private = path in _PRIVATE_READS or (path, query) in (
+            leverage_query,
+            ("/api/v5/account/max-size", {"instId": _NATIVE, "tdMode": "cross"}),
+        )
         if not private and (path, query) not in public_queries:
             raise ValueError("BTC_DEMO_GET_PATH_FORBIDDEN")
         endpoint = path + (f"?{urlencode(query)}" if query else "")

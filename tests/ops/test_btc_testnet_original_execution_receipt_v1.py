@@ -57,6 +57,7 @@ def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
     assert identity.execution_environment == "TESTNET"
     policy = owner.entry_budget_policy_v1()
     saved = owner.risk_snapshot_v1()["state"]["sizing_bindings"][rid]
+    fill_price = saved["entry_cost_binding"]["receipt"]["book_vwap"]
     root = owner._store.root.parent
     held = owner.local_commitment_readback_v1().commitments
     owner.close()
@@ -69,7 +70,7 @@ def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
         posSide="net",
         mgnMode="cross",
         pos=envelope.quantity if long else "-" + envelope.quantity,
-        avgPx="60000",
+        avgPx=fill_price,
         tradeId="22",
         posId="8923",
         cTime=str(stamp - 200),
@@ -116,7 +117,7 @@ def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
                         **order,
                         "tradeId": "22",
                         "fillSz": envelope.quantity,
-                        "fillPx": "60000",
+                        "fillPx": fill_price,
                         "side": envelope.side,
                         "posSide": "net",
                         "fillTime": str(stamp - 200),
@@ -215,6 +216,7 @@ def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
             proof=proofs[rid],
             now=now,
             saved=saved,
+            movement_input=movement,
             rid=rid,
             payloads=payloads,
         )
