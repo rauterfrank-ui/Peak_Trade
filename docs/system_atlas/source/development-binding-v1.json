@@ -1374,7 +1374,7 @@
     {
       "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.json",
       "before_sha256": null,
-      "sha256": "9ca342c43de340f40e024b6d2851bd8316cae447567252f21dce2dbce528a912"
+      "sha256": "8633b7e6863839b5418df96760776596544bc93bca2fe0032ef20b019e8e905c"
     },
     {
       "path": "docs/ops/specs/N1_DOUBLE_PLAY_RUNTIME_SEAL_V1.md",
@@ -1389,7 +1389,7 @@
     {
       "path": "docs/ops/specs/N1_TESTNET_BOUNDED_HOST_SOURCE_ACCEPTANCE_V1.json",
       "before_sha256": null,
-      "sha256": "18c474217d6cb402f663824863efcd6f5dc9a16dbc9d189df393898c369ee3d3"
+      "sha256": "f9ddd2fe12cd0ca97c1586e3cad584d8734fc3729ae640e0dd9e703cc0967c1f"
     },
     {
       "path": "docs/ops/specs/N1_TESTNET_ENTRY_SUBMIT_SOURCE_ACCEPTANCE_V1.json",
@@ -1584,7 +1584,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "259782151cace2c5dd43377aeab8f07812686ce5bf46bc0ca2f6090b61df3ee1"
+      "sha256": "d22c85def7fc6a79d18eb513d670f7fe0342079b23c613128d73dcdc73788540"
     },
     {
       "path": "docs/system_atlas/source/current-files.jsonl.gz",
@@ -5279,7 +5279,7 @@
     {
       "path": "tests/ops/test_btc_demo_session_close_v1.py",
       "before_sha256": null,
-      "sha256": "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c"
+      "sha256": "a6ebeecaad9d1fce6cbeb7bedcb83c1dd621540be13e60ea65fe653271ac9a73"
     },
     {
       "path": "tests/ops/test_btc_demo_session_control_v1.py",

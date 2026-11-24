@@ -946,6 +946,10 @@ TESTNET_SESSION_CLOSE_REVIEW_DELTAS = {
 
 
 TESTNET_BOUNDED_HOST_REVIEW_DELTAS = {
+    "tests/ops/test_btc_demo_session_close_v1.py": (
+        "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+        "a6ebeecaad9d1fce6cbeb7bedcb83c1dd621540be13e60ea65fe653271ac9a73",
+    ),
     "scripts/ops/run_btc_demo_bounded_host_v1.py": (
         None,
         "a55e3c30a701e184929484567105226c0afe1687f01d92f4dd4a1b66b1a8c362",

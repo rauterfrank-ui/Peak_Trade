@@ -52,10 +52,14 @@
     "tests/ops/test_btc_demo_bounded_host_v1.py": [
       null,
       "bac79fa2edf2da95c15950e747228e495b083d49ebce97ae56edad0dd32a58ad"
+    ],
+    "tests/ops/test_btc_demo_session_close_v1.py": [
+      "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+      "a6ebeecaad9d1fce6cbeb7bedcb83c1dd621540be13e60ea65fe653271ac9a73"
     ]
   },
   "review_guard_sources": {
-    "docs/system_atlas/policy_projection.py": "259782151cace2c5dd43377aeab8f07812686ce5bf46bc0ca2f6090b61df3ee1",
+    "docs/system_atlas/policy_projection.py": "d22c85def7fc6a79d18eb513d670f7fe0342079b23c613128d73dcdc73788540",
     "docs/system_atlas/tests/test_policy_projection.py": "5049fde14ac76e127d1a33b8ff8c106470ac8b3c1a861b8dccc46e961590fdf1"
   },
   "contract_checks": [
@@ -72,12 +76,19 @@
       "xml_sha256": "e02c9fa7f0a89530c6cfbd8e2f7a9b20fb3438995fe91dcff2925a2256e46b51"
     },
     {
-      "cohort": "policy",
+      "cohort": "policy-fix",
       "tests": 119,
       "result": "PASS",
-      "xml_sha256": "16a7e2a20906612baf5179c19b8a1a8ab4a46417ed1b549ce236d97fab13f6db"
+      "xml_sha256": "f41957a60f62906c54fa521bc7b7a4dce9492777dd1de172399ffe8de8e4f729"
+    },
+    {
+      "cohort": "fixture-fix",
+      "tests": 2,
+      "result": "PASS",
+      "xml_sha256": "a3ec538a1f3b51ee8d6918c654a1f08269c9231a0233932b28ec3bbd6492a6b9"
     }
   ],
+  "validation_reuse_note": "The 266-case PASS is bound to the prior exact close-test bytes. A harmless foreign-signer dummy key was shortened after CI false-positive; both affected parameter cases are rechecked separately. Runtime sources remain unchanged; policy checks bind the current exact successor.",
   "actual_orders_sent": 0,
   "real_credential_access": false,
   "activation_authorized": false,

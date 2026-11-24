@@ -652,7 +652,7 @@ def test_close_authority_is_testnet_scoped_and_rechecked_at_socket(
     handle = case.signing_handle
     if fault == "foreign-signer":
         handle = bind_already_held_k1_venue_auth_session_v1(
-            api_key="foreign-fixture-key",
+            api_key="other-key",
             api_secret="fixture-secret",
             passphrase="fixture-phrase",
             execution_environment="TESTNET",
