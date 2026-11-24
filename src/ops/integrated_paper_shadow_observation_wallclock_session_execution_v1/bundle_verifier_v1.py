@@ -18,6 +18,7 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
+    require_event_time_utc,
 )
 from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
     require_current_double_play_bundle_v1,
@@ -72,6 +73,18 @@ _MANIFEST_REQUIRED_FILES = frozenset(
     }
 )
 
+# These sealed I17 captures used the explicit Mark input, but the price-basis
+# serializer still retained its ticker-default label. Reconstruct those bytes;
+# do not relabel their history or admit that label for current producers.
+# Both revisions retain session_runtime_v1.py SHA256
+# 9dfc1e22ce45da5275ad2d9905c3d1584183b374701ecbf617bc358a72378590.
+_RECORDED_COLLAPSED_MARK_CAPTURE_REVISIONS = frozenset(
+    {
+        "755d4d5a3f6f2756885bd00f14b5758e76e18442",
+        "05243d30437dbaeb5e62ce8c9b0e453cec801ab9",
+    }
+)
+
 
 @dataclass
 class WallclockEvidenceVerificationResultV1:
@@ -113,8 +126,10 @@ class _ShadowDecisionSelection:
     decision: dict[str, Any] | None = None
 
 
-def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
-    """Rebuild the bridge's price reference and return the recorded DDO host clock."""
+def _typed_cycle_market_time(
+    cycle: dict, mark: dict, session: dict, *, repository_sha: str | None = None
+) -> float:
+    """Rebuild the original price reference and recover the decision's own clock."""
     timing = cycle["shadow_decision_timing"]
     event = timing["mark_event_ts_unix"]
     receive = timing["mark_receive_ts_unix"]
@@ -183,11 +198,24 @@ def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
         or mark.get("mark_price_endpoint") != "/api/v5/public/mark-price"
     ):
         raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+    price_field = mark["mark_price_field"]
+    if repository_sha in _RECORDED_COLLAPSED_MARK_CAPTURE_REVISIONS:
+        if (
+            quote is not None
+            or session.get("mark_price_field") != "markPx"
+            or session.get("mark_price_endpoint") != "/api/v5/public/mark-price"
+            or session.get("canonical_instrument_id") != "ETH-USD_UM_XPERP-310404"
+            or session.get("venue_instrument_id") != "ETH-USD_UM_XPERP-310404"
+            or session.get("lane_id") is not None
+            or session.get("n5_assignment") is not None
+        ):
+            raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+        price_field = "last"
     basis = build_explicit_mid_price_basis_v2(
         mid_price=float(price),
         event_ts_unix=float(mark["event_ts_unix"]),
         receive_ts_unix=float(local_receive),
-        price_field=mark["mark_price_field"],
+        price_field=price_field,
         bid_px=bid,
         ask_px=ask,
         quote_source="ticker" if quote is None else "public_book",
@@ -197,6 +225,14 @@ def _typed_cycle_market_time(cycle: dict, mark: dict, session: dict) -> float:
         or cycle["price_basis"] != basis.to_dict()
     ):
         raise ValueError("DDO_MARKET_PRICE_REFERENCE_MISMATCH")
+    if "canonical_decision_time_utc" in timing:
+        stamp = require_event_time_utc(
+            timing["canonical_decision_time_utc"], "canonical_decision_time_utc"
+        )
+        instant = datetime.fromisoformat(stamp.replace("Z", "+00:00")).timestamp()
+        if not isfinite(instant) or instant < decided:
+            raise ValueError("DDO_MARKET_DECISION_CLOCK_INVALID")
+        return instant
     return float(decided)
 
 
@@ -296,7 +332,9 @@ def _verify_typed_cycle_bindings(
                     or index <= previous_index
                 ):
                     raise ValueError("DDO_MARKET_OR_CYCLE_SEQUENCE_INVALID")
-                decided = _typed_cycle_market_time(cycle, marks[sequence], session)
+                decided = _typed_cycle_market_time(
+                    cycle, marks[sequence], session, repository_sha=session_revision
+                )
                 bind_host_cycle_capture_context_v0(
                     binding,
                     event_ts_unix=decided,

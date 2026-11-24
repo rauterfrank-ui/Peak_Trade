@@ -98,6 +98,10 @@ def test_tick_latches_dataset_excludes_open_paper_and_skips_completed_source(tmp
 
     monkeypatch.setattr(campaign_ops, "_read_source", source)
     monkeypatch.setattr(campaign_ops, "run_offline_paper_ddo_research_cycle_v1", research)
+    # This scheduling test replaces scientific execution with a minimal fake.
+    # Complete original-owner chain admission is tested with actual engine
+    # packets in test_learning_research_chain_readback_v1.
+    monkeypatch.setattr(campaign_ops, "read_learning_research_chain_v1", lambda *args: {})
     tick = campaign_ops.tick_research_campaign_v1
     assert tick(campaign, code=code, now=start)["jobs"][0]["status"] == "MECHANISM_INCOMPLETE"
     job = campaign.state / "jobs" / (digest + ".json")

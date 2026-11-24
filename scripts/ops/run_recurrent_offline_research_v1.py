@@ -28,6 +28,7 @@ from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (  #
 )
 from src.experiments.canonical_experiment_identity_v1 import inspect_code_provenance_v1  # noqa: E402
 from src.experiments.canonical_native_research_session_v1 import NativeResearchExecutionArchiveV1  # noqa: E402
+from src.experiments.learning_research_chain_readback_v1 import read_learning_research_chain_v1  # noqa: E402
 from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1, read_v1  # noqa: E402
 from src.experiments.offline_ddo_research_cycle_v1 import (  # noqa: E402
     OfflineDdoResearchProfileV1,
@@ -495,30 +496,29 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
     )
     if result["status"] == "MECHANISM_INCOMPLETE":
         return result["status"]
-    publish_v1(
-        done,
-        {
-            "authority": "NONE",
-            "completed_at_utc": _utc(datetime.now(timezone.utc)),
-            "instrument_id": instrument,
-            "learning_digest": digest,
-            "source": source,
-            "result_digest": digest_v1(result),
-            "input_digest": input_digest,
-            "status": result["status"],
-            "strategy_id": template["strategy_id"],
-            "strategy_version": template["strategy_version"],
-            "artifacts": [
-                artifact
-                for artifact in (
-                    result["first_artifact_id"],
-                    result["next_artifact_id"],
-                    (result.get("follow_up") or {}).get("artifact_id"),
-                )
-                if artifact is not None
-            ],
-        },
-    )
+    completed = {
+        "authority": "NONE",
+        "completed_at_utc": _utc(datetime.now(timezone.utc)),
+        "instrument_id": instrument,
+        "learning_digest": digest,
+        "source": source,
+        "result_digest": digest_v1(result),
+        "input_digest": input_digest,
+        "status": result["status"],
+        "strategy_id": template["strategy_id"],
+        "strategy_version": template["strategy_version"],
+        "artifacts": [
+            artifact
+            for artifact in (
+                result["first_artifact_id"],
+                result["next_artifact_id"],
+                (result.get("follow_up") or {}).get("artifact_id"),
+            )
+            if artifact is not None
+        ],
+    }
+    read_learning_research_chain_v1(workspace.root, digest, completed)
+    publish_v1(done, completed)
     publish_v1(receipt, {"source": source, "learning_digest": digest})
     return result["status"]
 
@@ -549,6 +549,7 @@ def _verify_completed(workspace, digest):
         or digest_v1(result) != completed["result_digest"]
     ):
         raise ValueError("RESEARCH_CAMPAIGN_RESULT_MISMATCH")
+    read_learning_research_chain_v1(workspace.root, digest)
 
 
 def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):

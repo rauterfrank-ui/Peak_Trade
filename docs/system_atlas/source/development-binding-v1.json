@@ -1014,7 +1014,7 @@
     {
       "path": "docs/ops/specs/CANONICAL_META_LEARNING_V1.md",
       "before_sha256": "fb398cfd2db6101625fac595962b0b96dc25754ce0777c81c6d45fb669bb4a23",
-      "sha256": "a3c3ee080f0e5c7620ef35eb9902901cecaf3f450810c39241fd9368980e6624"
+      "sha256": "5e774c0fd2d5058ef76a1e64b667d163ff786d0e26d4e43e78b0ee725c86c2d0"
     },
     {
       "path": "docs/ops/specs/CURRENT_BWP1_COST_PROVISION_AND_PAPER_SHADOW_V1.md",
@@ -1409,7 +1409,7 @@
     {
       "path": "docs/ops/specs/OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md",
       "before_sha256": null,
-      "sha256": "942950a795f2fadaeb3842a238231c5e12060fc7c26e2dae97b7b9f33299f8be"
+      "sha256": "a84e3ffb9133547e0a0c9e55defde10527653167a5a1ef56b5cc4b01a28a919d"
     },
     {
       "path": "docs/ops/specs/OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
@@ -2169,7 +2169,7 @@
     {
       "path": "scripts/ops/run_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "720c563b7d8bc6782b9bb8a7d4e006c1b487653029496dab8364f6b4233b9fda"
+      "sha256": "60cc96b52ead058e7d7e3812391169f64f4f0f3e1eaeb364229e2aa62391eaf2"
     },
     {
       "path": "scripts/ops/run_research_candidate_shadow_v1.py",
@@ -2365,6 +2365,11 @@
       "path": "src/experiments/f2_meta_cost_model_follow_up_v1.py",
       "before_sha256": null,
       "sha256": "950c1c28c4f3f6b08fe5eeb07820a2b4aff795d2d5054db972484cc79baa2d26"
+    },
+    {
+      "path": "src/experiments/learning_research_chain_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "90b291b7c7506e1c9222f0f809b88d6c54e7775581c5c2d5d6722da3668f2c1d"
     },
     {
       "path": "src/experiments/offline_ddo_research_cycle_v1.py",
@@ -3639,7 +3644,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
       "before_sha256": "b81028c042019ee7b44eac2a3cc40ba0d65f81dfad3f834c485eb6bc343c5015",
-      "sha256": "3241f5b209b7a71300743a4cdfb847c32cb3e77b5f4f534eac434886983d88c7"
+      "sha256": "0d49d194d306aebed328e252ad17226d68b7d78275e63d7338904acc5b3c56b1"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/candidate_observation_v1.py",
@@ -3669,7 +3674,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/session_runtime_v1.py",
       "before_sha256": "7594d921bb5b54ff628713d602a06c91c6406fd409f119718ab131c88335e7a6",
-      "sha256": "05bb97fa4451c43addf3ed8b9375ec5520dbae66c627843910aed2c5b1edbefa"
+      "sha256": "eaa63e3ad340071f638b7914854ef8ab78aaad4b376046791e1d91075a648c4b"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/wallclock_evidence_v1.py",
@@ -4977,6 +4982,11 @@
       "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb"
     },
     {
+      "path": "tests/learning/test_learning_research_chain_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "76b348e0a80a8a38cf4de891816f43c9c45e9764d65ed594d5b58abe937f3959"
+    },
+    {
       "path": "tests/learning/test_legacy_directional_score_semantics_v1.py",
       "before_sha256": null,
       "sha256": "641afb47cf1d9fdc7be00da542c49e277cda7a8a9cebcf2210ff13b5aa0e4f04"
@@ -5089,7 +5099,7 @@
     {
       "path": "tests/learning/test_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "eeed45621100f08c084a0539560ea969a28ccfa4f9633430932eb5da5c69b062"
+      "sha256": "e6828c47d722beba1a724aac1a0943bfcb1b26ef699dab69bee6e9b47c2cb55a"
     },
     {
       "path": "tests/learning/test_representation_evaluation_return_binding_v1.py",
@@ -5932,6 +5942,11 @@
       "sha256": "aeba8967c6a6358a875140ef051882a678c5b8b3653cc2629a6ac367293dc8b5"
     },
     {
+      "path": "tests/ops/test_i17_recorded_mark_basis_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "a33946e18ad98e9307db6cc26ecc5a7a08e2409d672b4f79baacd4675bbc9a2d"
+    },
+    {
       "path": "tests/ops/test_inspect_btc_demo_account_v1.py",
       "before_sha256": null,
       "sha256": "47724ab69363a883d55151139002337a55af37afbcc056d55b1d6418a16b85b7"
@@ -5954,7 +5969,7 @@
     {
       "path": "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
       "before_sha256": "0647863030595cabf9cc496508a0fe0169029939a902e1824f4fea72437922b6",
-      "sha256": "9a8ca66be31375f9d1c95d29cf76e49ca3919f1781663b4ff0eaed17632a6aaa"
+      "sha256": "318993c418b294edab2d8261d1611913e245e5af8ea8d257268024d0dbd3f756"
     },
     {
       "path": "tests/ops/test_integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.py",
@@ -8523,5 +8538,6 @@
   "btc_demo_usd_usdc_reservation_scope": "Original decision-bound Demo GET bodies feed a V3 TESTNET first-entry hold. Explicit EEA linear X-Perp selected-margin interpretation retains USD quote and USDC cash units without a spot FX parity assumption or source-row projection. Monetary source v2 retains the same private account and instrument observations for cold reconstruction. Both Core directions, once-funded 25 USDC despite larger observed balance, depth, fees and wrong-source refusals pass offline. Confirmed venue payments, full dispatch/reversal and five-lane scheduling remain open. Runtime authority is NONE.",
   "btc_demo_testnet_plan_scope": "The original canonical intent, composition, venue-plan and envelope producers consume the actual retained sizing binding for TESTNET, with original decision and current entry-frame custody. Offline bilateral tests prove exact reserved quantity, no Core cursor rewrite, same plan after cold read, and refusal before mutation for stale observations including expiry during composition. No permit, submit attempt or transport is created. Full Demo send/reversal and bounded five-lane dispatch remain open.",
   "btc_demo_bounded_host_scope": "Concrete original Slot 3 TESTNET host, once-funded 25 USDC and immutable 3600-second deadline, original G17/C1 lineage across minute boundaries, confirmed original net reversals, cold recovery, separately confirmed bounded close or authenticated no-entry. Offline preparation only; no venue execution, activation or five-slot DDO/GVEF runtime proof.",
-  "five_slot_ddo_gvef_preparation_scope": "Fixed five-slot offset procedure with explicitly later fresh admission. Original N5 occupancy keeps its historical revision; explicit successor Cap21/22/23 originals replay the original policy. BTC bounded original registration, retained Core/G17 source, authenticated budget reconciliation and original DDO now feed the existing GVEF consumer after the original host close attempt. One-hour original source window; idempotent first-entry IMMEDIATE_POST_EVENT only, no full-account profit claim. Existing sealed host and policies unchanged. No T0, credentials, actual venue run, orders, promotion or activation."
+  "five_slot_ddo_gvef_preparation_scope": "Fixed five-slot offset procedure with explicitly later fresh admission. Original N5 occupancy keeps its historical revision; explicit successor Cap21/22/23 originals replay the original policy. BTC bounded original registration, retained Core/G17 source, authenticated budget reconciliation and original DDO now feed the existing GVEF consumer after the original host close attempt. One-hour original source window; idempotent first-entry IMMEDIATE_POST_EVENT only, no full-account profit claim. Existing sealed host and policies unchanged. No T0, credentials, actual venue run, orders, promotion or activation.",
+  "learning_research_readback_scope": "Bounded offline campaign readback of DDO lineage, native measurements, Meta research proposals, GVEF receipts and follow-up. Restore the recorded ETH Mark serializer at two identified revisions and retain the original Core decision clock in Shadow evidence. No operational schedule or trading policy change."
 }
