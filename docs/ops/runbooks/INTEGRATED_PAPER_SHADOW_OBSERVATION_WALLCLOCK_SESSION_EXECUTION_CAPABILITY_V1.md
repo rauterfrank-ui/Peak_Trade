@@ -176,6 +176,56 @@ Simulationsprofil. Ein erfolgreicher Input-Vorcheck ist ein Teilbefund.
 Die Ausgabe `launch_blockers` führt die noch fehlende Hostbindung und
 die Prüfung von Core-Marktinputs und Kosten auf.
 
+### Shadow-Slot 4 · Originalbelege für den virtuellen Erstkauf
+
+Beim Offline-Abgleich vom 24. November 2026 las N5 für Slot 4 weiterhin
+`PIEVERSE-USDT-SWAP` in der Session `rang_lane_4_20261123_p01`.
+Ihr letzter belegter Zustand war ein Abbruch mit aktivem Killstate wegen
+veralteter Fundingdaten. Der Positionsstatus blieb unbekannt. Dem
+[Rotations-Owner](../../../src/ops/ranked_shadow_slot4_successor_v1.py)
+fehlten der Flat-Nachweis, die Reconciliation, der Status offener Vorgänge
+vor und nach externer Übergabe sowie die Freigabe des Slot-Zustands für
+den Wechsel. Sein Ergebnis war `SHADOW_SLOT4_RECOVERY_OWNER_INPUTS_REQUIRED`.
+
+Der separat gesicherte Entwurf für `CSOPSKHYNIX2L-USDT-SWAP` hatte
+`authority=NONE`. Der Cap23-Kandidatenverweis führte zu Rang 1 im
+Cap22-Snapshot `pfr_9f77a4cd74cc430e67a7887c` von 00:27:10 UTC.
+Um 00:29:58.419921 UTC entsprach das Mindestlos einem Kontrakt zu einer
+Basiseinheit und nominal 1,83589 USDC. Mit modellierten Kosten ergab der
+Vergleich für BUY rund 1,8592 bis 2,1167 USDC und für SELL rund 1,8592
+bis 2,1142 USDC. Beim späteren Neueinlesen waren die Marktbelege veraltet.
+Der Vergleich enthielt weder den Schutzstopp noch die Risikomenge einer
+Entry-Entscheidung. SHA-256 des archivierten Entwurfs:
+`2220e20318366ed269d0bf1a6daba66bc4fc2490348c8e3a55feb4f0237de52d`.
+[Prüfung des historischen Mindestloses](../../../src/ops/ranked_shadow_slot4_nomination_v1.py)
+
+Für diese Kandidatur lagen folgende Übergaben noch offen:
+
+1. **N5 und Cap23.** Nach Freigabe durch den Rotations-Owner braucht der
+   Nachfolger eine eigene Session, eine veröffentlichte N5-Transition und
+   eine zum Entscheidungszeitpunkt gültige Auswahl mit Vorgänger-ID, Lane,
+   Instrument und Auswahl-Digest. Im Abgleich gab es kein `PENDING`.
+2. **Cap24.** Die Shadow-Session liefert ihr originales analytisches
+   Portfolio mit belegter Flat-Position und den frischen Markpreis des
+   Instruments. Die erfolgreiche Reconciliation und das erneut gelesene
+   `BoundInstrumentV1` binden genau diese Auswahl. [Bindungsprüfung](../../../src/ops/ranked_shadow_entry_selection_v1.py)
+3. **Entscheidung, Budget und Menge.** Nach Warm-up und Sicherheitsfreigabe
+   braucht Master V2 für LONG oder SHORT mindestens zwei verschiedene
+   Bestätigungsbeobachtungen und den Schutzstopp-Abstand des Zyklus. Für
+   die Bewertung fehlen zum Entscheidungszeitpunkt native Kontraktregeln,
+   Mark- und Indexpreis, Ticker, Open Interest, beidseitige Orderbuchtiefe,
+   Funding und der nach dem Markpreis erhobene Umrechnungskurs in USDC je
+   USDT. Der Budget-Owner bewertet Cash und Equity des analytischen Portfolios.
+   Die 10 USDC begrenzen Nominalwert plus Kostenansatz für Buchausführung,
+   Slippage, Gebühren und Funding. Das Risk Sizing liefert die zulässige
+   Kontraktmenge auf dem Losraster. Das analytisch gebundene Budget führt
+   `reserved_amount=None`. [Budgetquelle](../../../src/ops/instrument_card_stream_v1.py) · [Kosten und Sizing](../../../src/ops/ranked_shadow_first_purchase_v1.py)
+4. **Virtuelle Buchung.** Aus Sizing, Intent und gebundenem Instrument
+   entsteht der simulierte Auftrag. Erst `FILLED` mit übereinstimmender
+   Fill-ID, Auftragsdigest, Kontraktmenge, umgerechneter Basismenge und
+   Portfoliozustand vor und nach dem Fill belegt die Buchung. Für den
+   Entwurf lagen weder Auftrag noch Fill vor. [Buchungsabgleich](../../../src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py)
+
 ### ZKP-Paper-Einstieg auf LANE_1
 
 Der [ZKP-Startpfad](../../../scripts/ops/run_zkp_lane1_paper_v1.py) liest
