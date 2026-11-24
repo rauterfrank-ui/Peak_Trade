@@ -893,10 +893,122 @@ TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS = {
 }
 
 
+TESTNET_SESSION_CLOSE_REVIEW_DELTAS = {
+    "src/ops/btc_demo_budget_owner_v3.py": (
+        "3dbf24c4ef153ea24391f1a22f574183809e4d0b7be66df2633c6645fe06148f",
+        "adb0479f5a6e10ab5da5f5b20ad5d780e62b92a17ccdfe393727c509f3911375",
+    ),
+    "src/ops/btc_demo_session_close_reconciliation_v1.py": (
+        None,
+        "ddd250faed59e74ce9d731f715a296ce2a29c9ef134ca835d48ef710ff7d09ad",
+    ),
+    "src/ops/btc_demo_session_close_submit_v1.py": (
+        None,
+        "812cccc1eb848ec40bfd577057fc547d29e8eac7bd4fc82f383283218ff1e8f4",
+    ),
+    "src/ops/btc_demo_session_close_v1.py": (
+        None,
+        "b3f15a2cc4870385e6405417fa442573ef7eef3091c7ebed076258fbf3d6ec8f",
+    ),
+    "src/ops/btc_demo_session_control_v1.py": (
+        None,
+        "b125b0a64391818a0be2206724d0bd9d94bde49dad782e29eaeaab47217660c8",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": (
+        "bd553c70644d8bece02fe36cb6f82d39c9870c17aff6477d33d3ba58727c546a",
+        "43bba39e45dfe8f5ef9744531959c8524ea957488375799cc9c2094bd78db708",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": (
+        "95d399e03b5f5c6f029b24d05dbb2e9354a2d7fee6898e853a862f85abcbbc27",
+        "49e02ef30bc58a8ba4e15d375ef87c59e1f6e8c08b626bfa3abd29940b1aedf5",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": (
+        "23cc26d4b91072dbe11b529c03cbb1ff1b42bee024b9bdc753afb836468f85c1",
+        "5df84aa61774e52ff8ab88a5898cfb75525dfa5b37a91ecd9edd2bfc0f48e512",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/position_close_quote_v1.py": (
+        None,
+        "92a388ca9f4e70702fc55a916c30b12fe4e6dd33af04a909c4a67c6f69e0d773",
+    ),
+    "tests/ops/test_btc_demo_entry_submit_v1.py": (
+        "660ef17cf27176a716f1d7ffd4604a60b83f10170897ebcd647e2f072ad0975c",
+        "557409db3b44fc16e42dd3e6ea0d1e7441aacfee09d88be946e08035b19104d0",
+    ),
+    "tests/ops/test_btc_demo_session_close_v1.py": (
+        None,
+        "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+    ),
+    "tests/ops/test_btc_demo_session_control_v1.py": (
+        None,
+        "f273dc4d860fb78dc3bfae1e14e5ba02af3f76dc1cf995d3de1867604c06bd49",
+    ),
+}
+
+
+TESTNET_BOUNDED_HOST_REVIEW_DELTAS = {
+    "tests/ops/test_btc_demo_session_close_v1.py": (
+        "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+        "a6ebeecaad9d1fce6cbeb7bedcb83c1dd621540be13e60ea65fe653271ac9a73",
+    ),
+    "scripts/ops/run_btc_demo_bounded_host_v1.py": (
+        None,
+        "a55e3c30a701e184929484567105226c0afe1687f01d92f4dd4a1b66b1a8c362",
+    ),
+    "src/ops/btc_demo_bounded_host_v1.py": (
+        None,
+        "df92a4e2d07ba511d5802b7c1f2c5a18e57d967a4f5e74c2933c611058b8f510",
+    ),
+    "src/ops/btc_demo_bounded_post_owner_v1.py": (
+        None,
+        "0335b92db8f77d9a4f019c51c82c31d5fcf8e5c2e3c9d5ef1e37eaea7f4e8813",
+    ),
+    "src/ops/btc_demo_entry_c1_source_v1.py": (
+        None,
+        "fcf2029753a365370340d373b644b30781b2112e145435fe8cf21e75a781324a",
+    ),
+    "src/ops/btc_demo_entry_reservation_v1.py": (
+        "8b1b535d1a3781e4d696a38b8a7254a70be7ff3e79c811a3b754114296a33818",
+        "2dcf4e3d9f89a12bd1ac72f811fdcf18db90eb861100b30ec2806265e415f1ab",
+    ),
+    "src/ops/btc_demo_net_reversal_pretrade_v1.py": (
+        "8d62a270e43ee9850aed5f159f2b915c79945657c7bcfe55ce3f049325f773a1",
+        "d924e484ffc8599741aa2f2e3531cecb411d53ae08e7d8c3bc3e2bb94c2c1e49",
+    ),
+    "src/ops/btc_demo_offline_trading_host_v1.py": (
+        "7f6bf2593eb388ebce4f7ef3e4e1b35e266fc815acf2227f69e7424edee36929",
+        "c298d7a338b61615a3af47552d0733391499dd6ff986dbaf38c435149b092450",
+    ),
+    "src/ops/btc_demo_runtime_no_entry_v1.py": (
+        None,
+        "c9530b9e4ee446260cb9e87ea3cfd21a0cd2be664ea610b45876a9d8fdb18501",
+    ),
+    "src/ops/btc_demo_runtime_v1.py": (
+        None,
+        "84060c04c50d875914c698d76e1ff2b42e579c1348a9c017307910f63b6ce207",
+    ),
+    "src/ops/btc_demo_session_control_v1.py": (
+        "b125b0a64391818a0be2206724d0bd9d94bde49dad782e29eaeaab47217660c8",
+        "53398c8707509d6a0739507e7d1ba666588e5610c90872513d5927cc40bf9dd0",
+    ),
+    "tests/ops/test_btc_demo_bounded_host_cli_v1.py": (
+        None,
+        "2bea9e8c84e3dda43db67e8847d5e47ff0d6797f45cb459fc01172c17b071e93",
+    ),
+    "tests/ops/test_btc_demo_bounded_host_v1.py": (
+        None,
+        "bac79fa2edf2da95c15950e747228e495b083d49ebce97ae56edad0dd32a58ad",
+    ),
+}
+
+
 def _reviewed_testnet_successor(root, parent):
     expected = _exact_double_play_successor(parent, TESTNET_PREPARATION_REVIEW_DELTAS)
     if (root / "src/ops/btc_demo_entry_submit_v1.py").is_file():
         expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
+    if (root / "src/ops/btc_demo_session_close_v1.py").is_file():
+        expected = _exact_double_play_successor(expected, TESTNET_SESSION_CLOSE_REVIEW_DELTAS)
+    if (root / "src/ops/btc_demo_bounded_host_v1.py").is_file():
+        expected = _exact_double_play_successor(expected, TESTNET_BOUNDED_HOST_REVIEW_DELTAS)
     return expected
 
 
@@ -956,6 +1068,14 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
+        if (root / "src/ops/btc_demo_session_close_v1.py").is_file():
+            for path, (before, _) in TESTNET_SESSION_CLOSE_REVIEW_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, TESTNET_SESSION_CLOSE_REVIEW_DELTAS)
+        if (root / "src/ops/btc_demo_bounded_host_v1.py").is_file():
+            for path, (before, _) in TESTNET_BOUNDED_HOST_REVIEW_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, TESTNET_BOUNDED_HOST_REVIEW_DELTAS)
     actual = {}
     for path in expected:
         source = root / path

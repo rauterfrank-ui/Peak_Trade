@@ -61,6 +61,7 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
             and durable_lane_bindings[demo._LANE].venue_native_id == demo._NATIVE,
             "BTC_DEMO_V3_OWNER_SCOPE_REQUIRED",
         )
+        self._bounded_demo_session_control = None
         super().__init__(
             durable_root=root,
             durable_account_identity=durable_account_identity,
@@ -76,11 +77,14 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
         return "TESTNET"
 
     def _durable_payload_locked(self):
-        return {
+        body = {
             **super()._durable_payload_locked(),
             "testnet_owner_contract": CONTRACT,
             "execution_environment": "TESTNET",
         }
+        if self._bounded_demo_session_control is not None:
+            body["bounded_demo_session_control"] = deepcopy(self._bounded_demo_session_control)
+        return body
 
     def _restore_locked(self, payload):
         _need(
@@ -90,7 +94,73 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
         )
         body = deepcopy(payload)
         del body["testnet_owner_contract"]
+        session = body.pop("bounded_demo_session_control", None)
         super()._restore_locked(body)
+        from src.ops.btc_demo_session_control_v1 import validate_session_control_v1
+
+        validate_session_control_v1(self, session)
+        self._bounded_demo_session_control = deepcopy(session)
+
+    def register_bounded_demo_session_v1(self, registration, *, expected_head, now_utc):
+        from src.ops.btc_demo_session_control_v1 import register_session_locked_v1
+
+        with self._lock:
+            return register_session_locked_v1(
+                self, registration, expected_head=expected_head, now_utc=now_utc
+            )
+
+    def require_bounded_demo_risk_window_v1(self):
+        from src.ops.btc_demo_session_control_v1 import require_risk_window_v1
+        from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+            utc_now_iso_v1,
+        )
+
+        with self._lock:
+            return require_risk_window_v1(self, now_utc=utc_now_iso_v1())
+
+    def bounded_demo_session_result_v1(self):
+        """Read the original once-funded session's confirmed settlement only."""
+        from decimal import Decimal, localcontext
+        from src.ops.btc_demo_session_control_v1 import validate_session_control_v1
+
+        with self._lock:
+            if self._store is None or self._closed_owner or self._storage_failed:
+                raise ValueError("BTC_DEMO_SESSION_RESULT_WRITER_UNAVAILABLE")
+            registration = validate_session_control_v1(self, self._bounded_demo_session_control)
+            if registration is None or self._bounded_demo_session_control["phase"] != "CLOSED":
+                raise ValueError("BTC_DEMO_CONFIRMED_SESSION_CLOSE_REQUIRED")
+            receipt = self._bounded_demo_session_control["close_receipt"]
+            reversals = self._live_net_reversal_bookings.get(receipt["reservation_id"], ())
+            allocation = self._slot_capital_allocation
+            if (
+                allocation is None
+                or allocation["schema"] != "slot_capital_allocation.v1"
+                or allocation["funding"] is None
+            ):
+                raise ValueError("BTC_DEMO_ORIGINAL_TESTNET_FUNDING_REQUIRED")
+            initial = Decimal(allocation["declaration"]["initial_usdc_by_slot"]["LANE_3"])
+            with localcontext() as ctx:
+                ctx.prec = 96
+                net = sum(
+                    (Decimal(row["net_result_usdc"]) for row in reversals),
+                    Decimal(receipt["net_result_usdc"]),
+                )
+                return dict(
+                    session_id=registration.session_id,
+                    registration_digest=registration.digest_v1(),
+                    settlement_currency="USDC",
+                    initial_usdc=str(initial),
+                    booked_net_usdc=str(net),
+                    final_session_basis_usdc=str(initial + net),
+                    reversal_count=len(reversals),
+                    close_receipt_digest=digest(receipt),
+                    hold_released=True,
+                    account_balance_or_return_claim=False,
+                )
+
+    def inspect_current_entry_budget_policy_v1(self, *args, **kwargs):
+        self.require_bounded_demo_risk_window_v1()
+        return super().inspect_current_entry_budget_policy_v1(*args, **kwargs)
 
     def try_reserve_v1(self, **kwargs):
         return self._closed(("BTC_DEMO_V3_ORIGINAL_ENTRY_SOURCES_REQUIRED",))
@@ -120,6 +190,7 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
         )
 
         with self._lock:
+            self.require_bounded_demo_risk_window_v1()
             _need(self._store.head == expected_durable_head, "RESERVATION_DURABLE_HEAD_CHANGED")
             _need(
                 self._admitted

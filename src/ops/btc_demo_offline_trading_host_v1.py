@@ -208,7 +208,7 @@ class BtcDemoOfflineTradingHostV1:
         return value
 
     @observe_demo_call_v1
-    def prepare_entry_v1(self, *, observation, reconciliation):
+    def prepare_entry_v1(self, *, observation, reconciliation, budget_binding=None):
         obs = self._observation(observation)
         _need(
             self.budget.owner.active_sum_v1() == 0,
@@ -234,6 +234,7 @@ class BtcDemoOfflineTradingHostV1:
             lane_id=demo._LANE,
             cursor_store_root=self.cursor_root,
             capture_demo_decision=True,
+            budget_binding=budget_binding,
         )
 
     def assess_monetary_entry_v1(self, *, entry, coverage, now):

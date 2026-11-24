@@ -297,7 +297,9 @@ class SharedPostOwnerAuthorizationV1:
         if (
             grant.account != account
             or grant.action != action
-            or action not in {"ENTER", "L10_CLOSE", "DIRECT_DOUBLE_PLAY_REVERSAL"}
+            or action
+            not in {"ENTER", "L10_CLOSE", "DIRECT_DOUBLE_PLAY_REVERSAL", "BOUNDED_SESSION_CLOSE"}
+            or (action == "BOUNDED_SESSION_CLOSE" and execution_environment != "TESTNET")
             or execution_environment not in {"LIVE", "TESTNET"}
             or grant.environment != execution_environment
             or grant.venue != "OKX_EEA"

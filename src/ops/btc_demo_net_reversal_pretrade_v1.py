@@ -99,10 +99,18 @@ class BtcDemoNetReversalPretradeV1:
             evaluated_at_utc=now,
         )
         funding = cost.FundingCostObservationV1.capture_v1(**base, source=rows["funding"])
-        movement = AbsoluteMovementCostObservationV1.capture_v1(
-            instrument_raw_input=self.movement_input,
-            opening_observation=opening,
-            evaluated_at_utc=now,
+        from src.ops.portfolio_capital_reservation_budget_v1.absolute_movement_cost_v1 import (
+            EntryPublicMarkSourceV1,
+        )
+
+        movement = (
+            self.movement_input.observe_v1(bound=bound, opening_observation=opening)
+            if type(self.movement_input) is EntryPublicMarkSourceV1
+            else AbsoluteMovementCostObservationV1.capture_v1(
+                instrument_raw_input=self.movement_input,
+                opening_observation=opening,
+                evaluated_at_utc=now,
+            )
         )
         limits = capture_n1_venue_quantity_limits_v1(
             results=dict(instruments=rows["quantity_public"], max_size=rows["quantity_private"]),
@@ -113,6 +121,9 @@ class BtcDemoNetReversalPretradeV1:
             cycle_id=cycle_id,
             execution_environment="TESTNET",
         )
+        # Original public movement acquisition may finish after the financial
+        # observations above. The final receipt uses the actual later clock.
+        now = datetime.fromtimestamp(self.clock(), timezone.utc).isoformat()
         return CurrentProductiveEnterLive29PInjectedGetV1(
             payload=rows["balance"].payload,
             get_performed=True,
