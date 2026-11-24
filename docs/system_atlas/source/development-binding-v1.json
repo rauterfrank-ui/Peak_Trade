@@ -6423,10 +6423,10 @@
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
   "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome.",
   "artifact_assignments": {
-    "repo_commit": "11c910f0b3a716ff06ffd3096b0298ec591a37ac",
+    "repo_commit": "e045776d73537dfec4e200ff99137188f3185e88",
     "obsidian_register": "08 Register/Repo-Dateien.jsonl",
     "obsidian_register_sha256": "a714e113cee9c4869cd37649cbcc3484c99df38dcc54d90782b97de3ab658988",
-    "records_sha256": "a1910793389f1b51c21d28672f15bc81f248bb9b9406d37a9a19342c95261dcc",
+    "records_sha256": "3b47b5e665f3d7fd5da8f255e996df3f34cf1a845a527de5a3f9c3666eba7d71",
     "additions": [
       {
         "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
@@ -8136,7 +8136,8 @@
       "tests/ops/test_full_core_pre_live_capital_admission_contract_v1.py": "slot3_demo_original_source_and_settlement_review",
       "tests/ops/test_portfolio_budget_host_v1.py": "slot3_demo_original_source_and_settlement_review",
       "tests/ops/test_portfolio_execution_recovery_v1.py": "slot3_demo_original_source_and_settlement_review",
-      "tests/ops/test_portfolio_sizing_learning_semantic_join_v1.py": "slot3_demo_original_source_and_settlement_review"
+      "tests/ops/test_portfolio_sizing_learning_semantic_join_v1.py": "slot3_demo_original_source_and_settlement_review",
+      "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json": "btc_demo_law_diff_binding_review"
     }
   },
   "reviewed_file_connections": {
